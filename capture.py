@@ -15,9 +15,11 @@ script.
 import csv
 import pdfkit
 import time
+import os.path
 
 # Where we write problems PDFing files
 logname = time.strftime("logs/%Y%m%d-%H%M%S.log")
+print(logname)
 
 # Names of the incident link columns
 link_fields = ['Link 1', 'Link 2', 'Link 3', 'Link 4', 'Link 5',
@@ -45,6 +47,19 @@ pdfkit_options = {
     #'no-outline': None
 }
 
+def get_pdf_path(incident_id, link_number):
+    """ Get the path to the file where we want to store the PDF
+
+    Args:
+        incident_id (str): The string identifier of the incident.
+        link_number (int): The document reference number for the PDF.
+
+    Return:
+        (str): The relative path to the storage location for the file.
+    """
+    out_name = incident_id + ".link" + str(link_number) + ".pdf"
+    return "captures/" + out_name
+
 def collect_pdfs(filepath):
     """Print the CSV file contents
 
@@ -63,13 +78,18 @@ def collect_pdfs(filepath):
         for row in reader:
             for idx, link_number in enumerate(link_fields):
                 if len(row[link_number]) > 10:
+                    pdf_path = get_pdf_path(row["Incident number"], idx)
+                    if os.path.exists(pdf_path):
+                        print("Skipping: " + pdf_path)
+                        continue
                     print("PDFing: " + row[link_number])
-                    out_name = row["Incident number"] + ".link" + str(idx) + ".pdf"
+                    print("...and storing to: " + pdf_path)
                     try:
                         pdfkit.from_url(row[link_number],
-                                    "captures/" + out_name,
+                                        pdf_path,
                                     options=pdfkit_options)
                     except Exception as err:
+                        print("Exception Written to Log")
                         with open(logname, "a") as logfile:
                             logfile.write(str(err))
 
