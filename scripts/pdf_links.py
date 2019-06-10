@@ -58,7 +58,7 @@ def get_pdf_path(incident_id, link_number):
         (str): The relative path to the storage location for the file.
     """
     out_name = incident_id + ".link" + str(link_number) + ".pdf"
-    return "captures/" + out_name
+    return "captures/pdfs/" + out_name
 
 def collect_pdfs(filepath):
     """Print the CSV file contents
