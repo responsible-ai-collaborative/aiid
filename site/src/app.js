@@ -1,4 +1,6 @@
-/* global algoliasearch instantsearch */
+/* global algoliasearch instantsearch current_hits */
+
+var current_hits = {};
 
 const searchClient = algoliasearch(
   'JD5JCVZEVS',
@@ -59,9 +61,129 @@ function showSubmitterModal(ev) {
     modal.modal();
 }
 
+function showDetailModal(ev) {
+    var modal = $('#detailmodal');
+    var json = current_hits[parseInt($( ev ).data("detail-number"))-1];
+    var rendered = `
+<div class="card_pad col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="article-header">${json.title}</h1>
+    </div>
+    <div class="card-body">
+      <article>
+        <h3>End Date</h3>
+        ${json["End Date"]}
+
+        <h3>Meets Preliminary Definition</h3>
+        ${json["Meets Preliminary Definition"]}
+
+        <h3>Sam Yoon Assessed Harm Caused</h3>
+        ${json["Sam Yoon Assessed Harm Caused"]}
+
+        <h3>Sam Yoon Assessed Harmed Party</h3>
+        ${json["Sam Yoon Assessed Harmed Party"]}
+
+        <h3>Sam Yoon Assessed Response or Mitigation</h3>
+        ${json["Sam Yoon Assessed Response or Mitigation"]}
+
+        <h3>Sam Yoon Description</h3>
+        ${json["Sam Yoon Description"]}
+
+        <h3>Sam Yoon Estimated Scale of Harm</h3>
+        ${json["Sam Yoon Estimated Scale of Harm"]}
+
+        <h3>Sam Yoon Search Words</h3>
+        ${json["Sam Yoon Search Words"]}
+
+        <h3>Date</h3>
+        ${json["Start Date"]}
+
+        <h3>Submitter</h3>
+        ${json["Submitter"]}
+
+        <h3>Uncertain</h3>
+        ${json["Uncertain"]}
+
+        <h3>authors</h3>
+        ${json["authors"]}
+
+        <h3>date_download</h3>
+        ${json["date_download"]}
+
+        <h3>date_modify</h3>
+        ${json["date_modify"]}
+
+        <h3>date_publish</h3>
+        ${json["date_publish"]}
+
+        <h3>description</h3>
+        ${json["description"]}
+
+        <h3>filename</h3>
+        ${json["filename"]}
+
+        <h3>for_render</h3>
+        ${json["for_render"]}
+
+        <h3>image_url</h3>
+        ${json["image_url"]}
+
+        <h3>incident_id</h3>
+        ${json["incident_id"]}
+
+        <h3>language</h3>
+        ${json["language"]}
+
+        <h3>localpath</h3>
+        ${json["localpath"]}
+
+        <h3>objectID</h3>
+        ${json["objectID"]}
+
+        <h3>ref_number</h3>
+        ${json["ref_number"]}
+
+        <h3>source_domain</h3>
+        ${json["source_domain"]}
+
+        <h3>text</h3>
+        ${json["text"].replace(/(\r\n|\n|\r)/g,"<br /><br />")}
+
+        <h3>title</h3>
+        ${json["title"]}
+
+        <h3>title_page</h3>
+        ${json["title_page"]}
+
+        <h3>title_rss</h3>
+        ${json["title_rss"]}
+
+        <h3>URL</h3>
+        ${json["url"]}
+      </article>
+    </div>
+    <div class="align-bottom">
+      <p><img class="image-preview" onerror="this.style.display='none'" src='${json.image_url}'></p>
+    </div>
+    <div class="card-footer text-muted">
+      <p>
+        <a href=${ json.url }><i class="far fa-newspaper" title="Read the Source"></i></a>
+        <i class="pointer far fa-id-card"  title="Authors" onclick="showAuthorModal(this)" data-toggle="modal" data-target="#authormodal"><span style="display:none;">${ json.authors }</span></i>
+        <i class="pointer fas fa-user-shield"  title="Submitters" onclick="showSubmitterModal(this)" data-toggle="modal" data-target="#submittermodal"><span style="display:none;">${ json.Submitter }</span></i>
+        <i class="fas fa-hashtag" title="Incident ID"></i>${ json.incident_id }
+      </p>
+    </div>
+  </div>
+</div>`
+    modal.find("#detail-modal").html(rendered);
+    modal.modal();
+}
+
 // Create the render function
 const renderHits = (renderOptions, isFirstRender) => {
   const { hits, widgetParams } = renderOptions;
+  current_hits = hits;
   hits.forEach(function(element) {
       element.for_render = "<p>";
       if (typeof element._snippetResult.description !== 'undefined') {
@@ -95,6 +217,7 @@ const renderHits = (renderOptions, isFirstRender) => {
             <a href=${ item.url }><i class="far fa-newspaper" title="Read the Source"></i></a>
             <i class="pointer far fa-id-card"  title="Authors" onclick="showAuthorModal(this)" data-toggle="modal" data-target="#authormodal"><span style="display:none;">${ item.authors }</span></i>
             <i class="pointer fas fa-user-shield"  title="Submitters" onclick="showSubmitterModal(this)" data-toggle="modal" data-target="#submittermodal"><span style="display:none;">${ item.Submitter }</span></i>
+            <i class="pointer fas fa-search-plus" title="Complete Information" onclick="showDetailModal(this)" data-toggle="modal" data-target="#detailmodal" data-detail-number="${ item.__position }"></i>
             <i class="fas fa-hashtag" title="Incident ID"></i>${ item.incident_id }
           </p>
         </div>
