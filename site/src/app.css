@@ -1,3 +1,27 @@
+blockquote {
+  background: #f9f9f9;
+  border-left: 3px solid #ccc;
+  margin: 0.5em 0px;
+  padding: 0.5em 0px;
+  quotes: "\201C""\201D""\2018""\2019";
+}
+
+blockquote:before {
+  color: #ccc;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+
+.card-body {
+    padding: 0.50rem;
+}
+
+.mark, mark {
+    padding: 0px;
+}
+
 .refine {
     padding-bottom: 10px;
 }

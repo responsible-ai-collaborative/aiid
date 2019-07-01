@@ -47,7 +47,7 @@ def process_doc(doc, filename, max_field_length=5000):
     ref_number = int(filename.split(".")[2])
     doc["incident_id"] = incident_id
     doc["ref_number"] = ref_number
-    if doc["source_domain"].index("www.") == 0:
+    if "www." in doc["source_domain"] and doc["source_domain"].index("www.") == 0:
         doc["source_domain"] = doc["source_domain"][4:]
 
 def collect_algolia_index(index_files_directory, out_directory, max_field_length=5000):

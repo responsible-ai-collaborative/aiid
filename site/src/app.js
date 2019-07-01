@@ -36,6 +36,12 @@ search.addWidget(
 );
 search.addWidget(
     instantsearch.widgets.refinementList({
+      container: '#Submitter-refine',
+      attribute: 'Submitter',
+    })
+);
+search.addWidget(
+    instantsearch.widgets.refinementList({
       container: '#incident-refine',
       attribute: 'incident_id',
     })
@@ -43,17 +49,29 @@ search.addWidget(
 
 function showAuthorModal(ev) {
     var modal = $('#authormodal');
-    modal.find(".modal-body").text($( ev ).children().text());
+    modal.find("#author-modal").text($( ev ).children().text());
     modal.modal();
 }
 
-
-
+function showSubmitterModal(ev) {
+    var modal = $('#submittermodal');
+    modal.find("#submitter-modal").text($( ev ).children().text());
+    modal.modal();
+}
 
 // Create the render function
 const renderHits = (renderOptions, isFirstRender) => {
   const { hits, widgetParams } = renderOptions;
-
+  hits.forEach(function(element) {
+      element.for_render = "<p>";
+      if (typeof element._snippetResult.description !== 'undefined') {
+          element.for_render += element._snippetResult.description.value;
+      }
+      if (typeof element._snippetResult.text !== 'undefined' && element._snippetResult.text.matchLevel === 'full') {
+          element.for_render += "</p><blockquote class='blockquote'><p>&hellip;" + element._snippetResult.text.value + "&hellip;</blockquote>";
+      }
+      element.for_render += "</p>";
+  });
   widgetParams.container.innerHTML = `
       ${hits
         .map(
@@ -66,7 +84,7 @@ const renderHits = (renderOptions, isFirstRender) => {
         </div>
         <div class="card-body">
           <article>
-            <p>${instantsearch.highlight({ attribute: 'description', hit: item })}</p>
+            ${item.for_render}
           </article>
         </div>
         <div class="align-bottom">
@@ -76,6 +94,7 @@ const renderHits = (renderOptions, isFirstRender) => {
           <p>
             <a href=${ item.url }><i class="far fa-newspaper" title="Read the Source"></i></a>
             <i class="pointer far fa-id-card"  title="Authors" onclick="showAuthorModal(this)" data-toggle="modal" data-target="#authormodal"><span style="display:none;">${ item.authors }</span></i>
+            <i class="pointer fas fa-user-shield"  title="Submitters" onclick="showSubmitterModal(this)" data-toggle="modal" data-target="#submittermodal"><span style="display:none;">${ item.Submitter }</span></i>
             <i class="fas fa-hashtag" title="Incident ID"></i>${ item.incident_id }
           </p>
         </div>
