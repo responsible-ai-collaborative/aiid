@@ -2,16 +2,17 @@
 
 var current_hits = {};
 
+// Initialize the search client
 const searchClient = algoliasearch(
   'JD5JCVZEVS',
   'c5e99d93261645721a1765fe4414389c'
 );
-
 const search = instantsearch({
   indexName: 'instant_search',
   searchClient,
 });
 
+// Add the search box
 search.addWidget(
   instantsearch.widgets.searchBox({
     container: '#searchbox',
@@ -21,9 +22,7 @@ search.addWidget(
   })
 );
 
-/**
- * Refinement lists
- */
+// Refinement lists that appear to the left of the results
 search.addWidget(
     instantsearch.widgets.refinementList({
       container: '#source-refine',
@@ -49,18 +48,20 @@ search.addWidget(
     })
 );
 
+// Modal popups giving details about the specific card
 function showAuthorModal(ev) {
     var modal = $('#authormodal');
     modal.find("#author-modal").text($( ev ).children().text());
     modal.modal();
 }
-
 function showSubmitterModal(ev) {
     var modal = $('#submittermodal');
     modal.find("#submitter-modal").text($( ev ).children().text());
     modal.modal();
 }
 
+// A modal that appears when the user clicks the magnifying glass on a card.
+// This gives the complete record detail
 function showDetailModal(ev) {
     var modal = $('#detailmodal');
     var json = current_hits[parseInt($( ev ).data("detail-number"))-1];
@@ -180,7 +181,7 @@ function showDetailModal(ev) {
     modal.modal();
 }
 
-// Create the render function
+// Render each search result as a card
 const renderHits = (renderOptions, isFirstRender) => {
   const { hits, widgetParams } = renderOptions;
   current_hits = hits;
@@ -227,26 +228,21 @@ const renderHits = (renderOptions, isFirstRender) => {
         .join('')}
   `;
 };
-
-// Create the custom widget
 const customHits = instantsearch.connectors.connectHits(renderHits);
-
-// Instantiate the custom widget
 search.addWidget(
   customHits({
     container: document.querySelector('#hits'),
   })
 );
 
+// Add pagination
 search.addWidget(
   instantsearch.widgets.pagination({
     container: '#pagination',
   })
 );
 
-/**
- * Search result counter
- */
+// Render search result statistics, like how many results are returned
 const renderStats = (renderOptions, isFirstRender) => {
   const { nbHits, processingTimeMS, query, widgetParams } = renderOptions;
 
@@ -265,15 +261,27 @@ const renderStats = (renderOptions, isFirstRender) => {
     ${count} found
   `;
 };
-
-// Create the custom widget
 const customStats = instantsearch.connectors.connectStats(renderStats);
-
-// Instantiate the custom widget
 search.addWidget(
   customStats({
     container: document.querySelector('#stats'),
   })
 );
+
+// Make a text form for jumping directly to a specific incident ID
+search.addWidget({
+  init(opts) {
+    const helper = opts.helper;
+    const input = document.querySelector('#incident-text-input');
+    input.addEventListener('input', ({currentTarget}) => {
+        helper.clearRefinements('incident_id');
+        if(currentTarget.value.length > 0) {
+            helper.toggleRefinement('incident_id', currentTarget.value);
+        }
+        search.refresh();
+        helper.search();
+    });
+  }
+});
 
 search.start();
