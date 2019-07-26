@@ -64,21 +64,25 @@ function showDetailModal(ev) {
   var modal = $('#detailmodal');
   var ref_number = parseInt(ev.getAttribute("data-ref-number"));
   var incident_id = parseInt(ev.getAttribute("data-incident-id"));
-
+  if(typeof adminMongoInterface === "undefined") {
+      modal.find("#detail-modal").html("<p>You must specify an Admin Key to have access to this.</p>");
+      modal.modal();
+      return;
+  }
   adminMongoInterface
     .then(() =>
       db.collection('incidents').find({ref_number: ref_number, incident_id: incident_id}, {limit: 1}).asArray()
     ).then(docs => {
         json = docs[0];
-        var renderKeys = ["title", "date_publish", "Start Date", "authors", "text",
-            "image_url", "incident_id",
-            "localpath", "ref_number", "source_domain", "Submitter"];
-
+        var renderKeys = ["title", "description", "text", "date_publish", "image_url", "is bad"];
         var textForms = "";
+        if( typeof json["is bad"] === "undefined" ) {
+            json["is bad"] = "";
+        }
         for(var i = 0; i < renderKeys.length; i++) {
             textForms += `
                 <h3>${renderKeys[i]}</h3>
-                <textarea class="form-control" onkeyup="autoGrow(this)" onclick="autoGrow(this)">${json[renderKeys[i]]}</textarea>`;
+                <textarea class="form-control db-text-area" data-database-key="${renderKeys[i]}" onkeyup="autoGrow(this)" onclick="autoGrow(this)">${json[renderKeys[i]]}</textarea>`;
         }
 
         var rendered = `
@@ -92,10 +96,37 @@ function showDetailModal(ev) {
                     <div class="form-group col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <form>
                             ${textForms}
+                            <textarea style="display:none" class="form-control db-text-area" data-database-key="incident_id">${incident_id}</textarea>
+                            <textarea style="display:none" class="form-control db-text-area" data-database-key="ref_number">${ref_number}</textarea>
                         </form>
+                        <button type="button" class="btn btn-warning" onclick="updateRecord(this)">Submit</button>
                     </div>
                     <h2>Historical Data</h2>
-                    <p>!!!!!!!!!!!!!!!!!!!!Notes that will not be normalized.!!!!!!!!!!!!!!!!!!!!</p>
+                    <p>!!!!!!!!!!!!!!!!!!!!Notes that will remain pre-normalization.!!!!!!!!!!!!!!!!!!!!</p>
+                    <p>!!!!!!!!!!!!!!!!!!!!Notes that will remain pre-normalization.!!!!!!!!!!!!!!!!!!!!</p>
+                    <p>!!!!!!!!!!!!!!!!!!!!Notes that will remain pre-normalization.!!!!!!!!!!!!!!!!!!!!</p>
+
+
+                        <h3>Start Date</h3>
+                        ${json["Start Date"]}
+
+                        <h3>incident_id</h3>
+                        ${json["incident_id"]}
+
+                        <h3>ref_number</h3>
+                        ${json["ref_number"]}
+
+                        <h3>source_domain</h3>
+                        ${json["source_domain"]}
+
+                        <h3>Submitter</h3>
+                        ${json["Submitter"]}
+
+                        <h3>localpath</h3>
+                        ${json["localpath"]}
+
+                        <h3>authors</h3>
+                        ${json["authors"]}
 
                         <h3>date_download</h3>
                         ${json["date_download"]}
