@@ -1,3 +1,4 @@
+var isAdmin = false;
 var adminMongoInterface;
 var db;
 
@@ -57,6 +58,7 @@ function updateRecord(obj) {
 // Add the admin script the page if the API key is defined
 var urlQuery = parseQuery(window.location.search);
 if(urlQuery["admin_key"] !== undefined) {
+    isAdmin = true;
     const mongoDBClient = stitch.Stitch.initializeDefaultAppClient('aiidstitch2-fuwyv');
     db = mongoDBClient.getServiceClient(stitch.RemoteMongoClient.factory, 'mongodb-atlas').db('aiidprod');
     const credential = new stitch.UserApiKeyCredential(urlQuery["admin_key"]);
