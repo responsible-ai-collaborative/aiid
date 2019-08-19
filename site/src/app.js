@@ -1,4 +1,7 @@
-/* global algoliasearch instantsearch */
+/* global algoliasearch instantsearch renderBig */
+
+// Should the big or the small cards be rendered?
+var renderBig = false;
 
 // Initialize the search client
 const searchClient = algoliasearch(
@@ -56,6 +59,15 @@ function showSubmitterModal(ev) {
     var modal = $('#submittermodal');
     modal.find("#submitter-modal").text($( ev ).children().text());
     modal.modal();
+}
+
+// Switch to single column and display long articles
+function filterToIncident(ev) {
+    var incident_id = parseInt(ev.getAttribute("data-incident-id"));
+    var incidentForm = document.getElementById("incident-text-input");
+    renderBig = true;
+    incidentForm.value = incident_id;
+    incidentForm.dispatchEvent(new Event("input"));
 }
 
 // A modal that appears when the user clicks the magnifying glass on a card.
@@ -217,39 +229,52 @@ const renderHits = (renderOptions, isFirstRender) => {
           element.for_render += "</p><blockquote class='blockquote'><p>&hellip;" + element._snippetResult.text.value + "&hellip;</blockquote>";
       }
       element.for_render += "</p>";
+      if (typeof element.text === 'string') {
+          var shortText = element.text.substr(0, 400) + "...";
+          if(renderBig) {
+              element.for_render += "<div class='card_full_text'><p>" + element.text.replace(/\n/g, "</p><p>") + "</p></div>";
+          } else {
+              element.for_render += "<div class='card_short_text'><p>" + shortText.replace(/\n/g, "</p><p>") + "</p></div>";
+          }
+      }
   });
-  widgetParams.container.innerHTML = `
-      ${hits
-        .map(
-          item =>
-            `
-    <div class="card_pad col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
-      <div class="card">
-        <div class="card-header">
-          <h1 class="article-header">${instantsearch.highlight({ attribute: 'title', hit: item })}</h1>
-        </div>
-        <div class="card-body">
-          <article>
-            ${item.for_render}
-          </article>
-        </div>
-        <div class="align-bottom">
-          <p><img class="image-preview" onerror="this.style.display='none'" src='${item.image_url}'></p>
-        </div>
-        <div class="card-footer text-muted">
-          <p>
-            <a href=${ item.url }><i class="far fa-newspaper" title="Read the Source"></i></a>
-            <i class="pointer far fa-id-card"  title="Authors" onclick="showAuthorModal(this)" data-toggle="modal" data-target="#authormodal"><span style="display:none;">${ item.authors }</span></i>
-            <i class="pointer fas fa-user-shield"  title="Submitters" onclick="showSubmitterModal(this)" data-toggle="modal" data-target="#submittermodal"><span style="display:none;">${ item.Submitter }</span></i>
-            <i class="pointer fas fa-search-plus" title="Complete Information" onclick="showDetailModal(this)" data-target="#detailmodal" data-detail-number="${ item.__position }" data-ref-number="${ item.ref_number }" data-incident-id="${ item.incident_id }"></i>
-            <i class="fas fa-hashtag" title="Incident ID"></i>${ item.incident_id }
-          </p>
-        </div>
-      </div>
-    </div>`
-        )
-        .join('')}
-  `;
+  var cardCSS = "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12";
+  if(renderBig) {
+      cardCSS = "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12";
+  }
+
+  rendered = `${hits
+    .map(
+      item =>
+        `
+<div class="card_detail card_pad ${cardCSS}">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="article-header">${instantsearch.highlight({ attribute: 'title', hit: item })}</h1>
+    </div>
+    <div class="card-body">
+      <article>
+        ${item.for_render}
+      </article>
+    </div>
+    <div class="align-bottom">
+      <p><img class="image-preview" onerror="this.style.display='none'" src='${item.image_url}'></p>
+    </div>
+    <div class="card-footer text-muted">
+      <p>
+        <a href=${ item.url }><i class="far fa-newspaper" title="Read the Source"></i></a>
+        <i class="pointer far fa-id-card"  title="Authors" onclick="showAuthorModal(this)" data-toggle="modal" data-target="#authormodal"><span style="display:none;">${ item.authors }</span></i>
+        <i class="pointer fas fa-user-shield"  title="Submitters" onclick="showSubmitterModal(this)" data-toggle="modal" data-target="#submittermodal"><span style="display:none;">${ item.Submitter }</span></i>
+        ${(typeof isAdmin !== "undefined" && isAdmin) ?  `<i class="pointer fas fa-search-plus" title="Complete Information" onclick="showDetailModal(this)" data-target="#detailmodal" data-detail-number="${ item.__position }" data-ref-number="${ item.ref_number }" data-incident-id="${ item.incident_id }"></i>` : ''}
+        <span class="pointer" data-incident-id="${ item.incident_id }" onclick="filterToIncident(this)"><i class="fas fa-hashtag" title="Incident ID" ></i>${ item.incident_id }</span>
+      </p>
+    </div>
+  </div>
+</div>`
+    )
+    .join('')}`;
+
+  widgetParams.container.innerHTML = rendered;
 };
 const customHits = instantsearch.connectors.connectHits(renderHits);
 search.addWidget(
@@ -296,6 +321,7 @@ search.addWidget({
   init(opts) {
     const helper = opts.helper;
     const input = document.querySelector('#incident-text-input');
+    renderBig = false;
     input.addEventListener('input', ({currentTarget}) => {
         helper.clearRefinements('incident_id');
         if(currentTarget.value.length > 0) {
@@ -307,3 +333,11 @@ search.addWidget({
   }
 });
 search.start();
+
+// Clear the text entry when the check boxes are manipulated.
+const container = document.querySelector("#incident-refine");
+container.addEventListener("click", event => {
+    renderBig = false;
+    var incidentForm = document.getElementById("incident-text-input");
+    incidentForm.value = "";
+});

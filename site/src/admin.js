@@ -1,3 +1,4 @@
+var isAdmin = false;
 var adminMongoInterface;
 var db;
 
@@ -57,6 +58,7 @@ function updateRecord(obj) {
 // Add the admin script the page if the API key is defined
 var urlQuery = parseQuery(window.location.search);
 if(urlQuery["admin_key"] !== undefined) {
+    isAdmin = true;
     const mongoDBClient = stitch.Stitch.initializeDefaultAppClient('aiidstitch2-fuwyv');
     db = mongoDBClient.getServiceClient(stitch.RemoteMongoClient.factory, 'mongodb-atlas').db('aiidprod');
     const credential = new stitch.UserApiKeyCredential(urlQuery["admin_key"]);
@@ -66,4 +68,22 @@ if(urlQuery["admin_key"] !== undefined) {
       .then(authedId => {
          console.log(`successfully logged in with id: ${authedId}`);
       }).catch(err => console.error(`login failed with error: ${err}`));
+}
+
+function downloadIndex() {
+    console.log("Downloading index...");
+    adminMongoInterface
+        .then(() =>
+            db.collection('incidents').find({}, {limit: 2000}).asArray()
+        )
+        .then(docs => {
+            console.log("Downloaded up to 2k documents, total downloaded:");
+            console.log(docs.length);
+            var a = document.createElement("a");
+            var file = new Blob([JSON.stringify(docs)], {type: 'text/plain'});
+            a.href = URL.createObjectURL(file);
+            a.download = "new_index.json";
+            a.click();
+        }
+        ).catch(err => console.error(`login failed with error: ${err}`));
 }
