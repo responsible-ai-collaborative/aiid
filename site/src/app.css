@@ -1,3 +1,10 @@
+textarea {
+    resize: none;
+    overflow: hidden;
+    min-height: 50px;
+    max-height: 800px;
+}
+
 blockquote {
   background: #f9f9f9;
   border-left: 3px solid #ccc;
