@@ -69,3 +69,21 @@ if(urlQuery["admin_key"] !== undefined) {
          console.log(`successfully logged in with id: ${authedId}`);
       }).catch(err => console.error(`login failed with error: ${err}`));
 }
+
+function downloadIndex() {
+    console.log("Downloading index...");
+    adminMongoInterface
+        .then(() =>
+            db.collection('incidents').find({}, {limit: 2000}).asArray()
+        )
+        .then(docs => {
+            console.log("Downloaded up to 2k documents, total downloaded:");
+            console.log(docs.length);
+            var a = document.createElement("a");
+            var file = new Blob([JSON.stringify(docs)], {type: 'text/plain'});
+            a.href = URL.createObjectURL(file);
+            a.download = "new_index.json";
+            a.click();
+        }
+        ).catch(err => console.error(`login failed with error: ${err}`));
+}
