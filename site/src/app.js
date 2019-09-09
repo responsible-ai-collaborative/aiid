@@ -196,7 +196,7 @@ function showDetailModal(ev) {
                   </article>
                 </div>
                 <div class="align-bottom">
-                  <p><img class="image-preview" onerror="this.style.display='none'" src='${json.image_url}'></p>
+                  <p><img class="image-preview" onerror="this.style.display='none';this.onerror=null;this.parentElement.className='fas fa-robot fa-5x';" src='${json.image_url}'></p>
                 </div>
                 <div class="card-footer text-muted">
                   <p>
@@ -237,6 +237,7 @@ const renderHits = (renderOptions, isFirstRender) => {
               element.for_render += "<div class='card_short_text'><p>" + shortText.replace(/\n/g, "</p><p>") + "</p></div>";
           }
       }
+      element["image_url_hash"] = "//aiid.partnershiponai.org/protected/images/incident_banners/" + md5(element.image_url);
   });
   var cardCSS = "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12";
   if(renderBig) {
@@ -258,7 +259,7 @@ const renderHits = (renderOptions, isFirstRender) => {
       </article>
     </div>
     <div class="align-bottom">
-      <p><img class="image-preview" onerror="this.style.display='none'" src='${item.image_url}'></p>
+      <p><img class="image-preview" onerror="this.style.display='none';this.onerror=null;this.parentElement.className='fas fa-robot fa-5x';" src='${item.image_url_hash}'></p>
     </div>
     <div class="card-footer text-muted">
       <p>
