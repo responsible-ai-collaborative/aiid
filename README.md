@@ -6,6 +6,14 @@ The AIID consists of a website built upon a database where users can view and su
 
 [See the live site here](http://aiid.partnershiponai.org/)
 
+## Citations
+
+Please cite either the database or individual incidents within your academic works.
+
+**Citing the Database:** todo: put something up on arxive.
+
+**Citing an Incident:** Every incident has its own suggested citation that credits both the submitter(s) of the incident and the editor(s) of the incident. The submitters are the people that submitted reports associated with the incident and their names are listed in the order in which their submissions were added to the AIID. Since reports can be added to an incident record through time, our suggested citation format includes the access date. Click the `#` symbol at the bottom of an incident report to see the suggested citation for the incident.
+
 ## Governance
 
 The AIID is governed by the Partnership on AI (PAI) partner organizations and stewarded by [Sean McGregor](https://seanbmcgregor.com/) as representative of the XPRIZE Foundation (a PAI partner). There is a broad base of interest in the AIID as a research and industrial tool and the development of the incident indexing will be managed in a participatory manner. Persons and organizations contributing code and incidents will be given priority and position in the governance of the project. The following positions currently exist on the project,
@@ -77,7 +85,8 @@ Systems
 
 * _id: 5534b8c29cfd494a0103d45a # MongoDB database hash
 * incident_id: 1 # (int) The incrementing primary key for incidents, which are a collection of reports.
-* ref_number: 9284 # (int) The auto-incrementing primary key counting report numbers
+* ref_number: 25 # (int) The reference number scoped to the incident ID.
+* report_number: 2379 # (int) the incrementing primary key for the report. This is a global resource identifier.
 
 Definitions
 
@@ -85,14 +94,15 @@ Definitions
 
 Dates
 
-* incident_date: `2019-07-25T16:45:21+00:00` # (TimeDate) Date the incident occurred. Defaults to the article date. ISO 8601 and RFC 3339
-* date_downloaded:`2019-07-25T16:45:21+00:00` # (TimeDate) Date the report was downloaded. ISO 8601 and RFC 3339
-* date_modify: `2019-07-25T16:45:21+00:00` # (TimeDate or null) Date the report was edited. ISO 8601 and RFC 3339
-* date_published: `2019-07-25T16:45:21+00:00` # (TimeDate or null) The publication date of the report. ISO 8601 and RFC 3339
+* incident_date: `2019-07-25` # (Date) Date the incident occurred. Defaults to the article date.
+* date_downloaded:`2019-07-25` # (Date) Date the report was downloaded.
+* date_submitted:`2019-07-25` # (Date) Date the report was submitted to the AIID. This determines citation order.
+* date_modified: `2019-07-25` # (Date or null) Date the report was edited.
+* date_published: `2019-07-25` # (Date or null) The publication date of the report.
 
 People
 
-* submitter: Array(string) # People that submitted the incident report
+* submitters: Array(string) # People that submitted the incident report
 * authors: Array(string) # People that wrote the incident report
 
 Text

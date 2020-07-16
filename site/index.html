@@ -16,19 +16,74 @@
   <link rel="stylesheet" href="./src/app.css">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
-  <title>demo</title>
+  <title>Artificial Intelligence Incident Database</title>
 </head>
 
 <body>
   <header class="header">
-    <h1 class="header-title">
-      <a href="/">AIID Demo</a>
-    </h1>
-    <p class="header-subtitle">
-      Pre-Normalization
-    </p>
+      <div class="d-flex">
+        <div class="mr-auto p-2">
+            <h1>
+                <span class="header-title">
+                <a href="/">Artificial Intelligence Incident Database (AIID)</a>
+            </span>
+                Discover
+            </h1>
+        </div>
+        <div class="p-2"><button type="button" class="btn btn-success">Aggregate Statistics <i class="fas fa-signal"></i></button></div>
+      </div>
+    </div>
   </header>
 
+  <!-- Modal Flag -->
+  <div class="modal fade" id="flagmodal" tabindex="-1" role="dialog" aria-labelledby="flagcontent" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Flag Incident Report</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="flag-modal" class="modal-body">
+            <p>
+                Is there a problem with this content? Examples of "problems" include,
+            </p>
+            <ul>
+              <li>The text contents of the report are not parsed properly</li>
+              <li>The authors of the report are not associated with the report</li>
+              <li>The report is associated with the wrong incident</li>
+              <li>The text contents of the report are not parsed properly</li>
+            </ul>
+            <p>
+                Flagged content will still be displayed within the database, but a database
+                editor will periodically review the incident reports that have been flagged.
+                Please note that the content contained within incident reports (e.g.,
+                the commentary within a news article) does not need to be correct or
+                consistent across articles. If an article is wrong, misleading, or
+                fraudulent, the best response is to submit additional incident reports
+                that correct the record. The incident database is meant to capture
+                the complete state of knowledge and discourse for incidents, not
+                as an arbiter of what happened in individual incidents. In future
+                versions of the database it will additionally be possible to apply
+                tags to incident reports to classify their content.
+            </p>
+            <p>
+                Please do NOT flag content if,
+            </p>
+            <ul>
+              <li>You disagree with the report</li>
+              <li>The linked report has disappeared from the web</li>
+              <li>The report should not be considered an "incident"</li>
+            </ul>
+            <button type="button" class="btn btn-danger btn-sm btn-block flag-button" data-dismiss="modal">Flag Report</button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal Authors -->
   <div class="modal fade" id="authormodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -124,10 +179,14 @@
               </div>
               <div class="refine col-xl-12 col-lg-12 col-md-12 col-sm-6 col-6">
                 <div>
-                  <p class="refine_header"><i class="fas fa-hashtag"></i> Top Incidents By Count</p>
+                  <p class="refine_header"><i class="fas fa-hashtag"></i> Incident ID and Count</p>
                   <div id="incident-refine"></div>
-                  <input type="text" id="incident-text-input" placeholder="Jump to incident (e.g., '42')"
-                         minlength="1" maxlength="12" size="25">
+                </div>
+              </div>
+              <div class="refine col-xl-12 col-lg-12 col-md-12 col-sm-6 col-6">
+                <div>
+                  <p class="refine_header"><i class="far fa-flag"></i> Flagged</p>
+                  <div id="flag-refine"></div>
                 </div>
               </div>
             </div>
@@ -137,6 +196,7 @@
       <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-12">
         <div class="search-panel">
           <div class="search-panel__results">
+            <div id="no-results" style="display:none;">You have filtered to no results <button type='button' class='btn btn-warning btn-sm' onclick="index.clearAll()">clear all filters</button>?</div>
             <div id="hits" class="container row">
             </div>
           </div>
@@ -152,20 +212,23 @@
 
   <!-- Bootstrap Dependencies -->
   <script
-    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    src="./src/vendor/jquery-3.4.1.min.js"
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
     crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="./src/vendor/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="./src/vendor/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
   <!-- Algolia Dependencies -->
-  <script src="https://cdn.jsdelivr.net/algoliasearch/3.32.0/algoliasearchLite.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@3.4.0"></script>
+  <script src="./src/vendor/algoliasearchLite.min.js"></script>
+  <script src="./src/vendor/instantsearch.js@3.4.0"></script>
   <script src="./src/app.js"></script>
+  <script src="./src/algolia.js"></script>
 
-  <!-- Admin Dependencies -->
-  <script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.4.0/stitch.js"></script>
-  <script src="./src/admin.js"></script>
+  <!-- Database Dependencies -->
+  <script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.9.0/stitch.js"></script>
+  <script src="./src/migrations.js"></script>
+  <script src="./src/api.js"></script>
+  <script src="./src/lib.js"></script>
 </body>
 
 </html>
