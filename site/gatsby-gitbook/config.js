@@ -6,7 +6,7 @@ const config = {
     trailingSlash: false,
   },
   header: {
-    logo: 'partership-on-ai-logo-1up.png',
+    logo: '/partership-on-ai-logo-1up.png',
     logoLink: '/',
     title:
       " Incident Database",
@@ -33,6 +33,8 @@ const config = {
     forcedNavOrder: [
       '/index', // add trailing slash if enabled above
       '/roadmap',
+      '/research',
+      '/apps',
       '/about_us',
       '/contact',
     ],
@@ -43,7 +45,7 @@ const config = {
     frontline: false,
     ignoreIndex: false,
     title:
-      "<a href='discover'>Discover </a><div class='greenCircle'></div><a href='submit'>Submit</a>",
+      "<a href='/apps/1-discover'>Discover </a><div class='greenCircle'></div><a href='/apps/2-submit'>Submit</a>",
   },
   siteMetadata: {
     title: 'Artificial Intelligence Incident Database | Partnership on AI',
