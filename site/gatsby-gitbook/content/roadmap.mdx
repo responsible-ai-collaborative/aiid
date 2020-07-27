@@ -4,18 +4,36 @@ metaTitle: "Roadmapt and Future Development"
 metaDescription: "what changes you can expect through time as the AIID develops"
 ---
 
-## Phase 1
+The AIID is largely developed by the partnership community, but development of both the data product and the applications built on top of the data is open to contributors. Regular contributors to the database will be invited, but not expected, to take leadership roles in the system's development.
 
-todo
+## Phase 1: Initial Incident Collection
 
-## Phase 2
+The initial dataset was collected in 2019 by combining incident listings from
+[Roman Yampolskiy](http://cecs.louisville.edu/ry/),
+[Catherine Olsson](https://www.linkedin.com/in/catherineolsson/),
+and [Sam Yoon](https://www.linkedin.com/in/samyoonnz/). These incidents are associated with more than 1k total incident reports.
 
-todo
+## Phase 2: Incident Discovery Application
 
-## Phase 3
+Subsequent to initial dataset collection, [Sean McGregor](https://seanbmcgregor.com/) developed a [Discover](/apps/1-discover) application that supported the indexing and cleaning of the more than 1k reports assembled in Phase 1.
 
-todo
+The **user stories** supported in this phase include,
 
-## Phase 4
+* **system architects/product leads:** "I want to find instances where similar systems have failed in the real world so that I can proactively avoid those failures in my system design."
+* **public relations managers:** "I want to see what has happened in the past so I can understand how to avoid embarassment in the future."
+* **lawyers:** "I want to incident history so I can understand how to avoid liability in the future."
 
-todo
+## Phase 3: Flexible Taxonomy
+
+Intelligent systems are in development for every market segment and function of government. Developing the [research quality](/research) of the data product requires systems for regularizing and classifying incidents according to,
+
+* Incident types
+* Incident scale
+* Technologies involved
+* Impacted parties
+
+These, and other, classifications are a point of contention in multi-stakeholder systems. To advance the research utility of the database while not requiring full consensus on every classification, it will be possible for partners to apply taxonomies to the incidents within the database that can develop through time independently of a central taxonomic authority. Each "taxonomic scope" will be managed by an editor that develops the taxonomy, and is responsible for applying the taxonomy across the incidents.
+
+## Phase 4: Incident Monitoring
+
+As more intelligent systems are deployed within the real world, it will become increasingly difficult to monitor, collect, and categorize incidents. A scraper that monitors content sources for AI incidents and facilitates the easy ingestion thereof would ensure the AIID continues to be relevant for the most recently developed intelligent systems.

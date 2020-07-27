@@ -6,46 +6,6 @@ The AIID consists of a website built upon a database where users can view and su
 
 [See the live site here](http://aiid.partnershiponai.org/)
 
-## Citations
-
-Please cite either the database or individual incidents within your academic works.
-
-**Citing the Database:** todo: put something up on arxive.
-
-**Citing an Incident:** Every incident has its own suggested citation that credits both the submitter(s) of the incident and the editor(s) of the incident. The submitters are the people that submitted reports associated with the incident and their names are listed in the order in which their submissions were added to the AIID. Since reports can be added to an incident record through time, our suggested citation format includes the access date. Click the `#` symbol at the bottom of an incident report to see the suggested citation for the incident.
-
-## Governance
-
-The AIID is governed by the Partnership on AI (PAI) partner organizations and stewarded by [Sean McGregor](https://seanbmcgregor.com/) as representative of the XPRIZE Foundation (a PAI partner). There is a broad base of interest in the AIID as a research and industrial tool and the development of the incident indexing will be managed in a participatory manner. Persons and organizations contributing code and incidents will be given priority and position in the governance of the project. The following positions currently exist on the project,
-
-**Steering:** People that have contributed significant time and resources to the project and are affiliated with a PAI partner organization.
-
-* Sean McGregor (XPRIZE Foundation)
-
-**Advisors:** People that have contributed significant time and resources to the project.
-
-* Jingying Yang (Partnership on AI)
-
-**Open Source Contributors:** People that have contributed more than one pull request to the code base.
-
-* Seth Reid (AI Forum of New Zealand)
-
-**Incident Editors:** People that resolve incident submissions to the database.
-
-* Sean McGregor (XPRIZE Foundation)
-
-**Incident Contributors:** People that have contributed a large numbers of incidents to the database.
-
-* Sam Yoon (as contractor to PAI, now with Deloitte Consulting)
-* Catherine Olsson (Google)
-* Roman Yampolskiy (University of Louisville)
-
-There is a growing community of people concerned with the collection and characterization of AI incidents, and we encourage everyone to contribute to the development of this system.
-
-## Contributing Incidents
-
-At present all incidents must be submitted to the review backlog for editors to resolve into existing or new AI incident identifiers. The new incidents will periodically be added after their submission [here](http://aiid.partnershiponai.org/).
-
 ## Contributing Code
 
 Anyone can contribute code to the project. The steps are the following,

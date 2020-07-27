@@ -35,6 +35,7 @@ const config = {
       '/roadmap',
       '/research',
       '/apps',
+      '/develop',
       '/about_us',
       '/contact',
     ],
