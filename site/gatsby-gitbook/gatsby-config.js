@@ -2,14 +2,15 @@ require("dotenv").config();
 const queries = require("./src/utils/algolia");
 const config = require("./config");
 const plugins = [
+  {
+    resolve: `gatsby-plugin-page-creator`,
+    options: {
+      path: `${__dirname}/pages`,
+    },
+  },
+  'gatsby-plugin-catch-links',
   'gatsby-plugin-sitemap',
   'gatsby-plugin-sharp',
-  {
-    resolve: `gatsby-plugin-layout`,
-    options: {
-        component: require.resolve(`./src/templates/docs.js`)
-    }
-  },
   'gatsby-plugin-emotion',
   'gatsby-plugin-react-helmet',
   {
@@ -47,6 +48,28 @@ const plugins = [
       // enable ip anonymization
       anonymize: false,
     },
+  },
+  {
+    resolve: 'gatsby-source-mongodb',
+    options: {
+      dbName: 'aiidprod',
+      collection: 'incidents',
+      connectionString: 'mongodb+srv://readonlyuser:EScmnlEQHM1pWwWM@aiiddev-aqdmh.gcp.mongodb.net/AIIDDev',
+      server: {
+          address: 'aiiddev-aqdmh.gcp.mongodb.net',
+          port: 27017
+      },
+      auth: {
+          user: 'readonlyuser',
+          password: 'EScmnlEQHM1pWwWM'
+      },
+      extraParams: {
+          replicaSet: ['aiiddev-shard-00-02-aqdmh', 'aiiddev-shard-00-01-aqdmh', 'aiiddev-shard-00-00-aqdmh'],
+          ssl: true,
+          authSource: 'admin',
+          retryWrites: true
+      }
+    }
   },
 ];
 // check and add algolia
