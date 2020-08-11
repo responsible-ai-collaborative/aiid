@@ -1,9 +1,9 @@
 {
-  "name": "gatsby-gitbook-boilerplate",
+  "name": "gatsby-gitbook-aiid",
   "private": true,
-  "description": "Documentation, built with mdx",
-  "author": "Praveen <praveen@hasura.io> (@praveenweb)",
-  "version": "0.0.1",
+  "description": "Artificial Intelligence Incident Database",
+  "author": "Sean <aiidpackage@seanbmcgregor.com> (@seanmcgregor)",
+  "version": "0.2.0",
   "dependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.7.4",
     "@emotion/core": "^10.0.22",
