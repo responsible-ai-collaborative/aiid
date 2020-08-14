@@ -1,0 +1,92 @@
+import React, { Component } from 'react';
+import Helmet from 'react-helmet';
+import { graphql } from 'gatsby';
+
+import uuid from 'react-uuid'
+
+import { Layout, Link } from '$components';
+import config from '../config';
+import { Edit, StyledHeading, StyledMainWrapper } from '../src/components/styles/Docs';
+
+const ReportList = ({items}) => {
+  return (
+    <ul>
+      {items.map((value, index) => (
+        <li key={uuid()}>{value["node"]["title"]}</li>
+      ))}
+    </ul>
+  );
+};
+
+const IncidentList = ({group}) => {
+  return (<>
+      {group.map((value, index) => (
+        <div key={uuid()}>
+          <h2>Incident {value["edges"][0]["node"]["incident_id"]}</h2>
+          <ReportList key={uuid()} items={value["edges"]} />
+        </div>
+      ))}
+      </>
+  );
+};
+
+export default class Incidents extends Component {
+  
+  render() {
+
+    const { data } = this.props;
+
+    if (!data) {
+      return null;
+    }
+    const {
+      allMongodbAiidprodIncidents: {
+        group
+      }
+    } = data;
+
+    // sort by value
+    group.sort(function (a, b) {
+      return a["edges"][0]["node"]["incident_id"] -
+        b["edges"][0]["node"]["incident_id"];
+    });
+
+    return (
+      <Layout {...this.props}>
+        <Helmet>
+          <title>Incident List</title>
+        </Helmet>
+        <div className={'titleWrapper'}>
+          <StyledHeading>Incident List</StyledHeading>
+        </div>
+        <StyledMainWrapper>
+          <p className="paragraph">
+            This is a simple numeric listing of all incidents
+            and their reports within the database. If you would
+            like to explore the contents of the reports, you
+            should work through the
+            <Link to="/apps/1-discover"> Discover app</Link>.
+          </p>
+          <IncidentList group={group} />
+        </StyledMainWrapper>
+      </Layout>
+    );
+  }
+}
+
+export const pageQuery = graphql`
+query AllIncidentsPart {
+  allMongodbAiidprodIncidents(filter: {flag: {eq: null}}, sort: {order: ASC, fields: incident_id}) {
+    group(field: incident_id) {
+      edges {
+        node {
+          id
+          incident_id
+          report_number
+          title
+        }
+      }
+    }
+  }
+}
+`;
