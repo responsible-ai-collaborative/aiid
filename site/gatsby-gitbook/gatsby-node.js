@@ -7,9 +7,10 @@ const startCase = require('lodash.startcase');
 const config = require('./config');
 
 exports.createPages = ({ graphql, actions }) => {
+
   const { createPage } = actions;
 
-  return new Promise((resolve, reject) => {
+  const promiseMdx = new Promise((resolve, reject) => {
     resolve(
       graphql(
         `
@@ -48,6 +49,8 @@ exports.createPages = ({ graphql, actions }) => {
       })
     );
   });
+
+  return Promise.all([promiseMdx])
 };
 
 exports.onCreateWebpackConfig = ({ actions }) => {
