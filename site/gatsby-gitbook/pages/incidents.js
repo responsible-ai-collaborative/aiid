@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
 
+import Button from 'react-bootstrap/Button'
+
 import uuid from 'react-uuid'
 
 import { Layout, Link } from '$components';
@@ -12,7 +14,7 @@ const ReportList = ({items}) => {
   return (
     <ul>
       {items.map((value, index) => (
-        <li key={uuid()}>{value["node"]["title"]}</li>
+        <li key={uuid()}><a href={value["node"]["url"]}>{value["node"]["title"]}</a></li>
       ))}
     </ul>
   );
@@ -22,7 +24,10 @@ const IncidentList = ({group}) => {
   return (<>
       {group.map((value, index) => (
         <div key={uuid()}>
-          <h2>Incident {value["edges"][0]["node"]["incident_id"]}</h2>
+          <h2>
+              Incident {value["edges"][0]["node"]["incident_id"]}{' '}
+              <Button variant="outline-primary" href={"/discover/index.html?incident_id=" + value["edges"][0]["node"]["incident_id"]}>Discover</Button>
+          </h2>
           <ReportList key={uuid()} items={value["edges"]} />
         </div>
       ))}
@@ -84,6 +89,7 @@ query AllIncidentsPart {
           incident_id
           report_number
           title
+          url
         }
       }
     }
