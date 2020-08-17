@@ -1,7 +1,7 @@
 const config = {
   gatsby: {
     pathPrefix: '/',
-    siteUrl: 'http://aiid.partnershiponai.org',
+    siteUrl: 'https://incidentdatabase.ai',
     gaTrackingId: "UA-23867277-2",
     trailingSlash: false,
   },
