@@ -13,6 +13,151 @@ migrations.getIncidents = function(query, callback) {
     ).catch(err => console.error(`Callback error: ${err}`));
 }
 
+migrations.m12_updateDescription = function() {
+  function callback(docs) {
+    var doc = docs[0];
+
+    if(typeof doc["text"] !== "string" || doc["text"].length < 400) {
+      console.log("!!!Skipping short or empty text!!!")
+      docs.shift();
+      callback(docs);
+      return
+    }
+
+    if(typeof doc["description"] === "string" && doc["description"].length > 0) {
+      console.log("Skipping, has description already")
+      docs.shift();
+      callback(docs);
+      return
+    }
+    console.log(doc["text"].substr(0, 400) + "...")
+
+    var up = {};
+    up["description"] = doc["text"].substr(0, 400) + "...";
+
+    const update = {
+      "$set": up
+    };
+    const query = {ref_number: doc["ref_number"], incident_id: doc["incident_id"]};
+
+    const options = { "upsert": false };
+
+    api.db.collection('incidents').updateOne(query, update, options)
+      .then(result => {
+        const { matchedCount, modifiedCount } = result;
+        if(matchedCount && modifiedCount) {
+          console.log(`Successfully updated reference.`);
+        } else {
+          console.log('nothing updated');
+        }
+        docs.shift();
+        callback(docs);
+      })
+      .catch(err => console.error(`Failed to update: ${err}`));
+    console.log("------------");
+  }
+  migrations.getIncidents({}, callback);
+}
+
+migrations.m11_removeIsIncident = function() {
+  var reportNumber = 0;
+  function callback(docs) {
+
+    var doc = docs[0];
+
+    const query = {ref_number: doc["ref_number"], incident_id: doc["incident_id"]};
+    var unset = {
+      "is_incident": "",
+    }
+    const update = {
+      "$set": query,
+      "$unset": unset
+    };
+
+    const options = { "upsert": false };
+
+    api.db.collection('incidents').updateOne(query, update, options)
+      .then(result => {
+        const { matchedCount, modifiedCount } = result;
+        if(matchedCount && modifiedCount) {
+          console.log(`Successfully updated reference.`);
+        } else {
+          console.log('nothing updated');
+        }
+        docs.shift();
+        callback(docs);
+      })
+      .catch(err => console.error(`Failed to update: ${err}`));
+    console.log("------------");
+  }
+  migrations.getIncidents({}, callback);
+}
+
+migrations.m10_addSubmitter = function() {
+  var reportNumber = 0;
+  function callback(docs) {
+
+    var doc = docs[0];
+
+    const query = {ref_number: doc["ref_number"], incident_id: doc["incident_id"], submitters: []};
+    
+    const update = {
+      "$set": {submitters: ["Anonymous"]}
+    };
+
+    const options = { "upsert": false };
+
+    api.db.collection('incidents').updateOne(query, update, options)
+      .then(result => {
+        const { matchedCount, modifiedCount } = result;
+        if(matchedCount && modifiedCount) {
+          console.log(`Successfully updated reference.`);
+        } else {
+          console.log('nothing updated');
+        }
+        docs.shift();
+        callback(docs);
+      })
+      .catch(err => console.error(`Failed to update: ${err}`));
+    console.log("------------");
+  }
+  migrations.getIncidents({}, callback);
+}
+
+migrations.m9_removeIsBad = function() {
+  var reportNumber = 0;
+  function callback(docs) {
+
+    var doc = docs[0];
+
+    const query = {ref_number: doc["ref_number"], incident_id: doc["incident_id"]};
+    var unset = {
+      "is bad": "",
+    }
+    const update = {
+      "$set": query,
+      "$unset": unset
+    };
+
+    const options = { "upsert": false };
+
+    api.db.collection('incidents').updateOne(query, update, options)
+      .then(result => {
+        const { matchedCount, modifiedCount } = result;
+        if(matchedCount && modifiedCount) {
+          console.log(`Successfully updated reference.`);
+        } else {
+          console.log('nothing updated');
+        }
+        docs.shift();
+        callback(docs);
+      })
+      .catch(err => console.error(`Failed to update: ${err}`));
+    console.log("------------");
+  }
+  migrations.getIncidents({}, callback);
+}
+
 migrations.m8_removeEndDate = function() {
   var reportNumber = 0;
   function callback(docs) {

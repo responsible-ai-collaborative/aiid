@@ -207,22 +207,3 @@ lib.validations.isInteger = function(docs, field) {
     ).join('')}</div>`;
   }
 }
-
-lib.validations.isIncident = function(docs) {
-  var consistent = true;
-  var badDocs = [];
-  function collectBad(doc) {
-    if(!doc["is_incident"]) {
-      consistent = false;
-      badDocs.push(doc);
-    }
-  }
-  docs.forEach(collectBad);
-  if(consistent) {
-    return "";
-  } else {
-    return `<div class="alert alert-danger" role="alert">
-    As currently described, these reports do not meet the preliminary definition of "incident".
-   </div>`;
-  }
-}

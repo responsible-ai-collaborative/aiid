@@ -46,7 +46,7 @@ function showDetailModal(ev) {
       api.db.collection('incidents').find({ref_number: ref_number, incident_id: incident_id}, {limit: 1}).asArray()
     ).then(docs => {
         json = docs[0];
-        var renderKeys = ["title", "description", "text", "date_published", "image_url", "incident_id", "ref_number", "is_incident", "incident_date", "submitters", "authors", "language", "url"];
+        var renderKeys = ["title", "description", "text", "date_published", "image_url", "incident_id", "ref_number", "incident_date", "submitters", "authors", "language", "url"];
         var textForms = "";
         if( typeof json["is bad"] === "undefined" ) {
             json["is bad"] = "";
@@ -138,7 +138,6 @@ function renderIncidentDetailCard(hits, cardCSS) {
     textFields.forEach(field => errors += lib.validations.hasContent(docs, field));
     var integerFields = ["ref_number", "report_number", "incident_id"];
     integerFields.forEach(field => errors += lib.validations.isInteger(docs, field));
-    errors += lib.validations.isIncident(docs);
     if(errors !== "") {
       errors = "<h2>Incident Validation Failures</h2>" + errors;
     }
@@ -202,10 +201,6 @@ function renderIncidentDetailCard(hits, cardCSS) {
                       <article>
                         ${errors}
                         <dl class="row">
-                          <dt class="col-sm-3">Is Incident</dt>
-                          <dd class="col-sm-9">
-                            <p>${docs[0]["is_incident"] ? "yes" : "no"}</p>
-                          </dd>
                           <dt class="col-sm-3">Incident ID</dt>
                           <dd class="col-sm-9">
                             <p>${docs[0]["incident_id"]}</p>
