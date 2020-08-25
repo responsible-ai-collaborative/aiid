@@ -46,7 +46,7 @@ function showDetailModal(ev) {
       api.db.collection('incidents').find({ref_number: ref_number, incident_id: incident_id}, {limit: 1}).asArray()
     ).then(docs => {
         json = docs[0];
-        var renderKeys = ["title", "description", "text", "date_published", "image_url", "incident_id", "ref_number", "incident_date", "submitters", "authors", "language", "url"];
+        var renderKeys = ["title", "description", "text", "date_published", "date_downloaded", "image_url", "incident_id", "ref_number", "incident_date", "submitters", "authors", "language", "url"];
         var textForms = "";
         if( typeof json["is bad"] === "undefined" ) {
             json["is bad"] = "";
@@ -80,9 +80,6 @@ function showDetailModal(ev) {
 
                         <h3>Report Number</h3>
                         ${json["report_number"]}
-
-                        <h3>Date Downloaded</h3>
-                        ${json["date_downloaded"]}
 
                         <h3>Date Modified</h3>
                         ${json["date_modified"]}

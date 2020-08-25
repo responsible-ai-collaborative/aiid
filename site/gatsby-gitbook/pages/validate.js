@@ -81,7 +81,7 @@ const jsonSchema = {
 }
 
 
-const Validate = ({node}) => {
+const ValidateReport = ({node}) => {
   let ret = []
   const discoverURL = "/discover/index.html?incident_id=" + node["incident_id"]
   Object.keys(jsonSchema["properties"]).forEach(key => {
@@ -122,10 +122,24 @@ const Validate = ({node}) => {
 }
 
 const ReportList = ({items}) => {
+  const minPublishDate = items.reduce(
+      (accumulator, currentValue) => accumulator > Date.parse(currentValue["node"]["date_published"]) ?
+         accumulator :
+         Date.parse(currentValue["node"]["date_published"]),
+      9999999999999999)
+  const incidentDate = Date.parse(items[0]["node"]["incident_date"])
+  let dateIssue = ""
+  if (minPublishDate < incidentDate) {
+    dateIssue = (<ListGroup.Item key={uuid()} variant="danger">
+        Publication dates precede the incident date
+      </ListGroup.Item>)
+  }
+
   return (
     <ListGroup>
+      {dateIssue}
       {items.map((value, index) => (
-        <Validate key={uuid()} node={value["node"]} />
+        <ValidateReport key={uuid()} node={value["node"]} />
       ))}
     </ListGroup>
   );
