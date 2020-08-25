@@ -13,6 +13,78 @@ migrations.getIncidents = function(query, callback) {
     ).catch(err => console.error(`Callback error: ${err}`));
 }
 
+migrations.m14_addSubmitter2 = function() {
+  function callback(docs) {
+    var doc = docs[0];
+
+    const query = {ref_number: doc["ref_number"], incident_id: doc["incident_id"], submitters: [""]};
+    const update = {
+      "$set": {submitters: ["Anonymous"]}
+    };
+
+    const options = { "upsert": false };
+
+    api.db.collection('incidents').updateOne(query, update, options)
+      .then(result => {
+        const { matchedCount, modifiedCount } = result;
+        if(matchedCount && modifiedCount) {
+          console.log(`Successfully updated reference.`);
+        } else {
+          console.log('nothing updated');
+        }
+        docs.shift();
+        callback(docs);
+      })
+      .catch(err => console.error(`Failed to update: ${err}`));
+    console.log("------------");
+  }
+  migrations.getIncidents({submitters: [""]}, callback);
+}
+
+migrations.m13_merge55And36 = function() {
+  function callback36(docs36) {
+    let currentRefNumber = docs36.reduce(
+      (accumulator, currentValue) => accumulator > currentValue["ref_number"] ? accumulator : currentValue["ref_number"], -1);
+    function callback55(docs55) {
+      currentRefNumber += 1;
+      var doc = docs55[0];
+
+      var up = {};
+      up["ref_number"] = currentRefNumber;
+      up["incident_id"] = 36;
+
+      const update = {
+        "$set": up
+      };
+      const query = {
+        ref_number: doc["ref_number"],
+        incident_id: doc["incident_id"],
+        report_number: doc["report_number"]
+      };
+
+      const options = { "upsert": false };
+
+      api.db.collection('incidents').updateOne(query, update, options)
+        .then(result => {
+          const { matchedCount, modifiedCount } = result;
+          if(matchedCount && modifiedCount) {
+            console.log(`Successfully updated reference.`);
+          } else {
+            console.log('nothing updated');
+          }
+          docs55.shift();
+          callback55(docs55);
+        })
+        .catch(err => console.error(`Failed to update: ${err}`));
+      console.log("------------");
+    }
+    const query55 = {incident_id: 55};
+    migrations.getIncidents(query55, callback55);
+  }
+  const query36 = {incident_id: 36};
+  migrations.getIncidents(query36, callback36);
+}
+
 migrations.m12_updateDescription = function() {
   function callback(docs) {
     var doc = docs[0];
