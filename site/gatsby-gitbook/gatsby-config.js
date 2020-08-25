@@ -3,6 +3,16 @@ const queries = require("./src/utils/algolia");
 const config = require("./config");
 const plugins = [
   {
+      resolve: `gatsby-plugin-netlify`,
+      options: {
+        headers: {
+              "/*": [
+                "Basic-Auth: scai:scai",
+              ]
+        }
+      }
+  },
+  {
     resolve: `gatsby-plugin-page-creator`,
     options: {
       path: `${__dirname}/pages`,
