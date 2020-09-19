@@ -66,6 +66,7 @@ function showDetailModal(ev) {
                 <div class="card-body">
                   <article>
                     <div class="form-group col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <a href="${json["url"]}">Source</a>
                         <form>
                             ${textForms}
                             <textarea style="display:none" class="form-control db-text-area" data-database-key="incident_id">${incident_id}</textarea>
