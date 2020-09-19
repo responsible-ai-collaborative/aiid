@@ -1,0 +1,23 @@
+---
+title: "Discover App"
+metaTitle: "About the AIID app used to discover incidents"
+metaDescription: "How should you use the discover application?"
+---
+
+# Demo Video
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/wF0eSvIvj60" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+# Access the Database
+
+The database is currently in early access availability for members of the Partnership on AI community. If you have an access password, you can [enter the Discover app](/discover/index.html).
+
+# Example Queries
+
+* [All incident reports with "facial recognition" in the description](/discover/index.html?s=facial%20recognition)
+* [All incidents reports submitted by anonymous users](/discover/index.html?s=&submitters=Anonymous)
+* [Details on incident number 1](/discover/index.html?s=&incident_id=1)
+
+# App Notes
+
+The Discover application plugs into a MongoDB Atlas database for the data and an Algolia instant search index of the associated data. It is independent of the website you are presently reading in scripting context and paths. More information is available in the [GitHub Repo](https://github.com/PartnershipOnAI/aiid).
