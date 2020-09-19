@@ -13,6 +13,50 @@ migrations.getIncidents = function(query, callback) {
     ).catch(err => console.error(`Callback error: ${err}`));
 }
 
+migrations.m15_resetIncidentID = function() {
+  let incidentNumberFetch = 1;
+  let incidentNumberAssign = 1;
+  let increment = false;
+  function callback(docs) {
+
+    if(docs.length == 0) {
+      incidentNumberFetch += 1;
+      if (increment) {
+        incidentNumberAssign += 1;
+      }
+      increment = false;
+      if( incidentNumberFetch < 100 ) {
+        migrations.getIncidents({incident_id: incidentNumberFetch}, callback);
+      }
+      return;
+    }
+    var doc = docs[0];
+
+    const query = {ref_number: doc["ref_number"], incident_id: doc["incident_id"]};
+    const update = {
+      "$set": {incident_id: incidentNumberAssign}
+    };
+
+    const options = { "upsert": false };
+
+    api.db.collection('incidents').updateOne(query, update, options)
+      .then(result => {
+        const { matchedCount, modifiedCount } = result;
+        if(matchedCount && modifiedCount) {
+          console.log(`Successfully updated reference.`);
+        } else {
+          console.log('nothing updated');
+        }
+        increment = true;
+        docs.shift();
+        callback(docs);
+      })
+      .catch(err => console.error(`Failed to update: ${err}`));
+    console.log("------------");
+  }
+  migrations.getIncidents({incident_id: incidentNumberFetch}, callback);
+}
+
 migrations.m14_addSubmitter2 = function() {
   function callback(docs) {
     var doc = docs[0];
