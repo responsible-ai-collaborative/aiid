@@ -1,11 +1,14 @@
-# aiid-capture
+# Artificial Intelligence Incident Database (AIID)
 
-A work-in-progress repository doing the following:
+The goal of this project is to facilitate the characterization and dissemination of incidents wherein AI systems produce real world harms. Surfacing these incidents serves to prevent or mitigate future incidents. Similar to other incident databases, such as databases for aviation and motor vehicles, the AIID is a systematization of knowledge facilitating trend analysis and the development of best practices. Incident systematization helps proactively avoid physical, emotional, and economic harms.
 
-1. Capturing the data associated with publicly available URLs detailing AI Incidents. Status: an initial set of incidents has been scraped. The capture scripts now need to be adapted to a user interface instead of a batch jobb.
-2. A serverless Javascript application for interfacing with a two MongoDB databases. One MongoDB is associated with the search index supporting instantaneous search of full text articles. The other one is the same data, but it is stored in a secondary server for administratively cleaning data. At some point in the future the administrative database will automatically push to the search index, but this will be a manual process in the near team.
+The AIID consists of a website built upon a database where users can view and submit incident reports that are then associated with incident identifiers. A single incident can be associated with multiple incident reports, such as news articles and scholarly work. Future versions of the AIID will additionally support a flexible taxonomic system wherein editors can develop technology and impact systematizations on the incident database.
 
-## Contributing
+[See the live site here](http://aiid.partnershiponai.org/)
+
+## Contributing Code
+
+Anyone can contribute code to the project. The steps are the following,
 
 1. Open a feature branch from whichever branch you would like to change, `git checkout -b feature-cool-new-thing`.
 2. Make your change, commit them, then push them remote.
@@ -16,22 +19,15 @@ A work-in-progress repository doing the following:
 
 Please make sure your code is well organized and commented before opening the pull request.
 
-Assignment of IP: please see "license" below.
-
-## Starting the Web Application for Development
-
 ### System Requirements
 
-You will need a web server of some sort. Since the web application is serverless (i.e., it is static HTML, CSS, and Javascript), you can just serve the files to the web browser. In most cases I recommend doing the following: `cd aiid-capture/site ; python -m SimpleHTTPServer 8000`, then visit [http://localhost:8000/](http://localhost:8000/) in your browser. This uses a development server that typically ships with Python, so you likely have it already.
-
-### Setup
-
 1. Clone this repository, `git clone git@github.com:PartnershipOnAI/aiid-capture.git`
-2. Checkout the branch you are going to be working with. If you want to work from most recent code, you should probably work off of the `feature-admin-interface` branch. `cd aiid-capture; git checkout feature-admin-interface`. DO NOT COMMIT TO THIS BRANCH. This is Sean's working branch. See "contributing" above for developing new code.
-3. Start a server in the "site" directory. For example, `cd aiid-capture/site; python -m SimpleHTTPServer 8000`
-4. Visit the web application [http://localhost:8000/](http://localhost:8000/)
+2. Checkout the branch you are going to be working with. If you want to work from most recent code, you should probably work off of the `develop` branch, which periodically merges to master and is then deployed.
+3. You will need a web server of some sort. Since the web application is serverless (i.e., it is static HTML, CSS, and Javascript), you can just serve the files to the web browser. In most cases you should do the following: `cd aiid-capture/site ; python -m SimpleHTTPServer 8000`, then visit [http://localhost:8000/](http://localhost:8000/) in your browser. This uses a development server that typically ships with Python, so you likely have it already.
 
 ## Site Architecture
+
+The site has three components that all conform to a "serverless architecture," meaning there is no dynamic backend templating the application or responding to API requests. The components include,
 
 1. Site. A static untemplated web application.
 2. Index. The [Algolia](https://www.algolia.com) search index.
@@ -39,54 +35,60 @@ You will need a web server of some sort. Since the web application is serverless
 
 ## Administering Data
 
-Administering data requires an API token from Sean. After you have a token, you can visit `http://localhost:8000/?admin_key=TOKEN_GOES_HERE` and you will have full admin access to the website.
+Administering data requires an API token from Sean. After you have a token, you can visit `?admin_key=TOKEN_GOES_HERE` and you will have full admin access to the database.
 
-Once you have admin access, you can begin doing one of the following data processes below. You also can develop the website without an access token.
+### Database Schema
 
-### Current Data Process: Cleanup!
+There are two backend databases. First the MongoDB database supports storage of arbitrary MongoDB database objects. These objects are the incident report documents. Second, the MongoDB database periodically exports to the Algolia instant search index by subsetting the MongoDB database fields to those required by Algolia. Until a document is exported from MongoDB to Algolia, it is not live and available within the web application.
 
-1. Get an API key from Sean. This will allow you to connect to the admin database.
-2. Get assigned a set of incidents to work with.
-3. For each record associate with an assigned incident, click on the magnifying glass.
-4. Fix any issues that arise in the editable fields presented within the modal window.
+Systems
 
-**Definitions of Editable Fields:**
+* _id: 5534b8c29cfd494a0103d45a # MongoDB database hash
+* incident_id: 1 # (int) The incrementing primary key for incidents, which are a collection of reports.
+* ref_number: 25 # (int) The reference number scoped to the incident ID.
+* report_number: 2379 # (int) the incrementing primary key for the report. This is a global resource identifier.
 
-* "title": The title of the article, book, proceedings article, arXiv article, etc.
-* "description": A short snipped summarizing the reference's perspective on the incident.
-* "date_publish": The date at which the reference posted publicly.
-* "text": The full text of the article. If it is spread over several pages, you should add at least the first page and use discretion on whether the later pages are worth manually resolving.
-* "image_url": This is the image we will scrape next for display with the incident. If the image is bad, you should just remove the link. Please note that many images will not display until we index them, so you may need to click through on these to see what they  will be.
-* "is bad": put contents into this text area to mark the reference as not being good. Add a note indicating what is wrong and we may attempt to move it to a different incident.
+Definitions
 
-We can add other fields at will. The goal is to adaptively develop both the interface and the data.
+* is_incident: True # (Bool or nil) Determines whether it is officially an incident
 
-**Things to note:**
+Dates
 
-1. Updating the admin records will not update the search index that you see on the page. It only updates the database. We are going to periodically dump the database into Algolia, and at some point in the future we will connect them.
-2. Use proper string date formatting: `2019-07-25T16:45:21+00:00` for in ISO 8601 and RFC 3339
-3. Follow the data process below! You have a lot of power and could change the whole datastore in ways that are confusing to everyone. If you cause a bad, irreversible problem, please let Sean know and he will roll back to an earlier version of the database. Try to avoid this. :)
+* incident_date: `2019-07-25` # (Date) Date the incident occurred. Defaults to the article date.
+* date_downloaded:`2019-07-25` # (Date) Date the report was downloaded.
+* date_submitted:`2019-07-25` # (Date) Date the report was submitted to the AIID. This determines citation order.
+* date_modified: `2019-07-25` # (Date or null) Date the report was edited.
+* date_published: `2019-07-25` # (Date or null) The publication date of the report.
 
-### Next Data Process: Add scripts for ingesting new links
+People
 
-The process we just executed should be done at the time the incident link is ingested. The user should see how the contents are parsed, correct them, and then potentially associate the content with an existing link.
+* submitters: Array(string) # People that submitted the incident report
+* authors: Array(string) # People that wrote the incident report
 
-### Other Data Process: Incident Definitions
+Text
 
-We need to adopt one or more formally evaluatable definitions for AI incidents and accidents. The definitions should minimize inter-rater disagreement. The steps here are to propose 3 definitions, then apply them as a group with minimal contextualization outside the materials.
+* title: "title of the report" # (string) The title of the report that is indexed.
+* description: "Short text for the report"
+* text: "Long text for the report" # (string) This is the complete text for the report in the MongoDB instance, and a shortened subset in the Algolia index
 
-### Also valuable to work on: Development!
+Media
 
-You can make changes to the UI without needing access to the Algolia backend. That is the beauty of the static javascript application: you can control everything! The priority order of new developments is the following:
+* language: "en" # (string) The language identifier of the report.
+* image_url: "http://si.wsj.net/public/resources/images/BN-IM269_YouTub_P_2015051817" # (string) The URL for the image that is indexed. This will be stored on the server as a hash of the URL.
+* source_domain: "blogs.wsj.com" # (string) The domain name hosting the report.
+* url: "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti" # The fully qualified URL to the report as hosted on the web.
 
-1. Add an "incident detail" view. The card interface doesn't show the full details of an incident. These could potentially give vital statistics across all incident references.
-2. Add a service for parsing incident references interactively.
+### Systems
+
+A cron job periodically exports the schema to the form supported by the Algolia index, which includes shortening the full-text fields to be within the maximum length. Another cron job also requests the images associated with the database entry and adds them to the site host.
+
+In the future, an additional set of database keys will be added to support the development of incident taxonomies.
 
 ## License
 
-Note: We have not discussed licenses yet. I am putting my MIT license on this now because it is simpler than figuring out which organizations I can legally add to the license. All code contributed to the project falls under the license. If the license is transferred to an org, it will be to some combination of the Partnership on AI, the XPRIZE Foundation, the AI Commons, Sean McGregor, and/or the contributing individuals/organizations. Contributions include both code and data. Contributors disclaim all rights to their contributions. If you don't like these terms, then please reach out to discuss them. Please note that the MIT license furnished below is one of the most permissive licenses in existence, so this is not limiting your right to expression with code. :)
+The codebase currently carries an individual MIT license because it is simplest way to proceed forward. All code contributed to the project falls under the license. If the license is transferred to an org rather than an individual, it will be to some combination of the Partnership on AI, the XPRIZE Foundation, the AI Commons, Sean McGregor, and/or the contributing individuals/organizations. Contributions include both code and data. Contributors disclaim all rights to their contributions. If you don't like these terms, then please reach out to discuss them. Please note that the MIT license furnished below is one of the most permissive licenses in existence, so this is not limiting your right to expression with code. :)
 
-Copyright 2019 Sean McGregor
+Copyright 2020 Sean McGregor
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
