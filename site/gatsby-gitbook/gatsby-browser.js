@@ -7,3 +7,5 @@ export const onServiceWorkerUpdateReady = () => {
     window.location.reload()
   }
 }
+
+import 'bootstrap/dist/css/bootstrap.css';
