@@ -1,15 +1,49 @@
 ---
-title: "Incident Submission"
-metaTitle: "About the AIID app used to submit incidents"
+title: "Incident Report Submission"
+metaTitle: "About the AIID apps used to submit incidents"
 metaDescription: "How should you use the submit application?"
 ---
 
-We currently accept incident reports in a [quick add](/quickadd/index.html) form.
+## Add Single Incident Reports
 
-## Attribution
+We currently accept incident reports in a [quick add](/apps/quickadd) form, which does not credit submitters, and the [submit app](/apps/submit) which allows you to assign credit for the submission. Both types of submissions are a great help to preventing repeating history.
 
-Submissions made to the Quick Add app are all listed as submitted by "anonymous". If you have a list of submissions you would like to see included on the [leaderboard](/summaries/leaderboard), please send an email with the submission links and the attribution to AIIDSubmissions 'at' seanbmcgregor.com.
+## Batch Adding
 
-## App Notes
+If you have a large batch (i.e., more than 30) of incidents to add to the database, we can facilitate their import with a [CSV format](https://docs.google.com/spreadsheets/d/1FLguZeFziNKKtpx14TYZ5EjBuc3FCbUGmlMIdCDU6ak/edit?usp=sharing). The steps for getting many incidents batch added to the database are,
 
-The submit application is currently a holdover of the original landing page from the AIID. It collects incident reports into a Google sheet for manual resolution into the database. If you are looking for a way to contribute to the software backing the AIID. A new submission app will be rolled out within a week.
+1. Copy the [example Google Sheets document](https://docs.google.com/spreadsheets/d/1FLguZeFziNKKtpx14TYZ5EjBuc3FCbUGmlMIdCDU6ak/edit?usp=sharing).
+2. Columns B through J will be imported into the database and care
+should be taken to maintain their format. The first column, "Incident
+Number", will not be imported directly into the database but it is
+used when resolving reports to existing incidents. Incident numbers
+less than 10,000 are reserved for reports that should be associated
+with an incident already in the DB. Values equal to or greater than 10k
+are this spreadsheet's new incident counter. So if you want to import
+multiple reports for a single incident, then the incident number
+should be consistent across those reports.
+3. Fill in the columns with the following information,
+    * title is the title of the report.
+    * author(s) contains comma separated values of the authors of the
+    report. Some reports will not have authors, in which case place the publication name in this field.
+    * submitter(s) contains comma separated values for the people or
+    organizations submitting the report.
+    * incident date is the date in which the incident likely happened.
+    Many times a report will be written about an incident that happened
+    months or years earlier. Sometimes there will be ambiguity in when the
+    incident likely took place, in which case it is OK to input a best
+    guess. For incidents that are ongoing or had multiple occurances, the
+    incident date should be the earliest known date.
+    * date published is the date the report was posted on the web. Some
+    publications do not have a publication date, in which case you should use
+    the Wayback machine in support of when the publication was definitely
+    added by.
+    * date downloaded is the date in which the content was copy/pasted
+    into the text column.
+    * report address is the URL for the report.
+    * image address is the image preview for the report. Capturing this
+    generally requires either viewing the HTML of the web page and
+    capturing static asset paths, or using a web page parser like
+    NewsPlease.
+    * text is the text of the report copy pasted out of the website.
+4. Email `batchadd -at- seanbmcgregor.com` with a link to your data.

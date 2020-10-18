@@ -74,6 +74,18 @@ const IncidentList = ({edges}) => {
   );
 };
 
+const QuickList = ({edges}) => {
+  return (
+      <ListGroup>
+        {edges.map((key, idx) =>
+          <ListGroup.Item key={uuid()}>
+              <a href={edges[idx]["node"]["url"]}>{edges[idx]["node"]["url"]}</a>
+          </ListGroup.Item>
+        )}
+      </ListGroup>
+  );
+}
+
 export default class SubmittedIncidents extends Component {
   
   render() {
@@ -84,15 +96,20 @@ export default class SubmittedIncidents extends Component {
       return null;
     }
     const {
-      allMongodbAiidprodSubmissions: {
-        edges
-      }
+      allMongodbAiidprodSubmissions,
+      allMongodbAiidprodQuickadd
     } = data;
+    const fullSubmissions = allMongodbAiidprodSubmissions["edges"];
+    const quickSubmissions = allMongodbAiidprodQuickadd["edges"];
 
     // sort by value
-    edges.sort(function (a, b) {
+    fullSubmissions.sort(function (a, b) {
       return a["node"]["incident_date"] -
         b["node"]["incident_date"];
+    });
+    quickSubmissions.sort(function (a, b) {
+      return a["node"]["date_submitted"] -
+        b["node"]["date_submitted"];
     });
 
     return (
@@ -105,10 +122,13 @@ export default class SubmittedIncidents extends Component {
         </div>
         <StyledMainWrapper>
           <p className="paragraph">
-            The following incident reports have been <Link to="/apps/submit">submitted </Link> by users and are pending review by editors.
+            The following incident reports have been <Link to="/about_apps/2-submit">submitted </Link> by users and are pending review by editors.
             Only editors may promote these records to incident reports in the database.
           </p>
-          <IncidentList edges={edges} />
+          <IncidentList edges={fullSubmissions} />
+          <h1>Quick Add URLs</h1>
+          <p>These reports were added anonymously by users in the <Link to="/apps/quickadd"> Quick Add </Link> form.</p>
+          <QuickList edges={quickSubmissions} />
         </StyledMainWrapper>
       </Layout>
     );
@@ -118,26 +138,35 @@ export default class SubmittedIncidents extends Component {
 export const pageQuery = graphql`
 query AllSubmittedReports {
   allMongodbAiidprodSubmissions {
-      edges {
-        node {
-          title
-          source_domain
-          authors
-          submitters
-          incident_date
-          incident_id
-          url
-          image_url
-          date_downloaded
-          date_published
-          date_submitted
-          date_modified
-          text
-          description
-          language
-          id
-        }
+    edges {
+      node {
+        title
+        source_domain
+        authors
+        submitters
+        incident_date
+        incident_id
+        url
+        image_url
+        date_downloaded
+        date_published
+        date_submitted
+        date_modified
+        text
+        description
+        language
+        id
       }
     }
+  }
+  allMongodbAiidprodQuickadd {
+    edges {
+      node {
+        date_submitted
+        url
+        source_domain
+      }
+    }
+  }
 }
 `;
