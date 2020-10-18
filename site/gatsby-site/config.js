@@ -61,7 +61,7 @@ const config = {
     frontline: false,
     ignoreIndex: false,
     title:
-      "<a href='/apps/1-discover'>Discover </a><div class='greenCircle'></div><a href='/apps/2-submit'>Submit</a>",
+      "<a href='/about_apps/1-discover'>Discover </a><div class='greenCircle'></div><a href='/about_apps/2-submit'>Submit</a>",
   },
   siteMetadata: {
     title: 'Artificial Intelligence Incident Database | Partnership on AI',
