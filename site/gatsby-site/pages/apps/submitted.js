@@ -12,8 +12,8 @@ import Button from 'react-bootstrap/Button'
 import uuid from 'react-uuid'
 
 import { Layout, Link } from '$components';
-import config from '../config';
-import { Edit, StyledHeading, StyledMainWrapper } from '../src/components/styles/Docs';
+import config from '../../config';
+import { Edit, StyledHeading, StyledMainWrapper } from '../../src/components/styles/Docs';
 
 const ReportList = ({items}) => {
   const uid = "#???"
@@ -105,7 +105,7 @@ export default class SubmittedIncidents extends Component {
         </div>
         <StyledMainWrapper>
           <p className="paragraph">
-            The following incident reports have been <Link to="/submit">submitted </Link> by users and are pending review by editors.
+            The following incident reports have been <Link to="/apps/submit">submitted </Link> by users and are pending review by editors.
             Only editors may promote these records to incident reports in the database.
           </p>
           <IncidentList edges={edges} />

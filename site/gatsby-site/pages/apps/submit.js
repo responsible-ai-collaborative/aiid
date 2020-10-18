@@ -5,10 +5,10 @@ import { Form, Button, OverlayTrigger, Popover } from 'react-bootstrap';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-import API from '../src/mongodb/api';
+import API from '../../src/mongodb/api';
 
 import { Layout, Link } from '$components';
-import { StyledHeading } from '../src/components/styles/Docs';
+import { StyledHeading } from '../../src/components/styles/Docs';
 
 // Reference: 
 // https://hackernoon.com/building-react-forms-with-formik-yup-and-react-bootstrap-with-a-minimal-amount-of-pain-and-suffering-1sfk3xv8
@@ -223,7 +223,7 @@ export default class ContactForm extends Component {
       <div className={'titleWrapper'}>
         <StyledHeading>New Incident from Report</StyledHeading>
       </div>
-      <p>The following form will create a new incident report for <Link to="/submitted">review </Link> and inclusion
+      <p>The following form will create a new incident report for <Link to="/apps/submitted">review </Link> and inclusion
       into the AI Incident Database. Please be careful in your entries </p>
       <CONTAINER>
       <API newIncidentData={this.state.newIncidentData} createCallback={this.state.createCallback} />
@@ -425,7 +425,7 @@ export default class ContactForm extends Component {
                 ): null}
             </Form.Group>
             {/*Submit button that is disabled after button is clicked/form is in the process of submitting*/}
-            <p>Submitted reports are added to a <Link to="/submitted">review queue </Link>
+            <p>Submitted reports are added to a <Link to="/apps/submitted">review queue </Link>
             to be resolved to a new or existing incident record.
             Incidents are reviewed and merged into the database after
             enough incidents are pending.</p>
