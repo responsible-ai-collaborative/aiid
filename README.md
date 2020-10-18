@@ -48,10 +48,6 @@ Systems
 * ref_number: 25 # (int) The reference number scoped to the incident ID.
 * report_number: 2379 # (int) the incrementing primary key for the report. This is a global resource identifier.
 
-Definitions
-
-* is_incident: True # (Bool or nil) Determines whether it is officially an incident
-
 Dates
 
 * incident_date: `2019-07-25` # (Date) Date the incident occurred. Defaults to the article date.

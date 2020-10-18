@@ -5,6 +5,20 @@ const config = {
     gaTrackingId: "UA-23867277-2",
     trailingSlash: false,
   },
+  realm: {
+    review_db: {
+      realm_app_id: "aiidstitch2-fuwyv",
+      db_service: "mongodb-atlas",
+      db_name: "aiidprod",
+      db_collection: "submissions"
+    },
+    production_db: {
+      realm_app_id: "aiidstitch2-fuwyv",
+      db_service: "mongodb-atlas",
+      db_name: "aiidprod",
+      db_collection: "incidents"
+    }
+  },
   header: {
     logo: '/partership-on-ai-logo-1up.png',
     logoLink: '/',
