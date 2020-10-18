@@ -11,8 +11,8 @@ import Col from 'react-bootstrap/Col'
 import uuid from 'react-uuid'
 
 import { Layout, Link } from '$components';
-import config from '../config';
-import { Edit, StyledHeading, StyledMainWrapper } from '../src/components/styles/Docs';
+import config from '../../config';
+import { Edit, StyledHeading, StyledMainWrapper } from '../../src/components/styles/Docs';
 
 const ReportList = ({items}) => {
   const uid = "#" + items["node"]["report_number"]

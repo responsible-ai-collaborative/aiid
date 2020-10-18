@@ -5,6 +5,20 @@ const config = {
     gaTrackingId: "UA-23867277-2",
     trailingSlash: false,
   },
+  realm: {
+    review_db: {
+      realm_app_id: "aiidstitch2-fuwyv",
+      db_service: "mongodb-atlas",
+      db_name: "aiidprod",
+      db_collection: "submissions"
+    },
+    production_db: {
+      realm_app_id: "aiidstitch2-fuwyv",
+      db_service: "mongodb-atlas",
+      db_name: "aiidprod",
+      db_collection: "incidents"
+    }
+  },
   header: {
     logo: '/partership-on-ai-logo-1up.png',
     logoLink: '/',
@@ -34,7 +48,8 @@ const config = {
       '/index', // add trailing slash if enabled above
       '/roadmap',
       '/research',
-      '/apps',
+      '/summaries',
+      '/about_apps',
       '/develop',
       '/about_us',
       '/contact',
@@ -46,7 +61,7 @@ const config = {
     frontline: false,
     ignoreIndex: false,
     title:
-      "<a href='/apps/1-discover'>Discover </a><div class='greenCircle'></div><a href='/apps/2-submit'>Submit</a>",
+      "<a href='/about_apps/1-discover'>Discover </a><div class='greenCircle'></div><a href='/about_apps/2-submit'>Submit</a>",
   },
   siteMetadata: {
     title: 'Artificial Intelligence Incident Database | Partnership on AI',
