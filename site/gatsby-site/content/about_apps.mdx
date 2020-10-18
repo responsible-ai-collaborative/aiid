@@ -1,0 +1,20 @@
+---
+title: "Database Apps"
+metaTitle: "Database Applications"
+metaDescription: "The following applications have been built to integrate with the AIID"
+---
+
+The AIID is built on a document database and a collection of serverless browser applications. This means the database is highly extensible, and the application layer can have an unlimited number of views into the database. The intention behind this architecture is that it becomes possible for partner organizations, and the communities they represent, to have different views into the database. You should not treat the AIID as a static data product, but instead an analytical framework from which we collectively produce the best intelligent systems while avoiding the worst outcomes they may potentially produce.
+
+## In Development Applications ##
+
+The following apps are presently being developed,
+
+* [Full Submission](/submit). Submit complete incident reports including all the text and metadata.
+* [Submission Review](/submitted). Review incident reports submitted via the [Full Submission](/submit) app.
+
+You can find the source code for these applications on [GitHub](https://github.com/PartnershipOnAI/aiid).
+
+## Apps vs Summaries ##
+
+A "[summary](/summaries)" in the AIID is something that generates descriptive statistics, visualizations, or other read-only views into the database. Summaries are expected to live inside the scripting environment you are presently reading. An "app" is something that may have write permissions on some portion of the database. Additionally, an app can maintain its own scripting environment isolated from the scripting environment you are presently reading.

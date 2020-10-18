@@ -7,8 +7,8 @@ import Button from 'react-bootstrap/Button'
 import uuid from 'react-uuid'
 
 import { Layout, Link } from '$components';
-import config from '../config';
-import { Edit, StyledHeading, StyledMainWrapper } from '../src/components/styles/Docs';
+import config from '../../config';
+import { Edit, StyledHeading, StyledMainWrapper } from '../../src/components/styles/Docs';
 
 const ReportList = ({items}) => {
   return (

@@ -13,8 +13,8 @@ import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 
 import { Layout, Link } from '$components';
-import config from '../config';
-import { Edit, StyledHeading, StyledMainWrapper } from '../src/components/styles/Docs';
+import config from '../../config';
+import { Edit, StyledHeading, StyledMainWrapper } from '../../src/components/styles/Docs';
 
 const englishStopwords = stopword.en
 const customStopWords = [

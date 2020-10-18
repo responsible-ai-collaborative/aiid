@@ -48,7 +48,8 @@ const config = {
       '/index', // add trailing slash if enabled above
       '/roadmap',
       '/research',
-      '/apps',
+      '/summaries',
+      '/about_apps',
       '/develop',
       '/about_us',
       '/contact',

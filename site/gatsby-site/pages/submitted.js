@@ -63,7 +63,6 @@ const ReportList = ({items}) => {
 };
 
 const IncidentList = ({edges}) => {
-  console.log(edges)
   return (<>
       {edges.map((value, index) => (
         <div key={uuid()}>
