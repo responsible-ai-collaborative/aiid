@@ -48,6 +48,14 @@ async function createReportForReview(newReportData, callback) {
   return;
 }
 
+async function quickAddReport(newReportData, callback) {
+  console.log("Creating quick add report:");
+  console.log(newReportData);
+  const result = await user.functions.quickAdd(newReportData);
+  callback();
+  return;
+}
+
 class API extends Component {
   constructor(props) {
     super()
@@ -62,13 +70,17 @@ class API extends Component {
         />
         Connecting to Database...
       </Button>
-);
+    );
     this.state = {loadingMessage: spinner}
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.newIncidentData !== prevProps.newIncidentData && this.props.newIncidentData !== {}) {
-      createReportForReview(this.props.newIncidentData, this.props.createCallback)
+      if("title" in this.props.newIncidentData) {
+        createReportForReview(this.props.newIncidentData, this.props.createCallback)
+      } else {
+        quickAddReport(this.props.newIncidentData, this.props.createCallback)
+      }
     }
   }
 
