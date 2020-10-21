@@ -95,7 +95,7 @@ export default class Authors extends Component {
             If you would
             like to explore the contents of the reports, you
             should work through the
-            <Link to="/apps/1-discover"> Discover app</Link>.
+            <Link to="/about_apps/1-discover"> Discover app</Link>.
           </p>
           <Leaderboard title="Submitters" content={leaderboardSubmittersSorted} />
           <Leaderboard title="Authors" content={leaderboardAuthorsSorted} />

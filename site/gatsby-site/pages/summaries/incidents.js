@@ -70,7 +70,7 @@ export default class Incidents extends Component {
             and their reports within the database. If you would
             like to explore the contents of the reports, you
             should work through the
-            <Link to="/apps/1-discover"> Discover app</Link>.
+            <Link to="/about_apps/1-discover"> Discover app</Link>.
           </p>
           <IncidentList group={group} />
         </StyledMainWrapper>
