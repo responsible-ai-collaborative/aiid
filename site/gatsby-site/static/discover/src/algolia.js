@@ -64,9 +64,9 @@ const renderSearchBox = (renderOptions, isFirstRender) => {
   }
 
   var startingQuery = lib.parseQuery(window.location.search)["s"];
-  if(startingQuery !== undefined) {
-    console.log("amazon??????");
+  if(startingQuery !== undefined && isFirstRender) {
     widgetParams.container.querySelector('input').value = startingQuery;
+    refine(startingQuery);
   } else {
     console.log("nothing");
     widgetParams.container.querySelector('input').value = query;
