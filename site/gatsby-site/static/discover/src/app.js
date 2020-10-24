@@ -121,8 +121,6 @@ function renderIncidentDetailCard(hits, cardCSS) {
   }
 
   var incident_id = hits[0]['incident_id'];
-  console.log(incident_id);
-  console.log("+++++++");
 
   function collectErrors(docs) {
     var errors = "";

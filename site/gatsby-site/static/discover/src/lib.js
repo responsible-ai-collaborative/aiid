@@ -21,7 +21,6 @@ lib.pushURL = function(facets, search) {
   }
   const mergedquery = { ...currentQueryObject, ...urlQueryObj };
   const url = 'index.html' + lib.serializeQuery(mergedquery);
-  console.log(url);
   history.pushState(state, title, url);
 }
 

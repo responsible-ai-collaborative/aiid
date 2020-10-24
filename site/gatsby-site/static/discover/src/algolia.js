@@ -68,7 +68,6 @@ const renderSearchBox = (renderOptions, isFirstRender) => {
     widgetParams.container.querySelector('input').value = startingQuery;
     refine(startingQuery);
   } else {
-    console.log("nothing");
     widgetParams.container.querySelector('input').value = query;
   }
 };
@@ -117,6 +116,7 @@ function renderRefinementWithAttribute(attribute) {
       input.classList.add("form-control");
 
       const ul = document.createElement('ul');
+      ul.classList.add("list-group");
 
       input.addEventListener('input', event => {
         searchForItems(event.currentTarget.value);
@@ -128,6 +128,12 @@ function renderRefinementWithAttribute(attribute) {
 
     const input = widgetParams.container.querySelector('input');
 
+    if(renderOptions["widgetParams"]["inputText"] === "none" || items.length < 1) {
+      input.style = "display:none;";
+    } else {
+      input.style = "";
+    }
+
     if (!isFromSearch && input.value) {
       input.value = '';
     }
@@ -135,17 +141,19 @@ function renderRefinementWithAttribute(attribute) {
     widgetParams.container.querySelector('ul').innerHTML = items
       .map(
         item => `
-          <li>
             <button
-              class="link"
+              class="d-flex justify-content-between align-items-center btn btn-sm btn-block ${item.isRefined ? 'btn-primary' : 'btn-outline-primary'} btn-no-margin"
               href="${createURL(item.value)}"
               data-value="${item.value}"
-              style="font-weight: ${item.isRefined ? 'bold' : 'normal'}"
-            >${item.label} (${item.count})</button>
-          </li>
+            >
+              ${item.label} <span class="badge ${item.isRefined ? 'badge-secondary' : 'badge-secondary'} badge-pill"> ${item.count}</span>
+            </button>
         `
       )
       .join('');
+    if(items.length < 1) {
+      widgetParams.container.querySelector('ul').innerHTML = "<div class='d-flex justify-content-center'>no results</div>";
+    }
 
     [...widgetParams.container.querySelectorAll('button')].forEach(element => {
       element.addEventListener('click', event => {
@@ -203,7 +211,7 @@ search.addWidgets([
   customRefinementList({
     container: document.querySelector('#flag-refine'),
     attribute: 'flag',
-    inputText: "Filter flag state ('true')"
+    inputText: "none"
   })
 ]);
 
@@ -216,7 +224,6 @@ search.addWidgets([
 // Render each search result as a card
 const renderHits = (renderOptions, isFirstRender) => {
   const { hits, widgetParams } = renderOptions;
-  console.log(widgetParams.searchParameters);
   hits.forEach(function(element) {
       element.for_render = "<p>";
       if (typeof element._snippetResult === 'undefined') {

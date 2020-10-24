@@ -134,10 +134,21 @@ const ReportList = ({items}) => {
         Publication dates precede the incident date
       </ListGroup.Item>)
   }
-
+  const hasIncidentDateIssue = items.reduce(
+      (accumulator, currentValue) => items[0]["node"]["incident_date"] === currentValue["node"]["incident_date"] ?
+         accumulator :
+         true,
+      false)
+  let incidentDateIssue = ""
+  if(hasIncidentDateIssue) {
+    incidentDateIssue = (<ListGroup.Item key={uuid()} variant="danger">
+          Incident Dates are not consistent
+        </ListGroup.Item>)
+  }
   return (
     <ListGroup>
       {dateIssue}
+      {incidentDateIssue}
       {items.map((value, index) => (
         <ValidateReport key={uuid()} node={value["node"]} />
       ))}
