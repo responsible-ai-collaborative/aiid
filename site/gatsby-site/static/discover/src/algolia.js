@@ -68,7 +68,6 @@ const renderSearchBox = (renderOptions, isFirstRender) => {
     widgetParams.container.querySelector('input').value = startingQuery;
     refine(startingQuery);
   } else {
-    console.log("nothing");
     widgetParams.container.querySelector('input').value = query;
   }
 };
@@ -216,7 +215,6 @@ search.addWidgets([
 // Render each search result as a card
 const renderHits = (renderOptions, isFirstRender) => {
   const { hits, widgetParams } = renderOptions;
-  console.log(widgetParams.searchParameters);
   hits.forEach(function(element) {
       element.for_render = "<p>";
       if (typeof element._snippetResult === 'undefined') {
