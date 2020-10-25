@@ -222,7 +222,14 @@ button.btn-no-margin {
     margin: auto;
     font-size: 20px;
     cursor: pointer;
-    color: #ccc;
+    color: #6c757d;
+}
+
+.searchcount {
+    position: absolute;
+    right: 45px;
+    top: 11px;
+    margin: auto;
 }
 
 .subhead {

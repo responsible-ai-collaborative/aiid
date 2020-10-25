@@ -334,7 +334,7 @@ const renderStats = (renderOptions, isFirstRender) => {
     count += `1 report`;
   } else {
     $("#no-results").show();
-    count += `no result`;
+    count += `no matches`;
   }
   widgetParams.container.innerHTML = `${count} found`;
 };
