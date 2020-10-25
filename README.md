@@ -1,5 +1,7 @@
 # Artificial Intelligence Incident Database (AIID)
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/9eb0dda2-916c-46f9-a0bd-9ddab3879c6e/deploy-status)](https://app.netlify.com/sites/aiid/deploys)
+
 The goal of this project is to facilitate the characterization and dissemination of incidents wherein AI systems produce real world harms. Surfacing these incidents serves to prevent or mitigate future incidents. Similar to other incident databases, such as databases for aviation and motor vehicles, the AIID is a systematization of knowledge facilitating trend analysis and the development of best practices. Incident systematization helps proactively avoid physical, emotional, and economic harms.
 
 The AIID consists of a website built upon a database where users can view and submit incident reports that are then associated with incident identifiers. A single incident can be associated with multiple incident reports, such as news articles and scholarly work. Future versions of the AIID will additionally support a flexible taxonomic system wherein editors can develop technology and impact systematizations on the incident database.
