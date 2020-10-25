@@ -1,5 +1,7 @@
 # Artificial Intelligence Incident Database (AIID)
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/9eb0dda2-916c-46f9-a0bd-9ddab3879c6e/deploy-status)](https://app.netlify.com/sites/aiid/deploys)
+
 The goal of this project is to facilitate the characterization and dissemination of incidents wherein AI systems produce real world harms. Surfacing these incidents serves to prevent or mitigate future incidents. Similar to other incident databases, such as databases for aviation and motor vehicles, the AIID is a systematization of knowledge facilitating trend analysis and the development of best practices. Incident systematization helps proactively avoid physical, emotional, and economic harms.
 
 The AIID consists of a website built upon a database where users can view and submit incident reports that are then associated with incident identifiers. A single incident can be associated with multiple incident reports, such as news articles and scholarly work. Future versions of the AIID will additionally support a flexible taxonomic system wherein editors can develop technology and impact systematizations on the incident database.
@@ -82,15 +84,22 @@ In the future, an additional set of database keys will be added to support the d
 
 ## License
 
-The codebase currently carries an individual MIT license because it is simplest way to proceed forward. All code contributed to the project falls under the license. If the license is transferred to an org rather than an individual, it will be to some combination of the Partnership on AI, the XPRIZE Foundation, the AI Commons, Sean McGregor, and/or the contributing individuals/organizations. Contributions include both code and data. Contributors disclaim all rights to their contributions. If you don't like these terms, then please reach out to discuss them. Please note that the MIT license furnished below is one of the most permissive licenses in existence, so this is not limiting your right to expression with code. :)
+The codebase currently carries an individual MIT license because it is simplest way to proceed forward. All code contributed to the project falls under the license. If the license is transferred to an org rather than an individual, it will be to some combination of the Partnership on AI, the XPRIZE Foundation, the AI Commons, Sean McGregor, and/or the contributing individuals/organizations. Contributions include both code and data. Contributors disclaim all rights to their contributions. If you don't like these terms, then please reach out to discuss them.
 
 Copyright 2020 Sean McGregor
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Contact
 

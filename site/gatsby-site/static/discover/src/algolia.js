@@ -128,8 +128,10 @@ function renderRefinementWithAttribute(attribute) {
 
     const input = widgetParams.container.querySelector('input');
 
-    if(renderOptions["widgetParams"]["inputText"] === "none" || items.length < 1) {
+    if(renderOptions["widgetParams"]["inputText"] === "none") {
       input.style = "display:none;";
+    } else if(items.length < 1) {
+      input.style = "color:red;";
     } else {
       input.style = "";
     }
@@ -334,7 +336,7 @@ const renderStats = (renderOptions, isFirstRender) => {
     count += `1 report`;
   } else {
     $("#no-results").show();
-    count += `no result`;
+    count += `no matches`;
   }
   widgetParams.container.innerHTML = `${count} found`;
 };
