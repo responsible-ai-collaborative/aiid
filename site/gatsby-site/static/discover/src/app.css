@@ -25,6 +25,14 @@ blockquote:before {
   vertical-align: -0.4em;
 }
 
+.breadcrumb {
+      padding: 0rem;
+      margin-bottom: 0rem;
+      list-style: none;
+      background-color: inherit;
+      font-size: 25px;
+}
+
 .card-body {
     padding: 0.50rem;
 }
