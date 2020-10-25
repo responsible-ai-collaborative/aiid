@@ -18,7 +18,12 @@ const plugins = [
       path: `${__dirname}/pages`,
     },
   },
-  'gatsby-plugin-catch-links',
+  {
+      resolve: `gatsby-plugin-catch-links`,
+      options: {
+        excludePattern: /(\/discover\/)/
+      }
+  },
   'gatsby-plugin-sitemap',
   'gatsby-plugin-sharp',
   'gatsby-plugin-emotion',
