@@ -6,6 +6,7 @@ const plugins = [
       resolve: `gatsby-plugin-netlify`,
       options: {
         headers: {
+              "/.netlify*": [],
               "/*": [
                 "Basic-Auth: scai:scai",
               ]
