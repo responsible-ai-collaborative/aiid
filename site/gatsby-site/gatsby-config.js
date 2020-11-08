@@ -5,11 +5,20 @@ const plugins = [
   {
       resolve: `gatsby-plugin-netlify`,
       options: {
-        headers: {
-              "/*": [
+          headers: {
+	      "/.netlify/large-media/*": [
+                "foo: bar",
+              ],
+	      "/.netlify/*": [
+                "foo: bar",
+              ],
+	      "/.netlify*": [
+                "foo: bar",
+              ],
+	      "/*": [
                 "Basic-Auth: scai:scai",
               ]
-        }
+	  }
       }
   },
   {
