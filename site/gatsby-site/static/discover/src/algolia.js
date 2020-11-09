@@ -247,7 +247,7 @@ const renderHits = (renderOptions, isFirstRender) => {
               element.for_render += "<div class='card_short_text'><p>" + shortText.replace(/\n/g, "</p><p>") + "</p></div>";
           }
       }
-      element["image_url_hash"] = "http://aiid.partnershiponai.org/protected/images/incident_banners/" + md5(element.image_url);
+      element["image_url_hash"] = "/large_media/report_banners/" + md5(element.image_url);
   });
   var cardCSS = "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12";
   var rendered = "<div id='incident_detail'></div>";
