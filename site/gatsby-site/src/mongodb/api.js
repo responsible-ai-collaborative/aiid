@@ -1,43 +1,36 @@
-import React, { Component, PropTypes } from 'react';
-import Helmet from 'react-helmet';
-import { graphql } from 'gatsby';
-
+import React, { Component } from 'react';
 import { Spinner, Button } from 'react-bootstrap';
-
 import * as Realm from "realm-web";
-
-import uuid from 'react-uuid'
-
-import { Layout, Link } from '$components';
 import config from '../../config';
-
-const REALM_APP_ID = config["realm"]["review_db"]["realm_app_id"];
-const DB_SERVICE = config["realm"]["review_db"]["db_service"]
-const DB_NAME = config["realm"]["review_db"]["db_name"]
-const DB_COLLECTION = config["realm"]["review_db"]["db_collection"]
-const app = new Realm.App({
-  id: REALM_APP_ID,
-  timeout: 10000 // timeout in number of milliseconds
-});
+import {realmApp, getUser} from './authenticate';
 
 // https://docs.mongodb.com/realm/web/mongodb/
 
-let user = undefined;
+const REALM_APP_ID = config["realm"]["review_db"]["realm_app_id"];
+const DB_SERVICE = config["realm"]["review_db"]["db_service"];
+const DB_NAME = config["realm"]["review_db"]["db_name"];
+const DB_COLLECTION = config["realm"]["review_db"]["db_collection"];
 
-async function login(callback) {
-  user = await app.logIn(Realm.Credentials.anonymous());
-  callback();
-  console.log(`Logged in ${user}`);
-}
+let user;
+getUser().then(res => {
+  user = res["user"];
+});
 
 // For future use, this is an example query
-async function runQuery(query, callback) {
-  console.log("querying incident:");
-  const mongo = app.services.mongodb(DB_SERVICE);
+export async function runQuery(query, callback) {
+  console.log("querying: " + query);
+  const mongo = realmApp.services.mongodb(DB_SERVICE);
   const mongoCollection = mongo.db(DB_NAME).collection(DB_COLLECTION);
   const incident1 = await mongoCollection.find(query);
+  callback(incident1);
+}
+
+export async function promoteReport(newReportData, callback) {
+  console.log("Promoting report:");
+  console.log(newReportData);
+  const result = await user.functions.promoteReport(newReportData);
   callback();
-  console.log(incident1);
+  return;
 }
 
 async function createReportForReview(newReportData, callback) {
@@ -86,7 +79,7 @@ class API extends Component {
 
   componentDidMount() {
     const connectedMessage = <></>;
-    login(() => {this.setState({loadingMessage: connectedMessage})});
+    getUser(() => {this.setState({loadingMessage: connectedMessage})});
   }
 
   render() {

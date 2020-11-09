@@ -9,7 +9,12 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
 
+import BSON from "bson";
+
 import uuid from 'react-uuid'
+
+import {promoteReport} from '../../src/mongodb/api'
+import {getUser} from '../../src/mongodb/authenticate'
 
 import { Layout, Link } from '$components';
 import config from '../../config';
@@ -62,11 +67,21 @@ const ReportList = ({items}) => {
   );
 };
 
-const IncidentList = ({edges}) => {
+const IncidentList = ({edges, admin}) => {
+
+  const addReport = (id) => {
+    const bs = new BSON.ObjectId(id["node"]["mongodb_id"]);
+    promoteReport({"_id": bs}, console.log);
+  }
+
   return (<>
       {edges.map((value, index) => (
         <div key={uuid()}>
-          <h2>New Report {index + 1} <Button variant="outline-secondary" disabled>Add New {value["node"]["incident_id"] < 1 ? "Incident" : "Report"}</Button></h2>
+          <h2>New Report {index + 1}
+            <Button variant="outline-secondary" disabled={admin ? false : true} onClick={() => addReport(value)}>
+              Add New {value["node"]["incident_id"] < 1 ? "Incident" : "Report"}
+            </Button>
+          </h2>
           <ReportList key={uuid()} items={value} />
         </div>
       ))}
@@ -87,7 +102,21 @@ const QuickList = ({edges}) => {
 }
 
 export default class SubmittedIncidents extends Component {
-  
+
+  constructor(props) {
+    super(props);
+    this.state = { admin: false };
+  }
+
+  componentDidMount() {
+    const that = this;
+    getUser().then(function(user){
+      that.setState((state, props) => {
+        return {admin: user.type=="token"};
+      });
+    });
+  }
+
   render() {
 
     const { data } = this.props;
@@ -125,7 +154,7 @@ export default class SubmittedIncidents extends Component {
             The following incident reports have been <Link to="/about_apps/2-submit">submitted </Link> by users and are pending review by editors.
             Only editors may promote these records to incident reports in the database.
           </p>
-          <IncidentList edges={fullSubmissions} />
+          <IncidentList edges={fullSubmissions} admin={this.state["admin"]} />
           <h1>Quick Add URLs</h1>
           <p>These reports were added anonymously by users in the <Link to="/apps/quickadd"> Quick Add </Link> form.</p>
           <QuickList edges={quickSubmissions} />
@@ -156,6 +185,7 @@ query AllSubmittedReports {
         description
         language
         id
+        mongodb_id
       }
     }
   }
