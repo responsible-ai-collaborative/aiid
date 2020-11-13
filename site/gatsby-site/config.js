@@ -50,7 +50,6 @@ const config = {
       '/research',
       '/summaries',
       '/about_apps',
-      '/develop',
       '/about_us',
       '/contact',
     ],
