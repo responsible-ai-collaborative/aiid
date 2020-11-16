@@ -26,6 +26,7 @@ const IncidentList = ({group}) => {
         <div key={uuid()}>
           <h2>
               Incident {value["edges"][0]["node"]["incident_id"]}{' '}
+              <Button variant="outline-primary" href={"/cite/" + value["edges"][0]["node"]["incident_id"]}>Citation</Button>
               <Button variant="outline-primary" href={"/discover/index.html?incident_id=" + value["edges"][0]["node"]["incident_id"]}>Discover</Button>
           </h2>
           <ReportList key={uuid()} items={value["edges"]} />
