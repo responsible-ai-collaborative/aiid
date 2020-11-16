@@ -140,86 +140,6 @@ function renderIncidentDetailCard(hits, cardCSS) {
     return errors;
   }
 
-  function getCitation(docs) {
-
-    // Sort the docs according to their submit date
-    docs.sort(function(a, b){
-      return a["submission_date"] > b["submission_date"];
-    });
-
-    // Return the submitters across all docs that are distinct
-    var submitters = [];
-    docs.forEach(element => {
-      let split = element["submitters"][0].split(" ");
-      if(split.length > 1) {
-        submitters.push(`${split[split.length - 1]}, ${split.slice(0, split.length - 1).join(" ")}`);
-      } else {
-        submitters.push(element["submitters"][0]);
-      }
-    });
-    let submitterCite = [...new Set(submitters)];
-
-    var incidentDate = docs[0]["incident_date"];
-    var submissionDate = docs[0]["submission_date"];
-    return `${submitterCite}. (${incidentDate}) Incident Number ${docs[0]['incident_id']}. in McGregor, S. (ed.) <em>Artificial Intelligence Incident Database.</em> Partnership on AI.`;
-  }
-
-  function getBibtex(docs) {
-    // Sort the docs according to their submit date
-    docs.sort(function(a, b){
-      return a["submission_date"] > b["submission_date"];
-    });
-
-    // Return the submitters across all docs that are distinct
-    var submitters = [];
-    docs.forEach(element => {
-      let split = element["submitters"][0].split(" ");
-      if(split.length > 1) {
-        submitters.push(`${split[split.length - 1]}, ${split.slice(0, split.length - 1).join(" ")}`);
-      } else {
-        submitters.push(element["submitters"][0]);
-      }
-    });//Only supporting the first submitter on the doc
-    let submitterCite = [...new Set(submitters)];
-
-    var incidentDate = docs[0]["incident_date"];
-    var submissionDate = docs[0]["submission_date"];
-    var incidentID = docs[0]["incident_id"];
-    return `
-      <!-- Button trigger modal -->
-      <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#bibtex">
-        Show
-      </button>
-
-      <!-- Modal -->
-      <div class="modal fade" id="bibtex" tabindex="-1" role="dialog" aria-labelledby="bibtex" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Incident Citation Bibtex</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-      <pre>@article{aiid:${docs[0]['incident_id']},
-    author = {${submitterCite}},
-    editor = {McGregor, Sean},
-    journal = {AI Incident Database},
-    publisher = {Partnership on AI},
-    title = {Incident Number ${docs[0]['incident_id']}},
-    url = {https://incidentdatabase.ai/discover/index.html?s={\&}incident{\_}id={${incidentID}}},
-    year = {${incidentDate.substring(0, 4)}}
-}</pre>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>`;
-  }
-
   function callback(docs) {
     console.log(docs);
     var errors = collectErrors(docs);
@@ -252,11 +172,7 @@ function renderIncidentDetailCard(hits, cardCSS) {
                           </dd>
                           <dt class="col-sm-3">Citation</dt>
                           <dd class="col-sm-9">
-                            <p>${getCitation(docs)}</p>
-                          </dd>
-                          <dt class="col-sm-3">Bibtex</dt>
-                          <dd class="col-sm-9">
-                            <p>${getBibtex(docs)}</p>
+                            <p><a href="/cite/${incident_id}">View</a></p>
                           </dd>
                         </dl>
                         <button type="button" class="btn btn-secondary btn-sm btn-block" onclick="index.clearAll()">Clear Incident Selection and Search</button>

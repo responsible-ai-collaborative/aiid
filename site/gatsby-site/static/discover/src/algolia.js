@@ -250,7 +250,7 @@ const renderHits = (renderOptions, isFirstRender) => {
       element["image_url_hash"] = "/large_media/report_banners/" + md5(element.image_url);
   });
   var cardCSS = "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12";
-  var rendered = "<div id='incident_detail'></div>";
+  var rendered = "<div id='incident_detail' class='w-100'></div>";
   if(renderBig) {
       cardCSS = "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12";
   }
