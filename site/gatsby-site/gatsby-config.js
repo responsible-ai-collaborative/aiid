@@ -5,50 +5,7 @@ const plugins = [
   {
       resolve: `gatsby-plugin-netlify`,
       options: {
-          headers: {
-	      "/.netlify/large-media/*": [
-                "foo: bar",
-              ],
-	      "/.netlify/*": [
-                "foo: bar",
-              ],
-	      "/.netlify*": [
-                "foo: bar",
-              ],
-	      "/roadmap": [
-                "Basic-Auth: scai:scai",
-              ],
-	      "/": [
-                "Basic-Auth: scai:scai",
-              ],
-	      "/research": [
-                "Basic-Auth: scai:scai",
-              ],
-	      "/summaries": [
-                "Basic-Auth: scai:scai",
-              ],
-	      "/summaries/*": [
-                "Basic-Auth: scai:scai",
-              ],
-	      "/apps/*": [
-                "Basic-Auth: scai:scai",
-              ],
-	      "/about_apps": [
-                "Basic-Auth: scai:scai",
-              ],
-	      "/about_apps/*": [
-                "Basic-Auth: scai:scai",
-              ],
-	      "/develop": [
-                "Basic-Auth: scai:scai",
-              ],
-	      "/contact": [
-                "Basic-Auth: scai:scai",
-              ],
-	      "/discover/*": [
-                "Basic-Auth: scai:scai",
-              ]
-	  }
+          headers: {}
       }
   },
   {
