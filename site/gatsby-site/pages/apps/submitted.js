@@ -154,6 +154,7 @@ export default class SubmittedIncidents extends Component {
             The following incident reports have been <Link to="/about_apps/2-submit">submitted </Link> by users and are pending review by editors.
             Only editors may promote these records to incident reports in the database.
           </p>
+          <p>Please note that this list updates hourly. New submissions are not immediately shown.</p>
           <IncidentList edges={fullSubmissions} admin={this.state["admin"]} />
           <h1>Quick Add URLs</h1>
           <p>These reports were added anonymously by users in the <Link to="/apps/quickadd"> Quick Add </Link> form.</p>
