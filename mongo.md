@@ -330,12 +330,12 @@ exports = function(arg){
     if(incident_id > 0) {
       newIncidentID = incident_id;
       var currentIncidentReports = incidentCollection.find({"incident_id": incident_id}).sort({"ref_number":-1}).limit(1).next().then(res => {
-        newRefNumber = res["ref_number"] + 1;
+        newRefNumber = parseInt(res["ref_number"] + 1);
         create(submittedDoc, newIncidentID, newReportNumber, newRefNumber);
       });
     } else {
         incidentCollection.find().sort({"incident_id":-1}).limit(1).next().then(res => {
-          newIncidentID = res["incident_id"] + 1;
+          newIncidentID = parseInt(res["incident_id"] + 1);
           newRefNumber = 1;
           create(submittedDoc, newIncidentID, newReportNumber, newRefNumber);
         });
