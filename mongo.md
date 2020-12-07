@@ -237,13 +237,13 @@ exports = function(arg){
   date_modified = yyyy + '-' + mm + '-' + dd ; 
   
   var record = {
-    authors: arg["authors"].split(","),
+    authors: arg["authors"].split(",").map(function(item){return item.trim()}),
     date_downloaded: arg["date_downloaded"],
     date_published: arg["date_published"],
     image_url: arg["image_url"],
     incident_date: arg["incident_date"],
     incident_id: 0,
-    submitters: arg["submitters"].split(","),
+    submitters: arg["submitters"].split(",").map(function(item){return item.trim()}),
     text: arg["text"],
     title: arg["title"],
     url: arg["url"],
