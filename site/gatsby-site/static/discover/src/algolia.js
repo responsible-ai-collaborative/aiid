@@ -6,11 +6,11 @@ index.currentCount = 999;
 
 // Initialize the search client
 index.searchClient = algoliasearch(
-  'JD5JCVZEVS',
-  'c5e99d93261645721a1765fe4414389c'
+  '8TNY3YFAO8',
+  '55efba4929953a53eb357824297afb4c'
 );
 const search = instantsearch({
-  indexName: 'dev_aiid',
+  indexName: 'aiid-emergency',
   searchClient: index.searchClient,
 });
 
