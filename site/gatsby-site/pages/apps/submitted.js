@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, Component } from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
 
@@ -8,81 +8,168 @@ import Tab from 'react-bootstrap/Tab'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card'
+import Collapse from 'react-bootstrap/Collapse'
+import Badge from 'react-bootstrap/Badge'
 
 import BSON from "bson";
 
 import uuid from 'react-uuid'
 
-import {promoteReport} from '../../src/mongodb/api'
+import {promoteReport, deleteSubmittedDocument} from '../../src/mongodb/api'
 import {getUser} from '../../src/mongodb/authenticate'
 
 import { Layout, Link } from '$components';
 import config from '../../config';
 import { Edit, StyledHeading, StyledMainWrapper } from '../../src/components/styles/Docs';
 
-const ReportList = ({items}) => {
-  const uid = "#???"
-  const tabbedRender = [
-    "description",
-    "text"
-  ]
-  let untabbedRender = Object.keys(items["node"])
-  delete untabbedRender["id"]
-  tabbedRender.forEach(element => untabbedRender.splice(untabbedRender.indexOf(element), 1));
+// Renders buttons that render the whole contents of, for example, long text
+const TabGroup = ({item, keysToRender}) => {
+  const uid = "#???";
   return (
-    <>
-    <ListGroup>
-      {untabbedRender.map((key, idx) =>
-        <ListGroup.Item key={uid + key}>
-          <span style={{ color: '#1cd3c6' }}>{key}</span>:
-            {" "}{typeof(items["node"][key]) == "object" ? items["node"][key].join(", ") : items["node"][key]}
-          </ListGroup.Item>
-      )}
-    </ListGroup>
     <Tab.Container defaultActiveKey={uid + "url"}>
       <Row>
-        <Col xs={12} sm={6} lg={3}>
-          <ListGroup>
-            {tabbedRender.map((key, idx) => 
-              <ListGroup.Item action eventKey={uid + key} key={uid + key}>
+        <Col xs={12} sm={12} lg={12}>
+          <ListGroup horizontal>
+            {keysToRender.map((key, idx) =>
+              <ListGroup.Item action eventKey={uid + key} key={uid + key} variant="light">
                 {key}
               </ListGroup.Item>
             )}
           </ListGroup>
         </Col>
-        <Col xs={12} sm={6} lg={9}>
+      </Row>
+      <Row>
+        <Col xs={12} sm={12} lg={12}>
           <Tab.Content>
-            {tabbedRender.map((key, idx) => 
-              <Tab.Pane eventKey={uid + key}  key={uid + key}>
-                {items["node"][key].split('\n').map((item, key) => {
-                  return <span key={key}>{item}<br/></span>
-                })}
+            {keysToRender.map((key, idx) =>
+              <Tab.Pane key={"a" + uid + key} eventKey={uid + key}>
+                <Card.Text>
+                  {item[key].split('\n').map((item, key) => {
+                    return <span key={uid + key}>{item}<br/></span>
+                  })}
+                </Card.Text>
               </Tab.Pane>
             )}
           </Tab.Content>
         </Col>
       </Row>
     </Tab.Container>
-    </>
+  )
+}
+
+const ListedGroup = ({item, keysToRender}) => {
+  const uid = "#???";
+  return (<ListGroup>
+      {keysToRender.map((key, idx) =>
+        <ListGroup.Item key={uid + key}>
+          <span style={{ color: '#1cd3c6' }}>{key}</span>:
+            {" "}{typeof(item[key]) == "object" ? item[key].join(", ") : item[key]}
+          </ListGroup.Item>
+      )}
+      </ListGroup>);
+}
+
+const ReportList = ({items, admin}) => {
+  const uid = "#???"
+
+  const addReport = (id) => {
+    const bs = new BSON.ObjectId(id["mongodb_id"]);
+    promoteReport({"_id": bs}, console.log);
+  }
+
+  const rejectReport = (id) => {
+    const bs = new BSON.ObjectId(id["mongodb_id"]);
+    deleteSubmittedDocument({"_id": bs}, console.log);
+  }
+
+  const [open, setOpen] = useState(false);
+
+  const leadItems = [
+    "source_domain",
+    "authors",
+    "submitters",
+    "incident_id"
+  ]
+
+  const urls = [
+    "url",
+    "image_url",
+    "authors",
+    "submitters"
+  ]
+
+  const dateRender = [
+    "incident_date",
+    "date_published",
+    "date_submitted",
+    "date_downloaded",
+    "date_modified"
+  ]
+  const longRender = [
+    "description",
+    "text"
+  ]
+
+  const otherDetails = [
+    "id",
+    "language",
+    "mongodb_id"
+  ]
+
+  const report = items["node"];
+  const isNewIncident = report["incident_id"] === 0;
+  const cardSubheader = isNewIncident ? "New Incident" : "New Report";
+  return (
+    <Card>
+      <Card.Header>
+        <Row>
+          <Col xs={4} sm={2} lg={2}>
+            <Button
+              onClick={() => setOpen(!open)}
+              aria-controls="collapse-report-submission"
+              aria-expanded={open}
+            >
+              review &gt;
+            </Button>
+          </Col>
+          <Col xs={12} sm={10} lg={10}>
+            {" "}{report["title"]}
+            <br />
+            <Badge variant="secondary">Inc: {report["incident_date"]}</Badge>{" "}
+            <Badge variant="secondary">Pub: {report["date_published"]}</Badge>{" "}
+            <Badge variant="secondary">Sub: {report["date_submitted"]}</Badge>{" "}
+            <Badge variant="secondary">{report["submitters"]}</Badge>
+          </Col>
+        </Row>
+      </Card.Header>
+      <Collapse in={open}>
+        <div id="collapse-report-submission">
+          <ListedGroup item={report} keysToRender={leadItems} />
+          <ListedGroup item={report} keysToRender={dateRender} />
+          <ListedGroup item={report} keysToRender={urls} />
+          <ListedGroup item={report} keysToRender={otherDetails} />
+          <TabGroup item={report} keysToRender={longRender} />
+          <Card.Footer className="text-muted">
+            <Button variant="outline-secondary" disabled={admin ? false : true} onClick={() => addReport(report)}>
+              Add {cardSubheader}
+            </Button>
+            <Button variant="outline-secondary" disabled={admin ? false : true} onClick={() => rejectReport(report)}>
+              Reject {cardSubheader}
+            </Button>
+          </Card.Footer>
+        </div>
+      </Collapse>
+    </Card>
   );
 };
 
 const IncidentList = ({edges, admin}) => {
 
-  const addReport = (id) => {
-    const bs = new BSON.ObjectId(id["node"]["mongodb_id"]);
-    promoteReport({"_id": bs}, console.log);
-  }
-
   return (<>
       {edges.map((value, index) => (
         <div key={uuid()}>
-          <h2>New Report {index + 1}
-            <Button variant="outline-secondary" disabled={admin ? false : true} onClick={() => addReport(value)}>
-              Add New {value["node"]["incident_id"] < 1 ? "Incident" : "Report"}
-            </Button>
-          </h2>
-          <ReportList key={uuid()} items={value} />
+          <ReportList key={uuid()} items={value} admin={admin} />
         </div>
       ))}
       </>
