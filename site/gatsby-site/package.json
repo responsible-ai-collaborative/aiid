@@ -57,6 +57,7 @@
     "react-instantsearch-dom": "^6.0.0",
     "react-live": "^2.2.2",
     "react-loadable": "^5.5.0",
+    "react-papaparse": "^3.11.0",
     "react-uuid": "^1.0.2",
     "react-wordcloud": "^1.2.7",
     "realm-web": "^0.7.0",
