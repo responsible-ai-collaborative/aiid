@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 
 import { Layout } from '$components';
-import { Edit, StyledHeading, StyledMainWrapper } from '../components/styles/Docs';
+import { StyledHeading, StyledMainWrapper } from '../components/styles/Docs';
 
 import config from '../../config';
 import { getFormattedName } from '../utils/typography';
@@ -18,8 +18,6 @@ const GetCitation = ({ nodes }) => {
 
   let docs = [];
   nodes.forEach(({ node }) => docs.push(node));
-
-  console.log(docs)
 
   // Sort the docs according to their submit date
   docs.sort(function (a, b) {
