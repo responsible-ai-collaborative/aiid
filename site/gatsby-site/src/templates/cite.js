@@ -1,38 +1,33 @@
 import React, { Component, useState } from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
-import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 
 import uuid from 'react-uuid'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 
-import { Layout, Link } from '$components';
-import NextPrevious from '../components/NextPrevious';
+import { Layout } from '$components';
+import { StyledHeading, StyledMainWrapper } from '../components/styles/Docs';
+
 import config from '../../config';
-import { Edit, StyledHeading, StyledMainWrapper } from '../components/styles/Docs';
+import { getFormattedName } from '../utils/typography';
 
 const forcedNavOrder = config.sidebar.forcedNavOrder;
 
-const GetCitation = ({nodes}) => {
+const GetCitation = ({ nodes }) => {
 
   let docs = [];
-  nodes.forEach(({node})=>docs.push(node));
+  nodes.forEach(({ node }) => docs.push(node));
 
   // Sort the docs according to their submit date
-  docs.sort(function(a, b){
+  docs.sort(function (a, b) {
     return a["submission_date"] > b["submission_date"];
   });
 
   // Return the submitters across all docs that are distinct
   var submitters = [];
   docs.forEach(element => {
-    let split = element["submitters"][0].split(" ");
-    if(split.length > 1) {
-      submitters.push(`${split[split.length - 1]}, ${split.slice(0, split.length - 1).join(" ")}`);
-    } else {
-      submitters.push(element["submitters"][0]);
-    }
+    submitters.push(getFormattedName(element["submitters"][0]));
   });
   let submitterCite = [...new Set(submitters)];
 
@@ -45,17 +40,17 @@ const GetCitation = ({nodes}) => {
   return jsx;
 }
 
-function BibTex({nodes}) {
+function BibTex({ nodes }) {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   let docs = [];
-  nodes.forEach(({node})=>docs.push(node));
+  nodes.forEach(({ node }) => docs.push(node));
 
   // Sort the docs according to their submit date
-  docs.sort(function(a, b){
+  docs.sort(function (a, b) {
     return a["submission_date"] > b["submission_date"];
   });
 
@@ -63,7 +58,7 @@ function BibTex({nodes}) {
   var submitters = [];
   docs.forEach(element => {
     let split = element["submitters"][0].split(" ");
-    if(split.length > 1) {
+    if (split.length > 1) {
       submitters.push(`${split[split.length - 1]}, ${split.slice(0, split.length - 1).join(" ")}`);
     } else {
       submitters.push(element["submitters"][0]);
@@ -75,16 +70,19 @@ function BibTex({nodes}) {
   var submissionDate = docs[0]["submission_date"];
   var incidentID = docs[0]["incident_id"];
 
-  const jsx = <>
-    @article&#123;aiid:{docs[0]['incident_id']},
-  author = &#123;{submitterCite}&#125;,
-  editor = &#123;McGregor, Sean&#125;,
-  journal = &#123;AI Incident Database&#125;,
-  publisher = &#123;Partnership on AI&#125;,
-  title = &#123;Incident Number {docs[0]['incident_id']}&#125;,
-  url = &#123;https://incidentdatabase.ai/cite/{incidentID}&#125;,
-  year = &#123;{incidentDate.substring(0, 4)}&#125;
-}</>
+  const jsx = (
+    <>
+      @article&#123;aiid:{docs[0]['incident_id']},
+      author = &#123;{submitterCite}&#125;,
+      editor = &#123;McGregor, Sean&#125;,
+      journal = &#123;AI Incident Database&#125;,
+      publisher = &#123;Partnership on AI&#125;,
+      title = &#123;Incident Number {docs[0]['incident_id']}&#125;,
+      url = &#123;https://incidentdatabase.ai/cite/{incidentID}&#125;,
+      year = &#123;{incidentDate.substring(0, 4)}&#125;
+    </>
+  );
+
   return (
     <>
       <Button variant="outline-primary" onClick={handleShow}>
@@ -105,7 +103,7 @@ function BibTex({nodes}) {
   );
 }
 
-const ReportList = ({items}) => {
+const ReportList = ({ items }) => {
 
   return (
     <ul>
@@ -116,14 +114,14 @@ const ReportList = ({items}) => {
   );
 };
 
-const IncidentList = ({group}) => {
+const IncidentList = ({ group }) => {
   return (<>
-      {group.map((value, index) => (
-        <div key={uuid()}>
-          <ReportList key={uuid()} items={value["edges"]} />
-        </div>
-      ))}
-      </>
+    {group.map((value, index) => (
+      <div key={uuid()}>
+        <ReportList key={uuid()} items={value["edges"]} />
+      </div>
+    ))}
+  </>
   );
 };
 
@@ -218,12 +216,12 @@ export default class IncidentCite extends Component {
         <StyledMainWrapper>
 
           <h2>
-              Suggested citation format
+            Suggested citation format
           </h2>
           <GetCitation nodes={nodes} />
 
           <h2>
-              Reports
+            Reports
           </h2>
           <IncidentList group={group} />
 
@@ -239,39 +237,38 @@ export default class IncidentCite extends Component {
 }
 
 export const pageQuery = graphql`
-query ($incident_id: Int!) {
-  site {
-    siteMetadata {
-      title
-      docsLocation
-    }
-  }
-  allMdx {
-    edges {
-      node {
-        fields {
-          slug
-          title
-        }
+  query ($incident_id: Int!) {
+    site {
+      siteMetadata {
+        title
+        docsLocation
       }
     }
-  }
-  allMongodbAiidprodIncidents(filter: {incident_id: {eq: $incident_id}}) {
-    group(field: incident_id) {
+    allMdx {
       edges {
         node {
-          id
-          submitters
-          incident_date
-          date_published
-          incident_id
-          report_number
-          title
-          url
+          fields {
+            slug
+            title
+          }
+        }
+      }
+    }
+    allMongodbAiidprodIncidents(filter: {incident_id: {eq: $incident_id}}) {
+      group(field: incident_id) {
+        edges {
+          node {
+            id
+            submitters
+            incident_date
+            date_published
+            incident_id
+            report_number
+            title
+            url
+          }
         }
       }
     }
   }
-}
-  
 `;
