@@ -84,7 +84,17 @@
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.19.0",
     "gatsby-plugin-remove-trailing-slashes": "^2.1.17",
+    "husky": "^4.3.6",
+    "lint-staged": "^10.5.3",
     "prettier": "^1.19.1",
     "prism-react-renderer": "^1.0.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix"
   }
 }
