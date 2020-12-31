@@ -24,12 +24,8 @@ const GetCitation = ({ nodes }) => {
     return a["submission_date"] > b["submission_date"];
   });
 
-  // Return the submitters across all docs that are distinct
-  var submitters = [];
-  docs.forEach(element => {
-    submitters.push(getFormattedName(element["submitters"][0]));
-  });
-  let submitterCite = [...new Set(submitters)];
+  // Only return the earliest submitter
+  let submitterCite = getFormattedName(docs[0]["submitters"][0]);
 
   var incidentDate = docs[0]["incident_date"];
   var submissionDate = docs[0]["submission_date"];
@@ -54,17 +50,8 @@ function BibTex({ nodes }) {
     return a["submission_date"] > b["submission_date"];
   });
 
-  // Return the submitters across all docs that are distinct
-  var submitters = [];
-  docs.forEach(element => {
-    let split = element["submitters"][0].split(" ");
-    if (split.length > 1) {
-      submitters.push(`${split[split.length - 1]}, ${split.slice(0, split.length - 1).join(" ")}`);
-    } else {
-      submitters.push(element["submitters"][0]);
-    }
-  });//Only supporting the first submitter on the doc
-  let submitterCite = [...new Set(submitters)];
+  // Only return the earliest submitter
+  let submitterCite = getFormattedName(docs[0]["submitters"][0]);
 
   var incidentDate = docs[0]["incident_date"];
   var submissionDate = docs[0]["submission_date"];

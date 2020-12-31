@@ -22,6 +22,11 @@ export function getFormattedName(str) {
     return str;
   }
 
+  // Special case of organizational collaboration
+  if(str === "CSET annotators") {
+    return str;
+  }
+
   if (checkParenthetical(split[split.length - 1])) {
     const lastWord = split.pop();
     if (split.length > 1) {
@@ -31,5 +36,7 @@ export function getFormattedName(str) {
       // One word + parenthesized word, return origin
       return str;
     }
+  } else {
+    return `${split[split.length - 1]}, ${split.slice(0, split.length - 1).join(" ")}`;
   }
 }
