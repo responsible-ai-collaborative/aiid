@@ -31,7 +31,6 @@ const plugins = [
       path: `${__dirname}/content/`
     }
   },
-  plugins: [`gatsby-plugin-styled-components`],
   {
     resolve: 'gatsby-plugin-mdx',
     options: {
