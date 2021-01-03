@@ -53,6 +53,9 @@ const GetImageCarousel = ({ nodes }) => {
   const Caption = styled.h3`
     background: rgba(0, 0, 0, 0.55);
     `;
+  const Link = styled.a`
+    color: white !important;;
+    `;
   const SubCaption = styled.p`
     background: rgba(0, 0, 0, 0.55);
     `;
@@ -66,7 +69,9 @@ const GetImageCarousel = ({ nodes }) => {
             alt={value["node"]["title"]}
           />
           <Carousel.Caption>
-            <Caption>{value["node"]["title"]}</Caption>
+            <Caption>
+              <Link href={value["node"]["url"]} target="_blank">{value["node"]["title"]}</Link>
+            </Caption>
             <SubCaption>{value["node"]["source_domain"]}</SubCaption>
           </Carousel.Caption>
         </Carousel.Item>
