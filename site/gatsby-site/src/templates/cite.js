@@ -1,10 +1,16 @@
 import React, { Component, useState } from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
+import styled from "styled-components"
 
+import md5 from 'md5'
 import uuid from 'react-uuid'
 import Button from 'react-bootstrap/Button'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 import Modal from 'react-bootstrap/Modal'
+import Carousel from 'react-bootstrap/Carousel'
 
 import { Layout } from '$components';
 import { StyledHeading, StyledMainWrapper } from '../components/styles/Docs';
@@ -34,6 +40,43 @@ const GetCitation = ({ nodes }) => {
     <em>Artificial Intelligence Incident Database.</em> Partnership on AI.
   </>
   return jsx;
+}
+
+/**
+ * Get an image carousel of the report images along with their headlines.
+ *
+ * @param {nodes} The GraphQL nodes to render as a carousel.
+ * @return {jsx} The HTML to render to the page.
+ */
+const GetImageCarousel = ({ nodes }) => {
+
+  const Caption = styled.h3`
+    background: rgba(0, 0, 0, 0.55);
+    `;
+  const Link = styled.a`
+    color: white !important;;
+    `;
+  const SubCaption = styled.p`
+    background: rgba(0, 0, 0, 0.55);
+    `;
+
+  return <Carousel interval={60000}>
+      {nodes.map((value, index) => (
+        <Carousel.Item key={index}>
+          <img
+            className="d-block w-100"
+            src={"https://incidentdatabase.ai/large_media/report_banners/" + md5(value["node"]["image_url"])}
+            alt={value["node"]["title"]}
+          />
+          <Carousel.Caption>
+            <Caption>
+              <Link href={value["node"]["url"]} target="_blank">{value["node"]["title"]}</Link>
+            </Caption>
+            <SubCaption>{value["node"]["source_domain"]}</SubCaption>
+          </Carousel.Caption>
+        </Carousel.Item>
+      ))}
+  </Carousel>
 }
 
 function BibTex({ nodes }) {
@@ -202,21 +245,33 @@ export default class IncidentCite extends Component {
         </div>
         <StyledMainWrapper>
 
-          <h2>
-            Suggested citation format
-          </h2>
-          <GetCitation nodes={nodes} />
-
-          <h2>
-            Reports
-          </h2>
-          <IncidentList group={group} />
-
-          <h1>Tools</h1>
-          <Button variant="outline-primary" href={"/summaries/incidents"}>All Incidents</Button>
-          <Button variant="outline-primary" href={"/discover/index.html?incident_id=" + incident_id}>Discover</Button>
-          <BibTex nodes={nodes} />
-
+          <Container>
+            <Row>
+              <Col>
+                <h2>
+                  Suggested citation format
+                </h2>
+                <GetCitation nodes={nodes} />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <h2>
+                  Reports
+                </h2>
+                <IncidentList group={group} />
+                <GetImageCarousel nodes={nodes} />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <h1>Tools</h1>
+                <Button variant="outline-primary" href={"/summaries/incidents"}>All Incidents</Button>
+                <Button variant="outline-primary" href={"/discover/index.html?incident_id=" + incident_id}>Discover</Button>
+                <BibTex nodes={nodes} />
+              </Col>
+            </Row>
+          </Container>
         </StyledMainWrapper>
       </Layout>
     );
@@ -253,6 +308,8 @@ export const pageQuery = graphql`
             report_number
             title
             url
+            image_url
+            source_domain
           }
         }
       }
