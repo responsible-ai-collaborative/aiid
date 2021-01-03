@@ -3,6 +3,7 @@
 *~
 *.pdf
 *.log
+*__pycache__*
 
 #
 # From: https://github.com/gatsbyjs/gatsby/blob/8e98277d35b340a66310ca37219e2b4051553b1b/.gitignore
