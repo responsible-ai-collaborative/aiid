@@ -38,7 +38,7 @@ const retrievalDate = () => {
   return `${month} ${dd}, ${yyyy}`;
 }
 
-const GetCitation = ({ nodes }) => {
+const GetCitation = ({ nodes, incident_id }) => {
 
   let docs = [];
   nodes.forEach(({ node }) => docs.push(node));
@@ -50,7 +50,7 @@ const GetCitation = ({ nodes }) => {
 
   // Only return the earliest submitter
   let submitterCite = getFormattedName(docs[0]["submitters"][0]);
-  const retrievalString = `Retrieved on ${retrievalDate()} from ${window.location.host + window.location.pathname}.`;
+  const retrievalString = `Retrieved on ${retrievalDate()} from incidentdatabase.ai/cite/${incident_id}.`;
 
   var incidentDate = docs[0]["incident_date"];
   var submissionDate = docs[0]["submission_date"];
@@ -98,7 +98,7 @@ const GetImageCarousel = ({ nodes }) => {
   </Carousel>
 }
 
-function BibTex({ nodes }) {
+function BibTex({ nodes, incident_id }) {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -117,7 +117,6 @@ function BibTex({ nodes }) {
 
   var incidentDate = docs[0]["incident_date"];
   var submissionDate = docs[0]["submission_date"];
-  var incidentID = docs[0]["incident_id"];
 
   const jsx = (
     <>
@@ -126,8 +125,8 @@ function BibTex({ nodes }) {
       <br />&nbsp; &nbsp; &nbsp; &nbsp;  editor = &#123;McGregor, Sean&#125;,
       <br />&nbsp; &nbsp; &nbsp; &nbsp;  journal = &#123;AI Incident Database&#125;,
       <br />&nbsp; &nbsp; &nbsp; &nbsp;  publisher = &#123;Partnership on AI&#125;,
-      <br />&nbsp; &nbsp; &nbsp; &nbsp;  title = &#123;Incident Number {docs[0]['incident_id']}&#125;,
-      <br />&nbsp; &nbsp; &nbsp; &nbsp;  url = &#123;https://incidentdatabase.ai/cite/{incidentID}&#125;,
+      <br />&nbsp; &nbsp; &nbsp; &nbsp;  title = &#123;Incident Number {incident_id}&#125;,
+      <br />&nbsp; &nbsp; &nbsp; &nbsp;  url = &#123;https://incidentdatabase.ai/cite/{incident_id}&#125;,
       <br />&nbsp; &nbsp; &nbsp; &nbsp;  year = &#123;{incidentDate.substring(0, 4)}&#125;,
       <br />&nbsp; &nbsp; &nbsp; &nbsp;  urldate = &#123;{retrievalDate()}&#125;
       <br />&#125;
@@ -272,7 +271,7 @@ export default class IncidentCite extends Component {
                 <h2>
                   Suggested citation format
                 </h2>
-                <GetCitation nodes={nodes} />
+                <GetCitation nodes={nodes} incident_id={incident_id} />
               </Col>
             </Row>
             <Row>
@@ -289,7 +288,7 @@ export default class IncidentCite extends Component {
                 <h1>Tools</h1>
                 <Button variant="outline-primary" href={"/summaries/incidents"}>All Incidents</Button>
                 <Button variant="outline-primary" href={"/discover/index.html?incident_id=" + incident_id}>Discover</Button>
-                <BibTex nodes={nodes} />
+                <BibTex nodes={nodes} incident_id={incident_id} />
               </Col>
             </Row>
           </Container>
