@@ -11,6 +11,15 @@
   "settings": {
     "react": {
       "version": "detect"
+    },
+    "import/resolver": {
+      "alias": {
+        "map": [
+          ["@components", "./src/components"],
+          ["buble", "@philpl/buble"]
+        ],
+        "extensions": [".js", ".jsx"]
+      }
     }
   },
   "rules": {
