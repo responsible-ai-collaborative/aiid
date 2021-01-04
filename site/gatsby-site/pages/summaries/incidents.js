@@ -2,59 +2,66 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
 
-import Button from 'react-bootstrap/Button'
+import Button from 'react-bootstrap/Button';
 
-import uuid from 'react-uuid'
+import uuid from 'react-uuid';
 
-import { Layout, Link } from '$components';
-import config from '../../config';
-import { Edit, StyledHeading, StyledMainWrapper } from '../../src/components/styles/Docs';
+import { Layout, Link } from '@components';
+import { StyledHeading, StyledMainWrapper } from '../../src/components/styles/Docs';
 
-const ReportList = ({items}) => {
+const ReportList = ({ items }) => {
   return (
     <ul>
-      {items.map((value, index) => (
-        <li key={uuid()}><a href={value["node"]["url"]}>{value["node"]["title"]}</a></li>
+      {items.map(value => (
+        <li key={uuid()}>
+          <a href={value['node']['url']}>{value['node']['title']}</a>
+        </li>
       ))}
     </ul>
   );
 };
 
-const IncidentList = ({group}) => {
-  return (<>
-      {group.map((value, index) => (
+const IncidentList = ({ group }) => {
+  return (
+    <>
+      {group.map(value => (
         <div key={uuid()}>
           <h2>
-              Incident {value["edges"][0]["node"]["incident_id"]}{' '}
-              <Button variant="outline-primary" href={"/cite/" + value["edges"][0]["node"]["incident_id"]}>Citation</Button>
-              <Button variant="outline-primary" href={"/discover/index.html?incident_id=" + value["edges"][0]["node"]["incident_id"]}>Discover</Button>
+            Incident {value['edges'][0]['node']['incident_id']}{' '}
+            <Button
+              variant="outline-primary"
+              href={'/cite/' + value['edges'][0]['node']['incident_id']}
+            >
+              Citation
+            </Button>
+            <Button
+              variant="outline-primary"
+              href={'/discover/index.html?incident_id=' + value['edges'][0]['node']['incident_id']}
+            >
+              Discover
+            </Button>
           </h2>
-          <ReportList key={uuid()} items={value["edges"]} />
+          <ReportList key={uuid()} items={value['edges']} />
         </div>
       ))}
-      </>
+    </>
   );
 };
 
 export default class Incidents extends Component {
-  
   render() {
-
     const { data } = this.props;
 
     if (!data) {
       return null;
     }
     const {
-      allMongodbAiidprodIncidents: {
-        group
-      }
+      allMongodbAiidprodIncidents: { group },
     } = data;
 
     // sort by value
-    group.sort(function (a, b) {
-      return a["edges"][0]["node"]["incident_id"] -
-        b["edges"][0]["node"]["incident_id"];
+    group.sort(function(a, b) {
+      return a['edges'][0]['node']['incident_id'] - b['edges'][0]['node']['incident_id'];
     });
 
     return (
@@ -67,10 +74,8 @@ export default class Incidents extends Component {
         </div>
         <StyledMainWrapper>
           <p className="paragraph">
-            This is a simple numeric listing of all incidents
-            and their reports within the database. If you would
-            like to explore the contents of the reports, you
-            should work through the
+            This is a simple numeric listing of all incidents and their reports within the database.
+            If you would like to explore the contents of the reports, you should work through the
             <Link to="/about_apps/1-discover"> Discover app</Link>.
           </p>
           <IncidentList group={group} />
@@ -81,19 +86,22 @@ export default class Incidents extends Component {
 }
 
 export const pageQuery = graphql`
-query AllIncidentsPart {
-  allMongodbAiidprodIncidents(filter: {flag: {eq: null}}, sort: {order: ASC, fields: incident_id}) {
-    group(field: incident_id) {
-      edges {
-        node {
-          id
-          incident_id
-          report_number
-          title
-          url
+  query AllIncidentsPart {
+    allMongodbAiidprodIncidents(
+      filter: { flag: { eq: null } }
+      sort: { order: ASC, fields: incident_id }
+    ) {
+      group(field: incident_id) {
+        edges {
+          node {
+            id
+            incident_id
+            report_number
+            title
+            url
+          }
         }
       }
     }
   }
-}
 `;
