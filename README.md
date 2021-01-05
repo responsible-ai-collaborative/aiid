@@ -48,6 +48,12 @@ More details are available in the `Production System` information below. We reco
 
 Now when you modify pages in the Gatsby site, you can see the build update in the terminal and the UI updated in the browser.
 
+**Style guide:**
+
+1. `ESLint` and `Prettier` has been configured to help enforcing code styles. Configuration details can be found on `.eslintrc.json` and `.prettierrc`.
+2. [Husky](https://github.com/typicode/husky#readme) and [lint-staged](https://github.com/okonet/lint-staged) are installed and `pre-commit` hook added to check lint/prettier issues on staged files and fix them automatically before making commit.
+3. `format` and `lint` scripts can be used manually to fix style issues.
+
 **Where to find things:**
 
 The Gatsby front end manages a growing collection of web applications, including,
