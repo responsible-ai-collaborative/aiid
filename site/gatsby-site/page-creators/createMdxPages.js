@@ -1,3 +1,5 @@
+const path = require('path');
+
 const createMdxPages = (graphql, createPage) => {
   return new Promise((resolve, reject) => {
     resolve(

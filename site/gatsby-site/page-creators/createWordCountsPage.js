@@ -1,6 +1,8 @@
-const customStopWords = require('./constants/customStopWords');
+const path = require('path');
 const stopword = require('stopword');
 const stemmer = require('stemmer');
+
+const customStopWords = require('../constants/customStopWords');
 
 const createWordCountsPage = (graphql, createPage) => {
   return new Promise((resolve, reject) => {

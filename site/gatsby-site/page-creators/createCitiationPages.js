@@ -1,3 +1,5 @@
+const path = require('path');
+
 const createCitiationPages = (graphql, createPage) => {
   return new Promise((resolve, reject) => {
     resolve(
