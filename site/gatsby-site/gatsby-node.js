@@ -1,5 +1,3 @@
-const componentWithMDXScope = require('gatsby-plugin-mdx/component-with-mdx-scope');
-
 const path = require('path');
 
 const startCase = require('lodash.startcase');
@@ -90,7 +88,7 @@ exports.onCreateWebpackConfig = ({ actions }) => {
     resolve: {
       modules: [path.resolve(__dirname, 'src'), 'node_modules'],
       alias: {
-        $components: path.resolve(__dirname, 'src/components'),
+        "@components": path.resolve(__dirname, 'src/components'),
         buble: '@philpl/buble', // to reduce bundle size
       },
     },

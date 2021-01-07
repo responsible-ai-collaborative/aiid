@@ -11,12 +11,22 @@
   "settings": {
     "react": {
       "version": "detect"
+    },
+    "import/resolver": {
+      "alias": {
+        "map": [
+          ["@components", "./src/components"],
+          ["buble", "@philpl/buble"]
+        ],
+        "extensions": [".js", ".jsx"]
+      }
     }
   },
   "rules": {
     "react/prop-types": 0,
     "react/react-in-jsx-scope": "off",
     "lines-between-class-members": ["error", "always"],
+    "import/namespace": [2, { "allowComputed": true }],
     "padding-line-between-statements": [
       "error",
       { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*" },

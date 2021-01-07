@@ -1,5 +1,4 @@
-import React from 'react';
-import * as Realm from "realm-web";
+import * as Realm from 'realm-web';
 import config from '../../config';
 
 // A MongoDB interface component managing the privileged user state.
@@ -13,42 +12,45 @@ import config from '../../config';
 //
 // https://docs.mongodb.com/realm/web/mongodb/
 
-const REALM_APP_ID = config["realm"]["review_db"]["realm_app_id"];
+const REALM_APP_ID = config['realm']['review_db']['realm_app_id'];
+
 export const realmApp = new Realm.App({
   id: REALM_APP_ID,
-  timeout: 10000 // timeout in number of milliseconds
+  timeout: 10000, // timeout in number of milliseconds
 });
 
-const isBrowser = () => typeof window !== "undefined";
+const isBrowser = () => typeof window !== 'undefined';
 
 export const getUserAPIKey = () =>
-  isBrowser() && window.localStorage.getItem("mongoUserKey")
-    ? window.localStorage.getItem("mongoUserKey")
-    : "";
+  isBrowser() && window.localStorage.getItem('mongoUserKey')
+    ? window.localStorage.getItem('mongoUserKey')
+    : '';
 
-export const setUserAPIKey = apiKey =>
-    window.localStorage.setItem("mongoUserKey", apiKey);
+export const setUserAPIKey = (apiKey) => window.localStorage.setItem('mongoUserKey', apiKey);
 
 export const isLoggedIn = () => {
   const user = getUser();
-  return !!user.mongoUserKey;
-}
-export const logout = () =>
-  window.localStorage.removeItem("mongoUserKey");
 
-export async function getUser(callback=function(){}) {
+  return !!user.mongoUserKey;
+};
+export const logout = () => window.localStorage.removeItem('mongoUserKey');
+
+export async function getUser(callback = function () {}) {
   const apiKey = getUserAPIKey();
+
   let user, type;
-  if(apiKey) {
+
+  if (apiKey) {
     const credentials = Realm.Credentials.apiKey(apiKey);
+
     user = await realmApp.logIn(credentials);
-    type = "token";
+    type = 'token';
     console.log(`Logged in token API user: ${user}`);
   } else {
     user = await realmApp.logIn(Realm.Credentials.anonymous());
-    type = "anonymous"
+    type = 'anonymous';
     console.log(`Logged in anonymous user: ${user}`);
   }
   callback();
-  return {"user": user, "type": type};
+  return { user: user, type: type };
 }

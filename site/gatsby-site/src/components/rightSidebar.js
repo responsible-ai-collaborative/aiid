@@ -1,7 +1,6 @@
 import React from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 
-// import Link from './link';
 import config from '../../config';
 import { Sidebar, ListItem } from './styles/Sidebar';
 
@@ -22,12 +21,10 @@ const SidebarLayout = ({ location }) => (
       }
     `}
     render={({ allMdx }) => {
-      let navItems = [];
-
       let finalNavItems;
 
       if (allMdx.edges !== undefined && allMdx.edges.length > 0) {
-        const navItems = allMdx.edges.map((item, index) => {
+        allMdx.edges.map((item) => {
           let innerItems;
 
           if (item !== undefined) {
