@@ -57,7 +57,7 @@ const GetCitation = ({ nodes, incident_id }) => {
   nodes.forEach(({ node }) => docs.push(node));
 
   // Sort the docs according to their submit date
-  docs.sort(function(a, b) {
+  docs.sort(function (a, b) {
     return a['submission_date'] > b['submission_date'];
   });
 
@@ -135,7 +135,7 @@ function BibTex({ nodes, incident_id }) {
   nodes.forEach(({ node }) => docs.push(node));
 
   // Sort the docs according to their submit date
-  docs.sort(function(a, b) {
+  docs.sort(function (a, b) {
     return a['submission_date'] > b['submission_date'];
   });
 
@@ -191,7 +191,7 @@ function BibTex({ nodes, incident_id }) {
 const ReportList = ({ items }) => {
   return (
     <ul>
-      {items.map(value => (
+      {items.map((value) => (
         <li key={uuid()}>
           {value['node']['date_published']}{' '}
           <a href={value['node']['url']}>{value['node']['title']}</a>
@@ -204,7 +204,7 @@ const ReportList = ({ items }) => {
 const IncidentList = ({ group }) => {
   return (
     <>
-      {group.map(value => (
+      {group.map((value) => (
         <div key={uuid()}>
           <ReportList key={uuid()} items={value['edges']} />
         </div>

@@ -4,7 +4,7 @@ import ClosedSvg from '../images/closed';
 import config from '../../../config';
 import Link from '../link';
 
-const TreeNode = ({ className = '', setCollapsed, collapsed, url, title, items, ...rest }) => {
+const TreeNode = ({ className = '', setCollapsed, collapsed, url, title, items }) => {
   const isCollapsed = collapsed[url];
 
   const collapse = () => {
@@ -18,13 +18,21 @@ const TreeNode = ({ className = '', setCollapsed, collapsed, url, title, items, 
   if (typeof document != 'undefined') {
     location = document.location;
   }
-  const isSummary = location && (location.pathname.indexOf("/summaries/") === 0);
-  const isSummaryNav = url === "/summaries";
-  const isApp = location && (location.pathname.indexOf("/apps/") === 0);
-  const isAppNav = url === "/apps";
+  const isSummary = location && location.pathname.indexOf('/summaries/') === 0;
+
+  const isSummaryNav = url === '/summaries';
+
+  const isApp = location && location.pathname.indexOf('/apps/') === 0;
+
+  const isAppNav = url === '/apps';
+
   const makeActive = (isSummary && isSummaryNav) || (isApp && isAppNav);
+
   const active =
-    location && (location.pathname === url || location.pathname === config.gatsby.pathPrefix + url || makeActive);
+    location &&
+    (location.pathname === url ||
+      location.pathname === config.gatsby.pathPrefix + url ||
+      makeActive);
 
   const calculatedClassName = `${className} item ${active ? 'active' : ''}`;
 

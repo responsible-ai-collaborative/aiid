@@ -279,7 +279,7 @@ export default class SubmitForm extends Component {
     });
   }
 
-  handleOnDrop = data => {
+  handleOnDrop = (data) => {
     console.log('---------------------------');
     console.log(data);
     this.setState({ csvData: data });
