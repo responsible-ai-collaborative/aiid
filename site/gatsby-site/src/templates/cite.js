@@ -18,8 +18,6 @@ import { StyledHeading, StyledMainWrapper } from '../components/styles/Docs';
 import config from '../../config';
 import { getFormattedName } from '../utils/typography';
 
-// const forcedNavOrder = config.sidebar.forcedNavOrder;
-
 /**
  * Get the month name, day, and year that the citation is
  * being referenced.
@@ -70,7 +68,6 @@ const GetCitation = ({ nodes, incident_id }) => {
 
   var incidentDate = docs[0]['incident_date'];
 
-  // var submissionDate = docs[0]["submission_date"];
   const jsx = (
     <>
       {submitterCite}. ({incidentDate}) Incident Number {docs[0]['incident_id']}. in McGregor, S.
@@ -146,7 +143,6 @@ function BibTex({ nodes, incident_id }) {
   let submitterCite = getFormattedName(docs[0]['submitters'][0]);
 
   var incidentDate = docs[0]['incident_date'];
-  // var submissionDate = docs[0]["submission_date"];
 
   const jsx = (
     <>
@@ -225,47 +221,8 @@ export default class IncidentCite extends Component {
       return null;
     }
     const {
-      // allMdx,
       allMongodbAiidprodIncidents: { group },
     } = data;
-
-    // const navItems = allMdx.edges
-    //   .map(({ node }) => node.fields.slug)
-    //   .filter(slug => slug !== '/')
-    //   .sort()
-    //   .reduce(
-    //     (acc, cur) => {
-    //       if (forcedNavOrder.find(url => url === cur)) {
-    //         return { ...acc, [cur]: [cur] };
-    //       }
-
-    //       let prefix = cur.split('/')[1];
-
-    //       if (config.gatsby && config.gatsby.trailingSlash) {
-    //         prefix = prefix + '/';
-    //       }
-
-    //       if (prefix && forcedNavOrder.find(url => url === `/${prefix}`)) {
-    //         return { ...acc, [`/${prefix}`]: [...acc[`/${prefix}`], cur] };
-    //       } else {
-    //         return { ...acc, items: [...acc.items, cur] };
-    //       }
-    //     },
-    //     { items: [] }
-    //   );
-
-    // const nav = forcedNavOrder
-    //   .reduce((acc, cur) => {
-    //     return acc.concat(navItems[cur]);
-    //   }, [])
-    //   .concat(navItems.items)
-    //   .map(slug => {
-    //     if (slug) {
-    //       const { node } = allMdx.edges.find(({ node }) => node.fields.slug === slug);
-
-    //       return { title: node.fields.title, url: node.fields.slug };
-    //     }
-    //   });
 
     // meta tags
     const reports = group[0]['edges'];

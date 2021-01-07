@@ -79,8 +79,6 @@ const ListedGroup = ({ item, keysToRender }) => {
 };
 
 const ReportList = ({ items, admin }) => {
-  // const uid = "#???"
-
   const addReport = id => {
     const bs = new BSON.ObjectId(id['mongodb_id']);
 
