@@ -3,84 +3,19 @@ const path = require('path');
 const startCase = require('lodash.startcase');
 
 const config = require('./config');
+const createMdxPages = require('./page-creators/createMdxPages');
+const createCitiationPages = require('./page-creators/createCitiationPages');
+const createWordCountsPages = require('./page-creators/createWordCountsPage');
 
 exports.createPages = ({ graphql, actions }) => {
 
   const { createPage } = actions;
 
-  const promiseMdx = new Promise((resolve, reject) => {
-    resolve(
-      graphql(
-        `
-          {
-            allMdx {
-              edges {
-                node {
-                  fields {
-                    id
-                  }
-                  tableOfContents
-                  fields {
-                    slug
-                  }
-                }
-              }
-            }
-          }
-        `
-      ).then(result => {
-        if (result.errors) {
-          console.log(result.errors); // eslint-disable-line no-console
-          reject(result.errors);
-        }
-
-        // Create blog posts pages.
-        result.data.allMdx.edges.forEach(({ node }) => {
-          createPage({
-            path: node.fields.slug ? node.fields.slug : '/',
-            component: path.resolve('./src/templates/docs.js'),
-            context: {
-              id: node.fields.id,
-            },
-          });
-        });
-      })
-    );
-  });
-
-  const citations = new Promise((resolve, reject) => {
-    resolve(
-      graphql(
-        `query IncidentIDs {
-           allMongodbAiidprodIncidents {
-             distinct(field: incident_id)
-               nodes {
-                 incident_id
-               }
-            }
-         }
-        `
-      ).then(result => {
-        if (result.errors) {
-          console.log(result.errors); // eslint-disable-line no-console
-          reject(result.errors);
-        }
-
-        // Create citation pages
-        result.data.allMongodbAiidprodIncidents.distinct.forEach((incident_id) => {
-          createPage({
-            path: '/cite/' + incident_id,
-            component: path.resolve('./src/templates/cite.js'),
-            context: {
-              incident_id: parseInt(incident_id),
-            },
-          });
-        });
-      })
-    );
-  });
-
-  return Promise.all([promiseMdx, citations])
+  return Promise.all([
+    createMdxPages(graphql, createPage),
+    createCitiationPages(graphql, createPage),
+    createWordCountsPages(graphql, createPage),
+  ])
 };
 
 exports.onCreateWebpackConfig = ({ actions }) => {
@@ -142,8 +77,8 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
 };
 
 // https://github.com/gatsbyjs/gatsby/issues/17761#issuecomment-533816520
-const express= require('express');
+const express = require('express');
 
-exports.onCreateDevServer=({app})=>{
-    app.use(express.static('public'))
+exports.onCreateDevServer = ({ app }) => {
+  app.use(express.static('public'))
 }
