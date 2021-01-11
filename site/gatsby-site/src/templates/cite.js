@@ -274,13 +274,14 @@ export default class IncidentCite extends Component {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className="mt-4 mb-5">
                 <h1>Tools</h1>
-                <Button variant="outline-primary" href={'/summaries/incidents'}>
+                <Button variant="outline-primary" className="mr-2" href={'/summaries/incidents'}>
                   All Incidents
                 </Button>
                 <Button
                   variant="outline-primary"
+                  className="mr-2"
                   href={'/discover/index.html?incident_id=' + incident_id}
                 >
                   Discover
