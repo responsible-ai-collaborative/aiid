@@ -14,7 +14,7 @@ import IncidentList from '../components/IncidentList';
 import ImageCarousel from '../components/ImageCarousel';
 import BibTex from '../components/BibTex';
 
-import { getCanonicalUrl } from '../utils/getCanonicalUrlUrl';
+import { getCanonicalUrl } from '../utils/getCanonicalUrl';
 export default class IncidentCite extends Component {
   render() {
     const { data } = this.props;
