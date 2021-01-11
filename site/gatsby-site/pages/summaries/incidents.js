@@ -4,17 +4,15 @@ import { graphql } from 'gatsby';
 
 import Button from 'react-bootstrap/Button';
 
-import uuid from 'react-uuid';
-
 import { Layout, Link } from '@components';
 import { StyledHeading, StyledMainWrapper } from '../../src/components/styles/Docs';
 
 const ReportList = ({ items }) => {
   return (
     <ul>
-      {items.map(value => (
-        <li key={uuid()}>
-          <a href={value['node']['url']}>{value['node']['title']}</a>
+      {items.map(({ node: { id, url, title } }) => (
+        <li key={id}>
+          <a href={url}>{title}</a>
         </li>
       ))}
     </ul>
@@ -24,8 +22,8 @@ const ReportList = ({ items }) => {
 const IncidentList = ({ group }) => {
   return (
     <>
-      {group.map(value => (
-        <div key={uuid()}>
+      {group.map((value, idx) => (
+        <div key={`incident-${idx}`}>
           <h2>
             Incident {value['edges'][0]['node']['incident_id']}{' '}
             <Button
@@ -41,7 +39,7 @@ const IncidentList = ({ group }) => {
               Discover
             </Button>
           </h2>
-          <ReportList key={uuid()} items={value['edges']} />
+          <ReportList items={value['edges']} />
         </div>
       ))}
     </>
@@ -60,7 +58,7 @@ export default class Incidents extends Component {
     } = data;
 
     // sort by value
-    group.sort(function(a, b) {
+    group.sort(function (a, b) {
       return a['edges'][0]['node']['incident_id'] - b['edges'][0]['node']['incident_id'];
     });
 

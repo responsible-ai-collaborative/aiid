@@ -8,25 +8,23 @@ import Tab from 'react-bootstrap/Tab';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-import uuid from 'react-uuid';
-
 import { Layout } from '@components';
 import { StyledHeading, StyledMainWrapper } from '../../src/components/styles/Docs';
 
-const ReportList = ({ items }) => {
-  const uid = '#' + items['node']['report_number'];
+const ReportList = ({ report }) => {
+  const uid = '#' + report['report_number'];
 
   const tabbedRender = ['description', 'text'];
 
-  let untabbedRender = Object.keys(items['node']);
+  let untabbedRender = Object.keys(report);
 
-  tabbedRender.forEach(element => untabbedRender.splice(untabbedRender.indexOf(element), 1));
+  tabbedRender.forEach((element) => untabbedRender.splice(untabbedRender.indexOf(element), 1));
   return (
     <>
       <ListGroup>
-        {untabbedRender.map(key => (
+        {untabbedRender.map((key) => (
           <ListGroup.Item key={uid + key}>
-            {key}: {items['node'][key]}
+            {key}: {report[key]}
           </ListGroup.Item>
         ))}
       </ListGroup>
@@ -34,7 +32,7 @@ const ReportList = ({ items }) => {
         <Row>
           <Col xs={12} sm={6} lg={3}>
             <ListGroup>
-              {tabbedRender.map(key => (
+              {tabbedRender.map((key) => (
                 <ListGroup.Item action eventKey={uid + key} key={uid + key}>
                   {key}
                 </ListGroup.Item>
@@ -43,9 +41,9 @@ const ReportList = ({ items }) => {
           </Col>
           <Col xs={12} sm={6} lg={9}>
             <Tab.Content>
-              {tabbedRender.map(key => (
+              {tabbedRender.map((key) => (
                 <Tab.Pane eventKey={uid + key} key={uid + key}>
-                  {items['node'][key]}
+                  {report[key]}
                 </Tab.Pane>
               ))}
             </Tab.Content>
@@ -59,11 +57,11 @@ const ReportList = ({ items }) => {
 const IncidentList = ({ group }) => {
   return (
     <>
-      {group.map(value => (
-        <div key={uuid()}>
+      {group.map((value, idx) => (
+        <div key={`incident-${idx}`}>
           <h2>Incident {value['edges'][0]['node']['incident_id']}</h2>
-          {value['edges'].map(innerValue => (
-            <ReportList key={uuid()} items={innerValue} />
+          {value['edges'].map(({ node }) => (
+            <ReportList key={node.id} report={node} />
           ))}
         </div>
       ))}
@@ -83,7 +81,7 @@ export default class FlaggedIncidents extends Component {
     } = data;
 
     // sort by value
-    group.sort(function(a, b) {
+    group.sort(function (a, b) {
       return a['edges'][0]['node']['incident_id'] - b['edges'][0]['node']['incident_id'];
     });
 

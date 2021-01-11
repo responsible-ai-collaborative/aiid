@@ -5,8 +5,6 @@ import { graphql } from 'gatsby';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 
-import uuid from 'react-uuid';
-
 import { Layout, Link } from '@components';
 import { StyledHeading, StyledMainWrapper } from '../../src/components/styles/Docs';
 
@@ -84,53 +82,39 @@ const ValidateReport = ({ node }) => {
 
   const discoverURL = '/discover/index.html?incident_id=' + node['incident_id'];
 
-  Object.keys(jsonSchema['properties']).forEach(key => {
+  Object.keys(jsonSchema['properties']).forEach((key) => {
+    let varient = 'danger';
+
+    let keyString = key;
+
     if (!Object.keys(node).includes(key)) {
-      ret.push(
-        <ListGroup.Item key={uuid()} variant="danger">
-          <a href={discoverURL}>
-            {key + ' (not in schema): '}
-            {node[key]}
-          </a>
-        </ListGroup.Item>
-      );
+      keyString += ' (not in schema): ';
     } else if (
       jsonSchema['properties'][key]['bsonType'] == 'string' &&
       typeof node[key] !== 'string'
     ) {
-      ret.push(
-        <ListGroup.Item key={uuid()} variant="dark">
-          <a href={discoverURL}>
-            {key + ' (is not string): '}
-            {node[key]}
-          </a>
-        </ListGroup.Item>
-      );
+      varient = 'dark';
+      keyString += ' (is not string): ';
     } else if (
       jsonSchema['properties'][key]['bsonType'] == 'int' &&
       typeof node[key] !== 'number'
     ) {
-      ret.push(
-        <ListGroup.Item key={uuid()} variant="danger">
-          <a href={discoverURL}>
-            {key + ' (is not number): '}
-            {node[key]}
-          </a>
-        </ListGroup.Item>
-      );
+      keyString += ' (is not number): ';
     } else if (
       jsonSchema['properties'][key]['bsonType'] == 'array' &&
       (typeof node[key] !== 'object' || node[key].length < 1)
     ) {
-      ret.push(
-        <ListGroup.Item key={uuid()} variant="danger">
-          <a href={discoverURL}>
-            {key + ' (is empty or not array): '}
-            {node[key]}
-          </a>
-        </ListGroup.Item>
-      );
+      keyString += ' (is empty or not array): ';
     }
+
+    ret.push(
+      <ListGroup.Item key={key} variant={varient}>
+        <a href={discoverURL}>
+          {keyString}
+          {node[key]}
+        </a>
+      </ListGroup.Item>
+    );
   });
   return <>{ret}</>;
 };
@@ -150,9 +134,7 @@ const ReportList = ({ items }) => {
 
   if (minPublishDate < incidentDate) {
     dateIssue = (
-      <ListGroup.Item key={uuid()} variant="danger">
-        Publication dates precede the incident date
-      </ListGroup.Item>
+      <ListGroup.Item variant="danger">Publication dates precede the incident date</ListGroup.Item>
     );
   }
   const hasIncidentDateIssue = items.reduce(
@@ -167,17 +149,15 @@ const ReportList = ({ items }) => {
 
   if (hasIncidentDateIssue) {
     incidentDateIssue = (
-      <ListGroup.Item key={uuid()} variant="danger">
-        Incident Dates are not consistent
-      </ListGroup.Item>
+      <ListGroup.Item variant="danger">Incident Dates are not consistent</ListGroup.Item>
     );
   }
   return (
     <ListGroup>
       {dateIssue}
       {incidentDateIssue}
-      {items.map(value => (
-        <ValidateReport key={uuid()} node={value['node']} />
+      {items.map(({ node }) => (
+        <ValidateReport key={node.id} node={node} />
       ))}
     </ListGroup>
   );
@@ -186,8 +166,8 @@ const ReportList = ({ items }) => {
 const IncidentList = ({ group }) => {
   return (
     <>
-      {group.map(value => (
-        <div key={uuid()}>
+      {group.map((value, idx) => (
+        <div key={`incident-${idx}`}>
           <h2>
             Incident {value['edges'][0]['node']['incident_id']}{' '}
             <Button
@@ -197,7 +177,7 @@ const IncidentList = ({ group }) => {
               Discover
             </Button>
           </h2>
-          <ReportList key={uuid()} items={value['edges']} />
+          <ReportList items={value['edges']} />
         </div>
       ))}
     </>
@@ -216,7 +196,7 @@ export default class ValidateDB extends Component {
     } = data;
 
     // sort by value
-    group.sort(function(a, b) {
+    group.sort(function (a, b) {
       return a['edges'][0]['node']['incident_id'] - b['edges'][0]['node']['incident_id'];
     });
 
@@ -250,6 +230,7 @@ export const pageQuery = graphql`
       group(field: incident_id) {
         edges {
           node {
+            id
             authors
             source_domain
             submitters

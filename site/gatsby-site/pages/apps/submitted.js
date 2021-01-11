@@ -14,8 +14,6 @@ import Badge from 'react-bootstrap/Badge';
 
 import BSON from 'bson';
 
-import uuid from 'react-uuid';
-
 import { promoteReport, deleteSubmittedDocument } from '../../src/mongodb/api';
 import { getUser } from '../../src/mongodb/authenticate';
 
@@ -31,7 +29,7 @@ const TabGroup = ({ item, keysToRender }) => {
       <Row>
         <Col xs={12} sm={12} lg={12}>
           <ListGroup horizontal>
-            {keysToRender.map(key => (
+            {keysToRender.map((key) => (
               <ListGroup.Item action eventKey={uid + key} key={uid + key} variant="light">
                 {key}
               </ListGroup.Item>
@@ -42,7 +40,7 @@ const TabGroup = ({ item, keysToRender }) => {
       <Row>
         <Col xs={12} sm={12} lg={12}>
           <Tab.Content>
-            {keysToRender.map(key => (
+            {keysToRender.map((key) => (
               <Tab.Pane key={'a' + uid + key} eventKey={uid + key}>
                 <Card.Text>
                   {item[key].split('\n').map((item, key) => {
@@ -68,7 +66,7 @@ const ListedGroup = ({ item, keysToRender }) => {
 
   return (
     <ListGroup>
-      {keysToRender.map(key => (
+      {keysToRender.map((key) => (
         <ListGroup.Item key={uid + key}>
           <span style={{ color: '#1cd3c6' }}>{key}</span>:{' '}
           {typeof item[key] == 'object' ? item[key].join(', ') : item[key]}
@@ -78,14 +76,14 @@ const ListedGroup = ({ item, keysToRender }) => {
   );
 };
 
-const ReportList = ({ items, admin }) => {
-  const addReport = id => {
+const ReportList = ({ report, admin }) => {
+  const addReport = (id) => {
     const bs = new BSON.ObjectId(id['mongodb_id']);
 
     promoteReport({ _id: bs }, console.log);
   };
 
-  const rejectReport = id => {
+  const rejectReport = (id) => {
     const bs = new BSON.ObjectId(id['mongodb_id']);
 
     deleteSubmittedDocument({ _id: bs }, console.log);
@@ -108,8 +106,6 @@ const ReportList = ({ items, admin }) => {
   const longRender = ['description', 'text'];
 
   const otherDetails = ['id', 'language', 'mongodb_id'];
-
-  const report = items['node'];
 
   const isNewIncident = report['incident_id'] === 0;
 
@@ -171,9 +167,9 @@ const ReportList = ({ items, admin }) => {
 const IncidentList = ({ edges, admin }) => {
   return (
     <>
-      {edges.map(value => (
-        <div key={uuid()}>
-          <ReportList key={uuid()} items={value} admin={admin} />
+      {edges.map(({ node }) => (
+        <div key={node.id}>
+          <ReportList report={node} admin={admin} />
         </div>
       ))}
     </>
@@ -183,9 +179,9 @@ const IncidentList = ({ edges, admin }) => {
 const QuickList = ({ edges }) => {
   return (
     <ListGroup>
-      {edges.map((key, idx) => (
-        <ListGroup.Item key={uuid()}>
-          <a href={edges[idx]['node']['url']}>{edges[idx]['node']['url']}</a>
+      {edges.map(({ node }) => (
+        <ListGroup.Item key={node.id}>
+          <a href={node.url}>{node.url}</a>
         </ListGroup.Item>
       ))}
     </ListGroup>
@@ -201,7 +197,7 @@ export default class SubmittedIncidents extends Component {
   componentDidMount() {
     const that = this;
 
-    getUser().then(function(user) {
+    getUser().then(function (user) {
       that.setState({ admin: user.type == 'token' });
     });
   }
@@ -219,10 +215,10 @@ export default class SubmittedIncidents extends Component {
     const quickSubmissions = allMongodbAiidprodQuickadd['edges'];
 
     // sort by value
-    fullSubmissions.sort(function(a, b) {
+    fullSubmissions.sort(function (a, b) {
       return a['node']['incident_date'] - b['node']['incident_date'];
     });
-    quickSubmissions.sort(function(a, b) {
+    quickSubmissions.sort(function (a, b) {
       return a['node']['date_submitted'] - b['node']['date_submitted'];
     });
 
@@ -284,6 +280,7 @@ export const pageQuery = graphql`
     allMongodbAiidprodQuickadd {
       edges {
         node {
+          id
           date_submitted
           url
           source_domain
