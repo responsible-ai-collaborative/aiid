@@ -1,6 +1,5 @@
 import React from 'react';
 import Helmet from 'react-helmet';
-import uuid from 'react-uuid';
 import ReactWordcloud from 'react-wordcloud';
 
 import Container from 'react-bootstrap/Container';
@@ -10,14 +9,13 @@ import Row from 'react-bootstrap/Row';
 import { Layout, Link } from '@components';
 import { StyledHeading, StyledMainWrapper } from '../components/styles/Docs';
 
-
 const wordCloudSize = [350, 350];
 
 const Wordlist = ({ content }) => {
   return (
     <>
-      {content.map(value => (
-        <li key={uuid()}>
+      {content.map((value) => (
+        <li key={`word-${value[0]}`}>
           {value[0]}: {value[1]}
         </li>
       ))}
@@ -39,7 +37,7 @@ const WordCloudCell = ({ wordCountsSorted, wordCloudOptions, wordCloudSize, word
 };
 
 const WordCounts = ({ pageContext, ...props }) => {
-  const { wordClouds, wordCountsSorted, wordsPerCloud } = pageContext
+  const { wordClouds, wordCountsSorted, wordsPerCloud } = pageContext;
 
   if (!wordClouds || !wordCountsSorted) {
     return null;
@@ -65,8 +63,8 @@ const WordCounts = ({ pageContext, ...props }) => {
           displayed rather than the conjugations found within the text. Words with fewer than 10
           appearances and fewer than 3 letters are not included. If you would like to explore the
           contents of the reports, you should work through the
-            <Link to="/about_apps/1-discover"> Discover app</Link>.
-          </p>
+          <Link to="/about_apps/1-discover"> Discover app</Link>.
+        </p>
         <Container>
           <ul>
             {wordClouds.map((wordCloud, idx) => (
@@ -83,6 +81,6 @@ const WordCounts = ({ pageContext, ...props }) => {
       </StyledMainWrapper>
     </Layout>
   );
-}
+};
 
 export default WordCounts;

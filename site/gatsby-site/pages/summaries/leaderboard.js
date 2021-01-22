@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
 
-import uuid from 'react-uuid';
-
 import { Layout, Link } from '@components';
 import { StyledHeading, StyledMainWrapper } from '../../src/components/styles/Docs';
 
@@ -12,8 +10,8 @@ const Leaderboard = ({ title, content }) => {
     <>
       <h2>{title}</h2>
       <ul>
-        {content.map(value => (
-          <li key={uuid()}>
+        {content.map((value) => (
+          <li key={`${title}-${value[0]}`}>
             {value[0]}: {value[1]}
           </li>
         ))}
@@ -39,20 +37,20 @@ export default class Authors extends Component {
 
     let leaderboardDomains = {};
 
-    nodes.forEach(element => {
+    nodes.forEach((element) => {
       if (element['source_domain'] in leaderboardDomains) {
         leaderboardDomains[element['source_domain']] += 1;
       } else {
         leaderboardDomains[element['source_domain']] = 1;
       }
-      element['authors'].forEach(author => {
+      element['authors'].forEach((author) => {
         if (author in leaderboardAuthors) {
           leaderboardAuthors[author] += 1;
         } else {
           leaderboardAuthors[author] = 1;
         }
       });
-      element['submitters'].forEach(submitter => {
+      element['submitters'].forEach((submitter) => {
         if (submitter in leaderboardSubmitters) {
           leaderboardSubmitters[submitter] += 1;
         } else {
@@ -75,13 +73,13 @@ export default class Authors extends Component {
     for (var domain in leaderboardDomains) {
       leaderboardDomainsSorted.push([domain, leaderboardDomains[domain]]);
     }
-    leaderboardSubmittersSorted.sort(function(a, b) {
+    leaderboardSubmittersSorted.sort(function (a, b) {
       return b[1] - a[1];
     });
-    leaderboardAuthorsSorted.sort(function(a, b) {
+    leaderboardAuthorsSorted.sort(function (a, b) {
       return b[1] - a[1];
     });
-    leaderboardDomainsSorted.sort(function(a, b) {
+    leaderboardDomainsSorted.sort(function (a, b) {
       return b[1] - a[1];
     });
 
@@ -112,6 +110,7 @@ export const pageQuery = graphql`
   query LeaderboardAuthors {
     allMongodbAiidprodIncidents {
       nodes {
+        id
         authors
         source_domain
         submitters
