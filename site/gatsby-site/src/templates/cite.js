@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
 
@@ -13,50 +13,58 @@ import Citation from '../components/Citation';
 import IncidentList from '../components/IncidentList';
 import ImageCarousel from '../components/ImageCarousel';
 import BibTex from '../components/BibTex';
+import Link from '../components/link';
 
 import { getCanonicalUrl } from '../utils/getCanonicalUrl';
-export default class IncidentCite extends Component {
-  render() {
-    const { data } = this.props;
 
-    if (!data) {
-      return null;
-    }
-    const {
-      allMongodbAiidprodIncidents: { group },
-    } = data;
+const IncidentCite = ({ data, ...props }) => {
+  if (!data) {
+    return null;
+  }
 
-    // meta tags
-    const reports = group[0]['edges'];
+  const {
+    allMongodbAiidprodIncidents: { group },
+    allMongodbAiidprodDuplicates: { distinct },
+  } = data;
 
-    const incident_id = reports[0]['node']['incident_id'];
+  // meta tags
+  const reports = group[0]['edges'];
 
-    const metaTitle = 'Incident ' + incident_id;
+  const incident_id = reports[0]['node']['incident_id'];
 
-    const metaDescription = 'Citation record for Incident ' + incident_id;
+  const metaTitle = 'Incident ' + incident_id;
 
-    const canonicalUrl = getCanonicalUrl(incident_id);
+  const metaDescription = 'Citation record for Incident ' + incident_id;
 
-    const nodes = group[0]['edges'];
+  const canonicalUrl = getCanonicalUrl(incident_id);
 
-    return (
-      <Layout {...this.props}>
-        <Helmet>
-          {metaTitle ? <title>{metaTitle}</title> : null}
-          {metaTitle ? <meta name="title" content={metaTitle} /> : null}
-          {metaDescription ? <meta name="description" content={metaDescription} /> : null}
-          {metaTitle ? <meta property="og:title" content={metaTitle} /> : null}
-          {metaDescription ? <meta property="og:description" content={metaDescription} /> : null}
-          {metaTitle ? <meta property="twitter:title" content={metaTitle} /> : null}
-          {metaDescription ? (
-            <meta property="twitter:description" content={metaDescription} />
-          ) : null}
-          <link rel="canonical" href={canonicalUrl} />
-        </Helmet>
-        <div className={'titleWrapper'}>
-          <StyledHeading>{metaDescription}</StyledHeading>
-        </div>
-        <StyledMainWrapper>
+  const nodes = group[0]['edges'];
+
+  return (
+    <Layout {...props}>
+      <Helmet>
+        {metaTitle ? <title>{metaTitle}</title> : null}
+        {metaTitle ? <meta name="title" content={metaTitle} /> : null}
+        {metaDescription ? <meta name="description" content={metaDescription} /> : null}
+        {metaTitle ? <meta property="og:title" content={metaTitle} /> : null}
+        {metaDescription ? <meta property="og:description" content={metaDescription} /> : null}
+        {metaTitle ? <meta property="twitter:title" content={metaTitle} /> : null}
+        {metaDescription ? <meta property="twitter:description" content={metaDescription} /> : null}
+        <link rel="canonical" href={canonicalUrl} />
+      </Helmet>
+      <div className={'titleWrapper'}>
+        <StyledHeading>{metaDescription}</StyledHeading>
+      </div>
+      <StyledMainWrapper>
+        {distinct.length > 0 && (
+          <Container>
+            This incident is a duplicate of Incident{' '}
+            <Link to={`/cite/${distinct[0]}`}>{distinct[0]}</Link>. All new reports and citations
+            should be directed to incident {distinct[0]}. The reports previously found on this page
+            have been migrated to the previously existing incident.
+          </Container>
+        )}
+        {distinct.length === 0 && (
           <Container>
             <Row>
               <Col>
@@ -88,11 +96,13 @@ export default class IncidentCite extends Component {
               </Col>
             </Row>
           </Container>
-        </StyledMainWrapper>
-      </Layout>
-    );
-  }
-}
+        )}
+      </StyledMainWrapper>
+    </Layout>
+  );
+};
+
+export default IncidentCite;
 
 export const pageQuery = graphql`
   query($incident_id: Int!) {
@@ -129,6 +139,9 @@ export const pageQuery = graphql`
           }
         }
       }
+    }
+    allMongodbAiidprodDuplicates(filter: { duplicate_incident_number: { eq: $incident_id } }) {
+      distinct(field: true_incident_number)
     }
   }
 `;
