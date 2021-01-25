@@ -30,3 +30,6 @@ export const retrievalDate = () => {
 
   return `${month} ${dd}, ${yyyy}`;
 };
+
+// RegEx for date validation
+export const dateRegExp = /^(\+?\d{4})?\s?-?\s?(\(?\d{2}\)?)\s?-?\s?(\(?\d{2}\)?)\s?-?\s?(\?)?$/;
