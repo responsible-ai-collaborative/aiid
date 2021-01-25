@@ -3,7 +3,7 @@ import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 
-import { Layout } from '@components';
+import { Layout } from 'components';
 import NextPrevious from '../components/NextPrevious';
 import config from '../../config';
 import { StyledHeading, StyledMainWrapper } from '../components/styles/Docs';

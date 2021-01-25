@@ -6,7 +6,7 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
-import { Layout, Link } from '@components';
+import { Layout, Link } from 'components';
 import { StyledHeading, StyledMainWrapper } from '../components/styles/Docs';
 
 const wordCloudSize = [350, 350];
