@@ -1,5 +1,7 @@
 const path = require('path');
+
 const stopword = require('stopword');
+
 const stemmer = require('stemmer');
 
 const customStopWords = require('../constants/customStopWords');
@@ -8,24 +10,25 @@ const createWordCountsPage = (graphql, createPage) => {
   return new Promise((resolve, reject) => {
     resolve(
       graphql(
-        `query WordCounts {
-          allMongodbAiidprodIncidents {
-            nodes {
-              text
+        `
+          query WordCounts {
+            allMongodbAiidprodIncidents {
+              nodes {
+                text
+              }
             }
           }
-        }`
-      ).then(result => {
+        `
+      ).then((result) => {
         if (result.errors) {
           console.log(result.errors); // eslint-disable-line no-console
           reject(result.errors);
         }
 
-
         // Create wordcounts page
         const wordCounts = {};
 
-        result.data.allMongodbAiidprodIncidents.nodes.forEach(element => {
+        result.data.allMongodbAiidprodIncidents.nodes.forEach((element) => {
           if (element['text']) {
             const words = stopword.removeStopwords(element['text'].split(' '), customStopWords);
 
@@ -44,7 +47,8 @@ const createWordCountsPage = (graphql, createPage) => {
         const wordCountsSorted = [];
 
         for (let word in wordCounts) {
-          if (wordCounts[word] > 99 && word.length > 2) wordCountsSorted.push([word, wordCounts[word]]);
+          if (wordCounts[word] > 99 && word.length > 2)
+            wordCountsSorted.push([word, wordCounts[word]]);
         }
 
         wordCountsSorted.sort(function (a, b) {
@@ -52,6 +56,7 @@ const createWordCountsPage = (graphql, createPage) => {
         });
 
         const numWordClouds = 8;
+
         const wordsPerCloud = 80;
 
         let wordClouds = [];
@@ -73,8 +78,8 @@ const createWordCountsPage = (graphql, createPage) => {
           },
         });
       })
-    )
+    );
   });
-}
+};
 
 module.exports = createWordCountsPage;
