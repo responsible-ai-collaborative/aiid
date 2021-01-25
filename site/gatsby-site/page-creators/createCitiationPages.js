@@ -4,19 +4,20 @@ const createCitiationPages = (graphql, createPage) => {
   return new Promise((resolve, reject) => {
     resolve(
       graphql(
-        `query IncidentIDs {
-           allMongodbAiidprodIncidents {
-             distinct(field: incident_id)
-            }
-            allMongodbAiidprodDuplicates {
-              nodes{
-                true_incident_number
-                duplicate_incident_number
-              }
-            }
-         }
         `
-      ).then(result => {
+        query IncidentIDs {
+          allMongodbAiidprodIncidents {
+            distinct(field: incident_id)
+          }
+          allMongodbAiidprodDuplicates {
+            nodes{
+              true_incident_number
+              duplicate_incident_number
+            }
+          }
+        }
+        `
+      ).then((result) => {
         if (result.errors) {
           console.log(result.errors); // eslint-disable-line no-console
           reject(result.errors);
@@ -48,6 +49,6 @@ const createCitiationPages = (graphql, createPage) => {
       })
     );
   });
-}
+};
 
 module.exports = createCitiationPages;
