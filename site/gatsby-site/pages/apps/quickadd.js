@@ -36,7 +36,7 @@ const reportAddressPopover = Popover(
 );
 
 const QuickAddForm = ({ ...props }) => {
-  const [showSuccess, setShowSuccess] = useState();
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const { loading, user } = useUser();
 
