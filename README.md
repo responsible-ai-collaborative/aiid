@@ -89,9 +89,9 @@ See [mongo.md](mongo.md)
 
 ## License
 
-The codebase currently carries an individual MIT license because it is simplest way to proceed forward. All code contributed to the project falls under the license. If the license is transferred to an org rather than an individual, it will be to some combination of the Partnership on AI, the XPRIZE Foundation, the AI Commons, Sean McGregor, and/or the contributing individuals/organizations. Contributions include both code and data. Contributors disclaim all rights to their contributions. If you don't like these terms, then please reach out to discuss them.
+The codebase currently carries an GNU Affero General Public License and all contributions to the project falls under the license. Contributors disclaim all rights to their contributions. Please reach out to discuss the license terms if they are causing you any issues. We selected the GNU Affero license to encourage contributing back to the project, but the license itself provides the community wide latitude in working with this codebase.
 
-Copyright 2020 Sean McGregor
+Copyright 2021 Sean McGregor
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -108,4 +108,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Contact
 
-The AIID is a project of the Partnership on AI. For inquiries, you are encouraged to open an issue on this repository or visit the [production website](https://incidentdatabase.ai/). You can also email a human at github.readme@incidentdatabase.ai
+For inquiries, you are encouraged to open an issue on this repository or visit the [contact page](https://incidentdatabase.ai/contact).
