@@ -8,7 +8,7 @@ import { useUser } from 'mongodb/useUser';
 
 import { Layout, Link } from 'components';
 import { StyledHeading } from 'components/styles/Docs';
-import { CONTAINER, FORM, BUTTON } from 'components/styles/Form';
+import { FormStyles, StyledForm, StyledButton } from 'components/styles/Form';
 import DBConnecting from 'components/DBConnecting';
 import Popover from 'components/Popover';
 
@@ -63,7 +63,7 @@ const QuickAddForm = ({ ...props }) => {
         The following form will add a report link to the{' '}
         <Link to="/apps/submitted">review queue</Link> for inclusion into the AI Incident Database.
       </p>
-      <CONTAINER>
+      <FormStyles>
         {loading && <DBConnecting />}
         <Alert variant="success" show={showSuccess}>
           Report successfully added to review queue. It will appear on the{' '}
@@ -71,7 +71,7 @@ const QuickAddForm = ({ ...props }) => {
         </Alert>
         <Formik initialValues={{ url: '' }} validationSchema={validationSchema} onSubmit={onSubmit}>
           {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
-            <FORM onSubmit={handleSubmit} className="mx-auto">
+            <StyledForm onSubmit={handleSubmit} className="mx-auto">
               <Form.Group controlId="formUrl">
                 <OverlayTrigger
                   trigger={['hover', 'focus']}
@@ -98,13 +98,13 @@ const QuickAddForm = ({ ...props }) => {
                 <Link to="/apps/submit"> full details </Link> are processed before URLs not
                 posessing the full details.
               </p>
-              <BUTTON variant="primary" type="submit" disabled={isSubmitting}>
+              <StyledButton variant="primary" type="submit" disabled={isSubmitting}>
                 Submit
-              </BUTTON>
-            </FORM>
+              </StyledButton>
+            </StyledForm>
           )}
         </Formik>
-      </CONTAINER>
+      </FormStyles>
     </Layout>
   );
 };
