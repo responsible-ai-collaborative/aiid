@@ -21,8 +21,8 @@ const Citation = ({ nodes, incident_id }) => {
 
   return (
     <>
-      {submitterCite}. ({incidentDate}) Incident Number {docs[0]['incident_id']}. in McGregor, S.
-      (ed.) <em>Artificial Intelligence Incident Database.</em> Partnership on AI. {retrievalString}
+      {submitterCite}. ({incidentDate}) Incident Number {docs[0].incident_id}. in McGregor, S. (ed.){' '}
+      <em>Artificial Intelligence Incident Database.</em> Partnership on AI. {retrievalString}
     </>
   );
 };
