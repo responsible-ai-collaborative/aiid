@@ -16,5 +16,6 @@ export const useUser = () => {
   return {
     loading,
     user,
+    isAdmin: !loading && user.type === 'token',
   };
 };
