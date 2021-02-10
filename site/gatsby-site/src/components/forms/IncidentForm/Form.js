@@ -16,7 +16,8 @@ import { dateRegExp } from 'utils/date';
 
 import { useUser } from 'mongodb/useUser';
 import { useMongo } from 'mongodb/useMongo';
-import Loader from 'components/Loader';
+
+import config from '../../../../config';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -154,7 +155,8 @@ const IncidentForm = ({ incident }) => {
 
     if (incident) {
       // Update reported incident
-      updateOne({ incident_id: parseInt(values.id) }, values);
+      const { db_service, db_name, db_collection } = config.realm.production_db;
+      updateOne({ incident_id: parseInt(values.id) }, values, null, db_service, db_name, db_collection);
     } else {
       // Submit new incident into queue
       await user.functions.createReportForReview(values);

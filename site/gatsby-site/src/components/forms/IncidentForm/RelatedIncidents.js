@@ -3,6 +3,7 @@ import { ListGroup } from 'react-bootstrap';
 import Loader from 'components/Loader';
 
 import { useMongo } from 'mongodb/useMongo';
+
 import config from '../../../../config';
 
 const RelatedIncidents = ({ incident }) => {
@@ -11,11 +12,13 @@ const RelatedIncidents = ({ incident }) => {
   const { runQuery } = useMongo();
   const [loading, setLoading] = useState(false);
   const [related, setRelated] = useState([]);
-
+  
   useEffect(() => {
+    const { db_service, db_name, db_collection } = config.realm.production_db;
+    
     if (incident_id) {
       const parsed = parseInt(incident_id);
-
+      
       console.log(incident_id);
       if (isNaN(parsed)) {
         setRelated([]);
@@ -31,9 +34,9 @@ const RelatedIncidents = ({ incident }) => {
           setRelated(res);
           setLoading(false);
         },
-        config.realm.production_db.db_service,
-        config.realm.production_db.db_name,
-        config.realm.production_db.db_collection
+        db_service,
+        db_name,
+        db_collection
       );
     } else if (date_published) {
       setLoading(true);
@@ -45,10 +48,12 @@ const RelatedIncidents = ({ incident }) => {
           setRelated(res);
           setLoading(false);
         },
-        config.realm.production_db.db_service,
-        config.realm.production_db.db_name,
-        config.realm.production_db.db_collection
+        db_service,
+        db_name,
+        db_collection
       );
+    } else {
+      setRelated([]);
     }
   }, [incident]);
 
@@ -56,7 +61,7 @@ const RelatedIncidents = ({ incident }) => {
     return null;
   }
   return (
-    <ListGroup className="position-relative">
+    <ListGroup className="position-relative mt-4">
       <Loader loading={loading} />
       <ListGroup.Item key={'header'}>
         The following incident reports exist for the incident you are reporting on
