@@ -16,11 +16,11 @@ const IncidentList = ({ group }) => {
       {group.map((value, idx) => (
         <div key={`incident-group${idx}`}>
           <ul>
-            {value['edges'].map((value) => (
-              <li key={value['node']['id']} className="d-flex">
-                <Date>{value['node']['date_published']}</Date>
-                <Link href={value['node']['url']} target="_blank" rel="noopener noreferrer">
-                  {value['node']['title']}
+            {value.edges.map((value) => (
+              <li key={value.node.id} className="d-flex">
+                <Date>{value.node.date_published}</Date>
+                <Link href={value.node.url} target="_blank" rel="noopener noreferrer">
+                  {value.node.title}
                 </Link>
               </li>
             ))}

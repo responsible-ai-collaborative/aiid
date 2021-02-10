@@ -25,23 +25,22 @@ const ImageCarousel = ({ nodes }) => {
           <img
             className="d-block w-100"
             src={
-              'https://incidentdatabase.ai/large_media/report_banners/' +
-              md5(value['node']['image_url'])
+              'https://incidentdatabase.ai/large_media/report_banners/' + md5(value.node.image_url)
             }
-            alt={value['node']['title']}
+            alt={value.node.title}
           />
           <Carousel.Caption>
             <Caption>
               <a
-                href={value['node']['url']}
+                href={value.node.url}
                 className="text-white"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {value['node']['title']}
+                {value.node.title}
               </a>
             </Caption>
-            <SubCaption>{value['node']['source_domain']}</SubCaption>
+            <SubCaption>{value.node.source_domain}</SubCaption>
           </Carousel.Caption>
         </Carousel.Item>
       ))}

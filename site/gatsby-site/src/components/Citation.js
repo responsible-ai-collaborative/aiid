@@ -9,15 +9,15 @@ const Citation = ({ nodes, incident_id }) => {
 
   // Sort the docs according to their submit date
   docs.sort(function (a, b) {
-    return a['submission_date'] > b['submission_date'];
+    return a.submission_date > b.submission_date;
   });
 
   // Only return the earliest submitter
-  let submitterCite = getFormattedName(docs[0]['submitters'][0]);
+  let submitterCite = getFormattedName(docs[0].submitters[0]);
 
   const retrievalString = `Retrieved on ${retrievalDate()} from incidentdatabase.ai/cite/${incident_id}.`;
 
-  var incidentDate = docs[0]['incident_date'];
+  var incidentDate = docs[0].incident_date;
 
   return (
     <>

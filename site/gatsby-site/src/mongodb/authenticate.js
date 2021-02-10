@@ -12,7 +12,7 @@ import config from '../../config';
 //
 // https://docs.mongodb.com/realm/web/mongodb/
 
-const REALM_APP_ID = config['realm']['review_db']['realm_app_id'];
+const REALM_APP_ID = config.realm.review_db.realm_app_id;
 
 export const realmApp = new Realm.App({
   id: REALM_APP_ID,

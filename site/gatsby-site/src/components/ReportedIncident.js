@@ -38,13 +38,13 @@ const ReportedIncident = ({ report }) => {
   const admin = !loading && user.type === 'token';
 
   const addReport = () => {
-    const bs = new BSON.ObjectId(report['mongodb_id']);
+    const bs = new BSON.ObjectId(report.mongodb_id);
 
     user.functions.promoteReport({ _id: bs });
   };
 
   const rejectReport = () => {
-    const bs = new BSON.ObjectId(report['mongodb_id']);
+    const bs = new BSON.ObjectId(report.mongodb_id);
 
     user.functions.deleteSubmittedDocument({ _id: bs });
   };
@@ -67,7 +67,7 @@ const ReportedIncident = ({ report }) => {
 
   const otherDetails = ['id', 'language', 'mongodb_id'];
 
-  const isNewIncident = report['incident_id'] === 0;
+  const isNewIncident = report.incident_id === 0;
 
   const cardSubheader = isNewIncident ? 'New Incident' : 'New Report';
 
@@ -87,12 +87,12 @@ const ReportedIncident = ({ report }) => {
           </Col>
           <Col xs={12} sm={10} lg={10}>
             {' '}
-            {report['title']}
+            {report.title}
             <br />
-            <Badge variant="secondary">Inc: {report['incident_date']}</Badge>{' '}
-            <Badge variant="secondary">Pub: {report['date_published']}</Badge>{' '}
-            <Badge variant="secondary">Sub: {report['date_submitted']}</Badge>{' '}
-            <Badge variant="secondary">{report['submitters']}</Badge>
+            <Badge variant="secondary">Inc: {report.incident_date}</Badge>{' '}
+            <Badge variant="secondary">Pub: {report.date_published}</Badge>{' '}
+            <Badge variant="secondary">Sub: {report.date_submitted}</Badge>{' '}
+            <Badge variant="secondary">{report.submitters}</Badge>
           </Col>
         </Row>
       </Card.Header>

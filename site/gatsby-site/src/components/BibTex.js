@@ -16,19 +16,19 @@ const BibTex = ({ nodes, incident_id }) => {
 
   // Sort the docs according to their submit date
   docs.sort(function (a, b) {
-    return a['submission_date'] > b['submission_date'];
+    return a.submission_date > b.submission_date;
   });
 
   // Only return the earliest submitter
-  let submitterCite = getFormattedName(docs[0]['submitters'][0]);
+  let submitterCite = getFormattedName(docs[0].submitters[0]);
 
-  var incidentDate = docs[0]['incident_date'];
+  var incidentDate = docs[0].incident_date;
 
   const jsx = (
     <code>
       @article &#123;
       <br />
-      &nbsp; &nbsp; &nbsp; &nbsp; aiid:{docs[0]['incident_id']},
+      &nbsp; &nbsp; &nbsp; &nbsp; aiid:{docs[0].incident_id},
       <br />
       &nbsp; &nbsp; &nbsp; &nbsp; author = &#123;{submitterCite}&#125;,
       <br />

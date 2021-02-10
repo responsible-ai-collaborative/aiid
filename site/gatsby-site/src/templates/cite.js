@@ -26,9 +26,9 @@ const IncidentCite = ({ data, ...props }) => {
   } = data;
 
   // meta tags
-  const reports = group[0]['edges'];
+  const reports = group[0].edges;
 
-  const incident_id = reports[0]['node']['incident_id'];
+  const incident_id = reports[0].node.incident_id;
 
   const metaTitle = 'Incident ' + incident_id;
 
@@ -36,7 +36,7 @@ const IncidentCite = ({ data, ...props }) => {
 
   const canonicalUrl = getCanonicalUrl(incident_id);
 
-  const nodes = group[0]['edges'];
+  const nodes = group[0].edges;
 
   return (
     <Layout {...props}>
