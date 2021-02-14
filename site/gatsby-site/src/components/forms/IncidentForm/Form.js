@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Button, Container } from 'react-bootstrap';
 import { CSVReader } from 'react-papaparse';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -118,10 +118,48 @@ const TextInputGroup = ({
 
 const IncidentForm = ({ incident }) => {
   const { loading, user, isAdmin } = useUser();
-  const { runQuery, updateOne } = useMongo();
+
+  const { updateOne } = useMongo();
 
   const [csvData, setCsvData] = useState([{ data: incident || defaultValue }]);
+
   const [csvIndex, setCsvIndex] = useState(0);
+
+  const previousRecord = () => {
+    const newCSVIndex = Math.max(0, csvIndex - 1);
+
+    setCsvIndex(newCSVIndex);
+  };
+
+  const nextRecord = () => {
+    const newCSVIndex = Math.min(csvData.length - 1, csvIndex + 1);
+
+    setCsvIndex(newCSVIndex);
+  };
+
+  const onSubmit = async () => {
+    setSubmitting(true);
+
+    if (incident) {
+      // Update reported incident
+      const { db_service, db_name, db_collection } = config.realm.production_db;
+
+      updateOne(
+        { incident_id: parseInt(values.id) },
+        values,
+        null,
+        db_service,
+        db_name,
+        db_collection
+      );
+    } else {
+      // Submit new incident into queue
+      await user.functions.createReportForReview(values);
+    }
+
+    resetForm();
+    setSubmitting(false);
+  };
 
   const {
     values,
@@ -139,32 +177,6 @@ const IncidentForm = ({ incident }) => {
     validationSchema,
     onSubmit,
   });
-
-  const previousRecord = () => {
-    const newCSVIndex = Math.max(0, csvIndex - 1);
-    setCsvIndex(newCSVIndex);
-  };
-
-  const nextRecord = () => {
-    const newCSVIndex = Math.min(csvData.length - 1, csvIndex + 1);
-    setCsvIndex(newCSVIndex);
-  };
-
-  const onSubmit = async (values) => {
-    setSubmitting(true);
-
-    if (incident) {
-      // Update reported incident
-      const { db_service, db_name, db_collection } = config.realm.production_db;
-      updateOne({ incident_id: parseInt(values.id) }, values, null, db_service, db_name, db_collection);
-    } else {
-      // Submit new incident into queue
-      await user.functions.createReportForReview(values);
-    }
-
-    resetForm();
-    setSubmitting(false);
-  };
 
   const TextInputGroupProps = { values, errors, touched, handleChange, handleBlur };
 
