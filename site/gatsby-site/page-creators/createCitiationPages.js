@@ -7,9 +7,12 @@ const createCitiationPages = (graphql, createPage) => {
         `query IncidentIDs {
            allMongodbAiidprodIncidents {
              distinct(field: incident_id)
-               nodes {
-                 incident_id
-               }
+            }
+            allMongodbAiidprodDuplicates {
+              nodes{
+                true_incident_number
+                duplicate_incident_number
+              }
             }
          }
         `
@@ -29,6 +32,19 @@ const createCitiationPages = (graphql, createPage) => {
             },
           });
         });
+
+        // Create redirects
+        result.data.allMongodbAiidprodDuplicates.nodes.forEach(({true_incident_number, duplicate_incident_number}) => {
+          createPage({
+            path: '/cite/' + duplicate_incident_number,
+            component: path.resolve('./src/templates/cite-duplicate.js'),
+            context: {
+              duplicate_incident_number: parseInt(duplicate_incident_number),
+              true_incident_number: parseInt(true_incident_number)
+            },
+          });
+        });
+
       })
     );
   });
