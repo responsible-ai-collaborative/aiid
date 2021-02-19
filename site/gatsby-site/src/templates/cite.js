@@ -13,7 +13,6 @@ import Citation from '../components/Citation';
 import IncidentList from '../components/IncidentList';
 import ImageCarousel from '../components/ImageCarousel';
 import BibTex from '../components/BibTex';
-import Link from '../components/link';
 
 import { getCanonicalUrl } from '../utils/getCanonicalUrl';
 
@@ -24,7 +23,6 @@ const IncidentCite = ({ data, ...props }) => {
 
   const {
     allMongodbAiidprodIncidents: { group },
-    allMongodbAiidprodDuplicates: { distinct },
   } = data;
 
   // meta tags
@@ -56,47 +54,37 @@ const IncidentCite = ({ data, ...props }) => {
         <StyledHeading>{metaDescription}</StyledHeading>
       </div>
       <StyledMainWrapper>
-        {distinct.length > 0 && (
-          <Container>
-            This incident is a duplicate of Incident{' '}
-            <Link to={`/cite/${distinct[0]}`}>{distinct[0]}</Link>. All new reports and citations
-            should be directed to incident {distinct[0]}. The reports previously found on this page
-            have been migrated to the previously existing incident.
-          </Container>
-        )}
-        {distinct.length === 0 && (
-          <Container>
-            <Row>
-              <Col>
-                <h2>Suggested citation format</h2>
-                <Citation nodes={nodes} incident_id={incident_id} />
-              </Col>
-            </Row>
-            <Row className="mt-4 mb-5">
-              <Col>
-                <h2>Reports</h2>
-                <IncidentList group={group} />
-                <ImageCarousel nodes={nodes} />
-              </Col>
-            </Row>
-            <Row className="mt-4 mb-5">
-              <Col>
-                <h1>Tools</h1>
-                <Button variant="outline-primary" className="mr-2" href={'/summaries/incidents'}>
-                  All Incidents
+        <Container>
+          <Row>
+            <Col>
+              <h2>Suggested citation format</h2>
+              <Citation nodes={nodes} incident_id={incident_id} />
+            </Col>
+          </Row>
+          <Row className="mt-4 mb-5">
+            <Col>
+              <h2>Reports</h2>
+              <IncidentList group={group} />
+              <ImageCarousel nodes={nodes} />
+            </Col>
+          </Row>
+          <Row className="mt-4 mb-5">
+            <Col>
+              <h1>Tools</h1>
+              <Button variant="outline-primary" className="mr-2" href={'/summaries/incidents'}>
+                All Incidents
                 </Button>
-                <Button
-                  variant="outline-primary"
-                  className="mr-2"
-                  href={'/discover/index.html?incident_id=' + incident_id}
-                >
-                  Discover
+              <Button
+                variant="outline-primary"
+                className="mr-2"
+                href={'/discover/index.html?incident_id=' + incident_id}
+              >
+                Discover
                 </Button>
-                <BibTex nodes={nodes} incident_id={incident_id} />
-              </Col>
-            </Row>
-          </Container>
-        )}
+              <BibTex nodes={nodes} incident_id={incident_id} />
+            </Col>
+          </Row>
+        </Container>
       </StyledMainWrapper>
     </Layout>
   );
@@ -139,9 +127,6 @@ export const pageQuery = graphql`
           }
         }
       }
-    }
-    allMongodbAiidprodDuplicates(filter: { duplicate_incident_number: { eq: $incident_id } }) {
-      distinct(field: true_incident_number)
     }
   }
 `;
