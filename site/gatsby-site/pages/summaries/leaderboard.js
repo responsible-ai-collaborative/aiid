@@ -86,7 +86,7 @@ export default class Authors extends Component {
     return (
       <Layout {...this.props}>
         <Helmet>
-          <title>Incident List</title>
+          <title>Submissions Leaderboard</title>
         </Helmet>
         <div className={'titleWrapper'}>
           <StyledHeading>Leaderboard</StyledHeading>
