@@ -90,6 +90,54 @@ const plugins = [
       },
     },
   },
+  {
+    resolve: 'gatsby-plugin-feed',
+    options: {
+      query: `
+        {
+          site {
+            siteMetadata {
+              title
+              description
+              siteUrl
+              site_url: siteUrl
+            }
+          }
+        }
+      `,
+      feeds: [
+        {
+          serialize: ({ query: { allMongodbAiidprodIncidents } }) => {
+            return allMongodbAiidprodIncidents.edges.map((edge) => {
+              console.log({ edge });
+              return Object.assign({}, edge.node.frontmatter, {
+                title: edge.node.title,
+                url: edge.node.url,
+                link: edge.node.url,
+                description: edge.node.description,
+              });
+            });
+          },
+          query: `
+            {
+              allMongodbAiidprodIncidents {
+                totalCount
+                edges {
+                  node {
+                    title
+                    url
+                    description
+                  }
+                }
+              }
+            }
+          `,
+          output: '/rss.xml',
+          title: 'AI Incident Database RSS Feed',
+        },
+      ],
+    },
+  },
 ];
 
 // check and add algolia

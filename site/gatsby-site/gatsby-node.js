@@ -3,19 +3,21 @@ const path = require('path');
 const startCase = require('lodash.startcase');
 
 const config = require('./config');
+
 const createMdxPages = require('./page-creators/createMdxPages');
+
 const createCitiationPages = require('./page-creators/createCitiationPages');
+
 const createWordCountsPages = require('./page-creators/createWordCountsPage');
 
 exports.createPages = ({ graphql, actions }) => {
-
   const { createPage } = actions;
 
   return Promise.all([
     createMdxPages(graphql, createPage),
     createCitiationPages(graphql, createPage),
     createWordCountsPages(graphql, createPage),
-  ])
+  ]);
 };
 
 exports.onCreateWebpackConfig = ({ actions }) => {
@@ -23,7 +25,7 @@ exports.onCreateWebpackConfig = ({ actions }) => {
     resolve: {
       modules: [path.resolve(__dirname, 'src'), 'node_modules'],
       alias: {
-        "@components": path.resolve(__dirname, 'src/components'),
+        '@components': path.resolve(__dirname, 'src/components'),
         buble: '@philpl/buble', // to reduce bundle size
       },
     },
@@ -80,5 +82,5 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
 const express = require('express');
 
 exports.onCreateDevServer = ({ app }) => {
-  app.use(express.static('public'))
-}
+  app.use(express.static('public'));
+};
