@@ -6,7 +6,8 @@ import * as Yup from 'yup';
 
 import { useUser } from 'mongodb/useUser';
 
-import { Layout, Link } from 'components';
+import Layout from 'components/Layout';
+import Link from 'components/Link';
 import { StyledHeading } from 'components/styles/Docs';
 import { FormStyles, StyledForm, StyledButton } from 'components/styles/Form';
 import DBConnecting from 'components/DBConnecting';

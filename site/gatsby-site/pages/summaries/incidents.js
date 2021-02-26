@@ -4,7 +4,8 @@ import { graphql } from 'gatsby';
 
 import Button from 'react-bootstrap/Button';
 
-import { Layout, Link } from 'components';
+import Layout from 'components/Layout';
+import Link from 'components/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 
 const ReportList = ({ items }) => {

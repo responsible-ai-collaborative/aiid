@@ -1,6 +1,6 @@
 import React, { useState, Component } from 'react';
 import Helmet from 'react-helmet';
-import { Layout } from 'components';
+import Layout from 'components/Layout';
 import { Form, Button } from 'react-bootstrap';
 
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';

@@ -3,7 +3,7 @@ import Helmet from 'react-helmet';
 
 import Container from 'react-bootstrap/Container';
 
-import { Layout } from '@components';
+import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper } from '../components/styles/Docs';
 import Link from '../components/link';
 

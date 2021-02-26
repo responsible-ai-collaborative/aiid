@@ -3,7 +3,8 @@ import { graphql } from 'gatsby';
 import Helmet from 'react-helmet';
 import ListGroup from 'react-bootstrap/ListGroup';
 
-import { Layout, Link } from 'components';
+import Layout from 'components/Layout';
+import Link from 'components/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import ReportedIncident from 'components/ReportedIncident';
 

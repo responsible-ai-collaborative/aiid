@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
 
-import { Layout, Link } from 'components';
+import Layout from 'components/Layout';
+import Link from 'components/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 
 const Leaderboard = ({ title, content }) => {

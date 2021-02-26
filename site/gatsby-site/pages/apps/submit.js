@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 
-import { Layout, Link } from 'components';
+import Layout from 'components/Layout';
+import Link from 'components/Link';
 import { StyledHeading } from 'components/styles/Docs';
 import IncidentForm from 'components/forms/IncidentForm';
 

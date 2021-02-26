@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout } from '@components';
+import Layout from 'components/Layout';
 import Helmet from 'react-helmet';
 import styled from 'styled-components';
 

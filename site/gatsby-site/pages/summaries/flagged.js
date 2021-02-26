@@ -8,7 +8,7 @@ import Tab from 'react-bootstrap/Tab';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-import { Layout } from 'components';
+import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 
 const ReportList = ({ report }) => {
