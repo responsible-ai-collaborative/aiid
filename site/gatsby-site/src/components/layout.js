@@ -62,7 +62,7 @@ const RightSideBarWidth = styled('div')`
   width: 224px;
 `;
 
-const Layout = ({ children, location }) => (
+const Layout = ({ children, location, className }) => (
   <ThemeProvider location={location}>
     <MDXProvider components={mdxComponents}>
       <Wrapper>
@@ -76,7 +76,7 @@ const Layout = ({ children, location }) => (
           />
         ) : null}
         <Content>
-          <MaxWidth>{children}</MaxWidth>
+          <MaxWidth className={className}>{children}</MaxWidth>
         </Content>
         <RightSideBarWidth className={'hiddenMobile'}>
           <RightSidebar location={location} />
