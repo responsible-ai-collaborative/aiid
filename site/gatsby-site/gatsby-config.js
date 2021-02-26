@@ -109,7 +109,6 @@ const plugins = [
         {
           serialize: ({ query: { allMongodbAiidprodIncidents } }) => {
             return allMongodbAiidprodIncidents.edges.map((edge) => {
-              console.log({ edge });
               return Object.assign({}, edge.node.frontmatter, {
                 title: edge.node.title,
                 url: edge.node.url,
@@ -120,7 +119,7 @@ const plugins = [
           },
           query: `
             {
-              allMongodbAiidprodIncidents {
+              allMongodbAiidprodIncidents(sort: {fields: date_published, order: DESC}, limit: 100) {
                 totalCount
                 edges {
                   node {
