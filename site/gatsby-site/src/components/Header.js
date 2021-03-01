@@ -79,6 +79,8 @@ const Header = ({ location, isDarkThemeActive }) => (
 
       const twitter = require('./images/twitter.svg');
 
+      const rssFeed = require('./images/rssFeed.svg');
+
       const {
         site: {
           siteMetadata: { headerTitle, githubUrl, helpUrl, tweetText, logo, headerLinks },
@@ -176,6 +178,15 @@ const Header = ({ location, isDarkThemeActive }) => (
                     </GitHubButton>
                   </li>
                 ) : null}
+                <li className={'displayFlex'}>
+                  <a
+                    href={'http://localhost:8000/rss.xml'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img src={rssFeed} alt={'RSSFeed'} />
+                  </a>
+                </li>
               </ul>
             </div>
           </nav>
