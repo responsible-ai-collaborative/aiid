@@ -179,11 +179,7 @@ const Header = ({ location, isDarkThemeActive }) => (
                   </li>
                 ) : null}
                 <li className={'displayFlex'}>
-                  <a
-                    href={'http://localhost:8000/rss.xml'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <a href={'/rss.xml'} target="_blank" rel="noopener noreferrer">
                     <img src={rssFeed} alt={'RSSFeed'} />
                   </a>
                 </li>

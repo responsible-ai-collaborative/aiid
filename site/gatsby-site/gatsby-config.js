@@ -114,18 +114,26 @@ const plugins = [
                 url: edge.node.url,
                 link: edge.node.url,
                 description: edge.node.description,
+                guid: edge.node.id,
+                enclosure: edge.node.image_url &&
+                  edge.node.image_url !== 'placeholder.svg' && {
+                    url: edge.node.image_url,
+                    type: 'image/jpeg',
+                  },
               });
             });
           },
           query: `
             {
-              allMongodbAiidprodIncidents(sort: {fields: date_published, order: DESC}, limit: 100) {
+              allMongodbAiidprodIncidents(sort: {fields: date_submitted, order: DESC}, limit: 100) {
                 totalCount
                 edges {
                   node {
                     title
                     url
                     description
+                    id
+                    image_url
                   }
                 }
               }
