@@ -51,7 +51,7 @@ const WordCounts = ({ pageContext, ...props }) => {
   return (
     <Layout {...props}>
       <Helmet>
-        <title>Incident List</title>
+        <title>Word Counts</title>
       </Helmet>
       <div className="titleWrapper">
         <StyledHeading>Word Counts</StyledHeading>
