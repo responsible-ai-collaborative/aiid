@@ -5,7 +5,7 @@ import Container from 'react-bootstrap/Container';
 
 import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper } from '../components/styles/Docs';
-import Link from '../components/link';
+import Link from '../components/Link';
 
 import { getCanonicalUrl } from '../utils/getCanonicalUrl';
 
