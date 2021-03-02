@@ -626,10 +626,6 @@ export const baseStyles = injectGlobal`
     align-items: center;
   }
 
-  .displayFlex {
-    display: flex;
-  }
-
   .communitySection {
     font-size: 24px;
     font-weight: 700;
