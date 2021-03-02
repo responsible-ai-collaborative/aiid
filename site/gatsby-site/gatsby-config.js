@@ -1,4 +1,6 @@
 require('dotenv').config();
+const md5 = require('md5');
+
 const queries = require('./src/utils/algolia');
 
 const config = require('./config');
@@ -117,7 +119,10 @@ const plugins = [
                 guid: edge.node.id,
                 enclosure: edge.node.image_url &&
                   edge.node.image_url !== 'placeholder.svg' && {
-                    url: edge.node.image_url,
+                    url:
+                      config.gatsby.siteUrl +
+                      '/large_media/report_banners/' +
+                      md5(edge.node.image_url),
                     type: 'image/jpeg',
                   },
               });
