@@ -52,6 +52,15 @@ const StyledBgDiv = styled('div')`
   }
 `;
 
+const GrayscaleDiv = styled.div`
+  display: flex;
+  img {
+    -webkit-filter: grayscale(1);
+    filter: gray;
+    filter: grayscale(1);
+  }
+`;
+
 const Header = ({ location, isDarkThemeActive }) => (
   <StaticQuery
     query={graphql`
@@ -78,6 +87,8 @@ const Header = ({ location, isDarkThemeActive }) => (
       const logoImg = require('./images/logo.svg');
 
       const twitter = require('./images/twitter.svg');
+
+      const rssFeed = require('./images/rssFeed.svg');
 
       const {
         site: {
@@ -176,6 +187,13 @@ const Header = ({ location, isDarkThemeActive }) => (
                     </GitHubButton>
                   </li>
                 ) : null}
+                <li>
+                  <GrayscaleDiv>
+                    <a href={'/rss.xml'} target="_blank" rel="noopener noreferrer">
+                      <img src={rssFeed} alt={'RSSFeed'} />
+                    </a>
+                  </GrayscaleDiv>
+                </li>
               </ul>
             </div>
           </nav>
