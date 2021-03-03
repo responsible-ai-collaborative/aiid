@@ -17,6 +17,34 @@ import '../../static/discover/src/algolia.css';
 
 const searchClient = algoliasearch('8TNY3YFAO8', '55efba4929953a53eb357824297afb4c');
 
+const REFINEMENT_LISTS = [
+  {
+    attribute: 'source_domain',
+    inputText: "Filter Domains ('bbc.com')",
+    label: 'Source',
+  },
+  {
+    attribute: 'authors',
+    inputText: "Filter Authors ('Helen...')",
+    label: 'Authors',
+  },
+  {
+    attribute: 'submitters',
+    inputText: "Filter Submitters ('Helen...')",
+    label: 'Submitters',
+  },
+  {
+    attribute: 'incident_id',
+    inputText: "Filter incident number ('42')",
+    label: 'Incident ID',
+  },
+  {
+    attribute: 'flag',
+    inputText: 'none',
+    label: 'Flagged',
+  },
+];
+
 const Container = styled.div`
   display: flex;
   flex-direction: row;
@@ -112,12 +140,14 @@ const AuthorsRefinementList = connectRefinementList(StyledRefinementList);
 
 const DiscoverApp = (props) => {
   return (
-    <Layout {...props} className="maxWidth">
+    <Layout {...props} collapse={true} className="maxWidth">
       <InstantSearch indexName="aiid-emergency" searchClient={searchClient}>
         <SearchBox />
         <Container>
           <LeftPanel>
-            <AuthorsRefinementList attribute="authors" />
+            {REFINEMENT_LISTS.map((list) => (
+              <AuthorsRefinementList key={list.attribute} attribute={list.attribute} />
+            ))}
             <Configure hitsPerPage={8} />
           </LeftPanel>
           <RightPanel>
