@@ -56,18 +56,19 @@ const MaxWidth = styled('div')`
 
 const LeftSideBarWidth = styled('div')`
   width: 298px;
+  ${({ collapse }) => collapse && `width: 0;`}
 `;
 
 const RightSideBarWidth = styled('div')`
   width: 224px;
 `;
 
-const Layout = ({ children, location, className }) => (
+const Layout = ({ children, location, collapse, className }) => (
   <ThemeProvider location={location}>
     <MDXProvider components={mdxComponents}>
       <Wrapper>
-        <LeftSideBarWidth className={'hiddenMobile'}>
-          <Sidebar location={location} />
+        <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
+          <Sidebar location={location} collapse={collapse} />
         </LeftSideBarWidth>
         {config.sidebar.title ? (
           <div

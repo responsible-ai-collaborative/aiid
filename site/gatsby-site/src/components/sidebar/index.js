@@ -46,6 +46,7 @@ const ListItem = styled(({ className, active, level, ...props }) => {
 `;
 
 const Sidebar = styled('aside')`
+  ${({ collapse }) => collapse && `display: none;`}
   width: 100%;
   height: 100vh;
   overflow: auto;
@@ -90,7 +91,7 @@ const Divider = styled((props) => (
   }
 `;
 
-const SidebarLayout = () => (
+const SidebarLayout = ({ collapse }) => (
   <StaticQuery
     query={graphql`
       query {
@@ -108,7 +109,7 @@ const SidebarLayout = () => (
     `}
     render={({ allMdx }) => {
       return (
-        <Sidebar>
+        <Sidebar collapse={collapse}>
           {config.sidebar.title ? (
             <div
               className={'sidebarTitle hiddenMobile'}

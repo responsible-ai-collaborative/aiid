@@ -1,4 +1,6 @@
 require('dotenv').config();
+const md5 = require('md5');
+
 const queries = require('./src/utils/algolia');
 
 const config = require('./config');
@@ -88,6 +90,64 @@ const plugins = [
         authSource: 'admin',
         retryWrites: true,
       },
+    },
+  },
+  {
+    resolve: 'gatsby-plugin-feed',
+    options: {
+      query: `
+        {
+          site {
+            siteMetadata {
+              title
+              description
+              siteUrl
+              site_url: siteUrl
+            }
+          }
+        }
+      `,
+      feeds: [
+        {
+          serialize: ({ query: { allMongodbAiidprodIncidents } }) => {
+            return allMongodbAiidprodIncidents.edges.map((edge) => {
+              return Object.assign({}, edge.node.frontmatter, {
+                title: edge.node.title,
+                url: edge.node.url,
+                link: edge.node.url,
+                description: edge.node.description,
+                guid: edge.node.id,
+                enclosure: edge.node.image_url &&
+                  edge.node.image_url !== 'placeholder.svg' && {
+                    url:
+                      config.gatsby.siteUrl +
+                      '/large_media/report_banners/' +
+                      md5(edge.node.image_url),
+                    type: 'image/jpeg',
+                  },
+              });
+            });
+          },
+          query: `
+            {
+              allMongodbAiidprodIncidents(sort: {fields: date_submitted, order: DESC}, limit: 100) {
+                totalCount
+                edges {
+                  node {
+                    title
+                    url
+                    description
+                    id
+                    image_url
+                  }
+                }
+              }
+            }
+          `,
+          output: '/rss.xml',
+          title: 'AI Incident Database RSS Feed',
+        },
+      ],
     },
   },
 ];
