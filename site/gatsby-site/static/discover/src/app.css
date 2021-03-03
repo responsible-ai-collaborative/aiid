@@ -107,6 +107,10 @@ blockquote:before {
     max-width: 100%;
 }
 
+.maxWidth {
+  width: 100%;
+}
+
 .column_left {
   float: left;
   width: 18%;
