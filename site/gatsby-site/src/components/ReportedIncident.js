@@ -14,7 +14,7 @@ import ReadMoreText from 'components/ReadMoreText';
 import IncidentEditModal from 'components/modals/IncidentEditModal';
 import EditableListItem from 'components/EditableListItem';
 
-import { useUserContext } from 'contexts/userContext';
+import { useUser } from 'mongodb/useUser';
 
 const ListedGroup = ({ item, keysToRender }) => {
   return (
@@ -31,11 +31,9 @@ const ListedGroup = ({ item, keysToRender }) => {
 };
 
 const ReportedIncident = ({ report }) => {
-  const { loading, user } = useUserContext();
+  const { user, isAdmin } = useUser();
 
   const [isEditing, setIsEditing] = useState(false);
-
-  const admin = !loading && user.type === 'token';
 
   const addReport = () => {
     const bs = new BSON.ObjectId(report.mongodb_id);
@@ -109,18 +107,18 @@ const ReportedIncident = ({ report }) => {
             </Card.Body>
           </Card>
           <Card.Footer className="d-flex text-muted">
-            <Button className="mr-auto" disabled={!admin} onClick={toggleEditing}>
+            <Button className="mr-auto" disabled={!isAdmin} onClick={toggleEditing}>
               <FontAwesomeIcon icon={faEdit} />
             </Button>
             <Button
               className="mr-2"
               variant="outline-primary"
-              disabled={!admin}
+              disabled={!isAdmin}
               onClick={addReport}
             >
               Add {cardSubheader}
             </Button>
-            <Button variant="outline-secondary" disabled={!admin} onClick={rejectReport}>
+            <Button variant="outline-secondary" disabled={!isAdmin} onClick={rejectReport}>
               Reject {cardSubheader}
             </Button>
           </Card.Footer>

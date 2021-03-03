@@ -4,7 +4,7 @@ import { UserContext } from './UserContext';
 import { useUser } from 'mongodb/useUser';
 
 export const UserContextProvider = ({ children }) => {
-  const { loading, user } = useUser();
+  const { loading, user, isAdmin } = useUser();
 
-  return <UserContext.Provider value={{ loading, user }}>{children}</UserContext.Provider>;
+  return <UserContext.Provider value={{ loading, user, isAdmin }}>{children}</UserContext.Provider>;
 };

@@ -3,12 +3,14 @@ import { getUser } from './authenticate';
 
 export const useUser = () => {
   const [loading, setLoading] = useState(true);
+  const [type, setType] = useState('anonymous');
 
   const [user, setUser] = useState();
 
   useEffect(() => {
-    getUser().then((res) => {
-      setUser(res.user);
+    getUser().then(({ user, type}) => {
+      setUser(user);
+      setType(type);
       setLoading(false);
     });
   }, []);
@@ -16,6 +18,6 @@ export const useUser = () => {
   return {
     loading,
     user,
-    isAdmin: !loading && user.type === 'token',
+    isAdmin: !loading && type === 'token',
   };
 };
