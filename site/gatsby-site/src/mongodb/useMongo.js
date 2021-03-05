@@ -18,7 +18,7 @@ export const useMongo = () => {
 
     const res = await mongoCollection.find(query);
 
-    callback(res);
+    callback && callback(res);
   };
 
   const updateOne = async (
@@ -38,7 +38,7 @@ export const useMongo = () => {
 
     const res = await mongoCollection.updateOne(query, data);
 
-    callback(res);
+    callback && callback(res);
   };
 
   return {
