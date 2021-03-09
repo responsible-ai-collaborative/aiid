@@ -15,7 +15,13 @@
     "import/resolver": {
       "alias": {
         "map": [
-          ["@components", "./src/components"],
+          ["components", "./src/components"],
+          ["contexts", "./src/contexts"],
+          ["mongodb", "./src/mongodb"],
+          ["pages", "./src/pages"],
+          ["services", "./src/services"],
+          ["templates", "./src/templates"],
+          ["utils", "./src/utils"],
           ["buble", "@philpl/buble"]
         ],
         "extensions": [".js", ".jsx"]
