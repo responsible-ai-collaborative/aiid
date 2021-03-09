@@ -284,22 +284,51 @@ const getFlagModalContent = () => (
   </div>
 );
 
+const cardNeedsBlockquote = (item) => {
+  if (item.text && item.text.matchLevel === 'full') {
+    return true;
+  }
+  return false;
+};
+
 const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) => (
   <IncidentCardContainer className="card">
     <div className="card-header">
-      <h1 className="article-header">{item.title}</h1>
+      <Highlight hit={item} attribute="title" />
       <p className="subhead">
         {item.source_domain} &middot;{' '}
         {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
       </p>
     </div>
     <div className="card-body">
-      <p>{item._snippetResult.description.value}</p>
+      <Highlight hit={item} attribute="description" />
+      {cardNeedsBlockquote(item._snippetResult) && (
+        <blockquote>
+          <Highlight
+            hit={{
+              _highlightResult: {
+                ...item._snippetResult,
+                text: {
+                  ...item._snippetResult.text,
+                  value: `...${item._snippetResult.text.value}...`,
+                },
+              },
+            }}
+            attribute="text"
+          />
+        </blockquote>
+      )}
       <p>{item.text.substr(0, 400) + '...'}</p>
     </div>
     <div className="align-bottom">
       <img className="image-preview" alt={item.title} src={getImageHashPath(item.image_url)} />
-      <button type="button" className="btn btn-secondary btn-sm btn-block assignment-button">
+      <button
+        type="button"
+        className="btn btn-secondary btn-sm btn-block assignment-button"
+        onClick={() => {
+          console.log('incident id');
+        }}
+      >
         Show Details on Incident #${item.incident_id}
       </button>
     </div>
@@ -443,7 +472,11 @@ const DiscoverApp = (props) => {
   return (
     <Layout {...props} collapse={collapse} className="maxWidth">
       <Container>
-        <InstantSearch indexName="aiid-emergency" searchClient={searchClient}>
+        <InstantSearch
+          indexName="aiid-emergency"
+          searchClient={searchClient}
+          // createURL={searchState => `?q=${searchState.query}`}
+        >
           <Header>
             <FontAwesomeIcon
               icon={faBars}
@@ -479,20 +512,6 @@ const DiscoverApp = (props) => {
         </InstantSearch>
       </Container>
 
-      {/* <Modal show={authorsModal.isOpen} onHide={authorsModal.close}>
-        <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Woohoo, you are reading this text in a modal!</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={authorsModal.close}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={authorsModal.close}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal> */}
       <CustomModal {...authorsModal} />
       <CustomModal {...submittersModal} />
       <CustomModal {...flagReportModal} />
