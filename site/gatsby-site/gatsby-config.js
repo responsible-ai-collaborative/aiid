@@ -150,6 +150,7 @@ const plugins = [
       ],
     },
   },
+  'gatsby-plugin-use-query-params',
 ];
 
 // check and add algolia

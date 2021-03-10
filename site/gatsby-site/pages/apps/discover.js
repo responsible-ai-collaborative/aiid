@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { StringParam, QueryParams, useQueryParams } from 'use-query-params';
 import { Layout } from '@components';
 import algoliasearch from 'algoliasearch/lite';
+import { debounce } from 'debounce';
 import {
   InstantSearch,
-  Configure,
   Highlight,
   connectHits,
   connectRefinementList,
@@ -291,7 +292,13 @@ const cardNeedsBlockquote = (item) => {
   return false;
 };
 
-const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) => (
+const IncidentCard = ({
+  item,
+  authorsModal,
+  submittersModal,
+  flagReportModal,
+  toggleFilterByIncidentId,
+}) => (
   <IncidentCardContainer className="card">
     <div className="card-header">
       <Highlight hit={item} attribute="title" />
@@ -326,10 +333,10 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
         type="button"
         className="btn btn-secondary btn-sm btn-block assignment-button"
         onClick={() => {
-          console.log('incident id');
+          toggleFilterByIncidentId(item.incident_id + '');
         }}
       >
-        Show Details on Incident #${item.incident_id}
+        Show Details on Incident #{item.incident_id}
       </button>
     </div>
     <CardFooter className="card-footer text-muted">
@@ -384,7 +391,7 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
           icon={faHashtag}
           className="fas fa-hashtag"
           title="Incident ID"
-          onClick={() => console.log(item.incident_id)}
+          onClick={() => toggleFilterByIncidentId(item.incident_id + '')}
         />
         {item.incident_id}
       </span>
@@ -392,47 +399,53 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
   </IncidentCardContainer>
 );
 
-const StyledSearchBox = ({ currentRefinement, refine }) => (
-  <div className="ais-SearchBox flex-grow-1">
-    <form className="ais-SearchBox-form" noValidate>
-      <StyledSearchInput
-        className="ais-SearchBox-input"
-        autoComplete="off"
-        autoCorrect="off"
-        autoCapitalize="off"
-        placeholder="Search for products"
-        spellCheck="false"
-        maxLength="512"
-        type="search"
-        value={currentRefinement}
-        onChange={(event) => refine(event.currentTarget.value)}
-      />
-      <button
-        className="ais-SearchBox-reset"
-        type="reset"
-        title="Clear the search query."
-        onClick={() => refine('')}
-      >
-        <FontAwesomeIcon
-          icon={faTimesCircle}
-          className="pointer fa fa-times-circle"
-          title="Authors"
+const StyledSearchBox = ({ refine, defaultRefinement }) => {
+  const debouncedRefine = debounce((text) => {
+    refine(text);
+  }, 500);
+
+  return (
+    <div className="ais-SearchBox flex-grow-1">
+      <form className="ais-SearchBox-form" noValidate>
+        <StyledSearchInput
+          className="ais-SearchBox-input"
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          placeholder="Search for products"
+          spellCheck="false"
+          maxLength="512"
+          type="search"
+          defaultValue={defaultRefinement}
+          onChange={(event) => debouncedRefine(event.currentTarget.value)}
         />
-      </button>
-      <StyledStats
-        translations={{
-          stats(nbHits) {
-            return (
-              <span className="badge badge-secondary badge-pill">{`${
-                nbHits === 0 ? 'No' : nbHits
-              } reports found`}</span>
-            );
-          },
-        }}
-      />
-    </form>
-  </div>
-);
+        <button
+          className="ais-SearchBox-reset"
+          type="reset"
+          title="Clear the search query."
+          onClick={() => refine('')}
+        >
+          <FontAwesomeIcon
+            icon={faTimesCircle}
+            className="pointer fa fa-times-circle"
+            title="Authors"
+          />
+        </button>
+        <StyledStats
+          translations={{
+            stats(nbHits) {
+              return (
+                <span className="badge badge-secondary badge-pill">{`${
+                  nbHits === 0 ? 'No' : nbHits
+                } reports found`}</span>
+              );
+            },
+          }}
+        />
+      </form>
+    </div>
+  );
+};
 
 const CustomSearchBox = connectSearchBox(StyledSearchBox);
 
@@ -442,8 +455,127 @@ const getImageHashPath = (imgUrl) => {
   return `${config.gatsby.siteUrl}/large_media/report_banners/${md5(imgUrl)}`;
 };
 
+const removeUndefinedAttributes = (obj) => {
+  for (const attr in obj) {
+    if (obj[attr] === undefined) {
+      delete obj[attr];
+    }
+  }
+  return { ...obj };
+};
+
+const removeEmptyAttributes = (obj) => {
+  for (const attr in obj) {
+    if (obj[attr] === '' || obj[attr].length === 0) {
+      delete obj[attr];
+    }
+  }
+  return { ...obj };
+};
+
+const convertArrayToString = (obj) => {
+  for (const attr in obj) {
+    if (obj[attr].length > 0) {
+      obj[attr] = obj[attr].join();
+    }
+  }
+  return { ...obj };
+};
+
+const convertStringToArray = (obj) => {
+  for (const attr in obj) {
+    if (attr !== 's' && obj[attr] !== undefined) {
+      obj[attr] = obj[attr].split(',');
+    }
+  }
+  return { ...obj };
+};
+
 const DiscoverApp = (props) => {
   const [collapse, setCollapse] = useState(true);
+
+  const [query, setQuery] = useQueryParams({
+    s: StringParam,
+    source_domain: StringParam,
+    authors: StringParam,
+    submitters: StringParam,
+    incident_id: StringParam,
+    flag: StringParam,
+  });
+
+  const [searchState, setSearchState] = useState({
+    configure: {
+      hitsPerPage: 30,
+    },
+    page: 1,
+    query: 'Youtube',
+    refinementList: {},
+  });
+
+  const queryConfig = {
+    s: StringParam,
+    source_domain: StringParam,
+    authors: StringParam,
+    submitters: StringParam,
+    incident_id: StringParam,
+    flag: StringParam,
+  };
+
+  useEffect(() => {
+    const cleanQuery = removeUndefinedAttributes(query);
+
+    const querySearch = cleanQuery.s || '';
+
+    delete cleanQuery.s;
+
+    setSearchState({
+      ...searchState,
+      query: querySearch,
+      refinementList: {
+        ...convertStringToArray(cleanQuery),
+      },
+    });
+  }, []);
+
+  const getQueryFromState = (searchState) => {
+    let query = {};
+
+    if (searchState && searchState.query !== '') {
+      query.s = searchState.query;
+    }
+
+    if (searchState && searchState.refinementList !== {}) {
+      query = {
+        ...query,
+        ...convertArrayToString(removeEmptyAttributes(searchState.refinementList)),
+      };
+    }
+
+    return query;
+  };
+
+  const toggleFilterByIncidentId = (incidentId) => {
+    const incident_id = [];
+
+    if (
+      !searchState.refinementList ||
+      !searchState.refinementList.incident_id ||
+      searchState.refinementList.incident_id.length === 0
+    ) {
+      incident_id.push(incidentId);
+    }
+
+    const newSearchState = {
+      ...searchState,
+      refinementList: {
+        ...searchState.refinementList,
+        incident_id,
+      },
+    };
+
+    setSearchState(newSearchState);
+    setQuery(getQueryFromState(newSearchState), 'push');
+  };
 
   const authorsModal = useModal();
 
@@ -451,7 +583,7 @@ const DiscoverApp = (props) => {
 
   const flagReportModal = useModal();
 
-  const RenderCards = ({ hits }) => {
+  const RenderCards = ({ hits, toggleFilterByIncidentId }) => {
     return (
       <>
         {hits.map((hit) => (
@@ -461,6 +593,7 @@ const DiscoverApp = (props) => {
             authorsModal={authorsModal}
             submittersModal={submittersModal}
             flagReportModal={flagReportModal}
+            toggleFilterByIncidentId={toggleFilterByIncidentId}
           />
         ))}
       </>
@@ -471,50 +604,59 @@ const DiscoverApp = (props) => {
 
   return (
     <Layout {...props} collapse={collapse} className="maxWidth">
-      <Container>
-        <InstantSearch
-          indexName="aiid-emergency"
-          searchClient={searchClient}
-          // createURL={searchState => `?q=${searchState.query}`}
-        >
-          <Header>
-            <FontAwesomeIcon
-              icon={faBars}
-              className="pointer fa fa-BARS"
-              title="Authors"
-              size="2x"
-              style={{ marginRight: 10, marginTop: 2 }}
-              onClick={() => setCollapse(!collapse)}
-            />
-            <CustomSearchBox />
-          </Header>
-          <SidesContainer>
-            <LeftSide>
-              {REFINEMENT_LISTS.map((list) => (
-                <RefinementList
-                  key={list.attribute}
-                  attribute={list.attribute}
-                  placeholder={list.inputText}
-                  listLabel={list.label}
-                  faIcon={list.faIcon}
-                  faClasses={list.faClasses}
-                />
-              ))}
-              <Configure hitsPerPage={30} />
-            </LeftSide>
-            <RightSide>
-              <HitsContainer>
-                <CustomHits />
-              </HitsContainer>
-              <StyledPagination />
-            </RightSide>
-          </SidesContainer>
-        </InstantSearch>
-      </Container>
+      <QueryParams config={queryConfig}>
+        {({ query, setQuery }) => (
+          <>
+            <Container>
+              <InstantSearch
+                indexName="aiid-emergency"
+                searchClient={searchClient}
+                searchState={searchState}
+                onSearchStateChange={(searchState) => {
+                  setSearchState(searchState);
+                  setQuery(getQueryFromState(searchState), 'push');
+                }}
+              >
+                <Header>
+                  <FontAwesomeIcon
+                    icon={faBars}
+                    className="pointer fa fa-BARS"
+                    title="Authors"
+                    size="2x"
+                    style={{ marginRight: 10, marginTop: 2 }}
+                    onClick={() => setCollapse(!collapse)}
+                  />
+                  <CustomSearchBox defaultRefinement={query.s} />
+                </Header>
+                <SidesContainer>
+                  <LeftSide>
+                    {REFINEMENT_LISTS.map((list) => (
+                      <RefinementList
+                        key={list.attribute}
+                        attribute={list.attribute}
+                        placeholder={list.inputText}
+                        listLabel={list.label}
+                        faIcon={list.faIcon}
+                        faClasses={list.faClasses}
+                      />
+                    ))}
+                  </LeftSide>
+                  <RightSide>
+                    <HitsContainer>
+                      <CustomHits toggleFilterByIncidentId={toggleFilterByIncidentId} />
+                    </HitsContainer>
+                    <StyledPagination />
+                  </RightSide>
+                </SidesContainer>
+              </InstantSearch>
+            </Container>
 
-      <CustomModal {...authorsModal} />
-      <CustomModal {...submittersModal} />
-      <CustomModal {...flagReportModal} />
+            <CustomModal {...authorsModal} />
+            <CustomModal {...submittersModal} />
+            <CustomModal {...flagReportModal} />
+          </>
+        )}
+      </QueryParams>
     </Layout>
   );
 };
