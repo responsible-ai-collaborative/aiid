@@ -7,8 +7,9 @@ import * as Yup from 'yup';
 
 import API from '../../src/mongodb/api';
 
-import { Layout, Link } from '@components';
-import { StyledHeading } from '../../src/components/styles/Docs';
+import Layout from 'components/Layout';
+import Link from 'components/Link';
+import { StyledHeading } from 'components/styles/Docs';
 
 // Reference:
 // https://hackernoon.com/building-react-forms-with-formik-yup-and-react-bootstrap-with-a-minimal-amount-of-pain-and-suffering-1sfk3xv8

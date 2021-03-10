@@ -13,12 +13,12 @@ import Collapse from 'react-bootstrap/Collapse';
 import Badge from 'react-bootstrap/Badge';
 
 import BSON from 'bson';
+import Layout from 'components/Layout';
+import Link from 'components/Link';
+import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 
 import { promoteReport, deleteSubmittedDocument } from '../../src/mongodb/api';
 import { getUser } from '../../src/mongodb/authenticate';
-
-import { Layout, Link } from '@components';
-import { StyledHeading, StyledMainWrapper } from '../../src/components/styles/Docs';
 
 // Renders buttons that render the whole contents of, for example, long text
 const TabGroup = ({ item, keysToRender }) => {
