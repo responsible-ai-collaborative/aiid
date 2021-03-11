@@ -5,8 +5,9 @@ import { graphql } from 'gatsby';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 
-import { Layout, Link } from '@components';
-import { StyledHeading, StyledMainWrapper } from '../../src/components/styles/Docs';
+import Layout from 'components/Layout';
+import Link from 'components/Link';
+import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 
 const jsonSchema = {
   title: 'incident',

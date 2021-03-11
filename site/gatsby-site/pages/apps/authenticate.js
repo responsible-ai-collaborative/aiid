@@ -1,10 +1,10 @@
 import React, { useState, Component } from 'react';
-import { getUserAPIKey, setUserAPIKey, logout } from '../../src/mongodb/authenticate';
-
 import Helmet from 'react-helmet';
-import { Layout } from '@components';
+import Layout from 'components/Layout';
 import { Form, Button } from 'react-bootstrap';
-import { StyledHeading, StyledMainWrapper } from '../../src/components/styles/Docs';
+
+import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
+import { getUserAPIKey, setUserAPIKey, logout } from 'mongodb/authenticate';
 
 function AuthenticateUI() {
   const [apiKey, setAPIKey] = useState(getUserAPIKey());
@@ -19,7 +19,7 @@ function AuthenticateUI() {
     window.location.reload(false);
   };
 
-  const input = e => {
+  const input = (e) => {
     setAPIKey(e.target.value);
   };
 

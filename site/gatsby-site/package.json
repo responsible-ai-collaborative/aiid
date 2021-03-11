@@ -76,8 +76,8 @@
   "scripts": {
     "start": "gatsby develop",
     "build": "gatsby build --prefix-paths",
-    "format": "prettier --write \"src/**/*.{js,jsx,css,json}\"",
-    "lint": "eslint --fix \"src/**/*.{js,jsx}\""
+    "format": "prettier --write \"{src,page-creators,pages,constants}/**/*.{js,jsx,css,json}\"",
+    "lint": "eslint --fix \"{src,page-creators,pages,constants}/**/*.{js,jsx}\""
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",

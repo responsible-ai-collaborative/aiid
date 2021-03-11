@@ -7,14 +7,14 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-import { Layout } from '@components';
-import { StyledHeading, StyledMainWrapper } from '../components/styles/Docs';
-import Citation from '../components/Citation';
-import IncidentList from '../components/IncidentList';
-import ImageCarousel from '../components/ImageCarousel';
-import BibTex from '../components/BibTex';
+import Layout from 'components/Layout';
+import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
+import Citation from 'components/Citation';
+import IncidentList from 'components/IncidentList';
+import ImageCarousel from 'components/ImageCarousel';
+import BibTex from 'components/BibTex';
 
-import { getCanonicalUrl } from '../utils/getCanonicalUrl';
+import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 
 const IncidentCite = ({ data, ...props }) => {
   if (!data) {
@@ -73,14 +73,14 @@ const IncidentCite = ({ data, ...props }) => {
               <h1>Tools</h1>
               <Button variant="outline-primary" className="mr-2" href={'/summaries/incidents'}>
                 All Incidents
-                </Button>
+              </Button>
               <Button
                 variant="outline-primary"
                 className="mr-2"
                 href={'/discover/index.html?incident_id=' + incident_id}
               >
                 Discover
-                </Button>
+              </Button>
               <BibTex nodes={nodes} incident_id={incident_id} />
             </Col>
           </Row>

@@ -70,12 +70,12 @@ const Layout = ({ children, location, collapse, className }) => (
         <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
           <Sidebar location={location} collapse={collapse} />
         </LeftSideBarWidth>
-        {config.sidebar.title ? (
+        {config.sidebar.title && (
           <div
             className={'sidebarTitle sideBarShow'}
             dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
           />
-        ) : null}
+        )}
         <Content>
           <MaxWidth className={className}>{children}</MaxWidth>
         </Content>
