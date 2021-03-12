@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { StringParam, QueryParams, useQueryParams } from 'use-query-params';
-import { Layout } from '@components';
+import { MiddleLayout } from '@components';
 import algoliasearch from 'algoliasearch/lite';
 import { debounce } from 'debounce';
 import {
@@ -11,6 +11,7 @@ import {
   Pagination,
   Stats,
   connectSearchBox,
+  connectCurrentRefinements,
 } from 'react-instantsearch-dom';
 import styled from 'styled-components';
 import config from '../../config';
@@ -72,7 +73,13 @@ const REFINEMENT_LISTS = [
 ];
 
 const Container = styled.div`
-  max-width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+
+  @media (max-width: 1440px) {
+    padding: 0;
+  }
 `;
 
 const SidesContainer = styled.div`
@@ -90,19 +97,27 @@ const HitsContainer = styled.div`
   display: grid;
   max-width: 100%;
   grid-gap: 13px;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
 
-  @media (max-width: 1440px) {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
+  ${({ showDetails }) =>
+    showDetails === true &&
+    `
+    grid-template-columns: auto;
+  `};
 
-  @media (max-width: 1140px) {
+  @media (max-width: 1240px) {
     grid-template-columns: 1fr 1fr;
   }
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
   }
+`;
+
+const StatsContainer = styled.div`
+  display: grid;
+  max-width: 100%;
+  grid-template-columns: 1fr 3fr;
 `;
 
 const LeftSide = styled.div`
@@ -292,12 +307,67 @@ const cardNeedsBlockquote = (item) => {
   return false;
 };
 
+const getParagraphs = (itemText) => {
+  return (
+    <>
+      {itemText.split('\n').map((paragraph, index) => (
+        <p key={index}>{paragraph}</p>
+      ))}
+    </>
+  );
+};
+
+const IncidentStatsCard = ({ searchInput, stats }) => {
+  const STATS = [
+    {
+      key: 'incidentId',
+      label: 'Incident ID',
+    },
+    {
+      key: 'reportCount',
+      label: 'Report Count',
+    },
+    {
+      key: 'incidentDate',
+      label: 'Incident Date',
+    },
+    {
+      key: 'citation',
+      label: 'Citation',
+    },
+  ];
+
+  return (
+    <IncidentCardContainer className="card">
+      <div className="card-header">
+        <p>Incident Stats</p>
+      </div>
+      <StatsContainer className="card-body">
+        <div>
+          {STATS.map((stat) => (
+            <div key={stat.key}>{stat.label}</div>
+          ))}
+        </div>
+        <div>
+          {STATS.map((stat) => (
+            <div key={stat.key}>
+              {stat.key === 'citation' ? <a href={stats[stat.key]}>View</a> : stats[stat.key]}
+            </div>
+          ))}
+        </div>
+      </StatsContainer>
+      <CustomClearRefinements searchInputRef={searchInput} clearsQuery={true} />
+    </IncidentCardContainer>
+  );
+};
+
 const IncidentCard = ({
   item,
   authorsModal,
   submittersModal,
   flagReportModal,
   toggleFilterByIncidentId,
+  showDetails,
 }) => (
   <IncidentCardContainer className="card">
     <div className="card-header">
@@ -325,19 +395,27 @@ const IncidentCard = ({
           />
         </blockquote>
       )}
-      <p>{item.text.substr(0, 400) + '...'}</p>
+      {showDetails ? (
+        <div>{getParagraphs(item.text)}</div>
+      ) : (
+        <div>
+          <p>{item.text.substr(0, 400) + '...'}</p>
+        </div>
+      )}
     </div>
     <div className="align-bottom">
       <img className="image-preview" alt={item.title} src={getImageHashPath(item.image_url)} />
-      <button
-        type="button"
-        className="btn btn-secondary btn-sm btn-block assignment-button"
-        onClick={() => {
-          toggleFilterByIncidentId(item.incident_id + '');
-        }}
-      >
-        Show Details on Incident #{item.incident_id}
-      </button>
+      {!showDetails && (
+        <button
+          type="button"
+          className="btn btn-secondary btn-sm btn-block assignment-button"
+          onClick={() => {
+            toggleFilterByIncidentId(item.incident_id + '');
+          }}
+        >
+          Show Details on Incident #{item.incident_id}
+        </button>
+      )}
     </div>
     <CardFooter className="card-footer text-muted">
       <a href={item.url} target="_blank" rel="noreferrer">
@@ -399,7 +477,7 @@ const IncidentCard = ({
   </IncidentCardContainer>
 );
 
-const StyledSearchBox = ({ refine, defaultRefinement }) => {
+const StyledSearchBox = ({ refine, defaultRefinement, customRef }) => {
   const debouncedRefine = debounce((text) => {
     refine(text);
   }, 500);
@@ -408,6 +486,7 @@ const StyledSearchBox = ({ refine, defaultRefinement }) => {
     <div className="ais-SearchBox flex-grow-1">
       <form className="ais-SearchBox-form" noValidate>
         <StyledSearchInput
+          ref={customRef}
           className="ais-SearchBox-input"
           autoComplete="off"
           autoCorrect="off"
@@ -446,6 +525,21 @@ const StyledSearchBox = ({ refine, defaultRefinement }) => {
     </div>
   );
 };
+
+const ClearRefinements = ({ items, refine, searchInputRef }) => (
+  <button
+    type="button"
+    className="btn btn-secondary btn-sm btn-block assignment-button"
+    onClick={() => {
+      searchInputRef.current.value = '';
+      refine(items);
+    }}
+  >
+    Clear Incident Selection and Search
+  </button>
+);
+
+const CustomClearRefinements = connectCurrentRefinements(ClearRefinements);
 
 const CustomSearchBox = connectSearchBox(StyledSearchBox);
 
@@ -494,6 +588,8 @@ const convertStringToArray = (obj) => {
 const DiscoverApp = (props) => {
   const [collapse, setCollapse] = useState(true);
 
+  const searchInput = useRef(null);
+
   const [query, setQuery] = useQueryParams({
     s: StringParam,
     source_domain: StringParam,
@@ -508,7 +604,7 @@ const DiscoverApp = (props) => {
       hitsPerPage: 30,
     },
     page: 1,
-    query: 'Youtube',
+    query: '',
     refinementList: {},
   });
 
@@ -520,6 +616,8 @@ const DiscoverApp = (props) => {
     incident_id: StringParam,
     flag: StringParam,
   };
+
+  const showDetails = searchState.refinementList?.incident_id?.length === 1;
 
   useEffect(() => {
     const cleanQuery = removeUndefinedAttributes(query);
@@ -583,9 +681,22 @@ const DiscoverApp = (props) => {
 
   const flagReportModal = useModal();
 
-  const RenderCards = ({ hits, toggleFilterByIncidentId }) => {
+  const RenderCards = ({ hits, toggleFilterByIncidentId, showDetails }) => {
+    const itemsCount = hits.length;
+
     return (
       <>
+        {showDetails && hits[0] && (
+          <IncidentStatsCard
+            searchInput={searchInput}
+            stats={{
+              incidentId: hits[0].incident_id,
+              reportCount: hits.length,
+              incidentDate: hits[0].incident_date,
+              citation: `/cite/${hits[0].incident_id}`,
+            }}
+          />
+        )}
         {hits.map((hit) => (
           <IncidentCard
             key={hit._id}
@@ -594,6 +705,8 @@ const DiscoverApp = (props) => {
             submittersModal={submittersModal}
             flagReportModal={flagReportModal}
             toggleFilterByIncidentId={toggleFilterByIncidentId}
+            showDetails={showDetails}
+            itemsCount={itemsCount}
           />
         ))}
       </>
@@ -602,8 +715,21 @@ const DiscoverApp = (props) => {
 
   const CustomHits = connectHits(RenderCards);
 
+  const filters = useMemo(() => {
+    return REFINEMENT_LISTS.map((list) => (
+      <RefinementList
+        key={list.attribute}
+        attribute={list.attribute}
+        placeholder={list.inputText}
+        listLabel={list.label}
+        faIcon={list.faIcon}
+        faClasses={list.faClasses}
+      />
+    ));
+  }, []);
+
   return (
-    <Layout {...props} collapse={collapse} className="maxWidth">
+    <MiddleLayout {...props} collapse={collapse} className="maxWidth">
       <QueryParams config={queryConfig}>
         {({ query, setQuery }) => (
           <>
@@ -613,7 +739,7 @@ const DiscoverApp = (props) => {
                 searchClient={searchClient}
                 searchState={searchState}
                 onSearchStateChange={(searchState) => {
-                  setSearchState(searchState);
+                  setSearchState({ ...searchState });
                   setQuery(getQueryFromState(searchState), 'push');
                 }}
               >
@@ -626,24 +752,16 @@ const DiscoverApp = (props) => {
                     style={{ marginRight: 10, marginTop: 2 }}
                     onClick={() => setCollapse(!collapse)}
                   />
-                  <CustomSearchBox defaultRefinement={query.s} />
+                  <CustomSearchBox customRef={searchInput} defaultRefinement={query.s} />
                 </Header>
                 <SidesContainer>
-                  <LeftSide>
-                    {REFINEMENT_LISTS.map((list) => (
-                      <RefinementList
-                        key={list.attribute}
-                        attribute={list.attribute}
-                        placeholder={list.inputText}
-                        listLabel={list.label}
-                        faIcon={list.faIcon}
-                        faClasses={list.faClasses}
-                      />
-                    ))}
-                  </LeftSide>
+                  <LeftSide>{filters}</LeftSide>
                   <RightSide>
-                    <HitsContainer>
-                      <CustomHits toggleFilterByIncidentId={toggleFilterByIncidentId} />
+                    <HitsContainer showDetails={showDetails}>
+                      <CustomHits
+                        toggleFilterByIncidentId={toggleFilterByIncidentId}
+                        showDetails={showDetails}
+                      />
                     </HitsContainer>
                     <StyledPagination />
                   </RightSide>
@@ -657,7 +775,7 @@ const DiscoverApp = (props) => {
           </>
         )}
       </QueryParams>
-    </Layout>
+    </MiddleLayout>
   );
 };
 
