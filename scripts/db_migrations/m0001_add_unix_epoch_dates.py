@@ -47,6 +47,7 @@ def string_to_epoch(st):
 def update_epoch_dates(doc):
     if "epoch_incident_date" in doc:
         print("Skipping doc already containing epoch key...")
+        return
     print("Updating...\n\n" + str(doc))
     epochs = {
         "epoch_incident_date": string_to_epoch(res["incident_date"]),
@@ -55,7 +56,7 @@ def update_epoch_dates(doc):
         "epoch_date_modified": string_to_epoch(res["date_modified"]),
         "epoch_date_published": string_to_epoch(res["date_published"])
     }
-    
+
     print("------------- {}".format(epochs))
 
     for k in epochs:

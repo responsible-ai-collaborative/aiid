@@ -23,16 +23,16 @@ Systems
 
 Dates
 
-* `incident_date`: `2019-07-25` # (Date) Date the incident occurred. Defaults to the article date.
-* `date_downloaded`:`2019-07-25` # (Date) Date the report was downloaded.
-* `date_submitted`:`2019-07-25` # (Date) Date the report was submitted to the AIID. This determines citation order.
-* `date_modified`: `2019-07-25` # (Date or null) Date the report was edited.
-* `date_published`: `2019-07-25` # (Date or null) The publication date of the report.
-* `epoch_incident_date`: `2019-07-25` # (Int) Date the incident occurred in the Unix Epoch.
-* `epoch_date_downloaded`:`2019-07-25` # (Date) Date the report was downloaded in the Unix Epoch.
-* `epoch_date_submitted`:`2019-07-25` # (Date) Date the report was submitted to the AIID in the Unix Epoch.
-* `epoch_date_modified`: `2019-07-25` # (Date or null) Date the report was edited in the Unix Epoch.
-* `epoch_date_published`: `2019-07-25` # (Date or null) The publication date of the report in the Unix Epoch.
+* `incident_date`: `2019-07-25` # (String) Date the incident occurred. Defaults to the article date.
+* `date_downloaded`:`2019-07-25` # (String) Date the report was downloaded.
+* `date_submitted`:`2019-07-25` # (String) Date the report was submitted to the AIID. This determines citation order.
+* `date_modified`: `2019-07-25` # (String) Date the report was edited.
+* `date_published`: `2019-07-25` # (String) The publication date of the report.
+* `epoch_incident_date`: `1564016400` # (Int) Date the incident occurred in the Unix Epoch.
+* `epoch_date_downloaded`:`1564016400` # (Int) Date the report was downloaded in the Unix Epoch.
+* `epoch_date_submitted`:`1564016400` # (Int) Date the report was submitted to the AIID in the Unix Epoch.
+* `epoch_date_modified`: `1564016400` # (Int) Date the report was edited in the Unix Epoch.
+* `epoch_date_published`: `1564016400` # (Int) The publication date of the report in the Unix Epoch.
 
 People
 
