@@ -644,6 +644,8 @@ const DiscoverApp = (props) => {
 
     delete cleanQuery.s;
 
+    searchInput.current.value = querySearch;
+
     setSearchState({
       ...searchState,
       query: querySearch,
@@ -651,7 +653,7 @@ const DiscoverApp = (props) => {
         ...convertStringToArray(cleanQuery),
       },
     });
-  }, []);
+  }, [query]);
 
   const getQueryFromState = (searchState) => {
     let query = {};
