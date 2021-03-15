@@ -107,10 +107,21 @@ const HitsContainer = styled.div`
 
   @media (max-width: 1240px) {
     grid-template-columns: 1fr 1fr;
+    ${({ showDetails }) =>
+      showDetails === true &&
+      `
+      grid-template-columns: auto;
+    `};
   }
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
+
+    ${({ showDetails }) =>
+      showDetails === true &&
+      `
+      grid-template-columns: auto;
+    `};
   }
 `;
 
@@ -118,6 +129,7 @@ const StatsContainer = styled.div`
   display: grid;
   max-width: 100%;
   grid-template-columns: 1fr 3fr;
+  padding: 1.25rem;
 `;
 
 const LeftSide = styled.div`
@@ -147,6 +159,8 @@ const IncidentCardContainer = styled.div`
   border: 1.5px solid #d9deee;
   border-radius: 5px;
   box-shadow: 0 2px 5px 0px #e3e5ec;
+  display: flex;
+  flex-direction: column;
 `;
 
 const RefinementListContainer = styled.div`
@@ -206,6 +220,10 @@ const StyledButton = styled.button`
     background-color: #007bff;
     border-color: #007bff;
   `};
+`;
+
+const CardBody = styled.div`
+  padding: 1.25rem 1.25rem 0 1.25rem !important;
 `;
 
 const StyledSearchInput = styled.input`
@@ -369,7 +387,7 @@ const IncidentCard = ({
   toggleFilterByIncidentId,
   showDetails,
 }) => (
-  <IncidentCardContainer className="card">
+  <IncidentCardContainer>
     <div className="card-header">
       <Highlight hit={item} attribute="title" />
       <p className="subhead">
@@ -377,7 +395,7 @@ const IncidentCard = ({
         {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
       </p>
     </div>
-    <div className="card-body">
+    <CardBody className="card-body">
       <Highlight hit={item} attribute="description" />
       {cardNeedsBlockquote(item._snippetResult) && (
         <blockquote>
@@ -402,7 +420,7 @@ const IncidentCard = ({
           <p>{item.text.substr(0, 400) + '...'}</p>
         </div>
       )}
-    </div>
+    </CardBody>
     <div className="align-bottom">
       <img className="image-preview" alt={item.title} src={getImageHashPath(item.image_url)} />
       {!showDetails && (
