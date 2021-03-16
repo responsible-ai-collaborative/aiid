@@ -3,7 +3,7 @@ import { Form, Button } from 'react-bootstrap';
 
 // Reference:
 // https://hackernoon.com/building-react-forms-with-formik-yup-and-react-bootstrap-with-a-minimal-amount-of-pain-and-suffering-1sfk3xv8
-export const CONTAINER = styled.div`
+export const FormStyles = styled.div`
   background: #f7f9fa;
   height: auto;
   width: 100%;
@@ -37,7 +37,7 @@ export const CONTAINER = styled.div`
   }
 `;
 
-export const FORM = styled(Form)`
+export const StyledForm = styled(Form)`
   width: 90%;
   text-align: left;
   padding-top: 2em;
@@ -46,7 +46,7 @@ export const FORM = styled(Form)`
   }
 `;
 
-export const BUTTON = styled(Button)`
+export const StyledButton = styled(Button)`
   background: #1863ab;
   border: none;
   font-size: 1.2em;
