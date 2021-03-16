@@ -8,7 +8,7 @@ const TextInputGroup = ({
   name,
   label,
   placeholder,
-  value,
+  values = {},
   errors,
   touched,
   handleChange,
