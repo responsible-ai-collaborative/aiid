@@ -24,7 +24,6 @@ import {
   faFlag,
   faHashtag,
   faTimesCircle,
-  faBars,
 } from '@fortawesome/free-solid-svg-icons';
 import { useModal, CustomModal } from '../../src/components/useModal';
 
@@ -604,8 +603,6 @@ const convertStringToArray = (obj) => {
 };
 
 const DiscoverApp = (props) => {
-  const [collapse, setCollapse] = useState(true);
-
   const searchInput = useRef(null);
 
   const [query, setQuery] = useQueryParams({
@@ -749,7 +746,7 @@ const DiscoverApp = (props) => {
   }, []);
 
   return (
-    <MiddleLayout {...props} collapse={collapse} className="maxWidth">
+    <MiddleLayout {...props} className="maxWidth">
       <QueryParams config={queryConfig}>
         {({ query, setQuery }) => (
           <>
@@ -764,14 +761,6 @@ const DiscoverApp = (props) => {
                 }}
               >
                 <Header>
-                  <FontAwesomeIcon
-                    icon={faBars}
-                    className="pointer fa fa-BARS"
-                    title="Authors"
-                    size="2x"
-                    style={{ marginRight: 10, marginTop: 2 }}
-                    onClick={() => setCollapse(!collapse)}
-                  />
                   <CustomSearchBox customRef={searchInput} defaultRefinement={query.s} />
                 </Header>
                 <SidesContainer>

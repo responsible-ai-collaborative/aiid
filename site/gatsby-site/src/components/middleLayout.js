@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { MDXProvider } from '@mdx-js/react';
 
@@ -6,6 +6,7 @@ import ThemeProvider from './theme/themeProvider';
 import mdxComponents from './mdxComponents';
 import Sidebar from './sidebar';
 import config from '../../config.js';
+import Button from 'react-bootstrap/Button';
 
 const Wrapper = styled('div')`
   display: flex;
@@ -30,9 +31,9 @@ const Wrapper = styled('div')`
 
 const Content = styled('main')`
   display: flex;
+  flex-direction: column;
   flex-grow: 1;
   margin: 0px 88px;
-  padding-top: 3rem;
   background: ${({ theme }) => theme.colors.background};
 
   table tr {
@@ -42,7 +43,6 @@ const Content = styled('main')`
   @media only screen and (max-width: 1440px) {
     padding-left: 0;
     margin: 0 10px;
-    padding-top: 3rem;
   }
 `;
 
@@ -51,6 +51,10 @@ const MaxWidth = styled('div')`
     width: 100%;
     position: relative;
   }
+
+  @media (max-width: 1440px) {
+    padding-top: 1.2em;
+  }
 `;
 
 const LeftSideBarWidth = styled('div')`
@@ -58,25 +62,45 @@ const LeftSideBarWidth = styled('div')`
   ${({ collapse }) => collapse && `width: 0;`}
 `;
 
-const MiddleLayout = ({ children, location, collapse, className }) => (
-  <ThemeProvider location={location}>
-    <MDXProvider components={mdxComponents}>
-      <Wrapper>
-        <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
-          <Sidebar location={location} collapse={collapse} />
-        </LeftSideBarWidth>
-        {config.sidebar.title ? (
-          <div
-            className={'sidebarTitle sideBarShow'}
-            dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
-          />
-        ) : null}
-        <Content>
-          <MaxWidth className={className}>{children}</MaxWidth>
-        </Content>
-      </Wrapper>
-    </MDXProvider>
-  </ThemeProvider>
-);
+const SidebarToggleButton = styled(Button)`
+  width: 100px;
+  position: relative;
+  right: 76px;
+  top: 10px;
+
+  @media (max-width: 1440px) {
+    right: 0;
+  }
+
+  @media (max-width: 767px) {
+    display: none;
+  }
+`;
+
+const MiddleLayout = ({ children, location, className }) => {
+  const [collapse, setCollapse] = useState(false);
+
+  return (
+    <ThemeProvider location={location}>
+      <MDXProvider components={mdxComponents}>
+        <Wrapper>
+          <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
+            <Sidebar location={location} collapse={collapse} />
+          </LeftSideBarWidth>
+          {config.sidebar.title ? (
+            <div
+              className={'sidebarTitle sideBarShow'}
+              dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
+            />
+          ) : null}
+          <Content>
+            <SidebarToggleButton onClick={() => setCollapse(!collapse)}>MENU</SidebarToggleButton>
+            <MaxWidth className={className}>{children}</MaxWidth>
+          </Content>
+        </Wrapper>
+      </MDXProvider>
+    </ThemeProvider>
+  );
+};
 
 export default MiddleLayout;
