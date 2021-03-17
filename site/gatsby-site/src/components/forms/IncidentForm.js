@@ -10,6 +10,7 @@ import TextInputGroup from 'components/TextInputGroup';
 import { dateRegExp } from 'utils/date';
 import { useUserContext } from 'contexts/userContext';
 import { useMongo } from 'hooks/useMongo';
+import config from '../../../config';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -106,10 +107,18 @@ const IncidentForm = ({ incident, onUpdate }) => {
     setSubmitting(true);
 
     if (incident && incident.incident_id) {
-      // Update reported incident
-      updateOne({ incident_id: parseInt(values.id) }, values);
+      // Update reported incident in production DB
+      const { db_service, db_name, db_collection } = config.realm.production_db;
+      updateOne(
+        { incident_id: parseInt(values.id) },
+        values,
+        null,
+        db_service,
+        db_name,
+        db_collection
+      );
     } else {
-      // Submit new incident into queue
+      // Submit new incident into review queue
       await user.functions.createReportForReview(values);
     }
 
