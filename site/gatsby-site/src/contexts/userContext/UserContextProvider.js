@@ -17,8 +17,7 @@ import { UserContext } from './UserContext';
 // https://docs.mongodb.com/realm/web/mongodb/
 
 export const UserContextProvider = ({ children }) => {
-  const [loading, setLoading] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState();
 
   const [type, setType] = useState();
@@ -37,9 +36,11 @@ export const UserContextProvider = ({ children }) => {
     const apiKey = window.localStorage.getItem('mongoUserKey');
 
     setMongoUserKey(apiKey);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
+    if (loading && !mongoUserKey) return;
     setLoading(true);
     const credentials = mongoUserKey
       ? Realm.Credentials.apiKey(mongoUserKey)

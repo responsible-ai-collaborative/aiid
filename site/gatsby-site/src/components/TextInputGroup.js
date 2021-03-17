@@ -2,7 +2,7 @@ import React from 'react';
 import { Form } from 'react-bootstrap';
 
 import Label from './Label';
-import * as POP_OVERS from './PopOvers'
+import * as POP_OVERS from './PopOvers';
 
 const TextInputGroup = ({
   name,

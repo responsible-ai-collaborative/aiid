@@ -29,6 +29,8 @@ const Toggle = styled(Button).attrs({
  * @param {{ text: string, max: number }} props
  */
 const ReadMoreText = ({ text, rows = 3, visibility, ...props }) => {
+  if (!text) return null;
+
   const parentRef = useRef();
 
   const textRef = useRef();
