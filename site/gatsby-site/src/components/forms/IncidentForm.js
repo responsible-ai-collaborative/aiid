@@ -94,37 +94,34 @@ const IncidentForm = ({ incident, onUpdate }) => {
     handleBlur,
     handleSubmit,
     setValues,
-    setSubmitting,
-    resetForm,
   } = useFormik({
     initialValues: incident || defaultValue,
     validationSchema,
-    onSubmit,
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
+      setSubmitting(true);
+
+      if (incident && incident.incident_id) {
+        // Update reported incident in production DB
+        const { db_service, db_name, db_collection } = config.realm.production_db;
+        updateOne(
+          { incident_id: parseInt(values.id) },
+          values,
+          null,
+          db_service,
+          db_name,
+          db_collection
+        );
+      } else {
+        // Submit new incident into review queue
+        await user.functions.createReportForReview(values);
+      }
+
+      resetForm();
+      setSubmitting(false);
+    },
   });
 
   const TextInputGroupProps = { values, errors, touched, handleChange, handleBlur };
-  const onSubmit = async () => {
-    setSubmitting(true);
-
-    if (incident && incident.incident_id) {
-      // Update reported incident in production DB
-      const { db_service, db_name, db_collection } = config.realm.production_db;
-      updateOne(
-        { incident_id: parseInt(values.id) },
-        values,
-        null,
-        db_service,
-        db_name,
-        db_collection
-      );
-    } else {
-      // Submit new incident into review queue
-      await user.functions.createReportForReview(values);
-    }
-
-    resetForm();
-    setSubmitting(false);
-  };
 
   useEffect(() => {
     if (incident) {
