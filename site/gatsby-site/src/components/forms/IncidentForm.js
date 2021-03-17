@@ -102,10 +102,10 @@ const IncidentForm = ({ incident, onUpdate }) => {
   });
 
   const TextInputGroupProps = { values, errors, touched, handleChange, handleBlur };
-  const onSubmit = async (values) => {
+  const onSubmit = async () => {
     setSubmitting(true);
 
-    if (incident.incident_id) {
+    if (incident && incident.incident_id) {
       // Update reported incident
       updateOne({ incident_id: parseInt(values.id) }, values);
     } else {
@@ -118,7 +118,9 @@ const IncidentForm = ({ incident, onUpdate }) => {
   };
 
   useEffect(() => {
-    setValues(incident);
+    if (incident) {
+      setValues(incident);
+    }
   }, [incident]);
 
   useEffect(() => {
@@ -188,6 +190,7 @@ const IncidentForm = ({ incident, onUpdate }) => {
         label="Text :"
         placeholder="Text of the report"
         as="textarea"
+        rows={8}
         {...TextInputGroupProps}
       />
       {!isEditMode && (
