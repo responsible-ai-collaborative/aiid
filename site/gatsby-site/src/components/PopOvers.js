@@ -79,3 +79,8 @@ export const text = Popover(
   and other media that should not be indexed and searched when users are discovering
   incidents in the database.`
 );
+
+export const reportAddress = Popover(
+  'Link to the publicly available report',
+  `This address will be linked to within many incident database UIs.`
+);
