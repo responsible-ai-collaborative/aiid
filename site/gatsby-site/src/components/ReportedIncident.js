@@ -15,6 +15,8 @@ import EditableListItem from 'components/EditableListItem';
 import IncidentEditModal from 'components/IncidentEditModal';
 
 import { useUserContext } from 'contexts/userContext';
+import { useSubmissionsContext } from 'contexts/submissionsContext';
+import { useMongo } from 'hooks/useMongo';
 
 const ListedGroup = ({ item, keysToRender }) => {
   return (
@@ -39,23 +41,35 @@ const dateRender = [
   'date_downloaded',
   'date_modified',
 ];
-const otherDetails = ['id', 'language', 'mongodb_id'];
+const otherDetails = ['language', 'mongodb_id'];
 
 const ReportedIncident = ({ incident }) => {
-  const { loading, user, isAdmin } = useUserContext();
+  const { user, isAdmin } = useUserContext();
+  const {
+    actions: { refetch },
+  } = useSubmissionsContext();
+  const { updateOne } = useMongo();
 
   const [isEditing, setIsEditing] = useState(false);
   const [open, setOpen] = useState(false);
 
   const addReport = () => {
     user.functions.promoteReport({ _id: new ObjectId(incident['mongodb_id']) });
+    refetch();
   };
 
   const rejectReport = () => {
     user.functions.deleteSubmittedDocument({ _id: new ObjectId(incident['mongodb_id']) });
+    refetch();
   };
 
   const toggleEditing = () => setIsEditing(!isEditing);
+
+  const handleUpdate = async (values) => {
+    console.log('Updating report from: ', incident);
+    console.log('Updating report to:', values);
+    updateOne({ _id: values._id }, values, refetch);
+  };
 
   const isNewIncident = incident['incident_id'] === 0;
   const cardSubheader = isNewIncident ? 'New Incident' : 'New Report';
@@ -115,7 +129,12 @@ const ReportedIncident = ({ incident }) => {
           </Card.Footer>
         </div>
       </Collapse>
-      <IncidentEditModal show={isEditing} incident={incident} onHide={toggleEditing} />
+      <IncidentEditModal
+        show={isEditing}
+        incident={incident}
+        onHide={toggleEditing}
+        onSubmit={handleUpdate}
+      />
     </>
   );
 };

@@ -10,7 +10,7 @@ import { FormStyles } from 'components/styles/Form';
 import { useUserContext } from 'contexts/userContext';
 
 const SubmitForm = () => {
-  const { isAdmin } = useUserContext();
+  const { isAdmin, user } = useUserContext();
   const [incident, setIncident] = useState({});
   const [csvData, setCsvData] = useState([]);
   const [csvIndex, setCsvIndex] = useState(0);
@@ -29,9 +29,13 @@ const SubmitForm = () => {
     setCsvIndex(Math.min(csvData.length - 1, csvIndex + 1));
   };
 
+  const handleSubmit = (values) => {
+    user.functions.createReportForReview(values);
+  };
+
   return (
     <FormStyles className="p-5 mb-5">
-      <IncidentForm incident={incident} onUpdate={setIncident} />
+      <IncidentForm incident={incident} onUpdate={setIncident} onSubmit={handleSubmit} />
       <RelatedIncidents incident={incident} />
       <Container className={cx('mt-5 p-0', !isAdmin && 'd-none')}>
         <h2>Advanced: Add by CSV</h2>

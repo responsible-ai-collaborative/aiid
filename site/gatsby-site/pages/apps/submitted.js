@@ -5,23 +5,20 @@ import { graphql } from 'gatsby';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Layout from 'components/Layout';
 import Link from 'components/Link';
-import ReportedIncident from 'components/ReportedIncident';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
+import { SubmissionsContextProvider } from 'contexts/submissionsContext';
+import SubmissionList from 'components/SubmissionList';
 
 const SubmittedIncidentsPage = ({ data, ...props }) => {
   if (!data) {
     return null;
   }
-  const { allMongodbAiidprodSubmissions, allMongodbAiidprodQuickadd } = data;
 
-  const fullSubmissions = allMongodbAiidprodSubmissions['edges'];
+  const { allMongodbAiidprodQuickadd } = data;
 
   const quickSubmissions = allMongodbAiidprodQuickadd['edges'];
 
   // sort by value
-  fullSubmissions.sort(function (a, b) {
-    return a['node']['incident_date'] - b['node']['incident_date'];
-  });
   quickSubmissions.sort(function (a, b) {
     return a['node']['date_submitted'] - b['node']['date_submitted'];
   });
@@ -34,20 +31,10 @@ const SubmittedIncidentsPage = ({ data, ...props }) => {
       <div className={'titleWrapper'}>
         <StyledHeading>Submitted Incident Report List</StyledHeading>
       </div>
+      <SubmissionsContextProvider>
+        <SubmissionList />
+      </SubmissionsContextProvider>
       <StyledMainWrapper>
-        <p className="paragraph">
-          The following incident reports have been <Link to="/about_apps/2-submit">submitted </Link>{' '}
-          by users and are pending review by editors. Only editors may promote these records to
-          incident reports in the database.
-        </p>
-        <p>Please note that this list updates hourly. New submissions are not immediately shown.</p>
-        <ListGroup className="mb-5">
-          {fullSubmissions.map(({ node }) => (
-            <ListGroup.Item key={node.id} className="m-0 p-0">
-              <ReportedIncident incident={node} />
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
         <h1>Quick Add URLs</h1>
         <p>
           These reports were added anonymously by users in the{' '}
@@ -69,29 +56,6 @@ export default SubmittedIncidentsPage;
 
 export const pageQuery = graphql`
   query AllSubmittedReports {
-    allMongodbAiidprodSubmissions {
-      edges {
-        node {
-          title
-          source_domain
-          authors
-          submitters
-          incident_date
-          incident_id
-          url
-          image_url
-          date_downloaded
-          date_published
-          date_submitted
-          date_modified
-          text
-          description
-          language
-          id
-          mongodb_id
-        }
-      }
-    }
     allMongodbAiidprodQuickadd {
       edges {
         node {
