@@ -76,7 +76,7 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 1rem;
 
-  @media (max-width: 1440px) {
+  @media (max-width: 767px) {
     padding: 0;
   }
 `;
@@ -87,8 +87,12 @@ const SidesContainer = styled.div`
   width: 100%;
   padding-top: 2rem;
 
+  @media (max-width: 1440px) {
+    padding-top: 1em;
+  }
+
   @media (max-width: 570px) {
-    flex-direction: column;
+    flex-direction: column-reverse;
   }
 `;
 
@@ -131,25 +135,35 @@ const StatsContainer = styled.div`
   padding: 1.25rem;
 `;
 
-const LeftSide = styled.div`
+const FacetsSide = styled.div`
   display: flex;
   flex-direction: column;
   width: 300px;
+
+  @media (max-width: 1440px) {
+    width: auto
+    max-width: 300px;
+  }
+
+  @media (max-width: 570px) {
+    max-width: unset;
+    min-width: 300px;
+  }
+`;
+
+const ResultsSide = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   padding-right: 2rem;
+
+  @media (max-width: 1440px) {
+    padding-right: 1rem;
+  }
 
   @media (max-width: 570px) {
     width: 100%;
     padding: 0;
-  }
-`;
-
-const RightSide = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-
-  @media (max-width: 570px) {
-    width: 100%;
   }
 `;
 
@@ -508,7 +522,7 @@ const StyledSearchBox = ({ refine, defaultRefinement, customRef }) => {
           autoComplete="off"
           autoCorrect="off"
           autoCapitalize="off"
-          placeholder="Search for products"
+          placeholder="Search"
           spellCheck="false"
           maxLength="512"
           type="search"
@@ -764,8 +778,7 @@ const DiscoverApp = (props) => {
                   <CustomSearchBox customRef={searchInput} defaultRefinement={query.s} />
                 </Header>
                 <SidesContainer>
-                  <LeftSide>{filters}</LeftSide>
-                  <RightSide>
+                  <ResultsSide>
                     <HitsContainer showDetails={showDetails}>
                       <CustomHits
                         toggleFilterByIncidentId={toggleFilterByIncidentId}
@@ -773,7 +786,8 @@ const DiscoverApp = (props) => {
                       />
                     </HitsContainer>
                     <StyledPagination />
-                  </RightSide>
+                  </ResultsSide>
+                  <FacetsSide>{filters}</FacetsSide>
                 </SidesContainer>
               </InstantSearch>
             </Container>

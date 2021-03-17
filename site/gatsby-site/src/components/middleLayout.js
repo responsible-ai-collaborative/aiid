@@ -31,7 +31,7 @@ const Wrapper = styled('div')`
 
 const Content = styled('main')`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex-grow: 1;
   margin: 0px 88px;
   background: ${({ theme }) => theme.colors.background};
@@ -42,7 +42,11 @@ const Content = styled('main')`
 
   @media only screen and (max-width: 1440px) {
     padding-left: 0;
-    margin: 0 10px;
+    margin: 0 0 0 30px;
+  }
+
+  @media (max-width: 767px) {
+    margin: 1em;
   }
 `;
 
@@ -53,7 +57,7 @@ const MaxWidth = styled('div')`
   }
 
   @media (max-width: 1440px) {
-    padding-top: 1.2em;
+    padding-top: 0;
   }
 `;
 
@@ -64,12 +68,22 @@ const LeftSideBarWidth = styled('div')`
 
 const SidebarToggleButton = styled(Button)`
   width: 100px;
-  position: relative;
-  right: 76px;
-  top: 10px;
+  height: 40px;
+  position: fixed;
+  left: 220px;
+  ${({ collapse }) =>
+    collapse === true &&
+    `
+      left: -30px;
+    `};
+  top: 50%;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
 
   @media (max-width: 1440px) {
-    right: 0;
+    right: 41px;
   }
 
   @media (max-width: 767px) {
@@ -78,7 +92,7 @@ const SidebarToggleButton = styled(Button)`
 `;
 
 const MiddleLayout = ({ children, location, className }) => {
-  const [collapse, setCollapse] = useState(false);
+  const [collapse, setCollapse] = useState(true);
 
   return (
     <ThemeProvider location={location}>
@@ -94,7 +108,9 @@ const MiddleLayout = ({ children, location, className }) => {
             />
           ) : null}
           <Content>
-            <SidebarToggleButton onClick={() => setCollapse(!collapse)}>MENU</SidebarToggleButton>
+            <SidebarToggleButton onClick={() => setCollapse(!collapse)} collapse={collapse}>
+              MENU
+            </SidebarToggleButton>
             <MaxWidth className={className}>{children}</MaxWidth>
           </Content>
         </Wrapper>
