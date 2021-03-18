@@ -51,8 +51,10 @@ const Content = styled('main')`
 `;
 
 const MaxWidth = styled('div')`
+  width: 100%;
+
   @media only screen and (max-width: 50rem) {
-    width: 100%;
+    max-width: 100%;
     position: relative;
   }
 
@@ -91,7 +93,7 @@ const SidebarToggleButton = styled(Button)`
   }
 `;
 
-const MiddleLayout = ({ children, location, className }) => {
+const MiddleLayout = ({ children, location }) => {
   const [collapse, setCollapse] = useState(true);
 
   return (
@@ -111,7 +113,7 @@ const MiddleLayout = ({ children, location, className }) => {
             <SidebarToggleButton onClick={() => setCollapse(!collapse)} collapse={collapse}>
               MENU
             </SidebarToggleButton>
-            <MaxWidth className={className}>{children}</MaxWidth>
+            <MaxWidth>{children}</MaxWidth>
           </Content>
         </Wrapper>
       </MDXProvider>

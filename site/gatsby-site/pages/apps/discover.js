@@ -84,7 +84,7 @@ const Container = styled.div`
 const SidesContainer = styled.div`
   display: flex;
   flex-direction: row;
-  width: 100%;
+  max-width: 100%;
   padding-top: 2rem;
 
   @media (max-width: 1440px) {
@@ -138,23 +138,25 @@ const StatsContainer = styled.div`
 const FacetsSide = styled.div`
   display: flex;
   flex-direction: column;
-  width: 300px;
+  max-width: 300px;
 
   @media (max-width: 1440px) {
-    width: auto
     max-width: 300px;
   }
 
   @media (max-width: 570px) {
     max-width: unset;
-    min-width: 300px;
   }
+`;
+
+const Text = styled.p`
+  line-height: 1.3;
 `;
 
 const ResultsSide = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  max-width: 85%;
   padding-right: 2rem;
 
   @media (max-width: 1440px) {
@@ -168,7 +170,6 @@ const ResultsSide = styled.div`
 `;
 
 const IncidentCardContainer = styled.div`
-  min-width: 300px;
   border: 1.5px solid #d9deee;
   border-radius: 5px;
   box-shadow: 0 2px 5px 0px #e3e5ec;
@@ -241,12 +242,13 @@ const CardBody = styled.div`
 
 const StyledSearchInput = styled.input`
   padding: 0.3rem 0.3rem !important;
+  max-width: 100% !important;
 `;
 
 const Header = styled.div`
   display: flex;
   flex-direction: row;
-  width: 100%;
+  max-width: 100%;
 
   @media (max-width: 767px) {
     .fa-BARS {
@@ -409,7 +411,7 @@ const IncidentCard = ({
       </p>
     </div>
     <CardBody className="card-body">
-      <Highlight hit={item} attribute="description" />
+      {/* <Highlight hit={item} attribute="description" /> */}
       {cardNeedsBlockquote(item._snippetResult) && (
         <blockquote>
           <Highlight
@@ -430,7 +432,7 @@ const IncidentCard = ({
         <div>{getParagraphs(item.text)}</div>
       ) : (
         <div>
-          <p>{item.text.substr(0, 400) + '...'}</p>
+          <Text>{item.text.substr(0, 400) + '...'}</Text>
         </div>
       )}
     </CardBody>
@@ -760,7 +762,7 @@ const DiscoverApp = (props) => {
   }, []);
 
   return (
-    <MiddleLayout {...props} className="maxWidth">
+    <MiddleLayout {...props}>
       <QueryParams config={queryConfig}>
         {({ query, setQuery }) => (
           <>

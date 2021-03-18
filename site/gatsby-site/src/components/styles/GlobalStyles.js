@@ -618,7 +618,6 @@ export const baseStyles = injectGlobal`
     align-items: center;
     font-size: 16px;
     padding: 10px 0px;
-    padding-left: 15px;
     max-height: 40px;
   }
   .githubBtn span span {
