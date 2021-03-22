@@ -3,10 +3,10 @@ import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 
-import { Layout } from '@components';
-import NextPrevious from '../components/NextPrevious';
+import Layout from 'components/Layout';
+import NextPrevious from 'components/NextPrevious';
+import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import config from '../../config';
-import { StyledHeading, StyledMainWrapper } from '../components/styles/Docs';
 
 const forcedNavOrder = config.sidebar.forcedNavOrder;
 

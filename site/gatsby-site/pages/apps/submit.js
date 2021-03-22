@@ -13,8 +13,9 @@ import config from '../../config';
 import { getUser } from '../../src/mongodb/authenticate';
 import API, { runQuery } from '../../src/mongodb/api';
 
-import { Layout, Link } from '@components';
-import { StyledHeading } from '../../src/components/styles/Docs';
+import Layout from 'components/Layout';
+import Link from 'components/Link';
+import { StyledHeading } from 'components/styles/Docs';
 
 // Reference:
 // https://hackernoon.com/building-react-forms-with-formik-yup-and-react-bootstrap-with-a-minimal-amount-of-pain-and-suffering-1sfk3xv8
@@ -230,7 +231,7 @@ const RelatedLayout = ({ related }) => {
         <ListGroup.Item key={'header'}>
           The following incident reports exist for the incident you are reporting on
         </ListGroup.Item>
-        {related.map(val => (
+        {related.map((val) => (
           <ListGroup.Item key={val['url']}>
             <a href={val['url']} target="_blank" rel="noreferrer">
               {val['title']}
@@ -274,7 +275,7 @@ export default class SubmitForm extends Component {
   componentDidMount() {
     const that = this;
 
-    getUser().then(function(user) {
+    getUser().then(function (user) {
       that.setState({ admin: user.type == 'token' });
     });
   }
@@ -290,7 +291,7 @@ export default class SubmitForm extends Component {
     console.log(err, file, inputElem, reason);
   };
 
-  updateRelated = incident_id => {
+  updateRelated = (incident_id) => {
     const parsed = parseInt(incident_id);
 
     console.log(incident_id);
@@ -300,7 +301,7 @@ export default class SubmitForm extends Component {
     }
     const query = { incident_id: parsed };
 
-    const relatedUpdater = results => {
+    const relatedUpdater = (results) => {
       this.setState({ relatedIncidents: results });
     };
 
@@ -313,7 +314,7 @@ export default class SubmitForm extends Component {
     );
   };
 
-  previousRecord = setValues => {
+  previousRecord = (setValues) => {
     const newCSVIndex = Math.max(0, this.state.csvIndex - 1);
 
     setValues(this.state.csvData[newCSVIndex]['data']);
@@ -321,7 +322,7 @@ export default class SubmitForm extends Component {
     this.updateRelated(this.state.csvData[newCSVIndex]['data']['incident_id']);
   };
 
-  nextRecord = setValues => {
+  nextRecord = (setValues) => {
     const newCSVIndex = Math.min(this.state.csvData.length - 1, this.state.csvIndex + 1);
 
     setValues(this.state.csvData[newCSVIndex]['data']);
@@ -561,7 +562,7 @@ export default class SubmitForm extends Component {
                       type="text"
                       name="incident_id"
                       placeholder="OPTIONAL"
-                      onChange={evt => {
+                      onChange={(evt) => {
                         handleChange(evt);
                         this.updateRelated(evt.target.value);
                       }}
@@ -620,7 +621,7 @@ export default class SubmitForm extends Component {
                   <Button onClick={() => this.previousRecord(setValues)}>&lt; Previous</Button>
                   <Button onClick={() => this.nextRecord(setValues)}>Next &gt;</Button>
                   <CSVReader
-                    onDrop={dropped => {
+                    onDrop={(dropped) => {
                       this.handleOnDrop(dropped);
                       setValues(this.state.csvData[this.state.csvIndex]['data']);
                     }}

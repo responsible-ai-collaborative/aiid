@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faRssSquare } from '@fortawesome/free-solid-svg-icons';
 import { faTwitterSquare } from '@fortawesome/free-brands-svg-icons';
 
-import Link from './link';
+import Link from './Link';
 import LoadingProvider from './mdxComponents/loading';
 import config from '../../config.js';
 

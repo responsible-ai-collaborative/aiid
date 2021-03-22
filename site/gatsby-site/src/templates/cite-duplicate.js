@@ -3,17 +3,14 @@ import Helmet from 'react-helmet';
 
 import Container from 'react-bootstrap/Container';
 
-import { Layout } from '@components';
-import { StyledHeading, StyledMainWrapper } from '../components/styles/Docs';
-import Link from '../components/link';
+import Layout from 'components/Layout';
+import Link from 'components/Link';
+import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 
-import { getCanonicalUrl } from '../utils/getCanonicalUrl';
+import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 
 const IncidentCite = ({ pageContext, ...props }) => {
-  const {
-    true_incident_number,
-    duplicate_incident_number
-  } = pageContext;
+  const { true_incident_number, duplicate_incident_number } = pageContext;
 
   // meta tags
 
@@ -41,9 +38,9 @@ const IncidentCite = ({ pageContext, ...props }) => {
       <StyledMainWrapper>
         <Container>
           This incident is a duplicate of Incident{' '}
-          <Link to={`/cite/${true_incident_number}`}>{true_incident_number}</Link>. All new reports and citations
-          should be directed to incident {true_incident_number}. The reports previously found on this page
-          have been migrated to the previously existing incident.
+          <Link to={`/cite/${true_incident_number}`}>{true_incident_number}</Link>. All new reports
+          and citations should be directed to incident {true_incident_number}. The reports
+          previously found on this page have been migrated to the previously existing incident.
         </Container>
       </StyledMainWrapper>
     </Layout>
