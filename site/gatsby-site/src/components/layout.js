@@ -40,7 +40,7 @@ const Content = styled('main')`
     background: ${({ theme }) => theme.colors.background};
   }
 
-  @media only screen and (max-width: 1023px) {
+  @media only screen and (max-width: 1123px) {
     padding-left: 0;
     margin: 0 10px;
     padding-top: 3rem;
@@ -61,6 +61,10 @@ const LeftSideBarWidth = styled('div')`
 
 const RightSideBarWidth = styled('div')`
   width: 224px;
+
+  @media (max-width: 965px) {
+    display: none;
+  }
 `;
 
 const Layout = ({ children, location, collapse, className }) => (
