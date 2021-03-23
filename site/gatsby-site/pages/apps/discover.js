@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { StringParam, QueryParams, useQueryParams } from 'use-query-params';
-import MiddleLayout from '../../src/components/MiddleLayout';
+import MiddleLayout from '../../src/components/MiddleLayout.js';
 import algoliasearch from 'algoliasearch/lite';
 import { debounce } from 'debounce';
 import {
