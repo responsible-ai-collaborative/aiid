@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { StringParam, QueryParams, useQueryParams } from 'use-query-params';
-import MiddleLayout from 'components/MiddleLayout';
 import algoliasearch from 'algoliasearch/lite';
 import { debounce } from 'debounce';
 import {
@@ -26,6 +25,7 @@ import {
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { useModal, CustomModal } from '../../src/components/useModal';
+import MiddleLayout from 'components/MiddleLayout';
 
 import '../../static/discover/src/algolia.css';
 import '../../static/discover/src/app.css';
