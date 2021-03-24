@@ -93,7 +93,7 @@ const SidebarToggleButton = styled(Button)`
   }
 `;
 
-const MiddleLayout = ({ children, location }) => {
+const LayoutHideSidebar = ({ children, location }) => {
   const [collapse, setCollapse] = useState(true);
 
   return (
@@ -121,4 +121,4 @@ const MiddleLayout = ({ children, location }) => {
   );
 };
 
-export default MiddleLayout;
+export default LayoutHideSidebar;

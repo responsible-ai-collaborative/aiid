@@ -25,7 +25,7 @@ import {
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { useModal, CustomModal } from '../../src/components/useModal';
-import MiddleLayout from 'components/MiddleLayout';
+import LayoutHideSidebar from 'components/LayoutHideSidebar';
 
 import '../../static/discover/src/algolia.css';
 import '../../static/discover/src/app.css';
@@ -762,7 +762,7 @@ const DiscoverApp = (props) => {
   }, []);
 
   return (
-    <MiddleLayout {...props}>
+    <LayoutHideSidebar {...props}>
       <QueryParams config={queryConfig}>
         {({ query, setQuery }) => (
           <>
@@ -800,7 +800,7 @@ const DiscoverApp = (props) => {
           </>
         )}
       </QueryParams>
-    </MiddleLayout>
+    </LayoutHideSidebar>
   );
 };
 
