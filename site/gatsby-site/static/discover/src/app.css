@@ -107,6 +107,10 @@ blockquote:before {
     max-width: 100%;
 }
 
+.maxWidth {
+  width: 100%;
+}
+
 .column_left {
   float: left;
   width: 18%;
@@ -246,6 +250,10 @@ button.btn-no-margin {
     right: 45px;
     top: 11px;
     margin: auto;
+}
+
+.flex-grow-1 {
+  flex-grow: 1;
 }
 
 .subhead {

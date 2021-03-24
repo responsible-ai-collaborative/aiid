@@ -1,5 +1,7 @@
 const path = require('path');
+
 const stopword = require('stopword');
+
 const stemmer = require('stemmer');
 
 const customStopWords = require('../constants/customStopWords');
@@ -54,6 +56,7 @@ const createWordCountsPage = (graphql, createPage) => {
         });
 
         const numWordClouds = 8;
+
         const wordsPerCloud = 80;
 
         let wordClouds = [];

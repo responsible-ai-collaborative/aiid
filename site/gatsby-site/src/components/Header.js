@@ -3,6 +3,9 @@ import styled from '@emotion/styled';
 import { StaticQuery, graphql } from 'gatsby';
 import GitHubButton from 'react-github-btn';
 import Loadable from 'react-loadable';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faRssSquare } from '@fortawesome/free-solid-svg-icons';
+import { faTwitterSquare } from '@fortawesome/free-brands-svg-icons';
 
 import Link from './Link';
 import LoadingProvider from './mdxComponents/loading';
@@ -52,12 +55,30 @@ const StyledBgDiv = styled('div')`
   }
 `;
 
-const GrayscaleDiv = styled.div`
+const NavBarHeaderContainer = styled.div`
   display: flex;
-  img {
-    -webkit-filter: grayscale(1);
-    filter: gray;
-    filter: grayscale(1);
+  flex-direction: row;
+  justify-content: flex-start;
+
+  @media (max-width: 767px) {
+    justify-content: space-between;
+  }
+`;
+
+const HeaderIconsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  .paddingAround {
+    padding-right: 10px;
+  }
+`;
+
+const HideOnDesktop = styled.div`
+  @media (min-width: 767px) {
+    display: none;
   }
 `;
 
@@ -88,8 +109,6 @@ const Header = ({ location, isDarkThemeActive }) => (
 
       const twitter = require('./images/twitter.svg');
 
-      const rssFeed = require('./images/rssFeed.svg');
-
       const {
         site: {
           siteMetadata: { headerTitle, githubUrl, helpUrl, tweetText, logo, headerLinks },
@@ -99,27 +118,74 @@ const Header = ({ location, isDarkThemeActive }) => (
       const finalLogoLink = logo.link !== '' ? logo.link : 'https://hasura.io/';
 
       return (
-        <div className={'navBarWrapper'}>
+        <div>
           <nav className={'navBarDefault'}>
-            <div className={'navBarHeader'}>
-              <Link to={finalLogoLink} className={'navBarBrand'}>
-                <img
-                  className={'img-responsive displayInline'}
-                  src={logo.image !== '' ? logo.image : logoImg}
-                  alt={'logo'}
+            <NavBarHeaderContainer>
+              <div className={'navBarHeader'}>
+                <Link to={finalLogoLink} className={'navBarBrand'}>
+                  <img
+                    className={'img-responsive displayInline'}
+                    src={logo.image !== '' ? logo.image : logoImg}
+                    alt={'logo'}
+                  />
+                </Link>
+                <div
+                  className={'headerTitle displayInline'}
+                  dangerouslySetInnerHTML={{ __html: headerTitle }}
                 />
-              </Link>
-              <div
-                className={'headerTitle displayInline'}
-                dangerouslySetInnerHTML={{ __html: headerTitle }}
-              />
-            </div>
-            {config.header.social ? (
-              <ul
-                className="socialWrapper visibleMobileView"
-                dangerouslySetInnerHTML={{ __html: config.header.social }}
-              ></ul>
-            ) : null}
+              </div>
+              <HeaderIconsContainer>
+                <li className="divider hiddenMobile"></li>
+                {config.header.social && (
+                  <a
+                    className="paddingAround"
+                    href={'https://twitter.com/IncidentsDB'}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <FontAwesomeIcon
+                      icon={faTwitterSquare}
+                      color={'white'}
+                      className="pointer fa fa-twitter-square fa-lg"
+                      title="Open Twitter"
+                    />
+                  </a>
+                )}
+                {githubUrl !== '' && (
+                  <div className="githubBtn paddingAround">
+                    <GitHubButton
+                      href={githubUrl}
+                      data-show-count="true"
+                      aria-label="Star on GitHub"
+                    >
+                      Star
+                    </GitHubButton>
+                  </div>
+                )}
+                <a
+                  className="paddingAround"
+                  href={'/rss.xml'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FontAwesomeIcon
+                    icon={faRssSquare}
+                    color={'white'}
+                    className="pointer fa fa-rss-square fa-lg"
+                    title="Open RSS Feed"
+                  />
+                </a>
+                <HideOnDesktop>
+                  <FontAwesomeIcon
+                    icon={faBars}
+                    color={'white'}
+                    className="pointer fa fa-BARS fa-lg"
+                    title="Open Menu"
+                    onClick={myFunction}
+                  />
+                </HideOnDesktop>
+              </HeaderIconsContainer>
+            </NavBarHeaderContainer>
             {isSearchEnabled ? (
               <div className={'searchWrapper hiddenMobile navBarUL'}>
                 <LoadableComponent collapse={true} indices={searchIndices} />
@@ -165,58 +231,16 @@ const Header = ({ location, isDarkThemeActive }) => (
                     </a>
                   </li>
                 ) : null}
-                {tweetText !== '' || githubUrl !== '' ? (
-                  <li className="divider hiddenMobile"></li>
-                ) : null}
-                {config.header.social ? (
-                  <li className={'hiddenMobile'}>
-                    <ul
-                      className="socialWrapper"
-                      dangerouslySetInnerHTML={{ __html: config.header.social }}
-                    ></ul>
-                  </li>
-                ) : null}
-                {githubUrl !== '' ? (
-                  <li className={'githubBtn'}>
-                    <GitHubButton
-                      href={githubUrl}
-                      data-show-count="true"
-                      aria-label="Star on GitHub"
-                    >
-                      Star
-                    </GitHubButton>
-                  </li>
-                ) : null}
-                <li>
-                  <GrayscaleDiv>
-                    <a href={'/rss.xml'} target="_blank" rel="noopener noreferrer">
-                      <img src={rssFeed} alt={'RSSFeed'} />
-                    </a>
-                  </GrayscaleDiv>
-                </li>
               </ul>
             </div>
           </nav>
-          <StyledBgDiv isDarkThemeActive={isDarkThemeActive}>
-            <div className={'navBarDefault removePadd'}>
-              <span
-                onClick={myFunction}
-                className={'navBarToggle'}
-                onKeyDown={myFunction}
-                role="button"
-                tabIndex={0}
-              >
-                <span className={'iconBar'}></span>
-                <span className={'iconBar'}></span>
-                <span className={'iconBar'}></span>
-              </span>
-            </div>
-            {isSearchEnabled ? (
+          {isSearchEnabled && (
+            <StyledBgDiv isDarkThemeActive={isDarkThemeActive}>
               <div className={'searchWrapper'}>
                 <LoadableComponent collapse={true} indices={searchIndices} />
               </div>
-            ) : null}
-          </StyledBgDiv>
+            </StyledBgDiv>
+          )}
         </div>
       );
     }}

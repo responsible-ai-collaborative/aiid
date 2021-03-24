@@ -18,8 +18,11 @@ import { UserContext } from './UserContext';
 
 export const UserContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
+
   const [user, setUser] = useState();
+
   const [type, setType] = useState();
+
   const [mongoUserKey, setMongoUserKey] = useState();
 
   const setUserAPIKey = useCallback((apiKey) => {
@@ -33,6 +36,7 @@ export const UserContextProvider = ({ children }) => {
 
   useEffect(() => {
     const apiKey = window.localStorage.getItem('mongoUserKey');
+
     setMongoUserKey(apiKey);
   }, []);
 
@@ -41,6 +45,7 @@ export const UserContextProvider = ({ children }) => {
     const credentials = mongoUserKey
       ? Realm.Credentials.apiKey(mongoUserKey)
       : Realm.Credentials.anonymous();
+
     setType(mongoUserKey ? 'token' : 'anonymous');
 
     realmApp
