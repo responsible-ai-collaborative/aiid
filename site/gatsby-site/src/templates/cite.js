@@ -16,6 +16,27 @@ import BibTex from 'components/BibTex';
 
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 
+import { InstantSearch, Configure, connectHits } from 'react-instantsearch-dom';
+import { searchClient, Hits, IncidentStatsCard } from '../../pages/apps/discover';
+import styled from 'styled-components';
+
+const HitsContainer = styled.div`
+  display: grid;
+  max-width: 100%;
+  grid-gap: 13px;
+  grid-template-columns: 1fr 1fr;
+
+  @media (max-width: 1740px) {
+    grid-template-columns: auto;
+  }
+`;
+
+const CiteStyledMainWrapper = styled(StyledMainWrapper)`
+  max-width: 100% !important;
+`;
+
+const CustomStats = connectHits(IncidentStatsCard);
+
 const IncidentCite = ({ data, ...props }) => {
   if (!data) {
     return null;
@@ -52,40 +73,57 @@ const IncidentCite = ({ data, ...props }) => {
       </Helmet>
       <div className={'titleWrapper'}>
         <StyledHeading>{metaDescription}</StyledHeading>
+        <Button
+          onClick={(e) => {
+            e.preventDefault();
+            history.back();
+          }}
+        >
+          Back To Discover App
+        </Button>
       </div>
-      <StyledMainWrapper>
+      <CiteStyledMainWrapper>
         <Container>
-          <Row>
-            <Col>
-              <h2>Suggested citation format</h2>
-              <Citation nodes={nodes} incident_id={incident_id} />
-            </Col>
-          </Row>
-          <Row className="mt-4 mb-5">
-            <Col>
-              <h2>Reports</h2>
-              <IncidentList group={group} />
-              <ImageCarousel nodes={nodes} />
-            </Col>
-          </Row>
-          <Row className="mt-4 mb-5">
-            <Col>
-              <h1>Tools</h1>
-              <Button variant="outline-primary" className="mr-2" href={'/summaries/incidents'}>
-                All Incidents
-              </Button>
-              <Button
-                variant="outline-primary"
-                className="mr-2"
-                href={'/discover/index.html?incident_id=' + incident_id}
-              >
-                Discover
-              </Button>
-              <BibTex nodes={nodes} incident_id={incident_id} />
-            </Col>
-          </Row>
+          <InstantSearch indexName="aiid-emergency" searchClient={searchClient}>
+            <Row>
+              <Col>
+                <h2>Suggested citation format</h2>
+                <Citation nodes={nodes} incident_id={incident_id} />
+              </Col>
+            </Row>
+            <Row>
+              <CustomStats />
+            </Row>
+            <Row className="mt-4 mb-5">
+              <Col>
+                <h2>Reports</h2>
+                <IncidentList group={group} />
+                <ImageCarousel nodes={nodes} />
+              </Col>
+            </Row>
+            <Row className="mt-4 mb-5">
+              <Col>
+                <h1>Tools</h1>
+                <Button variant="outline-primary" className="mr-2" href={'/summaries/incidents'}>
+                  All Incidents
+                </Button>
+                <Button
+                  variant="outline-primary"
+                  className="mr-2"
+                  href={'/discover/index.html?incident_id=' + incident_id}
+                >
+                  Discover
+                </Button>
+                <BibTex nodes={nodes} incident_id={incident_id} />
+              </Col>
+            </Row>
+            <HitsContainer showDetails={true}>
+              <Hits showDetails={true} />
+            </HitsContainer>
+            <Configure filters={`incident_id:${incident_id}`} />
+          </InstantSearch>
         </Container>
-      </StyledMainWrapper>
+      </CiteStyledMainWrapper>
     </Layout>
   );
 };

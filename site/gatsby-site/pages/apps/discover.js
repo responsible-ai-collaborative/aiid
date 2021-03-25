@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { StringParam, QueryParams, useQueryParams } from 'use-query-params';
+import Link from 'components/Link';
 import algoliasearch from 'algoliasearch/lite';
 import { debounce } from 'debounce';
 import {
@@ -10,7 +11,6 @@ import {
   Pagination,
   Stats,
   connectSearchBox,
-  connectCurrentRefinements,
 } from 'react-instantsearch-dom';
 import styled from 'styled-components';
 import config from '../../config';
@@ -26,12 +26,13 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useModal, CustomModal } from '../../src/components/useModal';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
+import Helmet from 'react-helmet';
 
 import '../../static/discover/src/algolia.css';
 import '../../static/discover/src/app.css';
 import '../../static/discover/src/index.css';
 
-const searchClient = algoliasearch('8TNY3YFAO8', '55efba4929953a53eb357824297afb4c');
+export const searchClient = algoliasearch('8TNY3YFAO8', '55efba4929953a53eb357824297afb4c');
 
 const REFINEMENT_LISTS = [
   {
@@ -257,6 +258,16 @@ const Header = styled.div`
   }
 `;
 
+const StyledLink = styled(Link)`
+  color: white;
+  text-decoration: none;
+
+  :hover {
+    color: white;
+    text-decoration: none;
+  }
+`;
+
 const StyledRefinementList = ({
   items,
   isFromSearch,
@@ -350,7 +361,8 @@ const getParagraphs = (itemText) => {
   );
 };
 
-const IncidentStatsCard = ({ searchInput, stats }) => {
+export const IncidentStatsCard = ({ hits }) => {
+  console.log({ hits });
   const STATS = [
     {
       key: 'incidentId',
@@ -364,11 +376,17 @@ const IncidentStatsCard = ({ searchInput, stats }) => {
       key: 'incidentDate',
       label: 'Incident Date',
     },
-    {
-      key: 'citation',
-      label: 'Citation',
-    },
   ];
+
+  if (!hits || hits.length === 0) {
+    return null;
+  }
+
+  const stats = {
+    incidentId: hits[0].incident_id,
+    reportCount: hits.length,
+    incidentDate: hits[0].incident_date,
+  };
 
   return (
     <IncidentCardContainer className="card">
@@ -383,13 +401,10 @@ const IncidentStatsCard = ({ searchInput, stats }) => {
         </div>
         <div>
           {STATS.map((stat) => (
-            <div key={stat.key}>
-              {stat.key === 'citation' ? <a href={stats[stat.key]}>View</a> : stats[stat.key]}
-            </div>
+            <div key={stat.key}>{stats[stat.key]}</div>
           ))}
         </div>
       </StatsContainer>
-      <CustomClearRefinements searchInputRef={searchInput} clearsQuery={true} />
     </IncidentCardContainer>
   );
 };
@@ -438,7 +453,7 @@ const IncidentCard = ({
     </CardBody>
     <div className="align-bottom">
       <img className="image-preview" alt={item.title} src={getImageHashPath(item.image_url)} />
-      {!showDetails && (
+      {toggleFilterByIncidentId && (
         <button
           type="button"
           className="btn btn-secondary btn-sm btn-block assignment-button"
@@ -446,7 +461,9 @@ const IncidentCard = ({
             toggleFilterByIncidentId(item.incident_id + '');
           }}
         >
-          Show Details on Incident #{item.incident_id}
+          <StyledLink to={`/cite/${item.incident_id}`}>
+            Show Details on Incident #{item.incident_id}
+          </StyledLink>
         </button>
       )}
     </div>
@@ -559,21 +576,6 @@ const StyledSearchBox = ({ refine, defaultRefinement, customRef }) => {
   );
 };
 
-const ClearRefinements = ({ items, refine, searchInputRef }) => (
-  <button
-    type="button"
-    className="btn btn-secondary btn-sm btn-block assignment-button"
-    onClick={() => {
-      searchInputRef.current.value = '';
-      refine(items);
-    }}
-  >
-    Clear Incident Selection and Search
-  </button>
-);
-
-const CustomClearRefinements = connectCurrentRefinements(ClearRefinements);
-
 const CustomSearchBox = connectSearchBox(StyledSearchBox);
 
 const RefinementList = connectRefinementList(StyledRefinementList);
@@ -618,6 +620,56 @@ const convertStringToArray = (obj) => {
   return { ...obj };
 };
 
+const RenderCards = ({
+  hits,
+  toggleFilterByIncidentId,
+  showDetails,
+  authorsModal,
+  submittersModal,
+  flagReportModal,
+}) => {
+  return (
+    <>
+      {hits.map((hit) => (
+        <IncidentCard
+          key={hit._id}
+          item={hit}
+          authorsModal={authorsModal}
+          submittersModal={submittersModal}
+          flagReportModal={flagReportModal}
+          toggleFilterByIncidentId={toggleFilterByIncidentId}
+          showDetails={showDetails}
+        />
+      ))}
+    </>
+  );
+};
+
+const CustomHits = connectHits(RenderCards);
+
+export const Hits = ({ toggleFilterByIncidentId, showDetails = false }) => {
+  const authorsModal = useModal();
+
+  const submittersModal = useModal();
+
+  const flagReportModal = useModal();
+
+  return (
+    <>
+      <CustomHits
+        toggleFilterByIncidentId={toggleFilterByIncidentId}
+        authorsModal={authorsModal}
+        submittersModal={submittersModal}
+        flagReportModal={flagReportModal}
+        showDetails={showDetails}
+      />
+      <CustomModal {...authorsModal} />
+      <CustomModal {...submittersModal} />
+      <CustomModal {...flagReportModal} />
+    </>
+  );
+};
+
 const DiscoverApp = (props) => {
   const searchInput = useRef(null);
 
@@ -648,7 +700,7 @@ const DiscoverApp = (props) => {
     flag: StringParam,
   };
 
-  const showDetails = searchState.refinementList?.incident_id?.length === 1;
+  // const showDetails = searchState.refinementList?.incident_id?.length === 1;
 
   useEffect(() => {
     const cleanQuery = removeUndefinedAttributes(query);
@@ -708,46 +760,6 @@ const DiscoverApp = (props) => {
     setQuery(getQueryFromState(newSearchState), 'push');
   };
 
-  const authorsModal = useModal();
-
-  const submittersModal = useModal();
-
-  const flagReportModal = useModal();
-
-  const RenderCards = ({ hits, toggleFilterByIncidentId, showDetails }) => {
-    const itemsCount = hits.length;
-
-    return (
-      <>
-        {showDetails && hits[0] && (
-          <IncidentStatsCard
-            searchInput={searchInput}
-            stats={{
-              incidentId: hits[0].incident_id,
-              reportCount: hits.length,
-              incidentDate: hits[0].incident_date,
-              citation: `/cite/${hits[0].incident_id}`,
-            }}
-          />
-        )}
-        {hits.map((hit) => (
-          <IncidentCard
-            key={hit._id}
-            item={hit}
-            authorsModal={authorsModal}
-            submittersModal={submittersModal}
-            flagReportModal={flagReportModal}
-            toggleFilterByIncidentId={toggleFilterByIncidentId}
-            showDetails={showDetails}
-            itemsCount={itemsCount}
-          />
-        ))}
-      </>
-    );
-  };
-
-  const CustomHits = connectHits(RenderCards);
-
   const filters = useMemo(() => {
     return REFINEMENT_LISTS.map((list) => (
       <RefinementList
@@ -763,6 +775,9 @@ const DiscoverApp = (props) => {
 
   return (
     <LayoutHideSidebar {...props}>
+      <Helmet>
+        <title>Artifical Intelligence Incident Database</title>
+      </Helmet>
       <QueryParams config={queryConfig}>
         {({ query, setQuery }) => (
           <>
@@ -781,11 +796,8 @@ const DiscoverApp = (props) => {
                 </Header>
                 <SidesContainer>
                   <ResultsSide>
-                    <HitsContainer showDetails={showDetails}>
-                      <CustomHits
-                        toggleFilterByIncidentId={toggleFilterByIncidentId}
-                        showDetails={showDetails}
-                      />
+                    <HitsContainer>
+                      <Hits toggleFilterByIncidentId={toggleFilterByIncidentId} />
                     </HitsContainer>
                     <StyledPagination />
                   </ResultsSide>
@@ -793,10 +805,6 @@ const DiscoverApp = (props) => {
                 </SidesContainer>
               </InstantSearch>
             </Container>
-
-            <CustomModal {...authorsModal} />
-            <CustomModal {...submittersModal} />
-            <CustomModal {...flagReportModal} />
           </>
         )}
       </QueryParams>
