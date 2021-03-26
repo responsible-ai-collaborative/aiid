@@ -261,3 +261,7 @@ button.btn-no-margin {
   padding-top: 10px;
   margin: 0px 0px 0px;
 }
+
+.ais-Highlight-highlighted,
+.ais-Snippet-highlighted {
+  background-color: #ffc168; }

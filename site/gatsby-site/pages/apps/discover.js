@@ -27,7 +27,6 @@ import {
 import { useModal, CustomModal } from '../../src/components/useModal';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
 
-import '../../static/discover/src/algolia.css';
 import '../../static/discover/src/app.css';
 import '../../static/discover/src/index.css';
 
@@ -243,11 +242,47 @@ const CardBody = styled.div`
 const StyledSearchInput = styled.input`
   padding: 0.3rem 0.3rem !important;
   max-width: 100% !important;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 0.3rem 1.7rem;
+  width: 100%;
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #c4c8d8;
+  border-radius: 5px;
+`;
+
+const SearchResetButton = styled.button`
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  position: absolute;
+  z-index: 1;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  right: 0.3rem;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+
+  padding: 0;
+  overflow: visible;
+  font: inherit;
+  line-height: normal;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 `;
 
 const Header = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   max-width: 100%;
 
   @media (max-width: 767px) {
@@ -255,6 +290,15 @@ const Header = styled.div`
       display: none;
     }
   }
+`;
+
+const SearchContainer = styled.div`
+  flex-grow: 1;
+`;
+
+const SearchForm = styled.form`
+  display: block;
+  position: relative;
 `;
 
 const StyledRefinementList = ({
@@ -516,11 +560,10 @@ const StyledSearchBox = ({ refine, defaultRefinement, customRef }) => {
   }, 500);
 
   return (
-    <div className="ais-SearchBox flex-grow-1">
-      <form className="ais-SearchBox-form" noValidate>
+    <SearchContainer>
+      <SearchForm noValidate>
         <StyledSearchInput
           ref={customRef}
-          className="ais-SearchBox-input"
           autoComplete="off"
           autoCorrect="off"
           autoCapitalize="off"
@@ -531,18 +574,13 @@ const StyledSearchBox = ({ refine, defaultRefinement, customRef }) => {
           defaultValue={defaultRefinement}
           onChange={(event) => debouncedRefine(event.currentTarget.value)}
         />
-        <button
-          className="ais-SearchBox-reset"
-          type="reset"
-          title="Clear the search query."
-          onClick={() => refine('')}
-        >
+        <SearchResetButton type="reset" title="Clear the search query." onClick={() => refine('')}>
           <FontAwesomeIcon
             icon={faTimesCircle}
             className="pointer fa fa-times-circle"
             title="Authors"
           />
-        </button>
+        </SearchResetButton>
         <StyledStats
           translations={{
             stats(nbHits) {
@@ -554,8 +592,8 @@ const StyledSearchBox = ({ refine, defaultRefinement, customRef }) => {
             },
           }}
         />
-      </form>
-    </div>
+      </SearchForm>
+    </SearchContainer>
   );
 };
 
