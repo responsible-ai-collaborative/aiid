@@ -354,15 +354,20 @@ const cardNeedsBlockquote = (item) => {
 const getParagraphs = (itemText) => {
   return (
     <>
-      {itemText.split('\n').map((paragraph, index) => (
-        <p key={index}>{paragraph}</p>
+      {itemText.split('\n').map((paragraph, index, array) => (
+        <>
+          {array.length - 1 === index ? (
+            <p key={index}>{paragraph + '...'}</p>
+          ) : (
+            <p key={index}>{paragraph}</p>
+          )}
+        </>
       ))}
     </>
   );
 };
 
 export const IncidentStatsCard = ({ hits }) => {
-  console.log({ hits });
   const STATS = [
     {
       key: 'incidentId',
@@ -417,7 +422,7 @@ const IncidentCard = ({
   toggleFilterByIncidentId,
   showDetails,
 }) => (
-  <IncidentCardContainer>
+  <IncidentCardContainer id={item._id}>
     <div className="card-header">
       <Highlight hit={item} attribute="title" />
       <p className="subhead">
@@ -458,7 +463,7 @@ const IncidentCard = ({
           type="button"
           className="btn btn-secondary btn-sm btn-block assignment-button"
           onClick={() => {
-            toggleFilterByIncidentId(item.incident_id + '');
+            // toggleFilterByIncidentId(item.incident_id + '');
           }}
         >
           <StyledLink to={`/cite/${item.incident_id}`}>

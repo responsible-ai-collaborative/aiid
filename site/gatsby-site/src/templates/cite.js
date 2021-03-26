@@ -37,6 +37,13 @@ const CiteStyledMainWrapper = styled(StyledMainWrapper)`
 
 const CustomStats = connectHits(IncidentStatsCard);
 
+const StatsContainer = styled.div`
+  margin-top: 1.5rem;
+  p {
+    margin: 0 !important;
+  }
+`;
+
 const IncidentCite = ({ data, ...props }) => {
   if (!data) {
     return null;
@@ -73,14 +80,14 @@ const IncidentCite = ({ data, ...props }) => {
       </Helmet>
       <div className={'titleWrapper'}>
         <StyledHeading>{metaDescription}</StyledHeading>
-        <Button
+        {/* <Button
           onClick={(e) => {
             e.preventDefault();
             history.back();
           }}
         >
           Back To Discover App
-        </Button>
+        </Button> */}
       </div>
       <CiteStyledMainWrapper>
         <Container>
@@ -91,9 +98,9 @@ const IncidentCite = ({ data, ...props }) => {
                 <Citation nodes={nodes} incident_id={incident_id} />
               </Col>
             </Row>
-            <Row>
+            <StatsContainer>
               <CustomStats />
-            </Row>
+            </StatsContainer>
             <Row className="mt-4 mb-5">
               <Col>
                 <h2>Reports</h2>
@@ -162,6 +169,7 @@ export const pageQuery = graphql`
             url
             image_url
             source_domain
+            mongodb_id
           }
         }
       }
