@@ -1,13 +1,9 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { MDXProvider } from '@mdx-js/react';
 
-import ThemeProvider from './theme/themeProvider';
-import mdxComponents from './mdxComponents';
 import Sidebar from './sidebar';
 import RightSidebar from './rightSidebar';
 import config from '../../config.js';
-import { UserContextProvider } from 'contexts/userContext';
 
 const Wrapper = styled('div')`
   display: flex;
@@ -68,30 +64,24 @@ const RightSideBarWidth = styled('div')`
   }
 `;
 
-const Layout = ({ children, location, collapse, className }) => (
-  <ThemeProvider location={location}>
-    <MDXProvider components={mdxComponents}>
-      <UserContextProvider>
-        <Wrapper>
-          <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
-            <Sidebar location={location} collapse={collapse} />
-          </LeftSideBarWidth>
-          {config.sidebar.title && (
-            <div
-              className={'sidebarTitle sideBarShow'}
-              dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
-            />
-          )}
-          <Content>
-            <MaxWidth className={className}>{children}</MaxWidth>
-          </Content>
-          <RightSideBarWidth className={'hiddenMobile'}>
-            <RightSidebar location={location} />
-          </RightSideBarWidth>
-        </Wrapper>
-      </UserContextProvider>
-    </MDXProvider>
-  </ThemeProvider>
+const Layout = ({ children, collapse, className, location }) => (
+  <Wrapper>
+    <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
+      <Sidebar collapse={collapse} />
+    </LeftSideBarWidth>
+    {config.sidebar.title && (
+      <div
+        className={'sidebarTitle sideBarShow'}
+        dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
+      />
+    )}
+    <Content>
+      <MaxWidth className={className}>{children}</MaxWidth>
+    </Content>
+    <RightSideBarWidth className={'hiddenMobile'}>
+      <RightSidebar location={location} />
+    </RightSideBarWidth>
+  </Wrapper>
 );
 
 export default Layout;
