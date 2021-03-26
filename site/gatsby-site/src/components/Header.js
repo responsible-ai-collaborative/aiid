@@ -82,7 +82,7 @@ const HideOnDesktop = styled.div`
   }
 `;
 
-const Header = ({ location, isDarkThemeActive }) => (
+const Header = ({ isDarkThemeActive }) => (
   <StaticQuery
     query={graphql`
       query headerTitleQuery {
@@ -193,7 +193,7 @@ const Header = ({ location, isDarkThemeActive }) => (
             ) : null}
             <div id="navbar" className={'topnav'}>
               <div className={'visibleMobile'}>
-                <Sidebar location={location} />
+                <Sidebar />
                 <hr />
               </div>
               <ul className={'navBarUL navBarNav navBarULRight'}>
