@@ -28,7 +28,7 @@ class ThemeProvider extends React.Component {
   };
 
   render() {
-    const { children, location } = this.props;
+    const { children } = this.props;
 
     const { isDarkThemeActive } = this.state;
 
@@ -38,7 +38,6 @@ class ThemeProvider extends React.Component {
       <div>
         <Global styles={baseStyles} />
         <Header
-          location={location}
           isDarkThemeActive={isDarkThemeActive}
           toggleActiveTheme={this.toggleActiveTheme}
         />

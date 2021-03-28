@@ -1,4 +1,4 @@
-import { realmApp } from '../services/realmApp';
+import { realmApp } from 'services/realmApp';
 import config from '../../config';
 
 // https://docs.mongodb.com/realm/web/mongodb/
