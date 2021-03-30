@@ -11,6 +11,7 @@ import {
   Stats,
   connectSearchBox,
   connectCurrentRefinements,
+  connectRange,
 } from 'react-instantsearch-dom';
 import styled from 'styled-components';
 import config from '../../config';
@@ -23,17 +24,27 @@ import {
   faFlag,
   faHashtag,
   faTimesCircle,
+  faCalendarAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { useModal, CustomModal } from '../../src/components/useModal';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
+import { Button, Form } from 'react-bootstrap';
 
 import '../../static/discover/src/algolia.css';
 import '../../static/discover/src/app.css';
 import '../../static/discover/src/index.css';
+import { formatISO } from 'date-fns';
 
 const searchClient = algoliasearch('8TNY3YFAO8', '55efba4929953a53eb357824297afb4c');
 
 const REFINEMENT_LISTS = [
+  {
+    attribute: 'epoch_incident_date',
+    inputText: 'none',
+    label: 'Incident Date',
+    faIcon: faCalendarAlt,
+    faClasses: 'far fa-calendar-alt',
+  },
   {
     attribute: 'source_domain',
     inputText: "Filter Domains ('bbc.com')",
@@ -126,6 +137,10 @@ const HitsContainer = styled.div`
       grid-template-columns: auto;
     `};
   }
+`;
+
+const RangeInputContainer = styled.div`
+  padding-bottom: 1.5rem;
 `;
 
 const StatsContainer = styled.div`
@@ -618,6 +633,76 @@ const convertStringToArray = (obj) => {
   return { ...obj };
 };
 
+const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
+  if (!min || !max) {
+    return null;
+  }
+
+  const validateDate = (date) => {
+    const dateStr = date + '';
+
+    if (dateStr.length === 9) {
+      return date * 1000;
+    }
+    return date;
+  };
+
+  const [dateInterval, setDateInterval] = useState({
+    min: validateDate(min),
+    max: validateDate(max),
+  });
+
+  const [limitInterval] = useState({
+    min: formatISO(validateDate(min), { representation: 'date' }),
+    max: formatISO(validateDate(max), { representation: 'date' }),
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    refine({
+      max: dateInterval.max / 1000,
+      min: dateInterval.min / 1000,
+    });
+  };
+
+  return (
+    <Form onSubmit={handleSubmit}>
+      <Form.Label>From Date:</Form.Label>
+      <Form.Control
+        type="date"
+        min={limitInterval.min}
+        max={limitInterval.max}
+        value={formatISO(dateInterval.min, { representation: 'date' })}
+        onChange={(event) => {
+          setDateInterval({
+            min: new Date(event.currentTarget.value || limitInterval.min).getTime(),
+            max: dateInterval.max,
+          });
+        }}
+      />
+      <Form.Label>To Date:</Form.Label>
+      <Form.Control
+        type="date"
+        placeholder="Max"
+        min={limitInterval.min}
+        max={limitInterval.max}
+        value={formatISO(dateInterval.max, { representation: 'date' })}
+        onChange={(event) => {
+          setDateInterval({
+            max: new Date(event.currentTarget.value || limitInterval.max).getTime(),
+            min: dateInterval.min,
+          });
+        }}
+      />
+      <Button variant="primary" type="submit" block className="mt-3">
+        Submit
+      </Button>
+    </Form>
+  );
+};
+
+const CustomRangeInput = connectRange(RangeInput);
+
 const DiscoverApp = (props) => {
   const searchInput = useRef(null);
 
@@ -628,6 +713,7 @@ const DiscoverApp = (props) => {
     submitters: StringParam,
     incident_id: StringParam,
     flag: StringParam,
+    epoch_incident_date: StringParam,
   });
 
   const [searchState, setSearchState] = useState({
@@ -646,6 +732,7 @@ const DiscoverApp = (props) => {
     submitters: StringParam,
     incident_id: StringParam,
     flag: StringParam,
+    epoch_incident_date: StringParam,
   };
 
   const showDetails = searchState.refinementList?.incident_id?.length === 1;
@@ -749,16 +836,29 @@ const DiscoverApp = (props) => {
   const CustomHits = connectHits(RenderCards);
 
   const filters = useMemo(() => {
-    return REFINEMENT_LISTS.map((list) => (
-      <RefinementList
-        key={list.attribute}
-        attribute={list.attribute}
-        placeholder={list.inputText}
-        listLabel={list.label}
-        faIcon={list.faIcon}
-        faClasses={list.faClasses}
-      />
-    ));
+    return REFINEMENT_LISTS.map((list) => {
+      if (list.attribute === 'epoch_incident_date') {
+        return (
+          <RangeInputContainer>
+            <RefinementListHeader className="refine_header">
+              <FontAwesomeIcon icon={list.faIcon} className={list.faClasses} />
+              {` ${list.label}`}
+            </RefinementListHeader>
+            <CustomRangeInput attribute={list.attribute} />
+          </RangeInputContainer>
+        );
+      }
+      return (
+        <RefinementList
+          key={list.attribute}
+          attribute={list.attribute}
+          placeholder={list.inputText}
+          listLabel={list.label}
+          faIcon={list.faIcon}
+          faClasses={list.faClasses}
+        />
+      );
+    });
   }, []);
 
   return (
