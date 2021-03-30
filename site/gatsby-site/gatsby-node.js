@@ -31,7 +31,7 @@ exports.onCreateWebpackConfig = ({ actions }) => {
         components: path.resolve(__dirname, 'src/components'),
         contexts: path.resolve(__dirname, 'src/contexts'),
         mongodb: path.resolve(__dirname, 'src/mongodb'),
-        //pages: path.resolve(__dirname, 'src/pages'),
+        pages: path.resolve(__dirname, 'src/pages'),
         services: path.resolve(__dirname, 'src/services'),
         templates: path.resolve(__dirname, 'src/templates'),
         utils: path.resolve(__dirname, 'src/utils'),

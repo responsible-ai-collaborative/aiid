@@ -12,6 +12,10 @@ import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 const Backups = ({ pageContext, ...props }) => {
   const { backups } = pageContext;
 
+  if (!backups) {
+    return null;
+  }
+
   return (
     <Layout {...props}>
       <Helmet>
