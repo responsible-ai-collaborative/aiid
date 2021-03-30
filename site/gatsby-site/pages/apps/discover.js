@@ -46,6 +46,13 @@ const REFINEMENT_LISTS = [
     faClasses: 'far fa-calendar-alt',
   },
   {
+    attribute: 'epoch_date_published',
+    inputText: 'none',
+    label: 'Published Date',
+    faIcon: faCalendarAlt,
+    faClasses: 'far fa-calendar-alt',
+  },
+  {
     attribute: 'source_domain',
     inputText: "Filter Domains ('bbc.com')",
     label: 'Source',
@@ -633,6 +640,43 @@ const convertStringToArray = (obj) => {
   return { ...obj };
 };
 
+const convertRangeToQueryString = (rangeObj) => {
+  let rangeQueryObj = {};
+
+  for (const attr in rangeObj) {
+    if (rangeObj[attr] !== undefined && rangeObj[attr].min) {
+      rangeQueryObj[`${attr}_min`] = rangeObj[attr].min;
+    }
+    if (rangeObj[attr] !== undefined && rangeObj[attr].max) {
+      rangeQueryObj[`${attr}_max`] = rangeObj[attr].max;
+    }
+  }
+
+  return rangeQueryObj;
+};
+
+const convertStringToRange = (query) => {
+  let resultObj = {};
+
+  for (const attr in query) {
+    if (attr.includes('_min') && !isNaN(parseInt(query[attr]))) {
+      resultObj[attr.split('_min')[0]] = {
+        ...resultObj[attr.split('_min')[0]],
+        min: parseInt(query[attr]),
+      };
+    }
+
+    if (attr.includes('_max') && !isNaN(parseInt(query[attr]))) {
+      resultObj[attr.split('_max')[0]] = {
+        ...resultObj[attr.split('_max')[0]],
+        max: parseInt(query[attr]),
+      };
+    }
+  }
+
+  return resultObj;
+};
+
 const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
   if (!min || !max) {
     return null;
@@ -641,29 +685,37 @@ const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
   const validateDate = (date) => {
     const dateStr = date + '';
 
-    if (dateStr.length === 9) {
+    if (dateStr.length <= 10) {
       return date * 1000;
     }
     return date;
   };
 
-  const [dateInterval, setDateInterval] = useState({
-    min: validateDate(min),
-    max: validateDate(max),
-  });
+  const [localMin, setLocalMin] = useState(validateDate(min));
+
+  const [localMax, setLocalMax] = useState(validateDate(max));
 
   const [limitInterval] = useState({
     min: formatISO(validateDate(min), { representation: 'date' }),
     max: formatISO(validateDate(max), { representation: 'date' }),
   });
 
+  useEffect(() => {
+    setLocalMin(validateDate(min));
+    setLocalMax(validateDate(max));
+  }, [min, max]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     refine({
-      max: dateInterval.max / 1000,
-      min: dateInterval.min / 1000,
+      max: validateDate(localMax) / 1000,
+      min: validateDate(localMin) / 1000,
     });
   };
+
+  if (!localMax || !localMin) {
+    return null;
+  }
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -672,12 +724,9 @@ const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
         type="date"
         min={limitInterval.min}
         max={limitInterval.max}
-        value={formatISO(dateInterval.min, { representation: 'date' })}
+        value={formatISO(localMin, { representation: 'date' })}
         onChange={(event) => {
-          setDateInterval({
-            min: new Date(event.currentTarget.value || limitInterval.min).getTime(),
-            max: dateInterval.max,
-          });
+          setLocalMin(new Date(event.currentTarget.value || limitInterval.min).getTime());
         }}
       />
       <Form.Label>To Date:</Form.Label>
@@ -686,12 +735,9 @@ const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
         placeholder="Max"
         min={limitInterval.min}
         max={limitInterval.max}
-        value={formatISO(dateInterval.max, { representation: 'date' })}
+        value={formatISO(localMax, { representation: 'date' })}
         onChange={(event) => {
-          setDateInterval({
-            max: new Date(event.currentTarget.value || limitInterval.max).getTime(),
-            min: dateInterval.min,
-          });
+          setLocalMax(new Date(event.currentTarget.value || limitInterval.max).getTime());
         }}
       />
       <Button variant="primary" type="submit" block className="mt-3">
@@ -713,7 +759,10 @@ const DiscoverApp = (props) => {
     submitters: StringParam,
     incident_id: StringParam,
     flag: StringParam,
-    epoch_incident_date: StringParam,
+    epoch_incident_date_min: StringParam,
+    epoch_incident_date_max: StringParam,
+    epoch_date_published_min: StringParam,
+    epoch_date_published_max: StringParam,
   });
 
   const [searchState, setSearchState] = useState({
@@ -723,6 +772,7 @@ const DiscoverApp = (props) => {
     page: 1,
     query: '',
     refinementList: {},
+    range: {},
   });
 
   const queryConfig = {
@@ -732,7 +782,10 @@ const DiscoverApp = (props) => {
     submitters: StringParam,
     incident_id: StringParam,
     flag: StringParam,
-    epoch_incident_date: StringParam,
+    epoch_incident_date_min: StringParam,
+    epoch_incident_date_max: StringParam,
+    epoch_date_published_min: StringParam,
+    epoch_date_published_max: StringParam,
   };
 
   const showDetails = searchState.refinementList?.incident_id?.length === 1;
@@ -752,6 +805,9 @@ const DiscoverApp = (props) => {
       refinementList: {
         ...convertStringToArray(cleanQuery),
       },
+      range: {
+        ...convertStringToRange(cleanQuery),
+      },
     });
   }, [query]);
 
@@ -766,6 +822,13 @@ const DiscoverApp = (props) => {
       query = {
         ...query,
         ...convertArrayToString(removeEmptyAttributes(searchState.refinementList)),
+      };
+    }
+
+    if (searchState && searchState.range !== {}) {
+      query = {
+        ...query,
+        ...convertRangeToQueryString(removeEmptyAttributes(searchState.range)),
       };
     }
 
@@ -837,9 +900,9 @@ const DiscoverApp = (props) => {
 
   const filters = useMemo(() => {
     return REFINEMENT_LISTS.map((list) => {
-      if (list.attribute === 'epoch_incident_date') {
+      if (list.attribute === 'epoch_incident_date' || list.attribute === 'epoch_date_published') {
         return (
-          <RangeInputContainer>
+          <RangeInputContainer key={list.attribute}>
             <RefinementListHeader className="refine_header">
               <FontAwesomeIcon icon={list.faIcon} className={list.faClasses} />
               {` ${list.label}`}
