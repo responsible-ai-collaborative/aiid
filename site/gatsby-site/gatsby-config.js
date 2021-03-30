@@ -151,6 +151,19 @@ const plugins = [
     },
   },
   'gatsby-plugin-use-query-params',
+  {
+    resolve: 'gatsby-source-s3',
+    options: {
+      aws: {
+        // This AWS IAM user has been provisioned no permissions, but the plugin requires a user to
+        // get a listing of the public S3 bucket. User: backupindexpublic
+        accessKeyId: 'AKIA25BP4AERUFDGAJUJ',
+        secretAccessKeyId: 'backupindexpublic',
+        secretAccessKey: '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',
+      },
+      buckets: ['aiid-backups-public'],
+    },
+  },
 ];
 
 // check and add algolia
