@@ -16,36 +16,41 @@ Administering data requires administrative access to the database. This access i
 
 Systems
 
-* _id: 5534b8c29cfd494a0103d45a # MongoDB database hash
-* incident_id: 1 # (int) The incrementing primary key for incidents, which are a collection of reports.
-* ref_number: 25 # (int) The reference number scoped to the incident ID.
-* report_number: 2379 # (int) the incrementing primary key for the report. This is a global resource identifier.
+* `_id`: 5534b8c29cfd494a0103d45a # MongoDB database hash
+* `incident_id`: 1 # (int) The incrementing primary key for incidents, which are a collection of reports.
+* `ref_number`: 25 # (int) The reference number scoped to the incident ID.
+* `report_number`: 2379 # (int) the incrementing primary key for the report. This is a global resource identifier.
 
 Dates
 
-* incident_date: `2019-07-25` # (Date) Date the incident occurred. Defaults to the article date.
-* date_downloaded:`2019-07-25` # (Date) Date the report was downloaded.
-* date_submitted:`2019-07-25` # (Date) Date the report was submitted to the AIID. This determines citation order.
-* date_modified: `2019-07-25` # (Date or null) Date the report was edited.
-* date_published: `2019-07-25` # (Date or null) The publication date of the report.
+* `incident_date`: `2019-07-25` # (String) Date the incident occurred. Defaults to the article date.
+* `date_downloaded`:`2019-07-25` # (String) Date the report was downloaded.
+* `date_submitted`:`2019-07-25` # (String) Date the report was submitted to the AIID. This determines citation order.
+* `date_modified`: `2019-07-25` # (String) Date the report was edited.
+* `date_published`: `2019-07-25` # (String) The publication date of the report.
+* `epoch_incident_date`: `1564016400` # (Int) Date the incident occurred in the Unix Epoch.
+* `epoch_date_downloaded`:`1564016400` # (Int) Date the report was downloaded in the Unix Epoch.
+* `epoch_date_submitted`:`1564016400` # (Int) Date the report was submitted to the AIID in the Unix Epoch.
+* `epoch_date_modified`: `1564016400` # (Int) Date the report was edited in the Unix Epoch.
+* `epoch_date_published`: `1564016400` # (Int) The publication date of the report in the Unix Epoch.
 
 People
 
-* submitters: Array(string) # People that submitted the incident report
-* authors: Array(string) # People that wrote the incident report
+* `submitters`: Array(string) # People that submitted the incident report
+* `authors`: Array(string) # People that wrote the incident report
 
 Text
 
-* title: "title of the report" # (string) The title of the report that is indexed.
-* description: "Short text for the report"
-* text: "Long text for the report" # (string) This is the complete text for the report in the MongoDB instance, and a shortened subset in the Algolia index
+* `title`: "title of the report" # (string) The title of the report that is indexed.
+* `description`: "Short text for the report"
+* `text`: "Long text for the report" # (string) This is the complete text for the report in the MongoDB instance, and a shortened subset in the Algolia index
 
 Media
 
-* language: "en" # (string) The language identifier of the report.
-* image_url: "http://si.wsj.net/public/resources/images/BN-IM269_YouTub_P_2015051817" # (string) The URL for the image that is indexed. This will be stored on the server as a hash of the URL.
-* source_domain: "blogs.wsj.com" # (string) The domain name hosting the report.
-* url: "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti" # The fully qualified URL to the report as hosted on the web.
+* `language`: "en" # (string) The language identifier of the report.
+* `image_url`: "http://si.wsj.net/public/resources/images/BN-IM269_YouTub_P_2015051817" # (string) The URL for the image that is indexed. This will be stored on the server as a hash of the URL.
+* `source_domain`: "blogs.wsj.com" # (string) The domain name hosting the report.
+* `url`: "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti" # The fully qualified URL to the report as hosted on the web.
 
 ```
 {
@@ -271,7 +276,14 @@ exports = function(arg){
   var submissionCollection = context.services.get("mongodb-atlas").db("aiidprod").collection("submissions");
   var incidentCollection = context.services.get("mongodb-atlas").db("aiidprod").collection("incidents");
 
+  function stringToEpoch(dateString) {
+    let someDate = new Date(dateString);
+    let epoch = someDate.getTime();
+    return epoch;
+  }
+
   function create(submittedReport, incident_id, report_number, ref_number) {
+
 
     // Provided by the submitted report
     var newReport = {
@@ -283,10 +295,18 @@ exports = function(arg){
       text: submittedReport["text"],
       title: submittedReport["title"],
       url: submittedReport["url"],
+
       date_downloaded: submittedReport["date_downloaded"],
       date_modified: submittedReport["date_modified"],
       date_published: submittedReport["date_published"],
       incident_date: submittedReport["incident_date"],
+
+      epoch_date_downloaded: stringToEpoch(submittedReport["date_downloaded"]),
+      epoch_date_modified: stringToEpoch(submittedReport["date_modified"]),
+      epoch_date_published: stringToEpoch(submittedReport["date_published"]),
+      epoch_incident_date: stringToEpoch(submittedReport["incident_date"]),
+      epoch_date_submitted: stringToEpoch(submittedReport["date_submitted"]),
+
       submitters: submittedReport["submitters"],
       date_submitted: submittedReport["date_submitted"],
       report_number: submittedReport["report_number"]
