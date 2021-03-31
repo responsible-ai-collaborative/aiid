@@ -39,20 +39,6 @@ const searchClient = algoliasearch('8TNY3YFAO8', '55efba4929953a53eb357824297afb
 
 const REFINEMENT_LISTS = [
   {
-    attribute: 'epoch_incident_date',
-    inputText: 'none',
-    label: 'Incident Date',
-    faIcon: faCalendarAlt,
-    faClasses: 'far fa-calendar-alt',
-  },
-  {
-    attribute: 'epoch_date_published',
-    inputText: 'none',
-    label: 'Published Date',
-    faIcon: faCalendarAlt,
-    faClasses: 'far fa-calendar-alt',
-  },
-  {
     attribute: 'source_domain',
     inputText: "Filter Domains ('bbc.com')",
     label: 'Source',
@@ -79,6 +65,20 @@ const REFINEMENT_LISTS = [
     label: 'Incident ID',
     faIcon: faHashtag,
     faClasses: 'fas fa-hashtag',
+  },
+  {
+    attribute: 'epoch_incident_date',
+    inputText: 'none',
+    label: 'Incident Date',
+    faIcon: faCalendarAlt,
+    faClasses: 'far fa-calendar-alt',
+  },
+  {
+    attribute: 'epoch_date_published',
+    inputText: 'none',
+    label: 'Published Date',
+    faIcon: faCalendarAlt,
+    faClasses: 'far fa-calendar-alt',
   },
   {
     attribute: 'flag',
@@ -695,14 +695,20 @@ const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
 
   const [localMax, setLocalMax] = useState(validateDate(max));
 
-  const [limitInterval] = useState({
-    min: formatISO(validateDate(min), { representation: 'date' }),
-    max: formatISO(validateDate(max), { representation: 'date' }),
-  });
+  const [limitInterval, setLimitInterval] = useState({ min: 0, max: 0 });
+
+  useEffect(() => {
+    setLimitInterval({
+      min: formatISO(validateDate(min), { representation: 'date' }),
+      max: formatISO(validateDate(max), { representation: 'date' }),
+    });
+    console.log(3);
+  }, []);
 
   useEffect(() => {
     setLocalMin(validateDate(min));
     setLocalMax(validateDate(max));
+    console.log(2);
   }, [min, max]);
 
   const handleSubmit = (e) => {
@@ -726,7 +732,10 @@ const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
         max={limitInterval.max}
         value={formatISO(localMin, { representation: 'date' })}
         onChange={(event) => {
-          setLocalMin(new Date(event.currentTarget.value || limitInterval.min).getTime());
+          console.log(event.currentTarget.value);
+          if (event.currentTarget.value !== '' && event.currentTarget.value.length <= 10) {
+            setLocalMin(new Date(event.currentTarget.value || limitInterval.min).getTime());
+          }
         }}
       />
       <Form.Label>To Date:</Form.Label>
@@ -737,7 +746,9 @@ const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
         max={limitInterval.max}
         value={formatISO(localMax, { representation: 'date' })}
         onChange={(event) => {
-          setLocalMax(new Date(event.currentTarget.value || limitInterval.max).getTime());
+          if (event.currentTarget.value !== '' && event.currentTarget.value.length <= 10) {
+            setLocalMax(new Date(event.currentTarget.value || limitInterval.max).getTime());
+          }
         }}
       />
       <Button variant="primary" type="submit" block className="mt-3">
