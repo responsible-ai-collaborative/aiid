@@ -31,6 +31,13 @@ const HitsContainer = styled.div`
   }
 `;
 
+const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  border-bottom: 1px solid rgb(230, 236, 241);
+  padding: 1em 0 1em 0;
+`;
+
 const CiteStyledMainWrapper = styled(StyledMainWrapper)`
   max-width: 100% !important;
 `;
@@ -98,16 +105,20 @@ const IncidentCite = ({ data, ...props }) => {
                 <Citation nodes={nodes} incident_id={incident_id} />
               </Col>
             </Row>
+            <Divider />
             <StatsContainer>
               <CustomStats />
             </StatsContainer>
+            <Divider />
             <Row className="mt-4 mb-5">
               <Col>
                 <h2>Reports</h2>
                 <IncidentList group={group} />
+                <Divider />
                 <ImageCarousel nodes={nodes} />
               </Col>
             </Row>
+            <Divider />
             <Row className="mt-4 mb-5">
               <Col>
                 <h1>Tools</h1>
@@ -124,6 +135,7 @@ const IncidentCite = ({ data, ...props }) => {
                 <BibTex nodes={nodes} incident_id={incident_id} />
               </Col>
             </Row>
+            <Divider />
             <HitsContainer showDetails={true}>
               <Hits showDetails={true} />
             </HitsContainer>
