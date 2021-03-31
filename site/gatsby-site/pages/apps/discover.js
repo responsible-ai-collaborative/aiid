@@ -396,7 +396,7 @@ export const IncidentStatsCard = ({ hits }) => {
   return (
     <IncidentCardContainer className="card">
       <div className="card-header">
-        <p>Incident Stats</p>
+        <h4>Incident Stats</h4>
       </div>
       <StatsContainer className="card-body">
         <div>

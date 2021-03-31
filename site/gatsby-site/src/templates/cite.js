@@ -5,7 +5,6 @@ import { graphql } from 'gatsby';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 
 import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
@@ -31,22 +30,28 @@ const HitsContainer = styled.div`
   }
 `;
 
-const Divider = styled.div`
-  width: 100%;
-  height: 1px;
-  border-bottom: 1px solid rgb(230, 236, 241);
-  padding: 1em 0 1em 0;
-`;
-
 const CiteStyledMainWrapper = styled(StyledMainWrapper)`
   max-width: 100% !important;
+`;
+
+const CardContainer = styled.div`
+  width: 100%;
+  border: 1.5px solid #d9deee;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px 0px #e3e5ec;
+  display: flex;
+  flex-direction: column;
+  h4 {
+    margin: 0 !important;
+  }
 `;
 
 const CustomStats = connectHits(IncidentStatsCard);
 
 const StatsContainer = styled.div`
+  width: 100%;
   margin-top: 1.5rem;
-  p {
+  h4 {
     margin: 0 !important;
   }
 `;
@@ -100,46 +105,61 @@ const IncidentCite = ({ data, ...props }) => {
         <Container>
           <InstantSearch indexName="aiid-emergency" searchClient={searchClient}>
             <Row>
-              <Col>
-                <h2>Suggested citation format</h2>
-                <Citation nodes={nodes} incident_id={incident_id} />
-              </Col>
+              <CardContainer className="card">
+                <div className="card-header">
+                  <h4>Suggested citation format</h4>
+                </div>
+                <div className="card-body">
+                  <Citation nodes={nodes} incident_id={incident_id} />
+                </div>
+              </CardContainer>
             </Row>
-            <Divider />
-            <StatsContainer>
-              <CustomStats />
-            </StatsContainer>
-            <Divider />
-            <Row className="mt-4 mb-5">
-              <Col>
-                <h2>Reports</h2>
-                <IncidentList group={group} />
-                <Divider />
+            <Row className="mb-4">
+              <StatsContainer>
+                <CustomStats />
+              </StatsContainer>
+            </Row>
+            <Row className="mb-4">
+              <CardContainer className="card">
+                <div className="card-header">
+                  <h4>Reports</h4>
+                </div>
+                <div className="card-body">
+                  <IncidentList group={group} />
+                </div>
+              </CardContainer>
+            </Row>
+            <Row className="mb-4">
+              <CardContainer className="card">
                 <ImageCarousel nodes={nodes} />
-              </Col>
+              </CardContainer>
             </Row>
-            <Divider />
-            <Row className="mt-4 mb-5">
-              <Col>
-                <h1>Tools</h1>
-                <Button variant="outline-primary" className="mr-2" href={'/summaries/incidents'}>
-                  All Incidents
-                </Button>
-                <Button
-                  variant="outline-primary"
-                  className="mr-2"
-                  href={'/discover/index.html?incident_id=' + incident_id}
-                >
-                  Discover
-                </Button>
-                <BibTex nodes={nodes} incident_id={incident_id} />
-              </Col>
+            <Row className="mb-4">
+              <CardContainer className="card">
+                <div className="card-header">
+                  <h4>Tools</h4>
+                </div>
+                <div className="card-body">
+                  <Button variant="outline-primary" className="mr-2" href={'/summaries/incidents'}>
+                    All Incidents
+                  </Button>
+                  <Button
+                    variant="outline-primary"
+                    className="mr-2"
+                    href={'/discover/index.html?incident_id=' + incident_id}
+                  >
+                    Discover
+                  </Button>
+                  <BibTex nodes={nodes} incident_id={incident_id} />
+                </div>
+              </CardContainer>
             </Row>
-            <Divider />
-            <HitsContainer showDetails={true}>
-              <Hits showDetails={true} />
-            </HitsContainer>
-            <Configure filters={`incident_id:${incident_id}`} />
+            <Row className="mb-4">
+              <HitsContainer showDetails={true}>
+                <Hits showDetails={true} />
+              </HitsContainer>
+              <Configure filters={`incident_id:${incident_id}`} />
+            </Row>
           </InstantSearch>
         </Container>
       </CiteStyledMainWrapper>
