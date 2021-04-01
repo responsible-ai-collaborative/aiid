@@ -17,7 +17,7 @@ import { UserContext } from './UserContext';
 // https://docs.mongodb.com/realm/web/mongodb/
 
 export const UserContextProvider = ({ children }) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState();
 
   const [type, setType] = useState();

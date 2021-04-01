@@ -18,11 +18,13 @@ const SubmissionList = () => {
       </p>
       <p>Please note that this list updates hourly. New submissions are not immediately shown.</p>
       <ListGroup className="mb-5">
-        {submissions.sort((a,b) => a.incident_date - b.incident_date).map((node) => (
-          <ListGroup.Item key={node._id} className="m-0 p-0">
-            <ReportedIncident incident={node} />
-          </ListGroup.Item>
-        ))}
+        {submissions
+          .sort((a, b) => a.incident_date - b.incident_date)
+          .map((node) => (
+            <ListGroup.Item key={node._id} className="m-0 p-0">
+              <ReportedIncident incident={node} />
+            </ListGroup.Item>
+          ))}
       </ListGroup>
     </>
   );

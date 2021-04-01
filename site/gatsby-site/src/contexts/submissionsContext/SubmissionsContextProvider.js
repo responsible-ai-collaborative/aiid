@@ -3,8 +3,10 @@ import { ObjectId } from 'bson';
 
 import { useMongo } from 'hooks/useMongo';
 import { SubmissionsContext } from './SubmissionsContext';
+import { useUserContext } from 'contexts/userContext';
 
 export const SubmissionsContextProvider = ({ children }) => {
+  const { loading: authLoading } = useUserContext();
   const [loading, setLoading] = useState(false);
   const [submissions, setSubmissions] = useState([]);
   const { runQuery } = useMongo();
@@ -19,8 +21,10 @@ export const SubmissionsContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    refetch();
-  }, []);
+    if (!authLoading) {
+      refetch();
+    }
+  }, [authLoading]);
 
   return (
     <SubmissionsContext.Provider

@@ -7,7 +7,10 @@ import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import { useUserContext } from 'contexts/userContext';
 
 function AuthenticateUI() {
-  const { mongoUserKey, actions: { setUserAPIKey, logout } } = useUserContext();
+  const {
+    mongoUserKey,
+    actions: { setUserAPIKey, logout },
+  } = useUserContext();
   const [apiKey, setAPIKey] = useState(mongoUserKey);
 
   const update = () => {
@@ -25,7 +28,7 @@ function AuthenticateUI() {
   };
 
   useEffect(() => {
-    setAPIKey(mongoUserKey)
+    setAPIKey(mongoUserKey);
   }, [mongoUserKey]);
 
   return (
