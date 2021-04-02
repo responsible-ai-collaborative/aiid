@@ -514,7 +514,8 @@ export const baseStyles = injectGlobal`
 
   .titleWrapper {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
     padding-bottom: 40px;
     border-bottom: 1px solid rgb(230, 236, 241);
     margin-bottom: 32px;
