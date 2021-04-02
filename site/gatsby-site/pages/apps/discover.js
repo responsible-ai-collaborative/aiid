@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { StringParam, QueryParams, useQueryParams } from 'use-query-params';
+import Link from 'components/Link';
 import algoliasearch from 'algoliasearch/lite';
 import { debounce } from 'debounce';
 import {
@@ -10,7 +11,6 @@ import {
   Pagination,
   Stats,
   connectSearchBox,
-  connectCurrentRefinements,
   connectRange,
 } from 'react-instantsearch-dom';
 import styled from 'styled-components';
@@ -29,13 +29,13 @@ import {
 import { useModal, CustomModal } from '../../src/components/useModal';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
 import { Form } from 'react-bootstrap';
+import Helmet from 'react-helmet';
 
-import '../../static/discover/src/algolia.css';
 import '../../static/discover/src/app.css';
 import '../../static/discover/src/index.css';
 import { add, formatISO, isAfter, isBefore } from 'date-fns';
 
-const searchClient = algoliasearch('8TNY3YFAO8', '55efba4929953a53eb357824297afb4c');
+export const searchClient = algoliasearch('8TNY3YFAO8', '55efba4929953a53eb357824297afb4c');
 
 const REFINEMENT_LISTS = [
   {
@@ -206,6 +206,81 @@ const RefinementListContainer = styled.div`
 
 const StyledPagination = styled(Pagination)`
   padding: 50px 0 50px 0;
+
+  .ais-Pagination {
+    color: #3a4570;
+  }
+
+  .ais-Pagination-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+  }
+
+  .ais-Pagination-item + .ais-Pagination-item {
+    margin-left: 0.3rem;
+  }
+
+  .ais-Pagination-link {
+    color: #0096db;
+    -webkit-transition: color 0.2s ease-out;
+    transition: color 0.2s ease-out;
+    padding: 0.3rem 0.6rem;
+    display: block;
+    border: 1px solid #c4c8d8;
+    border-radius: 5px;
+    -webkit-transition: background-color 0.2s ease-out;
+    transition: background-color 0.2s ease-out;
+
+    :hover {
+      color: #0073a8;
+      background-color: #e3e5ec;
+    }
+
+    :focus {
+      color: #0073a8;
+      background-color: #e3e5ec;
+    }
+  }
+
+  .ais-Pagination-item--disabled .ais-Pagination-link {
+    opacity: 0.6;
+    cursor: not-allowed;
+    color: #a5abc4;
+
+    :hover {
+      color: #a5abc4;
+      background-color: #fff;
+    }
+
+    :focus {
+      color: #a5abc4;
+      background-color: #fff;
+    }
+  }
+
+  .ais-Pagination-item--selected .ais-Pagination-link {
+    color: #fff;
+    background-color: #0096db;
+    border-color: #0096db;
+
+    :hover {
+      color: #fff;
+    }
+
+    :focus {
+      color: #fff;
+    }
+  }
 `;
 
 const CardFooter = styled.div`
@@ -266,11 +341,47 @@ const CardBody = styled.div`
 const StyledSearchInput = styled.input`
   padding: 0.3rem 0.3rem !important;
   max-width: 100% !important;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 0.3rem 1.7rem;
+  width: 100%;
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #c4c8d8;
+  border-radius: 5px;
+`;
+
+const SearchResetButton = styled.button`
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  position: absolute;
+  z-index: 1;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  right: 0.3rem;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+
+  padding: 0;
+  overflow: visible;
+  font: inherit;
+  line-height: normal;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 `;
 
 const Header = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   max-width: 100%;
 
   @media (max-width: 767px) {
@@ -296,6 +407,25 @@ const NoResults = styled.div`
 
   @media (max-width: 1240px) {
     grid-column-start: 1;
+  }
+`;
+
+const SearchContainer = styled.div`
+  flex-grow: 1;
+`;
+
+const SearchForm = styled.form`
+  display: block;
+  position: relative;
+`;
+
+const StyledLink = styled(Link)`
+  color: white;
+  text-decoration: none;
+
+  :hover {
+    color: white;
+    text-decoration: none;
   }
 `;
 
@@ -385,14 +515,20 @@ const cardNeedsBlockquote = (item) => {
 const getParagraphs = (itemText) => {
   return (
     <>
-      {itemText.split('\n').map((paragraph, index) => (
-        <p key={index}>{paragraph}</p>
+      {itemText.split('\n').map((paragraph, index, array) => (
+        <>
+          {array.length - 1 === index ? (
+            <p key={index}>{paragraph + '...'}</p>
+          ) : (
+            <p key={index}>{paragraph}</p>
+          )}
+        </>
       ))}
     </>
   );
 };
 
-const IncidentStatsCard = ({ searchInput, stats }) => {
+export const IncidentStatsCard = ({ hits }) => {
   const STATS = [
     {
       key: 'incidentId',
@@ -406,16 +542,22 @@ const IncidentStatsCard = ({ searchInput, stats }) => {
       key: 'incidentDate',
       label: 'Incident Date',
     },
-    {
-      key: 'citation',
-      label: 'Citation',
-    },
   ];
+
+  if (!hits || hits.length === 0) {
+    return null;
+  }
+
+  const stats = {
+    incidentId: hits[0].incident_id,
+    reportCount: hits.length,
+    incidentDate: hits[0].incident_date,
+  };
 
   return (
     <IncidentCardContainer className="card">
       <div className="card-header">
-        <p>Incident Stats</p>
+        <h4>Incident Stats</h4>
       </div>
       <StatsContainer className="card-body">
         <div>
@@ -425,13 +567,10 @@ const IncidentStatsCard = ({ searchInput, stats }) => {
         </div>
         <div>
           {STATS.map((stat) => (
-            <div key={stat.key}>
-              {stat.key === 'citation' ? <a href={stats[stat.key]}>View</a> : stats[stat.key]}
-            </div>
+            <div key={stat.key}>{stats[stat.key]}</div>
           ))}
         </div>
       </StatsContainer>
-      <CustomClearRefinements searchInputRef={searchInput} clearsQuery={true} />
     </IncidentCardContainer>
   );
 };
@@ -444,7 +583,7 @@ const IncidentCard = ({
   toggleFilterByIncidentId,
   showDetails,
 }) => (
-  <IncidentCardContainer>
+  <IncidentCardContainer id={item._id}>
     <div className="card-header">
       <Highlight hit={item} attribute="title" />
       <p className="subhead">
@@ -480,15 +619,17 @@ const IncidentCard = ({
     </CardBody>
     <div className="align-bottom">
       <img className="image-preview" alt={item.title} src={getImageHashPath(item.image_url)} />
-      {!showDetails && (
+      {toggleFilterByIncidentId && (
         <button
           type="button"
           className="btn btn-secondary btn-sm btn-block assignment-button"
           onClick={() => {
-            toggleFilterByIncidentId(item.incident_id + '');
+            // toggleFilterByIncidentId(item.incident_id + '');
           }}
         >
-          Show Details on Incident #{item.incident_id}
+          <StyledLink to={`/cite/${item.incident_id}`}>
+            Show Details on Incident #{item.incident_id}
+          </StyledLink>
         </button>
       )}
     </div>
@@ -558,11 +699,10 @@ const StyledSearchBox = ({ refine, defaultRefinement, customRef }) => {
   }, 500);
 
   return (
-    <div className="ais-SearchBox flex-grow-1">
-      <form className="ais-SearchBox-form" noValidate>
+    <SearchContainer>
+      <SearchForm noValidate>
         <StyledSearchInput
           ref={customRef}
-          className="ais-SearchBox-input"
           autoComplete="off"
           autoCorrect="off"
           autoCapitalize="off"
@@ -573,18 +713,13 @@ const StyledSearchBox = ({ refine, defaultRefinement, customRef }) => {
           defaultValue={defaultRefinement}
           onChange={(event) => debouncedRefine(event.currentTarget.value)}
         />
-        <button
-          className="ais-SearchBox-reset"
-          type="reset"
-          title="Clear the search query."
-          onClick={() => refine('')}
-        >
+        <SearchResetButton type="reset" title="Clear the search query." onClick={() => refine('')}>
           <FontAwesomeIcon
             icon={faTimesCircle}
             className="pointer fa fa-times-circle"
             title="Authors"
           />
-        </button>
+        </SearchResetButton>
         <StyledStats
           translations={{
             stats(nbHits) {
@@ -596,25 +731,10 @@ const StyledSearchBox = ({ refine, defaultRefinement, customRef }) => {
             },
           }}
         />
-      </form>
-    </div>
+      </SearchForm>
+    </SearchContainer>
   );
 };
-
-const ClearRefinements = ({ items, refine, searchInputRef }) => (
-  <button
-    type="button"
-    className="btn btn-secondary btn-sm btn-block assignment-button"
-    onClick={() => {
-      searchInputRef.current.value = '';
-      refine(items);
-    }}
-  >
-    Clear Incident Selection and Search
-  </button>
-);
-
-const CustomClearRefinements = connectCurrentRefinements(ClearRefinements);
 
 const CustomSearchBox = connectSearchBox(StyledSearchBox);
 
@@ -798,6 +918,64 @@ const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
 
 const CustomRangeInput = connectRange(RangeInput);
 
+const RenderCards = ({
+  hits,
+  toggleFilterByIncidentId,
+  showDetails,
+  authorsModal,
+  submittersModal,
+  flagReportModal,
+}) => {
+  if (hits.length === 0) {
+    return (
+      <NoResults>
+        <p>Your search returned no results.</p>
+        <p>Please clear your search in the search box above or the filters.</p>
+      </NoResults>
+    );
+  }
+  return (
+    <>
+      {hits.map((hit) => (
+        <IncidentCard
+          key={hit._id}
+          item={hit}
+          authorsModal={authorsModal}
+          submittersModal={submittersModal}
+          flagReportModal={flagReportModal}
+          toggleFilterByIncidentId={toggleFilterByIncidentId}
+          showDetails={showDetails}
+        />
+      ))}
+    </>
+  );
+};
+
+const CustomHits = connectHits(RenderCards);
+
+export const Hits = ({ toggleFilterByIncidentId, showDetails = false }) => {
+  const authorsModal = useModal();
+
+  const submittersModal = useModal();
+
+  const flagReportModal = useModal();
+
+  return (
+    <>
+      <CustomHits
+        toggleFilterByIncidentId={toggleFilterByIncidentId}
+        authorsModal={authorsModal}
+        submittersModal={submittersModal}
+        flagReportModal={flagReportModal}
+        showDetails={showDetails}
+      />
+      <CustomModal {...authorsModal} />
+      <CustomModal {...submittersModal} />
+      <CustomModal {...flagReportModal} />
+    </>
+  );
+};
+
 const DiscoverApp = (props) => {
   const searchInput = useRef(null);
 
@@ -837,7 +1015,7 @@ const DiscoverApp = (props) => {
     epoch_date_published_max: StringParam,
   };
 
-  const showDetails = searchState.refinementList?.incident_id?.length === 1;
+  // const showDetails = searchState.refinementList?.incident_id?.length === 1;
 
   useEffect(() => {
     const cleanQuery = removeUndefinedAttributes(query);
@@ -907,51 +1085,6 @@ const DiscoverApp = (props) => {
     setQuery(getQueryFromState(newSearchState), 'push');
   };
 
-  const authorsModal = useModal();
-
-  const submittersModal = useModal();
-
-  const flagReportModal = useModal();
-
-  const RenderCards = ({ hits, toggleFilterByIncidentId, showDetails }) => {
-    if (hits.length === 0) {
-      return (
-        <NoResults>
-          <p>Your search returned no results.</p>
-          <p>Please clear your search in the search box above or the filters.</p>
-        </NoResults>
-      );
-    }
-    return (
-      <>
-        {showDetails && hits[0] && (
-          <IncidentStatsCard
-            searchInput={searchInput}
-            stats={{
-              incidentId: hits[0].incident_id,
-              reportCount: hits.length,
-              incidentDate: hits[0].incident_date,
-              citation: `/cite/${hits[0].incident_id}`,
-            }}
-          />
-        )}
-        {hits.map((hit) => (
-          <IncidentCard
-            key={hit._id}
-            item={hit}
-            authorsModal={authorsModal}
-            submittersModal={submittersModal}
-            flagReportModal={flagReportModal}
-            toggleFilterByIncidentId={toggleFilterByIncidentId}
-            showDetails={showDetails}
-          />
-        ))}
-      </>
-    );
-  };
-
-  const CustomHits = connectHits(RenderCards);
-
   const filters = useMemo(() => {
     return REFINEMENT_LISTS.map((list) => {
       if (list.attribute === 'epoch_incident_date' || list.attribute === 'epoch_date_published') {
@@ -980,6 +1113,9 @@ const DiscoverApp = (props) => {
 
   return (
     <LayoutHideSidebar {...props}>
+      <Helmet>
+        <title>Artifical Intelligence Incident Database</title>
+      </Helmet>
       <QueryParams config={queryConfig}>
         {({ query, setQuery }) => (
           <>
@@ -998,11 +1134,8 @@ const DiscoverApp = (props) => {
                 </Header>
                 <SidesContainer>
                   <ResultsSide>
-                    <HitsContainer showDetails={showDetails}>
-                      <CustomHits
-                        toggleFilterByIncidentId={toggleFilterByIncidentId}
-                        showDetails={showDetails}
-                      />
+                    <HitsContainer>
+                      <Hits toggleFilterByIncidentId={toggleFilterByIncidentId} />
                     </HitsContainer>
                     <StyledPagination />
                   </ResultsSide>
@@ -1010,10 +1143,6 @@ const DiscoverApp = (props) => {
                 </SidesContainer>
               </InstantSearch>
             </Container>
-
-            <CustomModal {...authorsModal} />
-            <CustomModal {...submittersModal} />
-            <CustomModal {...flagReportModal} />
           </>
         )}
       </QueryParams>
