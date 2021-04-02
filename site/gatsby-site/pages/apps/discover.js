@@ -28,12 +28,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useModal, CustomModal } from '../../src/components/useModal';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
-import { Button, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 
 import '../../static/discover/src/algolia.css';
 import '../../static/discover/src/app.css';
 import '../../static/discover/src/index.css';
-import { formatISO } from 'date-fns';
+import { add, formatISO, isAfter, isBefore } from 'date-fns';
 
 const searchClient = algoliasearch('8TNY3YFAO8', '55efba4929953a53eb357824297afb4c');
 
@@ -177,6 +177,7 @@ const Text = styled.p`
 
 const ResultsSide = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: column;
   max-width: 85%;
   padding-right: 2rem;
@@ -276,6 +277,25 @@ const Header = styled.div`
     .fa-BARS {
       display: none;
     }
+  }
+`;
+
+const NoResults = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  grid-column-start: 2;
+  grid-column-end: 3;
+
+  p {
+    text-align: center;
+  }
+
+  @media (max-width: 1240px) {
+    grid-column-start: 1;
   }
 `;
 
@@ -702,58 +722,76 @@ const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
       min: formatISO(validateDate(min), { representation: 'date' }),
       max: formatISO(validateDate(max), { representation: 'date' }),
     });
-    console.log(3);
   }, []);
 
   useEffect(() => {
     setLocalMin(validateDate(min));
     setLocalMax(validateDate(max));
-    console.log(2);
   }, [min, max]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    refine({
-      max: validateDate(localMax) / 1000,
-      min: validateDate(localMin) / 1000,
-    });
-  };
 
   if (!localMax || !localMin) {
     return null;
   }
 
+  const onChangeMinDate = debounce((newInput) => {
+    try {
+      if (
+        newInput !== '' &&
+        newInput.length <= 10 &&
+        isAfter(new Date(newInput), new Date(limitInterval.min))
+      ) {
+        setLocalMin(new Date(newInput || limitInterval.min).getTime());
+        refine({
+          max: validateDate(localMax) / 1000,
+          min: validateDate(new Date(newInput || limitInterval.min).getTime()) / 1000,
+        });
+      }
+    } catch (error) {
+      refine({
+        max: validateDate(localMax) / 1000,
+        min: validateDate(add(validateDate(localMax) / 1000, { seconds: 1 }).getTime()) / 1000,
+      });
+    }
+  }, 1000);
+
+  const onChangeMaxDate = debounce((newInput) => {
+    try {
+      if (
+        newInput !== '' &&
+        newInput.length <= 10 &&
+        isBefore(new Date(newInput), new Date(limitInterval.max))
+      ) {
+        setLocalMax(new Date(newInput || limitInterval.max).getTime());
+        refine({
+          max: validateDate(new Date(newInput || limitInterval.max).getTime()) / 1000,
+          min: validateDate(localMin) / 1000,
+        });
+      }
+    } catch (error) {
+      refine({
+        min: validateDate(localMin) / 1000,
+        max: validateDate(add(validateDate(localMin) / 1000, { seconds: 1 }).getTime()) / 1000,
+      });
+    }
+  }, 1000);
+
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form>
       <Form.Label>From Date:</Form.Label>
       <Form.Control
         type="date"
+        defaultValue={formatISO(localMin, { representation: 'date' })}
+        onChange={(event) => onChangeMinDate(event.currentTarget.value)}
         min={limitInterval.min}
-        max={limitInterval.max}
-        value={formatISO(localMin, { representation: 'date' })}
-        onChange={(event) => {
-          console.log(event.currentTarget.value);
-          if (event.currentTarget.value !== '' && event.currentTarget.value.length <= 10) {
-            setLocalMin(new Date(event.currentTarget.value || limitInterval.min).getTime());
-          }
-        }}
       />
+
       <Form.Label>To Date:</Form.Label>
       <Form.Control
         type="date"
-        placeholder="Max"
-        min={limitInterval.min}
+        defaultValue={formatISO(localMax, { representation: 'date' })}
+        onChange={(event) => onChangeMaxDate(event.currentTarget.value)}
         max={limitInterval.max}
-        value={formatISO(localMax, { representation: 'date' })}
-        onChange={(event) => {
-          if (event.currentTarget.value !== '' && event.currentTarget.value.length <= 10) {
-            setLocalMax(new Date(event.currentTarget.value || limitInterval.max).getTime());
-          }
-        }}
       />
-      <Button variant="primary" type="submit" block className="mt-3">
-        Submit
-      </Button>
     </Form>
   );
 };
@@ -876,8 +914,14 @@ const DiscoverApp = (props) => {
   const flagReportModal = useModal();
 
   const RenderCards = ({ hits, toggleFilterByIncidentId, showDetails }) => {
-    const itemsCount = hits.length;
-
+    if (hits.length === 0) {
+      return (
+        <NoResults>
+          <p>Your search returned no results.</p>
+          <p>Please clear your search in the search box above or the filters.</p>
+        </NoResults>
+      );
+    }
     return (
       <>
         {showDetails && hits[0] && (
@@ -900,7 +944,6 @@ const DiscoverApp = (props) => {
             flagReportModal={flagReportModal}
             toggleFilterByIncidentId={toggleFilterByIncidentId}
             showDetails={showDetails}
-            itemsCount={itemsCount}
           />
         ))}
       </>
@@ -933,7 +976,7 @@ const DiscoverApp = (props) => {
         />
       );
     });
-  }, []);
+  }, [searchState]);
 
   return (
     <LayoutHideSidebar {...props}>
