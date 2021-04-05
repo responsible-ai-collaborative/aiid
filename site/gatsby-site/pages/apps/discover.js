@@ -984,6 +984,7 @@ const FiltersBar = ({ filters, updateFilters, updateQuery }) => {
   console.log(filters);
   for (const filter in filters.refinementList) {
     console.log(filter);
+    // TODO: range filters contain _min _max - need refactoring
     const filterName = REFINEMENT_LISTS.filter((f) => f.attribute === filter)[0].label;
 
     for (const value of filters.refinementList[filter]) {
