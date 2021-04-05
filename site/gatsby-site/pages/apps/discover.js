@@ -903,6 +903,7 @@ const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
         defaultValue={formatISO(localMin, { representation: 'date' })}
         onChange={(event) => onChangeMinDate(event.currentTarget.value)}
         min={limitInterval.min}
+        onKeyDown={(e) => e.preventDefault()}
       />
 
       <Form.Label>To Date:</Form.Label>
@@ -911,6 +912,7 @@ const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
         defaultValue={formatISO(localMax, { representation: 'date' })}
         onChange={(event) => onChangeMaxDate(event.currentTarget.value)}
         max={limitInterval.max}
+        onKeyDown={(e) => e.preventDefault()}
       />
     </Form>
   );
@@ -925,7 +927,12 @@ const RenderCards = ({
   authorsModal,
   submittersModal,
   flagReportModal,
+  scrollTo,
 }) => {
+  useEffect(() => {
+    scrollTo();
+  }, [hits]);
+
   if (hits.length === 0) {
     return (
       <NoResults>
@@ -953,7 +960,7 @@ const RenderCards = ({
 
 const CustomHits = connectHits(RenderCards);
 
-export const Hits = ({ toggleFilterByIncidentId, showDetails = false }) => {
+export const Hits = ({ toggleFilterByIncidentId, showDetails = false, scrollTo }) => {
   const authorsModal = useModal();
 
   const submittersModal = useModal();
@@ -968,6 +975,7 @@ export const Hits = ({ toggleFilterByIncidentId, showDetails = false }) => {
         submittersModal={submittersModal}
         flagReportModal={flagReportModal}
         showDetails={showDetails}
+        scrollTo={scrollTo}
       />
       <CustomModal {...authorsModal} />
       <CustomModal {...submittersModal} />
@@ -978,6 +986,12 @@ export const Hits = ({ toggleFilterByIncidentId, showDetails = false }) => {
 
 const DiscoverApp = (props) => {
   const searchInput = useRef(null);
+
+  const [currentScrollPosition, setCurrentScrollPosition] = useState(0);
+
+  const debouncedSetCurrentScrollPosition = debounce((pos) => {
+    setCurrentScrollPosition(pos);
+  }, 100);
 
   const [query, setQuery] = useQueryParams({
     s: StringParam,
@@ -1037,6 +1051,20 @@ const DiscoverApp = (props) => {
       },
     });
   }, [query]);
+
+  const onScroll = () => {
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+
+    debouncedSetCurrentScrollPosition(winScroll);
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', onScroll);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, []);
 
   const getQueryFromState = (searchState) => {
     let query = {};
@@ -1135,7 +1163,10 @@ const DiscoverApp = (props) => {
                 <SidesContainer>
                   <ResultsSide>
                     <HitsContainer>
-                      <Hits toggleFilterByIncidentId={toggleFilterByIncidentId} />
+                      <Hits
+                        toggleFilterByIncidentId={toggleFilterByIncidentId}
+                        scrollTo={() => window.scrollTo(0, currentScrollPosition)}
+                      />
                     </HitsContainer>
                     <StyledPagination />
                   </ResultsSide>
