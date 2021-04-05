@@ -28,7 +28,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useModal, CustomModal } from '../../src/components/useModal';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
-import { Form } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import Helmet from 'react-helmet';
 
 import '../../static/discover/src/app.css';
@@ -350,6 +350,31 @@ const StyledSearchInput = styled.input`
   background-color: #fff;
   border: 1px solid #c4c8d8;
   border-radius: 5px;
+`;
+
+const FiltersContainer = styled.div`
+  width: 100;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 2em;
+`;
+
+const Tags = styled(Button)`
+  &&& {
+    margin-right: 0.5em;
+    border-radius: 23px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    p {
+      margin-bottom: 0 !important;
+      margin-right: 0.4em;
+    }
+  }
 `;
 
 const SearchResetButton = styled.button`
@@ -717,7 +742,7 @@ const StyledSearchBox = ({ refine, defaultRefinement, customRef }) => {
           <FontAwesomeIcon
             icon={faTimesCircle}
             className="pointer fa fa-times-circle"
-            title="Authors"
+            title="reset"
           />
         </SearchResetButton>
         <StyledStats
@@ -953,6 +978,83 @@ const RenderCards = ({
 
 const CustomHits = connectHits(RenderCards);
 
+const FiltersBar = ({ filters, updateFilters, updateQuery }) => {
+  const flitersArray = [];
+
+  console.log(filters);
+  for (const filter in filters.refinementList) {
+    console.log(filter);
+    const filterName = REFINEMENT_LISTS.filter((f) => f.attribute === filter)[0].label;
+
+    for (const value of filters.refinementList[filter]) {
+      flitersArray.push(`${filterName}: ${value}`);
+    }
+  }
+
+  for (const filter in filters.range) {
+    flitersArray.push(filter);
+  }
+
+  if (flitersArray.length === 0) {
+    return null;
+  }
+
+  return (
+    <FiltersContainer>
+      {flitersArray.map((filter) => (
+        <Tags
+          variant="outline-primary"
+          key={filter}
+          onClick={() => {
+            const filterValuePair = filter.split(': ');
+
+            const filterAttr = REFINEMENT_LISTS.filter((f) => f.label === filterValuePair[0])[0]
+              .attribute;
+
+            let newFilters = {};
+
+            if (filters.refinementList[filterAttr]) {
+              newFilters = {
+                ...filters,
+                refinementList: {
+                  ...filters.refinementList,
+                  [filterAttr]: filters.refinementList[filterAttr]?.filter(
+                    (v) => v !== filterValuePair[1]
+                  ),
+                },
+              };
+            }
+
+            if (filters.range[filterAttr]) {
+              newFilters = {
+                ...filters,
+                range: {
+                  ...filters.range,
+                  [filterAttr]: filters.range[filterAttr]?.filter((v) => v !== filterValuePair[1]),
+                },
+              };
+            }
+
+            updateFilters({
+              ...newFilters,
+            });
+            updateQuery({
+              ...newFilters,
+            });
+          }}
+        >
+          <p>{filter}</p>
+          <FontAwesomeIcon
+            icon={faTimesCircle}
+            className="pointer fa fa-times-circle"
+            title="reset"
+          />
+        </Tags>
+      ))}
+    </FiltersContainer>
+  );
+};
+
 export const Hits = ({ toggleFilterByIncidentId, showDetails = false }) => {
   const authorsModal = useModal();
 
@@ -1131,6 +1233,11 @@ const DiscoverApp = (props) => {
               >
                 <Header>
                   <CustomSearchBox customRef={searchInput} defaultRefinement={query.s} />
+                  <FiltersBar
+                    filters={searchState}
+                    updateFilters={setSearchState}
+                    updateQuery={(newFilters) => setQuery(getQueryFromState(newFilters), 'push')}
+                  />
                 </Header>
                 <SidesContainer>
                   <ResultsSide>
