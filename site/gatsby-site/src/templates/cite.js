@@ -65,6 +65,16 @@ const IncidentCite = ({ data, ...props }) => {
     allMongodbAiidprodIncidents: { group },
   } = data;
 
+  const scrollToIncidentCard = () => {
+    if (props.location?.hash) {
+      const incidentCard = document.getElementById(props.location?.hash?.split('#')[1]);
+
+      if (incidentCard) {
+        incidentCard.scrollIntoView();
+      }
+    }
+  };
+
   // meta tags
   const reports = group[0]['edges'];
 
@@ -156,7 +166,7 @@ const IncidentCite = ({ data, ...props }) => {
             </Row>
             <Row className="mb-4">
               <HitsContainer showDetails={true}>
-                <Hits showDetails={true} />
+                <Hits showDetails={true} scrollTo={() => scrollToIncidentCard()} />
               </HitsContainer>
               <Configure filters={`incident_id:${incident_id}`} />
             </Row>

@@ -627,7 +627,7 @@ const IncidentCard = ({
             // toggleFilterByIncidentId(item.incident_id + '');
           }}
         >
-          <StyledLink to={`/cite/${item.incident_id}`}>
+          <StyledLink to={`/cite/${item.incident_id}#${item._id}`}>
             Show Details on Incident #{item.incident_id}
           </StyledLink>
         </button>
@@ -930,7 +930,9 @@ const RenderCards = ({
   scrollTo,
 }) => {
   useEffect(() => {
-    scrollTo();
+    if (scrollTo) {
+      scrollTo();
+    }
   }, [hits]);
 
   if (hits.length === 0) {
