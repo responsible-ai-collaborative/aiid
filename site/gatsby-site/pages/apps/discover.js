@@ -680,12 +680,12 @@ const IncidentCard = ({
         }
       />
 
-      <span className="pointer">
+      <span>
         <FontAwesomeIcon
           icon={faHashtag}
           className="fas fa-hashtag"
           title="Incident ID"
-          onClick={() => toggleFilterByIncidentId(item.incident_id + '')}
+          // onClick={() => toggleFilterByIncidentId(item.incident_id + '')}
         />
         {item.incident_id}
       </span>
@@ -991,12 +991,6 @@ export const Hits = ({ toggleFilterByIncidentId, showDetails = false, scrollTo }
 const DiscoverApp = (props) => {
   const searchInput = useRef(null);
 
-  const [currentScrollPosition, setCurrentScrollPosition] = useState(0);
-
-  const debouncedSetCurrentScrollPosition = debounce((pos) => {
-    setCurrentScrollPosition(pos);
-  }, 100);
-
   const [query, setQuery] = useQueryParams({
     s: StringParam,
     source_domain: StringParam,
@@ -1055,20 +1049,6 @@ const DiscoverApp = (props) => {
       },
     });
   }, [query]);
-
-  const onScroll = () => {
-    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-
-    debouncedSetCurrentScrollPosition(winScroll);
-  };
-
-  useEffect(() => {
-    window.addEventListener('scroll', onScroll);
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-    };
-  }, []);
 
   const getQueryFromState = (searchState) => {
     let query = {};
@@ -1167,10 +1147,7 @@ const DiscoverApp = (props) => {
                 <SidesContainer>
                   <ResultsSide>
                     <HitsContainer>
-                      <Hits
-                        toggleFilterByIncidentId={toggleFilterByIncidentId}
-                        scrollTo={() => window.scrollTo(0, currentScrollPosition)}
-                      />
+                      <Hits toggleFilterByIncidentId={toggleFilterByIncidentId} />
                     </HitsContainer>
                     <StyledPagination />
                   </ResultsSide>

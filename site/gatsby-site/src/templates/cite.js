@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
 
@@ -65,12 +65,16 @@ const IncidentCite = ({ data, ...props }) => {
     allMongodbAiidprodIncidents: { group },
   } = data;
 
+  const [hasScrolled, setHasScrolled] = useState(false);
+
   const scrollToIncidentCard = () => {
+    console.log('scrollToIncidentCard');
     if (props.location?.hash) {
       const incidentCard = document.getElementById(props.location?.hash?.split('#')[1]);
 
-      if (incidentCard) {
+      if (incidentCard && !hasScrolled) {
         incidentCard.scrollIntoView();
+        setHasScrolled(true);
       }
     }
   };
