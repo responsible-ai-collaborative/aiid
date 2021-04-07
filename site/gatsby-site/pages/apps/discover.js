@@ -899,6 +899,7 @@ const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
     <Form>
       <Form.Label>From Date:</Form.Label>
       <Form.Control
+        required={true}
         type="date"
         defaultValue={formatISO(localMin, { representation: 'date' })}
         onChange={(event) => onChangeMinDate(event.currentTarget.value)}
@@ -908,6 +909,7 @@ const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
 
       <Form.Label>To Date:</Form.Label>
       <Form.Control
+        required={true}
         type="date"
         defaultValue={formatISO(localMax, { representation: 'date' })}
         onChange={(event) => onChangeMaxDate(event.currentTarget.value)}
