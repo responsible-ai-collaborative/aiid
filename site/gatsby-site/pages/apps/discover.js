@@ -355,6 +355,7 @@ const StyledSearchInput = styled.input`
 const FiltersContainer = styled.div`
   width: 100;
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-start;
   align-items: center;
   padding-top: 2em;
@@ -362,6 +363,7 @@ const FiltersContainer = styled.div`
 
 const Tags = styled(Button)`
   &&& {
+    margin-bottom: 0.7em;
     margin-right: 0.5em;
     border-radius: 23px;
 
@@ -373,6 +375,7 @@ const Tags = styled(Button)`
     p {
       margin-bottom: 0 !important;
       margin-right: 0.4em;
+      /* padding-bottom: 1em; */
     }
   }
 `;
