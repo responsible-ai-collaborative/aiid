@@ -33,7 +33,7 @@ import Helmet from 'react-helmet';
 
 import '../../static/discover/src/app.css';
 import '../../static/discover/src/index.css';
-import { add, formatISO, isAfter, isBefore } from 'date-fns';
+import { add, format, formatISO, isAfter, isBefore } from 'date-fns';
 
 export const searchClient = algoliasearch('8TNY3YFAO8', '55efba4929953a53eb357824297afb4c');
 
@@ -796,13 +796,26 @@ const convertArrayToString = (obj) => {
   return { ...obj };
 };
 
+const validateDate = (date) => {
+  const dateStr = date + '';
+
+  if (dateStr.length <= 10) {
+    return date * 1000;
+  }
+  return date;
+};
+
 const convertStringToArray = (obj) => {
+  const stringKeys = ['source_domain', 'authors', 'submitters', 'incident_id', 'flag'];
+
+  let newObj = {};
+
   for (const attr in obj) {
-    if (attr !== 's' && obj[attr] !== undefined) {
-      obj[attr] = obj[attr].split(',');
+    if (stringKeys.includes(attr) && obj[attr] !== undefined) {
+      newObj[attr] = obj[attr].split(',');
     }
   }
-  return { ...obj };
+  return newObj;
 };
 
 const convertRangeToQueryString = (rangeObj) => {
@@ -821,21 +834,30 @@ const convertRangeToQueryString = (rangeObj) => {
 };
 
 const convertStringToRange = (query) => {
+  const rangeKeys = [
+    'epoch_incident_date_min',
+    'epoch_incident_date_max',
+    'epoch_date_published_min',
+    'epoch_date_published_max',
+  ];
+
   let resultObj = {};
 
   for (const attr in query) {
-    if (attr.includes('_min') && !isNaN(parseInt(query[attr]))) {
-      resultObj[attr.split('_min')[0]] = {
-        ...resultObj[attr.split('_min')[0]],
-        min: parseInt(query[attr]),
-      };
-    }
+    if (rangeKeys.includes(attr)) {
+      if (attr.includes('_min') && !isNaN(parseInt(query[attr]))) {
+        resultObj[attr.split('_min')[0]] = {
+          ...resultObj[attr.split('_min')[0]],
+          min: parseInt(query[attr]),
+        };
+      }
 
-    if (attr.includes('_max') && !isNaN(parseInt(query[attr]))) {
-      resultObj[attr.split('_max')[0]] = {
-        ...resultObj[attr.split('_max')[0]],
-        max: parseInt(query[attr]),
-      };
+      if (attr.includes('_max') && !isNaN(parseInt(query[attr]))) {
+        resultObj[attr.split('_max')[0]] = {
+          ...resultObj[attr.split('_max')[0]],
+          max: parseInt(query[attr]),
+        };
+      }
     }
   }
 
@@ -846,15 +868,6 @@ const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
   if (!min || !max) {
     return null;
   }
-
-  const validateDate = (date) => {
-    const dateStr = date + '';
-
-    if (dateStr.length <= 10) {
-      return date * 1000;
-    }
-    return date;
-  };
 
   const [localMin, setLocalMin] = useState(validateDate(min));
 
@@ -981,9 +994,7 @@ const CustomHits = connectHits(RenderCards);
 const FiltersBar = ({ filters, updateFilters, updateQuery }) => {
   const flitersArray = [];
 
-  console.log(filters);
   for (const filter in filters.refinementList) {
-    console.log(filter);
     // TODO: range filters contain _min _max - need refactoring
     const filterName = REFINEMENT_LISTS.filter((f) => f.attribute === filter)[0].label;
 
@@ -993,7 +1004,19 @@ const FiltersBar = ({ filters, updateFilters, updateQuery }) => {
   }
 
   for (const filter in filters.range) {
-    flitersArray.push(filter);
+    const filterName = REFINEMENT_LISTS.filter((f) => f.attribute.includes(filter))[0].label;
+
+    if (filters.range[filter].min) {
+      const value = format(validateDate(filters.range[filter].min), 'MM/dd/yyyy');
+
+      flitersArray.push(`${filterName}: From ${value}`);
+    }
+
+    if (filters.range[filter].max) {
+      const value = format(validateDate(filters.range[filter].max), 'MM/dd/yyyy');
+
+      flitersArray.push(`${filterName}: To ${value}`);
+    }
   }
 
   if (flitersArray.length === 0) {
@@ -1027,11 +1050,21 @@ const FiltersBar = ({ filters, updateFilters, updateQuery }) => {
             }
 
             if (filters.range[filterAttr]) {
+              const newRangeFilter = {};
+
+              if (filterValuePair[1].split(' ')[0] === 'To') {
+                newRangeFilter.min = filters.range[filterAttr].min;
+              }
+
+              if (filterValuePair[1].split(' ')[0] === 'From') {
+                newRangeFilter.max = filters.range[filterAttr].max;
+              }
+
               newFilters = {
                 ...filters,
                 range: {
                   ...filters.range,
-                  [filterAttr]: filters.range[filterAttr]?.filter((v) => v !== filterValuePair[1]),
+                  [filterAttr]: { ...newRangeFilter },
                 },
               };
             }
