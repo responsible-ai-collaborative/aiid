@@ -11,6 +11,7 @@ import {
   Pagination,
   Stats,
   connectSearchBox,
+  connectRange,
 } from 'react-instantsearch-dom';
 import styled from 'styled-components';
 import config from '../../config';
@@ -23,13 +24,16 @@ import {
   faFlag,
   faHashtag,
   faTimesCircle,
+  faCalendarAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { useModal, CustomModal } from '../../src/components/useModal';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
+import { Form, Button } from 'react-bootstrap';
 import Helmet from 'react-helmet';
 
 import '../../static/discover/src/app.css';
 import '../../static/discover/src/index.css';
+import { add, format, formatISO, isAfter, isBefore } from 'date-fns';
 
 export const searchClient = algoliasearch('8TNY3YFAO8', '55efba4929953a53eb357824297afb4c');
 
@@ -61,6 +65,20 @@ const REFINEMENT_LISTS = [
     label: 'Incident ID',
     faIcon: faHashtag,
     faClasses: 'fas fa-hashtag',
+  },
+  {
+    attribute: 'epoch_incident_date',
+    inputText: 'none',
+    label: 'Incident Date',
+    faIcon: faCalendarAlt,
+    faClasses: 'far fa-calendar-alt',
+  },
+  {
+    attribute: 'epoch_date_published',
+    inputText: 'none',
+    label: 'Published Date',
+    faIcon: faCalendarAlt,
+    faClasses: 'far fa-calendar-alt',
   },
   {
     attribute: 'flag',
@@ -128,6 +146,10 @@ const HitsContainer = styled.div`
   }
 `;
 
+const RangeInputContainer = styled.div`
+  padding-bottom: 1.5rem;
+`;
+
 const StatsContainer = styled.div`
   display: grid;
   max-width: 100%;
@@ -155,6 +177,7 @@ const Text = styled.p`
 
 const ResultsSide = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: column;
   max-width: 85%;
   padding-right: 2rem;
@@ -329,6 +352,34 @@ const StyledSearchInput = styled.input`
   border-radius: 5px;
 `;
 
+const FiltersContainer = styled.div`
+  width: 100;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 2em;
+`;
+
+const Tags = styled(Button)`
+  &&& {
+    margin-bottom: 0.7em;
+    margin-right: 0.5em;
+    border-radius: 23px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    p {
+      margin-bottom: 0 !important;
+      margin-right: 0.4em;
+      /* padding-bottom: 1em; */
+    }
+  }
+`;
+
 const SearchResetButton = styled.button`
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -365,6 +416,25 @@ const Header = styled.div`
     .fa-BARS {
       display: none;
     }
+  }
+`;
+
+const NoResults = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  grid-column-start: 2;
+  grid-column-end: 3;
+
+  p {
+    text-align: center;
+  }
+
+  @media (max-width: 1240px) {
+    grid-column-start: 1;
   }
 `;
 
@@ -675,7 +745,7 @@ const StyledSearchBox = ({ refine, defaultRefinement, customRef }) => {
           <FontAwesomeIcon
             icon={faTimesCircle}
             className="pointer fa fa-times-circle"
-            title="Authors"
+            title="reset"
           />
         </SearchResetButton>
         <StyledStats
@@ -729,14 +799,165 @@ const convertArrayToString = (obj) => {
   return { ...obj };
 };
 
+const validateDate = (date) => {
+  const dateStr = date + '';
+
+  if (dateStr.length <= 10) {
+    return date * 1000;
+  }
+  return date;
+};
+
 const convertStringToArray = (obj) => {
+  const stringKeys = ['source_domain', 'authors', 'submitters', 'incident_id', 'flag'];
+
+  let newObj = {};
+
   for (const attr in obj) {
-    if (attr !== 's' && obj[attr] !== undefined) {
-      obj[attr] = obj[attr].split(',');
+    if (stringKeys.includes(attr) && obj[attr] !== undefined) {
+      newObj[attr] = obj[attr].split(',');
     }
   }
-  return { ...obj };
+  return newObj;
 };
+
+const convertRangeToQueryString = (rangeObj) => {
+  let rangeQueryObj = {};
+
+  for (const attr in rangeObj) {
+    if (rangeObj[attr] !== undefined && rangeObj[attr].min) {
+      rangeQueryObj[`${attr}_min`] = rangeObj[attr].min;
+    }
+    if (rangeObj[attr] !== undefined && rangeObj[attr].max) {
+      rangeQueryObj[`${attr}_max`] = rangeObj[attr].max;
+    }
+  }
+
+  return rangeQueryObj;
+};
+
+const convertStringToRange = (query) => {
+  const rangeKeys = [
+    'epoch_incident_date_min',
+    'epoch_incident_date_max',
+    'epoch_date_published_min',
+    'epoch_date_published_max',
+  ];
+
+  let resultObj = {};
+
+  for (const attr in query) {
+    if (rangeKeys.includes(attr)) {
+      if (attr.includes('_min') && !isNaN(parseInt(query[attr]))) {
+        resultObj[attr.split('_min')[0]] = {
+          ...resultObj[attr.split('_min')[0]],
+          min: parseInt(query[attr]),
+        };
+      }
+
+      if (attr.includes('_max') && !isNaN(parseInt(query[attr]))) {
+        resultObj[attr.split('_max')[0]] = {
+          ...resultObj[attr.split('_max')[0]],
+          max: parseInt(query[attr]),
+        };
+      }
+    }
+  }
+
+  return resultObj;
+};
+
+const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
+  if (!min || !max) {
+    return null;
+  }
+
+  const [localMin, setLocalMin] = useState(validateDate(min));
+
+  const [localMax, setLocalMax] = useState(validateDate(max));
+
+  const [limitInterval, setLimitInterval] = useState({ min: 0, max: 0 });
+
+  useEffect(() => {
+    setLimitInterval({
+      min: formatISO(validateDate(min), { representation: 'date' }),
+      max: formatISO(validateDate(max), { representation: 'date' }),
+    });
+  }, []);
+
+  useEffect(() => {
+    setLocalMin(validateDate(min));
+    setLocalMax(validateDate(max));
+  }, [min, max]);
+
+  if (!localMax || !localMin) {
+    return null;
+  }
+
+  const onChangeMinDate = debounce((newInput) => {
+    try {
+      if (
+        newInput !== '' &&
+        newInput.length <= 10 &&
+        isAfter(new Date(newInput), new Date(limitInterval.min))
+      ) {
+        setLocalMin(new Date(newInput || limitInterval.min).getTime());
+        refine({
+          max: validateDate(localMax) / 1000,
+          min: validateDate(new Date(newInput || limitInterval.min).getTime()) / 1000,
+        });
+      }
+    } catch (error) {
+      refine({
+        max: validateDate(localMax) / 1000,
+        min: validateDate(add(validateDate(localMax) / 1000, { seconds: 1 }).getTime()) / 1000,
+      });
+    }
+  }, 1000);
+
+  const onChangeMaxDate = debounce((newInput) => {
+    try {
+      if (
+        newInput !== '' &&
+        newInput.length <= 10 &&
+        isBefore(new Date(newInput), new Date(limitInterval.max))
+      ) {
+        setLocalMax(new Date(newInput || limitInterval.max).getTime());
+        refine({
+          max: validateDate(new Date(newInput || limitInterval.max).getTime()) / 1000,
+          min: validateDate(localMin) / 1000,
+        });
+      }
+    } catch (error) {
+      refine({
+        min: validateDate(localMin) / 1000,
+        max: validateDate(add(validateDate(localMin) / 1000, { seconds: 1 }).getTime()) / 1000,
+      });
+    }
+  }, 1000);
+
+  return (
+    <Form>
+      <Form.Label>From Date:</Form.Label>
+      <Form.Control
+        type="date"
+        defaultValue={formatISO(localMin, { representation: 'date' })}
+        onChange={(event) => onChangeMinDate(event.currentTarget.value)}
+        min={limitInterval.min}
+      />
+
+      <Form.Label>To Date:</Form.Label>
+      <Form.Control
+        type="date"
+        defaultValue={formatISO(localMax, { representation: 'date' })}
+        onChange={(event) => onChangeMaxDate(event.currentTarget.value)}
+        max={limitInterval.max}
+      />
+    </Form>
+  );
+};
+
+const CustomRangeInput = connectRange(RangeInput);
 
 const RenderCards = ({
   hits,
@@ -746,6 +967,14 @@ const RenderCards = ({
   submittersModal,
   flagReportModal,
 }) => {
+  if (hits.length === 0) {
+    return (
+      <NoResults>
+        <p>Your search returned no results.</p>
+        <p>Please clear your search in the search box above or the filters.</p>
+      </NoResults>
+    );
+  }
   return (
     <>
       {hits.map((hit) => (
@@ -764,6 +993,103 @@ const RenderCards = ({
 };
 
 const CustomHits = connectHits(RenderCards);
+
+const FiltersBar = ({ filters, updateFilters, updateQuery }) => {
+  const flitersArray = [];
+
+  for (const filter in filters.refinementList) {
+    const filterName = REFINEMENT_LISTS.filter((f) => f.attribute === filter)[0].label;
+
+    for (const value of filters.refinementList[filter]) {
+      flitersArray.push(`${filterName}: ${value}`);
+    }
+  }
+
+  for (const filter in filters.range) {
+    const filterName = REFINEMENT_LISTS.filter((f) => f.attribute.includes(filter))[0].label;
+
+    if (filters.range[filter].min) {
+      const value = format(validateDate(filters.range[filter].min), 'MM/dd/yyyy');
+
+      flitersArray.push(`${filterName}: From ${value}`);
+    }
+
+    if (filters.range[filter].max) {
+      const value = format(validateDate(filters.range[filter].max), 'MM/dd/yyyy');
+
+      flitersArray.push(`${filterName}: To ${value}`);
+    }
+  }
+
+  if (flitersArray.length === 0) {
+    return null;
+  }
+
+  return (
+    <FiltersContainer>
+      {flitersArray.map((filter) => (
+        <Tags
+          variant="outline-primary"
+          key={filter}
+          onClick={() => {
+            const filterValuePair = filter.split(': ');
+
+            const filterAttr = REFINEMENT_LISTS.filter((f) => f.label === filterValuePair[0])[0]
+              .attribute;
+
+            let newFilters = {};
+
+            if (filters.refinementList[filterAttr]) {
+              newFilters = {
+                ...filters,
+                refinementList: {
+                  ...filters.refinementList,
+                  [filterAttr]: filters.refinementList[filterAttr]?.filter(
+                    (v) => v !== filterValuePair[1]
+                  ),
+                },
+              };
+            }
+
+            if (filters.range[filterAttr]) {
+              const newRangeFilter = {};
+
+              if (filterValuePair[1].split(' ')[0] === 'To') {
+                newRangeFilter.min = filters.range[filterAttr].min;
+              }
+
+              if (filterValuePair[1].split(' ')[0] === 'From') {
+                newRangeFilter.max = filters.range[filterAttr].max;
+              }
+
+              newFilters = {
+                ...filters,
+                range: {
+                  ...filters.range,
+                  [filterAttr]: { ...newRangeFilter },
+                },
+              };
+            }
+
+            updateFilters({
+              ...newFilters,
+            });
+            updateQuery({
+              ...newFilters,
+            });
+          }}
+        >
+          <p>{filter}</p>
+          <FontAwesomeIcon
+            icon={faTimesCircle}
+            className="pointer fa fa-times-circle"
+            title="reset"
+          />
+        </Tags>
+      ))}
+    </FiltersContainer>
+  );
+};
 
 export const Hits = ({ toggleFilterByIncidentId, showDetails = false }) => {
   const authorsModal = useModal();
@@ -798,6 +1124,10 @@ const DiscoverApp = (props) => {
     submitters: StringParam,
     incident_id: StringParam,
     flag: StringParam,
+    epoch_incident_date_min: StringParam,
+    epoch_incident_date_max: StringParam,
+    epoch_date_published_min: StringParam,
+    epoch_date_published_max: StringParam,
   });
 
   const [searchState, setSearchState] = useState({
@@ -807,6 +1137,7 @@ const DiscoverApp = (props) => {
     page: 1,
     query: '',
     refinementList: {},
+    range: {},
   });
 
   const queryConfig = {
@@ -816,6 +1147,10 @@ const DiscoverApp = (props) => {
     submitters: StringParam,
     incident_id: StringParam,
     flag: StringParam,
+    epoch_incident_date_min: StringParam,
+    epoch_incident_date_max: StringParam,
+    epoch_date_published_min: StringParam,
+    epoch_date_published_max: StringParam,
   };
 
   // const showDetails = searchState.refinementList?.incident_id?.length === 1;
@@ -835,6 +1170,9 @@ const DiscoverApp = (props) => {
       refinementList: {
         ...convertStringToArray(cleanQuery),
       },
+      range: {
+        ...convertStringToRange(cleanQuery),
+      },
     });
   }, [query]);
 
@@ -849,6 +1187,13 @@ const DiscoverApp = (props) => {
       query = {
         ...query,
         ...convertArrayToString(removeEmptyAttributes(searchState.refinementList)),
+      };
+    }
+
+    if (searchState && searchState.range !== {}) {
+      query = {
+        ...query,
+        ...convertRangeToQueryString(removeEmptyAttributes(searchState.range)),
       };
     }
 
@@ -879,17 +1224,30 @@ const DiscoverApp = (props) => {
   };
 
   const filters = useMemo(() => {
-    return REFINEMENT_LISTS.map((list) => (
-      <RefinementList
-        key={list.attribute}
-        attribute={list.attribute}
-        placeholder={list.inputText}
-        listLabel={list.label}
-        faIcon={list.faIcon}
-        faClasses={list.faClasses}
-      />
-    ));
-  }, []);
+    return REFINEMENT_LISTS.map((list) => {
+      if (list.attribute === 'epoch_incident_date' || list.attribute === 'epoch_date_published') {
+        return (
+          <RangeInputContainer key={list.attribute}>
+            <RefinementListHeader className="refine_header">
+              <FontAwesomeIcon icon={list.faIcon} className={list.faClasses} />
+              {` ${list.label}`}
+            </RefinementListHeader>
+            <CustomRangeInput attribute={list.attribute} />
+          </RangeInputContainer>
+        );
+      }
+      return (
+        <RefinementList
+          key={list.attribute}
+          attribute={list.attribute}
+          placeholder={list.inputText}
+          listLabel={list.label}
+          faIcon={list.faIcon}
+          faClasses={list.faClasses}
+        />
+      );
+    });
+  }, [searchState]);
 
   return (
     <LayoutHideSidebar {...props}>
@@ -911,6 +1269,11 @@ const DiscoverApp = (props) => {
               >
                 <Header>
                   <CustomSearchBox customRef={searchInput} defaultRefinement={query.s} />
+                  <FiltersBar
+                    filters={searchState}
+                    updateFilters={setSearchState}
+                    updateQuery={(newFilters) => setQuery(getQueryFromState(newFilters), 'push')}
+                  />
                 </Header>
                 <SidesContainer>
                   <ResultsSide>
