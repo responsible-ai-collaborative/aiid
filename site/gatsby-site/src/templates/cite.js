@@ -15,7 +15,7 @@ import BibTex from 'components/BibTex';
 
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 
-import { InstantSearch, Configure, connectHits } from 'react-instantsearch-dom';
+import { InstantSearch, Configure } from 'react-instantsearch-dom';
 import { searchClient, Hits, IncidentStatsCard } from '../../pages/apps/discover';
 import styled from 'styled-components';
 
@@ -46,8 +46,6 @@ const CardContainer = styled.div`
   }
 `;
 
-const CustomStats = connectHits(IncidentStatsCard);
-
 const StatsContainer = styled.div`
   width: 100%;
   margin-top: 1.5rem;
@@ -77,6 +75,12 @@ const IncidentCite = ({ data, ...props }) => {
   const canonicalUrl = getCanonicalUrl(incident_id);
 
   const nodes = group[0]['edges'];
+
+  const stats = {
+    incidentId: nodes[0].node.incident_id,
+    reportCount: nodes.length,
+    incidentDate: nodes[0].node.incident_date,
+  };
 
   return (
     <Layout {...props}>
@@ -116,7 +120,7 @@ const IncidentCite = ({ data, ...props }) => {
             </Row>
             <Row className="mb-4">
               <StatsContainer>
-                <CustomStats />
+                <IncidentStatsCard {...stats} />
               </StatsContainer>
             </Row>
             <Row className="mb-4">
