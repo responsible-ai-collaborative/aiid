@@ -68,7 +68,6 @@ const IncidentCite = ({ data, ...props }) => {
   const [hasScrolled, setHasScrolled] = useState(false);
 
   const scrollToIncidentCard = () => {
-    console.log('scrollToIncidentCard');
     if (props.location?.hash) {
       const incidentCard = document.getElementById(props.location?.hash?.split('#')[1]);
 
