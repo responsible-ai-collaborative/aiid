@@ -181,7 +181,7 @@ const IncidentCite = ({ data, ...props }) => {
             </Row>
             <Row className="mb-4">
               <HitsContainer showDetails={true}>
-                <Hits showDetails={true} />
+                <Hits showDetails={true} sortByDatePublished={true} />
               </HitsContainer>
               <Configure filters={`incident_id:${incident_id}`} />
             </Row>
