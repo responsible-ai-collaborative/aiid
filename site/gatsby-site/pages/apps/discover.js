@@ -338,7 +338,7 @@ const CardBody = styled.div`
   padding: 1.25rem 1.25rem 0 1.25rem !important;
 `;
 
-const StyledSearchInput = styled.input`
+export const StyledSearchInput = styled.input`
   padding: 0.3rem 0.3rem !important;
   max-width: 100% !important;
   -webkit-appearance: none;
@@ -438,11 +438,11 @@ const NoResults = styled.div`
   }
 `;
 
-const SearchContainer = styled.div`
+export const SearchContainer = styled.div`
   flex-grow: 1;
 `;
 
-const SearchForm = styled.form`
+export const SearchForm = styled.form`
   display: block;
   position: relative;
 `;

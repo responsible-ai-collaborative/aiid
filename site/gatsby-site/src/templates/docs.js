@@ -7,12 +7,14 @@ import Layout from 'components/Layout';
 import NextPrevious from 'components/NextPrevious';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import config from '../../config';
+import { SearchContainer, SearchForm, StyledSearchInput } from '../../pages/apps/discover';
+import { debounce } from 'debounce';
 
 const forcedNavOrder = config.sidebar.forcedNavOrder;
 
 export default class MDXRuntimeTest extends Component {
   render() {
-    const { data } = this.props;
+    const { data, location } = this.props;
 
     if (!data) {
       return null;
@@ -68,6 +70,11 @@ export default class MDXRuntimeTest extends Component {
       config.gatsby.pathPrefix !== '/' ? canonicalUrl + config.gatsby.pathPrefix : canonicalUrl;
     canonicalUrl = canonicalUrl + mdx.fields.slug;
 
+    const debouncedSearch = debounce((text) => {
+      history.pushState(null, null, `/apps/discover?s=${text}`);
+      history.go();
+    }, 1000);
+
     return (
       <Layout {...this.props}>
         <Helmet>
@@ -85,6 +92,23 @@ export default class MDXRuntimeTest extends Component {
         <div className={'titleWrapper'}>
           <StyledHeading>{mdx.fields.title}</StyledHeading>
         </div>
+        {location.pathname === '/' && (
+          <SearchContainer>
+            <h1 className="heading1">Search for an incident</h1>
+            <SearchForm>
+              <StyledSearchInput
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                placeholder="Search"
+                spellCheck="false"
+                maxLength="512"
+                type="search"
+                onChange={(event) => debouncedSearch(event.currentTarget.value)}
+              />
+            </SearchForm>
+          </SearchContainer>
+        )}
         <StyledMainWrapper>
           <MDXRenderer>{mdx.body}</MDXRenderer>
         </StyledMainWrapper>
