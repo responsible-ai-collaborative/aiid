@@ -10,36 +10,11 @@ The commercial air travel industry owes much of its increasing safety to systema
 
 Where the aviation industry has clear definitions, computer scientists and philosophers have long debated foundational definitions of artificial intelligence. In the absence of clear lines differentiating algorithms, intelligence, and the harms they may directly or indirectly cause, this database adopts an adaptive criteria for ingesting "incidents" where reports are accepted or rejected on the basis of a growing rule set.
 
-## Acceptance Criteria
-
-An prospective incident will be considered for inclusion to the database if the following are all true,
-
-1. An identifiable intelligent system is involved
-2. Real harms did or could reasonably result from the identified behavior, decision, or event
-
-Prospective incidents will be rejected from the database under the following conditions,
-
-1. It is a thought experiment not tied to a real intelligent system
-
-Additional rules for including or rejecting prospective incidents will be added through time to ensure the integrity of the dataset. However, the database will err towards including borderline incidents rather than excluding them. Our **working definition** for "AI Incidents" is the following,
-
-> _AI incidents are events or occurrences in real life that caused or had the potential to cause physical, financial, or emotional harm to people, animals or the environment._
-
-# Initial Collection Methodology
-
-The aviation industry in the United States is required by law to report incidents and accidents to the Federal Aviation Administration. There is no compulsory reporting requirement for intelligent systems, so the AIID is built on the incidents that have gained sufficient notoriety to be covered in either the popular or the research press. As a result, you should consider the database to be representative of "public incidents", rather than all incidents that are known to have occured throughout the artificial intelligence industry.
-
-The current database is dominated by the initial collection of incident reports, which were assembled with the following methodology by research assistant Sam Yoon,
-
-- An initial set of links were [assembled by Yampolski and Olsson](http://localhost:8000/roadmap#phase1:initialincidentcollection).
-- The links indicated key words to find related results in a series of Google searches.
-- Potentially relevant links in the top three pages of Google search results were opened and read to see whether they have quality information about the event described by the sources. If relevant, they were added to the dataset.
-- Other relevant looking incidents that were identified during the search process were included in the data set
-- There were certain types of results that were not included because they were either hypothetical, academic and/or did not cause real harm
+More details about the acceptance criteria are available on the [criteria page](/research/1-criteria).
 
 # Download the Index
 
-The public index is available for export as a document database. Please [contact](/contact) us for more information and be sure to let us know about your work so we can list it on this page.
+The complete state of the database can be downloaded in weekly JSON, MongoDB, and CSV format [snapshots](/research/snapshots). We maintain these snapshots so you can create stable datasets for natural language processing research and academic analysis. Please [contact](/contact) to let us know what you are using the database for so we can list your work in the incident database and esnure your use case is not dropped from support.
 
 # Citing the Database as a Whole
 
@@ -60,4 +35,4 @@ While formal AI incident research is relatively new, a number of people have bee
 * [AI and Algorithimic Incidents and Controversies of Charlie Pownall](https://charliepownall.com/ai-algorithimic-incident-controversy-database/)
 * [Map of Helpful and Harmful AI](https://map.ai-global.org/)
 
-If you have an incident resource that could be added here, please [contact](/contact) us.
+If you have an incident resource that could be added here, please [contact](/contact) us or open a pull request with the resource.

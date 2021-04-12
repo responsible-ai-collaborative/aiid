@@ -13,7 +13,7 @@ blockquote {
   background: #f9f9f9;
   border-left: 3px solid #ccc;
   margin: 0.5em 0px;
-  padding: 0.5em 0px;
+  padding: 0px 0px 0px 12px;
   quotes: "\201C""\201D""\2018""\2019";
 }
 

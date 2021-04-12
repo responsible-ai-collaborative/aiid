@@ -10,6 +10,8 @@ const createCitiationPages = require('./page-creators/createCitiationPages');
 
 const createWordCountsPages = require('./page-creators/createWordCountsPage');
 
+const createBackupsPage = require('./page-creators/createBackupsPage');
+
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions;
 
@@ -17,6 +19,7 @@ exports.createPages = ({ graphql, actions }) => {
     createMdxPages(graphql, createPage),
     createCitiationPages(graphql, createPage),
     createWordCountsPages(graphql, createPage),
+    createBackupsPage(graphql, createPage),
   ]);
 };
 
