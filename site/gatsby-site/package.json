@@ -22,6 +22,7 @@
     "babel-plugin-styled-components": "^1.12.0",
     "bootstrap": "^4.6.0",
     "bson": "^4.2.3",
+    "date-fns": "^2.19.0",
     "debounce": "^1.2.0",
     "dotenv": "^8.2.0",
     "emotion": "^10.0.27",
