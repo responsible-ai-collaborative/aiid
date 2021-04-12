@@ -556,7 +556,7 @@ const getParagraphs = (itemText) => {
   );
 };
 
-export const IncidentStatsCard = ({ hits }) => {
+export const IncidentStatsCard = ({ incidentId, reportCount, incidentDate }) => {
   const STATS = [
     {
       key: 'incidentId',
@@ -572,14 +572,14 @@ export const IncidentStatsCard = ({ hits }) => {
     },
   ];
 
-  if (!hits || hits.length === 0) {
+  if (reportCount === 0) {
     return null;
   }
 
   const stats = {
-    incidentId: hits[0].incident_id,
-    reportCount: hits.length,
-    incidentDate: hits[0].incident_date,
+    incidentId,
+    reportCount,
+    incidentDate,
   };
 
   return (

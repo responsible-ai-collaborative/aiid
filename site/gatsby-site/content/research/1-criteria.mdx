@@ -1,0 +1,73 @@
+---
+title: "Incident Report Acceptance Criteria"
+metaTitle: "Incident Report Acceptance Criteria"
+metaDescription: "What are the reasons incident reports are or are not accepted into the AI Incident Database?"
+---
+
+# What is an AI incident?
+
+The AI Incident Database contains records of AI incidents. An “AI incident” is a situation in which AI systems _caused_, or _nearly caused_, _real-world harm_. In applying this definition, note that it’s meant to be broad. If, after careful inquiry, you’re not sure whether an incident qualifies, err on the side of submitting it.
+
+## "AI"
+
+For our purposes, “AI” means the capability of machines to perform functions typically thought of as requiring human intelligence, such as reasoning, recognizing patterns or understanding natural language. AI includes, but is not limited to, machine learning - a set of techniques by which a computer system learns how to perform a task through recognizing patterns in data and inferring decision rules, rather than through explicit instructions.
+
+## "AI system"
+
+By "AI systems," we mean technologies and processes in which AI plays a meaningful role. These systems may also include components that do not involve artificial intelligence, such as mechanical components.
+
+> **Examples:** A self-driving car; facial-recognition software; Google Translate; a credit-scoring algorithm.
+
+Algorithms that are not traditionally considered AI may be considered an AI system when a human transfers decision making authority to the system.
+
+> **Example:** A hospital system selects vaccine candidates based on a series of hand tailored rules in a black box algorithm.
+
+## "Caused"
+
+When we say that an AI system “caused” harm, we mean that it played an important role in the chain of events that led to harm. The AI system doesn’t need to be the only factor, or even the major factor, in causing the harm. But it should at least be a “but-for” cause - that is, if the AI system hadn’t acted in the way it did, the specific harm would not have occurred.
+
+We make no distinction between accidental and deliberate harm (i.e., malicious use of AI). For purposes of the AI Incident Database, what matters is that harm was caused, not whether it was intended.
+
+## "Nearly caused"
+
+When we say that an AI system “nearly caused” harm, we mean that it played an important role in a chain of events that easily could have caused harm, but some external factor kept the harm from occurring. This external factor should be independent of the AI system and should not have been put in place specifically to prevent the harm in question.
+
+> **Example:** An industrial robot begins spinning out of control, but a nearby worker manages to cut power to the robot before either the robot or nearby people are harmed.
+
+> **Counterexample:** An industrial robot begins spinning out of control, but its built-in safety sensor detects the abnormality and immediately shuts the robot down.
+
+Again, the AI system doesn’t need to be the only factor, or even the major factor, in the chain of events that could have led to harm. But it should at least be a “but-for” cause - that is, if the AI system hadn’t acted in the way it did, there would have been no significant chance that the harm would occur.
+
+# "Real-world harm"
+
+We have an expansive definition of "real-world harm." It includes, but is not limited to:
+
+* Harm to physical health/safety
+* Psychological harm
+* Financial harm
+* Harm to physical property
+* Harm to intangible property (for example, IP theft, damage to a company’s reputation)
+* Harm to social or political systems (for example, election interference, loss of trust in authorities)
+* Harm to civil liberties (for example, unjustified imprisonment or other punishment, censorship)
+
+Harms do not have to be severe to meet this definition; an incident resulting in minor, easily remedied expense or inconvenience still counts as harm for our purposes.
+
+In some cases, especially involving harms that are psychological or otherwise intangible, reasonable people might disagree about whether harm has actually occurred (or almost occurred). Contributors should use their best judgment, erring on the side of finding harm when there is a plausible argument that harm occurred.
+
+## What is not an AI incident?
+
+Several common situations do _not_ meet the above criteria and should not be recorded as incidents in the AI Incident Database. These include:
+
+| Type                                                                                                                                                  | Example                                                                                                                                                                                                                    |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| AI systems malfunctioning in controlled or testing environments, including simulated environments                                                     | [Slight Street Sign Modifications Can Completely Fool Machine Learning Algorithms](https://spectrum.ieee.org/cars-that-think/transportation/sensors/slight-street-sign-modifications-can-fool-machine-learning-algorithms) |
+| Studies documenting theoretical or conceptual flaws in AI technology                                                                                  | [Deep Neural Networks Are Easily Fooled: High Confidence Predictions for Unrecognizable Images](https://www.cv-foundation.org/openaccess/content_cvpr_2015/html/Nguyen_Deep_Neural_Networks_2015_CVPR_paper.html)          |
+| Thought experiments and hypothetical examples                                                                                                         | ["...artificial general intelligence, even one designed competently and without malice, could ultimately destroy humanity"](https://www.lesswrong.com/tag/paperclip-maximizer)                                             |
+| The development or deployment of AI products that seem likely to cause harm, but there are no reports of specific situations in which harm was caused | [Deep neural networks are more accurate than humans at detecting sexual orientation from facial images](https://osf.io/zn79k/)                                                                                             |
+| Discussions of broad types of AI incidents or harmful AI behaviors                                                                                    | [How a handful of tech companies control billions of minds every day](https://www.ted.com/talks/tristan_harris_how_a_handful_of_tech_companies_control_billions_of_minds_every_day)                                        |
+| Misleading marketing of AI products                                                                                                                   | [The mystery of Zach the miracle AI, continued: it all just gets Terribler](https://thespinoff.co.nz/the-best-of/09-03-2018/the-mystery-of-zach-the-miracle-ai-continued-it-all-just-gets-terribler/)                      |
+
+Of course, there are many other types of situations that don’t qualify as incidents, but these are some of the more common ones that tend to confuse AIID collaborators.
+
+
+

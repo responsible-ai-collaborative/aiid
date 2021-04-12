@@ -2,28 +2,27 @@ const config = {
   gatsby: {
     pathPrefix: '/',
     siteUrl: 'https://incidentdatabase.ai',
-    gaTrackingId: "UA-23867277-2",
+    gaTrackingId: 'UA-23867277-2',
     trailingSlash: false,
   },
   realm: {
     review_db: {
-      realm_app_id: "aiidstitch2-fuwyv",
-      db_service: "mongodb-atlas",
-      db_name: "aiidprod",
-      db_collection: "submissions"
+      realm_app_id: 'aiidstitch2-fuwyv',
+      db_service: 'mongodb-atlas',
+      db_name: 'aiidprod',
+      db_collection: 'submissions',
     },
     production_db: {
-      realm_app_id: "aiidstitch2-fuwyv",
-      db_service: "mongodb-atlas",
-      db_name: "aiidprod",
-      db_collection: "incidents"
-    }
+      realm_app_id: 'aiidstitch2-fuwyv',
+      db_service: 'mongodb-atlas',
+      db_name: 'aiidprod',
+      db_collection: 'incidents',
+    },
   },
   header: {
     logo: '/partership-on-ai-logo-1up.png',
     logoLink: '/',
-    title:
-      " Incident Database",
+    title: ' Incident Database',
     githubUrl: 'https://github.com/PartnershipOnAI/aiid',
     helpUrl: '',
     tweetText: '',
@@ -46,7 +45,6 @@ const config = {
   sidebar: {
     forcedNavOrder: [
       '/index', // add trailing slash if enabled above
-      '/roadmap',
       '/research',
       '/summaries',
       '/about_apps',
