@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
 
@@ -63,6 +63,19 @@ const IncidentCite = ({ data, ...props }) => {
   const {
     allMongodbAiidprodIncidents: { group },
   } = data;
+
+  const [hasScrolled, setHasScrolled] = useState(false);
+
+  const scrollToIncidentCard = () => {
+    if (props.location?.hash) {
+      const incidentCard = document.getElementById(props.location?.hash?.split('#')[1]);
+
+      if (incidentCard && !hasScrolled) {
+        incidentCard.scrollIntoView();
+        setHasScrolled(true);
+      }
+    }
+  };
 
   // meta tags
   const reports = group[0]['edges'];
@@ -175,7 +188,7 @@ const IncidentCite = ({ data, ...props }) => {
                   <Button
                     variant="outline-primary"
                     className="mr-2"
-                    href={'/discover/index.html?incident_id=' + incident_id}
+                    href={'/apps/discover?incident_id=' + incident_id}
                   >
                     Discover
                   </Button>
@@ -185,7 +198,11 @@ const IncidentCite = ({ data, ...props }) => {
             </Row>
             <Row className="mb-4">
               <HitsContainer showDetails={true}>
-                <Hits showDetails={true} sortByDatePublished={true} />
+                <Hits
+                  showDetails={true}
+                  sortByDatePublished={true}
+                  scrollTo={() => scrollToIncidentCard()}
+                />
               </HitsContainer>
               <Configure filters={`incident_id:${incident_id}`} />
             </Row>

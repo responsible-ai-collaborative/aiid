@@ -655,7 +655,7 @@ const IncidentCard = ({
             // toggleFilterByIncidentId(item.incident_id + '');
           }}
         >
-          <StyledLink to={`/cite/${item.incident_id}`}>
+          <StyledLink to={`/cite/${item.incident_id}#${item._id}`}>
             Show Details on Incident #{item.incident_id}
           </StyledLink>
         </button>
@@ -708,12 +708,12 @@ const IncidentCard = ({
         }
       />
 
-      <span className="pointer">
+      <span>
         <FontAwesomeIcon
           icon={faHashtag}
           className="fas fa-hashtag"
           title="Incident ID"
-          onClick={() => toggleFilterByIncidentId(item.incident_id + '')}
+          // onClick={() => toggleFilterByIncidentId(item.incident_id + '')}
         />
         {item.incident_id}
       </span>
@@ -940,18 +940,22 @@ const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
     <Form>
       <Form.Label>From Date:</Form.Label>
       <Form.Control
+        required={true}
         type="date"
         defaultValue={formatISO(localMin, { representation: 'date' })}
         onChange={(event) => onChangeMinDate(event.currentTarget.value)}
         min={limitInterval.min}
+        onKeyDown={(e) => e.preventDefault()}
       />
 
       <Form.Label>To Date:</Form.Label>
       <Form.Control
+        required={true}
         type="date"
         defaultValue={formatISO(localMax, { representation: 'date' })}
         onChange={(event) => onChangeMaxDate(event.currentTarget.value)}
         max={limitInterval.max}
+        onKeyDown={(e) => e.preventDefault()}
       />
     </Form>
   );
@@ -966,8 +970,15 @@ const RenderCards = ({
   authorsModal,
   submittersModal,
   flagReportModal,
+  scrollTo,
   sortByDatePublished,
 }) => {
+  useEffect(() => {
+    if (scrollTo) {
+      scrollTo();
+    }
+  }, [hits]);
+
   if (hits.length === 0) {
     return (
       <NoResults>
@@ -1127,7 +1138,12 @@ const FiltersBar = ({ filters, updateFilters, updateQuery }) => {
   );
 };
 
-export const Hits = ({ toggleFilterByIncidentId, showDetails = false, sortByDatePublished }) => {
+export const Hits = ({
+  toggleFilterByIncidentId,
+  showDetails = false,
+  sortByDatePublished,
+  scrollTo,
+}) => {
   const authorsModal = useModal();
 
   const submittersModal = useModal();
@@ -1142,6 +1158,7 @@ export const Hits = ({ toggleFilterByIncidentId, showDetails = false, sortByDate
         submittersModal={submittersModal}
         flagReportModal={flagReportModal}
         showDetails={showDetails}
+        scrollTo={scrollTo}
         sortByDatePublished={sortByDatePublished}
       />
       <CustomModal {...authorsModal} />
