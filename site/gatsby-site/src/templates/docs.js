@@ -7,8 +7,25 @@ import Layout from 'components/Layout';
 import NextPrevious from 'components/NextPrevious';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import config from '../../config';
+import { Leaderboards } from '../../pages/summaries/leaderboard';
+import { Link } from 'gatsby';
 
 const forcedNavOrder = config.sidebar.forcedNavOrder;
+
+const LEADERBOARDS = [
+  {
+    title: 'Submitters',
+    attribute: 'submitters',
+  },
+  {
+    title: 'Authors',
+    attribute: 'authors',
+  },
+  {
+    title: 'Domains',
+    attribute: 'source_domain',
+  },
+];
 
 export default class MDXRuntimeTest extends Component {
   render() {
@@ -17,7 +34,11 @@ export default class MDXRuntimeTest extends Component {
     if (!data) {
       return null;
     }
-    const { allMdx, mdx } = data;
+    const {
+      allMdx,
+      mdx,
+      allMongodbAiidprodIncidents: { nodes },
+    } = data;
 
     const navItems = allMdx.edges
       .map(({ node }) => node.fields.slug)
@@ -85,6 +106,18 @@ export default class MDXRuntimeTest extends Component {
         <div className={'titleWrapper'}>
           <StyledHeading>{mdx.fields.title}</StyledHeading>
         </div>
+        <Leaderboards
+          leaderboardsToGenerate={LEADERBOARDS}
+          incidentData={nodes}
+          limit={3}
+          itemRender={(item, index) => (
+            <li key={`${item.label}-${index}`}>
+              <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
+                {`${item.label}: ${item.value}`}
+              </Link>
+            </li>
+          )}
+        />
         <StyledMainWrapper>
           <MDXRenderer>{mdx.body}</MDXRenderer>
         </StyledMainWrapper>
@@ -98,6 +131,14 @@ export default class MDXRuntimeTest extends Component {
 
 export const pageQuery = graphql`
   query($id: String!) {
+    allMongodbAiidprodIncidents {
+      nodes {
+        id
+        authors
+        source_domain
+        submitters
+      }
+    }
     site {
       siteMetadata {
         title

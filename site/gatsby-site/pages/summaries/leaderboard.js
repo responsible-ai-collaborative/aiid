@@ -6,17 +6,105 @@ import Layout from 'components/Layout';
 import Link from 'components/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 
-const Leaderboard = ({ title, content }) => {
+const LEADERBOARDS = [
+  {
+    title: 'Submitters',
+    attribute: 'submitters',
+  },
+  {
+    title: 'Authors',
+    attribute: 'authors',
+  },
+  {
+    title: 'Domains',
+    attribute: 'source_domain',
+  },
+];
+
+export const Leaderboards = ({ leaderboardsToGenerate, incidentData, limit, itemRender }) => {
+  const leaderboards = [];
+
+  const leaderboardsHash = {};
+
+  const leaderboardsArray = {};
+
+  for (const { attribute } of leaderboardsToGenerate) {
+    leaderboardsHash[attribute] = {};
+  }
+
+  incidentData.forEach((element) => {
+    for (const { attribute } of leaderboardsToGenerate) {
+      const currentHash = leaderboardsHash[attribute];
+
+      if (typeof element[attribute] === 'string') {
+        if (element[attribute] in currentHash) {
+          currentHash[element[attribute]] += 1;
+        } else {
+          currentHash[element[attribute]] = 1;
+        }
+      }
+
+      if (Array.isArray(element[attribute])) {
+        element[attribute].forEach((item) => {
+          if (item in currentHash) {
+            currentHash[item] += 1;
+          } else {
+            currentHash[item] = 1;
+          }
+        });
+      }
+    }
+  });
+
+  for (const { title, attribute } of leaderboardsToGenerate) {
+    const currentHash = leaderboardsHash[attribute];
+
+    leaderboardsArray[attribute] = [];
+    for (const item in currentHash) {
+      leaderboardsArray[attribute].push({
+        label: item,
+        value: currentHash[item],
+        attribute,
+      });
+    }
+
+    leaderboards.push({
+      title,
+      array: leaderboardsArray[attribute].sort((a, b) => {
+        return b.value - a.value;
+      }),
+    });
+  }
+
+  if (limit && limit > 0) {
+    leaderboards.forEach((board) => {
+      return {
+        title: board.title,
+        array: board.array.splice(limit),
+      };
+    });
+  }
+
   return (
     <>
-      <h2>{title}</h2>
-      <ul>
-        {content.map((value) => (
-          <li key={`${title}-${value[0]}`}>
-            {value[0]}: {value[1]}
-          </li>
-        ))}
-      </ul>
+      {leaderboards.map((board) => (
+        <div key={board.title}>
+          <h2>{board.title}</h2>
+          <ul>
+            {itemRender ? (
+              <>{board.array.map((item, index) => itemRender(item, index))}</>
+            ) : (
+              <>
+                {board.array.map((item) => (
+                  <li key={`${item.label}-${item.value}`}>
+                    {item.label}: {item.value}
+                  </li>
+                ))}
+              </>
+            )}
+          </ul>
+        </div>
+      ))}
     </>
   );
 };
@@ -32,58 +120,6 @@ export default class Authors extends Component {
       allMongodbAiidprodIncidents: { nodes },
     } = data;
 
-    let leaderboardAuthors = {};
-
-    let leaderboardSubmitters = {};
-
-    let leaderboardDomains = {};
-
-    nodes.forEach((element) => {
-      if (element['source_domain'] in leaderboardDomains) {
-        leaderboardDomains[element['source_domain']] += 1;
-      } else {
-        leaderboardDomains[element['source_domain']] = 1;
-      }
-      element['authors'].forEach((author) => {
-        if (author in leaderboardAuthors) {
-          leaderboardAuthors[author] += 1;
-        } else {
-          leaderboardAuthors[author] = 1;
-        }
-      });
-      element['submitters'].forEach((submitter) => {
-        if (submitter in leaderboardSubmitters) {
-          leaderboardSubmitters[submitter] += 1;
-        } else {
-          leaderboardSubmitters[submitter] = 1;
-        }
-      });
-    });
-    let leaderboardAuthorsSorted = [];
-
-    let leaderboardSubmittersSorted = [];
-
-    let leaderboardDomainsSorted = [];
-
-    for (var submitter in leaderboardSubmitters) {
-      leaderboardSubmittersSorted.push([submitter, leaderboardSubmitters[submitter]]);
-    }
-    for (var author in leaderboardAuthors) {
-      leaderboardAuthorsSorted.push([author, leaderboardAuthors[author]]);
-    }
-    for (var domain in leaderboardDomains) {
-      leaderboardDomainsSorted.push([domain, leaderboardDomains[domain]]);
-    }
-    leaderboardSubmittersSorted.sort(function (a, b) {
-      return b[1] - a[1];
-    });
-    leaderboardAuthorsSorted.sort(function (a, b) {
-      return b[1] - a[1];
-    });
-    leaderboardDomainsSorted.sort(function (a, b) {
-      return b[1] - a[1];
-    });
-
     return (
       <Layout {...this.props}>
         <Helmet>
@@ -98,9 +134,7 @@ export default class Authors extends Component {
             like to explore the contents of the reports, you should work through the
             <Link to="/about_apps/1-discover"> Discover app</Link>.
           </p>
-          <Leaderboard title="Submitters" content={leaderboardSubmittersSorted} />
-          <Leaderboard title="Authors" content={leaderboardAuthorsSorted} />
-          <Leaderboard title="Domains" content={leaderboardDomainsSorted} />
+          <Leaderboards leaderboardsToGenerate={LEADERBOARDS} incidentData={nodes} />
         </StyledMainWrapper>
       </Layout>
     );
