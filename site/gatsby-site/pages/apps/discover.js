@@ -33,7 +33,7 @@ import Helmet from 'react-helmet';
 
 import '../../static/discover/src/app.css';
 import '../../static/discover/src/index.css';
-import { add, format, formatISO, isAfter, isBefore } from 'date-fns';
+import { add, format, formatISO, isAfter, isBefore, isEqual } from 'date-fns';
 
 export const searchClient = algoliasearch('8TNY3YFAO8', '55efba4929953a53eb357824297afb4c');
 
@@ -556,7 +556,7 @@ const getParagraphs = (itemText) => {
   );
 };
 
-export const IncidentStatsCard = ({ hits }) => {
+export const IncidentStatsCard = ({ incidentId, reportCount, incidentDate }) => {
   const STATS = [
     {
       key: 'incidentId',
@@ -572,14 +572,14 @@ export const IncidentStatsCard = ({ hits }) => {
     },
   ];
 
-  if (!hits || hits.length === 0) {
+  if (reportCount === 0) {
     return null;
   }
 
   const stats = {
-    incidentId: hits[0].incident_id,
-    reportCount: hits.length,
-    incidentDate: hits[0].incident_date,
+    incidentId,
+    reportCount,
+    incidentDate,
   };
 
   return (
@@ -971,6 +971,7 @@ const RenderCards = ({
   submittersModal,
   flagReportModal,
   scrollTo,
+  sortByDatePublished,
 }) => {
   useEffect(() => {
     if (scrollTo) {
@@ -986,6 +987,41 @@ const RenderCards = ({
       </NoResults>
     );
   }
+
+  if (sortByDatePublished) {
+    const sortedHits = hits.sort((a, b) => {
+      const dateA = new Date(a.date_published);
+
+      const dateB = new Date(b.date_published);
+
+      if (isEqual(dateA, dateB)) {
+        return 0;
+      }
+      if (isAfter(dateA, dateB)) {
+        return 1;
+      }
+      if (isAfter(dateB, dateA)) {
+        return -1;
+      }
+    });
+
+    return (
+      <>
+        {sortedHits.map((hit) => (
+          <IncidentCard
+            key={hit._id}
+            item={hit}
+            authorsModal={authorsModal}
+            submittersModal={submittersModal}
+            flagReportModal={flagReportModal}
+            toggleFilterByIncidentId={toggleFilterByIncidentId}
+            showDetails={showDetails}
+          />
+        ))}
+      </>
+    );
+  }
+
   return (
     <>
       {hits.map((hit) => (
@@ -1102,7 +1138,12 @@ const FiltersBar = ({ filters, updateFilters, updateQuery }) => {
   );
 };
 
-export const Hits = ({ toggleFilterByIncidentId, showDetails = false, scrollTo }) => {
+export const Hits = ({
+  toggleFilterByIncidentId,
+  showDetails = false,
+  sortByDatePublished,
+  scrollTo,
+}) => {
   const authorsModal = useModal();
 
   const submittersModal = useModal();
@@ -1118,6 +1159,7 @@ export const Hits = ({ toggleFilterByIncidentId, showDetails = false, scrollTo }
         flagReportModal={flagReportModal}
         showDetails={showDetails}
         scrollTo={scrollTo}
+        sortByDatePublished={sortByDatePublished}
       />
       <CustomModal {...authorsModal} />
       <CustomModal {...submittersModal} />
