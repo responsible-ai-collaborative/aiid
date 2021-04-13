@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
@@ -7,10 +7,35 @@ import Layout from 'components/Layout';
 import NextPrevious from 'components/NextPrevious';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import config from '../../config';
-import { SearchContainer, SearchForm, StyledSearchInput } from '../../pages/apps/discover';
-import { debounce } from 'debounce';
+import { Link } from 'gatsby';
+import { Button, InputGroup, FormControl } from 'react-bootstrap';
 
 const forcedNavOrder = config.sidebar.forcedNavOrder;
+
+const DiscoverAppSearch = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  return (
+    <>
+      <h1 className="heading1">Search for an incident</h1>
+      <InputGroup className="mb-3">
+        <InputGroup.Prepend>
+          <Button as={Link} to={`/apps/discover?s=${searchTerm}`} variant="outline-secondary">
+            Button
+          </Button>
+        </InputGroup.Prepend>
+        <FormControl
+          id="algolia-search"
+          aria-describedby="basic-addon1"
+          onChange={(event) => setSearchTerm(event.currentTarget.value)}
+        />
+      </InputGroup>
+      <label className="alert-light" htmlFor="algolia-search">
+        Entering text above will search across more than 1200 incident reports
+      </label>
+    </>
+  );
+};
 
 export default class MDXRuntimeTest extends Component {
   render() {
@@ -70,11 +95,6 @@ export default class MDXRuntimeTest extends Component {
       config.gatsby.pathPrefix !== '/' ? canonicalUrl + config.gatsby.pathPrefix : canonicalUrl;
     canonicalUrl = canonicalUrl + mdx.fields.slug;
 
-    const debouncedSearch = debounce((text) => {
-      history.pushState(null, null, `/apps/discover?s=${text}`);
-      history.go();
-    }, 1000);
-
     return (
       <Layout {...this.props}>
         <Helmet>
@@ -92,23 +112,7 @@ export default class MDXRuntimeTest extends Component {
         <div className={'titleWrapper'}>
           <StyledHeading>{mdx.fields.title}</StyledHeading>
         </div>
-        {location.pathname === '/' && (
-          <SearchContainer>
-            <h1 className="heading1">Search for an incident</h1>
-            <SearchForm>
-              <StyledSearchInput
-                autoComplete="off"
-                autoCorrect="off"
-                autoCapitalize="off"
-                placeholder="Search"
-                spellCheck="false"
-                maxLength="512"
-                type="search"
-                onChange={(event) => debouncedSearch(event.currentTarget.value)}
-              />
-            </SearchForm>
-          </SearchContainer>
-        )}
+        {location.pathname === '/' && <DiscoverAppSearch />}
         <StyledMainWrapper>
           <MDXRenderer>{mdx.body}</MDXRenderer>
         </StyledMainWrapper>
