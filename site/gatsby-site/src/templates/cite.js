@@ -18,6 +18,7 @@ import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 import { InstantSearch, Configure } from 'react-instantsearch-dom';
 import { searchClient, Hits, IncidentStatsCard } from '../../pages/apps/discover';
 import styled from 'styled-components';
+import { isAfter, isEqual } from 'date-fns';
 
 const HitsContainer = styled.div`
   display: grid;
@@ -76,6 +77,30 @@ const IncidentCite = ({ data, ...props }) => {
 
   const nodes = group[0]['edges'];
 
+  const sortIncidentsByDatePublished = (group) => {
+    return [
+      {
+        edges: group[0].edges.sort((a, b) => {
+          const dateA = new Date(a.node.date_published);
+
+          const dateB = new Date(b.node.date_published);
+
+          if (isEqual(dateA, dateB)) {
+            return 0;
+          }
+          if (isAfter(dateA, dateB)) {
+            return 1;
+          }
+          if (isAfter(dateB, dateA)) {
+            return -1;
+          }
+        }),
+      },
+    ];
+  };
+
+  const sortedGroup = sortIncidentsByDatePublished(group);
+
   const stats = {
     incidentId: nodes[0].node.incident_id,
     reportCount: nodes.length,
@@ -129,7 +154,7 @@ const IncidentCite = ({ data, ...props }) => {
                   <h4>Reports</h4>
                 </div>
                 <div className="card-body">
-                  <IncidentList group={group} />
+                  <IncidentList group={sortedGroup} />
                 </div>
               </CardContainer>
             </Row>
@@ -160,7 +185,7 @@ const IncidentCite = ({ data, ...props }) => {
             </Row>
             <Row className="mb-4">
               <HitsContainer showDetails={true}>
-                <Hits showDetails={true} />
+                <Hits showDetails={true} sortByDatePublished={true} />
               </HitsContainer>
               <Configure filters={`incident_id:${incident_id}`} />
             </Row>
