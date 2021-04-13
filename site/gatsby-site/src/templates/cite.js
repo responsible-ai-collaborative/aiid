@@ -188,7 +188,7 @@ const IncidentCite = ({ data, ...props }) => {
                   <Button
                     variant="outline-primary"
                     className="mr-2"
-                    href={'/discover/index.html?incident_id=' + incident_id}
+                    href={'/apps/discover?incident_id=' + incident_id}
                   >
                     Discover
                   </Button>
