@@ -7,12 +7,13 @@ import Layout from 'components/Layout';
 import NextPrevious from 'components/NextPrevious';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import config from '../../config';
+import WordcountComponent from 'components/WordcountComponent';
 
 const forcedNavOrder = config.sidebar.forcedNavOrder;
 
 export default class MDXRuntimeTest extends Component {
   render() {
-    const { data } = this.props;
+    const { data, location } = this.props;
 
     if (!data) {
       return null;
@@ -85,6 +86,7 @@ export default class MDXRuntimeTest extends Component {
         <div className={'titleWrapper'}>
           <StyledHeading>{mdx.fields.title}</StyledHeading>
         </div>
+        {location.pathname === '/' && <WordcountComponent limit={10} />}
         <StyledMainWrapper>
           <MDXRenderer>{mdx.body}</MDXRenderer>
         </StyledMainWrapper>
