@@ -21,7 +21,7 @@ const DiscoverAppSearch = () => {
       <InputGroup className="mb-3">
         <InputGroup.Prepend>
           <Button as={Link} to={`/apps/discover?s=${searchTerm}`} variant="outline-secondary">
-            Button
+            Search
           </Button>
         </InputGroup.Prepend>
         <FormControl
