@@ -89,7 +89,7 @@ export const Leaderboards = ({ leaderboardsToGenerate, incidentData, limit, item
     <>
       {leaderboards.map((board) => (
         <div key={board.title}>
-          <h2>{board.title}</h2>
+          <h1 className="heading1">{board.title}</h1>
           <ul>
             {itemRender ? (
               <>{board.array.map((item, index) => itemRender(item, index))}</>
@@ -134,7 +134,17 @@ export default class Authors extends Component {
             like to explore the contents of the reports, you should work through the
             <Link to="/about_apps/1-discover"> Discover app</Link>.
           </p>
-          <Leaderboards leaderboardsToGenerate={LEADERBOARDS} incidentData={nodes} />
+          <Leaderboards
+            leaderboardsToGenerate={LEADERBOARDS}
+            incidentData={nodes}
+            itemRender={(item, index) => (
+              <li key={`${item.label}-${index}`}>
+                <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
+                  {`${item.label}: ${item.value}`}
+                </Link>
+              </li>
+            )}
+          />
         </StyledMainWrapper>
       </Layout>
     );

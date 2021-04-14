@@ -107,18 +107,21 @@ export default class MDXRuntimeTest extends Component {
           <StyledHeading>{mdx.fields.title}</StyledHeading>
         </div>
         {location.pathname === '/' && (
-          <Leaderboards
-            leaderboardsToGenerate={LEADERBOARDS}
-            incidentData={nodes}
-            limit={3}
-            itemRender={(item, index) => (
-              <li key={`${item.label}-${index}`}>
-                <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
-                  {`${item.label}: ${item.value}`}
-                </Link>
-              </li>
-            )}
-          />
+          <>
+            <h2>Incident Report Submission Leaderboards</h2>
+            <Leaderboards
+              leaderboardsToGenerate={LEADERBOARDS}
+              incidentData={nodes}
+              limit={3}
+              itemRender={(item, index) => (
+                <li key={`${item.label}-${index}`}>
+                  <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
+                    {`${item.label}: ${item.value}`}
+                  </Link>
+                </li>
+              )}
+            />
+          </>
         )}
         <StyledMainWrapper>
           <MDXRenderer>{mdx.body}</MDXRenderer>
