@@ -7,25 +7,11 @@ import Layout from 'components/Layout';
 import NextPrevious from 'components/NextPrevious';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import config from '../../config';
-import { Leaderboards } from '../../pages/summaries/leaderboard';
-import { Link } from 'gatsby';
+import SubmittersLeaderboards from 'components/leaderboards/SubmittersLeaderboards';
+import AuthorsLeaderboard from 'components/leaderboards/AuthorsLeaderboard';
+import DomainsLeaderboard from 'components/leaderboards/DomainsLeaderboard';
 
 const forcedNavOrder = config.sidebar.forcedNavOrder;
-
-const LEADERBOARDS = [
-  {
-    title: 'Submitters',
-    attribute: 'submitters',
-  },
-  {
-    title: 'Authors',
-    attribute: 'authors',
-  },
-  {
-    title: 'Domains',
-    attribute: 'source_domain',
-  },
-];
 
 export default class MDXRuntimeTest extends Component {
   render() {
@@ -34,11 +20,7 @@ export default class MDXRuntimeTest extends Component {
     if (!data) {
       return null;
     }
-    const {
-      allMdx,
-      mdx,
-      allMongodbAiidprodIncidents: { nodes },
-    } = data;
+    const { allMdx, mdx } = data;
 
     const navItems = allMdx.edges
       .map(({ node }) => node.fields.slug)
@@ -109,18 +91,9 @@ export default class MDXRuntimeTest extends Component {
         {location.pathname === '/' && (
           <>
             <h2>Incident Report Submission Leaderboards</h2>
-            <Leaderboards
-              leaderboardsToGenerate={LEADERBOARDS}
-              incidentData={nodes}
-              limit={3}
-              itemRender={(item, index) => (
-                <li key={`${item.label}-${index}`}>
-                  <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
-                    {`${item.label}: ${item.value}`}
-                  </Link>
-                </li>
-              )}
-            />
+            <SubmittersLeaderboards limit={3} />
+            <AuthorsLeaderboard limit={3} />
+            <DomainsLeaderboard limit={3} />
           </>
         )}
         <StyledMainWrapper>
@@ -136,14 +109,6 @@ export default class MDXRuntimeTest extends Component {
 
 export const pageQuery = graphql`
   query($id: String!) {
-    allMongodbAiidprodIncidents {
-      nodes {
-        id
-        authors
-        source_domain
-        submitters
-      }
-    }
     site {
       siteMetadata {
         title
