@@ -12,7 +12,7 @@ import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 
 const wordCloudSize = [350, 350];
 
-const Wordlist = ({ content }) => {
+export const Wordlist = ({ content }) => {
   return (
     <>
       {content.map((value) => (
