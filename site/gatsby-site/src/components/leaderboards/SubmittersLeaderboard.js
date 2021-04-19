@@ -2,11 +2,11 @@ import React from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 import { Leaderboard } from './Leaderboard';
 
-const SubmittersLeaderboards = ({ limit }) => {
+const SubmittersLeaderboard = ({ limit }) => {
   return (
     <StaticQuery
       query={graphql`
-        query SubmittersLeaderboards {
+        query SubmittersLeaderboard {
           allMongodbAiidprodIncidents {
             group(field: submitters) {
               field
@@ -30,4 +30,4 @@ const SubmittersLeaderboards = ({ limit }) => {
   );
 };
 
-export default SubmittersLeaderboards;
+export default SubmittersLeaderboard;

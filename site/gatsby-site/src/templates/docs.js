@@ -7,7 +7,7 @@ import Layout from 'components/Layout';
 import NextPrevious from 'components/NextPrevious';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import config from '../../config';
-import SubmittersLeaderboards from 'components/leaderboards/SubmittersLeaderboards';
+import SubmittersLeaderboard from 'components/leaderboards/SubmittersLeaderboard';
 import AuthorsLeaderboard from 'components/leaderboards/AuthorsLeaderboard';
 import DomainsLeaderboard from 'components/leaderboards/DomainsLeaderboard';
 
@@ -91,7 +91,7 @@ export default class MDXRuntimeTest extends Component {
         {location.pathname === '/' && (
           <>
             <h2>Incident Report Submission Leaderboards</h2>
-            <SubmittersLeaderboards limit={3} />
+            <SubmittersLeaderboard limit={3} />
             <AuthorsLeaderboard limit={3} />
             <DomainsLeaderboard limit={3} />
           </>
