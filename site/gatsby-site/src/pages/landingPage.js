@@ -5,7 +5,6 @@ import { Wordlist } from '../pages/wordcounts';
 import { StyledHeading } from 'components/styles/Docs';
 
 const LandingPage = (props) => {
-  console.log(props);
   const {
     pageContext: { wordCountsSorted },
   } = props;
@@ -28,6 +27,16 @@ const LandingPage = (props) => {
       <div className={'titleWrapper'}>
         <StyledHeading>Welcome to the AIID</StyledHeading>
       </div>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas faucibus lacinia magna a
+        rutrum. Curabitur ante ligula, elementum eget metus et, varius pharetra sapien. Donec
+        ullamcorper elit commodo ipsum venenatis consequat. Nulla vitae lorem blandit, pellentesque
+        mauris non, pretium dui. Nullam nulla magna, blandit id lacus vel, ultrices malesuada erat.
+        Vivamus id ligula ut mi dignissim imperdiet sed vel leo. Nam dui lacus, rhoncus eu imperdiet
+        eget, efficitur non nisi. Etiam pellentesque dui lacinia, facilisis tellus sed, laoreet
+        ipsum. Etiam pretium et ligula ac posuere. Aliquam ut faucibus nibh, vel maximus enim.
+        Aliquam congue augue sit amet risus dapibus, ut pretium enim mollis.
+      </p>
       <h1 className="heading1">Wordcount</h1>
       <Wordlist content={wordCountsSorted.splice(0, 10)} />
     </Layout>

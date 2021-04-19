@@ -6,7 +6,7 @@ const stemmer = require('stemmer');
 
 const customStopWords = require('../constants/customStopWords');
 
-const PAGES_WITH_WORKCOUNT = [
+const PAGES_WITH_WORDCOUNT = [
   {
     path: '/summaries/wordcounts',
     componentPath: './src/pages/wordcounts.js',
@@ -79,7 +79,7 @@ const createWordCountsPage = (graphql, createPage) => {
           }
         }
 
-        PAGES_WITH_WORKCOUNT.forEach((page) => {
+        PAGES_WITH_WORDCOUNT.forEach((page) => {
           createPage({
             path: page.path,
             component: path.resolve(page.componentPath),
