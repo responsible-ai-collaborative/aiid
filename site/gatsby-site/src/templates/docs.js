@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import Helmet from 'react-helmet';
-import { graphql } from 'gatsby';
+import { graphql, navigate } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 
 import Layout from 'components/Layout';
@@ -15,21 +15,28 @@ const forcedNavOrder = config.sidebar.forcedNavOrder;
 const DiscoverAppSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
+  const submit = (e) => {
+    e.preventDefault();
+    navigate(`/apps/discover?s=${searchTerm}`);
+  };
+
   return (
     <>
       <h1 className="heading1">Search for an incident</h1>
-      <InputGroup className="mb-3">
-        <InputGroup.Prepend>
-          <Button as={Link} to={`/apps/discover?s=${searchTerm}`} variant="outline-secondary">
-            Search
-          </Button>
-        </InputGroup.Prepend>
-        <FormControl
-          id="algolia-search"
-          aria-describedby="basic-addon1"
-          onChange={(event) => setSearchTerm(event.currentTarget.value)}
-        />
-      </InputGroup>
+      <form onSubmit={submit}>
+        <InputGroup className="mb-3">
+          <InputGroup.Prepend>
+            <Button as={Link} to={`/apps/discover?s=${searchTerm}`} variant="outline-secondary">
+              Search
+            </Button>
+          </InputGroup.Prepend>
+          <FormControl
+            id="algolia-search"
+            aria-describedby="basic-addon1"
+            onChange={(event) => setSearchTerm(event.currentTarget.value)}
+          />
+        </InputGroup>
+      </form>
       <label className="alert-light" htmlFor="algolia-search">
         Entering text above will search across more than 1200 incident reports
       </label>
