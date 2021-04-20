@@ -3,6 +3,43 @@ import Helmet from 'react-helmet';
 import Layout from 'components/Layout';
 import { Wordlist } from '../pages/wordcounts';
 import { StyledHeading } from 'components/styles/Docs';
+import styled from 'styled-components';
+import SubmittersLeaderboard from 'components/leaderboards/SubmittersLeaderboard';
+import AuthorsLeaderboard from 'components/leaderboards/AuthorsLeaderboard';
+import DomainsLeaderboard from 'components/leaderboards/DomainsLeaderboard';
+
+const Card = styled.div`
+  border: 1.5px solid #d9deee;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px 0px #e3e5ec;
+  display: flex;
+  flex-direction: column;
+  padding: 1.3em 2em 2em 2em;
+  margin-bottom: 2em;
+`;
+
+const SectionHeading = styled.h1`
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.5;
+`;
+
+const LeaderboardContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  @media (max-width: 530px) {
+    flex-direction: column;
+  }
+`;
+
+const LiWrapper = styled.div`
+  li {
+    margin-left: 1em;
+  }
+`;
 
 const LandingPage = (props) => {
   const {
@@ -37,8 +74,20 @@ const LandingPage = (props) => {
         ipsum. Etiam pretium et ligula ac posuere. Aliquam ut faucibus nibh, vel maximus enim.
         Aliquam congue augue sit amet risus dapibus, ut pretium enim mollis.
       </p>
-      <h1 className="heading1">Wordcount</h1>
-      <Wordlist content={wordCountsSorted.splice(0, 10)} />
+      <Card>
+        <SectionHeading>Wordcount</SectionHeading>
+        <LiWrapper>
+          <Wordlist content={wordCountsSorted.splice(0, 10)} />
+        </LiWrapper>
+      </Card>
+      <Card>
+        <SectionHeading>Incident Report Submission Leaderboards</SectionHeading>
+        <LeaderboardContainer>
+          <SubmittersLeaderboard limit={3} />
+          <AuthorsLeaderboard limit={3} />
+          <DomainsLeaderboard limit={3} />
+        </LeaderboardContainer>
+      </Card>
     </Layout>
   );
 };
