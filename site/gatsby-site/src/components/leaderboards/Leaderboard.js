@@ -1,5 +1,10 @@
 import React from 'react';
 import { Link } from 'gatsby';
+import styled from 'styled-components';
+
+const StyledLi = styled.li`
+  margin-left: 1em;
+`;
 
 export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit }) => {
   let sortedArray = [];
@@ -21,17 +26,17 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
   }
 
   return (
-    <>
+    <div>
       <h1 className="heading1">{title}</h1>
       <ul>
         {sortedArray.map((item) => (
-          <li key={`${item.label}-${item.value}`}>
+          <StyledLi key={`${item.label}-${item.value}`}>
             <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
               {`${item.label}: ${item.value}`}
             </Link>
-          </li>
+          </StyledLi>
         ))}
       </ul>
-    </>
+    </div>
   );
 };

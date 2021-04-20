@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
+import styled from 'styled-components';
 
 import Layout from 'components/Layout';
 import NextPrevious from 'components/NextPrevious';
@@ -12,6 +13,32 @@ import AuthorsLeaderboard from 'components/leaderboards/AuthorsLeaderboard';
 import DomainsLeaderboard from 'components/leaderboards/DomainsLeaderboard';
 
 const forcedNavOrder = config.sidebar.forcedNavOrder;
+
+const Card = styled.div`
+  border: 1.5px solid #d9deee;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px 0px #e3e5ec;
+  display: flex;
+  flex-direction: column;
+  padding: 1.3em 2em 2em 2em;
+`;
+
+const SectionHeading = styled.h1`
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.5;
+`;
+
+const LeaderboardContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  @media (max-width: 530px) {
+    flex-direction: column;
+  }
+`;
 
 export default class MDXRuntimeTest extends Component {
   render() {
@@ -89,12 +116,14 @@ export default class MDXRuntimeTest extends Component {
           <StyledHeading>{mdx.fields.title}</StyledHeading>
         </div>
         {location.pathname === '/' && (
-          <>
-            <h2>Incident Report Submission Leaderboards</h2>
-            <SubmittersLeaderboard limit={3} />
-            <AuthorsLeaderboard limit={3} />
-            <DomainsLeaderboard limit={3} />
-          </>
+          <Card>
+            <SectionHeading>Incident Report Submission Leaderboards</SectionHeading>
+            <LeaderboardContainer>
+              <SubmittersLeaderboard limit={3} />
+              <AuthorsLeaderboard limit={3} />
+              <DomainsLeaderboard limit={3} />
+            </LeaderboardContainer>
+          </Card>
         )}
         <StyledMainWrapper>
           <MDXRenderer>{mdx.body}</MDXRenderer>
