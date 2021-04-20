@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Helmet from 'react-helmet';
 import Layout from 'components/Layout';
 import { Wordlist } from '../pages/wordcounts';
@@ -7,6 +7,9 @@ import styled from 'styled-components';
 import SubmittersLeaderboard from 'components/leaderboards/SubmittersLeaderboard';
 import AuthorsLeaderboard from 'components/leaderboards/AuthorsLeaderboard';
 import DomainsLeaderboard from 'components/leaderboards/DomainsLeaderboard';
+import { navigate } from 'gatsby';
+import { Link } from 'gatsby';
+import { Button, InputGroup, FormControl } from 'react-bootstrap';
 
 const Card = styled.div`
   border: 1.5px solid #d9deee;
@@ -41,6 +44,38 @@ const LiWrapper = styled.div`
   }
 `;
 
+const DiscoverAppSearch = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const submit = (e) => {
+    e.preventDefault();
+    navigate(`/apps/discover?s=${searchTerm}`);
+  };
+
+  return (
+    <>
+      <SectionHeading>Search for an incident</SectionHeading>
+      <form onSubmit={submit}>
+        <InputGroup className="mb-3">
+          <InputGroup.Prepend>
+            <Button as={Link} to={`/apps/discover?s=${searchTerm}`} variant="outline-secondary">
+              Search
+            </Button>
+          </InputGroup.Prepend>
+          <FormControl
+            id="algolia-search"
+            aria-describedby="basic-addon1"
+            onChange={(event) => setSearchTerm(event.currentTarget.value)}
+          />
+        </InputGroup>
+      </form>
+      <label className="alert-light" htmlFor="algolia-search">
+        Entering text above will search across more than 1200 incident reports
+      </label>
+    </>
+  );
+};
+
 const LandingPage = (props) => {
   const {
     pageContext: { wordCountsSorted },
@@ -74,6 +109,9 @@ const LandingPage = (props) => {
         ipsum. Etiam pretium et ligula ac posuere. Aliquam ut faucibus nibh, vel maximus enim.
         Aliquam congue augue sit amet risus dapibus, ut pretium enim mollis.
       </p>
+      <Card>
+        <DiscoverAppSearch />
+      </Card>
       <Card>
         <SectionHeading>Wordcount</SectionHeading>
         <LiWrapper>

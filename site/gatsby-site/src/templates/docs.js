@@ -1,52 +1,18 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import Helmet from 'react-helmet';
-import { graphql, navigate } from 'gatsby';
+import { graphql } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 
 import Layout from 'components/Layout';
 import NextPrevious from 'components/NextPrevious';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import config from '../../config';
-import { Link } from 'gatsby';
-import { Button, InputGroup, FormControl } from 'react-bootstrap';
 
 const forcedNavOrder = config.sidebar.forcedNavOrder;
 
-const DiscoverAppSearch = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const submit = (e) => {
-    e.preventDefault();
-    navigate(`/apps/discover?s=${searchTerm}`);
-  };
-
-  return (
-    <>
-      <h1 className="heading1">Search for an incident</h1>
-      <form onSubmit={submit}>
-        <InputGroup className="mb-3">
-          <InputGroup.Prepend>
-            <Button as={Link} to={`/apps/discover?s=${searchTerm}`} variant="outline-secondary">
-              Search
-            </Button>
-          </InputGroup.Prepend>
-          <FormControl
-            id="algolia-search"
-            aria-describedby="basic-addon1"
-            onChange={(event) => setSearchTerm(event.currentTarget.value)}
-          />
-        </InputGroup>
-      </form>
-      <label className="alert-light" htmlFor="algolia-search">
-        Entering text above will search across more than 1200 incident reports
-      </label>
-    </>
-  );
-};
-
 export default class MDXRuntimeTest extends Component {
   render() {
-    const { data, location } = this.props;
+    const { data } = this.props;
 
     if (!data) {
       return null;
@@ -119,7 +85,6 @@ export default class MDXRuntimeTest extends Component {
         <div className={'titleWrapper'}>
           <StyledHeading>{mdx.fields.title}</StyledHeading>
         </div>
-        {location.pathname === '/' && <DiscoverAppSearch />}
         <StyledMainWrapper>
           <MDXRenderer>{mdx.body}</MDXRenderer>
         </StyledMainWrapper>
