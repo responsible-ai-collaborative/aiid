@@ -4,6 +4,7 @@ import { graphql } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 
 import Layout from 'components/Layout';
+import RandomIncidentsCarousel from 'components/RandomIncidentsCarousel';
 import NextPrevious from 'components/NextPrevious';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import config from '../../config';
@@ -12,7 +13,10 @@ const forcedNavOrder = config.sidebar.forcedNavOrder;
 
 export default class MDXRuntimeTest extends Component {
   render() {
-    const { data } = this.props;
+    const {
+      data,
+      location: { pathname },
+    } = this.props;
 
     if (!data) {
       return null;
@@ -85,6 +89,7 @@ export default class MDXRuntimeTest extends Component {
         <div className={'titleWrapper'}>
           <StyledHeading>{mdx.fields.title}</StyledHeading>
         </div>
+        {pathname === '/' && <RandomIncidentsCarousel />}
         <StyledMainWrapper>
           <MDXRenderer>{mdx.body}</MDXRenderer>
         </StyledMainWrapper>
