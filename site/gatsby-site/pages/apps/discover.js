@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { navigate } from 'gatsby';
 import { StringParam, QueryParams, useQueryParams } from 'use-query-params';
-import Link from 'components/Link';
 import algoliasearch from 'algoliasearch/lite';
 import { debounce } from 'debounce';
 import {
@@ -447,14 +447,8 @@ const SearchForm = styled.form`
   position: relative;
 `;
 
-const StyledLink = styled(Link)`
-  color: white;
-  text-decoration: none;
-
-  :hover {
-    color: white;
-    text-decoration: none;
-  }
+const StyledLabel = styled.p`
+  margin: 0.6em 0;
 `;
 
 const StyledRefinementList = ({
@@ -652,12 +646,10 @@ const IncidentCard = ({
           type="button"
           className="btn btn-secondary btn-sm btn-block assignment-button"
           onClick={() => {
-            // toggleFilterByIncidentId(item.incident_id + '');
+            navigate(`/cite/${item.incident_id}#${item._id}`);
           }}
         >
-          <StyledLink to={`/cite/${item.incident_id}#${item._id}`}>
-            Show Details on Incident #{item.incident_id}
-          </StyledLink>
+          <StyledLabel>Show Details on Incident #{item.incident_id}</StyledLabel>
         </button>
       )}
     </div>
@@ -708,13 +700,12 @@ const IncidentCard = ({
         }
       />
 
-      <span>
-        <FontAwesomeIcon
-          icon={faHashtag}
-          className="fas fa-hashtag"
-          title="Incident ID"
-          // onClick={() => toggleFilterByIncidentId(item.incident_id + '')}
-        />
+      <span
+        aria-hidden="true"
+        className="pointer"
+        onClick={() => toggleFilterByIncidentId && toggleFilterByIncidentId(item.incident_id + '')}
+      >
+        <FontAwesomeIcon icon={faHashtag} className="fas fa-hashtag" title="Incident ID" />
         {item.incident_id}
       </span>
     </CardFooter>
