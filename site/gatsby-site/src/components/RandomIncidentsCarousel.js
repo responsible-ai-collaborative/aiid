@@ -51,7 +51,9 @@ const RandomIncidentsCarousel = () => {
         }
       `}
       render={({ allMongodbAiidprodIncidents: { edges } }) => {
-        const randomIncidents = edges.filter((node, index) => randomArray.includes(index));
+        const randomIncidents = edges.filter(
+          (node, index) => randomArray.includes(index) && node.image_url !== 'placeholder.svg'
+        );
 
         return (
           <Container>

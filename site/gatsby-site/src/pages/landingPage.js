@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import SubmittersLeaderboard from 'components/leaderboards/SubmittersLeaderboard';
 import AuthorsLeaderboard from 'components/leaderboards/AuthorsLeaderboard';
 import DomainsLeaderboard from 'components/leaderboards/DomainsLeaderboard';
+import RandomIncidentsCarousel from 'components/RandomIncidentsCarousel';
 import { navigate } from 'gatsby';
 import { Link } from 'gatsby';
 import { Button, InputGroup, FormControl } from 'react-bootstrap';
@@ -18,6 +19,13 @@ const Card = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1.3em 2em 2em 2em;
+  margin-bottom: 2em;
+`;
+
+const NoBackgroudCard = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
   margin-bottom: 2em;
 `;
 
@@ -114,6 +122,9 @@ const LandingPage = (props) => {
       <Card>
         <DiscoverAppSearch />
       </Card>
+      <NoBackgroudCard>
+        <RandomIncidentsCarousel />
+      </NoBackgroudCard>
       <Card>
         <SectionHeading>Wordcount</SectionHeading>
         <LiWrapper>
