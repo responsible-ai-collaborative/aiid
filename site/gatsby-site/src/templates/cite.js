@@ -134,14 +134,6 @@ const IncidentCite = ({ data, ...props }) => {
       </Helmet>
       <div className={'titleWrapper'}>
         <StyledHeading>{metaDescription}</StyledHeading>
-        {/* <Button
-          onClick={(e) => {
-            e.preventDefault();
-            history.back();
-          }}
-        >
-          Back To Discover App
-        </Button> */}
       </div>
       <CiteStyledMainWrapper>
         <Container>
