@@ -85,6 +85,8 @@ const LandingPage = (props) => {
     return null;
   }
 
+  const localWordCounts = wordCountsSorted.filter((word, index) => index < 10);
+
   const metaTitle = 'Welcome to the Artificial Intelligence Incident Database';
 
   const metaDescription = 'The starting point for information about the AI Incident Database';
@@ -115,7 +117,7 @@ const LandingPage = (props) => {
       <Card>
         <SectionHeading>Wordcount</SectionHeading>
         <LiWrapper>
-          <Wordlist content={wordCountsSorted.splice(0, 10)} />
+          <Wordlist content={localWordCounts} />
         </LiWrapper>
       </Card>
       <Card>
