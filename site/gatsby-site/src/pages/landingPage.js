@@ -8,6 +8,7 @@ import SubmittersLeaderboard from 'components/leaderboards/SubmittersLeaderboard
 import AuthorsLeaderboard from 'components/leaderboards/AuthorsLeaderboard';
 import DomainsLeaderboard from 'components/leaderboards/DomainsLeaderboard';
 import RandomIncidentsCarousel from 'components/RandomIncidentsCarousel';
+import LatestIncidentReport from 'components/LatestIncidentReport';
 import { navigate } from 'gatsby';
 import { Link } from 'gatsby';
 import { Button, InputGroup, FormControl } from 'react-bootstrap';
@@ -18,14 +19,14 @@ const Card = styled.div`
   box-shadow: 0 2px 5px 0px #e3e5ec;
   display: flex;
   flex-direction: column;
-  padding: 1.3em 2em 2em 2em;
+  padding: 1em 2em 2em 2em;
   margin-bottom: 2em;
 `;
 
 const NoBackgroudCard = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
   margin-bottom: 2em;
 `;
 
@@ -33,6 +34,7 @@ const SectionHeading = styled.h1`
   font-size: 26px;
   font-weight: 800;
   line-height: 1.5;
+  margin-bottom: 0.5em;
 `;
 
 const LeaderboardContainer = styled.div`
@@ -119,6 +121,10 @@ const LandingPage = (props) => {
         ipsum. Etiam pretium et ligula ac posuere. Aliquam ut faucibus nibh, vel maximus enim.
         Aliquam congue augue sit amet risus dapibus, ut pretium enim mollis.
       </p>
+      <Card>
+        <SectionHeading>Latest Incident Report</SectionHeading>
+        <LatestIncidentReport />
+      </Card>
       <Card>
         <DiscoverAppSearch />
       </Card>

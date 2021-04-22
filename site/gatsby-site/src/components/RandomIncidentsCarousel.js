@@ -1,9 +1,8 @@
 import React from 'react';
-import { StaticQuery, graphql } from 'gatsby';
+import { StaticQuery, graphql, Link } from 'gatsby';
 import styled from 'styled-components';
 import md5 from 'md5';
 import Carousel from 'react-bootstrap/Carousel';
-import { Link } from 'gatsby';
 
 const Caption = styled.h3`
   background: rgba(0, 0, 0, 0.55);
