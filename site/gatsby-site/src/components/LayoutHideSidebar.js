@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import { MDXProvider } from '@mdx-js/react';
 
-import ThemeProvider from './theme/themeProvider';
-import mdxComponents from './mdxComponents';
 import Sidebar from './sidebar';
 import config from '../../config.js';
 import Button from 'react-bootstrap/Button';
@@ -97,27 +94,23 @@ const LayoutHideSidebar = ({ children, location }) => {
   const [collapse, setCollapse] = useState(true);
 
   return (
-    <ThemeProvider location={location}>
-      <MDXProvider components={mdxComponents}>
-        <Wrapper>
-          <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
-            <Sidebar location={location} collapse={collapse} />
-          </LeftSideBarWidth>
-          {config.sidebar.title ? (
-            <div
-              className={'sidebarTitle sideBarShow'}
-              dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
-            />
-          ) : null}
-          <Content>
-            <SidebarToggleButton onClick={() => setCollapse(!collapse)} collapse={collapse}>
-              MENU
-            </SidebarToggleButton>
-            <MaxWidth>{children}</MaxWidth>
-          </Content>
-        </Wrapper>
-      </MDXProvider>
-    </ThemeProvider>
+    <Wrapper>
+      <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
+        <Sidebar location={location} collapse={collapse} />
+      </LeftSideBarWidth>
+      {config.sidebar.title ? (
+        <div
+          className={'sidebarTitle sideBarShow'}
+          dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
+        />
+      ) : null}
+      <Content>
+        <SidebarToggleButton onClick={() => setCollapse(!collapse)} collapse={collapse}>
+          MENU
+        </SidebarToggleButton>
+        <MaxWidth>{children}</MaxWidth>
+      </Content>
+    </Wrapper>
   );
 };
 
