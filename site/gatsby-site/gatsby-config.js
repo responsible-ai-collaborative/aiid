@@ -69,7 +69,7 @@ const plugins = [
     resolve: 'gatsby-source-mongodb',
     options: {
       dbName: 'aiidprod',
-      collection: ['incidents', 'submissions', 'quickadd', 'duplicates'],
+      collection: ['incidents', 'submissions', 'quickadd', 'duplicates', 'taxa', 'classifications'],
       connectionString:
         'mongodb+srv://readonlyuser:EScmnlEQHM1pWwWM@aiiddev-aqdmh.gcp.mongodb.net/AIIDDev',
       server: {
