@@ -11,6 +11,7 @@ const TextInputGroup = ({
   values = {},
   errors,
   touched,
+  type,
   handleChange,
   handleBlur,
   ...props
@@ -18,7 +19,7 @@ const TextInputGroup = ({
   <Form.Group>
     <Label popover={POP_OVERS[name]} label={label} />
     <Form.Control
-      type="text"
+      type={type || "text"}
       name={name}
       placeholder={placeholder}
       onChange={handleChange}

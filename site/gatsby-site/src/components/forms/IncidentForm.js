@@ -163,6 +163,7 @@ const IncidentForm = ({ incident, onUpdate, onSubmit }) => {
         name="incident_id"
         label="Incident ID :"
         placeholder="OPTIONAL"
+        type="number"
         {...TextInputGroupProps}
       />
       <TextInputGroup
