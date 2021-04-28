@@ -166,9 +166,13 @@ const IncidentCite = ({ data, ...props }) => {
     incidentDate: nodes[0].node.incident_date,
   };
 
-  const classificationsArray = getClassificationsArray(
-    allMongodbAiidprodClassifications.nodes[0].classifications
-  );
+  let classificationsArray = [];
+
+  if (allMongodbAiidprodClassifications.nodes.length > 0) {
+    classificationsArray = getClassificationsArray(
+      allMongodbAiidprodClassifications.nodes[0].classifications
+    );
+  }
 
   return (
     <Layout {...props}>
@@ -221,22 +225,23 @@ const IncidentCite = ({ data, ...props }) => {
                 </div>
               </CardContainer>
             </Row>
-            {allMongodbAiidprodClassifications.nodes.map((c) => (
-              <Row key={c.namespace} className="mb-4">
-                <CardContainer className="card">
-                  <div className="card-header">
-                    <h4>{`${c.namespace} Taxonomy Classifications`}</h4>
-                  </div>
-                  {classificationsArray &&
-                    classificationsArray.map((field) => (
-                      <ClassificationContainer key={field.name} className="card-body">
-                        <Field>{field.name}</Field>
-                        <Value>{field.value}</Value>
-                      </ClassificationContainer>
-                    ))}
-                </CardContainer>
-              </Row>
-            ))}
+            {classificationsArray.length > 0 &&
+              allMongodbAiidprodClassifications.nodes.map((c) => (
+                <Row key={c.namespace} className="mb-4">
+                  <CardContainer className="card">
+                    <div className="card-header">
+                      <h4>{`${c.namespace} Taxonomy Classifications`}</h4>
+                    </div>
+                    {classificationsArray &&
+                      classificationsArray.map((field) => (
+                        <ClassificationContainer key={field.name} className="card-body">
+                          <Field>{field.name}</Field>
+                          <Value>{field.value}</Value>
+                        </ClassificationContainer>
+                      ))}
+                  </CardContainer>
+                </Row>
+              ))}
             <Row className="mb-4">
               <CardContainer className="card">
                 <ImageCarousel nodes={nodes} />
