@@ -55,6 +55,25 @@ const StatsContainer = styled.div`
   }
 `;
 
+const ClassificationContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  width: 100%;
+`;
+
+const Field = styled.div`
+  width: 20%;
+  border-right: 2.5px solid #d9deee;
+  margin-right: 1em;
+  color: grey;
+  font-weight: 700;
+`;
+
+const Value = styled.div`
+  width: 80%;
+`;
+
 const IncidentCite = ({ data, ...props }) => {
   if (!data) {
     return null;
@@ -62,6 +81,7 @@ const IncidentCite = ({ data, ...props }) => {
 
   const {
     allMongodbAiidprodIncidents: { group },
+    allMongodbAiidprodClassifications,
   } = data;
 
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -75,6 +95,32 @@ const IncidentCite = ({ data, ...props }) => {
         setHasScrolled(true);
       }
     }
+  };
+
+  const getClassificationsArray = (classificationObj) => {
+    const array = [];
+
+    const getStringForValue = (value) => {
+      switch (typeof value) {
+        case 'object':
+          return value.join(', ');
+
+        case 'boolean':
+          return value.toString();
+
+        default:
+          return value;
+      }
+    };
+
+    for (const c in classificationObj) {
+      array.push({
+        name: c,
+        value: getStringForValue(classificationObj[c]),
+      });
+    }
+
+    return array;
   };
 
   // meta tags
@@ -119,6 +165,10 @@ const IncidentCite = ({ data, ...props }) => {
     reportCount: nodes.length,
     incidentDate: nodes[0].node.incident_date,
   };
+
+  const classificationsArray = getClassificationsArray(
+    allMongodbAiidprodClassifications.nodes[0].classifications
+  );
 
   return (
     <Layout {...props}>
@@ -171,6 +221,22 @@ const IncidentCite = ({ data, ...props }) => {
                 </div>
               </CardContainer>
             </Row>
+            {allMongodbAiidprodClassifications.nodes.map((c) => (
+              <Row key={c.namespace} className="mb-4">
+                <CardContainer className="card">
+                  <div className="card-header">
+                    <h4>{`${c.namespace} Taxonomy Classifications`}</h4>
+                  </div>
+                  {classificationsArray &&
+                    classificationsArray.map((field) => (
+                      <ClassificationContainer key={field.name} className="card-body">
+                        <Field>{field.name}</Field>
+                        <Value>{field.value}</Value>
+                      </ClassificationContainer>
+                    ))}
+                </CardContainer>
+              </Row>
+            ))}
             <Row className="mb-4">
               <CardContainer className="card">
                 <ImageCarousel nodes={nodes} />
@@ -223,6 +289,7 @@ export const pageQuery = graphql`
         docsLocation
       }
     }
+
     allMdx {
       edges {
         node {
@@ -233,6 +300,7 @@ export const pageQuery = graphql`
         }
       }
     }
+
     allMongodbAiidprodIncidents(filter: { incident_id: { eq: $incident_id } }) {
       group(field: incident_id) {
         edges {
@@ -249,6 +317,32 @@ export const pageQuery = graphql`
             source_domain
             mongodb_id
           }
+        }
+      }
+    }
+
+    allMongodbAiidprodClassifications(filter: { incident_id: { eq: $incident_id } }) {
+      nodes {
+        incident_id
+        id
+        namespace
+        classifications {
+          Annotation_Status
+          Annotator
+          Ending_Date
+          Beginning_Date
+          Full_Description
+          Harm_distribution_basis
+          Intent
+          Lives_lost
+          Location
+          Named_entities
+          Near_miss
+          Quality_Control
+          Reviewer
+          Severity
+          Short_Description
+          Technology_purveyor
         }
       }
     }
