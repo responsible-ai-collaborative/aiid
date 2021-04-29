@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
 
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
+import { Button, Container, Row, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
@@ -74,6 +72,22 @@ const Value = styled.div`
   width: 80%;
 `;
 
+const TaxaCardHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  p {
+    margin: 0;
+  }
+`;
+
+const IncidnetsReportsTitle = styled.div`
+  margin-top: 4em;
+  padding-bottom: 20px;
+`;
+
 const IncidentCite = ({ data, ...props }) => {
   if (!data) {
     return null;
@@ -82,9 +96,18 @@ const IncidentCite = ({ data, ...props }) => {
   const {
     allMongodbAiidprodIncidents: { group },
     allMongodbAiidprodClassifications,
+    allMongodbAiidprodTaxa,
   } = data;
 
+  let taxonomyNamespace = '';
+
+  if (allMongodbAiidprodTaxa.nodes[0]) {
+    taxonomyNamespace = allMongodbAiidprodTaxa.nodes[0].namespace.toLowerCase();
+  }
+
   const [hasScrolled, setHasScrolled] = useState(false);
+
+  const [showAllClassifications, setShowAllClassifications] = useState(false);
 
   const scrollToIncidentCard = () => {
     if (props.location?.hash) {
@@ -97,7 +120,9 @@ const IncidentCite = ({ data, ...props }) => {
     }
   };
 
-  const getClassificationsArray = (classificationObj) => {
+  const getClassificationsArray = (classificationObj, taxonomy) => {
+    const taxaFieldsArray = taxonomy.field_list.sort((a, b) => b.weight - a.weight);
+
     const array = [];
 
     const getStringForValue = (value) => {
@@ -106,19 +131,25 @@ const IncidentCite = ({ data, ...props }) => {
           return value.join(', ');
 
         case 'boolean':
-          return value.toString();
+          return value ? 'Yes' : 'No';
 
         default:
           return value;
       }
     };
 
-    for (const c in classificationObj) {
-      array.push({
-        name: c,
-        value: getStringForValue(classificationObj[c]),
-      });
-    }
+    taxaFieldsArray.forEach((field) => {
+      const c = classificationObj[field.short_name.split(' ').join('_')];
+
+      if (c !== undefined) {
+        array.push({
+          name: field.short_name,
+          value: getStringForValue(c),
+          weight: field.weight,
+          shortDescription: field.short_description,
+        });
+      }
+    });
 
     return array;
   };
@@ -170,9 +201,20 @@ const IncidentCite = ({ data, ...props }) => {
 
   if (allMongodbAiidprodClassifications.nodes.length > 0) {
     classificationsArray = getClassificationsArray(
-      allMongodbAiidprodClassifications.nodes[0].classifications
+      allMongodbAiidprodClassifications.nodes[0].classifications,
+      allMongodbAiidprodTaxa.nodes[0]
     );
   }
+
+  const toggleShowAllClassifications = () => {
+    setShowAllClassifications(!showAllClassifications);
+  };
+
+  const renderTooltip = (props, displayText) => (
+    <Tooltip id="button-tooltip" {...props}>
+      {displayText}
+    </Tooltip>
+  );
 
   return (
     <Layout {...props}>
@@ -188,14 +230,6 @@ const IncidentCite = ({ data, ...props }) => {
       </Helmet>
       <div className={'titleWrapper'}>
         <StyledHeading>{metaDescription}</StyledHeading>
-        {/* <Button
-          onClick={(e) => {
-            e.preventDefault();
-            history.back();
-          }}
-        >
-          Back To Discover App
-        </Button> */}
       </div>
       <CiteStyledMainWrapper>
         <Container>
@@ -225,28 +259,6 @@ const IncidentCite = ({ data, ...props }) => {
                 </div>
               </CardContainer>
             </Row>
-            {classificationsArray.length > 0 &&
-              allMongodbAiidprodClassifications.nodes.map((c) => (
-                <Row key={c.namespace} className="mb-4">
-                  <CardContainer className="card">
-                    <div className="card-header">
-                      <h4>{`${c.namespace} Taxonomy Classifications`}</h4>
-                    </div>
-                    {classificationsArray &&
-                      classificationsArray.map((field) => (
-                        <ClassificationContainer key={field.name} className="card-body">
-                          <Field>{field.name}</Field>
-                          <Value>{field.value}</Value>
-                        </ClassificationContainer>
-                      ))}
-                  </CardContainer>
-                </Row>
-              ))}
-            <Row className="mb-4">
-              <CardContainer className="card">
-                <ImageCarousel nodes={nodes} />
-              </CardContainer>
-            </Row>
             <Row className="mb-4">
               <CardContainer className="card">
                 <div className="card-header">
@@ -267,6 +279,57 @@ const IncidentCite = ({ data, ...props }) => {
                 </div>
               </CardContainer>
             </Row>
+            {classificationsArray.length > 0 &&
+              allMongodbAiidprodClassifications.nodes.map((c) => (
+                <Row key={c.namespace} className="mb-4">
+                  <CardContainer className="card">
+                    <TaxaCardHeader className="card-header">
+                      <h4>{`${c.namespace} Taxonomy Classifications`}</h4>
+                      <a href={`/taxonomy/${taxonomyNamespace}`}>Taxonomy Details</a>
+                    </TaxaCardHeader>
+                    {classificationsArray &&
+                      classificationsArray
+                        .filter((field) => {
+                          if (showAllClassifications) return true;
+                          if (!showAllClassifications && field.weight >= 50) {
+                            return true;
+                          }
+                          return false;
+                        })
+                        .map((field) => (
+                          <ClassificationContainer key={field.name} className="card-body">
+                            <Field>
+                              <OverlayTrigger
+                                placement="left"
+                                delay={{ show: 100, hide: 400 }}
+                                overlay={(e) => renderTooltip(e, field.shortDescription)}
+                              >
+                                <p>{field.name}</p>
+                              </OverlayTrigger>
+                            </Field>
+                            <Value>{field.value}</Value>
+                          </ClassificationContainer>
+                        ))}
+                    <button
+                      type="button"
+                      className="btn btn-secondary btn-sm btn-block assignment-button"
+                      onClick={() => toggleShowAllClassifications()}
+                    >
+                      Show All Classification
+                    </button>
+                  </CardContainer>
+                </Row>
+              ))}
+            <Row className="mb-4">
+              <CardContainer className="card">
+                <ImageCarousel nodes={nodes} />
+              </CardContainer>
+            </Row>
+            <IncidnetsReportsTitle>
+              <div className={'titleWrapper'}>
+                <StyledHeading>Incidents Reports</StyledHeading>
+              </div>
+            </IncidnetsReportsTitle>
             <Row className="mb-4">
               <HitsContainer showDetails={true}>
                 <Hits
@@ -287,7 +350,7 @@ const IncidentCite = ({ data, ...props }) => {
 export default IncidentCite;
 
 export const pageQuery = graphql`
-  query($incident_id: Int!) {
+  query($incident_id: Int!, $taxonomy_namespace: String) {
     site {
       siteMetadata {
         title
@@ -334,8 +397,8 @@ export const pageQuery = graphql`
         classifications {
           Annotation_Status
           Annotator
-          Ending_Date
-          Beginning_Date
+          Ending_Date(formatString: "YYYY-MM-DD")
+          Beginning_Date(formatString: "YYYY-MM-DD")
           Full_Description
           Harm_distribution_basis
           Intent
@@ -348,6 +411,22 @@ export const pageQuery = graphql`
           Severity
           Short_Description
           Technology_purveyor
+        }
+      }
+    }
+
+    allMongodbAiidprodTaxa(filter: { namespace: { eq: $taxonomy_namespace } }) {
+      nodes {
+        id
+        namespace
+        weight
+        description
+        field_list {
+          display_type
+          long_name
+          short_name
+          weight
+          short_description
         }
       }
     }
