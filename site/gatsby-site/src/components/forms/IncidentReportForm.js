@@ -79,7 +79,7 @@ const defaultValue = {
   text: '',
 };
 
-const IncidentForm = ({ incident, onUpdate, onSubmit }) => {
+const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
   const {
     values,
     errors,
@@ -188,9 +188,9 @@ const IncidentForm = ({ incident, onUpdate, onSubmit }) => {
   );
 };
 
-IncidentForm.propTypes = {
+IncidentReportForm.propTypes = {
   incident: PropTypes.object,
   onUpdate: PropTypes.func,
 };
 
-export default IncidentForm;
+export default IncidentReportForm;

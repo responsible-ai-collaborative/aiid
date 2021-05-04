@@ -4,7 +4,7 @@ import { CSVReader } from 'react-papaparse';
 import cx from 'classnames';
 
 import RelatedIncidents from 'components/RelatedIncidents';
-import IncidentForm from 'components/forms/IncidentForm';
+import IncidentReportForm from 'components/forms/IncidentReportForm';
 import { FormStyles } from 'components/styles/Form';
 
 import { useUserContext } from 'contexts/userContext';
@@ -35,7 +35,7 @@ const SubmitForm = () => {
 
   return (
     <FormStyles className="p-5 mb-5">
-      <IncidentForm incident={incident} onUpdate={setIncident} onSubmit={handleSubmit} />
+      <IncidentReportForm incident={incident} onUpdate={setIncident} onSubmit={handleSubmit} />
       <RelatedIncidents incident={incident} />
       <Container className={cx('mt-5 p-0', !isAdmin && 'd-none')}>
         <h2>Advanced: Add by CSV</h2>

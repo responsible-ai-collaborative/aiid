@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
 
-import IncidentForm from 'components/forms/IncidentForm';
+import IncidentReportForm from 'components/forms/IncidentReportForm';
 
 const IncidentEditModal = ({ show, incident, onHide, onSubmit }) => {
   return (
@@ -10,7 +10,7 @@ const IncidentEditModal = ({ show, incident, onHide, onSubmit }) => {
         <Modal.Title>Edit Incident</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <IncidentForm incident={incident} onSubmit={onSubmit} />
+        <IncidentReportForm incident={incident} onSubmit={onSubmit} />
       </Modal.Body>
     </Modal>
   );
