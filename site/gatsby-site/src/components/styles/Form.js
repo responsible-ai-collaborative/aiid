@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 import { Form, Button } from 'react-bootstrap';
 
-// Reference:
-// https://hackernoon.com/building-react-forms-with-formik-yup-and-react-bootstrap-with-a-minimal-amount-of-pain-and-suffering-1sfk3xv8
 export const FormStyles = styled.div`
   background: #f7f9fa;
   height: auto;

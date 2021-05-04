@@ -4,7 +4,7 @@ const baseTheme = {
   },
 };
 
-const lightTheme = {
+export {
   ...baseTheme,
   colors: {
     background: '#fff',
@@ -14,16 +14,3 @@ const lightTheme = {
     link: '#1000EE',
   },
 };
-
-const darkTheme = {
-  ...baseTheme,
-  colors: {
-    background: '#001933',
-    heading: '#fff',
-    text: '#fff',
-    preFormattedText: '#000',
-    link: '#1ED3C6',
-  },
-};
-
-export { lightTheme, darkTheme };
