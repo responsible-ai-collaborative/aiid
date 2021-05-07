@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Container } from 'react-bootstrap';
+import { Button, Container, Alert } from 'react-bootstrap';
 import { CSVReader } from 'react-papaparse';
 import cx from 'classnames';
 
+import Link from 'components/Link';
 import RelatedIncidents from 'components/RelatedIncidents';
 import IncidentReportForm from 'components/forms/IncidentReportForm';
 import { FormStyles } from 'components/styles/Form';
 
 import { useUserContext } from 'contexts/userContext';
+import { useMongo } from 'hooks/useMongo';
 
 const SubmitForm = () => {
   const { isAdmin, user } = useUserContext();
+  const { updateOne } = useMongo();
   const [incident, setIncident] = useState({});
   const [csvData, setCsvData] = useState([]);
   const [csvIndex, setCsvIndex] = useState(0);
+  const [showAlert, setShowAlert] = useState();
 
   useEffect(() => {
     setIncident(csvData[csvIndex]);
@@ -29,12 +33,33 @@ const SubmitForm = () => {
     setCsvIndex(Math.min(csvData.length - 1, csvIndex + 1));
   };
 
-  const handleSubmit = (values) => {
-    user.functions.createReportForReview(values);
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    setSubmitting(true);
+
+    try {
+      if (incident.incident_id) {
+        updateOne({ incident_id: incident.incident_id }, values);
+      } else {
+        await user.functions.createReportForReview(values);
+      }
+      setShowAlert('success');
+    } catch {
+      setShowAlert('failure');
+    }
+
+    resetForm();
+    setSubmitting(false);
   };
 
   return (
     <FormStyles className="p-5 mb-5">
+      <Alert variant="success"  show={showAlert === 'success'} onClose={() => setShowAlert()} dismissible>
+        Report successfully added to review queue. It will appear on the{' '}
+        <Link to="/apps/submitted">review queue page</Link> within an hour.
+      </Alert>
+      <Alert variant="danger" show={showAlert === 'failure'} onClose={() => setShowAlert()} dismissible>
+        Was not able to create the report, please review the form and try again.
+      </Alert>
       <IncidentReportForm incident={incident} onUpdate={setIncident} onSubmit={handleSubmit} />
       <RelatedIncidents incident={incident} />
       <Container className={cx('mt-5 p-0', !isAdmin && 'd-none')}>
