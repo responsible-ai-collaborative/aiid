@@ -84,6 +84,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
     values,
     errors,
     touched,
+    isValid,
     isSubmitting,
     handleChange,
     handleBlur,
@@ -181,7 +182,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
           into the database after enough incidents are pending.
         </p>
       )}
-      <Button variant="primary" type="submit" disabled={isSubmitting}>
+      <Button variant="primary" type="submit" disabled={(touched && !isValid) || isSubmitting}>
         {isEditMode ? 'Update' : 'Submit'}
       </Button>
     </Form>
