@@ -1,11 +1,4 @@
-const baseTheme = {
-  fonts: {
-    mono: '"SF Mono", "Roboto Mono", Menlo, monospace',
-  },
-};
-
-export {
-  ...baseTheme,
+export const theme = {
   colors: {
     background: '#fff',
     heading: '#000',
@@ -13,4 +6,7 @@ export {
     preFormattedText: 'rgb(245, 247, 249)',
     link: '#1000EE',
   },
-};
+  fonts: {
+    mono: '"SF Mono", "Roboto Mono", Menlo, monospace',
+  },
+}

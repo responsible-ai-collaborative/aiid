@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ThemeProvider as EmotionThemeProvider } from 'emotion-theming';
 import { Global } from '@emotion/core';
 
-import theme from './index';
+import { theme } from './index';
 import Header from '../Header';
 import { baseStyles } from '../styles/GlobalStyles';
 
