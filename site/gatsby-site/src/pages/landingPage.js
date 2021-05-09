@@ -119,7 +119,7 @@ const LandingPage = (props) => {
         <meta name="description" content={metaDescription} />
       </Helmet>
       <div className={'titleWrapper'}>
-        <StyledHeading>Welcome to the AIID</StyledHeading>
+        <StyledHeading>Welcome to the Artifical Intelligence Incident Database</StyledHeading>
       </div>
       <Card>
         <LeadParagraph>
@@ -131,20 +131,26 @@ const LandingPage = (props) => {
           intelligence will only be a benefit to people and society if we collectively record and
           learn from its failings. Learn more <Link to="/about">about the database</Link>, or read
           about it on the{' '}
-          <a href="https://www.partnershiponai.org/aiincidentdatabase/" target="_blank" rel="noreferrer">
+          <a
+            href="https://www.partnershiponai.org/aiincidentdatabase/"
+            target="_blank"
+            rel="noreferrer"
+          >
             PAI Blog
           </a>
           ,{' '}
           <a
             href="https://www.vice.com/en/article/m7agjq/this-database-is-finally-holding-ai-accountable"
-            target="_blank" rel="noreferrer"
+            target="_blank"
+            rel="noreferrer"
           >
             Vice News
           </a>
           ,{' '}
           <a
             href="https://venturebeat.com/2021/01/15/the-ai-incident-database-wants-to-improve-the-safety-of-machine-learning/"
-            target="_blank" rel="noreferrer"
+            target="_blank"
+            rel="noreferrer"
           >
             Venture Beat
           </a>
