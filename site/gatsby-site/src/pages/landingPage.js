@@ -13,6 +13,11 @@ import { navigate } from 'gatsby';
 import { Link } from 'gatsby';
 import { Button, InputGroup, FormControl } from 'react-bootstrap';
 
+const LeadParagraph = styled.p`
+  margin-bottom: 0px;
+  line-height: 1.7;
+`;
+
 const Card = styled.div`
   border: 1.5px solid #d9deee;
   border-radius: 5px;
@@ -23,7 +28,7 @@ const Card = styled.div`
   margin-bottom: 2em;
 `;
 
-const NoBackgroudCard = styled.div`
+const NoBackgroundCard = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -48,6 +53,11 @@ const LeaderboardContainer = styled.div`
   }
 `;
 
+const CarouselEntry = styled.div`
+  width: 50%;
+  min-height: 300px;
+`;
+
 const LiWrapper = styled.div`
   li {
     margin-left: 1em;
@@ -64,7 +74,7 @@ const DiscoverAppSearch = () => {
 
   return (
     <>
-      <SectionHeading>Search for an incident</SectionHeading>
+      <SectionHeading>Search all incident reports</SectionHeading>
       <form onSubmit={submit}>
         <InputGroup className="mb-3">
           <InputGroup.Prepend>
@@ -111,40 +121,78 @@ const LandingPage = (props) => {
       <div className={'titleWrapper'}>
         <StyledHeading>Welcome to the AIID</StyledHeading>
       </div>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas faucibus lacinia magna a
-        rutrum. Curabitur ante ligula, elementum eget metus et, varius pharetra sapien. Donec
-        ullamcorper elit commodo ipsum venenatis consequat. Nulla vitae lorem blandit, pellentesque
-        mauris non, pretium dui. Nullam nulla magna, blandit id lacus vel, ultrices malesuada erat.
-        Vivamus id ligula ut mi dignissim imperdiet sed vel leo. Nam dui lacus, rhoncus eu imperdiet
-        eget, efficitur non nisi. Etiam pellentesque dui lacinia, facilisis tellus sed, laoreet
-        ipsum. Etiam pretium et ligula ac posuere. Aliquam ut faucibus nibh, vel maximus enim.
-        Aliquam congue augue sit amet risus dapibus, ut pretium enim mollis.
-      </p>
+      <Card>
+        <LeadParagraph>
+          The AI Incident Database is a collection of harms or near harms realized in the real world
+          by the deployment of intelligent systems. You are invited to{' '}
+          <Link to="/apps/quickadd">submit</Link> reports to the database, whereupon accepted
+          incidents will be indexed and made <Link to="/apps/discover">discoverable</Link> to people
+          developing and deploying the next generation of AI technology to the world. Artificial
+          intelligence will only be a benefit to people and society if we collectively record and
+          learn from its failings. Learn more <Link to="/about">about the database</Link>, or read
+          about it on the{' '}
+          <a href="https://www.partnershiponai.org/aiincidentdatabase/" target="_blank" rel="noreferrer">
+            PAI Blog
+          </a>
+          ,{' '}
+          <a
+            href="https://www.vice.com/en/article/m7agjq/this-database-is-finally-holding-ai-accountable"
+            target="_blank" rel="noreferrer"
+          >
+            Vice News
+          </a>
+          ,{' '}
+          <a
+            href="https://venturebeat.com/2021/01/15/the-ai-incident-database-wants-to-improve-the-safety-of-machine-learning/"
+            target="_blank" rel="noreferrer"
+          >
+            Venture Beat
+          </a>
+          , and{' '}
+          <a href="https://arxiv.org/abs/2011.08512" target="_blank" rel="noreferrer">
+            arXiv
+          </a>{' '}
+          among other outlets.
+        </LeadParagraph>
+      </Card>
+      <Card>
+        <DiscoverAppSearch />
+      </Card>
       <Card>
         <SectionHeading>Latest Incident Report</SectionHeading>
         <LatestIncidentReport />
       </Card>
       <Card>
-        <DiscoverAppSearch />
-      </Card>
-      <NoBackgroudCard>
-        <RandomIncidentsCarousel />
-      </NoBackgroudCard>
-      <Card>
-        <SectionHeading>Wordcount</SectionHeading>
-        <LiWrapper>
-          <Wordlist content={localWordCounts} />
-        </LiWrapper>
-      </Card>
-      <Card>
         <SectionHeading>Incident Report Submission Leaderboards</SectionHeading>
+        <p>
+          These are the persons and entities credited with creating and submitted incident reports.
+          More details are available on the{' '}
+          <Link to="/summaries/leaderboard">leaderboard page.</Link>
+        </p>
         <LeaderboardContainer>
           <SubmittersLeaderboard limit={3} />
           <AuthorsLeaderboard limit={3} />
           <DomainsLeaderboard limit={3} />
         </LeaderboardContainer>
       </Card>
+      <Card>
+        <SectionHeading>Wordcounts</SectionHeading>
+        <p>
+          These are the most common rooted and stemmed words across all incident reports. More
+          details are available on its <Link to="/summaries/wordcounts">data summary page.</Link>
+        </p>
+        <LiWrapper>
+          <Wordlist content={localWordCounts} />
+        </LiWrapper>
+      </Card>
+      <NoBackgroundCard>
+        <CarouselEntry>
+          <RandomIncidentsCarousel />
+        </CarouselEntry>
+        <CarouselEntry>
+          <RandomIncidentsCarousel />
+        </CarouselEntry>
+      </NoBackgroundCard>
     </Layout>
   );
 };
