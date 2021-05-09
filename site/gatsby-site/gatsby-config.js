@@ -7,6 +7,12 @@ const config = require('./config');
 
 const plugins = [
   {
+    resolve: `gatsby-plugin-layout`,
+    options: {
+      component: require.resolve(`./wrap-with-provider`),
+    },
+  },
+  {
     resolve: `gatsby-plugin-netlify`,
     options: {
       headers: {},
