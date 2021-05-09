@@ -134,14 +134,6 @@ const IncidentCite = ({ data, ...props }) => {
       </Helmet>
       <div className={'titleWrapper'}>
         <StyledHeading>{metaDescription}</StyledHeading>
-        {/* <Button
-          onClick={(e) => {
-            e.preventDefault();
-            history.back();
-          }}
-        >
-          Back To Discover App
-        </Button> */}
       </div>
       <CiteStyledMainWrapper>
         <Container>
@@ -173,11 +165,6 @@ const IncidentCite = ({ data, ...props }) => {
             </Row>
             <Row className="mb-4">
               <CardContainer className="card">
-                <ImageCarousel nodes={nodes} />
-              </CardContainer>
-            </Row>
-            <Row className="mb-4">
-              <CardContainer className="card">
                 <div className="card-header">
                   <h4>Tools</h4>
                 </div>
@@ -194,6 +181,11 @@ const IncidentCite = ({ data, ...props }) => {
                   </Button>
                   <BibTex nodes={nodes} incident_id={incident_id} />
                 </div>
+              </CardContainer>
+            </Row>
+            <Row className="mb-4">
+              <CardContainer className="card">
+                <ImageCarousel nodes={nodes} />
               </CardContainer>
             </Row>
             <Row className="mb-4">

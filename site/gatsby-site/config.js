@@ -43,29 +43,22 @@ const config = {
     },
   },
   sidebar: {
-    forcedNavOrder: [
-      '/index', // add trailing slash if enabled above
-      '/research',
-      '/summaries',
-      '/about_apps',
-      '/about_us',
-      '/contact',
-    ],
+    forcedNavOrder: ['/welcome', '/about', '/research', '/summaries', '/about_apps', '/contact'],
     collapsedNav: [
       //'/codeblock', // add trailing slash if enabled above
     ],
     links: [{ text: 'Partnership on AI Home', link: 'https://partnershiponai.org' }],
-    frontline: false,
+    frontline: true,
     ignoreIndex: false,
     title:
-      "<a href='/about_apps/1-discover'>Discover </a><div class='greenCircle'></div><a href='/about_apps/2-submit'>Submit</a>",
+      "<a href='/apps/discover'>Discover </a><div class='greenCircle'></div><a href='/apps/quickadd'>Submit</a>",
   },
   siteMetadata: {
     title: 'Artificial Intelligence Incident Database | Partnership on AI',
     description: 'a collection of intelligent system harms in the real world ',
     ogImage: null,
     docsLocation: '/',
-    favicon: 'favicon.png',
+    favicon: '/favicon.png',
   },
   pwa: {
     enabled: false, // disabling this will also remove the existing service worker.

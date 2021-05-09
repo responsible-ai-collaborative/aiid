@@ -71,7 +71,7 @@ const SidebarToggleButton = styled(Button)`
   position: fixed;
   left: 220px;
   ${({ collapse }) =>
-    collapse === true &&
+    collapse === 'true' &&
     `
       left: -30px;
     `};
@@ -105,7 +105,10 @@ const LayoutHideSidebar = ({ children, location }) => {
         />
       ) : null}
       <Content>
-        <SidebarToggleButton onClick={() => setCollapse(!collapse)} collapse={collapse}>
+        <SidebarToggleButton
+          onClick={() => setCollapse(!collapse)}
+          collapse={collapse.toString()}
+        >
           MENU
         </SidebarToggleButton>
         <MaxWidth>{children}</MaxWidth>
