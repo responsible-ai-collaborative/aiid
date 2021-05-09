@@ -6,6 +6,17 @@ const stemmer = require('stemmer');
 
 const customStopWords = require('../constants/customStopWords');
 
+const PAGES_WITH_WORDCOUNT = [
+  {
+    path: '/summaries/wordcounts',
+    componentPath: './src/pages/wordcounts.js',
+  },
+  {
+    path: '/',
+    componentPath: './src/pages/landingPage.js',
+  },
+];
+
 const createWordCountsPage = (graphql, createPage) => {
   return new Promise((resolve, reject) => {
     resolve(
@@ -68,14 +79,16 @@ const createWordCountsPage = (graphql, createPage) => {
           }
         }
 
-        createPage({
-          path: '/summaries/wordcounts',
-          component: path.resolve('./src/pages/wordcounts.js'),
-          context: {
-            wordClouds,
-            wordCountsSorted,
-            wordsPerCloud,
-          },
+        PAGES_WITH_WORDCOUNT.forEach((page) => {
+          createPage({
+            path: page.path,
+            component: path.resolve(page.componentPath),
+            context: {
+              wordClouds,
+              wordCountsSorted,
+              wordsPerCloud,
+            },
+          });
         });
       })
     );

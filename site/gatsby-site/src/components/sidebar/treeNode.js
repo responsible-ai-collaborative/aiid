@@ -22,11 +22,16 @@ const TreeNode = ({ className = '', setCollapsed, collapsed, url, title, items }
 
   const isSummaryNav = url === '/summaries';
 
+  const isWelcome = location && location.pathname.indexOf('/welcome/') === 0;
+
+  const isWelcomeNav = url === '/summaries' || url === '/' || url === '';
+
   const isApp = location && location.pathname.indexOf('/apps/') === 0;
 
   const isAppNav = url === '/apps';
 
-  const makeActive = (isSummary && isSummaryNav) || (isApp && isAppNav);
+  const makeActive =
+    (isSummary && isSummaryNav) || (isApp && isAppNav) || (isWelcome && isWelcomeNav);
 
   const active =
     location &&
