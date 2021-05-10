@@ -715,7 +715,7 @@ const IncidentCard = ({
 const StyledSearchBox = ({ refine, defaultRefinement, customRef }) => {
   const debouncedRefine = debounce((text) => {
     refine(text);
-  }, 500);
+  }, 700);
 
   return (
     <SearchContainer>
