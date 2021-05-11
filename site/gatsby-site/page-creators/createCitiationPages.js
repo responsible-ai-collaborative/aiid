@@ -17,7 +17,7 @@ const createCitiationPages = (graphql, createPage) => {
               }
             }
 
-            allMongodbAiidprodClassifications {
+            allMongodbAiidprodClassifications(filter: { incident_id: { gt: 0 } }) {
               nodes {
                 namespace
                 incident_id
