@@ -1,6 +1,14 @@
 const csv = require('csvtojson');
 
-const csvFilePath = 'rawClassifications.csv';
+const path = require('path');
+
+const fs = require('fs');
+
+const csvFileName = './src/scripts/rawClassifications.csv';
+
+const csvFilePath = path.resolve(csvFileName);
+
+const outFilePath = './classifications.json';
 
 // i = 5 is the first row
 // i < 5 is for headers and subheaders
@@ -118,32 +126,29 @@ const getClassification = (r) => {
     'Beginning Date': convertStringToDate(r.field8),
     'Ending Date': convertStringToDate(r.field9),
     Location: r.field10,
-    'Near miss': r.field11,
-    'Named entities': r.field12.split('; '),
-    'Technology purveyor': getTechPurveyorArray(r),
+    'Near Miss': r.field11,
+    'Named Entities': r.field12.split('; '),
+    'Technology Purveyor': getTechPurveyorArray(r),
     Intent: r.field19,
     Severity: r.field20,
-    // Has also value Unclear/unknown
-    'Lives lost': r.field31 === 'Yes' ? true : false,
-    'Harm distribution basis': getArrayForSubfields(r, harmBasisFields),
-    // missing from classification collection
-    'Harm type': getArrayForSubfields(r, harmTypesFields),
-    'Infrastructure sectors': getArrayForSubfields(r, infraSectorsFields),
-    // not yet in taxonomy fields
-    'Total finacial cost': r.field65,
-    'Laws implicated': r.field66,
-    'Description AI': r.field67,
-    'Description data inputs': r.field68,
-    'System developer': r.field69,
-    'Sector of deployment': r.field70,
-    'Public sector deployment': r.field71,
-    'Nature of end user': r.field72,
-    'Level of autonomy': r.field73,
-    'AI functions': getArrayForSubfields(r, aiFunctionFields),
-    'Tools and techniques': r.field80,
-    'Functions and applications': r.field81,
-    'Physical system integrated': getArrayForSubfields(r, sysIntegratedFields),
-    'Proplem nature': getArrayForSubfields(r, problemNatureFields),
+    'Lives Lost': r.field31 === 'Yes' ? true : false,
+    'Harm Distribution Basis': getArrayForSubfields(r, harmBasisFields),
+    'Harm Type': getArrayForSubfields(r, harmTypesFields),
+    'Infrastructure Sectors': getArrayForSubfields(r, infraSectorsFields),
+    'Finacial Cost': r.field65,
+    'Laws Implicated': r.field66,
+    'AI System Description': r.field67,
+    'Data Inputs': r.field68,
+    'System Developer': r.field69,
+    'Sector of Deployment': r.field70,
+    'Public Sector Deployment': r.field71,
+    'Nature of End User': r.field72,
+    'Level of Autonomy': r.field73,
+    'Relevant AI functions': getArrayForSubfields(r, aiFunctionFields),
+    'AI techniques': r.field80,
+    'AI Applications': r.field81,
+    'Physical System': getArrayForSubfields(r, sysIntegratedFields),
+    'Problem Nature': getArrayForSubfields(r, problemNatureFields),
     Notes: r.field96,
   };
 };
@@ -160,14 +165,15 @@ const main = () => {
 
       noHeadersJsonObj.forEach((r) => {
         nodes.push({
-          incident_id: r.field1,
+          incident_id: parseInt(r.field1),
           namespace: 'CSET',
           classifications: getClassification(r),
         });
       });
 
-      console.log('========================');
-      console.log(nodes);
+      // console.log(nodes);
+
+      fs.writeFileSync(outFilePath, JSON.stringify(nodes, null, 4));
     });
 };
 

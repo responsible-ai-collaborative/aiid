@@ -397,8 +397,8 @@ export const pageQuery = graphql`
         classifications {
           Annotation_Status
           Annotator
-          Ending_Date(formatString: "YYYY-MM-DD")
-          Beginning_Date(formatString: "YYYY-MM-DD")
+          Ending_Date
+          Beginning_Date
           Full_Description
           Harm_distribution_basis
           Intent
