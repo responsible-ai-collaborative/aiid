@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
 
@@ -99,15 +99,20 @@ const IncidentCite = ({ data, ...props }) => {
     allMongodbAiidprodTaxa,
   } = data;
 
-  let taxonomyNamespace = '';
-
-  if (allMongodbAiidprodTaxa.nodes[0]) {
-    taxonomyNamespace = allMongodbAiidprodTaxa.nodes[0].namespace.toLowerCase();
-  }
-
   const [hasScrolled, setHasScrolled] = useState(false);
 
-  const [showAllClassifications, setShowAllClassifications] = useState(false);
+  const [showAllClassifications, setShowAllClassifications] = useState({});
+
+  useEffect(() => {
+    let initShowAllClassifications = {};
+
+    if (allMongodbAiidprodClassifications.nodes.length > 0) {
+      allMongodbAiidprodClassifications.nodes.forEach((c) => {
+        initShowAllClassifications[c.namespace] = false;
+      });
+      setShowAllClassifications(initShowAllClassifications);
+    }
+  }, []);
 
   const scrollToIncidentCard = () => {
     if (props.location?.hash) {
@@ -141,7 +146,7 @@ const IncidentCite = ({ data, ...props }) => {
     taxaFieldsArray.forEach((field) => {
       const c = classificationObj[field.short_name.split(' ').join('_')];
 
-      if (c !== undefined) {
+      if (c !== undefined && c !== '' && c.length > 0) {
         array.push({
           name: field.short_name,
           value: getStringForValue(c),
@@ -197,17 +202,27 @@ const IncidentCite = ({ data, ...props }) => {
     incidentDate: nodes[0].node.incident_date,
   };
 
-  let classificationsArray = [];
+  const taxonomies = [];
 
   if (allMongodbAiidprodClassifications.nodes.length > 0) {
-    classificationsArray = getClassificationsArray(
-      allMongodbAiidprodClassifications.nodes[0].classifications,
-      allMongodbAiidprodTaxa.nodes[0]
-    );
+    allMongodbAiidprodClassifications.nodes.forEach((c) => {
+      allMongodbAiidprodTaxa.nodes.forEach((t) => {
+        if (c.namespace === t.namespace) {
+          taxonomies.push({
+            namespace: c.namespace,
+            classificationsArray: getClassificationsArray(c.classifications, t),
+            showAllClassifications: false,
+          });
+        }
+      });
+    });
   }
 
-  const toggleShowAllClassifications = () => {
-    setShowAllClassifications(!showAllClassifications);
+  const toggleShowAllClassifications = (namespace) => {
+    setShowAllClassifications({
+      ...showAllClassifications,
+      [namespace]: !showAllClassifications[namespace],
+    });
   };
 
   const renderTooltip = (props, displayText) => (
@@ -279,19 +294,19 @@ const IncidentCite = ({ data, ...props }) => {
                 </div>
               </CardContainer>
             </Row>
-            {classificationsArray.length > 0 &&
-              allMongodbAiidprodClassifications.nodes.map((c) => (
-                <Row key={c.namespace} className="mb-4">
+            {taxonomies.length > 0 &&
+              taxonomies.map((t) => (
+                <Row key={t.namespace} className="mb-4">
                   <CardContainer className="card">
                     <TaxaCardHeader className="card-header">
-                      <h4>{`${c.namespace} Taxonomy Classifications`}</h4>
-                      <a href={`/taxonomy/${taxonomyNamespace}`}>Taxonomy Details</a>
+                      <h4>{`${t.namespace} Taxonomy Classifications`}</h4>
+                      <a href={`/taxonomy/${t.namespace.toLowerCase()}`}>Taxonomy Details</a>
                     </TaxaCardHeader>
-                    {classificationsArray &&
-                      classificationsArray
+                    {t.classificationsArray &&
+                      t.classificationsArray
                         .filter((field) => {
-                          if (showAllClassifications) return true;
-                          if (!showAllClassifications && field.weight >= 50) {
+                          if (showAllClassifications[t.namespace]) return true;
+                          if (!showAllClassifications[t.namespace] && field.weight >= 50) {
                             return true;
                           }
                           return false;
@@ -313,9 +328,11 @@ const IncidentCite = ({ data, ...props }) => {
                     <button
                       type="button"
                       className="btn btn-secondary btn-sm btn-block assignment-button"
-                      onClick={() => toggleShowAllClassifications()}
+                      onClick={() => toggleShowAllClassifications(t.namespace)}
                     >
-                      Show All Classification
+                      {`Show ${
+                        showAllClassifications[t.namespace] ? 'Fewer' : 'All'
+                      } Classifications`}
                     </button>
                   </CardContainer>
                 </Row>
@@ -350,7 +367,7 @@ const IncidentCite = ({ data, ...props }) => {
 export default IncidentCite;
 
 export const pageQuery = graphql`
-  query($incident_id: Int!, $taxonomy_namespace: String) {
+  query($incident_id: Int!, $taxonomy_namespace_array: [String!]!) {
     site {
       siteMetadata {
         title
@@ -411,11 +428,33 @@ export const pageQuery = graphql`
           Severity
           Short_Description
           Technology_purveyor
+          AI_Applications
+          AI_System_Description
+          AI_techniques
+          Data_Inputs
+          Finacial_Cost
+          Harm_Distribution_Basis
+          Harm_Type
+          Infrastructure_Sectors
+          Laws_Implicated
+          Level_of_Autonomy
+          Lives_Lost
+          Named_Entities
+          Nature_of_End_User
+          Near_Miss
+          Notes
+          Physical_System
+          Problem_Nature
+          Public_Sector_Deployment
+          Relevant_AI_functions
+          Sector_of_Deployment
+          System_Developer
+          Technology_Purveyor
         }
       }
     }
 
-    allMongodbAiidprodTaxa(filter: { namespace: { eq: $taxonomy_namespace } }) {
+    allMongodbAiidprodTaxa(filter: { namespace: { in: $taxonomy_namespace_array } }) {
       nodes {
         id
         namespace

@@ -38,21 +38,23 @@ const createCitiationPages = (graphql, createPage) => {
 
         // Create citation pages
         allMongodbAiidprodIncidents.distinct.forEach((incident_id) => {
-          const incidentTaxaNamespace = allMongodbAiidprodClassifications.nodes.filter(
+          const incidentsTaxaNamespace = allMongodbAiidprodClassifications.nodes.filter(
             (t) => t.incident_id.toString() === incident_id
           );
 
-          let taxonomyNamespace = null;
+          let taxonomyNamespaceArray = [];
 
-          if (incidentTaxaNamespace[0]) {
-            taxonomyNamespace = incidentTaxaNamespace[0].namespace;
+          if (incidentsTaxaNamespace && incidentsTaxaNamespace.length > 0) {
+            incidentsTaxaNamespace.forEach((i) => {
+              taxonomyNamespaceArray.push(i.namespace);
+            });
           }
           createPage({
             path: '/cite/' + incident_id,
             component: path.resolve('./src/templates/cite.js'),
             context: {
               incident_id: parseInt(incident_id),
-              taxonomy_namespace: taxonomyNamespace,
+              taxonomy_namespace_array: taxonomyNamespaceArray,
             },
           });
         });
