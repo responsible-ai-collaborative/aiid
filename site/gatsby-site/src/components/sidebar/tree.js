@@ -114,8 +114,19 @@ const calculateTreeData = (edges) => {
 };
 
 const Tree = ({ edges }) => {
+  // Inject the welcome page into the nav since it is not MDX
+  let navElements = [
+    {
+      node: {
+        fields: { slug: '/', title: 'Welcome to the AIID' },
+      },
+    },
+  ];
+
+  navElements = navElements.concat(edges);
+
   let [treeData] = useState(() => {
-    return calculateTreeData(edges);
+    return calculateTreeData(navElements);
   });
 
   const defaultCollapsed = {};

@@ -348,6 +348,11 @@ const IncidentCite = ({ data, ...props }) => {
               </div>
             </IncidnetsReportsTitle>
             <Row className="mb-4">
+              <CardContainer className="card">
+                <ImageCarousel nodes={nodes} />
+              </CardContainer>
+            </Row>
+            <Row className="mb-4">
               <HitsContainer showDetails={true}>
                 <Hits
                   showDetails={true}
