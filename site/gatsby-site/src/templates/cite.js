@@ -146,10 +146,12 @@ const IncidentCite = ({ data, ...props }) => {
     taxaFieldsArray.forEach((field) => {
       const c = classificationObj[field.short_name.split(' ').join('_')];
 
-      if (c !== undefined && c !== '' && c.length > 0) {
+      const value = getStringForValue(c);
+
+      if (value !== undefined && value !== '' && value.length > 0) {
         array.push({
           name: field.short_name,
-          value: getStringForValue(c),
+          value: getStringForValue(value),
           weight: field.weight,
           shortDescription: field.short_description,
         });
