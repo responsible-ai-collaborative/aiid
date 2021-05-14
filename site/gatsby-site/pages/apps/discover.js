@@ -809,7 +809,14 @@ const validateDate = (date) => {
 };
 
 const convertStringToArray = (obj) => {
-  const stringKeys = ['source_domain', 'authors', 'submitters', 'incident_id', 'flag'];
+  const stringKeys = [
+    'source_domain',
+    'authors',
+    'submitters',
+    'incident_id',
+    'flag',
+    'classifications',
+  ];
 
   let newObj = {};
 
@@ -1179,6 +1186,7 @@ const DiscoverApp = (props) => {
     submitters: StringParam,
     incident_id: StringParam,
     flag: StringParam,
+    classifications: StringParam,
     epoch_incident_date_min: StringParam,
     epoch_incident_date_max: StringParam,
     epoch_date_published_min: StringParam,
@@ -1202,6 +1210,7 @@ const DiscoverApp = (props) => {
     submitters: StringParam,
     incident_id: StringParam,
     flag: StringParam,
+    classifications: StringParam,
     epoch_incident_date_min: StringParam,
     epoch_incident_date_max: StringParam,
     epoch_date_published_min: StringParam,
