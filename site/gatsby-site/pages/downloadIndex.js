@@ -95,11 +95,46 @@ const DownloadIndex = () => {
   };
 
   useEffect(() => {
+    const getStringForValue = (value) => {
+      switch (typeof value) {
+        case 'object':
+          return value.join(', ');
+
+        case 'boolean':
+          return value ? 'Yes' : 'No';
+
+        default:
+          return value;
+      }
+    };
+
+    const getClassificationArray = (cObj, namespace) => {
+      const cArray = [];
+
+      for (const c in cObj) {
+        if (cObj[c] !== null) {
+          const value = getStringForValue(cObj[c]);
+
+          if (value !== undefined && value !== '' && value.length > 0) {
+            cArray.push(`${namespace}:${c}:${cObj[c]}`);
+          }
+        }
+      }
+
+      return cArray;
+    };
+
     if (data) {
       let classificationsHash = {};
 
       data.allMongodbAiidprodClassifications.nodes.map((c) => {
-        classificationsHash[c.incident_id] = c;
+        if (!classificationsHash[c.incident_id]) {
+          classificationsHash[c.incident_id] = [];
+        }
+
+        classificationsHash[c.incident_id].push(
+          getClassificationArray(c.classifications, c.namespace)
+        );
       });
 
       const downloadData = [];
@@ -112,7 +147,7 @@ const DownloadIndex = () => {
         if (classificationsHash[i.incident_id]) {
           finalDataNode = {
             ...i,
-            ...classificationsHash[i.incident_id].classifications,
+            classifications: classificationsHash[i.incident_id],
           };
         }
 
