@@ -128,13 +128,7 @@ const DownloadIndex = () => {
       let classificationsHash = {};
 
       data.allMongodbAiidprodClassifications.nodes.map((c) => {
-        if (!classificationsHash[c.incident_id]) {
-          classificationsHash[c.incident_id] = [];
-        }
-
-        classificationsHash[c.incident_id].push(
-          getClassificationArray(c.classifications, c.namespace)
-        );
+        classificationsHash[c.incident_id] = getClassificationArray(c.classifications, c.namespace);
       });
 
       const downloadData = [];
