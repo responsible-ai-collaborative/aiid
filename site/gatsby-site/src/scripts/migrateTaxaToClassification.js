@@ -131,10 +131,13 @@ const getClassification = (r) => {
     'Technology Purveyor': getTechPurveyorArray(r),
     Intent: r.field19,
     Severity: r.field20,
+    // Has also value Unclear/unknown
     'Lives Lost': r.field31 === 'Yes' ? true : false,
     'Harm Distribution Basis': getArrayForSubfields(r, harmBasisFields),
+    // missing from classification collection
     'Harm Type': getArrayForSubfields(r, harmTypesFields),
     'Infrastructure Sectors': getArrayForSubfields(r, infraSectorsFields),
+    // not yet in taxonomy fields
     'Finacial Cost': r.field65,
     'Laws Implicated': r.field66,
     'AI System Description': r.field67,
@@ -171,7 +174,8 @@ const main = () => {
         });
       });
 
-      // console.log(nodes);
+      console.log('========================');
+      console.log(nodes);
 
       fs.writeFileSync(outFilePath, JSON.stringify(nodes, null, 4));
     });

@@ -449,7 +449,6 @@ export const pageQuery = graphql`
           Named_Entities
           Nature_of_End_User
           Near_Miss
-          Notes
           Physical_System
           Problem_Nature
           Public_Sector_Deployment
