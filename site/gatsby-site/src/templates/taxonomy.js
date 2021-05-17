@@ -48,9 +48,15 @@ const StyledLi = styled.li`
   margin-left: 1em;
 `;
 
-const FacetList = ({ namespace, instant_facet, short_name, permitted_values }) => {
+const FacetList = ({ namespace, instant_facet, short_name, permitted_values, stats }) => {
   if (!instant_facet || permitted_values === null) {
     return '';
+  }
+
+  let valueStats = {};
+
+  if (stats[short_name]) {
+    valueStats = stats[short_name];
   }
   return (
     <div>
@@ -63,7 +69,15 @@ const FacetList = ({ namespace, instant_facet, short_name, permitted_values }) =
                 encodeURIComponent(`${namespace}:${short_name}:${item}`)
               }
             >
-              {`${item}`}
+              {valueStats !== {} ? (
+                <>
+                  {`${item} => ${valueStats[item]} ${
+                    valueStats[item] > 1 || valueStats[item] === 0 ? 'Incidents' : 'Incident'
+                  }`}
+                </>
+              ) : (
+                <>{`${item}`}</>
+              )}
             </Link>
           </StyledLi>
         ))}
@@ -102,6 +116,7 @@ const Taxonomy = (props) => {
                 instant_facet={instant_facet}
                 short_name={short_name}
                 permitted_values={permitted_values}
+                stats={props.pageContext.stats}
               />
             </Card>
           </Row>
