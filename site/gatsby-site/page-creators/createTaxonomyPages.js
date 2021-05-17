@@ -14,6 +14,12 @@ const createTaxonomyPages = (graphql, createPage) => {
                   long_name
                   long_description
                   weight
+                  permitted_values
+                  required
+                  short_description
+                  short_name
+                  instant_facet
+                  display_type
                 }
               }
             }

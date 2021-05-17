@@ -827,7 +827,14 @@ const convertStringToArray = (obj) => {
 
   for (const attr in obj) {
     if (stringKeys.includes(attr) && obj[attr] !== undefined) {
-      newObj[attr] = obj[attr].split(',');
+      if (obj[attr].indexOf('CSET') >= 0) {
+        // todo: This is a hack that should be addressed before or shortly after merging to master.
+        // The problem is that the facet separator is a comma, which can occur within facets.
+        newObj[attr] = obj[attr].split(',CSET').map((i) => 'CSET' + i);
+        newObj[attr][0] = newObj[attr][0].substr(4);
+      } else {
+        newObj[attr] = obj[attr].split(',');
+      }
     }
   }
   return newObj;
