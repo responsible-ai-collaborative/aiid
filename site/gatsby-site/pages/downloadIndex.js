@@ -83,28 +83,22 @@ const DownloadIndex = () => {
   };
 
   useEffect(() => {
-    const getStringForValue = (value) => {
-      switch (typeof value) {
-        case 'object':
-          return value.join(', ');
-
-        case 'boolean':
-          return value ? 'Yes' : 'No';
-
-        default:
-          return value;
-      }
-    };
-
     const getClassificationArray = (cObj, namespace) => {
       const cArray = [];
 
       for (const c in cObj) {
         if (cObj[c] !== null) {
-          const value = getStringForValue(cObj[c]);
+          let valuesToUnpack = null;
 
-          if (value !== undefined && value !== '' && value.length > 0) {
-            cArray.push(`${namespace}:${c}:${cObj[c]}`);
+          if (typeof cObj[c] === 'object') {
+            valuesToUnpack = cObj[c];
+          } else {
+            valuesToUnpack = [cObj[c]];
+          }
+          if (cObj[c] !== undefined && cObj[c] !== '' && valuesToUnpack.length > 0) {
+            valuesToUnpack.forEach((element) =>
+              cArray.push(`${namespace}:${c.replaceAll('_', ' ')}:${element}`)
+            );
           }
         }
       }

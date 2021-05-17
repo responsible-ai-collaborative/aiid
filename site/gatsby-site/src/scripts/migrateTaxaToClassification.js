@@ -127,14 +127,17 @@ const getClassification = (r) => {
     'Ending Date': convertStringToDate(r.field9),
     Location: r.field10,
     'Near Miss': r.field11,
-    'Named Entities': r.field12.split('; '),
+    'Named Entities': r.field12.replaceAll(',', ';').split(';'),
     'Technology Purveyor': getTechPurveyorArray(r),
     Intent: r.field19,
     Severity: r.field20,
+    // Has also value Unclear/unknown
     'Lives Lost': r.field31 === 'Yes' ? true : false,
     'Harm Distribution Basis': getArrayForSubfields(r, harmBasisFields),
+    // missing from classification collection
     'Harm Type': getArrayForSubfields(r, harmTypesFields),
     'Infrastructure Sectors': getArrayForSubfields(r, infraSectorsFields),
+    // not yet in taxonomy fields
     'Finacial Cost': r.field65,
     'Laws Implicated': r.field66,
     'AI System Description': r.field67,
@@ -146,7 +149,7 @@ const getClassification = (r) => {
     'Level of Autonomy': r.field73,
     'Relevant AI functions': getArrayForSubfields(r, aiFunctionFields),
     'AI techniques': r.field80,
-    'AI Applications': r.field81,
+    'AI Applications': r.field81.replaceAll(',', ';').split(';'),
     'Physical System': getArrayForSubfields(r, sysIntegratedFields),
     'Problem Nature': getArrayForSubfields(r, problemNatureFields),
     Notes: r.field96,
@@ -171,7 +174,8 @@ const main = () => {
         });
       });
 
-      // console.log(nodes);
+      console.log('========================');
+      console.log(nodes);
 
       fs.writeFileSync(outFilePath, JSON.stringify(nodes, null, 4));
     });

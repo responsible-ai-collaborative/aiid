@@ -35,9 +35,14 @@ import '../../static/discover/src/app.css';
 import '../../static/discover/src/index.css';
 import { add, format, formatISO, isAfter, isBefore, isEqual } from 'date-fns';
 
+const indexName = 'instant_search';
+
 export const searchClient = algoliasearch('JD5JCVZEVS', 'c5e99d93261645721a1765fe4414389c');
 
-const ALGOLIA_INDEX_NAME = 'instant_search';
+//// Alternative
+// const indexName = "aiid-emergency";
+// export const searchClient = ('8TNY3YFAO8', '55efba4929953a53eb357824297afb4c');
+// const indexName = "aiid-emergency";
 
 const REFINEMENT_LISTS = [
   {
@@ -822,7 +827,14 @@ const convertStringToArray = (obj) => {
 
   for (const attr in obj) {
     if (stringKeys.includes(attr) && obj[attr] !== undefined) {
-      newObj[attr] = obj[attr].split(',');
+      if (obj[attr].indexOf('CSET') >= 0) {
+        // todo: This is a hack that should be addressed before or shortly after merging to master.
+        // The problem is that the facet separator is a comma, which can occur within facets.
+        newObj[attr] = obj[attr].split(',CSET').map((i) => 'CSET' + i);
+        newObj[attr][0] = newObj[attr][0].substr(4);
+      } else {
+        newObj[attr] = obj[attr].split(',');
+      }
     }
   }
   return newObj;
@@ -1322,7 +1334,7 @@ const DiscoverApp = (props) => {
           <>
             <Container>
               <InstantSearch
-                indexName={ALGOLIA_INDEX_NAME}
+                indexName={indexName}
                 searchClient={searchClient}
                 searchState={searchState}
                 onSearchStateChange={(searchState) => {

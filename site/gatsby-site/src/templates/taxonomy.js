@@ -1,17 +1,27 @@
 import React from 'react';
-import Layout from 'components/Layout';
 import styled from 'styled-components';
-import { StyledHeading } from 'components/styles/Docs';
 import md5 from 'md5';
+import Markdown from 'react-markdown';
+import Badge from 'react-bootstrap/Badge';
+
+import Layout from 'components/Layout';
+import { StyledHeading } from 'components/styles/Docs';
+import Link from 'components/Link';
 
 const Row = styled.div`
   display: flex;
   flex-direction: row;
 `;
 
-const Description = styled(Row)`
+const Description = styled(Markdown)`
+  h1 {
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    margin-top: 32px;
+  }
   p {
-    font-size: 1.5em;
     line-height: 1.5;
   }
 `;
@@ -34,6 +44,34 @@ const FieldNameHeading = styled.h1`
   margin-bottom: 0.5em;
 `;
 
+const StyledLi = styled.li`
+  margin-left: 1em;
+`;
+
+const FacetList = ({ namespace, instant_facet, short_name, permitted_values }) => {
+  if (!instant_facet || permitted_values === null) {
+    return '';
+  }
+  return (
+    <div>
+      <ul>
+        {permitted_values.map((item) => (
+          <StyledLi key={`${short_name}-${item}`}>
+            <Link
+              to={
+                `/apps/discover?classifications=` +
+                encodeURIComponent(`${namespace}:${short_name}:${item}`)
+              }
+            >
+              {`${item}`}
+            </Link>
+          </StyledLi>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
 const Taxonomy = (props) => {
   if (!props || !props.pageContext) {
     return null;
@@ -43,25 +81,32 @@ const Taxonomy = (props) => {
 
   const sortedFieldsArray = field_list.sort((a, b) => b.weight - a.weight);
 
-  console.log(sortedFieldsArray);
-
   return (
     <Layout {...props}>
       <div className={'titleWrapper'}>
         <StyledHeading>{namespace}</StyledHeading>
       </div>
-      <Description>
-        <p>{description}</p>
-      </Description>
-      <h1 className="heading1">Fields</h1>
-      {sortedFieldsArray.map(({ long_name, long_description }) => (
-        <Row key={md5(long_name)}>
-          <Card>
-            <FieldNameHeading>{long_name}</FieldNameHeading>
-            {long_description}
-          </Card>
-        </Row>
-      ))}
+      <Description>{description}</Description>
+      <h1 className="heading1">Taxonomy Fields</h1>
+      {sortedFieldsArray.map(
+        ({ long_name, long_description, permitted_values, short_name, instant_facet }) => (
+          <Row key={md5(long_name)}>
+            <Card>
+              <FieldNameHeading>
+                {long_name}{' '}
+                {instant_facet && <Badge variant="secondary">Searchable in Facet</Badge>}
+              </FieldNameHeading>
+              <Description>{long_description}</Description>
+              <FacetList
+                namespace={namespace}
+                instant_facet={instant_facet}
+                short_name={short_name}
+                permitted_values={permitted_values}
+              />
+            </Card>
+          </Row>
+        )
+      )}
     </Layout>
   );
 };
