@@ -14,7 +14,7 @@ import BibTex from 'components/BibTex';
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 
 import { InstantSearch, Configure } from 'react-instantsearch-dom';
-import { searchClient, Hits, IncidentStatsCard } from '../../pages/apps/discover';
+import { searchClient, Hits, IncidentStatsCard, indexName } from '../../pages/apps/discover';
 import styled from 'styled-components';
 import { isAfter, isEqual } from 'date-fns';
 
@@ -250,7 +250,7 @@ const IncidentCite = ({ data, ...props }) => {
       </div>
       <CiteStyledMainWrapper>
         <Container>
-          <InstantSearch indexName="aiid-emergency" searchClient={searchClient}>
+          <InstantSearch indexName={indexName} searchClient={searchClient}>
             <Row>
               <CardContainer className="card">
                 <div className="card-header">
@@ -349,11 +349,6 @@ const IncidentCite = ({ data, ...props }) => {
                 <StyledHeading>Incidents Reports</StyledHeading>
               </div>
             </IncidnetsReportsTitle>
-            <Row className="mb-4">
-              <CardContainer className="card">
-                <ImageCarousel nodes={nodes} />
-              </CardContainer>
-            </Row>
             <Row className="mb-4">
               <HitsContainer showDetails={true}>
                 <Hits

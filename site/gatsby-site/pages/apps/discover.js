@@ -35,7 +35,7 @@ import '../../static/discover/src/app.css';
 import '../../static/discover/src/index.css';
 import { add, format, formatISO, isAfter, isBefore, isEqual } from 'date-fns';
 
-const indexName = 'instant_search';
+export const indexName = 'instant_search';
 
 export const searchClient = algoliasearch('JD5JCVZEVS', 'c5e99d93261645721a1765fe4414389c');
 
