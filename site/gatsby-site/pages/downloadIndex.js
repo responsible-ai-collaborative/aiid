@@ -36,37 +36,25 @@ const ALL_INCIDENTS_DATA = graphql`
         id
         namespace
         classifications {
-          Annotation_Status
-          Annotator
-          Ending_Date
-          Beginning_Date
-          Full_Description
           Harm_distribution_basis
           Intent
           Lives_lost
           Location
           Named_entities
           Near_miss
-          Quality_Control
-          Reviewer
           Severity
-          Short_Description
           Technology_purveyor
           AI_Applications
-          AI_System_Description
           AI_techniques
-          Data_Inputs
           Finacial_Cost
           Harm_Distribution_Basis
           Harm_Type
           Infrastructure_Sectors
-          Laws_Implicated
           Level_of_Autonomy
           Lives_Lost
           Named_Entities
           Nature_of_End_User
           Near_Miss
-          Notes
           Physical_System
           Problem_Nature
           Public_Sector_Deployment

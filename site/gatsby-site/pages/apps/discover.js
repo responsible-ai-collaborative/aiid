@@ -35,9 +35,9 @@ import '../../static/discover/src/app.css';
 import '../../static/discover/src/index.css';
 import { add, format, formatISO, isAfter, isBefore, isEqual } from 'date-fns';
 
-// export const searchClient = algoliasearch('8TNY3YFAO8', '55efba4929953a53eb357824297afb4c');
-
 export const searchClient = algoliasearch('JD5JCVZEVS', 'c5e99d93261645721a1765fe4414389c');
+
+const ALGOLIA_INDEX_NAME = 'instant_search';
 
 const REFINEMENT_LISTS = [
   {
@@ -980,7 +980,6 @@ const RenderCards = ({
   scrollTo,
   sortByDatePublished,
 }) => {
-  console.log(hits);
   useEffect(() => {
     if (scrollTo) {
       scrollTo();
@@ -1323,8 +1322,7 @@ const DiscoverApp = (props) => {
           <>
             <Container>
               <InstantSearch
-                // indexName="aiid-emergency"
-                indexName="instant_search"
+                indexName={ALGOLIA_INDEX_NAME}
                 searchClient={searchClient}
                 searchState={searchState}
                 onSearchStateChange={(searchState) => {

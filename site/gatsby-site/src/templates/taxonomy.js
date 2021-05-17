@@ -39,7 +39,7 @@ const Taxonomy = (props) => {
     return null;
   }
 
-  const { namespace, description, field_list } = props.pageContext.taxaonomy;
+  const { namespace, description, field_list } = props.pageContext.taxonomy;
 
   const sortedFieldsArray = field_list.sort((a, b) => b.weight - a.weight);
 

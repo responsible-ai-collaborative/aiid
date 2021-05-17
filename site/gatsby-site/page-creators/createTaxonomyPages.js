@@ -24,12 +24,12 @@ const createTaxonomyPages = (graphql, createPage) => {
           reject(result.errors);
         }
 
-        result.data.allMongodbAiidprodTaxa.nodes.forEach((taxaonomy) => {
+        result.data.allMongodbAiidprodTaxa.nodes.forEach((taxonomy) => {
           createPage({
-            path: '/taxonomy/' + taxaonomy.namespace.toLowerCase(),
+            path: '/taxonomy/' + taxonomy.namespace.toLowerCase(),
             component: path.resolve('./src/templates/taxonomy.js'),
             context: {
-              taxaonomy,
+              taxonomy,
             },
           });
         });
