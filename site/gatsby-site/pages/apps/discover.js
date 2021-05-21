@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { navigate } from 'gatsby';
 import { StringParam, QueryParams, useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
@@ -712,10 +712,20 @@ const IncidentCard = ({
   </IncidentCardContainer>
 );
 
-const StyledSearchBox = ({ refine, defaultRefinement, customRef }) => {
+const StyledSearchBox = ({ refine, customRef }) => {
+  // eslint-disable-next-line no-unused-vars
+  const [searchTerm, setSearchTerm] = useState('');
+
   const debouncedRefine = debounce((text) => {
     refine(text);
   }, 500);
+
+  const debouceRefineCallback = useCallback((value) => debouncedRefine(value), []);
+
+  const handleOnChange = (e) => {
+    debouceRefineCallback(e.target.value);
+    setSearchTerm(e.target.value);
+  };
 
   return (
     <SearchContainer>
@@ -728,9 +738,11 @@ const StyledSearchBox = ({ refine, defaultRefinement, customRef }) => {
           placeholder="Search"
           spellCheck="false"
           maxLength="512"
+          onKeyPress={(e) => {
+            e.key === 'Enter' && e.preventDefault();
+          }}
           type="search"
-          defaultValue={defaultRefinement}
-          onChange={(event) => debouncedRefine(event.currentTarget.value)}
+          onChange={handleOnChange}
         />
         <SearchResetButton type="reset" title="Clear the search query." onClick={() => refine('')}>
           <FontAwesomeIcon
