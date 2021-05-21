@@ -738,6 +738,9 @@ const StyledSearchBox = ({ refine, customRef }) => {
           placeholder="Search"
           spellCheck="false"
           maxLength="512"
+          onKeyPress={(e) => {
+            e.key === 'Enter' && e.preventDefault();
+          }}
           type="search"
           onChange={handleOnChange}
         />
