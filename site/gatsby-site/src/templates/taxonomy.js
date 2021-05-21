@@ -49,7 +49,7 @@ const StyledLi = styled.li`
 `;
 
 const FacetList = ({ namespace, instant_facet, short_name, permitted_values, stats }) => {
-  if (!instant_facet || permitted_values === null) {
+  if (!instant_facet) {
     return '';
   }
 
@@ -58,32 +58,68 @@ const FacetList = ({ namespace, instant_facet, short_name, permitted_values, sta
   if (stats[short_name]) {
     valueStats = stats[short_name];
   }
-  return (
-    <div>
-      <ul>
-        {permitted_values.map((item) => (
-          <StyledLi key={`${short_name}-${item}`}>
-            <Link
-              to={
-                `/apps/discover?classifications=` +
-                encodeURIComponent(`${namespace}:${short_name}:${item}`)
-              }
-            >
-              {valueStats !== {} ? (
-                <>
-                  {`${item} => ${valueStats[item]} ${
-                    valueStats[item] > 1 || valueStats[item] === 0 ? 'Incidents' : 'Incident'
-                  }`}
-                </>
-              ) : (
-                <>{`${item}`}</>
-              )}
-            </Link>
-          </StyledLi>
-        ))}
-      </ul>
-    </div>
-  );
+
+  if (permitted_values) {
+    return (
+      <div>
+        <ul>
+          {permitted_values.map((item) => (
+            <StyledLi key={`${short_name}-${item}`}>
+              <Link
+                to={
+                  `/apps/discover?classifications=` +
+                  encodeURIComponent(`${namespace}:${short_name}:${item}`)
+                }
+              >
+                {valueStats !== {} ? (
+                  <>
+                    {`${item} => ${valueStats[item] || 0} ${
+                      valueStats[item] === 1 ? 'Incident' : 'Incidents'
+                    }`}
+                  </>
+                ) : (
+                  <>{`${item}`}</>
+                )}
+              </Link>
+            </StyledLi>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  if (valueStats && Object.keys(valueStats).length !== 0) {
+    const valueStatsKeys = Object.keys(valueStats);
+
+    return (
+      <div>
+        <ul>
+          {valueStatsKeys.map((item) => (
+            <StyledLi key={`${short_name}-${item}`}>
+              <Link
+                to={
+                  `/apps/discover?classifications=` +
+                  encodeURIComponent(`${namespace}:${short_name}:${item}`)
+                }
+              >
+                {valueStats !== {} ? (
+                  <>
+                    {`${item} => ${valueStats[item] || 0} ${
+                      valueStats[item] === 1 ? 'Incident' : 'Incidents'
+                    }`}
+                  </>
+                ) : (
+                  <>{`${item}`}</>
+                )}
+              </Link>
+            </StyledLi>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  return <></>;
 };
 
 const Taxonomy = (props) => {

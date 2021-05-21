@@ -23,7 +23,7 @@ const createTaxonomyPages = (graphql, createPage) => {
                 }
               }
             }
-            allMongodbAiidprodClassifications {
+            allMongodbAiidprodClassifications(filter: { incident_id: { lt: 1000 } }) {
               nodes {
                 incident_id
                 id
@@ -34,9 +34,7 @@ const createTaxonomyPages = (graphql, createPage) => {
                   Ending_Date
                   Beginning_Date
                   Full_Description
-                  Harm_distribution_basis
                   Intent
-                  Lives_lost
                   Location
                   Named_entities
                   Near_miss
@@ -77,6 +75,43 @@ const createTaxonomyPages = (graphql, createPage) => {
         }
 
         const getStats = (taxa, classification) => {
+          const incrementStat = (stat, val) => {
+            if (val === undefined || val === null || val === '') {
+              return 0;
+            }
+
+            let current = stat[val];
+
+            if (current) {
+              return current + 1;
+            }
+
+            return 1;
+          };
+
+          const validateString = (v) => {
+            let vClean = v;
+
+            if (vClean.includes('-')) {
+              vClean = vClean.split('-').join('_');
+            }
+
+            if (vClean.includes('#')) {
+              vClean = vClean.replace('#', '');
+            }
+
+            if (vClean.includes('(')) {
+              vClean = vClean.replace('(', '');
+            }
+
+            if (vClean.includes(')')) {
+              vClean = vClean.replace(')', '');
+            }
+
+            vClean = vClean.replace(/[^\w\s]/gi, '');
+            return vClean;
+          };
+
           const filtredClassification = classification.filter(
             (c) => c.namespace === taxa.namespace
           );
@@ -88,31 +123,65 @@ const createTaxonomyPages = (graphql, createPage) => {
             .forEach((field) => {
               let auxStat = {};
 
-              let incidents = [];
+              filtredClassification.forEach((c) => {
+                const value = c.classifications[field.short_name.split(' ').join('_')];
 
-              field.permitted_values.forEach((v) => {
-                auxStat[v] = 0;
+                if (value.length > 0) {
+                  if (typeof value === 'object') {
+                    value.forEach((v) => {
+                      auxStat[v] = incrementStat(auxStat, v);
+                    });
+                  } else {
+                    auxStat[value] = incrementStat(auxStat, value);
+                  }
+                }
               });
+
+              if (Object.entries(auxStat).length !== 0) {
+                stats[field.short_name] = auxStat;
+              }
+            });
+
+          taxa.field_list
+            .filter((field) => field.permitted_values === null)
+            .forEach((field) => {
+              let auxStat = {};
 
               filtredClassification.forEach((c) => {
                 const value = c.classifications[field.short_name.split(' ').join('_')];
 
-                if (field.permitted_values !== null && value.length > 0) {
-                  if (typeof value === 'object') {
-                    value.forEach((v) => {
-                      auxStat[v] = auxStat[v] || 0 + 1;
-                    });
-                  } else {
-                    auxStat[value] = auxStat[value] + 1;
+                if (value && value !== '') {
+                  if (typeof value === 'boolean') {
+                    auxStat[value] = incrementStat(auxStat, value);
                   }
-                  incidents.push({
-                    [field.short_name]: value,
-                  });
+
+                  if (field.display_type === 'bool' && typeof value !== 'boolean') {
+                    auxStat[value] = incrementStat(auxStat, value === 'No' ? false : true);
+                  }
+
+                  if (typeof value === 'object') {
+                    value
+                      .filter((v) => v !== '')
+                      .forEach((v) => {
+                        const vClean = validateString(v);
+
+                        auxStat[vClean] = incrementStat(auxStat, vClean);
+                      });
+                  }
+
+                  if (field.display_type === 'list' && typeof value !== 'object') {
+                    const vClean = validateString(value);
+
+                    auxStat[vClean] = incrementStat(auxStat, vClean);
+                  }
                 }
               });
 
-              stats[field.short_name] = auxStat;
+              if (Object.keys(auxStat).length !== 0) {
+                stats[field.short_name] = auxStat;
+              }
             });
+
           return stats;
         };
 
