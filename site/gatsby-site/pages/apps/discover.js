@@ -798,7 +798,7 @@ const removeEmptyAttributes = (obj) => {
 const convertArrayToString = (obj) => {
   for (const attr in obj) {
     if (obj[attr].length > 0) {
-      obj[attr] = obj[attr].join();
+      obj[attr] = obj[attr].join('||');
     }
   }
   return { ...obj };
@@ -828,12 +828,11 @@ const convertStringToArray = (obj) => {
   for (const attr in obj) {
     if (stringKeys.includes(attr) && obj[attr] !== undefined) {
       if (obj[attr].indexOf('CSET') >= 0) {
-        // todo: This is a hack that should be addressed before or shortly after merging to master.
-        // The problem is that the facet separator is a comma, which can occur within facets.
-        newObj[attr] = obj[attr].split(',CSET').map((i) => 'CSET' + i);
+        // The facet separator is double pipe sign - "||"
+        newObj[attr] = obj[attr].split('||CSET').map((i) => 'CSET' + i);
         newObj[attr][0] = newObj[attr][0].substr(4);
       } else {
-        newObj[attr] = obj[attr].split(',');
+        newObj[attr] = obj[attr].split('||');
       }
     }
   }
