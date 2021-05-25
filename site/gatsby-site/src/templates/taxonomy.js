@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import md5 from 'md5';
 import Markdown from 'react-markdown';
@@ -48,6 +48,10 @@ const StyledLi = styled.li`
   margin-left: 1em;
 `;
 
+const StyledButton = styled.button`
+  margin-top: 1em;
+`;
+
 const FacetList = ({ namespace, instant_facet, short_name, permitted_values, stats }) => {
   if (!instant_facet) {
     return '';
@@ -59,30 +63,47 @@ const FacetList = ({ namespace, instant_facet, short_name, permitted_values, sta
     valueStats = stats[short_name];
   }
 
+  const [showAllStats, setShowAllStats] = useState(false);
+
+  const toggleShowAllStats = () => {
+    setShowAllStats(!showAllStats);
+  };
+
   if (permitted_values) {
     return (
       <div>
         <ul>
-          {permitted_values.map((item) => (
-            <StyledLi key={`${short_name}-${item}`}>
-              <Link
-                to={
-                  `/apps/discover?classifications=` +
-                  encodeURIComponent(`${namespace}:${short_name}:${item}`)
-                }
-              >
-                {valueStats !== {} ? (
-                  <>
-                    {`${item} => ${valueStats[item] || 0} ${
-                      valueStats[item] === 1 ? 'Incident' : 'Incidents'
-                    }`}
-                  </>
-                ) : (
-                  <>{`${item}`}</>
-                )}
-              </Link>
-            </StyledLi>
-          ))}
+          {permitted_values
+            .filter((item, index) => showAllStats || index < 5)
+            .map((item) => (
+              <StyledLi key={`${short_name}-${item}`}>
+                <Link
+                  to={
+                    `/apps/discover?classifications=` +
+                    encodeURIComponent(`${namespace}:${short_name}:${item}`)
+                  }
+                >
+                  {valueStats !== {} ? (
+                    <>
+                      {`${item} => ${valueStats[item] || 0} ${
+                        valueStats[item] === 1 ? 'Incident' : 'Incidents'
+                      }`}
+                    </>
+                  ) : (
+                    <>{`${item}`}</>
+                  )}
+                </Link>
+              </StyledLi>
+            ))}
+          {permitted_values.length > 5 && (
+            <StyledButton
+              onClick={toggleShowAllStats}
+              type="button"
+              className="btn btn-secondary btn-sm assignment-button"
+            >
+              {`Show ${showAllStats ? 'less stats' : 'more stats'}`}
+            </StyledButton>
+          )}
         </ul>
       </div>
     );
@@ -94,27 +115,38 @@ const FacetList = ({ namespace, instant_facet, short_name, permitted_values, sta
     return (
       <div>
         <ul>
-          {valueStatsKeys.map((item) => (
-            <StyledLi key={`${short_name}-${item}`}>
-              <Link
-                to={
-                  `/apps/discover?classifications=` +
-                  encodeURIComponent(`${namespace}:${short_name}:${item}`)
-                }
-              >
-                {valueStats !== {} ? (
-                  <>
-                    {`${item} => ${valueStats[item] || 0} ${
-                      valueStats[item] === 1 ? 'Incident' : 'Incidents'
-                    }`}
-                  </>
-                ) : (
-                  <>{`${item}`}</>
-                )}
-              </Link>
-            </StyledLi>
-          ))}
+          {valueStatsKeys
+            .filter((item, index) => showAllStats || index < 5)
+            .map((item) => (
+              <StyledLi key={`${short_name}-${item}`}>
+                <Link
+                  to={
+                    `/apps/discover?classifications=` +
+                    encodeURIComponent(`${namespace}:${short_name}:${item}`)
+                  }
+                >
+                  {valueStats !== {} ? (
+                    <>
+                      {`${item} => ${valueStats[item] || 0} ${
+                        valueStats[item] === 1 ? 'Incident' : 'Incidents'
+                      }`}
+                    </>
+                  ) : (
+                    <>{`${item}`}</>
+                  )}
+                </Link>
+              </StyledLi>
+            ))}
         </ul>
+        {valueStatsKeys.length > 5 && (
+          <StyledButton
+            onClick={toggleShowAllStats}
+            type="button"
+            className="btn btn-secondary btn-sm assignment-button"
+          >
+            {`Show ${showAllStats ? 'less stats' : 'more stats'}`}
+          </StyledButton>
+        )}
       </div>
     );
   }
