@@ -36,16 +36,16 @@ const createTaxonomyPages = (graphql, createPage) => {
                   Full_Description
                   Intent
                   Location
-                  Named_entities
-                  Near_miss
+                  Named_Entities
+                  Near_Miss
                   Quality_Control
                   Reviewer
                   Severity
                   Short_Description
-                  Technology_purveyor
+                  Technology_Purveyor
                   AI_Applications
                   AI_System_Description
-                  AI_techniques
+                  AI_Techniques
                   Data_Inputs
                   Finacial_Cost
                   Harm_Distribution_Basis
@@ -63,7 +63,6 @@ const createTaxonomyPages = (graphql, createPage) => {
                   Relevant_AI_functions
                   Sector_of_Deployment
                   System_Developer
-                  Technology_Purveyor
                 }
               }
             }

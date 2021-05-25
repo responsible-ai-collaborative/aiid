@@ -36,18 +36,16 @@ const ALL_INCIDENTS_DATA = graphql`
         id
         namespace
         classifications {
-          Harm_distribution_basis
-          Intent
-          Lives_lost
-          Location
-          Named_entities
-          Near_miss
-          Severity
-          Technology_purveyor
-          AI_Applications
-          AI_techniques
-          Finacial_Cost
           Harm_Distribution_Basis
+          Intent
+          Lives_Lost
+          Location
+          Named_Entities
+          Near_Miss
+          Severity
+          AI_Applications
+          AI_Techniques
+          Finacial_Cost
           Harm_Type
           Infrastructure_Sectors
           Level_of_Autonomy
