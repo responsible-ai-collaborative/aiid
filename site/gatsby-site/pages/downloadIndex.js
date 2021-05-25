@@ -50,9 +50,7 @@ const ALL_INCIDENTS_DATA = graphql`
           Infrastructure_Sectors
           Level_of_Autonomy
           Lives_Lost
-          Named_Entities
           Nature_of_End_User
-          Near_Miss
           Physical_System
           Problem_Nature
           Public_Sector_Deployment
