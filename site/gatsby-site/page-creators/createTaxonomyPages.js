@@ -139,6 +139,8 @@ const createTaxonomyPages = (graphql, createPage) => {
               }
             });
 
+          // TODO add another filter clause that will elimintate stats for
+          // fields that are not supporse to be visible to the end user
           taxa.field_list
             .filter((field) => field.permitted_values === null)
             .forEach((field) => {

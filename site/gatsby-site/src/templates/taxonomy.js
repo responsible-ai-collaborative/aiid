@@ -52,6 +52,21 @@ const StyledButton = styled.button`
   margin-top: 1em;
 `;
 
+const StatItemText = styled.span`
+  margin-right: 0.7em;
+`;
+
+const StatItem = ({ text, value }) => {
+  return (
+    <>
+      <StatItemText>{text}</StatItemText>
+      <Badge pill variant="light">
+        {`${value || 0} ${value === 1 ? 'Incident' : 'Incidents'}`}
+      </Badge>
+    </>
+  );
+};
+
 const FacetList = ({ namespace, instant_facet, short_name, permitted_values, stats }) => {
   if (!instant_facet) {
     return '';
@@ -84,11 +99,7 @@ const FacetList = ({ namespace, instant_facet, short_name, permitted_values, sta
                   }
                 >
                   {valueStats !== {} ? (
-                    <>
-                      {`${item} => ${valueStats[item] || 0} ${
-                        valueStats[item] === 1 ? 'Incident' : 'Incidents'
-                      }`}
-                    </>
+                    <StatItem text={item} value={valueStats[item]} />
                   ) : (
                     <>{`${item}`}</>
                   )}
@@ -126,11 +137,7 @@ const FacetList = ({ namespace, instant_facet, short_name, permitted_values, sta
                   }
                 >
                   {valueStats !== {} ? (
-                    <>
-                      {`${item} => ${valueStats[item] || 0} ${
-                        valueStats[item] === 1 ? 'Incident' : 'Incidents'
-                      }`}
-                    </>
+                    <StatItem text={item} value={valueStats[item]} />
                   ) : (
                     <>{`${item}`}</>
                   )}
