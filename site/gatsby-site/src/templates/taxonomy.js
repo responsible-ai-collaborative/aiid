@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import md5 from 'md5';
 import Markdown from 'react-markdown';
-import Badge from 'react-bootstrap/Badge';
+import { Badge, Button } from 'react-bootstrap';
 
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
@@ -46,10 +46,6 @@ const FieldNameHeading = styled.h1`
 
 const StyledLi = styled.li`
   margin-left: 1em;
-`;
-
-const StyledButton = styled.button`
-  margin-top: 1em;
 `;
 
 const StatItemText = styled.span`
@@ -119,13 +115,13 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
               </StyledLi>
             ))}
           {sortedStatsArray.length > 5 && (
-            <StyledButton
+            <Button
+              variant="outline-primary"
+              className="btn btn-sm assignment-button"
               onClick={toggleShowAllStats}
-              type="button"
-              className="btn btn-secondary btn-sm assignment-button"
             >
               {`Show ${showAllStats ? 'less stats' : 'more stats'}`}
-            </StyledButton>
+            </Button>
           )}
         </ul>
       </div>
@@ -166,13 +162,13 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
             ))}
         </ul>
         {sortedStatsArray.length > 5 && (
-          <StyledButton
+          <Button
+            variant="outline-primary"
+            className="btn btn-sm assignment-button"
             onClick={toggleShowAllStats}
-            type="button"
-            className="btn btn-secondary btn-sm assignment-button"
           >
             {`Show ${showAllStats ? 'less stats' : 'more stats'}`}
-          </StyledButton>
+          </Button>
         )}
       </div>
     );
