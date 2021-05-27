@@ -67,7 +67,7 @@ const StatItem = ({ text, value }) => {
   );
 };
 
-const FacetList = ({ namespace, instant_facet, short_name, permitted_values, stats }) => {
+const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
   if (!instant_facet) {
     return '';
   }
@@ -84,13 +84,25 @@ const FacetList = ({ namespace, instant_facet, short_name, permitted_values, sta
     setShowAllStats(!showAllStats);
   };
 
+  /*
   if (permitted_values) {
+    let sortedStatsArray = []
+
+    permitted_values.forEach((item) => {
+      sortedStatsArray.push({
+        item,
+        value: valueStats[item] || 0,
+      })
+    })
+
+    sortedStatsArray.sort((a, b) => b.value - a.value)
+
     return (
       <div>
         <ul>
-          {permitted_values
+          {sortedStatsArray
             .filter((item, index) => showAllStats || index < 5)
-            .map((item) => (
+            .map(({ item, value }) => (
               <StyledLi key={`${short_name}-${item}`}>
                 <Link
                   to={
@@ -99,14 +111,14 @@ const FacetList = ({ namespace, instant_facet, short_name, permitted_values, sta
                   }
                 >
                   {valueStats !== {} ? (
-                    <StatItem text={item} value={valueStats[item]} />
+                    <StatItem text={item} value={value} />
                   ) : (
                     <>{`${item}`}</>
                   )}
                 </Link>
               </StyledLi>
             ))}
-          {permitted_values.length > 5 && (
+          {sortedStatsArray.length > 5 && (
             <StyledButton
               onClick={toggleShowAllStats}
               type="button"
@@ -119,16 +131,28 @@ const FacetList = ({ namespace, instant_facet, short_name, permitted_values, sta
       </div>
     );
   }
+*/
 
   if (valueStats && Object.keys(valueStats).length !== 0) {
     const valueStatsKeys = Object.keys(valueStats);
 
+    let sortedStatsArray = [];
+
+    valueStatsKeys.forEach((item) => {
+      sortedStatsArray.push({
+        item,
+        value: valueStats[item] || 0,
+      });
+    });
+
+    sortedStatsArray.sort((a, b) => b.value - a.value);
+
     return (
       <div>
         <ul>
-          {valueStatsKeys
+          {sortedStatsArray
             .filter((item, index) => showAllStats || index < 5)
-            .map((item) => (
+            .map(({ item, value }) => (
               <StyledLi key={`${short_name}-${item}`}>
                 <Link
                   to={
@@ -136,16 +160,12 @@ const FacetList = ({ namespace, instant_facet, short_name, permitted_values, sta
                     encodeURIComponent(`${namespace}:${short_name}:${item}`)
                   }
                 >
-                  {valueStats !== {} ? (
-                    <StatItem text={item} value={valueStats[item]} />
-                  ) : (
-                    <>{`${item}`}</>
-                  )}
+                  {valueStats !== {} ? <StatItem text={item} value={value} /> : <>{`${item}`}</>}
                 </Link>
               </StyledLi>
             ))}
         </ul>
-        {valueStatsKeys.length > 5 && (
+        {sortedStatsArray.length > 5 && (
           <StyledButton
             onClick={toggleShowAllStats}
             type="button"
