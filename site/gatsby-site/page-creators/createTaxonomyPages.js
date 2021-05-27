@@ -173,6 +173,12 @@ const createTaxonomyPages = (graphql, createPage) => {
 
                     auxStat[vClean] = incrementStat(auxStat, vClean);
                   }
+
+                  if (field.short_name === 'Location') {
+                    const vClean = validateString(value);
+
+                    auxStat[vClean] = incrementStat(auxStat, vClean);
+                  }
                 }
               });
 
