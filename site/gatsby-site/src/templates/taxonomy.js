@@ -80,6 +80,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
     setShowAllStats(!showAllStats);
   };
 
+  // This was commented in order to allow multiple values in the stats
   /*
   if (permitted_values) {
     let sortedStatsArray = []
@@ -177,14 +178,135 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
   return <></>;
 };
 
+const getStats = (taxa, classification) => {
+  const incrementStat = (stat, val) => {
+    if (val === undefined || val === null || val === '') {
+      return 0;
+    }
+
+    let current = stat[val];
+
+    if (current) {
+      return current + 1;
+    }
+
+    return 1;
+  };
+
+  const validateString = (v) => {
+    let vClean = v;
+
+    if (vClean.includes('-')) {
+      vClean = vClean.split('-').join('_');
+    }
+
+    if (vClean.includes('#')) {
+      vClean = vClean.replace('#', '');
+    }
+
+    if (vClean.includes('(')) {
+      vClean = vClean.replace('(', '');
+    }
+
+    if (vClean.includes(')')) {
+      vClean = vClean.replace(')', '');
+    }
+
+    vClean = vClean.replace(/[^\w\s]/gi, '');
+    return vClean;
+  };
+
+  const filtredClassification = classification.filter((c) => c.namespace === taxa.namespace);
+
+  const stats = {};
+
+  taxa.field_list
+    .filter((field) => field.permitted_values !== null)
+    .forEach((field) => {
+      let auxStat = {};
+
+      filtredClassification.forEach((c) => {
+        const value = c.classifications[field.short_name.split(' ').join('_')];
+
+        if (value?.length > 0) {
+          if (typeof value === 'object') {
+            value.forEach((v) => {
+              auxStat[v] = incrementStat(auxStat, v);
+            });
+          } else {
+            auxStat[value] = incrementStat(auxStat, value);
+          }
+        }
+      });
+
+      if (Object.entries(auxStat).length !== 0) {
+        stats[field.short_name] = auxStat;
+      }
+    });
+
+  // TODO add another filter clause that will elimintate stats for
+  // fields that are not supporse to be visible to the end user
+  taxa.field_list
+    .filter((field) => field.permitted_values === null)
+    .forEach((field) => {
+      let auxStat = {};
+
+      filtredClassification.forEach((c) => {
+        const value = c.classifications[field.short_name.split(' ').join('_')];
+
+        if (value && value !== '') {
+          if (typeof value === 'boolean') {
+            auxStat[value] = incrementStat(auxStat, value);
+          }
+
+          if (field.display_type === 'bool' && typeof value !== 'boolean') {
+            auxStat[value] = incrementStat(auxStat, value === 'No' ? false : true);
+          }
+
+          if (typeof value === 'object') {
+            value
+              .filter((v) => v !== '')
+              .forEach((v) => {
+                const vClean = validateString(v);
+
+                auxStat[vClean] = incrementStat(auxStat, vClean);
+              });
+          }
+
+          if (field.display_type === 'list' && typeof value !== 'object') {
+            const vClean = validateString(value);
+
+            auxStat[vClean] = incrementStat(auxStat, vClean);
+          }
+
+          if (field.short_name === 'Location') {
+            const vClean = validateString(value);
+
+            auxStat[vClean] = incrementStat(auxStat, vClean);
+          }
+        }
+      });
+
+      if (Object.keys(auxStat).length !== 0) {
+        stats[field.short_name] = auxStat;
+      }
+    });
+
+  return stats;
+};
+
 const Taxonomy = (props) => {
-  if (!props || !props.pageContext) {
+  if (!props || !props.pageContext || !props.data) {
     return null;
   }
+
+  const { allMongodbAiidprodClassifications } = props.data;
 
   const { namespace, description, field_list } = props.pageContext.taxonomy;
 
   const sortedFieldsArray = field_list.sort((a, b) => b.weight - a.weight);
+
+  const stats = getStats(props.pageContext.taxonomy, allMongodbAiidprodClassifications.nodes);
 
   return (
     <Layout {...props}>
@@ -207,7 +329,7 @@ const Taxonomy = (props) => {
                 instant_facet={instant_facet}
                 short_name={short_name}
                 permitted_values={permitted_values}
-                stats={props.pageContext.stats}
+                stats={stats}
               />
             </Card>
           </Row>
@@ -218,3 +340,13 @@ const Taxonomy = (props) => {
 };
 
 export default Taxonomy;
+
+export const pageQuery = graphql`
+  query($namespace: String!) {
+    allMongodbAiidprodClassifications(
+      filter: { namespace: { eq: $namespace }, incident_id: { lt: 1000 } }
+    ) {
+      ...ClassificationFields
+    }
+  }
+`;
