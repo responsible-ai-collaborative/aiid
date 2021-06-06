@@ -114,12 +114,12 @@ const LandingPage = (props) => {
   return (
     <Layout {...props}>
       <Helmet>
-        <title>Welcome to the Artifical Intelligence Incident Database</title>
+        <title>Welcome to the Artificial Intelligence Incident Database</title>
         <meta name="title" content={metaTitle} />
         <meta name="description" content={metaDescription} />
       </Helmet>
       <div className={'titleWrapper'}>
-        <StyledHeading>Welcome to the Artifical Intelligence Incident Database</StyledHeading>
+        <StyledHeading>Welcome to the Artificial Intelligence Incident Database</StyledHeading>
       </div>
       <Card>
         <LeadParagraph>
