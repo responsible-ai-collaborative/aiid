@@ -700,14 +700,16 @@ const IncidentCard = ({
         }
       />
 
-      <span
-        aria-hidden="true"
-        className="pointer"
-        onClick={() => toggleFilterByIncidentId && toggleFilterByIncidentId(item.incident_id + '')}
-      >
-        <FontAwesomeIcon icon={faHashtag} className="fas fa-hashtag" title="Incident ID" />
-        {item.incident_id}
-      </span>
+      {toggleFilterByIncidentId && (
+        <span
+          aria-hidden="true"
+          className="pointer"
+          onClick={() => toggleFilterByIncidentId(item.incident_id + '')}
+        >
+          <FontAwesomeIcon icon={faHashtag} className="fas fa-hashtag" title="Incident ID" />
+          {item.incident_id}
+        </span>
+      )}
     </CardFooter>
   </IncidentCardContainer>
 );
