@@ -121,7 +121,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
               className="btn btn-sm assignment-button"
               onClick={toggleShowAllStats}
             >
-              {`Show ${showAllStats ? 'less stats' : 'more stats'}`}
+              {`Show ${showAllStats ? 'fewer stats' : 'more stats'}`}
             </Button>
           )}
         </ul>
@@ -168,7 +168,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
             className="btn btn-sm assignment-button"
             onClick={toggleShowAllStats}
           >
-            {`Show ${showAllStats ? 'less stats' : 'more stats'}`}
+            {`Show ${showAllStats ? 'fewer stats' : 'more stats'}`}
           </Button>
         )}
       </div>
