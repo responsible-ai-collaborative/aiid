@@ -713,24 +713,25 @@ const IncidentCard = ({
 );
 
 const StyledSearchBox = ({ refine, customRef }) => {
-  // eslint-disable-next-line no-unused-vars
-  const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const debouncedRefine = debounce((text) => {
+    setLoading(true);
     refine(text);
+    setLoading(false);
   }, 500);
 
   const debouceRefineCallback = useCallback((value) => debouncedRefine(value), []);
 
   const handleOnChange = (e) => {
     debouceRefineCallback(e.target.value);
-    setSearchTerm(e.target.value);
   };
 
   return (
     <SearchContainer>
       <SearchForm noValidate>
         <StyledSearchInput
+          disabled={loading}
           ref={customRef}
           autoComplete="off"
           autoCorrect="off"
