@@ -732,6 +732,8 @@ const StyledSearchBox = ({ refine, customRef }) => {
       <SearchForm noValidate>
         <StyledSearchInput
           disabled={loading}
+          // eslint-disable-next-line jsx-a11y/no-autofocus
+          autoFocus={true}
           ref={customRef}
           autoComplete="off"
           autoCorrect="off"
