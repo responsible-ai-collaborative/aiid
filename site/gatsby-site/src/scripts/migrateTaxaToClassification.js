@@ -1,3 +1,9 @@
+/**
+ * A script for migrating CSET data from a CSV file to a collection of JSON documents.
+ *
+ * Run with `node ./src/scripts/migrateTaxaToClassification.js`
+ */
+
 const csv = require('csvtojson');
 
 const path = require('path');
@@ -152,6 +158,7 @@ const getClassification = (r) => {
     'AI Applications': r.field81.replace('/,/g', ';').split(';'),
     'Physical System': getArrayForSubfields(r, sysIntegratedFields),
     'Problem Nature': getArrayForSubfields(r, problemNatureFields),
+    Publish: r.field3 == '6. Complete and final',
     Notes: r.field96,
   };
 };

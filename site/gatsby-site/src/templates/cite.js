@@ -408,7 +408,9 @@ export const pageQuery = graphql`
       }
     }
 
-    allMongodbAiidprodClassifications(filter: { incident_id: { eq: $incident_id } }) {
+    allMongodbAiidprodClassifications(
+      filter: { incident_id: { eq: $incident_id }, classifications: { Publish: { eq: true } } }
+    ) {
       ...ClassificationFields
     }
 

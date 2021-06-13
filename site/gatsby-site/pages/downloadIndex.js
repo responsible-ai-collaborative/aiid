@@ -30,7 +30,10 @@ const ALL_INCIDENTS_DATA = graphql`
         ref_number
       }
     }
-    allMongodbAiidprodClassifications(filter: { namespace: { eq: "CSET" } }) {
+
+    allMongodbAiidprodClassifications(
+      filter: { namespace: { eq: "CSET" }, classifications: { Publish: { eq: true } } }
+    ) {
       nodes {
         incident_id
         id

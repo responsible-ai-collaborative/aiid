@@ -39,6 +39,7 @@ export const ClassificationFieldsFragment = graphql`
         Relevant_AI_functions
         Sector_of_Deployment
         System_Developer
+        Publish
       }
     }
   }
