@@ -28,7 +28,9 @@ const Column = styled.div`
 `;
 
 const TextContainer = styled.div`
-  padding-left: 1.5em;
+  padding: 0em 2em 0em 2em;
+  margin-bottom: 10px;
+  line-height: 1.7;
 
   @media (max-width: 800px) {
     padding-left: 0;
@@ -49,7 +51,7 @@ const SubmissionDate = styled.div`
 `;
 
 const Description = styled.div`
-  padding-top: 1em;
+  padding-top: 0em;
   p {
     line-height: 1.5;
     margin-bottom: 0;
@@ -98,7 +100,9 @@ const LatestIncidentReport = () => {
                     <p>{format(epoch_date_submitted, 'MMM d, yyyy, h:mm aaaa')}</p>
                   </SubmissionDate>
                   <Description>
-                    <p>{description}</p>
+                    <p>
+                      {description}... <Link to={`/cite/${incident_id}`}>(Read More)</Link>
+                    </p>
                   </Description>
                 </Column>
               </TextContainer>
