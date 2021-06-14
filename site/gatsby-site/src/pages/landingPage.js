@@ -289,7 +289,7 @@ const LandingPage = (props) => {
           </Col>
         </StyledRow>
         <StyledRow>
-          <Col xs={6}>
+          <Col xs={12} sm={12} md={12} lg={6}>
             <StyledCard>
               <SectionHeading>Wordcounts</SectionHeading>
               <StyledCardLeadParagraph>
@@ -302,8 +302,8 @@ const LandingPage = (props) => {
               </LiWrapper>
             </StyledCard>
           </Col>
-          <Col>
-            <StyledCard xs={6}>
+          <Col xs={12} sm={12} md={12} lg={6}>
+            <StyledCard>
               <SectionHeading>Random Reports</SectionHeading>
               <RandomIncidentsCarousel />
             </StyledCard>
