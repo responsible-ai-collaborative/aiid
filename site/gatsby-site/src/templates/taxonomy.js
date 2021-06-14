@@ -244,8 +244,6 @@ const getStats = (taxa, classification) => {
       }
     });
 
-  // TODO add another filter clause that will elimintate stats for
-  // fields that are not supporse to be visible to the end user
   taxa.field_list
     .filter((field) => field.permitted_values === null)
     .forEach((field) => {
@@ -344,7 +342,11 @@ export default Taxonomy;
 export const pageQuery = graphql`
   query($namespace: String!) {
     allMongodbAiidprodClassifications(
-      filter: { namespace: { eq: $namespace }, incident_id: { lt: 1000 } }
+      filter: {
+        namespace: { eq: $namespace }
+        incident_id: { lt: 1000 }
+        classifications: { Publish: { eq: true } }
+      }
     ) {
       ...ClassificationFields
     }

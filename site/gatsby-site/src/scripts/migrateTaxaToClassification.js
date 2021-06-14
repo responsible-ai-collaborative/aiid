@@ -106,7 +106,7 @@ const getArrayForSubfields = (r, fields) => {
     .filter((type) => type.value !== 'FALSE' && type.value !== '')
     .map((type) => {
       if (type.name.includes('Other')) {
-        return `${type.name}: ${type.value}`;
+        return `Other:${type.value}`;
       }
       return type.name;
     });
