@@ -29,6 +29,7 @@ exports.onCreateWebpackConfig = ({ actions }) => {
       modules: [path.resolve(__dirname, 'src'), 'node_modules'],
       alias: {
         components: path.resolve(__dirname, 'src/components'),
+        hooks: path.resolve(__dirname, 'src/hooks'),
         contexts: path.resolve(__dirname, 'src/contexts'),
         mongodb: path.resolve(__dirname, 'src/mongodb'),
         pages: path.resolve(__dirname, 'src/pages'),

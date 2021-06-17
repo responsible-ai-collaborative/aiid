@@ -13,10 +13,15 @@ import { useMongo } from 'hooks/useMongo';
 
 const SubmitForm = () => {
   const { isAdmin, user } = useUserContext();
+
   const { updateOne } = useMongo();
+
   const [incident, setIncident] = useState({});
+
   const [csvData, setCsvData] = useState([]);
+
   const [csvIndex, setCsvIndex] = useState(0);
+
   const [showAlert, setShowAlert] = useState();
 
   useEffect(() => {
@@ -26,9 +31,11 @@ const SubmitForm = () => {
   const handleCSVError = (err, file, inputElem, reason) => {
     console.log(err, file, inputElem, reason);
   };
+
   const previousRecord = () => {
     setCsvIndex(Math.max(0, csvIndex - 1));
   };
+
   const nextRecord = () => {
     setCsvIndex(Math.min(csvData.length - 1, csvIndex + 1));
   };
@@ -40,10 +47,13 @@ const SubmitForm = () => {
       if (incident.incident_id) {
         updateOne({ incident_id: incident.incident_id }, values);
       } else {
-        await user.functions.createReportForReview(values);
+        await user.functions.createReportForReview({
+          ...values,
+          incident_id: 0,
+        });
       }
       setShowAlert('success');
-    } catch {
+    } catch (e) {
       setShowAlert('failure');
     }
 
@@ -53,11 +63,21 @@ const SubmitForm = () => {
 
   return (
     <FormStyles className="p-5 mb-5">
-      <Alert variant="success"  show={showAlert === 'success'} onClose={() => setShowAlert()} dismissible>
+      <Alert
+        variant="success"
+        show={showAlert === 'success'}
+        onClose={() => setShowAlert()}
+        dismissible
+      >
         Report successfully added to review queue. It will appear on the{' '}
         <Link to="/apps/submitted">review queue page</Link> within an hour.
       </Alert>
-      <Alert variant="danger" show={showAlert === 'failure'} onClose={() => setShowAlert()} dismissible>
+      <Alert
+        variant="danger"
+        show={showAlert === 'failure'}
+        onClose={() => setShowAlert()}
+        dismissible
+      >
         Was not able to create the report, please review the form and try again.
       </Alert>
       <IncidentReportForm incident={incident} onUpdate={setIncident} onSubmit={handleSubmit} />
