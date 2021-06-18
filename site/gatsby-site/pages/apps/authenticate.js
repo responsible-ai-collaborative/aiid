@@ -11,6 +11,7 @@ function AuthenticateUI() {
     mongoUserKey,
     actions: { setUserAPIKey, logout },
   } = useUserContext();
+
   const [apiKey, setAPIKey] = useState(mongoUserKey);
 
   const update = () => {

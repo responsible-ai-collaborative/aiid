@@ -7,8 +7,11 @@ import { useUserContext } from 'contexts/userContext';
 
 export const SubmissionsContextProvider = ({ children }) => {
   const { loading: authLoading } = useUserContext();
+
   const [loading, setLoading] = useState(false);
+
   const [submissions, setSubmissions] = useState([]);
+
   const { runQuery } = useMongo();
 
   const refetch = () => {
