@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { graphql } from 'gatsby';
 import styled from 'styled-components';
 import md5 from 'md5';
 import Markdown from 'react-markdown';
@@ -302,7 +303,9 @@ const Taxonomy = (props) => {
 
   const { namespace, description, field_list } = props.pageContext.taxonomy;
 
-  const sortedFieldsArray = field_list.sort((a, b) => b.weight - a.weight);
+  const sortedFieldsArray = field_list
+    .sort((a, b) => b.weight - a.weight)
+    .filter((entry) => entry.public === null || entry.public);
 
   const stats = getStats(props.pageContext.taxonomy, allMongodbAiidprodClassifications.nodes);
 

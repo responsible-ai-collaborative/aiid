@@ -11,6 +11,7 @@ const createTaxonomyPages = (graphql, createPage) => {
                 namespace
                 description
                 field_list {
+                  public
                   long_name
                   long_description
                   weight

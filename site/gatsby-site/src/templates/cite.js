@@ -421,6 +421,7 @@ export const pageQuery = graphql`
         weight
         description
         field_list {
+          public
           display_type
           long_name
           short_name
