@@ -61,6 +61,7 @@
     "md5": "^2.3.0",
     "react": "^16.14.0",
     "react-bootstrap": "^1.5.2",
+    "react-c3js": "^0.1.20",
     "react-dom": "^16.14.0",
     "react-feather": "^2.0.9",
     "react-github-btn": "^1.2.0",

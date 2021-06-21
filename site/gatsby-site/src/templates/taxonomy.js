@@ -5,6 +5,9 @@ import md5 from 'md5';
 import Markdown from 'react-markdown';
 import { Badge, Button } from 'react-bootstrap';
 
+import C3Chart from 'react-c3js';
+import 'c3/c3.css';
+
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
 import Link from 'components/Link';
@@ -95,6 +98,21 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
 
     sortedStatsArray.sort((a, b) => b.value - a.value);
 
+    const data = {
+      columns: [],
+      type: 'donut',
+    };
+
+    data.columns = sortedStatsArray.slice(0, 9).map((a) => [a.item, a.value]);
+    if (sortedStatsArray.length > 9) {
+      data.columns.push([
+        'All Others',
+        sortedStatsArray
+          .slice(9)
+          .reduce((accumulator, currentValue) => accumulator + currentValue.value, 0),
+      ]);
+    }
+
     return (
       <div>
         <ul>
@@ -113,6 +131,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
               </StyledLi>
             ))}
         </ul>
+        <C3Chart data={data} />
         {sortedStatsArray.length > 5 && (
           <Button
             variant="outline-primary"
