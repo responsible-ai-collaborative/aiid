@@ -120,6 +120,13 @@ const convertStringToDate = (dateStr) => {
   }
 };
 
+const cleanArrayFromString = (st) => {
+  return st
+    .replace('/,/g', ';')
+    .split(';')
+    .map((s) => s.trim());
+};
+
 const getClassification = (r) => {
   return {
     Annotator: r.field2,
@@ -133,7 +140,7 @@ const getClassification = (r) => {
     'Ending Date': convertStringToDate(r.field9),
     Location: r.field10,
     'Near Miss': r.field11,
-    'Named Entities': r.field12.replace('/,/g', ';').split(';'),
+    'Named Entities': cleanArrayFromString(r.field12),
     'Technology Purveyor': getTechPurveyorArray(r),
     Intent: r.field19,
     Severity: r.field20,
@@ -155,7 +162,7 @@ const getClassification = (r) => {
     'Level of Autonomy': r.field73,
     'Relevant AI functions': getArrayForSubfields(r, aiFunctionFields),
     'AI Techniques': r.field80,
-    'AI Applications': r.field81.replace('/,/g', ';').split(';'),
+    'AI Applications': cleanArrayFromString(r.field81),
     'Physical System': getArrayForSubfields(r, sysIntegratedFields),
     'Problem Nature': getArrayForSubfields(r, problemNatureFields),
     Publish: r.field3 == '6. Complete and final',
