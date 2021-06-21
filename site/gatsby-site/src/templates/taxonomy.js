@@ -81,56 +81,6 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
     setShowAllStats(!showAllStats);
   };
 
-  // This was commented in order to allow multiple values in the stats
-  /*
-  if (permitted_values) {
-    let sortedStatsArray = []
-
-    permitted_values.forEach((item) => {
-      sortedStatsArray.push({
-        item,
-        value: valueStats[item] || 0,
-      })
-    })
-
-    sortedStatsArray.sort((a, b) => b.value - a.value)
-
-    return (
-      <div>
-        <ul>
-          {sortedStatsArray
-            .filter((item, index) => showAllStats || index < 5)
-            .map(({ item, value }) => (
-              <StyledLi key={`${short_name}-${item}`}>
-                <Link
-                  to={
-                    `/apps/discover?classifications=` +
-                    encodeURIComponent(`${namespace}:${short_name}:${item}`)
-                  }
-                >
-                  {valueStats !== {} ? (
-                    <StatItem text={item} value={value} />
-                  ) : (
-                    <>{`${item}`}</>
-                  )}
-                </Link>
-              </StyledLi>
-            ))}
-          {sortedStatsArray.length > 5 && (
-            <Button
-              variant="outline-primary"
-              className="btn btn-sm assignment-button"
-              onClick={toggleShowAllStats}
-            >
-              {`Show ${showAllStats ? 'fewer stats' : 'more stats'}`}
-            </Button>
-          )}
-        </ul>
-      </div>
-    );
-  }
-*/
-
   if (valueStats && Object.keys(valueStats).length !== 0) {
     const valueStatsKeys = Object.keys(valueStats);
 
