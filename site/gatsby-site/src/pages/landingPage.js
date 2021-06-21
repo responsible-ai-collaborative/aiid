@@ -160,8 +160,8 @@ const LandingPage = (props) => {
             <StyledCard>
               <SectionHeading>About the Database</SectionHeading>
               <StyledCardLeadParagraph>
-                The AI Incident Database is the only collection of intelligent system deployment
-                harms or near harms across all disciplines, geographies, and use cases.
+                The AI Incident Database is the only collection of AI deployment harms or near harms
+                across all disciplines, geographies, and use cases.
               </StyledCardLeadParagraph>
               <StyledCardParagraph>
                 You are invited to <Link to="/apps/quickadd">submit</Link> reports to the database,
