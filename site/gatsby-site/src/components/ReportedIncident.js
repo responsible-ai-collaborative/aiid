@@ -33,7 +33,9 @@ const ListedGroup = ({ item, keysToRender }) => {
 };
 
 const leadItems = ['source_domain', 'authors', 'submitters', 'incident_id'];
+
 const urls = ['url', 'image_url', 'authors', 'submitters'];
+
 const dateRender = [
   'incident_date',
   'date_published',
@@ -41,16 +43,20 @@ const dateRender = [
   'date_downloaded',
   'date_modified',
 ];
+
 const otherDetails = ['language', 'mongodb_id'];
 
 const ReportedIncident = ({ incident }) => {
   const { user, isAdmin } = useUserContext();
+
   const {
     actions: { refetch },
   } = useSubmissionsContext();
+
   const { updateOne } = useMongo();
 
   const [isEditing, setIsEditing] = useState(false);
+
   const [open, setOpen] = useState(false);
 
   const addReport = () => {
@@ -72,6 +78,7 @@ const ReportedIncident = ({ incident }) => {
   };
 
   const isNewIncident = incident['incident_id'] === 0;
+
   const cardSubheader = isNewIncident ? 'New Incident' : 'New Report';
 
   return (
