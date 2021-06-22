@@ -48,8 +48,8 @@ const SubmitForm = () => {
         updateOne({ incident_id: incident.incident_id }, values);
       } else {
         await user.functions.createReportForReview({
-          ...values,
           incident_id: 0,
+          ...values,
         });
       }
       setShowAlert('success');

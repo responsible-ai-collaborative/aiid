@@ -25,8 +25,6 @@ export const UserContextProvider = ({ children }) => {
 
   const [mongoUserKey, setMongoUserKey] = useState(null);
 
-  const apiKey = window.localStorage.getItem('mongoUserKey');
-
   const setUserAPIKey = useCallback((apiKey) => {
     setMongoUserKey(apiKey);
     window.localStorage.setItem('mongoUserKey', apiKey);
@@ -44,6 +42,8 @@ export const UserContextProvider = ({ children }) => {
 
   useEffect(() => {
     setLoading(true);
+    const apiKey = window.localStorage.getItem('mongoUserKey');
+
     const credentials = apiKey ? Realm.Credentials.apiKey(apiKey) : Realm.Credentials.anonymous();
 
     const type = apiKey ? 'token' : 'anonymous';
