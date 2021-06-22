@@ -712,28 +712,29 @@ const IncidentCard = ({
   </IncidentCardContainer>
 );
 
-const StyledSearchBox = ({ refine, customRef }) => {
+// eslint-disable-next-line react/display-name
+const StyledSearchBox = React.memo(({ refine, customRef }) => {
   const [loading, setLoading] = useState(false);
 
   const debouncedRefine = debounce((text) => {
-    setLoading(true);
     refine(text);
-    setLoading(false);
   }, 500);
 
   const debouceRefineCallback = useCallback((value) => debouncedRefine(value), []);
 
   const handleOnChange = (e) => {
+    e.preventDefault();
+    setLoading(true);
     debouceRefineCallback(e.target.value);
+    setLoading(false);
   };
 
   return (
     <SearchContainer>
-      <SearchForm noValidate>
+      <SearchForm>
         <StyledSearchInput
-          disabled={loading}
-          // eslint-disable-next-line jsx-a11y/no-autofocus
-          autoFocus={true}
+          readOnly={loading}
+          type="text"
           ref={customRef}
           autoComplete="off"
           autoCorrect="off"
@@ -744,7 +745,6 @@ const StyledSearchBox = ({ refine, customRef }) => {
           onKeyPress={(e) => {
             e.key === 'Enter' && e.preventDefault();
           }}
-          type="search"
           onChange={handleOnChange}
         />
         <SearchResetButton type="reset" title="Clear the search query." onClick={() => refine('')}>
@@ -768,9 +768,9 @@ const StyledSearchBox = ({ refine, customRef }) => {
       </SearchForm>
     </SearchContainer>
   );
-};
+});
 
-const CustomSearchBox = connectSearchBox(StyledSearchBox);
+const CustomSearchBox = React.memo(connectSearchBox(StyledSearchBox));
 
 const RefinementList = connectRefinementList(StyledRefinementList);
 
@@ -1174,7 +1174,7 @@ export const Hits = ({
   );
 };
 
-const DiscoverApp = (props) => {
+const DiscoverApp = React.memo((props) => {
   const searchInput = useRef(null);
 
   const [query, setQuery] = useQueryParams({
@@ -1351,6 +1351,6 @@ const DiscoverApp = (props) => {
       </QueryParams>
     </LayoutHideSidebar>
   );
-};
+});
 
 export default DiscoverApp;
