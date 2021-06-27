@@ -16,6 +16,7 @@
       "alias": {
         "map": [
           ["components", "./src/components"],
+          ["hooks", "./src/hooks"],
           ["contexts", "./src/contexts"],
           ["mongodb", "./src/mongodb"],
           ["pages", "./src/pages"],
