@@ -175,7 +175,7 @@ const LandingPage = (props) => {
           </Col>
           <Col>
             <StyledCard md={12} lg={6}>
-              <SectionHeading>About the Partnership</SectionHeading>
+              <SectionHeading>About Partnership on AI</SectionHeading>
               <StyledCardLeadParagraph>
                 The <a href="http://partnershiponai.org/">Partnership on AI</a> is the leading forum
                 addressing the most important and difficult decisions on the future of AI. We are a
