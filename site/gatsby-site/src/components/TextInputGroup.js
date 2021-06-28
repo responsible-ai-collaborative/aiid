@@ -24,7 +24,7 @@ const TextInputGroup = ({
       placeholder={placeholder}
       onChange={handleChange}
       onBlur={handleBlur}
-      value={values[name]}
+      value={values[name] || ''}
       className={touched[name] && errors[name] ? 'has-error' : null}
       {...props}
     />

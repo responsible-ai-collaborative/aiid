@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { ListGroup } from 'react-bootstrap';
 import Loader from 'components/Loader';
 
@@ -14,8 +14,17 @@ const RelatedIncidents = ({ incident = {} }) => {
 
   const [related, setRelated] = useState([]);
 
+  const prevIncident = useRef(0);
+
+  const prevDate = useRef(0);
+
   useEffect(() => {
-    if (incident_id) {
+    const changed = prevIncident.current !== incident_id || prevDate.current !== date_published;
+
+    prevIncident.current = incident_id;
+    prevDate.current = date_published;
+
+    if (changed && incident_id) {
       const parsed = parseInt(incident_id);
 
       console.log('Seeking incidents related with incident_id: ', incident_id);
@@ -37,7 +46,7 @@ const RelatedIncidents = ({ incident = {} }) => {
         config.realm.production_db.db_name,
         config.realm.production_db.db_collection
       );
-    } else if (date_published) {
+    } else if (changed && date_published) {
       setLoading(true);
 
       runQuery(
