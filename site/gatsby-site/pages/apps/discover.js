@@ -538,13 +538,9 @@ const getParagraphs = (itemText) => {
   return (
     <>
       {itemText.split('\n').map((paragraph, index, array) => (
-        <>
-          {array.length - 1 === index ? (
-            <p key={index}>{paragraph + '...'}</p>
-          ) : (
-            <p key={index}>{paragraph}</p>
-          )}
-        </>
+        <p key={index}>
+          {array.length - 1 === index ? <>{paragraph + '...'}</> : <>{paragraph}</>}
+        </p>
       ))}
     </>
   );
@@ -605,7 +601,7 @@ const IncidentCard = ({
   toggleFilterByIncidentId,
   showDetails,
 }) => (
-  <IncidentCardContainer id={item._id}>
+  <IncidentCardContainer id={item.objectID}>
     <div className="card-header">
       <Highlight hit={item} attribute="title" />
       <p className="subhead">
@@ -1017,7 +1013,7 @@ const RenderCards = ({
       <>
         {sortedHits.map((hit) => (
           <IncidentCard
-            key={hit._id}
+            key={hit.objectID}
             item={hit}
             authorsModal={authorsModal}
             submittersModal={submittersModal}
@@ -1034,7 +1030,7 @@ const RenderCards = ({
     <>
       {hits.map((hit) => (
         <IncidentCard
-          key={hit._id}
+          key={hit.objectID}
           item={hit}
           authorsModal={authorsModal}
           submittersModal={submittersModal}
