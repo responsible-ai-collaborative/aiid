@@ -131,7 +131,6 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
               </StyledLi>
             ))}
         </ul>
-        <C3Chart data={data} />
         {sortedStatsArray.length > 5 && (
           <Button
             variant="outline-primary"
@@ -141,6 +140,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
             {`Show ${showAllStats ? 'fewer stats' : 'more stats'}`}
           </Button>
         )}
+        <C3Chart data={data} />
       </div>
     );
   }
