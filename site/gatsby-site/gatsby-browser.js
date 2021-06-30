@@ -19,3 +19,9 @@ export const shouldUpdateScroll = ({ routerProps: { location } }) => {
 
   return false;
 };
+
+import { ToastContextProvider } from './src/contexts/ToastContext';
+
+export const wrapRootElement = ({ element }) => {
+  return <ToastContextProvider>{element}</ToastContextProvider>;
+};
