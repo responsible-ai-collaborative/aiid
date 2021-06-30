@@ -44,6 +44,7 @@ const ToastBody = styled(Toast.Body)`
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
   }
 `;
 
@@ -71,8 +72,6 @@ export function ToastContextProvider({ children }) {
 
   const removeToast = (e, clickedToast, index) => {
     e.preventDefault();
-    console.log(toasts);
-    console.log(clickedToast, index);
     if (toasts.length > 0) {
       setToasts(toasts.filter((t, i) => i !== index));
     }
