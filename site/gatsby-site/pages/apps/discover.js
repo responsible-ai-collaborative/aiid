@@ -601,7 +601,7 @@ const IncidentCard = ({
   toggleFilterByIncidentId,
   showDetails,
 }) => (
-  <IncidentCardContainer id={item.objectID}>
+  <IncidentCardContainer id={item.mongodb_id}>
     <div className="card-header">
       <Highlight hit={item} attribute="title" />
       <p className="subhead">
@@ -642,7 +642,7 @@ const IncidentCard = ({
           type="button"
           className="btn btn-secondary btn-sm btn-block assignment-button"
           onClick={() => {
-            navigate(`/cite/${item.incident_id}#${item._id}`);
+            navigate(`/cite/${item.incident_id}#${item.mongodb_id}`);
           }}
         >
           <StyledLabel>Show Details on Incident #{item.incident_id}</StyledLabel>
