@@ -43,7 +43,7 @@ const TabGroup = ({ item, keysToRender }) => {
             {keysToRender.map((key) => (
               <Tab.Pane key={'a' + uid + key} eventKey={uid + key}>
                 <Card.Text>
-                  {item[key].split('\n').map((item, key) => {
+                  {item[key]?.split('\n').map((item, key) => {
                     return (
                       <span key={uid + key}>
                         {item}
@@ -69,7 +69,7 @@ const ListedGroup = ({ item, keysToRender }) => {
       {keysToRender.map((key) => (
         <ListGroup.Item key={uid + key}>
           <span style={{ color: '#1cd3c6' }}>{key}</span>:{' '}
-          {typeof item[key] == 'object' ? item[key].join(', ') : item[key]}
+          {Array.isArray(item[key]) ? item[key].join(', ') : item[key]}
         </ListGroup.Item>
       ))}
     </ListGroup>

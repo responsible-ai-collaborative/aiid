@@ -538,13 +538,9 @@ const getParagraphs = (itemText) => {
   return (
     <>
       {itemText.split('\n').map((paragraph, index, array) => (
-        <>
-          {array.length - 1 === index ? (
-            <p key={index}>{paragraph + '...'}</p>
-          ) : (
-            <p key={index}>{paragraph}</p>
-          )}
-        </>
+        <p key={index}>
+          {array.length - 1 === index ? <>{paragraph + '...'}</> : <>{paragraph}</>}
+        </p>
       ))}
     </>
   );
@@ -605,7 +601,7 @@ const IncidentCard = ({
   toggleFilterByIncidentId,
   showDetails,
 }) => (
-  <IncidentCardContainer id={item._id}>
+  <IncidentCardContainer id={item.objectID}>
     <div className="card-header">
       <Highlight hit={item} attribute="title" />
       <p className="subhead">
@@ -714,9 +710,9 @@ const IncidentCard = ({
   </IncidentCardContainer>
 );
 
-const StyledSearchBox = ({ refine, customRef }) => {
-  // eslint-disable-next-line no-unused-vars
-  const [searchTerm, setSearchTerm] = useState('');
+// eslint-disable-next-line react/display-name
+const StyledSearchBox = React.memo(({ refine, customRef }) => {
+  const [loading, setLoading] = useState(false);
 
   const debouncedRefine = debounce((text) => {
     refine(text);
@@ -725,14 +721,18 @@ const StyledSearchBox = ({ refine, customRef }) => {
   const debouceRefineCallback = useCallback((value) => debouncedRefine(value), []);
 
   const handleOnChange = (e) => {
+    e.preventDefault();
+    setLoading(true);
     debouceRefineCallback(e.target.value);
-    setSearchTerm(e.target.value);
+    setLoading(false);
   };
 
   return (
     <SearchContainer>
-      <SearchForm noValidate>
+      <SearchForm>
         <StyledSearchInput
+          readOnly={loading}
+          type="text"
           ref={customRef}
           autoComplete="off"
           autoCorrect="off"
@@ -743,7 +743,6 @@ const StyledSearchBox = ({ refine, customRef }) => {
           onKeyPress={(e) => {
             e.key === 'Enter' && e.preventDefault();
           }}
-          type="search"
           onChange={handleOnChange}
         />
         <SearchResetButton type="reset" title="Clear the search query." onClick={() => refine('')}>
@@ -767,9 +766,9 @@ const StyledSearchBox = ({ refine, customRef }) => {
       </SearchForm>
     </SearchContainer>
   );
-};
+});
 
-const CustomSearchBox = connectSearchBox(StyledSearchBox);
+const CustomSearchBox = React.memo(connectSearchBox(StyledSearchBox));
 
 const RefinementList = connectRefinementList(StyledRefinementList);
 
@@ -1014,7 +1013,7 @@ const RenderCards = ({
       <>
         {sortedHits.map((hit) => (
           <IncidentCard
-            key={hit._id}
+            key={hit.objectID}
             item={hit}
             authorsModal={authorsModal}
             submittersModal={submittersModal}
@@ -1031,7 +1030,7 @@ const RenderCards = ({
     <>
       {hits.map((hit) => (
         <IncidentCard
-          key={hit._id}
+          key={hit.objectID}
           item={hit}
           authorsModal={authorsModal}
           submittersModal={submittersModal}
@@ -1173,7 +1172,7 @@ export const Hits = ({
   );
 };
 
-const DiscoverApp = (props) => {
+const DiscoverApp = React.memo((props) => {
   const searchInput = useRef(null);
 
   const [query, setQuery] = useQueryParams({
@@ -1350,6 +1349,6 @@ const DiscoverApp = (props) => {
       </QueryParams>
     </LayoutHideSidebar>
   );
-};
+});
 
 export default DiscoverApp;
