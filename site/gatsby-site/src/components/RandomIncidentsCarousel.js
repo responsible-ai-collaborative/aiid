@@ -8,17 +8,6 @@ const Caption = styled.h3`
   background: rgba(0, 0, 0, 0.55);
 `;
 
-const Container = styled.div`
-  border: 1.5px solid #d9deee;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px 0px #e3e5ec;
-  display: flex;
-  flex-direction: column;
-  h4 {
-    margin: 0 !important;
-  }
-`;
-
 const Img = styled.img`
   max-height: 500px;
 `;
@@ -58,26 +47,22 @@ const RandomIncidentsCarousel = () => {
         );
 
         return (
-          <Container>
-            <Carousel interval={60000}>
-              {randomIncidents.map(({ node: { id, incident_id, title, image_url } }) => (
-                <Carousel.Item key={id}>
-                  <Link to={`/cite/${incident_id}`}>
-                    <Img
-                      className="d-block w-100"
-                      src={
-                        'https://incidentdatabase.ai/large_media/report_banners/' + md5(image_url)
-                      }
-                      alt={title}
-                    />
-                    <Carousel.Caption>
-                      <Caption>{title}</Caption>
-                    </Carousel.Caption>
-                  </Link>
-                </Carousel.Item>
-              ))}
-            </Carousel>
-          </Container>
+          <Carousel interval={60000}>
+            {randomIncidents.map(({ node: { id, incident_id, title, image_url } }) => (
+              <Carousel.Item key={id}>
+                <Link to={`/cite/${incident_id}`}>
+                  <Img
+                    className="d-block w-100"
+                    src={'https://incidentdatabase.ai/large_media/report_banners/' + md5(image_url)}
+                    alt={title}
+                  />
+                  <Carousel.Caption>
+                    <Caption>{title}</Caption>
+                  </Carousel.Caption>
+                </Link>
+              </Carousel.Item>
+            ))}
+          </Carousel>
         );
       }}
     />

@@ -1,4 +1,4 @@
-import { realmApp } from '../services/realmApp';
+import { realmApp } from 'services/realmApp';
 import config from '../../config';
 
 // https://docs.mongodb.com/realm/web/mongodb/
@@ -35,12 +35,18 @@ export const useMongo = () => {
     dbName = DB_NAME,
     dbCollection = DB_COLLECTION
   ) => {
+    const newData = {
+      ...data,
+      authors: data.authors.split(','),
+      submitters: data.submitters.split(','),
+    };
+
     const mongoCollection = realmApp.services
       .mongodb(dbService)
       .db(dbName)
       .collection(dbCollection);
 
-    const res = await mongoCollection.updateOne(query, data);
+    const res = await mongoCollection.updateOne(query, newData);
 
     callback && callback(res);
   };

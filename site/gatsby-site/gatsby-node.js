@@ -12,6 +12,8 @@ const createWordCountsPages = require('./page-creators/createWordCountsPage');
 
 const createBackupsPage = require('./page-creators/createBackupsPage');
 
+const createTaxonomyPages = require('./page-creators/createTaxonomyPages');
+
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions;
 
@@ -20,6 +22,7 @@ exports.createPages = ({ graphql, actions }) => {
     createCitiationPages(graphql, createPage),
     createWordCountsPages(graphql, createPage),
     createBackupsPage(graphql, createPage),
+    createTaxonomyPages(graphql, createPage),
   ]);
 };
 
@@ -29,6 +32,7 @@ exports.onCreateWebpackConfig = ({ actions }) => {
       modules: [path.resolve(__dirname, 'src'), 'node_modules'],
       alias: {
         components: path.resolve(__dirname, 'src/components'),
+        hooks: path.resolve(__dirname, 'src/hooks'),
         contexts: path.resolve(__dirname, 'src/contexts'),
         mongodb: path.resolve(__dirname, 'src/mongodb'),
         pages: path.resolve(__dirname, 'src/pages'),

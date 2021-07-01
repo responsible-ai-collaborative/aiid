@@ -2,6 +2,8 @@
 
 The AIID is stored on MongoDB as document collections and hosted in [MongoDB Realm](https://www.mongodb.com/realm). MongoDB is responsible for managing the availability and backups of the database, as well as presenting web-accessible APIs for the content. This document details the database structure as is present on the MongoDB servers. Database exports are available upon request to `aiid.export@incidentdatabase.ai`, but for most database development needs you should be able to interface with the production database.
 
+See also: [MongoDB Realm Serverless Functions](realm.md).
+
 # Administering Data
 
 Administering data requires administrative access to the database. This access is presently limited, but through additional functionality that can protect data from vandalism, we may open it to less privileged parties.
@@ -11,6 +13,9 @@ Administering data requires administrative access to the database. This access i
 * `incidents`: this is the main incident database
 * `quickadd`: A collection of links without their associated content. This is to make it easier to capture lots of data that needs to subsequently get processed into full records.
 * `submissions`: Prospective full incidents before they are rotated into the `incidents` collection. These should have the complete `incidents` schema minus the elements that are granted when promoted to incident reports.
+* `duplicates`: All the incident numbers that have been migrated to an earlier incident number.
+* `taxa`: Metadata describing the taxonomies of the classifications collection.
+* `classifications`: All the taxonomic classifications of incident records.
 
 # Incidents Collection Details
 
@@ -212,289 +217,228 @@ Media
 }
 ```
 
-# Server-side functions
+# Duplicates Collection Details
 
-These functions are defined in the MongoDB UI and are restated here so they will be in version control.
+Systems
 
-
-`createReportForReview()`: Create a record for the `submissions` collection.
-
-```
-exports = function(arg){
-  // IN REQUEST
-  //authors: ""
-  //date_downloaded: ""
-  //date_published: ""
-  //image_url: ""
-  //incident_date: ""
-  //incident_id: ""
-  //submitters: "Anonymous"
-  //text: ""
-  //title: ""
-  //url: ""
-  
-  let url = new URL(arg["url"]);
-  
-  var today = new Date();
-  var dd = String(today.getDate()).padStart(2, '0');
-  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-  var yyyy = today.getFullYear();
-  date_modified = yyyy + '-' + mm + '-' + dd ; 
-  
-  var authors = arg["authors"]
-  if( typeof authors === 'string' ) {
-    authors = arg["authors"].split(",").map(function(item){return item.trim()});
-  }
-
-  var submitters = arg["submitters"]
-  if( typeof submitters === 'string' ) {
-    submitters = arg["submitters"].split(",").map(function(item){return item.trim()});
-  }
-  
-  var record = {
-    authors: authors,
-    date_downloaded: arg["date_downloaded"],
-    date_published: arg["date_published"],
-    image_url: arg["image_url"],
-    incident_date: arg["incident_date"],
-    incident_id: 0,
-    submitters: submitters,
-    text: arg["text"],
-    title: arg["title"],
-    url: arg["url"],
-    date_submitted: date_modified,
-    date_modified: date_modified,
-    description: arg["text"].substring(0, 200),
-    language: "en",
-    source_domain: url.hostname
-  }
-  if(arg["incident_id"].length > 0) {
-    record["incident_id"] = parseInt(arg["incident_id"]);
-  }
-
-  var collection = context.services.get("mongodb-atlas").db("aiidprod").collection("submissions");
-  var doc = collection.insertOne(record);
-  return record;
-};
-```
-
-`promoteReport()`: Promote a report from the `submissions` collection to the `incidents` collection.
+* `_id`: 5534b8c29cfd494a0103d45a # MongoDB database hash
+* `duplicate_incident_number`: 90
+* `true_incident_number`: 77
 
 ```
-exports = function(arg){
-
-  var submissionCollection = context.services.get("mongodb-atlas").db("aiidprod").collection("submissions");
-  var incidentCollection = context.services.get("mongodb-atlas").db("aiidprod").collection("incidents");
-
-  function stringToEpoch(dateString) {
-    let someDate = new Date(dateString);
-    let epoch = someDate.getTime();
-    return epoch;
-  }
-
-  function create(submittedReport, incident_id, report_number, ref_number) {
-
-
-    // Provided by the submitted report
-    var newReport = {
-      description: submittedReport["description"],
-      authors: submittedReport["authors"],
-      image_url: submittedReport["image_url"],
-      language: submittedReport["language"],
-      source_domain: submittedReport["source_domain"],
-      text: submittedReport["text"],
-      title: submittedReport["title"],
-      url: submittedReport["url"],
-
-      date_downloaded: submittedReport["date_downloaded"],
-      date_modified: submittedReport["date_modified"],
-      date_published: submittedReport["date_published"],
-      incident_date: submittedReport["incident_date"],
-
-      epoch_date_downloaded: stringToEpoch(submittedReport["date_downloaded"]),
-      epoch_date_modified: stringToEpoch(submittedReport["date_modified"]),
-      epoch_date_published: stringToEpoch(submittedReport["date_published"]),
-      epoch_incident_date: stringToEpoch(submittedReport["incident_date"]),
-      epoch_date_submitted: stringToEpoch(submittedReport["date_submitted"]),
-
-      submitters: submittedReport["submitters"],
-      date_submitted: submittedReport["date_submitted"],
-      report_number: submittedReport["report_number"]
+{
+  "title": "duplicate",
+  "properties": {
+    "_id": {
+      "bsonType": "objectId"
+    },
+    "duplicate_incident_number": {
+      "bsonType": "int"
+    },
+    "true_incident_number": {
+      "bsonType": "int"
     }
-  
-    // Provided by submitted incident or by finding the next ID
-    newReport["incident_id"] = incident_id;
-  
-    // Derived from the database
-    newReport["ref_number"] = ref_number;
-    newReport["report_number"] = report_number;
-  
-    incidentCollection.insertOne(
-      newReport
-    ).then(()=>{
-      submissionCollection.deleteOne( { "_id": objectId } )
-    });
-    return newReport;
   }
+}
+```
 
-  // Test data REMOVE
-  //const objectId = new BSON.ObjectId("5f7e8bde67a56464500eb211");
-  //arg["_id"] = objectId;
-  //incident_id = 1;
-  // END REMOVE
+# Taxa Collection Details
 
-  // UNCOMMENT
-  //const objectId = new BSON.ObjectId(arg["_id"]);
-  const objectId = arg["_id"];
+**Example Doc**
 
-  var incident_id, submittedDoc, newReportNumber, newIncidentID, newRefNumber;
+```json
+{
+"namespace": "Organization Name Here",
+"weight": 50,
+"description": "Description of the taxonomy in Markdown here",
+"field_list": [
+  {FIELD_DESCRIPTION},
+  {...},
+],
+}
+```
 
-  // Get the report number, which is global, then find the incident number, if needed, then get the ref number local to the incident
-  submissionCollection.findOne({"_id": objectId}).then(res => {
-    submittedDoc = res;
-    incident_id = submittedDoc["incident_id"];
-  }).then(() => {
-    incidentCollection.find({}).sort({"report_number":-1}).limit(1).next().then(res => {
-      newReportNumber = res["report_number"];
-  }).then(() => {
-    if(incident_id > 0) {
-      newIncidentID = incident_id;
-      var currentIncidentReports = incidentCollection.find({"incident_id": incident_id}).sort({"ref_number":-1}).limit(1).next().then(res => {
-        newRefNumber = parseInt(res["ref_number"] + 1);
-        create(submittedDoc, newIncidentID, newReportNumber, newRefNumber);
-      });
-    } else {
-        incidentCollection.find().sort({"incident_id":-1}).limit(1).next().then(res => {
-          newIncidentID = parseInt(res["incident_id"] + 1);
-          newRefNumber = 1;
-          create(submittedDoc, newIncidentID, newReportNumber, newRefNumber);
-        });
+**Top Level Attributes**
+
+* `_id`: 5534b8c29cfd494a0103d45a # MongoDB database hash
+* namespace: this determines how things are presented to users as facets within the Algolia index and determines the named path to the taxonomy's detail page.
+* weight: this determines the priority of displaying the taxonomy when multiple taxonomies are entered in the system.
+* description: this is a markdown description of the taxonomy that is presented on the taxonomy detail page
+* field_list: a list detailing the classifications within the taxonomy
+
+**Field Description List**
+
+* "short_name": "" # the display name for the field when it is presented as a facet. (e.g., "intent" would be presented as `CSET:intent`)
+* "long_name": "" # the display name for the field as presented to users.
+* "short_description": "This goes in tooltips and other short descriptions" # Must be defined
+* "long_description":"This goes in the documentation page for the taxonomy"
+* "display_type": "string" # values are in {"string", "text", "multi", "date",  "enum", "bool", "list", "location"}
+* "mongo_type": "" # MongoDB datatype see "alias" [here](https://docs.mongodb.com/manual/reference/operator/query/type/#available-types) for acceptable values.
+* "default": "" # the values that sit in the form as a starting value when applying a taxonomy. Default: `nil`
+* "placeholder": "" # that to place in the form when classifying according to this taxonomy. Default: `nil`
+* "permitted_values": [] # optional, only used with `multi` and `enum` display types
+* "weight": 0 # Determines presentation order of the classification
+* "instant_facet": false # Determines whether the taxonomy item will be exported to the Algolia instant search index
+* "required": false # indicates whether the namespace may have classifications associated with it, but without this particular field
+* "public": true # indicates that the field should not be displayed to the general public. It will be displayed to authenticated users
+
+**Additional notes**
+
+* display_type's values have these additional notes for determining how the mongo_type will be displayed.
+  * string: short text of approximately 140 characters
+  * text: textual input potentially of arbitrary length 
+  * multi: multiple selectable short values
+  * list: a sequence of short strings not selected from a defined set
+  * enum: a single selection from a list of values
+  * date: a timestamp dereferences to a specific day. The number of seconds into the day are dropped
+  * bool: generally a checkbox
+  * location: the string represents a named place which is geocoded as latitude and longitude values
+
+**MongoDB System Schema**
+
+```json
+{
+  "title": "taxa",
+  "properties": {
+    "_id": {
+      "bsonType": "objectId"
+    },
+    "description": {
+      "bsonType": "string"
+    },
+    "fields": {
+      "bsonType": "array",
+      "items": {
+        "bsonType": "object",
+        "properties": {
+          "default": {
+            "bsonType": "string"
+          },
+          "display_type": {
+            "bsonType": "string"
+          },
+          "instant_facet": {
+            "bsonType": "bool"
+          },
+          "long_description": {
+            "bsonType": "string"
+          },
+          "long_name": {
+            "bsonType": "string"
+          },
+          "mongo_type": {
+            "bsonType": "string"
+          },
+          "permitted_values": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "placeholder": {
+            "bsonType": "string"
+          },
+          "required": {
+            "bsonType": "bool"
+          },
+          "short_description": {
+            "bsonType": "string"
+          },
+          "short_name": {
+            "bsonType": "string"
+          },
+          "weight": {
+            "bsonType": "int"
+          }
+        }
+      }
+    },
+    "namespace": {
+      "bsonType": "string"
+    },
+    "weight": {
+      "bsonType": "int"
     }
-  });
-  })
-
-  return newIncidentID;
-};
-```
-
-`quickAdd()`: Add a document to the `quickadd` collection.
-
-```
-exports = function(arg){
-  // IN REQUEST
-  //url: ""
-  
-  let url = new URL(arg["url"]);
-  
-  var today = new Date();
-  var dd = String(today.getDate()).padStart(2, '0');
-  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-  var yyyy = today.getFullYear();
-  date_modified = yyyy + '-' + mm + '-' + dd ; 
-  
-  var record = {
-    incident_id: 0,
-    url: arg["url"],
-    date_submitted: date_modified,
-    source_domain: url.hostname
   }
-
-  var collection = context.services.get("mongodb-atlas").db("aiidprod").collection("quickadd");
-  var doc = collection.insertOne(record);
-  return record;
-};
+}
 ```
 
-`deleteSubmittedDocument()`: Delete a document that is sitting in the review queue.
+# Classifications Collection
 
-```
-exports = function(arg){
-  var collection = context.services.get("mongodb-atlas").db("aiidprod").collection("submissions");
-  const objectId = arg["_id"];
-  const query = {"_id": objectId};
-  collection.deleteOne(query);
-  return;
-};
-```
+**Top Level Attributes**
 
-`updateSubmissionReport`: Update an existing doc in the submissions collection.
+* `_id`: 5534b8c29cfd494a0103d45a # MongoDB database hash
+* `namespace`: "CSET" # this resolves the classifications to their taxa collection entry.
+* `incident_id`: 1 # this is the incident number
+* `classifications`: `{}` this is all the classifications consistent with its references taxonomy.
 
-```
-exports = function(arg){
+**MongoDB System Schema**
 
-  // IN REQUEST
-  //authors: ""
-  //date_downloaded: ""
-  //date_published: ""
-  //image_url: ""
-  //incident_date: ""
-  //incident_id: ""
-  //submitters: "Anonymous"
-  //text: ""
-  //title: ""
-  //url: ""
+It is not specified.
 
-  var submissionCollection = context.services.get("mongodb-atlas").db("aiidprod").collection("submissions");
+`{}`
 
-  function update(arg, doc) {
-      let url = new URL(arg["url"]);
+**Example**
 
-      var today = new Date();
-      var dd = String(today.getDate()).padStart(2, '0');
-      var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-      var yyyy = today.getFullYear();
-      date_modified = yyyy + '-' + mm + '-' + dd ;
-
-      var authors = arg["authors"]
-      if( typeof authors === 'string' ) {
-        authors = arg["authors"].split(",").map(function(item){return item.trim()});
-      }
-
-      var submitters = arg["submitters"]
-      if( typeof submitters === 'string' ) {
-        submitters = arg["submitters"].split(",").map(function(item){return item.trim()});
-      }
-
-      var record = {
-        authors: authors,
-        date_downloaded: arg["date_downloaded"],
-        date_published: arg["date_published"],
-        image_url: arg["image_url"],
-        incident_date: arg["incident_date"],
-        incident_id: 0,
-        submitters: submitters,
-        text: arg["text"],
-        title: arg["title"],
-        url: arg["url"],
-        date_submitted: date_modified,
-        date_modified: date_modified,
-        description: arg["text"].substring(0, 200),
-        language: "en",
-        source_domain: url.hostname
-      }
-      if(arg["incident_id"].length > 0) {
-        record["incident_id"] = arg["incident_id"];
-      }
-
-      var collection = context.services.get("mongodb-atlas").db("aiidprod").collection("submissions");
-
-      const options = { upsert: false };
-      const filter = doc;
-      const updateDoc = {
-            $set: record,
-      };
-      var updatedDoc = collection.updateOne(filter, updateDoc, options);
-      return updatedDoc;
-  }
-
-  const objectId = arg["_id"];
-
-  var submittedDoc;
-
-  submissionCollection.findOne({"_id": objectId}).then(res => {
-    submittedDoc = res;
-  }).then(() => {
-    return update(arg, submittedDoc);
-  });
-};
+```json
+{
+   "_id":{
+      "$oid":"60c6e89ea514640922d807b2"
+   },
+   "incident_id":{
+      "$numberInt":"2"
+   },
+   "namespace":"CSET",
+   "classifications":{
+      "Annotator":"1",
+      "Annotation Status":"6. Complete and final",
+      "Reviewer":"5",
+      "Quality Control":false,
+      "Full Description":"On December 5, 2018, a robot punctured a can of bear spray in Amazon's fulfillment center in Robbinsville, New Jersey. Amazon's spokesman stated that \"an automated machine punctured a 9-oz can of bear repellent.\" The punctured can released capsaicin, an irritant, into the air. Several dozen workers were exposed to the fumes, causing symptoms including trouble breathing and a burning sensation in the eyes and throat. 24 workers were hospitalized, and one was sent to intensive care and intubated.",
+      "Short Description":"Twenty-four Amazon workers in New Jersey were hospitalized after a robot punctured a can of bear repellent spray in a warehouse.",
+      "Beginning Date":"2018-12-05T08:00:00.000Z",
+      "Ending Date":"2018-12-05T08:00:00.000Z",
+      "Location":"Robbinsville, NJ",
+      "Near Miss":"Harm caused",
+      "Named Entities":[
+         "Amazon"
+      ],
+      "Technology Purveyor":[
+         "Amazon"
+      ],
+      "Intent":"Accident",
+      "Severity":"Moderate",
+      "Lives Lost":false,
+      "Harm Distribution Basis":[],
+      "Harm Type":[
+         "Harm to physical health/safety",
+         "Harm to physical property"
+      ],
+      "Infrastructure Sectors":[],
+      "Finacial Cost":"",
+      "Laws Implicated":"Workplace safety laws; OSHA regulations",
+      "AI System Description":"An automated machine operating within an Amazon fulfillment center.",
+      "Data Inputs":"",
+      "System Developer":"",
+      "Sector of Deployment":"Transportation and storage",
+      "Public Sector Deployment":"No",
+      "Nature of End User":"",
+      "Level of Autonomy":"Unclear/unknown",
+      "Relevant AI functions":[
+         "Unclear"
+      ],
+      "AI Techniques":"",
+      "AI Applications":[
+         "robotics"
+      ],
+      "Physical System":[
+         "Unknown/unclear"
+      ],
+      "Problem Nature":[
+         "Unknown/unclear"
+      ],
+      "Publish":true,
+      "Notes":""
+   }
+}
 ```
