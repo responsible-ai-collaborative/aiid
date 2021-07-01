@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Toast, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import uuid from 'react-uuid';
 
 const ToastsWrapper = styled.div`
   position: fixed;
@@ -65,12 +66,12 @@ export function ToastContextProvider({ children }) {
 
   const addToast = useCallback(
     function (toast) {
-      setToasts((toasts) => [...toasts, toast]);
+      setToasts((toasts) => [...toasts, { ...toast, id: uuid() }]);
     },
     [setToasts]
   );
 
-  const removeToast = (e, clickedToast, index) => {
+  const removeToast = (e, index) => {
     e.preventDefault();
     if (toasts.length > 0) {
       setToasts(toasts.filter((t, i) => i !== index));
@@ -81,14 +82,14 @@ export function ToastContextProvider({ children }) {
     <ToastContext.Provider value={addToast}>
       {children}
       <ToastsWrapper>
-        {toasts.map(({ message, severity }, index) => (
-          <Toast key={message} style={{ background: severity.color, maxWidth: '100%' }}>
+        {toasts.map(({ message, severity, id }, index) => (
+          <Toast key={id} style={{ background: severity.color, maxWidth: '100%' }}>
             <ToastBody style={{ color: 'white' }}>
               <ToastBodyContent>
                 <FontAwesomeIcon icon={severity.icon} className={severity.faClass} />
-                {message}
+                {message()}
               </ToastBodyContent>
-              <CloseButton bg={severity.color} onClick={(e) => removeToast(e, message, index)}>
+              <CloseButton bg={severity.color} onClick={(e) => removeToast(e, index)}>
                 <FontAwesomeIcon icon={faTimes} className="fas fa-times" />
               </CloseButton>
             </ToastBody>

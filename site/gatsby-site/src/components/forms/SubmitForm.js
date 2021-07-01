@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Container, Alert } from 'react-bootstrap';
+import { Button, Container } from 'react-bootstrap';
 import { CSVReader } from 'react-papaparse';
 import cx from 'classnames';
 
@@ -10,6 +10,7 @@ import { FormStyles } from 'components/styles/Form';
 
 import { useUserContext } from 'contexts/userContext';
 import { useMongo } from 'hooks/useMongo';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
 const SubmitForm = () => {
   const { isAdmin, user } = useUserContext();
@@ -22,7 +23,19 @@ const SubmitForm = () => {
 
   const [csvIndex, setCsvIndex] = useState(0);
 
-  const [showAlert, setShowAlert] = useState();
+  // const [showAlert, setShowAlert] = useState();
+  const addToast = useToastContext();
+
+  addToast({
+    // eslint-disable-next-line react/display-name
+    message: () => (
+      <>
+        {'Report successfully added to review queue. It will appear on the'}
+        <Link to="/apps/submitted">review queue page</Link>
+      </>
+    ),
+    severity: SEVERITY.success,
+  });
 
   useEffect(() => {
     setIncident(csvData[csvIndex]);
@@ -52,9 +65,17 @@ const SubmitForm = () => {
           ...values,
         });
       }
-      setShowAlert('success');
+      // setShowAlert('success');
+      addToast({
+        message: 'Report successfully added to review queue. It will appear on the',
+        severity: SEVERITY.success,
+      });
     } catch (e) {
-      setShowAlert('failure');
+      // setShowAlert('failure');
+      addToast({
+        message: 'Was not able to create the report, please review the form and try again.',
+        severity: SEVERITY.success,
+      });
     }
 
     resetForm();
@@ -63,7 +84,7 @@ const SubmitForm = () => {
 
   return (
     <FormStyles className="p-5 mb-5">
-      <Alert
+      {/* <Alert
         variant="success"
         show={showAlert === 'success'}
         onClose={() => setShowAlert()}
@@ -79,7 +100,7 @@ const SubmitForm = () => {
         dismissible
       >
         Was not able to create the report, please review the form and try again.
-      </Alert>
+      </Alert> */}
       <IncidentReportForm incident={incident} onUpdate={setIncident} onSubmit={handleSubmit} />
       <RelatedIncidents incident={incident} />
       <Container className={cx('mt-5 p-0', !isAdmin && 'd-none')}>
