@@ -157,7 +157,7 @@ const getClassification = (r) => {
     'Data Inputs': r.field68,
     'System Developer': r.field69,
     'Sector of Deployment': r.field70,
-    'Public Sector Deployment': r.field71,
+    'Public Sector Deployment': r.field71 === 'Yes' ? true : false,
     'Nature of End User': r.field72,
     'Level of Autonomy': r.field73,
     'Relevant AI functions': getArrayForSubfields(r, aiFunctionFields),

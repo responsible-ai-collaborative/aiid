@@ -186,7 +186,7 @@ const getStats = (taxa, classification) => {
     return vClean;
   };
 
-  const filtredClassification = classification.filter((c) => c.namespace === taxa.namespace);
+  const filteredClassification = classification.filter((c) => c.namespace === taxa.namespace);
 
   const stats = {};
 
@@ -195,7 +195,7 @@ const getStats = (taxa, classification) => {
     .forEach((field) => {
       let auxStat = {};
 
-      filtredClassification.forEach((c) => {
+      filteredClassification.forEach((c) => {
         const value = c.classifications[field.short_name.split(' ').join('_')];
 
         if (value?.length > 0) {
@@ -219,16 +219,16 @@ const getStats = (taxa, classification) => {
     .forEach((field) => {
       let auxStat = {};
 
-      filtredClassification.forEach((c) => {
+      filteredClassification.forEach((c) => {
         const value = c.classifications[field.short_name.split(' ').join('_')];
 
-        if (value && value !== '') {
+        if ((value || typeof value === 'boolean') && value !== '') {
           if (typeof value === 'boolean') {
             auxStat[value] = incrementStat(auxStat, value);
           }
 
           if (field.display_type === 'bool' && typeof value !== 'boolean') {
-            auxStat[value] = incrementStat(auxStat, value === 'No' ? false : true);
+            auxStat[value] = incrementStat(auxStat, value === 'Yes' ? 'Yes' : 'No');
           }
 
           if (typeof value === 'object') {

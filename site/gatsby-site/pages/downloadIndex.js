@@ -116,6 +116,7 @@ const DownloadIndex = () => {
 
       data.allMongodbAiidprodIncidents.nodes.map((i) => {
         let finalDataNode = {
+          objectID: i['mongodb_id'],
           ...i,
         };
 
