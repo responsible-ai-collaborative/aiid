@@ -87,7 +87,7 @@ export function ToastContextProvider({ children }) {
             <ToastBody style={{ color: 'white' }}>
               <ToastBodyContent>
                 <FontAwesomeIcon icon={severity.icon} className={severity.faClass} />
-                {message()}
+                {message}
               </ToastBodyContent>
               <CloseButton bg={severity.color} onClick={(e) => removeToast(e, index)}>
                 <FontAwesomeIcon icon={faTimes} className="fas fa-times" />
