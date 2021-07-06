@@ -148,7 +148,7 @@ const IncidentCite = ({ data, ...props }) => {
 
       const value = getStringForValue(c);
 
-      if (value !== undefined && value !== '' && value.length > 0) {
+      if (field.public !== false && value !== undefined && value !== '' && value.length > 0) {
         array.push({
           name: field.short_name,
           value: getStringForValue(value),
