@@ -163,29 +163,6 @@ const getStats = (taxa, classification) => {
     return 1;
   };
 
-  const validateString = (v) => {
-    let vClean = v;
-
-    if (vClean.includes('-')) {
-      vClean = vClean.split('-').join('_');
-    }
-
-    if (vClean.includes('#')) {
-      vClean = vClean.replace('#', '');
-    }
-
-    if (vClean.includes('(')) {
-      vClean = vClean.replace('(', '');
-    }
-
-    if (vClean.includes(')')) {
-      vClean = vClean.replace(')', '');
-    }
-
-    vClean = vClean.replace(/[^\w\s]/gi, '');
-    return vClean;
-  };
-
   const filteredClassification = classification.filter((c) => c.namespace === taxa.namespace);
 
   const stats = {};
@@ -235,22 +212,16 @@ const getStats = (taxa, classification) => {
             value
               .filter((v) => v !== '')
               .forEach((v) => {
-                const vClean = validateString(v);
-
-                auxStat[vClean] = incrementStat(auxStat, vClean);
+                auxStat[v] = incrementStat(auxStat, v);
               });
           }
 
           if (field.display_type === 'list' && typeof value !== 'object') {
-            const vClean = validateString(value);
-
-            auxStat[vClean] = incrementStat(auxStat, vClean);
+            auxStat[value] = incrementStat(auxStat, value);
           }
 
           if (field.short_name === 'Location') {
-            const vClean = validateString(value);
-
-            auxStat[vClean] = incrementStat(auxStat, vClean);
+            auxStat[value] = incrementStat(auxStat, value);
           }
         }
       });
