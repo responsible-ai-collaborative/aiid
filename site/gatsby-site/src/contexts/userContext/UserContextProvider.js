@@ -23,7 +23,7 @@ export const UserContextProvider = ({ children }) => {
 
   const [type, setType] = useState();
 
-  const [mongoUserKey, setMongoUserKey] = useState();
+  const [mongoUserKey, setMongoUserKey] = useState(null);
 
   const setUserAPIKey = useCallback((apiKey) => {
     setMongoUserKey(apiKey);
@@ -42,17 +42,19 @@ export const UserContextProvider = ({ children }) => {
 
   useEffect(() => {
     setLoading(true);
-    const credentials = mongoUserKey
-      ? Realm.Credentials.apiKey(mongoUserKey)
-      : Realm.Credentials.anonymous();
+    const apiKey = window.localStorage.getItem('mongoUserKey');
 
-    setType(mongoUserKey ? 'token' : 'anonymous');
+    const credentials = apiKey ? Realm.Credentials.apiKey(apiKey) : Realm.Credentials.anonymous();
+
+    const type = apiKey ? 'token' : 'anonymous';
+
+    setType(type);
 
     realmApp
       .logIn(credentials)
       .then((res) => {
         setUser(res);
-        console.log(`Logged in as ${type} user:`, user);
+        console.log(`Logged in as ${type} user:`, res);
       })
       .catch((e) => {
         console.log('RealmApp login Failed: ', e);
@@ -60,7 +62,7 @@ export const UserContextProvider = ({ children }) => {
       .finally(() => {
         setLoading(false);
       });
-  }, [mongoUserKey]);
+  }, []);
 
   return (
     <UserContext.Provider

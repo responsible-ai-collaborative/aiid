@@ -45,11 +45,11 @@ export async function getUser(callback = function () {}) {
 
     user = await realmApp.logIn(credentials);
     type = 'token';
-    console.log(`Logged in token API user: ${user}`);
+    console.log('Logged in token API user:', user);
   } else {
     user = await realmApp.logIn(Realm.Credentials.anonymous());
     type = 'anonymous';
-    console.log(`Logged in anonymous user: ${user}`);
+    console.log('Logged in anonymous user:', user);
   }
   callback();
   return { user: user, type: type };

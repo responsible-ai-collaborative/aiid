@@ -1,11 +1,4 @@
-const baseTheme = {
-  fonts: {
-    mono: '"SF Mono", "Roboto Mono", Menlo, monospace',
-  },
-};
-
-const lightTheme = {
-  ...baseTheme,
+export const theme = {
   colors: {
     background: '#fff',
     heading: '#000',
@@ -13,17 +6,7 @@ const lightTheme = {
     preFormattedText: 'rgb(245, 247, 249)',
     link: '#1000EE',
   },
-};
-
-const darkTheme = {
-  ...baseTheme,
-  colors: {
-    background: '#001933',
-    heading: '#fff',
-    text: '#fff',
-    preFormattedText: '#000',
-    link: '#1ED3C6',
+  fonts: {
+    mono: '"SF Mono", "Roboto Mono", Menlo, monospace',
   },
 };
-
-export { lightTheme, darkTheme };
