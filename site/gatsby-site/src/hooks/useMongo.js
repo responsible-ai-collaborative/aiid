@@ -37,8 +37,8 @@ export const useMongo = () => {
   ) => {
     const newData = {
       ...data,
-      authors: data.authors.split(','),
-      submitters: data.submitters.split(','),
+      authors: data.authors,
+      submitters: data.submitters,
     };
 
     const mongoCollection = realmApp.services
