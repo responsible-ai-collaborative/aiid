@@ -58,7 +58,7 @@ export function ToastContextProvider({ children }) {
 
   useEffect(() => {
     if (toasts.length > 0) {
-      const timer = setTimeout(() => setToasts((toasts) => toasts.slice(1)), 4000);
+      const timer = setTimeout(() => setToasts((toasts) => toasts.slice(1)), 10 * 1000);
 
       return () => clearTimeout(timer);
     }
@@ -78,8 +78,12 @@ export function ToastContextProvider({ children }) {
     }
   };
 
+  const removeAllToasts = () => {
+    setToasts([]);
+  };
+
   return (
-    <ToastContext.Provider value={addToast}>
+    <ToastContext.Provider value={{ addToast, removeAllToasts }}>
       {children}
       <ToastsWrapper>
         {toasts.map(({ message, severity, id }, index) => (

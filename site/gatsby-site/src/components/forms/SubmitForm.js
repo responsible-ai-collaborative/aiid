@@ -23,11 +23,19 @@ const SubmitForm = () => {
 
   const [csvIndex, setCsvIndex] = useState(0);
 
-  const addToast = useToastContext();
+  const addToast = useToastContext().addToast;
+
+  const removeAllToasts = useToastContext().removeAllToasts;
 
   useEffect(() => {
     setIncident(csvData[csvIndex]);
   }, [csvIndex, csvData]);
+
+  useEffect(() => {
+    return () => {
+      removeAllToasts();
+    };
+  }, []);
 
   const handleCSVError = (err, file, inputElem, reason) => {
     console.log(err, file, inputElem, reason);
