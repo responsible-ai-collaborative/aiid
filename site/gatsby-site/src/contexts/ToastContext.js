@@ -4,6 +4,7 @@ import { Toast, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import uuid from 'react-uuid';
+import { globalHistory } from '@reach/router';
 
 const ToastsWrapper = styled.div`
   position: fixed;
@@ -56,6 +57,12 @@ export default ToastContext;
 export function ToastContextProvider({ children }) {
   const [toasts, setToasts] = useState([]);
 
+  globalHistory.listen(() => {
+    if (toasts.length > 0) {
+      setToasts([]);
+    }
+  });
+
   useEffect(() => {
     if (toasts.length > 0) {
       const timer = setTimeout(() => setToasts((toasts) => toasts.slice(1)), 10 * 1000);
@@ -78,12 +85,8 @@ export function ToastContextProvider({ children }) {
     }
   };
 
-  const removeAllToasts = () => {
-    setToasts([]);
-  };
-
   return (
-    <ToastContext.Provider value={{ addToast, removeAllToasts }}>
+    <ToastContext.Provider value={addToast}>
       {children}
       <ToastsWrapper>
         {toasts.map(({ message, severity, id }, index) => (
