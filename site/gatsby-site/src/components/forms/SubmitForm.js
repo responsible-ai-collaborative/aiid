@@ -23,7 +23,7 @@ const SubmitForm = () => {
 
   const [csvIndex, setCsvIndex] = useState(0);
 
-  const addToast = useToastContext().addToast;
+  const addToast = useToastContext();
 
   useEffect(() => {
     setIncident(csvData[csvIndex]);
