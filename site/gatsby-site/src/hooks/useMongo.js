@@ -35,26 +35,10 @@ export const useMongo = () => {
     dbName = DB_NAME,
     dbCollection = DB_COLLECTION
   ) => {
-    let authors = data.authors;
-
-    if (Object.prototype.toString.call(authors) !== '[object Array]') {
-      authors = data.authors.split(',').map(function (item) {
-        return item.trim();
-      });
-    }
-
-    let submitters = data.submitters;
-
-    if (Object.prototype.toString.call(submitters) !== '[object Array]') {
-      submitters = data.submitters.split(',').map(function (item) {
-        return item.trim();
-      });
-    }
-
     const newData = {
       ...data,
-      authors: authors,
-      submitters: submitters,
+      authors: data.authors,
+      submitters: data.submitters,
     };
 
     const mongoCollection = realmApp.services
