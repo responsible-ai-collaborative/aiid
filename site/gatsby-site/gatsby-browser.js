@@ -13,7 +13,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 export const shouldUpdateScroll = ({ routerProps: { location } }) => {
   const { pathname } = location;
 
-  if (pathname !== '/apps/discover') {
+  if (pathname !== '/apps/discover' && !pathname.includes('/cite/')) {
     window.scrollTo(0, 0);
   }
 
