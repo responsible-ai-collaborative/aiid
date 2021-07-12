@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Container, Alert } from 'react-bootstrap';
+import { Button, Container } from 'react-bootstrap';
 import { CSVReader } from 'react-papaparse';
 import cx from 'classnames';
 
@@ -10,6 +10,7 @@ import { FormStyles } from 'components/styles/Form';
 
 import { useUserContext } from 'contexts/userContext';
 import { useMongo } from 'hooks/useMongo';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
 const SubmitForm = () => {
   const { isAdmin, user } = useUserContext();
@@ -22,7 +23,7 @@ const SubmitForm = () => {
 
   const [csvIndex, setCsvIndex] = useState(0);
 
-  const [showAlert, setShowAlert] = useState();
+  const addToast = useToastContext();
 
   useEffect(() => {
     setIncident(csvData[csvIndex]);
@@ -30,6 +31,10 @@ const SubmitForm = () => {
 
   const handleCSVError = (err, file, inputElem, reason) => {
     console.log(err, file, inputElem, reason);
+    addToast({
+      message: `Unable to upload: ${reason}`,
+      severity: SEVERITY.danger,
+    });
   };
 
   const previousRecord = () => {
@@ -52,9 +57,20 @@ const SubmitForm = () => {
           ...values,
         });
       }
-      setShowAlert('success');
+      addToast({
+        message: (
+          <>
+            {'Report successfully added to review queue. It will appear on the  '}
+            <Link to="/apps/submitted">review queue page</Link> within an hour.
+          </>
+        ),
+        severity: SEVERITY.success,
+      });
     } catch (e) {
-      setShowAlert('failure');
+      addToast({
+        message: 'Was not able to create the report, please review the form and try again.',
+        severity: SEVERITY.warning,
+      });
     }
 
     resetForm();
@@ -63,23 +79,6 @@ const SubmitForm = () => {
 
   return (
     <FormStyles className="p-5 mb-5">
-      <Alert
-        variant="success"
-        show={showAlert === 'success'}
-        onClose={() => setShowAlert()}
-        dismissible
-      >
-        Report successfully added to review queue. It will appear on the{' '}
-        <Link to="/apps/submitted">review queue page</Link> within an hour.
-      </Alert>
-      <Alert
-        variant="danger"
-        show={showAlert === 'failure'}
-        onClose={() => setShowAlert()}
-        dismissible
-      >
-        Was not able to create the report, please review the form and try again.
-      </Alert>
       <IncidentReportForm incident={incident} onUpdate={setIncident} onSubmit={handleSubmit} />
       <RelatedIncidents incident={incident} />
       <Container className={cx('mt-5 p-0', !isAdmin && 'd-none')}>
@@ -99,7 +98,13 @@ const SubmitForm = () => {
           <Button onClick={nextRecord}>Next &gt;</Button>
         </div>
         <CSVReader
-          onDrop={setCsvData}
+          onDrop={(data) => {
+            setCsvData(data);
+            addToast({
+              message: 'File uploaded',
+              severity: SEVERITY.info,
+            });
+          }}
           onError={handleCSVError}
           config={{ header: true }}
           noDrag
