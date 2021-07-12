@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Form, Button, OverlayTrigger, Alert } from 'react-bootstrap';
+import React from 'react';
+import { Form, Button, OverlayTrigger } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
@@ -9,6 +9,7 @@ import { FormStyles } from 'components/styles/Form';
 import * as Popovers from 'components/PopOvers';
 
 import { useUserContext } from 'contexts/userContext';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
 // set in form //
 // * url: "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti" # The fully qualified URL to the report as hosted on the web.
@@ -31,7 +32,7 @@ const validationSchema = Yup.object().shape({
 const QuickAddForm = () => {
   const { loading, user } = useUserContext();
 
-  const [showSuccess, setShowSuccess] = useState(false);
+  const addToast = useToastContext();
 
   const {
     values,
@@ -46,22 +47,34 @@ const QuickAddForm = () => {
     validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       setSubmitting(true);
-
-      await user.functions.quickAdd(values);
+      user.functions
+        .quickAdd(values)
+        .then(() => {
+          addToast({
+            message: (
+              <>
+                {'Report successfully added to review queue. It will appear on the  '}
+                <Link to="/apps/submitted">review queue page</Link> within an hour.
+              </>
+            ),
+            severity: SEVERITY.success,
+          });
+        })
+        .catch(() => {
+          addToast({
+            message: 'Was not able to create the report, please review the form and try again.',
+            severity: SEVERITY.warning,
+          });
+        });
 
       resetForm();
       setSubmitting(false);
-      setShowSuccess(true);
     },
   });
 
   return (
     <FormStyles>
       {loading && <DBConnecting />}
-      <Alert variant="success" show={showSuccess}>
-        Report successfully added to review queue. It will appear on the{' '}
-        <Link to="/apps/submitted">review queue page</Link> within an hour.
-      </Alert>
       <Form onSubmit={handleSubmit} className="mx-auto p-5">
         <Form.Group controlId="formUrl">
           <OverlayTrigger

@@ -9,10 +9,10 @@ import AuthorsLeaderboard from 'components/leaderboards/AuthorsLeaderboard';
 import DomainsLeaderboard from 'components/leaderboards/DomainsLeaderboard';
 import RandomIncidentsCarousel from 'components/RandomIncidentsCarousel';
 import LatestIncidentReport from 'components/LatestIncidentReport';
-import Blog from 'components/blog/Blog';
-import { navigate, Link } from 'gatsby';
-
+import { navigate } from 'gatsby';
+import { Link } from 'gatsby';
 import { Button, InputGroup, FormControl, Container, Row, Col, Image, Card } from 'react-bootstrap';
+import Blog from 'components/blog/Blog';
 
 const StyledCard = styled(Card)`
   height: 100%;
