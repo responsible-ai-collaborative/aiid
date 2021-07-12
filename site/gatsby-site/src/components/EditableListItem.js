@@ -65,6 +65,8 @@ const EditableListItem = ({ editable, onUpdate, name, value }) => {
 
   const toggleEditing = () => setEditing(!editing);
 
+  const isLink = name === 'image_url' || name === 'url';
+
   const handleSave = () => {
     onUpdate(inputRef.current.value);
     toggleEditing();
@@ -78,7 +80,13 @@ const EditableListItem = ({ editable, onUpdate, name, value }) => {
       <Col xs={12} lg={9} className="d-flex align-items-center">
         {!editing && (
           <EditButton onClick={toggleEditing} disabled={!editable}>
-            {value}
+            {isLink ? (
+              <a href={value} target="_blank" rel="noreferrer">
+                {value}
+              </a>
+            ) : (
+              value
+            )}
             {editable && <FontAwesomeIcon icon={faPen} size="xs" />}
           </EditButton>
         )}
