@@ -25,7 +25,9 @@ const ListedGroup = ({ item, keysToRender }) => {
         <EditableListItem
           key={key}
           name={key}
-          value={typeof item[key] == 'object' ? item[key].join(', ') : item[key]}
+          value={
+            typeof item[key] == 'object' && item[key] !== null ? item[key].join(', ') : item[key]
+          }
         />
       ))}
     </ListGroup>
