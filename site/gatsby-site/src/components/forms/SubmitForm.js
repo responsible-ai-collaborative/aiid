@@ -9,13 +9,10 @@ import IncidentReportForm from 'components/forms/IncidentReportForm';
 import { FormStyles } from 'components/styles/Form';
 
 import { useUserContext } from 'contexts/userContext';
-import { useMongo } from 'hooks/useMongo';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
 const SubmitForm = () => {
   const { isAdmin, user } = useUserContext();
-
-  const { updateOne } = useMongo();
 
   const [incident, setIncident] = useState({});
 
@@ -49,14 +46,15 @@ const SubmitForm = () => {
     setSubmitting(true);
 
     try {
+      let submitIncidentID = 0;
+
       if (incident.incident_id) {
-        updateOne({ incident_id: incident.incident_id }, values);
-      } else {
-        await user.functions.createReportForReview({
-          incident_id: 0,
-          ...values,
-        });
+        submitIncidentID = incident.incident_id;
       }
+      await user.functions.createReportForReview({
+        incident_id: submitIncidentID,
+        ...values,
+      });
       addToast({
         message: (
           <>

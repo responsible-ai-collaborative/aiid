@@ -54,7 +54,7 @@ exports = function(arg){
     language: "en",
     source_domain: url.hostname
   }
-  if(arg["incident_id"].length > 0) {
+  if(arg["incident_id"].length > 0 || typeof arg["incident_id"] === 'number') {
     record["incident_id"] = parseInt(arg["incident_id"]);
   }
 
