@@ -74,6 +74,12 @@ const ReportedIncident = ({ incident }) => {
   const handleUpdate = async (values) => {
     console.log('Updating report from: ', incident);
     console.log('Updating report to:', values);
+    if (typeof values['authors'] === 'string') {
+      values['authors'] = values['authors'].split(',').map((s) => s.trim());
+    }
+    if (typeof values['submitters'] === 'string') {
+      values['submitters'] = values['submitters'].split(',').map((s) => s.trim());
+    }
     updateOne({ _id: values._id }, values, refetch);
   };
 
