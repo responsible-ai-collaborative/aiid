@@ -12,6 +12,7 @@ import LatestIncidentReport from 'components/LatestIncidentReport';
 import { navigate } from 'gatsby';
 import { Link } from 'gatsby';
 import { Button, InputGroup, FormControl, Container, Row, Col, Image, Card } from 'react-bootstrap';
+import Blog from 'components/blog/Blog';
 
 const StyledCard = styled(Card)`
   height: 100%;
@@ -140,6 +141,13 @@ const LandingPage = (props) => {
         <StyledHeading>Welcome to the Artificial Intelligence Incident Database</StyledHeading>
       </div>
       <Container>
+        <StyledRow>
+          <Col>
+            <StyledCard>
+              <Blog />
+            </StyledCard>
+          </Col>
+        </StyledRow>
         <StyledRow>
           <Col>
             <StyledCard>

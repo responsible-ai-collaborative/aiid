@@ -47,7 +47,6 @@ const QuickAddForm = () => {
     validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       setSubmitting(true);
-
       user.functions
         .quickAdd(values)
         .then(() => {
