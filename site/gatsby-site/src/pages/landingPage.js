@@ -14,9 +14,7 @@ import { Link } from 'gatsby';
 import { Button, InputGroup, FormControl, Container, Row, Col, Image, Card } from 'react-bootstrap';
 import Blog from 'components/blog/Blog';
 
-const StyledCard = styled(Card)`
-  height: 100%;
-`;
+const StyledCard = styled(Card)``;
 
 const StyledLeadContent = styled.div`
   padding: 0em 2em 0em 2em;
@@ -37,7 +35,17 @@ const StyledCardParagraph = styled.p`
 `;
 
 const StyledRow = styled(Row)`
-  margin-bottom: 1em;
+  & + & {
+    margin-top: 1rem;
+  }
+`;
+
+const StyledCol = styled(Col)`
+  @media (max-width: 991px) {
+    &.col-lg-6 + &.col-lg-6 {
+      margin-top: 1rem;
+    }
+  }
 `;
 
 const ImageRow = styled(StyledRow)`
@@ -164,7 +172,7 @@ const LandingPage = (props) => {
           </Col>
         </StyledRow>
         <StyledRow>
-          <Col md={12} lg={6}>
+          <StyledCol lg={6}>
             <StyledCard>
               <SectionHeading>About the Database</SectionHeading>
               <StyledCardLeadParagraph>
@@ -180,9 +188,9 @@ const LandingPage = (props) => {
                 failings. <Link to={`/about`}>(Learn More)</Link>
               </StyledCardParagraph>
             </StyledCard>
-          </Col>
-          <Col>
-            <StyledCard md={12} lg={6}>
+          </StyledCol>
+          <StyledCol lg={6}>
+            <StyledCard>
               <SectionHeading>About Partnership on AI</SectionHeading>
               <StyledCardLeadParagraph>
                 The <a href="http://partnershiponai.org/">Partnership on AI</a> is the leading forum
@@ -199,7 +207,7 @@ const LandingPage = (props) => {
                 <Link to={`/about/1-governance`}>(Learn More)</Link>
               </StyledCardParagraph>
             </StyledCard>
-          </Col>
+          </StyledCol>
         </StyledRow>
         <StyledRow>
           <Col>
@@ -297,7 +305,7 @@ const LandingPage = (props) => {
           </Col>
         </StyledRow>
         <StyledRow>
-          <Col xs={12} sm={12} md={12} lg={6}>
+          <StyledCol lg={6}>
             <StyledCard>
               <SectionHeading>Wordcounts</SectionHeading>
               <StyledCardLeadParagraph>
@@ -309,13 +317,13 @@ const LandingPage = (props) => {
                 <Wordlist content={localWordCounts} />
               </LiWrapper>
             </StyledCard>
-          </Col>
-          <Col xs={12} sm={12} md={12} lg={6}>
+          </StyledCol>
+          <StyledCol lg={6}>
             <StyledCard>
               <SectionHeading>Random Reports</SectionHeading>
               <RandomIncidentsCarousel />
             </StyledCard>
-          </Col>
+          </StyledCol>
         </StyledRow>
       </Container>
     </Layout>
