@@ -43,6 +43,7 @@ More details are available in the `Production System` information below. We reco
 **Setup the application:**
 
 1. Clone this repository, `git clone git@github.com:PartnershipOnAI/aiid.git`
+    - You need to have git LFS installed, and if not granted access to Netlify Large Media, please set ` GIT_LFS_SKIP_SMUDGE=1` before cloning, and when pushing, use `yarn lint && yarn format && git push --no-verify` to skip Netlify's pre-commit hook.
 2. Install all the dependencies associated with [Gatbsy development](https://www.gatsbyjs.com/tutorial/part-zero/) to your machine.
 3. From inside the `site/gatsby-site/` directory, issue `gatsby develop`. Visit `http://localhost:8000`
 
