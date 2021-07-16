@@ -14,7 +14,9 @@ import { Link } from 'gatsby';
 import { Button, InputGroup, FormControl, Container, Row, Col, Image, Card } from 'react-bootstrap';
 import Blog from 'components/blog/Blog';
 
-const StyledCard = styled(Card)``;
+const StyledCard = styled(Card)`
+  overflow: hidden;
+`;
 
 const StyledLeadContent = styled.div`
   padding: 0em 2em 0em 2em;
