@@ -12,7 +12,7 @@ import LatestIncidentReport from 'components/LatestIncidentReport';
 import { navigate } from 'gatsby';
 import { Link } from 'gatsby';
 import { Button, InputGroup, FormControl, Container, Row, Col, Image, Card } from 'react-bootstrap';
-import Blog from 'components/blog/Blog';
+import LatestPost from 'components/blog/LatestPost';
 
 const StyledCard = styled(Card)`
   overflow: hidden;
@@ -154,7 +154,8 @@ const LandingPage = (props) => {
         <StyledRow>
           <Col>
             <StyledCard>
-              <Blog />
+              <SectionHeading>From the blog</SectionHeading>
+              <LatestPost />
             </StyledCard>
           </Col>
         </StyledRow>
