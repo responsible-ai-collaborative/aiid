@@ -46,7 +46,7 @@ export default function PostsListing() {
   return (
     <>
       {posts.map((p) => (
-        <StyledCard key={p.node.slug}>
+        <StyledCard key={p.node.fields.slug}>
           <PostPreview post={p.node} />
         </StyledCard>
       ))}
