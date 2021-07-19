@@ -132,11 +132,14 @@ const Tree = ({ edges }) => {
   const defaultCollapsed = {};
 
   treeData.items.forEach((item) => {
-    if (config.sidebar.collapsedNav && config.sidebar.collapsedNav.includes(item.url)) {
-      defaultCollapsed[item.url] = true;
-    } else {
-      defaultCollapsed[item.url] = false;
-    }
+    const collapsedFromConfig =
+      config.sidebar.collapsedNav && config.sidebar.collapsedNav.includes(item.url);
+
+    const collapsedFromURL =
+      window.location.pathname != item.url &&
+      item.items.every((subItem) => subItem.url != window.location.pathname);
+
+    defaultCollapsed[item.url] = collapsedFromConfig || collapsedFromURL;
   });
   const [collapsed, setCollapsed] = useState(defaultCollapsed);
 
