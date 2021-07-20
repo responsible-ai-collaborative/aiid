@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import config from '../../../config';
 import TreeNode from './treeNode';
+import { useLocation } from '@reach/router';
 
 const calculateTreeData = (edges) => {
   const originalData = config.sidebar.ignoreIndex
@@ -131,13 +132,15 @@ const Tree = ({ edges }) => {
 
   const defaultCollapsed = {};
 
+  const location = useLocation();
+
   treeData.items.forEach((item) => {
     const collapsedFromConfig =
       config.sidebar.collapsedNav && config.sidebar.collapsedNav.includes(item.url);
 
     const collapsedFromURL =
-      window.location.pathname != item.url &&
-      item.items.every((subItem) => subItem.url != window.location.pathname);
+      location.pathname != item.url &&
+      item.items.every((subItem) => subItem.url != location.pathname);
 
     defaultCollapsed[item.url] = collapsedFromConfig || collapsedFromURL;
   });
