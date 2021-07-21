@@ -23,7 +23,9 @@ const SubmitForm = () => {
   const addToast = useToastContext();
 
   useEffect(() => {
-    setIncident(csvData[csvIndex]);
+    if (csvData[csvIndex]) {
+      setIncident(csvData[csvIndex]);
+    }
   }, [csvIndex, csvData]);
 
   const handleCSVError = (err, file, inputElem, reason) => {
