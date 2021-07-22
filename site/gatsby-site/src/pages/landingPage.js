@@ -13,6 +13,7 @@ import { navigate } from 'gatsby';
 import { Link } from 'gatsby';
 import { Button, InputGroup, FormControl, Container, Row, Col, Image, Card } from 'react-bootstrap';
 import Blog from 'components/blog/Blog';
+import QuickAddForm from 'components/forms/QuickAddForm';
 
 const StyledCard = styled(Card)`
   overflow: hidden;
@@ -91,6 +92,10 @@ const LiWrapper = styled.div`
   }
 `;
 
+const StyledQuickAddForm = styled.div`
+  margin-top: -1rem;
+`;
+
 const DiscoverAppSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -151,6 +156,14 @@ const LandingPage = (props) => {
         <StyledHeading>Welcome to the Artificial Intelligence Incident Database</StyledHeading>
       </div>
       <Container>
+        <StyledRow>
+          <Col>
+            <StyledCard>
+              <SectionHeading>Quick Add New Report URL</SectionHeading>
+              <StyledQuickAddForm as={QuickAddForm} />
+            </StyledCard>
+          </Col>
+        </StyledRow>
         <StyledRow>
           <Col>
             <StyledCard>
