@@ -29,51 +29,44 @@ const validationSchema = Yup.object().shape({
     .required('*URL required'),
 });
 
-const QuickAddForm = () => {
+const QuickAddForm = ({ className }) => {
   const { loading, user } = useUserContext();
 
   const addToast = useToastContext();
 
-  const {
-    values,
-    errors,
-    touched,
-    isSubmitting,
-    handleChange,
-    handleBlur,
-    handleSubmit,
-  } = useFormik({
-    initialValues: { url: '' },
-    validationSchema,
-    onSubmit: async (values, { setSubmitting, resetForm }) => {
-      setSubmitting(true);
-      user.functions
-        .quickAdd(values)
-        .then(() => {
-          addToast({
-            message: (
-              <>
-                {'Report successfully added to review queue. It will appear on the  '}
-                <Link to="/apps/submitted">review queue page</Link> within an hour.
-              </>
-            ),
-            severity: SEVERITY.success,
+  const { values, errors, touched, isSubmitting, handleChange, handleBlur, handleSubmit } =
+    useFormik({
+      initialValues: { url: '' },
+      validationSchema,
+      onSubmit: async (values, { setSubmitting, resetForm }) => {
+        setSubmitting(true);
+        user.functions
+          .quickAdd(values)
+          .then(() => {
+            addToast({
+              message: (
+                <>
+                  {'Report successfully added to review queue. It will appear on the  '}
+                  <Link to="/apps/submitted">review queue page</Link> within an hour.
+                </>
+              ),
+              severity: SEVERITY.success,
+            });
+          })
+          .catch(() => {
+            addToast({
+              message: 'Was not able to create the report, please review the form and try again.',
+              severity: SEVERITY.warning,
+            });
           });
-        })
-        .catch(() => {
-          addToast({
-            message: 'Was not able to create the report, please review the form and try again.',
-            severity: SEVERITY.warning,
-          });
-        });
 
-      resetForm();
-      setSubmitting(false);
-    },
-  });
+        resetForm();
+        setSubmitting(false);
+      },
+    });
 
   return (
-    <FormStyles>
+    <FormStyles className={className}>
       {loading && <DBConnecting />}
       <Form onSubmit={handleSubmit} className="mx-auto p-5">
         <Form.Group controlId="formUrl">
