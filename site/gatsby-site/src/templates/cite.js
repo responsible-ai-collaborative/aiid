@@ -369,7 +369,7 @@ const IncidentCite = ({ data, ...props }) => {
 export default IncidentCite;
 
 export const pageQuery = graphql`
-  query($incident_id: Int!, $taxonomy_namespace_array: [String!]!) {
+  query ($incident_id: Int!, $taxonomy_namespace_array: [String!]!) {
     site {
       siteMetadata {
         title
