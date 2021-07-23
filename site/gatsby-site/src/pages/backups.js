@@ -38,14 +38,17 @@ const Backups = ({ pageContext, ...props }) => {
           <Row>
             <Col xs={12}>
               <ul>
-                {backups.map((value) => (
-                  <li
-                    key={`snapshot-${`https://s3.amazonaws.com/aiid-backups-public/${value.Key}`}`}
-                  >
-                    {value['LastModified']} &middot; {value['Size'] / 1000000} MB &middot;{' '}
-                    <Link to={value['Url']}>{value['Key']}</Link>
-                  </li>
-                ))}
+                {backups
+                  .map((b) => ({
+                    ...b,
+                    Key: `https://s3.amazonaws.com/aiid-backups-public/${b.Key}`,
+                  }))
+                  .map((value) => (
+                    <li key={`snapshot-${value['Key']}`}>
+                      {value['LastModified']} &middot; {value['Size'] / 1000000} MB &middot;{' '}
+                      <Link to={value['Url']}>{value['Key']}</Link>
+                    </li>
+                  ))}
               </ul>
             </Col>
           </Row>
