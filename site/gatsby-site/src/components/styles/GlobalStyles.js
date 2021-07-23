@@ -1,8 +1,8 @@
 import { injectGlobal } from '@emotion/css';
 
 injectGlobal`
-  @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap');
-  @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,600&display=swap');
+  @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Poppins:300,400,500,600&display=swap');
+
   * {
     margin: 0;
     padding: 0;
