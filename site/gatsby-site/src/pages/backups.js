@@ -39,7 +39,9 @@ const Backups = ({ pageContext, ...props }) => {
             <Col xs={12}>
               <ul>
                 {backups.map((value) => (
-                  <li key={`snapshot-${value['Url']}`}>
+                  <li
+                    key={`snapshot-${`https://s3.amazonaws.com/aiid-backups-public/${value.Key}`}`}
+                  >
                     {value['LastModified']} &middot; {value['Size'] / 1000000} MB &middot;{' '}
                     <Link to={value['Url']}>{value['Key']}</Link>
                   </li>

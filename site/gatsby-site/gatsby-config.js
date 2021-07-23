@@ -168,7 +168,7 @@ const plugins = [
   },
   'gatsby-plugin-use-query-params',
   {
-    resolve: 'gatsby-source-s3',
+    resolve: `@robinmetral/gatsby-source-s3`,
     options: {
       aws: {
         // This AWS IAM user has been provisioned no permissions, but the plugin requires a user to
@@ -178,6 +178,7 @@ const plugins = [
         secretAccessKey: 'PlZnI8J8ahPd3AeOGTAihRQUuon8n4FGYK8ROQep',
       },
       buckets: ['aiid-backups-public'],
+      // expiration: 120,
     },
   },
 ];
