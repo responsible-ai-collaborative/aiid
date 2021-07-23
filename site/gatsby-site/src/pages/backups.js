@@ -41,7 +41,7 @@ const Backups = ({ pageContext, ...props }) => {
                 {backups
                   .map((b) => ({
                     ...b,
-                    Key: `https://s3.amazonaws.com/aiid-backups-public/${b.Key}`,
+                    Url: `https://s3.amazonaws.com/aiid-backups-public/${b.Key}`,
                   }))
                   .map((value) => (
                     <li key={`snapshot-${value['Key']}`}>
