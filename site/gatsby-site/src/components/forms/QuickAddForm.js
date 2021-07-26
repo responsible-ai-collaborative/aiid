@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, OverlayTrigger } from 'react-bootstrap';
+import { Form, Button, OverlayTrigger, InputGroup } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
@@ -29,7 +29,7 @@ const validationSchema = Yup.object().shape({
     .required('*URL required'),
 });
 
-const QuickAddForm = ({ className }) => {
+const QuickAddForm = ({ className, appendSubmit = false }) => {
   const { loading, user } = useUserContext();
 
   const addToast = useToastContext();
@@ -77,26 +77,37 @@ const QuickAddForm = ({ className }) => {
           >
             <Form.Label>Report Address :</Form.Label>
           </OverlayTrigger>
-          <Form.Control
-            type="text"
-            name="url"
-            placeholder="Report URL"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.url}
-            className={touched.url && errors.url ? 'has-error' : null}
-          />
+          <InputGroup>
+            <Form.Control
+              type="text"
+              name="url"
+              placeholder="Report URL"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              value={values.url}
+              className={touched.url && errors.url ? 'has-error' : null}
+            />
+            {appendSubmit && (
+              <Button variant="primary" type="submit" disabled={isSubmitting || loading}>
+                Submit
+              </Button>
+            )}
+          </InputGroup>
           {touched.url && errors.url && <div className="error-message">{errors.url}</div>}
         </Form.Group>
+
         <p>
           Submitted links are added to a <Link to="/apps/submitted">review queue </Link>
           to be resolved to a new or existing incident record. Incidents submitted with
-          <Link to="/apps/submit"> full details </Link> are processed before URLs not posessing the
+          <Link to="/apps/submit"> full details </Link> are processed before URLs not possessing the
           full details.
         </p>
-        <Button variant="primary" type="submit" disabled={isSubmitting || loading}>
-          Submit
-        </Button>
+
+        {!appendSubmit && (
+          <Button variant="primary" type="submit" disabled={isSubmitting || loading}>
+            Submit
+          </Button>
+        )}
       </Form>
     </FormStyles>
   );
