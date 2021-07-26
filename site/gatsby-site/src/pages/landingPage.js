@@ -154,7 +154,7 @@ const LandingPage = (props) => {
         <StyledRow>
           <Col>
             <StyledCard>
-              <SectionHeading>From the blog</SectionHeading>
+              <SectionHeading>Latest Blog Post</SectionHeading>
               <LatestPost />
             </StyledCard>
           </Col>
