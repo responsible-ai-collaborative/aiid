@@ -12,7 +12,7 @@ export default function LatestPost() {
   } = useStaticQuery(graphql`
     query {
       allMdx(
-        filter: { fileAbsolutePath: { glob: "**/content/blog/*" } }
+        filter: { fileAbsolutePath: { glob: "**/content/about/blog/*" } }
         sort: { fields: frontmatter___date, order: DESC }
         limit: 1
       ) {
