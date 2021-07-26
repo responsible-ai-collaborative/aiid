@@ -114,8 +114,16 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
 
   const [parsingNews, setParsingNews] = useState(false);
 
+  const coldStartToast = () => {
+    addToast({
+      message: <>Sometimes fetching news info may take a while...</>,
+      severity: SEVERITY.warning,
+    });
+  };
+
   const parseNewsUrl = async (newsUrl) => {
     setParsingNews(true);
+    const timeout = setTimeout(coldStartToast, 20000);
 
     try {
       const url = `https://z14490usg0.execute-api.us-east-1.amazonaws.com/default/parseNews?url=${encodeURIComponent(
@@ -135,11 +143,12 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
       }));
     } catch (e) {
       addToast({
-        message: <>Error fetching news info.</>,
+        message: <>Error fetching news info, please try again in a few seconds.</>,
         severity: SEVERITY.danger,
       });
     }
 
+    clearTimeout(timeout);
     setParsingNews(false);
   };
 
