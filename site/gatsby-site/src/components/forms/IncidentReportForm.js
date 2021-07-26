@@ -131,7 +131,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         date_published: format(new Date(response.date_publish), 'yyyy-MM-dd'),
         date_downloaded: format(new Date(response.date_download), 'yyyy-MM-dd'),
         image_url: response.image_url,
-        text: response.text,
+        text: response.maintext,
       }));
     } catch (e) {
       addToast({
