@@ -150,29 +150,21 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         label="Report Address :"
         placeholder="Report URL"
         addOnComponent={
-          !isEditMode ? (
-            <Button
-              className="outline-secondary"
-              disabled={errors.url || !touched.url || parsingNews}
-              onClick={() => parseNewsUrl(incident.url)}
-            >
-              {' '}
-              {!parsingNews ? (
-                <>Fetch info</>
-              ) : (
-                <>
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />{' '}
-                  Fetching...
-                </>
-              )}
-            </Button>
-          ) : null
+          <Button
+            className="outline-secondary"
+            disabled={errors.url || !touched.url || parsingNews}
+            onClick={() => parseNewsUrl(incident.url)}
+          >
+            {' '}
+            {!parsingNews ? (
+              <>Fetch info</>
+            ) : (
+              <>
+                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />{' '}
+                Fetching...
+              </>
+            )}
+          </Button>
         }
         {...TextInputGroupProps}
       />
