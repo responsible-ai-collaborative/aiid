@@ -48,7 +48,7 @@ const StyledBgDiv = styled('div')`
   background-color: #f8f8f8;
   position: relative;
   display: none;
-  background: ${(props) => (props.isDarkThemeActive ? '#001932' : undefined)};
+  background: #001932';
 
   @media (max-width: 767px) {
     display: block;
@@ -82,7 +82,7 @@ const HideOnDesktop = styled.div`
   }
 `;
 
-const Header = ({ location, isDarkThemeActive }) => (
+const Header = () => (
   <StaticQuery
     query={graphql`
       query headerTitleQuery {
@@ -193,7 +193,7 @@ const Header = ({ location, isDarkThemeActive }) => (
             ) : null}
             <div id="navbar" className={'topnav'}>
               <div className={'visibleMobile'}>
-                <Sidebar location={location} />
+                <Sidebar />
                 <hr />
               </div>
               <ul className={'navBarUL navBarNav navBarULRight'}>
@@ -235,7 +235,7 @@ const Header = ({ location, isDarkThemeActive }) => (
             </div>
           </nav>
           {isSearchEnabled && (
-            <StyledBgDiv isDarkThemeActive={isDarkThemeActive}>
+            <StyledBgDiv>
               <div className={'searchWrapper'}>
                 <LoadableComponent collapse={true} indices={searchIndices} />
               </div>

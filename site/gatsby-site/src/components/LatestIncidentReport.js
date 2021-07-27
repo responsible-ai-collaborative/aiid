@@ -4,36 +4,28 @@ import styled from 'styled-components';
 import md5 from 'md5';
 import { format } from 'date-fns';
 
-const ThumbnailImg = styled.img`
-  max-width: 300px;
-  border: 1.5px solid #d9deee;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px 0px #e3e5ec;
-  display: flex;
-  flex-direction: column;
-`;
-
-const Row = styled.div`
-  display: flex;
-  flex-direction: row;
-
-  @media (max-width: 800px) {
-    flex-direction: column;
+const ThumbnailLink = styled(Link)`
+  display: block;
+  height: 300px;
+  margin: 0 -2rem 0;
+  @media (min-width: 991px) {
+    height: auto;
+    margin: 0 1rem -1rem -2rem;
+    justify-self: stretch;
+    flex: 1;
   }
 `;
 
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
+const ThumbnailImg = styled.img`
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
 `;
 
 const TextContainer = styled.div`
-  padding-left: 1.5em;
-
-  @media (max-width: 800px) {
-    padding-left: 0;
-    padding-top: 1.5em;
-  }
+  margin: 1rem auto 0;
+  line-height: 1.7;
+  flex: 1;
 `;
 
 const Title = styled.div`
@@ -49,10 +41,18 @@ const SubmissionDate = styled.div`
 `;
 
 const Description = styled.div`
-  padding-top: 1em;
+  padding-top: 0em;
   p {
     line-height: 1.5;
     margin-bottom: 0;
+  }
+`;
+
+const Wrapper = styled.div`
+  margin-top: -0.75em;
+  padding: 0em 2em 1rem;
+  @media (min-width: 991px) {
+    display: flex;
   }
 `;
 
@@ -79,31 +79,29 @@ const LatestIncidentReport = () => {
         const { image_url, title, description, epoch_date_submitted, incident_id } = nodes[0];
 
         return (
-          <>
-            <Row>
+          <Wrapper>
+            <ThumbnailLink to={`/cite/${incident_id}`}>
+              <ThumbnailImg
+                src={'https://incidentdatabase.ai/large_media/report_banners/' + md5(image_url)}
+                alt={title}
+              />
+            </ThumbnailLink>
+            <TextContainer>
               <Link to={`/cite/${incident_id}`}>
-                <ThumbnailImg
-                  src={'https://incidentdatabase.ai/large_media/report_banners/' + md5(image_url)}
-                  alt={title}
-                />
+                <Title>
+                  <p>{title}</p>
+                </Title>
               </Link>
-              <TextContainer>
-                <Column>
-                  <Link to={`/cite/${incident_id}`}>
-                    <Title>
-                      <p>{title}</p>
-                    </Title>
-                  </Link>
-                  <SubmissionDate>
-                    <p>{format(epoch_date_submitted, 'MMM d, yyyy, h:mm aaaa')}</p>
-                  </SubmissionDate>
-                  <Description>
-                    <p>{description}</p>
-                  </Description>
-                </Column>
-              </TextContainer>
-            </Row>
-          </>
+              <SubmissionDate>
+                <p>{format(epoch_date_submitted, 'MMM d, yyyy, h:mm aaaa')}</p>
+              </SubmissionDate>
+              <Description>
+                <p>
+                  {description}... <Link to={`/cite/${incident_id}`}>(Read More)</Link>
+                </p>
+              </Description>
+            </TextContainer>
+          </Wrapper>
         );
       }}
     />

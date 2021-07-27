@@ -1,9 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { MDXProvider } from '@mdx-js/react';
 
-import ThemeProvider from './theme/themeProvider';
-import mdxComponents from './mdxComponents';
 import Sidebar from './sidebar';
 import RightSidebar from './rightSidebar';
 import config from '../../config.js';
@@ -32,7 +29,7 @@ const Wrapper = styled('div')`
 const Content = styled('main')`
   display: flex;
   flex-grow: 1;
-  margin: 0px 88px;
+  margin: 0px 33px;
   padding-top: 3rem;
   background: ${({ theme }) => theme.colors.background};
 
@@ -67,28 +64,24 @@ const RightSideBarWidth = styled('div')`
   }
 `;
 
-const Layout = ({ children, location, collapse, className }) => (
-  <ThemeProvider location={location}>
-    <MDXProvider components={mdxComponents}>
-      <Wrapper>
-        <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
-          <Sidebar location={location} collapse={collapse} />
-        </LeftSideBarWidth>
-        {config.sidebar.title && (
-          <div
-            className={'sidebarTitle sideBarShow'}
-            dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
-          />
-        )}
-        <Content>
-          <MaxWidth className={className}>{children}</MaxWidth>
-        </Content>
-        <RightSideBarWidth className={'hiddenMobile'}>
-          <RightSidebar location={location} />
-        </RightSideBarWidth>
-      </Wrapper>
-    </MDXProvider>
-  </ThemeProvider>
+const Layout = ({ children, collapse, className, location }) => (
+  <Wrapper>
+    <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
+      <Sidebar collapse={collapse} />
+    </LeftSideBarWidth>
+    {config.sidebar.title && (
+      <div
+        className={'sidebarTitle sideBarShow'}
+        dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
+      />
+    )}
+    <Content>
+      <MaxWidth className={className}>{children}</MaxWidth>
+    </Content>
+    <RightSideBarWidth className={'hiddenMobile'}>
+      <RightSidebar location={location} />
+    </RightSideBarWidth>
+  </Wrapper>
 );
 
 export default Layout;

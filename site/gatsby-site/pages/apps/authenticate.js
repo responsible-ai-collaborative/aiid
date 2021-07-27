@@ -1,13 +1,18 @@
-import React, { useState, Component } from 'react';
+import React, { useState, Component, useEffect } from 'react';
 import Helmet from 'react-helmet';
 import Layout from 'components/Layout';
 import { Form, Button } from 'react-bootstrap';
 
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
-import { getUserAPIKey, setUserAPIKey, logout } from 'mongodb/authenticate';
+import { useUserContext } from 'contexts/userContext';
 
 function AuthenticateUI() {
-  const [apiKey, setAPIKey] = useState(getUserAPIKey());
+  const {
+    mongoUserKey,
+    actions: { setUserAPIKey, logout },
+  } = useUserContext();
+
+  const [apiKey, setAPIKey] = useState(mongoUserKey);
 
   const update = () => {
     setUserAPIKey(apiKey);
@@ -23,6 +28,10 @@ function AuthenticateUI() {
     setAPIKey(e.target.value);
   };
 
+  useEffect(() => {
+    setAPIKey(mongoUserKey);
+  }, [mongoUserKey]);
+
   return (
     <Form>
       <Form.Group controlId="formBasicEmail">
@@ -30,7 +39,7 @@ function AuthenticateUI() {
         <Form.Control
           type="text"
           placeholder="hf7h2lsH...834djsk"
-          value={apiKey}
+          value={apiKey || ''}
           onChange={input}
         />
         <Form.Text className="text-muted">Do not share this token with anyone.</Form.Text>

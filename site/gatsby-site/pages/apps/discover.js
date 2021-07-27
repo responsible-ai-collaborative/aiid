@@ -35,9 +35,23 @@ import '../../static/discover/src/app.css';
 import '../../static/discover/src/index.css';
 import { add, format, formatISO, isAfter, isBefore } from 'date-fns';
 
-export const searchClient = algoliasearch('8TNY3YFAO8', '55efba4929953a53eb357824297afb4c');
+export const indexName = 'instant_search';
+
+export const searchClient = algoliasearch('JD5JCVZEVS', 'c5e99d93261645721a1765fe4414389c');
+
+//// Alternative
+// const indexName = "aiid-emergency";
+// export const searchClient = ('8TNY3YFAO8', '55efba4929953a53eb357824297afb4c');
+// const indexName = "aiid-emergency";
 
 const REFINEMENT_LISTS = [
+  {
+    attribute: 'classifications',
+    inputText: 'CSET:...',
+    label: 'Classifications',
+    faIcon: faNewspaper,
+    faClasses: 'far fa-newspaper',
+  },
   {
     attribute: 'source_domain',
     inputText: "Filter Domains ('bbc.com')",
@@ -798,7 +812,7 @@ const removeEmptyAttributes = (obj) => {
 const convertArrayToString = (obj) => {
   for (const attr in obj) {
     if (obj[attr].length > 0) {
-      obj[attr] = obj[attr].join();
+      obj[attr] = obj[attr].join('||');
     }
   }
   return { ...obj };
@@ -814,13 +828,26 @@ const validateDate = (date) => {
 };
 
 const convertStringToArray = (obj) => {
-  const stringKeys = ['source_domain', 'authors', 'submitters', 'incident_id', 'flag'];
+  const stringKeys = [
+    'source_domain',
+    'authors',
+    'submitters',
+    'incident_id',
+    'flag',
+    'classifications',
+  ];
 
   let newObj = {};
 
   for (const attr in obj) {
     if (stringKeys.includes(attr) && obj[attr] !== undefined) {
-      newObj[attr] = obj[attr].split(',');
+      if (obj[attr].indexOf('CSET') >= 0) {
+        // The facet separator is double pipe sign - "||"
+        newObj[attr] = obj[attr].split('||CSET').map((i) => 'CSET' + i);
+        newObj[attr][0] = newObj[attr][0].substr(4);
+      } else {
+        newObj[attr] = obj[attr].split('||');
+      }
     }
   }
   return newObj;
@@ -1141,6 +1168,7 @@ const DiscoverApp = React.memo((props) => {
     submitters: StringParam,
     incident_id: StringParam,
     flag: StringParam,
+    classifications: StringParam,
     epoch_incident_date_min: StringParam,
     epoch_incident_date_max: StringParam,
     epoch_date_published_min: StringParam,
@@ -1164,6 +1192,7 @@ const DiscoverApp = React.memo((props) => {
     submitters: StringParam,
     incident_id: StringParam,
     flag: StringParam,
+    classifications: StringParam,
     epoch_incident_date_min: StringParam,
     epoch_incident_date_max: StringParam,
     epoch_date_published_min: StringParam,
@@ -1276,7 +1305,7 @@ const DiscoverApp = React.memo((props) => {
           <>
             <Container>
               <InstantSearch
-                indexName="aiid-emergency"
+                indexName={indexName}
                 searchClient={searchClient}
                 searchState={searchState}
                 onSearchStateChange={(searchState) => {

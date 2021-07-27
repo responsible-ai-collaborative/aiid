@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Helmet from 'react-helmet';
 
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
+import { Button, Container, Row, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
@@ -54,7 +52,42 @@ const StatsContainer = styled.div`
   }
 `;
 
-const IncidentCite = ({ ...props }) => {
+const ClassificationContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  width: 100%;
+`;
+
+const Field = styled.div`
+  width: 20%;
+  border-right: 2.5px solid #d9deee;
+  margin-right: 1em;
+  color: grey;
+  font-weight: 700;
+`;
+
+const Value = styled.div`
+  width: 80%;
+`;
+
+const TaxaCardHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  p {
+    margin: 0;
+  }
+`;
+
+const IncidnetsReportsTitle = styled.div`
+  margin-top: 4em;
+  padding-bottom: 20px;
+`;
+
+const IncidentCite = ({ data, ...props }) => {
   if (!props?.pathContext?.incidentReports) {
     return null;
   }
@@ -62,6 +95,25 @@ const IncidentCite = ({ ...props }) => {
   const {
     pathContext: { incidentReports },
   } = props;
+
+  if (!data) {
+    return null;
+  }
+
+  const { allMongodbAiidprodTaxa, allMongodbAiidprodClassifications } = data;
+
+  const [showAllClassifications, setShowAllClassifications] = useState({});
+
+  useEffect(() => {
+    let initShowAllClassifications = {};
+
+    if (allMongodbAiidprodClassifications.nodes.length > 0) {
+      allMongodbAiidprodClassifications.nodes.forEach((c) => {
+        initShowAllClassifications[c.namespace] = false;
+      });
+      setShowAllClassifications(initShowAllClassifications);
+    }
+  }, []);
 
   const scrollToIncidentCard = () => {
     if (props.location?.hash) {
@@ -76,6 +128,41 @@ const IncidentCite = ({ ...props }) => {
       scrollToIncidentCard();
     }
   }, []);
+  const getClassificationsArray = (classificationObj, taxonomy) => {
+    const taxaFieldsArray = taxonomy.field_list.sort((a, b) => b.weight - a.weight);
+
+    const array = [];
+
+    const getStringForValue = (value) => {
+      switch (typeof value) {
+        case 'object':
+          return value.join(', ');
+
+        case 'boolean':
+          return value ? 'Yes' : 'No';
+
+        default:
+          return value;
+      }
+    };
+
+    taxaFieldsArray.forEach((field) => {
+      const c = classificationObj[field.short_name.split(' ').join('_')];
+
+      const value = getStringForValue(c);
+
+      if (field.public !== false && value !== undefined && value !== '' && value.length > 0) {
+        array.push({
+          name: field.short_name,
+          value: getStringForValue(value),
+          weight: field.weight,
+          shortDescription: field.short_description,
+        });
+      }
+    });
+
+    return array;
+  };
 
   // meta tags
   const incident_id = incidentReports[0].node.incident_id;
@@ -174,6 +261,35 @@ const IncidentCite = ({ ...props }) => {
     );
   };
 
+  const taxonomies = [];
+
+  if (allMongodbAiidprodClassifications.nodes.length > 0) {
+    allMongodbAiidprodClassifications.nodes.forEach((c) => {
+      allMongodbAiidprodTaxa.nodes.forEach((t) => {
+        if (c.namespace === t.namespace) {
+          taxonomies.push({
+            namespace: c.namespace,
+            classificationsArray: getClassificationsArray(c.classifications, t),
+            showAllClassifications: false,
+          });
+        }
+      });
+    });
+  }
+
+  const toggleShowAllClassifications = (namespace) => {
+    setShowAllClassifications({
+      ...showAllClassifications,
+      [namespace]: !showAllClassifications[namespace],
+    });
+  };
+
+  const renderTooltip = (props, displayText) => (
+    <Tooltip id="button-tooltip" {...props}>
+      {displayText}
+    </Tooltip>
+  );
+
   return (
     <Layout {...props}>
       <Helmet>
@@ -236,11 +352,59 @@ const IncidentCite = ({ ...props }) => {
               </div>
             </CardContainer>
           </Row>
+          {taxonomies.length > 0 &&
+            taxonomies.map((t) => (
+              <Row key={t.namespace} className="mb-4">
+                <CardContainer className="card">
+                  <TaxaCardHeader className="card-header">
+                    <h4>{`${t.namespace} Taxonomy Classifications`}</h4>
+                    <a href={`/taxonomy/${t.namespace.toLowerCase()}`}>Taxonomy Details</a>
+                  </TaxaCardHeader>
+                  {t.classificationsArray &&
+                    t.classificationsArray
+                      .filter((field) => {
+                        if (showAllClassifications[t.namespace]) return true;
+                        if (!showAllClassifications[t.namespace] && field.weight >= 50) {
+                          return true;
+                        }
+                        return false;
+                      })
+                      .map((field) => (
+                        <ClassificationContainer key={field.name} className="card-body">
+                          <Field>
+                            <OverlayTrigger
+                              placement="left"
+                              delay={{ show: 100, hide: 400 }}
+                              overlay={(e) => renderTooltip(e, field.shortDescription)}
+                            >
+                              <p>{field.name}</p>
+                            </OverlayTrigger>
+                          </Field>
+                          <Value>{field.value}</Value>
+                        </ClassificationContainer>
+                      ))}
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-sm btn-block assignment-button"
+                    onClick={() => toggleShowAllClassifications(t.namespace)}
+                  >
+                    {`Show ${
+                      showAllClassifications[t.namespace] ? 'Fewer' : 'All'
+                    } Classifications`}
+                  </button>
+                </CardContainer>
+              </Row>
+            ))}
           <Row className="mb-4">
             <CardContainer className="card">
               <ImageCarousel nodes={incidentReports} />
             </CardContainer>
           </Row>
+          <IncidnetsReportsTitle>
+            <div className={'titleWrapper'}>
+              <StyledHeading>Incidents Reports</StyledHeading>
+            </div>
+          </IncidnetsReportsTitle>
           <Row className="mb-4">
             <HitsContainer showDetails={true}>
               <RenderIncidentCards nodes={incidentReports} />
@@ -253,3 +417,30 @@ const IncidentCite = ({ ...props }) => {
 };
 
 export default IncidentCite;
+
+export const pageQuery = graphql`
+  query($incident_id: Int!, $taxonomy_namespace_array: [String!]!) {
+    allMongodbAiidprodTaxa(filter: { namespace: { in: $taxonomy_namespace_array } }) {
+      nodes {
+        id
+        namespace
+        weight
+        description
+        field_list {
+          public
+          display_type
+          long_name
+          short_name
+          weight
+          short_description
+        }
+      }
+    }
+
+    allMongodbAiidprodClassifications(
+      filter: { incident_id: { eq: $incident_id }, classifications: { Publish: { eq: true } } }
+    ) {
+      ...ClassificationFields
+    }
+  }
+`;

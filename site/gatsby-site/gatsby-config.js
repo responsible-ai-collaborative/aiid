@@ -1,11 +1,19 @@
 require('dotenv').config();
 const md5 = require('md5');
 
+const path = require(`path`);
+
 const queries = require('./src/utils/algolia');
 
 const config = require('./config');
 
 const plugins = [
+  {
+    resolve: `gatsby-plugin-layout`,
+    options: {
+      component: require.resolve(`./wrap-with-provider`),
+    },
+  },
   {
     resolve: `gatsby-plugin-netlify`,
     options: {
@@ -26,6 +34,7 @@ const plugins = [
   },
   'gatsby-plugin-styled-components',
   'gatsby-plugin-sitemap',
+  `gatsby-transformer-sharp`,
   'gatsby-plugin-sharp',
   'gatsby-plugin-emotion',
   'gatsby-plugin-react-helmet',
@@ -34,6 +43,13 @@ const plugins = [
     options: {
       name: 'docs',
       path: `${__dirname}/content/`,
+    },
+  },
+  {
+    resolve: 'gatsby-source-filesystem',
+    options: {
+      name: 'images',
+      path: path.join(__dirname, `src`, `images`),
     },
   },
   {

@@ -1,6 +1,6 @@
 export const onServiceWorkerUpdateReady = () => {
   const answer = window.confirm(
-    `This website has been updated. ` + `Reload to display the latest version?`
+    `This website has been updated. Reload to display the latest version?`
   );
 
   if (answer === true) {
@@ -22,4 +22,10 @@ export const shouldUpdateScroll = ({ routerProps: { location } }) => {
   }
 
   return false;
+};
+
+import { ToastContextProvider } from './src/contexts/ToastContext';
+
+export const wrapRootElement = ({ element }) => {
+  return <ToastContextProvider>{element}</ToastContextProvider>;
 };
