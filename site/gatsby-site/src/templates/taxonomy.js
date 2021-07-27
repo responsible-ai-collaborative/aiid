@@ -283,7 +283,7 @@ const Taxonomy = (props) => {
 export default Taxonomy;
 
 export const pageQuery = graphql`
-  query ($namespace: String!) {
+  query($namespace: String!) {
     allMongodbAiidprodClassifications(
       filter: {
         namespace: { eq: $namespace }

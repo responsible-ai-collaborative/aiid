@@ -97,7 +97,7 @@ export default class MDXRuntimeTest extends Component {
 }
 
 export const pageQuery = graphql`
-  query ($id: String!) {
+  query($id: String!) {
     site {
       siteMetadata {
         title
