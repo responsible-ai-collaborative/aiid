@@ -87,33 +87,34 @@ const IncidnetsReportsTitle = styled.div`
   padding-bottom: 20px;
 `;
 
-const IncidentCite = ({ data, ...props }) => {
-  if (!props?.pathContext?.incidentReports) {
+const IncidentCite = ({ ...props }) => {
+  if (!props?.pageContext?.incidentReports) {
     return null;
   }
 
   const {
-    pathContext: { incidentReports },
+    pageContext: { incidentReports, taxonomies },
   } = props;
-
-  if (!data) {
-    return null;
-  }
-
-  const { allMongodbAiidprodTaxa, allMongodbAiidprodClassifications } = data;
 
   const [showAllClassifications, setShowAllClassifications] = useState({});
 
   useEffect(() => {
     let initShowAllClassifications = {};
 
-    if (allMongodbAiidprodClassifications.nodes.length > 0) {
-      allMongodbAiidprodClassifications.nodes.forEach((c) => {
-        initShowAllClassifications[c.namespace] = false;
+    if (taxonomies.length > 0) {
+      taxonomies.forEach((t) => {
+        initShowAllClassifications[t.namespace] = false;
       });
       setShowAllClassifications(initShowAllClassifications);
     }
   }, []);
+
+  const toggleShowAllClassifications = (namespace) => {
+    setShowAllClassifications({
+      ...showAllClassifications,
+      [namespace]: !showAllClassifications[namespace],
+    });
+  };
 
   const scrollToIncidentCard = () => {
     if (props.location?.hash) {
@@ -128,41 +129,6 @@ const IncidentCite = ({ data, ...props }) => {
       scrollToIncidentCard();
     }
   }, []);
-  const getClassificationsArray = (classificationObj, taxonomy) => {
-    const taxaFieldsArray = taxonomy.field_list.sort((a, b) => b.weight - a.weight);
-
-    const array = [];
-
-    const getStringForValue = (value) => {
-      switch (typeof value) {
-        case 'object':
-          return value.join(', ');
-
-        case 'boolean':
-          return value ? 'Yes' : 'No';
-
-        default:
-          return value;
-      }
-    };
-
-    taxaFieldsArray.forEach((field) => {
-      const c = classificationObj[field.short_name.split(' ').join('_')];
-
-      const value = getStringForValue(c);
-
-      if (field.public !== false && value !== undefined && value !== '' && value.length > 0) {
-        array.push({
-          name: field.short_name,
-          value: getStringForValue(value),
-          weight: field.weight,
-          shortDescription: field.short_description,
-        });
-      }
-    });
-
-    return array;
-  };
 
   // meta tags
   const incident_id = incidentReports[0].node.incident_id;
@@ -259,29 +225,6 @@ const IncidentCite = ({ data, ...props }) => {
         <CustomModal {...flagReportModal} />
       </>
     );
-  };
-
-  const taxonomies = [];
-
-  if (allMongodbAiidprodClassifications.nodes.length > 0) {
-    allMongodbAiidprodClassifications.nodes.forEach((c) => {
-      allMongodbAiidprodTaxa.nodes.forEach((t) => {
-        if (c.namespace === t.namespace) {
-          taxonomies.push({
-            namespace: c.namespace,
-            classificationsArray: getClassificationsArray(c.classifications, t),
-            showAllClassifications: false,
-          });
-        }
-      });
-    });
-  }
-
-  const toggleShowAllClassifications = (namespace) => {
-    setShowAllClassifications({
-      ...showAllClassifications,
-      [namespace]: !showAllClassifications[namespace],
-    });
   };
 
   const renderTooltip = (props, displayText) => (
@@ -417,30 +360,3 @@ const IncidentCite = ({ data, ...props }) => {
 };
 
 export default IncidentCite;
-
-export const pageQuery = graphql`
-  query($incident_id: Int!, $taxonomy_namespace_array: [String!]!) {
-    allMongodbAiidprodTaxa(filter: { namespace: { in: $taxonomy_namespace_array } }) {
-      nodes {
-        id
-        namespace
-        weight
-        description
-        field_list {
-          public
-          display_type
-          long_name
-          short_name
-          weight
-          short_description
-        }
-      }
-    }
-
-    allMongodbAiidprodClassifications(
-      filter: { incident_id: { eq: $incident_id }, classifications: { Publish: { eq: true } } }
-    ) {
-      ...ClassificationFields
-    }
-  }
-`;
