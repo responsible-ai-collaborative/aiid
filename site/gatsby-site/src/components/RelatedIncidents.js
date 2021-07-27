@@ -4,11 +4,22 @@ import Loader from 'components/Loader';
 
 import config from '../../config';
 import { useMongo } from 'hooks/useMongo';
+import { subWeeks, addWeeks } from 'date-fns';
+
+const useRunQuery = (query, callback) => {
+  const { runQuery } = useMongo();
+
+  runQuery(
+    query,
+    callback,
+    config.realm.production_db.db_service,
+    config.realm.production_db.db_name,
+    config.realm.production_db.db_collection
+  );
+};
 
 const RelatedIncidents = ({ incident = {} }) => {
   const { incident_id, date_published } = incident;
-
-  const { runQuery } = useMongo();
 
   const [loading, setLoading] = useState(false);
 
@@ -35,30 +46,40 @@ const RelatedIncidents = ({ incident = {} }) => {
 
       setLoading(true);
 
-      runQuery(
-        { incident_id: parsed },
-        (res) => {
-          console.log('incidents related with incident_id: ', incident_id, res);
-          setRelated(res);
-          setLoading(false);
-        },
-        config.realm.production_db.db_service,
-        config.realm.production_db.db_name,
-        config.realm.production_db.db_collection
-      );
+      useRunQuery({ incident_id: parsed }, (res) => {
+        const incidentEpochDate = res[0].epoch_incident_date * 1000;
+
+        useRunQuery(
+          {
+            epoch_incident_date: {
+              $gte: subWeeks(incidentEpochDate, 2).getTime() / 1000,
+              $lt: addWeeks(incidentEpochDate, 2).getTime() / 1000,
+            },
+          },
+          (res) => {
+            console.log('incidents related with incident_id: ', incident_id, res);
+            setRelated(res);
+            setLoading(false);
+          }
+        );
+      });
     } else if (changed && date_published) {
       setLoading(true);
 
-      runQuery(
-        { date_published },
+      const inputEpochDatePublished = new Date(date_published).getTime();
+
+      useRunQuery(
+        {
+          epoch_date_published: {
+            $gte: subWeeks(inputEpochDatePublished, 2).getTime() / 1000,
+            $lt: addWeeks(inputEpochDatePublished, 2).getTime() / 1000,
+          },
+        },
         (res) => {
           console.log(res);
           setRelated(res);
           setLoading(false);
-        },
-        config.realm.production_db.db_service,
-        config.realm.production_db.db_name,
-        config.realm.production_db.db_collection
+        }
       );
     }
   }, [incident]);
