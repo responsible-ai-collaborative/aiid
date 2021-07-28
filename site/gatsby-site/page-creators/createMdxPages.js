@@ -6,7 +6,7 @@ const createMdxPages = (graphql, createPage) => {
       graphql(
         `
           {
-            allMdx {
+            allMdx(filter: { fileAbsolutePath: { glob: "**/content/**" } }) {
               edges {
                 node {
                   fields {
