@@ -154,14 +154,6 @@ const LandingPage = (props) => {
         <StyledRow>
           <Col>
             <StyledCard>
-              <SectionHeading>Latest Blog Post</SectionHeading>
-              <LatestPost />
-            </StyledCard>
-          </Col>
-        </StyledRow>
-        <StyledRow>
-          <Col>
-            <StyledCard>
               <DiscoverAppSearch />
             </StyledCard>
           </Col>
@@ -304,6 +296,14 @@ const LandingPage = (props) => {
                 <AuthorsLeaderboard limit={3} />
                 <DomainsLeaderboard limit={3} />
               </LeaderboardContainer>
+            </StyledCard>
+          </Col>
+        </StyledRow>
+        <StyledRow>
+          <Col>
+            <StyledCard>
+              <SectionHeading>Latest Blog Post</SectionHeading>
+              <LatestPost />
             </StyledCard>
           </Col>
         </StyledRow>
