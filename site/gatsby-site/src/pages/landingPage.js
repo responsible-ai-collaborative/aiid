@@ -13,6 +13,7 @@ import { navigate } from 'gatsby';
 import { Link } from 'gatsby';
 import { Button, InputGroup, FormControl, Container, Row, Col, Image, Card } from 'react-bootstrap';
 import Blog from 'components/blog/Blog';
+import QuickAddForm from 'components/forms/QuickAddForm';
 
 const StyledCard = styled(Card)`
   overflow: hidden;
@@ -88,6 +89,26 @@ const LiWrapper = styled.div`
   padding: 0em 2em 2em 2em;
   li {
     margin-left: 1em;
+  }
+`;
+
+const StyledQuickAddForm = styled(QuickAddForm)`
+  margin-top: -1rem;
+  form {
+    background: #fff;
+    padding: 1rem 2rem 2rem !important;
+  }
+  label {
+    display: none;
+  }
+  .form-group {
+    margin-bottom: 0;
+  }
+  .error-message {
+    position: relative;
+  }
+  p {
+    display: none;
   }
 `;
 
@@ -170,6 +191,14 @@ const LandingPage = (props) => {
             <StyledCard>
               <SectionHeading>Latest Incident Report</SectionHeading>
               <LatestIncidentReport />
+            </StyledCard>
+          </Col>
+        </StyledRow>
+        <StyledRow>
+          <Col>
+            <StyledCard>
+              <SectionHeading>Quick Add New Report URL</SectionHeading>
+              <StyledQuickAddForm showDescription={false} appendSubmit={true} />
             </StyledCard>
           </Col>
         </StyledRow>
