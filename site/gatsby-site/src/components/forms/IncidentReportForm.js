@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Spinner } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-
 import Link from 'components/Link';
 import TextInputGroup from 'components/TextInputGroup';
-
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { format } from 'date-fns';
 import { dateRegExp } from 'utils/date';
 
 // set in form //
@@ -110,8 +110,74 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
 
   const isEditMode = incident && !!incident.incident_id;
 
+  const addToast = useToastContext();
+
+  const [parsingNews, setParsingNews] = useState(false);
+
+  const coldStartToast = () => {
+    addToast({
+      message: <>Sometimes fetching news info may take a while...</>,
+      severity: SEVERITY.warning,
+    });
+  };
+
+  const parseNewsUrl = async (newsUrl) => {
+    setParsingNews(true);
+    const timeout = setTimeout(coldStartToast, 20000);
+
+    try {
+      const url = `https://z14490usg0.execute-api.us-east-1.amazonaws.com/default/parseNews?url=${encodeURIComponent(
+        newsUrl
+      )}`;
+
+      const response = await (await fetch(url)).json();
+
+      onUpdate((incident) => ({
+        ...incident,
+        title: response.title,
+        authors: response.authors,
+        date_published: format(new Date(response.date_publish), 'yyyy-MM-dd'),
+        date_downloaded: format(new Date(response.date_download), 'yyyy-MM-dd'),
+        image_url: response.image_url,
+        text: response.maintext,
+      }));
+    } catch (e) {
+      addToast({
+        message: <>Error fetching news info, please try again in a few seconds.</>,
+        severity: SEVERITY.danger,
+      });
+    }
+
+    clearTimeout(timeout);
+    setParsingNews(false);
+  };
+
   return (
     <Form onSubmit={handleSubmit} className="mx-auto">
+      <TextInputGroup
+        name="url"
+        label="Report Address :"
+        placeholder="Report URL"
+        addOnComponent={
+          <Button
+            className="outline-secondary"
+            disabled={errors.url || !touched.url || parsingNews}
+            onClick={() => parseNewsUrl(incident.url)}
+          >
+            {' '}
+            {!parsingNews ? (
+              <>Fetch info</>
+            ) : (
+              <>
+                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />{' '}
+                Fetching...
+              </>
+            )}
+          </Button>
+        }
+        {...TextInputGroupProps}
+      />
+
       <TextInputGroup
         name="title"
         label="Title :"
@@ -146,12 +212,6 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         name="date_downloaded"
         label="Date Downloaded :"
         placeholder="YYYY-MM-DD"
-        {...TextInputGroupProps}
-      />
-      <TextInputGroup
-        name="url"
-        label="Report Address :"
-        placeholder="Report URL"
         {...TextInputGroupProps}
       />
       <TextInputGroup
