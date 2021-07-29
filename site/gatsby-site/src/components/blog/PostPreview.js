@@ -8,12 +8,6 @@ const ThumbnailLink = styled(Link)`
   display: block;
   height: 300px;
   margin: 0 -2rem 0;
-  @media (min-width: 991px) {
-    height: auto;
-    margin: 0 1rem -1rem -2rem;
-    justify-self: stretch;
-    flex: 1;
-  }
 `;
 
 const ThumbnailImg = styled(Img)`
@@ -48,11 +42,30 @@ const Description = styled.div`
   }
 `;
 
+const Author = styled.div`
+  font-style: italic;
+  margin-top: 1rem;
+`;
+
 const Wrapper = styled.div`
   margin-top: -0.75em;
   padding: 0em 2em 1rem;
   @media (min-width: 991px) {
     display: flex;
+    ${ThumbnailLink} {
+      height: auto;
+      margin: 0 1rem -1rem -2rem;
+      justify-self: stretch;
+      flex: 0.5;
+      min-width: 280px;
+    }
+    ${TextContainer} {
+      display: flex;
+      flex-direction: column;
+    }
+    ${Description} {
+      flex: 1;
+    }
   }
 `;
 
@@ -76,6 +89,7 @@ export default function PostPreview({ post }) {
             {post.excerpt}... <Link to={post.fields.slug}>(Read More)</Link>
           </p>
         </Description>
+        <Author>By {post.frontmatter.author}</Author>
       </TextContainer>
     </Wrapper>
   );

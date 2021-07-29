@@ -26,6 +26,7 @@ export default function LatestPost() {
             excerpt
             frontmatter {
               date
+              author
               image {
                 childImageSharp {
                   fluid(maxWidth: 800) {

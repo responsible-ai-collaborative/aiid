@@ -1,99 +1,50 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 
 import Layout from 'components/Layout';
-import NextPrevious from 'components/NextPrevious';
-import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
+import { StyledHeading, StyledMainWrapper, PostDate, Author } from 'components/styles/Post';
 import config from '../../config';
+import { format } from 'date-fns';
 
-const forcedNavOrder = config.sidebar.forcedNavOrder;
+export default function Post(props) {
+  const {
+    data: { mdx },
+  } = props;
 
-export default class MDXRuntimeTest extends Component {
-  render() {
-    const { data } = this.props;
+  const metaTitle = mdx.frontmatter.metaTitle;
 
-    if (!data) {
-      return null;
-    }
-    const { allMdx, mdx } = data;
+  const metaDescription = mdx.frontmatter.metaDescription;
 
-    const navItems = allMdx.edges
-      .map(({ node }) => node.fields.slug)
-      .filter((slug) => slug !== '/')
-      .sort()
-      .reduce(
-        (acc, cur) => {
-          if (forcedNavOrder.find((url) => url === cur)) {
-            return { ...acc, [cur]: [cur] };
-          }
+  let canonicalUrl = config.gatsby.siteUrl;
 
-          let prefix = cur.split('/')[1];
+  canonicalUrl =
+    config.gatsby.pathPrefix !== '/' ? canonicalUrl + config.gatsby.pathPrefix : canonicalUrl;
+  canonicalUrl = canonicalUrl + mdx.fields.slug;
 
-          if (config.gatsby && config.gatsby.trailingSlash) {
-            prefix = prefix + '/';
-          }
-
-          if (prefix && forcedNavOrder.find((url) => url === `/${prefix}`)) {
-            return { ...acc, [`/${prefix}`]: [...acc[`/${prefix}`], cur] };
-          } else {
-            return { ...acc, items: [...acc.items, cur] };
-          }
-        },
-        { items: [] }
-      );
-
-    const nav = forcedNavOrder
-      .reduce((acc, cur) => {
-        return acc.concat(navItems[cur]);
-      }, [])
-      .concat(navItems.items)
-      .map((slug) => {
-        if (slug) {
-          const { node } = allMdx.edges.find(({ node }) => node.fields.slug === slug);
-
-          return { title: node.fields.title, url: node.fields.slug };
-        }
-      });
-
-    // meta tags
-    const metaTitle = mdx.frontmatter.metaTitle;
-
-    const metaDescription = mdx.frontmatter.metaDescription;
-
-    let canonicalUrl = config.gatsby.siteUrl;
-
-    canonicalUrl =
-      config.gatsby.pathPrefix !== '/' ? canonicalUrl + config.gatsby.pathPrefix : canonicalUrl;
-    canonicalUrl = canonicalUrl + mdx.fields.slug;
-
-    return (
-      <Layout {...this.props}>
-        <Helmet>
-          {metaTitle ? <title>{metaTitle}</title> : null}
-          {metaTitle ? <meta name="title" content={metaTitle} /> : null}
-          {metaDescription ? <meta name="description" content={metaDescription} /> : null}
-          {metaTitle ? <meta property="og:title" content={metaTitle} /> : null}
-          {metaDescription ? <meta property="og:description" content={metaDescription} /> : null}
-          {metaTitle ? <meta property="twitter:title" content={metaTitle} /> : null}
-          {metaDescription ? (
-            <meta property="twitter:description" content={metaDescription} />
-          ) : null}
-          <link rel="canonical" href={canonicalUrl} />
-        </Helmet>
-        <div className={'titleWrapper'}>
-          <StyledHeading>{mdx.fields.title}</StyledHeading>
-        </div>
-        <StyledMainWrapper>
-          <MDXRenderer>{mdx.body}</MDXRenderer>
-        </StyledMainWrapper>
-        <div className={'addPaddTopBottom'}>
-          <NextPrevious mdx={mdx} nav={nav} />
-        </div>
-      </Layout>
-    );
-  }
+  return (
+    <Layout {...props}>
+      <Helmet>
+        {metaTitle ? <title>{metaTitle}</title> : null}
+        {metaTitle ? <meta name="title" content={metaTitle} /> : null}
+        {metaDescription ? <meta name="description" content={metaDescription} /> : null}
+        {metaTitle ? <meta property="og:title" content={metaTitle} /> : null}
+        {metaDescription ? <meta property="og:description" content={metaDescription} /> : null}
+        {metaTitle ? <meta property="twitter:title" content={metaTitle} /> : null}
+        {metaDescription ? <meta property="twitter:description" content={metaDescription} /> : null}
+        <link rel="canonical" href={canonicalUrl} />
+      </Helmet>
+      <div className={'titleWrapper'}>
+        <StyledHeading>{mdx.fields.title}</StyledHeading>
+        <PostDate>{format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')}</PostDate>
+      </div>
+      <StyledMainWrapper>
+        <MDXRenderer>{mdx.body}</MDXRenderer>
+        <Author>By {mdx.frontmatter.author}</Author>
+      </StyledMainWrapper>
+    </Layout>
+  );
 }
 
 export const pageQuery = graphql`
@@ -120,6 +71,8 @@ export const pageQuery = graphql`
       frontmatter {
         metaTitle
         metaDescription
+        author
+        date
       }
     }
     allMdx {
