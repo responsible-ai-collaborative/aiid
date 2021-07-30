@@ -19,7 +19,6 @@
     "@mdx-js/react": "^1.6.22",
     "@philpl/buble": "^0.19.7",
     "@playlyfe/gql": "^2.6.2",
-    "@robinmetral/gatsby-source-s3": "^2.1.1",
     "algoliasearch": "^3.35.1",
     "babel-plugin-styled-components": "^1.12.0",
     "bootstrap": "^4.6.0",
@@ -94,6 +93,7 @@
     "lint": "eslint --fix \"{src,page-creators,pages,constants}/**/*.{js,jsx}\""
   },
   "devDependencies": {
+    "@robinmetral/gatsby-source-s3": "^2.1.1",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.17.0",
     "eslint-config-prettier": "^7.1.0",
@@ -103,7 +103,6 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.22.0",
     "gatsby-plugin-remove-trailing-slashes": "^3.10.0",
-    "gatsby-source-s3": "0.0.0",
     "husky": "^4.3.6",
     "lint-staged": "^10.5.3",
     "prettier": "^2.2.1",
