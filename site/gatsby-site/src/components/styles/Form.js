@@ -5,7 +5,6 @@ export const FormStyles = styled.div`
   background: #f7f9fa;
   height: auto;
   width: 100%;
-  min-width: 450px;
   -webkit-box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.4);
   box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.4);
