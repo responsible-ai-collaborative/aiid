@@ -25,3 +25,5 @@ import { ToastContextProvider } from './src/contexts/ToastContext';
 export const wrapRootElement = ({ element }) => {
   return <ToastContextProvider>{element}</ToastContextProvider>;
 };
+
+import './src/global.css';
