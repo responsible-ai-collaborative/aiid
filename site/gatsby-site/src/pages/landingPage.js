@@ -12,7 +12,7 @@ import LatestIncidentReport from 'components/LatestIncidentReport';
 import { navigate } from 'gatsby';
 import { Link } from 'gatsby';
 import { Button, InputGroup, FormControl, Container, Row, Col, Image, Card } from 'react-bootstrap';
-import Blog from 'components/blog/Blog';
+import LatestPost from 'components/blog/LatestPost';
 import QuickAddForm from 'components/forms/QuickAddForm';
 
 const StyledCard = styled(Card)`
@@ -175,13 +175,6 @@ const LandingPage = (props) => {
         <StyledRow>
           <Col>
             <StyledCard>
-              <Blog />
-            </StyledCard>
-          </Col>
-        </StyledRow>
-        <StyledRow>
-          <Col>
-            <StyledCard>
               <DiscoverAppSearch />
             </StyledCard>
           </Col>
@@ -332,6 +325,14 @@ const LandingPage = (props) => {
                 <AuthorsLeaderboard limit={3} />
                 <DomainsLeaderboard limit={3} />
               </LeaderboardContainer>
+            </StyledCard>
+          </Col>
+        </StyledRow>
+        <StyledRow>
+          <Col>
+            <StyledCard>
+              <SectionHeading>Latest Blog Post</SectionHeading>
+              <LatestPost />
             </StyledCard>
           </Col>
         </StyledRow>

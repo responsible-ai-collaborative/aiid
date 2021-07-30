@@ -14,6 +14,8 @@ const createBackupsPage = require('./page-creators/createBackupsPage');
 
 const createTaxonomyPages = require('./page-creators/createTaxonomyPages');
 
+const createBlogPosts = require('./page-creators/createBlogPosts');
+
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions;
 
@@ -23,6 +25,7 @@ exports.createPages = ({ graphql, actions }) => {
     createWordCountsPages(graphql, createPage),
     createBackupsPage(graphql, createPage),
     createTaxonomyPages(graphql, createPage),
+    createBlogPosts(graphql, createPage),
   ]);
 };
 
@@ -61,6 +64,10 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
 
     if (value === 'index') {
       value = '';
+    }
+
+    if (parent.sourceInstanceName === 'blog') {
+      value = `blog/${value}`;
     }
 
     if (config.gatsby && config.gatsby.trailingSlash) {

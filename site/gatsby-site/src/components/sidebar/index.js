@@ -96,7 +96,7 @@ const SidebarLayout = ({ collapse }) => (
   <StaticQuery
     query={graphql`
       query {
-        allMdx {
+        allMdx(filter: { fileAbsolutePath: { glob: "**/content/**" } }) {
           edges {
             node {
               fields {
