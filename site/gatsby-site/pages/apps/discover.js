@@ -35,6 +35,7 @@ import Helmet from 'react-helmet';
 import '../../static/discover/src/app.css';
 import '../../static/discover/src/index.css';
 import { add, format, formatISO, isAfter, isBefore } from 'date-fns';
+import WebArchiveLink from 'components/WebArchiveLink';
 
 export const indexName = 'instant_search';
 
@@ -666,9 +667,9 @@ export const IncidentCard = ({
       )}
     </div>
     <CardFooter className="card-footer text-muted">
-      <a href={item.url} target="_blank" rel="noreferrer">
+      <WebArchiveLink url={item.url} date={item.date_submitted}>
         <FontAwesomeIcon icon={faNewspaper} className="far fa-newspaper" title="Read the Source" />
-      </a>
+      </WebArchiveLink>
 
       <FontAwesomeIcon
         icon={faIdCard}
