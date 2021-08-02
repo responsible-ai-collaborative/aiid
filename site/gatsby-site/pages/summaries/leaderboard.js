@@ -8,6 +8,7 @@ import SubmittersLeaderboard from 'components/leaderboards/SubmittersLeaderboard
 import AuthorsLeaderboard from 'components/leaderboards/AuthorsLeaderboard';
 import DomainsLeaderboard from 'components/leaderboards/DomainsLeaderboard';
 import OriginalSubmittersLeaderboard from 'components/leaderboards/OriginalSubmittersLeaderboard';
+import UniqueSubmittersLeaderboard from 'components/leaderboards/UniqueSubmittersLeaderboard';
 
 export default class Authors extends Component {
   render() {
@@ -25,6 +26,7 @@ export default class Authors extends Component {
             like to explore the contents of the reports, you should work through the
             <Link to="/about_apps/1-discover"> Discover app</Link>.
           </p>
+          <UniqueSubmittersLeaderboard />
           <OriginalSubmittersLeaderboard />
           <SubmittersLeaderboard />
           <AuthorsLeaderboard />
