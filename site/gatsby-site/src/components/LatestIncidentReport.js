@@ -98,7 +98,7 @@ const LatestIncidentReport = () => {
                 </Title>
               </Link>
               <SubmissionDate>
-                <p>{format(epoch_date_submitted, 'MMM d, yyyy, h:mm aaaa')}</p>
+                <p>{format(epoch_date_submitted * 1000, 'MMM d, yyyy, h:mm aaaa')}</p>
               </SubmissionDate>
               <Description>
                 <p>
