@@ -2,7 +2,7 @@ name: 'Netlify Deploy to Production'
 
 on:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "0 6,18 * * *"
 
 jobs:
   deploy:

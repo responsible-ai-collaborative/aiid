@@ -11,6 +11,7 @@ import {
   Pagination,
   Stats,
   connectSearchBox,
+  connectStateResults,
   connectRange,
 } from 'react-instantsearch-dom';
 import styled from 'styled-components';
@@ -28,7 +29,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useModal, CustomModal } from '../../src/components/useModal';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Spinner } from 'react-bootstrap';
 import Helmet from 'react-helmet';
 
 import '../../static/discover/src/app.css';
@@ -1002,7 +1003,18 @@ const RenderCards = ({
   authorsModal,
   submittersModal,
   flagReportModal,
+  isSearchStalled,
 }) => {
+  if (isSearchStalled) {
+    return (
+      <NoResults>
+        <Spinner animation="border" role="status" variant="primary">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      </NoResults>
+    );
+  }
+
   if (hits.length === 0) {
     return (
       <NoResults>
@@ -1029,7 +1041,7 @@ const RenderCards = ({
   );
 };
 
-const CustomHits = connectHits(RenderCards);
+const CustomHits = connectHits(connectStateResults(RenderCards));
 
 const FiltersBar = ({ filters, updateFilters, updateQuery }) => {
   const flitersArray = [];
