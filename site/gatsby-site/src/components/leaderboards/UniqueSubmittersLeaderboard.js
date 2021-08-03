@@ -45,7 +45,7 @@ const UniqueSubmittersLeaderboard = ({ limit }) => {
       dataHash={hash}
       leaderboard={{
         attribute: 'submitters',
-        title: 'Unique Submitters',
+        title: 'Distinct Incidents Reported',
       }}
       limit={limit}
     />

@@ -20,7 +20,7 @@ const AuthorsLeaderboard = ({ limit }) => {
           dataHash={group}
           leaderboard={{
             attribute: 'authors',
-            title: 'Authors',
+            title: 'Report Authorship',
           }}
           limit={limit}
         />

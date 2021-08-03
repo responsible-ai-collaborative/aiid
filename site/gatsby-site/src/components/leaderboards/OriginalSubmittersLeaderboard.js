@@ -48,7 +48,7 @@ const OriginalSubmitersLeaderboard = ({ limit }) => {
       dataHash={hash}
       leaderboard={{
         attribute: 'submitters',
-        title: 'Original Submitters',
+        title: 'First Incident Reports',
       }}
       limit={limit}
     />
