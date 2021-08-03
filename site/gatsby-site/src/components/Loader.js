@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 const Wrapper = styled.div`
+  z-index: 1;
   position: absolute;
   top: 0;
   right: 0;

@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { ListGroup } from 'react-bootstrap';
 import Loader from 'components/Loader';
+import { debounce } from 'debounce';
 
 import config from '../../config';
 import { useMongo } from 'hooks/useMongo';
@@ -18,75 +19,177 @@ const useRunQuery = (query, callback) => {
   );
 };
 
-const RelatedIncidents = ({ incident = {} }) => {
-  const { incident_id, date_published } = incident;
+const RelatedIncidents = ({ incident = {}, isSubmitted }) => {
+  const { incident_id, date_published, authors, url } = incident;
 
   const [loading, setLoading] = useState(false);
 
   const [related, setRelated] = useState([]);
 
-  const prevIncident = useRef(0);
+  const [queryConditions, setQueryConditions] = useState({});
 
-  const prevDate = useRef(0);
+  const [prevIncident, setPrevIncident] = useState(0);
 
-  useEffect(() => {
-    const changed = prevIncident.current !== incident_id || prevDate.current !== date_published;
+  const [prevDatePublished, setPrevDatePublished] = useState(0);
 
-    prevIncident.current = incident_id;
-    prevDate.current = date_published;
+  const [prevAuthors, setPrevAuthors] = useState('');
 
-    if (changed && incident_id) {
-      const parsed = parseInt(incident_id);
+  const [prevUrl, setPrevUrl] = useState('');
 
-      console.log('Seeking incidents related with incident_id: ', incident_id);
-      if (isNaN(parsed)) {
-        setRelated([]);
-        return;
+  const addQueryCondition = (condition) => {
+    let newConditions = queryConditions;
+
+    for (const key in condition) {
+      newConditions[key] = condition[key];
+    }
+
+    setQueryConditions({ ...newConditions });
+  };
+
+  const addQueryConditionDebounced = useCallback(
+    debounce((condition) => addQueryCondition(condition), 500),
+    []
+  );
+
+  const queryByIncidentId = () => {
+    return new Promise((resolve, reject) => {
+      if (prevIncident !== incident_id && incident_id) {
+        setPrevIncident(incident_id);
+        let incidentEpochDate = 0;
+
+        const parsed = parseInt(incident_id);
+
+        console.log('Seeking incidents related with incident_id: ', incident_id);
+        if (isNaN(parsed)) {
+          setRelated([]);
+          return;
+        }
+
+        // TODO: remove from all app division and multiplication with 1000
+        try {
+          useRunQuery({ incident_id: parsed }, (res) => {
+            if (res[0]) {
+              incidentEpochDate = res[0].epoch_incident_date * 1000;
+              resolve({
+                epoch_incident_date: {
+                  $gte: subWeeks(incidentEpochDate, 1).getTime() / 1000,
+                  $lt: addWeeks(incidentEpochDate, 1).getTime() / 1000,
+                },
+              });
+            }
+          });
+        } catch (error) {
+          reject(error);
+        }
       }
+    });
+  };
 
-      setLoading(true);
-
-      useRunQuery({ incident_id: parsed }, (res) => {
-        const incidentEpochDate = res[0].epoch_incident_date * 1000;
-
-        useRunQuery(
-          {
-            epoch_incident_date: {
-              $gte: subWeeks(incidentEpochDate, 2).getTime() / 1000,
-              $lt: addWeeks(incidentEpochDate, 2).getTime() / 1000,
-            },
-          },
-          (res) => {
-            console.log('incidents related with incident_id: ', incident_id, res);
-            setRelated(res);
-            setLoading(false);
-          }
-        );
-      });
-    } else if (changed && date_published) {
-      setLoading(true);
-
+  const queryByDatePublished = () => {
+    if (prevDatePublished !== date_published && date_published) {
+      setPrevDatePublished(date_published);
       const inputEpochDatePublished = new Date(date_published).getTime();
 
-      useRunQuery(
-        {
+      if (isSubmitted) {
+        addQueryCondition({
           epoch_date_published: {
             $gte: subWeeks(inputEpochDatePublished, 2).getTime() / 1000,
             $lt: addWeeks(inputEpochDatePublished, 2).getTime() / 1000,
           },
-        },
-        (res) => {
-          console.log(res);
-          setRelated(res);
-          setLoading(false);
-        }
-      );
+        });
+      } else {
+        addQueryConditionDebounced({
+          epoch_date_published: {
+            $gte: subWeeks(inputEpochDatePublished, 2).getTime() / 1000,
+            $lt: addWeeks(inputEpochDatePublished, 2).getTime() / 1000,
+          },
+        });
+      }
     }
+  };
+
+  const queryByAuthors = () => {
+    if (prevAuthors !== authors && authors) {
+      setPrevAuthors(authors);
+      let authorsArray = authors;
+
+      if (!Array.isArray(authorsArray)) {
+        authorsArray = authors.split(',').map((author) => author.trim());
+      }
+
+      if (isSubmitted) {
+        addQueryCondition({
+          authors: {
+            $in: authorsArray,
+          },
+        });
+      } else {
+        addQueryConditionDebounced({
+          authors: {
+            $in: authorsArray,
+          },
+        });
+      }
+    }
+  };
+
+  const queryByUrl = () => {
+    if (prevUrl !== url && url) {
+      setPrevUrl(url);
+      if (isSubmitted) {
+        addQueryCondition({
+          url: {
+            $eq: url,
+          },
+        });
+      } else {
+        addQueryConditionDebounced({
+          url: {
+            $eq: url,
+          },
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    const query = { $or: [] };
+
+    for (const conditionKey in queryConditions) {
+      query.$or.push({
+        [conditionKey]: queryConditions[conditionKey],
+      });
+    }
+
+    if (query.$or.length > 0) {
+      useRunQuery(query, (res) => {
+        console.log(res);
+        setRelated(res);
+        setLoading(false);
+      });
+    }
+  }, [queryConditions]);
+
+  useEffect(() => {
+    setLoading(true);
+
+    queryByUrl();
+    queryByAuthors();
+    queryByDatePublished();
+    queryByIncidentId().then((q) => {
+      addQueryCondition(q);
+    });
   }, [incident]);
 
   if (related.length < 1) {
-    return null;
+    return (
+      <span>
+        Preliminary checks failed to find incident reports with similar publication dates (+/- 2
+        weeks), similar incident dates (+/- 1 month), the same report URL, or the same authors.
+      </span>
+    );
   }
+
   return (
     <ListGroup className="position-relative">
       <Loader loading={loading} />

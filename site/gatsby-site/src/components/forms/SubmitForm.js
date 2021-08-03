@@ -80,7 +80,7 @@ const SubmitForm = () => {
   return (
     <FormStyles className="p-5 mb-5">
       <IncidentReportForm incident={incident} onUpdate={setIncident} onSubmit={handleSubmit} />
-      <RelatedIncidents incident={incident} />
+      <RelatedIncidents incident={incident} isSubmitted={false} />
       <Container className={cx('mt-5 p-0', !isAdmin && 'd-none')}>
         <h2>Advanced: Add by CSV</h2>
         <p>

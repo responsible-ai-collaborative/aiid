@@ -131,7 +131,7 @@ const ReportedIncident = ({ incident }) => {
             <Card className="m-3">
               <Card.Header>Possible related incidents</Card.Header>
               <Card.Body>
-                <RelatedIncidents incident={incident} />
+                <RelatedIncidents incident={incident} isSubmitted={true} />
               </Card.Body>
             </Card>
           )}
