@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Helmet from 'react-helmet';
 import Layout from 'components/Layout';
-import { Wordlist } from '../pages/wordcounts';
+import Wordlist from 'components/WordList';
 import { StyledHeading } from 'components/styles/Docs';
 import styled from 'styled-components';
 import SubmittersLeaderboard from 'components/leaderboards/SubmittersLeaderboard';
