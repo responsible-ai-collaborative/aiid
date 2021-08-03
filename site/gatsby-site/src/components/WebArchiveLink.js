@@ -4,7 +4,7 @@ import { Spinner } from 'react-bootstrap';
 export default function WebArchiveLink({ url, date, children }) {
   const [archiveURL, setArchiveURL] = useState(null);
 
-  const timestamp = date.replace('-', '');
+  const timestamp = date ? date.replace('-', '') : '';
 
   const waUrl = `https://archive.org/wayback/available?url=${url}&timestamp=${timestamp}`;
 
