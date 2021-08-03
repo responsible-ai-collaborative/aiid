@@ -74,7 +74,7 @@ exports = function(arg){
 
   function stringToEpoch(dateString) {
     let someDate = new Date(dateString);
-    let epoch = someDate.getTime();
+    let epoch = Math.floor(someDate.getTime()/1000);
     return epoch;
   }
 

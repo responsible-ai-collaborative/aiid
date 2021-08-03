@@ -11,6 +11,7 @@ import {
   Pagination,
   Stats,
   connectSearchBox,
+  connectStateResults,
   connectRange,
 } from 'react-instantsearch-dom';
 import styled from 'styled-components';
@@ -28,12 +29,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useModal, CustomModal } from '../../src/components/useModal';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Spinner } from 'react-bootstrap';
 import Helmet from 'react-helmet';
 
 import '../../static/discover/src/app.css';
 import '../../static/discover/src/index.css';
-import { add, format, formatISO, isAfter, isBefore, isEqual } from 'date-fns';
+import { add, format, formatISO, isAfter, isBefore } from 'date-fns';
 
 export const indexName = 'instant_search';
 
@@ -433,7 +434,7 @@ const Header = styled.div`
   }
 `;
 
-const NoResults = styled.div`
+export const NoResults = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
@@ -607,17 +608,18 @@ export const IncidentStatsCard = ({ incidentId, reportCount, incidentDate }) => 
   );
 };
 
-const IncidentCard = ({
+export const IncidentCard = ({
   item,
   authorsModal,
   submittersModal,
   flagReportModal,
   toggleFilterByIncidentId,
   showDetails,
+  isCitePage,
 }) => (
-  <IncidentCardContainer id={item.objectID}>
+  <IncidentCardContainer id={item.mongodb_id}>
     <div className="card-header">
-      <Highlight hit={item} attribute="title" />
+      {isCitePage ? <span>{item.title}</span> : <Highlight hit={item} attribute="title" />}
       <p className="subhead">
         {item.source_domain} &middot;{' '}
         {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
@@ -625,7 +627,7 @@ const IncidentCard = ({
     </div>
     <CardBody className="card-body">
       {/* <Highlight hit={item} attribute="description" /> */}
-      {cardNeedsBlockquote(item._snippetResult) && (
+      {item._snippetResult && cardNeedsBlockquote(item._snippetResult) && (
         <blockquote>
           <Highlight
             hit={{
@@ -656,7 +658,7 @@ const IncidentCard = ({
           type="button"
           className="btn btn-secondary btn-sm btn-block assignment-button"
           onClick={() => {
-            navigate(`/cite/${item.incident_id}#${item._id}`);
+            navigate(`/cite/${item.incident_id}#${item.mongodb_id}`);
           }}
         >
           <StyledLabel>Show Details on Incident #{item.incident_id}</StyledLabel>
@@ -1001,14 +1003,17 @@ const RenderCards = ({
   authorsModal,
   submittersModal,
   flagReportModal,
-  scrollTo,
-  sortByDatePublished,
+  isSearchStalled,
 }) => {
-  useEffect(() => {
-    if (scrollTo) {
-      scrollTo();
-    }
-  }, [hits]);
+  if (isSearchStalled) {
+    return (
+      <NoResults>
+        <Spinner animation="border" role="status" variant="primary">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      </NoResults>
+    );
+  }
 
   if (hits.length === 0) {
     return (
@@ -1016,40 +1021,6 @@ const RenderCards = ({
         <p>Your search returned no results.</p>
         <p>Please clear your search in the search box above or the filters.</p>
       </NoResults>
-    );
-  }
-
-  if (sortByDatePublished) {
-    const sortedHits = hits.sort((a, b) => {
-      const dateA = new Date(a.date_published);
-
-      const dateB = new Date(b.date_published);
-
-      if (isEqual(dateA, dateB)) {
-        return 0;
-      }
-      if (isAfter(dateA, dateB)) {
-        return 1;
-      }
-      if (isAfter(dateB, dateA)) {
-        return -1;
-      }
-    });
-
-    return (
-      <>
-        {sortedHits.map((hit) => (
-          <IncidentCard
-            key={hit.objectID}
-            item={hit}
-            authorsModal={authorsModal}
-            submittersModal={submittersModal}
-            flagReportModal={flagReportModal}
-            toggleFilterByIncidentId={toggleFilterByIncidentId}
-            showDetails={showDetails}
-          />
-        ))}
-      </>
     );
   }
 
@@ -1070,7 +1041,7 @@ const RenderCards = ({
   );
 };
 
-const CustomHits = connectHits(RenderCards);
+const CustomHits = connectHits(connectStateResults(RenderCards));
 
 const FiltersBar = ({ filters, updateFilters, updateQuery }) => {
   const flitersArray = [];

@@ -48,6 +48,13 @@ const plugins = [
   {
     resolve: 'gatsby-source-filesystem',
     options: {
+      name: 'blog',
+      path: `${__dirname}/blog/`,
+    },
+  },
+  {
+    resolve: 'gatsby-source-filesystem',
+    options: {
       name: 'images',
       path: path.join(__dirname, `src`, `images`),
     },

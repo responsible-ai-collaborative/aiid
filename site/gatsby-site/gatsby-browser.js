@@ -11,9 +11,13 @@ export const onServiceWorkerUpdateReady = () => {
 import 'bootstrap/dist/css/bootstrap.css';
 
 export const shouldUpdateScroll = ({ routerProps: { location } }) => {
-  const { pathname } = location;
+  const { pathname, hash } = location;
 
-  if (pathname !== '/apps/discover') {
+  if (pathname !== '/apps/discover' && !pathname.includes('/cite/')) {
+    window.scrollTo(0, 0);
+  }
+
+  if (pathname.includes('/cite/') && hash === '') {
     window.scrollTo(0, 0);
   }
 
