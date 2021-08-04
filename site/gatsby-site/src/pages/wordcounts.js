@@ -9,20 +9,9 @@ import Row from 'react-bootstrap/Row';
 import Layout from 'components/Layout';
 import Link from 'components/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
+import Wordlist from '../components/WordList';
 
 const wordCloudSize = [350, 350];
-
-export const Wordlist = ({ content }) => {
-  return (
-    <>
-      {content.map((value) => (
-        <li key={`word-${value[0]}`}>
-          {value[0]}: {value[1]}
-        </li>
-      ))}
-    </>
-  );
-};
 
 const WordCloudCell = ({ wordCountsSorted, wordCloudOptions, wordCloudSize, wordCloud }) => {
   return (

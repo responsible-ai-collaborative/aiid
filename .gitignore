@@ -68,6 +68,7 @@ yarn.lock
 package-lock.json
 # ignore any lock file other than main lock file
 !/yarn.lock
+!/site/gatsby-site/package-lock.json
 
 # starters are special; we want to persist the lock files
 !starters/*/package-lock.json

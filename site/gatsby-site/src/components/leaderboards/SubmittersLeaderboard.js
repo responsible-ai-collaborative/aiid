@@ -21,7 +21,7 @@ const SubmittersLeaderboard = ({ limit }) => {
           dataHash={group}
           leaderboard={{
             attribute: 'submitters',
-            title: 'Submitters',
+            title: 'Total Incident Reports',
           }}
           limit={limit}
         />
