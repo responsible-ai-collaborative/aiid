@@ -5,8 +5,7 @@ import Wordlist from 'components/WordList';
 import { StyledHeading } from 'components/styles/Docs';
 import styled from 'styled-components';
 import SubmittersLeaderboard from 'components/leaderboards/SubmittersLeaderboard';
-import AuthorsLeaderboard from 'components/leaderboards/AuthorsLeaderboard';
-import DomainsLeaderboard from 'components/leaderboards/DomainsLeaderboard';
+
 import RandomIncidentsCarousel from 'components/RandomIncidentsCarousel';
 import LatestIncidentReport from 'components/LatestIncidentReport';
 import { navigate } from 'gatsby';
@@ -14,6 +13,8 @@ import { Link } from 'gatsby';
 import { Button, InputGroup, FormControl, Container, Row, Col, Image, Card } from 'react-bootstrap';
 import LatestPost from 'components/blog/LatestPost';
 import QuickAddForm from 'components/forms/QuickAddForm';
+import UniqueSubmittersLeaderboard from 'components/leaderboards/UniqueSubmittersLeaderboard';
+import OriginalSubmitersLeaderboard from 'components/leaderboards/OriginalSubmittersLeaderboard';
 
 const StyledCard = styled(Card)`
   overflow: hidden;
@@ -79,8 +80,12 @@ const LeaderboardContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   padding: 0em 2em 2em 2em;
+  margin: 1rem auto 0;
+  h2 {
+    font-size: 1.2em;
+  }
 
-  @media (max-width: 530px) {
+  @media (max-width: 991px) {
     flex-direction: column;
   }
 `;
@@ -321,9 +326,9 @@ const LandingPage = (props) => {
                 <Link to="/summaries/leaderboard">leaderboard page.</Link>
               </StyledCardLeadParagraph>
               <LeaderboardContainer>
+                <OriginalSubmitersLeaderboard limit={3} />
+                <UniqueSubmittersLeaderboard limit={3} />
                 <SubmittersLeaderboard limit={3} />
-                <AuthorsLeaderboard limit={3} />
-                <DomainsLeaderboard limit={3} />
               </LeaderboardContainer>
             </StyledCard>
           </Col>
