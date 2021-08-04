@@ -8,7 +8,6 @@ const createBackupsPage = (graphql, createPage) => {
           query AllS3Backups {
             allS3Object {
               nodes {
-                Url
                 Size
                 LastModified
                 Key

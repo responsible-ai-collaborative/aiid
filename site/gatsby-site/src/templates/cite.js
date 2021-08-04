@@ -12,7 +12,7 @@ import BibTex from 'components/BibTex';
 
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 
-import { IncidentStatsCard, IncidentCard, NoResults } from '../../pages/apps/discover';
+import { IncidentStatsCard, IncidentCard, NoResults } from '../../src/components/IncidentCards';
 import styled from 'styled-components';
 import { isAfter, isEqual } from 'date-fns';
 import { useModal, CustomModal } from '../../src/components/useModal';
