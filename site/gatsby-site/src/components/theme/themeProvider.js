@@ -3,7 +3,6 @@ import { ThemeProvider as EmotionThemeProvider } from '@emotion/react';
 
 import { theme } from './index';
 import Header from '../Header';
-import '../styles/GlobalStyles';
 
 const ThemeProvider = ({ children }) => (
   <div>
