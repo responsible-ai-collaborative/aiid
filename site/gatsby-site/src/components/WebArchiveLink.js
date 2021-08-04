@@ -1,37 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { Spinner } from 'react-bootstrap';
+import React from 'react';
 
-export default function WebArchiveLink({ url, date, children }) {
-  const [archiveURL, setArchiveURL] = useState(null);
-
+async function getSnapshotURL(url, date) {
   const timestamp = date ? date.replace('-', '') : '';
 
   const waUrl = `https://archive.org/wayback/available?url=${url}&timestamp=${timestamp}`;
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const response = await (await fetch(waUrl)).json();
+  const response = await (await fetch(waUrl)).json();
 
-        if (!response.archived_snapshots.closest) {
-          setArchiveURL(url);
-        }
+  return response.archived_snapshots.closest.url.replace('http:', 'https:');
+}
 
-        setArchiveURL(response.archived_snapshots.closest.url.replace('http:', 'https:'));
-      } catch (e) {
-        setArchiveURL(url);
-      }
+export default function WebArchiveLink({ url, date, children }) {
+  const onClick = async (e) => {
+    e.preventDefault();
+    const win = window.open('', '_blank');
+
+    try {
+      const snapshotUrl = await getSnapshotURL(url, date);
+
+      win.location.href = snapshotUrl;
+    } catch (e) {
+      win.location.href = url;
     }
-
-    load();
-  }, [url]);
-
-  if (!archiveURL) {
-    return <Spinner />;
-  }
+  };
 
   return (
-    <a href={archiveURL} target="_blank" rel="noopener noreferrer">
+    <a onClick={onClick} href={url} target="_blank" rel="noopener noreferrer">
       {children}
     </a>
   );
