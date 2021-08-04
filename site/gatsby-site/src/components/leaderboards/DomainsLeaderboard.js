@@ -20,7 +20,7 @@ const DomainsLeaderboard = ({ limit }) => {
           dataHash={group}
           leaderboard={{
             attribute: 'source_domain',
-            title: 'Domains',
+            title: 'Report Domains',
           }}
           limit={limit}
         />
