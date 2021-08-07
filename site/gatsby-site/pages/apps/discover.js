@@ -28,7 +28,7 @@ import Helmet from 'react-helmet';
 
 import '../../static/discover/src/app.css';
 import '../../static/discover/src/index.css';
-import { add, format, formatISO, isAfter, isBefore } from 'date-fns';
+import { add, format, formatISO, isAfter } from 'date-fns';
 import { Hits } from '../../src/components/IncidentCards';
 
 const indexName = 'instant_search';
@@ -667,11 +667,7 @@ const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
 
   const onChangeMaxDate = debounce((newInput) => {
     try {
-      if (
-        newInput !== '' &&
-        newInput.length <= 10 &&
-        isBefore(new Date(newInput), new Date(limitInterval.max))
-      ) {
+      if (newInput !== '' && newInput.length <= 10) {
         setLocalMax(new Date(newInput || limitInterval.max).getTime());
         refine({
           max: validateDate(new Date(newInput || limitInterval.max).getTime()) / 1000,
@@ -704,7 +700,6 @@ const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
         type="date"
         defaultValue={formatISO(localMax, { representation: 'date' })}
         onChange={(event) => onChangeMaxDate(event.currentTarget.value)}
-        max={limitInterval.max}
         onKeyDown={(e) => e.preventDefault()}
       />
     </Form>
