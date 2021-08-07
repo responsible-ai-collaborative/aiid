@@ -10,18 +10,29 @@ export const onServiceWorkerUpdateReady = () => {
 
 import 'bootstrap/dist/css/bootstrap.css';
 
+const ROUTES_WITH_RULES = ['/cite/', '/apps/discover'];
+
 export const shouldUpdateScroll = ({ routerProps: { location } }) => {
   const { pathname, hash } = location;
 
-  if (pathname !== '/apps/discover' && !pathname.includes('/cite/')) {
-    window.scrollTo(0, 0);
-  }
+  if (ROUTES_WITH_RULES.includes(pathname)) {
+    if (pathname.includes('/cite/') && hash !== '') {
+      // Scroll to where the cite hash link page points to
+      return false;
+    }
 
-  if (pathname.includes('/cite/') && hash === '') {
-    window.scrollTo(0, 0);
-  }
+    if (pathname.includes('/cite/') && hash === '') {
+      // Scoll to top when cite pate is accessed without an incident report hash
+      window.scrollTo(0, 0);
+    }
 
-  return false;
+    if (pathname !== '/apps/discover') {
+      // Don't allow Gatsby to scroll to top when picking a search filter
+      window.scrollTo(0, 0);
+    }
+  } else {
+    return false;
+  }
 };
 
 import { ToastContextProvider } from './src/contexts/ToastContext';
