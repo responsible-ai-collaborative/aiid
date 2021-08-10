@@ -78,6 +78,19 @@ const plugins = [
     },
   },
   {
+    resolve: `gatsby-theme-i18n`,
+    options: {
+      defaultLang: `en`,
+      configPath: require.resolve(`./i18n/config.json`),
+    },
+  },
+  {
+    resolve: `gatsby-theme-i18n-lingui`,
+    options: {
+      localeDir: `./i18n/lingui`,
+    },
+  },
+  {
     resolve: `gatsby-plugin-gtag`,
     options: {
       // your google analytics tracking id

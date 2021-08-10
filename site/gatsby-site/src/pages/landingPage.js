@@ -15,6 +15,7 @@ import LatestPost from 'components/blog/LatestPost';
 import QuickAddForm from 'components/forms/QuickAddForm';
 import UniqueSubmittersLeaderboard from 'components/leaderboards/UniqueSubmittersLeaderboard';
 import OriginalSubmitersLeaderboard from 'components/leaderboards/OriginalSubmittersLeaderboard';
+import { Trans } from '@lingui/macro';
 
 const StyledCard = styled(Card)`
   overflow: hidden;
@@ -174,7 +175,9 @@ const LandingPage = (props) => {
         <meta name="description" content={metaDescription} />
       </Helmet>
       <div className={'titleWrapper'}>
-        <StyledHeading>Welcome to the Artificial Intelligence Incident Database</StyledHeading>
+        <StyledHeading>
+          <Trans>Welcome to the Artificial Intelligence Incident Database</Trans>
+        </StyledHeading>
       </div>
       <Container>
         <StyledRow>
@@ -336,7 +339,9 @@ const LandingPage = (props) => {
         <StyledRow>
           <Col>
             <StyledCard>
-              <SectionHeading>Latest Blog Post</SectionHeading>
+              <SectionHeading>
+                <Trans>Latest Blog Post</Trans>
+              </SectionHeading>
               <LatestPost />
             </StyledCard>
           </Col>

@@ -14,6 +14,10 @@
     "@fortawesome/free-brands-svg-icons": "^5.15.3",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "@fortawesome/react-fontawesome": "^0.1.14",
+    "@lingui/cli": "^3.10.2",
+    "@lingui/core": "^3.10.4",
+    "@lingui/macro": "^3.10.2",
+    "@lingui/react": "^3.10.2",
     "@mdx-js/loader": "^1.6.22",
     "@mdx-js/mdx": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
@@ -21,6 +25,7 @@
     "@playlyfe/gql": "^2.6.2",
     "algoliasearch": "^3.35.1",
     "babel-plugin-styled-components": "^1.12.0",
+    "babel-preset-gatsby": "^1.11.0",
     "bootstrap": "^4.6.0",
     "bson": "^4.2.3",
     "csvtojson": "^2.0.10",
@@ -52,6 +57,8 @@
     "gatsby-remark-images": "^5.7.0",
     "gatsby-source-filesystem": "^3.10.0",
     "gatsby-source-mongodb": "^3.10.0",
+    "gatsby-theme-i18n": "^2.0.0",
+    "gatsby-theme-i18n-lingui": "^2.0.0",
     "gatsby-transformer-remark": "^4.7.0",
     "gatsby-transformer-sharp": "^3.10.0",
     "graphql": "^15.5.1",
@@ -90,7 +97,9 @@
     "start": "gatsby develop",
     "build": "gatsby build --prefix-paths",
     "format": "prettier --write \"{src,page-creators,pages,constants}/**/*.{js,jsx,css,json}\"",
-    "lint": "eslint --fix \"{src,page-creators,pages,constants}/**/*.{js,jsx}\""
+    "lint": "eslint --fix \"{src,page-creators,pages,constants}/**/*.{js,jsx}\"",
+    "extract": "lingui extract",
+    "compile": "lingui compile"
   },
   "devDependencies": {
     "@robinmetral/gatsby-source-s3": "^2.1.1",
