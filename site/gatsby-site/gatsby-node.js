@@ -19,6 +19,18 @@ const createBlogPosts = require('./page-creators/createBlogPosts');
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions;
 
+  const { createRedirect } = actions;
+
+  const redirects = [
+    ['/about_apps/1-discover', '/about_apps'],
+    ['/about_apps/2-submit', '/about_apps'],
+    ['/about_apps/3-your_app_here', '/about_apps'],
+  ];
+
+  redirects.forEach((pair) =>
+    createRedirect({ fromPath: pair[0], toPath: pair[1], isPermanent: true })
+  );
+
   return Promise.all([
     createMdxPages(graphql, createPage),
     createCitiationPages(graphql, createPage),
