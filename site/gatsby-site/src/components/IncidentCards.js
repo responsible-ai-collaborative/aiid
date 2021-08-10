@@ -14,6 +14,7 @@ import {
   faFlag,
   faHashtag,
 } from '@fortawesome/free-solid-svg-icons';
+import WebArchiveLink from './WebArchiveLink';
 
 const cardNeedsBlockquote = (item) => {
   if (item.text && item.text.matchLevel === 'full') {
@@ -186,9 +187,9 @@ const IncidentCard = ({
       )}
     </div>
     <CardFooter className="card-footer text-muted">
-      <a href={item.url} target="_blank" rel="noreferrer">
+      <WebArchiveLink url={item.url} date={item.date_submitted}>
         <FontAwesomeIcon icon={faNewspaper} className="far fa-newspaper" title="Read the Source" />
-      </a>
+      </WebArchiveLink>
 
       <FontAwesomeIcon
         icon={faIdCard}
