@@ -198,6 +198,7 @@ const RelatedIncidents = ({ incident = {}, isSubmitted }) => {
       let results = [];
 
       if (query.$or.length > 0) {
+        setLoading(true);
         for (const q of query.$or) {
           for (const key in q) {
             const res = await useRunQuery(q);
@@ -235,8 +236,6 @@ const RelatedIncidents = ({ incident = {}, isSubmitted }) => {
   }, [queryConditions]);
 
   useEffect(() => {
-    setLoading(true);
-
     queryByUrl();
     queryByAuthors();
     queryByDatePublished();
