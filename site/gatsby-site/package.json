@@ -33,6 +33,7 @@
     "gatsby-link": "^3.10.0",
     "gatsby-plugin-algolia": "^0.5.0",
     "gatsby-plugin-catch-links": "^3.10.0",
+    "gatsby-plugin-client-side-redirect": "^1.1.0",
     "gatsby-plugin-emotion": "^6.10.0",
     "gatsby-plugin-feed": "^3.10.0",
     "gatsby-plugin-gtag": "^1.0.13",
