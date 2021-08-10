@@ -228,6 +228,8 @@ if (config.gatsby && !config.gatsby.trailingSlash) {
   plugins.push('gatsby-plugin-remove-trailing-slashes');
 }
 
+plugins.push(`gatsby-plugin-client-side-redirect`);
+
 module.exports = {
   pathPrefix: config.gatsby.pathPrefix,
   siteMetadata: {

@@ -12,9 +12,9 @@ const SubmissionList = () => {
   return (
     <>
       <p className="paragraph">
-        The following incident reports have been <Link to="/about_apps/2-submit">submitted </Link>{' '}
-        by users and are pending review by editors. Only editors may promote these records to
-        incident reports in the database.
+        The following incident reports have been <Link to="/apps/submit">submitted </Link> by users
+        and are pending review by editors. Only editors may promote these records to incident
+        reports in the database.
       </p>
       <p>Please note that this list updates hourly. New submissions are not immediately shown.</p>
       <ListGroup className="mb-5">

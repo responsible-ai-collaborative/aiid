@@ -53,7 +53,7 @@ const WordCounts = ({ pageContext, ...props }) => {
           displayed rather than the conjugations found within the text. Words with fewer than 10
           appearances and fewer than 3 letters are not included. If you would like to explore the
           contents of the reports, you should work through the
-          <Link to="/about_apps/1-discover"> Discover app</Link>.
+          <Link to="/apps/discover"> Discover app</Link>.
         </p>
         <Container>
           <ul>
