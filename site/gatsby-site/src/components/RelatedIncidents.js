@@ -1,11 +1,16 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { ListGroup } from 'react-bootstrap';
+import { ListGroup, Card } from 'react-bootstrap';
 import Loader from 'components/Loader';
 import { debounce } from 'debounce';
 
 import config from '../../config';
 import { useMongo } from 'hooks/useMongo';
 import { subWeeks, addWeeks } from 'date-fns';
+import styled from 'styled-components';
+
+const ListContainer = styled(Card)`
+  margin: 1em 0;
+`;
 
 const useRunQuery = (query) => {
   return new Promise((resolve, reject) => {
@@ -263,7 +268,7 @@ const RelatedIncidents = ({ incident = {}, isSubmitted }) => {
     }
 
     return (
-      <>
+      <ListContainer>
         <ListGroup.Item variant="secondary" key={'header'}>
           {context.header}
         </ListGroup.Item>
@@ -274,7 +279,7 @@ const RelatedIncidents = ({ incident = {}, isSubmitted }) => {
             </a>
           </ListGroup.Item>
         ))}
-      </>
+      </ListContainer>
     );
   };
 
