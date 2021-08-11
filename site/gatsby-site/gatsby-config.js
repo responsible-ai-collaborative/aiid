@@ -33,7 +33,12 @@ const plugins = [
     },
   },
   'gatsby-plugin-styled-components',
-  'gatsby-plugin-sitemap',
+  {
+    resolve: 'gatsby-plugin-sitemap',
+    options: {
+      excludes: ['/es/**'],
+    },
+  },
   `gatsby-transformer-sharp`,
   'gatsby-plugin-sharp',
   'gatsby-plugin-emotion',
