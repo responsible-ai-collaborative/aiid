@@ -13,6 +13,7 @@ import { ObjectId } from 'bson';
 import ReadMoreText from 'components/ReadMoreText';
 import EditableListItem from 'components/EditableListItem';
 import IncidentEditModal from 'components/IncidentEditModal';
+import RelatedIncidents from 'components/RelatedIncidents';
 
 import { useUserContext } from 'contexts/userContext';
 import { useSubmissionsContext } from 'contexts/submissionsContext';
@@ -126,6 +127,14 @@ const ReportedIncident = ({ incident }) => {
               <ReadMoreText text={incident.text} visibility={open} />
             </Card.Body>
           </Card>
+          {open && (
+            <Card className="m-3">
+              <Card.Header>Possible related incidents</Card.Header>
+              <Card.Body>
+                <RelatedIncidents incident={incident} isSubmitted={true} />
+              </Card.Body>
+            </Card>
+          )}
           <Card.Footer className="d-flex text-muted">
             <Button className="mr-auto" disabled={!isAdmin} onClick={toggleEditing}>
               <FontAwesomeIcon icon={faEdit} />

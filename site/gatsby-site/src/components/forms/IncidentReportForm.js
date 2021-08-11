@@ -243,7 +243,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         </p>
       )}
       <Button variant="primary" type="submit" disabled={(touched && !isValid) || isSubmitting}>
-        {isEditMode ? 'Update' : 'Submit'}
+        Submit
       </Button>
     </Form>
   );
