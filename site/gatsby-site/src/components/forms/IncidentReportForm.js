@@ -90,6 +90,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
     handleBlur,
     handleSubmit,
     setValues,
+    setFieldTouched,
   } = useFormik({
     initialValues: incident || defaultValue,
     validationSchema,
@@ -176,6 +177,10 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
           </Button>
         }
         {...TextInputGroupProps}
+        handleChange={(e) => {
+          setFieldTouched('url', true);
+          TextInputGroupProps.handleChange(e);
+        }}
       />
 
       <TextInputGroup
