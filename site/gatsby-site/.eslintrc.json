@@ -23,7 +23,8 @@
           ["services", "./src/services"],
           ["templates", "./src/templates"],
           ["utils", "./src/utils"],
-          ["buble", "@philpl/buble"]
+          ["buble", "@philpl/buble"],
+          ["@reach/router", "@gatsbyjs/reach-router"]
         ],
         "extensions": [".js", ".jsx"]
       }

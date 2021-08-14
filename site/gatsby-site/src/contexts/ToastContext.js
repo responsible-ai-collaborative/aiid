@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Toast, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import uuid from 'react-uuid';
 import { globalHistory } from '@reach/router';
 
 const ToastsWrapper = styled.div`
@@ -73,7 +72,7 @@ export function ToastContextProvider({ children }) {
 
   const addToast = useCallback(
     function (toast) {
-      setToasts((toasts) => [...toasts, { ...toast, id: uuid() }]);
+      setToasts((toasts) => [...toasts, { ...toast, id: Date.now() }]);
     },
     [setToasts]
   );
