@@ -90,6 +90,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
     handleBlur,
     handleSubmit,
     setValues,
+    setFieldTouched,
   } = useFormik({
     initialValues: incident || defaultValue,
     validationSchema,
@@ -130,16 +131,22 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         newsUrl
       )}`;
 
-      const response = await (await fetch(url)).json();
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+
+      const news = await response.json();
 
       onUpdate((incident) => ({
         ...incident,
-        title: response.title,
-        authors: response.authors,
-        date_published: format(new Date(response.date_publish), 'yyyy-MM-dd'),
-        date_downloaded: format(new Date(response.date_download), 'yyyy-MM-dd'),
-        image_url: response.image_url,
-        text: response.maintext,
+        title: news.title,
+        authors: news.authors,
+        date_published: format(new Date(news.date_publish), 'yyyy-MM-dd'),
+        date_downloaded: format(new Date(news.date_download), 'yyyy-MM-dd'),
+        image_url: news.image_url,
+        text: news.maintext,
       }));
     } catch (e) {
       addToast({
@@ -176,6 +183,10 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
           </Button>
         }
         {...TextInputGroupProps}
+        handleChange={(e) => {
+          setFieldTouched('url', true);
+          TextInputGroupProps.handleChange(e);
+        }}
       />
 
       <TextInputGroup
