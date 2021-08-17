@@ -11,7 +11,7 @@ const cld = new Cloudinary({
 const getCloudinaryPublicID = (url) => {
   // https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files
 
-  const publicID = `/reports/${url.replace(/^https?:\/\//, '')}`;
+  const publicID = `reports/${url.replace(/^https?:\/\//, '')}`;
 
   return publicID;
 };
