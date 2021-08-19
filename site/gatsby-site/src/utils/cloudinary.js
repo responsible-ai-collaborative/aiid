@@ -19,7 +19,7 @@ const getCloudinaryPublicID = (url) => {
   return publicID;
 };
 
-const Image = ({ publicID, className, alt, transformation = null }) => {
+const Image = ({ publicID, className, alt, transformation = null, plugins = [lazyload()] }) => {
   const image = cld.image(publicID).delivery(defaultImage('fallback.jpg'));
 
   image.delivery(format(auto())).delivery(quality(qAuto()));
@@ -28,7 +28,7 @@ const Image = ({ publicID, className, alt, transformation = null }) => {
     image.addTransformation(transformation);
   }
 
-  return <AdvancedImage alt={alt} className={className} cldImg={image} plugins={[lazyload()]} />;
+  return <AdvancedImage alt={alt} className={className} cldImg={image} plugins={plugins} />;
 };
 
 export { getCloudinaryPublicID, Image };
