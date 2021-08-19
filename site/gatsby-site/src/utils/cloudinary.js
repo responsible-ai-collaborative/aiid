@@ -1,6 +1,9 @@
 import React from 'react';
-import { AdvancedImage } from '@cloudinary/react';
+import { AdvancedImage, lazyload } from '@cloudinary/react';
 import { Cloudinary } from '@cloudinary/base';
+import { defaultImage, format, quality } from '@cloudinary/base/actions/delivery';
+import { auto } from '@cloudinary/base/qualifiers/format';
+import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
 
 const cld = new Cloudinary({
   cloud: {
@@ -16,10 +19,16 @@ const getCloudinaryPublicID = (url) => {
   return publicID;
 };
 
-const Image = ({ publicID, className }) => {
-  const image = cld.image(publicID);
+const Image = ({ publicID, className, alt, transformation = null }) => {
+  const image = cld.image(publicID).delivery(defaultImage('fallback.jpg'));
 
-  return <AdvancedImage className={className} cldImg={image} />;
+  image.delivery(format(auto())).delivery(quality(qAuto()));
+
+  if (transformation) {
+    image.addTransformation(transformation);
+  }
+
+  return <AdvancedImage alt={alt} className={className} cldImg={image} plugins={[lazyload()]} />;
 };
 
 export { getCloudinaryPublicID, Image };
