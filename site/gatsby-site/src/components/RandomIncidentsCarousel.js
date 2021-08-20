@@ -3,13 +3,17 @@ import { StaticQuery, graphql, Link } from 'gatsby';
 import styled from 'styled-components';
 import md5 from 'md5';
 import Carousel from 'react-bootstrap/Carousel';
+import { Image } from 'utils/cloudinary';
+import { fill } from '@cloudinary/base/actions/resize';
 
 const Caption = styled.h3`
   background: rgba(0, 0, 0, 0.55);
 `;
 
-const Img = styled.img`
-  max-height: 500px;
+const CarouselImage = styled(Image)`
+  height: 480px;
+  object-fit: cover;
+  width: 100%;
 `;
 
 const RandomIncidentsCarousel = () => {
@@ -48,20 +52,23 @@ const RandomIncidentsCarousel = () => {
 
         return (
           <Carousel interval={60000}>
-            {randomIncidents.map(({ node: { id, incident_id, title, image_url } }) => (
-              <Carousel.Item key={id}>
-                <Link to={`/cite/${incident_id}`}>
-                  <Img
-                    className="d-block w-100"
-                    src={'https://incidentdatabase.ai/large_media/report_banners/' + md5(image_url)}
-                    alt={title}
-                  />
-                  <Carousel.Caption>
-                    <Caption>{title}</Caption>
-                  </Carousel.Caption>
-                </Link>
-              </Carousel.Item>
-            ))}
+            {randomIncidents.map(
+              ({ node: { id, incident_id, title, image_url, cloudinary_id } }) => (
+                <Carousel.Item key={id}>
+                  <Link to={`/cite/${incident_id}`}>
+                    <CarouselImage
+                      publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
+                      alt={title}
+                      transformation={fill().height(480)}
+                      plugins={[]}
+                    />
+                    <Carousel.Caption>
+                      <Caption>{title}</Caption>
+                    </Carousel.Caption>
+                  </Link>
+                </Carousel.Item>
+              )
+            )}
           </Carousel>
         );
       }}
