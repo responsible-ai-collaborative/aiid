@@ -241,7 +241,9 @@ const IncidentCite = ({ ...props }) => {
             </CardContainer>
           </Row>
           {taxonomies.length > 0 &&
-            taxonomies.map((t) => <TaxonomyForm key={t.namespace} taxonomy={t} />)}
+            taxonomies.map((t) => (
+              <TaxonomyForm key={t.namespace} taxonomy={t} incidentId={incident_id} />
+            ))}
           <Row className="mb-4">
             <CardContainer className="card">
               <ImageCarousel nodes={incidentReports} />

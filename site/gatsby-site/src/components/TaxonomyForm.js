@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Row, OverlayTrigger, Tooltip, Button } from 'react-bootstrap';
+import { Row, OverlayTrigger, Tooltip, Button, Form, Card } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useUserContext } from 'contexts/userContext';
 import { useMongo } from 'hooks/useMongo';
-import { useFormik } from 'formik';
+import { Formik } from 'formik';
 import Loader from 'components/Loader';
 
 const ClassificationContainer = styled.div`
@@ -11,6 +11,11 @@ const ClassificationContainer = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   width: 100%;
+`;
+
+const UsageInfoSpan = styled.span`
+  font-size: 0.8em;
+  color: grey;
 `;
 
 const TaxaCardHeader = styled.div`
@@ -52,24 +57,24 @@ const FormContainer = styled.div`
   padding: 1em;
 `;
 
-const EditTaxonomyForm = ({ namespace }) => {
-  const [loading, setLoading] = useState(false);
+const TaxaHeader = styled.h4`
+  padding-right: 0.8em;
+`;
+
+const TEXTAREA_LIMIT = 120;
+
+const EditTaxonomyForm = ({ namespace, incidentId }) => {
+  const [loading, setLoading] = useState(true);
 
   const [error, setError] = useState('');
 
-  // fetch latest taxonomy data
-  // populate form fields
-  // save new data
-  const formik = useFormik({
-    initialValues: {
-      email: '',
-      name: 'lkjlkj',
-      today: '2018-07-22',
-    },
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
-    },
+  const [initialValues, setInitialValues] = useState({
+    email: '',
+    name: '',
+    today: '',
   });
+
+  const [fieldsWithDefaultValues, setFieldsWithDefaultValues] = useState([]);
 
   const useRunTaxaQuery = () => {
     return new Promise((resolve, reject) => {
@@ -100,8 +105,8 @@ const EditTaxonomyForm = ({ namespace }) => {
       try {
         runQuery(
           {
-            'classifications.Publish': true,
-            incident_id: 1,
+            // 'classifications.Publish': true,
+            incident_id: incidentId,
           },
           (res) => {
             resolve(res);
@@ -120,28 +125,41 @@ const EditTaxonomyForm = ({ namespace }) => {
     setLoading(true);
     Promise.all([useRunTaxaQuery(), useRunClassificationsQuery()])
       .then((results) => {
-        console.log(results);
-
-        // Building the for structure
         // TODO: handle multiple taxonomies/classifications
         const taxonomy = results[0][0];
-        // console.log(taxonomy)
+
+        const classifications = results[1][0].classifications;
+
+        const fieldsArray = [];
+
+        const defaultValues = {};
 
         taxonomy.field_list.forEach((taxaField) => {
-          console.log({
+          fieldsArray.push({
             display_type: taxaField.display_type,
             mongo_type: taxaField.mongo_type,
             permitted_values: taxaField.permitted_values,
             placeholder: taxaField.placeholder,
             required: taxaField.required,
             short_description: taxaField.short_description,
-            short_name: taxaField.short_name,
+            short_name: taxaField.short_name.split(' ').join('_'),
           });
+
+          let classificationValue = classifications[taxaField.short_name];
+
+          if (classificationValue === undefined) {
+            classificationValue = '';
+          }
+
+          if (taxaField.display_type === 'date') {
+            classificationValue = classifications[taxaField.short_name].split('T')[0];
+          }
+
+          defaultValues[taxaField.short_name.split(' ').join('_')] = classificationValue;
         });
+        setFieldsWithDefaultValues(fieldsArray);
 
-        const classifications = results[1][0].classifications;
-
-        console.log(classifications);
+        setInitialValues(defaultValues);
 
         setLoading(false);
       })
@@ -152,46 +170,198 @@ const EditTaxonomyForm = ({ namespace }) => {
       });
   }, []);
 
+  const generateFormField = (rawField, handleChange, formikValues) => {
+    const validateListField = (value) => {
+      if (Array.isArray(value)) {
+        return value.join(';');
+      }
+
+      return value.replace(',', ';');
+    };
+
+    return (
+      <>
+        <Form.Label>{rawField.short_name.split('_').join(' ')}</Form.Label>
+        {rawField.display_type === 'list' && (
+          <UsageInfoSpan>{' (use semicolon for term separation)'}</UsageInfoSpan>
+        )}
+        {rawField.display_type === 'multi' && (
+          <UsageInfoSpan>{" (use 'command' or 'ctrl' keys for multiple selections)"}</UsageInfoSpan>
+        )}
+        {rawField.display_type === 'enum' && (
+          <Form.Control
+            as="select"
+            id={rawField.short_name}
+            name={rawField.short_name}
+            type="text"
+            onChange={handleChange}
+            value={formikValues[rawField.short_name]}
+          >
+            {rawField.permitted_values.map((v) => (
+              <option key={v} value={v}>
+                {v}
+              </option>
+            ))}
+          </Form.Control>
+        )}
+
+        {rawField.display_type === 'string' &&
+          formikValues[rawField.short_name].length <= TEXTAREA_LIMIT && (
+            <Form.Control
+              id={rawField.short_name}
+              name={rawField.short_name}
+              type="text"
+              onChange={handleChange}
+              value={formikValues[rawField.short_name]}
+            />
+          )}
+
+        {rawField.display_type === 'string' &&
+          formikValues[rawField.short_name].length > TEXTAREA_LIMIT && (
+            <Form.Control
+              as="textarea"
+              rows={3}
+              id={rawField.short_name}
+              name={rawField.short_name}
+              type="text"
+              onChange={handleChange}
+              value={formikValues[rawField.short_name]}
+            />
+          )}
+
+        {rawField.display_type === 'bool' && (
+          <Form.Control
+            as="select"
+            id={rawField.short_name}
+            name={rawField.short_name}
+            type="text"
+            onChange={handleChange}
+            value={formikValues[rawField.short_name]}
+          >
+            <option key={''} value={''}>
+              {''}
+            </option>
+            <option key={'yes'} value={true}>
+              {'Yes'}
+            </option>
+            <option key={'no'} value={false}>
+              {'No'}
+            </option>
+          </Form.Control>
+        )}
+
+        {rawField.display_type === 'date' && (
+          <Form.Control
+            id={rawField.short_name}
+            name={rawField.short_name}
+            type="date"
+            onChange={handleChange}
+            value={formikValues[rawField.short_name]}
+          />
+        )}
+
+        {rawField.display_type === 'location' && (
+          <Form.Control
+            id={rawField.short_name}
+            name={rawField.short_name}
+            type="text"
+            onChange={handleChange}
+            value={formikValues[rawField.short_name]}
+          />
+        )}
+
+        {rawField.display_type === 'list' && (
+          <Form.Control
+            id={rawField.short_name}
+            name={rawField.short_name}
+            type="text"
+            onChange={handleChange}
+            value={validateListField(formikValues[rawField.short_name])}
+          />
+        )}
+
+        {rawField.display_type === 'multi' && (
+          <Form.Control
+            as="select"
+            multiple={true}
+            id={rawField.short_name}
+            name={rawField.short_name}
+            type="text"
+            onChange={handleChange}
+            value={formikValues[rawField.short_name]}
+          >
+            {rawField.permitted_values.map((v) => (
+              <option key={v} value={v}>
+                {v}
+              </option>
+            ))}
+          </Form.Control>
+        )}
+        <Form.Text className={['text-muted', 'mb-4']}>{rawField.short_description}</Form.Text>
+      </>
+    );
+  };
+
   if (loading) {
-    return <Loader loading={loading} />;
+    return (
+      <FormContainer>
+        <Loader loading={loading} />
+      </FormContainer>
+    );
   }
 
   if (error !== '') {
-    return <span>{error}</span>;
+    return (
+      <FormContainer>
+        <span>{error}</span>
+      </FormContainer>
+    );
+  }
+
+  if (fieldsWithDefaultValues.length === 0) {
+    return (
+      <FormContainer>
+        <span>{'Could not render form edit'}</span>
+      </FormContainer>
+    );
   }
 
   return (
     <FormContainer>
-      <form onSubmit={formik.handleSubmit}>
-        <label htmlFor="email">Email Address</label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          onChange={formik.handleChange}
-          value={formik.values.email}
-        />
-        <input
-          id="name"
-          name="name"
-          type="text"
-          onChange={formik.handleChange}
-          value={formik.values.name}
-        />
-        <input
-          id="today"
-          name="today"
-          type="date"
-          onChange={formik.handleChange}
-          value={formik.values.today}
-        />
-        <button type="submit">Submit</button>
-      </form>
+      <Formik
+        initialValues={initialValues}
+        validate={(values) => {
+          console.log(values);
+          return {};
+        }}
+        onSubmit={(values, { setSubmitting }) => {
+          alert(JSON.stringify(values, null, 2));
+          setSubmitting(false);
+        }}
+      >
+        {({
+          values,
+          // errors,
+          // touched,
+          handleChange,
+          handleSubmit,
+          isSubmitting,
+        }) => (
+          <Form onSubmit={handleSubmit}>
+            {fieldsWithDefaultValues.map((rawField) =>
+              generateFormField(rawField, handleChange, values)
+            )}
+            <Button type="submit" disabled={isSubmitting}>
+              Submit
+            </Button>
+          </Form>
+        )}
+      </Formik>
     </FormContainer>
   );
 };
 
-const TaxonomyForm = ({ taxonomy }) => {
+const TaxonomyForm = ({ taxonomy, incidentId }) => {
   if (!taxonomy) {
     return null;
   }
@@ -202,7 +372,11 @@ const TaxonomyForm = ({ taxonomy }) => {
 
   const [isEditing, setIsEditing] = useState(false);
 
+  const [showBanner, setShowBanner] = useState(false);
+
   const handleSubmit = () => {
+    // TODO: after save show updated permited values in the form?
+    setShowBanner(true);
     setIsEditing(false);
   };
 
@@ -216,13 +390,20 @@ const TaxonomyForm = ({ taxonomy }) => {
     <Row key={taxonomy.namespace} className="mb-4">
       <Container className="card">
         <TaxaCardHeader className="card-header">
-          <h4>{`${taxonomy.namespace} Taxonomy Classifications`}</h4>
+          <TaxaHeader>{`${taxonomy.namespace} Taxonomy Classifications`}</TaxaHeader>
           {isAdmin && (
             <>
               {isEditing ? (
-                <Button onClick={handleSubmit}>Save</Button>
+                <>
+                  <Button style={{ marginRight: '1em' }} onClick={handleSubmit}>
+                    Save
+                  </Button>
+                  <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+                </>
               ) : (
-                <Button onClick={() => setIsEditing(true)}>Edit</Button>
+                <Button Button onClick={() => setIsEditing(true)}>
+                  Edit
+                </Button>
               )}
             </>
           )}
@@ -236,6 +417,17 @@ const TaxonomyForm = ({ taxonomy }) => {
         <>
           {!isEditing ? (
             <>
+              {showBanner && (
+                <div style={{ padding: '0.5em' }}>
+                  <Card bg="secondary" style={{ width: '100%' }} text="light" className="mb-2">
+                    <Card.Body>
+                      <Card.Text>
+                        Submition is in review. Classification will update in 24 - 48 hours.
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                </div>
+              )}
               {taxonomy.classificationsArray &&
                 taxonomy.classificationsArray
                   .filter((field) => {
@@ -271,7 +463,7 @@ const TaxonomyForm = ({ taxonomy }) => {
             </>
           ) : (
             <>
-              <EditTaxonomyForm namespace={taxonomy.namespace} />
+              <EditTaxonomyForm namespace={taxonomy.namespace} incidentId={incidentId} />
             </>
           )}
         </>
