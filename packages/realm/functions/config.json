@@ -1,0 +1,47 @@
+[
+    {
+        "name": "createReportForReview",
+        "private": false,
+        "can_evaluate": true,
+        "disable_arg_logs": false,
+        "run_as_system": true,
+        "run_as_user_id": "",
+        "run_as_user_id_script_source": ""
+    },
+    {
+        "name": "deleteSubmittedDocument",
+        "private": false,
+        "can_evaluate": true,
+        "disable_arg_logs": false,
+        "run_as_system": true,
+        "run_as_user_id": "",
+        "run_as_user_id_script_source": ""
+    },
+    {
+        "name": "promoteReport",
+        "private": false,
+        "can_evaluate": true,
+        "disable_arg_logs": false,
+        "run_as_system": true,
+        "run_as_user_id": "",
+        "run_as_user_id_script_source": ""
+    },
+    {
+        "name": "quickAdd",
+        "private": false,
+        "can_evaluate": true,
+        "disable_arg_logs": false,
+        "run_as_system": true,
+        "run_as_user_id": "",
+        "run_as_user_id_script_source": ""
+    },
+    {
+        "name": "updateSubmissionReport",
+        "private": false,
+        "can_evaluate": true,
+        "disable_arg_logs": false,
+        "run_as_system": true,
+        "run_as_user_id": "",
+        "run_as_user_id_script_source": ""
+    }
+]
