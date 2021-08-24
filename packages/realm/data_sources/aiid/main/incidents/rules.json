@@ -1,6 +1,6 @@
 {
-    "collection": "quickadd",
-    "database": "aiid",
+    "collection": "incidents",
+    "database": "main",
     "roles": [
         {
             "name": "default",

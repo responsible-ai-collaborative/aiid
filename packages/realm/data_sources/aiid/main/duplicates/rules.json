@@ -1,6 +1,6 @@
 {
-    "collection": "taxa",
-    "database": "aiid",
+    "collection": "duplicates",
+    "database": "main",
     "roles": [
         {
             "name": "default",

@@ -1,6 +1,6 @@
 {
-    "collection": "classifications",
-    "database": "aiid",
+    "collection": "quickadd",
+    "database": "main",
     "roles": [
         {
             "name": "default",

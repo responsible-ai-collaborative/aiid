@@ -1,6 +1,6 @@
 {
-    "collection": "duplicates",
-    "database": "aiid",
+    "collection": "classifications",
+    "database": "main",
     "roles": [
         {
             "name": "default",
