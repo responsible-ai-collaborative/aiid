@@ -1,5 +1,5 @@
 {
-    "name": "aiid",
+    "name": "mongodb-atlas",
     "type": "mongodb-atlas",
     "config": {
         "clusterName": "aiid",

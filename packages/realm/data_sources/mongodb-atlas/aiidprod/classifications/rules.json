@@ -1,6 +1,6 @@
 {
     "collection": "classifications",
-    "database": "main",
+    "database": "aiidprod",
     "roles": [
         {
             "name": "default",
