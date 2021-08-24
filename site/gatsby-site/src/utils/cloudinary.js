@@ -4,10 +4,11 @@ import { Cloudinary } from '@cloudinary/base';
 import { defaultImage, format, quality } from '@cloudinary/base/actions/delivery';
 import { auto } from '@cloudinary/base/qualifiers/format';
 import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
+import config from '../../config';
 
 const cld = new Cloudinary({
   cloud: {
-    cloudName: 'pai',
+    cloudName: config.cloudinary.cloudName
   },
 });
 

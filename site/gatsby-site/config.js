@@ -79,6 +79,9 @@ const config = {
       ],
     },
   },
+  cloudinary: {
+    cloudName: 'pai',
+  }
 };
 
 module.exports = config;
