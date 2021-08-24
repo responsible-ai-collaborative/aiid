@@ -1,6 +1,6 @@
 {
-    "collection": "duplicate",
-    "database": "aiid-dev",
+    "collection": "incidents",
+    "database": "aiid-prod",
     "roles": [
         {
             "name": "default",
