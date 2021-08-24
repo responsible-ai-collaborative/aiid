@@ -1,6 +1,6 @@
 {
     "collection": "incidents",
-    "database": "aiidprod",
+    "database": "aiid",
     "roles": [
         {
             "name": "default",

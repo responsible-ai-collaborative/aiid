@@ -1,8 +1,8 @@
 {
-    "name": "mongodb-atlas",
+    "name": "aiid",
     "type": "mongodb-atlas",
     "config": {
-        "clusterName": "Cluster0",
+        "clusterName": "aiid",
         "readPreference": "primary",
         "wireProtocolEnabled": false
     },

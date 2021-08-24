@@ -1,6 +1,6 @@
 {
-    "collection": "submissions",
-    "database": "aiidprod",
+    "collection": "classifications",
+    "database": "aiid",
     "roles": [
         {
             "name": "default",
