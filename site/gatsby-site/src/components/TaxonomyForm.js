@@ -63,18 +63,18 @@ const TaxaHeader = styled.h4`
 
 const TEXTAREA_LIMIT = 120;
 
-const EditTaxonomyForm = ({ namespace, incidentId }) => {
+const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }) => {
   const [loading, setLoading] = useState(true);
 
   const [error, setError] = useState('');
 
-  const [initialValues, setInitialValues] = useState({
-    email: '',
-    name: '',
-    today: '',
-  });
+  const { user } = useUserContext();
+
+  const [initialValues, setInitialValues] = useState({});
 
   const [fieldsWithDefaultValues, setFieldsWithDefaultValues] = useState([]);
+
+  const [listTypeFields, setListTypeFields] = useState([]);
 
   const useRunTaxaQuery = () => {
     return new Promise((resolve, reject) => {
@@ -158,6 +158,8 @@ const EditTaxonomyForm = ({ namespace, incidentId }) => {
           defaultValues[taxaField.short_name.split(' ').join('_')] = classificationValue;
         });
         setFieldsWithDefaultValues(fieldsArray);
+
+        setListTypeFields(fieldsArray.filter((f) => f.display_type === 'list'));
 
         setInitialValues(defaultValues);
 
@@ -330,12 +332,29 @@ const EditTaxonomyForm = ({ namespace, incidentId }) => {
     <FormContainer>
       <Formik
         initialValues={initialValues}
-        validate={(values) => {
-          console.log(values);
-          return {};
-        }}
-        onSubmit={(values, { setSubmitting }) => {
-          alert(JSON.stringify(values, null, 2));
+        onSubmit={async (values, { setSubmitting }) => {
+          let newValues = values;
+
+          listTypeFields.forEach((f) => {
+            if (Array.isArray(values[f.short_name])) {
+              newValues[f.short_name] = values[f.short_name]
+                .filter((f) => f !== '')
+                .map((f) => f.trim());
+            } else {
+              newValues[f.short_name] = values[f.short_name]
+                .split(';')
+                .filter((f) => f !== '')
+                .map((f) => f.trim());
+            }
+          });
+
+          await user.functions.updateIncidentClassification({
+            incident_id: incidentId,
+            ...newValues,
+          });
+
+          setShowBanner(true);
+          setIsEditing(false);
           setSubmitting(false);
         }}
       >
@@ -348,12 +367,14 @@ const EditTaxonomyForm = ({ namespace, incidentId }) => {
           isSubmitting,
         }) => (
           <Form onSubmit={handleSubmit}>
-            {fieldsWithDefaultValues.map((rawField) =>
-              generateFormField(rawField, handleChange, values)
-            )}
-            <Button type="submit" disabled={isSubmitting}>
-              Submit
-            </Button>
+            <fieldset disabled={isSubmitting}>
+              {fieldsWithDefaultValues.map((rawField) =>
+                generateFormField(rawField, handleChange, values)
+              )}
+              <Button type="submit" disabled={isSubmitting}>
+                Submit
+              </Button>
+            </fieldset>
           </Form>
         )}
       </Formik>
@@ -374,12 +395,6 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
 
   const [showBanner, setShowBanner] = useState(false);
 
-  const handleSubmit = () => {
-    // TODO: after save show updated permited values in the form?
-    setShowBanner(true);
-    setIsEditing(false);
-  };
-
   const renderTooltip = (props, displayText) => (
     <Tooltip id="button-tooltip" {...props}>
       {displayText}
@@ -394,12 +409,7 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
           {isAdmin && (
             <>
               {isEditing ? (
-                <>
-                  <Button style={{ marginRight: '1em' }} onClick={handleSubmit}>
-                    Save
-                  </Button>
-                  <Button onClick={() => setIsEditing(false)}>Cancel</Button>
-                </>
+                <Button onClick={() => setIsEditing(false)}>Cancel</Button>
               ) : (
                 <Button Button onClick={() => setIsEditing(true)}>
                   Edit
@@ -463,7 +473,12 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
             </>
           ) : (
             <>
-              <EditTaxonomyForm namespace={taxonomy.namespace} incidentId={incidentId} />
+              <EditTaxonomyForm
+                namespace={taxonomy.namespace}
+                incidentId={incidentId}
+                setShowBanner={setShowBanner}
+                setIsEditing={setIsEditing}
+              />
             </>
           )}
         </>
