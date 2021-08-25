@@ -15,7 +15,7 @@ export const useMongo = () => {
     callback,
     dbService = DB_SERVICE,
     dbName = DB_NAME,
-    dbCollection = DB_COLLECTION
+    dbCollection = 'submissions'
   ) => {
     const mongoCollection = realmApp.services
       .mongodb(dbService)

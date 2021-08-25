@@ -18,6 +18,6 @@
   },
   "homepage": "https://github.com/cesarvarela/aiid#readme",
   "workspaces": [
-    "packages/*"
+    "site/*"
   ]
 }

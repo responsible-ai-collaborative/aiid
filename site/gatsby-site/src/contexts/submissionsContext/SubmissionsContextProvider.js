@@ -17,7 +17,7 @@ export const SubmissionsContextProvider = ({ children }) => {
   const refetch = () => {
     setLoading(true);
 
-    runQuery(null, (res) => {
+    runQuery({}, (res) => {
       setSubmissions(res.map((doc) => ({ ...doc, mongodb_id: new ObjectId(doc._id).toString() })));
       setLoading(false);
     });
@@ -42,7 +42,7 @@ export const SubmissionsContextProvider = ({ children }) => {
         [loading, submissions, refetch]
       )}
     >
-      {children}
+      {loading ? <div>Loading...</div> : children}
     </SubmissionsContext.Provider>
   );
 };
