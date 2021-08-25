@@ -33,7 +33,7 @@ const useRunQuery = (query) => {
 };
 
 const DEFAULT_RESULTS = {
-  epoch_incident_date: {
+  incident_id: {
     header: 'Incidents reports matched by ID',
     reports: [],
   },
@@ -90,7 +90,6 @@ const RelatedIncidents = ({ incident = {}, isSubmitted }) => {
   const queryByIncidentId = async () => {
     if (prevIncident !== incident_id && incident_id) {
       setPrevIncident(incident_id);
-      let incidentEpochDate = 0;
 
       const parsed = parseInt(incident_id);
 
@@ -98,28 +97,16 @@ const RelatedIncidents = ({ incident = {}, isSubmitted }) => {
       if (isNaN(parsed)) {
         setRelated({
           ...related,
-          epoch_incident_date: {
-            header: related.epoch_incident_date.header,
+          incident_id: {
+            header: related.incident_id.header,
             reports: [],
           },
         });
         return;
       }
 
-      // TODO: remove from all app division and multiplication with 1000
-      const res = await useRunQuery({ incident_id: parsed });
-
-      if (res[0]) {
-        incidentEpochDate = res[0].epoch_incident_date * 1000;
-        const q = {
-          epoch_incident_date: {
-            $gte: subWeeks(incidentEpochDate, 1).getTime() / 1000,
-            $lt: addWeeks(incidentEpochDate, 1).getTime() / 1000,
-          },
-        };
-
-        addQueryCondition(q);
-      }
+      // const res = await useRunQuery({ incident_id: parsed });
+      addQueryCondition({ incident_id: parsed });
     }
   };
 
@@ -251,7 +238,7 @@ const RelatedIncidents = ({ incident = {}, isSubmitted }) => {
     !loading &&
     related.url.reports.length === 0 &&
     related.authors.reports.length === 0 &&
-    related.epoch_incident_date.reports.length === 0 &&
+    related.incident_id.reports.length === 0 &&
     related.epoch_date_published.reports.length === 0
   ) {
     return (
@@ -286,7 +273,7 @@ const RelatedIncidents = ({ incident = {}, isSubmitted }) => {
   return (
     <ListGroup className="position-relative">
       <Loader loading={loading} />
-      <RelatedIncidentsArea context={related.epoch_incident_date} />
+      <RelatedIncidentsArea context={related.incident_id} />
       <RelatedIncidentsArea context={related.epoch_date_published} />
       <RelatedIncidentsArea context={related.authors} />
       <RelatedIncidentsArea context={related.url} />
