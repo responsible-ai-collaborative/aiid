@@ -1,6 +1,6 @@
 {
     "collection": "taxa",
-    "database": "main",
+    "database": "aiidprod",
     "roles": [
         {
             "name": "default",
