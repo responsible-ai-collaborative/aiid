@@ -1,6 +1,6 @@
 {
     "collection": "quickadd",
-    "database": "main",
+    "database": "aiidprod",
     "roles": [
         {
             "name": "default",
