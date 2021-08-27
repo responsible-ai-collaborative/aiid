@@ -60,13 +60,6 @@ const plugins = [
     },
   },
   {
-    resolve: 'gatsby-source-filesystem',
-    options: {
-      name: 'images',
-      path: path.join(__dirname, `static`, `large_media`, `report_banners`),
-    },
-  },
-  {
     resolve: 'gatsby-plugin-mdx',
     options: {
       gatsbyRemarkPlugins: [
@@ -100,22 +93,11 @@ const plugins = [
     options: {
       dbName: 'aiidprod',
       collection: ['incidents', 'submissions', 'quickadd', 'duplicates', 'taxa', 'classifications'],
-      connectionString:
-        'mongodb+srv://readonlyuser:EScmnlEQHM1pWwWM@aiiddev-aqdmh.gcp.mongodb.net/AIIDDev',
-      server: {
-        address: 'aiiddev-aqdmh.gcp.mongodb.net',
-        port: 27017,
-      },
-      auth: {
-        user: 'readonlyuser',
-        password: 'EScmnlEQHM1pWwWM',
-      },
+      connectionString: process.env.MONGODB_CONNECTION_STRING || 'mongodb+srv://readonlyuser:EScmnlEQHM1pWwWM@aiiddev-aqdmh.gcp.mongodb.net',
       extraParams: {
-        replicaSet: [
-          'aiiddev-shard-00-02-aqdmh',
-          'aiiddev-shard-00-01-aqdmh',
-          'aiiddev-shard-00-00-aqdmh',
-        ],
+        replicaSet: process.env.MONGODB_REPLICA_SET
+          ? process.env.MONGODB_REPLICA_SET.split(',')
+          : ['aiiddev-shard-00-02-aqdmh', 'aiiddev-shard-00-01-aqdmh', 'aiiddev-shard-00-00-aqdmh'],
         ssl: true,
         authSource: 'admin',
         retryWrites: true,
