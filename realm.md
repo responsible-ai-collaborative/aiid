@@ -12,6 +12,7 @@ exports = function(arg){
   //date_downloaded: ""
   //date_published: ""
   //image_url: ""
+  //cloudinary_id: ""
   //incident_date: ""
   //incident_id: ""
   //submitters: "Anonymous"
@@ -42,6 +43,7 @@ exports = function(arg){
     date_downloaded: arg["date_downloaded"],
     date_published: arg["date_published"],
     image_url: arg["image_url"],
+    cloudinary_id: arg["cloudinary_id"],
     incident_date: arg["incident_date"],
     incident_id: 0,
     submitters: submitters,
@@ -86,6 +88,7 @@ exports = function(arg){
       description: submittedReport["description"],
       authors: submittedReport["authors"],
       image_url: submittedReport["image_url"],
+      cloudinary_id: submittedReport["cloudinary_id"],
       language: submittedReport["language"],
       source_domain: submittedReport["source_domain"],
       text: submittedReport["text"],
@@ -246,6 +249,7 @@ exports = function(arg){
         date_downloaded: arg["date_downloaded"],
         date_published: arg["date_published"],
         image_url: arg["image_url"],
+        cloudinary_id: arg["cloudinary_id"],
         incident_date: arg["incident_date"],
         incident_id: 0,
         submitters: submitters,

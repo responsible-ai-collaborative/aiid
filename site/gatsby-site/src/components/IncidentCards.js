@@ -4,7 +4,6 @@ import { Highlight, connectHits, connectStateResults } from 'react-instantsearch
 import { Spinner } from 'react-bootstrap';
 import styled from 'styled-components';
 import { navigate } from 'gatsby';
-import config from '../../config';
 import md5 from 'md5';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -15,6 +14,8 @@ import {
   faHashtag,
 } from '@fortawesome/free-solid-svg-icons';
 import WebArchiveLink from './WebArchiveLink';
+import { Image } from 'utils/cloudinary';
+import { fill } from '@cloudinary/base/actions/resize';
 
 const cardNeedsBlockquote = (item) => {
   if (item.text && item.text.matchLevel === 'full') {
@@ -33,10 +34,6 @@ const getParagraphs = (itemText) => {
       ))}
     </>
   );
-};
-
-const getImageHashPath = (imgUrl) => {
-  return `${config.gatsby.siteUrl}/large_media/report_banners/${md5(imgUrl)}`;
 };
 
 const getFlagModalContent = () => (
@@ -129,6 +126,12 @@ const StatsContainer = styled.div`
   padding: 1.25rem;
 `;
 
+const IncidentCardImage = styled(Image)`
+  height: ${({ height }) => height};
+  object-fit: cover;
+  width: 100%;
+`;
+
 const IncidentCard = ({
   item,
   authorsModal,
@@ -173,7 +176,13 @@ const IncidentCard = ({
       )}
     </CardBody>
     <div className="align-bottom">
-      <img className="image-preview" alt={item.title} src={getImageHashPath(item.image_url)} />
+      <IncidentCardImage
+        publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
+        alt={item.title}
+        height={isCitePage ? 'unset' : '240px'}
+        transformation={isCitePage ? null : fill().height(480)}
+      />
+
       {toggleFilterByIncidentId && (
         <button
           type="button"
