@@ -80,6 +80,13 @@ exports = function(arg){
     return epoch;
   }
 
+  function getCloudinaryPublicID(url) {
+    // https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files
+    const publicID = `reports/${url.replace(/^https?:\/\//, '')}`;
+
+    return publicID;
+  }
+
   function create(submittedReport, incident_id, report_number, ref_number) {
 
 
@@ -88,7 +95,7 @@ exports = function(arg){
       description: submittedReport["description"],
       authors: submittedReport["authors"],
       image_url: submittedReport["image_url"],
-      cloudinary_id: submittedReport["cloudinary_id"],
+      cloudinary_id: submittedReport["cloudinary_id"] || getCloudinaryPublicID(submittedReport["image_url"]),
       language: submittedReport["language"],
       source_domain: submittedReport["source_domain"],
       text: submittedReport["text"],
