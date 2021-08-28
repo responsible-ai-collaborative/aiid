@@ -7,13 +7,13 @@ const config = {
   },
   realm: {
     review_db: {
-      realm_app_id: 'aiidstitch2-fuwyv',
+      realm_app_id: process.env.GATSBY_REALM_APP_ID || 'aiidstitch2-fuwyv',
       db_service: 'mongodb-atlas',
       db_name: 'aiidprod',
       db_collection: 'submissions',
     },
     production_db: {
-      realm_app_id: 'aiidstitch2-fuwyv',
+      realm_app_id: process.env.GATSBY_REALM_APP_ID || 'aiidstitch2-fuwyv',
       db_service: 'mongodb-atlas',
       db_name: 'aiidprod',
       db_collection: 'incidents',
