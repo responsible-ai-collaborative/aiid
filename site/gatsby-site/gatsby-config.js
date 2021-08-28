@@ -93,22 +93,9 @@ const plugins = [
     options: {
       dbName: 'aiidprod',
       collection: ['incidents', 'submissions', 'quickadd', 'duplicates', 'taxa', 'classifications'],
-      connectionString:
-        'mongodb+srv://readonlyuser:EScmnlEQHM1pWwWM@aiiddev-aqdmh.gcp.mongodb.net/AIIDDev',
-      server: {
-        address: 'aiiddev-aqdmh.gcp.mongodb.net',
-        port: 27017,
-      },
-      auth: {
-        user: 'readonlyuser',
-        password: 'EScmnlEQHM1pWwWM',
-      },
+      connectionString: config.mongodb.connectionString,
       extraParams: {
-        replicaSet: [
-          'aiiddev-shard-00-02-aqdmh',
-          'aiiddev-shard-00-01-aqdmh',
-          'aiiddev-shard-00-00-aqdmh',
-        ],
+        replicaSet: config.mongodb.replicaSet,
         ssl: true,
         authSource: 'admin',
         retryWrites: true,
