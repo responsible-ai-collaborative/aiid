@@ -1,14 +1,14 @@
 {
-    "properties": {
-        "_id": {
-            "bsonType": "objectId"
-        },
-        "duplicate_incident_number": {
-            "bsonType": "int"
-        },
-        "true_incident_number": {
-            "bsonType": "int"
-        }
+  "properties": {
+    "_id": {
+      "bsonType": "objectId"
     },
-    "title": "duplicate"
+    "duplicate_incident_number": {
+      "bsonType": "int"
+    },
+    "true_incident_number": {
+      "bsonType": "int"
+    }
+  },
+  "title": "duplicate"
 }
