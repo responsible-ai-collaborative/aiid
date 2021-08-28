@@ -81,7 +81,15 @@ const config = {
   },
   cloudinary: {
     cloudName: 'pai',
-  }
+  },
+  mongodb: {
+    connectionString:
+      process.env.MONGODB_CONNECTION_STRING ||
+      'mongodb+srv://readonlyuser:EScmnlEQHM1pWwWM@aiiddev-aqdmh.gcp.mongodb.net',
+    replicaSet: process.env.MONGODB_REPLICA_SET
+      ? process.env.MONGODB_REPLICA_SET.split(',')
+      : ['aiiddev-shard-00-02-aqdmh', 'aiiddev-shard-00-01-aqdmh', 'aiiddev-shard-00-00-aqdmh'],
+  },
 };
 
 module.exports = config;
