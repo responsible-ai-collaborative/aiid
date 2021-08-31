@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from '@emotion/styled';
+import styled from 'styled-components';
 import { StaticQuery, graphql } from 'gatsby';
 import GitHubButton from 'react-github-btn';
 import Loadable from 'react-loadable';
@@ -58,11 +58,8 @@ const StyledBgDiv = styled('div')`
 const NavBarHeaderContainer = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
-
-  @media (max-width: 767px) {
-    justify-content: space-between;
-  }
+  justify-content: space-between;
+  width: 100%;
 `;
 
 const HeaderIconsContainer = styled.div`
