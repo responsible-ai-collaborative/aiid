@@ -30,10 +30,14 @@ import '../../static/discover/src/app.css';
 import '../../static/discover/src/index.css';
 import { add, format, formatISO, isAfter } from 'date-fns';
 import { Hits } from '../../src/components/IncidentCards';
+import config from '../../config';
 
 const indexName = 'instant_search';
 
-const searchClient = algoliasearch('JD5JCVZEVS', 'c5e99d93261645721a1765fe4414389c');
+const searchClient = algoliasearch(
+  config.header.search.algoliaAppId,
+  config.header.search.algoliaSearchKey
+);
 
 //// Alternative
 // const indexName = "aiid-emergency";
