@@ -3,6 +3,53 @@
 These functions are defined in the MongoDB UI and are restated here so they will be in version control.
 
 
+`updateIncidentClassification()`: Override incident classification for a given taxonomy.
+
+```
+exports = function(arg){
+  // IN REQUEST
+  // incident_id: ""
+  // namespace: ""
+  // newClassifications: { ...taxonomy fields with values }
+
+  var collection = context.services.get("mongodb-atlas").db("aiidprod").collection("classifications");
+
+  function update(filter, doc, arg) {
+    const options = { upsert: false };
+    const updateDoc = {
+      $set: {
+        ...doc,
+        classifications: {
+          ...arg["newClassifications"]
+        }
+      },
+    };
+
+    var updatedDoc = collection.updateOne(filter, updateDoc, options);
+    return updatedDoc;
+  }
+
+  // Find what we want to update
+  const incidentId = arg["incident_id"];
+  const taxonomy = arg["namespace"]
+
+  var foundDoc;
+
+  var filter = {
+    $and: [
+      {'incident_id': incidentId},
+      {'namespace': namespace}
+    ]
+  }
+
+  collection.findOne(filter).then(res => {
+    foundDoc = res;
+  }).then(() => {
+    return update(filter, foundDoc, arg);
+  });
+};
+```
+
 `createReportForReview()`: Create a record for the `submissions` collection.
 
 ```
@@ -18,15 +65,15 @@ exports = function(arg){
   //text: ""
   //title: ""
   //url: ""
-  
+
   let url = new URL(arg["url"]);
-  
+
   var today = new Date();
   var dd = String(today.getDate()).padStart(2, '0');
   var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
   var yyyy = today.getFullYear();
-  date_modified = yyyy + '-' + mm + '-' + dd ; 
-  
+  date_modified = yyyy + '-' + mm + '-' + dd ;
+
   var authors = arg["authors"]
   if( typeof authors === 'string' ) {
     authors = arg["authors"].split(",").map(function(item){return item.trim()});
@@ -36,7 +83,7 @@ exports = function(arg){
   if( typeof submitters === 'string' ) {
     submitters = arg["submitters"].split(",").map(function(item){return item.trim()});
   }
-  
+
   var record = {
     authors: authors,
     date_downloaded: arg["date_downloaded"],
@@ -107,14 +154,14 @@ exports = function(arg){
       date_submitted: submittedReport["date_submitted"],
       report_number: submittedReport["report_number"]
     }
-  
+
     // Provided by submitted incident or by finding the next ID
     newReport["incident_id"] = incident_id;
-  
+
     // Derived from the database
     newReport["ref_number"] = ref_number;
     newReport["report_number"] = report_number;
-  
+
     incidentCollection.insertOne(
       newReport
     ).then(()=>{
@@ -169,15 +216,15 @@ exports = function(arg){
 exports = function(arg){
   // IN REQUEST
   //url: ""
-  
+
   let url = new URL(arg["url"]);
-  
+
   var today = new Date();
   var dd = String(today.getDate()).padStart(2, '0');
   var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
   var yyyy = today.getFullYear();
-  date_modified = yyyy + '-' + mm + '-' + dd ; 
-  
+  date_modified = yyyy + '-' + mm + '-' + dd ;
+
   var record = {
     incident_id: 0,
     url: arg["url"],
