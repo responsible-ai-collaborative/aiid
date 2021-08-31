@@ -74,8 +74,6 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
 
   const [fieldsWithDefaultValues, setFieldsWithDefaultValues] = useState([]);
 
-  const [listTypeFields, setListTypeFields] = useState([]);
-
   const useRunTaxaQuery = () => {
     return new Promise((resolve, reject) => {
       const { runQuery } = useMongo();
@@ -107,6 +105,7 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
           {
             // 'classifications.Publish': true,
             incident_id: incidentId,
+            namespace,
           },
           (res) => {
             resolve(res);
@@ -125,10 +124,15 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
     setLoading(true);
     Promise.all([useRunTaxaQuery(), useRunClassificationsQuery()])
       .then((results) => {
-        // TODO: handle multiple taxonomies/classifications
         const taxonomy = results[0][0];
 
-        const classifications = results[1][0].classifications;
+        let classifications = {};
+
+        if (results[1].length > 0) {
+          classifications = results[1][0].classifications;
+        }
+
+        console.log(results[1]);
 
         const fieldsArray = [];
 
@@ -149,17 +153,15 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
 
           if (classificationValue === undefined) {
             classificationValue = '';
-          }
-
-          if (taxaField.display_type === 'date') {
-            classificationValue = classifications[taxaField.short_name].split('T')[0];
+          } else {
+            if (taxaField.display_type === 'date') {
+              classificationValue = classifications[taxaField.short_name].split('T')[0];
+            }
           }
 
           defaultValues[taxaField.short_name.split(' ').join('_')] = classificationValue;
         });
         setFieldsWithDefaultValues(fieldsArray);
-
-        setListTypeFields(fieldsArray.filter((f) => f.display_type === 'list'));
 
         setInitialValues(defaultValues);
 
@@ -199,6 +201,9 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
             onChange={handleChange}
             value={formikValues[rawField.short_name]}
           >
+            <option key={''} value={''}>
+              {''}
+            </option>
             {rawField.permitted_values.map((v) => (
               <option key={v} value={v}>
                 {v}
@@ -328,36 +333,48 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
     );
   }
 
+  const onSubmit = async (values, { setSubmitting }) => {
+    let newValues = values;
+
+    console.log(fieldsWithDefaultValues);
+    fieldsWithDefaultValues.forEach((f) => {
+      //Convert string values into array
+      if (f.display_type === 'list') {
+        if (Array.isArray(values[f.short_name])) {
+          newValues[f.short_name] = values[f.short_name]
+            .map((f) => f.trim())
+            .filter((f) => f !== '');
+        } else {
+          newValues[f.short_name] = values[f.short_name]
+            .split(';')
+            .map((f) => f.trim())
+            .filter((f) => f !== '');
+        }
+      }
+
+      //Convert string values into date
+      if (f.display_type === 'date') {
+        newValues[f.short_name] = `${values[f.short_name]}T00:00:00.000Z`;
+      }
+    });
+
+    if (JSON.stringify(initialValues) !== JSON.stringify(newValues)) {
+      await user.functions.updateIncidentClassification({
+        incident_id: incidentId,
+        namespace,
+        newClassifications: newValues,
+      });
+
+      setShowBanner(true);
+    }
+
+    setIsEditing(false);
+    setSubmitting(false);
+  };
+
   return (
     <FormContainer>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={async (values, { setSubmitting }) => {
-          let newValues = values;
-
-          listTypeFields.forEach((f) => {
-            if (Array.isArray(values[f.short_name])) {
-              newValues[f.short_name] = values[f.short_name]
-                .filter((f) => f !== '')
-                .map((f) => f.trim());
-            } else {
-              newValues[f.short_name] = values[f.short_name]
-                .split(';')
-                .filter((f) => f !== '')
-                .map((f) => f.trim());
-            }
-          });
-
-          await user.functions.updateIncidentClassification({
-            incident_id: incidentId,
-            ...newValues,
-          });
-
-          setShowBanner(true);
-          setIsEditing(false);
-          setSubmitting(false);
-        }}
-      >
+      <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({
           values,
           // errors,
@@ -438,38 +455,49 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
                   </Card>
                 </div>
               )}
-              {taxonomy.classificationsArray &&
-                taxonomy.classificationsArray
-                  .filter((field) => {
-                    if (showAllClassifications) return true;
-                    if (!showAllClassifications && field.weight >= 50) {
-                      return true;
-                    }
-                    return false;
-                  })
-                  .map((field) => (
-                    <ClassificationContainer key={field.name} className="card-body">
-                      <Field>
-                        <OverlayTrigger
-                          placement="left"
-                          delay={{ show: 100, hide: 400 }}
-                          overlay={(e) => renderTooltip(e, field.shortDescription)}
-                        >
-                          <p>{field.name}</p>
-                        </OverlayTrigger>
-                      </Field>
-                      <Value>{field.value}</Value>
-                    </ClassificationContainer>
-                  ))}
-              <button
-                type="button"
-                className="btn btn-secondary btn-sm btn-block assignment-button"
-                onClick={() => setShowAllClassifications(!showAllClassifications)}
-              >
-                {`Show ${
-                  showAllClassifications[taxonomy.namespace] ? 'Fewer' : 'All'
-                } Classifications`}
-              </button>
+              {taxonomy.classificationsArray.length > 0 ? (
+                <>
+                  {taxonomy.classificationsArray
+                    .filter((field) => {
+                      if (showAllClassifications) return true;
+                      if (!showAllClassifications && field.weight >= 50) {
+                        return true;
+                      }
+                      return false;
+                    })
+                    .map((field) => (
+                      <ClassificationContainer key={field.name} className="card-body">
+                        <Field>
+                          <OverlayTrigger
+                            placement="left"
+                            delay={{ show: 100, hide: 400 }}
+                            overlay={(e) => renderTooltip(e, field.shortDescription)}
+                          >
+                            <p>{field.name}</p>
+                          </OverlayTrigger>
+                        </Field>
+                        <Value>{field.value}</Value>
+                      </ClassificationContainer>
+                    ))}
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-sm btn-block assignment-button"
+                    onClick={() => setShowAllClassifications(!showAllClassifications)}
+                  >
+                    {`Show ${
+                      showAllClassifications[taxonomy.namespace] ? 'Fewer' : 'All'
+                    } Classifications`}
+                  </button>
+                </>
+              ) : (
+                <div style={{ padding: '0.5em' }}>
+                  <Card bg="secondary" style={{ width: '100%' }} text="light" className="mb-2">
+                    <Card.Body>
+                      <Card.Text>No classifications for this taxonomy.</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </div>
+              )}
             </>
           ) : (
             <>
