@@ -26,8 +26,6 @@ import LayoutHideSidebar from 'components/LayoutHideSidebar';
 import { Form, Button } from 'react-bootstrap';
 import Helmet from 'react-helmet';
 
-import '../../static/discover/src/app.css';
-import '../../static/discover/src/index.css';
 import { add, format, formatISO, isAfter } from 'date-fns';
 import { Hits } from '../../src/components/IncidentCards';
 import config from '../../config';
