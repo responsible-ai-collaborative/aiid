@@ -489,7 +489,7 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
                     } Classifications`}
                   </button>
                 </>
-              ) : (
+              ) : isAdmin && (
                 <div style={{ padding: '0.5em' }}>
                   <Card bg="secondary" style={{ width: '100%' }} text="light" className="mb-2">
                     <Card.Body>
