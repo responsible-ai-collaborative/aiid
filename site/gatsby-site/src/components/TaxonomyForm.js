@@ -418,7 +418,7 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
     </Tooltip>
   );
 
-  if (!isAdmin && taxonomy.classificationsArray.length > 0) {
+  if (!isAdmin && taxonomy.classificationsArray.length === 0) {
     return (<></>);
   }
 
