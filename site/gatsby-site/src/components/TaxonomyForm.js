@@ -418,6 +418,10 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
     </Tooltip>
   );
 
+  if (!isAdmin && taxonomy.classificationsArray.length > 0) {
+    return (<>);
+  }
+
   return (
     <Row key={taxonomy.namespace} className="mb-4">
       <Container className="card">
@@ -489,7 +493,7 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
                     } Classifications`}
                   </button>
                 </>
-              ) : isAdmin && (
+              ) : (
                 <div style={{ padding: '0.5em' }}>
                   <Card bg="secondary" style={{ width: '100%' }} text="light" className="mb-2">
                     <Card.Body>
