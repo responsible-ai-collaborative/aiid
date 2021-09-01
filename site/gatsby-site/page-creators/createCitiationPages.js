@@ -66,6 +66,7 @@ const createCitiationPages = (graphql, createPage) => {
                     title
                     url
                     image_url
+                    cloudinary_id
                     source_domain
                     mongodb_id
                     text

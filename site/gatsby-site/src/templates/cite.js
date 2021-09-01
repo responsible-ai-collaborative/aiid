@@ -162,7 +162,7 @@ const IncidentCite = ({ ...props }) => {
       <>
         {sortedHits.map((hit) => (
           <IncidentCard
-            key={hit.node.objectID}
+            key={hit.node.id}
             item={hit.node}
             authorsModal={authorsModal}
             submittersModal={submittersModal}

@@ -9,6 +9,7 @@ const ALL_INCIDENTS_DATA = graphql`
         description
         authors
         image_url
+        cloudinary_id
         language
         source_domain
         text

@@ -117,3 +117,15 @@ const express = require('express');
 exports.onCreateDevServer = ({ app }) => {
   app.use(express.static('public'));
 };
+
+exports.createSchemaCustomization = ({ actions }) => {
+  const { createTypes } = actions;
+
+  const typeDefs = `
+    type mongodbAiidprodIncidents implements Node {
+      cloudinary_id: String
+    }
+  `;
+
+  createTypes(typeDefs);
+};
