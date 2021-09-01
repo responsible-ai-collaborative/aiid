@@ -5,6 +5,7 @@ import { useUserContext } from 'contexts/userContext';
 import { useMongo } from 'hooks/useMongo';
 import { Formik } from 'formik';
 import Loader from 'components/Loader';
+import config from '../../config.js';
 
 const ClassificationContainer = styled.div`
   display: flex;
@@ -86,7 +87,7 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
           (res) => {
             resolve(res);
           },
-          'mongodb-atlas',
+          config.realm.production_db.db_service,
           'aiidprod',
           'taxa'
         );
@@ -110,7 +111,7 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
           (res) => {
             resolve(res);
           },
-          'mongodb-atlas',
+          config.realm.production_db.db_service,
           'aiidprod',
           'classifications'
         );
@@ -419,7 +420,7 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
   );
 
   if (!isAdmin && taxonomy.classificationsArray.length === 0) {
-    return (<></>);
+    return <></>;
   }
 
   return (
