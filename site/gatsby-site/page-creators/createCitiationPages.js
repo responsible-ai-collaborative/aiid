@@ -1,6 +1,15 @@
 const path = require('path');
 
-const getClassificationsArray = (classificationObj, taxonomy) => {
+const getClassificationsArray = (incidentClassifications, taxonomy) => {
+  const classifications = incidentClassifications.filter(
+    (c) => c.namespace === taxonomy.namespace
+  )[0];
+
+  if (!classifications) {
+    return [];
+  }
+  const classificationObj = classifications.classifications;
+
   const taxaFieldsArray = taxonomy.field_list.sort((a, b) => b.weight - a.weight);
 
   const array = [];
@@ -162,34 +171,15 @@ const createCitiationPages = (graphql, createPage) => {
             (t) => t.incident_id.toString() === incident_id
           );
 
-          let taxonomyNamespaceArray = [];
-
-          if (incidentClassifications && incidentClassifications.length > 0) {
-            incidentClassifications.forEach((i) => {
-              taxonomyNamespaceArray.push(i.namespace);
-            });
-          }
-
-          taxonomyNamespaceArray = [...new Set(taxonomyNamespaceArray)];
-
-          const filteredAllMongodbAiidprodTaxa = allMongodbAiidprodTaxa.nodes.filter((taxonomy) =>
-            taxonomyNamespaceArray.includes(taxonomy.namespace)
-          );
-
           const taxonomies = [];
 
-          if (incidentClassifications.length > 0) {
-            incidentClassifications.forEach((c) => {
-              filteredAllMongodbAiidprodTaxa.forEach((t) => {
-                if (c.namespace === t.namespace) {
-                  taxonomies.push({
-                    namespace: c.namespace,
-                    classificationsArray: getClassificationsArray(c.classifications, t),
-                  });
-                }
-              });
+          allMongodbAiidprodTaxa.nodes.forEach((t) => {
+            taxonomies.push({
+              namespace: t.namespace,
+              classificationsArray: getClassificationsArray(incidentClassifications, t),
+              taxonomyFields: t.field_list,
             });
-          }
+          });
 
           // Create citation pages
           createPage({

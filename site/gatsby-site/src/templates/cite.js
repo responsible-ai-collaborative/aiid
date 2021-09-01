@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Helmet from 'react-helmet';
 
-import { Button, Container, Row, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Button, Container, Row } from 'react-bootstrap';
 
 import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
@@ -16,6 +16,7 @@ import { IncidentStatsCard, IncidentCard, NoResults } from '../../src/components
 import styled from 'styled-components';
 import { isAfter, isEqual } from 'date-fns';
 import { useModal, CustomModal } from '../../src/components/useModal';
+import TaxonomyForm from '../components/TaxonomyForm';
 
 const HitsContainer = styled.div`
   display: grid;
@@ -52,36 +53,6 @@ const StatsContainer = styled.div`
   }
 `;
 
-const ClassificationContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  width: 100%;
-`;
-
-const Field = styled.div`
-  width: 20%;
-  border-right: 2.5px solid #d9deee;
-  margin-right: 1em;
-  color: grey;
-  font-weight: 700;
-`;
-
-const Value = styled.div`
-  width: 80%;
-`;
-
-const TaxaCardHeader = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-
-  p {
-    margin: 0;
-  }
-`;
-
 const IncidnetsReportsTitle = styled.div`
   margin-top: 4em;
   padding-bottom: 20px;
@@ -95,26 +66,6 @@ const IncidentCite = ({ ...props }) => {
   const {
     pageContext: { incidentReports, taxonomies },
   } = props;
-
-  const [showAllClassifications, setShowAllClassifications] = useState({});
-
-  useEffect(() => {
-    let initShowAllClassifications = {};
-
-    if (taxonomies.length > 0) {
-      taxonomies.forEach((t) => {
-        initShowAllClassifications[t.namespace] = false;
-      });
-      setShowAllClassifications(initShowAllClassifications);
-    }
-  }, []);
-
-  const toggleShowAllClassifications = (namespace) => {
-    setShowAllClassifications({
-      ...showAllClassifications,
-      [namespace]: !showAllClassifications[namespace],
-    });
-  };
 
   const scrollToIncidentCard = () => {
     if (props.location?.hash) {
@@ -227,12 +178,6 @@ const IncidentCite = ({ ...props }) => {
     );
   };
 
-  const renderTooltip = (props, displayText) => (
-    <Tooltip id="button-tooltip" {...props}>
-      {displayText}
-    </Tooltip>
-  );
-
   return (
     <Layout {...props}>
       <Helmet>
@@ -297,46 +242,7 @@ const IncidentCite = ({ ...props }) => {
           </Row>
           {taxonomies.length > 0 &&
             taxonomies.map((t) => (
-              <Row key={t.namespace} className="mb-4">
-                <CardContainer className="card">
-                  <TaxaCardHeader className="card-header">
-                    <h4>{`${t.namespace} Taxonomy Classifications`}</h4>
-                    <a href={`/taxonomy/${t.namespace.toLowerCase()}`}>Taxonomy Details</a>
-                  </TaxaCardHeader>
-                  {t.classificationsArray &&
-                    t.classificationsArray
-                      .filter((field) => {
-                        if (showAllClassifications[t.namespace]) return true;
-                        if (!showAllClassifications[t.namespace] && field.weight >= 50) {
-                          return true;
-                        }
-                        return false;
-                      })
-                      .map((field) => (
-                        <ClassificationContainer key={field.name} className="card-body">
-                          <Field>
-                            <OverlayTrigger
-                              placement="left"
-                              delay={{ show: 100, hide: 400 }}
-                              overlay={(e) => renderTooltip(e, field.shortDescription)}
-                            >
-                              <p>{field.name}</p>
-                            </OverlayTrigger>
-                          </Field>
-                          <Value>{field.value}</Value>
-                        </ClassificationContainer>
-                      ))}
-                  <button
-                    type="button"
-                    className="btn btn-secondary btn-sm btn-block assignment-button"
-                    onClick={() => toggleShowAllClassifications(t.namespace)}
-                  >
-                    {`Show ${
-                      showAllClassifications[t.namespace] ? 'Fewer' : 'All'
-                    } Classifications`}
-                  </button>
-                </CardContainer>
-              </Row>
+              <TaxonomyForm key={t.namespace} taxonomy={t} incidentId={incident_id} />
             ))}
           <Row className="mb-4">
             <CardContainer className="card">
