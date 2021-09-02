@@ -4,7 +4,6 @@ import { Highlight, connectHits, connectStateResults } from 'react-instantsearch
 import { Spinner } from 'react-bootstrap';
 import styled from 'styled-components';
 import { navigate } from 'gatsby';
-import config from '../../config';
 import md5 from 'md5';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -15,6 +14,8 @@ import {
   faHashtag,
 } from '@fortawesome/free-solid-svg-icons';
 import WebArchiveLink from './WebArchiveLink';
+import { Image } from 'utils/cloudinary';
+import { fill } from '@cloudinary/base/actions/resize';
 
 const cardNeedsBlockquote = (item) => {
   if (item.text && item.text.matchLevel === 'full') {
@@ -33,10 +34,6 @@ const getParagraphs = (itemText) => {
       ))}
     </>
   );
-};
-
-const getImageHashPath = (imgUrl) => {
-  return `${config.gatsby.siteUrl}/large_media/report_banners/${md5(imgUrl)}`;
 };
 
 const getFlagModalContent = () => (
@@ -120,6 +117,11 @@ const IncidentCardContainer = styled.div`
   box-shadow: 0 2px 5px 0px #e3e5ec;
   display: flex;
   flex-direction: column;
+  .subhead {
+    margin: 0;
+    opacity: 0.4;
+    padding-top: 10px;
+  }
 `;
 
 const StatsContainer = styled.div`
@@ -127,6 +129,12 @@ const StatsContainer = styled.div`
   max-width: 100%;
   grid-template-columns: 1fr 3fr;
   padding: 1.25rem;
+`;
+
+const IncidentCardImage = styled(Image)`
+  height: ${({ height }) => height};
+  object-fit: cover;
+  width: 100%;
 `;
 
 const IncidentCard = ({
@@ -173,7 +181,13 @@ const IncidentCard = ({
       )}
     </CardBody>
     <div className="align-bottom">
-      <img className="image-preview" alt={item.title} src={getImageHashPath(item.image_url)} />
+      <IncidentCardImage
+        publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
+        alt={item.title}
+        height={isCitePage ? 'unset' : '240px'}
+        transformation={isCitePage ? null : fill().height(480)}
+      />
+
       {toggleFilterByIncidentId && (
         <button
           type="button"

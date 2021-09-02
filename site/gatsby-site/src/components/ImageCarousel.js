@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import md5 from 'md5';
 import Carousel from 'react-bootstrap/Carousel';
+import { Image } from 'utils/cloudinary';
+import { fill } from '@cloudinary/base/actions/resize';
 
 const Caption = styled.h3`
   background: rgba(0, 0, 0, 0.55);
@@ -9,6 +11,12 @@ const Caption = styled.h3`
 
 const SubCaption = styled.p`
   background: rgba(0, 0, 0, 0.55);
+`;
+
+const CarouselImage = styled(Image)`
+  height: 640px;
+  object-fit: cover;
+  width: 100%;
 `;
 
 /**
@@ -22,13 +30,15 @@ const ImageCarousel = ({ nodes }) => {
     <Carousel interval={60000}>
       {nodes.map((value, index) => (
         <Carousel.Item key={index}>
-          <img
-            className="d-block w-100"
-            src={
-              'https://incidentdatabase.ai/large_media/report_banners/' +
-              md5(value['node']['image_url'])
+          <CarouselImage
+            publicID={
+              value.node.cloudinary_id
+                ? value.node.cloudinary_id
+                : `legacy/${md5(value.node.image_url)}`
             }
-            alt={value['node']['title']}
+            alt={value.node.title}
+            transformation={fill().height(640)}
+            plugins={[]}
           />
           <Carousel.Caption>
             <Caption>

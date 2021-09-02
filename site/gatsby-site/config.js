@@ -79,6 +79,9 @@ const config = {
       ],
     },
   },
+  cloudinary: {
+    cloudName: 'pai',
+  },
   mongodb: {
     connectionString:
       process.env.MONGODB_CONNECTION_STRING ||

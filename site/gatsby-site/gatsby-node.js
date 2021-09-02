@@ -26,6 +26,7 @@ exports.createPages = ({ graphql, actions }) => {
     ['/about_apps/2-submit', '/about_apps'],
     ['/about_apps/3-your_app_here', '/about_apps'],
     ['/apps/quickadd', '/apps/submit'],
+    ['/discover', '/apps/discover'],
   ];
 
   redirects.forEach((pair) =>
@@ -109,4 +110,16 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
       value: node.frontmatter.title || startCase(parent.name),
     });
   }
+};
+
+exports.createSchemaCustomization = ({ actions }) => {
+  const { createTypes } = actions;
+
+  const typeDefs = `
+    type mongodbAiidprodIncidents implements Node {
+      cloudinary_id: String
+    }
+  `;
+
+  createTypes(typeDefs);
 };

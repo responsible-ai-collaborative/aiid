@@ -757,14 +757,14 @@ img {
     border-top: 1px solid #fff;
   }
   .headerTitle {
-    padding-right: 50px;
-    font-size: 16px;
+    font-size: 12px;
+    margin-top: 0;
   }
   .navBarBrand {
     min-height: 40px;
   }
   .navBarBrand img {
-    margin-right: 8px;
+    width: 42px;
   }
   .topnav.responsive .visibleMobile {
     display: block;
@@ -832,7 +832,6 @@ img {
     padding: 0 0;
     padding-left: 0;
     flex: initial;
-    padding-right: 15px;
   }
 
   .titleWrapper {

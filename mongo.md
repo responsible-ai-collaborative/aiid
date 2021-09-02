@@ -91,6 +91,9 @@ Media
     "image_url": {
       "bsonType": "string"
     },
+    "cloudinary_id": {
+      "bsonType": "string"
+    },
     "incident_date": {
       "bsonType": "string"
     },
@@ -184,6 +187,9 @@ Media
       "bsonType": "string"
     },
     "image_url": {
+      "bsonType": "string"
+    },
+    "cloudinary_id": {
       "bsonType": "string"
     },
     "incident_date": {
