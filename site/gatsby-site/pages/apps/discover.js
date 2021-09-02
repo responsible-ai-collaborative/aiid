@@ -195,6 +195,7 @@ const ResultsSide = styled.div`
 
 const RefinementListContainer = styled.div`
   margin-bottom: 1rem;
+  padding-bottom: 10px;
 `;
 
 const StyledPagination = styled(Pagination)`
@@ -425,7 +426,7 @@ const StyledRefinementList = ({
   faIcon,
   faClasses,
 }) => (
-  <RefinementListContainer className="refine">
+  <RefinementListContainer>
     <RefinementListHeader className="refine_header">
       <FontAwesomeIcon icon={faIcon} className={faClasses} />
       {` ${listLabel}`}
