@@ -27,8 +27,8 @@ import { Form, Button } from 'react-bootstrap';
 import Helmet from 'react-helmet';
 
 import { add, format, formatISO, isAfter } from 'date-fns';
-import { Hits } from '../../src/components/IncidentCards';
-import config from '../../config';
+import { Hits } from 'components/IncidentCards';
+import config from '../../../config';
 
 const indexName = 'instant_search';
 
