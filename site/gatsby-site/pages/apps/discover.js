@@ -274,6 +274,11 @@ const StyledPagination = styled(Pagination)`
 
 const RefinementListHeader = styled.span`
   display: block;
+  background: #036eff;
+  border-radius: 1px;
+  color: #fff;
+  margin-bottom: 0;
+  padding: 10px;
 `;
 
 const StyledStats = styled(Stats)`
