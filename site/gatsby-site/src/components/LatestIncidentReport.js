@@ -3,6 +3,8 @@ import { StaticQuery, graphql, Link } from 'gatsby';
 import styled from 'styled-components';
 import md5 from 'md5';
 import { format } from 'date-fns';
+import { Image } from '../utils/cloudinary';
+import { fill } from '@cloudinary/base/actions/resize';
 
 const ThumbnailLink = styled(Link)`
   display: block;
@@ -10,7 +12,7 @@ const ThumbnailLink = styled(Link)`
   margin: 0 -2rem 0;
 `;
 
-const ThumbnailImg = styled.img`
+const ThumbnailImg = styled(Image)`
   object-fit: cover;
   height: 100%;
   width: 100%;
@@ -81,13 +83,15 @@ const LatestIncidentReport = () => {
         }
       `}
       render={({ allMongodbAiidprodIncidents: { nodes } }) => {
-        const { image_url, title, description, epoch_date_submitted, incident_id } = nodes[0];
+        const { image_url, cloudinary_id, title, description, epoch_date_submitted, incident_id } =
+          nodes[0];
 
         return (
           <Wrapper>
             <ThumbnailLink to={`/cite/${incident_id}`}>
               <ThumbnailImg
-                src={'https://incidentdatabase.ai/large_media/report_banners/' + md5(image_url)}
+                publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
+                transformation={fill().height(480)}
                 alt={title}
               />
             </ThumbnailLink>

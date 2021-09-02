@@ -8,6 +8,8 @@ import TextInputGroup from 'components/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format } from 'date-fns';
 import { dateRegExp } from 'utils/date';
+import { getCloudinaryPublicID, Image } from 'utils/cloudinary';
+import styled from 'styled-components';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -28,6 +30,10 @@ import { dateRegExp } from 'utils/date';
 // * report_number: 2379 # (int) the incrementing primary key for the report. This is a global resource identifier.
 // * date_modified: `2019-07-25` # (Date or null) Date the report was edited.
 // * language: "en" # (string) The language identifier of the report.
+
+const PreviewImage = styled(Image)`
+  margin: -1rem auto 1rem;
+`;
 
 // Schema for yup
 const validationSchema = Yup.object().shape({
@@ -139,6 +145,8 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
 
       const news = await response.json();
 
+      const cloudinary_id = getCloudinaryPublicID(news.image_url, 'pai', 'reports');
+
       onUpdate((incident) => ({
         ...incident,
         title: news.title,
@@ -146,6 +154,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         date_published: format(new Date(news.date_publish), 'yyyy-MM-dd'),
         date_downloaded: format(new Date(news.date_download), 'yyyy-MM-dd'),
         image_url: news.image_url,
+        cloudinary_id,
         text: news.maintext,
       }));
     } catch (e) {
@@ -231,6 +240,9 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         placeholder="Image URL"
         {...TextInputGroupProps}
       />
+
+      <PreviewImage publicID={incident.cloudinary_id} />
+
       <TextInputGroup
         name="incident_id"
         label="Incident ID :"

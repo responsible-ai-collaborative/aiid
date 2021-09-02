@@ -3,9 +3,13 @@ const md5 = require('md5');
 
 const path = require(`path`);
 
+const cloudinary = require('cloudinary').v2;
+
 const queries = require('./src/utils/algolia');
 
 const config = require('./config');
+
+cloudinary.config({ cloud_name: config.cloudinary.cloudName });
 
 const plugins = [
   {
@@ -93,22 +97,9 @@ const plugins = [
     options: {
       dbName: 'aiidprod',
       collection: ['incidents', 'submissions', 'quickadd', 'duplicates', 'taxa', 'classifications'],
-      connectionString:
-        'mongodb+srv://readonlyuser:EScmnlEQHM1pWwWM@aiiddev-aqdmh.gcp.mongodb.net/AIIDDev',
-      server: {
-        address: 'aiiddev-aqdmh.gcp.mongodb.net',
-        port: 27017,
-      },
-      auth: {
-        user: 'readonlyuser',
-        password: 'EScmnlEQHM1pWwWM',
-      },
+      connectionString: config.mongodb.connectionString,
       extraParams: {
-        replicaSet: [
-          'aiiddev-shard-00-02-aqdmh',
-          'aiiddev-shard-00-01-aqdmh',
-          'aiiddev-shard-00-00-aqdmh',
-        ],
+        replicaSet: config.mongodb.replicaSet,
         ssl: true,
         authSource: 'admin',
         retryWrites: true,
@@ -134,20 +125,24 @@ const plugins = [
         {
           serialize: ({ query: { allMongodbAiidprodIncidents } }) => {
             return allMongodbAiidprodIncidents.edges.map((edge) => {
+              const publicID = edge.node.cloudinary_id
+                ? edge.node.cloudinary_id
+                : `legacy/${md5(edge.node.image_url)}`;
+
               return Object.assign({}, edge.node.frontmatter, {
                 title: edge.node.title,
                 url: edge.node.url,
                 link: edge.node.url,
                 description: edge.node.description,
                 guid: edge.node.id,
-                enclosure: edge.node.image_url &&
-                  edge.node.image_url !== 'placeholder.svg' && {
-                    url:
-                      config.gatsby.siteUrl +
-                      '/large_media/report_banners/' +
-                      md5(edge.node.image_url),
-                    type: 'image/jpeg',
-                  },
+                enclosure: {
+                  url: cloudinary.url(publicID, {
+                    secure: true,
+                    width: 800,
+                    default_image: 'fallback.jpg',
+                  }),
+                  type: 'image/jpeg',
+                },
               });
             });
           },
@@ -162,6 +157,7 @@ const plugins = [
                     description
                     id
                     image_url
+                    cloudinary_id
                   }
                 }
               }

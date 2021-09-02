@@ -7,13 +7,13 @@ const config = {
   },
   realm: {
     review_db: {
-      realm_app_id: 'aiidstitch2-fuwyv',
+      realm_app_id: process.env.GATSBY_REALM_APP_ID || 'aiidstitch2-fuwyv',
       db_service: 'mongodb-atlas',
       db_name: 'aiidprod',
       db_collection: 'submissions',
     },
     production_db: {
-      realm_app_id: 'aiidstitch2-fuwyv',
+      realm_app_id: process.env.GATSBY_REALM_APP_ID || 'aiidstitch2-fuwyv',
       db_service: 'mongodb-atlas',
       db_name: 'aiidprod',
       db_collection: 'incidents',
@@ -37,8 +37,8 @@ const config = {
     search: {
       enabled: false,
       indexName: '',
-      algoliaAppId: process.env.GATSBY_ALGOLIA_APP_ID,
-      algoliaSearchKey: process.env.GATSBY_ALGOLIA_SEARCH_KEY,
+      algoliaAppId: process.env.GATSBY_ALGOLIA_APP_ID || 'JD5JCVZEVS',
+      algoliaSearchKey: process.env.GATSBY_ALGOLIA_SEARCH_KEY || 'c5e99d93261645721a1765fe4414389c',
       algoliaAdminKey: process.env.ALGOLIA_ADMIN_KEY,
     },
   },
@@ -78,6 +78,17 @@ const config = {
         },
       ],
     },
+  },
+  cloudinary: {
+    cloudName: 'pai',
+  },
+  mongodb: {
+    connectionString:
+      process.env.MONGODB_CONNECTION_STRING ||
+      'mongodb+srv://readonlyuser:EScmnlEQHM1pWwWM@aiiddev-aqdmh.gcp.mongodb.net',
+    replicaSet: process.env.MONGODB_REPLICA_SET
+      ? process.env.MONGODB_REPLICA_SET.split(',')
+      : ['aiiddev-shard-00-02-aqdmh', 'aiiddev-shard-00-01-aqdmh', 'aiiddev-shard-00-00-aqdmh'],
   },
 };
 
