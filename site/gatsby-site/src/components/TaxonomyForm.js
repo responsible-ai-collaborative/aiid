@@ -88,7 +88,7 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
             resolve(res);
           },
           config.realm.production_db.db_service,
-          'aiidprod',
+          config.realm.production_db.db_name,
           'taxa'
         );
       } catch (error) {
@@ -112,7 +112,7 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
             resolve(res);
           },
           config.realm.production_db.db_service,
-          'aiidprod',
+          config.realm.production_db.db_name,
           'classifications'
         );
       } catch (error) {
