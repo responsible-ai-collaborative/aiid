@@ -117,6 +117,11 @@ const IncidentCardContainer = styled.div`
   box-shadow: 0 2px 5px 0px #e3e5ec;
   display: flex;
   flex-direction: column;
+  .subhead {
+    margin: 0;
+    opacity: 0.4;
+    padding-top: 10px;
+  }
 `;
 
 const StatsContainer = styled.div`

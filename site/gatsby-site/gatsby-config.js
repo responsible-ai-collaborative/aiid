@@ -25,12 +25,6 @@ const plugins = [
     },
   },
   {
-    resolve: `gatsby-plugin-page-creator`,
-    options: {
-      path: `${__dirname}/pages`,
-    },
-  },
-  {
     resolve: `gatsby-plugin-catch-links`,
     options: {
       excludePattern: /(\/discover\/)/,

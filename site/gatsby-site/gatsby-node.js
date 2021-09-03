@@ -26,6 +26,7 @@ exports.createPages = ({ graphql, actions }) => {
     ['/about_apps/2-submit', '/about_apps'],
     ['/about_apps/3-your_app_here', '/about_apps'],
     ['/apps/quickadd', '/apps/submit'],
+    ['/discover', '/apps/discover'],
   ];
 
   redirects.forEach((pair) =>
@@ -111,11 +112,16 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
   }
 };
 
-// https://github.com/gatsbyjs/gatsby/issues/17761#issuecomment-533816520
-const express = require('express');
+exports.createSchemaCustomization = ({ actions }) => {
+  const { createTypes } = actions;
 
-exports.onCreateDevServer = ({ app }) => {
-  app.use(express.static('public'));
+  const typeDefs = `
+    type mongodbAiidprodIncidents implements Node {
+      cloudinary_id: String
+    }
+  `;
+
+  createTypes(typeDefs);
 };
 
 exports.createSchemaCustomization = ({ actions }) => {

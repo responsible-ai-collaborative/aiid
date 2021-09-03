@@ -81,7 +81,7 @@ const jsonSchema = {
 const ValidateReport = ({ node }) => {
   let ret = [];
 
-  const discoverURL = '/discover/index.html?incident_id=' + node['incident_id'];
+  const discoverURL = '/apps/discover?incident_id=' + node['incident_id'];
 
   Object.keys(jsonSchema['properties']).forEach((key) => {
     let varient = 'danger';
@@ -173,7 +173,7 @@ const IncidentList = ({ group }) => {
             Incident {value['edges'][0]['node']['incident_id']}{' '}
             <Button
               variant="outline-primary"
-              href={'/discover/index.html?incident_id=' + value['edges'][0]['node']['incident_id']}
+              href={'/apps/discover?incident_id=' + value['edges'][0]['node']['incident_id']}
             >
               Discover
             </Button>

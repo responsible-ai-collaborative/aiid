@@ -27,8 +27,8 @@ import { Form, Button } from 'react-bootstrap';
 import Helmet from 'react-helmet';
 
 import { add, format, formatISO, isAfter } from 'date-fns';
-import { Hits } from '../../src/components/IncidentCards';
-import config from '../../config';
+import { Hits } from 'components/IncidentCards';
+import config from '../../../config';
 
 const indexName = 'instant_search';
 
@@ -195,6 +195,7 @@ const ResultsSide = styled.div`
 
 const RefinementListContainer = styled.div`
   margin-bottom: 1rem;
+  padding-bottom: 10px;
 `;
 
 const StyledPagination = styled(Pagination)`
@@ -278,6 +279,11 @@ const StyledPagination = styled(Pagination)`
 
 const RefinementListHeader = styled.span`
   display: block;
+  background: #036eff;
+  border-radius: 1px;
+  color: #fff;
+  margin-bottom: 0;
+  padding: 10px;
 `;
 
 const StyledStats = styled(Stats)`
@@ -420,7 +426,7 @@ const StyledRefinementList = ({
   faIcon,
   faClasses,
 }) => (
-  <RefinementListContainer className="refine">
+  <RefinementListContainer>
     <RefinementListHeader className="refine_header">
       <FontAwesomeIcon icon={faIcon} className={faClasses} />
       {` ${listLabel}`}

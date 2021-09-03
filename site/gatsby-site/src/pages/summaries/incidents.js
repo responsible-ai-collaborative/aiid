@@ -35,7 +35,7 @@ const IncidentList = ({ group }) => {
             </Button>
             <Button
               variant="outline-primary"
-              href={'/discover/index.html?incident_id=' + value['edges'][0]['node']['incident_id']}
+              href={'/apps/discover?incident_id=' + value['edges'][0]['node']['incident_id']}
             >
               Discover
             </Button>
