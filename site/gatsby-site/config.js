@@ -20,7 +20,7 @@ const config = {
     },
   },
   header: {
-    logo: '/partership-on-ai-logo-1up.png',
+    logo: '/partership-on-ai-logo-1up.svg',
     logoLink: '/',
     title: ' Incident Database',
     githubUrl: 'https://github.com/PartnershipOnAI/aiid',

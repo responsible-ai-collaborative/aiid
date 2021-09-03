@@ -219,6 +219,8 @@ right: 30px; */
   font-size: 14px;
 }
 .headerTitle {
+  position: relative;
+  right: 20px;
   height: auto;
   font-size: 16px;
   line-height: 1.5;

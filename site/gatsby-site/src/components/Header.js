@@ -48,7 +48,7 @@ const StyledBgDiv = styled('div')`
   background-color: #f8f8f8;
   position: relative;
   display: none;
-  background: #001932';
+  background: #001932;
 
   @media (max-width: 767px) {
     display: block;
@@ -122,6 +122,7 @@ const Header = () => (
                 <Link to={finalLogoLink} className={'navBarBrand'}>
                   <img
                     className={'img-responsive displayInline'}
+                    style={{ width: 140 }}
                     src={logo.image !== '' ? logo.image : logoImg}
                     alt={'logo'}
                   />
