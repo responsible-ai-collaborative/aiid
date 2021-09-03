@@ -112,13 +112,6 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
   }
 };
 
-// https://github.com/gatsbyjs/gatsby/issues/17761#issuecomment-533816520
-const express = require('express');
-
-exports.onCreateDevServer = ({ app }) => {
-  app.use(express.static('public'));
-};
-
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
 

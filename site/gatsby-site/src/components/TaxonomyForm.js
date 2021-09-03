@@ -419,7 +419,7 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
   );
 
   if (!isAdmin && taxonomy.classificationsArray.length === 0) {
-    return (<></>);
+    return <></>;
   }
 
   return (

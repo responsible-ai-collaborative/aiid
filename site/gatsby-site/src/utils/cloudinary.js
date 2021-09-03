@@ -8,7 +8,7 @@ import config from '../../config';
 
 const cld = new Cloudinary({
   cloud: {
-    cloudName: config.cloudinary.cloudName
+    cloudName: config.cloudinary.cloudName,
   },
 });
 
