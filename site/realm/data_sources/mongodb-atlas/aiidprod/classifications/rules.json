@@ -1,0 +1,14 @@
+{
+    "collection": "classifications",
+    "database": "aiidprod",
+    "roles": [
+        {
+            "name": "default",
+            "apply_when": {},
+            "insert": true,
+            "delete": true,
+            "search": true,
+            "additional_fields": {}
+        }
+    ]
+}

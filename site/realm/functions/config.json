@@ -1,0 +1,27 @@
+[
+    {
+        "name": "createReportForReview",
+        "private": false,
+        "run_as_system": true
+    },
+    {
+        "name": "deleteSubmittedDocument",
+        "private": false,
+        "run_as_system": true
+    },
+    {
+        "name": "promoteReport",
+        "private": false,
+        "run_as_system": true
+    },
+    {
+        "name": "quickAdd",
+        "private": false,
+        "run_as_system": true
+    },
+    {
+        "name": "updateSubmissionReport",
+        "private": false,
+        "run_as_system": true
+    }
+]
