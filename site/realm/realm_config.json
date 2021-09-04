@@ -1,5 +1,5 @@
 {
-  "app_id": "realm-gnedy",
+  "app_id": "%%values.appId",
   "config_version": 20210101,
   "name": "realm",
   "location": "US-VA",
