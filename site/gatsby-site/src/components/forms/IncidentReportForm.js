@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import Link from 'components/Link';
 import TextInputGroup from 'components/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { dateRegExp } from 'utils/date';
 import { getCloudinaryPublicID, Image } from 'utils/cloudinary';
 import styled from 'styled-components';
@@ -145,18 +145,25 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
 
       const news = await response.json();
 
+      addToast({
+        message: <>Please verify all information programmatically pulled from the report</>,
+        severity: SEVERITY.info,
+      });
+
       const cloudinary_id = getCloudinaryPublicID(news.image_url, 'pai', 'reports');
 
-      onUpdate((incident) => ({
-        ...incident,
-        title: news.title,
-        authors: news.authors,
-        date_published: format(new Date(news.date_publish), 'yyyy-MM-dd'),
-        date_downloaded: format(new Date(news.date_download), 'yyyy-MM-dd'),
-        image_url: news.image_url,
-        cloudinary_id,
-        text: news.maintext,
-      }));
+      onUpdate((incident) => {
+        return {
+          ...incident,
+          title: news.title,
+          authors: news.authors,
+          date_published: format(parseISO(news.date_publish), 'yyyy-MM-dd'),
+          date_downloaded: format(parseISO(news.date_download), 'yyyy-MM-dd'),
+          image_url: news.image_url,
+          cloudinary_id,
+          text: news.maintext,
+        };
+      });
     } catch (e) {
       addToast({
         message: <>Error fetching news info, please try again in a few seconds.</>,
