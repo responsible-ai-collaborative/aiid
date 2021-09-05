@@ -131,6 +131,10 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
     setParsingNews(true);
     const timeout = setTimeout(coldStartToast, 20000);
 
+    const improveText = (text) => {
+      return text.replaceAll('\n', '\n\n');
+    };
+
     try {
       const url = `https://z14490usg0.execute-api.us-east-1.amazonaws.com/default/parseNews?url=${encodeURIComponent(
         newsUrl
@@ -160,7 +164,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
           date_downloaded: format(parseISO(news.date_download), 'yyyy-MM-dd'),
           image_url: news.image_url,
           cloudinary_id,
-          text: news.maintext,
+          text: improveText(news.maintext),
         };
       });
     } catch (e) {
