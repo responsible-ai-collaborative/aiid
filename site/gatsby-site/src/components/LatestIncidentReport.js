@@ -78,6 +78,7 @@ const LatestIncidentReport = () => {
               description
               image_url
               incident_id
+              cloudinary_id
             }
           }
         }
