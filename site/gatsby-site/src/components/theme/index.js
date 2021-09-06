@@ -7,6 +7,6 @@ export const theme = {
     link: '#1000EE',
   },
   fonts: {
-    mono: '"SF Mono", "Roboto Mono", Menlo, monospace',
+    mono: '"Josefin Sans", Karla',
   },
 };
