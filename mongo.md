@@ -214,47 +214,6 @@ It is not specified.
 }
 ```
 
-# Development Environment Setup
-
-Go to https://cloud.mongodb.com/ and create a new project
- 
-## Creating the Database
-
-Create a cluster named `aiid`
-
-Download a copy of the database from here: https://incidentdatabase.ai/backups
-
-Run the [mongorestore](https://docs.mongodb.com/database-tools/mongorestore/) from inside the recently download backup with the following arguments:
-
-```sh
-mongorestore mongodb+srv://<USER>:<PASSWORD>@aiid.<CLOUDNAME>.mongodb.net/aiidprod aiidprod
-```
-
-*It is important to name the database `aiidprod` to make your life easier*
-
-## Setting up the Realm app
-
-Install the [realm-cli](https://docs.mongodb.com/realm/cli/#std-label-realm-cli-quickstart)
-
-```
-npm install -g mongodb-realm-cli
-```
-
-Authenticate the `realm-cli` by creating an [API key](https://docs.atlas.mongodb.com/configure-api-access/#programmatic-api-keys) and running the following commmand:
-
-```
-realm-cli login --api-key="<MongoDB Cloud Public API Key>" --private-api-key="<MongoDB Cloud Private API Key>"
-```
-
-Navigate to the `site` folder on this repo and run:
-
-```
-realm-cli push --remote="<Your App ID>"
-```
-
-
-
-
  
 
 

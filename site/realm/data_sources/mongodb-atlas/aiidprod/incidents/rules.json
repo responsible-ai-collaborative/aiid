@@ -3,10 +3,49 @@
     "database": "aiidprod",
     "roles": [
         {
-            "name": "default",
-            "apply_when": {},
+            "name": "admin",
+            "apply_when": {
+                "%%user.type": "server"
+            },
+            "fields": {
+                "flag": {},
+                "tags": {}
+            },
+            "write": true,
             "insert": true,
             "delete": true,
+            "search": true,
+            "additional_fields": {}
+        },
+        {
+            "name": "APIToken",
+            "apply_when": {
+                "%%user.type": "server"
+            },
+            "fields": {
+                "flag": {},
+                "tags": {}
+            },
+            "write": true,
+            "insert": true,
+            "delete": true,
+            "search": true,
+            "additional_fields": {}
+        },
+        {
+            "name": "default",
+            "apply_when": {},
+            "fields": {
+                "flag": {
+                    "write": true
+                },
+                "tags": {
+                    "write": true
+                }
+            },
+            "read": true,
+            "insert": false,
+            "delete": false,
             "search": true,
             "additional_fields": {}
         }

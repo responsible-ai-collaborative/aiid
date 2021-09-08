@@ -9,6 +9,9 @@
                 "bsonType": "string"
             }
         },
+        "cloudinary_id": {
+            "bsonType": "string"
+        },
         "date_downloaded": {
             "bsonType": "string"
         },

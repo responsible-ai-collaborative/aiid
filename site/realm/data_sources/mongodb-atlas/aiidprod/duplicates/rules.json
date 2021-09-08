@@ -5,8 +5,10 @@
         {
             "name": "default",
             "apply_when": {},
-            "insert": true,
-            "delete": true,
+            "read": true,
+            "write": false,
+            "insert": false,
+            "delete": false,
             "search": true,
             "additional_fields": {}
         }
