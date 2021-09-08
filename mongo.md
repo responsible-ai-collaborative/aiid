@@ -246,7 +246,7 @@ Authenticate the `realm-cli` by creating an [API key](https://docs.atlas.mongodb
 realm-cli login --api-key="<MongoDB Cloud Public API Key>" --private-api-key="<MongoDB Cloud Private API Key>"
 ```
 
-Navigate to the `site` folder on this repo and run:
+Navigate to the `site/realm` folder on this repo and run:
 
 ```
 realm-cli push --remote="<Your App ID>"
