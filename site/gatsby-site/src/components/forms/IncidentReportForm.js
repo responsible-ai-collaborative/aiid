@@ -6,10 +6,9 @@ import * as Yup from 'yup';
 import Link from 'components/Link';
 import TextInputGroup from 'components/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { dateRegExp } from 'utils/date';
-import { getCloudinaryPublicID, Image } from 'utils/cloudinary';
-import styled from 'styled-components';
+import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -30,10 +29,6 @@ import styled from 'styled-components';
 // * report_number: 2379 # (int) the incrementing primary key for the report. This is a global resource identifier.
 // * date_modified: `2019-07-25` # (Date or null) Date the report was edited.
 // * language: "en" # (string) The language identifier of the report.
-
-const PreviewImage = styled(Image)`
-  margin: -1rem auto 1rem;
-`;
 
 // Schema for yup
 const validationSchema = Yup.object().shape({
@@ -112,6 +107,10 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
   }, [incident]);
 
   useEffect(() => {
+    values['cloudinary_id'] =
+      typeof values['image_url'] === 'string'
+        ? getCloudinaryPublicID(values['image_url'], 'pai', 'reports')
+        : '';
     onUpdate && onUpdate(values);
   }, [values]);
 
@@ -132,6 +131,10 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
     setParsingNews(true);
     const timeout = setTimeout(coldStartToast, 20000);
 
+    const improveText = (text) => {
+      return text.replaceAll('\n', '\n\n');
+    };
+
     try {
       const url = `https://z14490usg0.execute-api.us-east-1.amazonaws.com/default/parseNews?url=${encodeURIComponent(
         newsUrl
@@ -145,18 +148,25 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
 
       const news = await response.json();
 
+      addToast({
+        message: <>Please verify all information programmatically pulled from the report</>,
+        severity: SEVERITY.info,
+      });
+
       const cloudinary_id = getCloudinaryPublicID(news.image_url, 'pai', 'reports');
 
-      onUpdate((incident) => ({
-        ...incident,
-        title: news.title,
-        authors: news.authors,
-        date_published: format(new Date(news.date_publish), 'yyyy-MM-dd'),
-        date_downloaded: format(new Date(news.date_download), 'yyyy-MM-dd'),
-        image_url: news.image_url,
-        cloudinary_id,
-        text: news.maintext,
-      }));
+      onUpdate((incident) => {
+        return {
+          ...incident,
+          title: news.title,
+          authors: news.authors,
+          date_published: format(parseISO(news.date_publish), 'yyyy-MM-dd'),
+          date_downloaded: format(parseISO(news.date_download), 'yyyy-MM-dd'),
+          image_url: news.image_url,
+          cloudinary_id,
+          text: improveText(news.maintext),
+        };
+      });
     } catch (e) {
       addToast({
         message: <>Error fetching news info, please try again in a few seconds.</>,
@@ -234,15 +244,13 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         placeholder="YYYY-MM-DD"
         {...TextInputGroupProps}
       />
-      <TextInputGroup
+      <PreviewImageInputGroup
+        publicID={incident.cloudinary_id}
         name="image_url"
         label="Image Address :"
         placeholder="Image URL"
         {...TextInputGroupProps}
       />
-
-      <PreviewImage publicID={incident.cloudinary_id} />
-
       <TextInputGroup
         name="incident_id"
         label="Incident ID :"
