@@ -83,6 +83,7 @@ const createCitiationPages = (graphql, createPage) => {
                 incident_id
                 id
                 namespace
+                notes
                 classifications {
                   Annotation_Status
                   Annotator
@@ -176,6 +177,7 @@ const createCitiationPages = (graphql, createPage) => {
 
           allMongodbAiidprodTaxa.nodes.forEach((t) => {
             taxonomies.push({
+              notes: incidentClassifications.notes,
               namespace: t.namespace,
               classificationsArray: getClassificationsArray(incidentClassifications, t),
               taxonomyFields: t.field_list,
