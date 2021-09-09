@@ -31,7 +31,7 @@ const createBackupsPage = (graphql, createPage) => {
         });
         createPage({
           path: '/research/snapshots',
-          component: path.resolve('./src/pages/backups.js'),
+          component: path.resolve('./src/templates/backups.js'),
           context: {
             backups,
           },
