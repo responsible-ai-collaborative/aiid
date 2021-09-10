@@ -400,7 +400,7 @@ blockquote {
 .greenCircle {
   width: 8px;
   height: 8px;
-  background-color: var(--secondary2);
+  background-color: var(--primary3);
   border-radius: 50%;
   margin: 0 12px;
 }
@@ -460,7 +460,7 @@ blockquote {
 }
 
 .hideFrontLine .active > a {
-  background-color: var(--secondary2);
+  background-color: var(--primary3);
   color: #fff !important;
 }
 .firstLevel ul li .collapser svg path {
@@ -480,7 +480,7 @@ blockquote {
 }
 
 .sideBarUL .item > a {
-  color: var(--secondary2);
+  color: var(--primary3);
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -518,7 +518,7 @@ blockquote {
   border-color: rgb(230, 236, 241) !important;
   border-style: solid none solid solid;
   border-width: 1px 0px 1px 1px;
-  background-color: var(--secondary2) !important;
+  background-color: var(--primary3) !important;
   color: #fff;
 }
 

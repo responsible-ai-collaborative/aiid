@@ -4,7 +4,7 @@ export const StyledHeading = styled('h1')`
   font-size: 32px;
   line-height: 1.5;
   font-weight: 500;
-  border-left: 2px solid ${(props) => props.theme.colors.secondary2};
+  border-left: 2px solid ${(props) => props.theme.colors.primary3};
   padding: 0 16px;
   flex: 1;
   margin-top: 0;
