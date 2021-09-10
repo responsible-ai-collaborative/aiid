@@ -230,13 +230,16 @@ right: 30px; */
   font-size: 14px;
 }
 .headerTitle {
+  position: relative;
+  right: 20px;
   height: auto;
-  font-size: 16px;
+  font-size: 21px;
   line-height: 1.5;
-  font-weight: 300;
+  font-weight: bold;
   color: #fff !important;
-  margin-top: 16px;
+  margin-left: 24px;
   text-transform: uppercase;
+  word-spacing: 3px;
 }
 .headerTitle a {
   color: #fff;
