@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 
 export const StyledHeading = styled('h1')`
+  font-family: 'Josefin Sans', sans-serif !important;
   font-size: 32px;
   line-height: 1.5;
-  font-weight: 500;
-  border-left: 2px solid ${(props) => props.theme.colors.primary3};
+  font-weight: bold;
   padding: 0 16px;
   flex: 1;
   margin-top: 0;

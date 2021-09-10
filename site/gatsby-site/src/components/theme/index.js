@@ -15,6 +15,6 @@ export const theme = {
     secondary4: '#071d49',
   },
   fonts: {
-    mono: '"SF Mono", "Roboto Mono", Menlo, monospace',
+    mono: '"Josefin Sans", Karla',
   },
 };

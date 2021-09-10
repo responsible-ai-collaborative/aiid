@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 
 export const Sidebar = styled('aside')`
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 15px;
   width: 100%;
   border-right: 1px solid #ede7f3;
   height: 100vh;
@@ -15,7 +17,7 @@ export const Sidebar = styled('aside')`
   background: ${(props) => props.theme.colors.background};
 
   .rightSideTitle {
-    font-size: 10px;
+    font-size: 14px;
     line-height: 1;
     font-weight: 700;
     text-transform: uppercase;
@@ -38,7 +40,6 @@ export const Sidebar = styled('aside')`
   }
 
   .rightSideBarUL li a {
-    font-size: 12px;
     font-weight: 500;
     line-height: 1.5;
     padding: 7px 24px 7px 16px;
