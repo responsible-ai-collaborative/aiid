@@ -30,7 +30,7 @@ const Content = styled('main')`
   display: flex;
   flex-direction: row;
   flex-grow: 1;
-  margin: 0px 33px;
+  /* margin: 0px 33px; */
   background: ${({ theme }) => theme.colors.background};
 
   table tr {
