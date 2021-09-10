@@ -122,11 +122,12 @@ const Header = () => (
                 <Link to={finalLogoLink} className={'navBarBrand'}>
                   <img
                     className={'img-responsive displayInline'}
-                    style={{ width: 140 }}
+                    style={{ width: 330 }}
                     src={logo.image !== '' ? logo.image : logoImg}
                     alt={'logo'}
                   />
                 </Link>
+                <li className="divider hiddenMobile"></li>
                 <div
                   className={'headerTitle displayInline'}
                   dangerouslySetInnerHTML={{ __html: headerTitle }}
