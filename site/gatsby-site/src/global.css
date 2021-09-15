@@ -246,7 +246,7 @@ a:hover {
 }
 
 .logoContent {
-  font-family: 'Josefin Sans', sans-serif !important;
+  font-family: Karla, sans-serif !important;
   margin-left: 16px;
   font-size: 28px;
   line-height: 1.5;
@@ -299,7 +299,7 @@ a:hover {
   -webkit-overflow-scrolling: touch;
 }
 .navBarUL li a {
-  font-family: 'Josefin Sans', sans-serif !important;
+  font-family: Karla, sans-serif !important;
   color: #fff !important;
   font-size: 16px;
   font-weight: bold;
@@ -371,7 +371,7 @@ blockquote {
   /* box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16); */
   background-color: #f8f8f8;
   padding: 18px 16px;
-  font-family: 'Josefin Sans', sans-serif !important;
+  font-family: Karla, sans-serif !important;
   font-size: 18px;
   font-weight: bold;
   color: #001934;
@@ -396,7 +396,7 @@ blockquote {
 }
 
 .headerNav {
-  font-family: 'Josefin Sans', sans-serif !important;
+  font-family: Karla, sans-serif !important;
   padding: 0px 24px;
   color: #001933;
   font-size: 16px;

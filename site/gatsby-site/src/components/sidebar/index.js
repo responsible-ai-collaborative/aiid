@@ -47,7 +47,7 @@ const ListItem = styled(({ className, active, level, ...props }) => {
 
 const Sidebar = styled('aside')`
   ${({ collapse }) => collapse && `display: none;`}
-  font-family: 'Josefin Sans', sans-serif;
+  font-family: Karla, sans-serif;
   font-weight: 700 !important;
   width: 250px;
   min-width: 250px;

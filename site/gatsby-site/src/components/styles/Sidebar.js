@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 export const Sidebar = styled('aside')`
-  font-family: 'Josefin Sans', sans-serif;
+  font-family: Karla, sans-serif;
   font-size: 15px;
   width: 100%;
   border-right: 1px solid #ede7f3;
