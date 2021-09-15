@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 export const StyledHeading = styled('h1')`
-  font-family: 'Josefin Sans', sans-serif !important;
+  font-family: Karla, sans-serif !important;
   font-size: 32px;
   line-height: 1.5;
   font-weight: bold;
