@@ -7,6 +7,7 @@ import config from '../../../config';
 
 import { useTable, useFilters, usePagination } from 'react-table';
 import { Table } from 'react-bootstrap';
+import Link from 'components/Link';
 
 const Container = styled.div`
   width: 100vw;
@@ -453,11 +454,21 @@ export default function ClassificationsDbView(props) {
                 return (
                   <tr key={row.id} {...row.getRowProps()}>
                     {row.cells.map((cell) => {
-                      return (
-                        <td key={cell.id} {...cell.getCellProps()}>
-                          <ScrollCell>{cell.render('Cell')}</ScrollCell>
-                        </td>
-                      );
+                      if (cell.column.Header.includes('Incident ID')) {
+                        return (
+                          <td key={cell.id} {...cell.getCellProps()}>
+                            <ScrollCell>
+                              <Link to={`/cite/${cell.value}`}>Incident {cell.render('Cell')}</Link>
+                            </ScrollCell>
+                          </td>
+                        );
+                      } else {
+                        return (
+                          <td key={cell.id} {...cell.getCellProps()}>
+                            <ScrollCell>{cell.render('Cell')}</ScrollCell>
+                          </td>
+                        );
+                      }
                     })}
                   </tr>
                 );
