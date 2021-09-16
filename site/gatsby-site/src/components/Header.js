@@ -79,6 +79,20 @@ const HideOnDesktop = styled.div`
   }
 `;
 
+// const LogoContainer = styled.div`
+//   .mobile {
+//     @media only screen and (max-width: 767px) {
+//       display: block !important;
+//     }
+//   }
+
+//   .desktop {
+//     @media only screen and (min-width: 767px) {
+//       display: none !important;
+//     }
+//   }
+// `
+
 const Header = () => (
   <StaticQuery
     query={graphql`
@@ -92,6 +106,7 @@ const Header = () => (
             logo {
               link
               image
+              mobile
             }
             headerLinks {
               link
@@ -121,9 +136,17 @@ const Header = () => (
               <div className={'navBarHeader'}>
                 <Link to={finalLogoLink} className={'navBarBrand'}>
                   <img
-                    className={'img-responsive displayInline'}
+                    className={'img-responsive displayInline desktop'}
                     style={{ width: 330 }}
                     src={logo.image !== '' ? logo.image : logoImg}
+                    alt={'logo'}
+                  />
+                  {/* <LogoContainer>
+                  </LogoContainer> */}
+                  <img
+                    className={'img-responsive displayInline mobile'}
+                    style={{ width: 330 }}
+                    src={logo.mobile !== '' ? logo.mobile : logoImg}
                     alt={'logo'}
                   />
                 </Link>

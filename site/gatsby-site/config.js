@@ -21,6 +21,7 @@ const config = {
   },
   header: {
     logo: '/partership-on-ai-logo-1up.png',
+    mobileLogo: '/partnership-mobile-logo.svg',
     logoLink: '/',
     title: ' AI Incident Database',
     githubUrl: 'https://github.com/PartnershipOnAI/aiid',
