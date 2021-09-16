@@ -8,6 +8,9 @@ import config from '../../../config';
 import { useTable, useFilters, usePagination } from 'react-table';
 import { Table } from 'react-bootstrap';
 import Link from 'components/Link';
+import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useModal, CustomModal } from 'components/useModal';
 
 const Container = styled.div`
   width: 100vw;
@@ -53,6 +56,12 @@ const ScrollCell = styled.div`
   margin: 0;
   padding: 0;
   overflow: auto;
+`;
+
+const ModalCell = styled.div`
+  cursor: pointer;
+  width: 10px;
+  height: 10px;
 `;
 
 const DEFAULT_EMPTY_CELL_DATA = '-';
@@ -339,20 +348,6 @@ export default function ClassificationsDbView(props) {
     initSetup();
   }, []);
 
-  // loading state
-  // table setup
-  /**
-   * Characteristisc:
-   *
-   * virtualized rows
-   * sorting
-   * filtering
-   * paginated - with fetch + loading
-   * column resizing
-   * full width
-   * bootstrap
-   */
-
   const data = React.useMemo(() => tableData, [tableData]);
 
   const columns = React.useMemo(() => [...columnData], [columnData]);
@@ -363,16 +358,6 @@ export default function ClassificationsDbView(props) {
     }),
     []
   );
-
-  // const filterTypes = {
-  //   postDate: (rows, id, filterValue) => {
-  //     const start = format(filterValue[0]).subtract(1, 'day');
-
-  //     const end = format(filterValue[1]).add(1, 'day');
-
-  //     return rows.filter(val => format(val.original[id], 'YYYY-MM-DD').isBetween(start, end));
-  //   },
-  // };
 
   const {
     getTableProps,
@@ -396,11 +381,12 @@ export default function ClassificationsDbView(props) {
       data,
       defaultColumn,
       initialState: { pageIndex: 0 },
-      // manualPagination: true,
     },
     useFilters,
     usePagination
   );
+
+  const fullTextModal = useModal();
 
   if (loading) {
     return (
@@ -460,6 +446,28 @@ export default function ClassificationsDbView(props) {
                             <ScrollCell>
                               <Link to={`/cite/${cell.value}`}>Incident {cell.render('Cell')}</Link>
                             </ScrollCell>
+                          </td>
+                        );
+                      } else if (cell.value?.length > 130) {
+                        return (
+                          <td key={cell.id} {...cell.getCellProps()}>
+                            <ScrollCell style={{ overflow: 'hidden' }}>
+                              {cell.value.substring(0, 124)}...
+                            </ScrollCell>
+                            <ModalCell>
+                              <FontAwesomeIcon
+                                onClick={() =>
+                                  fullTextModal.openFor({
+                                    title: cell.column.Header,
+                                    body: function f() {
+                                      return cell.value;
+                                    },
+                                  })
+                                }
+                                icon={faExpandAlt}
+                                className="fas fa-expand-arrows-alt"
+                              />
+                            </ModalCell>
                           </td>
                         );
                       } else {
@@ -532,6 +540,7 @@ export default function ClassificationsDbView(props) {
           </div>
         </TableStyles>
       </Container>
+      <CustomModal {...fullTextModal} />
     </LayoutHideSidebar>
   );
 }
