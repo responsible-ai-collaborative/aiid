@@ -34,18 +34,19 @@ export const UserContextProvider = ({ children }) => {
       credentials = Realm.Credentials.anonymous();
     }
 
-    try {
-      const user = await realmApp.logIn(credentials);
+    const user = await realmApp.logIn(credentials);
 
-      if (user.id === realmApp.currentUser.id) {
-        setUser(user);
-        return user;
-      }
-    } catch (err) {
-      console.error('Failed to log in', err);
+    if (user.id === realmApp.currentUser.id) {
+      setUser(user);
     }
+  };
 
-    return null;
+  const sendResetPasswordEmail = async ({ email }) => {
+    return realmApp.emailPasswordAuth.sendResetPasswordEmail(email);
+  };
+
+  const resetPassword = async ({ password, token, tokenId }) => {
+    return realmApp.emailPasswordAuth.resetPassword(token, tokenId, password);
   };
 
   useEffect(() => {
@@ -55,6 +56,8 @@ export const UserContextProvider = ({ children }) => {
       if (!realmApp.currentUser.isLoggedIn) {
         await login();
       }
+
+      console.log('UserContextProvider: currentUser', realmApp.currentUser);
 
       setLoading(false);
     };
@@ -72,6 +75,8 @@ export const UserContextProvider = ({ children }) => {
         actions: {
           login,
           logout,
+          sendResetPasswordEmail,
+          resetPassword,
         },
       }}
     >
