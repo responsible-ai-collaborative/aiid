@@ -1,9 +1,9 @@
 import { createContext, useContext } from 'react';
 
 export const UserContext = createContext({
-  loading: undefined,
+  loading: true,
   user: undefined,
-  isAdmin: false,
+  isAdmin: undefined,
   isLoggedIn: undefined,
   actions: {
     login: () => {},

@@ -17,7 +17,7 @@ import { UserContext } from './UserContext';
 export const UserContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(realmApp.currentUser);
 
   const logout = () => {
     return realmApp.currentUser.logOut();
@@ -50,19 +50,7 @@ export const UserContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    setLoading(true);
-
-    const init = async () => {
-      if (!realmApp.currentUser.isLoggedIn) {
-        await login();
-      }
-
-      console.log('UserContextProvider: currentUser', realmApp.currentUser);
-
-      setLoading(false);
-    };
-
-    init();
+    setLoading(false); //TODO: this might not be necessary
   }, []);
 
   return (
@@ -71,7 +59,6 @@ export const UserContextProvider = ({ children }) => {
         loading,
         user,
         isAdmin: false, //TODO: type === 'token',
-        isLoggedIn: !!user,
         actions: {
           login,
           logout,
