@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { useMongo } from 'hooks/useMongo';
 import config from '../../../config';
 
-import { useTable, useFilters, usePagination } from 'react-table';
+import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
 import { Table } from 'react-bootstrap';
 import Link from 'components/Link';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
@@ -62,6 +62,11 @@ const ModalCell = styled.div`
   cursor: pointer;
   width: 10px;
   height: 10px;
+`;
+
+const HeaderCellContainer = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const DEFAULT_EMPTY_CELL_DATA = '-';
@@ -383,6 +388,7 @@ export default function ClassificationsDbView(props) {
       initialState: { pageIndex: 0 },
     },
     useFilters,
+    useSortBy,
     usePagination
   );
 
@@ -427,7 +433,12 @@ export default function ClassificationsDbView(props) {
                 <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map((column) => (
                     <th key={column.id} {...column.getHeaderProps()}>
-                      {column.render('Header')}
+                      <HeaderCellContainer
+                        {...column.getHeaderProps(column.getSortByToggleProps())}
+                      >
+                        {column.render('Header')}
+                        <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
+                      </HeaderCellContainer>
                       <div>{column.canFilter ? column.render('Filter') : null}</div>
                     </th>
                   ))}
