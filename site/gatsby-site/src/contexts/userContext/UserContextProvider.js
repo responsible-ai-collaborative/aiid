@@ -58,7 +58,7 @@ export const UserContextProvider = ({ children }) => {
       value={{
         loading,
         user,
-        isAdmin: false, //TODO: type === 'token',
+        isAdmin: user && user.customData.role == 'admin',
         actions: {
           login,
           logout,
