@@ -17,8 +17,8 @@ export const useMongo = () => {
     dbName = DB_NAME,
     dbCollection = DB_COLLECTION
   ) => {
-    const mongoCollection = realmApp.services
-      .mongodb(dbService)
+    const mongoCollection = realmApp.currentUser
+      .mongoClient(dbService)
       .db(dbName)
       .collection(dbCollection);
 
@@ -41,8 +41,8 @@ export const useMongo = () => {
       submitters: data.submitters,
     };
 
-    const mongoCollection = realmApp.services
-      .mongodb(dbService)
+    const mongoCollection = realmApp.currentUser
+      .mongoClient(dbService)
       .db(dbName)
       .collection(dbCollection);
 
