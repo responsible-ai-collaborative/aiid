@@ -1,26 +1,10 @@
 [
     {
-        "name": "onNewUser",
-        "private": true
-    },
-    {
-        "name": "promoteReport",
-        "private": false,
-        "run_as_system": true,
-        "can_evaluate": {
-            "%%user.type": "server"
-        }
-    },
-    {
-        "name": "quickAdd",
-        "private": false
-    },
-    {
         "name": "updateIncidentClassification",
         "private": false,
         "run_as_system": true,
         "can_evaluate": {
-            "%%user.type": "server"
+            "%%user.custom_data.role": "admin"
         }
     },
     {
@@ -28,7 +12,7 @@
         "private": false,
         "run_as_system": true,
         "can_evaluate": {
-            "%%user.type": "server"
+            "%%user.custom_data.role": "admin"
         }
     },
     {
@@ -37,6 +21,22 @@
     },
     {
         "name": "deleteSubmittedDocument",
+        "private": false
+    },
+    {
+        "name": "onNewUser",
+        "private": true
+    },
+    {
+        "name": "promoteReport",
+        "private": false,
+        "run_as_system": true,
+        "can_evaluate": {
+            "%%user.custom_data.role": "admin"
+        }
+    },
+    {
+        "name": "quickAdd",
         "private": false
     }
 ]
