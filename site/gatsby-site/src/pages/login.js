@@ -22,7 +22,7 @@ const Login = (props) => {
 
   return (
     <Layout {...props}>
-      {user && user.isLoggedIn ? (
+      {user && user.isLoggedIn && user.profile.email ? (
         <div>
           Logged in as {user.profile.email}, <Link to="/logout">Log out</Link>
         </div>

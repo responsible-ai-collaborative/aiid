@@ -50,7 +50,15 @@ export const UserContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    setLoading(false); //TODO: this might not be necessary
+    async function checkUser() {
+      if (!user || !user.isLoggedIn) {
+        await login();
+      }
+
+      setLoading(false);
+    }
+
+    checkUser();
   }, []);
 
   return (
