@@ -49,7 +49,7 @@ const ALL_INCIDENTS_DATA = graphql`
           Severity
           AI_Applications
           AI_Techniques
-          Finacial_Cost
+          Financial_Cost
           Harm_Type
           Infrastructure_Sectors
           Level_of_Autonomy
