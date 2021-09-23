@@ -31,7 +31,7 @@ exports = function(arg){
 
   // Find what we want to update
   const incidentId = arg["incident_id"];
-  const taxonomy = arg["namespace"]
+  const namespace = arg["namespace"]
 
   var foundDoc;
 
