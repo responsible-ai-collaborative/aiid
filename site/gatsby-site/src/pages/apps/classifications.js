@@ -69,6 +69,10 @@ const HeaderCellContainer = styled.div`
   flex-direction: column;
 `;
 
+const TaxonomySelectContainer = styled.div`
+  padding: 1rem;
+`;
+
 const DEFAULT_EMPTY_CELL_DATA = '-';
 
 const DefaultColumnFilter = ({ column: { filterValue, preFilteredRows, setFilter } }) => {
@@ -182,19 +186,42 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
 export default function ClassificationsDbView(props) {
   const [loading, setLoading] = useState(false);
 
+  const [allTaxonomies, setAllTaxonomies] = useState([]);
+
   const [tableData, setTableData] = useState([]);
 
   const [columnData, setColumnData] = useState([]);
 
+  const [currentTaxonomy, setCurrentTaxonomy] = useState('');
+
+  useEffect(() => {
+    setLoading(true);
+    const setupTaxonomiesSelect = async () => {
+      const taxonomies = await fetchTaxaData();
+
+      setAllTaxonomies([
+        ...taxonomies,
+        {
+          ...taxonomies[0],
+          namespace: 'CSET2',
+        },
+      ]);
+      setCurrentTaxonomy(taxonomies[0].namespace);
+      setLoading(false);
+    };
+
+    setupTaxonomiesSelect();
+  }, []);
+
   // data fetch method - paginated
-  const fetchClassificationData = () => {
+  const fetchClassificationData = (namespace) => {
     return new Promise((resolve, reject) => {
       const { runQuery } = useMongo();
 
       try {
         runQuery(
           {
-            namespace: 'CSET',
+            namespace,
           },
           (res) => {
             resolve(res);
@@ -215,9 +242,7 @@ export default function ClassificationsDbView(props) {
 
       try {
         runQuery(
-          {
-            namespace: 'CSET',
-          },
+          {},
           (res) => {
             resolve(res);
           },
@@ -332,9 +357,19 @@ export default function ClassificationsDbView(props) {
       return tableData;
     };
 
+    if (allTaxonomies.length === 0) {
+      return;
+    }
     setLoading(true);
     const initSetup = async () => {
-      const taxaData = await fetchTaxaData();
+      const taxaData = allTaxonomies.filter((taxa) => taxa.namespace === currentTaxonomy);
+
+      if (taxaData.length === 0) {
+        // setColumnData([])
+        // setTableData([])
+        setLoading(false);
+        return;
+      }
 
       const incidentIdColumn = {
         Header: 'Incident ID',
@@ -343,7 +378,7 @@ export default function ClassificationsDbView(props) {
 
       setColumnData([incidentIdColumn, ...taxaData[0].field_list.map(fieldToColumnMap)]);
 
-      const classificationData = await fetchClassificationData();
+      const classificationData = await fetchClassificationData(currentTaxonomy);
 
       setTableData(formatClassificationData(taxaData[0].field_list, classificationData));
 
@@ -351,7 +386,7 @@ export default function ClassificationsDbView(props) {
     };
 
     initSetup();
-  }, []);
+  }, [currentTaxonomy]);
 
   const data = React.useMemo(() => tableData, [tableData]);
 
@@ -394,27 +429,27 @@ export default function ClassificationsDbView(props) {
 
   const fullTextModal = useModal();
 
-  if (loading) {
+  if (columnData.length === 0 || tableData.length === 0) {
     return (
       <LayoutHideSidebar {...props}>
         <Helmet>
           <title>Artifical Intelligence Incident Database</title>
         </Helmet>
         <Container>
-          <div>loading...</div>
-        </Container>
-      </LayoutHideSidebar>
-    );
-  }
-
-  if (!columnData || !tableData) {
-    return (
-      <LayoutHideSidebar {...props}>
-        <Helmet>
-          <title>Artifical Intelligence Incident Database</title>
-        </Helmet>
-        <Container>
-          <div>Error</div>
+          <TaxonomySelectContainer>
+            <select
+              aria-label="Default select example"
+              onChange={(e) => setCurrentTaxonomy(e.target.value)}
+            >
+              {allTaxonomies.length > 0 &&
+                allTaxonomies.map((taxa) => (
+                  <option key={taxa.namespace} value={taxa.namespace}>
+                    {taxa.namespace}
+                  </option>
+                ))}
+            </select>
+          </TaxonomySelectContainer>
+          <div>No Data</div>
         </Container>
       </LayoutHideSidebar>
     );
@@ -426,130 +461,151 @@ export default function ClassificationsDbView(props) {
         <title>Artifical Intelligence Incident Database</title>
       </Helmet>
       <Container>
-        <TableStyles>
-          <Table striped bordered hover {...getTableProps()}>
-            <thead>
-              {headerGroups.map((headerGroup) => (
-                <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map((column) => (
-                    <th key={column.id} {...column.getHeaderProps()}>
-                      <HeaderCellContainer
-                        {...column.getHeaderProps(column.getSortByToggleProps())}
-                      >
-                        {column.render('Header')}
-                        <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
-                      </HeaderCellContainer>
-                      <div>{column.canFilter ? column.render('Filter') : null}</div>
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-              {page.map((row) => {
-                prepareRow(row);
-                return (
-                  <tr key={row.id} {...row.getRowProps()}>
-                    {row.cells.map((cell) => {
-                      if (cell.column.Header.includes('Incident ID')) {
-                        return (
-                          <td key={cell.id} {...cell.getCellProps()}>
-                            <ScrollCell>
-                              <Link to={`/cite/${cell.value}`}>Incident {cell.render('Cell')}</Link>
-                            </ScrollCell>
-                          </td>
-                        );
-                      } else if (cell.value?.length > 130) {
-                        return (
-                          <td key={cell.id} {...cell.getCellProps()}>
-                            <ScrollCell style={{ overflow: 'hidden' }}>
-                              {cell.value.substring(0, 124)}...
-                            </ScrollCell>
-                            <ModalCell>
-                              <FontAwesomeIcon
-                                onClick={() =>
-                                  fullTextModal.openFor({
-                                    title: cell.column.Header,
-                                    body: function f() {
-                                      return cell.value;
-                                    },
-                                  })
-                                }
-                                icon={faExpandAlt}
-                                className="fas fa-expand-arrows-alt"
-                              />
-                            </ModalCell>
-                          </td>
-                        );
-                      } else {
-                        return (
-                          <td key={cell.id} {...cell.getCellProps()}>
-                            <ScrollCell>{cell.render('Cell')}</ScrollCell>
-                          </td>
-                        );
-                      }
-                    })}
-                  </tr>
-                );
-              })}
-              {page.length === 0 && (
-                <tr>
-                  <th colSpan={10}>
-                    <div>
-                      <span>No results found</span>
-                    </div>
-                  </th>
-                </tr>
-              )}
-            </tbody>
-          </Table>
-
-          <div className="pagination">
-            <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-              {'<<'}
-            </button>{' '}
-            <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-              {'<'}
-            </button>{' '}
-            <button onClick={() => nextPage()} disabled={!canNextPage}>
-              {'>'}
-            </button>{' '}
-            <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-              {'>>'}
-            </button>{' '}
-            <span>
-              Page{' '}
-              <strong>
-                {pageIndex + 1} of {pageOptions.length}
-              </strong>{' '}
-            </span>
-            <span>
-              | Go to page:{' '}
-              <input
-                type="number"
-                defaultValue={pageIndex + 1}
-                onChange={(e) => {
-                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
-
-                  gotoPage(page);
-                }}
-                style={{ width: '100px' }}
-              />
-            </span>{' '}
-            <select
-              value={pageSize}
-              onChange={(e) => {
-                setPageSize(Number(e.target.value));
-              }}
-            >
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
+        <TaxonomySelectContainer>
+          <select
+            aria-label="Default select example"
+            onChange={(e) => setCurrentTaxonomy(e.target.value)}
+          >
+            {allTaxonomies.length > 0 &&
+              allTaxonomies.map((taxa) => (
+                <option key={taxa.namespace} value={taxa.namespace}>
+                  {taxa.namespace}
                 </option>
               ))}
-            </select>
-          </div>
-        </TableStyles>
+          </select>
+        </TaxonomySelectContainer>
+        {loading ? (
+          <div>loading...</div>
+        ) : (
+          <TableStyles>
+            <Table striped bordered hover {...getTableProps()}>
+              <thead>
+                {headerGroups.map((headerGroup) => (
+                  <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column) => (
+                      <th key={column.id} {...column.getHeaderProps()}>
+                        <HeaderCellContainer
+                          {...column.getHeaderProps(column.getSortByToggleProps())}
+                        >
+                          {column.render('Header')}
+                          <span>
+                            {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
+                          </span>
+                        </HeaderCellContainer>
+                        <div>{column.canFilter ? column.render('Filter') : null}</div>
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tbody {...getTableBodyProps()}>
+                {page.map((row) => {
+                  prepareRow(row);
+                  return (
+                    <tr key={row.id} {...row.getRowProps()}>
+                      {row.cells.map((cell) => {
+                        if (cell.column.Header.includes('Incident ID')) {
+                          return (
+                            <td key={cell.id} {...cell.getCellProps()}>
+                              <ScrollCell>
+                                <Link to={`/cite/${cell.value}`}>
+                                  Incident {cell.render('Cell')}
+                                </Link>
+                              </ScrollCell>
+                            </td>
+                          );
+                        } else if (cell.value?.length > 130) {
+                          return (
+                            <td key={cell.id} {...cell.getCellProps()}>
+                              <ScrollCell style={{ overflow: 'hidden' }}>
+                                {cell.value.substring(0, 124)}...
+                              </ScrollCell>
+                              <ModalCell>
+                                <FontAwesomeIcon
+                                  onClick={() =>
+                                    fullTextModal.openFor({
+                                      title: cell.column.Header,
+                                      body: function f() {
+                                        return cell.value;
+                                      },
+                                    })
+                                  }
+                                  icon={faExpandAlt}
+                                  className="fas fa-expand-arrows-alt"
+                                />
+                              </ModalCell>
+                            </td>
+                          );
+                        } else {
+                          return (
+                            <td key={cell.id} {...cell.getCellProps()}>
+                              <ScrollCell>{cell.render('Cell')}</ScrollCell>
+                            </td>
+                          );
+                        }
+                      })}
+                    </tr>
+                  );
+                })}
+                {page.length === 0 && (
+                  <tr>
+                    <th colSpan={10}>
+                      <div>
+                        <span>No results found</span>
+                      </div>
+                    </th>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+
+            <div className="pagination">
+              <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+                {'<<'}
+              </button>{' '}
+              <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+                {'<'}
+              </button>{' '}
+              <button onClick={() => nextPage()} disabled={!canNextPage}>
+                {'>'}
+              </button>{' '}
+              <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+                {'>>'}
+              </button>{' '}
+              <span>
+                Page{' '}
+                <strong>
+                  {pageIndex + 1} of {pageOptions.length}
+                </strong>{' '}
+              </span>
+              <span>
+                | Go to page:{' '}
+                <input
+                  type="number"
+                  defaultValue={pageIndex + 1}
+                  onChange={(e) => {
+                    const page = e.target.value ? Number(e.target.value) - 1 : 0;
+
+                    gotoPage(page);
+                  }}
+                  style={{ width: '100px' }}
+                />
+              </span>{' '}
+              <select
+                value={pageSize}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                }}
+              >
+                {[10, 20, 30, 40, 50].map((pageSize) => (
+                  <option key={pageSize} value={pageSize}>
+                    Show {pageSize}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </TableStyles>
+        )}
       </Container>
       <CustomModal {...fullTextModal} />
     </LayoutHideSidebar>
