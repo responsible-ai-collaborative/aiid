@@ -79,20 +79,6 @@ const HideOnDesktop = styled.div`
   }
 `;
 
-// const LogoContainer = styled.div`
-//   .mobile {
-//     @media only screen and (max-width: 767px) {
-//       display: block !important;
-//     }
-//   }
-
-//   .desktop {
-//     @media only screen and (min-width: 767px) {
-//       display: none !important;
-//     }
-//   }
-// `
-
 const Header = () => (
   <StaticQuery
     query={graphql`
@@ -136,23 +122,23 @@ const Header = () => (
               <div className={'navBarHeader'}>
                 <Link to={finalLogoLink} className={'navBarBrand'}>
                   <img
-                    className={'img-responsive displayInline desktop'}
+                    id="desktopLogo"
+                    className={'hiddenMobile'}
                     style={{ width: 330 }}
                     src={logo.image !== '' ? logo.image : logoImg}
                     alt={'logo'}
                   />
-                  {/* <LogoContainer>
-                  </LogoContainer> */}
-                  <img
-                    className={'img-responsive displayInline mobile'}
-                    style={{ width: 330 }}
-                    src={logo.mobile !== '' ? logo.mobile : logoImg}
-                    alt={'logo'}
-                  />
+                  <HideOnDesktop>
+                    <img
+                      style={{ width: 50 }}
+                      src={logo.mobile !== '' ? logo.mobile : logoImg}
+                      alt={'logo'}
+                    />
+                  </HideOnDesktop>
                 </Link>
                 <li className="divider hiddenMobile"></li>
                 <div
-                  className={'headerTitle displayInline'}
+                  className={'headerTitle displayInline hiddenMobile'}
                   dangerouslySetInnerHTML={{ __html: headerTitle }}
                 />
               </div>
