@@ -48,7 +48,7 @@ const StyledBgDiv = styled('div')`
   background-color: #f8f8f8;
   position: relative;
   display: none;
-  background: #001932';
+  background: #001932;
 
   @media (max-width: 767px) {
     display: block;
@@ -92,6 +92,7 @@ const Header = () => (
             logo {
               link
               image
+              mobile
             }
             headerLinks {
               link
@@ -121,13 +122,23 @@ const Header = () => (
               <div className={'navBarHeader'}>
                 <Link to={finalLogoLink} className={'navBarBrand'}>
                   <img
-                    className={'img-responsive displayInline'}
+                    id="desktopLogo"
+                    className={'hiddenMobile'}
+                    style={{ width: 330 }}
                     src={logo.image !== '' ? logo.image : logoImg}
                     alt={'logo'}
                   />
+                  <HideOnDesktop>
+                    <img
+                      style={{ width: 50 }}
+                      src={logo.mobile !== '' ? logo.mobile : logoImg}
+                      alt={'logo'}
+                    />
+                  </HideOnDesktop>
                 </Link>
+                <li className="divider hiddenMobile"></li>
                 <div
-                  className={'headerTitle displayInline'}
+                  className={'headerTitle displayInline hiddenMobile'}
                   dangerouslySetInnerHTML={{ __html: headerTitle }}
                 />
               </div>
