@@ -102,7 +102,7 @@ const createCitiationPages = (graphql, createPage) => {
                   AI_System_Description
                   AI_Techniques
                   Data_Inputs
-                  Finacial_Cost
+                  Financial_Cost
                   Harm_Distribution_Basis
                   Harm_Type
                   Infrastructure_Sectors
