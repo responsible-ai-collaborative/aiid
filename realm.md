@@ -15,7 +15,7 @@ exports = function(arg){
   var collection = context.services.get("mongodb-atlas").db("aiidprod").collection("classifications");
 
   function update(filter, doc, arg) {
-    const options = { upsert: false };
+    const options = { upsert: true };
     const updateDoc = {
       $set: {
         ...doc,
