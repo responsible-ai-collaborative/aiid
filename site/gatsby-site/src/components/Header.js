@@ -138,7 +138,7 @@ const Header = () => (
                 </Link>
                 <li className="divider hiddenMobile"></li>
                 <div
-                  className={'headerTitle displayInline hiddenMobile'}
+                  className={'headerTitle displayInline'}
                   dangerouslySetInnerHTML={{ __html: headerTitle }}
                 />
               </div>
@@ -160,7 +160,7 @@ const Header = () => (
                   </a>
                 )}
                 {githubUrl !== '' && (
-                  <div className="githubBtn paddingAround">
+                  <div className="githubBtn paddingAround hiddenMobile">
                     <GitHubButton
                       href={githubUrl}
                       data-show-count="true"
@@ -171,7 +171,7 @@ const Header = () => (
                   </div>
                 )}
                 <a
-                  className="paddingAround"
+                  className="paddingAround hiddenMobile"
                   href={'/rss.xml'}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -188,6 +188,7 @@ const Header = () => (
                     icon={faBars}
                     color={'white'}
                     className="pointer fa fa-BARS fa-lg"
+                    style={{ cursor: 'pointer' }}
                     title="Open Menu"
                     onClick={myFunction}
                   />
