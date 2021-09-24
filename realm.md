@@ -10,6 +10,7 @@ exports = function(arg){
   // IN REQUEST
   // incident_id: ""
   // namespace: ""
+  // notes: ""
   // newClassifications: { ...taxonomy fields with values }
 
   var collection = context.services.get("mongodb-atlas").db("aiidprod").collection("classifications");
@@ -21,7 +22,8 @@ exports = function(arg){
         ...doc,
         classifications: {
           ...arg["newClassifications"]
-        }
+        },
+        notes: arg["notes"]
       },
     };
 
@@ -31,7 +33,7 @@ exports = function(arg){
 
   // Find what we want to update
   const incidentId = arg["incident_id"];
-  const namespace = arg["namespace"]
+  const namespace = arg["namespace"];
 
   var foundDoc;
 
