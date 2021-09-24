@@ -203,7 +203,6 @@ export default function ClassificationsDbView(props) {
         ...taxonomies,
         {
           ...taxonomies[0],
-          namespace: 'CSET2',
         },
       ]);
       setCurrentTaxonomy(taxonomies[0].namespace);
