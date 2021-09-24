@@ -74,7 +74,7 @@ const HeaderIconsContainer = styled.div`
 `;
 
 const HideOnDesktop = styled.div`
-  @media (min-width: 767px) {
+  @media (min-width: 768px) {
     display: none;
   }
 `;
