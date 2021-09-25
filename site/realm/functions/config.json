@@ -4,7 +4,7 @@
         "private": false,
         "run_as_system": true,
         "can_evaluate": {
-            "%%user.custom_data.role": "admin"
+            "%%user.custom_data.roles": "admin"
         }
     },
     {
@@ -12,7 +12,7 @@
         "private": false,
         "run_as_system": true,
         "can_evaluate": {
-            "%%user.custom_data.role": "admin"
+            "%%user.custom_data.roles": "admin"
         }
     },
     {
@@ -32,7 +32,7 @@
         "private": false,
         "run_as_system": true,
         "can_evaluate": {
-            "%%user.custom_data.role": "admin"
+            "%%user.custom_data.roles": "admin"
         }
     },
     {

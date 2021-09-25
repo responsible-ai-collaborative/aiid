@@ -16,7 +16,7 @@ const Logout = (props) => {
     };
 
     init();
-  }, [logout]);
+  }, []);
 
   return (
     <Layout {...props}>

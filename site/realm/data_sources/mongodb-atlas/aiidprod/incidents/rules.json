@@ -5,7 +5,7 @@
         {
             "name": "role is admin",
             "apply_when": {
-                "%%user.custom_data.role": "admin"
+                "%%user.custom_data.roles": "admin"
             },
             "fields": {
                 "flag": {},

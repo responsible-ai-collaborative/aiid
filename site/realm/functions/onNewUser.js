@@ -4,7 +4,7 @@ exports = async (authEvent) => {
   const users = mongodb.db("customData").collection("users");
 
   const { user } = authEvent;
-  const newUser = { userId: user.id, role: 'admin' };
+  const newUser = { userId: user.id, roles: ['admin'] };
 
   await users.insertOne(newUser);
 };

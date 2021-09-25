@@ -19,8 +19,11 @@ export const UserContextProvider = ({ children }) => {
 
   const [user, setUser] = useState(realmApp.currentUser);
 
-  const logout = () => {
-    return realmApp.currentUser.logOut();
+  const logout = async () => {
+    await realmApp.currentUser.logOut();
+
+    //TODO: functions need at least an anon user to work
+    await login();
   };
 
   const login = async ({ apiKey, email, password } = {}) => {
@@ -66,7 +69,11 @@ export const UserContextProvider = ({ children }) => {
       value={{
         loading,
         user,
-        isAdmin: user && user.isLoggedIn && user.customData.role == 'admin',
+        isAdmin:
+          user &&
+          user.isLoggedIn &&
+          user.customData.roles &&
+          user.customData.roles.includes('admin'),
         actions: {
           login,
           logout,
