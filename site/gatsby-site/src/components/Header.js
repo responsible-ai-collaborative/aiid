@@ -48,7 +48,7 @@ const StyledBgDiv = styled('div')`
   background-color: #f8f8f8;
   position: relative;
   display: none;
-  background: #001932';
+  background: #001932;
 
   @media (max-width: 767px) {
     display: block;

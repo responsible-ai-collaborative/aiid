@@ -292,7 +292,7 @@ Systems
 
 * display_type's values have these additional notes for determining how the mongo_type will be displayed.
   * string: short text of approximately 140 characters
-  * text: textual input potentially of arbitrary length 
+  * text: textual input potentially of arbitrary length
   * multi: multiple selectable short values
   * list: a sequence of short strings not selected from a defined set
   * enum: a single selection from a list of values
@@ -376,6 +376,7 @@ Systems
 * `_id`: 5534b8c29cfd494a0103d45a # MongoDB database hash
 * `namespace`: "CSET" # this resolves the classifications to their taxa collection entry.
 * `incident_id`: 1 # this is the incident number
+* `notes`: "Todo list: add x, y, z" # this is for storing additional, general purpose, classification meta data
 * `classifications`: `{}` this is all the classifications consistent with its references taxonomy.
 
 **MongoDB System Schema**
@@ -547,6 +548,7 @@ It is not specified.
       "$numberInt":"2"
    },
    "namespace":"CSET",
+   "notes": "Next tasks: ...",
    "classifications":{
       "Annotator":"1",
       "Annotation Status":"6. Complete and final",
