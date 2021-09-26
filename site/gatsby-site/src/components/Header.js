@@ -92,6 +92,7 @@ const Header = () => (
             logo {
               link
               image
+              mobile
             }
             headerLinks {
               link
@@ -121,11 +122,21 @@ const Header = () => (
               <div className={'navBarHeader'}>
                 <Link to={finalLogoLink} className={'navBarBrand'}>
                   <img
-                    className={'img-responsive displayInline'}
+                    id="desktopLogo"
+                    className={'hiddenMobile'}
+                    style={{ width: 330 }}
                     src={logo.image !== '' ? logo.image : logoImg}
                     alt={'logo'}
                   />
+                  <HideOnDesktop>
+                    <img
+                      style={{ width: 50 }}
+                      src={logo.mobile !== '' ? logo.mobile : logoImg}
+                      alt={'logo'}
+                    />
+                  </HideOnDesktop>
                 </Link>
+                <li className="divider hiddenMobile"></li>
                 <div
                   className={'headerTitle displayInline'}
                   dangerouslySetInnerHTML={{ __html: headerTitle }}
@@ -149,7 +160,7 @@ const Header = () => (
                   </a>
                 )}
                 {githubUrl !== '' && (
-                  <div className="githubBtn paddingAround">
+                  <div className="githubBtn paddingAround hiddenMobile">
                     <GitHubButton
                       href={githubUrl}
                       data-show-count="true"
@@ -160,7 +171,7 @@ const Header = () => (
                   </div>
                 )}
                 <a
-                  className="paddingAround"
+                  className="paddingAround hiddenMobile"
                   href={'/rss.xml'}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -177,6 +188,7 @@ const Header = () => (
                     icon={faBars}
                     color={'white'}
                     className="pointer fa fa-BARS fa-lg"
+                    style={{ cursor: 'pointer' }}
                     title="Open Menu"
                     onClick={myFunction}
                   />
