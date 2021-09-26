@@ -292,7 +292,7 @@ Systems
 
 * display_type's values have these additional notes for determining how the mongo_type will be displayed.
   * string: short text of approximately 140 characters
-  * text: textual input potentially of arbitrary length 
+  * text: textual input potentially of arbitrary length
   * multi: multiple selectable short values
   * list: a sequence of short strings not selected from a defined set
   * enum: a single selection from a list of values
@@ -376,13 +376,166 @@ Systems
 * `_id`: 5534b8c29cfd494a0103d45a # MongoDB database hash
 * `namespace`: "CSET" # this resolves the classifications to their taxa collection entry.
 * `incident_id`: 1 # this is the incident number
+* `notes`: "Todo list: add x, y, z" # this is for storing additional, general purpose, classification meta data
 * `classifications`: `{}` this is all the classifications consistent with its references taxonomy.
 
 **MongoDB System Schema**
 
 It is not specified.
 
-`{}`
+```json
+{
+  "title": "classification",
+  "properties": {
+    "_id": {
+      "bsonType": "objectId"
+    },
+    "classifications": {
+      "bsonType": "object",
+      "properties": {
+        "AI Applications": {
+          "bsonType": "array",
+          "items": {
+            "bsonType": "string"
+          }
+        },
+        "AI System Description": {
+          "bsonType": "string"
+        },
+        "AI Techniques": {
+          "bsonType": "string"
+        },
+        "Annotation Status": {
+          "bsonType": "string"
+        },
+        "Annotator": {
+          "bsonType": "string"
+        },
+        "Beginning Date": {
+          "bsonType": "string"
+        },
+        "Data Inputs": {
+          "bsonType": "string"
+        },
+        "Ending Date": {
+          "bsonType": "string"
+        },
+        "Financial Cost": {
+          "bsonType": "string"
+        },
+        "Full Description": {
+          "bsonType": "string"
+        },
+        "Harm Distribution Basis": {
+          "bsonType": "array",
+          "items": {
+            "bsonType": "string"
+          }
+        },
+        "Harm Type": {
+          "bsonType": "array",
+          "items": {
+            "bsonType": "string"
+          }
+        },
+        "Infrastructure Sectors": {
+          "bsonType": "array",
+          "items": {
+            "bsonType": "string"
+          }
+        },
+        "Intent": {
+          "bsonType": "string"
+        },
+        "Laws Implicated": {
+          "bsonType": "string"
+        },
+        "Level of Autonomy": {
+          "bsonType": "string"
+        },
+        "Lives Lost": {
+          "bsonType": "bool"
+        },
+        "Location": {
+          "bsonType": "string"
+        },
+        "Named Entities": {
+          "bsonType": "array",
+          "items": {
+            "bsonType": "string"
+          }
+        },
+        "Nature of End User": {
+          "bsonType": "string"
+        },
+        "Near Miss": {
+          "bsonType": "string"
+        },
+        "Notes": {
+          "bsonType": "string"
+        },
+        "Physical System": {
+          "bsonType": "array",
+          "items": {
+            "bsonType": "string"
+          }
+        },
+        "Problem Nature": {
+          "bsonType": "array",
+          "items": {
+            "bsonType": "string"
+          }
+        },
+        "Public Sector Deployment": {
+          "bsonType": "bool"
+        },
+        "Publish": {
+          "bsonType": "bool"
+        },
+        "Quality Control": {
+          "bsonType": "bool"
+        },
+        "Relevant AI functions": {
+          "bsonType": "array",
+          "items": {
+            "bsonType": "string"
+          }
+        },
+        "Reviewer": {
+          "bsonType": "string"
+        },
+        "Sector of Deployment": {
+          "bsonType": "string"
+        },
+        "Severity": {
+          "bsonType": "string"
+        },
+        "Short Description": {
+          "bsonType": "string"
+        },
+        "System Developer": {
+          "bsonType": "string"
+        },
+        "Technology Purveyor": {
+          "bsonType": "array",
+          "items": {
+            "bsonType": "string"
+          }
+        }
+      }
+    },
+    "incident_id": {
+      "bsonType": "int"
+    },
+    "namespace": {
+      "bsonType": "string"
+    },
+    "notes": {
+      "bsonType": "string"
+    }
+  }
+}
+````
 
 **Example**
 
@@ -395,6 +548,7 @@ It is not specified.
       "$numberInt":"2"
    },
    "namespace":"CSET",
+   "notes": "Next tasks: ...",
    "classifications":{
       "Annotator":"1",
       "Annotation Status":"6. Complete and final",
