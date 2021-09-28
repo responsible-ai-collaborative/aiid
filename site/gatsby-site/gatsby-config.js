@@ -231,6 +231,7 @@ module.exports = {
     logo: {
       link: config.header.logoLink ? config.header.logoLink : '/',
       image: config.header.logo,
+      mobile: config.header.logoMobile,
     }, // backwards compatible
     headerTitle: config.header.title,
     githubUrl: config.header.githubUrl,

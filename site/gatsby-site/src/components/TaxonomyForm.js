@@ -385,6 +385,15 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
           isSubmitting,
         }) => (
           <Form onSubmit={handleSubmit}>
+            <Form.Control
+              id={'notes'}
+              name={'notes'}
+              type="text"
+              as="textarea"
+              rows={4}
+              onChange={handleChange}
+              value={values.notes}
+            />
             <fieldset disabled={isSubmitting}>
               {fieldsWithDefaultValues.map((rawField) =>
                 generateFormField(rawField, handleChange, values)
@@ -462,6 +471,20 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
               )}
               {taxonomy.classificationsArray.length > 0 ? (
                 <>
+                  {isAdmin && (
+                    <ClassificationContainer key={'NOTES'} className="card-body">
+                      <Field>
+                        <OverlayTrigger
+                          placement="left"
+                          delay={{ show: 100, hide: 400 }}
+                          overlay={(e) => renderTooltip(e, 'Admin notes')}
+                        >
+                          <p>{'Notes'}</p>
+                        </OverlayTrigger>
+                      </Field>
+                      <Value>{taxonomy.notes}</Value>
+                    </ClassificationContainer>
+                  )}
                   {taxonomy.classificationsArray
                     .filter((field) => {
                       if (showAllClassifications) return true;

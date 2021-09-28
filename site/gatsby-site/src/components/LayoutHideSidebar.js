@@ -15,7 +15,7 @@ const Wrapper = styled('div')`
   }
 
   .sideBarUL .item > a:hover {
-    background-color: #1ed3c6;
+    background-color: ${({ theme }) => theme.colors.primary3};
     color: #fff !important;
 
     /* background: #F8F8F8 */
@@ -30,7 +30,7 @@ const Content = styled('main')`
   display: flex;
   flex-direction: row;
   flex-grow: 1;
-  margin: 0px 33px;
+  /* margin: 0px 33px; */
   background: ${({ theme }) => theme.colors.background};
 
   table tr {
