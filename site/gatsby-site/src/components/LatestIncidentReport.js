@@ -69,12 +69,12 @@ const LatestIncidentReport = () => {
       query={graphql`
         query LatestIncidentReport {
           allMongodbAiidprodIncidents(
-            sort: { order: DESC, fields: epoch_date_submitted }
+            sort: { order: DESC, fields: epoch_incident_date }
             limit: 1
           ) {
             nodes {
               title
-              epoch_date_submitted
+              epoch_incident_date
               description
               image_url
               incident_id
@@ -84,7 +84,7 @@ const LatestIncidentReport = () => {
         }
       `}
       render={({ allMongodbAiidprodIncidents: { nodes } }) => {
-        const { image_url, cloudinary_id, title, description, epoch_date_submitted, incident_id } =
+        const { image_url, cloudinary_id, title, description, epoch_incident_date, incident_id } =
           nodes[0];
 
         return (
@@ -103,7 +103,7 @@ const LatestIncidentReport = () => {
                 </Title>
               </Link>
               <SubmissionDate>
-                <p>{format(epoch_date_submitted * 1000, 'MMM d, yyyy, h:mm aaaa')}</p>
+                <p>{format(epoch_incident_date * 1000, 'MMM d, yyyy')}</p>
               </SubmissionDate>
               <Description>
                 <p>
