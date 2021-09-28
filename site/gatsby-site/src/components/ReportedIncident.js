@@ -96,7 +96,7 @@ const ReportedIncident = ({ incident }) => {
         <Row>
           <Col xs={12} sm={2} lg={2}>
             <Button
-              block
+              block="true"
               onClick={() => setOpen(!open)}
               aria-controls="collapse-incident-submission"
               aria-expanded={open}
