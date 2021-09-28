@@ -108,10 +108,10 @@ const ReportedIncident = ({ incident }) => {
             {' '}
             {incident['title']}
             <br />
-            <Badge variant="secondary">Inc: {incident['incident_date']}</Badge>{' '}
-            <Badge variant="secondary">Pub: {incident['date_published']}</Badge>{' '}
-            <Badge variant="secondary">Sub: {incident['date_submitted']}</Badge>{' '}
-            <Badge variant="secondary">{incident['submitters']}</Badge>
+            <Badge bg="secondary">Inc: {incident['incident_date']}</Badge>{' '}
+            <Badge bg="secondary">Pub: {incident['date_published']}</Badge>{' '}
+            <Badge bg="secondary">Sub: {incident['date_submitted']}</Badge>{' '}
+            <Badge bg="secondary">{incident['submitters']}</Badge>
           </Col>
         </Row>
       </Card.Header>
