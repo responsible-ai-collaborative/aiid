@@ -136,11 +136,11 @@ const ReportedIncident = ({ incident }) => {
             </Card>
           )}
           <Card.Footer className="d-flex text-muted">
-            <Button className="mr-auto" disabled={!isAdmin} onClick={toggleEditing}>
+            <Button className="me-auto" disabled={!isAdmin} onClick={toggleEditing}>
               <FontAwesomeIcon icon={faEdit} />
             </Button>
             <Button
-              className="mr-2"
+              className="me-2"
               variant="outline-primary"
               disabled={!isAdmin}
               onClick={addReport}

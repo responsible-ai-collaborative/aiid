@@ -226,12 +226,12 @@ const IncidentCite = ({ ...props }) => {
                 <h4>Tools</h4>
               </div>
               <div className="card-body">
-                <Button variant="outline-primary" className="mr-2" href={'/summaries/incidents'}>
+                <Button variant="outline-primary" className="me-2" href={'/summaries/incidents'}>
                   All Incidents
                 </Button>
                 <Button
                   variant="outline-primary"
-                  className="mr-2"
+                  className="me-2"
                   href={'/apps/discover?incident_id=' + incident_id}
                 >
                   Discover
