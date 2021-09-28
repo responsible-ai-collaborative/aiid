@@ -119,10 +119,6 @@ exports.createSchemaCustomization = ({ actions }) => {
     type mongodbAiidprodIncidents implements Node {
       cloudinary_id: String
     }
-
-    type mongodbAiidprodClassificationsClassifications implements Node {
-      Financial_Cost: String
-    }
   `;
 
   createTypes(typeDefs);
