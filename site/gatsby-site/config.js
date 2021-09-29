@@ -85,7 +85,9 @@ const config = {
   },
   mongodb: {
     connectionString: process.env.MONGODB_CONNECTION_STRING,
-    replicaSet: process.env.MONGODB_REPLICA_SET.split(','),
+    replicaSet: process.env.MONGODB_REPLICA_SET
+      ? process.env.MONGODB_REPLICA_SET.split(',')
+      : process.env.MONGODB_REPLICA_SET,
   },
 };
 
