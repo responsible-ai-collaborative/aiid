@@ -131,11 +131,9 @@ const DiscoverAppSearch = () => {
       <StyledLeadContent>
         <form onSubmit={submit}>
           <InputGroup className="mb-3">
-            <InputGroup.Prepend>
-              <Button as={Link} to={`/apps/discover?s=${searchTerm}`} variant="outline-secondary">
-                Search
-              </Button>
-            </InputGroup.Prepend>
+            <Button as={Link} to={`/apps/discover?s=${searchTerm}`} variant="outline-secondary">
+              Search
+            </Button>
             <FormControl
               id="algolia-search"
               aria-describedby="basic-addon1"
