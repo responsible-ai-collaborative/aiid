@@ -310,6 +310,7 @@ a:hover {
 .navBarNav {
   display: flex;
   align-items: center;
+  padding-left: 0;
 }
 .navBarUL li a img,
 .navBarUL li a .shareIcon {
