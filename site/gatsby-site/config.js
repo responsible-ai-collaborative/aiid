@@ -7,13 +7,19 @@ const config = {
   },
   realm: {
     review_db: {
-      realm_app_id: process.env.GATSBY_REALM_APP_ID || 'aiidstitch2-fuwyv',
+      realm_app_id:
+        process.env.BRANCH === 'master'
+          ? 'aiidstitch2-fuwyv'
+          : process.env.GATSBY_REALM_APP_ID || 'aiidstitch2-fuwyv',
       db_service: 'mongodb-atlas',
       db_name: 'aiidprod',
       db_collection: 'submissions',
     },
     production_db: {
-      realm_app_id: process.env.GATSBY_REALM_APP_ID || 'aiidstitch2-fuwyv',
+      realm_app_id:
+        process.env.BRANCH === 'master'
+          ? 'aiidstitch2-fuwyv'
+          : process.env.GATSBY_REALM_APP_ID || 'aiidstitch2-fuwyv',
       db_service: 'mongodb-atlas',
       db_name: 'aiidprod',
       db_collection: 'incidents',
@@ -85,11 +91,16 @@ const config = {
   },
   mongodb: {
     connectionString:
-      process.env.MONGODB_CONNECTION_STRING ||
-      'mongodb+srv://readonlyuser:EScmnlEQHM1pWwWM@aiiddev-aqdmh.gcp.mongodb.net',
-    replicaSet: process.env.MONGODB_REPLICA_SET
-      ? process.env.MONGODB_REPLICA_SET.split(',')
-      : ['aiiddev-shard-00-02-aqdmh', 'aiiddev-shard-00-01-aqdmh', 'aiiddev-shard-00-00-aqdmh'],
+      process.env.BRANCH === 'master'
+        ? 'mongodb+srv://readonlyuser:EScmnlEQHM1pWwWM@aiiddev-aqdmh.gcp.mongodb.net'
+        : process.env.MONGODB_CONNECTION_STRING ||
+          'mongodb+srv://readonlyuser:EScmnlEQHM1pWwWM@aiiddev-aqdmh.gcp.mongodb.net',
+    replicaSet:
+      process.env.BRANCH === 'master'
+        ? ['aiiddev-shard-00-02-aqdmh', 'aiiddev-shard-00-01-aqdmh', 'aiiddev-shard-00-00-aqdmh']
+        : process.env.MONGODB_REPLICA_SET
+        ? process.env.MONGODB_REPLICA_SET.split(',')
+        : ['aiiddev-shard-00-02-aqdmh', 'aiiddev-shard-00-01-aqdmh', 'aiiddev-shard-00-00-aqdmh'],
   },
 };
 
