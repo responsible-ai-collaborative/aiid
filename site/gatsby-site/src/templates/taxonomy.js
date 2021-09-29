@@ -104,7 +104,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
       type: donut(),
     };
 
-    data.columns = sortedStatsArray.slice(0, 9).map((a) => [a.item, a.value]);
+    data.columns = sortedStatsArray.slice(0, 9).map((a) => [a.item || 'N/A', a.value]);
     if (sortedStatsArray.length > 9) {
       data.columns.push([
         'All Others',
