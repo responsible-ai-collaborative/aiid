@@ -60,7 +60,7 @@ const StatItem = ({ text, value }) => {
   return (
     <>
       <StatItemText>{text}</StatItemText>
-      <Badge pill variant="light">
+      <Badge pill bg="light">
         {`${value || 0} ${value === 1 ? 'Incident' : 'Incidents'}`}
       </Badge>
     </>
@@ -262,7 +262,7 @@ const Taxonomy = (props) => {
             <Card>
               <FieldNameHeading>
                 {long_name}{' '}
-                {instant_facet && <Badge variant="secondary">Searchable in Discover App</Badge>}
+                {instant_facet && <Badge bg="secondary">Searchable in Discover App</Badge>}
               </FieldNameHeading>
               <Description>{long_description}</Description>
               <FacetList
@@ -283,7 +283,7 @@ const Taxonomy = (props) => {
 export default Taxonomy;
 
 export const pageQuery = graphql`
-  query($namespace: String!) {
+  query ($namespace: String!) {
     allMongodbAiidprodClassifications(
       filter: {
         namespace: { eq: $namespace }

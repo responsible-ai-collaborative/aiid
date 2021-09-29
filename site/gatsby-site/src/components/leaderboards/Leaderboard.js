@@ -29,7 +29,7 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
   return (
     <div>
       <h2>
-        <Badge variant="secondary">{title}</Badge>
+        <Badge bg="secondary">{title}</Badge>
       </h2>
       <ol>
         {sortedArray.map((item) => (
