@@ -419,6 +419,11 @@ blockquote {
 
 .sideBarUL {
   margin-top: 32px;
+  padding-left: 0;
+}
+
+.sideBarUL ul {
+  padding-left: 0;
 }
 
 .sideBarUL li {
