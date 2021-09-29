@@ -57,171 +57,16 @@ Media
 * `source_domain`: "blogs.wsj.com" # (string) The domain name hosting the report.
 * `url`: "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti" # The fully qualified URL to the report as hosted on the web.
 
-```
-{
-  "title": "incident",
-  "properties": {
-    "_id": {
-      "bsonType": "objectId"
-    },
-    "authors": {
-      "bsonType": "array",
-      "items": {
-        "bsonType": "string"
-      }
-    },
-    "date_downloaded": {
-      "bsonType": "string"
-    },
-    "date_modified": {
-      "bsonType": "string"
-    },
-    "date_published": {
-      "bsonType": "string"
-    },
-    "date_submitted": {
-      "bsonType": "string"
-    },
-    "description": {
-      "bsonType": "string"
-    },
-    "flag": {
-      "bsonType": "bool"
-    },
-    "image_url": {
-      "bsonType": "string"
-    },
-    "cloudinary_id": {
-      "bsonType": "string"
-    },
-    "incident_date": {
-      "bsonType": "string"
-    },
-    "incident_id": {
-      "bsonType": "int"
-    },
-    "language": {
-      "bsonType": "string"
-    },
-    "ref_number": {
-      "bsonType": "int"
-    },
-    "report_number": {
-      "bsonType": "int"
-    },
-    "source_domain": {
-      "bsonType": "string"
-    },
-    "submitters": {
-      "bsonType": "array",
-      "items": {
-        "bsonType": "string"
-      }
-    },
-    "text": {
-      "bsonType": "string"
-    },
-    "title": {
-      "bsonType": "string"
-    },
-    "url": {
-      "bsonType": "string"
-    }
-  }
-}
-```
+
+[site/realm/data_sources/mongodb-atlas/aiidprod/incidents/schema.json](site/realm/data_sources/mongodb-atlas/aiidprod/incidents/schema.json)
 
 # QuickAdd Collection
 
-```
-{
-  "title": "quickadd",
-  "properties": {
-    "_id": {
-      "bsonType": "objectId"
-    },
-    "date_submitted": {
-      "bsonType": "string"
-    },
-    "incident_id": {
-      "bsonType": "long"
-    },
-    "source_domain": {
-      "bsonType": "string"
-    },
-    "url": {
-      "bsonType": "string"
-    }
-  }
-}
-```
+[site/realm/data_sources/mongodb-atlas/aiidprod/quickadd/schema.json](site/realm/data_sources/mongodb-atlas/aiidprod/quickadd/schema.json)
 
 # Submissions Collection
 
-```
-{
-  "title": "submission",
-  "properties": {
-    "_id": {
-      "bsonType": "objectId"
-    },
-    "authors": {
-      "bsonType": "array",
-      "items": {
-        "bsonType": "string"
-      }
-    },
-    "date_downloaded": {
-      "bsonType": "string"
-    },
-    "date_modified": {
-      "bsonType": "string"
-    },
-    "date_published": {
-      "bsonType": "string"
-    },
-    "date_submitted": {
-      "bsonType": "string"
-    },
-    "description": {
-      "bsonType": "string"
-    },
-    "image_url": {
-      "bsonType": "string"
-    },
-    "cloudinary_id": {
-      "bsonType": "string"
-    },
-    "incident_date": {
-      "bsonType": "string"
-    },
-    "incident_id": {
-      "bsonType": "long"
-    },
-    "language": {
-      "bsonType": "string"
-    },
-    "source_domain": {
-      "bsonType": "string"
-    },
-    "submitters": {
-      "bsonType": "array",
-      "items": {
-        "bsonType": "string"
-      }
-    },
-    "text": {
-      "bsonType": "string"
-    },
-    "title": {
-      "bsonType": "string"
-    },
-    "url": {
-      "bsonType": "string"
-    }
-  }
-}
-```
+[site/realm/data_sources/mongodb-atlas/aiidprod/submissions/schema.json](site/realm/data_sources/mongodb-atlas/aiidprod/submissions/schema.json)
 
 # Duplicates Collection Details
 
@@ -231,22 +76,7 @@ Systems
 * `duplicate_incident_number`: 90
 * `true_incident_number`: 77
 
-```
-{
-  "title": "duplicate",
-  "properties": {
-    "_id": {
-      "bsonType": "objectId"
-    },
-    "duplicate_incident_number": {
-      "bsonType": "int"
-    },
-    "true_incident_number": {
-      "bsonType": "int"
-    }
-  }
-}
-```
+[site/realm/data_sources/mongodb-atlas/aiidprod/duplicates/schema.json](site/realm/data_sources/mongodb-atlas/aiidprod/duplicates/schema.json)
 
 # Taxa Collection Details
 
@@ -302,72 +132,7 @@ Systems
 
 **MongoDB System Schema**
 
-```json
-{
-  "title": "taxa",
-  "properties": {
-    "_id": {
-      "bsonType": "objectId"
-    },
-    "description": {
-      "bsonType": "string"
-    },
-    "fields": {
-      "bsonType": "array",
-      "items": {
-        "bsonType": "object",
-        "properties": {
-          "default": {
-            "bsonType": "string"
-          },
-          "display_type": {
-            "bsonType": "string"
-          },
-          "instant_facet": {
-            "bsonType": "bool"
-          },
-          "long_description": {
-            "bsonType": "string"
-          },
-          "long_name": {
-            "bsonType": "string"
-          },
-          "mongo_type": {
-            "bsonType": "string"
-          },
-          "permitted_values": {
-            "bsonType": "array",
-            "items": {
-              "bsonType": "string"
-            }
-          },
-          "placeholder": {
-            "bsonType": "string"
-          },
-          "required": {
-            "bsonType": "bool"
-          },
-          "short_description": {
-            "bsonType": "string"
-          },
-          "short_name": {
-            "bsonType": "string"
-          },
-          "weight": {
-            "bsonType": "int"
-          }
-        }
-      }
-    },
-    "namespace": {
-      "bsonType": "string"
-    },
-    "weight": {
-      "bsonType": "int"
-    }
-  }
-}
-```
+[site/realm/ data_sources/mongodb-atlas/aiidprod/taxa/schema.json](site/realm/data_sources/mongodb-atlas/aiidprod/taxa/schema.json)
 
 # Classifications Collection
 
@@ -602,3 +367,7 @@ It is not specified.
    }
 }
 ```
+
+ 
+
+

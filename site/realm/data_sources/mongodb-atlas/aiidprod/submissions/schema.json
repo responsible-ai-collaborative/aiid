@@ -1,0 +1,62 @@
+{
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "authors": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "cloudinary_id": {
+            "bsonType": "string"
+        },
+        "date_downloaded": {
+            "bsonType": "string"
+        },
+        "date_modified": {
+            "bsonType": "string"
+        },
+        "date_published": {
+            "bsonType": "string"
+        },
+        "date_submitted": {
+            "bsonType": "string"
+        },
+        "description": {
+            "bsonType": "string"
+        },
+        "image_url": {
+            "bsonType": "string"
+        },
+        "incident_date": {
+            "bsonType": "string"
+        },
+        "incident_id": {
+            "bsonType": "long"
+        },
+        "language": {
+            "bsonType": "string"
+        },
+        "source_domain": {
+            "bsonType": "string"
+        },
+        "submitters": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "text": {
+            "bsonType": "string"
+        },
+        "title": {
+            "bsonType": "string"
+        },
+        "url": {
+            "bsonType": "string"
+        }
+    },
+    "title": "submission"
+}
