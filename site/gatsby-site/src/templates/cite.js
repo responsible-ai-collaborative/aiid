@@ -40,6 +40,8 @@ const CardContainer = styled.div`
   box-shadow: 0 2px 5px 0px #e3e5ec;
   display: flex;
   flex-direction: column;
+  padding-right: 0;
+  padding-left: 0;
   h4 {
     margin: 0 !important;
   }
@@ -48,6 +50,8 @@ const CardContainer = styled.div`
 const StatsContainer = styled.div`
   width: 100%;
   margin-top: 1.5rem;
+  padding-right: 0;
+  padding-left: 0;
   h4 {
     margin: 0 !important;
   }
