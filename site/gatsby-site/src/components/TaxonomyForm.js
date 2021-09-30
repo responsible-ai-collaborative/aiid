@@ -305,7 +305,9 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
             ))}
           </Form.Control>
         )}
-        <Form.Text className={['text-muted', 'mb-4']}>{rawField.short_description}</Form.Text>
+        <Form.Text className={['text-muted', 'mb-4', 'd-block']}>
+          {rawField.short_description}
+        </Form.Text>
       </>
     );
   };
