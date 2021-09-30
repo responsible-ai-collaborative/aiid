@@ -94,7 +94,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
       if (valueStats[item] > 0) {
         sortedStatsArray.push({
           item,
-          value: valueStats[item] || 0,
+          value: valueStats[item],
         });
       }
     });
