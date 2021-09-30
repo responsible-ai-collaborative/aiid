@@ -91,10 +91,12 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
     let sortedStatsArray = [];
 
     valueStatsKeys.forEach((item) => {
-      sortedStatsArray.push({
-        item,
-        value: valueStats[item] || 0,
-      });
+      if (valueStats[item] > 0) {
+        sortedStatsArray.push({
+          item,
+          value: valueStats[item] || 0,
+        });
+      }
     });
 
     sortedStatsArray.sort((a, b) => b.value - a.value);
@@ -104,7 +106,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
       type: donut(),
     };
 
-    data.columns = sortedStatsArray.slice(0, 9).map((a) => [a.item || 'N/A', a.value]);
+    data.columns = sortedStatsArray.slice(0, 9).map((a) => [a.item, a.value]);
     if (sortedStatsArray.length > 9) {
       data.columns.push([
         'All Others',
