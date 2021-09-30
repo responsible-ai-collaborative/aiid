@@ -62,11 +62,7 @@ const getFlagModalContent = () => (
       <li>The linked report has disappeared from the web</li>
       <li>The report should not be considered an `&quot;`incident`&quot;`</li>
     </ul>
-    <button
-      type="button"
-      className="btn btn-danger btn-sm btn-block flag-button"
-      data-dismiss="modal"
-    >
+    <button type="button" className="btn btn-danger btn-sm w-100" data-dismiss="modal">
       Flag Report
     </button>
   </div>
@@ -191,7 +187,7 @@ const IncidentCard = ({
       {toggleFilterByIncidentId && (
         <button
           type="button"
-          className="btn btn-secondary btn-sm btn-block assignment-button"
+          className="btn btn-secondary btn-sm w-100"
           onClick={() => {
             navigate(`/cite/${item.incident_id}#${item.mongodb_id}`);
           }}

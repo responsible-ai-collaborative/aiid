@@ -511,7 +511,7 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
                     ))}
                   <button
                     type="button"
-                    className="btn btn-secondary btn-sm btn-block assignment-button"
+                    className="btn btn-secondary btn-sm w-100"
                     onClick={() => setShowAllClassifications(!showAllClassifications)}
                   >
                     {`Show ${
