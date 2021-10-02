@@ -259,7 +259,7 @@ const IncidentCite = ({ ...props }) => {
             </div>
           </IncidnetsReportsTitle>
           <Row className="mb-4">
-            <HitsContainer showDetails={true}>
+            <HitsContainer showDetails={true} className="ps-0 pe-0">
               <RenderIncidentCards nodes={incidentReports} />
             </HitsContainer>
           </Row>

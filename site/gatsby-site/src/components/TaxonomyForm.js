@@ -436,7 +436,7 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
 
   return (
     <Row key={taxonomy.namespace} className="mb-4">
-      <Container className="card">
+      <Container className="card ps-0 pe-0">
         <TaxaCardHeader className="card-header">
           <TaxaHeader>{`${taxonomy.namespace} Taxonomy Classifications`}</TaxaHeader>
           {isAdmin && (
