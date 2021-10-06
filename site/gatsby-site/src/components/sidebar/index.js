@@ -26,7 +26,7 @@ const ListItem = styled(({ className, active, level, ...props }) => {
     position: relative;
 
     &:hover {
-      color: #1ed3c6 !important;
+      color: var(--primary3) !important;
     }
 
     ${(props) =>
@@ -47,6 +47,8 @@ const ListItem = styled(({ className, active, level, ...props }) => {
 
 const Sidebar = styled('aside')`
   ${({ collapse }) => collapse && `display: none;`}
+  font-family: Karla, sans-serif;
+  font-weight: 700 !important;
   width: 250px;
   min-width: 250px;
   height: 100vh;

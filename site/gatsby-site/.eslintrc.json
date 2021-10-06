@@ -45,7 +45,8 @@
       },
       { "blankLine": "always", "prev": "directive", "next": "*" },
       { "blankLine": "any", "prev": "directive", "next": "directive" }
-    ]
+    ],
+    "jsx-a11y/no-onchange": "off"
   },
   "parser": "babel-eslint",
   "parserOptions": {

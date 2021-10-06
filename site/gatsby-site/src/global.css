@@ -1,4 +1,15 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Poppins:300,400,500,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Karla:wght@400;700&display=swap');
+
+:root {
+  --primary1: #868787;
+  --primary2: #18181a;
+  --primary3: #ec9982;
+  --primary4: #0857c3;
+  --secondary1: #df8270;
+  --secondary2: #6490e8;
+  --secondary3: #ba5a4b;
+  --secondary4: #071d49;
+}
 
 * {
   margin: 0;
@@ -21,9 +32,7 @@
 }
 html,
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Roboto Light', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif,
-    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-family: 'Karla', sans-serif !important;
 
   font-size: 16px;
   scroll-behavior: smooth;
@@ -34,9 +43,6 @@ a {
   /* color: #663399; */
 }
 
-body {
-  font-family: 'Roboto';
-}
 .visibleMobile {
   display: none;
 }
@@ -103,10 +109,6 @@ a:hover {
   height: 30px;
   margin: 0 15px;
   border-right: 1px solid rgba(255, 255, 255, 0.3);
-}
-.navBarULRight {
-  /* position: absolute;
-right: 30px; */
 }
 .githubIcon {
   width: 15px;
@@ -219,13 +221,16 @@ right: 30px; */
   font-size: 14px;
 }
 .headerTitle {
+  position: relative;
+  right: 20px;
   height: auto;
-  font-size: 16px;
+  font-size: 21px;
   line-height: 1.5;
-  font-weight: 300;
+  font-weight: bold;
   color: #fff !important;
-  margin-top: 16px;
+  margin-left: 24px;
   text-transform: uppercase;
+  word-spacing: 3px;
 }
 .headerTitle a {
   color: #fff;
@@ -241,11 +246,11 @@ right: 30px; */
 }
 
 .logoContent {
-  font-family: 'Roboto';
+  font-family: Karla, sans-serif !important;
   margin-left: 16px;
   font-size: 28px;
   line-height: 1.5;
-  font-weight: 500;
+  font-weight: bold;
   padding-right: 10px;
 }
 
@@ -294,10 +299,10 @@ right: 30px; */
   -webkit-overflow-scrolling: touch;
 }
 .navBarUL li a {
-  font-family: 'Roboto';
+  font-family: Karla, sans-serif !important;
   color: #fff !important;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: bold;
   line-height: 1em;
   opacity: 1;
   padding: 10px 15px;
@@ -360,19 +365,15 @@ blockquote {
 .twitterBtn:hover {
   opacity: 1;
 }
-.discordBtn {
-  img {
-    width: 10px;
-  }
-}
+
 /* Header section ends here */
 .sidebarTitle {
   /* box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16); */
   background-color: #f8f8f8;
   padding: 18px 16px;
-  font-family: 'Poppins';
+  font-family: Karla, sans-serif !important;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: bold;
   color: #001934;
   display: flex;
   align-items: center;
@@ -389,17 +390,17 @@ blockquote {
 .greenCircle {
   width: 8px;
   height: 8px;
-  background-color: #1cd3c6;
+  background-color: var(--primary3);
   border-radius: 50%;
   margin: 0 12px;
 }
 
 .headerNav {
-  font-family: 'Roboto';
+  font-family: Karla, sans-serif !important;
   padding: 0px 24px;
   color: #001933;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: bold;
   line-height: 1em;
 }
 
@@ -428,7 +429,7 @@ blockquote {
 .sideBarUL li a {
   /* color: #fff; */
   font-size: 14px;
-  font-weight: 500;
+  /* font-weight: 500; */
   line-height: 1.5;
   padding: 7px 24px 7px 16px;
   padding-left: 10px;
@@ -449,7 +450,7 @@ blockquote {
 }
 
 .hideFrontLine .active > a {
-  background-color: #1ed3c6;
+  background-color: var(--primary3);
   color: #fff !important;
 }
 .firstLevel ul li .collapser svg path {
@@ -469,7 +470,7 @@ blockquote {
 }
 
 .sideBarUL .item > a {
-  color: #1ed3c6;
+  color: var(--primary3);
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -507,7 +508,7 @@ blockquote {
   border-color: rgb(230, 236, 241) !important;
   border-style: solid none solid solid;
   border-width: 1px 0px 1px 1px;
-  background-color: #1ed3c6 !important;
+  background-color: var(--primary3) !important;
   color: #fff;
 }
 
