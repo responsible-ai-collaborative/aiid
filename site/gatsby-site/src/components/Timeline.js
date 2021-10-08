@@ -1,5 +1,5 @@
 import React from 'react';
-import { scaleTime, extent, bin, axisLeft, select, timeFormat } from 'd3';
+import { scaleTime, extent, bin, axisLeft, select, timeFormat, timeYear } from 'd3';
 import styled from 'styled-components';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
@@ -50,7 +50,7 @@ const GroupListItem = styled.li`
 
 const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
   return (
-    <g key={bucket.x0} transform={`translate(20,${yScale((bucket.x0 + bucket.x1) / 2)})`}>
+    <g key={bucket.x0} transform={`translate(20,${(yScale(bucket.x0) + yScale(bucket.x1)) / 2})`}>
       {bucket.length > 1 ? (
         <>
           <Point cy={0} r={groupRadius} />
@@ -128,8 +128,12 @@ function Timeline({ items }) {
 
   const yValue = (d) => new Date(d.date_published);
 
+  const [min, max] = extent(data, yValue);
+
+  const domain = [timeYear.floor(min), timeYear.ceil(max)];
+
   const yScale = scaleTime()
-    .domain(extent(data, yValue))
+    .domain(domain)
     .range([margin.top, size.height - margin.top])
     .nice();
 
