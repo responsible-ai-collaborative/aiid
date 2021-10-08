@@ -213,7 +213,7 @@ const IncidentCite = ({ ...props }) => {
           <Row className="mb-4">
             <CardContainer className="card">
               <div className="card-header">
-                <h4>Reports</h4>
+                <h4>Reports Timeline</h4>
               </div>
               <div className="card-body">
                 <Timeline items={sortedGroup} />
