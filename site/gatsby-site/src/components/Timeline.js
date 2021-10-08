@@ -1,6 +1,7 @@
 import React from 'react';
-import { scaleTime, extent, bin, axisLeft, select } from 'd3';
+import { scaleTime, extent, bin, axisLeft, select, timeFormat } from 'd3';
 import styled from 'styled-components';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
 
 const AxisLeft = ({ yScale, margin }) => {
   const axisRef = (axis) => {
@@ -28,11 +29,60 @@ const Count = styled.text`
   dominant-baseline: middle;
 `;
 
+const Trigger = styled.div`
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+`;
+
+const GroupList = styled.ul`
+  margin: 0;
+  list-style-type: none;
+`;
+
+const GroupListItem = styled.li`
+  font-size: 12px;
+  margin-top: 6px;
+  &:first-child {
+    margin-top: 0%;
+  }
+`;
+
 const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
   return (
     <g key={bucket.x0} transform={`translate(20,${yScale((bucket.x0 + bucket.x1) / 2)})`}>
-      <Point cy={0} r={bucket.length > 1 ? groupRadius : radius} />
-      {bucket.length > 1 && <Count>{bucket.length}</Count>}
+      {bucket.length > 1 ? (
+        <>
+          <Point cy={0} r={groupRadius} />
+          <Count>{bucket.length}</Count>
+          <OverlayTrigger
+            placement="right"
+            trigger="click"
+            overlay={
+              <Popover>
+                <Popover.Content>
+                  <GroupList>
+                    {bucket.map((b) => (
+                      <GroupListItem key={b.mongodb_id}>
+                        {timeFormat('%b %d, %Y')(new Date(b.date_published))}
+                        <br />
+                        <a href={`#${b.mongodb_id}`}>{b.title}</a>
+                      </GroupListItem>
+                    ))}
+                  </GroupList>
+                </Popover.Content>
+              </Popover>
+            }
+          >
+            <foreignObject x={-8} y={-8} width={16} height={16}>
+              <Trigger />
+            </foreignObject>
+          </OverlayTrigger>
+        </>
+      ) : (
+        <Point cy={0} r={radius} />
+      )}
+
       <a href={`#${bucket[0].mongodb_id}`}>
         <Title dx={16}>{bucket[0].title}</Title>
       </a>
