@@ -58,6 +58,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
           <OverlayTrigger
             placement="right"
             trigger="click"
+            rootClose={true}
             overlay={
               <Popover>
                 <Popover.Content>
