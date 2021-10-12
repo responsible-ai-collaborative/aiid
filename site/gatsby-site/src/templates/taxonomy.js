@@ -5,8 +5,9 @@ import md5 from 'md5';
 import Markdown from 'react-markdown';
 import { Badge, Button } from 'react-bootstrap';
 
-import C3Chart from 'react-c3js';
-import 'c3/c3.css';
+import BillboardChart from 'react-billboardjs';
+import { donut } from 'billboard.js';
+import 'billboard.js/dist/billboard.css';
 
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
@@ -90,17 +91,19 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
     let sortedStatsArray = [];
 
     valueStatsKeys.forEach((item) => {
-      sortedStatsArray.push({
-        item,
-        value: valueStats[item] || 0,
-      });
+      if (valueStats[item] > 0) {
+        sortedStatsArray.push({
+          item,
+          value: valueStats[item],
+        });
+      }
     });
 
     sortedStatsArray.sort((a, b) => b.value - a.value);
 
     const data = {
       columns: [],
-      type: 'donut',
+      type: donut(),
     };
 
     data.columns = sortedStatsArray.slice(0, 9).map((a) => [a.item, a.value]);
@@ -140,7 +143,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
             {`Show ${showAllStats ? 'fewer stats' : 'more stats'}`}
           </Button>
         )}
-        <C3Chart data={data} />
+        <BillboardChart data={data} />
       </div>
     );
   }
@@ -283,7 +286,7 @@ const Taxonomy = (props) => {
 export default Taxonomy;
 
 export const pageQuery = graphql`
-  query($namespace: String!) {
+  query ($namespace: String!) {
     allMongodbAiidprodClassifications(
       filter: {
         namespace: { eq: $namespace }
