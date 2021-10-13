@@ -96,7 +96,7 @@ const ReportedIncident = ({ incident }) => {
         <Row>
           <Col xs={12} sm={2} lg={2}>
             <Button
-              block
+              block="true"
               onClick={() => setOpen(!open)}
               aria-controls="collapse-incident-submission"
               aria-expanded={open}
@@ -108,10 +108,10 @@ const ReportedIncident = ({ incident }) => {
             {' '}
             {incident['title']}
             <br />
-            <Badge variant="secondary">Inc: {incident['incident_date']}</Badge>{' '}
-            <Badge variant="secondary">Pub: {incident['date_published']}</Badge>{' '}
-            <Badge variant="secondary">Sub: {incident['date_submitted']}</Badge>{' '}
-            <Badge variant="secondary">{incident['submitters']}</Badge>
+            <Badge bg="secondary">Inc: {incident['incident_date']}</Badge>{' '}
+            <Badge bg="secondary">Pub: {incident['date_published']}</Badge>{' '}
+            <Badge bg="secondary">Sub: {incident['date_submitted']}</Badge>{' '}
+            <Badge bg="secondary">{incident['submitters']}</Badge>
           </Col>
         </Row>
       </Card.Header>
@@ -136,11 +136,11 @@ const ReportedIncident = ({ incident }) => {
             </Card>
           )}
           <Card.Footer className="d-flex text-muted">
-            <Button className="mr-auto" disabled={!isAdmin} onClick={toggleEditing}>
+            <Button className="me-auto" disabled={!isAdmin} onClick={toggleEditing}>
               <FontAwesomeIcon icon={faEdit} />
             </Button>
             <Button
-              className="mr-2"
+              className="me-2"
               variant="outline-primary"
               disabled={!isAdmin}
               onClick={addReport}

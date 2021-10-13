@@ -1,0 +1,64 @@
+{
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "description": {
+            "bsonType": "string"
+        },
+        "fields": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "default": {
+                        "bsonType": "string"
+                    },
+                    "display_type": {
+                        "bsonType": "string"
+                    },
+                    "instant_facet": {
+                        "bsonType": "bool"
+                    },
+                    "long_description": {
+                        "bsonType": "string"
+                    },
+                    "long_name": {
+                        "bsonType": "string"
+                    },
+                    "mongo_type": {
+                        "bsonType": "string"
+                    },
+                    "permitted_values": {
+                        "bsonType": "array",
+                        "items": {
+                            "bsonType": "string"
+                        }
+                    },
+                    "placeholder": {
+                        "bsonType": "string"
+                    },
+                    "required": {
+                        "bsonType": "bool"
+                    },
+                    "short_description": {
+                        "bsonType": "string"
+                    },
+                    "short_name": {
+                        "bsonType": "string"
+                    },
+                    "weight": {
+                        "bsonType": "int"
+                    }
+                }
+            }
+        },
+        "namespace": {
+            "bsonType": "string"
+        },
+        "weight": {
+            "bsonType": "int"
+        }
+    },
+    "title": "taxa"
+}

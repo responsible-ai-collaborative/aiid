@@ -1,0 +1,20 @@
+{
+    "collection": "quickadd",
+    "database": "aiidprod",
+    "roles": [
+        {
+            "name": "default",
+            "apply_when": {},
+            "fields": {
+                "date_submitted": {},
+                "source_domain": {},
+                "url": {}
+            },
+            "write": true,
+            "insert": true,
+            "delete": false,
+            "search": true,
+            "additional_fields": {}
+        }
+    ]
+}

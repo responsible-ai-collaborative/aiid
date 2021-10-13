@@ -1,0 +1,24 @@
+{
+    "anon-user": {
+        "name": "anon-user",
+        "type": "anon-user",
+        "disabled": false
+    },
+    "api-key": {
+        "name": "api-key",
+        "type": "api-key",
+        "disabled": false
+    },
+    "local-userpass": {
+        "name": "local-userpass",
+        "type": "local-userpass",
+        "config": {
+            "autoConfirm": true,
+            "resetPasswordSubject": "Password Resets are not Currently Supported",
+            "resetPasswordUrl": "http://aiid.partnershiponai.org/",
+            "runConfirmationFunction": false,
+            "runResetFunction": false
+        },
+        "disabled": false
+    }
+}

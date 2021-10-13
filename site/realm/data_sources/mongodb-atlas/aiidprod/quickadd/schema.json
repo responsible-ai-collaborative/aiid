@@ -1,0 +1,20 @@
+{
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "date_submitted": {
+            "bsonType": "string"
+        },
+        "incident_id": {
+            "bsonType": "long"
+        },
+        "source_domain": {
+            "bsonType": "string"
+        },
+        "url": {
+            "bsonType": "string"
+        }
+    },
+    "title": "quickadd"
+}

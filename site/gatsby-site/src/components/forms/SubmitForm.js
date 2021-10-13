@@ -92,7 +92,7 @@ const SubmitForm = () => {
           Record {csvIndex + 1} of {csvData.length}
         </p>
         <div className="d-flex justify-content-center my-3">
-          <Button className="mr-4" onClick={previousRecord}>
+          <Button className="me-4" onClick={previousRecord}>
             &lt; Previous
           </Button>
           <Button onClick={nextRecord}>Next &gt;</Button>

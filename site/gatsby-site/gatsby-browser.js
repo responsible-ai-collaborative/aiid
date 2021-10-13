@@ -8,7 +8,7 @@ export const onServiceWorkerUpdateReady = () => {
   }
 };
 
-import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ROUTES_WITH_RULES = ['/cite/', '/apps/discover'];
 

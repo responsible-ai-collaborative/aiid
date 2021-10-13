@@ -110,3 +110,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ## Contact
 
 For inquiries, you are encouraged to open an issue on this repository or visit the [contact page](https://incidentdatabase.ai/contact).
+ 

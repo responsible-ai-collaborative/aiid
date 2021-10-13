@@ -1,0 +1,38 @@
+[
+    {
+        "name": "createReportForReview",
+        "private": false
+    },
+    {
+        "name": "quickAdd",
+        "private": false
+    },
+    {
+        "name": "promoteReport",
+        "private": false,
+        "run_as_system": true,
+        "can_evaluate": {
+            "%%user.type": "server"
+        }
+    },
+    {
+        "name": "deleteSubmittedDocument",
+        "private": false
+    },
+    {
+        "name": "updateSubmissionReport",
+        "private": false,
+        "run_as_system": true,
+        "can_evaluate": {
+            "%%user.type": "server"
+        }
+    },
+    {
+        "name": "updateIncidentClassification",
+        "private": false,
+        "run_as_system": true,
+        "can_evaluate": {
+            "%%user.type": "server"
+        }
+    }
+]

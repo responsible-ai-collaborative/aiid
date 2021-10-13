@@ -305,7 +305,9 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
             ))}
           </Form.Control>
         )}
-        <Form.Text className={['text-muted', 'mb-4']}>{rawField.short_description}</Form.Text>
+        <Form.Text className={['text-muted', 'mb-4', 'd-block']}>
+          {rawField.short_description}
+        </Form.Text>
       </>
     );
   };
@@ -434,7 +436,7 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
 
   return (
     <Row key={taxonomy.namespace} className="mb-4">
-      <Container className="card">
+      <Container className="card ps-0 pe-0">
         <TaxaCardHeader className="card-header">
           <TaxaHeader>{`${taxonomy.namespace} Taxonomy Classifications`}</TaxaHeader>
           {isAdmin && (
@@ -509,7 +511,7 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
                     ))}
                   <button
                     type="button"
-                    className="btn btn-secondary btn-sm btn-block assignment-button"
+                    className="btn btn-secondary btn-sm w-100"
                     onClick={() => setShowAllClassifications(!showAllClassifications)}
                   >
                     {`Show ${
