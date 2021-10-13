@@ -6,7 +6,6 @@ import { Button, Container, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import Citation from 'components/Citation';
-import IncidentList from 'components/IncidentList';
 import ImageCarousel from 'components/ImageCarousel';
 import BibTex from 'components/BibTex';
 
@@ -17,6 +16,7 @@ import styled from 'styled-components';
 import { isAfter, isEqual } from 'date-fns';
 import { useModal, CustomModal } from '../../src/components/useModal';
 import TaxonomyForm from '../components/TaxonomyForm';
+import Timeline from 'components/Timeline';
 
 const HitsContainer = styled.div`
   display: grid;
@@ -217,10 +217,10 @@ const IncidentCite = ({ ...props }) => {
           <Row className="mb-4">
             <CardContainer className="card">
               <div className="card-header">
-                <h4>Reports</h4>
+                <h4>Reports Timeline</h4>
               </div>
               <div className="card-body">
-                <IncidentList group={sortedGroup} />
+                <Timeline items={sortedGroup} />
               </div>
             </CardContainer>
           </Row>
