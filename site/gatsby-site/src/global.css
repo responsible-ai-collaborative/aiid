@@ -310,6 +310,7 @@ a:hover {
 .navBarNav {
   display: flex;
   align-items: center;
+  padding-left: 0;
 }
 .navBarUL li a img,
 .navBarUL li a .shareIcon {
@@ -419,6 +420,11 @@ blockquote {
 
 .sideBarUL {
   margin-top: 32px;
+  padding-left: 0;
+}
+
+.sideBarUL ul {
+  padding-left: 0;
 }
 
 .sideBarUL li {

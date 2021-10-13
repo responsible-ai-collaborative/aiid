@@ -3,6 +3,10 @@ import { Link } from 'gatsby';
 import styled from 'styled-components';
 import Badge from 'react-bootstrap/Badge';
 
+const StyledOl = styled.ol`
+  padding: 0;
+`;
+
 const StyledLi = styled.li`
   margin-left: 1em;
 `;
@@ -29,9 +33,9 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
   return (
     <div>
       <h2>
-        <Badge variant="secondary">{title}</Badge>
+        <Badge bg="secondary">{title}</Badge>
       </h2>
-      <ol>
+      <StyledOl>
         {sortedArray.map((item) => (
           <StyledLi key={`${item.label}-${item.value}`}>
             <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
@@ -39,7 +43,7 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
             </Link>
           </StyledLi>
         ))}
-      </ol>
+      </StyledOl>
     </div>
   );
 };

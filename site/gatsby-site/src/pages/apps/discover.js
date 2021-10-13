@@ -443,7 +443,7 @@ const StyledRefinementList = ({
         }}
       >
         {isFromSearch ? <Highlight attribute="label" hit={item} /> : item.label}
-        <span className="badge badge-secondary badge-pill">{item.count}</span>
+        <span className="badge bg-secondary badge-pill">{item.count}</span>
       </StyledButton>
     ))}
     <input
@@ -501,7 +501,7 @@ const StyledSearchBox = React.memo(({ refine, customRef }) => {
           translations={{
             stats(nbHits) {
               return (
-                <span className="badge badge-secondary badge-pill">{`${
+                <span className="badge bg-secondary badge-pill">{`${
                   nbHits === 0 ? 'No' : nbHits
                 } reports found`}</span>
               );
