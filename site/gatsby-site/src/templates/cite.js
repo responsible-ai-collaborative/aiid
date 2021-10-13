@@ -6,7 +6,6 @@ import { Button, Container, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import Citation from 'components/Citation';
-import IncidentList from 'components/IncidentList';
 import ImageCarousel from 'components/ImageCarousel';
 import BibTex from 'components/BibTex';
 
@@ -17,6 +16,7 @@ import styled from 'styled-components';
 import { isAfter, isEqual } from 'date-fns';
 import { useModal, CustomModal } from '../../src/components/useModal';
 import TaxonomyForm from '../components/TaxonomyForm';
+import Timeline from 'components/Timeline';
 
 const HitsContainer = styled.div`
   display: grid;
@@ -40,6 +40,8 @@ const CardContainer = styled.div`
   box-shadow: 0 2px 5px 0px #e3e5ec;
   display: flex;
   flex-direction: column;
+  padding-right: 0;
+  padding-left: 0;
   h4 {
     margin: 0 !important;
   }
@@ -48,6 +50,8 @@ const CardContainer = styled.div`
 const StatsContainer = styled.div`
   width: 100%;
   margin-top: 1.5rem;
+  padding-right: 0;
+  padding-left: 0;
   h4 {
     margin: 0 !important;
   }
@@ -213,10 +217,10 @@ const IncidentCite = ({ ...props }) => {
           <Row className="mb-4">
             <CardContainer className="card">
               <div className="card-header">
-                <h4>Reports</h4>
+                <h4>Reports Timeline</h4>
               </div>
               <div className="card-body">
-                <IncidentList group={sortedGroup} />
+                <Timeline items={sortedGroup} />
               </div>
             </CardContainer>
           </Row>
@@ -226,12 +230,12 @@ const IncidentCite = ({ ...props }) => {
                 <h4>Tools</h4>
               </div>
               <div className="card-body">
-                <Button variant="outline-primary" className="mr-2" href={'/summaries/incidents'}>
+                <Button variant="outline-primary" className="me-2" href={'/summaries/incidents'}>
                   All Incidents
                 </Button>
                 <Button
                   variant="outline-primary"
-                  className="mr-2"
+                  className="me-2"
                   href={'/apps/discover?incident_id=' + incident_id}
                 >
                   Discover
@@ -255,7 +259,7 @@ const IncidentCite = ({ ...props }) => {
             </div>
           </IncidnetsReportsTitle>
           <Row className="mb-4">
-            <HitsContainer showDetails={true}>
+            <HitsContainer showDetails={true} className="ps-0 pe-0">
               <RenderIncidentCards nodes={incidentReports} />
             </HitsContainer>
           </Row>
