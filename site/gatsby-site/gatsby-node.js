@@ -16,6 +16,8 @@ const createTaxonomyPages = require('./page-creators/createTaxonomyPages');
 
 const createBlogPosts = require('./page-creators/createBlogPosts');
 
+const createDownloadIndexPage = require('./page-creators/createDownloadIndexPage');
+
 const discoverIndex = require('./src/utils/discoverIndexGenerator');
 
 const algoliasearch = require('algoliasearch');
@@ -44,6 +46,7 @@ exports.createPages = ({ graphql, actions }) => {
     createBackupsPage(graphql, createPage),
     createTaxonomyPages(graphql, createPage),
     createBlogPosts(graphql, createPage),
+    createDownloadIndexPage(graphql, createPage),
   ]);
 };
 
