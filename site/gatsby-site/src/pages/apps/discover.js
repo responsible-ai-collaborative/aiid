@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { StringParam, QueryParams, useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { debounce } from 'debounce';
@@ -6,9 +6,6 @@ import {
   InstantSearch,
   Highlight,
   connectRefinementList,
-  Pagination,
-  Stats,
-  connectSearchBox,
   connectRange,
 } from 'react-instantsearch-dom';
 import styled from 'styled-components';
@@ -25,10 +22,13 @@ import {
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
 import { Form, Button } from 'react-bootstrap';
 import Helmet from 'react-helmet';
+import { useModal, CustomModal } from 'components/useModal';
 
 import { add, format, formatISO, isAfter } from 'date-fns';
-import { Hits } from 'components/IncidentCards';
 import config from '../../../config';
+import Hits from 'components/discover/Hits';
+import SearchBox from 'components/discover/SearchBox';
+import Pagination from 'components/discover/Pagination';
 
 const indexName = 'instant_search';
 
@@ -36,11 +36,6 @@ const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
   config.header.search.algoliaSearchKey
 );
-
-//// Alternative
-// const indexName = "aiid-emergency";
-// export const searchClient = ('8TNY3YFAO8', '55efba4929953a53eb357824297afb4c');
-// const indexName = "aiid-emergency";
 
 const REFINEMENT_LISTS = [
   {
@@ -135,7 +130,7 @@ const HitsContainer = styled.div`
   ${({ showDetails }) =>
     showDetails === true &&
     `
-    grid-template-columns: auto;
+    grid-template-columns: auto;i
   `};
 
   @media (max-width: 1240px) {
@@ -198,85 +193,6 @@ const RefinementListContainer = styled.div`
   padding-bottom: 10px;
 `;
 
-const StyledPagination = styled(Pagination)`
-  padding: 50px 0 50px 0;
-
-  .ais-Pagination {
-    color: #3a4570;
-  }
-
-  .ais-Pagination-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-  }
-
-  .ais-Pagination-item + .ais-Pagination-item {
-    margin-left: 0.3rem;
-  }
-
-  .ais-Pagination-link {
-    color: #0096db;
-    -webkit-transition: color 0.2s ease-out;
-    transition: color 0.2s ease-out;
-    padding: 0.3rem 0.6rem;
-    display: block;
-    border: 1px solid #c4c8d8;
-    border-radius: 5px;
-    -webkit-transition: background-color 0.2s ease-out;
-    transition: background-color 0.2s ease-out;
-
-    :hover {
-      color: #0073a8;
-      background-color: #e3e5ec;
-    }
-
-    :focus {
-      color: #0073a8;
-      background-color: #e3e5ec;
-    }
-  }
-
-  .ais-Pagination-item--disabled .ais-Pagination-link {
-    opacity: 0.6;
-    cursor: not-allowed;
-    color: #a5abc4;
-
-    :hover {
-      color: #a5abc4;
-      background-color: #fff;
-    }
-
-    :focus {
-      color: #a5abc4;
-      background-color: #fff;
-    }
-  }
-
-  .ais-Pagination-item--selected .ais-Pagination-link {
-    color: #fff;
-    background-color: #0096db;
-    border-color: #0096db;
-
-    :hover {
-      color: #fff;
-    }
-
-    :focus {
-      color: #fff;
-    }
-  }
-`;
-
 const RefinementListHeader = styled.span`
   display: block;
   background: #036eff;
@@ -284,13 +200,6 @@ const RefinementListHeader = styled.span`
   color: #fff;
   margin-bottom: 0;
   padding: 10px;
-`;
-
-const StyledStats = styled(Stats)`
-  position: absolute;
-  top: 4px;
-  right: 28px;
-  z-index: 1;
 `;
 
 const StyledButton = styled.button`
@@ -325,20 +234,6 @@ const StyledButton = styled.button`
   `};
 `;
 
-const StyledSearchInput = styled.input`
-  padding: 0.3rem 0.3rem !important;
-  max-width: 100% !important;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  padding: 0.3rem 1.7rem;
-  width: 100%;
-  position: relative;
-  background-color: #fff;
-  border: 1px solid #c4c8d8;
-  border-radius: 5px;
-`;
-
 const FiltersContainer = styled.div`
   width: 100;
   display: flex;
@@ -367,33 +262,6 @@ const Tags = styled(Button)`
   }
 `;
 
-const SearchResetButton = styled.button`
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  position: absolute;
-  z-index: 1;
-  width: 20px;
-  height: 20px;
-  top: 50%;
-  right: 0.3rem;
-  -webkit-transform: translateY(-50%);
-  transform: translateY(-50%);
-
-  padding: 0;
-  overflow: visible;
-  font: inherit;
-  line-height: normal;
-  color: inherit;
-  background: none;
-  border: 0;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-`;
-
 const Header = styled.div`
   display: flex;
   flex-direction: column;
@@ -404,15 +272,6 @@ const Header = styled.div`
       display: none;
     }
   }
-`;
-
-const SearchContainer = styled.div`
-  flex-grow: 1;
-`;
-
-const SearchForm = styled.form`
-  display: block;
-  position: relative;
 `;
 
 const StyledRefinementList = ({
@@ -454,66 +313,6 @@ const StyledRefinementList = ({
     />
   </RefinementListContainer>
 );
-
-// eslint-disable-next-line react/display-name
-const StyledSearchBox = React.memo(({ refine, customRef }) => {
-  const [loading, setLoading] = useState(false);
-
-  const debouncedRefine = debounce((text) => {
-    refine(text);
-  }, 500);
-
-  const debouceRefineCallback = useCallback((value) => debouncedRefine(value), []);
-
-  const handleOnChange = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    debouceRefineCallback(e.target.value);
-    setLoading(false);
-  };
-
-  return (
-    <SearchContainer>
-      <SearchForm>
-        <StyledSearchInput
-          readOnly={loading}
-          type="text"
-          ref={customRef}
-          autoComplete="off"
-          autoCorrect="off"
-          autoCapitalize="off"
-          placeholder="Search"
-          spellCheck="false"
-          maxLength="512"
-          onKeyPress={(e) => {
-            e.key === 'Enter' && e.preventDefault();
-          }}
-          onChange={handleOnChange}
-        />
-        <SearchResetButton type="reset" title="Clear the search query." onClick={() => refine('')}>
-          <FontAwesomeIcon
-            icon={faTimesCircle}
-            className="pointer fa fa-times-circle"
-            title="reset"
-          />
-        </SearchResetButton>
-        <StyledStats
-          translations={{
-            stats(nbHits) {
-              return (
-                <span className="badge bg-secondary badge-pill">{`${
-                  nbHits === 0 ? 'No' : nbHits
-                } reports found`}</span>
-              );
-            },
-          }}
-        />
-      </SearchForm>
-    </SearchContainer>
-  );
-});
-
-const CustomSearchBox = React.memo(connectSearchBox(StyledSearchBox));
 
 const RefinementList = connectRefinementList(StyledRefinementList);
 
@@ -950,6 +749,12 @@ const DiscoverApp = React.memo((props) => {
     });
   }, [searchState]);
 
+  const authorsModal = useModal();
+
+  const submittersModal = useModal();
+
+  const flagReportModal = useModal();
+
   return (
     <LayoutHideSidebar {...props}>
       <Helmet>
@@ -969,7 +774,7 @@ const DiscoverApp = React.memo((props) => {
                 }}
               >
                 <Header>
-                  <CustomSearchBox customRef={searchInput} defaultRefinement={query.s} />
+                  <SearchBox customRef={searchInput} defaultRefinement={query.s} />
                   <FiltersBar
                     filters={searchState}
                     updateFilters={setSearchState}
@@ -979,9 +784,18 @@ const DiscoverApp = React.memo((props) => {
                 <SidesContainer>
                   <ResultsSide>
                     <HitsContainer>
-                      <Hits toggleFilterByIncidentId={toggleFilterByIncidentId} />
+                      <Hits
+                        toggleFilterByIncidentId={toggleFilterByIncidentId}
+                        authorsModal={authorsModal}
+                        submittersModal={submittersModal}
+                        flagReportModal={flagReportModal}
+                      />
+
+                      <CustomModal {...authorsModal} />
+                      <CustomModal {...submittersModal} />
+                      <CustomModal {...flagReportModal} />
                     </HitsContainer>
-                    <StyledPagination />
+                    <Pagination />
                   </ResultsSide>
                   <FacetsSide>{filters}</FacetsSide>
                 </SidesContainer>
