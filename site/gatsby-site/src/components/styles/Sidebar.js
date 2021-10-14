@@ -31,6 +31,7 @@ export const Sidebar = styled('aside')`
 
   .rightSideBarUL {
     margin-top: 32px;
+    padding: 0;
   }
 
   .rightSideBarUL li {
