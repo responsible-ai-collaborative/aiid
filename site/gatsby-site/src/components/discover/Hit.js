@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Button } from 'react-bootstrap';
 import { Highlight } from 'react-instantsearch-dom';
 import { Image } from 'utils/cloudinary';
 import styled from 'styled-components';
@@ -126,31 +126,28 @@ export default function Hit({
         </div>
       </Card.Body>
 
-      <Card.Footer>
-        <WebArchiveLink url={item.url} date={item.date_submitted} className="card-link">
-          <FontAwesomeIcon
-            icon={faNewspaper}
-            className="far fa-newspaper"
-            title="Read the Source"
-          />
+      <Card.Footer className="d-flex justify-content-between px-5">
+        <WebArchiveLink url={item.url} date={item.date_submitted}>
+          <Button variant="link" title="Authors">
+            <FontAwesomeIcon icon={faNewspaper} className="fa-newspaper" title="Read the Source" />
+          </Button>
         </WebArchiveLink>
 
-        <button className="card-link">
-          <FontAwesomeIcon
-            icon={faIdCard}
-            className="pointer far fa-id-card"
-            title="Authors"
-            onClick={() =>
-              authorsModal.openFor({
-                title: 'Authors',
-                body: () => item.authors.join(', '),
-              })
-            }
-          />
-        </button>
+        <Button
+          variant="link"
+          title="Authors"
+          onClick={() =>
+            authorsModal.openFor({
+              title: 'Authors',
+              body: () => item.authors.join(', '),
+            })
+          }
+        >
+          <FontAwesomeIcon icon={faIdCard} className="fa-id-card" />
+        </Button>
 
-        <button
-          className="card-link"
+        <Button
+          variant="link"
           title="Submitters"
           onClick={() =>
             submittersModal.openFor({
@@ -159,11 +156,11 @@ export default function Hit({
             })
           }
         >
-          <FontAwesomeIcon icon={faUserShield} className="pointer fas fa-user-shield" />
-        </button>
+          <FontAwesomeIcon icon={faUserShield} className="fa-user-shield" />
+        </Button>
 
-        <button
-          className="card-link"
+        <Button
+          variant="link"
           title="Flag Report"
           onClick={() =>
             flagReportModal.openFor({
@@ -172,18 +169,18 @@ export default function Hit({
             })
           }
         >
-          <FontAwesomeIcon icon={faFlag} className="pointer far fa-flag" />
-        </button>
+          <FontAwesomeIcon icon={faFlag} className="fa-flag" />
+        </Button>
 
         {toggleFilterByIncidentId && (
-          <button
-            className="card-link"
+          <Button
+            variant="link"
             aria-hidden="true"
             onClick={() => toggleFilterByIncidentId(item.incident_id + '')}
           >
-            <FontAwesomeIcon icon={faHashtag} className="fas fa-hashtag" title="Incident ID" />
+            <FontAwesomeIcon icon={faHashtag} className="fa-hashtag" title="Incident ID" />
             {item.incident_id}
-          </button>
+          </Button>
         )}
       </Card.Footer>
     </Card>
