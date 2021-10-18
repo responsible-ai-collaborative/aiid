@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Button } from 'react-bootstrap';
-import { Highlight } from 'react-instantsearch-dom';
+import { Highlight, Snippet } from 'react-instantsearch-dom';
 import { Image } from 'utils/cloudinary';
 import styled from 'styled-components';
 import { fill } from '@cloudinary/base/actions/resize';
@@ -26,12 +26,9 @@ const StyledLabel = styled.p`
   margin: 0.6em 0;
 `;
 
-const cardNeedsBlockquote = (item) => {
-  if (item.text && item.text.matchLevel === 'full') {
-    return true;
-  }
-  return false;
-};
+const TitleHighlight = styled(Highlight)`
+  font-weight: bold;
+`;
 
 const getFlagModalContent = () => (
   <div className="modal-body">
@@ -81,9 +78,9 @@ export default function Hit({
         height="240px"
         transformation={fill().height(480)}
       />
-      <Card.Body>
+      <Card.Body className="d-flex flex-column ">
         <Card.Title>
-          <Highlight hit={item} attribute="title" />
+          <TitleHighlight hit={item} attribute="title" />
         </Card.Title>
 
         <Card.Subtitle className="mb-2 text-muted">
@@ -91,25 +88,13 @@ export default function Hit({
           {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
         </Card.Subtitle>
 
-        <Card.Text>
-          {item._snippetResult && cardNeedsBlockquote(item._snippetResult) && (
-            <blockquote>
-              <Highlight
-                hit={{
-                  _highlightResult: {
-                    ...item._snippetResult,
-                    text: {
-                      ...item._snippetResult.text,
-                      value: `...${item._snippetResult.text.value}...`,
-                    },
-                  },
-                }}
-                attribute="text"
-              />
-            </blockquote>
-          )}
-          {item.text.substr(0, 400) + '...'}
-        </Card.Text>
+        {item._snippetResult.text.matchLevel === 'full' && (
+          <blockquote className="mt-4">
+            <Snippet attribute="text" hit={item} />
+          </blockquote>
+        )}
+
+        <Card.Text className="flex-fill">{item.text.substr(0, 400) + '...'}</Card.Text>
 
         <div className="align-bottom">
           {toggleFilterByIncidentId && (
@@ -126,7 +111,7 @@ export default function Hit({
         </div>
       </Card.Body>
 
-      <Card.Footer className="d-flex justify-content-between px-5">
+      <Card.Footer className="d-flex justify-content-between">
         <WebArchiveLink url={item.url} date={item.date_submitted}>
           <Button variant="link" title="Authors">
             <FontAwesomeIcon icon={faNewspaper} className="fa-newspaper" title="Read the Source" />
