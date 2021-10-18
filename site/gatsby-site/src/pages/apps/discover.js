@@ -10,25 +10,18 @@ import {
 } from 'react-instantsearch-dom';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faNewspaper,
-  faIdCard,
-  faUserShield,
-  faFlag,
-  faHashtag,
-  faTimesCircle,
-  faCalendarAlt,
-} from '@fortawesome/free-solid-svg-icons';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
-import { Form, Button } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import Helmet from 'react-helmet';
 import { useModal, CustomModal } from 'components/useModal';
 
-import { add, format, formatISO, isAfter } from 'date-fns';
+import { add, formatISO, isAfter } from 'date-fns';
 import config from '../../../config';
 import Hits from 'components/discover/Hits';
 import SearchBox from 'components/discover/SearchBox';
 import Pagination from 'components/discover/Pagination';
+import FiltersBar from 'components/discover/FiltersBar';
+import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
 
 const indexName = 'instant_search';
 
@@ -36,65 +29,6 @@ const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
   config.header.search.algoliaSearchKey
 );
-
-const REFINEMENT_LISTS = [
-  {
-    attribute: 'classifications',
-    inputText: 'CSET:...',
-    label: 'Classifications',
-    faIcon: faNewspaper,
-    faClasses: 'far fa-newspaper',
-  },
-  {
-    attribute: 'source_domain',
-    inputText: "Filter Domains ('bbc.com')",
-    label: 'Source',
-    faIcon: faNewspaper,
-    faClasses: 'far fa-newspaper',
-  },
-  {
-    attribute: 'authors',
-    inputText: "Filter Authors ('Helen...')",
-    label: 'Authors',
-    faIcon: faIdCard,
-    faClasses: 'far fa-id-card',
-  },
-  {
-    attribute: 'submitters',
-    inputText: "Filter Submitters ('Helen...')",
-    label: 'Submitters',
-    faIcon: faUserShield,
-    faClasses: 'fas fa-user-shield',
-  },
-  {
-    attribute: 'incident_id',
-    inputText: "Filter incident number ('42')",
-    label: 'Incident ID',
-    faIcon: faHashtag,
-    faClasses: 'fas fa-hashtag',
-  },
-  {
-    attribute: 'epoch_incident_date',
-    inputText: 'none',
-    label: 'Incident Date',
-    faIcon: faCalendarAlt,
-    faClasses: 'far fa-calendar-alt',
-  },
-  {
-    attribute: 'epoch_date_published',
-    inputText: 'none',
-    label: 'Published Date',
-    faIcon: faCalendarAlt,
-    faClasses: 'far fa-calendar-alt',
-  },
-  {
-    attribute: 'flag',
-    inputText: 'none',
-    label: 'Flagged',
-    faIcon: faFlag,
-    faClasses: 'far fa-flag',
-  },
-];
 
 const Container = styled.div`
   max-width: 1400px;
@@ -232,34 +166,6 @@ const StyledButton = styled.button`
     background-color: #007bff;
     border-color: #007bff;
   `};
-`;
-
-const FiltersContainer = styled.div`
-  width: 100;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: center;
-  padding-top: 2em;
-`;
-
-const Tags = styled(Button)`
-  &&& {
-    margin-bottom: 0.7em;
-    margin-right: 0.5em;
-    border-radius: 23px;
-
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-
-    p {
-      margin-bottom: 0 !important;
-      margin-right: 0.4em;
-      /* padding-bottom: 1em; */
-    }
-  }
 `;
 
 const Header = styled.div`
@@ -514,103 +420,6 @@ const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
 };
 
 const CustomRangeInput = connectRange(RangeInput);
-
-const FiltersBar = ({ filters, updateFilters, updateQuery }) => {
-  const flitersArray = [];
-
-  for (const filter in filters.refinementList) {
-    const filterName = REFINEMENT_LISTS.filter((f) => f.attribute === filter)[0].label;
-
-    for (const value of filters.refinementList[filter]) {
-      flitersArray.push(`${filterName}: ${value}`);
-    }
-  }
-
-  for (const filter in filters.range) {
-    const filterName = REFINEMENT_LISTS.filter((f) => f.attribute.includes(filter))[0].label;
-
-    if (filters.range[filter].min) {
-      const value = format(validateDate(filters.range[filter].min), 'MM/dd/yyyy');
-
-      flitersArray.push(`${filterName}: From ${value}`);
-    }
-
-    if (filters.range[filter].max) {
-      const value = format(validateDate(filters.range[filter].max), 'MM/dd/yyyy');
-
-      flitersArray.push(`${filterName}: To ${value}`);
-    }
-  }
-
-  if (flitersArray.length === 0) {
-    return null;
-  }
-
-  return (
-    <FiltersContainer>
-      {flitersArray.map((filter) => (
-        <Tags
-          variant="outline-primary"
-          key={filter}
-          onClick={() => {
-            const filterValuePair = filter.split(': ');
-
-            const filterAttr = REFINEMENT_LISTS.filter((f) => f.label === filterValuePair[0])[0]
-              .attribute;
-
-            let newFilters = {};
-
-            if (filters.refinementList[filterAttr]) {
-              newFilters = {
-                ...filters,
-                refinementList: {
-                  ...filters.refinementList,
-                  [filterAttr]: filters.refinementList[filterAttr]?.filter(
-                    (v) => v !== filterValuePair[1]
-                  ),
-                },
-              };
-            }
-
-            if (filters.range[filterAttr]) {
-              const newRangeFilter = {};
-
-              if (filterValuePair[1].split(' ')[0] === 'To') {
-                newRangeFilter.min = filters.range[filterAttr].min;
-              }
-
-              if (filterValuePair[1].split(' ')[0] === 'From') {
-                newRangeFilter.max = filters.range[filterAttr].max;
-              }
-
-              newFilters = {
-                ...filters,
-                range: {
-                  ...filters.range,
-                  [filterAttr]: { ...newRangeFilter },
-                },
-              };
-            }
-
-            updateFilters({
-              ...newFilters,
-            });
-            updateQuery({
-              ...newFilters,
-            });
-          }}
-        >
-          <p>{filter}</p>
-          <FontAwesomeIcon
-            icon={faTimesCircle}
-            className="pointer fa fa-times-circle"
-            title="reset"
-          />
-        </Tags>
-      ))}
-    </FiltersContainer>
-  );
-};
 
 const DiscoverApp = React.memo((props) => {
   const searchInput = useRef(null);
