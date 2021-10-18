@@ -3,8 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
 import styled from 'styled-components';
-import { format, validateDate } from 'date-fns';
+import { format } from 'date-fns';
 import { Button } from 'react-bootstrap';
+import { validateDate } from 'utils/date';
 
 const FiltersContainer = styled.div`
   width: 100;
