@@ -153,7 +153,7 @@ exports.onPostBuild = async function ({ graphql, reporter }) {
     index.setSettings({
       attributesForFaceting: [
         'classifications',
-        'source_domain',
+        'searchable(source_domain)',
         'authors',
         'submitters',
         'incident_id',
