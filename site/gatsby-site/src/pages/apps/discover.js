@@ -11,7 +11,6 @@ import config from '../../../config';
 import Hits from 'components/discover/Hits';
 import SearchBox from 'components/discover/SearchBox';
 import Pagination from 'components/discover/Pagination';
-import FiltersBar from 'components/discover/FiltersBar';
 import Filters from 'components/discover/Filters';
 
 const indexName = 'instant_search';
@@ -311,11 +310,6 @@ const DiscoverApp = React.memo((props) => {
               >
                 <Header>
                   <SearchBox customRef={searchInput} defaultRefinement={query.s} />
-                  <FiltersBar
-                    filters={searchState}
-                    updateFilters={setSearchState}
-                    updateQuery={(newFilters) => setQuery(getQueryFromState(newFilters), 'push')}
-                  />
                 </Header>
 
                 <Filters />
