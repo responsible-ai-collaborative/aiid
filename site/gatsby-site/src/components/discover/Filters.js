@@ -75,7 +75,7 @@ const RangeInput = ({ faIcon, label, faClasses, currentRefinement: { min, max },
 
   return (
     <Dropdown autoClose="outside">
-      <Dropdown.Toggle>
+      <Dropdown.Toggle className="w-100">
         <FontAwesomeIcon icon={faIcon} className={faClasses} />
         {` ${label}`}
       </Dropdown.Toggle>
@@ -119,7 +119,7 @@ const StyledRefinementList = ({
   faClasses,
 }) => (
   <Dropdown autoClose="outside">
-    <Dropdown.Toggle>
+    <Dropdown.Toggle className="w-100">
       <FontAwesomeIcon icon={faIcon} className={faClasses} />
       {` ${label}`}
     </Dropdown.Toggle>
@@ -166,15 +166,17 @@ const map = (props) => {
 
 function Filters() {
   return (
-    <Container fluid>
-      <Row>
-        <Col>
-          {REFINEMENT_LISTS.map((list) => {
-            const Component = map(list);
+    <Container fluid className="my-4">
+      <Row xs={1} sm={2} md={3} lg={4} className="gy-2">
+        {REFINEMENT_LISTS.map((list) => {
+          const Component = map(list);
 
-            return <Component key={list.attribute} {...list} />;
-          })}
-        </Col>
+          return (
+            <Col key={list.attribute}>
+              <Component key={list.attribute} {...list} />
+            </Col>
+          );
+        })}
       </Row>
     </Container>
   );

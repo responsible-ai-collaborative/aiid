@@ -31,21 +31,6 @@ const Container = styled.div`
   }
 `;
 
-const SidesContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  max-width: 100%;
-  padding-top: 2rem;
-
-  @media (max-width: 1440px) {
-    padding-top: 1em;
-  }
-
-  @media (max-width: 570px) {
-    flex-direction: column-reverse;
-  }
-`;
-
 const HitsContainer = styled.div`
   display: grid;
   max-width: 100%;
@@ -75,37 +60,6 @@ const HitsContainer = styled.div`
       `
       grid-template-columns: auto;
     `};
-  }
-`;
-
-const FacetsSide = styled.div`
-  display: flex;
-  flex-direction: column;
-  max-width: 300px;
-
-  @media (max-width: 1440px) {
-    max-width: 300px;
-  }
-
-  @media (max-width: 570px) {
-    max-width: unset;
-  }
-`;
-
-const ResultsSide = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  max-width: 85%;
-  padding-right: 2rem;
-
-  @media (max-width: 1440px) {
-    padding-right: 1rem;
-  }
-
-  @media (max-width: 570px) {
-    width: 100%;
-    padding: 0;
   }
 `;
 
@@ -363,25 +317,21 @@ const DiscoverApp = React.memo((props) => {
                     updateQuery={(newFilters) => setQuery(getQueryFromState(newFilters), 'push')}
                   />
                 </Header>
-                <SidesContainer>
-                  <ResultsSide>
-                    <HitsContainer>
-                      <Hits
-                        toggleFilterByIncidentId={toggleFilterByIncidentId}
-                        authorsModal={authorsModal}
-                        submittersModal={submittersModal}
-                        flagReportModal={flagReportModal}
-                      />
-                      <CustomModal {...authorsModal} />
-                      <CustomModal {...submittersModal} />
-                      <CustomModal {...flagReportModal} />
-                    </HitsContainer>
-                    <Pagination />
-                  </ResultsSide>
-                  <FacetsSide>
-                    <Filters />
-                  </FacetsSide>
-                </SidesContainer>
+
+                <Filters />
+
+                <HitsContainer>
+                  <Hits
+                    toggleFilterByIncidentId={toggleFilterByIncidentId}
+                    authorsModal={authorsModal}
+                    submittersModal={submittersModal}
+                    flagReportModal={flagReportModal}
+                  />
+                  <CustomModal {...authorsModal} />
+                  <CustomModal {...submittersModal} />
+                  <CustomModal {...flagReportModal} />
+                </HitsContainer>
+                <Pagination />
               </InstantSearch>
             </Container>
           </>
