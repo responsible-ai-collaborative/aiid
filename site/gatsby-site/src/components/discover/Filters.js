@@ -2,64 +2,13 @@ import React, { useState, useEffect } from 'react';
 import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
 import { debounce } from 'debounce';
 import { connectRange, connectRefinementList } from 'react-instantsearch-dom';
-import { Form } from 'react-bootstrap';
+import { Form, Dropdown, Badge } from 'react-bootstrap';
 import { add, formatISO, isAfter } from 'date-fns';
-import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { validateDate } from 'utils/date';
 import { Highlight } from 'react-instantsearch-dom';
 
-const RangeInputContainer = styled.div`
-  padding-bottom: 1.5rem;
-`;
-
-const RefinementListContainer = styled.div`
-  margin-bottom: 1rem;
-  padding-bottom: 10px;
-`;
-
-const RefinementListHeader = styled.span`
-  display: block;
-  background: #036eff;
-  border-radius: 1px;
-  color: #fff;
-  margin-bottom: 0;
-  padding: 10px;
-`;
-
-const StyledButton = styled.button`
-  width: 100%;
-  background-color: white;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  border-radius: 0rem;
-  margin-top: 0rem !important;
-  border: 1px solid transparent;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-
-  :hover {
-    color: #fff;
-    background-color: #6bb3ff;
-    border-color: #6bb3ff;
-    text-decoration: none;
-  }
-
-  ${({ active }) =>
-    active === true &&
-    `
-    color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
-  `};
-`;
-
-const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
+const RangeInput = ({ faIcon, listLabel, faClasses, currentRefinement: { min, max }, refine }) => {
   if (!min || !max) {
     return null;
   }
@@ -125,26 +74,35 @@ const RangeInput = ({ currentRefinement: { min, max }, refine }) => {
   }, 1000);
 
   return (
-    <Form>
-      <Form.Label>From Date:</Form.Label>
-      <Form.Control
-        required={true}
-        type="date"
-        defaultValue={formatISO(localMin, { representation: 'date' })}
-        onChange={(event) => onChangeMinDate(event.currentTarget.value)}
-        min={limitInterval.min}
-        onKeyDown={(e) => e.preventDefault()}
-      />
+    <Dropdown className="d-inline mx-2" autoClose="outside">
+      <Dropdown.Toggle>
+        <FontAwesomeIcon icon={faIcon} className={faClasses} />
+        {` ${listLabel}`}
+      </Dropdown.Toggle>
 
-      <Form.Label>To Date:</Form.Label>
-      <Form.Control
-        required={true}
-        type="date"
-        defaultValue={formatISO(localMax, { representation: 'date' })}
-        onChange={(event) => onChangeMaxDate(event.currentTarget.value)}
-        onKeyDown={(e) => e.preventDefault()}
-      />
-    </Form>
+      <Dropdown.Menu>
+        <Form className="px-3">
+          <Form.Label>From Date:</Form.Label>
+          <Form.Control
+            required={true}
+            type="date"
+            defaultValue={formatISO(localMin, { representation: 'date' })}
+            onChange={(event) => onChangeMinDate(event.currentTarget.value)}
+            min={limitInterval.min}
+            onKeyDown={(e) => e.preventDefault()}
+          />
+
+          <Form.Label>To Date:</Form.Label>
+          <Form.Control
+            required={true}
+            type="date"
+            defaultValue={formatISO(localMax, { representation: 'date' })}
+            onChange={(event) => onChangeMaxDate(event.currentTarget.value)}
+            onKeyDown={(e) => e.preventDefault()}
+          />
+        </Form>
+      </Dropdown.Menu>
+    </Dropdown>
   );
 };
 
@@ -155,39 +113,43 @@ const StyledRefinementList = ({
   isFromSearch,
   refine,
   searchForItems,
-  createURL,
   placeholder,
   listLabel,
   faIcon,
   faClasses,
 }) => (
-  <RefinementListContainer>
-    <RefinementListHeader className="refine_header">
+  <Dropdown className="d-inline mx-2" autoClose="outside">
+    <Dropdown.Toggle>
       <FontAwesomeIcon icon={faIcon} className={faClasses} />
       {` ${listLabel}`}
-    </RefinementListHeader>
-    {items.length === 0 && <div className="d-flex justify-content-center">No result</div>}
-    {items.map((item) => (
-      <StyledButton
-        key={item.label}
-        active={item.isRefined}
-        href={createURL(item.value)}
-        onClick={(event) => {
-          event.preventDefault();
-          refine(item.value);
-        }}
-      >
-        {isFromSearch ? <Highlight attribute="label" hit={item} /> : item.label}
-        <span className="badge bg-secondary badge-pill">{item.count}</span>
-      </StyledButton>
-    ))}
-    <input
-      className="form-control"
-      type="search"
-      placeholder={placeholder}
-      onChange={(event) => searchForItems(event.currentTarget.value)}
-    />
-  </RefinementListContainer>
+    </Dropdown.Toggle>
+
+    <Dropdown.Menu>
+      <Form className="px-3" onSubmit={(e) => e.preventDefault()}>
+        <Form.Control
+          type="search"
+          placeholder={placeholder}
+          onChange={(event) => searchForItems(event.currentTarget.value)}
+        />
+      </Form>
+      <Dropdown.Divider />
+      {items.map((item) => (
+        <Dropdown.Item
+          key={item.label}
+          active={item.isRefined}
+          onClick={() => {
+            refine(item.value);
+          }}
+        >
+          <div className="d-flex justify-content-between align-items-center">
+            {isFromSearch ? <Highlight attribute="label" hit={item} /> : item.label}&nbsp;
+            <Badge>{item.count}</Badge>
+          </div>
+        </Dropdown.Item>
+      ))}
+      {items.length === 0 && <div className="d-flex justify-content-center">No result</div>}
+    </Dropdown.Menu>
+  </Dropdown>
 );
 
 const RefinementList = connectRefinementList(StyledRefinementList);
@@ -196,13 +158,13 @@ function Filters() {
   return REFINEMENT_LISTS.map((list) => {
     if (list.attribute === 'epoch_incident_date' || list.attribute === 'epoch_date_published') {
       return (
-        <RangeInputContainer key={list.attribute}>
-          <RefinementListHeader className="refine_header">
-            <FontAwesomeIcon icon={list.faIcon} className={list.faClasses} />
-            {` ${list.label}`}
-          </RefinementListHeader>
-          <CustomRangeInput attribute={list.attribute} />
-        </RangeInputContainer>
+        <CustomRangeInput
+          key={list.attribute}
+          attribute={list.attribute}
+          listLabel={list.label}
+          faIcon={list.faIcon}
+          faClasses={list.faClasses}
+        />
       );
     }
     return (
