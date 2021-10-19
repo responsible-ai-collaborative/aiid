@@ -152,14 +152,14 @@ exports.onPostBuild = async function ({ graphql, reporter }) {
 
     index.setSettings({
       attributesForFaceting: [
-        'classifications',
+        'searchable(classifications)',
         'searchable(source_domain)',
-        'authors',
-        'submitters',
-        'incident_id',
+        'searchable(authors)',
+        'searchable(submitters)',
+        'searchable(incident_id)',
         'epoch_incident_date',
         'epoch_date_published',
-        'flag',
+        'searchable(flag)',
       ],
     });
 
