@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
 import { debounce } from 'debounce';
 import { connectRange, connectRefinementList } from 'react-instantsearch-dom';
-import { Form, Dropdown, Badge } from 'react-bootstrap';
+import { Form, Dropdown, Badge, Container, Row, Col } from 'react-bootstrap';
 import { add, formatISO, isAfter } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { validateDate } from 'utils/date';
 import { Highlight } from 'react-instantsearch-dom';
 
-const RangeInput = ({ faIcon, listLabel, faClasses, currentRefinement: { min, max }, refine }) => {
+const RangeInput = ({ faIcon, label, faClasses, currentRefinement: { min, max }, refine }) => {
   if (!min || !max) {
     return null;
   }
@@ -74,10 +74,10 @@ const RangeInput = ({ faIcon, listLabel, faClasses, currentRefinement: { min, ma
   }, 1000);
 
   return (
-    <Dropdown className="d-inline mx-2" autoClose="outside">
+    <Dropdown autoClose="outside">
       <Dropdown.Toggle>
         <FontAwesomeIcon icon={faIcon} className={faClasses} />
-        {` ${listLabel}`}
+        {` ${label}`}
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
@@ -114,14 +114,14 @@ const StyledRefinementList = ({
   refine,
   searchForItems,
   placeholder,
-  listLabel,
+  label,
   faIcon,
   faClasses,
 }) => (
-  <Dropdown className="d-inline mx-2" autoClose="outside">
+  <Dropdown autoClose="outside">
     <Dropdown.Toggle>
       <FontAwesomeIcon icon={faIcon} className={faClasses} />
-      {` ${listLabel}`}
+      {` ${label}`}
     </Dropdown.Toggle>
 
     <Dropdown.Menu>
@@ -143,7 +143,7 @@ const StyledRefinementList = ({
         >
           <div className="d-flex justify-content-between align-items-center">
             {isFromSearch ? <Highlight attribute="label" hit={item} /> : item.label}&nbsp;
-            <Badge>{item.count}</Badge>
+            <Badge bg="secondary">{item.count}</Badge>
           </div>
         </Dropdown.Item>
       ))}
@@ -154,30 +154,30 @@ const StyledRefinementList = ({
 
 const RefinementList = connectRefinementList(StyledRefinementList);
 
+const map = (props) => {
+  switch (props.attribute) {
+    case 'epoch_incident_date':
+    case 'epoch_date_published':
+      return CustomRangeInput;
+    default:
+      return RefinementList;
+  }
+};
+
 function Filters() {
-  return REFINEMENT_LISTS.map((list) => {
-    if (list.attribute === 'epoch_incident_date' || list.attribute === 'epoch_date_published') {
-      return (
-        <CustomRangeInput
-          key={list.attribute}
-          attribute={list.attribute}
-          listLabel={list.label}
-          faIcon={list.faIcon}
-          faClasses={list.faClasses}
-        />
-      );
-    }
-    return (
-      <RefinementList
-        key={list.attribute}
-        attribute={list.attribute}
-        placeholder={list.inputText}
-        listLabel={list.label}
-        faIcon={list.faIcon}
-        faClasses={list.faClasses}
-      />
-    );
-  });
+  return (
+    <Container fluid>
+      <Row>
+        <Col>
+          {REFINEMENT_LISTS.map((list) => {
+            const Component = map(list);
+
+            return <Component key={list.attribute} {...list} />;
+          })}
+        </Col>
+      </Row>
+    </Container>
+  );
 }
 
 export default Filters;
