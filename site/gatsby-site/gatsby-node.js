@@ -22,6 +22,8 @@ const discoverIndex = require('./src/utils/discoverIndexGenerator');
 
 const algoliasearch = require('algoliasearch');
 
+const algoliaSettings = require('./src/utils/algoliaSettings');
+
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions;
 
@@ -150,22 +152,16 @@ exports.onPostBuild = async function ({ graphql, reporter }) {
 
     const index = client.initIndex('instant_search');
 
-    index.setSettings({
-      attributesForFaceting: [
-        'searchable(classifications)',
-        'searchable(source_domain)',
-        'searchable(authors)',
-        'searchable(submitters)',
-        'searchable(incident_id)',
-        'epoch_incident_date',
-        'epoch_date_published',
-        'searchable(flag)',
-      ],
-    });
-
     await index.saveObjects(data);
 
     activity.setStatus(`Uploaded ${data.length} items to the index.`);
+
+    activity.setStatus('Updating settings...');
+
+    await index.setSettings(algoliaSettings);
+
+    activity.setStatus('Settings saved.');
+
     activity.end();
   } else {
     activity.setStatus(`Missing env settings, skipping index upload.`);
