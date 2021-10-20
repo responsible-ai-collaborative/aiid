@@ -1,5 +1,5 @@
 import React from 'react';
-import { scaleTime, extent, bin, axisLeft, select, timeFormat, timeYear } from 'd3';
+import { scaleTime, extent, bin, axisLeft, select, timeFormat, timeMonth } from 'd3';
 import styled from 'styled-components';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
@@ -37,6 +37,7 @@ const Trigger = styled.div`
 
 const GroupList = styled.ul`
   margin: 0;
+  padding: 0;
   list-style-type: none;
 `;
 
@@ -61,7 +62,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
             rootClose={true}
             overlay={
               <Popover>
-                <Popover.Content>
+                <Popover.Body>
                   <GroupList>
                     {bucket.map((b) => (
                       <GroupListItem key={b.mongodb_id}>
@@ -71,7 +72,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
                       </GroupListItem>
                     ))}
                   </GroupList>
-                </Popover.Content>
+                </Popover.Body>
               </Popover>
             }
           >
@@ -91,6 +92,12 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
   );
 };
 
+function thresholdTime(n) {
+  return (data, min, max) => {
+    return scaleTime().domain([min, max]).ticks(n);
+  };
+}
+
 const Reports = ({ data, yScale, yValue, margin, size }) => {
   const [, innerHeight] = yScale.range();
 
@@ -100,7 +107,7 @@ const Reports = ({ data, yScale, yValue, margin, size }) => {
 
   const thresholds = Math.round(innerHeight / (groupRadius * 2));
 
-  const binned = bin().value(yValue).thresholds(thresholds)(data);
+  const binned = bin().value(yValue).thresholds(thresholdTime(thresholds))(data);
 
   return (
     <g transform={`translate(${margin.left}, 0)`}>
@@ -131,7 +138,7 @@ function Timeline({ items }) {
 
   const [min, max] = extent(data, yValue);
 
-  const domain = [timeYear.floor(min), timeYear.ceil(max)];
+  const domain = [timeMonth.floor(min), timeMonth.ceil(max)];
 
   const yScale = scaleTime()
     .domain(domain)
