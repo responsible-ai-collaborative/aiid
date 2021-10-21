@@ -3,9 +3,9 @@ import { scaleTime, extent, bin, axisLeft, select, timeFormat, timeMonth } from 
 import styled from 'styled-components';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
-const AxisLeft = ({ yScale, margin }) => {
+const AxisLeft = ({ yScale, margin, data }) => {
   const axisRef = (axis) => {
-    axis && axisLeft(yScale)(select(axis));
+    axis && axisLeft(yScale).ticks(data.length == 1 ? 2 : null)(select(axis));
   };
 
   return <g ref={axisRef} transform={`translate(${margin.left}, 0)`} />;
@@ -130,7 +130,7 @@ const Reports = ({ data, yScale, yValue, margin, size }) => {
 function Timeline({ items }) {
   const data = items[0].edges.map((item) => item.node);
 
-  const size = { width: 640, height: 480 };
+  const size = { width: 640, height: data.length == 1 ? 120 : 480 };
 
   const margin = { top: 20, right: 20, bottom: 20, left: 60 };
 
@@ -147,7 +147,7 @@ function Timeline({ items }) {
 
   return (
     <svg width="100%" viewBox={`0 0 ${size.width} ${size.height}`}>
-      <AxisLeft yScale={yScale} margin={margin} size={size} />
+      <AxisLeft data={data} yScale={yScale} margin={margin} size={size} />
       <Reports data={data} yScale={yScale} yValue={yValue} margin={margin} size={size} />
     </svg>
   );
