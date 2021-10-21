@@ -1,4 +1,11 @@
-require('dotenv').config();
+if (process.env.NODE_ENV === 'development') {
+  require('dotenv').config({
+    path: 'local.env',
+  });
+} else {
+  require('dotenv').config();
+}
+
 const md5 = require('md5');
 
 const path = require(`path`);
