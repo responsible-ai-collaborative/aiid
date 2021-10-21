@@ -83,6 +83,10 @@ See [mongo.md](mongo.md)
 
 [Algolia](https://www.algolia.com/) is the instant search provider interfaced in the [Discover](https://incidentdatabase.ai/about_apps/1-discover) application. It is presently manually when new incident reports are ingested into the database.
 
+### Cloudinary
+
+[Cloudinary](https://www.cloudinary.com/) is what we use to host and manage report images.
+
 ## License
 
 The codebase currently carries an GNU Affero General Public License and all contributions to the project falls under the license. Contributors disclaim all rights to their contributions. Please reach out to discuss the license terms if they are causing you any issues. We selected the GNU Affero license to encourage contributing back to the project, but the license itself provides the community wide latitude in working with this codebase.
