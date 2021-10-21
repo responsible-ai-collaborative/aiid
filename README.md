@@ -65,9 +65,7 @@ The Gatsby front end manages a growing collection of web applications, including
 
 ## Discover App Structure
 
-The AIID began its life as the `Discover` application, which means it has much of the functionality that is in the process of shifting to the enclosing Gatsby application. This particular app is "old school," in the sense that it has no build or rendering pipeline. The code you see is the code you get in the client. There are two modes of operation for the app: normal user and admin user. The admin user is identified by a `admin_key=` URL parameter, which serves to authenticate the user into the MongoDB database. A valuable coding contribution to the site would be to move any functionality from the Discover app that is not related to instant/faceted search and put it into the Gatsby application.
-
-You can find the discover application in its own scripting environment at `site/gatsby-site/static/discover`.
+The AIID began its life as the `Discover` application. There are two modes of operation for the app: normal user and admin user. The admin user is identified by a `admin_key=` URL parameter, which serves to authenticate the user into the MongoDB database.
 
 ## Production System
 
