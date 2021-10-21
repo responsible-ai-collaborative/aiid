@@ -75,8 +75,6 @@ The site is hosted by [Netlify](https://www.netlify.com/) and is integrated into
 
 **Builds:** Builds are presently run at least every 3 hours automatically by a GitHub action. They are also run on merge requests from forks. The site deploys from the master branch automatically if the build succeeds.
 
-**Git LFS:** Images in the `site/gatsby-site/static/large_media/report_banners` directory are Git LFS images, which means they are not checked into the repository directly, but they are posted to Netlify when you push to GitHub. Note that this means the images will not, by default, be checked out and hosted in your development.
-
 ### MongoDB Database
 
 See [mongo.md](mongo.md)
