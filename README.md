@@ -87,6 +87,99 @@ See [mongo.md](mongo.md)
 
 [Cloudinary](https://www.cloudinary.com/) is what we use to host and manage report images.
 
+## Setting up a development environment
+
+Depending on what feature you are working on, there will be different systems you'll need to set up after you've forked and cloned this repository:
+
+### Basic setup
+Get a Gatsby environment working. Most of the time, you'll only need to run:
+
+```
+npm i -g gatsby-cli
+```
+Create a `.env` file under `site/gatsby-site` with the following contents:
+
+```
+GATSBY_REALM_APP_ID=aiidstitch2-vsdrv
+MONGODB_CONNECTION_STRING=mongodb+srv://readonlyuser:gfz2JXY1SDmworgw@aiiddev.6zxh5.mongodb.net
+MONGODB_REPLICA_SET=aiiddev-shard-00-02.6zxh5.mongodb.net,aiiddev-shard-00-01.6zxh5.mongodb.net,aiiddev-shard-00-00.6zxh5.mongodb.net
+
+GATSBY_ALGOLIA_APP_ID=A5WTAUL2MO
+GATSBY_ALGOLIA_SEARCH_KEY=68cc43e0828a14fc5752a8ae68576571
+```
+In the same folder, install dependencies using `npm` (do not use `yarn`, it will ignore the `package-lock.json` file):
+
+`npm i`
+
+You are ready to start a local copy of the project:
+
+```
+gatsby develop
+```
+You should have a local copy of the project running on https://localhost:8000.
+
+(This setup will run against our `staging` environment. If you need to develop a more advanced feature, please keep reading)
+
+### MongoDB setup
+
+If the feature you are working on includes structural changes to the MongoDB database or Realm functions, you'll need to create your own project by going to https://cloud.mongodb.com and following these steps:
+- Create a new MongoDB project (the free tier will be enough)
+- Create a new Atlas cluster with the name: `AIIDDev`
+- Create a new Realm App. The name should be `AIIDStitch2`. Realm will give it an id like `aiidstitch2-xxxxx`
+- Create a new database user with admin access and another user with read-only permissions
+
+#### Replicating the Database
+Download the latest database backup from https://incidentdatabase.ai/research/snapshots
+
+Then, run `mongorestore` (included in MongoDB tools) using the admin user created in the step above to upload the database backup:
+
+```
+mongorestore mongodb+srv://<USER>:<PASSWORD>@aiiddev.<CLUSTER>.mongodb.net/aiidprod aiidprod`
+```
+#### Deploy the Realm App
+
+Install the `realm-cli` and follow the login process: https://docs.mongodb.com/realm/cli/
+
+```
+npm i -g mongodb-realm-cli
+```
+Once authenticated, you can deploy the realm app by going to `/site/realm` of this repo and running:
+
+```
+ realm-cli push --remote=aiidstitch2-<YOUR-NEW-APP-ID>
+```
+
+Finally, update the previously created `.env`:
+
+```
+GATSBY_REALM_APP_ID =`aiidstitch2-xxxxx`
+MONGODB_CONNECTION_STRING=mongodb+srv://<username>:<password>@aiiddev.<CLUSTER>.mongodb.net
+MONGODB_REPLICA_SET=<CLUSTER>-shard-00-00.6zxh5.mongodb.net,aiiddev-shard-00-01.<CLUSTER>.mongodb.net,aiiddev-shard-00-02.<CLUSTER>.mongodb.net
+```
+Restart Gatsby, and your local app should fetch data from your MongoDB environment!
+
+### Algolia environment setup
+Suppose the feature you are developing involves mutating the Algolia index (used in the Discover app). In that case, you'll have to create your own by signing up for Algolia here: https://www.algolia.com and following these steps:
+
+- Create a new App (free tier will be enough)
+- Create a new index called `instant_search`
+- Go to https://incidentdatabase.ai/downloadIndex and save the `new_index.json` file
+- Upload this file to your newly created index, by selecting `Use File` Algolia's UI
+- Now go to your Algolia App settings, and click API Keys, using the values from there to update your `.env` file accordingly.
+
+```
+GATSBY_ALGOLIA_APP_ID=<YOUR APP ID>
+GATSBY_ALGOLIA_SEARCH_KEY=<YOUR SEARCH KEY>
+ALGOLIA_ADMIN_KEY=<YOUR ADMIN KEY>
+```
+
+Algolia index settings are uploaded on build time, so you'll have to do that at least once from your local env:
+```
+gatsby build
+```
+
+Restart Gatsby, and you should have a complete working environment!
+
 ## License
 
 The codebase currently carries an GNU Affero General Public License and all contributions to the project falls under the license. Contributors disclaim all rights to their contributions. Please reach out to discuss the license terms if they are causing you any issues. We selected the GNU Affero license to encourage contributing back to the project, but the license itself provides the community wide latitude in working with this codebase.
