@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { scaleTime, extent, bin, axisLeft, select, timeFormat, timeMonth } from 'd3';
 import styled from 'styled-components';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
@@ -50,6 +50,12 @@ const GroupListItem = styled.li`
 `;
 
 const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
+  const [baseURL, setBaseURL] = useState('');
+
+  useEffect(() => {
+    setBaseURL(location.href.replace(location.hash, ''));
+  }, []);
+
   return (
     <g key={bucket.x0} transform={`translate(20,${(yScale(bucket.x0) + yScale(bucket.x1)) / 2})`}>
       {bucket.length > 1 ? (
@@ -85,7 +91,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
         <Point cy={0} r={radius} />
       )}
 
-      <a href={`#${bucket[0].mongodb_id}`}>
+      <a href={`${baseURL}#${bucket[0].mongodb_id}`}>
         <Title dx={16}>{bucket[0].title}</Title>
       </a>
     </g>
