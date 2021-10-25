@@ -118,7 +118,7 @@ gatsby develop
 ```
 You should have a local copy of the project running on https://localhost:8000.
 
-(This setup will run against our `staging` environment. If you need to develop a more advanced feature, please keep reading)
+The values you placed into the env file are all associated with a staging environment that is periodically rebuilt from the production environment. While this helps you get setup more quickly, if you will be making changing to the backend you will need your own development backend that you can control, modify, and potentially break.
 
 ### MongoDB setup
 
@@ -143,7 +143,7 @@ Install the `realm-cli` and follow the login process: https://docs.mongodb.com/r
 ```
 npm i -g mongodb-realm-cli
 ```
-Once authenticated, you can deploy the realm app by going to `/site/realm` of this repo and running:
+Once authenticated, you can deploy the realm app by going to `site/realm` of this repo and running:
 
 ```
  realm-cli push --remote=aiidstitch2-<YOUR-NEW-APP-ID>
