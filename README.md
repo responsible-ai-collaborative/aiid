@@ -104,8 +104,8 @@ GATSBY_REALM_APP_ID=aiidstitch2-vsdrv
 MONGODB_CONNECTION_STRING=mongodb+srv://readonlyuser:gfz2JXY1SDmworgw@aiiddev.6zxh5.mongodb.net
 MONGODB_REPLICA_SET=aiiddev-shard-00-02.6zxh5.mongodb.net,aiiddev-shard-00-01.6zxh5.mongodb.net,aiiddev-shard-00-00.6zxh5.mongodb.net
 
-GATSBY_ALGOLIA_APP_ID=A5WTAUL2MO
-GATSBY_ALGOLIA_SEARCH_KEY=68cc43e0828a14fc5752a8ae68576571
+GATSBY_ALGOLIA_APP_ID=JD5JCVZEVS
+GATSBY_ALGOLIA_SEARCH_KEY=c5e99d93261645721a1765fe4414389c
 ```
 In the same folder, install dependencies using `npm` (do not use `yarn`, it will ignore the `package-lock.json` file):
 
