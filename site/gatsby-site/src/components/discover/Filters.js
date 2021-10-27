@@ -34,7 +34,24 @@ function Filters() {
 
   return (
     <>
-      <Row className="my-3">
+      <Row className="d-none d-md-flex justify-content-md-between mb-3">
+        <Col className="d-flex mt-2 gap-1">
+          {['classifications', 'source_domain', 'authors', 'submitters', 'incident_id']
+            .map((a) => REFINEMENT_LISTS.find((list) => list.attribute == a))
+            .map((list) => (
+              <Filter key={list.attribute} attribute={list.attribute} {...list} />
+            ))}
+        </Col>
+        <Col className="d-flex gap-1 mt-2">
+          {['epoch_incident_date', 'epoch_date_published', 'flag']
+            .map((a) => REFINEMENT_LISTS.find((list) => list.attribute == a))
+            .map((list) => (
+              <Filter key={list.attribute} attribute={list.attribute} {...list} />
+            ))}
+        </Col>
+      </Row>
+
+      <Row className="my-3 d-md-none">
         <Col className="d-flex justify-content-end">
           <Button variant="link" onClick={() => setShowModal(true)}>
             Configure Filters
