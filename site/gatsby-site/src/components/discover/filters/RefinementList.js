@@ -13,39 +13,44 @@ const RefinementList = ({
   label,
   faIcon,
   faClasses,
-}) => (
-  <Dropdown autoClose="outside">
-    <Dropdown.Toggle>
-      <FontAwesomeIcon icon={faIcon} className={faClasses} />
-      {` ${label}`}
-    </Dropdown.Toggle>
+}) => {
+  const refinementCount = items.reduce((total, item) => (item.isRefined ? total + 1 : total), 0);
 
-    <Dropdown.Menu>
-      <Form className="px-3" onSubmit={(e) => e.preventDefault()}>
-        <Form.Control
-          type="search"
-          placeholder={placeholder}
-          onChange={(event) => searchForItems(event.currentTarget.value)}
-        />
-      </Form>
-      <Dropdown.Divider />
-      {items.map((item) => (
-        <Dropdown.Item
-          key={item.label}
-          active={item.isRefined}
-          onClick={() => {
-            refine(item.value);
-          }}
-        >
-          <div className="d-flex justify-content-between align-items-center">
-            {isFromSearch ? <Highlight attribute="label" hit={item} /> : item.label}&nbsp;
-            <Badge bg="secondary">{item.count}</Badge>
-          </div>
-        </Dropdown.Item>
-      ))}
-      {items.length === 0 && <div className="d-flex justify-content-center">No result</div>}
-    </Dropdown.Menu>
-  </Dropdown>
-);
+  return (
+    <Dropdown autoClose="outside">
+      <Dropdown.Toggle>
+        <FontAwesomeIcon icon={faIcon} className={faClasses} />
+        &nbsp; {label} &nbsp;{' '}
+        {refinementCount > 0 && <Badge bg="secondary">{refinementCount}</Badge>}
+      </Dropdown.Toggle>
+
+      <Dropdown.Menu>
+        <Form className="px-3" onSubmit={(e) => e.preventDefault()}>
+          <Form.Control
+            type="search"
+            placeholder={placeholder}
+            onChange={(event) => searchForItems(event.currentTarget.value)}
+          />
+        </Form>
+        <Dropdown.Divider />
+        {items.map((item) => (
+          <Dropdown.Item
+            key={item.label}
+            active={item.isRefined}
+            onClick={() => {
+              refine(item.value);
+            }}
+          >
+            <div className="d-flex justify-content-between align-items-center">
+              {isFromSearch ? <Highlight attribute="label" hit={item} /> : item.label}&nbsp;
+              <Badge bg="secondary">{item.count}</Badge>
+            </div>
+          </Dropdown.Item>
+        ))}
+        {items.length === 0 && <div className="d-flex justify-content-center">No result</div>}
+      </Dropdown.Menu>
+    </Dropdown>
+  );
+};
 
 export default connectRefinementList(styled(RefinementList)``);
