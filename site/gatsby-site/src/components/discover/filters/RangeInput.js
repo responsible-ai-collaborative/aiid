@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { debounce } from 'debounce';
 import { connectRange } from 'react-instantsearch-dom';
-import { Form, Dropdown } from 'react-bootstrap';
+import { Form, Dropdown, Badge } from 'react-bootstrap';
 import { add, formatISO, isAfter } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { validateDate } from 'utils/date';
@@ -72,11 +72,21 @@ const RangeInput = ({ faIcon, label, faClasses, currentRefinement: { min, max },
     }
   }, 1000);
 
+  const [touched, setTouched] = useState(false);
+
+  useEffect(() => {
+    if (localMin !== min * 1000 || localMax !== max * 1000) {
+      setTouched(true);
+    } else {
+      setTouched(false);
+    }
+  }, [localMin, localMax]);
+
   return (
     <Dropdown autoClose="outside">
       <Dropdown.Toggle>
         <FontAwesomeIcon icon={faIcon} className={faClasses} />
-        {` ${label}`}
+        {` ${label}`}&nbsp; {touched && <Badge>!</Badge>}
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
