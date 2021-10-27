@@ -1,11 +1,11 @@
-import React from 'react';
-import { scaleTime, extent, bin, axisLeft, select, timeFormat, timeYear } from 'd3';
+import React, { useState, useEffect } from 'react';
+import { scaleTime, extent, bin, axisLeft, select, timeFormat, timeMonth } from 'd3';
 import styled from 'styled-components';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
-const AxisLeft = ({ yScale, margin }) => {
+const AxisLeft = ({ yScale, margin, data }) => {
   const axisRef = (axis) => {
-    axis && axisLeft(yScale)(select(axis));
+    axis && axisLeft(yScale).ticks(data.length == 1 ? 2 : null)(select(axis));
   };
 
   return <g ref={axisRef} transform={`translate(${margin.left}, 0)`} />;
@@ -37,6 +37,7 @@ const Trigger = styled.div`
 
 const GroupList = styled.ul`
   margin: 0;
+  padding: 0;
   list-style-type: none;
 `;
 
@@ -49,6 +50,12 @@ const GroupListItem = styled.li`
 `;
 
 const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
+  const [baseURL, setBaseURL] = useState('');
+
+  useEffect(() => {
+    setBaseURL(location.href.replace(location.hash, ''));
+  }, []);
+
   return (
     <g key={bucket.x0} transform={`translate(20,${(yScale(bucket.x0) + yScale(bucket.x1)) / 2})`}>
       {bucket.length > 1 ? (
@@ -61,7 +68,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
             rootClose={true}
             overlay={
               <Popover>
-                <Popover.Content>
+                <Popover.Body>
                   <GroupList>
                     {bucket.map((b) => (
                       <GroupListItem key={b.mongodb_id}>
@@ -71,7 +78,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
                       </GroupListItem>
                     ))}
                   </GroupList>
-                </Popover.Content>
+                </Popover.Body>
               </Popover>
             }
           >
@@ -84,12 +91,18 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
         <Point cy={0} r={radius} />
       )}
 
-      <a href={`#${bucket[0].mongodb_id}`}>
+      <a href={`${baseURL}#${bucket[0].mongodb_id}`}>
         <Title dx={16}>{bucket[0].title}</Title>
       </a>
     </g>
   );
 };
+
+function thresholdTime(n) {
+  return (data, min, max) => {
+    return scaleTime().domain([min, max]).ticks(n);
+  };
+}
 
 const Reports = ({ data, yScale, yValue, margin, size }) => {
   const [, innerHeight] = yScale.range();
@@ -100,7 +113,7 @@ const Reports = ({ data, yScale, yValue, margin, size }) => {
 
   const thresholds = Math.round(innerHeight / (groupRadius * 2));
 
-  const binned = bin().value(yValue).thresholds(thresholds)(data);
+  const binned = bin().value(yValue).thresholds(thresholdTime(thresholds))(data);
 
   return (
     <g transform={`translate(${margin.left}, 0)`}>
@@ -123,7 +136,7 @@ const Reports = ({ data, yScale, yValue, margin, size }) => {
 function Timeline({ items }) {
   const data = items[0].edges.map((item) => item.node);
 
-  const size = { width: 640, height: 480 };
+  const size = { width: 640, height: data.length == 1 ? 120 : 480 };
 
   const margin = { top: 20, right: 20, bottom: 20, left: 60 };
 
@@ -131,7 +144,7 @@ function Timeline({ items }) {
 
   const [min, max] = extent(data, yValue);
 
-  const domain = [timeYear.floor(min), timeYear.ceil(max)];
+  const domain = [timeMonth.floor(min), timeMonth.ceil(max)];
 
   const yScale = scaleTime()
     .domain(domain)
@@ -140,7 +153,7 @@ function Timeline({ items }) {
 
   return (
     <svg width="100%" viewBox={`0 0 ${size.width} ${size.height}`}>
-      <AxisLeft yScale={yScale} margin={margin} size={size} />
+      <AxisLeft data={data} yScale={yScale} margin={margin} size={size} />
       <Reports data={data} yScale={yScale} yValue={yValue} margin={margin} size={size} />
     </svg>
   );
