@@ -154,26 +154,30 @@ const StyledRefinementList = ({
 
 const RefinementList = connectRefinementList(StyledRefinementList);
 
-const map = (props) => {
-  switch (props.attribute) {
+function Filter({ attribute, ...rest }) {
+  let Component = null;
+
+  switch (attribute) {
     case 'epoch_incident_date':
     case 'epoch_date_published':
-      return CustomRangeInput;
+      Component = CustomRangeInput;
+      break;
     default:
-      return RefinementList;
+      Component = RefinementList;
+      break;
   }
-};
+
+  return <Component attribute={attribute} {...rest} />;
+}
 
 function Filters() {
   return (
     <Container fluid className="my-4">
       <Row xs={1} sm={2} md={3} lg={4} className="gy-2">
         {REFINEMENT_LISTS.map((list) => {
-          const Component = map(list);
-
           return (
             <Col key={list.attribute}>
-              <Component key={list.attribute} {...list} />
+              <Filter key={list.attribute} attribute={list.attribute} {...list} />
             </Col>
           );
         })}
