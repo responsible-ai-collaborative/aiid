@@ -104,8 +104,8 @@ GATSBY_REALM_APP_ID=aiidstitch2-vsdrv
 MONGODB_CONNECTION_STRING=mongodb+srv://readonlyuser:gfz2JXY1SDmworgw@aiiddev.6zxh5.mongodb.net
 MONGODB_REPLICA_SET=aiiddev-shard-00-02.6zxh5.mongodb.net,aiiddev-shard-00-01.6zxh5.mongodb.net,aiiddev-shard-00-00.6zxh5.mongodb.net
 
-GATSBY_ALGOLIA_APP_ID=A5WTAUL2MO
-GATSBY_ALGOLIA_SEARCH_KEY=68cc43e0828a14fc5752a8ae68576571
+GATSBY_ALGOLIA_APP_ID=JD5JCVZEVS
+GATSBY_ALGOLIA_SEARCH_KEY=c5e99d93261645721a1765fe4414389c
 ```
 In the same folder, install dependencies using `npm` (do not use `yarn`, it will ignore the `package-lock.json` file):
 
@@ -118,7 +118,7 @@ gatsby develop
 ```
 You should have a local copy of the project running on https://localhost:8000.
 
-(This setup will run against our `staging` environment. If you need to develop a more advanced feature, please keep reading)
+The values you placed into the env file are all associated with a staging environment that is periodically rebuilt from the production environment. While this helps you get setup more quickly, if you will be making changing to the backend you will need your own development backend that you can control, modify, and potentially break.
 
 ### MongoDB setup
 
@@ -143,7 +143,7 @@ Install the `realm-cli` and follow the login process: https://docs.mongodb.com/r
 ```
 npm i -g mongodb-realm-cli
 ```
-Once authenticated, you can deploy the realm app by going to `/site/realm` of this repo and running:
+Once authenticated, you can deploy the realm app by going to `site/realm` of this repo and running:
 
 ```
  realm-cli push --remote=aiidstitch2-<YOUR-NEW-APP-ID>
