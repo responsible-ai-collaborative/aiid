@@ -54,7 +54,7 @@ function Filters() {
       <Row className="my-3 d-md-none">
         <Col className="d-flex justify-content-end">
           <Button variant="link" onClick={() => setShowModal(true)}>
-            Configure Filters
+            Filters
           </Button>
         </Col>
       </Row>
