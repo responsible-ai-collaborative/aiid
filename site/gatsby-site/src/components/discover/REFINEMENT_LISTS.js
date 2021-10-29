@@ -14,6 +14,7 @@ const REFINEMENT_LISTS = [
     label: 'Classifications',
     faIcon: faNewspaper,
     faClasses: 'far fa-newspaper',
+    type: 'refinement',
   },
   {
     attribute: 'source_domain',
@@ -21,6 +22,7 @@ const REFINEMENT_LISTS = [
     label: 'Source',
     faIcon: faNewspaper,
     faClasses: 'far fa-newspaper',
+    type: 'refinement',
   },
   {
     attribute: 'authors',
@@ -28,6 +30,7 @@ const REFINEMENT_LISTS = [
     label: 'Authors',
     faIcon: faIdCard,
     faClasses: 'far fa-id-card',
+    type: 'refinement',
   },
   {
     attribute: 'submitters',
@@ -35,6 +38,7 @@ const REFINEMENT_LISTS = [
     label: 'Submitters',
     faIcon: faUserShield,
     faClasses: 'fas fa-user-shield',
+    type: 'refinement',
   },
   {
     attribute: 'incident_id',
@@ -42,6 +46,7 @@ const REFINEMENT_LISTS = [
     label: 'Incident ID',
     faIcon: faHashtag,
     faClasses: 'fas fa-hashtag',
+    type: 'refinement',
   },
   {
     attribute: 'epoch_incident_date',
@@ -49,6 +54,7 @@ const REFINEMENT_LISTS = [
     label: 'Incident Date',
     faIcon: faCalendarAlt,
     faClasses: 'far fa-calendar-alt',
+    type: 'range',
   },
   {
     attribute: 'epoch_date_published',
@@ -56,6 +62,7 @@ const REFINEMENT_LISTS = [
     label: 'Published Date',
     faIcon: faCalendarAlt,
     faClasses: 'far fa-calendar-alt',
+    type: 'range',
   },
   {
     attribute: 'flag',
@@ -63,6 +70,7 @@ const REFINEMENT_LISTS = [
     label: 'Flagged',
     faIcon: faFlag,
     faClasses: 'far fa-flag',
+    type: 'refinement',
   },
 ];
 
