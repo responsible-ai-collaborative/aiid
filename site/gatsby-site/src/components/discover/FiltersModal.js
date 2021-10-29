@@ -55,4 +55,4 @@ function FiltersModal({ searchClient, indexName, searchState, onSearchStateChang
   );
 }
 
-export default React.memo(FiltersModal);
+export default FiltersModal;
