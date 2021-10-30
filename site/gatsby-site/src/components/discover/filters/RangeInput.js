@@ -1,92 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { debounce } from 'debounce';
 import { connectRange } from 'react-instantsearch-dom';
 import { Form, Dropdown, Badge } from 'react-bootstrap';
-import { add, formatISO, isAfter } from 'date-fns';
+import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { validateDate } from 'utils/date';
 
-const RangeInput = ({ faIcon, label, faClasses, currentRefinement: { min, max }, refine }) => {
+const formatDate = (epoch) => format(new Date(epoch * 1000), 'yyyy-MM-dd');
+
+const dateToEpoch = (date) => new Date(date).getTime() / 1000;
+
+const RangeInput = ({ faIcon, label, faClasses, min, max, currentRefinement, refine }) => {
   if (!min || !max) {
     return null;
   }
 
-  const [localMin, setLocalMin] = useState(validateDate(min));
-
-  const [localMax, setLocalMax] = useState(validateDate(max));
-
-  const [limitInterval, setLimitInterval] = useState({ min: 0, max: 0 });
-
-  useEffect(() => {
-    setLimitInterval({
-      min: formatISO(validateDate(min), { representation: 'date' }),
-      max: formatISO(validateDate(max), { representation: 'date' }),
-    });
-  }, []);
-
-  useEffect(() => {
-    setLocalMin(validateDate(min));
-    setLocalMax(validateDate(max));
-  }, [min, max]);
-
-  if (!localMax || !localMin) {
-    return null;
-  }
-
-  const onChangeMinDate = debounce((newInput) => {
-    try {
-      if (
-        newInput !== '' &&
-        newInput.length <= 10 &&
-        isAfter(new Date(newInput), new Date(limitInterval.min))
-      ) {
-        setLocalMin(new Date(newInput || limitInterval.min).getTime());
-        refine({
-          max: validateDate(localMax) / 1000,
-          min: validateDate(new Date(newInput || limitInterval.min).getTime()) / 1000,
-        });
-      }
-    } catch (error) {
-      refine({
-        max: validateDate(localMax) / 1000,
-        min: validateDate(add(validateDate(localMax) / 1000, { seconds: 1 }).getTime()) / 1000,
-      });
+  const onChange = ({ min, max }) => {
+    if (currentRefinement.min !== min || currentRefinement.max !== max) {
+      refine({ min, max });
     }
-  }, 1000);
+  };
 
-  const onChangeMaxDate = debounce((newInput) => {
-    try {
-      if (newInput !== '' && newInput.length <= 10) {
-        setLocalMax(new Date(newInput || limitInterval.max).getTime());
-        refine({
-          max: validateDate(new Date(newInput || limitInterval.max).getTime()) / 1000,
-          min: validateDate(localMin) / 1000,
-        });
-      }
-    } catch (error) {
-      refine({
-        min: validateDate(localMin) / 1000,
-        max: validateDate(add(validateDate(localMin) / 1000, { seconds: 1 }).getTime()) / 1000,
-      });
-    }
-  }, 1000);
-
-  const [touched, setTouched] = useState(false);
-
-  useEffect(() => {
-    if (localMin !== min * 1000 || localMax !== max * 1000) {
-      setTouched(true);
-    } else {
-      setTouched(false);
-    }
-  }, [localMin, localMax]);
+  const touched = currentRefinement.min !== min || currentRefinement.max !== max;
 
   return (
     <Dropdown autoClose="outside">
       <Dropdown.Toggle>
         <FontAwesomeIcon icon={faIcon} className={faClasses} />
-        {` ${label}`}&nbsp; {touched && <Badge>!</Badge>}
+        {` ${label}`}&nbsp; {touched && <Badge bg="secondary">!</Badge>}
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
@@ -95,9 +35,12 @@ const RangeInput = ({ faIcon, label, faClasses, currentRefinement: { min, max },
           <Form.Control
             required={true}
             type="date"
-            defaultValue={formatISO(localMin, { representation: 'date' })}
-            onChange={(event) => onChangeMinDate(event.currentTarget.value)}
-            min={limitInterval.min}
+            min={formatDate(min)}
+            max={formatDate(max)}
+            value={formatDate(currentRefinement.min)}
+            onChange={(event) =>
+              onChange({ min: dateToEpoch(event.target.value), max: currentRefinement.max })
+            }
             onKeyDown={(e) => e.preventDefault()}
           />
 
@@ -105,8 +48,12 @@ const RangeInput = ({ faIcon, label, faClasses, currentRefinement: { min, max },
           <Form.Control
             required={true}
             type="date"
-            defaultValue={formatISO(localMax, { representation: 'date' })}
-            onChange={(event) => onChangeMaxDate(event.currentTarget.value)}
+            min={formatDate(min)}
+            max={formatDate(max)}
+            value={formatDate(currentRefinement.max)}
+            onChange={(event) =>
+              onChange({ min: currentRefinement.min, max: dateToEpoch(event.target.value) })
+            }
             onKeyDown={(e) => e.preventDefault()}
           />
         </Form>
