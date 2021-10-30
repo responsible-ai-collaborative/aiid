@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { StringParam, QueryParams, useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { InstantSearch } from 'react-instantsearch-dom';
@@ -12,6 +12,7 @@ import Hits from 'components/discover/Hits';
 import SearchBox from 'components/discover/SearchBox';
 import Pagination from 'components/discover/Pagination';
 import Filters from 'components/discover/Filters';
+import FiltersModal from 'components/discover/FiltersModal';
 
 const indexName = 'instant_search';
 
@@ -173,9 +174,36 @@ const convertStringToRange = (query) => {
   return resultObj;
 };
 
-const DiscoverApp = React.memo((props) => {
-  const searchInput = useRef(null);
+const generateSearchState = ({ query }) => {
+  const searchState = {
+    configure: {
+      hitsPerPage: 30,
+    },
+    page: 1,
+    query: '',
+    refinementList: {},
+    range: {},
+  };
 
+  const cleanQuery = removeUndefinedAttributes(query);
+
+  const querySearch = cleanQuery.s || '';
+
+  delete cleanQuery.s;
+
+  return {
+    ...searchState,
+    query: querySearch,
+    refinementList: {
+      ...convertStringToArray(cleanQuery),
+    },
+    range: {
+      ...convertStringToRange(cleanQuery),
+    },
+  };
+};
+
+const DiscoverApp = React.memo((props) => {
   const [query, setQuery] = useQueryParams({
     s: StringParam,
     source_domain: StringParam,
@@ -190,15 +218,7 @@ const DiscoverApp = React.memo((props) => {
     epoch_date_published_max: StringParam,
   });
 
-  const [searchState, setSearchState] = useState({
-    configure: {
-      hitsPerPage: 30,
-    },
-    page: 1,
-    query: '',
-    refinementList: {},
-    range: {},
-  });
+  const [searchState, setSearchState] = useState(generateSearchState({ query }));
 
   const queryConfig = {
     s: StringParam,
@@ -213,29 +233,6 @@ const DiscoverApp = React.memo((props) => {
     epoch_date_published_min: StringParam,
     epoch_date_published_max: StringParam,
   };
-
-  // const showDetails = searchState.refinementList?.incident_id?.length === 1;
-
-  useEffect(() => {
-    const cleanQuery = removeUndefinedAttributes(query);
-
-    const querySearch = cleanQuery.s || '';
-
-    delete cleanQuery.s;
-
-    searchInput.current.value = querySearch;
-
-    setSearchState({
-      ...searchState,
-      query: querySearch,
-      refinementList: {
-        ...convertStringToArray(cleanQuery),
-      },
-      range: {
-        ...convertStringToRange(cleanQuery),
-      },
-    });
-  }, [query]);
 
   const getQueryFromState = (searchState) => {
     let query = {};
@@ -284,6 +281,11 @@ const DiscoverApp = React.memo((props) => {
     setQuery(getQueryFromState(newSearchState), 'push');
   };
 
+  const onSearchStateChange = (searchState) => {
+    setSearchState({ ...searchState });
+    setQuery(getQueryFromState(searchState), 'push');
+  };
+
   const authorsModal = useModal();
 
   const submittersModal = useModal();
@@ -296,39 +298,46 @@ const DiscoverApp = React.memo((props) => {
         <title>Artifical Intelligence Incident Database</title>
       </Helmet>
       <QueryParams config={queryConfig}>
-        {({ query, setQuery }) => (
-          <>
-            <Container>
-              <InstantSearch
-                indexName={indexName}
+        {() => (
+          <Container>
+            <InstantSearch
+              indexName={indexName}
+              searchClient={searchClient}
+              searchState={searchState}
+              onSearchStateChange={onSearchStateChange}
+            >
+              <Header>
+                <SearchBox defaultRefinement={query.s} />
+              </Header>
+
+              <Filters />
+
+              <FiltersModal
                 searchClient={searchClient}
+                indexName={indexName}
                 searchState={searchState}
-                onSearchStateChange={(searchState) => {
-                  setSearchState({ ...searchState });
-                  setQuery(getQueryFromState(searchState), 'push');
-                }}
-              >
-                <Header>
-                  <SearchBox customRef={searchInput} defaultRefinement={query.s} />
-                </Header>
+                onSearchStateChange={onSearchStateChange}
+              />
+              <Header>
+                <SearchBox defaultRefinement={query.s} />
+              </Header>
 
-                <Filters />
+              <Filters />
 
-                <HitsContainer>
-                  <Hits
-                    toggleFilterByIncidentId={toggleFilterByIncidentId}
-                    authorsModal={authorsModal}
-                    submittersModal={submittersModal}
-                    flagReportModal={flagReportModal}
-                  />
-                  <CustomModal {...authorsModal} />
-                  <CustomModal {...submittersModal} />
-                  <CustomModal {...flagReportModal} />
-                </HitsContainer>
-                <Pagination />
-              </InstantSearch>
-            </Container>
-          </>
+              <HitsContainer>
+                <Hits
+                  toggleFilterByIncidentId={toggleFilterByIncidentId}
+                  authorsModal={authorsModal}
+                  submittersModal={submittersModal}
+                  flagReportModal={flagReportModal}
+                />
+                <CustomModal {...authorsModal} />
+                <CustomModal {...submittersModal} />
+                <CustomModal {...flagReportModal} />
+              </HitsContainer>
+              <Pagination />
+            </InstantSearch>
+          </Container>
         )}
       </QueryParams>
     </LayoutHideSidebar>
