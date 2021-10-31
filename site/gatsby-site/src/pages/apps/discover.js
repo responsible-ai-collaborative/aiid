@@ -318,11 +318,6 @@ const DiscoverApp = React.memo((props) => {
                 searchState={searchState}
                 onSearchStateChange={onSearchStateChange}
               />
-              <Header>
-                <SearchBox defaultRefinement={query.s} />
-              </Header>
-
-              <Filters />
 
               <HitsContainer>
                 <Hits
