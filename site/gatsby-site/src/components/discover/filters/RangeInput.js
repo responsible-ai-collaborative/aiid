@@ -2,10 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { connectRange } from 'react-instantsearch-dom';
 import { Form, Dropdown, Badge } from 'react-bootstrap';
-import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const formatDate = (epoch) => format(new Date(epoch * 1000), 'yyyy-MM-dd');
+const formatDate = (epoch) => new Date(epoch * 1000).toISOString().substr(0, 10);
 
 const dateToEpoch = (date) => new Date(date).getTime() / 1000;
 
@@ -26,7 +25,7 @@ const RangeInput = ({ faIcon, label, faClasses, min, max, currentRefinement, ref
     <Dropdown autoClose="outside">
       <Dropdown.Toggle>
         <FontAwesomeIcon icon={faIcon} className={faClasses} />
-        {` ${label}`}&nbsp; {touched && <Badge bg="secondary">!</Badge>}
+        {` ${label}`}&nbsp;{touched && <Badge bg="secondary">!</Badge>}
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
