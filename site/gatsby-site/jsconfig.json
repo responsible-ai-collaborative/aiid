@@ -1,6 +1,33 @@
 {
   "compilerOptions": {
-    "baseUrl": "src"
+    "baseUrl": "./",
+    "jsx": "react",
+    "paths": {
+      "components/*": [
+        "src/components/*"
+      ],
+      "hooks/*": [
+        "src/hooks/*"
+      ],
+      "contexts/*": [
+        "src/contexts/*"
+      ],
+      "mongodb/*": [
+        "src/mongodb/*"
+      ],
+      "pages/*": [
+        "src/pages/*"
+      ],
+      "services/*": [
+        "src/services/*"
+      ],
+      "templates/*": [
+        "src/templates/*"
+      ],
+      "utils/*": [
+        "src/utils/*"
+      ],
+    }
   },
   "exclude": [
     "node_modules",
