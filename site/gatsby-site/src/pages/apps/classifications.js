@@ -432,7 +432,7 @@ export default function ClassificationsDbView(props) {
     return (
       <LayoutHideSidebar {...props}>
         <Helmet>
-          <title>Artifical Intelligence Incident Database</title>
+          <title>Artificial Intelligence Incident Database</title>
         </Helmet>
         <Container>
           <TaxonomySelectContainer>
@@ -457,7 +457,7 @@ export default function ClassificationsDbView(props) {
   return (
     <LayoutHideSidebar {...props}>
       <Helmet>
-        <title>Artifical Intelligence Incident Database</title>
+        <title>Artificial Intelligence Incident Database</title>
       </Helmet>
       <Container>
         <TaxonomySelectContainer>

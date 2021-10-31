@@ -340,7 +340,7 @@ const DiscoverApp = React.memo((props) => {
   return (
     <LayoutHideSidebar {...props}>
       <Helmet>
-        <title>Artifical Intelligence Incident Database</title>
+        <title>Artificial Intelligence Incident Database</title>
       </Helmet>
       <QueryParams config={queryConfig}>
         {({ query, setQuery }) => (
