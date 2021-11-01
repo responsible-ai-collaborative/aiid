@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { scaleTime, extent, bin, axisLeft, select, timeFormat, timeMonth } from 'd3';
 import styled from 'styled-components';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
@@ -133,10 +133,17 @@ const Reports = ({ data, yScale, yValue, margin, size }) => {
   );
 };
 
+const calculatesize = ({ data, rect }) => ({
+  width: rect ? rect.width : 640,
+  height: data.length == 1 ? 120 : 480,
+});
+
 function Timeline({ items }) {
+  const containerRef = useRef();
+
   const data = items[0].edges.map((item) => item.node);
 
-  const size = { width: 640, height: data.length == 1 ? 120 : 480 };
+  const [size, setSize] = useState(calculatesize({ data }));
 
   const margin = { top: 20, right: 20, bottom: 20, left: 60 };
 
@@ -151,11 +158,29 @@ function Timeline({ items }) {
     .range([margin.top, size.height - margin.top])
     .nice();
 
+  useEffect(() => {
+    const resize = () => {
+      const container = containerRef.current;
+
+      const rect = container.getBoundingClientRect();
+
+      setSize(calculatesize({ data, rect }));
+    };
+
+    resize();
+
+    window.addEventListener('resize', resize, false);
+
+    return () => window.removeEventListener('resize', resize);
+  }, [containerRef]);
+
   return (
-    <svg width="100%" viewBox={`0 0 ${size.width} ${size.height}`}>
-      <AxisLeft data={data} yScale={yScale} margin={margin} size={size} />
-      <Reports data={data} yScale={yScale} yValue={yValue} margin={margin} size={size} />
-    </svg>
+    <div ref={containerRef}>
+      <svg width="100%" viewBox={`0 0 ${size.width} ${size.height}`}>
+        <AxisLeft data={data} yScale={yScale} margin={margin} size={size} />
+        <Reports data={data} yScale={yScale} yValue={yValue} margin={margin} size={size} />
+      </svg>
+    </div>
   );
 }
 
