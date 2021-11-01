@@ -10,7 +10,7 @@ import {
 const REFINEMENT_LISTS = [
   {
     attribute: 'classifications',
-    placeholder: 'CSET:...',
+    placeholder: 'Type Here',
     label: 'Classifications',
     faIcon: faNewspaper,
     faClasses: 'far fa-newspaper',
@@ -18,7 +18,7 @@ const REFINEMENT_LISTS = [
   },
   {
     attribute: 'source_domain',
-    placeholder: "Filter Domains ('bbc.com')",
+    placeholder: 'Type Here',
     label: 'Source',
     faIcon: faNewspaper,
     faClasses: 'far fa-newspaper',
@@ -26,7 +26,7 @@ const REFINEMENT_LISTS = [
   },
   {
     attribute: 'authors',
-    placeholder: "Filter Authors ('Helen...')",
+    placeholder: 'Type Here',
     label: 'Authors',
     faIcon: faIdCard,
     faClasses: 'far fa-id-card',
@@ -34,7 +34,7 @@ const REFINEMENT_LISTS = [
   },
   {
     attribute: 'submitters',
-    placeholder: "Filter Submitters ('Helen...')",
+    placeholder: 'Type Here',
     label: 'Submitters',
     faIcon: faUserShield,
     faClasses: 'fas fa-user-shield',
@@ -42,7 +42,7 @@ const REFINEMENT_LISTS = [
   },
   {
     attribute: 'incident_id',
-    placeholder: "Filter incident number ('42')",
+    placeholder: 'Type Here',
     label: 'Incident ID',
     faIcon: faHashtag,
     faClasses: 'fas fa-hashtag',
@@ -50,7 +50,7 @@ const REFINEMENT_LISTS = [
   },
   {
     attribute: 'epoch_incident_date',
-    placeholder: 'none',
+    placeholder: 'Type Here',
     label: 'Incident Date',
     faIcon: faCalendarAlt,
     faClasses: 'far fa-calendar-alt',
