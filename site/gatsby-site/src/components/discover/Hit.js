@@ -70,7 +70,7 @@ export default function Hit({
   toggleFilterByIncidentId,
 }) {
   return (
-    <Card>
+    <Card className="h-100">
       <IncidentCardImage
         className="card-img-top"
         publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
