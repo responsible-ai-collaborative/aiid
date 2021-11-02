@@ -1,12 +1,46 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { scaleTime, extent, bin, axisLeft, select, timeFormat, timeMonth } from 'd3';
+import {
+  scaleTime,
+  extent,
+  bin,
+  axisLeft,
+  select,
+  timeFormat,
+  timeYear,
+  timeMonth,
+  timeWeek,
+} from 'd3';
 import styled from 'styled-components';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
+const formatDay = timeFormat('%b %d');
+
+const formatMonth = timeFormat('%B');
+
+const formatYear = timeFormat('%Y');
+
+const multiFormat = (date) => {
+  return (timeMonth(date) < date ? formatDay : timeYear(date) < date ? formatMonth : formatYear)(
+    date
+  );
+};
+
 const AxisLeft = ({ yScale, margin, data }) => {
-  const axisRef = (axis) => {
-    axis && axisLeft(yScale).ticks(data.length == 1 ? 2 : null)(select(axis));
-  };
+  const axisRef = useRef();
+
+  useEffect(() => {
+    const axis = axisRef.current;
+
+    axisLeft(yScale)
+      .ticks(data.length == 1 ? 1 : 8)
+      .tickFormat((d, i) => {
+        if (i == 0 || yScale.ticks().length - 1 == i) {
+          return timeFormat('%b %Y')(d);
+        }
+
+        return multiFormat(d);
+      })(select(axis));
+  }, [axisRef]);
 
   return <g ref={axisRef} transform={`translate(${margin.left}, 0)`} />;
 };
@@ -153,7 +187,7 @@ function Timeline({ items }) {
 
   const [min, max] = extent(data, yValue);
 
-  const domain = [timeMonth.floor(min), timeMonth.ceil(max)];
+  const domain = [timeWeek.floor(min), timeWeek.ceil(max)];
 
   const yScale = scaleTime()
     .domain(domain)
