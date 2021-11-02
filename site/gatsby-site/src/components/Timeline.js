@@ -27,6 +27,8 @@ const Count = styled.text`
   fill: #fff;
   text-anchor: middle;
   dominant-baseline: middle;
+  font-weight: bold;
+  font-size: 12px;
 `;
 
 const Trigger = styled.div`
@@ -61,7 +63,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
       {bucket.length > 1 ? (
         <>
           <Point cy={0} r={groupRadius} />
-          <Count>{bucket.length}</Count>
+          <Count>+{bucket.length - 1}</Count>
           <OverlayTrigger
             placement="right"
             trigger="click"
