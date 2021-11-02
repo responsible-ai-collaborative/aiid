@@ -106,7 +106,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
               <Popover>
                 <Popover.Body>
                   <GroupList>
-                    {bucket.map((b) => (
+                    {bucket.slice(1).map((b) => (
                       <GroupListItem key={b.mongodb_id}>
                         {timeFormat('%b %d, %Y')(new Date(b.date_published))}
                         <br />
