@@ -134,12 +134,6 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
   );
 };
 
-function thresholdTime(n) {
-  return (data, min, max) => {
-    return scaleTime().domain([min, max]).ticks(n);
-  };
-}
-
 const Reports = ({ data, yScale, yValue, margin, size }) => {
   const [, innerHeight] = yScale.range();
 
@@ -149,7 +143,7 @@ const Reports = ({ data, yScale, yValue, margin, size }) => {
 
   const thresholds = Math.round(innerHeight / (groupRadius * 2));
 
-  const binned = bin().value(yValue).thresholds(thresholdTime(thresholds))(data);
+  const binned = bin().value(yValue).thresholds(thresholds)(data);
 
   return (
     <g transform={`translate(${margin.left}, 0)`}>
