@@ -47,6 +47,16 @@ const ScrollCell = styled.div`
   margin: 0;
   padding: 0;
   overflow: auto;
+
+  ${({ hasClick }) =>
+    hasClick &&
+    `
+    cursor: pointer;
+
+    :hover {
+      background: white;
+    }
+  `};
 `;
 
 const Container = styled.div`
@@ -356,6 +366,7 @@ export default function Incidents(props) {
     nextPage,
     previousPage,
     setPageSize,
+    setFilter,
     state: { pageIndex, pageSize },
   } = useTable(
     {
@@ -381,6 +392,22 @@ export default function Incidents(props) {
   group.sort(function (a, b) {
     return a['edges'][0]['node']['incident_id'] - b['edges'][0]['node']['incident_id'];
   });
+
+  const filterOnClick = (cell, customHeader) => {
+    const header =
+      customHeader?.toLowerCase().split(' ').join('_') ??
+      cell.column.Header.toLowerCase().split(' ').join('_');
+
+    const cellClickedValue = cell.render('Cell').props.cell.value + '';
+
+    const currentFilter = cell.column.filterValue + '';
+
+    if (currentFilter?.includes(cellClickedValue)) {
+      setFilter(header, undefined);
+    } else {
+      setFilter(header, cellClickedValue);
+    }
+  };
 
   return (
     <LayoutHideSidebar {...props}>
@@ -419,7 +446,7 @@ export default function Incidents(props) {
                       if (cell.column.Header === 'TITLE') {
                         return (
                           <td key={cell.id} {...cell.getCellProps()}>
-                            <ScrollCell>
+                            <ScrollCell hasClick={true} onClick={() => filterOnClick(cell)}>
                               <Link to={row.original.url}>{cell.render('Cell')}</Link>
                             </ScrollCell>
                           </td>
@@ -427,7 +454,9 @@ export default function Incidents(props) {
                       } else if (cell.column.Header === 'INCIDENT ID') {
                         return (
                           <td key={cell.id} {...cell.getCellProps()}>
-                            <ScrollCell>{formatIncidentIdField(cell.render('Cell'))}</ScrollCell>
+                            <ScrollCell hasClick={true} onClick={() => filterOnClick(cell)}>
+                              {formatIncidentIdField(cell.render('Cell'))}
+                            </ScrollCell>
                           </td>
                         );
                       } else if (cell.column.Header.includes('DATE')) {
@@ -439,7 +468,9 @@ export default function Incidents(props) {
                       } else {
                         return (
                           <td key={cell.id} {...cell.getCellProps()}>
-                            <ScrollCell>{cell.render('Cell')}</ScrollCell>
+                            <ScrollCell hasClick={true} onClick={() => filterOnClick(cell)}>
+                              {cell.render('Cell')}
+                            </ScrollCell>
                           </td>
                         );
                       }
