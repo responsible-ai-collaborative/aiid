@@ -20,11 +20,12 @@ Anyone can contribute code to the project. The system is being built as a "do-oc
 The steps for contributing changes are the following,
 
 1. Create a fork of the repository.
-2. Open a feature branch from whichever branch you would like to change, `git checkout -b feature-cool-new-thing`.
-3. Make your changes, commit them, then push them remote.
-4. Open a pull request to the `master` branch.
-5. Update the pull request based on the review.
-6. See the pull request get pulled. :)
+2. Clone the fork to your local environment.
+3. Open a feature branch from whichever branch you would like to change. This is typically the master branch, so you can do `git checkout master` then `git checkout -b feature-cool-new-thing`.
+4. Make your changes, commit them, then push them remote.
+5. Open a pull request to the `master` branch.
+6. Update the pull request based on the review.
+7. See the pull request get pulled. :)
 
 Please make sure your code is well organized and commented before opening the pull request.
 
@@ -38,34 +39,11 @@ The site has three components that all be considered "serverless," meaning there
 
 More details are available in the `Production System` information below. We recommend most people forego setting up a development environment with their own Index and Database. You should instead concentrate on setting up a Gatsby development site.
 
-## Gatsby Site
-
-**Setup the application:**
-
-1. Clone this repository, `git clone git@github.com:PartnershipOnAI/aiid.git`
-2. Install all the dependencies associated with [Gatbsy development](https://www.gatsbyjs.com/tutorial/part-zero/) to your machine.
-3. From inside the `site/gatsby-site/` directory, issue `gatsby develop`. Visit `http://localhost:8000`
-
-Now when you modify pages in the Gatsby site, you can see the build update in the terminal and the UI updated in the browser.
-
 **Style guide:**
 
 1. `ESLint` and `Prettier` has been configured to help enforcing code styles. Configuration details can be found on `.eslintrc.json` and `.prettierrc`.
 2. [Husky](https://github.com/typicode/husky#readme) and [lint-staged](https://github.com/okonet/lint-staged) are installed and `pre-commit` hook added to check lint/prettier issues on staged files and fix them automatically before making commit.
 3. `format` and `lint` scripts can be used manually to fix style issues.
-
-**Where to find things:**
-
-The Gatsby front end manages a growing collection of web applications, including,
-
-* Navigational pages: Content in the `site/gatsby-site/content` directory are part of the Gatsby site's navigational structure and automatically built
-* Apps: The apps that are presently listed [on the website](https://incidentdatabase.ai/about_apps) can live either as static web applications separate from the Gatsby app (see the "Discover" app below), or in the Gatsby app scripting environment. The current apps of the Gatsby environment are found in `site/gatsby-site/pages/apps`.
-* Summaries: Summaries are apps that are summarizing the dataset. These can be found at `site/gatsby-site/pages/summaries`
-* Citations: pages in the `/cite/INCIDENT_ID` route give a suggested citation for the incident record along with basic summary information for the associated incident reports. These pages are programatically generated and typeset according to the template in `site/gatsby-site/src/templates/cite.js`.
-
-## Discover App Structure
-
-The AIID began its life as the `Discover` application. There are two modes of operation for the app: normal user and admin user. The admin user is identified by a `admin_key=` URL parameter, which serves to authenticate the user into the MongoDB database.
 
 ## Production System
 
