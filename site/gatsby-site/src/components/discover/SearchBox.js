@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { connectSearchBox, Stats } from 'react-instantsearch-dom';
+import { connectSearchBox } from 'react-instantsearch-dom';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
@@ -55,13 +55,6 @@ const SearchForm = styled.form`
   position: relative;
 `;
 
-const StyledStats = styled(Stats)`
-  position: absolute;
-  top: 4px;
-  right: 28px;
-  z-index: 1;
-`;
-
 function SearchBox({ currentRefinement, refine }) {
   const [query, setQuery] = useState(currentRefinement);
 
@@ -93,24 +86,16 @@ function SearchBox({ currentRefinement, refine }) {
           }}
           onChange={(event) => setQuery(event.currentTarget.value)}
         />
-        <SearchResetButton type="reset" title="Clear the search query." onClick={() => clear()}>
-          <FontAwesomeIcon
-            icon={faTimesCircle}
-            className="pointer fa fa-times-circle"
-            title="reset"
-          />
-        </SearchResetButton>
-        <StyledStats
-          translations={{
-            stats(nbHits) {
-              return (
-                <span className="badge bg-secondary badge-pill">{`${
-                  nbHits === 0 ? 'No' : nbHits
-                } reports found`}</span>
-              );
-            },
-          }}
-        />
+
+        {query !== '' && (
+          <SearchResetButton type="reset" title="Clear the search query." onClick={() => clear()}>
+            <FontAwesomeIcon
+              icon={faTimesCircle}
+              className="pointer fa fa-times-circle"
+              title="reset"
+            />
+          </SearchResetButton>
+        )}
       </SearchForm>
     </SearchContainer>
   );
