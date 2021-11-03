@@ -70,7 +70,7 @@ export default function Hit({
   toggleFilterByIncidentId,
 }) {
   return (
-    <Card>
+    <Card className="h-100">
       <IncidentCardImage
         className="card-img-top"
         publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
@@ -112,10 +112,13 @@ export default function Hit({
       </Card.Body>
 
       <Card.Footer className="d-flex justify-content-between">
-        <WebArchiveLink url={item.url} date={item.date_submitted}>
-          <Button variant="link" title="Authors">
-            <FontAwesomeIcon icon={faNewspaper} className="fa-newspaper" title="Read the Source" />
-          </Button>
+        <WebArchiveLink
+          url={item.url}
+          date={item.date_submitted}
+          className="btn btn-link px-1"
+          title={'Authors'}
+        >
+          <FontAwesomeIcon icon={faNewspaper} className="fa-newspaper" title="Read the Source" />
         </WebArchiveLink>
 
         <Button
@@ -134,6 +137,7 @@ export default function Hit({
         <Button
           variant="link"
           title="Submitters"
+          className="px-1"
           onClick={() =>
             submittersModal.openFor({
               title: 'Submitters',
@@ -147,6 +151,7 @@ export default function Hit({
         <Button
           variant="link"
           title="Flag Report"
+          className="px-1"
           onClick={() =>
             flagReportModal.openFor({
               title: 'Submitters',
@@ -161,6 +166,7 @@ export default function Hit({
           <Button
             variant="link"
             aria-hidden="true"
+            className="d-flex align-items-center px-1"
             onClick={() => toggleFilterByIncidentId(item.incident_id + '')}
           >
             <FontAwesomeIcon icon={faHashtag} className="fa-hashtag" title="Incident ID" />

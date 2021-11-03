@@ -21,46 +21,27 @@ const searchClient = algoliasearch(
   config.header.search.algoliaSearchKey
 );
 
-const Container = styled.div`
+const HitsContainer = styled.div`
   max-width: 1400px;
-  margin: 0 auto;
-  padding: 1rem;
+  display: grid;
+  grid-gap: 6px;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
 
-  @media (max-width: 767px) {
-    padding: 0;
+  @media (min-width: 576px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @media (min-width: 992px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 `;
 
-const HitsContainer = styled.div`
-  display: grid;
-  max-width: 100%;
-  grid-gap: 13px;
-  grid-template-columns: 1fr 1fr 1fr;
-
-  ${({ showDetails }) =>
-    showDetails === true &&
-    `
-    grid-template-columns: auto;i
-  `};
-
-  @media (max-width: 1240px) {
-    grid-template-columns: 1fr 1fr;
-    ${({ showDetails }) =>
-      showDetails === true &&
-      `
-      grid-template-columns: auto;
-    `};
-  }
-
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
-
-    ${({ showDetails }) =>
-      showDetails === true &&
-      `
-      grid-template-columns: auto;
-    `};
-  }
+const FiltersContainer = styled.div`
+  max-width: 1400px;
 `;
 
 const Header = styled.div`
@@ -299,13 +280,13 @@ const DiscoverApp = React.memo((props) => {
       </Helmet>
       <QueryParams config={queryConfig}>
         {() => (
-          <Container>
-            <InstantSearch
-              indexName={indexName}
-              searchClient={searchClient}
-              searchState={searchState}
-              onSearchStateChange={onSearchStateChange}
-            >
+          <InstantSearch
+            indexName={indexName}
+            searchClient={searchClient}
+            searchState={searchState}
+            onSearchStateChange={onSearchStateChange}
+          >
+            <FiltersContainer className="container container-fluid mt-4">
               <Header>
                 <SearchBox defaultRefinement={query.s} />
               </Header>
@@ -318,21 +299,23 @@ const DiscoverApp = React.memo((props) => {
                 searchState={searchState}
                 onSearchStateChange={onSearchStateChange}
               />
+            </FiltersContainer>
 
-              <HitsContainer>
-                <Hits
-                  toggleFilterByIncidentId={toggleFilterByIncidentId}
-                  authorsModal={authorsModal}
-                  submittersModal={submittersModal}
-                  flagReportModal={flagReportModal}
-                />
-                <CustomModal {...authorsModal} />
-                <CustomModal {...submittersModal} />
-                <CustomModal {...flagReportModal} />
-              </HitsContainer>
-              <Pagination />
-            </InstantSearch>
-          </Container>
+            <HitsContainer className="container container-fluid mt-4">
+              <Hits
+                toggleFilterByIncidentId={toggleFilterByIncidentId}
+                authorsModal={authorsModal}
+                submittersModal={submittersModal}
+                flagReportModal={flagReportModal}
+              />
+            </HitsContainer>
+
+            <CustomModal {...authorsModal} />
+            <CustomModal {...submittersModal} />
+            <CustomModal {...flagReportModal} />
+
+            <Pagination />
+          </InstantSearch>
         )}
       </QueryParams>
     </LayoutHideSidebar>
