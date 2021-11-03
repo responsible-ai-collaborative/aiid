@@ -15,7 +15,7 @@ import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
 import { Table, InputGroup, FormControl, Form, Button } from 'react-bootstrap';
 
 const TableStyles = styled.div`
-  padding: 1rem;
+  padding: 1rem 1rem 1rem 0;
 
   table {
     border-spacing: 0;
@@ -42,8 +42,7 @@ const TableStyles = styled.div`
 
 const ScrollCell = styled.div`
   width: 100%;
-  min-width: 100px;
-  height: 100px;
+  min-width: 200px;
   margin: 0;
   padding: 0;
   overflow: auto;
@@ -64,6 +63,14 @@ const Container = styled.div`
   margin: 0 auto;
   overflow: auto;
   white-space: nowrap;
+  padding: 0 0 0 1rem;
+
+  ${({ isWide }) =>
+    isWide &&
+    `
+    max-width: 100vw;
+    padding: 0 0 0 3.5rem;
+  `};
 
   @media (max-width: 767px) {
     padding: 0;
@@ -161,7 +168,7 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
   return (
     <Form.Select
       style={{ width: '100%' }}
-      value={filterValue}
+      value={filterValue || 'All'}
       onChange={(e) => {
         setFilter(e.target.value || undefined);
       }}
@@ -176,7 +183,9 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
   );
 };
 
-const SelectDatePickerFilter = ({ column: { preFilteredRows, setFilter, id } }) => {
+const SelectDatePickerFilter = ({
+  column: { filterValue = [], preFilteredRows, setFilter, id },
+}) => {
   const [min, max] = React.useMemo(() => {
     let min = new Date(preFilteredRows[0]?.values[id] ?? '1970-01-01').getTime();
 
@@ -190,6 +199,10 @@ const SelectDatePickerFilter = ({ column: { preFilteredRows, setFilter, id } }) 
     });
     return [min, max];
   }, [id, preFilteredRows]);
+
+  if (filterValue.length === 0) {
+    setFilter;
+  }
 
   const handleApply = (event, picker) => {
     picker.element.val(
@@ -224,6 +237,8 @@ const SelectDatePickerFilter = ({ column: { preFilteredRows, setFilter, id } }) 
 export default function Incidents(props) {
   const [tableData, setTableData] = useState([]);
 
+  const [collapse, setCollapse] = useState(true);
+
   const [columnData, setColumnData] = useState([]);
 
   const { data } = props;
@@ -236,6 +251,8 @@ export default function Incidents(props) {
       epoch_date_submitted: 'date_submitted',
       epoch_date_modified: 'date_modified',
       epoch_date_downloaded: 'date_downloaded',
+      report_number: 'report_id',
+      flag: 'flagged',
     };
 
     const omitKeys = ['id', 'url'];
@@ -367,6 +384,7 @@ export default function Incidents(props) {
     previousPage,
     setPageSize,
     setFilter,
+    setAllFilters,
     state: { pageIndex, pageSize },
   } = useTable(
     {
@@ -374,7 +392,7 @@ export default function Incidents(props) {
       data: cellData,
       defaultColumn,
       filterTypes,
-      initialState: { pageIndex: 0, pageSize: 200 },
+      initialState: { pageIndex: 0, pageSize: 100 },
     },
     useFilters,
     useSortBy,
@@ -410,14 +428,16 @@ export default function Incidents(props) {
   };
 
   return (
-    <LayoutHideSidebar {...props}>
+    <LayoutHideSidebar
+      {...props}
+      menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
+    >
       <Helmet>
         <title>Incident List</title>
       </Helmet>
-      <div className={'titleWrapper'}>
+      <Container isWide={collapse}>
         <StyledHeading>Incident Report Table</StyledHeading>
-      </div>
-      <Container>
+        <Button onClick={() => setAllFilters([])}>Reset filters</Button>
         <TableStyles>
           <Table striped bordered hover {...getTableProps()}>
             <thead>
@@ -465,6 +485,12 @@ export default function Incidents(props) {
                             <ScrollCell>{formatDateField(cell.render('Cell'))}</ScrollCell>
                           </td>
                         );
+                      } else if (cell.column.Header === 'AUTHORS') {
+                        return (
+                          <td key={cell.id} {...cell.getCellProps()}>
+                            <ScrollCell style={{ width: 200 }}>{cell.render('Cell')}</ScrollCell>
+                          </td>
+                        );
                       } else {
                         return (
                           <td key={cell.id} {...cell.getCellProps()}>
@@ -480,7 +506,7 @@ export default function Incidents(props) {
               })}
               {page.length === 0 && (
                 <tr>
-                  <th colSpan={10}>
+                  <th colSpan={11}>
                     <div>
                       <span>No results found</span>
                     </div>
@@ -560,16 +586,16 @@ export const pageQuery = graphql`
           node {
             id
             incident_id
-            report_number
             title
+            source_domain
             url
-            epoch_incident_date
             authors
+            submitters
+            epoch_incident_date
             epoch_date_submitted
             epoch_date_modified
             epoch_date_downloaded
-            submitters
-            source_domain
+            report_number
             flag
           }
         }
