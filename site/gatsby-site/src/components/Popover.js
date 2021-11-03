@@ -3,8 +3,8 @@ import { Popover as BSPopOver } from 'react-bootstrap';
 
 const Popover = (title, text) => (
   <BSPopOver id="popover-basic">
-    <BSPopOver.Title as="h3">{title}</BSPopOver.Title>
-    <BSPopOver.Content>{text}</BSPopOver.Content>
+    <BSPopOver.Header as="h3">{title}</BSPopOver.Header>
+    <BSPopOver.Body>{text}</BSPopOver.Body>
   </BSPopOver>
 );
 

@@ -53,6 +53,10 @@ const StyledLi = styled.li`
   margin-left: 1em;
 `;
 
+const StyledUl = styled.ul`
+  padding: 0;
+`;
+
 const StatItemText = styled.span`
   margin-right: 0.7em;
 `;
@@ -61,7 +65,7 @@ const StatItem = ({ text, value }) => {
   return (
     <>
       <StatItemText>{text}</StatItemText>
-      <Badge pill variant="light">
+      <Badge pill bg="light" text="dark">
         {`${value || 0} ${value === 1 ? 'Incident' : 'Incidents'}`}
       </Badge>
     </>
@@ -118,7 +122,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
 
     return (
       <div>
-        <ul>
+        <StyledUl>
           {sortedStatsArray
             .filter((item, index) => showAllStats || index < 5)
             .map(({ item, value }) => (
@@ -133,7 +137,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
                 </Link>
               </StyledLi>
             ))}
-        </ul>
+        </StyledUl>
         {sortedStatsArray.length > 5 && (
           <Button
             variant="outline-primary"
@@ -265,7 +269,7 @@ const Taxonomy = (props) => {
             <Card>
               <FieldNameHeading>
                 {long_name}{' '}
-                {instant_facet && <Badge variant="secondary">Searchable in Discover App</Badge>}
+                {instant_facet && <Badge bg="secondary">Searchable in Discover App</Badge>}
               </FieldNameHeading>
               <Description>{long_description}</Description>
               <FacetList
