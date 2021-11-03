@@ -10,6 +10,8 @@ export const onServiceWorkerUpdateReady = () => {
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import '@fortawesome/fontawesome-svg-core/styles.css';
+
 const ROUTES_WITH_RULES = ['/cite/', '/apps/discover'];
 
 export const shouldUpdateScroll = ({ routerProps: { location } }) => {

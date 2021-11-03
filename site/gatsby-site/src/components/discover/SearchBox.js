@@ -1,9 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connectSearchBox, Stats } from 'react-instantsearch-dom';
 import styled from 'styled-components';
-import { debounce } from 'debounce';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { debounce } from 'debounce';
 
 const StyledSearchInput = styled.input`
   padding: 0.3rem 0.3rem !important;
@@ -62,41 +62,38 @@ const StyledStats = styled(Stats)`
   z-index: 1;
 `;
 
-function SearchBox({ refine, customRef }) {
-  const [loading, setLoading] = useState(false);
+function SearchBox({ currentRefinement, refine }) {
+  const [query, setQuery] = useState(currentRefinement);
 
-  const debouncedRefine = debounce((text) => {
-    refine(text);
-  }, 500);
+  const debouncedRefine = useRef(debounce((value) => refine(value), 500)).current;
 
-  const debouceRefineCallback = useCallback((value) => debouncedRefine(value), []);
+  useEffect(() => {
+    debouncedRefine(query);
+  }, [query]);
 
-  const handleOnChange = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    debouceRefineCallback(e.target.value);
-    setLoading(false);
+  const clear = () => {
+    setQuery('');
+    refine('');
   };
 
   return (
     <SearchContainer>
       <SearchForm>
         <StyledSearchInput
-          readOnly={loading}
           type="text"
-          ref={customRef}
           autoComplete="off"
           autoCorrect="off"
           autoCapitalize="off"
           placeholder="Search"
           spellCheck="false"
-          maxLength="512"
+          maxLength={512}
+          value={query}
           onKeyPress={(e) => {
             e.key === 'Enter' && e.preventDefault();
           }}
-          onChange={handleOnChange}
+          onChange={(event) => setQuery(event.currentTarget.value)}
         />
-        <SearchResetButton type="reset" title="Clear the search query." onClick={() => refine('')}>
+        <SearchResetButton type="reset" title="Clear the search query." onClick={() => clear()}>
           <FontAwesomeIcon
             icon={faTimesCircle}
             className="pointer fa fa-times-circle"
