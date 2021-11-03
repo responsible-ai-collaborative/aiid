@@ -13,11 +13,12 @@ const RefinementList = ({
   label,
   faIcon,
   faClasses,
+  className,
 }) => {
   const refinementCount = items.reduce((total, item) => (item.isRefined ? total + 1 : total), 0);
 
   return (
-    <Dropdown autoClose="outside">
+    <Dropdown autoClose="outside" className={className}>
       <Dropdown.Toggle>
         <FontAwesomeIcon icon={faIcon} className={faClasses} />
         &nbsp; {label} &nbsp;{' '}

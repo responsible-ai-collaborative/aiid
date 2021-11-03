@@ -2,27 +2,23 @@ import React from 'react';
 import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
 import { Row, Col } from 'react-bootstrap';
 import Filter from './Filter';
+import styled from 'styled-components';
+
+const StyledFilter = styled(Filter)`
+  .dropdown-toggle {
+    width: 100%;
+  }
+`;
 
 function Filters() {
   return (
-    <>
-      <Row className="d-none d-md-flex justify-content-md-between mb-3">
-        <Col className="d-flex mt-2 gap-1 col-md-auto flex-wrap">
-          {['classifications', 'source_domain', 'authors', 'submitters', 'incident_id']
-            .map((a) => REFINEMENT_LISTS.find((list) => list.attribute == a))
-            .map((list) => (
-              <Filter key={list.attribute} type={list.type} {...list} />
-            ))}
+    <Row xs={1} md={2} lg={4} className="d-none d-md-flex mt-2 mb-4 g-2">
+      {REFINEMENT_LISTS.map((list) => (
+        <Col key={list.attribute}>
+          <StyledFilter type={list.type} {...list} />
         </Col>
-        <Col className="d-flex gap-1 mt-2 col-md-auto">
-          {['epoch_incident_date', 'epoch_date_published', 'flag']
-            .map((a) => REFINEMENT_LISTS.find((list) => list.attribute == a))
-            .map((list) => (
-              <Filter key={list.attribute} attribute={list.attribute} {...list} />
-            ))}
-        </Col>
-      </Row>
-    </>
+      ))}
+    </Row>
   );
 }
 

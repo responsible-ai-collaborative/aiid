@@ -8,7 +8,16 @@ const formatDate = (epoch) => new Date(epoch * 1000).toISOString().substr(0, 10)
 
 const dateToEpoch = (date) => new Date(date).getTime() / 1000;
 
-const RangeInput = ({ faIcon, label, faClasses, min, max, currentRefinement, refine }) => {
+const RangeInput = ({
+  faIcon,
+  label,
+  faClasses,
+  min,
+  max,
+  currentRefinement,
+  refine,
+  className,
+}) => {
   const onChange = ({ min, max }) => {
     if (currentRefinement.min !== min || currentRefinement.max !== max) {
       refine({ min, max });
@@ -20,7 +29,7 @@ const RangeInput = ({ faIcon, label, faClasses, min, max, currentRefinement, ref
   const enabled = min && max;
 
   return (
-    <Dropdown autoClose="outside">
+    <Dropdown autoClose="outside" className={className}>
       <Dropdown.Toggle disabled={!enabled}>
         <FontAwesomeIcon icon={faIcon} className={faClasses} />
         {` ${label}`}&nbsp;{touched && <Badge bg="secondary">!</Badge>}
