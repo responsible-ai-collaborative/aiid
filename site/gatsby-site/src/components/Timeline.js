@@ -1,12 +1,46 @@
-import React, { useState, useEffect } from 'react';
-import { scaleTime, extent, bin, axisLeft, select, timeFormat, timeMonth } from 'd3';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  scaleTime,
+  extent,
+  bin,
+  axisLeft,
+  select,
+  timeFormat,
+  timeYear,
+  timeMonth,
+  timeWeek,
+} from 'd3';
 import styled from 'styled-components';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
+const formatDay = timeFormat('%b %d');
+
+const formatMonth = timeFormat('%B');
+
+const formatYear = timeFormat('%Y');
+
+const multiFormat = (date) => {
+  return (timeMonth(date) < date ? formatDay : timeYear(date) < date ? formatMonth : formatYear)(
+    date
+  );
+};
+
 const AxisLeft = ({ yScale, margin, data }) => {
-  const axisRef = (axis) => {
-    axis && axisLeft(yScale).ticks(data.length == 1 ? 2 : null)(select(axis));
-  };
+  const axisRef = useRef();
+
+  useEffect(() => {
+    const axis = axisRef.current;
+
+    axisLeft(yScale)
+      .ticks(data.length == 1 ? 1 : 8)
+      .tickFormat((d, i) => {
+        if (i == 0 || yScale.ticks().length - 1 == i) {
+          return timeFormat('%b %Y')(d);
+        }
+
+        return multiFormat(d);
+      })(select(axis));
+  }, [axisRef]);
 
   return <g ref={axisRef} transform={`translate(${margin.left}, 0)`} />;
 };
@@ -27,6 +61,8 @@ const Count = styled.text`
   fill: #fff;
   text-anchor: middle;
   dominant-baseline: middle;
+  font-weight: bold;
+  font-size: 12px;
 `;
 
 const Trigger = styled.div`
@@ -61,7 +97,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
       {bucket.length > 1 ? (
         <>
           <Point cy={0} r={groupRadius} />
-          <Count>{bucket.length}</Count>
+          <Count>+{bucket.length - 1}</Count>
           <OverlayTrigger
             placement="right"
             trigger="click"
@@ -70,7 +106,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
               <Popover>
                 <Popover.Body>
                   <GroupList>
-                    {bucket.map((b) => (
+                    {bucket.slice(1).map((b) => (
                       <GroupListItem key={b.mongodb_id}>
                         {timeFormat('%b %d, %Y')(new Date(b.date_published))}
                         <br />
@@ -98,12 +134,6 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
   );
 };
 
-function thresholdTime(n) {
-  return (data, min, max) => {
-    return scaleTime().domain([min, max]).ticks(n);
-  };
-}
-
 const Reports = ({ data, yScale, yValue, margin, size }) => {
   const [, innerHeight] = yScale.range();
 
@@ -113,7 +143,7 @@ const Reports = ({ data, yScale, yValue, margin, size }) => {
 
   const thresholds = Math.round(innerHeight / (groupRadius * 2));
 
-  const binned = bin().value(yValue).thresholds(thresholdTime(thresholds))(data);
+  const binned = bin().value(yValue).thresholds(thresholds)(data);
 
   return (
     <g transform={`translate(${margin.left}, 0)`}>
@@ -133,10 +163,17 @@ const Reports = ({ data, yScale, yValue, margin, size }) => {
   );
 };
 
+const calculatesize = ({ data, rect }) => ({
+  width: rect ? rect.width : 640,
+  height: data.length == 1 ? 120 : 480,
+});
+
 function Timeline({ items }) {
+  const containerRef = useRef();
+
   const data = items[0].edges.map((item) => item.node);
 
-  const size = { width: 640, height: data.length == 1 ? 120 : 480 };
+  const [size, setSize] = useState(calculatesize({ data }));
 
   const margin = { top: 20, right: 20, bottom: 20, left: 60 };
 
@@ -144,18 +181,36 @@ function Timeline({ items }) {
 
   const [min, max] = extent(data, yValue);
 
-  const domain = [timeMonth.floor(min), timeMonth.ceil(max)];
+  const domain = [timeWeek.floor(min), timeWeek.ceil(max)];
 
   const yScale = scaleTime()
     .domain(domain)
     .range([margin.top, size.height - margin.top])
     .nice();
 
+  useEffect(() => {
+    const resize = () => {
+      const container = containerRef.current;
+
+      const rect = container.getBoundingClientRect();
+
+      setSize(calculatesize({ data, rect }));
+    };
+
+    resize();
+
+    window.addEventListener('resize', resize, false);
+
+    return () => window.removeEventListener('resize', resize);
+  }, [containerRef]);
+
   return (
-    <svg width="100%" viewBox={`0 0 ${size.width} ${size.height}`}>
-      <AxisLeft data={data} yScale={yScale} margin={margin} size={size} />
-      <Reports data={data} yScale={yScale} yValue={yValue} margin={margin} size={size} />
-    </svg>
+    <div ref={containerRef}>
+      <svg width="100%" viewBox={`0 0 ${size.width} ${size.height}`}>
+        <AxisLeft data={data} yScale={yScale} margin={margin} size={size} />
+        <Reports data={data} yScale={yScale} yValue={yValue} margin={margin} size={size} />
+      </svg>
+    </div>
   );
 }
 
