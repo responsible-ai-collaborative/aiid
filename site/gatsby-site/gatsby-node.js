@@ -16,6 +16,14 @@ const createTaxonomyPages = require('./page-creators/createTaxonomyPages');
 
 const createBlogPosts = require('./page-creators/createBlogPosts');
 
+const createDownloadIndexPage = require('./page-creators/createDownloadIndexPage');
+
+const discoverIndex = require('./src/utils/discoverIndexGenerator');
+
+const algoliasearch = require('algoliasearch');
+
+const algoliaSettings = require('./src/utils/algoliaSettings');
+
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions;
 
@@ -40,6 +48,7 @@ exports.createPages = ({ graphql, actions }) => {
     createBackupsPage(graphql, createPage),
     createTaxonomyPages(graphql, createPage),
     createBlogPosts(graphql, createPage),
+    createDownloadIndexPage(graphql, createPage),
   ]);
 };
 
@@ -122,4 +131,40 @@ exports.createSchemaCustomization = ({ actions }) => {
   `;
 
   createTypes(typeDefs);
+};
+
+exports.onPostBuild = async function ({ graphql, reporter }) {
+  const activity = reporter.activityTimer(`Algolia`);
+
+  activity.start();
+
+  if (config.header.search.algoliaAppId && config.header.search.algoliaAdminKey) {
+    activity.setStatus('Building index...');
+
+    const data = await discoverIndex({ graphql });
+
+    activity.setStatus('Uploading index...');
+
+    const client = algoliasearch(
+      config.header.search.algoliaAppId,
+      config.header.search.algoliaAdminKey
+    );
+
+    const index = client.initIndex('instant_search');
+
+    await index.saveObjects(data);
+
+    activity.setStatus(`Uploaded ${data.length} items to the index.`);
+
+    activity.setStatus('Updating settings...');
+
+    await index.setSettings(algoliaSettings);
+
+    activity.setStatus('Settings saved.');
+
+    activity.end();
+  } else {
+    activity.setStatus(`Missing env settings, skipping index upload.`);
+    activity.end();
+  }
 };
