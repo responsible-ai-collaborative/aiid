@@ -13,11 +13,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useModal, CustomModal } from 'components/useModal';
 
 const Container = styled.div`
-  width: 100vw;
+  max-width: calc(100vw - 298px);
   margin: 0 auto;
   padding: 0 2rem;
   overflow: auto;
+  white-space: nowrap;
   font-size: 0.8em;
+
+  ${({ isWide }) =>
+    isWide &&
+    `
+    max-width: 100vw;
+    padding: 0 0 0 3.5rem;
+  `};
 
   @media (max-width: 767px) {
     padding: 0;
@@ -52,7 +60,6 @@ const TableStyles = styled.div`
 
 const ScrollCell = styled.div`
   width: 100%;
-  height: 100px;
   margin: 0;
   padding: 0;
   overflow: auto;
@@ -185,6 +192,8 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
 
 export default function ClassificationsDbView(props) {
   const [loading, setLoading] = useState(false);
+
+  const [collapse, setCollapse] = useState(true);
 
   const [allTaxonomies, setAllTaxonomies] = useState([]);
 
@@ -419,7 +428,7 @@ export default function ClassificationsDbView(props) {
       columns,
       data,
       defaultColumn,
-      initialState: { pageIndex: 0 },
+      initialState: { pageIndex: 0, pageSize: 50 },
     },
     useFilters,
     useSortBy,
@@ -455,11 +464,14 @@ export default function ClassificationsDbView(props) {
   }
 
   return (
-    <LayoutHideSidebar {...props}>
+    <LayoutHideSidebar
+      {...props}
+      menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
+    >
       <Helmet>
         <title>Artificial Intelligence Incident Database</title>
       </Helmet>
-      <Container>
+      <Container isWide={collapse}>
         <TaxonomySelectContainer>
           <select
             aria-label="Default select example"
