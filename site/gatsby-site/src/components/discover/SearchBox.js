@@ -45,8 +45,6 @@ function SearchBox({ currentRefinement, refine }) {
     refine('');
   };
 
-  console.log(currentRefinement);
-
   return (
     <Row>
       <Col>
