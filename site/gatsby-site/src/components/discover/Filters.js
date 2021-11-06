@@ -23,7 +23,7 @@ function Filters() {
         ))}
       </Row>
       <Row className="d-none d-md-flex">
-        <Col>
+        <Col className="d-flex align-items-center">
           <Stats />
         </Col>
         <Col className="d-flex justify-content-end">
