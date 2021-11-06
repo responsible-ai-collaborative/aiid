@@ -4,6 +4,7 @@ import { Row, Col } from 'react-bootstrap';
 import Filter from './Filter';
 import Stats from './Stats';
 import styled from 'styled-components';
+import ClearFilters from './ClearFilters';
 
 const StyledFilter = styled(Filter)`
   .dropdown-toggle {
@@ -24,6 +25,9 @@ function Filters() {
       <Row className="d-none d-md-flex">
         <Col>
           <Stats />
+        </Col>
+        <Col className="d-flex justify-content-end">
+          <ClearFilters>Clear Filters</ClearFilters>
         </Col>
       </Row>
     </>

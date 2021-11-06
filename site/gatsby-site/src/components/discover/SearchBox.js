@@ -36,10 +36,16 @@ function SearchBox({ currentRefinement, refine }) {
     debouncedRefine(query);
   }, [query]);
 
+  useEffect(() => {
+    setQuery(currentRefinement);
+  }, [currentRefinement]);
+
   const clear = () => {
     setQuery('');
     refine('');
   };
+
+  console.log(currentRefinement);
 
   return (
     <Row>
