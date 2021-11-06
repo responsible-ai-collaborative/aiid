@@ -4,46 +4,19 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { debounce } from 'debounce';
-
-const StyledSearchInput = styled.input`
-  padding: 0.3rem 0.3rem !important;
-  max-width: 100% !important;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  padding: 0.3rem 1.7rem;
-  width: 100%;
-  position: relative;
-  background-color: #fff;
-  border: 1px solid #c4c8d8;
-  border-radius: 5px;
-`;
+import { InputGroup, FormControl } from 'react-bootstrap';
 
 const SearchResetButton = styled.button`
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
   position: absolute;
-  z-index: 1;
+  z-index: 4;
   width: 20px;
   height: 20px;
   top: 50%;
   right: 0.3rem;
-  -webkit-transform: translateY(-50%);
   transform: translateY(-50%);
-
-  padding: 0;
-  overflow: visible;
-  font: inherit;
-  line-height: normal;
-  color: inherit;
   background: none;
-  border: 0;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
+  border: none;
 `;
 
 const SearchContainer = styled.div`
@@ -72,30 +45,26 @@ function SearchBox({ currentRefinement, refine }) {
   return (
     <SearchContainer>
       <SearchForm>
-        <StyledSearchInput
-          type="text"
-          autoComplete="off"
-          autoCorrect="off"
-          autoCapitalize="off"
-          placeholder="Search"
-          spellCheck="false"
-          maxLength={512}
-          value={query}
-          onKeyPress={(e) => {
-            e.key === 'Enter' && e.preventDefault();
-          }}
-          onChange={(event) => setQuery(event.currentTarget.value)}
-        />
-
-        {query !== '' && (
-          <SearchResetButton type="reset" title="Clear the search query." onClick={() => clear()}>
-            <FontAwesomeIcon
-              icon={faTimesCircle}
-              className="pointer fa fa-times-circle"
-              title="reset"
-            />
-          </SearchResetButton>
-        )}
+        <InputGroup className="position-relative">
+          <FormControl
+            placeholder="Type Here"
+            maxLength={512}
+            value={query}
+            onKeyPress={(e) => {
+              e.key === 'Enter' && e.preventDefault();
+            }}
+            onChange={(event) => setQuery(event.currentTarget.value)}
+          />
+          {query !== '' && (
+            <SearchResetButton type="reset" title="Clear the search query." onClick={() => clear()}>
+              <FontAwesomeIcon
+                icon={faTimesCircle}
+                className="pointer fa fa-times-circle"
+                title="reset"
+              />
+            </SearchResetButton>
+          )}
+        </InputGroup>
       </SearchForm>
     </SearchContainer>
   );
