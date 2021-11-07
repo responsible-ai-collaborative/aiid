@@ -65,6 +65,7 @@
     "lodash.flatten": "^4.4.0",
     "lodash.startcase": "^4.4.0",
     "md5": "^2.3.0",
+    "query-string": "^7.0.1",
     "react": "^17.0.2",
     "react-billboardjs": "^3.0.1",
     "react-bootstrap": "^2.0.0-rc.1",
