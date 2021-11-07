@@ -1,5 +1,5 @@
 import React from 'react';
-import { connectCurrentRefinements, InstantSearch } from 'react-instantsearch-dom';
+import { InstantSearch } from 'react-instantsearch-dom';
 import RangeInput from './filters/RangeInput';
 import RefinementList from './filters/RefinementList';
 import { Button, OverlayTrigger, Badge, Card } from 'react-bootstrap';
@@ -10,28 +10,29 @@ const componentsMap = {
   range: RangeInput,
 };
 
-const ButtonToggle = connectCurrentRefinements(function ButtonToggle({
+const ButtonToggle = function ButtonToggle({
   trigger: { ref, ...triggerHandler },
-  items,
+  searchState,
   label,
   faIcon,
+  attribute,
 }) {
-  const refinementCount = items.reduce((total, item) => (item.isRefined ? total + 1 : total), 0);
+  const items = searchState.refinementList[attribute] || [];
 
-  const touched = refinementCount > 0;
+  const touched = items.length > 0;
 
   return (
     <Button ref={ref} variant={touched ? 'success' : 'primary'} {...triggerHandler}>
       <FontAwesomeIcon icon={faIcon} />
       &nbsp; {label} &nbsp;{' '}
-      {refinementCount > 0 && (
+      {touched && (
         <Badge bg="light" text="dark">
-          {refinementCount}
+          {items.length}
         </Badge>
       )}
     </Button>
   );
-});
+};
 
 const FilterOverlay = React.forwardRef(function Container(
   { type, instantSearch, filterProps, ...overlayProps },
@@ -40,18 +41,20 @@ const FilterOverlay = React.forwardRef(function Container(
   const Component = componentsMap[type];
 
   return (
-    <Card ref={ref} {...overlayProps} style={{ ...overlayProps.style, width: 400 }}>
-      <InstantSearch {...instantSearch}>
-        <Card.Body>
-          <Component {...filterProps} />
-        </Card.Body>
-      </InstantSearch>
-    </Card>
+    <div ref={ref} {...overlayProps} style={{ ...overlayProps.style, width: 400 }}>
+      <Card className="shadow-lg">
+        <InstantSearch {...instantSearch}>
+          <Card.Body>
+            <Component {...filterProps} />
+          </Card.Body>
+        </InstantSearch>
+      </Card>
+    </div>
   );
 });
 
 export default function Filter({ type, instantSearch, ...filterProps }) {
-  const { label, faIcon } = filterProps;
+  const { label, faIcon, attribute } = filterProps;
 
   return (
     <>
@@ -63,7 +66,15 @@ export default function Filter({ type, instantSearch, ...filterProps }) {
           <FilterOverlay instantSearch={instantSearch} type={type} filterProps={filterProps} />
         }
       >
-        {(trigger) => <ButtonToggle trigger={trigger} label={label} faIcon={faIcon} />}
+        {(trigger) => (
+          <ButtonToggle
+            trigger={trigger}
+            label={label}
+            faIcon={faIcon}
+            searchState={instantSearch.searchState}
+            attribute={attribute}
+          />
+        )}
       </OverlayTrigger>
     </>
   );
