@@ -291,7 +291,9 @@ const DiscoverApp = React.memo((props) => {
                 <SearchBox defaultRefinement={query.s} />
               </Header>
 
-              <Filters />
+              <Filters
+                instantSearch={{ searchClient, indexName, searchState, onSearchStateChange }}
+              />
 
               <FiltersModal
                 searchClient={searchClient}
