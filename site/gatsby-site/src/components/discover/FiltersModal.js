@@ -4,6 +4,8 @@ import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
 import styled from 'styled-components';
 import Filter from './Filter';
 import { InstantSearch } from 'react-instantsearch-core';
+import Stats from './Stats';
+import ClearFilters from './ClearFilters';
 
 const FiltersModalList = styled.div`
   gap: 0.5rem;
@@ -20,7 +22,11 @@ function FiltersModal({ searchClient, indexName, searchState, onSearchStateChang
   return (
     <>
       <Row className="my-3 d-md-none">
+        <Col className="d-flex align-items-center">
+          <Stats />
+        </Col>
         <Col className="d-flex justify-content-end">
+          <ClearFilters>Clear</ClearFilters>
           <Button variant="link" onClick={() => setShowModal(true)}>
             Filters
           </Button>

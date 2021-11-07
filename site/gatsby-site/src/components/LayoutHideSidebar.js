@@ -90,8 +90,15 @@ const SidebarToggleButton = styled(Button)`
   }
 `;
 
-const LayoutHideSidebar = ({ children, location }) => {
+const LayoutHideSidebar = ({ children, location, menuCollapseCallback }) => {
   const [collapse, setCollapse] = useState(true);
+
+  const toggleMenu = () => {
+    setCollapse(!collapse);
+    if (menuCollapseCallback) {
+      menuCollapseCallback(!collapse);
+    }
+  };
 
   return (
     <Wrapper>
@@ -105,7 +112,7 @@ const LayoutHideSidebar = ({ children, location }) => {
         />
       ) : null}
       <Content>
-        <SidebarToggleButton onClick={() => setCollapse(!collapse)} collapse={collapse.toString()}>
+        <SidebarToggleButton onClick={() => toggleMenu()} collapse={collapse.toString()}>
           MENU
         </SidebarToggleButton>
         <MaxWidth>{children}</MaxWidth>
