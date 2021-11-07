@@ -11,6 +11,8 @@ const componentsMap = {
   range: VirtualRange,
 };
 
+// SEE: https://github.com/algolia/react-instantsearch/issues/302
+
 export default function VirtualFilters({ searchState }) {
   return REFINEMENT_LISTS.map((list) => {
     const Component = componentsMap[list.type];
