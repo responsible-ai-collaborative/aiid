@@ -13,6 +13,7 @@ import SearchBox from 'components/discover/SearchBox';
 import Pagination from 'components/discover/Pagination';
 import Filters from 'components/discover/Filters';
 import FiltersModal from 'components/discover/FiltersModal';
+import VirtualFilters from 'components/discover/VirtualFilters';
 
 const indexName = 'instant_search';
 
@@ -286,6 +287,8 @@ const DiscoverApp = React.memo((props) => {
             searchState={searchState}
             onSearchStateChange={onSearchStateChange}
           >
+            <VirtualFilters searchState={searchState} />
+
             <FiltersContainer className="container container-fluid mt-4">
               <Header>
                 <SearchBox defaultRefinement={query.s} />
