@@ -24,6 +24,7 @@
     "algoliasearch": "^4.10.5",
     "babel-plugin-styled-components": "^1.12.0",
     "bootstrap": "^5.1.1",
+    "bootstrap-daterangepicker": "^3.1.0",
     "bson": "^4.2.3",
     "cloudinary": "^1.26.3",
     "csvtojson": "^2.0.10",
@@ -36,7 +37,7 @@
     "gatsby": "^3.10.1",
     "gatsby-image": "^3.9.0",
     "gatsby-link": "^3.10.0",
-    "gatsby-plugin-algolia": "^0.5.0",
+    "gatsby-plugin-algolia": "^0.23.0",
     "gatsby-plugin-catch-links": "^3.10.0",
     "gatsby-plugin-client-side-redirect": "^1.1.0",
     "gatsby-plugin-emotion": "^6.10.0",
@@ -113,6 +114,9 @@
     "lint-staged": "^10.5.3",
     "prettier": "^2.2.1",
     "prism-react-renderer": "^1.2.0"
+  },
+  "browser": {
+    "crypto": false
   },
   "husky": {
     "hooks": {
