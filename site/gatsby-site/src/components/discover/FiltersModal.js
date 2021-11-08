@@ -14,7 +14,7 @@ const FiltersModalList = styled.div`
 `;
 
 // TODO: https://www.algolia.com/doc/guides/building-search-ui/going-further/native/react/?language=react#create-a-modal
-function FiltersModal({ searchClient, indexName, searchState, onSearchStateChange }) {
+function FiltersModal({ instantSearch }) {
   const [showModal, setShowModal] = useState(false);
 
   const handleClose = () => setShowModal(false);
@@ -38,15 +38,15 @@ function FiltersModal({ searchClient, indexName, searchState, onSearchStateChang
           <Modal.Title>Filters</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <InstantSearch
-            indexName={indexName}
-            searchClient={searchClient}
-            searchState={searchState}
-            onSearchStateChange={onSearchStateChange}
-          >
+          <InstantSearch {...instantSearch}>
             <FiltersModalList>
               {REFINEMENT_LISTS.map((list) => (
-                <Filter key={`chucku` + list.attribute} attribute={list.attribute} {...list} />
+                <Filter
+                  key={list.attribute}
+                  instantSearch={instantSearch}
+                  attribute={list.attribute}
+                  {...list}
+                />
               ))}
             </FiltersModalList>
           </InstantSearch>

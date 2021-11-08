@@ -299,10 +299,7 @@ const DiscoverApp = React.memo((props) => {
               />
 
               <FiltersModal
-                searchClient={searchClient}
-                indexName={indexName}
-                searchState={searchState}
-                onSearchStateChange={onSearchStateChange}
+                instantSearch={{ searchClient, indexName, searchState, onSearchStateChange }}
               />
             </FiltersContainer>
 
