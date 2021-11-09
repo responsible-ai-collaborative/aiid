@@ -44,4 +44,6 @@ const RefinementList = ({ items, isFromSearch, refine, searchForItems, placehold
   );
 };
 
+export const touchedCount = ({ items }) => (items ? items.length : 0);
+
 export default connectRefinementList(RefinementList);

@@ -51,4 +51,6 @@ const RangeInput = ({ min, max, currentRefinement, refine }) => {
   );
 };
 
+export const touchedCount = ({ range }) => (range && (range.min || range.max) ? 1 : 0);
+
 export default connectRange(styled(RangeInput)``);
