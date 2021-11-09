@@ -69,6 +69,7 @@ const RefinementList = ({
   );
 };
 
-export const touchedCount = ({ items }) => (items ? items.length : 0);
+export const touchedCount = ({ searchState, attribute }) =>
+  searchState.refinementList[attribute] ? searchState.refinementList[attribute].length : 0;
 
 export default connectRefinementList(RefinementList);

@@ -75,6 +75,10 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
   );
 };
 
-export const touchedCount = ({ range }) => (range && (range.min || range.max) ? 1 : 0);
+export const touchedCount = ({ searchState, attribute }) =>
+  searchState.range[attribute] &&
+  (searchState.range[attribute].min || searchState.range[attribute].max)
+    ? 1
+    : 0;
 
 export default connectRange(styled(RangeInput)``);

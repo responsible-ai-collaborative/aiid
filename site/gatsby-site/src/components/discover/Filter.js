@@ -3,6 +3,7 @@ import { InstantSearch } from 'react-instantsearch-dom';
 import { Button, OverlayTrigger, Badge, Card } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import componentsMap from './filters';
+import useSearch from './useSearch';
 
 const ButtonToggle = function ButtonToggle({
   trigger: { ref, ...triggerHandler },
@@ -47,10 +48,9 @@ export default function Filter({ type, instantSearch, ...filterProps }) {
 
   const { touchedCount } = componentsMap[type];
 
-  const touched = touchedCount({
-    items: instantSearch.searchState.refinementList[attribute],
-    range: instantSearch.searchState.range[attribute],
-  });
+  const { searchState } = useSearch();
+
+  const touched = touchedCount({ searchState, attribute });
 
   return (
     <>
