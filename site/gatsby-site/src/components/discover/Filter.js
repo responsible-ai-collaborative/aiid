@@ -1,6 +1,6 @@
 import React from 'react';
 import { InstantSearch } from 'react-instantsearch-dom';
-import { Button, OverlayTrigger, Badge, Card } from 'react-bootstrap';
+import { OverlayTrigger, Badge, Card, Dropdown } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import componentsMap from './filters';
 import useSearch from './useSearch';
@@ -12,7 +12,12 @@ const ButtonToggle = function ButtonToggle({
   touched,
 }) {
   return (
-    <Button ref={ref} variant={touched ? 'success' : 'primary'} {...triggerHandler}>
+    <Dropdown.Toggle
+      ref={ref}
+      variant={touched ? 'success' : 'primary'}
+      className="w-100"
+      {...triggerHandler}
+    >
       <FontAwesomeIcon icon={faIcon} />
       &nbsp; {label} &nbsp;{' '}
       {touched > 0 && (
@@ -20,7 +25,7 @@ const ButtonToggle = function ButtonToggle({
           {touched}
         </Badge>
       )}
-    </Button>
+    </Dropdown.Toggle>
   );
 };
 
