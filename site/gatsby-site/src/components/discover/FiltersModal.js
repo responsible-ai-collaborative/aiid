@@ -33,7 +33,7 @@ function FiltersModal({ instantSearch }) {
         </Col>
       </Row>
 
-      <Modal show={showModal} onHide={handleClose}>
+      <Modal show={showModal} onHide={handleClose} enforceFocus={false}>
         <Modal.Header closeButton>
           <Modal.Title>Filters</Modal.Title>
         </Modal.Header>
