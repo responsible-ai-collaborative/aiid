@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AdvancedImage, lazyload } from '@cloudinary/react';
-import { CloudinaryImage } from '@cloudinary/url-gen';
+import { CloudinaryImage } from '@cloudinary/base';
 import { defaultImage, format, quality } from '@cloudinary/base/actions/delivery';
 import { auto } from '@cloudinary/base/qualifiers/format';
 import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
@@ -23,13 +23,17 @@ const Image = ({ publicID, className, alt, transformation = null, plugins = [laz
     { analytics: false }
   );
 
-  image.delivery(defaultImage('fallback.jpg'));
+  //TODO: this is a fix for this issue: tmpImage.transformation.toString()
+  const tmpImage = new CloudinaryImage();
 
-  image.delivery(format(auto())).delivery(quality(qAuto()));
+  tmpImage.delivery(defaultImage('fallback.jpg'));
+  tmpImage.delivery(format(auto())).delivery(quality(qAuto()));
 
   if (transformation) {
-    image.addTransformation(transformation);
+    tmpImage.addTransformation(transformation);
   }
+
+  image.transformation = tmpImage.transformation.toString();
 
   return <AdvancedImage alt={alt} className={className} cldImg={image} plugins={plugins} />;
 };
