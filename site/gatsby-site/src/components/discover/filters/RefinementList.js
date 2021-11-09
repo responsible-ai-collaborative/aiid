@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { connectRefinementList, Highlight } from 'react-instantsearch-dom';
-import { Form, Badge, ListGroup } from 'react-bootstrap';
+import { Form, Badge, ListGroup, Button } from 'react-bootstrap';
 
 const ListGroupScrollable = styled(ListGroup)`
   max-height: 400px;
@@ -9,6 +9,10 @@ const ListGroupScrollable = styled(ListGroup)`
 `;
 
 const RefinementList = ({ items, isFromSearch, refine, searchForItems, placeholder }) => {
+  const clear = useCallback(() => {
+    refine([]);
+  }, [items]);
+
   return (
     <>
       <Form onSubmit={(e) => e.preventDefault()}>
@@ -18,7 +22,6 @@ const RefinementList = ({ items, isFromSearch, refine, searchForItems, placehold
           onChange={(event) => searchForItems(event.currentTarget.value)}
         />
       </Form>
-
       <ListGroupScrollable className="mt-4 border">
         {items.map((item) => (
           <ListGroup.Item
@@ -40,6 +43,9 @@ const RefinementList = ({ items, isFromSearch, refine, searchForItems, placehold
           {items.length === 0 && <div className="d-flex justify-content-center">No result</div>}
         </ListGroup.Item>
       </ListGroupScrollable>
+      <Button variant="link secondary" className="mt-4" onClick={clear}>
+        Clear
+      </Button>
     </>
   );
 };
