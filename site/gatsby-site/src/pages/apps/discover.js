@@ -14,6 +14,7 @@ import Pagination from 'components/discover/Pagination';
 import Filters from 'components/discover/Filters';
 import FiltersModal from 'components/discover/FiltersModal';
 import VirtualFilters from 'components/discover/VirtualFilters';
+import { SearchContext } from 'components/discover/useSearch';
 
 const indexName = 'instant_search';
 
@@ -279,47 +280,49 @@ const DiscoverApp = React.memo((props) => {
       <Helmet>
         <title>Artificial Intelligence Incident Database</title>
       </Helmet>
-      <QueryParams config={queryConfig}>
-        {() => (
-          <InstantSearch
-            indexName={indexName}
-            searchClient={searchClient}
-            searchState={searchState}
-            onSearchStateChange={onSearchStateChange}
-          >
-            <VirtualFilters searchState={searchState} />
+      <SearchContext.Provider value={{ searchState }}>
+        <QueryParams config={queryConfig}>
+          {() => (
+            <InstantSearch
+              indexName={indexName}
+              searchClient={searchClient}
+              searchState={searchState}
+              onSearchStateChange={onSearchStateChange}
+            >
+              <VirtualFilters searchState={searchState} />
 
-            <FiltersContainer className="container container-fluid mt-4">
-              <Header>
-                <SearchBox defaultRefinement={query.s} />
-              </Header>
+              <FiltersContainer className="container container-fluid mt-4">
+                <Header>
+                  <SearchBox defaultRefinement={query.s} />
+                </Header>
 
-              <Filters
-                instantSearch={{ searchClient, indexName, searchState, onSearchStateChange }}
-              />
+                <Filters
+                  instantSearch={{ searchClient, indexName, searchState, onSearchStateChange }}
+                />
 
-              <FiltersModal
-                instantSearch={{ searchClient, indexName, searchState, onSearchStateChange }}
-              />
-            </FiltersContainer>
+                <FiltersModal
+                  instantSearch={{ searchClient, indexName, searchState, onSearchStateChange }}
+                />
+              </FiltersContainer>
 
-            <HitsContainer className="container container-fluid mt-4">
-              <Hits
-                toggleFilterByIncidentId={toggleFilterByIncidentId}
-                authorsModal={authorsModal}
-                submittersModal={submittersModal}
-                flagReportModal={flagReportModal}
-              />
-            </HitsContainer>
+              <HitsContainer className="container container-fluid mt-4">
+                <Hits
+                  toggleFilterByIncidentId={toggleFilterByIncidentId}
+                  authorsModal={authorsModal}
+                  submittersModal={submittersModal}
+                  flagReportModal={flagReportModal}
+                />
+              </HitsContainer>
 
-            <CustomModal {...authorsModal} />
-            <CustomModal {...submittersModal} />
-            <CustomModal {...flagReportModal} />
+              <CustomModal {...authorsModal} />
+              <CustomModal {...submittersModal} />
+              <CustomModal {...flagReportModal} />
 
-            <Pagination />
-          </InstantSearch>
-        )}
-      </QueryParams>
+              <Pagination />
+            </InstantSearch>
+          )}
+        </QueryParams>
+      </SearchContext.Provider>
     </LayoutHideSidebar>
   );
 });

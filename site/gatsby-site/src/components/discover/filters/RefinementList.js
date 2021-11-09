@@ -2,16 +2,30 @@ import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { connectRefinementList, Highlight } from 'react-instantsearch-dom';
 import { Form, Badge, ListGroup, Button } from 'react-bootstrap';
+import useSearch from '../useSearch';
 
 const ListGroupScrollable = styled(ListGroup)`
   max-height: 400px;
   overflow-y: scroll;
 `;
 
-const RefinementList = ({ items, isFromSearch, refine, searchForItems, placeholder }) => {
+const RefinementList = ({
+  items,
+  isFromSearch,
+  refine,
+  searchForItems,
+  placeholder,
+  attribute,
+}) => {
   const clear = useCallback(() => {
     refine([]);
   }, [items]);
+
+  const { searchState } = useSearch();
+
+  const selectedItems = searchState.refinementList[attribute] || [];
+
+  const clearEnabled = selectedItems.length > 0;
 
   return (
     <>
@@ -43,7 +57,12 @@ const RefinementList = ({ items, isFromSearch, refine, searchForItems, placehold
           {items.length === 0 && <div className="d-flex justify-content-center">No result</div>}
         </ListGroup.Item>
       </ListGroupScrollable>
-      <Button variant="link secondary" className="mt-4" onClick={clear}>
+      <Button
+        variant="link secondary"
+        className="mt-4 text-decoration-none"
+        onClick={clear}
+        disabled={!clearEnabled}
+      >
         Clear
       </Button>
     </>
