@@ -17,11 +17,7 @@ const getCloudinaryPublicID = (url) => {
 };
 
 const Image = ({ publicID, className, alt, transformation = null, plugins = [lazyload()] }) => {
-  const image = new CloudinaryImage(
-    publicID,
-    { cloudName: config.cloudinary.cloudName },
-    { analytics: false }
-  );
+  const image = new CloudinaryImage(publicID, { cloudName: config.cloudinary.cloudName });
 
   //TODO: this is a fix for this issue: tmpImage.transformation.toString()
   const tmpImage = new CloudinaryImage();
