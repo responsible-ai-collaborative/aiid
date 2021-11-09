@@ -21,7 +21,7 @@ const REFINEMENT_LISTS = [
 
     // algolia specific
     showMore: true,
-    showMoreLimit: 30,
+    showMoreLimit: 50,
     transformItems,
   },
   {
@@ -34,7 +34,7 @@ const REFINEMENT_LISTS = [
 
     // algolia specific
     showMore: true,
-    showMoreLimit: 30,
+    showMoreLimit: 50,
     transformItems,
   },
   {
@@ -47,7 +47,7 @@ const REFINEMENT_LISTS = [
 
     // algolia specific
     showMore: true,
-    showMoreLimit: 30,
+    showMoreLimit: 50,
     transformItems,
   },
   {
@@ -60,7 +60,7 @@ const REFINEMENT_LISTS = [
 
     // algolia specific
     showMore: true,
-    showMoreLimit: 30,
+    showMoreLimit: 50,
     transformItems,
   },
   {
@@ -73,7 +73,7 @@ const REFINEMENT_LISTS = [
 
     // algolia specific
     showMore: true,
-    showMoreLimit: 30,
+    showMoreLimit: 50,
     transformItems,
   },
   {

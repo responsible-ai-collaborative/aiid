@@ -27,6 +27,14 @@ const RefinementList = ({
 
   const clearEnabled = selectedItems.length > 0;
 
+  const itemsNotInView = selectedItems
+    .filter((selected) => items.every((item) => item.label !== selected))
+    .map((selected) => ({
+      label: selected,
+      isRefined: true,
+      value: selectedItems.filter((s) => s !== selected),
+    }));
+
   return (
     <>
       <Form onSubmit={(e) => e.preventDefault()}>
@@ -37,7 +45,7 @@ const RefinementList = ({
         />
       </Form>
       <ListGroupScrollable className="mt-4 border">
-        {items.map((item) => (
+        {items.concat(itemsNotInView).map((item) => (
           <ListGroup.Item
             action
             key={item.label}
@@ -53,9 +61,11 @@ const RefinementList = ({
           </ListGroup.Item>
         ))}
 
-        <ListGroup.Item key="no-results">
-          {items.length === 0 && <div className="d-flex justify-content-center">No result</div>}
-        </ListGroup.Item>
+        {items.length === 0 && (
+          <ListGroup.Item key="no-results">
+            <div className="d-flex justify-content-center">No result</div>
+          </ListGroup.Item>
+        )}
       </ListGroupScrollable>
       <Button
         variant="link secondary"
