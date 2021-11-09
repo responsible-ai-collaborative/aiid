@@ -1,18 +1,12 @@
 import React, { useState } from 'react';
 import { AdvancedImage, lazyload } from '@cloudinary/react';
-import { Cloudinary } from '@cloudinary/base';
+import { CloudinaryImage } from '@cloudinary/url-gen';
 import { defaultImage, format, quality } from '@cloudinary/base/actions/delivery';
 import { auto } from '@cloudinary/base/qualifiers/format';
 import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
 import styled from 'styled-components';
 import config from '../../config';
 import TextInputGroup from 'components/TextInputGroup';
-
-const cld = new Cloudinary({
-  cloud: {
-    cloudName: config.cloudinary.cloudName,
-  },
-});
 
 const getCloudinaryPublicID = (url) => {
   // https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files
@@ -23,7 +17,13 @@ const getCloudinaryPublicID = (url) => {
 };
 
 const Image = ({ publicID, className, alt, transformation = null, plugins = [lazyload()] }) => {
-  const image = cld.image(publicID).delivery(defaultImage('fallback.jpg'));
+  const image = new CloudinaryImage(
+    publicID,
+    { cloudName: config.cloudinary.cloudName },
+    { analytics: false }
+  );
+
+  image.delivery(defaultImage('fallback.jpg'));
 
   image.delivery(format(auto())).delivery(quality(qAuto()));
 
