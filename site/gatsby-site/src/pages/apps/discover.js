@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { StringParam, QueryParams, useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { InstantSearch } from 'react-instantsearch-dom';
@@ -241,28 +241,21 @@ const DiscoverApp = React.memo((props) => {
     return query;
   };
 
-  const toggleFilterByIncidentId = (incidentId) => {
-    const incident_id = [];
+  const toggleFilterByIncidentId = useCallback(
+    (incidentId) => {
+      const newSearchState = {
+        ...searchState,
+        refinementList: {
+          ...searchState.refinementList,
+          incident_id: [incidentId],
+        },
+      };
 
-    if (
-      !searchState.refinementList ||
-      !searchState.refinementList.incident_id ||
-      searchState.refinementList.incident_id.length === 0
-    ) {
-      incident_id.push(incidentId);
-    }
-
-    const newSearchState = {
-      ...searchState,
-      refinementList: {
-        ...searchState.refinementList,
-        incident_id,
-      },
-    };
-
-    setSearchState(newSearchState);
-    setQuery(getQueryFromState(newSearchState), 'push');
-  };
+      setSearchState(newSearchState);
+      setQuery(getQueryFromState(newSearchState), 'push');
+    },
+    [searchState]
+  );
 
   const onSearchStateChange = (searchState) => {
     setSearchState({ ...searchState });
