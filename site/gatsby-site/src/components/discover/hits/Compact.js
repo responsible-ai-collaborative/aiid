@@ -54,17 +54,15 @@ const getFlagModalContent = () => (
 
 const IncidentCardImage = styled(Image)`
   object-fit: cover;
-  height: 100%;
   position: absolute;
   z-index: 0;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100%;
+  height: 100%;
 `;
 
 const StyledCardBody = styled(Card.Body)`
   position: relative;
+  padding: 0;
 `;
 
 const StyledSubTitle = styled(Card.Subtitle)`
@@ -77,18 +75,26 @@ const StyledCardTitle = styled(Card.Title)`
   }
 `;
 
-const StyledCard = styled(Card)`
-  height: 240px;
-`;
-
 const Contents = styled.div`
-  background: #000000a6;
+  background: #000000b3;
   color: #fff;
   bottom: 0;
   position: absolute;
   left: 0;
   right: 0;
   z-index: 1;
+  min-height: 40%;
+`;
+
+const StyledCard = styled(Card)`
+  height: 320px;
+  overflow: hidden;
+
+  :hover {
+    background: #00000000;
+  }
+
+  animation: all 0s;
 `;
 
 export default function Compact({
@@ -101,13 +107,13 @@ export default function Compact({
   return (
     <StyledCard>
       <StyledCardBody className="d-flex flex-column ">
-        <Contents className="p-4">
+        <Contents className="ps-4 pe-4 pt-3">
           <StyledCardTitle>
             <Link
               to={`/cite/${item.incident_id}#${item.mongodb_id}`}
               className="text-decoration-none"
             >
-              <TitleHighlight hit={item} attribute="title" />
+              <TitleHighlight hit={item} attribute="title" className="h6" />
             </Link>
           </StyledCardTitle>
 
