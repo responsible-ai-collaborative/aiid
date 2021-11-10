@@ -20,6 +20,7 @@ const Image = ({ publicID, className, alt, transformation = null, plugins = [laz
   const image = new CloudinaryImage(publicID, { cloudName: config.cloudinary.cloudName });
 
   //TODO: this is a fix for this issue: https://github.com/PartnershipOnAI/aiid/issues/260
+  // Setting transformation as a string skips the safe url check here: https://github.com/cloudinary/js-url-gen/blob/9a3d0a29ea77ddfd6f7181251615f34c2d8a6c5d/src/assets/CloudinaryFile.ts#L279
   const tmpImage = new CloudinaryImage();
 
   tmpImage.delivery(defaultImage('fallback.jpg'));
