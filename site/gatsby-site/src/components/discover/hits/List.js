@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, Button } from 'react-bootstrap';
 import { Highlight, Snippet } from 'react-instantsearch-dom';
 import { Image } from 'utils/cloudinary';
@@ -14,12 +14,11 @@ import {
   faHashtag,
 } from '@fortawesome/free-solid-svg-icons';
 import md5 from 'md5';
-import { navigate } from 'gatsby';
 
-const IncidentCardImage = styled(Image)``;
-
-const StyledLabel = styled.p`
-  margin: 0.6em 0;
+const IncidentCardImage = styled(Image)`
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
 `;
 
 const TitleHighlight = styled(Highlight)`
@@ -58,6 +57,20 @@ const getFlagModalContent = () => (
   </div>
 );
 
+const StyledCardBody = styled(Card.Body)``;
+
+const Contents = styled.div`
+  display: flex;
+`;
+
+const StyledCard = styled(Card)`
+  overflow: hidden;
+`;
+
+const Text = styled.div``;
+
+const Actions = styled.div``;
+
 export default function Details({
   item,
   authorsModal,
@@ -65,111 +78,115 @@ export default function Details({
   flagReportModal,
   toggleFilterByIncidentId,
 }) {
+  const [viewMore, setViewMore] = useState(false);
+
   return (
-    <Card className="h-100">
-      <IncidentCardImage
-        className="card-img-top"
-        publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
-        alt={item.title}
-        height="240px"
-        transformation={fill().height(480)}
-      />
-      <Card.Body className="d-flex flex-column ">
-        <Card.Title>
-          <TitleHighlight hit={item} attribute="title" />
-        </Card.Title>
+    <StyledCard>
+      <StyledCardBody>
+        <Contents className="gap-3">
+          <IncidentCardImage
+            className="img-thumbnail"
+            publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
+            alt={item.title}
+            transformation={fill().height(320)}
+          />
+          <Text>
+            <Card.Title>
+              <TitleHighlight hit={item} attribute="title" />
+            </Card.Title>
 
-        <Card.Subtitle className="mb-2 text-muted">
-          {item.source_domain} &middot;{' '}
-          {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
-        </Card.Subtitle>
+            <Card.Subtitle className="mb-2 text-muted">
+              {item.source_domain} &middot;{' '}
+              {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
+            </Card.Subtitle>
 
-        {item._snippetResult.text.matchLevel === 'full' && (
-          <blockquote className="mt-4">
-            <Snippet attribute="text" hit={item} />
-          </blockquote>
-        )}
+            {item._snippetResult.text.matchLevel === 'full' && (
+              <blockquote className="mt-4">
+                <Snippet attribute="text" hit={item} />
+              </blockquote>
+            )}
 
-        <Card.Text className="flex-fill">{item.text.substr(0, 400) + '...'}</Card.Text>
+            <Actions className="d-flex justify-content-start gap-4">
+              <WebArchiveLink
+                url={item.url}
+                date={item.date_submitted}
+                className="btn btn-link px-1"
+                title={'Authors'}
+              >
+                <FontAwesomeIcon
+                  icon={faNewspaper}
+                  className="fa-newspaper"
+                  title="Read the Source"
+                />
+              </WebArchiveLink>
 
-        <div className="align-bottom">
-          {toggleFilterByIncidentId && (
-            <button
-              type="button"
-              className="btn btn-secondary btn-sm w-100"
-              onClick={() => {
-                navigate(`/cite/${item.incident_id}#${item.mongodb_id}`);
-              }}
-            >
-              <StyledLabel>Show Details on Incident #{item.incident_id}</StyledLabel>
-            </button>
-          )}
-        </div>
-      </Card.Body>
+              <Button
+                variant="link"
+                title="Authors"
+                onClick={() =>
+                  authorsModal.openFor({
+                    title: 'Authors',
+                    body: () => item.authors.join(', '),
+                  })
+                }
+              >
+                <FontAwesomeIcon icon={faIdCard} className="fa-id-card" />
+              </Button>
 
-      <Card.Footer className="d-flex justify-content-between">
-        <WebArchiveLink
-          url={item.url}
-          date={item.date_submitted}
-          className="btn btn-link px-1"
-          title={'Authors'}
-        >
-          <FontAwesomeIcon icon={faNewspaper} className="fa-newspaper" title="Read the Source" />
-        </WebArchiveLink>
+              <Button
+                variant="link"
+                title="Submitters"
+                className="px-1"
+                onClick={() =>
+                  submittersModal.openFor({
+                    title: 'Submitters',
+                    body: () => item.submitters.join(', '),
+                  })
+                }
+              >
+                <FontAwesomeIcon icon={faUserShield} className="fa-user-shield" />
+              </Button>
 
-        <Button
-          variant="link"
-          title="Authors"
-          onClick={() =>
-            authorsModal.openFor({
-              title: 'Authors',
-              body: () => item.authors.join(', '),
-            })
-          }
-        >
-          <FontAwesomeIcon icon={faIdCard} className="fa-id-card" />
-        </Button>
+              <Button
+                variant="link"
+                title="Flag Report"
+                className="px-1"
+                onClick={() =>
+                  flagReportModal.openFor({
+                    title: 'Submitters',
+                    body: getFlagModalContent,
+                  })
+                }
+              >
+                <FontAwesomeIcon icon={faFlag} className="fa-flag" />
+              </Button>
 
-        <Button
-          variant="link"
-          title="Submitters"
-          className="px-1"
-          onClick={() =>
-            submittersModal.openFor({
-              title: 'Submitters',
-              body: () => item.submitters.join(', '),
-            })
-          }
-        >
-          <FontAwesomeIcon icon={faUserShield} className="fa-user-shield" />
-        </Button>
+              {toggleFilterByIncidentId && (
+                <Button
+                  variant="link"
+                  aria-hidden="true"
+                  className="d-flex align-items-center px-1"
+                  onClick={() => toggleFilterByIncidentId(item.incident_id + '')}
+                >
+                  <FontAwesomeIcon icon={faHashtag} className="fa-hashtag" title="Incident ID" />
+                  {item.incident_id}
+                </Button>
+              )}
+            </Actions>
+          </Text>
+        </Contents>
+        <Card.Text className="mt-2">
+          {viewMore ? item.text : item.text.slice(0, 400)}
 
-        <Button
-          variant="link"
-          title="Flag Report"
-          className="px-1"
-          onClick={() =>
-            flagReportModal.openFor({
-              title: 'Submitters',
-              body: getFlagModalContent,
-            })
-          }
-        >
-          <FontAwesomeIcon icon={faFlag} className="fa-flag" />
-        </Button>
-
-        {toggleFilterByIncidentId && (
           <Button
+            onClick={() => setViewMore((view) => !view)}
             variant="link"
-            aria-hidden="true"
-            className="d-flex align-items-center px-1"
-            onClick={() => toggleFilterByIncidentId(item.incident_id + '')}
+            className="d-inline px-1 py-0"
           >
-            <FontAwesomeIcon icon={faHashtag} className="fa-hashtag" title="Incident ID" />
-            {item.incident_id}
+            {viewMore ? <>less</> : <>more...</>}
           </Button>
-        )}
-      </Card.Footer>
-    </Card>
+        </Card.Text>
+      </StyledCardBody>
+    </StyledCard>
   );
 }

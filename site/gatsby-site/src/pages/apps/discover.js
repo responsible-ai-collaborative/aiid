@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { QueryParams, useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { InstantSearch } from 'react-instantsearch-dom';
@@ -21,25 +21,6 @@ const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
   config.header.search.algoliaSearchKey
 );
-
-const HitsContainer = styled.div`
-  max-width: 1400px;
-  display: grid;
-  grid-gap: 6px;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-
-  @media (min-width: 576px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  @media (min-width: 992px) {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-`;
 
 const FiltersContainer = styled.div`
   max-width: 1400px;
@@ -185,57 +166,50 @@ const generateSearchState = ({ query }) => {
   };
 };
 
-const DiscoverApp = React.memo((props) => {
+const getQueryFromState = (searchState) => {
+  let query = {};
+
+  if (searchState && searchState.query !== '') {
+    query.s = searchState.query;
+  }
+
+  if (searchState && searchState.refinementList !== {}) {
+    query = {
+      ...query,
+      ...convertArrayToString(removeEmptyAttributes(searchState.refinementList)),
+    };
+  }
+
+  if (searchState && searchState.range !== {}) {
+    query = {
+      ...query,
+      ...convertRangeToQueryString(removeEmptyAttributes(searchState.range)),
+    };
+  }
+
+  return query;
+};
+
+function DiscoverApp(props) {
   const [query, setQuery] = useQueryParams(queryConfig);
 
   const [searchState, setSearchState] = useState(generateSearchState({ query }));
 
-  const getQueryFromState = (searchState) => {
-    let query = {};
-
-    if (searchState && searchState.query !== '') {
-      query.s = searchState.query;
-    }
-
-    if (searchState && searchState.refinementList !== {}) {
-      query = {
-        ...query,
-        ...convertArrayToString(removeEmptyAttributes(searchState.refinementList)),
+  const toggleFilterByIncidentId = useCallback(
+    (incidentId) => {
+      const newSearchState = {
+        ...searchState,
+        refinementList: {
+          ...searchState.refinementList,
+          incident_id: [incidentId],
+        },
       };
-    }
 
-    if (searchState && searchState.range !== {}) {
-      query = {
-        ...query,
-        ...convertRangeToQueryString(removeEmptyAttributes(searchState.range)),
-      };
-    }
-
-    return query;
-  };
-
-  const toggleFilterByIncidentId = (incidentId) => {
-    const incident_id = [];
-
-    if (
-      !searchState.refinementList ||
-      !searchState.refinementList.incident_id ||
-      searchState.refinementList.incident_id.length === 0
-    ) {
-      incident_id.push(incidentId);
-    }
-
-    const newSearchState = {
-      ...searchState,
-      refinementList: {
-        ...searchState.refinementList,
-        incident_id,
-      },
-    };
-
-    setSearchState(newSearchState);
-    setQuery(getQueryFromState(newSearchState), 'push');
-  };
+      setSearchState(newSearchState);
+      setQuery(getQueryFromState(newSearchState), 'push');
+    },
+    [searchState]
+  );
 
   const onSearchStateChange = (searchState) => {
     setSearchState({ ...searchState });
@@ -247,8 +221,6 @@ const DiscoverApp = React.memo((props) => {
   const submittersModal = useModal();
 
   const flagReportModal = useModal();
-
-  console.log(searchState);
 
   return (
     <LayoutHideSidebar {...props}>
@@ -278,14 +250,12 @@ const DiscoverApp = React.memo((props) => {
               />
             </FiltersContainer>
 
-            <HitsContainer className="container container-fluid mt-4">
-              <Hits
-                toggleFilterByIncidentId={toggleFilterByIncidentId}
-                authorsModal={authorsModal}
-                submittersModal={submittersModal}
-                flagReportModal={flagReportModal}
-              />
-            </HitsContainer>
+            <Hits
+              toggleFilterByIncidentId={toggleFilterByIncidentId}
+              authorsModal={authorsModal}
+              submittersModal={submittersModal}
+              flagReportModal={flagReportModal}
+            />
 
             <CustomModal {...authorsModal} />
             <CustomModal {...submittersModal} />
@@ -297,8 +267,6 @@ const DiscoverApp = React.memo((props) => {
       </QueryParams>
     </LayoutHideSidebar>
   );
-});
-
-DiscoverApp.displayName = 'DiscoverApp';
+}
 
 export default DiscoverApp;
