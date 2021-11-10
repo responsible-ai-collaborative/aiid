@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StringParam, QueryParams, useQueryParams } from 'use-query-params';
+import { QueryParams, useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { InstantSearch } from 'react-instantsearch-dom';
 import styled from 'styled-components';
@@ -13,6 +13,7 @@ import SearchBox from 'components/discover/SearchBox';
 import Pagination from 'components/discover/Pagination';
 import Filters from 'components/discover/Filters';
 import FiltersModal from 'components/discover/FiltersModal';
+import { queryConfig } from 'components/discover/queryParams';
 
 const indexName = 'instant_search';
 
@@ -185,35 +186,9 @@ const generateSearchState = ({ query }) => {
 };
 
 const DiscoverApp = React.memo((props) => {
-  const [query, setQuery] = useQueryParams({
-    s: StringParam,
-    source_domain: StringParam,
-    authors: StringParam,
-    submitters: StringParam,
-    incident_id: StringParam,
-    flag: StringParam,
-    classifications: StringParam,
-    epoch_incident_date_min: StringParam,
-    epoch_incident_date_max: StringParam,
-    epoch_date_published_min: StringParam,
-    epoch_date_published_max: StringParam,
-  });
+  const [query, setQuery] = useQueryParams(queryConfig);
 
   const [searchState, setSearchState] = useState(generateSearchState({ query }));
-
-  const queryConfig = {
-    s: StringParam,
-    source_domain: StringParam,
-    authors: StringParam,
-    submitters: StringParam,
-    incident_id: StringParam,
-    flag: StringParam,
-    classifications: StringParam,
-    epoch_incident_date_min: StringParam,
-    epoch_incident_date_max: StringParam,
-    epoch_date_published_min: StringParam,
-    epoch_date_published_max: StringParam,
-  };
 
   const getQueryFromState = (searchState) => {
     let query = {};
@@ -273,6 +248,8 @@ const DiscoverApp = React.memo((props) => {
 
   const flagReportModal = useModal();
 
+  console.log(searchState);
+
   return (
     <LayoutHideSidebar {...props}>
       <Helmet>
@@ -321,5 +298,7 @@ const DiscoverApp = React.memo((props) => {
     </LayoutHideSidebar>
   );
 });
+
+DiscoverApp.displayName = 'DiscoverApp';
 
 export default DiscoverApp;
