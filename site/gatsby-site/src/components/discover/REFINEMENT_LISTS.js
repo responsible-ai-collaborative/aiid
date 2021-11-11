@@ -6,9 +6,6 @@ import {
   faHashtag,
   faCalendarAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import orderBy from 'lodash.orderby';
-
-const transformItems = (items) => orderBy(items, ['count', 'label'], ['desc', 'desc']);
 
 const REFINEMENT_LISTS = [
   {
@@ -22,7 +19,6 @@ const REFINEMENT_LISTS = [
     // algolia specific
     showMore: true,
     showMoreLimit: 50,
-    transformItems,
   },
   {
     attribute: 'source_domain',
@@ -35,7 +31,6 @@ const REFINEMENT_LISTS = [
     // algolia specific
     showMore: true,
     showMoreLimit: 50,
-    transformItems,
   },
   {
     attribute: 'authors',
@@ -48,7 +43,6 @@ const REFINEMENT_LISTS = [
     // algolia specific
     showMore: true,
     showMoreLimit: 50,
-    transformItems,
   },
   {
     attribute: 'submitters',
@@ -61,7 +55,6 @@ const REFINEMENT_LISTS = [
     // algolia specific
     showMore: true,
     showMoreLimit: 50,
-    transformItems,
   },
   {
     attribute: 'incident_id',
@@ -74,7 +67,6 @@ const REFINEMENT_LISTS = [
     // algolia specific
     showMore: true,
     showMoreLimit: 50,
-    transformItems,
   },
   {
     attribute: 'epoch_incident_date',

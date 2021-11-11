@@ -27,14 +27,6 @@ const RefinementList = ({
 
   const clearEnabled = selectedItems.length > 0;
 
-  const itemsNotInView = selectedItems
-    .filter((selected) => items.every((item) => item.label !== selected))
-    .map((selected) => ({
-      label: selected,
-      isRefined: true,
-      value: selectedItems.filter((s) => s !== selected),
-    }));
-
   return (
     <>
       <Form onSubmit={(e) => e.preventDefault()}>
@@ -45,7 +37,7 @@ const RefinementList = ({
         />
       </Form>
       <ListGroupScrollable className="mt-4 border">
-        {items.concat(itemsNotInView).map((item) => (
+        {items.map((item) => (
           <ListGroup.Item
             action
             key={item.label}
