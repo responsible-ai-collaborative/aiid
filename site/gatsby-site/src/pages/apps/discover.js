@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { QueryParams, useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { InstantSearch } from 'react-instantsearch-dom';
@@ -206,15 +206,23 @@ function DiscoverApp(props) {
       };
 
       setSearchState(newSearchState);
-      setQuery(getQueryFromState(newSearchState), 'push');
     },
     [searchState]
   );
 
   const onSearchStateChange = (searchState) => {
     setSearchState({ ...searchState });
-    setQuery(getQueryFromState(searchState), 'push');
   };
+
+  useEffect(() => {
+
+    const searchQuery = getQueryFromState(searchState)
+
+    const viewQuery = { display: query.display }
+
+    setQuery({ ...searchQuery, ...viewQuery }, 'push');
+
+  }, [searchState])
 
   const authorsModal = useModal();
 
