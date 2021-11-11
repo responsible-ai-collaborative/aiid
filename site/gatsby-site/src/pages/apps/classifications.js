@@ -6,12 +6,13 @@ import { useMongo } from 'hooks/useMongo';
 import config from '../../../config';
 
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
-import { Table, Spinner, Form } from 'react-bootstrap';
+import { Table, Spinner, Form, InputGroup, FormControl, Button } from 'react-bootstrap';
 import Link from 'components/Link';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useModal, CustomModal } from 'components/useModal';
 import { useUserContext } from 'contexts/userContext';
+import DateRangePicker from 'react-bootstrap-daterangepicker';
 
 const Container = styled.div`
   max-width: calc(100vw - 298px);
@@ -91,14 +92,17 @@ const DefaultColumnFilter = ({ column: { filterValue, preFilteredRows, setFilter
   const count = preFilteredRows.length;
 
   return (
-    <input
-      value={filterValue || ''}
-      onChange={(e) => {
-        e.preventDefault();
-        setFilter(e.target.value || undefined);
-      }}
-      placeholder={`Search ${count} records...`}
-    />
+    <InputGroup>
+      <FormControl
+        style={{ minWidth: 100 }}
+        value={filterValue || ''}
+        onChange={(e) => {
+          e.preventDefault();
+          setFilter(e.target.value || undefined);
+        }}
+        placeholder={`Search ${count} records...`}
+      />
+    </InputGroup>
   );
 };
 
@@ -178,8 +182,8 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
   const filteredOptions = options.filter((o) => o !== '-');
 
   return (
-    <select
-      style={{ maxWidth: 100 }}
+    <Form.Select
+      style={{ minWidth: 100 }}
       value={filterValue}
       onChange={(e) => {
         setFilter(e.target.value || undefined);
@@ -191,7 +195,58 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
           {option}
         </option>
       ))}
-    </select>
+    </Form.Select>
+  );
+};
+
+const SelectDatePickerFilter = ({
+  column: { filterValue = [], preFilteredRows, setFilter, id },
+}) => {
+  const [min, max] = React.useMemo(() => {
+    let min = new Date(preFilteredRows[0]?.values[id] ?? '1970-01-01').getTime();
+
+    let max = new Date(preFilteredRows[0]?.values[id] ?? '1970-01-01').getTime();
+
+    preFilteredRows.forEach((row) => {
+      const currentDatetime = new Date(row.values[id]).getTime();
+
+      min = currentDatetime <= min ? currentDatetime : min;
+      max = currentDatetime >= max ? currentDatetime : max;
+    });
+    return [min, max];
+  }, [id, preFilteredRows]);
+
+  if (filterValue.length === 0) {
+    setFilter;
+  }
+
+  const handleApply = (event, picker) => {
+    picker.element.val(
+      picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+    );
+    setFilter([picker.startDate.valueOf(), picker.endDate.valueOf()]);
+  };
+
+  const handleCancel = (event, picker) => {
+    picker.element.val('');
+    setFilter([min, max]);
+  };
+
+  return (
+    <DateRangePicker
+      className="custom-picker"
+      onApply={handleApply}
+      onCancel={handleCancel}
+      initialSettings={{
+        showDropdowns: true,
+        autoUpdateInput: false,
+        locale: {
+          cancelLabel: 'Clear',
+        },
+      }}
+    >
+      <input style={{ width: 190 }} type="text" className="form-control col-4" defaultValue="" />
+    </DateRangePicker>
   );
 };
 
@@ -286,6 +341,11 @@ export default function ClassificationsDbView(props) {
       if (selectFilterTypes.includes(taxaField.display_type)) {
         column.Filter = SelectColumnFilter;
         column.filter = 'includes';
+      }
+
+      if (taxaField.display_type === 'date') {
+        column.Filter = SelectDatePickerFilter;
+        column.filter = taxaField.short_name.split(' ').join('');
       }
 
       return column;
@@ -417,6 +477,22 @@ export default function ClassificationsDbView(props) {
     []
   );
 
+  const filterDateFunction = (rows, id, filterValue) => {
+    const start = new Date(filterValue[0]).getTime();
+
+    const end = new Date(filterValue[1]).getTime();
+
+    return rows.filter(
+      (val) =>
+        new Date(val.original[id]).getTime() >= start && new Date(val.original[id]).getTime() <= end
+    );
+  };
+
+  const filterTypes = {
+    BeginningDate: filterDateFunction,
+    EndingDate: filterDateFunction,
+  };
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -432,12 +508,14 @@ export default function ClassificationsDbView(props) {
     nextPage,
     previousPage,
     setPageSize,
+    setAllFilters,
     state: { pageIndex, pageSize },
   } = useTable(
     {
       columns,
       data,
       defaultColumn,
+      filterTypes,
       initialState: { pageIndex: 0, pageSize: 500 },
     },
     useFilters,
@@ -506,6 +584,9 @@ export default function ClassificationsDbView(props) {
             </Spinner>
           )}
         </TaxonomySelectContainer>
+        <Button onClick={() => setAllFilters([])} style={{ marginLeft: '1em' }}>
+          Reset filters
+        </Button>
         {!loading && (
           <TableStyles>
             <Table striped bordered hover {...getTableProps()}>
@@ -516,6 +597,7 @@ export default function ClassificationsDbView(props) {
                       <th key={column.id} {...column.getHeaderProps()}>
                         <HeaderCellContainer
                           {...column.getHeaderProps(column.getSortByToggleProps())}
+                          style={{ marginBottom: 5 }}
                         >
                           {column.render('Header')}
                           <span>
