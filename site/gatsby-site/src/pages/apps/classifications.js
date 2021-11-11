@@ -6,11 +6,12 @@ import { useMongo } from 'hooks/useMongo';
 import config from '../../../config';
 
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
-import { Table } from 'react-bootstrap';
+import { Table, Spinner, Form } from 'react-bootstrap';
 import Link from 'components/Link';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useModal, CustomModal } from 'components/useModal';
+import { useUserContext } from 'contexts/userContext';
 
 const Container = styled.div`
   max-width: calc(100vw - 298px);
@@ -78,6 +79,10 @@ const HeaderCellContainer = styled.div`
 
 const TaxonomySelectContainer = styled.div`
   padding: 1rem;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `;
 
 const DEFAULT_EMPTY_CELL_DATA = '-';
@@ -191,6 +196,8 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
 };
 
 export default function ClassificationsDbView(props) {
+  const { isAdmin } = useUserContext();
+
   const [loading, setLoading] = useState(false);
 
   const [collapse, setCollapse] = useState(true);
@@ -208,12 +215,7 @@ export default function ClassificationsDbView(props) {
     const setupTaxonomiesSelect = async () => {
       const taxonomies = await fetchTaxaData();
 
-      setAllTaxonomies([
-        ...taxonomies,
-        {
-          ...taxonomies[0],
-        },
-      ]);
+      setAllTaxonomies([...taxonomies]);
       setCurrentTaxonomy(taxonomies[0].namespace);
       setLoading(false);
     };
@@ -252,7 +254,15 @@ export default function ClassificationsDbView(props) {
         runQuery(
           {},
           (res) => {
-            resolve(res);
+            let result = [...res];
+
+            if (!isAdmin) {
+              res.forEach((t, index) => {
+                result[index].field_list = t.field_list.filter((f) => f.public !== false);
+              });
+            }
+
+            resolve(result);
           },
           config.realm.production_db.db_service,
           config.realm.production_db.db_name,
@@ -428,7 +438,7 @@ export default function ClassificationsDbView(props) {
       columns,
       data,
       defaultColumn,
-      initialState: { pageIndex: 0, pageSize: 50 },
+      initialState: { pageIndex: 0, pageSize: 500 },
     },
     useFilters,
     useSortBy,
@@ -445,7 +455,8 @@ export default function ClassificationsDbView(props) {
         </Helmet>
         <Container>
           <TaxonomySelectContainer>
-            <select
+            <Form.Select
+              style={{ width: 100, margin: '0 10px' }}
               aria-label="Default select example"
               onChange={(e) => setCurrentTaxonomy(e.target.value)}
             >
@@ -455,9 +466,11 @@ export default function ClassificationsDbView(props) {
                     {taxa.namespace}
                   </option>
                 ))}
-            </select>
+            </Form.Select>
+            <Spinner animation="border" role="status" variant="primary" style={{ marginLeft: 10 }}>
+              <span className="sr-only">Loading...</span>
+            </Spinner>
           </TaxonomySelectContainer>
-          <div>No Data</div>
         </Container>
       </LayoutHideSidebar>
     );
@@ -473,7 +486,9 @@ export default function ClassificationsDbView(props) {
       </Helmet>
       <Container isWide={collapse}>
         <TaxonomySelectContainer>
-          <select
+          Showing the
+          <Form.Select
+            style={{ width: 100, margin: '0 10px' }}
             aria-label="Default select example"
             onChange={(e) => setCurrentTaxonomy(e.target.value)}
           >
@@ -483,11 +498,15 @@ export default function ClassificationsDbView(props) {
                   {taxa.namespace}
                 </option>
               ))}
-          </select>
+          </Form.Select>
+          taxonomy
+          {loading && (
+            <Spinner animation="border" role="status" variant="primary" style={{ marginLeft: 10 }}>
+              <span className="sr-only">Loading...</span>
+            </Spinner>
+          )}
         </TaxonomySelectContainer>
-        {loading ? (
-          <div>loading...</div>
-        ) : (
+        {!loading && (
           <TableStyles>
             <Table striped bordered hover {...getTableProps()}>
               <thead>
@@ -519,7 +538,7 @@ export default function ClassificationsDbView(props) {
                           return (
                             <td key={cell.id} {...cell.getCellProps()}>
                               <ScrollCell>
-                                <Link to={`/cite/${cell.value}`}>
+                                <Link to={`/cite/${cell.value}#taxa-area`}>
                                   Incident {cell.render('Cell')}
                                 </Link>
                               </ScrollCell>
@@ -608,7 +627,7 @@ export default function ClassificationsDbView(props) {
                   setPageSize(Number(e.target.value));
                 }}
               >
-                {[10, 20, 30, 40, 50].map((pageSize) => (
+                {[10, 20, 30, 40, 50, 100, 500].map((pageSize) => (
                   <option key={pageSize} value={pageSize}>
                     Show {pageSize}
                   </option>
