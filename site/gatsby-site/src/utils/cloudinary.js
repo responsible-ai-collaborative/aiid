@@ -1,18 +1,12 @@
 import React, { useState } from 'react';
 import { AdvancedImage, lazyload } from '@cloudinary/react';
-import { Cloudinary } from '@cloudinary/base';
+import { CloudinaryImage } from '@cloudinary/base';
 import { defaultImage, format, quality } from '@cloudinary/base/actions/delivery';
 import { auto } from '@cloudinary/base/qualifiers/format';
 import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
 import styled from 'styled-components';
 import config from '../../config';
 import TextInputGroup from 'components/TextInputGroup';
-
-const cld = new Cloudinary({
-  cloud: {
-    cloudName: config.cloudinary.cloudName,
-  },
-});
 
 const getCloudinaryPublicID = (url) => {
   // https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files
@@ -23,13 +17,20 @@ const getCloudinaryPublicID = (url) => {
 };
 
 const Image = ({ publicID, className, alt, transformation = null, plugins = [lazyload()] }) => {
-  const image = cld.image(publicID).delivery(defaultImage('fallback.jpg'));
+  const image = new CloudinaryImage(publicID, { cloudName: config.cloudinary.cloudName });
 
-  image.delivery(format(auto())).delivery(quality(qAuto()));
+  //TODO: this is a fix for this issue: https://github.com/PartnershipOnAI/aiid/issues/260
+  // Setting transformation as a string skips the safe url check here: https://github.com/cloudinary/js-url-gen/blob/9a3d0a29ea77ddfd6f7181251615f34c2d8a6c5d/src/assets/CloudinaryFile.ts#L279
+  const tmpImage = new CloudinaryImage();
+
+  tmpImage.delivery(defaultImage('fallback.jpg'));
+  tmpImage.delivery(format(auto())).delivery(quality(qAuto()));
 
   if (transformation) {
-    image.addTransformation(transformation);
+    tmpImage.addTransformation(transformation);
   }
+
+  image.transformation = tmpImage.transformation.toString();
 
   return <AdvancedImage alt={alt} className={className} cldImg={image} plugins={plugins} />;
 };
