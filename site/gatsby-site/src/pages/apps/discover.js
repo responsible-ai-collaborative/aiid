@@ -243,7 +243,7 @@ function DiscoverApp(props) {
             searchState={searchState}
             onSearchStateChange={onSearchStateChange}
           >
-            <FiltersContainer className="container container-fluid mt-4">
+            <FiltersContainer className="container-xl mt-4">
               <Header>
                 <SearchBox defaultRefinement={query.s} />
               </Header>
