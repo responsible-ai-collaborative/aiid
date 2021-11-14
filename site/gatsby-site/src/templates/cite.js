@@ -244,10 +244,12 @@ const IncidentCite = ({ ...props }) => {
               </div>
             </CardContainer>
           </Row>
-          {taxonomies.length > 0 &&
-            taxonomies.map((t) => (
-              <TaxonomyForm key={t.namespace} taxonomy={t} incidentId={incident_id} />
-            ))}
+          <div id="taxa-area">
+            {taxonomies.length > 0 &&
+              taxonomies.map((t) => (
+                <TaxonomyForm key={t.namespace} taxonomy={t} incidentId={incident_id} />
+              ))}
+          </div>
           <Row className="mb-4">
             <CardContainer className="card">
               <ImageCarousel nodes={incidentReports} />
