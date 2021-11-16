@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import md5 from 'md5';
 import Carousel from 'react-bootstrap/Carousel';
 import { Image } from 'utils/cloudinary';
-import { fill } from '@cloudinary/base/actions/resize';
+import { fill } from '@cloudinary/url-gen/actions/resize';
 
 const Caption = styled.h3`
   background: rgba(0, 0, 0, 0.55);

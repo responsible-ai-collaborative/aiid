@@ -3,7 +3,7 @@ import { Card } from 'react-bootstrap';
 import { Highlight, Snippet } from 'react-instantsearch-dom';
 import { Image } from 'utils/cloudinary';
 import styled from 'styled-components';
-import { fill } from '@cloudinary/base/actions/resize';
+import { fill } from '@cloudinary/url-gen/actions/resize';
 import md5 from 'md5';
 import { Link } from 'gatsby';
 import Actions from './Actions';

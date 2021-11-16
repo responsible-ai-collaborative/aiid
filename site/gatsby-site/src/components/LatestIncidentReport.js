@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import md5 from 'md5';
 import { format } from 'date-fns';
 import { Image } from '../utils/cloudinary';
-import { fill } from '@cloudinary/base/actions/resize';
+import { fill } from '@cloudinary/url-gen/actions/resize';
 
 const ThumbnailLink = styled(Link)`
   display: block;

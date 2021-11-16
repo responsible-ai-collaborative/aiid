@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { AdvancedImage, lazyload } from '@cloudinary/react';
-import { CloudinaryImage } from '@cloudinary/base';
-import { defaultImage, format, quality } from '@cloudinary/base/actions/delivery';
-import { auto } from '@cloudinary/base/qualifiers/format';
-import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
+import { CloudinaryImage } from '@cloudinary/url-gen';
+import { defaultImage, format, quality } from '@cloudinary/url-gen/actions/delivery';
+import { auto } from '@cloudinary/url-gen/qualifiers/format';
+import { auto as qAuto } from '@cloudinary/url-gen/qualifiers/quality';
 import styled from 'styled-components';
 import config from '../../config';
 import TextInputGroup from 'components/TextInputGroup';

@@ -15,7 +15,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import WebArchiveLink from './WebArchiveLink';
 import { Image } from 'utils/cloudinary';
-import { fill } from '@cloudinary/base/actions/resize';
+import { fill } from '@cloudinary/url-gen/actions/resize';
 
 const cardNeedsBlockquote = (item) => {
   if (item.text && item.text.matchLevel === 'full') {
