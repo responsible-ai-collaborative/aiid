@@ -1,17 +1,9 @@
 import React, { useState } from 'react';
-import { Row, Col, Modal, Button } from 'react-bootstrap';
+import { Row, Col, Modal, Button, Accordion } from 'react-bootstrap';
 import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
-import styled from 'styled-components';
-import Filter from './Filter';
+import { AccordionFilter } from './Filter';
 import Stats from './Stats';
 import ClearFilters from './ClearFilters';
-
-const FiltersModalList = styled.div`
-  gap: 0.5rem;
-  display: flex;
-  flex-direction: column;
-`;
-
 // https://www.algolia.com/doc/guides/building-search-ui/going-further/native/react/?language=react#create-a-modal
 
 function FiltersModal() {
@@ -33,16 +25,16 @@ function FiltersModal() {
         </Col>
       </Row>
 
-      <Modal show={showModal} onHide={handleClose} enforceFocus={false}>
+      <Modal show={showModal} onHide={handleClose} enforceFocus={false} fullscreen>
         <Modal.Header closeButton>
           <Modal.Title>Filters</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <FiltersModalList>
+          <Accordion defaultActiveKey="0">
             {REFINEMENT_LISTS.map((list) => (
-              <Filter key={list.attribute} attribute={list.attribute} {...list} />
+              <AccordionFilter key={list.attribute} attribute={list.attribute} {...list} />
             ))}
-          </FiltersModalList>
+          </Accordion>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
