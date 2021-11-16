@@ -13,29 +13,18 @@ import 'bootstrap-daterangepicker/daterangepicker.css';
 
 import '@fortawesome/fontawesome-svg-core/styles.css';
 
-const ROUTES_WITH_RULES = ['/cite/', '/apps/discover'];
-
 export const shouldUpdateScroll = ({ routerProps: { location } }) => {
   const { pathname, hash } = location;
 
-  if (ROUTES_WITH_RULES.includes(pathname)) {
-    if (pathname.includes('/cite/') && hash !== '') {
-      // Scroll to where the cite hash link page points to
-      return false;
-    }
+  if (pathname.includes('/cite/') && hash !== '') {
+    return hash.split('#')[1];
+  }
 
-    if (pathname.includes('/cite/') && hash === '') {
-      // Scoll to top when cite pate is accessed without an incident report hash
-      window.scrollTo(0, 0);
-    }
-
-    if (pathname !== '/apps/discover') {
-      // Don't allow Gatsby to scroll to top when picking a search filter
-      window.scrollTo(0, 0);
-    }
-  } else {
+  if (pathname.includes('/apps/discover')) {
     return false;
   }
+
+  return true;
 };
 
 import { ToastContextProvider } from './src/contexts/ToastContext';
