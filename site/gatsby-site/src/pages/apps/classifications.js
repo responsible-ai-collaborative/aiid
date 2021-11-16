@@ -13,11 +13,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useModal, CustomModal } from 'components/useModal';
 import { useUserContext } from 'contexts/userContext';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
+import { format } from 'date-fns';
 
 const Container = styled.div`
   max-width: calc(100vw - 298px);
   margin: 0 auto;
-  padding: 0 2rem;
   overflow: auto;
   white-space: nowrap;
   font-size: 0.8em;
@@ -26,7 +26,7 @@ const Container = styled.div`
     isWide &&
     `
     max-width: 100vw;
-    padding: 0 0 0 3.5rem;
+    padding: 0 0 0 2.7rem;
   `};
 
   @media (max-width: 767px) {
@@ -35,7 +35,7 @@ const Container = styled.div`
 `;
 
 const TableStyles = styled.div`
-  padding: 1rem;
+  padding-top: 1rem;
 
   table {
     border-spacing: 0;
@@ -79,7 +79,7 @@ const HeaderCellContainer = styled.div`
 `;
 
 const TaxonomySelectContainer = styled.div`
-  padding: 1rem;
+  padding: 1rem 1rem 1rem 0;
   font-size: 1rem;
   display: flex;
   flex-direction: row;
@@ -270,13 +270,26 @@ export default function ClassificationsDbView(props) {
     const setupTaxonomiesSelect = async () => {
       const taxonomies = await fetchTaxaData();
 
-      setAllTaxonomies([...taxonomies]);
+      let filteredTaxa = [];
+
+      if (!isAdmin) {
+        taxonomies.forEach((t) => {
+          filteredTaxa.push({
+            ...t,
+            field_list: t.field_list.filter((f) => f.public !== false),
+          });
+        });
+      } else {
+        filteredTaxa = [...taxonomies];
+      }
+
+      setAllTaxonomies([...filteredTaxa]);
       setCurrentTaxonomy(taxonomies[0].namespace);
       setLoading(false);
     };
 
     setupTaxonomiesSelect();
-  }, []);
+  }, [isAdmin]);
 
   // data fetch method - paginated
   const fetchClassificationData = (namespace) => {
@@ -309,15 +322,7 @@ export default function ClassificationsDbView(props) {
         runQuery(
           {},
           (res) => {
-            let result = [...res];
-
-            if (!isAdmin) {
-              res.forEach((t, index) => {
-                result[index].field_list = t.field_list.filter((f) => f.public !== false);
-              });
-            }
-
-            resolve(result);
+            resolve(res);
           },
           config.realm.production_db.db_service,
           config.realm.production_db.db_name,
@@ -443,8 +448,6 @@ export default function ClassificationsDbView(props) {
       const taxaData = allTaxonomies.filter((taxa) => taxa.namespace === currentTaxonomy);
 
       if (taxaData.length === 0) {
-        // setColumnData([])
-        // setTableData([])
         setLoading(false);
         return;
       }
@@ -464,7 +467,7 @@ export default function ClassificationsDbView(props) {
     };
 
     initSetup();
-  }, [currentTaxonomy]);
+  }, [currentTaxonomy, allTaxonomies]);
 
   const data = React.useMemo(() => tableData, [tableData]);
 
@@ -488,6 +491,16 @@ export default function ClassificationsDbView(props) {
     );
   };
 
+  const formatDateField = (s) => {
+    const dateObj = new Date(s.props.cell.value);
+
+    if (dateObj instanceof Date && !isNaN(dateObj)) {
+      return <>{format(new Date(dateObj), 'yyyy-MM-dd')}</>;
+    } else {
+      return <>{s.props.cell.value}</>;
+    }
+  };
+
   const filterTypes = {
     BeginningDate: filterDateFunction,
     EndingDate: filterDateFunction,
@@ -497,7 +510,6 @@ export default function ClassificationsDbView(props) {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    // rows,
     page,
     prepareRow,
     canPreviousPage,
@@ -524,6 +536,62 @@ export default function ClassificationsDbView(props) {
   );
 
   const fullTextModal = useModal();
+
+  const RenderRow = React.useCallback(
+    (row) => {
+      prepareRow(row);
+      return (
+        <tr key={row.id} {...row.getRowProps()}>
+          {row.cells.map((cell) => {
+            if (cell.column.Header.includes('Incident ID')) {
+              return (
+                <td key={cell.id} {...cell.getCellProps()}>
+                  <ScrollCell>
+                    <Link to={`/cite/${cell.value}#taxa-area`}>Incident {cell.render('Cell')}</Link>
+                  </ScrollCell>
+                </td>
+              );
+            } else if (cell.column.Header.includes('Date')) {
+              return (
+                <td key={cell.id} {...cell.getCellProps()}>
+                  <ScrollCell>{formatDateField(cell.render('Cell'))}</ScrollCell>
+                </td>
+              );
+            } else if (cell.value?.length > 130) {
+              return (
+                <td key={cell.id} {...cell.getCellProps()}>
+                  <ScrollCell style={{ overflow: 'hidden' }}>
+                    {cell.value.substring(0, 124)}...
+                  </ScrollCell>
+                  <ModalCell>
+                    <FontAwesomeIcon
+                      onClick={() =>
+                        fullTextModal.openFor({
+                          title: cell.column.Header,
+                          body: function f() {
+                            return cell.value;
+                          },
+                        })
+                      }
+                      icon={faExpandAlt}
+                      className="fas fa-expand-arrows-alt"
+                    />
+                  </ModalCell>
+                </td>
+              );
+            } else {
+              return (
+                <td key={cell.id} {...cell.getCellProps()}>
+                  <ScrollCell>{cell.render('Cell')}</ScrollCell>
+                </td>
+              );
+            }
+          })}
+        </tr>
+      );
+    },
+    [prepareRow, page]
+  );
 
   if (columnData.length === 0 || tableData.length === 0) {
     return (
@@ -563,30 +631,38 @@ export default function ClassificationsDbView(props) {
         <title>Artificial Intelligence Incident Database</title>
       </Helmet>
       <Container isWide={collapse}>
-        <TaxonomySelectContainer>
-          Showing the
-          <Form.Select
-            style={{ width: 100, margin: '0 10px' }}
-            aria-label="Default select example"
-            onChange={(e) => setCurrentTaxonomy(e.target.value)}
-          >
-            {allTaxonomies.length > 0 &&
-              allTaxonomies.map((taxa) => (
-                <option key={taxa.namespace} value={taxa.namespace}>
-                  {taxa.namespace}
-                </option>
-              ))}
-          </Form.Select>
-          taxonomy
-          {loading && (
-            <Spinner animation="border" role="status" variant="primary" style={{ marginLeft: 10 }}>
-              <span className="sr-only">Loading...</span>
-            </Spinner>
-          )}
-        </TaxonomySelectContainer>
-        <Button onClick={() => setAllFilters([])} style={{ marginLeft: '1em' }}>
-          Reset filters
-        </Button>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+          <TaxonomySelectContainer>
+            Showing the
+            <Form.Select
+              style={{ width: 100, margin: '0 10px' }}
+              aria-label="Default select example"
+              onChange={(e) => setCurrentTaxonomy(e.target.value)}
+            >
+              {allTaxonomies.length > 0 &&
+                allTaxonomies.map((taxa) => (
+                  <option key={taxa.namespace} value={taxa.namespace}>
+                    {taxa.namespace}
+                  </option>
+                ))}
+            </Form.Select>
+            taxonomy
+            {loading && (
+              <Spinner
+                animation="border"
+                role="status"
+                variant="primary"
+                style={{ marginLeft: 10 }}
+              >
+                <span className="sr-only">Loading...</span>
+              </Spinner>
+            )}
+          </TaxonomySelectContainer>
+          <Link to={`/taxonomy/${currentTaxonomy.toLowerCase()}`} style={{ paddingBottom: '1em' }}>
+            {currentTaxonomy} taxonomy page
+          </Link>
+          <Button onClick={() => setAllFilters([])}>Reset filters</Button>
+        </div>
         {!loading && (
           <TableStyles>
             <Table striped bordered hover {...getTableProps()}>
@@ -611,54 +687,7 @@ export default function ClassificationsDbView(props) {
                 ))}
               </thead>
               <tbody {...getTableBodyProps()}>
-                {page.map((row) => {
-                  prepareRow(row);
-                  return (
-                    <tr key={row.id} {...row.getRowProps()}>
-                      {row.cells.map((cell) => {
-                        if (cell.column.Header.includes('Incident ID')) {
-                          return (
-                            <td key={cell.id} {...cell.getCellProps()}>
-                              <ScrollCell>
-                                <Link to={`/cite/${cell.value}#taxa-area`}>
-                                  Incident {cell.render('Cell')}
-                                </Link>
-                              </ScrollCell>
-                            </td>
-                          );
-                        } else if (cell.value?.length > 130) {
-                          return (
-                            <td key={cell.id} {...cell.getCellProps()}>
-                              <ScrollCell style={{ overflow: 'hidden' }}>
-                                {cell.value.substring(0, 124)}...
-                              </ScrollCell>
-                              <ModalCell>
-                                <FontAwesomeIcon
-                                  onClick={() =>
-                                    fullTextModal.openFor({
-                                      title: cell.column.Header,
-                                      body: function f() {
-                                        return cell.value;
-                                      },
-                                    })
-                                  }
-                                  icon={faExpandAlt}
-                                  className="fas fa-expand-arrows-alt"
-                                />
-                              </ModalCell>
-                            </td>
-                          );
-                        } else {
-                          return (
-                            <td key={cell.id} {...cell.getCellProps()}>
-                              <ScrollCell>{cell.render('Cell')}</ScrollCell>
-                            </td>
-                          );
-                        }
-                      })}
-                    </tr>
-                  );
-                })}
+                {page.map(RenderRow)}
                 {page.length === 0 && (
                   <tr>
                     <th colSpan={10}>
