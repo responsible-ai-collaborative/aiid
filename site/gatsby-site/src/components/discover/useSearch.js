@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 
 const SearchContext = React.createContext({ searchState: {} });
 
-// TODO: this could be improved here and everywhere once Aloglia releases their hook-based library
+// This could be improved here and everywhere once Aloglia releases their hook-based library
 // https://github.com/algolia/react-instantsearch/tree/master/packages/react-instantsearch-hooks#getting-started
 
 function useSearch() {

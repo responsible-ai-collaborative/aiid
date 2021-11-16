@@ -13,7 +13,7 @@ const FiltersModalList = styled.div`
   flex-direction: column;
 `;
 
-// TODO: https://www.algolia.com/doc/guides/building-search-ui/going-further/native/react/?language=react#create-a-modal
+// https://www.algolia.com/doc/guides/building-search-ui/going-further/native/react/?language=react#create-a-modal
 function FiltersModal({ instantSearch }) {
   const [showModal, setShowModal] = useState(false);
 
