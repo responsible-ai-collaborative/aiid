@@ -15,6 +15,7 @@ import Filters from 'components/discover/Filters';
 import FiltersModal from 'components/discover/FiltersModal';
 import { SearchContext } from 'components/discover/useSearch';
 import { queryConfig } from 'components/discover/queryParams';
+import VirtualFilters from 'components/discover/VirtualFilters';
 
 const indexName = 'instant_search';
 
@@ -244,6 +245,7 @@ function DiscoverApp(props) {
               searchState={searchState}
               onSearchStateChange={onSearchStateChange}
             >
+              <VirtualFilters />
               <FiltersContainer className="container-xl mt-4">
                 <Header>
                   <SearchBox defaultRefinement={query.s} />
