@@ -91,7 +91,7 @@ module.exports = async ({ graphql }) => {
         }
         if (cObj[c] !== undefined && cObj[c] !== '' && valuesToUnpack.length > 0) {
           valuesToUnpack.forEach((element) =>
-            cArray.push(`${namespace}:${c.replaceAll('_', ' ')}:${element}`)
+            cArray.push(`${namespace}:${c.replace(/_/g, ' ')}:${element}`)
           );
         }
       }

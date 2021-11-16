@@ -2,7 +2,7 @@ import React from 'react';
 import { InstantSearch } from 'react-instantsearch-dom';
 import { OverlayTrigger, Badge, Card, Dropdown } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import componentsMap from './filters';
+import componentsMap from './filterTypes';
 import useSearch from './useSearch';
 
 const ButtonToggle = function ButtonToggle({
@@ -34,6 +34,8 @@ const FilterOverlay = React.forwardRef(function Container(
   ref
 ) {
   const { default: Component } = componentsMap[type];
+
+  console.log(instantSearch);
 
   return (
     <div ref={ref} {...overlayProps} style={{ ...overlayProps.style, width: 320, zIndex: 1055 }}>
