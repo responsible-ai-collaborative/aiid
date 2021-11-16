@@ -3,6 +3,8 @@ import { connectHits, connectStateResults } from 'react-instantsearch-dom';
 import Hit from './Hit';
 import styled from 'styled-components';
 import { Spinner } from 'react-bootstrap';
+import { DisplayModeEnumParam } from './queryParams';
+import { useQueryParam } from 'use-query-params';
 
 const NoResults = styled.div`
   width: 100%;
@@ -20,6 +22,35 @@ const NoResults = styled.div`
 
   @media (max-width: 1240px) {
     grid-column-start: 1;
+  }
+`;
+
+const HitsContainer = styled.div`
+  max-width: 1400px;
+
+  &.compact,
+  &.details {
+    display: grid;
+    grid-gap: 6px;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+
+    @media (min-width: 576px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    @media (min-width: 992px) {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  &.list {
+    display: grid;
+    grid-gap: 6px;
+    grid-template-columns: 1fr;
   }
 `;
 
@@ -51,17 +82,23 @@ const Hits = ({
     );
   }
 
-  return hits.map((hit) => (
-    <Hit
-      key={hit.objectID}
-      item={hit}
-      authorsModal={authorsModal}
-      submittersModal={submittersModal}
-      flagReportModal={flagReportModal}
-      toggleFilterByIncidentId={toggleFilterByIncidentId}
-      showDetails={showDetails}
-    />
-  ));
+  const [display] = useQueryParam('display', DisplayModeEnumParam);
+
+  return (
+    <HitsContainer className={`container-xl mt-4 ${display}`}>
+      {hits.map((hit) => (
+        <Hit
+          key={hit.objectID}
+          item={hit}
+          authorsModal={authorsModal}
+          submittersModal={submittersModal}
+          flagReportModal={flagReportModal}
+          toggleFilterByIncidentId={toggleFilterByIncidentId}
+          showDetails={showDetails}
+        />
+      ))}
+    </HitsContainer>
+  );
 };
 
 export default connectHits(connectStateResults(Hits));

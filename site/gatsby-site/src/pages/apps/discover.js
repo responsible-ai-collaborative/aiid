@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StringParam, QueryParams, useQueryParams } from 'use-query-params';
+import React, { useCallback, useState, useEffect } from 'react';
+import { QueryParams, useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { InstantSearch } from 'react-instantsearch-dom';
 import styled from 'styled-components';
@@ -13,6 +13,7 @@ import SearchBox from 'components/discover/SearchBox';
 import Pagination from 'components/discover/Pagination';
 import Filters from 'components/discover/Filters';
 import FiltersModal from 'components/discover/FiltersModal';
+import { queryConfig } from 'components/discover/queryParams';
 
 const indexName = 'instant_search';
 
@@ -20,25 +21,6 @@ const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
   config.header.search.algoliaSearchKey
 );
-
-const HitsContainer = styled.div`
-  max-width: 1400px;
-  display: grid;
-  grid-gap: 6px;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-
-  @media (min-width: 576px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  @media (min-width: 992px) {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-`;
 
 const FiltersContainer = styled.div`
   max-width: 1400px;
@@ -184,88 +166,63 @@ const generateSearchState = ({ query }) => {
   };
 };
 
-const DiscoverApp = React.memo((props) => {
-  const [query, setQuery] = useQueryParams({
-    s: StringParam,
-    source_domain: StringParam,
-    authors: StringParam,
-    submitters: StringParam,
-    incident_id: StringParam,
-    flag: StringParam,
-    classifications: StringParam,
-    epoch_incident_date_min: StringParam,
-    epoch_incident_date_max: StringParam,
-    epoch_date_published_min: StringParam,
-    epoch_date_published_max: StringParam,
-  });
+const getQueryFromState = (searchState) => {
+  let query = {};
+
+  if (searchState && searchState.query !== '') {
+    query.s = searchState.query;
+  }
+
+  if (searchState && searchState.refinementList !== {}) {
+    query = {
+      ...query,
+      ...convertArrayToString(removeEmptyAttributes(searchState.refinementList)),
+    };
+  }
+
+  if (searchState && searchState.range !== {}) {
+    query = {
+      ...query,
+      ...convertRangeToQueryString(removeEmptyAttributes(searchState.range)),
+    };
+  }
+
+  return query;
+};
+
+function DiscoverApp(props) {
+  const [query, setQuery] = useQueryParams(queryConfig);
 
   const [searchState, setSearchState] = useState(generateSearchState({ query }));
 
-  const queryConfig = {
-    s: StringParam,
-    source_domain: StringParam,
-    authors: StringParam,
-    submitters: StringParam,
-    incident_id: StringParam,
-    flag: StringParam,
-    classifications: StringParam,
-    epoch_incident_date_min: StringParam,
-    epoch_incident_date_max: StringParam,
-    epoch_date_published_min: StringParam,
-    epoch_date_published_max: StringParam,
-  };
-
-  const getQueryFromState = (searchState) => {
-    let query = {};
-
-    if (searchState && searchState.query !== '') {
-      query.s = searchState.query;
-    }
-
-    if (searchState && searchState.refinementList !== {}) {
-      query = {
-        ...query,
-        ...convertArrayToString(removeEmptyAttributes(searchState.refinementList)),
+  const toggleFilterByIncidentId = useCallback(
+    (incidentId) => {
+      const newSearchState = {
+        ...searchState,
+        refinementList: {
+          ...searchState.refinementList,
+          incident_id: [incidentId],
+        },
       };
-    }
 
-    if (searchState && searchState.range !== {}) {
-      query = {
-        ...query,
-        ...convertRangeToQueryString(removeEmptyAttributes(searchState.range)),
-      };
-    }
-
-    return query;
-  };
-
-  const toggleFilterByIncidentId = (incidentId) => {
-    const incident_id = [];
-
-    if (
-      !searchState.refinementList ||
-      !searchState.refinementList.incident_id ||
-      searchState.refinementList.incident_id.length === 0
-    ) {
-      incident_id.push(incidentId);
-    }
-
-    const newSearchState = {
-      ...searchState,
-      refinementList: {
-        ...searchState.refinementList,
-        incident_id,
-      },
-    };
-
-    setSearchState(newSearchState);
-    setQuery(getQueryFromState(newSearchState), 'push');
-  };
+      setSearchState(newSearchState);
+    },
+    [searchState]
+  );
 
   const onSearchStateChange = (searchState) => {
     setSearchState({ ...searchState });
-    setQuery(getQueryFromState(searchState), 'push');
   };
+
+  useEffect(() => {
+
+    const searchQuery = getQueryFromState(searchState)
+
+    const viewQuery = { display: query.display }
+
+    setQuery({ ...searchQuery, ...viewQuery }, 'push');
+
+  }, [searchState])
 
   const authorsModal = useModal();
 
@@ -286,7 +243,7 @@ const DiscoverApp = React.memo((props) => {
             searchState={searchState}
             onSearchStateChange={onSearchStateChange}
           >
-            <FiltersContainer className="container container-fluid mt-4">
+            <FiltersContainer className="container-xl mt-4">
               <Header>
                 <SearchBox defaultRefinement={query.s} />
               </Header>
@@ -301,14 +258,12 @@ const DiscoverApp = React.memo((props) => {
               />
             </FiltersContainer>
 
-            <HitsContainer className="container container-fluid mt-4">
-              <Hits
-                toggleFilterByIncidentId={toggleFilterByIncidentId}
-                authorsModal={authorsModal}
-                submittersModal={submittersModal}
-                flagReportModal={flagReportModal}
-              />
-            </HitsContainer>
+            <Hits
+              toggleFilterByIncidentId={toggleFilterByIncidentId}
+              authorsModal={authorsModal}
+              submittersModal={submittersModal}
+              flagReportModal={flagReportModal}
+            />
 
             <CustomModal {...authorsModal} />
             <CustomModal {...submittersModal} />
@@ -320,6 +275,6 @@ const DiscoverApp = React.memo((props) => {
       </QueryParams>
     </LayoutHideSidebar>
   );
-});
+}
 
 export default DiscoverApp;
