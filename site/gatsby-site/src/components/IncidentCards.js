@@ -136,7 +136,7 @@ const IncidentCardImage = styled(Image)`
 
 const Anchor = styled.span`
   position: absolute;
-  top: -32px;
+  top: -90px;
 `;
 
 const IncidentCard = ({
