@@ -113,6 +113,7 @@ const IncidentCardContainer = styled.div`
   box-shadow: 0 2px 5px 0px #e3e5ec;
   display: flex;
   flex-direction: column;
+  position: relative;
   .subhead {
     margin: 0;
     opacity: 0.4;
@@ -133,6 +134,11 @@ const IncidentCardImage = styled(Image)`
   width: 100%;
 `;
 
+const Anchor = styled.span`
+  position: absolute;
+  top: -32px;
+`;
+
 const IncidentCard = ({
   item,
   authorsModal,
@@ -142,7 +148,8 @@ const IncidentCard = ({
   showDetails,
   isCitePage,
 }) => (
-  <IncidentCardContainer id={item.mongodb_id}>
+  <IncidentCardContainer>
+    <Anchor id={item.mongodb_id} />
     <div className="card-header">
       {isCitePage ? <span>{item.title}</span> : <Highlight hit={item} attribute="title" />}
       <p className="subhead">
@@ -180,8 +187,8 @@ const IncidentCard = ({
       <IncidentCardImage
         publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
         alt={item.title}
-        height={isCitePage ? 'unset' : '240px'}
-        transformation={isCitePage ? null : fill().height(480)}
+        height={'480px'}
+        transformation={fill().height(480)}
       />
 
       {toggleFilterByIncidentId && (
