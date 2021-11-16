@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Helmet from 'react-helmet';
 
 import { Button, Container, Row } from 'react-bootstrap';
@@ -70,20 +70,6 @@ const IncidentCite = ({ ...props }) => {
   const {
     pageContext: { incidentReports, taxonomies },
   } = props;
-
-  const scrollToIncidentCard = () => {
-    if (props.location?.hash) {
-      const incidentCard = document.getElementById(props.location?.hash?.split('#')[1]);
-
-      incidentCard.scrollIntoView();
-    }
-  };
-
-  useEffect(() => {
-    if (props.location?.hash?.split('#')[1]) {
-      scrollToIncidentCard();
-    }
-  }, []);
 
   // meta tags
   const incident_id = incidentReports[0].node.incident_id;
