@@ -13,7 +13,6 @@ import SearchBox from 'components/discover/SearchBox';
 import Pagination from 'components/discover/Pagination';
 import Filters from 'components/discover/Filters';
 import FiltersModal from 'components/discover/FiltersModal';
-import VirtualFilters from 'components/discover/VirtualFilters';
 import { SearchContext } from 'components/discover/useSearch';
 import { queryConfig } from 'components/discover/queryParams';
 
@@ -236,7 +235,7 @@ function DiscoverApp(props) {
       <Helmet>
         <title>Artificial Intelligence Incident Database</title>
       </Helmet>
-      <SearchContext.Provider value={{ searchState }}>
+      <SearchContext.Provider value={{ searchState, indexName, searchClient, onSearchStateChange }}>
         <QueryParams config={queryConfig}>
           {() => (
             <InstantSearch
@@ -245,20 +244,12 @@ function DiscoverApp(props) {
               searchState={searchState}
               onSearchStateChange={onSearchStateChange}
             >
-              <VirtualFilters searchState={searchState} />
-
               <FiltersContainer className="container-xl mt-4">
                 <Header>
                   <SearchBox defaultRefinement={query.s} />
                 </Header>
-
-                <Filters
-                  instantSearch={{ searchClient, indexName, searchState, onSearchStateChange }}
-                />
-
-                <FiltersModal
-                  instantSearch={{ searchClient, indexName, searchState, onSearchStateChange }}
-                />
+                <Filters />
+                <FiltersModal />
               </FiltersContainer>
 
               <Hits

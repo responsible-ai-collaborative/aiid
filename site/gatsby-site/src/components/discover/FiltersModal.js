@@ -3,7 +3,6 @@ import { Row, Col, Modal, Button } from 'react-bootstrap';
 import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
 import styled from 'styled-components';
 import Filter from './Filter';
-import { InstantSearch } from 'react-instantsearch-core';
 import Stats from './Stats';
 import ClearFilters from './ClearFilters';
 
@@ -14,7 +13,8 @@ const FiltersModalList = styled.div`
 `;
 
 // https://www.algolia.com/doc/guides/building-search-ui/going-further/native/react/?language=react#create-a-modal
-function FiltersModal({ instantSearch }) {
+
+function FiltersModal() {
   const [showModal, setShowModal] = useState(false);
 
   const handleClose = () => setShowModal(false);
@@ -38,18 +38,11 @@ function FiltersModal({ instantSearch }) {
           <Modal.Title>Filters</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <InstantSearch {...instantSearch}>
-            <FiltersModalList>
-              {REFINEMENT_LISTS.map((list) => (
-                <Filter
-                  key={list.attribute}
-                  instantSearch={instantSearch}
-                  attribute={list.attribute}
-                  {...list}
-                />
-              ))}
-            </FiltersModalList>
-          </InstantSearch>
+          <FiltersModalList>
+            {REFINEMENT_LISTS.map((list) => (
+              <Filter key={list.attribute} attribute={list.attribute} {...list} />
+            ))}
+          </FiltersModalList>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

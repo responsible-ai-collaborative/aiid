@@ -4,6 +4,7 @@ import { OverlayTrigger, Badge, Card, Dropdown } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import componentsMap from './filterTypes';
 import useSearch from './useSearch';
+import VirtualFilters from './VirtualFilters';
 
 const ButtonToggle = function ButtonToggle({
   trigger: { ref, ...triggerHandler },
@@ -30,32 +31,35 @@ const ButtonToggle = function ButtonToggle({
 };
 
 const FilterOverlay = React.forwardRef(function Container(
-  { type, instantSearch, filterProps, ...overlayProps },
+  { type, filterProps, ...overlayProps },
   ref
 ) {
   const { default: Component } = componentsMap[type];
 
-  console.log(instantSearch);
+  const instantSearch = useSearch();
 
   return (
     <div ref={ref} {...overlayProps} style={{ ...overlayProps.style, width: 320, zIndex: 1055 }}>
-      <Card className="shadow-lg">
-        <InstantSearch {...instantSearch}>
+      <InstantSearch {...instantSearch}>
+        <VirtualFilters />
+        <Card className="shadow-lg">
           <Card.Body>
             <Component {...filterProps} />
           </Card.Body>
-        </InstantSearch>
-      </Card>
+        </Card>
+      </InstantSearch>
     </div>
   );
 });
 
-export default function Filter({ type, instantSearch, ...filterProps }) {
+export default function Filter({ type, ...filterProps }) {
   const { label, faIcon, attribute } = filterProps;
 
   const { touchedCount } = componentsMap[type];
 
-  const { searchState } = useSearch();
+  const instantSearch = useSearch();
+
+  const { searchState } = instantSearch;
 
   const touched = touchedCount({ searchState, attribute });
 
@@ -65,16 +69,13 @@ export default function Filter({ type, instantSearch, ...filterProps }) {
         trigger="click"
         rootClose={true}
         placement="bottom-start"
-        overlay={
-          <FilterOverlay instantSearch={instantSearch} type={type} filterProps={filterProps} />
-        }
+        overlay={<FilterOverlay type={type} filterProps={filterProps} />}
       >
         {(trigger) => (
           <ButtonToggle
             trigger={trigger}
             label={label}
             faIcon={faIcon}
-            searchState={instantSearch.searchState}
             attribute={attribute}
             touched={touched}
           />
