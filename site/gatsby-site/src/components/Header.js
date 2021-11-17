@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { StaticQuery, graphql } from 'gatsby';
 import GitHubButton from 'react-github-btn';
@@ -31,16 +31,6 @@ const LoadableComponent = Loadable({
   loader: () => import('./search/index'),
   loading: LoadingProvider,
 });
-
-function myFunction() {
-  var x = document.getElementById('navbar');
-
-  if (x.className === 'topnav') {
-    x.className += ' responsive';
-  } else {
-    x.className = 'topnav';
-  }
-}
 
 const StyledBgDiv = styled('div')`
   height: 60px;
@@ -114,6 +104,8 @@ const Header = () => (
       } = data;
 
       const finalLogoLink = logo.link !== '' ? logo.link : 'https://hasura.io/';
+
+      const [navCollapsed, setNavCollapsed] = useState(true);
 
       return (
         <div>
@@ -190,7 +182,7 @@ const Header = () => (
                     className="pointer fa fa-BARS fa-lg"
                     style={{ cursor: 'pointer' }}
                     title="Open Menu"
-                    onClick={myFunction}
+                    onClick={() => setNavCollapsed((c) => !c)}
                   />
                 </HideOnDesktop>
               </HeaderIconsContainer>
@@ -200,7 +192,7 @@ const Header = () => (
                 <LoadableComponent collapse={true} indices={searchIndices} />
               </div>
             ) : null}
-            <div id="navbar" className={'topnav'}>
+            <div id="navbar" className={`topnav ${navCollapsed ? '' : 'responsive'}`}>
               <div className={'visibleMobile'}>
                 <Sidebar />
                 <hr />
