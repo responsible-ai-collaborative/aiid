@@ -134,11 +134,6 @@ const IncidentCardImage = styled(Image)`
   width: 100%;
 `;
 
-const Anchor = styled.span`
-  position: absolute;
-  top: -90px;
-`;
-
 const IncidentCard = ({
   item,
   authorsModal,
@@ -148,8 +143,7 @@ const IncidentCard = ({
   showDetails,
   isCitePage,
 }) => (
-  <IncidentCardContainer>
-    <Anchor id={item.mongodb_id} />
+  <IncidentCardContainer id={`${item.mongodb_id}`}>
     <div className="card-header">
       {isCitePage ? <span>{item.title}</span> : <Highlight hit={item} attribute="title" />}
       <p className="subhead">
