@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { fill } from '@cloudinary/base/actions/resize';
 import md5 from 'md5';
 import Actions from './Actions';
+import { getParagraphs } from 'utils/typography';
 
 const IncidentCardImage = styled(Image)`
   width: 120px;
@@ -78,7 +79,7 @@ export default function Details({
           </Text>
         </Contents>
         <Card.Text className="mt-2">
-          {viewMore ? item.text : item.text.slice(0, 400)}
+          {getParagraphs(viewMore ? item.text : item.text.slice(0, 400))}
 
           <Button
             onClick={() => setViewMore((view) => !view)}
