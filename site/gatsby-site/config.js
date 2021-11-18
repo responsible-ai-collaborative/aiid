@@ -51,8 +51,7 @@ const config = {
     links: [{ text: 'Partnership on AI Home', link: 'https://partnershiponai.org' }],
     frontline: true,
     ignoreIndex: false,
-    title:
-      "<a href='/apps/discover'>Discover </a><div class='greenCircle'></div><a href='/apps/submit'>Submit</a>",
+    title: '',
   },
   siteMetadata: {
     title: 'Artificial Intelligence Incident Database | Partnership on AI',
