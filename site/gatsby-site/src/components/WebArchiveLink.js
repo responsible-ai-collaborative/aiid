@@ -10,7 +10,7 @@ async function getSnapshotURL(url, date) {
   return response.archived_snapshots.closest.url.replace('http:', 'https:');
 }
 
-export default function WebArchiveLink({ url, date, children, className }) {
+export default function WebArchiveLink({ url, date, children, className, title }) {
   const onClick = async (e) => {
     e.preventDefault();
     const win = window.open('', '_blank');
@@ -25,7 +25,14 @@ export default function WebArchiveLink({ url, date, children, className }) {
   };
 
   return (
-    <a className={className} onClick={onClick} href={url} target="_blank" rel="noopener noreferrer">
+    <a
+      title={title}
+      className={className}
+      onClick={onClick}
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {children}
     </a>
   );

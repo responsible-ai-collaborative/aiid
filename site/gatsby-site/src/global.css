@@ -742,6 +742,13 @@ img {
   width: 100%;
 }
 
+.drp-calendar.right {
+  max-width: none;
+}
+.drp-calendar.left {
+  max-width: none;
+}
+
 @media (max-width: 767px) {
   .formElement svg path {
     fill: #001934;

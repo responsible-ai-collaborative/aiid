@@ -16,24 +16,13 @@ import {
 import WebArchiveLink from './WebArchiveLink';
 import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
+import { getParagraphs } from 'utils/typography';
 
 const cardNeedsBlockquote = (item) => {
   if (item.text && item.text.matchLevel === 'full') {
     return true;
   }
   return false;
-};
-
-const getParagraphs = (itemText) => {
-  return (
-    <>
-      {itemText.split('\n').map((paragraph, index, array) => (
-        <p key={index}>
-          {array.length - 1 === index ? <>{paragraph + '...'}</> : <>{paragraph}</>}
-        </p>
-      ))}
-    </>
-  );
 };
 
 const getFlagModalContent = () => (
