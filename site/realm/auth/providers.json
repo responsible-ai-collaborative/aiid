@@ -15,7 +15,7 @@
         "config": {
             "autoConfirm": true,
             "resetPasswordSubject": "",
-            "resetPasswordUrl": "http://localhost:8000/resetpassword",
+            "resetPasswordUrl": "https://incidentdatabase.ai/resetpassword",
             "runConfirmationFunction": false,
             "runResetFunction": false
         },
