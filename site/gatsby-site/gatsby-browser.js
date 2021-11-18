@@ -13,27 +13,7 @@ import 'bootstrap-daterangepicker/daterangepicker.css';
 
 import '@fortawesome/fontawesome-svg-core/styles.css';
 
-export const shouldUpdateScroll = ({ routerProps: { location } }) => {
-  const { pathname, hash } = location;
-
-  if (pathname.includes('/cite/') && hash !== '') {
-    const id = hash.split('#')[1];
-
-    const item = document.querySelector(`#${CSS.escape(id)}`);
-
-    const top = item.getBoundingClientRect().top + window.scrollY;
-
-    window.scrollTo({ top, behavior: 'smooth' });
-
-    return false;
-  }
-
-  if (pathname.includes('/apps/discover')) {
-    return false;
-  }
-
-  return true;
-};
+export const shouldUpdateScroll = () => false;
 
 import { ToastContextProvider } from './src/contexts/ToastContext';
 
