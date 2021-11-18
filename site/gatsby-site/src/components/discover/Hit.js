@@ -1,5 +1,5 @@
 import React from 'react';
-import hitModes from './hits';
+import hitModes from './hitTypes';
 import { useQueryParam } from 'use-query-params';
 import { DisplayModeEnumParam } from './queryParams';
 export default function Hit(props) {
