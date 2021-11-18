@@ -13,10 +13,8 @@ import 'bootstrap-daterangepicker/daterangepicker.css';
 
 import '@fortawesome/fontawesome-svg-core/styles.css';
 
-export const shouldUpdateScroll = ({ routerProps: { location }, getSavedScrollPosition }) => {
+export const shouldUpdateScroll = ({ routerProps: { location } }) => {
   const { pathname, hash } = location;
-
-  const currentPosition = getSavedScrollPosition(location);
 
   if (pathname.includes('/cite/') && hash !== '') {
     const id = hash.split('#')[1];
@@ -34,7 +32,7 @@ export const shouldUpdateScroll = ({ routerProps: { location }, getSavedScrollPo
     return false;
   }
 
-  window.scrollTo(currentPosition || [0, 0]);
+  return true;
 };
 
 import { ToastContextProvider } from './src/contexts/ToastContext';
