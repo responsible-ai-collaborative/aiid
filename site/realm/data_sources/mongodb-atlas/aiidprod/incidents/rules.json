@@ -3,24 +3,9 @@
     "database": "aiidprod",
     "roles": [
         {
-            "name": "admin",
+            "name": "role is admin",
             "apply_when": {
-                "%%user.type": "server"
-            },
-            "fields": {
-                "flag": {},
-                "tags": {}
-            },
-            "write": true,
-            "insert": true,
-            "delete": true,
-            "search": true,
-            "additional_fields": {}
-        },
-        {
-            "name": "APIToken",
-            "apply_when": {
-                "%%user.type": "server"
+                "%%user.custom_data.roles": "admin"
             },
             "fields": {
                 "flag": {},
