@@ -12,7 +12,7 @@ import {
 
 const getFlagModalContent = () => (
   <div className="modal-body">
-    <p>Is there a problem with this content? Examples of &quot;problems`&quot;` include,</p>
+    <p>Is there a problem with this content? Examples of &quot;problems&quot; include,</p>
     <ul>
       <li>The text contents of the report are not parsed properly</li>
       <li>The authors of the report are not associated with the report</li>
@@ -33,8 +33,7 @@ const getFlagModalContent = () => (
     <p>Please do NOT flag content if,</p>
     <ul>
       <li>You disagree with the report</li>
-      <li>The linked report has disappeared from the web</li>
-      <li>The report should not be considered an `&quot;`incident`&quot;`</li>
+      <li>The report should not be considered an &quot;incident&quot;</li>
     </ul>
     <button type="button" className="btn btn-danger btn-sm w-100" data-dismiss="modal">
       Flag Report
