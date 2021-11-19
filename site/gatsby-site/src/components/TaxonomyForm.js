@@ -133,8 +133,6 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
           classifications = results[1][0].classifications;
         }
 
-        console.log(results[1]);
-
         const fieldsArray = [];
 
         const defaultValues = {};
@@ -339,7 +337,6 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
   const onSubmit = async (values, { setSubmitting }) => {
     let newValues = values;
 
-    console.log(fieldsWithDefaultValues);
     fieldsWithDefaultValues.forEach((f) => {
       //Convert string values into array
       if (f.display_type === 'list') {
@@ -361,11 +358,17 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
       }
     });
 
+    const newValuesNoUnderscore = {};
+
+    for (const key in newValues) {
+      newValuesNoUnderscore[key.split('_').join(' ')] = newValues[key];
+    }
+
     if (JSON.stringify(initialValues) !== JSON.stringify(newValues)) {
       await user.functions.updateIncidentClassification({
         incident_id: incidentId,
         namespace,
-        newClassifications: newValues,
+        newClassifications: newValuesNoUnderscore,
       });
 
       setShowBanner(true);

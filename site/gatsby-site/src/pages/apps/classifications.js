@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
+import TaxonomyForm from 'components/TaxonomyForm';
 import Helmet from 'react-helmet';
 import styled from 'styled-components';
 import { useMongo } from 'hooks/useMongo';
@@ -9,6 +10,7 @@ import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
 import { Table, Spinner, Form, InputGroup, FormControl, Button } from 'react-bootstrap';
 import Link from 'components/Link';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useModal, CustomModal } from 'components/useModal';
 import { useUserContext } from 'contexts/userContext';
@@ -130,15 +132,17 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
       const options = new Set();
 
       preFilteredRows.forEach((row) => {
-        if (Array.isArray(row.values[id])) {
-          row.values[id].forEach((w) => {
-            if (w !== '') {
-              options.add(w);
+        if (row.values[id]) {
+          if (Array.isArray(row.values[id])) {
+            row.values[id].forEach((w) => {
+              if (w !== '') {
+                options.add(w);
+              }
+            });
+          } else {
+            if (row.values[id] !== '') {
+              options.add(row.values[id]);
             }
-          });
-        } else {
-          if (row.values[id] !== '') {
-            options.add(row.values[id]);
           }
         }
       });
@@ -151,11 +155,13 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
       const options = new Set();
 
       preFilteredRows.forEach((row) => {
-        row.values[id].split('; ').forEach((s) => {
-          if (s !== '') {
-            options.add(s);
-          }
-        });
+        if (row.values[id]) {
+          row.values[id].split('; ').forEach((s) => {
+            if (s !== '') {
+              options.add(s);
+            }
+          });
+        }
       });
 
       return [...options.values()];
@@ -171,8 +177,10 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
       const options = new Set();
 
       preFilteredRows.forEach((row) => {
-        if (row.values[id] !== '') {
-          options.add(row.values[id]);
+        if (row.values[id]) {
+          if (row.values[id] !== '') {
+            options.add(row.values[id]);
+          }
         }
       });
       return [...options.values()];
@@ -250,6 +258,45 @@ const SelectDatePickerFilter = ({
   );
 };
 
+const getClassificationsArray = (classifications, taxonomy) => {
+  console.log(classifications, taxonomy);
+  if (!classifications) {
+    return [];
+  }
+
+  const taxaFieldsArray = taxonomy.field_list.sort((a, b) => b.weight - a.weight);
+
+  const array = [];
+
+  const getStringForValue = (value) => {
+    switch (typeof value) {
+      case 'object':
+        return value.join(', ');
+
+      case 'boolean':
+        return value ? 'Yes' : 'No';
+
+      default:
+        return value;
+    }
+  };
+
+  taxaFieldsArray.forEach((field) => {
+    const c = classifications[field.short_name.split(' ').join('_')];
+
+    const value = getStringForValue(c);
+
+    array.push({
+      name: field.short_name,
+      value: getStringForValue(value),
+      weight: field.weight,
+      shortDescription: field.short_description,
+    });
+  });
+
+  return array;
+};
+
 export default function ClassificationsDbView(props) {
   const { isAdmin } = useUserContext();
 
@@ -258,6 +305,8 @@ export default function ClassificationsDbView(props) {
   const [collapse, setCollapse] = useState(true);
 
   const [allTaxonomies, setAllTaxonomies] = useState([]);
+
+  const [allClassifications, setAllClassifications] = useState(undefined);
 
   const [tableData, setTableData] = useState([]);
 
@@ -291,16 +340,13 @@ export default function ClassificationsDbView(props) {
     setupTaxonomiesSelect();
   }, [isAdmin]);
 
-  // data fetch method - paginated
-  const fetchClassificationData = (namespace) => {
+  const fetchClassificationData = (query) => {
     return new Promise((resolve, reject) => {
       const { runQuery } = useMongo();
 
       try {
         runQuery(
-          {
-            namespace,
-          },
+          query,
           (res) => {
             resolve(res);
           },
@@ -457,9 +503,22 @@ export default function ClassificationsDbView(props) {
         accessor: 'IncidentId',
       };
 
-      setColumnData([incidentIdColumn, ...taxaData[0].field_list.map(fieldToColumnMap)]);
+      const actionsColumn = {
+        Header: 'Actions',
+        accessor: 'actions',
+      };
 
-      const classificationData = await fetchClassificationData(currentTaxonomy);
+      setColumnData([
+        actionsColumn,
+        incidentIdColumn,
+        ...taxaData[0].field_list.map(fieldToColumnMap),
+      ]);
+
+      const classificationData = await fetchClassificationData({ namespace: currentTaxonomy });
+
+      if (classificationData.length > 0) {
+        setAllClassifications(classificationData[0]);
+      }
 
       setTableData(formatClassificationData(taxaData[0].field_list, classificationData));
 
@@ -468,6 +527,8 @@ export default function ClassificationsDbView(props) {
 
     initSetup();
   }, [currentTaxonomy, allTaxonomies]);
+
+  const editClassificationModal = useModal();
 
   const data = React.useMemo(() => tableData, [tableData]);
 
@@ -499,6 +560,38 @@ export default function ClassificationsDbView(props) {
     } else {
       return <>{s.props.cell.value}</>;
     }
+  };
+
+  const getEditClassificationForm = (row) => {
+    const taxonomyFormObj = {
+      classificationsArray: [],
+      namespace: '',
+      taxonomyFields: [],
+    };
+
+    const taxaData = allTaxonomies.filter((taxa) => taxa.namespace === currentTaxonomy)[0];
+
+    taxonomyFormObj.namespace = taxaData.namespace;
+    taxonomyFormObj.taxonomyFields = taxaData.field_list.map((f) => {
+      return {
+        display_type: f.display_type,
+        long_name: f.long_name,
+        public: f.public,
+        short_description: f.short_description,
+        short_name: f.short_name,
+        weight: f.weight,
+      };
+    });
+    taxonomyFormObj.classificationsArray = getClassificationsArray(
+      allClassifications.classifications,
+      taxaData
+    );
+
+    return (
+      <>
+        <TaxonomyForm key={'CSET'} taxonomy={taxonomyFormObj} incidentId={row.values.IncidentId} />
+      </>
+    );
   };
 
   const filterTypes = {
@@ -549,6 +642,25 @@ export default function ClassificationsDbView(props) {
                   <ScrollCell>
                     <Link to={`/cite/${cell.value}#taxa-area`}>Incident {cell.render('Cell')}</Link>
                   </ScrollCell>
+                </td>
+              );
+            } else if (cell.column.Header.includes('Actions')) {
+              return (
+                <td key={cell.id} {...cell.getCellProps()}>
+                  <Button
+                    className="me-auto"
+                    disabled={!isAdmin}
+                    onClick={() =>
+                      editClassificationModal.openFor({
+                        title: 'Edit CSET classification for incident X',
+                        body: function f() {
+                          return getEditClassificationForm(row);
+                        },
+                      })
+                    }
+                  >
+                    <FontAwesomeIcon icon={faEdit} className="fas fa-edit" />
+                  </Button>
                 </td>
               );
             } else if (cell.column.Header.includes('Date')) {
@@ -630,6 +742,7 @@ export default function ClassificationsDbView(props) {
       <Helmet>
         <title>Artificial Intelligence Incident Database</title>
       </Helmet>
+      <CustomModal style={{ maxWidth: '80%' }} {...editClassificationModal} />
       <Container isWide={collapse}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
           <TaxonomySelectContainer>
