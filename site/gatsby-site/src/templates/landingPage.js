@@ -72,7 +72,11 @@ const LandingPage = (props) => {
           </Col>
         </Row>
 
-        <Leaderboards />
+        <Row className="mt-5">
+          <Col>
+            <Leaderboards />
+          </Col>
+        </Row>
 
         <Blog />
 

@@ -2,13 +2,35 @@ import React from 'react';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
 import Badge from 'react-bootstrap/Badge';
+import { Card, ListGroup } from 'react-bootstrap';
 
-const StyledOl = styled.ol`
-  padding: 0;
-`;
+const medalMap = (position) => {
+  switch (position) {
+    case 1:
+      return (
+        <span role="img" aria-label="Gold medal">
+          🥇
+        </span>
+      );
+    case 2:
+      return (
+        <span role="img" aria-label="Silver medal">
+          🥈
+        </span>
+      );
+    case 3:
+      return (
+        <span role="img" aria-label="Bronze medal">
+          🥉
+        </span>
+      );
+    default:
+      return <span>{position}.</span>;
+  }
+};
 
-const StyledLi = styled.li`
-  margin-left: 1em;
+const Medal = styled.div`
+  display: inline-block;
 `;
 
 export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit }) => {
@@ -31,19 +53,18 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
   }
 
   return (
-    <div>
-      <h2>
-        <Badge bg="secondary">{title}</Badge>
-      </h2>
-      <StyledOl>
-        {sortedArray.map((item) => (
-          <StyledLi key={`${item.label}-${item.value}`}>
+    <Card>
+      <Card.Header>{title}</Card.Header>
+      <ListGroup variant="flush">
+        {sortedArray.map((item, index) => (
+          <ListGroup.Item key={`${item.label}-${item.value}`}>
+            <Medal className="p-2">{medalMap(index + 1)}</Medal>
             <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
-              {`${item.label}: ${item.value}`}
+              {item.label} <Badge>{item.value}</Badge>
             </Link>
-          </StyledLi>
+          </ListGroup.Item>
         ))}
-      </StyledOl>
-    </div>
+      </ListGroup>
+    </Card>
   );
 };
