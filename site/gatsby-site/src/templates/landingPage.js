@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Helmet from 'react-helmet';
 import Layout from 'components/Layout';
-import Wordlist from 'components/WordList';
 import { StyledHeading } from 'components/styles/Docs';
 import styled from 'styled-components';
 
@@ -14,6 +13,7 @@ import QuickAddForm from 'components/forms/QuickAddForm';
 import Featured from 'components/landing/Featured';
 import Leaderboards from 'components/landing/Leaderboards';
 import Blog from 'components/landing/Blog';
+import WordCounts from 'components/landing/WordCounts';
 
 const StyledCard = styled(Card)``;
 
@@ -46,13 +46,6 @@ const StyledCol = styled(Col)`
 `;
 
 const SectionHeading = styled(Card.Header)``;
-
-const LiWrapper = styled.div`
-  padding: 0em 2em 2em 2em;
-  li {
-    margin-left: 1em;
-  }
-`;
 
 const StyledQuickAddForm = styled(QuickAddForm)`
   margin-top: -1rem;
@@ -202,17 +195,7 @@ const LandingPage = (props) => {
 
         <StyledRow>
           <StyledCol lg={6}>
-            <StyledCard>
-              <SectionHeading>Wordcounts</SectionHeading>
-              <StyledCardLeadParagraph>
-                These are the most common rooted and stemmed words across all incident reports. More
-                details are available on its{' '}
-                <Link to="/summaries/wordcounts">data summary page.</Link>
-              </StyledCardLeadParagraph>
-              <LiWrapper>
-                <Wordlist content={localWordCounts} />
-              </LiWrapper>
-            </StyledCard>
+            <WordCounts localWordCounts={localWordCounts} />
           </StyledCol>
           <StyledCol lg={6}>
             <StyledCard>
