@@ -10,15 +10,14 @@ import RandomIncidentsCarousel from 'components/RandomIncidentsCarousel';
 import LatestIncidentReport from 'components/LatestIncidentReport';
 import { navigate } from 'gatsby';
 import { Link } from 'gatsby';
-import { Button, InputGroup, FormControl, Container, Row, Col, Image, Card } from 'react-bootstrap';
+import { Button, InputGroup, FormControl, Container, Row, Col, Card } from 'react-bootstrap';
 import LatestPost from 'components/blog/LatestPost';
 import QuickAddForm from 'components/forms/QuickAddForm';
 import UniqueSubmittersLeaderboard from 'components/leaderboards/UniqueSubmittersLeaderboard';
 import OriginalSubmitersLeaderboard from 'components/leaderboards/OriginalSubmittersLeaderboard';
+import Featured from 'components/landing/Featured';
 
-const StyledCard = styled(Card)`
-  overflow: hidden;
-`;
+const StyledCard = styled(Card)``;
 
 const StyledLeadContent = styled.div`
   padding: 0em 2em 0em 2em;
@@ -38,11 +37,7 @@ const StyledCardParagraph = styled.p`
   line-height: 1.7;
 `;
 
-const StyledRow = styled(Row)`
-  & + & {
-    margin-top: 1rem;
-  }
-`;
+const StyledRow = styled(Row)``;
 
 const StyledCol = styled(Col)`
   @media (max-width: 991px) {
@@ -52,27 +47,7 @@ const StyledCol = styled(Col)`
   }
 `;
 
-const ImageRow = styled(StyledRow)`
-  padding: 1em 2em 0em 2em;
-`;
-
-const NewsImage = styled(Image)`
-  min-width: 100%;
-`;
-
-const NewsCol = styled(Col)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const SectionHeading = styled(Card.Header)`
-  font-size: 26px;
-  font-weight: 800;
-  line-height: 1.5;
-  margin-bottom: 0.5em;
-  background-color: rgba(0, 0, 0, 0.03);
-`;
+const SectionHeading = styled(Card.Header)``;
 
 const LeaderboardContainer = styled.div`
   width: 100%;
@@ -236,84 +211,9 @@ const LandingPage = (props) => {
             </StyledCard>
           </StyledCol>
         </StyledRow>
-        <StyledRow>
-          <Col>
-            <StyledCard>
-              <SectionHeading>The Database in Print</SectionHeading>
-              <StyledCardLeadParagraph>
-                Read about the database on the{' '}
-                <a
-                  href="https://www.partnershiponai.org/aiincidentdatabase/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  PAI Blog
-                </a>
-                ,{' '}
-                <a
-                  href="https://www.vice.com/en/article/m7agjq/this-database-is-finally-holding-ai-accountable"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Vice News
-                </a>
-                ,{' '}
-                <a
-                  href="https://venturebeat.com/2021/01/15/the-ai-incident-database-wants-to-improve-the-safety-of-machine-learning/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Venture Beat
-                </a>
-                ,{' '}
-                <a
-                  href="https://www.wired.com/story/artificial-intelligence-hall-shame/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Wired
-                </a>
-                , and{' '}
-                <a href="https://arxiv.org/abs/2011.08512" target="_blank" rel="noreferrer">
-                  arXiv
-                </a>{' '}
-                among other outlets.
-              </StyledCardLeadParagraph>
-              <ImageRow>
-                <NewsCol xs={12} sm={4}>
-                  <a href="https://arxiv.org/abs/2011.08512" target="_blank" rel="noreferrer">
-                    <NewsImage src="/images/news/arxiv.png" rounded />
-                  </a>
-                </NewsCol>
-                <Col xs={12} sm={4}>
-                  <a
-                    href="https://venturebeat.com/2021/01/15/the-ai-incident-database-wants-to-improve-the-safety-of-machine-learning/"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <NewsImage src="/images/news/VentureBeat.png" rounded />
-                  </a>
-                  <a
-                    href="https://www.wired.com/story/artificial-intelligence-hall-shame/"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <NewsImage src="/images/news/Wired_logo.svg" rounded />
-                  </a>
-                </Col>
-                <NewsCol xs={12} sm={4}>
-                  <a
-                    href="https://www.vice.com/en/article/m7agjq/this-database-is-finally-holding-ai-accountable"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <NewsImage src="/images/news/vice.png" rounded />
-                  </a>
-                </NewsCol>
-              </ImageRow>
-            </StyledCard>
-          </Col>
-        </StyledRow>
+
+        <Featured />
+
         <StyledRow>
           <Col>
             <StyledCard>
