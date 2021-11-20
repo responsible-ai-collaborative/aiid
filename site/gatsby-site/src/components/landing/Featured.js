@@ -20,11 +20,9 @@ const Outlets = styled.ul`
 export default function Featured() {
   return (
     <>
-      <h3 className="text-center">The Database in Print</h3>
-
       <Card>
         <Card.Body>
-          <Card.Title className="text-center">The Database in Print</Card.Title>
+          <Card.Title className="text-center h3">The Database in Print</Card.Title>
           <Card.Subtitle className="text-center">
             Read about the database on the{' '}
             <a
