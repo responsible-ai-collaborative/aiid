@@ -5,7 +5,6 @@ import { StyledHeading } from 'components/styles/Docs';
 import styled from 'styled-components';
 
 import RandomIncidentsCarousel from 'components/RandomIncidentsCarousel';
-import LatestIncidentReport from 'components/LatestIncidentReport';
 import { navigate } from 'gatsby';
 import { Link } from 'gatsby';
 import { Button, InputGroup, FormControl, Container, Row, Col, Card } from 'react-bootstrap';
@@ -16,6 +15,7 @@ import Blog from 'components/landing/Blog';
 import WordCounts from 'components/landing/WordCounts';
 import AboutPartnership from 'components/landing/AboutPartnership';
 import AboutDatabase from 'components/landing/AboutDatabase ';
+import LatestReports from 'components/landing/LatestReports';
 
 const StyledCard = styled(Card)``;
 
@@ -124,10 +124,7 @@ const LandingPage = (props) => {
         </StyledRow>
         <StyledRow>
           <Col>
-            <StyledCard>
-              <SectionHeading>Latest Incident Report</SectionHeading>
-              <LatestIncidentReport />
-            </StyledCard>
+            <LatestReports />
           </Col>
         </StyledRow>
         <StyledRow>
