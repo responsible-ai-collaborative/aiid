@@ -4,7 +4,6 @@ import Layout from 'components/Layout';
 import Wordlist from 'components/WordList';
 import { StyledHeading } from 'components/styles/Docs';
 import styled from 'styled-components';
-import SubmittersLeaderboard from 'components/leaderboards/SubmittersLeaderboard';
 
 import RandomIncidentsCarousel from 'components/RandomIncidentsCarousel';
 import LatestIncidentReport from 'components/LatestIncidentReport';
@@ -13,9 +12,9 @@ import { Link } from 'gatsby';
 import { Button, InputGroup, FormControl, Container, Row, Col, Card } from 'react-bootstrap';
 import LatestPost from 'components/blog/LatestPost';
 import QuickAddForm from 'components/forms/QuickAddForm';
-import UniqueSubmittersLeaderboard from 'components/leaderboards/UniqueSubmittersLeaderboard';
-import OriginalSubmitersLeaderboard from 'components/leaderboards/OriginalSubmittersLeaderboard';
+
 import Featured from 'components/landing/Featured';
+import Leaderboards from 'components/landing/Leaderboards';
 
 const StyledCard = styled(Card)``;
 
@@ -48,22 +47,6 @@ const StyledCol = styled(Col)`
 `;
 
 const SectionHeading = styled(Card.Header)``;
-
-const LeaderboardContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 0em 2em 2em 2em;
-  margin: 1rem auto 0;
-  h2 {
-    font-size: 1.2em;
-  }
-
-  @media (max-width: 991px) {
-    flex-direction: column;
-  }
-`;
 
 const LiWrapper = styled.div`
   padding: 0em 2em 2em 2em;
@@ -214,23 +197,8 @@ const LandingPage = (props) => {
 
         <Featured />
 
-        <StyledRow>
-          <Col>
-            <StyledCard>
-              <SectionHeading>Incident Report Submission Leaderboards</SectionHeading>
-              <StyledCardLeadParagraph>
-                These are the persons and entities credited with creating and submitted incident
-                reports. More details are available on the{' '}
-                <Link to="/summaries/leaderboard">leaderboard page.</Link>
-              </StyledCardLeadParagraph>
-              <LeaderboardContainer>
-                <OriginalSubmitersLeaderboard limit={3} />
-                <UniqueSubmittersLeaderboard limit={3} />
-                <SubmittersLeaderboard limit={3} />
-              </LeaderboardContainer>
-            </StyledCard>
-          </Col>
-        </StyledRow>
+        <Leaderboards />
+
         <StyledRow>
           <Col>
             <StyledCard>
