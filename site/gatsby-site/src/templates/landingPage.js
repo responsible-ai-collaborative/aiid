@@ -14,23 +14,13 @@ import Featured from 'components/landing/Featured';
 import Leaderboards from 'components/landing/Leaderboards';
 import Blog from 'components/landing/Blog';
 import WordCounts from 'components/landing/WordCounts';
+import AboutPartnership from 'components/landing/AboutPartnership';
+import AboutDatabase from 'components/landing/AboutDatabase ';
 
 const StyledCard = styled(Card)``;
 
 const StyledLeadContent = styled.div`
   padding: 0em 2em 0em 2em;
-  margin-bottom: 0px;
-  line-height: 1.7;
-`;
-
-const StyledCardLeadParagraph = styled.p`
-  padding: 0em 2em 0em 2em;
-  margin-bottom: 0px;
-  line-height: 1.7;
-`;
-
-const StyledCardParagraph = styled.p`
-  padding: 1em 2em 2em 2em;
   margin-bottom: 0px;
   line-height: 1.7;
 `;
@@ -150,40 +140,10 @@ const LandingPage = (props) => {
         </StyledRow>
         <StyledRow>
           <StyledCol lg={6}>
-            <StyledCard>
-              <SectionHeading>About the Database</SectionHeading>
-              <StyledCardLeadParagraph>
-                The AI Incident Database is the only collection of AI deployment harms or near harms
-                across all disciplines, geographies, and use cases.
-              </StyledCardLeadParagraph>
-              <StyledCardParagraph>
-                You are invited to <Link to="/apps/quickadd">submit</Link> reports to the database,
-                whereupon accepted incidents will be indexed and made{' '}
-                <Link to="/apps/discover">discoverable</Link> to people developing and deploying the
-                next generation of AI technology to the world. Artificial intelligence will only be
-                a benefit to people and society if we collectively record and learn from its
-                failings. <Link to={`/about`}>(Learn More)</Link>
-              </StyledCardParagraph>
-            </StyledCard>
+            <AboutDatabase />
           </StyledCol>
           <StyledCol lg={6}>
-            <StyledCard>
-              <SectionHeading>About Partnership on AI</SectionHeading>
-              <StyledCardLeadParagraph>
-                The <a href="http://partnershiponai.org/">Partnership on AI</a> is the leading forum
-                addressing the most important and difficult decisions on the future of AI. We are a
-                non-profit that invites diverse voices into the process of technical governance,
-                design, and deployment of AI technologies. Partners work together across industry,
-                academia, and civil society to understand the implications of AI advancements and
-                ensure they benefit society equitably.
-              </StyledCardLeadParagraph>
-              <StyledCardParagraph>
-                The AI Incident Database is one of PAI’s key projects because it is a tangible
-                resource on what can happen if AI is not built or deployed in a manner which
-                considers real world implications.{' '}
-                <Link to={`/about/1-governance`}>(Learn More)</Link>
-              </StyledCardParagraph>
-            </StyledCard>
+            <AboutPartnership />
           </StyledCol>
         </StyledRow>
 
