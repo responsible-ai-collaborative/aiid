@@ -6,7 +6,6 @@ import styled from 'styled-components';
 
 import RandomIncidentsCarousel from 'components/RandomIncidentsCarousel';
 import { Container, Row, Col, Card } from 'react-bootstrap';
-import QuickAddForm from 'components/forms/QuickAddForm';
 import Featured from 'components/landing/Featured';
 import Leaderboards from 'components/landing/Leaderboards';
 import Blog from 'components/landing/Blog';
@@ -15,6 +14,7 @@ import AboutPartnership from 'components/landing/AboutPartnership';
 import AboutDatabase from 'components/landing/AboutDatabase ';
 import LatestReports from 'components/landing/LatestReports';
 import QuickSearch from 'components/landing/QuickSearch';
+import QuickAdd from 'components/landing/QuickAdd';
 
 const StyledCard = styled(Card)``;
 
@@ -29,26 +29,6 @@ const StyledCol = styled(Col)`
 `;
 
 const SectionHeading = styled(Card.Header)``;
-
-const StyledQuickAddForm = styled(QuickAddForm)`
-  margin-top: -1rem;
-  form {
-    background: #fff;
-    padding: 1rem 2rem 2rem !important;
-  }
-  label {
-    display: none;
-  }
-  .form-group {
-    margin-bottom: 0;
-  }
-  .error-message {
-    position: relative;
-  }
-  p {
-    display: none;
-  }
-`;
 
 const LandingPage = (props) => {
   const {
@@ -88,10 +68,7 @@ const LandingPage = (props) => {
         </StyledRow>
         <StyledRow>
           <Col>
-            <StyledCard>
-              <SectionHeading>Quick Add New Report URL</SectionHeading>
-              <StyledQuickAddForm showDescription={false} appendSubmit={true} />
-            </StyledCard>
+            <QuickAdd />
           </Col>
         </StyledRow>
         <StyledRow>
