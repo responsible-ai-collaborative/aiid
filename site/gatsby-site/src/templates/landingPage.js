@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Helmet from 'react-helmet';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
 import styled from 'styled-components';
 
 import RandomIncidentsCarousel from 'components/RandomIncidentsCarousel';
-import { navigate } from 'gatsby';
-import { Link } from 'gatsby';
-import { Button, InputGroup, FormControl, Container, Row, Col, Card } from 'react-bootstrap';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 import QuickAddForm from 'components/forms/QuickAddForm';
 import Featured from 'components/landing/Featured';
 import Leaderboards from 'components/landing/Leaderboards';
@@ -16,14 +14,9 @@ import WordCounts from 'components/landing/WordCounts';
 import AboutPartnership from 'components/landing/AboutPartnership';
 import AboutDatabase from 'components/landing/AboutDatabase ';
 import LatestReports from 'components/landing/LatestReports';
+import QuickSearch from 'components/landing/QuickSearch';
 
 const StyledCard = styled(Card)``;
-
-const StyledLeadContent = styled.div`
-  padding: 0em 2em 0em 2em;
-  margin-bottom: 0px;
-  line-height: 1.7;
-`;
 
 const StyledRow = styled(Row)``;
 
@@ -57,38 +50,6 @@ const StyledQuickAddForm = styled(QuickAddForm)`
   }
 `;
 
-const DiscoverAppSearch = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const submit = (e) => {
-    e.preventDefault();
-    navigate(`/apps/discover?s=${searchTerm}`);
-  };
-
-  return (
-    <>
-      <SectionHeading>Search all incident reports</SectionHeading>
-      <StyledLeadContent>
-        <form onSubmit={submit}>
-          <InputGroup className="mb-3">
-            <Button as={Link} to={`/apps/discover?s=${searchTerm}`} variant="outline-secondary">
-              Search
-            </Button>
-            <FormControl
-              id="algolia-search"
-              aria-describedby="basic-addon1"
-              onChange={(event) => setSearchTerm(event.currentTarget.value)}
-            />
-          </InputGroup>
-        </form>
-        <label className="alert-light" htmlFor="algolia-search">
-          Entering text above will search across more than 1200 incident reports
-        </label>
-      </StyledLeadContent>
-    </>
-  );
-};
-
 const LandingPage = (props) => {
   const {
     pageContext: { wordCountsSorted },
@@ -117,9 +78,7 @@ const LandingPage = (props) => {
       <Container>
         <StyledRow>
           <Col>
-            <StyledCard>
-              <DiscoverAppSearch />
-            </StyledCard>
+            <QuickSearch />
           </Col>
         </StyledRow>
         <StyledRow>
