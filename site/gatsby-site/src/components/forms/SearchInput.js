@@ -20,11 +20,19 @@ const SearchResetButton = styled.button`
   border: none;
 `;
 
-export default function SearchInput({ value, onChange, onClear, onKeyPress }) {
+export default function SearchInput({
+  value,
+  onChange,
+  onClear,
+  onKeyPress,
+  size = 'sm',
+  placeHolder = 'Type Here',
+}) {
   return (
     <InputGroup className="position-relative">
       <FormControl
-        placeholder="Type Here"
+        size={size}
+        placeholder={placeHolder}
         maxLength={512}
         value={value}
         onKeyPress={onKeyPress}
@@ -33,7 +41,7 @@ export default function SearchInput({ value, onChange, onClear, onKeyPress }) {
       <SearchStatus>
         {value !== '' ? (
           <SearchResetButton type="reset" title="Clear the search query." onClick={() => onClear()}>
-            <FontAwesomeIcon icon={faTimesCircle} className="pointer" title="clear" />
+            <FontAwesomeIcon opacity={0.5} icon={faTimesCircle} className="pointer" title="clear" />
           </SearchResetButton>
         ) : (
           <FontAwesomeIcon opacity={0.5} icon={faSearch} className="pointer" />

@@ -1,7 +1,6 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import Layout from 'components/Layout';
-import styled from 'styled-components';
 import { Container, Row, Col } from 'react-bootstrap';
 import Featured from 'components/landing/Featured';
 import Leaderboards from 'components/landing/Leaderboards';
@@ -15,24 +14,10 @@ import QuickAdd from 'components/landing/QuickAdd';
 import RandomReports from 'components/landing/RandomReports';
 import Hero from 'components/landing/Hero';
 
-const StyledRow = styled(Row)``;
-
-const StyledCol = styled(Col)`
-  @media (max-width: 991px) {
-    &.col-lg-6 + &.col-lg-6 {
-      margin-top: 1rem;
-    }
-  }
-`;
-
 const LandingPage = (props) => {
   const {
     pageContext: { wordCountsSorted },
   } = props;
-
-  if (!wordCountsSorted) {
-    return null;
-  }
 
   const localWordCounts = wordCountsSorted.filter((word, index) => index < 10);
 
@@ -54,29 +39,29 @@ const LandingPage = (props) => {
           </Col>
         </Row>
 
-        <StyledRow>
+        <Row className="mt-2">
           <Col>
-            <QuickSearch />
+            <QuickSearch className="text-center border-0 px-5" />
           </Col>
-        </StyledRow>
-        <StyledRow>
+        </Row>
+        <Row className="mt-5">
           <Col>
             <LatestReports />
           </Col>
-        </StyledRow>
-        <StyledRow>
+        </Row>
+        <Row className="mt-4">
           <Col>
             <QuickAdd />
           </Col>
-        </StyledRow>
-        <StyledRow>
-          <StyledCol lg={6}>
+        </Row>
+        <Row>
+          <Col lg={6}>
             <AboutDatabase />
-          </StyledCol>
-          <StyledCol lg={6}>
+          </Col>
+          <Col lg={6}>
             <AboutPartnership />
-          </StyledCol>
-        </StyledRow>
+          </Col>
+        </Row>
 
         <Featured />
 
@@ -84,14 +69,14 @@ const LandingPage = (props) => {
 
         <Blog />
 
-        <StyledRow>
-          <StyledCol lg={6}>
+        <Row>
+          <Col lg={6}>
             <WordCounts localWordCounts={localWordCounts} />
-          </StyledCol>
-          <StyledCol lg={6}>
+          </Col>
+          <Col lg={6}>
             <RandomReports />
-          </StyledCol>
-        </StyledRow>
+          </Col>
+        </Row>
       </Container>
     </Layout>
   );
