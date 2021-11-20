@@ -1,7 +1,6 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import Layout from 'components/Layout';
-import { StyledHeading } from 'components/styles/Docs';
 import styled from 'styled-components';
 import { Container, Row, Col } from 'react-bootstrap';
 import Featured from 'components/landing/Featured';
@@ -14,6 +13,7 @@ import LatestReports from 'components/landing/LatestReports';
 import QuickSearch from 'components/landing/QuickSearch';
 import QuickAdd from 'components/landing/QuickAdd';
 import RandomReports from 'components/landing/RandomReports';
+import Hero from 'components/landing/Hero';
 
 const StyledRow = styled(Row)``;
 
@@ -47,10 +47,13 @@ const LandingPage = (props) => {
         <meta name="title" content={metaTitle} />
         <meta name="description" content={metaDescription} />
       </Helmet>
-      <div className={'titleWrapper'}>
-        <StyledHeading>Welcome to the Artificial Intelligence Incident Database</StyledHeading>
-      </div>
       <Container>
+        <Row>
+          <Col>
+            <Hero />
+          </Col>
+        </Row>
+
         <StyledRow>
           <Col>
             <QuickSearch />
