@@ -44,22 +44,25 @@ const LandingPage = (props) => {
             <QuickSearch className="text-center border-0 px-5" />
           </Col>
         </Row>
+
         <Row className="mt-5">
           <Col>
             <LatestReports />
           </Col>
         </Row>
+
         <Row className="mt-4">
           <Col>
             <QuickAdd />
           </Col>
         </Row>
+
         <Row>
-          <Col lg={6}>
-            <AboutDatabase />
+          <Col lg={6} className="mt-4">
+            <AboutDatabase className="border-0 shadow" />
           </Col>
-          <Col lg={6}>
-            <AboutPartnership />
+          <Col lg={6} className="mt-4">
+            <AboutPartnership className="border-0 shadow" />
           </Col>
         </Row>
 
