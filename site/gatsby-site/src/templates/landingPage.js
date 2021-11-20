@@ -3,9 +3,7 @@ import Helmet from 'react-helmet';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
 import styled from 'styled-components';
-
-import RandomIncidentsCarousel from 'components/RandomIncidentsCarousel';
-import { Container, Row, Col, Card } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import Featured from 'components/landing/Featured';
 import Leaderboards from 'components/landing/Leaderboards';
 import Blog from 'components/landing/Blog';
@@ -15,8 +13,7 @@ import AboutDatabase from 'components/landing/AboutDatabase ';
 import LatestReports from 'components/landing/LatestReports';
 import QuickSearch from 'components/landing/QuickSearch';
 import QuickAdd from 'components/landing/QuickAdd';
-
-const StyledCard = styled(Card)``;
+import RandomReports from 'components/landing/RandomReports';
 
 const StyledRow = styled(Row)``;
 
@@ -27,8 +24,6 @@ const StyledCol = styled(Col)`
     }
   }
 `;
-
-const SectionHeading = styled(Card.Header)``;
 
 const LandingPage = (props) => {
   const {
@@ -91,10 +86,7 @@ const LandingPage = (props) => {
             <WordCounts localWordCounts={localWordCounts} />
           </StyledCol>
           <StyledCol lg={6}>
-            <StyledCard>
-              <SectionHeading>Random Reports</SectionHeading>
-              <RandomIncidentsCarousel />
-            </StyledCard>
+            <RandomReports />
           </StyledCol>
         </StyledRow>
       </Container>
