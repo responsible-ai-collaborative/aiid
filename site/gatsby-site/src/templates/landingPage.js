@@ -85,10 +85,10 @@ const LandingPage = (props) => {
         </Row>
 
         <Row>
-          <Col lg={6}>
+          <Col className="mt-5" lg={6}>
             <WordCounts localWordCounts={localWordCounts} />
           </Col>
-          <Col lg={6}>
+          <Col className="mt-5" lg={6}>
             <RandomReports />
           </Col>
         </Row>
