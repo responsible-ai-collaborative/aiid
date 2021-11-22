@@ -58,10 +58,10 @@ const LandingPage = (props) => {
         </Row>
 
         <Row>
-          <Col lg={6} className="mt-4">
+          <Col lg={6} className="mt-5">
             <AboutDatabase className="border-0 shadow" />
           </Col>
-          <Col lg={6} className="mt-4">
+          <Col lg={6} className="mt-5">
             <AboutPartnership className="border-0 shadow" />
           </Col>
         </Row>
