@@ -259,7 +259,6 @@ const SelectDatePickerFilter = ({
 };
 
 const getClassificationsArray = (classifications, taxonomy) => {
-  console.log(classifications, taxonomy);
   if (!classifications) {
     return [];
   }
@@ -282,7 +281,7 @@ const getClassificationsArray = (classifications, taxonomy) => {
   };
 
   taxaFieldsArray.forEach((field) => {
-    const c = classifications[field.short_name.split(' ').join('_')];
+    const c = classifications[field.short_name];
 
     const value = getStringForValue(c);
 
@@ -306,7 +305,7 @@ export default function ClassificationsDbView(props) {
 
   const [allTaxonomies, setAllTaxonomies] = useState([]);
 
-  const [allClassifications, setAllClassifications] = useState(undefined);
+  const [allClassifications, setAllClassifications] = useState([]);
 
   const [tableData, setTableData] = useState([]);
 
@@ -380,28 +379,7 @@ export default function ClassificationsDbView(props) {
     });
   };
 
-  useEffect(() => {
-    const fieldToColumnMap = (taxaField) => {
-      const selectFilterTypes = ['multi', 'list', 'enum', 'bool'];
-
-      const column = {
-        Header: taxaField.short_name,
-        accessor: taxaField.short_name.split(' ').join(''),
-      };
-
-      if (selectFilterTypes.includes(taxaField.display_type)) {
-        column.Filter = SelectColumnFilter;
-        column.filter = 'includes';
-      }
-
-      if (taxaField.display_type === 'date') {
-        column.Filter = SelectDatePickerFilter;
-        column.filter = taxaField.short_name.split(' ').join('');
-      }
-
-      return column;
-    };
-
+  const initSetup = async () => {
     const formatClassificationData = (taxonomyFields, classifications) => {
       let tableData = [];
 
@@ -486,44 +464,66 @@ export default function ClassificationsDbView(props) {
       return tableData;
     };
 
+    const fieldToColumnMap = (taxaField) => {
+      const selectFilterTypes = ['multi', 'list', 'enum', 'bool'];
+
+      const column = {
+        Header: taxaField.short_name,
+        accessor: taxaField.short_name.split(' ').join(''),
+      };
+
+      if (selectFilterTypes.includes(taxaField.display_type)) {
+        column.Filter = SelectColumnFilter;
+        column.filter = 'includes';
+      }
+
+      if (taxaField.display_type === 'date') {
+        column.Filter = SelectDatePickerFilter;
+        column.filter = taxaField.short_name.split(' ').join('');
+      }
+
+      return column;
+    };
+
+    const taxaData = allTaxonomies.filter((taxa) => taxa.namespace === currentTaxonomy);
+
+    if (taxaData.length === 0) {
+      setLoading(false);
+      return;
+    }
+
+    const incidentIdColumn = {
+      Header: 'Incident ID',
+      accessor: 'IncidentId',
+    };
+
+    const actionsColumn = {
+      Header: 'Actions',
+      accessor: 'actions',
+    };
+
+    setColumnData([
+      actionsColumn,
+      incidentIdColumn,
+      ...taxaData[0].field_list.map(fieldToColumnMap),
+    ]);
+
+    const classificationData = await fetchClassificationData({ namespace: currentTaxonomy });
+
+    if (classificationData.length > 0) {
+      setAllClassifications(classificationData);
+    }
+
+    setTableData(formatClassificationData(taxaData[0].field_list, classificationData));
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
     if (allTaxonomies.length === 0) {
       return;
     }
     setLoading(true);
-    const initSetup = async () => {
-      const taxaData = allTaxonomies.filter((taxa) => taxa.namespace === currentTaxonomy);
-
-      if (taxaData.length === 0) {
-        setLoading(false);
-        return;
-      }
-
-      const incidentIdColumn = {
-        Header: 'Incident ID',
-        accessor: 'IncidentId',
-      };
-
-      const actionsColumn = {
-        Header: 'Actions',
-        accessor: 'actions',
-      };
-
-      setColumnData([
-        actionsColumn,
-        incidentIdColumn,
-        ...taxaData[0].field_list.map(fieldToColumnMap),
-      ]);
-
-      const classificationData = await fetchClassificationData({ namespace: currentTaxonomy });
-
-      if (classificationData.length > 0) {
-        setAllClassifications(classificationData[0]);
-      }
-
-      setTableData(formatClassificationData(taxaData[0].field_list, classificationData));
-
-      setLoading(false);
-    };
 
     initSetup();
   }, [currentTaxonomy, allTaxonomies]);
@@ -582,14 +582,24 @@ export default function ClassificationsDbView(props) {
         weight: f.weight,
       };
     });
+
+    const classificationObj = allClassifications.filter(
+      (report) => report.incident_id === row.values.IncidentId
+    );
+
     taxonomyFormObj.classificationsArray = getClassificationsArray(
-      allClassifications.classifications,
+      classificationObj.length > 0 ? classificationObj[0].classifications : null,
       taxaData
     );
 
     return (
       <>
-        <TaxonomyForm key={'CSET'} taxonomy={taxonomyFormObj} incidentId={row.values.IncidentId} />
+        <TaxonomyForm
+          key={'CSET'}
+          taxonomy={taxonomyFormObj}
+          incidentId={row.values.IncidentId}
+          doneSubmittingCallback={initSetup}
+        />
       </>
     );
   };

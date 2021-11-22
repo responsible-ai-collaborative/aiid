@@ -64,7 +64,13 @@ const TaxaHeader = styled.h4`
 
 const TEXTAREA_LIMIT = 120;
 
-const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }) => {
+const EditTaxonomyForm = ({
+  namespace,
+  incidentId,
+  setIsEditing,
+  setShowBanner,
+  doneSubmittingCallback,
+}) => {
   const [loading, setLoading] = useState(true);
 
   const [error, setError] = useState('');
@@ -376,6 +382,9 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
 
     setIsEditing(false);
     setSubmitting(false);
+    if (doneSubmittingCallback) {
+      doneSubmittingCallback();
+    }
   };
 
   return (
@@ -414,7 +423,7 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
   );
 };
 
-const TaxonomyForm = ({ taxonomy, incidentId }) => {
+const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
   if (!taxonomy) {
     return null;
   }
@@ -539,6 +548,7 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
                 incidentId={incidentId}
                 setShowBanner={setShowBanner}
                 setIsEditing={setIsEditing}
+                doneSubmittingCallback={doneSubmittingCallback}
               />
             </>
           )}

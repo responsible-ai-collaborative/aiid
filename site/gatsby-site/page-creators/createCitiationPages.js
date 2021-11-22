@@ -15,6 +15,10 @@ const getClassificationsArray = (incidentClassifications, taxonomy) => {
   const array = [];
 
   const getStringForValue = (value) => {
+    if (value === null) {
+      return '';
+    }
+
     switch (typeof value) {
       case 'object':
         return value.join(', ');
@@ -28,7 +32,7 @@ const getClassificationsArray = (incidentClassifications, taxonomy) => {
   };
 
   taxaFieldsArray.forEach((field) => {
-    const c = classificationObj[field.short_name.split(' ').join('_')];
+    const c = classificationObj[field.short_name];
 
     const value = getStringForValue(c);
 
