@@ -37,7 +37,12 @@ const StyledItem = styled(ListGroup.Item)`
   white-space: nowrap;
 `;
 
-export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit }) => {
+export const Leaderboard = ({
+  dataHash,
+  leaderboard: { attribute, title },
+  limit,
+  className = '',
+}) => {
   let sortedArray = [];
 
   for (const item in dataHash) {
@@ -57,7 +62,7 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
   }
 
   return (
-    <Card>
+    <Card className={className}>
       <Card.Header>{title}</Card.Header>
       <ListGroup variant="flush">
         {sortedArray.map((item, index) => (
