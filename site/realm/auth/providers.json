@@ -14,8 +14,8 @@
         "type": "local-userpass",
         "config": {
             "autoConfirm": true,
-            "resetPasswordSubject": "Password Resets are not Currently Supported",
-            "resetPasswordUrl": "http://aiid.partnershiponai.org/",
+            "resetPasswordSubject": "",
+            "resetPasswordUrl": "https://incidentdatabase.ai/resetpassword",
             "runConfirmationFunction": false,
             "runResetFunction": false
         },

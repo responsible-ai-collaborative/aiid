@@ -6,14 +6,14 @@ import styled from 'styled-components';
 import { fill } from '@cloudinary/base/actions/resize';
 import md5 from 'md5';
 import { Link } from 'gatsby';
-import Actions from './Actions'
+import Actions from './Actions';
 
 const BlockQuote = styled.blockquote`
-  color: var( --bs-gray-400);
+  color: var(--bs-gray-400);
   .ais-Snippet-highlighted {
     background: rgba(237, 74, 0, 0.98);
   }
-`
+`;
 
 const TitleHighlight = styled(Highlight)`
   font-weight: bold;
@@ -35,7 +35,7 @@ const StyledCardBody = styled(Card.Body)`
 `;
 
 const StyledSubTitle = styled(Card.Subtitle)`
- color: var( --bs-gray-400);
+  color: var(--bs-gray-400);
 `;
 
 const StyledCardTitle = styled(Card.Title)`
@@ -77,9 +77,8 @@ export default function Compact({
     <StyledCard>
       <StyledCardBody className="d-flex flex-column ">
         <Contents className="ps-4 pe-4 pt-3">
-
-          {item._snippetResult.text.matchLevel === 'full'
-            ? <>
+          {item._snippetResult.text.matchLevel === 'full' ? (
+            <>
               <StyledCardTitle>
                 <Link
                   to={`/cite/${item.incident_id}#${item.mongodb_id}`}
@@ -92,7 +91,8 @@ export default function Compact({
                 <Snippet attribute="text" hit={item} />
               </BlockQuote>
             </>
-            : <>
+          ) : (
+            <>
               <StyledCardTitle>
                 <Link
                   to={`/cite/${item.incident_id}#${item.mongodb_id}`}
@@ -106,8 +106,7 @@ export default function Compact({
                 {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
               </StyledSubTitle>
             </>
-          }
-
+          )}
         </Contents>
 
         <IncidentCardImage
@@ -116,7 +115,7 @@ export default function Compact({
           height="240px"
           transformation={fill().height(240)}
         />
-      </StyledCardBody >
+      </StyledCardBody>
 
       <Card.Footer className="d-flex justify-content-between">
         <Actions
@@ -127,6 +126,6 @@ export default function Compact({
           item={item}
         />
       </Card.Footer>
-    </StyledCard >
+    </StyledCard>
   );
 }

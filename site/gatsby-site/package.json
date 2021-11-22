@@ -82,7 +82,7 @@
     "react-papaparse": "^3.16.1",
     "react-table": "^7.7.0",
     "react-wordcloud": "^1.2.7",
-    "realm-web": "^0.7.0",
+    "realm-web": "^1.3.0",
     "sharp": "^0.28.3",
     "stemmer": "^1.0.5",
     "stopword": "^1.0.7",

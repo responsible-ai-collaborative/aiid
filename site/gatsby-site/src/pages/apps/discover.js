@@ -13,7 +13,9 @@ import SearchBox from 'components/discover/SearchBox';
 import Pagination from 'components/discover/Pagination';
 import Filters from 'components/discover/Filters';
 import FiltersModal from 'components/discover/FiltersModal';
+import { SearchContext } from 'components/discover/useSearch';
 import { queryConfig } from 'components/discover/queryParams';
+import VirtualFilters from 'components/discover/VirtualFilters';
 
 const indexName = 'instant_search';
 
@@ -195,6 +197,10 @@ function DiscoverApp(props) {
 
   const [searchState, setSearchState] = useState(generateSearchState({ query }));
 
+  const onSearchStateChange = (searchState) => {
+    setSearchState({ ...searchState });
+  };
+
   const toggleFilterByIncidentId = useCallback(
     (incidentId) => {
       const newSearchState = {
@@ -206,23 +212,18 @@ function DiscoverApp(props) {
       };
 
       setSearchState(newSearchState);
+      setQuery(getQueryFromState(newSearchState), 'push');
     },
     [searchState]
   );
 
-  const onSearchStateChange = (searchState) => {
-    setSearchState({ ...searchState });
-  };
-
   useEffect(() => {
+    const searchQuery = getQueryFromState(searchState);
 
-    const searchQuery = getQueryFromState(searchState)
-
-    const viewQuery = { display: query.display }
+    const viewQuery = { display: query.display };
 
     setQuery({ ...searchQuery, ...viewQuery }, 'push');
-
-  }, [searchState])
+  }, [searchState]);
 
   const authorsModal = useModal();
 
@@ -235,44 +236,40 @@ function DiscoverApp(props) {
       <Helmet>
         <title>Artificial Intelligence Incident Database</title>
       </Helmet>
-      <QueryParams config={queryConfig}>
-        {() => (
-          <InstantSearch
-            indexName={indexName}
-            searchClient={searchClient}
-            searchState={searchState}
-            onSearchStateChange={onSearchStateChange}
-          >
-            <FiltersContainer className="container-xl mt-4">
-              <Header>
-                <SearchBox defaultRefinement={query.s} />
-              </Header>
+      <SearchContext.Provider value={{ searchState, indexName, searchClient, onSearchStateChange }}>
+        <QueryParams config={queryConfig}>
+          {() => (
+            <InstantSearch
+              indexName={indexName}
+              searchClient={searchClient}
+              searchState={searchState}
+              onSearchStateChange={onSearchStateChange}
+            >
+              <VirtualFilters />
+              <FiltersContainer className="container-xl mt-4">
+                <Header>
+                  <SearchBox defaultRefinement={query.s} />
+                </Header>
+                <Filters />
+                <FiltersModal />
+              </FiltersContainer>
 
-              <Filters />
-
-              <FiltersModal
-                searchClient={searchClient}
-                indexName={indexName}
-                searchState={searchState}
-                onSearchStateChange={onSearchStateChange}
+              <Hits
+                toggleFilterByIncidentId={toggleFilterByIncidentId}
+                authorsModal={authorsModal}
+                submittersModal={submittersModal}
+                flagReportModal={flagReportModal}
               />
-            </FiltersContainer>
 
-            <Hits
-              toggleFilterByIncidentId={toggleFilterByIncidentId}
-              authorsModal={authorsModal}
-              submittersModal={submittersModal}
-              flagReportModal={flagReportModal}
-            />
+              <CustomModal {...authorsModal} />
+              <CustomModal {...submittersModal} />
+              <CustomModal {...flagReportModal} />
 
-            <CustomModal {...authorsModal} />
-            <CustomModal {...submittersModal} />
-            <CustomModal {...flagReportModal} />
-
-            <Pagination />
-          </InstantSearch>
-        )}
-      </QueryParams>
+              <Pagination />
+            </InstantSearch>
+          )}
+        </QueryParams>
+      </SearchContext.Provider>
     </LayoutHideSidebar>
   );
 }

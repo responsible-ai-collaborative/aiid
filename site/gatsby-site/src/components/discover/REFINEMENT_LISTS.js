@@ -15,6 +15,10 @@ const REFINEMENT_LISTS = [
     faIcon: faNewspaper,
     faClasses: 'far fa-newspaper',
     type: 'refinement',
+
+    // algolia specific
+    showMore: true,
+    showMoreLimit: 50,
   },
   {
     attribute: 'source_domain',
@@ -23,6 +27,10 @@ const REFINEMENT_LISTS = [
     faIcon: faNewspaper,
     faClasses: 'far fa-newspaper',
     type: 'refinement',
+
+    // algolia specific
+    showMore: true,
+    showMoreLimit: 50,
   },
   {
     attribute: 'authors',
@@ -31,6 +39,10 @@ const REFINEMENT_LISTS = [
     faIcon: faIdCard,
     faClasses: 'far fa-id-card',
     type: 'refinement',
+
+    // algolia specific
+    showMore: true,
+    showMoreLimit: 50,
   },
   {
     attribute: 'submitters',
@@ -39,6 +51,10 @@ const REFINEMENT_LISTS = [
     faIcon: faUserShield,
     faClasses: 'fas fa-user-shield',
     type: 'refinement',
+
+    // algolia specific
+    showMore: true,
+    showMoreLimit: 50,
   },
   {
     attribute: 'incident_id',
@@ -47,6 +63,10 @@ const REFINEMENT_LISTS = [
     faIcon: faHashtag,
     faClasses: 'fas fa-hashtag',
     type: 'refinement',
+
+    // algolia specific
+    showMore: true,
+    showMoreLimit: 50,
   },
   {
     attribute: 'epoch_incident_date',

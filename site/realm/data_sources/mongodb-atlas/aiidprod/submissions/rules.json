@@ -3,9 +3,9 @@
     "database": "aiidprod",
     "roles": [
         {
-            "name": "admin",
+            "name": "role is admin",
             "apply_when": {
-                "%%user.type": "server"
+                "%%user.custom_data.roles": "admin"
             },
             "write": true,
             "insert": true,

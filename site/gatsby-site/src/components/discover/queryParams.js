@@ -2,7 +2,7 @@ import { StringParam, createEnumParam, withDefault } from 'use-query-params';
 
 const DisplayModeEnumParam = withDefault(
   createEnumParam(['details', 'compact', 'list']),
-  'compact'
+  'details'
 );
 
 const queryConfig = {
