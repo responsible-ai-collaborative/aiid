@@ -33,6 +33,10 @@ const Medal = styled.div`
   display: inline-block;
 `;
 
+const StyledItem = styled(ListGroup.Item)`
+  white-space: nowrap;
+`;
+
 export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit }) => {
   let sortedArray = [];
 
@@ -57,12 +61,12 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
       <Card.Header>{title}</Card.Header>
       <ListGroup variant="flush">
         {sortedArray.map((item, index) => (
-          <ListGroup.Item key={`${item.label}-${item.value}`}>
+          <StyledItem key={`${item.label}-${item.value}`}>
             <Medal className="p-2">{medalMap(index + 1)}</Medal>
             <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
               {item.label} <Badge>{item.value}</Badge>
             </Link>
-          </ListGroup.Item>
+          </StyledItem>
         ))}
       </ListGroup>
     </Card>
