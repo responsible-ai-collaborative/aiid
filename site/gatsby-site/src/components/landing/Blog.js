@@ -7,7 +7,7 @@ export default function Blog() {
     <>
       <Card>
         <Card.Body>
-          <Card.Title className="text-center h3">Latest Blog Post</Card.Title>
+          <Card.Title>Latest Blog Post</Card.Title>
           <LatestPost />
         </Card.Body>
       </Card>
