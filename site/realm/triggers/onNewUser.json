@@ -1,0 +1,12 @@
+{
+    "name": "onNewUser",
+    "type": "AUTHENTICATION",
+    "config": {
+        "operation_type": "CREATE",
+        "providers": [
+            "local-userpass"
+        ]
+    },
+    "function_name": "onNewUser",
+    "disabled": false
+}

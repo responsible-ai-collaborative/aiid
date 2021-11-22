@@ -1,14 +1,16 @@
 import { createContext, useContext } from 'react';
 
 export const UserContext = createContext({
-  loading: false,
-  user: null,
-  mongoUserKey: '',
-  isAdmin: false,
-  isLoggedIn: false,
+  loading: true,
+  user: undefined,
+  isAdmin: undefined,
+  isLoggedIn: undefined,
   actions: {
-    setUserAPIKey: () => {},
+    login: () => {},
     logout: () => {},
+    sendResetPasswordEmail: () => {},
+    resetPassword: () => {},
   },
 });
+
 export const useUserContext = () => useContext(UserContext);

@@ -1,8 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as Realm from 'realm-web';
-
 import { realmApp } from 'services/realmApp';
-
 import { UserContext } from './UserContext';
 
 // A MongoDB interface component managing the privileged user state.
@@ -17,69 +15,72 @@ import { UserContext } from './UserContext';
 // https://docs.mongodb.com/realm/web/mongodb/
 
 export const UserContextProvider = ({ children }) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(realmApp.currentUser);
 
-  const [type, setType] = useState();
+  const logout = async () => {
+    await realmApp.currentUser.logOut();
 
-  const [mongoUserKey, setMongoUserKey] = useState(null);
+    //TODO: functions need at least an anon user to work
+    await login();
+  };
 
-  const setUserAPIKey = useCallback((apiKey) => {
-    setMongoUserKey(apiKey);
-    window.localStorage.setItem('mongoUserKey', apiKey);
-  }, []);
+  const login = async ({ apiKey, email, password } = {}) => {
+    let credentials = null;
 
-  const logout = useCallback(() => {
-    window.localStorage.removeItem('mongoUserKey');
-  }, []);
+    if (apiKey) {
+      credentials = Realm.Credentials.apiKey(apiKey);
+    } else if (email && password) {
+      credentials = Realm.Credentials.emailPassword(email, password);
+    } else {
+      credentials = Realm.Credentials.anonymous();
+    }
+
+    const user = await realmApp.logIn(credentials);
+
+    if (user.id === realmApp.currentUser.id) {
+      setUser(user);
+    }
+  };
+
+  const sendResetPasswordEmail = async ({ email }) => {
+    return realmApp.emailPasswordAuth.sendResetPasswordEmail(email);
+  };
+
+  const resetPassword = async ({ password, token, tokenId }) => {
+    return realmApp.emailPasswordAuth.resetPassword(token, tokenId, password);
+  };
 
   useEffect(() => {
-    const apiKey = window.localStorage.getItem('mongoUserKey');
+    async function checkUser() {
+      if (!user || !user.isLoggedIn) {
+        await login();
+      }
 
-    setMongoUserKey(apiKey);
-  }, []);
+      setLoading(false);
+    }
 
-  useEffect(() => {
-    setLoading(true);
-    const apiKey = window.localStorage.getItem('mongoUserKey');
-
-    const credentials = apiKey ? Realm.Credentials.apiKey(apiKey) : Realm.Credentials.anonymous();
-
-    const type = apiKey ? 'token' : 'anonymous';
-
-    setType(type);
-
-    realmApp
-      .logIn(credentials)
-      .then((res) => {
-        setUser(res);
-        console.log(`Logged in as ${type} user:`, res);
-      })
-      .catch((e) => {
-        console.log('RealmApp login Failed: ', e);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    checkUser();
   }, []);
 
   return (
     <UserContext.Provider
-      value={useMemo(
-        () => ({
-          loading,
-          user,
-          mongoUserKey,
-          isAdmin: type === 'token',
-          isLoggedIn: !!user,
-          actions: {
-            setUserAPIKey,
-            logout,
-          },
-        }),
-        [loading, user, type, setUserAPIKey, logout]
-      )}
+      value={{
+        loading,
+        user,
+        isAdmin:
+          user &&
+          user.isLoggedIn &&
+          user.customData.roles &&
+          user.customData.roles.includes('admin'),
+        actions: {
+          login,
+          logout,
+          sendResetPasswordEmail,
+          resetPassword,
+        },
+      }}
     >
       {children}
     </UserContext.Provider>
