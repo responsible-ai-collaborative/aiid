@@ -74,7 +74,7 @@ export const Leaderboard = ({
               <Medal className="pe-2">{medalMap(index + 1)}</Medal>
               {item.label}
             </Link>
-            <Badge>{item.value}</Badge>
+            <Badge bg="secondary">{item.value}</Badge>
           </StyledItem>
         ))}
       </ListGroup>
