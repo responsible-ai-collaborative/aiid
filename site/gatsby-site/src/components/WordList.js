@@ -6,7 +6,10 @@ const Wordlist = ({ content }) => {
     <>
       <ListGroup>
         {content.map((value) => (
-          <ListGroup.Item key={`word-${value[0]}`}>
+          <ListGroup.Item
+            key={`word-${value[0]}`}
+            className="d-flex justify-content-between align-items-center"
+          >
             {value[0]} <Badge bg="secondary"> {value[1]} </Badge>
           </ListGroup.Item>
         ))}
