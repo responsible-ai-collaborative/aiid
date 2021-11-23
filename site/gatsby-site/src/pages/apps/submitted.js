@@ -38,7 +38,7 @@ const SubmittedIncidentsPage = ({ data, ...props }) => {
         <h1>Quick Add URLs</h1>
         <p>
           These reports were added anonymously by users in the{' '}
-          <Link to="/apps/quickadd"> Quick Add </Link> form.
+          <Link to="/apps/submit"> Quick Add </Link> form.
         </p>
         <ListGroup className="mb-5">
           {quickSubmissions.map(({ node }) => (

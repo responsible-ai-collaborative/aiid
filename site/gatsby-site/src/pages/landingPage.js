@@ -207,7 +207,7 @@ const LandingPage = (props) => {
                 across all disciplines, geographies, and use cases.
               </StyledCardLeadParagraph>
               <StyledCardParagraph>
-                You are invited to <Link to="/apps/quickadd">submit</Link> reports to the database,
+                You are invited to <Link to="/apps/submit">submit</Link> reports to the database,
                 whereupon accepted incidents will be indexed and made{' '}
                 <Link to="/apps/discover">discoverable</Link> to people developing and deploying the
                 next generation of AI technology to the world. Artificial intelligence will only be
