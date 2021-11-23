@@ -10,12 +10,7 @@ export default function Featured() {
     <>
       <Card>
         <Card.Body>
-          <Card.Title>
-            Incident Report Submission Leaderboards{' '}
-            <span role="img" aria-label="Victory emoji">
-              ✌️
-            </span>
-          </Card.Title>
+          <Card.Title as="h2">Incident Report Submission Leaderboards</Card.Title>
           <Card.Subtitle>
             These are the persons and entities credited with creating and submitted incident
             reports. More details are available on the{' '}

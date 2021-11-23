@@ -6,8 +6,8 @@ export default function RandomReports() {
   return (
     <Card>
       <Card.Body>
-        <Card.Title>Random Reports</Card.Title>
-        <RandomIncidentsCarousel />
+        <Card.Title as="h2">Random Reports</Card.Title>
+        <RandomIncidentsCarousel className="mt-3" />
       </Card.Body>
     </Card>
   );

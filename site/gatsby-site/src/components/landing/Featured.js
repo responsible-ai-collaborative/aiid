@@ -18,12 +18,12 @@ const Outlets = styled.ul`
   }
 `;
 
-export default function Featured({ className }) {
+export default function Featured() {
   return (
-    <Card className={className}>
+    <Card className="text-center">
       <Card.Body>
-        <Card.Title className="text-center h3">The Database in Print</Card.Title>
-        <Card.Text className="text-center px-4">
+        <Card.Title as="h2">The Database in Print</Card.Title>
+        <Card.Text>
           Read about the database on the{' '}
           <a
             href="https://www.partnershiponai.org/aiincidentdatabase/"

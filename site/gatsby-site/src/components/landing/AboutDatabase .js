@@ -6,7 +6,7 @@ export default function AboutDatabase({ className }) {
   return (
     <Card className={className}>
       <Card.Body>
-        <Card.Title>About the Database</Card.Title>
+        <Card.Title as="h2">About the Database</Card.Title>
         <Card.Text className="fst-italic">
           The AI Incident Database is the only collection of AI deployment harms or near harms
           across all disciplines, geographies, and use cases.

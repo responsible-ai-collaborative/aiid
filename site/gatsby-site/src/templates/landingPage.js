@@ -68,7 +68,7 @@ const LandingPage = (props) => {
 
         <Row className="mt-5">
           <Col>
-            <Featured className="border-0" />
+            <Featured />
           </Col>
         </Row>
 

@@ -6,8 +6,8 @@ export default function LatestReports() {
   return (
     <Card>
       <Card.Body>
-        <Card.Title>Latest Incident Report</Card.Title>
-        <LatestIncidentReport />
+        <Card.Title as="h2">Latest Incident Report</Card.Title>
+        <LatestIncidentReport className="mt-3" />
       </Card.Body>
     </Card>
   );
