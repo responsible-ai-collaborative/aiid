@@ -66,11 +66,15 @@ export const Leaderboard = ({
       <Card.Header>{title}</Card.Header>
       <ListGroup variant="flush">
         {sortedArray.map((item, index) => (
-          <StyledItem key={`${item.label}-${item.value}`}>
-            <Medal className="p-2">{medalMap(index + 1)}</Medal>
+          <StyledItem
+            key={`${item.label}-${item.value}`}
+            className="d-flex justify-content-between align-items-center"
+          >
             <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
-              {item.label} <Badge>{item.value}</Badge>
+              <Medal className="pe-2">{medalMap(index + 1)}</Medal>
+              {item.label}
             </Link>
+            <Badge>{item.value}</Badge>
           </StyledItem>
         ))}
       </ListGroup>
