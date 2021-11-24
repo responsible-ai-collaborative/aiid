@@ -45,7 +45,7 @@ const LandingPage = (props) => {
           </Col>
         </Row>
 
-        <Row className="mt-5">
+        <Row className="mt-4">
           <Col>
             <LatestReports />
           </Col>
@@ -58,37 +58,37 @@ const LandingPage = (props) => {
         </Row>
 
         <Row>
-          <Col lg={6} className="mt-5">
-            <AboutDatabase className="border-0 shadow" />
+          <Col className="mt-4">
+            <AboutDatabase className="h-100" />
           </Col>
-          <Col lg={6} className="mt-5">
-            <AboutPartnership className="border-0 shadow" />
+          <Col className="mt-4">
+            <AboutPartnership className="h-100" />
           </Col>
         </Row>
 
-        <Row className="mt-5">
+        <Row className="mt-4">
           <Col>
             <Featured />
           </Col>
         </Row>
 
-        <Row className="mt-5">
+        <Row className="mt-4">
           <Col>
             <Leaderboards />
           </Col>
         </Row>
 
-        <Row className="mt-5">
+        <Row className="mt-4">
           <Col>
             <Blog />
           </Col>
         </Row>
 
         <Row>
-          <Col className="mt-5" lg={6}>
+          <Col className="mt-4" lg={6}>
             <WordCounts localWordCounts={localWordCounts} />
           </Col>
-          <Col className="mt-5" lg={6}>
+          <Col className="mt-4" lg={6}>
             <RandomReports />
           </Col>
         </Row>
