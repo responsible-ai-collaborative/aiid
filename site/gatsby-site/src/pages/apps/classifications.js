@@ -525,7 +525,12 @@ export default function ClassificationsDbView(props) {
     }
     setLoading(true);
 
-    initSetup();
+    try {
+      initSetup();
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   }, [currentTaxonomy, allTaxonomies]);
 
   const editClassificationModal = useModal();
@@ -723,21 +728,32 @@ export default function ClassificationsDbView(props) {
         </Helmet>
         <Container>
           <TaxonomySelectContainer>
-            <Form.Select
-              style={{ width: 100, margin: '0 10px' }}
-              aria-label="Default select example"
-              onChange={(e) => setCurrentTaxonomy(e.target.value)}
-            >
-              {allTaxonomies.length > 0 &&
-                allTaxonomies.map((taxa) => (
-                  <option key={taxa.namespace} value={taxa.namespace}>
-                    {taxa.namespace}
-                  </option>
-                ))}
-            </Form.Select>
-            <Spinner animation="border" role="status" variant="primary" style={{ marginLeft: 10 }}>
-              <span className="sr-only">Loading...</span>
-            </Spinner>
+            {loading ? (
+              <>
+                <Form.Select
+                  style={{ width: 100, margin: '0 10px' }}
+                  aria-label="Default select example"
+                  onChange={(e) => setCurrentTaxonomy(e.target.value)}
+                >
+                  {allTaxonomies.length > 0 &&
+                    allTaxonomies.map((taxa) => (
+                      <option key={taxa.namespace} value={taxa.namespace}>
+                        {taxa.namespace}
+                      </option>
+                    ))}
+                </Form.Select>
+                <Spinner
+                  animation="border"
+                  role="status"
+                  variant="primary"
+                  style={{ marginLeft: 10 }}
+                >
+                  <span className="sr-only">Loading...</span>
+                </Spinner>
+              </>
+            ) : (
+              <span>Error. Please try again or contact support team.</span>
+            )}
           </TaxonomySelectContainer>
         </Container>
       </LayoutHideSidebar>

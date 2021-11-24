@@ -39,7 +39,7 @@ const Content = styled('main')`
 
   @media only screen and (max-width: 1440px) {
     padding-left: 0;
-    margin: 0 0 0 30px;
+    /* margin: 0 0 0 30px; */
   }
 
   @media (max-width: 767px) {
