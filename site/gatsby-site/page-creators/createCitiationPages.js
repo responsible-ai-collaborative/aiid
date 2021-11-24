@@ -32,7 +32,7 @@ const getClassificationsArray = (incidentClassifications, taxonomy) => {
   };
 
   taxaFieldsArray.forEach((field) => {
-    const c = classificationObj[field.short_name];
+    const c = classificationObj[field.short_name.split(' ').join('_')];
 
     const value = getStringForValue(c);
 
