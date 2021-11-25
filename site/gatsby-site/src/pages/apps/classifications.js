@@ -508,7 +508,11 @@ export default function ClassificationsDbView(props) {
       ...taxaData[0].field_list.map(fieldToColumnMap),
     ]);
 
-    const classificationData = await fetchClassificationData({ namespace: currentTaxonomy });
+    // Fetch only classifications with "Annotation Status": "6. Complete and final"
+    const classificationData = await fetchClassificationData({
+      namespace: currentTaxonomy,
+      'classifications.Annotation Status': '6. Complete and final',
+    });
 
     if (classificationData.length > 0) {
       setAllClassifications(classificationData);

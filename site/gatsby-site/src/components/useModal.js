@@ -5,6 +5,10 @@ import styled from 'styled-components';
 const StyledModal = styled(Modal)`
   .modal-dialog {
     max-width: 80%;
+
+    @media only screen and (max-width: 800px) {
+      max-width: 100%;
+    }
   }
 `;
 
