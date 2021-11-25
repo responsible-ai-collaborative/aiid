@@ -50,7 +50,7 @@ export default function LocationMap({ data, geocodes, className }) {
 
   console.log(min, max);
 
-  const sizeScale = scaleLinear().domain([min, max]).range([6, 18]);
+  const sizeScale = scaleLinear().domain([min, max]).range([3, 18]);
 
   return (
     <svg className={className} width="100%" viewBox={`0 0 ${size.width} ${size.height}`}>
