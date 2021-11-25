@@ -1,5 +1,7 @@
 const path = require('path');
 
+const { Client: GoogleMapsAPIClient } = require('@googlemaps/google-maps-services-js');
+
 const startCase = require('lodash.startcase');
 
 const config = require('./config');
@@ -23,6 +25,8 @@ const discoverIndex = require('./src/utils/discoverIndexGenerator');
 const algoliasearch = require('algoliasearch');
 
 const algoliaSettings = require('./src/utils/algoliaSettings');
+
+const googleMapsApiClient = new GoogleMapsAPIClient({});
 
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions;
@@ -77,7 +81,7 @@ exports.onCreateBabelConfig = ({ actions }) => {
   });
 };
 
-exports.onCreateNode = ({ node, getNode, actions }) => {
+exports.onCreateNode = async ({ node, getNode, actions }) => {
   const { createNodeField } = actions;
 
   if (node.internal.type === `Mdx`) {
@@ -118,6 +122,26 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
       node,
       value: node.frontmatter.title || startCase(parent.name),
     });
+  }
+
+  if (node.internal.type == 'mongodbAiidprodClassifications') {
+    try {
+      const {
+        data: {
+          results: { 0: geometry },
+        },
+      } = await googleMapsApiClient.geocode({
+        params: { key: process.env.GOOGLE_MAPS_API_KEY, address: node.classifications.Location },
+      });
+
+      createNodeField({
+        name: 'geocode',
+        node,
+        value: geometry,
+      });
+    } catch (e) {
+      console.log('Error fetching geocode data for', node.classifications.Location);
+    }
   }
 };
 
