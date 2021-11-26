@@ -33,7 +33,9 @@ const Trigger = styled.div`
   cursor: pointer;
 `;
 
-export default function LocationMap({ data, geocodes, className }) {
+const fixedLocations = ['Global', 'Twitter platform', 'Wikipedia platform']
+
+export default function LocationMap({ data, geocodes, className, size = { width: 960, height: 480 } }) {
   const worldAtlas = useWorldAtlas();
 
   if (!worldAtlas) {
@@ -42,13 +44,9 @@ export default function LocationMap({ data, geocodes, className }) {
 
   const { land } = worldAtlas;
 
-  const size = { width: 960, height: 480 };
-
   const sizeValue = ([, value]) => value;
 
   const [min, max] = extent(data.columns, sizeValue);
-
-  console.log(min, max);
 
   const sizeScale = scaleLinear().domain([min, max]).range([3, 18]);
 
@@ -63,6 +61,7 @@ export default function LocationMap({ data, geocodes, className }) {
       ))}
 
       {data.columns
+        .filter(([place]) => !fixedLocations.includes(place))
         .filter(([place]) => geocodes[place])
         .map((d) => {
           const [place] = d;
