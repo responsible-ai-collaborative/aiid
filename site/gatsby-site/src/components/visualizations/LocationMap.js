@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { geoPath, geoGraticule, geoEquirectangular, scaleLinear, extent, zoom, select } from 'd3';
 import styled from 'styled-components';
 import { useWorldAtlas } from './useWorldAtlas';
@@ -27,10 +27,9 @@ const Trigger = styled.div`
   cursor: pointer;
 `;
 
-const abstractLocations = ['Global', 'Twitter platform', 'Wikipedia platform']
+const abstractLocations = ['Global', 'Twitter platform', 'Wikipedia platform'];
 
 function Points({ data, geocodes, projection }) {
-
   const sizeValue = ([, value]) => value;
 
   const [min, max] = extent(data.columns, sizeValue);
@@ -70,12 +69,11 @@ function Points({ data, geocodes, projection }) {
           </OverlayTrigger>
         </>
       );
-    })
+    });
 }
 
 function WorldMap({ land, projection }) {
-
-  const path = geoPath(projection)
+  const path = geoPath(projection);
 
   const graticule = geoGraticule();
 
@@ -88,93 +86,54 @@ function WorldMap({ land, projection }) {
       {land.features.map((feature) => (
         <Land key={feature} d={path(feature)} />
       ))}
-    </>)
+    </>
+  );
 }
 
 function LocationMap({ land, data, geocodes, className }) {
+  const size = { width: 960, height: 480 };
 
-  const size = { width: 960, height: 480 }
+  const svgRef = useRef();
 
-  const svgRef = useRef()
-
-  const mapRef = useRef()
-
-  const containerRef = useRef()
-
-  const zoomRef = useRef()
-
-  const [rect, setRect] = useState()
+  const mapRef = useRef();
 
   useEffect(() => {
-    const containerNode = containerRef.current
+    const svgNode = svgRef.current;
 
-    const resize = () => {
+    const mapNode = mapRef.current;
 
-      const rect = containerNode.getBoundingClientRect();
-
-      setRect(rect)
-    }
-
-    resize()
-
-    window.addEventListener('resize', resize, false);
-
-    return () => window.removeEventListener('resize', resize);
-
-  }, [containerRef])
-
-  useEffect(() => {
-
-    if (svgRef && mapRef) {
-
-      const svgNode = svgRef.current
-
-      const mapNode = mapRef.current
-
-      zoomRef.current = zoom()
+    if (svgNode && mapNode) {
+      const zoomBehavior = zoom()
+        .scaleExtent([1, 9])
+        .translateExtent([
+          [0, 0],
+          [size.width, size.height],
+        ])
         .on('zoom', ({ transform }) => {
+          select(mapNode).attr('transform', transform);
+        });
 
-          select(mapNode).attr("transform", transform);
-        })
-
-      select(svgNode).call(zoomRef.current)
+      select(svgNode).call(zoomBehavior);
     }
-
-  }, [svgRef, mapRef])
-
-  useEffect(() => {
-
-    if (rect && zoomRef.current) {
-
-      console.log('rect updated')
-
-      const minZoom = Math.max(rect.width / size.width, rect.height / size.height);
-
-      const maxZoom = 10 * minZoom;
-
-      zoomRef.current
-        .scaleExtent([minZoom, maxZoom])
-        .translateExtent([[0, 0], [size.width, size.height]])
-    }
-
-  }, [rect, zoomRef]);
+  }, [svgRef, mapRef]);
 
   const projection = geoEquirectangular()
     .fitSize([size.width, size.height], land)
-    .translate([size.width / 2, size.height / 2])
+    .translate([size.width / 2, size.height / 2]);
 
-  return <div className={className} ref={containerRef}>
-    <svg ref={svgRef} width="100%" viewBox={`0 0 ${size.width} ${size.height}`}>
-      <g ref={mapRef}>
-        <WorldMap land={land} projection={projection} />
-        <Points data={data} geocodes={geocodes} projection={projection} />
-      </g>
-    </svg>
-  </div>
+  return (
+    <div className={className}>
+      <svg ref={svgRef} width="100%" viewBox={`0 0 ${size.width} ${size.height}`}>
+        <g ref={mapRef}>
+          <WorldMap land={land} projection={projection} />
+          <Points data={data} geocodes={geocodes} projection={projection} />
+        </g>
+      </svg>
+    </div>
+  );
 }
 
 function MapLoader({ data, geocodes, className }) {
-
   const worldAtlas = useWorldAtlas();
 
   if (!worldAtlas) {
@@ -183,9 +142,11 @@ function MapLoader({ data, geocodes, className }) {
 
   const { land } = worldAtlas;
 
-  return <>
-    <LocationMap land={land} data={data} geocodes={geocodes} className={className} />
-  </>
+  return (
+    <>
+      <LocationMap land={land} data={data} geocodes={geocodes} className={className} />
+    </>
+  );
 }
 
-export default MapLoader
+export default MapLoader;
