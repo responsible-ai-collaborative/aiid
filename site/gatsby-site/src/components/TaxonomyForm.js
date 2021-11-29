@@ -189,7 +189,7 @@ const EditTaxonomyForm = ({
     };
 
     return (
-      <>
+      <div key={rawField.short_name}>
         <Form.Label>{rawField.short_name.split('_').join(' ')}</Form.Label>
         {rawField.display_type === 'list' && (
           <UsageInfoSpan>{' (use semicolon for term separation)'}</UsageInfoSpan>
@@ -312,7 +312,7 @@ const EditTaxonomyForm = ({
         <Form.Text className={['text-muted', 'mb-4', 'd-block']}>
           {rawField.short_description}
         </Form.Text>
-      </>
+      </div>
     );
   };
 
