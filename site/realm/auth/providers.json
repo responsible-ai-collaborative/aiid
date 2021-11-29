@@ -7,7 +7,7 @@
     "api-key": {
         "name": "api-key",
         "type": "api-key",
-        "disabled": false
+        "disabled": true
     },
     "local-userpass": {
         "name": "local-userpass",
