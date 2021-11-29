@@ -475,7 +475,7 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
                   <Card bg="secondary" style={{ width: '100%' }} text="light" className="mb-2">
                     <Card.Body>
                       <Card.Text>
-                        Submition is in review. Classification will update in 24 - 48 hours.
+                        Classifications will update in production within 24 hours.
                       </Card.Text>
                     </Card.Body>
                   </Card>
