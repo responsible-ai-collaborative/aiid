@@ -1,5 +1,16 @@
 import { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
+import styled from 'styled-components';
+
+const StyledModal = styled(Modal)`
+  .modal-dialog {
+    max-width: 80%;
+
+    @media only screen and (max-width: 800px) {
+      max-width: 100%;
+    }
+  }
+`;
 
 export const useModal = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +34,7 @@ export const useModal = () => {
 };
 
 export const CustomModal = ({ close, isOpen, target }) => (
-  <Modal show={isOpen} onHide={close}>
+  <StyledModal show={isOpen} onHide={close}>
     <Modal.Header closeButton>
       <Modal.Title>{target.title}</Modal.Title>
     </Modal.Header>
@@ -33,5 +44,5 @@ export const CustomModal = ({ close, isOpen, target }) => (
         Close
       </Button>
     </Modal.Footer>
-  </Modal>
+  </StyledModal>
 );
