@@ -675,7 +675,7 @@ export default function ClassificationsDbView(props) {
                     disabled={!isAdmin}
                     onClick={() =>
                       editClassificationModal.openFor({
-                        title: 'Edit CSET classification for incident X',
+                        title: `Edit CSET classification for incident ${row.original.IncidentId}`,
                         body: function f() {
                           return getEditClassificationForm(row);
                         },
