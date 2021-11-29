@@ -118,7 +118,10 @@
                     "bsonType": "string"
                 },
                 "Sector of Deployment": {
-                    "bsonType": "string"
+                  "bsonType": "array",
+                  "items": {
+                      "bsonType": "string"
+                  }
                 },
                 "Severity": {
                     "bsonType": "string"
