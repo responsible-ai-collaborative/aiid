@@ -456,9 +456,7 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
               {isEditing ? (
                 <Button onClick={() => setIsEditing(false)}>Cancel</Button>
               ) : (
-                <Button Button onClick={() => setIsEditing(true)}>
-                  Edit
-                </Button>
+                <Button onClick={() => setIsEditing(true)}>Edit</Button>
               )}
             </>
           )}
