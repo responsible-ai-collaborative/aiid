@@ -508,11 +508,15 @@ export default function ClassificationsDbView(props) {
       ...taxaData[0].field_list.map(fieldToColumnMap),
     ]);
 
-    // Fetch only classifications with "Annotation Status": "6. Complete and final"
-    const classificationData = await fetchClassificationData({
+    let rowQuery = {
       namespace: currentTaxonomy,
-      'classifications.Annotation Status': '6. Complete and final',
-    });
+    };
+
+    // Fetch only classifications with "Annotation Status": "6. Complete and final"
+    if (!isAdmin) {
+      rowQuery['classifications.Annotation Status'] = '6. Complete and final';
+    }
+    const classificationData = await fetchClassificationData(rowQuery);
 
     if (classificationData.length > 0) {
       setAllClassifications(classificationData);
