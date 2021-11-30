@@ -1,9 +1,11 @@
 // Imports the Google Cloud client library
 const { Translate } = require('@google-cloud/translate').v2;
 
+const config = require('../../config');
+
 const cloneDeep = require('lodash.clonedeep');
 
-const translate = new Translate({ key: process.env.GOOGLE_MAPS_API_KEY });
+const translate = new Translate({ key: config.google.translateApikey });
 
 async function getLanguages() {
   return await translate.getLanguages();
@@ -14,7 +16,7 @@ async function translateDiscoverIndex({ index, to }) {
 
   let batch = [];
 
-  const batchSize = 10;
+  const batchSize = 100;
 
   const translatedIndex = [];
 
