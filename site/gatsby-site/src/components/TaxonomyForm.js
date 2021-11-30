@@ -362,6 +362,15 @@ const EditTaxonomyForm = ({
       if (f.display_type === 'date') {
         newValues[f.short_name] = `${values[f.short_name]}T00:00:00.000Z`;
       }
+
+      //Convert string into boolean
+      if (f.display_type === 'bool') {
+        if (values[f.short_name] === '') {
+          newValues[f.short_name] = undefined;
+        } else {
+          newValues[f.short_name] = values[f.short_name] === 'true';
+        }
+      }
     });
 
     const newValuesNoUnderscore = {};
