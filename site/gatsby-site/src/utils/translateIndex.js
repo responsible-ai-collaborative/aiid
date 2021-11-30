@@ -16,7 +16,8 @@ async function translateDiscoverIndex({ index, to }) {
 
   let batch = [];
 
-  const batchSize = 100;
+  // `Max payload size is 204800 bytes.`
+  const batchSize = 10;
 
   const translatedIndex = [];
 
