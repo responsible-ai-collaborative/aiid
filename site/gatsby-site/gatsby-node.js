@@ -24,6 +24,8 @@ const algoliasearch = require('algoliasearch');
 
 const algoliaSettings = require('./src/utils/algoliaSettings');
 
+const { getLanguages, translateDiscoverIndex } = require('./src/utils/translateIndex');
+
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions;
 
@@ -138,33 +140,46 @@ exports.onPostBuild = async function ({ graphql, reporter }) {
 
   activity.start();
 
-  if (config.header.search.algoliaAppId && config.header.search.algoliaAdminKey) {
-    activity.setStatus('Building index...');
+  try {
+    const [languages] = await getLanguages();
 
-    const data = await discoverIndex({ graphql });
+    activity.setStatus('Building default index...');
 
-    activity.setStatus('Uploading index...');
+    const originalIndex = await discoverIndex({ graphql });
 
-    const client = algoliasearch(
-      config.header.search.algoliaAppId,
-      config.header.search.algoliaAdminKey
-    );
+    for (let { code: to, name } of languages) {
+      activity.setStatus(`Translating index to: ${name}`);
 
-    const index = client.initIndex('instant_search');
+      const translatedIndex = await translateDiscoverIndex({ index: originalIndex, to });
 
-    await index.saveObjects(data);
+      if (config.header.search.algoliaAppId && config.header.search.algoliaAdminKey) {
+        const indexName = `instant_search-${to}`;
 
-    activity.setStatus(`Uploaded ${data.length} items to the index.`);
+        activity.setStatus(`Uploading index: ${indexName}`);
 
-    activity.setStatus('Updating settings...');
+        const client = algoliasearch(
+          config.header.search.algoliaAppId,
+          config.header.search.algoliaAdminKey
+        );
 
-    await index.setSettings(algoliaSettings);
+        const index = client.initIndex(indexName);
 
-    activity.setStatus('Settings saved.');
+        await index.saveObjects(translatedIndex);
 
-    activity.end();
-  } else {
-    activity.setStatus(`Missing env settings, skipping index upload.`);
-    activity.end();
+        activity.setStatus(`Uploaded ${translatedIndex.length} items to: ${indexName}`);
+
+        activity.setStatus('Updating index settings...');
+
+        await index.setSettings(algoliaSettings);
+
+        activity.setStatus('Settings saved.');
+      } else {
+        activity.setStatus(`Missing env settings, skipping index upload.`);
+      }
+    }
+  } catch (e) {
+    activity.panicOnBuild('Error updating Algolia indexes', e);
   }
+
+  activity.end();
 };
