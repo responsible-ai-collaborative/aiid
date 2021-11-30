@@ -39,6 +39,9 @@ const Container = styled.div`
 const TableStyles = styled.div`
   padding-top: 1rem;
 
+  width: calc(100vw - 2.7rem);
+  height: calc(100vh - 220px);
+
   table {
     border-spacing: 0;
 
