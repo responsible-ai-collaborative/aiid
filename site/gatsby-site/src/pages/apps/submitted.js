@@ -4,7 +4,6 @@ import { graphql } from 'gatsby';
 
 import ListGroup from 'react-bootstrap/ListGroup';
 import Layout from 'components/Layout';
-import Link from 'components/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import { SubmissionsContextProvider } from 'contexts/submissionsContext';
 import SubmissionList from 'components/SubmissionList';
@@ -37,8 +36,7 @@ const SubmittedIncidentsPage = ({ data, ...props }) => {
       <StyledMainWrapper>
         <h1>Quick Add URLs</h1>
         <p>
-          These reports were added anonymously by users in the{' '}
-          <Link to="/apps/quickadd"> Quick Add </Link> form.
+          These reports were added anonymously by users in the Quick Add form on the landing page
         </p>
         <ListGroup className="mb-5">
           {quickSubmissions.map(({ node }) => (

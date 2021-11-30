@@ -64,7 +64,13 @@ const TaxaHeader = styled.h4`
 
 const TEXTAREA_LIMIT = 120;
 
-const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }) => {
+const EditTaxonomyForm = ({
+  namespace,
+  incidentId,
+  setIsEditing,
+  setShowBanner,
+  doneSubmittingCallback,
+}) => {
   const [loading, setLoading] = useState(true);
 
   const [error, setError] = useState('');
@@ -133,8 +139,6 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
           classifications = results[1][0].classifications;
         }
 
-        console.log(results[1]);
-
         const fieldsArray = [];
 
         const defaultValues = {};
@@ -185,7 +189,7 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
     };
 
     return (
-      <>
+      <div key={rawField.short_name}>
         <Form.Label>{rawField.short_name.split('_').join(' ')}</Form.Label>
         {rawField.display_type === 'list' && (
           <UsageInfoSpan>{' (use semicolon for term separation)'}</UsageInfoSpan>
@@ -308,7 +312,7 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
         <Form.Text className={['text-muted', 'mb-4', 'd-block']}>
           {rawField.short_description}
         </Form.Text>
-      </>
+      </div>
     );
   };
 
@@ -339,7 +343,6 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
   const onSubmit = async (values, { setSubmitting }) => {
     let newValues = values;
 
-    console.log(fieldsWithDefaultValues);
     fieldsWithDefaultValues.forEach((f) => {
       //Convert string values into array
       if (f.display_type === 'list') {
@@ -361,11 +364,17 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
       }
     });
 
+    const newValuesNoUnderscore = {};
+
+    for (const key in newValues) {
+      newValuesNoUnderscore[key.split('_').join(' ')] = newValues[key];
+    }
+
     if (JSON.stringify(initialValues) !== JSON.stringify(newValues)) {
       await user.functions.updateIncidentClassification({
         incident_id: incidentId,
         namespace,
-        newClassifications: newValues,
+        newClassifications: newValuesNoUnderscore,
       });
 
       setShowBanner(true);
@@ -373,6 +382,9 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
 
     setIsEditing(false);
     setSubmitting(false);
+    if (doneSubmittingCallback) {
+      doneSubmittingCallback();
+    }
   };
 
   return (
@@ -411,7 +423,7 @@ const EditTaxonomyForm = ({ namespace, incidentId, setIsEditing, setShowBanner }
   );
 };
 
-const TaxonomyForm = ({ taxonomy, incidentId }) => {
+const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
   if (!taxonomy) {
     return null;
   }
@@ -444,9 +456,7 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
               {isEditing ? (
                 <Button onClick={() => setIsEditing(false)}>Cancel</Button>
               ) : (
-                <Button Button onClick={() => setIsEditing(true)}>
-                  Edit
-                </Button>
+                <Button onClick={() => setIsEditing(true)}>Edit</Button>
               )}
             </>
           )}
@@ -465,7 +475,7 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
                   <Card bg="secondary" style={{ width: '100%' }} text="light" className="mb-2">
                     <Card.Body>
                       <Card.Text>
-                        Submition is in review. Classification will update in 24 - 48 hours.
+                        Classifications will update in production within 24 hours.
                       </Card.Text>
                     </Card.Body>
                   </Card>
@@ -536,6 +546,7 @@ const TaxonomyForm = ({ taxonomy, incidentId }) => {
                 incidentId={incidentId}
                 setShowBanner={setShowBanner}
                 setIsEditing={setIsEditing}
+                doneSubmittingCallback={doneSubmittingCallback}
               />
             </>
           )}

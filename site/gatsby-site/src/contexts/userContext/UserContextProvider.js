@@ -26,12 +26,10 @@ export const UserContextProvider = ({ children }) => {
     await login();
   };
 
-  const login = async ({ apiKey, email, password } = {}) => {
+  const login = async ({ email = null, password = null } = {}) => {
     let credentials = null;
 
-    if (apiKey) {
-      credentials = Realm.Credentials.apiKey(apiKey);
-    } else if (email && password) {
+    if (email && password) {
       credentials = Realm.Credentials.emailPassword(email, password);
     } else {
       credentials = Realm.Credentials.anonymous();
