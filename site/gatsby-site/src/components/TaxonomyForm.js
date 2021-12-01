@@ -135,8 +135,13 @@ const EditTaxonomyForm = ({
 
         let classifications = {};
 
+        let notes = '';
+
         if (results[1].length > 0) {
           classifications = results[1][0].classifications;
+          if (results[1][0].notes) {
+            notes = results[1][0].notes;
+          }
         }
 
         const fieldsArray = [];
@@ -168,7 +173,10 @@ const EditTaxonomyForm = ({
         });
         setFieldsWithDefaultValues(fieldsArray);
 
-        setInitialValues(defaultValues);
+        setInitialValues({
+          ...defaultValues,
+          notes,
+        });
 
         setLoading(false);
       })
@@ -379,6 +387,7 @@ const EditTaxonomyForm = ({
         incident_id: incidentId,
         namespace,
         newClassifications: newValuesNoUnderscore,
+        notes: newValuesNoUnderscore.notes,
       });
 
       setShowBanner(true);

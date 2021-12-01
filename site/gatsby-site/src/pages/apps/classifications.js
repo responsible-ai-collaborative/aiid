@@ -609,6 +609,10 @@ export default function ClassificationsDbView(props) {
       taxaData
     );
 
+    if (classificationObj.length === 1) {
+      taxonomyFormObj.notes = classificationObj[0].notes;
+    }
+
     return (
       <>
         <TaxonomyForm
