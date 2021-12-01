@@ -8,7 +8,7 @@ const cloneDeep = require('lodash.clonedeep');
 
 const { translate, getLanguages } = require('./translate');
 
-const keys = ['description', 'text', 'title'];
+const keys = ['text', 'title'];
 
 const client = new MongoClient(config.mongodb.translationsConnectionString);
 
