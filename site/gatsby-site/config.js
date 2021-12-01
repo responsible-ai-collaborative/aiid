@@ -85,6 +85,7 @@ const config = {
   mongodb: {
     connectionString: process.env.MONGODB_CONNECTION_STRING,
     replicaSet: process.env.MONGODB_REPLICA_SET,
+    translationsConnectionString: process.env.MONGODB_TRANSLATIONS_CONNECTION_STRING,
   },
   google: {
     translateApikey: process.env.GOOGLE_TRANSLATE_API_KEY,
