@@ -379,6 +379,7 @@ const EditTaxonomyForm = ({
         incident_id: incidentId,
         namespace,
         newClassifications: newValuesNoUnderscore,
+        notes: newValuesNoUnderscore.notes,
       });
 
       setShowBanner(true);
