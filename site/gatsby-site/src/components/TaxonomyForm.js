@@ -357,11 +357,6 @@ const EditTaxonomyForm = ({
             .filter((f) => f !== '');
         }
       }
-
-      //Convert string values into date
-      if (f.display_type === 'date') {
-        newValues[f.short_name] = `${values[f.short_name]}T00:00:00.000Z`;
-      }
     });
 
     const newValuesNoUnderscore = {};
