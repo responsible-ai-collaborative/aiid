@@ -313,6 +313,10 @@ export default function ClassificationsDbView(props) {
 
   const [currentTaxonomy, setCurrentTaxonomy] = useState('');
 
+  const [currentFilters, setCurrentFilters] = useState([]);
+
+  const [currentSorting, setCurrentSorting] = useState([]);
+
   useEffect(() => {
     setLoading(true);
     const setupTaxonomiesSelect = async () => {
@@ -637,19 +641,34 @@ export default function ClassificationsDbView(props) {
     previousPage,
     setPageSize,
     setAllFilters,
-    state: { pageIndex, pageSize },
+    state,
   } = useTable(
     {
       columns,
       data,
       defaultColumn,
       filterTypes,
-      initialState: { pageIndex: 0, pageSize: 500 },
+      initialState: {
+        pageIndex: 0,
+        pageSize: 500,
+        filters: currentFilters,
+        sortBy: currentSorting,
+      },
     },
     useFilters,
     useSortBy,
     usePagination
   );
+
+  const { pageIndex, pageSize, filters, sortBy } = state;
+
+  useEffect(() => {
+    setCurrentFilters(filters);
+  }, [filters]);
+
+  useEffect(() => {
+    setCurrentSorting(sortBy);
+  }, [sortBy]);
 
   const fullTextModal = useModal();
 
