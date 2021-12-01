@@ -24,6 +24,17 @@ const Container = styled.div`
   white-space: nowrap;
   font-size: 0.8em;
 
+  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+    height: 7px;
+  }
+  ::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+  }
+
   ${({ isWide }) =>
     isWide &&
     `
@@ -40,7 +51,9 @@ const TableStyles = styled.div`
   padding-top: 1rem;
 
   width: calc(100vw - 2.7rem);
-  height: calc(100vh - 220px);
+  height: calc(100vh - 227px);
+
+  ${({ isFirefox }) => isFirefox && `height: calc(100vh - 220px);`}
 
   table {
     border-spacing: 0;
@@ -300,6 +313,8 @@ const getClassificationsArray = (classifications, taxonomy) => {
 };
 
 export default function ClassificationsDbView(props) {
+  const isFirefox = navigator.userAgent.includes('Firefox');
+
   const { isAdmin } = useUserContext();
 
   const [loading, setLoading] = useState(false);
@@ -814,7 +829,7 @@ export default function ClassificationsDbView(props) {
           <Button onClick={() => setAllFilters([])}>Reset filters</Button>
         </div>
         {!loading && (
-          <TableStyles>
+          <TableStyles isFirefox={isFirefox}>
             <Table striped bordered hover {...getTableProps()}>
               <thead>
                 {headerGroups.map((headerGroup) => (
