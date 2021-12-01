@@ -98,7 +98,7 @@ const uploadToAlgolia = async ({ language, entries }) => {
   await index.setSettings(algoliaSettings);
 };
 
-async function uploadIndexes() {
+async function run() {
   try {
     await client.connect();
 
@@ -119,6 +119,5 @@ async function uploadIndexes() {
 }
 
 module.exports = {
-  generateIndexEntries,
-  uploadIndexes,
+  run,
 };

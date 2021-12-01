@@ -24,7 +24,9 @@ const algoliasearch = require('algoliasearch');
 
 const algoliaSettings = require('./src/utils/algoliaSettings');
 
-const { getLanguages, translateDiscoverIndex } = require('./src/utils/translateIndex');
+const translateIncidents = require('./src/utils/translateIncidents');
+
+const updateDiscoverIndexes = require('./src/utils/updateDiscoverIndexes');
 
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions;
@@ -136,50 +138,59 @@ exports.createSchemaCustomization = ({ actions }) => {
 };
 
 exports.onPostBuild = async function ({ graphql, reporter }) {
-  const activity = reporter.activityTimer(`Algolia`);
+  let activity = reporter.activityTimer(`Translations`);
+
+  if (
+    config.mongodb.translationsConnectionString &&
+    config.header.search.algoliaAdminKey &&
+    config.header.search.algoliaAppId
+  ) {
+    try {
+      activity.setStatus('Translating incident reports...');
+
+      await translateIncidents.run();
+
+      activity.setStatus('Updating Algolia indexes...');
+
+      await updateDiscoverIndexes.run();
+    } catch (e) {
+      reporter.warn('Error running trasnlation scripts:', e);
+    }
+  } else {
+    activity.setStatus(`Missing env settings, skipping indexes translation and upload.`);
+  }
+
+  activity = reporter.activityTimer(`Algolia`);
 
   activity.start();
 
-  try {
-    const [languages] = await getLanguages();
+  if (config.header.search.algoliaAppId && config.header.search.algoliaAdminKey) {
+    activity.setStatus('Building index...');
 
-    activity.setStatus('Building default index...');
+    const data = await discoverIndex({ graphql });
 
-    const originalIndex = await discoverIndex({ graphql });
+    activity.setStatus('Uploading index...');
 
-    for (let { code: to, name } of languages) {
-      activity.setStatus(`Translating index to: ${name}`);
+    const client = algoliasearch(
+      config.header.search.algoliaAppId,
+      config.header.search.algoliaAdminKey
+    );
 
-      const translatedIndex = await translateDiscoverIndex({ index: originalIndex, to });
+    const index = client.initIndex('instant_search');
 
-      if (config.header.search.algoliaAppId && config.header.search.algoliaAdminKey) {
-        const indexName = `instant_search-${to}`;
+    await index.saveObjects(data);
 
-        activity.setStatus(`Uploading index: ${indexName}`);
+    activity.setStatus(`Uploaded ${data.length} items to the index.`);
 
-        const client = algoliasearch(
-          config.header.search.algoliaAppId,
-          config.header.search.algoliaAdminKey
-        );
+    activity.setStatus('Updating settings...');
 
-        const index = client.initIndex(indexName);
+    await index.setSettings(algoliaSettings);
 
-        await index.saveObjects(translatedIndex);
+    activity.setStatus('Settings saved.');
 
-        activity.setStatus(`Uploaded ${translatedIndex.length} items to: ${indexName}`);
-
-        activity.setStatus('Updating index settings...');
-
-        await index.setSettings(algoliaSettings);
-
-        activity.setStatus('Settings saved.');
-      } else {
-        activity.setStatus(`Missing env settings, skipping index upload.`);
-      }
-    }
-  } catch (e) {
-    activity.panicOnBuild('Error updating Algolia indexes', e);
+    activity.end();
+  } else {
+    activity.setStatus(`Missing env settings, skipping index upload.`);
+    activity.end();
   }
-
-  activity.end();
 };
