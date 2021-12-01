@@ -357,6 +357,15 @@ const EditTaxonomyForm = ({
             .filter((f) => f !== '');
         }
       }
+
+      //Convert string into boolean
+      if (f.display_type === 'bool') {
+        if (values[f.short_name] === '') {
+          newValues[f.short_name] = undefined;
+        } else {
+          newValues[f.short_name] = values[f.short_name] === 'true';
+        }
+      }
     });
 
     const newValuesNoUnderscore = {};
