@@ -358,11 +358,6 @@ const EditTaxonomyForm = ({
         }
       }
 
-      //Convert string values into date
-      if (f.display_type === 'date') {
-        newValues[f.short_name] = `${values[f.short_name]}T00:00:00.000Z`;
-      }
-
       //Convert string into boolean
       if (f.display_type === 'bool') {
         if (values[f.short_name] === '') {
