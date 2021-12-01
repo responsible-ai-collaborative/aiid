@@ -135,8 +135,13 @@ const EditTaxonomyForm = ({
 
         let classifications = {};
 
+        let notes = '';
+
         if (results[1].length > 0) {
           classifications = results[1][0].classifications;
+          if (results[1][0].notes) {
+            notes = results[1][0].notes;
+          }
         }
 
         const fieldsArray = [];
@@ -168,7 +173,10 @@ const EditTaxonomyForm = ({
         });
         setFieldsWithDefaultValues(fieldsArray);
 
-        setInitialValues(defaultValues);
+        setInitialValues({
+          ...defaultValues,
+          notes,
+        });
 
         setLoading(false);
       })
@@ -358,9 +366,13 @@ const EditTaxonomyForm = ({
         }
       }
 
-      //Convert string values into date
-      if (f.display_type === 'date') {
-        newValues[f.short_name] = `${values[f.short_name]}T00:00:00.000Z`;
+      //Convert string into boolean
+      if (f.display_type === 'bool') {
+        if (values[f.short_name] === '') {
+          newValues[f.short_name] = undefined;
+        } else {
+          newValues[f.short_name] = values[f.short_name] === 'true';
+        }
       }
     });
 
@@ -375,6 +387,7 @@ const EditTaxonomyForm = ({
         incident_id: incidentId,
         namespace,
         newClassifications: newValuesNoUnderscore,
+        notes: newValuesNoUnderscore.notes,
       });
 
       setShowBanner(true);
