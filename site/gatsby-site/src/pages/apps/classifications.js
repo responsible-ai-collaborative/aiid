@@ -506,11 +506,13 @@ export default function ClassificationsDbView(props) {
       accessor: 'actions',
     };
 
-    setColumnData([
-      actionsColumn,
-      incidentIdColumn,
-      ...taxaData[0].field_list.map(fieldToColumnMap),
-    ]);
+    if (columnData.length === 0) {
+      setColumnData([
+        actionsColumn,
+        incidentIdColumn,
+        ...taxaData[0].field_list.map(fieldToColumnMap),
+      ]);
+    }
 
     let rowQuery = {
       namespace: currentTaxonomy,
