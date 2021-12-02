@@ -58,9 +58,7 @@ async function getTranslatedIncidents({ items, language }) {
 async function saveIncidents({ items, language }) {
   const incidents = client.db('translations').collection(`incidents-${language}`);
 
-  const result = await incidents.insertMany(items);
-
-  console.log(`${result.insertedCount} documents were inserted`);
+  return incidents.insertMany(items);
 }
 
 async function translateIncident({ entry, to }) {
@@ -87,25 +85,29 @@ async function translateIncident({ entry, to }) {
   return translatedEntry;
 }
 
-async function run() {
+async function run({ reporter }) {
   try {
     await client.connect();
 
-    const database = client.db('aiidprod');
-
-    const collection = database.collection(`incidents`);
-
-    const incidents = await collection.find({}).toArray();
+    const incidents = await client.db('aiidprod').collection(`incidents`).find({}).toArray();
 
     const [languages] = await getLanguages();
 
     const concurrency = 10;
 
     const q = queue(async ({ to }, done) => {
+      reporter.log(`Translating incident reports for [${to}]`);
+
       const translated = await translateIncidentCollection({ items: incidents, to });
 
       if (translated.length > 0) {
-        await saveIncidents({ items: translated, language: to });
+        reporter.log(`Translated [${translated.length}] new reports to [${to}]`);
+
+        const result = await saveIncidents({ items: translated, language: to });
+
+        reporter.log(`Stored [${result.insertedCount}] new reports to [${to}]`);
+      } else {
+        reporter.log(`No new incident reports neeed translation to [${to}]`);
       }
 
       done();

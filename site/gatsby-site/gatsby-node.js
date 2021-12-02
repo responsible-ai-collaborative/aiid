@@ -138,19 +138,22 @@ exports.createSchemaCustomization = ({ actions }) => {
 };
 
 exports.onPostBuild = async function ({ graphql, reporter }) {
-  let activity = reporter.activityTimer(`Translations`);
+  const activity = reporter.activityTimer(`Algolia`);
+
+  activity.start();
 
   if (
     config.mongodb.translationsConnectionString &&
+    config.google.translateApikey &&
     config.header.search.algoliaAdminKey &&
     config.header.search.algoliaAppId
   ) {
     try {
       activity.setStatus('Translating incident reports...');
 
-      await translateIncidents.run();
+      await translateIncidents.run({ reporter });
 
-      activity.setStatus('Updating Algolia indexes...');
+      activity.setStatus('Updating incidents indexes...');
 
       await updateDiscoverIndexes.run();
     } catch (e) {
@@ -159,10 +162,6 @@ exports.onPostBuild = async function ({ graphql, reporter }) {
   } else {
     activity.setStatus(`Missing env settings, skipping indexes translation and upload.`);
   }
-
-  activity = reporter.activityTimer(`Algolia`);
-
-  activity.start();
 
   if (config.header.search.algoliaAppId && config.header.search.algoliaAdminKey) {
     activity.setStatus('Building index...');
@@ -187,10 +186,9 @@ exports.onPostBuild = async function ({ graphql, reporter }) {
     await index.setSettings(algoliaSettings);
 
     activity.setStatus('Settings saved.');
-
-    activity.end();
   } else {
     activity.setStatus(`Missing env settings, skipping index upload.`);
-    activity.end();
   }
+
+  activity.end();
 };
