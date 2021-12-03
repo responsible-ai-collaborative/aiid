@@ -149,6 +149,12 @@ exports.onPostBuild = async function ({ graphql, reporter }) {
     config.header.search.algoliaAppId
   ) {
     try {
+      if (process.env.TRANSLATE_DRY_RUN !== 'false') {
+        reporter.warn(
+          'Please set `TRANSLATE_DRY_RUN=false` to disble dry running of translation process.'
+        );
+      }
+
       activity.setStatus('Translating incident reports...');
 
       await translateIncidents.run({ reporter });
@@ -157,7 +163,7 @@ exports.onPostBuild = async function ({ graphql, reporter }) {
 
       await updateDiscoverIndexes.run();
     } catch (e) {
-      reporter.warn('Error running trasnlation scripts:', e);
+      reporter.warn('Error running translation scripts:', e);
     }
   } else {
     reporter.log(`Missing env settings, skipping indexes translation and upload.`);
