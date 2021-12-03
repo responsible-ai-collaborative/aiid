@@ -160,7 +160,7 @@ exports.onPostBuild = async function ({ graphql, reporter }) {
       reporter.warn('Error running trasnlation scripts:', e);
     }
   } else {
-    activity.setStatus(`Missing env settings, skipping indexes translation and upload.`);
+    reporter.log(`Missing env settings, skipping indexes translation and upload.`);
   }
 
   if (config.header.search.algoliaAppId && config.header.search.algoliaAdminKey) {

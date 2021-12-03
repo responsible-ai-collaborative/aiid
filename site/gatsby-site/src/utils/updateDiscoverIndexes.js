@@ -4,7 +4,9 @@ const languages = require('../i18n/languages.json');
 
 const MongoClient = require('mongodb').MongoClient;
 
-const client = new MongoClient(config.mongodb.translationsConnectionString);
+const client = config.mongodb.translationsConnectionString
+  ? new MongoClient(config.mongodb.translationsConnectionString)
+  : null;
 
 const algoliasearch = require('algoliasearch');
 

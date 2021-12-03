@@ -12,7 +12,9 @@ const { translate } = require('./translate');
 
 const keys = ['text', 'title'];
 
-const client = new MongoClient(config.mongodb.translationsConnectionString);
+const client = config.mongodb.translationsConnectionString
+  ? new MongoClient(config.mongodb.translationsConnectionString)
+  : null;
 
 async function translateIncidentCollection({ items, to }) {
   const concurrency = 100;
