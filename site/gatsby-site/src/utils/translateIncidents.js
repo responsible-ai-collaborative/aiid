@@ -4,9 +4,11 @@ const { queue } = require('async');
 
 const config = require('../../config');
 
+const languages = require('../i18n/languages.json');
+
 const cloneDeep = require('lodash.clonedeep');
 
-const { translate, getLanguages } = require('./translate');
+const { translate } = require('./translate');
 
 const keys = ['text', 'title'];
 
@@ -90,8 +92,6 @@ async function run({ reporter }) {
     await client.connect();
 
     const incidents = await client.db('aiidprod').collection(`incidents`).find({}).toArray();
-
-    const [languages] = await getLanguages();
 
     const concurrency = 10;
 

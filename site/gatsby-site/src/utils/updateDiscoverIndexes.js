@@ -1,8 +1,8 @@
 const config = require('../../config');
 
-const MongoClient = require('mongodb').MongoClient;
+const languages = require('../i18n/languages.json');
 
-const { getLanguages } = require('./translateIncidents');
+const MongoClient = require('mongodb').MongoClient;
 
 const client = new MongoClient(config.mongodb.translationsConnectionString);
 
@@ -103,8 +103,6 @@ async function run() {
     await client.connect();
 
     const classifications = await getClassifications();
-
-    const [languages] = await getLanguages();
 
     for (let { code: language } of languages) {
       const incidents = await getIncidents({ language });
