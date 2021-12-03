@@ -161,7 +161,7 @@ exports.onPostBuild = async function ({ graphql, reporter }) {
 
       activity.setStatus('Updating incidents indexes...');
 
-      await updateDiscoverIndexes.run();
+      await updateDiscoverIndexes.run({ reporter });
     } catch (e) {
       reporter.warn('Error running translation scripts:', e);
     }

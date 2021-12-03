@@ -100,7 +100,7 @@ const uploadToAlgolia = async ({ language, entries }) => {
   await index.setSettings(algoliaSettings);
 };
 
-async function run() {
+async function run({ reporter }) {
   try {
     await client.connect();
 
@@ -111,6 +111,7 @@ async function run() {
 
       const entries = generateIndexEntries({ incidents, classifications });
 
+      reporter.log(`Uploading Algolia index of [${language}] with [${entries.length}] entries`);
       await uploadToAlgolia({ entries, language });
     }
   } finally {
