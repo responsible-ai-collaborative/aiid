@@ -4,7 +4,7 @@ const { queue } = require('async');
 
 const config = require('../../config');
 
-const languages = require('../i18n/languages.json');
+const languages = require('../components/i18n/languages.json');
 
 const cloneDeep = require('lodash.clonedeep');
 
