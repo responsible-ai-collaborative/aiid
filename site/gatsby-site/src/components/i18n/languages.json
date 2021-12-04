@@ -1,5 +1,9 @@
 [
     {
+        "code": "en",
+        "name": "English"
+    },
+    {
         "code": "af",
         "name": "Afrikaans"
     },
@@ -82,10 +86,6 @@
     {
         "code": "nl",
         "name": "Dutch"
-    },
-    {
-        "code": "en",
-        "name": "English"
     },
     {
         "code": "eo",
