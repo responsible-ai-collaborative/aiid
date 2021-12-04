@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { debounce } from 'debounce';
-import { InputGroup, FormControl, Row, Col } from 'react-bootstrap';
+import { InputGroup, FormControl } from 'react-bootstrap';
 
 const SearchStatus = styled.div`
   position: absolute;
@@ -46,36 +46,34 @@ function SearchBox({ currentRefinement, refine }) {
   };
 
   return (
-    <Row>
-      <Col>
-        <SearchForm>
-          <InputGroup className="position-relative">
-            <FormControl
-              placeholder="Type Here"
-              maxLength={512}
-              value={query}
-              onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
-              }}
-              onChange={(event) => setQuery(event.currentTarget.value)}
-            />
-            <SearchStatus>
-              {query !== '' ? (
-                <SearchResetButton
-                  type="reset"
-                  title="Clear the search query."
-                  onClick={() => clear()}
-                >
-                  <FontAwesomeIcon icon={faTimesCircle} className="pointer" title="clear" />
-                </SearchResetButton>
-              ) : (
-                <FontAwesomeIcon opacity={0.5} icon={faSearch} className="pointer" />
-              )}
-            </SearchStatus>
-          </InputGroup>
-        </SearchForm>
-      </Col>
-    </Row>
+    <>
+      <SearchForm>
+        <InputGroup className="position-relative">
+          <FormControl
+            placeholder="Type Here"
+            maxLength={512}
+            value={query}
+            onKeyPress={(e) => {
+              e.key === 'Enter' && e.preventDefault();
+            }}
+            onChange={(event) => setQuery(event.currentTarget.value)}
+          />
+          <SearchStatus>
+            {query !== '' ? (
+              <SearchResetButton
+                type="reset"
+                title="Clear the search query."
+                onClick={() => clear()}
+              >
+                <FontAwesomeIcon icon={faTimesCircle} className="pointer" title="clear" />
+              </SearchResetButton>
+            ) : (
+              <FontAwesomeIcon opacity={0.5} icon={faSearch} className="pointer" />
+            )}
+          </SearchStatus>
+        </InputGroup>
+      </SearchForm>
+    </>
   );
 }
 

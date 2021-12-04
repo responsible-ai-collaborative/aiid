@@ -2,7 +2,6 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { QueryParams, useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { InstantSearch } from 'react-instantsearch-dom';
-import styled from 'styled-components';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
 import Helmet from 'react-helmet';
 import { useModal, CustomModal } from 'components/useModal';
@@ -16,29 +15,14 @@ import FiltersModal from 'components/discover/FiltersModal';
 import { SearchContext } from 'components/discover/useSearch';
 import { queryConfig } from 'components/discover/queryParams';
 import VirtualFilters from 'components/discover/VirtualFilters';
-
-const indexName = 'instant_search';
+import { Container, Row, Col } from 'react-bootstrap';
+import LanguageSwitcher from 'components/i18n/LanguageSwitcher';
+import useTranslation from 'components/i18n/useTranslation';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
   config.header.search.algoliaSearchKey
 );
-
-const FiltersContainer = styled.div`
-  max-width: 1400px;
-`;
-
-const Header = styled.div`
-  display: flex;
-  flex-direction: column;
-  max-width: 100%;
-
-  @media (max-width: 767px) {
-    .fa-BARS {
-      display: none;
-    }
-  }
-`;
 
 const removeUndefinedAttributes = (obj) => {
   for (const attr in obj) {
@@ -195,6 +179,10 @@ const getQueryFromState = (searchState) => {
 function DiscoverApp(props) {
   const [query, setQuery] = useQueryParams(queryConfig);
 
+  const { language } = useTranslation();
+
+  const [indexName, setIndexName] = useState(`instant_search-${language.code}`);
+
   const [searchState, setSearchState] = useState(generateSearchState({ query }));
 
   const onSearchStateChange = (searchState) => {
@@ -225,6 +213,10 @@ function DiscoverApp(props) {
     setQuery({ ...searchQuery, ...viewQuery }, 'push');
   }, [searchState]);
 
+  useEffect(() => {
+    setIndexName(`instant_search-${language.code}`);
+  }, [language]);
+
   const authorsModal = useModal();
 
   const submittersModal = useModal();
@@ -246,13 +238,18 @@ function DiscoverApp(props) {
               onSearchStateChange={onSearchStateChange}
             >
               <VirtualFilters />
-              <FiltersContainer className="container-xl mt-4">
-                <Header>
-                  <SearchBox defaultRefinement={query.s} />
-                </Header>
+              <Container className="container-xl mt-4">
+                <Row>
+                  <Col>
+                    <SearchBox defaultRefinement={query.s} />
+                  </Col>
+                  <Col className="col-auto">
+                    <LanguageSwitcher />
+                  </Col>
+                </Row>
                 <Filters />
                 <FiltersModal />
-              </FiltersContainer>
+              </Container>
 
               <Hits
                 toggleFilterByIncidentId={toggleFilterByIncidentId}

@@ -44,4 +44,9 @@ export const wrapRootElement = ({ element }) => {
   return <ToastContextProvider>{element}</ToastContextProvider>;
 };
 
+export const wrapPageElement = ({ element, props }) => {
+  return <LanguageProvider {...props}>{element}</LanguageProvider>;
+};
+
 import './src/global.css';
+import { LanguageProvider } from 'components/i18n/useTranslation';
