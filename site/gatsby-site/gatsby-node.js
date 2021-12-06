@@ -125,7 +125,7 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
   }
 
   if (node.internal.type == 'mongodbAiidprodClassifications') {
-    let value;
+    let value = { geometry: { location: { lat: 0, lng: 0 } } };
 
     try {
       const {
