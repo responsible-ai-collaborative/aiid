@@ -158,6 +158,13 @@ gatsby build
 
 Restart Gatsby, and you should have a complete working environment!
 
+### Geocoding
+If the feature you are working on depends on Google's Geocoding API, please add the following environment variable with the appropriate value to your .env file.
+
+```
+GOOGLE_MAPS_API_KEY=XXXXXXXXXXXX
+```
+
 ## License
 
 The codebase currently carries an GNU Affero General Public License and all contributions to the project falls under the license. Contributors disclaim all rights to their contributions. Please reach out to discuss the license terms if they are causing you any issues. We selected the GNU Affero license to encourage contributing back to the project, but the license itself provides the community wide latitude in working with this codebase.
