@@ -127,18 +127,20 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
   if (node.internal.type == 'mongodbAiidprodClassifications') {
     let value = { geometry: { location: { lat: 0, lng: 0 } } };
 
-    try {
-      const {
-        data: {
-          results: { 0: geometry },
-        },
-      } = await googleMapsApiClient.geocode({
-        params: { key: config.google.mapsApiKey, address: node.classifications.Location },
-      });
+    if (config.google.mapsApiKey) {
+      try {
+        const {
+          data: {
+            results: { 0: geometry },
+          },
+        } = await googleMapsApiClient.geocode({
+          params: { key: config.google.mapsApiKey, address: node.classifications.Location },
+        });
 
-      value = geometry;
-    } catch (e) {
-      console.log('Error fetching geocode data for', node.classifications.Location);
+        value = geometry;
+      } catch (e) {
+        console.log('Error fetching geocode data for', node.classifications.Location);
+      }
     }
 
     createNodeField({
@@ -159,6 +161,12 @@ exports.createSchemaCustomization = ({ actions }) => {
   `;
 
   createTypes(typeDefs);
+};
+
+exports.onPreBuild = function () {
+  if (!config.google.mapsApiKey) {
+    console.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
+  }
 };
 
 exports.onPostBuild = async function ({ graphql, reporter }) {
