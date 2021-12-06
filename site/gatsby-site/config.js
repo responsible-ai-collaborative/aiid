@@ -87,7 +87,7 @@ const config = {
     replicaSet: process.env.MONGODB_REPLICA_SET,
   },
   google: {
-    translateApiKey: process.env.GOOGLE_MAPS_API_KEY,
+    mapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
   },
 };
 

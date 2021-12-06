@@ -125,23 +125,27 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
   }
 
   if (node.internal.type == 'mongodbAiidprodClassifications') {
+    let value;
+
     try {
       const {
         data: {
           results: { 0: geometry },
         },
       } = await googleMapsApiClient.geocode({
-        params: { key: config.google.translateApiKey, address: node.classifications.Location },
+        params: { key: config.google.mapsApiKey, address: node.classifications.Location },
       });
 
-      createNodeField({
-        name: 'geocode',
-        node,
-        value: geometry,
-      });
+      value = geometry;
     } catch (e) {
       console.log('Error fetching geocode data for', node.classifications.Location);
     }
+
+    createNodeField({
+      name: 'geocode',
+      node,
+      value,
+    });
   }
 };
 
