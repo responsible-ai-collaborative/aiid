@@ -131,7 +131,7 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
           results: { 0: geometry },
         },
       } = await googleMapsApiClient.geocode({
-        params: { key: process.env.GOOGLE_MAPS_API_KEY, address: node.classifications.Location },
+        params: { key: config.google.translateApiKey, address: node.classifications.Location },
       });
 
       createNodeField({
