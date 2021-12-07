@@ -19,6 +19,7 @@ import { format } from 'date-fns';
 
 const Container = styled.div`
   max-width: calc(100vw - 298px);
+  height: calc(100vh - 80px);
   margin: 0 auto;
   overflow: auto;
   white-space: nowrap;
@@ -49,12 +50,6 @@ const Container = styled.div`
 
 const TableStyles = styled.div`
   padding-top: 1rem;
-
-  width: calc(100vw - 2.7rem);
-  height: calc(100vh - 227px);
-
-  ${({ isFirefox }) => isFirefox && `height: calc(100vh - 220px);`}
-
   table {
     border-spacing: 0;
 
@@ -313,8 +308,6 @@ const getClassificationsArray = (classifications, taxonomy) => {
 };
 
 export default function ClassificationsDbView(props) {
-  const isFirefox = navigator.userAgent.includes('Firefox');
-
   const { isAdmin } = useUserContext();
 
   const [loading, setLoading] = useState(false);
@@ -829,7 +822,7 @@ export default function ClassificationsDbView(props) {
           <Button onClick={() => setAllFilters([])}>Reset filters</Button>
         </div>
         {!loading && (
-          <TableStyles isFirefox={isFirefox}>
+          <TableStyles>
             <Table striped bordered hover {...getTableProps()}>
               <thead>
                 {headerGroups.map((headerGroup) => (
