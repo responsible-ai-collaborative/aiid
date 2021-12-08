@@ -30,7 +30,7 @@
     "deepmerge": "^4.2.2",
     "dotenv": "^8.2.0",
     "formik": "^2.2.6",
-    "gatsby": "^3.10.1",
+    "gatsby": "^4.3.0",
     "gatsby-image": "^3.9.0",
     "gatsby-link": "^3.10.0",
     "gatsby-plugin-algolia": "^0.23.0",
