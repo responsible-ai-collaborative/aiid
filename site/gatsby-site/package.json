@@ -38,7 +38,6 @@
     "gatsby-plugin-client-side-redirect": "^1.1.0",
     "gatsby-plugin-feed": "^3.10.0",
     "gatsby-plugin-gtag": "^1.0.13",
-    "gatsby-plugin-layout": "^2.10.0",
     "gatsby-plugin-manifest": "^3.10.0",
     "gatsby-plugin-mdx": "^2.10.0",
     "gatsby-plugin-netlify": "^3.10.0",

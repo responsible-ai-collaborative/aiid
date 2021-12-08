@@ -43,7 +43,12 @@ export const shouldUpdateScroll = ({ routerProps: { location } }) => {
 import { ToastContextProvider } from './src/contexts/ToastContext';
 
 export const wrapRootElement = ({ element }) => {
-  return <ToastContextProvider>{element}</ToastContextProvider>;
+  return (
+    <ThemeProvider>
+      <ToastContextProvider>{element}</ToastContextProvider>
+    </ThemeProvider>
+  );
 };
 
 import './src/global.css';
+import ThemeProvider from 'components/theme/themeProvider';
