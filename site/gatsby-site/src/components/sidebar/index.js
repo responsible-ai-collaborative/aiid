@@ -1,7 +1,7 @@
 import React from 'react';
 import Tree from './tree';
 import { StaticQuery, graphql } from 'gatsby';
-import styled from '@emotion/styled';
+import styled from 'styled-components';
 import { ExternalLink } from 'react-feather';
 import config from '../../../config';
 import DiscoverQuickAccess from 'components/DiscoverQuickAccess';

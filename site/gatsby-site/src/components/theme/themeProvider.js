@@ -1,13 +1,12 @@
 import * as React from 'react';
-import { ThemeProvider as EmotionThemeProvider } from '@emotion/react';
-
+import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { theme } from './index';
 import Header from '../Header';
 
 const ThemeProvider = ({ children }) => (
   <div>
     <Header />
-    <EmotionThemeProvider theme={theme}>{children}</EmotionThemeProvider>
+    <StyledThemeProvider theme={theme}>{children}</StyledThemeProvider>
   </div>
 );
 
