@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const onServiceWorkerUpdateReady = () => {
   const answer = window.confirm(
     `This website has been updated. Reload to display the latest version?`
@@ -9,11 +7,6 @@ export const onServiceWorkerUpdateReady = () => {
     window.location.reload();
   }
 };
-
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-daterangepicker/daterangepicker.css';
-
-import '@fortawesome/fontawesome-svg-core/styles.css';
 
 const ROUTES_WITH_RULES = ['/cite/', '/apps/discover'];
 
@@ -40,15 +33,22 @@ export const shouldUpdateScroll = ({ routerProps: { location } }) => {
   }
 };
 
+import React from 'react';
 import { ToastContextProvider } from './src/contexts/ToastContext';
+import ThemeProvider from './src/components/theme/themeProvider';
+import Header from 'components/Header';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-daterangepicker/daterangepicker.css';
+import '@fortawesome/fontawesome-svg-core/styles.css';
+import './src/global.css';
 
 export const wrapRootElement = ({ element }) => {
   return (
     <ThemeProvider>
-      <ToastContextProvider>{element}</ToastContextProvider>
+      <ToastContextProvider>
+        <Header />
+        {element}
+      </ToastContextProvider>
     </ThemeProvider>
   );
 };
-
-import './src/global.css';
-import ThemeProvider from 'components/theme/themeProvider';

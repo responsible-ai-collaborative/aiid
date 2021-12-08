@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import Sidebar from './sidebar';
 import RightSidebar from './rightSidebar';
 import config from '../../config.js';
-import Header from './Header';
 
 const Wrapper = styled.div`
   display: flex;
@@ -66,26 +65,23 @@ const RightSideBarWidth = styled.div`
 `;
 
 const Layout = ({ children, collapse, className, location }) => (
-  <>
-    <Header />
-    <Wrapper>
-      <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
-        <Sidebar collapse={collapse} />
-      </LeftSideBarWidth>
-      {config.sidebar.title && (
-        <div
-          className={'sidebarTitle sideBarShow'}
-          dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
-        />
-      )}
-      <Content>
-        <MaxWidth className={className}>{children}</MaxWidth>
-      </Content>
-      <RightSideBarWidth className={'hiddenMobile'}>
-        <RightSidebar location={location} />
-      </RightSideBarWidth>
-    </Wrapper>
-  </>
+  <Wrapper>
+    <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
+      <Sidebar collapse={collapse} />
+    </LeftSideBarWidth>
+    {config.sidebar.title && (
+      <div
+        className={'sidebarTitle sideBarShow'}
+        dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
+      />
+    )}
+    <Content>
+      <MaxWidth className={className}>{children}</MaxWidth>
+    </Content>
+    <RightSideBarWidth className={'hiddenMobile'}>
+      <RightSidebar location={location} />
+    </RightSideBarWidth>
+  </Wrapper>
 );
 
 export default Layout;
