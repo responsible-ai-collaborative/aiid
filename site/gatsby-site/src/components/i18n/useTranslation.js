@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 import { useState } from 'react';
-import languages from './languages.json';
+import { getLanguages } from './languages';
 
 const LanguageContext = React.createContext({
   language: {},
   setLanguage: () => undefined,
-  languages,
+  languages: getLanguages(),
 });
 
 function useTranslation() {
@@ -15,6 +15,8 @@ function useTranslation() {
 }
 
 function LanguageProvider({ children }) {
+  const [languages] = useState(getLanguages());
+
   const [language, setLanguage] = useState(languages.find((l) => l.code == 'en'));
 
   return (

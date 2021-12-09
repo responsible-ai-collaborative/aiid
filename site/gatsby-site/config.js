@@ -89,6 +89,7 @@ const config = {
   },
   google: {
     translateApikey: process.env.GOOGLE_TRANSLATE_API_KEY,
+    availableLanguages: process.env.GATSBY_AVAILABLE_LANGUAGES,
   },
 };
 

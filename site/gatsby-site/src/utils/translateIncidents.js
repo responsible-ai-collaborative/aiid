@@ -4,7 +4,7 @@ const { queue } = require('async');
 
 const config = require('../../config');
 
-const languages = require('../components/i18n/languages.json');
+const { getLanguages } = require('../components/i18n/languages');
 
 const cloneDeep = require('lodash.clonedeep');
 
@@ -115,7 +115,7 @@ async function run({ reporter }) {
       done();
     }, concurrency);
 
-    for (let { code: to } of languages) {
+    for (let { code: to } of getLanguages()) {
       q.push({ to });
     }
 

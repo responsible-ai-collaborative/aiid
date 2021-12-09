@@ -1,6 +1,6 @@
 const config = require('../../config');
 
-const languages = require('../components/i18n/languages.json');
+const { getLanguages } = require('../components/i18n/languages');
 
 const MongoClient = require('mongodb').MongoClient;
 
@@ -106,7 +106,7 @@ async function run({ reporter }) {
 
     const classifications = await getClassifications();
 
-    for (let { code: language } of languages) {
+    for (let { code: language } of getLanguages()) {
       const incidents = await getIncidents({ language });
 
       const entries = generateIndexEntries({ incidents, classifications });
