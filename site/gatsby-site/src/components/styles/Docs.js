@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import styled from 'styled-components';
 
 export const StyledHeading = styled('h1')`
   font-family: Karla, sans-serif !important;
@@ -12,7 +12,7 @@ export const StyledHeading = styled('h1')`
   color: ${(props) => props.theme.colors.heading};
 `;
 
-export const Edit = styled('div')`
+export const Edit = styled.div`
   padding: 1rem 1.5rem;
   text-align: right;
 

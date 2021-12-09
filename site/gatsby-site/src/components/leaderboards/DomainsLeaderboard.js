@@ -2,7 +2,7 @@ import React from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 import { Leaderboard } from './Leaderboard';
 
-const DomainsLeaderboard = ({ limit }) => {
+const DomainsLeaderboard = ({ limit, className }) => {
   return (
     <StaticQuery
       query={graphql`
@@ -23,6 +23,7 @@ const DomainsLeaderboard = ({ limit }) => {
             title: 'Report Domains',
           }}
           limit={limit}
+          className={className}
         />
       )}
     />

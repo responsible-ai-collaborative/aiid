@@ -1,4 +1,5 @@
-import styled from '@emotion/styled';
+import React from 'react';
+import styled from 'styled-components';
 
 export const Sidebar = styled('aside')`
   font-family: Karla, sans-serif;
