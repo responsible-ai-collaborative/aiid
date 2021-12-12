@@ -26,11 +26,11 @@ export default class Authors extends Component {
             like to explore the contents of the reports, you should work through the
             <Link to="/about_apps/1-discover"> Discover app</Link>.
           </p>
-          <OriginalSubmittersLeaderboard />
-          <UniqueSubmittersLeaderboard />
-          <SubmittersLeaderboard />
-          <AuthorsLeaderboard />
-          <DomainsLeaderboard />
+          <OriginalSubmittersLeaderboard className="mt-4" />
+          <UniqueSubmittersLeaderboard className="mt-4" />
+          <SubmittersLeaderboard className="mt-4" />
+          <AuthorsLeaderboard className="mt-4" />
+          <DomainsLeaderboard className="mt-4" />
         </StyledMainWrapper>
       </Layout>
     );
