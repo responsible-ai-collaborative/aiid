@@ -35,20 +35,37 @@ export const shouldUpdateScroll = ({ routerProps: { location } }) => {
 
 import React from 'react';
 import { ToastContextProvider } from './src/contexts/ToastContext';
-import ThemeProvider from './src/components/theme/themeProvider';
+import ThemeProvider from 'components/theme/themeProvider';
 import Header from 'components/Header';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-daterangepicker/daterangepicker.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import './src/global.css';
+import { QueryParamProvider } from 'use-query-params';
+import { navigate } from 'gatsby';
 
 export const wrapRootElement = ({ element }) => {
   return (
     <ThemeProvider>
-      <ToastContextProvider>
-        <Header />
-        {element}
-      </ToastContextProvider>
+      <ToastContextProvider>{element}</ToastContextProvider>
     </ThemeProvider>
+  );
+};
+
+export const wrapPageElement = ({ element }) => {
+  const history = {
+    replace(location) {
+      navigate(location.search, { replace: true });
+    },
+    push(location) {
+      navigate(location.search, { replace: false });
+    },
+  };
+
+  return (
+    <QueryParamProvider history={history}>
+      <Header />
+      {element}
+    </QueryParamProvider>
   );
 };
