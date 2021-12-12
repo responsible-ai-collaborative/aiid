@@ -33,24 +33,15 @@ export const shouldUpdateScroll = ({ routerProps: { location } }) => {
   }
 };
 
-import React from 'react';
-import { ToastContextProvider } from './src/contexts/ToastContext';
-import ThemeProvider from 'components/theme/themeProvider';
-import Header from 'components/Header';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-daterangepicker/daterangepicker.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import './src/global.css';
+import { wrapRootElement } from './wrapRootElement';
+import React from 'react';
+import Header from 'components/Header';
 import { QueryParamProvider } from 'use-query-params';
 import { navigate } from 'gatsby';
-
-export const wrapRootElement = ({ element }) => {
-  return (
-    <ThemeProvider>
-      <ToastContextProvider>{element}</ToastContextProvider>
-    </ThemeProvider>
-  );
-};
 
 export const wrapPageElement = ({ element }) => {
   const history = {
@@ -69,3 +60,5 @@ export const wrapPageElement = ({ element }) => {
     </QueryParamProvider>
   );
 };
+
+export { wrapRootElement };
