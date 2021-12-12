@@ -1,6 +1,6 @@
-import styled from '@emotion/styled';
+import styled from 'styled-components';
 
-export const StyledNextPrevious = styled('div')`
+export const StyledNextPrevious = styled.div`
   margin: 0px;
   padding: 0px;
   width: auto;

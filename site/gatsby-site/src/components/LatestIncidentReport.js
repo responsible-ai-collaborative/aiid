@@ -5,12 +5,7 @@ import md5 from 'md5';
 import { format } from 'date-fns';
 import { Image } from '../utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
-
-const ThumbnailLink = styled(Link)`
-  display: block;
-  height: 300px;
-  margin: 0 -2rem 0;
-`;
+import { Card, Col, Row } from 'react-bootstrap';
 
 const ThumbnailImg = styled(Image)`
   object-fit: cover;
@@ -18,52 +13,7 @@ const ThumbnailImg = styled(Image)`
   width: 100%;
 `;
 
-const TextContainer = styled.div`
-  margin: 1rem auto 0;
-  line-height: 1.7;
-  flex: 1;
-`;
-
-const Title = styled.div`
-  p {
-    font-size: 1.5em;
-  }
-`;
-
-const SubmissionDate = styled.div`
-  p {
-    color: grey;
-  }
-`;
-
-const Description = styled.div`
-  padding-top: 0em;
-  p {
-    line-height: 1.5;
-    margin-bottom: 0;
-  }
-`;
-
-const Wrapper = styled.div`
-  margin-top: -0.75em;
-  padding: 0em 2em 1rem;
-  @media (min-width: 991px) {
-    display: flex;
-    ${ThumbnailLink} {
-      height: auto;
-      margin: 0 1rem -1rem -2rem;
-      justify-self: stretch;
-      flex: 1;
-      display: block;
-      position: relative;
-      ${ThumbnailImg} {
-        position: absolute;
-      }
-    }
-  }
-`;
-
-const LatestIncidentReport = () => {
+const LatestIncidentReport = ({ className = '' }) => {
   return (
     <StaticQuery
       query={graphql`
@@ -88,30 +38,28 @@ const LatestIncidentReport = () => {
           nodes[0];
 
         return (
-          <Wrapper>
-            <ThumbnailLink to={`/cite/${incident_id}`}>
-              <ThumbnailImg
-                publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
-                transformation={fill().height(480)}
-                alt={title}
-              />
-            </ThumbnailLink>
-            <TextContainer>
-              <Link to={`/cite/${incident_id}`}>
-                <Title>
-                  <p>{title}</p>
-                </Title>
-              </Link>
-              <SubmissionDate>
-                <p>{format(epoch_incident_date * 1000, 'MMM d, yyyy')}</p>
-              </SubmissionDate>
-              <Description>
-                <p>
-                  {description}... <Link to={`/cite/${incident_id}`}>(Read More)</Link>
-                </p>
-              </Description>
-            </TextContainer>
-          </Wrapper>
+          <Card className={className}>
+            <Row className="g-0">
+              <Col md={4}>
+                <ThumbnailImg
+                  publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
+                  transformation={fill().height(480)}
+                  alt={title}
+                />
+              </Col>
+              <Col md={8}>
+                <Card.Body>
+                  <Card.Title>
+                    <Link to={`/cite/${incident_id}`}>{title}</Link>
+                  </Card.Title>
+                  <Card.Subtitle>{format(epoch_incident_date * 1000, 'MMM d, yyyy')}</Card.Subtitle>
+                  <Card.Text>
+                    {description}... <Link to={`/cite/${incident_id}`}>(Read More)</Link>
+                  </Card.Text>
+                </Card.Body>
+              </Col>
+            </Row>
+          </Card>
         );
       }}
     />

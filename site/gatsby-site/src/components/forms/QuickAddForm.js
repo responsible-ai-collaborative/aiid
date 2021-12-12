@@ -1,13 +1,10 @@
 import React from 'react';
-import { Form, Button, OverlayTrigger, InputGroup } from 'react-bootstrap';
+import { Form, Button, Col, Row } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
 import Link from 'components/Link';
 import DBConnecting from 'components/DBConnecting';
-import { FormStyles } from 'components/styles/Form';
-import * as Popovers from 'components/PopOvers';
-
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
@@ -29,55 +26,47 @@ const validationSchema = Yup.object().shape({
     .required('*URL required'),
 });
 
-const QuickAddForm = ({ className, appendSubmit = false }) => {
+const QuickAddForm = ({ className = '' }) => {
   const { loading, user } = useUserContext();
 
   const addToast = useToastContext();
 
-  const { values, errors, touched, isSubmitting, handleChange, handleBlur, handleSubmit } =
-    useFormik({
-      initialValues: { url: '' },
-      validationSchema,
-      onSubmit: async (values, { setSubmitting, resetForm }) => {
-        setSubmitting(true);
-        user.functions
-          .quickAdd(values)
-          .then(() => {
-            addToast({
-              message: (
-                <>
-                  {'Report successfully added to review queue. It will appear on the  '}
-                  <Link to="/apps/submitted">review queue page</Link> within an hour.
-                </>
-              ),
-              severity: SEVERITY.success,
-            });
-          })
-          .catch(() => {
-            addToast({
-              message: 'Was not able to create the report, please review the form and try again.',
-              severity: SEVERITY.warning,
-            });
+  const { values, errors, isSubmitting, handleChange, handleBlur, handleSubmit } = useFormik({
+    initialValues: { url: '' },
+    validationSchema,
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
+      setSubmitting(true);
+      user.functions
+        .quickAdd(values)
+        .then(() => {
+          addToast({
+            message: (
+              <>
+                {'Report successfully added to review queue. It will appear on the  '}
+                <Link to="/apps/submitted">review queue page</Link> within an hour.
+              </>
+            ),
+            severity: SEVERITY.success,
           });
+        })
+        .catch(() => {
+          addToast({
+            message: 'Was not able to create the report, please review the form and try again.',
+            severity: SEVERITY.warning,
+          });
+        });
 
-        resetForm();
-        setSubmitting(false);
-      },
-    });
+      resetForm();
+      setSubmitting(false);
+    },
+  });
 
   return (
-    <FormStyles className={className}>
-      {loading && <DBConnecting />}
-      <Form onSubmit={handleSubmit} className="mx-auto p-5">
-        <Form.Group controlId="formUrl">
-          <OverlayTrigger
-            trigger={['hover', 'focus']}
-            placement="top"
-            overlay={Popovers.reportAddress}
-          >
-            <Form.Label>Report Address :</Form.Label>
-          </OverlayTrigger>
-          <InputGroup>
+    <>
+      <Form onSubmit={handleSubmit} className={className}>
+        {loading && <DBConnecting />}
+        <Row>
+          <Form.Group as={Col} controlId="formUrl">
             <Form.Control
               type="text"
               name="url"
@@ -85,31 +74,33 @@ const QuickAddForm = ({ className, appendSubmit = false }) => {
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.url}
-              className={touched.url && errors.url ? 'has-error' : null}
+              isInvalid={!!errors.url}
             />
-            {appendSubmit && (
-              <Button variant="primary" type="submit" disabled={isSubmitting || loading}>
-                Submit
-              </Button>
-            )}
-          </InputGroup>
-          {touched.url && errors.url && <div className="error-message">{errors.url}</div>}
-        </Form.Group>
+            <Form.Control.Feedback type="invalid">{errors.url}</Form.Control.Feedback>
+          </Form.Group>
 
-        <p>
-          Submitted links are added to a <Link to="/apps/submitted">review queue </Link>
-          to be resolved to a new or existing incident record. Incidents submitted with
-          <Link to="/apps/submit"> full details </Link> are processed before URLs not possessing the
-          full details.
-        </p>
-
-        {!appendSubmit && (
-          <Button variant="primary" type="submit" disabled={isSubmitting || loading}>
-            Submit
-          </Button>
-        )}
+          <Col xs="auto">
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={isSubmitting || loading || !!errors.url}
+            >
+              Submit
+            </Button>
+          </Col>
+        </Row>
+        <Row className="mt-2">
+          <Col>
+            <Form.Text className="text-muted">
+              Submitted links are added to a <Link to="/apps/submitted">review queue </Link>
+              to be resolved to a new or existing incident record. Incidents submitted with
+              <Link to="/apps/submit"> full details </Link> are processed before URLs not possessing
+              the full details.
+            </Form.Text>
+          </Col>
+        </Row>
       </Form>
-    </FormStyles>
+    </>
   );
 };
 

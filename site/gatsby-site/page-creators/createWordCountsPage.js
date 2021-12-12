@@ -13,7 +13,7 @@ const PAGES_WITH_WORDCOUNT = [
   },
   {
     path: '/',
-    componentPath: './src/pages/landingPage.js',
+    componentPath: './src/templates/landingPage.js',
   },
 ];
 

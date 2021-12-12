@@ -2,16 +2,47 @@ import React from 'react';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
 import Badge from 'react-bootstrap/Badge';
+import { Card, ListGroup } from 'react-bootstrap';
 
-const StyledOl = styled.ol`
-  padding: 0;
+const medalMap = (position) => {
+  switch (position) {
+    case 1:
+      return (
+        <span role="img" aria-label="Gold medal">
+          🥇
+        </span>
+      );
+    case 2:
+      return (
+        <span role="img" aria-label="Silver medal">
+          🥈
+        </span>
+      );
+    case 3:
+      return (
+        <span role="img" aria-label="Bronze medal">
+          🥉
+        </span>
+      );
+    default:
+      return <span>{position}.</span>;
+  }
+};
+
+const Medal = styled.div`
+  display: inline-block;
 `;
 
-const StyledLi = styled.li`
-  margin-left: 1em;
+const StyledItem = styled(ListGroup.Item)`
+  white-space: nowrap;
 `;
 
-export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit }) => {
+export const Leaderboard = ({
+  dataHash,
+  leaderboard: { attribute, title },
+  limit,
+  className = '',
+}) => {
   let sortedArray = [];
 
   for (const item in dataHash) {
@@ -31,19 +62,22 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
   }
 
   return (
-    <div>
-      <h2>
-        <Badge bg="secondary">{title}</Badge>
-      </h2>
-      <StyledOl>
-        {sortedArray.map((item) => (
-          <StyledLi key={`${item.label}-${item.value}`}>
+    <Card className={className}>
+      <Card.Header>{title}</Card.Header>
+      <ListGroup variant="flush">
+        {sortedArray.map((item, index) => (
+          <StyledItem
+            key={`${item.label}-${item.value}`}
+            className="d-flex justify-content-between align-items-center"
+          >
             <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
-              {`${item.label}: ${item.value}`}
+              <Medal className="pe-2">{medalMap(index + 1)}</Medal>
+              {item.label}
             </Link>
-          </StyledLi>
+            <Badge bg="secondary">{item.value}</Badge>
+          </StyledItem>
         ))}
-      </StyledOl>
-    </div>
+      </ListGroup>
+    </Card>
   );
 };
