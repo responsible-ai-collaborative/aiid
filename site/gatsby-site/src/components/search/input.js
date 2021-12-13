@@ -1,8 +1,8 @@
 import React from 'react';
 import { connectSearchBox } from 'react-instantsearch-dom';
 
-import styled from '@emotion/styled';
-import { css } from '@emotion/css';
+import styled from 'styled-components';
+import { css } from 'styled-components';
 import { Search } from 'styled-icons/fa-solid/Search';
 
 const SearchIcon = styled(Search)`

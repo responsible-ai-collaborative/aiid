@@ -1,11 +1,12 @@
 import React from 'react';
-import styled from '@emotion/styled';
+import styled from 'styled-components';
 
 import Sidebar from './sidebar';
 import RightSidebar from './rightSidebar';
 import config from '../../config.js';
+import Footer from './layout/Footer';
 
-const Wrapper = styled('div')`
+const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   background: ${({ theme }) => theme.colors.background};
@@ -44,19 +45,19 @@ const Content = styled('main')`
   }
 `;
 
-const MaxWidth = styled('div')`
+const MaxWidth = styled.div`
   @media only screen and (max-width: 50rem) {
     width: 100%;
     position: relative;
   }
 `;
 
-const LeftSideBarWidth = styled('div')`
+const LeftSideBarWidth = styled.div`
   width: 298px;
   ${({ collapse }) => collapse && `width: 0;`}
 `;
 
-const RightSideBarWidth = styled('div')`
+const RightSideBarWidth = styled.div`
   width: 224px;
 
   @media (max-width: 965px) {
@@ -65,23 +66,26 @@ const RightSideBarWidth = styled('div')`
 `;
 
 const Layout = ({ children, collapse, className, location }) => (
-  <Wrapper>
-    <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
-      <Sidebar collapse={collapse} />
-    </LeftSideBarWidth>
-    {config.sidebar.title && (
-      <div
-        className={'sidebarTitle sideBarShow'}
-        dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
-      />
-    )}
-    <Content>
-      <MaxWidth className={className}>{children}</MaxWidth>
-    </Content>
-    <RightSideBarWidth className={'hiddenMobile'}>
-      <RightSidebar location={location} />
-    </RightSideBarWidth>
-  </Wrapper>
+  <>
+    <Wrapper>
+      <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
+        <Sidebar collapse={collapse} />
+      </LeftSideBarWidth>
+      {config.sidebar.title && (
+        <div
+          className={'sidebarTitle sideBarShow'}
+          dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
+        />
+      )}
+      <Content>
+        <MaxWidth className={className}>{children}</MaxWidth>
+      </Content>
+      <RightSideBarWidth className={'hiddenMobile'}>
+        <RightSidebar location={location} />
+      </RightSideBarWidth>
+    </Wrapper>
+    <Footer />
+  </>
 );
 
 export default Layout;

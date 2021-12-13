@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import styled from '@emotion/styled';
+import styled from 'styled-components';
 
 import Sidebar from './sidebar';
 import config from '../../config.js';
 import Button from 'react-bootstrap/Button';
 
-const Wrapper = styled('div')`
+const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   background: ${({ theme }) => theme.colors.background};
@@ -47,7 +47,7 @@ const Content = styled('main')`
   }
 `;
 
-const MaxWidth = styled('div')`
+const MaxWidth = styled.div`
   width: 100%;
 
   @media only screen and (max-width: 50rem) {
@@ -60,7 +60,7 @@ const MaxWidth = styled('div')`
   }
 `;
 
-const LeftSideBarWidth = styled('div')`
+const LeftSideBarWidth = styled.div`
   width: 298px;
   ${({ collapse }) => collapse && `width: 0;`}
 `;

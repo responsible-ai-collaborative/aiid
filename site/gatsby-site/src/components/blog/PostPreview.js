@@ -3,94 +3,41 @@ import Img from 'gatsby-image';
 import styled from 'styled-components';
 import { Link } from 'gatsby';
 import { format } from 'date-fns';
+import { Card, Col, Row } from 'react-bootstrap';
 
-const ThumbnailLink = styled(Link)`
-  display: block;
-  height: 300px;
-  margin: 0 -2rem 0;
-`;
-
-const ThumbnailImg = styled(Img)`
-  object-fit: cover;
+const StyledImg = styled(Img)`
   height: 100%;
-  width: 100%;
+  max-height: 240px;
 `;
 
-const TextContainer = styled.div`
-  margin: 1rem auto 0;
-  line-height: 1.7;
-  flex: 1;
-`;
-
-const Title = styled.div`
-  p {
-    font-size: 1.5em;
-  }
-`;
-
-const PostDate = styled.div`
-  p {
-    color: grey;
-  }
-`;
-
-const Description = styled.div`
-  padding-top: 0em;
-  p {
-    line-height: 1.5;
-    margin-bottom: 0;
-  }
-`;
-
-const Author = styled.div`
-  font-style: italic;
-  margin-top: 1rem;
-`;
-
-const Wrapper = styled.div`
-  margin-top: -0.75em;
-  padding: 0em 2em 1rem;
-  @media (min-width: 991px) {
-    display: flex;
-    ${ThumbnailLink} {
-      height: auto;
-      margin: 0 1rem -1rem -2rem;
-      justify-self: stretch;
-      flex: 0.5;
-      min-width: 280px;
-    }
-    ${TextContainer} {
-      display: flex;
-      flex-direction: column;
-    }
-    ${Description} {
-      flex: 1;
-    }
-  }
-`;
-
-export default function PostPreview({ post }) {
+function PostPreview({ post, className }) {
   return (
-    <Wrapper>
-      <ThumbnailLink to={post.fields.slug}>
-        <ThumbnailImg fluid={post.frontmatter.image.childImageSharp.fluid} />
-      </ThumbnailLink>
-      <TextContainer>
-        <Link to={post.fields.slug}>
-          <Title>
-            <p>{post.fields.title}</p>
-          </Title>
-        </Link>
-        <PostDate>
-          <p>{format(new Date(post.frontmatter.date), 'MMM d, yyyy')}</p>
-        </PostDate>
-        <Description>
-          <p>
-            {post.excerpt}... <Link to={post.fields.slug}>(Read More)</Link>
-          </p>
-        </Description>
-        <Author>By {post.frontmatter.author}</Author>
-      </TextContainer>
-    </Wrapper>
+    <Card className={className}>
+      <Row className="g-0">
+        <Col md={4}>
+          <StyledImg
+            className="img-fluid rounded-start"
+            fluid={post.frontmatter.image.childImageSharp.fluid}
+          />
+        </Col>
+        <Col md={8}>
+          <Card.Body>
+            <Card.Title>
+              <Link to={post.fields.slug}>{post.fields.title}</Link>
+            </Card.Title>
+            <Card.Subtitle>{format(new Date(post.frontmatter.date), 'MMM d, yyyy')}</Card.Subtitle>
+            <Card.Text>
+              {' '}
+              {post.excerpt}... <Link to={post.fields.slug}>(Read More)</Link>
+            </Card.Text>
+            <Card.Text>
+              <small className="text-muted">By {post.frontmatter.author}</small>
+            </Card.Text>
+          </Card.Body>
+        </Col>
+      </Row>
+    </Card>
   );
 }
+
+export default styled(PostPreview)``;
