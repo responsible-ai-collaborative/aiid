@@ -18,3 +18,10 @@ import './commands';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+Cypress.on('uncaught:exception', (err) => {
+  // disable Realm error when origin is not whitelisted
+  if (err.message.includes('origin forbidden (status 403 Forbidden)')) {
+    return false;
+  }
+});
