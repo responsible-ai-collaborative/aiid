@@ -8,5 +8,7 @@ TERM = "xterm"
 
 [[plugins]]
 package = "@netlify/plugin-gatsby"
+
+[[plugins]]
 package = "netlify-plugin-cypress"
 
