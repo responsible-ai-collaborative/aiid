@@ -158,6 +158,33 @@ gatsby build
 
 Restart Gatsby, and you should have a complete working environment!
 
+## Deployment Setup
+
+Deployment of the site consists of two parts: deployment of the backend related features that runs as a Github Action and deployment of the frontend related features that runs on Netlify:
+
+### Netlify
+The Netlify build process runs every time a push is made to an open PR or `master` or `develop`.
+To correctly set up  this process, the following environment variables need to be created using Netlify's build settings UI:
+
+```
+ALGOLIA_ADMIN_KEY=
+AWS_LAMBDA_JS_RUNTIME=nodejs14.x # required to run the Gatsby v4
+GATSBY_ALGOLIA_APP_ID=
+GATSBY_ALGOLIA_SEARCH_KEY=
+GATSBY_REALM_APP_ID=
+MONGODB_CONNECTION_STRING=
+MONGODB_REPLICA_SET=
+```
+### Github Actions
+Two workflows take care of deploying the Realm app to both `production` and `staging` environments, defined in `realm-production.yml` and `realm-staging.yml`. Each workflow looks for environment variables defined in a Github Environment named `production` and `staging`. 
+
+These environments must contain the following variables:
+```
+GATSBY_REALM_APP_ID=
+REALM_API_PRIVATE_KEY=
+REALM_API_PUBLIC_KEY=
+```
+
 ## License
 
 The codebase currently carries an GNU Affero General Public License and all contributions to the project falls under the license. Contributors disclaim all rights to their contributions. Please reach out to discuss the license terms if they are causing you any issues. We selected the GNU Affero license to encourage contributing back to the project, but the license itself provides the community wide latitude in working with this codebase.
