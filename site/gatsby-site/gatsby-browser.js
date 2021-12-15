@@ -10,11 +10,6 @@ export const onServiceWorkerUpdateReady = () => {
   }
 };
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-daterangepicker/daterangepicker.css';
-
-import '@fortawesome/fontawesome-svg-core/styles.css';
-
 const ROUTES_WITH_RULES = ['/cite/', '/apps/discover'];
 
 export const shouldUpdateScroll = ({ routerProps: { location } }) => {
@@ -40,10 +35,31 @@ export const shouldUpdateScroll = ({ routerProps: { location } }) => {
   }
 };
 
-import { ToastContextProvider } from './src/contexts/ToastContext';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-daterangepicker/daterangepicker.css';
+import '@fortawesome/fontawesome-svg-core/styles.css';
+import './src/global.css';
+import { wrapRootElement } from './wrapRootElement';
+import Header from 'components/Header';
+import { QueryParamProvider } from 'use-query-params';
+import { navigate } from 'gatsby';
 
-export const wrapRootElement = ({ element }) => {
-  return <ToastContextProvider>{element}</ToastContextProvider>;
+export const wrapPageElement = ({ element }) => {
+  const history = {
+    replace(location) {
+      navigate(location.search, { replace: true });
+    },
+    push(location) {
+      navigate(location.search, { replace: false });
+    },
+  };
+
+  return (
+    <QueryParamProvider history={history}>
+      <Header />
+      {element}
+    </QueryParamProvider>
+  );
 };
 
-import './src/global.css';
+export { wrapRootElement };
