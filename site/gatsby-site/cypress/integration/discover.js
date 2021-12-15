@@ -23,7 +23,7 @@ describe('The Discover app', () => {
     cy.get('div[class^="Hits__HitsContainer"]').children().should('have.length.at.least', 12);
   });
 
-  it('Filters by incident Id', () => {
+  it('Filters by incident Id using top filters', () => {
     cy.visit(url);
 
     cy.get('button:contains("Incident ID")').click();
@@ -35,5 +35,21 @@ describe('The Discover app', () => {
     cy.url().should('include', 'incident_id=100');
 
     cy.get('div[class^="Hits__HitsContainer"]').children().should('have.length', 1);
+  });
+
+  it('Filters by incident Id using card button', () => {
+    cy.visit(url);
+
+    cy.get('div[class^="Hits__HitsContainer"]')
+      .children()
+      .get('[title="Filter by Incident ID #10"]')
+      .first()
+      .click();
+
+    cy.get('button:contains("Incident ID")').get('span.badge').should('contain.text', '1');
+
+    cy.url().should('include', 'incident_id=10');
+
+    cy.get('div[class^="Hits__HitsContainer"]').children().should('have.length.at.least', 10);
   });
 });
