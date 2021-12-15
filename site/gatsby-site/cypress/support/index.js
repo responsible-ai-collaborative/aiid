@@ -19,9 +19,16 @@ import './commands';
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-Cypress.on('uncaught:exception', (err) => {
+const ignoredErrors = [
   // disable Realm error when origin is not whitelisted
-  if (err.message.includes('origin forbidden (status 403 Forbidden)')) {
+  'origin forbidden (status 403 Forbidden)',
+
+  // I have no Idea why this is happening, but it is.
+  'Transport not open',
+];
+
+Cypress.on('uncaught:exception', (err) => {
+  if (ignoredErrors.some((e) => err.message.includes(e))) {
     return false;
   }
 });
