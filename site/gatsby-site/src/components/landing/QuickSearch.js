@@ -19,7 +19,7 @@ export default function QuickSearch({ className }) {
   return (
     <Card className={className}>
       <Card.Body>
-        <Form onSubmit={submit} className="mt-4">
+        <Form onSubmit={submit} className="mt-4" id="quickSearch">
           <SearchInput
             size="lg"
             value={searchTerm}
