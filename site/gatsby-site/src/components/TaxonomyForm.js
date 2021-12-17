@@ -6,6 +6,8 @@ import { useMongo } from 'hooks/useMongo';
 import { Formik } from 'formik';
 import Loader from 'components/Loader';
 import config from '../../config.js';
+import { faCheck, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const ClassificationContainer = styled.div`
   display: flex;
@@ -62,7 +64,116 @@ const TaxaHeader = styled.h4`
   padding-right: 0.8em;
 `;
 
+const ArrayContainer = styled.div`
+  /* background-color: palevioletred; */
+
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+`;
+
+const ArrayItem = styled.div`
+  margin-right: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid lightgray;
+  padding: 5px 15px;
+  border-radius: 10px;
+
+  svg {
+    display: none;
+    margin-left: 10px;
+    cursor: pointer;
+  }
+
+  &:hover {
+    svg {
+      display: block;
+
+      :hover {
+        color: red;
+      }
+    }
+  }
+`;
+
+const RowContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+`;
+
 const TEXTAREA_LIMIT = 120;
+
+const FormArrayComponent = ({ stringArray, rawField, handleChange }) => {
+  const [onChangeEvent, setOnChangeEvent] = useState(undefined);
+
+  const [words, setWords] = useState(stringArray.split(';'));
+
+  const removeItem = (wordToRemove) => {
+    if (words.find((word) => word === wordToRemove)) {
+      setWords([...words.filter((w) => w !== wordToRemove)]);
+
+      setOnChangeEvent(undefined);
+    }
+  };
+
+  const addItem = () => {
+    const newWord = (onChangeEvent?.target?.value || '').trim();
+
+    if (!words.find((word) => word === newWord) && newWord !== '') {
+      setWords([...words, newWord]);
+
+      setOnChangeEvent(undefined);
+    }
+  };
+
+  const onChange = (e) => {
+    e.preventDefault();
+    setOnChangeEvent(e);
+  };
+
+  useEffect(() => {
+    if (stringArray !== words.join(';')) {
+      handleChange(words);
+    }
+  }, [words]);
+
+  return (
+    <>
+      <ArrayContainer>
+        {words.map((word) => (
+          <>
+            <ArrayItem key={word}>
+              {word}
+              <FontAwesomeIcon
+                icon={faTrashAlt}
+                className="fas fa-trash-alt"
+                onClick={() => removeItem(word)}
+              />
+            </ArrayItem>
+          </>
+        ))}
+      </ArrayContainer>
+      <RowContainer>
+        <Button style={{ marginRight: 10 }} variant="outline-primary" onClick={() => addItem()}>
+          <FontAwesomeIcon icon={faCheck} className="fas fa-check" />
+        </Button>
+        <Form.Control
+          id={rawField.short_name}
+          name={rawField.short_name}
+          type="text"
+          onChange={(e) => onChange(e)}
+          value={onChangeEvent?.target?.value || ''}
+        />
+      </RowContainer>
+    </>
+  );
+};
 
 const EditTaxonomyForm = ({
   namespace,
@@ -291,12 +402,10 @@ const EditTaxonomyForm = ({
         )}
 
         {rawField.display_type === 'list' && (
-          <Form.Control
-            id={rawField.short_name}
-            name={rawField.short_name}
-            type="text"
-            onChange={handleChange}
-            value={validateListField(formikValues[rawField.short_name])}
+          <FormArrayComponent
+            stringArray={validateListField(formikValues[rawField.short_name])}
+            rawField={rawField}
+            handleChange={(words) => (formikValues[rawField.short_name] = words.join(';'))}
           />
         )}
 
@@ -402,7 +511,7 @@ const EditTaxonomyForm = ({
 
   return (
     <FormContainer>
-      <Formik initialValues={initialValues} onSubmit={onSubmit}>
+      <Formik initialValues={{ ...initialValues }} onSubmit={onSubmit}>
         {({
           values,
           // errors,
