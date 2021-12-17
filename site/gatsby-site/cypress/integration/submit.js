@@ -9,7 +9,7 @@ describe('The Submit form', () => {
     cy.visit(url);
   });
 
-  it('Submitting a report', () => {
+  it('Should fetch an article data and fill forms accordingly', () => {
     cy.intercept('GET', parserURL).as('parseNews');
 
     cy.get('input[name="url"]').type(articleURL);
@@ -30,5 +30,27 @@ describe('The Submit form', () => {
       'have.value',
       'https://cbsnews3.cbsistatic.com/hub/i/r/2015/03/17/01a38576-5108-40f7-8df8-5416164ed878/thumbnail/1200x630/ca8d35fe6bc065b5c9a747d92bc6d94c/154211248.jpg'
     );
+
+    cy.get('button[type="submit"]').should('be.disabled');
+  });
+
+  it('Should fetch an article data and fill forms accordingly', () => {
+    cy.intercept('GET', parserURL).as('parseNews');
+
+    cy.get('input[name="url"]').type(articleURL);
+
+    cy.get('button').contains('Fetch info').click();
+
+    cy.wait('@parseNews', { timeout: 30000 });
+
+    cy.get('input[name="submitters"]').type('Something');
+
+    cy.get('input[name="incident_date"]').type('2021-09-21');
+
+    cy.get('button[type="submit"]').click();
+
+    cy.get('div[class^="ToastContext"]')
+      .contains('Report successfully added to review queue')
+      .should('exist');
   });
 });
