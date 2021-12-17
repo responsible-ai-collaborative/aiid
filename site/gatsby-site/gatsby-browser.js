@@ -43,6 +43,7 @@ import { wrapRootElement } from './wrapRootElement';
 import Header from 'components/Header';
 import { QueryParamProvider } from 'use-query-params';
 import { navigate } from 'gatsby';
+import { UserContextProvider } from 'contexts/userContext';
 
 export const wrapPageElement = ({ element }) => {
   const history = {
@@ -56,8 +57,10 @@ export const wrapPageElement = ({ element }) => {
 
   return (
     <QueryParamProvider history={history}>
-      <Header />
-      {element}
+      <UserContextProvider>
+        <Header />
+        {element}
+      </UserContextProvider>
     </QueryParamProvider>
   );
 };
