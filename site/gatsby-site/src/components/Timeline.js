@@ -205,7 +205,7 @@ function Timeline({ items }) {
   }, [containerRef]);
 
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} style={{ height: `${size.height}px` }}>
       <svg width="100%" viewBox={`0 0 ${size.width} ${size.height}`}>
         <AxisLeft data={data} yScale={yScale} margin={margin} size={size} />
         <Reports data={data} yScale={yScale} yValue={yValue} margin={margin} size={size} />
