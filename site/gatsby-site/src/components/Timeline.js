@@ -171,7 +171,7 @@ const calculatesize = ({ data, rect }) => ({
 function Timeline({ items }) {
   const containerRef = useRef();
 
-  const data = items[0].edges.map((item) => item.node);
+  const data = items.map((item) => item.node);
 
   const [size, setSize] = useState(calculatesize({ data }));
 
