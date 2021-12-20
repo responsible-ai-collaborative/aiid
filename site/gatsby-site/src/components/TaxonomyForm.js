@@ -6,7 +6,7 @@ import { useMongo } from 'hooks/useMongo';
 import { Formik } from 'formik';
 import Loader from 'components/Loader';
 import config from '../../config.js';
-import { faCheck, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const ClassificationContainer = styled.div`
@@ -160,8 +160,15 @@ const FormArrayComponent = ({ stringArray, rawField, handleChange }) => {
         ))}
       </ArrayContainer>
       <RowContainer>
-        <Button style={{ marginRight: 10 }} variant="outline-primary" onClick={() => addItem()}>
-          <FontAwesomeIcon icon={faCheck} className="fas fa-check" />
+        <Button
+          style={{ marginRight: 10, width: 100 }}
+          variant="outline-primary"
+          onClick={() => addItem()}
+          disabled={
+            onChangeEvent?.target?.value === undefined || onChangeEvent?.target?.value.trim() === ''
+          }
+        >
+          Add item
         </Button>
         <Form.Control
           id={rawField.short_name}
