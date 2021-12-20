@@ -81,7 +81,7 @@ export default function Compact({
             <>
               <StyledCardTitle>
                 <Link
-                  to={`/cite/${item.incident_id}#${item.mongodb_id}`}
+                  to={`/cite/${item.incident_id}#r${item.mongodb_id}`}
                   className="text-decoration-none"
                 >
                   <TitleHighlight hit={item} attribute="title" className="h6" />
