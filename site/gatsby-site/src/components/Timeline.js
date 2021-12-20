@@ -110,7 +110,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
                       <GroupListItem key={b.mongodb_id}>
                         {timeFormat('%b %d, %Y')(new Date(b.date_published))}
                         <br />
-                        <a href={`#${b.mongodb_id}`}>{b.title}</a>
+                        <a href={`#r${b.mongodb_id}`}>{b.title}</a>
                       </GroupListItem>
                     ))}
                   </GroupList>
@@ -127,7 +127,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
         <Point cy={0} r={radius} />
       )}
 
-      <a href={`${baseURL}#${bucket[0].mongodb_id}`}>
+      <a href={`${baseURL}#r${bucket[0].mongodb_id}`}>
         <Title dx={16}>{bucket[0].title}</Title>
       </a>
     </g>
