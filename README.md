@@ -185,6 +185,22 @@ REALM_API_PRIVATE_KEY=
 REALM_API_PUBLIC_KEY=
 ```
 
+### Testing
+
+For integration testing, we use Cypress. You can run the desktop app continuously as part of your development environment or run it on demand in headless mode.
+
+To use the desktop version, run:
+```
+npm run test:e2e
+``
+
+And to run it in continuous integration (headless) mode:
+```
+test:e2e:ci
+```
+
+
+
 ## License
 
 The codebase currently carries an GNU Affero General Public License and all contributions to the project falls under the license. Contributors disclaim all rights to their contributions. Please reach out to discuss the license terms if they are causing you any issues. We selected the GNU Affero license to encourage contributing back to the project, but the license itself provides the community wide latitude in working with this codebase.
