@@ -127,7 +127,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
         <Point cy={0} r={radius} />
       )}
 
-      <a href={`${baseURL}#r${bucket[0].mongodb_id}`}>
+      <a href={`#r${bucket[0].mongodb_id}`}>
         <Title dx={16}>{bucket[0].title}</Title>
       </a>
     </g>
