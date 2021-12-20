@@ -106,6 +106,7 @@ export default function Actions({
           variant="link"
           aria-hidden="true"
           className="d-flex align-items-center px-1"
+          title={`Filter by Incident ID #${item.incident_id}`}
           onClick={() => toggleFilterByIncidentId(item.incident_id + '')}
         >
           <FontAwesomeIcon icon={faHashtag} className="fa-hashtag" title="Incident ID" />
