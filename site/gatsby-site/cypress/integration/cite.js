@@ -14,6 +14,8 @@ describe('Cite pages', () => {
 
         cy.contains('Show Details on Incident #10').first().click()
 
+        cy.wait(1000)
+
         cy.getWindowScroll().should('be.closeTo', 15761, 20);
     });
 
@@ -24,6 +26,8 @@ describe('Cite pages', () => {
         cy.get('text')
             .contains('For some Starbucks workers, job leaves bitter taste')
             .click()
+
+        cy.wait(1000)
 
         cy.getWindowScroll().should('be.closeTo', 4946, 20);
     });
