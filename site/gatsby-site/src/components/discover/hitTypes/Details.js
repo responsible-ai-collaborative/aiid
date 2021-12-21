@@ -63,7 +63,7 @@ export default function Details({
               type="button"
               className="btn btn-secondary btn-sm w-100"
               onClick={() => {
-                navigate(`/cite/${item.incident_id}#${item.mongodb_id}`);
+                navigate(`/cite/${item.incident_id}#r${item.mongodb_id}`);
               }}
             >
               <StyledLabel>Show Details on Incident #{item.incident_id}</StyledLabel>
