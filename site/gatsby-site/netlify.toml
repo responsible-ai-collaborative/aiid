@@ -1,6 +1,13 @@
 [build]
-  publish = "public"
-  command = "npm run build"
+publish = "public"
+command = "npm run build"
+
+[build.environment]
+CYPRESS_CACHE_FOLDER = "./node_modules/CypressBinary"
+TERM = "xterm"
 
 [[plugins]]
 package = "@netlify/plugin-gatsby"
+
+[[plugins]]
+package = "netlify-plugin-cypress"

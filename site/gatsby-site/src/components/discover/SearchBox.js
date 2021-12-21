@@ -31,7 +31,7 @@ function SearchBox({ currentRefinement, refine }) {
   return (
     <Row>
       <Col>
-        <SearchForm>
+        <SearchForm id="searchForm">
           <SearchInput
             value={query}
             onChange={setQuery}

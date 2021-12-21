@@ -110,7 +110,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
                       <GroupListItem key={b.mongodb_id}>
                         {timeFormat('%b %d, %Y')(new Date(b.date_published))}
                         <br />
-                        <a href={`#${b.mongodb_id}`}>{b.title}</a>
+                        <a href={`#r${b.mongodb_id}`}>{b.title}</a>
                       </GroupListItem>
                     ))}
                   </GroupList>
@@ -127,7 +127,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
         <Point cy={0} r={radius} />
       )}
 
-      <a href={`${baseURL}#${bucket[0].mongodb_id}`}>
+      <a href={`#r${bucket[0].mongodb_id}`}>
         <Title dx={16}>{bucket[0].title}</Title>
       </a>
     </g>
@@ -171,7 +171,7 @@ const calculatesize = ({ data, rect }) => ({
 function Timeline({ items }) {
   const containerRef = useRef();
 
-  const data = items[0].edges.map((item) => item.node);
+  const data = items.map((item) => item.node);
 
   const [size, setSize] = useState(calculatesize({ data }));
 
@@ -205,7 +205,7 @@ function Timeline({ items }) {
   }, [containerRef]);
 
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} style={{ height: `${size.height}px` }}>
       <svg width="100%" viewBox={`0 0 ${size.width} ${size.height}`}>
         <AxisLeft data={data} yScale={yScale} margin={margin} size={size} />
         <Reports data={data} yScale={yScale} yValue={yValue} margin={margin} size={size} />
