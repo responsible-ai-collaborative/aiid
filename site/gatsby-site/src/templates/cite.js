@@ -1,89 +1,62 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Helmet from 'react-helmet';
-
-import { Button, Container, Row } from 'react-bootstrap';
-
+import { Button, Col, Container, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
-import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
+import { StyledHeading } from 'components/styles/Docs';
 import Citation from 'components/Citation';
 import ImageCarousel from 'components/ImageCarousel';
 import BibTex from 'components/BibTex';
-
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
-
-import { IncidentStatsCard, IncidentCard, NoResults } from '../../src/components/IncidentCards';
 import styled from 'styled-components';
 import { isAfter, isEqual } from 'date-fns';
 import { useModal, CustomModal } from '../../src/components/useModal';
 import TaxonomyForm from '../components/TaxonomyForm';
 import Timeline from 'components/Timeline';
-
-const HitsContainer = styled.div`
-  display: grid;
-  max-width: 100%;
-  grid-gap: 13px;
-  grid-template-columns: 1fr 1fr;
-
-  @media (max-width: 1740px) {
-    grid-template-columns: auto;
-  }
-`;
-
-const CiteStyledMainWrapper = styled(StyledMainWrapper)`
-  max-width: 100% !important;
-`;
+import IncidentStatsCard from 'components/cite/IncidentStatsCard';
+import IncidentCard from 'components/cite/IncidentCard';
 
 const CardContainer = styled.div`
-  width: 100%;
   border: 1.5px solid #d9deee;
   border-radius: 5px;
   box-shadow: 0 2px 5px 0px #e3e5ec;
-  display: flex;
-  flex-direction: column;
-  padding-right: 0;
-  padding-left: 0;
   h4 {
     margin: 0 !important;
   }
 `;
 
 const StatsContainer = styled.div`
-  width: 100%;
-  margin-top: 1.5rem;
-  padding-right: 0;
-  padding-left: 0;
   h4 {
     margin: 0 !important;
   }
 `;
 
 const IncidnetsReportsTitle = styled.div`
-  margin-top: 4em;
   padding-bottom: 20px;
 `;
 
-const IncidentCite = ({ ...props }) => {
-  if (!props?.pageContext?.incidentReports) {
-    return null;
-  }
+const sortIncidentsByDatePublished = (incidentReports) => {
+  return incidentReports.sort((a, b) => {
+    const dateA = new Date(a.node.date_published);
+
+    const dateB = new Date(b.node.date_published);
+
+    if (isEqual(dateA, dateB)) {
+      return 0;
+    }
+    if (isAfter(dateA, dateB)) {
+      return 1;
+    }
+    if (isAfter(dateB, dateA)) {
+      return -1;
+    }
+  })
+};
+
+function CitePage(props) {
 
   const {
     pageContext: { incidentReports, taxonomies },
   } = props;
-
-  const scrollToIncidentCard = () => {
-    if (props.location?.hash) {
-      const incidentCard = document.getElementById(props.location?.hash?.split('#')[1]);
-
-      incidentCard.scrollIntoView();
-    }
-  };
-
-  useEffect(() => {
-    if (props.location?.hash?.split('#')[1]) {
-      scrollToIncidentCard();
-    }
-  }, []);
 
   // meta tags
   const incident_id = incidentReports[0].node.incident_id;
@@ -94,92 +67,18 @@ const IncidentCite = ({ ...props }) => {
 
   const canonicalUrl = getCanonicalUrl(incident_id);
 
-  const sortIncidentsByDatePublished = (incidentReports) => {
-    return [
-      {
-        edges: incidentReports.sort((a, b) => {
-          const dateA = new Date(a.node.date_published);
+  const sortedReports = sortIncidentsByDatePublished(incidentReports);
 
-          const dateB = new Date(b.node.date_published);
+  const authorsModal = useModal();
 
-          if (isEqual(dateA, dateB)) {
-            return 0;
-          }
-          if (isAfter(dateA, dateB)) {
-            return 1;
-          }
-          if (isAfter(dateB, dateA)) {
-            return -1;
-          }
-        }),
-      },
-    ];
-  };
+  const submittersModal = useModal();
 
-  const sortedGroup = sortIncidentsByDatePublished(incidentReports);
+  const flagReportModal = useModal();
 
   const stats = {
     incidentId: incident_id,
     reportCount: incidentReports.length,
     incidentDate: incidentReports[0].node.incident_date,
-  };
-
-  const sortByDatePublished = (nodes) => {
-    const sortedHits = nodes.sort((a, b) => {
-      const dateA = new Date(a.node.date_published);
-
-      const dateB = new Date(b.node.date_published);
-
-      if (isEqual(dateA, dateB)) {
-        return 0;
-      }
-      if (isAfter(dateA, dateB)) {
-        return 1;
-      }
-      if (isAfter(dateB, dateA)) {
-        return -1;
-      }
-    });
-
-    return sortedHits;
-  };
-
-  const RenderIncidentCards = ({ nodes }) => {
-    const sortedHits = sortByDatePublished(nodes);
-
-    const authorsModal = useModal();
-
-    const submittersModal = useModal();
-
-    const flagReportModal = useModal();
-
-    if (sortedHits.length === 0) {
-      return (
-        <NoResults>
-          <p>Your search returned no results.</p>
-          <p>Please clear your search in the search box above or the filters.</p>
-        </NoResults>
-      );
-    }
-
-    return (
-      <>
-        {sortedHits.map((hit) => (
-          <IncidentCard
-            key={hit.node.id}
-            item={hit.node}
-            authorsModal={authorsModal}
-            submittersModal={submittersModal}
-            flagReportModal={flagReportModal}
-            showDetails={true}
-            isCitePage={true}
-          />
-        ))}
-        <CustomModal {...authorsModal} />
-        <CustomModal {...submittersModal} />
-        <CustomModal {...flagReportModal} />
-      </>
-    );
   };
 
   return (
@@ -194,12 +93,15 @@ const IncidentCite = ({ ...props }) => {
         {metaDescription ? <meta property="twitter:description" content={metaDescription} /> : null}
         <link rel="canonical" href={canonicalUrl} />
       </Helmet>
+
       <div className={'titleWrapper'}>
         <StyledHeading>{metaDescription}</StyledHeading>
       </div>
-      <CiteStyledMainWrapper>
-        <Container>
-          <Row>
+
+      <Container>
+
+        <Row>
+          <Col>
             <CardContainer className="card">
               <div className="card-header">
                 <h4>Suggested citation format</h4>
@@ -208,23 +110,32 @@ const IncidentCite = ({ ...props }) => {
                 <Citation nodes={incidentReports} incident_id={incident_id} />
               </div>
             </CardContainer>
-          </Row>
-          <Row className="mb-4">
+          </Col>
+        </Row>
+
+        <Row className="mt-4">
+          <Col>
             <StatsContainer>
               <IncidentStatsCard {...stats} />
             </StatsContainer>
-          </Row>
-          <Row className="mb-4">
+          </Col>
+        </Row>
+
+        <Row className="mt-4">
+          <Col>
             <CardContainer className="card">
               <div className="card-header">
                 <h4>Reports Timeline</h4>
               </div>
               <div className="card-body">
-                <Timeline items={sortedGroup} />
+                <Timeline items={sortedReports} />
               </div>
             </CardContainer>
-          </Row>
-          <Row className="mb-4">
+          </Col>
+        </Row>
+
+        <Row className="mt-4">
+          <Col>
             <CardContainer className="card">
               <div className="card-header">
                 <h4>Tools</h4>
@@ -243,32 +154,60 @@ const IncidentCite = ({ ...props }) => {
                 <BibTex nodes={incidentReports} incident_id={incident_id} />
               </div>
             </CardContainer>
+          </Col>
+        </Row>
+
+        {taxonomies.length > 0 &&
+          <Row className="mt-4">
+            <Col>
+              <div id="taxa-area">
+                {taxonomies.map((t) => (
+                  <TaxonomyForm key={t.namespace} taxonomy={t} incidentId={incident_id} />
+                ))}
+              </div>
+            </Col>
           </Row>
-          <div id="taxa-area">
-            {taxonomies.length > 0 &&
-              taxonomies.map((t) => (
-                <TaxonomyForm key={t.namespace} taxonomy={t} incidentId={incident_id} />
-              ))}
-          </div>
-          <Row className="mb-4">
+        }
+
+        <Row className="mt-4">
+          <Col>
             <CardContainer className="card">
               <ImageCarousel nodes={incidentReports} />
             </CardContainer>
+          </Col>
+        </Row>
+
+        <Row className="mt-4">
+          <Col>
+            <IncidnetsReportsTitle>
+              <div className={'titleWrapper'}>
+                <StyledHeading>Incidents Reports</StyledHeading>
+              </div>
+            </IncidnetsReportsTitle>
+          </Col>
+        </Row>
+
+        {sortedReports.map((hit) => (
+          <Row className="mb-4" key={hit.node.id}>
+            <Col>
+              <IncidentCard
+                item={hit.node}
+                authorsModal={authorsModal}
+                submittersModal={submittersModal}
+                flagReportModal={flagReportModal}
+                showDetails={true}
+              />
+            </Col>
           </Row>
-          <IncidnetsReportsTitle>
-            <div className={'titleWrapper'}>
-              <StyledHeading>Incidents Reports</StyledHeading>
-            </div>
-          </IncidnetsReportsTitle>
-          <Row className="mb-4">
-            <HitsContainer showDetails={true} className="ps-0 pe-0">
-              <RenderIncidentCards nodes={incidentReports} />
-            </HitsContainer>
-          </Row>
-        </Container>
-      </CiteStyledMainWrapper>
+        ))}
+
+        <CustomModal {...authorsModal} />
+        <CustomModal {...submittersModal} />
+        <CustomModal {...flagReportModal} />
+
+      </Container>
     </Layout>
   );
 };
 
-export default IncidentCite;
+export default CitePage;

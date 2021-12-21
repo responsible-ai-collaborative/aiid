@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button, Spinner } from 'react-bootstrap';
 
 const DBConnecting = () => (

@@ -16,7 +16,7 @@ const CarouselImage = styled(Image)`
   width: 100%;
 `;
 
-const RandomIncidentsCarousel = () => {
+const RandomIncidentsCarousel = ({ className }) => {
   const generateRandomIncidents = () => {
     const array = [];
 
@@ -51,7 +51,7 @@ const RandomIncidentsCarousel = () => {
         );
 
         return (
-          <Carousel interval={60000}>
+          <Carousel interval={60000} className={className}>
             {randomIncidents.map(
               ({ node: { id, incident_id, title, image_url, cloudinary_id } }) => (
                 <Carousel.Item key={id}>

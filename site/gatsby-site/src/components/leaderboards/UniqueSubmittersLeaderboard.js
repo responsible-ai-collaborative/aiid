@@ -2,7 +2,7 @@ import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import { Leaderboard } from './Leaderboard';
 
-const UniqueSubmittersLeaderboard = ({ limit }) => {
+const UniqueSubmittersLeaderboard = ({ limit, className }) => {
   const {
     allMongodbAiidprodIncidents: { nodes },
   } = useStaticQuery(graphql`
@@ -48,6 +48,7 @@ const UniqueSubmittersLeaderboard = ({ limit }) => {
         title: 'Distinct Incidents Reported',
       }}
       limit={limit}
+      className={className}
     />
   );
 };

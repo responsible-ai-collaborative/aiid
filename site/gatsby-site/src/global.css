@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Karla:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;700&family=Karla:wght@400;500;700&display=swap');
 
 :root {
   --primary1: #868787;
@@ -30,12 +30,14 @@
 ::placeholder {
   color: #c2c2c2;
 }
-html,
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: 'Karla', sans-serif !important;
-
   font-size: 16px;
-  scroll-behavior: smooth;
 }
 
 a {

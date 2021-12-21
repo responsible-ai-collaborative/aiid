@@ -13,12 +13,6 @@ cloudinary.config({ cloud_name: config.cloudinary.cloudName });
 
 const plugins = [
   {
-    resolve: `gatsby-plugin-layout`,
-    options: {
-      component: require.resolve(`./wrap-with-provider`),
-    },
-  },
-  {
     resolve: `gatsby-plugin-netlify`,
     options: {
       headers: {},
@@ -34,7 +28,6 @@ const plugins = [
   'gatsby-plugin-sitemap',
   `gatsby-transformer-sharp`,
   'gatsby-plugin-sharp',
-  'gatsby-plugin-emotion',
   'gatsby-plugin-react-helmet',
   {
     resolve: 'gatsby-source-filesystem',

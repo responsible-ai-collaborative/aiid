@@ -2,7 +2,7 @@ import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import PostPreview from './PostPreview';
 
-export default function LatestPost() {
+export default function LatestPost({ className }) {
   const {
     allMdx: {
       edges: {
@@ -41,5 +41,5 @@ export default function LatestPost() {
     }
   `);
 
-  return <PostPreview post={post} />;
+  return <PostPreview post={post} className={className} />;
 }
