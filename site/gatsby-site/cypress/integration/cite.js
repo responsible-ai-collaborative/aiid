@@ -5,7 +5,10 @@ describe('Cite pages', () => {
     const url = '/cite/10';
 
     it('Successfully loads', () => {
+
         cy.visit(url);
+
+        cy.disableSmoothScroll()
     });
 
     it('Should scroll to report when comming from the discover app', () => {
@@ -14,14 +17,18 @@ describe('Cite pages', () => {
 
         cy.contains('Show Details on Incident #10').first().click()
 
+        cy.disableSmoothScroll()
+
         cy.wait(1000)
 
-        cy.getWindowScroll().should('be.closeTo', 15761, 20);
+        cy.window().its("scrollY").should('be.closeTo', 15761, 20);
     });
 
     it('Should scroll to report when clicking on a report in the timeline', () => {
 
         cy.visit(url)
+
+        cy.disableSmoothScroll()
 
         cy.get('text')
             .contains('For some Starbucks workers, job leaves bitter taste')
@@ -29,6 +36,6 @@ describe('Cite pages', () => {
 
         cy.wait(1000)
 
-        cy.getWindowScroll().should('be.closeTo', 4946, 20);
+        cy.window().its("scrollY").should('be.closeTo', 4946, 20);
     });
 });
