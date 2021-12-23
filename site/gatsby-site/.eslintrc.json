@@ -7,7 +7,7 @@
     "prettier",
     "prettier/react"
   ],
-  "plugins": ["react", "import", "jsx-a11y"],
+  "plugins": ["react", "import", "jsx-a11y", "cypress"],
   "settings": {
     "react": {
       "version": "detect"
@@ -59,7 +59,8 @@
   "env": {
     "es6": true,
     "browser": true,
-    "node": true
+    "node": true,
+    "cypress/globals": true
   },
   "globals": {
     "graphql": false
