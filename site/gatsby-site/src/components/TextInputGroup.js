@@ -15,9 +15,10 @@ const TextInputGroup = ({
   handleChange,
   handleBlur,
   addOnComponent = null,
+  className = '',
   ...props
 }) => (
-  <Form.Group className="form-group">
+  <Form.Group className={`form-group ${className}`}>
     <Label popover={POP_OVERS[name]} label={label} />
     <InputGroup>
       <Form.Control
