@@ -5,30 +5,35 @@ import { useUserContext } from 'contexts/userContext';
 import config from '../../../config';
 import { NumberParam, useQueryParam } from 'use-query-params';
 
-const getCollection = (user) =>
-  user
-    .mongoClient(config.realm.production_db.db_service)
-    .db(config.realm.production_db.db_name)
-    .collection('incidents');
-
 function EditCitePage(props) {
   const { user } = useUserContext();
 
   const [report, setReport] = useState({});
 
-  const incidents = useRef(getCollection(user)).current;
+  const incidents = useRef();
 
   const [reportNumber] = useQueryParam('reportNumber', NumberParam);
 
   useEffect(() => {
+    if (user) {
+      incidents.current = user
+        .mongoClient(config.realm.production_db.db_service)
+        .db(config.realm.production_db.db_name)
+        .collection('incidents');
+    }
+  }, [user]);
+
+  useEffect(() => {
     async function fetch() {
-      const report = await incidents.findOne({ report_number: reportNumber });
+      const report = await incidents.current.findOne({ report_number: reportNumber });
 
       setReport(report);
     }
 
-    fetch();
-  }, [user]);
+    if (incidents) {
+      fetch();
+    }
+  }, [incidents]);
 
   const handleSubmit = async (values) => {
     if (typeof values.authors === 'string') {
@@ -41,7 +46,7 @@ function EditCitePage(props) {
 
     const updated = { ...values };
 
-    await incidents.updateOne({ report_number: reportNumber }, updated, { upsert: false });
+    await incidents.current.updateOne({ report_number: reportNumber }, updated, { upsert: false });
   };
 
   return (
