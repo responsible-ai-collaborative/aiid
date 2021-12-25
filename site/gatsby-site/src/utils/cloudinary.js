@@ -49,6 +49,7 @@ const PreviewImageInputGroup = ({
   touched,
   handleChange,
   handleBlur,
+  className = '',
 }) => {
   const [cloudinaryID, setCloudinaryID] = useState(cloudinary_id);
 
@@ -62,6 +63,7 @@ const PreviewImageInputGroup = ({
         errors={errors}
         touched={touched}
         handleChange={handleChange}
+        className={className}
         handleBlur={(e) => {
           try {
             const url = new URL(e.target.value);
