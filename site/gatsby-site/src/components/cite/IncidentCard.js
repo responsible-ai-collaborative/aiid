@@ -98,7 +98,7 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal, sh
           <a href={`#r${item.mongodb_id}`}>
             <span>{item.title}</span>
           </a>
-          {isAdmin && <a href={`/cite/edit?id=${item.mongodb_id}`}>edit</a>}
+          {isAdmin && <a href={`/cite/edit?reportNumber=${item.report_number}`}>edit</a>}
         </div>
         <p className="subhead">
           {item.source_domain} &middot;{' '}
