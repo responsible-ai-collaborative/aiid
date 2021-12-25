@@ -5,11 +5,12 @@ import { useUserContext } from 'contexts/userContext';
 import config from '../../../config';
 import { NumberParam, useQueryParam } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { Spinner } from 'react-bootstrap';
 
 function EditCitePage(props) {
   const { user } = useUserContext();
 
-  const [report, setReport] = useState({});
+  const [report, setReport] = useState();
 
   const incidents = useRef();
 
@@ -69,7 +70,15 @@ function EditCitePage(props) {
   return (
     <Layout {...props} className={'w-100'}>
       <h1 className="mb-5">Editing Incident Report {reportNumber}</h1>
-      <IncidentReportForm incident={report} onUpdate={setReport} onSubmit={handleSubmit} />
+
+      {report === undefined && (
+        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+      )}
+      {report === null && <div>Report not found</div>}
+
+      {report && (
+        <IncidentReportForm incident={report} onUpdate={setReport} onSubmit={handleSubmit} />
+      )}
     </Layout>
   );
 }
