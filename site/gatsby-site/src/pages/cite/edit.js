@@ -4,6 +4,7 @@ import IncidentReportForm from 'components/forms/IncidentReportForm';
 import { useUserContext } from 'contexts/userContext';
 import config from '../../../config';
 import { NumberParam, useQueryParam } from 'use-query-params';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
 function EditCitePage(props) {
   const { user } = useUserContext();
@@ -13,6 +14,8 @@ function EditCitePage(props) {
   const incidents = useRef();
 
   const [reportNumber] = useQueryParam('reportNumber', NumberParam);
+
+  const addToast = useToastContext();
 
   useEffect(() => {
     if (user) {
@@ -36,17 +39,31 @@ function EditCitePage(props) {
   }, [incidents]);
 
   const handleSubmit = async (values) => {
-    if (typeof values.authors === 'string') {
-      values.authors = values.authors.split(',').map((s) => s.trim());
+    try {
+      if (typeof values.authors === 'string') {
+        values.authors = values.authors.split(',').map((s) => s.trim());
+      }
+
+      if (typeof values.submitters === 'string') {
+        values.submitters = values.submitters.split(',').map((s) => s.trim());
+      }
+
+      const updated = { ...values };
+
+      await incidents.current.updateOne({ report_number: reportNumber }, updated, {
+        upsert: false,
+      });
+
+      addToast({
+        message: `Incident report ${reportNumber} updated succesfully.`,
+        severity: SEVERITY.success,
+      });
+    } catch (e) {
+      addToast({
+        message: `Error updating incident report ${reportNumber}`,
+        severity: SEVERITY.danger,
+      });
     }
-
-    if (typeof values.submitters === 'string') {
-      values.submitters = values.submitters.split(',').map((s) => s.trim());
-    }
-
-    const updated = { ...values };
-
-    await incidents.current.updateOne({ report_number: reportNumber }, updated, { upsert: false });
   };
 
   return (
