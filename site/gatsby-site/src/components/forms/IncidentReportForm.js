@@ -210,36 +210,42 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         name="title"
         label="Title :"
         placeholder="Report title"
+        className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="authors"
         label="Author CSV :"
         placeholder="Author CSV"
+        className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="submitters"
         label="Submitter CSV :"
         placeholder="Submitter CSV"
+        className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="incident_date"
         label="Incident Date :"
         placeholder="YYYY-MM-DD"
+        className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="date_published"
         label="Date Published :"
         placeholder="YYYY-MM-DD"
+        className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="date_downloaded"
         label="Date Downloaded :"
         placeholder="YYYY-MM-DD"
+        className="mt-3"
         {...TextInputGroupProps}
       />
       <PreviewImageInputGroup
@@ -247,6 +253,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         name="image_url"
         label="Image Address :"
         placeholder="Image URL"
+        className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
@@ -254,6 +261,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         label="Incident ID :"
         placeholder="OPTIONAL"
         type="number"
+        className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
@@ -262,16 +270,22 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         placeholder="Text of the report"
         as="textarea"
         rows={8}
+        className="mt-3"
         {...TextInputGroupProps}
       />
       {!isEditMode && (
-        <p>
+        <p className="mt-3">
           Submitted reports are added to a <Link to="/apps/submitted">review queue </Link>
           to be resolved to a new or existing incident record. Incidents are reviewed and merged
           into the database after enough incidents are pending.
         </p>
       )}
-      <Button variant="primary" type="submit" disabled={(touched && !isValid) || isSubmitting}>
+      <Button
+        className="mt-3"
+        variant="primary"
+        type="submit"
+        disabled={(touched && !isValid) || isSubmitting}
+      >
         Submit
       </Button>
     </Form>
