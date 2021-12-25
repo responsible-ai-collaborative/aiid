@@ -82,7 +82,7 @@ const PreviewImageInputGroup = ({
           handleBlur(e);
         }}
       />
-      <PreviewImage publicID={cloudinaryID} />
+      <PreviewImage className={'mt-3'} publicID={cloudinaryID} />
     </>
   );
 };
