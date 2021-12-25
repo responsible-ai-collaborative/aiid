@@ -108,9 +108,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
 
   useEffect(() => {
     values['cloudinary_id'] =
-      typeof values['image_url'] === 'string'
-        ? getCloudinaryPublicID(values['image_url'], 'pai', 'reports')
-        : '';
+      typeof values['image_url'] === 'string' ? getCloudinaryPublicID(values['image_url']) : '';
     onUpdate && onUpdate(values);
   }, [values]);
 
