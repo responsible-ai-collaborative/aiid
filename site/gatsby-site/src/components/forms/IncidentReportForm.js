@@ -170,7 +170,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
     } catch (e) {
       const message =
         e.message == 'Parser error'
-          ? `Error fetching news from ${newsUrl}, you'll have to enter the text manually.`
+          ? `Error fetching news. Scraping was blocked by ${newsUrl}, Please enter the text manually.`
           : `Error reaching news info endpoint, please try again in a few seconds.`;
 
       addToast({

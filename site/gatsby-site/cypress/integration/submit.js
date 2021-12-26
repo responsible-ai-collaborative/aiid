@@ -57,13 +57,14 @@ describe('The Submit form', () => {
   });
 
   it('Should show a toast on error when attempting to parse an "unparsable" article', () => {
+    const errorNewsURL =
+      'https://www.cnn.com/2021/11/09/tech/zillow-ibuying-home-zestimate/index.html';
+
     cy.visit(url);
 
     cy.intercept('GET', parserURL).as('parseNews');
 
-    cy.get('input[name="url"]').type(
-      `https://www.cnn.com/2021/11/09/tech/zillow-ibuying-home-zestimate/index.html`
-    );
+    cy.get('input[name="url"]').type(errorNewsURL);
 
     cy.get('button').contains('Fetch info').click();
 
@@ -71,7 +72,7 @@ describe('The Submit form', () => {
 
     cy.get('div[class^="ToastContext"]')
       .contains(
-        "Error fetching news from https://www.cnn.com/2021/11/09/tech/zillow-ibuying-home-zestimate/index.html, you'll have to enter the text manually."
+        `Error fetching news. Scraping was blocked by ${errorNewsURL}, Please enter the text manually.`
       )
       .should('exist');
   });
@@ -81,9 +82,7 @@ describe('The Submit form', () => {
 
     cy.intercept('GET', parserURL, { forceNetworkError: true }).as('parseNews');
 
-    cy.get('input[name="url"]').type(
-      `https://www.cnn.com/2021/11/09/tech/zillow-ibuying-home-zestimate/index.html`
-    );
+    cy.get('input[name="url"]').type(articleURL);
 
     cy.get('button').contains('Fetch info').click();
 
