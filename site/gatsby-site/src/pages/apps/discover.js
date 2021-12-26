@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { QueryParams, useQueryParams } from 'use-query-params';
+import { useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { InstantSearch } from 'react-instantsearch-dom';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
@@ -229,43 +229,40 @@ function DiscoverApp(props) {
         <title>Artificial Intelligence Incident Database</title>
       </Helmet>
       <SearchContext.Provider value={{ searchState, indexName, searchClient, onSearchStateChange }}>
-        <QueryParams config={queryConfig}>
-          {() => (
-            <InstantSearch
-              indexName={indexName}
-              searchClient={searchClient}
-              searchState={searchState}
-              onSearchStateChange={onSearchStateChange}
-            >
-              <VirtualFilters />
-              <Container className="container-xl mt-4">
-                <Row>
-                  <Col>
-                    <SearchBox defaultRefinement={query.s} />
-                  </Col>
-                  <Col className="col-auto">
-                    <LanguageSwitcher />
-                  </Col>
-                </Row>
-                <Filters />
-                <FiltersModal />
-              </Container>
+        <InstantSearch
+          indexName={indexName}
+          searchClient={searchClient}
+          searchState={searchState}
+          onSearchStateChange={onSearchStateChange}
+        >
+          <VirtualFilters />
 
-              <Hits
-                toggleFilterByIncidentId={toggleFilterByIncidentId}
-                authorsModal={authorsModal}
-                submittersModal={submittersModal}
-                flagReportModal={flagReportModal}
-              />
+          <Container className="container-xl mt-4">
+            <Row>
+              <Col>
+                <SearchBox defaultRefinement={query.s} />
+              </Col>
+              <Col className="col-auto">
+                <LanguageSwitcher />
+              </Col>
+            </Row>
+            <Filters />
+            <FiltersModal />
+          </Container>
 
-              <CustomModal {...authorsModal} />
-              <CustomModal {...submittersModal} />
-              <CustomModal {...flagReportModal} />
+          <Hits
+            toggleFilterByIncidentId={toggleFilterByIncidentId}
+            authorsModal={authorsModal}
+            submittersModal={submittersModal}
+            flagReportModal={flagReportModal}
+          />
 
-              <Pagination />
-            </InstantSearch>
-          )}
-        </QueryParams>
+          <CustomModal {...authorsModal} />
+          <CustomModal {...submittersModal} />
+          <CustomModal {...flagReportModal} />
+
+          <Pagination />
+        </InstantSearch>
       </SearchContext.Provider>
     </LayoutHideSidebar>
   );

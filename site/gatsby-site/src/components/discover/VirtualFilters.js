@@ -16,6 +16,15 @@ const componentsMap = {
 
 // SEE: https://github.com/algolia/react-instantsearch/issues/302
 
+const defaultRefinement = (type) => {
+  switch (type) {
+    case 'refinement':
+      return [];
+    default:
+      return {};
+  }
+};
+
 export default function VirtualFilters() {
   const { searchState } = useSearch();
 
@@ -30,7 +39,9 @@ export default function VirtualFilters() {
           <Component
             key={list.attribute}
             attribute={list.attribute}
-            defaultRefinement={searchState.refinementList[list.attribute] || []}
+            defaultRefinement={
+              searchState.refinementList[list.attribute] || defaultRefinement(list.type)
+            }
           />
         );
       })}
