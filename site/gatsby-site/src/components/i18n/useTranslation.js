@@ -1,5 +1,7 @@
-import React, { useContext } from 'react';
+import { LanguageEnumParam } from 'components/discover/queryParams';
+import React, { useContext, useEffect } from 'react';
 import { useState } from 'react';
+import { useQueryParam } from 'use-query-params';
 import { getLanguages } from './languages';
 
 const LanguageContext = React.createContext({
@@ -17,7 +19,13 @@ function useTranslation() {
 function LanguageProvider({ children }) {
   const [languages] = useState(getLanguages());
 
-  const [language, setLanguage] = useState(languages.find((l) => l.code == 'en'));
+  const [lang, setLang] = useQueryParam('lang', LanguageEnumParam);
+
+  const [language, setLanguage] = useState(languages.find((l) => l.code == lang));
+
+  useEffect(() => {
+    setLang(language.code);
+  }, [language]);
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, languages }}>

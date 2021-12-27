@@ -208,9 +208,9 @@ function DiscoverApp(props) {
   useEffect(() => {
     const searchQuery = getQueryFromState(searchState);
 
-    const viewQuery = { display: query.display };
+    const extraQuery = { display: query.display, lang: query.lang };
 
-    setQuery({ ...searchQuery, ...viewQuery }, 'push');
+    setQuery({ ...searchQuery, ...extraQuery }, 'push');
   }, [searchState]);
 
   useEffect(() => {
