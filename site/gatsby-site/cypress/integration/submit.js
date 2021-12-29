@@ -10,6 +10,8 @@ describe('The Submit form', () => {
   });
 
   it('Should fetch an article data and fill forms accordingly', () => {
+    cy.visit(url);
+
     cy.intercept('GET', parserURL).as('parseNews');
 
     cy.get('input[name="url"]').type(articleURL);
@@ -33,6 +35,8 @@ describe('The Submit form', () => {
   });
 
   it('Should fetch an article data and fill forms accordingly', () => {
+    cy.visit(url);
+
     cy.intercept('GET', parserURL).as('parseNews');
 
     cy.get('input[name="url"]').type(articleURL);
@@ -49,6 +53,43 @@ describe('The Submit form', () => {
 
     cy.get('div[class^="ToastContext"]')
       .contains('Report successfully added to review queue')
+      .should('exist');
+  });
+
+  it('Should show a toast on error when attempting to parse an "unparsable" article', () => {
+    const errorNewsURL =
+      'https://www.cnn.com/2021/11/09/tech/zillow-ibuying-home-zestimate/index.html';
+
+    cy.visit(url);
+
+    cy.intercept('GET', parserURL).as('parseNews');
+
+    cy.get('input[name="url"]').type(errorNewsURL);
+
+    cy.get('button').contains('Fetch info').click();
+
+    cy.wait('@parseNews', { timeout: 30000 });
+
+    cy.get('div[class^="ToastContext"]')
+      .contains(
+        `Error fetching news. Scraping was blocked by ${errorNewsURL}, Please enter the text manually.`
+      )
+      .should('exist');
+  });
+
+  it('Should show a toast on error when failing to reach parsing endpoint', () => {
+    cy.visit(url);
+
+    cy.intercept('GET', parserURL, { forceNetworkError: true }).as('parseNews');
+
+    cy.get('input[name="url"]').type(articleURL);
+
+    cy.get('button').contains('Fetch info').click();
+
+    cy.wait('@parseNews', { timeout: 30000 });
+
+    cy.get('div[class^="ToastContext"]')
+      .contains('Error reaching news info endpoint, please try again in a few seconds.')
       .should('exist');
   });
 });

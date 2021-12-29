@@ -32,9 +32,6 @@ const CloseButton = styled(Button)`
 `;
 
 const ToastBodyContent = styled.div`
-  overflow: hidden;
-  white-space: nowrap;
-
   svg {
     margin-right: 0.5em;
   }
