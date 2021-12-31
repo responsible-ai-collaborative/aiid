@@ -55,6 +55,7 @@
     "gatsby-transformer-sharp": "^4.3.0",
     "graphql": "^15.8.0",
     "is-absolute-url": "^3.0.3",
+    "isomorphic-fetch": "^3.0.0",
     "lodash.flatten": "^4.4.0",
     "lodash.startcase": "^4.4.0",
     "md5": "^2.3.0",

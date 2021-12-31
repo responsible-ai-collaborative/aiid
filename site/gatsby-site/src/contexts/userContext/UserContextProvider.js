@@ -4,6 +4,7 @@ import { realmApp } from 'services/realmApp';
 import { UserContext } from './UserContext';
 import { ApolloProvider, ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import config from '../../../config';
+import fetch from 'isomorphic-fetch';
 
 // https://github.com/mongodb-university/realm-graphql-apollo-react/blob/master/src/index.js
 
