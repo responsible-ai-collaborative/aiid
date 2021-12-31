@@ -1,43 +1,30 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from 'components/Layout';
 import IncidentReportForm from 'components/forms/IncidentReportForm';
-import { useUserContext } from 'contexts/userContext';
-import config from '../../../config';
 import { NumberParam, useQueryParam } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Spinner } from 'react-bootstrap';
+import { FIND_REPORT, UPDATE_REPORT } from '../../graphql/reports';
+import { useMutation, useQuery } from '@apollo/client/react/hooks';
 
 function EditCitePage(props) {
-  const { user } = useUserContext();
-
   const [report, setReport] = useState();
 
-  const incidents = useRef();
-
   const [reportNumber] = useQueryParam('reportNumber', NumberParam);
+
+  const { data: reportData } = useQuery(FIND_REPORT, {
+    variables: { query: { report_number: reportNumber } },
+  });
+
+  const [updateReport] = useMutation(UPDATE_REPORT);
 
   const addToast = useToastContext();
 
   useEffect(() => {
-    if (user) {
-      incidents.current = user
-        .mongoClient(config.realm.production_db.db_service)
-        .db(config.realm.production_db.db_name)
-        .collection('incidents');
+    if (reportData) {
+      setReport({ ...reportData.incident });
     }
-  }, [user]);
-
-  useEffect(() => {
-    async function fetch() {
-      const report = await incidents.current.findOne({ report_number: reportNumber });
-
-      setReport(report);
-    }
-
-    if (incidents) {
-      fetch();
-    }
-  }, [incidents]);
+  }, [reportData]);
 
   const handleSubmit = async (values) => {
     try {
@@ -49,14 +36,21 @@ function EditCitePage(props) {
         values.submitters = values.submitters.split(',').map((s) => s.trim());
       }
 
-      const updated = { ...values };
+      const updated = { ...values, __typename: undefined };
 
-      await incidents.current.updateOne({ report_number: reportNumber }, updated, {
-        upsert: false,
+      await updateReport({
+        variables: {
+          query: {
+            report_number: reportNumber,
+          },
+          set: {
+            ...updated,
+          },
+        },
       });
 
       addToast({
-        message: `Incident report ${reportNumber} updated succesfully.`,
+        message: `Incident report ${reportNumber} updated successfully.`,
         severity: SEVERITY.success,
       });
     } catch (e) {
