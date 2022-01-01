@@ -89,7 +89,7 @@ const getFlagModalContent = () => (
 );
 
 const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal, showDetails }) => {
-  const { isAdmin } = useUserContext();
+  const { isRole } = useUserContext();
 
   return (
     <IncidentCardContainer id={`r${item.mongodb_id}`}>
@@ -98,7 +98,9 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal, sh
           <a href={`#r${item.mongodb_id}`}>
             <span>{item.title}</span>
           </a>
-          {isAdmin && <a href={`/cite/edit?reportNumber=${item.report_number}`}>edit</a>}
+          {isRole('incident_editor') && (
+            <a href={`/cite/edit?reportNumber=${item.report_number}`}>edit</a>
+          )}
         </div>
         <p className="subhead">
           {item.source_domain} &middot;{' '}
