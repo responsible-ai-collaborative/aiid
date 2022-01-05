@@ -87,7 +87,7 @@ const getClassifications = async () => {
 };
 
 const getIncidents = async ({ language }) => {
-  const reports = await client.db('aiidprod').collection(`incident_reports`).find({}).toArray();
+  const reports = await client.db('aiidprod').collection(`incidents`).find({}).toArray();
 
   const translations = await client
     .db('translations')

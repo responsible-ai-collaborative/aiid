@@ -99,7 +99,7 @@ async function run({ reporter }) {
   try {
     await client.connect();
 
-    const incidents = await client.db('aiidprod').collection(`incident_reports`).find({}).toArray();
+    const incidents = await client.db('aiidprod').collection(`incidents`).find({}).toArray();
 
     const concurrency = 10;
 
