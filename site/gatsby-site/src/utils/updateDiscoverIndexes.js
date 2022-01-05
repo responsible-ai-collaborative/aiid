@@ -87,7 +87,20 @@ const getClassifications = async () => {
 };
 
 const getIncidents = async ({ language }) => {
-  return client.db('translations').collection(`incidents-${language}`).find({}).toArray();
+  const reports = await client.db('aiidprod').collection(`incident_reports`).find({}).toArray();
+
+  const translations = await client
+    .db('translations')
+    .collection(`incident_reports_${language}`)
+    .find({})
+    .toArray();
+
+  const fullReports = reports.map((report) => ({
+    ...report,
+    ...translations.find((t) => t.report_number === report.report_number),
+  }));
+
+  return fullReports;
 };
 
 const uploadToAlgolia = async ({ language, entries }) => {

@@ -1,5 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
 
+const lodash = require('lodash');
+
 const { queue } = require('async');
 
 const config = require('../../config');
@@ -47,7 +49,7 @@ async function translateIncidentCollection({ items, to }) {
 async function getTranslatedIncidents({ items, language }) {
   const originalIds = items.map((item) => item.report_number);
 
-  const incidents = client.db('translations').collection(`incidents-${language}`);
+  const incidents = client.db('translations').collection(`incident_reports_${language}`);
 
   const query = {
     report_number: { $in: originalIds },
@@ -60,9 +62,13 @@ async function getTranslatedIncidents({ items, language }) {
 }
 
 async function saveIncidents({ items, language }) {
-  const incidents = client.db('translations').collection(`incidents-${language}`);
+  const incidents = client.db('translations').collection(`incident_reports_${language}`);
 
-  return incidents.insertMany(items);
+  const fields = [...keys, 'report_number'];
+
+  const translated = items.map((item) => lodash.pick(item, fields));
+
+  return incidents.insertMany(translated);
 }
 
 async function translateIncident({ entry, to }) {
@@ -93,7 +99,7 @@ async function run({ reporter }) {
   try {
     await client.connect();
 
-    const incidents = await client.db('aiidprod').collection(`incidents`).find({}).toArray();
+    const incidents = await client.db('aiidprod').collection(`incident_reports`).find({}).toArray();
 
     const concurrency = 10;
 

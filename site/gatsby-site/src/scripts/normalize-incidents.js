@@ -1,3 +1,8 @@
+/**
+ * Migrates incidents from the old format to the new normalized format.
+ * Run with `node ./src/scripts/normalize-incidents.js`
+ */
+
 require('dotenv').config();
 
 const lodash = require('lodash');
