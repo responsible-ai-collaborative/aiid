@@ -455,8 +455,6 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
     </Tooltip>
   );
 
-  console.log(taxonomy.namespace);
-
   if (
     !isRole('taxonomy_editor') ||
     !isRole('taxonomy_editor_' + taxonomy.namespace.toLowerCase())
