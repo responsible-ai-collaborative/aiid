@@ -168,21 +168,21 @@ GATSBY_AVAILABLE_LANGUAGES=en,es,it,af
 ```
 -2 Translate each incident report to each language, and save the translated reports to a `translations` database under a collection for each language:
 ```
-translations
-    |-- incidents-en
-    |   |-- report 1 { title, text, ... }
-    |   |-- report n { title, text, ...v}
+translations 
+    |-- incident_reports_en
+    |   |-- { title, text, report_number }
+    |   |-- { title, text, report_number }
     |
-    |--incidents-es
-    |   |-- report 1 { title, text, ... }
-        |-- report n { title, text, ...v}
+    |--incident_report_es
+    |   |-- { title, text, report_number }
+        |-- { title, text, report_number }
 ```
 -3 Generate an Algolia index from each translated collection and upload them to Algolia. Each index has the following naming format:
 ```
 instant_search-{language code}
 ```
 After the first run, the following applies for subsequent runs:
-Translations of report fields load from the existing `translations/incidents-{language}/report n` document, and if not found, then the Translate API is hit.
+Translations of report fields load from the existing `translations/incident_reports_{language}/{doc}` document, and if not found, then the Translate API is hit.
 Algolia indexes are replaced every time the process runs
 
 ### Cost
