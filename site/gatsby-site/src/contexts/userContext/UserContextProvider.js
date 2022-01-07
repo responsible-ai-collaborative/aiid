@@ -90,11 +90,10 @@ export const UserContextProvider = ({ children }) => {
         user,
         isRole(role) {
           return (
-            (user &&
-              user.isLoggedIn &&
-              user.customData.roles &&
-              user.customData.roles.includes('admin')) ||
-            user.customData.roles.includes(role)
+            user &&
+            user.isLoggedIn &&
+            user.customData.roles &&
+            (user.customData.roles.includes('admin') || user.customData.roles.includes(role))
           );
         },
         isAdmin:
