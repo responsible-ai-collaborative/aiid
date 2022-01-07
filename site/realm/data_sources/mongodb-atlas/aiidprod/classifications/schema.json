@@ -16,10 +16,10 @@
                     "bsonType": "string"
                 },
                 "AI Techniques": {
-                  "bsonType": "array",
-                  "items": {
-                      "bsonType": "string"
-                  }
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
                 },
                 "Annotation Status": {
                     "bsonType": "string"
@@ -31,10 +31,10 @@
                     "bsonType": "string"
                 },
                 "Data Inputs": {
-                  "bsonType": "array",
-                  "items": {
-                      "bsonType": "string"
-                  }
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
                 },
                 "Ending Date": {
                     "bsonType": "string"
@@ -124,10 +124,10 @@
                     "bsonType": "string"
                 },
                 "Sector of Deployment": {
-                  "bsonType": "array",
-                  "items": {
-                      "bsonType": "string"
-                  }
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
                 },
                 "Severity": {
                     "bsonType": "string"
@@ -136,10 +136,10 @@
                     "bsonType": "string"
                 },
                 "System Developer": {
-                  "bsonType": "array",
-                  "items": {
-                      "bsonType": "string"
-                  }
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
                 },
                 "Technology Purveyor": {
                     "bsonType": "array",

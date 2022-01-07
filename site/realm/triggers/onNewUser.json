@@ -7,6 +7,12 @@
             "local-userpass"
         ]
     },
-    "function_name": "onNewUser",
-    "disabled": false
+    "disabled": false,
+    "event_processors": {
+        "FUNCTION": {
+            "config": {
+                "function_name": "onNewUser"
+            }
+        }
+    }
 }
