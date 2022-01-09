@@ -55,7 +55,11 @@ The site is hosted by [Netlify](https://www.netlify.com/) and is integrated into
 
 ### MongoDB Database
 
-See [mongo.md](mongo.md)
+See [mongo.md](mongo.md).
+
+### JSON API
+
+The database has an experimental JSON API added to support visualizations built on [observablehq.com](https://observablehq.com/). Please [contact us](https://incidentdatabase.ai/contact) to let us know you are using this API since we will maintain the integration point and list your visualizations on the website.
 
 ### Algolia
 
