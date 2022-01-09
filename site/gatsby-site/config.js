@@ -86,6 +86,9 @@ const config = {
     connectionString: process.env.MONGODB_CONNECTION_STRING,
     replicaSet: process.env.MONGODB_REPLICA_SET,
   },
+  google: {
+    mapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+  },
 };
 
 module.exports = config;

@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 const StatsContainer = styled.div`
   display: grid;
@@ -22,50 +22,50 @@ const IncidentCardContainer = styled.div`
 `;
 
 const IncidentStatsCard = ({ incidentId, reportCount, incidentDate }) => {
-    const STATS = [
-        {
-            key: 'incidentId',
-            label: 'Incident ID',
-        },
-        {
-            key: 'reportCount',
-            label: 'Report Count',
-        },
-        {
-            key: 'incidentDate',
-            label: 'Incident Date',
-        },
-    ];
+  const STATS = [
+    {
+      key: 'incidentId',
+      label: 'Incident ID',
+    },
+    {
+      key: 'reportCount',
+      label: 'Report Count',
+    },
+    {
+      key: 'incidentDate',
+      label: 'Incident Date',
+    },
+  ];
 
-    if (reportCount === 0) {
-        return null;
-    }
+  if (reportCount === 0) {
+    return null;
+  }
 
-    const stats = {
-        incidentId,
-        reportCount,
-        incidentDate,
-    };
+  const stats = {
+    incidentId,
+    reportCount,
+    incidentDate,
+  };
 
-    return (
-        <IncidentCardContainer className="card">
-            <div className="card-header">
-                <h4>Incident Stats</h4>
-            </div>
-            <StatsContainer className="card-body">
-                <div>
-                    {STATS.map((stat) => (
-                        <div key={stat.key}>{stat.label}</div>
-                    ))}
-                </div>
-                <div>
-                    {STATS.map((stat) => (
-                        <div key={stat.key}>{stats[stat.key]}</div>
-                    ))}
-                </div>
-            </StatsContainer>
-        </IncidentCardContainer>
-    );
+  return (
+    <IncidentCardContainer className="card">
+      <div className="card-header">
+        <h4>Incident Stats</h4>
+      </div>
+      <StatsContainer className="card-body">
+        <div>
+          {STATS.map((stat) => (
+            <div key={stat.key}>{stat.label}</div>
+          ))}
+        </div>
+        <div>
+          {STATS.map((stat) => (
+            <div key={stat.key}>{stats[stat.key]}</div>
+          ))}
+        </div>
+      </StatsContainer>
+    </IncidentCardContainer>
+  );
 };
 
 export default IncidentStatsCard;
