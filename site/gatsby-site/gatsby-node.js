@@ -130,16 +130,19 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
 
     if (config.google.mapsApiKey) {
       try {
-        const {
-          data: {
-            results: { 0: geometry },
-          },
-        } = await googleMapsApiClient.geocode({
-          params: { key: config.google.mapsApiKey, address: node.classifications.Location },
-        });
+        if (node.classifications.Location && node.classifications.Location !== '') {
+          const {
+            data: {
+              results: { 0: geometry },
+            },
+          } = await googleMapsApiClient.geocode({
+            params: { key: config.google.mapsApiKey, address: node.classifications.Location },
+          });
 
-        value = geometry;
+          value = geometry;
+        }
       } catch (e) {
+        console.log(e);
         console.log('Error fetching geocode data for', node.classifications.Location);
       }
     }
