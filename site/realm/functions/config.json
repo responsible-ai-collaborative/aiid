@@ -38,5 +38,13 @@
     {
         "name": "quickAdd",
         "private": false
+    },
+    {
+        "name": "getIncidentReports",
+        "private": false
+    },
+    {
+        "name": "getIncidentClassifications",
+        "private": false
     }
 ]
