@@ -14,6 +14,7 @@
         "type": "local-userpass",
         "config": {
             "autoConfirm": true,
+            "confirmationFunctionName": "confirmUser",
             "resetPasswordSubject": "",
             "resetPasswordUrl": "https://incidentdatabase.ai/resetpassword",
             "runConfirmationFunction": false,

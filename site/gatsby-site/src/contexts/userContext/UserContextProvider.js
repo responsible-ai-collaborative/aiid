@@ -67,6 +67,14 @@ export const UserContextProvider = ({ children }) => {
       value={{
         loading,
         user,
+        isRole(role) {
+          return (
+            user &&
+            user.isLoggedIn &&
+            user.customData.roles &&
+            (user.customData.roles.includes('admin') || user.customData.roles.includes(role))
+          );
+        },
         isAdmin:
           user &&
           user.isLoggedIn &&
