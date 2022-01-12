@@ -27,8 +27,8 @@
         {
             "name": "taxonomy_editor_cset",
             "apply_when": {
-                "%%user.custom_data.roles": "taxonomy_editor_cset",
-                "%%root.namespace": "CSET"
+                "%%root.namespace": "CSET",
+                "%%user.custom_data.roles": "taxonomy_editor_cset"
             },
             "write": true,
             "insert": false,
@@ -39,8 +39,8 @@
         {
             "name": "taxonomy_editor_tech",
             "apply_when": {
-                "%%user.custom_data.roles": "taxonomy_editor_tech",
-                "%%root.namespace": "TECH"
+                "%%root.namespace": "TECH",
+                "%%user.custom_data.roles": "taxonomy_editor_tech"
             },
             "write": true,
             "insert": false,
