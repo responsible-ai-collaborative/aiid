@@ -149,7 +149,11 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
           </Button>
         )}
         {short_name == 'Location' ? (
-          <LocationMap data={data} geocodes={geocodes} className="mt-4 border rounded" />
+          <LocationMap
+            data={{ columns: sortedStatsArray.map((a) => [a.item, a.value]) }}
+            geocodes={geocodes}
+            className="mt-4 border rounded"
+          />
         ) : (
           <BillboardChart data={data} />
         )}
