@@ -5,6 +5,9 @@ export const UserContext = createContext({
   user: undefined,
   isAdmin: undefined,
   isLoggedIn: undefined,
+  isRole() {
+    return false;
+  },
   actions: {
     login: () => {},
     logout: () => {},
