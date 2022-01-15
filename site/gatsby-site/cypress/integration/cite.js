@@ -33,7 +33,7 @@ describe('Cite pages', () => {
     cy.window().its('scrollY').should('be.closeTo', 4946, 200);
   });
 
-  it.only('Should show an edit link to users with the appropriate role', () => {
+  it('Should show an edit link to users with the appropriate role', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const id = 'r5d34b8c29ced494f010ed463';
@@ -45,7 +45,7 @@ describe('Cite pages', () => {
       .should('exist');
   });
 
-  it.only('Should show the taxonomy edit form to users with the appropriate role', () => {
+  it('Should show the taxonomy edit form to users with the appropriate role', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const id = 'r5d34b8c29ced494f010ed463';
