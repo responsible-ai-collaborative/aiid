@@ -34,7 +34,7 @@ describe('The Submit form', () => {
     cy.get('button[type="submit"]').should('be.disabled');
   });
 
-  it('Should fetch an article data and fill forms accordingly', () => {
+  it.skip('Should fetch an article data and fill forms accordingly', () => {
     cy.visit(url);
 
     cy.intercept('GET', parserURL).as('parseNews');
