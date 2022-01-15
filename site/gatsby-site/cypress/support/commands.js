@@ -9,11 +9,15 @@ Cypress.Commands.add('disableSmoothScroll', () => {
 });
 
 Cypress.Commands.add('login', (email, password) => {
+  cy.clearLocalStorage();
+
   cy.visit('/login');
 
   cy.get('input[name=email]').type(email);
 
   cy.get('input[name=password]').type(password);
 
-  return cy.get('form').submit();
+  cy.contains('Login').click();
+
+  return cy.location('pathname').should('eq', '/');
 });

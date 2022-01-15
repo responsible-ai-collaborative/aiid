@@ -463,7 +463,7 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
   }
 
   return (
-    <Row key={taxonomy.namespace} className="mb-4">
+    <Row key={taxonomy.namespace} className="mb-4" data-cy="taxonomy-form">
       <Container className="card ps-0 pe-0">
         <TaxaCardHeader className="card-header">
           <TaxaHeader>{`${taxonomy.namespace} Taxonomy Classifications`}</TaxaHeader>
