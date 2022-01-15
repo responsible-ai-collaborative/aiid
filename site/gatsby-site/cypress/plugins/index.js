@@ -18,8 +18,8 @@ require('dotenv').config();
  * @type {Cypress.PluginConfig}
  */
 module.exports = (on, config) => {
-  config.env.e2eUsername = process.env.E2E_USERNAME;
-  config.env.e2ePassword = process.env.E2E_PASSWORD;
+  config.env.e2eUsername = process.env.E2E_ADMIN_USERNAME;
+  config.env.e2ePassword = process.env.E2E_ADMIN_PASSWORD;
 
   return config;
 };
