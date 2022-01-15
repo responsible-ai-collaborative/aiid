@@ -18,21 +18,6 @@
             "additional_fields": {}
         },
         {
-            "name": "incident_editor",
-            "apply_when": {
-                "%%user.custom_data.roles": "incident_editor"
-            },
-            "fields": {
-                "flag": {},
-                "tags": {}
-            },
-            "write": true,
-            "insert": false,
-            "delete": false,
-            "search": true,
-            "additional_fields": {}
-        },
-        {
             "name": "default",
             "apply_when": {},
             "fields": {
