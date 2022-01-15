@@ -12,6 +12,7 @@
     "@fortawesome/free-brands-svg-icons": "^5.15.3",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "@fortawesome/react-fontawesome": "^0.1.14",
+    "@googlemaps/google-maps-services-js": "^3.3.3",
     "@mdx-js/loader": "^1.6.22",
     "@mdx-js/mdx": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
@@ -81,6 +82,7 @@
     "stream": "^0.0.2",
     "styled-components": "^5.3.0",
     "styled-icons": "^9.5.0",
+    "topojson": "^3.0.2",
     "use-query-params": "^1.2.0",
     "yup": "^0.29.3"
   },
