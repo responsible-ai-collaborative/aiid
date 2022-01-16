@@ -7,7 +7,7 @@ import { fill } from '@cloudinary/base/actions/resize';
 
 import md5 from 'md5';
 import { navigate } from 'gatsby';
-import Actions from './Actions';
+import Actions from '../Actions';
 
 const IncidentCardImage = styled(Image)`
   height: ${({ height }) => height};

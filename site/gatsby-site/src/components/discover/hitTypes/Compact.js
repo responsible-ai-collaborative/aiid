@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { fill } from '@cloudinary/base/actions/resize';
 import md5 from 'md5';
 import { Link } from 'gatsby';
-import Actions from './Actions';
+import Actions from '../Actions';
 
 const BlockQuote = styled.blockquote`
   color: var(--bs-gray-400);
