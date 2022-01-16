@@ -14,7 +14,7 @@ export const shouldUpdateScroll = ({ routerProps: { location } }) => {
   const { pathname } = location;
 
   if (pathname.includes('/apps/discover')) {
-    return false
+    return false;
   }
 };
 

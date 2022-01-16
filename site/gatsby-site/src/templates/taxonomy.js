@@ -12,6 +12,7 @@ import 'billboard.js/dist/billboard.css';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
 import Link from 'components/Link';
+import LocationMap from 'components/visualizations/LocationMap';
 
 const Row = styled.div`
   display: flex;
@@ -72,7 +73,7 @@ const StatItem = ({ text, value }) => {
   );
 };
 
-const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
+const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) => {
   if (!instant_facet) {
     return '';
   }
@@ -147,7 +148,15 @@ const FacetList = ({ namespace, instant_facet, short_name, stats }) => {
             {`Show ${showAllStats ? 'fewer stats' : 'more stats'}`}
           </Button>
         )}
-        <BillboardChart data={data} />
+        {short_name == 'Location' ? (
+          <LocationMap
+            data={{ columns: sortedStatsArray.map((a) => [a.item, a.value]) }}
+            geocodes={geocodes}
+            className="mt-4 border rounded"
+          />
+        ) : (
+          <BillboardChart data={data} />
+        )}
       </div>
     );
   }
@@ -241,6 +250,20 @@ const getStats = (taxa, classification) => {
   return stats;
 };
 
+const getGeocodes = (classifications) => {
+  const map = {};
+
+  classifications.forEach((c) => {
+    const { Location } = c.classifications;
+
+    if (!(Location in map)) {
+      map[Location] = c.fields ? c.fields.geocode : {};
+    }
+  });
+
+  return map;
+};
+
 const Taxonomy = (props) => {
   if (!props || !props.pageContext || !props.data) {
     return null;
@@ -255,6 +278,8 @@ const Taxonomy = (props) => {
     .filter((entry) => entry.public === null || entry.public);
 
   const stats = getStats(props.pageContext.taxonomy, allMongodbAiidprodClassifications.nodes);
+
+  const geocodes = getGeocodes(allMongodbAiidprodClassifications.nodes);
 
   return (
     <Layout {...props}>
@@ -278,6 +303,7 @@ const Taxonomy = (props) => {
                 short_name={short_name}
                 permitted_values={permitted_values}
                 stats={stats}
+                geocodes={geocodes}
               />
             </Card>
           </Row>
