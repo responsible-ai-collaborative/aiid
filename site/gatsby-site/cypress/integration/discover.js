@@ -88,7 +88,7 @@ describe('The Discover app', () => {
       },
     }).as('fetchIncident');
 
-    cy.get(`[data-cy="${_id}"`).get('[data-cy="flag-button"]').first().click();
+    cy.get(`[data-cy="${_id}"`).find('[data-cy="flag-button"]').click();
 
     cy.get('[data-cy="flag-modal"]').as('modal').should('be.visible');
 
@@ -105,11 +105,11 @@ describe('The Discover app', () => {
       },
     }).as('updateIncident');
 
-    cy.get('@modal').get('[data-cy="flag-toggle"]').click();
+    cy.get('@modal').find('[data-cy="flag-toggle"]').click();
 
     cy.wait('@updateIncident');
 
-    cy.get('@modal').get('[data-cy="flag-toggle"]').should('be.disabled');
+    cy.get('@modal').find('[data-cy="flag-toggle"]').should('be.disabled');
 
     cy.contains('Close').click();
 
