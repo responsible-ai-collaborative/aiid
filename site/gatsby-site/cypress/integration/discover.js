@@ -68,22 +68,27 @@ describe('The Discover app', () => {
   });
 
   it('Should flag an incident', () => {
-    cy.visit(url);
-
     // mock requests until a testing database is implemented
+
+    cy.visit(
+      url +
+        '?display=details&incident_id=10&s=%E2%80%8BIs%20Starbucks%20shortchanging%20its%20baristas%3F'
+    );
+
+    const _id = '5d34b8c29ced494f010ed470';
 
     cy.intercept('POST', '**/graphql', {
       data: {
         incident: {
           __typename: 'Incident',
-          _id: '5d34b8c29ced494f010ed470',
+          _id,
           ...dummyIncident,
           flag: false,
         },
       },
     }).as('fetchIncident');
 
-    cy.get('[data-cy="5d34b8c29ced494f010ed470"').get('[data-cy="flag-button"]').first().click();
+    cy.get(`[data-cy="${_id}"`).get('[data-cy="flag-button"]').first().click();
 
     cy.get('[data-cy="flag-modal"]').as('modal').should('be.visible');
 
@@ -93,7 +98,7 @@ describe('The Discover app', () => {
       data: {
         updateOneIncident: {
           __typename: 'Incident',
-          _id: '5d34b8c29ced494f010ed470',
+          _id,
           ...dummyIncident,
           flag: true,
         },
@@ -108,6 +113,6 @@ describe('The Discover app', () => {
 
     cy.contains('Close').click();
 
-    cy.get('@modal').should('not.be.visible');
+    cy.get('@modal').should('not.exist');
   });
 });
