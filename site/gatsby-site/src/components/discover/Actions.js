@@ -9,10 +9,14 @@ import {
   faFlag,
   faHashtag,
 } from '@fortawesome/free-solid-svg-icons';
-import { UPDATE_REPORT } from '../../graphql/reports';
-import { useMutation } from '@apollo/client';
+import { FIND_REPORT, UPDATE_REPORT } from '../../graphql/reports';
+import { useMutation, useQuery } from '@apollo/client';
 
 function FlagModalContent({ reportNumber }) {
+  const { data } = useQuery(FIND_REPORT, {
+    variables: { query: { report_number: reportNumber } },
+  });
+
   const [flagReport, { loading }] = useMutation(UPDATE_REPORT, {
     variables: {
       query: {
@@ -24,8 +28,10 @@ function FlagModalContent({ reportNumber }) {
     },
   });
 
+  const incident = data?.incident;
+
   return (
-    <div className="modal-body">
+    <div className="modal-body" data-cy="flag-modal">
       <p>Is there a problem with this content? Examples of &quot;problems`&quot;` include,</p>
       <ul>
         <li>The text contents of the report are not parsed properly</li>
@@ -50,9 +56,23 @@ function FlagModalContent({ reportNumber }) {
         <li>The linked report has disappeared from the web</li>
         <li>The report should not be considered an `&quot;`incident`&quot;`</li>
       </ul>
-      <Button className="w-100" variant="danger" onClick={() => flagReport()}>
-        Flag Report {loading && <Spinner size="sm" animation="border" />}
-      </Button>
+
+      {!incident ? (
+        <Spinner size="sm" animation="border" />
+      ) : incident.flag ? (
+        <Button className="w-100" variant="danger" disabled data-cy="flag-toggle">
+          Flagged
+        </Button>
+      ) : (
+        <Button
+          className="w-100"
+          variant="danger"
+          onClick={() => flagReport()}
+          data-cy="flag-toggle"
+        >
+          Flag Report {loading && <Spinner size="sm" animation="border" />}
+        </Button>
+      )}
     </div>
   );
 }
@@ -106,6 +126,7 @@ export default function Actions({
         variant="link"
         title="Flag Report"
         className="px-1"
+        data-cy="flag-button"
         onClick={() =>
           flagReportModal.openFor({
             title: 'Submitters',

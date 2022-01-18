@@ -1,6 +1,20 @@
 describe('The Discover app', () => {
   const url = '/apps/discover';
 
+  const dummyIncident = {
+    url: '',
+    title: '',
+    authors: '',
+    submitters: '',
+    incident_date: '',
+    date_published: '',
+    date_downloaded: '',
+    image_url: '',
+    incident_id: '',
+    text: '',
+    flag: '',
+  };
+
   it('Successfully loads', () => {
     cy.visit(url);
   });
@@ -51,5 +65,49 @@ describe('The Discover app', () => {
     cy.url().should('include', 'incident_id=10');
 
     cy.get('div[class^="Hits__HitsContainer"]').children().should('have.length.at.least', 10);
+  });
+
+  it('Should flag an incident', () => {
+    cy.visit(url);
+
+    // mock requests until a testing database is implemented
+
+    cy.intercept('POST', '**/graphql', {
+      data: {
+        incident: {
+          __typename: 'Incident',
+          _id: '5d34b8c29ced494f010ed470',
+          ...dummyIncident,
+          flag: false,
+        },
+      },
+    }).as('fetchIncident');
+
+    cy.get('[data-cy="5d34b8c29ced494f010ed470"').get('[data-cy="flag-button"]').first().click();
+
+    cy.get('[data-cy="flag-modal"]').as('modal').should('be.visible');
+
+    cy.wait('@fetchIncident');
+
+    cy.intercept('POST', '**/graphql', {
+      data: {
+        updateOneIncident: {
+          __typename: 'Incident',
+          _id: '5d34b8c29ced494f010ed470',
+          ...dummyIncident,
+          flag: true,
+        },
+      },
+    }).as('updateIncident');
+
+    cy.get('@modal').get('[data-cy="flag-toggle"]').click();
+
+    cy.wait('@updateIncident');
+
+    cy.get('@modal').get('[data-cy="flag-toggle"]').should('be.disabled');
+
+    cy.contains('Close').click();
+
+    cy.get('@modal').should('not.be.visible');
   });
 });
