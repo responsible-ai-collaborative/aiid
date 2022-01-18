@@ -90,6 +90,7 @@ const config = {
   google: {
     translateApikey: process.env.GOOGLE_TRANSLATE_API_KEY,
     availableLanguages: process.env.GATSBY_AVAILABLE_LANGUAGES,
+    mapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
   },
 };
 

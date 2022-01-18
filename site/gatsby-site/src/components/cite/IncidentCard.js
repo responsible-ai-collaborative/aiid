@@ -81,7 +81,7 @@ const getFlagModalContent = () => (
       <li>The linked report has disappeared from the web</li>
       <li>The report should not be considered an `&quot;`incident`&quot;`</li>
     </ul>
-    <button type="button" className="btn btn-danger btn-sm w-100" data-dismiss="modal">
+    <button type="button" className="btn btn-danger btn-sm w-100">
       Flag Report
     </button>
   </div>

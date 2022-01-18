@@ -201,6 +201,11 @@ The dry run is disabled through an environment variable as follows:
 
 ```
 TRANSLATE_DRY_RUN=false
+### Geocoding
+If the feature you are working on depends on Google's Geocoding API, please add the following environment variable with the appropriate value to your .env file.
+
+```
+GOOGLE_MAPS_API_KEY=XXXXXXXXXXXX
 ```
 
 ## Deployment Setup
