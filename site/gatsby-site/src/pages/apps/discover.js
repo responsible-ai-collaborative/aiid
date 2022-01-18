@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { InstantSearch } from 'react-instantsearch-dom';
@@ -217,6 +217,10 @@ function DiscoverApp(props) {
     setIndexName(`instant_search-${language.code}`);
   }, [language]);
 
+  const languageSwitcher = useRef(
+    typeof window !== 'undefined' && window.localStorage.getItem('i18n')
+  ).current;
+
   const authorsModal = useModal();
 
   const submittersModal = useModal();
@@ -242,9 +246,11 @@ function DiscoverApp(props) {
               <Col>
                 <SearchBox defaultRefinement={query.s} />
               </Col>
-              <Col className="col-auto">
-                <LanguageSwitcher />
-              </Col>
+              {languageSwitcher && (
+                <Col className="col-auto">
+                  <LanguageSwitcher />
+                </Col>
+              )}
             </Row>
             <Filters />
             <FiltersModal />
