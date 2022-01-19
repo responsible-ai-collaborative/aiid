@@ -181,7 +181,13 @@ function DiscoverApp(props) {
 
   const { language } = useTranslation();
 
-  const [indexName, setIndexName] = useState(`instant_search-${language.code}`);
+  const languageSwitcher = useRef(
+    typeof window !== 'undefined' && window.localStorage.getItem('i18n')
+  ).current;
+
+  const [indexName, setIndexName] = useState(
+    languageSwitcher ? `instant_search-${language.code}` : 'instant_search'
+  );
 
   const [searchState, setSearchState] = useState(generateSearchState({ query }));
 
@@ -217,10 +223,6 @@ function DiscoverApp(props) {
     setIndexName(`instant_search-${language.code}`);
   }, [language]);
 
-  const languageSwitcher = useRef(
-    typeof window !== 'undefined' && window.localStorage.getItem('i18n')
-  ).current;
-
   const authorsModal = useModal();
 
   const submittersModal = useModal();
@@ -234,7 +236,7 @@ function DiscoverApp(props) {
       </Helmet>
       <SearchContext.Provider value={{ searchState, indexName, searchClient, onSearchStateChange }}>
         <InstantSearch
-          indexName={languageSwitcher ? indexName : 'instant_search'}
+          indexName={indexName}
           searchClient={searchClient}
           searchState={searchState}
           onSearchStateChange={onSearchStateChange}
