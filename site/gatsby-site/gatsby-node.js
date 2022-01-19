@@ -185,6 +185,7 @@ exports.onPostBuild = async function ({ graphql, reporter }) {
   if (
     config.mongodb.translationsConnectionString &&
     config.google.translateApikey &&
+    config.google.availableLanguages &&
     config.header.search.algoliaAdminKey &&
     config.header.search.algoliaAppId
   ) {

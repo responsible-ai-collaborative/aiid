@@ -448,9 +448,7 @@ const languages = [
 ];
 
 const getLanguages = () =>
-  config.google.availableLanguages
-    ? languages.filter((lang) => config.google.availableLanguages.includes(lang.code))
-    : languages;
+  languages.filter((lang) => config.google.availableLanguages.includes(lang.code));
 
 module.exports = languages;
 module.exports.getLanguages = getLanguages;
