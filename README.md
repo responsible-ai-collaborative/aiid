@@ -158,6 +158,13 @@ gatsby build
 
 Restart Gatsby, and you should have a complete working environment!
 
+### Geocoding
+If the feature you are working on depends on Google's Geocoding API, please add the following environment variable with the appropriate value to your .env file.
+
+```
+GOOGLE_MAPS_API_KEY=XXXXXXXXXXXX
+```
+
 ## Deployment Setup
 
 Deployment of the site consists of two parts: deployment of the backend related features that runs as a Github Action and deployment of the frontend related features that runs on Netlify:

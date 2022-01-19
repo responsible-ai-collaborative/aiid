@@ -41,6 +41,16 @@ export const ClassificationFieldsFragment = graphql`
         System_Developer
         Publish
       }
+      fields {
+        geocode {
+          geometry {
+            location {
+              lat
+              lng
+            }
+          }
+        }
+      }
     }
   }
 `;
