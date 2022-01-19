@@ -7,7 +7,7 @@ import { fill } from '@cloudinary/base/actions/resize';
 
 import md5 from 'md5';
 import { navigate } from 'gatsby';
-import Actions from './Actions';
+import Actions from '../Actions';
 
 const IncidentCardImage = styled(Image)`
   height: ${({ height }) => height};
@@ -31,7 +31,7 @@ export default function Details({
   toggleFilterByIncidentId,
 }) {
   return (
-    <Card className="h-100">
+    <Card className="h-100" data-cy={item.mongodb_id}>
       <IncidentCardImage
         className="card-img-top"
         publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}

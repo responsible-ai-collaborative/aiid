@@ -2,13 +2,11 @@ import React from 'react';
 import { Highlight } from 'react-instantsearch-dom';
 import styled from 'styled-components';
 import md5 from 'md5';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faNewspaper, faIdCard, faUserShield, faFlag } from '@fortawesome/free-solid-svg-icons';
-import WebArchiveLink from '../WebArchiveLink';
 import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { getParagraphs } from 'utils/typography';
 import { useUserContext } from 'contexts/userContext';
+import Actions from 'components/discover/Actions';
 
 const IncidentCardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -55,38 +53,6 @@ const cardNeedsBlockquote = (item) => {
   }
   return false;
 };
-
-const getFlagModalContent = () => (
-  <div className="modal-body">
-    <p>Is there a problem with this content? Examples of &quot;problems`&quot;` include,</p>
-    <ul>
-      <li>The text contents of the report are not parsed properly</li>
-      <li>The authors of the report are not associated with the report</li>
-      <li>The report is associated with the wrong incident</li>
-      <li>The text contents of the report are not parsed properly</li>
-    </ul>
-    <p>
-      Flagged content will still be displayed within the database, but a database editor will
-      periodically review the incident reports that have been flagged. Please note that the content
-      contained within incident reports (e.g., the commentary within a news article) does not need
-      to be correct or consistent across articles. If an article is wrong, misleading, or
-      fraudulent, the best response is to submit additional incident reports that correct the
-      record. The incident database is meant to capture the complete state of knowledge and
-      discourse for incidents, not as an arbiter of what happened in individual incidents. In future
-      versions of the database it will additionally be possible to apply tags to incident reports to
-      classNameify their content.
-    </p>
-    <p>Please do NOT flag content if,</p>
-    <ul>
-      <li>You disagree with the report</li>
-      <li>The linked report has disappeared from the web</li>
-      <li>The report should not be considered an `&quot;`incident`&quot;`</li>
-    </ul>
-    <button type="button" className="btn btn-danger btn-sm w-100">
-      Flag Report
-    </button>
-  </div>
-);
 
 const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal, showDetails }) => {
   const { isRole } = useUserContext();
@@ -142,54 +108,11 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal, sh
         </ImageContainer>
       </div>
       <CardFooter className="card-footer text-muted">
-        <WebArchiveLink url={item.url} date={item.date_submitted}>
-          <FontAwesomeIcon
-            icon={faNewspaper}
-            className="far fa-newspaper"
-            title="Read the Source"
-          />
-        </WebArchiveLink>
-
-        <FontAwesomeIcon
-          icon={faIdCard}
-          className="pointer far fa-id-card"
-          title="Authors"
-          onClick={() =>
-            authorsModal.openFor({
-              title: 'Authors',
-              body: function f() {
-                return item.authors.join(', ');
-              },
-            })
-          }
-        />
-
-        <FontAwesomeIcon
-          icon={faUserShield}
-          className="pointer fas fa-user-shield"
-          title="Submitters"
-          onClick={() =>
-            submittersModal.openFor({
-              title: 'Submitters',
-              body: function f() {
-                return item.submitters.join(', ');
-              },
-            })
-          }
-        />
-
-        <FontAwesomeIcon
-          icon={faFlag}
-          className="pointer far fa-flag"
-          title="Flag Report"
-          onClick={() =>
-            flagReportModal.openFor({
-              title: 'Submitters',
-              body: function f() {
-                return getFlagModalContent();
-              },
-            })
-          }
+        <Actions
+          item={item}
+          authorsModal={authorsModal}
+          flagReportModal={flagReportModal}
+          submittersModal={submittersModal}
         />
       </CardFooter>
     </IncidentCardContainer>
