@@ -9,7 +9,7 @@ describe('Cite pages', () => {
     cy.disableSmoothScroll();
   });
 
-  it('Should scroll to report when comming from the discover app', () => {
+  it('Should scroll to report when coming from the discover app', () => {
     cy.visit(discoverUrl);
 
     cy.contains('Show Details on Incident #10').first().click();
@@ -18,7 +18,7 @@ describe('Cite pages', () => {
 
     cy.wait(1000);
 
-    cy.window().its('scrollY').should('be.closeTo', 15761, 200);
+    cy.window().its('scrollY').should('be.closeTo', 15761, 1000);
   });
 
   it('Should scroll to report when clicking on a report in the timeline', () => {
