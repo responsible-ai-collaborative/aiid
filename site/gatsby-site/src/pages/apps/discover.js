@@ -220,7 +220,9 @@ function DiscoverApp(props) {
   }, [searchState]);
 
   useEffect(() => {
-    setIndexName(`instant_search-${language.code}`);
+    if (languageSwitcher) {
+      setIndexName(`instant_search-${language.code}`);
+    }
   }, [language]);
 
   const authorsModal = useModal();
