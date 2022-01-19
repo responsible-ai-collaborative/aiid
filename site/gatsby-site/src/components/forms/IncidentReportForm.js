@@ -141,7 +141,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
       const response = await fetch(url);
 
       if (!response.ok) {
-        throw new Error(response.statusText);
+        throw new Error('Parser error');
       }
 
       const news = await response.json();
@@ -166,8 +166,13 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         };
       });
     } catch (e) {
+      const message =
+        e.message == 'Parser error'
+          ? `Error fetching news. Scraping was blocked by ${newsUrl}, Please enter the text manually.`
+          : `Error reaching news info endpoint, please try again in a few seconds.`;
+
       addToast({
-        message: <>Error fetching news info, please try again in a few seconds.</>,
+        message: <>{message}</>,
         severity: SEVERITY.danger,
       });
     }

@@ -49,11 +49,10 @@ const sortIncidentsByDatePublished = (incidentReports) => {
     if (isAfter(dateB, dateA)) {
       return -1;
     }
-  })
+  });
 };
 
 function CitePage(props) {
-
   const {
     pageContext: { incidentReports, taxonomies },
   } = props;
@@ -99,7 +98,6 @@ function CitePage(props) {
       </div>
 
       <Container>
-
         <Row>
           <Col>
             <CardContainer className="card">
@@ -157,7 +155,7 @@ function CitePage(props) {
           </Col>
         </Row>
 
-        {taxonomies.length > 0 &&
+        {taxonomies.length > 0 && (
           <Row className="mt-4">
             <Col>
               <div id="taxa-area">
@@ -167,7 +165,7 @@ function CitePage(props) {
               </div>
             </Col>
           </Row>
-        }
+        )}
 
         <Row className="mt-4">
           <Col>
@@ -204,10 +202,9 @@ function CitePage(props) {
         <CustomModal {...authorsModal} />
         <CustomModal {...submittersModal} />
         <CustomModal {...flagReportModal} />
-
       </Container>
     </Layout>
   );
-};
+}
 
 export default CitePage;

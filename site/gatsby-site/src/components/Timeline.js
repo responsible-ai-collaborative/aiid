@@ -86,12 +86,6 @@ const GroupListItem = styled.li`
 `;
 
 const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
-  const [baseURL, setBaseURL] = useState('');
-
-  useEffect(() => {
-    setBaseURL(location.href.replace(location.hash, ''));
-  }, []);
-
   return (
     <g key={bucket.x0} transform={`translate(20,${(yScale(bucket.x0) + yScale(bucket.x1)) / 2})`}>
       {bucket.length > 1 ? (

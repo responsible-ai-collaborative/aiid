@@ -1,11 +1,14 @@
 import React from 'react';
 import { ToastContextProvider } from './src/contexts/ToastContext';
 import ThemeProvider from 'components/theme/themeProvider';
+import SSRProvider from 'react-bootstrap/SSRProvider';
 
 export const wrapRootElement = ({ element }) => {
   return (
-    <ThemeProvider>
-      <ToastContextProvider>{element}</ToastContextProvider>
-    </ThemeProvider>
+    <SSRProvider>
+      <ThemeProvider>
+        <ToastContextProvider>{element}</ToastContextProvider>
+      </ThemeProvider>
+    </SSRProvider>
   );
 };

@@ -1,5 +1,17 @@
 [
     {
+        "name": "promoteReport",
+        "private": false,
+        "run_as_system": true,
+        "can_evaluate": {
+            "%%user.custom_data.roles": "admin"
+        }
+    },
+    {
+        "name": "quickAdd",
+        "private": false
+    },
+    {
         "name": "updateIncidentClassification",
         "private": false,
         "run_as_system": true,
@@ -28,15 +40,7 @@
         "private": true
     },
     {
-        "name": "promoteReport",
-        "private": false,
-        "run_as_system": true,
-        "can_evaluate": {
-            "%%user.custom_data.roles": "admin"
-        }
-    },
-    {
-        "name": "quickAdd",
-        "private": false
+        "name": "confirmUser",
+        "private": true
     }
 ]
