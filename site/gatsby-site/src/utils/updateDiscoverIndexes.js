@@ -110,7 +110,11 @@ const uploadToAlgolia = async ({ language, entries }) => {
 
   await index.saveObjects(entries);
 
-  await index.setSettings(algoliaSettings);
+  await index.setSettings({
+    ...algoliaSettings,
+    indexLanguages: [language],
+    queryLanguages: [language],
+  });
 };
 
 async function run({ reporter }) {
