@@ -177,6 +177,12 @@ translations
     |   |-- { title, text, report_number }
         |-- { title, text, report_number }
 ```
+To access this database, a user with read/write permissions needs to be provided through the following environment variable:
+
+```
+MONGODB_TRANSLATIONS_CONNECTION_STRING=mongodb+srv://<user>:<password>@aiiddev.<host>.mongodb.net
+```
+
 -3 Generate an Algolia index from each translated collection and upload them to Algolia. Each index has the following naming format:
 ```
 instant_search-{language code}
@@ -201,6 +207,8 @@ The dry run is disabled through an environment variable as follows:
 
 ```
 TRANSLATE_DRY_RUN=false
+```
+
 ### Geocoding
 If the feature you are working on depends on Google's Geocoding API, please add the following environment variable with the appropriate value to your .env file.
 
@@ -242,7 +250,7 @@ For integration testing, we use Cypress. You can run the desktop app continuousl
 To use the desktop version, run:
 ```
 npm run test:e2e
-``
+```
 
 And to run it in continuous integration (headless) mode:
 ```
