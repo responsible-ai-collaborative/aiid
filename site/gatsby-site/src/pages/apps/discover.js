@@ -234,7 +234,7 @@ function DiscoverApp(props) {
       </Helmet>
       <SearchContext.Provider value={{ searchState, indexName, searchClient, onSearchStateChange }}>
         <InstantSearch
-          indexName={indexName}
+          indexName={languageSwitcher ? indexName : 'instant_search'}
           searchClient={searchClient}
           searchState={searchState}
           onSearchStateChange={onSearchStateChange}
