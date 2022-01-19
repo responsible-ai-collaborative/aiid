@@ -28,13 +28,13 @@ describe('The Discover app', () => {
 
     cy.get('button:contains("Incident ID")').click();
 
-    cy.get('.card [placeholder="Type Here"]').type('100').type('{enter}');
+    cy.get('.card [placeholder="Type Here"]').type('34').type('{enter}');
 
-    cy.get('.list-group-item:contains("100")').click();
+    cy.get('.list-group-item:contains("34")').click();
 
-    cy.url().should('include', 'incident_id=100');
+    cy.url().should('include', 'incident_id=34');
 
-    cy.get('div[class^="Hits__HitsContainer"]').children().should('have.length', 1);
+    cy.get('div[class^="Hits__HitsContainer"]').children().should('have.length.at.least', 30);
   });
 
   it('Filters by incident Id using card button', () => {
