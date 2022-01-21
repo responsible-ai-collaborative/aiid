@@ -6,9 +6,8 @@ import Link from 'components/Link';
 import { StyledHeading } from 'components/styles/Docs';
 import SubmitForm from 'components/forms/SubmitForm';
 
-const SubmitPage = (props) => {
-
-  return <Layout {...props}>
+const SubmitPage = (props) => (
+  <Layout {...props}>
     <Helmet>
       <title>New Incident from Report</title>
     </Helmet>
@@ -24,8 +23,7 @@ const SubmitPage = (props) => {
       <Link to="/contact">contact us with questions.</Link>{' '}
     </p>
     <SubmitForm />
-  </ Layout>
-}
+  </Layout>
+);
 
 export default SubmitPage;
-
