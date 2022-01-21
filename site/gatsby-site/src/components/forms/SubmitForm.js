@@ -8,7 +8,7 @@ import IncidentReportForm from 'components/forms/IncidentReportForm';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
-const SubmitForm = ({ tags }) => {
+const SubmitForm = () => {
   const { isRole, user } = useUserContext();
 
   const [incident, setIncident] = useState({ tags: [] });

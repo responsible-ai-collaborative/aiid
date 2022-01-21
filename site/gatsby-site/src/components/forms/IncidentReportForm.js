@@ -12,6 +12,7 @@ import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary'
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import styled from 'styled-components';
+import { graphql, useStaticQuery } from 'gatsby';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -90,7 +91,7 @@ const StyledTypeahead = styled(Typeahead)`
   }
 `
 
-const IncidentReportForm = ({ incident, tags, onUpdate, onSubmit }) => {
+const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
   const {
     values,
     errors,
@@ -108,6 +109,30 @@ const IncidentReportForm = ({ incident, tags, onUpdate, onSubmit }) => {
     validationSchema,
     onSubmit,
   });
+
+  const data = useStaticQuery(graphql`
+    query IncidentReportFormQuery {
+      allMongodbAiidprodIncidents {
+        edges {
+          node {
+            tags
+          }
+        }
+      }
+    }
+  `);
+
+  const tags = []
+
+  for (const node of data.allMongodbAiidprodIncidents.edges) {
+    if (node.node.tags) {
+      for (const tag of node.node.tags) {
+        if (!tags.includes(tag)) {
+          tags.push(tag)
+        }
+      }
+    }
+  }
 
   const TextInputGroupProps = { values, errors, touched, handleChange, handleBlur };
 
@@ -300,7 +325,7 @@ const IncidentReportForm = ({ incident, tags, onUpdate, onSubmit }) => {
           onBlur={handleBlur}
           onChange={(value) => {
             setFieldTouched('tags', true);
-            setFieldValue('tags', value);
+            setFieldValue('tags', value.map(v => v.label ? v.label : v));
           }}
           selected={values.tags}
           options={tags}

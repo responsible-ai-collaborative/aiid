@@ -5,14 +5,8 @@ import Layout from 'components/Layout';
 import Link from 'components/Link';
 import { StyledHeading } from 'components/styles/Docs';
 import SubmitForm from 'components/forms/SubmitForm';
-import { graphql } from 'gatsby'
 
 const SubmitPage = (props) => {
-  const { data } = props
-
-  const tags = data.allMongodbAiidprodIncidents.edges.reduce((acc, curr) => {
-    curr.node.tags ? acc.push(...curr.node.tags) : acc; return acc;
-  }, []);
 
   return <Layout {...props}>
     <Helmet>
@@ -29,21 +23,9 @@ const SubmitPage = (props) => {
       <Link to="/research/1-criteria/">acceptance criteria</Link>. Please{' '}
       <Link to="/contact">contact us with questions.</Link>{' '}
     </p>
-    <SubmitForm tags={tags} />
+    <SubmitForm />
   </ Layout>
 }
-
-export const query = graphql`
-  query SubmitIncidentQuery {
-    allMongodbAiidprodIncidents {
-      edges {
-        node {
-          tags
-        }
-      }
-    }
-  }
-`
 
 export default SubmitPage;
 
