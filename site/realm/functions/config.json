@@ -20,7 +20,11 @@
         }
     },
     {
-        "name": "updateSubmissionReport",
+        "name": "onNewUser",
+        "private": true
+    },
+    {
+        "name": "promoteReport",
         "private": false,
         "run_as_system": true,
         "can_evaluate": {
@@ -28,16 +32,16 @@
         }
     },
     {
-        "name": "createReportForReview",
+        "name": "quickAdd",
         "private": false
     },
     {
-        "name": "deleteSubmittedDocument",
-        "private": false
-    },
-    {
-        "name": "onNewUser",
-        "private": true
+        "name": "updateIncidentClassification",
+        "private": false,
+        "run_as_system": true,
+        "can_evaluate": {
+            "%%user.custom_data.roles": "admin"
+        }
     },
     {
         "name": "confirmUser",
