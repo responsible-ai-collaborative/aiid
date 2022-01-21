@@ -76,7 +76,7 @@ const SubmitForm = () => {
 
   return (
     <div className="my-5">
-      <IncidentReportForm incident={incident} tags={tags} onUpdate={setIncident} onSubmit={handleSubmit} />
+      <IncidentReportForm incident={incident} onUpdate={setIncident} onSubmit={handleSubmit} />
       <RelatedIncidents incident={incident} isSubmitted={false} />
       {isRole('submitter') && (
         <Container className="mt-5 p-0">
