@@ -15,6 +15,7 @@ export const FIND_REPORT = gql`
       incident_id
       text
       tags
+      flag
     }
   }
 `;
@@ -34,6 +35,7 @@ export const UPDATE_REPORT = gql`
       incident_id
       text
       tags
+      flag
     }
   }
 `;
