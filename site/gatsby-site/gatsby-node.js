@@ -161,6 +161,7 @@ exports.createSchemaCustomization = ({ actions }) => {
   const typeDefs = `
     type mongodbAiidprodIncidents implements Node {
       cloudinary_id: String
+      tags: [String]
     }
   `;
 
