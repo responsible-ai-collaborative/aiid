@@ -9,6 +9,9 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, parseISO } from 'date-fns';
 import { dateRegExp } from 'utils/date';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
+import styled from 'styled-components';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -80,7 +83,14 @@ const defaultValue = {
   text: '',
 };
 
-const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
+const StyledTypeahead = styled(Typeahead)`
+  .rbt-close {
+    border: none;
+    background: transparent;
+  }
+`
+
+const IncidentReportForm = ({ incident, tags, onUpdate, onSubmit }) => {
   const {
     values,
     errors,
@@ -92,6 +102,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
     handleSubmit,
     setValues,
     setFieldTouched,
+    setFieldValue,
   } = useFormik({
     initialValues: incident || defaultValue,
     validationSchema,
@@ -151,7 +162,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         severity: SEVERITY.info,
       });
 
-      const cloudinary_id = getCloudinaryPublicID(news.image_url, 'pai', 'reports');
+      const cloudinary_id = getCloudinaryPublicID(news.image_url);
 
       onUpdate((incident) => {
         return {
@@ -190,7 +201,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         addOnComponent={
           <Button
             className="outline-secondary"
-            disabled={errors.url || !touched.url || parsingNews}
+            disabled={!!errors.url || !touched.url || parsingNews}
             onClick={() => parseNewsUrl(incident.url)}
           >
             {' '}
@@ -278,8 +289,27 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         className="mt-3"
         {...TextInputGroupProps}
       />
+
+      <Form.Group className="mt-3">
+        <Form.Label>Tags</Form.Label>
+        <StyledTypeahead
+          id="submit-report-tags"
+          inputProps={{ id: 'submit-report-tags-input' }}
+          allowNew
+          multiple
+          onBlur={handleBlur}
+          onChange={(value) => {
+            setFieldTouched('tags', true);
+            setFieldValue('tags', value);
+          }}
+          selected={values.tags}
+          options={tags}
+          placeholder="Choose several tags..."
+        />
+      </Form.Group>
+
       {!isEditMode && (
-        <p className="mt-3">
+        <p className="mt-4">
           Submitted reports are added to a <Link to="/apps/submitted">review queue </Link>
           to be resolved to a new or existing incident record. Incidents are reviewed and merged
           into the database after enough incidents are pending.
