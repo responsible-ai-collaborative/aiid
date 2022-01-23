@@ -1,11 +1,11 @@
 [
     {
         "name": "updateSubmissionReport",
-        "private": false,
-        "run_as_system": true,
-        "can_evaluate": {
-            "%%user.custom_data.roles": "admin"
-        }
+        "private": false
+    },
+    {
+        "name": "confirmUser",
+        "private": true
     },
     {
         "name": "createReportForReview",
@@ -38,9 +38,5 @@
         "can_evaluate": {
             "%%user.custom_data.roles": "admin"
         }
-    },
-    {
-        "name": "confirmUser",
-        "private": true
     }
 ]
