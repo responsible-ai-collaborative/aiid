@@ -3,6 +3,7 @@
     "baseUrl": "./",
     "jsx": "react",
     "checkJs": true,
+    "resolveJsonModule": true,
     "paths": {
       "components/*": [
         "src/components/*"

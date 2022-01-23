@@ -85,8 +85,11 @@ const config = {
   mongodb: {
     connectionString: process.env.MONGODB_CONNECTION_STRING,
     replicaSet: process.env.MONGODB_REPLICA_SET,
+    translationsConnectionString: process.env.MONGODB_TRANSLATIONS_CONNECTION_STRING,
   },
   google: {
+    translateApikey: process.env.GOOGLE_TRANSLATE_API_KEY,
+    availableLanguages: process.env.GATSBY_AVAILABLE_LANGUAGES || 'en',
     mapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
   },
 };

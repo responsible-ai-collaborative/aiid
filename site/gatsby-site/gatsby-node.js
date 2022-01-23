@@ -26,6 +26,10 @@ const algoliasearch = require('algoliasearch');
 
 const algoliaSettings = require('./src/utils/algoliaSettings');
 
+const translateIncidents = require('./src/utils/translateIncidents');
+
+const updateDiscoverIndexes = require('./src/utils/updateDiscoverIndexes');
+
 const googleMapsApiClient = new GoogleMapsAPIClient({});
 
 exports.createPages = ({ graphql, actions }) => {
@@ -178,6 +182,34 @@ exports.onPostBuild = async function ({ graphql, reporter }) {
 
   activity.start();
 
+  if (
+    config.mongodb.translationsConnectionString &&
+    config.google.translateApikey &&
+    config.google.availableLanguages &&
+    config.header.search.algoliaAdminKey &&
+    config.header.search.algoliaAppId
+  ) {
+    try {
+      if (process.env.TRANSLATE_DRY_RUN !== 'false') {
+        reporter.warn(
+          'Please set `TRANSLATE_DRY_RUN=false` to disble dry running of translation process.'
+        );
+      }
+
+      activity.setStatus('Translating incident reports...');
+
+      await translateIncidents.run({ reporter });
+
+      activity.setStatus('Updating incidents indexes...');
+
+      await updateDiscoverIndexes.run({ reporter });
+    } catch (e) {
+      reporter.warn('Error running translation scripts:', e);
+    }
+  } else {
+    reporter.log(`Missing env settings, skipping indexes translation and upload.`);
+  }
+
   if (config.header.search.algoliaAppId && config.header.search.algoliaAdminKey) {
     activity.setStatus('Building index...');
 
@@ -201,10 +233,9 @@ exports.onPostBuild = async function ({ graphql, reporter }) {
     await index.setSettings(algoliaSettings);
 
     activity.setStatus('Settings saved.');
-
-    activity.end();
   } else {
     activity.setStatus(`Missing env settings, skipping index upload.`);
-    activity.end();
   }
+
+  activity.end();
 };

@@ -38,5 +38,9 @@
         "can_evaluate": {
             "%%user.custom_data.roles": "admin"
         }
+    },
+    {
+        "name": "confirmUser",
+        "private": true
     }
 ]
