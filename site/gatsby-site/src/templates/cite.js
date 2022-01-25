@@ -86,7 +86,12 @@ function CitePage(props) {
     mongodb_id,
   }));
 
-  timeline.push({ date_published: stats.incidentDate, title: 'Incident Date', mongodb_id: 0 });
+  timeline.push({
+    date_published: stats.incidentDate,
+    title: 'Incident Occurrence',
+    mongodb_id: 0,
+    isOccurrence: true,
+  });
 
   return (
     <Layout {...props}>
@@ -134,7 +139,7 @@ function CitePage(props) {
                 <h4>Reports Timeline</h4>
               </div>
               <div className="card-body">
-                <Timeline items={sortedReports} />
+                <Timeline data={timeline} />
               </div>
             </CardContainer>
           </Col>
