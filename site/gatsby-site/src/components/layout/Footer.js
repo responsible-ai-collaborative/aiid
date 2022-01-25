@@ -43,7 +43,7 @@ export default function Footer() {
   return (
     <Container fluid as="footer" className="bg-light mt-5">
       <Row className="justify-content-md-center p-4">
-        <Col xs="auto">2021 - AI Incident Database</Col>
+        <Col xs="auto">2022 - AI Incident Database</Col>
         <Col xs="auto">
           <Icons>
             <a href={'https://twitter.com/IncidentsDB'} target="_blank" rel="noreferrer">
