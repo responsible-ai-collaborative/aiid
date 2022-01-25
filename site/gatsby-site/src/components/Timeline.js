@@ -157,15 +157,13 @@ const Reports = ({ data, yScale, yValue, margin, size }) => {
   );
 };
 
-const calculatesize = ({ data, rect }) => ({
+const calculatesize = ({ data, rect = null }) => ({
   width: rect ? rect.width : 640,
   height: data.length == 1 ? 120 : 480,
 });
 
-function Timeline({ items }) {
+function Timeline({ data }) {
   const containerRef = useRef();
-
-  const data = items.map((item) => item.node);
 
   const [size, setSize] = useState(calculatesize({ data }));
 
