@@ -441,7 +441,7 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
     return null;
   }
 
-  const { isAdmin } = useUserContext();
+  const { isRole } = useUserContext();
 
   const [showAllClassifications, setShowAllClassifications] = useState(false);
 
@@ -455,7 +455,10 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
     </Tooltip>
   );
 
-  if (!isAdmin && taxonomy.classificationsArray.length === 0) {
+  if (
+    !isRole('taxonomy_editor') ||
+    !isRole('taxonomy_editor_' + taxonomy.namespace.toLowerCase())
+  ) {
     return <></>;
   }
 
@@ -464,15 +467,13 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
       <Container className="card ps-0 pe-0">
         <TaxaCardHeader className="card-header">
           <TaxaHeader>{`${taxonomy.namespace} Taxonomy Classifications`}</TaxaHeader>
-          {isAdmin && (
-            <>
-              {isEditing ? (
-                <Button onClick={() => setIsEditing(false)}>Cancel</Button>
-              ) : (
-                <Button onClick={() => setIsEditing(true)}>Edit</Button>
-              )}
-            </>
-          )}
+          <>
+            {isEditing ? (
+              <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+            ) : (
+              <Button onClick={() => setIsEditing(true)}>Edit</Button>
+            )}
+          </>
           <a
             style={{ order: 2, marginLeft: 'auto' }}
             href={`/taxonomy/${taxonomy.namespace.toLowerCase()}`}
@@ -496,20 +497,18 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
               )}
               {taxonomy.classificationsArray.length > 0 ? (
                 <>
-                  {isAdmin && (
-                    <ClassificationContainer key={'NOTES'} className="card-body">
-                      <Field>
-                        <OverlayTrigger
-                          placement="left"
-                          delay={{ show: 100, hide: 400 }}
-                          overlay={(e) => renderTooltip(e, 'Admin notes')}
-                        >
-                          <p>{'Notes'}</p>
-                        </OverlayTrigger>
-                      </Field>
-                      <Value>{taxonomy.notes}</Value>
-                    </ClassificationContainer>
-                  )}
+                  <ClassificationContainer key={'NOTES'} className="card-body">
+                    <Field>
+                      <OverlayTrigger
+                        placement="left"
+                        delay={{ show: 100, hide: 400 }}
+                        overlay={(e) => renderTooltip(e, 'Admin notes')}
+                      >
+                        <p>{'Notes'}</p>
+                      </OverlayTrigger>
+                    </Field>
+                    <Value>{taxonomy.notes}</Value>
+                  </ClassificationContainer>
                   {taxonomy.classificationsArray
                     .filter((field) => {
                       if (showAllClassifications) return true;

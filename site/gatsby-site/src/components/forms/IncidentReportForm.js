@@ -9,6 +9,10 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, parseISO } from 'date-fns';
 import { dateRegExp } from 'utils/date';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
+import styled from 'styled-components';
+import { graphql, useStaticQuery } from 'gatsby';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -80,6 +84,13 @@ const defaultValue = {
   text: '',
 };
 
+const StyledTypeahead = styled(Typeahead)`
+  .rbt-close {
+    border: none;
+    background: transparent;
+  }
+`
+
 const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
   const {
     values,
@@ -92,11 +103,36 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
     handleSubmit,
     setValues,
     setFieldTouched,
+    setFieldValue,
   } = useFormik({
     initialValues: incident || defaultValue,
     validationSchema,
     onSubmit,
   });
+
+  const data = useStaticQuery(graphql`
+    query IncidentReportFormQuery {
+      allMongodbAiidprodIncidents {
+        edges {
+          node {
+            tags
+          }
+        }
+      }
+    }
+  `);
+
+  const tags = []
+
+  for (const node of data.allMongodbAiidprodIncidents.edges) {
+    if (node.node.tags) {
+      for (const tag of node.node.tags) {
+        if (!tags.includes(tag)) {
+          tags.push(tag)
+        }
+      }
+    }
+  }
 
   const TextInputGroupProps = { values, errors, touched, handleChange, handleBlur };
 
@@ -108,9 +144,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
 
   useEffect(() => {
     values['cloudinary_id'] =
-      typeof values['image_url'] === 'string'
-        ? getCloudinaryPublicID(values['image_url'], 'pai', 'reports')
-        : '';
+      typeof values['image_url'] === 'string' ? getCloudinaryPublicID(values['image_url']) : '';
     onUpdate && onUpdate(values);
   }, [values]);
 
@@ -143,7 +177,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
       const response = await fetch(url);
 
       if (!response.ok) {
-        throw new Error(response.statusText);
+        throw new Error('Parser error');
       }
 
       const news = await response.json();
@@ -153,7 +187,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         severity: SEVERITY.info,
       });
 
-      const cloudinary_id = getCloudinaryPublicID(news.image_url, 'pai', 'reports');
+      const cloudinary_id = getCloudinaryPublicID(news.image_url);
 
       onUpdate((incident) => {
         return {
@@ -168,8 +202,13 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         };
       });
     } catch (e) {
+      const message =
+        e.message == 'Parser error'
+          ? `Error fetching news. Scraping was blocked by ${newsUrl}, Please enter the text manually.`
+          : `Error reaching news info endpoint, please try again in a few seconds.`;
+
       addToast({
-        message: <>Error fetching news info, please try again in a few seconds.</>,
+        message: <>{message}</>,
         severity: SEVERITY.danger,
       });
     }
@@ -187,7 +226,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         addOnComponent={
           <Button
             className="outline-secondary"
-            disabled={errors.url || !touched.url || parsingNews}
+            disabled={!!errors.url || !touched.url || parsingNews}
             onClick={() => parseNewsUrl(incident.url)}
           >
             {' '}
@@ -212,36 +251,42 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         name="title"
         label="Title :"
         placeholder="Report title"
+        className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="authors"
         label="Author CSV :"
         placeholder="Author CSV"
+        className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="submitters"
         label="Submitter CSV :"
         placeholder="Submitter CSV"
+        className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="incident_date"
         label="Incident Date :"
         placeholder="YYYY-MM-DD"
+        className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="date_published"
         label="Date Published :"
         placeholder="YYYY-MM-DD"
+        className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="date_downloaded"
         label="Date Downloaded :"
         placeholder="YYYY-MM-DD"
+        className="mt-3"
         {...TextInputGroupProps}
       />
       <PreviewImageInputGroup
@@ -249,6 +294,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         name="image_url"
         label="Image Address :"
         placeholder="Image URL"
+        className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
@@ -256,6 +302,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         label="Incident ID :"
         placeholder="OPTIONAL"
         type="number"
+        className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
@@ -264,16 +311,41 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         placeholder="Text of the report"
         as="textarea"
         rows={8}
+        className="mt-3"
         {...TextInputGroupProps}
       />
+
+      <Form.Group className="mt-3">
+        <Form.Label>Tags</Form.Label>
+        <StyledTypeahead
+          id="submit-report-tags"
+          inputProps={{ id: 'submit-report-tags-input' }}
+          allowNew
+          multiple
+          onBlur={handleBlur}
+          onChange={(value) => {
+            setFieldTouched('tags', true);
+            setFieldValue('tags', value.map(v => v.label ? v.label : v));
+          }}
+          selected={values.tags}
+          options={tags}
+          placeholder="Choose several tags..."
+        />
+      </Form.Group>
+
       {!isEditMode && (
-        <p>
+        <p className="mt-4">
           Submitted reports are added to a <Link to="/apps/submitted">review queue </Link>
           to be resolved to a new or existing incident record. Incidents are reviewed and merged
           into the database after enough incidents are pending.
         </p>
       )}
-      <Button variant="primary" type="submit" disabled={(touched && !isValid) || isSubmitting}>
+      <Button
+        className="mt-3"
+        variant="primary"
+        type="submit"
+        disabled={(touched && !isValid) || isSubmitting}
+      >
         Submit
       </Button>
     </Form>

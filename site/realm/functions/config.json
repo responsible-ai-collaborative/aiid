@@ -1,27 +1,23 @@
 [
     {
+        "name": "promoteReport",
+        "private": false,
+        "run_as_system": true,
+        "can_evaluate": {
+            "%%user.custom_data.roles": "admin"
+        }
+    },
+    {
+        "name": "quickAdd",
+        "private": false
+    },
+    {
         "name": "updateIncidentClassification",
         "private": false,
         "run_as_system": true,
         "can_evaluate": {
             "%%user.custom_data.roles": "admin"
         }
-    },
-    {
-        "name": "updateSubmissionReport",
-        "private": false,
-        "run_as_system": true,
-        "can_evaluate": {
-            "%%user.custom_data.roles": "admin"
-        }
-    },
-    {
-        "name": "createReportForReview",
-        "private": false
-    },
-    {
-        "name": "deleteSubmittedDocument",
-        "private": false
     },
     {
         "name": "onNewUser",
@@ -38,5 +34,17 @@
     {
         "name": "quickAdd",
         "private": false
+    },
+    {
+        "name": "updateIncidentClassification",
+        "private": false,
+        "run_as_system": true,
+        "can_evaluate": {
+            "%%user.custom_data.roles": "admin"
+        }
+    },
+    {
+        "name": "confirmUser",
+        "private": true
     }
 ]

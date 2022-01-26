@@ -1,4 +1,15 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-daterangepicker/daterangepicker.css';
+import '@fortawesome/fontawesome-svg-core/styles.css';
+import './src/global.css';
+
 import React from 'react';
+import { wrapRootElement } from './wrapRootElement';
+import Header from 'components/Header';
+import { QueryParamProvider } from 'use-query-params';
+import { navigate } from 'gatsby';
+import { UserContextProvider } from 'contexts/userContext';
+import { LanguageProvider } from 'components/i18n/useTranslation';
 
 export const onServiceWorkerUpdateReady = () => {
   const answer = window.confirm(
@@ -14,19 +25,9 @@ export const shouldUpdateScroll = ({ routerProps: { location } }) => {
   const { pathname } = location;
 
   if (pathname.includes('/apps/discover')) {
-    return false
+    return false;
   }
 };
-
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-daterangepicker/daterangepicker.css';
-import '@fortawesome/fontawesome-svg-core/styles.css';
-import './src/global.css';
-import { wrapRootElement } from './wrapRootElement';
-import Header from 'components/Header';
-import { QueryParamProvider } from 'use-query-params';
-import { navigate } from 'gatsby';
-import { UserContextProvider } from 'contexts/userContext';
 
 export const wrapPageElement = ({ element }) => {
   const history = {
@@ -40,10 +41,12 @@ export const wrapPageElement = ({ element }) => {
 
   return (
     <QueryParamProvider history={history}>
-      <UserContextProvider>
-        <Header />
-        {element}
-      </UserContextProvider>
+      <LanguageProvider>
+        <UserContextProvider>
+          <Header />
+          {element}
+        </UserContextProvider>
+      </LanguageProvider>
     </QueryParamProvider>
   );
 };

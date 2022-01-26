@@ -5,6 +5,8 @@ const DisplayModeEnumParam = withDefault(
   'details'
 );
 
+const LanguageEnumParam = withDefault(createEnumParam(['en']), 'en');
+
 const queryConfig = {
   s: StringParam,
   source_domain: StringParam,
@@ -18,6 +20,7 @@ const queryConfig = {
   epoch_date_published_min: StringParam,
   epoch_date_published_max: StringParam,
   display: DisplayModeEnumParam,
+  lang: LanguageEnumParam,
 };
 
-export { queryConfig, DisplayModeEnumParam };
+export { queryConfig, DisplayModeEnumParam, LanguageEnumParam };

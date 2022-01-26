@@ -49,11 +49,10 @@ const sortIncidentsByDatePublished = (incidentReports) => {
     if (isAfter(dateB, dateA)) {
       return -1;
     }
-  })
+  });
 };
 
 function CitePage(props) {
-
   const {
     pageContext: { incidentReports, taxonomies },
   } = props;
@@ -81,6 +80,19 @@ function CitePage(props) {
     incidentDate: incidentReports[0].node.incident_date,
   };
 
+  const timeline = sortedReports.map(({ node: { date_published, title, mongodb_id } }) => ({
+    date_published,
+    title,
+    mongodb_id,
+  }));
+
+  timeline.push({
+    date_published: stats.incidentDate,
+    title: 'Incident Occurrence',
+    mongodb_id: 0,
+    isOccurrence: true,
+  });
+
   return (
     <Layout {...props}>
       <Helmet>
@@ -99,7 +111,6 @@ function CitePage(props) {
       </div>
 
       <Container>
-
         <Row>
           <Col>
             <CardContainer className="card">
@@ -128,7 +139,7 @@ function CitePage(props) {
                 <h4>Reports Timeline</h4>
               </div>
               <div className="card-body">
-                <Timeline items={sortedReports} />
+                <Timeline data={timeline} />
               </div>
             </CardContainer>
           </Col>
@@ -157,7 +168,7 @@ function CitePage(props) {
           </Col>
         </Row>
 
-        {taxonomies.length > 0 &&
+        {taxonomies.length > 0 && (
           <Row className="mt-4">
             <Col>
               <div id="taxa-area">
@@ -167,7 +178,7 @@ function CitePage(props) {
               </div>
             </Col>
           </Row>
-        }
+        )}
 
         <Row className="mt-4">
           <Col>
@@ -204,10 +215,9 @@ function CitePage(props) {
         <CustomModal {...authorsModal} />
         <CustomModal {...submittersModal} />
         <CustomModal {...flagReportModal} />
-
       </Container>
     </Layout>
   );
-};
+}
 
 export default CitePage;

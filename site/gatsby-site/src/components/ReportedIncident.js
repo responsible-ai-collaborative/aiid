@@ -50,7 +50,7 @@ const dateRender = [
 const otherDetails = ['language', 'mongodb_id'];
 
 const ReportedIncident = ({ incident }) => {
-  const { user, isAdmin } = useUserContext();
+  const { user, isRole } = useUserContext();
 
   const {
     actions: { refetch },
@@ -61,6 +61,8 @@ const ReportedIncident = ({ incident }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const [open, setOpen] = useState(false);
+
+  const isSubmitter = isRole('submitter');
 
   const addReport = () => {
     user.functions.promoteReport({ _id: new ObjectId(incident['mongodb_id']) });
@@ -136,18 +138,18 @@ const ReportedIncident = ({ incident }) => {
             </Card>
           )}
           <Card.Footer className="d-flex text-muted">
-            <Button className="me-auto" disabled={!isAdmin} onClick={toggleEditing}>
+            <Button className="me-auto" disabled={!isSubmitter} onClick={toggleEditing}>
               <FontAwesomeIcon icon={faEdit} />
             </Button>
             <Button
               className="me-2"
               variant="outline-primary"
-              disabled={!isAdmin}
+              disabled={!isSubmitter}
               onClick={addReport}
             >
               Add {cardSubheader}
             </Button>
-            <Button variant="outline-secondary" disabled={!isAdmin} onClick={rejectReport}>
+            <Button variant="outline-secondary" disabled={!isSubmitter} onClick={rejectReport}>
               Reject {cardSubheader}
             </Button>
           </Card.Footer>

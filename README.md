@@ -158,6 +158,64 @@ gatsby build
 
 Restart Gatsby, and you should have a complete working environment!
 
+### Translation Process
+
+The translation process runs on Gatsby's `postBuild` event and consists of 3 steps:
+
+-1 Get the list of languages, which is pulled from the /src/components/i18n/languages.js using the `GATSBY_AVAILABLE_LANGUAGES` environment variable as a filter:
+```
+GATSBY_AVAILABLE_LANGUAGES=en,es,it,af
+```
+-2 Translate each incident report to each language, and save the translated reports to a `translations` database under a collection for each language:
+```
+translations 
+    |-- incident_reports_en
+    |   |-- { title, text, report_number }
+    |   |-- { title, text, report_number }
+    |
+    |--incident_report_es
+    |   |-- { title, text, report_number }
+        |-- { title, text, report_number }
+```
+To access this database, a user with read/write permissions needs to be provided through the following environment variable:
+
+```
+MONGODB_TRANSLATIONS_CONNECTION_STRING=mongodb+srv://<user>:<password>@aiiddev.<host>.mongodb.net
+```
+
+-3 Generate an Algolia index from each translated collection and upload them to Algolia. Each index has the following naming format:
+```
+instant_search-{language code}
+```
+After the first run, the following applies for subsequent runs:
+Translations of report fields load from the existing `translations/incident_reports_{language}/{doc}` document, and if not found, then the Translate API is hit.
+Algolia indexes are replaced every time the process runs
+
+### Cost
+
+The translate API charges ~20USD per million characters and can translate to 111 languages.
+
+At the time of writing, there are 1336 Incident Reports, each report consisting of ~4000 characters, with a total sum of ~5 million characters.
+
+Considering the pricing above, translating all ingested reports to one language will cost `(5 million / 1 million) * $20 = ~$100`, and translating all incident reports to all languages `$100 * 111= ~$11k`.
+
+The translation process defaults to a **dry run ** mode that prepends a string to every translated text instead of hitting Google's API. 
+
+Therefore, Translated texts in this mode will look like: `translated-{language}-YouTube to crack down on inappropriate content masked as kids’ cartoons`
+
+The dry run is disabled through an environment variable as follows:
+
+```
+TRANSLATE_DRY_RUN=false
+```
+
+### Geocoding
+If the feature you are working on depends on Google's Geocoding API, please add the following environment variable with the appropriate value to your .env file.
+
+```
+GOOGLE_MAPS_API_KEY=XXXXXXXXXXXX
+```
+
 ## Deployment Setup
 
 Deployment of the site consists of two parts: deployment of the backend related features that runs as a Github Action and deployment of the frontend related features that runs on Netlify:
@@ -192,7 +250,7 @@ For integration testing, we use Cypress. You can run the desktop app continuousl
 To use the desktop version, run:
 ```
 npm run test:e2e
-``
+```
 
 And to run it in continuous integration (headless) mode:
 ```

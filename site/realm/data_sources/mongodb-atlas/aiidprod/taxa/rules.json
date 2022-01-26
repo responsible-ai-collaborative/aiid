@@ -3,6 +3,52 @@
     "database": "aiidprod",
     "roles": [
         {
+            "name": "admin",
+            "apply_when": {
+                "%%user.custom_data.roles": "admin"
+            },
+            "write": true,
+            "insert": true,
+            "delete": true,
+            "search": true,
+            "additional_fields": {}
+        },
+        {
+            "name": "taxonomy_editor",
+            "apply_when": {
+                "%%user.custom_data.roles": "taxonomy_editor"
+            },
+            "write": true,
+            "insert": false,
+            "delete": false,
+            "search": true,
+            "additional_fields": {}
+        },
+        {
+            "name": "taxonomy_editor_cset",
+            "apply_when": {
+                "%%root.namespace": "CSET",
+                "%%user.custom_data.roles": "taxonomy_editor_cset"
+            },
+            "write": true,
+            "insert": false,
+            "delete": false,
+            "search": true,
+            "additional_fields": {}
+        },
+        {
+            "name": "taxonomy_editor_tech",
+            "apply_when": {
+                "%%root.namespace": "TECH",
+                "%%user.custom_data.roles": "taxonomy_editor_tech"
+            },
+            "write": true,
+            "insert": false,
+            "delete": false,
+            "search": true,
+            "additional_fields": {}
+        },
+        {
             "name": "default",
             "apply_when": {},
             "read": true,

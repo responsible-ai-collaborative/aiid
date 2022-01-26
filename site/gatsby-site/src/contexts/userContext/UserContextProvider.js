@@ -1,18 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as Realm from 'realm-web';
 import { realmApp } from 'services/realmApp';
 import { UserContext } from './UserContext';
+import { ApolloProvider, ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import config from '../../../config';
+import fetch from 'isomorphic-fetch';
 
-// A MongoDB interface component managing the privileged user state.
-// There are two authentication states for the API:
-//
-// 1. Anonymous users. These are permitted to make submissions to the database, but they
-//    are not permitted to accept reports into the main incident database.
-// 2. Authenticated users. These are permitted to accept reports into the database.
-//
-// Authenticated token users are added to the database in the MongoDB UI.
-//
-// https://docs.mongodb.com/realm/web/mongodb/
+// https://github.com/mongodb-university/realm-graphql-apollo-react/blob/master/src/index.js
+
+const getApolloCLient = (getValidAccessToken) =>
+  new ApolloClient({
+    link: new HttpLink({
+      uri: `https://realm.mongodb.com/api/client/v2.0/app/${config.realm.production_db.realm_app_id}/graphql`,
+
+      fetch: async (uri, options) => {
+        const accessToken = await getValidAccessToken();
+
+        options.headers.Authorization = `Bearer ${accessToken}`;
+        return fetch(uri, options);
+      },
+    }),
+    cache: new InMemoryCache(),
+  });
 
 export const UserContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
@@ -50,6 +59,18 @@ export const UserContextProvider = ({ children }) => {
     return realmApp.emailPasswordAuth.resetPassword(token, tokenId, password);
   };
 
+  const getValidAccessToken = async () => {
+    if (!realmApp.currentUser) {
+      await login();
+    } else {
+      await realmApp.currentUser.refreshCustomData();
+    }
+
+    return realmApp.currentUser.accessToken;
+  };
+
+  const client = useRef(getApolloCLient(getValidAccessToken)).current;
+
   useEffect(() => {
     async function checkUser() {
       if (!user || !user.isLoggedIn) {
@@ -67,6 +88,14 @@ export const UserContextProvider = ({ children }) => {
       value={{
         loading,
         user,
+        isRole(role) {
+          return (
+            user &&
+            user.isLoggedIn &&
+            user.customData.roles &&
+            (user.customData.roles.includes('admin') || user.customData.roles.includes(role))
+          );
+        },
         isAdmin:
           user &&
           user.isLoggedIn &&
@@ -80,7 +109,7 @@ export const UserContextProvider = ({ children }) => {
         },
       }}
     >
-      {children}
+      <ApolloProvider client={client}>{children}</ApolloProvider>
     </UserContext.Provider>
   );
 };

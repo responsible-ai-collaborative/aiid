@@ -55,7 +55,9 @@ const Line = styled.line`
   stroke-dasharray: 2;
 `;
 
-const Point = styled.circle``;
+const Point = styled.circle`
+  fill: ${(props) => (props.isOccurrence ? 'var(--bs-danger)' : 'var(--bs-gray-900)')};
+`;
 
 const Count = styled.text`
   fill: #fff;
@@ -86,12 +88,6 @@ const GroupListItem = styled.li`
 `;
 
 const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
-  const [baseURL, setBaseURL] = useState('');
-
-  useEffect(() => {
-    setBaseURL(location.href.replace(location.hash, ''));
-  }, []);
-
   return (
     <g key={bucket.x0} transform={`translate(20,${(yScale(bucket.x0) + yScale(bucket.x1)) / 2})`}>
       {bucket.length > 1 ? (
@@ -110,7 +106,11 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
                       <GroupListItem key={b.mongodb_id}>
                         {timeFormat('%b %d, %Y')(new Date(b.date_published))}
                         <br />
-                        <a href={`#r${b.mongodb_id}`}>{b.title}</a>
+                        {b.isOccurrence ? (
+                          <>{b.title}</>
+                        ) : (
+                          <a href={`#r${b.mongodb_id}`}>{b.title}</a>
+                        )}
                       </GroupListItem>
                     ))}
                   </GroupList>
@@ -124,27 +124,21 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
           </OverlayTrigger>
         </>
       ) : (
-        <Point cy={0} r={radius} />
+        <Point cy={0} r={radius} isOccurrence={bucket[0].isOccurrence} />
       )}
 
-      <a href={`#r${bucket[0].mongodb_id}`}>
+      {bucket[0].isOccurrence ? (
         <Title dx={16}>{bucket[0].title}</Title>
-      </a>
+      ) : (
+        <a href={bucket[0].mongodb_id ? `#r${bucket[0].mongodb_id}` : ''}>
+          <Title dx={16}>{bucket[0].title}</Title>
+        </a>
+      )}
     </g>
   );
 };
 
-const Reports = ({ data, yScale, yValue, margin, size }) => {
-  const [, innerHeight] = yScale.range();
-
-  const radius = 6;
-
-  const groupRadius = 12;
-
-  const thresholds = Math.round(innerHeight / (groupRadius * 2));
-
-  const binned = bin().value(yValue).thresholds(thresholds)(data);
-
+const Reports = ({ binned, yScale, radius, groupRadius, margin, size }) => {
   return (
     <g transform={`translate(${margin.left}, 0)`}>
       <Line x1={20} x2={20} y1={margin.top} y2={size.height - margin.bottom} />
@@ -163,15 +157,13 @@ const Reports = ({ data, yScale, yValue, margin, size }) => {
   );
 };
 
-const calculatesize = ({ data, rect }) => ({
+const calculatesize = ({ data, rect = null }) => ({
   width: rect ? rect.width : 640,
   height: data.length == 1 ? 120 : 480,
 });
 
-function Timeline({ items }) {
+function Timeline({ data }) {
   const containerRef = useRef();
-
-  const data = items.map((item) => item.node);
 
   const [size, setSize] = useState(calculatesize({ data }));
 
@@ -188,13 +180,23 @@ function Timeline({ items }) {
     .range([margin.top, size.height - margin.top])
     .nice();
 
+  const [, innerHeight] = yScale.range();
+
+  const radius = 6;
+
+  const groupRadius = 12;
+
+  const thresholds = Math.round(innerHeight / (groupRadius * 2));
+
+  const binned = bin().value(yValue).thresholds(thresholds)(data);
+
   useEffect(() => {
     const resize = () => {
       const container = containerRef.current;
 
       const rect = container.getBoundingClientRect();
 
-      setSize(calculatesize({ data, rect }));
+      setSize(calculatesize({ data: binned, rect }));
     };
 
     resize();
@@ -208,7 +210,15 @@ function Timeline({ items }) {
     <div ref={containerRef} style={{ height: `${size.height}px` }}>
       <svg width="100%" viewBox={`0 0 ${size.width} ${size.height}`}>
         <AxisLeft data={data} yScale={yScale} margin={margin} size={size} />
-        <Reports data={data} yScale={yScale} yValue={yValue} margin={margin} size={size} />
+        <Reports
+          radius={radius}
+          groupRadius={groupRadius}
+          binned={binned}
+          yScale={yScale}
+          yValue={yValue}
+          margin={margin}
+          size={size}
+        />
       </svg>
     </div>
   );

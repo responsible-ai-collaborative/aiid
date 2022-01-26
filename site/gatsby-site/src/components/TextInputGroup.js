@@ -11,28 +11,32 @@ const TextInputGroup = ({
   values = {},
   errors,
   touched,
-  type,
+  type = 'text',
   handleChange,
   handleBlur,
   addOnComponent = null,
+  className = '',
   ...props
 }) => (
-  <Form.Group className="form-group">
+  <Form.Group className={`form-group ${className}`}>
     <Label popover={POP_OVERS[name]} label={label} />
     <InputGroup>
       <Form.Control
-        type={type || 'text'}
+        type={type}
         name={name}
         placeholder={placeholder}
         onChange={handleChange}
         onBlur={handleBlur}
         value={values[name] || ''}
         className={touched[name] && errors[name] ? 'has-error' : null}
+        isInvalid={errors[name] && touched[name]}
         {...props}
       />
       {addOnComponent}
+      <Form.Control.Feedback type="invalid">
+        {errors[name] && touched[name] ? errors[name] : null}
+      </Form.Control.Feedback>
     </InputGroup>
-    {touched[name] && errors[name] ? <div className="error-message">{errors[name]}</div> : null}
   </Form.Group>
 );
 

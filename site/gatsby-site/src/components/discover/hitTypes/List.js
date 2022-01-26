@@ -5,7 +5,7 @@ import { Image } from 'utils/cloudinary';
 import styled from 'styled-components';
 import { fill } from '@cloudinary/base/actions/resize';
 import md5 from 'md5';
-import Actions from './Actions';
+import Actions from '../Actions';
 import { getParagraphs } from 'utils/typography';
 
 const IncidentCardImage = styled(Image)`

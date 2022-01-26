@@ -1,5 +1,7 @@
 const path = require('path');
 
+const { Client: GoogleMapsAPIClient } = require('@googlemaps/google-maps-services-js');
+
 const startCase = require('lodash.startcase');
 
 const config = require('./config');
@@ -23,6 +25,12 @@ const discoverIndex = require('./src/utils/discoverIndexGenerator');
 const algoliasearch = require('algoliasearch');
 
 const algoliaSettings = require('./src/utils/algoliaSettings');
+
+const translateIncidents = require('./src/utils/translateIncidents');
+
+const updateDiscoverIndexes = require('./src/utils/updateDiscoverIndexes');
+
+const googleMapsApiClient = new GoogleMapsAPIClient({});
 
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions;
@@ -78,7 +86,7 @@ exports.onCreateBabelConfig = ({ actions }) => {
   });
 };
 
-exports.onCreateNode = ({ node, getNode, actions }) => {
+exports.onCreateNode = async ({ node, getNode, actions }) => {
   const { createNodeField } = actions;
 
   if (node.internal.type === `Mdx`) {
@@ -120,6 +128,35 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
       value: node.frontmatter.title || startCase(parent.name),
     });
   }
+
+  if (node.internal.type == 'mongodbAiidprodClassifications') {
+    let value = { geometry: { location: { lat: 0, lng: 0 } } };
+
+    if (config.google.mapsApiKey) {
+      try {
+        if (node.classifications.Location && node.classifications.Location !== '') {
+          const {
+            data: {
+              results: { 0: geometry },
+            },
+          } = await googleMapsApiClient.geocode({
+            params: { key: config.google.mapsApiKey, address: node.classifications.Location },
+          });
+
+          value = geometry;
+        }
+      } catch (e) {
+        console.log(e);
+        console.log('Error fetching geocode data for', node.classifications.Location);
+      }
+    }
+
+    createNodeField({
+      name: 'geocode',
+      node,
+      value,
+    });
+  }
 };
 
 exports.createSchemaCustomization = ({ actions }) => {
@@ -128,16 +165,51 @@ exports.createSchemaCustomization = ({ actions }) => {
   const typeDefs = `
     type mongodbAiidprodIncidents implements Node {
       cloudinary_id: String
+      tags: [String]
     }
   `;
 
   createTypes(typeDefs);
 };
 
+exports.onPreBuild = function () {
+  if (!config.google.mapsApiKey) {
+    console.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
+  }
+};
+
 exports.onPostBuild = async function ({ graphql, reporter }) {
   const activity = reporter.activityTimer(`Algolia`);
 
   activity.start();
+
+  if (
+    config.mongodb.translationsConnectionString &&
+    config.google.translateApikey &&
+    config.google.availableLanguages &&
+    config.header.search.algoliaAdminKey &&
+    config.header.search.algoliaAppId
+  ) {
+    try {
+      if (process.env.TRANSLATE_DRY_RUN !== 'false') {
+        reporter.warn(
+          'Please set `TRANSLATE_DRY_RUN=false` to disble dry running of translation process.'
+        );
+      }
+
+      activity.setStatus('Translating incident reports...');
+
+      await translateIncidents.run({ reporter });
+
+      activity.setStatus('Updating incidents indexes...');
+
+      await updateDiscoverIndexes.run({ reporter });
+    } catch (e) {
+      reporter.warn('Error running translation scripts:', e);
+    }
+  } else {
+    reporter.log(`Missing env settings, skipping indexes translation and upload.`);
+  }
 
   if (config.header.search.algoliaAppId && config.header.search.algoliaAdminKey) {
     activity.setStatus('Building index...');
@@ -162,10 +234,9 @@ exports.onPostBuild = async function ({ graphql, reporter }) {
     await index.setSettings(algoliaSettings);
 
     activity.setStatus('Settings saved.');
-
-    activity.end();
   } else {
     activity.setStatus(`Missing env settings, skipping index upload.`);
-    activity.end();
   }
+
+  activity.end();
 };
