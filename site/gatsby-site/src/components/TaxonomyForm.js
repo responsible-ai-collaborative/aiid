@@ -536,9 +536,7 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
                     className="btn btn-secondary btn-sm w-100"
                     onClick={() => setShowAllClassifications(!showAllClassifications)}
                   >
-                    {`Show ${
-                      showAllClassifications[taxonomy.namespace] ? 'Fewer' : 'All'
-                    } Classifications`}
+                    Show {`${showAllClassifications ? 'Fewer' : 'All'}`} Classifications
                   </button>
                 </>
               ) : (
