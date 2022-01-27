@@ -412,15 +412,18 @@ const EditTaxonomyForm = ({
           isSubmitting,
         }) => (
           <Form onSubmit={handleSubmit}>
-            <Form.Control
-              id={'notes'}
-              name={'notes'}
-              type="text"
-              as="textarea"
-              rows={4}
-              onChange={handleChange}
-              value={values.notes}
-            />
+            <Form.Group className="mb-4">
+              <Form.Label>Notes</Form.Label>
+              <Form.Control
+                id={'notes'}
+                name={'notes'}
+                type="text"
+                as="textarea"
+                rows={4}
+                onChange={handleChange}
+                value={values.notes}
+              />
+            </Form.Group>
             <fieldset disabled={isSubmitting}>
               {fieldsWithDefaultValues.map((rawField) =>
                 generateFormField(rawField, handleChange, values)
