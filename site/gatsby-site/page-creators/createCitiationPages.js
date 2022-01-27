@@ -53,8 +53,7 @@ const createCitiationPages = async (graphql, createPage) => {
   const result = await graphql(
     `
       query IncidentIDs {
-        allMongodbAiidprodIncidents {
-          distinct(field: incident_id)
+        allMongodbAiidprodIncidents(filter: { incident_id: { ne: 0 } }) {
           group(field: incident_id) {
             fieldValue
             edges {
@@ -122,6 +121,16 @@ const createCitiationPages = async (graphql, createPage) => {
           }
         }
 
+        allMongodbAiidprodResources {
+          nodes {
+            id
+            incident_id
+            classifications {
+              Datasheets_for_Datasets
+            }
+          }
+        }
+
         allMongodbAiidprodTaxa {
           nodes {
             id
@@ -154,18 +163,23 @@ const createCitiationPages = async (graphql, createPage) => {
     allMongodbAiidprodClassifications,
     allMongodbAiidprodDuplicates,
     allMongodbAiidprodTaxa,
+    allMongodbAiidprodResources,
   } = result.data;
 
   // Incident reports list
   const incidentReportsMap = {};
 
-  result.data.allMongodbAiidprodIncidents.group.map((g) => {
+  allMongodbAiidprodIncidents.group.map((g) => {
     incidentReportsMap[g.fieldValue] = g.edges;
   });
 
-  // Incident taxonomy and classifications
-  allMongodbAiidprodIncidents.distinct.forEach((incident_id) => {
-    const incidentClassifications = allMongodbAiidprodClassifications.nodes.filter(
+  const allClassifications = [
+    ...allMongodbAiidprodClassifications.nodes,
+    ...allMongodbAiidprodResources.nodes.map((r) => ({ ...r, namespace: 'resources' })),
+  ];
+
+  for (const incident_id of Object.keys(incidentReportsMap)) {
+    const incidentClassifications = allClassifications.filter(
       (t) => t.incident_id.toString() === incident_id
     );
 
@@ -189,21 +203,21 @@ const createCitiationPages = async (graphql, createPage) => {
         taxonomies,
       },
     });
-  });
+  }
 
-  // Create redirects
-  allMongodbAiidprodDuplicates.nodes.forEach(
-    ({ true_incident_number, duplicate_incident_number }) => {
-      createPage({
-        path: '/cite/' + duplicate_incident_number,
-        component: path.resolve('./src/templates/cite-duplicate.js'),
-        context: {
-          duplicate_incident_number: parseInt(duplicate_incident_number),
-          true_incident_number: parseInt(true_incident_number),
-        },
-      });
-    }
-  );
+  for (const {
+    true_incident_number,
+    duplicate_incident_number,
+  } of allMongodbAiidprodDuplicates.nodes) {
+    createPage({
+      path: '/cite/' + duplicate_incident_number,
+      component: path.resolve('./src/templates/cite-duplicate.js'),
+      context: {
+        duplicate_incident_number: parseInt(duplicate_incident_number),
+        true_incident_number: parseInt(true_incident_number),
+      },
+    });
+  }
 };
 
 module.exports = createCitiationPages;
