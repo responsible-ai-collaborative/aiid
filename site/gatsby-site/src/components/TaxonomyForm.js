@@ -6,6 +6,11 @@ import { useMongo } from 'hooks/useMongo';
 import { Formik } from 'formik';
 import Loader from 'components/Loader';
 import config from '../../config.js';
+import { useQuery } from '@apollo/client';
+import {
+  FIND_CSET_CLASSIFICATION,
+  FIND_RESOURCE_CLASSIFICATION,
+} from '../graphql/classifications.js';
 
 const ClassificationContainer = styled.div`
   display: flex;
@@ -64,6 +69,11 @@ const TaxaHeader = styled.h4`
 
 const TEXTAREA_LIMIT = 120;
 
+const queryMap = {
+  CSET: FIND_CSET_CLASSIFICATION,
+  resources: FIND_RESOURCE_CLASSIFICATION,
+};
+
 const EditTaxonomyForm = ({
   namespace,
   incidentId,
@@ -73,7 +83,7 @@ const EditTaxonomyForm = ({
 }) => {
   const [loading, setLoading] = useState(true);
 
-  const [error, setError] = useState('');
+  const [error] = useState('');
 
   const { user } = useUserContext();
 
@@ -81,111 +91,78 @@ const EditTaxonomyForm = ({
 
   const [fieldsWithDefaultValues, setFieldsWithDefaultValues] = useState([]);
 
-  const useRunTaxaQuery = () => {
-    return new Promise((resolve, reject) => {
-      const { runQuery } = useMongo();
+  const [taxonomy, setTaxonomy] = useState(null);
 
-      try {
-        runQuery(
-          {
-            namespace,
-          },
-          (res) => {
-            resolve(res);
-          },
-          config.realm.production_db.db_service,
-          config.realm.production_db.db_name,
-          'taxa'
-        );
-      } catch (error) {
-        reject(error);
-      }
-    });
-  };
-
-  const useRunClassificationsQuery = () => {
-    return new Promise((resolve, reject) => {
-      const { runQuery } = useMongo();
-
-      try {
-        runQuery(
-          {
-            // 'classifications.Publish': true,
-            incident_id: incidentId,
-            namespace,
-          },
-          (res) => {
-            resolve(res);
-          },
-          config.realm.production_db.db_service,
-          config.realm.production_db.db_name,
-          'classifications'
-        );
-      } catch (error) {
-        reject(error);
-      }
-    });
-  };
+  const { runQuery } = useMongo();
 
   useEffect(() => {
-    setLoading(true);
-    Promise.all([useRunTaxaQuery(), useRunClassificationsQuery()])
-      .then((results) => {
-        const taxonomy = results[0][0];
+    runQuery(
+      {
+        namespace,
+      },
+      (res) => {
+        setTaxonomy(res[0]);
+      },
+      config.realm.production_db.db_service,
+      config.realm.production_db.db_name,
+      'taxa'
+    );
+  }, []);
 
-        let classifications = {};
+  const { data: classificationsData } = useQuery(queryMap[namespace], {
+    variables: { query: { incident_id: incidentId } },
+  });
 
-        let notes = '';
+  useEffect(() => {
+    if (classificationsData && taxonomy) {
+      const key = namespace === 'CSET' ? 'classifications' : namespace;
 
-        if (results[1].length > 0) {
-          classifications = results[1][0].classifications;
-          if (results[1][0].notes) {
-            notes = results[1][0].notes;
+      const classification = classificationsData[key][0];
+
+      const classifications = classification?.classifications || {};
+
+      const notes = classification?.notes || '';
+
+      const fieldsArray = [];
+
+      const defaultValues = {};
+
+      taxonomy.field_list.forEach((taxaField) => {
+        const field = {
+          display_type: taxaField.display_type,
+          mongo_type: taxaField.mongo_type,
+          permitted_values: taxaField.permitted_values,
+          placeholder: taxaField.placeholder,
+          required: taxaField.required,
+          short_description: taxaField.short_description,
+          short_name: taxaField.short_name.split(' ').join(''),
+        };
+
+        fieldsArray.push(field);
+
+        let classificationValue = classifications[field.short_name];
+
+        if (classificationValue === undefined) {
+          classificationValue = '';
+        } else {
+          if (taxaField.display_type === 'date') {
+            classificationValue = classifications[field.short_name].split('T')[0];
           }
         }
 
-        const fieldsArray = [];
-
-        const defaultValues = {};
-
-        taxonomy.field_list.forEach((taxaField) => {
-          fieldsArray.push({
-            display_type: taxaField.display_type,
-            mongo_type: taxaField.mongo_type,
-            permitted_values: taxaField.permitted_values,
-            placeholder: taxaField.placeholder,
-            required: taxaField.required,
-            short_description: taxaField.short_description,
-            short_name: taxaField.short_name.split(' ').join('_'),
-          });
-
-          let classificationValue = classifications[taxaField.short_name];
-
-          if (classificationValue === undefined) {
-            classificationValue = '';
-          } else {
-            if (taxaField.display_type === 'date') {
-              classificationValue = classifications[taxaField.short_name].split('T')[0];
-            }
-          }
-
-          defaultValues[taxaField.short_name.split(' ').join('_')] = classificationValue;
-        });
-        setFieldsWithDefaultValues(fieldsArray);
-
-        setInitialValues({
-          ...defaultValues,
-          notes,
-        });
-
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError('Error fetching. Please try later.');
-        setLoading(false);
+        defaultValues[field.short_name] = classificationValue;
       });
-  }, []);
+
+      setFieldsWithDefaultValues(fieldsArray);
+
+      setInitialValues({
+        ...defaultValues,
+        notes,
+      });
+
+      setLoading(false);
+    }
+  }, [classificationsData, taxonomy]);
 
   const generateFormField = (rawField, handleChange, formikValues) => {
     const validateListField = (value) => {
@@ -464,6 +441,8 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
   ) {
     return <></>;
   }
+
+  console.log(taxonomy);
 
   return (
     <Row key={taxonomy.namespace} className="mb-4">
