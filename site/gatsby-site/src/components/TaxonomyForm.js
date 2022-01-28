@@ -6,10 +6,12 @@ import { useMongo } from 'hooks/useMongo';
 import { Formik } from 'formik';
 import Loader from 'components/Loader';
 import config from '../../config.js';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import {
   FIND_CSET_CLASSIFICATION,
   FIND_RESOURCE_CLASSIFICATION,
+  UPDATE_CSET_CLASSIFICATION,
+  UPDATE_RESOURCE_CLASSIFICATION,
 } from '../graphql/classifications.js';
 
 const ClassificationContainer = styled.div`
@@ -74,6 +76,11 @@ const queryMap = {
   resources: FIND_RESOURCE_CLASSIFICATION,
 };
 
+const mutationMap = {
+  CSET: UPDATE_CSET_CLASSIFICATION,
+  resources: UPDATE_RESOURCE_CLASSIFICATION,
+};
+
 const getTaxaFieldKey = (key) => {
   key = key.split(' ').join('');
 
@@ -86,6 +93,8 @@ const getTaxaFieldKey = (key) => {
       return 'SectorOfDeployment';
     case 'RelevantAIfunctions':
       return 'RelevantAIFunctions';
+    case 'DatasheetsforDatasets':
+      return 'DatasheetsForDatasets';
   }
   return key;
 };
@@ -101,8 +110,6 @@ const EditTaxonomyForm = ({
 
   const [error] = useState('');
 
-  const { user } = useUserContext();
-
   const [initialValues, setInitialValues] = useState({});
 
   const [fieldsWithDefaultValues, setFieldsWithDefaultValues] = useState([]);
@@ -111,6 +118,8 @@ const EditTaxonomyForm = ({
 
   const { runQuery } = useMongo();
 
+  // this should be updated to use the useQuery hook but some
+  // fields need to be normalized to play nice with graphql
   useEffect(() => {
     runQuery(
       {
@@ -128,6 +137,8 @@ const EditTaxonomyForm = ({
   const { data: classificationsData } = useQuery(queryMap[namespace], {
     variables: { query: { incident_id: incidentId } },
   });
+
+  const [updateClassification] = useMutation(mutationMap[namespace]);
 
   useEffect(() => {
     if (classificationsData && taxonomy) {
@@ -203,10 +214,10 @@ const EditTaxonomyForm = ({
           <Form.Control
             as="select"
             id={rawField.short_name}
-            name={rawField.short_name}
+            name={rawField.key}
             type="text"
             onChange={handleChange}
-            value={formikValues[rawField.short_name]}
+            value={formikValues[rawField.key]}
           >
             <option key={''} value={''}>
               {''}
@@ -223,7 +234,7 @@ const EditTaxonomyForm = ({
           formikValues[rawField.key].length <= TEXTAREA_LIMIT && (
             <Form.Control
               id={rawField.short_name}
-              name={rawField.short_name}
+              name={rawField.key}
               type="text"
               onChange={handleChange}
               value={formikValues[rawField.key]}
@@ -236,7 +247,7 @@ const EditTaxonomyForm = ({
               as="textarea"
               rows={3}
               id={rawField.short_name}
-              name={rawField.short_name}
+              name={rawField.key}
               type="text"
               onChange={handleChange}
               value={formikValues[rawField.key]}
@@ -341,15 +352,15 @@ const EditTaxonomyForm = ({
   }
 
   const onSubmit = async (values, { setSubmitting }) => {
-    let newValues = values;
+    const { notes, ...classifications } = values;
 
     fieldsWithDefaultValues.forEach((f) => {
       //Convert string values into array
       if (f.display_type === 'list') {
         if (Array.isArray(values[f.key])) {
-          newValues[f.key] = values[f.key].map((f) => f.trim()).filter((f) => f !== '');
+          classifications[f.key] = values[f.key].map((f) => f.trim()).filter((f) => f !== '');
         } else {
-          newValues[f.key] = values[f.key]
+          classifications[f.key] = values[f.key]
             .split(';')
             .map((f) => f.trim())
             .filter((f) => f !== '');
@@ -359,32 +370,30 @@ const EditTaxonomyForm = ({
       //Convert string into boolean
       if (f.display_type === 'bool') {
         if (values[f.key] === '') {
-          newValues[f.key] = undefined;
+          classifications[f.key] = undefined;
         } else {
-          newValues[f.key] = values[f.key] === 'true';
+          classifications[f.key] = values[f.key] === 'true';
         }
       }
     });
 
-    const newValuesNoUnderscore = {};
+    await updateClassification({
+      variables: {
+        query: {
+          incident_id: incidentId,
+        },
+        data: {
+          incident_id: incidentId,
+          notes,
+          classifications,
+        },
+      },
+    });
 
-    for (const key in newValues) {
-      newValuesNoUnderscore[key.split('_').join(' ')] = newValues[key];
-    }
-
-    if (JSON.stringify(initialValues) !== JSON.stringify(newValues)) {
-      await user.functions.updateIncidentClassification({
-        incident_id: incidentId,
-        namespace,
-        newClassifications: newValuesNoUnderscore,
-        notes: newValuesNoUnderscore.notes,
-      });
-
-      setShowBanner(true);
-    }
-
+    setShowBanner(true);
     setIsEditing(false);
     setSubmitting(false);
+
     if (doneSubmittingCallback) {
       doneSubmittingCallback();
     }

@@ -4,6 +4,8 @@ export const FIND_RESOURCE_CLASSIFICATION = gql`
   query FindResourceClassifications($query: ResourceQueryInput) {
     resources(query: $query) {
       _id
+      incident_id
+      notes
       classifications {
         DatasheetsForDatasets
       }
@@ -12,9 +14,11 @@ export const FIND_RESOURCE_CLASSIFICATION = gql`
 `;
 
 export const UPDATE_RESOURCE_CLASSIFICATION = gql`
-  mutation UpdateResource($query: ResourceQueryInput, $set: ResourceUpdateInput!) {
-    updateOneResource(query: $query, set: $set) {
+  mutation UpserResourceClassification($query: ResourceQueryInput, $data: ResourceInsertInput!) {
+    upsertOneResource(query: $query, data: $data) {
       _id
+      incident_id
+      notes
       classifications {
         DatasheetsForDatasets
       }
@@ -68,12 +72,49 @@ export const FIND_CSET_CLASSIFICATION = gql`
 `;
 
 export const UPDATE_CSET_CLASSIFICATION = gql`
-  mutation UpdateCSETClassification(
+  mutation UpsertClassification(
     $query: ClassificationQueryInput
-    $set: ClassificationUpdateInput!
+    $data: ClassificationInsertInput!
   ) {
-    updateOneClassification(query: $query, set: $set) {
+    upsertOneClassification(query: $query, data: $data) {
       _id
+      incident_id
+      notes
+      classifications {
+        AIApplications
+        AISystemDescription
+        AITechniques
+        AnnotationStatus
+        Annotator
+        BeginningDate
+        DataInputs
+        EndingDate
+        FinancialCost
+        FullDescription
+        HarmDistributionBasis
+        HarmType
+        InfrastructureSectors
+        Intent
+        LawsImplicated
+        LevelOfAutonomy
+        LivesLost
+        Location
+        NamedEntities
+        NatureOfEndUser
+        NearMiss
+        Notes
+        PhysicalSystem
+        ProblemNature
+        PublicSectorDeployment
+        Publish
+        RelevantAIFunctions
+        Reviewer
+        SectorOfDeployment
+        Severity
+        ShortDescription
+        SystemDeveloper
+        TechnologyPurveyor
+      }
     }
   }
 `;
