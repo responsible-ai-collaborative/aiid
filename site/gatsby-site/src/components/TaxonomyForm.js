@@ -170,12 +170,16 @@ const EditTaxonomyForm = ({
 
         let classificationValue = classifications[field.key];
 
-        if (classificationValue === undefined) {
-          classificationValue = '';
-        } else if (taxaField.display_type === 'multi') {
-          classificationValue = [];
-        } else if (taxaField.display_type === 'date') {
-          classificationValue = classifications[field.key].split('T')[0];
+        if (!classificationValue) {
+          if (taxaField.display_type === 'multi') {
+            classificationValue = [];
+          } else {
+            classificationValue = '';
+          }
+        } else {
+          if (taxaField.display_type === 'date') {
+            classificationValue = classifications[field.key].split('T')[0];
+          }
         }
 
         defaultValues[field.key] = classificationValue;
