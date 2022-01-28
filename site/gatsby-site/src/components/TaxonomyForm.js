@@ -138,12 +138,12 @@ const EditTaxonomyForm = ({
     variables: { query: { incident_id: incidentId } },
   });
 
+  const key = namespace === 'CSET' ? 'classifications' : namespace;
+
   const [updateClassification] = useMutation(mutationMap[namespace]);
 
   useEffect(() => {
     if (classificationsData && taxonomy) {
-      const key = namespace === 'CSET' ? 'classifications' : namespace;
-
       const classification = classificationsData[key][0];
 
       const classifications = classification?.classifications || {};
@@ -354,6 +354,8 @@ const EditTaxonomyForm = ({
   const onSubmit = async (values, { setSubmitting }) => {
     const { notes, ...classifications } = values;
 
+    const Publish = classificationsData[key][0]?.classifications.Publish;
+
     fieldsWithDefaultValues.forEach((f) => {
       //Convert string values into array
       if (f.display_type === 'list') {
@@ -385,7 +387,10 @@ const EditTaxonomyForm = ({
         data: {
           incident_id: incidentId,
           notes,
-          classifications,
+          classifications: {
+            ...classifications,
+            Publish,
+          },
         },
       },
     });

@@ -174,7 +174,7 @@ const createCitiationPages = async (graphql, createPage) => {
   });
 
   const allClassifications = [
-    ...allMongodbAiidprodClassifications.nodes,
+    ...allMongodbAiidprodClassifications.nodes.map((r) => ({ ...r, namespace: 'CSET' })),
     ...allMongodbAiidprodResources.nodes.map((r) => ({ ...r, namespace: 'resources' })),
   ];
 
