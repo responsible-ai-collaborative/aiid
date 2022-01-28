@@ -74,6 +74,22 @@ const queryMap = {
   resources: FIND_RESOURCE_CLASSIFICATION,
 };
 
+const getTaxaFieldKey = (key) => {
+  key = key.split(' ').join('');
+
+  switch (key) {
+    case 'LevelofAutonomy':
+      return 'LevelOfAutonomy';
+    case 'NatureofEndUser':
+      return 'NatureOfEndUser';
+    case 'SectorofDeployment':
+      return 'SectorOfDeployment';
+    case 'RelevantAIfunctions':
+      return 'RelevantAIFunctions';
+  }
+  return key;
+};
+
 const EditTaxonomyForm = ({
   namespace,
   incidentId,
@@ -135,22 +151,23 @@ const EditTaxonomyForm = ({
           placeholder: taxaField.placeholder,
           required: taxaField.required,
           short_description: taxaField.short_description,
-          short_name: taxaField.short_name.split(' ').join(''),
+          short_name: taxaField.short_name,
+          key: getTaxaFieldKey(taxaField.short_name),
         };
 
         fieldsArray.push(field);
 
-        let classificationValue = classifications[field.short_name];
+        let classificationValue = classifications[field.key];
 
         if (classificationValue === undefined) {
           classificationValue = '';
-        } else {
-          if (taxaField.display_type === 'date') {
-            classificationValue = classifications[field.short_name].split('T')[0];
-          }
+        } else if (taxaField.display_type === 'multi') {
+          classificationValue = [];
+        } else if (taxaField.display_type === 'date') {
+          classificationValue = classifications[field.key].split('T')[0];
         }
 
-        defaultValues[field.short_name] = classificationValue;
+        defaultValues[field.key] = classificationValue;
       });
 
       setFieldsWithDefaultValues(fieldsArray);
@@ -174,8 +191,8 @@ const EditTaxonomyForm = ({
     };
 
     return (
-      <div key={rawField.short_name}>
-        <Form.Label>{rawField.short_name.split('_').join(' ')}</Form.Label>
+      <div key={rawField.key}>
+        <Form.Label>{rawField.short_name}</Form.Label>
         {rawField.display_type === 'list' && (
           <UsageInfoSpan>{' (use semicolon for term separation)'}</UsageInfoSpan>
         )}
@@ -203,18 +220,18 @@ const EditTaxonomyForm = ({
         )}
 
         {rawField.display_type === 'string' &&
-          formikValues[rawField.short_name].length <= TEXTAREA_LIMIT && (
+          formikValues[rawField.key].length <= TEXTAREA_LIMIT && (
             <Form.Control
               id={rawField.short_name}
               name={rawField.short_name}
               type="text"
               onChange={handleChange}
-              value={formikValues[rawField.short_name]}
+              value={formikValues[rawField.key]}
             />
           )}
 
         {rawField.display_type === 'string' &&
-          formikValues[rawField.short_name].length > TEXTAREA_LIMIT && (
+          formikValues[rawField.key].length > TEXTAREA_LIMIT && (
             <Form.Control
               as="textarea"
               rows={3}
@@ -222,18 +239,18 @@ const EditTaxonomyForm = ({
               name={rawField.short_name}
               type="text"
               onChange={handleChange}
-              value={formikValues[rawField.short_name]}
+              value={formikValues[rawField.key]}
             />
           )}
 
         {rawField.display_type === 'bool' && (
           <Form.Control
             as="select"
-            id={rawField.short_name}
-            name={rawField.short_name}
+            id={rawField.key}
+            name={rawField.key}
             type="text"
             onChange={handleChange}
-            value={formikValues[rawField.short_name]}
+            value={formikValues[rawField.key]}
           >
             <option key={''} value={''}>
               {''}
@@ -249,31 +266,31 @@ const EditTaxonomyForm = ({
 
         {rawField.display_type === 'date' && (
           <Form.Control
-            id={rawField.short_name}
-            name={rawField.short_name}
+            id={rawField.key}
+            name={rawField.key}
             type="date"
             onChange={handleChange}
-            value={formikValues[rawField.short_name]}
+            value={formikValues[rawField.key]}
           />
         )}
 
         {rawField.display_type === 'location' && (
           <Form.Control
-            id={rawField.short_name}
-            name={rawField.short_name}
+            id={rawField.key}
+            name={rawField.key}
             type="text"
             onChange={handleChange}
-            value={formikValues[rawField.short_name]}
+            value={formikValues[rawField.key]}
           />
         )}
 
         {rawField.display_type === 'list' && (
           <Form.Control
-            id={rawField.short_name}
-            name={rawField.short_name}
+            id={rawField.key}
+            name={rawField.key}
             type="text"
             onChange={handleChange}
-            value={validateListField(formikValues[rawField.short_name])}
+            value={validateListField(formikValues[rawField.key])}
           />
         )}
 
@@ -281,11 +298,11 @@ const EditTaxonomyForm = ({
           <Form.Control
             as="select"
             multiple={true}
-            id={rawField.short_name}
-            name={rawField.short_name}
+            id={rawField.key}
+            name={rawField.key}
             type="text"
             onChange={handleChange}
-            value={formikValues[rawField.short_name]}
+            value={formikValues[rawField.key]}
           >
             {rawField.permitted_values.map((v) => (
               <option key={v} value={v}>
@@ -294,9 +311,7 @@ const EditTaxonomyForm = ({
             ))}
           </Form.Control>
         )}
-        <Form.Text className={['text-muted', 'mb-4', 'd-block']}>
-          {rawField.short_description}
-        </Form.Text>
+        <Form.Text className="text-muted mb-4 d-block">{rawField.short_description}</Form.Text>
       </div>
     );
   };
@@ -331,12 +346,10 @@ const EditTaxonomyForm = ({
     fieldsWithDefaultValues.forEach((f) => {
       //Convert string values into array
       if (f.display_type === 'list') {
-        if (Array.isArray(values[f.short_name])) {
-          newValues[f.short_name] = values[f.short_name]
-            .map((f) => f.trim())
-            .filter((f) => f !== '');
+        if (Array.isArray(values[f.key])) {
+          newValues[f.key] = values[f.key].map((f) => f.trim()).filter((f) => f !== '');
         } else {
-          newValues[f.short_name] = values[f.short_name]
+          newValues[f.key] = values[f.key]
             .split(';')
             .map((f) => f.trim())
             .filter((f) => f !== '');
@@ -345,10 +358,10 @@ const EditTaxonomyForm = ({
 
       //Convert string into boolean
       if (f.display_type === 'bool') {
-        if (values[f.short_name] === '') {
-          newValues[f.short_name] = undefined;
+        if (values[f.key] === '') {
+          newValues[f.key] = undefined;
         } else {
-          newValues[f.short_name] = values[f.short_name] === 'true';
+          newValues[f.key] = values[f.key] === 'true';
         }
       }
     });
@@ -416,7 +429,7 @@ const EditTaxonomyForm = ({
   );
 };
 
-const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
+const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback = null }) => {
   if (!taxonomy) {
     return null;
   }
@@ -441,8 +454,6 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
   ) {
     return <></>;
   }
-
-  console.log(taxonomy);
 
   return (
     <Row key={taxonomy.namespace} className="mb-4">
