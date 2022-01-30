@@ -493,18 +493,20 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
               )}
               {taxonomy.classificationsArray.length > 0 ? (
                 <>
-                  <ClassificationContainer key={'NOTES'} className="card-body">
-                    <Field>
-                      <OverlayTrigger
-                        placement="left"
-                        delay={{ show: 100, hide: 400 }}
-                        overlay={(e) => renderTooltip(e, 'Admin notes')}
-                      >
-                        <p>{'Notes'}</p>
-                      </OverlayTrigger>
-                    </Field>
-                    <Value>{taxonomy.notes}</Value>
-                  </ClassificationContainer>
+                  {canEdit && (
+                    <ClassificationContainer key={'NOTES'} className="card-body">
+                      <Field>
+                        <OverlayTrigger
+                          placement="left"
+                          delay={{ show: 100, hide: 400 }}
+                          overlay={(e) => renderTooltip(e, 'Admin notes')}
+                        >
+                          <p>{'Notes'}</p>
+                        </OverlayTrigger>
+                      </Field>
+                      <Value>{taxonomy.notes}</Value>
+                    </ClassificationContainer>
+                  )}
                   {taxonomy.classificationsArray
                     .filter((field) => {
                       if (showAllClassifications) return true;
