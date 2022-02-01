@@ -455,12 +455,8 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
     </Tooltip>
   );
 
-  if (
-    !isRole('taxonomy_editor') ||
-    !isRole('taxonomy_editor_' + taxonomy.namespace.toLowerCase())
-  ) {
-    return <></>;
-  }
+  const canEdit =
+    isRole('taxonomy_editor') || isRole('taxonomy_editor_' + taxonomy.namespace.toLowerCase());
 
   return (
     <Row key={taxonomy.namespace} className="mb-4">
@@ -471,7 +467,7 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
             {isEditing ? (
               <Button onClick={() => setIsEditing(false)}>Cancel</Button>
             ) : (
-              <Button onClick={() => setIsEditing(true)}>Edit</Button>
+              canEdit && <Button onClick={() => setIsEditing(true)}>Edit</Button>
             )}
           </>
           <a
@@ -497,18 +493,20 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
               )}
               {taxonomy.classificationsArray.length > 0 ? (
                 <>
-                  <ClassificationContainer key={'NOTES'} className="card-body">
-                    <Field>
-                      <OverlayTrigger
-                        placement="left"
-                        delay={{ show: 100, hide: 400 }}
-                        overlay={(e) => renderTooltip(e, 'Admin notes')}
-                      >
-                        <p>{'Notes'}</p>
-                      </OverlayTrigger>
-                    </Field>
-                    <Value>{taxonomy.notes}</Value>
-                  </ClassificationContainer>
+                  {canEdit && (
+                    <ClassificationContainer key={'NOTES'} className="card-body">
+                      <Field>
+                        <OverlayTrigger
+                          placement="left"
+                          delay={{ show: 100, hide: 400 }}
+                          overlay={(e) => renderTooltip(e, 'Admin notes')}
+                        >
+                          <p>{'Notes'}</p>
+                        </OverlayTrigger>
+                      </Field>
+                      <Value>{taxonomy.notes}</Value>
+                    </ClassificationContainer>
+                  )}
                   {taxonomy.classificationsArray
                     .filter((field) => {
                       if (showAllClassifications) return true;
