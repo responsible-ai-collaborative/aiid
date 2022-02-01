@@ -358,8 +358,6 @@ const EditTaxonomyForm = ({
   const onSubmit = async (values, { setSubmitting }) => {
     const { notes, ...classifications } = values;
 
-    const Publish = classificationsData[key][0]?.classifications.Publish;
-
     fieldsWithDefaultValues.forEach((f) => {
       //Convert string values into array
       if (f.display_type === 'list') {
@@ -391,10 +389,7 @@ const EditTaxonomyForm = ({
         data: {
           incident_id: incidentId,
           notes,
-          classifications: {
-            ...classifications,
-            Publish,
-          },
+          classifications,
         },
       },
     });
