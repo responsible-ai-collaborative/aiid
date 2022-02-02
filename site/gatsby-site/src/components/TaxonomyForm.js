@@ -376,8 +376,10 @@ const EditTaxonomyForm = ({
       if (f.display_type === 'bool') {
         if (values[f.key] === '') {
           classifications[f.key] = undefined;
-        } else {
-          classifications[f.key] = values[f.key] === 'true';
+        } else if (values[f.key] === 'true') {
+          classifications[f.key] = true;
+        } else if (values[f.key] === 'false') {
+          classifications[f.key] = false;
         }
       }
     });
