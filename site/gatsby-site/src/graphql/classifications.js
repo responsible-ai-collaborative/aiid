@@ -15,7 +15,7 @@ export const FIND_RESOURCE_CLASSIFICATION = gql`
 `;
 
 export const UPDATE_RESOURCE_CLASSIFICATION = gql`
-  mutation UpserResourceClassification($query: ResourceQueryInput, $data: ResourceInsertInput!) {
+  mutation UpsertResourceClassification($query: ResourceQueryInput, $data: ResourceInsertInput!) {
     upsertOneResource(query: $query, data: $data) {
       _id
       incident_id
