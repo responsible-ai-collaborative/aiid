@@ -8,6 +8,7 @@ export const FIND_RESOURCE_CLASSIFICATION = gql`
       notes
       classifications {
         DatasheetsForDatasets
+        Publish
       }
     }
   }
@@ -21,6 +22,7 @@ export const UPDATE_RESOURCE_CLASSIFICATION = gql`
       notes
       classifications {
         DatasheetsForDatasets
+        Publish
       }
     }
   }
