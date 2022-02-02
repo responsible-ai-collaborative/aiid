@@ -13,6 +13,7 @@ import {
   UPDATE_CSET_CLASSIFICATION,
   UPDATE_RESOURCE_CLASSIFICATION,
 } from '../graphql/classifications.js';
+import Markdown from 'react-markdown';
 
 const ClassificationContainer = styled.div`
   display: flex;
@@ -45,7 +46,7 @@ const Field = styled.div`
   font-weight: 700;
 `;
 
-const Value = styled.div`
+const Value = styled(Markdown)`
   width: 80%;
 `;
 
@@ -170,7 +171,7 @@ const EditTaxonomyForm = ({
 
         let classificationValue = classifications[field.key];
 
-        if (!classificationValue) {
+        if (classificationValue === undefined) {
           if (taxaField.display_type === 'multi') {
             classificationValue = [];
           } else {
@@ -521,6 +522,20 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback = null }) =
                       }
                       return false;
                     })
+                    .filter((field) => {
+                      if (field.name === 'Datasheets for Datasets' && field.value == 'No') {
+                        return false;
+                      }
+
+                      return true;
+                    })
+                    .map((field) => {
+                      if (field.name === 'Datasheets for Datasets') {
+                        return { ...field, value: field.longDescription };
+                      }
+
+                      return field;
+                    })
                     .map((field) => (
                       <ClassificationContainer key={field.name} className="card-body">
                         <Field>
@@ -532,11 +547,7 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback = null }) =
                             <p>{field.name}</p>
                           </OverlayTrigger>
                         </Field>
-                        <Value>
-                          {field.name === 'Datasheets for Datasets'
-                            ? field.longDescription
-                            : field.value}
-                        </Value>
+                        <Value>{field.value}</Value>
                       </ClassificationContainer>
                     ))}
                   {taxonomy.classificationsArray.length > 2 && (
