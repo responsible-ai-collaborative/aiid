@@ -532,16 +532,22 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback = null }) =
                             <p>{field.name}</p>
                           </OverlayTrigger>
                         </Field>
-                        <Value>{field.value}</Value>
+                        <Value>
+                          {field.name === 'Datasheets for Datasets'
+                            ? field.longDescription
+                            : field.value}
+                        </Value>
                       </ClassificationContainer>
                     ))}
-                  <button
-                    type="button"
-                    className="btn btn-secondary btn-sm w-100"
-                    onClick={() => setShowAllClassifications(!showAllClassifications)}
-                  >
-                    Show {`${showAllClassifications ? 'Fewer' : 'All'}`} Classifications
-                  </button>
+                  {taxonomy.classificationsArray.length > 2 && (
+                    <button
+                      type="button"
+                      className="btn btn-secondary btn-sm w-100"
+                      onClick={() => setShowAllClassifications(!showAllClassifications)}
+                    >
+                      Show {`${showAllClassifications ? 'Fewer' : 'All'}`} Classifications
+                    </button>
+                  )}
                 </>
               ) : (
                 <div style={{ padding: '0.5em' }}>

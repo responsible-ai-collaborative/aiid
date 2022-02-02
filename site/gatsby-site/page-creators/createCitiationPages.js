@@ -41,6 +41,7 @@ const getClassificationsArray = (incidentClassifications, taxonomy) => {
         name: field.short_name,
         value: getStringForValue(value),
         weight: field.weight,
+        longDescription: field.long_description,
         shortDescription: field.short_description,
       });
     }
@@ -121,7 +122,7 @@ const createCitiationPages = async (graphql, createPage) => {
           }
         }
 
-        allMongodbAiidprodResources {
+        allMongodbAiidprodResources(filter: { classifications: { Publish: { eq: true } } }) {
           nodes {
             id
             incident_id
@@ -142,6 +143,7 @@ const createCitiationPages = async (graphql, createPage) => {
               display_type
               long_name
               short_name
+              long_description
               weight
               short_description
             }
