@@ -126,8 +126,10 @@ const createCitiationPages = async (graphql, createPage) => {
           nodes {
             id
             incident_id
+            notes
             classifications {
               Datasheets_for_Datasets
+              Publish
             }
           }
         }
@@ -188,8 +190,10 @@ const createCitiationPages = async (graphql, createPage) => {
     const taxonomies = [];
 
     allMongodbAiidprodTaxa.nodes.forEach((t) => {
+      const notes = incidentClassifications.find((c) => c.namespace === t.namespace)?.notes;
+
       taxonomies.push({
-        notes: incidentClassifications.notes,
+        notes,
         namespace: t.namespace,
         classificationsArray: getClassificationsArray(incidentClassifications, t),
         taxonomyFields: t.field_list,
