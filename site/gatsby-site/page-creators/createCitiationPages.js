@@ -54,7 +54,7 @@ const createCitiationPages = async (graphql, createPage) => {
   const result = await graphql(
     `
       query IncidentIDs {
-        allMongodbAiidprodIncidents(filter: { incident_id: { ne: 0 } }) {
+        allMongodbAiidprodIncidents {
           group(field: incident_id) {
             fieldValue
             edges {
