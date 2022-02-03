@@ -47,7 +47,11 @@ describe('Cite pages', () => {
     cy.window().its('scrollY').should('be.closeTo', 4946, 200);
   });
 
-  it('Should show an edit link to users with the appropriate role', () => {
+  // Meanwhile there is not reproducible environment skip tests with admin permissions
+
+  const maybeIt = Cypress.env('e2eUsername') && Cypress.env('e2ePassword') ? it : it.skip;
+
+  maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const id = 'r5d34b8c29ced494f010ed463';
@@ -59,7 +63,7 @@ describe('Cite pages', () => {
       .should('exist');
   });
 
-  it('Should show the taxonomy edit form to users with the appropriate role', () => {
+  maybeIt('Should show the taxonomy edit form to users with the appropriate role', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const id = 'r5d34b8c29ced494f010ed463';
