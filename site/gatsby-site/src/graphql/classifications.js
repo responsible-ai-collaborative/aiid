@@ -6,6 +6,7 @@ export const FIND_RESOURCE_CLASSIFICATION = gql`
       _id
       incident_id
       notes
+      namespace
       classifications {
         DatasheetsForDatasets
         Publish
@@ -20,6 +21,7 @@ export const UPDATE_RESOURCE_CLASSIFICATION = gql`
       _id
       incident_id
       notes
+      namespace
       classifications {
         DatasheetsForDatasets
         Publish
@@ -34,6 +36,7 @@ export const FIND_CSET_CLASSIFICATION = gql`
       _id
       incident_id
       notes
+      namespace
       classifications {
         AIApplications
         AISystemDescription
@@ -82,6 +85,7 @@ export const UPDATE_CSET_CLASSIFICATION = gql`
       _id
       incident_id
       notes
+      namespace
       classifications {
         AIApplications
         AISystemDescription

@@ -396,6 +396,7 @@ const EditTaxonomyForm = ({
           data: {
             incident_id: incidentId,
             notes,
+            namespace,
             classifications,
           },
         },
