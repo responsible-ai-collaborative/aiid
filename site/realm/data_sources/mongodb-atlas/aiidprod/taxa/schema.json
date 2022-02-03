@@ -12,7 +12,7 @@
                 "bsonType": "object",
                 "properties": {
                     "default": {
-                        "bsonType": "string"
+                        "bsonType": "mixed"
                     },
                     "display_type": {
                         "bsonType": "string"
@@ -36,7 +36,7 @@
                         }
                     },
                     "placeholder": {
-                        "bsonType": "string"
+                        "bsonType": "mixed"
                     },
                     "public": {
                         "bsonType": "bool"
