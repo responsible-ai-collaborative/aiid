@@ -14,6 +14,7 @@ import {
   UPDATE_RESOURCE_CLASSIFICATION,
 } from '../graphql/classifications.js';
 import Markdown from 'react-markdown';
+import useToastContext, { SEVERITY } from 'hooks/useToast';
 
 const ClassificationContainer = styled.div`
   display: flex;
@@ -118,6 +119,8 @@ const EditTaxonomyForm = ({
   const [taxonomy, setTaxonomy] = useState(null);
 
   const { runQuery } = useMongo();
+
+  const addToast = useToastContext();
 
   // this should be updated to use the useQuery hook but some
   // fields need to be normalized to play nice with graphql
@@ -384,18 +387,25 @@ const EditTaxonomyForm = ({
       }
     });
 
-    await updateClassification({
-      variables: {
-        query: {
-          incident_id: incidentId,
+    try {
+      await updateClassification({
+        variables: {
+          query: {
+            incident_id: incidentId,
+          },
+          data: {
+            incident_id: incidentId,
+            notes,
+            classifications,
+          },
         },
-        data: {
-          incident_id: incidentId,
-          notes,
-          classifications,
-        },
-      },
-    });
+      });
+    } catch (e) {
+      addToast({
+        message: <>Error updating classification data: {e.message}</>,
+        severity: SEVERITY.danger,
+      });
+    }
 
     setShowBanner(true);
     setIsEditing(false);
