@@ -753,46 +753,6 @@ export default function ClassificationsDbView(props) {
     [prepareRow, page]
   );
 
-  if (columnData.length === 0 || tableData.length === 0) {
-    return (
-      <LayoutHideSidebar {...props}>
-        <Helmet>
-          <title>Artificial Intelligence Incident Database</title>
-        </Helmet>
-        <Container>
-          <TaxonomySelectContainer>
-            {loading ? (
-              <>
-                <Form.Select
-                  style={{ width: 100, margin: '0 10px' }}
-                  aria-label="Default select example"
-                  onChange={(e) => setCurrentTaxonomy(e.target.value)}
-                >
-                  {allTaxonomies.length > 0 &&
-                    allTaxonomies.map((taxa) => (
-                      <option key={taxa.namespace} value={taxa.namespace}>
-                        {taxa.namespace}
-                      </option>
-                    ))}
-                </Form.Select>
-                <Spinner
-                  animation="border"
-                  role="status"
-                  variant="primary"
-                  style={{ marginLeft: 10 }}
-                >
-                  <span className="sr-only">Loading...</span>
-                </Spinner>
-              </>
-            ) : (
-              <span>Error. Please try again or contact support team.</span>
-            )}
-          </TaxonomySelectContainer>
-        </Container>
-      </LayoutHideSidebar>
-    );
-  }
-
   return (
     <LayoutHideSidebar
       {...props}
@@ -807,16 +767,16 @@ export default function ClassificationsDbView(props) {
           <TaxonomySelectContainer>
             Showing the
             <Form.Select
-              style={{ width: 100, margin: '0 10px' }}
+              style={{ width: 120, margin: '0 10px' }}
               aria-label="Default select example"
               onChange={(e) => setCurrentTaxonomy(e.target.value)}
+              value={currentTaxonomy}
             >
-              {allTaxonomies.length > 0 &&
-                allTaxonomies.map((taxa) => (
-                  <option key={taxa.namespace} value={taxa.namespace}>
-                    {taxa.namespace}
-                  </option>
-                ))}
+              {allTaxonomies.map((taxa) => (
+                <option key={taxa.namespace} value={taxa.namespace}>
+                  {taxa.namespace}
+                </option>
+              ))}
             </Form.Select>
             taxonomy
             {loading && (
