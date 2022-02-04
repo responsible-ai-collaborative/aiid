@@ -80,6 +80,19 @@ function CitePage(props) {
     incidentDate: incidentReports[0].node.incident_date,
   };
 
+  const timeline = sortedReports.map(({ node: { date_published, title, mongodb_id } }) => ({
+    date_published,
+    title,
+    mongodb_id,
+  }));
+
+  timeline.push({
+    date_published: stats.incidentDate,
+    title: 'Incident Occurrence',
+    mongodb_id: 0,
+    isOccurrence: true,
+  });
+
   return (
     <Layout {...props}>
       <Helmet>
@@ -126,7 +139,7 @@ function CitePage(props) {
                 <h4>Reports Timeline</h4>
               </div>
               <div className="card-body">
-                <Timeline items={sortedReports} />
+                <Timeline data={timeline} />
               </div>
             </CardContainer>
           </Col>

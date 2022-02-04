@@ -5,15 +5,13 @@ import { CSVReader } from 'react-papaparse';
 import Link from 'components/Link';
 import RelatedIncidents from 'components/RelatedIncidents';
 import IncidentReportForm from 'components/forms/IncidentReportForm';
-import { FormStyles } from 'components/styles/Form';
-
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
 const SubmitForm = () => {
   const { isRole, user } = useUserContext();
 
-  const [incident, setIncident] = useState({});
+  const [incident, setIncident] = useState({ tags: [] });
 
   const [csvData, setCsvData] = useState([]);
 
@@ -77,7 +75,7 @@ const SubmitForm = () => {
   };
 
   return (
-    <FormStyles className="p-5 mb-5">
+    <div className="my-5">
       <IncidentReportForm incident={incident} onUpdate={setIncident} onSubmit={handleSubmit} />
       <RelatedIncidents incident={incident} isSubmitted={false} />
       {isRole('submitter') && (
@@ -114,7 +112,7 @@ const SubmitForm = () => {
           </CSVReader>
         </Container>
       )}
-    </FormStyles>
+    </div>
   );
 };
 

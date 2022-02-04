@@ -57,6 +57,12 @@
                 "bsonType": "string"
             }
         },
+        "tags": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
         "text": {
             "bsonType": "string"
         },

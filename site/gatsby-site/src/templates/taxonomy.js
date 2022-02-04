@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { graphql } from 'gatsby';
 import styled from 'styled-components';
-import md5 from 'md5';
 import Markdown from 'react-markdown';
 import { Badge, Button } from 'react-bootstrap';
 
@@ -290,7 +289,7 @@ const Taxonomy = (props) => {
       <h1 className="heading1">Taxonomy Fields</h1>
       {sortedFieldsArray.map(
         ({ long_name, long_description, permitted_values, short_name, instant_facet }) => (
-          <Row key={md5(long_name)}>
+          <Row key={short_name}>
             <Card>
               <FieldNameHeading>
                 {long_name}{' '}

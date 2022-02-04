@@ -9,6 +9,10 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, parseISO } from 'date-fns';
 import { dateRegExp } from 'utils/date';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
+import styled from 'styled-components';
+import { graphql, useStaticQuery } from 'gatsby';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -80,6 +84,13 @@ const defaultValue = {
   text: '',
 };
 
+const StyledTypeahead = styled(Typeahead)`
+  .rbt-close {
+    border: none;
+    background: transparent;
+  }
+`
+
 const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
   const {
     values,
@@ -92,11 +103,36 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
     handleSubmit,
     setValues,
     setFieldTouched,
+    setFieldValue,
   } = useFormik({
     initialValues: incident || defaultValue,
     validationSchema,
     onSubmit,
   });
+
+  const data = useStaticQuery(graphql`
+    query IncidentReportFormQuery {
+      allMongodbAiidprodIncidents {
+        edges {
+          node {
+            tags
+          }
+        }
+      }
+    }
+  `);
+
+  const tags = []
+
+  for (const node of data.allMongodbAiidprodIncidents.edges) {
+    if (node.node.tags) {
+      for (const tag of node.node.tags) {
+        if (!tags.includes(tag)) {
+          tags.push(tag)
+        }
+      }
+    }
+  }
 
   const TextInputGroupProps = { values, errors, touched, handleChange, handleBlur };
 
@@ -151,7 +187,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         severity: SEVERITY.info,
       });
 
-      const cloudinary_id = getCloudinaryPublicID(news.image_url, 'pai', 'reports');
+      const cloudinary_id = getCloudinaryPublicID(news.image_url);
 
       onUpdate((incident) => {
         return {
@@ -190,7 +226,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         addOnComponent={
           <Button
             className="outline-secondary"
-            disabled={errors.url || !touched.url || parsingNews}
+            disabled={!!errors.url || !touched.url || parsingNews}
             onClick={() => parseNewsUrl(incident.url)}
           >
             {' '}
@@ -278,8 +314,27 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
         className="mt-3"
         {...TextInputGroupProps}
       />
+
+      <Form.Group className="mt-3">
+        <Form.Label>Tags</Form.Label>
+        <StyledTypeahead
+          id="submit-report-tags"
+          inputProps={{ id: 'submit-report-tags-input' }}
+          allowNew
+          multiple
+          onBlur={handleBlur}
+          onChange={(value) => {
+            setFieldTouched('tags', true);
+            setFieldValue('tags', value.map(v => v.label ? v.label : v));
+          }}
+          selected={values.tags}
+          options={tags}
+          placeholder="Choose several tags..."
+        />
+      </Form.Group>
+
       {!isEditMode && (
-        <p className="mt-3">
+        <p className="mt-4">
           Submitted reports are added to a <Link to="/apps/submitted">review queue </Link>
           to be resolved to a new or existing incident record. Incidents are reviewed and merged
           into the database after enough incidents are pending.
