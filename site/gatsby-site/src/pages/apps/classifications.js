@@ -268,6 +268,10 @@ const getClassificationsArray = (classifications, taxonomy) => {
   const array = [];
 
   const getStringForValue = (value) => {
+    if (value === null) {
+      return '';
+    }
+
     switch (typeof value) {
       case 'object':
         return value.join(', ');
