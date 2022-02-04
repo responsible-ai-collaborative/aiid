@@ -44,7 +44,7 @@ describe('Cite pages', () => {
 
     cy.wait(1000);
 
-    cy.window().its('scrollY').should('be.closeTo', 4946, 200);
+    cy.window().its('scrollY').should('be.closeTo', 4946, 300);
   });
 
   it('Should flag an incident', () => {
