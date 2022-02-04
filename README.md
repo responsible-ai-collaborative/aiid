@@ -247,6 +247,14 @@ REALM_API_PUBLIC_KEY=
 
 For integration testing, we use Cypress. You can run the desktop app continuously as part of your development environment or run it on demand in headless mode.
 
+First, add two new environment variables:
+
+```
+E2E_ADMIN_USERNAME=
+E2E_ADMIN_PASSWORD=
+```
+As their names imply, they should be an existing user's credentials with the `admin` role.
+
 To use the desktop version, run:
 ```
 npm run test:e2e
