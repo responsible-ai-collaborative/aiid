@@ -1,0 +1,28 @@
+{
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "classifications": {
+            "bsonType": "object",
+            "properties": {
+                "Datasheets for Datasets": {
+                    "bsonType": "bool"
+                },
+                "Publish": {
+                    "bsonType": "bool"
+                }
+            }
+        },
+        "incident_id": {
+            "bsonType": "int"
+        },
+        "namespace": {
+            "bsonType": "string"
+        },
+        "notes": {
+            "bsonType": "string"
+        }
+    },
+    "title": "resource"
+}

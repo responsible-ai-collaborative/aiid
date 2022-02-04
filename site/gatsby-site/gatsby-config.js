@@ -83,7 +83,15 @@ const plugins = [
     resolve: 'gatsby-source-mongodb',
     options: {
       dbName: 'aiidprod',
-      collection: ['incidents', 'submissions', 'quickadd', 'duplicates', 'taxa', 'classifications'],
+      collection: [
+        'incidents',
+        'submissions',
+        'quickadd',
+        'duplicates',
+        'taxa',
+        'classifications',
+        'resources',
+      ],
       connectionString: config.mongodb.connectionString,
       extraParams: {
         replicaSet: config.mongodb.replicaSet,
