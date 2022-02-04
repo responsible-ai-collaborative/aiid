@@ -14,4 +14,4 @@ package = "@netlify/plugin-gatsby"
   [plugins.inputs.postBuild]
     enable = true
     spa = true
-    start = 'npm start'
+    start = 'gatsby serve -p 8080'
