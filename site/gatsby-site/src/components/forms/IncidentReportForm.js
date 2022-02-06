@@ -223,7 +223,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
     <Form onSubmit={handleSubmit} className="mx-auto">
       <TextInputGroup
         name="url"
-        label="Report Address :"
+        label="Report Address"
         placeholder="Report URL"
         addOnComponent={
           <Button
@@ -251,42 +251,42 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
 
       <TextInputGroup
         name="title"
-        label="Title :"
+        label="Title"
         placeholder="Report title"
         className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="authors"
-        label="Author CSV :"
+        label="Author CSV"
         placeholder="Author CSV"
         className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="submitters"
-        label="Submitter CSV :"
+        label="Submitter CSV"
         placeholder="Submitter CSV"
         className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="incident_date"
-        label="Incident Date :"
+        label="Incident Date"
         placeholder="YYYY-MM-DD"
         className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="date_published"
-        label="Date Published :"
+        label="Date Published"
         placeholder="YYYY-MM-DD"
         className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="date_downloaded"
-        label="Date Downloaded :"
+        label="Date Downloaded"
         placeholder="YYYY-MM-DD"
         className="mt-3"
         {...TextInputGroupProps}
@@ -294,14 +294,14 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
       <PreviewImageInputGroup
         publicID={incident.cloudinary_id}
         name="image_url"
-        label="Image Address :"
+        label="Image Address"
         placeholder="Image URL"
         className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="incident_id"
-        label="Incident ID :"
+        label="Incident ID"
         placeholder="OPTIONAL"
         type="number"
         className="mt-3"
@@ -309,7 +309,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
       />
       <TextInputGroup
         name="text"
-        label="Text :"
+        label="Text"
         placeholder="Text of the report"
         as="textarea"
         rows={8}
