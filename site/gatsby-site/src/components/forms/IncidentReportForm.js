@@ -13,6 +13,8 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import styled from 'styled-components';
 import { graphql, useStaticQuery } from 'gatsby';
+import * as POP_OVERS from '../PopOvers';
+import Label from '../Label';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -89,7 +91,7 @@ const StyledTypeahead = styled(Typeahead)`
     border: none;
     background: transparent;
   }
-`
+`;
 
 const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
   const {
@@ -122,13 +124,13 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
     }
   `);
 
-  const tags = []
+  const tags = [];
 
   for (const node of data.allMongodbAiidprodIncidents.edges) {
     if (node.node.tags) {
       for (const tag of node.node.tags) {
         if (!tags.includes(tag)) {
-          tags.push(tag)
+          tags.push(tag);
         }
       }
     }
@@ -316,7 +318,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
       />
 
       <Form.Group className="mt-3">
-        <Form.Label>Tags</Form.Label>
+        <Label popover={POP_OVERS['tags']} label={'Tags'} />
         <StyledTypeahead
           id="submit-report-tags"
           inputProps={{ id: 'submit-report-tags-input' }}
@@ -325,7 +327,10 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
           onBlur={handleBlur}
           onChange={(value) => {
             setFieldTouched('tags', true);
-            setFieldValue('tags', value.map(v => v.label ? v.label : v));
+            setFieldValue(
+              'tags',
+              value.map((v) => (v.label ? v.label : v))
+            );
           }}
           selected={values.tags}
           options={tags}
