@@ -6,6 +6,15 @@ import { useMongo } from 'hooks/useMongo';
 import { Formik } from 'formik';
 import Loader from 'components/Loader';
 import config from '../../config.js';
+import { useMutation, useQuery } from '@apollo/client';
+import {
+  FIND_CSET_CLASSIFICATION,
+  FIND_RESOURCE_CLASSIFICATION,
+  UPDATE_CSET_CLASSIFICATION,
+  UPDATE_RESOURCE_CLASSIFICATION,
+} from '../graphql/classifications.js';
+import Markdown from 'react-markdown';
+import useToastContext, { SEVERITY } from 'hooks/useToast';
 
 const ClassificationContainer = styled.div`
   display: flex;
@@ -38,7 +47,7 @@ const Field = styled.div`
   font-weight: 700;
 `;
 
-const Value = styled.div`
+const Value = styled(Markdown)`
   width: 80%;
 `;
 
@@ -64,6 +73,34 @@ const TaxaHeader = styled.h4`
 
 const TEXTAREA_LIMIT = 120;
 
+const queryMap = {
+  CSET: FIND_CSET_CLASSIFICATION,
+  resources: FIND_RESOURCE_CLASSIFICATION,
+};
+
+const mutationMap = {
+  CSET: UPDATE_CSET_CLASSIFICATION,
+  resources: UPDATE_RESOURCE_CLASSIFICATION,
+};
+
+const getTaxaFieldKey = (key) => {
+  key = key.split(' ').join('');
+
+  switch (key) {
+    case 'LevelofAutonomy':
+      return 'LevelOfAutonomy';
+    case 'NatureofEndUser':
+      return 'NatureOfEndUser';
+    case 'SectorofDeployment':
+      return 'SectorOfDeployment';
+    case 'RelevantAIfunctions':
+      return 'RelevantAIFunctions';
+    case 'DatasheetsforDatasets':
+      return 'DatasheetsForDatasets';
+  }
+  return key;
+};
+
 const EditTaxonomyForm = ({
   namespace,
   incidentId,
@@ -73,119 +110,95 @@ const EditTaxonomyForm = ({
 }) => {
   const [loading, setLoading] = useState(true);
 
-  const [error, setError] = useState('');
-
-  const { user } = useUserContext();
+  const [error] = useState('');
 
   const [initialValues, setInitialValues] = useState({});
 
   const [fieldsWithDefaultValues, setFieldsWithDefaultValues] = useState([]);
 
-  const useRunTaxaQuery = () => {
-    return new Promise((resolve, reject) => {
-      const { runQuery } = useMongo();
+  const [taxonomy, setTaxonomy] = useState(null);
 
-      try {
-        runQuery(
-          {
-            namespace,
-          },
-          (res) => {
-            resolve(res);
-          },
-          config.realm.production_db.db_service,
-          config.realm.production_db.db_name,
-          'taxa'
-        );
-      } catch (error) {
-        reject(error);
-      }
-    });
-  };
+  const { runQuery } = useMongo();
 
-  const useRunClassificationsQuery = () => {
-    return new Promise((resolve, reject) => {
-      const { runQuery } = useMongo();
+  const addToast = useToastContext();
 
-      try {
-        runQuery(
-          {
-            // 'classifications.Publish': true,
-            incident_id: incidentId,
-            namespace,
-          },
-          (res) => {
-            resolve(res);
-          },
-          config.realm.production_db.db_service,
-          config.realm.production_db.db_name,
-          'classifications'
-        );
-      } catch (error) {
-        reject(error);
-      }
-    });
-  };
+  // this should be updated to use the useQuery hook but some
+  // fields need to be normalized to play nice with graphql
+  useEffect(() => {
+    runQuery(
+      {
+        namespace,
+      },
+      (res) => {
+        setTaxonomy(res[0]);
+      },
+      config.realm.production_db.db_service,
+      config.realm.production_db.db_name,
+      'taxa'
+    );
+  }, []);
+
+  const { data: classificationsData } = useQuery(queryMap[namespace], {
+    variables: { query: { incident_id: incidentId } },
+  });
+
+  const key = namespace === 'CSET' ? 'classifications' : namespace;
+
+  const [updateClassification] = useMutation(mutationMap[namespace]);
 
   useEffect(() => {
-    setLoading(true);
-    Promise.all([useRunTaxaQuery(), useRunClassificationsQuery()])
-      .then((results) => {
-        const taxonomy = results[0][0];
+    if (classificationsData && taxonomy) {
+      const classification = classificationsData[key][0];
 
-        let classifications = {};
+      const classifications = classification?.classifications || {};
 
-        let notes = '';
+      const notes = classification?.notes || '';
 
-        if (results[1].length > 0) {
-          classifications = results[1][0].classifications;
-          if (results[1][0].notes) {
-            notes = results[1][0].notes;
+      const fieldsArray = [];
+
+      const defaultValues = {};
+
+      taxonomy.field_list.forEach((taxaField) => {
+        const field = {
+          display_type: taxaField.display_type,
+          mongo_type: taxaField.mongo_type,
+          permitted_values: taxaField.permitted_values,
+          placeholder: taxaField.placeholder,
+          required: taxaField.required,
+          short_description: taxaField.short_description,
+          short_name: taxaField.short_name,
+          key: getTaxaFieldKey(taxaField.short_name),
+        };
+
+        fieldsArray.push(field);
+
+        let classificationValue = classifications[field.key];
+
+        if (classificationValue === undefined) {
+          if (taxaField.display_type === 'multi') {
+            classificationValue = [];
+          } else {
+            classificationValue = '';
+          }
+        } else {
+          if (taxaField.display_type === 'date') {
+            classificationValue = classifications[field.key].split('T')[0];
           }
         }
 
-        const fieldsArray = [];
-
-        const defaultValues = {};
-
-        taxonomy.field_list.forEach((taxaField) => {
-          fieldsArray.push({
-            display_type: taxaField.display_type,
-            mongo_type: taxaField.mongo_type,
-            permitted_values: taxaField.permitted_values,
-            placeholder: taxaField.placeholder,
-            required: taxaField.required,
-            short_description: taxaField.short_description,
-            short_name: taxaField.short_name.split(' ').join('_'),
-          });
-
-          let classificationValue = classifications[taxaField.short_name];
-
-          if (classificationValue === undefined) {
-            classificationValue = '';
-          } else {
-            if (taxaField.display_type === 'date') {
-              classificationValue = classifications[taxaField.short_name].split('T')[0];
-            }
-          }
-
-          defaultValues[taxaField.short_name.split(' ').join('_')] = classificationValue;
-        });
-        setFieldsWithDefaultValues(fieldsArray);
-
-        setInitialValues({
-          ...defaultValues,
-          notes,
-        });
-
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError('Error fetching. Please try later.');
-        setLoading(false);
+        defaultValues[field.key] = classificationValue;
       });
-  }, []);
+
+      setFieldsWithDefaultValues(fieldsArray);
+
+      setInitialValues({
+        ...defaultValues,
+        notes,
+      });
+
+      setLoading(false);
+    }
+  }, [classificationsData, taxonomy]);
 
   const generateFormField = (rawField, handleChange, formikValues) => {
     const validateListField = (value) => {
@@ -197,8 +210,8 @@ const EditTaxonomyForm = ({
     };
 
     return (
-      <div key={rawField.short_name}>
-        <Form.Label>{rawField.short_name.split('_').join(' ')}</Form.Label>
+      <div key={rawField.key}>
+        <Form.Label>{rawField.short_name}</Form.Label>
         {rawField.display_type === 'list' && (
           <UsageInfoSpan>{' (use semicolon for term separation)'}</UsageInfoSpan>
         )}
@@ -209,10 +222,10 @@ const EditTaxonomyForm = ({
           <Form.Control
             as="select"
             id={rawField.short_name}
-            name={rawField.short_name}
+            name={rawField.key}
             type="text"
             onChange={handleChange}
-            value={formikValues[rawField.short_name]}
+            value={formikValues[rawField.key]}
           >
             <option key={''} value={''}>
               {''}
@@ -226,37 +239,37 @@ const EditTaxonomyForm = ({
         )}
 
         {rawField.display_type === 'string' &&
-          formikValues[rawField.short_name].length <= TEXTAREA_LIMIT && (
+          formikValues[rawField.key].length <= TEXTAREA_LIMIT && (
             <Form.Control
               id={rawField.short_name}
-              name={rawField.short_name}
+              name={rawField.key}
               type="text"
               onChange={handleChange}
-              value={formikValues[rawField.short_name]}
+              value={formikValues[rawField.key]}
             />
           )}
 
         {rawField.display_type === 'string' &&
-          formikValues[rawField.short_name].length > TEXTAREA_LIMIT && (
+          formikValues[rawField.key].length > TEXTAREA_LIMIT && (
             <Form.Control
               as="textarea"
               rows={3}
               id={rawField.short_name}
-              name={rawField.short_name}
+              name={rawField.key}
               type="text"
               onChange={handleChange}
-              value={formikValues[rawField.short_name]}
+              value={formikValues[rawField.key]}
             />
           )}
 
         {rawField.display_type === 'bool' && (
           <Form.Control
             as="select"
-            id={rawField.short_name}
-            name={rawField.short_name}
+            id={rawField.key}
+            name={rawField.key}
             type="text"
             onChange={handleChange}
-            value={formikValues[rawField.short_name]}
+            value={formikValues[rawField.key]}
           >
             <option key={''} value={''}>
               {''}
@@ -272,31 +285,31 @@ const EditTaxonomyForm = ({
 
         {rawField.display_type === 'date' && (
           <Form.Control
-            id={rawField.short_name}
-            name={rawField.short_name}
+            id={rawField.key}
+            name={rawField.key}
             type="date"
             onChange={handleChange}
-            value={formikValues[rawField.short_name]}
+            value={formikValues[rawField.key]}
           />
         )}
 
         {rawField.display_type === 'location' && (
           <Form.Control
-            id={rawField.short_name}
-            name={rawField.short_name}
+            id={rawField.key}
+            name={rawField.key}
             type="text"
             onChange={handleChange}
-            value={formikValues[rawField.short_name]}
+            value={formikValues[rawField.key]}
           />
         )}
 
         {rawField.display_type === 'list' && (
           <Form.Control
-            id={rawField.short_name}
-            name={rawField.short_name}
+            id={rawField.key}
+            name={rawField.key}
             type="text"
             onChange={handleChange}
-            value={validateListField(formikValues[rawField.short_name])}
+            value={validateListField(formikValues[rawField.key])}
           />
         )}
 
@@ -304,11 +317,11 @@ const EditTaxonomyForm = ({
           <Form.Control
             as="select"
             multiple={true}
-            id={rawField.short_name}
-            name={rawField.short_name}
+            id={rawField.key}
+            name={rawField.key}
             type="text"
             onChange={handleChange}
-            value={formikValues[rawField.short_name]}
+            value={formikValues[rawField.key]}
           >
             {rawField.permitted_values.map((v) => (
               <option key={v} value={v}>
@@ -317,9 +330,7 @@ const EditTaxonomyForm = ({
             ))}
           </Form.Control>
         )}
-        <Form.Text className={['text-muted', 'mb-4', 'd-block']}>
-          {rawField.short_description}
-        </Form.Text>
+        <Form.Text className="text-muted mb-4 d-block">{rawField.short_description}</Form.Text>
       </div>
     );
   };
@@ -349,17 +360,15 @@ const EditTaxonomyForm = ({
   }
 
   const onSubmit = async (values, { setSubmitting }) => {
-    let newValues = values;
+    const { notes, ...classifications } = values;
 
     fieldsWithDefaultValues.forEach((f) => {
       //Convert string values into array
       if (f.display_type === 'list') {
-        if (Array.isArray(values[f.short_name])) {
-          newValues[f.short_name] = values[f.short_name]
-            .map((f) => f.trim())
-            .filter((f) => f !== '');
+        if (Array.isArray(values[f.key])) {
+          classifications[f.key] = values[f.key].map((f) => f.trim()).filter((f) => f !== '');
         } else {
-          newValues[f.short_name] = values[f.short_name]
+          classifications[f.key] = values[f.key]
             .split(';')
             .map((f) => f.trim())
             .filter((f) => f !== '');
@@ -368,33 +377,41 @@ const EditTaxonomyForm = ({
 
       //Convert string into boolean
       if (f.display_type === 'bool') {
-        if (values[f.short_name] === '') {
-          newValues[f.short_name] = undefined;
-        } else {
-          newValues[f.short_name] = values[f.short_name] === 'true';
+        if (values[f.key] === '') {
+          classifications[f.key] = undefined;
+        } else if (values[f.key] === 'true') {
+          classifications[f.key] = true;
+        } else if (values[f.key] === 'false') {
+          classifications[f.key] = false;
         }
       }
     });
 
-    const newValuesNoUnderscore = {};
-
-    for (const key in newValues) {
-      newValuesNoUnderscore[key.split('_').join(' ')] = newValues[key];
-    }
-
-    if (JSON.stringify(initialValues) !== JSON.stringify(newValues)) {
-      await user.functions.updateIncidentClassification({
-        incident_id: incidentId,
-        namespace,
-        newClassifications: newValuesNoUnderscore,
-        notes: newValuesNoUnderscore.notes,
+    try {
+      await updateClassification({
+        variables: {
+          query: {
+            incident_id: incidentId,
+          },
+          data: {
+            incident_id: incidentId,
+            notes,
+            namespace,
+            classifications,
+          },
+        },
       });
-
-      setShowBanner(true);
+    } catch (e) {
+      addToast({
+        message: <>Error updating classification data: {e.message}</>,
+        severity: SEVERITY.danger,
+      });
     }
 
+    setShowBanner(true);
     setIsEditing(false);
     setSubmitting(false);
+
     if (doneSubmittingCallback) {
       doneSubmittingCallback();
     }
@@ -412,15 +429,18 @@ const EditTaxonomyForm = ({
           isSubmitting,
         }) => (
           <Form onSubmit={handleSubmit}>
-            <Form.Control
-              id={'notes'}
-              name={'notes'}
-              type="text"
-              as="textarea"
-              rows={4}
-              onChange={handleChange}
-              value={values.notes}
-            />
+            <Form.Group className="mb-4">
+              <Form.Label>Notes</Form.Label>
+              <Form.Control
+                id={'notes'}
+                name={'notes'}
+                type="text"
+                as="textarea"
+                rows={4}
+                onChange={handleChange}
+                value={values.notes}
+              />
+            </Form.Group>
             <fieldset disabled={isSubmitting}>
               {fieldsWithDefaultValues.map((rawField) =>
                 generateFormField(rawField, handleChange, values)
@@ -436,7 +456,7 @@ const EditTaxonomyForm = ({
   );
 };
 
-const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
+const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback = null }) => {
   if (!taxonomy) {
     return null;
   }
@@ -459,7 +479,7 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
     isRole('taxonomy_editor') || isRole('taxonomy_editor_' + taxonomy.namespace.toLowerCase());
 
   return (
-    <Row key={taxonomy.namespace} className="mb-4">
+    <Row key={taxonomy.namespace} className="mb-4" data-cy="taxonomy-form">
       <Container className="card ps-0 pe-0">
         <TaxaCardHeader className="card-header">
           <TaxaHeader>{`${taxonomy.namespace} Taxonomy Classifications`}</TaxaHeader>
@@ -515,6 +535,20 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
                       }
                       return false;
                     })
+                    .filter((field) => {
+                      if (field.name === 'Datasheets for Datasets' && field.value == 'No') {
+                        return false;
+                      }
+
+                      return true;
+                    })
+                    .map((field) => {
+                      if (field.name === 'Datasheets for Datasets') {
+                        return { ...field, value: field.longDescription };
+                      }
+
+                      return field;
+                    })
                     .map((field) => (
                       <ClassificationContainer key={field.name} className="card-body">
                         <Field>
@@ -529,15 +563,15 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback }) => {
                         <Value>{field.value}</Value>
                       </ClassificationContainer>
                     ))}
-                  <button
-                    type="button"
-                    className="btn btn-secondary btn-sm w-100"
-                    onClick={() => setShowAllClassifications(!showAllClassifications)}
-                  >
-                    {`Show ${
-                      showAllClassifications[taxonomy.namespace] ? 'Fewer' : 'All'
-                    } Classifications`}
-                  </button>
+                  {taxonomy.classificationsArray.length > 2 && (
+                    <button
+                      type="button"
+                      className="btn btn-secondary btn-sm w-100"
+                      onClick={() => setShowAllClassifications(!showAllClassifications)}
+                    >
+                      Show {`${showAllClassifications ? 'Fewer' : 'All'}`} Classifications
+                    </button>
+                  )}
                 </>
               ) : (
                 <div style={{ padding: '0.5em' }}>

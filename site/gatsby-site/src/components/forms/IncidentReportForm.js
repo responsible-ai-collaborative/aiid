@@ -13,6 +13,8 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import styled from 'styled-components';
 import { graphql, useStaticQuery } from 'gatsby';
+import * as POP_OVERS from '../PopOvers';
+import Label from '../Label';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -89,7 +91,7 @@ const StyledTypeahead = styled(Typeahead)`
     border: none;
     background: transparent;
   }
-`
+`;
 
 const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
   const {
@@ -122,13 +124,13 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
     }
   `);
 
-  const tags = []
+  const tags = [];
 
   for (const node of data.allMongodbAiidprodIncidents.edges) {
     if (node.node.tags) {
       for (const tag of node.node.tags) {
         if (!tags.includes(tag)) {
-          tags.push(tag)
+          tags.push(tag);
         }
       }
     }
@@ -221,7 +223,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
     <Form onSubmit={handleSubmit} className="mx-auto">
       <TextInputGroup
         name="url"
-        label="Report Address :"
+        label="Report Address"
         placeholder="Report URL"
         addOnComponent={
           <Button
@@ -249,42 +251,42 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
 
       <TextInputGroup
         name="title"
-        label="Title :"
+        label="Title"
         placeholder="Report title"
         className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="authors"
-        label="Author CSV :"
+        label="Author CSV"
         placeholder="Author CSV"
         className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="submitters"
-        label="Submitter CSV :"
+        label="Submitter CSV"
         placeholder="Submitter CSV"
         className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="incident_date"
-        label="Incident Date :"
+        label="Incident Date"
         placeholder="YYYY-MM-DD"
         className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="date_published"
-        label="Date Published :"
+        label="Date Published"
         placeholder="YYYY-MM-DD"
         className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="date_downloaded"
-        label="Date Downloaded :"
+        label="Date Downloaded"
         placeholder="YYYY-MM-DD"
         className="mt-3"
         {...TextInputGroupProps}
@@ -292,14 +294,14 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
       <PreviewImageInputGroup
         publicID={incident.cloudinary_id}
         name="image_url"
-        label="Image Address :"
+        label="Image Address"
         placeholder="Image URL"
         className="mt-3"
         {...TextInputGroupProps}
       />
       <TextInputGroup
         name="incident_id"
-        label="Incident ID :"
+        label="Incident ID"
         placeholder="OPTIONAL"
         type="number"
         className="mt-3"
@@ -307,7 +309,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
       />
       <TextInputGroup
         name="text"
-        label="Text :"
+        label="Text"
         placeholder="Text of the report"
         as="textarea"
         rows={8}
@@ -316,7 +318,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
       />
 
       <Form.Group className="mt-3">
-        <Form.Label>Tags</Form.Label>
+        <Label popover={POP_OVERS['tags']} label={'Tags'} />
         <StyledTypeahead
           id="submit-report-tags"
           inputProps={{ id: 'submit-report-tags-input' }}
@@ -325,7 +327,10 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
           onBlur={handleBlur}
           onChange={(value) => {
             setFieldTouched('tags', true);
-            setFieldValue('tags', value.map(v => v.label ? v.label : v));
+            setFieldValue(
+              'tags',
+              value.map((v) => (v.label ? v.label : v))
+            );
           }}
           selected={values.tags}
           options={tags}

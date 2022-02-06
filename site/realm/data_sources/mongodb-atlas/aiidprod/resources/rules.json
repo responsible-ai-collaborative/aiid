@@ -1,5 +1,5 @@
 {
-    "collection": "classifications",
+    "collection": "resources",
     "database": "aiidprod",
     "roles": [
         {
@@ -25,21 +25,9 @@
             "additional_fields": {}
         },
         {
-            "name": "taxonomy_editor_cset",
-            "apply_when": {
-                "%%user.custom_data.roles": "taxonomy_editor_cset"
-            },
-            "write": true,
-            "insert": true,
-            "delete": false,
-            "search": true,
-            "additional_fields": {}
-        },
-        {
             "name": "default",
             "apply_when": {},
             "read": true,
-            "write": false,
             "insert": false,
             "delete": false,
             "search": true,

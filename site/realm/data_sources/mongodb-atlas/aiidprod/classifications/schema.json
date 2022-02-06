@@ -67,7 +67,10 @@
                     "bsonType": "string"
                 },
                 "Laws Implicated": {
-                    "bsonType": "string"
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
                 },
                 "Level of Autonomy": {
                     "bsonType": "string"
@@ -112,7 +115,7 @@
                     "bsonType": "bool"
                 },
                 "Quality Control": {
-                    "bsonType": "bool"
+                    "bsonType": "mixed"
                 },
                 "Relevant AI functions": {
                     "bsonType": "array",

@@ -84,3 +84,8 @@ export const reportAddress = Popover(
   'Link to the publicly available report',
   `This address will be linked to within many incident database UIs.`
 );
+
+export const tags = Popover(
+  'Tag the type of incident report',
+  `The purpose of report tags is to support sorting reports on the citation page for the incident. When in doubt, you can leave this field blank and a database editor will select appropriate tags at ingestion time.`
+);
