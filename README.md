@@ -51,7 +51,7 @@ More details are available in the `Production System` information below. We reco
 
 The site is hosted by [Netlify](https://www.netlify.com/) and is integrated into GitHub to generate previews of all code states. This allows for seamless previewing of the application. However, the preview domains do not match the whitelisted domains known by the MongoDB service, so not all functionality is expected to work in the build previews without whitelisting the domain preview.
 
-**Builds:** Builds are presently run at least every 3 hours automatically by a GitHub action. They are also run on merge requests from forks. The site deploys from the master branch automatically if the build succeeds.
+**Builds:** Builds are presently run at least every 12 hours automatically by a GitHub action. They are also run on merge requests from forks. The site deploys from the master branch automatically if the build succeeds.
 
 ### MongoDB Database
 
@@ -246,6 +246,14 @@ REALM_API_PUBLIC_KEY=
 ### Testing
 
 For integration testing, we use Cypress. You can run the desktop app continuously as part of your development environment or run it on demand in headless mode.
+
+First, add two new environment variables:
+
+```
+E2E_ADMIN_USERNAME=
+E2E_ADMIN_PASSWORD=
+```
+As their names imply, they should be an existing user's credentials with the `admin` role.
 
 To use the desktop version, run:
 ```
