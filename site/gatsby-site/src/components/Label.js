@@ -1,15 +1,24 @@
 import React from 'react';
 import { OverlayTrigger, Form } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 
 const Label = ({ popover, placement, trigger, label }) => {
   if (!popover) {
-    return <Form.Label>{label}</Form.Label>;
+    return <Form.Label>{label} :</Form.Label>;
   }
-
   return (
     <OverlayTrigger trigger={trigger} placement={placement} overlay={popover}>
-      <Form.Label>{label}</Form.Label>
+      <Form.Label>
+        {label}{' '}
+        <FontAwesomeIcon
+          icon={faQuestionCircle}
+          style={{ color: 'rgb(210, 210, 210)' }}
+          className="far fa-question-circle"
+        />{' '}
+        :
+      </Form.Label>
     </OverlayTrigger>
   );
 };

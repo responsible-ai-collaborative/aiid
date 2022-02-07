@@ -478,8 +478,12 @@ const TaxonomyForm = ({ taxonomy, incidentId, doneSubmittingCallback = null }) =
   const canEdit =
     isRole('taxonomy_editor') || isRole('taxonomy_editor_' + taxonomy.namespace.toLowerCase());
 
+  if (!canEdit && taxonomy.classificationsArray.length < 1) {
+    return <></>;
+  }
+
   return (
-    <Row key={taxonomy.namespace} className="mb-4">
+    <Row key={taxonomy.namespace} className="mb-4" data-cy="taxonomy-form">
       <Container className="card ps-0 pe-0">
         <TaxaCardHeader className="card-header">
           <TaxaHeader>{`${taxonomy.namespace} Taxonomy Classifications`}</TaxaHeader>
