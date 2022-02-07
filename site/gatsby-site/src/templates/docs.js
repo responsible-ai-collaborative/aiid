@@ -7,8 +7,20 @@ import Layout from 'components/Layout';
 import NextPrevious from 'components/NextPrevious';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import config from '../../config';
+import { MDXProvider } from '@mdx-js/react';
 
 const forcedNavOrder = config.sidebar.forcedNavOrder;
+
+const slug = (title) => title.toLowerCase().replace(/\s+/g, '');
+
+const Components = {
+  h1: ({ children }) => <h1 id={slug(children)}>{children}</h1>,
+  h2: ({ children }) => <h2 id={slug(children)}>{children}</h2>,
+  h3: ({ children }) => <h3 id={slug(children)}>{children}</h3>,
+  h4: ({ children }) => <h4 id={slug(children)}>{children}</h4>,
+  h5: ({ children }) => <h5 id={slug(children)}>{children}</h5>,
+  h6: ({ children }) => <h6 id={slug(children)}>{children}</h6>,
+};
 
 export default class MDXRuntimeTest extends Component {
   render() {
@@ -86,7 +98,9 @@ export default class MDXRuntimeTest extends Component {
           <StyledHeading>{mdx.fields.title}</StyledHeading>
         </div>
         <StyledMainWrapper>
-          <MDXRenderer>{mdx.body}</MDXRenderer>
+          <MDXProvider components={Components}>
+            <MDXRenderer>{mdx.body}</MDXRenderer>
+          </MDXProvider>
         </StyledMainWrapper>
         <div className={'addPaddTopBottom'}>
           <NextPrevious mdx={mdx} nav={nav} />
@@ -97,7 +111,7 @@ export default class MDXRuntimeTest extends Component {
 }
 
 export const pageQuery = graphql`
-  query($id: String!) {
+  query ($id: String!) {
     site {
       siteMetadata {
         title
