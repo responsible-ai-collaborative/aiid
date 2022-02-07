@@ -15,6 +15,7 @@ describe('Cite pages', () => {
     incident_id: '',
     text: '',
     flag: '',
+    tags: [],
   };
 
   it('Successfully loads', () => {
@@ -44,12 +45,38 @@ describe('Cite pages', () => {
 
     cy.wait(1000);
 
-    cy.window().its('scrollY').should('be.closeTo', 4946, 200);
+    cy.window().its('scrollY').should('be.closeTo', 4946, 400);
   });
 
   // Meanwhile there is not reproducible environment skip tests with admin permissions
 
   const maybeIt = Cypress.env('e2eUsername') && Cypress.env('e2ePassword') ? it : it.skip;
+
+  maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    const id = 'r5d34b8c29ced494f010ed463';
+
+    cy.visit('/cite/1#' + id);
+
+    cy.get('#' + id)
+      .get('[data-cy=edit-report]')
+      .should('exist');
+  });
+
+  maybeIt('Should show the taxonomy edit form to users with the appropriate role', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    const id = 'r5d34b8c29ced494f010ed463';
+
+    cy.visit('/cite/1#' + id);
+
+    cy.get('#' + id)
+      .get('[data-cy=taxonomy-form]')
+      .should('exist');
+  });
+
+  // Meanwhile there is not reproducible environment skip tests with admin permissions
 
   maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));

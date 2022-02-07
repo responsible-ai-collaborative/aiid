@@ -10,4 +10,8 @@ TERM = "xterm"
 package = "@netlify/plugin-gatsby"
 
 [[plugins]]
-package = "netlify-plugin-cypress"
+  package = "netlify-plugin-cypress"
+  [plugins.inputs.postBuild]
+    enable = true
+    spa = true
+    start = 'gatsby serve -p 8080'
