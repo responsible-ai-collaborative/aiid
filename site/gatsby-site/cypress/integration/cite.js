@@ -15,6 +15,7 @@ describe('Cite pages', () => {
     incident_id: '',
     text: '',
     flag: '',
+    tags: [],
   };
 
   it('Successfully loads', () => {

@@ -13,6 +13,7 @@ describe('The Discover app', () => {
     incident_id: '',
     text: '',
     flag: '',
+    tags: [],
   };
 
   it('Successfully loads', () => {
