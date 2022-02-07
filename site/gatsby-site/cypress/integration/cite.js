@@ -15,6 +15,7 @@ describe('Cite pages', () => {
     incident_id: '',
     text: '',
     flag: '',
+    tags: [],
   };
 
   it('Successfully loads', () => {
@@ -44,7 +45,7 @@ describe('Cite pages', () => {
 
     cy.wait(1000);
 
-    cy.window().its('scrollY').should('be.closeTo', 4946, 200);
+    cy.window().its('scrollY').should('be.closeTo', 4946, 400);
   });
 
   // Meanwhile there is not reproducible environment skip tests with admin permissions
