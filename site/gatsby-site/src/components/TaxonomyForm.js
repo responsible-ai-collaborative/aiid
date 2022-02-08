@@ -195,7 +195,6 @@ const EditTaxonomyForm = ({
         ...defaultValues,
         notes,
       });
-
       setLoading(false);
     }
   }, [classificationsData, taxonomy]);

@@ -1,25 +1,55 @@
-import { Link } from 'gatsby';
 import React from 'react';
 import { Card } from 'react-bootstrap';
+import styled from 'styled-components';
+
+const HideOnDesktop = styled.div`
+  @media (min-width: 767px) {
+    display: none;
+  }
+`;
+
+const StyledImageMobile = styled.img`
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: space-around;
+  align-items: center;
+  width: 75%;
+  max-width: 110px;
+`;
+
+const StyledImage = styled.img`
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: space-around;
+  align-items: center;
+  width: 85%;
+  max-width: 355px;
+`;
 
 export default function AboutPartnership({ className }) {
   return (
     <Card className={className}>
       <Card.Body>
-        <Card.Title as="h2">About Partnership on AI</Card.Title>
+        <Card.Title as="h2">Founding Sponsor</Card.Title>
         <Card.Text className="fst-italic">
-          The <a href="http://partnershiponai.org/">Partnership on AI</a> is the leading forum
-          addressing the most important and difficult decisions on the future of AI. We are a
-          non-profit that invites diverse voices into the process of technical governance, design,
-          and deployment of AI technologies. Partners work together across industry, academia, and
-          civil society to understand the implications of AI advancements and ensure they benefit
-          society equitably.
+          As a founding sponsor of the AIID,{' '}
+          <a href="http://partnershiponai.org/">Partnership on AI</a> was instrumental in supporting
+          the start-up of the database, as well as providing ongoing support and guidance.
+          Partnership on AI also invested in promoting the social benefits of the AIID to their
+          Partners and other stakeholders and have an ongoing interest in supporting its outcomes.
         </Card.Text>
-        <Card.Text className="fst-italic">
-          The AI Incident Database is one of PAI’s key projects because it is a tangible resource on
-          what can happen if AI is not built or deployed in a manner which considers real world
-          implications. <Link to={`/about/1-governance`}>(Learn More)</Link>
-        </Card.Text>
+        <a
+          href="https://partnershiponai.org/resource/tracking-when-ai-systems-fail/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <StyledImage src="/partership-on-ai-logo.png" className="hiddenMobile" />
+          <HideOnDesktop>
+            <StyledImageMobile src="/partership-on-ai-logo-mobile.png" />
+          </HideOnDesktop>
+        </a>
       </Card.Body>
     </Card>
   );

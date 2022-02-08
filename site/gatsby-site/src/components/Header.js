@@ -116,7 +116,7 @@ const Header = () => (
                   <img
                     id="desktopLogo"
                     className={'hiddenMobile'}
-                    style={{ width: 330 }}
+                    style={{ width: 200 }}
                     src={logo.image !== '' ? logo.image : logoImg}
                     alt={'logo'}
                   />
