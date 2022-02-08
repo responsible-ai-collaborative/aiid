@@ -33,7 +33,7 @@ describe('Cite pages', () => {
 
     cy.wait(1000);
 
-    cy.window().its('scrollY').should('be.closeTo', 17100, 1000);
+    cy.window().its('scrollY').should('be.closeTo', 17100, 1400);
   });
 
   it('Should scroll to report when clicking on a report in the timeline', () => {
@@ -45,7 +45,7 @@ describe('Cite pages', () => {
 
     cy.wait(1000);
 
-    cy.window().its('scrollY').should('be.closeTo', 6215.5, 400);
+    cy.window().its('scrollY').should('be.closeTo', 6215.5, 1400);
   });
 
   // Meanwhile there is not reproducible environment skip tests with admin permissions
