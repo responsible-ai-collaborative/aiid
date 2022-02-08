@@ -20,8 +20,8 @@ const config = {
     },
   },
   header: {
-    logo: '/partership-on-ai-logo-1up.png',
-    logoMobile: '/partership-on-ai-logo-mobile.png',
+    logo: '/logos/White_Transparent_AIID_short.png',
+    logoMobile: '/White_Transparent_AIID.png',
     logoLink: '/',
     title: ' AI Incident Database',
     githubUrl: 'https://github.com/PartnershipOnAI/aiid',
@@ -48,13 +48,15 @@ const config = {
     collapsedNav: [
       //'/codeblock', // add trailing slash if enabled above
     ],
-    links: [{ text: 'Partnership on AI Home', link: 'https://partnershiponai.org' }],
+    links: [
+      { text: 'Launch Announcement', link: 'https://partnershiponai.org/aiincidentdatabase/' },
+    ],
     frontline: true,
     ignoreIndex: false,
     title: '',
   },
   siteMetadata: {
-    title: 'Artificial Intelligence Incident Database | Partnership on AI',
+    title: 'Artificial Intelligence Incident Database',
     description: 'a collection of intelligent system harms in the real world ',
     ogImage: null,
     docsLocation: '/',
