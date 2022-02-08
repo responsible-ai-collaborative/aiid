@@ -2,14 +2,30 @@ import React from 'react';
 import { Card } from 'react-bootstrap';
 import styled from 'styled-components';
 
-const StyledImage = styled.img`
+const HideOnDesktop = styled.div`
+  @media (min-width: 767px) {
+    display: none;
+  }
+`;
+
+const StyledImageMobile = styled.img`
   display: flex;
   margin-left: auto;
   margin-right: auto;
   justify-content: space-around;
   align-items: center;
   width: 75%;
-  max-width: 80px;
+  max-width: 110px;
+`;
+
+const StyledImage = styled.img`
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: space-around;
+  align-items: center;
+  width: 85%;
+  max-width: 355px;
 `;
 
 export default function AboutPartnership({ className }) {
@@ -26,9 +42,13 @@ export default function AboutPartnership({ className }) {
         </Card.Text>
         <a
           href="https://partnershiponai.org/resource/tracking-when-ai-systems-fail/"
-          target="_blank" rel="noreferrer"
+          target="_blank"
+          rel="noreferrer"
         >
-          <StyledImage src="/partership-on-ai-logo-mobile.png" />
+          <StyledImage src="/partership-on-ai-logo.png" className="hiddenMobile" />
+          <HideOnDesktop>
+            <StyledImageMobile src="/partership-on-ai-logo-mobile.png" />
+          </HideOnDesktop>
         </a>
       </Card.Body>
     </Card>
