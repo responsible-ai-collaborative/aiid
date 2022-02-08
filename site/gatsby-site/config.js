@@ -20,7 +20,7 @@ const config = {
     },
   },
   header: {
-    logo: '/White_Transparent_AIID.png',
+    logo: '/logos/White_Transparent_AIID_short.png',
     logoMobile: '/White_Transparent_AIID.png',
     logoLink: '/',
     title: ' AI Incident Database',
