@@ -265,7 +265,92 @@ And to run it in continuous integration (headless) mode:
 test:e2e:ci
 ```
 
+## Adding new Taxonomies
 
+### To add new taxonomies, follow these steps:
+Let's say you want to add the `CTECH` Taxonomy.
+
+1. Create a new collection using the lowercased Taxonomy name: `ctech`
+
+2. Define the appropriate rules, relationships, and schema for this new collection. Specifically, a schema that specifies the fields of the taxonomy:
+
+`/site/realm/data_sources/mongodb-atlas/aiidprod/ctech/schema.json`
+
+```
+{
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "classifications": {
+            "bsonType": "object",
+            "properties": {
+                "taxonomy field 1": {
+                    "bsonType": "bool"
+                },
+                "taxonomy field 2": {
+                    "bsonType": "string"
+                },
+                "Publish": {
+                    "bsonType": "bool"
+                }
+            }
+        },
+        "incident_id": {
+            "bsonType": "int"
+        },
+        "namespace": {
+            "bsonType": "string"
+        },
+        "notes": {
+            "bsonType": "string"
+        }
+    },
+    "title": "ctech"
+}
+```
+
+3. Add the new document to the `taxa` collection, that lists the taxonomy fields:
+
+```
+{
+    "_id": {
+        "$oid": "61f158f4c19c105af2f3d6af"
+    },
+    "namespace": "ctech",
+    "weight": {
+        "$numberInt": "50"
+    },
+    "description": "# What are these resources?\n\nThe following resources have been associated with incidents in the database to provide tools and processes to persons and companies looking for best practices in the prevention or mitigation of similar incidents in the future.",
+    "field_list": [
+        {
+            "short_name": "taxonomy field 1",
+            "long_name": "taxonomy field 1",
+            "short_description": "Lorem ipsum...",
+            "long_description": "__Lorem ipsum__",
+            "display_type": "bool",
+            "mongo_type": "bool",
+            "default": null,
+            "placeholder": null,
+            "permitted_values": null,
+            "weight": {
+                "$numberInt": "70"
+            },
+            "instant_facet": true,
+            "required": false
+        },
+        {
+            "short_name": "Publish",
+            "display_type": "bool",
+            "mongo_type": "bool"
+        }
+    ]
+}
+```
+
+4. Restart Gatsby
+
+Restarting Gatsby should make the new taxonomy available on the citation pages. 
 
 ## License
 
