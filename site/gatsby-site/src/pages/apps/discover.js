@@ -128,7 +128,6 @@ const generateSearchState = ({ query }) => {
     configure: {
       hitsPerPage: 30,
     },
-    page: 1,
     query: '',
     refinementList: {},
     range: {},
@@ -142,6 +141,7 @@ const generateSearchState = ({ query }) => {
 
   return {
     ...searchState,
+    page: query.page,
     query: querySearch,
     refinementList: {
       ...convertStringToArray(cleanQuery),
@@ -172,6 +172,8 @@ const getQueryFromState = (searchState) => {
       ...convertRangeToQueryString(removeEmptyAttributes(searchState.range)),
     };
   }
+
+  query.page = searchState.page;
 
   return query;
 };

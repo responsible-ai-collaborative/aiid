@@ -16,7 +16,9 @@ function SearchBox({ currentRefinement, refine }) {
   const debouncedRefine = useRef(debounce((value) => refine(value), 500)).current;
 
   useEffect(() => {
-    debouncedRefine(query);
+    if (query != currentRefinement) {
+      debouncedRefine(query);
+    }
   }, [query]);
 
   useEffect(() => {
