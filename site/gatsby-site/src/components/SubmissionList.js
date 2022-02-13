@@ -1,5 +1,6 @@
 import React from 'react';
 import ListGroup from 'react-bootstrap/ListGroup';
+import { Spinner } from 'react-bootstrap';
 
 import Link from 'components/Link';
 import ReportedIncident from 'components/ReportedIncident';
@@ -16,8 +17,13 @@ const SubmissionList = () => {
         and are pending review by editors. Only editors may promote these records to incident
         reports in the database.
       </p>
-      <p>Please note that this list updates hourly. New submissions are not immediately shown.</p>
       <ListGroup className="mb-5">
+        {submissions.length < 1 && (
+          <>
+            <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" />{' '}
+            <p>Loading Submissions...</p>
+          </>
+        )}
         {submissions
           .sort((a, b) => a.incident_date - b.incident_date)
           .map((node) => (
