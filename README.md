@@ -270,9 +270,9 @@ test:e2e:ci
 ### To add new taxonomies, follow these steps:
 Let's say you want to add the `CTECH` Taxonomy.
 
-1. Create a new collection using the lowercased Taxonomy name: `ctech`
+1. Create a new MongoDB collection using the lowercased Taxonomy name: ctech.
 
-2. Define the appropriate rules, relationships, and schema for this new collection. Specifically, a schema that specifies the fields of the taxonomy:
+2. Define the appropriate rules, relationships, and schema for this new collection. Specifically, a schema that specifies the fields of the taxonomy. An example for the fictional `ctech` schema is below. You can optionally populate the schema and use the MongoDB Realm API to generate the schema programmatically.
 
 `/site/realm/data_sources/mongodb-atlas/aiidprod/ctech/schema.json`
 
@@ -310,7 +310,7 @@ Let's say you want to add the `CTECH` Taxonomy.
 }
 ```
 
-3. Add the new document to the `taxa` collection, that lists the taxonomy fields:
+3. Add the new document to the `taxa` collection, that lists the taxonomy fields. This annotates the classifications found in the new collection and determines properties of their display in the user interface.
 
 ```
 {
@@ -348,9 +348,14 @@ Let's say you want to add the `CTECH` Taxonomy.
 }
 ```
 
-4. Restart Gatsby
+4. Update `createCitiationPages.js` to have it pull the new taxonomy definitions. The relevant lines are:
 
-Restarting Gatsby should make the new taxonomy available on the citation pages. 
+    - /site/gatsby-site/page-creators/createCitiationPages.js#L125
+    - /site/gatsby-site/page-creators/createCitiationPages.js#L180
+
+5. Restart Gatsby
+
+Restarting Gatsby should make the new taxonomy available on the citation pages, so you can visit /cite/1 to see a form for editing the taxonomy. Please note that you will need to be logged in to a user account on the application to see the form.
 
 ## License
 
