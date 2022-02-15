@@ -31,21 +31,34 @@ describe('Cite pages', () => {
 
     cy.disableSmoothScroll();
 
-    cy.wait(1000);
+    cy.url().should('include', '/cite/10');
 
-    cy.window().its('scrollY').should('be.closeTo', 17100, 1400);
+    cy.get('span')
+      .contains('Is Starbucks shortchanging its baristas?')
+      .parents('[class*="IncidentCard"]')
+      .then((subject) => {
+        expect(subject[0].getBoundingClientRect().top).to.be.closeTo(0, 1);
+      });
   });
 
   it('Should scroll to report when clicking on a report in the timeline', () => {
     cy.visit(url);
 
+    cy.wait(2000);
+
     cy.disableSmoothScroll();
 
-    cy.get('text').contains('For some Starbucks workers, job leaves bitter taste').click();
+    cy.get('text')
+      .contains('For some Starbucks workers, job leaves bitter taste')
+      .parents('a')
+      .click({ force: true });
 
-    cy.wait(1000);
-
-    cy.window().its('scrollY').should('be.closeTo', 6215.5, 1400);
+    cy.get('span')
+      .contains('For some Starbucks workers, job leaves bitter taste')
+      .parents('[class*="IncidentCard"]')
+      .then((subject) => {
+        expect(subject[0].getBoundingClientRect().top).to.be.closeTo(0, 1);
+      });
   });
 
   // Meanwhile there is not reproducible environment skip tests with admin permissions
