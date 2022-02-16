@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
-import TaxonomyForm from 'components/TaxonomyForm';
+import TaxonomyForm from 'components/taxa/TaxonomyForm';
 import Helmet from 'react-helmet';
 import styled from 'styled-components';
 import { useMongo } from 'hooks/useMongo';
@@ -583,6 +583,11 @@ export default function ClassificationsDbView(props) {
     }
   };
 
+  const handleSubmit = () => {
+    editClassificationModal.close();
+    initSetup();
+  };
+
   const getEditClassificationForm = (row) => {
     const taxonomyFormObj = {
       classificationsArray: [],
@@ -620,10 +625,9 @@ export default function ClassificationsDbView(props) {
     return (
       <>
         <TaxonomyForm
-          key={'CSET'}
-          taxonomy={taxonomyFormObj}
+          namespace={taxaData.namespace}
           incidentId={row.values.IncidentId}
-          doneSubmittingCallback={initSetup}
+          onSubmit={handleSubmit}
         />
       </>
     );

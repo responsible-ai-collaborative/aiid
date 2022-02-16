@@ -10,10 +10,10 @@ import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 import styled from 'styled-components';
 import { isAfter, isEqual } from 'date-fns';
 import { useModal, CustomModal } from '../../src/components/useModal';
-import TaxonomyForm from '../components/TaxonomyForm';
 import Timeline from 'components/Timeline';
 import IncidentStatsCard from 'components/cite/IncidentStatsCard';
 import IncidentCard from 'components/cite/IncidentCard';
+import Taxonomy from 'components/taxa/Taxonomy';
 
 const CardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -173,7 +173,7 @@ function CitePage(props) {
             <Col>
               <div id="taxa-area">
                 {taxonomies.map((t) => (
-                  <TaxonomyForm key={t.namespace} taxonomy={t} incidentId={incident_id} />
+                  <Taxonomy key={t.namespace} taxonomy={t} incidentId={incident_id} />
                 ))}
               </div>
             </Col>
