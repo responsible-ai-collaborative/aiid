@@ -43,6 +43,8 @@ exports.createPages = ({ graphql, actions }) => {
     ['/about_apps/3-your_app_here', '/about_apps'],
     ['/apps/quickadd', '/apps/submit'],
     ['/discover', '/apps/discover'],
+    ['/discover', '/apps/discover'],
+    ['/summaries', '/about_apps'],
   ];
 
   redirects.forEach((pair) =>
