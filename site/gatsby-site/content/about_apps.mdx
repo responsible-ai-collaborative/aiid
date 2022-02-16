@@ -10,4 +10,14 @@ The AIID is built on a document database and a collection of serverless browser 
 
 **Apps vs Summaries**
 
-A "[summary](/summaries)" in the AIID is something that generates descriptive statistics, visualizations, or other read-only views into the database. Summaries are expected to live inside the scripting environment you are presently reading. An "app" is something that may have write permissions on some portion of the database. Additionally, an app can maintain its own scripting environment isolated from the scripting environment you are presently reading.
+A "summary" in the AIID is something that generates descriptive statistics, visualizations, or other read-only views into the database. Summaries are expected to live inside the scripting environment you are presently reading. An "app" is something that may have write permissions on some portion of the database. Additionally, an app can maintain its own scripting environment isolated from the scripting environment you are presently reading.
+
+## Summaries ##
+
+The following views support task-specific data exploration. These views of the database are periodically regenerated as the database develops, but they are not dynamically searching the complete set of data. If you are looking to find incidents similar to your current or fielded intelligent system, your best starting point is the [Discover](/apps/discover) application.
+
+* [List of all incidents and their associated report titles](/summaries/incidents). View this page to track when new incidents are added.
+* [Leaderboard](/summaries/leaderboard). The top submitters, authors, and domains for reports withint he database.
+* [Wordcount](/summaries/wordcounts). A list of words in incident reports with their counts across the whole database.
+* [Flagged incidents](/summaries/flagged). View this page to see incident reports that may have issues.
+* [Classifications Database view](/apps/classifications). View this page to see a full view of the classifications collection.
