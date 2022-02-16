@@ -588,6 +588,8 @@ export default function ClassificationsDbView(props) {
     initSetup();
   };
 
+  const editFormRef = React.useRef(null);
+
   const getEditClassificationForm = (row) => {
     const taxonomyFormObj = {
       classificationsArray: [],
@@ -625,6 +627,7 @@ export default function ClassificationsDbView(props) {
     return (
       <>
         <TaxonomyForm
+          ref={editFormRef}
           namespace={taxaData.namespace}
           incidentId={row.values.IncidentId}
           onSubmit={handleSubmit}
@@ -706,7 +709,15 @@ export default function ClassificationsDbView(props) {
                     disabled={!isAdmin}
                     onClick={() =>
                       editClassificationModal.openFor({
-                        title: `Edit CSET classification for incident ${row.original.IncidentId}`,
+                        title: (
+                          <>
+                            Edit {currentTaxonomy} classification for incident{' '}
+                            {row.original.IncidentId}{' '}
+                            <Button className="ms-2" onClick={() => editFormRef.current.submit()}>
+                              Submit
+                            </Button>
+                          </>
+                        ),
                         body: function f() {
                           return getEditClassificationForm(row);
                         },

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useMongo } from 'hooks/useMongo';
@@ -53,7 +53,7 @@ const getTaxaFieldKey = (key) => {
   return key;
 };
 
-const TaxonomyForm = ({ namespace, incidentId, onSubmit }) => {
+const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, onSubmit }, ref) {
   const [loading, setLoading] = useState(true);
 
   const [error] = useState('');
@@ -67,6 +67,14 @@ const TaxonomyForm = ({ namespace, incidentId, onSubmit }) => {
   const { runQuery } = useMongo();
 
   const addToast = useToastContext();
+
+  const formRef = useRef(null);
+
+  useImperativeHandle(ref, () => ({
+    submit() {
+      formRef.current.submitForm();
+    },
+  }));
 
   // this should be updated to use the useQuery hook but some
   // fields need to be normalized to play nice with graphql
@@ -362,7 +370,7 @@ const TaxonomyForm = ({ namespace, incidentId, onSubmit }) => {
 
   return (
     <FormContainer>
-      <Formik initialValues={initialValues} onSubmit={submit}>
+      <Formik initialValues={initialValues} onSubmit={submit} innerRef={formRef}>
         {({
           values,
           // errors,
@@ -397,6 +405,6 @@ const TaxonomyForm = ({ namespace, incidentId, onSubmit }) => {
       </Formik>
     </FormContainer>
   );
-};
+});
 
 export default TaxonomyForm;
