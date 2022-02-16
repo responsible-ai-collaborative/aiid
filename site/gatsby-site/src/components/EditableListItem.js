@@ -73,7 +73,7 @@ const EditableListItem = ({ editable, onUpdate, name, value }) => {
   };
 
   return (
-    <Row noGutters>
+    <Row className="g-0">
       <Col xs={12} lg={3} className="text-lg-right pr-2">
         <Key>{name}</Key> :
       </Col>
