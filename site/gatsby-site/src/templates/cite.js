@@ -169,13 +169,13 @@ function CitePage(props) {
         </Row>
 
         {taxonomies.length > 0 && (
-          <Row className="mt-4">
+          <Row>
             <Col>
-              <div id="taxa-area">
-                {taxonomies.map((t) => (
+              {taxonomies.map((t) => (
+                <CardContainer key={t.namespace} className="card mt-4" id="taxa-area">
                   <Taxonomy key={t.namespace} taxonomy={t} incidentId={incident_id} />
-                ))}
-              </div>
+                </CardContainer>
+              ))}
             </Col>
           </Row>
         )}

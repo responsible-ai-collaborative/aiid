@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Row, OverlayTrigger, Tooltip, Button, Card } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip, Button, Card } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useUserContext } from 'contexts/userContext';
 import Markdown from 'react-markdown';
@@ -35,18 +35,6 @@ const Value = styled(Markdown)`
   width: 80%;
 `;
 
-const Container = styled.div`
-  width: 100%;
-  border: 1.5px solid #d9deee;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px 0px #e3e5ec;
-  display: flex;
-  flex-direction: column;
-  h4 {
-    margin: 0 !important;
-  }
-`;
-
 const TaxaHeader = styled.h4`
   padding-right: 0.8em;
 `;
@@ -79,122 +67,120 @@ const Taxonomy = ({ taxonomy, incidentId }) => {
   };
 
   return (
-    <Row key={taxonomy.namespace} className="mb-4" data-cy="taxonomy-form">
-      <Container className="card ps-0 pe-0">
-        <TaxaCardHeader className="card-header">
-          <TaxaHeader>{`${taxonomy.namespace} Taxonomy Classifications`}</TaxaHeader>
-          <>
-            {isEditing ? (
-              <Button onClick={() => setIsEditing(false)}>Cancel</Button>
-            ) : (
-              canEdit && <Button onClick={() => setIsEditing(true)}>Edit</Button>
-            )}
-          </>
-          <a
-            style={{ order: 2, marginLeft: 'auto' }}
-            href={`/taxonomy/${taxonomy.namespace.toLowerCase()}`}
-          >
-            Taxonomy Details
-          </a>
-        </TaxaCardHeader>
+    <>
+      <TaxaCardHeader className="card-header">
+        <TaxaHeader>{`${taxonomy.namespace} Taxonomy Classifications`}</TaxaHeader>
         <>
-          {!isEditing ? (
-            <>
-              {showBanner && (
-                <div style={{ padding: '0.5em' }}>
-                  <Card bg="secondary" style={{ width: '100%' }} text="light" className="mb-2">
-                    <Card.Body>
-                      <Card.Text>
-                        Classifications will update in production within 24 hours.
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>
-                </div>
-              )}
-              {taxonomy.classificationsArray.length > 0 ? (
-                <>
-                  {canEdit && (
-                    <ClassificationContainer key={'NOTES'} className="card-body">
+          {isEditing ? (
+            <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+          ) : (
+            canEdit && <Button onClick={() => setIsEditing(true)}>Edit</Button>
+          )}
+        </>
+        <a
+          style={{ order: 2, marginLeft: 'auto' }}
+          href={`/taxonomy/${taxonomy.namespace.toLowerCase()}`}
+        >
+          Taxonomy Details
+        </a>
+      </TaxaCardHeader>
+      <>
+        {!isEditing ? (
+          <>
+            {showBanner && (
+              <div style={{ padding: '0.5em' }}>
+                <Card bg="secondary" style={{ width: '100%' }} text="light" className="mb-2">
+                  <Card.Body>
+                    <Card.Text>
+                      Classifications will update in production within 24 hours.
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </div>
+            )}
+            {taxonomy.classificationsArray.length > 0 ? (
+              <>
+                {canEdit && (
+                  <ClassificationContainer key={'NOTES'} className="card-body">
+                    <Field>
+                      <OverlayTrigger
+                        placement="left"
+                        delay={{ show: 100, hide: 400 }}
+                        overlay={(e) => renderTooltip(e, 'Admin notes')}
+                      >
+                        <p>{'Notes'}</p>
+                      </OverlayTrigger>
+                    </Field>
+                    <Value>{taxonomy.notes}</Value>
+                  </ClassificationContainer>
+                )}
+                {taxonomy.classificationsArray
+                  .filter((field) => {
+                    if (showAllClassifications) return true;
+                    if (!showAllClassifications && field.weight >= 50) {
+                      return true;
+                    }
+                    return false;
+                  })
+                  .filter((field) => {
+                    if (field.name === 'Datasheets for Datasets' && field.value == 'No') {
+                      return false;
+                    }
+
+                    return true;
+                  })
+                  .map((field) => {
+                    if (field.name === 'Datasheets for Datasets') {
+                      return { ...field, value: field.longDescription };
+                    }
+
+                    return field;
+                  })
+                  .map((field) => (
+                    <ClassificationContainer key={field.name} className="card-body">
                       <Field>
                         <OverlayTrigger
                           placement="left"
                           delay={{ show: 100, hide: 400 }}
-                          overlay={(e) => renderTooltip(e, 'Admin notes')}
+                          overlay={(e) => renderTooltip(e, field.shortDescription)}
                         >
-                          <p>{'Notes'}</p>
+                          <p>{field.name}</p>
                         </OverlayTrigger>
                       </Field>
-                      <Value>{taxonomy.notes}</Value>
+                      <Value>{field.value}</Value>
                     </ClassificationContainer>
-                  )}
-                  {taxonomy.classificationsArray
-                    .filter((field) => {
-                      if (showAllClassifications) return true;
-                      if (!showAllClassifications && field.weight >= 50) {
-                        return true;
-                      }
-                      return false;
-                    })
-                    .filter((field) => {
-                      if (field.name === 'Datasheets for Datasets' && field.value == 'No') {
-                        return false;
-                      }
-
-                      return true;
-                    })
-                    .map((field) => {
-                      if (field.name === 'Datasheets for Datasets') {
-                        return { ...field, value: field.longDescription };
-                      }
-
-                      return field;
-                    })
-                    .map((field) => (
-                      <ClassificationContainer key={field.name} className="card-body">
-                        <Field>
-                          <OverlayTrigger
-                            placement="left"
-                            delay={{ show: 100, hide: 400 }}
-                            overlay={(e) => renderTooltip(e, field.shortDescription)}
-                          >
-                            <p>{field.name}</p>
-                          </OverlayTrigger>
-                        </Field>
-                        <Value>{field.value}</Value>
-                      </ClassificationContainer>
-                    ))}
-                  {taxonomy.classificationsArray.length > 2 && (
-                    <button
-                      type="button"
-                      className="btn btn-secondary btn-sm w-100"
-                      onClick={() => setShowAllClassifications(!showAllClassifications)}
-                    >
-                      Show {`${showAllClassifications ? 'Fewer' : 'All'}`} Classifications
-                    </button>
-                  )}
-                </>
-              ) : (
-                <div style={{ padding: '0.5em' }}>
-                  <Card bg="secondary" style={{ width: '100%' }} text="light" className="mb-2">
-                    <Card.Body>
-                      <Card.Text>No classifications for this taxonomy.</Card.Text>
-                    </Card.Body>
-                  </Card>
-                </div>
-              )}
-            </>
-          ) : (
-            <>
-              <TaxonomyForm
-                namespace={taxonomy.namespace}
-                incidentId={incidentId}
-                onSubmit={handleSubmit}
-              />
-            </>
-          )}
-        </>
-      </Container>
-    </Row>
+                  ))}
+                {taxonomy.classificationsArray.length > 2 && (
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-sm w-100"
+                    onClick={() => setShowAllClassifications(!showAllClassifications)}
+                  >
+                    Show {`${showAllClassifications ? 'Fewer' : 'All'}`} Classifications
+                  </button>
+                )}
+              </>
+            ) : (
+              <div style={{ padding: '0.5em' }}>
+                <Card bg="secondary" style={{ width: '100%' }} text="light" className="mb-2">
+                  <Card.Body>
+                    <Card.Text>No classifications for this taxonomy.</Card.Text>
+                  </Card.Body>
+                </Card>
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <TaxonomyForm
+              namespace={taxonomy.namespace}
+              incidentId={incidentId}
+              onSubmit={handleSubmit}
+            />
+          </>
+        )}
+      </>
+    </>
   );
 };
 
