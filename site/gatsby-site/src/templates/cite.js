@@ -169,10 +169,10 @@ function CitePage(props) {
         </Row>
 
         {taxonomies.length > 0 && (
-          <Row>
+          <Row id="taxa-area">
             <Col>
               {taxonomies.map((t) => (
-                <CardContainer key={t.namespace} className="card mt-4" id="taxa-area">
+                <CardContainer key={t.namespace} className="card mt-4" data-cy={t.namespace}>
                   <Taxonomy key={t.namespace} taxonomy={t} incidentId={incident_id} />
                 </CardContainer>
               ))}
