@@ -705,6 +705,7 @@ export default function ClassificationsDbView(props) {
               return (
                 <td key={cell.id} {...cell.getCellProps()}>
                   <Button
+                    data-cy="edit-classification"
                     className="me-auto"
                     disabled={!isAdmin}
                     onClick={() =>

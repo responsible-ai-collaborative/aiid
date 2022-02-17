@@ -369,16 +369,9 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
   };
 
   return (
-    <FormContainer>
+    <FormContainer data-cy="taxonomy-form">
       <Formik initialValues={initialValues} onSubmit={submit} innerRef={formRef}>
-        {({
-          values,
-          // errors,
-          // touched,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-        }) => (
+        {({ values, handleChange, handleSubmit, isSubmitting }) => (
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-4">
               <Form.Label>Notes</Form.Label>
