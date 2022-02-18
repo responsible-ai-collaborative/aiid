@@ -58,8 +58,8 @@
     "gatsby-transformer-sharp": "^4.3.0",
     "graphql": "^15.8.0",
     "is-absolute-url": "^3.0.3",
-    "lodash.clonedeep": "^4.5.0",
     "isomorphic-fetch": "^3.0.0",
+    "lodash.clonedeep": "^4.5.0",
     "lodash.flatten": "^4.4.0",
     "lodash.startcase": "^4.4.0",
     "md5": "^2.3.0",
@@ -90,6 +90,7 @@
     "styled-components": "^5.3.0",
     "styled-icons": "^9.5.0",
     "topojson": "^3.0.2",
+    "umzug": "^3.0.0",
     "use-query-params": "^1.2.0",
     "yup": "^0.29.3"
   },
