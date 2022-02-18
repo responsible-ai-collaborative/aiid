@@ -4,7 +4,7 @@ const { Umzug } = require('umzug');
 
 const { MongoClient } = require('mongodb');
 
-const client = new MongoClient(process.env.MONGODB_TRANSLATIONS_CONNECTION_STRING);
+const client = new MongoClient(process.env.MONGODB_MIGRATIONS_CONNECTION_STRING);
 
 const collection = client.db('aiidprod').collection('migrations');
 
@@ -33,6 +33,9 @@ const umzug = new Umzug({
     glob: './migrations/*.js',
   },
   logger: console,
+  context: {
+    client,
+  },
 });
 
 exports.umzug = umzug;
