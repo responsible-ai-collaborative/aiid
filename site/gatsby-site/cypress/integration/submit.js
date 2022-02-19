@@ -43,7 +43,7 @@ describe('The Submit form', () => {
 
     cy.get('button').contains('Fetch info').click();
 
-    cy.wait('@parseNews', { timeout: 30000 });
+    cy.wait('@parseNews', { timeout: 30000 }).its('response.statusCode').should('eq', 200);
 
     cy.get('input[name="submitters"]').type('Something');
 
@@ -87,7 +87,7 @@ describe('The Submit form', () => {
 
     cy.get('button').contains('Fetch info').click();
 
-    cy.wait('@parseNews', { timeout: 30000 });
+    cy.wait('@parseNews', { timeout: 30000 }).its('response.statusCode').should('eq', 500);
 
     cy.contains(
       'div[class^="ToastContext"]',
