@@ -33,8 +33,7 @@ describe('Cite pages', () => {
 
     cy.url().should('include', '/cite/10');
 
-    cy.get('span', { timeout: 8000 })
-      .contains('Is Starbucks shortchanging its baristas?')
+    cy.contains('span', 'Is Starbucks shortchanging its baristas?', { timeout: 8000 })
       .parents('[class*="IncidentCard"]')
       .then((subject) => {
         expect(subject[0].getBoundingClientRect().top).to.be.closeTo(0, 1);
