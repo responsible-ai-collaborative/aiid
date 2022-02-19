@@ -24,7 +24,7 @@ describe('Cite pages', () => {
     cy.disableSmoothScroll();
   });
 
-  it('Should scroll to report when coming from the discover app', () => {
+  it.skip('Should scroll to report when coming from the discover app', () => {
     cy.visit(discoverUrl);
 
     cy.contains('Show Details on Incident #10').first().click();
