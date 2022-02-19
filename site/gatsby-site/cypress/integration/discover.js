@@ -42,7 +42,7 @@ describe('The Discover app', () => {
   it('Filters by incident Id using top filters', () => {
     cy.visit(url);
 
-    cy.get('button:contains("Incident ID")').click();
+    cy.contains('button', 'Incident ID').click();
 
     cy.get('.card [placeholder="Type Here"]').type('34').type('{enter}');
 
