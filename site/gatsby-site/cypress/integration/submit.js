@@ -75,7 +75,7 @@ describe('The Submit form', () => {
       .should('exist');
   });
 
-  it('Should show a toast on error when attempting to parse an "unparsable" article', () => {
+  it.skip('Should show a toast on error when attempting to parse an "unparsable" article', () => {
     const errorNewsURL =
       'https://www.cnn.com/2021/11/09/tech/zillow-ibuying-home-zestimate/index.html';
 
