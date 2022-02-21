@@ -16,7 +16,7 @@ const collection = client.db('aiidprod').collection('migrations');
 const storage = {
   async logMigration({ name: migrationName }) {
     await client.connect();
-    await collection.insertOne({ migrationName });
+    await collection.insertOne({ migrationName, createdAt: new Date() });
   },
 
   async unlogMigration({ name: migrationName }) {

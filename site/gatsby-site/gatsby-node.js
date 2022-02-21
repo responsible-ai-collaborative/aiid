@@ -32,6 +32,8 @@ const updateDiscoverIndexes = require('./src/utils/updateDiscoverIndexes');
 
 const googleMapsApiClient = new GoogleMapsAPIClient({});
 
+const migrator = require('./migrator');
+
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions;
 
@@ -241,4 +243,15 @@ exports.onPostBuild = async function ({ graphql, reporter }) {
   }
 
   activity.end();
+
+  const migrationsActivity = reporter.activityTimer(`Migrations`);
+
+  migrationsActivity.start();
+  migrationsActivity.setStatus('Running...');
+
+  await migrator.umzug.runAsCLI(['up']);
+
+  migrationsActivity.setStatus('Finished!');
+
+  migrationsActivity.end();
 };
