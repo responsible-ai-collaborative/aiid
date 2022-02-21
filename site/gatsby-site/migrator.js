@@ -4,8 +4,8 @@ const { Umzug } = require('umzug');
 
 const { MongoClient } = require('mongodb');
 
-if (!process.env.MONGODB_MIGRATIONS_CONNECTION_STRING) {
-  console.warn('MONGODB_MIGRATIONS_CONNECTION_STRING is not set, skipping migrations.');
+if (require.main === module && !process.env.MONGODB_MIGRATIONS_CONNECTION_STRING) {
+  console.warn('MONGODB_MIGRATIONS_CONNECTION_STRING is not set');
 }
 
 const client = new MongoClient(process.env.MONGODB_MIGRATIONS_CONNECTION_STRING);

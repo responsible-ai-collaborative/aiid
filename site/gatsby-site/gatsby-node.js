@@ -32,8 +32,6 @@ const updateDiscoverIndexes = require('./src/utils/updateDiscoverIndexes');
 
 const googleMapsApiClient = new GoogleMapsAPIClient({});
 
-const migrator = require('./migrator');
-
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions;
 
@@ -246,12 +244,18 @@ exports.onPostBuild = async function ({ graphql, reporter }) {
 
   const migrationsActivity = reporter.activityTimer(`Migrations`);
 
-  migrationsActivity.start();
-  migrationsActivity.setStatus('Running...');
+  if (!process.env.MONGODB_MIGRATIONS_CONNECTION_STRING) {
+    console.warn('MONGODB_MIGRATIONS_CONNECTION_STRING is not set, skipping migrations.');
+  } else {
+    migrationsActivity.start();
+    migrationsActivity.setStatus('Running...');
 
-  await migrator.umzug.runAsCLI(['up']);
+    const migrator = require('./migrator');
 
-  migrationsActivity.setStatus('Finished!');
+    await migrator.umzug.runAsCLI(['up']);
 
-  migrationsActivity.end();
+    migrationsActivity.setStatus('Finished!');
+
+    migrationsActivity.end();
+  }
 };
