@@ -17,8 +17,6 @@ exports.up = async ({ context: { client } }) => {
   let duplicateIndex = 0;
 
   for (let i = 0; i < sorted.length - 1; i++) {
-    console.log(sorted[i].report_number);
-
     if (sorted[i].report_number == sorted[i + 1].report_number) {
       duplicateIndex = i + 1;
       break;
