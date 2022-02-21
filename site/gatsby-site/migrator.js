@@ -6,7 +6,6 @@ const { MongoClient } = require('mongodb');
 
 if (!process.env.MONGODB_MIGRATIONS_CONNECTION_STRING) {
   console.warn('MONGODB_MIGRATIONS_CONNECTION_STRING is not set, skipping migrations.');
-  process.exit(0);
 }
 
 const client = new MongoClient(process.env.MONGODB_MIGRATIONS_CONNECTION_STRING);
