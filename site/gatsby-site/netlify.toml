@@ -1,6 +1,6 @@
 [build]
 publish = "public"
-command = "npm run build && npm run migrate"
+command = "npm run build && node migrator up"
 
 [build.environment]
 CYPRESS_CACHE_FOLDER = "./node_modules/CypressBinary"

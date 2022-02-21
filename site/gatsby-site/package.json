@@ -104,8 +104,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:e2e": "start-server-and-test start http://localhost:8000 cypress:open",
-    "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run",
-    "migrate": "node migrator up"
+    "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run"
   },
   "devDependencies": {
     "@netlify/plugin-gatsby": "^2.0.0-beta",
