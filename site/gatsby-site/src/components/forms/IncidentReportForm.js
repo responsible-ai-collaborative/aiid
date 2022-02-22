@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import Link from 'components/Link';
-import TextInputGroup from 'components/TextInputGroup';
+import Link from 'components/ui/Link';
+import TextInputGroup from 'components/forms/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, parseISO } from 'date-fns';
 import { dateRegExp } from 'utils/date';
@@ -13,8 +13,8 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import styled from 'styled-components';
 import { graphql, useStaticQuery } from 'gatsby';
-import * as POP_OVERS from '../PopOvers';
-import Label from '../Label';
+import * as POP_OVERS from '../ui/PopOvers';
+import Label from './Label';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.

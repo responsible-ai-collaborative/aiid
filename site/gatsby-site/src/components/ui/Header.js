@@ -8,10 +8,10 @@ import { faBars, faRssSquare } from '@fortawesome/free-solid-svg-icons';
 import { faTwitterSquare } from '@fortawesome/free-brands-svg-icons';
 
 import Link from './Link';
-import LoadingProvider from './mdxComponents/loading';
-import config from '../../config.js';
+import LoadingProvider from '../mdxComponents/loading';
+import config from '../../../config.js';
 
-const help = require('./images/help.svg');
+const help = require('../images/help.svg');
 
 const isSearchEnabled = config.header.search && config.header.search.enabled ? true : false;
 
@@ -25,10 +25,10 @@ if (isSearchEnabled && config.header.search.indexName) {
   });
 }
 
-import Sidebar from './sidebar';
+import Sidebar from '../sidebar';
 
 const LoadableComponent = Loadable({
-  loader: () => import('./search/index'),
+  loader: () => import('../search/index'),
   loading: LoadingProvider,
 });
 
@@ -93,9 +93,9 @@ const Header = () => (
       }
     `}
     render={(data) => {
-      const logoImg = require('./images/logo.svg');
+      const logoImg = require('../images/logo.svg');
 
-      const twitter = require('./images/twitter.svg');
+      const twitter = require('../images/twitter.svg');
 
       const {
         site: {

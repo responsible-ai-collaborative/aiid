@@ -5,7 +5,7 @@ import './src/global.css';
 
 import React from 'react';
 import { wrapRootElement } from './wrapRootElement';
-import Header from 'components/Header';
+import Header from 'components/ui/Header';
 import { QueryParamProvider } from 'use-query-params';
 import { navigate } from 'gatsby';
 import { UserContextProvider } from 'contexts/userContext';

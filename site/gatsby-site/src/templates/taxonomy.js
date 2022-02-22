@@ -10,7 +10,7 @@ import 'billboard.js/dist/billboard.css';
 
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
-import Link from 'components/Link';
+import Link from 'components/ui/Link';
 import LocationMap from 'components/visualizations/LocationMap';
 
 const Row = styled.div`
