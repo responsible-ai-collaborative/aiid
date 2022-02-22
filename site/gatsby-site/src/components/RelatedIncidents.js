@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { ListGroup, Card } from 'react-bootstrap';
-import Loader from 'components/Loader';
+import Loader from 'components/ui/Loader';
 import { debounce } from 'debounce';
 
 import config from '../../config';

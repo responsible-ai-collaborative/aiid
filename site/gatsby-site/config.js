@@ -44,7 +44,7 @@ const config = {
     },
   },
   sidebar: {
-    forcedNavOrder: ['/welcome', '/about', '/research', '/summaries', '/about_apps', '/contact'],
+    forcedNavOrder: ['/welcome', '/about', '/research', '/about_apps', '/contact'],
     collapsedNav: [
       //'/codeblock', // add trailing slash if enabled above
     ],

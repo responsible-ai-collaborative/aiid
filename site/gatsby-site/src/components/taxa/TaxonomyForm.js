@@ -3,8 +3,10 @@ import { Button, Form } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useMongo } from 'hooks/useMongo';
 import { Formik } from 'formik';
-import Loader from 'components/Loader';
+
+import Loader from 'components/ui/Loader';
 import config from '../../../config.js';
+
 import { useMutation, useQuery } from '@apollo/client';
 import {
   FIND_CSET_CLASSIFICATION,

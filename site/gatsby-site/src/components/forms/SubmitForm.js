@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Container } from 'react-bootstrap';
 import { CSVReader } from 'react-papaparse';
 
-import Link from 'components/Link';
+import Link from 'components/ui/Link';
 import RelatedIncidents from 'components/RelatedIncidents';
 import IncidentReportForm from 'components/forms/IncidentReportForm';
 import { useUserContext } from 'contexts/userContext';

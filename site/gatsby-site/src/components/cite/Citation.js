@@ -1,6 +1,6 @@
 import React from 'react';
-import { retrievalDate } from '../utils/date';
-import { getFormattedName } from '../utils/typography';
+import { retrievalDate } from '../../utils/date';
+import { getFormattedName } from '../../utils/typography';
 
 const Citation = ({ nodes, incident_id }) => {
   let docs = [];

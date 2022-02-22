@@ -1,4 +1,4 @@
-import Popover from 'components/Popover';
+import Popover from 'components/ui/Popover';
 
 // These tooltip messages are displayed on the form elements explaining what is expected to be input.
 export const title = Popover(
