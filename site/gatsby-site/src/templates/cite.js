@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import { isAfter, isEqual } from 'date-fns';
 import { useModal, CustomModal } from '../../src/components/useModal';
 import TaxonomyForm from '../components/TaxonomyForm';
-import Timeline from 'components/Timeline';
+import Timeline from 'components/visualizations/Timeline';
 import IncidentStatsCard from 'components/cite/IncidentStatsCard';
 import IncidentCard from 'components/cite/IncidentCard';
 
