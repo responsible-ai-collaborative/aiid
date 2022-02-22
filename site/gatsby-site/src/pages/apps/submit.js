@@ -2,7 +2,7 @@ import React from 'react';
 import Helmet from 'react-helmet';
 
 import Layout from 'components/Layout';
-import Link from 'components/Link';
+import Link from 'components/ui/Link';
 import { StyledHeading } from 'components/styles/Docs';
 import SubmitForm from 'components/forms/SubmitForm';
 

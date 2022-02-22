@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from './Link';
+import Link from './ui/Link';
 
 import { StyledNextPrevious } from './styles/PageNavigationButtons';
 

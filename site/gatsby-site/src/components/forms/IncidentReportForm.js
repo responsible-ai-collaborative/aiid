@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import Link from 'components/Link';
+import Link from 'components/ui/Link';
 import TextInputGroup from 'components/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, parseISO } from 'date-fns';

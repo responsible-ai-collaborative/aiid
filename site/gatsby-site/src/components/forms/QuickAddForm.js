@@ -3,7 +3,7 @@ import { Form, Button, Col, Row } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-import Link from 'components/Link';
+import Link from 'components/ui/Link';
 import DBConnecting from 'components/DBConnecting';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
