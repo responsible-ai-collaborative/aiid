@@ -3,7 +3,7 @@ import Helmet from 'react-helmet';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
-import Citation from 'components/Citation';
+import Citation from 'components/cite/Citation';
 import ImageCarousel from 'components/ImageCarousel';
 import BibTex from 'components/BibTex';
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
