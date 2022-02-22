@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
-import LatestIncidentReport from 'components/LatestIncidentReport';
+import LatestIncidentReport from 'components/landing/LatestIncidentReport';
 
 export default function LatestReports() {
   return (
