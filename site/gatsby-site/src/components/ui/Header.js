@@ -11,7 +11,7 @@ import Link from './Link';
 import LoadingProvider from '../mdxComponents/loading';
 import config from '../../../config.js';
 
-const help = require('./images/help.svg');
+const help = require('../images/help.svg');
 
 const isSearchEnabled = config.header.search && config.header.search.enabled ? true : false;
 
@@ -93,9 +93,9 @@ const Header = () => (
       }
     `}
     render={(data) => {
-      const logoImg = require('./images/logo.svg');
+      const logoImg = require('../images/logo.svg');
 
-      const twitter = require('./images/twitter.svg');
+      const twitter = require('../images/twitter.svg');
 
       const {
         site: {
