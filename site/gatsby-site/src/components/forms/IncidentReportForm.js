@@ -13,7 +13,7 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import styled from 'styled-components';
 import { graphql, useStaticQuery } from 'gatsby';
-import * as POP_OVERS from '../PopOvers';
+import * as POP_OVERS from '../ui/PopOvers';
 import Label from './Label';
 
 // set in form //
