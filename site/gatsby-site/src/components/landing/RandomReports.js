@@ -1,4 +1,4 @@
-import RandomIncidentsCarousel from 'components/RandomIncidentsCarousel';
+import RandomIncidentsCarousel from 'components/landing/RandomIncidentsCarousel';
 import React from 'react';
 import { Card } from 'react-bootstrap';
 
