@@ -9,7 +9,7 @@ import BibTex from 'components/BibTex';
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 import styled from 'styled-components';
 import { isAfter, isEqual } from 'date-fns';
-import { useModal, CustomModal } from '../../src/components/useModal';
+import { useModal, CustomModal } from '../hooks/useModal';
 import TaxonomyForm from '../components/TaxonomyForm';
 import Timeline from 'components/visualizations/Timeline';
 import IncidentStatsCard from 'components/cite/IncidentStatsCard';
