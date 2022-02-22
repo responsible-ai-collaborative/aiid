@@ -4,7 +4,7 @@ import { StaticQuery, graphql } from 'gatsby';
 import styled from 'styled-components';
 import { ExternalLink } from 'react-feather';
 import config from '../../../config';
-import DiscoverQuickAccess from 'components/DiscoverQuickAccess';
+import QuickAccess from 'components/discover/QuickAccess';
 
 // eslint-disable-next-line no-unused-vars
 const ListItem = styled(({ className, active, level, ...props }) => {
@@ -114,7 +114,7 @@ const SidebarLayout = ({ collapse }) => (
     render={({ allMdx }) => {
       return (
         <Sidebar collapse={collapse}>
-          <DiscoverQuickAccess />
+          <QuickAccess />
           {config.sidebar.title ? (
             <div
               className={'sidebarTitle hiddenMobile'}
