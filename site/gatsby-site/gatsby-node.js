@@ -169,6 +169,10 @@ exports.createSchemaCustomization = ({ actions }) => {
       cloudinary_id: String
       tags: [String]
     }
+
+    type mongodbAiidprodTaxaField_list implements Node {
+      render_as: String
+    }  
   `;
 
   createTypes(typeDefs);

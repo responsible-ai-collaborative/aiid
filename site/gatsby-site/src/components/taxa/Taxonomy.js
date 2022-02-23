@@ -116,19 +116,16 @@ const Taxonomy = ({ taxonomy, incidentId }) => {
                 )}
                 {taxonomy.classificationsArray
                   .filter((field) => {
+                    console.log(field);
                     if (showAllClassifications) return true;
                     if (!showAllClassifications && field.weight >= 50) {
                       return true;
                     }
                     return false;
                   })
-                  .filter((field) => {
-                    if (field.name === 'Datasheets for Datasets' && field.value == 'No') {
-                      return false;
-                    }
-
-                    return true;
-                  })
+                  .filter(
+                    (field) => !(field.renderAs === 'description_toggle' && field.value == 'No')
+                  )
                   .map((field) => {
                     if (field.name === 'Datasheets for Datasets') {
                       return { ...field, value: field.longDescription };
