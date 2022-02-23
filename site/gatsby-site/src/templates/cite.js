@@ -93,6 +93,8 @@ function CitePage(props) {
     isOccurrence: true,
   });
 
+  console.log(taxonomies);
+
   return (
     <Layout {...props}>
       <Helmet>
@@ -172,9 +174,7 @@ function CitePage(props) {
           <Row id="taxa-area">
             <Col>
               {taxonomies.map((t) => (
-                <CardContainer key={t.namespace} className="card mt-4" data-cy={t.namespace}>
-                  <Taxonomy key={t.namespace} taxonomy={t} incidentId={incident_id} />
-                </CardContainer>
+                <Taxonomy key={t.namespace} taxonomy={t} incidentId={incident_id} />
               ))}
             </Col>
           </Row>

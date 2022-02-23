@@ -67,7 +67,7 @@ const Taxonomy = ({ taxonomy, incidentId }) => {
   };
 
   return (
-    <>
+    <Card key={taxonomy.namespace} className="mt-4" data-cy={taxonomy.namespace}>
       <TaxaCardHeader className="card-header">
         <TaxaHeader>{`${taxonomy.namespace} Taxonomy Classifications`}</TaxaHeader>
         <>
@@ -176,7 +176,7 @@ const Taxonomy = ({ taxonomy, incidentId }) => {
           </>
         )}
       </>
-    </>
+    </Card>
   );
 };
 
