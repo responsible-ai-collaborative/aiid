@@ -126,7 +126,7 @@ const Taxonomy = ({ taxonomy, incidentId }) => {
                     (field) => !(field.renderAs === 'description_toggle' && field.value == 'No')
                   )
                   .map((field) => {
-                    if (field.name === 'Datasheets for Datasets') {
+                    if (field.renderAs === 'description_toggle') {
                       return { ...field, value: field.longDescription };
                     }
 
