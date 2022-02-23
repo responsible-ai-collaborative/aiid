@@ -116,7 +116,6 @@ const Taxonomy = ({ taxonomy, incidentId }) => {
                 )}
                 {taxonomy.classificationsArray
                   .filter((field) => {
-                    console.log(field);
                     if (showAllClassifications) return true;
                     if (!showAllClassifications && field.weight >= 50) {
                       return true;
