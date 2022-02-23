@@ -13,7 +13,7 @@
                 "url": {}
             },
             "write": true,
-            "insert": false,
+            "insert": true,
             "delete": true,
             "search": true,
             "additional_fields": {}
