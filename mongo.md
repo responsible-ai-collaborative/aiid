@@ -117,6 +117,7 @@ Systems
 * "instant_facet": false # Determines whether the taxonomy item will be exported to the Algolia instant search index
 * "required": false # indicates whether the namespace may have classifications associated with it, but without this particular field
 * "public": true # indicates that the field should not be displayed to the general public. It will be displayed to authenticated users
+* "render_as": string # optional, overwrites the `display_type` property when rendering. The only supported value is `description_toggle` which shows the field's description if its value is `true`.
 
 **Additional notes**
 

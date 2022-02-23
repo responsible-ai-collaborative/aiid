@@ -43,6 +43,7 @@ const getClassificationsArray = (incidentClassifications, taxonomy) => {
         weight: field.weight,
         longDescription: field.long_description,
         shortDescription: field.short_description,
+        renderAs: field.render_as,
       });
     }
   });
@@ -148,6 +149,7 @@ const createCitiationPages = async (graphql, createPage) => {
               long_description
               weight
               short_description
+              render_as
             }
           }
         }
