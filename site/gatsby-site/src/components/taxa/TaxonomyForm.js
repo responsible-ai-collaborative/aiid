@@ -250,7 +250,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
           <Tags
             id={`${rawField.key}-tags`}
             inputId={rawField.key}
-            placeHolder="Type and press Enter to add a items"
+            placeHolder="Type and press Enter to add an item"
             value={formikValues[rawField.key]}
             onChange={(value) => {
               setFieldTouched(rawField.key, true);
