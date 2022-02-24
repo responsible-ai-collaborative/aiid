@@ -15,11 +15,7 @@ import {
   UPDATE_RESOURCE_CLASSIFICATION,
 } from '../../graphql/classifications.js';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
-
-const UsageInfoSpan = styled.span`
-  font-size: 0.8em;
-  color: grey;
-`;
+import Tags from 'components/forms/Tags.js';
 
 const FormContainer = styled.div`
   padding: 1em;
@@ -155,21 +151,16 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
     }
   }, [classificationsData, taxonomy]);
 
-  const generateFormField = (rawField, handleChange, formikValues) => {
-    const validateListField = (value) => {
-      if (Array.isArray(value)) {
-        return value.join(';');
-      }
-
-      return value.replace(',', ';');
-    };
-
+  const generateFormField = (
+    rawField,
+    handleChange,
+    formikValues,
+    setFieldTouched,
+    setFieldValue
+  ) => {
     return (
       <div key={rawField.key}>
         <Form.Label>{rawField.short_name}</Form.Label>
-        {rawField.display_type === 'list' && (
-          <UsageInfoSpan>{' (use semicolon for term separation)'}</UsageInfoSpan>
-        )}
         {rawField.display_type === 'enum' && (
           <Form.Control
             as="select"
@@ -256,12 +247,15 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
         )}
 
         {rawField.display_type === 'list' && (
-          <Form.Control
-            id={rawField.key}
-            name={rawField.key}
-            type="text"
-            onChange={handleChange}
-            value={validateListField(formikValues[rawField.key])}
+          <Tags
+            id={`${rawField.key}-tags`}
+            inputId={rawField.key}
+            placeHolder="Type and press Enter to add a items"
+            value={formikValues[rawField.key]}
+            onChange={(value) => {
+              setFieldTouched(rawField.key, true);
+              setFieldValue(rawField.key, value);
+            }}
           />
         )}
 
@@ -314,18 +308,6 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
     const { notes, ...classifications } = values;
 
     fieldsWithDefaultValues.forEach((f) => {
-      //Convert string values into array
-      if (f.display_type === 'list') {
-        if (Array.isArray(values[f.key])) {
-          classifications[f.key] = values[f.key].map((f) => f.trim()).filter((f) => f !== '');
-        } else {
-          classifications[f.key] = values[f.key]
-            .split(';')
-            .map((f) => f.trim())
-            .filter((f) => f !== '');
-        }
-      }
-
       //Convert string into boolean
       if (f.display_type === 'bool') {
         if (values[f.key] === '') {
@@ -369,7 +351,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
   return (
     <FormContainer data-cy="taxonomy-form">
       <Formik initialValues={initialValues} onSubmit={submit} innerRef={formRef}>
-        {({ values, handleChange, handleSubmit, isSubmitting }) => (
+        {({ values, handleChange, handleSubmit, setFieldTouched, setFieldValue, isSubmitting }) => (
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-4">
               <Form.Label>Notes</Form.Label>
@@ -385,7 +367,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
             </Form.Group>
             <fieldset disabled={isSubmitting}>
               {fieldsWithDefaultValues.map((rawField) =>
-                generateFormField(rawField, handleChange, values)
+                generateFormField(rawField, handleChange, values, setFieldTouched, setFieldValue)
               )}
               <Button type="submit" disabled={isSubmitting}>
                 Submit
