@@ -16,17 +16,24 @@ describe('Classifications App', () => {
 
     cy.get('@form').find('[name="Annotator"]').select('5');
 
+    cy.get('@form').find('#HarmDistributionBasis-Race').uncheck();
+
+    cy.get('@form').find('#HarmDistributionBasis-Religion').uncheck();
+
+    cy.get('@form').find('#HarmDistributionBasis-Geography').check();
+
     cy.intercept('POST', '**/graphql', { fixture: 'classifications/upsertCSET.json' }).as(
       'updateClassification'
     );
 
     cy.get('@form').contains('Submit').click();
 
-    cy.wait('@updateClassification')
-      .its('request.body.variables.data')
-      .should('deep.include', {
-        notes: 'This is an updated note',
-      })
-      .and('have.deep.nested.property', 'classifications.Annotator', '5');
+    cy.wait('@updateClassification').then((xhr) => {
+      expect(xhr.request.body.variables.data.notes).to.equal('This is an updated note');
+      expect(xhr.request.body.variables.data.classifications.Annotator).to.equal('5');
+      expect(xhr.request.body.variables.data.classifications.HarmDistributionBasis).to.deep.equal([
+        'Geography',
+      ]);
+    });
   });
 });

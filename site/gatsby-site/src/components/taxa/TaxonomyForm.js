@@ -170,9 +170,6 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
         {rawField.display_type === 'list' && (
           <UsageInfoSpan>{' (use semicolon for term separation)'}</UsageInfoSpan>
         )}
-        {rawField.display_type === 'multi' && (
-          <UsageInfoSpan>{" (use 'command' or 'ctrl' keys for multiple selections)"}</UsageInfoSpan>
-        )}
         {rawField.display_type === 'enum' && (
           <Form.Control
             as="select"
@@ -269,21 +266,20 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
         )}
 
         {rawField.display_type === 'multi' && (
-          <Form.Control
-            as="select"
-            multiple={true}
-            id={rawField.key}
-            name={rawField.key}
-            type="text"
-            onChange={handleChange}
-            value={formikValues[rawField.key]}
-          >
+          <>
             {rawField.permitted_values.map((v) => (
-              <option key={v} value={v}>
-                {v}
-              </option>
+              <Form.Check
+                key={v}
+                type="checkbox"
+                name={rawField.key}
+                label={v}
+                id={`${rawField.key}-${v}`}
+                value={v}
+                onChange={handleChange}
+                checked={formikValues[rawField.key].includes(v)}
+              />
             ))}
-          </Form.Control>
+          </>
         )}
         <Form.Text className="text-muted mb-4 d-block">{rawField.short_description}</Form.Text>
       </div>
