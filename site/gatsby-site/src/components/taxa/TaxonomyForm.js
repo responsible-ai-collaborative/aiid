@@ -170,9 +170,6 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
         {rawField.display_type === 'list' && (
           <UsageInfoSpan>{' (use semicolon for term separation)'}</UsageInfoSpan>
         )}
-        {rawField.display_type === 'multi' && (
-          <UsageInfoSpan>{" (use 'command' or 'ctrl' keys for multiple selections)"}</UsageInfoSpan>
-        )}
         {rawField.display_type === 'enum' && (
           <Form.Control
             as="select"
