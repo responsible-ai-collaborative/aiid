@@ -93,8 +93,6 @@ function CitePage(props) {
     isOccurrence: true,
   });
 
-  console.log(taxonomies);
-
   return (
     <Layout {...props}>
       <Helmet>

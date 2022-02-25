@@ -88,6 +88,18 @@ describe('Cite pages', () => {
     cy.get('@taxonomyForm').should('exist');
   });
 
+  maybeIt('Should show the taxonomy form of resources', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.visit(url);
+
+    cy.get('[data-cy="resources"]').contains('Edit').click();
+
+    cy.get('[data-cy="resources"] [data-cy="taxonomy-form"]').as('taxonomyForm');
+
+    cy.get('@taxonomyForm').should('exist');
+  });
+
   it('Should flag an incident', () => {
     // mock requests until a testing database is implemented
     const _id = '5d34b8c29ced494f010ed470';
