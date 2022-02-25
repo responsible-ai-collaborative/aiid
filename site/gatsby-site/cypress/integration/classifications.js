@@ -14,7 +14,11 @@ describe('Classifications App', () => {
 
     cy.get('@form').find('[name="notes"]').clear().type('This is an updated note');
 
-    cy.get('@form').find('[name="Annotator"]').select('5');
+    cy.get('@form').contains('label', 'Annotator').scrollIntoView();
+
+    cy.get('@form').find('#Annotator-5').check();
+
+    cy.contains('label', 'Harm Distribution Basis').scrollIntoView();
 
     cy.get('@form').find('#HarmDistributionBasis-Race').uncheck();
 
