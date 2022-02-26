@@ -20,11 +20,27 @@ describe('Classifications App', () => {
 
     cy.contains('label', 'Harm Distribution Basis').scrollIntoView();
 
+    cy.contains('label', 'Harm Distribution Basis').scrollIntoView();
+
     cy.get('@form').find('#HarmDistributionBasis-Race').uncheck();
 
     cy.get('@form').find('#HarmDistributionBasis-Religion').uncheck();
 
     cy.get('@form').find('#HarmDistributionBasis-Geography').check();
+
+    cy.contains('label', 'Named Entities').next('[class*="Typeahead"]').as('typeahead');
+
+    cy.get('@typeahead').find('[option="Starbucks"]').should('exist');
+
+    cy.get('@typeahead').find('[option="Starbucks"]').find('button').click();
+
+    cy.get('@typeahead').find('[option="Starbucks"]').should('not.exist');
+
+    cy.get('@typeahead').find('[option="Kronos"]').should('exist');
+
+    cy.get('@typeahead').find('input[type="text"]').clear().type('Something').type('{enter}');
+
+    cy.get('@typeahead').find('[option="Something"]').should('exist');
 
     cy.intercept('POST', '**/graphql', { fixture: 'classifications/upsertCSET.json' }).as(
       'updateClassification'
@@ -37,6 +53,10 @@ describe('Classifications App', () => {
       expect(xhr.request.body.variables.data.classifications.Annotator).to.equal('5');
       expect(xhr.request.body.variables.data.classifications.HarmDistributionBasis).to.deep.equal([
         'Geography',
+      ]);
+      expect(xhr.request.body.variables.data.classifications.NamedEntities).to.deep.equal([
+        'Kronos',
+        'Something',
       ]);
     });
   });

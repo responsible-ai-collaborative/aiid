@@ -49,7 +49,7 @@ describe('The Submit form', () => {
 
     cy.get('input[name="incident_date"]').type('2021-09-21');
 
-    cy.get('[class*="StyledTypeahead"]').type('New Tag');
+    cy.get('[class*="Typeahead"]').type('New Tag');
 
     cy.get('a[aria-label="New Tag"]').click();
 

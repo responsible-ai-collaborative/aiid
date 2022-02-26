@@ -9,12 +9,11 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, parseISO } from 'date-fns';
 import { dateRegExp } from 'utils/date';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
-import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-import styled from 'styled-components';
 import { graphql, useStaticQuery } from 'gatsby';
 import * as POP_OVERS from '../ui/PopOvers';
 import Label from './Label';
+import Typeahead from './Typeahead';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -85,13 +84,6 @@ const defaultValue = {
   incident_id: '',
   text: '',
 };
-
-const StyledTypeahead = styled(Typeahead)`
-  .rbt-close {
-    border: none;
-    background: transparent;
-  }
-`;
 
 const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
   const {
@@ -319,7 +311,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
 
       <Form.Group className="mt-3">
         <Label popover={POP_OVERS['tags']} label={'Tags'} />
-        <StyledTypeahead
+        <Typeahead
           id="submit-report-tags"
           inputProps={{ id: 'submit-report-tags-input' }}
           allowNew
