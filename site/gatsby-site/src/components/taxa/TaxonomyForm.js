@@ -171,23 +171,20 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
           <UsageInfoSpan>{' (use semicolon for term separation)'}</UsageInfoSpan>
         )}
         {rawField.display_type === 'enum' && (
-          <Form.Control
-            as="select"
-            id={rawField.short_name}
-            name={rawField.key}
-            type="text"
-            onChange={handleChange}
-            value={formikValues[rawField.key]}
-          >
-            <option key={''} value={''}>
-              {''}
-            </option>
+          <>
             {rawField.permitted_values.map((v) => (
-              <option key={v} value={v}>
-                {v}
-              </option>
+              <Form.Check
+                key={v}
+                type="radio"
+                name={rawField.key}
+                label={v}
+                id={`${rawField.key}-${v}`}
+                value={v}
+                onChange={handleChange}
+                checked={formikValues[rawField.key].includes(v)}
+              />
             ))}
-          </Form.Control>
+          </>
         )}
 
         {rawField.display_type === 'string' &&
