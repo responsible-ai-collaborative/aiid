@@ -29,20 +29,19 @@ const subtreeNav = (treeRoot, currentLocation = undefined) => {
       (currentLocation === item.url || currentLocation === config.gatsby.pathPrefix + item.url);
 
     childVisit = false;
-    defaultNavSetting['items'].forEach((item) => {
+    defaultNavSetting.items.forEach((item) => {
       if (
         !childVisit &&
         currentLocation &&
-        (currentLocation === item['url'] ||
-          currentLocation === config.gatsby.pathPrefix + item['url'])
+        (currentLocation === item.url || currentLocation === config.gatsby.pathPrefix + item.url)
       ) {
         childVisit = true;
       }
     });
 
-    defaultNavSetting['collapsed'] = !currentVisit && !childVisit;
-    defaultNavSetting['childVisit'] = childVisit;
-    defaultNavSetting['current'] = currentVisit;
+    defaultNavSetting.collapsed = !currentVisit && !childVisit;
+    defaultNavSetting.childVisit = childVisit;
+    defaultNavSetting.current = currentVisit;
 
     subs.push(defaultNavSetting);
   });
@@ -57,7 +56,6 @@ const Tree = ({ setNavCollapsed }) => {
   const toggle = (url) => {
     setNavSetting(subtreeNav(navConfig, url));
     setNavCollapsed && setNavCollapsed(true);
-    console.log('setNavCollapsed');
   };
 
   return navSettings.map((cur, index) => {
