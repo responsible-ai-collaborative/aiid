@@ -45,6 +45,9 @@ exports.createPages = ({ graphql, actions }) => {
     ['/discover', '/apps/discover'],
     ['/discover', '/apps/discover'],
     ['/summaries', '/about_apps'],
+    ['/about/1-governance', '/about'],
+    ['/about/blog', '/blog'],
+    ['/research/4-taxonomies', '/taxonomies'],
   ];
 
   redirects.forEach((pair) =>
