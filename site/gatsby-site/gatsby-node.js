@@ -176,6 +176,15 @@ exports.createSchemaCustomization = ({ actions }) => {
     type mongodbAiidprodTaxaField_list implements Node {
       render_as: String
     }  
+    
+    type mongodbAiidprodTaxa implements Node {
+      field_list: [mongodbAiidprodTaxaField_list]
+    }
+
+    type mongodbAiidprodTaxaField_list {
+      default: String
+      placeholder: String
+    }
   `;
 
   createTypes(typeDefs);
