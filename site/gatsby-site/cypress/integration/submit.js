@@ -3,7 +3,7 @@ describe('The Submit form', () => {
 
   const articleURL = 'https://www.cbsnews.com/news/is-starbucks-shortchanging-its-baristas/';
 
-  const parserURL = 'https://z14490usg0.execute-api.us-east-1.amazonaws.com/default/parseNews**';
+  const parserURL = '/api/parseNews**';
 
   it('Successfully loads', () => {
     cy.visit(url);
