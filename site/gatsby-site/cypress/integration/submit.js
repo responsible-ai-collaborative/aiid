@@ -144,9 +144,7 @@ describe('The Submit form', () => {
       {}
     );
 
-    cy.get('button[type="submit"]').scrollIntoView();
-
-    cy.get('button[type="submit"]').click();
+    cy.get('button[type="submit"]').scrollIntoView().click({ force: true });
 
     cy.wait('@submitReport').then((xhr) => {
       expect(xhr.request.body.arguments[0]).to.deep.include({
