@@ -53,7 +53,12 @@ describe('The Submit form', () => {
 
     cy.get('a[aria-label="New Tag"]').click();
 
-    cy.intercept('POST', '**/functions/call', {}).as('submitReport');
+    cy.conditionalIntercept(
+      '**/functions/call',
+      (req) => req.body.name == 'createReportForReview',
+      'submitReport',
+      {}
+    );
 
     cy.get('button[type="submit"]').click();
 
@@ -66,7 +71,6 @@ describe('The Submit form', () => {
         image_url:
           'https://cbsnews3.cbsistatic.com/hub/i/r/2015/03/17/01a38576-5108-40f7-8df8-5416164ed878/thumbnail/1200x630/ca8d35fe6bc065b5c9a747d92bc6d94c/154211248.jpg',
         tags: ['New Tag'],
-        incident_id: { $numberInt: '0' },
       });
     });
 
@@ -109,5 +113,45 @@ describe('The Submit form', () => {
     cy.get('div[class^="ToastContext"]')
       .contains('Error reaching news info endpoint, please try again in a few seconds.')
       .should('exist');
+  });
+
+  it('Should pull parameters form the query string and auto-fill fields', () => {
+    const values = {
+      url: 'https://test.com',
+      title: 'test title',
+      authors: 'test author',
+      submitters: 'test submitter',
+      incident_date: '2022-01-01',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+      image_url: 'https://test.com/image.jpg',
+      incident_id: '1',
+      text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
+      tags: 'test tag',
+    };
+
+    const params = new URLSearchParams(values);
+
+    cy.visit(url + `?${params.toString()}`);
+
+    // wait for gatsby to finish its scroll restoration stuff
+    cy.wait(1000);
+
+    cy.conditionalIntercept(
+      '**/functions/call',
+      (req) => req.body.name == 'createReportForReview',
+      'submitReport',
+      {}
+    );
+
+    cy.get('button[type="submit"]').scrollIntoView().click({ force: true });
+
+    cy.wait('@submitReport').then((xhr) => {
+      expect(xhr.request.body.arguments[0]).to.deep.include({
+        ...values,
+        incident_id: { $numberInt: values.incident_id },
+        tags: [values.tags],
+      });
+    });
   });
 });

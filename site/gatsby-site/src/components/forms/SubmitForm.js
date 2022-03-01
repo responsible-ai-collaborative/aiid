@@ -1,17 +1,47 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Container } from 'react-bootstrap';
 import { CSVReader } from 'react-papaparse';
-
+import { useQueryParams, StringParam, NumberParam, ArrayParam, encodeDate } from 'use-query-params';
 import Link from 'components/ui/Link';
 import RelatedIncidents from 'components/RelatedIncidents';
 import IncidentReportForm from 'components/forms/IncidentReportForm';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { parse } from 'date-fns';
+
+const CustomDateParam = {
+  encode: encodeDate,
+  decode: (value) => {
+    const result = parse(value, 'yyyy-MM-dd', new Date());
+
+    if (result.toString() == 'Invalid Date') {
+      return undefined;
+    }
+
+    return value;
+  },
+};
+
+const queryConfig = {
+  url: StringParam,
+  title: StringParam,
+  authors: StringParam,
+  submitters: StringParam,
+  incident_date: CustomDateParam,
+  date_published: CustomDateParam,
+  date_downloaded: CustomDateParam,
+  image_url: StringParam,
+  incident_id: NumberParam,
+  text: StringParam,
+  tags: ArrayParam,
+};
 
 const SubmitForm = () => {
   const { isRole, user } = useUserContext();
 
-  const [incident, setIncident] = useState({ tags: [] });
+  const [query] = useQueryParams(queryConfig);
+
+  const [incident, setIncident] = useState({ ...query });
 
   const [csvData, setCsvData] = useState([]);
 
@@ -76,7 +106,9 @@ const SubmitForm = () => {
 
   return (
     <div className="my-5">
-      <IncidentReportForm incident={incident} onUpdate={setIncident} onSubmit={handleSubmit} />
+      {user && (
+        <IncidentReportForm incident={incident} onUpdate={setIncident} onSubmit={handleSubmit} />
+      )}
       <RelatedIncidents incident={incident} isSubmitted={false} />
       {isRole('submitter') && (
         <Container className="mt-5 p-0">

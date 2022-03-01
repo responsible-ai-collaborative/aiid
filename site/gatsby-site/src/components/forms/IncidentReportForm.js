@@ -97,6 +97,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
     setValues,
     setFieldTouched,
     setFieldValue,
+    setTouched,
   } = useFormik({
     initialValues: incident || defaultValue,
     validationSchema,
@@ -140,6 +141,10 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
       typeof values['image_url'] === 'string' ? getCloudinaryPublicID(values['image_url']) : '';
     onUpdate && onUpdate(values);
   }, [values]);
+
+  useEffect(() => {
+    setTouched(incident);
+  }, []);
 
   const isEditMode = incident && !!incident.incident_id;
 
