@@ -53,7 +53,12 @@ describe('The Submit form', () => {
 
     cy.get('a[aria-label="New Tag"]').click();
 
-    cy.intercept('POST', '**/functions/call', {}).as('submitReport');
+    cy.conditionalIntercept(
+      '**/functions/call',
+      (req) => req.body.name == 'createReportForReview',
+      'submitReport',
+      {}
+    );
 
     cy.get('button[type="submit"]').click();
 
@@ -66,7 +71,6 @@ describe('The Submit form', () => {
         image_url:
           'https://cbsnews3.cbsistatic.com/hub/i/r/2015/03/17/01a38576-5108-40f7-8df8-5416164ed878/thumbnail/1200x630/ca8d35fe6bc065b5c9a747d92bc6d94c/154211248.jpg',
         tags: ['New Tag'],
-        incident_id: { $numberInt: '0' },
       });
     });
 
