@@ -110,4 +110,41 @@ describe('The Submit form', () => {
       .contains('Error reaching news info endpoint, please try again in a few seconds.')
       .should('exist');
   });
+
+  it('Should pull parameters form the query string and auto-fill fields', () => {
+    const values = {
+      url: 'https://test.com',
+      title: 'test title',
+      authors: 'test author',
+      submitters: 'test submitter',
+      incident_date: '2022-01-01',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+      image_url: 'https://test.com/image.jpg',
+      incident_id: '1',
+      text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
+      tags: 'test tag',
+    };
+
+    const params = new URLSearchParams(values);
+
+    cy.visit(url + `?${params.toString()}`);
+
+    // wait for gatsby to finish its scroll restoration stuff
+    cy.wait(1000);
+
+    cy.intercept('POST', '**/functions/call', {}).as('submitReport');
+
+    cy.get('button[type="submit"]').scrollIntoView();
+
+    cy.get('button[type="submit"]').click();
+
+    cy.wait('@submitReport').then((xhr) => {
+      expect(xhr.request.body.arguments[0]).to.deep.include({
+        ...values,
+        incident_id: { $numberInt: values.incident_id },
+        tags: [values.tags],
+      });
+    });
+  });
 });
