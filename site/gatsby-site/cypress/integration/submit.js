@@ -133,7 +133,12 @@ describe('The Submit form', () => {
     // wait for gatsby to finish its scroll restoration stuff
     cy.wait(1000);
 
-    cy.intercept('POST', '**/functions/call', {}).as('submitReport');
+    cy.conditionalIntercept(
+      '**/functions/call',
+      (req) => req.body.name == 'createReportForReview',
+      'submitReport',
+      {}
+    );
 
     cy.get('button[type="submit"]').scrollIntoView();
 
