@@ -39,3 +39,12 @@ export const UPDATE_REPORT = gql`
     }
   }
 `;
+
+export const DELETE_REPORT = gql`
+  mutation deleteOneIncident($query: IncidentQueryInput!) {
+    deleteOneIncident(query: $query) {
+      _id
+      incident_id
+    }
+  }
+`;
