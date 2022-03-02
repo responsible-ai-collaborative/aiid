@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
   const response = {
     title: article.title,
-    authors: [article.author],
+    authors: article.author,
     date_published: article.date_published
       ? format(parseISO(article.date_published), 'yyyy-MM-dd')
       : null,
