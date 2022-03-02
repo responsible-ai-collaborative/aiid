@@ -145,7 +145,7 @@ describe('Cite pages', () => {
     cy.get('@modal').should('not.exist');
   });
 
-  it('Should scroll to report when clicking on a report in the timeline', () => {
+  it('Should pre-fill submit report form', () => {
     cy.clock(Date.UTC(2022, 2, 2), ['Date']);
 
     cy.visit(url);
