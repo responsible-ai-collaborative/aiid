@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
 import Layout from 'components/Layout';
-import Link from 'components/Link';
+import Link from 'components/ui/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 
 const Backups = ({ pageContext, ...props }) => {

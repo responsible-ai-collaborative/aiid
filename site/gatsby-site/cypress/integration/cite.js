@@ -76,42 +76,28 @@ describe('Cite pages', () => {
       .should('exist');
   });
 
-  maybeIt('Should show the taxonomy edit form to users with the appropriate role', () => {
+  maybeIt('Should show the taxonomy form of CSET', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    const id = 'r5d34b8c29ced494f010ed463';
+    cy.visit(url);
 
-    cy.visit('/cite/1#' + id);
+    cy.get('[data-cy="CSET"]').contains('Edit').click();
 
-    cy.get('#' + id)
-      .get('[data-cy=taxonomy-form]')
-      .should('exist');
+    cy.get('[data-cy="CSET"] [data-cy="taxonomy-form"]').as('taxonomyForm');
+
+    cy.get('@taxonomyForm').should('exist');
   });
 
-  // Meanwhile there is not reproducible environment skip tests with admin permissions
-
-  maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
+  maybeIt('Should show the taxonomy form of resources', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    const id = 'r5d34b8c29ced494f010ed463';
+    cy.visit(url);
 
-    cy.visit('/cite/1#' + id);
+    cy.get('[data-cy="resources"]').contains('Edit').click();
 
-    cy.get('#' + id)
-      .get('[data-cy=edit-report]')
-      .should('exist');
-  });
+    cy.get('[data-cy="resources"] [data-cy="taxonomy-form"]').as('taxonomyForm');
 
-  maybeIt('Should show the taxonomy edit form to users with the appropriate role', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-    const id = 'r5d34b8c29ced494f010ed463';
-
-    cy.visit('/cite/1#' + id);
-
-    cy.get('#' + id)
-      .get('[data-cy=taxonomy-form]')
-      .should('exist');
+    cy.get('@taxonomyForm').should('exist');
   });
 
   it('Should flag an incident', () => {

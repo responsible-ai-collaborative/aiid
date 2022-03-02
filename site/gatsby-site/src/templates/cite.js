@@ -3,17 +3,17 @@ import Helmet from 'react-helmet';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
-import Citation from 'components/Citation';
-import ImageCarousel from 'components/ImageCarousel';
+import Citation from 'components/cite/Citation';
+import ImageCarousel from 'components/cite/ImageCarousel';
 import BibTex from 'components/BibTex';
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 import styled from 'styled-components';
 import { isAfter, isEqual } from 'date-fns';
-import { useModal, CustomModal } from '../../src/components/useModal';
-import TaxonomyForm from '../components/TaxonomyForm';
-import Timeline from 'components/Timeline';
+import { useModal, CustomModal } from '../hooks/useModal';
+import Timeline from 'components/visualizations/Timeline';
 import IncidentStatsCard from 'components/cite/IncidentStatsCard';
 import IncidentCard from 'components/cite/IncidentCard';
+import Taxonomy from 'components/taxa/Taxonomy';
 
 const CardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -169,13 +169,11 @@ function CitePage(props) {
         </Row>
 
         {taxonomies.length > 0 && (
-          <Row className="mt-4">
+          <Row id="taxa-area">
             <Col>
-              <div id="taxa-area">
-                {taxonomies.map((t) => (
-                  <TaxonomyForm key={t.namespace} taxonomy={t} incidentId={incident_id} />
-                ))}
-              </div>
+              {taxonomies.map((t) => (
+                <Taxonomy key={t.namespace} taxonomy={t} incidentId={incident_id} />
+              ))}
             </Col>
           </Row>
         )}

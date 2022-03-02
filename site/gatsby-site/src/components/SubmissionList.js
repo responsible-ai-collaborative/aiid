@@ -2,7 +2,7 @@ import React from 'react';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { Spinner } from 'react-bootstrap';
 
-import Link from 'components/Link';
+import Link from 'components/ui/Link';
 import ReportedIncident from 'components/ReportedIncident';
 
 import { useSubmissionsContext } from 'contexts/submissionsContext';

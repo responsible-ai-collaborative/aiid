@@ -1,4 +1,4 @@
-import Header from 'components/Header';
+import Header from 'components/ui/Header';
 import { UserContextProvider } from 'contexts/userContext';
 import React from 'react';
 import { wrapRootElement } from './wrapRootElement';

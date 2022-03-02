@@ -1,36 +1,15 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { ListGroup, Card } from 'react-bootstrap';
-import Loader from 'components/Loader';
+import Loader from 'components/ui/Loader';
 import { debounce } from 'debounce';
-
 import config from '../../config';
-import { useMongo } from 'hooks/useMongo';
 import { subWeeks, addWeeks } from 'date-fns';
 import styled from 'styled-components';
+import { useUserContext } from 'contexts/userContext';
 
 const ListContainer = styled(Card)`
   margin: 1em 0;
 `;
-
-const useRunQuery = (query) => {
-  return new Promise((resolve, reject) => {
-    const { runQuery } = useMongo();
-
-    try {
-      runQuery(
-        query,
-        (res) => {
-          resolve(res);
-        },
-        config.realm.production_db.db_service,
-        config.realm.production_db.db_name,
-        config.realm.production_db.db_collection
-      );
-    } catch (error) {
-      reject(error);
-    }
-  });
-};
 
 const DEFAULT_RESULTS = {
   incident_id: {
@@ -54,7 +33,7 @@ const DEFAULT_RESULTS = {
 const RelatedIncidents = ({ incident = {}, isSubmitted }) => {
   const { incident_id, date_published, authors, url } = incident;
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [related, setRelated] = useState(DEFAULT_RESULTS);
 
@@ -67,6 +46,8 @@ const RelatedIncidents = ({ incident = {}, isSubmitted }) => {
   const [prevAuthors, setPrevAuthors] = useState('');
 
   const [prevUrl, setPrevUrl] = useState('');
+
+  const { user } = useUserContext();
 
   const addQueryCondition = (condition) => {
     let newConditions = queryConditions;
@@ -193,7 +174,11 @@ const RelatedIncidents = ({ incident = {}, isSubmitted }) => {
         setLoading(true);
         for (const q of query.$or) {
           for (const key in q) {
-            const res = await useRunQuery(q);
+            const res = await user
+              .mongoClient(config.realm.production_db.db_service)
+              .db(config.realm.production_db.db_name)
+              .collection('incidents')
+              .find(q);
 
             results.push({
               [key]: {
@@ -224,8 +209,10 @@ const RelatedIncidents = ({ incident = {}, isSubmitted }) => {
       setLoading(false);
     };
 
-    queryRelatedIncidents();
-  }, [queryConditions]);
+    if (user) {
+      queryRelatedIncidents();
+    }
+  }, [user, queryConditions]);
 
   useEffect(() => {
     queryByUrl();
@@ -239,6 +226,7 @@ const RelatedIncidents = ({ incident = {}, isSubmitted }) => {
     related.url.reports.length === 0 &&
     related.authors.reports.length === 0 &&
     related.incident_id.reports.length === 0 &&
+    related.epoch_date_published.reports &&
     related.epoch_date_published.reports.length === 0
   ) {
     return (
@@ -250,7 +238,7 @@ const RelatedIncidents = ({ incident = {}, isSubmitted }) => {
   }
 
   const RelatedIncidentsArea = ({ context }) => {
-    if (context.reports.length === 0) {
+    if (!context.reports || context.reports.length === 0) {
       return null;
     }
 

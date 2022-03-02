@@ -4,7 +4,7 @@ import Helmet from 'react-helmet';
 import Container from 'react-bootstrap/Container';
 
 import Layout from 'components/Layout';
-import Link from 'components/Link';
+import Link from 'components/ui/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';

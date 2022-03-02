@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Spinner } from 'react-bootstrap';
-import WebArchiveLink from '../WebArchiveLink';
+import WebArchiveLink from '../ui/WebArchiveLink';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faNewspaper,

@@ -4,12 +4,9 @@ import { graphql } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 
 import Layout from 'components/Layout';
-import NextPrevious from 'components/NextPrevious';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import config from '../../config';
 import { MDXProvider } from '@mdx-js/react';
-
-const forcedNavOrder = config.sidebar.forcedNavOrder;
 
 const slug = (title) => title.toLowerCase().replace(/\s+/g, '');
 
@@ -29,45 +26,7 @@ export default class MDXRuntimeTest extends Component {
     if (!data) {
       return null;
     }
-    const { allMdx, mdx } = data;
-
-    const navItems = allMdx.edges
-      .map(({ node }) => node.fields.slug)
-      .filter((slug) => slug !== '/')
-      .sort()
-      .reduce(
-        (acc, cur) => {
-          if (forcedNavOrder.find((url) => url === cur)) {
-            return { ...acc, [cur]: [cur] };
-          }
-
-          let prefix = cur.split('/')[1];
-
-          if (config.gatsby && config.gatsby.trailingSlash) {
-            prefix = prefix + '/';
-          }
-
-          if (prefix && forcedNavOrder.find((url) => url === `/${prefix}`)) {
-            return { ...acc, [`/${prefix}`]: [...acc[`/${prefix}`], cur] };
-          } else {
-            return { ...acc, items: [...acc.items, cur] };
-          }
-        },
-        { items: [] }
-      );
-
-    const nav = forcedNavOrder
-      .reduce((acc, cur) => {
-        return acc.concat(navItems[cur]);
-      }, [])
-      .concat(navItems.items)
-      .map((slug) => {
-        if (slug) {
-          const { node } = allMdx.edges.find(({ node }) => node.fields.slug === slug);
-
-          return { title: node.fields.title, url: node.fields.slug };
-        }
-      });
+    const { mdx } = data;
 
     // meta tags
     const metaTitle = mdx.frontmatter.metaTitle;
@@ -102,9 +61,6 @@ export default class MDXRuntimeTest extends Component {
             <MDXRenderer>{mdx.body}</MDXRenderer>
           </MDXProvider>
         </StyledMainWrapper>
-        <div className={'addPaddTopBottom'}>
-          <NextPrevious mdx={mdx} nav={nav} />
-        </div>
       </Layout>
     );
   }
@@ -134,16 +90,6 @@ export const pageQuery = graphql`
       frontmatter {
         metaTitle
         metaDescription
-      }
-    }
-    allMdx {
-      edges {
-        node {
-          fields {
-            slug
-            title
-          }
-        }
       }
     }
   }
