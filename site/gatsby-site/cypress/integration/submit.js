@@ -41,12 +41,13 @@ describe('The Submit form', () => {
       expect(xhr.request.body.arguments[0]).to.deep.include({
         title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
         submitters: 'Something',
-        authors: ['Valentina Palladino'],
+        authors: 'Valentina Palladino',
         incident_date: '2021-09-21',
         date_published: '2017-11-10',
         image_url:
           'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
         tags: ['New Tag'],
+        incident_id: { $numberInt: '0' },
       });
     });
 

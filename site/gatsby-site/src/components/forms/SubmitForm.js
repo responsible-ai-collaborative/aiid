@@ -81,9 +81,12 @@ const SubmitForm = () => {
         submitIncidentID = incident.incident_id;
       }
       await user.functions.createReportForReview({
-        incident_id: submitIncidentID,
         ...values,
+        incident_id: submitIncidentID,
       });
+
+      resetForm();
+
       addToast({
         message: (
           <>
@@ -100,7 +103,6 @@ const SubmitForm = () => {
       });
     }
 
-    resetForm();
     setSubmitting(false);
   };
 
