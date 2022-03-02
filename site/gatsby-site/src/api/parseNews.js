@@ -14,7 +14,7 @@ export default async function handler(req, res) {
       : null,
     date_downloaded: format(new Date(), 'yyyy-MM-dd'),
     image_url: article.lead_image_url,
-    text: article.content,
+    text: article.content.trim(),
   };
 
   res.status(200).json(response);
