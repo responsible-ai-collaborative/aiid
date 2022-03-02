@@ -156,6 +156,6 @@ describe('Cite pages', () => {
 
     cy.get('[name="incident_date"]').should('have.value', '2014-08-14');
 
-    cy.get('[name="date_downloaded"]').should('have.value', '2022-03-01');
+    cy.get('[name="date_downloaded"]').should('have.value', '2022-03-02');
   });
 });
