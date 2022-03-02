@@ -6,7 +6,6 @@ import * as Yup from 'yup';
 import Link from 'components/ui/Link';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { format, parseISO } from 'date-fns';
 import { dateRegExp } from 'utils/date';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
@@ -164,14 +163,8 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
     setParsingNews(true);
     const timeout = setTimeout(coldStartToast, 20000);
 
-    const improveText = (text) => {
-      return text.replaceAll('\n', '\n\n');
-    };
-
     try {
-      const url = `https://z14490usg0.execute-api.us-east-1.amazonaws.com/default/parseNews?url=${encodeURIComponent(
-        newsUrl
-      )}`;
+      const url = `/api/parseNews?url=${encodeURIComponent(newsUrl)}`;
 
       const response = await fetch(url);
 
@@ -191,13 +184,8 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
       onUpdate((incident) => {
         return {
           ...incident,
-          title: news.title,
-          authors: news.authors,
-          date_published: format(parseISO(news.date_publish), 'yyyy-MM-dd'),
-          date_downloaded: format(parseISO(news.date_download), 'yyyy-MM-dd'),
-          image_url: news.image_url,
+          ...news,
           cloudinary_id,
-          text: improveText(news.maintext),
         };
       });
     } catch (e) {
