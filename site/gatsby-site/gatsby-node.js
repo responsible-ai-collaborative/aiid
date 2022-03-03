@@ -246,6 +246,8 @@ exports.onPostBuild = async function ({ graphql, reporter }) {
 
   if (!process.env.MONGODB_MIGRATIONS_CONNECTION_STRING) {
     console.warn('MONGODB_MIGRATIONS_CONNECTION_STRING is not set, skipping migrations.');
+  } else if (process.env.CONTEXT !== 'production') {
+    console.info('Netlify CONTEXT is not production, skipping migrations.');
   } else {
     migrationsActivity.start();
     migrationsActivity.setStatus('Running...');
