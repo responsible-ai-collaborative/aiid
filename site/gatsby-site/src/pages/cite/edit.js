@@ -24,8 +24,6 @@ function EditCitePage(props) {
 
   useEffect(() => {
     if (reportData) {
-      console.log('reportData', reportData, { ...reportData.incident });
-
       if (reportData.incident) {
         setReport({ ...reportData.incident });
       } else {
