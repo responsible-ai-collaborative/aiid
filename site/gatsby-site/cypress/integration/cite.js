@@ -144,4 +144,18 @@ describe('Cite pages', () => {
 
     cy.get('@modal').should('not.exist');
   });
+
+  it('Should pre-fill submit report form', () => {
+    cy.clock(Date.UTC(2022, 2, 2), ['Date']);
+
+    cy.visit(url);
+
+    cy.contains('New Report').scrollIntoView().click();
+
+    cy.get('[name="incident_id"]').should('have.value', '10');
+
+    cy.get('[name="incident_date"]').should('have.value', '2014-08-14');
+
+    cy.get('[name="date_downloaded"]').should('have.value', '2022-03-02');
+  });
 });

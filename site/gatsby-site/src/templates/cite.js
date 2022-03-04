@@ -8,7 +8,7 @@ import ImageCarousel from 'components/cite/ImageCarousel';
 import BibTex from 'components/BibTex';
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 import styled from 'styled-components';
-import { isAfter, isEqual } from 'date-fns';
+import { format, isAfter, isEqual } from 'date-fns';
 import { useModal, CustomModal } from '../hooks/useModal';
 import Timeline from 'components/visualizations/Timeline';
 import IncidentStatsCard from 'components/cite/IncidentStatsCard';
@@ -58,7 +58,7 @@ function CitePage(props) {
   } = props;
 
   // meta tags
-  const incident_id = incidentReports[0].node.incident_id;
+  const { incident_id, incident_date } = incidentReports[0].node;
 
   const metaTitle = 'Incident ' + incident_id;
 
@@ -152,6 +152,16 @@ function CitePage(props) {
                 <h4>Tools</h4>
               </div>
               <div className="card-body">
+                <Button
+                  variant="outline-primary"
+                  className="me-2"
+                  href={`/apps/submit?incident_id=${incident_id}&incident_date=${incident_date}&date_downloaded=${format(
+                    new Date(),
+                    'yyyy-MM-dd'
+                  )}`}
+                >
+                  New Report
+                </Button>
                 <Button variant="outline-primary" className="me-2" href={'/summaries/incidents'}>
                   All Incidents
                 </Button>
