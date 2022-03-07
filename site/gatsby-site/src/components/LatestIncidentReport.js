@@ -18,10 +18,7 @@ const LatestIncidentReport = ({ className = '' }) => {
     <StaticQuery
       query={graphql`
         query LatestIncidentReport {
-          allMongodbAiidprodIncidents(
-            sort: { order: DESC, fields: epoch_incident_date }
-            limit: 1
-          ) {
+          allMongodbAiidprodReports(sort: { order: DESC, fields: epoch_incident_date }, limit: 1) {
             nodes {
               title
               epoch_incident_date
@@ -33,7 +30,7 @@ const LatestIncidentReport = ({ className = '' }) => {
           }
         }
       `}
-      render={({ allMongodbAiidprodIncidents: { nodes } }) => {
+      render={({ allMongodbAiidprodReports: { nodes } }) => {
         const { image_url, cloudinary_id, title, description, epoch_incident_date, incident_id } =
           nodes[0];
 

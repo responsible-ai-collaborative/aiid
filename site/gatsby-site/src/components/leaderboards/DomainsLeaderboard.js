@@ -7,7 +7,7 @@ const DomainsLeaderboard = ({ limit, className }) => {
     <StaticQuery
       query={graphql`
         query DomainsLeaderboard {
-          allMongodbAiidprodIncidents {
+          allMongodbAiidprodReports {
             group(field: source_domain) {
               fieldValue
               totalCount
@@ -15,7 +15,7 @@ const DomainsLeaderboard = ({ limit, className }) => {
           }
         }
       `}
-      render={({ allMongodbAiidprodIncidents: { group } }) => (
+      render={({ allMongodbAiidprodReports: { group } }) => (
         <Leaderboard
           dataHash={group}
           leaderboard={{
