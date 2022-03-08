@@ -2,66 +2,39 @@ import React from 'react';
 import OpenedSvg from '../images/opened';
 import ClosedSvg from '../images/closed';
 import config from '../../../config';
-import Link from '../Link';
+import Link from '../ui/Link';
 
-const TreeNode = ({ className = '', setCollapsed, collapsed, url, title, items }) => {
-  const isCollapsed = collapsed[url];
+const TreeNode = ({ className = '', setCollapsed, navSetting, item }) => {
+  const calculatedClassName = `${className} item ${item.current ? 'active' : 'inactive'}`;
 
-  const collapse = () => {
-    setCollapsed(url);
+  const hasChildren = item.items.length > 0;
+
+  const click = () => {
+    setCollapsed(item['url']);
   };
-
-  const hasChildren = items.length !== 0;
-
-  let location;
-
-  if (typeof document != 'undefined') {
-    location = document.location;
-  }
-  const isSummary = location && location.pathname.indexOf('/summaries/') === 0;
-
-  const isSummaryNav = url === '/summaries';
-
-  const isWelcome = location && location.pathname.indexOf('/welcome/') === 0;
-
-  const isWelcomeNav = url === '/summaries' || url === '/' || url === '';
-
-  const isApp = location && location.pathname.indexOf('/apps/') === 0;
-
-  const isAppNav = url === '/apps';
-
-  const makeActive =
-    (isSummary && isSummaryNav) || (isApp && isAppNav) || (isWelcome && isWelcomeNav);
-
-  const active =
-    location &&
-    (location.pathname === url ||
-      location.pathname === config.gatsby.pathPrefix + url ||
-      makeActive);
-
-  const calculatedClassName = `${className} item ${active ? 'active' : ''}`;
 
   return (
     <li className={calculatedClassName}>
-      {title && (
-        <Link to={url}>
-          {title}
-          {!config.sidebar.frontLine && title && hasChildren ? (
-            <button onClick={collapse} aria-label="collapse" className="collapser">
-              {!isCollapsed ? <OpenedSvg /> : <ClosedSvg />}
+      {item.title && (
+        <Link to={item.url} onClick={click}>
+          {item.title}
+          {!config.sidebar.frontLine && item.title && hasChildren ? (
+            <button onClick={click} aria-label="collapse" className="collapser">
+              {!item.collapsed ? <OpenedSvg /> : <ClosedSvg />}
             </button>
           ) : null}
         </Link>
       )}
 
-      {!isCollapsed && hasChildren ? (
+      {!item.collapsed && hasChildren ? (
         <ul>
-          {items.map((item, index) => (
+          {item.items.map((item, index) => (
             <TreeNode
+              className="subtree"
               key={item.url + index.toString()}
               setCollapsed={setCollapsed}
-              collapsed={collapsed}
-              {...item}
+              navSetting={navSetting}
+              item={item}
             />
           ))}
         </ul>

@@ -6,7 +6,7 @@ import { auto } from '@cloudinary/base/qualifiers/format';
 import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
 import styled from 'styled-components';
 import config from '../../config';
-import TextInputGroup from 'components/TextInputGroup';
+import TextInputGroup from 'components/forms/TextInputGroup';
 
 const getCloudinaryPublicID = (url) => {
   // https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files

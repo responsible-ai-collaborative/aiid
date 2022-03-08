@@ -4,7 +4,7 @@ import { graphql } from 'gatsby';
 
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
 import { format } from 'date-fns';
-import Link from 'components/Link';
+import Link from 'components/ui/Link';
 import { StyledHeading } from 'components/styles/Docs';
 import styled from 'styled-components';
 import { faLink } from '@fortawesome/free-solid-svg-icons';

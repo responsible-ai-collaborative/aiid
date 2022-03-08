@@ -1,10 +1,9 @@
 import React from 'react';
 import Tree from './tree';
-import { StaticQuery, graphql } from 'gatsby';
 import styled from 'styled-components';
 import { ExternalLink } from 'react-feather';
 import config from '../../../config';
-import DiscoverQuickAccess from 'components/DiscoverQuickAccess';
+import QuickAccess from 'components/discover/QuickAccess';
 
 // eslint-disable-next-line no-unused-vars
 const ListItem = styled(({ className, active, level, ...props }) => {
@@ -95,50 +94,36 @@ const Divider = styled((props) => (
   }
 `;
 
-const SidebarLayout = ({ collapse }) => (
-  <StaticQuery
-    query={graphql`
-      query {
-        allMdx(filter: { fileAbsolutePath: { glob: "**/content/**" } }) {
-          edges {
-            node {
-              fields {
-                slug
-                title
-              }
-            }
-          }
-        }
-      }
-    `}
-    render={({ allMdx }) => {
-      return (
-        <Sidebar collapse={collapse}>
-          <DiscoverQuickAccess />
-          {config.sidebar.title ? (
-            <div
-              className={'sidebarTitle hiddenMobile'}
-              dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
-            />
-          ) : null}
-          <ul className={'sideBarUL'}>
-            <Tree edges={allMdx.edges} />
-            {config.sidebar.links && config.sidebar.links.length > 0 && <Divider />}
-            {config.sidebar.links.map((link, key) => {
-              if (link.link !== '' && link.text !== '') {
-                return (
-                  <ListItem key={key} to={link.link}>
-                    {link.text}
-                    <ExternalLink size={14} />
-                  </ListItem>
-                );
-              }
-            })}
+const SidebarLayout = ({ collapse, setNavCollapsed }) => {
+  return (
+    <Sidebar collapse={collapse}>
+      <QuickAccess />
+      {config.sidebar.title ? (
+        <div
+          className={'sidebarTitle hiddenMobile'}
+          dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
+        />
+      ) : null}
+      <ul className={'sideBarUL'}>
+        <li className="hideFrontLine firstLevel item">
+          <ul>
+            <Tree setNavCollapsed={setNavCollapsed} />
           </ul>
-        </Sidebar>
-      );
-    }}
-  />
-);
+        </li>
+        {config.sidebar.links && config.sidebar.links.length > 0 && <Divider />}
+        {config.sidebar.links.map((link, key) => {
+          if (link.link !== '' && link.text !== '') {
+            return (
+              <ListItem key={key} to={link.link}>
+                {link.text}
+                <ExternalLink size={14} />
+              </ListItem>
+            );
+          }
+        })}
+      </ul>
+    </Sidebar>
+  );
+};
 
 export default SidebarLayout;

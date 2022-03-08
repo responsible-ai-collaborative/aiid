@@ -4,7 +4,7 @@ import IncidentReportForm from 'components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Spinner } from 'react-bootstrap';
-import { FIND_REPORT, UPDATE_REPORT } from '../../graphql/reports';
+import { FIND_REPORT, UPDATE_REPORT, DELETE_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 
 function EditCitePage(props) {
@@ -18,11 +18,17 @@ function EditCitePage(props) {
 
   const [updateReport] = useMutation(UPDATE_REPORT);
 
+  const [deleteReport] = useMutation(DELETE_REPORT);
+
   const addToast = useToastContext();
 
   useEffect(() => {
     if (reportData) {
-      setReport({ ...reportData.incident });
+      if (reportData.incident) {
+        setReport({ ...reportData.incident });
+      } else {
+        setReport(null);
+      }
     }
   }, [reportData]);
 
@@ -61,6 +67,30 @@ function EditCitePage(props) {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      await deleteReport({
+        variables: {
+          query: {
+            report_number: reportNumber,
+          },
+        },
+      });
+
+      addToast({
+        message: `Incident report ${reportNumber} deleted successfully.`,
+        severity: SEVERITY.success,
+      });
+    } catch (e) {
+      addToast({
+        message: `Error deleting incident report ${reportNumber}`,
+        severity: SEVERITY.danger,
+      });
+    }
+
+    setReport(null);
+  };
+
   return (
     <Layout {...props} className={'w-100'}>
       <h1 className="mb-5">Editing Incident Report {reportNumber}</h1>
@@ -71,7 +101,12 @@ function EditCitePage(props) {
       {report === null && <div>Report not found</div>}
 
       {report && (
-        <IncidentReportForm incident={report} onUpdate={setReport} onSubmit={handleSubmit} />
+        <IncidentReportForm
+          incident={report}
+          onUpdate={setReport}
+          onSubmit={handleSubmit}
+          onDelete={handleDelete}
+        />
       )}
     </Layout>
   );

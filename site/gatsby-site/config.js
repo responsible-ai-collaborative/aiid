@@ -44,9 +44,61 @@ const config = {
     },
   },
   sidebar: {
-    forcedNavOrder: ['/welcome', '/about', '/research', '/about_apps', '/contact'],
-    collapsedNav: [
-      //'/codeblock', // add trailing slash if enabled above
+    navConfig: [
+      { label: 'welcome', url: '/', items: [], title: 'Welcome to the AIID' },
+      { label: 'about', url: '/about', items: [], title: 'About' },
+      { label: 'blog', url: '/blog', items: [], title: 'AIID Blog' },
+      {
+        label: 'about_apps',
+        url: '/about_apps',
+        items: [
+          { label: 'discover', url: '/apps/discover', items: [], title: 'Discover Incidents' },
+          { label: 'submit', url: '/apps/submit', items: [], title: 'Submit Incident Reports' },
+          {
+            label: 'all-incidents',
+            url: '/summaries/incidents',
+            items: [],
+            title: 'All Incidents in List Form',
+          },
+          {
+            label: 'leaderboard',
+            url: '/summaries/leaderboard',
+            items: [],
+            title: 'Submission Leaderboard',
+          },
+          {
+            label: 'classifications',
+            url: '/apps/classifications',
+            items: [],
+            title: 'Classifications View',
+          },
+          { label: 'flagged', url: '/summaries/flagged', items: [], title: 'Flagged Incidents' },
+          { label: 'wordcounts', url: '/summaries/wordcounts', items: [], title: 'Word Counts' },
+        ],
+        title: 'Database Apps',
+      },
+      {
+        label: 'research',
+        url: '/research',
+        items: [
+          {
+            label: '1-criteria',
+            url: '/research/1-criteria',
+            items: [],
+            title: 'Incident Report Acceptance Criteria',
+          },
+          { label: '2-roadmap', url: '/research/2-roadmap', items: [], title: 'Database Roadmap' },
+          {
+            label: '3-history',
+            url: '/research/3-history',
+            items: [],
+            title: 'Initial Collection Methodology',
+          },
+        ],
+        title: 'Researcher Guide',
+      },
+      { label: 'taxonomies', url: '/taxonomies', items: [], title: 'Taxonomies' },
+      { label: 'contact', url: '/contact', items: [], title: 'Contact and Follow' },
     ],
     links: [
       { text: 'Launch Announcement', link: 'https://partnershiponai.org/aiincidentdatabase/' },

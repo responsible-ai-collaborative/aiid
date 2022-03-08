@@ -3,18 +3,16 @@ import PropTypes from 'prop-types';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import Link from 'components/Link';
-import TextInputGroup from 'components/TextInputGroup';
+import Link from 'components/ui/Link';
+import TextInputGroup from 'components/forms/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { format, parseISO } from 'date-fns';
 import { dateRegExp } from 'utils/date';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
-import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-import styled from 'styled-components';
 import { graphql, useStaticQuery } from 'gatsby';
-import * as POP_OVERS from '../PopOvers';
-import Label from '../Label';
+import * as POP_OVERS from '../ui/PopOvers';
+import Label from './Label';
+import Typeahead from './Typeahead';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -86,19 +84,11 @@ const defaultValue = {
   text: '',
 };
 
-const StyledTypeahead = styled(Typeahead)`
-  .rbt-close {
-    border: none;
-    background: transparent;
-  }
-`;
-
-const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
+const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) => {
   const {
     values,
     errors,
     touched,
-    isValid,
     isSubmitting,
     handleChange,
     handleBlur,
@@ -106,6 +96,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
     setValues,
     setFieldTouched,
     setFieldValue,
+    setTouched,
   } = useFormik({
     initialValues: incident || defaultValue,
     validationSchema,
@@ -150,6 +141,10 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
     onUpdate && onUpdate(values);
   }, [values]);
 
+  useEffect(() => {
+    setTouched(incident);
+  }, []);
+
   const isEditMode = incident && !!incident.incident_id;
 
   const addToast = useToastContext();
@@ -167,14 +162,8 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
     setParsingNews(true);
     const timeout = setTimeout(coldStartToast, 20000);
 
-    const improveText = (text) => {
-      return text.replaceAll('\n', '\n\n');
-    };
-
     try {
-      const url = `https://z14490usg0.execute-api.us-east-1.amazonaws.com/default/parseNews?url=${encodeURIComponent(
-        newsUrl
-      )}`;
+      const url = `/api/parseNews?url=${encodeURIComponent(newsUrl)}`;
 
       const response = await fetch(url);
 
@@ -194,13 +183,8 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
       onUpdate((incident) => {
         return {
           ...incident,
-          title: news.title,
-          authors: news.authors,
-          date_published: format(parseISO(news.date_publish), 'yyyy-MM-dd'),
-          date_downloaded: format(parseISO(news.date_download), 'yyyy-MM-dd'),
-          image_url: news.image_url,
+          ...news,
           cloudinary_id,
-          text: improveText(news.maintext),
         };
       });
     } catch (e) {
@@ -319,7 +303,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
 
       <Form.Group className="mt-3">
         <Label popover={POP_OVERS['tags']} label={'Tags'} />
-        <StyledTypeahead
+        <Typeahead
           id="submit-report-tags"
           inputProps={{ id: 'submit-report-tags-input' }}
           allowNew
@@ -345,14 +329,20 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
           into the database after enough incidents are pending.
         </p>
       )}
-      <Button
-        className="mt-3"
-        variant="primary"
-        type="submit"
-        disabled={(touched && !isValid) || isSubmitting}
-      >
+      <Button className="mt-3" variant="primary" type="submit" disabled={isSubmitting}>
         Submit
       </Button>
+      {onDelete && (
+        <Button
+          className="mt-3 text-danger"
+          variant="link"
+          onClick={() => {
+            confirm('Sure you want to delete this report?') && onDelete();
+          }}
+        >
+          Delete this report
+        </Button>
+      )}
     </Form>
   );
 };

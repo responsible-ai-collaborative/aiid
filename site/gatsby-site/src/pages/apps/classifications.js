@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
-import TaxonomyForm from 'components/TaxonomyForm';
+import TaxonomyForm from 'components/taxa/TaxonomyForm';
 import Helmet from 'react-helmet';
 import styled from 'styled-components';
 import { useMongo } from 'hooks/useMongo';
@@ -8,11 +8,11 @@ import config from '../../../config';
 
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
 import { Table, Spinner, Form, InputGroup, FormControl, Button } from 'react-bootstrap';
-import Link from 'components/Link';
+import Link from 'components/ui/Link';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useModal, CustomModal } from 'components/useModal';
+import { useModal, CustomModal } from 'hooks/useModal';
 import { useUserContext } from 'contexts/userContext';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import { format } from 'date-fns';
@@ -583,6 +583,13 @@ export default function ClassificationsDbView(props) {
     }
   };
 
+  const handleSubmit = () => {
+    editClassificationModal.close();
+    initSetup();
+  };
+
+  const editFormRef = React.useRef(null);
+
   const getEditClassificationForm = (row) => {
     const taxonomyFormObj = {
       classificationsArray: [],
@@ -620,10 +627,10 @@ export default function ClassificationsDbView(props) {
     return (
       <>
         <TaxonomyForm
-          key={'CSET'}
-          taxonomy={taxonomyFormObj}
+          ref={editFormRef}
+          namespace={taxaData.namespace}
           incidentId={row.values.IncidentId}
-          doneSubmittingCallback={initSetup}
+          onSubmit={handleSubmit}
         />
       </>
     );
@@ -698,11 +705,20 @@ export default function ClassificationsDbView(props) {
               return (
                 <td key={cell.id} {...cell.getCellProps()}>
                   <Button
+                    data-cy="edit-classification"
                     className="me-auto"
                     disabled={!isAdmin}
                     onClick={() =>
                       editClassificationModal.openFor({
-                        title: `Edit CSET classification for incident ${row.original.IncidentId}`,
+                        title: (
+                          <>
+                            Edit {currentTaxonomy} classification for incident{' '}
+                            {row.original.IncidentId}{' '}
+                            <Button className="ms-2" onClick={() => editFormRef.current.submit()}>
+                              Submit
+                            </Button>
+                          </>
+                        ),
                         body: function f() {
                           return getEditClassificationForm(row);
                         },
