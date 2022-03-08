@@ -366,7 +366,7 @@ Please add a connection string with read/write permissions to the mongo database
 MONGODB_MIGRATIONS_CONNECTION_STRING=
 ```
 ### Execution
-Migrations run on Netlify after the build process finishes, but it is also possible to run them from the command line for debugging or testing purposes.
+Migrations run automatically as part of Gatsby's `onPreBootstrap` event, but it is also possible to run them from the command line for debugging or testing purposes:
 
 To run all pending migrations:
 ```
