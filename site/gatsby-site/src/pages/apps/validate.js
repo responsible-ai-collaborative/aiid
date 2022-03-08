@@ -42,9 +42,6 @@ const jsonSchema = {
     image_url: {
       bsonType: 'string',
     },
-    incident_date: {
-      bsonType: 'string',
-    },
     incident_id: {
       bsonType: 'int',
     },
@@ -193,7 +190,7 @@ export default class ValidateDB extends Component {
       return null;
     }
     const {
-      allMongodbAiidprodIncidents: { group },
+      allMongodbAiidprodReports: { group },
     } = data;
 
     // sort by value
@@ -224,7 +221,7 @@ export default class ValidateDB extends Component {
 
 export const pageQuery = graphql`
   query ValidationsQuery {
-    allMongodbAiidprodIncidents(
+    allMongodbAiidprodReports(
       filter: { flag: { eq: null } }
       sort: { order: ASC, fields: incident_id }
     ) {
@@ -242,7 +239,6 @@ export const pageQuery = graphql`
             ref_number
             language
             incident_id
-            incident_date
             image_url
             flag
             description

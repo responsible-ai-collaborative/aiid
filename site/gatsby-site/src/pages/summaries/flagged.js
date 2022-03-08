@@ -76,7 +76,7 @@ export default class FlaggedIncidents extends Component {
       return null;
     }
     const {
-      allMongodbAiidprodIncidents: { group },
+      allMongodbAiidprodReports: { group },
     } = data;
 
     // sort by value
@@ -106,7 +106,7 @@ export default class FlaggedIncidents extends Component {
 
 export const pageQuery = graphql`
   query AllFlaggedIncidents {
-    allMongodbAiidprodIncidents(
+    allMongodbAiidprodReports(
       filter: { flag: { eq: true } }
       sort: { order: ASC, fields: incident_id }
     ) {
@@ -126,7 +126,6 @@ export const pageQuery = graphql`
             description
             flag
             image_url
-            incident_date
             language
             ref_number
             source_domain

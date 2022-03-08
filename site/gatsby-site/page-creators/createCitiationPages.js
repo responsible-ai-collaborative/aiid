@@ -55,26 +55,27 @@ const createCitiationPages = async (graphql, createPage) => {
     `
       query IncidentIDs {
         allMongodbAiidprodIncidents {
-          group(field: incident_id) {
-            fieldValue
-            edges {
-              node {
-                id
-                submitters
-                incident_date
-                date_published
-                incident_id
-                report_number
-                title
-                url
-                image_url
-                cloudinary_id
-                source_domain
-                mongodb_id
-                text
-                authors
-              }
-            }
+          nodes {
+            incident_id
+            date
+            reports
+          }
+        }
+
+        allMongodbAiidprodReports {
+          nodes {
+            submitters
+            date_published
+            incident_id
+            report_number
+            title
+            url
+            image_url
+            cloudinary_id
+            source_domain
+            mongodb_id
+            text
+            authors
           }
         }
 
@@ -164,6 +165,7 @@ const createCitiationPages = async (graphql, createPage) => {
 
   const {
     allMongodbAiidprodIncidents,
+    allMongodbAiidprodReports,
     allMongodbAiidprodClassifications,
     allMongodbAiidprodDuplicates,
     allMongodbAiidprodTaxa,
@@ -173,9 +175,12 @@ const createCitiationPages = async (graphql, createPage) => {
   // Incident reports list
   const incidentReportsMap = {};
 
-  allMongodbAiidprodIncidents.group.map((g) => {
-    incidentReportsMap[g.fieldValue] = g.edges;
-  });
+  for (const incident of allMongodbAiidprodIncidents.nodes) {
+    incidentReportsMap[incident.incident_id] = incident.reports
+      .map((r) => allMongodbAiidprodReports.nodes.find((n) => n.report_number === r))
+      .map((r) => ({ ...r, incident_date: incident.date }))
+      .map((r) => ({ node: { ...r } }));
+  }
 
   const allClassifications = [
     ...allMongodbAiidprodClassifications.nodes.map((r) => ({ ...r, namespace: 'CSET' })),

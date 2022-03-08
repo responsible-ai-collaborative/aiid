@@ -91,6 +91,7 @@ const plugins = [
         'taxa',
         'classifications',
         'resources',
+        'reports',
       ],
       connectionString: config.mongodb.connectionString,
       extraParams: {
@@ -118,8 +119,8 @@ const plugins = [
       `,
       feeds: [
         {
-          serialize: ({ query: { allMongodbAiidprodIncidents } }) => {
-            return allMongodbAiidprodIncidents.edges.map((edge) => {
+          serialize: ({ query: { allMongodbAiidprodReports } }) => {
+            return allMongodbAiidprodReports.edges.map((edge) => {
               const publicID = edge.node.cloudinary_id
                 ? edge.node.cloudinary_id
                 : `legacy/${md5(edge.node.image_url)}`;
@@ -143,7 +144,7 @@ const plugins = [
           },
           query: `
             {
-              allMongodbAiidprodIncidents(sort: {fields: date_submitted, order: DESC}, limit: 100) {
+              allMongodbAiidprodReports(sort: {fields: date_submitted, order: DESC}, limit: 100) {
                 totalCount
                 edges {
                   node {

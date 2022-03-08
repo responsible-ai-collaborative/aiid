@@ -1,1 +1,8 @@
-{}
+{
+    "reports": {
+        "ref": "#/relationship/mongodb-atlas/aiidprod/reports",
+        "source_key": "reports",
+        "foreign_key": "report_number",
+        "is_list": true
+    }
+}
