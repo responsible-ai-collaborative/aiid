@@ -92,7 +92,7 @@ exports.up = async ({ context: { client } }) => {
         flag,
       };
 
-      console.log('new report', newReport);
+      console.log('new report', { incident_id, report_number });
       reports.push(newReport);
     }
 
