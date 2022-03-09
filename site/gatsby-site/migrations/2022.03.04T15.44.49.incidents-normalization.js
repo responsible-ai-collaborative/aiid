@@ -89,8 +89,11 @@ exports.up = async ({ context: { client } }) => {
         title,
         url,
         tags: tags || [],
-        flag: flag || undefined,
       };
+
+      if (flag) {
+        newReport.flag = flag;
+      }
 
       console.log('new report', { incident_id, report_number });
       reports.push(newReport);
