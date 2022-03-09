@@ -1,14 +1,13 @@
 import gql from 'graphql-tag';
 
 export const FIND_REPORT = gql`
-  query FindReport($query: IncidentQueryInput!) {
-    incident(query: $query) {
+  query FindReport($query: ReportQueryInput!) {
+    report(query: $query) {
       _id
       url
       title
       authors
       submitters
-      incident_date
       date_published
       date_downloaded
       image_url
@@ -21,14 +20,13 @@ export const FIND_REPORT = gql`
 `;
 
 export const UPDATE_REPORT = gql`
-  mutation UpdateIncidentReport($query: IncidentQueryInput!, $set: IncidentUpdateInput!) {
-    updateOneIncident(query: $query, set: $set) {
+  mutation UpdateIncidentReport($query: ReportQueryInput!, $set: IncidentUpdateInput!) {
+    updateOneReport(query: $query, set: $set) {
       _id
       url
       title
       authors
       submitters
-      incident_date
       date_published
       date_downloaded
       image_url
@@ -41,7 +39,7 @@ export const UPDATE_REPORT = gql`
 `;
 
 export const DELETE_REPORT = gql`
-  mutation deleteOneIncident($query: IncidentQueryInput!) {
+  mutation deleteOneIncident($query: ReportQueryInput!) {
     deleteOneIncident(query: $query) {
       _id
       incident_id
