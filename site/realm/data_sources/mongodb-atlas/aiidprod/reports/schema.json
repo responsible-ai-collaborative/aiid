@@ -45,6 +45,9 @@
         "image_url": {
             "bsonType": "string"
         },
+        "incident_id": {
+            "bsonType": "int"
+        },
         "language": {
             "bsonType": "string"
         },
@@ -63,6 +66,12 @@
                 "bsonType": "string"
             }
         },
+        "tags": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
         "text": {
             "bsonType": "string"
         },
@@ -71,12 +80,6 @@
         },
         "url": {
             "bsonType": "string"
-        },
-        "tags": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "string"
-            }
         }
     },
     "title": "report"
