@@ -20,7 +20,7 @@ export const FIND_REPORT = gql`
 `;
 
 export const UPDATE_REPORT = gql`
-  mutation UpdateIncidentReport($query: ReportQueryInput!, $set: IncidentUpdateInput!) {
+  mutation UpdateIncidentReport($query: ReportQueryInput!, $set: ReportUpdateInput!) {
     updateOneReport(query: $query, set: $set) {
       _id
       url
