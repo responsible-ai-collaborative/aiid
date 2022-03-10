@@ -91,6 +91,7 @@
     "styled-components": "^5.3.0",
     "styled-icons": "^9.5.0",
     "topojson": "^3.0.2",
+    "umzug": "^3.0.0",
     "use-query-params": "^1.2.0",
     "yup": "^0.29.3"
   },
