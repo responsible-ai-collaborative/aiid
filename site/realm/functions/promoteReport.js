@@ -79,7 +79,7 @@ exports = function(arg){
     incident_id = submittedDoc["incident_id"];
   }).then(() => {
     incidentCollection.find({}).sort({"report_number":-1}).limit(1).next().then(res => {
-      newReportNumber = res["report_number"];
+      newReportNumber = 1 + res["report_number"];
   }).then(() => {
     if(incident_id > 0) {
       newIncidentID = incident_id;
