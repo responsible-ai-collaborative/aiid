@@ -6,7 +6,7 @@
         "date": {
             "bsonType": "string"
         },
-        "id": {
+        "incident_id": {
             "bsonType": "int"
         },
         "reports": {
