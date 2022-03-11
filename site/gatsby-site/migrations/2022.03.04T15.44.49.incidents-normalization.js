@@ -67,7 +67,6 @@ exports.up = async ({ context: { client } }) => {
       const newReport = {
         _id,
         incident_id,
-        cloudinary_id: cloudinary_id || undefined,
         authors: authors || [],
         date_downloaded,
         date_modified,
@@ -93,6 +92,10 @@ exports.up = async ({ context: { client } }) => {
 
       if (flag) {
         newReport.flag = flag;
+      }
+
+      if (cloudinary_id) {
+        newReport.cloudinary_id = cloudinary_id;
       }
 
       console.log('new report', { incident_id, report_number });
