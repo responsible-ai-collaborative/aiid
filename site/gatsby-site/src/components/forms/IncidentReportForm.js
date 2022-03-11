@@ -84,7 +84,7 @@ const defaultValue = {
   text: '',
 };
 
-const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
+const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) => {
   const {
     values,
     errors,
@@ -332,6 +332,17 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit }) => {
       <Button className="mt-3" variant="primary" type="submit" disabled={isSubmitting}>
         Submit
       </Button>
+      {onDelete && (
+        <Button
+          className="mt-3 text-danger"
+          variant="link"
+          onClick={() => {
+            confirm('Sure you want to delete this report?') && onDelete();
+          }}
+        >
+          Delete this report
+        </Button>
+      )}
     </Form>
   );
 };

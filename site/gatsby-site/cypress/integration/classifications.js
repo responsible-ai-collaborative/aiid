@@ -1,7 +1,7 @@
+import { maybeIt } from '../support/utils';
+
 describe('Classifications App', () => {
   const url = '/apps/classifications';
-
-  const maybeIt = Cypress.env('e2eUsername') && Cypress.env('e2ePassword') ? it : it.skip;
 
   maybeIt('Successfully edit a CSET classification', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));

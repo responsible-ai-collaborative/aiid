@@ -1,3 +1,5 @@
+import { maybeIt } from '../support/utils';
+
 describe('Cite pages', () => {
   const discoverUrl = '/apps/discover';
 
@@ -59,10 +61,6 @@ describe('Cite pages', () => {
         expect(subject[0].getBoundingClientRect().top).to.be.closeTo(0, 1);
       });
   });
-
-  // Meanwhile there is not reproducible environment skip tests with admin permissions
-
-  const maybeIt = Cypress.env('e2eUsername') && Cypress.env('e2ePassword') ? it : it.skip;
 
   maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
@@ -143,5 +141,15 @@ describe('Cite pages', () => {
     cy.contains('Close').click();
 
     cy.get('@modal').should('not.exist');
+  });
+
+  it('Should pre-fill submit report form', () => {
+    cy.visit(url);
+
+    cy.contains('New Report').scrollIntoView().click();
+
+    cy.get('[name="incident_id"]').should('have.value', '10');
+
+    cy.get('[name="incident_date"]').should('have.value', '2014-08-14');
   });
 });
