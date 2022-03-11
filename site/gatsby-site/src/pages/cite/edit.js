@@ -4,7 +4,13 @@ import IncidentReportForm from 'components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Spinner } from 'react-bootstrap';
-import { FIND_REPORT, UPDATE_REPORT, DELETE_REPORT } from '../../graphql/reports';
+import {
+  FIND_REPORT,
+  UPDATE_REPORT,
+  DELETE_REPORT,
+  useUpdateLinkedReports,
+} from '../../graphql/reports';
+import { FIND_INCIDENT } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 
 function EditCitePage(props) {
@@ -16,21 +22,31 @@ function EditCitePage(props) {
     variables: { query: { report_number: reportNumber } },
   });
 
+  const { data: incidentData } = useQuery(FIND_INCIDENT, {
+    variables: { query: { reports_in: { report_number: reportNumber } } },
+  });
+
   const [updateReport] = useMutation(UPDATE_REPORT);
 
   const [deleteReport] = useMutation(DELETE_REPORT);
 
+  const updateLinkedReports = useUpdateLinkedReports();
+
   const addToast = useToastContext();
 
   useEffect(() => {
-    if (reportData) {
-      if (reportData.report) {
-        setReport({ ...reportData.report });
+    if (reportData && incidentData) {
+      if (reportData.report && incidentData.incident) {
+        setReport({
+          ...reportData.report,
+          incident_date: incidentData.incident.date,
+          incident_id: reportData.report.incident_id,
+        });
       } else {
         setReport(null);
       }
     }
-  }, [reportData]);
+  }, [reportData, incidentData]);
 
   const handleSubmit = async (values) => {
     try {
@@ -54,6 +70,10 @@ function EditCitePage(props) {
           },
         },
       });
+
+      if (values.incident_id !== reportData.report.incident_id) {
+        await updateLinkedReports({ reportNumber, incidentIds: [values.incident_id] });
+      }
 
       addToast({
         message: `Incident report ${reportNumber} updated successfully.`,
