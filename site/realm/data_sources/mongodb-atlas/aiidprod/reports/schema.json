@@ -9,6 +9,9 @@
                 "bsonType": "string"
             }
         },
+        "cloudinary_id": {
+            "bsonType": "string"
+        },
         "date_downloaded": {
             "bsonType": "string"
         },
@@ -43,6 +46,9 @@
             "bsonType": "bool"
         },
         "image_url": {
+            "bsonType": "string"
+        },
+        "incident_date": {
             "bsonType": "string"
         },
         "incident_id": {
