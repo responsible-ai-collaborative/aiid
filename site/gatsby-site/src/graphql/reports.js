@@ -48,6 +48,55 @@ export const DELETE_REPORT = gql`
   }
 `;
 
+export const INSERT_REPORT = gql`
+  mutation InsertReport($report: ReportInsertInput!) {
+    insertOneReport(data: $report) {
+      report_number
+    }
+  }
+`;
+
+export const LAST_REPORT_NUMBER = gql`
+  query {
+    reports(sortBy: REPORT_NUMBER_DESC, limit: 1) {
+      report_number
+    }
+  }
+`;
+
+export const REF_NUMBERS_BY_INCIDENT = gql`
+  query RefsNumbersByIncident($incidentId: Int!) {
+    incident(query: { incident_id: $incidentId }) {
+      incident_id
+      reports {
+        report_number
+        ref_number
+      }
+    }
+  }
+`;
+
+// how will this work with many to many reports to incidents?
+
+export const useGetLastRefNumber = () => {
+  const client = useApolloClient();
+
+  return async ({ incidentId }) => {
+    const {
+      data: { incident },
+    } = await client.query({ query: REF_NUMBERS_BY_INCIDENT, variables: { incidentId } });
+
+    if (!incident) {
+      return 0;
+    }
+
+    return incident.reports.reduce(
+      (last, report) => (report.ref_number > last ? report.ref_number : last),
+      0
+    );
+  };
+};
+
 // There is no built-in support for making easy array operations in Realm yet, so this is somewhat inefficient
 // https://feedback.mongodb.com/forums/923521-realm/suggestions/40765336-adding-or-removing-elements-from-array-fields
 

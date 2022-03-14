@@ -35,3 +35,11 @@ export const UPDATE_INCIDENT = gql`
     }
   }
 `;
+
+export const LAST_INCIDENT_ID = gql`
+  query {
+    incidents(sortBy: INCIDENT_ID_DESC, limit: 1) {
+      incident_id
+    }
+  }
+`;
