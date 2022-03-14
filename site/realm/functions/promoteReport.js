@@ -1,4 +1,4 @@
-exports = function(arg){
+exports = async function(arg){
 
   var submissionCollection = context.services.get("mongodb-atlas").db("aiidprod").collection("submissions");
   var incidentCollection = context.services.get("mongodb-atlas").db("aiidprod").collection("incidents");
@@ -74,21 +74,21 @@ exports = function(arg){
   var incident_id, submittedDoc, newReportNumber, newIncidentID, newRefNumber;
 
   // Get the report number, which is global, then find the incident number, if needed, then get the ref number local to the incident
-  submissionCollection.findOne({"_id": objectId}).then(res => {
+  await submissionCollection.findOne({"_id": objectId}).then(res => {
     submittedDoc = res;
     incident_id = submittedDoc["incident_id"];
-  }).then(() => {
-    incidentCollection.find({}).sort({"report_number":-1}).limit(1).next().then(res => {
+  }).then(async () => {
+    await incidentCollection.find({}).sort({"report_number":-1}).limit(1).next().then(res => {
       newReportNumber = res["report_number"];
-  }).then(() => {
+  }).then(async () => {
     if(incident_id > 0) {
       newIncidentID = incident_id;
-      var currentIncidentReports = incidentCollection.find({"incident_id": incident_id}).sort({"ref_number":-1}).limit(1).next().then(res => {
+      await incidentCollection.find({"incident_id": incident_id}).sort({"ref_number":-1}).limit(1).next().then(res => {
         newRefNumber = parseInt(res["ref_number"] + 1);
         create(submittedDoc, newIncidentID, newReportNumber, newRefNumber);
       });
     } else {
-        incidentCollection.find().sort({"incident_id":-1}).limit(1).next().then(res => {
+        await incidentCollection.find().sort({"incident_id":-1}).limit(1).next().then(res => {
           newIncidentID = parseInt(res["incident_id"] + 1);
           newRefNumber = 1;
           create(submittedDoc, newIncidentID, newReportNumber, newRefNumber);
