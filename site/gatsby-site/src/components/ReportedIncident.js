@@ -25,6 +25,7 @@ import {
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { LAST_INCIDENT_ID } from '../graphql/incidents';
 import { DELETE_SUBMISSION } from '../graphql/submissions';
+import useToastContext, { SEVERITY } from 'hooks/useToast';
 
 const ListedGroup = ({ item, keysToRender }) => {
   return (
@@ -83,6 +84,8 @@ const ReportedIncident = ({ incident: report }) => {
 
   const getLastRefNumber = useGetLastRefNumber();
 
+  const addToast = useToastContext();
+
   const addReport = async () => {
     const newReport = { ...report };
 
@@ -124,6 +127,16 @@ const ReportedIncident = ({ incident: report }) => {
     });
 
     await deleteSubmission({ variables: { _id: report._id } });
+
+    addToast({
+      message: (
+        <>
+          Succesfully promoted submission to Incident {newReport.incident_id} and Report{' '}
+          {newReport.report_number}{' '}
+        </>
+      ),
+      severity: SEVERITY.success,
+    });
 
     refetch();
   };
