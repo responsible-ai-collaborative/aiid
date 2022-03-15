@@ -63,14 +63,14 @@ describe('Edit report', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'UpdateIncidentReport',
-      'updateIncidentReport',
+      (req) => req.body.operationName == 'UpdateReport',
+      'updateReport',
       updateOneIncident
     );
 
     cy.contains('button', 'Submit').click();
 
-    cy.wait('@updateIncidentReport');
+    cy.wait('@updateReport');
 
     cy.get('div[class^="ToastContext"]')
       .contains('Incident report 10 updated successfully.')
@@ -84,17 +84,9 @@ describe('Edit report', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'deleteOneIncident',
+      (req) => req.body.operationName == 'DeleteOneReport',
       'delete',
-      {
-        data: {
-          deleteOneIncident: {
-            __typename: 'Incident',
-            _id: '5d34b8c29ced494f010ed464',
-            incident_id: 1,
-          },
-        },
-      }
+      { data: { deleteOneReport: { __typename: 'Report', report_number: 10 } } }
     );
 
     cy.contains('button', 'Delete this report').click();
