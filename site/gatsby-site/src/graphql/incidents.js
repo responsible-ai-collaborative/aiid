@@ -14,7 +14,7 @@ export const FIND_INCIDENT = gql`
 
 export const FIND_INCIDENTS = gql`
   query FindIncidents($query: IncidentQueryInput) {
-    incidents(query: $query) {
+    incidents(query: $query, limit: 999) {
       date
       incident_id
       reports {
