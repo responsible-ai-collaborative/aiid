@@ -35,6 +35,11 @@
         {
             "name": "default",
             "apply_when": {},
+            "fields": {
+                "flag": {
+                    "write": true
+                }
+            },
             "read": true,
             "insert": true,
             "delete": true,
