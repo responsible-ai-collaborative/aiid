@@ -43,3 +43,11 @@ export const LAST_INCIDENT_ID = gql`
     }
   }
 `;
+
+export const INSERT_INCIDENT = gql`
+  mutation InsertIncident($incident: IncidentInsertInput!) {
+    insertOneIncident(data: $incident) {
+      incident_id
+    }
+  }
+`;

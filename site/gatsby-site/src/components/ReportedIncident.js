@@ -23,7 +23,7 @@ import {
   useUpdateLinkedReports,
 } from '../graphql/reports';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { LAST_INCIDENT_ID } from '../graphql/incidents';
+import { INSERT_INCIDENT, LAST_INCIDENT_ID } from '../graphql/incidents';
 import { DELETE_SUBMISSION } from '../graphql/submissions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 
@@ -82,6 +82,8 @@ const ReportedIncident = ({ incident: report }) => {
 
   const [deleteSubmission] = useMutation(DELETE_SUBMISSION);
 
+  const [insertIncident] = useMutation(INSERT_INCIDENT);
+
   const getLastRefNumber = useGetLastRefNumber();
 
   const addToast = useToastContext();
@@ -113,6 +115,13 @@ const ReportedIncident = ({ incident: report }) => {
       } = await getLastIncidentId();
 
       newReport.incident_id = incident_id + 1;
+
+      const newIncident = {
+        incident_id: newReport.incident_id,
+        date: newReport.incident_date,
+      };
+
+      await insertIncident({ variables: { incident: newIncident } });
     }
 
     const lastRefNumber = await getLastRefNumber({ incidentId: newReport.incident_id });
