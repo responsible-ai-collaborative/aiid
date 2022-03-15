@@ -1,5 +1,7 @@
 const lodash = require('lodash');
 
+const config = require('../config');
+
 /**
  *
  * @param {{context: {client: import('mongodb').MongoClient}}} context
@@ -8,7 +10,7 @@ const lodash = require('lodash');
 exports.up = async ({ context: { client } }) => {
   await client.connect();
 
-  const collection = client.db('aiidprod').collection('incidents');
+  const collection = client.db(config.realm.production_db.db_name).collection('incidents');
 
   const reports = await collection.find({}).toArray();
 
@@ -17,7 +19,7 @@ exports.up = async ({ context: { client } }) => {
   let duplicateIndex = 0;
 
   for (let i = 0; i < sorted.length - 1; i++) {
-    if (sorted[i].report_number == sorted[i + 1].report_number) {
+    if (sorted[i].report_number && sorted[i].report_number == sorted[i + 1].report_number) {
       duplicateIndex = i + 1;
       break;
     }
