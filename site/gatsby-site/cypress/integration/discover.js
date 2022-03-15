@@ -70,7 +70,7 @@ describe('The Discover app', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'FindReport',
-      'fetchIncident',
+      'fetchReport',
       unflaggedReport
     );
 
@@ -78,18 +78,18 @@ describe('The Discover app', () => {
 
     cy.get('[data-cy="flag-modal"]').as('modal').should('be.visible');
 
-    cy.wait('@fetchIncident');
+    cy.wait('@fetchReport');
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'UpdateIncidentReport',
-      'updateIncident',
+      (req) => req.body.operationName == 'UpdateReport',
+      'updateReport',
       flaggedReport
     );
 
     cy.get('@modal').find('[data-cy="flag-toggle"]').click();
 
-    cy.wait('@updateIncident');
+    cy.wait('@updateReport');
 
     cy.get('@modal').find('[data-cy="flag-toggle"]').should('be.disabled');
 
