@@ -103,7 +103,7 @@ const ReportedIncident = ({ incident: report }) => {
       },
     } = await getLastReportNumber();
 
-    newReport.report_number = report_number;
+    newReport.report_number = report_number + 1;
 
     if (!newReport.incident_id) {
       const {
