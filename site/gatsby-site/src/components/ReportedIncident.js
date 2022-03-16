@@ -16,14 +16,9 @@ import RelatedIncidents from 'components/RelatedIncidents';
 import { useUserContext } from 'contexts/userContext';
 import { useSubmissionsContext } from 'contexts/submissionsContext';
 import { useMongo } from 'hooks/useMongo';
-import {
-  INSERT_REPORT,
-  LAST_REPORT_NUMBER,
-  useGetLastRefNumber,
-  useUpdateLinkedReports,
-} from '../graphql/reports';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { INSERT_INCIDENT, LAST_INCIDENT_ID } from '../graphql/incidents';
+import { INSERT_REPORT, useUpdateLinkedReports } from '../graphql/reports';
+import { gql, useLazyQuery, useMutation } from '@apollo/client';
+import { INSERT_INCIDENT } from '../graphql/incidents';
 import { DELETE_SUBMISSION } from '../graphql/submissions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 
@@ -57,6 +52,24 @@ const dateRender = [
 
 const otherDetails = ['language', 'mongodb_id'];
 
+const lastIndexesQuery = gql`
+  query LastIndexes($incidentId: Int) {
+    lastReport: reports(sortBy: REPORT_NUMBER_DESC, limit: 1) {
+      report_number
+    }
+    lastIncident: incidents(sortBy: INCIDENT_ID_DESC, limit: 1) {
+      incident_id
+    }
+    refsNumbers: incident(query: { incident_id: $incidentId }) {
+      incident_id
+      reports {
+        report_number
+        ref_number
+      }
+    }
+  }
+`;
+
 const ReportedIncident = ({ incident: report }) => {
   const { isRole } = useUserContext();
 
@@ -74,17 +87,13 @@ const ReportedIncident = ({ incident: report }) => {
 
   const updateLinkedReports = useUpdateLinkedReports();
 
-  const [getLastReportNumber] = useLazyQuery(LAST_REPORT_NUMBER);
-
-  const [getLastIncidentId] = useLazyQuery(LAST_INCIDENT_ID);
+  const [getLastIndexes] = useLazyQuery(lastIndexesQuery);
 
   const [insertReport] = useMutation(INSERT_REPORT);
 
   const [deleteSubmission] = useMutation(DELETE_SUBMISSION);
 
   const [insertIncident] = useMutation(INSERT_INCIDENT);
-
-  const getLastRefNumber = useGetLastRefNumber();
 
   const addToast = useToastContext();
 
@@ -97,24 +106,24 @@ const ReportedIncident = ({ incident: report }) => {
 
     const {
       data: {
-        reports: {
-          0: { report_number },
-        },
+        lastIncident: [{ incident_id: lastIncidentId }],
+        lastReport: [{ report_number: lastReportNumber }],
+        refsNumbers,
       },
-    } = await getLastReportNumber();
+    } = await getLastIndexes();
 
-    newReport.report_number = report_number + 1;
+    const lastRefNumber =
+      report.incident_id == '0'
+        ? 0
+        : refsNumbers.reports.reduce(
+            (last, report) => (report.ref_number > last ? report.ref_number : last),
+            0
+          );
+
+    newReport.report_number = lastReportNumber + 1;
 
     if (!newReport.incident_id) {
-      const {
-        data: {
-          incidents: {
-            0: { incident_id },
-          },
-        },
-      } = await getLastIncidentId();
-
-      newReport.incident_id = incident_id + 1;
+      newReport.incident_id = lastIncidentId + 1;
 
       const newIncident = {
         incident_id: newReport.incident_id,
@@ -123,8 +132,6 @@ const ReportedIncident = ({ incident: report }) => {
 
       await insertIncident({ variables: { incident: newIncident } });
     }
-
-    const lastRefNumber = await getLastRefNumber({ incidentId: newReport.incident_id });
 
     newReport.ref_number = lastRefNumber + 1;
 
