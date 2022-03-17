@@ -22,14 +22,17 @@ Cypress.Commands.add('login', (email, password) => {
   return cy.location('pathname').should('eq', '/');
 });
 
-Cypress.Commands.add('conditionalIntercept', (url, condition, alias, response = null) => {
-  cy.intercept(url, (req) => {
-    if (condition(req)) {
-      req.alias = alias;
+Cypress.Commands.add(
+  'conditionalIntercept',
+  (url, condition, alias, response = null, options = { method: '*' }) => {
+    cy.intercept(url, options, (req) => {
+      if (condition(req)) {
+        req.alias = alias;
 
-      if (response) {
-        req.reply(response);
+        if (response) {
+          req.reply(response);
+        }
       }
-    }
-  });
-});
+    });
+  }
+);

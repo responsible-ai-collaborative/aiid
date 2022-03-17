@@ -1,6 +1,5 @@
-import { useMutation, useApolloClient } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import gql from 'graphql-tag';
-import { UPDATE_INCIDENT } from './incidents';
 
 export const FIND_REPORT = gql`
   query FindReport($query: ReportQueryInput!) {
@@ -60,8 +59,6 @@ export const INSERT_REPORT = gql`
 // https://feedback.mongodb.com/forums/923521-realm/suggestions/40765336-adding-or-removing-elements-from-array-fields
 
 export const useUpdateLinkedReports = () => {
-  const [updateIncident] = useMutation(UPDATE_INCIDENT);
-
   const client = useApolloClient();
 
   const query = gql`
@@ -81,6 +78,17 @@ export const useUpdateLinkedReports = () => {
     }
   `;
 
+  const updateMutation = gql`
+    mutation UpdateIncident($query: IncidentQueryInput!, $set: IncidentUpdateInput!) {
+      updateOneIncident(query: $query, set: $set) {
+        incident_id
+        reports {
+          report_number
+        }
+      }
+    }
+  `;
+
   return async ({ reportNumber, incidentIds }) => {
     const {
       data: { incidentsToUnlink, incidentsToLink },
@@ -92,17 +100,22 @@ export const useUpdateLinkedReports = () => {
       },
     });
 
+    const operations = [];
+
     for (const incident of incidentsToUnlink) {
       const reportNumbers = incident.reports
         .filter((r) => r.report_number !== reportNumber)
         .map((r) => r.report_number);
 
-      await updateIncident({
+      const operation = client.mutate({
+        mutation: updateMutation,
         variables: {
           query: { incident_id: incident.incident_id },
           set: { reports: { link: reportNumbers } },
         },
       });
+
+      operations.push(operation);
     }
 
     for (const incident of incidentsToLink) {
@@ -110,12 +123,17 @@ export const useUpdateLinkedReports = () => {
 
       reportNumbers.push(reportNumber);
 
-      await updateIncident({
+      const operation = client.mutate({
+        mutation: updateMutation,
         variables: {
           query: { incident_id: incident.incident_id },
           set: { reports: { link: reportNumbers } },
         },
       });
+
+      operations.push(operation);
     }
+
+    await Promise.all(operations);
   };
 };
