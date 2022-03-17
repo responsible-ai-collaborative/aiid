@@ -110,7 +110,7 @@ const ReportedIncident = ({ incident: report }) => {
         lastReport: [{ report_number: lastReportNumber }],
         refsNumbers,
       },
-    } = await getLastIndexes();
+    } = await getLastIndexes({ variables: { incidentId: report.incident_id } });
 
     const lastRefNumber =
       report.incident_id == '0'
