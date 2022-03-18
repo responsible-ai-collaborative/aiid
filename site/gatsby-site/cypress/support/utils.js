@@ -11,8 +11,6 @@ export const getApolloClient = () => {
 
   const realmAppId = Cypress.env('realmAppId');
 
-  console.log(email, password, realmAppId);
-
   const client = new ApolloClient({
     link: new HttpLink({
       uri: `https://realm.mongodb.com/api/client/v2.0/app/${realmAppId}/graphql`,
