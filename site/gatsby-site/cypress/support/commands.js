@@ -1,3 +1,5 @@
+import { getApolloClient } from './utils';
+
 Cypress.Commands.add('disableSmoothScroll', () => {
   return cy.document().then((document) => {
     const node = document.createElement('style');
@@ -36,3 +38,9 @@ Cypress.Commands.add(
     });
   }
 );
+
+Cypress.Commands.add('query', ({ query, variables }) => {
+  const client = getApolloClient();
+
+  return cy.wrap(client.query({ query, variables }), { timeout: 8000, log: true });
+});
