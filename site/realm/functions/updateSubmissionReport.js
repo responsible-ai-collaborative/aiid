@@ -12,6 +12,12 @@ exports = function(arg){
   //title: ""
   //url: ""
 
+  function stringToEpoch(dateString) {
+    let someDate = new Date(dateString);
+    let epoch = Math.floor(someDate.getTime()/1000);
+    return epoch;
+  }
+  
   var submissionCollection = context.services.get("mongodb-atlas").db("aiidprod").collection("submissions");
 
   function update(arg, doc) {
@@ -49,7 +55,12 @@ exports = function(arg){
         date_modified: date_modified,
         description: arg["text"].substring(0, 200),
         language: "en",
-        source_domain: url.hostname
+        source_domain: url.hostname,
+        epoch_date_downloaded: stringToEpoch(arg["date_downloaded"]),
+        epoch_date_modified: stringToEpoch(date_modified),
+        epoch_date_published: stringToEpoch(arg["date_published"]),
+        epoch_incident_date: stringToEpoch(arg["incident_date"]),
+        epoch_date_submitted: stringToEpoch(date_modified)
       }
       if(arg["incident_id"].length > 0) {
         record["incident_id"] = arg["incident_id"];
