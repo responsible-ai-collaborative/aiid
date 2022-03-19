@@ -31,6 +31,11 @@ export const UPDATE_REPORT = gql`
       incident_date
       date_published
       date_downloaded
+      epoch_date_downloaded
+      epoch_date_modified
+      date_modified
+      epoch_date_published
+      epoch_incident_date
       image_url
       incident_id
       text
