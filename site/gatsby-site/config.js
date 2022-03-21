@@ -18,6 +18,7 @@ const config = {
       db_name: 'aiidprod',
       db_collection: 'incidents',
     },
+    graphqlApiKey: process.env.REALM_GRAPHQL_API_KEY,
   },
   header: {
     logo: '/logos/White_Transparent_AIID_short.png',
