@@ -1,17 +1,25 @@
-import { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 const DownloadIndex = ({ pageContext: { data } }) => {
+  const ref = useRef();
+
   useEffect(() => {
-    var a = document.createElement('a');
+    if (ref.current) {
+      const file = new Blob([JSON.stringify(data)], { type: 'text/plain' });
 
-    var file = new Blob([JSON.stringify(data)], { type: 'text/plain' });
+      ref.current.href = URL.createObjectURL(file);
 
-    a.href = URL.createObjectURL(file);
-    a.download = 'new_index.json';
-    a.click();
-  }, [data]);
+      ref.current.download = 'index.json';
+    }
+  }, [ref]);
 
-  return null;
+  return (
+    <div className="p-4">
+      <a ref={ref} href="/#" data-cy="download">
+        Download Index
+      </a>
+    </div>
+  );
 };
 
 export default DownloadIndex;

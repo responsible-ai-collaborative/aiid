@@ -105,7 +105,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
 
   const data = useStaticQuery(graphql`
     query IncidentReportFormQuery {
-      allMongodbAiidprodIncidents {
+      allMongodbAiidprodReports {
         edges {
           node {
             tags
@@ -117,7 +117,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
 
   const tags = [];
 
-  for (const node of data.allMongodbAiidprodIncidents.edges) {
+  for (const node of data.allMongodbAiidprodReports.edges) {
     if (node.node.tags) {
       for (const tag of node.node.tags) {
         if (!tags.includes(tag)) {

@@ -28,7 +28,7 @@ function FlagModalContent({ reportNumber }) {
     },
   });
 
-  const incident = data?.incident;
+  const report = data?.report;
 
   return (
     <div className="modal-body" data-cy="flag-modal">
@@ -57,9 +57,9 @@ function FlagModalContent({ reportNumber }) {
         <li>The report should not be considered an `&quot;`incident`&quot;`</li>
       </ul>
 
-      {!incident ? (
+      {!report ? (
         <Spinner size="sm" animation="border" />
-      ) : incident.flag ? (
+      ) : report.flag ? (
         <Button className="w-100" variant="danger" disabled data-cy="flag-toggle">
           Flagged
         </Button>

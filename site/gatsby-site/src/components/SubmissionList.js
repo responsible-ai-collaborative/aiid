@@ -17,7 +17,7 @@ const SubmissionList = () => {
         and are pending review by editors. Only editors may promote these records to incident
         reports in the database.
       </p>
-      <ListGroup className="mb-5">
+      <ListGroup className="mb-5" data-cy="submissions">
         {submissions.length < 1 && (
           <>
             <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" />{' '}

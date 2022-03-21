@@ -7,7 +7,7 @@ const SubmittersLeaderboard = ({ limit, className }) => {
     <StaticQuery
       query={graphql`
         query SubmittersLeaderboard {
-          allMongodbAiidprodIncidents {
+          allMongodbAiidprodReports {
             group(field: submitters) {
               field
               fieldValue
@@ -16,7 +16,7 @@ const SubmittersLeaderboard = ({ limit, className }) => {
           }
         }
       `}
-      render={({ allMongodbAiidprodIncidents: { group } }) => (
+      render={({ allMongodbAiidprodReports: { group } }) => (
         <Leaderboard
           dataHash={group}
           leaderboard={{

@@ -20,7 +20,23 @@ const getApolloCLient = (getValidAccessToken) =>
         return fetch(uri, options);
       },
     }),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Incident: {
+          keyFields: ['incident_id'],
+          fields: {
+            reports: {
+              merge(existing, incoming = []) {
+                return [...incoming];
+              },
+            },
+          },
+        },
+        Report: {
+          keyFields: ['report_number'],
+        },
+      },
+    }),
   });
 
 export const UserContextProvider = ({ children }) => {
