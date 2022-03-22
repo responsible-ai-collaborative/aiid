@@ -7,7 +7,9 @@ import Cors from 'cors';
 import { graphqlHTTP } from 'express-graphql';
 import config from '../../config';
 
-const cors = Cors();
+const cors = Cors({
+  origin: [/\.observableusercontent\.com$/],
+});
 
 async function realmExecutor({ document, variables }) {
   const query = print(document);
