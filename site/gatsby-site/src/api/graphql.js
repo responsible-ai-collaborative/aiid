@@ -1,4 +1,5 @@
-import { introspectSchema } from '@graphql-tools/wrap';
+import { introspectSchema, wrapSchema, FilterRootFields } from '@graphql-tools/wrap';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 import fetch from 'cross-fetch';
 import { print } from 'graphql';
 import { stitchSchemas } from '@graphql-tools/stitch';
@@ -29,13 +30,19 @@ let graphqlMiddleware = null;
 
 export default async function handler(req, res) {
   if (!graphqlMiddleware) {
-    const realmSubschema = {
+    const realmSubschema = wrapSchema({
       schema: await introspectSchema(realmExecutor),
       executor: realmExecutor,
-    };
+      transforms: [new FilterRootFields((operationName) => operationName != 'Mutation')],
+    });
+
+    // https://github.com/graphql/graphql-spec/issues/568
+    const dummySchema = makeExecutableSchema({
+      typeDefs: [`type Mutation { _ : Boolean }`],
+    });
 
     const gatewaySchema = stitchSchemas({
-      subschemas: [realmSubschema],
+      subschemas: [realmSubschema, dummySchema],
     });
 
     graphqlMiddleware = graphqlHTTP({ schema: gatewaySchema, graphiql: true });
