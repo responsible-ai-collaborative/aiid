@@ -7,9 +7,7 @@ import Cors from 'cors';
 import { graphqlHTTP } from 'express-graphql';
 import config from '../../config';
 
-const cors = Cors({
-  origin: [/\.observableusercontent\.com$/],
-});
+const cors = Cors();
 
 async function realmExecutor({ document, variables }) {
   const query = print(document);
@@ -59,13 +57,5 @@ export default async function handler(req, res) {
     });
   });
 
-  return new Promise((resolve, reject) => {
-    graphqlMiddleware(req, res, (result) => {
-      console.log(req);
-      if (result instanceof Error) {
-        reject(result);
-      }
-      resolve(result);
-    });
-  });
+  return graphqlMiddleware(req, res);
 }
