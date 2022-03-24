@@ -384,6 +384,18 @@ node migrator create --name increment-report-number.js --folder migrations
 
 Execution is taken care of by the [umzug](https://github.com/sequelize/umzug) package. Please refer to its documentation for more information.
 
+## Public GraphQL endpoint
+The site exposes a read-only GraphQL endpoint at `/api/graphql`, which is a reflection of the Realm's auto-generated endpoint.
+
+### GraphiQL
+The `graphiQL` UI is avaiable at:
+https://incidentdatabase.ai/api/graphql
+
+### Configuration
+Set an environment variable to an API key with query introspection permissions as:
+```
+REALM_GRAPHQL_API_KEY=xxxxxxxxxx
+```
 
 ## License
 
