@@ -204,7 +204,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
   };
 
   return (
-    <Form onSubmit={handleSubmit} className="mx-auto">
+    <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
       <TextInputGroup
         name="url"
         label="Report Address"

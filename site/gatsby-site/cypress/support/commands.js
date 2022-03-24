@@ -21,7 +21,7 @@ Cypress.Commands.add('login', (email, password) => {
 
   cy.contains('Login').click();
 
-  return cy.location('pathname').should('eq', '/');
+  return cy.location('pathname', { timeout: 8000 }).should('eq', '/');
 });
 
 Cypress.Commands.add(

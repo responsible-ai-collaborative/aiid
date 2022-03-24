@@ -32,7 +32,7 @@ describe('Cite pages', () => {
   it('Should scroll to report when clicking on a report in the timeline', () => {
     cy.visit(url);
 
-    cy.wait(3000);
+    cy.wait(4000);
 
     cy.disableSmoothScroll();
 
