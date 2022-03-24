@@ -13,6 +13,14 @@ import {
 import { FIND_INCIDENT } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 
+function stringToEpoch(dateString) {
+  let someDate = new Date(dateString);
+
+  let epoch = Math.floor(someDate.getTime() / 1000);
+
+  return epoch;
+}
+
 function EditCitePage(props) {
   const [report, setReport] = useState();
 
@@ -57,6 +65,21 @@ function EditCitePage(props) {
       if (typeof values.submitters === 'string') {
         values.submitters = values.submitters.split(',').map((s) => s.trim());
       }
+      values.epoch_date_downloaded = stringToEpoch(values.date_downloaded);
+      const today = new Date();
+
+      const dd = String(today.getDate()).padStart(2, '0');
+
+      const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+
+      const yyyy = today.getFullYear();
+
+      const todayStr = yyyy + '-' + mm + '-' + dd;
+
+      values.epoch_date_modified = stringToEpoch(todayStr);
+      values.date_modified = todayStr;
+      values.epoch_date_published = stringToEpoch(values.date_published);
+      values.epoch_incident_date = stringToEpoch(values.incident_date);
 
       const updated = { ...values, __typename: undefined };
 

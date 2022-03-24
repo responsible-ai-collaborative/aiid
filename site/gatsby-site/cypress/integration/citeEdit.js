@@ -89,7 +89,7 @@ describe('Edit report', () => {
       { data: { deleteOneReport: { __typename: 'Report', report_number: 10 } } }
     );
 
-    cy.contains('button', 'Delete this report').click();
+    cy.contains('button', 'Delete this report', { timeout: 8000 }).click();
 
     cy.wait('@delete');
 
@@ -206,6 +206,8 @@ describe('Edit report', () => {
         },
       }
     );
+
+    cy.get('form[data-cy="report"]').should('be.visible');
 
     cy.get('[name="incident_id"]').clear().type('12');
 
