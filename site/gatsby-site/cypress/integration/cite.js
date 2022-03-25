@@ -131,4 +131,12 @@ describe('Cite pages', () => {
 
     cy.get('[name="incident_date"]').should('have.value', '2014-08-14');
   });
+
+  it('should render Next and Previous incident buttons', () => {
+    cy.visit(url);
+
+    cy.contains('Next Incident').should('be.visible').should('have.attr', 'href', '/cite/11');
+
+    cy.contains('Previous Incident').should('be.visible').should('have.attr', 'href', '/cite/9');
+  });
 });
