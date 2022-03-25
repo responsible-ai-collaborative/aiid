@@ -75,7 +75,7 @@ module.exports = async ({ graphql }) => {
           incident_id
           classifications {
             Datasheets_for_Datasets
-            Publish
+            MSFT_AI_Fairness_Checklist
           }
         }
       }
