@@ -1,6 +1,6 @@
 import React from 'react';
 import Helmet from 'react-helmet';
-import { Button, Col, Container, Row } from 'react-bootstrap';
+import { Button, Card, Col, Container, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
 import Citation from 'components/cite/Citation';
@@ -19,12 +19,6 @@ const CardContainer = styled.div`
   border: 1.5px solid #d9deee;
   border-radius: 5px;
   box-shadow: 0 2px 5px 0px #e3e5ec;
-  h4 {
-    margin: 0 !important;
-  }
-`;
-
-const StatsContainer = styled.div`
   h4 {
     margin: 0 !important;
   }
@@ -113,68 +107,67 @@ function CitePage(props) {
       <Container>
         <Row>
           <Col>
-            <CardContainer className="card">
-              <div className="card-header">
-                <h4>Suggested citation format</h4>
-              </div>
-              <div className="card-body">
+            <Card>
+              <Card.Body>
+                <Card.Title as="h2">Suggested citation format</Card.Title>
                 <Citation nodes={incidentReports} incident_id={incident_id} />
-              </div>
-            </CardContainer>
+              </Card.Body>
+            </Card>
           </Col>
         </Row>
 
         <Row className="mt-4">
           <Col>
-            <StatsContainer>
-              <IncidentStatsCard {...stats} />
-            </StatsContainer>
+            <Card>
+              <Card.Body>
+                <Card.Title as="h2">Incident Stats</Card.Title>
+                <IncidentStatsCard {...stats} />
+              </Card.Body>
+            </Card>
           </Col>
         </Row>
 
         <Row className="mt-4">
           <Col>
-            <CardContainer className="card">
-              <div className="card-header">
-                <h4>Reports Timeline</h4>
-              </div>
-              <div className="card-body">
+            <Card>
+              <Card.Body>
+                <Card.Title as="h2">Reports Timeline</Card.Title>
                 <Timeline data={timeline} />
-              </div>
-            </CardContainer>
+              </Card.Body>
+            </Card>
           </Col>
         </Row>
 
         <Row className="mt-4">
           <Col>
-            <CardContainer className="card">
-              <div className="card-header">
-                <h4>Tools</h4>
-              </div>
-              <div className="card-body">
-                <Button
-                  variant="outline-primary"
-                  className="me-2"
-                  href={`/apps/submit?incident_id=${incident_id}&incident_date=${incident_date}&date_downloaded=${format(
-                    new Date(),
-                    'yyyy-MM-dd'
-                  )}`}
-                >
-                  New Report
-                </Button>
-                <Button variant="outline-primary" className="me-2" href={'/summaries/incidents'}>
-                  All Incidents
-                </Button>
-                <Button
-                  variant="outline-primary"
-                  className="me-2"
-                  href={'/apps/discover?incident_id=' + incident_id}
-                >
-                  Discover
-                </Button>
-                <BibTex nodes={incidentReports} incident_id={incident_id} />
-              </div>
-            </CardContainer>
+            <Card>
+              <Card.Body>
+                <Card.Title as="h2">Tools</Card.Title>
+                <div>
+                  <Button
+                    variant="outline-primary"
+                    className="me-2"
+                    href={`/apps/submit?incident_id=${incident_id}&incident_date=${incident_date}&date_downloaded=${format(
+                      new Date(),
+                      'yyyy-MM-dd'
+                    )}`}
+                  >
+                    New Report
+                  </Button>
+                  <Button variant="outline-primary" className="me-2" href={'/summaries/incidents'}>
+                    All Incidents
+                  </Button>
+                  <Button
+                    variant="outline-primary"
+                    className="me-2"
+                    href={'/apps/discover?incident_id=' + incident_id}
+                  >
+                    Discover
+                  </Button>
+                  <BibTex nodes={incidentReports} incident_id={incident_id} />
+                </div>
+              </Card.Body>
+            </Card>
           </Col>
         </Row>
 
@@ -214,7 +207,6 @@ function CitePage(props) {
                 authorsModal={authorsModal}
                 submittersModal={submittersModal}
                 flagReportModal={flagReportModal}
-                showDetails={true}
               />
             </Col>
           </Row>
