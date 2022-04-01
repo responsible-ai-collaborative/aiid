@@ -1,8 +1,7 @@
 {
     "data": {
-        "updateOneIncident": {
-            "__typename": "Incident",
-            "_id": "5d34b8c29ced494f010ed464",
+        "updateOneReport": {
+            "__typename": "Report",
             "authors": [
                 "K.G Orphanides"
             ],
@@ -10,8 +9,8 @@
             "date_published": "2018-03-23",
             "flag": null,
             "image_url": "https://wi-images.condecdn.net/image/ye8GWkPPMo7/crop/1020/0.5235602094240838/f/minniefinal.jpg",
-            "incident_date": "2015-05-19",
             "incident_id": 1,
+            "report_number": 10,
             "submitters": [
                 "Roman Yampolskiy"
             ],

@@ -93,9 +93,6 @@ describe('The Submit form', () => {
 
     cy.visit(url + `?${params.toString()}`);
 
-    // wait for gatsby to finish its scroll restoration stuff
-    cy.wait(1000);
-
     cy.conditionalIntercept(
       '**/functions/call',
       (req) => req.body.name == 'createReportForReview',
@@ -103,7 +100,7 @@ describe('The Submit form', () => {
       {}
     );
 
-    cy.get('button[type="submit"]').scrollIntoView().click({ force: true });
+    cy.get('button[type="submit"]', { timeout: 8000 }).scrollIntoView().click({ force: true });
 
     cy.wait('@submitReport').then((xhr) => {
       expect(xhr.request.body.arguments[0]).to.deep.include({

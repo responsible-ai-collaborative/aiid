@@ -4,10 +4,10 @@ import { Leaderboard } from './Leaderboard';
 
 const UniqueSubmittersLeaderboard = ({ limit, className }) => {
   const {
-    allMongodbAiidprodIncidents: { nodes },
+    allMongodbAiidprodReports: { nodes },
   } = useStaticQuery(graphql`
     {
-      allMongodbAiidprodIncidents {
+      allMongodbAiidprodReports {
         nodes {
           submitters
           incident_id

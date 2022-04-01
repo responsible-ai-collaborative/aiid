@@ -1,20 +1,8 @@
+import flaggedReport from '../fixtures/reports/flagged.json';
+import unflaggedReport from '../fixtures/reports/unflagged.json';
+
 describe('The Discover app', () => {
   const url = '/apps/discover';
-
-  const dummyIncident = {
-    url: '',
-    title: '',
-    authors: '',
-    submitters: '',
-    incident_date: '',
-    date_published: '',
-    date_downloaded: '',
-    image_url: '',
-    incident_id: '',
-    text: '',
-    flag: '',
-    tags: [],
-  };
 
   it('Successfully loads', () => {
     cy.visit(url);
@@ -79,37 +67,29 @@ describe('The Discover app', () => {
 
     const _id = '5d34b8c29ced494f010ed470';
 
-    cy.intercept('POST', '**/graphql', {
-      data: {
-        incident: {
-          __typename: 'Incident',
-          _id,
-          ...dummyIncident,
-          flag: false,
-        },
-      },
-    }).as('fetchIncident');
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindReport',
+      'fetchReport',
+      unflaggedReport
+    );
 
     cy.get(`[data-cy="${_id}"`).find('[data-cy="flag-button"]').click();
 
     cy.get('[data-cy="flag-modal"]').as('modal').should('be.visible');
 
-    cy.wait('@fetchIncident');
+    cy.wait('@fetchReport');
 
-    cy.intercept('POST', '**/graphql', {
-      data: {
-        updateOneIncident: {
-          __typename: 'Incident',
-          _id,
-          ...dummyIncident,
-          flag: true,
-        },
-      },
-    }).as('updateIncident');
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateReport',
+      'updateReport',
+      flaggedReport
+    );
 
     cy.get('@modal').find('[data-cy="flag-toggle"]').click();
 
-    cy.wait('@updateIncident');
+    cy.wait('@updateReport');
 
     cy.get('@modal').find('[data-cy="flag-toggle"]').should('be.disabled');
 

@@ -3,89 +3,17 @@
         "_id": {
             "bsonType": "objectId"
         },
-        "authors": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "string"
-            }
-        },
-        "cloudinary_id": {
-            "bsonType": "string"
-        },
-        "date_downloaded": {
-            "bsonType": "string"
-        },
-        "date_modified": {
-            "bsonType": "string"
-        },
-        "date_published": {
-            "bsonType": "string"
-        },
-        "date_submitted": {
-            "bsonType": "string"
-        },
-        "epoch_date_downloaded": {
-            "bsonType": "int"
-        },
-        "epoch_date_modified": {
-            "bsonType": "int"
-        },
-        "epoch_date_published": {
-            "bsonType": "int"
-        },
-        "epoch_date_submitted": {
-            "bsonType": "int"
-        },
-        "epoch_incident_date": {
-            "bsonType": "int"
-        },
-        "description": {
-            "bsonType": "string"
-        },
-        "flag": {
-            "bsonType": "bool"
-        },
-        "image_url": {
-            "bsonType": "string"
-        },
-        "incident_date": {
+        "date": {
             "bsonType": "string"
         },
         "incident_id": {
             "bsonType": "int"
         },
-        "language": {
-            "bsonType": "string"
-        },
-        "ref_number": {
-            "bsonType": "int"
-        },
-        "report_number": {
-            "bsonType": "int"
-        },
-        "source_domain": {
-            "bsonType": "string"
-        },
-        "submitters": {
+        "reports": {
             "bsonType": "array",
             "items": {
-                "bsonType": "string"
+                "bsonType": "int"
             }
-        },
-        "tags": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "string"
-            }
-        },
-        "text": {
-            "bsonType": "string"
-        },
-        "title": {
-            "bsonType": "string"
-        },
-        "url": {
-            "bsonType": "string"
         }
     },
     "title": "incident"

@@ -8,8 +8,6 @@ import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
-import { ObjectId } from 'bson';
-
 import ReadMoreText from 'components/ReadMoreText';
 import EditableListItem from 'components/EditableListItem';
 import IncidentEditModal from 'components/IncidentEditModal';
@@ -18,6 +16,11 @@ import RelatedIncidents from 'components/RelatedIncidents';
 import { useUserContext } from 'contexts/userContext';
 import { useSubmissionsContext } from 'contexts/submissionsContext';
 import { useMongo } from 'hooks/useMongo';
+import { INSERT_REPORT, useUpdateLinkedReports } from '../graphql/reports';
+import { gql, useLazyQuery, useMutation } from '@apollo/client';
+import { INSERT_INCIDENT } from '../graphql/incidents';
+import { DELETE_SUBMISSION } from '../graphql/submissions';
+import useToastContext, { SEVERITY } from 'hooks/useToast';
 
 const ListedGroup = ({ item, keysToRender }) => {
   return (
@@ -49,8 +52,26 @@ const dateRender = [
 
 const otherDetails = ['language', 'mongodb_id'];
 
-const ReportedIncident = ({ incident }) => {
-  const { user, isRole } = useUserContext();
+const lastIndexesQuery = gql`
+  query LastIndexes($incidentId: Int) {
+    lastReport: reports(sortBy: REPORT_NUMBER_DESC, limit: 1) {
+      report_number
+    }
+    lastIncident: incidents(sortBy: INCIDENT_ID_DESC, limit: 1) {
+      incident_id
+    }
+    refsNumbers: incident(query: { incident_id: $incidentId }) {
+      incident_id
+      reports {
+        report_number
+        ref_number
+      }
+    }
+  }
+`;
+
+const ReportedIncident = ({ incident: report }) => {
+  const { isRole } = useUserContext();
 
   const {
     actions: { refetch },
@@ -64,20 +85,88 @@ const ReportedIncident = ({ incident }) => {
 
   const isSubmitter = isRole('submitter');
 
-  const addReport = () => {
-    user.functions.promoteReport({ _id: new ObjectId(incident['mongodb_id']) });
+  const updateLinkedReports = useUpdateLinkedReports();
+
+  const [getLastIndexes] = useLazyQuery(lastIndexesQuery);
+
+  const [insertReport] = useMutation(INSERT_REPORT);
+
+  const [deleteSubmission] = useMutation(DELETE_SUBMISSION);
+
+  const [insertIncident] = useMutation(INSERT_INCIDENT);
+
+  const addToast = useToastContext();
+
+  const addReport = async () => {
+    const newReport = { ...report };
+
+    delete newReport.mongodb_id;
+
+    delete newReport._id;
+
+    const {
+      data: {
+        lastIncident: [{ incident_id: lastIncidentId }],
+        lastReport: [{ report_number: lastReportNumber }],
+        refsNumbers,
+      },
+    } = await getLastIndexes({ variables: { incidentId: report.incident_id } });
+
+    const lastRefNumber =
+      report.incident_id == '0'
+        ? 0
+        : refsNumbers.reports.reduce(
+            (last, report) => (report.ref_number > last ? report.ref_number : last),
+            0
+          );
+
+    newReport.report_number = lastReportNumber + 1;
+
+    if (!newReport.incident_id) {
+      newReport.incident_id = lastIncidentId + 1;
+
+      const newIncident = {
+        incident_id: newReport.incident_id,
+        date: newReport.incident_date,
+      };
+
+      await insertIncident({ variables: { incident: newIncident } });
+    }
+
+    newReport.ref_number = lastRefNumber + 1;
+
+    await insertReport({ variables: { report: newReport } });
+
+    await updateLinkedReports({
+      incidentIds: [newReport.incident_id],
+      reportNumber: newReport.report_number,
+    });
+
+    await deleteSubmission({ variables: { _id: report._id } });
+
+    addToast({
+      message: (
+        <>
+          Succesfully promoted submission to Incident {newReport.incident_id} and Report{' '}
+          {newReport.report_number}{' '}
+        </>
+      ),
+      severity: SEVERITY.success,
+    });
+
     refetch();
   };
 
-  const rejectReport = () => {
-    user.functions.deleteSubmittedDocument({ _id: new ObjectId(incident['mongodb_id']) });
+  const rejectReport = async () => {
+    await deleteSubmission({ variables: { _id: report._id } });
+
     refetch();
   };
 
   const toggleEditing = () => setIsEditing(!isEditing);
 
   const handleUpdate = async (values) => {
-    console.log('Updating report from: ', incident);
+    console.log('Updating report from: ', report);
     console.log('Updating report to:', values);
     if (typeof values['authors'] === 'string') {
       values['authors'] = values['authors'].split(',').map((s) => s.trim());
@@ -88,7 +177,7 @@ const ReportedIncident = ({ incident }) => {
     updateOne({ _id: values._id }, values, refetch);
   };
 
-  const isNewIncident = incident['incident_id'] === 0;
+  const isNewIncident = report['incident_id'] === 0;
 
   const cardSubheader = isNewIncident ? 'New Incident' : 'New Report';
 
@@ -98,7 +187,6 @@ const ReportedIncident = ({ incident }) => {
         <Row>
           <Col xs={12} sm={2} lg={2}>
             <Button
-              block="true"
               onClick={() => setOpen(!open)}
               aria-controls="collapse-incident-submission"
               aria-expanded={open}
@@ -108,32 +196,32 @@ const ReportedIncident = ({ incident }) => {
           </Col>
           <Col xs={12} sm={10} lg={10}>
             {' '}
-            {incident['title']}
+            {report['title']}
             <br />
-            <Badge bg="secondary">Inc: {incident['incident_date']}</Badge>{' '}
-            <Badge bg="secondary">Pub: {incident['date_published']}</Badge>{' '}
-            <Badge bg="secondary">Sub: {incident['date_submitted']}</Badge>{' '}
-            <Badge bg="secondary">{incident['submitters']}</Badge>
+            <Badge bg="secondary">Inc: {report['incident_date']}</Badge>{' '}
+            <Badge bg="secondary">Pub: {report['date_published']}</Badge>{' '}
+            <Badge bg="secondary">Sub: {report['date_submitted']}</Badge>{' '}
+            <Badge bg="secondary">{report['submitters']}</Badge>
           </Col>
         </Row>
       </Card.Header>
       <Collapse in={open}>
         <div id="collapse-incident-submission" className="pt-3">
-          <ListedGroup item={incident} keysToRender={leadItems} />
-          <ListedGroup item={incident} keysToRender={dateRender} />
-          <ListedGroup item={incident} keysToRender={urls} />
-          <ListedGroup item={incident} keysToRender={otherDetails} />
+          <ListedGroup item={report} keysToRender={leadItems} />
+          <ListedGroup item={report} keysToRender={dateRender} />
+          <ListedGroup item={report} keysToRender={urls} />
+          <ListedGroup item={report} keysToRender={otherDetails} />
           <Card className="m-3">
             <Card.Header>Text</Card.Header>
             <Card.Body>
-              <ReadMoreText text={incident.text} visibility={open} />
+              <ReadMoreText text={report.text} visibility={open} />
             </Card.Body>
           </Card>
           {open && (
             <Card className="m-3">
               <Card.Header>Possible related incidents</Card.Header>
               <Card.Body>
-                <RelatedIncidents incident={incident} isSubmitted={true} />
+                <RelatedIncidents incident={report} isSubmitted={true} />
               </Card.Body>
             </Card>
           )}
@@ -157,7 +245,7 @@ const ReportedIncident = ({ incident }) => {
       </Collapse>
       <IncidentEditModal
         show={isEditing}
-        incident={incident}
+        incident={report}
         onHide={toggleEditing}
         onSubmit={handleUpdate}
       />

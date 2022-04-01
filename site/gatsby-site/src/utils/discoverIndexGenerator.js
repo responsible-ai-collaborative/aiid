@@ -3,6 +3,14 @@ module.exports = async ({ graphql }) => {
     query AllIncidentsDataQuery {
       allMongodbAiidprodIncidents {
         nodes {
+          date
+          incident_id
+          reports
+        }
+      }
+
+      allMongodbAiidprodReports {
+        nodes {
           mongodb_id
           description
           authors
@@ -16,7 +24,6 @@ module.exports = async ({ graphql }) => {
           date_downloaded
           date_modified
           date_published
-          incident_date
           epoch_date_downloaded
           epoch_date_modified
           epoch_date_published
@@ -108,20 +115,22 @@ module.exports = async ({ graphql }) => {
 
   const downloadData = [];
 
-  data.allMongodbAiidprodIncidents.nodes.map((i) => {
-    const finalDataNode = {
-      objectID: i['mongodb_id'],
-      ...i,
-    };
+  for (const incident of data.allMongodbAiidprodIncidents.nodes) {
+    for (const reportNumber of incident.reports) {
+      const report = data.allMongodbAiidprodReports.nodes.find(
+        (r) => r.report_number === reportNumber
+      );
 
-    if (classificationsHash[i.incident_id]) {
-      finalDataNode.classifications = classificationsHash[i.incident_id];
+      const incidentData = {
+        objectID: report.mongodb_id,
+        incident_date: incident.date,
+        ...report,
+        classifications: classificationsHash[incident.incident_id],
+      };
+
+      downloadData.push(truncate(incidentData));
     }
+  }
 
-    downloadData.push(finalDataNode);
-  });
-
-  const truncatedData = downloadData.map(truncate);
-
-  return truncatedData;
+  return downloadData;
 };

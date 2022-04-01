@@ -33,7 +33,7 @@ const RandomIncidentsCarousel = ({ className }) => {
     <StaticQuery
       query={graphql`
         query RandomIncidentsCarousel {
-          allMongodbAiidprodIncidents(limit: 50, sort: { order: ASC, fields: id }) {
+          allMongodbAiidprodReports(limit: 50, sort: { order: ASC, fields: id }) {
             edges {
               node {
                 id
@@ -45,7 +45,7 @@ const RandomIncidentsCarousel = ({ className }) => {
           }
         }
       `}
-      render={({ allMongodbAiidprodIncidents: { edges } }) => {
+      render={({ allMongodbAiidprodReports: { edges } }) => {
         const randomIncidents = edges.filter(
           (node, index) => randomArray.includes(index) && node.image_url !== 'placeholder.svg'
         );

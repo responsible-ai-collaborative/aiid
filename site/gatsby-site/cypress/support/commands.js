@@ -1,3 +1,5 @@
+import { getApolloClient } from './utils';
+
 Cypress.Commands.add('disableSmoothScroll', () => {
   return cy.document().then((document) => {
     const node = document.createElement('style');
@@ -19,17 +21,26 @@ Cypress.Commands.add('login', (email, password) => {
 
   cy.contains('Login').click();
 
-  return cy.location('pathname').should('eq', '/');
+  return cy.location('pathname', { timeout: 8000 }).should('eq', '/');
 });
 
-Cypress.Commands.add('conditionalIntercept', (url, condition, alias, response = null) => {
-  cy.intercept(url, (req) => {
-    if (condition(req)) {
-      req.alias = alias;
+Cypress.Commands.add(
+  'conditionalIntercept',
+  (url, condition, alias, response = null, options = { method: '*' }) => {
+    cy.intercept(url, options, (req) => {
+      if (condition(req)) {
+        req.alias = alias;
 
-      if (response) {
-        req.reply(response);
+        if (response) {
+          req.reply(response);
+        }
       }
-    }
-  });
+    });
+  }
+);
+
+Cypress.Commands.add('query', ({ query, variables }) => {
+  const client = getApolloClient();
+
+  return cy.wrap(client.query({ query, variables }), { timeout: 8000, log: true });
 });
