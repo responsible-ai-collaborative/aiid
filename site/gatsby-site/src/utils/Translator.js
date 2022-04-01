@@ -20,7 +20,7 @@ class Translator {
   }
 
   async translate({ payload, to }) {
-    if (process.env.TRANSLATE_DRY_RUN !== 'false') {
+    if (process.env.TRANSLATE_DRY_RUN === 'false') {
       return this.translateClient.translate(payload, { to });
     } else {
       return [payload.map((p) => `translated-${to}-${p}`)];
@@ -111,18 +111,14 @@ class Translator {
   async run() {
     await this.mongoClient.connect();
 
-    const incidents = await this.mongoClient
-      .db('aiidprod')
-      .collection(`reports`)
-      .find({})
-      .toArray();
+    const reports = await this.mongoClient.db('aiidprod').collection(`reports`).find({}).toArray();
 
     const concurrency = 10;
 
     const q = queue(async ({ to }, done) => {
       this.reporter.log(`Translating incident reports for [${to}]`);
 
-      const translated = await this.translateIncidentCollection({ items: incidents, to });
+      const translated = await this.translateIncidentCollection({ items: reports, to });
 
       if (translated.length > 0) {
         this.reporter.log(`Translated [${translated.length}] new reports to [${to}]`);
