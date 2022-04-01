@@ -33,14 +33,14 @@ class Translator {
     const translated = [];
 
     const q = queue(async ({ entry, to }, done) => {
-      const translatedEntry = await this.translateIncident({ entry, to });
+      const translatedEntry = await this.translateReport({ entry, to });
 
       translated.push(translatedEntry);
 
       done();
     }, concurrency);
 
-    const alreadyTranslated = await this.getTranslatedIncidents({ items, language: to });
+    const alreadyTranslated = await this.getTranslatedReports({ items, language: to });
 
     for (const entry of items) {
       if (!alreadyTranslated.find((item) => item.report_number == entry.report_number)) {
@@ -55,7 +55,7 @@ class Translator {
     return translated;
   }
 
-  async getTranslatedIncidents({ items, language }) {
+  async getTranslatedReports({ items, language }) {
     const originalIds = items.map((item) => item.report_number);
 
     const incidents = this.mongoClient
@@ -72,7 +72,7 @@ class Translator {
     return translated;
   }
 
-  async saveIncidents({ items, language }) {
+  async saveTranslatedReports({ items, language }) {
     const incidents = this.mongoClient
       .db('translations')
       .collection(`incident_reports_${language}`);
@@ -84,7 +84,7 @@ class Translator {
     return incidents.insertMany(translated);
   }
 
-  async translateIncident({ entry, to }) {
+  async translateReport({ entry, to }) {
     const translatedEntry = cloneDeep(entry);
 
     const payload = [];
@@ -109,45 +109,42 @@ class Translator {
   }
 
   async run() {
-    try {
-      await this.mongoClient.connect();
+    await this.mongoClient.connect();
 
-      const incidents = await this.mongoClient
-        .db('aiidprod')
-        .collection(`reports`)
-        .find({})
-        .toArray();
+    const incidents = await this.mongoClient
+      .db('aiidprod')
+      .collection(`reports`)
+      .find({})
+      .toArray();
 
-      const concurrency = 10;
+    const concurrency = 10;
 
-      const q = queue(async ({ to }, done) => {
-        this.reporter.log(`Translating incident reports for [${to}]`);
+    const q = queue(async ({ to }, done) => {
+      this.reporter.log(`Translating incident reports for [${to}]`);
 
-        const translated = await this.translateIncidentCollection({ items: incidents, to });
+      const translated = await this.translateIncidentCollection({ items: incidents, to });
 
-        if (translated.length > 0) {
-          this.reporter.log(`Translated [${translated.length}] new reports to [${to}]`);
+      if (translated.length > 0) {
+        this.reporter.log(`Translated [${translated.length}] new reports to [${to}]`);
 
-          const result = await this.saveIncidents({ items: translated, language: to });
+        const result = await this.saveTranslatedReports({ items: translated, language: to });
 
-          this.reporter.log(`Stored [${result.insertedCount}] new reports to [${to}]`);
-        } else {
-          this.reporter.log(`No new incident reports neeed translation to [${to}]`);
-        }
-
-        done();
-      }, concurrency);
-
-      for (const { code: to } of this.languages) {
-        q.push({ to });
+        this.reporter.log(`Stored [${result.insertedCount}] new reports to [${to}]`);
+      } else {
+        this.reporter.log(`No new incident reports neeed translation to [${to}]`);
       }
 
-      if (q.length() > 0) {
-        await q.drain();
-      }
-    } finally {
-      await this.mongoClient.close();
+      done();
+    }, concurrency);
+
+    for (const { code: to } of this.languages) {
+      q.push({ to });
     }
+
+    if (q.length() > 0) {
+      await q.drain();
+    }
+    await this.mongoClient.close();
   }
 }
 

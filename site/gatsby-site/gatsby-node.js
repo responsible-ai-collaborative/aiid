@@ -28,13 +28,13 @@ const algoliasearch = require('algoliasearch');
 
 const algoliaSettings = require('./src/utils/algoliaSettings');
 
-const updateDiscoverIndexes = require('./src/utils/updateDiscoverIndexes');
-
 const Translator = require('./src/utils/Translator');
 
 const { MongoClient } = require('mongodb');
 
-const { getLanguages } = require('components/i18n/languages');
+const { getLanguages } = require('./src/components/i18n/languages');
+
+const AlgoliaUpdater = require('./src/utils/AlgoliaUpdater');
 
 const googleMapsApiClient = new GoogleMapsAPIClient({});
 
@@ -248,7 +248,19 @@ exports.onPreBootstrap = async ({ reporter }) => {
 
       translationsActivity.setStatus('Updating incidents indexes...');
 
-      await updateDiscoverIndexes.run({ reporter });
+      const algoliaClient = algoliasearch(
+        config.header.search.algoliaAppId,
+        config.header.search.algoliaAdminKey
+      );
+
+      const algoliaUpdater = new AlgoliaUpdater({
+        languages,
+        mongoClient,
+        algoliaClient,
+        reporter,
+      });
+
+      await algoliaUpdater.run();
     } catch (e) {
       reporter.warn('Error running translation scripts:', e);
     }
