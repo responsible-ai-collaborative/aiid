@@ -187,7 +187,7 @@ exports.createSchemaCustomization = ({ actions }) => {
     }
 
     type mongodbAiidprodResourcesClassifications implements Node {
-      MSFT_AI_Fairness_Checklist: String
+      MSFT_AI_Fairness_Checklist: Boolean
     }
   `;
 
