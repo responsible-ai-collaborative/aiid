@@ -44,10 +44,11 @@ describe('Download Algolia Index', () => {
 
       cy.readFile(path.join(downloadsFolder, 'index.json'), { timeout: 15000 }).then((index) => {
         expect(index).to.have.length(reports.length);
-        expect(index.find((r) => r.report_number == 19)).to.deep.equal({
-          objectID: '5d34b8c29ced494f010ed46c',
+
+        const report = index.find((r) => r.report_number == 19);
+
+        expect(report).to.deep.nested.include({
           incident_date: '2014-08-14',
-          mongodb_id: '5d34b8c29ced494f010ed46c',
           description: 'Originally published on Seattle Times on June 4, 2016 at 8:00 am',
           authors: ['Fair Workweek Initiative'],
           image_url:
