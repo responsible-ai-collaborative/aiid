@@ -30,7 +30,7 @@ describe('Edit report', () => {
     };
 
     Object.keys(values).forEach((key) => {
-      cy.get(`[name=${key}]`).should('have.value', values[key]);
+      cy.get(`[name=${key}]`, { timeout: 8000 }).should('have.value', values[key]);
     });
 
     cy.get('[class*=Typeahead] [option]').should('have.length', 0);
