@@ -23,18 +23,17 @@ exports.up = async ({ context: { client } }) => {
 
     const incidentUpdate = {
       title: report.title,
-      description: report.description,
-      'Alleged harmed or nearly harmed parties':
-        classification.classifications['Alleged harmed or nearly harmed parties'],
-      'Alleged developer of AI system':
-        classification.classifications['Alleged developer of AI system'],
-      'Alleged deployer of AI system':
-        classification.classifications['Alleged deployer of AI system'],
+      description: classification.classifications['Short Description'],
+      'Alleged harmed or nearly harmed parties': [],
+      'Alleged developer of AI system': classification.classifications['System Developer'],
+      'Alleged deployer of AI system': classification.classifications['System Developer'],
     };
+
+    console.log('Added normative fields to incident: ', classification.incident_id, incidentUpdate);
 
     await incidentsCollection.updateOne(
       { incident_id: classification.incident_id },
-      incidentUpdate
+      { $set: { ...incidentUpdate } }
     );
   }
 };

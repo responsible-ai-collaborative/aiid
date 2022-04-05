@@ -1,13 +1,22 @@
 {
     "properties": {
         "Alleged deployer of AI system": {
-            "bsonType": "string"
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
         },
         "Alleged developer of AI system": {
-            "bsonType": "string"
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
         },
         "Alleged harmed or nearly harmed parties": {
-            "bsonType": "string"
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
         },
         "_id": {
             "bsonType": "objectId"
