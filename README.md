@@ -391,11 +391,38 @@ The site exposes a read-only GraphQL endpoint at `/api/graphql`, which is a refl
 The `graphiQL` UI is avaiable at:
 https://incidentdatabase.ai/api/graphql
 
+### Sample request
+
+The endpoint can be queried using any GraphQL client, but for example, if using Apollo:
+
+```
+    import { ApolloClient, HttpLink, InMemoryCache, gql } from '@apollo/client';
+
+    const client = new ApolloClient({
+        link: new HttpLink({
+            uri: `https://incidentdatabase.ai/api/graphql`,
+        }),
+        cache: new InMemoryCache()
+    });
+
+    client.query({query: gql`{
+        reports {
+          title
+          report_number
+        }
+    }`}).then(result => console.log(result));
+
+```
+
 ### Configuration
-Set an environment variable to an API key with query introspection permissions as:
+
+The endpoint is implemented as a Gatsby function. In the context where this function runs (Netlify or your local Node), an environment variable to an Realm API Key with query introspection permission needs to be set:
+
 ```
 REALM_GRAPHQL_API_KEY=xxxxxxxxxx
 ```
+About Realm API Keys: https://www.mongodb.com/docs/realm/authentication/api-key/
+
 
 ## Contact
 
