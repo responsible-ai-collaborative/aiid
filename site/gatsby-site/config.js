@@ -24,7 +24,7 @@ const config = {
     logoMobile: '/White_Transparent_AIID.png',
     logoLink: '/',
     title: ' AI Incident Database',
-    githubUrl: 'https://github.com/PartnershipOnAI/aiid',
+    githubUrl: 'https://github.com/responsible-ai-collaborative/aiid',
     helpUrl: '',
     tweetText: '',
     social: `<li>
