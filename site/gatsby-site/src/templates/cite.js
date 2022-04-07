@@ -1,6 +1,6 @@
 import React from 'react';
 import Helmet from 'react-helmet';
-import { Button, Card, Col, Container, Row } from 'react-bootstrap';
+import { Button, Card, Col, Container, Pagination, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
 import Citation from 'components/cite/Citation';
@@ -48,7 +48,7 @@ const sortIncidentsByDatePublished = (incidentReports) => {
 
 function CitePage(props) {
   const {
-    pageContext: { incidentReports, taxonomies },
+    pageContext: { incidentReports, taxonomies, nextIncident, prevIncident },
   } = props;
 
   // meta tags
@@ -211,6 +211,15 @@ function CitePage(props) {
             </Col>
           </Row>
         ))}
+
+        <Pagination className="justify-content-between">
+          <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>
+            ‹ Previous Incident
+          </Pagination.Item>
+          <Pagination.Item href={`/cite/${nextIncident}`} disabled={!nextIncident}>
+            Next Incident ›
+          </Pagination.Item>
+        </Pagination>
 
         <CustomModal {...authorsModal} />
         <CustomModal {...submittersModal} />
