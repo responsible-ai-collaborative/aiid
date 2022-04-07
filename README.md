@@ -391,30 +391,38 @@ The site exposes a read-only GraphQL endpoint at `/api/graphql`, which is a refl
 The `graphiQL` UI is avaiable at:
 https://incidentdatabase.ai/api/graphql
 
+### Sample request
+
+The endpoint can be queried using any GraphQL client, but for example, if using Apollo:
+
+```
+    import { ApolloClient, HttpLink, InMemoryCache, gql } from '@apollo/client';
+
+    const client = new ApolloClient({
+        link: new HttpLink({
+            uri: `https://incidentdatabase.ai/api/graphql`,
+        }),
+        cache: new InMemoryCache()
+    });
+
+    client.query({query: gql`{
+        reports {
+          title
+          report_number
+        }
+    }`}).then(result => console.log(result));
+
+```
+
 ### Configuration
-Set an environment variable to an API key with query introspection permissions as:
+
+The endpoint is implemented as a Gatsby function. In the context where this function runs (Netlify or your local Node), an environment variable to an Realm API Key with query introspection permission needs to be set:
+
 ```
 REALM_GRAPHQL_API_KEY=xxxxxxxxxx
 ```
+About Realm API Keys: https://www.mongodb.com/docs/realm/authentication/api-key/
 
-## License
-
-The codebase currently carries an GNU Affero General Public License and all contributions to the project falls under the license. Contributors disclaim all rights to their contributions. Please reach out to discuss the license terms if they are causing you any issues. We selected the GNU Affero license to encourage contributing back to the project, but the license itself provides the community wide latitude in working with this codebase.
-
-Copyright 2021 Sean McGregor
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Contact
 
