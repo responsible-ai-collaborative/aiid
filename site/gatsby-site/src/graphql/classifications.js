@@ -9,6 +9,7 @@ export const FIND_RESOURCE_CLASSIFICATION = gql`
       namespace
       classifications {
         DatasheetsForDatasets
+        MSFTAIFairnessChecklist
         Publish
       }
     }

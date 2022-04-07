@@ -1,0 +1,373 @@
+{
+    "data": {
+        "allMongodbAiidprodIncidents": {
+            "nodes": [
+                {
+                    "date": "2014-08-14",
+                    "incident_id": 10,
+                    "reports": [
+                        16,
+                        17,
+                        18,
+                        19,
+                        20,
+                        21,
+                        22,
+                        23,
+                        24,
+                        25
+                    ]
+                }
+            ]
+        },
+        "allMongodbAiidprodReports": {
+            "nodes": [
+                {
+                    "mongodb_id": "5d34b8c29ced494f010ed469",
+                    "description": "Increasing numbers of low-income mothers and fathers are at the center of a new collision that pits workplace scheduling technology against the routines of parenting.",
+                    "authors": [
+                        "Jodi Kantor"
+                    ],
+                    "image_url": "https://static01.nyt.com/images/2014/08/13/us/worker-hours-1407960684740/worker-hours-1407960684740-articleLarge.jpg",
+                    "cloudinary_id": null,
+                    "language": "en",
+                    "source_domain": "nytimes.com",
+                    "text": "SAN DIEGO — In a typical last-minute scramble, Jannette Navarro, a 22-year-old Starbucks barista and single mother, scraped together a plan for surviving the month of July without setting off family or financial disaster.\nIn contrast to the joyless work she had done at a Dollar Tree store and a KFC franchise, the $9-an-hour Starbucks job gave Ms. Navarro, the daughter of a drug addict and an absentee father, the hope of forward motion. She had been hired because she showed up so many times, cheerful and persistent, asking for work, and she had a way of flicking away setbacks — such as a missed bus on her three-hour commute — with the phrase, “I’m over it.”\nJannette Navarro at Starbucks.\nNewly off public assistance, she was just a few credits shy of an associate degree in business and talked of getting a master’s degree as some of her co-workers were. Her take-home pay rarely topped $400 to $500 every two weeks; since starting in November, she had set aside $900 toward a car — her next step toward stability and independence for herself and her 4-year-old son, Gavin.\nBut Ms. Navarro’s fluctuating hours, combined with her limited resources, had also turned their lives into a chronic crisis over the clock. She rarely learned her schedule more than three days before the start of a workweek, plunging her into urgent logistical puzzles over who would watch the boy. Months after starting the job she moved out of her aunt’s home, in part because of mounting friction over the erratic schedule, which the aunt felt was also holding her family captive. Ms. Navarro’s degree was on indefinite pause because her shifting hours left her unable to commit to classes. She needed to work all she could, sometimes counting on dimes from the tip jar to make the bus fare home. If she dared ask for more stable hours, she feared, she would get fewer work hours over all.\n“You’re waiting on your job to control your life,” she said, with the scheduling software used by her employer dictating everything from “how much sleep Gavin will get to what groceries I’ll be able to buy this month.”\nLast month, she was scheduled to work until 11 p.m. on Friday, July 4; report again just hours later, at 4 a.m. on Saturday; and start again at 5 a.m. on Sunday. She braced herself to ask her aunt, Karina Rivera, to watch Gavin, hoping she would not explode in annoyance, or worse, refuse. She vowed to somehow practice for the driving test that she had promised her boyfriend she would pass by the previous month. To stay awake, she would formulate her own behind-the-counter coffee concoctions, pumping in extra shots of espresso.\nA sign with a missed deadline hanging in the kitchen.\nScheduling Chaos\nLike increasing numbers of low-income mothers and fathers, Ms. Navarro is at the center of a new collision that pits sophisticated workplace technology against some fundamental requirements of parenting, with particularly harsh consequences for poor single mothers. Along with virtually every major retail and restaurant chain, Starbucks relies on software that choreographs workers in precise, intricate ballets, using sales patterns and other data to determine which of its 130,000 baristas are needed in its thousands of locations and exactly when. Big-box retailers or mall clothing chains are now capable of bringing in more hands in anticipation of a delivery truck pulling in or the weather changing, and sending workers home when real-time analyses show sales are slowing. Managers are often compensated based on the efficiency of their staffing.\nScheduling is now a powerful tool to bolster profits, allowing businesses to cut labor costs with a few keystrokes. “It’s like magic,” said Charles DeWitt, vice president for business development at Kronos, which supplies the software for Starbucks and many other chains.\nYet those advances are injecting turbulence into parents’ routines and personal relationships, undermining efforts to expand preschool access, driving some mothers out of the work force and redistributing some of the uncertainty of doing business from corporations to families, say parents, child care providers and policy experts.\nIn Brooklyn, Sandianna Irvine often works “on call” hours at Ashley Stewart, a plus-size clothing store, rushing to make arrangements for her 5-year-old daughter if the store needs her. Before Martha Cadenas was promoted to manager at a Walmart in Apple Valley, Minn., she had to work any time the store needed; her mother “ended up having to move in with me,” she said, because of the unpredictable hours. Maria Trisler is often dismissed early from her shifts at a McDonald’s in Peoria, Ill., when the computers say sales are slow. The same sometimes happens to Ms. Navarro at Starbucks.\nBy Saturday afternoon of the Fourth of July weekend, Ms. Navarro had made it through “clopening,” closing late at night and opening again just a few hours later. But she had not yet worked up the courage to ask Ms. Rivera and Ms. Rivera’s boyfriend, Osc",
+                    "title": "Working Anything but 9 to 5",
+                    "url": "https://www.nytimes.com/interactive/2014/08/13/us/starbucks-workers-scheduling-hours.html",
+                    "date_downloaded": "2019-04-13",
+                    "date_modified": "2020-06-14",
+                    "date_published": "2014-08-14",
+                    "epoch_date_downloaded": 1555113600,
+                    "epoch_date_modified": 1592092800,
+                    "epoch_date_published": 1407974400,
+                    "epoch_incident_date": 1407974400,
+                    "epoch_date_submitted": 1559347200,
+                    "submitters": [
+                        "Catherine Olsson"
+                    ],
+                    "date_submitted": "2019-06-01",
+                    "report_number": 16,
+                    "incident_id": 10,
+                    "ref_number": 0
+                },
+                {
+                    "mongodb_id": "5d34b8c29ced494f010ed46a",
+                    "description": "Retail and restaurant workers are the focus of a raging national debate over fair hours, pay and the use of shift scheduling software from big vendors such as ADP, SAP and Kronos.",
+                    "authors": [
+                        "News Writer"
+                    ],
+                    "image_url": "https://cdn.ttgtmedia.com/visuals/searchFinancialApplications/hr_technology/financialapplications_article_004.jpg",
+                    "cloudinary_id": null,
+                    "language": "en",
+                    "source_domain": "searchhrsoftware.techtarget.com",
+                    "text": "Caitlin O'Reilly-Green, a barista at an Atlanta Starbucks, says a manager blames her erratic hours on the staff scheduling software used by the giant coffee chain.\n\"When you try to bring up issues with it, they just kind of blame it on the software,\" she said. \"'That is what the computer does.' They can't do anything about it or change the schedule. It is very frustrating.\"\nShe said the shift scheduling software often turns out hours that make no sense.\nO'Reilly-Green is among millions of retail and restaurant workers at the focus of a raging national debate over fair hours, pay and the use of shift scheduling software -- sometimes called staff scheduling software -- from big vendors like ADP, SAP and Kronos to set worker hours based on factors such as store traffic and weather.\nStarbucks uses Kronos to set schedules at her store, O'Reilly-Green said, but the company would neither confirm nor deny that it uses Kronos.\n\"I work about 25 hours a week right now,\" she said of the Starbucks barista job she has held for a little more than a year. The schedule is \"totally 100% different every week,\" she said. \"Monday is 4 to 8. On Tuesday, it can be 9 to 4. It is different every single day, every single week. There has never been any sort of consistency.\"\nShe said a year-old Starbucks policy requiring at least a 10-day advance notice for a weekly schedule is helpful, but workers, at least at her store, need more advance notice and more consistency, though they do sometimes get two weeks' notice. Starbucks provides Blue Cross Blue Shield health insurance for workers, but it can be difficult to use because doctor's appointments are tough to schedule, she said.\nO'Reilly-Green said the erratic scheduling is her biggest concern after the pay: She gets $8.10 an hour in a state where the minimum wage is $7.25.\nLaurel Harper, a spokeswoman for Starbucks, said the company is very concerned about the experience of one of its employees and welcomes the opportunity to look into the situation and fix it.\nStore managers are allowed to schedule employees up to three weeks in advance, and must post schedules at least 10 days in advance, she said.\nA year ago, the company updated its automated shift scheduling software to enable more stability and consistency of weekly hours. Only managers have access to the software. Lower-level employees can't use it to propose shift swaps, for example, or leave notes, she said.\nEmployees do have the option to change shifts with other employees if a personal conflict arises. Each employee has unique scheduling needs, and store managers do their best to accommodate all requests for time off for any appointment or personal reason, Harper said.\nActivist cites software abuse Software companies, not just retailers or other users, have a big role in helping bring about change to improve schedules and protect workers in the retail and service industries, said Erin Hurley, worker organizer at Rise Up Georgia, a grassroots organization. Software vendors should set guidelines on how their shift scheduling software is used, she said. Shift scheduling software enables certain retailers and restaurant chains to use on-call shifts and create erratic schedules for workers, according to Hurley. \"They should hold the corporations accountable if their product is being abused,\" she said. \"I would not want to have a client that is abusing my product, and that is what retailers are doing with software -- abusing it.\" Hurley received $8 an hour when she worked on and off for five years at Bath & Body Works. In her most recent stint from August 2014 to February, she generally had to be available for two to three on-call shifts a week, which forced her to keep her schedule open, even though 90% of the time she wasn't needed. Kronos Vice President Charlie DeWitt said Kronos is continuing to work with retailers, policy makers, nonprofits, and academics to address issues surrounding schedule stability, equity and employee engagement. \"We have a policy to not comment on how our customers use Kronos,\" DeWitt said by email when asked if he agreed with the Starbucks worker who said the schedules produced by Kronos make no sense and that managers need to be more involved in setting the schedule. But in a move that could benefit workers, Kronos is planning to make available in the next few months a plug-in to help companies track how often the time worked by an employee differs from the initial schedule, if they are receiving adequate hours and how often their schedule changes from week to week, DeWitt said. \"We recently met with 10 major retailers to explore enhancement opportunities for the prototype,\" DeWitt said in the email. \"The meeting was successful and most showed interest in pursuing further.\" Another vendor, Oracle, has discontinued selling shift scheduling software, a spokesman said. Congress and about 10 states are considering bills to require premium pay for \"on-call\" scheduling, or in at least some cases, for failu",
+                    "title": "Kronos shift scheduling software a grind for Starbucks worker",
+                    "url": "https://searchhrsoftware.techtarget.com/news/4500252451/Kronos-shift-scheduling-software-a-grind-for-Starbucks-worker",
+                    "date_downloaded": "2019-04-13",
+                    "date_modified": "2020-06-14",
+                    "date_published": "2015-08-27",
+                    "epoch_date_downloaded": 1555113600,
+                    "epoch_date_modified": 1592092800,
+                    "epoch_date_published": 1440633600,
+                    "epoch_incident_date": 1407974400,
+                    "epoch_date_submitted": 1559347200,
+                    "submitters": [
+                        "Catherine Olsson"
+                    ],
+                    "date_submitted": "2019-06-01",
+                    "report_number": 17,
+                    "incident_id": 10,
+                    "ref_number": 1
+                },
+                {
+                    "mongodb_id": "5d34b8c29ced494f010ed46b",
+                    "description": "On Tuesday, I wrote about Starbucks baristas and other food service workers who marched downtown at sunrise to call for fair scheduling from their employers. Workers said they often get little notice of when they're scheduled to work and their hours can vary dramatically from week to week. At Starbucks, 19-year-old barista Darrion Sjoquist told me, understaffing makes it nearly impossible to call in sick without finding someone to fill in for you, worsening the unpredictability for everyone.\n\nIn a new essay up on Medium, Sjoquist describes more about his own experience and it's worth a read.\n\nSjoquist writes about how, growing up, his mom worked at Starbucks and the two also took care of Sjoquist's niece Khaliah. Because of his mom's erratic scheduling—including the infamous \"clopening\" shifts—he ended up \"picking up a lot of the childcare responsibilities.\"\n\nAt 16, I was waking up at 4:30 a.m. to get Khaliah to her preschool by 7 a.m. I would then rush back to the bus stop to get to my high school by 8 a.m. We never knew what the next week would be like more than a 7 days in advance, sometimes less. There was no consistency. As a result it was difficult to be an involved student. I was late as often as the buses were and couldn’t regularly attend any clubs or groups. Without structure in your life, it’s difficult to form healthy habits and it’s easy to feel lost or overwhelmed.\n\nNow that Sjoquist himself is working at Starbucks, he says he frequently fills in for coworkers when they're sick because he knows how impossible it can be to find someone to cover a shift. That sometimes means closing the store one night and then getting a call around 4 a.m. to fill in for a sick coworker the next morning, effectively working the same \"clopenings\" his mom did. That whole process of struggling to find a coworker to fill in for you if you're sick, Sjoquist writes, \"breeds the mindset that being sick is your fault.\"\n\nStarbucks expects us to find staff coverage when we call in sick. You are expected to show up for work if your son has been missing for 24 hours or your grandfather has died. If you are so sick that it hurts to speak, you are expected to call and text and beg every available person and ask them to sacrifice their day off, their precious hours before work or after school to help you solve a problem neither of you had any control over.\n\nIt’s a strange practice, one that breeds the mindset that being sick is your fault. When this outlook is coupled with incredibly lean staffing, there’s an enormous amount of guilt that comes with calling in sick. When losing just one person means disaster, calling in sick feels like abandoning your friends and peers. The bottom line is that no one chooses to be sick, but Starbucks seems to punish partners for calling out. The policy is to force baristas to ask their co-workers with no notice to work at stores where they’ve never been and to work with people they do not know. For a company as innovative and considerate as Starbucks this seems like it would be a last resort, not standard procedure.\n\nToday, Sjoquist spoke at a conference about \"the future of work\" in San Francisco. \"It’s time,\" he writes, \"for Starbucks to become an industry leader on a new front: fair schedules.\"",
+                    "authors": [
+                        "Heidi Groover"
+                    ],
+                    "image_url": "placeholder.svg",
+                    "cloudinary_id": null,
+                    "language": "en",
+                    "source_domain": "thestranger.com",
+                    "text": "On Tuesday, I wrote about Starbucks baristas and other food service workers who marched downtown at sunrise to call for fair scheduling from their employers. Workers said they often get little notice of when they're scheduled to work and their hours can vary dramatically from week to week. At Starbucks, 19-year-old barista Darrion Sjoquist told me, understaffing makes it nearly impossible to call in sick without finding someone to fill in for you, worsening the unpredictability for everyone.\n\nIn a new essay up on Medium, Sjoquist describes more about his own experience and it's worth a read.\n\nSjoquist writes about how, growing up, his mom worked at Starbucks and the two also took care of Sjoquist's niece Khaliah. Because of his mom's erratic scheduling—including the infamous \"clopening\" shifts—he ended up \"picking up a lot of the childcare responsibilities.\"\n\nAt 16, I was waking up at 4:30 a.m. to get Khaliah to her preschool by 7 a.m. I would then rush back to the bus stop to get to my high school by 8 a.m. We never knew what the next week would be like more than a 7 days in advance, sometimes less. There was no consistency. As a result it was difficult to be an involved student. I was late as often as the buses were and couldn’t regularly attend any clubs or groups. Without structure in your life, it’s difficult to form healthy habits and it’s easy to feel lost or overwhelmed.\n\nNow that Sjoquist himself is working at Starbucks, he says he frequently fills in for coworkers when they're sick because he knows how impossible it can be to find someone to cover a shift. That sometimes means closing the store one night and then getting a call around 4 a.m. to fill in for a sick coworker the next morning, effectively working the same \"clopenings\" his mom did. That whole process of struggling to find a coworker to fill in for you if you're sick, Sjoquist writes, \"breeds the mindset that being sick is your fault.\"\n\nStarbucks expects us to find staff coverage when we call in sick. You are expected to show up for work if your son has been missing for 24 hours or your grandfather has died. If you are so sick that it hurts to speak, you are expected to call and text and beg every available person and ask them to sacrifice their day off, their precious hours before work or after school to help you solve a problem neither of you had any control over.\n\nIt’s a strange practice, one that breeds the mindset that being sick is your fault. When this outlook is coupled with incredibly lean staffing, there’s an enormous amount of guilt that comes with calling in sick. When losing just one person means disaster, calling in sick feels like abandoning your friends and peers. The bottom line is that no one chooses to be sick, but Starbucks seems to punish partners for calling out. The policy is to force baristas to ask their co-workers with no notice to work at stores where they’ve never been and to work with people they do not know. For a company as innovative and considerate as Starbucks this seems like it would be a last resort, not standard procedure.\n\nToday, Sjoquist spoke at a conference about \"the future of work\" in San Francisco. \"It’s time,\" he writes, \"for Starbucks to become an industry leader on a new front: fair schedules.\"",
+                    "title": "\"I Hope That Howard Schultz Hears My Story\": A Starbucks Barista on Why He's Fighting for Fair Scheduling",
+                    "url": "https://www.thestranger.com/blogs/slog/2015/11/12/23142113/i-hope-that-howard-schultz-hears-my-story-a-starbucks-barista-on-why-hes-fighting-for-fair-scheduling",
+                    "date_downloaded": "2019-04-13",
+                    "date_modified": "2020-06-14",
+                    "date_published": "2015-11-12",
+                    "epoch_date_downloaded": 1555113600,
+                    "epoch_date_modified": 1592092800,
+                    "epoch_date_published": 1447286400,
+                    "epoch_incident_date": 1407974400,
+                    "epoch_date_submitted": 1559347200,
+                    "submitters": [
+                        "Catherine Olsson"
+                    ],
+                    "date_submitted": "2019-06-01",
+                    "report_number": 18,
+                    "incident_id": 10,
+                    "ref_number": 2
+                },
+                {
+                    "mongodb_id": "5d34b8c29ced494f010ed46c",
+                    "description": "Originally published on Seattle Times on June 4, 2016 at 8:00 am",
+                    "authors": [
+                        "Fair Workweek Initiative"
+                    ],
+                    "image_url": "http://static1.squarespace.com/static/556496efe4b02c9d26fdf26a/5564cf12e4b0e2aacd5c90bf/575d6f189f7266835093d178/1465776979746/5f134984-0e51-11e6-9acf-68c45ca472eb-1020x655.jpg?format=1500w",
+                    "cloudinary_id": null,
+                    "language": "en",
+                    "source_domain": "fairworkweek.org",
+                    "text": "Originally published on Seattle Times on June 4, 2016 at 8:00 am\nThe company took a lot of heat in 2014 when The New York Times described scheduling practices that made some employees miserable. But the coffee giant says its policies and software have changed in important ways since then.\nStarbucks says it gives employees more advance notice and makes sure of more rest between shifts than it did when a 2014 New York Times storydescribed scheduling practices that made some workers miserable.\nThe coffee company now requires U.S. store managers to post workers’ schedules 14 days in advance, up from 10 previously. Its scheduling software now prevents managers from booking employees to work shifts with less than an eight-hour break in between, Starbucks says.\nThe company says it has never used on-call scheduling and has always tried to give available hours to part-time employees who request them. It offers full benefits to employees who work 20 hours a week or more.\nThe company’s contact center, where employees call in with concerns, now has a special team to deal with scheduling issues. Fewer than 3 percent of those calls concern scheduling, said spokeswoman Jaime Riley.\nStill, implementation appears to be uneven.\nIlana Greenberg, a barista at the Starbucks drive-through on Elliott Avenue West in Seattle, says that at her store the manager is good about getting schedules out to employees two weeks in advance.\nBut she’s heard from baristas at other stores who’ve gotten their schedules only three to four days in advance, and employees who’ve worked “clopening” shifts or “doubles” — working two shifts a day at different stores.\nGreenberg, who volunteers as an organizer with the union-backed Working Washington, acknowledges that some of those instances are likely due to the workers’ own choices. But sometimes, she says, “The manager will come up to a partner [employee] and say, ‘Can you work this shift?’ and it’s clear from phrasing and tone of voice that you don’t really have the option of saying no.”\nStarbucks acknowledges that sometimes, practice doesn’t always meet company policy. “We’re not perfect,” said spokeswoman Riley. “We know there’s still work to be done.”",
+                    "title": "The Seattle Times: Starbucks says its scheduling practices have improved",
+                    "url": "http://www.fairworkweek.org/news-bedford/starbucks-schedule",
+                    "date_downloaded": "2019-04-13",
+                    "date_modified": "2020-06-14",
+                    "date_published": "2016-06-04",
+                    "epoch_date_downloaded": 1555113600,
+                    "epoch_date_modified": 1592092800,
+                    "epoch_date_published": 1464998400,
+                    "epoch_incident_date": 1407974400,
+                    "epoch_date_submitted": 1559347200,
+                    "submitters": [
+                        "Catherine Olsson"
+                    ],
+                    "date_submitted": "2019-06-01",
+                    "report_number": 19,
+                    "incident_id": 10,
+                    "ref_number": 3
+                },
+                {
+                    "mongodb_id": "5d34b8c29ced494f010ed46d",
+                    "description": "Starbucks exec addressed managers ahead of New York Times story about scheduling issues.",
+                    "authors": [
+                        "Aaron Smith"
+                    ],
+                    "image_url": "https://i2.cdn.turner.com/money/dam/assets/150924110035-starbucks-barista-780x439.jpg",
+                    "cloudinary_id": null,
+                    "language": "en",
+                    "source_domain": "money.cnn.com",
+                    "text": "An internal memo from a Starbucks executive this week urged store managers to \"go the extra mile\" to improve workers' schedules.\nThe letter was distributed on Tuesday and refers to a New York Times story that was set to be published the following day titled, \"Starbucks falls short after pledging better labor practices.\"\nThe Times story referred to a survey by the nonprofit advocacy group Center for Popular Democracy.\nBased on interviews with 200 baristas in 37 states, the survey says Starbucks \"is not living up to its commitment to provide predictable, sustainable schedules to its workforce.\"\nIn 2014, Starbucks said it was changing its policies telling managers to post schedules at least a week in advance and not make store employees work an opening and closing shift back-to-back.\nIn this week's memo, Cliff Burrows, Starbucks (SBUX) group president of the U.S. and Americas, said the findings of the new survey \"suggest\" that neither commitment was being met -- \"contrary to the expectations we have in place.\"\nIn his letter, Burrows urges managers to improve scheduling for coffee baristas, who the company calls partners.\n\"To our store managers, I want to stress that as we continue to evolve and improve the usability of our system, we have to go the extra mile to ensure partners have a consistent schedule -- free of back-to-back close and open shifts that are less than 8 hours apart -- that is posted 2 weeks in advance,\" he wrote.",
+                    "title": "Starbucks vows to do more to ease barista schedules",
+                    "url": "https://money.cnn.com/2015/09/24/news/companies/starbucks-schedules/index.html",
+                    "date_downloaded": "2019-04-13",
+                    "date_modified": "2020-06-14",
+                    "date_published": "2015-09-24",
+                    "epoch_date_downloaded": 1555113600,
+                    "epoch_date_modified": 1592092800,
+                    "epoch_date_published": 1443052800,
+                    "epoch_incident_date": 1407974400,
+                    "epoch_date_submitted": 1559347200,
+                    "submitters": [
+                        "Catherine Olsson"
+                    ],
+                    "date_submitted": "2019-06-01",
+                    "report_number": 20,
+                    "incident_id": 10,
+                    "ref_number": 4
+                },
+                {
+                    "mongodb_id": "5d34b8c29ced494f010ed46e",
+                    "description": "A 2015 nationwide survey of Starbucks workers reveals that the company is not living up to its commitment to provide predictable, sustainable schedules to its workforce. Starbucks’ frontline employees bear the brunt of the management imperative to minimize store labor costs, which takes precedence over attempts to stabilize work hours, provide healthy schedules, and to ensure employees have real input into their working conditions. In 2014, a New York Times investigation into Starbucks’ scheduling practices revealed a troubling disconnect between a company whose mission is “to inspire and nurture the human spirit”...",
+                    "authors": [
+                        "Aditi Sen",
+                        "Carrie Gleason"
+                    ],
+                    "image_url": "placeholder.svg",
+                    "cloudinary_id": null,
+                    "language": "en",
+                    "source_domain": "populardemocracy.org",
+                    "text": "A 2015 nationwide survey of Starbucks workers reveals that the company is not living up to its commitment to provide predictable, sustainable schedules to its workforce. Starbucks’ frontline employees bear the brunt of the management imperative to minimize store labor costs, which takes precedence over attempts to stabilize work hours, provide healthy schedules, and to ensure employees have real input into their working conditions. In 2014, a New York Times investigation into Starbucks’ scheduling practices revealed a troubling disconnect between a company whose mission is “to inspire and nurture the human spirit” and work schedules that left its employees exhausted, stressed, and struggling to care for their families and get ahead. Starbucks responded quickly, committing to honor employee availability, deliver weekly schedules with greater notice, and ensure adequete rest between shifts. One year later, Starbucks employees across the country report that little has changed for them. Many Starbucks scheduling policies fail to reflect the company’s human-focused values, while other policies designed to promote sustainable schedules have been implemented inconsistently",
+                    "title": "THE GRIND: Striving for Scheduling Fairness at Starbucks",
+                    "url": "http://populardemocracy.org/sites/default/files/The%2BGrind.pdf",
+                    "date_downloaded": "2019-04-13",
+                    "date_modified": "2020-06-14",
+                    "date_published": "2015-09-01",
+                    "epoch_date_downloaded": 1555113600,
+                    "epoch_date_modified": 1592092800,
+                    "epoch_date_published": 1441065600,
+                    "epoch_incident_date": 1407974400,
+                    "epoch_date_submitted": 1559347200,
+                    "submitters": [
+                        "Catherine Olsson"
+                    ],
+                    "date_submitted": "2019-06-01",
+                    "report_number": 21,
+                    "incident_id": 10,
+                    "ref_number": 5
+                },
+                {
+                    "mongodb_id": "5d34b8c29ced494f010ed46f",
+                    "description": "Workforce management software helps companies take the guesswork out of scheduling. Through analysis of different data streams, and by using historical data and forecast modules, it can optimise schedules for each day of the year to ensure companies are working efficiently and productively in order to maximise profits.",
+                    "authors": [
+                        "Tommy Tonkins"
+                    ],
+                    "image_url": "http://www.quinyx.com/hubfs/Blog/Images/starbucks-scheduling.png#keepProtocol",
+                    "cloudinary_id": null,
+                    "language": "en",
+                    "source_domain": "quinyx.com",
+                    "text": "The best schedules deliver two things; they ensure a business maximises profit while at the same time keeping the workforce happy and motivated.\nAt first glance, these two outcomes seem to be coming from opposite sides of the spectrum. To maximise profits businesses have to adopt schedules that are dynamic, flexible and efficient. This type of scheduling doesn’t always work in harmony with employees who crave stability and regular working hours.\nWorkforce management software helps companies take the guesswork out of scheduling. Through analysis of different data streams, and by using historical data and forecast modules, it can optimise schedules for each day of the year to ensure companies are working efficiently and productively in order to maximise profits.\nFor many businesses, especially retailers and hospitality businesses, the workforce is the biggest controllable cost and being able to optimise it through automated scheduling is a dream come true for managers. They are able to react to instant demands, seasonal changes and sales patterns with a few clicks of the mouse to create the perfect schedule.\nHowever, as Starbucks found in the USA, a constantly changing schedule dictated by the management and by software can make it miserable for workers. The sheer unpredictability of the scheduling, with hours ranging from 40 to 15 to zero for some employees, meant it was impossible for workers to plan their lives.\nStriking a balance\nA group of Starbucks employees set up an online petition last year calling on the company to change their scheduling practices. They said: ‘We often get our schedules less than a week in advance — that’s not nearly enough to plan for childcare, another job, or school… or enough to cover our bills.\n‘There’s no reason why our work schedules can’t be as consistent as our loyal customers who line up for their morning Venti soy latte.’\nAfter a feature in The New York Times, Starbucks agreed to revise its policy of the way it schedules its 130,000 workers, realising the importance in having a happy and motivated workforce.\nThey have two needs they need to fulfil; the need to have a schedule that delivers for the business and the need to take care of their employees. In order to do this, they have to use the same workforce management software to empower their staff to control their own schedules.\nAs noted in the Harvard Business Review: “Ultimately, the success of scheduling systems depends on whether they serve as tools for or against the workers.\n“In many ways, data-driven scheduling software is attractive to retailers because it gives them unprecedented transparency. But the ultimate success of these systems depends on this same transparency being available to employees as well.”\nA new approach\nThis is why Quinyx will tell all employees when there are available shifts, allowing them to claim the shifts that fit in best for them and choose the hours they work. Quinyx will optimise the schedule and, through integrated and effective communication, employees are then able to claim or swap available shifts with their co-workers.\nWorkers are enabled. They have control over their own destiny and because they are cared about and looked after they deliver more and work harder. The results we’ve seen from companies using Quinyx speak for themselves.\nThis approach to scheduling is revolutionising the way businesses around the world are operating. But don’t just take our word for it. Get in touch today and see how we can help you do the same.",
+                    "title": "How Starbucks started taking their schedules seriously…and why you should too",
+                    "url": "https://www.quinyx.com/blog/how-starbucks-started-taking-their-schedules-seriously-and-why-you-should-too",
+                    "date_downloaded": "2019-04-13",
+                    "date_modified": "2020-06-14",
+                    "date_published": "2016-01-01",
+                    "epoch_date_downloaded": 1555113600,
+                    "epoch_date_modified": 1592092800,
+                    "epoch_date_published": 1451606400,
+                    "epoch_incident_date": 1407974400,
+                    "epoch_date_submitted": 1559347200,
+                    "submitters": [
+                        "Catherine Olsson"
+                    ],
+                    "date_submitted": "2019-06-01",
+                    "report_number": 22,
+                    "incident_id": 10,
+                    "ref_number": 6
+                },
+                {
+                    "mongodb_id": "5d34b8c29ced494f010ed470",
+                    "description": "Some employees at the coffee chain say it isn't living up to promises to improve the company's labor practices",
+                    "authors": [
+                        "Aimee Picchi"
+                    ],
+                    "image_url": "https://cbsnews1.cbsistatic.com/hub/i/r/2015/03/17/01a38576-5108-40f7-8df8-5416164ed878/thumbnail/1200x630/ca8d35fe6bc065b5c9a747d92bc6d94c/154211248.jpg",
+                    "cloudinary_id": null,
+                    "language": "en",
+                    "source_domain": "cbsnews.com",
+                    "text": "For Starbucks (SBUX) barista Kylei Weisse, working at the coffee chain helps him secure health insurance and some extra money while he studies at Georgia Perimeter College. What it doesn't provide is the kind of stable schedule that the company promised its workers last year.\n\"It's the wild inconsistency\" of the hours that's a problem, Weisse, 32, said. \"We're supposed to get them 10 days in advance, which often happens, but there's no guarantee. If our manager doesn't get it to us on time, we just have to deal with it.\"\nThat became a problem recently when Weisse's manager gave him only a few days notice on his work hours, which ended up conflicting with an anatomy and physiology exam at his college. Weisse ended up paying another worker $20 to take his shift so he could take the exam.\nThe short notice is especially frustrating because of Starbucks' vow last year to post employees' schedules at least 10 days in advance, as well as the company's insistence that workers provide at least one-month notice when they need to take a day off.\nWhat's behind Starbucks price increases?\nWeisse isn't alone in complaining that Starbucks isn't living up to its promises to overhaul its labor practices for its roughly 130,000 baristas. That vow followed an article last year by The New York Times that detailed how workers were struggling to manage childcare and other obligations when the company provided only a few days notice about their schedules.\nAbout half of roughly 200 Starbucks baristas in a recent survey said they are still receiving their schedule with less than one week's notice. Others also reported being asked to handle \"clopens,\" split shifts in which employees work a closing shift late into the evening and then an early opening shift the following morning. The company last year promised to end the practice.\nOf course, Starbucks isn't alone in using \"just-in-time\" scheduling, with the retail and restaurant industry increasingly turning to software that allows them to change work schedules at the last minute, depending on whether business picks up or slows down. But it is Starbucks that has become a lightning rod on the issue given its vows to improve how it treats employees and its own emphatic claims to valuing workers, whom it labels \"partners.\"\n\"Starbucks has the values and wants to do right by their employees,\" said Carrie Gleason, director of the Fair Workweek Initiative at the Center for Popular Democracy, an advocacy group focused on workers'rights, and a co-author of the group's new report on the company's labor practices. \"However, since last year when the company recognized there was a serious problem with the way it scheduled workers and pledged to reform, still so many of the same issues persist.\"\nStarbucks didn't respond to requests for comment on the study or on baristas' reports of labor practices that are failing to meet the company's stated goals.\nIn an internal memo this week published by Time, Starbucks executive Cliff Burrows wrote that the company couldn't validate the survey, but added that \"the findings suggest, contrary to the expectations we have in place, that some partners are receiving their schedules less than one week in advance and that there is a continuing issue with some partners working a close and then an opening shift the following morning.\" He asks store managers \"to go the extra mile to ensure partners have a consistent schedule.\"\nStarbucks ends \"race together\" campaign amid public backlash\nTo be sure, some Starbucks workers are receiving at least 10 days notice on their work hours, with the survey finding that about one-third receive two weeks notice and another 18 percent get their schedules three weeks in advance. But that leaves almost half of workers who only receive one week's notice, making it more difficult from them manage other obligations, such as school, family commitments or other jobs.\nClopens remain a problem, as well. About 60 percent of workers who have to handle a clopen receive seven or fewer hours of rest between a closing and an opening shift, the study found.\nThat's prompted one former Starbucks employee to start a petition to end the practice of scheduling clopens. Ciara Moran noted in her petition that she sometimes was only able to get four or five hours of sleep on the days she was scheduled for clopens. She said she quit her job because she doubted whether it was possible to get ahead given the demands on workers.\nEven if Starbucks stuck with its policy of providing eight hours between shifts, that's not enough time, especially given that many workers in the service sector have long commutes, the study said.\nAnother issue singled out by the report is Starbucks' practices on sick time. Since paid time off is only available to workers with at least a year on the job, about 40 percent of employees in the survey said they had dealt with barriers in taking sick days.\nIn a perfect world, Weisse said he'd like to receive his schedule either a month or a",
+                    "title": "​Is Starbucks shortchanging its baristas?",
+                    "url": "https://www.cbsnews.com/news/is-starbucks-shortchanging-its-baristas/",
+                    "date_downloaded": "2019-04-13",
+                    "date_modified": "2020-06-14",
+                    "date_published": "2015-09-24",
+                    "epoch_date_downloaded": 1555113600,
+                    "epoch_date_modified": 1592092800,
+                    "epoch_date_published": 1443052800,
+                    "epoch_incident_date": 1407974400,
+                    "epoch_date_submitted": 1559347200,
+                    "submitters": [
+                        "Catherine Olsson"
+                    ],
+                    "date_submitted": "2019-06-01",
+                    "report_number": 23,
+                    "incident_id": 10,
+                    "ref_number": 7
+                },
+                {
+                    "mongodb_id": "5d34b8c29ced494f010ed471",
+                    "description": "Baristas at the coffee chain worry the company won't fulfill its promise to improve working conditions",
+                    "authors": [
+                        "Alain Sherter"
+                    ],
+                    "image_url": "https://cbsnews2.cbsistatic.com/hub/i/r/2014/09/25/aa2708c1-7e84-4573-8f79-add177a690cd/thumbnail/1200x630/2505bd91ab74f8e2ce3e7c6f8a5d77f3/starbucks.jpg",
+                    "cloudinary_id": null,
+                    "language": "en",
+                    "source_domain": "cbsnews.com",
+                    "text": "Liberte Locke, a 32-year-old \"barista\" at a Starbucks (SBUX) in New York City, is fed up.\n\"Starbucks' attitude is that there's always someone else who can do the job,\" she said in running through her complaints about life at the java giant.\nIf that isn't necessarily the consensus among Starbucks workers, interviews with nine current and former baristas at the company make clear it's not an isolated opinion, either. Even those who say they like their job paint a picture of a business that underpays front-line workers, enforces work rules arbitrarily, and too often fails to strike a balance between corporate goals and employee needs.\nOf course, such complaints are nothing new in retail, where low pay and erratic schedules are the norm. But by its own account, Starbucks is no ordinary company and is ostensibly a far cry from the fast-food outlets now facing a nationwide uprising by employees tired of working for peanuts.\nThat's evident in the company's recruitment pitch. Starbucks invites job-seekers to \"become a part of something bigger and inspire positive change in the world,\" describing it as a chance to discover a \"deep sense of purpose.\"\nDamage control\nThat image suffered a serious blow last month after The New York Times vividly chronicled a Starbucks worker struggling with the company's scheduling practices. The story, which centered on a 22-year-old barista and single mother, amounted to a public relations nightmare for Starbucks. Perhaps not coincidentally, within days of the story's publication top executives were promising reform.\nIn a memo to employees earlier this month, for instance, Chief Operating Officer Troy Alstead vowed to \"transform the U.S. partner experience,\" referring to Starbucks' more than 130,000 baristas. Inviting worker feedback, he said Starbucks will examine its approach to employee pay, revisit its dress code, make it easier for people to ask for time off, and consider other changes aimed at helping baristas balance work and their personal lives.\nAmong other changes, the company said it would end the practice of \"clopening,\" when an employee responsible for closing a store late at night is also assigned to open it early in the morning.\n\"We recognize that we can do more for our partners who wear the apron every day,\" he wrote.\nSome baristas did not feel this August memo from Starbucks went far enough in proposing ways to improve work conditions, so they marked it up with their own ideas. CBS\nAlthough Starbucks workers welcome this pledge to respect the apron, they fear the company is more intent on dousing the PR flames than on genuinely improving employees' experience. After the retailer last month sent an email to workers outlining possible solutions to the kind of scheduling problems and related issues detailed by the Times, a group of baristas gave the proposal a C- and posted online a marked-up version of the memo listing their own demands (see image above).\n\"We hope you're ready for a commitment to give us schedules that don't mess with taking care of kids, going to school or holding onto that second job we need because Sbux wages don't make ends meet,\" wrote the baristas, who are working with a union-backed labor group, the Center for Popular Democracy.\nRetail jungle\nDespite the recent media focus on Starbucks, the company's labor practices are generally no worse than those of many large retailers. In some ways they're better, with the company offering health care to part-time, as well as full-time, workers; unusually generous 401(k) matching contributions; annual stock grants to employees; and tuition reimbursement.\nStarbucks highlights such benefits as an example of its commitment to employees. \"Sharing success with one another has been core to the company's heritage for more than 40 years,\" Alstead said in the September memo.\nMeanwhile, some baristas say they enjoy their work and feel valued by Starbucks. \"It's a decent place to work, and my manager and co-workers are great,\" said one employee who asked not to be identified.\nBut other current and former workers claim Starbucks has changed in recent years, saying that corporate leaders' intense focus on slashing costs has short-circuited its professed commitment to workers. Mostly, they say Starbucks doesn't listen to employees and even punishes those who identify problems.\n\"The biggest problem is that baristas don't have a voice,\" said Sarah Madden, a former Starbucks barista who left the company this spring after two years with the coffee vendor. \"They can't speak to issues that they know exist. Workers know how to fix them, but when [they] speak up there are serious repercussions -- your hours get cut, you're transferred to another store or isolated from other people.\"\nEmployees interviewed for this article said one result of Starbucks' cost-containment push is that stores are frequently understaffed, hurting customer service and forcing managers to scramble to find staff. That problem is common across the big-box s",
+                    "title": "For some Starbucks workers, job leaves bitter taste",
+                    "url": "https://www.cbsnews.com/news/for-some-starbucks-workers-job-leaves-bitter-taste/",
+                    "date_downloaded": "2019-04-13",
+                    "date_modified": "2020-06-14",
+                    "date_published": "2014-09-26",
+                    "epoch_date_downloaded": 1555113600,
+                    "epoch_date_modified": 1592092800,
+                    "epoch_date_published": 1411689600,
+                    "epoch_incident_date": 1407974400,
+                    "epoch_date_submitted": 1559347200,
+                    "submitters": [
+                        "Catherine Olsson"
+                    ],
+                    "date_submitted": "2019-06-01",
+                    "report_number": 24,
+                    "incident_id": 10,
+                    "ref_number": 8
+                },
+                {
+                    "mongodb_id": "5d34b8c29ced494f010ed472",
+                    "description": "Kronos, a workforce management company, thinks giving managers more data can make scheduling practices more fair. But ultimately, the underpinnings of the problem may go deeper than the algorit",
+                    "authors": [
+                        "Caroline O'Donovan"
+                    ],
+                    "image_url": "https://img.buzzfeed.com/buzzfeed-static/static/2015-06/2/17/campaign_images/webdr02/kronos-makes-changes-to-software-accused-of-produ-2-14421-1433279634-2_dblbig.jpg",
+                    "cloudinary_id": null,
+                    "language": "en",
+                    "source_domain": "buzzfeednews.com",
+                    "text": "In April, the New York attorney general's office launched an investigation into the scheduling practices of 13 national retail chains, distributing a letter to the Gap, Target, J.C. Penney, and 10 other companies. The letter asked, among other things, whether these companies' store managers use software manufactured by a company called Kronos to algorithmically generate schedules.\nA few months later, Kronos was also featured prominently in an article published by the New York Times about the ill effects of erratic scheduling on Starbucks employees, especially one particular family. In a follow-up piece, the author, Jodi Kantor, points directly to Kronos' scheduling software as the root of the problem. \"I saw that her life was coming apart and that the Starbucks software had contributed to the crisis,\" Kantor wrote of one of the story's subjects.\nThe piece's argument centered around the financial and scheduling unpredictability engendered by platforms like Kronos. When you don't know if your shift might be canceled, if or when you'll be called in, or what your hours will look like next week or the week after, it becomes very difficult to make even the most\nbasic plans for your future. This can have devastating long-term financial and emotional impacts on workers. According to a recent study by the Economic Policy Institute, a left-leaning think tank in Washington, D.C., 17 percent of the American workforce is negatively affected by unstable schedules.\nFor their part, Kronos representatives argue that the algorithm is far from the root of the problem. \"The populist view is that scheduling is evil, in that it's causing erratic schedules for employees, and so forth,\" Charlie DeWitt, vice president of business development for Kronos, told BuzzFeed News. \"The fact of the matter is it's an algorithm. It does whatever you want it to do.\"\nAnd you don't necessarily need to work for Kronos to believe that in a competitive retail climate, the problem is more complicated than technology alone. Lonnie Golden, a Penn State economist who has extensively studied the impact of erratic scheduling, acknowledges that Kronos' product itself is less to blame than the managers who make staffing decisions based on the data it provides. \"It's not necessarily the technology that's responsible for minimum to no advance notice,\" he said. \"It's the way in which it's applied.\"\nBut, he added, \"where there's a technology problem, there's usually a technology solution.\" And while Kronos maintains that managers, and not the software, are responsible for early dismissals and last-minute shift cancellations, the company is nonetheless pursuing some technological solutions.\nKronos wants to help managers better understand how scheduling adjustments affect workers and, ultimately, the bottom line. Though the company maintains that its software doesn't produce the kind of erratic schedules that hurt wage workers, DeWitt said there was nonetheless an interest in figuring out why that perception existed — and, if possible, fixing it.\nTo that end, earlier this month at a retail conference in Philadelphia, the company announced that it's working on a new plug-in that will give managers better insight into workers' schedule stability, equity of hours worked among employees, and the consistency of schedules from week to week. In addition, Kronos is improving a feature meant to help give employees more control over their schedules: Though the software already incorporates employee availability and preferences into its scheduling calculations, improvements to a shift-swapping feature on its employee-facing web and mobile apps will theoretically allow employees to work around conflicts among themselves.\nGolden said increased employee input and control would be a good thing. But some retailers, DeWitt pointed out, are uncomfortable making workers use an app outside of work hours; indeed, the practice could be seen as a shift of management responsibilities onto lower-paid individuals.\nPart of the idea behind the new Kronos plug-in is to help companies tie fairer scheduling practices to reduction in absenteeism and turnover, which can be enormously costly. In other words, if Kronos can help executives see the connection between treating workers fairly and a store's ability to increase revenue, DeWitt said, managers will have an impetus to create more predictable, stable schedules.\nAnd just because companies are looking at this kind of data doesn't mean they have to use it. \"Companies like Kronos and Workplace Systems are starting to integrate some of these principles into their software,\" said Carrie Gleason, director of the Fair Workweek Initiative at the Center for Popular Democracy, \"but it's all optional, so companies can decide not to do it.\" While 12 states are currently considering legislation that would create new labor standards around the workweek, Gleason said the technology alone lacks a mechanism for enforcement.\nGiven market pressures and standa",
+                    "title": "After A Wave Of Bad Press, This Controversial Software Company Is Making Changes",
+                    "url": "https://www.buzzfeednews.com/article/carolineodonovan/kronos-makes-changes-to-software-accused-of-producing-bad-sc",
+                    "date_downloaded": "2019-04-13",
+                    "date_modified": "2020-06-14",
+                    "date_published": "2015-06-03",
+                    "epoch_date_downloaded": 1555113600,
+                    "epoch_date_modified": 1592092800,
+                    "epoch_date_published": 1433289600,
+                    "epoch_incident_date": 1407974400,
+                    "epoch_date_submitted": 1559347200,
+                    "submitters": [
+                        "Catherine Olsson"
+                    ],
+                    "date_submitted": "2019-06-01",
+                    "report_number": 25,
+                    "incident_id": 10,
+                    "ref_number": 9
+                }
+            ]
+        },
+        "allMongodbAiidprodClassifications": {
+            "nodes": [
+                {
+                    "incident_id": 10,
+                    "namespace": "CSET",
+                    "classifications": {
+                        "Harm_Distribution_Basis": [],
+                        "Intent": "Unclear",
+                        "Lives_Lost": false,
+                        "Location": "Global",
+                        "Named_Entities": [
+                            "Starbucks",
+                            "Kronos"
+                        ],
+                        "Near_Miss": "Unclear/unknown",
+                        "Severity": "Negligible",
+                        "AI_Applications": [],
+                        "AI_Techniques": [],
+                        "Financial_Cost": "",
+                        "Harm_Type": [
+                            "Psychological harm"
+                        ],
+                        "Infrastructure_Sectors": [
+                            "Food and agriculture"
+                        ],
+                        "Level_of_Autonomy": "",
+                        "Nature_of_End_User": "",
+                        "Physical_System": [],
+                        "Problem_Nature": [],
+                        "Public_Sector_Deployment": false,
+                        "Relevant_AI_functions": [],
+                        "Sector_of_Deployment": [
+                            ""
+                        ],
+                        "System_Developer": [],
+                        "Technology_Purveyor": [
+                            "Starbucks"
+                        ]
+                    }
+                }
+            ]
+        },
+        "allMongodbAiidprodResources": {
+            "nodes": [
+                {
+                    "incident_id": 10,
+                    "classifications": {
+                        "Datasheets_for_Datasets": false,
+                        "MSFT_AI_Fairness_Checklist": true
+                    }
+                }
+            ]
+        }
+    },
+    "extensions": {}
+}
