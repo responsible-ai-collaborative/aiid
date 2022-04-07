@@ -8,6 +8,8 @@ describe('Classifications App', () => {
 
     cy.visit(url);
 
+    cy.get('select[data-cy="taxonomy"]').select('CSET');
+
     cy.contains('Incident 10').parents('tr').find('[data-cy=edit-classification]').click();
 
     cy.get('[data-cy="taxonomy-form"]').should('exist').as('form');
@@ -17,8 +19,6 @@ describe('Classifications App', () => {
     cy.get('@form').contains('label', 'Annotator').scrollIntoView();
 
     cy.get('@form').find('#Annotator-5').check();
-
-    cy.contains('label', 'Harm Distribution Basis').scrollIntoView();
 
     cy.contains('label', 'Harm Distribution Basis').scrollIntoView();
 

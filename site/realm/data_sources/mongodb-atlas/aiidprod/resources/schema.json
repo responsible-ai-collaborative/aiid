@@ -9,6 +9,9 @@
                 "Datasheets for Datasets": {
                     "bsonType": "bool"
                 },
+                "MSFT AI Fairness Checklist": {
+                    "bsonType": "bool"
+                },
                 "Publish": {
                     "bsonType": "bool"
                 }
