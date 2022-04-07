@@ -384,6 +384,46 @@ node migrator create --name increment-report-number.js --folder migrations
 
 Execution is taken care of by the [umzug](https://github.com/sequelize/umzug) package. Please refer to its documentation for more information.
 
+## Public GraphQL endpoint
+The site exposes a read-only GraphQL endpoint at `/api/graphql`, which is a reflection of the Realm's auto-generated endpoint.
+
+### GraphiQL
+The `graphiQL` UI is avaiable at:
+https://incidentdatabase.ai/api/graphql
+
+### Sample request
+
+The endpoint can be queried using any GraphQL client, but for example, if using Apollo:
+
+```
+    import { ApolloClient, HttpLink, InMemoryCache, gql } from '@apollo/client';
+
+    const client = new ApolloClient({
+        link: new HttpLink({
+            uri: `https://incidentdatabase.ai/api/graphql`,
+        }),
+        cache: new InMemoryCache()
+    });
+
+    client.query({query: gql`{
+        reports {
+          title
+          report_number
+        }
+    }`}).then(result => console.log(result));
+
+```
+
+### Configuration
+
+The endpoint is implemented as a Gatsby function. In the context where this function runs (Netlify or your local Node), an environment variable to an Realm API Key with query introspection permission needs to be set:
+
+```
+REALM_GRAPHQL_API_KEY=xxxxxxxxxx
+```
+About Realm API Keys: https://www.mongodb.com/docs/realm/authentication/api-key/
+
+
 ## Contact
 
 For inquiries, you are encouraged to open an issue on this repository or visit the [contact page](https://incidentdatabase.ai/contact).

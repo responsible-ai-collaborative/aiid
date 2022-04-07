@@ -36,7 +36,7 @@ const BibTex = ({ nodes, incident_id }) => {
       <br />
       &nbsp; &nbsp; &nbsp; &nbsp; journal = &#123;AI Incident Database&#125;,
       <br />
-      &nbsp; &nbsp; &nbsp; &nbsp; publisher = &#123;Partnership on AI&#125;,
+      &nbsp; &nbsp; &nbsp; &nbsp; publisher = &#123;Responsible AI Collaborative&#125;,
       <br />
       &nbsp; &nbsp; &nbsp; &nbsp; title = &#123;Incident Number {incident_id}&#125;,
       <br />

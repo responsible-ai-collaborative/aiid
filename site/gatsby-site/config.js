@@ -18,13 +18,14 @@ const config = {
       db_name: 'aiidprod',
       db_collection: 'incidents',
     },
+    graphqlApiKey: process.env.REALM_GRAPHQL_API_KEY,
   },
   header: {
     logo: '/logos/White_Transparent_AIID_short.png',
     logoMobile: '/White_Transparent_AIID.png',
     logoLink: '/',
     title: ' AI Incident Database',
-    githubUrl: 'https://github.com/PartnershipOnAI/aiid',
+    githubUrl: 'https://github.com/responsible-ai-collaborative/aiid',
     helpUrl: '',
     tweetText: '',
     social: `<li>

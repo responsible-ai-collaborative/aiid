@@ -42,7 +42,6 @@ module.exports = async ({ graphql }) => {
       ) {
         nodes {
           incident_id
-          id
           namespace
           classifications {
             Harm_Distribution_Basis
@@ -67,6 +66,16 @@ module.exports = async ({ graphql }) => {
             Sector_of_Deployment
             System_Developer
             Technology_Purveyor
+          }
+        }
+      }
+
+      allMongodbAiidprodResources(filter: { classifications: { Publish: { eq: true } } }) {
+        nodes {
+          incident_id
+          classifications {
+            Datasheets_for_Datasets
+            MSFT_AI_Fairness_Checklist
           }
         }
       }
@@ -107,11 +116,12 @@ module.exports = async ({ graphql }) => {
     return cArray;
   };
 
-  let classificationsHash = {};
+  const { allMongodbAiidprodClassifications, allMongodbAiidprodResources } = data;
 
-  data.allMongodbAiidprodClassifications.nodes.map((c) => {
-    classificationsHash[c.incident_id] = getClassificationArray(c.classifications, c.namespace);
-  });
+  const allClassifications = {
+    CSET: allMongodbAiidprodClassifications.nodes,
+    resources: allMongodbAiidprodResources.nodes,
+  };
 
   const downloadData = [];
 
@@ -121,11 +131,25 @@ module.exports = async ({ graphql }) => {
         (r) => r.report_number === reportNumber
       );
 
+      let classifications = [];
+
+      for (const namespace in allClassifications) {
+        const classification = allClassifications[namespace].find(
+          (c) => c.incident_id === incident.incident_id
+        )?.classifications;
+
+        if (classification) {
+          const keys = getClassificationArray(classification, namespace);
+
+          classifications = [...classifications, ...keys];
+        }
+      }
+
       const incidentData = {
         objectID: report.mongodb_id,
         incident_date: incident.date,
         ...report,
-        classifications: classificationsHash[incident.incident_id],
+        classifications,
       };
 
       downloadData.push(truncate(incidentData));
