@@ -41,9 +41,8 @@ describe('Cite pages', () => {
       .parents('a')
       .click({ force: true });
 
-    cy.get('span')
-      .contains('For some Starbucks workers, job leaves bitter taste')
-      .parents('[class*="IncidentCard"]')
+    cy.contains('h2 a', 'For some Starbucks workers, job leaves bitter taste')
+      .parents('.card')
       .then((subject) => {
         expect(subject[0].getBoundingClientRect().top).to.be.closeTo(0, 1);
       });
