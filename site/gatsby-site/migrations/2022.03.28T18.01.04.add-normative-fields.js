@@ -19,7 +19,16 @@ exports.up = async ({ context: { client } }) => {
   const csetClassifications = await csetCollection.find({}).toArray();
 
   for (const classification of csetClassifications) {
-    const report = await reportsCollection.findOne({ incident_id: classification.incident_id });
+    const reports = await reportsCollection
+      .find(
+        { incident_id: classification.incident_id },
+        { projection: { title: 1, date_submitted: 1 } }
+      )
+      .toArray();
+
+    const report = reports.sort(
+      (a, b) => new Date(a.date_submitted).valueOf() - new Date(b.date_submitted).valueOf()
+    )[0];
 
     const incidentUpdate = {
       title: report.title,
