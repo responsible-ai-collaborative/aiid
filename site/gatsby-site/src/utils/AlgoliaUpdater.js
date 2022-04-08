@@ -37,7 +37,6 @@ const getClassificationArray = (cObj, namespace) => {
 class AlgoliaUpdater {
   constructor({ mongoClient, algoliaClient, reporter, languages }) {
     /**
-     * someProperty is an example property that is set to `true`
      * @type {import('mongodb').MongoClient}
      * @public
      */

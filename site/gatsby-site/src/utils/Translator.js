@@ -10,7 +10,6 @@ class Translator {
   constructor({ mongoClient, translateClient, languages, reporter }) {
     this.translateClient = translateClient;
     /**
-     * someProperty is an example property that is set to `true`
      * @type {import('mongodb').MongoClient}
      * @public
      */
