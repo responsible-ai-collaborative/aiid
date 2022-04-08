@@ -189,7 +189,11 @@ const createCitiationPages = async (graphql, createPage) => {
     ...allMongodbAiidprodResources.nodes.map((r) => ({ ...r, namespace: 'resources' })),
   ];
 
-  for (const incident_id of Object.keys(incidentReportsMap)) {
+  const keys = Object.keys(incidentReportsMap);
+
+  for (let i = 0; i < keys.length; i++) {
+    const incident_id = keys[i];
+
     const incidentClassifications = allClassifications.filter(
       (t) => t.incident_id.toString() === incident_id
     );
@@ -214,6 +218,8 @@ const createCitiationPages = async (graphql, createPage) => {
       context: {
         incidentReports: incidentReportsMap[incident_id],
         taxonomies,
+        nextIncident: i < keys.length - 1 ? keys[i + 1] : null,
+        prevIncident: i > 0 ? keys[i - 1] : null,
       },
     });
   }
