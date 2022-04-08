@@ -24,8 +24,8 @@ const reports = [
     source_domain: 'blogs.wsj.com',
     submitters: (1)['Roman Yampolskiy'],
     tags: [],
-    text: 'Rest text',
-    title: 'Report Title 1',
+    text: 'Report 1 text',
+    title: 'Report 1 title',
     url: 'https://url.com/stuff',
   },
   {
@@ -35,7 +35,7 @@ const reports = [
     date_modified: '2020-06-14',
     date_published: '2015-05-19',
     date_submitted: '2019-06-01',
-    description: 'Description of report 1',
+    description: 'Description of report 2',
     epoch_date_downloaded: 1555113600,
     epoch_date_modified: 1592092800,
     epoch_date_published: 1431993600,
@@ -49,8 +49,8 @@ const reports = [
     source_domain: 'blogs.wsj.com',
     submitters: (1)['Roman Yampolskiy'],
     tags: [],
-    text: 'Rest text',
-    title: 'Report Title 2',
+    text: 'Report 2 text',
+    title: 'Report 2 title',
     url: 'https://url.com/stuff',
   },
 ];
@@ -76,6 +76,98 @@ const classifications = [
 
 describe('Translations', () => {
   it('Should run translations process', () => {
+    const translatedReportsEN = [
+      {
+        _id: '61d5ad9f102e6e30fca90ddf',
+        text: 'translated-en-text report 1',
+        title: 'translated-en-title report 1',
+        report_number: 1,
+      },
+    ];
+
+    const translatedReportsES = [
+      {
+        _id: '61d5ad9f102e6e30fca90ddf',
+        text: 'translated-es-text report 2',
+        title: 'translated-es-title report 2',
+        report_number: 2,
+      },
+    ];
+
+    const reporter = { log: cy.stub() };
+
+    const reportsCollection = {
+      find: cy.stub().returns({
+        toArray: cy.stub().resolves(reports),
+      }),
+    };
+
+    const reportsENCollection = {
+      find: cy.stub().returns({
+        toArray: cy.stub().resolves(translatedReportsEN),
+      }),
+      insertMany: cy.stub().log(true).resolves({ insertedCount: 1 }),
+    };
+
+    const reportsESCollection = {
+      find: cy.stub().returns({
+        toArray: cy.stub().resolves(translatedReportsES),
+      }),
+      insertMany: cy.stub().resolves({ insertedCount: 1 }),
+    };
+
+    const mongoClient = {
+      connect: cy.stub(),
+      close: cy.stub(),
+      db: cy.stub().returns({
+        collection: (() => {
+          const stub = cy.stub();
+
+          stub.withArgs('reports').returns(reportsCollection);
+          stub.withArgs('incident_reports_en').returns(reportsENCollection);
+          stub.withArgs('incident_reports_es').returns(reportsESCollection);
+
+          return stub;
+        })(),
+      }),
+    };
+
+    const translateClient = {
+      translate: cy.stub().callsFake((payload, { to }) => [payload.map((p) => `test-${to}-${p}`)]),
+    };
+
+    const translator = new Translator({
+      mongoClient,
+      translateClient,
+      languages: [{ code: 'es' }, { code: 'en' }],
+      reporter,
+      dryRun: false,
+    });
+
+    cy.wrap(translator.run()).then(() => {
+      expect(mongoClient.connect.callCount).to.eq(1);
+
+      expect(reportsENCollection.insertMany).to.have.been.calledOnceWith([
+        {
+          report_number: 2,
+          text: 'test-en-Report 2 text',
+          title: 'test-en-Report 2 title',
+        },
+      ]);
+
+      expect(reportsESCollection.insertMany).to.have.been.calledOnceWith([
+        {
+          report_number: 1,
+          text: 'test-es-Report 1 text',
+          title: 'test-es-Report 1 title',
+        },
+      ]);
+
+      expect(mongoClient.close.callCount).to.eq(1);
+    });
+  });
+
+  it("Shouldn't call Google's translate api if dryRun is true", () => {
     const translatedReportsEN = [
       {
         _id: '61d5ad9f102e6e30fca90ddf',
@@ -133,7 +225,9 @@ describe('Translations', () => {
     };
 
     const translateClient = {
-      translate: cy.stub().resolves([['Translated text', 'Translated title']]),
+      translate: cy
+        .stub()
+        .callsFake((payload, { to }) => [payload.map((p) => `translated-${to}-${p}`)]),
     };
 
     const translator = new Translator({
@@ -141,28 +235,11 @@ describe('Translations', () => {
       translateClient,
       languages: [{ code: 'es' }, { code: 'en' }],
       reporter,
+      dryRun: true,
     });
 
-    translator.run().then(() => {
-      expect(mongoClient.connect.callCount).to.eq(1);
-
-      expect(reportsENCollection.insertMany).to.have.been.calledOnceWith([
-        {
-          report_number: 2,
-          text: 'Translated text',
-          title: 'Translated title',
-        },
-      ]);
-
-      expect(reportsESCollection.insertMany).to.have.been.calledOnceWith([
-        {
-          report_number: 1,
-          text: 'Translated text',
-          title: 'Translated title',
-        },
-      ]);
-
-      expect(mongoClient.close.callCount).to.eq(1);
+    cy.wrap(translator.run()).then(() => {
+      expect(translateClient.translate.callCount).to.eq(0);
     });
   });
 
@@ -268,7 +345,7 @@ describe('Translations', () => {
       reporter,
     });
 
-    updater.run().then(() => {
+    cy.wrap(updater.run()).then(() => {
       expect(mongoClient.connect.callCount).to.eq(1);
 
       expect(enIndex.saveObjects).to.have.been.calledOnceWith(

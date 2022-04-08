@@ -7,7 +7,13 @@ const cloneDeep = require('lodash.clonedeep');
 const keys = ['text', 'title'];
 
 class Translator {
-  constructor({ mongoClient, translateClient, languages, reporter }) {
+  constructor({
+    mongoClient,
+    translateClient,
+    languages,
+    reporter,
+    dryRun = process.env.TRANSLATE_DRY_RUN !== 'false',
+  }) {
     this.translateClient = translateClient;
     /**
      * @type {import('mongodb').MongoClient}
@@ -16,10 +22,11 @@ class Translator {
     this.mongoClient = mongoClient;
     this.reporter = reporter;
     this.languages = languages;
+    this.dryRun = dryRun;
   }
 
   async translate({ payload, to }) {
-    if (process.env.TRANSLATE_DRY_RUN === 'false') {
+    if (!this.dryRun) {
       return this.translateClient.translate(payload, { to });
     } else {
       return [payload.map((p) => `translated-${to}-${p}`)];
