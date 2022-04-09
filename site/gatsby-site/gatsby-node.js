@@ -2,6 +2,8 @@ const path = require('path');
 
 const { Client: GoogleMapsAPIClient } = require('@googlemaps/google-maps-services-js');
 
+const { Translate } = require('@google-cloud/translate').v2;
+
 const startCase = require('lodash.startcase');
 
 const config = require('./config');
@@ -26,9 +28,13 @@ const algoliasearch = require('algoliasearch');
 
 const algoliaSettings = require('./src/utils/algoliaSettings');
 
-const translateIncidents = require('./src/utils/translateIncidents');
+const Translator = require('./src/utils/Translator');
 
-const updateDiscoverIndexes = require('./src/utils/updateDiscoverIndexes');
+const { MongoClient } = require('mongodb');
+
+const { getLanguages } = require('./src/components/i18n/languages');
+
+const AlgoliaUpdater = require('./src/utils/AlgoliaUpdater');
 
 const googleMapsApiClient = new GoogleMapsAPIClient({});
 
@@ -213,18 +219,10 @@ exports.onPreBootstrap = async ({ reporter }) => {
 
     migrationsActivity.end();
   }
-};
 
-exports.onPreBuild = function () {
-  if (!config.google.mapsApiKey) {
-    console.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
-  }
-};
+  const translationsActivity = reporter.activityTimer(`Translations`);
 
-exports.onPostBuild = async function ({ graphql, reporter }) {
-  const activity = reporter.activityTimer(`Algolia`);
-
-  activity.start();
+  translationsActivity.start();
 
   if (
     config.mongodb.translationsConnectionString &&
@@ -240,19 +238,53 @@ exports.onPostBuild = async function ({ graphql, reporter }) {
         );
       }
 
-      activity.setStatus('Translating incident reports...');
+      translationsActivity.setStatus('Translating incident reports...');
 
-      await translateIncidents.run({ reporter });
+      const translateClient = new Translate({ key: config.google.translateApikey });
 
-      activity.setStatus('Updating incidents indexes...');
+      const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
 
-      await updateDiscoverIndexes.run({ reporter });
+      const languages = getLanguages();
+
+      const translator = new Translator({ mongoClient, translateClient, languages, reporter });
+
+      await translator.run();
+
+      translationsActivity.setStatus('Updating incidents indexes...');
+
+      const algoliaClient = algoliasearch(
+        config.header.search.algoliaAppId,
+        config.header.search.algoliaAdminKey
+      );
+
+      const algoliaUpdater = new AlgoliaUpdater({
+        languages,
+        mongoClient,
+        algoliaClient,
+        reporter,
+      });
+
+      await algoliaUpdater.run();
     } catch (e) {
       reporter.warn('Error running translation scripts:', e);
     }
   } else {
     reporter.log(`Missing env settings, skipping indexes translation and upload.`);
   }
+
+  translationsActivity.end();
+};
+
+exports.onPreBuild = function () {
+  if (!config.google.mapsApiKey) {
+    console.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
+  }
+};
+
+exports.onPostBuild = async function ({ graphql, reporter }) {
+  const activity = reporter.activityTimer(`Algolia`);
+
+  activity.start();
 
   if (config.header.search.algoliaAppId && config.header.search.algoliaAdminKey) {
     activity.setStatus('Building index...');

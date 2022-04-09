@@ -5,14 +5,33 @@
 
 require('dotenv').config();
 
-const { run } = require('../utils/translateIncidents');
+const config = require('../../config');
+
+const { MongoClient } = require('mongodb');
+
+const { Translate } = require('@google-cloud/translate').v2;
+
+const Translator = require('../utils/Translator');
+
+const { getLanguages } = require('components/i18n/languages');
 
 const reporter = { log: console.log };
 
 (async () => {
   console.log('Translating incident reports...');
 
-  await run({ reporter });
+  const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
+
+  const translateClient = new Translate({ key: config.google.translateApikey });
+
+  const translator = new Translator({
+    mongoClient,
+    translateClient,
+    languages: getLanguages(),
+    reporter,
+  });
+
+  await translator.run();
 
   console.log('Done');
 
