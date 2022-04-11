@@ -89,7 +89,7 @@ describe('Edit report', () => {
       { data: { deleteOneReport: { __typename: 'Report', report_number: 10 } } }
     );
 
-    cy.contains('button', 'Delete this report', { timeout: 8000 }).click();
+    cy.contains('button', 'Delete this report').click();
 
     cy.wait('@delete');
 
