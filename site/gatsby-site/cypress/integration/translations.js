@@ -243,7 +243,7 @@ describe('Translations', () => {
     });
   });
 
-  it.only('Should update translations to Algolia', () => {
+  it('Should update translations to Algolia', () => {
     const translatedReportsEN = [
       {
         _id: '61d5ad9f102e6e30fca90ddf',
