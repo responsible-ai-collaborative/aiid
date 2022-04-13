@@ -1,12 +1,11 @@
 import React from 'react';
-import { Highlight } from 'react-instantsearch-dom';
 import styled from 'styled-components';
 import md5 from 'md5';
 import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
-import { getParagraphs } from 'utils/typography';
 import { useUserContext } from 'contexts/userContext';
 import Actions from 'components/discover/Actions';
+import ReportText from 'components/reports/ReportText';
 
 const IncidentCardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -35,10 +34,6 @@ const CardBody = styled.div`
   padding: 1.25rem 1.25rem 0 1.25rem !important;
 `;
 
-const Text = styled.p`
-  line-height: 1.3;
-`;
-
 const CardFooter = styled.div`
   display: flex;
   width: 100%;
@@ -47,14 +42,7 @@ const CardFooter = styled.div`
   align-items: center;
 `;
 
-const cardNeedsBlockquote = (item) => {
-  if (item.text && item.text.matchLevel === 'full') {
-    return true;
-  }
-  return false;
-};
-
-const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal, showDetails }) => {
+const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) => {
   const { isRole } = useUserContext();
 
   return (
@@ -76,29 +64,7 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal, sh
         </p>
       </div>
       <CardBody className="card-body">
-        {item._snippetResult && cardNeedsBlockquote(item._snippetResult) && (
-          <blockquote>
-            <Highlight
-              hit={{
-                _highlightResult: {
-                  ...item._snippetResult,
-                  text: {
-                    ...item._snippetResult.text,
-                    value: `...${item._snippetResult.text.value}...`,
-                  },
-                },
-              }}
-              attribute="text"
-            />
-          </blockquote>
-        )}
-        {showDetails ? (
-          <div>{getParagraphs(item.text)}</div>
-        ) : (
-          <div>
-            <Text>{item.text.substr(0, 400) + '...'}</Text>
-          </div>
-        )}
+        <ReportText text={item.text} />
       </CardBody>
       <div className="align-bottom">
         <ImageContainer>

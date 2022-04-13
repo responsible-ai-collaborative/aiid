@@ -1,3 +1,7 @@
+const remark = require('remark');
+
+const remarkStrip = require('strip-markdown');
+
 module.exports = async ({ graphql }) => {
   const { data } = await graphql(`
     query AllIncidentsDataQuery {
@@ -145,11 +149,14 @@ module.exports = async ({ graphql }) => {
         }
       }
 
+      const text = await remark().use(remarkStrip).process(report.text);
+
       const incidentData = {
+        ...report,
         objectID: report.mongodb_id,
         incident_date: incident.date,
-        ...report,
         classifications,
+        text: text.contents.toString().trim(),
       };
 
       downloadData.push(truncate(incidentData));

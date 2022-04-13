@@ -1,5 +1,3 @@
-import React from 'react';
-
 /**
  * Check if last word is parenthesized
  *
@@ -43,15 +41,3 @@ export function getFormattedName(str) {
     return `${split[split.length - 1]}, ${split.slice(0, split.length - 1).join(' ')}`;
   }
 }
-
-export const getParagraphs = (itemText) => {
-  return (
-    <>
-      {itemText.split('\n').map((paragraph, index, array) => (
-        <p key={index}>
-          {array.length - 1 === index ? <>{paragraph + '...'}</> : <>{paragraph}</>}
-        </p>
-      ))}
-    </>
-  );
-};

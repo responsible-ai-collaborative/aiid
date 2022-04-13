@@ -1,5 +1,9 @@
 const algoliaSettings = require('./algoliaSettings');
 
+const remark = require('remark');
+
+const remarkStrip = require('strip-markdown');
+
 const truncate = (doc) => {
   for (const [key, value] of Object.entries(doc)) {
     if (typeof value == 'string') {
@@ -46,25 +50,30 @@ class AlgoliaUpdater {
     this.algoliaClient = algoliaClient;
   }
 
-  generateIndexEntries({ reports, classifications }) {
+  async generateIndexEntries({ reports, classifications }) {
     let classificationsHash = {};
 
     classifications.map((c) => {
       classificationsHash[c.incident_id] = getClassificationArray(c.classifications, c.namespace);
     });
 
-    const downloadData = reports.map((report) => {
+    const downloadData = [];
+
+    for (const report of reports) {
+      const text = await remark().use(remarkStrip).process(report.text);
+
       const finalDataNode = {
-        objectID: report.report_number.toString(),
         ...report,
+        objectID: report.report_number.toString(),
+        text: text.contents.toString().trim(),
       };
 
       if (classificationsHash[report.incident_id]) {
         finalDataNode.classifications = classificationsHash[report.incident_id];
       }
 
-      return finalDataNode;
-    });
+      downloadData.push(finalDataNode);
+    }
 
     const truncatedData = downloadData.map(truncate);
 
@@ -118,7 +127,7 @@ class AlgoliaUpdater {
     for (let { code: language } of this.languages) {
       const reports = await this.getReports({ language });
 
-      const entries = this.generateIndexEntries({ reports, classifications });
+      const entries = await this.generateIndexEntries({ reports, classifications });
 
       this.reporter.log(
         `Uploading Algolia index of [${language}] with [${entries.length}] entries`

@@ -24,7 +24,7 @@ const reports = [
     source_domain: 'blogs.wsj.com',
     submitters: (1)['Roman Yampolskiy'],
     tags: [],
-    text: 'Report 1 text',
+    text: 'Report 1 **text**',
     title: 'Report 1 title',
     url: 'https://url.com/stuff',
   },
@@ -49,7 +49,7 @@ const reports = [
     source_domain: 'blogs.wsj.com',
     submitters: (1)['Roman Yampolskiy'],
     tags: [],
-    text: 'Report 2 text',
+    text: 'Report 2 **text**',
     title: 'Report 2 title',
     url: 'https://url.com/stuff',
   },
@@ -75,7 +75,7 @@ const classifications = [
 ];
 
 describe('Translations', () => {
-  it('Should run translations process', () => {
+  it('Should cache translations in the database', () => {
     const translatedReportsEN = [
       {
         _id: '61d5ad9f102e6e30fca90ddf',
@@ -243,17 +243,17 @@ describe('Translations', () => {
     });
   });
 
-  it('Should update translations to Algolia', () => {
+  it.only('Should update translations to Algolia', () => {
     const translatedReportsEN = [
       {
         _id: '61d5ad9f102e6e30fca90ddf',
-        text: 'translated-en-text report 1',
+        text: 'translated-en-text **report 1**',
         title: 'translated-en-title report 1',
         report_number: 1,
       },
       {
         _id: '61d5ad9f102e6e30fca9065r',
-        text: 'translated-en-text report 2',
+        text: 'translated-en-text **report 2**',
         title: 'translated-en-title report 2',
         report_number: 2,
       },
@@ -262,13 +262,13 @@ describe('Translations', () => {
     const translatedReportsES = [
       {
         _id: '61d5ad9f102e6e30fca90ddf',
-        text: 'translated-es-text report 1',
+        text: 'translated-es-text **report 1**',
         title: 'translated-es-title report 1',
         report_number: 1,
       },
       {
         _id: '61d5ad9f102e6e30fca90876',
-        text: 'translated-es-text report 2',
+        text: 'translated-es-text **report 2**',
         title: 'translated-es-title report 2',
         report_number: 2,
       },

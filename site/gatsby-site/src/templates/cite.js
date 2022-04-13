@@ -214,7 +214,6 @@ function CitePage(props) {
                 authorsModal={authorsModal}
                 submittersModal={submittersModal}
                 flagReportModal={flagReportModal}
-                showDetails={true}
               />
             </Col>
           </Row>
