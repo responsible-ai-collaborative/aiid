@@ -32,7 +32,7 @@ export default function AboutPartnership({ className }) {
   return (
     <Card className={className}>
       <Card.Body>
-        <Card.Title as="h2">Founding Sponsor</Card.Title>
+        <Card.Title as="h2">Database Founding Sponsor</Card.Title>
         <Card.Text className="fst-italic">
           As a founding sponsor of the AIID,{' '}
           <a href="http://partnershiponai.org/">Partnership on AI</a> was instrumental in supporting
