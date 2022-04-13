@@ -147,21 +147,19 @@ describe('Translations', () => {
     cy.wrap(translator.run()).then(() => {
       expect(mongoClient.connect.callCount).to.eq(1);
 
-      expect(reportsENCollection.insertMany).to.have.been.calledOnceWith([
-        {
-          report_number: 2,
-          text: 'test-en-Report 2 text',
-          title: 'test-en-Report 2 title',
-        },
-      ]);
+      expect(reportsENCollection.insertMany.callCount).to.eq(1);
+      expect(reportsENCollection.insertMany.firstCall.args[0][0]).to.deep.equal({
+        report_number: 2,
+        text: 'test-en-Report 2 **text**',
+        title: 'test-en-Report 2 title',
+      });
 
-      expect(reportsESCollection.insertMany).to.have.been.calledOnceWith([
-        {
-          report_number: 1,
-          text: 'test-es-Report 1 text',
-          title: 'test-es-Report 1 title',
-        },
-      ]);
+      expect(reportsENCollection.insertMany.callCount).to.eq(1);
+      expect(reportsESCollection.insertMany.firstCall.args[0][0]).to.deep.equal({
+        report_number: 1,
+        text: 'test-es-Report 1 **text**',
+        title: 'test-es-Report 1 title',
+      });
 
       expect(mongoClient.close.callCount).to.eq(1);
     });
