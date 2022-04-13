@@ -27,7 +27,7 @@ export default function QuickSearch({ className }) {
               value={searchTerm}
               onChange={setSearchTerm}
               onClear={() => setSearchTerm('')}
-              placeHolder="Search all incident reports"
+              placeHolder="Search reports"
               onKeyPress={(e) => {
                 e.key === 'Enter' && submit(e);
               }}
@@ -59,7 +59,7 @@ export default function QuickSearch({ className }) {
       <Card className={className}>
         <Card.Body>
           <h1>
-            <Link to="/blog/join-raic">⇨We are hiring!⇦</Link>
+            <Link to="/blog/join-raic">⇨Hiring⇦</Link>
           </h1>
         </Card.Body>
       </Card>
