@@ -786,9 +786,9 @@ export default function ClassificationsDbView(props) {
             Showing the
             <Form.Select
               style={{ width: 120, margin: '0 10px' }}
-              aria-label="Default select example"
               onChange={(e) => setCurrentTaxonomy(e.target.value)}
               value={currentTaxonomy}
+              data-cy="taxonomy"
             >
               {allTaxonomies.map((taxa) => (
                 <option key={taxa.namespace} value={taxa.namespace}>

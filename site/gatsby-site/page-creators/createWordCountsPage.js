@@ -23,7 +23,7 @@ const createWordCountsPage = (graphql, createPage) => {
       graphql(
         `
           query WordCounts {
-            allMongodbAiidprodIncidents {
+            allMongodbAiidprodReports {
               nodes {
                 text
               }
@@ -39,7 +39,7 @@ const createWordCountsPage = (graphql, createPage) => {
         // Create wordcounts page
         const wordCounts = {};
 
-        result.data.allMongodbAiidprodIncidents.nodes.forEach((element) => {
+        result.data.allMongodbAiidprodReports.nodes.forEach((element) => {
           if (element['text']) {
             const words = stopword.removeStopwords(element['text'].split(' '), customStopWords);
 

@@ -1,25 +1,5 @@
 [
     {
-        "name": "deleteSubmittedDocument",
-        "private": false
-    },
-    {
-        "name": "onNewUser",
-        "private": true
-    },
-    {
-        "name": "promoteReport",
-        "private": false,
-        "run_as_system": true,
-        "can_evaluate": {
-            "%%user.custom_data.roles": "admin"
-        }
-    },
-    {
-        "name": "quickAdd",
-        "private": false
-    },
-    {
         "name": "updateSubmissionReport",
         "private": false
     },
@@ -29,6 +9,14 @@
     },
     {
         "name": "createReportForReview",
+        "private": false
+    },
+    {
+        "name": "onNewUser",
+        "private": true
+    },
+    {
+        "name": "quickAdd",
         "private": false
     }
 ]

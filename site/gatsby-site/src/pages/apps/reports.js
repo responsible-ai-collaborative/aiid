@@ -257,7 +257,7 @@ export default function Incidents(props) {
 
     const omitKeys = ['id', 'url'];
 
-    const tableKeys = Object.keys(data.allMongodbAiidprodIncidents.group[0].edges[0].node);
+    const tableKeys = Object.keys(data.allMongodbAiidprodReports.group[0].edges[0].node);
 
     const formatHeaderName = (key) => {
       return key
@@ -310,7 +310,7 @@ export default function Incidents(props) {
       let tableData = [];
 
       const {
-        allMongodbAiidprodIncidents: { group },
+        allMongodbAiidprodReports: { group },
       } = data;
 
       group.forEach((incidentReports) => {
@@ -403,7 +403,7 @@ export default function Incidents(props) {
     return null;
   }
   const {
-    allMongodbAiidprodIncidents: { group },
+    allMongodbAiidprodReports: { group },
   } = data;
 
   // sort by value
@@ -577,7 +577,7 @@ export default function Incidents(props) {
 
 export const pageQuery = graphql`
   query AllIncidentsForTableView {
-    allMongodbAiidprodIncidents(
+    allMongodbAiidprodReports(
       filter: { flag: { eq: null } }
       sort: { order: ASC, fields: incident_id }
     ) {

@@ -55,7 +55,7 @@ export default class Incidents extends Component {
       return null;
     }
     const {
-      allMongodbAiidprodIncidents: { group },
+      allMongodbAiidprodReports: { group },
     } = data;
 
     // sort by value
@@ -86,7 +86,7 @@ export default class Incidents extends Component {
 
 export const pageQuery = graphql`
   query AllIncidentsPart {
-    allMongodbAiidprodIncidents(
+    allMongodbAiidprodReports(
       filter: { flag: { eq: null } }
       sort: { order: ASC, fields: incident_id }
     ) {

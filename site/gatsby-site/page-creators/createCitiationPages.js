@@ -56,26 +56,27 @@ const createCitiationPages = async (graphql, createPage) => {
     `
       query IncidentIDs {
         allMongodbAiidprodIncidents {
-          group(field: incident_id) {
-            fieldValue
-            edges {
-              node {
-                id
-                submitters
-                incident_date
-                date_published
-                incident_id
-                report_number
-                title
-                url
-                image_url
-                cloudinary_id
-                source_domain
-                mongodb_id
-                text
-                authors
-              }
-            }
+          nodes {
+            incident_id
+            date
+            reports
+          }
+        }
+
+        allMongodbAiidprodReports {
+          nodes {
+            submitters
+            date_published
+            incident_id
+            report_number
+            title
+            url
+            image_url
+            cloudinary_id
+            source_domain
+            mongodb_id
+            text
+            authors
           }
         }
 
@@ -166,6 +167,7 @@ const createCitiationPages = async (graphql, createPage) => {
 
   const {
     allMongodbAiidprodIncidents,
+    allMongodbAiidprodReports,
     allMongodbAiidprodClassifications,
     allMongodbAiidprodDuplicates,
     allMongodbAiidprodTaxa,
@@ -175,16 +177,23 @@ const createCitiationPages = async (graphql, createPage) => {
   // Incident reports list
   const incidentReportsMap = {};
 
-  allMongodbAiidprodIncidents.group.map((g) => {
-    incidentReportsMap[g.fieldValue] = g.edges;
-  });
+  for (const incident of allMongodbAiidprodIncidents.nodes) {
+    incidentReportsMap[incident.incident_id] = incident.reports
+      .map((r) => allMongodbAiidprodReports.nodes.find((n) => n.report_number === r))
+      .map((r) => ({ ...r, incident_date: incident.date }))
+      .map((r) => ({ node: { ...r } }));
+  }
 
   const allClassifications = [
     ...allMongodbAiidprodClassifications.nodes.map((r) => ({ ...r, namespace: 'CSET' })),
     ...allMongodbAiidprodResources.nodes.map((r) => ({ ...r, namespace: 'resources' })),
   ];
 
-  for (const incident_id of Object.keys(incidentReportsMap)) {
+  const keys = Object.keys(incidentReportsMap);
+
+  for (let i = 0; i < keys.length; i++) {
+    const incident_id = keys[i];
+
     const incidentClassifications = allClassifications.filter(
       (t) => t.incident_id.toString() === incident_id
     );
@@ -209,6 +218,8 @@ const createCitiationPages = async (graphql, createPage) => {
       context: {
         incidentReports: incidentReportsMap[incident_id],
         taxonomies,
+        nextIncident: i < keys.length - 1 ? keys[i + 1] : null,
+        prevIncident: i > 0 ? keys[i - 1] : null,
       },
     });
   }

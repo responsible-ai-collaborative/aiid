@@ -1,24 +1,11 @@
 import { maybeIt } from '../support/utils';
+import flaggedReport from '../fixtures/reports/flagged.json';
+import unflaggedReport from '../fixtures/reports/unflagged.json';
 
 describe('Cite pages', () => {
   const discoverUrl = '/apps/discover';
 
   const url = '/cite/10';
-
-  const dummyIncident = {
-    url: '',
-    title: '',
-    authors: '',
-    submitters: '',
-    incident_date: '',
-    date_published: '',
-    date_downloaded: '',
-    image_url: '',
-    incident_id: '',
-    text: '',
-    flag: '',
-    tags: [],
-  };
 
   it('Successfully loads', () => {
     cy.visit(url);
@@ -45,7 +32,7 @@ describe('Cite pages', () => {
   it('Should scroll to report when clicking on a report in the timeline', () => {
     cy.visit(url);
 
-    cy.wait(2000);
+    cy.wait(4000);
 
     cy.disableSmoothScroll();
 
@@ -104,37 +91,29 @@ describe('Cite pages', () => {
 
     cy.visit(url + '#' + _id);
 
-    cy.intercept('POST', '**/graphql', {
-      data: {
-        incident: {
-          __typename: 'Incident',
-          _id,
-          ...dummyIncident,
-          flag: false,
-        },
-      },
-    }).as('fetchIncident');
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindReport',
+      'fetchReport',
+      unflaggedReport
+    );
 
     cy.get(`[id="r${_id}"`).find('[data-cy="flag-button"]').click();
 
     cy.get('[data-cy="flag-modal"]').as('modal').should('be.visible');
 
-    cy.wait('@fetchIncident');
+    cy.wait('@fetchReport');
 
-    cy.intercept('POST', '**/graphql', {
-      data: {
-        updateOneIncident: {
-          __typename: 'Incident',
-          _id,
-          ...dummyIncident,
-          flag: true,
-        },
-      },
-    }).as('updateIncident');
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateReport',
+      'updateReport',
+      flaggedReport
+    );
 
     cy.get('@modal').find('[data-cy="flag-toggle"]').click();
 
-    cy.wait('@updateIncident');
+    cy.wait('@updateReport');
 
     cy.get('@modal').find('[data-cy="flag-toggle"]').should('be.disabled');
 
@@ -151,5 +130,13 @@ describe('Cite pages', () => {
     cy.get('[name="incident_id"]').should('have.value', '10');
 
     cy.get('[name="incident_date"]').should('have.value', '2014-08-14');
+  });
+
+  it('should render Next and Previous incident buttons', () => {
+    cy.visit(url);
+
+    cy.contains('Next Incident').should('be.visible').should('have.attr', 'href', '/cite/11');
+
+    cy.contains('Previous Incident').should('be.visible').should('have.attr', 'href', '/cite/9');
   });
 });

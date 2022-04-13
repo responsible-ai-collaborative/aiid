@@ -3,6 +3,14 @@ module.exports = async ({ graphql }) => {
     query AllIncidentsDataQuery {
       allMongodbAiidprodIncidents {
         nodes {
+          date
+          incident_id
+          reports
+        }
+      }
+
+      allMongodbAiidprodReports {
+        nodes {
           mongodb_id
           description
           authors
@@ -16,7 +24,6 @@ module.exports = async ({ graphql }) => {
           date_downloaded
           date_modified
           date_published
-          incident_date
           epoch_date_downloaded
           epoch_date_modified
           epoch_date_published
@@ -35,7 +42,6 @@ module.exports = async ({ graphql }) => {
       ) {
         nodes {
           incident_id
-          id
           namespace
           classifications {
             Harm_Distribution_Basis
@@ -60,6 +66,16 @@ module.exports = async ({ graphql }) => {
             Sector_of_Deployment
             System_Developer
             Technology_Purveyor
+          }
+        }
+      }
+
+      allMongodbAiidprodResources(filter: { classifications: { Publish: { eq: true } } }) {
+        nodes {
+          incident_id
+          classifications {
+            Datasheets_for_Datasets
+            MSFT_AI_Fairness_Checklist
           }
         }
       }
@@ -100,28 +116,45 @@ module.exports = async ({ graphql }) => {
     return cArray;
   };
 
-  let classificationsHash = {};
+  const { allMongodbAiidprodClassifications, allMongodbAiidprodResources } = data;
 
-  data.allMongodbAiidprodClassifications.nodes.map((c) => {
-    classificationsHash[c.incident_id] = getClassificationArray(c.classifications, c.namespace);
-  });
+  const allClassifications = {
+    CSET: allMongodbAiidprodClassifications.nodes,
+    resources: allMongodbAiidprodResources.nodes,
+  };
 
   const downloadData = [];
 
-  data.allMongodbAiidprodIncidents.nodes.map((i) => {
-    const finalDataNode = {
-      objectID: i['mongodb_id'],
-      ...i,
-    };
+  for (const incident of data.allMongodbAiidprodIncidents.nodes) {
+    for (const reportNumber of incident.reports) {
+      const report = data.allMongodbAiidprodReports.nodes.find(
+        (r) => r.report_number === reportNumber
+      );
 
-    if (classificationsHash[i.incident_id]) {
-      finalDataNode.classifications = classificationsHash[i.incident_id];
+      let classifications = [];
+
+      for (const namespace in allClassifications) {
+        const classification = allClassifications[namespace].find(
+          (c) => c.incident_id === incident.incident_id
+        )?.classifications;
+
+        if (classification) {
+          const keys = getClassificationArray(classification, namespace);
+
+          classifications = [...classifications, ...keys];
+        }
+      }
+
+      const incidentData = {
+        objectID: report.mongodb_id,
+        incident_date: incident.date,
+        ...report,
+        classifications,
+      };
+
+      downloadData.push(truncate(incidentData));
     }
+  }
 
-    downloadData.push(finalDataNode);
-  });
-
-  const truncatedData = downloadData.map(truncate);
-
-  return truncatedData;
+  return downloadData;
 };

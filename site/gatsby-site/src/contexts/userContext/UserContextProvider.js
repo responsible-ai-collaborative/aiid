@@ -4,7 +4,7 @@ import { realmApp } from 'services/realmApp';
 import { UserContext } from './UserContext';
 import { ApolloProvider, ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import config from '../../../config';
-import fetch from 'isomorphic-fetch';
+import fetch from 'cross-fetch';
 
 // https://github.com/mongodb-university/realm-graphql-apollo-react/blob/master/src/index.js
 
@@ -20,7 +20,23 @@ const getApolloCLient = (getValidAccessToken) =>
         return fetch(uri, options);
       },
     }),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Incident: {
+          keyFields: ['incident_id'],
+          fields: {
+            reports: {
+              merge(existing, incoming = []) {
+                return [...incoming];
+              },
+            },
+          },
+        },
+        Report: {
+          keyFields: ['report_number'],
+        },
+      },
+    }),
   });
 
 export const UserContextProvider = ({ children }) => {
