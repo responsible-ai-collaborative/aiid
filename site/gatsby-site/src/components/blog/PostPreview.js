@@ -15,10 +15,12 @@ function PostPreview({ post, className }) {
     <Card className={className}>
       <Row className="g-0">
         <Col md={4}>
-          <StyledImg
-            className="img-fluid rounded-start"
-            fluid={post.frontmatter.image.childImageSharp.fluid}
-          />
+          <Link to={post.fields.slug}>
+            <StyledImg
+              className="img-fluid rounded-start"
+              fluid={post.frontmatter.image.childImageSharp.fluid}
+            />
+          </Link>
         </Col>
         <Col md={8}>
           <Card.Body>
