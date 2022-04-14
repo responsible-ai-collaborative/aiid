@@ -78,7 +78,7 @@ describe('Download Algolia Index', () => {
             'CSET:Harm Distribution Basis:Sex',
             'CSET:Intent:Accident',
             'CSET:Lives Lost:false',
-            'CSET:Location:Twitter platform',
+            'CSET:Location:Global',
             'CSET:Named Entities:Microsoft',
             'CSET:Named Entities:Twitter',
             'CSET:Named Entities:Tay',
