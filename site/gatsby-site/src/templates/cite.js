@@ -172,6 +172,13 @@ function CitePage(props) {
                 >
                   Discover
                 </Button>
+                <Button
+                  variant="outline-primary"
+                  className="me-2"
+                  href={'/incidents/edit?incident_id=' + incident_id}
+                >
+                  Edit Incident
+                </Button>
                 <BibTex nodes={incidentReports} incident_id={incident_id} />
               </div>
             </CardContainer>
