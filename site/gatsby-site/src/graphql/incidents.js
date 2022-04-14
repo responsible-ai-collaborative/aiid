@@ -5,6 +5,10 @@ export const FIND_INCIDENT = gql`
     incident(query: $query) {
       date
       incident_id
+      description
+      AllegedDeployerOfAISystem
+      AllegedDeveloperOfAISystem
+      AllegedHarmedOrNearlyHarmedParties
       reports {
         report_number
       }
