@@ -149,4 +149,21 @@ describe('Cite pages', () => {
 
     cy.get('[data-cy="incident-form').should('be.visible');
   });
+
+  it('Should display correct BibTex Citation', () => {
+    cy.visit(url);
+
+    cy.contains('BibTex Citation').click();
+
+    cy.get('.modal-body code')
+      .invoke('text')
+      .then((text) => {
+        // eslint-disable-next-line
+        const bibText = text.replace(/(\r\n|\n|\r| |\s)/g, '');
+
+        expect(bibText).to.eq(
+          `@article{aiid:10,author={Olsson,Catherine},editor={McGregor,Sean},journal={AIIncidentDatabase},publisher={ResponsibleAICollaborative},title={IncidentNumber10},url={https://incidentdatabase.ai/cite/10},year={2014},urldate={April15,2022}}`
+        );
+      });
+  });
 });

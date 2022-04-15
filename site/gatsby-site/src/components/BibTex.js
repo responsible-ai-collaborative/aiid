@@ -3,7 +3,7 @@ import { Button, Modal } from 'react-bootstrap';
 import { retrievalDate } from '../utils/date';
 import { getFormattedName } from '../utils/typography';
 
-const BibTex = ({ nodes, incident_id }) => {
+const BibTex = ({ nodes, incidentDate, incident_id }) => {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -21,8 +21,6 @@ const BibTex = ({ nodes, incident_id }) => {
 
   // Only return the earliest submitter
   let submitterCite = getFormattedName(docs[0]['submitters'][0]);
-
-  var incidentDate = docs[0]['incident_date'];
 
   const jsx = (
     <code>
