@@ -109,12 +109,16 @@ function CitePage(props) {
       <Container>
         <Row>
           <Col>
-            <CardContainer className="card">
+            <CardContainer className="card" data-cy="citation">
               <div className="card-header">
                 <h4>Suggested citation format</h4>
               </div>
               <div className="card-body">
-                <Citation nodes={incidentReports} incident_id={incident.incident_id} />
+                <Citation
+                  nodes={incidentReports}
+                  incidentDate={incident.date}
+                  incident_id={incident.incident_id}
+                />
               </div>
             </CardContainer>
           </Col>

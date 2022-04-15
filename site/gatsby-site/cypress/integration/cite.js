@@ -166,4 +166,16 @@ describe('Cite pages', () => {
         );
       });
   });
+
+  it('Should display correct Citation', () => {
+    cy.visit(url);
+
+    cy.get('[data-cy="citation"] .card-body')
+      .invoke('text')
+      .then((text) => {
+        expect(text).to.eq(
+          `Olsson, Catherine. () Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on April 15, 2022 from incidentdatabase.ai/cite/10.`
+        );
+      });
+  });
 });
