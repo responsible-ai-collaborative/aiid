@@ -49,7 +49,6 @@ const LatestIncidentReport = ({ className = '' }) => {
                   <Card.Title>
                     <Link to={`/cite/${incident_id}`}>{title}</Link>
                   </Card.Title>
-                  <Card.Subtitle>{format(epoch_incident_date * 1000, 'MMM d, yyyy')}</Card.Subtitle>
                   <Card.Text>
                     {description}... <Link to={`/cite/${incident_id}`}>(Read More)</Link>
                   </Card.Text>
