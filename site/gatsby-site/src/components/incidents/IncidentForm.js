@@ -17,7 +17,7 @@ function IncidentForm({ incident, onSubmit }) {
   return (
     <Formik validationSchema={schema} onSubmit={onSubmit} initialValues={incident}>
       {({ handleSubmit, handleChange, values, isValid, errors }) => (
-        <FormikForm noValidate onSubmit={handleSubmit}>
+        <FormikForm noValidate onSubmit={handleSubmit} data-cy={`incident-form`}>
           <Form.Group>
             <Form.Label>Title</Form.Label>
             <Form.Control type="text" name="title" value={values.title} onChange={handleChange} />
