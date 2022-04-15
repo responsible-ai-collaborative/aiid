@@ -3,9 +3,10 @@ import gql from 'graphql-tag';
 export const FIND_INCIDENT = gql`
   query FindIncident($query: IncidentQueryInput) {
     incident(query: $query) {
-      date
       incident_id
+      title
       description
+      date
       AllegedDeployerOfAISystem
       AllegedDeveloperOfAISystem
       AllegedHarmedOrNearlyHarmedParties

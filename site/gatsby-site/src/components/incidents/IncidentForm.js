@@ -5,8 +5,9 @@ import { Form, Button } from 'react-bootstrap';
 import TagsControl from 'components/forms/TagsControl';
 
 const schema = Yup.object().shape({
-  date: Yup.date().required(),
+  title: Yup.string().required(),
   description: Yup.string().required(),
+  date: Yup.date().required(),
   AllegedDeployerOfAISystem: Yup.array(),
   AllegedDeveloperOfAISystem: Yup.array(),
   AllegedHarmedOrNearlyHarmedParties: Yup.array(),
@@ -17,6 +18,12 @@ function IncidentForm({ incident, onSubmit }) {
     <Formik validationSchema={schema} onSubmit={onSubmit} initialValues={incident}>
       {({ handleSubmit, handleChange, values, isValid, errors }) => (
         <FormikForm noValidate onSubmit={handleSubmit}>
+          <Form.Group>
+            <Form.Label>Title</Form.Label>
+            <Form.Control type="text" name="title" value={values.title} onChange={handleChange} />
+            <Form.Control.Feedback type="invalid">{errors.title}</Form.Control.Feedback>
+          </Form.Group>
+
           <Form.Group>
             <Form.Label>Description</Form.Label>
             <Form.Control
