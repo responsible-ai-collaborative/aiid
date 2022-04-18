@@ -79,7 +79,6 @@ function EditCitePage(props) {
       values.epoch_date_modified = stringToEpoch(todayStr);
       values.date_modified = todayStr;
       values.epoch_date_published = stringToEpoch(values.date_published);
-      values.epoch_incident_date = stringToEpoch(values.incident_date);
 
       const updated = { ...values, __typename: undefined };
 

@@ -247,7 +247,6 @@ export default function Incidents(props) {
     if (!data) return;
 
     const replaceKeys = {
-      epoch_incident_date: 'incident_date',
       epoch_date_submitted: 'date_submitted',
       epoch_date_modified: 'date_modified',
       epoch_date_downloaded: 'date_downloaded',
@@ -270,7 +269,6 @@ export default function Incidents(props) {
       const SELECT_FILTER_COLUMN = ['submitters', 'flag', 'incident_id'];
 
       const DATE_RANGE_FILTER_COLUMN = [
-        'epoch_incident_date',
         'epoch_date_submitted',
         'epoch_date_modified',
         'epoch_date_downloaded',
@@ -362,7 +360,6 @@ export default function Incidents(props) {
   };
 
   const filterTypes = {
-    epoch_incident_date: filterDateFunction,
     epoch_date_submitted: filterDateFunction,
     epoch_date_modified: filterDateFunction,
     epoch_date_downloaded: filterDateFunction,
@@ -591,7 +588,6 @@ export const pageQuery = graphql`
             url
             authors
             submitters
-            epoch_incident_date
             epoch_date_submitted
             epoch_date_modified
             epoch_date_downloaded

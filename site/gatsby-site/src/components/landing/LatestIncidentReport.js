@@ -18,10 +18,10 @@ const LatestIncidentReport = ({ className = '' }) => {
     <StaticQuery
       query={graphql`
         query LatestIncidentReport {
-          allMongodbAiidprodReports(sort: { order: DESC, fields: epoch_incident_date }, limit: 1) {
+          allMongodbAiidprodReports(sort: { order: DESC, fields: epoch_date_submitted }, limit: 1) {
             nodes {
               title
-              epoch_incident_date
+              epoch_date_submitted
               description
               image_url
               incident_id
@@ -31,7 +31,7 @@ const LatestIncidentReport = ({ className = '' }) => {
         }
       `}
       render={({ allMongodbAiidprodReports: { nodes } }) => {
-        const { image_url, cloudinary_id, title, description, epoch_incident_date, incident_id } =
+        const { image_url, cloudinary_id, title, description, epoch_date_submitted, incident_id } =
           nodes[0];
 
         return (
@@ -49,7 +49,9 @@ const LatestIncidentReport = ({ className = '' }) => {
                   <Card.Title>
                     <Link to={`/cite/${incident_id}`}>{title}</Link>
                   </Card.Title>
-                  <Card.Subtitle>{format(epoch_incident_date * 1000, 'MMM d, yyyy')}</Card.Subtitle>
+                  <Card.Subtitle>
+                    {format(epoch_date_submitted * 1000, 'MMM d, yyyy')}
+                  </Card.Subtitle>
                   <Card.Text>
                     {description}... <Link to={`/cite/${incident_id}`}>(Read More)</Link>
                   </Card.Text>
