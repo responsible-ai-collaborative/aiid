@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
-import { retrievalDate } from '../utils/date';
 import { getFormattedName } from '../utils/typography';
+import { format } from 'date-fns';
 
 const BibTex = ({ nodes, incidentDate, incident_id }) => {
   const [show, setShow] = useState(false);
@@ -42,7 +42,7 @@ const BibTex = ({ nodes, incidentDate, incident_id }) => {
       <br />
       &nbsp; &nbsp; &nbsp; &nbsp; year = &#123;{incidentDate.substring(0, 4)}&#125;,
       <br />
-      &nbsp; &nbsp; &nbsp; &nbsp; urldate = &#123;{retrievalDate()}&#125;
+      &nbsp; &nbsp; &nbsp; &nbsp; urldate = &#123;{format(new Date(), 'MMMM d, y')}&#125;
       <br />
       &#125;
     </code>

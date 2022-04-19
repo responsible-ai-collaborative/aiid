@@ -151,7 +151,7 @@ describe('Cite pages', () => {
   });
 
   it('Should display correct BibTex Citation', () => {
-    cy.clock(new Date('2022-04-15'), ['Date']);
+    cy.clock(Date.UTC(2022, 3, 16), ['Date']);
 
     cy.visit(url);
 
@@ -170,7 +170,7 @@ describe('Cite pages', () => {
   });
 
   it('Should display correct Citation', () => {
-    cy.clock(new Date('2022-04-15'), ['Date']);
+    cy.clock(Date.UTC(2022, 3, 16), ['Date']);
     cy.visit(url);
 
     cy.get('[data-cy="citation"] .card-body')
