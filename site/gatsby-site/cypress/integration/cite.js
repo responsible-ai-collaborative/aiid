@@ -151,6 +151,8 @@ describe('Cite pages', () => {
   });
 
   it('Should display correct BibTex Citation', () => {
+    cy.clock(new Date('2022-04-16'), ['Date']);
+
     cy.visit(url);
 
     cy.contains('BibTex Citation').click();
@@ -168,13 +170,14 @@ describe('Cite pages', () => {
   });
 
   it('Should display correct Citation', () => {
+    cy.clock(new Date('2022-04-16'), ['Date']);
     cy.visit(url);
 
     cy.get('[data-cy="citation"] .card-body')
       .invoke('text')
       .then((text) => {
         expect(text).to.eq(
-          `Olsson, Catherine. () Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on April 15, 2022 from incidentdatabase.ai/cite/10.`
+          `Olsson, Catherine. (2014-08-14) Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on April 15, 2022 from incidentdatabase.ai/cite/10.`
         );
       });
   });
