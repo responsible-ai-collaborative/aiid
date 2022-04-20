@@ -1,3 +1,5 @@
+const { getUnixTime } = require('date-fns');
+
 module.exports = async ({ graphql }) => {
   const { data } = await graphql(`
     query AllIncidentsDataQuery {
@@ -24,10 +26,10 @@ module.exports = async ({ graphql }) => {
           date_downloaded
           date_modified
           date_published
+          date_submitted
           epoch_date_downloaded
           epoch_date_modified
           epoch_date_published
-          epoch_incident_date
           epoch_date_submitted
           submitters
           date_submitted
@@ -145,14 +147,15 @@ module.exports = async ({ graphql }) => {
         }
       }
 
-      const incidentData = {
-        objectID: report.mongodb_id,
-        incident_date: incident.date,
+      const reportData = {
         ...report,
+        objectID: report.mongodb_id,
+        epoch_incident_date: getUnixTime(new Date(incident.date)),
+        incident_date: incident.date,
         classifications,
       };
 
-      downloadData.push(truncate(incidentData));
+      downloadData.push(truncate(reportData));
     }
   }
 
