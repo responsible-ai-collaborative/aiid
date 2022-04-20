@@ -139,4 +139,14 @@ describe('Cite pages', () => {
 
     cy.contains('Previous Incident').should('be.visible').should('have.attr', 'href', '/cite/9');
   });
+
+  maybeIt('Should show the edit incident form', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.visit(url);
+
+    cy.contains('Edit Incident').click();
+
+    cy.get('[data-cy="incident-form').should('be.visible');
+  });
 });

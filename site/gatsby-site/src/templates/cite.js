@@ -14,6 +14,7 @@ import Timeline from 'components/visualizations/Timeline';
 import IncidentStatsCard from 'components/cite/IncidentStatsCard';
 import IncidentCard from 'components/cite/IncidentCard';
 import Taxonomy from 'components/taxa/Taxonomy';
+import { useUserContext } from 'contexts/userContext';
 
 const CardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -56,6 +57,8 @@ function CitePage(props) {
   const {
     pageContext: { incidentReports, taxonomies, nextIncident, prevIncident },
   } = props;
+
+  const { isRole } = useUserContext();
 
   // meta tags
   const { incident_id, incident_date } = incidentReports[0].node;
@@ -172,6 +175,15 @@ function CitePage(props) {
                 >
                   Discover
                 </Button>
+                {isRole('incident_editor') && (
+                  <Button
+                    variant="outline-primary"
+                    className="me-2"
+                    href={'/incidents/edit?incident_id=' + incident_id}
+                  >
+                    Edit Incident
+                  </Button>
+                )}
                 <BibTex nodes={incidentReports} incident_id={incident_id} />
               </div>
             </CardContainer>
