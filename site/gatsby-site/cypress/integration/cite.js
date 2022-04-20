@@ -156,7 +156,7 @@ describe('Cite pages', () => {
 
     const date = format(new Date(), 'MMMMd,y');
 
-    cy.contains('BibTex Citation').click();
+    cy.contains('BibTex Citation').scrollIntoView().click();
 
     cy.get('.modal-body code')
       .invoke('text')
