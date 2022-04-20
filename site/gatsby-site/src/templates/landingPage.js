@@ -12,6 +12,7 @@ import LatestReports from 'components/landing/LatestReports';
 import QuickSearch from 'components/landing/QuickSearch';
 import QuickAdd from 'components/landing/QuickAdd';
 import RandomReports from 'components/landing/RandomReports';
+import Founding from 'components/landing/Founding';
 import Hero from 'components/landing/Hero';
 
 const LandingPage = (props) => {
@@ -58,11 +59,11 @@ const LandingPage = (props) => {
         </Row>
 
         <Row>
-          <Col className="mt-4">
+          <Col className="mt-4" sm={12} md={12} lg={6}>
             <AboutDatabase className="h-100" />
           </Col>
-          <Col className="mt-4">
-            <AboutPartnership className="h-100" />
+          <Col className="mt-4" sm={12} md={12} lg={6}>
+            <Blog className="h-100" />
           </Col>
         </Row>
 
@@ -72,23 +73,26 @@ const LandingPage = (props) => {
           </Col>
         </Row>
 
+        <Row>
+          <Col className="mt-4" md={12} lg={6}>
+            <Founding className="h-100" />
+          </Col>
+          <Col className="mt-4" md={12} lg={6}>
+            <AboutPartnership className="h-100" />
+          </Col>
+        </Row>
+
         <Row className="mt-4">
           <Col>
             <Leaderboards />
           </Col>
         </Row>
 
-        <Row className="mt-4">
-          <Col>
-            <Blog />
-          </Col>
-        </Row>
-
         <Row>
-          <Col className="mt-4" lg={6}>
+          <Col className="mt-4" md={12} lg={6}>
             <WordCounts localWordCounts={localWordCounts} />
           </Col>
-          <Col className="mt-4" lg={6}>
+          <Col className="mt-4" md={12} lg={6}>
             <RandomReports />
           </Col>
         </Row>

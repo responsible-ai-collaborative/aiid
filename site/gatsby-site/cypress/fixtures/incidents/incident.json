@@ -1,0 +1,76 @@
+{
+    "data": {
+        "incident": {
+            "AllegedDeployerOfAISystem": [
+                "YouTube"
+            ],
+            "AllegedDeveloperOfAISystem": [
+                "YouTube"
+            ],
+            "AllegedHarmedOrNearlyHarmedParties": [],
+            "__typename": "Incident",
+            "date": "2015-05-19",
+            "description": "YouTube’s content filtering and recommendation algorithms exposed children to disturbing and inappropriate videos.",
+            "incident_id": 1,
+            "reports": [
+                {
+                    "__typename": "Report",
+                    "report_number": 1
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 2
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 3
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 4
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 5
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 6
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 7
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 8
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 9
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 10
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 11
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 12
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 14
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 15
+                }
+            ],
+            "title": "YouTube Kids app is STILL showing disturbing videos"
+        }
+    }
+}

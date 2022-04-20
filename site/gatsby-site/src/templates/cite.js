@@ -14,6 +14,7 @@ import Timeline from 'components/visualizations/Timeline';
 import IncidentStatsCard from 'components/cite/IncidentStatsCard';
 import IncidentCard from 'components/cite/IncidentCard';
 import Taxonomy from 'components/taxa/Taxonomy';
+import { useUserContext } from 'contexts/userContext';
 
 const CardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -54,17 +55,18 @@ const sortIncidentsByDatePublished = (incidentReports) => {
 
 function CitePage(props) {
   const {
-    pageContext: { incidentReports, taxonomies, nextIncident, prevIncident },
+    pageContext: { incident, incidentReports, taxonomies, nextIncident, prevIncident },
   } = props;
 
+  const { isRole } = useUserContext();
+
   // meta tags
-  const { incident_id, incident_date } = incidentReports[0].node;
 
-  const metaTitle = 'Incident ' + incident_id;
+  const metaTitle = 'Incident ' + incident.incident_id;
 
-  const metaDescription = 'Citation record for Incident ' + incident_id;
+  const metaDescription = 'Citation record for Incident ' + incident.incident_id;
 
-  const canonicalUrl = getCanonicalUrl(incident_id);
+  const canonicalUrl = getCanonicalUrl(incident.incident_id);
 
   const sortedReports = sortIncidentsByDatePublished(incidentReports);
 
@@ -74,12 +76,6 @@ function CitePage(props) {
 
   const flagReportModal = useModal();
 
-  const stats = {
-    incidentId: incident_id,
-    reportCount: incidentReports.length,
-    incidentDate: incidentReports[0].node.incident_date,
-  };
-
   const timeline = sortedReports.map(({ node: { date_published, title, mongodb_id } }) => ({
     date_published,
     title,
@@ -87,7 +83,7 @@ function CitePage(props) {
   }));
 
   timeline.push({
-    date_published: stats.incidentDate,
+    date_published: incident.date,
     title: 'Incident Occurrence',
     mongodb_id: 0,
     isOccurrence: true,
@@ -113,12 +109,16 @@ function CitePage(props) {
       <Container>
         <Row>
           <Col>
-            <CardContainer className="card">
+            <CardContainer className="card" data-cy="citation">
               <div className="card-header">
                 <h4>Suggested citation format</h4>
               </div>
               <div className="card-body">
-                <Citation nodes={incidentReports} incident_id={incident_id} />
+                <Citation
+                  nodes={incidentReports}
+                  incidentDate={incident.date}
+                  incident_id={incident.incident_id}
+                />
               </div>
             </CardContainer>
           </Col>
@@ -127,7 +127,13 @@ function CitePage(props) {
         <Row className="mt-4">
           <Col>
             <StatsContainer>
-              <IncidentStatsCard {...stats} />
+              <IncidentStatsCard
+                {...{
+                  incidentId: incident.incident_id,
+                  reportCount: incidentReports.length,
+                  incidentDate: incident.date,
+                }}
+              />
             </StatsContainer>
           </Col>
         </Row>
@@ -155,10 +161,9 @@ function CitePage(props) {
                 <Button
                   variant="outline-primary"
                   className="me-2"
-                  href={`/apps/submit?incident_id=${incident_id}&incident_date=${incident_date}&date_downloaded=${format(
-                    new Date(),
-                    'yyyy-MM-dd'
-                  )}`}
+                  href={`/apps/submit?incident_id=${incident.incident_id}&incident_date=${
+                    incident.date
+                  }&date_downloaded=${format(new Date(), 'yyyy-MM-dd')}`}
                 >
                   New Report
                 </Button>
@@ -168,11 +173,24 @@ function CitePage(props) {
                 <Button
                   variant="outline-primary"
                   className="me-2"
-                  href={'/apps/discover?incident_id=' + incident_id}
+                  href={'/apps/discover?incident_id=' + incident.incident_id}
                 >
                   Discover
                 </Button>
-                <BibTex nodes={incidentReports} incident_id={incident_id} />
+                {isRole('incident_editor') && (
+                  <Button
+                    variant="outline-primary"
+                    className="me-2"
+                    href={'/incidents/edit?incident_id=' + incident.incident_id}
+                  >
+                    Edit Incident
+                  </Button>
+                )}
+                <BibTex
+                  nodes={incidentReports}
+                  incidentDate={incident.date}
+                  incident_id={incident.incident_id}
+                />
               </div>
             </CardContainer>
           </Col>
@@ -182,7 +200,7 @@ function CitePage(props) {
           <Row id="taxa-area">
             <Col>
               {taxonomies.map((t) => (
-                <Taxonomy key={t.namespace} taxonomy={t} incidentId={incident_id} />
+                <Taxonomy key={t.namespace} taxonomy={t} incidentId={incident.incident_id} />
               ))}
             </Col>
           </Row>
