@@ -1,6 +1,7 @@
 import { maybeIt } from '../support/utils';
 import flaggedReport from '../fixtures/reports/flagged.json';
 import unflaggedReport from '../fixtures/reports/unflagged.json';
+import { format } from 'date-fns';
 
 describe('Cite pages', () => {
   const discoverUrl = '/apps/discover';
@@ -151,9 +152,9 @@ describe('Cite pages', () => {
   });
 
   it('Should display correct BibTex Citation', () => {
-    cy.clock(Date.UTC(2022, 3, 16), ['Date']);
-
     cy.visit(url);
+
+    const date = format(new Date(), 'MMMMd,y');
 
     cy.contains('BibTex Citation').click();
 
@@ -164,20 +165,21 @@ describe('Cite pages', () => {
         const bibText = text.replace(/(\r\n|\n|\r| |\s)/g, '');
 
         expect(bibText).to.eq(
-          `@article{aiid:10,author={Olsson,Catherine},editor={McGregor,Sean},journal={AIIncidentDatabase},publisher={ResponsibleAICollaborative},title={IncidentNumber10},url={https://incidentdatabase.ai/cite/10},year={2014},urldate={April15,2022}}`
+          `@article{aiid:10,author={Olsson,Catherine},editor={McGregor,Sean},journal={AIIncidentDatabase},publisher={ResponsibleAICollaborative},title={IncidentNumber10},url={https://incidentdatabase.ai/cite/10},year={2014},urldate={${date}}}`
         );
       });
   });
 
   it('Should display correct Citation', () => {
-    cy.clock(Date.UTC(2022, 3, 16), ['Date']);
     cy.visit(url);
+
+    const date = format(new Date(), 'MMMM d, y');
 
     cy.get('[data-cy="citation"] .card-body')
       .invoke('text')
       .then((text) => {
         expect(text).to.eq(
-          `Olsson, Catherine. (2014-08-14) Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on April 15, 2022 from incidentdatabase.ai/cite/10.`
+          `Olsson, Catherine. (2014-08-14) Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on ${date} from incidentdatabase.ai/cite/10.`
         );
       });
   });
