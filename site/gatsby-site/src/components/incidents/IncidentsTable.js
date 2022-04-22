@@ -1,9 +1,11 @@
 import { useUserContext } from 'contexts/userContext';
 import React, { useState } from 'react';
-import { Button, Form, Pagination } from 'react-bootstrap';
-import { useBlockLayout, usePagination, useResizeColumns, useTable } from 'react-table';
+import { Button, Form, OverlayTrigger, Pagination, Popover } from 'react-bootstrap';
+import { useBlockLayout, useFilters, usePagination, useResizeColumns, useTable } from 'react-table';
 import IncidentEditModal from './IncidentEditModal';
 import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
 const Styles = styled.div`
   padding: 1rem;
@@ -66,6 +68,58 @@ const PaginationWrapper = styled.div`
   }
 `;
 
+const FilterButton = styled.button`
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  margin: 0 6px;
+  color: ${({ color }) => color};
+`;
+
+const HeaderText = styled.div`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+function DefaultColumnFilter({ column: { canFilter, filterValue, preFilteredRows, setFilter } }) {
+  const count = preFilteredRows.length;
+
+  if (!canFilter) {
+    return null;
+  }
+
+  const isActive = !!filterValue;
+
+  console.log(filterValue);
+
+  return (
+    <OverlayTrigger
+      trigger="click"
+      placement="bottom"
+      rootClose
+      overlay={
+        <Popover id="popover-basic">
+          <Popover.Body>
+            <Form.Control
+              type="text"
+              value={filterValue || ''}
+              onChange={(e) => {
+                setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
+              }}
+              placeholder={`Search ${count} records...`}
+            />
+          </Popover.Body>
+        </Popover>
+      }
+    >
+      <FilterButton color={isActive ? 'var(--bs-primary)' : 'var(--bs-secondary)'}>
+        <FontAwesomeIcon icon={faFilter} />
+      </FilterButton>
+    </OverlayTrigger>
+  );
+}
+
 export default function IncidentsTable({ data }) {
   const [incidentIdToEdit, setIncindentIdToEdit] = useState(0);
 
@@ -76,6 +130,7 @@ export default function IncidentsTable({ data }) {
       minWidth: 30,
       width: 150,
       maxWidth: 400,
+      Filter: DefaultColumnFilter,
     }),
     []
   );
@@ -152,6 +207,7 @@ export default function IncidentsTable({ data }) {
       data,
       defaultColumn,
     },
+    useFilters,
     useBlockLayout,
     useResizeColumns,
     usePagination
@@ -168,7 +224,10 @@ export default function IncidentsTable({ data }) {
               <div {...headerGroup.getHeaderGroupProps()} className="tr">
                 {headerGroup.headers.map((column) => (
                   <div {...column.getHeaderProps()} className="th">
-                    {column.render('Header')}
+                    <HeaderText>
+                      {column.render('Filter')}
+                      {column.render('Header')}
+                    </HeaderText>
                     <div
                       {...column.getResizerProps()}
                       className={`resizer ${column.isResizing ? 'isResizing' : ''}`}
