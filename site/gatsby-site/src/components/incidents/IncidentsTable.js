@@ -7,64 +7,27 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
-const Styles = styled.div`
-  padding: 1rem;
+const Table = styled.div`
+  display: inline-block;
+  border-spacing: 0;
 
-  .react-table {
-    display: inline-block;
-    border-spacing: 0;
-    border: 1px solid black;
-
-    .tr {
-      :last-child {
-        .td {
-          border-bottom: 0;
-        }
-      }
-    }
-
-    .th,
-    .td {
-      margin: 0;
-      padding: 0.5rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
-      position: relative;
-
-      :last-child {
-        border-right: 0;
-      }
-
-      .resizer {
-        display: inline-block;
-        background: blue;
-        width: 10px;
-        height: 100%;
-        position: absolute;
-        right: 0;
-        top: 0;
-        transform: translateX(50%);
-        z-index: 1;
-        touch-action: none;
-
-        &.isResizing {
-          background: red;
-        }
+  .tr {
+    :last-child {
+      .td {
+        border-bottom: 0;
       }
     }
   }
-`;
 
-const PaginationWrapper = styled.div`
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  gap: 12px;
-  .pagination {
-    margin-bottom: 0;
-  }
-  select {
-    width: 120px;
+  .th,
+  .td {
+    margin: 0;
+    padding: 0.5rem;
+    position: relative;
+
+    :last-child {
+      border-right: 0;
+    }
   }
 `;
 
@@ -76,10 +39,23 @@ const FilterButton = styled.button`
   color: ${({ color }) => color};
 `;
 
-const HeaderText = styled.div`
+const HeaderText = styled.h6`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+
+const ResizeHandle = styled.div`
+  display: inline-block;
+  background: ${({ isResizing }) => (isResizing ? 'var(--bs-primary)' : 'var(--bs-secondary)')};
+  width: 6px;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translateX(50%);
+  z-index: 1;
+  touch-action: none;
 `;
 
 function DefaultColumnFilter({ column: { canFilter, filterValue, preFilteredRows, setFilter } }) {
@@ -90,8 +66,6 @@ function DefaultColumnFilter({ column: { canFilter, filterValue, preFilteredRows
   }
 
   const isActive = !!filterValue;
-
-  console.log(filterValue);
 
   return (
     <OverlayTrigger
@@ -215,50 +189,45 @@ export default function IncidentsTable({ data }) {
 
   return (
     <>
-      <Styles>
-        {/* eslint-disable react/jsx-key */}
+      {/* eslint-disable react/jsx-key */}
 
-        <div {...getTableProps()} className="react-table">
-          <div>
-            {headerGroups.map((headerGroup) => (
-              <div {...headerGroup.getHeaderGroupProps()} className="tr">
-                {headerGroup.headers.map((column) => (
-                  <div {...column.getHeaderProps()} className="th">
-                    <HeaderText>
-                      {column.render('Filter')}
-                      {column.render('Header')}
-                    </HeaderText>
-                    <div
-                      {...column.getResizerProps()}
-                      className={`resizer ${column.isResizing ? 'isResizing' : ''}`}
-                    />
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-
-          <div {...getTableBodyProps()}>
-            {page.map((row) => {
-              prepareRow(row);
-              return (
-                <div {...row.getRowProps()} className="tr">
-                  {row.cells.map((cell) => {
-                    return (
-                      <div {...cell.getCellProps()} className="td">
-                        {cell.render('Cell')}
-                      </div>
-                    );
-                  })}
+      <Table {...getTableProps()}>
+        <div>
+          {headerGroups.map((headerGroup) => (
+            <div {...headerGroup.getHeaderGroupProps()} className="tr">
+              {headerGroup.headers.map((column) => (
+                <div {...column.getHeaderProps()} className="td border-bottom border-right">
+                  <HeaderText>
+                    {column.render('Filter')}
+                    {column.render('Header')}
+                  </HeaderText>
+                  <ResizeHandle {...column.getResizerProps()} isResizing={column.isResizing} />
                 </div>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          ))}
         </div>
-      </Styles>
 
-      <PaginationWrapper>
-        <Pagination>
+        <div {...getTableBodyProps()}>
+          {page.map((row) => {
+            prepareRow(row);
+            return (
+              <div {...row.getRowProps()} className="tr">
+                {row.cells.map((cell) => {
+                  return (
+                    <div {...cell.getCellProps()} className="td border-end border-bottom">
+                      {cell.render('Cell')}
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      </Table>
+
+      <div className="d-flex gap-2 justify-content-start align-items-center mt-3">
+        <Pagination className="mb-0">
           <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage} />
           <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage} />
 
@@ -274,6 +243,7 @@ export default function IncidentsTable({ data }) {
         </span>
 
         <Form.Select
+          style={{ width: 120 }}
           size="sm"
           value={pageSize}
           onChange={(e) => {
@@ -286,7 +256,7 @@ export default function IncidentsTable({ data }) {
             </option>
           ))}
         </Form.Select>
-      </PaginationWrapper>
+      </div>
 
       <IncidentEditModal
         show={incidentIdToEdit !== 0}
