@@ -115,7 +115,7 @@
   "devDependencies": {
     "@robinmetral/gatsby-source-s3": "^2.1.1",
     "babel-eslint": "^10.1.0",
-    "cypress": "^9.1.1",
+    "cypress": "^9.5.4",
     "eslint": "^7.17.0",
     "eslint-config-prettier": "^7.1.0",
     "eslint-import-resolver-alias": "^1.1.2",

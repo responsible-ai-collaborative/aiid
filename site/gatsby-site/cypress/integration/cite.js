@@ -1,6 +1,7 @@
 import { maybeIt } from '../support/utils';
 import flaggedReport from '../fixtures/reports/flagged.json';
 import unflaggedReport from '../fixtures/reports/unflagged.json';
+import { format } from 'date-fns';
 
 describe('Cite pages', () => {
   const discoverUrl = '/apps/discover';
@@ -138,5 +139,48 @@ describe('Cite pages', () => {
     cy.contains('Next Incident').should('be.visible').should('have.attr', 'href', '/cite/11');
 
     cy.contains('Previous Incident').should('be.visible').should('have.attr', 'href', '/cite/9');
+  });
+
+  maybeIt('Should show the edit incident form', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.visit(url);
+
+    cy.contains('Edit Incident').click();
+
+    cy.get('[data-cy="incident-form').should('be.visible');
+  });
+
+  it('Should display correct BibTex Citation', () => {
+    cy.visit(url);
+
+    const date = format(new Date(), 'MMMMd,y');
+
+    cy.contains('BibTex Citation').scrollIntoView().click();
+
+    cy.get('.modal-body code')
+      .invoke('text')
+      .then((text) => {
+        // eslint-disable-next-line
+        const bibText = text.replace(/(\r\n|\n|\r| |\s)/g, '');
+
+        expect(bibText).to.eq(
+          `@article{aiid:10,author={Olsson,Catherine},editor={McGregor,Sean},journal={AIIncidentDatabase},publisher={ResponsibleAICollaborative},title={IncidentNumber10},url={https://incidentdatabase.ai/cite/10},year={2014},urldate={${date}}}`
+        );
+      });
+  });
+
+  it('Should display correct Citation', () => {
+    cy.visit(url);
+
+    const date = format(new Date(), 'MMMM d, y');
+
+    cy.get('[data-cy="citation"] .card-body')
+      .invoke('text')
+      .then((text) => {
+        expect(text).to.eq(
+          `Olsson, Catherine. (2014-08-14) Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on ${date} from incidentdatabase.ai/cite/10.`
+        );
+      });
   });
 });

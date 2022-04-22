@@ -1,8 +1,8 @@
+import { format } from 'date-fns';
 import React from 'react';
-import { retrievalDate } from '../../utils/date';
 import { getFormattedName } from '../../utils/typography';
 
-const Citation = ({ nodes, incident_id }) => {
+const Citation = ({ nodes, incidentDate, incident_id }) => {
   let docs = [];
 
   nodes.forEach(({ node }) => docs.push(node));
@@ -15,9 +15,10 @@ const Citation = ({ nodes, incident_id }) => {
   // Only return the earliest submitter
   let submitterCite = getFormattedName(docs[0]['submitters'][0]);
 
-  const retrievalString = `Retrieved on ${retrievalDate()} from incidentdatabase.ai/cite/${incident_id}.`;
-
-  var incidentDate = docs[0]['incident_date'];
+  const retrievalString = `Retrieved on ${format(
+    new Date(),
+    'MMMM d, y'
+  )} from incidentdatabase.ai/cite/${incident_id}.`;
 
   return (
     <>
