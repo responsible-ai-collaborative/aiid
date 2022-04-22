@@ -180,7 +180,6 @@ const createCitiationPages = async (graphql, createPage) => {
   for (const incident of allMongodbAiidprodIncidents.nodes) {
     incidentReportsMap[incident.incident_id] = incident.reports
       .map((r) => allMongodbAiidprodReports.nodes.find((n) => n.report_number === r))
-      .map((r) => ({ ...r, incident_date: incident.date }))
       .map((r) => ({ node: { ...r } }));
   }
 
@@ -192,11 +191,13 @@ const createCitiationPages = async (graphql, createPage) => {
   const keys = Object.keys(incidentReportsMap);
 
   for (let i = 0; i < keys.length; i++) {
-    const incident_id = keys[i];
+    const incident_id = parseInt(keys[i]);
 
-    const incidentClassifications = allClassifications.filter(
-      (t) => t.incident_id.toString() === incident_id
+    const incident = allMongodbAiidprodIncidents.nodes.find(
+      (incident) => incident.incident_id === incident_id
     );
+
+    const incidentClassifications = allClassifications.filter((t) => t.incident_id === incident_id);
 
     const taxonomies = [];
 
@@ -216,6 +217,7 @@ const createCitiationPages = async (graphql, createPage) => {
       path: '/cite/' + incident_id,
       component: path.resolve('./src/templates/cite.js'),
       context: {
+        incident,
         incidentReports: incidentReportsMap[incident_id],
         taxonomies,
         nextIncident: i < keys.length - 1 ? keys[i + 1] : null,
