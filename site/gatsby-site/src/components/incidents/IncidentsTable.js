@@ -1,7 +1,7 @@
 import { useUserContext } from 'contexts/userContext';
 import React, { useState } from 'react';
-import { Button } from 'react-bootstrap';
-import { useBlockLayout, useResizeColumns, useTable } from 'react-table';
+import { Button, Form, Pagination } from 'react-bootstrap';
+import { useBlockLayout, usePagination, useResizeColumns, useTable } from 'react-table';
 import IncidentEditModal from './IncidentEditModal';
 import styled from 'styled-components';
 
@@ -50,6 +50,19 @@ const Styles = styled.div`
         }
       }
     }
+  }
+`;
+
+const PaginationWrapper = styled.div`
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 12px;
+  .pagination {
+    margin-bottom: 0;
+  }
+  select {
+    width: 120px;
   }
 `;
 
@@ -118,14 +131,30 @@ export default function IncidentsTable({ data }) {
     [isAdmin]
   );
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    prepareRow,
+    page,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state: { pageIndex, pageSize },
+  } = useTable(
     {
       columns,
       data,
       defaultColumn,
     },
     useBlockLayout,
-    useResizeColumns
+    useResizeColumns,
+    usePagination
   );
 
   return (
@@ -151,7 +180,7 @@ export default function IncidentsTable({ data }) {
           </div>
 
           <div {...getTableBodyProps()}>
-            {rows.map((row) => {
+            {page.map((row) => {
               prepareRow(row);
               return (
                 <div {...row.getRowProps()} className="tr">
@@ -168,6 +197,37 @@ export default function IncidentsTable({ data }) {
           </div>
         </div>
       </Styles>
+
+      <PaginationWrapper>
+        <Pagination>
+          <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage} />
+          <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage} />
+
+          <Pagination.Next onClick={() => nextPage()} disabled={!canNextPage} />
+          <Pagination.Last onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage} />
+        </Pagination>
+
+        <span>
+          Page{' '}
+          <strong>
+            {pageIndex + 1} of {pageOptions.length}
+          </strong>{' '}
+        </span>
+
+        <Form.Select
+          size="sm"
+          value={pageSize}
+          onChange={(e) => {
+            setPageSize(Number(e.target.value));
+          }}
+        >
+          {[10, 50, 100, 'all'].map((pageSize) => (
+            <option key={pageSize} value={pageSize == 'all' ? 99999 : pageSize}>
+              Show {pageSize}
+            </option>
+          ))}
+        </Form.Select>
+      </PaginationWrapper>
 
       <IncidentEditModal
         show={incidentIdToEdit !== 0}
