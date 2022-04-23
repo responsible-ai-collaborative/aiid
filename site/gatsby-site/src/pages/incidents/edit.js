@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from 'components/Layout';
 import IncidentForm from 'components/incidents/IncidentForm';
-import { NumberParam, useQueryParam } from 'use-query-params';
+import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Spinner } from 'react-bootstrap';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
@@ -10,7 +10,7 @@ import { useMutation, useQuery } from '@apollo/client/react/hooks';
 function EditCitePage(props) {
   const [incident, setIncident] = useState();
 
-  const [incidentId] = useQueryParam('incidentId', NumberParam);
+  const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
 
   const { data: incidentData } = useQuery(FIND_INCIDENT, {
     variables: { query: { incident_id: incidentId } },

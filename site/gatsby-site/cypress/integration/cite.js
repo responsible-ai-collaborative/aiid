@@ -57,9 +57,9 @@ describe('Cite pages', () => {
 
     cy.visit('/cite/1#' + id);
 
-    cy.get('#' + id)
-      .get('[data-cy=edit-report]')
-      .should('exist');
+    cy.get(`#${id} [data-cy="edit-report"]`).click();
+
+    cy.url().should('contain', '/cite/edit?report_number=10');
   });
 
   maybeIt('Should show the taxonomy form of CSET', () => {
@@ -147,6 +147,8 @@ describe('Cite pages', () => {
     cy.visit(url);
 
     cy.contains('Edit Incident').click();
+
+    cy.url().should('contain', '/incidents/edit?incident_id=10');
 
     cy.get('[data-cy="incident-form').should('be.visible');
   });
