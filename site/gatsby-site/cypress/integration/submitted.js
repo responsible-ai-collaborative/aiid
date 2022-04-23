@@ -1,7 +1,8 @@
 import { maybeIt } from '../support/utils';
 import submittedReports from '../fixtures/submissions/submitted.json';
+import { format, getUnixTime } from 'date-fns';
 
-describe('Cite pages', () => {
+describe('Submitted reports', () => {
   const url = '/apps/submitted';
 
   it('Loads submitted reports', () => {
@@ -128,9 +129,23 @@ describe('Cite pages', () => {
     cy.wait('@insertReport')
       .its('request.body.variables.report')
       .then((report) => {
+        const date_modified = format(new Date(), 'yyyy-MM-dd');
+
+        const epoch_date_modified = getUnixTime(new Date(date_modified));
+
         expect(report.report_number).to.eq(1545);
         expect(report.incident_id).to.eq(172);
         expect(report.ref_number).eq(1);
+
+        expect(report.date_modified).eq(date_modified);
+        expect(report.date_downloaded).eq('2020-10-30');
+        expect(report.date_published).eq('2017-05-03');
+        expect(report.date_submitted).eq('2020-10-30');
+
+        expect(report.epoch_date_modified).eq(epoch_date_modified);
+        expect(report.epoch_date_downloaded).eq(1604016000);
+        expect(report.epoch_date_published).eq(1493769600);
+        expect(report.epoch_date_submitted).eq(1604016000);
       });
 
     cy.wait('@relatedIncidents')
