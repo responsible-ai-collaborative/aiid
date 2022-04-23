@@ -59,7 +59,7 @@ describe('Cite pages', () => {
 
     cy.get(`#${id} [data-cy="edit-report"]`).click();
 
-    cy.url().should('contain', '/cite/edit?reportNumber=10');
+    cy.url().should('contain', '/cite/edit?report_number=10');
   });
 
   maybeIt('Should show the taxonomy form of CSET', () => {
