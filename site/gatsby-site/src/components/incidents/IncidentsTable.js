@@ -58,7 +58,9 @@ const ResizeHandle = styled.div`
   touch-action: none;
 `;
 
-function DefaultColumnFilter({ column: { canFilter, filterValue, preFilteredRows, setFilter } }) {
+function DefaultColumnFilter({
+  column: { Header, canFilter, filterValue, preFilteredRows, setFilter },
+}) {
   const count = preFilteredRows.length;
 
   if (!canFilter) {
@@ -76,6 +78,7 @@ function DefaultColumnFilter({ column: { canFilter, filterValue, preFilteredRows
         <Popover id="popover-basic">
           <Popover.Body>
             <Form.Control
+              data-cy={`input-filter-${Header}`}
               type="text"
               value={filterValue || ''}
               onChange={(e) => {
@@ -87,7 +90,10 @@ function DefaultColumnFilter({ column: { canFilter, filterValue, preFilteredRows
         </Popover>
       }
     >
-      <FilterButton color={isActive ? 'var(--bs-primary)' : 'var(--bs-secondary)'}>
+      <FilterButton
+        color={isActive ? 'var(--bs-primary)' : 'var(--bs-secondary)'}
+        data-cy={`filter-${Header}`}
+      >
         <FontAwesomeIcon icon={faFilter} />
       </FilterButton>
     </OverlayTrigger>
@@ -194,7 +200,7 @@ export default function IncidentsTable({ data }) {
       <Table {...getTableProps()}>
         <div>
           {headerGroups.map((headerGroup) => (
-            <div {...headerGroup.getHeaderGroupProps()} className="tr">
+            <div {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
                 <div {...column.getHeaderProps()} className="td border-bottom border-right">
                   <HeaderText>
@@ -212,7 +218,7 @@ export default function IncidentsTable({ data }) {
           {page.map((row) => {
             prepareRow(row);
             return (
-              <div {...row.getRowProps()} className="tr">
+              <div {...row.getRowProps()} className="tr" data-cy="row">
                 {row.cells.map((cell) => {
                   return (
                     <div {...cell.getCellProps()} className="td border-end border-bottom">

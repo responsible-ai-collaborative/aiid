@@ -1,0 +1,68 @@
+{
+    "data": {
+        "updateOneIncident": {
+            "__typename": "Incident",
+            "date": "2015-05-19",
+            "incident_id": 112,
+            "title": "Test title",
+            "reports": [
+                {
+                    "__typename": "Report",
+                    "report_number": 1
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 2
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 3
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 4
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 5
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 6
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 7
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 8
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 9
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 10
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 11
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 12
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 14
+                },
+                {
+                    "__typename": "Report",
+                    "report_number": 15
+                }
+            ]
+        }
+    }
+}
