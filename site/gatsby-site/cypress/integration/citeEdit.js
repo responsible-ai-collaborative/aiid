@@ -39,6 +39,8 @@ describe('Edit report', () => {
   maybeIt('Should submit new values', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
+    cy.clock(Date.UTC(2022, 3, 23), ['Date']);
+
     cy.visit(url);
 
     const values = {
