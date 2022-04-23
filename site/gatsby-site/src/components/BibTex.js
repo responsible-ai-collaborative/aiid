@@ -53,7 +53,7 @@ const BibTex = ({ nodes, incidentDate, incident_id }) => {
       <Button variant="outline-primary" onClick={handleShow}>
         BibTex Citation
       </Button>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} data-cy="bibtext-modal">
         <Modal.Header closeButton>
           <Modal.Title>BibTex Citation</Modal.Title>
         </Modal.Header>
