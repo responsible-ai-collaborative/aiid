@@ -148,7 +148,7 @@ describe('Cite pages', () => {
 
     cy.contains('Edit Incident').click();
 
-    cy.url().should('contain', '/incidents/edit?incidentId=10');
+    cy.url().should('contain', '/incidents/edit?incident_id=10');
 
     cy.get('[data-cy="incident-form').should('be.visible');
   });

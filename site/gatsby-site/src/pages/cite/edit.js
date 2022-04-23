@@ -17,7 +17,7 @@ import { format, getUnixTime } from 'date-fns';
 function EditCitePage(props) {
   const [report, setReport] = useState();
 
-  const [reportNumber] = useQueryParam('reportNumber', withDefault(NumberParam, 1));
+  const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
 
   const { data: reportData } = useQuery(FIND_REPORT, {
     variables: { query: { report_number: reportNumber } },

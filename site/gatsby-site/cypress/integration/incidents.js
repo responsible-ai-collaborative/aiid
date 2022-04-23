@@ -5,7 +5,7 @@ import incident from '../fixtures/incidents/incident.json';
 import updateOneIncident from '../fixtures/incidents/updateOneIncident.json';
 
 describe('Incidents', () => {
-  const url = '/incidents/edit?incidentId=10';
+  const url = '/incidents/edit?incident_id=10';
 
   maybeIt('Should successfully edit incident fields', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));

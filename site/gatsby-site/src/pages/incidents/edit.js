@@ -10,7 +10,7 @@ import { useMutation, useQuery } from '@apollo/client/react/hooks';
 function EditCitePage(props) {
   const [incident, setIncident] = useState();
 
-  const [incidentId] = useQueryParam('incidentId', withDefault(NumberParam, 1));
+  const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
 
   const { data: incidentData } = useQuery(FIND_INCIDENT, {
     variables: { query: { incident_id: incidentId } },
