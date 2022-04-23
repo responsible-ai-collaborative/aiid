@@ -38,7 +38,7 @@ describe('Cite pages', () => {
     });
   });
 
-  maybeIt('Promotes a report and links it to a new incident', () => {
+  it('Promotes a report and links it to a new incident', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -131,6 +131,9 @@ describe('Cite pages', () => {
         expect(report.report_number).to.eq(1545);
         expect(report.incident_id).to.eq(172);
         expect(report.ref_number).eq(1);
+        expect(report.epoch_date_downloaded).eq(1604016000);
+        expect(report.epoch_date_modified).eq(1604016000);
+        expect(report.epoch_date_published).eq(1493769600);
       });
 
     cy.wait('@relatedIncidents')
