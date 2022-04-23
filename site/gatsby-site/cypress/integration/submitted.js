@@ -1,7 +1,7 @@
 import { maybeIt } from '../support/utils';
 import submittedReports from '../fixtures/submissions/submitted.json';
 
-describe('Cite pages', () => {
+describe('Submitted reports', () => {
   const url = '/apps/submitted';
 
   it('Loads submitted reports', () => {

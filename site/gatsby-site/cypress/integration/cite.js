@@ -158,7 +158,10 @@ describe('Cite pages', () => {
 
     cy.contains('BibTex Citation').scrollIntoView().click();
 
-    cy.get('.modal-body code')
+    cy.get('[data-cy="bibtext-modal"]').as('modal').should('be.visible');
+
+    cy.get('@modal')
+      .find('code')
       .invoke('text')
       .then((text) => {
         // eslint-disable-next-line
