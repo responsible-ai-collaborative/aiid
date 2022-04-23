@@ -181,7 +181,7 @@ function CitePage(props) {
                   <Button
                     variant="outline-primary"
                     className="me-2"
-                    href={'/incidents/edit?incident_id=' + incident.incident_id}
+                    href={'/incidents/edit?incidentId=' + incident.incident_id}
                   >
                     Edit Incident
                   </Button>
