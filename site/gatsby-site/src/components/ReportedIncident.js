@@ -138,9 +138,10 @@ const ReportedIncident = ({ incident: report }) => {
 
     newReport.date_modified = format(new Date(), 'yyyy-MM-dd');
 
+    newReport.epoch_date_modified = getUnixTime(new Date(newReport.date_modified));
     newReport.epoch_date_published = getUnixTime(new Date(newReport.date_published));
     newReport.epoch_date_downloaded = getUnixTime(new Date(newReport.date_downloaded));
-    newReport.epoch_date_modified = getUnixTime(new Date(newReport.date_modified));
+    newReport.epoch_date_submitted = getUnixTime(new Date(newReport.date_submitted));
 
     await insertReport({ variables: { report: newReport } });
 
