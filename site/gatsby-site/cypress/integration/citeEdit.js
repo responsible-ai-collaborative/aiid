@@ -5,7 +5,7 @@ import updateOneIncident from '../fixtures/reports/updateOneIncident.json';
 import { format, getUnixTime } from 'date-fns';
 
 describe('Edit report', () => {
-  const url = '/cite/edit?reportNumber=10';
+  const url = '/cite/edit?report_number=10';
 
   it('Successfully loads', () => {
     cy.visit(url);
@@ -126,7 +126,7 @@ describe('Edit report', () => {
   });
 
   maybeIt('Should link a report to another incident', () => {
-    cy.visit(`/cite/edit?reportNumber=23`);
+    cy.visit(`/cite/edit?report_number=23`);
 
     cy.conditionalIntercept(
       '**/graphql',

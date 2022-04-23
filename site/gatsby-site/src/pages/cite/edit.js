@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from 'components/Layout';
 import IncidentReportForm from 'components/forms/IncidentReportForm';
-import { NumberParam, useQueryParam } from 'use-query-params';
+import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Spinner } from 'react-bootstrap';
 import {
@@ -17,7 +17,7 @@ import { format, getUnixTime } from 'date-fns';
 function EditCitePage(props) {
   const [report, setReport] = useState();
 
-  const [reportNumber] = useQueryParam('reportNumber', NumberParam);
+  const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
 
   const { data: reportData } = useQuery(FIND_REPORT, {
     variables: { query: { report_number: reportNumber } },
