@@ -2,6 +2,8 @@ import { maybeIt } from '../support/utils';
 
 import updateOneIncident from '../fixtures/reports/updateOneIncident.json';
 
+import { format, getUnixTime } from 'date-fns';
+
 describe('Edit report', () => {
   const url = '/cite/edit?reportNumber=10';
 
@@ -39,8 +41,6 @@ describe('Edit report', () => {
   maybeIt('Should submit new values', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    cy.clock(Date.UTC(2022, 3, 23), ['Date']);
-
     cy.visit(url);
 
     const values = {
@@ -73,13 +73,17 @@ describe('Edit report', () => {
     cy.contains('button', 'Submit').click();
 
     cy.wait('@updateReport').then((xhr) => {
+      const date_modified = format(new Date(), 'yyyy-MM-dd');
+
+      const epoch_date_modified = getUnixTime(new Date(date_modified));
+
       expect(xhr.request.body.variables.set.authors).deep.eq(['Test Author']);
       expect(xhr.request.body.variables.set.cloudinary_id).eq('reports/test.com/test.jpg');
       expect(xhr.request.body.variables.set.date_downloaded).eq('2022-01-01');
-      expect(xhr.request.body.variables.set.date_modified).eq('2022-04-22');
+      expect(xhr.request.body.variables.set.date_modified).eq(date_modified);
       expect(xhr.request.body.variables.set.date_published).eq('2022-02-02');
       expect(xhr.request.body.variables.set.epoch_date_downloaded).eq(1640995200);
-      expect(xhr.request.body.variables.set.epoch_date_modified).eq(1650585600);
+      expect(xhr.request.body.variables.set.epoch_date_modified).eq(epoch_date_modified);
       expect(xhr.request.body.variables.set.epoch_date_published).eq(1643760000);
       expect(xhr.request.body.variables.set.flag).eq(null);
       expect(xhr.request.body.variables.set.image_url).eq('https://test.com/test.jpg');
