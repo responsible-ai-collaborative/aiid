@@ -38,7 +38,7 @@ describe('Cite pages', () => {
     });
   });
 
-  it('Promotes a report and links it to a new incident', () => {
+  maybeIt('Promotes a report and links it to a new incident', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
