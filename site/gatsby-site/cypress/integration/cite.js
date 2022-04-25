@@ -57,9 +57,9 @@ describe('Cite pages', () => {
 
     cy.visit('/cite/1#' + id);
 
-    cy.get('#' + id)
-      .get('[data-cy=edit-report]')
-      .should('exist');
+    cy.get(`#${id} [data-cy="edit-report"]`).click();
+
+    cy.url().should('contain', '/cite/edit?report_number=10');
   });
 
   maybeIt('Should show the taxonomy form of CSET', () => {
@@ -148,6 +148,8 @@ describe('Cite pages', () => {
 
     cy.contains('Edit Incident').click();
 
+    cy.url().should('contain', '/incidents/edit?incident_id=10');
+
     cy.get('[data-cy="incident-form').should('be.visible');
   });
 
@@ -158,7 +160,10 @@ describe('Cite pages', () => {
 
     cy.contains('BibTex Citation').scrollIntoView().click();
 
-    cy.get('.modal-body code')
+    cy.get('[data-cy="bibtext-modal"]').as('modal').should('be.visible');
+
+    cy.get('@modal')
+      .find('code')
       .invoke('text')
       .then((text) => {
         // eslint-disable-next-line
