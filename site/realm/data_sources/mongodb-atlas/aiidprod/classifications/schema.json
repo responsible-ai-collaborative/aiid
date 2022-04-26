@@ -112,7 +112,7 @@
                     "bsonType": "bool"
                 },
                 "Quality Control": {
-                    "bsonType": "mixed"
+                    "bsonType": "bool"
                 },
                 "Relevant AI functions": {
                     "bsonType": "array",
