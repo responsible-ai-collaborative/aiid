@@ -1,4 +1,5 @@
 [build]
-  base = "site/gatsby-site/"
+base = "site/gatsby-site/"
 
-
+[[plugins]]
+package = "@netlify/plugin-gatsby"
