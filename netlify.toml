@@ -1,6 +1,5 @@
 [build]
-publish = "public"
-command = "npm run build"
+  base = "site/gatsby-site/"
 
 [build.environment]
 CYPRESS_CACHE_FOLDER = "./node_modules/CypressBinary"
