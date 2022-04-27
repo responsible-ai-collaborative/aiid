@@ -1,15 +1,4 @@
 [build]
   base = "site/gatsby-site/"
 
-[build.environment]
-CYPRESS_CACHE_FOLDER = "./node_modules/CypressBinary"
-TERM = "xterm"
 
-[[plugins]]
-  package = "netlify-plugin-cypress"
-  [plugins.inputs]
-    enable = false
-  [plugins.inputs.postBuild]
-    enable = true
-    spa = true
-    start = 'gatsby serve -p 8080'
