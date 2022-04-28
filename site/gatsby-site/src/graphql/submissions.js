@@ -7,3 +7,25 @@ export const DELETE_SUBMISSION = gql`
     }
   }
 `;
+
+export const FIND_SUBMISSIONS = gql`
+  {
+    submissions {
+      _id
+      cloudinary_id
+      date_downloaded
+      date_modified
+      date_published
+      date_submitted
+      description
+      image_url
+      incident_date
+      incident_id
+      language
+      source_domain
+      text
+      title
+      url
+    }
+  }
+`;
