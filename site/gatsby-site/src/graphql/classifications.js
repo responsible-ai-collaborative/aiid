@@ -60,7 +60,6 @@ export const FIND_CSET_CLASSIFICATION = gql`
         NamedEntities
         NatureOfEndUser
         NearMiss
-        Notes
         PhysicalSystem
         ProblemNature
         PublicSectorDeployment
@@ -109,7 +108,6 @@ export const UPDATE_CSET_CLASSIFICATION = gql`
         NamedEntities
         NatureOfEndUser
         NearMiss
-        Notes
         PhysicalSystem
         ProblemNature
         PublicSectorDeployment
