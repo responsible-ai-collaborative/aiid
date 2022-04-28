@@ -9,7 +9,7 @@ const Citation = ({ nodes, incidentDate, incident_id }) => {
 
   // Sort the docs according to their submit date
   docs.sort(function (a, b) {
-    return a['submission_date'] > b['submission_date'];
+    return a['epoch_date_submitted'] > b['epoch_date_submitted'];
   });
 
   // Only return the earliest submitter
