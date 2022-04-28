@@ -5,7 +5,6 @@ import { Button, Spinner, Row, Col, Card, Badge, ListGroup } from 'react-bootstr
 import { useMutation, useQuery } from '@apollo/client';
 import { DELETE_QUICKADD, FIND_QUICKADD } from '../../graphql/quickadd.js';
 import { useUserContext } from 'contexts/userContext';
-import { SubmissionsContextProvider } from 'contexts/submissionsContext';
 import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import SubmissionList from 'components/SubmissionList';
@@ -79,9 +78,7 @@ const SubmittedIncidentsPage = ({ ...props }) => {
       <div className={'titleWrapper'}>
         <StyledHeading>Submitted Incident Report List</StyledHeading>
       </div>
-      <SubmissionsContextProvider>
-        <SubmissionList />
-      </SubmissionsContextProvider>
+      <SubmissionList />
       <StyledMainWrapper>
         <h1>Quick Add URLs</h1>
         <p>
