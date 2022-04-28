@@ -27,7 +27,7 @@ const SubmissionList = () => {
         )}
         {submissionsData &&
           submissionsData.submissions
-            .slice(0)
+            .map((submission) => ({ ...submission, __typename: undefined }))
             .sort(
               (a, b) => new Date(a.date_submitted).getTime() - new Date(b.date_submitted).getTime()
             )
