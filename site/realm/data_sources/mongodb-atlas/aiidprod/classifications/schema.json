@@ -93,9 +93,6 @@
                 "Near Miss": {
                     "bsonType": "string"
                 },
-                "Notes": {
-                    "bsonType": "string"
-                },
                 "Physical System": {
                     "bsonType": "array",
                     "items": {
@@ -115,7 +112,7 @@
                     "bsonType": "bool"
                 },
                 "Quality Control": {
-                    "bsonType": "mixed"
+                    "bsonType": "bool"
                 },
                 "Relevant AI functions": {
                     "bsonType": "array",

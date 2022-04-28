@@ -88,7 +88,7 @@ const ReportedIncident = ({ incident: report }) => {
 
   const updateLinkedReports = useUpdateLinkedReports();
 
-  const [getLastIndexes] = useLazyQuery(lastIndexesQuery);
+  const [getLastIndexes] = useLazyQuery(lastIndexesQuery, { fetchPolicy: 'network-only' });
 
   const [insertReport] = useMutation(INSERT_REPORT);
 
