@@ -77,6 +77,7 @@ const createCitiationPages = async (graphql, createPage) => {
             mongodb_id
             text
             authors
+            epoch_date_submitted
           }
         }
 
