@@ -4,6 +4,7 @@ import { subWeeks, addWeeks, getUnixTime, parse, isValid } from 'date-fns';
 import styled from 'styled-components';
 import { gql, useApolloClient } from '@apollo/client';
 import debounce from 'lodash/debounce';
+import isArray from 'lodash/isArray';
 
 const ListContainer = styled(Card)`
   margin: 1em 0;
@@ -63,7 +64,9 @@ const searchColumns = {
     query: relatedReportsQuery,
     getReports: (result) => result.data.reports,
     isSet: (incident) => incident.authors,
-    getQueryVariables: (incident) => ({ authors_in: incident.authors.split(',') }),
+    getQueryVariables: (incident) => ({
+      authors_in: isArray(incident.authors) ? incident.authors : incident.authors.split(','),
+    }),
   },
 
   byURL: {
