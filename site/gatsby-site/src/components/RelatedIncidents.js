@@ -35,7 +35,11 @@ const relatedReportsQuery = gql`
 
 const searchColumns = {
   byDatePublished: {
-    header: () => `Incidents reports matched by published date`,
+    header: (incident) => (
+      <>
+        Incidents reports matched by published date: <b>{incident.date_published}</b>
+      </>
+    ),
     query: relatedReportsQuery,
     getReports: (result) => result.data.reports,
     isSet: (incident) =>
@@ -52,7 +56,11 @@ const searchColumns = {
   },
 
   byIncidentId: {
-    header: () => `Incidents reports matched by ID`,
+    header: (incident) => (
+      <>
+        Incidents reports matched by ID: <b>{incident.incident_id}</b>
+      </>
+    ),
     query: relatedIncidentsQuery,
     getReports: (result) => (result.data.incidents.length ? result.data.incidents[0].reports : []),
     isSet: (incident) => incident.incident_id,
@@ -60,7 +68,11 @@ const searchColumns = {
   },
 
   byAuthors: {
-    header: () => `Incidents reports matched by authors`,
+    header: (incident) => (
+      <>
+        Incidents reports matched by authors: <b>{incident.authors}</b>
+      </>
+    ),
     query: relatedReportsQuery,
     getReports: (result) => result.data.reports,
     isSet: (incident) => incident.authors,
@@ -70,7 +82,11 @@ const searchColumns = {
   },
 
   byURL: {
-    header: () => `Incidents reports matched by URL`,
+    header: (incident) => (
+      <>
+        Incidents reports matched by URL: <b>{incident.url}</b>
+      </>
+    ),
     query: relatedReportsQuery,
     getReports: (result) => result.data.reports,
     isSet: (incident) => incident.url,
@@ -185,7 +201,7 @@ const RelatedIncidents = ({ incident }) => {
             key={key}
             loading={loading[key]}
             reports={relatedReports[key]}
-            header={column.header()}
+            header={column.header(incident)}
           />
         );
       })}
