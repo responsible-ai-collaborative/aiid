@@ -9,15 +9,17 @@ describe('Submitted reports', () => {
     cy.visit(url);
 
     cy.conditionalIntercept(
-      '**/functions/call',
-      (req) => req.body.arguments[0]?.collection == 'submissions' && req.body.name === 'find',
-      'submitReport',
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'FindSubmission',
       submittedReports
     );
 
-    cy.get('[data-cy="submissions"] > div').should('have.length', submittedReports.length);
+    const submissions = submittedReports.data.submissions;
 
-    submittedReports.forEach((report, index) => {
+    cy.get('[data-cy="submissions"] > div').should('have.length', submissions.length);
+
+    submissions.forEach((report, index) => {
       cy.get('[data-cy="submissions"]')
         .children(`:nth-child(${index + 1})`)
         .contains('review >')
@@ -29,7 +31,7 @@ describe('Submitted reports', () => {
           cy.get('[data-cy="source_domain"]').should('contain', report.source_domain);
           cy.get('[data-cy="authors"]').should('contain', report.authors);
           cy.get('[data-cy="submitters"]').should('contain', report.submitters);
-          cy.get('[data-cy="incident_id"]').should('contain', report.incident_id.$numberLong);
+          cy.get('[data-cy="incident_id"]').should('contain', report.incident_id);
           cy.get('[data-cy="date_published"]').should('contain', report.date_published);
           cy.get('[data-cy="date_submitted"]').should('contain', report.date_submitted);
           cy.get('[data-cy="date_downloaded"]').should('contain', report.date_downloaded);

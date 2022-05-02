@@ -9,7 +9,7 @@ export const DELETE_SUBMISSION = gql`
 `;
 
 export const FIND_SUBMISSIONS = gql`
-  {
+  query FindSubmissions {
     submissions {
       _id
       cloudinary_id
