@@ -246,25 +246,25 @@ describe('The Submit form', () => {
       '@RelatedReportsByIncidentId',
     ]);
 
-    const keys = ['byDatePublished', 'byIncidentId', 'byAuthors', 'byURL'];
-
-    for (const key of keys) {
+    for (const key in relatedReports) {
       const reports =
         key == 'byIncidentId'
           ? relatedReports[key].data.incidents[0].reports
           : relatedReports[key].data.reports;
 
-      cy.get(`[data-cy="related-${key}"]`).within(() => {
-        if (reports.length == 0) {
-          cy.get('.list-group-item').should('contain.text', 'No related reports found.');
-        } else {
-          cy.get('[class="list-group-item"]').should('have.length', reports.length);
-        }
+      cy.get(`[data-cy="related-${key}"]`).as('related');
 
-        for (const report of reports) {
-          cy.contains('[class="list-group-item"]', report.title);
-        }
-      });
+      if (reports.length == 0) {
+        cy.get('@related')
+          .find('.list-group-item')
+          .should('contain.text', 'No related reports found.');
+      } else {
+        cy.get('@related').find('[class="list-group-item"]').should('have.length', reports.length);
+      }
+
+      for (const report of reports) {
+        cy.get('@related').find('[class="list-group-item"]', report.title);
+      }
     }
   });
 
