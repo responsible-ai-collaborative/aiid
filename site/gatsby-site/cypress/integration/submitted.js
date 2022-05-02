@@ -6,14 +6,16 @@ describe('Submitted reports', () => {
   const url = '/apps/submitted';
 
   it('Loads submitted reports', () => {
-    cy.visit(url);
-
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'FindSubmissions',
       'FindSubmission',
       submittedReports
     );
+
+    cy.visit(url);
+
+    cy.wait('@FindSubmission');
 
     const submissions = submittedReports.data.submissions;
 
@@ -41,17 +43,23 @@ describe('Submitted reports', () => {
     });
   });
 
-  maybeIt('Promotes a report and links it to a new incident', () => {
+  it('Promotes a report and links it to a new incident', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
-      '**/functions/call',
-      (req) => req.body.arguments[0]?.collection == 'submissions' && req.body.name === 'find',
-      'submissions',
-      submittedReports.filter((r) => r.incident_id.$numberLong === '0')
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'FindSubmissions',
+      {
+        data: {
+          submissions: submittedReports.data.submissions.filter((r) => r.incident_id === '0'),
+        },
+      }
     );
 
     cy.visit(url);
+
+    cy.wait('@FindSubmissions');
 
     cy.get('[data-cy="submissions"] > div:nth-child(1)').as('promoteForm');
 
@@ -167,8 +175,6 @@ describe('Submitted reports', () => {
     cy.wait('@deleteSubmission')
       .its('request.body.variables')
       .should('deep.equal', { _id: '5f9c3ebfd4896d392493f03c' });
-
-    cy.wait('@submissions');
 
     cy.get('div[class^="ToastContext"]')
       .contains('Succesfully promoted submission to Incident 172 and Report 1545')

@@ -118,7 +118,7 @@ const ReportedIncident = ({ incident: report }) => {
 
     newReport.report_number = lastReportNumber + 1;
 
-    if (!newReport.incident_id) {
+    if (newReport.incident_id === '0') {
       newReport.incident_id = lastIncidentId + 1;
 
       const newIncident = {
@@ -195,7 +195,7 @@ const ReportedIncident = ({ incident: report }) => {
     }
   };
 
-  const isNewIncident = report['incident_id'] === 0;
+  const isNewIncident = report['incident_id'] === '0';
 
   const cardSubheader = isNewIncident ? 'New Incident' : 'New Report';
 

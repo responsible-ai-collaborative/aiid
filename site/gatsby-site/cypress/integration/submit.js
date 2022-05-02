@@ -204,7 +204,7 @@ describe('The Submit form', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
-        req.body.operationName == 'RelatedReports' &&
+        req.body.operationName == 'ProbablyRelatedReports' &&
         req.body.variables.query?.url_in[0] ==
           'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
       'RelatedReportsByURL',
@@ -214,7 +214,7 @@ describe('The Submit form', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
-        req.body.operationName == 'RelatedReports' &&
+        req.body.operationName == 'ProbablyRelatedReports' &&
         req.body.variables.query?.epoch_date_published_gt == 1608346800 &&
         req.body.variables.query?.epoch_date_published_lt == 1610766000,
       'RelatedReportsByPublishedDate',
@@ -224,7 +224,7 @@ describe('The Submit form', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
-        req.body.operationName == 'RelatedReports' &&
+        req.body.operationName == 'ProbablyRelatedReports' &&
         req.body.variables.query?.authors_in?.[0] == 'test author',
       'RelatedReportsByAuthor',
       relatedReports.byAuthors
@@ -233,7 +233,7 @@ describe('The Submit form', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
-        req.body.operationName == 'RelatedIncidents' &&
+        req.body.operationName == 'ProbablyRelatedIncidents' &&
         req.body.variables.query?.incident_id_in?.[0] == 1,
       'RelatedReportsByIncidentId',
       relatedReports.byIncidentId
@@ -309,7 +309,7 @@ describe('The Submit form', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
-        req.body.operationName == 'RelatedReports' &&
+        req.body.operationName == 'ProbablyRelatedReports' &&
         req.body.variables.query?.url_in[0] ==
           'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
       'RelatedReportsByURL',
@@ -319,7 +319,7 @@ describe('The Submit form', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
-        req.body.operationName == 'RelatedReports' &&
+        req.body.operationName == 'ProbablyRelatedReports' &&
         req.body.variables.query?.epoch_date_published_gt == 1608346800 &&
         req.body.variables.query?.epoch_date_published_lt == 1610766000,
       'RelatedReportsByPublishedDate',
@@ -329,7 +329,7 @@ describe('The Submit form', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
-        req.body.operationName == 'RelatedReports' &&
+        req.body.operationName == 'ProbablyRelatedReports' &&
         req.body.variables.query?.authors_in?.[0] == 'test author',
       'RelatedReportsByAuthor',
       relatedReports.byAuthors
@@ -338,7 +338,7 @@ describe('The Submit form', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
-        req.body.operationName == 'RelatedIncidents' &&
+        req.body.operationName == 'ProbablyRelatedIncidents' &&
         req.body.variables.query?.incident_id_in?.[0] == 1,
       'RelatedReportsByIncidentId',
       relatedReports.byIncidentId

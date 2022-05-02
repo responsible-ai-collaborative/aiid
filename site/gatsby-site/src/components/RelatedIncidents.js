@@ -11,7 +11,7 @@ const ListContainer = styled(Card)`
 `;
 
 const relatedIncidentsQuery = gql`
-  query RelatedIncidents($query: IncidentQueryInput) {
+  query ProbablyRelatedIncidents($query: IncidentQueryInput) {
     incidents(query: $query) {
       incident_id
       reports {
@@ -24,7 +24,7 @@ const relatedIncidentsQuery = gql`
 `;
 
 const relatedReportsQuery = gql`
-  query RelatedReports($query: ReportQueryInput) {
+  query ProbablyRelatedReports($query: ReportQueryInput) {
     reports(query: $query) {
       report_number
       title
