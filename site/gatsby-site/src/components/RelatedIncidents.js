@@ -11,7 +11,7 @@ const ListContainer = styled(Card)`
 `;
 
 const relatedIncidentsQuery = gql`
-  query RelatedByIncidents($query: IncidentQueryInput) {
+  query RelatedIncidents($query: IncidentQueryInput) {
     incidents(query: $query) {
       incident_id
       reports {
@@ -94,13 +94,13 @@ const searchColumns = {
   },
 };
 
-const RelatedIncidentsArea = ({ header, reports, loading }) => {
+const RelatedIncidentsArea = ({ columnKey, header, reports, loading }) => {
   if (!reports && !loading) {
     return null;
   }
 
   return (
-    <ListContainer>
+    <ListContainer data-cy={`related-${columnKey}`}>
       <ListGroup.Item variant="secondary" key={'header'}>
         {header}
         {loading && <Spinner animation="border" size="sm" className="ms-2" />}
@@ -180,11 +180,9 @@ const RelatedIncidents = ({ incident }) => {
     }
   }, [queryVariables]);
 
-  console.log(relatedReports);
-
   if (Object.keys(relatedReports).every((key) => relatedReports?.[key]?.length == 0)) {
     return (
-      <div className="mt-4">
+      <div className="mt-4" data-cy="empty-message">
         Preliminary checks failed to find incident reports with similar publication dates (+/- 2
         weeks), similar incident dates (+/- 1 month), the same report URL, or the same authors.
       </div>
@@ -192,13 +190,14 @@ const RelatedIncidents = ({ incident }) => {
   }
 
   return (
-    <ListGroup className="position-relative">
+    <ListGroup data-cy="related-reports" className="position-relative">
       {Object.keys(searchColumns).map((key) => {
         const column = searchColumns[key];
 
         return (
           <RelatedIncidentsArea
             key={key}
+            columnKey={key}
             loading={loading[key]}
             reports={relatedReports[key]}
             header={column.header(incident)}
