@@ -18,6 +18,71 @@ describe('Edit report', () => {
 
     cy.visit(url);
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindReport',
+      'FindReport',
+      {
+        data: {
+          report: {
+            __typename: 'Report',
+            authors: ['Marco Acevedo'],
+            date_downloaded: '2019-04-13',
+            date_published: '2015-07-11',
+            flag: null,
+            image_url:
+              'https://assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
+            incident_id: 1,
+            report_number: 10,
+            submitters: ['Roman Yampolskiy'],
+            tags: [],
+            text: 'Videos filled with profanity, sexually explicit material, alcohol, smoking, and drug references - this is what parents are finding on Google’s YouTube Kids app. That’s right - its kids app.  Now, parents across the country are calling on Google to remove the app until it can guarantee the total elimination of this inappropriate content.\n\nWhen my neighbors told me about the horrible adult content popping up on the Youtube Kids app, I thought there must be a mistake. Why would Google market an app as “a family-friendly place to explore” and not have proper safeguards in place? Unfortunately, it turned out to be true. And I’ve since learned of the numerous complaints filed to the Federal Trade Commission about this very problem.\n\nEven worse, Google’s response has been laughable. They tell parents to simply flag inappropriate material or set new filters. As a father of two, it makes me angry when a large company like Google doesn’t take responsibility for its kids’ products. Parents are being sold on an app built for kids 5 and under that is supposed to keep them safe from adult content. Parents like myself are joining forces to hold Google accountable.\n\nTell Google to remove the YouTube Kids app until it can live up to its marketing.\n\nThe solution is simple: only allow content pre-approved for ages 5 and under to appear on the app, and don’t allow ads clearly meant for adults. Unless it can live up to expectations, the app should be removed.\n\nParents are not the only ones outraged. The media has blasted Google’s app, calling it “the most anti-family idea ever to come out of Silicon Valley," and reporting that it “ignores basic protections for children.”\n\nWith your support, we can get Google to remove YouTube Kids until the proper protections are in place.\n\nThese are examples of videos encountered on YouTube Kids:\n\nA graphic lecture discussing hardcore pornography by Cindy Gallop:\n\nhttps://www.youtube.com/watch?v=EgtcEq7jpAk\n\nHow to make chlorine gas with household products (chemical weapon used in Syria):\n\nhttps://www.youtube.com/watch?v=DF2CXHvh8uI\n\nHow to tie a noose:\n\nhttps://www.youtube.com/watch?v=TpAA2itjI34\n\nHow to throw knives:\n\nhttps://www.youtube.com/watch?v=NGgzn1haQ-E\n\nA guy tasting battery acid:\n\nhttps://www.youtube.com/watch?v=gif-OWNjJSw\n\nHow to use a chainsaw:\n\nhttps://www.youtube.com/watch?v=Kk28thdgCEU\n\nA “Sesame Street” episode dubbed with long strings of expletives:\n\nhttps://www.youtube.com/watch?v=kVkqzE-iiEY\n\nReferences to pedophilia in a homemade video reviewing a “My Little Pony” episode:\n\nhttps://www.youtube.com/watch?v=7K9uH4d-HnU\n\nA DIY video on conducting illegal piracy, featuring pictures of marijuana leaves:\n\nhttps://www.youtube.com/watch?v=dZDF5uqORA0',
+            title: 'Remove YouTube Kids app until it eliminates its inappropriate content',
+            url: 'https://www.change.org/p/remove-youtube-kids-app-until-it-eliminates-its-inappropriate-content',
+          },
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncident',
+      'FindIncident',
+      {
+        data: {
+          incident: {
+            AllegedDeployerOfAISystem: ['YouTube'],
+            AllegedDeveloperOfAISystem: ['YouTube'],
+            AllegedHarmedOrNearlyHarmedParties: [],
+            __typename: 'Incident',
+            date: '2015-05-19',
+            description:
+              'YouTube’s content filtering and recommendation algorithms exposed children to disturbing and inappropriate videos.',
+            incident_id: 1,
+            reports: [
+              { __typename: 'Report', report_number: 10 },
+              { __typename: 'Report', report_number: 6 },
+              { __typename: 'Report', report_number: 14 },
+              { __typename: 'Report', report_number: 5 },
+              { __typename: 'Report', report_number: 1 },
+              { __typename: 'Report', report_number: 15 },
+              { __typename: 'Report', report_number: 8 },
+              { __typename: 'Report', report_number: 9 },
+              { __typename: 'Report', report_number: 4 },
+              { __typename: 'Report', report_number: 2 },
+              { __typename: 'Report', report_number: 3 },
+              { __typename: 'Report', report_number: 11 },
+              { __typename: 'Report', report_number: 12 },
+              { __typename: 'Report', report_number: 7 },
+            ],
+            title: 'Google’s YouTube Kids App Criticized for ‘Inappropriate Content’',
+          },
+        },
+      }
+    );
+
+    cy.wait(['@FindReport', '@FindIncident']);
+
     const values = {
       authors: 'Marco Acevedo',
       date_downloaded: '2019-04-13',
