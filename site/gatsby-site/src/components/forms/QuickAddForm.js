@@ -73,7 +73,7 @@ const QuickAddForm = ({ className = '' }) => {
 
   return (
     <>
-      <Form onSubmit={handleSubmit} className={className}>
+      <Form onSubmit={handleSubmit} className={className} data-cy="quick-add">
         <Row>
           <Form.Group as={Col} controlId="formUrl">
             <Form.Control
