@@ -1,5 +1,9 @@
 [
     {
+        "name": "onNewUser",
+        "private": true
+    },
+    {
         "name": "updateSubmissionReport",
         "private": false
     },
@@ -9,14 +13,6 @@
     },
     {
         "name": "createReportForReview",
-        "private": false
-    },
-    {
-        "name": "onNewUser",
-        "private": true
-    },
-    {
-        "name": "quickAdd",
         "private": false
     }
 ]
