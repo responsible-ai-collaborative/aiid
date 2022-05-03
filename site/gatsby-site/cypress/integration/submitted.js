@@ -185,13 +185,19 @@ describe('Submitted reports', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
-      '**/functions/call',
-      (req) => req.body.arguments[0]?.collection == 'submissions' && req.body.name === 'find',
-      'submissions',
-      submittedReports.filter((r) => r.incident_id.$numberLong === '10')
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'FindSubmissions',
+      {
+        data: {
+          submissions: submittedReports.data.submissions.filter((r) => r.incident_id === '10'),
+        },
+      }
     );
 
     cy.visit(url);
+
+    cy.wait('@FindSubmissions');
 
     cy.get('[data-cy="submissions"] > div:nth-child(1)').as('promoteForm');
 
@@ -289,14 +295,14 @@ describe('Submitted reports', () => {
       .its('request.body.variables.report')
       .then((report) => {
         expect(report.report_number).to.eq(1545);
-        expect(report.incident_id).to.eq(10);
+        expect(report.incident_id).to.eq('10');
         expect(report.ref_number).eq(4);
       });
 
     cy.wait('@relatedIncidents')
       .its('request.body.variables')
       .then((variables) => {
-        expect(variables.incidentIds).to.deep.equal([10]);
+        expect(variables.incidentIds).to.deep.equal(['10']);
         expect(variables.reports).to.deep.equal([{ report_number: 1545 }]);
       });
 
@@ -309,9 +315,7 @@ describe('Submitted reports', () => {
 
     cy.wait('@deleteSubmission')
       .its('request.body.variables')
-      .should('deep.equal', { _id: '5f9c3f3394413b2fe87918eb' });
-
-    cy.wait('@submissions');
+      .should('deep.equal', { _id: '6123bf345e740c1a81850e89' });
 
     cy.get('div[class^="ToastContext"]')
       .contains('Succesfully promoted submission to Incident 10 and Report 1545')
