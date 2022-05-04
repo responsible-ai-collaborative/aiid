@@ -1,22 +1,15 @@
 [
     {
-        "name": "updateSubmissionReport",
-        "private": false
+        "name": "quickAdd",
+        "private": false,
+        "disable_arg_logs": true
     },
     {
         "name": "confirmUser",
         "private": true
     },
     {
-        "name": "createReportForReview",
-        "private": false
-    },
-    {
         "name": "onNewUser",
         "private": true
-    },
-    {
-        "name": "quickAdd",
-        "private": false
     }
 ]
