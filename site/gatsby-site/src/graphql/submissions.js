@@ -55,3 +55,11 @@ export const UPDATE_SUBMISSION = gql`
     }
   }
 `;
+
+export const INSERT_SUBMISSION = gql`
+  mutation InsertSubmission($submission: SubmissionInsertInput!) {
+    insertOneSubmission(data: $submission) {
+      _id
+    }
+  }
+`;

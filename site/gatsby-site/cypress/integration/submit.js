@@ -29,25 +29,29 @@ describe('The Submit form', () => {
     cy.get('a[aria-label="New Tag"]').click();
 
     cy.conditionalIntercept(
-      '**/functions/call',
-      (req) => req.body.name == 'createReportForReview',
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
       'submitReport',
-      {}
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
     );
 
     cy.get('button[type="submit"]').click();
 
     cy.wait('@submitReport').then((xhr) => {
-      expect(xhr.request.body.arguments[0]).to.deep.include({
+      expect(xhr.request.body.variables.submission).to.deep.include({
         title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
-        submitters: 'Something',
-        authors: 'Valentina Palladino',
+        submitters: ['Something'],
+        authors: ['Valentina Palladino'],
         incident_date: '2021-09-21',
         date_published: '2017-11-10',
         image_url:
           'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
         tags: ['New Tag'],
-        incident_id: { $numberInt: '0' },
+        incident_id: '0',
       });
     });
 
