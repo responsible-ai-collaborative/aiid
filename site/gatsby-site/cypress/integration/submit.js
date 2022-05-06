@@ -98,37 +98,30 @@ describe('The Submit form', () => {
     cy.visit(url + `?${params.toString()}`);
 
     cy.conditionalIntercept(
-      '**/functions/call',
-      (req) => req.body.name == 'createReportForReview',
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
       'submitReport',
-      {}
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
     );
 
     cy.get('button[type="submit"]', { timeout: 8000 }).scrollIntoView().click({ force: true });
 
     cy.wait('@submitReport').then((xhr) => {
-      expect(xhr.request.body.arguments[0]).to.deep.include({
+      expect(xhr.request.body.variables.submission).to.deep.include({
         ...values,
-        incident_id: { $numberInt: values.incident_id },
+        incident_id: 1,
+        authors: [values.authors],
+        submitters: [values.submitters],
         tags: [values.tags],
       });
     });
   });
 
   it('Should show a list of related reports', () => {
-    cy.visit(url);
-
-    const values = {
-      url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
-      authors: 'test author',
-      date_published: '2021-01-02',
-      incident_id: '1',
-    };
-
-    for (const key in values) {
-      cy.get(`input[name="${key}"]`).type(values[key]);
-    }
-
     const relatedReports = {
       byURL: {
         data: {
@@ -243,33 +236,44 @@ describe('The Submit form', () => {
       relatedReports.byIncidentId
     );
 
+    cy.visit(url);
+
+    const values = {
+      url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
+      authors: 'test author',
+      date_published: '2021-01-02',
+      incident_id: '1',
+    };
+
+    for (const key in values) {
+      cy.get(`input[name="${key}"]`).type(values[key]);
+    }
+
     cy.wait([
       '@RelatedReportsByURL',
       '@RelatedReportsByPublishedDate',
       '@RelatedReportsByAuthor',
       '@RelatedReportsByIncidentId',
-    ]);
+    ]).then(() => {
+      for (const key of ['byURL', 'byDatePublished', 'byIncidentId']) {
+        const reports =
+          key == 'byIncidentId'
+            ? relatedReports[key].data.incidents[0].reports
+            : relatedReports[key].data.reports;
 
-    for (const key in relatedReports) {
-      const reports =
-        key == 'byIncidentId'
-          ? relatedReports[key].data.incidents[0].reports
-          : relatedReports[key].data.reports;
+        cy.get(`[data-cy="related-${key}"]`).within(() => {
+          cy.get('[class="list-group-item"]').should('have.length', reports.length);
 
-      cy.get(`[data-cy="related-${key}"]`).as('related');
-
-      if (reports.length == 0) {
-        cy.get('@related')
-          .find('.list-group-item')
-          .should('contain.text', 'No related reports found.');
-      } else {
-        cy.get('@related').find('[class="list-group-item"]').should('have.length', reports.length);
+          for (const report of reports) {
+            cy.contains('[class="list-group-item"]', report.title).should('be.visible');
+          }
+        });
       }
 
-      for (const report of reports) {
-        cy.get('@related').find('[class="list-group-item"]', report.title);
-      }
-    }
+      cy.get(`[data-cy="related-byAuthors"]`).within(() => {
+        cy.get('.list-group-item').should('contain.text', 'No related reports found.');
+      });
+    });
   });
 
   it('Should show a preliminary checks message', () => {

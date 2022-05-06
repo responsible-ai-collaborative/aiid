@@ -83,10 +83,10 @@ const SubmitForm = () => {
 
       const submission = {
         ...values,
+        incident_id: values.incident_id ? values.incident_id : '0',
         date_submitted,
         date_modified: date_submitted,
         description: values.text.substring(0, 200),
-        incident_id: '0',
         authors: isString(values.authors) ? values.authors.split(',') : values.authors,
         submitters: isString(values.submitters) ? values.submitters.split(',') : values.submitters,
         language: 'en',
