@@ -7,7 +7,10 @@ import RelatedIncidents from 'components/RelatedIncidents';
 import IncidentReportForm from 'components/forms/IncidentReportForm';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { parse } from 'date-fns';
+import { format, parse } from 'date-fns';
+import { useMutation } from '@apollo/client';
+import { INSERT_SUBMISSION } from '../../graphql/submissions';
+import isString from 'lodash/isString';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -49,6 +52,8 @@ const SubmitForm = () => {
 
   const addToast = useToastContext();
 
+  const [insertSubmission] = useMutation(INSERT_SUBMISSION);
+
   useEffect(() => {
     if (csvData[csvIndex]) {
       setIncident(csvData[csvIndex]);
@@ -56,7 +61,6 @@ const SubmitForm = () => {
   }, [csvIndex, csvData]);
 
   const handleCSVError = (err, file, inputElem, reason) => {
-    console.log(err, file, inputElem, reason);
     addToast({
       message: `Unable to upload: ${reason}`,
       severity: SEVERITY.danger,
@@ -75,15 +79,20 @@ const SubmitForm = () => {
     setSubmitting(true);
 
     try {
-      let submitIncidentID = 0;
+      const date_submitted = format(new Date(), 'yyyy-MM-dd');
 
-      if (incident.incident_id) {
-        submitIncidentID = incident.incident_id;
-      }
-      await user.functions.createReportForReview({
+      const submission = {
         ...values,
-        incident_id: submitIncidentID,
-      });
+        incident_id: values.incident_id ? values.incident_id : '0',
+        date_submitted,
+        date_modified: date_submitted,
+        description: values.text.substring(0, 200),
+        authors: isString(values.authors) ? values.authors.split(',') : values.authors,
+        submitters: isString(values.submitters) ? values.submitters.split(',') : values.submitters,
+        language: 'en',
+      };
+
+      await insertSubmission({ variables: { submission } });
 
       resetForm();
 
