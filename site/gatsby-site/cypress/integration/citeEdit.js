@@ -4,6 +4,10 @@ import updateOneIncident from '../fixtures/reports/updateOneIncident.json';
 
 import { format, getUnixTime } from 'date-fns';
 
+import incident from '../fixtures/incidents/incident.json';
+
+import report from '../fixtures/reports/report.json';
+
 describe('Edit report', () => {
   const url = '/cite/edit?report_number=10';
 
@@ -13,37 +17,45 @@ describe('Edit report', () => {
     cy.disableSmoothScroll();
   });
 
-  maybeIt('Should load appropriate values', () => {
+  maybeIt('Should load and update report values', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindReport',
+      'findReport',
+      report
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncident',
+      'findIncident',
+      incident
+    );
 
     cy.visit(url);
 
-    const values = {
-      authors: 'Marco Acevedo',
-      date_downloaded: '2019-04-13',
-      date_published: '2015-07-11',
-      image_url:
-        'https://assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975',
-      incident_date: '2015-05-19',
-      submitters: 'Roman Yampolskiy',
-      text: `Videos filled with profanity, sexually explicit material, alcohol, smoking, and drug references - this is what parents are finding on Google’s YouTube Kids app. That’s right - its kids app.  Now, parents across the country are calling on Google to remove the app until it can guarantee the total elimination of this inappropriate content.\n\nWhen my neighbors told me about the horrible adult content popping up on the Youtube Kids app, I thought there must be a mistake. Why would Google market an app as “a family-friendly place to explore” and not have proper safeguards in place? Unfortunately, it turned out to be true. And I’ve since learned of the numerous complaints filed to the Federal Trade Commission about this very problem.\n\nEven worse, Google’s response has been laughable. They tell parents to simply flag inappropriate material or set new filters. As a father of two, it makes me angry when a large company like Google doesn’t take responsibility for its kids’ products. Parents are being sold on an app built for kids 5 and under that is supposed to keep them safe from adult content. Parents like myself are joining forces to hold Google accountable.\n\nTell Google to remove the YouTube Kids app until it can live up to its marketing.\n\nThe solution is simple: only allow content pre-approved for ages 5 and under to appear on the app, and don’t allow ads clearly meant for adults. Unless it can live up to expectations, the app should be removed.\n\nParents are not the only ones outraged. The media has blasted Google’s app, calling it “the most anti-family idea ever to come out of Silicon Valley," and reporting that it “ignores basic protections for children.”\n\nWith your support, we can get Google to remove YouTube Kids until the proper protections are in place.\n\nThese are examples of videos encountered on YouTube Kids:\n\nA graphic lecture discussing hardcore pornography by Cindy Gallop:\n\nhttps://www.youtube.com/watch?v=EgtcEq7jpAk\n\nHow to make chlorine gas with household products (chemical weapon used in Syria):\n\nhttps://www.youtube.com/watch?v=DF2CXHvh8uI\n\nHow to tie a noose:\n\nhttps://www.youtube.com/watch?v=TpAA2itjI34\n\nHow to throw knives:\n\nhttps://www.youtube.com/watch?v=NGgzn1haQ-E\n\nA guy tasting battery acid:\n\nhttps://www.youtube.com/watch?v=gif-OWNjJSw\n\nHow to use a chainsaw:\n\nhttps://www.youtube.com/watch?v=Kk28thdgCEU\n\nA “Sesame Street” episode dubbed with long strings of expletives:\n\nhttps://www.youtube.com/watch?v=kVkqzE-iiEY\n\nReferences to pedophilia in a homemade video reviewing a “My Little Pony” episode:\n\nhttps://www.youtube.com/watch?v=7K9uH4d-HnU\n\nA DIY video on conducting illegal piracy, featuring pictures of marijuana leaves:\n\nhttps://www.youtube.com/watch?v=dZDF5uqORA0`,
-      title: 'Remove YouTube Kids app until it eliminates its inappropriate content',
-      url: 'https://www.change.org/p/remove-youtube-kids-app-until-it-eliminates-its-inappropriate-content',
-    };
+    cy.wait(['@findReport', '@findIncident']);
 
-    Object.keys(values).forEach((key) => {
-      cy.get(`[name=${key}]`, { timeout: 8000 }).should('have.value', values[key]);
+    [
+      'authors',
+      'date_downloaded',
+      'date_published',
+      'image_url',
+      'incident_id',
+      'submitters',
+      'text',
+      'title',
+    ].forEach((key) => {
+      cy.get(`[name=${key}]`).should('have.value', report.data.report[key].toString());
     });
 
-    cy.get('[class*=Typeahead] [option]').should('have.length', 0);
-  });
+    cy.get(`[name=${'incident_date'}]`).should('have.value', incident.data.incident.date);
 
-  maybeIt('Should submit new values', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+    cy.get('[class*=Typeahead] [option="Test Tag"]').should('have.length', 1);
 
-    cy.visit(url);
-
-    const values = {
+    const updates = {
       authors: 'Test Author',
       date_downloaded: '2022-01-01',
       date_published: '2022-02-02',
@@ -55,8 +67,8 @@ describe('Edit report', () => {
       url: 'https://www.test.com/test',
     };
 
-    Object.keys(values).forEach((key) => {
-      cy.get(`[name=${key}]`).clear().type(values[key]);
+    Object.keys(updates).forEach((key) => {
+      cy.get(`[name=${key}]`).clear().type(updates[key]);
     });
 
     cy.get('[class*=Typeahead] [type="text"]').type('New Tag');
@@ -91,7 +103,7 @@ describe('Edit report', () => {
       expect(xhr.request.body.variables.set.incident_id).eq(1);
       expect(xhr.request.body.variables.set.report_number).eq(10);
       expect(xhr.request.body.variables.set.submitters).deep.eq(['Test Submitter']);
-      expect(xhr.request.body.variables.set.tags).deep.eq(['New Tag']);
+      expect(xhr.request.body.variables.set.tags).deep.eq(['Test Tag', 'New Tag']);
       expect(xhr.request.body.variables.set.text).eq(
         'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
       );
@@ -106,6 +118,20 @@ describe('Edit report', () => {
 
   maybeIt('Should delete incident report', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindReport',
+      'findReport',
+      report
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncident',
+      'findIncident',
+      incident
+    );
 
     cy.visit(url);
 

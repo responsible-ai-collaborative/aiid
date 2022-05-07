@@ -5,10 +5,11 @@ import { Spinner } from 'react-bootstrap';
 import Link from 'components/ui/Link';
 import ReportedIncident from 'components/ReportedIncident';
 
-import { useSubmissionsContext } from 'contexts/submissionsContext';
+import { FIND_SUBMISSIONS } from '../graphql/submissions';
+import { useQuery } from '@apollo/client';
 
 const SubmissionList = () => {
-  const { submissions } = useSubmissionsContext();
+  const { data: submissionsData } = useQuery(FIND_SUBMISSIONS);
 
   return (
     <>
@@ -18,19 +19,23 @@ const SubmissionList = () => {
         reports in the database.
       </p>
       <ListGroup className="mb-5" data-cy="submissions">
-        {submissions.length < 1 && (
+        {!submissionsData && (
           <>
             <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" />{' '}
             <p>Loading Submissions...</p>
           </>
         )}
-        {submissions
-          .sort((a, b) => a.incident_date - b.incident_date)
-          .map((node) => (
-            <ListGroup.Item key={node._id} className="m-0 p-0">
-              <ReportedIncident incident={node} />
-            </ListGroup.Item>
-          ))}
+        {submissionsData &&
+          submissionsData.submissions
+            .map((submission) => ({ ...submission, __typename: undefined }))
+            .sort(
+              (a, b) => new Date(a.date_submitted).getTime() - new Date(b.date_submitted).getTime()
+            )
+            .map((node) => (
+              <ListGroup.Item key={node._id} className="m-0 p-0">
+                <ReportedIncident incident={node} />
+              </ListGroup.Item>
+            ))}
       </ListGroup>
     </>
   );
