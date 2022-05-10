@@ -70,6 +70,7 @@ export const PROMOTE_SUBMISSION = gql`
       incident_id
       reports {
         report_number
+        ref_number
       }
     }
   }

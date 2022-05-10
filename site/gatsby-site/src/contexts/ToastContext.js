@@ -61,7 +61,7 @@ export function ToastContextProvider({ children }) {
 
   useEffect(() => {
     if (toasts.length > 0) {
-      const timer = setTimeout(() => setToasts((toasts) => toasts.slice(1)), 10 * 1000);
+      const timer = setTimeout(() => setToasts((toasts) => toasts.slice(1)), 100000000 * 1000);
 
       return () => clearTimeout(timer);
     }
@@ -86,7 +86,7 @@ export function ToastContextProvider({ children }) {
       {children}
       <ToastsWrapper>
         {toasts.map(({ message, severity, id }, index) => (
-          <Toast key={id} style={{ background: severity.color, maxWidth: '100%' }}>
+          <Toast key={id} style={{ background: severity.color, maxWidth: '100%' }} data-cy="toast">
             <ToastBody style={{ color: 'white' }}>
               <ToastBodyContent>
                 <FontAwesomeIcon icon={severity.icon} className={severity.faClass} />

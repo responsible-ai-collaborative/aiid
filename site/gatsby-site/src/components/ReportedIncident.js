@@ -97,23 +97,28 @@ const ReportedIncident = ({ incident: submission }) => {
       },
     });
 
-    const newReport = { ...submission, _id: undefined, __typename: undefined };
+    const report = { ...submission, _id: undefined, __typename: undefined };
 
-    newReport.date_modified = format(new Date(), 'yyyy-MM-dd');
+    report.date_modified = format(new Date(), 'yyyy-MM-dd');
 
-    newReport.epoch_date_modified = getUnixTime(new Date(newReport.date_modified));
-    newReport.epoch_date_published = getUnixTime(new Date(newReport.date_published));
-    newReport.epoch_date_downloaded = getUnixTime(new Date(newReport.date_downloaded));
-    newReport.epoch_date_submitted = getUnixTime(new Date(newReport.date_submitted));
+    report.epoch_date_modified = getUnixTime(new Date(report.date_modified));
+    report.epoch_date_published = getUnixTime(new Date(report.date_published));
+    report.epoch_date_downloaded = getUnixTime(new Date(report.date_downloaded));
+    report.epoch_date_submitted = getUnixTime(new Date(report.date_submitted));
+
+    report.incident_id = incident.incident_id;
+
+    const report_number = incident.reports
+      .sort((a, b) => a.report_number - b.report_number)
+      .shift().report_number;
 
     await updateReport({
       variables: {
         query: {
-          report_number: incident.reports.sort((a, b) => a.report_number - b.report_number).shift()
-            .report_number,
+          report_number,
         },
         set: {
-          ...newReport,
+          ...report,
         },
       },
     });
@@ -134,8 +139,8 @@ const ReportedIncident = ({ incident: submission }) => {
     addToast({
       message: (
         <>
-          Succesfully promoted submission to Incident {newReport.incident_id} and Report{' '}
-          {newReport.report_number}{' '}
+          Successfully promoted submission to Incident {incident.incident_id} and Report{' '}
+          {report_number}{' '}
         </>
       ),
       severity: SEVERITY.success,
