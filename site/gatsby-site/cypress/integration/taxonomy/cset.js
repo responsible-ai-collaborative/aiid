@@ -16,8 +16,10 @@ describe('The CSET taxonomy page', () => {
           taxa(query: { namespace_in: ["CSET"] }) {
             namespace
             field_list {
+              long_name
               short_name
               instant_facet
+              public
             }
           }
         }
@@ -30,7 +32,7 @@ describe('The CSET taxonomy page', () => {
           },
         }) => {
           return field_list.filter(
-            (entry) => (entry.public === null || entry.public) && entry.short_name === 'Publish'
+            (entry) => (entry.public === null || entry.public) && entry.short_name !== 'Publish'
           );
         }
       )
@@ -38,7 +40,7 @@ describe('The CSET taxonomy page', () => {
         cy.get('[data-cy*="field-"]').should('have.length', field_list.length);
 
         field_list.forEach((field) => {
-          cy.contains('h1', field.short_name)
+          cy.contains('h1', field.long_name)
             .should('exist')
             .contains('span', 'Searchable in Discover App')
             .should(field.instant_facet ? 'exist' : 'not.exist');

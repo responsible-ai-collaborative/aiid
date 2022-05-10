@@ -18,3 +18,11 @@ export const DELETE_QUICKADD = gql`
     }
   }
 `;
+
+export const INSERT_QUICKADD = gql`
+  mutation InsertQuickAdd($quickAdd: QuickaddInsertInput!) {
+    insertOneQuickadd(data: $quickAdd) {
+      _id
+    }
+  }
+`;

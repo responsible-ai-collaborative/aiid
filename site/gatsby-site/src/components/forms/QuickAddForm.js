@@ -4,9 +4,10 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
 import Link from 'components/ui/Link';
-import DBConnecting from 'components/ui/DBConnecting';
-import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { format } from 'date-fns';
+import { INSERT_QUICKADD } from '../../graphql/quickadd';
+import { useMutation } from '@apollo/client';
 
 // set in form //
 // * url: "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti" # The fully qualified URL to the report as hosted on the web.
@@ -27,34 +28,43 @@ const validationSchema = Yup.object().shape({
 });
 
 const QuickAddForm = ({ className = '' }) => {
-  const { loading, user } = useUserContext();
-
   const addToast = useToastContext();
+
+  const [insertQuickAdd] = useMutation(INSERT_QUICKADD);
 
   const { values, errors, isSubmitting, handleChange, handleBlur, handleSubmit } = useFormik({
     initialValues: { url: '' },
     validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       setSubmitting(true);
-      user.functions
-        .quickAdd(values)
-        .then(() => {
-          addToast({
-            message: (
-              <>
-                {'Report successfully added to review queue. It will appear on the  '}
-                <Link to="/apps/submitted">review queue page</Link> within an hour.
-              </>
-            ),
-            severity: SEVERITY.success,
-          });
-        })
-        .catch(() => {
-          addToast({
-            message: 'Was not able to create the report, please review the form and try again.',
-            severity: SEVERITY.warning,
-          });
+
+      try {
+        const url = new URL(values.url);
+
+        const quickAdd = {
+          incident_id: '0',
+          date_submitted: format(new Date(), 'yyyy-MM-dd'),
+          source_domain: url.hostname,
+          url: url.href,
+        };
+
+        await insertQuickAdd({ variables: { quickAdd } });
+
+        addToast({
+          message: (
+            <>
+              {'Report successfully added to review queue. It will appear on the  '}
+              <Link to="/apps/submitted">review queue page</Link> within an hour.
+            </>
+          ),
+          severity: SEVERITY.success,
         });
+      } catch (e) {
+        addToast({
+          message: 'Was not able to create the report, please review the form and try again.',
+          severity: SEVERITY.warning,
+        });
+      }
 
       resetForm();
       setSubmitting(false);
@@ -63,8 +73,7 @@ const QuickAddForm = ({ className = '' }) => {
 
   return (
     <>
-      <Form onSubmit={handleSubmit} className={className}>
-        {loading && <DBConnecting />}
+      <Form onSubmit={handleSubmit} className={className} data-cy="quick-add">
         <Row>
           <Form.Group as={Col} controlId="formUrl">
             <Form.Control
@@ -80,11 +89,7 @@ const QuickAddForm = ({ className = '' }) => {
           </Form.Group>
 
           <Col xs="auto">
-            <Button
-              variant="primary"
-              type="submit"
-              disabled={isSubmitting || loading || !!errors.url}
-            >
+            <Button variant="primary" type="submit" disabled={isSubmitting || !!errors.url}>
               Submit
             </Button>
           </Col>
