@@ -63,3 +63,14 @@ export const INSERT_SUBMISSION = gql`
     }
   }
 `;
+
+export const PROMOTE_SUBMISSION = gql`
+  mutation PromoteSubmission($input: PromoteSubmissionToReportInput!) {
+    promoteSubmissionToReport(input: $input) {
+      incident_id
+      reports {
+        report_number
+      }
+    }
+  }
+`;

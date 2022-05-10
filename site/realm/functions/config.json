@@ -4,15 +4,19 @@
         "private": true
     },
     {
+        "name": "linkReportsToIncidents",
+        "private": false
+    },
+    {
         "name": "onNewUser",
         "private": true
     },
     {
-        "name": "linkReportstoIncidents",
+        "name": "unlinkReportsFromIncidents",
         "private": false
     },
     {
-        "name": "unlinkReportsFromIncidents",
+        "name": "promoteSubmissionToReport",
         "private": false
     }
 ]

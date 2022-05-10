@@ -1,8 +1,7 @@
 {
-    "field_name": "linkReportsToIncidents",
-    "function_name": "linkReportsToIncidents",
+    "field_name": "promoteSubmissionToReport",
+    "function_name": "promoteSubmissionToReport",
     "input_type": {
-        "bsonType": "object",
         "properties": {
             "incident_ids": {
                 "bsonType": "array",
@@ -10,14 +9,12 @@
                     "bsonType": "int"
                 }
             },
-            "report_numbers": {
-                "bsonType": "array",
-                "items": {
-                    "bsonType": "int"
-                }
+            "submission_id": {
+                "bsonType": "objectId"
             }
         },
-        "title": "LinkReportsToIncidentsInput"
+        "title": "PromoteSubmissionToReportInput",
+        "type": "object"
     },
     "input_type_format": "custom",
     "on_type": "Mutation",
