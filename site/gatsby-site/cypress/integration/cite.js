@@ -129,8 +129,6 @@ describe('Cite pages', () => {
     cy.contains('New Report').scrollIntoView().click();
 
     cy.get('[name="incident_id"]').should('have.value', '10');
-
-    cy.get('[name="incident_date"]').should('have.value', '2014-08-14');
   });
 
   it('should render Next and Previous incident buttons', () => {
