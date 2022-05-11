@@ -109,7 +109,7 @@ const ReportedIncident = ({ incident: submission }) => {
     report.incident_id = incident.incident_id;
 
     const report_number = incident.reports
-      .sort((a, b) => a.report_number - b.report_number)
+      .sort((a, b) => b.report_number - a.report_number)
       .shift().report_number;
 
     await updateReport({
