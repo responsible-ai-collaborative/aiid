@@ -51,8 +51,6 @@ describe('Edit report', () => {
       cy.get(`[name=${key}]`).should('have.value', report.data.report[key].toString());
     });
 
-    cy.get(`[name=${'incident_date'}]`).should('have.value', incident.data.incident.date);
-
     cy.get('[class*=Typeahead] [option="Test Tag"]').should('have.length', 1);
 
     const updates = {
@@ -60,7 +58,6 @@ describe('Edit report', () => {
       date_downloaded: '2022-01-01',
       date_published: '2022-02-02',
       image_url: 'https://test.com/test.jpg',
-      incident_date: '2022-03-03',
       submitters: 'Test Submitter',
       text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
       title: 'Test Title',
@@ -99,7 +96,6 @@ describe('Edit report', () => {
       expect(xhr.request.body.variables.set.epoch_date_published).eq(1643760000);
       expect(xhr.request.body.variables.set.flag).eq(null);
       expect(xhr.request.body.variables.set.image_url).eq('https://test.com/test.jpg');
-      expect(xhr.request.body.variables.set.incident_date).eq('2022-03-03');
       expect(xhr.request.body.variables.set.incident_id).eq(1);
       expect(xhr.request.body.variables.set.report_number).eq(10);
       expect(xhr.request.body.variables.set.submitters).deep.eq(['Test Submitter']);

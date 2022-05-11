@@ -40,7 +40,6 @@ function EditCitePage(props) {
       if (reportData.report && incidentData.incident) {
         setReport({
           ...reportData.report,
-          incident_date: incidentData.incident.date,
           incident_id: reportData.report.incident_id,
         });
       } else {
