@@ -1,4 +1,6 @@
 exports = async (input) => {
+
+  throw 'Orphan reports are not supported yet.'
   
   const incidents = context.services.get('mongodb-atlas').db('aiidprod').collection("incidents");
   
