@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
-import { InstantSearch } from 'react-instantsearch-dom';
+import { Configure, InstantSearch } from 'react-instantsearch-dom';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
 import Helmet from 'react-helmet';
 import { useModal, CustomModal } from 'hooks/useModal';
@@ -125,9 +125,6 @@ const convertStringToRange = (query) => {
 
 const generateSearchState = ({ query }) => {
   const searchState = {
-    configure: {
-      hitsPerPage: 30,
-    },
     query: '',
     refinementList: {},
     range: {},
@@ -245,6 +242,8 @@ function DiscoverApp(props) {
           searchState={searchState}
           onSearchStateChange={onSearchStateChange}
         >
+          <Configure hitsPerPage={28} />
+
           <VirtualFilters />
 
           <Container className="container-xl mt-4">
