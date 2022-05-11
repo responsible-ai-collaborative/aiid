@@ -17,7 +17,6 @@ import Typeahead from './Typeahead';
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
 // * text: "Long text for the report" # (string) This is the complete text for the report in the MongoDB instance, and a shortened subset in the Algolia index
-// * incident_date: `2019-07-25` # (Date) Date the incident occurred. Defaults to the article date.
 // * date_downloaded:`2019-07-25` # (Date) Date the report was downloaded.
 // * submitters: Array(string) # People that submitted the incident report
 // * authors: Array(string) # People that wrote the incident report
@@ -52,9 +51,6 @@ const validationSchema = Yup.object().shape({
     .min(80, '*Text must have at least 80 characters')
     .max(50000, "*Text can't be longer than 50000 characters")
     .required('*Text is required'),
-  incident_date: Yup.string()
-    .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
-    .required('*Incident date required'),
   date_published: Yup.string()
     .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
     .required('*Date published is required'),
@@ -75,7 +71,6 @@ const defaultValue = {
   title: '',
   authors: '',
   submitters: 'Anonymous',
-  incident_date: '',
   date_published: '',
   date_downloaded: '',
   url: '',
@@ -251,13 +246,6 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
         name="submitters"
         label="Submitter CSV"
         placeholder="Submitter CSV"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-      <TextInputGroup
-        name="incident_date"
-        label="Incident Date"
-        placeholder="YYYY-MM-DD"
         className="mt-3"
         {...TextInputGroupProps}
       />
