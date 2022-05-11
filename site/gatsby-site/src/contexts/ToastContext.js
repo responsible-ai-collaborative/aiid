@@ -61,7 +61,7 @@ export function ToastContextProvider({ children }) {
 
   useEffect(() => {
     if (toasts.length > 0) {
-      const timer = setTimeout(() => setToasts((toasts) => toasts.slice(1)), 100000000 * 1000);
+      const timer = setTimeout(() => setToasts((toasts) => toasts.slice(1)), 10 * 1000);
 
       return () => clearTimeout(timer);
     }
