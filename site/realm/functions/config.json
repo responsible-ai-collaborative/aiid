@@ -12,11 +12,11 @@
         "private": true
     },
     {
-        "name": "unlinkReportsFromIncidents",
+        "name": "promoteSubmissionToReport",
         "private": false
     },
     {
-        "name": "promoteSubmissionToReport",
+        "name": "unlinkReportsFromIncidents",
         "private": false
     }
 ]

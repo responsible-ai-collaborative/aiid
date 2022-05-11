@@ -155,13 +155,15 @@ const ReportedIncident = ({ incident: submission }) => {
 
   const handleSubmit = async (values) => {
     try {
+      const update = { ...values, _id: undefined };
+
       await updateSubmission({
         variables: {
           query: {
             _id: values._id,
           },
           set: {
-            ...values,
+            ...update,
             authors: !isArray(values.authors)
               ? values.authors.split(',').map((s) => s.trim())
               : values.authors,
