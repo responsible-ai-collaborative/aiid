@@ -14,14 +14,13 @@ import IncidentEditModal from 'components/IncidentEditModal';
 import RelatedIncidents from 'components/RelatedIncidents';
 
 import { useUserContext } from 'contexts/userContext';
-import { useSubmissionsContext } from 'contexts/submissionsContext';
-import { useMongo } from 'hooks/useMongo';
 import { INSERT_REPORT, useUpdateLinkedReports } from '../graphql/reports';
 import { gql, useLazyQuery, useMutation } from '@apollo/client';
 import { INSERT_INCIDENT } from '../graphql/incidents';
-import { DELETE_SUBMISSION } from '../graphql/submissions';
+import { DELETE_SUBMISSION, UPDATE_SUBMISSION } from '../graphql/submissions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { format, getUnixTime } from 'date-fns';
+import isArray from 'lodash/isArray';
 
 const ListedGroup = ({ item, keysToRender }) => {
   return (
@@ -74,12 +73,6 @@ const lastIndexesQuery = gql`
 const ReportedIncident = ({ incident: report }) => {
   const { isRole } = useUserContext();
 
-  const {
-    actions: { refetch },
-  } = useSubmissionsContext();
-
-  const { updateOne } = useMongo();
-
   const [isEditing, setIsEditing] = useState(false);
 
   const [open, setOpen] = useState(false);
@@ -95,6 +88,8 @@ const ReportedIncident = ({ incident: report }) => {
   const [deleteSubmission] = useMutation(DELETE_SUBMISSION);
 
   const [insertIncident] = useMutation(INSERT_INCIDENT);
+
+  const [updateSubmission] = useMutation(UPDATE_SUBMISSION);
 
   const addToast = useToastContext();
 
@@ -123,7 +118,7 @@ const ReportedIncident = ({ incident: report }) => {
 
     newReport.report_number = lastReportNumber + 1;
 
-    if (!newReport.incident_id) {
+    if (newReport.incident_id === '0') {
       newReport.incident_id = lastIncidentId + 1;
 
       const newIncident = {
@@ -161,31 +156,46 @@ const ReportedIncident = ({ incident: report }) => {
       ),
       severity: SEVERITY.success,
     });
-
-    refetch();
   };
 
   const rejectReport = async () => {
     await deleteSubmission({ variables: { _id: report._id } });
-
-    refetch();
   };
 
   const toggleEditing = () => setIsEditing(!isEditing);
 
-  const handleUpdate = async (values) => {
-    console.log('Updating report from: ', report);
-    console.log('Updating report to:', values);
-    if (typeof values['authors'] === 'string') {
-      values['authors'] = values['authors'].split(',').map((s) => s.trim());
+  const handleSubmit = async (values) => {
+    try {
+      await updateSubmission({
+        variables: {
+          query: {
+            _id: values._id,
+          },
+          set: {
+            ...values,
+            authors: !isArray(values.authors)
+              ? values.authors.split(',').map((s) => s.trim())
+              : values.authors,
+            submitters: !isArray(values.submitters)
+              ? values.submitters.split(',').map((s) => s.trim())
+              : values.submitters,
+          },
+        },
+      });
+
+      addToast({
+        message: `Submission updated successfully.`,
+        severity: SEVERITY.success,
+      });
+    } catch (e) {
+      addToast({
+        message: `Error updating submission ${values._id}`,
+        severity: SEVERITY.danger,
+      });
     }
-    if (typeof values['submitters'] === 'string') {
-      values['submitters'] = values['submitters'].split(',').map((s) => s.trim());
-    }
-    updateOne({ _id: values._id }, values, refetch);
   };
 
-  const isNewIncident = report['incident_id'] === 0;
+  const isNewIncident = report['incident_id'] === '0';
 
   const cardSubheader = isNewIncident ? 'New Incident' : 'New Report';
 
@@ -209,7 +219,11 @@ const ReportedIncident = ({ incident: report }) => {
             <Badge bg="secondary">Inc: {report['incident_date']}</Badge>{' '}
             <Badge bg="secondary">Pub: {report['date_published']}</Badge>{' '}
             <Badge bg="secondary">Sub: {report['date_submitted']}</Badge>{' '}
-            <Badge bg="secondary">{report['submitters']}</Badge>
+            {report.submitters.map((submitter) => (
+              <Badge key={submitter} bg="secondary">
+                {submitter}
+              </Badge>
+            ))}
           </Col>
         </Row>
       </Card.Header>
@@ -255,7 +269,7 @@ const ReportedIncident = ({ incident: report }) => {
         show={isEditing}
         incident={report}
         onHide={toggleEditing}
-        onSubmit={handleUpdate}
+        onSubmit={handleSubmit}
       />
     </>
   );
