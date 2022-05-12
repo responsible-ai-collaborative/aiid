@@ -124,8 +124,8 @@ export default function IncidentsTable({ data }) {
     []
   );
 
-  const columns = React.useMemo(
-    () => [
+  const columns = React.useMemo(() => {
+    const columns = [
       {
         Header: 'Incident ID',
         accessor: 'incident_id',
@@ -163,26 +163,25 @@ export default function IncidentsTable({ data }) {
         Header: 'Alleged Harmed or Nearly Harmed Parties',
         accessor: 'AllegedHarmedOrNearlyHarmedParties',
       },
-      {
+    ];
+
+    if (isAdmin) {
+      columns.push({
         Header: 'Actions',
         Cell: ({ row: { values } }) => (
-          <>
-            {isAdmin && (
-              <Button
-                data-cy="edit-incident"
-                variant="link"
-                disabled={!isAdmin}
-                onClick={() => setIncindentIdToEdit(values.incident_id)}
-              >
-                Edit
-              </Button>
-            )}
-          </>
+          <Button
+            data-cy="edit-incident"
+            variant="link"
+            onClick={() => setIncindentIdToEdit(values.incident_id)}
+          >
+            Edit
+          </Button>
         ),
-      },
-    ],
-    [isAdmin]
-  );
+      });
+    }
+
+    return columns;
+  }, [isAdmin]);
 
   const {
     getTableProps,
