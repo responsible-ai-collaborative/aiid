@@ -31,6 +31,15 @@ const Table = styled.div`
   }
 `;
 
+const Header = styled.div`
+  background: #fff;
+  position: sticky;
+  z-index: 1;
+  width: fit-content;
+  top: 0;
+  box-shadow: 0px 3px 3px #ccc;
+`;
+
 const FilterButton = styled.button`
   border: none;
   background: transparent;
@@ -207,7 +216,7 @@ export default function IncidentsTable({ data }) {
       {/* eslint-disable react/jsx-key */}
 
       <Table {...getTableProps()}>
-        <div>
+        <Header>
           {headerGroups.map((headerGroup) => (
             <div {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
@@ -221,7 +230,7 @@ export default function IncidentsTable({ data }) {
               ))}
             </div>
           ))}
-        </div>
+        </Header>
 
         <div {...getTableBodyProps()}>
           {page.map((row) => {
