@@ -120,6 +120,15 @@ export default function IncidentsTable({ data }) {
       {
         Header: 'Incident ID',
         accessor: 'incident_id',
+        Cell: ({ row: { values } }) => (
+          <>
+            {isAdmin && (
+              <a className="d-flex" href={`/cite/${values.incident_id}`}>
+                Incident {values.incident_id}
+              </a>
+            )}
+          </>
+        ),
       },
       {
         Header: 'Title',
