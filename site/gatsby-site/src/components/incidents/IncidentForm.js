@@ -16,7 +16,7 @@ const schema = Yup.object().shape({
 function IncidentForm({ incident, onSubmit }) {
   return (
     <Formik validationSchema={schema} onSubmit={onSubmit} initialValues={incident}>
-      {({ handleSubmit, handleChange, values, isValid, errors }) => (
+      {({ handleSubmit, handleChange, values, isValid, errors, isSubmitting }) => (
         <FormikForm noValidate onSubmit={handleSubmit} data-cy={`incident-form`}>
           <Form.Group>
             <Form.Label>Title</Form.Label>
@@ -56,7 +56,7 @@ function IncidentForm({ incident, onSubmit }) {
             <TagsControl name="AllegedHarmedOrNearlyHarmedParties" />
           </Form.Group>
 
-          <Button className="mt-3" type="submit" disabled={!isValid}>
+          <Button className="mt-3" type="submit" disabled={!isValid || isSubmitting}>
             Save
           </Button>
         </FormikForm>
