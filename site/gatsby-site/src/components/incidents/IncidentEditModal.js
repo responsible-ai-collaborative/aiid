@@ -43,6 +43,8 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         message: `Incident ${incidentId} updated successfully.`,
         severity: SEVERITY.success,
       });
+
+      onClose();
     } catch (e) {
       addToast({
         message: `Error updating incident ${incident} \n ${e.message}`,
