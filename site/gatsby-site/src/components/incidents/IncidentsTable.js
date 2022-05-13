@@ -10,6 +10,9 @@ const Table = styled.div`
   border-spacing: 0;
 
   .tr {
+    &:nth-child(even) {
+      background-color: #f2f2f2;
+    }
     :last-child {
       .td {
         border-bottom: 0;
