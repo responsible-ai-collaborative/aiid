@@ -112,7 +112,7 @@ function DefaultColumnFilter({
 export default function IncidentsTable({ data }) {
   const [incidentIdToEdit, setIncindentIdToEdit] = useState(0);
 
-  const { isAdmin } = useUserContext();
+  const { isLoggedIn, isRole } = useUserContext();
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -130,13 +130,9 @@ export default function IncidentsTable({ data }) {
         Header: 'Incident ID',
         accessor: 'incident_id',
         Cell: ({ row: { values } }) => (
-          <>
-            {isAdmin && (
-              <a className="d-flex" href={`/cite/${values.incident_id}`}>
-                Incident {values.incident_id}
-              </a>
-            )}
-          </>
+          <a className="d-flex" href={`/cite/${values.incident_id}`}>
+            Incident {values.incident_id}
+          </a>
         ),
       },
       {
@@ -165,7 +161,7 @@ export default function IncidentsTable({ data }) {
       },
     ];
 
-    if (isAdmin) {
+    if (isRole('incident_editor')) {
       columns.push({
         Header: 'Actions',
         Cell: ({ row: { values } }) => (
@@ -181,7 +177,7 @@ export default function IncidentsTable({ data }) {
     }
 
     return columns;
-  }, [isAdmin]);
+  }, [isLoggedIn]);
 
   const {
     getTableProps,
