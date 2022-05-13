@@ -4,7 +4,7 @@ import incident from '../../fixtures/incidents/incident112.json';
 
 import updateOneIncident from '../../fixtures/incidents/updateOneIncident112.json';
 
-describe('Classifications App', () => {
+describe('Incidents App', () => {
   const url = '/apps/incidents';
 
   it('Successfully loads', () => {
@@ -15,8 +15,6 @@ describe('Classifications App', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.visit(url);
-
-    cy.get('[data-cy="filter-Incident ID"]').click();
 
     cy.get('[data-cy="input-filter-Incident ID"]').type('112');
 
@@ -49,7 +47,7 @@ describe('Classifications App', () => {
       updateOneIncident
     );
 
-    cy.contains('Save').click();
+    cy.contains('Update').click();
 
     cy.wait('@UpdateIncident').then((xhr) => {
       expect(xhr.request.body.operationName).to.eq('UpdateIncident');
@@ -57,6 +55,8 @@ describe('Classifications App', () => {
       expect(xhr.request.body.variables.set.title).to.eq('Test title');
     });
 
-    cy.contains('Close').click();
+    cy.contains('Update').should('be.disabled');
+
+    cy.get('[data-cy="incident-form"]').should('not.exist');
   });
 });
