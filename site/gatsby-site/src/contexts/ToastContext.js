@@ -86,7 +86,7 @@ export function ToastContextProvider({ children }) {
       {children}
       <ToastsWrapper>
         {toasts.map(({ message, severity, id }, index) => (
-          <Toast key={id} style={{ background: severity.color, maxWidth: '100%' }}>
+          <Toast key={id} style={{ background: severity.color, maxWidth: '100%' }} data-cy="toast">
             <ToastBody style={{ color: 'white' }}>
               <ToastBodyContent>
                 <FontAwesomeIcon icon={severity.icon} className={severity.faClass} />

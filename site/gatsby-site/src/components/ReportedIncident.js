@@ -14,10 +14,10 @@ import IncidentEditModal from 'components/IncidentEditModal';
 import RelatedIncidents from 'components/RelatedIncidents';
 
 import { useUserContext } from 'contexts/userContext';
-import { INSERT_REPORT, useUpdateLinkedReports } from '../graphql/reports';
-import { gql, useLazyQuery, useMutation } from '@apollo/client';
-import { INSERT_INCIDENT } from '../graphql/incidents';
-import { DELETE_SUBMISSION, UPDATE_SUBMISSION } from '../graphql/submissions';
+import { UPDATE_REPORT } from '../graphql/reports';
+import { useMutation } from '@apollo/client';
+import { UPDATE_INCIDENT } from '../graphql/incidents';
+import { DELETE_SUBMISSION, PROMOTE_SUBMISSION, UPDATE_SUBMISSION } from '../graphql/submissions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { format, getUnixTime } from 'date-fns';
 import isArray from 'lodash/isArray';
@@ -52,25 +52,7 @@ const dateRender = [
 
 const otherDetails = ['language', 'mongodb_id'];
 
-const lastIndexesQuery = gql`
-  query LastIndexes($incidentId: Int) {
-    lastReport: reports(sortBy: REPORT_NUMBER_DESC, limit: 1) {
-      report_number
-    }
-    lastIncident: incidents(sortBy: INCIDENT_ID_DESC, limit: 1) {
-      incident_id
-    }
-    refsNumbers: incident(query: { incident_id: $incidentId }) {
-      incident_id
-      reports {
-        report_number
-        ref_number
-      }
-    }
-  }
-`;
-
-const ReportedIncident = ({ incident: report }) => {
+const ReportedIncident = ({ incident: submission }) => {
   const { isRole } = useUserContext();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -79,79 +61,86 @@ const ReportedIncident = ({ incident: report }) => {
 
   const isSubmitter = isRole('submitter');
 
-  const updateLinkedReports = useUpdateLinkedReports();
+  const [promoteSubmission] = useMutation(PROMOTE_SUBMISSION, { fetchPolicy: 'network-only' });
 
-  const [getLastIndexes] = useLazyQuery(lastIndexesQuery, { fetchPolicy: 'network-only' });
+  const [updateReport] = useMutation(UPDATE_REPORT);
 
-  const [insertReport] = useMutation(INSERT_REPORT);
-
-  const [deleteSubmission] = useMutation(DELETE_SUBMISSION);
-
-  const [insertIncident] = useMutation(INSERT_INCIDENT);
+  const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
   const [updateSubmission] = useMutation(UPDATE_SUBMISSION);
+
+  const [deleteSubmission] = useMutation(DELETE_SUBMISSION);
 
   const addToast = useToastContext();
 
   const addReport = async () => {
-    const newReport = { ...report };
-
-    delete newReport.mongodb_id;
-
-    delete newReport._id;
-
     const {
       data: {
-        lastIncident: [{ incident_id: lastIncidentId }],
-        lastReport: [{ report_number: lastReportNumber }],
-        refsNumbers,
+        promoteSubmissionToReport: { 0: incident },
       },
-    } = await getLastIndexes({ variables: { incidentId: report.incident_id } });
-
-    const lastRefNumber =
-      report.incident_id == '0'
-        ? 0
-        : refsNumbers.reports.reduce(
-            (last, report) => (report.ref_number > last ? report.ref_number : last),
-            0
-          );
-
-    newReport.report_number = lastReportNumber + 1;
-
-    if (newReport.incident_id === '0') {
-      newReport.incident_id = lastIncidentId + 1;
-
-      const newIncident = {
-        incident_id: newReport.incident_id,
-        date: newReport.incident_date,
-      };
-
-      await insertIncident({ variables: { incident: newIncident } });
-    }
-
-    newReport.ref_number = lastRefNumber + 1;
-
-    newReport.date_modified = format(new Date(), 'yyyy-MM-dd');
-
-    newReport.epoch_date_modified = getUnixTime(new Date(newReport.date_modified));
-    newReport.epoch_date_published = getUnixTime(new Date(newReport.date_published));
-    newReport.epoch_date_downloaded = getUnixTime(new Date(newReport.date_downloaded));
-    newReport.epoch_date_submitted = getUnixTime(new Date(newReport.date_submitted));
-
-    await insertReport({ variables: { report: newReport } });
-
-    await updateLinkedReports({
-      incidentIds: [newReport.incident_id],
-      reportNumber: newReport.report_number,
+    } = await promoteSubmission({
+      variables: {
+        input: {
+          submission_id: submission._id,
+          incident_ids: submission.incident_id === '0' ? [] : [submission.incident_id],
+        },
+      },
+      fetchPolicy: 'no-cache',
+      update: (cache) => {
+        cache.modify({
+          fields: {
+            submissions(refs, { readField }) {
+              return refs.filter((s) => submission._id !== readField('_id', s));
+            },
+          },
+        });
+      },
     });
 
-    await deleteSubmission({ variables: { _id: report._id } });
+    const report = { ...submission, _id: undefined, __typename: undefined };
+
+    report.date_modified = format(new Date(), 'yyyy-MM-dd');
+
+    report.epoch_date_modified = getUnixTime(new Date(report.date_modified));
+    report.epoch_date_published = getUnixTime(new Date(report.date_published));
+    report.epoch_date_downloaded = getUnixTime(new Date(report.date_downloaded));
+    report.epoch_date_submitted = getUnixTime(new Date(report.date_submitted));
+
+    report.incident_id = incident.incident_id;
+
+    const report_number = incident.reports
+      .sort((a, b) => b.report_number - a.report_number)
+      .shift().report_number;
+
+    await updateReport({
+      variables: {
+        query: {
+          report_number,
+        },
+        set: {
+          ...report,
+        },
+      },
+    });
+
+    if (submission.incident_id === '0') {
+      await updateIncident({
+        variables: {
+          query: {
+            incident_id: incident.incident_id,
+          },
+          set: {
+            title: submission.title,
+          },
+        },
+      });
+    }
 
     addToast({
       message: (
         <>
-          Succesfully promoted submission to Incident {newReport.incident_id} and Report{' '}
-          {newReport.report_number}{' '}
+          Successfully promoted submission to Incident {incident.incident_id} and Report{' '}
+          {report_number}{' '}
         </>
       ),
       severity: SEVERITY.success,
@@ -159,20 +148,22 @@ const ReportedIncident = ({ incident: report }) => {
   };
 
   const rejectReport = async () => {
-    await deleteSubmission({ variables: { _id: report._id } });
+    await deleteSubmission({ variables: { _id: submission._id } });
   };
 
   const toggleEditing = () => setIsEditing(!isEditing);
 
   const handleSubmit = async (values) => {
     try {
+      const update = { ...values, _id: undefined };
+
       await updateSubmission({
         variables: {
           query: {
             _id: values._id,
           },
           set: {
-            ...values,
+            ...update,
             authors: !isArray(values.authors)
               ? values.authors.split(',').map((s) => s.trim())
               : values.authors,
@@ -195,7 +186,7 @@ const ReportedIncident = ({ incident: report }) => {
     }
   };
 
-  const isNewIncident = report['incident_id'] === '0';
+  const isNewIncident = submission['incident_id'] === '0';
 
   const cardSubheader = isNewIncident ? 'New Incident' : 'New Report';
 
@@ -214,12 +205,12 @@ const ReportedIncident = ({ incident: report }) => {
           </Col>
           <Col xs={12} sm={10} lg={10}>
             {' '}
-            {report['title']}
+            {submission['title']}
             <br />
-            <Badge bg="secondary">Inc: {report['incident_date']}</Badge>{' '}
-            <Badge bg="secondary">Pub: {report['date_published']}</Badge>{' '}
-            <Badge bg="secondary">Sub: {report['date_submitted']}</Badge>{' '}
-            {report.submitters.map((submitter) => (
+            <Badge bg="secondary">Inc: {submission['incident_date']}</Badge>{' '}
+            <Badge bg="secondary">Pub: {submission['date_published']}</Badge>{' '}
+            <Badge bg="secondary">Sub: {submission['date_submitted']}</Badge>{' '}
+            {submission.submitters.map((submitter) => (
               <Badge key={submitter} bg="secondary">
                 {submitter}
               </Badge>
@@ -229,21 +220,21 @@ const ReportedIncident = ({ incident: report }) => {
       </Card.Header>
       <Collapse in={open}>
         <div id="collapse-incident-submission" className="pt-3">
-          <ListedGroup item={report} keysToRender={leadItems} />
-          <ListedGroup item={report} keysToRender={dateRender} />
-          <ListedGroup item={report} keysToRender={urls} />
-          <ListedGroup item={report} keysToRender={otherDetails} />
+          <ListedGroup item={submission} keysToRender={leadItems} />
+          <ListedGroup item={submission} keysToRender={dateRender} />
+          <ListedGroup item={submission} keysToRender={urls} />
+          <ListedGroup item={submission} keysToRender={otherDetails} />
           <Card className="m-3">
             <Card.Header>Text</Card.Header>
             <Card.Body>
-              <ReadMoreText text={report.text} visibility={open} />
+              <ReadMoreText text={submission.text} visibility={open} />
             </Card.Body>
           </Card>
           {open && (
             <Card className="m-3">
               <Card.Header>Possible related incidents</Card.Header>
               <Card.Body>
-                <RelatedIncidents incident={report} isSubmitted={true} />
+                <RelatedIncidents incident={submission} isSubmitted={true} />
               </Card.Body>
             </Card>
           )}
@@ -267,7 +258,7 @@ const ReportedIncident = ({ incident: report }) => {
       </Collapse>
       <IncidentEditModal
         show={isEditing}
-        incident={report}
+        incident={submission}
         onHide={toggleEditing}
         onSubmit={handleSubmit}
       />

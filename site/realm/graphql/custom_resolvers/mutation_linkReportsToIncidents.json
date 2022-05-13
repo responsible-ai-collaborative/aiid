@@ -1,0 +1,26 @@
+{
+    "field_name": "linkReportsToIncidents",
+    "function_name": "linkReportsToIncidents",
+    "input_type": {
+        "bsonType": "object",
+        "properties": {
+            "incident_ids": {
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "int"
+                }
+            },
+            "report_numbers": {
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "int"
+                }
+            }
+        },
+        "title": "LinkReportsToIncidentsInput"
+    },
+    "input_type_format": "custom",
+    "on_type": "Mutation",
+    "payload_type": "Incident",
+    "payload_type_format": "generated-list"
+}
