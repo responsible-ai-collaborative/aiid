@@ -10,7 +10,12 @@ export default function IncidentsPage(props) {
 
   return (
     <LayoutHideSidebar {...props}>
-      {!incidentsData && <Spinner size="sm" animation="border" />}
+      {!incidentsData && (
+        <div className="p-2">
+          <Spinner animation="border" size="sm" role="status" aria-hidden="true" /> Fetching
+          Incidents...
+        </div>
+      )}
       {incidentsData && incidentsData.incidents && (
         <div className="ms-3 mt-2 mb-2">
           <IncidentsTable data={incidentsData.incidents} />

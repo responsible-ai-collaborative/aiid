@@ -1,17 +1,18 @@
 import { useUserContext } from 'contexts/userContext';
 import React, { useState } from 'react';
-import { Button, Form, OverlayTrigger, Pagination, Popover } from 'react-bootstrap';
+import { Button, Form, Pagination } from 'react-bootstrap';
 import { useBlockLayout, useFilters, usePagination, useResizeColumns, useTable } from 'react-table';
 import IncidentEditModal from './IncidentEditModal';
 import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
 const Table = styled.div`
   display: inline-block;
   border-spacing: 0;
 
   .tr {
+    &:nth-child(even) {
+      background-color: #f2f2f2;
+    }
     :last-child {
       .td {
         border-bottom: 0;
@@ -31,12 +32,13 @@ const Table = styled.div`
   }
 `;
 
-const FilterButton = styled.button`
-  border: none;
-  background: transparent;
-  font-size: 12px;
-  margin: 0 6px;
-  color: ${({ color }) => color};
+const Header = styled.div`
+  background: #fff;
+  position: sticky;
+  z-index: 1;
+  width: fit-content;
+  top: 0;
+  box-shadow: 0px 3px 3px #ccc;
 `;
 
 const HeaderText = styled.h6`
@@ -64,62 +66,51 @@ function DefaultColumnFilter({
   const count = preFilteredRows.length;
 
   if (!canFilter) {
-    return null;
+    return <HeaderText>{Header}</HeaderText>;
   }
 
-  const isActive = !!filterValue;
-
   return (
-    <OverlayTrigger
-      trigger="click"
-      placement="bottom"
-      rootClose
-      overlay={
-        <Popover id="popover-basic">
-          <Popover.Body>
-            <Form.Control
-              data-cy={`input-filter-${Header}`}
-              type="text"
-              value={filterValue || ''}
-              onChange={(e) => {
-                setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
-              }}
-              placeholder={`Search ${count} records...`}
-            />
-          </Popover.Body>
-        </Popover>
-      }
-    >
-      <FilterButton
-        color={isActive ? 'var(--bs-primary)' : 'var(--bs-secondary)'}
-        data-cy={`filter-${Header}`}
-      >
-        <FontAwesomeIcon icon={faFilter} />
-      </FilterButton>
-    </OverlayTrigger>
+    <>
+      <HeaderText>{Header}</HeaderText>
+      <Form.Control
+        data-cy={`input-filter-${Header}`}
+        className="w-100"
+        type="text"
+        value={filterValue || ''}
+        onChange={(e) => {
+          setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
+        }}
+        placeholder={`Search ${count} records...`}
+      />
+    </>
   );
 }
 
 export default function IncidentsTable({ data }) {
   const [incidentIdToEdit, setIncindentIdToEdit] = useState(0);
 
-  const { isAdmin } = useUserContext();
+  const { isLoggedIn, isRole } = useUserContext();
 
   const defaultColumn = React.useMemo(
     () => ({
       minWidth: 30,
-      width: 150,
-      maxWidth: 400,
+      width: 220,
+      maxWidth: 640,
       Filter: DefaultColumnFilter,
     }),
     []
   );
 
-  const columns = React.useMemo(
-    () => [
+  const columns = React.useMemo(() => {
+    const columns = [
       {
         Header: 'Incident ID',
         accessor: 'incident_id',
+        Cell: ({ row: { values } }) => (
+          <a className="d-flex" href={`/cite/${values.incident_id}`}>
+            Incident {values.incident_id}
+          </a>
+        ),
       },
       {
         Header: 'Title',
@@ -145,26 +136,25 @@ export default function IncidentsTable({ data }) {
         Header: 'Alleged Harmed or Nearly Harmed Parties',
         accessor: 'AllegedHarmedOrNearlyHarmedParties',
       },
-      {
+    ];
+
+    if (isRole('incident_editor')) {
+      columns.push({
         Header: 'Actions',
         Cell: ({ row: { values } }) => (
-          <>
-            {isAdmin && (
-              <Button
-                data-cy="edit-incident"
-                variant="link"
-                disabled={!isAdmin}
-                onClick={() => setIncindentIdToEdit(values.incident_id)}
-              >
-                Edit
-              </Button>
-            )}
-          </>
+          <Button
+            data-cy="edit-incident"
+            variant="link"
+            onClick={() => setIncindentIdToEdit(values.incident_id)}
+          >
+            Edit
+          </Button>
         ),
-      },
-    ],
-    [isAdmin]
-  );
+      });
+    }
+
+    return columns;
+  }, [isLoggedIn]);
 
   const {
     getTableProps,
@@ -198,21 +188,21 @@ export default function IncidentsTable({ data }) {
       {/* eslint-disable react/jsx-key */}
 
       <Table {...getTableProps()}>
-        <div>
+        <Header>
           {headerGroups.map((headerGroup) => (
             <div {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
-                <div {...column.getHeaderProps()} className="td border-bottom border-right">
-                  <HeaderText>
-                    {column.render('Filter')}
-                    {column.render('Header')}
-                  </HeaderText>
+                <div
+                  {...column.getHeaderProps()}
+                  className="td border-bottom border-right px-3 py-2"
+                >
+                  {column.render('Filter')}
                   <ResizeHandle {...column.getResizerProps()} isResizing={column.isResizing} />
                 </div>
               ))}
             </div>
           ))}
-        </div>
+        </Header>
 
         <div {...getTableBodyProps()}>
           {page.map((row) => {

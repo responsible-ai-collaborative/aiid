@@ -4,6 +4,11 @@ import Typeahead from './Typeahead';
 export default function Tags({ id, inputId, placeHolder, value, onChange }) {
   const ref = useRef(null);
 
+  const commitTag = (tag) => {
+    onChange(value.concat(tag));
+    ref.current.clear();
+  };
+
   return (
     <Typeahead
       ref={ref}
@@ -11,8 +16,12 @@ export default function Tags({ id, inputId, placeHolder, value, onChange }) {
       inputProps={{ id: inputId }}
       onKeyDown={(e) => {
         if (e.key === 'Enter') {
-          onChange(value.concat(e.target.value));
-          ref.current.clear();
+          commitTag(e.target.value);
+        }
+      }}
+      onBlur={(e) => {
+        if (e.target.value) {
+          commitTag(e.target.value);
         }
       }}
       allowNew

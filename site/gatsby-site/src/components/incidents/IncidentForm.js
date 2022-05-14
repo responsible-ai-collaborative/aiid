@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { Formik, Form as FormikForm } from 'formik';
 import * as Yup from 'yup';
 import { Form, Button } from 'react-bootstrap';
@@ -13,10 +13,22 @@ const schema = Yup.object().shape({
   AllegedHarmedOrNearlyHarmedParties: Yup.array(),
 });
 
-function IncidentForm({ incident, onSubmit }) {
+const IncidentForm = forwardRef(function IncidentForm(
+  { incident, onSubmit, showSubmit = true },
+  ref
+) {
+  const formRef = useRef();
+
+  useImperativeHandle(ref, () => ({ form: () => formRef.current }));
+
   return (
-    <Formik validationSchema={schema} onSubmit={onSubmit} initialValues={incident}>
-      {({ handleSubmit, handleChange, values, isValid, errors }) => (
+    <Formik
+      validationSchema={schema}
+      onSubmit={onSubmit}
+      initialValues={incident}
+      innerRef={formRef}
+    >
+      {({ handleSubmit, handleChange, values, isValid, errors, isSubmitting }) => (
         <FormikForm noValidate onSubmit={handleSubmit} data-cy={`incident-form`}>
           <Form.Group>
             <Form.Label>Title</Form.Label>
@@ -56,13 +68,15 @@ function IncidentForm({ incident, onSubmit }) {
             <TagsControl name="AllegedHarmedOrNearlyHarmedParties" />
           </Form.Group>
 
-          <Button className="mt-3" type="submit" disabled={!isValid}>
-            Save
-          </Button>
+          {showSubmit && (
+            <Button className="mt-3" type="submit" disabled={!isValid || isSubmitting}>
+              Save
+            </Button>
+          )}
         </FormikForm>
       )}
     </Formik>
   );
-}
+});
 
 export default IncidentForm;
