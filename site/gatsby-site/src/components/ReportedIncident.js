@@ -192,7 +192,7 @@ const ReportedIncident = ({ incident: submission }) => {
 
   return (
     <>
-      <Card.Header>
+      <Card.Header data-cy="submission">
         <Row>
           <Col xs={12} sm={2} lg={2}>
             <Button

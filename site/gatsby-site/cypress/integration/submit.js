@@ -58,6 +58,45 @@ describe('The Submit form', () => {
     cy.get('div[class^="ToastContext"]')
       .contains('Report successfully added to review queue')
       .should('exist');
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'findSubmissions',
+      {
+        data: {
+          submissions: [
+            {
+              __typename: 'Submission',
+              _id: '6272f2218933c7a9b512e13b',
+              text: 'Something',
+              title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
+              submitters: ['Something'],
+              authors: ['Valentina Palladino'],
+              incident_date: '2021-09-21',
+              date_published: '2017-11-10',
+              image_url:
+                'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+              tags: ['New Tag'],
+              incident_id: '0',
+              url: `https://arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
+              source_domain: 'arstechinca.com',
+              language: 'en',
+              description: 'Something',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.visit('/apps/submitted');
+
+    cy.wait('@findSubmissions');
+
+    cy.contains(
+      '[data-cy="submission"]',
+      'YouTube to crack down on inappropriate content masked as kids’ cartoons'
+    ).should('exist');
   });
 
   it('Should show a toast on error when failing to reach parsing endpoint', () => {
