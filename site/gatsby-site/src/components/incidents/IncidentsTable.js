@@ -87,7 +87,7 @@ function DefaultColumnFilter({
 }
 
 function ListCell({ cell }) {
-  return <div>{cell.value.join(', ')}</div>;
+  return <div>{cell.value?.join(', ')}</div>;
 }
 
 export default function IncidentsTable({ data }) {
