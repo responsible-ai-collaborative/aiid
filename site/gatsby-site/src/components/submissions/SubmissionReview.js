@@ -13,13 +13,13 @@ import EditableListItem from 'components/EditableListItem';
 import RelatedIncidents from 'components/RelatedIncidents';
 
 import { useUserContext } from 'contexts/userContext';
-import { UPDATE_REPORT } from '../graphql/reports';
+import { UPDATE_REPORT } from '../../graphql/reports';
 import { useMutation } from '@apollo/client';
-import { UPDATE_INCIDENT } from '../graphql/incidents';
-import { DELETE_SUBMISSION, PROMOTE_SUBMISSION } from '../graphql/submissions';
+import { UPDATE_INCIDENT } from '../../graphql/incidents';
+import { DELETE_SUBMISSION, PROMOTE_SUBMISSION } from '../../graphql/submissions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { format, getUnixTime } from 'date-fns';
-import SubmissionEditModal from './submissions/SubmissionEditModal';
+import SubmissionEditModal from './SubmissionEditModal';
 
 const ListedGroup = ({ item, keysToRender }) => {
   return (
@@ -51,7 +51,7 @@ const dateRender = [
 
 const otherDetails = ['language', 'mongodb_id'];
 
-const ReportedIncident = ({ incident: submission }) => {
+const SubmissionReview = ({ incident: submission }) => {
   const { isRole } = useUserContext();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -234,4 +234,4 @@ const ReportedIncident = ({ incident: submission }) => {
   );
 };
 
-export default ReportedIncident;
+export default SubmissionReview;
