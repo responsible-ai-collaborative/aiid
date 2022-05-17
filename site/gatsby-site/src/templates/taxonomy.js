@@ -183,7 +183,7 @@ const getStats = (taxa, classification) => {
   const stats = {};
 
   taxa.field_list
-    .filter((field) => field.permitted_values !== null)
+    .filter((field) => field.permitted_values && field.permitted_values.length > 0)
     .forEach((field) => {
       let auxStat = {};
 
@@ -207,7 +207,7 @@ const getStats = (taxa, classification) => {
     });
 
   taxa.field_list
-    .filter((field) => field.permitted_values === null)
+    .filter((field) => !field.permitted_values || field.permitted_values === 0)
     .forEach((field) => {
       let auxStat = {};
 
@@ -287,11 +287,12 @@ const Taxonomy = (props) => {
       </div>
       <Description>{description}</Description>
       <h1 className="heading1">Taxonomy Fields</h1>
-      {sortedFieldsArray.map(
-        ({ long_name, long_description, permitted_values, short_name, instant_facet }) => (
-          <Row key={short_name}>
+      {sortedFieldsArray
+        .filter((f) => f.short_name !== 'Publish')
+        .map(({ long_name, long_description, permitted_values, short_name, instant_facet }) => (
+          <Row key={short_name} data-cy={`field-${short_name}`}>
             <Card>
-              <FieldNameHeading>
+              <FieldNameHeading data-cy={`title-${short_name}`}>
                 {long_name}{' '}
                 {instant_facet && <Badge bg="secondary">Searchable in Discover App</Badge>}
               </FieldNameHeading>
@@ -306,8 +307,7 @@ const Taxonomy = (props) => {
               />
             </Card>
           </Row>
-        )
-      )}
+        ))}
     </Layout>
   );
 };

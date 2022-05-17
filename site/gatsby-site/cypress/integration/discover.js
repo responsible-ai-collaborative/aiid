@@ -11,7 +11,7 @@ describe('The Discover app', () => {
   it('Should load at least 30 hits', () => {
     cy.visit(url);
 
-    cy.get('div[class^="Hits__HitsContainer"]').children().should('have.length.at.least', 30);
+    cy.get('div[class^="Hits__HitsContainer"]').children().should('have.length.at.least', 28);
   });
 
   it('Performs a search and filters results', () => {
@@ -38,7 +38,7 @@ describe('The Discover app', () => {
 
     cy.url().should('include', 'incident_id=34');
 
-    cy.get('div[class^="Hits__HitsContainer"]').children().should('have.length.at.least', 30);
+    cy.get('div[class^="Hits__HitsContainer"]').children().should('have.length.at.least', 28);
   });
 
   it('Filters by incident Id using card button', () => {

@@ -1,54 +1,54 @@
-[
-    {
-        "_id": {
-            "$oid": "5f9c3ebfd4896d392493f03c"
-        },
-        "authors": [
-            "Ryan Francis"
-        ],
-        "date_downloaded": "2020-10-30",
-        "date_published": "2017-05-03",
-        "image_url": "",
-        "incident_date": "2013-11-27",
-        "incident_id": {
-            "$numberLong": "0"
-        },
-        "submitters": [
-            "Ingrid Dickinson (CSET)"
-        ],
-        "text": "\"It is commonly referred to as information overload. An infosec professional throws out a wide net in hopes of stopping malware before it gets too deep into the network, but like a motion-sensor light, sometimes the alert catches a squirrel instead of a burglar.\n\nRob Kerr, chief technology officer at Haystax Technology, cited the 2013 breach at Target, as an example in which thieves stole some 40 million Target credit cards by accessing data on point of sale (POS) systems. Target later revised that number to include theft of private data for 70 million customers.\n\n“There were many missteps before the breach happened, but a big one was that Target missed internal alerts -- only finding out about the breach when they were contacted by the Department of Justice,” he said.\n\nKerr said there were two different issues relating to the alert problem: While the attack was in progress, monitoring software (FireEye) alerted staff in Bangalore, India, who in turn notified Target staff in Minneapolis. No action was taken because these alerts were included with many other likely false alerts. Kerr recalls that it also appeared that at least some of the company's network infiltration alerting systems were turned off to reduce false positives.\n\n\nA survey by FireEye polled C-level security executives at large enterprises worldwide and found that 37 percent of respondents receive more than 10,000 alerts each month. Of those alerts, 52 percent were false positives, and 64 percent were redundant alerts.\n\n“This represents a huge burden on companies, as around 40 percent of them manually review each alert,” Kerr said.\n\nIn most enterprises, various monitoring and detection solutions are constantly combing through network and user activity data looking for anomalies that may indicate a malicious event is taking place. Each time the system gets a hit, an alert is generated that typically requires a human analyst to either verify it is a bona-fide threat, or clear as not applicable or too minor.\n\n\n\n\n\nThe problem this creates is analyst overload, Kerr notes. “In other words, the system is unable to provide sufficient context up front to filter out the anomaly before it generates an alert, so it falls to the analyst to do that manually. This is a big problem because there are thousands of pieces of data on network logins, printer activity and building access logs. So there will be an alert when Bob -- who typically works 9 to 5 every day -- reenters the office at 7:30 one evening and prints a large file on a Sunday, accessing a file server that is normally off-limits to him.” \n\n\n\n\n\n\nThe Cisco 2017 Security Capabilities Benchmark Study found that, due to various constraints, organizations can investigate only 56 percent of the security alerts they receive on a given day. Half of the investigated alerts (28 percent) are deemed legitimate; less than half (46 percent) of legitimate alerts are remediated. In addition, 44 percent of security operations managers see more than 5000 security alerts per day.\n\nKerr added that the combination of filtering out minor activity and highlighting the highest-priority risks has the net effect of providing enough context to drastically diminish false positives and the burdens they place on overworked analyst teams.\n\nOne of the key takeaways from a recent Rapid7 report was that reducing alert fatigue should always be a goal, but there’s more to it. A better signal-to-noise ratio means responders and analysts are more likely to see meaningful trends. One trend is that attackers still heavily rely on user interaction. For instance, on Monday holidays, alerts dipped significantly, which Rapid7's analysts attributed to a lack of employees interacting with malicious emails, attachments, etc.\n\nRapid 7’s report also notes that if you design indicators based only on currently available information, rather than seeking out additional intelligence or adding industry- and company-specific context, the result will be low-quality alerts. In other words: while most alerts are triggered from known, malicious activity, the quality of these alerts is entirely dependent on the established indicators.\n\n\nAs the entire process shifts, this is how to address remote learning — quickly\n\nRebekah Brown, intelligence lead at Rapid7, said it is difficult to compile a list of common alerts that will be good for everyone, all the time. “Even some that seem like obvious choices--i.e., alerting on hashes associated with ransomware--may not be universally applicable. For example, if they are hashes that encrypt Windows-based systems, they wouldn’t be relevant in an organization that only uses Macs,” she said.\n\nShe added that a customer needs to identify what threats are relevant to them because of the systems they use, the data they have, and their threat profile. For example, a retail company that deals with both online and in-store sales would want to alert on:\n\nThreats to their e-commerce platform, which can come from a threat feed that gathers data on brute force and other attacks against that specific platform\nThreats to POS systems \nThreats reported by an industry-specific information sharing group, such as the R-CISC\nGeneral threats to Windows systems including ransomware, credential theft or malware \nCustom alerts based on things that they have seen in their environment before\nBrown said there are three primary sources for detections: threat feeds (primarily from honeypots and network sensors), threat reports (primarily from IR investigations or research initiatives), and internal detections (from previous incidents).\n\nStaple lists Brown likes to use include Facebook threat exchange, Openbl_1d (open blocklist 1 day), Ransomware_feed by Abuse.ch and SSL blacklist by Abuse.ch.",
-        "title": "False positives still cause threat alert fatigue",
-        "url": "https://www.csoonline.com/article/3191379/false-positives-still-cause-alert-fatigue.html#:~:text=Rob%20Kerr%2C%20chief%20technology%20officer,data%20for%2070%20million%20customers.",
-        "date_submitted": "2020-10-30",
-        "date_modified": "2020-10-30",
-        "description": "\"It is commonly referred to as information overload. An infosec professional throws out a wide net in hopes of stopping malware before it gets too deep into the network, but like a motion-sensor light",
-        "language": "en",
-        "source_domain": "www.csoonline.com"
-    },
-    {
-        "_id": {
-            "$oid": "5f9c3f3394413b2fe87918eb"
-        },
-        "authors": [
-            "Anand Tamboli"
-        ],
-        "date_downloaded": "2020-10-30",
-        "date_published": "2020-09-11",
-        "image_url": "",
-        "incident_date": "2018-02-01",
-        "incident_id": {
-            "$numberLong": "10"
-        },
-        "submitters": [
-            "Ingrid Dickinson (CSET)"
-        ],
-        "text": "\"In early 2018, an Australian telecommunications company bit the bullet and rolled out an AI program for its incident management process. The telco expected to save more than 25% of the operational costs from this implementation. Unfortunately, the plan backfired.\nThe bot was designed to intercept all of the network incidents, 100% of them. Once intercepted, it would follow a series of checks based on the problem as reported by the users. It was programmed to take one of the three pre-defined actions based on the tests it would perform.\nFirstly, it would remotely resolve the incident by fixing the issue programmatically. If that did not work, it would assume that a technician’s visit is required to customer premises. Accordingly, it would issue a work order to send someone directly. If none of that were apparent, it would present the case to the human operator for further investigation and decision.\nAt the outset, this approach was seemingly sound and appeared quite logical. Within a few weeks, after the rollout company realized, the bot was sending an awful lot of technicians in the field. Of course, sending out technicians for the field visit was a costly affair, and it was always the last choice for fixing an issue. The bot, however, maximized on that choice.\nLater, the team found out that there were a few incident scenarios only a human operator could understand (and invariably join the dots). Apparently, for the bot, they were not clear enough. In all such cases, a human operator would have taken a different decision than the bot.\nNow, here was the kicker. Despite finding out the flaw in logic, the automation team was unable to turn off the bot (much like what Microsoft did with Tay in 2016). They had implemented the bot in all or nothing fashion, and it was sitting right in the middle of the user and operator interface. Which meant there were only two possibilities. Either all the incidents would go through the bot and get incorrectly handled more often. Or none of them would go through the bot and thereby getting handled manually.\nBut the telco was not ready to handle such a workload — they had already released the staff for saving costs (oops!).\nEventually, the telco set up another project to fix the bot while it was in operation and wasted several million dollars in the process.\nThey spent the money on two things, for continuing the service with an artificially stupid bot, and for running a massive fix-up project that lasted for more than a year.\nEventually, the endowment effect kicked in, and the company had no plans to go back and fix the problem from its roots. Instead, it kept pushing through and wasting an enormous amount of money, allegedly circa $11 million in operational costs.\nThe crucial question remains — who eventually paid for this?\nEvery link that joins two heterogeneous systems is a weak link!\nI saw this fiasco up close and personal. In my view, this implementation went wrong on several levels, right from system design to its implementation and fixing of the problems.\nBut the first and foremost question is: why there was no plan B, a kill switch of some sort to stop this bot. The bot development and rollout were not thoroughly tested for all the potential scenarios and thus lacked testing rigor that could have identified problems early on. While the time required to fix the situation was too long, detecting the failure of bot took considerably longer.\nThis story (or case study, as some would call it) highlights many weak spots in AI and its development. It guides us to focus on specific risks. It may be merely a drop in the ocean, but an accurate representation of a few common aspects.\nWhat went wrong?\nA few things in the above story failed, and it is not the technology!\nCreators of AI and the business that deployed it have not been careful enough. They did not follow the fundamental tenet of handling something as powerful as AI, responsibly.\nWe often say, “With great power comes great responsibility.” And yet, in this case, responsible design or deployment did not occur in full spirit.\nResponsible behavior is necessary for the deployment and use of AI as well as all other stages from conception to design, testing to implementation, and ongoing management and governance.\nThere is also a level of weakness in the solution conception stage, which directly seeped into their development.\nEmphasis on solution quality was not enough. There might have been a few testing routines. Just enough to meet the requirements of IT development frameworks, but not enough to meet the AI development framework — which does not exist!\nCreators lacked thoughtfulness in the design of the solution.\nThree things you should learn from this\nIf you are planning to implement an AI solution, or in the midst of it, then you must learn from this fiasco. It will not only save your money and resources but also give you peace of mind in the long run.\n1. Rigorous testing is of utmost importance: Firstly, you must understand that narrow AI is all about the relation between input and outputs. You provide input X and get output Y, or there is input X to do output Y. Either way, the nature of input affects the output. Indiscriminate input can lead to adverse outcomes. And this is just one good reason why rigorous testing is so important. We must note that in the case of AI systems, general IT system testing mechanisms are usually not enough.\n2. Always keep humans in the loop: When discretion and exceptions are required, use automated systems only as a tool to assist humans — or do not use them at all. There are still several applications and use cases that we cannot define as clearly as a game of chess. The majority of the AI systems are still kids, and they need a responsible adult to be in charge. Most importantly, ensuring enough human resources are available to handle the likely workload is always a good idea.\n3. Good governance and risk management are critical: As AI systems become more powerful, managing risk is going to be even more critical. Having robust governance in place is not only an umbrella requirement for the industry but also is a good idea for every business to have in-house.\nYou do not always need to lose millions or face challenges to learn. When you see a failure, do not fail to learn the lesson!\"",
-        "title": "A Lesson Worth $11 Million",
-        "url": "https://medium.com/tomorrow-plus-plus/a-lesson-worth-11-million-7851be19921f",
-        "date_submitted": "2020-10-30",
-        "date_modified": "2020-10-30",
-        "description": "\"In early 2018, an Australian telecommunications company bit the bullet and rolled out an AI program for its incident management process. The telco expected to save more than 25% of the operational co",
-        "language": "en",
-        "source_domain": "medium.com"
+{
+    "data": {
+        "submissions": [
+            {
+                "__typename": "Submission",
+                "_id": "5f9c3ebfd4896d392493f03c",
+                "authors": [
+                    "Nedi Bedi and Kathleen McGrory"
+                ],
+                "cloudinary_id": null,
+                "date_downloaded": "2020-10-30",
+                "date_modified": "2021-07-27",
+                "date_published": "2017-05-03",
+                "date_submitted": "2020-10-30",
+                "description": "By NEIL BEDI and KATHLEEN McGRORY\nTimes staff writers\nNov. 19, 2020\nThe Pasco Sheriff’s Office keeps a secret list of kids it thinks could “fall into a life of crime” based on factors like wheth",
+                "image_url": "https://s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg",
+                "incident_date": "2015-09-01",
+                "incident_id": "0",
+                "language": "en",
+                "source_domain": "projects.tampabay.com",
+                "submitters": [
+                    "Kate Perkins"
+                ],
+                "text": "Submission 1 text",
+                "title": "Submisssion 1 title",
+                "url": "https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/"
+            },
+            {
+                "__typename": "Submission",
+                "_id": "6123bf345e740c1a81850e89",
+                "authors": [
+                    "Adi Ashkenazy"
+                ],
+                "cloudinary_id": null,
+                "date_downloaded": "2021-08-23",
+                "date_modified": "2021-08-23",
+                "date_published": "2019-07-18",
+                "date_submitted": "2021-08-23",
+                "description": "Read about our Journey of dissecting the brain of a leading AI based Endpoint Protection Product, culminating in the creation of a universal bypass\n\nUpdate: 07/Sep/2019\nWe had the honour to present ou",
+                "image_url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/cylance-i-kill-you-small.gif",
+                "incident_date": "2019-07-18",
+                "incident_id": "10",
+                "language": "en",
+                "source_domain": "skylightcyber.com",
+                "submitters": [
+                    "Kate Perkins"
+                ],
+                "text": "Submission 2 text",
+                "title": "Submission 1 title",
+                "url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/"
+            }
+        ]
     }
-]
+}

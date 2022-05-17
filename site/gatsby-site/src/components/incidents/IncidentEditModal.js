@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import Layout from 'components/Layout';
-import IncidentForm, { schema } from 'components/incidents/IncidentForm';
-import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
-import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Button, Spinner } from 'react-bootstrap';
+import { useMutation, useQuery } from '@apollo/client';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
-import { useMutation, useQuery } from '@apollo/client/react/hooks';
+import useToastContext, { SEVERITY } from 'hooks/useToast';
+import { Button, Modal, Spinner } from 'react-bootstrap';
+import IncidentForm, { schema } from './IncidentForm';
 import { Formik } from 'formik';
 
-function EditCitePage(props) {
+export default function IncidentEditModal({ show, onClose, incidentId }) {
   const [incident, setIncident] = useState();
-
-  const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
 
   const { data: incidentData } = useQuery(FIND_INCIDENT, {
     variables: { query: { incident_id: incidentId } },
@@ -23,9 +19,9 @@ function EditCitePage(props) {
 
   useEffect(() => {
     if (incidentData?.incident) {
-      setIncident({
-        ...incidentData.incident,
-      });
+      setIncident({ ...incidentData.incident });
+    } else {
+      setIncident(undefined);
     }
   }, [incidentData]);
 
@@ -48,6 +44,8 @@ function EditCitePage(props) {
         message: `Incident ${incidentId} updated successfully.`,
         severity: SEVERITY.success,
       });
+
+      onClose();
     } catch (e) {
       addToast({
         message: `Error updating incident ${incident} \n ${e.message}`,
@@ -57,33 +55,39 @@ function EditCitePage(props) {
   };
 
   return (
-    <Layout {...props} className={'w-100'}>
-      <h1 className="mb-5">Editing Incident {incidentId}</h1>
+    <Modal show={show} onHide={onClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Edit Incident</Modal.Title>
+      </Modal.Header>
 
-      {incident === undefined && (
-        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+      {!incident && (
+        <Modal.Body>
+          {incident === undefined && (
+            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+          )}
+          {incident === null && <div>Report not found</div>}
+        </Modal.Body>
       )}
-      {incident === null && <div>Report not found</div>}
 
       {incident && (
         <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={incident}>
           {({ isValid, isSubmitting, submitForm }) => (
             <>
-              <IncidentForm />
-              <Button
-                onClick={submitForm}
-                className="mt-3"
-                type="submit"
-                disabled={!isValid || isSubmitting}
-              >
-                Save
-              </Button>
+              <Modal.Body>
+                <IncidentForm />
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={onClose}>
+                  Close
+                </Button>
+                <Button variant="primary" onClick={submitForm} disabled={isSubmitting || !isValid}>
+                  Update
+                </Button>
+              </Modal.Footer>
             </>
           )}
         </Formik>
       )}
-    </Layout>
+    </Modal>
   );
 }
-
-export default EditCitePage;
