@@ -1,10 +1,10 @@
-import React, { forwardRef, useImperativeHandle, useRef } from 'react';
-import { Formik, Form as FormikForm } from 'formik';
+import React from 'react';
+import { Form as FormikForm, useFormikContext } from 'formik';
 import * as Yup from 'yup';
-import { Form, Button } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import TagsControl from 'components/forms/TagsControl';
 
-const schema = Yup.object().shape({
+export const schema = Yup.object().shape({
   title: Yup.string().required(),
   description: Yup.string().required(),
   date: Yup.date().required(),
@@ -13,70 +13,50 @@ const schema = Yup.object().shape({
   AllegedHarmedOrNearlyHarmedParties: Yup.array(),
 });
 
-const IncidentForm = forwardRef(function IncidentForm(
-  { incident, onSubmit, showSubmit = true },
-  ref
-) {
-  const formRef = useRef();
-
-  useImperativeHandle(ref, () => ({ form: () => formRef.current }));
+function IncidentForm() {
+  const { values, errors, handleChange, handleSubmit } = useFormikContext();
 
   return (
-    <Formik
-      validationSchema={schema}
-      onSubmit={onSubmit}
-      initialValues={incident}
-      innerRef={formRef}
-    >
-      {({ handleSubmit, handleChange, values, isValid, errors, isSubmitting }) => (
-        <FormikForm noValidate onSubmit={handleSubmit} data-cy={`incident-form`}>
-          <Form.Group>
-            <Form.Label>Title</Form.Label>
-            <Form.Control type="text" name="title" value={values.title} onChange={handleChange} />
-            <Form.Control.Feedback type="invalid">{errors.title}</Form.Control.Feedback>
-          </Form.Group>
+    <FormikForm noValidate onSubmit={handleSubmit} data-cy={`incident-form`}>
+      <Form.Group>
+        <Form.Label>Title</Form.Label>
+        <Form.Control type="text" name="title" value={values.title} onChange={handleChange} />
+        <Form.Control.Feedback type="invalid">{errors.title}</Form.Control.Feedback>
+      </Form.Group>
 
-          <Form.Group>
-            <Form.Label>Description</Form.Label>
-            <Form.Control
-              type="text"
-              name="description"
-              value={values.description}
-              onChange={handleChange}
-            />
-            <Form.Control.Feedback type="invalid">{errors.description}</Form.Control.Feedback>
-          </Form.Group>
+      <Form.Group>
+        <Form.Label>Description</Form.Label>
+        <Form.Control
+          type="text"
+          name="description"
+          value={values.description}
+          onChange={handleChange}
+        />
+        <Form.Control.Feedback type="invalid">{errors.description}</Form.Control.Feedback>
+      </Form.Group>
 
-          <Form.Group className="mt-3">
-            <Form.Label>Date</Form.Label>
-            <Form.Control type="date" name="date" value={values.date} onChange={handleChange} />
-            <Form.Control.Feedback type="invalid">{errors.date}</Form.Control.Feedback>
-          </Form.Group>
+      <Form.Group className="mt-3">
+        <Form.Label>Date</Form.Label>
+        <Form.Control type="date" name="date" value={values.date} onChange={handleChange} />
+        <Form.Control.Feedback type="invalid">{errors.date}</Form.Control.Feedback>
+      </Form.Group>
 
-          <Form.Group className="mt-3">
-            <Form.Label>Alleged Deployer of AI System</Form.Label>
-            <TagsControl name="AllegedDeployerOfAISystem" />
-          </Form.Group>
+      <Form.Group className="mt-3">
+        <Form.Label>Alleged Deployer of AI System</Form.Label>
+        <TagsControl name="AllegedDeployerOfAISystem" />
+      </Form.Group>
 
-          <Form.Group className="mt-3">
-            <Form.Label>Alleged Developer of AI System</Form.Label>
-            <TagsControl name="AllegedDeveloperOfAISystem" />
-          </Form.Group>
+      <Form.Group className="mt-3">
+        <Form.Label>Alleged Developer of AI System</Form.Label>
+        <TagsControl name="AllegedDeveloperOfAISystem" />
+      </Form.Group>
 
-          <Form.Group className="mt-3">
-            <Form.Label>Alleged Harmed or Nearly Harmed Parties</Form.Label>
-            <TagsControl name="AllegedHarmedOrNearlyHarmedParties" />
-          </Form.Group>
-
-          {showSubmit && (
-            <Button className="mt-3" type="submit" disabled={!isValid || isSubmitting}>
-              Save
-            </Button>
-          )}
-        </FormikForm>
-      )}
-    </Formik>
+      <Form.Group className="mt-3">
+        <Form.Label>Alleged Harmed or Nearly Harmed Parties</Form.Label>
+        <TagsControl name="AllegedHarmedOrNearlyHarmedParties" />
+      </Form.Group>
+    </FormikForm>
   );
-});
+}
 
 export default IncidentForm;

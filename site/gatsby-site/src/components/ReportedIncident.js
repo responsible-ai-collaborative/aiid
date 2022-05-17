@@ -123,7 +123,9 @@ const ReportedIncident = ({ incident: submission }) => {
       },
     });
 
-    if (submission.incident_id === '0') {
+    // this should be removed once a different form is used for submissions
+
+    if (submission.incident_id === '0' || submission.incident_id === 0) {
       await updateIncident({
         variables: {
           query: {
@@ -131,6 +133,11 @@ const ReportedIncident = ({ incident: submission }) => {
           },
           set: {
             title: submission.title,
+            date: submission.incident_date,
+            description: '',
+            AllegedDeployerOfAISystem: [],
+            AllegedDeveloperOfAISystem: [],
+            AllegedHarmedOrNearlyHarmedParties: [],
           },
         },
       });

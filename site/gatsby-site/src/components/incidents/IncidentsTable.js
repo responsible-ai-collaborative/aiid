@@ -86,6 +86,10 @@ function DefaultColumnFilter({
   );
 }
 
+function ListCell({ cell }) {
+  return <div>{cell.value?.join(', ')}</div>;
+}
+
 export default function IncidentsTable({ data }) {
   const [incidentIdToEdit, setIncindentIdToEdit] = useState(0);
 
@@ -127,14 +131,17 @@ export default function IncidentsTable({ data }) {
       {
         Header: 'Alleged Deployer of AI System',
         accessor: 'AllegedDeployerOfAISystem',
+        Cell: ListCell,
       },
       {
         Header: 'Alleged Developer of AISystem',
-        accessor: 'Alleged Developer of AISystem',
+        accessor: 'AllegedDeveloperOfAISystem',
+        Cell: ListCell,
       },
       {
         Header: 'Alleged Harmed or Nearly Harmed Parties',
         accessor: 'AllegedHarmedOrNearlyHarmedParties',
+        Cell: ListCell,
       },
     ];
 
@@ -211,7 +218,11 @@ export default function IncidentsTable({ data }) {
               <div {...row.getRowProps()} className="tr" data-cy="row">
                 {row.cells.map((cell) => {
                   return (
-                    <div {...cell.getCellProps()} className="td border-end border-bottom">
+                    <div
+                      {...cell.getCellProps()}
+                      className="td border-end border-bottom"
+                      data-cy="cell"
+                    >
                       {cell.render('Cell')}
                     </div>
                   );
