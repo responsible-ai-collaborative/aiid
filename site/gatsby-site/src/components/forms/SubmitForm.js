@@ -45,7 +45,7 @@ const SubmitForm = () => {
 
   const [query] = useQueryParams(queryConfig);
 
-  const [incident, setIncident] = useState({ ...query });
+  const [submission, setSubmission] = useState({ ...query });
 
   const [csvData, setCsvData] = useState([]);
 
@@ -57,7 +57,7 @@ const SubmitForm = () => {
 
   useEffect(() => {
     if (csvData[csvIndex]) {
-      setIncident(csvData[csvIndex]);
+      setSubmission(csvData[csvIndex]);
     }
   }, [csvIndex, csvData]);
 
@@ -118,7 +118,12 @@ const SubmitForm = () => {
 
   return (
     <div className="my-5">
-      <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={incident}>
+      <Formik
+        validationSchema={schema}
+        onSubmit={handleSubmit}
+        initialValues={submission}
+        enableReinitialize={true}
+      >
         {({ isValid, isSubmitting, submitForm }) => (
           <>
             <SubmissionForm />
@@ -135,7 +140,7 @@ const SubmitForm = () => {
         )}
       </Formik>
 
-      <RelatedIncidents incident={incident} />
+      <RelatedIncidents incident={submission} />
 
       {isRole('submitter') && (
         <Container className="mt-5 p-0">
