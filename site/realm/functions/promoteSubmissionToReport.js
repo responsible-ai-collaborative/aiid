@@ -18,6 +18,7 @@ exports = async (input) => {
       title: submission.title,
       incident_id: lastIncident.incident_id + 1,
       reports: [],
+      date: submission.incident_date,
     }
     
     await incidents.insertOne({...newIncident, incident_id: BSON.Int32(newIncident.incident_id)});
