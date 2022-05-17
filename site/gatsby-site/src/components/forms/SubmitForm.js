@@ -4,13 +4,14 @@ import { CSVReader } from 'react-papaparse';
 import { useQueryParams, StringParam, NumberParam, ArrayParam, encodeDate } from 'use-query-params';
 import Link from 'components/ui/Link';
 import RelatedIncidents from 'components/RelatedIncidents';
-import IncidentReportForm from 'components/forms/IncidentReportForm';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, parse } from 'date-fns';
 import { useMutation } from '@apollo/client';
 import { INSERT_SUBMISSION } from '../../graphql/submissions';
 import isString from 'lodash/isString';
+import SubmissionForm, { schema } from 'components/submissions/SubmissionForm';
+import { Formik } from 'formik';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -40,7 +41,7 @@ const queryConfig = {
 };
 
 const SubmitForm = () => {
-  const { isRole, user } = useUserContext();
+  const { isRole } = useUserContext();
 
   const [query] = useQueryParams(queryConfig);
 
@@ -117,10 +118,25 @@ const SubmitForm = () => {
 
   return (
     <div className="my-5">
-      {user && (
-        <IncidentReportForm incident={incident} onUpdate={setIncident} onSubmit={handleSubmit} />
-      )}
-      <RelatedIncidents incident={incident} isSubmitted={false} />
+      <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={incident}>
+        {({ isValid, isSubmitting, submitForm }) => (
+          <>
+            <SubmissionForm />
+            <Button
+              onClick={submitForm}
+              className="mt-3"
+              variant="primary"
+              type="submit"
+              disabled={isSubmitting || !isValid}
+            >
+              Submit
+            </Button>
+          </>
+        )}
+      </Formik>
+
+      <RelatedIncidents incident={incident} />
+
       {isRole('submitter') && (
         <Container className="mt-5 p-0">
           <h2>Advanced: Add by CSV</h2>
