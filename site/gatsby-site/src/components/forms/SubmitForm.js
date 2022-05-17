@@ -124,9 +124,16 @@ const SubmitForm = () => {
         initialValues={submission}
         enableReinitialize={true}
       >
-        {({ isValid, isSubmitting, submitForm }) => (
+        {({ isValid, isSubmitting, submitForm, values }) => (
           <>
             <SubmissionForm />
+
+            <p className="mt-4">
+              Submitted reports are added to a <Link to="/apps/submitted">review queue </Link>
+              to be resolved to a new or existing incident record. Incidents are reviewed and merged
+              into the database after enough incidents are pending.
+            </p>
+
             <Button
               onClick={submitForm}
               className="mt-3"
@@ -136,11 +143,11 @@ const SubmitForm = () => {
             >
               Submit
             </Button>
+
+            <RelatedIncidents incident={values} />
           </>
         )}
       </Formik>
-
-      <RelatedIncidents incident={submission} />
 
       {isRole('submitter') && (
         <Container className="mt-5 p-0">

@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import { useFormikContext } from 'formik';
 import * as Yup from 'yup';
-import Link from 'components/ui/Link';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { dateRegExp } from 'utils/date';
@@ -12,6 +11,7 @@ import { graphql, useStaticQuery } from 'gatsby';
 import * as POP_OVERS from '../ui/PopOvers';
 import Label from '../forms/Label';
 import TagsControl from 'components/forms/TagsControl';
+import IncidentIdField from 'components/incidents/IncidentIdField';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -162,109 +162,116 @@ const SubmissionForm = () => {
   );
 
   return (
-    <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
-      <TextInputGroup
-        name="url"
-        label="Report Address"
-        placeholder="Report URL"
-        addOnComponent={
-          <Button
-            className="outline-secondary"
-            disabled={!!errors.url || !touched.url || parsingNews}
-            onClick={() => parseNewsUrl(values.url)}
-          >
-            {' '}
-            {!parsingNews ? (
-              <>Fetch info</>
-            ) : (
-              <>
-                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />{' '}
-                Fetching...
-              </>
-            )}
-          </Button>
-        }
-        {...TextInputGroupProps}
-        handleChange={(e) => {
-          setFieldTouched('url', true);
-          TextInputGroupProps.handleChange(e);
-        }}
-      />
+    <>
+      <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
+        <TextInputGroup
+          name="url"
+          label="Report Address"
+          placeholder="Report URL"
+          addOnComponent={
+            <Button
+              className="outline-secondary"
+              disabled={!!errors.url || !touched.url || parsingNews}
+              onClick={() => parseNewsUrl(values.url)}
+            >
+              {' '}
+              {!parsingNews ? (
+                <>Fetch info</>
+              ) : (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />{' '}
+                  Fetching...
+                </>
+              )}
+            </Button>
+          }
+          {...TextInputGroupProps}
+          handleChange={(e) => {
+            setFieldTouched('url', true);
+            TextInputGroupProps.handleChange(e);
+          }}
+        />
 
-      <TextInputGroup
-        name="title"
-        label="Title"
-        placeholder="Report title"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-      <TextInputGroup
-        name="authors"
-        label="Author CSV"
-        placeholder="Author CSV"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-      <TextInputGroup
-        name="submitters"
-        label="Submitter CSV"
-        placeholder="Submitter CSV"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-      <TextInputGroup
-        name="date_published"
-        label="Date Published"
-        placeholder="YYYY-MM-DD"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-      <TextInputGroup
-        name="date_downloaded"
-        label="Date Downloaded"
-        placeholder="YYYY-MM-DD"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-      <PreviewImageInputGroup
-        publicID={values.cloudinary_id}
-        name="image_url"
-        label="Image Address"
-        placeholder="Image URL"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
+        <TextInputGroup
+          name="title"
+          label="Title"
+          placeholder="Report title"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+        <TextInputGroup
+          name="authors"
+          label="Author CSV"
+          placeholder="Author CSV"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+        <TextInputGroup
+          name="submitters"
+          label="Submitter CSV"
+          placeholder="Submitter CSV"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+        <TextInputGroup
+          name="date_published"
+          label="Date Published"
+          placeholder="YYYY-MM-DD"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+        <TextInputGroup
+          name="date_downloaded"
+          label="Date Downloaded"
+          placeholder="YYYY-MM-DD"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+        <PreviewImageInputGroup
+          publicID={values.cloudinary_id}
+          name="image_url"
+          label="Image Address"
+          placeholder="Image URL"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
 
-      <TextInputGroup
-        name="incident_id"
-        label="Incident ID"
-        placeholder="OPTIONAL"
-        type="number"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
+        <TextInputGroup
+          name="text"
+          label="Text"
+          placeholder="Text of the report"
+          as="textarea"
+          rows={8}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
 
-      <TextInputGroup
-        name="text"
-        label="Text"
-        placeholder="Text of the report"
-        as="textarea"
-        rows={8}
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
+        <Form.Group className="mt-3">
+          <Label popover={POP_OVERS['tags']} label={'Tags'} />
+          <TagsControl name={'tags'} />
+        </Form.Group>
 
-      <Form.Group className="mt-3">
-        <Label popover={POP_OVERS['tags']} label={'Tags'} />
-        <TagsControl name={'tags'} />
-      </Form.Group>
+        <IncidentIdField name="incident_id" className="mt-3" placeHolder="OPTIONAL" />
 
-      <p className="mt-4">
-        Submitted reports are added to a <Link to="/apps/submitted">review queue </Link>
-        to be resolved to a new or existing incident record. Incidents are reviewed and merged into
-        the database after enough incidents are pending.
-      </p>
-    </Form>
+        {!values.incident_id && (
+          <TextInputGroup
+            name="incident_date"
+            label="Incident Date"
+            placeholder="Incident Date"
+            type="date"
+            className="mt-3"
+            disabled={values.incident_id}
+            {...TextInputGroupProps}
+          />
+        )}
+      </Form>
+    </>
   );
 };
 
