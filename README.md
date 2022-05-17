@@ -109,7 +109,7 @@ If the feature you are working on includes structural changes to the MongoDB dat
 #### Replicating the Database
 Download the latest database backup from https://incidentdatabase.ai/research/snapshots
 
-Then, run `mongorestore` (included in MongoDB tools) using the admin user created in the step above to upload the database backup:
+Then, run `mongorestore` (included in [MongoDB tools](https://www.mongodb.com/docs/database-tools/installation/installation)) using the admin user created in the step above to upload the database backup:
 
 ```
 mongorestore mongodb+srv://<USER>:<PASSWORD>@aiiddev.<CLUSTER>.mongodb.net/aiidprod aiidprod`
@@ -199,7 +199,7 @@ At the time of writing, there are 1336 Incident Reports, each report consisting 
 
 Considering the pricing above, translating all ingested reports to one language will cost `(5 million / 1 million) * $20 = ~$100`, and translating all incident reports to all languages `$100 * 111= ~$11k`.
 
-The translation process defaults to a **dry run ** mode that prepends a string to every translated text instead of hitting Google's API. 
+The translation process defaults to a **dry run** mode that prepends a string to every translated text instead of hitting Google's API.
 
 Therefore, Translated texts in this mode will look like: `translated-{language}-YouTube to crack down on inappropriate content masked as kids’ cartoons`
 
