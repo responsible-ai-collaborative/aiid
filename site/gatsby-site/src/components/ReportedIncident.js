@@ -10,17 +10,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import ReadMoreText from 'components/ReadMoreText';
 import EditableListItem from 'components/EditableListItem';
-import IncidentEditModal from 'components/IncidentEditModal';
 import RelatedIncidents from 'components/RelatedIncidents';
 
 import { useUserContext } from 'contexts/userContext';
 import { UPDATE_REPORT } from '../graphql/reports';
 import { useMutation } from '@apollo/client';
 import { UPDATE_INCIDENT } from '../graphql/incidents';
-import { DELETE_SUBMISSION, PROMOTE_SUBMISSION, UPDATE_SUBMISSION } from '../graphql/submissions';
+import { DELETE_SUBMISSION, PROMOTE_SUBMISSION } from '../graphql/submissions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { format, getUnixTime } from 'date-fns';
-import isArray from 'lodash/isArray';
+import SubmissionEditModal from './submissions/SubmissionEditModal';
 
 const ListedGroup = ({ item, keysToRender }) => {
   return (
@@ -66,8 +65,6 @@ const ReportedIncident = ({ incident: submission }) => {
   const [updateReport] = useMutation(UPDATE_REPORT);
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
-
-  const [updateSubmission] = useMutation(UPDATE_SUBMISSION);
 
   const [deleteSubmission] = useMutation(DELETE_SUBMISSION);
 
@@ -158,41 +155,6 @@ const ReportedIncident = ({ incident: submission }) => {
     await deleteSubmission({ variables: { _id: submission._id } });
   };
 
-  const toggleEditing = () => setIsEditing(!isEditing);
-
-  const handleSubmit = async (values) => {
-    try {
-      const update = { ...values, _id: undefined };
-
-      await updateSubmission({
-        variables: {
-          query: {
-            _id: values._id,
-          },
-          set: {
-            ...update,
-            authors: !isArray(values.authors)
-              ? values.authors.split(',').map((s) => s.trim())
-              : values.authors,
-            submitters: !isArray(values.submitters)
-              ? values.submitters.split(',').map((s) => s.trim())
-              : values.submitters,
-          },
-        },
-      });
-
-      addToast({
-        message: `Submission updated successfully.`,
-        severity: SEVERITY.success,
-      });
-    } catch (e) {
-      addToast({
-        message: `Error updating submission ${values._id}`,
-        severity: SEVERITY.danger,
-      });
-    }
-  };
-
   const isNewIncident = submission['incident_id'] === '0';
 
   const cardSubheader = isNewIncident ? 'New Incident' : 'New Report';
@@ -246,7 +208,7 @@ const ReportedIncident = ({ incident: submission }) => {
             </Card>
           )}
           <Card.Footer className="d-flex text-muted">
-            <Button className="me-auto" disabled={!isSubmitter} onClick={toggleEditing}>
+            <Button className="me-auto" disabled={!isSubmitter} onClick={() => setIsEditing(true)}>
               <FontAwesomeIcon icon={faEdit} />
             </Button>
             <Button
@@ -263,11 +225,10 @@ const ReportedIncident = ({ incident: submission }) => {
           </Card.Footer>
         </div>
       </Collapse>
-      <IncidentEditModal
+      <SubmissionEditModal
         show={isEditing}
-        incident={submission}
-        onHide={toggleEditing}
-        onSubmit={handleSubmit}
+        onHide={() => setIsEditing(false)}
+        submissionId={submission._id}
       />
     </>
   );
