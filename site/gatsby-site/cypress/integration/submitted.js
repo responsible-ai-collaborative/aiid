@@ -169,6 +169,11 @@ describe('Submitted reports', () => {
       .then(({ query, set }) => {
         expect(query.incident_id).eq(182);
         expect(set.title).eq(submission.title);
+        expect(set.date).eq(submission.incident_date);
+        expect(set.description).eq('');
+        expect(set.AllegedDeployerOfAISystem).to.deep.eq([]);
+        expect(set.AllegedDeveloperOfAISystem).to.deep.eq([]);
+        expect(set.AllegedHarmedOrNearlyHarmedParties).to.deep.eq([]);
       });
 
     cy.get('[data-cy="toast"]')
