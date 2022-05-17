@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Container } from 'react-bootstrap';
 import { CSVReader } from 'react-papaparse';
-import { useQueryParams, StringParam, NumberParam, ArrayParam, encodeDate } from 'use-query-params';
+import { useQueryParams, StringParam, ArrayParam, encodeDate, withDefault } from 'use-query-params';
 import Link from 'components/ui/Link';
 import RelatedIncidents from 'components/RelatedIncidents';
 import { useUserContext } from 'contexts/userContext';
@@ -27,17 +27,17 @@ const CustomDateParam = {
 };
 
 const queryConfig = {
-  url: StringParam,
-  title: StringParam,
-  authors: StringParam,
-  submitters: StringParam,
-  incident_date: CustomDateParam,
-  date_published: CustomDateParam,
-  date_downloaded: CustomDateParam,
-  image_url: StringParam,
-  incident_id: NumberParam,
-  text: StringParam,
-  tags: ArrayParam,
+  url: withDefault(StringParam, ''),
+  title: withDefault(StringParam, ''),
+  authors: withDefault(StringParam, ''),
+  submitters: withDefault(StringParam, ''),
+  incident_date: withDefault(CustomDateParam, ''),
+  date_published: withDefault(CustomDateParam, ''),
+  date_downloaded: withDefault(CustomDateParam, ''),
+  image_url: withDefault(StringParam, ''),
+  incident_id: withDefault(StringParam, ''),
+  text: withDefault(StringParam, ''),
+  tags: withDefault(ArrayParam, []),
 };
 
 const SubmitForm = () => {
@@ -115,6 +115,8 @@ const SubmitForm = () => {
 
     setSubmitting(false);
   };
+
+  console.log(submission);
 
   return (
     <div className="my-5">

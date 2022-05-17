@@ -63,7 +63,7 @@ export const schema = Yup.object().shape({
     /((https?):\/\/)(\S)*$/,
     '*Must enter URL in http://www.example.com/images/preview.png format'
   ),
-  incident_id: Yup.number().integer('*Must be an incident number or empty'),
+  incident_id: Yup.number().positive().integer('*Must be an incident number or empty'),
 });
 
 const SubmissionForm = () => {
@@ -257,7 +257,11 @@ const SubmissionForm = () => {
           <TagsControl name={'tags'} />
         </Form.Group>
 
-        <IncidentIdField name="incident_id" className="mt-3" placeHolder="OPTIONAL" />
+        <IncidentIdField
+          name="incident_id"
+          className="mt-3"
+          placeHolder="Leave empty to report a new incident"
+        />
 
         {!values.incident_id && (
           <TextInputGroup

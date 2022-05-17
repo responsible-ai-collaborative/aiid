@@ -1,7 +1,7 @@
 import { useLazyQuery } from '@apollo/client';
 import Label from 'components/forms/Label';
 import { useField } from 'formik';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 import { FIND_INCIDENT } from '../../graphql/incidents';
 import * as POP_OVERS from '../ui/PopOvers';
@@ -21,6 +21,10 @@ export default function IncidentIdField({ name, placeHolder = '', className = ''
 
   const [{ value, onChange, onBlur }, { error }] = useField({ validate, name });
 
+  useEffect(() => {
+    validate(value);
+  }, []);
+
   return (
     <>
       <Form.Group className={className}>
@@ -37,18 +41,14 @@ export default function IncidentIdField({ name, placeHolder = '', className = ''
         <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
       </Form.Group>
 
-      {value && (
+      {value !== '' && !error && (
         <div className="pt-1">
-          {loadingIncident ? (
-            <div className="small">Searching...</div>
-          ) : (
+          {loadingIncident && <div className="small">Searching...</div>}
+
+          {incident?.incident && (
             <>
-              {incident?.incident && (
-                <>
-                  <div className="small">{incident.incident.date}</div>
-                  <a href={`/cite/${incident.incident.incident_id}`}> {incident.incident.title}</a>
-                </>
-              )}
+              <div className="small">{incident.incident.date}</div>
+              <a href={`/cite/${incident.incident.incident_id}`}> {incident.incident.title}</a>
             </>
           )}
         </div>
