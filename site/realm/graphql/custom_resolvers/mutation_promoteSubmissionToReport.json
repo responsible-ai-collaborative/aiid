@@ -1,0 +1,23 @@
+{
+    "field_name": "promoteSubmissionToReport",
+    "function_name": "promoteSubmissionToReport",
+    "input_type": {
+        "properties": {
+            "incident_ids": {
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "int"
+                }
+            },
+            "submission_id": {
+                "bsonType": "objectId"
+            }
+        },
+        "title": "PromoteSubmissionToReportInput",
+        "type": "object"
+    },
+    "input_type_format": "custom",
+    "on_type": "Mutation",
+    "payload_type": "Incident",
+    "payload_type_format": "generated-list"
+}

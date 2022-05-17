@@ -4,19 +4,52 @@ import incident from '../../fixtures/incidents/incident112.json';
 
 import updateOneIncident from '../../fixtures/incidents/updateOneIncident112.json';
 
-describe('Classifications App', () => {
+import incidents from '../../fixtures/incidents/incidents.json';
+
+describe('Incidents App', () => {
   const url = '/apps/incidents';
 
   it('Successfully loads', () => {
     cy.visit(url);
   });
 
+  it('Should display a list of incidents and their values', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidents',
+      'FindIncidents',
+      incidents
+    );
+
+    cy.visit(url);
+
+    cy.get('[data-cy="row"]')
+      .eq(0)
+      .within(() => {
+        cy.get('[data-cy="cell"]').should('have.length', 7);
+
+        const { 0: incident } = incidents.data.incidents;
+
+        cy.get('[data-cy="cell"]').eq(0).should('have.text', `Incident ${incident.incident_id}`);
+        cy.get('[data-cy="cell"]').eq(1).should('have.text', incident.title);
+        cy.get('[data-cy="cell"]').eq(2).should('have.text', incident.description);
+        cy.get('[data-cy="cell"]').eq(3).should('have.text', incident.date);
+        cy.get('[data-cy="cell"]')
+          .eq(4)
+          .should('have.text', incident.AllegedDeployerOfAISystem.join(', '));
+        cy.get('[data-cy="cell"]')
+          .eq(5)
+          .should('have.text', incident.AllegedDeveloperOfAISystem.join(', '));
+        cy.get('[data-cy="cell"]')
+          .eq(6)
+          .should('have.text', incident.AllegedHarmedOrNearlyHarmedParties.join(', '));
+      });
+  });
+
   maybeIt('Successfully filter and edit incident 11', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.visit(url);
-
-    cy.get('[data-cy="filter-Incident ID"]').click();
 
     cy.get('[data-cy="input-filter-Incident ID"]').type('112');
 
@@ -49,7 +82,7 @@ describe('Classifications App', () => {
       updateOneIncident
     );
 
-    cy.contains('Save').click();
+    cy.contains('Update').click();
 
     cy.wait('@UpdateIncident').then((xhr) => {
       expect(xhr.request.body.operationName).to.eq('UpdateIncident');
@@ -57,6 +90,8 @@ describe('Classifications App', () => {
       expect(xhr.request.body.variables.set.title).to.eq('Test title');
     });
 
-    cy.contains('Close').click();
+    cy.contains('Update').should('be.disabled');
+
+    cy.get('[data-cy="incident-form"]').should('not.exist');
   });
 });
