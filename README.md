@@ -73,7 +73,7 @@ Depending on what feature you are working on, there will be different systems yo
 Get a Gatsby environment working. Most of the time, you'll only need to run:
 
 ```
-npm i -g gatsby-cli
+npm install --global gatsby-cli
 ```
 Create a `.env` file under `site/gatsby-site` with the following contents:
 
@@ -87,7 +87,7 @@ GATSBY_ALGOLIA_SEARCH_KEY=c5e99d93261645721a1765fe4414389c
 ```
 In the same folder, install dependencies using `npm` (do not use `yarn`, it will ignore the `package-lock.json` file):
 
-`npm i`
+`npm install`
 
 You are ready to start a local copy of the project:
 
@@ -119,7 +119,7 @@ mongorestore mongodb+srv://<USER>:<PASSWORD>@aiiddev.<CLUSTER>.mongodb.net/aiidp
 Install the `realm-cli` and follow the login process: https://docs.mongodb.com/realm/cli/
 
 ```
-npm i -g mongodb-realm-cli
+npm install --global mongodb-realm-cli
 ```
 Once authenticated, you can deploy the realm app by going to `site/realm` of this repo and running:
 
