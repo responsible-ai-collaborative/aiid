@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Layout from 'components/Layout';
-import IncidentForm from 'components/incidents/IncidentForm';
+import IncidentForm, { schema } from 'components/incidents/IncidentForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Spinner } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
+import { Formik } from 'formik';
 
 function EditCitePage(props) {
   const [incident, setIncident] = useState();
@@ -64,7 +65,23 @@ function EditCitePage(props) {
       )}
       {incident === null && <div>Report not found</div>}
 
-      {incident && <IncidentForm incident={incident} onSubmit={handleSubmit} />}
+      {incident && (
+        <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={incident}>
+          {({ isValid, isSubmitting, submitForm }) => (
+            <>
+              <IncidentForm />
+              <Button
+                onClick={submitForm}
+                className="mt-3"
+                type="submit"
+                disabled={!isValid || isSubmitting}
+              >
+                Save
+              </Button>
+            </>
+          )}
+        </Formik>
+      )}
     </Layout>
   );
 }

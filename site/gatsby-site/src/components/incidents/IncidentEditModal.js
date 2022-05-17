@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { Button, Modal, Spinner } from 'react-bootstrap';
-import IncidentForm from './IncidentForm';
+import IncidentForm, { schema } from './IncidentForm';
+import { Formik } from 'formik';
 
 export default function IncidentEditModal({ show, onClose, incidentId }) {
   const [incident, setIncident] = useState();
@@ -15,8 +16,6 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
   const addToast = useToastContext();
-
-  const formRef = useRef();
 
   useEffect(() => {
     if (incidentData?.incident) {
@@ -60,33 +59,35 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
       <Modal.Header closeButton>
         <Modal.Title>Edit Incident</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
-        {incident === undefined && (
-          <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-        )}
-        {incident === null && <div>Report not found</div>}
 
-        {incident && (
-          <IncidentForm
-            ref={formRef}
-            incident={incident}
-            onSubmit={handleSubmit}
-            showSubmit={false}
-          />
-        )}
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>
-          Close
-        </Button>
-        <Button
-          variant="primary"
-          onClick={() => formRef.current?.form().submitForm()}
-          disabled={formRef.current?.form().isSubmitting}
-        >
-          Update
-        </Button>
-      </Modal.Footer>
+      {!incident && (
+        <Modal.Body>
+          {incident === undefined && (
+            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+          )}
+          {incident === null && <div>Report not found</div>}
+        </Modal.Body>
+      )}
+
+      {incident && (
+        <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={incident}>
+          {({ isValid, isSubmitting, submitForm }) => (
+            <>
+              <Modal.Body>
+                <IncidentForm />
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={onClose}>
+                  Close
+                </Button>
+                <Button variant="primary" onClick={submitForm} disabled={isSubmitting || !isValid}>
+                  Update
+                </Button>
+              </Modal.Footer>
+            </>
+          )}
+        </Formik>
+      )}
     </Modal>
   );
 }
