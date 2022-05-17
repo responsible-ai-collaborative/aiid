@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import { Button, Modal, Spinner } from 'react-bootstrap';
 import SubmissionForm, { schema } from 'components/submissions/SubmissionForm';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { FIND_SUBMISSION, UPDATE_SUBMISSION } from '../../graphql/submissions';
@@ -60,7 +60,11 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
       <Modal.Header closeButton onHide={onHide}>
         <Modal.Title>Edit Submission</Modal.Title>
       </Modal.Header>
-      {loading && <>loading</>}
+      {loading && (
+        <Modal.Body>
+          <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+        </Modal.Body>
+      )}
       {submission?.submission && (
         <Formik
           validationSchema={schema}
@@ -81,7 +85,7 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
                   type="submit"
                   disabled={isSubmitting || !isValid}
                 >
-                  Submit
+                  Update
                 </Button>
               </Modal.Footer>
             </>

@@ -9,7 +9,6 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import ReadMoreText from 'components/ReadMoreText';
-import EditableListItem from 'components/EditableListItem';
 import RelatedIncidents from 'components/RelatedIncidents';
 
 import { useUserContext } from 'contexts/userContext';
@@ -21,17 +20,18 @@ import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { format, getUnixTime } from 'date-fns';
 import SubmissionEditModal from './SubmissionEditModal';
 
-const ListedGroup = ({ item, keysToRender }) => {
+const ListedGroup = ({ item, className = '', keysToRender }) => {
   return (
-    <ListGroup className="px-3">
+    <ListGroup className={className}>
       {keysToRender.map((key) => (
-        <EditableListItem
-          key={key}
-          name={key}
-          value={
-            typeof item[key] == 'object' && item[key] !== null ? item[key].join(', ') : item[key]
-          }
-        />
+        <ListGroup.Item key={key} className="d-flex gap-4">
+          <div style={{ width: 140 }} className="flex-grow">
+            <b>{key}</b>
+          </div>
+          <div className="text-break">
+            {item[key] == 'object' && item[key] !== null ? item[key].join(', ') : item[key]}
+          </div>
+        </ListGroup.Item>
       ))}
     </ListGroup>
   );
@@ -39,7 +39,7 @@ const ListedGroup = ({ item, keysToRender }) => {
 
 const leadItems = ['source_domain', 'authors', 'submitters', 'incident_id'];
 
-const urls = ['url', 'image_url', 'authors', 'submitters'];
+const urls = ['url', 'image_url'];
 
 const dateRender = [
   'incident_date',
@@ -49,7 +49,7 @@ const dateRender = [
   'date_modified',
 ];
 
-const otherDetails = ['language', 'mongodb_id'];
+const otherDetails = ['language', '_id'];
 
 const SubmissionReview = ({ incident: submission }) => {
   const { isRole } = useUserContext();
@@ -189,23 +189,23 @@ const SubmissionReview = ({ incident: submission }) => {
       </Card.Header>
       <Collapse in={open}>
         <div id="collapse-incident-submission" className="pt-3">
-          <ListedGroup item={submission} keysToRender={leadItems} />
-          <ListedGroup item={submission} keysToRender={dateRender} />
-          <ListedGroup item={submission} keysToRender={urls} />
-          <ListedGroup item={submission} keysToRender={otherDetails} />
+          <ListedGroup className="mx-3" item={submission} keysToRender={leadItems} />
+          <ListedGroup className="mt-2 mx-3" item={submission} keysToRender={dateRender} />
+          <ListedGroup className="mt-2 mx-3" item={submission} keysToRender={urls} />
+          <ListedGroup className="mt-2 mx-3" item={submission} keysToRender={otherDetails} />
+
           <Card className="m-3">
             <Card.Header>Text</Card.Header>
             <Card.Body>
               <ReadMoreText text={submission.text} visibility={open} />
             </Card.Body>
           </Card>
+
           {open && (
-            <Card className="m-3">
-              <Card.Header>Possible related incidents</Card.Header>
-              <Card.Body>
-                <RelatedIncidents incident={submission} isSubmitted={true} />
-              </Card.Body>
-            </Card>
+            <div className="mx-3">
+              <h5>Possible related incidents</h5>
+              <RelatedIncidents incident={submission} />
+            </div>
           )}
           <Card.Footer className="d-flex text-muted">
             <Button className="me-auto" disabled={!isSubmitter} onClick={() => setIsEditing(true)}>
