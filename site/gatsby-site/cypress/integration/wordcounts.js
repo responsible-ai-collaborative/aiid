@@ -40,4 +40,8 @@ describe('The Word Counts Page', () => {
         expect(counts.sort(ascending)[0] > 9).to.be.true;
       });
   });
+  it('word cloud should exist', () => {
+    cy.get('.col-8 svg');
+    cy.get('.col-8 svg text');
+  });
 });
