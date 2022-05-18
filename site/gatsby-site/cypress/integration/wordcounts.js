@@ -5,9 +5,18 @@ describe('The Word Counts Page', () => {
 
   it('word count table should exist', () => {
     cy.visit('/summaries/wordcounts');
-    cy.get('.row .list-group');
-    cy.get('.row .list-group > div');
-    cy.get('.row .list-group > div > span');
+    cy.get('[data-cy=wordlist-container]').should('exist').and('be.visible');
+
+    // Check that there are multiple rows
+    cy.get('[data-cy=wordlist-container] > * > *').its('length').should('be.gt', 1);
+  });
+
+  it('word cloud should exist', () => {
+    cy.visit('/summaries/wordcounts');
+    cy.get('[data-cy=wordcloud]').should('exist').and('be.visible');
+
+    // Check that there are multiple text nodes
+    cy.get('[data-cy=wordcloud] text').its('length').should('be.gt', 1);
   });
 
   it('words should have length > 2 and count > 10', () => {
@@ -15,18 +24,19 @@ describe('The Word Counts Page', () => {
 
     // Pull out the words and their counts and then check
     // that the minimum word length and occurence count are accurate
-    let counts = [];
+    const counts = [];
 
-    let words = [];
+    const words = [];
 
-    cy.get('.row .list-group > div')
+    cy.get('[data-cy=wordlist-container] > * > *')
       .each((row) => {
         words.push(row.text().trim());
+
+        const countText = row.find('span').text().trim();
+
+        const spanIsNumeric = /\d+/.test(countText);
+
         let count = 0;
-
-        let countText = row.find('span').text().trim();
-
-        let spanIsNumeric = /\d+/.test(countText);
 
         if (spanIsNumeric) {
           count = parseInt(countText);
@@ -39,9 +49,5 @@ describe('The Word Counts Page', () => {
         expect(words.map((word) => word.length).sort(ascending)[0] > 2).to.be.true;
         expect(counts.sort(ascending)[0] > 9).to.be.true;
       });
-  });
-  it('word cloud should exist', () => {
-    cy.get('.col-8 svg');
-    cy.get('.col-8 svg text');
   });
 });
