@@ -5,7 +5,7 @@ describe('Generate a Algolia index', () => {
   it('Should return a properly constructed Algolia index', () => {
     discoverIndexGenerator({ graphql: () => allClassifications }).then((index) => {
       expect(index).to.have.length(10);
-      expect(index[0]).to.deep.equal({
+      expect(index[0]).to.deep.nested.include({
         objectID: '5d34b8c29ced494f010ed469',
         incident_date: '2014-08-14',
         mongodb_id: '5d34b8c29ced494f010ed469',

@@ -47,7 +47,6 @@
                     ],
                     "date_submitted": "2019-06-01",
                     "report_number": 16,
-                    "incident_id": 10,
                     "ref_number": 0
                 },
                 {
@@ -75,7 +74,6 @@
                     ],
                     "date_submitted": "2019-06-01",
                     "report_number": 17,
-                    "incident_id": 10,
                     "ref_number": 1
                 },
                 {
@@ -103,7 +101,6 @@
                     ],
                     "date_submitted": "2019-06-01",
                     "report_number": 18,
-                    "incident_id": 10,
                     "ref_number": 2
                 },
                 {
@@ -131,7 +128,6 @@
                     ],
                     "date_submitted": "2019-06-01",
                     "report_number": 19,
-                    "incident_id": 10,
                     "ref_number": 3
                 },
                 {
@@ -159,7 +155,6 @@
                     ],
                     "date_submitted": "2019-06-01",
                     "report_number": 20,
-                    "incident_id": 10,
                     "ref_number": 4
                 },
                 {
@@ -188,7 +183,6 @@
                     ],
                     "date_submitted": "2019-06-01",
                     "report_number": 21,
-                    "incident_id": 10,
                     "ref_number": 5
                 },
                 {
@@ -216,7 +210,6 @@
                     ],
                     "date_submitted": "2019-06-01",
                     "report_number": 22,
-                    "incident_id": 10,
                     "ref_number": 6
                 },
                 {
@@ -244,7 +237,6 @@
                     ],
                     "date_submitted": "2019-06-01",
                     "report_number": 23,
-                    "incident_id": 10,
                     "ref_number": 7
                 },
                 {
@@ -272,7 +264,6 @@
                     ],
                     "date_submitted": "2019-06-01",
                     "report_number": 24,
-                    "incident_id": 10,
                     "ref_number": 8
                 },
                 {
@@ -300,7 +291,6 @@
                     ],
                     "date_submitted": "2019-06-01",
                     "report_number": 25,
-                    "incident_id": 10,
                     "ref_number": 9
                 }
             ]
