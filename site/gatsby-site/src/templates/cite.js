@@ -132,6 +132,7 @@ function CitePage(props) {
                   incidentId: incident.incident_id,
                   reportCount: incidentReports.length,
                   incidentDate: incident.date,
+                  editors: incident.editors.join(', '),
                 }}
               />
             </StatsContainer>
