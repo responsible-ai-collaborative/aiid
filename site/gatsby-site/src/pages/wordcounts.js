@@ -16,11 +16,16 @@ const wordCloudSize = [350, 350];
 const WordCloudCell = ({ wordCountsSorted, wordCloudOptions, wordCloudSize, wordCloud }) => {
   return (
     <Row>
-      <Col xs={4}>
+      <Col xs={4} data-cy="wordlist-container">
         <Wordlist content={wordCountsSorted} />
       </Col>
       <Col xs={8}>
-        <ReactWordcloud options={wordCloudOptions} size={wordCloudSize} words={wordCloud} />
+        <ReactWordcloud
+          data-cy="wordcloud"
+          options={wordCloudOptions}
+          size={wordCloudSize}
+          words={wordCloud}
+        />
       </Col>
     </Row>
   );
