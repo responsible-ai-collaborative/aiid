@@ -43,6 +43,7 @@ People
 
 * `submitters`: Array(string) # People that submitted the incident report
 * `authors`: Array(string) # People that wrote the incident report
+* `editors`: Array(string) # The editors of the incident. Editors are listed in the incident citation and can promote user-submitted records to incident reports.
 
 Text
 
