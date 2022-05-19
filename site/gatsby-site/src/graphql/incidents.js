@@ -6,6 +6,7 @@ export const FIND_INCIDENT = gql`
       incident_id
       title
       description
+      editors
       date
       AllegedDeployerOfAISystem
       AllegedDeveloperOfAISystem
@@ -23,6 +24,7 @@ export const FIND_INCIDENTS = gql`
       incident_id
       title
       description
+      editors
       date
       AllegedDeployerOfAISystem
       AllegedDeveloperOfAISystem
@@ -40,6 +42,7 @@ export const UPDATE_INCIDENT = gql`
       incident_id
       title
       description
+      editors
       date
       AllegedDeployerOfAISystem
       AllegedDeveloperOfAISystem

@@ -27,6 +27,12 @@
         "description": {
             "bsonType": "string"
         },
+        "editors": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
         "incident_id": {
             "bsonType": "int"
         },
