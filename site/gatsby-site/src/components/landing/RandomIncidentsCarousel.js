@@ -33,42 +33,55 @@ const RandomIncidentsCarousel = ({ className }) => {
     <StaticQuery
       query={graphql`
         query RandomIncidentsCarousel {
+          allMongodbAiidprodIncidents {
+            nodes {
+              incident_id
+              reports
+            }
+          }
+
           allMongodbAiidprodReports(limit: 50, sort: { order: ASC, fields: id }) {
-            edges {
-              node {
-                id
-                incident_id
-                title
-                image_url
-              }
+            nodes {
+              id
+              report_number
+              title
+              image_url
             }
           }
         }
       `}
-      render={({ allMongodbAiidprodReports: { edges } }) => {
-        const randomIncidents = edges.filter(
-          (node, index) => randomArray.includes(index) && node.image_url !== 'placeholder.svg'
-        );
+      render={({
+        allMongodbAiidprodReports: { nodes: reports },
+        allMongodbAiidprodIncidents: { nodes: incidents },
+      }) => {
+        const randomIncidents = reports
+          .filter(
+            (node, index) => randomArray.includes(index) && node.image_url !== 'placeholder.svg'
+          )
+          .map((report) => ({
+            ...report,
+            incident_id: incidents.find((incident) =>
+              incident.reports.includes(report.report_number)
+            ).incident_id,
+          }));
 
         return (
           <Carousel interval={60000} className={className}>
-            {randomIncidents.map(
-              ({ node: { id, incident_id, title, image_url, cloudinary_id } }) => (
-                <Carousel.Item key={id}>
-                  <Link to={`/cite/${incident_id}`}>
-                    <CarouselImage
-                      publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
-                      alt={title}
-                      transformation={fill().height(480)}
-                      plugins={[]}
-                    />
-                    <Carousel.Caption>
-                      <Caption>{title}</Caption>
-                    </Carousel.Caption>
-                  </Link>
-                </Carousel.Item>
-              )
-            )}
+            {randomIncidents.map(({ id, incident_id, title, image_url, cloudinary_id }) => (
+              <Carousel.Item key={id}>
+                <Link to={`/cite/${incident_id}`}>
+                  <CarouselImage
+                    publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
+                    alt={title}
+                    transformation={fill().height(480)}
+                    plugins={[]}
+                  />
+                  <Carousel.Caption>
+                    <Caption>{title}</Caption>
+                  </Carousel.Caption>
+                </Link>
+              </Carousel.Item>
+            ))}
           </Carousel>
         );
       }}
