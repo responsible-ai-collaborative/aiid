@@ -118,6 +118,7 @@ function CitePage(props) {
                   nodes={incidentReports}
                   incidentDate={incident.date}
                   incident_id={incident.incident_id}
+                  editors={incident.editors}
                 />
               </div>
             </CardContainer>
@@ -191,6 +192,7 @@ function CitePage(props) {
                   nodes={incidentReports}
                   incidentDate={incident.date}
                   incident_id={incident.incident_id}
+                  editors={incident.editors}
                 />
               </div>
             </CardContainer>
