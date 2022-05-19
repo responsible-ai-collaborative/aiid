@@ -127,7 +127,7 @@ function CitePage(props) {
 
         <Row className="mt-4">
           <Col>
-            <StatsContainer>
+            <StatsContainer data-cy={'incident-stats'}>
               <IncidentStatsCard
                 {...{
                   incidentId: incident.incident_id,

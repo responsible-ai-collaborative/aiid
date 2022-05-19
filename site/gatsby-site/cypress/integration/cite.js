@@ -50,6 +50,19 @@ describe('Cite pages', () => {
       });
   });
 
+  it('Should show the incident stats table', () => {
+    cy.visit(url);
+    cy.get('[data-cy=incident-stats]').should('exist');
+  });
+
+  it('Should show editors in the stats table', () => {
+    cy.visit(url);
+    cy.get('[data-cy=incident-stats] > * > *')
+      .contains('Editors')
+      .parents('*')
+      .contains('Sean McGregor');
+  });
+
   maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
