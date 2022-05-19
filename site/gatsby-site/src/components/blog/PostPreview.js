@@ -13,7 +13,7 @@ const StyledImg = styled(Img)`
 function PostPreview({ post, className }) {
   return (
     <Card className={className}>
-      <Row className="g-0">
+      <Row className="gap-0">
         <Col md={4}>
           <Link to={post.fields.slug}>
             <StyledImg
