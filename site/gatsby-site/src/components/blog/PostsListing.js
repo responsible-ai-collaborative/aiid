@@ -43,10 +43,10 @@ export default function PostsListing() {
   `);
 
   return (
-    <>
+    <div className=" flex flex-wrap gap-5">
       {posts.map((p) => (
         <StyledPostPreview key={p.node.fields.slug} post={p.node} />
       ))}
-    </>
+    </div>
   );
 }
