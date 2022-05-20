@@ -164,6 +164,7 @@ describe('Cite pages', () => {
       .find('code')
       .invoke('text')
       .then((text) => {
+        // would be nice not having to remove especial characters
         // eslint-disable-next-line
         const bibText = text.replace(/(\r\n|\n|\r| |\s)/g, '');
 

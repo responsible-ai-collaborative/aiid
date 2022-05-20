@@ -26,7 +26,7 @@ const BibTex = ({ nodes, incidentDate, incident_id }) => {
     <code>
       @article &#123;
       <br />
-      &nbsp; &nbsp; &nbsp; &nbsp; aiid:{docs[0]['incident_id']},
+      &nbsp; &nbsp; &nbsp; &nbsp; aiid:{incident_id},
       <br />
       &nbsp; &nbsp; &nbsp; &nbsp; author = &#123;{submitterCite}&#125;,
       <br />

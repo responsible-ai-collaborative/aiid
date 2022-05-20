@@ -11,7 +11,6 @@ export const FIND_REPORT = gql`
       date_published
       date_downloaded
       image_url
-      incident_id
       text
       tags
       flag
