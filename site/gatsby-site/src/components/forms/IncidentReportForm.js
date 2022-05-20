@@ -257,6 +257,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
       <TextInputGroup
         name="incident_date"
         label="Incident Date"
+        type="date"
         placeholder="YYYY-MM-DD"
         className="mt-3"
         {...TextInputGroupProps}
@@ -264,6 +265,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
       <TextInputGroup
         name="date_published"
         label="Date Published"
+        type="date"
         placeholder="YYYY-MM-DD"
         className="mt-3"
         {...TextInputGroupProps}
@@ -271,6 +273,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
       <TextInputGroup
         name="date_downloaded"
         label="Date Downloaded"
+        type="date"
         placeholder="YYYY-MM-DD"
         className="mt-3"
         {...TextInputGroupProps}
