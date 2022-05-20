@@ -9,7 +9,7 @@ describe('Reports App', () => {
     cy.visit(url);
 
     cy.get('[data-cy="filter"]')
-      .eq(0)
+      .eq(1)
       .find('input')
       .type('YouTube Kids has been a problem since 2015 - why did it take this long to address?');
 
