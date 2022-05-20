@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
@@ -19,12 +19,13 @@ import { DELETE_SUBMISSION, PROMOTE_SUBMISSION } from '../../graphql/submissions
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { format, getUnixTime } from 'date-fns';
 import SubmissionEditModal from './SubmissionEditModal';
+import { Spinner } from 'react-bootstrap';
 
 const ListedGroup = ({ item, className = '', keysToRender }) => {
   return (
     <ListGroup className={className}>
       {keysToRender.map((key) => (
-        <ListGroup.Item key={key} className="d-flex gap-4">
+        <ListGroup.Item key={key} className="d-flex gap-4" data-cy={key}>
           <div style={{ width: 140 }} className="flex-grow">
             <b>{key}</b>
           </div>
@@ -51,7 +52,7 @@ const dateRender = [
 
 const otherDetails = ['language', '_id'];
 
-const SubmissionReview = ({ incident: submission }) => {
+const SubmissionReview = ({ submission }) => {
   const { isRole } = useUserContext();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -60,26 +61,38 @@ const SubmissionReview = ({ incident: submission }) => {
 
   const isSubmitter = isRole('submitter');
 
-  const [promoteSubmission] = useMutation(PROMOTE_SUBMISSION, { fetchPolicy: 'network-only' });
+  const [promoteSubmissionToReport, { loading: promoting }] = useMutation(PROMOTE_SUBMISSION, {
+    fetchPolicy: 'network-only',
+  });
 
   const [updateReport] = useMutation(UPDATE_REPORT);
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
-  const [deleteSubmission] = useMutation(DELETE_SUBMISSION);
+  const [deleteSubmission, { loading: deleting }] = useMutation(DELETE_SUBMISSION, {
+    update: (cache, { data }) => {
+      // Apollo expects a `deleted` boolean field otherwise manual cache manipulation is needed
+      cache.evict({
+        id: cache.identify({
+          __typename: data.deleteOneSubmission.__typename,
+          id: data.deleteOneSubmission._id,
+        }),
+      });
+    },
+  });
 
   const addToast = useToastContext();
 
-  const addReport = async () => {
+  const promoteSubmission = useCallback(async () => {
     const {
       data: {
         promoteSubmissionToReport: { 0: incident },
       },
-    } = await promoteSubmission({
+    } = await promoteSubmissionToReport({
       variables: {
         input: {
           submission_id: submission._id,
-          incident_ids: submission.incident_id === '0' ? [] : [submission.incident_id],
+          incident_ids: submission.incident_id === 0 ? [] : [submission.incident_id],
         },
       },
       fetchPolicy: 'no-cache',
@@ -94,7 +107,7 @@ const SubmissionReview = ({ incident: submission }) => {
       },
     });
 
-    const report = { ...submission, _id: undefined, __typename: undefined };
+    const report = { ...submission, incident_id: undefined, _id: undefined, __typename: undefined };
 
     report.date_modified = format(new Date(), 'yyyy-MM-dd');
 
@@ -102,8 +115,6 @@ const SubmissionReview = ({ incident: submission }) => {
     report.epoch_date_published = getUnixTime(new Date(report.date_published));
     report.epoch_date_downloaded = getUnixTime(new Date(report.date_downloaded));
     report.epoch_date_submitted = getUnixTime(new Date(report.date_submitted));
-
-    report.incident_id = incident.incident_id;
 
     const report_number = incident.reports
       .sort((a, b) => b.report_number - a.report_number)
@@ -120,9 +131,7 @@ const SubmissionReview = ({ incident: submission }) => {
       },
     });
 
-    // this should be removed once a different form is used for submissions
-
-    if (submission.incident_id === '0' || submission.incident_id === 0) {
+    if (submission.incident_id === 0) {
       await updateIncident({
         variables: {
           query: {
@@ -149,15 +158,11 @@ const SubmissionReview = ({ incident: submission }) => {
       ),
       severity: SEVERITY.success,
     });
-  };
+  }, [submission]);
 
   const rejectReport = async () => {
     await deleteSubmission({ variables: { _id: submission._id } });
   };
-
-  const isNewIncident = submission['incident_id'] === '0';
-
-  const cardSubheader = isNewIncident ? 'New Incident' : 'New Report';
 
   return (
     <>
@@ -214,13 +219,38 @@ const SubmissionReview = ({ incident: submission }) => {
             <Button
               className="me-2"
               variant="outline-primary"
-              disabled={!isSubmitter}
-              onClick={addReport}
+              disabled={!isSubmitter || promoting}
+              onClick={promoteSubmission}
             >
-              Add {cardSubheader}
+              {submission.incident_id === 0 ? <>Add New Incident</> : <>Add New Report</>}
+              {promoting && (
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="ms-2"
+                />
+              )}
             </Button>
-            <Button variant="outline-secondary" disabled={!isSubmitter} onClick={rejectReport}>
-              Reject {cardSubheader}
+            <Button
+              variant="outline-secondary"
+              disabled={!isSubmitter || deleting}
+              onClick={rejectReport}
+            >
+              {submission.incident_id === 0 ? <>Reject New Incident</> : <>Reject New Report</>}
+              {deleting && (
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="ms-2"
+                  variant="secondary"
+                />
+              )}
             </Button>
           </Card.Footer>
         </div>

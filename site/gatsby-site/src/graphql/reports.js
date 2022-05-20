@@ -34,7 +34,6 @@ export const UPDATE_REPORT = gql`
       epoch_date_downloaded
       epoch_date_modified
       image_url
-      incident_id
       text
       tags
       flag

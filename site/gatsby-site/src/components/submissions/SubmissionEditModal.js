@@ -8,7 +8,7 @@ import useToastContext, { SEVERITY } from 'hooks/useToast';
 import isArray from 'lodash/isArray';
 
 export default function SubmissionEditModal({ show, onHide, submissionId }) {
-  const [findSubmission, { data: submission, loading }] = useLazyQuery(FIND_SUBMISSION);
+  const [findSubmission, { data, loading }] = useLazyQuery(FIND_SUBMISSION);
 
   const [updateSubmission] = useMutation(UPDATE_SUBMISSION);
 
@@ -31,6 +31,7 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
           },
           set: {
             ...update,
+            incident_id: update.incident_id === '' ? 0 : update.incident_id,
             authors: !isArray(values.authors)
               ? values.authors.split(',').map((s) => s.trim())
               : values.authors,
@@ -65,11 +66,14 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
           <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
         </Modal.Body>
       )}
-      {submission?.submission && (
+      {data?.submission && (
         <Formik
           validationSchema={schema}
           onSubmit={handleSubmit}
-          initialValues={submission.submission}
+          initialValues={{
+            ...data.submission,
+            incident_id: data.submission.incident_id == 0 ? '' : data.submission.incident_id,
+          }}
           enableReinitialize={true}
         >
           {({ isValid, isSubmitting, submitForm }) => (
