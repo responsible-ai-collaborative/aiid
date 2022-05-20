@@ -84,7 +84,7 @@ const SubmitForm = () => {
 
       const submission = {
         ...values,
-        incident_id: values.incident_id ? values.incident_id : '0',
+        incident_id: values.incident_id == '' ? 0 : values.incident_id,
         date_submitted,
         date_modified: date_submitted,
         description: values.text.substring(0, 200),

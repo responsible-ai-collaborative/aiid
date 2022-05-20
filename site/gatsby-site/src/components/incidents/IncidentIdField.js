@@ -26,20 +26,18 @@ export default function IncidentIdField({ name, placeHolder = '', className = ''
   }, []);
 
   return (
-    <>
-      <Form.Group className={className}>
-        <Label popover={POP_OVERS[name]} label={'Incident ID'} />
-        <Form.Control
-          type="number"
-          name={name}
-          value={value}
-          onChange={onChange}
-          onBlur={onBlur}
-          isInvalid={!!error}
-          placeholder={placeHolder}
-        />
-        <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
-      </Form.Group>
+    <Form.Group className={className}>
+      <Label popover={POP_OVERS[name]} label={'Incident ID'} />
+      <Form.Control
+        type="number"
+        name={name}
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
+        isInvalid={!!error}
+        placeholder={placeHolder}
+      />
+      <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
 
       {value !== '' && !error && (
         <div className="pt-1">
@@ -53,6 +51,6 @@ export default function IncidentIdField({ name, placeHolder = '', className = ''
           )}
         </div>
       )}
-    </>
+    </Form.Group>
   );
 }

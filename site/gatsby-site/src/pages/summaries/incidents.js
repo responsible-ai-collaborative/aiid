@@ -89,7 +89,6 @@ export const pageQuery = graphql`
     allMongodbAiidprodReports(filter: { flag: { eq: null } }) {
       nodes {
         id
-        incident_id
         report_number
         title
         url
