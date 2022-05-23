@@ -60,6 +60,7 @@ const createCitiationPages = async (graphql, createPage) => {
             incident_id
             date
             reports
+            editors
           }
         }
 

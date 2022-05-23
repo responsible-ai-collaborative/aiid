@@ -3,7 +3,7 @@ import { Button, Modal } from 'react-bootstrap';
 import { getFormattedName } from '../utils/typography';
 import { format } from 'date-fns';
 
-const BibTex = ({ nodes, incidentDate, incident_id }) => {
+const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -22,6 +22,14 @@ const BibTex = ({ nodes, incidentDate, incident_id }) => {
   // Only return the earliest submitter
   let submitterCite = getFormattedName(docs[0]['submitters'][0]);
 
+  const firstEditor = editors[0];
+
+  const nameFragments = firstEditor.split(' ');
+
+  const editorLastName = nameFragments[nameFragments.length - 1];
+
+  const editorFirstName = nameFragments[0];
+
   const jsx = (
     <code>
       @article &#123;
@@ -30,7 +38,7 @@ const BibTex = ({ nodes, incidentDate, incident_id }) => {
       <br />
       &nbsp; &nbsp; &nbsp; &nbsp; author = &#123;{submitterCite}&#125;,
       <br />
-      &nbsp; &nbsp; &nbsp; &nbsp; editor = &#123;McGregor, Sean&#125;,
+      &nbsp; &nbsp; &nbsp; &nbsp; editor = &#123;{editorLastName}, {editorFirstName}&#125;,
       <br />
       &nbsp; &nbsp; &nbsp; &nbsp; journal = &#123;AI Incident Database&#125;,
       <br />
