@@ -22,12 +22,13 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
   // Only return the earliest submitter
   let submitterCite = getFormattedName(docs[0]['submitters'][0]);
 
-  /* eslint-disable padding-line-between-statements */
   const firstEditor = editors[0];
+
   const nameFragments = firstEditor.split(' ');
+
   const editorLastName = nameFragments[nameFragments.length - 1];
+
   const editorFirstName = nameFragments[0];
-  /* eslint-enable padding-line-between-statements */
 
   const jsx = (
     <code>

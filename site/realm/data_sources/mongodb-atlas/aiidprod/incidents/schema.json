@@ -47,7 +47,6 @@
         }
     },
     "required": [
-      "_id",
       "incident_id",
       "editors", 
       "reports"
