@@ -37,6 +37,11 @@ const Image = ({ publicID, className, alt, transformation = null, plugins = [laz
 
 const PreviewImage = styled(Image)`
   margin: -1rem auto 1rem;
+  max-height: 50vh;
+`;
+
+const PreviewFigure = styled.figure`
+  text-align: center;
 `;
 
 const PreviewImageInputGroup = ({
@@ -82,7 +87,17 @@ const PreviewImageInputGroup = ({
           handleBlur(e);
         }}
       />
-      <PreviewImage className={'mt-3'} publicID={cloudinaryID} />
+      <PreviewFigure>
+        <PreviewImage
+          className={'mt-3'}
+          publicID={
+            cloudinaryID ||
+            (values?.cloudinary_id === 'reports/' ? null : values?.cloudinary_id) ||
+            'fallback.jpg'
+          }
+        />
+        <figcaption>Selected Image</figcaption>
+      </PreviewFigure>
     </>
   );
 };
