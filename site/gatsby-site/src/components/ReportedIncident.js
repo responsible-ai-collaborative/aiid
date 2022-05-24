@@ -40,7 +40,7 @@ const ListedGroup = ({ item, keysToRender }) => {
 
 const leadItems = ['source_domain', 'authors', 'submitters', 'incident_id'];
 
-const urls = ['url', 'image_url', 'authors', 'submitters'];
+const urls = ['url', 'image_url'];
 
 const dateRender = [
   'incident_date',
