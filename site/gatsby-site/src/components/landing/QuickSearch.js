@@ -18,6 +18,8 @@ export default function QuickSearch({ className }) {
 
   const [placeHolderText, setPlaceHolderText] = useState('Search >1300 reports');
 
+  const buttonStyle = { width: '10ch' };
+
   useEffect(() => {
     const updatePlaceHolder = () => {
       if (document && document.body.scrollWidth > 500) {
@@ -52,7 +54,13 @@ export default function QuickSearch({ className }) {
             />
             <Row>
               <Col className="d-flex gap-2 justify-content-center">
-                <Button size="lg" variant="primary" className="mt-4" type="submit">
+                <Button
+                  size="lg"
+                  variant="primary"
+                  className="mt-4"
+                  type="submit"
+                  style={buttonStyle}
+                >
                   Search
                 </Button>
 
@@ -62,6 +70,7 @@ export default function QuickSearch({ className }) {
                   className="mt-4"
                   type="button"
                   onClick={discover}
+                  style={buttonStyle}
                 >
                   Discover
                 </Button>
