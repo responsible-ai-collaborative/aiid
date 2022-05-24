@@ -204,7 +204,13 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
   };
 
   return (
-    <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
+    <Form
+      onSubmit={(event) => {
+        event.preventDefault();
+      }}
+      className="mx-auto"
+      data-cy="report"
+    >
       <TextInputGroup
         name="url"
         label="Report Address"
@@ -332,7 +338,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
           into the database after enough incidents are pending.
         </p>
       )}
-      <Button className="mt-3" variant="primary" type="submit" disabled={isSubmitting}>
+      <Button className="mt-3" variant="primary" onClick={handleSubmit} disabled={isSubmitting}>
         Submit
       </Button>
       {onDelete && (
