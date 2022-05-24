@@ -73,7 +73,7 @@ Depending on what feature you are working on, there will be different systems yo
 Get a Gatsby environment working. Most of the time, you'll only need to run:
 
 ```
-npm i -g gatsby-cli
+npm install --global gatsby-cli
 ```
 Create a `.env` file under `site/gatsby-site` with the following contents:
 
@@ -87,7 +87,7 @@ GATSBY_ALGOLIA_SEARCH_KEY=c5e99d93261645721a1765fe4414389c
 ```
 In the same folder, install dependencies using `npm` (do not use `yarn`, it will ignore the `package-lock.json` file):
 
-`npm i`
+`npm install`
 
 You are ready to start a local copy of the project:
 
@@ -107,19 +107,22 @@ If the feature you are working on includes structural changes to the MongoDB dat
 - Create a new database user with admin access and another user with read-only permissions
 
 #### Replicating the Database
-Download the latest database backup from https://incidentdatabase.ai/research/snapshots
+Download the latest database backup from https://incidentdatabase.ai/research/snapshots.
 
-Then, run `mongorestore` (included in MongoDB tools) using the admin user created in the step above to upload the database backup:
+Extract the archive, then from the `mongodump` directory, run `mongorestore` (included in [MongoDB tools](https://www.mongodb.com/docs/database-tools/installation/installation)) using the admin user created in the step above to upload the database backup:
 
 ```
-mongorestore mongodb+srv://<USER>:<PASSWORD>@aiiddev.<CLUSTER>.mongodb.net/aiidprod aiidprod`
+mongorestore mongodb+srv://<USER>:<PASSWORD>@aiiddev.<CLUSTER>.mongodb.net/aiidprod aiidprod
 ```
+
+You can find the value for `<CLUSTER>` by going to your Atlas cluster's overview on cloud.mongodb.com, then selecting the "primary" shard labeled `aiiddev-shard-00-<XX>.<CLUSTER>.mongodb.net`.
+
 #### Deploy the Realm App
 
-Install the `realm-cli` and follow the login process: https://docs.mongodb.com/realm/cli/
+Install the `realm-cli` and follow the login process: https://docs.mongodb.com/realm/cli/realm-cli-login
 
 ```
-npm i -g mongodb-realm-cli
+npm install --global mongodb-realm-cli
 ```
 Once authenticated, you can deploy the realm app by going to `site/realm` of this repo and running:
 
@@ -130,9 +133,9 @@ Once authenticated, you can deploy the realm app by going to `site/realm` of thi
 Finally, update the previously created `.env`:
 
 ```
-GATSBY_REALM_APP_ID =`aiidstitch2-xxxxx`
+GATSBY_REALM_APP_ID=`aiidstitch2-xxxxx`
 MONGODB_CONNECTION_STRING=mongodb+srv://<username>:<password>@aiiddev.<CLUSTER>.mongodb.net
-MONGODB_REPLICA_SET=<CLUSTER>-shard-00-00.6zxh5.mongodb.net,aiiddev-shard-00-01.<CLUSTER>.mongodb.net,aiiddev-shard-00-02.<CLUSTER>.mongodb.net
+MONGODB_REPLICA_SET=aiiddev-shard-00-00.<CLUSTER>.mongodb.net,aiiddev-shard-00-01.<CLUSTER>.mongodb.net,aiiddev-shard-00-02.<CLUSTER>.mongodb.net
 ```
 Restart Gatsby, and your local app should fetch data from your MongoDB environment!
 
@@ -199,7 +202,7 @@ At the time of writing, there are 1336 Incident Reports, each report consisting 
 
 Considering the pricing above, translating all ingested reports to one language will cost `(5 million / 1 million) * $20 = ~$100`, and translating all incident reports to all languages `$100 * 111= ~$11k`.
 
-The translation process defaults to a **dry run ** mode that prepends a string to every translated text instead of hitting Google's API. 
+The translation process defaults to a **dry run** mode that prepends a string to every translated text instead of hitting Google's API.
 
 Therefore, Translated texts in this mode will look like: `translated-{language}-YouTube to crack down on inappropriate content masked as kids’ cartoons`
 

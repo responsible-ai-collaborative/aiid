@@ -7,8 +7,8 @@ import RelatedIncidents from 'components/RelatedIncidents';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, parse } from 'date-fns';
-import { useMutation } from '@apollo/client';
-import { INSERT_SUBMISSION } from '../../graphql/submissions';
+import { useMutation, useQuery } from '@apollo/client';
+import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
 import isString from 'lodash/isString';
 import SubmissionForm, { schema } from 'components/submissions/SubmissionForm';
 import { Formik } from 'formik';
@@ -53,7 +53,10 @@ const SubmitForm = () => {
 
   const addToast = useToastContext();
 
-  const [insertSubmission] = useMutation(INSERT_SUBMISSION);
+  // See https://github.com/apollographql/apollo-client/issues/5419
+  useQuery(FIND_SUBMISSIONS);
+
+  const [insertSubmission] = useMutation(INSERT_SUBMISSION, { refetchQueries: [FIND_SUBMISSIONS] });
 
   useEffect(() => {
     if (csvData[csvIndex]) {

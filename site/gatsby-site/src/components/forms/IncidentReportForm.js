@@ -154,7 +154,13 @@ const IncidentReportForm = () => {
   };
 
   return (
-    <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
+    <Form
+      onSubmit={(event) => {
+        event.preventDefault();
+      }}
+      className="mx-auto"
+      data-cy="report"
+    >
       <TextInputGroup
         name="url"
         label="Report Address"
@@ -207,6 +213,7 @@ const IncidentReportForm = () => {
       <TextInputGroup
         name="date_published"
         label="Date Published"
+        type="date"
         placeholder="YYYY-MM-DD"
         className="mt-3"
         {...TextInputGroupProps}
@@ -214,6 +221,7 @@ const IncidentReportForm = () => {
       <TextInputGroup
         name="date_downloaded"
         label="Date Downloaded"
+        type="date"
         placeholder="YYYY-MM-DD"
         className="mt-3"
         {...TextInputGroupProps}
