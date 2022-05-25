@@ -87,7 +87,7 @@ const PreviewImageInputGroup = ({
           handleBlur(e);
         }}
       />
-      <PreviewFigure>
+      <PreviewFigure data-cy="image-preview-figure">
         <PreviewImage
           className={'mt-3'}
           publicID={

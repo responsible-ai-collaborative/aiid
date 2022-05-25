@@ -402,4 +402,26 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="related-reports"]').should('not.exist');
   });
+
+  it('Should show fallback preview image on initial load', () => {
+    const imageUrl =
+      'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/fallback.jpg';
+
+    cy.visit(url);
+    cy.get('[data-cy="image-preview-figure"] img').should('have.attr', 'src', imageUrl);
+  });
+
+  it('Should update preview image when url is typed', () => {
+    const suffix = 'github.com/favicon.ico';
+
+    const newImageUrl = 'https://' + suffix;
+
+    const cloudinaryImageUrl =
+      'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/v1/reports/' +
+      suffix;
+
+    cy.visit(url);
+    cy.get('input[name=image_url]').type(newImageUrl);
+    cy.get('[data-cy=image-preview-figure] img').should('have.attr', 'src', cloudinaryImageUrl);
+  });
 });
