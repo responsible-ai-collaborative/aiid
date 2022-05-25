@@ -1,14 +1,10 @@
 [
     {
-        "name": "updateSubmissionReport",
-        "private": false
-    },
-    {
         "name": "confirmUser",
         "private": true
     },
     {
-        "name": "createReportForReview",
+        "name": "linkReportsToIncidents",
         "private": false
     },
     {
@@ -16,7 +12,11 @@
         "private": true
     },
     {
-        "name": "quickAdd",
+        "name": "promoteSubmissionToReport",
+        "private": false
+    },
+    {
+        "name": "unlinkReportsFromIncidents",
         "private": false
     }
 ]

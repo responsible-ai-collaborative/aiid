@@ -5,7 +5,7 @@ import incident from '../fixtures/incidents/incident.json';
 import updateOneIncident from '../fixtures/incidents/updateOneIncident.json';
 
 describe('Incidents', () => {
-  const url = '/incidents/edit?incidentId=10';
+  const url = '/incidents/edit?incident_id=10';
 
   maybeIt('Should successfully edit incident fields', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
@@ -36,6 +36,8 @@ describe('Incidents', () => {
       .find('[type="text"]')
       .type('Test Deployer{enter}');
 
+    cy.contains('label', 'Editors').next().find('[type="text"]').type('Test Editor{enter}');
+
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'UpdateIncident',
@@ -57,6 +59,7 @@ describe('Incidents', () => {
       ]);
       expect(xhr.request.body.variables.set.AllegedDeveloperOfAISystem).to.deep.eq(['YouTube']);
       expect(xhr.request.body.variables.set.AllegedHarmedOrNearlyHarmedParties).to.deep.eq([]);
+      expect(xhr.request.body.variables.set.editors).to.deep.eq(['Sean McGregor', 'Test Editor']);
     });
 
     cy.get('div[class^="ToastContext"]')

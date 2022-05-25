@@ -50,6 +50,19 @@ describe('Cite pages', () => {
       });
   });
 
+  it('Should show the incident stats table', () => {
+    cy.visit(url);
+    cy.get('[data-cy=incident-stats]').should('exist');
+  });
+
+  it('Should show editors in the stats table', () => {
+    cy.visit(url);
+    cy.get('[data-cy=incident-stats] > * > *')
+      .contains('Editors')
+      .parents('*')
+      .contains('Sean McGregor');
+  });
+
   maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
@@ -57,9 +70,9 @@ describe('Cite pages', () => {
 
     cy.visit('/cite/1#' + id);
 
-    cy.get('#' + id)
-      .get('[data-cy=edit-report]')
-      .should('exist');
+    cy.get(`#${id} [data-cy="edit-report"]`).click();
+
+    cy.url().should('contain', '/cite/edit?report_number=10');
   });
 
   maybeIt('Should show the taxonomy form of CSET', () => {
@@ -148,6 +161,8 @@ describe('Cite pages', () => {
 
     cy.contains('Edit Incident').click();
 
+    cy.url().should('contain', '/incidents/edit?incident_id=10');
+
     cy.get('[data-cy="incident-form').should('be.visible');
   });
 
@@ -158,7 +173,10 @@ describe('Cite pages', () => {
 
     cy.contains('BibTex Citation').scrollIntoView().click();
 
-    cy.get('.modal-body code')
+    cy.get('[data-cy="bibtext-modal"]').as('modal').should('be.visible');
+
+    cy.get('@modal')
+      .find('code')
       .invoke('text')
       .then((text) => {
         // eslint-disable-next-line
@@ -175,12 +193,9 @@ describe('Cite pages', () => {
 
     const date = format(new Date(), 'MMMM d, y');
 
-    cy.get('[data-cy="citation"] .card-body')
-      .invoke('text')
-      .then((text) => {
-        expect(text).to.eq(
-          `Olsson, Catherine. (2014-08-14) Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on ${date} from incidentdatabase.ai/cite/10.`
-        );
-      });
+    cy.get('[data-cy="citation"] .card-body').should(
+      'contain.text',
+      `Olsson, Catherine. (2014-08-14) Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on ${date} from incidentdatabase.ai/cite/10.`
+    );
   });
 });

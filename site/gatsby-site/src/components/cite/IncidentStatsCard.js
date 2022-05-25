@@ -21,7 +21,7 @@ const IncidentCardContainer = styled.div`
   }
 `;
 
-const IncidentStatsCard = ({ incidentId, reportCount, incidentDate }) => {
+const IncidentStatsCard = ({ incidentId, reportCount, incidentDate, editors }) => {
   const STATS = [
     {
       key: 'incidentId',
@@ -35,6 +35,10 @@ const IncidentStatsCard = ({ incidentId, reportCount, incidentDate }) => {
       key: 'incidentDate',
       label: 'Incident Date',
     },
+    {
+      key: 'editors',
+      label: 'Editors',
+    },
   ];
 
   if (reportCount === 0) {
@@ -45,6 +49,7 @@ const IncidentStatsCard = ({ incidentId, reportCount, incidentDate }) => {
     incidentId,
     reportCount,
     incidentDate,
+    editors,
   };
 
   return (

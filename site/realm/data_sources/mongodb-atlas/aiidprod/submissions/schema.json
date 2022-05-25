@@ -34,7 +34,7 @@
             "bsonType": "string"
         },
         "incident_id": {
-            "bsonType": "long"
+            "bsonType": "int"
         },
         "language": {
             "bsonType": "string"
@@ -43,6 +43,12 @@
             "bsonType": "string"
         },
         "submitters": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "tags": {
             "bsonType": "array",
             "items": {
                 "bsonType": "string"

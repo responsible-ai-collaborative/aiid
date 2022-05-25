@@ -84,7 +84,7 @@ const Divider = styled((props) => (
   </li>
 ))`
   list-style: none;
-  padding: 0.5rem 0;
+  padding: 16px 0;
 
   hr {
     margin: 0;

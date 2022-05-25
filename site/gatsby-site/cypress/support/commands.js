@@ -44,3 +44,7 @@ Cypress.Commands.add('query', ({ query, variables }) => {
 
   return cy.wrap(client.query({ query, variables }), { timeout: 8000, log: true });
 });
+
+Cypress.Commands.add('clickOutside', () => {
+  return cy.get('body').click(0, 0);
+});

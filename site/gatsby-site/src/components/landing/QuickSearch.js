@@ -51,7 +51,7 @@ export default function QuickSearch({ className }) {
             </Row>
 
             <small className="text-mutted mt-4 d-block">
-              Entering text above will search across more than 1300 incident reports
+              Entering text above will search across more than 1300 reports of AI harms
             </small>
           </Form>
         </Card.Body>

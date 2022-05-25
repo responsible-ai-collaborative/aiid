@@ -130,12 +130,12 @@ const Header = () => {
                         alt={'logo'}
                       />
                     </HideOnDesktop>
+                    <div className="divider hiddenMobile"></div>
+                    <div
+                      className={'headerTitle displayInline'}
+                      dangerouslySetInnerHTML={{ __html: headerTitle }}
+                    />
                   </Link>
-                  <li className="divider hiddenMobile"></li>
-                  <div
-                    className={'headerTitle displayInline'}
-                    dangerouslySetInnerHTML={{ __html: headerTitle }}
-                  />
                 </div>
                 <HeaderIconsContainer>
                   <li className="divider hiddenMobile"></li>

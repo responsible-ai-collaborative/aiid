@@ -204,7 +204,13 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
   };
 
   return (
-    <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
+    <Form
+      onSubmit={(event) => {
+        event.preventDefault();
+      }}
+      className="mx-auto"
+      data-cy="report"
+    >
       <TextInputGroup
         name="url"
         label="Report Address"
@@ -257,6 +263,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
       <TextInputGroup
         name="incident_date"
         label="Incident Date"
+        type="date"
         placeholder="YYYY-MM-DD"
         className="mt-3"
         {...TextInputGroupProps}
@@ -264,6 +271,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
       <TextInputGroup
         name="date_published"
         label="Date Published"
+        type="date"
         placeholder="YYYY-MM-DD"
         className="mt-3"
         {...TextInputGroupProps}
@@ -271,6 +279,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
       <TextInputGroup
         name="date_downloaded"
         label="Date Downloaded"
+        type="date"
         placeholder="YYYY-MM-DD"
         className="mt-3"
         {...TextInputGroupProps}
@@ -329,7 +338,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
           into the database after enough incidents are pending.
         </p>
       )}
-      <Button className="mt-3" variant="primary" type="submit" disabled={isSubmitting}>
+      <Button className="mt-3" variant="primary" onClick={handleSubmit} disabled={isSubmitting}>
         Submit
       </Button>
       {onDelete && (

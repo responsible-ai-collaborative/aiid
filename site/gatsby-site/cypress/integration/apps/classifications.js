@@ -1,4 +1,4 @@
-import { maybeIt } from '../support/utils';
+import { maybeIt } from '../../support/utils';
 
 describe('Classifications App', () => {
   const url = '/apps/classifications';

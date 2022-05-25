@@ -6,6 +6,7 @@ export const FIND_INCIDENT = gql`
       incident_id
       title
       description
+      editors
       date
       AllegedDeployerOfAISystem
       AllegedDeveloperOfAISystem
@@ -20,8 +21,14 @@ export const FIND_INCIDENT = gql`
 export const FIND_INCIDENTS = gql`
   query FindIncidents($query: IncidentQueryInput) {
     incidents(query: $query, limit: 999) {
-      date
       incident_id
+      title
+      description
+      editors
+      date
+      AllegedDeployerOfAISystem
+      AllegedDeveloperOfAISystem
+      AllegedHarmedOrNearlyHarmedParties
       reports {
         report_number
       }
@@ -32,8 +39,14 @@ export const FIND_INCIDENTS = gql`
 export const UPDATE_INCIDENT = gql`
   mutation UpdateIncident($query: IncidentQueryInput!, $set: IncidentUpdateInput!) {
     updateOneIncident(query: $query, set: $set) {
-      date
       incident_id
+      title
+      description
+      editors
+      date
+      AllegedDeployerOfAISystem
+      AllegedDeveloperOfAISystem
+      AllegedHarmedOrNearlyHarmedParties
       reports {
         report_number
       }

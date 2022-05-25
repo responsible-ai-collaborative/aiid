@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from 'components/Layout';
 import IncidentReportForm from 'components/forms/IncidentReportForm';
-import { NumberParam, useQueryParam } from 'use-query-params';
+import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Spinner } from 'react-bootstrap';
 import {
@@ -12,19 +12,12 @@ import {
 } from '../../graphql/reports';
 import { FIND_INCIDENT } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
-
-function stringToEpoch(dateString) {
-  let someDate = new Date(dateString);
-
-  let epoch = Math.floor(someDate.getTime() / 1000);
-
-  return epoch;
-}
+import { format, getUnixTime } from 'date-fns';
 
 function EditCitePage(props) {
   const [report, setReport] = useState();
 
-  const [reportNumber] = useQueryParam('reportNumber', NumberParam);
+  const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
 
   const { data: reportData } = useQuery(FIND_REPORT, {
     variables: { query: { report_number: reportNumber } },
@@ -65,20 +58,12 @@ function EditCitePage(props) {
       if (typeof values.submitters === 'string') {
         values.submitters = values.submitters.split(',').map((s) => s.trim());
       }
-      values.epoch_date_downloaded = stringToEpoch(values.date_downloaded);
-      const today = new Date();
 
-      const dd = String(today.getDate()).padStart(2, '0');
+      values.date_modified = format(new Date(), 'yyyy-MM-dd');
 
-      const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-
-      const yyyy = today.getFullYear();
-
-      const todayStr = yyyy + '-' + mm + '-' + dd;
-
-      values.epoch_date_modified = stringToEpoch(todayStr);
-      values.date_modified = todayStr;
-      values.epoch_date_published = stringToEpoch(values.date_published);
+      values.epoch_date_downloaded = getUnixTime(new Date(values.date_downloaded));
+      values.epoch_date_published = getUnixTime(new Date(values.date_published));
+      values.epoch_date_modified = getUnixTime(new Date(values.date_modified));
 
       const updated = { ...values, __typename: undefined };
 
