@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { StaticQuery, graphql } from 'gatsby';
-import GitHubButton from 'react-github-btn';
 import Loadable from 'react-loadable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faRssSquare } from '@fortawesome/free-solid-svg-icons';
-import { faTwitterSquare } from '@fortawesome/free-brands-svg-icons';
+import { faTwitterSquare, faGithubSquare } from '@fortawesome/free-brands-svg-icons';
 
 import Link from './Link';
 import LoadingProvider from '../mdxComponents/loading';
@@ -68,6 +67,38 @@ const HideOnDesktop = styled.div`
     display: none;
   }
 `;
+
+const StarsCount = (props) => {
+  const [count, setCount] = useState(null);
+
+  useEffect(() => {
+    if (!count) {
+      fetch('https://api.github.com/repos/responsible-ai-collaborative/aiid')
+        .then((res) => res.json())
+        .then((json) => {
+          console.log(json);
+          setCount(json['stargazers_count']);
+        });
+    }
+  });
+  return (
+    <a
+      className={props.className}
+      href={props.href}
+      style={{
+        color: 'white',
+        marginLeft: '3px',
+        marginRight: '8px',
+        width: '2em',
+        marginTop: '-2px',
+        display: 'inline-block',
+        textDecoration: 'none',
+      }}
+    >
+      ★{count ? count : ''}
+    </a>
+  );
+};
 
 const Header = () => {
   const logoImg = require('../images/logo.svg');
@@ -154,17 +185,6 @@ const Header = () => {
                       />
                     </a>
                   )}
-                  {githubUrl !== '' && (
-                    <div className="githubBtn paddingAround hiddenMobile">
-                      <GitHubButton
-                        href={githubUrl}
-                        data-show-count="true"
-                        aria-label="Star on GitHub"
-                      >
-                        Star
-                      </GitHubButton>
-                    </div>
-                  )}
                   <a
                     className="paddingAround hiddenMobile"
                     href={'/rss.xml'}
@@ -178,6 +198,25 @@ const Header = () => {
                       title="Open RSS Feed"
                     />
                   </a>
+                  {config.header.social && (
+                    <>
+                      <a
+                        className="paddingAround hiddenMobile"
+                        href={githubUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ paddingRight: '0px' }}
+                      >
+                        <FontAwesomeIcon
+                          icon={faGithubSquare}
+                          color={'white'}
+                          className="pointer fa fa-github-square fa-lg"
+                          title="Open GitHub"
+                        />
+                      </a>
+                      <StarsCount className="hiddenMobile" href={githubUrl + '/stargazers'} />
+                    </>
+                  )}
                   <HideOnDesktop>
                     <FontAwesomeIcon
                       icon={faBars}
