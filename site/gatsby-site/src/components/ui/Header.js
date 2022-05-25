@@ -95,7 +95,7 @@ const StarsCount = (props) => {
         textDecoration: 'none',
       }}
     >
-      ★{count ? count : ''}
+      {count ? '★' + count : ''}
     </a>
   );
 };
