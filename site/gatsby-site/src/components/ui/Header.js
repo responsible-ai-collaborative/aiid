@@ -73,7 +73,7 @@ const StarsCount = (props) => {
 
   useEffect(() => {
     if (!count) {
-      fetch('https://api.github.com/repos/responsible-ai-collaborative/aiid')
+      fetch('https://api.github.com/repos/' + props.repo)
         .then((res) => res.json())
         .then((json) => {
           console.log(json);
@@ -85,7 +85,7 @@ const StarsCount = (props) => {
     <a
       target="_blank"
       className={props.className}
-      href={props.href}
+      href={'https://github.com/' + props.repo + '/stargazers'}
       style={{
         color: 'white',
         marginLeft: '3px',
@@ -94,7 +94,8 @@ const StarsCount = (props) => {
         marginTop: '-2px',
         display: 'inline-block',
         textDecoration: 'none',
-      }} rel="noreferrer"
+      }}
+      rel="noreferrer"
     >
       {count ? '★' + count : ''}
     </a>
@@ -215,7 +216,10 @@ const Header = () => {
                           title="Open GitHub"
                         />
                       </a>
-                      <StarsCount className="hiddenMobile" href={githubUrl + '/stargazers'} />
+                      <StarsCount
+                        className="hiddenMobile"
+                        repo={githubUrl.replace('https://github.com/', '')}
+                      />
                     </>
                   )}
                   <HideOnDesktop>
