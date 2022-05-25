@@ -383,8 +383,6 @@ describe('The Submit form', () => {
   });
 
   it('Should show a preliminary checks message', () => {
-    cy.visit(url);
-
     const relatedReports = {
       byURL: {
         data: {
@@ -453,6 +451,8 @@ describe('The Submit form', () => {
       date_published: '2021-01-02',
       incident_id: '1',
     };
+
+    cy.visit(url);
 
     for (const key in values) {
       cy.get(`input[name="${key}"]`).type(values[key]);
