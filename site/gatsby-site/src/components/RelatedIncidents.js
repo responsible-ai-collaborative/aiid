@@ -92,6 +92,33 @@ const searchColumns = {
     isSet: (incident) => incident.url,
     getQueryVariables: (incident) => ({ url_in: [incident.url] }),
   },
+
+  byText: {
+    header: () => <>Most Semantically Similar Incident Reports (Experimental)</>,
+    query: relatedIncidentsQuery,
+    getReports: (result) => (result.data.incidents.length ? result.data.incidents[0].reports : []),
+    isSet: (incident) => incident.text,
+    getQueryVariables: (incident, relatedIncidents) => {
+      if (relatedIncidents) {
+        return { incident_id_in: [relatedIncidents[0]] };
+      } else {
+        return { incident_id_in: [] };
+      }
+    },
+  },
+};
+
+const semanticallyRelated = async (text) => {
+  const url = `/api/semanticallyRelated?text=${encodeURIComponent(text)}`;
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error('Semantic relation error');
+  }
+  const json = await response.json();
+
+  return json;
 };
 
 const RelatedIncidentsArea = ({ columnKey, header, reports, loading }) => {
@@ -127,17 +154,29 @@ const RelatedIncidents = ({ incident }) => {
 
   const [queryVariables, setQueryVariables] = useState({});
 
+  const [relatedIncidents, setRelatedIncidents] = useState([]);
+
   const client = useApolloClient();
 
   const debouncedUpdateSearch = useRef(
-    debounce((updaters, incident) => {
+    debounce((updaters, incident, relatedIncidents, fetchRemote) => {
+      const fetchSemanticallyRelated = async () => {
+        const response = semanticallyRelated(incident.text);
+
+        response.then((res) => {
+          setRelatedIncidents(res.incidents);
+        });
+      };
+
+      if (fetchRemote || relatedIncidents.length == 0) fetchSemanticallyRelated();
+
       const variables = {};
 
       for (const key in updaters) {
         const updater = updaters[key];
 
         if (updater.isSet(incident)) {
-          variables[key] = updater.getQueryVariables(incident);
+          variables[key] = updater.getQueryVariables(incident, relatedIncidents);
         } else {
           variables[key] = null;
         }
@@ -148,8 +187,12 @@ const RelatedIncidents = ({ incident }) => {
   ).current;
 
   useEffect(() => {
-    debouncedUpdateSearch(searchColumns, incident);
+    debouncedUpdateSearch(searchColumns, incident, relatedIncidents, true);
   }, [incident]);
+
+  useEffect(() => {
+    debouncedUpdateSearch(searchColumns, incident, relatedIncidents, false);
+  }, [relatedIncidents]);
 
   const search = useCallback(
     async (key, column) => {
