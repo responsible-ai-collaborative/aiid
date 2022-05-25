@@ -119,8 +119,6 @@ const SubmitForm = () => {
     setSubmitting(false);
   };
 
-  console.log(submission);
-
   return (
     <div className="my-5">
       <Formik
