@@ -83,6 +83,7 @@ const StarsCount = (props) => {
   });
   return (
     <a
+      target="_blank"
       className={props.className}
       href={props.href}
       style={{
@@ -93,7 +94,7 @@ const StarsCount = (props) => {
         marginTop: '-2px',
         display: 'inline-block',
         textDecoration: 'none',
-      }}
+      }} rel="noreferrer"
     >
       {count ? '★' + count : ''}
     </a>
