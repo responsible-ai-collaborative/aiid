@@ -324,7 +324,7 @@ describe('The Submit form', () => {
       '**/graphql',
       (req) =>
         req.body.operationName == 'ProbablyRelatedReports' &&
-        req.body.variables.query?.url_in[0] ==
+        req.body.variables.query?.url_in?.[0] ==
           'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
       'RelatedReportsByURL',
       relatedReports.byURL
@@ -427,7 +427,7 @@ describe('The Submit form', () => {
       '**/graphql',
       (req) =>
         req.body.operationName == 'ProbablyRelatedReports' &&
-        req.body.variables.query?.url_in[0] ==
+        req.body.variables.query?.url_in?.[0] ==
           'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
       'RelatedReportsByURL',
       relatedReports.byURL
