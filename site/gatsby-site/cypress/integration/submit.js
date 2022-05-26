@@ -1,3 +1,5 @@
+import parseNews from '../fixtures/api/parseNews.json';
+
 describe('The Submit form', () => {
   const url = '/apps/submit';
 
@@ -10,7 +12,7 @@ describe('The Submit form', () => {
   it('Should submit a new report not linked to any incident once all fields are filled properly', () => {
     cy.visit(url);
 
-    cy.intercept('GET', parserURL).as('parseNews');
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.get('input[name="url"]').type(
       `https://arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
@@ -18,7 +20,7 @@ describe('The Submit form', () => {
 
     cy.get('button').contains('Fetch info').click();
 
-    cy.wait('@parseNews', { timeout: 30000 });
+    cy.wait('@parseNews');
 
     cy.get('input[name="submitters"]').type('Something');
 
@@ -58,7 +60,7 @@ describe('The Submit form', () => {
   it('Should submit a new report linked to incident 1 once all fields are filled properly', () => {
     cy.visit(url);
 
-    cy.intercept('GET', parserURL).as('parseNews');
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.get('input[name="url"]').type(
       `https://arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
@@ -66,7 +68,7 @@ describe('The Submit form', () => {
 
     cy.get('button').contains('Fetch info').click();
 
-    cy.wait('@parseNews', { timeout: 30000 });
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.get('input[name="submitters"]').type('Something');
 
