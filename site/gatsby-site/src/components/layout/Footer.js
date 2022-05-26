@@ -41,7 +41,7 @@ export default function Footer() {
   } = data;
 
   return (
-    <Container fluid as="footer" className="bg-light mt-5">
+    <Container fluid as="footer" className="bg-light" style={{ position: 'relative' }}>
       <Row className="justify-content-md-center p-4">
         <Col xs="auto">2022 - AI Incident Database</Col>
         <Col xs="auto">

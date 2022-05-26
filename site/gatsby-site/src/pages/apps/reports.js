@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Helmet from 'react-helmet';
-import { graphql } from 'gatsby';
-
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
 import { format } from 'date-fns';
 import Link from 'components/ui/Link';
@@ -10,9 +8,9 @@ import styled from 'styled-components';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
-
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
-import { Table, InputGroup, FormControl, Form, Button } from 'react-bootstrap';
+import { Table, InputGroup, FormControl, Form, Button, Spinner } from 'react-bootstrap';
+import { gql, useQuery } from '@apollo/client';
 
 const TableStyles = styled.div`
   padding: 1rem 1rem 1rem 0;
@@ -234,6 +232,26 @@ const SelectDatePickerFilter = ({
   );
 };
 
+const query = gql`
+  query ReportsQuery {
+    incidents(sortBy: INCIDENT_ID_ASC, limit: 9999) {
+      incident_id
+      reports {
+        title
+        source_domain
+        url
+        authors
+        submitters
+        epoch_date_submitted
+        epoch_date_modified
+        epoch_date_downloaded
+        report_number
+        flag
+      }
+    }
+  }
+`;
+
 export default function Incidents(props) {
   const [tableData, setTableData] = useState([]);
 
@@ -241,7 +259,7 @@ export default function Incidents(props) {
 
   const [columnData, setColumnData] = useState([]);
 
-  const { data } = props;
+  const { data, loading } = useQuery(query);
 
   useEffect(() => {
     if (!data) return;
@@ -254,9 +272,21 @@ export default function Incidents(props) {
       flag: 'flagged',
     };
 
-    const omitKeys = ['id', 'url'];
+    const tableKeys = [
+      'incident_id',
+      'title',
+      'source_domain',
+      'url',
+      'authors',
+      'submitters',
+      'epoch_date_submitted',
+      'epoch_date_modified',
+      'epoch_date_downloaded',
+      'report_number',
+      'flag',
+    ];
 
-    const tableKeys = Object.keys(data.allMongodbAiidprodReports.group[0].edges[0].node);
+    const omitKeys = ['id', 'url'];
 
     const formatHeaderName = (key) => {
       return key
@@ -305,21 +335,19 @@ export default function Incidents(props) {
     };
 
     const incidentDataToCellMap = (data) => {
-      let tableData = [];
-
-      const {
-        allMongodbAiidprodReports: { group },
-      } = data;
-
-      group.forEach((incidentReports) => {
-        incidentReports.edges.forEach((incident) => {
-          tableData.push({
-            ...incident.node,
-            flag: incident.node === true ? 'Yes' : 'No',
-            authors: incident.node.authors.join(', '),
+      const tableData = data.incidents.reduce((accumulator, incident) => {
+        for (const report of incident.reports) {
+          accumulator.push({
+            ...report,
+            incident_id: incident.incident_id,
+            flag: report.flag === true ? 'Yes' : 'No',
+            authors: report.authors.join(', '),
+            __typename: undefined,
           });
-        });
-      });
+        }
+        return accumulator;
+      }, []);
+
       return tableData;
     };
 
@@ -396,18 +424,6 @@ export default function Incidents(props) {
     usePagination
   );
 
-  if (!data) {
-    return null;
-  }
-  const {
-    allMongodbAiidprodReports: { group },
-  } = data;
-
-  // sort by value
-  group.sort(function (a, b) {
-    return a['edges'][0]['node']['incident_id'] - b['edges'][0]['node']['incident_id'];
-  });
-
   const filterOnClick = (cell, customHeader) => {
     const header =
       customHeader?.toLowerCase().split(' ').join('_') ??
@@ -432,170 +448,156 @@ export default function Incidents(props) {
       <Helmet>
         <title>Incident List</title>
       </Helmet>
-      <Container isWide={collapse}>
-        <StyledHeading>Incident Report Table</StyledHeading>
-        <Button onClick={() => setAllFilters([])}>Reset filters</Button>
-        <TableStyles>
-          <Table striped bordered hover {...getTableProps()}>
-            <thead>
-              {headerGroups.map((headerGroup) => (
-                <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map((column) => (
-                    <th key={column.id} {...column.getHeaderProps()}>
-                      <HeaderCellContainer
-                        {...column.getHeaderProps(column.getSortByToggleProps())}
-                      >
-                        {column.render('Header')}
-                        <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
-                      </HeaderCellContainer>
-                      <div>{column.canFilter ? column.render('Filter') : null}</div>
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-              {page.map((row) => {
-                prepareRow(row);
-                return (
-                  <tr key={row.id} {...row.getRowProps()}>
-                    {row.cells.map((cell) => {
-                      if (cell.column.Header === 'TITLE') {
-                        return (
-                          <td key={cell.id} {...cell.getCellProps()}>
-                            <ScrollCell hasClick={true} onClick={() => filterOnClick(cell)}>
-                              <Link to={row.original.url}>{cell.render('Cell')}</Link>
-                            </ScrollCell>
-                          </td>
-                        );
-                      } else if (cell.column.Header === 'INCIDENT ID') {
-                        return (
-                          <td key={cell.id} {...cell.getCellProps()}>
-                            <ScrollCell hasClick={true} onClick={() => filterOnClick(cell)}>
-                              {formatIncidentIdField(cell.render('Cell'))}
-                            </ScrollCell>
-                          </td>
-                        );
-                      } else if (cell.column.Header.includes('DATE')) {
-                        return (
-                          <td key={cell.id} {...cell.getCellProps()}>
-                            <ScrollCell>{formatDateField(cell.render('Cell'))}</ScrollCell>
-                          </td>
-                        );
-                      } else if (cell.column.Header === 'AUTHORS') {
-                        return (
-                          <td key={cell.id} {...cell.getCellProps()}>
-                            <ScrollCell style={{ width: 200 }}>{cell.render('Cell')}</ScrollCell>
-                          </td>
-                        );
-                      } else {
-                        return (
-                          <td key={cell.id} {...cell.getCellProps()}>
-                            <ScrollCell hasClick={true} onClick={() => filterOnClick(cell)}>
-                              {cell.render('Cell')}
-                            </ScrollCell>
-                          </td>
-                        );
-                      }
-                    })}
+
+      {loading && (
+        <div className="p-2">
+          <Spinner animation="border" size="sm" role="status" aria-hidden="true" /> Fetching
+          Reports...
+        </div>
+      )}
+
+      {!loading && (
+        <Container isWide={collapse}>
+          <StyledHeading>Incident Report Table</StyledHeading>
+          <Button onClick={() => setAllFilters([])}>Reset filters</Button>
+          <TableStyles>
+            <Table striped bordered hover {...getTableProps()}>
+              <thead>
+                {headerGroups.map((headerGroup) => (
+                  <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column) => (
+                      <th key={column.id} {...column.getHeaderProps()}>
+                        <HeaderCellContainer
+                          {...column.getHeaderProps(column.getSortByToggleProps())}
+                        >
+                          {column.render('Header')}
+                          <span>
+                            {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
+                          </span>
+                        </HeaderCellContainer>
+                        <div data-cy="filter">
+                          {column.canFilter ? column.render('Filter') : null}
+                        </div>
+                      </th>
+                    ))}
                   </tr>
-                );
-              })}
-              {page.length === 0 && (
-                <tr>
-                  <th colSpan={11}>
-                    <div>
-                      <span>No results found</span>
-                    </div>
-                  </th>
-                </tr>
-              )}
-            </tbody>
-          </Table>
-
-          <Pagination>
-            <PaginationNavButtons>
-              <Button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-                {'<<'}
-              </Button>{' '}
-              <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
-                {'<'}
-              </Button>{' '}
-              <Button onClick={() => nextPage()} disabled={!canNextPage}>
-                {'>'}
-              </Button>{' '}
-              <Button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-                {'>>'}
-              </Button>{' '}
-            </PaginationNavButtons>
-
-            <PageNumber>
-              <span>
-                Page{' '}
-                <strong>
-                  {pageIndex + 1} of {pageOptions.length}
-                </strong>{' '}
-              </span>
-            </PageNumber>
-
-            <PerPageNumber>
-              <span>
-                Go to page:{' '}
-                <input
-                  type="number"
-                  defaultValue={pageIndex + 1}
-                  onChange={(e) => {
-                    const page = e.target.value ? Number(e.target.value) - 1 : 0;
-
-                    gotoPage(page);
-                  }}
-                  style={{ width: '100px', minWidth: 0 }}
-                />
-              </span>{' '}
-              <select
-                value={pageSize}
-                onChange={(e) => {
-                  setPageSize(Number(e.target.value));
-                }}
-              >
-                {[10, 20, 30, 40, 50, 200].map((pageSize) => (
-                  <option key={pageSize} value={pageSize}>
-                    Show {pageSize}
-                  </option>
                 ))}
-              </select>
-            </PerPageNumber>
-          </Pagination>
-        </TableStyles>
-      </Container>
+              </thead>
+              <tbody {...getTableBodyProps()}>
+                {page.map((row) => {
+                  prepareRow(row);
+                  return (
+                    <tr key={row.id} {...row.getRowProps()} data-cy="row">
+                      {row.cells.map((cell) => {
+                        if (cell.column.Header === 'TITLE') {
+                          return (
+                            <td key={cell.id} {...cell.getCellProps()}>
+                              <ScrollCell hasClick={true} onClick={() => filterOnClick(cell)}>
+                                <Link to={row.original.url}>{cell.render('Cell')}</Link>
+                              </ScrollCell>
+                            </td>
+                          );
+                        } else if (cell.column.Header === 'INCIDENT ID') {
+                          return (
+                            <td key={cell.id} {...cell.getCellProps()}>
+                              <ScrollCell hasClick={true} onClick={() => filterOnClick(cell)}>
+                                {formatIncidentIdField(cell.render('Cell'))}
+                              </ScrollCell>
+                            </td>
+                          );
+                        } else if (cell.column.Header.includes('DATE')) {
+                          return (
+                            <td key={cell.id} {...cell.getCellProps()}>
+                              <ScrollCell>{formatDateField(cell.render('Cell'))}</ScrollCell>
+                            </td>
+                          );
+                        } else if (cell.column.Header === 'AUTHORS') {
+                          return (
+                            <td key={cell.id} {...cell.getCellProps()}>
+                              <ScrollCell style={{ width: 200 }}>{cell.render('Cell')}</ScrollCell>
+                            </td>
+                          );
+                        } else {
+                          return (
+                            <td key={cell.id} {...cell.getCellProps()}>
+                              <ScrollCell hasClick={true} onClick={() => filterOnClick(cell)}>
+                                {cell.render('Cell')}
+                              </ScrollCell>
+                            </td>
+                          );
+                        }
+                      })}
+                    </tr>
+                  );
+                })}
+                {page.length === 0 && (
+                  <tr>
+                    <th colSpan={11}>
+                      <div>
+                        <span>No results found</span>
+                      </div>
+                    </th>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+
+            <Pagination>
+              <PaginationNavButtons>
+                <Button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+                  {'<<'}
+                </Button>{' '}
+                <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
+                  {'<'}
+                </Button>{' '}
+                <Button onClick={() => nextPage()} disabled={!canNextPage}>
+                  {'>'}
+                </Button>{' '}
+                <Button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+                  {'>>'}
+                </Button>{' '}
+              </PaginationNavButtons>
+
+              <PageNumber>
+                <span>
+                  Page{' '}
+                  <strong>
+                    {pageIndex + 1} of {pageOptions.length}
+                  </strong>{' '}
+                </span>
+              </PageNumber>
+
+              <PerPageNumber>
+                <span>
+                  Go to page:{' '}
+                  <input
+                    type="number"
+                    defaultValue={pageIndex + 1}
+                    onChange={(e) => {
+                      const page = e.target.value ? Number(e.target.value) - 1 : 0;
+
+                      gotoPage(page);
+                    }}
+                    style={{ width: '100px', minWidth: 0 }}
+                  />
+                </span>{' '}
+                <select
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                  }}
+                >
+                  {[10, 20, 30, 40, 50, 200].map((pageSize) => (
+                    <option key={pageSize} value={pageSize}>
+                      Show {pageSize}
+                    </option>
+                  ))}
+                </select>
+              </PerPageNumber>
+            </Pagination>
+          </TableStyles>
+        </Container>
+      )}
     </LayoutHideSidebar>
   );
 }
-
-export const pageQuery = graphql`
-  query AllIncidentsForTableView {
-    allMongodbAiidprodReports(
-      filter: { flag: { eq: null } }
-      sort: { order: ASC, fields: incident_id }
-    ) {
-      group(field: incident_id) {
-        edges {
-          node {
-            id
-            incident_id
-            title
-            source_domain
-            url
-            authors
-            submitters
-            epoch_date_submitted
-            epoch_date_modified
-            epoch_date_downloaded
-            report_number
-            flag
-          }
-        }
-      }
-    }
-  }
-`;

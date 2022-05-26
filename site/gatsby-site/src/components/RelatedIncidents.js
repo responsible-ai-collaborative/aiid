@@ -147,7 +147,7 @@ const RelatedIncidentsArea = ({ columnKey, header, reports, loading }) => {
   );
 };
 
-const RelatedIncidents = ({ incident }) => {
+const RelatedIncidents = ({ incident, className = '' }) => {
   const [loading, setLoading] = useState({});
 
   const [relatedReports, setRelatedReports] = useState({});
@@ -233,7 +233,7 @@ const RelatedIncidents = ({ incident }) => {
   }
 
   return (
-    <ListGroup data-cy="related-reports" className="position-relative">
+    <ListGroup data-cy="related-reports" className={className}>
       {Object.keys(searchColumns).map((key) => {
         const column = searchColumns[key];
 
