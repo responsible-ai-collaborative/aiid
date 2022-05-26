@@ -243,7 +243,7 @@ describe('The Submit form', () => {
     });
   });
 
-  it.skip('Should show a list of related reports', () => {
+  it('Should show a list of related reports', () => {
     const relatedReports = {
       byURL: {
         data: {
@@ -378,9 +378,6 @@ describe('The Submit form', () => {
       '@RelatedReportsByIncidentId',
     ]);
 
-    // this reduces flakiness a lot, probably has to do with inputs being debounced
-    cy.wait(1000);
-
     for (const key of ['byURL', 'byDatePublished', 'byIncidentId']) {
       const reports =
         key == 'byIncidentId'
@@ -401,7 +398,7 @@ describe('The Submit form', () => {
     });
   });
 
-  it.skip('Should show a preliminary checks message', () => {
+  it('Should show a preliminary checks message', () => {
     const relatedReports = {
       byURL: {
         data: {
