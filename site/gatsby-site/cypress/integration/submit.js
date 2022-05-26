@@ -200,8 +200,6 @@ describe('The Submit form', () => {
 
     const params = new URLSearchParams(values);
 
-    cy.visit(url + `?${params.toString()}`);
-
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'InsertSubmission',
@@ -212,6 +210,25 @@ describe('The Submit form', () => {
         },
       }
     );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 1,
+      'findIncident',
+      {
+        data: {
+          incident: {
+            __typename: 'Incident',
+            incident_id: 1,
+            title: 'Test title',
+            date: '2022-01-01',
+          },
+        },
+      }
+    );
+
+    cy.visit(url + `?${params.toString()}`);
 
     cy.get('button[type="submit"]', { timeout: 8000 }).scrollIntoView().click({ force: true });
 
@@ -476,8 +493,6 @@ describe('The Submit form', () => {
   });
 
   it("Should disable Submit button when linking to an Incident that doesn't exist", () => {
-    cy.visit(url);
-
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
@@ -485,6 +500,8 @@ describe('The Submit form', () => {
       'findIncident',
       { data: { incident: null } }
     );
+
+    cy.visit(url);
 
     const values = {
       url: 'https://test.com',
