@@ -18,6 +18,10 @@ import VirtualFilters from 'components/discover/VirtualFilters';
 import { Container, Row, Col } from 'react-bootstrap';
 import LanguageSwitcher from 'components/i18n/LanguageSwitcher';
 import useTranslation from 'components/i18n/useTranslation';
+import Stats from 'components/discover/Stats';
+import ClearFilters from 'components/discover/ClearFilters';
+import DisplayModeSwitch from 'components/discover/DisplayModeSwitch';
+import styled from 'styled-components';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -175,6 +179,13 @@ const getQueryFromState = (searchState) => {
   return query;
 };
 
+const ClearFiltersButton = styled(ClearFilters)`
+  height: 32px !important;
+  line-height: 32px !important;
+  padding: 0px !important;
+  background: red;
+`;
+
 function DiscoverApp(props) {
   const [query, setQuery] = useQueryParams(queryConfig);
 
@@ -257,7 +268,47 @@ function DiscoverApp(props) {
                 </Col>
               )}
             </Row>
-            <Filters />
+
+            <div
+              className="hiddenMobile"
+              style={{ position: 'relative', minHeight: '4rem', boxSizing: 'border-box' }}
+            >
+              <details>
+                <summary
+                  className="mt-3"
+                  style={{
+                    position: 'absolute',
+                    right: '0px',
+                    top: '0px',
+                    height: '38px',
+                    lineHeight: '38px',
+                  }}
+                >
+                  Filter Search
+                </summary>
+                <div style={{ paddingTop: '3rem', clear: 'both' }}>
+                  <Filters />
+                </div>
+              </details>
+              <div
+                className="mt-3"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  position: 'absolute',
+                  top: '0px',
+                  height: '38px',
+                  width: 'calc(100% - 14ch)',
+                }}
+              >
+                <Stats />
+                <DisplayModeSwitch />
+                <div style={{ marginLeft: 'auto' }}>
+                  <ClearFiltersButton>Clear Filters</ClearFiltersButton>
+                </div>
+              </div>
+            </div>
+
             <FiltersModal />
           </Container>
 

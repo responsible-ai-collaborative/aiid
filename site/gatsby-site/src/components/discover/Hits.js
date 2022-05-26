@@ -85,7 +85,7 @@ const Hits = ({
   const [display] = useQueryParam('display', DisplayModeEnumParam);
 
   return (
-    <HitsContainer className={`container-xl mt-4 ${display}`}>
+    <HitsContainer className={`container-xl ${display}`}>
       {hits.map((hit) => (
         <Hit
           key={hit.objectID}

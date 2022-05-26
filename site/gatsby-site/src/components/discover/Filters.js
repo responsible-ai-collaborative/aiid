@@ -2,10 +2,7 @@ import React from 'react';
 import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
 import { Row, Col } from 'react-bootstrap';
 import Filter from './Filter';
-import Stats from './Stats';
 import styled from 'styled-components';
-import ClearFilters from './ClearFilters';
-import DisplayModeSwitch from './DisplayModeSwitch';
 
 const StyledFilter = styled(Filter)`
   .dropdown-toggle {
@@ -22,15 +19,6 @@ function Filters() {
             <StyledFilter type={list.type} {...list} />
           </Col>
         ))}
-      </Row>
-      <Row className="d-none d-md-flex">
-        <Col className="d-flex align-items-center">
-          <Stats />
-          <DisplayModeSwitch />
-        </Col>
-        <Col className="d-flex justify-content-end">
-          <ClearFilters>Clear Filters</ClearFilters>
-        </Col>
       </Row>
     </>
   );
