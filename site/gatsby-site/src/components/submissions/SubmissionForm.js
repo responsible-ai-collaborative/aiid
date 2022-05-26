@@ -113,17 +113,9 @@ const SubmissionForm = () => {
 
   const [parsingNews, setParsingNews] = useState(false);
 
-  const coldStartToast = () => {
-    addToast({
-      message: <>Sometimes fetching news info may take a while...</>,
-      severity: SEVERITY.warning,
-    });
-  };
-
   const parseNewsUrl = useCallback(
     async (newsUrl) => {
       setParsingNews(true);
-      const timeout = setTimeout(coldStartToast, 20000);
 
       try {
         const url = `/api/parseNews?url=${encodeURIComponent(newsUrl)}`;
@@ -160,7 +152,6 @@ const SubmissionForm = () => {
         });
       }
 
-      clearTimeout(timeout);
       setParsingNews(false);
     },
     [values]
