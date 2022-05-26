@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { getFormattedName } from '../utils/typography';
 import { format } from 'date-fns';
+import useToastContext, { SEVERITY } from '../hooks/useToast';
+import { faCopy } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
   const [show, setShow] = useState(false);
@@ -9,6 +12,8 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
   const handleClose = () => setShow(false);
 
   const handleShow = () => setShow(true);
+
+  const addToast = useToastContext();
 
   let docs = [];
 
@@ -30,31 +35,22 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
 
   const editorFirstName = nameFragments[0];
 
-  const jsx = (
-    <code>
-      @article &#123;
-      <br />
-      &nbsp; &nbsp; &nbsp; &nbsp; aiid:{docs[0]['incident_id']},
-      <br />
-      &nbsp; &nbsp; &nbsp; &nbsp; author = &#123;{submitterCite}&#125;,
-      <br />
-      &nbsp; &nbsp; &nbsp; &nbsp; editor = &#123;{editorLastName}, {editorFirstName}&#125;,
-      <br />
-      &nbsp; &nbsp; &nbsp; &nbsp; journal = &#123;AI Incident Database&#125;,
-      <br />
-      &nbsp; &nbsp; &nbsp; &nbsp; publisher = &#123;Responsible AI Collaborative&#125;,
-      <br />
-      &nbsp; &nbsp; &nbsp; &nbsp; title = &#123;Incident Number {incident_id}&#125;,
-      <br />
-      &nbsp; &nbsp; &nbsp; &nbsp; url = &#123;https://incidentdatabase.ai/cite/{incident_id}&#125;,
-      <br />
-      &nbsp; &nbsp; &nbsp; &nbsp; year = &#123;{incidentDate.substring(0, 4)}&#125;,
-      <br />
-      &nbsp; &nbsp; &nbsp; &nbsp; urldate = &#123;{format(new Date(), 'MMMM d, y')}&#125;
-      <br />
-      &#125;
-    </code>
-  );
+  const bibTex =
+    '@article {' +
+    `
+      aiid:${incident_id},
+      author = {${submitterCite}},
+      editor = {${editorLastName}, ${editorFirstName}},
+      journal = {AI Incident Database},
+      publisher = {Responsible AI Collaborative},
+      title = {Incident Number ${incident_id}},
+      url = {https://incidentdatabase.ai/cite/${incident_id}},
+      year = {${incidentDate.substring(0, 4)}},
+      urldate = {${format(new Date(), 'MMMM d, y')}}`.replace(/^ +/, '\t') +
+    '\n' +
+    '}';
+
+  const jsx = <code style={{ whiteSpace: 'pre' }}>{bibTex}</code>;
 
   return (
     <>
@@ -67,6 +63,23 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
         </Modal.Header>
         <Modal.Body>{jsx}</Modal.Body>
         <Modal.Footer>
+          <Button
+            style={{ marginRight: 'auto' }}
+            onClick={() => {
+              navigator.clipboard.writeText(bibTex);
+              addToast({
+                message: 'BibTeX copied to clipboard',
+                severity: SEVERITY.success,
+              });
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faCopy}
+              className="fas fa-times"
+              style={{ marginRight: '1ch' }}
+            />
+            Copy
+          </Button>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>

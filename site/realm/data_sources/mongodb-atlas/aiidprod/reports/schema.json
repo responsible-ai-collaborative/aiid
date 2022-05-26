@@ -51,9 +51,6 @@
         "incident_date": {
             "bsonType": "string"
         },
-        "incident_id": {
-            "bsonType": "int"
-        },
         "language": {
             "bsonType": "string"
         },

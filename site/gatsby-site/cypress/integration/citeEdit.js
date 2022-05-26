@@ -1,6 +1,6 @@
 import { maybeIt } from '../support/utils';
 
-import updateOneIncident from '../fixtures/reports/updateOneIncident.json';
+import updateOneReport from '../fixtures/reports/updateOneReport.json';
 
 import { format, getUnixTime } from 'date-fns';
 
@@ -29,7 +29,8 @@ describe('Edit report', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'FindIncident',
+      (req) =>
+        req.body.operationName == 'FindParentIncident' && req.body.variables.report_number == 10,
       'findIncident',
       incident
     );
@@ -43,7 +44,6 @@ describe('Edit report', () => {
       'date_downloaded',
       'date_published',
       'image_url',
-      'incident_id',
       'submitters',
       'text',
       'title',
@@ -51,7 +51,7 @@ describe('Edit report', () => {
       cy.get(`[name=${key}]`).should('have.value', report.data.report[key].toString());
     });
 
-    cy.get(`[name=${'incident_date'}]`).should('have.value', incident.data.incident.date);
+    cy.get(`[name="incident_id"]`).should('have.value', incident.data.incident.incident_id);
 
     cy.get('[class*=Typeahead] [option="Test Tag"]').should('have.length', 1);
 
@@ -60,7 +60,6 @@ describe('Edit report', () => {
       date_downloaded: '2022-01-01',
       date_published: '2022-02-02',
       image_url: 'https://test.com/test.jpg',
-      incident_date: '2022-03-03',
       submitters: 'Test Submitter',
       text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
       title: 'Test Title',
@@ -79,8 +78,19 @@ describe('Edit report', () => {
       '**/graphql',
       (req) => req.body.operationName == 'UpdateReport',
       'updateReport',
-      updateOneIncident
+      updateOneReport
     );
+
+    // cypress doesn't provide a built-in way to check that a request wasn't made
+    // in the context of this test this is an important assertion
+
+    let updateIncidentInvoked = false;
+
+    cy.intercept('**/graphql', (req) => {
+      if (req.body.operationName === 'UpdateIncident') {
+        updateIncidentInvoked = true;
+      }
+    });
 
     cy.contains('button', 'Submit').click();
 
@@ -99,8 +109,6 @@ describe('Edit report', () => {
       expect(xhr.request.body.variables.set.epoch_date_published).eq(1643760000);
       expect(xhr.request.body.variables.set.flag).eq(null);
       expect(xhr.request.body.variables.set.image_url).eq('https://test.com/test.jpg');
-      expect(xhr.request.body.variables.set.incident_date).eq('2022-03-03');
-      expect(xhr.request.body.variables.set.incident_id).eq(1);
       expect(xhr.request.body.variables.set.report_number).eq(10);
       expect(xhr.request.body.variables.set.submitters).deep.eq(['Test Submitter']);
       expect(xhr.request.body.variables.set.tags).deep.eq(['Test Tag', 'New Tag']);
@@ -110,6 +118,8 @@ describe('Edit report', () => {
       expect(xhr.request.body.variables.set.title).eq('Test Title');
       expect(xhr.request.body.variables.set.url).eq('https://www.test.com/test');
     });
+
+    cy.wrap(updateIncidentInvoked).should('eq', false);
 
     cy.get('div[class^="ToastContext"]')
       .contains('Incident report 10 updated successfully.')
@@ -168,7 +178,6 @@ describe('Edit report', () => {
             flag: true,
             image_url:
               'https://cbsnews1.cbsistatic.com/hub/i/r/2015/03/17/01a38576-5108-40f7-8df8-5416164ed878/thumbnail/1200x630/ca8d35fe6bc065b5c9a747d92bc6d94c/154211248.jpg',
-            incident_id: 12,
             report_number: 23,
             submitters: ['Catherine Olsson'],
             tags: ['boe'],
@@ -270,7 +279,7 @@ describe('Edit report', () => {
       .its('request.body.variables')
       .then((variables) => {
         expect(variables.query.report_number).to.equal(23);
-        expect(variables.set.incident_id).to.equal(12);
+        expect(variables.set.incident_id).to.equal(undefined);
       });
 
     cy.wait('@RelatedIncidents')

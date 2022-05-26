@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
@@ -9,30 +9,30 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import ReadMoreText from 'components/ReadMoreText';
-import EditableListItem from 'components/EditableListItem';
-import IncidentEditModal from 'components/IncidentEditModal';
 import RelatedIncidents from 'components/RelatedIncidents';
 
 import { useUserContext } from 'contexts/userContext';
-import { UPDATE_REPORT } from '../graphql/reports';
+import { UPDATE_REPORT } from '../../graphql/reports';
 import { useMutation } from '@apollo/client';
-import { UPDATE_INCIDENT } from '../graphql/incidents';
-import { DELETE_SUBMISSION, PROMOTE_SUBMISSION, UPDATE_SUBMISSION } from '../graphql/submissions';
+import { UPDATE_INCIDENT } from '../../graphql/incidents';
+import { DELETE_SUBMISSION, PROMOTE_SUBMISSION } from '../../graphql/submissions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { format, getUnixTime } from 'date-fns';
-import isArray from 'lodash/isArray';
+import SubmissionEditModal from './SubmissionEditModal';
+import { Spinner } from 'react-bootstrap';
 
-const ListedGroup = ({ item, keysToRender }) => {
+const ListedGroup = ({ item, className = '', keysToRender }) => {
   return (
-    <ListGroup className="px-3">
+    <ListGroup className={className}>
       {keysToRender.map((key) => (
-        <EditableListItem
-          key={key}
-          name={key}
-          value={
-            typeof item[key] == 'object' && item[key] !== null ? item[key].join(', ') : item[key]
-          }
-        />
+        <ListGroup.Item key={key} className="d-flex gap-4" data-cy={key}>
+          <div style={{ width: 140 }} className="flex-grow">
+            <b>{key}</b>
+          </div>
+          <div className="text-break">
+            {item[key] == 'object' && item[key] !== null ? item[key].join(', ') : item[key]}
+          </div>
+        </ListGroup.Item>
       ))}
     </ListGroup>
   );
@@ -50,9 +50,9 @@ const dateRender = [
   'date_modified',
 ];
 
-const otherDetails = ['language', 'mongodb_id'];
+const otherDetails = ['language', '_id'];
 
-const ReportedIncident = ({ incident: submission }) => {
+const SubmissionReview = ({ submission }) => {
   const { isRole } = useUserContext();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -61,28 +61,38 @@ const ReportedIncident = ({ incident: submission }) => {
 
   const isSubmitter = isRole('submitter');
 
-  const [promoteSubmission] = useMutation(PROMOTE_SUBMISSION, { fetchPolicy: 'network-only' });
+  const [promoteSubmissionToReport, { loading: promoting }] = useMutation(PROMOTE_SUBMISSION, {
+    fetchPolicy: 'network-only',
+  });
 
   const [updateReport] = useMutation(UPDATE_REPORT);
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
-  const [updateSubmission] = useMutation(UPDATE_SUBMISSION);
-
-  const [deleteSubmission] = useMutation(DELETE_SUBMISSION);
+  const [deleteSubmission, { loading: deleting }] = useMutation(DELETE_SUBMISSION, {
+    update: (cache, { data }) => {
+      // Apollo expects a `deleted` boolean field otherwise manual cache manipulation is needed
+      cache.evict({
+        id: cache.identify({
+          __typename: data.deleteOneSubmission.__typename,
+          id: data.deleteOneSubmission._id,
+        }),
+      });
+    },
+  });
 
   const addToast = useToastContext();
 
-  const addReport = async () => {
+  const promoteSubmission = useCallback(async () => {
     const {
       data: {
         promoteSubmissionToReport: { 0: incident },
       },
-    } = await promoteSubmission({
+    } = await promoteSubmissionToReport({
       variables: {
         input: {
           submission_id: submission._id,
-          incident_ids: submission.incident_id === '0' ? [] : [submission.incident_id],
+          incident_ids: submission.incident_id === 0 ? [] : [submission.incident_id],
         },
       },
       fetchPolicy: 'no-cache',
@@ -97,7 +107,7 @@ const ReportedIncident = ({ incident: submission }) => {
       },
     });
 
-    const report = { ...submission, _id: undefined, __typename: undefined };
+    const report = { ...submission, incident_id: undefined, _id: undefined, __typename: undefined };
 
     report.date_modified = format(new Date(), 'yyyy-MM-dd');
 
@@ -105,8 +115,6 @@ const ReportedIncident = ({ incident: submission }) => {
     report.epoch_date_published = getUnixTime(new Date(report.date_published));
     report.epoch_date_downloaded = getUnixTime(new Date(report.date_downloaded));
     report.epoch_date_submitted = getUnixTime(new Date(report.date_submitted));
-
-    report.incident_id = incident.incident_id;
 
     const report_number = incident.reports
       .sort((a, b) => b.report_number - a.report_number)
@@ -123,9 +131,7 @@ const ReportedIncident = ({ incident: submission }) => {
       },
     });
 
-    // this should be removed once a different form is used for submissions
-
-    if (submission.incident_id === '0' || submission.incident_id === 0) {
+    if (submission.incident_id === 0) {
       await updateIncident({
         variables: {
           query: {
@@ -152,50 +158,11 @@ const ReportedIncident = ({ incident: submission }) => {
       ),
       severity: SEVERITY.success,
     });
-  };
+  }, [submission]);
 
   const rejectReport = async () => {
     await deleteSubmission({ variables: { _id: submission._id } });
   };
-
-  const toggleEditing = () => setIsEditing(!isEditing);
-
-  const handleSubmit = async (values) => {
-    try {
-      const update = { ...values, _id: undefined };
-
-      await updateSubmission({
-        variables: {
-          query: {
-            _id: values._id,
-          },
-          set: {
-            ...update,
-            authors: !isArray(values.authors)
-              ? values.authors.split(',').map((s) => s.trim())
-              : values.authors,
-            submitters: !isArray(values.submitters)
-              ? values.submitters.split(',').map((s) => s.trim())
-              : values.submitters,
-          },
-        },
-      });
-
-      addToast({
-        message: `Submission updated successfully.`,
-        severity: SEVERITY.success,
-      });
-    } catch (e) {
-      addToast({
-        message: `Error updating submission ${values._id}`,
-        severity: SEVERITY.danger,
-      });
-    }
-  };
-
-  const isNewIncident = submission['incident_id'] === '0';
-
-  const cardSubheader = isNewIncident ? 'New Incident' : 'New Report';
 
   return (
     <>
@@ -227,50 +194,74 @@ const ReportedIncident = ({ incident: submission }) => {
       </Card.Header>
       <Collapse in={open}>
         <div id="collapse-incident-submission" className="pt-3">
-          <ListedGroup item={submission} keysToRender={leadItems} />
-          <ListedGroup item={submission} keysToRender={dateRender} />
-          <ListedGroup item={submission} keysToRender={urls} />
-          <ListedGroup item={submission} keysToRender={otherDetails} />
+          <ListedGroup className="mx-3" item={submission} keysToRender={leadItems} />
+          <ListedGroup className="mt-2 mx-3" item={submission} keysToRender={dateRender} />
+          <ListedGroup className="mt-2 mx-3" item={submission} keysToRender={urls} />
+          <ListedGroup className="mt-2 mx-3" item={submission} keysToRender={otherDetails} />
+
           <Card className="m-3">
             <Card.Header>Text</Card.Header>
             <Card.Body>
               <ReadMoreText text={submission.text} visibility={open} />
             </Card.Body>
           </Card>
+
           {open && (
-            <Card className="m-3">
-              <Card.Header>Possible related incidents</Card.Header>
-              <Card.Body>
-                <RelatedIncidents incident={submission} isSubmitted={true} />
-              </Card.Body>
-            </Card>
+            <div className="mx-3">
+              <h5>Possible related incidents</h5>
+              <RelatedIncidents incident={submission} />
+            </div>
           )}
           <Card.Footer className="d-flex text-muted">
-            <Button className="me-auto" disabled={!isSubmitter} onClick={toggleEditing}>
+            <Button className="me-auto" disabled={!isSubmitter} onClick={() => setIsEditing(true)}>
               <FontAwesomeIcon icon={faEdit} />
             </Button>
             <Button
               className="me-2"
               variant="outline-primary"
-              disabled={!isSubmitter}
-              onClick={addReport}
+              disabled={!isSubmitter || promoting}
+              onClick={promoteSubmission}
             >
-              Add {cardSubheader}
+              {submission.incident_id === 0 ? <>Add New Incident</> : <>Add New Report</>}
+              {promoting && (
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="ms-2"
+                />
+              )}
             </Button>
-            <Button variant="outline-secondary" disabled={!isSubmitter} onClick={rejectReport}>
-              Reject {cardSubheader}
+            <Button
+              variant="outline-secondary"
+              disabled={!isSubmitter || deleting}
+              onClick={rejectReport}
+            >
+              {submission.incident_id === 0 ? <>Reject New Incident</> : <>Reject New Report</>}
+              {deleting && (
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="ms-2"
+                  variant="secondary"
+                />
+              )}
             </Button>
           </Card.Footer>
         </div>
       </Collapse>
-      <IncidentEditModal
+      <SubmissionEditModal
         show={isEditing}
-        incident={submission}
-        onHide={toggleEditing}
-        onSubmit={handleSubmit}
+        onHide={() => setIsEditing(false)}
+        submissionId={submission._id}
       />
     </>
   );
 };
 
-export default ReportedIncident;
+export default SubmissionReview;

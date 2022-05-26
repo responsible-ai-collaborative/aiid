@@ -10,6 +10,7 @@ const ToastsWrapper = styled.div`
   bottom: 2em;
   left: 2em;
   max-width: 100% !important;
+  z-index: 1056;
 `;
 
 const CloseButton = styled(Button)`

@@ -163,9 +163,10 @@ function CitePage(props) {
                 <Button
                   variant="outline-primary"
                   className="me-2"
-                  href={`/apps/submit?incident_id=${incident.incident_id}&incident_date=${
-                    incident.date
-                  }&date_downloaded=${format(new Date(), 'yyyy-MM-dd')}`}
+                  href={`/apps/submit?incident_id=${incident.incident_id}&date_downloaded=${format(
+                    new Date(),
+                    'yyyy-MM-dd'
+                  )}`}
                 >
                   New Report
                 </Button>

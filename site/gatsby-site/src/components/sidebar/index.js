@@ -39,8 +39,8 @@ const ListItem = styled(({ className, active, level, ...props }) => {
       background-color: #fff;
     `} // external link icon
     svg {
-      float: right;
-      margin-right: 1rem;
+      margin-left: 1ch;
+      vertical-align: top;
     }
   }
 `;

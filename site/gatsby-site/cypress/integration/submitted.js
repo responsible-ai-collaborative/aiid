@@ -5,7 +5,7 @@ import { format, getUnixTime } from 'date-fns';
 describe('Submitted reports', () => {
   const url = '/apps/submitted';
 
-  it('Loads submitted reports', () => {
+  it('Loads submissions', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'FindSubmissions',
@@ -30,23 +30,38 @@ describe('Submitted reports', () => {
       cy.get('[data-cy="submissions"]')
         .children(`:nth-child(${index + 1})`)
         .within(() => {
-          cy.get('[data-cy="source_domain"]').should('contain', report.source_domain);
-          cy.get('[data-cy="authors"]').should('contain', report.authors);
-          cy.get('[data-cy="submitters"]').should('contain', report.submitters);
-          cy.get('[data-cy="incident_id"]').should('contain', report.incident_id);
-          cy.get('[data-cy="date_published"]').should('contain', report.date_published);
-          cy.get('[data-cy="date_submitted"]').should('contain', report.date_submitted);
-          cy.get('[data-cy="date_downloaded"]').should('contain', report.date_downloaded);
-          cy.get('[data-cy="date_modified"]').should('contain', report.date_modified);
-          cy.get('[data-cy="url"]').should('contain', report.url);
+          cy.get('[data-cy="source_domain"] div:nth-child(2)').should(
+            'contain',
+            report.source_domain
+          );
+          cy.get('[data-cy="authors"] div:nth-child(2)').should('contain', report.authors);
+          cy.get('[data-cy="submitters"] div:nth-child(2)').should('contain', report.submitters);
+          cy.get('[data-cy="incident_id"] div:nth-child(2)').should('contain', report.incident_id);
+          cy.get('[data-cy="date_published"] div:nth-child(2)').should(
+            'contain',
+            report.date_published
+          );
+          cy.get('[data-cy="date_submitted"] div:nth-child(2)').should(
+            'contain',
+            report.date_submitted
+          );
+          cy.get('[data-cy="date_downloaded"] div:nth-child(2)').should(
+            'contain',
+            report.date_downloaded
+          );
+          cy.get('[data-cy="date_modified"] div:nth-child(2)').should(
+            'contain',
+            report.date_modified
+          );
+          cy.get('[data-cy="url"] div:nth-child(2)').should('contain', report.url);
         });
     });
   });
 
-  maybeIt('Promotes a report and links it to a new incident', () => {
+  maybeIt('Promotes a submission to a new report and links it to a new incident', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    const submission = submittedReports.data.submissions.find((r) => r.incident_id === '0');
+    const submission = submittedReports.data.submissions.find((r) => r.incident_id === 0);
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -139,7 +154,6 @@ describe('Submitted reports', () => {
       .then(({ set, query }) => {
         expect(query.report_number).eq(1565);
 
-        expect(set.incident_id).eq(182);
         expect(set.text).eq(submission.text);
         expect(set.title).eq(submission.title);
         expect(set.authors).deep.eq(submission.authors);
@@ -168,6 +182,7 @@ describe('Submitted reports', () => {
       .its('request.body.variables')
       .then(({ query, set }) => {
         expect(query.incident_id).eq(182);
+
         expect(set.title).eq(submission.title);
         expect(set.date).eq(submission.incident_date);
         expect(set.description).eq('');
@@ -181,10 +196,10 @@ describe('Submitted reports', () => {
       .should('exist');
   });
 
-  maybeIt('Promotes a report and links it to an existing incident', () => {
+  maybeIt('Promotes a submission to a new report and links it to an existing incident', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    const submission = submittedReports.data.submissions.find((r) => r.incident_id === '10');
+    const submission = submittedReports.data.submissions.find((r) => r.incident_id === 10);
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -254,7 +269,7 @@ describe('Submitted reports', () => {
     cy.wait('@promoteSubmission')
       .its('request.body.variables.input')
       .then((input) => {
-        expect(input.incident_ids).to.deep.eq(['10']);
+        expect(input.incident_ids).to.deep.eq([10]);
         expect(input.submission_id).to.eq('6123bf345e740c1a81850e89');
       });
 
@@ -263,7 +278,6 @@ describe('Submitted reports', () => {
       .then(({ set, query }) => {
         expect(query.report_number).eq(1566);
 
-        expect(set.incident_id).eq(10);
         expect(set.text).eq(submission.text);
         expect(set.title).eq(submission.title);
         expect(set.authors).deep.eq(submission.authors);
@@ -292,5 +306,49 @@ describe('Submitted reports', () => {
     cy.get('[data-cy="toast"]')
       .contains('Successfully promoted submission to Incident 10 and Report 1566')
       .should('exist');
+  });
+
+  maybeIt('Rejects a submission', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    const submission = submittedReports.data.submissions.find((r) => r.incident_id === 10);
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'FindSubmissions',
+      {
+        data: {
+          submissions: [submission],
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.wait('@FindSubmissions');
+
+    cy.get('[data-cy="submissions"] > div:nth-child(1)').as('promoteForm');
+
+    cy.get('@promoteForm').contains('review >').click();
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'DeleteSubmission',
+      'DeleteSubmission',
+      {
+        data: {
+          deleteOneSubmission: { __typename: 'Submission', _id: '6123bf345e740c1a81850e89' },
+        },
+      }
+    );
+
+    cy.get('@promoteForm').contains('button', 'Reject New Report').click();
+
+    cy.wait('@DeleteSubmission').then((xhr) => {
+      expect(xhr.request.body.variables._id).to.eq('6123bf345e740c1a81850e89');
+    });
+
+    cy.get('[data-cy="submissions"]').children().should('have.length', 0);
   });
 });
