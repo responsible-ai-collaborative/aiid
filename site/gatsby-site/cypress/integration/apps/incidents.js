@@ -90,8 +90,10 @@ describe('Incidents App', () => {
       expect(xhr.request.body.variables.set.title).to.eq('Test title');
     });
 
-    cy.contains('Update').should('be.disabled');
-
     cy.get('[data-cy="incident-form"]').should('not.exist');
+
+    cy.get('[data-cy="toast"]')
+      .contains('Incident 112 updated successfully.')
+      .should('exist');
   });
 });

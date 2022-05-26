@@ -1,31 +1,40 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Layout from 'components/Layout';
-import IncidentReportForm from 'components/forms/IncidentReportForm';
+import IncidentReportForm, { schema } from 'components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Spinner } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
 import {
   FIND_REPORT,
   UPDATE_REPORT,
   DELETE_REPORT,
   useUpdateLinkedReports,
 } from '../../graphql/reports';
-import { FIND_INCIDENT } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { format, getUnixTime } from 'date-fns';
+import { Formik } from 'formik';
+import { gql } from '@apollo/client';
+
+const FIND_PARENT_INCIDENT = gql`
+  query FindParentIncident($report_number: Int) {
+    incident(query: { reports_in: { report_number: $report_number } }) {
+      incident_id
+    }
+  }
+`;
 
 function EditCitePage(props) {
-  const [report, setReport] = useState();
-
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
 
-  const { data: reportData } = useQuery(FIND_REPORT, {
+  const { data: reportData, loading: loadingReport } = useQuery(FIND_REPORT, {
     variables: { query: { report_number: reportNumber } },
   });
 
-  const { data: incidentData } = useQuery(FIND_INCIDENT, {
-    variables: { query: { reports_in: { report_number: reportNumber } } },
+  const { data: incidentData, loading: loadingIncident } = useQuery(FIND_PARENT_INCIDENT, {
+    variables: { report_number: reportNumber },
   });
+
+  const loading = loadingIncident || loadingReport;
 
   const [updateReport] = useMutation(UPDATE_REPORT);
 
@@ -34,20 +43,6 @@ function EditCitePage(props) {
   const updateLinkedReports = useUpdateLinkedReports();
 
   const addToast = useToastContext();
-
-  useEffect(() => {
-    if (reportData && incidentData) {
-      if (reportData.report && incidentData.incident) {
-        setReport({
-          ...reportData.report,
-          incident_date: incidentData.incident.date,
-          incident_id: reportData.report.incident_id,
-        });
-      } else {
-        setReport(null);
-      }
-    }
-  }, [reportData, incidentData]);
 
   const handleSubmit = async (values) => {
     try {
@@ -65,7 +60,7 @@ function EditCitePage(props) {
       values.epoch_date_published = getUnixTime(new Date(values.date_published));
       values.epoch_date_modified = getUnixTime(new Date(values.date_modified));
 
-      const updated = { ...values, __typename: undefined };
+      const updated = { ...values, incident_id: undefined, __typename: undefined };
 
       await updateReport({
         variables: {
@@ -78,7 +73,7 @@ function EditCitePage(props) {
         },
       });
 
-      if (values.incident_id !== reportData.report.incident_id) {
+      if (values.incident_id !== incidentData.incident.incident_id) {
         await updateLinkedReports({ reportNumber, incidentIds: [values.incident_id] });
       }
 
@@ -114,26 +109,49 @@ function EditCitePage(props) {
         severity: SEVERITY.danger,
       });
     }
-
-    setReport(null);
   };
 
   return (
     <Layout {...props} className={'w-100'}>
       <h1 className="mb-5">Editing Incident Report {reportNumber}</h1>
 
-      {report === undefined && (
+      {loading && (
         <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
       )}
-      {report === null && <div>Report not found</div>}
+      {!reportData?.report && !loading && <div>Report not found</div>}
 
-      {report && (
-        <IncidentReportForm
-          incident={report}
-          onUpdate={setReport}
+      {reportData?.report && incidentData?.incident && (
+        <Formik
+          validationSchema={schema}
           onSubmit={handleSubmit}
-          onDelete={handleDelete}
-        />
+          initialValues={{ ...reportData.report, incident_id: incidentData.incident.incident_id }}
+        >
+          {({ isValid, isSubmitting, submitForm }) => (
+            <>
+              <IncidentReportForm />
+
+              <Button
+                className="mt-3"
+                variant="primary"
+                type="submit"
+                disabled={!isValid || isSubmitting}
+                onClick={submitForm}
+              >
+                Submit
+              </Button>
+
+              <Button
+                className="mt-3 text-danger"
+                variant="link"
+                onClick={() => {
+                  confirm('Sure you want to delete this report?') && handleDelete();
+                }}
+              >
+                Delete this report
+              </Button>
+            </>
+          )}
+        </Formik>
       )}
     </Layout>
   );

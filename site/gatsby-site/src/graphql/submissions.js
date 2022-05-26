@@ -32,6 +32,30 @@ export const FIND_SUBMISSIONS = gql`
   }
 `;
 
+export const FIND_SUBMISSION = gql`
+  query FindSubmission($query: SubmissionQueryInput!) {
+    submission(query: $query) {
+      _id
+      cloudinary_id
+      date_downloaded
+      date_modified
+      date_published
+      date_submitted
+      description
+      image_url
+      incident_date
+      incident_id
+      language
+      source_domain
+      text
+      title
+      authors
+      submitters
+      url
+    }
+  }
+`;
+
 export const UPDATE_SUBMISSION = gql`
   mutation UpdateSubmission($query: SubmissionQueryInput!, $set: SubmissionUpdateInput!) {
     updateOneSubmission(query: $query, set: $set) {

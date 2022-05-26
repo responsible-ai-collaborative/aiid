@@ -4,13 +4,21 @@ import { Leaderboard } from './Leaderboard';
 
 const UniqueSubmittersLeaderboard = ({ limit, className }) => {
   const {
-    allMongodbAiidprodReports: { nodes },
+    allMongodbAiidprodReports: { nodes: reports },
+    allMongodbAiidprodIncidents: { nodes: incidents },
   } = useStaticQuery(graphql`
     {
+      allMongodbAiidprodIncidents {
+        nodes {
+          incident_id
+          reports
+        }
+      }
+
       allMongodbAiidprodReports {
         nodes {
+          report_number
           submitters
-          incident_id
           date_submitted
         }
       }
@@ -19,9 +27,12 @@ const UniqueSubmittersLeaderboard = ({ limit, className }) => {
 
   const submitters = {};
 
-  for (const report of nodes) {
+  for (const report of reports) {
+    const { incident_id: id } = incidents.find((incident) =>
+      incident.reports.includes(report.report_number)
+    );
+
     const {
-      incident_id: id,
       submitters: [submitter],
     } = report;
 

@@ -68,7 +68,6 @@ const createCitiationPages = async (graphql, createPage) => {
           nodes {
             submitters
             date_published
-            incident_id
             report_number
             title
             url

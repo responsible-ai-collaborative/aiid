@@ -38,7 +38,7 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
   const bibTex =
     '@article {' +
     `
-      aiid:${docs[0]['incident_id']},
+      aiid:${incident_id},
       author = {${submitterCite}},
       editor = {${editorLastName}, ${editorFirstName}},
       journal = {AI Incident Database},

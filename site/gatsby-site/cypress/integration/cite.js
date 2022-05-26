@@ -142,8 +142,6 @@ describe('Cite pages', () => {
     cy.contains('New Report').scrollIntoView().click();
 
     cy.get('[name="incident_id"]').should('have.value', '10');
-
-    cy.get('[name="incident_date"]').should('have.value', '2014-08-14');
   });
 
   it('should render Next and Previous incident buttons', () => {
@@ -179,6 +177,7 @@ describe('Cite pages', () => {
       .find('code')
       .invoke('text')
       .then((text) => {
+        // would be nice not having to remove especial characters
         // eslint-disable-next-line
         const bibText = text.replace(/(\r\n|\n|\r| |\s)/g, '');
 
