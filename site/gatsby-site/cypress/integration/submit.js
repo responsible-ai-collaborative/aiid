@@ -58,17 +58,15 @@ describe('The Submit form', () => {
   });
 
   it('Should submit a new report linked to incident 1 once all fields are filled properly', () => {
-    cy.visit(url);
-
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
+    cy.visit(url);
 
     cy.get('input[name="url"]').type(
       `https://arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
     );
 
     cy.get('button').contains('Fetch info').click();
-
-    cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.get('input[name="submitters"]').type('Something');
 
@@ -168,7 +166,7 @@ describe('The Submit form', () => {
   it('Should show a toast on error when failing to reach parsing endpoint', () => {
     cy.visit(url);
 
-    cy.intercept('GET', parserURL, { forceNetworkError: true }).as('parseNews');
+    cy.intercept('GET', parserURL, { ...parseNews, forceNetworkError: true }).as('parseNews');
 
     cy.get('input[name="url"]').type(
       `https://www.cbsnews.com/news/is-starbucks-shortchanging-its-baristas/`
@@ -176,7 +174,7 @@ describe('The Submit form', () => {
 
     cy.get('button').contains('Fetch info').click();
 
-    cy.wait('@parseNews', { timeout: 30000 });
+    cy.wait('@parseNews');
 
     cy.get('div[class^="ToastContext"]')
       .contains('Error reaching news info endpoint, please try again in a few seconds.')
@@ -229,6 +227,8 @@ describe('The Submit form', () => {
     );
 
     cy.visit(url + `?${params.toString()}`);
+
+    cy.wait('@findIncident');
 
     cy.get('button[type="submit"]').scrollIntoView().click();
 
