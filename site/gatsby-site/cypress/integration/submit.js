@@ -481,9 +481,6 @@ describe('The Submit form', () => {
       '@RelatedReportsByIncidentId',
     ]);
 
-    // this reduces flakiness a lot, probably has to do with inputs being debounced
-    cy.wait(1000);
-
     cy.get('[data-cy="empty-message"]').should('be.visible');
 
     cy.get('[data-cy="related-reports"]').should('not.exist');
