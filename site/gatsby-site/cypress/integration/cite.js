@@ -103,14 +103,14 @@ describe('Cite pages', () => {
     // mock requests until a testing database is implemented
     const _id = '5d34b8c29ced494f010ed470';
 
-    cy.visit(url + '#' + _id);
-
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'FindReport',
       'fetchReport',
       unflaggedReport
     );
+
+    cy.visit(url + '#' + _id);
 
     cy.get(`[id="r${_id}"`).find('[data-cy="flag-button"]').click();
 
