@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   //      "best_url": "https://incidentdatabase.ai/apps/discover?display=details&incident_id=10"
   //  }}
   const url =
-    'https://q3z6vr2qvj.execute-api.us-west-2.amazonaws.com/similar?text=' +
+    'https://q3z6vr2qvj.execute-api.us-west-2.amazonaws.com/text-to-db-similar?text=' +
     encodeURIComponent(text);
 
   axios
