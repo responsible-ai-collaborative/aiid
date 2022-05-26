@@ -192,7 +192,7 @@ describe('The Submit form', () => {
       date_downloaded: '2021-01-03',
       image_url: 'https://test.com/image.jpg',
       incident_id: '1',
-      text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
+      text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
       tags: 'test tag',
     };
 
@@ -214,12 +214,14 @@ describe('The Submit form', () => {
     cy.get('button[type="submit"]', { timeout: 8000 }).scrollIntoView().click({ force: true });
 
     cy.wait('@submitReport').then((xhr) => {
-      expect(xhr.request.body.variables.submission).to.deep.include({
+      expect(xhr.request.body.variables.submission).to.deep.nested.include({
         ...values,
         incident_id: '1',
         authors: [values.authors],
         submitters: [values.submitters],
         tags: [values.tags],
+        plain_text:
+          'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
       });
     });
   });
