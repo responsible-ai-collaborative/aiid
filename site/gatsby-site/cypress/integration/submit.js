@@ -243,7 +243,7 @@ describe('The Submit form', () => {
     });
   });
 
-  it('Should show a list of related reports', () => {
+  it.skip('Should show a list of related reports', () => {
     const relatedReports = {
       byURL: {
         data: {
