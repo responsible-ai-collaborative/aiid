@@ -230,7 +230,7 @@ describe('The Submit form', () => {
 
     cy.visit(url + `?${params.toString()}`);
 
-    cy.get('button[type="submit"]', { timeout: 8000 }).scrollIntoView().click({ force: true });
+    cy.get('button[type="submit"]').scrollIntoView().click();
 
     cy.wait('@submitReport').then((xhr) => {
       expect(xhr.request.body.variables.submission).to.deep.include({
