@@ -46,5 +46,7 @@ export function getFormattedName(str) {
 }
 
 export async function stripMarkdown(markdown) {
-  return (await remark().use(remarkStrip).process(markdown)).contents.toString();
+  const result = await remark().use(remarkStrip).process(markdown);
+
+  return result.contents.toString();
 }

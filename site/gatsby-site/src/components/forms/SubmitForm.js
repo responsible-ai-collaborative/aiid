@@ -12,6 +12,7 @@ import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
 import isString from 'lodash/isString';
 import SubmissionForm, { schema } from 'components/submissions/SubmissionForm';
 import { Formik } from 'formik';
+import { stripMarkdown } from 'utils/typography';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -94,6 +95,7 @@ const SubmitForm = () => {
         authors: isString(values.authors) ? values.authors.split(',') : values.authors,
         submitters: isString(values.submitters) ? values.submitters.split(',') : values.submitters,
         language: 'en',
+        plain_text: await stripMarkdown(values.text),
       };
 
       await insertSubmission({ variables: { submission } });

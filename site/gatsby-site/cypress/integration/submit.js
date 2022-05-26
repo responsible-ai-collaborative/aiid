@@ -40,7 +40,7 @@ describe('The Submit form', () => {
     cy.get('button[type="submit"]').click();
 
     cy.wait('@submitReport').then((xhr) => {
-      expect(xhr.request.body.variables.submission).to.deep.include({
+      expect(xhr.request.body.variables.submission).to.deep.nested.include({
         title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
         submitters: ['Something'],
         authors: ['Valentina Palladino'],
@@ -49,6 +49,9 @@ describe('The Submit form', () => {
           'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
         tags: ['New Tag'],
         incident_id: 0,
+        text: "## Recent news stories and blog\n\nposts _highlighted_ the underbelly of YouTube Kids, Google's children-friendly version.",
+        plain_text:
+          "Recent news stories and blog\n\nposts highlighted the underbelly of YouTube Kids, Google's children-friendly version.\n",
       });
     });
 

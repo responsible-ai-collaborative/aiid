@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import { useFormikContext } from 'formik';
 import * as Yup from 'yup';
@@ -114,45 +114,49 @@ const IncidentReportForm = () => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
 
-  const parseNewsUrl = async (newsUrl) => {
-    setParsingNews(true);
+  const parseNewsUrl = useCallback(
+    async (newsUrl) => {
+      setParsingNews(true);
 
-    try {
-      const url = `/api/parseNews?url=${encodeURIComponent(newsUrl)}`;
+      try {
+        const url = `/api/parseNews?url=${encodeURIComponent(newsUrl)}`;
 
-      const response = await fetch(url);
+        const response = await fetch(url);
 
-      if (!response.ok) {
-        throw new Error('Parser error');
+        if (!response.ok) {
+          throw new Error('Parser error');
+        }
+
+        const news = await response.json();
+
+        addToast({
+          message: <>Please verify all information programmatically pulled from the report</>,
+          severity: SEVERITY.info,
+        });
+
+        const cloudinary_id = getCloudinaryPublicID(news.image_url);
+
+        setValues({
+          ...values,
+          ...news,
+          cloudinary_id,
+        });
+      } catch (e) {
+        const message =
+          e.message == 'Parser error'
+            ? `Error fetching news. Scraping was blocked by ${newsUrl}, Please enter the text manually.`
+            : `Error reaching news info endpoint, please try again in a few seconds.`;
+
+        addToast({
+          message: <>{message}</>,
+          severity: SEVERITY.danger,
+        });
       }
 
-      const news = await response.json();
-
-      addToast({
-        message: <>Please verify all information programmatically pulled from the report</>,
-        severity: SEVERITY.info,
-      });
-
-      const cloudinary_id = getCloudinaryPublicID(news.image_url);
-
-      setValues({
-        ...news,
-        cloudinary_id,
-      });
-    } catch (e) {
-      const message =
-        e.message == 'Parser error'
-          ? `Error fetching news. Scraping was blocked by ${newsUrl}, Please enter the text manually.`
-          : `Error reaching news info endpoint, please try again in a few seconds.`;
-
-      addToast({
-        message: <>{message}</>,
-        severity: SEVERITY.danger,
-      });
-    }
-
-    setParsingNews(false);
-  };
+      setParsingNews(false);
+    },
+    [values]
+  );
 
   return (
     <Form
@@ -238,7 +242,7 @@ const IncidentReportForm = () => {
 
       <Form.Group className="mt-3" data-color-mode="light">
         <Label popover={POP_OVERS.text} label={'Text'} />
-        <Editor value={values.text || ''} onChange={(value) => setFieldValue('text', value)} />
+        <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
       </Form.Group>
 
       <Form.Group className="mt-3">
