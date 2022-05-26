@@ -13,6 +13,8 @@ import { graphql, useStaticQuery } from 'gatsby';
 import * as POP_OVERS from '../ui/PopOvers';
 import Label from './Label';
 import Typeahead from './Typeahead';
+import { Editor } from '@bytemd/react';
+import 'bytemd/dist/index.css';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -300,15 +302,11 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
         className="mt-3"
         {...TextInputGroupProps}
       />
-      <TextInputGroup
-        name="text"
-        label="Text"
-        placeholder="Text of the report"
-        as="textarea"
-        rows={8}
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
+
+      <Form.Group className="mt-3" data-color-mode="light">
+        <Label popover={POP_OVERS.text} label={'Text'} />
+        <Editor value={values.text || ''} onChange={(value) => setFieldValue('text', value)} />
+      </Form.Group>
 
       <Form.Group className="mt-3">
         <Label popover={POP_OVERS['tags']} label={'Tags'} />

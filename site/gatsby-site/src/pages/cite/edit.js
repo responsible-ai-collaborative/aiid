@@ -13,6 +13,7 @@ import {
 import { FIND_INCIDENT } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { format, getUnixTime } from 'date-fns';
+import { stripMarkdown } from 'utils/typography';
 
 function EditCitePage(props) {
   const [report, setReport] = useState();
@@ -74,6 +75,7 @@ function EditCitePage(props) {
           },
           set: {
             ...updated,
+            plain_text: await stripMarkdown(updated.text),
           },
         },
       });

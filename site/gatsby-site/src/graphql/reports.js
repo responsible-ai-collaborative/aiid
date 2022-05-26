@@ -13,6 +13,7 @@ export const FIND_REPORT = gql`
       image_url
       incident_id
       text
+      plain_text
       tags
       flag
       report_number
@@ -36,6 +37,7 @@ export const UPDATE_REPORT = gql`
       image_url
       incident_id
       text
+      plain_text
       tags
       flag
       report_number

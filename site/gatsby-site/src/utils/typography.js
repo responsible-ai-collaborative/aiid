@@ -1,3 +1,6 @@
+import remark from 'remark';
+import remarkStrip from 'strip-markdown';
+
 /**
  * Check if last word is parenthesized
  *
@@ -40,4 +43,8 @@ export function getFormattedName(str) {
   } else {
     return `${split[split.length - 1]}, ${split.slice(0, split.length - 1).join(' ')}`;
   }
+}
+
+export async function stripMarkdown(markdown) {
+  return (await remark().use(remarkStrip).process(markdown)).contents.toString();
 }
