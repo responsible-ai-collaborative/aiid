@@ -1,3 +1,5 @@
+import parseNews from '../fixtures/api/parseNews.json';
+
 describe('The Submit form', () => {
   const url = '/apps/submit';
 
@@ -10,7 +12,7 @@ describe('The Submit form', () => {
   it('Should submit a new report not linked to any incident once all fields are filled properly', () => {
     cy.visit(url);
 
-    cy.intercept('GET', parserURL).as('parseNews');
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.get('input[name="url"]').type(
       `https://arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
@@ -18,7 +20,7 @@ describe('The Submit form', () => {
 
     cy.get('button').contains('Fetch info').click();
 
-    cy.wait('@parseNews', { timeout: 30000 });
+    cy.wait('@parseNews');
 
     cy.get('input[name="submitters"]').type('Something');
 
@@ -56,17 +58,15 @@ describe('The Submit form', () => {
   });
 
   it('Should submit a new report linked to incident 1 once all fields are filled properly', () => {
-    cy.visit(url);
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
-    cy.intercept('GET', parserURL).as('parseNews');
+    cy.visit(url);
 
     cy.get('input[name="url"]').type(
       `https://arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
     );
 
     cy.get('button').contains('Fetch info').click();
-
-    cy.wait('@parseNews', { timeout: 30000 });
 
     cy.get('input[name="submitters"]').type('Something');
 
@@ -166,7 +166,7 @@ describe('The Submit form', () => {
   it('Should show a toast on error when failing to reach parsing endpoint', () => {
     cy.visit(url);
 
-    cy.intercept('GET', parserURL, { forceNetworkError: true }).as('parseNews');
+    cy.intercept('GET', parserURL, { ...parseNews, forceNetworkError: true }).as('parseNews');
 
     cy.get('input[name="url"]').type(
       `https://www.cbsnews.com/news/is-starbucks-shortchanging-its-baristas/`
@@ -174,7 +174,7 @@ describe('The Submit form', () => {
 
     cy.get('button').contains('Fetch info').click();
 
-    cy.wait('@parseNews', { timeout: 30000 });
+    cy.wait('@parseNews');
 
     cy.get('div[class^="ToastContext"]')
       .contains('Error reaching news info endpoint, please try again in a few seconds.')
@@ -198,8 +198,6 @@ describe('The Submit form', () => {
 
     const params = new URLSearchParams(values);
 
-    cy.visit(url + `?${params.toString()}`);
-
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'InsertSubmission',
@@ -211,7 +209,28 @@ describe('The Submit form', () => {
       }
     );
 
-    cy.get('button[type="submit"]', { timeout: 8000 }).scrollIntoView().click({ force: true });
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 1,
+      'findIncident',
+      {
+        data: {
+          incident: {
+            __typename: 'Incident',
+            incident_id: 1,
+            title: 'Test title',
+            date: '2022-01-01',
+          },
+        },
+      }
+    );
+
+    cy.visit(url + `?${params.toString()}`);
+
+    cy.wait('@findIncident');
+
+    cy.get('button[type="submit"]').scrollIntoView().click();
 
     cy.wait('@submitReport').then((xhr) => {
       expect(xhr.request.body.variables.submission).to.deep.include({
@@ -305,7 +324,7 @@ describe('The Submit form', () => {
       '**/graphql',
       (req) =>
         req.body.operationName == 'ProbablyRelatedReports' &&
-        req.body.variables.query?.url_in[0] ==
+        req.body.variables.query?.url_in?.[0] ==
           'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
       'RelatedReportsByURL',
       relatedReports.byURL
@@ -358,9 +377,6 @@ describe('The Submit form', () => {
       '@RelatedReportsByAuthor',
       '@RelatedReportsByIncidentId',
     ]);
-
-    // this reduces flakiness a lot, probably has to do with inputs being debounced
-    cy.wait(1000);
 
     for (const key of ['byURL', 'byDatePublished', 'byIncidentId']) {
       const reports =
@@ -411,7 +427,7 @@ describe('The Submit form', () => {
       '**/graphql',
       (req) =>
         req.body.operationName == 'ProbablyRelatedReports' &&
-        req.body.variables.query?.url_in[0] ==
+        req.body.variables.query?.url_in?.[0] ==
           'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
       'RelatedReportsByURL',
       relatedReports.byURL
@@ -465,17 +481,12 @@ describe('The Submit form', () => {
       '@RelatedReportsByIncidentId',
     ]);
 
-    // this reduces flakiness a lot, probably has to do with inputs being debounced
-    cy.wait(1000);
-
     cy.get('[data-cy="empty-message"]').should('be.visible');
 
     cy.get('[data-cy="related-reports"]').should('not.exist');
   });
 
   it("Should disable Submit button when linking to an Incident that doesn't exist", () => {
-    cy.visit(url);
-
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
@@ -483,6 +494,8 @@ describe('The Submit form', () => {
       'findIncident',
       { data: { incident: null } }
     );
+
+    cy.visit(url);
 
     const values = {
       url: 'https://test.com',
