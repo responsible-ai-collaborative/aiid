@@ -271,7 +271,7 @@ function DiscoverApp(props) {
 
             <div
               className="hiddenMobile"
-              style={{ position: 'relative', minHeight: '4rem', boxSizing: 'border-box' }}
+              style={{ position: 'relative', minHeight: '4.25rem', boxSizing: 'border-box' }}
             >
               <details>
                 <summary
