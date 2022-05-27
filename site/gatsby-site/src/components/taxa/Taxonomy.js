@@ -57,10 +57,6 @@ const Taxonomy = ({ taxonomy, incidentId }) => {
   const canEdit =
     isRole('taxonomy_editor') || isRole('taxonomy_editor_' + taxonomy.namespace.toLowerCase());
 
-  if (!canEdit && taxonomy.classificationsArray.length < 1) {
-    return <></>;
-  }
-
   const handleSubmit = () => {
     setIsEditing(false);
     setShowBanner(true);
