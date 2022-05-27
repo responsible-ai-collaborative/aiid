@@ -512,12 +512,15 @@ describe('The Submit form', () => {
       date_downloaded: '2021-01-03',
       image_url: 'https://test.com/image.jpg',
       incident_id: '1',
-      text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
     };
 
     for (const key in values) {
       cy.get(`[name="${key}"]`).type(values[key]);
     }
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
 
     cy.wait('@findIncident');
 
