@@ -30,6 +30,7 @@ const reports = [
     submitters: (1)['Roman Yampolskiy'],
     tags: [],
     text: 'Report 1 **text**',
+    plain_text: 'Report 2 text',
     title: 'Report 1 title',
     url: 'https://url.com/stuff',
   },
@@ -53,6 +54,7 @@ const reports = [
     submitters: (1)['Roman Yampolskiy'],
     tags: [],
     text: 'Report 2 **text**',
+    plain_text: 'Report 2 text',
     title: 'Report 2 title',
     url: 'https://url.com/stuff',
   },
@@ -155,6 +157,7 @@ describe('Translations', () => {
         report_number: 2,
         text: 'test-en-Report 2 **text**',
         title: 'test-en-Report 2 title',
+        plain_text: 'test-en-Report 2 text\n',
       });
 
       expect(reportsENCollection.insertMany.callCount).to.eq(1);
@@ -162,6 +165,7 @@ describe('Translations', () => {
         report_number: 1,
         text: 'test-es-Report 1 **text**',
         title: 'test-es-Report 1 title',
+        plain_text: 'test-es-Report 1 text\n',
       });
 
       expect(mongoClient.close.callCount).to.eq(1);
