@@ -39,17 +39,13 @@ describe('Edit report', () => {
 
     cy.wait(['@findReport', '@findIncident']);
 
-    [
-      'authors',
-      'date_downloaded',
-      'date_published',
-      'image_url',
-      'submitters',
-      'text',
-      'title',
-    ].forEach((key) => {
-      cy.get(`[name=${key}]`).should('have.value', report.data.report[key].toString());
-    });
+    ['authors', 'date_downloaded', 'date_published', 'image_url', 'submitters', 'title'].forEach(
+      (key) => {
+        cy.get(`[name=${key}]`).should('have.value', report.data.report[key].toString());
+      }
+    );
+
+    cy.getEditorText().should('eq', report.data.report.text);
 
     cy.get(`[name="incident_id"]`).should('have.value', incident.data.incident.incident_id);
 
@@ -61,7 +57,6 @@ describe('Edit report', () => {
       date_published: '2022-02-02',
       image_url: 'https://test.com/test.jpg',
       submitters: 'Test Submitter',
-      text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
       title: 'Test Title',
       url: 'https://www.test.com/test',
     };
@@ -69,6 +64,10 @@ describe('Edit report', () => {
     Object.keys(updates).forEach((key) => {
       cy.get(`[name=${key}]`).clear().type(updates[key]);
     });
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
 
     cy.get('[class*=Typeahead] [type="text"]').type('New Tag');
 
