@@ -161,8 +161,6 @@ describe('Edit report', () => {
   });
 
   maybeIt('Should link a report to another incident', () => {
-    cy.visit(`/cite/edit?report_number=23`);
-
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'UpdateReport',
@@ -267,6 +265,8 @@ describe('Edit report', () => {
         },
       }
     );
+
+    cy.visit(`/cite/edit?report_number=23`);
 
     cy.get('form[data-cy="report"]').should('be.visible');
 

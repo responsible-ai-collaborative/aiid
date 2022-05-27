@@ -92,9 +92,11 @@ describe('Cite pages', () => {
 
     cy.visit(url);
 
-    cy.get('[data-cy="resources"]').contains('Edit').click();
+    cy.get('[data-cy="resources"]').should('be.visible').contains('Edit').click();
 
-    cy.get('[data-cy="resources"] [data-cy="taxonomy-form"]').as('taxonomyForm');
+    cy.get('[data-cy="resources"] [data-cy="taxonomy-form"]')
+      .should('be.visible')
+      .as('taxonomyForm');
 
     cy.get('@taxonomyForm').should('exist');
   });
@@ -171,7 +173,7 @@ describe('Cite pages', () => {
 
     cy.contains('BibTex Citation').scrollIntoView().click();
 
-    cy.get('[data-cy="bibtext-modal"]').as('modal').should('be.visible');
+    cy.get('[data-cy="bibtext-modal"]').should('be.visible').as('modal');
 
     cy.get('@modal')
       .find('code')
