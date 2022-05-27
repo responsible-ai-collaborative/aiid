@@ -122,7 +122,7 @@ function EditCitePage(props) {
       )}
       {!reportData?.report && !loading && <div>Report not found</div>}
 
-      {reportData?.report && incidentData?.incident && (
+      {!loading && reportData?.report && incidentData?.incident && (
         <Formik
           validationSchema={schema}
           onSubmit={handleSubmit}
