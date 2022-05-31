@@ -21,7 +21,8 @@
                 "submitters": [
                     "Kate Perkins"
                 ],
-                "text": "Submission 1 text",
+                "text": "## Submission 1 text\n\n_Markdown content!_",
+                "plain_text": "Submission 1 text\n\nMarkdown content!",
                 "title": "Submisssion 1 title",
                 "url": "https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/"
             },
