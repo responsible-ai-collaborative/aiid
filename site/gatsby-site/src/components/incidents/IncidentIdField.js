@@ -34,6 +34,7 @@ export default function IncidentIdField({ name, placeHolder = '', className = ''
         value={value}
         onChange={onChange}
         onBlur={onBlur}
+        onWheel={(event) => event.currentTarget.blur()}
         isInvalid={!!error}
         placeholder={placeHolder}
       />
