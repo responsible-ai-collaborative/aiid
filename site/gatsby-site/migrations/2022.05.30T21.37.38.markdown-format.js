@@ -1,5 +1,25 @@
 /**
  *
+ * @param {import('mongodb').Collection} collection
+ */
+
+const formatCollection = async (collection) => {
+  const cursor = await collection.find({}, { projection: { _id: 1, text: 1 } });
+
+  while (await cursor.hasNext()) {
+    const item = await cursor.next();
+
+    // convert single newlines to markdown-compatible double newlines
+    const text = item.text.replace(/(^|[^\n])\n(?!\n)/g, '$1\n\n');
+
+    await collection.updateOne({ _id: item._id }, { $set: { text, plain_text: text } });
+
+    console.log(`Updated document ${item._id}`);
+  }
+};
+
+/**
+ *
  * @param {{context: {client: import('mongodb').MongoClient}}} context
  */
 
@@ -8,18 +28,7 @@ exports.up = async ({ context: { client } }) => {
 
   const reportsCollection = client.db('aiidprod').collection('reports');
 
-  const cursor = await reportsCollection.find({}, { projection: { text: 1, report_number: 1 } });
+  const submissionsCollection = client.db('aiidprod').collection('submissions');
 
-  while (await cursor.hasNext()) {
-    const report = await cursor.next();
-
-    const text = report.text.replace(/(^|[^\n])\n(?!\n)/g, '$1\n\n');
-
-    await reportsCollection.updateOne(
-      { report_number: report.report_number },
-      { $set: { text, plain_text: text } }
-    );
-
-    console.log(`Updated report ${report.report_number}`);
-  }
+  await Promise.all([formatCollection(reportsCollection), formatCollection(submissionsCollection)]);
 };
