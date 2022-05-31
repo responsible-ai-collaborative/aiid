@@ -43,7 +43,7 @@ describe('Download Algolia Index', () => {
 
   const downloadsFolder = Cypress.config('downloadsFolder');
 
-  it.only('Should return a properly constructed Algolia index', () => {
+  it('Should return a properly constructed Algolia index', () => {
     cy.visit(url);
 
     cy.query({
