@@ -9,7 +9,7 @@ function ReportText({ text, maxChars = null }) {
     rehypePlugins.push([rehypeTruncate, { maxChars }]);
   }
 
-  return <ReactMarkdown rehypePlugins={rehypePlugins}>{text.replace(/\n/g, '\n\n')}</ReactMarkdown>;
+  return <ReactMarkdown rehypePlugins={rehypePlugins}>{text}</ReactMarkdown>;
 }
 
 export default ReportText;
