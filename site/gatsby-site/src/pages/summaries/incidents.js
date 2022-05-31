@@ -1,9 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
-
 import Button from 'react-bootstrap/Button';
-
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
@@ -11,95 +9,89 @@ import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 const ReportList = ({ items }) => {
   return (
     <ul>
-      {items.map(({ node: { id, url, title } }) => (
-        <li key={id}>
-          <a href={url}>{title}</a>
+      {items.map((report) => (
+        <li key={report.report_number} data-cy={`report-${report.report_number}`}>
+          <a href={report.url}>{report.title}</a>
         </li>
       ))}
     </ul>
   );
 };
 
-const IncidentList = ({ group }) => {
+const IncidentList = ({ incidents }) => {
   return (
     <>
-      {group.map((value, idx) => (
-        <div key={`incident-${idx}`}>
+      {incidents.map((incident) => (
+        <div key={incident.incident_id} data-cy={`incident-${incident.incident_id}`}>
           <h2>
-            Incident {value['edges'][0]['node']['incident_id']}{' '}
-            <Button
-              variant="outline-primary"
-              href={'/cite/' + value['edges'][0]['node']['incident_id']}
-            >
+            Incident {incident.incident_id}{' '}
+            <Button variant="outline-primary" href={'/cite/' + incident.incident_id}>
               Citation
             </Button>
             <Button
               variant="outline-primary"
-              href={'/apps/discover?incident_id=' + value['edges'][0]['node']['incident_id']}
+              href={'/apps/discover?incident_id=' + incident.incident_id}
             >
               Discover
             </Button>
           </h2>
-          <ReportList items={value['edges']} />
+          <ReportList items={incident.reports} />
         </div>
       ))}
     </>
   );
 };
 
-export default class Incidents extends Component {
-  render() {
-    const { data } = this.props;
-
-    if (!data) {
-      return null;
-    }
-    const {
-      allMongodbAiidprodReports: { group },
-    } = data;
-
-    // sort by value
-    group.sort(function (a, b) {
-      return a['edges'][0]['node']['incident_id'] - b['edges'][0]['node']['incident_id'];
-    });
-
-    return (
-      <Layout {...this.props}>
-        <Helmet>
-          <title>Incident List</title>
-        </Helmet>
-        <div className={'titleWrapper'}>
-          <StyledHeading>Incident List</StyledHeading>
-        </div>
-        <StyledMainWrapper>
-          <p className="paragraph">
-            This is a simple numeric listing of all incidents and their reports within the database.
-            If you would like to explore the contents of the reports, you should work through the
-            <Link to="/apps/discover"> Discover app</Link>.
-          </p>
-          <IncidentList group={group} />
-        </StyledMainWrapper>
-      </Layout>
+export default function Incidents({ data, ...props }) {
+  const incidents = data.allMongodbAiidprodIncidents.nodes.map((incident) => {
+    const reports = incident.reports.map(
+      (report_number) =>
+        data.allMongodbAiidprodReports.nodes.find((r) => r.report_number == report_number) || {
+          report_number,
+          title: `Missing Report ${report_number}`,
+        } // there are missing reports, remove once that's fixed
     );
-  }
+
+    return { ...incident, reports };
+  });
+
+  return (
+    <Layout {...props}>
+      <Helmet>
+        <title>Incident List</title>
+      </Helmet>
+      <div className={'titleWrapper'}>
+        <StyledHeading>Incident List</StyledHeading>
+      </div>
+      <StyledMainWrapper>
+        <p className="paragraph">
+          This is a simple numeric listing of all incidents and their reports within the database.
+          If you would like to explore the contents of the reports, you should work through the
+          <Link to="/apps/discover"> Discover app</Link>.
+        </p>
+        <IncidentList incidents={incidents} />
+      </StyledMainWrapper>
+    </Layout>
+  );
 }
 
 export const pageQuery = graphql`
   query AllIncidentsPart {
-    allMongodbAiidprodReports(
-      filter: { flag: { eq: null } }
-      sort: { order: ASC, fields: incident_id }
-    ) {
-      group(field: incident_id) {
-        edges {
-          node {
-            id
-            incident_id
-            report_number
-            title
-            url
-          }
-        }
+    allMongodbAiidprodIncidents(sort: { order: ASC, fields: incident_id }) {
+      nodes {
+        incident_id
+        title
+        date
+        reports
+      }
+    }
+
+    allMongodbAiidprodReports(filter: { flag: { eq: null } }) {
+      nodes {
+        id
+        report_number
+        title
+        url
       }
     }
   }

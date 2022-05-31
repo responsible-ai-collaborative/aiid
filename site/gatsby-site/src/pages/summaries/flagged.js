@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Helmet from 'react-helmet';
 import { graphql } from 'gatsby';
 
@@ -20,7 +20,7 @@ const ReportList = ({ report }) => {
   tabbedRender.forEach((element) => untabbedRender.splice(untabbedRender.indexOf(element), 1));
   return (
     <>
-      <ListGroup>
+      <ListGroup data-cy="report">
         {untabbedRender.map((key) => (
           <ListGroup.Item key={uid + key}>
             {key}: {report[key]}
@@ -53,14 +53,14 @@ const ReportList = ({ report }) => {
   );
 };
 
-const IncidentList = ({ group }) => {
+const IncidentList = ({ incidents }) => {
   return (
     <>
-      {group.map((value, idx) => (
-        <div key={`incident-${idx}`}>
-          <h2>Incident {value['edges'][0]['node']['incident_id']}</h2>
-          {value['edges'].map(({ node }) => (
-            <ReportList key={node.id} report={node} />
+      {incidents.map((incident) => (
+        <div key={incident.incident_id}>
+          <h2>Incident {incident.incident_id}</h2>
+          {incident.reports.map((report) => (
+            <ReportList key={report.report_number} report={report} />
           ))}
         </div>
       ))}
@@ -68,71 +68,77 @@ const IncidentList = ({ group }) => {
   );
 };
 
-export default class FlaggedIncidents extends Component {
-  render() {
-    const { data } = this.props;
+export default function FlaggedIncidents({ data, ...props }) {
+  const incidents = data.allMongodbAiidprodIncidents.nodes
+    .filter((incident) => {
+      return incident.reports.some((report_number) =>
+        data.allMongodbAiidprodReports.nodes.find((report) => report.report_number == report_number)
+      );
+    })
+    .map((incident) => {
+      const reports = incident.reports.reduce((filtered, report_number) => {
+        const report = data.allMongodbAiidprodReports.nodes.find(
+          (r) => r.report_number == report_number
+        );
 
-    if (!data) {
-      return null;
-    }
-    const {
-      allMongodbAiidprodReports: { group },
-    } = data;
+        if (report) {
+          filtered.push(report);
+        }
 
-    // sort by value
-    group.sort(function (a, b) {
-      return a['edges'][0]['node']['incident_id'] - b['edges'][0]['node']['incident_id'];
+        return filtered;
+      }, []);
+
+      return { ...incident, reports };
     });
 
-    return (
-      <Layout {...this.props}>
-        <Helmet>
-          <title>Incident List</title>
-        </Helmet>
-        <div className={'titleWrapper'}>
-          <StyledHeading>Flagged Incident List</StyledHeading>
-        </div>
-        <StyledMainWrapper>
-          <p className="paragraph">
-            The following incident reports have been flagged by users and are pending review by
-            editors.
-          </p>
-          <IncidentList group={group} />
-        </StyledMainWrapper>
-      </Layout>
-    );
-  }
+  return (
+    <Layout {...props}>
+      <Helmet>
+        <title>Incident List</title>
+      </Helmet>
+      <div className={'titleWrapper'}>
+        <StyledHeading>Flagged Incident List</StyledHeading>
+      </div>
+      <StyledMainWrapper>
+        <p className="paragraph">
+          The following incident reports have been flagged by users and are pending review by
+          editors.
+        </p>
+        <IncidentList incidents={incidents} />
+      </StyledMainWrapper>
+    </Layout>
+  );
 }
 
 export const pageQuery = graphql`
   query AllFlaggedIncidents {
-    allMongodbAiidprodReports(
-      filter: { flag: { eq: true } }
-      sort: { order: ASC, fields: incident_id }
-    ) {
-      group(field: incident_id) {
-        edges {
-          node {
-            id
-            incident_id
-            report_number
-            title
-            url
-            authors
-            date_downloaded
-            date_modified
-            date_published
-            date_submitted
-            description
-            flag
-            image_url
-            language
-            ref_number
-            source_domain
-            submitters
-            text
-          }
-        }
+    allMongodbAiidprodIncidents(sort: { order: ASC, fields: incident_id }) {
+      nodes {
+        incident_id
+        title
+        date
+        reports
+      }
+    }
+
+    allMongodbAiidprodReports(filter: { flag: { eq: true } }) {
+      nodes {
+        report_number
+        title
+        url
+        authors
+        date_downloaded
+        date_modified
+        date_published
+        date_submitted
+        description
+        flag
+        image_url
+        language
+        ref_number
+        source_domain
+        submitters
+        text
       }
     }
   }

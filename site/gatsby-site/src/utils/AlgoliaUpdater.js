@@ -46,30 +46,37 @@ class AlgoliaUpdater {
     this.algoliaClient = algoliaClient;
   }
 
-  generateIndexEntries({ reports, classifications }) {
+  generateIndexEntries = async ({ reports, incidents, classifications }) => {
     let classificationsHash = {};
 
-    classifications.map((c) => {
+    classifications.forEach((c) => {
       classificationsHash[c.incident_id] = getClassificationArray(c.classifications, c.namespace);
     });
 
-    const downloadData = reports.map((report) => {
-      const finalDataNode = {
-        objectID: report.report_number.toString(),
-        ...report,
-      };
+    const downloadData = [];
 
-      if (classificationsHash[report.incident_id]) {
-        finalDataNode.classifications = classificationsHash[report.incident_id];
+    for (const incident of incidents) {
+      for (const report_number of incident.reports) {
+        const report = reports.find((r) => r.report_number == report_number);
+
+        const entry = {
+          ...report,
+          objectID: report.report_number.toString(),
+          incident_id: incident.incident_id,
+        };
+
+        if (classificationsHash[entry.incident_id]) {
+          entry.classifications = classificationsHash[entry.incident_id];
+        }
+
+        downloadData.push(entry);
       }
-
-      return finalDataNode;
-    });
+    }
 
     const truncatedData = downloadData.map(truncate);
 
     return truncatedData;
-  }
+  };
 
   getClassifications = async () => {
     return this.mongoClient
@@ -77,6 +84,10 @@ class AlgoliaUpdater {
       .collection(`classifications`)
       .find({ namespace: 'CSET', 'classifications.Publish': true })
       .toArray();
+  };
+
+  getIncidents = async () => {
+    return this.mongoClient.db('aiidprod').collection(`incidents`).find({}).toArray();
   };
 
   getReports = async ({ language }) => {
@@ -115,10 +126,12 @@ class AlgoliaUpdater {
 
     const classifications = await this.getClassifications();
 
+    const incidents = await this.getIncidents();
+
     for (let { code: language } of this.languages) {
       const reports = await this.getReports({ language });
 
-      const entries = this.generateIndexEntries({ reports, classifications });
+      const entries = await this.generateIndexEntries({ reports, incidents, classifications });
 
       this.reporter.log(
         `Uploading Algolia index of [${language}] with [${entries.length}] entries`

@@ -58,6 +58,23 @@ const PreviewImageInputGroup = ({
 }) => {
   const [cloudinaryID, setCloudinaryID] = useState(cloudinary_id);
 
+  const updateImage = (e) => {
+    try {
+      const url = new URL(e.target.value);
+
+      if (url.pathname.length < 8) {
+        throw 'InvalidURL';
+      }
+      const cloudinary_id = getCloudinaryPublicID(e.target.value, 'pai', 'reports');
+
+      setCloudinaryID(cloudinary_id);
+    } catch (error) {
+      console.log('invalid image URL');
+      console.log(error);
+      setCloudinaryID('fallback.jpg');
+    }
+  };
+
   return (
     <>
       <TextInputGroup
@@ -67,23 +84,13 @@ const PreviewImageInputGroup = ({
         values={values}
         errors={errors}
         touched={touched}
-        handleChange={handleChange}
+        handleChange={(e) => {
+          updateImage(e);
+          handleChange(e);
+        }}
         className={className}
         handleBlur={(e) => {
-          try {
-            const url = new URL(e.target.value);
-
-            if (url.pathname.length < 8) {
-              throw 'InvalidURL';
-            }
-            const cloudinary_id = getCloudinaryPublicID(e.target.value, 'pai', 'reports');
-
-            setCloudinaryID(cloudinary_id);
-          } catch (error) {
-            console.log('invalid image URL');
-            console.log(error);
-            setCloudinaryID('fallback.jpg');
-          }
+          updateImage(e);
           handleBlur(e);
         }}
       />
