@@ -505,7 +505,6 @@ describe('The Submit form', () => {
 
     cy.visit(url);
     cy.get('input[name=image_url]').type(newImageUrl);
-    cy.wait(1000);
     cy.get('[data-cy=image-preview-figure] img').should('have.attr', 'src', cloudinaryImageUrl);
   });
 
