@@ -161,6 +161,8 @@ describe('Edit report', () => {
   });
 
   maybeIt('Should link a report to another incident', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'UpdateReport',
