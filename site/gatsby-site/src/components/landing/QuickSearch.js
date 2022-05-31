@@ -16,18 +16,18 @@ export default function QuickSearch({ className }) {
     navigate(`/apps/discover`);
   };
 
-  const [placeHolderText, setPlaceHolderText] = useState('Search >1300 reports');
+  const [placeHolderText, setPlaceHolderText] = useState('Search 1400+ reports');
 
   const buttonStyle = { width: '10ch' };
 
   useEffect(() => {
     const updatePlaceHolder = () => {
       if (document && document.body.scrollWidth > 500) {
-        setPlaceHolderText('Search over 1300 reports of AI harms');
+        setPlaceHolderText('Search over 1400 reports of AI harms');
       } else if (document && document.body.scrollWidth > 450) {
-        setPlaceHolderText('Search >1300 AI harm reports');
+        setPlaceHolderText('Search 1400+ AI harm reports');
       } else if (document && document.body.scrollWidth > 350) {
-        setPlaceHolderText('Search >1300 reports');
+        setPlaceHolderText('Search 1400+ reports');
       } else {
         setPlaceHolderText('Search reports');
       }
