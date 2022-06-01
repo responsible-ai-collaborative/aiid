@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 import { getFormattedName } from '../../utils/typography';
 
-const Citation = ({ nodes, incidentDate, incident_id }) => {
+const Citation = ({ nodes, incidentDate, incident_id, editors }) => {
   let docs = [];
 
   nodes.forEach(({ node }) => docs.push(node));
@@ -32,11 +32,19 @@ const Citation = ({ nodes, incidentDate, incident_id }) => {
     setRetrievalString(text);
   }, []);
 
+  const firstEditor = editors[0];
+
+  const nameFragments = firstEditor.split(' ');
+
+  const editorLastName = nameFragments[nameFragments.length - 1];
+
+  const editorFirstNameInitial = nameFragments[0][0] + '.';
+
   return (
     <>
-      {submitterCite}. ({incidentDate}) Incident Number {docs[0]['incident_id']}. in McGregor, S.
-      (ed.) <em>Artificial Intelligence Incident Database.</em> Responsible AI Collaborative.{' '}
-      {retrievalString}
+      {submitterCite}. ({incidentDate}) Incident Number {incident_id}. in {editorLastName},{' '}
+      {editorFirstNameInitial} (ed.) <em>Artificial Intelligence Incident Database.</em> Responsible
+      AI Collaborative. {retrievalString}
     </>
   );
 };

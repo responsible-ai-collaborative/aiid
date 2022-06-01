@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Container } from 'react-bootstrap';
 import { CSVReader } from 'react-papaparse';
-import { useQueryParams, StringParam, NumberParam, ArrayParam, encodeDate } from 'use-query-params';
+import { useQueryParams, StringParam, ArrayParam, encodeDate, withDefault } from 'use-query-params';
 import Link from 'components/ui/Link';
 import RelatedIncidents from 'components/RelatedIncidents';
-import IncidentReportForm from 'components/forms/IncidentReportForm';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, parse } from 'date-fns';
-import { useMutation } from '@apollo/client';
-import { INSERT_SUBMISSION } from '../../graphql/submissions';
+import { useMutation, useQuery } from '@apollo/client';
+import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
 import isString from 'lodash/isString';
+import SubmissionForm, { schema } from 'components/submissions/SubmissionForm';
+import { Formik } from 'formik';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -26,25 +27,25 @@ const CustomDateParam = {
 };
 
 const queryConfig = {
-  url: StringParam,
-  title: StringParam,
-  authors: StringParam,
-  submitters: StringParam,
-  incident_date: CustomDateParam,
-  date_published: CustomDateParam,
-  date_downloaded: CustomDateParam,
-  image_url: StringParam,
-  incident_id: NumberParam,
-  text: StringParam,
-  tags: ArrayParam,
+  url: withDefault(StringParam, ''),
+  title: withDefault(StringParam, ''),
+  authors: withDefault(StringParam, ''),
+  submitters: withDefault(StringParam, ''),
+  incident_date: withDefault(CustomDateParam, ''),
+  date_published: withDefault(CustomDateParam, ''),
+  date_downloaded: withDefault(CustomDateParam, ''),
+  image_url: withDefault(StringParam, ''),
+  incident_id: withDefault(StringParam, ''),
+  text: withDefault(StringParam, ''),
+  tags: withDefault(ArrayParam, []),
 };
 
 const SubmitForm = () => {
-  const { isRole, user } = useUserContext();
+  const { isRole } = useUserContext();
 
   const [query] = useQueryParams(queryConfig);
 
-  const [incident, setIncident] = useState({ ...query });
+  const [submission, setSubmission] = useState({ ...query });
 
   const [csvData, setCsvData] = useState([]);
 
@@ -52,11 +53,14 @@ const SubmitForm = () => {
 
   const addToast = useToastContext();
 
-  const [insertSubmission] = useMutation(INSERT_SUBMISSION);
+  // See https://github.com/apollographql/apollo-client/issues/5419
+  useQuery(FIND_SUBMISSIONS);
+
+  const [insertSubmission] = useMutation(INSERT_SUBMISSION, { refetchQueries: [FIND_SUBMISSIONS] });
 
   useEffect(() => {
     if (csvData[csvIndex]) {
-      setIncident(csvData[csvIndex]);
+      setSubmission(csvData[csvIndex]);
     }
   }, [csvIndex, csvData]);
 
@@ -83,7 +87,7 @@ const SubmitForm = () => {
 
       const submission = {
         ...values,
-        incident_id: values.incident_id ? values.incident_id : '0',
+        incident_id: values.incident_id == '' ? 0 : values.incident_id,
         date_submitted,
         date_modified: date_submitted,
         description: values.text.substring(0, 200),
@@ -117,10 +121,37 @@ const SubmitForm = () => {
 
   return (
     <div className="my-5">
-      {user && (
-        <IncidentReportForm incident={incident} onUpdate={setIncident} onSubmit={handleSubmit} />
-      )}
-      <RelatedIncidents incident={incident} isSubmitted={false} />
+      <Formik
+        validationSchema={schema}
+        onSubmit={handleSubmit}
+        initialValues={submission}
+        enableReinitialize={true}
+      >
+        {({ isValid, isSubmitting, submitForm, values }) => (
+          <>
+            <SubmissionForm />
+
+            <p className="mt-4">
+              Submitted reports are added to a <Link to="/apps/submitted">review queue </Link>
+              to be resolved to a new or existing incident record. Incidents are reviewed and merged
+              into the database after enough incidents are pending.
+            </p>
+
+            <Button
+              onClick={submitForm}
+              className="mt-3"
+              variant="primary"
+              type="submit"
+              disabled={isSubmitting || !isValid}
+            >
+              Submit
+            </Button>
+
+            <RelatedIncidents incident={values} />
+          </>
+        )}
+      </Formik>
+
       {isRole('submitter') && (
         <Container className="mt-5 p-0">
           <h2>Advanced: Add by CSV</h2>

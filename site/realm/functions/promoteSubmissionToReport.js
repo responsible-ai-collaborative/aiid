@@ -18,6 +18,7 @@ exports = async (input) => {
       title: submission.title,
       incident_id: lastIncident.incident_id + 1,
       reports: [],
+      editors: ["Sean McGregor"],
       date: submission.incident_date,
     }
     

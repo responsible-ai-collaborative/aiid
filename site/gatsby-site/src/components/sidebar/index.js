@@ -39,8 +39,8 @@ const ListItem = styled(({ className, active, level, ...props }) => {
       background-color: #fff;
     `} // external link icon
     svg {
-      float: right;
-      margin-right: 1rem;
+      margin-left: 1ch;
+      vertical-align: top;
     }
   }
 `;
@@ -84,7 +84,7 @@ const Divider = styled((props) => (
   </li>
 ))`
   list-style: none;
-  padding: 0.5rem 0;
+  padding: 16px 0;
 
   hr {
     margin: 0;

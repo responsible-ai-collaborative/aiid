@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { Form, Button, Spinner } from 'react-bootstrap';
-import { useFormik } from 'formik';
+import { useFormikContext } from 'formik';
 import * as Yup from 'yup';
-import Link from 'components/ui/Link';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { dateRegExp } from 'utils/date';
@@ -13,11 +11,11 @@ import { graphql, useStaticQuery } from 'gatsby';
 import * as POP_OVERS from '../ui/PopOvers';
 import Label from './Label';
 import Typeahead from './Typeahead';
+import IncidentIdField from 'components/incidents/IncidentIdField';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
 // * text: "Long text for the report" # (string) This is the complete text for the report in the MongoDB instance, and a shortened subset in the Algolia index
-// * incident_date: `2019-07-25` # (Date) Date the incident occurred. Defaults to the article date.
 // * date_downloaded:`2019-07-25` # (Date) Date the report was downloaded.
 // * submitters: Array(string) # People that submitted the incident report
 // * authors: Array(string) # People that wrote the incident report
@@ -35,7 +33,7 @@ import Typeahead from './Typeahead';
 // * language: "en" # (string) The language identifier of the report.
 
 // Schema for yup
-const validationSchema = Yup.object().shape({
+export const schema = Yup.object().shape({
   title: Yup.string()
     .min(6, '*Title must have at least 6 characters')
     .max(500, "*Titles can't be longer than 500 characters")
@@ -52,9 +50,6 @@ const validationSchema = Yup.object().shape({
     .min(80, '*Text must have at least 80 characters')
     .max(50000, "*Text can't be longer than 50000 characters")
     .required('*Text is required'),
-  incident_date: Yup.string()
-    .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
-    .required('*Incident date required'),
   date_published: Yup.string()
     .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
     .required('*Date published is required'),
@@ -68,40 +63,20 @@ const validationSchema = Yup.object().shape({
     /((https?):\/\/)(\S)*$/,
     '*Must enter URL in http://www.example.com/images/preview.png format'
   ),
-  incident_id: Yup.number().integer('*Must be an incident number or empty'),
+  incident_id: Yup.number().positive().integer('*Must be an incident number').required(),
 });
 
-const defaultValue = {
-  title: '',
-  authors: '',
-  submitters: 'Anonymous',
-  incident_date: '',
-  date_published: '',
-  date_downloaded: '',
-  url: '',
-  image_url: '',
-  incident_id: '',
-  text: '',
-};
-
-const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) => {
+const IncidentReportForm = () => {
   const {
     values,
     errors,
     touched,
-    isSubmitting,
     handleChange,
     handleBlur,
-    handleSubmit,
-    setValues,
     setFieldTouched,
     setFieldValue,
-    setTouched,
-  } = useFormik({
-    initialValues: incident || defaultValue,
-    validationSchema,
-    onSubmit,
-  });
+    setValues,
+  } = useFormikContext();
 
   const data = useStaticQuery(graphql`
     query IncidentReportFormQuery {
@@ -129,38 +104,16 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
 
   const TextInputGroupProps = { values, errors, touched, handleChange, handleBlur };
 
-  useEffect(() => {
-    if (incident) {
-      setValues(incident);
-    }
-  }, [incident]);
-
-  useEffect(() => {
-    values['cloudinary_id'] =
-      typeof values['image_url'] === 'string' ? getCloudinaryPublicID(values['image_url']) : '';
-    onUpdate && onUpdate(values);
-  }, [values]);
-
-  useEffect(() => {
-    setTouched(incident);
-  }, []);
-
-  const isEditMode = incident && !!incident.incident_id;
-
   const addToast = useToastContext();
 
   const [parsingNews, setParsingNews] = useState(false);
 
-  const coldStartToast = () => {
-    addToast({
-      message: <>Sometimes fetching news info may take a while...</>,
-      severity: SEVERITY.warning,
-    });
-  };
+  useEffect(() => {
+    setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
+  }, [values.image_url]);
 
   const parseNewsUrl = async (newsUrl) => {
     setParsingNews(true);
-    const timeout = setTimeout(coldStartToast, 20000);
 
     try {
       const url = `/api/parseNews?url=${encodeURIComponent(newsUrl)}`;
@@ -180,12 +133,9 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
 
       const cloudinary_id = getCloudinaryPublicID(news.image_url);
 
-      onUpdate((incident) => {
-        return {
-          ...incident,
-          ...news,
-          cloudinary_id,
-        };
+      setValues({
+        ...news,
+        cloudinary_id,
       });
     } catch (e) {
       const message =
@@ -199,12 +149,17 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
       });
     }
 
-    clearTimeout(timeout);
     setParsingNews(false);
   };
 
   return (
-    <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
+    <Form
+      onSubmit={(event) => {
+        event.preventDefault();
+      }}
+      className="mx-auto"
+      data-cy="report"
+    >
       <TextInputGroup
         name="url"
         label="Report Address"
@@ -213,7 +168,7 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
           <Button
             className="outline-secondary"
             disabled={!!errors.url || !touched.url || parsingNews}
-            onClick={() => parseNewsUrl(incident.url)}
+            onClick={() => parseNewsUrl(values.url)}
           >
             {' '}
             {!parsingNews ? (
@@ -255,15 +210,9 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
         {...TextInputGroupProps}
       />
       <TextInputGroup
-        name="incident_date"
-        label="Incident Date"
-        placeholder="YYYY-MM-DD"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-      <TextInputGroup
         name="date_published"
         label="Date Published"
+        type="date"
         placeholder="YYYY-MM-DD"
         className="mt-3"
         {...TextInputGroupProps}
@@ -271,26 +220,20 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
       <TextInputGroup
         name="date_downloaded"
         label="Date Downloaded"
+        type="date"
         placeholder="YYYY-MM-DD"
         className="mt-3"
         {...TextInputGroupProps}
       />
       <PreviewImageInputGroup
-        publicID={incident.cloudinary_id}
+        publicID={values.cloudinary_id}
         name="image_url"
         label="Image Address"
         placeholder="Image URL"
         className="mt-3"
         {...TextInputGroupProps}
       />
-      <TextInputGroup
-        name="incident_id"
-        label="Incident ID"
-        placeholder="OPTIONAL"
-        type="number"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
+
       <TextInputGroup
         name="text"
         label="Text"
@@ -322,34 +265,13 @@ const IncidentReportForm = ({ incident, onUpdate, onSubmit, onDelete = null }) =
         />
       </Form.Group>
 
-      {!isEditMode && (
-        <p className="mt-4">
-          Submitted reports are added to a <Link to="/apps/submitted">review queue </Link>
-          to be resolved to a new or existing incident record. Incidents are reviewed and merged
-          into the database after enough incidents are pending.
-        </p>
-      )}
-      <Button className="mt-3" variant="primary" type="submit" disabled={isSubmitting}>
-        Submit
-      </Button>
-      {onDelete && (
-        <Button
-          className="mt-3 text-danger"
-          variant="link"
-          onClick={() => {
-            confirm('Sure you want to delete this report?') && onDelete();
-          }}
-        >
-          Delete this report
-        </Button>
-      )}
+      <IncidentIdField
+        name="incident_id"
+        className="mt-3"
+        placeHolder="Leave empty to report a new incident"
+      />
     </Form>
   );
-};
-
-IncidentReportForm.propTypes = {
-  incident: PropTypes.object,
-  onUpdate: PropTypes.func,
 };
 
 export default IncidentReportForm;

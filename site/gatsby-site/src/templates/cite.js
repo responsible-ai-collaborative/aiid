@@ -118,6 +118,7 @@ function CitePage(props) {
                   nodes={incidentReports}
                   incidentDate={incident.date}
                   incident_id={incident.incident_id}
+                  editors={incident.editors}
                 />
               </div>
             </CardContainer>
@@ -126,12 +127,13 @@ function CitePage(props) {
 
         <Row className="mt-4">
           <Col>
-            <StatsContainer>
+            <StatsContainer data-cy={'incident-stats'}>
               <IncidentStatsCard
                 {...{
                   incidentId: incident.incident_id,
                   reportCount: incidentReports.length,
                   incidentDate: incident.date,
+                  editors: incident.editors.join(', '),
                 }}
               />
             </StatsContainer>
@@ -161,9 +163,10 @@ function CitePage(props) {
                 <Button
                   variant="outline-primary"
                   className="me-2"
-                  href={`/apps/submit?incident_id=${incident.incident_id}&incident_date=${
-                    incident.date
-                  }&date_downloaded=${format(new Date(), 'yyyy-MM-dd')}`}
+                  href={`/apps/submit?incident_id=${incident.incident_id}&date_downloaded=${format(
+                    new Date(),
+                    'yyyy-MM-dd'
+                  )}`}
                 >
                   New Report
                 </Button>
@@ -190,6 +193,7 @@ function CitePage(props) {
                   nodes={incidentReports}
                   incidentDate={incident.date}
                   incident_id={incident.incident_id}
+                  editors={incident.editors}
                 />
               </div>
             </CardContainer>

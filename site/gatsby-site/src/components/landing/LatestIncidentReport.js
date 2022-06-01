@@ -18,21 +18,41 @@ const LatestIncidentReport = ({ className = '' }) => {
     <StaticQuery
       query={graphql`
         query LatestIncidentReport {
+          allMongodbAiidprodIncidents {
+            nodes {
+              incident_id
+              reports
+            }
+          }
+
           allMongodbAiidprodReports(sort: { order: DESC, fields: epoch_date_submitted }, limit: 1) {
             nodes {
               title
               epoch_date_submitted
               description
               image_url
-              incident_id
+              report_number
               cloudinary_id
             }
           }
         }
       `}
-      render={({ allMongodbAiidprodReports: { nodes } }) => {
-        const { image_url, cloudinary_id, title, description, epoch_date_submitted, incident_id } =
-          nodes[0];
+      render={({
+        allMongodbAiidprodReports: { nodes: reports },
+        allMongodbAiidprodIncidents: { nodes: incidents },
+      }) => {
+        const {
+          image_url,
+          cloudinary_id,
+          title,
+          description,
+          epoch_date_submitted,
+          report_number,
+        } = reports[0];
+
+        const incident_id = incidents.find((incident) =>
+          incident.reports.includes(report_number)
+        ).incident_id;
 
         return (
           <Card className={className}>

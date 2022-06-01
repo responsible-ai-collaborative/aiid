@@ -1,49 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { StaticQuery, graphql } from 'gatsby';
-import GitHubButton from 'react-github-btn';
-import Loadable from 'react-loadable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faRssSquare } from '@fortawesome/free-solid-svg-icons';
-import { faTwitterSquare } from '@fortawesome/free-brands-svg-icons';
+import { faTwitterSquare, faGithubSquare } from '@fortawesome/free-brands-svg-icons';
 
 import Link from './Link';
-import LoadingProvider from '../mdxComponents/loading';
 import config from '../../../config.js';
 
-const help = require('../images/help.svg');
-
-const isSearchEnabled = config.header.search && config.header.search.enabled ? true : false;
-
-let searchIndices = [];
-
-if (isSearchEnabled && config.header.search.indexName) {
-  searchIndices.push({
-    name: `${config.header.search.indexName}`,
-    title: `Results`,
-    hitComp: `PageHit`,
-  });
-}
-
 import Sidebar from '../sidebar';
-
-const LoadableComponent = Loadable({
-  loader: () => import('../search/index'),
-  loading: LoadingProvider,
-});
-
-const StyledBgDiv = styled.div`
-  height: 60px;
-  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-  background-color: #f8f8f8;
-  position: relative;
-  display: none;
-  background: #001932;
-
-  @media (max-width: 767px) {
-    display: block;
-  }
-`;
 
 const NavBarHeaderContainer = styled.div`
   display: flex;
@@ -69,10 +34,42 @@ const HideOnDesktop = styled.div`
   }
 `;
 
+const StarsCount = (props) => {
+  const [count, setCount] = useState(null);
+
+  useEffect(() => {
+    if (!count) {
+      fetch('https://api.github.com/repos/' + props.repo)
+        .then((res) => res.json())
+        .then((json) => {
+          console.log(json);
+          setCount(json['stargazers_count']);
+        });
+    }
+  });
+  return (
+    <a
+      target="_blank"
+      className={props.className}
+      href={'https://github.com/' + props.repo + '/stargazers'}
+      style={{
+        color: 'white',
+        marginLeft: '3px',
+        marginRight: '8px',
+        width: '2em',
+        marginTop: '-2px',
+        display: 'inline-block',
+        textDecoration: 'none',
+      }}
+      rel="noreferrer"
+    >
+      {count ? '★' + count : ''}
+    </a>
+  );
+};
+
 const Header = () => {
   const logoImg = require('../images/logo.svg');
-
-  const twitter = require('../images/twitter.svg');
 
   const [navCollapsed, setNavCollapsed] = useState(true);
 
@@ -104,7 +101,7 @@ const Header = () => {
       render={(data) => {
         const {
           site: {
-            siteMetadata: { headerTitle, githubUrl, helpUrl, tweetText, logo, headerLinks },
+            siteMetadata: { headerTitle, githubUrl, logo, headerLinks },
           },
         } = data;
 
@@ -130,12 +127,12 @@ const Header = () => {
                         alt={'logo'}
                       />
                     </HideOnDesktop>
+                    <div className="divider hiddenMobile"></div>
+                    <div
+                      className={'headerTitle displayInline'}
+                      dangerouslySetInnerHTML={{ __html: headerTitle }}
+                    />
                   </Link>
-                  <li className="divider hiddenMobile"></li>
-                  <div
-                    className={'headerTitle displayInline'}
-                    dangerouslySetInnerHTML={{ __html: headerTitle }}
-                  />
                 </div>
                 <HeaderIconsContainer>
                   <li className="divider hiddenMobile"></li>
@@ -154,17 +151,6 @@ const Header = () => {
                       />
                     </a>
                   )}
-                  {githubUrl !== '' && (
-                    <div className="githubBtn paddingAround hiddenMobile">
-                      <GitHubButton
-                        href={githubUrl}
-                        data-show-count="true"
-                        aria-label="Star on GitHub"
-                      >
-                        Star
-                      </GitHubButton>
-                    </div>
-                  )}
                   <a
                     className="paddingAround hiddenMobile"
                     href={'/rss.xml'}
@@ -178,6 +164,28 @@ const Header = () => {
                       title="Open RSS Feed"
                     />
                   </a>
+                  {config.header.social && (
+                    <>
+                      <a
+                        className="paddingAround hiddenMobile"
+                        href={githubUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ paddingRight: '0px' }}
+                      >
+                        <FontAwesomeIcon
+                          icon={faGithubSquare}
+                          color={'white'}
+                          className="pointer fa fa-github-square fa-lg"
+                          title="Open GitHub"
+                        />
+                      </a>
+                      <StarsCount
+                        className="hiddenMobile"
+                        repo={githubUrl.replace('https://github.com/', '')}
+                      />
+                    </>
+                  )}
                   <HideOnDesktop>
                     <FontAwesomeIcon
                       icon={faBars}
@@ -190,11 +198,6 @@ const Header = () => {
                   </HideOnDesktop>
                 </HeaderIconsContainer>
               </NavBarHeaderContainer>
-              {isSearchEnabled ? (
-                <div className={'searchWrapper hiddenMobile navBarUL'}>
-                  <LoadableComponent collapse={true} indices={searchIndices} />
-                </div>
-              ) : null}
               <div id="navbar" className={topClass}>
                 <div className={'visibleMobile'}>
                   <Sidebar setNavCollapsed={setNavCollapsed} />
@@ -216,35 +219,9 @@ const Header = () => {
                       );
                     }
                   })}
-                  {helpUrl !== '' ? (
-                    <li>
-                      <a href={helpUrl}>
-                        <img src={help} alt={'Help icon'} />
-                      </a>
-                    </li>
-                  ) : null}
-
-                  {tweetText !== '' ? (
-                    <li>
-                      <a
-                        href={'https://twitter.com/intent/tweet?&text=' + tweetText}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <img className={'shareIcon'} src={twitter} alt={'Twitter'} />
-                      </a>
-                    </li>
-                  ) : null}
                 </ul>
               </div>
             </nav>
-            {isSearchEnabled && (
-              <StyledBgDiv>
-                <div className={'searchWrapper'}>
-                  <LoadableComponent collapse={true} indices={searchIndices} />
-                </div>
-              </StyledBgDiv>
-            )}
           </div>
         );
       }}

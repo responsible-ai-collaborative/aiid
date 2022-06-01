@@ -34,7 +34,6 @@ module.exports = async ({ graphql }) => {
           submitters
           date_submitted
           report_number
-          incident_id
           ref_number
         }
       }
@@ -152,6 +151,7 @@ module.exports = async ({ graphql }) => {
         objectID: report.mongodb_id,
         epoch_incident_date: getUnixTime(new Date(incident.date)),
         incident_date: incident.date,
+        incident_id: incident.incident_id,
         classifications,
       };
 

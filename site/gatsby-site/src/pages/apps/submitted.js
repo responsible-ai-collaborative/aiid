@@ -7,7 +7,7 @@ import { DELETE_QUICKADD, FIND_QUICKADD } from '../../graphql/quickadd.js';
 import { useUserContext } from 'contexts/userContext';
 import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
-import SubmissionList from 'components/SubmissionList';
+import SubmissionList from 'components/submissions/SubmissionList';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 
 const SubmittedIncidentsPage = ({ ...props }) => {
