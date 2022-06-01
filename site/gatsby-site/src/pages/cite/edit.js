@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from 'components/Layout';
-import IncidentReportForm, { schema } from 'components/forms/IncidentReportForm';
+import SubmissionForm, { schema } from 'components/submissions/SubmissionForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button, Spinner } from 'react-bootstrap';
@@ -128,7 +128,7 @@ function EditCitePage(props) {
         >
           {({ isValid, isSubmitting, submitForm }) => (
             <>
-              <IncidentReportForm />
+              <SubmissionForm />
 
               <Button
                 className="mt-3"
