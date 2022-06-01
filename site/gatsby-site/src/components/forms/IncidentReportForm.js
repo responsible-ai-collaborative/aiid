@@ -73,7 +73,6 @@ const IncidentReportForm = () => {
     touched,
     handleChange,
     handleBlur,
-    handleSubmit,
     setFieldTouched,
     setFieldValue,
     setValues,
