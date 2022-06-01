@@ -77,7 +77,7 @@ export const schema = yup.object().shape({
   incident_id: yup.number().positive().integer('*Must be an incident number or empty'),
   incident_date: yup.date().when('incident_id', {
     is: (incident_id) => incident_id == '' || incident_id === undefined,
-    then: yup.date().required(),
+    then: yup.date().required('*Incident Date required'),
   }),
 });
 

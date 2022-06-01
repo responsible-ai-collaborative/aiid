@@ -508,11 +508,11 @@ describe('The Submit form', () => {
     cy.get('[data-cy=image-preview-figure] img').should('have.attr', 'src', cloudinaryImageUrl);
   });
 
-  it("Should disable Submit button when linking to an Incident that doesn't exist", () => {
+  it("Should not submit form when linking to an Incident that doesn't exist", () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
-        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 1,
+        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 3456456,
       'findIncident',
       { data: { incident: null } }
     );
@@ -528,7 +528,7 @@ describe('The Submit form', () => {
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
       image_url: 'https://test.com/image.jpg',
-      incident_id: '1',
+      incident_id: '3456456',
       text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
     };
 
@@ -538,10 +538,41 @@ describe('The Submit form', () => {
 
     cy.wait('@findIncident');
 
-    cy.contains('.invalid-feedback', 'Incident ID 1 not found!');
-
     cy.get('[name="incident_date"]').should('not.exist');
 
-    cy.contains('button', 'Submit').should('be.disabled');
+    cy.contains('.invalid-feedback', 'Incident ID 3456456 not found!').should('be.visible');
+  });
+
+  it('Should require incident_date when incident_id is not set', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 3456456,
+      'findIncident',
+      { data: { incident: null } }
+    );
+
+    cy.visit(url);
+
+    const values = {
+      url: 'https://test.com',
+      title: 'test title',
+      authors: 'test author',
+      submitters: 'test submitter',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+      image_url: 'https://test.com/image.jpg',
+      text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
+    };
+
+    for (const key in values) {
+      cy.get(`[name="${key}"]`).type(values[key]);
+    }
+
+    cy.get('[name="incident_date"]').should('be.visible');
+
+    cy.contains('button', 'Submit').click();
+
+    cy.contains('.invalid-feedback', '*Incident Date required').should('be.visible');
   });
 });
