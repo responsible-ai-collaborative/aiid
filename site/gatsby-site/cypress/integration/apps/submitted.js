@@ -1,5 +1,5 @@
-import { maybeIt } from '../support/utils';
-import submittedReports from '../fixtures/submissions/submitted.json';
+import { maybeIt } from '../../support/utils';
+import submittedReports from '../../fixtures/submissions/submitted.json';
 import { format, getUnixTime } from 'date-fns';
 
 describe('Submitted reports', () => {
@@ -30,30 +30,25 @@ describe('Submitted reports', () => {
       cy.get('[data-cy="submissions"]')
         .children(`:nth-child(${index + 1})`)
         .within(() => {
-          cy.get('[data-cy="source_domain"] div:nth-child(2)').should(
-            'contain',
-            report.source_domain
-          );
-          cy.get('[data-cy="authors"] div:nth-child(2)').should('contain', report.authors);
-          cy.get('[data-cy="submitters"] div:nth-child(2)').should('contain', report.submitters);
-          cy.get('[data-cy="incident_id"] div:nth-child(2)').should('contain', report.incident_id);
-          cy.get('[data-cy="date_published"] div:nth-child(2)').should(
-            'contain',
-            report.date_published
-          );
-          cy.get('[data-cy="date_submitted"] div:nth-child(2)').should(
-            'contain',
-            report.date_submitted
-          );
-          cy.get('[data-cy="date_downloaded"] div:nth-child(2)').should(
-            'contain',
-            report.date_downloaded
-          );
-          cy.get('[data-cy="date_modified"] div:nth-child(2)').should(
-            'contain',
-            report.date_modified
-          );
-          cy.get('[data-cy="url"] div:nth-child(2)').should('contain', report.url);
+          const keys = [
+            'source_domain',
+            'authors',
+            'submitters',
+            'incident_id',
+            'date_published',
+            'date_submitted',
+            'date_downloaded',
+            'date_modified',
+            'url',
+          ];
+
+          for (const key of keys) {
+            if (report[key]) {
+              cy.get(`[data-cy="${key}"] div:nth-child(2)`).should('contain', report[key]);
+            } else {
+              cy.get(`[data-cy="${key}"] div:nth-child(2)`).should('not.exist');
+            }
+          }
         });
     });
   });

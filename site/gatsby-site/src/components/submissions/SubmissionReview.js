@@ -24,16 +24,18 @@ import { Spinner } from 'react-bootstrap';
 const ListedGroup = ({ item, className = '', keysToRender }) => {
   return (
     <ListGroup className={className}>
-      {keysToRender.map((key) => (
-        <ListGroup.Item key={key} className="d-flex gap-4" data-cy={key}>
-          <div style={{ width: 140 }} className="flex-grow">
-            <b>{key}</b>
-          </div>
-          <div className="text-break">
-            {item[key] == 'object' && item[key] !== null ? item[key].join(', ') : item[key]}
-          </div>
-        </ListGroup.Item>
-      ))}
+      {keysToRender
+        .filter((key) => !!item[key])
+        .map((key) => (
+          <ListGroup.Item key={key} className="d-flex gap-4" data-cy={key}>
+            <div style={{ width: 140 }} className="flex-grow">
+              <b>{key}</b>
+            </div>
+            <div className="text-break">
+              {item[key] == 'object' && item[key] !== null ? item[key].join(', ') : item[key]}
+            </div>
+          </ListGroup.Item>
+        ))}
     </ListGroup>
   );
 };
