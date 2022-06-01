@@ -1,0 +1,11 @@
+{
+  "entry": [
+    "src/{pages,templates}/**/*.{js,ts}",
+    "./gatsby-**.js",
+    "src/scripts/**/*.js",
+    "content/**/*.mdx",
+    "src/api/**/*.{js,ts}"
+  ],
+  "extensions": [".ts", ".js"],
+  "ignorePatterns": ["**/node_modules/**"]
+}

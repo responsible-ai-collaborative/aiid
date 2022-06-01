@@ -1,48 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { StaticQuery, graphql } from 'gatsby';
-import Loadable from 'react-loadable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faRssSquare } from '@fortawesome/free-solid-svg-icons';
 import { faTwitterSquare, faGithubSquare } from '@fortawesome/free-brands-svg-icons';
 
 import Link from './Link';
-import LoadingProvider from '../mdxComponents/loading';
 import config from '../../../config.js';
 
-const help = require('../images/help.svg');
-
-const isSearchEnabled = config.header.search && config.header.search.enabled ? true : false;
-
-let searchIndices = [];
-
-if (isSearchEnabled && config.header.search.indexName) {
-  searchIndices.push({
-    name: `${config.header.search.indexName}`,
-    title: `Results`,
-    hitComp: `PageHit`,
-  });
-}
-
 import Sidebar from '../sidebar';
-
-const LoadableComponent = Loadable({
-  loader: () => import('../search/index'),
-  loading: LoadingProvider,
-});
-
-const StyledBgDiv = styled.div`
-  height: 60px;
-  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-  background-color: #f8f8f8;
-  position: relative;
-  display: none;
-  background: #001932;
-
-  @media (max-width: 767px) {
-    display: block;
-  }
-`;
 
 const NavBarHeaderContainer = styled.div`
   display: flex;
@@ -105,8 +71,6 @@ const StarsCount = (props) => {
 const Header = () => {
   const logoImg = require('../images/logo.svg');
 
-  const twitter = require('../images/twitter.svg');
-
   const [navCollapsed, setNavCollapsed] = useState(true);
 
   const topClass = navCollapsed ? 'topnav' : 'topnav responsive ';
@@ -137,7 +101,7 @@ const Header = () => {
       render={(data) => {
         const {
           site: {
-            siteMetadata: { headerTitle, githubUrl, helpUrl, tweetText, logo, headerLinks },
+            siteMetadata: { headerTitle, githubUrl, logo, headerLinks },
           },
         } = data;
 
@@ -234,11 +198,6 @@ const Header = () => {
                   </HideOnDesktop>
                 </HeaderIconsContainer>
               </NavBarHeaderContainer>
-              {isSearchEnabled ? (
-                <div className={'searchWrapper hiddenMobile navBarUL'}>
-                  <LoadableComponent collapse={true} indices={searchIndices} />
-                </div>
-              ) : null}
               <div id="navbar" className={topClass}>
                 <div className={'visibleMobile'}>
                   <Sidebar setNavCollapsed={setNavCollapsed} />
@@ -260,35 +219,9 @@ const Header = () => {
                       );
                     }
                   })}
-                  {helpUrl !== '' ? (
-                    <li>
-                      <a href={helpUrl}>
-                        <img src={help} alt={'Help icon'} />
-                      </a>
-                    </li>
-                  ) : null}
-
-                  {tweetText !== '' ? (
-                    <li>
-                      <a
-                        href={'https://twitter.com/intent/tweet?&text=' + tweetText}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <img className={'shareIcon'} src={twitter} alt={'Twitter'} />
-                      </a>
-                    </li>
-                  ) : null}
                 </ul>
               </div>
             </nav>
-            {isSearchEnabled && (
-              <StyledBgDiv>
-                <div className={'searchWrapper'}>
-                  <LoadableComponent collapse={true} indices={searchIndices} />
-                </div>
-              </StyledBgDiv>
-            )}
           </div>
         );
       }}
