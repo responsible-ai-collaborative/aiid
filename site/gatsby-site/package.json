@@ -67,7 +67,7 @@
     "lodash.startcase": "^4.4.0",
     "md5": "^2.3.0",
     "mongodb": "^4.2.1",
-    "node-fetch": "^3.2.4",
+    "node-fetch": "^2.6.7",
     "query-string": "^7.0.1",
     "react": "^17.0.2",
     "react-billboardjs": "^3.0.1",
