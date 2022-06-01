@@ -127,7 +127,7 @@ const SubmitForm = () => {
         initialValues={submission}
         enableReinitialize={true}
       >
-        {({ isValid, isSubmitting, submitForm, values }) => (
+        {({ isSubmitting, submitForm, values }) => (
           <>
             <SubmissionForm />
 
@@ -142,7 +142,7 @@ const SubmitForm = () => {
               className="mt-3"
               variant="primary"
               type="submit"
-              disabled={isSubmitting || !isValid}
+              disabled={isSubmitting}
             >
               Submit
             </Button>
