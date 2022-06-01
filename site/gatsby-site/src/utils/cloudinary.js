@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { AdvancedImage, lazyload } from '@cloudinary/react';
 import { CloudinaryImage } from '@cloudinary/base';
 import { defaultImage, format, quality } from '@cloudinary/base/actions/delivery';
@@ -58,21 +58,26 @@ const PreviewImageInputGroup = ({
 }) => {
   const [cloudinaryID, setCloudinaryID] = useState(cloudinary_id);
 
+  const timeoutID = useRef(null);
+
   const updateImage = (e) => {
-    try {
-      const url = new URL(e.target.value);
+    clearTimeout(timeoutID.current);
+    timeoutID.current = setTimeout(() => {
+      try {
+        const url = new URL(e.target.value);
 
-      if (url.pathname.length < 8) {
-        throw 'InvalidURL';
+        if (url.pathname.length < 8) {
+          throw 'InvalidURL';
+        }
+        const cloudinary_id = getCloudinaryPublicID(e.target.value, 'pai', 'reports');
+
+        setCloudinaryID(cloudinary_id);
+      } catch (error) {
+        console.log('invalid image URL');
+        console.log(error);
+        setCloudinaryID('fallback.jpg');
       }
-      const cloudinary_id = getCloudinaryPublicID(e.target.value, 'pai', 'reports');
-
-      setCloudinaryID(cloudinary_id);
-    } catch (error) {
-      console.log('invalid image URL');
-      console.log(error);
-      setCloudinaryID('fallback.jpg');
-    }
+    }, 2000);
   };
 
   return (
@@ -89,10 +94,7 @@ const PreviewImageInputGroup = ({
           handleChange(e);
         }}
         className={className}
-        handleBlur={(e) => {
-          updateImage(e);
-          handleBlur(e);
-        }}
+        handleBlur={handleBlur}
       />
       <PreviewFigure data-cy="image-preview-figure">
         <PreviewImage
