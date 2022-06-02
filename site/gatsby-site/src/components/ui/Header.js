@@ -10,6 +10,21 @@ import config from '../../../config.js';
 
 import Sidebar from '../sidebar';
 
+const SkipToContent = styled.a`
+  color: white;
+  background-color: #001934;
+  display: block;
+  position: relative;
+  height: 0px;
+  opacity: 0;
+  z-index: 10000;
+  :focus {
+    opacity: 1;
+    height: unset;
+    padding: 0ch 1ch;
+  }
+`;
+
 const NavBarHeaderContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -109,6 +124,7 @@ const Header = () => {
 
         return (
           <div>
+            <SkipToContent href="#content">Skip to Content</SkipToContent>
             <nav className={'navBarDefault'}>
               <NavBarHeaderContainer>
                 <div className={'navBarHeader'}>
