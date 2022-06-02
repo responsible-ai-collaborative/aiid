@@ -13,8 +13,8 @@ import RelatedIncidents from 'components/RelatedIncidents';
 
 import { useUserContext } from 'contexts/userContext';
 import { UPDATE_REPORT } from '../../graphql/reports';
-import { useMutation } from '@apollo/client';
-import { UPDATE_INCIDENT } from '../../graphql/incidents';
+import { useMutation, useQuery } from '@apollo/client';
+import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { DELETE_SUBMISSION, PROMOTE_SUBMISSION } from '../../graphql/submissions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { format, getUnixTime } from 'date-fns';
@@ -166,6 +166,10 @@ const SubmissionReview = ({ submission }) => {
     await deleteSubmission({ variables: { _id: submission._id } });
   };
 
+  const { data: incidentData } = useQuery(FIND_INCIDENT, {
+    variables: { query: { incident_id: submission.incident_id } },
+  });
+
   return (
     <>
       <Card.Header data-cy="submission">
@@ -183,9 +187,11 @@ const SubmissionReview = ({ submission }) => {
             {' '}
             {submission['title']}
             <br />
-            <Badge bg="secondary">Inc: {submission['incident_date']}</Badge>{' '}
-            <Badge bg="secondary">Pub: {submission['date_published']}</Badge>{' '}
-            <Badge bg="secondary">Sub: {submission['date_submitted']}</Badge>{' '}
+            <Badge bg="secondary">
+              Inc: {submission.incident_date || incidentData?.incident.date}
+            </Badge>{' '}
+            <Badge bg="secondary">Pub: {submission.date_published}</Badge>{' '}
+            <Badge bg="secondary">Sub: {submission.date_submitted}</Badge>{' '}
             {submission.submitters.map((submitter) => (
               <Badge key={submitter} bg="secondary">
                 {submitter}
