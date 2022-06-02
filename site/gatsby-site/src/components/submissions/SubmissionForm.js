@@ -224,6 +224,7 @@ const SubmissionForm = () => {
         <TextInputGroup
           name="date_published"
           label="Date Published"
+          type="date"
           placeholder="YYYY-MM-DD"
           className="mt-3"
           {...TextInputGroupProps}
@@ -231,6 +232,7 @@ const SubmissionForm = () => {
         <TextInputGroup
           name="date_downloaded"
           label="Date Downloaded"
+          type="date"
           placeholder="YYYY-MM-DD"
           className="mt-3"
           {...TextInputGroupProps}
