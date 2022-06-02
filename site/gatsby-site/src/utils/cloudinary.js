@@ -37,6 +37,13 @@ const Image = ({ publicID, className, alt, transformation = null, plugins = [laz
   return <AdvancedImage alt={alt} className={className} cldImg={image} plugins={plugins} />;
 };
 
+const PreviewImageContainer = styled.div`
+  height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const PreviewImage = styled(Image)`
   margin: -1rem auto 1rem;
   max-height: 50vh;
@@ -128,20 +135,13 @@ const PreviewImageInputGroup = ({
         handleBlur={handleBlur}
       />
       <PreviewFigure data-cy="image-preview-figure" id="image-preview-figure">
-        <div
-          style={{
-            height: '50vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+        <PreviewImageContainer>
           {updatingImage ? (
             <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" />
           ) : (
             <PreviewImage className={'mt-3'} publicID={cloudinaryID} />
           )}
-        </div>
+        </PreviewImageContainer>
         <figcaption>Selected Image</figcaption>
       </PreviewFigure>
     </>
