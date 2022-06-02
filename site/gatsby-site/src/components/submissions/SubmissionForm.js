@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import { useFormikContext } from 'formik';
 import * as yup from 'yup';
@@ -112,6 +112,7 @@ const SubmissionForm = () => {
     touched,
     setValues,
     setFieldTouched,
+    setFieldValue,
     handleChange,
     handleSubmit,
     handleBlur,
@@ -175,6 +176,16 @@ const SubmissionForm = () => {
     },
     [values]
   );
+
+  useEffect(() => {
+    try {
+      const url = new URL(data?.submission?.url);
+
+      setFieldValue('source_domain', url.hostname);
+    } catch (e) {
+      // eslint-disable-next-line no-empty
+    } // just ignore it
+  }, [data?.submission?.url]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { useLazyQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import Label from 'components/forms/Label';
 import { useField } from 'formik';
 import React, { useEffect } from 'react';
@@ -7,11 +7,9 @@ import { FIND_INCIDENT } from '../../graphql/incidents';
 import * as POP_OVERS from '../ui/PopOvers';
 
 export default function IncidentIdField({ name, placeHolder = '', className = '' }) {
-  const [findIncident, { data: incident, loading: loadingIncident }] = useLazyQuery(FIND_INCIDENT);
-
   const validate = async (value) => {
     if (value) {
-      const result = await findIncident({ variables: { query: { incident_id: value } } });
+      const result = await refetch({ query: { incident_id: value } });
 
       if (!result.data?.incident) {
         return `Incident ID ${value} not found!`;
@@ -20,6 +18,12 @@ export default function IncidentIdField({ name, placeHolder = '', className = ''
   };
 
   const [{ value, onChange, onBlur }, { error }] = useField({ validate, name });
+
+  const {
+    data: incident,
+    loading: loadingIncident,
+    refetch,
+  } = useQuery(FIND_INCIDENT, { variables: { query: { incident_id: value } } });
 
   useEffect(() => {
     validate(value);
