@@ -505,8 +505,7 @@ describe('The Submit form', () => {
 
     cy.visit(url);
     cy.get('input[name=image_url]').scrollIntoView().type(newImageUrl);
-    cy.wait(3000);
-    cy.get('[data-cy=image-preview-figure] img')
+    cy.get('[data-cy=image-preview-figure] img', { timeout: 30000 })
       .scrollIntoView()
       .should('have.attr', 'src', cloudinaryImageUrl);
   });
