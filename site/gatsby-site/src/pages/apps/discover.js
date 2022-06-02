@@ -272,6 +272,8 @@ function DiscoverApp(props) {
 
   const flagReportModal = useModal();
 
+  const expandFilters = useRef(Object.keys(searchState.refinementList).length > 0);
+
   return (
     <LayoutHideSidebar {...props}>
       <Helmet>
@@ -308,7 +310,7 @@ function DiscoverApp(props) {
                   <ClearFilters>Clear Filters</ClearFilters>
                 </ClearFiltersContainer>
               </ControlsMain>
-              <details>
+              <details open={expandFilters.current}>
                 <summary className="mt-3">Filter Search</summary>
                 <FiltersContainer>
                   <Filters />
