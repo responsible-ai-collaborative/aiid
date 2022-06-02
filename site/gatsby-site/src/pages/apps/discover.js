@@ -179,11 +179,42 @@ const getQueryFromState = (searchState) => {
   return query;
 };
 
-const ClearFiltersButton = styled(ClearFilters)`
-  height: 32px !important;
-  line-height: 32px !important;
-  padding: 0px !important;
-  background: red;
+const SearchControls = styled.div`
+  position: relative;
+  min-height: 4.25rem;
+  box-sizing: border-box;
+
+  summary {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 38px;
+    line-height: 38px;
+  }
+`;
+
+const ControlsMain = styled.div`
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 0px;
+  height: 38px;
+  width: calc(100% - 14ch);
+`;
+
+const ClearFiltersContainer = styled.div`
+  margin-left: auto;
+  ClearFilters {
+    height: 32px !important;
+    line-height: 32px !important;
+    padding: 0px !important;
+    background: red;
+  }
+`;
+
+const FiltersContainer = styled.div`
+  padding-top: 3rem;
+  clear: both;
 `;
 
 function DiscoverApp(props) {
@@ -269,45 +300,21 @@ function DiscoverApp(props) {
               )}
             </Row>
 
-            <div
-              className="hiddenMobile"
-              style={{ position: 'relative', minHeight: '4.25rem', boxSizing: 'border-box' }}
-            >
-              <details>
-                <summary
-                  className="mt-3"
-                  style={{
-                    position: 'absolute',
-                    right: '0px',
-                    top: '0px',
-                    height: '38px',
-                    lineHeight: '38px',
-                  }}
-                >
-                  Filter Search
-                </summary>
-                <div style={{ paddingTop: '3rem', clear: 'both' }}>
-                  <Filters />
-                </div>
-              </details>
-              <div
-                className="mt-3"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  position: 'absolute',
-                  top: '0px',
-                  height: '38px',
-                  width: 'calc(100% - 14ch)',
-                }}
-              >
+            <SearchControls className="hiddenMobile">
+              <ControlsMain className="mt-3">
                 <Stats />
                 <DisplayModeSwitch />
-                <div style={{ marginLeft: 'auto' }}>
-                  <ClearFiltersButton>Clear Filters</ClearFiltersButton>
-                </div>
-              </div>
-            </div>
+                <ClearFiltersContainer>
+                  <ClearFilters>Clear Filters</ClearFilters>
+                </ClearFiltersContainer>
+              </ControlsMain>
+              <details>
+                <summary className="mt-3">Filter Search</summary>
+                <FiltersContainer>
+                  <Filters />
+                </FiltersContainer>
+              </details>
+            </SearchControls>
 
             <FiltersModal />
           </Container>
