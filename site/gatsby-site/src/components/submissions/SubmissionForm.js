@@ -179,13 +179,13 @@ const SubmissionForm = () => {
 
   useEffect(() => {
     try {
-      const url = new URL(data?.submission?.url);
+      const url = new URL(values?.url);
 
       setFieldValue('source_domain', url.hostname);
     } catch (e) {
       // eslint-disable-next-line no-empty
     } // just ignore it
-  }, [data?.submission?.url]);
+  }, [values?.url]);
 
   return (
     <>
