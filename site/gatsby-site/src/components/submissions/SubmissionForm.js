@@ -46,8 +46,7 @@ export const schema = Yup.object().shape({
     .required('*Author is required. Anonymous or the publication can be entered.'),
   submitters: Yup.string()
     .min(3, '*Submitter must have at least 3 characters')
-    .max(200, "*Submitter list can't be longer than 200 characters")
-    .required('*Submitter is required. Anonymous can be entered.'),
+    .max(200, "*Submitter list can't be longer than 200 characters"),
   text: Yup.string()
     .min(80, '*Text must have at least 80 characters')
     .max(50000, "*Text can't be longer than 50000 characters")
