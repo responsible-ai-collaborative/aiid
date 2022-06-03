@@ -1,8 +1,7 @@
 import SearchInput from 'components/forms/SearchInput';
 import { navigate } from 'gatsby';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Card, Col, Form, Row } from 'react-bootstrap';
-import Link from 'components/ui/Link';
 
 export default function QuickSearch({ className }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -17,24 +16,51 @@ export default function QuickSearch({ className }) {
     navigate(`/apps/discover`);
   };
 
+  const [placeHolderText, setPlaceHolderText] = useState('Search 1400+ reports');
+
+  const buttonStyle = { width: '10ch' };
+
+  useEffect(() => {
+    const updatePlaceHolder = () => {
+      if (document && document.body.scrollWidth > 500) {
+        setPlaceHolderText('Search over 1400 reports of AI harms');
+      } else if (document && document.body.scrollWidth > 450) {
+        setPlaceHolderText('Search 1400+ AI harm reports');
+      } else if (document && document.body.scrollWidth > 350) {
+        setPlaceHolderText('Search 1400+ reports');
+      } else {
+        setPlaceHolderText('Search reports');
+      }
+    };
+
+    updatePlaceHolder();
+    if (window) window.addEventListener('resize', updatePlaceHolder);
+  });
+
   return (
     <>
       <Card className={className}>
         <Card.Body>
-          <Form onSubmit={submit} className="mt-4" id="quickSearch">
+          <Form onSubmit={submit} id="quickSearch">
             <SearchInput
               size="lg"
               value={searchTerm}
               onChange={setSearchTerm}
               onClear={() => setSearchTerm('')}
-              placeHolder="Search reports"
+              placeHolder={placeHolderText}
               onKeyPress={(e) => {
                 e.key === 'Enter' && submit(e);
               }}
             />
             <Row>
               <Col className="d-flex gap-2 justify-content-center">
-                <Button size="lg" variant="primary" className="mt-4" type="submit">
+                <Button
+                  size="lg"
+                  variant="primary"
+                  className="mt-4"
+                  type="submit"
+                  style={buttonStyle}
+                >
                   Search
                 </Button>
 
@@ -44,23 +70,13 @@ export default function QuickSearch({ className }) {
                   className="mt-4"
                   type="button"
                   onClick={discover}
+                  style={buttonStyle}
                 >
                   Discover
                 </Button>
               </Col>
             </Row>
-
-            <small className="text-mutted mt-4 d-block">
-              Entering text above will search across more than 1300 reports of AI harms
-            </small>
           </Form>
-        </Card.Body>
-      </Card>
-      <Card className={className}>
-        <Card.Body>
-          <h1>
-            <Link to="/blog/join-raic">⇨Hiring⇦</Link>
-          </h1>
         </Card.Body>
       </Card>
     </>
