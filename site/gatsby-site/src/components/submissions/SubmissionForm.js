@@ -12,6 +12,7 @@ import * as POP_OVERS from '../ui/PopOvers';
 import Label from '../forms/Label';
 import TagsControl from 'components/forms/TagsControl';
 import IncidentIdField from 'components/incidents/IncidentIdField';
+import { useUserContext } from 'contexts/userContext';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -79,6 +80,8 @@ const SubmissionForm = () => {
       }
     }
   `);
+
+  const { isRole } = useUserContext();
 
   const tags = [];
 
@@ -276,6 +279,19 @@ const SubmissionForm = () => {
             disabled={values.incident_id}
             {...TextInputGroupProps}
           />
+        )}
+
+        {isRole('submitter') ? (
+          <TextInputGroup
+            name="editor_notes"
+            label="Editor Notes"
+            as="textarea"
+            rows={8}
+            className="mt-3"
+            {...TextInputGroupProps}
+          />
+        ) : (
+          ''
         )}
       </Form>
     </>
