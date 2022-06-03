@@ -98,6 +98,7 @@ const SubmitForm = () => {
             : values.submitters
           : ['Anonymous'],
         language: 'en',
+        editor_notes: values.editor_notes,
       };
 
       await insertSubmission({ variables: { submission } });

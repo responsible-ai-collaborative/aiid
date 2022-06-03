@@ -15,6 +15,7 @@ export const FIND_REPORT = gql`
       tags
       flag
       report_number
+      editor_notes
     }
   }
 `;
@@ -37,6 +38,7 @@ export const UPDATE_REPORT = gql`
       tags
       flag
       report_number
+      editor_notes
     }
   }
 `;
