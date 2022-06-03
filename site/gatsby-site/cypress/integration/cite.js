@@ -101,6 +101,14 @@ describe('Cite pages', () => {
     cy.get('@taxonomyForm').should('exist');
   });
 
+  it(`Should taxa table only when there are classifications and the user is not authenticated`, () => {
+    cy.visit(url);
+
+    cy.get('[data-cy="CSET"]').should('exist');
+
+    cy.get('[data-cy="resources"]').should('not.exist');
+  });
+
   it('Should flag an incident', () => {
     // mock requests until a testing database is implemented
     const _id = '5d34b8c29ced494f010ed470';
