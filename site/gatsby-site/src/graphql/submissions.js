@@ -10,7 +10,7 @@ export const DELETE_SUBMISSION = gql`
 
 export const FIND_SUBMISSIONS = gql`
   query FindSubmissions {
-    submissions {
+    submissions(limit: 200) {
       _id
       cloudinary_id
       date_downloaded

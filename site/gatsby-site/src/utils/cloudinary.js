@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { AdvancedImage, lazyload } from '@cloudinary/react';
 import { CloudinaryImage } from '@cloudinary/base';
 import { defaultImage, format, quality } from '@cloudinary/base/actions/delivery';
@@ -7,6 +7,8 @@ import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
 import styled from 'styled-components';
 import config from '../../config';
 import TextInputGroup from 'components/forms/TextInputGroup';
+import { Spinner } from 'react-bootstrap';
+import { isWebUri } from 'valid-url';
 
 const getCloudinaryPublicID = (url) => {
   // https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files
@@ -35,6 +37,13 @@ const Image = ({ publicID, className, alt, transformation = null, plugins = [laz
   return <AdvancedImage alt={alt} className={className} cldImg={image} plugins={plugins} />;
 };
 
+const PreviewImageContainer = styled.div`
+  height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const PreviewImage = styled(Image)`
   margin: -1rem auto 1rem;
   max-height: 50vh;
@@ -58,22 +67,59 @@ const PreviewImageInputGroup = ({
 }) => {
   const [cloudinaryID, setCloudinaryID] = useState(cloudinary_id);
 
-  const updateImage = (e) => {
-    try {
-      const url = new URL(e.target.value);
+  // Track whether the image is waiting to update so we can show a spinner.
+  const [updatingImage, setUpdatingImage] = useState(false);
 
-      if (url.pathname.length < 8) {
-        throw 'InvalidURL';
-      }
-      const cloudinary_id = getCloudinaryPublicID(e.target.value, 'pai', 'reports');
+  const [imageReferenceError, setImageReferenceError] = useState(false);
 
-      setCloudinaryID(cloudinary_id);
-    } catch (error) {
-      console.log('invalid image URL');
-      console.log(error);
-      setCloudinaryID('fallback.jpg');
+  const timeoutID = useRef(null);
+
+  const imageUrl = useRef(values.image_url);
+
+  const updateCloudinaryID = () => {
+    if (isWebUri(values.image_url)) {
+      // We want to show an error if the given url does not point to an image.
+      // We can do this by attempting to load the image ourselves
+      // before passing it to Cloudinary, which loads a fallback on error.
+      const img = document.createElement('img');
+
+      img.src = values.image_url;
+      img.onload = () => {
+        setImageReferenceError(false);
+        setCloudinaryID(getCloudinaryPublicID(values.image_url));
+      };
+      img.onerror = () => {
+        setCloudinaryID();
+        setImageReferenceError(true);
+      };
+    } else {
+      setCloudinaryID();
     }
+    setUpdatingImage(false);
   };
+
+  // When the form value changes, wait two seconds,
+  // and if it hasn't changed again by then, update the cloudinaryID.
+  // This prevents repeated requests for partially-typed URLs.
+  if (values.image_url != imageUrl.current) {
+    imageUrl.current = values.image_url;
+    setUpdatingImage(true);
+    clearTimeout(timeoutID.current);
+    timeoutID.current = setTimeout(updateCloudinaryID, 2000);
+  }
+
+  // Default to fallback so we don't have to hit cloudinary API
+  // when we know there will be no match
+  if (!cloudinaryID || cloudinaryID == 'reports/') {
+    setCloudinaryID('fallback.jpg');
+  }
+
+  const childErrors = { ...errors };
+
+  touched.image_url = values.image_url.length > 0;
+  if (imageReferenceError) {
+    childErrors.image_url ||= '*Url must point to a valid image';
+  }
 
   return (
     <>
@@ -82,27 +128,20 @@ const PreviewImageInputGroup = ({
         label={label}
         placeholder={placeholder}
         values={values}
-        errors={errors}
+        errors={childErrors}
         touched={touched}
-        handleChange={(e) => {
-          updateImage(e);
-          handleChange(e);
-        }}
+        handleChange={handleChange}
         className={className}
-        handleBlur={(e) => {
-          updateImage(e);
-          handleBlur(e);
-        }}
+        handleBlur={handleBlur}
       />
-      <PreviewFigure data-cy="image-preview-figure">
-        <PreviewImage
-          className={'mt-3'}
-          publicID={
-            cloudinaryID ||
-            (values?.cloudinary_id === 'reports/' ? null : values?.cloudinary_id) ||
-            'fallback.jpg'
-          }
-        />
+      <PreviewFigure data-cy="image-preview-figure" id="image-preview-figure">
+        <PreviewImageContainer>
+          {updatingImage ? (
+            <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" />
+          ) : (
+            <PreviewImage className={'mt-3'} publicID={cloudinaryID} />
+          )}
+        </PreviewImageContainer>
         <figcaption>Selected Image</figcaption>
       </PreviewFigure>
     </>

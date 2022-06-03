@@ -513,8 +513,10 @@ describe('The Submit form', () => {
       suffix;
 
     cy.visit(url);
-    cy.get('input[name=image_url]').type(newImageUrl);
-    cy.get('[data-cy=image-preview-figure] img').should('have.attr', 'src', cloudinaryImageUrl);
+    cy.get('input[name=image_url]').scrollIntoView().type(newImageUrl);
+    cy.get('[data-cy=image-preview-figure] img', { timeout: 30000 })
+      .scrollIntoView()
+      .should('have.attr', 'src', cloudinaryImageUrl);
   });
 
   it("Should not submit form when linking to an Incident that doesn't exist", () => {
