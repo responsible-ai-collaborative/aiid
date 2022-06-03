@@ -4,8 +4,8 @@ import allClassifications from '../fixtures/classifications/allClassifications.j
 describe('Generate a Algolia index', () => {
   it('Should return a properly constructed Algolia index', () => {
     cy.wrap(discoverIndexGenerator({ graphql: () => allClassifications })).then((index) => {
-      expect(index).to.have.length(10);
-      expect(index[0]).to.deep.nested.include({
+      expect(index).to.have.length(6);
+      expect(index[0]).to.deep.eq({
         objectID: '5d34b8c29ced494f010ed469',
         incident_date: '2014-08-14',
         mongodb_id: '5d34b8c29ced494f010ed469',
@@ -17,7 +17,7 @@ describe('Generate a Algolia index', () => {
         cloudinary_id: null,
         language: 'en',
         source_domain: 'nytimes.com',
-        text: 'SAN DIEGO — In a typical last-minute scramble.\nAnother line with Markdown',
+        text: 'SAN DIEGO — In a typical last-minute scramble.\n\nAnother line with Markdown',
         title: 'Working Anything but 9 to 5',
         url: 'https://www.nytimes.com/interactive/2014/08/13/us/starbucks-workers-scheduling-hours.html',
         date_downloaded: '2019-04-13',

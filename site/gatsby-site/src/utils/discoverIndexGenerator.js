@@ -1,9 +1,5 @@
 const { getUnixTime } = require('date-fns');
 
-const remark = require('remark');
-
-const remarkStrip = require('strip-markdown');
-
 module.exports = async ({ graphql }) => {
   const { data } = await graphql(`
     query AllIncidentsDataQuery {
@@ -150,8 +146,6 @@ module.exports = async ({ graphql }) => {
         }
       }
 
-      const text = await remark().use(remarkStrip).process(report.text);
-
       const reportData = {
         ...report,
         objectID: report.mongodb_id,
@@ -159,8 +153,10 @@ module.exports = async ({ graphql }) => {
         incident_date: incident.date,
         incident_id: incident.incident_id,
         classifications,
-        text: text.contents.toString().trim(),
+        text: report.plain_text,
       };
+
+      delete reportData.plain_text;
 
       downloadData.push(truncate(reportData));
     }
