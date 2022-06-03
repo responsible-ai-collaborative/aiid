@@ -21,6 +21,7 @@ module.exports = async ({ graphql }) => {
           language
           source_domain
           text
+          plain_text
           title
           url
           date_downloaded
