@@ -10,7 +10,31 @@ export const DELETE_SUBMISSION = gql`
 
 export const FIND_SUBMISSIONS = gql`
   query FindSubmissions {
-    submissions {
+    submissions(limit: 200) {
+      _id
+      cloudinary_id
+      date_downloaded
+      date_modified
+      date_published
+      date_submitted
+      description
+      image_url
+      incident_date
+      incident_id
+      language
+      source_domain
+      text
+      title
+      authors
+      submitters
+      url
+    }
+  }
+`;
+
+export const FIND_SUBMISSION = gql`
+  query FindSubmission($query: SubmissionQueryInput!) {
+    submission(query: $query) {
       _id
       cloudinary_id
       date_downloaded

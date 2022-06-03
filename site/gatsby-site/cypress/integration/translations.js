@@ -2,6 +2,13 @@ const AlgoliaUpdater = require('../../src/utils/AlgoliaUpdater');
 
 const Translator = require('../../src/utils/Translator');
 
+const incidents = [
+  {
+    incident_id: 1,
+    reports: [1, 2],
+  },
+];
+
 const reports = [
   {
     _id: '1',
@@ -16,7 +23,6 @@ const reports = [
     epoch_date_published: 1431993600,
     epoch_date_submitted: 1559347200,
     image_url: 'http://url.com',
-    incident_id: 1,
     language: 'en',
     ref_number: 0,
     report_number: 1,
@@ -40,7 +46,6 @@ const reports = [
     epoch_date_published: 1431993600,
     epoch_date_submitted: 1559347200,
     image_url: 'http://url.com',
-    incident_id: 1,
     language: 'en',
     ref_number: 0,
     report_number: 2,
@@ -292,6 +297,12 @@ describe('Translations', () => {
       }),
     };
 
+    const incidentsCollection = {
+      find: cy.stub().returns({
+        toArray: cy.stub().resolves(incidents),
+      }),
+    };
+
     const reportsCollection = {
       find: cy.stub().returns({
         toArray: cy.stub().resolves(reports),
@@ -307,6 +318,7 @@ describe('Translations', () => {
 
           stub.withArgs('reports').returns(reportsCollection);
           stub.withArgs('classifications').returns(classificationsCollection);
+          stub.withArgs('incidents').returns(incidentsCollection);
           stub.withArgs('incident_reports_en').returns(reportsENCollection);
           stub.withArgs('incident_reports_es').returns(reportsESCollection);
 
@@ -346,97 +358,79 @@ describe('Translations', () => {
     cy.wrap(updater.run()).then(() => {
       expect(mongoClient.connect.callCount).to.eq(1);
 
-      expect(enIndex.saveObjects).to.have.been.calledOnceWith(
-        Cypress.sinon.match.hasNested(
-          '0',
-          Cypress.sinon.match({
-            objectID: '1',
-            text: 'translated-en-text report 1',
-            title: 'translated-en-title report 1',
-            incident_id: 1,
-            classifications: [
-              'CSET:Annotator:1',
-              'CSET:Annotation Status:6. Complete and final',
-              'CSET:Reviewer:5',
-              'CSET:Quality Control:false',
-              'CSET:Full Description:On December 5, 2018, a robot punctured.',
-              'CSET:Named Entities:Amazon',
-              'CSET:Harm Type:Harm to physical health/safety',
-              'CSET:Harm Type:Harm to physical property',
-              'CSET:Publish:true',
-            ],
-          })
-        )
-      );
+      expect(enIndex.saveObjects.getCall(0).args[0].length).eq(2);
 
-      expect(enIndex.saveObjects).to.have.been.calledOnceWith(
-        Cypress.sinon.match.hasNested(
-          '1',
-          Cypress.sinon.match({
-            objectID: '2',
-            text: 'translated-en-text report 2',
-            title: 'translated-en-title report 2',
-            incident_id: 1,
-            classifications: [
-              'CSET:Annotator:1',
-              'CSET:Annotation Status:6. Complete and final',
-              'CSET:Reviewer:5',
-              'CSET:Quality Control:false',
-              'CSET:Full Description:On December 5, 2018, a robot punctured.',
-              'CSET:Named Entities:Amazon',
-              'CSET:Harm Type:Harm to physical health/safety',
-              'CSET:Harm Type:Harm to physical property',
-              'CSET:Publish:true',
-            ],
-          })
-        )
-      );
+      expect(enIndex.saveObjects.getCall(0).args[0][0]).to.deep.nested.include({
+        objectID: '1',
+        text: 'translated-en-text report 1',
+        title: 'translated-en-title report 1',
+        incident_id: 1,
+        classifications: [
+          'CSET:Annotator:1',
+          'CSET:Annotation Status:6. Complete and final',
+          'CSET:Reviewer:5',
+          'CSET:Quality Control:false',
+          'CSET:Full Description:On December 5, 2018, a robot punctured.',
+          'CSET:Named Entities:Amazon',
+          'CSET:Harm Type:Harm to physical health/safety',
+          'CSET:Harm Type:Harm to physical property',
+          'CSET:Publish:true',
+        ],
+      });
 
-      expect(esIndex.saveObjects).to.have.been.calledOnceWith(
-        Cypress.sinon.match.hasNested(
-          '0',
-          Cypress.sinon.match({
-            objectID: '1',
-            text: 'translated-es-text report 1',
-            title: 'translated-es-title report 1',
-            incident_id: 1,
-            classifications: [
-              'CSET:Annotator:1',
-              'CSET:Annotation Status:6. Complete and final',
-              'CSET:Reviewer:5',
-              'CSET:Quality Control:false',
-              'CSET:Full Description:On December 5, 2018, a robot punctured.',
-              'CSET:Named Entities:Amazon',
-              'CSET:Harm Type:Harm to physical health/safety',
-              'CSET:Harm Type:Harm to physical property',
-              'CSET:Publish:true',
-            ],
-          })
-        )
-      );
+      expect(enIndex.saveObjects.getCall(0).args[0][1]).to.deep.nested.include({
+        objectID: '2',
+        text: 'translated-en-text report 2',
+        title: 'translated-en-title report 2',
+        incident_id: 1,
+        classifications: [
+          'CSET:Annotator:1',
+          'CSET:Annotation Status:6. Complete and final',
+          'CSET:Reviewer:5',
+          'CSET:Quality Control:false',
+          'CSET:Full Description:On December 5, 2018, a robot punctured.',
+          'CSET:Named Entities:Amazon',
+          'CSET:Harm Type:Harm to physical health/safety',
+          'CSET:Harm Type:Harm to physical property',
+          'CSET:Publish:true',
+        ],
+      });
 
-      expect(esIndex.saveObjects).to.have.been.calledOnceWith(
-        Cypress.sinon.match.hasNested(
-          '1',
-          Cypress.sinon.match({
-            objectID: '2',
-            text: 'translated-es-text report 2',
-            title: 'translated-es-title report 2',
-            incident_id: 1,
-            classifications: [
-              'CSET:Annotator:1',
-              'CSET:Annotation Status:6. Complete and final',
-              'CSET:Reviewer:5',
-              'CSET:Quality Control:false',
-              'CSET:Full Description:On December 5, 2018, a robot punctured.',
-              'CSET:Named Entities:Amazon',
-              'CSET:Harm Type:Harm to physical health/safety',
-              'CSET:Harm Type:Harm to physical property',
-              'CSET:Publish:true',
-            ],
-          })
-        )
-      );
+      expect(esIndex.saveObjects.getCall(0).args[0][0]).to.deep.nested.include({
+        objectID: '1',
+        text: 'translated-es-text report 1',
+        title: 'translated-es-title report 1',
+        incident_id: 1,
+        classifications: [
+          'CSET:Annotator:1',
+          'CSET:Annotation Status:6. Complete and final',
+          'CSET:Reviewer:5',
+          'CSET:Quality Control:false',
+          'CSET:Full Description:On December 5, 2018, a robot punctured.',
+          'CSET:Named Entities:Amazon',
+          'CSET:Harm Type:Harm to physical health/safety',
+          'CSET:Harm Type:Harm to physical property',
+          'CSET:Publish:true',
+        ],
+      });
+
+      expect(esIndex.saveObjects.getCall(0).args[0][1]).to.deep.nested.include({
+        objectID: '2',
+        text: 'translated-es-text report 2',
+        title: 'translated-es-title report 2',
+        incident_id: 1,
+        classifications: [
+          'CSET:Annotator:1',
+          'CSET:Annotation Status:6. Complete and final',
+          'CSET:Reviewer:5',
+          'CSET:Quality Control:false',
+          'CSET:Full Description:On December 5, 2018, a robot punctured.',
+          'CSET:Named Entities:Amazon',
+          'CSET:Harm Type:Harm to physical health/safety',
+          'CSET:Harm Type:Harm to physical property',
+          'CSET:Publish:true',
+        ],
+      });
 
       expect(mongoClient.close.callCount).to.eq(1);
     });
