@@ -208,7 +208,6 @@ const ClearFiltersContainer = styled.div`
     height: 32px !important;
     line-height: 32px !important;
     padding: 0px !important;
-    background: red;
   }
 `;
 
