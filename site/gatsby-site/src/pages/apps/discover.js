@@ -215,6 +215,10 @@ const ClearFiltersContainer = styled.div`
 const FiltersContainer = styled.div`
   padding-top: 3rem;
   clear: both;
+  > div {
+    margin-top: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
 `;
 
 function DiscoverApp(props) {

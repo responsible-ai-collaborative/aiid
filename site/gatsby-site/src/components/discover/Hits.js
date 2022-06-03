@@ -26,8 +26,6 @@ const NoResults = styled.div`
 `;
 
 const HitsContainer = styled.div`
-  max-width: 1400px;
-
   &.compact,
   &.details {
     display: grid;
