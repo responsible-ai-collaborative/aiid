@@ -141,7 +141,7 @@ class Translator {
 
         this.reporter.log(`Stored [${result.insertedCount}] new reports to [${to}]`);
       } else {
-        this.reporter.log(`No new incident reports neeed translation to [${to}]`);
+        this.reporter.log(`No new incident reports needed translation to [${to}]`);
       }
 
       done();
