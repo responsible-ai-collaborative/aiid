@@ -30,7 +30,7 @@ const reports = [
     submitters: (1)['Roman Yampolskiy'],
     tags: [],
     text: 'Report 1 **text**',
-    plain_text: 'Report 2 text',
+    plain_text: 'Report 1 text',
     title: 'Report 1 title',
     url: 'https://url.com/stuff',
   },
