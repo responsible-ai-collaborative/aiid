@@ -6,7 +6,12 @@ import { Form } from 'react-bootstrap';
 import { FIND_INCIDENT } from '../../graphql/incidents';
 import * as POP_OVERS from '../ui/PopOvers';
 
-export default function IncidentIdField({ name, placeHolder = '', className = '' }) {
+export default function IncidentIdField({
+  name,
+  placeHolder = '',
+  className = '',
+  showIncidentData = true,
+}) {
   const validate = async (value) => {
     if (value) {
       const result = await refetch({ query: { incident_id: value } });
@@ -44,7 +49,7 @@ export default function IncidentIdField({ name, placeHolder = '', className = ''
       />
       <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
 
-      {value !== '' && !error && (
+      {showIncidentData && value !== '' && !error && (
         <div className="pt-1">
           {loadingIncident && <div className="small">Searching...</div>}
 

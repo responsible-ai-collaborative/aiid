@@ -289,6 +289,7 @@ const SubmissionForm = () => {
           name="incident_id"
           className="mt-3"
           placeHolder="Leave empty to report a new incident"
+          showIncidentData={false}
         />
 
         {!values.incident_id && (
