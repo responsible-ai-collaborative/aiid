@@ -24,6 +24,7 @@
                 "text": "Submission 1 text",
                 "title": "Submisssion 1 title",
                 "url": "https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/"
+                "editor_notes": ""
             },
             {
                 "__typename": "Submission",
@@ -47,7 +48,8 @@
                 ],
                 "text": "Submission 2 text",
                 "title": "Submission 1 title",
-                "url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/"
+                "url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/",
+                "editor_notes": ""
             }
         ]
     }
