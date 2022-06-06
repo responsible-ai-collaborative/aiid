@@ -1,4 +1,5 @@
 import parseNews from '../fixtures/api/parseNews.json';
+import { maybeIt } from '../support/utils';
 
 describe('The Submit form', () => {
   const url = '/apps/submit';
@@ -545,5 +546,15 @@ describe('The Submit form', () => {
     cy.get('[name="incident_date"]').should('not.exist');
 
     cy.contains('button', 'Submit').should('be.disabled');
+  });
+
+  maybeIt('Should show the editor notes field when logged in', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+    cy.visit(url);
+    cy.get('[name="editor_notes"').should('exist');
+  });
+  maybeIt('Should not show the editor notes field when not logged in', () => {
+    cy.visit(url);
+    cy.get('[name="editor_notes"').should('not.exist');
   });
 });
