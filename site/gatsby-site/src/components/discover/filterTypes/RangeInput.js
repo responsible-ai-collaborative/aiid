@@ -39,7 +39,7 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
           required={true}
           type="date"
           min={formatDate(min)}
-          max={formatDate(max)}
+          max={formatDate(Math.min(max, currentRefinement.max))}
           value={formatDate(currentRefinement.min)}
           onChange={(event) =>
             onChange({ min: dateToEpoch(event.target.value), max: currentRefinement.max })
@@ -52,7 +52,7 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
         <Form.Control
           required={true}
           type="date"
-          min={formatDate(min)}
+          min={formatDate(Math.max(min, currentRefinement.min))}
           max={formatDate(max)}
           value={formatDate(currentRefinement.max)}
           onChange={(event) =>
