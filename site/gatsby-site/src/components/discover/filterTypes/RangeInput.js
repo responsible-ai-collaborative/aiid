@@ -48,7 +48,7 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
           className={touchedMin && 'border border-success'}
         />
 
-        <Form.Label>To Date:</Form.Label>
+        <Form.Label className="mt-3">To Date:</Form.Label>
         <Form.Control
           required={true}
           type="date"
