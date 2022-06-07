@@ -66,7 +66,7 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
           <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
         </Modal.Body>
       )}
-      {data?.submission && (
+      {!loading && data?.submission && (
         <Formik
           validationSchema={schema}
           onSubmit={handleSubmit}
@@ -74,7 +74,6 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
             ...data.submission,
             incident_id: data.submission.incident_id == 0 ? '' : data.submission.incident_id,
           }}
-          enableReinitialize={true}
         >
           {({ isValid, isSubmitting, submitForm }) => (
             <>

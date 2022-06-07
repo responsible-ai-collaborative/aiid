@@ -1,7 +1,7 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import { useFormikContext } from 'formik';
-import * as Yup from 'yup';
+import * as yup from 'yup';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { dateRegExp } from 'utils/date';
@@ -35,36 +35,50 @@ import IncidentIdField from 'components/incidents/IncidentIdField';
 // * language: "en" # (string) The language identifier of the report.
 
 // Schema for yup
-export const schema = Yup.object().shape({
-  title: Yup.string()
+export const schema = yup.object().shape({
+  title: yup
+    .string()
     .min(6, '*Title must have at least 6 characters')
     .max(500, "*Titles can't be longer than 500 characters")
     .required('*Title is required'),
-  authors: Yup.string()
+  authors: yup
+    .string()
     .min(3, '*Authors must have at least 3 characters')
     .max(200, "*Authors can't be longer than 200 characters")
     .required('*Author is required. Anonymous or the publication can be entered.'),
-  submitters: Yup.string()
+  submitters: yup
+    .string()
     .min(3, '*Submitter must have at least 3 characters')
-    .max(200, "*Submitter list can't be longer than 200 characters"),
-  text: Yup.string()
+    .max(200, "*Submitter list can't be longer than 200 characters")
+    .required('*Submitter is required. Anonymous can be entered.'),
+  text: yup
+    .string()
     .min(80, '*Text must have at least 80 characters')
     .max(50000, "*Text can't be longer than 50000 characters")
     .required('*Text is required'),
-  date_published: Yup.string()
+  date_published: yup
+    .string()
     .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
     .required('*Date published is required'),
-  date_downloaded: Yup.string()
+  date_downloaded: yup
+    .string()
     .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
     .required('*Date downloaded required'),
-  url: Yup.string()
+  url: yup
+    .string()
     .url('*Must enter URL in http://www.example.com format')
     .required('*URL required'),
-  image_url: Yup.string().matches(
-    /((https?):\/\/)(\S)*$/,
-    '*Must enter URL in http://www.example.com/images/preview.png format'
-  ),
-  incident_id: Yup.number().positive().integer('*Must be an incident number or empty'),
+  image_url: yup
+    .string()
+    .matches(
+      /((https?):\/\/)(\S)*$/,
+      '*Must enter URL in http://www.example.com/images/preview.png format'
+    ),
+  incident_id: yup.number().positive().integer('*Must be an incident number or empty'),
+  incident_date: yup.date().when('incident_id', {
+    is: (incident_id) => incident_id == '' || incident_id === undefined,
+    then: yup.date().required('*Incident Date required'),
+  }),
 });
 
 const SubmissionForm = () => {
@@ -98,6 +112,7 @@ const SubmissionForm = () => {
     touched,
     setValues,
     setFieldTouched,
+    setFieldValue,
     handleChange,
     handleSubmit,
     handleBlur,
@@ -161,6 +176,16 @@ const SubmissionForm = () => {
     },
     [values]
   );
+
+  useEffect(() => {
+    try {
+      const url = new URL(values?.url);
+
+      setFieldValue('source_domain', url.hostname);
+    } catch (e) {
+      // eslint-disable-next-line no-empty
+    } // just ignore it
+  }, [values?.url]);
 
   return (
     <>
@@ -264,6 +289,7 @@ const SubmissionForm = () => {
           name="incident_id"
           className="mt-3"
           placeHolder="Leave empty to report a new incident"
+          showIncidentData={false}
         />
 
         {!values.incident_id && (
