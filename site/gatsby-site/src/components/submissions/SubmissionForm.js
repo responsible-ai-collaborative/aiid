@@ -181,7 +181,7 @@ const SubmissionForm = () => {
     try {
       const url = new URL(values?.url);
 
-      setFieldValue('source_domain', url.hostname);
+      setFieldValue('source_domain', url.hostname.replace(/^(www|m)\./, ''));
     } catch (e) {
       // eslint-disable-next-line no-empty
     } // just ignore it

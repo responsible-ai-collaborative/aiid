@@ -44,7 +44,7 @@ const QuickAddForm = ({ className = '' }) => {
         const quickAdd = {
           incident_id: '0',
           date_submitted: format(new Date(), 'yyyy-MM-dd'),
-          source_domain: url.hostname,
+          source_domain: url.hostname.replace(/^(www|m)\./, ''),
           url: url.href,
         };
 
