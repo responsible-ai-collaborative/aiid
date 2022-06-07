@@ -29,6 +29,7 @@ export const FIND_SUBMISSIONS = gql`
       submitters
       url
       editor_notes
+      tags
     }
   }
 `;
@@ -54,6 +55,7 @@ export const FIND_SUBMISSION = gql`
       submitters
       url
       editor_notes
+      tags
     }
   }
 `;
@@ -79,6 +81,7 @@ export const UPDATE_SUBMISSION = gql`
       submitters
       url
       editor_notes
+      tags
     }
   }
 `;
