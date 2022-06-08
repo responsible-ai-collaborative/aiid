@@ -545,7 +545,6 @@ describe('The Submit form', () => {
       date_downloaded: '2021-01-03',
       image_url: 'https://test.com/image.jpg',
       incident_id: '3456456',
-      text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
     };
 
     for (const key in values) {
@@ -582,7 +581,6 @@ describe('The Submit form', () => {
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
       image_url: 'https://test.com/image.jpg',
-      text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
     };
 
     for (const key in values) {
