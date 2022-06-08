@@ -5,9 +5,6 @@ import styled from 'styled-components';
 
 const linkHoverHighlight = `
   a:not(:hover) { color: inherit; }
-  @supports not selector(:not) {
-    a { color: inherit }
-  }
 `;
 
 const HeaderCard = styled(Card.Title)`

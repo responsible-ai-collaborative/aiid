@@ -179,46 +179,55 @@ const getQueryFromState = (searchState) => {
   return query;
 };
 
-const SearchControls = styled.div`
-  position: relative;
-  min-height: 4.25rem;
-  box-sizing: border-box;
-
-  summary {
-    position: absolute;
-    right: 0px;
-    top: 0px;
-    height: 38px;
-    line-height: 38px;
+const FiltersRow = styled.div`
+  &.hidden {
+    visibility: hidden;
+    height: 0px;
   }
 `;
 
-const ControlsMain = styled.div`
-  display: flex;
-  align-items: center;
-  position: absolute;
-  top: 0px;
-  height: 38px;
-  width: calc(100% - 14ch);
+const Expander = styled(Col)`
+  margin: auto;
 `;
 
-const ClearFiltersContainer = styled.div`
-  margin-left: auto;
-  ClearFilters {
-    height: 32px !important;
-    line-height: 32px !important;
-    padding: 0px !important;
-  }
+const ExpandFilters = styled.button`
+  user-select: none;
+  cursor: pointer;
+  color: inherit;
+  background: none;
+  border: none;
 `;
 
-const FiltersContainer = styled.div`
-  padding-top: 3rem;
-  clear: both;
-  > div {
-    margin-top: 0.75rem;
-    margin-bottom: 1.25rem;
-  }
-`;
+const Controls = (props) => {
+  const [expandFilters, setExpandFilters] = useState(
+    Object.keys(props.searchState.refinementList).length > 0
+  );
+
+  return (
+    <>
+      <Row className="justify-content-start align-items-center mb-2 mt-3 hiddenMobile">
+        <Col className="col-auto">
+          <Stats />
+        </Col>
+        <Col className="col-auto">
+          <DisplayModeSwitch />
+        </Col>
+        <Expander />
+        <Col className="col-auto">
+          <ClearFilters>Clear Filters</ClearFilters>
+        </Col>
+        <Col className="col-auto">
+          <ExpandFilters data-cy="expand-filters" onClick={() => setExpandFilters(!expandFilters)}>
+            {expandFilters ? '⏷' : '⏵'} Filter Search
+          </ExpandFilters>
+        </Col>
+      </Row>
+      <FiltersRow className={'mb-4 mt-2 hiddenMobile ' + (expandFilters ? '' : 'hidden')}>
+        <Filters />
+      </FiltersRow>
+    </>
+  );
+};
 
 function DiscoverApp(props) {
   const [query, setQuery] = useQueryParams(queryConfig);
@@ -275,8 +284,6 @@ function DiscoverApp(props) {
 
   const flagReportModal = useModal();
 
-  const expandFilters = useRef(Object.keys(searchState.refinementList).length > 0);
-
   return (
     <LayoutHideSidebar {...props}>
       <Helmet>
@@ -305,21 +312,7 @@ function DiscoverApp(props) {
               )}
             </Row>
 
-            <SearchControls className="hiddenMobile">
-              <ControlsMain className="mt-3">
-                <Stats />
-                <DisplayModeSwitch />
-                <ClearFiltersContainer>
-                  <ClearFilters>Clear Filters</ClearFilters>
-                </ClearFiltersContainer>
-              </ControlsMain>
-              <details open={expandFilters.current}>
-                <summary className="mt-3">Filter Search</summary>
-                <FiltersContainer>
-                  <Filters />
-                </FiltersContainer>
-              </details>
-            </SearchControls>
+            <Controls searchState={searchState} />
 
             <FiltersModal />
           </Container>
