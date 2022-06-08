@@ -39,6 +39,9 @@
         "language": {
             "bsonType": "string"
         },
+        "plain_text": {
+            "bsonType": "string"
+        },
         "source_domain": {
             "bsonType": "string"
         },

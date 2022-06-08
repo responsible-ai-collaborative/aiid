@@ -150,6 +150,7 @@ describe('Submitted reports', () => {
         expect(query.report_number).eq(1565);
 
         expect(set.text).eq(submission.text);
+        expect(set.plain_text).eq(submission.plain_text);
         expect(set.title).eq(submission.title);
         expect(set.authors).deep.eq(submission.authors);
         expect(set.submitters).deep.eq(submission.submitters);
@@ -274,6 +275,7 @@ describe('Submitted reports', () => {
         expect(query.report_number).eq(1566);
 
         expect(set.text).eq(submission.text);
+        expect(set.plain_text).eq(submission.plain_text);
         expect(set.title).eq(submission.title);
         expect(set.authors).deep.eq(submission.authors);
         expect(set.submitters).deep.eq(submission.submitters);
@@ -345,5 +347,75 @@ describe('Submitted reports', () => {
     });
 
     cy.get('[data-cy="submissions"]').children().should('have.length', 0);
+  });
+
+  it.only('Edits a submission', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'FindSubmissions',
+      submittedReports
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmission',
+      'FindSubmission',
+      {
+        data: {
+          submission: submittedReports.data.submissions[0],
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.wait('@FindSubmissions');
+
+    cy.get('[data-cy="submissions"] > div:nth-child(1)').as('promoteForm');
+
+    cy.get('@promoteForm').contains('review >').click();
+
+    cy.get('[data-cy="edit-submission"]').eq(0).click();
+
+    cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
+
+    cy.setEditorText(
+      '## Another one\n\n**More markdown**\n\nAnother paragraph with more text to reach the minimum character count!'
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName === 'UpdateSubmission',
+      'UpdateSubmission',
+      {
+        data: {
+          updateOneSubmission: {
+            ...submittedReports.data.submissions[0],
+            text: '## Another one\n\n**More markdown**\n\nAnother paragraph with more text to reach the minimum character count!',
+            plain_text:
+              'Another one\n\nMore markdown\n\nAnother paragraph with more text to reach the minimum character count!\n',
+          },
+        },
+      }
+    );
+
+    cy.get('@modal').contains('Update').click();
+
+    cy.wait('@UpdateSubmission').then((xhr) => {
+      expect(xhr.request.body.variables.query).to.deep.nested.include({
+        _id: submittedReports.data.submissions[0]._id,
+      });
+
+      expect(xhr.request.body.variables.set).to.deep.nested.include({
+        text: '## Another one\n\n**More markdown**\n\nAnother paragraph with more text to reach the minimum character count!',
+        plain_text:
+          'Another one\n\nMore markdown\n\nAnother paragraph with more text to reach the minimum character count!\n',
+      });
+    });
+
+    cy.get('@modal').should('not.exist');
   });
 });

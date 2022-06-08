@@ -177,6 +177,7 @@ exports.createSchemaCustomization = ({ actions }) => {
     type mongodbAiidprodReports implements Node {
       cloudinary_id: String
       tags: [String]
+      plain_text: String
     }
 
     type mongodbAiidprodTaxaField_list implements Node {

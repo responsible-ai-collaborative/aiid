@@ -221,7 +221,12 @@ const SubmissionReview = ({ submission }) => {
             </div>
           )}
           <Card.Footer className="d-flex text-muted">
-            <Button className="me-auto" disabled={!isSubmitter} onClick={() => setIsEditing(true)}>
+            <Button
+              className="me-auto"
+              data-cy="edit-submission"
+              disabled={!isSubmitter}
+              onClick={() => setIsEditing(true)}
+            >
               <FontAwesomeIcon icon={faEdit} />
             </Button>
             <Button

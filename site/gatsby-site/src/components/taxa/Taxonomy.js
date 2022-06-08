@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { OverlayTrigger, Tooltip, Button, Card } from 'react-bootstrap';
 import styled from 'styled-components';
-import { useUserContext } from 'contexts/userContext';
 import Markdown from 'react-markdown';
 import TaxonomyForm from './TaxonomyForm';
 
@@ -45,21 +44,12 @@ const renderTooltip = (props, displayText) => (
   </Tooltip>
 );
 
-const Taxonomy = ({ taxonomy, incidentId }) => {
-  const { isRole } = useUserContext();
-
+const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
   const [showAllClassifications, setShowAllClassifications] = useState(false);
 
   const [isEditing, setIsEditing] = useState(false);
 
   const [showBanner, setShowBanner] = useState(false);
-
-  const canEdit =
-    isRole('taxonomy_editor') || isRole('taxonomy_editor_' + taxonomy.namespace.toLowerCase());
-
-  if (!canEdit && taxonomy.classificationsArray.length < 1) {
-    return <></>;
-  }
 
   const handleSubmit = () => {
     setIsEditing(false);

@@ -29,7 +29,8 @@ const reports = [
     source_domain: 'blogs.wsj.com',
     submitters: (1)['Roman Yampolskiy'],
     tags: [],
-    text: 'Report 1 text',
+    text: 'Report 1 **text**',
+    plain_text: 'Report 1 text',
     title: 'Report 1 title',
     url: 'https://url.com/stuff',
   },
@@ -52,7 +53,8 @@ const reports = [
     source_domain: 'blogs.wsj.com',
     submitters: (1)['Roman Yampolskiy'],
     tags: [],
-    text: 'Report 2 text',
+    text: 'Report 2 **text**',
+    plain_text: 'Report 2 text',
     title: 'Report 2 title',
     url: 'https://url.com/stuff',
   },
@@ -78,7 +80,7 @@ const classifications = [
 ];
 
 describe('Translations', () => {
-  it('Should run translations process', () => {
+  it('Should cache translations in the database', () => {
     const translatedReportsEN = [
       {
         _id: '61d5ad9f102e6e30fca90ddf',
@@ -150,21 +152,21 @@ describe('Translations', () => {
     cy.wrap(translator.run()).then(() => {
       expect(mongoClient.connect.callCount).to.eq(1);
 
-      expect(reportsENCollection.insertMany).to.have.been.calledOnceWith([
-        {
-          report_number: 2,
-          text: 'test-en-Report 2 text',
-          title: 'test-en-Report 2 title',
-        },
-      ]);
+      expect(reportsENCollection.insertMany.callCount).to.eq(1);
+      expect(reportsENCollection.insertMany.firstCall.args[0][0]).to.deep.equal({
+        report_number: 2,
+        text: 'test-en-Report 2 **text**',
+        title: 'test-en-Report 2 title',
+        plain_text: 'test-en-Report 2 text\n',
+      });
 
-      expect(reportsESCollection.insertMany).to.have.been.calledOnceWith([
-        {
-          report_number: 1,
-          text: 'test-es-Report 1 text',
-          title: 'test-es-Report 1 title',
-        },
-      ]);
+      expect(reportsENCollection.insertMany.callCount).to.eq(1);
+      expect(reportsESCollection.insertMany.firstCall.args[0][0]).to.deep.equal({
+        report_number: 1,
+        text: 'test-es-Report 1 **text**',
+        title: 'test-es-Report 1 title',
+        plain_text: 'test-es-Report 1 text\n',
+      });
 
       expect(mongoClient.close.callCount).to.eq(1);
     });
@@ -250,13 +252,13 @@ describe('Translations', () => {
     const translatedReportsEN = [
       {
         _id: '61d5ad9f102e6e30fca90ddf',
-        text: 'translated-en-text report 1',
+        text: 'translated-en-text **report 1**',
         title: 'translated-en-title report 1',
         report_number: 1,
       },
       {
         _id: '61d5ad9f102e6e30fca9065r',
-        text: 'translated-en-text report 2',
+        text: 'translated-en-text **report 2**',
         title: 'translated-en-title report 2',
         report_number: 2,
       },
@@ -265,13 +267,13 @@ describe('Translations', () => {
     const translatedReportsES = [
       {
         _id: '61d5ad9f102e6e30fca90ddf',
-        text: 'translated-es-text report 1',
+        text: 'translated-es-text **report 1**',
         title: 'translated-es-title report 1',
         report_number: 1,
       },
       {
         _id: '61d5ad9f102e6e30fca90876',
-        text: 'translated-es-text report 2',
+        text: 'translated-es-text **report 2**',
         title: 'translated-es-title report 2',
         report_number: 2,
       },

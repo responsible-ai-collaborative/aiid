@@ -42,7 +42,7 @@ describe('The Submit form', () => {
     cy.get('button[type="submit"]').click();
 
     cy.wait('@submitReport').then((xhr) => {
-      expect(xhr.request.body.variables.submission).to.deep.include({
+      expect(xhr.request.body.variables.submission).to.deep.nested.include({
         title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
         submitters: ['Something'],
         authors: ['Valentina Palladino'],
@@ -52,6 +52,9 @@ describe('The Submit form', () => {
           'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
         tags: ['New Tag'],
         incident_id: 0,
+        text: "## Recent news stories and blog\n\nposts _highlighted_ the underbelly of YouTube Kids, Google's children-friendly version.",
+        plain_text:
+          "Recent news stories and blog\n\nposts highlighted the underbelly of YouTube Kids, Google's children-friendly version.\n",
         url: `https://arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
         source_domain: `arstechnica.com`,
         language: 'en',
@@ -200,7 +203,7 @@ describe('The Submit form', () => {
       date_downloaded: '2021-01-03',
       image_url: 'https://test.com/image.jpg',
       incident_id: '1',
-      text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
+      text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
       tags: 'test tag',
     };
 
@@ -241,12 +244,14 @@ describe('The Submit form', () => {
     cy.get('button[type="submit"]').scrollIntoView().click();
 
     cy.wait('@submitReport').then((xhr) => {
-      expect(xhr.request.body.variables.submission).to.deep.include({
+      expect(xhr.request.body.variables.submission).to.deep.nested.include({
         ...values,
         incident_id: '1',
         authors: [values.authors],
         submitters: [values.submitters],
         tags: [values.tags],
+        plain_text:
+          'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
         source_domain: `test.com`,
       });
     });
@@ -540,12 +545,15 @@ describe('The Submit form', () => {
       date_downloaded: '2021-01-03',
       image_url: 'https://test.com/image.jpg',
       incident_id: '3456456',
-      text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
     };
 
     for (const key in values) {
       cy.get(`[name="${key}"]`).type(values[key]);
     }
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
 
     cy.wait('@findIncident');
 
@@ -573,7 +581,6 @@ describe('The Submit form', () => {
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
       image_url: 'https://test.com/image.jpg',
-      text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
     };
 
     for (const key in values) {
