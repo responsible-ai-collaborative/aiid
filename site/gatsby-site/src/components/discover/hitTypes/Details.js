@@ -27,7 +27,6 @@ export default function Details({
   flagReportModal,
   toggleFilterByIncidentId,
 }) {
-  console.log(item);
   return (
     <Card className="h-100" data-cy={item.mongodb_id}>
       <a href={'/cite/' + item.incident_id + '#r' + item.objectID}>
