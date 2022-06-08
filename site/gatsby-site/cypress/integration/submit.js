@@ -26,6 +26,8 @@ describe('The Submit form', () => {
 
     cy.get('[class*="Typeahead"]').type('New Tag{enter}');
 
+    cy.get('[name="incident_date"]').type('2020-01-01');
+
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'InsertSubmission',
@@ -44,6 +46,7 @@ describe('The Submit form', () => {
         title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
         submitters: ['Something'],
         authors: ['Valentina Palladino'],
+        incident_date: '2020-01-01',
         date_published: '2017-11-10',
         image_url:
           'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
@@ -52,6 +55,9 @@ describe('The Submit form', () => {
         text: "## Recent news stories and blog\n\nposts _highlighted_ the underbelly of YouTube Kids, Google's children-friendly version.",
         plain_text:
           "Recent news stories and blog\n\nposts highlighted the underbelly of YouTube Kids, Google's children-friendly version.\n",
+        url: `https://arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
+        source_domain: `arstechnica.com`,
+        language: 'en',
       });
     });
 
@@ -119,6 +125,8 @@ describe('The Submit form', () => {
           'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
         tags: ['New Tag'],
         incident_id: 1,
+        url: `https://arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
+        source_domain: `arstechnica.com`,
       });
     });
 
@@ -244,6 +252,7 @@ describe('The Submit form', () => {
         tags: [values.tags],
         plain_text:
           'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
+        source_domain: `test.com`,
       });
     });
   });
@@ -515,11 +524,11 @@ describe('The Submit form', () => {
       .should('have.attr', 'src', cloudinaryImageUrl);
   });
 
-  it("Should disable Submit button when linking to an Incident that doesn't exist", () => {
+  it("Should not submit form when linking to an Incident that doesn't exist", () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
-        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 1,
+        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 3456456,
       'findIncident',
       { data: { incident: null } }
     );
@@ -535,7 +544,8 @@ describe('The Submit form', () => {
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
       image_url: 'https://test.com/image.jpg',
-      incident_id: '1',
+      incident_id: '3456456',
+      text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
     };
 
     for (const key in values) {
@@ -548,10 +558,41 @@ describe('The Submit form', () => {
 
     cy.wait('@findIncident');
 
-    cy.contains('.invalid-feedback', 'Incident ID 1 not found!');
-
     cy.get('[name="incident_date"]').should('not.exist');
 
-    cy.contains('button', 'Submit').should('be.disabled');
+    cy.contains('.invalid-feedback', 'Incident ID 3456456 not found!').should('be.visible');
+  });
+
+  it('Should require incident_date when incident_id is not set', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 3456456,
+      'findIncident',
+      { data: { incident: null } }
+    );
+
+    cy.visit(url);
+
+    const values = {
+      url: 'https://test.com',
+      title: 'test title',
+      authors: 'test author',
+      submitters: 'test submitter',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+      image_url: 'https://test.com/image.jpg',
+      text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
+    };
+
+    for (const key in values) {
+      cy.get(`[name="${key}"]`).type(values[key]);
+    }
+
+    cy.get('[name="incident_date"]').should('be.visible');
+
+    cy.contains('button', 'Submit').click();
+
+    cy.contains('.invalid-feedback', '*Incident Date required').should('be.visible');
   });
 });

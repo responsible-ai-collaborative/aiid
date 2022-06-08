@@ -28,6 +28,7 @@ export const FIND_SUBMISSIONS = gql`
       authors
       submitters
       url
+      tags
     }
   }
 `;
@@ -52,6 +53,7 @@ export const FIND_SUBMISSION = gql`
       authors
       submitters
       url
+      tags
     }
   }
 `;
@@ -76,6 +78,7 @@ export const UPDATE_SUBMISSION = gql`
       authors
       submitters
       url
+      tags
     }
   }
 `;
