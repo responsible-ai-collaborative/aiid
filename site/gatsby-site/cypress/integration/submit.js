@@ -600,7 +600,7 @@ describe('The Submit form', () => {
     cy.visit(url);
     cy.get('[name="editor_notes"').should('exist');
   });
-  maybeIt('Should not show the editor notes field when not logged in', () => {
+  it('Should not show the editor notes field when not logged in', () => {
     cy.visit(url);
     cy.get('[name="editor_notes"').should('not.exist');
   });
