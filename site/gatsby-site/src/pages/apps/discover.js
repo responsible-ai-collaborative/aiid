@@ -179,13 +179,6 @@ const getQueryFromState = (searchState) => {
   return query;
 };
 
-const FiltersRow = styled.div`
-  &.hidden {
-    visibility: hidden;
-    height: 0px;
-  }
-`;
-
 const Expander = styled(Col)`
   margin: auto;
 `;
@@ -198,10 +191,32 @@ const ExpandFilters = styled.button`
   border: none;
 `;
 
-const Controls = (props) => {
-  const [expandFilters, setExpandFilters] = useState(
-    Object.keys(props.searchState.refinementList).length > 0
-  );
+const Controls = ({ query }) => {
+  const [expandFilters, setExpandFilters] = useState(false);
+
+  const [firstRender, setFirstRender] = useState(true);
+
+  useEffect(() => {
+    if (firstRender) {
+      if (
+        query.classification ||
+        query.source_domain ||
+        query.authors ||
+        query.submitters ||
+        query.incident_id ||
+        query.epoch_incident_date_min ||
+        query.epoch_incident_date_max ||
+        query.epoch_date_published_min ||
+        query.epoch_date_published_max ||
+        query.flagged
+      ) {
+        //window.setTimeout(() =>
+        document.querySelector('#expand-filters').click();
+        //, 0);
+      }
+      setFirstRender(false);
+    }
+  });
 
   return (
     <>
@@ -217,14 +232,16 @@ const Controls = (props) => {
           <ClearFilters>Clear Filters</ClearFilters>
         </Col>
         <Col className="col-auto">
-          <ExpandFilters data-cy="expand-filters" onClick={() => setExpandFilters(!expandFilters)}>
+          <ExpandFilters
+            id="expand-filters"
+            data-cy="expand-filters"
+            onClick={() => setExpandFilters(!expandFilters)}
+          >
             {expandFilters ? '⏷' : '⏵'} Filter Search
           </ExpandFilters>
         </Col>
       </Row>
-      <FiltersRow className={'mb-4 mt-2 hiddenMobile ' + (expandFilters ? '' : 'hidden')}>
-        <Filters />
-      </FiltersRow>
+      <Row className="mb-3 hiddenMobile">{expandFilters ? <Filters /> : <div></div>}</Row>
     </>
   );
 };
@@ -312,9 +329,9 @@ function DiscoverApp(props) {
               )}
             </Row>
 
-            <Controls searchState={searchState} />
+            <Controls query={query} />
 
-            <FiltersModal />
+            <FiltersModal className="hiddenDesktop" />
           </Container>
 
           <Hits
