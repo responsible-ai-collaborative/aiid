@@ -111,7 +111,7 @@ const LayoutHideSidebar = ({ children, location, menuCollapseCallback }) => {
           dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
         />
       ) : null}
-      <Content>
+      <Content id="content">
         <SidebarToggleButton onClick={() => toggleMenu()} collapse={collapse.toString()}>
           MENU
         </SidebarToggleButton>

@@ -55,7 +55,6 @@ const HitsContainer = styled.div`
 const Hits = ({
   hits,
   toggleFilterByIncidentId,
-  showDetails,
   authorsModal,
   submittersModal,
   flagReportModal,
@@ -92,7 +91,6 @@ const Hits = ({
           submittersModal={submittersModal}
           flagReportModal={flagReportModal}
           toggleFilterByIncidentId={toggleFilterByIncidentId}
-          showDetails={showDetails}
         />
       ))}
     </HitsContainer>

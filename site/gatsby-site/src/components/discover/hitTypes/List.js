@@ -4,9 +4,9 @@ import { Image } from 'utils/cloudinary';
 import styled from 'styled-components';
 import { fill } from '@cloudinary/base/actions/resize';
 import Actions from '../Actions';
-import { getParagraphs } from 'utils/typography';
 import { HeaderTitle, SourceDomainSubtitle } from './shared';
 import md5 from 'md5';
+import ReportText from 'components/reports/ReportText';
 
 const StyledCard = styled(Card)`
   overflow: hidden;
@@ -64,7 +64,11 @@ export default function Details({
           </Text>
         </Contents>
         <Card.Text className="mt-2">
-          {getParagraphs(viewMore ? item.text : item.text.slice(0, 400))}
+          {viewMore ? (
+            <ReportText text={item.text} />
+          ) : (
+            <ReportText text={item.text} maxChars={400} />
+          )}
 
           <Button
             onClick={() => setViewMore((view) => !view)}

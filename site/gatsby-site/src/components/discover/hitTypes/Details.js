@@ -7,6 +7,7 @@ import { fill } from '@cloudinary/base/actions/resize';
 import md5 from 'md5';
 import { navigate } from 'gatsby';
 import Actions from '../Actions';
+import ReportText from 'components/reports/ReportText';
 
 import { SourceDomainSubtitle, HeaderTitle } from './shared';
 
@@ -43,7 +44,9 @@ export default function Details({
 
         <SourceDomainSubtitle item={item} className="mb-2 text-muted" />
 
-        <Card.Text className="flex-fill">{item.text.substr(0, 400) + '...'}</Card.Text>
+        <Card.Text className="flex-fill">
+          <ReportText text={item.text} maxChars={400} />
+        </Card.Text>
 
         <div className="align-bottom">
           {toggleFilterByIncidentId && (
