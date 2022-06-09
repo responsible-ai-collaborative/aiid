@@ -32,7 +32,7 @@ Administering data requires administrative access to the database. This access i
 
 ### People
 
-* `editors`: ["Anonymous"] # (String[]) Editors responsible for the Incident
+* `editors`: ["Sean McGregor"] # (String[]) Editors responsible for the Incident
 
 ### Text
 
@@ -40,9 +40,9 @@ Administering data requires administrative access to the database. This access i
 
 ### Other
 
-* `Alleged deployer of AI system`: String[] ??
-* `Alleged developer of AI system`: String[] ??
-* `Alleged harmed or nearly harmed parties`: String[] ??
+* `Alleged deployer of AI system`: String[] The entities responsible for deploying the AI system in the real world.
+* `Alleged developer of AI system`: String[] The entities responsible for developing the AI system in the real world.
+* `Alleged harmed or nearly harmed parties`: String[] The entities harmed as a result of the AI system.
 
 ## Reports Collection Details
 
@@ -75,7 +75,7 @@ Administering data requires administrative access to the database. This access i
 * `title`: "title of the report" # (string) The title of the report that is indexed.
 * `description`: "Short text for the report"
 * `text`: "Long text for the report" # (string) This is the complete text for the report in the MongoDB instance, and a shortened subset in the Algolia index
-* `tags`: ["Some Tag"] # (String[]) Tags assoaciated with the report.
+* `tags`: ["Some Tag"] # (String[]) Tags associated with the report.
 
 ### Media
 
