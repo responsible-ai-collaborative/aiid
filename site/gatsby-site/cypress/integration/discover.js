@@ -30,7 +30,7 @@ describe('The Discover app', () => {
   it('Filters by incident Id using top filters', () => {
     cy.visit(url);
 
-    cy.get('summary').click();
+    cy.get('[data-cy=expand-filters]').click();
 
     cy.contains('button', 'Incident ID').click();
 
@@ -45,6 +45,8 @@ describe('The Discover app', () => {
 
   it('Filters by incident Id using card button', () => {
     cy.visit(url);
+
+    cy.get('[data-cy=expand-filters]').click();
 
     cy.get('div[class^="Hits__HitsContainer"]')
       .children()

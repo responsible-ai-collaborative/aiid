@@ -210,9 +210,7 @@ const Controls = ({ query }) => {
         query.epoch_date_published_max ||
         query.flagged
       ) {
-        //window.setTimeout(() =>
         document.querySelector('#expand-filters').click();
-        //, 0);
       }
       setFirstRender(false);
     }
