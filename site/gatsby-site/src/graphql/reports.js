@@ -12,6 +12,7 @@ export const FIND_REPORT = gql`
       date_downloaded
       image_url
       text
+      plain_text
       tags
       flag
       report_number
@@ -35,6 +36,7 @@ export const UPDATE_REPORT = gql`
       epoch_date_modified
       image_url
       text
+      plain_text
       tags
       flag
       report_number

@@ -25,6 +25,9 @@ const ignoredErrors = [
 
   // I have no Idea why this is happening, but it is.
   'Transport not open',
+
+  // flakiness, flakiness everywhere: https://github.com/cypress-io/cypress/issues/8418
+  'ResizeObserver loop limit exceeded',
 ];
 
 Cypress.on('uncaught:exception', (err) => {
