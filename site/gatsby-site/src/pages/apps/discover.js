@@ -179,7 +179,7 @@ const getQueryFromState = (searchState) => {
   return query;
 };
 
-const Expander = styled(Col)`
+const FlexGap = styled(Col)`
   margin: auto;
 `;
 
@@ -208,7 +208,7 @@ const Controls = ({ query }) => {
         query.epoch_incident_date_max ||
         query.epoch_date_published_min ||
         query.epoch_date_published_max ||
-        query.flagged
+        query.flag
       ) {
         document.querySelector('#expand-filters').click();
       }
@@ -218,14 +218,14 @@ const Controls = ({ query }) => {
 
   return (
     <>
-      <Row className="justify-content-start align-items-center mb-2 mt-3 hiddenMobile">
+      <Row className="justify-content-start align-items-center mt-3 hiddenMobile">
         <Col className="col-auto">
           <Stats />
         </Col>
         <Col className="col-auto">
           <DisplayModeSwitch />
         </Col>
-        <Expander />
+        <FlexGap />
         <Col className="col-auto">
           <ClearFilters>Clear Filters</ClearFilters>
         </Col>

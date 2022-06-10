@@ -13,7 +13,7 @@ const StyledFilter = styled(Filter)`
 function Filters() {
   return (
     <>
-      <Row xs={1} md={2} lg={4} className="d-none d-md-flex g-2">
+      <Row xs={1} md={2} lg={4} className="d-none d-md-flex g-2 mt-1">
         {REFINEMENT_LISTS.map((list) => (
           <Col key={list.attribute}>
             <StyledFilter type={list.type} {...list} />
