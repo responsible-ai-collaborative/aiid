@@ -56,12 +56,3 @@ exports.up = async ({ context: { client } }) => {
     }
   }
 };
-
-/**
- * @param {{context: {client: import('mongodb').MongoClient}}} context
- */
-exports.down = async ({ context: { client } }) => {
-  const collection = client.db(config.realm.production_db.db_name).collection('incidents');
-
-  await collection.updateMany({ editors: ['Sean McGregor'] }, { $unset: { editors: [] } });
-};
