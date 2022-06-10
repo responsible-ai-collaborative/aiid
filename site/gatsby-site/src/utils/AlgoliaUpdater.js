@@ -1,5 +1,9 @@
 const algoliaSettings = require('./algoliaSettings');
 
+const remark = require('remark');
+
+const remarkStrip = require('strip-markdown');
+
 const truncate = (doc) => {
   for (const [key, value] of Object.entries(doc)) {
     if (typeof value == 'string') {
@@ -59,9 +63,12 @@ class AlgoliaUpdater {
       for (const report_number of incident.reports) {
         const report = reports.find((r) => r.report_number == report_number);
 
+        const text = await remark().use(remarkStrip).process(report.text);
+
         const entry = {
           ...report,
           objectID: report.report_number.toString(),
+          text: text.contents.toString().trim(),
           incident_id: incident.incident_id,
         };
 

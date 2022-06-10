@@ -1,8 +1,10 @@
-const lodash = require('lodash');
-
 const { queue } = require('async');
 
 const cloneDeep = require('lodash.clonedeep');
+
+const remark = require('remark');
+
+const remarkStrip = require('strip-markdown');
 
 const keys = ['text', 'title'];
 
@@ -83,9 +85,15 @@ class Translator {
       .db('translations')
       .collection(`incident_reports_${language}`);
 
-    const fields = [...keys, 'report_number'];
+    const translated = [];
 
-    const translated = items.map((item) => lodash.pick(item, fields));
+    for (const item of items) {
+      const { report_number, text, title } = item;
+
+      const plain_text = (await remark().use(remarkStrip).process(text)).contents.toString();
+
+      translated.push({ report_number, text, title, plain_text });
+    }
 
     return incidents.insertMany(translated);
   }
@@ -133,7 +141,7 @@ class Translator {
 
         this.reporter.log(`Stored [${result.insertedCount}] new reports to [${to}]`);
       } else {
-        this.reporter.log(`No new incident reports neeed translation to [${to}]`);
+        this.reporter.log(`No new incident reports needed translation to [${to}]`);
       }
 
       done();

@@ -10,11 +10,45 @@ import config from '../../../config.js';
 
 import Sidebar from '../sidebar';
 
+const SkipToContent = styled.a`
+  color: white;
+  background-color: #001934;
+  position: relative;
+  order: 1;
+  margin-left: auto;
+  opacity: 0;
+  width: 0px;
+  height: 0px;
+  overflow: hidden;
+  :focus {
+    opacity: 1;
+    padding: 0ch 1ch;
+    width: unset;
+    height: unset;
+  }
+  @media (max-width: 767px) {
+    font-size: 12px !important;
+  }
+`;
+
 const NavBarHeaderContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   width: 100%;
+  .navbarHeader {
+    order: 0;
+  }
+  .divider {
+    width: 1px;
+  }
+  .navBarBrand > * {
+    flex-shrink: 0;
+  }
+  .navBarBrand > .headerTitle {
+    flex-shrink: 1;
+  }
 `;
 
 const HeaderIconsContainer = styled.div`
@@ -22,7 +56,7 @@ const HeaderIconsContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-
+  order: 2;
   .paddingAround {
     padding-right: 10px;
   }
@@ -111,6 +145,7 @@ const Header = () => {
           <div>
             <nav className={'navBarDefault'}>
               <NavBarHeaderContainer>
+                <SkipToContent href="#content">Skip to Content</SkipToContent>
                 <div className={'navBarHeader'}>
                   <Link to={finalLogoLink} className={'navBarBrand'}>
                     <img

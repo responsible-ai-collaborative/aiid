@@ -12,6 +12,7 @@ import {
 } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { format, getUnixTime } from 'date-fns';
+import { stripMarkdown } from 'utils/typography';
 import { Formik } from 'formik';
 import { gql } from '@apollo/client';
 
@@ -69,6 +70,7 @@ function EditCitePage(props) {
           },
           set: {
             ...updated,
+            plain_text: await stripMarkdown(updated.text),
           },
         },
       });
@@ -120,7 +122,7 @@ function EditCitePage(props) {
       )}
       {!reportData?.report && !loading && <div>Report not found</div>}
 
-      {reportData?.report && incidentData?.incident && (
+      {!loading && reportData?.report && incidentData?.incident && (
         <Formik
           validationSchema={schema}
           onSubmit={handleSubmit}

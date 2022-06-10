@@ -10,25 +10,50 @@ Administering data requires administrative access to the database. This access i
 
 # Collections
 
-* `incidents`: this is the main incident database
+* `incidents`: this is the main incident collection that links incidents to  reports in a one-to-many relationship
+* `reports`: represents a particular report of an incident
 * `quickadd`: A collection of links without their associated content. This is to make it easier to capture lots of data that needs to subsequently get processed into full records.
-* `submissions`: Prospective full incidents before they are rotated into the `incidents` collection. These should have the complete `incidents` schema minus the elements that are granted when promoted to incident reports.
+* `submissions`: Prospective full reports before they are rotated into the `reports` collection. These should have the complete `reports` schema minus the elements that are granted when promoted.
 * `duplicates`: All the incident numbers that have been migrated to an earlier incident number.
 * `taxa`: Metadata describing the taxonomies of the classifications collection.
 * `classifications`: All the taxonomic classifications of incident records.
 
-# Incidents Collection Details
+## Incidents Collection Details
 
-Systems
+### Systems
 
 * `_id`: 5534b8c29cfd494a0103d45a # MongoDB database hash
 * `incident_id`: 1 # (int) The incrementing primary key for incidents, which are a collection of reports.
-* `ref_number`: 25 # (int) The reference number scoped to the incident ID.
+* `reports`: [1, 2, 3] # (Int[]) The list of reports by `report_number`, that belong to this Incident
+
+### Dates
+
+* `date`: 2019-07-25 # (String) Date the incident occurred.
+
+### People
+
+* `editors`: ["Sean McGregor"] # (String[]) Editors responsible for the Incident
+
+### Text
+
+* `title`: ["Anonymous"]: String title
+
+### Other
+
+* `Alleged deployer of AI system`: String[] The entities responsible for deploying the AI system in the real world.
+* `Alleged developer of AI system`: String[] The entities responsible for developing the AI system in the real world.
+* `Alleged harmed or nearly harmed parties`: String[] The entities harmed as a result of the AI system.
+
+## Reports Collection Details
+
+### Systems
+
+* `_id`: 5534b8c29cfd494a0103d45a # MongoDB database hash
+* `ref_number`: 25 # (int) The reference number scoped to the incident the report belongs to
 * `report_number`: 2379 # (int) the incrementing primary key for the report. This is a global resource identifier.
 
-Dates
+### Dates
 
-* `incident_date`: `2019-07-25` # (String) Date the incident occurred. Defaults to the article date.
 * `date_downloaded`:`2019-07-25` # (String) Date the report was downloaded.
 * `date_submitted`:`2019-07-25` # (String) Date the report was submitted to the AIID. This determines citation order.
 * `date_modified`: `2019-07-25` # (String) Date the report was edited.
@@ -39,37 +64,38 @@ Dates
 * `epoch_date_modified`: `1564016400` # (Int) Date the report was edited in the Unix Epoch.
 * `epoch_date_published`: `1564016400` # (Int) The publication date of the report in the Unix Epoch.
 
-People
+### People
 
 * `submitters`: Array(string) # People that submitted the incident report
 * `authors`: Array(string) # People that wrote the incident report
 * `editors`: Array(string) # The editors of the incident. Editors are listed in the incident citation and can promote user-submitted records to incident reports.
 
-Text
+### Text
 
 * `title`: "title of the report" # (string) The title of the report that is indexed.
 * `description`: "Short text for the report"
 * `text`: "Long text for the report" # (string) This is the complete text for the report in the MongoDB instance, and a shortened subset in the Algolia index
+* `tags`: ["Some Tag"] # (String[]) Tags associated with the report.
 
-Media
+### Media
 
 * `language`: "en" # (string) The language identifier of the report.
 * `image_url`: "http://si.wsj.net/public/resources/images/BN-IM269_YouTub_P_2015051817" # (string) The URL for the image that is indexed. This will be stored on the server as a hash of the URL.
 * `source_domain`: "blogs.wsj.com" # (string) The domain name hosting the report.
 * `url`: "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti" # The fully qualified URL to the report as hosted on the web.
-
+* `cloudinary_id`: "reports/<some URL>" Public ID used by Cloudinary to host the report's main image.
 
 [site/realm/data_sources/mongodb-atlas/aiidprod/incidents/schema.json](site/realm/data_sources/mongodb-atlas/aiidprod/incidents/schema.json)
 
-# QuickAdd Collection
+## QuickAdd Collection
 
 [site/realm/data_sources/mongodb-atlas/aiidprod/quickadd/schema.json](site/realm/data_sources/mongodb-atlas/aiidprod/quickadd/schema.json)
 
-# Submissions Collection
+## Submissions Collection
 
 [site/realm/data_sources/mongodb-atlas/aiidprod/submissions/schema.json](site/realm/data_sources/mongodb-atlas/aiidprod/submissions/schema.json)
 
-# Duplicates Collection Details
+## Duplicates Collection Details
 
 Systems
 
@@ -79,7 +105,7 @@ Systems
 
 [site/realm/data_sources/mongodb-atlas/aiidprod/duplicates/schema.json](site/realm/data_sources/mongodb-atlas/aiidprod/duplicates/schema.json)
 
-# Taxa Collection Details
+## Taxa Collection Details
 
 **Example Doc**
 
@@ -136,7 +162,7 @@ Systems
 
 [site/realm/ data_sources/mongodb-atlas/aiidprod/taxa/schema.json](site/realm/data_sources/mongodb-atlas/aiidprod/taxa/schema.json)
 
-# Classifications Collection
+## Classifications Collection
 
 **Top Level Attributes**
 

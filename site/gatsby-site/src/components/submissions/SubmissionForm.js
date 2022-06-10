@@ -13,6 +13,8 @@ import Label from '../forms/Label';
 import TagsControl from 'components/forms/TagsControl';
 import IncidentIdField from 'components/incidents/IncidentIdField';
 import getSourceDomain from '../../utils/getSourceDomain';
+import { Editor } from '@bytemd/react';
+import 'bytemd/dist/index.css';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -112,8 +114,8 @@ const SubmissionForm = () => {
     errors,
     touched,
     setValues,
-    setFieldTouched,
     setFieldValue,
+    setFieldTouched,
     handleChange,
     handleSubmit,
     handleBlur,
@@ -125,17 +127,9 @@ const SubmissionForm = () => {
 
   const [parsingNews, setParsingNews] = useState(false);
 
-  const coldStartToast = () => {
-    addToast({
-      message: <>Sometimes fetching news info may take a while...</>,
-      severity: SEVERITY.warning,
-    });
-  };
-
   const parseNewsUrl = useCallback(
     async (newsUrl) => {
       setParsingNews(true);
-      const timeout = setTimeout(coldStartToast, 20000);
 
       try {
         const url = `/api/parseNews?url=${encodeURIComponent(newsUrl)}`;
@@ -172,7 +166,6 @@ const SubmissionForm = () => {
         });
       }
 
-      clearTimeout(timeout);
       setParsingNews(false);
     },
     [values]
@@ -187,6 +180,10 @@ const SubmissionForm = () => {
       // eslint-disable-next-line no-empty
     } // just ignore it
   }, [values?.url]);
+
+  useEffect(() => {
+    setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
+  }, [values.image_url]);
 
   return (
     <>
@@ -271,15 +268,10 @@ const SubmissionForm = () => {
           {...TextInputGroupProps}
         />
 
-        <TextInputGroup
-          name="text"
-          label="Text"
-          placeholder="Text of the report"
-          as="textarea"
-          rows={8}
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
+        <Form.Group className="mt-3" data-color-mode="light">
+          <Label popover={POP_OVERS.text} label={'Text'} />
+          <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
+        </Form.Group>
 
         <Form.Group className="mt-3">
           <Label popover={POP_OVERS['tags']} label={'Tags'} />
