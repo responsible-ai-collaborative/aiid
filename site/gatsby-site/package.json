@@ -60,8 +60,6 @@
     "gatsby-transformer-sharp": "^4.16.0",
     "graphql": "^15.8.0",
     "is-absolute-url": "^3.0.3",
-    "lodash.clonedeep": "^4.5.0",
-    "lodash.startcase": "^4.4.0",
     "md5": "^2.3.0",
     "mongodb": "^4.2.1",
     "node-fetch": "^2.6.7",
