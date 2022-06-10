@@ -180,6 +180,10 @@ const SubmissionForm = () => {
     } // just ignore it
   }, [values?.url]);
 
+  useEffect(() => {
+    setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
+  }, [values.image_url]);
+
   return (
     <>
       <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">

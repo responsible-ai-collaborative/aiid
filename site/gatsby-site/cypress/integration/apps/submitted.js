@@ -281,6 +281,7 @@ describe('Submitted reports', () => {
         expect(set.submitters).deep.eq(submission.submitters);
         expect(set.source_domain).eq(submission.source_domain);
         expect(set.url).eq(submission.url);
+        expect(set.source_domain).eq(submission.source_domain);
         expect(set.cloudinary_id).eq(submission.cloudinary_id);
         expect(set.image_url).eq(submission.image_url);
 
