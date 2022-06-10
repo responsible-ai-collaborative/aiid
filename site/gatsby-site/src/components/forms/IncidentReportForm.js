@@ -111,6 +111,16 @@ const IncidentReportForm = () => {
   const [parsingNews, setParsingNews] = useState(false);
 
   useEffect(() => {
+    try {
+      const url = new URL(values?.url);
+
+      setFieldValue('source_domain', url.hostname);
+    } catch (e) {
+      // eslint-disable-next-line no-empty
+    } // just ignore it
+  }, [values?.url]);
+
+  useEffect(() => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
 

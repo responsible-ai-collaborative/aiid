@@ -14,7 +14,8 @@ describe('Generate a Algolia index', () => {
         authors: ['Jodi Kantor'],
         image_url:
           'https://static01.nyt.com/images/2014/08/13/us/worker-hours-1407960684740/worker-hours-1407960684740-articleLarge.jpg',
-        cloudinary_id: null,
+        cloudinary_id:
+          'reports/static01.nyt.com/images/2014/08/13/us/worker-hours-1407960684740/worker-hours-1407960684740-articleLarge.jpg',
         language: 'en',
         source_domain: 'nytimes.com',
         text: 'SAN DIEGO — In a typical last-minute scramble.\n\nAnother line with Markdown',

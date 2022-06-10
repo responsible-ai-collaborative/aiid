@@ -123,6 +123,8 @@ describe('The Submit form', () => {
         date_published: '2017-11-10',
         image_url:
           'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+        cloudinary_id:
+          'reports/cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
         tags: ['New Tag'],
         incident_id: 1,
         url: `https://arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
@@ -253,6 +255,7 @@ describe('The Submit form', () => {
         plain_text:
           'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
         source_domain: `test.com`,
+        cloudinary_id: `reports/test.com/image.jpg`,
       });
     });
   });

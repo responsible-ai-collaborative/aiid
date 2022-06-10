@@ -27,5 +27,12 @@
             "bsonType": "string"
         }
     },
+    "required": [
+        "_id",
+        "classifications",
+        "incident_id",
+        "namespace",
+        "notes"
+    ],
     "title": "resource"
 }

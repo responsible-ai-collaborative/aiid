@@ -116,6 +116,7 @@ describe('Edit report', () => {
       );
       expect(xhr.request.body.variables.set.title).eq('Test Title');
       expect(xhr.request.body.variables.set.url).eq('https://www.test.com/test');
+      expect(xhr.request.body.variables.set.source_domain).eq('www.test.com');
     });
 
     cy.wrap(updateIncidentInvoked).should('eq', false);
