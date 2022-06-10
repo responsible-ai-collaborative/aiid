@@ -1,7 +1,6 @@
 const config = require('../config');
 
 /**
- * @type {import('umzug').MigrationFn<any>}
  * @param {{context: {client: import('mongodb').MongoClient}}} context
  */
 exports.up = async ({ context: { client } }) => {
@@ -59,7 +58,6 @@ exports.up = async ({ context: { client } }) => {
 };
 
 /**
- * @type {import('umzug').MigrationFn<any>}
  * @param {{context: {client: import('mongodb').MongoClient}}} context
  */
 exports.down = async ({ context: { client } }) => {
