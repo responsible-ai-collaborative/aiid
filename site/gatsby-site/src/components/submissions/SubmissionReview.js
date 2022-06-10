@@ -188,7 +188,7 @@ const SubmissionReview = ({ submission }) => {
             {submission['title']}
             <br />
             <Badge bg="secondary">
-              Inc: {submission.incident_date || incidentData?.incident.date}
+              Inc: {submission.incident_date || incidentData?.incident?.date}
             </Badge>{' '}
             <Badge bg="secondary">Pub: {submission.date_published}</Badge>{' '}
             <Badge bg="secondary">Sub: {submission.date_submitted}</Badge>{' '}
