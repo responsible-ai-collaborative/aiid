@@ -16,5 +16,9 @@
             "bsonType": "string"
         }
     },
+    "required": [
+        "url",
+        "date_submitted"
+    ],
     "title": "quickadd"
 }
