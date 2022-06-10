@@ -1,6 +1,6 @@
 const { queue } = require('async');
 
-const cloneDeep = require('lodash.clonedeep');
+const { cloneDeep } = require('lodash');
 
 const remark = require('remark');
 

@@ -30,9 +30,7 @@ export default function PostsListing() {
               author
               image {
                 childImageSharp {
-                  fluid(maxWidth: 800) {
-                    ...GatsbyImageSharpFluid
-                  }
+                  gatsbyImageData(layout: FIXED)
                 }
               }
             }
