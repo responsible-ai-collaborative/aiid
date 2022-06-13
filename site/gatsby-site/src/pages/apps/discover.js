@@ -10,20 +10,14 @@ import config from '../../../config';
 import Hits from 'components/discover/Hits';
 import SearchBox from 'components/discover/SearchBox';
 import Pagination from 'components/discover/Pagination';
-import Filters from 'components/discover/Filters';
 import FiltersModal from 'components/discover/FiltersModal';
 import { SearchContext } from 'components/discover/useSearch';
 import { queryConfig } from 'components/discover/queryParams';
 import VirtualFilters from 'components/discover/VirtualFilters';
+import Controls from 'components/discover/Controls';
 import { Container, Row, Col } from 'react-bootstrap';
 import LanguageSwitcher from 'components/i18n/LanguageSwitcher';
 import useTranslation from 'components/i18n/useTranslation';
-import Stats from 'components/discover/Stats';
-import ClearFilters from 'components/discover/ClearFilters';
-import DisplayModeSwitch from 'components/discover/DisplayModeSwitch';
-import styled from 'styled-components';
-
-import REFINEMENT_LISTS from '../../components/discover/REFINEMENT_LISTS';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -179,68 +173,6 @@ const getQueryFromState = (searchState) => {
   query.page = searchState.page;
 
   return query;
-};
-
-const FlexGap = styled(Col)`
-  margin: auto;
-`;
-
-const ExpandFilters = styled.button`
-  user-select: none;
-  cursor: pointer;
-  color: inherit;
-  background: none;
-  border: none;
-`;
-
-const Controls = ({ query }) => {
-  const [expandFilters, setExpandFilters] = useState(false);
-
-  const [firstRender, setFirstRender] = useState(true);
-
-  useEffect(() => {
-    if (firstRender) {
-      let filter = false;
-
-      for (let refinement of REFINEMENT_LISTS) {
-        if (query[refinement.attribute]) {
-          filter = true;
-          break;
-        }
-      }
-      if (filter) {
-        document.querySelector('#expand-filters').click();
-      }
-      setFirstRender(false);
-    }
-  });
-
-  return (
-    <>
-      <Row className="justify-content-start align-items-center mt-3 hiddenMobile">
-        <Col className="col-auto">
-          <Stats />
-        </Col>
-        <Col className="col-auto">
-          <DisplayModeSwitch />
-        </Col>
-        <FlexGap />
-        <Col className="col-auto">
-          <ClearFilters>Clear Filters</ClearFilters>
-        </Col>
-        <Col className="col-auto">
-          <ExpandFilters
-            id="expand-filters"
-            data-cy="expand-filters"
-            onClick={() => setExpandFilters(!expandFilters)}
-          >
-            {expandFilters ? '⏷' : '⏵'} Filter Search
-          </ExpandFilters>
-        </Col>
-      </Row>
-      <Row className="mb-3 hiddenMobile">{expandFilters ? <Filters /> : <div></div>}</Row>
-    </>
-  );
 };
 
 function DiscoverApp(props) {
