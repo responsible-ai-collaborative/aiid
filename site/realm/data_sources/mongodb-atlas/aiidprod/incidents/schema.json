@@ -47,9 +47,10 @@
         }
     },
     "required": [
-      "incident_id",
-      "editors", 
-      "reports"
+        "incident_id",
+        "editors",
+        "reports",
+        "date"
     ],
     "title": "incident"
 }
