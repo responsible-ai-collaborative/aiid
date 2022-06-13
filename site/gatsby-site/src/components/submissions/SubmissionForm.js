@@ -1,7 +1,7 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import { useFormikContext } from 'formik';
-import * as Yup from 'yup';
+import * as yup from 'yup';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { dateRegExp } from 'utils/date';
@@ -12,6 +12,9 @@ import * as POP_OVERS from '../ui/PopOvers';
 import Label from '../forms/Label';
 import TagsControl from 'components/forms/TagsControl';
 import IncidentIdField from 'components/incidents/IncidentIdField';
+import getSourceDomain from '../../utils/getSourceDomain';
+import { Editor } from '@bytemd/react';
+import 'bytemd/dist/index.css';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -35,36 +38,50 @@ import IncidentIdField from 'components/incidents/IncidentIdField';
 // * language: "en" # (string) The language identifier of the report.
 
 // Schema for yup
-export const schema = Yup.object().shape({
-  title: Yup.string()
+export const schema = yup.object().shape({
+  title: yup
+    .string()
     .min(6, '*Title must have at least 6 characters')
     .max(500, "*Titles can't be longer than 500 characters")
     .required('*Title is required'),
-  authors: Yup.string()
+  authors: yup
+    .string()
     .min(3, '*Authors must have at least 3 characters')
     .max(200, "*Authors can't be longer than 200 characters")
     .required('*Author is required. Anonymous or the publication can be entered.'),
-  submitters: Yup.string()
+  submitters: yup
+    .string()
     .min(3, '*Submitter must have at least 3 characters')
-    .max(200, "*Submitter list can't be longer than 200 characters"),
-  text: Yup.string()
+    .max(200, "*Submitter list can't be longer than 200 characters")
+    .required('*Submitter is required. Anonymous can be entered.'),
+  text: yup
+    .string()
     .min(80, '*Text must have at least 80 characters')
     .max(50000, "*Text can't be longer than 50000 characters")
     .required('*Text is required'),
-  date_published: Yup.string()
+  date_published: yup
+    .string()
     .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
     .required('*Date published is required'),
-  date_downloaded: Yup.string()
+  date_downloaded: yup
+    .string()
     .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
     .required('*Date downloaded required'),
-  url: Yup.string()
+  url: yup
+    .string()
     .url('*Must enter URL in http://www.example.com format')
     .required('*URL required'),
-  image_url: Yup.string().matches(
-    /((https?):\/\/)(\S)*$/,
-    '*Must enter URL in http://www.example.com/images/preview.png format'
-  ),
-  incident_id: Yup.number().positive().integer('*Must be an incident number or empty'),
+  image_url: yup
+    .string()
+    .matches(
+      /((https?):\/\/)(\S)*$/,
+      '*Must enter URL in http://www.example.com/images/preview.png format'
+    ),
+  incident_id: yup.number().positive().integer('*Must be an incident number or empty'),
+  incident_date: yup.date().when('incident_id', {
+    is: (incident_id) => incident_id == '' || incident_id === undefined,
+    then: yup.date().required('*Incident Date required'),
+  }),
 });
 
 const SubmissionForm = () => {
@@ -97,6 +114,7 @@ const SubmissionForm = () => {
     errors,
     touched,
     setValues,
+    setFieldValue,
     setFieldTouched,
     handleChange,
     handleSubmit,
@@ -109,17 +127,9 @@ const SubmissionForm = () => {
 
   const [parsingNews, setParsingNews] = useState(false);
 
-  const coldStartToast = () => {
-    addToast({
-      message: <>Sometimes fetching news info may take a while...</>,
-      severity: SEVERITY.warning,
-    });
-  };
-
   const parseNewsUrl = useCallback(
     async (newsUrl) => {
       setParsingNews(true);
-      const timeout = setTimeout(coldStartToast, 20000);
 
       try {
         const url = `/api/parseNews?url=${encodeURIComponent(newsUrl)}`;
@@ -156,11 +166,24 @@ const SubmissionForm = () => {
         });
       }
 
-      clearTimeout(timeout);
       setParsingNews(false);
     },
     [values]
   );
+
+  useEffect(() => {
+    try {
+      const url = new URL(values?.url);
+
+      setFieldValue('source_domain', getSourceDomain(url));
+    } catch (e) {
+      // eslint-disable-next-line no-empty
+    } // just ignore it
+  }, [values?.url]);
+
+  useEffect(() => {
+    setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
+  }, [values.image_url]);
 
   return (
     <>
@@ -245,15 +268,10 @@ const SubmissionForm = () => {
           {...TextInputGroupProps}
         />
 
-        <TextInputGroup
-          name="text"
-          label="Text"
-          placeholder="Text of the report"
-          as="textarea"
-          rows={8}
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
+        <Form.Group className="mt-3" data-color-mode="light">
+          <Label popover={POP_OVERS.text} label={'Text'} />
+          <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
+        </Form.Group>
 
         <Form.Group className="mt-3">
           <Label popover={POP_OVERS['tags']} label={'Tags'} />
@@ -264,6 +282,7 @@ const SubmissionForm = () => {
           name="incident_id"
           className="mt-3"
           placeHolder="Leave empty to report a new incident"
+          showIncidentData={false}
         />
 
         {!values.incident_id && (

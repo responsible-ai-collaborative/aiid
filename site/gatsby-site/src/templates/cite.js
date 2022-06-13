@@ -203,9 +203,20 @@ function CitePage(props) {
         {taxonomies.length > 0 && (
           <Row id="taxa-area">
             <Col>
-              {taxonomies.map((t) => (
-                <Taxonomy key={t.namespace} taxonomy={t} incidentId={incident.incident_id} />
-              ))}
+              {taxonomies.map((t) => {
+                const canEdit =
+                  isRole('taxonomy_editor') ||
+                  isRole('taxonomy_editor_' + t.namespace.toLowerCase());
+
+                return canEdit || t.classificationsArray.length > 0 ? (
+                  <Taxonomy
+                    key={t.namespace}
+                    taxonomy={t}
+                    incidentId={incident.incident_id}
+                    canEdit={canEdit}
+                  />
+                ) : null;
+              })}
             </Col>
           </Row>
         )}
@@ -236,7 +247,6 @@ function CitePage(props) {
                 authorsModal={authorsModal}
                 submittersModal={submittersModal}
                 flagReportModal={flagReportModal}
-                showDetails={true}
               />
             </Col>
           </Row>

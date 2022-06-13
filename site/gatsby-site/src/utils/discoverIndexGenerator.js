@@ -21,6 +21,7 @@ module.exports = async ({ graphql }) => {
           language
           source_domain
           text
+          plain_text
           title
           url
           date_downloaded
@@ -153,7 +154,10 @@ module.exports = async ({ graphql }) => {
         incident_date: incident.date,
         incident_id: incident.incident_id,
         classifications,
+        text: report.plain_text,
       };
+
+      delete reportData.plain_text;
 
       downloadData.push(truncate(reportData));
     }

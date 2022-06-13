@@ -12,6 +12,7 @@ import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
 import isString from 'lodash/isString';
 import SubmissionForm, { schema } from 'components/submissions/SubmissionForm';
 import { Formik } from 'formik';
+import { stripMarkdown } from 'utils/typography';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -79,9 +80,7 @@ const SubmitForm = () => {
     setCsvIndex(Math.min(csvData.length - 1, csvIndex + 1));
   };
 
-  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    setSubmitting(true);
-
+  const handleSubmit = async (values, { resetForm }) => {
     try {
       const date_submitted = format(new Date(), 'yyyy-MM-dd');
 
@@ -98,6 +97,7 @@ const SubmitForm = () => {
             : values.submitters
           : ['Anonymous'],
         language: 'en',
+        plain_text: await stripMarkdown(values.text),
       };
 
       await insertSubmission({ variables: { submission } });
@@ -119,8 +119,6 @@ const SubmitForm = () => {
         severity: SEVERITY.warning,
       });
     }
-
-    setSubmitting(false);
   };
 
   return (
@@ -131,7 +129,7 @@ const SubmitForm = () => {
         initialValues={submission}
         enableReinitialize={true}
       >
-        {({ isValid, isSubmitting, submitForm, values }) => (
+        {({ isSubmitting, submitForm, values }) => (
           <>
             <SubmissionForm />
 
@@ -146,7 +144,7 @@ const SubmitForm = () => {
               className="mt-3"
               variant="primary"
               type="submit"
-              disabled={isSubmitting || !isValid}
+              disabled={isSubmitting}
             >
               Submit
             </Button>

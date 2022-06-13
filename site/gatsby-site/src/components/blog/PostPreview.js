@@ -1,5 +1,5 @@
 import React from 'react';
-import Img from 'gatsby-image';
+import { GatsbyImage as Img } from 'gatsby-plugin-image';
 import styled from 'styled-components';
 import { Link } from 'gatsby';
 import { format } from 'date-fns';
@@ -18,7 +18,7 @@ function PostPreview({ post, className }) {
           <Link to={post.fields.slug}>
             <StyledImg
               className="img-fluid rounded-start"
-              fluid={post.frontmatter.image.childImageSharp.fluid}
+              image={post.frontmatter.image.childImageSharp.gatsbyImageData}
             />
           </Link>
         </Col>
