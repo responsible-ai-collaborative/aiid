@@ -14,6 +14,7 @@ import Typeahead from './Typeahead';
 import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
 import IncidentIdField from 'components/incidents/IncidentIdField';
+import getSourceDomain from '../../utils/getSourceDomain';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -114,7 +115,7 @@ const IncidentReportForm = () => {
     try {
       const url = new URL(values?.url);
 
-      setFieldValue('source_domain', url.hostname);
+      setFieldValue('source_domain', getSourceDomain(url));
     } catch (e) {
       // eslint-disable-next-line no-empty
     } // just ignore it
