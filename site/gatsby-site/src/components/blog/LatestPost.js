@@ -29,9 +29,7 @@ export default function LatestPost({ className }) {
               author
               image {
                 childImageSharp {
-                  fluid(maxWidth: 800) {
-                    ...GatsbyImageSharpFluid
-                  }
+                  gatsbyImageData(layout: FIXED)
                 }
               }
             }

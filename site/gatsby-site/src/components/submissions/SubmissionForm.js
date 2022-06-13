@@ -12,6 +12,7 @@ import * as POP_OVERS from '../ui/PopOvers';
 import Label from '../forms/Label';
 import TagsControl from 'components/forms/TagsControl';
 import IncidentIdField from 'components/incidents/IncidentIdField';
+import getSourceDomain from '../../utils/getSourceDomain';
 import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
 
@@ -174,7 +175,7 @@ const SubmissionForm = () => {
     try {
       const url = new URL(values?.url);
 
-      setFieldValue('source_domain', url.hostname);
+      setFieldValue('source_domain', getSourceDomain(url));
     } catch (e) {
       // eslint-disable-next-line no-empty
     } // just ignore it
