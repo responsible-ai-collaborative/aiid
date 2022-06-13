@@ -23,6 +23,8 @@ import ClearFilters from 'components/discover/ClearFilters';
 import DisplayModeSwitch from 'components/discover/DisplayModeSwitch';
 import styled from 'styled-components';
 
+import REFINEMENT_LISTS from '../../components/discover/REFINEMENT_LISTS';
+
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
   config.header.search.algoliaSearchKey
@@ -198,18 +200,15 @@ const Controls = ({ query }) => {
 
   useEffect(() => {
     if (firstRender) {
-      if (
-        query.classification ||
-        query.source_domain ||
-        query.authors ||
-        query.submitters ||
-        query.incident_id ||
-        query.epoch_incident_date_min ||
-        query.epoch_incident_date_max ||
-        query.epoch_date_published_min ||
-        query.epoch_date_published_max ||
-        query.flag
-      ) {
+      let filter = false;
+
+      for (let refinement of REFINEMENT_LISTS) {
+        if (query[refinement.attribute]) {
+          filter = true;
+          break;
+        }
+      }
+      if (filter) {
         document.querySelector('#expand-filters').click();
       }
       setFirstRender(false);
