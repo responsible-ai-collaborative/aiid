@@ -22,24 +22,19 @@ const ExpandFilters = styled.button`
 const Controls = ({ query }) => {
   const [expandFilters, setExpandFilters] = useState(false);
 
-  const [firstRender, setFirstRender] = useState(true);
-
   useEffect(() => {
-    if (firstRender) {
-      let filter = false;
+    let filter = false;
 
-      for (let refinement of REFINEMENT_LISTS) {
-        if (query[refinement.attribute]) {
-          filter = true;
-          break;
-        }
+    for (let refinement of REFINEMENT_LISTS) {
+      if (query[refinement.attribute]) {
+        filter = true;
+        break;
       }
-      if (filter) {
-        document.querySelector('#expand-filters').click();
-      }
-      setFirstRender(false);
     }
-  });
+    if (filter) {
+      setExpandFilters(true);
+    }
+  }, []);
 
   return (
     <>
