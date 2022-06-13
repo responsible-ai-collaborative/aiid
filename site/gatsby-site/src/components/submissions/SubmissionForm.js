@@ -12,7 +12,6 @@ import * as POP_OVERS from '../ui/PopOvers';
 import Label from '../forms/Label';
 import TagsControl from 'components/forms/TagsControl';
 import IncidentIdField from 'components/incidents/IncidentIdField';
-import { useUserContext } from 'contexts/userContext';
 import getSourceDomain from '../../utils/getSourceDomain';
 import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
@@ -97,8 +96,6 @@ const SubmissionForm = () => {
       }
     }
   `);
-
-  const { isRole } = useUserContext();
 
   const tags = [];
 
@@ -300,19 +297,15 @@ const SubmissionForm = () => {
           />
         )}
 
-        {isRole('submitter') ? (
-          <TextInputGroup
-            name="editor_notes"
-            label="Editor Notes"
-            as="textarea"
-            placeholder="Additional information for others working on the project – e.g. rationale for inclusion or choice of metadata."
-            rows={8}
-            className="mt-3"
-            {...TextInputGroupProps}
-          />
-        ) : (
-          ''
-        )}
+        <TextInputGroup
+          name="editor_notes"
+          label="Editor Notes"
+          as="textarea"
+          placeholder="Optional context and notes about the incident"
+          rows={8}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
       </Form>
     </>
   );
