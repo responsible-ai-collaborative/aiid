@@ -186,6 +186,15 @@ const plugins = [
       configPath: require.resolve(`./i18n/config.json`),
     },
   },
+  {
+    resolve: `gatsby-theme-i18n-react-i18next`,
+    options: {
+      locales: `./i18n/locales`,
+      i18nextOptions: {
+        ns: ['translation'],
+      },
+    },
+  },
 ];
 
 // check and remove trailing slash
