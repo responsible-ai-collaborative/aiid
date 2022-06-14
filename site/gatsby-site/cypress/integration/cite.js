@@ -92,9 +92,6 @@ describe('Cite pages', () => {
 
     cy.visit(url);
 
-    cy.wait(2000);
-    cy.log(cy.get('body').invoke('html'));
-
     cy.get('[data-cy="resources"]', { timeout: 30000 })
       .should('be.visible')
       .contains('Edit')
