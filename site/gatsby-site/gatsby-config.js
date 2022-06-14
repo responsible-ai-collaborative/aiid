@@ -179,6 +179,13 @@ const plugins = [
       // expiration: 120,
     },
   },
+  {
+    resolve: `gatsby-theme-i18n`,
+    options: {
+      defaultLang: `en`,
+      configPath: require.resolve(`./i18n/config.json`),
+    },
+  },
 ];
 
 // check and remove trailing slash
