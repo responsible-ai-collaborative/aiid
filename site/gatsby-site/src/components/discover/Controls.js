@@ -28,19 +28,7 @@ const ExpandArrow = styled(FontAwesomeIcon)`
 const Controls = ({ query }) => {
   const [expandFilters, setExpandFilters] = useState(false);
 
-  useEffect(() => {
-    let filter = false;
-
-    for (let refinement of REFINEMENT_LISTS) {
-      if (query[refinement.attribute]) {
-        filter = true;
-        break;
-      }
-    }
-    if (filter) {
-      setExpandFilters(true);
-    }
-  }, []);
+  useEffect(() => setExpandFilters(REFINEMENT_LISTS.some((r) => query[r.attribute])), []);
 
   return (
     <>
@@ -66,7 +54,7 @@ const Controls = ({ query }) => {
           </ExpandFilters>
         </Col>
       </Row>
-      <Row className="mb-3 hiddenMobile">{expandFilters ? <Filters /> : <div></div>}</Row>
+      <Row className="mb-3 hiddenMobile">{expandFilters && <Filters />}</Row>
     </>
   );
 };
