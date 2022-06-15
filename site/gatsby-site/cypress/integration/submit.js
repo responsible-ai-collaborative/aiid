@@ -596,4 +596,9 @@ describe('The Submit form', () => {
 
     cy.contains('.invalid-feedback', '*Incident Date required').should('be.visible');
   });
+
+  it('Should show the editor notes field', () => {
+    cy.visit(url);
+    cy.get('[name="editor_notes"').should('exist');
+  });
 });

@@ -296,6 +296,16 @@ const SubmissionForm = () => {
             {...TextInputGroupProps}
           />
         )}
+
+        <TextInputGroup
+          name="editor_notes"
+          label="Editor Notes"
+          as="textarea"
+          placeholder="Optional context and notes about the incident"
+          rows={8}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
       </Form>
     </>
   );
