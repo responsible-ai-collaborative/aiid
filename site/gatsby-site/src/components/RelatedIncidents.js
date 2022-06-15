@@ -33,6 +33,8 @@ const relatedReportsQuery = gql`
   }
 `;
 
+const minLength = 300;
+
 const searchColumns = {
   byDatePublished: {
     header: (incident) => (
@@ -121,7 +123,7 @@ const semanticallyRelated = async (text) => {
   return json;
 };
 
-const RelatedIncidentsArea = ({ columnKey, header, reports, loading }) => {
+const RelatedIncidentsArea = ({ columnKey, header, reports, loading, incident }) => {
   if (!reports && !loading) {
     return null;
   }
@@ -141,7 +143,11 @@ const RelatedIncidentsArea = ({ columnKey, header, reports, loading }) => {
           </ListGroup.Item>
         ))}
       {!loading && reports?.length == 0 && (
-        <ListGroup.Item>No related reports found.</ListGroup.Item>
+        <ListGroup.Item>
+          {columnKey == 'byText' && incident.text.length < minLength
+            ? `Reports must have at least ${minLength} characters to compute semantic similarity`
+            : 'No related reports found.'}
+        </ListGroup.Item>
       )}
     </ListContainer>
   );
@@ -161,11 +167,15 @@ const RelatedIncidents = ({ incident, className = '' }) => {
   const debouncedUpdateSearch = useRef(
     debounce((updaters, incident, relatedIncidents, fetchRemote) => {
       const fetchSemanticallyRelated = async () => {
-        const response = semanticallyRelated(incident.text);
+        if (incident.text.length >= minLength) {
+          const response = semanticallyRelated(incident.text);
 
-        response.then((res) => {
-          setRelatedIncidents(res.incidents);
-        });
+          response.then((res) => {
+            setRelatedIncidents(res.incidents);
+          });
+        } else {
+          setRelatedIncidents([]);
+        }
       };
 
       if (fetchRemote || relatedIncidents.length == 0) fetchSemanticallyRelated();
@@ -244,6 +254,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
             loading={loading[key]}
             reports={relatedReports[key]}
             header={column.header(incident)}
+            incident={incident}
           />
         );
       })}
