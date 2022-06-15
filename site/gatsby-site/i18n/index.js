@@ -1,4 +1,11 @@
-module.exports = ({ currentLang, newLang, defaultLang, path, list }) => {
+const config = require('../config');
+
+const languages = require('./config.json');
+
+module.exports.getLanguages = () =>
+  languages.filter((lang) => config.i18n.availableLanguages.includes(lang.code));
+
+module.exports.localizePath = ({ currentLang, newLang, defaultLang, path, list }) => {
   let newPath;
 
   const paths = path.split('/');

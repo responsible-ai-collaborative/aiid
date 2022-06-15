@@ -2,7 +2,7 @@ import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { useLocalization } from 'gatsby-theme-i18n';
 import { navigate } from 'gatsby';
-import localizePath from './localizePath';
+import { localizePath } from '../../../i18n';
 
 export default function LanguageSwitcher() {
   const { locale: currentLang, config, defaultLang } = useLocalization();

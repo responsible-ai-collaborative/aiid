@@ -32,7 +32,7 @@ const Translator = require('./src/utils/Translator');
 
 const { MongoClient } = require('mongodb');
 
-const { getLanguages } = require('./src/components/i18n/languages');
+const { getLanguages } = require('./i18n');
 
 const AlgoliaUpdater = require('./src/utils/AlgoliaUpdater');
 
@@ -228,7 +228,7 @@ exports.onPreBootstrap = async ({ reporter }) => {
   if (
     config.mongodb.translationsConnectionString &&
     config.google.translateApikey &&
-    config.google.availableLanguages &&
+    config.i18n.availableLanguages &&
     config.header.search.algoliaAdminKey &&
     config.header.search.algoliaAppId
   ) {
