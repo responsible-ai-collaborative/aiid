@@ -4,7 +4,7 @@ const { Client: GoogleMapsAPIClient } = require('@googlemaps/google-maps-service
 
 const { Translate } = require('@google-cloud/translate').v2;
 
-const startCase = require('lodash.startcase');
+const { startCase } = require('lodash');
 
 const config = require('./config');
 
@@ -177,6 +177,7 @@ exports.createSchemaCustomization = ({ actions }) => {
     type mongodbAiidprodReports implements Node {
       cloudinary_id: String
       tags: [String]
+      plain_text: String
     }
 
     type mongodbAiidprodTaxaField_list implements Node {

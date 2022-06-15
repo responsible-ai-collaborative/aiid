@@ -15,7 +15,7 @@ describe('The Submit form', () => {
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.get('input[name="url"]').type(
-      `https://arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
     );
 
     cy.get('button').contains('Fetch info').click();
@@ -25,6 +25,8 @@ describe('The Submit form', () => {
     cy.get('input[name="submitters"]').type('Something');
 
     cy.get('[class*="Typeahead"]').type('New Tag{enter}');
+
+    cy.get('[name="incident_date"]').type('2020-01-01');
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -40,15 +42,22 @@ describe('The Submit form', () => {
     cy.get('button[type="submit"]').click();
 
     cy.wait('@submitReport').then((xhr) => {
-      expect(xhr.request.body.variables.submission).to.deep.include({
+      expect(xhr.request.body.variables.submission).to.deep.nested.include({
         title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
         submitters: ['Something'],
         authors: ['Valentina Palladino'],
+        incident_date: '2020-01-01',
         date_published: '2017-11-10',
         image_url:
           'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
         tags: ['New Tag'],
         incident_id: 0,
+        text: "## Recent news stories and blog\n\nposts _highlighted_ the underbelly of YouTube Kids, Google's children-friendly version.",
+        plain_text:
+          "Recent news stories and blog\n\nposts highlighted the underbelly of YouTube Kids, Google's children-friendly version.\n",
+        url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
+        source_domain: `arstechnica.com`,
+        language: 'en',
       });
     });
 
@@ -63,7 +72,7 @@ describe('The Submit form', () => {
     cy.visit(url);
 
     cy.get('input[name="url"]').type(
-      `https://arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
     );
 
     cy.get('button').contains('Fetch info').click();
@@ -114,8 +123,12 @@ describe('The Submit form', () => {
         date_published: '2017-11-10',
         image_url:
           'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+        cloudinary_id:
+          'reports/cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
         tags: ['New Tag'],
         incident_id: 1,
+        url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
+        source_domain: `arstechnica.com`,
       });
     });
 
@@ -143,7 +156,7 @@ describe('The Submit form', () => {
                 'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
               tags: ['New Tag'],
               incident_id: '0',
-              url: `https://arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
+              url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
               source_domain: 'arstechinca.com',
               language: 'en',
               description: 'Something',
@@ -192,7 +205,7 @@ describe('The Submit form', () => {
       date_downloaded: '2021-01-03',
       image_url: 'https://test.com/image.jpg',
       incident_id: '1',
-      text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
+      text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
       tags: 'test tag',
     };
 
@@ -233,12 +246,16 @@ describe('The Submit form', () => {
     cy.get('button[type="submit"]').scrollIntoView().click();
 
     cy.wait('@submitReport').then((xhr) => {
-      expect(xhr.request.body.variables.submission).to.deep.include({
+      expect(xhr.request.body.variables.submission).to.deep.nested.include({
         ...values,
         incident_id: '1',
         authors: [values.authors],
         submitters: [values.submitters],
         tags: [values.tags],
+        plain_text:
+          'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
+        source_domain: `test.com`,
+        cloudinary_id: `reports/test.com/image.jpg`,
       });
     });
   });
@@ -486,11 +503,35 @@ describe('The Submit form', () => {
     cy.get('[data-cy="related-reports"]').should('not.exist');
   });
 
-  it("Should disable Submit button when linking to an Incident that doesn't exist", () => {
+  it('Should show fallback preview image on initial load', () => {
+    const imageUrl =
+      'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/fallback.jpg';
+
+    cy.visit(url);
+    cy.get('[data-cy="image-preview-figure"] img').should('have.attr', 'src', imageUrl);
+  });
+
+  it('Should update preview image when url is typed', () => {
+    const suffix = 'github.com/favicon.ico';
+
+    const newImageUrl = 'https://' + suffix;
+
+    const cloudinaryImageUrl =
+      'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/v1/reports/' +
+      suffix;
+
+    cy.visit(url);
+    cy.get('input[name=image_url]').scrollIntoView().type(newImageUrl);
+    cy.get('[data-cy=image-preview-figure] img', { timeout: 30000 })
+      .scrollIntoView()
+      .should('have.attr', 'src', cloudinaryImageUrl);
+  });
+
+  it("Should not submit form when linking to an Incident that doesn't exist", () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
-        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 1,
+        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 3456456,
       'findIncident',
       { data: { incident: null } }
     );
@@ -506,20 +547,53 @@ describe('The Submit form', () => {
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
       image_url: 'https://test.com/image.jpg',
-      incident_id: '1',
-      text: 'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease',
+      incident_id: '3456456',
     };
 
     for (const key in values) {
       cy.get(`[name="${key}"]`).type(values[key]);
     }
 
-    cy.wait('@findIncident');
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
 
-    cy.contains('.invalid-feedback', 'Incident ID 1 not found!');
+    cy.wait('@findIncident');
 
     cy.get('[name="incident_date"]').should('not.exist');
 
-    cy.contains('button', 'Submit').should('be.disabled');
+    cy.contains('.invalid-feedback', 'Incident ID 3456456 not found!').should('be.visible');
+  });
+
+  it('Should require incident_date when incident_id is not set', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 3456456,
+      'findIncident',
+      { data: { incident: null } }
+    );
+
+    cy.visit(url);
+
+    const values = {
+      url: 'https://test.com',
+      title: 'test title',
+      authors: 'test author',
+      submitters: 'test submitter',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+      image_url: 'https://test.com/image.jpg',
+    };
+
+    for (const key in values) {
+      cy.get(`[name="${key}"]`).type(values[key]);
+    }
+
+    cy.get('[name="incident_date"]').should('be.visible');
+
+    cy.contains('button', 'Submit').click();
+
+    cy.contains('.invalid-feedback', '*Incident Date required').should('be.visible');
   });
 });

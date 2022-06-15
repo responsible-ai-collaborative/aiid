@@ -42,10 +42,9 @@ const Citation = ({ nodes, incidentDate, incident_id, editors }) => {
 
   return (
     <>
-      {submitterCite}. ({incidentDate}) Incident Number {incident_id}. in{' '}
-      {editorLastName}, {editorFirstNameInitial} (ed.){' '}
-      <em>Artificial Intelligence Incident Database.</em> Responsible AI Collaborative.{' '}
-      {retrievalString}
+      {submitterCite}. ({incidentDate}) Incident Number {incident_id}. in {editorLastName},{' '}
+      {editorFirstNameInitial} (ed.) <em>Artificial Intelligence Incident Database.</em> Responsible
+      AI Collaborative. {retrievalString}
     </>
   );
 };

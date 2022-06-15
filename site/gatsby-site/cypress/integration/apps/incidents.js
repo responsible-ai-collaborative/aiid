@@ -92,8 +92,6 @@ describe('Incidents App', () => {
 
     cy.get('[data-cy="incident-form"]').should('not.exist');
 
-    cy.get('[data-cy="toast"]')
-      .contains('Incident 112 updated successfully.')
-      .should('exist');
+    cy.get('[data-cy="toast"]').contains('Incident 112 updated successfully.').should('exist');
   });
 });

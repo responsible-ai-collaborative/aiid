@@ -8,6 +8,7 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format } from 'date-fns';
 import { INSERT_QUICKADD } from '../../graphql/quickadd';
 import { useMutation } from '@apollo/client';
+import getSourceDomain from '../../utils/getSourceDomain';
 
 // set in form //
 // * url: "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti" # The fully qualified URL to the report as hosted on the web.
@@ -44,7 +45,7 @@ const QuickAddForm = ({ className = '' }) => {
         const quickAdd = {
           incident_id: '0',
           date_submitted: format(new Date(), 'yyyy-MM-dd'),
-          source_domain: url.hostname,
+          source_domain: getSourceDomain(url),
           url: url.href,
         };
 

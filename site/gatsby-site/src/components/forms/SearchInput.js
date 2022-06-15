@@ -20,6 +20,16 @@ const SearchResetButton = styled.button`
   border: none;
 `;
 
+const SearchFormControl = styled(FormControl)`
+  border-top-right-radius: 0.3rem !important;
+  border-bottom-right-radius: 0.3rem !important;
+`;
+
+const SearchInputGroup = styled(InputGroup)`
+  max-width: 640px;
+  margin: auto;
+`;
+
 export default function SearchInput({
   value,
   onChange,
@@ -29,8 +39,8 @@ export default function SearchInput({
   placeHolder = 'Type Here',
 }) {
   return (
-    <InputGroup className="position-relative">
-      <FormControl
+    <SearchInputGroup className="position-relative mb-3">
+      <SearchFormControl
         size={size}
         placeholder={placeHolder}
         maxLength={512}
@@ -47,6 +57,6 @@ export default function SearchInput({
           <FontAwesomeIcon opacity={0.5} icon={faSearch} className="pointer" />
         )}
       </SearchStatus>
-    </InputGroup>
+    </SearchInputGroup>
   );
 }

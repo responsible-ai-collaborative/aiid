@@ -5,8 +5,6 @@ const path = require(`path`);
 
 const cloudinary = require('cloudinary').v2;
 
-const queries = require('./src/utils/algolia');
-
 const config = require('./config');
 
 cloudinary.config({ cloud_name: config.cloudinary.cloudName });
@@ -26,8 +24,9 @@ const plugins = [
   },
   'gatsby-plugin-styled-components',
   'gatsby-plugin-sitemap',
-  `gatsby-transformer-sharp`,
+  `gatsby-plugin-image`,
   'gatsby-plugin-sharp',
+  `gatsby-transformer-sharp`,
   'gatsby-plugin-react-helmet',
   {
     resolve: 'gatsby-source-filesystem',
@@ -181,39 +180,6 @@ const plugins = [
     },
   },
 ];
-
-// check and add algolia
-if (
-  config.header.search &&
-  config.header.search.enabled &&
-  config.header.search.algoliaAppId &&
-  config.header.search.algoliaAdminKey
-) {
-  plugins.push({
-    resolve: `gatsby-plugin-algolia`,
-    options: {
-      appId: config.header.search.algoliaAppId, // algolia application id
-      apiKey: config.header.search.algoliaAdminKey, // algolia admin key to index
-      queries,
-      chunkSize: 10000, // default: 1000
-    },
-  });
-}
-// check and add pwa functionality
-if (config.pwa && config.pwa.enabled && config.pwa.manifest) {
-  plugins.push({
-    resolve: `gatsby-plugin-manifest`,
-    options: { ...config.pwa.manifest },
-  });
-  plugins.push({
-    resolve: 'gatsby-plugin-offline',
-    options: {
-      appendScript: require.resolve(`./src/custom-sw-code.js`),
-    },
-  });
-} else {
-  plugins.push('gatsby-plugin-remove-serviceworker');
-}
 
 // check and remove trailing slash
 if (config.gatsby && !config.gatsby.trailingSlash) {

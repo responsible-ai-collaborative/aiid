@@ -69,6 +69,9 @@
                 "bsonType": "string"
             }
         },
+        "plain_text": {
+            "bsonType": "string"
+        },
         "tags": {
             "bsonType": "array",
             "items": {
@@ -85,5 +88,25 @@
             "bsonType": "string"
         }
     },
+    "required": [
+        "report_number",
+        "ref_number",
+        "date_downloaded",
+        "date_modified",
+        "date_published",
+        "date_submitted",
+        "epoch_date_downloaded",
+        "epoch_date_modified",
+        "epoch_date_published",
+        "epoch_date_submitted",
+        "image_url",
+        "cloudinary_id",
+        "authors",
+        "submitters",
+        "title",
+        "text",
+        "url",
+        "source_domain"
+    ],
     "title": "report"
 }

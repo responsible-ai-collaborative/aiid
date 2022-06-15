@@ -8,6 +8,7 @@ import { fill } from '@cloudinary/base/actions/resize';
 import md5 from 'md5';
 import { navigate } from 'gatsby';
 import Actions from '../Actions';
+import ReportText from 'components/reports/ReportText';
 
 const IncidentCardImage = styled(Image)`
   height: ${({ height }) => height};
@@ -55,7 +56,9 @@ export default function Details({
           </blockquote>
         )}
 
-        <Card.Text className="flex-fill">{item.text.substr(0, 400) + '...'}</Card.Text>
+        <Card.Text className="flex-fill">
+          <ReportText text={item.text} maxChars={400} />
+        </Card.Text>
 
         <div className="align-bottom">
           {toggleFilterByIncidentId && (

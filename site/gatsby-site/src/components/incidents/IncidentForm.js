@@ -55,7 +55,7 @@ function IncidentForm() {
         <Form.Label>Alleged Harmed or Nearly Harmed Parties</Form.Label>
         <TagsControl name="AllegedHarmedOrNearlyHarmedParties" />
       </Form.Group>
-      
+
       <Form.Group className="mt-3">
         <Form.Label>Editors</Form.Label>
         <TagsControl name="editors" />

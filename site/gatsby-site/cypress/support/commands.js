@@ -48,3 +48,21 @@ Cypress.Commands.add('query', ({ query, variables }) => {
 Cypress.Commands.add('clickOutside', () => {
   return cy.get('body').click(0, 0);
 });
+
+Cypress.Commands.add('setEditorText', (value) => {
+  return cy
+    .get('.CodeMirror')
+    .first()
+    .then((editor) => {
+      editor[0].CodeMirror.setValue(value);
+    });
+});
+
+Cypress.Commands.add('getEditorText', () => {
+  return cy
+    .get('.CodeMirror')
+    .first()
+    .then(({ 0: editor }) => {
+      return editor.CodeMirror.options.value;
+    });
+});

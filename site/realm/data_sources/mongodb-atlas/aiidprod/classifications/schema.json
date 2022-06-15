@@ -159,5 +159,10 @@
             "bsonType": "string"
         }
     },
+    "required": [
+        "incident_id",
+        "classifications",
+        "namespace"
+    ],
     "title": "classification"
 }
