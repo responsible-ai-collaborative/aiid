@@ -95,9 +95,17 @@ const plugins = [
       connectionString: config.mongodb.connectionString,
       extraParams: {
         replicaSet: config.mongodb.replicaSet,
-        ssl: true,
-        authSource: 'admin',
-        retryWrites: true,
+      },
+    },
+  },
+  {
+    resolve: 'gatsby-source-mongodb',
+    options: {
+      dbName: 'translations',
+      collection: ['reports_en', 'reports_es'],
+      connectionString: config.mongodb.connectionString,
+      extraParams: {
+        replicaSet: config.mongodb.replicaSet,
       },
     },
   },
