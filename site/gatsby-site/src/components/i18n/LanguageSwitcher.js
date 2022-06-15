@@ -5,14 +5,14 @@ import { navigate } from 'gatsby';
 import { localizePath } from '../../../i18n';
 
 export default function LanguageSwitcher() {
-  const { locale: currentLang, config, defaultLang } = useLocalization();
+  const { locale: currentLang, config } = useLocalization();
 
   const currentLocale = config.find((c) => c.code == currentLang);
 
   const setLanguage = (newLang) => {
     const { pathname: path, search } = new URL(window.location.href);
 
-    const newPath = localizePath({ currentLang, newLang, defaultLang, path, list: config });
+    const newPath = localizePath({ currentLang, newLang, path });
 
     navigate(newPath + search);
   };

@@ -182,9 +182,9 @@ const plugins = [
   {
     resolve: `gatsby-theme-i18n`,
     options: {
-      defaultLang: config.i18n.defaultLocale,
+      defaultLang: config.i18n.defaultLanguage,
       configPath: require.resolve(`./i18n/config.json`),
-      locales: config.google.availableLanguages.split(',').join(' '),
+      locales: config.i18n.availableLanguages.join(' '),
     },
   },
   {

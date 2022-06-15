@@ -1,4 +1,8 @@
+const config = require('../config');
+
 const path = require('path');
+
+const { localizePath } = require('../i18n');
 
 const getClassificationsArray = (incidentClassifications, taxonomy) => {
   const classifications = incidentClassifications.filter(
@@ -51,7 +55,7 @@ const getClassificationsArray = (incidentClassifications, taxonomy) => {
   return array;
 };
 
-const createCitiationPages = async (graphql, createPage) => {
+const createCitationPages = async (graphql, createPage) => {
   const result = await graphql(
     `
       query IncidentIDs {
@@ -155,13 +159,6 @@ const createCitiationPages = async (graphql, createPage) => {
             }
           }
         }
-
-        allMongodbAiidprodDuplicates {
-          nodes {
-            true_incident_number
-            duplicate_incident_number
-          }
-        }
       }
     `
   );
@@ -170,7 +167,6 @@ const createCitiationPages = async (graphql, createPage) => {
     allMongodbAiidprodIncidents,
     allMongodbAiidprodReports,
     allMongodbAiidprodClassifications,
-    allMongodbAiidprodDuplicates,
     allMongodbAiidprodTaxa,
     allMongodbAiidprodResources,
   } = result.data;
@@ -190,6 +186,8 @@ const createCitiationPages = async (graphql, createPage) => {
   ];
 
   const keys = Object.keys(incidentReportsMap);
+
+  const pageContexts = [];
 
   for (let i = 0; i < keys.length; i++) {
     const incident_id = parseInt(keys[i]);
@@ -213,33 +211,30 @@ const createCitiationPages = async (graphql, createPage) => {
       });
     });
 
-    // Create citation pages
-    createPage({
-      path: '/cite/' + incident_id,
-      component: path.resolve('./src/templates/cite.js'),
-      context: {
-        incident,
-        incidentReports: incidentReportsMap[incident_id],
-        taxonomies,
-        nextIncident: i < keys.length - 1 ? keys[i + 1] : null,
-        prevIncident: i > 0 ? keys[i - 1] : null,
-      },
+    pageContexts.push({
+      incident,
+      incidentReports: incidentReportsMap[incident_id],
+      taxonomies,
+      nextIncident: i < keys.length - 1 ? keys[i + 1] : null,
+      prevIncident: i > 0 ? keys[i - 1] : null,
     });
   }
 
-  for (const {
-    true_incident_number,
-    duplicate_incident_number,
-  } of allMongodbAiidprodDuplicates.nodes) {
-    createPage({
-      path: '/cite/' + duplicate_incident_number,
-      component: path.resolve('./src/templates/cite-duplicate.js'),
-      context: {
-        duplicate_incident_number: parseInt(duplicate_incident_number),
-        true_incident_number: parseInt(true_incident_number),
-      },
-    });
+  for (const language of config.i18n.availableLanguages) {
+    for (const context of pageContexts) {
+      const pagePath = localizePath({
+        currentLang: config.i18n.defaultLanguage,
+        newLang: language,
+        path: '/cite/' + context.incident.incident_id,
+      });
+
+      createPage({
+        path: pagePath,
+        component: path.resolve('./src/templates/cite.js'),
+        context,
+      });
+    }
   }
 };
 
-module.exports = createCitiationPages;
+module.exports = createCitationPages;

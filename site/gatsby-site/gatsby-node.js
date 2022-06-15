@@ -230,7 +230,7 @@ exports.onPreBootstrap = async ({ reporter }) => {
 
   if (
     config.mongodb.translationsConnectionString &&
-    config.google.translateApikey &&
+    config.i18n.translateApikey &&
     config.i18n.availableLanguages &&
     config.header.search.algoliaAdminKey &&
     config.header.search.algoliaAppId

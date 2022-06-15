@@ -148,7 +148,7 @@ const config = {
   i18n: {
     availableLanguages: String(process.env.GATSBY_AVAILABLE_LANGUAGES).split(',') || ['en'],
     translateApikey: process.env.GOOGLE_TRANSLATE_API_KEY,
-    defaultLocale: 'en',
+    defaultLanguage: 'en',
   },
 };
 
