@@ -184,6 +184,7 @@ const plugins = [
     options: {
       defaultLang: `en`,
       configPath: require.resolve(`./i18n/config.json`),
+      locales: config.i18n.locales.split(',').join(' '),
     },
   },
   {

@@ -147,6 +147,9 @@ const config = {
     availableLanguages: process.env.GATSBY_AVAILABLE_LANGUAGES || 'en',
     mapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
   },
+  i18n: {
+    locales: process.env.GATSBY_AVAILABLE_LANGUAGES,
+  },
 };
 
 module.exports = config;

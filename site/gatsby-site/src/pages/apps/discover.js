@@ -17,7 +17,7 @@ import { queryConfig } from 'components/discover/queryParams';
 import VirtualFilters from 'components/discover/VirtualFilters';
 import { Container, Row, Col } from 'react-bootstrap';
 import LanguageSwitcher from 'components/i18n/LanguageSwitcher';
-import useTranslation from 'components/i18n/useTranslation';
+import { useLocalization } from 'gatsby-theme-i18n';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -178,7 +178,9 @@ const getQueryFromState = (searchState) => {
 function DiscoverApp(props) {
   const [query, setQuery] = useQueryParams(queryConfig);
 
-  const { language } = useTranslation();
+  const { locale, config } = useLocalization();
+
+  const language = config.find((c) => c.code == locale);
 
   const languageSwitcher = useRef(
     typeof window !== 'undefined' && window.localStorage.getItem('i18n')
