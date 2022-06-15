@@ -92,7 +92,10 @@ describe('Cite pages', () => {
 
     cy.visit(url);
 
-    cy.get('[data-cy="resources"]').should('be.visible').contains('Edit').click();
+    cy.get('[data-cy="resources"]', { timeout: 30000 })
+      .should('be.visible')
+      .contains('Edit')
+      .click();
 
     cy.get('[data-cy="resources"] [data-cy="taxonomy-form"]')
       .should('be.visible')

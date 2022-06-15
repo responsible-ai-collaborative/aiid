@@ -26,8 +26,6 @@ const NoResults = styled.div`
 `;
 
 const HitsContainer = styled.div`
-  max-width: 1400px;
-
   &.compact,
   &.details {
     display: grid;
@@ -84,7 +82,7 @@ const Hits = ({
   const [display] = useQueryParam('display', DisplayModeEnumParam);
 
   return (
-    <HitsContainer className={`container-xl mt-4 ${display}`}>
+    <HitsContainer className={`container-xl ${display}`}>
       {hits.map((hit) => (
         <Hit
           key={hit.objectID}
