@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { gql, useApolloClient } from '@apollo/client';
 import debounce from 'lodash/debounce';
 import isArray from 'lodash/isArray';
+import { stripMarkdown } from '../utils/typography';
 
 const ListContainer = styled(Card)`
   margin: 1em 0;
@@ -123,7 +124,7 @@ const semanticallyRelated = async (text) => {
   return json;
 };
 
-const RelatedIncidentsArea = ({ columnKey, header, reports, loading, incident }) => {
+const RelatedIncidentsArea = ({ columnKey, header, reports, loading, plaintext }) => {
   if (!reports && !loading) {
     return null;
   }
@@ -144,7 +145,7 @@ const RelatedIncidentsArea = ({ columnKey, header, reports, loading, incident })
         ))}
       {!loading && reports?.length == 0 && (
         <ListGroup.Item>
-          {columnKey == 'byText' && incident.text.length < minLength
+          {columnKey == 'byText' && plaintext.length < minLength
             ? `Reports must have at least ${minLength} characters to compute semantic similarity`
             : 'No related reports found.'}
         </ListGroup.Item>
@@ -164,11 +165,13 @@ const RelatedIncidents = ({ incident, className = '' }) => {
 
   const client = useApolloClient();
 
+  const [plaintext, setPlaintext] = useState(incident.text);
+
   const debouncedUpdateSearch = useRef(
-    debounce((updaters, incident, relatedIncidents, fetchRemote) => {
+    debounce((updaters, incident, relatedIncidents, fetchRemote, plaintext) => {
       const fetchSemanticallyRelated = async () => {
-        if (incident.text.length >= minLength) {
-          const response = semanticallyRelated(incident.text);
+        if (plaintext && plaintext.length >= minLength) {
+          const response = semanticallyRelated(plaintext);
 
           response.then((res) => {
             setRelatedIncidents(res.incidents);
@@ -197,7 +200,10 @@ const RelatedIncidents = ({ incident, className = '' }) => {
   ).current;
 
   useEffect(() => {
-    debouncedUpdateSearch(searchColumns, incident, relatedIncidents, true);
+    stripMarkdown(incident.text).then((plaintext) => {
+      setPlaintext(plaintext);
+      debouncedUpdateSearch(searchColumns, incident, relatedIncidents, true, plaintext);
+    });
   }, [incident]);
 
   useEffect(() => {
@@ -254,7 +260,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
             loading={loading[key]}
             reports={relatedReports[key]}
             header={column.header(incident)}
-            incident={incident}
+            plaintext={plaintext}
           />
         );
       })}
