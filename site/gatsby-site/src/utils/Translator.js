@@ -66,9 +66,7 @@ class Translator {
   async getTranslatedReports({ items, language }) {
     const originalIds = items.map((item) => item.report_number);
 
-    const incidents = this.mongoClient
-      .db('translations')
-      .collection(`incident_reports_${language}`);
+    const incidents = this.mongoClient.db('translations').collection(`reports_${language}`);
 
     const query = {
       report_number: { $in: originalIds },
@@ -81,9 +79,7 @@ class Translator {
   }
 
   async saveTranslatedReports({ items, language }) {
-    const incidents = this.mongoClient
-      .db('translations')
-      .collection(`incident_reports_${language}`);
+    const incidents = this.mongoClient.db('translations').collection(`reports_${language}`);
 
     const translated = [];
 

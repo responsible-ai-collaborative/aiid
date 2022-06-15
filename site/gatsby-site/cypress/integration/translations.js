@@ -129,8 +129,8 @@ describe('Translations', () => {
           const stub = cy.stub();
 
           stub.withArgs('reports').returns(reportsCollection);
-          stub.withArgs('incident_reports_en').returns(reportsENCollection);
-          stub.withArgs('incident_reports_es').returns(reportsESCollection);
+          stub.withArgs('reports_en').returns(reportsENCollection);
+          stub.withArgs('reports_es').returns(reportsESCollection);
 
           return stub;
         })(),
@@ -221,8 +221,8 @@ describe('Translations', () => {
           const stub = cy.stub();
 
           stub.withArgs('reports').returns(reportsCollection);
-          stub.withArgs('incident_reports_en').returns(reportsENCollection);
-          stub.withArgs('incident_reports_es').returns(reportsESCollection);
+          stub.withArgs('reports_en').returns(reportsENCollection);
+          stub.withArgs('reports_es').returns(reportsESCollection);
 
           return stub;
         })(),
@@ -321,8 +321,8 @@ describe('Translations', () => {
           stub.withArgs('reports').returns(reportsCollection);
           stub.withArgs('classifications').returns(classificationsCollection);
           stub.withArgs('incidents').returns(incidentsCollection);
-          stub.withArgs('incident_reports_en').returns(reportsENCollection);
-          stub.withArgs('incident_reports_es').returns(reportsESCollection);
+          stub.withArgs('reports_en').returns(reportsENCollection);
+          stub.withArgs('reports_es').returns(reportsESCollection);
 
           return stub;
         })(),
