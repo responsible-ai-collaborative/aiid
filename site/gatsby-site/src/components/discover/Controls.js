@@ -6,6 +6,8 @@ import ClearFilters from './ClearFilters';
 import DisplayModeSwitch from './DisplayModeSwitch';
 import Filters from './Filters';
 import { Row, Col } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 
 const FlexGap = styled(Col)`
   margin: auto;
@@ -17,6 +19,10 @@ const ExpandFilters = styled.button`
   color: inherit;
   background: none;
   border: none;
+`;
+
+const ExpandArrow = styled(FontAwesomeIcon)`
+  vertical-align: -0.2em !important;
 `;
 
 const Controls = ({ query }) => {
@@ -55,7 +61,8 @@ const Controls = ({ query }) => {
             data-cy="expand-filters"
             onClick={() => setExpandFilters(!expandFilters)}
           >
-            {expandFilters ? '⏷' : '⏵'} Filter Search
+            <ExpandArrow icon={expandFilters ? faCaretDown : faCaretRight} fixedWidth /> Filter
+            Search
           </ExpandFilters>
         </Col>
       </Row>
