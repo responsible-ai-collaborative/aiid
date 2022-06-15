@@ -65,6 +65,9 @@
         },
         "url": {
             "bsonType": "string"
+        },
+        "editor_notes": {
+            "bsonType": "string"
         }
     },
     "required": [
