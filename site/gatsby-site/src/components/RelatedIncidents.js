@@ -46,7 +46,7 @@ const searchColumns = {
       </>
     ),
     query: relatedReportsQuery,
-    getReports: (result) => result.data.reports,
+    getReports: async (result) => result.data.reports,
     isSet: (incident) =>
       incident.date_published && isValid(parse(incident.date_published, 'yyyy-MM-dd', new Date())),
     getQueryVariables: (incident) => {
@@ -67,7 +67,8 @@ const searchColumns = {
       </>
     ),
     query: relatedIncidentsQuery,
-    getReports: (result) => (result.data.incidents.length ? result.data.incidents[0].reports : []),
+    getReports: async (result) =>
+      result.data.incidents.length ? result.data.incidents[0].reports : [],
     isSet: (incident) => incident.incident_id,
     getQueryVariables: (incident) => ({ incident_id_in: [incident.incident_id] }),
   },
@@ -79,7 +80,27 @@ const searchColumns = {
       </>
     ),
     query: relatedReportsQuery,
-    getReports: (result) => (console.log(result.data.reports), result.data.reports),
+    getReports: async (result, client) => {
+      const response = await client.query({
+        query: relatedIncidentsQuery,
+        variables: {
+          query: {
+            reports_in: result.data.reports.map((report) => ({
+              report_number: report.report_number,
+            })),
+          },
+        },
+      });
+
+      return result.data.reports.map((report) => ({
+        ...report,
+        incident_id: response.data.incidents.filter((incident) =>
+          incident.reports
+            .map((incidentReport) => incidentReport.report_number)
+            .includes(report.report_number)
+        )[0].incident_id,
+      }));
+    },
     isSet: (incident) => incident.authors,
     getQueryVariables: (incident) => ({
       authors_in: isArray(incident.authors) ? incident.authors : incident.authors.split(','),
@@ -93,7 +114,7 @@ const searchColumns = {
       </>
     ),
     query: relatedReportsQuery,
-    getReports: (result) => result.data.reports,
+    getReports: async (result) => result.data.reports,
     isSet: (incident) => incident.url,
     getQueryVariables: (incident) => ({ url_in: [incident.url] }),
   },
@@ -101,20 +122,12 @@ const searchColumns = {
   byText: {
     header: () => <>Most Semantically Similar Incident Reports (Experimental)</>,
     query: relatedIncidentsQuery,
-    getReports: (result) =>
+    getReports: async (result) =>
       result.data.incidents.reduce((reports, incident) => {
         const incident_id = incident.incident_id;
 
         return reports.concat(incident.reports.map((report) => ({ incident_id, ...report })));
       }, []),
-    /*getReports: (result) => (
-      result.data.incidents.length 
-        ? result.data.incidents[0].reports.map(report => {
-            const incident_id = result.data.incidents[0].incident_id;
-            return {incident_id, ...report};
-          })
-        : []
-    ),*/
     isSet: (incident) => incident.text,
     getQueryVariables: (incident, relatedIncidents) => {
       if (relatedIncidents) {
@@ -264,7 +277,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
 
         setLoading((loading) => ({ ...loading, [key]: false }));
 
-        const reports = column.getReports(result);
+        const reports = await column.getReports(result, client);
 
         setRelatedReports((related) => ({ ...related, [key]: reports }));
       } else {
