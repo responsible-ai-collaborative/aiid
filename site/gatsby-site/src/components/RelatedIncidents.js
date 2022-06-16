@@ -79,7 +79,7 @@ const searchColumns = {
       </>
     ),
     query: relatedReportsQuery,
-    getReports: (result) => result.data.reports,
+    getReports: (result) => (console.log(result.data.reports), result.data.reports),
     isSet: (incident) => incident.authors,
     getQueryVariables: (incident) => ({
       authors_in: isArray(incident.authors) ? incident.authors : incident.authors.split(','),
@@ -101,15 +101,12 @@ const searchColumns = {
   byText: {
     header: () => <>Most Semantically Similar Incident Reports (Experimental)</>,
     query: relatedIncidentsQuery,
-    //getReports: (result) => (result.data.incidents.length ? result.data.incidents[0].reports : []),
-    getReports: (result) => (
-      console.log('result', result),
+    getReports: (result) =>
       result.data.incidents.reduce((reports, incident) => {
         const incident_id = incident.incident_id;
 
         return reports.concat(incident.reports.map((report) => ({ incident_id, ...report })));
-      }, [])
-    ),
+      }, []),
     /*getReports: (result) => (
       result.data.incidents.length 
         ? result.data.incidents[0].reports.map(report => {
@@ -139,8 +136,6 @@ const semanticallyRelated = async (text) => {
   }
   const json = await response.json();
 
-  console.log('json', json);
-
   return json;
 };
 
@@ -158,7 +153,7 @@ const ReportRow = styled(ListGroup.Item)`
 `;
 
 const RelatedIncidentsArea = ({ columnKey, header, reports, loading, plaintext }) => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext() || { setFieldValue: null };
 
   if (!reports && !loading) {
     return null;
@@ -177,7 +172,9 @@ const RelatedIncidentsArea = ({ columnKey, header, reports, loading, plaintext }
               {val.title}
             </a>
             {val.incident_id && (
-              <Button onClick={() => setFieldValue('incident_id', val.incident_id)}>
+              <Button
+                onClick={() => setFieldValue && setFieldValue('incident_id', val.incident_id)}
+              >
                 Set&nbsp;Incident&nbsp;ID&nbsp;to&nbsp;{val.incident_id}
               </Button>
             )}
@@ -211,12 +208,15 @@ const RelatedIncidents = ({ incident, className = '' }) => {
     debounce((updaters, incident, relatedIncidents, fetchRemote, plaintext) => {
       const fetchSemanticallyRelated = async () => {
         if (plaintext && plaintext.length >= minLength) {
-          const response = semanticallyRelated(plaintext);
+          try {
+            const response = semanticallyRelated(plaintext);
 
-          response.then((res) => {
-            console.log('res.incidents', res.incidents);
-            setRelatedIncidents(res.incidents);
-          });
+            response.then((res) => {
+              setRelatedIncidents(res.incidents);
+            });
+          } catch (e) {
+            setRelatedIncidents([]);
+          }
         } else {
           setRelatedIncidents([]);
         }
