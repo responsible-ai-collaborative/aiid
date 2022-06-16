@@ -911,3 +911,16 @@ img {
     padding-left: 0px;
   }
 }
+
+/* disable Github Permalink */
+.bytemd-toolbar-right [bytemd-tippy-path='5'] {
+  display: none;
+}
+ 
+.bytemd-fullscreen.bytemd {
+  z-index: 99999999;
+}
+
+div .bytemd {
+  height: 480px;
+}

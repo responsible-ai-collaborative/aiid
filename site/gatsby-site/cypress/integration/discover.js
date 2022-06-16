@@ -24,11 +24,13 @@ describe('The Discover app', () => {
     cy.url().should('include', 's=starbucks');
 
     // a flaky assertion here, should improve once a testing enviqronment is set up
-    cy.get('div[class^="Hits__HitsContainer"]').children().should('have.length.at.least', 10);
+    cy.get('div[class^="Hits__HitsContainer"]').children().should('have.length.at.least', 8);
   });
 
   it('Filters by incident Id using top filters', () => {
     cy.visit(url);
+
+    cy.get('[data-cy=expand-filters]').click();
 
     cy.contains('button', 'Incident ID').click();
 
@@ -43,6 +45,8 @@ describe('The Discover app', () => {
 
   it('Filters by incident Id using card button', () => {
     cy.visit(url);
+
+    cy.get('[data-cy=expand-filters]').click();
 
     cy.get('div[class^="Hits__HitsContainer"]')
       .children()

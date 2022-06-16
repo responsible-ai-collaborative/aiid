@@ -39,6 +39,9 @@
         "language": {
             "bsonType": "string"
         },
+        "plain_text": {
+            "bsonType": "string"
+        },
         "source_domain": {
             "bsonType": "string"
         },
@@ -62,7 +65,26 @@
         },
         "url": {
             "bsonType": "string"
+        },
+        "editor_notes": {
+            "bsonType": "string"
         }
     },
+    "required": [
+        "authors",
+        "cloudinary_id",
+        "image_url",
+        "date_downloaded",
+        "date_modified",
+        "date_published",
+        "date_submitted",
+        "description",
+        "language",
+        "source_domain",
+        "submitters",
+        "text",
+        "title",
+        "url"
+    ],
     "title": "submission"
 }

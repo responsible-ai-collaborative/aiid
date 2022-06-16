@@ -77,7 +77,7 @@ const Layout = ({ children, collapse, className, location }) => (
           dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
         />
       )}
-      <Content className="mb-5">
+      <Content id="content" className="mb-5">
         <MaxWidth className={className}>{children}</MaxWidth>
       </Content>
       <RightSideBarWidth className={'hiddenMobile'}>
