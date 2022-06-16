@@ -102,7 +102,13 @@ const plugins = [
     resolve: 'gatsby-source-mongodb',
     options: {
       dbName: 'translations',
-      collection: ['reports_en', 'reports_es'],
+      collection: ['reports'].reduce(
+        (collections, name) => [
+          ...collections,
+          ...config.i18n.availableLanguages.map((lang) => `${name}_${lang}`),
+        ],
+        []
+      ),
       connectionString: config.mongodb.connectionString,
       extraParams: {
         replicaSet: config.mongodb.replicaSet,
