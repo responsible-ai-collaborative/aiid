@@ -7,6 +7,7 @@ import { fill } from '@cloudinary/base/actions/resize';
 import md5 from 'md5';
 import Actions from '../Actions';
 import ReportText from 'components/reports/ReportText';
+import { LocalizedLink } from 'gatsby-theme-i18n';
 
 const IncidentCardImage = styled(Image)`
   width: 120px;
@@ -53,7 +54,12 @@ export default function Details({
           />
           <Text>
             <Card.Title>
-              <TitleHighlight hit={item} attribute="title" />
+              <LocalizedLink
+                to={`/cite/${item.incident_id}#${item.mongodb_id}`}
+                className="text-decoration-none"
+              >
+                <TitleHighlight hit={item} attribute="title" />
+              </LocalizedLink>
             </Card.Title>
 
             <Card.Subtitle className="mb-2 text-muted">

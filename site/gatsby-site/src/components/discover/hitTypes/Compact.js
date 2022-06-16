@@ -7,6 +7,7 @@ import { fill } from '@cloudinary/base/actions/resize';
 import md5 from 'md5';
 import { Link } from 'gatsby';
 import Actions from '../Actions';
+import { LocalizedLink } from 'gatsby-theme-i18n';
 
 const BlockQuote = styled.blockquote`
   color: var(--bs-gray-400);
@@ -94,12 +95,12 @@ export default function Compact({
           ) : (
             <>
               <StyledCardTitle>
-                <Link
+                <LocalizedLink
                   to={`/cite/${item.incident_id}#${item.mongodb_id}`}
                   className="text-decoration-none"
                 >
                   <TitleHighlight hit={item} attribute="title" className="h6" />
-                </Link>
+                </LocalizedLink>
               </StyledCardTitle>
               <StyledSubTitle className="my-2 small">
                 {item.source_domain} &middot;{' '}
