@@ -10,7 +10,7 @@ const config = require('./config');
 
 const createMdxPages = require('./page-creators/createMdxPages');
 
-const createCitiationPages = require('./page-creators/createCitiationPages');
+const createCitationPages = require('./page-creators/createCitationPages');
 
 const createWordCountsPages = require('./page-creators/createWordCountsPage');
 
@@ -64,7 +64,7 @@ exports.createPages = ({ graphql, actions }) => {
 
   return Promise.all([
     createMdxPages(graphql, createPage),
-    createCitiationPages(graphql, createPage),
+    createCitationPages(graphql, createPage),
     createWordCountsPages(graphql, createPage),
     createBackupsPage(graphql, createPage),
     createTaxonomyPages(graphql, createPage),
