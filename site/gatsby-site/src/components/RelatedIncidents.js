@@ -6,6 +6,8 @@ import { gql, useApolloClient } from '@apollo/client';
 import debounce from 'lodash/debounce';
 import isArray from 'lodash/isArray';
 import { stripMarkdown } from '../utils/typography';
+import { useFormikContext } from 'formik';
+import { Button } from 'react-bootstrap';
 
 const ListContainer = styled(Card)`
   margin: 1em 0;
@@ -99,11 +101,27 @@ const searchColumns = {
   byText: {
     header: () => <>Most Semantically Similar Incident Reports (Experimental)</>,
     query: relatedIncidentsQuery,
-    getReports: (result) => (result.data.incidents.length ? result.data.incidents[0].reports : []),
+    //getReports: (result) => (result.data.incidents.length ? result.data.incidents[0].reports : []),
+    getReports: (result) => (
+      console.log('result', result),
+      result.data.incidents.reduce((reports, incident) => {
+        const incident_id = incident.incident_id;
+
+        return reports.concat(incident.reports.map((report) => ({ incident_id, ...report })));
+      }, [])
+    ),
+    /*getReports: (result) => (
+      result.data.incidents.length 
+        ? result.data.incidents[0].reports.map(report => {
+            const incident_id = result.data.incidents[0].incident_id;
+            return {incident_id, ...report};
+          })
+        : []
+    ),*/
     isSet: (incident) => incident.text,
     getQueryVariables: (incident, relatedIncidents) => {
       if (relatedIncidents) {
-        return { incident_id_in: [relatedIncidents[0]] };
+        return { incident_id_in: relatedIncidents };
       } else {
         return { incident_id_in: [] };
       }
@@ -121,10 +139,27 @@ const semanticallyRelated = async (text) => {
   }
   const json = await response.json();
 
+  console.log('json', json);
+
   return json;
 };
 
+const ReportRow = styled(ListGroup.Item)`
+  display: flex !important;
+  align-items: center;
+  a:first-child {
+    flex-shrink: 1;
+    margin-right: auto;
+  }
+  Button {
+    margin-left: 1ch;
+    flex-shrink: 0 !important;
+  }
+`;
+
 const RelatedIncidentsArea = ({ columnKey, header, reports, loading, plaintext }) => {
+  const { setFieldValue } = useFormikContext();
+
   if (!reports && !loading) {
     return null;
   }
@@ -137,11 +172,16 @@ const RelatedIncidentsArea = ({ columnKey, header, reports, loading, plaintext }
       </ListGroup.Item>
       {reports &&
         reports.map((val) => (
-          <ListGroup.Item key={val.url}>
+          <ReportRow key={val.url}>
             <a href={val.url} target="_blank" rel="noreferrer">
               {val.title}
             </a>
-          </ListGroup.Item>
+            {val.incident_id && (
+              <Button onClick={() => setFieldValue('incident_id', val.incident_id)}>
+                Set&nbsp;Incident&nbsp;ID&nbsp;to&nbsp;{val.incident_id}
+              </Button>
+            )}
+          </ReportRow>
         ))}
       {!loading && reports?.length == 0 && (
         <ListGroup.Item>
@@ -174,6 +214,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
           const response = semanticallyRelated(plaintext);
 
           response.then((res) => {
+            console.log('res.incidents', res.incidents);
             setRelatedIncidents(res.incidents);
           });
         } else {
@@ -223,7 +264,9 @@ const RelatedIncidents = ({ incident, className = '' }) => {
 
         setLoading((loading) => ({ ...loading, [key]: false }));
 
-        setRelatedReports((related) => ({ ...related, [key]: column.getReports(result) }));
+        const reports = column.getReports(result);
+
+        setRelatedReports((related) => ({ ...related, [key]: reports }));
       } else {
         setRelatedReports((related) => ({ ...related, [key]: null }));
       }
@@ -261,6 +304,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
             reports={relatedReports[key]}
             header={column.header(incident)}
             plaintext={plaintext}
+            incident={incident}
           />
         );
       })}
