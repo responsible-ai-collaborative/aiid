@@ -2,7 +2,7 @@ const config = require('../config');
 
 const path = require('path');
 
-const { localizePath } = require('../i18n');
+const { localizedPath } = require('../i18n');
 
 const getClassificationsArray = (incidentClassifications, taxonomy) => {
   const classifications = incidentClassifications.filter(
@@ -177,7 +177,7 @@ const createCitationPages = async (graphql, createPage) => {
   for (const incident of allMongodbAiidprodIncidents.nodes) {
     incidentReportsMap[incident.incident_id] = incident.reports
       .map((r) => allMongodbAiidprodReports.nodes.find((n) => n.report_number === r))
-      .map((r) => ({ node: { ...r } }));
+      .map((r) => ({ ...r }));
   }
 
   const allClassifications = [
@@ -221,17 +221,40 @@ const createCitationPages = async (graphql, createPage) => {
   }
 
   for (const language of config.i18n.availableLanguages) {
+    const {
+      data: {
+        translations: { nodes: translations },
+      },
+    } = await graphql(`
+    {
+      translations: allMongodbTranslationsReports${language[0].toUpperCase()}${language.slice(1)} {
+        nodes  {
+          report_number
+          title
+          text
+        }
+      }
+    }`);
+
     for (const context of pageContexts) {
-      const pagePath = localizePath({
-        currentLang: config.i18n.defaultLanguage,
+      const pagePath = localizedPath({
         newLang: language,
         path: '/cite/' + context.incident.incident_id,
+      });
+
+      const incidentReports = context.incidentReports.map((report) => {
+        const { title, text } = translations.find((t) => t.report_number == report.report_number);
+
+        return { ...report, title, text };
       });
 
       createPage({
         path: pagePath,
         component: path.resolve('./src/templates/cite.js'),
-        context,
+        context: {
+          ...context,
+          incidentReports,
+        },
       });
     }
   }
