@@ -44,8 +44,8 @@ exports = async (input) => {
     epoch_date_submitted: 0,
     image_url: '',
     cloudinary_id: '',
-    authors: [''],
-    submitters: [''],
+    authors: [],
+    submitters: [],
     text: '',
     url: '',
     source_domain: ''
