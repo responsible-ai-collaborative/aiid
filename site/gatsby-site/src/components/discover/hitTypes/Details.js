@@ -9,7 +9,7 @@ import md5 from 'md5';
 import { navigate } from 'gatsby';
 import Actions from '../Actions';
 import ReportText from 'components/reports/ReportText';
-import useLocalizedPath from 'components/i18n/useLocalizedPath';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 
 const IncidentCardImage = styled(Image)`
   height: ${({ height }) => height};
@@ -32,7 +32,7 @@ export default function Details({
   flagReportModal,
   toggleFilterByIncidentId,
 }) {
-  const localizedPath = useLocalizedPath();
+  const localizePath = useLocalizePath();
 
   return (
     <Card className="h-100" data-cy={item.mongodb_id}>
@@ -69,7 +69,7 @@ export default function Details({
               type="button"
               className="btn btn-secondary btn-sm w-100"
               onClick={() => {
-                const path = localizedPath({
+                const path = localizePath({
                   path: `/cite/${item.incident_id}#r${item.mongodb_id}`,
                 });
 

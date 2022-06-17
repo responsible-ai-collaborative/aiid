@@ -2,7 +2,7 @@ const config = require('../config');
 
 const path = require('path');
 
-const { localizedPath } = require('../i18n');
+const { switchLocalizedPath } = require('../i18n');
 
 const getClassificationsArray = (incidentClassifications, taxonomy) => {
   const classifications = incidentClassifications.filter(
@@ -237,7 +237,7 @@ const createCitationPages = async (graphql, createPage) => {
     }`);
 
     for (const context of pageContexts) {
-      const pagePath = localizedPath({
+      const pagePath = switchLocalizedPath({
         newLang: language,
         path: '/cite/' + context.incident.incident_id,
       });
