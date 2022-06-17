@@ -36,9 +36,11 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
             authors: !isArray(values.authors)
               ? values.authors.split(',').map((s) => s.trim())
               : values.authors,
-            submitters: !isArray(values.submitters)
-              ? values.submitters.split(',').map((s) => s.trim())
-              : values.submitters,
+            submitters: values.submitters
+              ? !isArray(values.submitters)
+                ? values.submitters.split(',').map((s) => s.trim())
+                : values.submitters
+              : ['Anonymous'],
             plain_text: await stripMarkdown(update.text),
           },
         },
