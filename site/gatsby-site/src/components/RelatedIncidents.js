@@ -36,7 +36,7 @@ const relatedReportsQuery = gql`
   }
 `;
 
-const minLength = 300;
+const minLength = 256;
 
 const searchColumns = {
   byDatePublished: {
@@ -200,8 +200,8 @@ const RelatedIncidentsArea = ({ columnKey, header, reports, loading, plaintext }
         ))}
       {!loading && reports?.length == 0 && (
         <ListGroup.Item>
-          {columnKey == 'byText' && plaintext.length < minLength
-            ? `Reports must have at least ${minLength} characters to compute semantic similarity`
+          {columnKey == 'byText' && plaintext.replace(/\s/g, '').length < minLength
+            ? `Reports must have at least ${minLength} non-space characters to compute semantic similarity`
             : 'No related reports found.'}
         </ListGroup.Item>
       )}
@@ -225,7 +225,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
   const debouncedUpdateSearch = useRef(
     debounce((updaters, incident, relatedIncidents, fetchRemote, plaintext) => {
       const fetchSemanticallyRelated = async () => {
-        if (plaintext && plaintext.length >= minLength) {
+        if (plaintext && plaintext.replace(/\s/g, '').length >= minLength) {
           try {
             const response = semanticallyRelated(plaintext);
 
