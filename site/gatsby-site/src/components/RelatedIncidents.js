@@ -263,7 +263,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
       setPlaintext(plaintext);
       debouncedUpdateSearch(searchColumns, incident, relatedIncidents, true, plaintext);
     });
-  }, [incident]);
+  }, [incident.text]);
 
   useEffect(() => {
     debouncedUpdateSearch(searchColumns, incident, relatedIncidents, false);
