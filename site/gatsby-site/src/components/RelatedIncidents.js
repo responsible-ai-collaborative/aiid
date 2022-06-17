@@ -48,7 +48,9 @@ const searchColumns = {
     query: relatedReportsQuery,
     getReports: async (result) => result.data.reports,
     isSet: (incident) =>
-      incident.date_published && isValid(parse(incident.date_published, 'yyyy-MM-dd', new Date())),
+      incident.date_published &&
+      isValid(parse(incident.date_published, 'yyyy-MM-dd', new Date())) &&
+      getUnixTime(incident.date_published) > 0,
     getQueryVariables: (incident) => {
       const datePublished = parse(incident.date_published, 'yyyy-MM-dd', new Date());
 
@@ -81,6 +83,9 @@ const searchColumns = {
     ),
     query: relatedReportsQuery,
     getReports: async (result, client) => {
+      if (result.data.reports.length == 0) {
+        return [];
+      }
       const response = await client.query({
         query: relatedIncidentsQuery,
         variables: {
