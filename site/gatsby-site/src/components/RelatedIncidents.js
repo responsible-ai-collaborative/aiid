@@ -60,10 +60,12 @@ const searchColumns = {
     ),
     query: relatedReportsQuery,
     getReports: async (result) => result.data.reports,
-    isSet: (incident) =>
-      incident.date_published &&
-      isValid(parse(incident.date_published, 'yyyy-MM-dd', new Date())) &&
-      getUnixTime(incident.date_published) > 0,
+    isSet: (incident) => {
+      if (!incident.date_published) return false;
+      const parsedDate = parse(incident.date_published, 'yyyy-MM-dd', new Date());
+
+      return isValid(parsedDate) && getUnixTime(parsedDate) > 0;
+    },
     getQueryVariables: (incident) => {
       const datePublished = parse(incident.date_published, 'yyyy-MM-dd', new Date());
 
