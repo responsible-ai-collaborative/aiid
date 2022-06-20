@@ -35,7 +35,7 @@ class Translator {
     }
   }
 
-  async translateIncidentCollection({ items, to }) {
+  async translateReportsCollection({ items, to }) {
     const concurrency = 100;
 
     const translated = [];
@@ -128,7 +128,9 @@ class Translator {
     const q = queue(async ({ to }, done) => {
       this.reporter.log(`Translating incident reports for [${to}]`);
 
-      const translated = await this.translateIncidentCollection({ items: reports, to });
+      const items = reports.filter((r) => r.language !== to);
+
+      const translated = await this.translateReportsCollection({ items, to });
 
       if (translated.length > 0) {
         this.reporter.log(`Translated [${translated.length}] new reports to [${to}]`);

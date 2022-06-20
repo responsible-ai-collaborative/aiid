@@ -2,6 +2,8 @@ const config = require('../config');
 
 const path = require('path');
 
+const { cloneDeep } = require('lodash');
+
 const { switchLocalizedPath } = require('../i18n');
 
 const getClassificationsArray = (incidentClassifications, taxonomy) => {
@@ -82,6 +84,7 @@ const createCitationPages = async (graphql, createPage) => {
             text
             authors
             epoch_date_submitted
+            language
           }
         }
 
@@ -221,11 +224,8 @@ const createCitationPages = async (graphql, createPage) => {
   }
 
   for (const language of config.i18n.availableLanguages) {
-    const {
-      data: {
-        translations: { nodes: translations },
-      },
-    } = await graphql(`
+    const { data: { translations: { nodes: translations } } = { translations: { nodes: [] } } } =
+      await graphql(`
     {
       translations: allMongodbTranslationsReports${language[0].toUpperCase()}${language.slice(1)} {
         nodes  {
@@ -242,10 +242,22 @@ const createCitationPages = async (graphql, createPage) => {
         path: '/cite/' + context.incident.incident_id,
       });
 
-      const incidentReports = context.incidentReports.map((report) => {
-        const { title, text } = translations.find((t) => t.report_number == report.report_number);
+      const incidentReports = context.incidentReports.map((r) => {
+        let report = cloneDeep(r);
 
-        return { ...report, title, text };
+        if (report.language !== language) {
+          const translation = translations.find((t) => t.report_number == report.report_number);
+
+          if (translation) {
+            const { title, text } = translation;
+
+            report = { ...report, title, text };
+          } else {
+            console.warn(`Missing translation for report ${report.report_number}`);
+          }
+        }
+
+        return report;
       });
 
       createPage({
