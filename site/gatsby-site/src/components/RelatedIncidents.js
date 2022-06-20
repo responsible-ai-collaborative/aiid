@@ -27,7 +27,7 @@ const relatedIncidentsQuery = gql`
 `;
 
 const relatedIncidentIdsQuery = gql`
-  query ProbablyRelatedIncidents($query: IncidentQueryInput) {
+  query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
     incidents(query: $query) {
       incident_id
       reports {
