@@ -214,6 +214,17 @@ const SubmissionReview = ({ submission }) => {
             </Card.Body>
           </Card>
 
+          {submission.editor_notes && isSubmitter ? (
+            <Card className="m-3">
+              <Card.Header>Editor Notes</Card.Header>
+              <Card.Body>
+                <ReadMoreText text={submission.editor_notes} visibility={open} />
+              </Card.Body>
+            </Card>
+          ) : (
+            ''
+          )}
+
           {open && (
             <div className="mx-3">
               <h5>Possible related incidents</h5>

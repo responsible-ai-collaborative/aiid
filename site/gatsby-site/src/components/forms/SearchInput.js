@@ -39,7 +39,7 @@ export default function SearchInput({
   placeHolder = 'Type Here',
 }) {
   return (
-    <SearchInputGroup className="position-relative mb-3">
+    <SearchInputGroup className="position-relative">
       <SearchFormControl
         size={size}
         placeholder={placeHolder}

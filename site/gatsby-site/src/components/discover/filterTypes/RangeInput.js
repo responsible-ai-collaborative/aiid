@@ -39,7 +39,11 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
           required={true}
           type="date"
           min={formatDate(min)}
-          max={formatDate(max)}
+          max={formatDate(
+            currentRefinement.min > currentRefinement.max
+              ? max
+              : Math.min(max, currentRefinement.max)
+          )}
           value={formatDate(currentRefinement.min)}
           onChange={(event) =>
             onChange({ min: dateToEpoch(event.target.value), max: currentRefinement.max })
@@ -48,11 +52,15 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
           className={touchedMin && 'border border-success'}
         />
 
-        <Form.Label>To Date:</Form.Label>
+        <Form.Label className="mt-3">To Date:</Form.Label>
         <Form.Control
           required={true}
           type="date"
-          min={formatDate(min)}
+          min={formatDate(
+            currentRefinement.min > currentRefinement.max
+              ? min
+              : Math.max(min, currentRefinement.min)
+          )}
           max={formatDate(max)}
           value={formatDate(currentRefinement.max)}
           onChange={(event) =>
