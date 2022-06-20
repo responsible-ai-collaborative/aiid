@@ -10,11 +10,11 @@ import config from '../../../config';
 import Hits from 'components/discover/Hits';
 import SearchBox from 'components/discover/SearchBox';
 import Pagination from 'components/discover/Pagination';
-import Filters from 'components/discover/Filters';
 import FiltersModal from 'components/discover/FiltersModal';
 import { SearchContext } from 'components/discover/useSearch';
 import { queryConfig } from 'components/discover/queryParams';
 import VirtualFilters from 'components/discover/VirtualFilters';
+import Controls from 'components/discover/Controls';
 import { Container, Row, Col } from 'react-bootstrap';
 import LanguageSwitcher from 'components/i18n/LanguageSwitcher';
 import useTranslation from 'components/i18n/useTranslation';
@@ -257,8 +257,10 @@ function DiscoverApp(props) {
                 </Col>
               )}
             </Row>
-            <Filters />
-            <FiltersModal />
+
+            <Controls query={query} />
+
+            <FiltersModal className="hiddenDesktop" />
           </Container>
 
           <Hits

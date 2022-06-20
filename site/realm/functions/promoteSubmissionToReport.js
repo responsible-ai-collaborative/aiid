@@ -34,6 +34,21 @@ exports = async (input) => {
     title: submission.title,
     report_number: lastReport.report_number + 1,
     ref_number: BSON.Int32(parentIncidents[0].reports.length), // this won't make sense with many to many relationships
+    date_downloaded: '',
+    date_modified: '',
+    date_published: '',
+    date_submitted: '',
+    epoch_date_downloaded: 0,
+    epoch_date_modified: 0,
+    epoch_date_published: 0,
+    epoch_date_submitted: 0,
+    image_url: '',
+    cloudinary_id: '',
+    authors: [],
+    submitters: [],
+    text: '',
+    url: '',
+    source_domain: ''
   };
   
   await reports.insertOne({...newReport, report_number: BSON.Int32(newReport.report_number)});
