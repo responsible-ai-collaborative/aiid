@@ -178,17 +178,13 @@ const getQueryFromState = (searchState) => {
 function DiscoverApp(props) {
   const [query, setQuery] = useQueryParams(queryConfig);
 
-  const { locale, config } = useLocalization();
-
-  const language = config.find((c) => c.code == locale);
+  const { locale } = useLocalization();
 
   const languageSwitcher = useRef(
     typeof window !== 'undefined' && window.localStorage.getItem('i18n')
   ).current;
 
-  const [indexName, setIndexName] = useState(
-    languageSwitcher ? `instant_search-${language.code}` : 'instant_search'
-  );
+  const indexName = useRef(`instant_search-${locale}`).current;
 
   const [searchState, setSearchState] = useState(generateSearchState({ query }));
 
@@ -219,12 +215,6 @@ function DiscoverApp(props) {
 
     setQuery({ ...searchQuery, ...extraQuery }, 'push');
   }, [searchState]);
-
-  useEffect(() => {
-    if (languageSwitcher) {
-      setIndexName(`instant_search-${language.code}`);
-    }
-  }, [language]);
 
   const authorsModal = useModal();
 
