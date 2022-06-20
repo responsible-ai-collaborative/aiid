@@ -26,6 +26,17 @@ const relatedIncidentsQuery = gql`
   }
 `;
 
+const relatedIncidentIdsQuery = gql`
+  query ProbablyRelatedIncidents($query: IncidentQueryInput) {
+    incidents(query: $query) {
+      incident_id
+      reports {
+        report_number
+      }
+    }
+  }
+`;
+
 const relatedReportsQuery = gql`
   query ProbablyRelatedReports($query: ReportQueryInput) {
     reports(query: $query) {
@@ -37,6 +48,8 @@ const relatedReportsQuery = gql`
 `;
 
 const minLength = 256;
+
+const longEnough = (text) => text.replace(/\s/g, '').length < minLength;
 
 const searchColumns = {
   byDatePublished: {
@@ -87,7 +100,7 @@ const searchColumns = {
         return [];
       }
       const response = await client.query({
-        query: relatedIncidentsQuery,
+        query: relatedIncidentIdsQuery,
         variables: {
           query: {
             reports_in: result.data.reports.map((report) => ({
@@ -191,16 +204,17 @@ const RelatedIncidentsArea = ({ columnKey, header, reports, loading, plaintext }
             </a>
             {val.incident_id && (
               <Button
+                variant="link"
                 onClick={() => setFieldValue && setFieldValue('incident_id', val.incident_id)}
               >
-                Set&nbsp;Incident&nbsp;ID&nbsp;to&nbsp;{val.incident_id}
+                Use&nbsp;ID&nbsp;#{val.incident_id}
               </Button>
             )}
           </ReportRow>
         ))}
       {!loading && reports?.length == 0 && (
         <ListGroup.Item>
-          {columnKey == 'byText' && plaintext.replace(/\s/g, '').length < minLength
+          {columnKey == 'byText' && !longEnough(plaintext)
             ? `Reports must have at least ${minLength} non-space characters to compute semantic similarity`
             : 'No related reports found.'}
         </ListGroup.Item>
@@ -225,7 +239,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
   const debouncedUpdateSearch = useRef(
     debounce((updaters, incident, relatedIncidents, fetchRemote, plaintext) => {
       const fetchSemanticallyRelated = async () => {
-        if (plaintext && plaintext.replace(/\s/g, '').length >= minLength) {
+        if (plaintext && longEnough(plaintext)) {
           try {
             const response = semanticallyRelated(plaintext);
 
