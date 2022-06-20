@@ -51,6 +51,31 @@ const minLength = 256;
 
 const longEnough = (text) => text.replace(/\s/g, '').length < minLength;
 
+const reportsWithIncidentIds = async (reports, client) => {
+  if (reports.length == 0) {
+    return [];
+  }
+  const response = await client.query({
+    query: relatedIncidentIdsQuery,
+    variables: {
+      query: {
+        reports_in: reports.map((report) => ({
+          report_number: report.report_number,
+        })),
+      },
+    },
+  });
+
+  return reports.map((report) => ({
+    ...report,
+    incident_id: response.data.incidents.filter((incident) =>
+      incident.reports
+        .map((incidentReport) => incidentReport.report_number)
+        .includes(report.report_number)
+    )[0].incident_id,
+  }));
+};
+
 const searchColumns = {
   byDatePublished: {
     header: (incident) => (
@@ -59,7 +84,7 @@ const searchColumns = {
       </>
     ),
     query: relatedReportsQuery,
-    getReports: async (result) => result.data.reports,
+    getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) => {
       if (!incident.date_published) return false;
       const parsedDate = parse(incident.date_published, 'yyyy-MM-dd', new Date());
@@ -97,30 +122,7 @@ const searchColumns = {
       </>
     ),
     query: relatedReportsQuery,
-    getReports: async (result, client) => {
-      if (result.data.reports.length == 0) {
-        return [];
-      }
-      const response = await client.query({
-        query: relatedIncidentIdsQuery,
-        variables: {
-          query: {
-            reports_in: result.data.reports.map((report) => ({
-              report_number: report.report_number,
-            })),
-          },
-        },
-      });
-
-      return result.data.reports.map((report) => ({
-        ...report,
-        incident_id: response.data.incidents.filter((incident) =>
-          incident.reports
-            .map((incidentReport) => incidentReport.report_number)
-            .includes(report.report_number)
-        )[0].incident_id,
-      }));
-    },
+    getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) => incident.authors,
     getQueryVariables: (incident) => ({
       authors_in: isArray(incident.authors) ? incident.authors : incident.authors.split(','),
