@@ -49,7 +49,7 @@ const relatedReportsQuery = gql`
 
 const minLength = 256;
 
-const longEnough = (text) => text.replace(/\s/g, '').length < minLength;
+const longEnough = (text) => text.replace(/\s/g, '').length > minLength;
 
 const reportsWithIncidentIds = async (reports, client) => {
   if (reports.length == 0) {
@@ -145,19 +145,20 @@ const searchColumns = {
     header: () => <>Most Semantically Similar Incident Reports (Experimental)</>,
     query: relatedIncidentsQuery,
     getReports: async (result) =>
-      result.data.incidents.reduce((reports, incident) => {
-        const incident_id = incident.incident_id;
-
-        return reports.concat(incident.reports.map((report) => ({ incident_id, ...report })));
-      }, []),
+      result.data.incidents.reduce(
+        (reports, incident) =>
+          reports.concat(
+            incident.reports.map((report) => ({
+              incident_id: incident.incident_id,
+              ...report,
+            }))
+          ),
+        []
+      ),
     isSet: (incident) => incident.text,
-    getQueryVariables: (incident, relatedIncidents) => {
-      if (relatedIncidents) {
-        return { incident_id_in: relatedIncidents };
-      } else {
-        return { incident_id_in: [] };
-      }
-    },
+    getQueryVariables: (incident, relatedIncidents) => ({
+      incident_id_in: relatedIncidents ? relatedIncidents.map((i) => i.incident_id) : [],
+    }),
   },
 };
 
@@ -265,11 +266,9 @@ const RelatedIncidents = ({ incident, className = '' }) => {
       for (const key in updaters) {
         const updater = updaters[key];
 
-        if (updater.isSet(incident)) {
-          variables[key] = updater.getQueryVariables(incident, relatedIncidents);
-        } else {
-          variables[key] = null;
-        }
+        variables[key] = updater.isSet(incident)
+          ? updater.getQueryVariables(incident, relatedIncidents)
+          : null;
       }
 
       setQueryVariables(variables);
@@ -281,7 +280,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
       setPlaintext(plaintext);
       debouncedUpdateSearch(searchColumns, incident, relatedIncidents, true, plaintext);
     });
-  }, [incident.text]);
+  }, [incident.text, incident.authors, incident.date_published]);
 
   useEffect(() => {
     debouncedUpdateSearch(searchColumns, incident, relatedIncidents, false);
@@ -301,6 +300,15 @@ const RelatedIncidents = ({ incident, className = '' }) => {
         setLoading((loading) => ({ ...loading, [key]: false }));
 
         const reports = await column.getReports(result, client);
+
+        if (key == 'byText') {
+          for (let report of reports) {
+            report.similarity = relatedIncidents.filter(
+              (inc) => inc.incident_id == report.incident_id
+            )[0].similarity;
+          }
+          reports.sort((a, b) => b.similarity - a.similarity);
+        }
 
         setRelatedReports((related) => ({ ...related, [key]: reports }));
       } else {
