@@ -47,7 +47,7 @@ const reports = [
     epoch_date_published: 1431993600,
     epoch_date_submitted: 1559347200,
     image_url: 'http://url.com',
-    language: 'en',
+    language: 'es',
     ref_number: 0,
     report_number: 2,
     source_domain: 'blogs.wsj.com',
@@ -80,7 +80,7 @@ const classifications = [
 ];
 
 describe('Translations', () => {
-  it('Should cache translations in the database', () => {
+  it('Should translate languages only if report language differs from target language', () => {
     const translatedReportsEN = [
       {
         _id: '61d5ad9f102e6e30fca90ddf',
@@ -153,6 +153,7 @@ describe('Translations', () => {
       expect(mongoClient.connect.callCount).to.eq(1);
 
       expect(reportsENCollection.insertMany.callCount).to.eq(1);
+
       expect(reportsENCollection.insertMany.firstCall.args[0][0]).to.deep.equal({
         report_number: 2,
         text: 'test-en-Report 2 **text**',
@@ -160,7 +161,8 @@ describe('Translations', () => {
         plain_text: 'test-en-Report 2 text\n',
       });
 
-      expect(reportsENCollection.insertMany.callCount).to.eq(1);
+      expect(reportsESCollection.insertMany.callCount).to.eq(1);
+
       expect(reportsESCollection.insertMany.firstCall.args[0][0]).to.deep.equal({
         report_number: 1,
         text: 'test-es-Report 1 **text**',
