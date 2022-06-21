@@ -3,7 +3,6 @@ const config = {
     pathPrefix: '/',
     siteUrl: 'https://incidentdatabase.ai',
     gaTrackingId: 'UA-23867277-2',
-    trailingSlash: false,
   },
   realm: {
     review_db: {

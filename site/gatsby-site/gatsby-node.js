@@ -116,19 +116,11 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
       value = `blog/${value}`;
     }
 
-    if (config.gatsby && config.gatsby.trailingSlash) {
-      createNodeField({
-        name: `slug`,
-        node,
-        value: value === '' ? `/` : `/${value}/`,
-      });
-    } else {
-      createNodeField({
-        name: `slug`,
-        node,
-        value: `/${value}`,
-      });
-    }
+    createNodeField({
+      name: `slug`,
+      node,
+      value: `/${value}`,
+    });
 
     createNodeField({
       name: 'id',

@@ -212,11 +212,6 @@ const plugins = [
   },
 ];
 
-// check and remove trailing slash
-if (config.gatsby && !config.gatsby.trailingSlash) {
-  plugins.push('gatsby-plugin-remove-trailing-slashes');
-}
-
 plugins.push(`gatsby-plugin-client-side-redirect`);
 
 module.exports = {
