@@ -75,7 +75,11 @@ const SimilarIncidents = ({ item }) => {
               variant="top"
               src={incident.reports.filter((report) => report.image_url)[0].image_url}
             />
-            <h3>{incident.title || incident.reports[0].title}</h3>
+            <h3>
+              <a href={'/cite/' + incident.incident_id}>
+                {incident.title || incident.reports[0].title}
+              </a>
+            </h3>
             <time>{format(parse(incident.date, 'yyyy-MM-dd', new Date()), 'MMM yyyy')}</time> ·{' '}
             <span>
               {incident.reports.length} {incident.reports.length == 1 ? 'report' : 'reports'}
@@ -88,13 +92,14 @@ const SimilarIncidents = ({ item }) => {
     <Button
       style={{ marginBottom: '1.5em' }}
       onClick={async () => {
-        const similarity = await semanticallyRelated(item.text, 4);
+        console.log(item);
+        const similarity = await semanticallyRelated(item.node.text, 4);
 
         const similarIncidentsResponse = await client.query({
           query: similarIncidentsQuery,
           variables: {
             query: {
-              incident_id_in: similarity.incidents.map((e) => e.incident_id),
+              incident_id_in: similarity.incidents.map((e) => e.incident_id).slice(1),
             },
           },
         });
