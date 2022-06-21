@@ -68,7 +68,21 @@
         },
         "editor_notes": {
             "bsonType": "string"
-        }
+        },
+        "nlp_related_incidents": {
+          "bsonType": "array",
+          "items": {
+              "bsonType": "object",
+              "properties": {
+                  "incident_id": {
+                      "bsonType": "int"
+                  },
+                  "similarity": {
+                      "bsonType": "float"
+                  }
+              }
+          }
+       }
     },
     "required": [
         "authors",
