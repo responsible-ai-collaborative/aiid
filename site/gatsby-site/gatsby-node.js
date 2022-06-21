@@ -24,11 +24,7 @@ const createDownloadIndexPage = require('./page-creators/createDownloadIndexPage
 
 const createDuplicatePages = require('./page-creators/createDuplicatePages');
 
-const discoverIndex = require('./src/utils/discoverIndexGenerator');
-
 const algoliasearch = require('algoliasearch');
-
-const algoliaSettings = require('./src/utils/algoliaSettings');
 
 const Translator = require('./src/utils/Translator');
 
@@ -275,39 +271,4 @@ exports.onPreBuild = function () {
   if (!config.google.mapsApiKey) {
     console.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
   }
-};
-
-exports.onPostBuild = async function ({ graphql, reporter }) {
-  const activity = reporter.activityTimer(`Algolia`);
-
-  activity.start();
-
-  if (config.header.search.algoliaAppId && config.header.search.algoliaAdminKey) {
-    activity.setStatus('Building index...');
-
-    const data = await discoverIndex({ graphql });
-
-    activity.setStatus('Uploading index...');
-
-    const client = algoliasearch(
-      config.header.search.algoliaAppId,
-      config.header.search.algoliaAdminKey
-    );
-
-    const index = client.initIndex('instant_search');
-
-    await index.saveObjects(data);
-
-    activity.setStatus(`Uploaded ${data.length} items to the index.`);
-
-    activity.setStatus('Updating settings...');
-
-    await index.setSettings(algoliaSettings);
-
-    activity.setStatus('Settings saved.');
-  } else {
-    activity.setStatus(`Missing env settings, skipping index upload.`);
-  }
-
-  activity.end();
 };
