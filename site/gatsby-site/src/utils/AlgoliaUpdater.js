@@ -4,6 +4,8 @@ const remark = require('remark');
 
 const remarkStrip = require('strip-markdown');
 
+const { getUnixTime } = require('date-fns');
+
 const truncate = (doc) => {
   for (const [key, value] of Object.entries(doc)) {
     if (typeof value == 'string') {
@@ -15,11 +17,36 @@ const truncate = (doc) => {
   return doc;
 };
 
+const classificationsWhitelist = [
+  'Harm Distribution Basis',
+  'Intent',
+  'Lives Lost',
+  'Location',
+  'Named Entities',
+  'Near Miss',
+  'Severity',
+  'AI Applications',
+  'AI Techniques',
+  'Financial Cost',
+  'Harm Type',
+  'Infrastructure Sectors',
+  'Level of Autonomy',
+  'Lives Lost',
+  'Nature of End User',
+  'Physical System',
+  'Problem Nature',
+  'Public Sector Deployment',
+  'Relevant AI functions',
+  'Sector of Deployment',
+  'System Developer',
+  'Technology Purveyor',
+];
+
 const getClassificationArray = (cObj, namespace) => {
   const cArray = [];
 
   for (const c in cObj) {
-    if (cObj[c] !== null) {
+    if (cObj[c] !== null && classificationsWhitelist.includes(c)) {
       let valuesToUnpack = null;
 
       if (typeof cObj[c] === 'object') {
@@ -70,6 +97,8 @@ class AlgoliaUpdater {
           objectID: report.report_number.toString(),
           text: text.contents.toString().trim(),
           incident_id: incident.incident_id,
+          incident_date: incident.date,
+          epoch_incident_date: getUnixTime(new Date(incident.date)),
         };
 
         if (classificationsHash[entry.incident_id]) {
@@ -128,17 +157,25 @@ class AlgoliaUpdater {
     });
   };
 
-  async run() {
+  async generateIndex({ language }) {
     await this.mongoClient.connect();
 
     const classifications = await this.getClassifications();
 
     const incidents = await this.getIncidents();
 
-    for (let { code: language } of this.languages) {
-      const reports = await this.getReports({ language });
+    const reports = await this.getReports({ language });
 
-      const entries = await this.generateIndexEntries({ reports, incidents, classifications });
+    const entries = await this.generateIndexEntries({ reports, incidents, classifications });
+
+    await this.mongoClient.close();
+
+    return entries;
+  }
+
+  async run() {
+    for (let { code: language } of this.languages) {
+      const entries = await this.generateIndex({ language });
 
       this.reporter.log(
         `Uploading Algolia index of [${language}] with [${entries.length}] entries`
