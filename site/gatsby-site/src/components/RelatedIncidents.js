@@ -245,15 +245,14 @@ const RelatedIncidents = ({ incident, className = '' }) => {
     debounce((updaters, incident, relatedIncidents, fetchRemote, plaintext) => {
       const fetchSemanticallyRelated = async () => {
         if (plaintext && longEnough(plaintext)) {
-          try {
-            const response = semanticallyRelated(plaintext);
-
-            response.then((res) => {
-              setRelatedIncidents(res.incidents);
+          semanticallyRelated(plaintext)
+            .then((response) => {
+              setRelatedIncidents(response.data.incidents);
+            })
+            .catch((error) => {
+              console.warn(error);
+              setRelatedIncidents([]);
             });
-          } catch (e) {
-            setRelatedIncidents([]);
-          }
         } else {
           setRelatedIncidents([]);
         }
