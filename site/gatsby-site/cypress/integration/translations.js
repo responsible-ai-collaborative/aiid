@@ -360,7 +360,7 @@ describe('Translations', () => {
     });
 
     cy.wrap(updater.run()).then(() => {
-      expect(mongoClient.connect.callCount).to.eq(1);
+      expect(mongoClient.connect.callCount).to.eq(2);
 
       expect(enIndex.saveObjects.getCall(0).args[0].length).eq(2);
 
@@ -436,7 +436,7 @@ describe('Translations', () => {
         ],
       });
 
-      expect(mongoClient.close.callCount).to.eq(1);
+      expect(mongoClient.close.callCount).to.eq(2);
     });
   });
 });
