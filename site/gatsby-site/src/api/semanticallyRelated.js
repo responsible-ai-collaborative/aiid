@@ -20,18 +20,14 @@ export default async function handler(req, res) {
 
   axios
     .get(url)
-    .then((lambdaResponse) => {
-      const data = lambdaResponse.data.body.msg.split(',');
-
-      // See: https://github.com/responsible-ai-collaborative/nlp-lambdas/issues/9
-      const incidents = [
-        parseInt(data[1].split(')')[0]),
-        parseInt(data[3].split(')')[0]),
-        parseInt(data[5].split(')')[0]),
-      ];
-
-      res.status(200).json({ incidents: incidents });
-    })
+    .then((lambdaResponse) =>
+      res.status(200).json({
+        // See: https://github.com/responsible-ai-collaborative/nlp-lambdas/issues/9
+        incidents: eval(lambdaResponse.data.body.msg.replace(/\(/g, '[').replace(/\)/g, ']')).map(
+          (arr) => ({ incident_id: arr[1], similarity: arr[0] })
+        ),
+      })
+    )
     .catch((error) => {
       console.error(error);
     });
