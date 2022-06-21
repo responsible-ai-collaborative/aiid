@@ -39,11 +39,17 @@ describe('Edit report', () => {
 
     cy.wait(['@findReport', '@findIncident']);
 
-    ['authors', 'date_downloaded', 'date_published', 'image_url', 'submitters', 'title'].forEach(
-      (key) => {
-        cy.get(`[name=${key}]`).should('have.value', report.data.report[key].toString());
-      }
-    );
+    [
+      'authors',
+      'date_downloaded',
+      'date_published',
+      'image_url',
+      'submitters',
+      'title',
+      'editor_notes',
+    ].forEach((key) => {
+      cy.get(`[name=${key}]`).should('have.value', report.data.report[key].toString());
+    });
 
     cy.getEditorText().should('eq', report.data.report.text);
 
@@ -59,6 +65,7 @@ describe('Edit report', () => {
       submitters: 'Test Submitter',
       title: 'Test Title',
       url: 'https://www.test.com/test',
+      editor_notes: 'Pro iustitia tantum',
     };
 
     Object.keys(updates).forEach((key) => {
@@ -117,6 +124,7 @@ describe('Edit report', () => {
       expect(xhr.request.body.variables.set.title).eq('Test Title');
       expect(xhr.request.body.variables.set.url).eq('https://www.test.com/test');
       expect(xhr.request.body.variables.set.source_domain).eq('test.com');
+      expect(xhr.request.body.variables.set.editor_notes).eq('Pro iustitia tantum');
     });
 
     cy.wrap(updateIncidentInvoked).should('eq', false);

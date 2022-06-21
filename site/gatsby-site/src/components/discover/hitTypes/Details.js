@@ -1,6 +1,5 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
-import { Highlight, Snippet } from 'react-instantsearch-dom';
 import { Image } from 'utils/cloudinary';
 import styled from 'styled-components';
 import { fill } from '@cloudinary/base/actions/resize';
@@ -11,6 +10,8 @@ import Actions from '../Actions';
 import ReportText from 'components/reports/ReportText';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 
+import { SourceDomainSubtitle, HeaderTitle } from './shared';
+
 const IncidentCardImage = styled(Image)`
   height: ${({ height }) => height};
   object-fit: cover;
@@ -19,10 +20,6 @@ const IncidentCardImage = styled(Image)`
 
 const StyledLabel = styled.p`
   margin: 0.6em 0;
-`;
-
-const TitleHighlight = styled(Highlight)`
-  font-weight: bold;
 `;
 
 export default function Details({
@@ -36,28 +33,19 @@ export default function Details({
 
   return (
     <Card className="h-100" data-cy={item.mongodb_id}>
-      <IncidentCardImage
-        className="card-img-top"
-        publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
-        alt={item.title}
-        height="240px"
-        transformation={fill().height(480)}
-      />
+      <a href={'/cite/' + item.incident_id + '#r' + item.objectID}>
+        <IncidentCardImage
+          className="card-img-top"
+          publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
+          alt={item.title}
+          height="240px"
+          transformation={fill().height(480)}
+        />
+      </a>
       <Card.Body className="d-flex flex-column ">
-        <Card.Title>
-          <TitleHighlight hit={item} attribute="title" />
-        </Card.Title>
+        <HeaderTitle item={item} />
 
-        <Card.Subtitle className="mb-2 text-muted">
-          {item.source_domain} &middot;{' '}
-          {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
-        </Card.Subtitle>
-
-        {item._snippetResult.text.matchLevel === 'full' && (
-          <blockquote className="mt-4">
-            <Snippet attribute="text" hit={item} />
-          </blockquote>
-        )}
+        <SourceDomainSubtitle item={item} className="mb-2 text-muted" />
 
         <Card.Text className="flex-fill">
           <ReportText text={item.text} maxChars={400} />

@@ -78,6 +78,9 @@
                 "bsonType": "string"
             }
         },
+        "editor_notes": {
+            "bsonType": "string"
+        },
         "text": {
             "bsonType": "string"
         },

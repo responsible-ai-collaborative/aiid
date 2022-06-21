@@ -52,8 +52,7 @@ export const schema = yup.object().shape({
   submitters: yup
     .string()
     .min(3, '*Submitter must have at least 3 characters')
-    .max(200, "*Submitter list can't be longer than 200 characters")
-    .required('*Submitter is required. Anonymous can be entered.'),
+    .max(200, "*Submitter list can't be longer than 200 characters"),
   text: yup
     .string()
     .min(80, '*Text must have at least 80 characters')
@@ -296,6 +295,16 @@ const SubmissionForm = () => {
             {...TextInputGroupProps}
           />
         )}
+
+        <TextInputGroup
+          name="editor_notes"
+          label="Editor Notes"
+          as="textarea"
+          placeholder="Optional context and notes about the incident"
+          rows={8}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
       </Form>
     </>
   );

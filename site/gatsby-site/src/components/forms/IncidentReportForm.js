@@ -282,6 +282,14 @@ const IncidentReportForm = () => {
         className="mt-3"
         placeHolder="Leave empty to report a new incident"
       />
+      <TextInputGroup
+        name="editor_notes"
+        label="Editor Notes"
+        as="textarea"
+        rows={8}
+        className="mt-3"
+        {...TextInputGroupProps}
+      />
     </Form>
   );
 };

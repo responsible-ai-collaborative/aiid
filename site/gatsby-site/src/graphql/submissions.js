@@ -28,6 +28,7 @@ export const FIND_SUBMISSIONS = gql`
       authors
       submitters
       url
+      editor_notes
       tags
     }
   }
@@ -53,6 +54,7 @@ export const FIND_SUBMISSION = gql`
       authors
       submitters
       url
+      editor_notes
       tags
     }
   }
@@ -78,6 +80,7 @@ export const UPDATE_SUBMISSION = gql`
       authors
       submitters
       url
+      editor_notes
       tags
     }
   }
