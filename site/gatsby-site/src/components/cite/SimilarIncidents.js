@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { gql, useApolloClient } from '@apollo/client';
 import styled from 'styled-components';
 import { Card, Button } from 'react-bootstrap';
@@ -112,6 +112,21 @@ const SimilarIncidents = ({ item }) => {
 
   const [similarIncidents, setSimilarIncidents] = useState([]);
 
+  useEffect(async () => {
+    const similarity = await semanticallyRelated(item.node.text, 4);
+
+    const similarIncidentsResponse = await client.query({
+      query: similarIncidentsQuery,
+      variables: {
+        query: {
+          incident_id_in: similarity.incidents.map((e) => e.incident_id).slice(1),
+        },
+      },
+    });
+
+    setSimilarIncidents(similarIncidentsResponse.data.incidents);
+  }, []);
+
   return similarIncidents.length > 0 ? (
     <SimilarIncidentsList>
       <h2 id="similar-incidents">
@@ -157,25 +172,7 @@ const SimilarIncidents = ({ item }) => {
       ))}
     </SimilarIncidentsList>
   ) : (
-    <Button
-      style={{ marginBottom: '1.5em' }}
-      onClick={async () => {
-        const similarity = await semanticallyRelated(item.node.text, 4);
-
-        const similarIncidentsResponse = await client.query({
-          query: similarIncidentsQuery,
-          variables: {
-            query: {
-              incident_id_in: similarity.incidents.map((e) => e.incident_id).slice(1),
-            },
-          },
-        });
-
-        setSimilarIncidents(similarIncidentsResponse.data.incidents);
-      }}
-    >
-      Get similar incidents
-    </Button>
+    ''
   );
 };
 

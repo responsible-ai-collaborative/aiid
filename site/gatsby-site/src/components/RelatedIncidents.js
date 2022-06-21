@@ -6,6 +6,7 @@ import { gql, useApolloClient } from '@apollo/client';
 import debounce from 'lodash/debounce';
 import isArray from 'lodash/isArray';
 import { stripMarkdown } from '../utils/typography';
+import { useFormikContext } from 'formik';
 
 const ListContainer = styled(Card)`
   margin: 1em 0;
@@ -167,6 +168,8 @@ const RelatedIncidents = ({ incident, className = '' }) => {
 
   const [plaintext, setPlaintext] = useState(incident.text);
 
+  const { setFieldValue } = useFormikContext();
+
   const debouncedUpdateSearch = useRef(
     debounce((updaters, incident, relatedIncidents, fetchRemote, plaintext) => {
       const fetchSemanticallyRelated = async () => {
@@ -175,6 +178,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
 
           response.then((res) => {
             setRelatedIncidents(res.incidents);
+            setFieldValue('semanticallyRelatedIncidents', res.incidents);
           });
         } else {
           setRelatedIncidents([]);
