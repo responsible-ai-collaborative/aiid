@@ -5,6 +5,9 @@ import { Card, Button } from 'react-bootstrap';
 import { format, parse } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlag } from '@fortawesome/free-solid-svg-icons';
+import { Image } from '../../utils/cloudinary';
+import { fill } from '@cloudinary/base/actions/resize';
+import md5 from 'md5';
 
 const similarIncidentsQuery = gql`
   query SimilarIncidents($query: IncidentQueryInput) {
@@ -47,11 +50,13 @@ const SimilarIncidentsList = styled.div`
   h3 {
     margin-top: 0.5em;
   }
-  .card-img-top {
-    margin: -1.25em -1.25em 0em -1.25em !important;
-    width: calc(100% + 2.5em);
-    max-width: calc(100% + 2.5em);
-  }
+`;
+
+const IncidentCardImage = styled(Image)`
+  object-fit: cover;
+  width: calc(100% + 2.5em);
+  max-width: calc(100% + 2.5em);
+  margin: -1.25em -1.25em 0em -1.25em !important;
 `;
 
 const SimilarIncidents = ({ item }) => {
@@ -71,9 +76,12 @@ const SimilarIncidents = ({ item }) => {
       {similarIncidents.map((incident) => (
         <Card key={incident.incident_id}>
           <Card.Body>
-            <Card.Img
-              variant="top"
-              src={incident.reports.filter((report) => report.image_url)[0].image_url}
+            <IncidentCardImage
+              publicID={
+                incident.reports[0].cloudinary_id || `legacy/${md5(incident.reports[0].image_url)}`
+              }
+              alt=""
+              transformation={fill().height(480)}
             />
             <h3>
               <a href={'/cite/' + incident.incident_id}>
