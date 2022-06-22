@@ -370,15 +370,9 @@ describe('Translations', () => {
         title: 'translated-en-title report 1',
         incident_id: 1,
         classifications: [
-          'CSET:Annotator:1',
-          'CSET:Annotation Status:6. Complete and final',
-          'CSET:Reviewer:5',
-          'CSET:Quality Control:false',
-          'CSET:Full Description:On December 5, 2018, a robot punctured.',
           'CSET:Named Entities:Amazon',
           'CSET:Harm Type:Harm to physical health/safety',
           'CSET:Harm Type:Harm to physical property',
-          'CSET:Publish:true',
         ],
       });
 
@@ -388,15 +382,9 @@ describe('Translations', () => {
         title: 'translated-en-title report 2',
         incident_id: 1,
         classifications: [
-          'CSET:Annotator:1',
-          'CSET:Annotation Status:6. Complete and final',
-          'CSET:Reviewer:5',
-          'CSET:Quality Control:false',
-          'CSET:Full Description:On December 5, 2018, a robot punctured.',
           'CSET:Named Entities:Amazon',
           'CSET:Harm Type:Harm to physical health/safety',
           'CSET:Harm Type:Harm to physical property',
-          'CSET:Publish:true',
         ],
       });
 
@@ -406,15 +394,9 @@ describe('Translations', () => {
         title: 'translated-es-title report 1',
         incident_id: 1,
         classifications: [
-          'CSET:Annotator:1',
-          'CSET:Annotation Status:6. Complete and final',
-          'CSET:Reviewer:5',
-          'CSET:Quality Control:false',
-          'CSET:Full Description:On December 5, 2018, a robot punctured.',
           'CSET:Named Entities:Amazon',
           'CSET:Harm Type:Harm to physical health/safety',
           'CSET:Harm Type:Harm to physical property',
-          'CSET:Publish:true',
         ],
       });
 
@@ -424,15 +406,9 @@ describe('Translations', () => {
         title: 'translated-es-title report 2',
         incident_id: 1,
         classifications: [
-          'CSET:Annotator:1',
-          'CSET:Annotation Status:6. Complete and final',
-          'CSET:Reviewer:5',
-          'CSET:Quality Control:false',
-          'CSET:Full Description:On December 5, 2018, a robot punctured.',
           'CSET:Named Entities:Amazon',
           'CSET:Harm Type:Harm to physical health/safety',
           'CSET:Harm Type:Harm to physical property',
-          'CSET:Publish:true',
         ],
       });
 

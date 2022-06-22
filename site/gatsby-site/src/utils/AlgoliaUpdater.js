@@ -182,8 +182,6 @@ class AlgoliaUpdater {
       );
       await this.uploadToAlgolia({ entries, language });
     }
-
-    await this.mongoClient.close();
   }
 }
 
