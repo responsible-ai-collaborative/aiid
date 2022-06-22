@@ -261,7 +261,7 @@ exports.onPreBootstrap = async ({ reporter }) => {
       reporter.warn('Error running translation scripts:', e);
     }
   } else {
-    reporter.log(`Missing env settings, skipping indexes translation and upload.`);
+    throw `Missing environment variable, can't run translation process.`;
   }
 
   translationsActivity.end();
