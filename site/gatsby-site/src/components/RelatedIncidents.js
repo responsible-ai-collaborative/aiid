@@ -247,7 +247,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
         if (plaintext && longEnough(plaintext)) {
           semanticallyRelated(plaintext)
             .then((response) => {
-              setRelatedIncidents(response.data.incidents);
+              setRelatedIncidents(response.incidents);
             })
             .catch((error) => {
               console.warn(error);
