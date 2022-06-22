@@ -11,6 +11,10 @@ export const FIND_INCIDENT = gql`
       AllegedDeployerOfAISystem
       AllegedDeveloperOfAISystem
       AllegedHarmedOrNearlyHarmedParties
+      nlp_similar_incidents {
+        incident_id
+        similarity
+      }
       reports {
         report_number
       }
@@ -29,6 +33,10 @@ export const FIND_INCIDENTS = gql`
       AllegedDeployerOfAISystem
       AllegedDeveloperOfAISystem
       AllegedHarmedOrNearlyHarmedParties
+      nlp_similar_incidents {
+        incident_id
+        similarity
+      }
       reports {
         report_number
       }
@@ -47,6 +55,10 @@ export const UPDATE_INCIDENT = gql`
       AllegedDeployerOfAISystem
       AllegedDeveloperOfAISystem
       AllegedHarmedOrNearlyHarmedParties
+      nlp_similar_incidents {
+        incident_id
+        similarity
+      }
       reports {
         report_number
       }

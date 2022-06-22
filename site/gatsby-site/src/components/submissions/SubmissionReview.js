@@ -109,7 +109,16 @@ const SubmissionReview = ({ submission }) => {
       },
     });
 
-    const report = { ...submission, incident_id: undefined, _id: undefined, __typename: undefined };
+    const report = {
+      ...submission,
+      incident_id: undefined,
+      _id: undefined,
+      __typename: undefined,
+      nlp_similar_incidents: submission.nlp_similar_incidents.map((inc) => ({
+        incident_id: inc.incident_id,
+        similarity: inc.similarity,
+      })),
+    };
 
     report.date_modified = format(new Date(), 'yyyy-MM-dd');
 
@@ -228,7 +237,7 @@ const SubmissionReview = ({ submission }) => {
           {open && (
             <div className="mx-3">
               <h5>Possible related incidents</h5>
-              <RelatedIncidents incident={submission} />
+              <RelatedIncidents incident={submission} editable={false} />
             </div>
           )}
           <Card.Footer className="d-flex text-muted">

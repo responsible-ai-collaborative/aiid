@@ -187,8 +187,8 @@ const ReportRow = styled(ListGroup.Item)`
   }
 `;
 
-const RelatedIncidentsArea = ({ columnKey, header, reports, loading, plaintext }) => {
-  const { setFieldValue } = useFormikContext() || { setFieldValue: null };
+const RelatedIncidentsArea = ({ columnKey, header, reports, loading, plaintext, editable }) => {
+  const { setFieldValue } = editable ? useFormikContext() : { setFieldValue: null };
 
   if (!reports && !loading) {
     return null;
@@ -206,7 +206,7 @@ const RelatedIncidentsArea = ({ columnKey, header, reports, loading, plaintext }
             <a href={val.url} target="_blank" rel="noreferrer">
               {val.title}
             </a>
-            {val.incident_id && (
+            {val.incident_id && editable && (
               <Button
                 variant="link"
                 onClick={() => setFieldValue && setFieldValue('incident_id', val.incident_id)}
@@ -227,34 +227,40 @@ const RelatedIncidentsArea = ({ columnKey, header, reports, loading, plaintext }
   );
 };
 
-const RelatedIncidents = ({ incident, className = '' }) => {
+const RelatedIncidents = ({ incident, className = '', editable = true }) => {
   const [loading, setLoading] = useState({});
 
   const [relatedReports, setRelatedReports] = useState({});
 
   const [queryVariables, setQueryVariables] = useState({});
 
-  const [relatedIncidents, setRelatedIncidents] = useState([]);
+  const [relatedIncidents, setRelatedIncidents] = useState();
 
   const client = useApolloClient();
 
   const [plaintext, setPlaintext] = useState(incident.text);
 
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = editable ? useFormikContext() : { setFieldValue: null };
 
   const debouncedUpdateSearch = useRef(
     debounce((updaters, incident, relatedIncidents, fetchRemote, plaintext) => {
       const fetchSemanticallyRelated = async () => {
         if (plaintext && longEnough(plaintext)) {
-          semanticallyRelated(plaintext)
-            .then((response) => {
-              setRelatedIncidents(response.incidents);
-              setFieldValue('nlp_similar_incidents', response.incidents);
-            })
-            .catch((error) => {
-              console.warn(error);
-              setRelatedIncidents([]);
-            });
+          if (incident.nlp_similar_incidents && !relatedIncidents) {
+            setRelatedIncidents(incident.nlp_similar_incidents);
+          } else {
+            semanticallyRelated(plaintext)
+              .then((response) => {
+                setRelatedIncidents(response.incidents);
+                if (editable) {
+                  setFieldValue('nlp_similar_incidents', response.incidents);
+                }
+              })
+              .catch((error) => {
+                console.warn(error);
+                setRelatedIncidents([]);
+              });
+          }
         } else {
           setRelatedIncidents([]);
         }
@@ -350,6 +356,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
             header={column.header(incident)}
             plaintext={plaintext}
             incident={incident}
+            editable={editable}
           />
         );
       })}

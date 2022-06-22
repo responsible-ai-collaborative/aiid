@@ -17,6 +17,10 @@ export const FIND_REPORT = gql`
       flag
       report_number
       editor_notes
+      nlp_similar_incidents {
+        incident_id
+        similarity
+      }
     }
   }
 `;
@@ -41,6 +45,10 @@ export const UPDATE_REPORT = gql`
       flag
       report_number
       editor_notes
+      nlp_similar_incidents {
+        incident_id
+        similarity
+      }
     }
   }
 `;
