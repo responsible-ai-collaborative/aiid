@@ -45,7 +45,7 @@
         "title": {
             "bsonType": "string"
         },
-        "nlp_related_incidents": {
+        "nlp_similar_incidents": {
           "bsonType": "array",
           "items": {
               "bsonType": "object",
@@ -54,7 +54,7 @@
                       "bsonType": "int"
                   },
                   "similarity": {
-                      "bsonType": "float"
+                      "bsonType": "double"
                   }
               }
           }

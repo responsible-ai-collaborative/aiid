@@ -30,6 +30,7 @@ export const FIND_SUBMISSIONS = gql`
       url
       editor_notes
       tags
+      nlp_similar_incidents
     }
   }
 `;
@@ -56,6 +57,7 @@ export const FIND_SUBMISSION = gql`
       url
       editor_notes
       tags
+      nlp_similar_incidents
     }
   }
 `;
@@ -82,6 +84,7 @@ export const UPDATE_SUBMISSION = gql`
       url
       editor_notes
       tags
+      nlp_similar_incidents
     }
   }
 `;
