@@ -59,6 +59,8 @@ function CitePage(props) {
     pageContext: { incident, incidentReports, taxonomies, nextIncident, prevIncident },
   } = props;
 
+  console.log(incident);
+
   const { isRole } = useUserContext();
 
   // meta tags
@@ -253,7 +255,7 @@ function CitePage(props) {
           </Row>
         ))}
 
-        <SimilarIncidents item={sortedReports[0]} />
+        <SimilarIncidents incident={incident} />
 
         <Pagination className="justify-content-between">
           <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>

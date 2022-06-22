@@ -25,18 +25,17 @@ const similarIncidentsQuery = gql`
   }
 `;
 
-const semanticallyRelated = async (text, num) => {
-  const url = `/api/semanticallyRelated?num=${num}&text=${encodeURIComponent(text)}`;
-
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error('Semantic relation error');
+const similarIncidentIdsQuery = gql`
+  query SimilarIncidentIds($query: IncidentQueryInput) {
+    incidents(query: $query) {
+      incident_id
+      nlp_similar_incidents {
+        incident_id
+        similarity
+      }
+    }
   }
-  const json = await response.json();
-
-  return json;
-};
+`;
 
 const SimilarIncidentsList = styled.div`
   margin-top: 2em;
@@ -46,15 +45,16 @@ const SimilarIncidentsList = styled.div`
     margin-bottom: 1.5em;
     overflow: hidden;
     box-shadow: 0 2px 5px 0px #e3e5ec;
+
+    a:not(:hover) {
+      color: inherit;
+    }
   }
   p + .card {
     margin-top: 0px;
   }
   h2 {
     font-size: 200%;
-  }
-  a:not(:hover) {
-    color: inherit;
   }
   h3 {
     margin-top: 0.5em;
@@ -107,24 +107,33 @@ const FlagButton = styled(Button)`
   }
 `;
 
-const SimilarIncidents = ({ item }) => {
+const SimilarIncidents = ({ incident }) => {
   const client = useApolloClient();
 
   const [similarIncidents, setSimilarIncidents] = useState([]);
 
   useEffect(async () => {
-    const similarity = await semanticallyRelated(item.node.text, 4);
-
-    const similarIncidentsResponse = await client.query({
-      query: similarIncidentsQuery,
+    const similarity = await client.query({
+      query: similarIncidentIdsQuery,
       variables: {
-        query: {
-          incident_id_in: similarity.incidents.map((e) => e.incident_id).slice(1),
-        },
+        query: { incident_id: incident.incident_id },
       },
     });
 
-    setSimilarIncidents(similarIncidentsResponse.data.incidents);
+    const inc = similarity.data.incidents[0];
+
+    if (inc.nlp_similar_incidents) {
+      const similarIncidentsResponse = await client.query({
+        query: similarIncidentsQuery,
+        variables: {
+          query: {
+            incident_id_in: inc.nlp_similar_incidents.map((e) => e.incident_id),
+          },
+        },
+      });
+
+      setSimilarIncidents(similarIncidentsResponse.data.incidents);
+    }
   }, []);
 
   return similarIncidents.length > 0 ? (
