@@ -1,4 +1,5 @@
 import parseNews from '../fixtures/api/parseNews.json';
+import { maybeIt } from '../support/utils';
 
 describe('The Submit form', () => {
   const url = '/apps/submit';
@@ -27,6 +28,8 @@ describe('The Submit form', () => {
     cy.get('[class*="Typeahead"]').type('New Tag{enter}');
 
     cy.get('[name="incident_date"]').type('2020-01-01');
+
+    cy.get('[name="editor_notes"').type('Here are some notes');
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -58,6 +61,7 @@ describe('The Submit form', () => {
         url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
         source_domain: `arstechnica.com`,
         language: 'en',
+        editor_notes: 'Here are some notes',
       });
     });
 
@@ -80,6 +84,8 @@ describe('The Submit form', () => {
     cy.get('input[name="submitters"]').type('Something');
 
     cy.get('[class*="Typeahead"]').type('New Tag{enter}');
+
+    cy.get('[name="editor_notes"').type('Here are some notes');
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -129,6 +135,7 @@ describe('The Submit form', () => {
         incident_id: 1,
         url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
         source_domain: `arstechnica.com`,
+        editor_notes: 'Here are some notes',
       });
     });
 
@@ -157,9 +164,10 @@ describe('The Submit form', () => {
               tags: ['New Tag'],
               incident_id: '0',
               url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
-              source_domain: 'arstechinca.com',
+              source_domain: 'arstechnica.com',
               language: 'en',
               description: 'Something',
+              editor_notes: 'Here are some notes',
             },
           ],
         },
@@ -174,7 +182,167 @@ describe('The Submit form', () => {
       '[data-cy="submission"]',
       'YouTube to crack down on inappropriate content masked as kids’ cartoons'
     ).should('exist');
+    cy.get('[data-cy="submission"] [data-cy="review-button"]').click();
+
+    let expectedValues = {
+      _id: '6272f2218933c7a9b512e13b',
+      text: 'Something',
+      submitters: 'Something',
+      authors: 'Valentina Palladino',
+      incident_date: '2021-09-21',
+      date_published: '2017-11-10',
+      image_url:
+        'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+      incident_id: '0',
+      url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
+      source_domain: 'arstechnica.com',
+      language: 'en',
+    };
+
+    for (let key in expectedValues) {
+      cy.get(`[data-cy="${key}"]`).contains(expectedValues[key]).should('exist');
+    }
   });
+
+  maybeIt(
+    'Should submit a new report linked to incident 1 with editor notes when logged in',
+    () => {
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+      cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
+      cy.visit(url);
+
+      cy.get('input[name="url"]').type(
+        `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+      );
+
+      cy.get('button').contains('Fetch info').click();
+
+      cy.get('input[name="submitters"]').type('Something');
+
+      cy.get('[class*="Typeahead"]').type('New Tag{enter}');
+
+      cy.get('[name="editor_notes"').type('Here are some notes');
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) =>
+          req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 1,
+        'findIncident',
+        {
+          data: {
+            incident: {
+              __typename: 'Incident',
+              incident_id: 1,
+              title: 'Test title',
+              date: '2016-03-13',
+            },
+          },
+        }
+      );
+
+      cy.get('[name="incident_id"]').type('1');
+
+      cy.wait('@findIncident');
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'InsertSubmission',
+        'submitReport',
+        {
+          data: {
+            insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+          },
+        }
+      );
+
+      cy.get('button[type="submit"]').click();
+
+      cy.wait('@submitReport').then((xhr) => {
+        expect(xhr.request.body.variables.submission).to.deep.include({
+          title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
+          submitters: ['Something'],
+          authors: ['Valentina Palladino'],
+          date_published: '2017-11-10',
+          image_url:
+            'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+          cloudinary_id:
+            'reports/cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+          tags: ['New Tag'],
+          incident_id: 1,
+          url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
+          source_domain: `arstechnica.com`,
+          editor_notes: 'Here are some notes',
+        });
+      });
+
+      cy.get('div[class^="ToastContext"]')
+        .contains('Report successfully added to review queue')
+        .should('exist');
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindSubmissions',
+        'findSubmissions',
+        {
+          data: {
+            submissions: [
+              {
+                __typename: 'Submission',
+                _id: '6272f2218933c7a9b512e13b',
+                text: 'Something',
+                title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
+                submitters: ['Something'],
+                authors: ['Valentina Palladino'],
+                incident_date: '2021-09-21',
+                date_published: '2017-11-10',
+                image_url:
+                  'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+                tags: ['New Tag'],
+                incident_id: '0',
+                url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
+                source_domain: 'arstechnica.com',
+                language: 'en',
+                description: 'Something',
+                editor_notes: 'Here are some notes',
+              },
+            ],
+          },
+        }
+      );
+
+      cy.visit('/apps/submitted');
+
+      cy.wait('@findSubmissions');
+
+      cy.contains(
+        '[data-cy="submission"]',
+        'YouTube to crack down on inappropriate content masked as kids’ cartoons'
+      ).should('exist');
+      cy.get('[data-cy="submission"] [data-cy="review-button"]').click();
+
+      let expectedValues = {
+        _id: '6272f2218933c7a9b512e13b',
+        text: 'Something',
+        submitters: 'Something',
+        authors: 'Valentina Palladino',
+        incident_date: '2021-09-21',
+        date_published: '2017-11-10',
+        image_url:
+          'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+        incident_id: '0',
+        url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
+        source_domain: 'arstechnica.com',
+        language: 'en',
+        editor_notes: 'Here are some notes',
+      };
+
+      for (let key in expectedValues) {
+        cy.get(`[data-cy="${key}"]`).contains(expectedValues[key]).should('exist');
+      }
+    }
+  );
 
   it('Should show a toast on error when failing to reach parsing endpoint', () => {
     cy.visit(url);
@@ -207,6 +375,7 @@ describe('The Submit form', () => {
       incident_id: '1',
       text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
       tags: 'test tag',
+      editor_notes: 'Here are some notes',
     };
 
     const params = new URLSearchParams(values);
@@ -256,6 +425,7 @@ describe('The Submit form', () => {
           'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
         source_domain: `test.com`,
         cloudinary_id: `reports/test.com/image.jpg`,
+        editor_notes: 'Here are some notes',
       });
     });
   });
@@ -548,6 +718,7 @@ describe('The Submit form', () => {
       date_downloaded: '2021-01-03',
       image_url: 'https://test.com/image.jpg',
       incident_id: '3456456',
+      editor_notes: 'Here are some notes',
     };
 
     for (const key in values) {
@@ -584,6 +755,7 @@ describe('The Submit form', () => {
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
       image_url: 'https://test.com/image.jpg',
+      editor_notes: 'Here are some notes',
     };
 
     for (const key in values) {
