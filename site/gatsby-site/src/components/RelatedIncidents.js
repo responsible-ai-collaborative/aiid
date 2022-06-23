@@ -163,7 +163,6 @@ const searchColumns = {
 };
 
 const semanticallyRelated = async (text, max_tries) => {
-  console.log('semanticallyRelated()');
   const url = `/api/semanticallyRelated?text=${encodeURIComponent(text)}`;
 
   let response;
@@ -289,17 +288,26 @@ const RelatedIncidents = ({ incident, className = '' }) => {
   }, [incident.text, incident.authors, incident.date_published, incident.incident_id]);
 
   useEffect(() => {
+    setLoading((loading) => ({ ...loading, byText: longEnough(incident.text) }));
+  }, [incident.text]);
+
+  useEffect(() => {
+    if (relatedReports.byText && relatedReports.byText.length > 1) {
+      setLoading((loading) => ({ ...loading, byText: false }));
+    }
+  }, [relatedReports.byText]);
+
+  useEffect(() => {
     debouncedUpdateSearch(searchColumns, incident, relatedIncidents, false);
   }, [relatedIncidents]);
 
   const search = useCallback(
     async (key, column) => {
       if (queryVariables[key]) {
+        setLoading((loading) => ({ ...loading, [key]: true }));
         const variables = { query: queryVariables[key] };
 
         const query = column.query;
-
-        setLoading((loading) => ({ ...loading, [key]: true }));
 
         const result = await client.query({ query, variables });
 
@@ -312,11 +320,11 @@ const RelatedIncidents = ({ incident, className = '' }) => {
             )[0].similarity;
           }
           reports.sort((a, b) => b.similarity - a.similarity);
+        } else {
+          setLoading((loading) => ({ ...loading, [key]: false }));
         }
 
         setRelatedReports((related) => ({ ...related, [key]: reports }));
-
-        setLoading((loading) => ({ ...loading, [key]: false }));
       } else {
         setRelatedReports((related) => ({ ...related, [key]: null }));
       }
