@@ -12,6 +12,7 @@
             "date": "2015-05-19",
             "description": "YouTube’s content filtering and recommendation algorithms exposed children to disturbing and inappropriate videos.",
             "editors": ["Sean McGregor"],
+            "nlp_similar_incidents": [],
             "incident_id": 1,
             "reports": [
                 {
