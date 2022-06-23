@@ -162,12 +162,19 @@ const searchColumns = {
   },
 };
 
-const semanticallyRelated = async (text) => {
+const semanticallyRelated = async (text, max_tries) => {
+  console.log('semanticallyRelated()');
   const url = `/api/semanticallyRelated?text=${encodeURIComponent(text)}`;
 
-  const response = await fetch(url);
+  let response;
 
-  if (!response.ok) {
+  let tries = 0;
+
+  while (tries < (max_tries || 2) && !response?.ok) {
+    response = await fetch(url);
+    tries++;
+  }
+  if (!response?.ok) {
     throw new Error('Semantic relation error');
   }
   const json = await response.json();
@@ -296,8 +303,6 @@ const RelatedIncidents = ({ incident, className = '' }) => {
 
         const result = await client.query({ query, variables });
 
-        setLoading((loading) => ({ ...loading, [key]: false }));
-
         const reports = await column.getReports(result, client);
 
         if (key == 'byText') {
@@ -310,6 +315,8 @@ const RelatedIncidents = ({ incident, className = '' }) => {
         }
 
         setRelatedReports((related) => ({ ...related, [key]: reports }));
+
+        setLoading((loading) => ({ ...loading, [key]: false }));
       } else {
         setRelatedReports((related) => ({ ...related, [key]: null }));
       }
