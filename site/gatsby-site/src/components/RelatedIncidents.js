@@ -161,12 +161,18 @@ const searchColumns = {
   },
 };
 
-const semanticallyRelated = async (text) => {
+const semanticallyRelated = async (text, max_tries) => {
   const url = `/api/semanticallyRelated?text=${encodeURIComponent(text)}`;
 
-  const response = await fetch(url);
+  let response;
 
-  if (!response.ok) {
+  let tries = 0;
+
+  while (tries < (max_tries || 2) && !response?.ok) {
+    response = await fetch(url);
+    tries++;
+  }
+  if (!response?.ok) {
     throw new Error('Semantic relation error');
   }
   const json = await response.json();
@@ -259,6 +265,7 @@ const RelatedIncidents = ({ incident, className = '', editable = true }) => {
               .catch((error) => {
                 console.warn(error);
                 setRelatedIncidents([]);
+                setLoading((loading) => ({ ...loading, byText: false }));
               });
           }
         } else {
@@ -290,21 +297,30 @@ const RelatedIncidents = ({ incident, className = '', editable = true }) => {
   }, [incident.text, incident.authors, incident.date_published, incident.incident_id]);
 
   useEffect(() => {
+    setLoading((loading) => ({ ...loading, byText: longEnough(incident.text) }));
+  }, [incident.text]);
+
+  useEffect(() => {
+    if (relatedReports?.byText && relatedReports?.byText.length > 1) {
+      setLoading((loading) => ({ ...loading, byText: false }));
+    }
+  }, [relatedReports.byText]);
+
+  useEffect(() => {
     debouncedUpdateSearch(searchColumns, incident, relatedIncidents, false);
   }, [relatedIncidents]);
 
   const search = useCallback(
     async (key, column) => {
       if (queryVariables[key]) {
+        if (key != 'byText') {
+          setLoading((loading) => ({ ...loading, [key]: true }));
+        }
         const variables = { query: queryVariables[key] };
 
         const query = column.query;
 
-        setLoading((loading) => ({ ...loading, [key]: true }));
-
         const result = await client.query({ query, variables });
-
-        setLoading((loading) => ({ ...loading, [key]: false }));
 
         const reports = await column.getReports(result, client);
 
@@ -315,6 +331,8 @@ const RelatedIncidents = ({ incident, className = '', editable = true }) => {
             )[0].similarity;
           }
           reports.sort((a, b) => b.similarity - a.similarity);
+        } else {
+          setLoading((loading) => ({ ...loading, [key]: false }));
         }
 
         setRelatedReports((related) => ({ ...related, [key]: reports }));

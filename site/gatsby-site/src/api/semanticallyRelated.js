@@ -21,13 +21,13 @@ export default async function handler(req, res) {
     num;
 
   axios
-    .get(url)
+    .get(url, { timeout: 30000 })
     .then((lambdaResponse) =>
       res.status(200).json({
         // See: https://github.com/responsible-ai-collaborative/nlp-lambdas/issues/9
-        incidents: eval(lambdaResponse.data.body.msg.replace(/\(/g, '[').replace(/\)/g, ']')).map(
-          (arr) => ({ incident_id: arr[1], similarity: arr[0] })
-        ),
+        incidents: JSON.parse(
+          lambdaResponse.data.body.msg.replace(/\(/g, '[').replace(/\)/g, ']')
+        ).map((arr) => ({ incident_id: arr[1], similarity: arr[0] })),
       })
     )
     .catch((error) => {
