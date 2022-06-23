@@ -19,7 +19,7 @@ export default async function handler(req, res) {
     encodeURIComponent(text);
 
   axios
-    .get(url)
+    .get(url, { timeout: 30000 })
     .then((lambdaResponse) =>
       res.status(200).json({
         // See: https://github.com/responsible-ai-collaborative/nlp-lambdas/issues/9

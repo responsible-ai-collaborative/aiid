@@ -258,6 +258,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
             .catch((error) => {
               console.warn(error);
               setRelatedIncidents([]);
+              setLoading((loading) => ({ ...loading, byText: false }));
             });
         } else {
           setRelatedIncidents([]);
@@ -292,7 +293,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
   }, [incident.text]);
 
   useEffect(() => {
-    if (relatedReports.byText && relatedReports.byText.length > 1) {
+    if (relatedReports?.byText && relatedReports?.byText.length > 1) {
       setLoading((loading) => ({ ...loading, byText: false }));
     }
   }, [relatedReports.byText]);
@@ -304,7 +305,9 @@ const RelatedIncidents = ({ incident, className = '' }) => {
   const search = useCallback(
     async (key, column) => {
       if (queryVariables[key]) {
-        setLoading((loading) => ({ ...loading, [key]: true }));
+        if (key != 'byText') {
+          setLoading((loading) => ({ ...loading, [key]: true }));
+        }
         const variables = { query: queryVariables[key] };
 
         const query = column.query;
