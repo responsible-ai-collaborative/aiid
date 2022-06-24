@@ -169,7 +169,7 @@ const semanticallyRelated = async (text, max_tries) => {
 
   let tries = 0;
 
-  while (tries < (max_tries || 2) && !response?.ok) {
+  while (tries < (max_tries || 3) && !response?.ok) {
     response = await fetch(url);
     tries++;
   }
