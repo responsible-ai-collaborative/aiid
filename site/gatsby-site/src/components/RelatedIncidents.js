@@ -146,6 +146,8 @@ const searchColumns = {
     header: () => <>Most Semantically Similar Incident Reports (Experimental)</>,
     query: relatedIncidentsQuery,
     getReports: async (result) =>
+      // We need a list of reports, not a list of incidents,
+      // so we reduce to get reports with associated incidents
       result.data.incidents.reduce(
         (reports, incident) =>
           reports.concat(
