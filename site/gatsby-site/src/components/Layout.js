@@ -38,6 +38,14 @@ const Content = styled('main')`
     background: ${({ theme }) => theme.colors.background};
   }
 
+  @media only screen and (min-width: 767px) {
+    /* Subtract the sidebar and margin width */
+    width: calc(100% - 298px - 66px);
+    > * {
+      max-width: 100%;
+    }
+  }
+
   @media only screen and (max-width: 1123px) {
     padding-left: 0;
     margin: 0 10px;
@@ -59,6 +67,7 @@ const LeftSideBarWidth = styled.div`
 
 const RightSideBarWidth = styled.div`
   width: 224px;
+  margin-left: -24px;
 
   @media (max-width: 965px) {
     display: none;
