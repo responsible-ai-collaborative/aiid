@@ -262,6 +262,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
             });
         } else {
           setRelatedIncidents([]);
+          setLoading((loading) => ({ ...loading, byText: false }));
         }
       };
 
@@ -299,7 +300,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
   }, [relatedReports.byText]);
 
   useEffect(() => {
-    debouncedUpdateSearch(searchColumns, incident, relatedIncidents, false);
+    debouncedUpdateSearch(searchColumns, incident, relatedIncidents, false, plaintext);
   }, [relatedIncidents]);
 
   const search = useCallback(
