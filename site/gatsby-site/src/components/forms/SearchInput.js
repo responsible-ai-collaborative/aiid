@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { FormControl, InputGroup } from 'react-bootstrap';
 import styled from 'styled-components';
+import { withTranslation } from 'react-i18next';
 
 const SearchStatus = styled.div`
   position: absolute;
@@ -30,13 +31,14 @@ const SearchInputGroup = styled(InputGroup)`
   margin: auto;
 `;
 
-export default function SearchInput({
+export default withTranslation()(function SearchInput({
   value,
   onChange,
   onClear,
   onKeyPress,
   size = 'sm',
-  placeHolder = 'Type Here',
+  t,
+  placeHolder = t('Type Here'),
 }) {
   return (
     <SearchInputGroup className="position-relative">
@@ -59,4 +61,4 @@ export default function SearchInput({
       </SearchStatus>
     </SearchInputGroup>
   );
-}
+});
