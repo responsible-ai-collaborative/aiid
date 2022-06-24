@@ -156,8 +156,10 @@ const searchColumns = {
         []
       ),
     isSet: (incident) => incident.text,
-    getQueryVariables: (incident, relatedIncidents) => ({
-      incident_id_in: relatedIncidents ? relatedIncidents.map((i) => i.incident_id) : [],
+    getQueryVariables: (incident, semanticallyRelatedIncidents) => ({
+      incident_id_in: semanticallyRelatedIncidents
+        ? semanticallyRelatedIncidents.map((i) => i.incident_id)
+        : [],
     }),
   },
 };
@@ -241,32 +243,32 @@ const RelatedIncidents = ({ incident, className = '' }) => {
 
   const [queryVariables, setQueryVariables] = useState({});
 
-  const [relatedIncidents, setRelatedIncidents] = useState([]);
+  const [semanticallyRelatedIncidents, setSemanticallyRelatedIncidents] = useState([]);
 
   const client = useApolloClient();
 
   const [plaintext, setPlaintext] = useState(incident.text);
 
   const debouncedUpdateSearch = useRef(
-    debounce((updaters, incident, relatedIncidents, fetchRemote, plaintext) => {
+    debounce((updaters, incident, semanticallyRelatedIncidents, fetchRemote, plaintext) => {
       const fetchSemanticallyRelated = async () => {
         if (plaintext && longEnough(plaintext)) {
           semanticallyRelated(plaintext)
             .then((response) => {
-              setRelatedIncidents(response.incidents);
+              setSemanticallyRelatedIncidents(response.incidents);
             })
             .catch((error) => {
               console.warn(error);
-              setRelatedIncidents([]);
+              setSemanticallyRelatedIncidents([]);
               setLoading((loading) => ({ ...loading, byText: false }));
             });
         } else {
-          setRelatedIncidents([]);
+          setSemanticallyRelatedIncidents([]);
           setLoading((loading) => ({ ...loading, byText: false }));
         }
       };
 
-      if (fetchRemote || relatedIncidents.length == 0) fetchSemanticallyRelated();
+      if (fetchRemote || semanticallyRelatedIncidents.length == 0) fetchSemanticallyRelated();
 
       const variables = {};
 
@@ -274,7 +276,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
         const updater = updaters[key];
 
         variables[key] = updater.isSet(incident)
-          ? updater.getQueryVariables(incident, relatedIncidents)
+          ? updater.getQueryVariables(incident, semanticallyRelatedIncidents)
           : null;
       }
 
@@ -285,7 +287,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
   useEffect(() => {
     stripMarkdown(incident.text).then((plaintext) => {
       setPlaintext(plaintext);
-      debouncedUpdateSearch(searchColumns, incident, relatedIncidents, true, plaintext);
+      debouncedUpdateSearch(searchColumns, incident, semanticallyRelatedIncidents, true, plaintext);
     });
   }, [incident.text, incident.authors, incident.date_published, incident.incident_id]);
 
@@ -300,8 +302,8 @@ const RelatedIncidents = ({ incident, className = '' }) => {
   }, [relatedReports.byText]);
 
   useEffect(() => {
-    debouncedUpdateSearch(searchColumns, incident, relatedIncidents, false, plaintext);
-  }, [relatedIncidents]);
+    debouncedUpdateSearch(searchColumns, incident, semanticallyRelatedIncidents, false, plaintext);
+  }, [semanticallyRelatedIncidents]);
 
   const search = useCallback(
     async (key, column) => {
@@ -319,7 +321,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
 
         if (key == 'byText') {
           for (let report of reports) {
-            report.similarity = relatedIncidents.filter(
+            report.similarity = semanticallyRelatedIncidents.filter(
               (inc) => inc.incident_id == report.incident_id
             )[0].similarity;
           }
