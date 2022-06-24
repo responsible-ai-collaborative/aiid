@@ -8,6 +8,7 @@ import isArray from 'lodash/isArray';
 import { stripMarkdown } from '../utils/typography';
 import { useFormikContext } from 'formik';
 import { Button } from 'react-bootstrap';
+import axios from 'axios';
 
 const ListContainer = styled(Card)`
   margin: 1em 0;
@@ -172,7 +173,7 @@ const semanticallyRelated = async (text, max_tries) => {
   let tries = 0;
 
   while (tries < (max_tries || 3) && !response?.ok) {
-    response = await fetch(url);
+    response = await axios.get(url, { timeout: 30000 });
     tries++;
   }
   if (!response?.ok) {
