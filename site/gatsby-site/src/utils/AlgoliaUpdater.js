@@ -95,11 +95,14 @@ class AlgoliaUpdater {
         const entry = {
           ...report,
           objectID: report.report_number.toString(),
+          mongodb_id: report._id.toString(),
           text: text.contents.toString().trim(),
           incident_id: incident.incident_id,
           incident_date: incident.date,
           epoch_incident_date: getUnixTime(new Date(incident.date)),
         };
+
+        delete entry._id;
 
         if (classificationsHash[entry.incident_id]) {
           entry.classifications = classificationsHash[entry.incident_id];
@@ -135,10 +138,16 @@ class AlgoliaUpdater {
       .find({})
       .toArray();
 
-    const fullReports = reports.map((report) => ({
-      ...report,
-      ...translations.find((t) => t.report_number === report.report_number),
-    }));
+    const fullReports = reports.map((report) => {
+      const { text, title } =
+        translations.find((t) => t.report_number === report.report_number) || {};
+
+      return {
+        ...report,
+        text,
+        title,
+      };
+    });
 
     return fullReports;
   };
