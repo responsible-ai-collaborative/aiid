@@ -256,14 +256,9 @@ describe('Translations', () => {
   it('Should update translations to Algolia', () => {
     const translatedReportsEN = [
       {
-        _id: '61d5ad9f102e6e30fca90ddf',
-        text: 'translated-en-text **report 1**',
-        title: 'translated-en-title report 1',
-        report_number: 1,
-      },
-      {
         _id: '61d5ad9f102e6e30fca9065r',
         text: 'translated-en-text **report 2**',
+        plain_text: 'translated-en-text report 2',
         title: 'translated-en-title report 2',
         report_number: 2,
       },
@@ -273,14 +268,9 @@ describe('Translations', () => {
       {
         _id: '61d5ad9f102e6e30fca90ddf',
         text: 'translated-es-text **report 1**',
+        plain_text: 'translated-es-text report 1',
         title: 'translated-es-title report 1',
         report_number: 1,
-      },
-      {
-        _id: '61d5ad9f102e6e30fca90876',
-        text: 'translated-es-text **report 2**',
-        title: 'translated-es-title report 2',
-        report_number: 2,
       },
     ];
 
@@ -367,12 +357,8 @@ describe('Translations', () => {
 
       expect(enIndex.saveObjects.getCall(0).args[0].length).eq(2);
 
-      expect(enIndex.saveObjects.getCall(0).args[0][0]).to.deep.equal({
+      expect(enIndex.saveObjects.getCall(0).args[0][0]).to.deep.nested.include({
         authors: ['Alistair Barr'],
-        date_downloaded: '2019-04-13',
-        date_modified: '2020-06-14',
-        date_published: '2015-05-19',
-        date_submitted: '2019-06-01',
         description: 'Description of report 1',
         epoch_date_downloaded: 1555113600,
         epoch_date_modified: 1592092800,
@@ -385,9 +371,8 @@ describe('Translations', () => {
         source_domain: 'blogs.wsj.com',
         submitters: ['Roman Yampolskiy'],
         tags: [],
-        text: 'translated-en-text report 1',
-        plain_text: 'Report 1 text',
-        title: 'translated-en-title report 1',
+        text: 'Report 1 text',
+        title: 'Report 1 title',
         url: 'https://url.com/stuff',
         objectID: '1',
         mongodb_id: '60dd465f80935bc89e6f9b01',
@@ -401,12 +386,8 @@ describe('Translations', () => {
         ],
       });
 
-      expect(enIndex.saveObjects.getCall(0).args[0][1]).to.deep.equal({
+      expect(enIndex.saveObjects.getCall(0).args[0][1]).to.deep.nested.include({
         authors: ['Alistair Barr'],
-        date_downloaded: '2019-04-13',
-        date_modified: '2020-06-14',
-        date_published: '2015-05-19',
-        date_submitted: '2019-06-01',
         description: 'Description of report 2',
         epoch_date_downloaded: 1555113600,
         epoch_date_modified: 1592092800,
@@ -420,7 +401,6 @@ describe('Translations', () => {
         submitters: ['Roman Yampolskiy'],
         tags: [],
         text: 'translated-en-text report 2',
-        plain_text: 'Report 2 text',
         title: 'translated-en-title report 2',
         url: 'https://url.com/stuff',
         objectID: '2',
@@ -435,12 +415,8 @@ describe('Translations', () => {
         ],
       });
 
-      expect(esIndex.saveObjects.getCall(0).args[0][0]).to.deep.equal({
+      expect(esIndex.saveObjects.getCall(0).args[0][0]).to.deep.nested.include({
         authors: ['Alistair Barr'],
-        date_downloaded: '2019-04-13',
-        date_modified: '2020-06-14',
-        date_published: '2015-05-19',
-        date_submitted: '2019-06-01',
         description: 'Description of report 1',
         epoch_date_downloaded: 1555113600,
         epoch_date_modified: 1592092800,
@@ -454,7 +430,6 @@ describe('Translations', () => {
         submitters: ['Roman Yampolskiy'],
         tags: [],
         text: 'translated-es-text report 1',
-        plain_text: 'Report 1 text',
         title: 'translated-es-title report 1',
         url: 'https://url.com/stuff',
         objectID: '1',
@@ -469,12 +444,8 @@ describe('Translations', () => {
         ],
       });
 
-      expect(esIndex.saveObjects.getCall(0).args[0][1]).to.deep.equal({
+      expect(esIndex.saveObjects.getCall(0).args[0][1]).to.deep.nested.include({
         authors: ['Alistair Barr'],
-        date_downloaded: '2019-04-13',
-        date_modified: '2020-06-14',
-        date_published: '2015-05-19',
-        date_submitted: '2019-06-01',
         description: 'Description of report 2',
         epoch_date_downloaded: 1555113600,
         epoch_date_modified: 1592092800,
@@ -487,9 +458,8 @@ describe('Translations', () => {
         source_domain: 'blogs.wsj.com',
         submitters: ['Roman Yampolskiy'],
         tags: [],
-        text: 'translated-es-text report 2',
-        plain_text: 'Report 2 text',
-        title: 'translated-es-title report 2',
+        text: 'Report 2 text',
+        title: 'Report 2 title',
         url: 'https://url.com/stuff',
         objectID: '2',
         mongodb_id: '60dd465f80935bc89e6f9b02',
