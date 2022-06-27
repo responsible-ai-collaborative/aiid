@@ -25,7 +25,8 @@
                 "plain_text": "Submission 1 text\n\nMarkdown content!",
                 "title": "Submisssion 1 title",
                 "url": "https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/",
-                "editor_notes": ""
+                "editor_notes": "",
+                "nlp_similar_incidents": []
             },
             {
                 "__typename": "Submission",
@@ -50,7 +51,8 @@
                 "text": "Submission 2 text",
                 "title": "Submission 1 title",
                 "url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/",
-                "editor_notes": ""
+                "editor_notes": "",
+                "nlp_similar_incidents": []
             }
         ]
     }

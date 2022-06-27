@@ -5,6 +5,7 @@
             "date": "2015-05-19",
             "incident_id": 112,
             "title": "Test title",
+            "nlp_similar_incidents": [],
             "reports": [
                 {
                     "__typename": "Report",

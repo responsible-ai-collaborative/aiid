@@ -15,6 +15,7 @@ import IncidentStatsCard from 'components/cite/IncidentStatsCard';
 import IncidentCard from 'components/cite/IncidentCard';
 import Taxonomy from 'components/taxa/Taxonomy';
 import { useUserContext } from 'contexts/userContext';
+import SimilarIncidents from 'components/cite/SimilarIncidents';
 
 const CardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -251,6 +252,8 @@ function CitePage(props) {
             </Col>
           </Row>
         ))}
+
+        <SimilarIncidents incident={incident} />
 
         <Pagination className="justify-content-between">
           <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>

@@ -30,6 +30,10 @@ export const FIND_SUBMISSIONS = gql`
       url
       editor_notes
       tags
+      nlp_similar_incidents {
+        similarity
+        incident_id
+      }
     }
   }
 `;
@@ -56,6 +60,10 @@ export const FIND_SUBMISSION = gql`
       url
       editor_notes
       tags
+      nlp_similar_incidents {
+        similarity
+        incident_id
+      }
     }
   }
 `;
@@ -82,6 +90,10 @@ export const UPDATE_SUBMISSION = gql`
       url
       editor_notes
       tags
+      nlp_similar_incidents {
+        similarity
+        incident_id
+      }
     }
   }
 `;

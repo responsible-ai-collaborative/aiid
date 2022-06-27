@@ -109,7 +109,16 @@ const SubmissionReview = ({ submission }) => {
       },
     });
 
-    const report = { ...submission, incident_id: undefined, _id: undefined, __typename: undefined };
+    const report = {
+      ...submission,
+      incident_id: undefined,
+      _id: undefined,
+      __typename: undefined,
+      nlp_similar_incidents: submission.nlp_similar_incidents.map((similarIncident) => ({
+        incident_id: similarIncident.incident_id,
+        similarity: similarIncident.similarity,
+      })),
+    };
 
     report.date_modified = format(new Date(), 'yyyy-MM-dd');
 
@@ -129,6 +138,7 @@ const SubmissionReview = ({ submission }) => {
         },
         set: {
           ...report,
+          nlp_similar_incidents: undefined,
         },
       },
     });

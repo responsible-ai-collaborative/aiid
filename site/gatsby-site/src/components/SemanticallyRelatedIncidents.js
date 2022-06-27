@@ -3,6 +3,7 @@ import { gql, useApolloClient } from '@apollo/client';
 import debounce from 'lodash/debounce';
 import RelatedIncidentsArea from './RelatedIncidentsArea';
 import { stripMarkdown } from '../utils/typography';
+import { useFormikContext } from 'formik';
 
 const relatedIncidentIdsQuery = gql`
   query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
@@ -50,11 +51,16 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
 
   const [error, setError] = useState(null);
 
+  const { setFieldValue } = editable ? useFormikContext() : { setFieldValue: null };
+
   const debouncedUpdateSearch = useRef(
     debounce(async (incident) => {
       setLoading(true);
       setReports([]);
       setError(null);
+      if (setFieldValue) {
+        setFieldValue('nlp_similar_incidents', []);
+      }
 
       const fail = (errorMessage) => {
         setReports([]);
@@ -81,6 +87,10 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
         console.error(error);
         fail('Could not compute semantic similarity');
         return;
+      }
+
+      if (setFieldValue) {
+        setFieldValue('nlp_similar_incidents', nlpResponse.incidents);
       }
 
       const incidentIds = nlpResponse.incidents
