@@ -17,6 +17,15 @@ const ReportRow = styled(ListGroup.Item)`
   Button {
     margin-left: 1ch;
     flex-shrink: 0 !important;
+    width: 8em;
+  }
+  @media (max-width: 400px) {
+    Button {
+      width: unset;
+    }
+    Button .incident-id {
+      display: block;
+    }
   }
 `;
 
@@ -43,7 +52,7 @@ const RelatedIncidentsArea = ({ columnKey, header, reports, loading, editable, e
               <Button
                 onClick={() => setFieldValue && setFieldValue('incident_id', val.incident_id)}
               >
-                Use&nbsp;ID&nbsp;#{val.incident_id}
+                Use&nbsp;ID&nbsp;<span className="incident-id">#{val.incident_id}</span>
               </Button>
             )}
           </ReportRow>
