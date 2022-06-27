@@ -18,7 +18,7 @@ const relatedIncidentIdsQuery = gql`
 `;
 
 const semanticallyRelated = async (text, max_tries) => {
-  const url = `/api/semanticallyRelated`;
+  const url = `/api/semanticallyRelated?text=${text}`;
 
   let response;
 
@@ -29,8 +29,6 @@ const semanticallyRelated = async (text, max_tries) => {
 
     setTimeout(() => controller.abort(), 30000);
     response = await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify({ text: text }),
       signal: controller.signal,
     });
     tries++;
@@ -70,7 +68,7 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
 
       if (plaintext.replace(/\s/, '').length < minLength) {
         fail(
-          `Text must be at least ${minLength} non-space characters to computer semantic similarity.`
+          `Reports must have at least ${minLength} non-space characters to compute semantic similarity.`
         );
         return;
       }

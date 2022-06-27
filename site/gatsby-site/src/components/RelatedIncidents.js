@@ -75,8 +75,11 @@ const searchColumns = {
     ),
     query: relatedReportsQuery,
     getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
-    isSet: (incident) =>
-      incident.date_published && isValid(parse(incident.date_published, 'yyyy-MM-dd', new Date())),
+    isSet: (incident) => {
+      const parsedDate = parse(incident.date_published, 'yyyy-MM-dd', new Date());
+
+      return isValid(parsedDate) && getUnixTime(parsedDate) > 0;
+    },
     getQueryVariables: (incident) => {
       const datePublished = parse(incident.date_published, 'yyyy-MM-dd', new Date());
 
@@ -157,7 +160,7 @@ const RelatedIncidents = ({ incident, editable = true, className = '' }) => {
 
   useEffect(() => {
     debouncedUpdateSearch(searchColumns, incident);
-  }, [incident]);
+  }, [incident.authors, incident.incident_id, incident.date_published, incident.url]);
 
   const search = useCallback(
     async (key, column) => {

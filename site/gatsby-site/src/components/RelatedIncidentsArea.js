@@ -35,7 +35,7 @@ const RelatedIncidentsArea = ({ columnKey, header, reports, loading, editable, e
       </ListGroup.Item>
       {reports &&
         reports.map((val) => (
-          <ReportRow key={val.url}>
+          <ReportRow key={val.url} data-cy="result">
             <a href={val.url} target="_blank" rel="noreferrer">
               {val.title}
             </a>
