@@ -4,7 +4,7 @@ const config = require('../config');
 
 // If set to true, applies migration only 5 incidents
 // so as to not run up AWS charges
-const testing = true;
+const testing = false;
 
 /** @type {import('umzug').MigrationFn<any>} */
 exports.up = async ({ context: { client } }) => {
