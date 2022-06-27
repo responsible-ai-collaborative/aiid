@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { ListGroup, Card, Spinner } from 'react-bootstrap';
+import { ListGroup, Card, Spinner, Button } from 'react-bootstrap';
 import { subWeeks, addWeeks, getUnixTime, parse, isValid } from 'date-fns';
 import styled from 'styled-components';
 import { gql, useApolloClient } from '@apollo/client';
 import debounce from 'lodash/debounce';
 import isArray from 'lodash/isArray';
+import { useFormikContext } from 'formik';
 
 const ListContainer = styled(Card)`
   margin: 1em 0;
@@ -23,6 +24,17 @@ const relatedIncidentsQuery = gql`
   }
 `;
 
+const relatedIncidentIdsQuery = gql`
+  query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
+    incidents(query: $query) {
+      incident_id
+      reports {
+        report_number
+      }
+    }
+  }
+`;
+
 const relatedReportsQuery = gql`
   query ProbablyRelatedReports($query: ReportQueryInput) {
     reports(query: $query) {
@@ -33,6 +45,31 @@ const relatedReportsQuery = gql`
   }
 `;
 
+const reportsWithIncidentIds = async (reports, client) => {
+  if (reports.length == 0) {
+    return [];
+  }
+  const response = await client.query({
+    query: relatedIncidentIdsQuery,
+    variables: {
+      query: {
+        reports_in: reports.map((report) => ({
+          report_number: report.report_number,
+        })),
+      },
+    },
+  });
+
+  return reports.map((report) => ({
+    ...report,
+    incident_id: response.data.incidents.filter((incident) =>
+      incident.reports
+        .map((incidentReport) => incidentReport.report_number)
+        .includes(report.report_number)
+    )[0].incident_id,
+  }));
+};
+
 const searchColumns = {
   byDatePublished: {
     header: (incident) => (
@@ -41,7 +78,7 @@ const searchColumns = {
       </>
     ),
     query: relatedReportsQuery,
-    getReports: (result) => result.data.reports,
+    getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) =>
       incident.date_published && isValid(parse(incident.date_published, 'yyyy-MM-dd', new Date())),
     getQueryVariables: (incident) => {
@@ -62,7 +99,8 @@ const searchColumns = {
       </>
     ),
     query: relatedIncidentsQuery,
-    getReports: (result) => (result.data.incidents.length ? result.data.incidents[0].reports : []),
+    getReports: async (result) =>
+      result.data.incidents.length ? result.data.incidents[0].reports : [],
     isSet: (incident) => incident.incident_id,
     getQueryVariables: (incident) => ({ incident_id_in: [incident.incident_id] }),
   },
@@ -74,7 +112,7 @@ const searchColumns = {
       </>
     ),
     query: relatedReportsQuery,
-    getReports: (result) => result.data.reports,
+    getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) => incident.authors,
     getQueryVariables: (incident) => ({
       authors_in: isArray(incident.authors) ? incident.authors : incident.authors.split(','),
@@ -88,16 +126,33 @@ const searchColumns = {
       </>
     ),
     query: relatedReportsQuery,
-    getReports: (result) => result.data.reports,
+    getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) => incident.url,
     getQueryVariables: (incident) => ({ url_in: [incident.url] }),
   },
 };
 
-const RelatedIncidentsArea = ({ columnKey, header, reports, loading }) => {
+const ReportRow = styled(ListGroup.Item)`
+  display: flex !important;
+  align-items: center;
+  a:first-child {
+    flex-shrink: 1;
+    margin-right: auto;
+  }
+  Button {
+    margin-left: 1ch;
+    flex-shrink: 0 !important;
+  }
+`;
+
+const RelatedIncidentsArea = ({ columnKey, header, reports, loading, editable }) => {
   if (!reports && !loading) {
     return null;
   }
+
+  const { setFieldValue } = editable ? useFormikContext() : { setFieldValue: null };
+
+  console.log('reports', reports);
 
   return (
     <ListContainer data-cy={`related-${columnKey}`}>
@@ -107,11 +162,18 @@ const RelatedIncidentsArea = ({ columnKey, header, reports, loading }) => {
       </ListGroup.Item>
       {reports &&
         reports.map((val) => (
-          <ListGroup.Item key={val.url}>
+          <ReportRow key={val.url}>
             <a href={val.url} target="_blank" rel="noreferrer">
               {val.title}
             </a>
-          </ListGroup.Item>
+            {val.incident_id && editable && (
+              <Button
+                onClick={() => setFieldValue && setFieldValue('incident_id', val.incident_id)}
+              >
+                Use&nbsp;ID&nbsp;#{val.incident_id}
+              </Button>
+            )}
+          </ReportRow>
         ))}
       {!loading && reports?.length == 0 && (
         <ListGroup.Item>No related reports found.</ListGroup.Item>
@@ -120,7 +182,7 @@ const RelatedIncidentsArea = ({ columnKey, header, reports, loading }) => {
   );
 };
 
-const RelatedIncidents = ({ incident, className = '' }) => {
+const RelatedIncidents = ({ incident, editable = true, className = '' }) => {
   const [loading, setLoading] = useState({});
 
   const [relatedReports, setRelatedReports] = useState({});
@@ -162,9 +224,11 @@ const RelatedIncidents = ({ incident, className = '' }) => {
 
         const result = await client.query({ query, variables });
 
+        const reports = await column.getReports(result, client);
+
         setLoading((loading) => ({ ...loading, [key]: false }));
 
-        setRelatedReports((related) => ({ ...related, [key]: column.getReports(result) }));
+        setRelatedReports((related) => ({ ...related, [key]: reports }));
       } else {
         setRelatedReports((related) => ({ ...related, [key]: null }));
       }
@@ -201,6 +265,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
             loading={loading[key]}
             reports={relatedReports[key]}
             header={column.header(incident)}
+            editable={editable}
           />
         );
       })}
