@@ -80,11 +80,11 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
             incident_id: data.submission.incident_id == 0 ? '' : data.submission.incident_id,
           }}
         >
-          {({ isValid, isSubmitting, submitForm }) => (
+          {({ isValid, isSubmitting, submitForm, values }) => (
             <>
               <Modal.Body>
                 <SubmissionForm />
-                <RelatedIncidents incident={data.submission} />
+                <RelatedIncidents incident={values} />
               </Modal.Body>
               <Modal.Footer>
                 <Button
