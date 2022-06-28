@@ -85,12 +85,16 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
 
       let nlp_similar_incidents;
 
-      if (incident.nlp_similar_incidents && initialDisplay.current) {
+      if (
+        incident.nlp_similar_incidents &&
+        incident.nlp_similar_incidents.length > 0 &&
+        initialDisplay.current
+      ) {
         nlp_similar_incidents = incident.nlp_similar_incidents;
       } else {
         try {
           nlpResponse = await semanticallyRelated(plaintext);
-          nlp_similar_incidents = nlpResponse.incidents;
+          nlp_similar_incidents = nlpResponse.incidents.sort((a, b) => b.similarity - a.similarity);
         } catch (e) {
           console.error(error);
           fail('Could not compute semantic similarity');
@@ -102,9 +106,7 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
         setFieldValue('nlp_similar_incidents', nlp_similar_incidents);
       }
 
-      const incidentIds = nlp_similar_incidents
-        .sort((a, b) => b.similarity - a.similarity)
-        .map((incident) => incident.incident_id);
+      const incidentIds = nlp_similar_incidents.map((incident) => incident.incident_id);
 
       let dbResponse;
 
