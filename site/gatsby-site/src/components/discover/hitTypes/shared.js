@@ -1,3 +1,4 @@
+import { format, fromUnixTime } from 'date-fns';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import React from 'react';
 import { Card } from 'react-bootstrap';
@@ -37,8 +38,7 @@ export function SourceDomainSubtitle({ item, ...props }) {
   return (
     <SubdomainCard {...props}>
       <a href={item.url}>
-        {item.source_domain} &middot;{' '}
-        {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
+        {item.source_domain} &middot; {format(fromUnixTime(item.epoch_date_published), 'yyyy')}
       </a>
     </SubdomainCard>
   );
