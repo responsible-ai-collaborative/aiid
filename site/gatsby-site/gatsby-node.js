@@ -18,8 +18,6 @@ const createBackupsPage = require('./page-creators/createBackupsPage');
 
 const createTaxonomyPages = require('./page-creators/createTaxonomyPages');
 
-const createBlogPosts = require('./page-creators/createBlogPosts');
-
 const createDownloadIndexPage = require('./page-creators/createDownloadIndexPage');
 
 const createDuplicatePages = require('./page-creators/createDuplicatePages');
@@ -64,7 +62,6 @@ exports.createPages = ({ graphql, actions }) => {
     createWordCountsPages(graphql, createPage),
     createBackupsPage(graphql, createPage),
     createTaxonomyPages(graphql, createPage),
-    createBlogPosts(graphql, createPage),
     createDownloadIndexPage(graphql, createPage),
     createDuplicatePages(graphql, createPage),
   ]);
