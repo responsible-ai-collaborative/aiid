@@ -1,4 +1,5 @@
-import React from 'react';
+import remark from 'remark';
+import remarkStrip from 'strip-markdown';
 
 /**
  * Check if last word is parenthesized
@@ -44,14 +45,8 @@ export function getFormattedName(str) {
   }
 }
 
-export const getParagraphs = (itemText) => {
-  return (
-    <>
-      {itemText.split('\n').map((paragraph, index, array) => (
-        <p key={index}>
-          {array.length - 1 === index ? <>{paragraph + '...'}</> : <>{paragraph}</>}
-        </p>
-      ))}
-    </>
-  );
-};
+export async function stripMarkdown(markdown) {
+  const result = await remark().use(remarkStrip).process(markdown);
+
+  return result.contents.toString();
+}

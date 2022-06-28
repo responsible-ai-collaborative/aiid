@@ -6,6 +6,7 @@ import { FIND_SUBMISSION, UPDATE_SUBMISSION } from '../../graphql/submissions';
 import { Formik } from 'formik';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import isArray from 'lodash/isArray';
+import { stripMarkdown } from 'utils/typography';
 
 export default function SubmissionEditModal({ show, onHide, submissionId }) {
   const [findSubmission, { data, loading }] = useLazyQuery(FIND_SUBMISSION);
@@ -35,9 +36,12 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
             authors: !isArray(values.authors)
               ? values.authors.split(',').map((s) => s.trim())
               : values.authors,
-            submitters: !isArray(values.submitters)
-              ? values.submitters.split(',').map((s) => s.trim())
-              : values.submitters,
+            submitters: values.submitters
+              ? !isArray(values.submitters)
+                ? values.submitters.split(',').map((s) => s.trim())
+                : values.submitters
+              : ['Anonymous'],
+            plain_text: await stripMarkdown(update.text),
           },
         },
       });
@@ -57,7 +61,7 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
   };
 
   return (
-    <Modal size="lg" show={show}>
+    <Modal size="lg" show={show} data-cy="submission-modal">
       <Modal.Header closeButton onHide={onHide}>
         <Modal.Title>Edit Submission</Modal.Title>
       </Modal.Header>
@@ -66,7 +70,7 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
           <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
         </Modal.Body>
       )}
-      {data?.submission && (
+      {!loading && data?.submission && (
         <Formik
           validationSchema={schema}
           onSubmit={handleSubmit}
@@ -74,7 +78,6 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
             ...data.submission,
             incident_id: data.submission.incident_id == 0 ? '' : data.submission.incident_id,
           }}
-          enableReinitialize={true}
         >
           {({ isValid, isSubmitting, submitForm }) => (
             <>

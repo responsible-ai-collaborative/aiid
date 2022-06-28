@@ -92,18 +92,29 @@ describe('Cite pages', () => {
 
     cy.visit(url);
 
-    cy.get('[data-cy="resources"]').contains('Edit').click();
+    cy.get('[data-cy="resources"]', { timeout: 30000 })
+      .should('be.visible')
+      .contains('Edit')
+      .click();
 
-    cy.get('[data-cy="resources"] [data-cy="taxonomy-form"]').as('taxonomyForm');
+    cy.get('[data-cy="resources"] [data-cy="taxonomy-form"]')
+      .should('be.visible')
+      .as('taxonomyForm');
 
     cy.get('@taxonomyForm').should('exist');
+  });
+
+  it(`Should taxa table only when there are classifications and the user is not authenticated`, () => {
+    cy.visit(url);
+
+    cy.get('[data-cy="CSET"]').should('exist');
+
+    cy.get('[data-cy="resources"]').should('not.exist');
   });
 
   it('Should flag an incident', () => {
     // mock requests until a testing database is implemented
     const _id = '5d34b8c29ced494f010ed470';
-
-    cy.visit(url + '#' + _id);
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -111,6 +122,8 @@ describe('Cite pages', () => {
       'fetchReport',
       unflaggedReport
     );
+
+    cy.visit(url + '#' + _id);
 
     cy.get(`[id="r${_id}"`).find('[data-cy="flag-button"]').click();
 
@@ -171,7 +184,7 @@ describe('Cite pages', () => {
 
     cy.contains('BibTex Citation').scrollIntoView().click();
 
-    cy.get('[data-cy="bibtext-modal"]').as('modal').should('be.visible');
+    cy.get('[data-cy="bibtext-modal"]').should('be.visible').as('modal');
 
     cy.get('@modal')
       .find('code')
