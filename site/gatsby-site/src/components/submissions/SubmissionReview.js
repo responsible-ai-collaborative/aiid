@@ -215,15 +215,13 @@ const SubmissionReview = ({ submission }) => {
             </Card.Body>
           </Card>
 
-          {submission.editor_notes && isSubmitter ? (
+          {submission.editor_notes && (
             <Card className="m-3" data-cy="editor_notes">
               <Card.Header>Editor Notes</Card.Header>
               <Card.Body>
                 <ReadMoreText text={submission.editor_notes} visibility={open} />
               </Card.Body>
             </Card>
-          ) : (
-            ''
           )}
 
           {open && (
