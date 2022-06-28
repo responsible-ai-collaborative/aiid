@@ -40,9 +40,11 @@ const StyledImageCover = styled.img`
 const StyledSubtitle = styled(Card.Subtitle).attrs((props) => ({
   top: props.top || '30px',
   bottom: props.bottom || '30px',
+  margin: props.margin || '-.25rem',
 }))`
   padding-top: ${(props) => props.top};
   padding-bottom: ${(props) => props.bottom};
+  margin-top: ${(props) => props.margin} !important;
 `;
 
 const SponsorModal = ({ setModalState, modalState, modalName, children, imagePath, title }) => {
@@ -94,7 +96,9 @@ export default function Sponsors({ className }) {
           </Col>
           <Col lg={7} md={12} sm={12}>
             <Card.Body>
-              <StyledSubtitle top={'0px'}>Organization Founding Sponsor</StyledSubtitle>
+              <StyledSubtitle top={'0px'} margin={'0px'}>
+                Organization Founding Sponsor
+              </StyledSubtitle>
 
               <Card.Text>
                 <StyledImage
