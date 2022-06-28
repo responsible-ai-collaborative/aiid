@@ -29,6 +29,8 @@ const similarIncidentIdsQuery = gql`
   query SimilarIncidentIds($query: IncidentQueryInput) {
     incidents(query: $query) {
       incident_id
+      editor_dissimilar_incidents
+      editor_similar_incidents
       nlp_similar_incidents {
         incident_id
         similarity
@@ -159,7 +161,10 @@ const SimilarIncidents = ({ incident }) => {
         query: similarIncidentsQuery,
         variables: {
           query: {
-            incident_id_in: currentIncident.nlp_similar_incidents.map((e) => e.incident_id),
+            incident_id_in: currentIncident.nlp_similar_incidents
+              .map((e) => e.incident_id)
+              .concat(currentIncident.editor_similar_incidents)
+              .filter((id) => !currentIncident.editor_dissimilar_incidents.includes(id)),
           },
         },
       });
