@@ -70,7 +70,7 @@ class Translator {
 
     const query = {
       report_number: { $in: originalIds },
-      $and: keys.map((key) => ({ [key]: { $exists: true } })),
+      $and: [...keys, 'plain_text'].map((key) => ({ [key]: { $exists: true } })),
     };
 
     const translated = await incidents.find(query, { projection: { report_number: 1 } }).toArray();
