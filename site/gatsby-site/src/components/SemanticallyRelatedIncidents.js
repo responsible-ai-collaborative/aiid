@@ -51,6 +51,8 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
 
   const [error, setError] = useState(null);
 
+  const initialDisplay = useRef(true);
+
   const { setFieldValue } = editable ? useFormikContext() : { setFieldValue: null };
 
   const debouncedUpdateSearch = useRef(
@@ -81,19 +83,26 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
 
       let nlpResponse;
 
-      try {
-        nlpResponse = await semanticallyRelated(plaintext);
-      } catch (e) {
-        console.error(error);
-        fail('Could not compute semantic similarity');
-        return;
+      let nlp_similar_incidents;
+
+      if (incident.nlp_similar_incidents && initialDisplay.current) {
+        nlp_similar_incidents = incident.nlp_similar_incidents;
+      } else {
+        try {
+          nlpResponse = await semanticallyRelated(plaintext);
+          nlp_similar_incidents = nlpResponse.incidents;
+        } catch (e) {
+          console.error(error);
+          fail('Could not compute semantic similarity');
+          return;
+        }
       }
 
       if (setFieldValue) {
-        setFieldValue('nlp_similar_incidents', nlpResponse.incidents);
+        setFieldValue('nlp_similar_incidents', nlp_similar_incidents);
       }
 
-      const incidentIds = nlpResponse.incidents
+      const incidentIds = nlp_similar_incidents
         .sort((a, b) => b.similarity - a.similarity)
         .map((incident) => incident.incident_id);
 
@@ -127,6 +136,7 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
       );
 
       setLoading(false);
+      initialDisplay.current = false;
     }, 2000)
   ).current;
 
