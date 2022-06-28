@@ -20,6 +20,7 @@ exports = async (input) => {
       reports: [],
       editors: ["Sean McGregor"],
       date: submission.incident_date,
+      nlp_similar_incidents: submission.nlp_similar_incidents || []
     }
     
     await incidents.insertOne({...newIncident, incident_id: BSON.Int32(newIncident.incident_id)});
