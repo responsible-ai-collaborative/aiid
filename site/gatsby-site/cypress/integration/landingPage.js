@@ -14,6 +14,13 @@ describe('The Landing page', () => {
     cy.url().should('include', 's=Test');
   });
 
+  it('Loads the sponsor modals', () => {
+    cy.visit('/');
+    cy.get('[data-cy="wu-modal-click"]').click();
+    cy.get('[data-cy="sponsor-modal"]').should('be.visible');
+    cy.get('[data-cy="close-modal"]').click();
+  });
+
   it('Should submit a report through the Quick Add form', () => {
     cy.conditionalIntercept(
       '**/graphql',

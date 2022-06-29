@@ -13,6 +13,7 @@ import isString from 'lodash/isString';
 import SubmissionForm, { schema } from 'components/submissions/SubmissionForm';
 import { Formik } from 'formik';
 import { stripMarkdown } from 'utils/typography';
+import isArray from 'lodash/isArray';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -38,6 +39,7 @@ const queryConfig = {
   image_url: withDefault(StringParam, ''),
   incident_id: withDefault(StringParam, ''),
   text: withDefault(StringParam, ''),
+  editor_notes: withDefault(StringParam, ''),
   tags: withDefault(ArrayParam, []),
 };
 
@@ -92,8 +94,8 @@ const SubmitForm = () => {
         description: values.text.substring(0, 200),
         authors: isString(values.authors) ? values.authors.split(',') : values.authors,
         submitters: values.submitters
-          ? isString(values.submitters)
-            ? values.submitters.split(',')
+          ? !isArray(values.submitters)
+            ? values.submitters.split(',').map((s) => s.trim())
             : values.submitters
           : ['Anonymous'],
         language: 'en',

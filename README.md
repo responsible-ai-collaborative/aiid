@@ -49,7 +49,7 @@ More details are available in the `Production System` information below. We reco
 
 ### Netlify
 
-The site is hosted by [Netlify](https://www.netlify.com/) and is integrated into GitHub to generate previews of all code states. This allows for seamless previewing of the application. However, the preview domains do not match the whitelisted domains known by the MongoDB service, so not all functionality is expected to work in the build previews without whitelisting the domain preview.
+The site is hosted by [Netlify](https://www.netlify.com) and is integrated into GitHub to generate previews of all code states. This allows for seamless previewing of the application. However, the preview domains do not match the whitelisted domains known by the MongoDB service, so not all functionality is expected to work in the build previews without whitelisting the domain preview.
 
 **Builds:** Builds are presently run at least every 12 hours automatically by a GitHub action. They are also run on merge requests from forks. The site deploys from the master branch automatically if the build succeeds.
 
@@ -59,11 +59,11 @@ See [mongo.md](mongo.md)
 
 ### Algolia
 
-[Algolia](https://www.algolia.com/) is the instant search provider interfaced in the [Discover](https://incidentdatabase.ai/about_apps/1-discover) application. It is presently manually when new incident reports are ingested into the database.
+[Algolia](https://www.algolia.com) is the instant search provider interfaced in the [Discover](https://incidentdatabase.ai/about_apps/1-discover) application. It is presently manually when new incident reports are ingested into the database.
 
 ### Cloudinary
 
-[Cloudinary](https://www.cloudinary.com/) is what we use to host and manage report images.
+[Cloudinary](https://www.cloudinary.com) is what we use to host and manage report images.
 
 ## Setting up a development environment
 

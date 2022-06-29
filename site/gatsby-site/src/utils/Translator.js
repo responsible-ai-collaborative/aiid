@@ -35,7 +35,7 @@ class Translator {
     }
   }
 
-  async translateIncidentCollection({ items, to }) {
+  async translateReportsCollection({ items, to }) {
     const concurrency = 100;
 
     const translated = [];
@@ -66,13 +66,11 @@ class Translator {
   async getTranslatedReports({ items, language }) {
     const originalIds = items.map((item) => item.report_number);
 
-    const incidents = this.mongoClient
-      .db('translations')
-      .collection(`incident_reports_${language}`);
+    const incidents = this.mongoClient.db('translations').collection(`reports_${language}`);
 
     const query = {
       report_number: { $in: originalIds },
-      $and: keys.map((key) => ({ [key]: { $exists: true } })),
+      $and: [...keys, 'plain_text'].map((key) => ({ [key]: { $exists: true } })),
     };
 
     const translated = await incidents.find(query, { projection: { report_number: 1 } }).toArray();
@@ -81,9 +79,7 @@ class Translator {
   }
 
   async saveTranslatedReports({ items, language }) {
-    const incidents = this.mongoClient
-      .db('translations')
-      .collection(`incident_reports_${language}`);
+    const incidents = this.mongoClient.db('translations').collection(`reports_${language}`);
 
     const translated = [];
 
@@ -132,7 +128,9 @@ class Translator {
     const q = queue(async ({ to }, done) => {
       this.reporter.log(`Translating incident reports for [${to}]`);
 
-      const translated = await this.translateIncidentCollection({ items: reports, to });
+      const items = reports.filter((r) => r.language !== to);
+
+      const translated = await this.translateReportsCollection({ items, to });
 
       if (translated.length > 0) {
         this.reporter.log(`Translated [${translated.length}] new reports to [${to}]`);
