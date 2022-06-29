@@ -1,0 +1,42 @@
+---
+# TODO: Add a more punchy title
+title: Natural Language Processing for AI Incident Resolution
+metaTitle: Natural Language Processing for AI Incident Resolution
+metaDescription: ''
+date: 2022-06-29
+image: ../src/images/facet.png
+author: Nicholas Broce, Nicholas Olson, and Jason Scott-Hakanson.
+---
+
+<!-- TODO: Add something at the top about this being a guest post -->
+
+The AI Incident Database (AIID) [launched](https://partnershiponai.org/aiincidentdatabase) publicly in November 2020 as a dashboard of AI harms realized in the real world. Inspired by similar databases in the aviation industry, its change thesis is derived from the Santayana aphorism, “Those who cannot remember the past are condemned to repeat it.” This newest addition to the AIID toolset aims to make it easier to connect, categorize, and correlate the emerging history of AI as well as monitor unfolding events to find where past lessons have been repeated.
+
+## The Newest Tool in the Box
+
+Over the course of the 2021–2022 academic year, four students at Oregon State University were tasked with creating a tool that can answer the question, “what are the most similar incidents to this document?”
+
+As the academic year is coming to an end, the students are proud to showcase the result of their work. The main outcome is an API that takes any arbitrary input text (like a news report body or press release) and outputs the IDs of the most similar incidents in the database. Each incident report in the database is a collection of news reports about the same event, and each of these clusters is given a unique “incident ID”, allowing for any text to be compared to a clustered understanding of the incidents rather than a text for text comparison using keywords.
+
+<!-- TODO: Insert GIF/video showing it working -->
+
+This is primarily built for the contributors of the AIID to use for behind-the-scenes database work currently, however this tool can be fitted for a variety of future use cases. Some examples of these future use cases are:
+
+- A web plugin to run on any website and generate a list of similar articles about the current website you are viewing
+- A Twitter bot that waits for tweets that link to new articles by major news networks, and replies with possibly similar AI Incidents in the AIID
+- An application that could create a dynamic graphical representation of the AIID and how articles are related to each other
+- A program that could automate AIID incident insertion or make database additions faster. 
+
+In testing, the Longformer model was about 94% accurate at correlating reports in the database back to their own incident IDs. The model is especially accurate with news report or similarly long input text, and less so with shorter input text that reads differently than what is in the AIID itself. With future iterations we hope to tackle both of these issues with improvements made to the model.
+
+The project is [fully open source](https://github.com/responsible-ai-collaborative/nlp-lambdas) and is built to be modular, extensible, and easily changed for future development. New models, new techniques, and new features can and will be easily added to this API to fulfill new needs for internal AIID development as well as new desires.
+
+If you want to know more about how this project was built, how it works, its current limitations, and how you can contribute, see our appendix <!-- TODO: Figure out where to put the technical content, update this sentence accordingly --> on the technical details!
+
+## Try it Yourself!
+
+You can find the first integration of this tool available at the link below, and we encourage you to play around with it and explore the articles you find. One the website scroll down to the field labeled text and that is the input field for our API. After a short calculation time, articles should begin to appear at the bottom of the page. 
+
+<!-- TODO: Add appropriate link -->
+
+This is a guest post written by three members of the OSU Capstone team, including Nicholas Broce (starting full time as a Software Engineering Intern at PCC Structurals Inc in July), [Nicholas Olson](https://www.linkedin.com/in/olson-nick) (starting full time as a Software Engineering Intern at Cognex in July), and [Jason Scott-Hakanson](https://www.linkedin.com/in/jason-scott-hakanson-953556221) (starting full time as Software Engineering Intern at Lam Research in July).
