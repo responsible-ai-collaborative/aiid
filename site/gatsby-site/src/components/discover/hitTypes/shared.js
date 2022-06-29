@@ -1,3 +1,5 @@
+import { format, fromUnixTime } from 'date-fns';
+import { LocalizedLink } from 'gatsby-theme-i18n';
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import { Highlight } from 'react-instantsearch-dom';
@@ -25,9 +27,9 @@ export function citationReportUrl(item) {
 export function HeaderTitle({ item, ...props }) {
   return (
     <HeaderCard {...props}>
-      <a href={citationReportUrl(item)}>
+      <LocalizedLink to={citationReportUrl(item)} className="text-decoration-none">
         <Highlight hit={item} attribute="title" />
-      </a>
+      </LocalizedLink>
     </HeaderCard>
   );
 }
@@ -36,8 +38,7 @@ export function SourceDomainSubtitle({ item, ...props }) {
   return (
     <SubdomainCard {...props}>
       <a href={item.url}>
-        {item.source_domain} &middot;{' '}
-        {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
+        {item.source_domain} &middot; {format(fromUnixTime(item.epoch_date_published), 'yyyy')}
       </a>
     </SubdomainCard>
   );

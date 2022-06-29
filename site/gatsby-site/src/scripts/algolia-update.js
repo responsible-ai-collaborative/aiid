@@ -13,7 +13,7 @@ const AlgoliaUpdater = require('../utils/AlgoliaUpdater');
 
 const { MongoClient } = require('mongodb');
 
-const { getLanguages } = require('components/i18n/languages');
+const { getLanguages } = require('../../i18n');
 
 const reporter = { log: console.log };
 

@@ -3,9 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { getFormattedName } from '../../utils/typography';
 
 const Citation = ({ nodes, incidentDate, incident_id, editors }) => {
-  let docs = [];
-
-  nodes.forEach(({ node }) => docs.push(node));
+  const docs = [...nodes];
 
   // Sort the docs according to their submit date
   docs.sort(function (a, b) {

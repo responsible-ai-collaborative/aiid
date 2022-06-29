@@ -31,27 +31,18 @@ const ImageCarousel = ({ nodes }) => {
       {nodes.map((value, index) => (
         <Carousel.Item key={index}>
           <CarouselImage
-            publicID={
-              value.node.cloudinary_id
-                ? value.node.cloudinary_id
-                : `legacy/${md5(value.node.image_url)}`
-            }
-            alt={value.node.title}
+            publicID={value.cloudinary_id ? value.cloudinary_id : `legacy/${md5(value.image_url)}`}
+            alt={value.title}
             transformation={fill().height(640)}
             plugins={[]}
           />
           <Carousel.Caption>
             <Caption>
-              <a
-                href={value['node']['url']}
-                className="text-white"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {value['node']['title']}
+              <a href={value.url} className="text-white" target="_blank" rel="noopener noreferrer">
+                {value.title}
               </a>
             </Caption>
-            <SubCaption>{value['node']['source_domain']}</SubCaption>
+            <SubCaption>{value.source_domain}</SubCaption>
           </Carousel.Caption>
         </Carousel.Item>
       ))}

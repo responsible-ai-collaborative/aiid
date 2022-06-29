@@ -15,9 +15,7 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
 
   const addToast = useToastContext();
 
-  let docs = [];
-
-  nodes.forEach(({ node }) => docs.push(node));
+  const docs = [...nodes];
 
   // Sort the docs according to their submit date
   docs.sort(function (a, b) {
