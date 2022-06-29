@@ -533,6 +533,22 @@ describe('The Submit form', () => {
     cy.get('[data-cy="related-reports"]').should('not.exist');
   });
 
+  it('Should show related reports based on semantic similarity', () => {
+    cy.visit(url);
+    cy.setEditorText(
+      `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
+    );
+    cy.get('[data-cy=related-byText] [data-cy=result] a').first().should('contain', 'YouTube');
+  });
+
+  it('Should *not* show semantically related reports when the text is under 256 non-space characters', () => {
+    cy.visit(url);
+    cy.setEditorText(
+      `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube.`
+    );
+    cy.get('[data-cy=related-byText]').contains('Reports must have at least').should('exist');
+  });
+
   it('Should show fallback preview image on initial load', () => {
     const imageUrl =
       'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/fallback.jpg';
