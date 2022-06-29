@@ -39,6 +39,7 @@ const queryConfig = {
   image_url: withDefault(StringParam, ''),
   incident_id: withDefault(StringParam, ''),
   text: withDefault(StringParam, ''),
+  editor_notes: withDefault(StringParam, ''),
   tags: withDefault(ArrayParam, []),
 };
 
