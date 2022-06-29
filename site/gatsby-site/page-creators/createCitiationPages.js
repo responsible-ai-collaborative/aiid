@@ -61,6 +61,10 @@ const createCitiationPages = async (graphql, createPage) => {
             date
             reports
             editors
+            nlp_similar_incidents {
+              incident_id
+              similarity
+            }
           }
         }
 
@@ -213,12 +217,25 @@ const createCitiationPages = async (graphql, createPage) => {
       });
     });
 
+    const similarIncidentsMap = {};
+
+    for (let similarIncident of incident.nlp_similar_incidents) {
+      similarIncidentsMap[similarIncident.incident_id] = allMongodbAiidprodIncidents.nodes.find(
+        (fullIncident) => fullIncident.incident_id === similarIncident.incident_id
+      );
+    }
+
     // Create citation pages
     createPage({
       path: '/cite/' + incident_id,
       component: path.resolve('./src/templates/cite.js'),
       context: {
         incident,
+        nlpSimilarIncidents: incident.nlp_similar_incidents.map((similarIncident) => ({
+          title: similarIncidentsMap[similarIncident.incident_id].title,
+          date: similarIncidentsMap[similarIncident.incident_id].date,
+          reports: incidentReportsMap[similarIncident.incident_id].map((e) => e.node),
+        })),
         incidentReports: incidentReportsMap[incident_id],
         taxonomies,
         nextIncident: i < keys.length - 1 ? keys[i + 1] : null,

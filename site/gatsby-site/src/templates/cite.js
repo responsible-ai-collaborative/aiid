@@ -56,7 +56,14 @@ const sortIncidentsByDatePublished = (incidentReports) => {
 
 function CitePage(props) {
   const {
-    pageContext: { incident, incidentReports, taxonomies, nextIncident, prevIncident },
+    pageContext: {
+      incident,
+      incidentReports,
+      nlpSimilarIncidents,
+      taxonomies,
+      nextIncident,
+      prevIncident,
+    },
   } = props;
 
   const { isRole } = useUserContext();
@@ -253,7 +260,7 @@ function CitePage(props) {
           </Row>
         ))}
 
-        <SimilarIncidents incident={incident} />
+        <SimilarIncidents nlpSimilarIncidents={nlpSimilarIncidents} />
 
         <Pagination className="justify-content-between">
           <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>
