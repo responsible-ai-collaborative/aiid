@@ -6,13 +6,12 @@ import Featured from 'components/landing/Featured';
 import Leaderboards from 'components/landing/Leaderboards';
 import Blog from 'components/landing/Blog';
 import WordCounts from 'components/landing/WordCounts';
-import AboutPartnership from 'components/landing/AboutPartnership';
+import Sponsors from 'components/landing/Sponsors';
 import AboutDatabase from 'components/landing/AboutDatabase ';
 import LatestReports from 'components/landing/LatestReports';
 import QuickSearch from 'components/landing/QuickSearch';
 import QuickAdd from 'components/landing/QuickAdd';
 import RandomReports from 'components/landing/RandomReports';
-import Founding from 'components/landing/Founding';
 import Hero from 'components/landing/Hero';
 
 const LandingPage = (props) => {
@@ -73,15 +72,6 @@ const LandingPage = (props) => {
           </Col>
         </Row>
 
-        <Row>
-          <Col className="mt-4" md={12} lg={6}>
-            <Founding className="h-100" />
-          </Col>
-          <Col className="mt-4" md={12} lg={6}>
-            <AboutPartnership className="h-100" />
-          </Col>
-        </Row>
-
         <Row className="mt-4">
           <Col>
             <Leaderboards />
@@ -94,6 +84,12 @@ const LandingPage = (props) => {
           </Col>
           <Col className="mt-4" md={12} lg={6}>
             <RandomReports />
+          </Col>
+        </Row>
+
+        <Row>
+          <Col className="mt-4" md={12} lg={12}>
+            <Sponsors className="h-100" />
           </Col>
         </Row>
       </Container>
