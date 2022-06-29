@@ -97,7 +97,6 @@ const SubmitForm = () => {
             ? values.submitters.split(',').map((s) => s.trim())
             : values.submitters
           : ['Anonymous'],
-        language: 'en',
         plain_text: await stripMarkdown(values.text),
       };
 
