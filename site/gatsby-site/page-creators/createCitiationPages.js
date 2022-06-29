@@ -232,6 +232,7 @@ const createCitiationPages = async (graphql, createPage) => {
       context: {
         incident,
         nlpSimilarIncidents: incident.nlp_similar_incidents.map((similarIncident) => ({
+          incident_id: similarIncidentsMap[similarIncident.incident_id].incident_id,
           title: similarIncidentsMap[similarIncident.incident_id].title,
           date: similarIncidentsMap[similarIncident.incident_id].date,
           reports: incidentReportsMap[similarIncident.incident_id].map((e) => e.node),
