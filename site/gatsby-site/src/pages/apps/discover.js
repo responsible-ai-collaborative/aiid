@@ -17,7 +17,7 @@ import VirtualFilters from 'components/discover/VirtualFilters';
 import Controls from 'components/discover/Controls';
 import { Container, Row, Col } from 'react-bootstrap';
 import LanguageSwitcher from 'components/i18n/LanguageSwitcher';
-import useTranslation from 'components/i18n/useTranslation';
+import { useLocalization } from 'gatsby-theme-i18n';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -178,15 +178,13 @@ const getQueryFromState = (searchState) => {
 function DiscoverApp(props) {
   const [query, setQuery] = useQueryParams(queryConfig);
 
-  const { language } = useTranslation();
+  const { locale } = useLocalization();
 
   const languageSwitcher = useRef(
     typeof window !== 'undefined' && window.localStorage.getItem('i18n')
   ).current;
 
-  const [indexName, setIndexName] = useState(
-    languageSwitcher ? `instant_search-${language.code}` : 'instant_search'
-  );
+  const indexName = useRef(`instant_search-${locale}`).current;
 
   const [searchState, setSearchState] = useState(generateSearchState({ query }));
 
@@ -217,12 +215,6 @@ function DiscoverApp(props) {
 
     setQuery({ ...searchQuery, ...extraQuery }, 'push');
   }, [searchState]);
-
-  useEffect(() => {
-    if (languageSwitcher) {
-      setIndexName(`instant_search-${language.code}`);
-    }
-  }, [language]);
 
   const authorsModal = useModal();
 

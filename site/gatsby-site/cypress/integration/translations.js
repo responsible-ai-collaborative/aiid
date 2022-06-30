@@ -1,3 +1,5 @@
+const { ObjectID } = require('bson');
+
 const AlgoliaUpdater = require('../../src/utils/AlgoliaUpdater');
 
 const Translator = require('../../src/utils/Translator');
@@ -5,13 +7,14 @@ const Translator = require('../../src/utils/Translator');
 const incidents = [
   {
     incident_id: 1,
+    date: '2020-06-14',
     reports: [1, 2],
   },
 ];
 
 const reports = [
   {
-    _id: '1',
+    _id: new ObjectID('60dd465f80935bc89e6f9b01'),
     authors: ['Alistair Barr'],
     date_downloaded: '2019-04-13',
     date_modified: '2020-06-14',
@@ -27,7 +30,7 @@ const reports = [
     ref_number: 0,
     report_number: 1,
     source_domain: 'blogs.wsj.com',
-    submitters: (1)['Roman Yampolskiy'],
+    submitters: ['Roman Yampolskiy'],
     tags: [],
     text: 'Report 1 **text**',
     plain_text: 'Report 1 text',
@@ -35,7 +38,7 @@ const reports = [
     url: 'https://url.com/stuff',
   },
   {
-    _id: '2',
+    _id: new ObjectID('60dd465f80935bc89e6f9b02'),
     authors: ['Alistair Barr'],
     date_downloaded: '2019-04-13',
     date_modified: '2020-06-14',
@@ -47,11 +50,11 @@ const reports = [
     epoch_date_published: 1431993600,
     epoch_date_submitted: 1559347200,
     image_url: 'http://url.com',
-    language: 'en',
+    language: 'es',
     ref_number: 0,
     report_number: 2,
     source_domain: 'blogs.wsj.com',
-    submitters: (1)['Roman Yampolskiy'],
+    submitters: ['Roman Yampolskiy'],
     tags: [],
     text: 'Report 2 **text**',
     plain_text: 'Report 2 text',
@@ -80,7 +83,7 @@ const classifications = [
 ];
 
 describe('Translations', () => {
-  it('Should cache translations in the database', () => {
+  it('Should translate languages only if report language differs from target language', () => {
     const translatedReportsEN = [
       {
         _id: '61d5ad9f102e6e30fca90ddf',
@@ -129,8 +132,8 @@ describe('Translations', () => {
           const stub = cy.stub();
 
           stub.withArgs('reports').returns(reportsCollection);
-          stub.withArgs('incident_reports_en').returns(reportsENCollection);
-          stub.withArgs('incident_reports_es').returns(reportsESCollection);
+          stub.withArgs('reports_en').returns(reportsENCollection);
+          stub.withArgs('reports_es').returns(reportsESCollection);
 
           return stub;
         })(),
@@ -153,6 +156,7 @@ describe('Translations', () => {
       expect(mongoClient.connect.callCount).to.eq(1);
 
       expect(reportsENCollection.insertMany.callCount).to.eq(1);
+
       expect(reportsENCollection.insertMany.firstCall.args[0][0]).to.deep.equal({
         report_number: 2,
         text: 'test-en-Report 2 **text**',
@@ -160,7 +164,8 @@ describe('Translations', () => {
         plain_text: 'test-en-Report 2 text\n',
       });
 
-      expect(reportsENCollection.insertMany.callCount).to.eq(1);
+      expect(reportsESCollection.insertMany.callCount).to.eq(1);
+
       expect(reportsESCollection.insertMany.firstCall.args[0][0]).to.deep.equal({
         report_number: 1,
         text: 'test-es-Report 1 **text**',
@@ -221,8 +226,8 @@ describe('Translations', () => {
           const stub = cy.stub();
 
           stub.withArgs('reports').returns(reportsCollection);
-          stub.withArgs('incident_reports_en').returns(reportsENCollection);
-          stub.withArgs('incident_reports_es').returns(reportsESCollection);
+          stub.withArgs('reports_en').returns(reportsENCollection);
+          stub.withArgs('reports_es').returns(reportsESCollection);
 
           return stub;
         })(),
@@ -251,14 +256,9 @@ describe('Translations', () => {
   it('Should update translations to Algolia', () => {
     const translatedReportsEN = [
       {
-        _id: '61d5ad9f102e6e30fca90ddf',
-        text: 'translated-en-text **report 1**',
-        title: 'translated-en-title report 1',
-        report_number: 1,
-      },
-      {
         _id: '61d5ad9f102e6e30fca9065r',
         text: 'translated-en-text **report 2**',
+        plain_text: 'translated-en-text report 2',
         title: 'translated-en-title report 2',
         report_number: 2,
       },
@@ -268,14 +268,9 @@ describe('Translations', () => {
       {
         _id: '61d5ad9f102e6e30fca90ddf',
         text: 'translated-es-text **report 1**',
+        plain_text: 'translated-es-text report 1',
         title: 'translated-es-title report 1',
         report_number: 1,
-      },
-      {
-        _id: '61d5ad9f102e6e30fca90876',
-        text: 'translated-es-text **report 2**',
-        title: 'translated-es-title report 2',
-        report_number: 2,
       },
     ];
 
@@ -321,8 +316,8 @@ describe('Translations', () => {
           stub.withArgs('reports').returns(reportsCollection);
           stub.withArgs('classifications').returns(classificationsCollection);
           stub.withArgs('incidents').returns(incidentsCollection);
-          stub.withArgs('incident_reports_en').returns(reportsENCollection);
-          stub.withArgs('incident_reports_es').returns(reportsESCollection);
+          stub.withArgs('reports_en').returns(reportsENCollection);
+          stub.withArgs('reports_es').returns(reportsESCollection);
 
           return stub;
         })(),
@@ -358,83 +353,127 @@ describe('Translations', () => {
     });
 
     cy.wrap(updater.run()).then(() => {
-      expect(mongoClient.connect.callCount).to.eq(1);
+      expect(mongoClient.connect.callCount).to.eq(2);
 
       expect(enIndex.saveObjects.getCall(0).args[0].length).eq(2);
 
       expect(enIndex.saveObjects.getCall(0).args[0][0]).to.deep.nested.include({
+        authors: ['Alistair Barr'],
+        description: 'Description of report 1',
+        epoch_date_downloaded: 1555113600,
+        epoch_date_modified: 1592092800,
+        epoch_date_published: 1431993600,
+        epoch_date_submitted: 1559347200,
+        image_url: 'http://url.com',
+        language: 'en',
+        ref_number: 0,
+        report_number: 1,
+        source_domain: 'blogs.wsj.com',
+        submitters: ['Roman Yampolskiy'],
+        tags: [],
+        text: 'Report 1 text',
+        title: 'Report 1 title',
+        url: 'https://url.com/stuff',
         objectID: '1',
-        text: 'translated-en-text report 1',
-        title: 'translated-en-title report 1',
+        mongodb_id: '60dd465f80935bc89e6f9b01',
         incident_id: 1,
+        epoch_incident_date: 1592092800,
+        incident_date: '2020-06-14',
         classifications: [
-          'CSET:Annotator:1',
-          'CSET:Annotation Status:6. Complete and final',
-          'CSET:Reviewer:5',
-          'CSET:Quality Control:false',
-          'CSET:Full Description:On December 5, 2018, a robot punctured.',
           'CSET:Named Entities:Amazon',
           'CSET:Harm Type:Harm to physical health/safety',
           'CSET:Harm Type:Harm to physical property',
-          'CSET:Publish:true',
         ],
       });
 
       expect(enIndex.saveObjects.getCall(0).args[0][1]).to.deep.nested.include({
-        objectID: '2',
+        authors: ['Alistair Barr'],
+        description: 'Description of report 2',
+        epoch_date_downloaded: 1555113600,
+        epoch_date_modified: 1592092800,
+        epoch_date_published: 1431993600,
+        epoch_date_submitted: 1559347200,
+        image_url: 'http://url.com',
+        language: 'es',
+        ref_number: 0,
+        report_number: 2,
+        source_domain: 'blogs.wsj.com',
+        submitters: ['Roman Yampolskiy'],
+        tags: [],
         text: 'translated-en-text report 2',
         title: 'translated-en-title report 2',
+        url: 'https://url.com/stuff',
+        objectID: '2',
+        mongodb_id: '60dd465f80935bc89e6f9b02',
         incident_id: 1,
+        incident_date: '2020-06-14',
+        epoch_incident_date: 1592092800,
         classifications: [
-          'CSET:Annotator:1',
-          'CSET:Annotation Status:6. Complete and final',
-          'CSET:Reviewer:5',
-          'CSET:Quality Control:false',
-          'CSET:Full Description:On December 5, 2018, a robot punctured.',
           'CSET:Named Entities:Amazon',
           'CSET:Harm Type:Harm to physical health/safety',
           'CSET:Harm Type:Harm to physical property',
-          'CSET:Publish:true',
         ],
       });
 
       expect(esIndex.saveObjects.getCall(0).args[0][0]).to.deep.nested.include({
-        objectID: '1',
+        authors: ['Alistair Barr'],
+        description: 'Description of report 1',
+        epoch_date_downloaded: 1555113600,
+        epoch_date_modified: 1592092800,
+        epoch_date_published: 1431993600,
+        epoch_date_submitted: 1559347200,
+        image_url: 'http://url.com',
+        language: 'en',
+        ref_number: 0,
+        report_number: 1,
+        source_domain: 'blogs.wsj.com',
+        submitters: ['Roman Yampolskiy'],
+        tags: [],
         text: 'translated-es-text report 1',
         title: 'translated-es-title report 1',
+        url: 'https://url.com/stuff',
+        objectID: '1',
+        mongodb_id: '60dd465f80935bc89e6f9b01',
         incident_id: 1,
+        incident_date: '2020-06-14',
+        epoch_incident_date: 1592092800,
         classifications: [
-          'CSET:Annotator:1',
-          'CSET:Annotation Status:6. Complete and final',
-          'CSET:Reviewer:5',
-          'CSET:Quality Control:false',
-          'CSET:Full Description:On December 5, 2018, a robot punctured.',
           'CSET:Named Entities:Amazon',
           'CSET:Harm Type:Harm to physical health/safety',
           'CSET:Harm Type:Harm to physical property',
-          'CSET:Publish:true',
         ],
       });
 
       expect(esIndex.saveObjects.getCall(0).args[0][1]).to.deep.nested.include({
+        authors: ['Alistair Barr'],
+        description: 'Description of report 2',
+        epoch_date_downloaded: 1555113600,
+        epoch_date_modified: 1592092800,
+        epoch_date_published: 1431993600,
+        epoch_date_submitted: 1559347200,
+        image_url: 'http://url.com',
+        language: 'es',
+        ref_number: 0,
+        report_number: 2,
+        source_domain: 'blogs.wsj.com',
+        submitters: ['Roman Yampolskiy'],
+        tags: [],
+        text: 'Report 2 text',
+        title: 'Report 2 title',
+        url: 'https://url.com/stuff',
         objectID: '2',
-        text: 'translated-es-text report 2',
-        title: 'translated-es-title report 2',
+        mongodb_id: '60dd465f80935bc89e6f9b02',
         incident_id: 1,
+        incident_date: '2020-06-14',
+        epoch_incident_date: 1592092800,
         classifications: [
-          'CSET:Annotator:1',
-          'CSET:Annotation Status:6. Complete and final',
-          'CSET:Reviewer:5',
-          'CSET:Quality Control:false',
-          'CSET:Full Description:On December 5, 2018, a robot punctured.',
           'CSET:Named Entities:Amazon',
           'CSET:Harm Type:Harm to physical health/safety',
           'CSET:Harm Type:Harm to physical property',
-          'CSET:Publish:true',
         ],
       });
 
-      expect(mongoClient.close.callCount).to.eq(1);
+      expect(mongoClient.close.callCount).to.eq(2);
     });
   });
 });
