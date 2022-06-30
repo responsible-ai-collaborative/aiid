@@ -8,6 +8,7 @@ import md5 from 'md5';
 import { navigate } from 'gatsby';
 import Actions from '../Actions';
 import ReportText from 'components/reports/ReportText';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 
 import { SourceDomainSubtitle, HeaderTitle } from './shared';
 
@@ -28,6 +29,8 @@ export default function Details({
   flagReportModal,
   toggleFilterByIncidentId,
 }) {
+  const localizePath = useLocalizePath();
+
   return (
     <Card className="h-100" data-cy={item.mongodb_id}>
       <a href={'/cite/' + item.incident_id + '#r' + item.objectID}>
@@ -54,7 +57,11 @@ export default function Details({
               type="button"
               className="btn btn-secondary btn-sm w-100"
               onClick={() => {
-                navigate(`/cite/${item.incident_id}`);
+                const path = localizePath({
+                  path: `/cite/${item.incident_id}#r${item.mongodb_id}`,
+                });
+
+                navigate(path);
               }}
             >
               <StyledLabel>Show Details on Incident #{item.incident_id}</StyledLabel>

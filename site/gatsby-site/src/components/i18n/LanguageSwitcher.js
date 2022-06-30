@@ -1,15 +1,29 @@
 import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
-import useTranslation from './useTranslation';
+import { useLocalization } from 'gatsby-theme-i18n';
+import { navigate } from 'gatsby';
+import useLocalizePath from './useLocalizePath';
 
 export default function LanguageSwitcher() {
-  const { language, setLanguage, languages } = useTranslation();
+  const { locale: currentLang, config } = useLocalization();
+
+  const localizedPath = useLocalizePath();
+
+  const currentLocale = config.find((c) => c.code == currentLang);
+
+  const setLanguage = (language) => {
+    const { pathname: path, search } = new URL(window.location.href);
+
+    const newPath = localizedPath({ path, language });
+
+    navigate(newPath + search);
+  };
 
   return (
-    <DropdownButton id="dropdown-basic-button" title={language.name}>
-      {languages.map((lang) => (
-        <Dropdown.Item key={lang.code} onClick={() => setLanguage(lang)}>
-          {lang.name}
+    <DropdownButton id="dropdown-basic-button" title={currentLocale.name}>
+      {config.map((locale) => (
+        <Dropdown.Item key={locale.code} onClick={() => setLanguage(locale.code)}>
+          {locale.name}
         </Dropdown.Item>
       ))}
     </DropdownButton>

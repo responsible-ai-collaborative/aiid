@@ -13,7 +13,7 @@ const { Translate } = require('@google-cloud/translate').v2;
 
 const Translator = require('../utils/Translator');
 
-const { getLanguages } = require('components/i18n/languages');
+const { getLanguages } = require('../../i18n');
 
 const reporter = { log: console.log };
 
@@ -22,7 +22,7 @@ const reporter = { log: console.log };
 
   const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
 
-  const translateClient = new Translate({ key: config.google.translateApikey });
+  const translateClient = new Translate({ key: config.i18n.translateApikey });
 
   const translator = new Translator({
     mongoClient,

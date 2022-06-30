@@ -10,7 +10,7 @@ const config = require('./config');
 
 const createMdxPages = require('./page-creators/createMdxPages');
 
-const createCitiationPages = require('./page-creators/createCitiationPages');
+const createCitationPages = require('./page-creators/createCitationPages');
 
 const createWordCountsPages = require('./page-creators/createWordCountsPage');
 
@@ -22,17 +22,15 @@ const createBlogPosts = require('./page-creators/createBlogPosts');
 
 const createDownloadIndexPage = require('./page-creators/createDownloadIndexPage');
 
-const discoverIndex = require('./src/utils/discoverIndexGenerator');
+const createDuplicatePages = require('./page-creators/createDuplicatePages');
 
 const algoliasearch = require('algoliasearch');
-
-const algoliaSettings = require('./src/utils/algoliaSettings');
 
 const Translator = require('./src/utils/Translator');
 
 const { MongoClient } = require('mongodb');
 
-const { getLanguages } = require('./src/components/i18n/languages');
+const { getLanguages } = require('./i18n');
 
 const AlgoliaUpdater = require('./src/utils/AlgoliaUpdater');
 
@@ -62,12 +60,13 @@ exports.createPages = ({ graphql, actions }) => {
 
   return Promise.all([
     createMdxPages(graphql, createPage),
-    createCitiationPages(graphql, createPage),
+    createCitationPages(graphql, createPage),
     createWordCountsPages(graphql, createPage),
     createBackupsPage(graphql, createPage),
     createTaxonomyPages(graphql, createPage),
     createBlogPosts(graphql, createPage),
     createDownloadIndexPage(graphql, createPage),
+    createDuplicatePages(graphql, createPage),
   ]);
 };
 
@@ -113,19 +112,11 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
       value = `blog/${value}`;
     }
 
-    if (config.gatsby && config.gatsby.trailingSlash) {
-      createNodeField({
-        name: `slug`,
-        node,
-        value: value === '' ? `/` : `/${value}/`,
-      });
-    } else {
-      createNodeField({
-        name: `slug`,
-        node,
-        value: `/${value}`,
-      });
-    }
+    createNodeField({
+      name: `slug`,
+      node,
+      value: `/${value}`,
+    });
 
     createNodeField({
       name: 'id',
@@ -227,8 +218,8 @@ exports.onPreBootstrap = async ({ reporter }) => {
 
   if (
     config.mongodb.translationsConnectionString &&
-    config.google.translateApikey &&
-    config.google.availableLanguages &&
+    config.i18n.translateApikey &&
+    config.i18n.availableLanguages &&
     config.header.search.algoliaAdminKey &&
     config.header.search.algoliaAppId
   ) {
@@ -270,7 +261,7 @@ exports.onPreBootstrap = async ({ reporter }) => {
       reporter.warn('Error running translation scripts:', e);
     }
   } else {
-    reporter.log(`Missing env settings, skipping indexes translation and upload.`);
+    throw `Missing environment variable, can't run translation process.`;
   }
 
   translationsActivity.end();
@@ -280,39 +271,4 @@ exports.onPreBuild = function () {
   if (!config.google.mapsApiKey) {
     console.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
   }
-};
-
-exports.onPostBuild = async function ({ graphql, reporter }) {
-  const activity = reporter.activityTimer(`Algolia`);
-
-  activity.start();
-
-  if (config.header.search.algoliaAppId && config.header.search.algoliaAdminKey) {
-    activity.setStatus('Building index...');
-
-    const data = await discoverIndex({ graphql });
-
-    activity.setStatus('Uploading index...');
-
-    const client = algoliasearch(
-      config.header.search.algoliaAppId,
-      config.header.search.algoliaAdminKey
-    );
-
-    const index = client.initIndex('instant_search');
-
-    await index.saveObjects(data);
-
-    activity.setStatus(`Uploaded ${data.length} items to the index.`);
-
-    activity.setStatus('Updating settings...');
-
-    await index.setSettings(algoliaSettings);
-
-    activity.setStatus('Settings saved.');
-  } else {
-    activity.setStatus(`Missing env settings, skipping index upload.`);
-  }
-
-  activity.end();
 };

@@ -27,7 +27,7 @@ export default async function handler(req, res) {
 
   while (tries < (max_retries || 3) && response?.status !== 200) {
     axios
-      .get(url, { timeout: 11000 })
+      .get(url)
       .then((lambdaResponse) =>
         res.status(200).json({
           // See: https://github.com/responsible-ai-collaborative/nlp-lambdas/issues/9
