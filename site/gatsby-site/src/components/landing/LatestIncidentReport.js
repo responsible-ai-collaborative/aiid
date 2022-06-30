@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { Image } from '../../utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { Card, Col, Row } from 'react-bootstrap';
+import ReactMarkdown from 'react-markdown';
 
 const ThumbnailImg = styled(Image)`
   object-fit: cover;
@@ -73,7 +74,8 @@ const LatestIncidentReport = ({ className = '' }) => {
                     {format(epoch_date_submitted * 1000, 'MMM d, yyyy')}
                   </Card.Subtitle>
                   <Card.Text>
-                    {description}... <Link to={`/cite/${incident_id}`}>(Read More)</Link>
+                    <ReactMarkdown>{description}</ReactMarkdown>...
+                    <Link to={`/cite/${incident_id}`}>(Read More)</Link>
                   </Card.Text>
                 </Card.Body>
               </Col>

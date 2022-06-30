@@ -76,7 +76,6 @@ const StarsCount = (props) => {
       fetch('https://api.github.com/repos/' + props.repo)
         .then((res) => res.json())
         .then((json) => {
-          console.log(json);
           setCount(json['stargazers_count']);
         });
     }

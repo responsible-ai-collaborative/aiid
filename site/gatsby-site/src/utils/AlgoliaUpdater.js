@@ -1,9 +1,5 @@
 const algoliaSettings = require('./algoliaSettings');
 
-const remark = require('remark');
-
-const remarkStrip = require('strip-markdown');
-
 const { getUnixTime } = require('date-fns');
 
 const truncate = (doc) => {
@@ -88,24 +84,45 @@ class AlgoliaUpdater {
 
     for (const incident of incidents) {
       for (const report_number of incident.reports) {
-        const report = reports.find((r) => r.report_number == report_number);
+        if (reports.some((r) => r.report_number == report_number)) {
+          const report = reports.find((r) => r.report_number == report_number) || {};
 
-        const text = await remark().use(remarkStrip).process(report.text);
+          const entry = {
+            authors: report.authors,
+            description: report.description,
+            epoch_date_downloaded: report.epoch_date_downloaded,
+            epoch_date_modified: report.epoch_date_modified,
+            epoch_date_published: report.epoch_date_published,
+            epoch_date_submitted: report.epoch_date_submitted,
+            image_url: report.image_url,
+            language: report.language,
+            ref_number: report.ref_number,
+            report_number: report.report_number,
+            source_domain: report.source_domain,
+            submitters: report.submitters,
+            title: report.title,
+            url: report.url,
+            tags: report.tags,
+            editor_notes: report.editor_notes,
+            cloudinary_id: report.cloudinary_id,
 
-        const entry = {
-          ...report,
-          objectID: report.report_number.toString(),
-          text: text.contents.toString().trim(),
-          incident_id: incident.incident_id,
-          incident_date: incident.date,
-          epoch_incident_date: getUnixTime(new Date(incident.date)),
-        };
+            text: report.plain_text,
 
-        if (classificationsHash[entry.incident_id]) {
-          entry.classifications = classificationsHash[entry.incident_id];
+            mongodb_id: report._id.toString(),
+
+            objectID: report.report_number.toString(),
+
+            incident_id: incident.incident_id,
+            incident_date: incident.date,
+            epoch_incident_date: getUnixTime(new Date(incident.date)),
+          };
+
+          if (classificationsHash[entry.incident_id]) {
+            entry.classifications = classificationsHash[entry.incident_id];
+          }
+
+          downloadData.push(entry);
         }
-
-        downloadData.push(entry);
       }
     }
 
@@ -127,7 +144,36 @@ class AlgoliaUpdater {
   };
 
   getReports = async ({ language }) => {
-    const reports = await this.mongoClient.db('aiidprod').collection(`reports`).find({}).toArray();
+    const projection = {
+      _id: 1,
+      authors: 1,
+      date_downloaded: 1,
+      date_modified: 1,
+      date_published: 1,
+      date_submitted: 1,
+      description: 1,
+      epoch_date_downloaded: 1,
+      epoch_date_modified: 1,
+      epoch_date_published: 1,
+      epoch_date_submitted: 1,
+      image_url: 1,
+      language: 1,
+      ref_number: 1,
+      report_number: 1,
+      source_domain: 1,
+      submitters: 1,
+      title: 1,
+      url: 1,
+      plain_text: 1,
+      editor_notes: 1,
+      cloudinary_id: 1,
+    };
+
+    const reports = await this.mongoClient
+      .db('aiidprod')
+      .collection(`reports`)
+      .find({}, { projection })
+      .toArray();
 
     const translations = await this.mongoClient
       .db('translations')
@@ -135,10 +181,22 @@ class AlgoliaUpdater {
       .find({})
       .toArray();
 
-    const fullReports = reports.map((report) => ({
-      ...report,
-      ...translations.find((t) => t.report_number === report.report_number),
-    }));
+    const fullReports = reports.map((r) => {
+      let report = { ...r };
+
+      if (translations.some((t) => t.report_number === r.report_number)) {
+        const { title, plain_text } =
+          translations.find((t) => t.report_number === r.report_number) || {};
+
+        report = {
+          ...r,
+          title,
+          plain_text,
+        };
+      }
+
+      return report;
+    });
 
     return fullReports;
   };

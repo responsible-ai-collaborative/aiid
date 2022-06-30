@@ -1,3 +1,5 @@
+const { ObjectID } = require('bson');
+
 const AlgoliaUpdater = require('../../src/utils/AlgoliaUpdater');
 
 const Translator = require('../../src/utils/Translator');
@@ -5,13 +7,14 @@ const Translator = require('../../src/utils/Translator');
 const incidents = [
   {
     incident_id: 1,
+    date: '2020-06-14',
     reports: [1, 2],
   },
 ];
 
 const reports = [
   {
-    _id: '1',
+    _id: new ObjectID('60dd465f80935bc89e6f9b01'),
     authors: ['Alistair Barr'],
     date_downloaded: '2019-04-13',
     date_modified: '2020-06-14',
@@ -27,7 +30,7 @@ const reports = [
     ref_number: 0,
     report_number: 1,
     source_domain: 'blogs.wsj.com',
-    submitters: (1)['Roman Yampolskiy'],
+    submitters: ['Roman Yampolskiy'],
     tags: [],
     text: 'Report 1 **text**',
     plain_text: 'Report 1 text',
@@ -35,7 +38,7 @@ const reports = [
     url: 'https://url.com/stuff',
   },
   {
-    _id: '2',
+    _id: new ObjectID('60dd465f80935bc89e6f9b02'),
     authors: ['Alistair Barr'],
     date_downloaded: '2019-04-13',
     date_modified: '2020-06-14',
@@ -51,7 +54,7 @@ const reports = [
     ref_number: 0,
     report_number: 2,
     source_domain: 'blogs.wsj.com',
-    submitters: (1)['Roman Yampolskiy'],
+    submitters: ['Roman Yampolskiy'],
     tags: [],
     text: 'Report 2 **text**',
     plain_text: 'Report 2 text',
@@ -253,14 +256,9 @@ describe('Translations', () => {
   it('Should update translations to Algolia', () => {
     const translatedReportsEN = [
       {
-        _id: '61d5ad9f102e6e30fca90ddf',
-        text: 'translated-en-text **report 1**',
-        title: 'translated-en-title report 1',
-        report_number: 1,
-      },
-      {
         _id: '61d5ad9f102e6e30fca9065r',
         text: 'translated-en-text **report 2**',
+        plain_text: 'translated-en-text report 2',
         title: 'translated-en-title report 2',
         report_number: 2,
       },
@@ -270,14 +268,9 @@ describe('Translations', () => {
       {
         _id: '61d5ad9f102e6e30fca90ddf',
         text: 'translated-es-text **report 1**',
+        plain_text: 'translated-es-text report 1',
         title: 'translated-es-title report 1',
         report_number: 1,
-      },
-      {
-        _id: '61d5ad9f102e6e30fca90876',
-        text: 'translated-es-text **report 2**',
-        title: 'translated-es-title report 2',
-        report_number: 2,
       },
     ];
 
@@ -365,10 +358,27 @@ describe('Translations', () => {
       expect(enIndex.saveObjects.getCall(0).args[0].length).eq(2);
 
       expect(enIndex.saveObjects.getCall(0).args[0][0]).to.deep.nested.include({
+        authors: ['Alistair Barr'],
+        description: 'Description of report 1',
+        epoch_date_downloaded: 1555113600,
+        epoch_date_modified: 1592092800,
+        epoch_date_published: 1431993600,
+        epoch_date_submitted: 1559347200,
+        image_url: 'http://url.com',
+        language: 'en',
+        ref_number: 0,
+        report_number: 1,
+        source_domain: 'blogs.wsj.com',
+        submitters: ['Roman Yampolskiy'],
+        tags: [],
+        text: 'Report 1 text',
+        title: 'Report 1 title',
+        url: 'https://url.com/stuff',
         objectID: '1',
-        text: 'translated-en-text report 1',
-        title: 'translated-en-title report 1',
+        mongodb_id: '60dd465f80935bc89e6f9b01',
         incident_id: 1,
+        epoch_incident_date: 1592092800,
+        incident_date: '2020-06-14',
         classifications: [
           'CSET:Named Entities:Amazon',
           'CSET:Harm Type:Harm to physical health/safety',
@@ -377,10 +387,27 @@ describe('Translations', () => {
       });
 
       expect(enIndex.saveObjects.getCall(0).args[0][1]).to.deep.nested.include({
-        objectID: '2',
+        authors: ['Alistair Barr'],
+        description: 'Description of report 2',
+        epoch_date_downloaded: 1555113600,
+        epoch_date_modified: 1592092800,
+        epoch_date_published: 1431993600,
+        epoch_date_submitted: 1559347200,
+        image_url: 'http://url.com',
+        language: 'es',
+        ref_number: 0,
+        report_number: 2,
+        source_domain: 'blogs.wsj.com',
+        submitters: ['Roman Yampolskiy'],
+        tags: [],
         text: 'translated-en-text report 2',
         title: 'translated-en-title report 2',
+        url: 'https://url.com/stuff',
+        objectID: '2',
+        mongodb_id: '60dd465f80935bc89e6f9b02',
         incident_id: 1,
+        incident_date: '2020-06-14',
+        epoch_incident_date: 1592092800,
         classifications: [
           'CSET:Named Entities:Amazon',
           'CSET:Harm Type:Harm to physical health/safety',
@@ -389,10 +416,27 @@ describe('Translations', () => {
       });
 
       expect(esIndex.saveObjects.getCall(0).args[0][0]).to.deep.nested.include({
-        objectID: '1',
+        authors: ['Alistair Barr'],
+        description: 'Description of report 1',
+        epoch_date_downloaded: 1555113600,
+        epoch_date_modified: 1592092800,
+        epoch_date_published: 1431993600,
+        epoch_date_submitted: 1559347200,
+        image_url: 'http://url.com',
+        language: 'en',
+        ref_number: 0,
+        report_number: 1,
+        source_domain: 'blogs.wsj.com',
+        submitters: ['Roman Yampolskiy'],
+        tags: [],
         text: 'translated-es-text report 1',
         title: 'translated-es-title report 1',
+        url: 'https://url.com/stuff',
+        objectID: '1',
+        mongodb_id: '60dd465f80935bc89e6f9b01',
         incident_id: 1,
+        incident_date: '2020-06-14',
+        epoch_incident_date: 1592092800,
         classifications: [
           'CSET:Named Entities:Amazon',
           'CSET:Harm Type:Harm to physical health/safety',
@@ -401,10 +445,27 @@ describe('Translations', () => {
       });
 
       expect(esIndex.saveObjects.getCall(0).args[0][1]).to.deep.nested.include({
+        authors: ['Alistair Barr'],
+        description: 'Description of report 2',
+        epoch_date_downloaded: 1555113600,
+        epoch_date_modified: 1592092800,
+        epoch_date_published: 1431993600,
+        epoch_date_submitted: 1559347200,
+        image_url: 'http://url.com',
+        language: 'es',
+        ref_number: 0,
+        report_number: 2,
+        source_domain: 'blogs.wsj.com',
+        submitters: ['Roman Yampolskiy'],
+        tags: [],
+        text: 'Report 2 text',
+        title: 'Report 2 title',
+        url: 'https://url.com/stuff',
         objectID: '2',
-        text: 'translated-es-text report 2',
-        title: 'translated-es-title report 2',
+        mongodb_id: '60dd465f80935bc89e6f9b02',
         incident_id: 1,
+        incident_date: '2020-06-14',
+        epoch_incident_date: 1592092800,
         classifications: [
           'CSET:Named Entities:Amazon',
           'CSET:Harm Type:Harm to physical health/safety',
