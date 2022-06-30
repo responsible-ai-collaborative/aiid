@@ -8,6 +8,7 @@ import Filters from './Filters';
 import { Row, Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import { Trans } from 'react-i18next';
 
 const FlexGap = styled(Col)`
   margin: auto;
@@ -41,7 +42,9 @@ const Controls = ({ query }) => {
         </Col>
         <FlexGap />
         <Col className="col-auto">
-          <ClearFilters>Clear Filters</ClearFilters>
+          <ClearFilters>
+            <Trans>Clear Filters</Trans>
+          </ClearFilters>
         </Col>
         <Col className="col-auto">
           <ExpandFilters
@@ -49,8 +52,8 @@ const Controls = ({ query }) => {
             data-cy="expand-filters"
             onClick={() => setExpandFilters(!expandFilters)}
           >
-            <ExpandArrow icon={expandFilters ? faCaretDown : faCaretRight} fixedWidth /> Filter
-            Search
+            <ExpandArrow icon={expandFilters ? faCaretDown : faCaretRight} fixedWidth />
+            <Trans>Filter Search</Trans>
           </ExpandFilters>
         </Col>
       </Row>
