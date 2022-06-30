@@ -9,17 +9,6 @@ import Header from 'components/ui/Header';
 import { QueryParamProvider } from 'use-query-params';
 import { navigate } from 'gatsby';
 import { UserContextProvider } from 'contexts/userContext';
-import { LanguageProvider } from 'components/i18n/useTranslation';
-
-export const onServiceWorkerUpdateReady = () => {
-  const answer = window.confirm(
-    `This website has been updated. Reload to display the latest version?`
-  );
-
-  if (answer === true) {
-    window.location.reload();
-  }
-};
 
 export const shouldUpdateScroll = ({ routerProps: { location } }) => {
   const { pathname } = location;
@@ -41,12 +30,10 @@ export const wrapPageElement = ({ element }) => {
 
   return (
     <QueryParamProvider history={history}>
-      <LanguageProvider>
-        <UserContextProvider>
-          <Header />
-          {element}
-        </UserContextProvider>
-      </LanguageProvider>
+      <UserContextProvider>
+        <Header />
+        {element}
+      </UserContextProvider>
     </QueryParamProvider>
   );
 };

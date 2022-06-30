@@ -1,4 +1,10 @@
+const config = require('../config');
+
 const path = require('path');
+
+const { cloneDeep } = require('lodash');
+
+const { switchLocalizedPath } = require('../i18n');
 
 const getClassificationsArray = (incidentClassifications, taxonomy) => {
   const classifications = incidentClassifications.filter(
@@ -51,7 +57,7 @@ const getClassificationsArray = (incidentClassifications, taxonomy) => {
   return array;
 };
 
-const createCitiationPages = async (graphql, createPage) => {
+const createCitationPages = async (graphql, createPage) => {
   const result = await graphql(
     `
       query IncidentIDs {
@@ -61,6 +67,10 @@ const createCitiationPages = async (graphql, createPage) => {
             date
             reports
             editors
+            nlp_similar_incidents {
+              incident_id
+              similarity
+            }
           }
         }
 
@@ -78,6 +88,7 @@ const createCitiationPages = async (graphql, createPage) => {
             text
             authors
             epoch_date_submitted
+            language
           }
         }
 
@@ -155,13 +166,6 @@ const createCitiationPages = async (graphql, createPage) => {
             }
           }
         }
-
-        allMongodbAiidprodDuplicates {
-          nodes {
-            true_incident_number
-            duplicate_incident_number
-          }
-        }
       }
     `
   );
@@ -170,7 +174,6 @@ const createCitiationPages = async (graphql, createPage) => {
     allMongodbAiidprodIncidents,
     allMongodbAiidprodReports,
     allMongodbAiidprodClassifications,
-    allMongodbAiidprodDuplicates,
     allMongodbAiidprodTaxa,
     allMongodbAiidprodResources,
   } = result.data;
@@ -181,7 +184,7 @@ const createCitiationPages = async (graphql, createPage) => {
   for (const incident of allMongodbAiidprodIncidents.nodes) {
     incidentReportsMap[incident.incident_id] = incident.reports
       .map((r) => allMongodbAiidprodReports.nodes.find((n) => n.report_number === r))
-      .map((r) => ({ node: { ...r } }));
+      .map((r) => ({ ...r }));
   }
 
   const allClassifications = [
@@ -190,6 +193,8 @@ const createCitiationPages = async (graphql, createPage) => {
   ];
 
   const keys = Object.keys(incidentReportsMap);
+
+  const pageContexts = [];
 
   for (let i = 0; i < keys.length; i++) {
     const incident_id = parseInt(keys[i]);
@@ -213,33 +218,75 @@ const createCitiationPages = async (graphql, createPage) => {
       });
     });
 
-    // Create citation pages
-    createPage({
-      path: '/cite/' + incident_id,
-      component: path.resolve('./src/templates/cite.js'),
-      context: {
-        incident,
-        incidentReports: incidentReportsMap[incident_id],
-        taxonomies,
-        nextIncident: i < keys.length - 1 ? keys[i + 1] : null,
-        prevIncident: i > 0 ? keys[i - 1] : null,
-      },
+    const similarIncidentsMap = {};
+
+    for (let similarIncident of incident.nlp_similar_incidents) {
+      similarIncidentsMap[similarIncident.incident_id] = allMongodbAiidprodIncidents.nodes.find(
+        (fullIncident) => fullIncident.incident_id === similarIncident.incident_id
+      );
+    }
+    pageContexts.push({
+      incident,
+      incidentReports: incidentReportsMap[incident_id],
+      nlpSimilarIncidents: incident.nlp_similar_incidents.map((similarIncident) => ({
+        incident_id: similarIncidentsMap[similarIncident.incident_id].incident_id,
+        title: similarIncidentsMap[similarIncident.incident_id].title,
+        date: similarIncidentsMap[similarIncident.incident_id].date,
+        reports: incidentReportsMap[similarIncident.incident_id],
+      })),
+      taxonomies,
+      nextIncident: i < keys.length - 1 ? keys[i + 1] : null,
+      prevIncident: i > 0 ? keys[i - 1] : null,
     });
   }
 
-  for (const {
-    true_incident_number,
-    duplicate_incident_number,
-  } of allMongodbAiidprodDuplicates.nodes) {
-    createPage({
-      path: '/cite/' + duplicate_incident_number,
-      component: path.resolve('./src/templates/cite-duplicate.js'),
-      context: {
-        duplicate_incident_number: parseInt(duplicate_incident_number),
-        true_incident_number: parseInt(true_incident_number),
-      },
-    });
+  for (const language of config.i18n.availableLanguages) {
+    const { data: { translations: { nodes: translations } } = { translations: { nodes: [] } } } =
+      await graphql(`
+    {
+      translations: allMongodbTranslationsReports${language[0].toUpperCase()}${language.slice(1)} {
+        nodes  {
+          report_number
+          title
+          text
+        }
+      }
+    }`);
+
+    for (const context of pageContexts) {
+      const pagePath = switchLocalizedPath({
+        newLang: language,
+        path: '/cite/' + context.incident.incident_id,
+      });
+
+      const incidentReports = context.incidentReports.map((r) => {
+        let report = cloneDeep(r);
+
+        if (report.language !== language) {
+          const translation = translations.find((t) => t.report_number == report.report_number);
+
+          if (translation) {
+            const { title, text } = translation;
+
+            report = { ...report, title, text };
+          } else {
+            console.warn(`Missing translation for report ${report.report_number}`);
+          }
+        }
+
+        return report;
+      });
+
+      createPage({
+        path: pagePath,
+        component: path.resolve('./src/templates/cite.js'),
+        context: {
+          ...context,
+          incidentReports,
+        },
+      });
+    }
   }
 };
 
-module.exports = createCitiationPages;
+module.exports = createCitationPages;

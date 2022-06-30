@@ -5,7 +5,7 @@ import { gql, useApolloClient } from '@apollo/client';
 import debounce from 'lodash/debounce';
 import isArray from 'lodash/isArray';
 import RelatedIncidentsArea from './RelatedIncidentsArea';
-import SemanticallyRelatedIncidents from './SemanticallyRelatedIncidents.js';
+import SemanticallyRelatedIncidents from './SemanticallyRelatedIncidents';
 
 const relatedIncidentsQuery = gql`
   query ProbablyRelatedIncidents($query: IncidentQueryInput) {
@@ -15,17 +15,6 @@ const relatedIncidentsQuery = gql`
         report_number
         title
         url
-      }
-    }
-  }
-`;
-
-const relatedIncidentIdsQuery = gql`
-  query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
-    incidents(query: $query) {
-      incident_id
-      reports {
-        report_number
       }
     }
   }
@@ -46,7 +35,7 @@ const reportsWithIncidentIds = async (reports, client) => {
     return [];
   }
   const response = await client.query({
-    query: relatedIncidentIdsQuery,
+    query: relatedIncidentsQuery,
     variables: {
       query: {
         reports_in: reports.map((report) => ({

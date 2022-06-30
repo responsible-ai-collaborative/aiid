@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { gql, useApolloClient } from '@apollo/client';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Card, Button } from 'react-bootstrap';
 import { formatISO, format, parse } from 'date-fns';
@@ -9,33 +8,7 @@ import { Image } from '../../utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import md5 from 'md5';
 
-const similarIncidentsQuery = gql`
-  query SimilarIncidents($query: IncidentQueryInput) {
-    incidents(query: $query) {
-      incident_id
-      title
-      date
-      reports {
-        title
-        report_number
-        cloudinary_id
-        image_url
-      }
-    }
-  }
-`;
-
-const similarIncidentIdsQuery = gql`
-  query SimilarIncidentIds($query: IncidentQueryInput) {
-    incidents(query: $query) {
-      incident_id
-      nlp_similar_incidents {
-        incident_id
-        similarity
-      }
-    }
-  }
-`;
+const blogPostUrl = null;
 
 const Subtitle = styled.p`
   font-size: 120%;
@@ -101,13 +74,18 @@ const FlexSeparator = styled.div`
 const FlagButton = styled(Button)`
   padding: 0px !important;
   color: var(--bs-gray-600) !important;
-  :hover {
+  &:hover {
+    color: var(--bs-gray-500) !important;
+  }
+  &.flagged {
     color: var(--bs-red) !important;
   }
 `;
 
 const SimilarIncidentCard = ({ incident }) => {
   const parsedDate = parse(incident.date, 'yyyy-MM-dd', new Date());
+
+  const [flagged, setFlagged] = useState(false);
 
   return (
     <Card>
@@ -130,8 +108,12 @@ const SimilarIncidentCard = ({ incident }) => {
             </span>
           </div>
           <FlexSeparator />
-          <FlagButton variant="link">
-            <FontAwesomeIcon icon={faFlag} className="fa-flag" />
+          <FlagButton
+            variant="link"
+            className={flagged ? ' flagged' : ''}
+            onClick={() => setFlagged(!flagged)}
+          >
+            <FontAwesomeIcon icon={faFlag} />
           </FlagButton>
         </CardFooter>
       </Card.Body>
@@ -139,55 +121,29 @@ const SimilarIncidentCard = ({ incident }) => {
   );
 };
 
-const SimilarIncidents = ({ incident }) => {
-  const client = useApolloClient();
+const SimilarIncidents = ({ nlpSimilarIncidents }) => {
+  if (nlpSimilarIncidents.length == 0) return null;
 
-  const [similarIncidents, setSimilarIncidents] = useState([]);
-
-  useEffect(async () => {
-    const similarity = await client.query({
-      query: similarIncidentIdsQuery,
-      variables: {
-        query: { incident_id: incident.incident_id },
-      },
-    });
-
-    const currentIncident = similarity.data.incidents[0];
-
-    if (currentIncident.nlp_similar_incidents) {
-      const similarIncidentsResponse = await client.query({
-        query: similarIncidentsQuery,
-        variables: {
-          query: {
-            incident_id_in: currentIncident.nlp_similar_incidents.map((e) => e.incident_id),
-          },
-        },
-      });
-
-      setSimilarIncidents(similarIncidentsResponse.data.incidents);
-    }
-  }, []);
-
-  return similarIncidents.length > 0 ? (
+  return (
     <SimilarIncidentsList>
-      <h2 id="similar-incidents">
-        <a href="#similar-incidents">Similar Incidents</a>
-      </h2>
+      <h2 id="similar-incidents">Similar Incidents</h2>
       <Subtitle>
         By textual similarity
-        <FontAwesomeIcon icon={faQuestionCircle} className="fa-flag" />
+        {blogPostUrl && (
+          <a href={blogPostUrl}>
+            <FontAwesomeIcon icon={faQuestionCircle} />
+          </a>
+        )}
       </Subtitle>
       <hr />
       <FlagPrompt className="text-muted">
-        Did <strong>our</strong> AI mess up? Flag{' '}
-        <FontAwesomeIcon icon={faFlag} className="fa-flag" /> unrelated incidents
+        Did <strong>our</strong> AI mess up? Flag <FontAwesomeIcon icon={faFlag} /> the unrelated
+        incidents
       </FlagPrompt>
-      {similarIncidents.map((similarIncident) => (
+      {nlpSimilarIncidents.map((similarIncident) => (
         <SimilarIncidentCard incident={similarIncident} key={similarIncident.incident_id} />
       ))}
     </SimilarIncidentsList>
-  ) : (
-    ''
   );
 };
 

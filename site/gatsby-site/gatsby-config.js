@@ -95,9 +95,23 @@ const plugins = [
       connectionString: config.mongodb.connectionString,
       extraParams: {
         replicaSet: config.mongodb.replicaSet,
-        ssl: true,
-        authSource: 'admin',
-        retryWrites: true,
+      },
+    },
+  },
+  {
+    resolve: 'gatsby-source-mongodb',
+    options: {
+      dbName: 'translations',
+      collection: ['reports'].reduce(
+        (collections, name) => [
+          ...collections,
+          ...config.i18n.availableLanguages.map((lang) => `${name}_${lang}`),
+        ],
+        []
+      ),
+      connectionString: config.mongodb.connectionString,
+      extraParams: {
+        replicaSet: config.mongodb.replicaSet,
       },
     },
   },
@@ -179,12 +193,24 @@ const plugins = [
       // expiration: 120,
     },
   },
+  {
+    resolve: `gatsby-theme-i18n`,
+    options: {
+      defaultLang: config.i18n.defaultLanguage,
+      configPath: require.resolve(`./i18n/config.json`),
+      locales: config.i18n.availableLanguages.join(' '),
+    },
+  },
+  {
+    resolve: `gatsby-theme-i18n-react-i18next`,
+    options: {
+      locales: `./i18n/locales`,
+      i18nextOptions: {
+        ns: ['translation'],
+      },
+    },
+  },
 ];
-
-// check and remove trailing slash
-if (config.gatsby && !config.gatsby.trailingSlash) {
-  plugins.push('gatsby-plugin-remove-trailing-slashes');
-}
 
 plugins.push(`gatsby-plugin-client-side-redirect`);
 
