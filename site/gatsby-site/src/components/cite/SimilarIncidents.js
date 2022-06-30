@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Card, Button } from 'react-bootstrap';
 import { formatISO, format, parse } from 'date-fns';
@@ -7,6 +7,8 @@ import { faFlag, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { Image } from '../../utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import md5 from 'md5';
+
+const blogPostUrl = null;
 
 const Subtitle = styled.p`
   font-size: 120%;
@@ -72,13 +74,18 @@ const FlexSeparator = styled.div`
 const FlagButton = styled(Button)`
   padding: 0px !important;
   color: var(--bs-gray-600) !important;
-  :hover {
+  &:hover {
+    color: var(--bs-gray-500) !important;
+  }
+  &.flagged {
     color: var(--bs-red) !important;
   }
 `;
 
 const SimilarIncidentCard = ({ incident }) => {
   const parsedDate = parse(incident.date, 'yyyy-MM-dd', new Date());
+
+  const [flagged, setFlagged] = useState(false);
 
   return (
     <Card>
@@ -101,8 +108,12 @@ const SimilarIncidentCard = ({ incident }) => {
             </span>
           </div>
           <FlexSeparator />
-          <FlagButton variant="link">
-            <FontAwesomeIcon icon={faFlag} className="fa-flag" />
+          <FlagButton
+            variant="link"
+            className={flagged ? ' flagged' : ''}
+            onClick={() => setFlagged(!flagged)}
+          >
+            <FontAwesomeIcon icon={faFlag} />
           </FlagButton>
         </CardFooter>
       </Card.Body>
@@ -115,17 +126,19 @@ const SimilarIncidents = ({ nlpSimilarIncidents }) => {
 
   return (
     <SimilarIncidentsList>
-      <h2 id="similar-incidents">
-        <a href="#similar-incidents">Similar Incidents</a>
-      </h2>
+      <h2 id="similar-incidents">Similar Incidents</h2>
       <Subtitle>
         By textual similarity
-        <FontAwesomeIcon icon={faQuestionCircle} className="fa-flag" />
+        {blogPostUrl && (
+          <a href={blogPostUrl}>
+            <FontAwesomeIcon icon={faQuestionCircle} />
+          </a>
+        )}
       </Subtitle>
       <hr />
       <FlagPrompt className="text-muted">
-        Did <strong>our</strong> AI mess up? Flag{' '}
-        <FontAwesomeIcon icon={faFlag} className="fa-flag" /> unrelated incidents
+        Did <strong>our</strong> AI mess up? Flag <FontAwesomeIcon icon={faFlag} /> the unrelated
+        incidents
       </FlagPrompt>
       {nlpSimilarIncidents.map((similarIncident) => (
         <SimilarIncidentCard incident={similarIncident} key={similarIncident.incident_id} />
