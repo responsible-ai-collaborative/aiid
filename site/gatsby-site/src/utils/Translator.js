@@ -40,12 +40,10 @@ class Translator {
 
     const translated = [];
 
-    const q = queue(async ({ entry, to }, done) => {
+    const q = queue(async ({ entry, to }) => {
       const translatedEntry = await this.translateReport({ entry, to });
 
       translated.push(translatedEntry);
-
-      done();
     }, concurrency);
 
     q.error((err, task) => {
