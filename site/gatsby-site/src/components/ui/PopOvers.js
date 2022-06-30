@@ -90,4 +90,7 @@ export const tags = Popover(
   `The purpose of report tags is to support sorting reports on the citation page for the incident. When in doubt, you can leave this field blank and a database editor will select appropriate tags at ingestion time.`
 );
 
-export const language = Popover('Language of the incident report', `????`);
+export const language = Popover(
+  'Language of the incident report',
+  `This is the written language of the text found in the report, not the language of the people or countries involved in the report. The reports will be translated to supported languages when we ingest the text.`
+);
