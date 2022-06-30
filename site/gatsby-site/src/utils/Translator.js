@@ -48,6 +48,12 @@ class Translator {
       done();
     }, concurrency);
 
+    q.error((err, task) => {
+      this.reporter.log(
+        `Error translating report ${task.entry.report_number}, ${err.code} ${err.message}`
+      );
+    });
+
     const alreadyTranslated = await this.getTranslatedReports({ items, language: to });
 
     for (const entry of items) {
