@@ -3,6 +3,7 @@
         "updateOneIncident": {
             "__typename": "Incident",
             "date": "2015-05-19",
+            "nlp_similar_incidents": [],
             "incident_id": 1,
             "nlp_similar_incidents": [],
             "reports": [

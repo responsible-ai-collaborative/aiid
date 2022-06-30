@@ -59,6 +59,8 @@ function CitePage(props) {
     pageContext: { incident, incidentReports, taxonomies, nextIncident, prevIncident },
   } = props;
 
+  console.log(incident);
+
   const { isRole } = useUserContext();
 
   // meta tags

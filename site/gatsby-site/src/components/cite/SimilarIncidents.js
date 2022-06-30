@@ -39,31 +39,16 @@ const similarIncidentIdsQuery = gql`
   }
 `;
 
-const Subtitle = styled.p`
-  font-size: 120%;
-  font-weight: bold;
-  svg {
-    margin-left: 0.5ch;
-  }
-`;
-
-const FlagPrompt = styled.p`
-  margin-top: 1em;
-  margin-bottom: 1em;
-  svg {
-    margin-left: 0.5ch;
-    margin-right: 0.5ch;
-  }
-`;
-
 const SimilarIncidentsList = styled.div`
   margin-top: 2em;
   margin-bottom: 2em;
+
   .card {
     margin-top: 1.5em;
     margin-bottom: 1.5em;
     overflow: hidden;
     box-shadow: 0 2px 5px 0px #e3e5ec;
+
     a:not(:hover) {
       color: inherit;
     }
@@ -98,6 +83,23 @@ const FlexSeparator = styled.div`
   display: inline-block;
   margin-left: auto;
   margin-right: auto;
+`;
+
+const Subtitle = styled.p`
+  font-size: 120%;
+  font-weight: bold;
+  svg {
+    margin-left: 0.5ch;
+  }
+`;
+
+const FlagPrompt = styled.p`
+  margin-top: 1em;
+  margin-bottom: 1em;
+  svg {
+    margin-left: 0.5ch;
+    margin-right: 0.5ch;
+  }
 `;
 
 const FlagButton = styled(Button)`
@@ -161,10 +163,9 @@ const SimilarIncidents = ({ incident }) => {
         query: similarIncidentsQuery,
         variables: {
           query: {
-            incident_id_in: currentIncident.nlp_similar_incidents
-              .map((e) => e.incident_id)
-              .concat(currentIncident.editor_similar_incidents)
-              .filter((id) => !currentIncident.editor_dissimilar_incidents.includes(id)),
+            incident_id_in: currentIncident.nlp_similar_incidents.map((e) => e.incident_id),
+            //    .concat(currentIncident.editor_similar_incidents)
+            //    .filter((id) => !currentIncident.editor_dissimilar_incidents.includes(id)),
           },
         },
       });
@@ -173,26 +174,26 @@ const SimilarIncidents = ({ incident }) => {
     }
   }, []);
 
-  return similarIncidents.length > 0 ? (
-    <SimilarIncidentsList>
-      <h2 id="similar-incidents">
-        <a href="#similar-incidents">Similar Incidents</a>
-      </h2>
-      <Subtitle>
-        By textual similarity
-        <FontAwesomeIcon icon={faQuestionCircle} className="fa-flag" />
-      </Subtitle>
-      <hr />
-      <FlagPrompt className="text-muted">
-        Did <strong>our</strong> AI mess up? Flag{' '}
-        <FontAwesomeIcon icon={faFlag} className="fa-flag" /> unrelated incidents
-      </FlagPrompt>
-      {similarIncidents.map((similarIncident) => (
-        <SimilarIncidentCard incident={similarIncident} key={similarIncident.incident_id} />
-      ))}
-    </SimilarIncidentsList>
-  ) : (
-    ''
+  return (
+    similarIncidents.length && (
+      <SimilarIncidentsList>
+        <h2 id="similar-incidents">
+          <a href="#similar-incidents">Similar Incidents</a>
+        </h2>
+        <Subtitle>
+          By textual similarity
+          <FontAwesomeIcon icon={faQuestionCircle} className="fa-flag" />
+        </Subtitle>
+        <hr />
+        <FlagPrompt className="text-muted">
+          Did <strong>our</strong> AI mess up? Flag{' '}
+          <FontAwesomeIcon icon={faFlag} className="fa-flag" /> unrelated incidents
+        </FlagPrompt>
+        {similarIncidents.map((similarIncident) => (
+          <SimilarIncidentCard incident={similarIncident} key={similarIncident.incident_id} />
+        ))}
+      </SimilarIncidentsList>
+    )
   );
 };
 

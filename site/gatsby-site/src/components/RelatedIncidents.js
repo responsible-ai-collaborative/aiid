@@ -76,6 +76,7 @@ const searchColumns = {
     query: relatedReportsQuery,
     getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) => {
+      if (!incident.date_published) return false;
       const parsedDate = parse(incident.date_published, 'yyyy-MM-dd', new Date());
 
       return isValid(parsedDate) && getUnixTime(parsedDate) > 0;
@@ -129,6 +130,26 @@ const searchColumns = {
     isSet: (incident) => incident.url,
     getQueryVariables: (incident) => ({ url_in: [incident.url] }),
   },
+
+  byText: {
+    header: () => <>Most Semantically Similar Incident Reports (Experimental)</>,
+    query: relatedIncidentsQuery,
+    getReports: async (result) =>
+      result.data.incidents.reduce(
+        (reports, incident) =>
+          reports.concat(
+            incident.reports.map((report) => ({
+              incident_id: incident.incident_id,
+              ...report,
+            }))
+          ),
+        []
+      ),
+    isSet: (incident) => incident.text,
+    getQueryVariables: (incident, relatedIncidents) => ({
+      incident_id_in: relatedIncidents ? relatedIncidents.map((i) => i.incident_id) : [],
+    }),
+  },
 };
 
 const RelatedIncidents = ({ incident, editable = true, className = '' }) => {
@@ -153,7 +174,6 @@ const RelatedIncidents = ({ incident, editable = true, className = '' }) => {
           variables[key] = null;
         }
       }
-
       setQueryVariables(variables);
     }, 1000)
   ).current;
@@ -165,11 +185,12 @@ const RelatedIncidents = ({ incident, editable = true, className = '' }) => {
   const search = useCallback(
     async (key, column) => {
       if (queryVariables[key]) {
+        if (key != 'byText') {
+          setLoading((loading) => ({ ...loading, [key]: true }));
+        }
         const variables = { query: queryVariables[key] };
 
         const query = column.query;
-
-        setLoading((loading) => ({ ...loading, [key]: true }));
 
         const result = await client.query({ query, variables });
 

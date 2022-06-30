@@ -25,8 +25,8 @@
                 "plain_text": "Submission 1 text\n\nMarkdown content!",
                 "title": "Submisssion 1 title",
                 "url": "https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/",
-                "editor_notes": "",
-                "nlp_similar_incidents": []
+                "nlp_similar_incidents": [],
+                "editor_notes": ""
             },
             {
                 "__typename": "Submission",
@@ -45,6 +45,7 @@
                 "incident_id": 10,
                 "language": "en",
                 "source_domain": "skylightcyber.com",
+                "nlp_similar_incidents": [],
                 "submitters": [
                     "Kate Perkins"
                 ],

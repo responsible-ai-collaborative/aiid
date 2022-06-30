@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 export default async function handler(req, res) {
-  const { text } = req.query;
+  const { text, num } = req.query;
 
   // Example result
   // {
@@ -16,7 +16,9 @@ export default async function handler(req, res) {
   //  }}
   const url =
     'https://q3z6vr2qvj.execute-api.us-west-2.amazonaws.com/text-to-db-similar?text=' +
-    encodeURIComponent(text);
+    encodeURIComponent(text) +
+    '&num=' +
+    num;
 
   axios
     .get(url, { timeout: 30000 })
