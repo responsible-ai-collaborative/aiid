@@ -6,7 +6,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlag, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { Image } from '../../utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
+import { useMutation } from '@apollo/client/react/hooks';
+import { UPDATE_INCIDENT } from '../../graphql/incidents';
 import md5 from 'md5';
+import { useUserContext } from 'contexts/userContext';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
 const blogPostUrl = null;
 
@@ -84,10 +88,16 @@ const FlagButton = styled(Button)`
   }
 `;
 
-const SimilarIncidentCard = ({ incident, flaggable = true }) => {
+const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncident }) => {
   const parsedDate = incident.date ? parse(incident.date, 'yyyy-MM-dd', new Date()) : null;
 
-  const [flagged, setFlagged] = useState(false);
+  const { isRole } = useUserContext();
+
+  const [isFlagged, setFlagged] = useState(flagged && isRole('incident_editor'));
+
+  const [updateIncident] = useMutation(UPDATE_INCIDENT);
+
+  const addToast = useToastContext();
 
   return (
     <Card>
@@ -118,8 +128,30 @@ const SimilarIncidentCard = ({ incident, flaggable = true }) => {
           {flaggable && (
             <FlagButton
               variant="link"
-              className={flagged ? ' flagged' : ''}
-              onClick={() => setFlagged(!flagged)}
+              className={isFlagged ? ' flagged' : ''}
+              onClick={async () => {
+                await updateIncident({
+                  variables: {
+                    query: { incident_id: parentIncident.incident_id },
+                    set: {
+                      flagged_dissimilar_incidents: isFlagged
+                        ? parentIncident.flagged_dissimilar_incidents.filter(
+                            (e) => e != incident.incident_id
+                          )
+                        : parentIncident.flagged_dissimilar_incidents
+                            .filter((e) => e != incident.incident_id)
+                            .concat([incident.incident_id]),
+                    },
+                  },
+                });
+                addToast({
+                  message: isFlagged
+                    ? `Flag reverted.`
+                    : `Incident flagged successfully. Our editors will remove it from this list if it not relevant.`,
+                  severity: SEVERITY.success,
+                });
+                setFlagged(!isFlagged);
+              }}
             >
               <FontAwesomeIcon icon={faFlag} />
             </FlagButton>
@@ -131,9 +163,11 @@ const SimilarIncidentCard = ({ incident, flaggable = true }) => {
 };
 
 const SimilarIncidents = ({
+  parentIncident,
   nlp_similar_incidents,
   editor_similar_incidents,
   editor_dissimilar_incidents,
+  flagged_dissimilar_incidents,
 }) => {
   const nlp_only_incidents = nlp_similar_incidents.filter(
     (similarIncident) =>
@@ -175,7 +209,12 @@ const SimilarIncidents = ({
             unrelated incidents
           </FlagPrompt>
           {nlp_only_incidents.map((similarIncident) => (
-            <SimilarIncidentCard incident={similarIncident} key={similarIncident.incident_id} />
+            <SimilarIncidentCard
+              incident={similarIncident}
+              key={similarIncident.incident_id}
+              flagged={flagged_dissimilar_incidents.includes(similarIncident.incident_id)}
+              parentIncident={parentIncident}
+            />
           ))}
         </>
       )}

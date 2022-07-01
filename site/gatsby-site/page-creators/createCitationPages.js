@@ -69,6 +69,7 @@ const createCitationPages = async (graphql, createPage) => {
             editors
             editor_similar_incidents
             editor_dissimilar_incidents
+            flagged_dissimilar_incidents
             nlp_similar_incidents {
               incident_id
               similarity
