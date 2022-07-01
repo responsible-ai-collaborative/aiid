@@ -84,8 +84,8 @@ const FlagButton = styled(Button)`
   }
 `;
 
-const SimilarIncidentCard = ({ incident }) => {
-  const parsedDate = parse(incident.date, 'yyyy-MM-dd', new Date());
+const SimilarIncidentCard = ({ incident, flaggable = true }) => {
+  const parsedDate = incident.date ? parse(incident.date, 'yyyy-MM-dd', new Date()) : null;
 
   const [flagged, setFlagged] = useState(false);
 
@@ -104,47 +104,83 @@ const SimilarIncidentCard = ({ incident }) => {
         </a>
         <CardFooter>
           <div className="text-muted">
-            <time dateTime={formatISO(parsedDate)}>{format(parsedDate, 'MMM yyyy')}</time> ·{' '}
+            {parsedDate && (
+              <>
+                <time dateTime={formatISO(parsedDate)}>{format(parsedDate, 'MMM yyyy')}</time> ·{' '}
+              </>
+            )}
             <span>
               {incident.reports.length} {incident.reports.length == 1 ? 'report' : 'reports'}
             </span>
           </div>
           <FlexSeparator />
-          <FlagButton
-            variant="link"
-            className={flagged ? ' flagged' : ''}
-            onClick={() => setFlagged(!flagged)}
-          >
-            <FontAwesomeIcon icon={faFlag} />
-          </FlagButton>
+
+          {flaggable && (
+            <FlagButton
+              variant="link"
+              className={flagged ? ' flagged' : ''}
+              onClick={() => setFlagged(!flagged)}
+            >
+              <FontAwesomeIcon icon={faFlag} />
+            </FlagButton>
+          )}
         </CardFooter>
       </Card.Body>
     </Card>
   );
 };
 
-const SimilarIncidents = ({ nlpSimilarIncidents }) => {
-  if (nlpSimilarIncidents.length == 0) return null;
+const SimilarIncidents = ({
+  nlp_similar_incidents,
+  editor_similar_incidents,
+  editor_dissimilar_incidents,
+}) => {
+  if (nlp_similar_incidents.length == 0) return null;
+
+  const nlp_only_incidents = nlp_similar_incidents.filter(
+    (similarIncident) =>
+      !(
+        editor_similar_incidents.map((e) => e.incident_id).includes(similarIncident.incident_id) ||
+        editor_dissimilar_incidents.map((e) => e.incident_id).includes(similarIncident.incident_id)
+      )
+  );
 
   return (
     <SimilarIncidentsList>
-      <h2 id="similar-incidents">Similar Incidents</h2>
-      <Subtitle>
-        By textual similarity
-        {blogPostUrl && (
-          <a href={blogPostUrl}>
-            <FontAwesomeIcon icon={faQuestionCircle} />
-          </a>
-        )}
-      </Subtitle>
-      <hr />
-      <FlagPrompt className="text-muted">
-        Did <strong>our</strong> AI mess up? Flag <FontAwesomeIcon icon={faFlag} /> the unrelated
-        incidents
-      </FlagPrompt>
-      {nlpSimilarIncidents.map((similarIncident) => (
-        <SimilarIncidentCard incident={similarIncident} key={similarIncident.incident_id} />
-      ))}
+      {editor_similar_incidents && (
+        <>
+          <h2 id="similar-incidents">Similar Incidents</h2>
+          <Subtitle>Selected by our editors</Subtitle>
+          {editor_similar_incidents.map((similarIncident) => (
+            <SimilarIncidentCard
+              incident={similarIncident}
+              flaggable={false}
+              key={similarIncident.incident_id}
+            />
+          ))}
+        </>
+      )}
+
+      {nlp_only_incidents.length > 0 && (
+        <>
+          <Subtitle>
+            By textual similarity
+            {blogPostUrl && (
+              <a href={blogPostUrl}>
+                <FontAwesomeIcon icon={faQuestionCircle} />
+              </a>
+            )}
+          </Subtitle>
+          <hr />
+          <FlagPrompt className="text-muted">
+            Did <strong>our</strong> AI mess up? Flag <FontAwesomeIcon icon={faFlag} /> the
+            unrelated incidents
+          </FlagPrompt>
+          {nlp_only_incidents.map((similarIncident) => (
+            <SimilarIncidentCard incident={similarIncident} key={similarIncident.incident_id} />
+          ))}
+        </>
+      )}
     </SimilarIncidentsList>
   );
 };

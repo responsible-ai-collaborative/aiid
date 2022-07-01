@@ -67,6 +67,8 @@ const createCitationPages = async (graphql, createPage) => {
             date
             reports
             editors
+            editor_similar_incidents
+            editor_dissimilar_incidents
             nlp_similar_incidents {
               incident_id
               similarity
@@ -218,25 +220,41 @@ const createCitationPages = async (graphql, createPage) => {
       });
     });
 
-    const similarIncidentsMap = {};
+    const similarIncidents = {};
 
-    for (let similarIncident of incident.nlp_similar_incidents) {
-      similarIncidentsMap[similarIncident.incident_id] = allMongodbAiidprodIncidents.nodes.find(
-        (fullIncident) => fullIncident.incident_id === similarIncident.incident_id
-      );
+    for (let key of [
+      'nlp_similar_incidents',
+      'editor_similar_incidents',
+      'editor_dissimilar_incidents',
+    ]) {
+      try {
+        similarIncidents[key] = incident[key].map((similarIncident) => {
+          const similarIncidentId = similarIncident.incident_id || similarIncident;
+
+          const foundFullIncident = allMongodbAiidprodIncidents.nodes.find(
+            (fullIncident) => fullIncident.incident_id === similarIncidentId
+          );
+
+          return {
+            title: foundFullIncident?.title || null,
+            date: foundFullIncident?.date || null,
+            incident_id: similarIncidentId,
+            reports: incidentReportsMap[similarIncidentId],
+          };
+        });
+      } catch (e) {
+        console.error(e);
+        console.log('incident', incident);
+      }
     }
+
     pageContexts.push({
       incident,
       incidentReports: incidentReportsMap[incident_id],
-      nlpSimilarIncidents: incident.nlp_similar_incidents.map((similarIncident) => ({
-        incident_id: similarIncidentsMap[similarIncident.incident_id].incident_id,
-        title: similarIncidentsMap[similarIncident.incident_id].title,
-        date: similarIncidentsMap[similarIncident.incident_id].date,
-        reports: incidentReportsMap[similarIncident.incident_id],
-      })),
       taxonomies,
       nextIncident: i < keys.length - 1 ? keys[i + 1] : null,
       prevIncident: i > 0 ? keys[i - 1] : null,
+      ...similarIncidents,
     });
   }
 

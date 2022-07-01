@@ -59,14 +59,14 @@ function CitePage(props) {
     pageContext: {
       incident,
       incidentReports,
-      nlpSimilarIncidents,
+      nlp_similar_incidents,
+      editor_similar_incidents,
+      editor_dissimilar_incidents,
       taxonomies,
       nextIncident,
       prevIncident,
     },
   } = props;
-
-  console.log(incident);
 
   const { isRole } = useUserContext();
 
@@ -262,7 +262,11 @@ function CitePage(props) {
           </Row>
         ))}
 
-        <SimilarIncidents nlpSimilarIncidents={nlpSimilarIncidents} />
+        <SimilarIncidents
+          nlp_similar_incidents={nlp_similar_incidents}
+          editor_similar_incidents={editor_similar_incidents}
+          editor_dissimilar_incidents={editor_dissimilar_incidents}
+        />
 
         <Pagination className="justify-content-between">
           <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>
