@@ -38,8 +38,6 @@ const semanticallyRelated = async (text) => {
 };
 
 const SemanticallyRelatedIncidents = ({ incident, editable }) => {
-  console.log('incident', incident);
-
   const [loading, setLoading] = useState(false);
 
   const [reports, setReports] = useState([]);
