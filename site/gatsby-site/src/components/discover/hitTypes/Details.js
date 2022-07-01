@@ -11,6 +11,7 @@ import ReportText from 'components/reports/ReportText';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 
 import { SourceDomainSubtitle, HeaderTitle } from './shared';
+import { Trans } from 'react-i18next';
 
 const IncidentCardImage = styled(Image)`
   height: ${({ height }) => height};
@@ -64,7 +65,9 @@ export default function Details({
                 navigate(path);
               }}
             >
-              <StyledLabel>Show Details on Incident #{item.incident_id}</StyledLabel>
+              <StyledLabel>
+                <Trans>Show Details on Incident #{{ id: item.incident_id }}</Trans>
+              </StyledLabel>
             </button>
           )}
         </div>

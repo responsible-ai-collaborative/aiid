@@ -28,6 +28,7 @@ const semanticallyRelated = async (text) => {
   });
 
   if (!response?.ok) {
+    console.error('/api/semanticallyRelated', response);
     throw new Error('Semantic relation error');
   }
   const json = await response.json();
