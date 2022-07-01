@@ -20,7 +20,7 @@ export default function LanguageSwitcher() {
   };
 
   return (
-    <DropdownButton id="dropdown-basic-button" title={currentLocale.name}>
+    <DropdownButton id="dropdown-basic-button" title={currentLocale.localName}>
       {config.map((locale) => (
         <Dropdown.Item key={locale.code} onClick={() => setLanguage(locale.code)}>
           {locale.name}

@@ -11,6 +11,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FIND_REPORT, UPDATE_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 
 function FlagModalContent({ reportNumber }) {
   const { data } = useQuery(FIND_REPORT, {
@@ -84,23 +85,25 @@ export default function Actions({
   submittersModal,
   flagReportModal,
 }) {
+  const { t } = useTranslation();
+
   return (
     <>
       <WebArchiveLink
         url={item.url}
         date={item.date_submitted}
         className="btn btn-link px-1"
-        title={'Authors'}
+        title={t('Authors')}
       >
         <FontAwesomeIcon icon={faNewspaper} className="fa-newspaper" title="Read the Source" />
       </WebArchiveLink>
 
       <Button
         variant="link"
-        title="Authors"
+        title={t('Authors')}
         onClick={() =>
           authorsModal.openFor({
-            title: 'Authors',
+            title: t('Authors'),
             body: () => item.authors.join(', '),
           })
         }
@@ -110,11 +113,11 @@ export default function Actions({
 
       <Button
         variant="link"
-        title="Submitters"
+        title={t('Submitters')}
         className="px-1"
         onClick={() =>
           submittersModal.openFor({
-            title: 'Submitters',
+            title: t('Submitters'),
             body: () => item.submitters.join(', '),
           })
         }
@@ -124,12 +127,12 @@ export default function Actions({
 
       <Button
         variant="link"
-        title="Flag Report"
+        title={t('Flag Report')}
         className="px-1"
         data-cy="flag-button"
         onClick={() =>
           flagReportModal.openFor({
-            title: 'Submitters',
+            title: t('Submitters'),
             body: () => <FlagModalContent reportNumber={item.report_number} />,
           })
         }
@@ -142,7 +145,7 @@ export default function Actions({
           variant="link"
           aria-hidden="true"
           className="d-flex align-items-center px-1"
-          title={`Filter by Incident ID #${item.incident_id}`}
+          title={t(`Filter by Incident ID #{{id}}`, { id: item.incident_id })}
           onClick={() => toggleFilterByIncidentId(item.incident_id + '')}
         >
           <FontAwesomeIcon icon={faHashtag} className="fa-hashtag" title="Incident ID" />

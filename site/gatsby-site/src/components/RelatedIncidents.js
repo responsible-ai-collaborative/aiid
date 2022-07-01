@@ -1,14 +1,11 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { ListGroup, Card, Spinner } from 'react-bootstrap';
+import { ListGroup } from 'react-bootstrap';
 import { subWeeks, addWeeks, getUnixTime, parse, isValid } from 'date-fns';
-import styled from 'styled-components';
 import { gql, useApolloClient } from '@apollo/client';
 import debounce from 'lodash/debounce';
 import isArray from 'lodash/isArray';
-
-const ListContainer = styled(Card)`
-  margin: 1em 0;
-`;
+import RelatedIncidentsArea from './RelatedIncidentsArea';
+import SemanticallyRelatedIncidents from './SemanticallyRelatedIncidents';
 
 const relatedIncidentsQuery = gql`
   query ProbablyRelatedIncidents($query: IncidentQueryInput) {
@@ -33,6 +30,31 @@ const relatedReportsQuery = gql`
   }
 `;
 
+const reportsWithIncidentIds = async (reports, client) => {
+  if (reports.length == 0) {
+    return [];
+  }
+  const response = await client.query({
+    query: relatedIncidentsQuery,
+    variables: {
+      query: {
+        reports_in: reports.map((report) => ({
+          report_number: report.report_number,
+        })),
+      },
+    },
+  });
+
+  return reports.map((report) => ({
+    ...report,
+    incident_id: response.data.incidents.filter((incident) =>
+      incident.reports
+        .map((incidentReport) => incidentReport.report_number)
+        .includes(report.report_number)
+    )[0].incident_id,
+  }));
+};
+
 const searchColumns = {
   byDatePublished: {
     header: (incident) => (
@@ -41,9 +63,12 @@ const searchColumns = {
       </>
     ),
     query: relatedReportsQuery,
-    getReports: (result) => result.data.reports,
-    isSet: (incident) =>
-      incident.date_published && isValid(parse(incident.date_published, 'yyyy-MM-dd', new Date())),
+    getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
+    isSet: (incident) => {
+      const parsedDate = parse(incident.date_published, 'yyyy-MM-dd', new Date());
+
+      return isValid(parsedDate) && getUnixTime(parsedDate) > 0;
+    },
     getQueryVariables: (incident) => {
       const datePublished = parse(incident.date_published, 'yyyy-MM-dd', new Date());
 
@@ -62,7 +87,8 @@ const searchColumns = {
       </>
     ),
     query: relatedIncidentsQuery,
-    getReports: (result) => (result.data.incidents.length ? result.data.incidents[0].reports : []),
+    getReports: async (result) =>
+      result.data.incidents.length ? result.data.incidents[0].reports : [],
     isSet: (incident) => incident.incident_id,
     getQueryVariables: (incident) => ({ incident_id_in: [incident.incident_id] }),
   },
@@ -74,7 +100,7 @@ const searchColumns = {
       </>
     ),
     query: relatedReportsQuery,
-    getReports: (result) => result.data.reports,
+    getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) => incident.authors,
     getQueryVariables: (incident) => ({
       authors_in: isArray(incident.authors) ? incident.authors : incident.authors.split(','),
@@ -88,39 +114,13 @@ const searchColumns = {
       </>
     ),
     query: relatedReportsQuery,
-    getReports: (result) => result.data.reports,
+    getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) => incident.url,
     getQueryVariables: (incident) => ({ url_in: [incident.url] }),
   },
 };
 
-const RelatedIncidentsArea = ({ columnKey, header, reports, loading }) => {
-  if (!reports && !loading) {
-    return null;
-  }
-
-  return (
-    <ListContainer data-cy={`related-${columnKey}`}>
-      <ListGroup.Item variant="secondary" key={'header'}>
-        {header}
-        {loading && <Spinner animation="border" size="sm" className="ms-2" />}
-      </ListGroup.Item>
-      {reports &&
-        reports.map((val) => (
-          <ListGroup.Item key={val.url}>
-            <a href={val.url} target="_blank" rel="noreferrer">
-              {val.title}
-            </a>
-          </ListGroup.Item>
-        ))}
-      {!loading && reports?.length == 0 && (
-        <ListGroup.Item>No related reports found.</ListGroup.Item>
-      )}
-    </ListContainer>
-  );
-};
-
-const RelatedIncidents = ({ incident, className = '' }) => {
+const RelatedIncidents = ({ incident, editable = true, className = '' }) => {
   const [loading, setLoading] = useState({});
 
   const [relatedReports, setRelatedReports] = useState({});
@@ -149,7 +149,7 @@ const RelatedIncidents = ({ incident, className = '' }) => {
 
   useEffect(() => {
     debouncedUpdateSearch(searchColumns, incident);
-  }, [incident]);
+  }, [incident.authors, incident.incident_id, incident.date_published, incident.url]);
 
   const search = useCallback(
     async (key, column) => {
@@ -162,9 +162,11 @@ const RelatedIncidents = ({ incident, className = '' }) => {
 
         const result = await client.query({ query, variables });
 
+        const reports = await column.getReports(result, client);
+
         setLoading((loading) => ({ ...loading, [key]: false }));
 
-        setRelatedReports((related) => ({ ...related, [key]: column.getReports(result) }));
+        setRelatedReports((related) => ({ ...related, [key]: reports }));
       } else {
         setRelatedReports((related) => ({ ...related, [key]: null }));
       }
@@ -201,9 +203,12 @@ const RelatedIncidents = ({ incident, className = '' }) => {
             loading={loading[key]}
             reports={relatedReports[key]}
             header={column.header(incident)}
+            editable={editable}
           />
         );
       })}
+
+      <SemanticallyRelatedIncidents incident={incident} editable={editable} />
     </ListGroup>
   );
 };

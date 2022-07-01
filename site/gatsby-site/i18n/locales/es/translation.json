@@ -1,2 +1,23 @@
 {
+  "Clear Filters": "Borrar Filtros",
+  "Filter Search": "Filtros",
+  "Type Here": "Escriba aqui",
+  "<0>{{count}}</0> reports found": "<0>{{count}}</0> reportes",
+  "Classifications": "Clasificaciones",
+  "Source": "Origen",
+  "Authors": "Autores",
+  "Submitters": "Remitentes",
+  "Incident ID": "ID",
+  "Incident Date": "Fecha del Incidente",
+  "Published Date": "Fecha de Publicado",
+  "Flagged": "Reportado",
+  "No result": "Sin resultados",
+  "Clear": "Borrar",
+  "From Date": "Desde",
+  "To Date": "Hasta",
+  "Close": "Cerrar",
+  "Show Details on Incident #{{id}}": "Ver detalles del Incidente #{{id}}",
+  "Filter by Incident ID #{{id}}": "Filtrar por ID de Incidente #{{id}}",
+  "Flag Report": "Reportar",
+  "Filters": "Filtros"
 }
