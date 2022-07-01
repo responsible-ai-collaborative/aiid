@@ -135,8 +135,6 @@ const SimilarIncidents = ({
   editor_similar_incidents,
   editor_dissimilar_incidents,
 }) => {
-  if (nlp_similar_incidents.length == 0) return null;
-
   const nlp_only_incidents = nlp_similar_incidents.filter(
     (similarIncident) =>
       !(
