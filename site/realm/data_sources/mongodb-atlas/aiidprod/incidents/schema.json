@@ -70,6 +70,12 @@
           "items": {
               "bsonType": "int"
           }
+       },
+       "flagged_dissimilar_incidents": {
+          "bsonType": "array",
+          "items": {
+              "bsonType": "int"
+          }
        }
     },
     "required": [
