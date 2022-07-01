@@ -114,10 +114,13 @@ const SubmissionReview = ({ submission }) => {
       incident_id: undefined,
       _id: undefined,
       __typename: undefined,
-      nlp_similar_incidents: submission.nlp_similar_incidents.map((similarIncident) => ({
+      nlp_similar_incidents: undefined,
+      editor_similar_incidents: undefined,
+      editor_dissimilar_incidents: undefined,
+      /*nlp_similar_incidents: submission.nlp_similar_incidents.map((similarIncident) => ({
         incident_id: similarIncident.incident_id,
         similarity: similarIncident.similarity,
-      })),
+      })),*/
     };
 
     report.date_modified = format(new Date(), 'yyyy-MM-dd');
@@ -138,7 +141,6 @@ const SubmissionReview = ({ submission }) => {
         },
         set: {
           ...report,
-          nlp_similar_incidents: undefined,
         },
       },
     });
@@ -189,6 +191,7 @@ const SubmissionReview = ({ submission }) => {
               onClick={() => setOpen(!open)}
               aria-controls="collapse-incident-submission"
               aria-expanded={open}
+              data-cy="review-button"
             >
               review &gt;
             </Button>
@@ -217,22 +220,20 @@ const SubmissionReview = ({ submission }) => {
           <ListedGroup className="mt-2 mx-3" item={submission} keysToRender={urls} />
           <ListedGroup className="mt-2 mx-3" item={submission} keysToRender={otherDetails} />
 
-          <Card className="m-3">
+          <Card className="m-3" data-cy="text">
             <Card.Header>Text</Card.Header>
             <Card.Body>
               <ReadMoreText text={submission.text} visibility={open} />
             </Card.Body>
           </Card>
 
-          {submission.editor_notes && isSubmitter ? (
-            <Card className="m-3">
+          {submission.editor_notes && (
+            <Card className="m-3" data-cy="editor_notes">
               <Card.Header>Editor Notes</Card.Header>
               <Card.Body>
                 <ReadMoreText text={submission.editor_notes} visibility={open} />
               </Card.Body>
             </Card>
-          ) : (
-            ''
           )}
 
           {open && (

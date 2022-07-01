@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 export default async function handler(req, res) {
-  const { text, num } = req.query;
+  const { text, max_retries, num } = req.query;
 
   // Example result
   // {
@@ -15,22 +15,30 @@ export default async function handler(req, res) {
   //      "best_url": "https://incidentdatabase.ai/apps/discover?display=details&incident_id=10"
   //  }}
   const url =
-    'https://q3z6vr2qvj.execute-api.us-west-2.amazonaws.com/text-to-db-similar?text=' +
-    encodeURIComponent(text) +
-    '&num=' +
-    num;
+    'https://q3z6vr2qvj.execute-api.us-west-2.amazonaws.com/text-to-db-similar?' +
+    'num=' +
+    String(num || 3) +
+    '&text=' +
+    encodeURIComponent(text);
 
-  axios
-    .get(url, { timeout: 30000 })
-    .then((lambdaResponse) =>
-      res.status(200).json({
-        // See: https://github.com/responsible-ai-collaborative/nlp-lambdas/issues/9
-        incidents: JSON.parse(
-          lambdaResponse.data.body.msg.replace(/\(/g, '[').replace(/\)/g, ']')
-        ).map((arr) => ({ incident_id: arr[1], similarity: arr[0] })),
-      })
-    )
-    .catch((error) => {
-      console.error(error);
-    });
+  let response;
+
+  let tries = 0;
+
+  while (tries < (max_retries || 3) && response?.status !== 200) {
+    axios
+      .get(url)
+      .then((lambdaResponse) =>
+        res.status(200).json({
+          // See: https://github.com/responsible-ai-collaborative/nlp-lambdas/issues/9
+          incidents: JSON.parse(
+            lambdaResponse.data.body.msg.replace(/\(/g, '[').replace(/\)/g, ']')
+          ).map((arr) => ({ incident_id: arr[1], similarity: arr[0] })),
+        })
+      )
+      .catch((error) => {
+        console.error(error);
+      });
+    tries++;
+  }
 }

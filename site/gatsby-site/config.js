@@ -3,7 +3,6 @@ const config = {
     pathPrefix: '/',
     siteUrl: 'https://incidentdatabase.ai',
     gaTrackingId: 'UA-23867277-2',
-    trailingSlash: false,
   },
   realm: {
     review_db: {
@@ -143,9 +142,12 @@ const config = {
     translationsConnectionString: process.env.MONGODB_TRANSLATIONS_CONNECTION_STRING,
   },
   google: {
-    translateApikey: process.env.GOOGLE_TRANSLATE_API_KEY,
-    availableLanguages: process.env.GATSBY_AVAILABLE_LANGUAGES || 'en',
     mapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+  },
+  i18n: {
+    availableLanguages: String(process.env.GATSBY_AVAILABLE_LANGUAGES).split(',') || ['en'],
+    translateApikey: process.env.GOOGLE_TRANSLATE_API_KEY,
+    defaultLanguage: 'en',
   },
 };
 

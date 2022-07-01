@@ -18,22 +18,16 @@ const relatedIncidentIdsQuery = gql`
   }
 `;
 
-const semanticallyRelated = async (text, max_tries) => {
+const semanticallyRelated = async (text) => {
   const url = `/api/semanticallyRelated?text=${text}`;
 
-  let response;
+  let controller = new AbortController();
 
-  let tries = 0;
+  setTimeout(() => controller.abort(), 33000);
+  const response = await fetch(url, {
+    signal: controller.signal,
+  });
 
-  while (tries < (max_tries || 3) && !response?.ok) {
-    let controller = new AbortController();
-
-    setTimeout(() => controller.abort(), 30000);
-    response = await fetch(url, {
-      signal: controller.signal,
-    });
-    tries++;
-  }
   if (!response?.ok) {
     throw new Error('Semantic relation error');
   }
@@ -43,6 +37,8 @@ const semanticallyRelated = async (text, max_tries) => {
 };
 
 const SemanticallyRelatedIncidents = ({ incident, editable }) => {
+  console.log('incident', incident);
+
   const [loading, setLoading] = useState(false);
 
   const [reports, setReports] = useState([]);
@@ -90,7 +86,10 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
         incident.nlp_similar_incidents.length > 0 &&
         initialDisplay.current
       ) {
-        nlp_similar_incidents = incident.nlp_similar_incidents;
+        nlp_similar_incidents = incident.nlp_similar_incidents.map((similarIncident) => ({
+          ...similarIncident,
+          __typename: undefined,
+        }));
       } else {
         try {
           nlpResponse = await semanticallyRelated(plaintext);

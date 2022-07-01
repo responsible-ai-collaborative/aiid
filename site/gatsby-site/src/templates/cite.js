@@ -38,9 +38,9 @@ const IncidnetsReportsTitle = styled.div`
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
-    const dateA = new Date(a.node.date_published);
+    const dateA = new Date(a.date_published);
 
-    const dateB = new Date(b.node.date_published);
+    const dateB = new Date(b.date_published);
 
     if (isEqual(dateA, dateB)) {
       return 0;
@@ -56,7 +56,14 @@ const sortIncidentsByDatePublished = (incidentReports) => {
 
 function CitePage(props) {
   const {
-    pageContext: { incident, incidentReports, taxonomies, nextIncident, prevIncident },
+    pageContext: {
+      incident,
+      incidentReports,
+      nlpSimilarIncidents,
+      taxonomies,
+      nextIncident,
+      prevIncident,
+    },
   } = props;
 
   console.log(incident);
@@ -79,7 +86,7 @@ function CitePage(props) {
 
   const flagReportModal = useModal();
 
-  const timeline = sortedReports.map(({ node: { date_published, title, mongodb_id } }) => ({
+  const timeline = sortedReports.map(({ date_published, title, mongodb_id }) => ({
     date_published,
     title,
     mongodb_id,
@@ -242,11 +249,11 @@ function CitePage(props) {
           </Col>
         </Row>
 
-        {sortedReports.map((hit) => (
-          <Row className="mb-4" key={hit.node.id}>
+        {sortedReports.map((report) => (
+          <Row className="mb-4" key={report.report_number}>
             <Col>
               <IncidentCard
-                item={hit.node}
+                item={report}
                 authorsModal={authorsModal}
                 submittersModal={submittersModal}
                 flagReportModal={flagReportModal}
@@ -255,7 +262,7 @@ function CitePage(props) {
           </Row>
         ))}
 
-        <SimilarIncidents incident={incident} />
+        <SimilarIncidents nlpSimilarIncidents={nlpSimilarIncidents} />
 
         <Pagination className="justify-content-between">
           <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>

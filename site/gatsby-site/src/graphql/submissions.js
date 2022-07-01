@@ -34,6 +34,8 @@ export const FIND_SUBMISSIONS = gql`
         similarity
         incident_id
       }
+      editor_similar_incidents
+      editor_dissimilar_incidents
     }
   }
 `;
@@ -64,6 +66,8 @@ export const FIND_SUBMISSION = gql`
         similarity
         incident_id
       }
+      editor_similar_incidents
+      editor_dissimilar_incidents
     }
   }
 `;
@@ -94,6 +98,8 @@ export const UPDATE_SUBMISSION = gql`
         similarity
         incident_id
       }
+      editor_similar_incidents
+      editor_dissimilar_incidents
     }
   }
 `;
