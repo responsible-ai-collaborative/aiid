@@ -25,20 +25,26 @@ export default async function handler(req, res) {
 
   let tries = 0;
 
-  while (tries < (max_retries || 3) && response?.status !== 200) {
-    axios
-      .get(url)
-      .then((lambdaResponse) =>
+  let error = null;
+
+  while (tries < (max_retries || 3) && (response?.status !== 200 || error)) {
+    try {
+      response = await axios.get(url);
+      if (response?.status === 200) {
         res.status(200).json({
           // See: https://github.com/responsible-ai-collaborative/nlp-lambdas/issues/9
-          incidents: JSON.parse(
-            lambdaResponse.data.body.msg.replace(/\(/g, '[').replace(/\)/g, ']')
-          ).map((arr) => ({ incident_id: arr[1], similarity: arr[0] })),
-        })
-      )
-      .catch((error) => {
-        console.error(error);
-      });
+          incidents: JSON.parse(response.data.body.msg.replace(/\(/g, '[').replace(/\)/g, ']')).map(
+            (arr) => ({ incident_id: arr[1], similarity: arr[0] })
+          ),
+        });
+        return;
+      }
+      error = null;
+    } catch (e) {
+      error = e;
+      console.error(e);
+    }
     tries++;
   }
+  res.status(500).json({ error: error || response.data });
 }
