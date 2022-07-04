@@ -26,7 +26,7 @@ const formatCollection = async (collection) => {
   while (await cursor.hasNext()) {
     const item = await cursor.next();
 
-    const plain_text = stripMarkdown(item.text);
+    const plain_text = await stripMarkdown(item.text);
 
     const update = {
       updateOne: {
