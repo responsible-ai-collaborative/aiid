@@ -19,5 +19,25 @@
   "Show Details on Incident #{{id}}": "Ver detalles del Incidente #{{id}}",
   "Filter by Incident ID #{{id}}": "Filtrar por ID de Incidente #{{id}}",
   "Flag Report": "Reportar",
-  "Filters": "Filtros"
+  "Filters": "Filtros",
+  "Suggested citation format": "Formato de cita sugerido",
+  "Incident Stats": "Estadísticas de incidentes",
+  "Reports Timeline": "Cronología de Reportes",
+  "Tools": "Herramientas",
+  "New Report": "Nuevo Reporte",
+  "All Incidents": "Todos los Incidentes",
+  "Discover": "Descubrir",
+  "Edit Incident": "Editar Incidente",
+  "BibTex Citation": "Cita BibText",
+  "Taxonomy Details": "Detalles de la Taxonomía",
+  "Classifications will update in production within 24 hours.": "Las clasificaciones se actualizarán en producción dentro de 24 horas.",
+  "Report Count": "Cantidad de reportes",
+  "Editors": "Editores",
+  "{{namespace}} Taxonomy Classifications": "Clasificaciones de la Taxonomía {{namespace}}",
+  "No classifications for this taxonomy.": "No hay clasificaciones para esta taxonomía.",
+  "Edit": "Editar",
+  "Incidents Reports": "Reportes del Incidente",
+  "Previous Incident": "Incidente Anterior",
+  "Next Incident": "Siguiente Incidente"
+
 }
