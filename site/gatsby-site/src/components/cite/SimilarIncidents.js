@@ -179,9 +179,11 @@ const SimilarIncidents = ({
 
   return (
     <SimilarIncidentsList>
-      {editor_similar_incidents && (
+      {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
+        <h2 id="similar-incidents">Similar Incidents</h2>
+      )}
+      {editor_similar_incidents.length > 0 && (
         <>
-          <h2 id="similar-incidents">Similar Incidents</h2>
           <Subtitle>Selected by our editors</Subtitle>
           {editor_similar_incidents.map((similarIncident) => (
             <SimilarIncidentCard

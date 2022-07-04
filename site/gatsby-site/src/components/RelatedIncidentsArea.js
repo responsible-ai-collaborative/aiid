@@ -14,7 +14,7 @@ const ListContainer = styled(Card)`
 const ReportRow = styled(ListGroup.Item)`
   display: flex !important;
   align-items: center;
-  a:first-child {
+  > *:first-child {
     flex-shrink: 1;
     margin-right: auto;
   }
@@ -53,7 +53,15 @@ const ReportToolbar = styled(ButtonToolbar)`
   align-items: center;
 `;
 
-const RelatedIncidentsArea = ({ columnKey, header, reports, loading, editable, error }) => {
+const RelatedIncidentsArea = ({
+  columnKey,
+  header,
+  reports,
+  loading,
+  editable,
+  editId = true,
+  error,
+}) => {
   if (!reports && !loading) {
     return null;
   }
@@ -70,9 +78,16 @@ const RelatedIncidentsArea = ({ columnKey, header, reports, loading, editable, e
         {reports &&
           reports.map((val) => (
             <ReportRow key={val.url} data-cy="result">
-              <a href={val.url} target="_blank" rel="noreferrer">
-                {val.title}
-              </a>
+              <span>
+                {val?.incident_id && (
+                  <>
+                    <a href={'/cite/' + val.incident_id}>#{val.incident_id}</a> –{' '}
+                  </>
+                )}
+                <a href={val.url} target="_blank" rel="noreferrer">
+                  {val.title}
+                </a>
+              </span>
               <ReportToolbar>
                 {editable && (
                   <>
@@ -154,7 +169,7 @@ const RelatedIncidentsArea = ({ columnKey, header, reports, loading, editable, e
                     </SimilarSelector>
                   </>
                 )}
-                {val.incident_id && editable && (
+                {val.incident_id && editable && editId && (
                   <Button
                     className="set-id"
                     onClick={() => setFieldValue && setFieldValue('incident_id', val.incident_id)}

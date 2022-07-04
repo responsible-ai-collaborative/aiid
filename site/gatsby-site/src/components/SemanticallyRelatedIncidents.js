@@ -37,7 +37,7 @@ const semanticallyRelated = async (text) => {
   return json;
 };
 
-const SemanticallyRelatedIncidents = ({ incident, editable }) => {
+const SemanticallyRelatedIncidents = ({ incident, editable, editId = true }) => {
   const [loading, setLoading] = useState(false);
 
   const [reports, setReports] = useState([]);
@@ -69,7 +69,10 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
 
       const minLength = 256;
 
-      if (plaintext.replace(/\s/, '').length < minLength) {
+      if (
+        plaintext.replace(/\s/, '')?.length < minLength &&
+        !(initialDisplay && incident?.nlp_similar_incidents?.length > 0)
+      ) {
         fail(
           `Reports must have at least ${minLength} non-space characters to compute semantic similarity.`
         );
@@ -145,17 +148,20 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
   }, [incident.text]);
 
   return (
-    incident.text.length > 0 && (
-      <RelatedIncidentsArea
-        key="byText"
-        columnKey="byText"
-        loading={loading}
-        reports={reports}
-        header="Most Semantically Similar Incident Reports (Experimental)"
-        editable={editable}
-        error={error}
-      />
-    )
+    <div id="similar-incidents">
+      {(incident?.text?.length > 0 || incident?.reports?.length > 0) && (
+        <RelatedIncidentsArea
+          key="byText"
+          columnKey="byText"
+          loading={loading}
+          reports={reports}
+          header="Most Semantically Similar Incident Reports (Experimental)"
+          editable={editable}
+          editId={editId}
+          error={error}
+        />
+      )}
+    </div>
   );
 };
 
