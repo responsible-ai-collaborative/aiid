@@ -43,7 +43,7 @@ function IncidentForm() {
       query: relatedIncidentIdsQuery,
       variables: {
         query: {
-          incident_id_in: values.editor_similar_incidents.concat(
+          incident_id_in: (values?.editor_similar_incidents || []).concat(
             values.editor_dissimilar_incidents
           ),
         },
