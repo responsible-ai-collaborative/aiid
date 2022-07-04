@@ -206,7 +206,8 @@ const plugins = [
     options: {
       locales: `./i18n/locales`,
       i18nextOptions: {
-        ns: ['translation'],
+        ns: ['translation', 'actions'],
+        debug: true,
       },
     },
   },
