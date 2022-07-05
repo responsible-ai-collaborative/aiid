@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Card, Button } from 'react-bootstrap';
 import { formatISO, format, parse } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFlag, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { faFlag, faQuestionCircle, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Image } from '../../utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { useMutation } from '@apollo/client/react/hooks';
@@ -100,7 +100,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
   const addToast = useToastContext();
 
   return (
-    <Card>
+    <Card data-cy="similar-incident-card">
       <Card.Body>
         <a href={'/cite/' + incident.incident_id}>
           <IncidentCardImage
@@ -162,6 +162,12 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
   );
 };
 
+const EditIcon = styled.a`
+  font-size: large !important;
+  vertical-align: middle;
+  margin-left: 1ch;
+`;
+
 const SimilarIncidents = ({
   parentIncident,
   nlp_similar_incidents,
@@ -169,6 +175,8 @@ const SimilarIncidents = ({
   editor_dissimilar_incidents,
   flagged_dissimilar_incidents,
 }) => {
+  const { isRole } = useUserContext();
+
   const nlp_only_incidents = nlp_similar_incidents.filter(
     (similarIncident) =>
       !(
@@ -180,7 +188,17 @@ const SimilarIncidents = ({
   return (
     <SimilarIncidentsList>
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
-        <h2 id="similar-incidents">Similar Incidents</h2>
+        <h2 id="similar-incidents">
+          Similar Incidents
+          {isRole('incident_editor') && (
+            <EditIcon
+              href={`/incidents/edit?incident_id=${parentIncident.incident_id}#similar-incidents`}
+              title="Change the displayed similar incidents"
+            >
+              <FontAwesomeIcon icon={faEdit} />
+            </EditIcon>
+          )}
+        </h2>
       )}
       {editor_similar_incidents.length > 0 && (
         <>

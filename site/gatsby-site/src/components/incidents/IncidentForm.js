@@ -63,6 +63,7 @@ function IncidentForm() {
 
   useEffect(() => {
     updateEditorSimilarIncidents();
+    document.querySelector(window.location.hash).scrollIntoView();
   }, []);
 
   return (
@@ -110,50 +111,52 @@ function IncidentForm() {
         <TagsControl name="editors" />
       </Form.Group>
 
-      <RelatedIncidentsArea
-        columnKey={'editor_similar_incidents'}
-        header={'Manually-selected similar and dissimilar incidents'}
-        reports={editorSimilarIncidentReports}
-        loading={false}
-        editable={true}
-        editId={false}
-        error={false}
-      />
-
-      <SemanticallyRelatedIncidents incident={values} editable={true} editId={false} />
-
-      <Form.Group className="mt-3">
-        <Form.Label>Similar Incident Id</Form.Label>
-        <Form.Control
-          type="number"
-          onChange={async (event) => {
-            const incident_id = Number(event.target.value);
-
-            const dbResponse = await client.query({
-              query: relatedIncidentIdsQuery,
-              variables: {
-                query: {
-                  incident_id_in: [incident_id],
-                },
-              },
-            });
-
-            setSimilarReportsById(
-              dbResponse.data.incidents[0].reports.map((report) => ({ incident_id, ...report }))
-            );
-          }}
+      <div id="similar-incidents">
+        <RelatedIncidentsArea
+          columnKey={'editor_similar_incidents'}
+          header={'Manually-selected similar and dissimilar incidents'}
+          reports={editorSimilarIncidentReports}
+          loading={false}
+          editable={true}
+          editId={false}
+          error={false}
         />
-      </Form.Group>
 
-      <RelatedIncidentsArea
-        columnKey={'byId'}
-        header={'Reports'}
-        reports={similarReportsById}
-        loading={false}
-        editable={true}
-        editId={false}
-        error={false}
-      />
+        <SemanticallyRelatedIncidents incident={values} editable={true} editId={false} />
+
+        <Form.Group className="mt-3">
+          <Form.Label>Similar Incident Id</Form.Label>
+          <Form.Control
+            type="number"
+            onChange={async (event) => {
+              const incident_id = Number(event.target.value);
+
+              const dbResponse = await client.query({
+                query: relatedIncidentIdsQuery,
+                variables: {
+                  query: {
+                    incident_id_in: [incident_id],
+                  },
+                },
+              });
+
+              setSimilarReportsById(
+                dbResponse.data.incidents[0].reports.map((report) => ({ incident_id, ...report }))
+              );
+            }}
+          />
+        </Form.Group>
+
+        <RelatedIncidentsArea
+          columnKey={'byId'}
+          header={'Reports'}
+          reports={similarReportsById}
+          loading={false}
+          editable={true}
+          editId={false}
+          error={false}
+        />
+      </div>
     </FormikForm>
   );
 }

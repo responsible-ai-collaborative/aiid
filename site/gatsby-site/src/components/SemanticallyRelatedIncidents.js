@@ -148,7 +148,7 @@ const SemanticallyRelatedIncidents = ({ incident, editable, editId = true }) => 
   }, [incident.text]);
 
   return (
-    <div id="similar-incidents">
+    <div>
       {(incident?.text?.length > 0 || incident?.reports?.length > 0) && (
         <RelatedIncidentsArea
           key="byText"
