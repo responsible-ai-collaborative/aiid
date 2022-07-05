@@ -38,6 +38,7 @@
   "Edit": "Editar",
   "Incidents Reports": "Reportes del Incidente",
   "Previous Incident": "Incidente Anterior",
-  "Next Incident": "Siguiente Incidente"
-
+  "Next Incident": "Siguiente Incidente",
+  "Incident {{id}}": "Incidente {{id}}",
+  "Citation record for Incident {{id}}": "Registro de citas para el Incidente {{id}}"
 }

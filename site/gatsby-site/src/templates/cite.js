@@ -15,7 +15,7 @@ import IncidentStatsCard from 'components/cite/IncidentStatsCard';
 import IncidentCard from 'components/cite/IncidentCard';
 import Taxonomy from 'components/taxa/Taxonomy';
 import { useUserContext } from 'contexts/userContext';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 const CardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -61,11 +61,13 @@ function CitePage(props) {
 
   const { isRole } = useUserContext();
 
+  const { t } = useTranslation();
+
   // meta tags
 
-  const metaTitle = 'Incident ' + incident.incident_id;
+  const metaTitle = t('Incident {{id}}', { id: incident.incident_id });
 
-  const metaDescription = 'Citation record for Incident ' + incident.incident_id;
+  const metaDescription = t('Citation record for Incident {{id}}', { id: incident.incident_id });
 
   const canonicalUrl = getCanonicalUrl(incident.incident_id);
 
