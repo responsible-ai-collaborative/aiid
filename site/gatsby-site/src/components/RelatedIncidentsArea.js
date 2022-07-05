@@ -84,7 +84,7 @@ const RelatedIncidentsArea = ({
                     <a href={'/cite/' + val.incident_id}>#{val.incident_id}</a> –{' '}
                   </>
                 )}
-                <a href={val.url} target="_blank" rel="noreferrer">
+                <a href={val.url} data-cy="title" target="_blank" rel="noreferrer">
                   {val.title}
                 </a>
               </span>
