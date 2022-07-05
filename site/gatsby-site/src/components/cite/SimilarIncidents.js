@@ -102,7 +102,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
   return (
     <Card data-cy="similar-incident-card">
       <Card.Body>
-        <a href={'/cite/' + incident.incident_id}>
+        <a href={'/cite/' + incident.incident_id} data-cy="cite-link">
           <IncidentCardImage
             publicID={
               incident.reports[0].cloudinary_id || `legacy/${md5(incident.reports[0].image_url)}`
@@ -129,6 +129,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
             <FlagButton
               variant="link"
               className={isFlagged ? ' flagged' : ''}
+              data-cy="flag-similar-incident"
               onClick={async () => {
                 await updateIncident({
                   variables: {
@@ -218,7 +219,7 @@ const SimilarIncidents = ({
           <Subtitle>
             By textual similarity
             {blogPostUrl && (
-              <a href={blogPostUrl}>
+              <a href={blogPostUrl} data-cy="edit-similar-incidents">
                 <FontAwesomeIcon icon={faQuestionCircle} />
               </a>
             )}

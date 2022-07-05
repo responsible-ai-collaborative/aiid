@@ -8,7 +8,7 @@ import RelatedIncidentsArea from '../RelatedIncidentsArea';
 import { gql, useApolloClient } from '@apollo/client';
 
 const relatedIncidentIdsQuery = gql`
-  query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
+  query IncidentWithReports($query: IncidentQueryInput) {
     incidents(query: $query) {
       incident_id
       reports {
@@ -63,7 +63,7 @@ function IncidentForm() {
 
   useEffect(() => {
     updateEditorSimilarIncidents();
-    document.querySelector(window.location.hash).scrollIntoView();
+    window.location.hash && document.querySelector(window.location.hash).scrollIntoView();
   }, []);
 
   return (
@@ -128,6 +128,7 @@ function IncidentForm() {
           <Form.Label>Similar Incident Id</Form.Label>
           <Form.Control
             type="number"
+            data-cy="similar-id-input"
             onChange={async (event) => {
               const incident_id = Number(event.target.value);
 

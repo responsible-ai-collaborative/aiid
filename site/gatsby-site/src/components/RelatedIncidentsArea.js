@@ -92,9 +92,10 @@ const RelatedIncidentsArea = ({
                 {editable && (
                   <>
                     <label htmlFor="similar-selector">Related: </label>
-                    <SimilarSelector id="similar-selector">
+                    <SimilarSelector data-cy="similar-selector" id="similar-selector">
                       {[
                         {
+                          identifier: 'dissimilar',
                           variant: 'danger',
                           icon: 'x',
                           show:
@@ -114,6 +115,7 @@ const RelatedIncidentsArea = ({
                           },
                         },
                         {
+                          identifier: 'unspecified',
                           variant: 'secondary',
                           icon: '?',
                           show:
@@ -137,6 +139,7 @@ const RelatedIncidentsArea = ({
                           },
                         },
                         {
+                          identifier: 'similar',
                           variant: 'success',
                           icon: '✓',
                           show:
@@ -162,6 +165,7 @@ const RelatedIncidentsArea = ({
                           disabled={button.show}
                           onClick={button.onClick}
                           key={button.icon}
+                          data-cy={button.identifier}
                         >
                           {button.icon}
                         </SimilarityButton>
@@ -171,6 +175,7 @@ const RelatedIncidentsArea = ({
                 )}
                 {val.incident_id && editable && editId && (
                   <Button
+                    data-cy="set-id"
                     className="set-id"
                     onClick={() => setFieldValue && setFieldValue('incident_id', val.incident_id)}
                   >
