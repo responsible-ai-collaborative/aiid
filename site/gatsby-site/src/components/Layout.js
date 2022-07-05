@@ -74,7 +74,7 @@ const RightSideBarWidth = styled.div`
   }
 `;
 
-const Layout = ({ children, collapse, className, location }) => (
+const Layout = ({ children, collapse, className, location, includeRightSidebar = true }) => (
   <>
     <Wrapper>
       <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
@@ -89,9 +89,11 @@ const Layout = ({ children, collapse, className, location }) => (
       <Content id="content" className="mb-5">
         <MaxWidth className={className}>{children}</MaxWidth>
       </Content>
-      <RightSideBarWidth className={'hiddenMobile'}>
-        <RightSidebar location={location} />
-      </RightSideBarWidth>
+      {includeRightSidebar && (
+        <RightSideBarWidth className={'hiddenMobile'}>
+          <RightSidebar location={location} />
+        </RightSideBarWidth>
+      )}
     </Wrapper>
     <Footer />
   </>

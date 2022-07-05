@@ -15,7 +15,6 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 const blogPostUrl = null;
 
 const SimilarIncidentsList = styled.div`
-  margin-top: 2em;
   margin-bottom: 2em;
 
   .card {
