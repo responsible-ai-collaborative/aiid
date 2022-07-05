@@ -75,13 +75,15 @@ describe('Incidents App', () => {
 
     cy.get(`[name="title"]`).clear().type('Test title');
 
-    cy.get('[data-cy="similar-id-input"]').type('40');
-
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'IncidentWithReports',
+      (req) =>
+        req.body.operationName == 'IncidentWithReports' &&
+        req.body.variables.query.incident_id_in[0] === 40,
       'IncidentWithReports'
     );
+
+    cy.get('[data-cy="similar-id-input"]').type('40');
 
     cy.wait('@IncidentWithReports');
 
