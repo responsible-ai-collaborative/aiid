@@ -119,26 +119,6 @@ const searchColumns = {
     isSet: (incident) => incident.url,
     getQueryVariables: (incident) => ({ url_in: [incident.url] }),
   },
-
-  byText: {
-    header: () => <>Most Semantically Similar Incident Reports (Experimental)</>,
-    query: relatedIncidentsQuery,
-    getReports: async (result) =>
-      result.data.incidents.reduce(
-        (reports, incident) =>
-          reports.concat(
-            incident.reports.map((report) => ({
-              incident_id: incident.incident_id,
-              ...report,
-            }))
-          ),
-        []
-      ),
-    isSet: (incident) => incident.text,
-    getQueryVariables: (incident, relatedIncidents) => ({
-      incident_id_in: relatedIncidents ? relatedIncidents.map((i) => i.incident_id) : [],
-    }),
-  },
 };
 
 const RelatedIncidents = ({ incident, editable = true, editId = true, className = '' }) => {
