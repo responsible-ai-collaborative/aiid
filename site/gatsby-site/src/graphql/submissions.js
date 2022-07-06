@@ -30,6 +30,7 @@ export const FIND_SUBMISSIONS = gql`
       url
       editor_notes
       tags
+      plain_text
     }
   }
 `;
