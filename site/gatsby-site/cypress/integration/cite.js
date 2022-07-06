@@ -241,7 +241,7 @@ describe('Cite pages', () => {
 
     cy.visit('/cite/9');
 
-    cy.get('[data-cy="edit-similar-incidents"]').should('not.exist');
+    cy.get('[data-cy="edit-similar-incidents"]').should('exist');
   });
 
   it('Should flag an incident as not related', () => {

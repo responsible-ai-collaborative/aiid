@@ -205,6 +205,7 @@ const SimilarIncidents = ({
               <EditIcon
                 href={`/incidents/edit?incident_id=${parentIncident.incident_id}#similar-incidents`}
                 title="Change the displayed similar incidents"
+                data-cy="edit-similar-incidents"
               >
                 <FontAwesomeIcon icon={faEdit} />
               </EditIcon>
@@ -226,7 +227,7 @@ const SimilarIncidents = ({
             By textual similarity
             <ActionIcons>
               {blogPostUrl && (
-                <a href={blogPostUrl} data-cy="edit-similar-incidents">
+                <a href={blogPostUrl} data-cy="about-similar-incidents">
                   <FontAwesomeIcon icon={faQuestionCircle} />
                 </a>
               )}
@@ -234,6 +235,7 @@ const SimilarIncidents = ({
                 <EditIcon
                   href={`/incidents/edit?incident_id=${parentIncident.incident_id}#similar-incidents`}
                   title="Change the displayed similar incidents"
+                  data-cy="edit-similar-incidents"
                 >
                   <FontAwesomeIcon icon={faEdit} />
                 </EditIcon>
