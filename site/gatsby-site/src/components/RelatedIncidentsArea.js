@@ -31,13 +31,14 @@ const ReportRow = styled(ListGroup.Item)`
   }
 `;
 
-const SimilarSelector = styled(SimilaritySelector)`
-  margin-left: 1ch;
-`;
-
 const ReportToolbar = styled(ButtonToolbar)`
   flex-shrink: 0;
   align-items: center;
+`;
+
+const SelectorLabel = styled.label`
+  margin-left: 1ch;
+  margin-right: 1ch;
 `;
 
 const RelatedIncidentsArea = ({
@@ -78,8 +79,8 @@ const RelatedIncidentsArea = ({
               <ReportToolbar>
                 {editable && (
                   <>
-                    <label htmlFor="similar-selector">Related: </label>
-                    <SimilarSelector incident_id={val.incident_id} />
+                    <SelectorLabel htmlFor="similar-selector">Related:</SelectorLabel>
+                    <SimilaritySelector incident_id={val.incident_id} />
                   </>
                 )}
                 {val.incident_id && editable && editId && (
