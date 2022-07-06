@@ -1,6 +1,6 @@
 # Artificial Intelligence Incident Database (AIID)
 
-[![Gitter](https://badges.gitter.im/incidentdatabase/community.svg)](https://gitter.im/incidentdatabase/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Netlify Status](https://api.netlify.com/api/v1/badges/9eb0dda2-916c-46f9-a0bd-9ddab3879c6e/deploy-status)](https://app.netlify.com/sites/aiid/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/9eb0dda2-916c-46f9-a0bd-9ddab3879c6e/deploy-status)](https://app.netlify.com/sites/aiid/deploys)
 
 Information about the goals and organization of the AI Incident Database can be found on the [production website](https://incidentdatabase.ai/). This page concentrates on onboarding for the following types of contributions to the database,
 
@@ -9,9 +9,9 @@ Information about the goals and organization of the AI Incident Database can be 
 3. Contribute a **new taxonomy** to the AI Incident Database. Details on taxonomies are available in the arXiv paper.
 4. Contribute a **new application** facilitating a new use case for the database.
 
-In most cases unless you are contributing quick fixes, we recommend opening an issue before contributing in any of these areas.
+## Project Communications
 
-[You can see the live site here](https://incidentdatabase.ai/)
+In most cases unless you are contributing quick fixes, we recommend opening an issue before contributing to the project. You can also [Contact](https://incidentdatabase.ai/contact) us for an invitation to the project's Slack installation. Lurking is encouraged. Finally, for major announcements you can join the [announcements-only mailing list](https://groups.google.com/g/incidentsdb).
 
 ## Contributing Changes
 
