@@ -12,7 +12,7 @@ import md5 from 'md5';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 
-const blogPostUrl = 'http://sadlkjf';
+const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
 const SimilarIncidentsList = styled.div`
   margin-top: 1rem;
