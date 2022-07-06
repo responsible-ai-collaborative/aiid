@@ -350,7 +350,7 @@ describe('Submitted reports', () => {
     cy.get('[data-cy="submissions"]').children().should('have.length', 0);
   });
 
-  it.only('Edits a submission', () => {
+  maybeIt('Edits a submission', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
