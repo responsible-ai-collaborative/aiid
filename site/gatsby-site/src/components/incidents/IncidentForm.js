@@ -141,9 +141,13 @@ function IncidentForm() {
                 },
               });
 
-              setSimilarReportsById(
-                dbResponse.data.incidents[0].reports.map((report) => ({ incident_id, ...report }))
-              );
+              if (dbResponse?.data?.incidents.length > 0) {
+                setSimilarReportsById(
+                  dbResponse.data.incidents[0].reports.map((report) => ({ incident_id, ...report }))
+                );
+              } else {
+                setSimilarReportsById([]);
+              }
             }}
           />
         </Form.Group>
