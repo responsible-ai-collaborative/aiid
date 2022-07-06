@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Sidebar from './sidebar';
-import RightSidebar from './rightSidebar';
+import Outline from './outline';
 import config from '../../config.js';
 import Footer from './layout/Footer';
 
@@ -65,38 +65,54 @@ const LeftSideBarWidth = styled.div`
   ${({ collapse }) => collapse && `width: 0;`}
 `;
 
-const RightSideBarWidth = styled.div`
-  width: 224px;
+const RightSideBarWidth = styled.div.attrs((props) => props)`
+  width: ${(props) => props.width};
   margin-left: -24px;
 
-  @media (max-width: 965px) {
+  @media (max-width: ${(props) => props.breakPoint}) {
     display: none;
   }
 `;
 
-const Layout = ({ children, collapse, className, location, includeRightSidebar = true }) => (
-  <>
-    <Wrapper>
-      <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
-        <Sidebar collapse={collapse} />
-      </LeftSideBarWidth>
-      {config.sidebar.title && (
-        <div
-          className={'sidebarTitle sideBarShow'}
-          dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
-        />
-      )}
-      <Content id="content" className="mb-5">
-        <MaxWidth className={className}>{children}</MaxWidth>
-      </Content>
-      {includeRightSidebar && (
-        <RightSideBarWidth className={'hiddenMobile'}>
-          <RightSidebar location={location} />
+const Layout = ({
+  children,
+  collapse,
+  className,
+  location,
+  RightSidebar = Outline,
+  rightSidebarProps,
+  rightSidebarWidth = '224px',
+  rightSidebarBreakPoint = '965px',
+}) => {
+  if (RightSidebar == Outline) {
+    rightSidebarProps = { location };
+  }
+  return (
+    <>
+      <Wrapper>
+        <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
+          <Sidebar collapse={collapse} />
+        </LeftSideBarWidth>
+        {config.sidebar.title && (
+          <div
+            className={'sidebarTitle sideBarShow'}
+            dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
+          />
+        )}
+        <Content id="content" className="mb-5">
+          <MaxWidth className={className}>{children}</MaxWidth>
+        </Content>
+        <RightSideBarWidth
+          className={'hiddenMobile'}
+          width={rightSidebarWidth}
+          breakPoint={rightSidebarBreakPoint}
+        >
+          <RightSidebar {...rightSidebarProps} />
         </RightSideBarWidth>
-      )}
-    </Wrapper>
-    <Footer />
-  </>
-);
+      </Wrapper>
+      <Footer />
+    </>
+  );
+};
 
 export default Layout;

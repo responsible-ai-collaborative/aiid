@@ -21,6 +21,9 @@ const SidebarLayout = ({ location }) => (
       }
     `}
     render={({ allMdx }) => {
+      console.log('allMdx', allMdx);
+      console.log('location', location);
+
       let finalNavItems;
 
       if (allMdx.edges !== undefined && allMdx.edges.length > 0) {
@@ -29,8 +32,9 @@ const SidebarLayout = ({ location }) => (
 
           if (item !== undefined) {
             if (
-              item.node.fields.slug === location.pathname ||
-              config.gatsby.pathPrefix + item.node.fields.slug === location.pathname
+              item.node.fields.slug.replace(/\/$/, '') === location.pathname.replace(/\/$/, '') ||
+              config.gatsby.pathPrefix + item.node.fields.slug.replace(/\/$/, '') ===
+                location.pathname.replace(/\/$/, '')
             ) {
               if (item.node.tableOfContents.items) {
                 innerItems = item.node.tableOfContents.items.map((innerItem, index) => {
