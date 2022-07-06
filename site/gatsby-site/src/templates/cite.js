@@ -56,7 +56,7 @@ const sortIncidentsByDatePublished = (incidentReports) => {
 
 const SidebarSimilarIncidents = styled.div`
   margin-top: 3.1rem;
-  padding-right: 1rem;
+  padding-right: 1.25rem;
   h3 {
     hyphens: auto;
   }
@@ -136,7 +136,7 @@ function CitePage(props) {
     <Layout
       RightSidebar={SimilarIncidentsSidebar}
       rightSidebarProps={similarIncidentProps}
-      rightSidebarWidth={'22rem'}
+      rightSidebarWidth={'23em'}
       rightSidebarBreakPoint={breakPoint}
       {...props}
     >
