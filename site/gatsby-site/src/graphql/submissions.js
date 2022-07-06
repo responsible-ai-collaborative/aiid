@@ -36,6 +36,7 @@ export const FIND_SUBMISSIONS = gql`
       }
       editor_similar_incidents
       editor_dissimilar_incidents
+      plain_text
     }
   }
 `;
