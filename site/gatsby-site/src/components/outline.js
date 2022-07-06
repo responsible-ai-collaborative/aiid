@@ -21,9 +21,6 @@ const SidebarLayout = ({ location }) => (
       }
     `}
     render={({ allMdx }) => {
-      console.log('allMdx', allMdx);
-      console.log('location', location);
-
       let finalNavItems;
 
       if (allMdx.edges !== undefined && allMdx.edges.length > 0) {
