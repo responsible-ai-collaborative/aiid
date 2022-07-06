@@ -247,7 +247,7 @@ describe('Cite pages', () => {
   it('Should flag an incident as not related', () => {
     cy.visit('/cite/9');
 
-    cy.get('[data-cy="flag-similar-incident"]').click();
+    cy.get('[data-cy="flag-similar-incident"]').first().click();
 
     cy.conditionalIntercept(
       '**/graphql',
