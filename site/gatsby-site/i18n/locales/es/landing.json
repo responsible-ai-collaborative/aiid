@@ -7,7 +7,7 @@
   "Search reports": "Buscar reportes",
   "Latest Incident Report": "Último Reporte",
   "Quick Add New Report URL": "Enviar URL de Reporte Rápido",
-  "quickaddDescription": "Los enlaces enviados se agregan a una <1>cola de revisión</1> para que se resuelvan en un registro de incidente nuevo o existente. Los incidentes enviados con <3>detalles completos</3> se procesan antes que las URL que no poseen los detalles completos.",
+  "quickaddDescription": "Los enlaces enviados se agregan a una <2>cola de revisión </2>para que se resuelvan en un registro de incidente nuevo o existente. Los incidentes enviados con <4> detalles completos </4> se procesan antes que las URL que no poseen los detalles completos.",
   "About the Database": "Acerca de la Base de Datos",
   "Latest Blog Post": "Último Post del Blog",
   "aboutLine1": "La base de datos de incidentes de IA está dedicada a indexar el historial colectivo de daños o casi daños realizados en el mundo real por el despliegue de sistemas de inteligencia artificial. Al igual que bases de datos similares en aviación y seguridad informática, la base de datos de incidentes de IA tiene como objetivo aprender de la experiencia para que podamos prevenir o mitigar los malos resultados.",
