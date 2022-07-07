@@ -1,10 +1,11 @@
 ---
-title: Using AI to Connect AI Incidents
-metaTitle: Using AI to Connect AI Incidents
+title: 'Using AI to Connect AI Incidents'
+metaTitle: 'Using AI to Connect AI Incidents'
 metaDescription: ''
-date: 2022-06-29
-image: ../src/images/nlp-lambdas-aws-architecture.png
-author: Nicholas Broce, Nicholas Olson, and Jason Scott-Hakanson.
+date: '2022-06-29'
+image: ../../src/images/nlp-lambdas-aws-architecture.png
+author: 'Nicholas Broce, Nicholas Olson, and Jason Scott-Hakanson'
+slug: 'using-ai-to-connect-ai-incidents'
 ---
 
 import { Card } from 'react-bootstrap';
@@ -22,6 +23,8 @@ Over the course of the 2021–22 academic year, four students at OSU were tasked
 The students are proud to showcase the result of their work. The main outcome is an <abbr title="Application Programming Interface">API</abbr> that takes an arbitrary input text, like a news report or press release, and outputs the IDs of the most similar incidents in the database. Each incident in the database is a collection of news reports about the same event, and each of these clusters is given a unique “incident ID”, allowing any text to be compared to a clustered understanding of the reports rather than a text-to-text comparison using keywords.
 
 <!-- TODO: Insert GIF/video showing it working -->
+
+<video src="/semantically-related.mp4" controls />
 
 The API is currently being used by AIID contributors to identify new submissions reporting on incidents already in the database. It is also planned to be fitted for future use-cases, including:
 
@@ -58,7 +61,7 @@ You can find the first integration of this tool available at [the report submiss
 
 To support scalable, asynchronous, and fast similarity correlation, this implementation uses a full stack of AWS tools, all built and deployed using AWS CDK v2. The AWS side of the solution primarily consists of a collection of AWS Lambdas and an AWS API Gateway RESTful HTTP API. This system and build-chain was designed to be highly modular and expandable, so that new Lambda functions or API features could be added at any time. In addition, the Longformer model can be easily swapped out for another pre-trained or fine-tuned model, so that future development can go in whatever direction best supports the growth of the database.
 
-![An architecture diagram showing the following connections: 1. AWS Lambda → 2. Pretrained LongFormer Model (.bin), 1. AWS Lambda → 3. AIID DB State (CLS Means), 4. Amazon ECR → 1. AWS Lambda, 1. AWS Lambda ↔ 5. Amazon EFS, 6. Amazon API Gateway (Public) ↔ 1. AWS Lambda, 6. Amazon API Gateway (Public) → Users, 6. Amazon API Gateway (Public) → AIID Applications. Items 1–3 are inside a box labelled “Lambda Docker Container.” Items 1–5 are inside a box labelled VPC 10.0.0/16. On the border of that box is an icon showing a doorframe labelled “Internet Gateway.” Within that box is another marked by a lock icon labelled “Public Subnet.” Items 1–6 are inside a box labelled “AWS cloud.”](/images/nlp-lambdas-aws-architecture.png)
+![An architecture diagram showing the following connections: 1. AWS Lambda → 2. Pretrained LongFormer Model (.bin), 1. AWS Lambda → 3. AIID DB State (CLS Means), 4. Amazon ECR → 1. AWS Lambda, 1. AWS Lambda ↔ 5. Amazon EFS, 6. Amazon API Gateway (Public) ↔ 1. AWS Lambda, 6. Amazon API Gateway (Public) → Users, 6. Amazon API Gateway (Public) → AIID Applications. Items 1–3 are inside a box labelled “Lambda Docker Container.” Items 1–5 are inside a box labelled VPC 10.0.0/16. On the border of that box is an icon showing a doorframe labelled “Internet Gateway.” Within that box is another marked by a lock icon labelled “Public Subnet.” Items 1–6 are inside a box labeled “AWS cloud.”](/images/nlp-lambdas-aws-architecture.png)
 
 These modular Lambda functions fulfill slices or whole chunks of the different computations that comprise the text-to-similar-incident process. Currently, the system hosts a few Lambda functions, each with a dedicated endpoint on the API:
 
