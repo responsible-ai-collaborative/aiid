@@ -68,6 +68,20 @@ const Subtitle = styled.p`
   }
 `;
 
+const ActionIcons = styled.span`
+  display: inline-flex;
+  align-items: center;
+  > * {
+    margin-left: 0.25ch;
+    margin-right: 0.25ch;
+  }
+`;
+
+const EditIcon = styled.a`
+  vertical-align: middle;
+  margin-top: -0.125em;
+`;
+
 const FlagPrompt = styled.p`
   margin-top: 1em;
   margin-bottom: 1em;
@@ -179,17 +193,6 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
     </Card>
   );
 };
-
-const ActionIcons = styled.span`
-  display: inline-flex;
-  align-items: center;
-`;
-
-const EditIcon = styled.a`
-  font-size: large !important;
-  vertical-align: middle;
-  margin-left: 1ch;
-`;
 
 const SimilarIncidents = ({
   parentIncident,
