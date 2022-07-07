@@ -15,7 +15,6 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
 const SimilarIncidentsList = styled.div`
-  margin-top: 1rem;
   margin-bottom: 2em;
 
   .card {
@@ -36,7 +35,6 @@ const SimilarIncidentsList = styled.div`
   }
   h3 {
     margin-top: 1rem;
-    font-size: large;
   }
 `;
 
@@ -164,15 +162,15 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
   );
 };
 
-const EditIcon = styled.a`
-  vertical-align: middle;
-  margin-top: -0.065em;
-  margin-left: 0.5ch;
-`;
-
 const ActionIcons = styled.span`
   display: inline-flex;
   align-items: center;
+`;
+
+const EditIcon = styled.a`
+  font-size: large !important;
+  vertical-align: middle;
+  margin-left: 1ch;
 `;
 
 const SimilarIncidents = ({
@@ -195,7 +193,17 @@ const SimilarIncidents = ({
   return (
     <SimilarIncidentsList>
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
-        <h2 id="similar-incidents">Similar Incidents</h2>
+        <h2 id="similar-incidents">
+          Similar Incidents
+          {isRole('incident_editor') && (
+            <EditIcon
+              href={`/incidents/edit?incident_id=${parentIncident.incident_id}#similar-incidents`}
+              title="Change the displayed similar incidents"
+            >
+              <FontAwesomeIcon icon={faEdit} />
+            </EditIcon>
+          )}
+        </h2>
       )}
       {editor_similar_incidents.length > 0 && (
         <>
@@ -242,6 +250,7 @@ const SimilarIncidents = ({
               )}
             </ActionIcons>
           </Subtitle>
+          <hr />
           <FlagPrompt className="text-muted">
             Did <strong>our</strong> AI mess up? Flag <FontAwesomeIcon icon={faFlag} /> the
             unrelated incidents

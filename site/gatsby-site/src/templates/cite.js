@@ -54,28 +54,31 @@ const sortIncidentsByDatePublished = (incidentReports) => {
   });
 };
 
-const SidebarSimilarIncidents = styled.div`
-  margin-top: 3.1rem;
-  padding-right: 1.25rem;
-  h3 {
-    hyphens: auto;
+const MainContainer = styled(Container)`
+  margin: 0px !important;
+  margin-left: -33px !important;
+  padding: 0px !important;
+  .col {
+    padding: 0px;
   }
 `;
 
-const BottomSimilarIncidents = styled.div.attrs((props) => props)`
-  display: none;
-  @media (max-width: ${(props) => props.breakPoint}) {
-    display: block;
-  }
+const MainCol = styled(Col)`
+  flex-shrink: 0;
+  flex-grow: 10;
+  padding-left: 0px !important;
+  padding-right: 10px !important;
 `;
 
-const SimilarIncidentsSidebar = (props) => {
-  return (
-    <SidebarSimilarIncidents>
-      <SimilarIncidents {...props} />
-    </SidebarSimilarIncidents>
-  );
-};
+const SimilarIncidentsCol = styled(Col)`
+  flex-shrink: 1;
+  > * {
+    min-width: 298px;
+    position: sticky !important;
+  }
+  padding: 0px !important;
+  margin-right: -33px;
+`;
 
 function CitePage(props) {
   const {
@@ -122,24 +125,8 @@ function CitePage(props) {
     isOccurrence: true,
   });
 
-  const similarIncidentProps = {
-    nlp_similar_incidents,
-    editor_similar_incidents,
-    editor_dissimilar_incidents,
-    flagged_dissimilar_incidents: incident.flagged_dissimilar_incidents,
-    parentIncident: incident,
-  };
-
-  const breakPoint = '1150px';
-
   return (
-    <Layout
-      RightSidebar={SimilarIncidentsSidebar}
-      rightSidebarProps={similarIncidentProps}
-      rightSidebarWidth={'23em'}
-      rightSidebarBreakPoint={breakPoint}
-      {...props}
-    >
+    <Layout includeRightSidebar={false} {...props}>
       <Helmet>
         {metaTitle ? <title>{metaTitle}</title> : null}
         {metaTitle ? <meta name="title" content={metaTitle} /> : null}
@@ -151,173 +138,187 @@ function CitePage(props) {
         <link rel="canonical" href={canonicalUrl} />
       </Helmet>
 
-      <div className={'titleWrapper'}>
-        <StyledHeading>{metaDescription}</StyledHeading>
-      </div>
-
-      <Container>
+      <MainContainer>
         <Row>
-          <Col>
-            <CardContainer className="card" data-cy="citation">
-              <div className="card-header">
-                <h4>Suggested citation format</h4>
-              </div>
-              <div className="card-body">
-                <Citation
-                  nodes={incidentReports}
-                  incidentDate={incident.date}
-                  incident_id={incident.incident_id}
-                  editors={incident.editors}
-                />
-              </div>
-            </CardContainer>
-          </Col>
+          <MainCol>
+            <div className={'titleWrapper'}>
+              <StyledHeading>{metaDescription}</StyledHeading>
+            </div>
+
+            <Container>
+              <Row>
+                <Col>
+                  <CardContainer className="card" data-cy="citation">
+                    <div className="card-header">
+                      <h4>Suggested citation format</h4>
+                    </div>
+                    <div className="card-body">
+                      <Citation
+                        nodes={incidentReports}
+                        incidentDate={incident.date}
+                        incident_id={incident.incident_id}
+                        editors={incident.editors}
+                      />
+                    </div>
+                  </CardContainer>
+                </Col>
+              </Row>
+
+              <Row className="mt-4">
+                <Col>
+                  <StatsContainer data-cy={'incident-stats'}>
+                    <IncidentStatsCard
+                      {...{
+                        incidentId: incident.incident_id,
+                        reportCount: incidentReports.length,
+                        incidentDate: incident.date,
+                        editors: incident.editors.join(', '),
+                      }}
+                    />
+                  </StatsContainer>
+                </Col>
+              </Row>
+
+              <Row className="mt-4">
+                <Col>
+                  <CardContainer className="card">
+                    <div className="card-header">
+                      <h4>Reports Timeline</h4>
+                    </div>
+                    <div className="card-body">
+                      <Timeline data={timeline} />
+                    </div>
+                  </CardContainer>
+                </Col>
+              </Row>
+
+              <Row className="mt-4">
+                <Col>
+                  <CardContainer className="card">
+                    <div className="card-header">
+                      <h4>Tools</h4>
+                    </div>
+                    <div className="card-body">
+                      <Button
+                        variant="outline-primary"
+                        className="me-2"
+                        href={`/apps/submit?incident_id=${
+                          incident.incident_id
+                        }&date_downloaded=${format(new Date(), 'yyyy-MM-dd')}`}
+                      >
+                        New Report
+                      </Button>
+                      <Button
+                        variant="outline-primary"
+                        className="me-2"
+                        href={'/summaries/incidents'}
+                      >
+                        All Incidents
+                      </Button>
+                      <Button
+                        variant="outline-primary"
+                        className="me-2"
+                        href={'/apps/discover?incident_id=' + incident.incident_id}
+                      >
+                        Discover
+                      </Button>
+                      {isRole('incident_editor') && (
+                        <Button
+                          variant="outline-primary"
+                          className="me-2"
+                          href={'/incidents/edit?incident_id=' + incident.incident_id}
+                        >
+                          Edit Incident
+                        </Button>
+                      )}
+                      <BibTex
+                        nodes={incidentReports}
+                        incidentDate={incident.date}
+                        incident_id={incident.incident_id}
+                        editors={incident.editors}
+                      />
+                    </div>
+                  </CardContainer>
+                </Col>
+              </Row>
+
+              {taxonomies.length > 0 && (
+                <Row id="taxa-area">
+                  <Col>
+                    {taxonomies.map((t) => {
+                      const canEdit =
+                        isRole('taxonomy_editor') ||
+                        isRole('taxonomy_editor_' + t.namespace.toLowerCase());
+
+                      return canEdit || t.classificationsArray.length > 0 ? (
+                        <Taxonomy
+                          key={t.namespace}
+                          taxonomy={t}
+                          incidentId={incident.incident_id}
+                          canEdit={canEdit}
+                        />
+                      ) : null;
+                    })}
+                  </Col>
+                </Row>
+              )}
+
+              <Row className="mt-4">
+                <Col>
+                  <CardContainer className="card">
+                    <ImageCarousel nodes={incidentReports} />
+                  </CardContainer>
+                </Col>
+              </Row>
+
+              <Row className="mt-4">
+                <Col>
+                  <IncidnetsReportsTitle>
+                    <div className={'titleWrapper'}>
+                      <StyledHeading>Incidents Reports</StyledHeading>
+                    </div>
+                  </IncidnetsReportsTitle>
+                </Col>
+              </Row>
+
+              {sortedReports.map((report) => (
+                <Row className="mb-4" key={report.report_number}>
+                  <Col>
+                    <IncidentCard
+                      item={report}
+                      authorsModal={authorsModal}
+                      submittersModal={submittersModal}
+                      flagReportModal={flagReportModal}
+                    />
+                  </Col>
+                </Row>
+              ))}
+
+              <Pagination className="justify-content-between">
+                <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>
+                  ‹ Previous Incident
+                </Pagination.Item>
+                <Pagination.Item href={`/cite/${nextIncident}`} disabled={!nextIncident}>
+                  Next Incident ›
+                </Pagination.Item>
+              </Pagination>
+
+              <CustomModal {...authorsModal} />
+              <CustomModal {...submittersModal} />
+              <CustomModal {...flagReportModal} />
+            </Container>
+          </MainCol>
+          <SimilarIncidentsCol>
+            <SimilarIncidents
+              nlp_similar_incidents={nlp_similar_incidents}
+              editor_similar_incidents={editor_similar_incidents}
+              editor_dissimilar_incidents={editor_dissimilar_incidents}
+              flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
+              parentIncident={incident}
+            />
+          </SimilarIncidentsCol>
         </Row>
-
-        <Row className="mt-4">
-          <Col>
-            <StatsContainer data-cy={'incident-stats'}>
-              <IncidentStatsCard
-                {...{
-                  incidentId: incident.incident_id,
-                  reportCount: incidentReports.length,
-                  incidentDate: incident.date,
-                  editors: incident.editors.join(', '),
-                }}
-              />
-            </StatsContainer>
-          </Col>
-        </Row>
-
-        <Row className="mt-4">
-          <Col>
-            <CardContainer className="card">
-              <div className="card-header">
-                <h4>Reports Timeline</h4>
-              </div>
-              <div className="card-body">
-                <Timeline data={timeline} />
-              </div>
-            </CardContainer>
-          </Col>
-        </Row>
-
-        <Row className="mt-4">
-          <Col>
-            <CardContainer className="card">
-              <div className="card-header">
-                <h4>Tools</h4>
-              </div>
-              <div className="card-body">
-                <Button
-                  variant="outline-primary"
-                  className="me-2"
-                  href={`/apps/submit?incident_id=${incident.incident_id}&date_downloaded=${format(
-                    new Date(),
-                    'yyyy-MM-dd'
-                  )}`}
-                >
-                  New Report
-                </Button>
-                <Button variant="outline-primary" className="me-2" href={'/summaries/incidents'}>
-                  All Incidents
-                </Button>
-                <Button
-                  variant="outline-primary"
-                  className="me-2"
-                  href={'/apps/discover?incident_id=' + incident.incident_id}
-                >
-                  Discover
-                </Button>
-                {isRole('incident_editor') && (
-                  <Button
-                    variant="outline-primary"
-                    className="me-2"
-                    href={'/incidents/edit?incident_id=' + incident.incident_id}
-                  >
-                    Edit Incident
-                  </Button>
-                )}
-                <BibTex
-                  nodes={incidentReports}
-                  incidentDate={incident.date}
-                  incident_id={incident.incident_id}
-                  editors={incident.editors}
-                />
-              </div>
-            </CardContainer>
-          </Col>
-        </Row>
-
-        {taxonomies.length > 0 && (
-          <Row id="taxa-area">
-            <Col>
-              {taxonomies.map((t) => {
-                const canEdit =
-                  isRole('taxonomy_editor') ||
-                  isRole('taxonomy_editor_' + t.namespace.toLowerCase());
-
-                return canEdit || t.classificationsArray.length > 0 ? (
-                  <Taxonomy
-                    key={t.namespace}
-                    taxonomy={t}
-                    incidentId={incident.incident_id}
-                    canEdit={canEdit}
-                  />
-                ) : null;
-              })}
-            </Col>
-          </Row>
-        )}
-
-        <Row className="mt-4">
-          <Col>
-            <CardContainer className="card">
-              <ImageCarousel nodes={incidentReports} />
-            </CardContainer>
-          </Col>
-        </Row>
-
-        <Row className="mt-4">
-          <Col>
-            <IncidnetsReportsTitle>
-              <div className={'titleWrapper'}>
-                <StyledHeading>Incidents Reports</StyledHeading>
-              </div>
-            </IncidnetsReportsTitle>
-          </Col>
-        </Row>
-
-        {sortedReports.map((report) => (
-          <Row className="mb-4" key={report.report_number}>
-            <Col>
-              <IncidentCard
-                item={report}
-                authorsModal={authorsModal}
-                submittersModal={submittersModal}
-                flagReportModal={flagReportModal}
-              />
-            </Col>
-          </Row>
-        ))}
-
-        <BottomSimilarIncidents breakPoint={breakPoint}>
-          <SimilarIncidents {...similarIncidentProps} />
-        </BottomSimilarIncidents>
-
-        <Pagination className="justify-content-between">
-          <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>
-            ‹ Previous Incident
-          </Pagination.Item>
-          <Pagination.Item href={`/cite/${nextIncident}`} disabled={!nextIncident}>
-            Next Incident ›
-          </Pagination.Item>
-        </Pagination>
-
-        <CustomModal {...authorsModal} />
-        <CustomModal {...submittersModal} />
-        <CustomModal {...flagReportModal} />
-      </Container>
+      </MainContainer>
     </Layout>
   );
 }
