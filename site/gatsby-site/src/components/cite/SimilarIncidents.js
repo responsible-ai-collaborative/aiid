@@ -15,6 +15,7 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
 const SimilarIncidentsList = styled.div`
+  margin-top: 2em;
   margin-bottom: 2em;
 
   .card {

@@ -54,32 +54,6 @@ const sortIncidentsByDatePublished = (incidentReports) => {
   });
 };
 
-const MainContainer = styled(Container)`
-  margin: 0px !important;
-  margin-left: -33px !important;
-  padding: 0px !important;
-  .col {
-    padding: 0px;
-  }
-`;
-
-const MainCol = styled(Col)`
-  flex-shrink: 0;
-  flex-grow: 10;
-  padding-left: 0px !important;
-  padding-right: 10px !important;
-`;
-
-const SimilarIncidentsCol = styled(Col)`
-  flex-shrink: 1;
-  > * {
-    min-width: 298px;
-    position: sticky !important;
-  }
-  padding: 0px !important;
-  margin-right: -33px;
-`;
-
 function CitePage(props) {
   const {
     pageContext: {
@@ -126,7 +100,7 @@ function CitePage(props) {
   });
 
   return (
-    <Layout includeRightSidebar={false} {...props}>
+    <Layout {...props}>
       <Helmet>
         {metaTitle ? <title>{metaTitle}</title> : null}
         {metaTitle ? <meta name="title" content={metaTitle} /> : null}
@@ -138,187 +112,177 @@ function CitePage(props) {
         <link rel="canonical" href={canonicalUrl} />
       </Helmet>
 
-      <MainContainer>
+      <div className={'titleWrapper'}>
+        <StyledHeading>{metaDescription}</StyledHeading>
+      </div>
+
+      <Container>
         <Row>
-          <MainCol>
-            <div className={'titleWrapper'}>
-              <StyledHeading>{metaDescription}</StyledHeading>
-            </div>
-
-            <Container>
-              <Row>
-                <Col>
-                  <CardContainer className="card" data-cy="citation">
-                    <div className="card-header">
-                      <h4>Suggested citation format</h4>
-                    </div>
-                    <div className="card-body">
-                      <Citation
-                        nodes={incidentReports}
-                        incidentDate={incident.date}
-                        incident_id={incident.incident_id}
-                        editors={incident.editors}
-                      />
-                    </div>
-                  </CardContainer>
-                </Col>
-              </Row>
-
-              <Row className="mt-4">
-                <Col>
-                  <StatsContainer data-cy={'incident-stats'}>
-                    <IncidentStatsCard
-                      {...{
-                        incidentId: incident.incident_id,
-                        reportCount: incidentReports.length,
-                        incidentDate: incident.date,
-                        editors: incident.editors.join(', '),
-                      }}
-                    />
-                  </StatsContainer>
-                </Col>
-              </Row>
-
-              <Row className="mt-4">
-                <Col>
-                  <CardContainer className="card">
-                    <div className="card-header">
-                      <h4>Reports Timeline</h4>
-                    </div>
-                    <div className="card-body">
-                      <Timeline data={timeline} />
-                    </div>
-                  </CardContainer>
-                </Col>
-              </Row>
-
-              <Row className="mt-4">
-                <Col>
-                  <CardContainer className="card">
-                    <div className="card-header">
-                      <h4>Tools</h4>
-                    </div>
-                    <div className="card-body">
-                      <Button
-                        variant="outline-primary"
-                        className="me-2"
-                        href={`/apps/submit?incident_id=${
-                          incident.incident_id
-                        }&date_downloaded=${format(new Date(), 'yyyy-MM-dd')}`}
-                      >
-                        New Report
-                      </Button>
-                      <Button
-                        variant="outline-primary"
-                        className="me-2"
-                        href={'/summaries/incidents'}
-                      >
-                        All Incidents
-                      </Button>
-                      <Button
-                        variant="outline-primary"
-                        className="me-2"
-                        href={'/apps/discover?incident_id=' + incident.incident_id}
-                      >
-                        Discover
-                      </Button>
-                      {isRole('incident_editor') && (
-                        <Button
-                          variant="outline-primary"
-                          className="me-2"
-                          href={'/incidents/edit?incident_id=' + incident.incident_id}
-                        >
-                          Edit Incident
-                        </Button>
-                      )}
-                      <BibTex
-                        nodes={incidentReports}
-                        incidentDate={incident.date}
-                        incident_id={incident.incident_id}
-                        editors={incident.editors}
-                      />
-                    </div>
-                  </CardContainer>
-                </Col>
-              </Row>
-
-              {taxonomies.length > 0 && (
-                <Row id="taxa-area">
-                  <Col>
-                    {taxonomies.map((t) => {
-                      const canEdit =
-                        isRole('taxonomy_editor') ||
-                        isRole('taxonomy_editor_' + t.namespace.toLowerCase());
-
-                      return canEdit || t.classificationsArray.length > 0 ? (
-                        <Taxonomy
-                          key={t.namespace}
-                          taxonomy={t}
-                          incidentId={incident.incident_id}
-                          canEdit={canEdit}
-                        />
-                      ) : null;
-                    })}
-                  </Col>
-                </Row>
-              )}
-
-              <Row className="mt-4">
-                <Col>
-                  <CardContainer className="card">
-                    <ImageCarousel nodes={incidentReports} />
-                  </CardContainer>
-                </Col>
-              </Row>
-
-              <Row className="mt-4">
-                <Col>
-                  <IncidnetsReportsTitle>
-                    <div className={'titleWrapper'}>
-                      <StyledHeading>Incidents Reports</StyledHeading>
-                    </div>
-                  </IncidnetsReportsTitle>
-                </Col>
-              </Row>
-
-              {sortedReports.map((report) => (
-                <Row className="mb-4" key={report.report_number}>
-                  <Col>
-                    <IncidentCard
-                      item={report}
-                      authorsModal={authorsModal}
-                      submittersModal={submittersModal}
-                      flagReportModal={flagReportModal}
-                    />
-                  </Col>
-                </Row>
-              ))}
-
-              <Pagination className="justify-content-between">
-                <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>
-                  ‹ Previous Incident
-                </Pagination.Item>
-                <Pagination.Item href={`/cite/${nextIncident}`} disabled={!nextIncident}>
-                  Next Incident ›
-                </Pagination.Item>
-              </Pagination>
-
-              <CustomModal {...authorsModal} />
-              <CustomModal {...submittersModal} />
-              <CustomModal {...flagReportModal} />
-            </Container>
-          </MainCol>
-          <SimilarIncidentsCol>
-            <SimilarIncidents
-              nlp_similar_incidents={nlp_similar_incidents}
-              editor_similar_incidents={editor_similar_incidents}
-              editor_dissimilar_incidents={editor_dissimilar_incidents}
-              flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
-              parentIncident={incident}
-            />
-          </SimilarIncidentsCol>
+          <Col>
+            <CardContainer className="card" data-cy="citation">
+              <div className="card-header">
+                <h4>Suggested citation format</h4>
+              </div>
+              <div className="card-body">
+                <Citation
+                  nodes={incidentReports}
+                  incidentDate={incident.date}
+                  incident_id={incident.incident_id}
+                  editors={incident.editors}
+                />
+              </div>
+            </CardContainer>
+          </Col>
         </Row>
-      </MainContainer>
+
+        <Row className="mt-4">
+          <Col>
+            <StatsContainer data-cy={'incident-stats'}>
+              <IncidentStatsCard
+                {...{
+                  incidentId: incident.incident_id,
+                  reportCount: incidentReports.length,
+                  incidentDate: incident.date,
+                  editors: incident.editors.join(', '),
+                }}
+              />
+            </StatsContainer>
+          </Col>
+        </Row>
+
+        <Row className="mt-4">
+          <Col>
+            <CardContainer className="card">
+              <div className="card-header">
+                <h4>Reports Timeline</h4>
+              </div>
+              <div className="card-body">
+                <Timeline data={timeline} />
+              </div>
+            </CardContainer>
+          </Col>
+        </Row>
+
+        <Row className="mt-4">
+          <Col>
+            <CardContainer className="card">
+              <div className="card-header">
+                <h4>Tools</h4>
+              </div>
+              <div className="card-body">
+                <Button
+                  variant="outline-primary"
+                  className="me-2"
+                  href={`/apps/submit?incident_id=${incident.incident_id}&date_downloaded=${format(
+                    new Date(),
+                    'yyyy-MM-dd'
+                  )}`}
+                >
+                  New Report
+                </Button>
+                <Button variant="outline-primary" className="me-2" href={'/summaries/incidents'}>
+                  All Incidents
+                </Button>
+                <Button
+                  variant="outline-primary"
+                  className="me-2"
+                  href={'/apps/discover?incident_id=' + incident.incident_id}
+                >
+                  Discover
+                </Button>
+                {isRole('incident_editor') && (
+                  <Button
+                    variant="outline-primary"
+                    className="me-2"
+                    href={'/incidents/edit?incident_id=' + incident.incident_id}
+                  >
+                    Edit Incident
+                  </Button>
+                )}
+                <BibTex
+                  nodes={incidentReports}
+                  incidentDate={incident.date}
+                  incident_id={incident.incident_id}
+                  editors={incident.editors}
+                />
+              </div>
+            </CardContainer>
+          </Col>
+        </Row>
+
+        {taxonomies.length > 0 && (
+          <Row id="taxa-area">
+            <Col>
+              {taxonomies.map((t) => {
+                const canEdit =
+                  isRole('taxonomy_editor') ||
+                  isRole('taxonomy_editor_' + t.namespace.toLowerCase());
+
+                return canEdit || t.classificationsArray.length > 0 ? (
+                  <Taxonomy
+                    key={t.namespace}
+                    taxonomy={t}
+                    incidentId={incident.incident_id}
+                    canEdit={canEdit}
+                  />
+                ) : null;
+              })}
+            </Col>
+          </Row>
+        )}
+
+        <Row className="mt-4">
+          <Col>
+            <CardContainer className="card">
+              <ImageCarousel nodes={incidentReports} />
+            </CardContainer>
+          </Col>
+        </Row>
+
+        <Row className="mt-4">
+          <Col>
+            <IncidnetsReportsTitle>
+              <div className={'titleWrapper'}>
+                <StyledHeading>Incidents Reports</StyledHeading>
+              </div>
+            </IncidnetsReportsTitle>
+          </Col>
+        </Row>
+
+        {sortedReports.map((report) => (
+          <Row className="mb-4" key={report.report_number}>
+            <Col>
+              <IncidentCard
+                item={report}
+                authorsModal={authorsModal}
+                submittersModal={submittersModal}
+                flagReportModal={flagReportModal}
+              />
+            </Col>
+          </Row>
+        ))}
+
+        <SimilarIncidents
+          nlp_similar_incidents={nlp_similar_incidents}
+          editor_similar_incidents={editor_similar_incidents}
+          editor_dissimilar_incidents={editor_dissimilar_incidents}
+          flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
+          parentIncident={incident}
+        />
+
+        <Pagination className="justify-content-between">
+          <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>
+            ‹ Previous Incident
+          </Pagination.Item>
+          <Pagination.Item href={`/cite/${nextIncident}`} disabled={!nextIncident}>
+            Next Incident ›
+          </Pagination.Item>
+        </Pagination>
+
+        <CustomModal {...authorsModal} />
+        <CustomModal {...submittersModal} />
+        <CustomModal {...flagReportModal} />
+      </Container>
     </Layout>
   );
 }
