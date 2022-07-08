@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Helmet from 'react-helmet';
 import { Button, Col, Container, Pagination, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
@@ -15,6 +15,8 @@ import IncidentStatsCard from 'components/cite/IncidentStatsCard';
 import IncidentCard from 'components/cite/IncidentCard';
 import Taxonomy from 'components/taxa/Taxonomy';
 import { useUserContext } from 'contexts/userContext';
+import TSNE from 'tsne-js';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 
 const CardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -33,6 +35,51 @@ const StatsContainer = styled.div`
 
 const IncidnetsReportsTitle = styled.div`
   padding-bottom: 20px;
+`;
+
+const TsneVisualization = styled.div`
+  height: 1000px;
+  width: 1000px;
+  display: inline;
+  position: relative;
+  overflow: hidden;
+  background: #ccc;
+  > * {
+    color: inherit;
+    position: absolute;
+    font-size: 40%;
+    height: 2em;
+    width: 2em;
+    padding-left: 2px;
+    padding-right: 2px;
+    border-radius: 50%;
+    margin-left: -1em;
+    margin-top: -1em;
+    background: rgba(240, 240, 240, 0.8);
+    z-index: 1;
+    text-align: center;
+    line-height: 2em;
+    box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.25);
+    transition: background 0.25s;
+  }
+  > *:hover:not(.current) {
+    background: #ddd;
+    z-index: 3;
+  }
+  > *.current {
+    background: cyan;
+    z-index: 2;
+  }
+`;
+
+const TransformWrapperWrapper = styled.div`
+  > * {
+    height: 90vh;
+  }
+  > *,
+  > * > * {
+    width: 100%;
+  }
 `;
 
 const sortIncidentsByDatePublished = (incidentReports) => {
@@ -88,6 +135,69 @@ function CitePage(props) {
     mongodb_id: 0,
     isOccurrence: true,
   });
+
+  const [spacialIncidents, setSpacialIncidents] = useState(null);
+
+  const [currentSpacialIncident, setCurrentSpacialIncident] = useState(null);
+
+  useEffect(() => {
+    fetch(
+      'https://raw.githubusercontent.com/responsible-ai-collaborative/nlp-lambdas/main/inference/db_state/state.csv'
+    )
+      .then((res) => res.text())
+      .then((text) => {
+        const lines = text
+          .split('\n')
+          .slice(1)
+          .filter((line) => line.length > 2);
+
+        const embeddings = lines.map((line) => JSON.parse(line.split('"')[1]));
+
+        const ids = lines.map((line) => line.split(',')[0]);
+
+        const model = new TSNE({
+          dim: 2,
+          perplexity: 30.0,
+          earlyExaggeration: 4.0,
+          learningRate: 100.0,
+          nIter: 100,
+          metric: 'euclidean',
+        });
+
+        // inputData is a nested array which can be converted into an ndarray
+        // alternatively, it can be an array of coordinates (second argument should be specified as 'sparse')
+        model.init({
+          data: embeddings,
+          type: 'dense',
+        });
+
+        // `error`,  `iter`: final error and iteration number
+        // note: computation-heavy action happens here
+        const [err, iter] = model.run();
+
+        if (err) {
+          console.error(err, iter);
+        }
+
+        // `outputScaled` is `output` scaled to a range of [-1, 1]
+        const outputScaled = model.getOutputScaled();
+
+        setSpacialIncidents(
+          outputScaled.map((array, i) => {
+            const spacialIncident = {
+              incident_id: ids[i],
+              x: array[0],
+              y: array[1],
+            };
+
+            if (ids[i] == incident.incident_id) {
+              setCurrentSpacialIncident(spacialIncident);
+            }
+            return spacialIncident;
+          })
+        );
+      });
+  }, []);
 
   return (
     <Layout {...props}>
@@ -260,6 +370,41 @@ function CitePage(props) {
             Next Incident ›
           </Pagination.Item>
         </Pagination>
+
+        {spacialIncidents && (
+          <TransformWrapperWrapper>
+            <TransformWrapper
+              initialScale={3}
+              initialPositionX={
+                -1500 - 1500 * (currentSpacialIncident.x || 0) + Math.min(500, window.innerWidth)
+              }
+              initialPositionY={
+                -1500 - 1500 * (currentSpacialIncident.y || 0) + Math.min(500, window.innerHeight)
+              }
+            >
+              <TransformComponent>
+                <TsneVisualization>
+                  {spacialIncidents.map((spacialIncident) => (
+                    <a
+                      id={'spacial-incident-' + spacialIncident.incident_id}
+                      key={spacialIncident.incident_id}
+                      href={'/cite/' + spacialIncident.incident_id}
+                      style={{
+                        top: `calc(50% + 48% * ${spacialIncident.y})`,
+                        left: `calc(50% + 48% * ${spacialIncident.x})`,
+                      }}
+                      className={
+                        spacialIncident.incident_id == incident.incident_id ? 'current' : ''
+                      }
+                    >
+                      {spacialIncident.incident_id}
+                    </a>
+                  ))}
+                </TsneVisualization>
+              </TransformComponent>
+            </TransformWrapper>
+          </TransformWrapperWrapper>
+        )}
 
         <CustomModal {...authorsModal} />
         <CustomModal {...submittersModal} />
