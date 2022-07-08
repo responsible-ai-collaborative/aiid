@@ -6,10 +6,11 @@ import Stats from './Stats';
 import ClearFilters from './ClearFilters';
 import { Trans } from 'react-i18next';
 import styled from 'styled-components';
+import DisplayModeSwitch from './DisplayModeSwitch';
 // https://www.algolia.com/doc/guides/building-search-ui/going-further/native/react/?language=react#create-a-modal
 
-const SwitchContainer = styled.div`
-  margin-top: 1em;
+const Hbox = styled.div`
+  margin-bottom: 1em;
   display: flex;
   gap: 1.5em;
   align-items: center;
@@ -23,6 +24,9 @@ const SwitchContainer = styled.div`
     margin: 0px;
     transform-origin: center left;
     transform: scale(1.5);
+  }
+  > *:last-child {
+    margin-left: auto !important;
   }
 `;
 
@@ -54,12 +58,7 @@ function OptionsModal({ setHideDuplicates, hideDuplicates }) {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Accordion defaultActiveKey="0">
-            {REFINEMENT_LISTS.map((list) => (
-              <AccordionFilter key={list.attribute} attribute={list.attribute} {...list} />
-            ))}
-          </Accordion>
-          <SwitchContainer>
+          <Hbox>
             <Form.Check
               type="switch"
               id="hide-duplicates-modal"
@@ -69,9 +68,15 @@ function OptionsModal({ setHideDuplicates, hideDuplicates }) {
               }}
             />
             <Form.Label for="hide-duplicates-modal">
-              <Trans>Show only 1 report per incident</Trans>
+              <Trans>1st report only</Trans>
             </Form.Label>
-          </SwitchContainer>
+            <DisplayModeSwitch />
+          </Hbox>
+          <Accordion defaultActiveKey="0">
+            {REFINEMENT_LISTS.map((list) => (
+              <AccordionFilter key={list.attribute} attribute={list.attribute} {...list} />
+            ))}
+          </Accordion>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
