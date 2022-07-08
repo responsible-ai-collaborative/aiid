@@ -19,5 +19,8 @@
   "Show Details on Incident #{{id}}": "Ver detalles del Incidente #{{id}}",
   "Filter by Incident ID #{{id}}": "Filtrar por ID de Incidente #{{id}}",
   "Flag Report": "Reportar",
-  "Filters": "Filtros"
+  "Filters": "Filtros",
+  "Options": "Options",
+  "1st report only": "1st report only",
+  "Show only 1 report per incident": "Show only 1 report per incident"
 }

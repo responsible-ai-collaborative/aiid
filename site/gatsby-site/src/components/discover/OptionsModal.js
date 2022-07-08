@@ -1,13 +1,32 @@
 import React, { useState } from 'react';
-import { Row, Col, Modal, Button, Accordion } from 'react-bootstrap';
+import { Row, Col, Modal, Button, Accordion, Form } from 'react-bootstrap';
 import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
 import { AccordionFilter } from './Filter';
 import Stats from './Stats';
 import ClearFilters from './ClearFilters';
 import { Trans } from 'react-i18next';
+import styled from 'styled-components';
 // https://www.algolia.com/doc/guides/building-search-ui/going-further/native/react/?language=react#create-a-modal
 
-function FiltersModal() {
+const SwitchContainer = styled.div`
+  margin-top: 1em;
+  display: flex;
+  gap: 1.5em;
+  align-items: center;
+  > * {
+    line-height: 2em;
+    vertical-align: middle;
+    margin: 0px !important;
+  }
+  input {
+    vertical-align: middle;
+    margin: 0px;
+    transform-origin: center left;
+    transform: scale(1.5);
+  }
+`;
+
+function OptionsModal({ setHideDuplicates, hideDuplicates }) {
   const [showModal, setShowModal] = useState(false);
 
   const handleClose = () => setShowModal(false);
@@ -23,7 +42,7 @@ function FiltersModal() {
             <Trans>Clear</Trans>
           </ClearFilters>
           <Button variant="link" onClick={() => setShowModal(true)}>
-            <Trans>Filters</Trans>
+            <Trans>Options</Trans>
           </Button>
         </Col>
       </Row>
@@ -31,7 +50,7 @@ function FiltersModal() {
       <Modal show={showModal} onHide={handleClose} enforceFocus={false} fullscreen>
         <Modal.Header closeButton>
           <Modal.Title>
-            <Trans>Filters</Trans>
+            <Trans>Search Options</Trans>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -40,6 +59,19 @@ function FiltersModal() {
               <AccordionFilter key={list.attribute} attribute={list.attribute} {...list} />
             ))}
           </Accordion>
+          <SwitchContainer>
+            <Form.Check
+              type="switch"
+              id="hide-duplicates-modal"
+              checked={hideDuplicates}
+              onClick={(event) => {
+                setHideDuplicates(event.target.checked);
+              }}
+            />
+            <Form.Label for="hide-duplicates-modal">
+              <Trans>Show only 1 report per incident</Trans>
+            </Form.Label>
+          </SwitchContainer>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
@@ -51,4 +83,4 @@ function FiltersModal() {
   );
 }
 
-export default FiltersModal;
+export default OptionsModal;
