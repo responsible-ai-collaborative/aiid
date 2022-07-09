@@ -15,6 +15,7 @@ import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
 import IncidentIdField from 'components/incidents/IncidentIdField';
 import getSourceDomain from '../../utils/getSourceDomain';
+import supportedLanguages from 'components/i18n/languages.json';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -254,6 +255,23 @@ const IncidentReportForm = () => {
       <Form.Group className="mt-3" data-color-mode="light">
         <Label popover={POP_OVERS.text} label={'Text'} />
         <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
+      </Form.Group>
+
+      <Form.Group className="mt-3">
+        <Label popover={POP_OVERS.language} label={'Language'} />
+        <Form.Select
+          name="language"
+          placeholder="Report Language"
+          className="mt-3"
+          value={values.language}
+          onChange={handleChange}
+        >
+          {supportedLanguages.map((l) => (
+            <option key={l.code} value={l.code}>
+              {l.name}
+            </option>
+          ))}
+        </Form.Select>
       </Form.Group>
 
       <Form.Group className="mt-3">
