@@ -278,7 +278,6 @@ const SubmissionForm = () => {
           <Form.Select
             name="language"
             placeholder="Report Language"
-            className="mt-3"
             value={values.language}
             onChange={handleChange}
           >
