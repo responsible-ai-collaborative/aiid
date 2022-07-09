@@ -144,7 +144,7 @@
     "name": "Hawaiian"
   },
   {
-    "code": "iw",
+    "code": "he",
     "name": "Hebrew"
   },
   {
@@ -434,13 +434,5 @@
   {
     "code": "zu",
     "name": "Zulu"
-  },
-  {
-    "code": "he",
-    "name": "Hebrew"
-  },
-  {
-    "code": "zh",
-    "name": "Chinese (Simplified)"
   }
 ]
