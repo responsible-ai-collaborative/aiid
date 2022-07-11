@@ -23,7 +23,7 @@ const incidentQuery = gql`
 const VisualizationWrapper = styled.div`
   > *,
   > * > * {
-    width: 100%;
+    width: 100% !important;
     height: 90vh;
     background: #ccc;
   }
