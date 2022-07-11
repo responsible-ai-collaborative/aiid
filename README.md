@@ -87,7 +87,9 @@ GATSBY_ALGOLIA_SEARCH_KEY=c5e99d93261645721a1765fe4414389c
 ```
 In the same folder, install dependencies using `npm` (do not use `yarn`, it will ignore the `package-lock.json` file):
 
-`npm install`
+```
+npm install
+```
 
 You are ready to start a local copy of the project:
 
