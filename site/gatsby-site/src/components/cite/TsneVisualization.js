@@ -107,6 +107,7 @@ const PlotPoint = ({ spacialIncident, incident, state }) => {
       <a
         id={'spacial-incident-' + spacialIncident.incident_id}
         href={'/cite/' + spacialIncident.incident_id}
+        data-cy="tsne-plotpoint"
         style={{
           top: `calc(50% + 48% * ${spacialIncident.y})`,
           left: `calc(50% + 48% * ${spacialIncident.x})`,
@@ -169,7 +170,7 @@ const TsneVisualization = ({ incident, spacialIncidents }) => {
 
   return (
     spacialIncidents && (
-      <VisualizationWrapper>
+      <VisualizationWrapper data-cy="tsne-visualization">
         <TransformWrapper
           initialScale={2}
           initialPositionX={-500 + -500 * currentSpacialIncident?.x || 0}

@@ -157,6 +157,17 @@ describe('Cite pages', () => {
     cy.get('[name="incident_id"]').should('have.value', '10');
   });
 
+  it('Should render the TISN visualization', () => {
+    cy.visit(url);
+    cy.get('[data-cy="tsne-visualization"] [data-cy="tsne-plotpoint"]').should('exist');
+  });
+
+  it('The visualization should show the current incident and have it marked as such', () => {
+    cy.visit(url);
+    cy.get('[data-cy="tsne-visualization"]').scrollIntoView();
+    cy.get('#spacial-incident-10.current').should('be.visible');
+  });
+
   it('should render Next and Previous incident buttons', () => {
     cy.visit(url);
 
