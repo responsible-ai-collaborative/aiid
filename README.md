@@ -105,6 +105,8 @@ The values you placed into the env file are all associated with a staging enviro
 If the feature you are working on includes structural changes to the MongoDB database or Realm functions, you'll need to create your own project by going to https://cloud.mongodb.com and following these steps:
 - Create a new MongoDB project (the free tier will be enough)
 - Create a new Atlas cluster with the name: `AIIDDev`
+    - Choose "Username and Password" as authentication method.
+    - Choose "My Local Environment" as network access and add your current IP address. If your IP is dynamic, add `0.0.0.0` to the list of IP addresses.
 - Create a new Realm App. The name should be `AIIDStitch2`. Realm will give it an id like `aiidstitch2-<REALM_APP_ID>`
 - Create a new database user with admin access and another user with read-only permissions
 
