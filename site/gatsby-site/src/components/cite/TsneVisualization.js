@@ -77,11 +77,13 @@ const Visualization = styled.div`
     }
   }
   > a:hover:not(.current) {
-    background: #ddd;
+    background: #dedede;
     z-index: 3;
+    color: var(--primary3);
   }
   > a.current {
-    background: cyan;
+    background: #001a32;
+    color: white;
     z-index: 2;
   }
 `;
