@@ -105,7 +105,7 @@ The values you placed into the env file are all associated with a staging enviro
 If the feature you are working on includes structural changes to the MongoDB database or Realm functions, you'll need to create your own project by going to https://cloud.mongodb.com and following these steps:
 - Create a new MongoDB project (the free tier will be enough)
 - Create a new Atlas cluster with the name: `AIIDDev`
-- Create a new Realm App. The name should be `AIIDStitch2`. Realm will give it an id like `aiidstitch2-xxxxx`
+- Create a new Realm App. The name should be `AIIDStitch2`. Realm will give it an id like `aiidstitch2-<REALM_APP_ID>`
 - Create a new database user with admin access and another user with read-only permissions
 
 #### Replicating the Database
@@ -129,13 +129,13 @@ npm install --global mongodb-realm-cli
 Once authenticated, you can deploy the realm app by going to `site/realm` of this repo and running:
 
 ```
- realm-cli push --remote=aiidstitch2-<YOUR-NEW-APP-ID>
+ realm-cli push --remote=aiidstitch2-<REALM_APP_ID>
 ```
 
 Finally, update the previously created `.env`:
 
 ```
-GATSBY_REALM_APP_ID=`aiidstitch2-xxxxx`
+GATSBY_REALM_APP_ID=aiidstitch2-<REALM_APP_ID>
 MONGODB_CONNECTION_STRING=mongodb+srv://<username>:<password>@aiiddev.<CLUSTER>.mongodb.net
 MONGODB_REPLICA_SET=aiiddev-shard-00-00.<CLUSTER>.mongodb.net,aiiddev-shard-00-01.<CLUSTER>.mongodb.net,aiiddev-shard-00-02.<CLUSTER>.mongodb.net
 ```
