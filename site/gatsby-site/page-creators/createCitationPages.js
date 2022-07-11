@@ -6,6 +6,10 @@ const { cloneDeep } = require('lodash');
 
 const { switchLocalizedPath } = require('../i18n');
 
+const axios = require('axios');
+
+const TSNE = require('tsne-js');
+
 const getClassificationsArray = (incidentClassifications, taxonomy) => {
   const classifications = incidentClassifications.filter(
     (c) => c.namespace === taxonomy.namespace
@@ -188,6 +192,62 @@ const createCitationPages = async (graphql, createPage) => {
     ...allMongodbAiidprodResources.nodes.map((r) => ({ ...r, namespace: 'resources' })),
   ];
 
+  let spacialIncidents;
+
+  const nlpStateResponse = await axios.get(
+    'https://raw.githubusercontent.com/responsible-ai-collaborative/nlp-lambdas/main/inference/db_state/state.csv'
+  );
+
+  if (nlpStateResponse?.status == 200) {
+    const lines = nlpStateResponse.data
+      .split('\n')
+      .slice(1)
+      .filter((line) => line.length > 2);
+
+    const embeddings = lines.map((line) => JSON.parse(line.split('"')[1]));
+
+    const ids = lines.map((line) => line.split(',')[0]);
+
+    const model = new TSNE({
+      dim: 2,
+      perplexity: 30.0,
+      earlyExaggeration: 4.0,
+      learningRate: 100.0,
+      nIter: 1000,
+      metric: 'euclidean',
+    });
+
+    // inputData is a nested array which can be converted into an ndarray
+    // alternatively, it can be an array of coordinates (second argument should be specified as 'sparse')
+    model.init({
+      data: embeddings,
+      type: 'dense',
+    });
+
+    // `error`,  `iter`: final error and iteration number
+    // note: computation-heavy action happens here
+    const [err, iter] = model.run();
+
+    if (err) {
+      console.error(err, iter);
+    }
+
+    // `outputScaled` is `output` scaled to a range of [-1, 1]
+    const outputScaled = model.getOutputScaled();
+
+    spacialIncidents = outputScaled.map((array, i) => {
+      const spacialIncident = {
+        incident_id: ids[i],
+        x: array[0],
+        y: array[1],
+      };
+
+      return spacialIncident;
+    });
+  } else {
+    console.error('Could not download embedding state, skipping TSNE visualization.');
+  }
+
   const keys = Object.keys(incidentReportsMap);
 
   const pageContexts = [];
@@ -220,6 +280,7 @@ const createCitationPages = async (graphql, createPage) => {
       taxonomies,
       nextIncident: i < keys.length - 1 ? keys[i + 1] : null,
       prevIncident: i > 0 ? keys[i - 1] : null,
+      spacialIncidents,
     });
   }
 

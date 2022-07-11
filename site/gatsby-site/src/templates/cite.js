@@ -56,7 +56,14 @@ const sortIncidentsByDatePublished = (incidentReports) => {
 
 function CitePage(props) {
   const {
-    pageContext: { incident, incidentReports, taxonomies, nextIncident, prevIncident },
+    pageContext: {
+      incident,
+      incidentReports,
+      taxonomies,
+      nextIncident,
+      prevIncident,
+      spacialIncidents,
+    },
   } = props;
 
   const { isRole } = useUserContext();
@@ -253,6 +260,13 @@ function CitePage(props) {
           </Row>
         ))}
 
+        {spacialIncidents && (
+          <>
+            <StyledHeading>This Incident in Semantic Space</StyledHeading>
+            <TsneVisualization incident={incident} spacialIncidents={spacialIncidents} />
+          </>
+        )}
+
         <Pagination className="justify-content-between">
           <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>
             ‹ Previous Incident
@@ -261,8 +275,6 @@ function CitePage(props) {
             Next Incident ›
           </Pagination.Item>
         </Pagination>
-
-        <TsneVisualization incident={incident} />
 
         <CustomModal {...authorsModal} />
         <CustomModal {...submittersModal} />

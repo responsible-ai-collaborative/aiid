@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useApolloClient, gql } from '@apollo/client';
 import { Image } from '../../utils/cloudinary';
-import TSNE from 'tsne-js';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 
 const incidentQuery = gql`
@@ -28,6 +27,8 @@ const VisualizationWrapper = styled.div`
     height: 90vh;
     background: #ccc;
   }
+  margin-bottom: 1em;
+  margin-top: 1em;
 `;
 
 const Visualization = styled.div`
@@ -130,7 +131,6 @@ const PlotPoint = ({ spacialIncident, incident, state }) => {
                 },
               })
               .then((res) => {
-                console.log('res', res);
                 setIncidentData(res.data.incident);
               });
           }
@@ -162,77 +162,18 @@ const PlotPoint = ({ spacialIncident, incident, state }) => {
   );
 };
 
-const TsneVisualization = ({ incident }) => {
-  const [spacialIncidents, setSpacialIncidents] = useState(null);
-
-  const [currentSpacialIncident, setCurrentSpacialIncident] = useState(null);
-
-  useEffect(() => {
-    fetch(
-      'https://raw.githubusercontent.com/responsible-ai-collaborative/nlp-lambdas/main/inference/db_state/state.csv'
-    )
-      .then((res) => res.text())
-      .then((text) => {
-        const lines = text
-          .split('\n')
-          .slice(1)
-          .filter((line) => line.length > 2);
-
-        const embeddings = lines.map((line) => JSON.parse(line.split('"')[1]));
-
-        const ids = lines.map((line) => line.split(',')[0]);
-
-        const model = new TSNE({
-          dim: 2,
-          perplexity: 30.0,
-          earlyExaggeration: 4.0,
-          learningRate: 100.0,
-          nIter: 100,
-          metric: 'euclidean',
-        });
-
-        // inputData is a nested array which can be converted into an ndarray
-        // alternatively, it can be an array of coordinates (second argument should be specified as 'sparse')
-        model.init({
-          data: embeddings,
-          type: 'dense',
-        });
-
-        // `error`,  `iter`: final error and iteration number
-        // note: computation-heavy action happens here
-        const [err, iter] = model.run();
-
-        if (err) {
-          console.error(err, iter);
-        }
-
-        // `outputScaled` is `output` scaled to a range of [-1, 1]
-        const outputScaled = model.getOutputScaled();
-
-        setSpacialIncidents(
-          outputScaled.map((array, i) => {
-            const spacialIncident = {
-              incident_id: ids[i],
-              x: array[0],
-              y: array[1],
-            };
-
-            if (ids[i] == incident.incident_id) {
-              setCurrentSpacialIncident(spacialIncident);
-            }
-            return spacialIncident;
-          })
-        );
-      });
-  }, []);
+const TsneVisualization = ({ incident, spacialIncidents }) => {
+  const currentSpacialIncident = spacialIncidents.find(
+    (spacialIncident) => spacialIncident.incident_id == incident.incident_id
+  );
 
   return (
     spacialIncidents && (
       <VisualizationWrapper>
         <TransformWrapper
           initialScale={2}
-          initialPositionX={-500 + -500 * currentSpacialIncident.x}
-          initialPositionY={-500 + -500 * currentSpacialIncident.y}
+          initialPositionX={-500 + -500 * currentSpacialIncident?.x || 0}
+          initialPositionY={-500 + -500 * currentSpacialIncident?.y || 0}
           limitToBounds={false}
           minScale={0.5}
           maxScale={10}
