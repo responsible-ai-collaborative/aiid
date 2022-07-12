@@ -53,8 +53,9 @@ const Image = ({ publicID, className, alt, transformation = null, plugins = [laz
       }
     };
 
+    setCloudinaryID(publicID);
     useFallbackIfLoadFailed();
-  }, []);
+  }, [publicID]);
 
   return (
     <AdvancedImage
