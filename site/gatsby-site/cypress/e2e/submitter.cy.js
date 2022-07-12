@@ -5,7 +5,7 @@ describe('Submitter Selection', () => {
     cy.visit(url);
   });
 
-  it('Should sroll to Incident Report Submission Leaderboards', () => {
+  it('Should scroll to Incident Report Submission Leaderboards', () => {
     cy.contains('Incident Report Submission Leaderboards').scrollIntoView();
   });
 
