@@ -42,7 +42,7 @@ const Image = ({ publicID, className, alt, transformation = null, plugins = [laz
 
   useEffect(() => {
     const useFallbackIfLoadFailed = () => {
-      const img = imageElement.current.imageRef.current;
+      const img = imageElement.current?.imageRef.current;
 
       if (!(img?.naturalHeight > 0)) {
         if (img?.complete) {
