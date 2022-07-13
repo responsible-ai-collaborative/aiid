@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Spinner } from 'react-bootstrap';
+import { Spinner, Form } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useApolloClient, gql } from '@apollo/client';
 import { Image } from '../../utils/cloudinary';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import Color from 'color';
+import hash from 'object-hash';
 
 const incidentQuery = gql`
   query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
@@ -24,7 +26,7 @@ const VisualizationWrapper = styled.div`
   > *,
   > * > * {
     width: 100% !important;
-    height: 90vh;
+    height: 80vh;
     background: #ccc;
   }
   margin-bottom: 1em;
@@ -49,7 +51,6 @@ const Visualization = styled.div`
     border-radius: 50%;
     margin-left: -1em;
     margin-top: -1em;
-    background: rgba(240, 240, 240, 0.8);
     z-index: 1;
     text-align: center;
     line-height: 2em;
@@ -80,16 +81,17 @@ const Visualization = styled.div`
   > a:hover:not(.current) {
     background: #dedede;
     z-index: 3;
-    color: var(--primary3);
+    color: var(--primary3) !important;
   }
   > a.current {
+    border: 1px solid grey;
     background: #001a32;
-    color: white;
+    box-shadow: 0px 0px 3px 3px rgba(255, 255, 255, 0.75);
     z-index: 2;
   }
 `;
 
-const PlotPoint = ({ spatialIncident, incident, state }) => {
+const PlotPoint = ({ spatialIncident, incident, state, axis, darkenBySeverity }) => {
   const client = useApolloClient();
 
   const [incidentData, setIncidentData] = useState(null);
@@ -101,6 +103,27 @@ const PlotPoint = ({ spatialIncident, incident, state }) => {
   // I'm pretty sure the JS engine is smart enough to memoize this,
   // but I'm not taking my chances.
   const sqrtScale = Math.sqrt(state.scale);
+
+  const classifications = spatialIncident.classifications?.classifications;
+
+  const taxon = classifications ? classifications[axis] : null;
+
+  const background = Color(taxon?.length > 0 ? '#ff0000' : '#ffffff')
+    .rotate(taxon?.length > 0 ? Number('0x' + hash(taxon[0], { encoding: 'hex' })) : 0)
+    .darken(
+      darkenBySeverity && classifications?.Severity
+        ? (0.7 *
+            ['Negligible', 'Minor', 'Unclear/unknown', 'Moderate', 'Critical', 'Severe'].indexOf(
+              classifications.Severity
+            )) /
+            5
+        : 0
+    )
+    .opaquer(-0.25);
+
+  // isDark() returns false for values that I find hard to read black text against,
+  // so we pretend it's darker than it really is.
+  const color = background?.darken(0.1).isDark() ? 'white' : 'black';
 
   return (
     <>
@@ -116,6 +139,8 @@ const PlotPoint = ({ spatialIncident, incident, state }) => {
           // allowing the user to zoom to more accurately select
           // from points that are very close to each other.
           transform: `scale(${1 / sqrtScale})`,
+          background,
+          color,
         }}
         className={spatialIncident.incident_id == incident.incident_id ? 'current' : ''}
         onMouseLeave={() => setHover(false)}
@@ -164,37 +189,72 @@ const PlotPoint = ({ spatialIncident, incident, state }) => {
 };
 
 const TsneVisualization = ({ incident, spatialIncidents }) => {
+  const [axis, setAxis] = useState('Harm_Distribution_Basis');
+
+  const [darkenBySeverity, setDarkenBySeverity] = useState(false);
+
   const currentSpatialIncident = spatialIncidents.find(
     (spatialIncident) => spatialIncident.incident_id == incident.incident_id
   );
 
   return (
     spatialIncidents && (
-      <VisualizationWrapper data-cy="tsne-visualization">
-        <TransformWrapper
-          initialScale={2}
-          initialPositionX={-500 + -500 * currentSpatialIncident?.x || 0}
-          initialPositionY={-500 + -500 * currentSpatialIncident?.y || 0}
-          limitToBounds={false}
-          minScale={0.5}
-          maxScale={10}
-        >
-          {({ state }) => (
-            <TransformComponent>
-              <Visualization>
-                {spatialIncidents.map((spatialIncident) => (
-                  <PlotPoint
-                    spatialIncident={spatialIncident}
-                    state={state}
-                    incident={incident}
-                    key={spatialIncident.incident_id}
-                  />
-                ))}
-              </Visualization>
-            </TransformComponent>
-          )}
-        </TransformWrapper>
-      </VisualizationWrapper>
+      <>
+        <div style={{ display: 'flex', gap: '1em', alignItems: 'center' }}>
+          <label htmlFor="color-axis-select">Color by </label>
+          <Form.Select
+            style={{ display: 'inline', width: 'unset' }}
+            id="color-axis-select"
+            onChange={(event) => setAxis(event.target.value)}
+          >
+            {[
+              'Harm_Distribution_Basis',
+              'Technology_Purveyor',
+              'System_Developer',
+              'Problem_Nature',
+              'Infrastructure_Sectors',
+              'None',
+            ].map((axis) => (
+              <option key={axis} value={axis}>
+                {axis.replace(/_/g, ' ')}
+              </option>
+            ))}
+          </Form.Select>
+          <label htmlFor="darken-by-severity-checkbox">Darken by Severity</label>
+          <Form.Check
+            type="switch"
+            id="darken-by-severity-checkbox"
+            onChange={(event) => setDarkenBySeverity(event.target.checked)}
+          />
+        </div>
+        <VisualizationWrapper data-cy="tsne-visualization">
+          <TransformWrapper
+            initialScale={2}
+            initialPositionX={-500 + -500 * currentSpatialIncident?.x || 0}
+            initialPositionY={-500 + -500 * currentSpatialIncident?.y || 0}
+            limitToBounds={false}
+            minScale={0.5}
+            maxScale={10}
+          >
+            {({ state }) => (
+              <TransformComponent>
+                <Visualization>
+                  {spatialIncidents.map((spatialIncident) => (
+                    <PlotPoint
+                      spatialIncident={spatialIncident}
+                      state={state}
+                      incident={incident}
+                      key={spatialIncident.incident_id}
+                      axis={axis}
+                      darkenBySeverity={darkenBySeverity}
+                    />
+                  ))}
+                </Visualization>
+              </TransformComponent>
+            )}
+          </TransformWrapper>
+        </VisualizationWrapper>
+      </>
     )
   );
 };
