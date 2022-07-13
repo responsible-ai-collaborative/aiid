@@ -165,7 +165,7 @@ describe('Cite pages', () => {
   it('The visualization should show the current incident and have it marked as such', () => {
     cy.visit(url);
     cy.get('[data-cy="tsne-visualization"]').scrollIntoView();
-    cy.get('#spacial-incident-10.current').should('be.visible');
+    cy.get('#spatial-incident-10.current').should('be.visible');
   });
 
   it('should render Next and Previous incident buttons', () => {

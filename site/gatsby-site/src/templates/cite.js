@@ -62,7 +62,7 @@ function CitePage(props) {
       taxonomies,
       nextIncident,
       prevIncident,
-      spacialIncidents,
+      spatialIncidents,
     },
   } = props;
 
@@ -260,10 +260,10 @@ function CitePage(props) {
           </Row>
         ))}
 
-        {spacialIncidents && (
+        {spatialIncidents && (
           <>
             <StyledHeading>This Incident in Semantic Space</StyledHeading>
-            <TsneVisualization incident={incident} spacialIncidents={spacialIncidents} />
+            <TsneVisualization incident={incident} spatialIncidents={spatialIncidents} />
           </>
         )}
 

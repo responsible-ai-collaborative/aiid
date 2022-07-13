@@ -192,7 +192,7 @@ const createCitationPages = async (graphql, createPage) => {
     ...allMongodbAiidprodResources.nodes.map((r) => ({ ...r, namespace: 'resources' })),
   ];
 
-  let spacialIncidents;
+  let spatialIncidents;
 
   const nlpStateResponse = await axios.get(
     'https://raw.githubusercontent.com/responsible-ai-collaborative/nlp-lambdas/main/inference/db_state/state.csv'
@@ -235,14 +235,14 @@ const createCitationPages = async (graphql, createPage) => {
     // `outputScaled` is `output` scaled to a range of [-1, 1]
     const outputScaled = model.getOutputScaled();
 
-    spacialIncidents = outputScaled.map((array, i) => {
-      const spacialIncident = {
+    spatialIncidents = outputScaled.map((array, i) => {
+      const spatialIncident = {
         incident_id: ids[i],
         x: array[0],
         y: array[1],
       };
 
-      return spacialIncident;
+      return spatialIncident;
     });
   } else {
     console.error('Could not download embedding state, skipping TSNE visualization.');
@@ -280,7 +280,7 @@ const createCitationPages = async (graphql, createPage) => {
       taxonomies,
       nextIncident: i < keys.length - 1 ? keys[i + 1] : null,
       prevIncident: i > 0 ? keys[i - 1] : null,
-      spacialIncidents,
+      spatialIncidents,
     });
   }
 
