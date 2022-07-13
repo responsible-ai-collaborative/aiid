@@ -211,9 +211,9 @@ const createCitationPages = async (graphql, createPage) => {
     const model = new TSNE({
       dim: 2,
       perplexity: 30.0,
-      earlyExaggeration: 4.0,
+      earlyExaggeration: 3.0,
       learningRate: 100.0,
-      nIter: 1000,
+      nIter: 10000,
       metric: 'euclidean',
     });
 
