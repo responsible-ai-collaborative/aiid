@@ -213,8 +213,6 @@ const plugins = [
   },
 ];
 
-plugins.push(`gatsby-plugin-client-side-redirect`);
-
 module.exports = {
   pathPrefix: config.gatsby.pathPrefix,
   siteMetadata: {
