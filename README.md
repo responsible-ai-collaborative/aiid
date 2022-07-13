@@ -84,6 +84,8 @@ MONGODB_REPLICA_SET=aiiddev-shard-00-02.6zxh5.mongodb.net,aiiddev-shard-00-01.6z
 
 GATSBY_ALGOLIA_APP_ID=JD5JCVZEVS
 GATSBY_ALGOLIA_SEARCH_KEY=c5e99d93261645721a1765fe4414389c
+GATSBY_AVAILABLE_LANGUAGES=en,es
+MONGODB_TRANSLATIONS_CONNECTION_STRING=[to be updated in MongoDB setup section]
 ```
 In the same folder, install dependencies using `npm` (do not use `yarn`, it will ignore the `package-lock.json` file):
 
@@ -189,6 +191,8 @@ To access this database, a user with read/write permissions needs to be provided
 ```
 MONGODB_TRANSLATIONS_CONNECTION_STRING=mongodb+srv://<user>:<password>@aiiddev.<host>.mongodb.net
 ```
+
+You can use the same value than defined on the MongoDB Setup environment variable ```MONGODB_CONNECTION_STRING```
 
 -3 Generate an Algolia index from each translated collection and upload them to Algolia. Each index has the following naming format:
 ```
