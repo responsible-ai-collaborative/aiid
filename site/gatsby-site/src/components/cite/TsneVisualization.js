@@ -89,7 +89,7 @@ const Visualization = styled.div`
   }
 `;
 
-const PlotPoint = ({ spacialIncident, incident, state }) => {
+const PlotPoint = ({ spatialIncident, incident, state }) => {
   const client = useApolloClient();
 
   const [incidentData, setIncidentData] = useState(null);
@@ -105,19 +105,19 @@ const PlotPoint = ({ spacialIncident, incident, state }) => {
   return (
     <>
       <a
-        id={'spacial-incident-' + spacialIncident.incident_id}
-        href={'/cite/' + spacialIncident.incident_id}
+        id={'spatial-incident-' + spatialIncident.incident_id}
+        href={'/cite/' + spatialIncident.incident_id}
         data-cy="tsne-plotpoint"
         style={{
-          top: `calc(50% + 48% * ${spacialIncident.y})`,
-          left: `calc(50% + 48% * ${spacialIncident.x})`,
+          top: `calc(50% + 48% * ${spatialIncident.y})`,
+          left: `calc(50% + 48% * ${spatialIncident.x})`,
 
           // The points do not grow as fast as the space between them,
           // allowing the user to zoom to more accurately select
           // from points that are very close to each other.
           transform: `scale(${1 / sqrtScale})`,
         }}
-        className={spacialIncident.incident_id == incident.incident_id ? 'current' : ''}
+        className={spatialIncident.incident_id == incident.incident_id ? 'current' : ''}
         onMouseLeave={() => setHover(false)}
         onMouseEnter={() => {
           setHover(true);
@@ -127,7 +127,7 @@ const PlotPoint = ({ spacialIncident, incident, state }) => {
                 query: incidentQuery,
                 variables: {
                   query: {
-                    incident_id: spacialIncident.incident_id,
+                    incident_id: spatialIncident.incident_id,
                   },
                 },
               })
@@ -137,13 +137,13 @@ const PlotPoint = ({ spacialIncident, incident, state }) => {
           }
         }}
       >
-        {spacialIncident.incident_id}
+        {spatialIncident.incident_id}
       </a>
       {hover && (
         <div
           style={{
-            top: `calc(50% + 48% * ${spacialIncident.y} + ${0.75 / sqrtScale}em)`,
-            left: `calc(50% + 48% * ${spacialIncident.x} + ${0.75 / sqrtScale}em)`,
+            top: `calc(50% + 48% * ${spatialIncident.y} + ${0.75 / sqrtScale}em)`,
+            left: `calc(50% + 48% * ${spatialIncident.x} + ${0.75 / sqrtScale}em)`,
             transform: `scale(${1 / state.scale})`,
             transformOrigin: 'top left',
             zIndex: 10,
@@ -163,18 +163,18 @@ const PlotPoint = ({ spacialIncident, incident, state }) => {
   );
 };
 
-const TsneVisualization = ({ incident, spacialIncidents }) => {
-  const currentSpacialIncident = spacialIncidents.find(
-    (spacialIncident) => spacialIncident.incident_id == incident.incident_id
+const TsneVisualization = ({ incident, spatialIncidents }) => {
+  const currentSpatialIncident = spatialIncidents.find(
+    (spatialIncident) => spatialIncident.incident_id == incident.incident_id
   );
 
   return (
-    spacialIncidents && (
+    spatialIncidents && (
       <VisualizationWrapper data-cy="tsne-visualization">
         <TransformWrapper
           initialScale={2}
-          initialPositionX={-500 + -500 * currentSpacialIncident?.x || 0}
-          initialPositionY={-500 + -500 * currentSpacialIncident?.y || 0}
+          initialPositionX={-500 + -500 * currentSpatialIncident?.x || 0}
+          initialPositionY={-500 + -500 * currentSpatialIncident?.y || 0}
           limitToBounds={false}
           minScale={0.5}
           maxScale={10}
@@ -182,12 +182,12 @@ const TsneVisualization = ({ incident, spacialIncidents }) => {
           {({ state }) => (
             <TransformComponent>
               <Visualization>
-                {spacialIncidents.map((spacialIncident) => (
+                {spatialIncidents.map((spatialIncident) => (
                   <PlotPoint
-                    spacialIncident={spacialIncident}
+                    spatialIncident={spatialIncident}
                     state={state}
                     incident={incident}
-                    key={spacialIncident.incident_id}
+                    key={spatialIncident.incident_id}
                   />
                 ))}
               </Visualization>

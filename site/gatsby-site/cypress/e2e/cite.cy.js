@@ -157,7 +157,7 @@ describe('Cite pages', () => {
     cy.get('[name="incident_id"]').should('have.value', '10');
   });
 
-  it('Should render the TISN visualization', () => {
+  it('Should render the TSNE visualization', () => {
     cy.visit(url);
     cy.get('[data-cy="tsne-visualization"] [data-cy="tsne-plotpoint"]').should('exist');
   });
