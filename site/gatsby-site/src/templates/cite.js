@@ -97,9 +97,11 @@ function CitePage(props) {
         {metaTitle ? <title>{metaTitle}</title> : null}
         {metaTitle ? <meta name="title" content={metaTitle} /> : null}
         {metaDescription ? <meta name="description" content={metaDescription} /> : null}
+        <meta property="og:type" content="website" />
         {metaTitle ? <meta property="og:title" content={metaTitle} /> : null}
         {metaDescription ? <meta property="og:description" content={metaDescription} /> : null}
         {metaImage ? <meta property="og:image" content={metaImage} /> : null}
+        {/* Meta tags for Twitter */}
         {metaTitle ? <meta property="twitter:title" content={metaTitle} /> : null}
         {metaDescription ? <meta property="twitter:description" content={metaDescription} /> : null}
         <link rel="canonical" href={canonicalUrl} />
