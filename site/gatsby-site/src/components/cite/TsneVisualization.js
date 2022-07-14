@@ -6,6 +6,7 @@ import { Image } from '../../utils/cloudinary';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Color from 'color';
 import hash from 'object-hash';
+import { LocalizedLink } from 'gatsby-theme-i18n';
 
 const incidentQuery = gql`
   query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
@@ -26,7 +27,7 @@ const VisualizationWrapper = styled.div`
   > *,
   > * > * {
     width: 100% !important;
-    height: 80vh;
+    height: 90vh;
     background: #ccc;
   }
   margin-bottom: 1em;
@@ -104,12 +105,24 @@ const PlotPoint = ({ spatialIncident, incident, state, axis, darkenBySeverity })
   // but I'm not taking my chances.
   const sqrtScale = Math.sqrt(state.scale);
 
-  const classifications = spatialIncident.classifications?.classifications;
+  const classifications = spatialIncident.classifications;
 
-  const taxon = classifications ? classifications[axis] : null;
+  const taxon =
+    classifications && classifications[axis]
+      ? Array.isArray(classifications[axis])
+        ? classifications[axis].length > 0 && String(classifications[axis][0].trim()).length > 0
+          ? String(classifications[axis][0])
+          : null
+        : String(classifications[axis]).length > 0
+        ? String(classifications[axis])
+        : null
+      : null;
 
-  const background = Color(taxon?.length > 0 ? '#ff0000' : '#ffffff')
-    .rotate(taxon?.length > 0 ? Number('0x' + hash(taxon[0], { encoding: 'hex' })) : 0)
+  const taxonHash = taxon ? hash(taxon, { encoding: 'hex' }) : null;
+
+  const background = Color(taxonHash ? '#ff0000' : '#ffffff')
+    .rotate(taxonHash ? Number('0x' + taxonHash.slice(3, 6)) : 0)
+    .desaturate(taxonHash ? (0.8 * Number('0x' + taxonHash.slice(0, 3))) / 4096 : 0)
     .darken(
       darkenBySeverity && classifications?.Severity
         ? (0.7 *
@@ -127,9 +140,9 @@ const PlotPoint = ({ spatialIncident, incident, state, axis, darkenBySeverity })
 
   return (
     <>
-      <a
+      <LocalizedLink
         id={'spatial-incident-' + spatialIncident.incident_id}
-        href={'/cite/' + spatialIncident.incident_id}
+        to={'/cite/' + spatialIncident.incident_id}
         data-cy="tsne-plotpoint"
         style={{
           top: `calc(50% + 48% * ${spatialIncident.y})`,
@@ -163,7 +176,7 @@ const PlotPoint = ({ spatialIncident, incident, state, axis, darkenBySeverity })
         }}
       >
         {spatialIncident.incident_id}
-      </a>
+      </LocalizedLink>
       {hover && (
         <div
           style={{
@@ -178,6 +191,22 @@ const PlotPoint = ({ spatialIncident, incident, state, axis, darkenBySeverity })
             <>
               <Image publicID={incidentData.reports[0].cloudinary_id} />
               <h3>{incidentData?.title || incidentData.reports[0].title}</h3>
+              {taxon && (
+                <div style={{ marginTop: '.5em' }}>
+                  <span
+                    style={{
+                      height: '.75em',
+                      width: '.75em',
+                      borderRadius: '.2em',
+                      margin: '0em .2em -.05em 0px',
+                      verticalAlign: 'center',
+                      display: 'inline-block',
+                      background,
+                    }}
+                  />
+                  {taxon}
+                </div>
+              )}
             </>
           ) : (
             <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
@@ -200,32 +229,38 @@ const TsneVisualization = ({ incident, spatialIncidents }) => {
   return (
     spatialIncidents && (
       <>
-        <div style={{ display: 'flex', gap: '1em', alignItems: 'center' }}>
-          <label htmlFor="color-axis-select">Color by </label>
-          <Form.Select
-            style={{ display: 'inline', width: 'unset' }}
-            id="color-axis-select"
-            onChange={(event) => setAxis(event.target.value)}
-          >
-            {[
-              'Harm_Distribution_Basis',
-              'Technology_Purveyor',
-              'System_Developer',
-              'Problem_Nature',
-              'Infrastructure_Sectors',
-              'None',
-            ].map((axis) => (
-              <option key={axis} value={axis}>
-                {axis.replace(/_/g, ' ')}
-              </option>
-            ))}
-          </Form.Select>
-          <label htmlFor="darken-by-severity-checkbox">Darken by Severity</label>
-          <Form.Check
-            type="switch"
-            id="darken-by-severity-checkbox"
-            onChange={(event) => setDarkenBySeverity(event.target.checked)}
-          />
+        <div style={{ display: 'flex', gap: '1em', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '1em', alignItems: 'center' }}>
+            <label htmlFor="color-axis-select">Color by </label>
+            <Form.Select
+              style={{ display: 'inline', width: 'unset' }}
+              id="color-axis-select"
+              onChange={(event) => setAxis(event.target.value)}
+            >
+              {[
+                'Harm_Distribution_Basis',
+                'Harm_Type',
+                'Intent',
+                'Near_Miss',
+                'Problem_Nature',
+                'Sector_of_Deployment',
+                'System_Developer',
+                'None',
+              ].map((axis) => (
+                <option key={axis} value={axis}>
+                  {axis.replace(/_/g, ' ')}
+                </option>
+              ))}
+            </Form.Select>
+          </div>
+          <div style={{ display: 'flex', gap: '1em', alignItems: 'center' }}>
+            <label htmlFor="darken-by-severity-checkbox">Darken by Severity</label>
+            <Form.Check
+              type="switch"
+              id="darken-by-severity-checkbox"
+              onChange={(event) => setDarkenBySeverity(event.target.checked)}
+            />
+          </div>
         </div>
         <VisualizationWrapper data-cy="tsne-visualization">
           <TransformWrapper

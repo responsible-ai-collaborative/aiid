@@ -16,8 +16,7 @@ import IncidentCard from 'components/cite/IncidentCard';
 import Taxonomy from 'components/taxa/Taxonomy';
 import { useUserContext } from 'contexts/userContext';
 import TsneVisualization from 'components/cite/TsneVisualization';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { LocalizedLink } from 'gatsby-theme-i18n';
 
 const CardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -264,12 +263,15 @@ function CitePage(props) {
 
         {spatialIncidents && (
           <>
-            <StyledHeading>
-              This Incident in Semantic Space{' '}
-              <a href="/blog/using-ai-to-connect-ai-incidents">
-                <FontAwesomeIcon icon={faQuestionCircle} />
-              </a>
-            </StyledHeading>
+            <StyledHeading>This Incident in Semantic Space </StyledHeading>
+            <p>
+              The visualization below plots incidents closer together according to the similarity of
+              their reports texts, as identified through{' '}
+              <LocalizedLink to="/blog/using-ai-to-connect-ai-incidents">
+                our natural-language processing system
+              </LocalizedLink>
+              .
+            </p>
             <TsneVisualization incident={incident} spatialIncidents={spatialIncidents} />
           </>
         )}

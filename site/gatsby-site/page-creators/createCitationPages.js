@@ -192,8 +192,6 @@ const createCitationPages = async (graphql, createPage) => {
     ...allMongodbAiidprodResources.nodes.map((r) => ({ ...r, namespace: 'resources' })),
   ];
 
-  console.log('allClassifications', allClassifications);
-
   let spatialIncidents;
 
   const nlpStateResponse = await axios.get(
@@ -242,7 +240,24 @@ const createCitationPages = async (graphql, createPage) => {
         incident_id: ids[i],
         x: array[0],
         y: array[1],
-        classifications: allClassifications.find((c) => c.incident_id == ids[i]),
+        classifications: ((c) => {
+          if (!c) return null;
+          let classificationsSubset = {};
+
+          for (let axis of [
+            'Harm_Distribution_Basis',
+            'System_Developer',
+            'Problem_Nature',
+            'Sector_of_Deployment',
+            'Harm_Type',
+            'Intent',
+            'Near_Miss',
+            'Severity',
+          ]) {
+            classificationsSubset[axis] = c[axis];
+          }
+          return classificationsSubset;
+        })(allClassifications.find((c) => c.incident_id == ids[i])?.classifications),
       };
 
       return spatialIncident;
