@@ -62,9 +62,9 @@ function CitePage(props) {
 
   // meta tags
 
-  const metaTitle = 'Incident ' + incident.incident_id;
+  const metaTitle = `Incident ${incident.incident_id}`;
 
-  const metaDescription = 'Citation record for Incident ' + incident.incident_id;
+  const metaDescription = `Citation record for Incident ${incident.incident_id}`;
 
   const canonicalUrl = getCanonicalUrl(incident.incident_id);
 
