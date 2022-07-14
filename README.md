@@ -32,16 +32,21 @@ Please make sure your code is well organized and commented before opening the pu
 ## PR labeling strategy
 
 On a daily basis, all PRs should be labeled with one of the review process tags:
-- `PR: Draft`
 - `PR: Needs Review`
 - `PR: Work Needed`
 - `PR: Mergeable`
 
-The person opening the PR should apply `PR: Draft` until the work is finished, then the person can apply the `PR: Needs Review` label as soon the PR is ready to be reviewed.
-The reviewer can change it to `PR: Mergeable` or `PR: Work Needed` if the PR needs more work and assign it back to the corresponding developer.
+The person opening the PR should create it in a draft status until the work is finished, then she/he should click on "Ready for review" button and apply the `PR: Needs Review` label and assign it to someone as a reviewer as soon the PR is ready to be reviewed.
 
-Please respond to review requests in a timely manner, or indicate another reviewer would be better. Code review is everyone’s responsibility.
-When something is mergeable, then someone else (not the implementer or reviewer) can merge it to staging. They can optionally do a final review. After merge to staging, the code quality is everyone’s responsibility.
+For more information on how to create built-in draft pull requests, please refer to the [GitHub blog](https://github.blog/2019-02-14-introducing-draft-pull-requests/).
+
+The reviewer can change the PR label to `PR: Mergeable` or `PR: Work Needed` if the PR needs more work and assign it back to the corresponding developer.
+
+Please respond to review requests in a timely manner, or indicate if another reviewer would be better. Code review is everyone’s responsibility.
+
+When something is mergeable, then someone else (not the implementer or reviewer) can merge it to staging. They can optionally do a final review.
+
+After merge to staging, the code quality is everyone’s responsibility.
 
 ## Site Architecture
 
