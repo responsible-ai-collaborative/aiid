@@ -1,44 +1,38 @@
 const path = require('path');
 
-const createMdxPages = (graphql, createPage) => {
-  return new Promise((resolve, reject) => {
-    resolve(
-      graphql(
-        `
-          {
-            allMdx(filter: { fileAbsolutePath: { glob: "**/content/**" } }) {
-              edges {
-                node {
-                  fields {
-                    id
-                  }
-                  tableOfContents
-                  fields {
-                    slug
-                  }
-                }
+const createMdxPages = async (graphql, createPage, reporter) => {
+  const result = await graphql(
+    `
+      {
+        allFile(filter: { sourceInstanceName: { in: ["blog", "docs"] } }) {
+          nodes {
+            sourceInstanceName
+            absolutePath
+            childMdx {
+              frontmatter {
+                slug
               }
             }
           }
-        `
-      ).then((result) => {
-        if (result.errors) {
-          console.log(result.errors); // eslint-disable-line no-console
-          reject(result.errors);
         }
+      }
+    `
+  );
 
-        // Create blog posts pages.
-        result.data.allMdx.edges.forEach(({ node }) => {
-          createPage({
-            path: node.fields.slug ? node.fields.slug : '/',
-            component: path.resolve('./src/templates/docs.js'),
-            context: {
-              id: node.fields.id,
-            },
-          });
-        });
-      })
-    );
+  result.data.allFile.nodes.forEach((node) => {
+    if (node.childMdx.frontmatter.slug) {
+      const template = node.sourceInstanceName == 'blog' ? 'post' : 'docs';
+
+      createPage({
+        path: node.childMdx.frontmatter.slug,
+        component: path.resolve(`./src/templates/${template}.js`),
+        context: {
+          slug: node.childMdx.frontmatter.slug,
+        },
+      });
+    } else {
+      reporter.warn(`Missing slug for ${node.absolutePath}`);
+    }
   });
 };
 

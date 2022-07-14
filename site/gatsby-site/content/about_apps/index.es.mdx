@@ -1,0 +1,23 @@
+---
+title: "Aplicaciones y resúmenes"
+metaTitle: "Aplicaciones y resúmenes"
+metaDescription: "Las siguientes aplicaciones y resúmenes se han creado para integrarse con el AIID"
+slug: "/about_apps"
+---
+
+* [Descubrir](/aplicaciones/descubrir). Búsqueda instantánea de texto y metadatos de incidentes.
+* [Enviar](/aplicaciones/enviar). Envíe nuevos informes de incidentes a la base de datos de incidentes de AI.
+* [Lista de todos los incidentes y sus títulos de informes asociados](/resúmenes/incidentes). Vea esta página para realizar un seguimiento cuando se agregan nuevos incidentes.
+* [Tabla de clasificación](/resúmenes/tabla de clasificación). Los principales remitentes, autores y dominios de los informes dentro de la base de datos.
+* [Recuento de palabras](/resúmenes/recuentos de palabras). Una lista de palabras en informes de incidentes con sus recuentos en toda la base de datos.
+* [Incidentes marcados](/resumen/marcados). Vea esta página para ver informes de incidentes que pueden tener problemas.
+* [Vista de la base de datos de clasificaciones](/apps/classifications). Vea esta página para ver una vista completa de la colección de clasificaciones.
+* [Enviado](/aplicaciones/enviado). Ver para revisar los envíos a la base de datos de incidentes de AI.
+
+## Acerca de aplicaciones y resúmenes ##
+
+El AIID se basa en una base de datos de documentos y una colección de aplicaciones de navegador sin servidor. Esto significa que la base de datos es altamente extensible y la capa de aplicación puede tener un número ilimitado de vistas en la base de datos. La intención detrás de esta arquitectura es permitir que muchas comunidades tengan diferentes vistas de la base de datos. No debe tratar el AIID como un producto de datos estáticos, sino como un marco analítico a partir del cual producimos colectivamente los mejores sistemas inteligentes y evitamos los peores resultados que potencialmente pueden producir. Cualquiera puede enviar una aplicación que interactúe con los datos del incidente. Vaya a [GitHub Repo](https://github.com/PartnershipOnAI/aiid) para obtener más detalles.
+
+**Aplicaciones frente a resúmenes**
+
+Un "resumen" en AIID es algo que genera estadísticas descriptivas, visualizaciones u otras vistas de solo lectura en la base de datos. Se espera que los resúmenes vivan dentro del entorno de secuencias de comandos que está leyendo actualmente. Una "aplicación" es algo que puede tener permisos de escritura en alguna parte de la base de datos. Además, una aplicación puede mantener su propio entorno de secuencias de comandos aislado del entorno de secuencias de comandos que está leyendo actualmente.

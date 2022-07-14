@@ -16,6 +16,7 @@ import IncidentCard from 'components/cite/IncidentCard';
 import Taxonomy from 'components/taxa/Taxonomy';
 import { useUserContext } from 'contexts/userContext';
 import SimilarIncidents from 'components/cite/SimilarIncidents';
+import { Trans, useTranslation } from 'react-i18next';
 
 const CardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -70,11 +71,13 @@ function CitePage(props) {
 
   const { isRole } = useUserContext();
 
+  const { t } = useTranslation();
+
   // meta tags
 
-  const metaTitle = 'Incident ' + incident.incident_id;
+  const metaTitle = t('Incident {{id}}', { id: incident.incident_id });
 
-  const metaDescription = 'Citation record for Incident ' + incident.incident_id;
+  const metaDescription = t('Citation record for Incident {{id}}', { id: incident.incident_id });
 
   const canonicalUrl = getCanonicalUrl(incident.incident_id);
 
@@ -121,7 +124,9 @@ function CitePage(props) {
           <Col>
             <CardContainer className="card" data-cy="citation">
               <div className="card-header">
-                <h4>Suggested citation format</h4>
+                <h4>
+                  <Trans>Suggested citation format</Trans>
+                </h4>
               </div>
               <div className="card-body">
                 <Citation
@@ -154,7 +159,9 @@ function CitePage(props) {
           <Col>
             <CardContainer className="card">
               <div className="card-header">
-                <h4>Reports Timeline</h4>
+                <h4>
+                  <Trans>Reports Timeline</Trans>
+                </h4>
               </div>
               <div className="card-body">
                 <Timeline data={timeline} />
@@ -167,7 +174,9 @@ function CitePage(props) {
           <Col>
             <CardContainer className="card">
               <div className="card-header">
-                <h4>Tools</h4>
+                <h4>
+                  <Trans>Tools</Trans>
+                </h4>
               </div>
               <div className="card-body">
                 <Button
@@ -178,17 +187,17 @@ function CitePage(props) {
                     'yyyy-MM-dd'
                   )}`}
                 >
-                  New Report
+                  <Trans>New Report</Trans>
                 </Button>
                 <Button variant="outline-primary" className="me-2" href={'/summaries/incidents'}>
-                  All Incidents
+                  <Trans>All Incidents</Trans>
                 </Button>
                 <Button
                   variant="outline-primary"
                   className="me-2"
                   href={'/apps/discover?incident_id=' + incident.incident_id}
                 >
-                  Discover
+                  <Trans>Discover</Trans>
                 </Button>
                 {isRole('incident_editor') && (
                   <Button
@@ -243,7 +252,9 @@ function CitePage(props) {
           <Col>
             <IncidnetsReportsTitle>
               <div className={'titleWrapper'}>
-                <StyledHeading>Incidents Reports</StyledHeading>
+                <StyledHeading>
+                  <Trans>Incidents Reports</Trans>
+                </StyledHeading>
               </div>
             </IncidnetsReportsTitle>
           </Col>
@@ -272,10 +283,10 @@ function CitePage(props) {
 
         <Pagination className="justify-content-between">
           <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>
-            ‹ Previous Incident
+            ‹ <Trans>Previous Incident</Trans>
           </Pagination.Item>
           <Pagination.Item href={`/cite/${nextIncident}`} disabled={!nextIncident}>
-            Next Incident ›
+            <Trans>Next Incident</Trans> ›
           </Pagination.Item>
         </Pagination>
 

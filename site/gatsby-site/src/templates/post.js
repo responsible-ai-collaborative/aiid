@@ -62,14 +62,14 @@ export default function Post(props) {
 }
 
 export const pageQuery = graphql`
-  query ($id: String!) {
+  query PostTemplateQuery($slug: String!, $locale: String!) {
     site {
       siteMetadata {
         title
         docsLocation
       }
     }
-    mdx(fields: { id: { eq: $id } }) {
+    mdx(fields: { locale: { eq: $locale } }, frontmatter: { slug: { eq: $slug } }) {
       fields {
         id
         title

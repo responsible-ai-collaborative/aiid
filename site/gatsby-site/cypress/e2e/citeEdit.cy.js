@@ -72,6 +72,8 @@ describe('Edit report', () => {
       cy.get(`[name=${key}]`).clear().type(updates[key]);
     });
 
+    cy.get(`[name="language"]`).select('Spanish');
+
     cy.setEditorText(
       'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
     );
@@ -125,6 +127,7 @@ describe('Edit report', () => {
       expect(xhr.request.body.variables.set.url).eq('https://www.test.com/test');
       expect(xhr.request.body.variables.set.source_domain).eq('test.com');
       expect(xhr.request.body.variables.set.editor_notes).eq('Pro iustitia tantum');
+      expect(xhr.request.body.variables.set.language).eq('es');
     });
 
     cy.wrap(updateIncidentInvoked).should('eq', false);
