@@ -222,12 +222,12 @@ describe('Cite pages', () => {
 
     const hrefs = new Set();
 
-    cy.get('[data-cy="similar-incident-card"] [data-cy="cite-link"]')
-      .invoke('attr', 'href')
-      .then((href) => {
-        expect(hrefs.has(href)).to.be.false;
-        hrefs.add(href);
-      });
+    cy.get('[data-cy="similar-incident-card"] [data-cy="cite-link"]').each((link) => {
+      const href = link[0].href;
+
+      expect(hrefs.has(href)).to.be.false;
+      hrefs.add(href);
+    });
   });
 
   it('Should not display edit link when not logged in', () => {
@@ -245,15 +245,16 @@ describe('Cite pages', () => {
   });
 
   it('Should flag an incident as not related', () => {
-    cy.visit('/cite/9');
-
-    cy.get('[data-cy="flag-similar-incident"]').first().click();
-
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'UpdateIncident',
       'updateIncident'
     );
+
+    cy.visit('/cite/9');
+
+    cy.get('[data-cy="flag-similar-incident"]').first().click();
+
     cy.wait('@updateIncident').then((xhr) => {
       expect(xhr.response.statusCode).to.equal(200);
       expect(Boolean(xhr.request.body.variables.set.flagged_dissimilar_incidents)).to.be.true;
