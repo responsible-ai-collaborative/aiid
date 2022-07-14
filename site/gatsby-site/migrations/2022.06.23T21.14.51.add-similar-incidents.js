@@ -36,12 +36,10 @@ exports.up = async ({ context: { client } }) => {
   for (let incident of testing ? testingIncidents : incidents) {
     const url = 'https://q3z6vr2qvj.execute-api.us-west-2.amazonaws.com/embed-to-db-similar';
 
-    const lambdaResponse = await axios
-      .post(url, {
-        embed: incident.embedding,
-        num: 4,
-      })
-      .catch((error) => console.error(error));
+    const lambdaResponse = await axios.post(url, {
+      embed: incident.embedding,
+      num: 4,
+    });
 
     const similar_incidents = JSON.parse(
       lambdaResponse.data.body.msg.replace(/\(/g, '[').replace(/\)/g, ']')
