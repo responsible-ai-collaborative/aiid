@@ -70,6 +70,8 @@ function CitePage(props) {
 
   const sortedReports = sortIncidentsByDatePublished(incidentReports);
 
+  const metaImage = sortedReports.length > 0 ? sortedReports[0].image_url : null;
+
   const authorsModal = useModal();
 
   const submittersModal = useModal();
@@ -97,6 +99,7 @@ function CitePage(props) {
         {metaDescription ? <meta name="description" content={metaDescription} /> : null}
         {metaTitle ? <meta property="og:title" content={metaTitle} /> : null}
         {metaDescription ? <meta property="og:description" content={metaDescription} /> : null}
+        {metaImage ? <meta property="og:image" content={metaImage} /> : null}
         {metaTitle ? <meta property="twitter:title" content={metaTitle} /> : null}
         {metaDescription ? <meta property="twitter:description" content={metaDescription} /> : null}
         <link rel="canonical" href={canonicalUrl} />
