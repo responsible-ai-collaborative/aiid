@@ -13,6 +13,12 @@ export default class HTML extends React.Component {
           {config.siteMetadata.ogImage ? (
             <meta property="og:image" content={config.siteMetadata.ogImage} />
           ) : null}
+          {config.siteMetadata.twitterAccount ? (
+            <>
+              <meta name="twitter:site" content="@IncidentsDB" />
+              <meta name="twitter:creator" content="@IncidentsDB" />
+            </>
+          ) : null}
           <meta property="twitter:card" content="summary_large_image" />
           {config.siteMetadata.ogImage ? (
             <meta property="twitter:image" content={config.siteMetadata.ogImage} />
