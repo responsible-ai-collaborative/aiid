@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { ListGroup, Card, Spinner, Button, ButtonToolbar } from 'react-bootstrap';
 import { useFormikContext } from 'formik';
 import SimilaritySelector from './SimilaritySelector';
+import { LocalizedLink } from 'gatsby-theme-i18n';
 
 const ListContainer = styled(Card)`
   margin: 1em 0;
@@ -69,12 +70,15 @@ const RelatedIncidentsArea = ({
               <span>
                 {val?.incident_id && (
                   <>
-                    <a href={'/cite/' + val.incident_id}>#{val.incident_id}</a> –{' '}
+                    <LocalizedLink to={'/cite/' + val.incident_id}>
+                      #{val.incident_id}
+                    </LocalizedLink>{' '}
+                    –{' '}
                   </>
                 )}
-                <a href={val.url} data-cy="title" target="_blank" rel="noreferrer">
+                <LocalizedLink to={val.url} data-cy="title" target="_blank" rel="noreferrer">
                   {val.title}
-                </a>
+                </LocalizedLink>
               </span>
               <ReportToolbar>
                 {editable && (
