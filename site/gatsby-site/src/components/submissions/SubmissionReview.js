@@ -53,7 +53,7 @@ const dateRender = [
   'date_modified',
 ];
 
-const otherDetails = ['language', '_id'];
+const otherDetails = ['language', '_id', 'developers', 'deployers', 'harmed_parties'];
 
 const SubmissionReview = ({ submission }) => {
   const { isRole } = useUserContext();

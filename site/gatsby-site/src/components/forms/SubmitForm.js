@@ -99,6 +99,11 @@ const SubmitForm = () => {
             : values.submitters
           : ['Anonymous'],
         plain_text: await stripMarkdown(values.text),
+        developers: isString(values.developers) ? values.developers.split(',') : values.developers,
+        deployers: isString(values.deployers) ? values.deployers.split(',') : values.deployers,
+        harmed_parties: isString(values.harmed_parties)
+          ? values.harmed_parties.split(',')
+          : values.harmed_parties,
       };
 
       await insertSubmission({ variables: { submission } });
