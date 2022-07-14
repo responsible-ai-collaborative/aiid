@@ -40,5 +40,9 @@
   "Previous Incident": "Incidente Anterior",
   "Next Incident": "Siguiente Incidente",
   "Incident {{id}}": "Incidente {{id}}",
-  "Citation record for Incident {{id}}": "Registro de citas para el Incidente {{id}}"
+  "Citation record for Incident {{id}}": "Registro de citas para el Incidente {{id}}",
+  "Search": "Buscar",
+  "Discover": "Descubrir",
+  "Submit": "Enviar",
+  "Report URL": "URL del Reporte"
 }
