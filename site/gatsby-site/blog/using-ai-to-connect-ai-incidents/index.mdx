@@ -5,7 +5,7 @@ metaDescription: ''
 date: '2022-06-29'
 image: ../../src/images/nlp-lambdas-aws-architecture.png
 author: 'Nicholas Broce, Nicholas Olson, and Jason Scott-Hakanson'
-slug: 'using-ai-to-connect-ai-incidents'
+slug: '/blog/using-ai-to-connect-ai-incidents'
 ---
 
 import { Card } from 'react-bootstrap';
@@ -22,9 +22,12 @@ Over the course of the 2021–22 academic year, four students at OSU were tasked
 
 The students are proud to showcase the result of their work. The main outcome is an <abbr title="Application Programming Interface">API</abbr> that takes an arbitrary input text, like a news report or press release, and outputs the IDs of the most similar incidents in the database. Each incident in the database is a collection of news reports about the same event, and each of these clusters is given a unique “incident ID”, allowing any text to be compared to a clustered understanding of the reports rather than a text-to-text comparison using keywords.
 
-<!-- TODO: Insert GIF/video showing it working -->
-
-<video src="/semantically-related.mp4" controls />
+<video 
+  controls
+  src="/semantically-related.mp4" 
+  style={{ maxWidth: '100%', maxHeight: '100vh', aspectRatio: '16 / 9' }} 
+  alt="A screen recording of a user of the incident submission form entering an text and reviewing the headlines of reports identified as semantically related. The entered text concerns hackers exploiting the workings of Tesla's cameras to make the car mistakenly accelerate. The user uses their cursor to gesture to some of the results returned, including one about a self-driving car accident in a Tesla, another about an iPhone hack, and a third about a Google self-driving car accident."
+/>
 
 The API is currently being used by AIID contributors to identify new submissions reporting on incidents already in the database. It is also planned to be fitted for future use-cases, including:
 
