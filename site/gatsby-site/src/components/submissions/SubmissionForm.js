@@ -45,6 +45,22 @@ export const schema = yup.object().shape({
     .min(6, '*Title must have at least 6 characters')
     .max(500, "*Titles can't be longer than 500 characters")
     .required('*Title is required'),
+  description: yup.string().when('_id', {
+    is: (_id) => _id !== undefined,
+    then: yup.string().required('*Incident Description required'),
+  }),
+  developer: yup.string().when('_id', {
+    is: (_id) => _id !== undefined,
+    then: yup.string().required('*Developer required'),
+  }),
+  deployer: yup.string().when('_id', {
+    is: (_id) => _id !== undefined,
+    then: yup.string().required('*Deployer is required'),
+  }),
+  harmed_parties: yup.string().when('_id', {
+    is: (_id) => _id !== undefined,
+    then: yup.string().required('*Harm Parties is required'),
+  }),
   authors: yup
     .string()
     .min(3, '*Authors must have at least 3 characters')
@@ -229,6 +245,41 @@ const SubmissionForm = () => {
           className="mt-3"
           {...TextInputGroupProps}
         />
+
+        <TextInputGroup
+          name="description"
+          label="Description"
+          as="textarea"
+          placeholder="Report Description"
+          rows={3}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
+        <TextInputGroup
+          name="developer"
+          label="Alleged developer of AI system"
+          placeholder="Alleged developer of AI system"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
+        <TextInputGroup
+          name="deployer"
+          label="Alleged deployer of AI system"
+          placeholder="Alleged deployer of AI system"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
+        <TextInputGroup
+          name="harmed_parties"
+          label="Alleged harmed or nearly harmed parties"
+          placeholder="Alleged harmed or nearly harmed parties"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
         <TextInputGroup
           name="authors"
           label="Author CSV"

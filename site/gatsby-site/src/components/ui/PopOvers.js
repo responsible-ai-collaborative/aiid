@@ -23,6 +23,24 @@ export const submitters = Popover(
   Entries in this field will be added to the public leaderboard.`
 );
 
+export const developer = Popover(
+  'Alleged developer of AI system',
+  `Enter the names of the developer(s) of the AI System.
+  You should enter all developers of the AI system as a single row of a CSV.`
+);
+
+export const deployer = Popover(
+  'Alleged deployer of AI system',
+  `Enter the names of the deployer(s) of the AI System.
+  You should enter all deployers of the AI system as a single row of a CSV.`
+);
+
+export const harmed_parties = Popover(
+  'Alleged harmed or nearly harmed parties',
+  `Enter the names of the harmed or nearly haermed parties by the AI System.
+  You should enter all parties as a single row of a CSV.`
+);
+
 export const incident_date = Popover(
   'When did the incident first occur?',
   `Many AI incidents are not discrete events (i.e., they happen over a period of time).
