@@ -11,6 +11,13 @@ const Icons = styled.div`
   gap: 1rem;
 `;
 
+const FooterLink = styled.a`
+  color: inherit;
+  :hover {
+    color: var(--primary3);
+  }
+`;
+
 export default function Footer() {
   const data = useStaticQuery(graphql`
     query FooterQuery {
@@ -73,6 +80,12 @@ export default function Footer() {
               />
             </a>
           </Icons>
+        </Col>
+        <Col xs="auto">
+          <FooterLink href="/terms-of-use">Terms of use</FooterLink>
+        </Col>
+        <Col xs="auto">
+          <FooterLink href="/privacy-policy">Privacy</FooterLink>
         </Col>
       </Row>
     </Container>
