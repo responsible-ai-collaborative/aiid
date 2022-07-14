@@ -104,6 +104,7 @@ function CitePage(props) {
         {/* Meta tags for Twitter */}
         {metaTitle ? <meta property="twitter:title" content={metaTitle} /> : null}
         {metaDescription ? <meta property="twitter:description" content={metaDescription} /> : null}
+        {metaImage ? <meta property="twitter:image" content={metaImage} /> : null}
         <link rel="canonical" href={canonicalUrl} />
       </Helmet>
 
