@@ -19,7 +19,7 @@ const ReportRow = styled(ListGroup.Item)`
     flex-shrink: 1;
     margin-right: auto;
   }
-  Button.set-id {
+  button.set-id {
     margin-left: 1ch;
     flex-shrink: 0 !important;
     width: 8em;
