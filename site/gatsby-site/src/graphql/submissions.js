@@ -31,6 +31,9 @@ export const FIND_SUBMISSIONS = gql`
       editor_notes
       tags
       plain_text
+      developers
+      deployers
+      harmed_parties
     }
   }
 `;
@@ -57,6 +60,9 @@ export const FIND_SUBMISSION = gql`
       url
       editor_notes
       tags
+      developers
+      deployers
+      harmed_parties
     }
   }
 `;

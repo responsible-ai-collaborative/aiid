@@ -49,11 +49,11 @@ export const schema = yup.object().shape({
     is: (_id) => _id !== undefined,
     then: yup.string().required('*Incident Description required'),
   }),
-  developer: yup.string().when('_id', {
+  developers: yup.string().when('_id', {
     is: (_id) => _id !== undefined,
     then: yup.string().required('*Developer required'),
   }),
-  deployer: yup.string().when('_id', {
+  deployers: yup.string().when('_id', {
     is: (_id) => _id !== undefined,
     then: yup.string().required('*Deployer is required'),
   }),
@@ -257,7 +257,7 @@ const SubmissionForm = () => {
         />
 
         <TextInputGroup
-          name="developer"
+          name="developers"
           label="Alleged developer of AI system"
           placeholder="Alleged developer of AI system"
           className="mt-3"
@@ -265,7 +265,7 @@ const SubmissionForm = () => {
         />
 
         <TextInputGroup
-          name="deployer"
+          name="deployers"
           label="Alleged deployer of AI system"
           placeholder="Alleged deployer of AI system"
           className="mt-3"

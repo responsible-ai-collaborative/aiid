@@ -143,10 +143,10 @@ const SubmissionReview = ({ submission }) => {
           set: {
             title: submission.title,
             date: submission.incident_date,
-            description: '',
-            AllegedDeployerOfAISystem: [],
-            AllegedDeveloperOfAISystem: [],
-            AllegedHarmedOrNearlyHarmedParties: [],
+            description: submission.description,
+            AllegedDeployerOfAISystem: [submission.deployers],
+            AllegedDeveloperOfAISystem: [submission.developers],
+            AllegedHarmedOrNearlyHarmedParties: [submission.harmed_parties],
           },
         },
       });

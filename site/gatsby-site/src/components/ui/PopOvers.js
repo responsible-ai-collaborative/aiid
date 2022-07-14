@@ -23,13 +23,13 @@ export const submitters = Popover(
   Entries in this field will be added to the public leaderboard.`
 );
 
-export const developer = Popover(
+export const developers = Popover(
   'Alleged developer of AI system',
   `Enter the names of the developer(s) of the AI System.
   You should enter all developers of the AI system as a single row of a CSV.`
 );
 
-export const deployer = Popover(
+export const deployers = Popover(
   'Alleged deployer of AI system',
   `Enter the names of the deployer(s) of the AI System.
   You should enter all deployers of the AI system as a single row of a CSV.`

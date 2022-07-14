@@ -16,10 +16,14 @@ exports = async (input) => {
     
     const newIncident = {
       title: submission.title,
+      description: submission.description,
       incident_id: lastIncident.incident_id + 1,
       reports: [],
       editors: ["Sean McGregor"],
       date: submission.incident_date,
+      AllegedDeployerOfAISystem: [submission.deployers],
+      AllegedDeveloperOfAISystem: [submission.developers],
+      AllegedHarmedOrNearlyHarmedParties: [submission.harmed_parties],
     }
     
     await incidents.insertOne({...newIncident, incident_id: BSON.Int32(newIncident.incident_id)});
