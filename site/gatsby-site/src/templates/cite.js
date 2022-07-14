@@ -94,6 +94,7 @@ function CitePage(props) {
   return (
     <Layout {...props}>
       <Helmet>
+        <meta property="og:url" content={canonicalUrl} />
         {metaTitle ? <title>{metaTitle}</title> : null}
         {metaTitle ? <meta name="title" content={metaTitle} /> : null}
         {metaDescription ? <meta name="description" content={metaDescription} /> : null}
