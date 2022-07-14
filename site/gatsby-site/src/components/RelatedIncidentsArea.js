@@ -76,9 +76,9 @@ const RelatedIncidentsArea = ({
                     –{' '}
                   </>
                 )}
-                <LocalizedLink to={val.url} data-cy="title" target="_blank" rel="noreferrer">
+                <a href={val.url} data-cy="title" target="_blank" rel="noreferrer">
                   {val.title}
-                </LocalizedLink>
+                </a>
               </span>
               <ReportToolbar>
                 {editable && (
