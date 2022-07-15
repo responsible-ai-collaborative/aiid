@@ -9,7 +9,7 @@ function TagsControl({ name }) {
     2: { setTouched, setValue },
   } = useField({ name });
 
-  const { t } = useTranslation();
+  const { t } = useTranslation(['validation']);
 
   return (
     <Tags

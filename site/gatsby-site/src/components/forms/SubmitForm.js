@@ -179,9 +179,11 @@ const SubmitForm = () => {
           </p>
           <div className="d-flex justify-content-center my-3">
             <Button className="me-4" onClick={previousRecord}>
-              &lt; Previous
+              &lt; <Trans>Previous</Trans>
             </Button>
-            <Button onClick={nextRecord}>Next &gt;</Button>
+            <Button onClick={nextRecord}>
+              <Trans>Next</Trans> &gt;
+            </Button>
           </div>
           <CSVReader
             onDrop={(data) => {
@@ -196,7 +198,9 @@ const SubmitForm = () => {
             noDrag
             addRemoveButton
           >
-            <span>Click to upload.</span>
+            <span>
+              <Trans>Click to upload</Trans>
+            </span>
           </CSVReader>
         </Container>
       )}
