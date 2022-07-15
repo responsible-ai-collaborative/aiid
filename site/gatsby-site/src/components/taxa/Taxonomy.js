@@ -26,8 +26,14 @@ const Field = styled.div`
   width: 20%;
   border-right: 2.5px solid #d9deee;
   margin-right: 1em;
+  padding-right: 0.5em;
   color: grey;
   font-weight: 700;
+
+  @media only screen and (max-width: 767px) {
+    width: 50%;
+    min-width: 40%;
+  }
 `;
 
 const Value = styled(Markdown)`
