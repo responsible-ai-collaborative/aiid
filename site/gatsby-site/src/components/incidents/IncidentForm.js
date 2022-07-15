@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Form as FormikForm, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import { Form } from 'react-bootstrap';
 import TagsControl from 'components/forms/TagsControl';
 import SemanticallyRelatedIncidents from '../SemanticallyRelatedIncidents';
 import RelatedIncidentsArea from '../RelatedIncidentsArea';
-import { gql, useApolloClient } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
+import { debounce } from 'debounce';
 
 const relatedIncidentIdsQuery = gql`
   query IncidentWithReports($query: IncidentQueryInput) {
@@ -32,37 +33,65 @@ export const schema = Yup.object().shape({
 function IncidentForm() {
   const { values, errors, handleChange, handleSubmit } = useFormikContext();
 
-  const [editorSimilarIncidentReports, setEditorSimilarIncidentReports] = useState([]);
-
-  const [similarReportsById, setSimilarReportsById] = useState([]);
-
-  const client = useApolloClient();
-
-  const updateEditorSimilarIncidents = async () => {
-    const dbResponse = await client.query({
-      query: relatedIncidentIdsQuery,
-      variables: {
-        query: {
-          incident_id_in: (values?.editor_similar_incidents || []).concat(
-            values.editor_dissimilar_incidents
-          ),
-        },
+  const similarReportsByIdQuery = useQuery(relatedIncidentIdsQuery, {
+    variables: {
+      query: {
+        incident_id_in: [],
       },
-    });
+    },
+  });
 
-    const reports = dbResponse.data.incidents.reduce(
-      (reports, incident) =>
-        reports.concat(
-          incident.reports.map((report) => ({ ...report, incident_id: incident.incident_id }))
+  const selectedSimilarId = useRef(null);
+
+  const similarIdUpdate = useRef(
+    debounce((event) => {
+      const incident_id = Number(event.target.value);
+
+      selectedSimilarId.current = incident_id;
+
+      similarReportsByIdQuery.refetch({
+        query: {
+          incident_id_in: [incident_id],
+        },
+      });
+    })
+  ).current;
+
+  const similarReportsById =
+    similarReportsByIdQuery.loading ||
+    similarReportsByIdQuery.error ||
+    similarReportsByIdQuery.data.incidents.length == 0 ||
+    selectedSimilarId == null
+      ? []
+      : similarReportsByIdQuery.data.incidents[0].reports.map((report) => ({
+          incident_id: selectedSimilarId.current,
+          ...report,
+        }));
+
+  const editorSimilarIncidentReportsQuery = useQuery(relatedIncidentIdsQuery, {
+    variables: {
+      query: {
+        incident_id_in: (values?.editor_similar_incidents || []).concat(
+          values.editor_dissimilar_incidents
         ),
-      []
-    );
+      },
+    },
+  });
 
-    setEditorSimilarIncidentReports(reports);
-  };
+  const editorSimilarIncidentReports =
+    editorSimilarIncidentReportsQuery.loading ||
+    editorSimilarIncidentReportsQuery.error ||
+    editorSimilarIncidentReportsQuery.data.incidents.length == 0
+      ? []
+      : editorSimilarIncidentReportsQuery.data.incidents.reduce(
+          (reports, incident) =>
+            reports.concat(
+              incident.reports.map((report) => ({ ...report, incident_id: incident.incident_id }))
+            ),
+          []
+        );
 
   useEffect(() => {
-    updateEditorSimilarIncidents();
     window.location.hash && document.querySelector(window.location.hash).scrollIntoView();
   }, []);
 
@@ -126,30 +155,7 @@ function IncidentForm() {
 
         <Form.Group className="mt-3">
           <Form.Label>Similar Incident Id</Form.Label>
-          <Form.Control
-            type="number"
-            data-cy="similar-id-input"
-            onChange={async (event) => {
-              const incident_id = Number(event.target.value);
-
-              const dbResponse = await client.query({
-                query: relatedIncidentIdsQuery,
-                variables: {
-                  query: {
-                    incident_id_in: [incident_id],
-                  },
-                },
-              });
-
-              if (dbResponse?.data?.incidents.length > 0) {
-                setSimilarReportsById(
-                  dbResponse.data.incidents[0].reports.map((report) => ({ incident_id, ...report }))
-                );
-              } else {
-                setSimilarReportsById([]);
-              }
-            }}
-          />
+          <Form.Control type="number" data-cy="similar-id-input" onChange={similarIdUpdate} />
         </Form.Group>
 
         <RelatedIncidentsArea
