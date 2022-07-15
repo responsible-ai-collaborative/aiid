@@ -24,7 +24,6 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
 
   const handleSubmit = async (values) => {
     try {
-      console.log('valuesss', values);
       const update = { ...values, __typename: undefined, _id: undefined };
 
       await updateSubmission({

@@ -110,7 +110,15 @@ const SubmissionReview = ({ submission }) => {
       },
     });
 
-    const report = { ...submission, incident_id: undefined, _id: undefined, __typename: undefined };
+    const report = {
+      ...submission,
+      deployers: undefined,
+      developers: undefined,
+      harmed_parties: undefined,
+      incident_id: undefined,
+      _id: undefined,
+      __typename: undefined,
+    };
 
     report.date_modified = format(new Date(), 'yyyy-MM-dd');
 
@@ -144,9 +152,6 @@ const SubmissionReview = ({ submission }) => {
             title: submission.title,
             date: submission.incident_date,
             description: submission.description,
-            AllegedDeployerOfAISystem: [submission.deployers],
-            AllegedDeveloperOfAISystem: [submission.developers],
-            AllegedHarmedOrNearlyHarmedParties: [submission.harmed_parties],
           },
         },
       });
