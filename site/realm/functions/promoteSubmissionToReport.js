@@ -21,9 +21,9 @@ exports = async (input) => {
       reports: [],
       editors: ["Sean McGregor"],
       date: submission.incident_date,
-      AllegedDeployerOfAISystem: !Array.isArray(submission.deployers) ? [] : submission.deployers,
-      AllegedDeveloperOfAISystem: !Array.isArray(submission.developers) ? [] : submission.developers,
-      AllegedHarmedOrNearlyHarmedParties: !Array.isArray(submission.harmed_parties) ? [] : submission.harmed_parties,
+      "Alleged Deployer Of AI System": !Array.isArray(submission.AllegedDeployerOfAISystem) ? [] : submission.AllegedDeployerOfAISystem,
+      "Alleged Developer Of AI System": !Array.isArray(submission.AllegedDeveloperOfAISystem) ? [] : submission.AllegedDeveloperOfAISystem,
+      "Alleged Harmed Or Nearly Harmed Parties": !Array.isArray(submission.AllegedHarmedOrNearlyHarmedParties) ? [] : submission.AllegedHarmedOrNearlyHarmedParties,
     }
     
     await incidents.insertOne({...newIncident, incident_id: BSON.Int32(newIncident.incident_id)});
