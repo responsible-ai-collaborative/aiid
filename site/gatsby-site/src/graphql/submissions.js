@@ -89,6 +89,9 @@ export const UPDATE_SUBMISSION = gql`
       url
       editor_notes
       tags
+      developers
+      deployers
+      harmed_parties
     }
   }
 `;

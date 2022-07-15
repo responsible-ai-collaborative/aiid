@@ -87,6 +87,13 @@ const SubmissionReview = ({ submission }) => {
   const addToast = useToastContext();
 
   const promoteSubmission = useCallback(async () => {
+    if (!submission.developers || !submission.deployers || !submission.harmed_parties) {
+      addToast({
+        message: `Please review submission. Some data is missing`,
+        severity: SEVERITY.danger,
+      });
+      return;
+    }
     const {
       data: {
         promoteSubmissionToReport: { 0: incident },
