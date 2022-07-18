@@ -108,6 +108,9 @@ describe('Submitted reports', () => {
         data: {
           updateOneReport: {
             ...submission,
+            deployers: undefined,
+            developers: undefined,
+            harmed_parties: undefined,
             __typename: 'Report',
             report_number: 1565,
           },
@@ -182,9 +185,6 @@ describe('Submitted reports', () => {
         expect(set.title).eq(submission.title);
         expect(set.date).eq(submission.incident_date);
         expect(set.description).eq(submission.description);
-        expect(set.AllegedDeployerOfAISystem).to.deep.eq([]);
-        expect(set.AllegedDeveloperOfAISystem).to.deep.eq([]);
-        expect(set.AllegedHarmedOrNearlyHarmedParties).to.deep.eq([]);
       });
 
     cy.get('[data-cy="toast"]')
