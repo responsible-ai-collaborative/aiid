@@ -10,14 +10,14 @@ jobs:
         shell: bash
         working-directory: site/gatsby-site
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Print a Cypress record key
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
         run: |
           echo Cypress record key: $CYPRESS_RECORD_KEY
-
-      - name: Checkout
-        uses: actions/checkout@v2
 
       # - name: "NPM Install"
       #   run: npm install --legacy-peer-deps
