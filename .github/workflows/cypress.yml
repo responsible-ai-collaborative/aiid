@@ -10,20 +10,27 @@ jobs:
         shell: bash
         working-directory: site/gatsby-site
     steps:
+      - name: Print a Cypress record key
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+        run: |
+          echo Cypress record key: $CYPRESS_RECORD_KEY
+
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: "NPM Install"
-        run: npm install --legacy-peer-deps
+      # - name: "NPM Install"
+      #   run: npm install --legacy-peer-deps
 
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
-          install: false
+          # install: false
           config-file: cypress-config.js
         env:
           # Recommended: pass the GitHub token lets this action correctly
           # determine the unique run id necessary to re-run the checks
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
