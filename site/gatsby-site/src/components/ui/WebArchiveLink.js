@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dropdown, SplitButton } from 'react-bootstrap';
 import styled from 'styled-components';
+import { Trans } from 'react-i18next';
 
 const ArchiveOriginalSplit = styled(SplitButton)`
   > *.dropdown-toggle {
@@ -54,10 +55,10 @@ export default function WebArchiveLink({ url, date, children, className }) {
       className={className}
     >
       <Dropdown.Item eventKey="1" href={url} target="_blank" rel="noopener noreferrer">
-        View the page at its original source
+        <Trans>View the page at its original source</Trans>
       </Dropdown.Item>
       <Dropdown.Item eventKey="2" onClick={onClick} target="_blank" rel="noopener noreferrer">
-        View the page archived by the Wayback Machine
+        <Trans>View the page archived by the Wayback Machine</Trans>
       </Dropdown.Item>
     </ArchiveOriginalSplit>
   );
