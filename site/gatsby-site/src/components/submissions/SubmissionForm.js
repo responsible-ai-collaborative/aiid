@@ -45,10 +45,14 @@ export const schema = yup.object().shape({
     .min(6, '*Title must have at least 6 characters')
     .max(500, "*Titles can't be longer than 500 characters")
     .required('*Title is required'),
-  description: yup.string().when('_id', {
-    is: (_id) => _id !== undefined,
-    then: yup.string().required('*Incident Description required'),
-  }),
+  description: yup
+    .string()
+    .min(3, 'Description must have at least 3 characters')
+    .max(200, "Description can't be longer than 200 characters")
+    .when('_id', {
+      is: (_id) => _id !== undefined,
+      then: yup.string().required('*Incident Description required'),
+    }),
   developers: yup
     .string()
     .min(3, 'Alleged Developer must have at least 3 characters')
