@@ -8,6 +8,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Move to the site directory
+        run: cd site/gatsby-site
       - name: "NPM Install"
         run: npm install
       # Install NPM dependencies, cache them correctly
