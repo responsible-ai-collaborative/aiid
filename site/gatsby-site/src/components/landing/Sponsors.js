@@ -7,6 +7,7 @@ import wu_foundation_blue_logo from './assets/wu-foundation-blue-logo.svg';
 import netlify_dark from './assets/netlify-dark.svg';
 import cloudinary_cloud_glyph_regular from './assets/cloudinary_cloud_glyph_regular.svg';
 import partership_on_ai_logo from './assets/partership-on-ai-logo.png';
+import { Trans } from 'react-i18next';
 
 const StyledImageModal = styled.img`
   display: flex;
@@ -86,16 +87,21 @@ export default function Sponsors({ className }) {
   return (
     <Card className={className}>
       <Card.Body>
-        <Card.Title as="h2">The Responsible AI Collaborative</Card.Title>
+        <Card.Title as="h2">
+          <Trans ns="landing">The Responsible AI Collaborative</Trans>
+        </Card.Title>
         <Row className="g-0">
           <Col lg={5} md={12} sm={12}>
             <Card.Text className="fst-italic">
-              The AI Incident Database is a project of the Responsible AI Collaborative, an
-              organization chartered to advance the AI Incident Database. The governance of the
-              Collaborative is architected around the participation in its impact programming. For
-              more details, we invite you to read the{' '}
-              <a href="https://docsend.com/view/a45p7mgh44nu8x7j">founding report</a> and learn more
-              on our <Link to="/about?lang=en#boardofdirectors">board and contributors</Link>.
+              <Trans i18nKey="raicDescription" ns="landing">
+                The AI Incident Database is a project of the Responsible AI Collaborative, an
+                organization chartered to advance the AI Incident Database. The governance of the
+                Collaborative is architected around the participation in its impact programming. For
+                more details, we invite you to read the{' '}
+                <a href="https://docsend.com/view/a45p7mgh44nu8x7j">founding report</a> and learn
+                more on our <Link to="/about?lang=en#boardofdirectors">board and contributors</Link>
+                .
+              </Trans>
             </Card.Text>
             <a href="https://docsend.com/view/a45p7mgh44nu8x7j" target="_blank" rel="noreferrer">
               <StyledImageCover src="/images/reportcover.png" />
@@ -103,7 +109,7 @@ export default function Sponsors({ className }) {
           </Col>
           <Col lg={6} md={12} sm={12} className="offset-lg-1">
             <StyledSubtitle top={'0px'} margin={'0px'}>
-              Organization Founding Sponsor
+              <Trans ns="landing">Organization Founding Sponsor</Trans>
             </StyledSubtitle>
 
             <Card.Text>
@@ -114,12 +120,16 @@ export default function Sponsors({ className }) {
               />
             </Card.Text>
 
-            <StyledSubtitle>Database Founding Sponsor</StyledSubtitle>
+            <StyledSubtitle>
+              <Trans ns="landing">Database Founding Sponsor</Trans>
+            </StyledSubtitle>
 
             <Card.Text>
               <StyledImage src={partership_on_ai_logo} onClick={() => setModalState('PAI')} />
             </Card.Text>
-            <StyledSubtitle>In-Kind Sponsors</StyledSubtitle>
+            <StyledSubtitle>
+              <Trans ns="landing">In-Kind Sponsors</Trans>
+            </StyledSubtitle>
             <Row className="g-0">
               <Col sm={6}>
                 <StyledImage src={netlify_dark} onClick={() => setModalState('N')} />
