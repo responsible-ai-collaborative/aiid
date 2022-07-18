@@ -130,7 +130,7 @@ const SubmitForm = () => {
         initialValues={submission}
         enableReinitialize={true}
       >
-        {({ isSubmitting, submitForm, values }) => (
+        {({ isSubmitting, submitForm, values, setFieldValue }) => (
           <>
             <SubmissionForm />
 
@@ -150,7 +150,7 @@ const SubmitForm = () => {
               Submit
             </Button>
 
-            <RelatedIncidents incident={values} />
+            <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
           </>
         )}
       </Formik>

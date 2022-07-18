@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ListGroup, Card, Spinner, Button, ButtonToolbar } from 'react-bootstrap';
-import { useFormikContext } from 'formik';
 import SimilaritySelector from './SimilaritySelector';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 
@@ -47,15 +46,13 @@ const RelatedIncidentsArea = ({
   header,
   reports,
   loading,
-  editable,
+  setFieldValue,
   editId = true,
   error,
 }) => {
   if (!reports && !loading) {
     return null;
   }
-
-  const { setFieldValue } = editable ? useFormikContext() : { setFieldValue: null };
 
   return (
     <ListContainer data-cy={`related-${columnKey}`}>
@@ -81,13 +78,13 @@ const RelatedIncidentsArea = ({
                 </a>
               </span>
               <ReportToolbar>
-                {editable && (
+                {setFieldValue && (
                   <>
                     <SelectorLabel htmlFor="similar-selector">Related:</SelectorLabel>
                     <SimilaritySelector incident_id={val.incident_id} />
                   </>
                 )}
-                {val.incident_id && editable && editId && (
+                {val.incident_id && setFieldValue && editId && (
                   <Button
                     data-cy="set-id"
                     className="set-id"

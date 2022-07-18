@@ -121,7 +121,7 @@ const searchColumns = {
   },
 };
 
-const RelatedIncidents = ({ incident, editable = true, editId = true, className = '' }) => {
+const RelatedIncidents = ({ incident, setFieldValue = null, editId = true, className = '' }) => {
   const [loading, setLoading] = useState({});
 
   const [relatedReports, setRelatedReports] = useState({});
@@ -204,13 +204,17 @@ const RelatedIncidents = ({ incident, editable = true, editId = true, className 
             loading={loading[key]}
             reports={relatedReports[key]}
             header={column.header(incident)}
-            editable={editable}
+            setFieldValue={setFieldValue}
             editId={editId}
           />
         );
       })}
 
-      <SemanticallyRelatedIncidents incident={incident} editable={editable} editId={editId} />
+      <SemanticallyRelatedIncidents
+        incident={incident}
+        setFieldValue={setFieldValue}
+        editId={editId}
+      />
     </ListGroup>
   );
 };

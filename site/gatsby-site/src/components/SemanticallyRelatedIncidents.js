@@ -3,7 +3,6 @@ import { gql, useApolloClient } from '@apollo/client';
 import debounce from 'lodash/debounce';
 import RelatedIncidentsArea from './RelatedIncidentsArea';
 import { stripMarkdown } from '../utils/typography';
-import { useFormikContext } from 'formik';
 
 const relatedIncidentIdsQuery = gql`
   query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
@@ -37,7 +36,7 @@ const semanticallyRelated = async (text) => {
   return json;
 };
 
-const SemanticallyRelatedIncidents = ({ incident, editable, editId = true }) => {
+const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }) => {
   const [loading, setLoading] = useState(false);
 
   const [reports, setReports] = useState([]);
@@ -47,8 +46,6 @@ const SemanticallyRelatedIncidents = ({ incident, editable, editId = true }) => 
   const [error, setError] = useState(null);
 
   const initialDisplay = useRef(true);
-
-  const { setFieldValue } = editable ? useFormikContext() : { setFieldValue: null };
 
   const debouncedUpdateSearch = useRef(
     debounce(async (incident) => {
@@ -156,7 +153,7 @@ const SemanticallyRelatedIncidents = ({ incident, editable, editId = true }) => 
           loading={loading}
           reports={reports}
           header="Most Semantically Similar Incident Reports (Experimental)"
-          editable={editable}
+          setFieldValue={setFieldValue}
           editId={editId}
           error={error}
         />

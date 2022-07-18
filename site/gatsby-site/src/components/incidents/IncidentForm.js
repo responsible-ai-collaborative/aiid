@@ -31,7 +31,7 @@ export const schema = Yup.object().shape({
 });
 
 function IncidentForm() {
-  const { values, errors, handleChange, handleSubmit } = useFormikContext();
+  const { values, errors, handleChange, handleSubmit, setFieldValue } = useFormikContext();
 
   const similarReportsByIdQuery = useQuery(relatedIncidentIdsQuery, {
     variables: {
@@ -146,12 +146,16 @@ function IncidentForm() {
           header={'Manually-selected similar and dissimilar incidents'}
           reports={editorSimilarIncidentReports}
           loading={false}
-          editable={true}
+          setFieldValue={setFieldValue}
           editId={false}
           error={false}
         />
 
-        <SemanticallyRelatedIncidents incident={values} editable={true} editId={false} />
+        <SemanticallyRelatedIncidents
+          incident={values}
+          setFieldValue={setFieldValue}
+          editId={false}
+        />
 
         <Form.Group className="mt-3">
           <Form.Label>Similar Incident Id</Form.Label>
@@ -163,7 +167,7 @@ function IncidentForm() {
           header={'Reports'}
           reports={similarReportsById}
           loading={false}
-          editable={true}
+          setFieldValue={setFieldValue}
           editId={false}
           error={false}
         />
