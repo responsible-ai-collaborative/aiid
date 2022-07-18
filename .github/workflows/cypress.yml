@@ -24,4 +24,8 @@ jobs:
           install: false
           project: ./site/gatsby-site
           install-command: npm install --legacy-peer-deps
-          config-file: cypress-config.json
+          config-file: cypress-config.js
+        env:
+          # Recommended: pass the GitHub token lets this action correctly
+          # determine the unique run id necessary to re-run the checks
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
