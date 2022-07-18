@@ -32,6 +32,7 @@ jobs:
           working-directory: site/gatsby-site
           install-command: npm install --legacy-peer-deps
           config-file: cypress.config.js
+          wait-on: http://localhost:8000/
         env:
           # Recommended: pass the GitHub token lets this action correctly
           # determine the unique run id necessary to re-run the checks
