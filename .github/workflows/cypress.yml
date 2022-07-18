@@ -1,5 +1,7 @@
 name: Cypress e2e tests
+
 on: [push]
+
 jobs:
   cypress-run:
     runs-on: ubuntu-20.04
@@ -10,3 +12,5 @@ jobs:
       # and run all Cypress tests
       - name: Cypress run
         uses: cypress-io/github-action@v4
+        with:
+          project: ./site/gatsby-site
