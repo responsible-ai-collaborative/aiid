@@ -73,7 +73,7 @@ function CitePage(props) {
 
   const sortedReports = sortIncidentsByDatePublished(incidentReports);
 
-  const metaImage = sortedReports.length > 0 ? sortedReports[0].image_url : null;
+  const metaImage = sortedReports[0].image_url;
 
   const authorsModal = useModal();
 
