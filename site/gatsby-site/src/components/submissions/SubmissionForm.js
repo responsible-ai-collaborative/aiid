@@ -182,9 +182,16 @@ const SubmissionForm = () => {
   }, [values?.url]);
 
   useEffect(() => {
+    if (values?.language) {
+      setFieldValue('language', values.language);
+    } else {
+      setFieldValue('language', supportedLanguages[0].code);
+    }
+  }, [values?.language, supportedLanguages]);
+
+  useEffect(() => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
-
   return (
     <>
       <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
@@ -275,14 +282,19 @@ const SubmissionForm = () => {
 
         <Form.Group className="mt-3">
           <Label popover={POP_OVERS['language']} label={'Language'} />
-          <Form.Select
-            name="language"
-            placeholder="Report Language"
-            value={values.language}
-            onChange={handleChange}
-          >
+          <Form.Select name="language" placeholder="Report Language" onChange={handleChange}>
             {supportedLanguages.map((l) => (
-              <option key={l.code} value={l.code}>
+              <option
+                key={l.code}
+                value={l.code}
+                selected={
+                  values?.language && values.language === l.code
+                    ? true
+                    : supportedLanguages[0].code === l.code
+                    ? true
+                    : false
+                }
+              >
                 {l.name}
               </option>
             ))}
