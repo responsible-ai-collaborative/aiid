@@ -41,6 +41,7 @@ const queryConfig = {
   text: withDefault(StringParam, ''),
   editor_notes: withDefault(StringParam, ''),
   tags: withDefault(ArrayParam, []),
+  language: withDefault(StringParam, 'en'),
 };
 
 const SubmitForm = () => {

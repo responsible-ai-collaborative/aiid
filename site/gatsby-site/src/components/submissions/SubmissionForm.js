@@ -182,14 +182,6 @@ const SubmissionForm = () => {
   }, [values?.url]);
 
   useEffect(() => {
-    if (values?.language) {
-      setFieldValue('language', values.language);
-    } else {
-      setFieldValue('language', supportedLanguages[0].code);
-    }
-  }, [values?.language, supportedLanguages]);
-
-  useEffect(() => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
   return (
