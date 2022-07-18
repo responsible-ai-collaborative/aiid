@@ -419,4 +419,44 @@ describe('Submitted reports', () => {
 
     cy.get('@modal').should('not.exist');
   });
+
+  maybeIt(
+    'Does not allow promossion of submission if developers, deployers or harmed parties is missing.',
+    () => {
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+      const submission = submittedReports.data.submissions.find(
+        (r) =>
+          r.incident_id === 0 &&
+          (r.deployers === undefined ||
+            r.developers === undefined ||
+            r.harmed_parties === undefined)
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindSubmissions',
+        'FindSubmissions',
+        {
+          data: {
+            submissions: [submission],
+          },
+        }
+      );
+
+      cy.visit(url);
+
+      cy.wait('@FindSubmissions');
+
+      cy.get('[data-cy="submissions"] > div:nth-child(1)').as('promoteForm');
+
+      cy.get('@promoteForm').contains('review >').click();
+
+      cy.get('@promoteForm').contains('button', 'Add New Incident').click();
+
+      cy.get('[data-cy="toast"]')
+        .contains('Please review submission before approving. Some data is missing.')
+        .should('exist');
+    }
+  );
 });

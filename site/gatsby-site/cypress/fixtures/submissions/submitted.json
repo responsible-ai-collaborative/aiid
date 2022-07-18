@@ -57,6 +57,31 @@
                 "developers": ["AI Dev"],
                 "deployers": ["Youtube"],
                 "harmed_parties": ["Adults"]
+            },
+            {
+                "__typename": "Submission",
+                "_id": "62d561606b4bb5e39603c67d",
+                "authors": [
+                    "Adi Ashkenazy"
+                ],
+                "cloudinary_id": null,
+                "date_downloaded": "2021-08-23",
+                "date_modified": "2021-08-23",
+                "date_published": "2019-07-18",
+                "date_submitted": "2021-08-23",
+                "description": "Read about our Journey of dissecting the brain of a leading AI based Endpoint Protection Product, culminating in the creation of a universal bypass\n\nUpdate: 07/Sep/2019\nWe had the honour to present ou",
+                "image_url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/cylance-i-kill-you-small.gif",
+                "incident_date": "2019-07-18",
+                "incident_id": 0,
+                "language": "en",
+                "source_domain": "skylightcyber.com",
+                "submitters": [
+                    "Kate Perkins"
+                ],
+                "text": "Submission 2 text",
+                "title": "Submission 1 title",
+                "url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/",
+                "editor_notes": ""
             }
         ]
     }

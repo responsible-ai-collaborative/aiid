@@ -89,7 +89,7 @@ const SubmissionReview = ({ submission }) => {
   const promoteSubmission = useCallback(async () => {
     if (!submission.developers || !submission.deployers || !submission.harmed_parties) {
       addToast({
-        message: `Please review submission. Some data is missing`,
+        message: `Please review submission before approving. Some data is missing.`,
         severity: SEVERITY.danger,
       });
       return;
