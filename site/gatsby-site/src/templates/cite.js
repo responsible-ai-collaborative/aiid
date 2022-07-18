@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Helmet from 'react-helmet';
 import { Button, Col, Container, Pagination, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
@@ -68,6 +68,18 @@ function CitePage(props) {
       prevIncident,
     },
   } = props;
+
+  // The server-side rendering occurs as if the user is not logged in.
+  // The taxonomies render conditionally on the login state,
+  // and are not re-hydrated when tests run.
+  // As a result, if there are no classifications,
+  // the taxonomy will not render and the test of its existence will fail.
+  // This is used to trigger a re-render on the client-side.
+  const [isClient, setClient] = useState(false);
+
+  useEffect(() => {
+    setClient(true);
+  }, []);
 
   const { isRole } = useUserContext();
 
@@ -221,7 +233,7 @@ function CitePage(props) {
 
         {taxonomies.length > 0 && (
           <Row id="taxa-area">
-            <Col>
+            <Col key={isClient}>
               {taxonomies.map((t) => {
                 const canEdit =
                   isRole('taxonomy_editor') ||
