@@ -3,35 +3,40 @@ name: Cypress e2e tests
 on: [push]
 
 jobs:
-  install:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: site/gatsby-site
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+  # install:
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #       working-directory: site/gatsby-site
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
 
-      # Install NPM dependencies
-      - name: Install NPM dependencies
-        uses: cypress-io/github-action@v4
-        with:
-          working-directory: site/gatsby-site
-          # just perform install
-          runTests: false
-          install-command: npm install --legacy-peer-deps
+  #     # Cache node_modules folder
+  #     - name: Cache node modules
+  #       id: cache-nodemodules
+  #       uses: actions/cache@v3.0.5
+  #       env:
+  #         cache-name: cache-node-modules
+  #       with:
+  #         # caching node_modules
+  #         path: node_modules
+  #         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-build-${{ env.cache-name }}-
+  #           ${{ runner.os }}-build-
+  #           ${{ runner.os }}-
 
-      - name: Save built folders 🆙
-        uses: actions/upload-artifact@v3.1.0
-        with:
-          name: install-and-build
-          path: |
-            ~/.cache/Cypress
-            node_modules
-            docs
-            public
-
+  #     # Install NPM dependencies
+  #     - name: Install NPM dependencies
+  #       if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+  #       uses: cypress-io/github-action@v4
+  #       with:
+  #         working-directory: site/gatsby-site
+  #         # just perform install
+  #         runTests: false
+  #         install-command: npm install --legacy-peer-deps
   
   cypress-run:
     runs-on: ubuntu-latest
@@ -53,19 +58,30 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Download built folders ⏬
-        uses: actions/download-artifact@v3.0.0
+      # Cache node_modules folder
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v3.0.5
+        env:
+          cache-name: cache-node-modules
         with:
-          name: install-and-build
+          # caching node_modules
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
       # Install NPM dependencies
-      # - name: Install NPM dependencies
-      #   uses: cypress-io/github-action@v4
-      #   with:
-      #     working-directory: site/gatsby-site
-      #     # just perform install
-      #     runTests: false
-      #     install-command: npm install --legacy-peer-deps
+      - name: Install NPM dependencies
+        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        uses: cypress-io/github-action@v4
+        with:
+          working-directory: site/gatsby-site
+          # just perform install
+          runTests: false
+          install-command: npm install --legacy-peer-deps
 
       # Run all Cypress tests
       - name: Cypress run
