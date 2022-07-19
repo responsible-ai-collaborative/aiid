@@ -30,14 +30,6 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - if: ${{ steps.cache-nodemodules.outputs.cache-hit == 'false' }}
-        name: List the state of node modules
-        continue-on-error: true
-        run: npm list
-
-      - name: Cache hit?
-        run: echo "Cache hit? ${{ steps.cache-nodemodules.outputs.cache-hit }}"
-
       # Install NPM dependencies
       - name: Install NPM dependencies
         if: steps.cache-nodemodules.outputs.cache-hit != 'true'
@@ -46,7 +38,7 @@ jobs:
           working-directory: site/gatsby-site
           # just perform install
           runTests: false
-          install-command: npm install --legacy-peer-deps
+          install-command: npm ci --legacy-peer-deps
 
   cypress-run:
     runs-on: ubuntu-latest
@@ -93,7 +85,7 @@ jobs:
           working-directory: site/gatsby-site
           # just perform install
           runTests: false
-          install-command: npm install --legacy-peer-deps
+          install-command: npm ci --legacy-peer-deps
 
       # Run all Cypress tests
       - name: Cypress run
