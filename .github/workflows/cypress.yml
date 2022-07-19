@@ -21,7 +21,9 @@ jobs:
           cache-name: cache-node-modules
         with:
           # caching node_modules
-          path: site/gatsby-site/node_modules
+          path: |
+            site/gatsby-site/node_modules
+            ~/.cache/Cypress
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -74,7 +76,9 @@ jobs:
           cache-name: cache-node-modules
         with:
           # caching node_modules
-          path: site/gatsby-site/node_modules
+          path: |
+            site/gatsby-site/node_modules
+            ~/.cache/Cypress
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
