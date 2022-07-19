@@ -22,13 +22,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # Install NPM dependencies, cache them correctly
-      # and run all Cypress tests
+      # Install NPM dependencies
+      - name: Install NPM dependencies
+        uses: cypress-io/github-action@v4
+        with:
+          # just perform install
+          runTests: false
+          install-command: npm install --legacy-peer-deps
+
+      # Run all Cypress tests
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
           working-directory: site/gatsby-site
-          install-command: npm install --legacy-peer-deps
+          # we have already installed all dependencies above
+          install: false
           config-file: cypress.config.js
           record: true
           parallel: true
