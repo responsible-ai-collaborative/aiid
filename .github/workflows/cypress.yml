@@ -15,26 +15,26 @@ jobs:
 
       # Cache node_modules folder
       - name: Cache node modules
-        id: cache-npm
+        id: cache-nodemodules
         uses: actions/cache@v3.0.5
         env:
           cache-name: cache-node-modules
         with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: ~/.npm
+          # caching node_modules
+          path: site/gatsby-site/node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - if: ${{ steps.cache-npm.outputs.cache-hit == 'false' }}
+      - if: ${{ steps.cache-nodemodules.outputs.cache-hit == 'false' }}
         name: List the state of node modules
         continue-on-error: true
         run: npm list
 
       - name: Cache hit?
-        run: echo "Cache hit? ${{ steps.cache-npm.outputs.cache-hit }}"
+        run: echo "Cache hit? ${{ steps.cache-nodemodules.outputs.cache-hit }}"
 
       # Install NPM dependencies
       - name: Install NPM dependencies
@@ -68,13 +68,13 @@ jobs:
 
       # Cache node_modules folder
       - name: Cache node modules
-        id: cache-nodemodules
+        id: cache-nodemodules-2
         uses: actions/cache@v3.0.5
         env:
           cache-name: cache-node-modules
         with:
           # caching node_modules
-          path: node_modules
+          path: site/gatsby-site/node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -83,7 +83,7 @@ jobs:
 
       # Install NPM dependencies
       - name: Install NPM dependencies
-        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        if: steps.cache-nodemodules-2.outputs.cache-hit != 'true'
         uses: cypress-io/github-action@v4
         with:
           working-directory: site/gatsby-site
@@ -99,7 +99,7 @@ jobs:
           # we have already installed all dependencies above
           install: false
           config-file: cypress.config.js
-          # record: true
+          record: true
           parallel: true
           group: '1. Cypress e2e tests'
           start: npm start
