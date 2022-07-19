@@ -3,45 +3,44 @@ name: Cypress e2e tests
 on: [push]
 
 jobs:
-  # install:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #       working-directory: site/gatsby-site
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
+  install:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: site/gatsby-site
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-  #     # Cache node_modules folder
-  #     - name: Cache node modules
-  #       id: cache-nodemodules
-  #       uses: actions/cache@v3.0.5
-  #       env:
-  #         cache-name: cache-node-modules
-  #       with:
-  #         # caching node_modules
-  #         path: node_modules
-  #         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-build-${{ env.cache-name }}-
-  #           ${{ runner.os }}-build-
-  #           ${{ runner.os }}-
+      # Cache node_modules folder
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v3.0.5
+        env:
+          cache-name: cache-node-modules
+        with:
+          # caching node_modules
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
-  #     # Install NPM dependencies
-  #     - name: Install NPM dependencies
-  #       if: steps.cache-nodemodules.outputs.cache-hit != 'true'
-  #       uses: cypress-io/github-action@v4
-  #       with:
-  #         working-directory: site/gatsby-site
-  #         # just perform install
-  #         runTests: false
-  #         install-command: npm install --legacy-peer-deps
+      # Install NPM dependencies
+      - name: Install NPM dependencies
+        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        uses: cypress-io/github-action@v4
+        with:
+          working-directory: site/gatsby-site
+          # just perform install
+          runTests: false
+          install-command: npm install --legacy-peer-deps
 
-  # touch
-  
   cypress-run:
     runs-on: ubuntu-latest
+    needs: install
     defaults:
       run:
         shell: bash
