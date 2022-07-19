@@ -5,6 +5,7 @@ import Sidebar from './sidebar';
 import RightSidebar from './rightSidebar';
 import config from '../../config.js';
 import Footer from './layout/Footer';
+import Header from './ui/Header';
 
 const Wrapper = styled.div`
   display: flex;
@@ -76,6 +77,7 @@ const RightSideBarWidth = styled.div`
 
 const Layout = ({ children, collapse, className, location }) => (
   <>
+    <Header />
     <Wrapper>
       <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
         <Sidebar collapse={collapse} />

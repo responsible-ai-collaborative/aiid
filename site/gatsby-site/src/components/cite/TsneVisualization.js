@@ -7,6 +7,7 @@ import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Color from 'color';
 import hash from 'object-hash';
 import { LocalizedLink } from 'gatsby-theme-i18n';
+import { Trans } from 'react-i18next';
 
 const incidentQuery = gql`
   query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
@@ -231,7 +232,9 @@ const TsneVisualization = ({ incident, spatialIncidents }) => {
       <>
         <div style={{ display: 'flex', gap: '1em', alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', gap: '1em', alignItems: 'center' }}>
-            <label htmlFor="color-axis-select">Color by </label>
+            <label htmlFor="color-axis-select">
+              <Trans>Color by</Trans>
+            </label>
             <Form.Select
               style={{ display: 'inline', width: 'unset' }}
               id="color-axis-select"
@@ -254,7 +257,9 @@ const TsneVisualization = ({ incident, spatialIncidents }) => {
             </Form.Select>
           </div>
           <div style={{ display: 'flex', gap: '1em', alignItems: 'center' }}>
-            <label htmlFor="darken-by-severity-checkbox">Darken by Severity</label>
+            <label htmlFor="darken-by-severity-checkbox">
+              <Trans>Darken by Severity</Trans>
+            </label>
             <Form.Check
               type="switch"
               id="darken-by-severity-checkbox"

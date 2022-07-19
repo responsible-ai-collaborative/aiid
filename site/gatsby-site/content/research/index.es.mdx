@@ -1,0 +1,107 @@
+---
+title: "Guía del investigador"
+metaTitle: "Investigar incidentes y/o contribuir a la base de datos"
+metaDescription: "La base de datos está en proceso de apertura al mundo con fines de investigación."
+slug: "/research"
+---
+
+# Definición de un "incidente de IA"
+
+La industria de los viajes aéreos comerciales debe gran parte de su creciente seguridad al análisis y archivo sistemáticos de accidentes e incidentes pasados ​​dentro de una base de datos compartida. En aviación, un accidente es un caso en el que se produce un daño sustancial o la pérdida de vidas. Los incidentes son casos en los que el riesgo de accidente aumenta sustancialmente. Por ejemplo, cuando un pequeño incendio se extingue rápidamente en una cabina, es un "incidente", pero si el fuego quema a los miembros de la tripulación en el curso de la extinción, es un "accidente". La [base de datos de aviación] de la FAA (https://www.faa.gov/data_research/accident_incident/) indexa datos de registro de vuelo e investigaciones posteriores de expertos en exámenes integrales de factores tecnológicos y humanos. En parte debido a este autoexamen continuo, viajar en avión es una de las formas más seguras de viajar. Décadas de mejoras iterativas en los sistemas de seguridad y la capacitación han reducido las muertes [81 veces](https://theblogbyjavier.com/2020/01/02/aviation-safety-evolution-2019-update/) desde 1970 cuando se normalizó para millas de pasajeros.
+
+Donde la industria de la aviación tiene definiciones claras, los informáticos y los filósofos han debatido durante mucho tiempo las definiciones fundamentales de la inteligencia artificial. En ausencia de líneas claras que diferencien los algoritmos, la inteligencia y los daños que pueden causar directa o indirectamente, esta base de datos adopta un criterio adaptativo para ingerir "incidentes" donde los informes se aceptan o rechazan sobre la base de un conjunto de reglas cada vez mayor.
+
+Más detalles sobre los criterios de aceptación están disponibles en la [página de criterios](/research/1-criteria).
+
+# Descarga el Índice
+
+El estado completo de la base de datos se puede descargar en formato semanal JSON, MongoDB y CSV [instantáneas](/research/instantáneas). Mantenemos estas instantáneas para que pueda crear conjuntos de datos estables para la investigación del procesamiento del lenguaje natural y el análisis académico. Por favor, [contacto](/contacto) para informarnos para qué está utilizando la base de datos para que podamos enumerar su trabajo en la base de datos de incidentes y asegurarnos de que su caso de uso no se elimine del soporte.
+
+# Citar la base de datos como un todo
+
+Te invitamos a citar:
+> McGregor, S. (2021) Prevención de fallas repetidas de IA en el mundo real mediante la catalogación de incidentes: la base de datos de incidentes de IA. En Actas de la Trigésima Tercera Conferencia Anual sobre Aplicaciones Innovadoras de la Inteligencia Artificial (IAAI-21). Conferencia Virtual.
+
+La [preimpresión](https://arxiv.org/abs/2011.08512) está disponible en arXiv.
+
+# Citar un incidente específico
+
+Cada incidente tiene su propia cita sugerida que da crédito tanto a los remitentes del incidente como a los editores del incidente. Los remitentes son las personas que enviaron informes asociados con el incidente y sus nombres se enumeran en el orden en que se agregaron sus envíos al AIID. Dado que los informes se pueden agregar a un registro de incidentes a lo largo del tiempo, nuestro formato de cita sugerido incluye la fecha de acceso. Puede encontrar citas de incidentes en `https://incidentdatabase.ai/cite/INSERT_NUMBER_HERE`.
+
+# Enviar incidentes #
+
+**Agregar informes de incidentes individuales**
+
+Actualmente aceptamos informes de incidentes en un formulario de adición rápida en el formulario [página de destino](/), que no acredita a los remitentes, y la [aplicación de envío](/apps/submit) que le permite asignar crédito por el envío. Ambos tipos de envíos son de gran ayuda para evitar que se repita el historial.
+
+**Adición por lotes**
+
+Si tiene un lote grande (es decir, más de 30) de incidentes para agregar a la base de datos, podemos facilitar su importación con un [formato CSV] (https://docs.google.com/spreadsheets/d/1FLguZeFziNKKtpx14TYZ5EjBuc3FCbUGmlMIdCDU6ak/edit ?usp=compartir). Los pasos para agregar muchos lotes de incidentes a la base de datos son:
+
+1. Copie el [documento de Google Sheets de ejemplo](https://docs.google.com/spreadsheets/d/1FLguZeFziNKKtpx14TYZ5EjBuc3FCbUGmlMIdCDU6ak/edit?usp=sharing).
+2. Las columnas B a J se importarán a la base de datos y se cuidarán
+deben tomarse para mantener su formato. La primera columna, "Incidente
+Número", no se importará directamente a la base de datos, pero es
+Se utiliza al resolver informes de incidentes existentes. Números de incidentes
+menos de 10.000 están reservados para informes que deben asociarse
+con una incidencia ya en la BD. Valores iguales o superiores a 10k
+son el nuevo contador de incidentes de esta hoja de cálculo. Así que si quieres importar
+múltiples informes para un solo incidente, luego el número de incidente
+debe ser consistente a través de esos informes.
+3. Complete las columnas con la siguiente información,
+    * título es el título del informe.
+    * autor(es) contiene valores separados por comas de los autores del
+    reporte. Algunos informes no tendrán autores, en cuyo caso coloque el nombre de la publicación en este campo.
+    * remitente(s) contiene valores separados por comas para las personas o
+    organizaciones que presentan el informe.
+    * fecha del incidente es la fecha en la que probablemente ocurrió el incidente.
+    Muchas veces se escribirá un informe sobre un incidente que sucedió
+    meses o años antes. A veces habrá ambigüedad en cuándo la
+    Es probable que haya ocurrido un incidente, en cuyo caso está bien ingresar un mejor
+    suponer. Para incidentes que están en curso o tuvieron múltiples ocurrencias, el
+    La fecha del incidente debe ser la fecha más antigua conocida.
+    * fecha de publicación es la fecha en que se publicó el informe en la web. Alguno
+    publicaciones no tienen una fecha de publicación, en cuyo caso debe utilizar
+    la máquina Wayback en apoyo de cuando la publicación fue definitivamente
+    añadido por.
+    * fecha de descarga es la fecha en que se copió/pegó el contenido
+    en la columna de texto.
+    * la dirección del informe es la URL del informe.
+    * la dirección de la imagen es la vista previa de la imagen del informe. capturando esto
+    generalmente requiere ver el HTML de la página web y
+    capturar rutas de activos estáticos, o usar un analizador de páginas web como
+    NoticiasPor favor.
+    * texto es el texto de la copia del informe pegada fuera del sitio web.
+4. Envíe un correo electrónico a `batchadd -at- seanbmcgregor.com` con un enlace a sus datos.
+
+# Trabajo relacionado
+
+Si bien la investigación formal de incidentes de IA es relativamente nueva, varias personas han estado recopilando lo que podrían considerarse incidentes. Éstos incluyen,
+
+* [Excelente interpretación del aprendizaje automático: AI Incident Tracker](https://github.com/jphall663/awesome-machine-learning-interpretability/blob/master/README.md#ai-incident-tracker)
+* [IA y incidentes algorítmicos y controversias de Charlie Pownall] (https://charliepownall.com/ai-algorithimic-incident-controversy-database/)
+* [Mapa de IA útil y dañina] (https://map.ai-global.org/)
+
+Si tiene un recurso de incidente que podría agregarse aquí, [comuníquese](/comuníquese) con nosotros.
+
+Las siguientes publicaciones han sido indexadas por Google Scholar como referencias a la base de datos en sí, en lugar de solo incidentes individuales. Póngase en contacto con nosotros si falta su referencia.
+
+* [Arnold, Z., Toner, H., Política CSET. "Accidentes de IA: una amenaza emergente". (2021).](https://cset.georgetown.edu/wp-content/uploads/CSET-AI-Accidents-An-Emerging-Threat.pdf)
+* [Avin, Shahar, et al. "Llenar los vacíos en el desarrollo confiable de la IA". Ciencia 374.6573 (2021): 1327-1329.](https://arxiv.org/abs/2112.07773)
+* [Schwartz, Reva, et al. "Hacia un estándar para identificar y gestionar el sesgo en la inteligencia artificial". (2022).](https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=934464)
+* [Aliman, Nadisha-Marie, Leon Kester y Roman Yampolskiy. "Observatorio transdisciplinario de IA: análisis retrospectivos y contradistinciones orientadas al futuro". Filosofías 6.1 (2021): 6.](https://www.mdpi.com/2409-9287/6/1/6/pdf)
+* [Shneiderman, Ben. IA centrada en el ser humano. Oxford University Press, 2022.](https://www.amazon.com/Human-Centered-AI-Ben-Shneiderman/dp/0192845292)
+* [Tampoco, Ahmad Kamal Mohd, et al. "Detección de anomalías y predicción de fallas mediante el aprendizaje profundo bayesiano explicable: metodología y estudio de caso de anomalías de turbinas de gas del mundo real". (2022).](https://www.mdpi.com/2227-7390/10/4/554/pdf)
+* [Falco, Gregory y Leilani H. Gilpin. "Un marco de pruebas de estrés para la verificación y validación de sistemas autónomos (v&v)". 2021 Conferencia internacional IEEE sobre sistemas autónomos (ICAS). IEEE, 2021.](https://www.researchgate.net/profile/Gregory-Falco/publication/352930787_A_Stress_Testing_Framework_For_Autonomous_System_Verification_And_Validation_VV/links/60e911fcb8c0d5588ce64ec5/A-Stress-Testing-Framework-For-Autonomous_System_Verification_And_Validation-System V-V.pdf)
+* [Petersen, Eike, et al. "Aprendizaje automático responsable y reglamentario para la medicina: una encuesta de desafíos técnicos y soluciones". preimpresión de arXiv arXiv:2107.09546 (2021).](https://arxiv.org/pdf/2107.09546)
+* [John-Mathews, Jean-Marie. Ética de la IA en la práctica, desafíos y limitaciones. dis. Universidad París-Saclay, 2021.](https://tel.archives-ouvertes.fr/tel-03527232/document)
+* [Macrae, Carl. "Aprendiendo de la Falla de los Sistemas Autónomos e Inteligentes: Accidentes, Seguridad y Fuentes Sociotécnicas de Riesgo". Seguridad y fuentes sociotécnicas de riesgo (4 de junio de 2021) (2021).](https://nottingham-repository.worktribe.com/OutputFile/7164920)
+* [Weissinger, Laurin, AI, Complexity, and Regulation (14 de octubre de 2021). Manual de OUP sobre la gobernanza de la IA, de próxima publicación](https://ssrn.com/abstract=3943968)
+* [Hong, Matthew K., et al. "Planificación de fallas de lenguaje natural con el libro de jugadas de IA". Actas de la Conferencia CHI 2021 sobre factores humanos en sistemas informáticos. 2021.](https://www.adamfourney.com/papers/hong_chi2021.pdf)
+* [Ruohonen, Jukka. "Una revisión de las normas de seguridad de productos en la Unión Europea". preimpresión de arXiv arXiv:2102.03679 (2021).](https://arxiv.org/pdf/2102.03679)
+* [Kalin, Josh, David Noever y Matthew Ciolino. "Una ecuación de Drake modificada para evaluar el riesgo adversario de los modelos de aprendizaje automático". preimpresión de arXiv arXiv:2103.02718 (2021).](https://arxiv.org/pdf/2103.02718)
+* [Aliman, Nadisha Marie y Leon Kester. "Defensas epistémicas contra ataques de IA adversarios científicos y empíricos". Actas del Taller CEUR. vol. 2916. CEUR WS, 2021.](https://dspace.library.uu.nl/bitstream/handle/1874/413353/paper_1.pdf?sequence=1)
+* [John-Mathews, Jean-Marie. L'Éthique de l'Intelligence Artificielle en Pratique. Enjeux et limites. dis. universidad Paris-Saclay, 2021.](https://www.theses.fr/2021UPASI015.pdf)
+* [Xie, Xuan, Kristian Kersting y Daniel Neider. "Verificación neurosimbólica de redes neuronales profundas". preimpresión de arXiv arXiv:2203.00938 (2022).](https://arxiv.org/pdf/2203.00938)
+
+Si tiene un trabajo académico que deba agregarse aquí, [comuníquese](/comuníquese) con nosotros.
