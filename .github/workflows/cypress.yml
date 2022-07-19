@@ -33,9 +33,8 @@ jobs:
         continue-on-error: true
         run: npm list
 
-      - if: ${{ steps.cache-npm.outputs.cache-hit == 'true' }}
-        name: Cache hit!
-        run: echo "Cache hit! ${{ steps.cache-npm.outputs.cache-hit }}"
+        name: Cache hit?
+        run: echo "Cache hit? ${{ steps.cache-npm.outputs.cache-hit }}"
 
       # Install NPM dependencies
       - name: Install NPM dependencies
