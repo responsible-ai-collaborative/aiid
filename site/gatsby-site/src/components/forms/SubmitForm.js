@@ -14,7 +14,7 @@ import SubmissionForm, { schema } from 'components/submissions/SubmissionForm';
 import { Formik } from 'formik';
 import { stripMarkdown } from 'utils/typography';
 import isArray from 'lodash/isArray';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -56,6 +56,8 @@ const SubmitForm = () => {
   const [csvIndex, setCsvIndex] = useState(0);
 
   const addToast = useToastContext();
+
+  const { i18n } = useTranslation(['submit']);
 
   // See https://github.com/apollographql/apollo-client/issues/5419
   useQuery(FIND_SUBMISSIONS);
@@ -108,7 +110,7 @@ const SubmitForm = () => {
 
       addToast({
         message: (
-          <Trans ns="submit">
+          <Trans i18n={i18n} ns="submit">
             Report successfully added to review queue. It will appear on the{' '}
             <Link to="/apps/submitted">review queue page</Link> within an hour.
           </Trans>
@@ -118,7 +120,7 @@ const SubmitForm = () => {
     } catch (e) {
       addToast({
         message: (
-          <Trans ns="submit">
+          <Trans i18n={i18n} ns="submit">
             Was not able to create the report, please review the form and try again.
           </Trans>
         ),
