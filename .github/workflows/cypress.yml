@@ -15,18 +15,23 @@ jobs:
 
       # Cache node_modules folder
       - name: Cache node modules
-        id: cache-nodemodules
+        id: cache-npm
         uses: actions/cache@v3.0.5
         env:
           cache-name: cache-node-modules
         with:
-          # caching node_modules
-          path: node_modules
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+
+      - if: ${{ steps.cache-npm.outputs.cache-hit == 'false' }}
+        name: List the state of node modules
+        continue-on-error: true
+        run: npm list
 
       # Install NPM dependencies
       - name: Install NPM dependencies
@@ -91,7 +96,7 @@ jobs:
           # we have already installed all dependencies above
           install: false
           config-file: cypress.config.js
-          record: true
+          # record: true
           parallel: true
           group: '1. Cypress e2e tests'
           start: npm start
