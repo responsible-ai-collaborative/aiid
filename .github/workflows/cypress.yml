@@ -40,7 +40,6 @@ jobs:
   
   cypress-run:
     runs-on: ubuntu-latest
-    needs: install
     defaults:
       run:
         shell: bash
