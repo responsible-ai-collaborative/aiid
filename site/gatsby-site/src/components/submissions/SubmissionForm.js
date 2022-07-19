@@ -279,13 +279,7 @@ const SubmissionForm = () => {
               <option
                 key={l.code}
                 value={l.code}
-                selected={
-                  values?.language && values.language === l.code
-                    ? true
-                    : supportedLanguages[0].code === l.code
-                    ? true
-                    : false
-                }
+                selected={values?.language && values.language === l.code ? true : false}
               >
                 {l.name}
               </option>
