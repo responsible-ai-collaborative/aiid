@@ -44,6 +44,23 @@
         },
         "title": {
             "bsonType": "string"
+        },
+        "embedding": {
+          "bsonType": "object",
+          "items": {
+            "vector": {
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "double"
+                }
+            },
+            "from_reports": {
+              "bsonType": "array",
+              "items": {
+                  "bsonType": "int"
+              }
+            }
+          }
         }
     },
     "required": [

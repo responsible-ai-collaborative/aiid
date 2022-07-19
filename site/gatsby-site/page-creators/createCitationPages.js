@@ -6,8 +6,6 @@ const { cloneDeep } = require('lodash');
 
 const { switchLocalizedPath } = require('../i18n');
 
-const axios = require('axios');
-
 const TSNE = require('tsne-js');
 
 const getClassificationsArray = (incidentClassifications, taxonomy) => {
@@ -71,6 +69,9 @@ const createCitationPages = async (graphql, createPage) => {
             date
             reports
             editors
+            embedding {
+              vector
+            }
           }
         }
 
@@ -194,77 +195,68 @@ const createCitationPages = async (graphql, createPage) => {
 
   let spatialIncidents;
 
-  const nlpStateResponse = await axios.get(
-    'https://raw.githubusercontent.com/responsible-ai-collaborative/nlp-lambdas/main/inference/db_state/state.csv'
+  const incidentsWithEmbeddings = allMongodbAiidprodIncidents.nodes.filter(
+    (incident) => incident.embedding
   );
 
-  if (nlpStateResponse?.status == 200) {
-    const lines = nlpStateResponse.data
-      .split('\n')
-      .slice(1)
-      .filter((line) => line.length > 2);
+  const embeddings = incidentsWithEmbeddings.map((incident) => incident?.embedding?.vector); //lines.map((line) => JSON.parse(line.split('"')[1]));
 
-    const embeddings = lines.map((line) => JSON.parse(line.split('"')[1]));
+  const ids = incidentsWithEmbeddings.map((incident) => incident.incident_id); //lines.map((line) => line.split(',')[0]);
 
-    const ids = lines.map((line) => line.split(',')[0]);
+  const model = new TSNE({
+    dim: 2,
+    perplexity: 30.0,
+    earlyExaggeration: 3.0,
+    learningRate: 100.0,
+    nIter: 10000,
+    metric: 'euclidean',
+  });
 
-    const model = new TSNE({
-      dim: 2,
-      perplexity: 30.0,
-      earlyExaggeration: 3.0,
-      learningRate: 100.0,
-      nIter: 10000,
-      metric: 'euclidean',
-    });
+  // inputData is a nested array which can be converted into an ndarray
+  // alternatively, it can be an array of coordinates (second argument should be specified as 'sparse')
+  model.init({
+    data: embeddings,
+    type: 'dense',
+  });
 
-    // inputData is a nested array which can be converted into an ndarray
-    // alternatively, it can be an array of coordinates (second argument should be specified as 'sparse')
-    model.init({
-      data: embeddings,
-      type: 'dense',
-    });
+  // `error`,  `iter`: final error and iteration number
+  // note: computation-heavy action happens here
+  const [err, iter] = model.run();
 
-    // `error`,  `iter`: final error and iteration number
-    // note: computation-heavy action happens here
-    const [err, iter] = model.run();
-
-    if (err) {
-      console.error(err, iter);
-    }
-
-    // `outputScaled` is `output` scaled to a range of [-1, 1]
-    const outputScaled = model.getOutputScaled();
-
-    spatialIncidents = outputScaled.map((array, i) => {
-      const spatialIncident = {
-        incident_id: ids[i],
-        x: array[0],
-        y: array[1],
-        classifications: ((c) => {
-          if (!c) return null;
-          let classificationsSubset = {};
-
-          for (let axis of [
-            'Harm_Distribution_Basis',
-            'System_Developer',
-            'Problem_Nature',
-            'Sector_of_Deployment',
-            'Harm_Type',
-            'Intent',
-            'Near_Miss',
-            'Severity',
-          ]) {
-            classificationsSubset[axis] = c[axis];
-          }
-          return classificationsSubset;
-        })(allClassifications.find((c) => c.incident_id == ids[i])?.classifications),
-      };
-
-      return spatialIncident;
-    });
-  } else {
-    console.error('Could not download embedding state, skipping TSNE visualization.');
+  if (err) {
+    console.error(err, iter);
   }
+
+  // `outputScaled` is `output` scaled to a range of [-1, 1]
+  const outputScaled = model.getOutputScaled();
+
+  spatialIncidents = outputScaled.map((array, i) => {
+    const spatialIncident = {
+      incident_id: ids[i],
+      x: array[0],
+      y: array[1],
+      classifications: ((c) => {
+        if (!c) return null;
+        let classificationsSubset = {};
+
+        for (let axis of [
+          'Harm_Distribution_Basis',
+          'System_Developer',
+          'Problem_Nature',
+          'Sector_of_Deployment',
+          'Harm_Type',
+          'Intent',
+          'Near_Miss',
+          'Severity',
+        ]) {
+          classificationsSubset[axis] = c[axis];
+        }
+        return classificationsSubset;
+      })(allClassifications.find((c) => c.incident_id == ids[i])?.classifications),
+    };
+
+    return spatialIncident;
+  });
 
   const keys = Object.keys(incidentReportsMap);
 

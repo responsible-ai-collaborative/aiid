@@ -89,6 +89,18 @@
         },
         "url": {
             "bsonType": "string"
+        },
+        "embedding": {
+          "bsonType": "object",
+          "items": {
+            "vector": {
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "double"
+                }
+            },
+            "from_text_hash": "string"
+          }
         }
     },
     "required": [
