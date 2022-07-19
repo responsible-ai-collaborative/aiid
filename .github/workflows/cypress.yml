@@ -26,6 +26,7 @@ jobs:
       - name: Install NPM dependencies
         uses: cypress-io/github-action@v4
         with:
+          working-directory: site/gatsby-site
           # just perform install
           runTests: false
           install-command: npm install --legacy-peer-deps
