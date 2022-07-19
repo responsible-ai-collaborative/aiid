@@ -211,6 +211,7 @@ const plugins = [
       },
     },
   },
+  'gatsby-plugin-postcss',
 ];
 
 module.exports = {
