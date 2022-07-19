@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default function Card({ children }) {
+export default function Card(props) {
   return (
     <>
-      <div className="p-10">{children}</div>
+      <div className={`border rounded flex ${props.className}`}>{props.children}</div>
     </>
   );
 }
