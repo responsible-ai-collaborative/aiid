@@ -33,7 +33,7 @@ jobs:
         continue-on-error: true
         run: npm list
 
-        name: Cache hit?
+      - name: Cache hit?
         run: echo "Cache hit? ${{ steps.cache-npm.outputs.cache-hit }}"
 
       # Install NPM dependencies
