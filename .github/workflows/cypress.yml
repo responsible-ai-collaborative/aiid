@@ -21,6 +21,7 @@ jobs:
           working-directory: site/gatsby-site
           install-command: npm install --legacy-peer-deps
           config-file: cypress.config.js
+          record: true
           start: npm start
           wait-on: http://localhost:8000/
           # wait for 2 minutes for the server to respond
