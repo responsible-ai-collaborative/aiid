@@ -13,9 +13,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # - name: "NPM Install"
-      #   run: npm install --legacy-peer-deps
-
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
       - name: Cypress run
