@@ -17,24 +17,27 @@ export default function QuickSearch({ className }) {
     navigate(`/apps/discover`);
   };
 
-  const [placeHolderText, setPlaceHolderText] = useState('Search 1400+ reports');
+  const [placeHolderText, setPlaceHolderText] = useState('Search 1600+ reports');
 
   useEffect(() => {
     const updatePlaceHolder = () => {
-      if (document && document.body.scrollWidth > 500) {
-        setPlaceHolderText('Search over 1400 reports of AI harms');
-      } else if (document && document.body.scrollWidth > 450) {
-        setPlaceHolderText('Search 1400+ AI harm reports');
-      } else if (document && document.body.scrollWidth > 350) {
-        setPlaceHolderText('Search 1400+ reports');
-      } else {
-        setPlaceHolderText('Search reports');
+      if (document) {
+        const w = document.body.scrollWidth;
+
+        if (w > 500) setPlaceHolderText('Search over 1600 reports of AI harms');
+        else if (w > 450) setPlaceHolderText('Search 1600+ AI harm reports');
+        else if (w > 350) setPlaceHolderText('Search 1600+ reports');
+        else setPlaceHolderText('Search reports');
       }
     };
 
     updatePlaceHolder();
-    if (window) window.addEventListener('resize', updatePlaceHolder);
-  });
+
+    if (window) {
+      window.addEventListener('resize', updatePlaceHolder);
+      return () => window.removeEventListener('resize', updatePlaceHolder);
+    }
+  }, []);
 
   const { t } = useTranslation(['translation', 'landing', 'actions']);
 
