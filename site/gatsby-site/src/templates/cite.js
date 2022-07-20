@@ -69,19 +69,7 @@ function CitePage(props) {
     },
   } = props;
 
-  // The server-side rendering occurs as if the user is not logged in.
-  // The taxonomies render conditionally on the login state,
-  // and are not re-hydrated when tests run.
-  // As a result, if there are no classifications,
-  // the taxonomy will not render and the test of its existence will fail.
-  // This is used to trigger a re-render on the client-side.
-  const [isClient, setClient] = useState(false);
-
-  useEffect(() => {
-    setClient(true);
-  }, []);
-
-  const { isRole } = useUserContext();
+  const { isRole, user } = useUserContext();
 
   const { t } = useTranslation();
 
@@ -113,6 +101,20 @@ function CitePage(props) {
     mongodb_id: 0,
     isOccurrence: true,
   });
+
+  const [taxonomiesList, setTaxonomiesList] = useState(
+    taxonomies.map((t) => ({ ...t, canEdit: false }))
+  );
+
+  useEffect(() => {
+    setTaxonomiesList((list) =>
+      list.map((t) => ({
+        ...t,
+        canEdit:
+          isRole('taxonomy_editor') || isRole('taxonomy_editor_' + t.namespace.toLowerCase()),
+      }))
+    );
+  }, [user]);
 
   return (
     <Layout {...props}>
@@ -233,21 +235,17 @@ function CitePage(props) {
 
         {taxonomies.length > 0 && (
           <Row id="taxa-area">
-            <Col key={isClient}>
-              {taxonomies.map((t) => {
-                const canEdit =
-                  isRole('taxonomy_editor') ||
-                  isRole('taxonomy_editor_' + t.namespace.toLowerCase());
-
-                return canEdit || t.classificationsArray.length > 0 ? (
+            <Col>
+              {taxonomiesList
+                .filter((t) => t.canEdit || t.classificationsArray.length > 0)
+                .map((t) => (
                   <Taxonomy
                     key={t.namespace}
                     taxonomy={t}
                     incidentId={incident.incident_id}
-                    canEdit={canEdit}
+                    canEdit={t.canEdit}
                   />
-                ) : null;
-              })}
+                ))}
             </Col>
           </Row>
         )}

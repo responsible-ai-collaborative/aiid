@@ -202,6 +202,15 @@ After the first run, the following applies for subsequent runs:
 Translations of report fields load from the existing `translations/incident_reports_{language}/{doc}` document, and if not found, then the Translate API is hit.
 Algolia indexes are replaced every time the process runs
 
+
+#### UI Translations
+
+Https://react.i18next.com handles UI translations. To find missing keys enable debugging by setting the following environment variable:
+
+```
+GATSBY_I18N_DEBUG=true
+```
+
 ### Cost
 
 The translate API charges ~20USD per million characters and can translate to 111 languages.
