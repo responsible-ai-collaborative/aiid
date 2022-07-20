@@ -42,7 +42,7 @@ jobs:
 
       # Start the server
       - name: Start site server
-        run: npm start & npx wait-on http://localhost:8000
+        run: RUNNER_TRACKING_ID="" && npm start & npx wait-on http://localhost:8000
         env:
           # Recommended: pass the GitHub token lets this action correctly
           # determine the unique run id necessary to re-run the checks
