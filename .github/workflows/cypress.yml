@@ -4,6 +4,7 @@ on: [push]
 
 jobs:
   install:
+    name: NPM install & Gatsby develop
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -45,7 +46,7 @@ jobs:
         run: |
           echo "::set-output name=sha::$(git rev-parse HEAD)"
 
-      # Cache '.cache' and 'public' folders
+      # Cache '.cache' and 'public' folders using the commit hash. This cache is used to improve 'gatsby develop' command performance.
       - name: Cache .Cache and Public folders
         id: cache-public-folders
         uses: actions/cache@v3.0.5
@@ -74,6 +75,7 @@ jobs:
           MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
 
   cypress-run:
+    name: Run Cypress tests
     runs-on: ubuntu-latest
     needs: install
     defaults:
@@ -125,7 +127,7 @@ jobs:
         run: |
           echo "::set-output name=sha::$(git rev-parse HEAD)"
 
-      # Cache '.cache' and 'public' folders
+      # Cache '.cache' and 'public' folders using the commit hash. This cache is used to improve 'gatsby develop' command performance.
       - name: Cache .Cache and Public folders
         id: cache-public-folders
         uses: actions/cache@v3.0.5
