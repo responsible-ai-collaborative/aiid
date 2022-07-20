@@ -97,7 +97,7 @@ jobs:
           config-file: cypress.config.js
           record: true
           parallel: true
-          group: '1. Cypress e2e tests'
+          group: 'Cypress e2e tests'
           start: npm start
           wait-on: http://localhost:8000/
           # wait for 2 minutes for the server to respond
