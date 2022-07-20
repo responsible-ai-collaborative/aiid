@@ -274,13 +274,14 @@ const SubmissionForm = () => {
 
         <Form.Group className="mt-3">
           <Label popover={POP_OVERS['language']} label={'Language'} />
-          <Form.Select name="language" placeholder="Report Language" onChange={handleChange}>
+          <Form.Select
+            name="language"
+            placeholder="Report Language"
+            value={values.language}
+            onChange={handleChange}
+          >
             {supportedLanguages.map((l) => (
-              <option
-                key={l.code}
-                value={l.code}
-                selected={values?.language && values.language === l.code ? true : false}
-              >
+              <option key={l.code} value={l.code}>
                 {l.name}
               </option>
             ))}
