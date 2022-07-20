@@ -44,7 +44,7 @@ jobs:
 
       # Build the site
       - name: Build Gatsby site
-        run: npm build
+        run: npm run build
         env:
           # Recommended: pass the GitHub token lets this action correctly
           # determine the unique run id necessary to re-run the checks
@@ -120,7 +120,7 @@ jobs:
           record: true
           parallel: true
           group: 'Cypress e2e tests'
-          start: npm serve
+          start: npm run serve
           wait-on: http://localhost:9000/
           # wait for 2 minutes for the server to respond
           wait-on-timeout: 120
