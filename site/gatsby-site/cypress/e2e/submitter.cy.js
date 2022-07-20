@@ -1,27 +1,25 @@
 describe('Submitter Selection', () => {
-  const url = '/';
+  let url = '/';
 
-  it('Should successfully load home page', () => {
+  it('Should select the first submitter if there is one and load the discover page with a pre-selected submitter in the URL', () => {
     cy.visit(url);
-  });
 
-  it('Should scroll to Incident Report Submission Leaderboards', () => {
     cy.contains('Incident Report Submission Leaderboards').scrollIntoView();
-  });
 
-  it('Should select the first submitter if there is one', () => {
     cy.get('div[class^="Leaderboard__StyledItem"] a').its('length').should('be.gt', 1);
 
     cy.get('div[class^="Leaderboard__StyledItem"] a').first().click();
-  });
 
-  it('Should load the discover page with a pre-selected submitter in the URL', () => {
     cy.url().should('include', 'submitters=');
   });
 
   it('Should have the submitter pre-selected on the dropdown', () => {
+    url = '/apps/discover?submitters=Anonymous';
+
+    cy.visit(url);
+
     cy.contains('Submitters').find('span.badge').first().click();
 
-    cy.contains('Submitters').find('span.badge').first().should('contain.text', '1');
+    cy.get('.shadow-lg.card').find('.list-group-item.active').should('contain.text', 'Anonymous');
   });
 });
