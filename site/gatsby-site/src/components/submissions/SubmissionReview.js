@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import ReadMoreText from 'components/ReadMoreText';
 import RelatedIncidents from 'components/RelatedIncidents';
+import isArray from 'lodash/isArray';
 
 import { useUserContext } from 'contexts/userContext';
 import { UPDATE_REPORT } from '../../graphql/reports';
@@ -32,7 +33,7 @@ const ListedGroup = ({ item, className = '', keysToRender }) => {
               <b>{key}</b>
             </div>
             <div className="text-break">
-              {item[key] == 'object' && item[key] !== null ? item[key].join(', ') : item[key]}
+              {isArray(item[key]) ? item[key].join(', ') : item[key]}
             </div>
           </ListGroup.Item>
         ))}

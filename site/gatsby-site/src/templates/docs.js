@@ -7,8 +7,10 @@ import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import config from '../../config';
 import { MDXProvider } from '@mdx-js/react';
+import isString from 'lodash/isString';
 
-const slug = (title) => title.toLowerCase().replace(/\s+/g, '');
+const slug = (title) =>
+  isString(title) ? title.toLowerCase().replace(/\s+/g, '') : title.props.children;
 
 const Components = {
   h1: ({ children }) => <h1 id={slug(children)}>{children}</h1>,
@@ -67,14 +69,14 @@ export default class MDXRuntimeTest extends Component {
 }
 
 export const pageQuery = graphql`
-  query ($id: String!) {
+  query DocsTemplateQuery($slug: String!, $locale: String!) {
     site {
       siteMetadata {
         title
         docsLocation
       }
     }
-    mdx(fields: { id: { eq: $id } }) {
+    mdx(fields: { locale: { eq: $locale } }, frontmatter: { slug: { eq: $slug } }) {
       fields {
         id
         title

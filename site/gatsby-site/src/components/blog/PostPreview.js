@@ -15,7 +15,7 @@ function PostPreview({ post, className }) {
     <Card className={className}>
       <Row className="g-0">
         <Col md={4}>
-          <LocalizedLink to={`/blog/${post.frontmatter.slug}`}>
+          <LocalizedLink to={post.frontmatter.slug}>
             <StyledImg
               alt="post-image"
               className="img-fluid rounded-start"
@@ -26,15 +26,13 @@ function PostPreview({ post, className }) {
         <Col md={8}>
           <Card.Body>
             <Card.Title>
-              <LocalizedLink to={`/blog/${post.frontmatter.slug}`}>
-                {post.fields.title}
-              </LocalizedLink>
+              <LocalizedLink to={post.frontmatter.slug}>{post.fields.title}</LocalizedLink>
             </Card.Title>
             <Card.Subtitle>{format(new Date(post.frontmatter.date), 'MMM d, yyyy')}</Card.Subtitle>
             <Card.Text>
               {' '}
               {post.excerpt}...{' '}
-              <LocalizedLink to={`/blog/${post.frontmatter.slug}`}>(Read More)</LocalizedLink>
+              <LocalizedLink to={post.frontmatter.slug}>(Read More)</LocalizedLink>
             </Card.Text>
             <Card.Text>
               <small className="text-muted">By {post.frontmatter.author}</small>
