@@ -13,18 +13,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # Cache node_modules folder
+      # Cache 'node_modules' and '~/.cache/Cypress' folder
       - name: Cache node modules
         id: cache-nodemodules
         uses: actions/cache@v3.0.5
         env:
-          cache-name: cache-whole-site
+          cache-name: cache-install-folder
         with:
           # caching node_modules
           path: |
             site/gatsby-site/node_modules
-            site/gatsby-site/public
-            site/gatsby-site/.cache
             ~/.cache/Cypress
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
@@ -44,10 +42,8 @@ jobs:
 
       # Build the site
       - name: Build Gatsby site
-        run: npm run build
+        run: npm start & npx wait-on http://localhost:8000
         env:
-          # Recommended: pass the GitHub token lets this action correctly
-          # determine the unique run id necessary to re-run the checks
           CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
@@ -59,6 +55,19 @@ jobs:
           MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}
           MONGODB_REPLICA_SET: ${{ secrets.MONGODB_REPLICA_SET }}
           MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
+
+      # Upload 'public' and '.cache' folders
+      - name: Upload 'public' folder
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-folder-artifact
+          path: site/gatsby-site/public
+
+      - name: Upload '.cache' folder
+        uses: actions/upload-artifact@v3
+        with:
+          name: cache-folder-artifact
+          path: site/gatsby-site/.cache
 
   cypress-run:
     runs-on: ubuntu-latest
@@ -85,13 +94,11 @@ jobs:
         id: cache-nodemodules-2
         uses: actions/cache@v3.0.5
         env:
-          cache-name: cache-whole-site
+          cache-name: cache-install-folder
         with:
           # caching node_modules
           path: |
             site/gatsby-site/node_modules
-            site/gatsby-site/public
-            site/gatsby-site/.cache
             ~/.cache/Cypress
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
@@ -109,6 +116,17 @@ jobs:
           runTests: false
           install-command: npm ci --legacy-peer-deps
 
+      # Download 'public' and '.cache' folders
+      - name: Download 'public' folder
+        uses: actions/download-artifact@v3
+        with:
+          name: build-folder-artifact
+      
+      - name: Download '.cache' folder
+        uses: actions/download-artifact@v3
+        with:
+          name: cache-folder-artifact
+
       # Run all Cypress tests
       - name: Cypress run
         uses: cypress-io/github-action@v4
@@ -120,8 +138,8 @@ jobs:
           record: true
           parallel: true
           group: 'Cypress e2e tests'
-          start: npm run serve
-          wait-on: http://localhost:9000/
+          start: npm start
+          wait-on: http://localhost:8000/
           # wait for 2 minutes for the server to respond
           wait-on-timeout: 120
         env:
