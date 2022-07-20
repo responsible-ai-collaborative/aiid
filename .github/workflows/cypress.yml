@@ -40,6 +40,23 @@ jobs:
           runTests: false
           install-command: npm ci --legacy-peer-deps
 
+      # Get GIT commit hash
+      - id: get-commit-sha
+        run: |
+          echo "::set-output name=sha::$(git rev-parse HEAD)"
+
+      # Cache '.cache' and 'public' folders
+      - name: Cache .Cache and Public folders
+        id: cache-public-folders
+        uses: actions/cache@v3.0.5
+        env:
+          cache-name: cache-public-folder
+        with:
+          path: |
+            site/gatsby-site/public
+            site/gatsby-site/.cache
+          key: ${{ env.cache-name }}-${{ steps.get-commit-sha.outputs.sha }}
+
       # Build the site
       - name: Build Gatsby site
         run: npm start & npx wait-on http://localhost:8000
@@ -56,19 +73,6 @@ jobs:
           MONGODB_REPLICA_SET: ${{ secrets.MONGODB_REPLICA_SET }}
           MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
 
-      # Upload 'public' and '.cache' folders
-      - name: Upload 'public' folder
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-folder-artifact
-          path: site/gatsby-site/public
-
-      - name: Upload '.cache' folder
-        uses: actions/upload-artifact@v3
-        with:
-          name: cache-folder-artifact
-          path: site/gatsby-site/.cache
-
   cypress-run:
     runs-on: ubuntu-latest
     needs: install
@@ -83,7 +87,7 @@ jobs:
       # https://github.com/cypress-io/github-action/issues/48
       fail-fast: false
       matrix:
-        # run 3 copies of the current job in parallel
+        # run 5 copies of the current job in parallel
         containers: [1, 2, 3, 4, 5]
     steps:
       - name: Checkout
@@ -116,16 +120,22 @@ jobs:
           runTests: false
           install-command: npm ci --legacy-peer-deps
 
-      # Download 'public' and '.cache' folders
-      - name: Download 'public' folder
-        uses: actions/download-artifact@v3
+      # Get GIT commit hash
+      - id: get-commit-sha
+        run: |
+          echo "::set-output name=sha::$(git rev-parse HEAD)"
+
+      # Cache '.cache' and 'public' folders
+      - name: Cache .Cache and Public folders
+        id: cache-public-folders
+        uses: actions/cache@v3.0.5
+        env:
+          cache-name: cache-public-folder
         with:
-          name: build-folder-artifact
-      
-      - name: Download '.cache' folder
-        uses: actions/download-artifact@v3
-        with:
-          name: cache-folder-artifact
+          path: |
+            site/gatsby-site/public
+            site/gatsby-site/.cache
+          key: ${{ env.cache-name }}-${{ steps.get-commit-sha.outputs.sha }}
 
       # Run all Cypress tests
       - name: Cypress run
