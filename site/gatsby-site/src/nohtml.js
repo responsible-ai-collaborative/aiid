@@ -9,6 +9,7 @@ export default class HTML extends React.Component {
         <head>
           <meta charSet="utf-8" />
           <meta httpEquiv="x-ua-compatible" content="ie=edge" />
+          <meta property="test" content="Remove this" />
           <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
           {config.siteMetadata.ogImage ? (
             <meta property="og:image" content={config.siteMetadata.ogImage} />
