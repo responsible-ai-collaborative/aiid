@@ -18,12 +18,14 @@ jobs:
         id: cache-nodemodules
         uses: actions/cache@v3.0.5
         env:
-          cache-name: cache-node-modules
+          cache-name: cache-site
         with:
           # caching node_modules
           path: |
             site/gatsby-site/node_modules
             ~/.cache/Cypress
+            public
+            .cache
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -40,9 +42,9 @@ jobs:
           runTests: false
           install-command: npm ci --legacy-peer-deps
 
-      # Start the server
-      - name: Start site server
-        run: RUNNER_TRACKING_ID="" && npm start & npx wait-on http://localhost:8000
+      # Build the site
+      - name: Build Gatsby site
+        run: npm build
         env:
           # Recommended: pass the GitHub token lets this action correctly
           # determine the unique run id necessary to re-run the checks
@@ -83,12 +85,14 @@ jobs:
         id: cache-nodemodules-2
         uses: actions/cache@v3.0.5
         env:
-          cache-name: cache-node-modules
+          cache-name: cache-site
         with:
           # caching node_modules
           path: |
             site/gatsby-site/node_modules
             ~/.cache/Cypress
+            public
+            .cache
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -116,8 +120,8 @@ jobs:
           record: true
           parallel: true
           group: 'Cypress e2e tests'
-          # start: npm start
-          wait-on: http://localhost:8000/
+          start: npm serve
+          wait-on: http://localhost:9000/
           # wait for 2 minutes for the server to respond
           wait-on-timeout: 120
         env:
