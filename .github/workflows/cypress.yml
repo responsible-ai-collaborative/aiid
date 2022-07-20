@@ -40,6 +40,10 @@ jobs:
           runTests: false
           install-command: npm ci --legacy-peer-deps
 
+      # Start the server
+      - name: Start site server
+        run: npm start
+
   cypress-run:
     runs-on: ubuntu-latest
     needs: install
@@ -98,7 +102,7 @@ jobs:
           record: true
           parallel: true
           group: 'Cypress e2e tests'
-          start: npm start
+          # start: npm start
           wait-on: http://localhost:8000/
           # wait for 2 minutes for the server to respond
           wait-on-timeout: 120
