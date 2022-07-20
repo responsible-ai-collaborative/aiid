@@ -8,14 +8,20 @@ import Card from '../../elements/Card';
 
 function PostPreview({ post }) {
   return (
-    <Card>
-      <div className="flex flex-column w-full">
+    <Card className="max-w-full">
+      <div className="flex flex-column w-full max-w-full">
         <LocalizedLink
           to={post.frontmatter.slug}
-          style={{ height: '100%', width: '100%', maxHeight: '240px', display: 'inline-block' }}
+          style={{
+            height: '100%',
+            width: '100%',
+            maxWidth: '100%',
+            maxHeight: '240px',
+            display: 'inline-block',
+          }}
         >
           <Img
-            style={{ height: '100%', width: '100%', maxHeight: '240px', display: 'block' }}
+            style={{ height: '100%', width: '100%', maxWidth: '100%', maxHeight: '240px' }}
             alt="post-image"
             className="img-fluid rounded-start"
             imgStyle={{ objectFit: 'cover' }}

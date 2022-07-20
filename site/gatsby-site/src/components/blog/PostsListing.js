@@ -24,12 +24,12 @@ export default function PostsListing({ posts }) {
 
   return (
     <>
-      <div className="grid gap-4 lg:gap-4 md:grid-cols-1">
+      <div className="md:grid gap-4 lg:gap-4 md:grid-cols-1 flex">
         {mainPosts.map((p) => (
           <StyledPostPreview key={p.fields.slug} post={p} />
         ))}
       </div>
-      <div className="grid gap-4 mt-10 lg:gap-4 md:grid-cols-2 xl:grid-cols-2">
+      <div className="md:grid gap-4 mt-10 lg:gap-4 md:grid-cols-2 xl:grid-cols-2 flex">
         {secondaryPosts.map((p) => (
           <StyledPostPreview key={p.fields.slug} post={p} />
         ))}
