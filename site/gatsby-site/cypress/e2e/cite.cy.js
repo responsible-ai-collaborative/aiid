@@ -221,7 +221,6 @@ describe('Cite pages', () => {
       query: gql`
         query {
           incidents(query: { incident_id: ${incidentId} }, limit: 1) {
-            incident_id
             title
             description
             reports {
