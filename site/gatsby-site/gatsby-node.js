@@ -162,6 +162,19 @@ exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
 
   const typeDefs = `
+    type mongodbAiidprodIncidents implements Node {
+      nlp_similar_incidents: [Object]
+      editor_similar_incidents: [Integer]
+      editor_dissimilar_incidents: [Integer]
+      flagged_dissimilar_incidents: [Integer]
+    }
+    
+    type mongodbAiidprodSubmissions implements Node {
+      nlp_similar_incidents: [Object]
+      editor_similar_incidents: [Integer]
+      editor_dissimilar_incidents: [Integer]
+    }
+
     type mongodbAiidprodReports implements Node {
       cloudinary_id: String
       tags: [String]
