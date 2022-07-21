@@ -53,11 +53,24 @@ export default function WebArchiveLink({ url, date, children, className }) {
       target="_blank"
       rel="noopener noreferrer"
       className={className}
+      data-cy="web-archive-link"
     >
-      <Dropdown.Item eventKey="1" href={url} target="_blank" rel="noopener noreferrer">
+      <Dropdown.Item
+        eventKey="1"
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-cy="original"
+      >
         <Trans>View the page at its original source</Trans>
       </Dropdown.Item>
-      <Dropdown.Item eventKey="2" onClick={onClick} target="_blank" rel="noopener noreferrer">
+      <Dropdown.Item
+        eventKey="2"
+        onClick={onClick}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-cy="wayback-machine"
+      >
         <Trans>View the page archived by the Wayback Machine</Trans>
       </Dropdown.Item>
     </ArchiveOriginalSplit>
