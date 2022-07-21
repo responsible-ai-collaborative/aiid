@@ -9,7 +9,6 @@ import { Row, Col, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Trans } from 'react-i18next';
-import { useTranslation } from 'react-i18next';
 
 const ExpandFilters = styled.button`
   user-select: none;
@@ -21,6 +20,12 @@ const ExpandFilters = styled.button`
 
 const ExpandArrow = styled(FontAwesomeIcon)`
   vertical-align: -0.2em !important;
+`;
+
+const ControlsRow = styled(Row)`
+  @media (max-width: 767.5px) {
+    display: none !important;
+  }
 `;
 
 const Hbox = styled(Col)`
@@ -37,18 +42,19 @@ const Hbox = styled(Col)`
     vertical-align: middle;
     margin: 0px;
   }
+  label {
+    white-space: nowrap;
+  }
 `;
 
 const Controls = ({ query, setHideDuplicates, hideDuplicates }) => {
-  const { t } = useTranslation();
-
   const [expandFilters, setExpandFilters] = useState(false);
 
   useEffect(() => setExpandFilters(REFINEMENT_LISTS.some((r) => query[r.attribute])), []);
 
   return (
     <>
-      <Row className="justify-content-start align-items-center mt-3 hiddenMobile">
+      <ControlsRow className="justify-content-start align-items-center mt-3 hiddenMobile">
         <Col className="col-auto">
           <Stats />
         </Col>
@@ -65,7 +71,7 @@ const Controls = ({ query, setHideDuplicates, hideDuplicates }) => {
             }}
           />
           <Form.Label for="hide-duplicates">
-            {t('1st report only').split(' ').join('\u00a0')}
+            <Trans>1st report only</Trans>
           </Form.Label>
         </Hbox>
         <Col className="col-auto">
@@ -83,7 +89,7 @@ const Controls = ({ query, setHideDuplicates, hideDuplicates }) => {
             <Trans>Filter Search</Trans>
           </ExpandFilters>
         </Col>
-      </Row>
+      </ControlsRow>
       <Row className="mb-3 hiddenMobile">{expandFilters && <Filters />}</Row>
     </>
   );
