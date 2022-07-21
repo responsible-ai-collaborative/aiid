@@ -210,4 +210,23 @@ describe('Cite pages', () => {
       `Olsson, Catherine. (2014-08-14) Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on ${date} from incidentdatabase.ai/cite/10.`
     );
   });
+
+  it('Should have OpenGraph meta tags', () => {
+    cy.visit(url);
+
+    cy.get('head meta[name="title"]').should('have.attr', 'content');
+    cy.get('head meta[name="description"]').should('have.attr', 'content');
+
+    cy.get('head meta[name="twitter:site"]').should('have.attr', 'content', '@IncidentsDB');
+    cy.get('head meta[name="twitter:creator"]').should('have.attr', 'content', '@IncidentsDB');
+
+    cy.get('head meta[property="og:url"]').should('have.attr', 'content');
+    cy.get('head meta[property="og:type"]').should('have.attr', 'content', 'website');
+    cy.get('head meta[property="og:title"]').should('have.attr', 'content');
+    cy.get('head meta[property="og:description"]').should('have.attr', 'content');
+    cy.get('head meta[property="og:image"]').should('have.attr', 'content');
+    cy.get('head meta[property="twitter:title"]').should('have.attr', 'content');
+    cy.get('head meta[property="twitter:description"]').should('have.attr', 'content');
+    cy.get('head meta[property="twitter:image"]').should('have.attr', 'content');
+  });
 });
