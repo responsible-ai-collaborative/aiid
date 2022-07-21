@@ -162,17 +162,21 @@ exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
 
   const typeDefs = `
+    type nlpSimilarIncident {
+      incident_id: Int
+      similarity: Float
+    }
     type mongodbAiidprodIncidents implements Node {
-      nlp_similar_incidents: [Object]
-      editor_similar_incidents: [Integer]
-      editor_dissimilar_incidents: [Integer]
-      flagged_dissimilar_incidents: [Integer]
+      nlp_similar_incidents: [nlpSimilarIncident]
+      editor_similar_incidents: [Int]
+      editor_dissimilar_incidents: [Int]
+      flagged_dissimilar_incidents: [Int]
     }
     
     type mongodbAiidprodSubmissions implements Node {
-      nlp_similar_incidents: [Object]
-      editor_similar_incidents: [Integer]
-      editor_dissimilar_incidents: [Integer]
+      nlp_similar_incidents: [nlpSimilarIncident]
+      editor_similar_incidents: [Int]
+      editor_dissimilar_incidents: [Int]
     }
 
     type mongodbAiidprodReports implements Node {
