@@ -7,22 +7,22 @@ import Card from '../../elements/Card';
 
 function PostPreview({ post }) {
   return (
-    <Card className="max-w-full">
-      <div className="flex flex-column w-full max-w-full">
-        <LocalizedLink to={post.frontmatter.slug}>
+    <Card className="tw-max-w-full">
+      <div className="tw-flex tw-flex-col tw-w-full tw-max-w-full">
+        <LocalizedLink to={post.frontmatter.slug} className="tw-text-primary-blue">
           <Img
-            style={{ maxHeight: '240px', transitionDuration: '.15s' }}
             alt="post-image"
-            className="img-fluid rounded-start h-full w-full max-w-full"
-            imgStyle={{ objectFit: 'cover' }}
+            className="img-fluid tw-rounded-start tw-h-full tw-w-full tw-max-w-full tw-max-h-240"
+            imgStyle={{ transition: '0.5s all ease-in-out' }}
+            imgClassName="hover:tw-scale-110 tw-object-cover"
             image={post.frontmatter.image.childImageSharp.gatsbyImageData}
           />
         </LocalizedLink>
-        <div className="p-4">
+        <div className="tw-p-4">
           <div>
             <LocalizedLink to={post.frontmatter.slug}>{post.fields.title}</LocalizedLink>
           </div>
-          <div className="font-medium">
+          <div className="tw-font-medium">
             {format(new Date(post.frontmatter.date), 'MMM d, yyyy')}
           </div>
           <div>
@@ -30,7 +30,7 @@ function PostPreview({ post }) {
             {post.excerpt}... <LocalizedLink to={post.frontmatter.slug}>(Read More)</LocalizedLink>
           </div>
           <div>
-            <small className="text-muted">By {post.frontmatter.author}</small>
+            <small className="tw-text-muted">By {post.frontmatter.author}</small>
           </div>
         </div>
       </div>

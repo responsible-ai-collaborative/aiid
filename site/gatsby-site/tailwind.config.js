@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  prefix: 'tw-',
   content: [
     './src/pages/**/*.{js,jsx,ts,tsx}',
     './src/components/**/*.{js,jsx,ts,tsx}',
@@ -7,7 +8,13 @@ module.exports = {
     './src/templates/**/*.{js,jsx,ts,tsx}',
   ],
   theme: {
+    maxHeight: {
+      240: '240px',
+    },
     extend: {
+      colors: {
+        'primary-blue': '#0d6efd',
+      },
       gridTemplateColumns: {
         5: 'repeat(5, minmax(0, 1fr))',
         6: 'repeat(6, minmax(0, 1fr))',
