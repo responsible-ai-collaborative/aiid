@@ -203,7 +203,7 @@ const SimilarIncidents = ({
 }) => {
   const { isRole } = useUserContext();
 
-  const nlp_only_incidents = nlp_similar_incidents.filter(
+  const nlp_only_incidents = (nlp_similar_incidents || []).filter(
     (similarIncident) =>
       !(
         editor_similar_incidents.map((e) => e.incident_id).includes(similarIncident.incident_id) ||
