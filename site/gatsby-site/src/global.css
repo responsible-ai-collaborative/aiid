@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;700&family=Karla:wght@400;500;700&display=swap');
-@import url('./tailwind.base.css');
 
 :root {
   --primary1: #868787;
@@ -46,6 +45,7 @@ body {
 
 a {
   transition: color 0.15s;
+  text-decoration: none;
   /* color: #663399; */
 }
 

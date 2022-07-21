@@ -1,0 +1,5 @@
+/* Custom styles meant to override global.css, tailwind and bootstrap */
+
+a {
+    text-decoration: none;
+}
