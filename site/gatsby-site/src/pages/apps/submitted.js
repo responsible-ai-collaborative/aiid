@@ -9,6 +9,7 @@ import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import SubmissionList from 'components/submissions/SubmissionList';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
+import { Trans, useTranslation } from 'react-i18next';
 
 const SubmittedIncidentsPage = ({ ...props }) => {
   const { isRole } = useUserContext();
@@ -23,14 +24,19 @@ const SubmittedIncidentsPage = ({ ...props }) => {
 
   const { loading, error, data } = useQuery(FIND_QUICKADD, { variables: { query: {} } });
 
+  const { t, i18n } = useTranslation(['submitted']);
+
   // Respond to a successful fetch of the quickadd data
   useEffect(() => {
     if (!loading && !error && data) {
       setQuickAdds(data['quickadds']);
     } else if (!loading && error) {
-      console.log(error);
       addToast({
-        message: <>Error deleting quick added incident: {error.message}</>,
+        message: (
+          <Trans i18n={i18n} ns="submitted">
+            Error deleting quick added incident: {error.message}
+          </Trans>
+        ),
         severity: SEVERITY.danger,
       });
     }
@@ -73,22 +79,30 @@ const SubmittedIncidentsPage = ({ ...props }) => {
   return (
     <Layout {...props}>
       <Helmet>
-        <title>Submitted Incident Report List</title>
+        <title>{t('Submitted Incident Report List')}</title>
       </Helmet>
       <div className={'titleWrapper'}>
-        <StyledHeading>Submitted Incident Report List</StyledHeading>
+        <StyledHeading>
+          <Trans ns="submitted">Submitted Incident Report List</Trans>
+        </StyledHeading>
       </div>
       <SubmissionList />
       <StyledMainWrapper>
-        <h1>Quick Add URLs</h1>
+        <h1>
+          <Trans ns="submitted">Quick Add URLs</Trans>
+        </h1>
         <p>
-          These reports were added anonymously by users in the Quick Add form on the landing page
+          <Trans ns="submitted" i18nKey="quickaddDescription">
+            These reports were added anonymously by users in the Quick Add form on the landing page
+          </Trans>
         </p>
         <ListGroup className="mb-5">
           {sortedQuickAdds.length < 1 && (
             <>
               <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" />{' '}
-              <p>Loading Quick Adds...</p>
+              <p>
+                <Trans ns="submitted">Loading Quick Adds...</Trans>
+              </p>
             </>
           )}
           {sortedQuickAdds.map(({ _id, url, date_submitted }) => (
@@ -101,7 +115,7 @@ const SubmittedIncidentsPage = ({ ...props }) => {
                       disabled={!isAdmin}
                       onClick={() => submitDeleteQuickAdd(_id)}
                     >
-                      Delete &gt;
+                      <Trans>Delete</Trans>&gt;
                     </Button>
                   </Col>
                   <Col xs={12} sm={10} lg={10}>
