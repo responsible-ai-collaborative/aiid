@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Helmet from 'react-helmet';
 import { Button, Col, Container, Pagination, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
@@ -59,7 +59,7 @@ function CitePage(props) {
     pageContext: { incident, incidentReports, taxonomies, nextIncident, prevIncident },
   } = props;
 
-  const { isRole } = useUserContext();
+  const { isRole, user } = useUserContext();
 
   const { t } = useTranslation();
 
@@ -91,6 +91,20 @@ function CitePage(props) {
     mongodb_id: 0,
     isOccurrence: true,
   });
+
+  const [taxonomiesList, setTaxonomiesList] = useState(
+    taxonomies.map((t) => ({ ...t, canEdit: false }))
+  );
+
+  useEffect(() => {
+    setTaxonomiesList((list) =>
+      list.map((t) => ({
+        ...t,
+        canEdit:
+          isRole('taxonomy_editor') || isRole('taxonomy_editor_' + t.namespace.toLowerCase()),
+      }))
+    );
+  }, [user]);
 
   return (
     <Layout {...props}>
@@ -212,20 +226,16 @@ function CitePage(props) {
         {taxonomies.length > 0 && (
           <Row id="taxa-area">
             <Col>
-              {taxonomies.map((t) => {
-                const canEdit =
-                  isRole('taxonomy_editor') ||
-                  isRole('taxonomy_editor_' + t.namespace.toLowerCase());
-
-                return canEdit || t.classificationsArray.length > 0 ? (
+              {taxonomiesList
+                .filter((t) => t.canEdit || t.classificationsArray.length > 0)
+                .map((t) => (
                   <Taxonomy
                     key={t.namespace}
                     taxonomy={t}
                     incidentId={incident.incident_id}
-                    canEdit={canEdit}
+                    canEdit={t.canEdit}
                   />
-                ) : null;
-              })}
+                ))}
             </Col>
           </Row>
         )}
