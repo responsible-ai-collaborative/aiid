@@ -12,7 +12,7 @@ function PostPreview({ post }) {
         <LocalizedLink to={post.frontmatter.slug} className="tw-text-primary-blue">
           <Img
             alt="post-image"
-            className="img-fluid tw-rounded-start tw-h-full tw-w-full tw-max-w-full tw-max-h-240"
+            className="img-fluid tw-rounded-start tw-h-full tw-w-full tw-max-w-full tw-max-h-240 tw-rounded-t-lg"
             imgStyle={{ transition: '0.5s all ease-in-out' }}
             imgClassName="hover:tw-scale-110 tw-object-cover"
             image={post.frontmatter.image.childImageSharp.gatsbyImageData}
@@ -30,7 +30,7 @@ function PostPreview({ post }) {
             {post.excerpt}... <LocalizedLink to={post.frontmatter.slug}>(Read More)</LocalizedLink>
           </div>
           <div>
-            <small className="tw-text-muted">By {post.frontmatter.author}</small>
+            <small className="tw-text-muted tw-text-sm">By {post.frontmatter.author}</small>
           </div>
         </div>
       </div>
