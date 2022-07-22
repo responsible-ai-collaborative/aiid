@@ -421,7 +421,7 @@ describe('Submitted reports', () => {
   });
 
   maybeIt(
-    'Does not allow promossion of submission if developers, deployers or harmed parties is missing.',
+    'Does not allow promotion of submission if developers, deployers or harmed parties is missing.',
     () => {
       cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
