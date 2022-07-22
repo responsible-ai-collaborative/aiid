@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
@@ -14,9 +14,9 @@ export default class Authors extends Component {
   render() {
     return (
       <Layout {...this.props}>
-        <Helmet>
+        <AiidHelmet>
           <title>Submissions Leaderboard</title>
-        </Helmet>
+        </AiidHelmet>
         <div className={'titleWrapper'}>
           <StyledHeading>Leaderboard</StyledHeading>
         </div>
