@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Helmet from 'react-helmet';
-import { Col, Container, Pagination, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
 import Citation from 'components/cite/Citation';
@@ -18,6 +17,10 @@ import { useUserContext } from 'contexts/userContext';
 import { Trans, useTranslation } from 'react-i18next';
 import Card from '../elements/Card';
 import Button from '../elements/Button';
+import Container from '../elements/Container';
+import Row from '../elements/Row';
+import Col from '../elements/Col';
+import Pagination from '../elements/Pagination';
 
 const StatsContainer = styled.div`
   h4 {

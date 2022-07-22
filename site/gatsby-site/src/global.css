@@ -17,6 +17,11 @@
 }
 
 @layer components {
+
+  .tw-container {
+    @apply xl:tw-max-w-[1140px] md:tw-max-w-[720px] lg:tw-max-w-[960px] sm:tw-max-w-[540px];
+  }
+
   .tw-btn {
     @apply tw-bg-transparent tw-border tw-border-transparent tw-rounded tw-border-dark-blue tw-cursor-pointer tw-inline-block tw-text-base tw-font-normal tw-py-1.5 tw-px-3 tw-text-center tw-no-underline tw-select-none tw-align-middle tw-transition-btn;
   }
@@ -27,6 +32,38 @@
 
   .tw-btn-outline-primary:hover {
     @apply tw-bg-primary-blue tw-text-white tw-border-primary-blue;
+  }
+
+  .tw-row {
+    @apply tw-flex tw-flex-wrap;
+  }
+
+  .tw-col {
+    @apply tw-flex-1;
+  }
+
+  .tw-pagination {
+    @apply tw-flex tw-pl-0 tw-list-none;
+  }
+
+  .tw-page-item:last-child .tw-page-link {
+    @apply tw-rounded-br tw-rounded-tr;
+  }
+
+  .tw-page-item:not(:first-child) .tw-page-link {
+    @apply tw-ml-[-1px];
+  }
+
+  .tw-page-item.disabled .tw-page-link {
+    @apply tw-bg-white tw-border-disable-grey tw-text-dark-grey tw-pointer-events-none;
+  }
+
+  .tw-page-link {
+    @apply tw-py-[0.375rem] tw-px-[0.75rem] tw-bg-white tw-border tw-border-disable-grey tw-text-primary-blue tw-block tw-relative tw-no-underline tw-transition-btn;
+  }
+
+  .tw-page-link:hover {
+    @apply tw-bg-light-grey tw-text-deep-blue tw-border-disable-grey tw-z-2;
   }
 }
 

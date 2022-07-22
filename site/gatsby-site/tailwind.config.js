@@ -12,14 +12,20 @@ module.exports = {
       colors: {
         'light-grey': 'rgba(0,0,0,.03)',
         'border-grey': 'rgba(0,0,0,.125)',
+        'disable-grey': '#dee2e6',
         'dark-blue': '#212529',
         'primary-blue': '#0d6efd',
+        'dark-grey': '#6c757d',
+        'deep-blue': '#0a58ca',
       },
       boxShadow: {
         card: '0 2px 5px 0px #e3e5ec',
       },
       transitionProperty: {
         btn: 'color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out',
+      },
+      zIndex: {
+        2: '2',
       },
     },
   },
