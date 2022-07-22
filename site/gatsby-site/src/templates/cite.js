@@ -16,15 +16,7 @@ import IncidentCard from 'components/cite/IncidentCard';
 import Taxonomy from 'components/taxa/Taxonomy';
 import { useUserContext } from 'contexts/userContext';
 import { Trans, useTranslation } from 'react-i18next';
-
-const CardContainer = styled.div`
-  border: 1.5px solid #d9deee;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px 0px #e3e5ec;
-  h4 {
-    margin: 0 !important;
-  }
-`;
+import Card from '../elements/Card';
 
 const StatsContainer = styled.div`
   h4 {
@@ -126,21 +118,21 @@ function CitePage(props) {
       <Container>
         <Row>
           <Col>
-            <CardContainer className="card" data-cy="citation">
-              <div className="card-header">
+            <Card data-cy="citation">
+              <Card.Header>
                 <h4>
                   <Trans>Suggested citation format</Trans>
                 </h4>
-              </div>
-              <div className="card-body">
+              </Card.Header>
+              <Card.Body>
                 <Citation
                   nodes={incidentReports}
                   incidentDate={incident.date}
                   incident_id={incident.incident_id}
                   editors={incident.editors}
                 />
-              </div>
-            </CardContainer>
+              </Card.Body>
+            </Card>
           </Col>
         </Row>
 
@@ -161,28 +153,28 @@ function CitePage(props) {
 
         <Row className="mt-4">
           <Col>
-            <CardContainer className="card">
-              <div className="card-header">
+            <Card>
+              <Card.Header>
                 <h4>
                   <Trans>Reports Timeline</Trans>
                 </h4>
-              </div>
-              <div className="card-body">
+              </Card.Header>
+              <Card.Body>
                 <Timeline data={timeline} />
-              </div>
-            </CardContainer>
+              </Card.Body>
+            </Card>
           </Col>
         </Row>
 
         <Row className="mt-4">
           <Col>
-            <CardContainer className="card">
-              <div className="card-header">
+            <Card>
+              <Card.Header>
                 <h4>
                   <Trans>Tools</Trans>
                 </h4>
-              </div>
-              <div className="card-body">
+              </Card.Header>
+              <Card.Body>
                 <Button
                   variant="outline-primary"
                   className="me-2"
@@ -218,8 +210,8 @@ function CitePage(props) {
                   incident_id={incident.incident_id}
                   editors={incident.editors}
                 />
-              </div>
-            </CardContainer>
+              </Card.Body>
+            </Card>
           </Col>
         </Row>
 
@@ -242,9 +234,9 @@ function CitePage(props) {
 
         <Row className="mt-4">
           <Col>
-            <CardContainer className="card">
+            <Card>
               <ImageCarousel nodes={incidentReports} />
-            </CardContainer>
+            </Card>
           </Col>
         </Row>
 
