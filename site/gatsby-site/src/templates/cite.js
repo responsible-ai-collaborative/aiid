@@ -282,7 +282,7 @@ function CitePage(props) {
           </Row>
         ))}
 
-        {spatialIncidents && (
+        {spatialIncidents ? (
           <>
             <StyledHeading>
               <Trans>This Incident in Semantic Space</Trans>
@@ -299,6 +299,8 @@ function CitePage(props) {
             </p>
             <TsneVisualization incident={incident} spatialIncidents={spatialIncidents} />
           </>
+        ) : (
+          <p>No Spatial incidents</p>
         )}
 
         <Pagination className="justify-content-between">

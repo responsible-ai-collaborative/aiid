@@ -199,9 +199,9 @@ const createCitationPages = async (graphql, createPage) => {
     (incident) => incident.embedding
   );
 
-  const embeddings = incidentsWithEmbeddings.map((incident) => incident?.embedding?.vector); //lines.map((line) => JSON.parse(line.split('"')[1]));
+  const embeddings = incidentsWithEmbeddings.map((incident) => incident?.embedding?.vector);
 
-  const ids = incidentsWithEmbeddings.map((incident) => incident.incident_id); //lines.map((line) => line.split(',')[0]);
+  const ids = incidentsWithEmbeddings.map((incident) => incident.incident_id);
 
   const model = new TSNE({
     dim: 2,
@@ -249,10 +249,10 @@ const createCitationPages = async (graphql, createPage) => {
           'Near_Miss',
           'Severity',
         ]) {
-          classificationsSubset[axis] = c[axis];
+          classificationsSubset[c.namespace + ':' + axis] = c.classifications[axis];
         }
         return classificationsSubset;
-      })(allClassifications.find((c) => c.incident_id == ids[i])?.classifications),
+      })(allClassifications.find((c) => c.incident_id == ids[i])),
     };
 
     return spatialIncident;

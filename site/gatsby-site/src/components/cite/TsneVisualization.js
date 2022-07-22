@@ -125,10 +125,10 @@ const PlotPoint = ({ spatialIncident, incident, state, axis, darkenBySeverity })
     .rotate(taxonHash ? Number('0x' + taxonHash.slice(3, 6)) : 0)
     .desaturate(taxonHash ? (0.8 * Number('0x' + taxonHash.slice(0, 3))) / 4096 : 0)
     .darken(
-      darkenBySeverity && classifications?.Severity
+      darkenBySeverity && classifications && classifications['CSET:Severity']
         ? (0.7 *
             ['Negligible', 'Minor', 'Unclear/unknown', 'Moderate', 'Critical', 'Severe'].indexOf(
-              classifications.Severity
+              classifications['CSET:Severity']
             )) /
             5
         : 0
@@ -219,7 +219,7 @@ const PlotPoint = ({ spatialIncident, incident, state, axis, darkenBySeverity })
 };
 
 const TsneVisualization = ({ incident, spatialIncidents }) => {
-  const [axis, setAxis] = useState('Harm_Distribution_Basis');
+  const [axis, setAxis] = useState('CSET:Harm_Distribution_Basis');
 
   const [darkenBySeverity, setDarkenBySeverity] = useState(false);
 
@@ -233,7 +233,7 @@ const TsneVisualization = ({ incident, spatialIncidents }) => {
         <div style={{ display: 'flex', gap: '1em', alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', gap: '1em', alignItems: 'center' }}>
             <label htmlFor="color-axis-select">
-              <Trans>Color by</Trans>
+              <Trans>Color by editor’s classification</Trans>
             </label>
             <Form.Select
               style={{ display: 'inline', width: 'unset' }}
@@ -241,14 +241,14 @@ const TsneVisualization = ({ incident, spatialIncidents }) => {
               onChange={(event) => setAxis(event.target.value)}
             >
               {[
-                'Harm_Distribution_Basis',
-                'Harm_Type',
-                'Intent',
-                'Near_Miss',
-                'Problem_Nature',
-                'Sector_of_Deployment',
-                'System_Developer',
-                'None',
+                'CSET:Harm_Distribution_Basis',
+                'CSET:Harm_Type',
+                'CSET:Intent',
+                'CSET:Near_Miss',
+                'CSET:Problem_Nature',
+                'CSET:Sector_of_Deployment',
+                'CSET:System_Developer',
+                'CSET:None',
               ].map((axis) => (
                 <option key={axis} value={axis}>
                   {axis.replace(/_/g, ' ')}
