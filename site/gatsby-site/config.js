@@ -112,7 +112,7 @@ const config = {
     description: 'a collection of intelligent system harms in the real world ',
     ogImage: null,
     docsLocation: '/',
-    favicon: '/favicon.ico',
+    favicon: '/favicon.png',
   },
   pwa: {
     enabled: false, // disabling this will also remove the existing service worker.
