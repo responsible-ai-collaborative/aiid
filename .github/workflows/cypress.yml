@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   install:
-    name: NPM install & Gatsby develop
+    name: NPM install and cache node_modules
     runs-on: ubuntu-latest
     defaults:
       run:
