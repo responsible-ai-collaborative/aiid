@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Helmet from 'react-helmet';
-import { Button, Col, Container, Pagination, Row } from 'react-bootstrap';
+import { Col, Container, Pagination, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
 import Citation from 'components/cite/Citation';
@@ -17,6 +17,7 @@ import Taxonomy from 'components/taxa/Taxonomy';
 import { useUserContext } from 'contexts/userContext';
 import { Trans, useTranslation } from 'react-i18next';
 import Card from '../elements/Card';
+import Button from '../elements/Button';
 
 const StatsContainer = styled.div`
   h4 {
@@ -177,7 +178,7 @@ function CitePage(props) {
               <Card.Body>
                 <Button
                   variant="outline-primary"
-                  className="me-2"
+                  className="tw-mr-2"
                   href={`/apps/submit?incident_id=${incident.incident_id}&date_downloaded=${format(
                     new Date(),
                     'yyyy-MM-dd'

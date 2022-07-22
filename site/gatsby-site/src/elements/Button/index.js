@@ -1,11 +1,22 @@
 import React from 'react';
 
 export default function Button(props) {
+  let classNames = 'tw-btn';
+
+  classNames += props.className ? ` ${props.className}` : '';
+  classNames += props.variant ? ` tw-btn-${props.variant}` : '';
+
   return (
     <>
-      <button className={``} {...props}>
-        {props.children}
-      </button>
+      {props.href ? (
+        <a {...props} className={`${classNames}`} role="button">
+          {props.children}
+        </a>
+      ) : (
+        <button {...props} className={`${classNames}`}>
+          {props.children}
+        </button>
+      )}
     </>
   );
 }
