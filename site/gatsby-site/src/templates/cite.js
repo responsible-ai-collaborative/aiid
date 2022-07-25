@@ -140,7 +140,7 @@ function CitePage(props) {
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="tw-mt-6">
           <Col>
             <StatsContainer data-cy={'incident-stats'}>
               <IncidentStatsCard
@@ -155,7 +155,7 @@ function CitePage(props) {
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="tw-mt-6">
           <Col>
             <Card>
               <Card.Header className="tw-items-center tw-justify-between">
@@ -170,7 +170,7 @@ function CitePage(props) {
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="tw-mt-6">
           <Col>
             <Card>
               <Card.Header className="tw-items-center tw-justify-between">
@@ -236,7 +236,7 @@ function CitePage(props) {
           </Row>
         )}
 
-        <Row className="mt-4">
+        <Row className="tw-mt-6">
           <Col>
             <Card>
               <ImageCarousel nodes={incidentReports} />
@@ -244,7 +244,7 @@ function CitePage(props) {
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="tw-mt-6">
           <Col>
             <IncidnetsReportsTitle>
               <div className={'titleWrapper'}>
