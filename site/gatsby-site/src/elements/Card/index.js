@@ -4,10 +4,10 @@ export default function Card(props) {
   return (
     <>
       <div
+        {...props}
         className={`tw-border tw-rounded-lg tw-flex ${
           props.className ? props.className : ''
-        } tw-flex-col tw-shadow-card`}
-        {...props}
+        } tw-flex-col tw-shadow-card ${props.bg ? 'tw-bg-' + props.bg : ''}`}
       >
         {props.children}
       </div>
@@ -57,6 +57,14 @@ Card.Footer = function CardFooter(props) {
       >
         {props.children}
       </div>
+    </>
+  );
+};
+
+Card.Text = function CardText(props) {
+  return (
+    <>
+      <p className={`${props.className ? props.className : ''}`}>{props.children}</p>
     </>
   );
 };

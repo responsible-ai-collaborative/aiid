@@ -17,6 +17,8 @@ module.exports = {
         'primary-blue': '#0d6efd',
         'dark-grey': '#6c757d',
         'deep-blue': '#0a58ca',
+        'secondary-grey': 'rgba(108,117,125,1)',
+        'text-light-grey': 'rgba(248,249,250,1)',
       },
       boxShadow: {
         card: '0 2px 5px 0px #e3e5ec',
@@ -30,5 +32,5 @@ module.exports = {
     },
   },
   plugins: [],
-  safelist: ['tw-btn-outline-primary', 'tw-btn'],
+  safelist: ['tw-btn-outline-primary', 'tw-btn', 'tw-bg-secondary'],
 };

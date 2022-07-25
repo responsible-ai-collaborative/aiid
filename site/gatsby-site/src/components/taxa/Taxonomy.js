@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { OverlayTrigger, Tooltip, Button, Card } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 import Markdown from 'react-markdown';
 import TaxonomyForm from './TaxonomyForm';
 import { Trans } from 'react-i18next';
+import Card from '../../elements/Card';
 
 const ClassificationContainer = styled.div`
   display: flex;
