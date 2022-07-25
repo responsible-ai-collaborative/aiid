@@ -1,21 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { OverlayTrigger, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 
 const Label = ({ popover, placement, trigger, label }) => {
+  const [show, setShow] = useState(false);
+
   if (!popover) {
     return <Form.Label>{label} :</Form.Label>;
   }
   return (
-    <OverlayTrigger trigger={trigger} placement={placement} overlay={popover}>
+    <OverlayTrigger
+      trigger={trigger}
+      placement={placement}
+      overlay={popover}
+      {...(show ? { show } : {})}
+    >
       <Form.Label>
         {label}{' '}
         <FontAwesomeIcon
           icon={faQuestionCircle}
           style={{ color: 'rgb(210, 210, 210)' }}
           className="far fa-question-circle"
+          onClick={() => setShow(!show)}
         />{' '}
         :
       </Form.Label>
