@@ -19,7 +19,7 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
           </a>
           {isRole('incident_editor') && (
             <a data-cy="edit-report" href={`/cite/edit?report_number=${item.report_number}`}>
-              Editttt
+              Edit
             </a>
           )}
         </div>
