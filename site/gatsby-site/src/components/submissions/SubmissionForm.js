@@ -15,6 +15,8 @@ import IncidentIdField from 'components/incidents/IncidentIdField';
 import getSourceDomain from '../../utils/getSourceDomain';
 import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
+import supportedLanguages from 'components/i18n/languages.json';
+import { Trans, useTranslation } from 'react-i18next';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -184,13 +186,15 @@ const SubmissionForm = () => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
 
+  const { t } = useTranslation(['submit']);
+
   return (
     <>
       <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
         <TextInputGroup
           name="url"
-          label="Report Address"
-          placeholder="Report URL"
+          label={t('Report Address')}
+          placeholder={t('Report URL')}
           addOnComponent={
             <Button
               className="outline-secondary"
@@ -199,7 +203,7 @@ const SubmissionForm = () => {
             >
               {' '}
               {!parsingNews ? (
-                <>Fetch info</>
+                <Trans ns="submit">Fetch info</Trans>
               ) : (
                 <>
                   <Spinner
@@ -209,7 +213,7 @@ const SubmissionForm = () => {
                     role="status"
                     aria-hidden="true"
                   />{' '}
-                  Fetching...
+                  <Trans>Fetching...</Trans>
                 </>
               )}
             </Button>
@@ -223,72 +227,88 @@ const SubmissionForm = () => {
 
         <TextInputGroup
           name="title"
-          label="Title"
-          placeholder="Report title"
+          label={t('Title')}
+          placeholder={t('Report title')}
           className="mt-3"
           {...TextInputGroupProps}
         />
         <TextInputGroup
           name="authors"
-          label="Author CSV"
-          placeholder="Author CSV"
+          label={t('Author CSV')}
+          placeholder={t('Author CSV')}
           className="mt-3"
           {...TextInputGroupProps}
         />
         <TextInputGroup
           name="submitters"
-          label="Submitter CSV"
-          placeholder="Submitter CSV"
+          label={t('Submitter CSV')}
+          placeholder={t('Submitter CSV')}
           className="mt-3"
           {...TextInputGroupProps}
         />
         <TextInputGroup
           name="date_published"
-          label="Date Published"
+          label={t('Date Published')}
           type="date"
-          placeholder="YYYY-MM-DD"
+          placeholder={t('YYYY-MM-DD')}
           className="mt-3"
           {...TextInputGroupProps}
         />
         <TextInputGroup
           name="date_downloaded"
-          label="Date Downloaded"
+          label={t('Date Downloaded')}
           type="date"
-          placeholder="YYYY-MM-DD"
+          placeholder={t('YYYY-MM-DD')}
           className="mt-3"
           {...TextInputGroupProps}
         />
         <PreviewImageInputGroup
           publicID={values.cloudinary_id}
           name="image_url"
-          label="Image Address"
-          placeholder="Image URL"
+          label={t('Image Address')}
+          placeholder={t('Image URL')}
           className="mt-3"
           {...TextInputGroupProps}
         />
 
         <Form.Group className="mt-3" data-color-mode="light">
-          <Label popover={POP_OVERS.text} label={'Text'} />
+          <Label popover={POP_OVERS.text} label={t('Text')} />
           <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
         </Form.Group>
 
         <Form.Group className="mt-3">
-          <Label popover={POP_OVERS['tags']} label={'Tags'} />
+          <Label popover={POP_OVERS['language']} label={t('Language')} />
+          <Form.Select
+            name="language"
+            placeholder={t('Report Language')}
+            value={values.language}
+            onChange={handleChange}
+          >
+            {supportedLanguages.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.name}
+              </option>
+            ))}
+          </Form.Select>
+        </Form.Group>
+
+        <Form.Group className="mt-3">
+          <Label popover={POP_OVERS['language']} label={t('Tags')} />
           <TagsControl name={'tags'} />
         </Form.Group>
 
         <IncidentIdField
           name="incident_id"
           className="mt-3"
-          placeHolder="Leave empty to report a new incident"
+          placeHolder={t('Leave empty to report a new incident')}
           showIncidentData={false}
         />
 
         {!values.incident_id && (
           <TextInputGroup
             name="incident_date"
-            label="Incident Date"
-            placeholder="Incident Date"
+            label={t('Incident Date')}
+            placeholder={t('Incident Date')}
             type="date"
             className="mt-3"
             disabled={values.incident_id}
@@ -298,9 +318,9 @@ const SubmissionForm = () => {
 
         <TextInputGroup
           name="editor_notes"
-          label="Editor Notes"
+          label={t('Editor Notes')}
           as="textarea"
-          placeholder="Optional context and notes about the incident"
+          placeholder={t('Optional context and notes about the incident')}
           rows={8}
           className="mt-3"
           {...TextInputGroupProps}

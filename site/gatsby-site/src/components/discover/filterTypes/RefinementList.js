@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { connectRefinementList, Highlight } from 'react-instantsearch-dom';
 import { Form, Badge, ListGroup, Button } from 'react-bootstrap';
 import useSearch from '../useSearch';
+import { Trans, useTranslation } from 'react-i18next';
 
 const ListGroupScrollable = styled(ListGroup)`
   max-height: 400px;
@@ -27,12 +28,14 @@ const RefinementList = ({
 
   const clearEnabled = selectedItems.length > 0;
 
+  const { t } = useTranslation();
+
   return (
     <>
       <Form onSubmit={(e) => e.preventDefault()}>
         <Form.Control
           type="search"
-          placeholder={placeholder}
+          placeholder={t(placeholder)}
           onChange={(event) => searchForItems(event.currentTarget.value)}
         />
       </Form>
@@ -55,7 +58,9 @@ const RefinementList = ({
 
         {items.length === 0 && (
           <ListGroup.Item key="no-results">
-            <div className="d-flex justify-content-center">No result</div>
+            <div className="d-flex justify-content-center">
+              <Trans>No result</Trans>
+            </div>
           </ListGroup.Item>
         )}
       </ListGroupScrollable>
@@ -65,7 +70,7 @@ const RefinementList = ({
         onClick={clear}
         disabled={!clearEnabled}
       >
-        Clear
+        <Trans>Clear</Trans>
       </Button>
     </>
   );

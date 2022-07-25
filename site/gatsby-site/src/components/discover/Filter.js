@@ -6,12 +6,13 @@ import componentsMap from './filterTypes';
 import useSearch from './useSearch';
 import VirtualFilters from './VirtualFilters';
 import styled from 'styled-components';
+import { Trans } from 'react-i18next';
 
 function ToggleContent({ label, touched, faIcon }) {
   return (
     <>
       <FontAwesomeIcon icon={faIcon} />
-      &nbsp; {label} &nbsp;{' '}
+      &nbsp; <Trans>{label}</Trans> &nbsp;{' '}
       {touched > 0 && (
         <Badge bg="light" text="dark">
           {touched}

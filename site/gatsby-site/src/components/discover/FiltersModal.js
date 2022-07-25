@@ -4,6 +4,7 @@ import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
 import { AccordionFilter } from './Filter';
 import Stats from './Stats';
 import ClearFilters from './ClearFilters';
+import { Trans } from 'react-i18next';
 // https://www.algolia.com/doc/guides/building-search-ui/going-further/native/react/?language=react#create-a-modal
 
 function FiltersModal() {
@@ -18,16 +19,20 @@ function FiltersModal() {
           <Stats />
         </Col>
         <Col className="d-flex justify-content-end">
-          <ClearFilters>Clear</ClearFilters>
+          <ClearFilters>
+            <Trans>Clear</Trans>
+          </ClearFilters>
           <Button variant="link" onClick={() => setShowModal(true)}>
-            Filters
+            <Trans>Filters</Trans>
           </Button>
         </Col>
       </Row>
 
       <Modal show={showModal} onHide={handleClose} enforceFocus={false} fullscreen>
         <Modal.Header closeButton>
-          <Modal.Title>Filters</Modal.Title>
+          <Modal.Title>
+            <Trans>Filters</Trans>
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Accordion defaultActiveKey="0">
@@ -38,7 +43,7 @@ function FiltersModal() {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            <Trans>Close</Trans>
           </Button>
         </Modal.Footer>
       </Modal>

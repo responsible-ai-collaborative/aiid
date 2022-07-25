@@ -3,6 +3,7 @@ import { Link } from 'gatsby';
 import styled from 'styled-components';
 import Badge from 'react-bootstrap/Badge';
 import { Card, ListGroup } from 'react-bootstrap';
+import { Trans } from 'react-i18next';
 
 const medalMap = (position) => {
   switch (position) {
@@ -63,7 +64,9 @@ export const Leaderboard = ({
 
   return (
     <Card className={className}>
-      <Card.Header>{title}</Card.Header>
+      <Card.Header>
+        <Trans ns="landing">{title}</Trans>
+      </Card.Header>
       <ListGroup variant="flush">
         {sortedArray.map((item, index) => (
           <StyledItem

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { connectRange } from 'react-instantsearch-dom';
 import { Form, Button } from 'react-bootstrap';
 import useSearch from '../useSearch';
+import { Trans } from 'react-i18next';
 
 const formatDate = (epoch) => new Date(epoch * 1000).toISOString().substr(0, 10);
 
@@ -34,7 +35,9 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
   return (
     <>
       <Form className="px-3">
-        <Form.Label>From Date:</Form.Label>
+        <Form.Label>
+          <Trans>From Date</Trans>:
+        </Form.Label>
         <Form.Control
           required={true}
           type="date"
@@ -52,7 +55,9 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
           className={touchedMin && 'border border-success'}
         />
 
-        <Form.Label className="mt-3">To Date:</Form.Label>
+        <Form.Label className="mt-3">
+          <Trans>To Date</Trans>:
+        </Form.Label>
         <Form.Control
           required={true}
           type="date"
@@ -76,7 +81,7 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
           onClick={clear}
           disabled={!clearEnabled}
         >
-          Clear
+          <Trans>Clear</Trans>
         </Button>
       </Form>
     </>

@@ -40,13 +40,17 @@ class Translator {
 
     const translated = [];
 
-    const q = queue(async ({ entry, to }, done) => {
+    const q = queue(async ({ entry, to }) => {
       const translatedEntry = await this.translateReport({ entry, to });
 
       translated.push(translatedEntry);
-
-      done();
     }, concurrency);
+
+    q.error((err, task) => {
+      this.reporter.log(
+        `Error translating report ${task.entry.report_number}, ${err.code} ${err.message}`
+      );
+    });
 
     const alreadyTranslated = await this.getTranslatedReports({ items, language: to });
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 const StatsContainer = styled.div`
@@ -22,22 +23,24 @@ const IncidentCardContainer = styled.div`
 `;
 
 const IncidentStatsCard = ({ incidentId, reportCount, incidentDate, editors }) => {
+  const { t } = useTranslation();
+
   const STATS = [
     {
       key: 'incidentId',
-      label: 'Incident ID',
+      label: t('Incident ID'),
     },
     {
       key: 'reportCount',
-      label: 'Report Count',
+      label: t('Report Count'),
     },
     {
       key: 'incidentDate',
-      label: 'Incident Date',
+      label: t('Incident Date'),
     },
     {
       key: 'editors',
-      label: 'Editors',
+      label: t('Editors'),
     },
   ];
 
@@ -55,7 +58,9 @@ const IncidentStatsCard = ({ incidentId, reportCount, incidentDate, editors }) =
   return (
     <IncidentCardContainer className="card">
       <div className="card-header">
-        <h4>Incident Stats</h4>
+        <h4>
+          <Trans>Incident Stats</Trans>
+        </h4>
       </div>
       <StatsContainer className="card-body">
         <div>
