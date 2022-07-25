@@ -123,7 +123,7 @@ function CitePage(props) {
         <Row>
           <Col>
             <Card data-cy="citation">
-              <Card.Header>
+              <Card.Header className="tw-items-center tw-justify-between">
                 <h4>
                   <Trans>Suggested citation format</Trans>
                 </h4>
@@ -158,7 +158,7 @@ function CitePage(props) {
         <Row className="mt-4">
           <Col>
             <Card>
-              <Card.Header>
+              <Card.Header className="tw-items-center tw-justify-between">
                 <h4>
                   <Trans>Reports Timeline</Trans>
                 </h4>
@@ -173,7 +173,7 @@ function CitePage(props) {
         <Row className="mt-4">
           <Col>
             <Card>
-              <Card.Header>
+              <Card.Header className="tw-items-center tw-justify-between">
                 <h4>
                   <Trans>Tools</Trans>
                 </h4>

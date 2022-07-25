@@ -18,7 +18,7 @@ export default function Card(props) {
 Card.Header = function CardHeader(props) {
   return (
     <div
-      className={`tw-flex tw-items-center tw-justify-between ${
+      className={`tw-flex ${
         props.className ? props.className : ''
       } tw-bg-light-grey tw-px-4 tw-py-2 tw-border-b tw-border-border-grey`}
     >
@@ -30,7 +30,7 @@ Card.Header = function CardHeader(props) {
 Card.Title = function CardTitle(props) {
   return (
     <>
-      <div className="tw-flex-1">
+      <div className={`tw-flex-1 ${props.className ? props.className : ''}`}>
         <h3 className="tw-text-2xl tw-mb-2">{props.children}</h3>
       </div>
     </>
@@ -40,7 +40,23 @@ Card.Title = function CardTitle(props) {
 Card.Body = function CardBody(props) {
   return (
     <>
-      <div className="tw-flex-1 tw-p-4">{props.children}</div>
+      <div className={`tw-flex-1 tw-p-4 ${props.className ? props.className : ''}`}>
+        {props.children}
+      </div>
+    </>
+  );
+};
+
+Card.Footer = function CardFooter(props) {
+  return (
+    <>
+      <div
+        className={`tw-bg-light-grey tw-border-border-grey tw-py-2 tw-px-4 ${
+          props.className ? props.className : ''
+        }`}
+      >
+        {props.children}
+      </div>
     </>
   );
 };
