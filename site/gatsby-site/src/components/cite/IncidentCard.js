@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 import md5 from 'md5';
 import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
@@ -7,12 +6,6 @@ import { useUserContext } from 'contexts/userContext';
 import Actions from 'components/discover/Actions';
 import ReportText from 'components/reports/ReportText';
 import Card from '../../elements/Card';
-
-const IncidentCardImage = styled(Image)`
-  height: 480px;
-  object-fit: cover;
-  width: 100%;
-`;
 
 const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) => {
   const { isRole } = useUserContext();
@@ -40,7 +33,8 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
       </Card.Body>
       <div className="tw-align-bottom">
         <div className="tw-h-[480px]">
-          <IncidentCardImage
+          <Image
+            className="tw-h-[480px] tw-object-cover tw-w-full"
             publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
             alt={item.title}
             transformation={fill().height(480)}

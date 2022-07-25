@@ -23,7 +23,7 @@
   }
 
   .tw-btn {
-    @apply tw-bg-transparent tw-border tw-border-transparent tw-rounded tw-border-dark-blue tw-cursor-pointer tw-inline-block tw-text-base tw-font-normal tw-py-1.5 tw-px-3 tw-text-center tw-no-underline tw-select-none tw-align-middle tw-transition-btn;
+    @apply tw-bg-transparent tw-border tw-border-transparent tw-rounded tw-cursor-pointer tw-inline-block tw-text-base tw-font-normal tw-py-1.5 tw-px-3 tw-text-center tw-no-underline tw-select-none tw-align-middle tw-transition-btn;
   }
 
   .tw-btn-outline-primary {
