@@ -69,14 +69,14 @@ export default class MDXRuntimeTest extends Component {
 }
 
 export const pageQuery = graphql`
-  query DocsTemplateQuery($slug: String!, $locale: String!) {
+  query ($id: String!) {
     site {
       siteMetadata {
         title
         docsLocation
       }
     }
-    mdx(fields: { locale: { eq: $locale } }, frontmatter: { slug: { eq: $slug } }) {
+    mdx(fields: { id: { eq: $id } }) {
       fields {
         id
         title

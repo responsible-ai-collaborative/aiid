@@ -34,7 +34,7 @@ const AlgoliaUpdater = require('./src/utils/AlgoliaUpdater');
 
 const googleMapsApiClient = new GoogleMapsAPIClient({});
 
-exports.createPages = ({ graphql, actions, reporter }) => {
+exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions;
 
   const { createRedirect } = actions;
@@ -57,7 +57,7 @@ exports.createPages = ({ graphql, actions, reporter }) => {
   );
 
   return Promise.all([
-    createMdxPages(graphql, createPage, reporter),
+    createMdxPages(graphql, createPage),
     createCitationPages(graphql, createPage),
     createWordCountsPages(graphql, createPage),
     createBackupsPage(graphql, createPage),

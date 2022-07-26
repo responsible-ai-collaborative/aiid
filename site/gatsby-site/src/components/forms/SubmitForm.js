@@ -14,7 +14,6 @@ import SubmissionForm, { schema } from 'components/submissions/SubmissionForm';
 import { Formik } from 'formik';
 import { stripMarkdown } from 'utils/typography';
 import isArray from 'lodash/isArray';
-import { Trans, useTranslation } from 'react-i18next';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -42,7 +41,6 @@ const queryConfig = {
   text: withDefault(StringParam, ''),
   editor_notes: withDefault(StringParam, ''),
   tags: withDefault(ArrayParam, []),
-  language: withDefault(StringParam, 'en'),
 };
 
 const SubmitForm = () => {
@@ -57,8 +55,6 @@ const SubmitForm = () => {
   const [csvIndex, setCsvIndex] = useState(0);
 
   const addToast = useToastContext();
-
-  const { i18n } = useTranslation(['submit']);
 
   // See https://github.com/apollographql/apollo-client/issues/5419
   useQuery(FIND_SUBMISSIONS);
@@ -111,20 +107,16 @@ const SubmitForm = () => {
 
       addToast({
         message: (
-          <Trans i18n={i18n} ns="submit">
-            Report successfully added to review queue. It will appear on the{' '}
+          <>
+            {'Report successfully added to review queue. It will appear on the  '}
             <Link to="/apps/submitted">review queue page</Link> within an hour.
-          </Trans>
+          </>
         ),
         severity: SEVERITY.success,
       });
     } catch (e) {
       addToast({
-        message: (
-          <Trans i18n={i18n} ns="submit">
-            Was not able to create the report, please review the form and try again.
-          </Trans>
-        ),
+        message: 'Was not able to create the report, please review the form and try again.',
         severity: SEVERITY.warning,
       });
     }
@@ -143,11 +135,9 @@ const SubmitForm = () => {
             <SubmissionForm />
 
             <p className="mt-4">
-              <Trans ns="submit" i18nKey="submitReviewDescription">
-                Submitted reports are added to a <Link to="/apps/submitted">review queue </Link> to
-                be resolved to a new or existing incident record. Incidents are reviewed and merged
-                into the database after enough incidents are pending.
-              </Trans>
+              Submitted reports are added to a <Link to="/apps/submitted">review queue </Link>
+              to be resolved to a new or existing incident record. Incidents are reviewed and merged
+              into the database after enough incidents are pending.
             </p>
 
             <Button
@@ -157,7 +147,7 @@ const SubmitForm = () => {
               type="submit"
               disabled={isSubmitting}
             >
-              <Trans>Submit</Trans>
+              Submit
             </Button>
 
             <RelatedIncidents incident={values} />
@@ -167,26 +157,20 @@ const SubmitForm = () => {
 
       {isRole('submitter') && (
         <Container className="mt-5 p-0">
-          <h2>
-            <Trans ns="submit">Advanced: Add by CSV</Trans>
-          </h2>
+          <h2>Advanced: Add by CSV</h2>
           <p>
-            <Trans ns="submit" i18nKey="CSVDescription">
-              The header row of the file is assumed to match the names of the inputs in the form.
-              Each row will be processed, one at a time, so that it flows through the form
-              validations before submitting.
-            </Trans>
+            The header row of the file is assumed to match the names of the inputs in the form. Each
+            row will be processed, one at a time, so that it flows through the form validations
+            before submitting.
           </p>
           <p>
             Record {csvIndex + 1} of {csvData.length}
           </p>
           <div className="d-flex justify-content-center my-3">
             <Button className="me-4" onClick={previousRecord}>
-              &lt; <Trans>Previous</Trans>
+              &lt; Previous
             </Button>
-            <Button onClick={nextRecord}>
-              <Trans>Next</Trans> &gt;
-            </Button>
+            <Button onClick={nextRecord}>Next &gt;</Button>
           </div>
           <CSVReader
             onDrop={(data) => {
@@ -201,9 +185,7 @@ const SubmitForm = () => {
             noDrag
             addRemoveButton
           >
-            <span>
-              <Trans>Click to upload</Trans>
-            </span>
+            <span>Click to upload.</span>
           </CSVReader>
         </Container>
       )}

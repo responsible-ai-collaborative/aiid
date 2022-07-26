@@ -3,7 +3,6 @@ import { Form, InputGroup } from 'react-bootstrap';
 
 import Label from './Label';
 import * as POP_OVERS from '../ui/PopOvers';
-import { Trans } from 'react-i18next';
 
 const TextInputGroup = ({
   name,
@@ -35,7 +34,7 @@ const TextInputGroup = ({
       />
       {addOnComponent}
       <Form.Control.Feedback type="invalid">
-        <Trans ns="validation">{errors[name] && touched[name] ? errors[name] : null}</Trans>
+        {errors[name] && touched[name] ? errors[name] : null}
       </Form.Control.Feedback>
     </InputGroup>
   </Form.Group>

@@ -3,7 +3,6 @@ import { OverlayTrigger, Tooltip, Button, Card } from 'react-bootstrap';
 import styled from 'styled-components';
 import Markdown from 'react-markdown';
 import TaxonomyForm from './TaxonomyForm';
-import { Trans } from 'react-i18next';
 
 const ClassificationContainer = styled.div`
   display: flex;
@@ -60,11 +59,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
   return (
     <Card key={taxonomy.namespace} className="mt-4" data-cy={taxonomy.namespace}>
       <TaxaCardHeader className="card-header">
-        <TaxaHeader>
-          <Trans namespace={taxonomy.namespace}>
-            {{ namespace: taxonomy.namespace }} Taxonomy Classifications
-          </Trans>
-        </TaxaHeader>
+        <TaxaHeader>{`${taxonomy.namespace} Taxonomy Classifications`}</TaxaHeader>
         <>
           {isEditing ? (
             <Button onClick={() => setIsEditing(false)}>Cancel</Button>
@@ -76,7 +71,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
           style={{ order: 2, marginLeft: 'auto' }}
           href={`/taxonomy/${taxonomy.namespace.toLowerCase()}`}
         >
-          <Trans>Taxonomy Details</Trans>
+          Taxonomy Details
         </a>
       </TaxaCardHeader>
       <>
@@ -87,7 +82,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
                 <Card bg="secondary" style={{ width: '100%' }} text="light" className="mb-2">
                   <Card.Body>
                     <Card.Text>
-                      <Trans>Classifications will update in production within 24 hours.</Trans>
+                      Classifications will update in production within 24 hours.
                     </Card.Text>
                   </Card.Body>
                 </Card>
@@ -155,9 +150,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
               <div style={{ padding: '0.5em' }}>
                 <Card bg="secondary" style={{ width: '100%' }} text="light" className="mb-2">
                   <Card.Body>
-                    <Card.Text>
-                      <Trans>No classifications for this taxonomy.</Trans>
-                    </Card.Text>
+                    <Card.Text>No classifications for this taxonomy.</Card.Text>
                   </Card.Body>
                 </Card>
               </div>

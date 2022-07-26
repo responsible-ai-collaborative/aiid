@@ -11,7 +11,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FIND_REPORT, UPDATE_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 function FlagModalContent({ reportNumber }) {
   const { data } = useQuery(FIND_REPORT, {
@@ -31,17 +31,38 @@ function FlagModalContent({ reportNumber }) {
 
   const report = data?.report;
 
-  const { t } = useTranslation(['translation', 'actions']);
-
   return (
     <div className="modal-body" data-cy="flag-modal">
-      <div dangerouslySetInnerHTML={{ __html: t('flagReport', { ns: 'actions' }) }} />
+      <p>Is there a problem with this content? Examples of &quot;problems`&quot;` include,</p>
+      <ul>
+        <li>The text contents of the report are not parsed properly</li>
+        <li>The authors of the report are not associated with the report</li>
+        <li>The report is associated with the wrong incident</li>
+        <li>The text contents of the report are not parsed properly</li>
+      </ul>
+      <p>
+        Flagged content will still be displayed within the database, but a database editor will
+        periodically review the incident reports that have been flagged. Please note that the
+        content contained within incident reports (e.g., the commentary within a news article) does
+        not need to be correct or consistent across articles. If an article is wrong, misleading, or
+        fraudulent, the best response is to submit additional incident reports that correct the
+        record. The incident database is meant to capture the complete state of knowledge and
+        discourse for incidents, not as an arbiter of what happened in individual incidents. In
+        future versions of the database it will additionally be possible to apply tags to incident
+        reports to classNameify their content.
+      </p>
+      <p>Please do NOT flag content if,</p>
+      <ul>
+        <li>You disagree with the report</li>
+        <li>The linked report has disappeared from the web</li>
+        <li>The report should not be considered an `&quot;`incident`&quot;`</li>
+      </ul>
 
       {!report ? (
         <Spinner size="sm" animation="border" />
       ) : report.flag ? (
         <Button className="w-100" variant="danger" disabled data-cy="flag-toggle">
-          <Trans>Flagged</Trans>
+          Flagged
         </Button>
       ) : (
         <Button
@@ -50,7 +71,7 @@ function FlagModalContent({ reportNumber }) {
           onClick={() => flagReport()}
           data-cy="flag-toggle"
         >
-          <Trans>Flag Report</Trans> {loading && <Spinner size="sm" animation="border" />}
+          Flag Report {loading && <Spinner size="sm" animation="border" />}
         </Button>
       )}
     </div>
@@ -111,7 +132,7 @@ export default function Actions({
         data-cy="flag-button"
         onClick={() =>
           flagReportModal.openFor({
-            title: t('Flag Report'),
+            title: t('Submitters'),
             body: () => <FlagModalContent reportNumber={item.report_number} />,
           })
         }

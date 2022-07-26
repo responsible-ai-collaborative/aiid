@@ -1,11 +1,6 @@
-import Layout from 'components/Layout';
 import React, { useEffect, useRef } from 'react';
 
-const DownloadIndex = (props) => {
-  const {
-    pageContext: { data },
-  } = props;
-
+const DownloadIndex = ({ pageContext: { data } }) => {
   const ref = useRef();
 
   useEffect(() => {
@@ -19,13 +14,11 @@ const DownloadIndex = (props) => {
   }, [ref]);
 
   return (
-    <Layout {...props}>
-      <div className="p-4">
-        <a ref={ref} href="/#" data-cy="download">
-          Download Index
-        </a>
-      </div>
-    </Layout>
+    <div className="p-4">
+      <a ref={ref} href="/#" data-cy="download">
+        Download Index
+      </a>
+    </div>
   );
 };
 

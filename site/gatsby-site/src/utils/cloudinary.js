@@ -9,7 +9,6 @@ import config from '../../config';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import { Spinner } from 'react-bootstrap';
 import { isWebUri } from 'valid-url';
-import { Trans } from 'react-i18next';
 
 const getCloudinaryPublicID = (url) => {
   // https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files
@@ -143,9 +142,7 @@ const PreviewImageInputGroup = ({
             <PreviewImage className={'mt-3'} publicID={cloudinaryID} />
           )}
         </PreviewImageContainer>
-        <figcaption>
-          <Trans>Selected Image</Trans>
-        </figcaption>
+        <figcaption>Selected Image</figcaption>
       </PreviewFigure>
     </>
   );

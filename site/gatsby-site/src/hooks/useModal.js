@@ -1,7 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { Trans } from 'react-i18next';
 import styled from 'styled-components';
 
 const StyledModal = styled(Modal)`
@@ -43,7 +42,7 @@ export const CustomModal = ({ close, isOpen, target }) => (
     <Modal.Body>{target.body()}</Modal.Body>
     <Modal.Footer>
       <Button variant="secondary" onClick={close}>
-        <Trans>Close</Trans>
+        Close
       </Button>
     </Modal.Footer>
   </StyledModal>

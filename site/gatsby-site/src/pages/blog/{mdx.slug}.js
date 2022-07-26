@@ -6,8 +6,9 @@ import { MDXProvider } from '@mdx-js/react';
 
 import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper, PostDate, Author } from 'components/styles/Post';
-import config from '../../config';
+import config from '../../../config';
 import { format } from 'date-fns';
+import { MdxLink } from 'gatsby-theme-i18n';
 
 const slug = (title) => title.toLowerCase().replace(/\s+/g, '');
 
@@ -18,6 +19,7 @@ const Components = {
   h4: ({ children }) => <h4 id={slug(children)}>{children}</h4>,
   h5: ({ children }) => <h5 id={slug(children)}>{children}</h5>,
   h6: ({ children }) => <h6 id={slug(children)}>{children}</h6>,
+  a: MdxLink,
 };
 
 export default function Post(props) {
@@ -61,43 +63,18 @@ export default function Post(props) {
   );
 }
 
-export const pageQuery = graphql`
-  query ($id: String!) {
-    site {
-      siteMetadata {
-        title
-        docsLocation
-      }
-    }
-    mdx(fields: { id: { eq: $id } }) {
-      fields {
-        id
+export const query = graphql`
+  query PostBySlug($frontmatter__slug: String, $locale: String) {
+    mdx(slug: { eq: $frontmatter__slug }, fields: { locale: { eq: $locale } }) {
+      frontmatter {
         title
         slug
-      }
-      body
-      tableOfContents
-      parent {
-        ... on File {
-          relativePath
-        }
-      }
-      frontmatter {
-        metaTitle
-        metaDescription
-        author
         date
       }
-    }
-    allMdx {
-      edges {
-        node {
-          fields {
-            slug
-            title
-          }
-        }
+      fields {
+        title
       }
+      body
     }
   }
 `;

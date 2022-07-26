@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { ExternalLink } from 'react-feather';
 import config from '../../../config';
 import QuickAccess from 'components/discover/QuickAccess';
-import { Trans } from 'react-i18next';
 
 // eslint-disable-next-line no-unused-vars
 const ListItem = styled(({ className, active, level, ...props }) => {
@@ -116,7 +115,7 @@ const SidebarLayout = ({ collapse, setNavCollapsed }) => {
           if (link.link !== '' && link.text !== '') {
             return (
               <ListItem key={key} to={link.link}>
-                <Trans>{link.text}</Trans>
+                {link.text}
                 <ExternalLink size={14} />
               </ListItem>
             );
