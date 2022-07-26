@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ListGroup, Card, Spinner, Button } from 'react-bootstrap';
-import { useFormikContext } from 'formik';
+import { ListGroup, Card, Spinner, Button, ButtonToolbar } from 'react-bootstrap';
+import { LocalizedLink } from 'gatsby-theme-i18n';
 
 const ListContainer = styled(Card)`
   margin: 1em 0;
@@ -33,12 +33,23 @@ const ReportRow = styled(ListGroup.Item)`
   }
 `;
 
-const RelatedIncidentsArea = ({ columnKey, header, reports, loading, editable, error }) => {
+const ReportToolbar = styled(ButtonToolbar)`
+  flex-shrink: 0;
+  align-items: center;
+`;
+
+const RelatedIncidentsArea = ({
+  columnKey,
+  header,
+  reports,
+  loading,
+  setFieldValue,
+  editId = true,
+  error,
+}) => {
   if (!reports && !loading) {
     return null;
   }
-
-  const { setFieldValue } = editable ? useFormikContext() : { setFieldValue: null };
 
   return (
     <ListContainer data-cy={`related-${columnKey}`}>
@@ -50,16 +61,30 @@ const RelatedIncidentsArea = ({ columnKey, header, reports, loading, editable, e
         {reports &&
           reports.map((val) => (
             <ReportRow key={val.url} data-cy="result">
-              <a href={val.url} target="_blank" rel="noreferrer">
-                {val.title}
-              </a>
-              {val.incident_id && editable && (
-                <Button
-                  onClick={() => setFieldValue && setFieldValue('incident_id', val.incident_id)}
-                >
-                  Use&nbsp;ID&nbsp;<span className="incident-id">#{val.incident_id}</span>
-                </Button>
-              )}
+              <span>
+                {val?.incident_id && (
+                  <>
+                    <LocalizedLink to={'/cite/' + val.incident_id}>
+                      #{val.incident_id}
+                    </LocalizedLink>{' '}
+                    –{' '}
+                  </>
+                )}
+                <a href={val.url} data-cy="title" target="_blank" rel="noreferrer">
+                  {val.title}
+                </a>
+              </span>
+              <ReportToolbar>
+                {val.incident_id && setFieldValue && editId && (
+                  <Button
+                    data-cy="set-id"
+                    className="set-id"
+                    onClick={() => setFieldValue && setFieldValue('incident_id', val.incident_id)}
+                  >
+                    Use&nbsp;ID&nbsp;<span className="incident-id">#{val.incident_id}</span>
+                  </Button>
+                )}
+              </ReportToolbar>
             </ReportRow>
           ))}
         {!loading && reports?.length == 0 && (

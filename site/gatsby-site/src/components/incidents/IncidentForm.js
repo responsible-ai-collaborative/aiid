@@ -3,6 +3,7 @@ import { Form as FormikForm, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import { Form } from 'react-bootstrap';
 import TagsControl from 'components/forms/TagsControl';
+import SemanticallyRelatedIncidents from '../SemanticallyRelatedIncidents';
 
 export const schema = Yup.object().shape({
   title: Yup.string().required(),
@@ -14,7 +15,7 @@ export const schema = Yup.object().shape({
 });
 
 function IncidentForm() {
-  const { values, errors, handleChange, handleSubmit } = useFormikContext();
+  const { values, errors, handleChange, handleSubmit, setFieldValue } = useFormikContext();
 
   return (
     <FormikForm noValidate onSubmit={handleSubmit} data-cy={`incident-form`}>
@@ -60,6 +61,13 @@ function IncidentForm() {
         <Form.Label>Editors</Form.Label>
         <TagsControl name="editors" />
       </Form.Group>
+      <div id="similar-incidents">
+        <SemanticallyRelatedIncidents
+          incident={values}
+          setFieldValue={setFieldValue}
+          editId={false}
+        />
+      </div>
     </FormikForm>
   );
 }

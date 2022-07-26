@@ -228,7 +228,7 @@ const SubmissionReview = ({ submission }) => {
           {open && (
             <div className="mx-3">
               <h5>Possible related incidents</h5>
-              <RelatedIncidents editable={false} incident={submission} />
+              <RelatedIncidents incident={submission} />
             </div>
           )}
           <Card.Footer className="d-flex text-muted">

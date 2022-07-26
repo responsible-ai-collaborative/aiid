@@ -87,6 +87,7 @@ const SubmitForm = () => {
   };
 
   const handleSubmit = async (values, { resetForm }) => {
+    console.log('values', values);
     try {
       const date_submitted = format(new Date(), 'yyyy-MM-dd');
 
@@ -119,6 +120,7 @@ const SubmitForm = () => {
         severity: SEVERITY.success,
       });
     } catch (e) {
+      console.error(e);
       addToast({
         message: (
           <Trans i18n={i18n} ns="submit">
@@ -138,7 +140,7 @@ const SubmitForm = () => {
         initialValues={submission}
         enableReinitialize={true}
       >
-        {({ isSubmitting, submitForm, values }) => (
+        {({ isSubmitting, submitForm, values, setFieldValue }) => (
           <>
             <SubmissionForm />
 
@@ -160,7 +162,7 @@ const SubmitForm = () => {
               <Trans>Submit</Trans>
             </Button>
 
-            <RelatedIncidents incident={values} />
+            <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
           </>
         )}
       </Formik>

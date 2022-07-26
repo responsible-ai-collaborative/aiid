@@ -31,6 +31,10 @@ export const FIND_SUBMISSIONS = gql`
       editor_notes
       tags
       plain_text
+      embedding {
+        vector
+        from_text_hash
+      }
     }
   }
 `;
@@ -57,6 +61,10 @@ export const FIND_SUBMISSION = gql`
       url
       editor_notes
       tags
+      embedding {
+        vector
+        from_text_hash
+      }
     }
   }
 `;
@@ -83,6 +91,10 @@ export const UPDATE_SUBMISSION = gql`
       url
       editor_notes
       tags
+      embedding {
+        vector
+        from_text_hash
+      }
     }
   }
 `;

@@ -38,7 +38,7 @@ const semanticallyRelated = async (text) => {
   return json;
 };
 
-const SemanticallyRelatedIncidents = ({ incident, editable }) => {
+const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }) => {
   const [loading, setLoading] = useState(false);
 
   const [reports, setReports] = useState([]);
@@ -79,6 +79,8 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
         fail('Could not compute semantic similarity');
         return;
       }
+
+      if (setFieldValue) setFieldValue('embedding', nlpResponse.embedding);
 
       const incidentIds = nlpResponse.incidents
         .sort((a, b) => b.similarity - a.similarity)
@@ -122,17 +124,20 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
   }, [incident.text]);
 
   return (
-    incident.text.length > 0 && (
-      <RelatedIncidentsArea
-        key="byText"
-        columnKey="byText"
-        loading={loading}
-        reports={reports}
-        header="Most Semantically Similar Incident Reports (Experimental)"
-        editable={editable}
-        error={error}
-      />
-    )
+    <div data-cy="semantically-related-incidents">
+      {(incident?.text?.length > 0 || incident?.reports?.length > 0) && (
+        <RelatedIncidentsArea
+          key="byText"
+          columnKey="byText"
+          loading={loading}
+          reports={reports}
+          header="Most Semantically Similar Incident Reports (Experimental)"
+          setFieldValue={setFieldValue}
+          editId={editId}
+          error={error}
+        />
+      )}
+    </div>
   );
 };
 
