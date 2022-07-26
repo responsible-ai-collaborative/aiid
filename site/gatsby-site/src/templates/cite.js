@@ -73,6 +73,8 @@ function CitePage(props) {
 
   const sortedReports = sortIncidentsByDatePublished(incidentReports);
 
+  const metaImage = sortedReports[0].image_url;
+
   const authorsModal = useModal();
 
   const submittersModal = useModal();
@@ -108,7 +110,9 @@ function CitePage(props) {
 
   return (
     <Layout {...props}>
-      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl }} />
+      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
+        <meta property="og:type" content="website" />
+      </AiidHelmet>
 
       <div className={'titleWrapper'}>
         <StyledHeading>{metaDescription}</StyledHeading>

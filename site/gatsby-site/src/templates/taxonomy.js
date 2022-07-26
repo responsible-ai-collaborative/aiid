@@ -207,7 +207,12 @@ const getStats = (taxa, classification) => {
     });
 
   taxa.field_list
-    .filter((field) => !field.permitted_values || field.permitted_values === 0)
+    .filter(
+      (field) =>
+        !field.permitted_values ||
+        field.permitted_values === 0 ||
+        field.permitted_values.length === 0
+    )
     .forEach((field) => {
       let auxStat = {};
 

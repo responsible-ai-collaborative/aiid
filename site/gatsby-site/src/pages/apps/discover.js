@@ -10,7 +10,7 @@ import config from '../../../config';
 import Hits from 'components/discover/Hits';
 import SearchBox from 'components/discover/SearchBox';
 import Pagination from 'components/discover/Pagination';
-import FiltersModal from 'components/discover/FiltersModal';
+import OptionsModal from 'components/discover/OptionsModal';
 import { SearchContext } from 'components/discover/useSearch';
 import { queryConfig } from 'components/discover/queryParams';
 import VirtualFilters from 'components/discover/VirtualFilters';
@@ -187,6 +187,8 @@ function DiscoverApp(props) {
     setSearchState({ ...searchState });
   };
 
+  const [hideDuplicates, setHideDuplicates] = useState(false);
+
   const toggleFilterByIncidentId = useCallback(
     (incidentId) => {
       const newSearchState = {
@@ -229,7 +231,7 @@ function DiscoverApp(props) {
           searchState={searchState}
           onSearchStateChange={onSearchStateChange}
         >
-          <Configure hitsPerPage={28} />
+          <Configure hitsPerPage={28} distinct={hideDuplicates} />
 
           <VirtualFilters />
 
@@ -240,9 +242,17 @@ function DiscoverApp(props) {
               </Col>
             </Row>
 
-            <Controls query={query} />
+            <Controls
+              query={query}
+              setHideDuplicates={setHideDuplicates}
+              hideDuplicates={hideDuplicates}
+            />
 
-            <FiltersModal className="hiddenDesktop" />
+            <OptionsModal
+              className="hiddenDesktop"
+              setHideDuplicates={setHideDuplicates}
+              hideDuplicates={hideDuplicates}
+            />
           </Container>
 
           <Hits
