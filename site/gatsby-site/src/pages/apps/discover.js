@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { Configure, InstantSearch } from 'react-instantsearch-dom';
@@ -16,7 +16,6 @@ import { queryConfig } from 'components/discover/queryParams';
 import VirtualFilters from 'components/discover/VirtualFilters';
 import Controls from 'components/discover/Controls';
 import { Container, Row, Col } from 'react-bootstrap';
-import LanguageSwitcher from 'components/i18n/LanguageSwitcher';
 import { useLocalization } from 'gatsby-theme-i18n';
 
 const searchClient = algoliasearch(
@@ -180,11 +179,7 @@ function DiscoverApp(props) {
 
   const { locale } = useLocalization();
 
-  const languageSwitcher = useRef(
-    typeof window !== 'undefined' && window.localStorage.getItem('i18n')
-  ).current;
-
-  const indexName = useRef(`instant_search-${locale}`).current;
+  const indexName = `instant_search-${locale}`;
 
   const [searchState, setSearchState] = useState(generateSearchState({ query }));
 
@@ -243,11 +238,6 @@ function DiscoverApp(props) {
               <Col>
                 <SearchBox defaultRefinement={query.s} />
               </Col>
-              {languageSwitcher && (
-                <Col className="col-auto">
-                  <LanguageSwitcher />
-                </Col>
-              )}
             </Row>
 
             <Controls query={query} />

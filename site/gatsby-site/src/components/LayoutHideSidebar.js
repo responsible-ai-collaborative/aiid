@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Sidebar from './sidebar';
 import config from '../../config.js';
 import Button from 'react-bootstrap/Button';
+import Header from './ui/Header';
 
 const Wrapper = styled.div`
   display: flex;
@@ -101,23 +102,26 @@ const LayoutHideSidebar = ({ children, location, menuCollapseCallback }) => {
   };
 
   return (
-    <Wrapper>
-      <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
-        <Sidebar location={location} collapse={collapse} />
-      </LeftSideBarWidth>
-      {config.sidebar.title ? (
-        <div
-          className={'sidebarTitle sideBarShow'}
-          dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
-        />
-      ) : null}
-      <Content id="content">
-        <SidebarToggleButton onClick={() => toggleMenu()} collapse={collapse.toString()}>
-          MENU
-        </SidebarToggleButton>
-        <MaxWidth>{children}</MaxWidth>
-      </Content>
-    </Wrapper>
+    <>
+      <Header />
+      <Wrapper>
+        <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
+          <Sidebar location={location} collapse={collapse} />
+        </LeftSideBarWidth>
+        {config.sidebar.title ? (
+          <div
+            className={'sidebarTitle sideBarShow'}
+            dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
+          />
+        ) : null}
+        <Content id="content">
+          <SidebarToggleButton onClick={() => toggleMenu()} collapse={collapse.toString()}>
+            MENU
+          </SidebarToggleButton>
+          <MaxWidth>{children}</MaxWidth>
+        </Content>
+      </Wrapper>
+    </>
   );
 };
 

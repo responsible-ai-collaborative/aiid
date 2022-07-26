@@ -3,6 +3,7 @@ import Label from 'components/forms/Label';
 import { useField } from 'formik';
 import React, { useEffect } from 'react';
 import { Form } from 'react-bootstrap';
+import { Trans, useTranslation } from 'react-i18next';
 import { FIND_INCIDENT } from '../../graphql/incidents';
 import * as POP_OVERS from '../ui/PopOvers';
 
@@ -12,12 +13,14 @@ export default function IncidentIdField({
   className = '',
   showIncidentData = true,
 }) {
+  const { t } = useTranslation(['validation']);
+
   const validate = async (value) => {
     if (value) {
       const result = await refetch({ query: { incident_id: value } });
 
       if (!result.data?.incident) {
-        return `Incident ID ${value} not found!`;
+        return t(`Incident ID {{value}} not found!`, { value });
       }
     }
   };
@@ -51,7 +54,11 @@ export default function IncidentIdField({
 
       {showIncidentData && value !== '' && !error && (
         <div className="pt-1">
-          {loadingIncident && <div className="small">Searching...</div>}
+          {loadingIncident && (
+            <div className="small">
+              <Trans>Searching...</Trans>
+            </div>
+          )}
 
           {incident?.incident && (
             <>

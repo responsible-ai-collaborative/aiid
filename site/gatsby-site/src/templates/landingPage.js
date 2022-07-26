@@ -13,6 +13,7 @@ import QuickSearch from 'components/landing/QuickSearch';
 import QuickAdd from 'components/landing/QuickAdd';
 import RandomReports from 'components/landing/RandomReports';
 import Hero from 'components/landing/Hero';
+import { useTranslation } from 'react-i18next';
 
 const LandingPage = (props) => {
   const {
@@ -21,15 +22,19 @@ const LandingPage = (props) => {
 
   const localWordCounts = wordCountsSorted.filter((word, index) => index < 10);
 
-  const metaTitle = 'Welcome to the Artificial Intelligence Incident Database';
+  const { t } = useTranslation(['translation', 'landing']);
 
-  const metaDescription = 'The starting point for information about the AI Incident Database';
+  const title = t('Welcome to the Artificial Intelligence Incident Database', { ns: 'landing' });
+
+  const metaDescription = t('The starting point for information about the AI Incident Database', {
+    ns: 'landing',
+  });
 
   return (
     <Layout {...props}>
       <Helmet>
-        <title>Welcome to the Artificial Intelligence Incident Database</title>
-        <meta name="title" content={metaTitle} />
+        <title>{title}</title>
+        <meta name="title" content={title} />
         <meta name="description" content={metaDescription} />
       </Helmet>
       <Container>
