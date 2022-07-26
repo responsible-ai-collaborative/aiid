@@ -6,6 +6,7 @@ import { fill } from '@cloudinary/base/actions/resize';
 import { useUserContext } from 'contexts/userContext';
 import Actions from 'components/discover/Actions';
 import ReportText from 'components/reports/ReportText';
+import WebArchiveLink from 'components/ui/WebArchiveLink';
 
 const IncidentCardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -14,8 +15,11 @@ const IncidentCardContainer = styled.div`
   display: flex;
   flex-direction: column;
   .subhead {
+    color: var(--bs-gray-600);
+    a:not(:hover) {
+      color: inherit;
+    }
     margin: 0;
-    opacity: 0.4;
     padding-top: 10px;
   }
 `;
@@ -59,8 +63,10 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
           )}
         </div>
         <p className="subhead">
-          {item.source_domain} &middot;{' '}
-          {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
+          <WebArchiveLink url={item.url}>
+            {item.source_domain} &middot;{' '}
+            {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
+          </WebArchiveLink>
         </p>
       </div>
       <CardBody className="card-body">
