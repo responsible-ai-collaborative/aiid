@@ -162,6 +162,13 @@ exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
 
   const typeDefs = `
+    type reportEmbedding {
+      vector: [Float]
+      from_text_hash: String
+    }
+    type mongodbAiidprodSubmissons implements Node {
+      embedding: reportEmbedding 
+    }
     type mongodbAiidprodReports implements Node {
       cloudinary_id: String
       tags: [String]
