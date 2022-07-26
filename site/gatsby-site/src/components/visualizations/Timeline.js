@@ -10,7 +10,6 @@ import {
   timeMonth,
   timeWeek,
 } from 'd3';
-import styled from 'styled-components';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
 const formatDay = timeFormat('%b %d');
@@ -45,55 +44,19 @@ const AxisLeft = ({ yScale, margin, data }) => {
   return <g ref={axisRef} transform={`translate(${margin.left}, 0)`} />;
 };
 
-const Title = styled.text`
-  font-size: 14px;
-  dominant-baseline: middle;
-`;
-
-const Line = styled.line`
-  stroke: #5b5b5b;
-  stroke-dasharray: 2;
-`;
-
-const Point = styled.circle`
-  fill: ${(props) => (props.isOccurrence ? 'var(--bs-danger)' : 'var(--bs-gray-900)')};
-`;
-
-const Count = styled.text`
-  fill: #fff;
-  text-anchor: middle;
-  dominant-baseline: middle;
-  font-weight: bold;
-  font-size: 12px;
-`;
-
-const Trigger = styled.div`
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-`;
-
-const GroupList = styled.ul`
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-`;
-
-const GroupListItem = styled.li`
-  font-size: 12px;
-  margin-top: 6px;
-  &:first-child {
-    margin-top: 0%;
-  }
-`;
-
 const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
   return (
     <g key={bucket.x0} transform={`translate(20,${(yScale(bucket.x0) + yScale(bucket.x1)) / 2})`}>
       {bucket.length > 1 ? (
         <>
-          <Point cy={0} r={groupRadius} />
-          <Count>+{bucket.length - 1}</Count>
+          <circle className="tw-fill-gray-900" cy={0} r={groupRadius} />
+          <text
+            textAnchor="middle"
+            dominantBaseline="middle"
+            className="tw-fill-white tw-font-bold tw-text-[12px]"
+          >
+            +{bucket.length - 1}
+          </text>
           <OverlayTrigger
             placement="right"
             trigger="click"
@@ -101,9 +64,12 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
             overlay={
               <Popover>
                 <Popover.Body>
-                  <GroupList>
+                  <ul className="tw-m-0 tw-p-0 tw-list-none">
                     {bucket.slice(1).map((b) => (
-                      <GroupListItem key={b.mongodb_id}>
+                      <li
+                        className="tw-text-[12px] tw-mt-[6px] first:tw-mt-[0%]"
+                        key={b.mongodb_id}
+                      >
                         {timeFormat('%b %d, %Y')(new Date(b.date_published))}
                         <br />
                         {b.isOccurrence ? (
@@ -111,27 +77,35 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
                         ) : (
                           <a href={`#r${b.mongodb_id}`}>{b.title}</a>
                         )}
-                      </GroupListItem>
+                      </li>
                     ))}
-                  </GroupList>
+                  </ul>
                 </Popover.Body>
               </Popover>
             }
           >
             <foreignObject x={-8} y={-8} width={16} height={16}>
-              <Trigger />
+              <div className="tw-w-[16px] tw-h-[16px] tw-cursor-pointer" />
             </foreignObject>
           </OverlayTrigger>
         </>
       ) : (
-        <Point cy={0} r={radius} isOccurrence={bucket[0].isOccurrence} />
+        <circle
+          className={`${bucket[0].isOccurrence ? 'tw-fill-danger' : 'tw-fill-gray-900'}`}
+          cy={0}
+          r={radius}
+        />
       )}
 
       {bucket[0].isOccurrence ? (
-        <Title dx={16}>{bucket[0].title}</Title>
+        <text dominantBaseline="middle" className="tw-text-[14px]" dx={16}>
+          {bucket[0].title}
+        </text>
       ) : (
         <a href={bucket[0].mongodb_id ? `#r${bucket[0].mongodb_id}` : ''}>
-          <Title dx={16}>{bucket[0].title}</Title>
+          <text dominantBaseline="middle" className="tw-text-[14px]" dx={16}>
+            {bucket[0].title}
+          </text>
         </a>
       )}
     </g>
@@ -141,7 +115,14 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
 const Reports = ({ binned, yScale, radius, groupRadius, margin, size }) => {
   return (
     <g transform={`translate(${margin.left}, 0)`}>
-      <Line x1={20} x2={20} y1={margin.top} y2={size.height - margin.bottom} />
+      <line
+        className="tw-stroke-[#5b5b5b]"
+        strokeDasharray="2"
+        x1={20}
+        x2={20}
+        y1={margin.top}
+        y2={size.height - margin.bottom}
+      />
       {binned
         .filter((b) => b.length > 0)
         .map((b) => (

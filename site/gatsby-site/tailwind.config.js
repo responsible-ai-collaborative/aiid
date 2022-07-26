@@ -13,7 +13,6 @@ module.exports = {
         'light-grey': 'rgba(0,0,0,.03)',
         'border-grey': 'rgba(0,0,0,.125)',
         'disable-grey': '#dee2e6',
-        'dark-blue': '#212529',
         'primary-blue': '#0d6efd',
         'dark-grey': '#6c757d',
         'deep-blue': '#0a58ca',
@@ -21,6 +20,8 @@ module.exports = {
         'text-light-grey': 'rgba(248,249,250,1)',
         'border-light-grey': '#d9deee',
         'default-gray': 'rgb(128, 128, 128)',
+        danger: '#dc3545',
+        'gray-900': '#212529',
       },
       boxShadow: {
         card: '0 2px 5px 0px #e3e5ec',
