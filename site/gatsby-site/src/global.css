@@ -69,6 +69,43 @@
   .tw-page-link:hover {
     @apply tw-bg-light-grey tw-text-deep-blue tw-border-disable-grey tw-z-2;
   }
+
+  .tw-classification-container {
+    @apply tw-flex tw-flex-row tw-justify-start tw-w-full tw-flex-auto tw-p-4;
+  }
+
+  .tw-card-body {
+    @apply tw-flex-auto tw-p-4;
+  }
+
+  .tw-field {
+    @apply tw-w-[20%] tw-border-r-2.5 tw-mr-4 tw-border-border-light-grey tw-text-default-gray tw-font-bold;
+  }
+
+  .tw-taxa-card-header {
+    @apply tw-flex tw-flex-row tw-justify-start tw-items-center     
+  }
+
+  .tw-taxa-card-header p {
+    @apply tw-m-0;
+  }
+
+  .tw-card-header {
+    @apply tw-bg-light-grey tw-border tw-border-b-border-grey tw-mb-0 tw-py-2 tw-px-4;
+  }
+
+  .tw-tooltip-wrapper {
+    @apply tw-relative tw-inline-block;
+  }
+
+  .tw-tooltip-left .tw-tooltip{
+    @apply tw-absolute tw-right-full tw-top-[-3px] tw-mr-[10px] tw-z-20 tw-mb-3 tw-whitespace-nowrap tw-rounded tw-bg-black tw-py-[6px] tw-px-4 tw-text-sm tw-font-semibold tw-text-white tw-opacity-0;
+  }
+
+  .tw-tooltip-left .tw-tooltip .tw-tooltip-arrow {
+    @apply tw-absolute tw-right-[-3px] tw-top-1/2 tw--z-10 tw-h-2 tw-w-2 tw--translate-y-1 tw-rotate-45 tw-rounded-sm tw-bg-black;
+  }
+  
 }
 
 * {

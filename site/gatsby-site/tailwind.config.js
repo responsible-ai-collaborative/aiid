@@ -19,6 +19,8 @@ module.exports = {
         'deep-blue': '#0a58ca',
         'secondary-grey': 'rgba(108,117,125,1)',
         'text-light-grey': 'rgba(248,249,250,1)',
+        'border-light-grey': '#d9deee',
+        'default-gray': 'rgb(128, 128, 128)',
       },
       boxShadow: {
         card: '0 2px 5px 0px #e3e5ec',
@@ -29,8 +31,22 @@ module.exports = {
       zIndex: {
         2: '2',
       },
+      borderWidth: {
+        2.5: '2.5px',
+      },
+      padding: {
+        0.8: '0.8rem',
+      },
     },
   },
   plugins: [],
-  safelist: ['tw-btn-outline-primary', 'tw-btn', 'tw-bg-secondary'],
+  safelist: [
+    'tw-btn-outline-primary',
+    'tw-btn',
+    'tw-bg-secondary',
+    'tw-tooltip-top',
+    'tw-tooltip-right',
+    'tw-tooltip-bottom',
+    'tw-tooltip-left',
+  ],
 };
