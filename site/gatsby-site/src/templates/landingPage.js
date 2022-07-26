@@ -1,7 +1,6 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import Layout from 'components/Layout';
-import { Container, Row, Col } from 'react-bootstrap';
 import Featured from 'components/landing/Featured';
 import Leaderboards from 'components/landing/Leaderboards';
 import Blog from 'components/landing/Blog';
@@ -14,6 +13,9 @@ import QuickAdd from 'components/landing/QuickAdd';
 import RandomReports from 'components/landing/RandomReports';
 import Hero from 'components/landing/Hero';
 import { useTranslation } from 'react-i18next';
+import Container from '../elements/Container';
+import Row from '../elements/Row';
+import Col from '../elements/Col';
 
 const LandingPage = (props) => {
   const {
