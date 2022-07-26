@@ -1,5 +1,5 @@
 import React from 'react';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
@@ -18,9 +18,9 @@ const Backups = ({ pageContext, ...props }) => {
 
   return (
     <Layout {...props}>
-      <Helmet>
+      <AiidHelmet>
         <title>Database Backups and Snapshots</title>
-      </Helmet>
+      </AiidHelmet>
       <div className="titleWrapper">
         <StyledHeading>Database Snapshots</StyledHeading>
       </div>
