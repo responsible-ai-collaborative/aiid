@@ -16,7 +16,8 @@ async function realmExecutor({ document, variables }) {
   const query = print(document);
 
   const fetchResult = await fetch(
-    `https://realm.mongodb.com/api/client/v2.0/app/${config.realm.production_db.realm_app_id}/graphql`,
+    //`https://realm.mongodb.com/api/client/v2.0/app/${config.realm.production_db.realm_app_id}/graphql`,
+    `${config.realm.production_db.realm_app_graphql_url}`,
     {
       method: 'POST',
       headers: {
