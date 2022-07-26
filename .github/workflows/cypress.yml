@@ -126,7 +126,7 @@ jobs:
   deploy:
     name: Deploy to Netlify
     runs-on: ubuntu-latest
-    needs: cypress-run
+    # needs: cypress-run
     steps:
 
       - name: Deploy to Netlify
