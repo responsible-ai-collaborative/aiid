@@ -166,13 +166,21 @@ exports.createSchemaCustomization = ({ actions }) => {
       vector: [Float]
       from_text_hash: String
     }
-    type mongodbAiidprodSubmissons implements Node {
-      embedding: reportEmbedding 
+
+    type incidentEmbedding {
+      vector: [Float]
+      from_reports: [Int]
     }
+
+    type mongodbAiidprodIncidents implements Node {
+      embedding: incidentEmbedding
+    }
+
     type mongodbAiidprodReports implements Node {
       cloudinary_id: String
       tags: [String]
       plain_text: String
+      embedding: reportEmbedding 
     }
 
     type mongodbAiidprodTaxaField_list implements Node {
