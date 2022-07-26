@@ -16,6 +16,21 @@
   --secondary4: #071d49;
 }
 
+@layer base {
+  .tw-layout {
+    @apply tw-block md:tw-flex tw-content-between tw-bg-white;
+  }
+
+  .tw-layout .tw-side-bar-ul li a {
+    @apply tw-text-light-orange;
+  }
+
+  .tw-layout .tw-side-bar-ul .item > a:hover {
+    @apply tw-bg-light-orange tw-text-white;
+  }
+
+}
+
 @layer components {
 
   .tw-container {

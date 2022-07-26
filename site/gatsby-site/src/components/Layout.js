@@ -7,27 +7,6 @@ import config from '../../config.js';
 import Footer from './layout/Footer';
 import Header from './ui/Header';
 
-const Wrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  background: ${({ theme }) => theme.colors.background};
-
-  .sideBarUL li a {
-    color: ${({ theme }) => theme.colors.text};
-  }
-
-  .sideBarUL .item > a:hover {
-    background-color: var(--primary3);
-    color: #fff !important;
-
-    /* background: #F8F8F8 */
-  }
-
-  @media only screen and (max-width: 767px) {
-    display: block;
-  }
-`;
-
 const Content = styled('main')`
   display: flex;
   flex-grow: 1;
@@ -82,7 +61,7 @@ const RightSideBarWidth = styled.div`
 const Layout = ({ children, collapse, className, location }) => (
   <>
     <Header />
-    <Wrapper>
+    <div className="tw-layout">
       <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
         <Sidebar collapse={collapse} />
       </LeftSideBarWidth>
@@ -98,7 +77,7 @@ const Layout = ({ children, collapse, className, location }) => (
       <RightSideBarWidth className={'hiddenMobile'}>
         <RightSidebar location={location} />
       </RightSideBarWidth>
-    </Wrapper>
+    </div>
     <Footer />
   </>
 );

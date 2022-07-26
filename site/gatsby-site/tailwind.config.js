@@ -22,6 +22,7 @@ module.exports = {
         'default-gray': 'rgb(128, 128, 128)',
         danger: '#dc3545',
         'gray-900': '#212529',
+        'light-orange': '#ec9982',
       },
       boxShadow: {
         card: '0 2px 5px 0px #e3e5ec',
