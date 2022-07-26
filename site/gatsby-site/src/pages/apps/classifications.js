@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
 import TaxonomyForm from 'components/taxa/TaxonomyForm';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 import styled from 'styled-components';
 import { useMongo } from 'hooks/useMongo';
 import config from '../../../config';
@@ -776,9 +776,9 @@ export default function ClassificationsDbView(props) {
       {...props}
       menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
     >
-      <Helmet>
+      <AiidHelmet>
         <title>Artificial Intelligence Incident Database</title>
-      </Helmet>
+      </AiidHelmet>
       <CustomModal style={{ maxWidth: '80%' }} {...editClassificationModal} />
       <Container isWide={collapse}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>

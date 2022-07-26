@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
 import { format } from 'date-fns';
 import Link from 'components/ui/Link';
@@ -445,9 +445,9 @@ export default function Incidents(props) {
       {...props}
       menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
     >
-      <Helmet>
+      <AiidHelmet>
         <title>Incident List</title>
-      </Helmet>
+      </AiidHelmet>
 
       {loading && (
         <div className="p-2">

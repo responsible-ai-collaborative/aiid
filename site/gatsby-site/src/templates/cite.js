@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 import { Button, Col, Container, Pagination, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
@@ -83,6 +83,8 @@ function CitePage(props) {
 
   const sortedReports = sortIncidentsByDatePublished(incidentReports);
 
+  const metaImage = sortedReports[0].image_url;
+
   const authorsModal = useModal();
 
   const submittersModal = useModal();
@@ -118,16 +120,9 @@ function CitePage(props) {
 
   return (
     <Layout {...props}>
-      <Helmet>
-        {metaTitle ? <title>{metaTitle}</title> : null}
-        {metaTitle ? <meta name="title" content={metaTitle} /> : null}
-        {metaDescription ? <meta name="description" content={metaDescription} /> : null}
-        {metaTitle ? <meta property="og:title" content={metaTitle} /> : null}
-        {metaDescription ? <meta property="og:description" content={metaDescription} /> : null}
-        {metaTitle ? <meta property="twitter:title" content={metaTitle} /> : null}
-        {metaDescription ? <meta property="twitter:description" content={metaDescription} /> : null}
-        <link rel="canonical" href={canonicalUrl} />
-      </Helmet>
+      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
+        <meta property="og:type" content="website" />
+      </AiidHelmet>
 
       <div className={'titleWrapper'}>
         <StyledHeading>{metaDescription}</StyledHeading>

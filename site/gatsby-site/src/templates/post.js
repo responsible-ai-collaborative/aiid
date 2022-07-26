@@ -1,5 +1,5 @@
 import React from 'react';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 import { MDXProvider } from '@mdx-js/react';
@@ -37,16 +37,7 @@ export default function Post(props) {
 
   return (
     <Layout {...props}>
-      <Helmet>
-        {metaTitle ? <title>{metaTitle}</title> : null}
-        {metaTitle ? <meta name="title" content={metaTitle} /> : null}
-        {metaDescription ? <meta name="description" content={metaDescription} /> : null}
-        {metaTitle ? <meta property="og:title" content={metaTitle} /> : null}
-        {metaDescription ? <meta property="og:description" content={metaDescription} /> : null}
-        {metaTitle ? <meta property="twitter:title" content={metaTitle} /> : null}
-        {metaDescription ? <meta property="twitter:description" content={metaDescription} /> : null}
-        <link rel="canonical" href={canonicalUrl} />
-      </Helmet>
+      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl }} />
       <div className={'titleWrapper'}>
         <StyledHeading>{mdx.fields.title}</StyledHeading>
         <PostDate>{format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')}</PostDate>

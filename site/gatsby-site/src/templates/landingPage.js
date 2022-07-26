@@ -1,5 +1,5 @@
 import React from 'react';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
 import { Container, Row, Col } from 'react-bootstrap';
 import Featured from 'components/landing/Featured';
@@ -32,11 +32,11 @@ const LandingPage = (props) => {
 
   return (
     <Layout {...props}>
-      <Helmet>
+      <AiidHelmet>
         <title>{title}</title>
         <meta name="title" content={title} />
         <meta name="description" content={metaDescription} />
-      </Helmet>
+      </AiidHelmet>
       <Container>
         <Row>
           <Col>
