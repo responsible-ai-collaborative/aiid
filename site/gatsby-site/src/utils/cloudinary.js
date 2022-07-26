@@ -41,6 +41,8 @@ const Image = ({ publicID, className, alt, transformation = null, plugins = [laz
   image.transformation = tmpImage.transformation.toString();
 
   useEffect(() => {
+    let fallbackTimeout;
+
     const useFallbackIfLoadFailed = () => {
       const img = imageElement.current?.imageRef.current;
 
@@ -48,13 +50,15 @@ const Image = ({ publicID, className, alt, transformation = null, plugins = [laz
         if (img?.complete) {
           setCloudinaryID('fallback.jpg');
         } else {
-          setTimeout(useFallbackIfLoadFailed, 1000);
+          fallbackTimeout = setTimeout(useFallbackIfLoadFailed, 1000);
         }
       }
     };
 
     setCloudinaryID(publicID);
     useFallbackIfLoadFailed();
+
+    return () => clearTimeout(fallbackTimeout);
   }, [publicID]);
 
   return (
