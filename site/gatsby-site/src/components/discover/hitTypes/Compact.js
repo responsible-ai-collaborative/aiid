@@ -9,7 +9,6 @@ import { HeaderTitle, SourceDomainSubtitle } from './shared';
 
 const StyledCard = styled(Card)`
   height: 240px;
-  overflow: hidden;
 
   :hover {
     background: #00000000;
@@ -55,6 +54,8 @@ const StyledHeaderTitle = styled(HeaderTitle)`
   * {
     font-size: 1rem;
   }
+  max-height: 5em;
+  overflow: hidden;
 `;
 
 const StyledSubTitle = styled(SourceDomainSubtitle)`

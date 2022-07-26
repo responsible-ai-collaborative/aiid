@@ -2,11 +2,14 @@ import { maybeIt } from '../support/utils';
 import flaggedReport from '../fixtures/reports/flagged.json';
 import unflaggedReport from '../fixtures/reports/unflagged.json';
 import { format } from 'date-fns';
+const { gql } = require('@apollo/client');
 
 describe('Cite pages', () => {
   const discoverUrl = '/apps/discover';
 
-  const url = '/cite/10';
+  const incidentId = 10;
+
+  const url = `/cite/${incidentId}`;
 
   it('Successfully loads', () => {
     cy.visit(url);
@@ -220,5 +223,54 @@ describe('Cite pages', () => {
       'contain.text',
       `Olsson, Catherine. (2014-08-14) Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on ${date} from incidentdatabase.ai/cite/10.`
     );
+  });
+  it('Should have OpenGraph meta tags', () => {
+    cy.visit(url);
+
+    cy.query({
+      query: gql`
+        query {
+          incidents(query: { incident_id: ${incidentId} }, limit: 1) {
+            title
+            description
+            reports {
+              image_url
+              date_published
+            }
+          }
+        }
+      `,
+    }).then(({ data: { incidents } }) => {
+      const title = `Incident ${incidentId}`;
+
+      const description = `Citation record for Incident ${incidentId}`;
+
+      const imageUrl = [...incidents[0].reports].sort((a, b) =>
+        a.date_published >= b.date_published ? 1 : -1
+      )[0].image_url;
+
+      cy.get('head meta[name="title"]').should('have.attr', 'content', title);
+      cy.get('head meta[name="description"]').should('have.attr', 'content', description);
+
+      cy.get('head meta[name="twitter:site"]').should('have.attr', 'content', '@IncidentsDB');
+      cy.get('head meta[name="twitter:creator"]').should('have.attr', 'content', '@IncidentsDB');
+
+      cy.get('head meta[property="og:url"]').should(
+        'have.attr',
+        'content',
+        `https://incidentdatabase.ai${url}`
+      );
+      cy.get('head meta[property="og:type"]').should('have.attr', 'content', 'website');
+      cy.get('head meta[property="og:title"]').should('have.attr', 'content', title);
+      cy.get('head meta[property="og:description"]').should('have.attr', 'content', description);
+      cy.get('head meta[property="og:image"]').should('have.attr', 'content', imageUrl);
+      cy.get('head meta[property="twitter:title"]').should('have.attr', 'content', title);
+      cy.get('head meta[property="twitter:description"]').should(
+        'have.attr',
+        'content',
+        description
+      );
+      cy.get('head meta[property="twitter:image"]').should('have.attr', 'content', imageUrl);
+    });
   });
 });

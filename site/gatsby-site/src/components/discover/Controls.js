@@ -5,14 +5,10 @@ import Stats from './Stats';
 import ClearFilters from './ClearFilters';
 import DisplayModeSwitch from './DisplayModeSwitch';
 import Filters from './Filters';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Trans } from 'react-i18next';
-
-const FlexGap = styled(Col)`
-  margin: auto;
-`;
 
 const ExpandFilters = styled.button`
   user-select: none;
@@ -26,21 +22,58 @@ const ExpandArrow = styled(FontAwesomeIcon)`
   vertical-align: -0.2em !important;
 `;
 
-const Controls = ({ query }) => {
+const ControlsRow = styled(Row)`
+  @media (max-width: 767.5px) {
+    display: none !important;
+  }
+`;
+
+const Hbox = styled(Col)`
+  display: flex;
+  gap: 0.25ch;
+  align-items: center;
+  padding-right: 0px !important;
+  > * {
+    line-height: 2em;
+    vertical-align: middle;
+    margin: 0px !important;
+  }
+  input {
+    vertical-align: middle;
+    margin: 0px;
+  }
+  label {
+    white-space: nowrap;
+  }
+`;
+
+const Controls = ({ query, setHideDuplicates, hideDuplicates }) => {
   const [expandFilters, setExpandFilters] = useState(false);
 
   useEffect(() => setExpandFilters(REFINEMENT_LISTS.some((r) => query[r.attribute])), []);
 
   return (
     <>
-      <Row className="justify-content-start align-items-center mt-3 hiddenMobile">
+      <ControlsRow className="justify-content-start align-items-center mt-3 hiddenMobile">
         <Col className="col-auto">
           <Stats />
         </Col>
         <Col className="col-auto">
           <DisplayModeSwitch />
         </Col>
-        <FlexGap />
+        <Hbox>
+          <Form.Check
+            type="switch"
+            id="hide-duplicates"
+            checked={hideDuplicates}
+            onClick={(event) => {
+              setHideDuplicates(event.target.checked);
+            }}
+          />
+          <Form.Label for="hide-duplicates">
+            <Trans>1st report only</Trans>
+          </Form.Label>
+        </Hbox>
         <Col className="col-auto">
           <ClearFilters>
             <Trans>Clear Filters</Trans>
@@ -56,7 +89,7 @@ const Controls = ({ query }) => {
             <Trans>Filter Search</Trans>
           </ExpandFilters>
         </Col>
-      </Row>
+      </ControlsRow>
       <Row className="mb-3 hiddenMobile">{expandFilters && <Filters />}</Row>
     </>
   );
