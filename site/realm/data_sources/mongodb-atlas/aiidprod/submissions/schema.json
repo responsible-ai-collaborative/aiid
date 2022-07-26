@@ -27,6 +27,9 @@
         "description": {
             "bsonType": "string"
         },
+        "editor_notes": {
+            "bsonType": "string"
+        },
         "image_url": {
             "bsonType": "string"
         },
@@ -64,9 +67,6 @@
             "bsonType": "string"
         },
         "url": {
-            "bsonType": "string"
-        },
-        "editor_notes": {
             "bsonType": "string"
         }
     },

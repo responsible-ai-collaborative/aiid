@@ -18,5 +18,9 @@
     {
         "name": "unlinkReportsFromIncidents",
         "private": false
+    },
+    {
+        "name": "reportTranslations",
+        "private": false
     }
 ]
