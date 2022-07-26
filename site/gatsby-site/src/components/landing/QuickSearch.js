@@ -2,6 +2,7 @@ import SearchInput from 'components/forms/SearchInput';
 import { navigate } from 'gatsby';
 import React, { useState, useEffect } from 'react';
 import { Button, Card, Col, Form, Row } from 'react-bootstrap';
+import { Trans, useTranslation } from 'react-i18next';
 
 export default function QuickSearch({ className }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -16,26 +17,29 @@ export default function QuickSearch({ className }) {
     navigate(`/apps/discover`);
   };
 
-  const [placeHolderText, setPlaceHolderText] = useState('Search 1400+ reports');
-
-  const buttonStyle = { width: '10ch' };
+  const [placeHolderText, setPlaceHolderText] = useState('Search 1600+ reports');
 
   useEffect(() => {
     const updatePlaceHolder = () => {
-      if (document && document.body.scrollWidth > 500) {
-        setPlaceHolderText('Search over 1400 reports of AI harms');
-      } else if (document && document.body.scrollWidth > 450) {
-        setPlaceHolderText('Search 1400+ AI harm reports');
-      } else if (document && document.body.scrollWidth > 350) {
-        setPlaceHolderText('Search 1400+ reports');
-      } else {
-        setPlaceHolderText('Search reports');
+      if (document) {
+        const w = document.body.scrollWidth;
+
+        if (w > 500) setPlaceHolderText('Search over 1600 reports of AI harms');
+        else if (w > 450) setPlaceHolderText('Search 1600+ AI harm reports');
+        else if (w > 350) setPlaceHolderText('Search 1600+ reports');
+        else setPlaceHolderText('Search reports');
       }
     };
 
     updatePlaceHolder();
-    if (window) window.addEventListener('resize', updatePlaceHolder);
-  });
+
+    if (window) {
+      window.addEventListener('resize', updatePlaceHolder);
+      return () => window.removeEventListener('resize', updatePlaceHolder);
+    }
+  }, []);
+
+  const { t } = useTranslation(['translation', 'landing', 'actions']);
 
   return (
     <>
@@ -47,21 +51,15 @@ export default function QuickSearch({ className }) {
               value={searchTerm}
               onChange={setSearchTerm}
               onClear={() => setSearchTerm('')}
-              placeHolder={placeHolderText}
+              placeHolder={t(placeHolderText, { ns: 'landing' })}
               onKeyPress={(e) => {
                 e.key === 'Enter' && submit(e);
               }}
             />
             <Row>
               <Col className="d-flex gap-2 justify-content-center">
-                <Button
-                  size="lg"
-                  variant="primary"
-                  className="mt-4"
-                  type="submit"
-                  style={buttonStyle}
-                >
-                  Search
+                <Button size="lg" variant="primary" className="mt-4" type="submit">
+                  <Trans>Search</Trans>
                 </Button>
 
                 <Button
@@ -70,9 +68,8 @@ export default function QuickSearch({ className }) {
                   className="mt-4"
                   type="button"
                   onClick={discover}
-                  style={buttonStyle}
                 >
-                  Discover
+                  <Trans>Discover</Trans>
                 </Button>
               </Col>
             </Row>
