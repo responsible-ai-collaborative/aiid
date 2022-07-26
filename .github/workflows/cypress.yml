@@ -99,7 +99,7 @@ jobs:
           config-file: cypress.config.js
           record: true
           parallel: true
-          group: 'Cypress e2e tests'
+          group: "Cypress e2e tests"
           start: npm start
           wait-on: http://localhost:8000/
           # wait for 10 minutes for the server to respond
@@ -122,3 +122,24 @@ jobs:
           MONGODB_REPLICA_SET: ${{ secrets.MONGODB_REPLICA_SET }}
           MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
           GATSBY_REALM_APP_GRAPHQL_URL: ${{ secrets.GATSBY_REALM_APP_GRAPHQL_URL }}
+
+  deploy:
+    name: Deploy to Netlify
+    runs-on: ubuntu-latest
+    needs: cypress-run
+    steps:
+
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v1.2
+        with:
+          publish-dir: "/site/gatsby-site/public"
+          production-branch: master
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions"
+          enable-pull-request-comment: false
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 1
