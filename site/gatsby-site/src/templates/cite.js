@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 import { Button, Col, Container, Pagination, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
@@ -110,21 +110,9 @@ function CitePage(props) {
 
   return (
     <Layout {...props}>
-      <Helmet>
-        <meta property="og:url" content={canonicalUrl} />
-        {metaTitle ? <title>{metaTitle}</title> : null}
-        {metaTitle ? <meta name="title" content={metaTitle} /> : null}
-        {metaDescription ? <meta name="description" content={metaDescription} /> : null}
+      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
         <meta property="og:type" content="website" />
-        {metaTitle ? <meta property="og:title" content={metaTitle} /> : null}
-        {metaDescription ? <meta property="og:description" content={metaDescription} /> : null}
-        {metaImage ? <meta property="og:image" content={metaImage} /> : null}
-        {/* Meta tags for Twitter */}
-        {metaTitle ? <meta property="twitter:title" content={metaTitle} /> : null}
-        {metaDescription ? <meta property="twitter:description" content={metaDescription} /> : null}
-        {metaImage ? <meta property="twitter:image" content={metaImage} /> : null}
-        <link rel="canonical" href={canonicalUrl} />
-      </Helmet>
+      </AiidHelmet>
 
       <div className={'titleWrapper'}>
         <StyledHeading>{metaDescription}</StyledHeading>

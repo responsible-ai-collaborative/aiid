@@ -213,7 +213,6 @@ describe('Cite pages', () => {
       `Olsson, Catherine. (2014-08-14) Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on ${date} from incidentdatabase.ai/cite/10.`
     );
   });
-
   it('Should have OpenGraph meta tags', () => {
     cy.visit(url);
 
@@ -225,6 +224,7 @@ describe('Cite pages', () => {
             description
             reports {
               image_url
+              date_published
             }
           }
         }
@@ -234,7 +234,9 @@ describe('Cite pages', () => {
 
       const description = `Citation record for Incident ${incidentId}`;
 
-      const imageUrl = incidents[0].reports[0].image_url;
+      const imageUrl = [...incidents[0].reports].sort((a, b) =>
+        a.date_published >= b.date_published ? 1 : -1
+      )[0].image_url;
 
       cy.get('head meta[name="title"]').should('have.attr', 'content', title);
       cy.get('head meta[name="description"]').should('have.attr', 'content', description);
