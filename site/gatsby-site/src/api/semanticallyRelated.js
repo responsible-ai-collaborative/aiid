@@ -1,7 +1,6 @@
 const axios = require('axios');
 
 export default async function handler(req, res) {
-  console.log('req.body', req.body);
   const { text, max_retries, num } = JSON.parse(req.body);
 
   // Example result
