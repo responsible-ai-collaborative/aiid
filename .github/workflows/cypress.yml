@@ -60,6 +60,9 @@ jobs:
       matrix:
         # run 5 copies of the current job in parallel
         containers: [1, 2, 3, 4, 5]
+    # stop the job if it runs over 10 minutes
+    # to prevent a hanging process from using all your CI minutes
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -124,3 +127,5 @@ jobs:
           MONGODB_REPLICA_SET: ${{ secrets.MONGODB_REPLICA_SET }}
           MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
           GATSBY_REALM_APP_GRAPHQL_URL: ${{ secrets.GATSBY_REALM_APP_GRAPHQL_URL }}
+          # We set the commit message to the pull request title
+          COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
