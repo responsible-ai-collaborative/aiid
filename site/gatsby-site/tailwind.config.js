@@ -14,6 +14,7 @@ module.exports = {
     extend: {
       colors: {
         'primary-blue': '#0d6efd',
+        'muted-gray': '#6c757d',
       },
       gridTemplateColumns: {
         5: 'repeat(5, minmax(0, 1fr))',
