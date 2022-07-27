@@ -2,7 +2,7 @@
 title: 'Using AI to Connect AI Incidents'
 metaTitle: 'Using AI to Connect AI Incidents'
 metaDescription: ''
-date: '2022-06-29'
+date: '2022-07-28'
 image: ../../src/images/nlp-lambdas-aws-architecture.png
 author: 'Nicholas Broce, Nicholas Olson, and Jason Scott-Hakanson'
 slug: '/blog/using-ai-to-connect-ai-incidents'
@@ -10,17 +10,13 @@ slug: '/blog/using-ai-to-connect-ai-incidents'
 
 import { Card } from 'react-bootstrap';
 
-<!-- -->
+The AI Incident Database (AIID) [launched](https://partnershiponai.org/aiincidentdatabase) publicly in November 2020 as a dashboard of AI harms realized in the real world. Inspired by similar databases in the aviation industry, its change thesis is derived from the Santayana aphorism, “Those who cannot remember the past are condemned to repeat it.” After amassing a collection of 1,600 incident reports, the AIID has much recorded "history" and a new set of problems: understanding the trends and relationships between incidents and ensuring we don't accept multiple copies of the same incident. Thus we set out to develop a tool to make it easier to connect and categorize the emerging history of AI harms.
 
-> This is a guest post written by three members of an Oregon State University (OSU) Capstone team, including Nicholas Broce, [Nicholas Olson](https://www.linkedin.com/in/olson-nick), and [Jason Scott-Hakanson](https://www.linkedin.com/in/jason-scott-hakanson-953556221).[^1]
-
-The AI Incident Database (AIID) [launched](https://partnershiponai.org/aiincidentdatabase) publicly in November 2020 as a dashboard of AI harms realized in the real world. Inspired by similar databases in the aviation industry, its change thesis is derived from the Santayana aphorism, “Those who cannot remember the past are condemned to repeat it.” This newest addition to the AIID toolset aims to make it easier to connect, categorize, and correlate the emerging history of AI and to monitor unfolding events to find where past lessons have been repeated.
+> This is a guest post written by three members of an Oregon State University (OSU) [Capstone](https://eecs.oregonstate.edu/industry-relations/capstone-and-senior-design-projects) team, including [Nicholas Broce](https://www.linkedin.com/in/nicholasbroce/), [Nicholas Olson](https://www.linkedin.com/in/olson-nick), and [Jason Scott-Hakanson](https://www.linkedin.com/in/jason-scott-hakanson-953556221).[^1]
 
 ## The Newest Tool in the Box
 
-Over the course of the 2021–22 academic year, four students at OSU were tasked with creating a tool that can answer the question, “what are the most similar incidents to this document?”
-
-The students are proud to showcase the result of their work. The main outcome is an <abbr title="Application Programming Interface">API</abbr> that takes an arbitrary input text, like a news report or press release, and outputs the IDs of the most similar incidents in the database. Each incident in the database is a collection of news reports about the same event, and each of these clusters is given a unique “incident ID”, allowing any text to be compared to a clustered understanding of the reports rather than a text-to-text comparison using keywords.
+Each incident in the AIID is a collection of news reports about the same event, and each of these collections is given a unique “incident ID.” We built a tool that applies a neural network to all new incident reports, and returns the most semantically related incident -- according to the neural network. For example, let's input a report of a Tesla car crash and see what the neural network returns as most related,
 
 <video 
   controls
@@ -29,18 +25,13 @@ The students are proud to showcase the result of their work. The main outcome is
   alt="A screen recording of a user of the incident submission form entering an text and reviewing the headlines of reports identified as semantically related. The entered text concerns hackers exploiting the workings of Tesla's cameras to make the car mistakenly accelerate. The user uses their cursor to gesture to some of the results returned, including one about a self-driving car accident in a Tesla, another about an iPhone hack, and a third about a Google self-driving car accident."
 />
 
-The API is currently being used by AIID contributors to identify new submissions reporting on incidents already in the database. It is also planned to be fitted for future use-cases, including:
+This example is built around the <abbr title="Application Programming Interface">API</abbr> that takes arbitrary input text and outputs the IDs of the most similar incidents in the database.  The API is currently being used by AIID editors to when new submissions are already in the database. It is also planned for future use-cases, including:
 
-- graphically visualizing relations between incidents in the AIID
+- [seeding all incidents with a "Similar Incident" panel](https://github.com/responsible-ai-collaborative/aiid/pull/761)
+- [graphically visualizing relations between incidents in the AIID](https://github.com/responsible-ai-collaborative/aiid/pull/779)
 - automatically identifying news reports to be added to the database
 
-<!-- Are these worth mentioning? -->
-<!--
-- A web plugin to run on any website and generate a list of similar articles about the current website you are viewing
-- A Twitter bot that waits for tweets that link to new articles by major news networks, and replies with possibly similar AI Incidents in the AIID
--->
-
-In testing, the Longformer model was about 94% accurate at correlating leave-one-out reports in the database back to their own incident IDs. The model is especially accurate with news reports or similarly long input texts, and less so with shorter input texts that less closely resemble existing incidents. We hope to tackle both of these issues in future iterations.
+In testing, the Longformer model was about 94% accurate at correlating leave-one-out reports in the database back to their own incident IDs. The model is especially accurate with news reports or similarly long input texts, and less so with shorter input texts. We hope to tackle these and other issues in future iterations.
 
 The project is [fully open source](https://github.com/responsible-ai-collaborative/nlp-lambdas) and is built to be modular, extensible, and easily changed for future development. New models, new techniques, and new features can and will be easily added to this API to fulfill future needs.
 
@@ -49,6 +40,11 @@ If you want to know more about how this project was built, how it works, its cur
 ## Try it Yourself!
 
 You can find the first integration of this tool available at [the report submission form](/apps/submit), and we encourage you to play around with it and explore the articles you find. On the website scroll down to the field labeled “text” and enter a text of at least 256 non-space characters. After a short calculation time, articles will appear in the box labeled “Semantically Related Incidents” at the bottom of the page.
+
+## Credits
+
+* Iz Beltagy, Matthew E. Peters, Arman Cohan at [AllenAI](https://allenai.org/) for the Longformer model as [hosted on Huggingface](https://huggingface.co/docs/transformers/model_doc/longformer)
+* Luna McNulty and Sean McGregor for ongoing front-end work interfacing with the API
 
 [^1]: Having completed their capstone, the authors will all be starting Software Engineering internships this July, with Nicholas Broce at **PCC Structurals Inc**, Nicholas Olson at **Cognex**, and Jason Scott-Hakanson at **Lam Research**.
 
@@ -100,7 +96,7 @@ The launch-state of this new system has a few notable limitation that is importa
 
 ### Want to Help?
 
-If you would like to help this tool grow and improve or would like to tinker with the systems we have set up, you can find all the code [in our GitHub repository](https://github.com/responsible-ai-collaborative/nlp-lambdas).
+If you would like to help this tool grow and improve or would like to tinker with the systems we have set up, you can find all the code [in the GitHub repository](https://github.com/responsible-ai-collaborative/nlp-lambdas).
 
 </details>
 </Card.Body>
