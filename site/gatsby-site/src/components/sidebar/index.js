@@ -17,7 +17,6 @@ const ListItem = styled(({ className, active, level, ...props }) => {
   );
 })`
   list-style: none;
-
   a {
     color: #5c6975;
     text-decoration: none;
@@ -25,11 +24,9 @@ const ListItem = styled(({ className, active, level, ...props }) => {
     padding: 0.45rem 0 0.45rem ${(props) => 2 + (props.level || 0) * 1}rem;
     display: block;
     position: relative;
-
     &:hover {
       color: var(--primary3) !important;
     }
-
     ${(props) =>
       props.active &&
       `
@@ -62,17 +59,14 @@ const Sidebar = styled('aside')`
   top: 0;
   padding-right: 0;
   -webkit-box-shadow: -1px 0px 4px 1px rgba(175, 158, 232, 0.4);
-
   @media only screen and (max-width: 1023px) {
     width: 100%;
     /* position: relative; */
     height: 100vh;
   }
-
   @media (min-width: 767px) and (max-width: 1023px) {
     padding-left: 0;
   }
-
   @media only screen and (max-width: 767px) {
     padding-left: 0px;
     height: auto;
@@ -86,12 +80,24 @@ const Divider = styled((props) => (
 ))`
   list-style: none;
   padding: 16px 0;
-
   hr {
     margin: 0;
     padding: 0;
     border: 0;
     border-bottom: 1px solid #ede7f3;
+  }
+`;
+
+const SideBarUL = styled.ul`
+  li a {
+    color: ${({ theme }) => theme.colors.text} !important;
+  }
+
+  .item > a:hover {
+    background-color: var(--primary3);
+    color: #fff !important;
+
+    /* background: #F8F8F8 */
   }
 `;
 
@@ -105,7 +111,7 @@ const SidebarLayout = ({ collapse, setNavCollapsed }) => {
           dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
         />
       ) : null}
-      <ul className={'tw-side-bar-ul'}>
+      <SideBarUL className={'sideBarUL'}>
         <li className="hideFrontLine firstLevel item">
           <ul>
             <Tree setNavCollapsed={setNavCollapsed} />
@@ -122,7 +128,7 @@ const SidebarLayout = ({ collapse, setNavCollapsed }) => {
             );
           }
         })}
-      </ul>
+      </SideBarUL>
     </Sidebar>
   );
 };
