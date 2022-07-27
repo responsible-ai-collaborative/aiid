@@ -147,7 +147,7 @@ jobs:
 
       - name: npm install and build
         run: |
-          npm install
+          npm ci --legacy-peer-deps
           npm run build
 
       - name: Deploy to Netlify
