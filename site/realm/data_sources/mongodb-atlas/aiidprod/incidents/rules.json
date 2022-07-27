@@ -39,6 +39,9 @@
                 "flag": {
                     "write": true
                 },
+                "flagged_dissimilar_incidents": {
+                    "write": true
+                },
                 "tags": {
                     "write": true
                 }

@@ -146,123 +146,121 @@ const Header = () => {
         const finalLogoLink = logo.link !== '' ? logo.link : 'https://incidentdatabase.ai/';
 
         return (
-          <div>
-            <nav className={'navBarDefault'}>
-              <NavBarHeaderContainer>
-                <SkipToContent href="#content">Skip to Content</SkipToContent>
-                <div className={'navBarHeader'}>
-                  <Link to={finalLogoLink} className={'navBarBrand'}>
+          <nav className={'navBarDefault'}>
+            <NavBarHeaderContainer>
+              <SkipToContent href="#content">Skip to Content</SkipToContent>
+              <div className={'navBarHeader'}>
+                <Link to={finalLogoLink} className={'navBarBrand'}>
+                  <img
+                    id="desktopLogo"
+                    className={'hiddenMobile'}
+                    style={{ width: 200 }}
+                    src={logo.image !== '' ? logo.image : logoImg}
+                    alt={'logo'}
+                  />
+                  <HideOnDesktop>
                     <img
-                      id="desktopLogo"
-                      className={'hiddenMobile'}
-                      style={{ width: 200 }}
-                      src={logo.image !== '' ? logo.image : logoImg}
+                      style={{ width: 50 }}
+                      src={logo.mobile !== '' ? logo.mobile : logoImg}
                       alt={'logo'}
                     />
-                    <HideOnDesktop>
-                      <img
-                        style={{ width: 50 }}
-                        src={logo.mobile !== '' ? logo.mobile : logoImg}
-                        alt={'logo'}
-                      />
-                    </HideOnDesktop>
-                    <div className="divider hiddenMobile"></div>
-                    <div
-                      className={'headerTitle displayInline'}
-                      dangerouslySetInnerHTML={{ __html: headerTitle }}
-                    />
-                  </Link>
-                </div>
-                <HeaderIconsContainer>
-                  {languageSwitcher && <LanguageSwitcher />}
-                  <li className="divider hiddenMobile"></li>
-                  {config.header.social && (
-                    <a
-                      className="paddingAround"
-                      href={'https://twitter.com/IncidentsDB'}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <FontAwesomeIcon
-                        icon={faTwitterSquare}
-                        color={'white'}
-                        className="pointer fa fa-twitter-square fa-lg"
-                        title="Open Twitter"
-                      />
-                    </a>
-                  )}
+                  </HideOnDesktop>
+                  <div className="divider hiddenMobile"></div>
+                  <div
+                    className={'headerTitle displayInline'}
+                    dangerouslySetInnerHTML={{ __html: headerTitle }}
+                  />
+                </Link>
+              </div>
+              <HeaderIconsContainer>
+                {languageSwitcher && <LanguageSwitcher />}
+                <li className="divider hiddenMobile"></li>
+                {config.header.social && (
                   <a
-                    className="paddingAround hiddenMobile"
-                    href={'/rss.xml'}
+                    className="paddingAround"
+                    href={'https://twitter.com/IncidentsDB'}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noreferrer"
                   >
                     <FontAwesomeIcon
-                      icon={faRssSquare}
+                      icon={faTwitterSquare}
                       color={'white'}
-                      className="pointer fa fa-rss-square fa-lg"
-                      title="Open RSS Feed"
+                      className="pointer fa fa-twitter-square fa-lg"
+                      title="Open Twitter"
                     />
                   </a>
-                  {config.header.social && (
-                    <>
-                      <a
-                        className="paddingAround hiddenMobile"
-                        href={githubUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{ paddingRight: '0px' }}
-                      >
-                        <FontAwesomeIcon
-                          icon={faGithubSquare}
-                          color={'white'}
-                          className="pointer fa fa-github-square fa-lg"
-                          title="Open GitHub"
-                        />
-                      </a>
-                      <StarsCount
-                        className="hiddenMobile"
-                        repo={githubUrl.replace('https://github.com/', '')}
+                )}
+                <a
+                  className="paddingAround hiddenMobile"
+                  href={'/rss.xml'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FontAwesomeIcon
+                    icon={faRssSquare}
+                    color={'white'}
+                    className="pointer fa fa-rss-square fa-lg"
+                    title="Open RSS Feed"
+                  />
+                </a>
+                {config.header.social && (
+                  <>
+                    <a
+                      className="paddingAround hiddenMobile"
+                      href={githubUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ paddingRight: '0px' }}
+                    >
+                      <FontAwesomeIcon
+                        icon={faGithubSquare}
+                        color={'white'}
+                        className="pointer fa fa-github-square fa-lg"
+                        title="Open GitHub"
                       />
-                    </>
-                  )}
-                  <HideOnDesktop>
-                    <FontAwesomeIcon
-                      icon={faBars}
-                      color={'white'}
-                      className="pointer fa fa-BARS fa-lg"
-                      style={{ cursor: 'pointer' }}
-                      title="Open Menu"
-                      onClick={() => setNavCollapsed(!navCollapsed)}
+                    </a>
+                    <StarsCount
+                      className="hiddenMobile"
+                      repo={githubUrl.replace('https://github.com/', '')}
                     />
-                  </HideOnDesktop>
-                </HeaderIconsContainer>
-              </NavBarHeaderContainer>
-              <div id="navbar" className={topClass}>
-                <div className={'visibleMobile'}>
-                  <Sidebar setNavCollapsed={setNavCollapsed} />
-                  <hr />
-                </div>
-                <ul className={'navBarUL navBarNav navBarULRight'}>
-                  {headerLinks.map((link, key) => {
-                    if (link.link !== '' && link.text !== '') {
-                      return (
-                        <li key={key}>
-                          <a
-                            className="sidebarLink"
-                            href={link.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            dangerouslySetInnerHTML={{ __html: link.text }}
-                          />
-                        </li>
-                      );
-                    }
-                  })}
-                </ul>
+                  </>
+                )}
+                <HideOnDesktop>
+                  <FontAwesomeIcon
+                    icon={faBars}
+                    color={'white'}
+                    className="pointer fa fa-BARS fa-lg"
+                    style={{ cursor: 'pointer' }}
+                    title="Open Menu"
+                    onClick={() => setNavCollapsed(!navCollapsed)}
+                  />
+                </HideOnDesktop>
+              </HeaderIconsContainer>
+            </NavBarHeaderContainer>
+            <div id="navbar" className={topClass}>
+              <div className={'visibleMobile'}>
+                <Sidebar setNavCollapsed={setNavCollapsed} />
+                <hr />
               </div>
-            </nav>
-          </div>
+              <ul className={'navBarUL navBarNav navBarULRight'}>
+                {headerLinks.map((link, key) => {
+                  if (link.link !== '' && link.text !== '') {
+                    return (
+                      <li key={key}>
+                        <a
+                          className="sidebarLink"
+                          href={link.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          dangerouslySetInnerHTML={{ __html: link.text }}
+                        />
+                      </li>
+                    );
+                  }
+                })}
+              </ul>
+            </div>
+          </nav>
         );
       }}
     />
