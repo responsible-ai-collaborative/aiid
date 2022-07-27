@@ -60,9 +60,9 @@ jobs:
       matrix:
         # run 5 copies of the current job in parallel
         containers: [1, 2, 3, 4, 5]
-    # stop the job if it runs over 10 minutes
+    # stop the job if it runs over 20 minutes
     # to prevent a hanging process from using all your CI minutes
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -94,6 +94,12 @@ jobs:
           runTests: false
           install-command: npm ci --legacy-peer-deps
 
+      # Extract branch name
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
       # Run all Cypress tests
       - name: Cypress run
         uses: cypress-io/github-action@v4
@@ -105,6 +111,7 @@ jobs:
           record: true
           parallel: true
           group: "Cypress e2e tests"
+          tag: ${{ steps.extract_branch.outputs.branch }}
           start: npm start
           wait-on: http://localhost:8000/
           # wait for 10 minutes for the server to respond
