@@ -202,7 +202,7 @@ jobs:
           enable-pull-request-comment: true
           enable-commit-comment: true
           overwrites-pull-request-comment: true
-          netlify-config-path: "./netlify.toml"
+          netlify-config-path: "./site/gatsby-site/netlify.toml"
           alias: deploy-preview-${{ github.event.number }}
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
