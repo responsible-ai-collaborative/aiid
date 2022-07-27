@@ -228,22 +228,20 @@ const createCitationPages = async (graphql, createPage) => {
       'editor_similar_incidents',
       'editor_dissimilar_incidents',
     ]) {
-      if (similarIncidents[key]) {
-        similarIncidents[key] = incident[key].map((similarIncident) => {
-          const similarIncidentId = similarIncident.incident_id || similarIncident;
+      similarIncidents[key] = incident[key].map((similarIncident) => {
+        const similarIncidentId = similarIncident.incident_id || similarIncident;
 
-          const foundFullIncident = allMongodbAiidprodIncidents.nodes.find(
-            (fullIncident) => fullIncident.incident_id === similarIncidentId
-          );
+        const foundFullIncident = allMongodbAiidprodIncidents.nodes.find(
+          (fullIncident) => fullIncident.incident_id === similarIncidentId
+        );
 
-          return {
-            title: foundFullIncident?.title || null,
-            date: foundFullIncident?.date || null,
-            incident_id: similarIncidentId,
-            reports: incidentReportsMap[similarIncidentId],
-          };
-        });
-      }
+        return {
+          title: foundFullIncident?.title || null,
+          date: foundFullIncident?.date || null,
+          incident_id: similarIncidentId,
+          reports: incidentReportsMap[similarIncidentId],
+        };
+      });
     }
 
     pageContexts.push({
@@ -252,6 +250,7 @@ const createCitationPages = async (graphql, createPage) => {
       taxonomies,
       nextIncident: i < keys.length - 1 ? keys[i + 1] : null,
       prevIncident: i > 0 ? keys[i - 1] : null,
+      similarIncidents,
       ...similarIncidents,
     });
   }
