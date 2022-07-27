@@ -65,6 +65,7 @@ const searchColumns = {
     query: relatedReportsQuery,
     getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) => {
+      if (!incident.date_published) return false;
       const parsedDate = parse(incident.date_published, 'yyyy-MM-dd', new Date());
 
       return isValid(parsedDate) && getUnixTime(parsedDate) > 0;
@@ -120,7 +121,7 @@ const searchColumns = {
   },
 };
 
-const RelatedIncidents = ({ incident, editable = true, className = '' }) => {
+const RelatedIncidents = ({ incident, setFieldValue = null, editId = true, className = '' }) => {
   const [loading, setLoading] = useState({});
 
   const [relatedReports, setRelatedReports] = useState({});
@@ -142,7 +143,6 @@ const RelatedIncidents = ({ incident, editable = true, className = '' }) => {
           variables[key] = null;
         }
       }
-
       setQueryVariables(variables);
     }, 1000)
   ).current;
@@ -154,11 +154,12 @@ const RelatedIncidents = ({ incident, editable = true, className = '' }) => {
   const search = useCallback(
     async (key, column) => {
       if (queryVariables[key]) {
+        if (key != 'byText') {
+          setLoading((loading) => ({ ...loading, [key]: true }));
+        }
         const variables = { query: queryVariables[key] };
 
         const query = column.query;
-
-        setLoading((loading) => ({ ...loading, [key]: true }));
 
         const result = await client.query({ query, variables });
 
@@ -203,12 +204,17 @@ const RelatedIncidents = ({ incident, editable = true, className = '' }) => {
             loading={loading[key]}
             reports={relatedReports[key]}
             header={column.header(incident)}
-            editable={editable}
+            setFieldValue={setFieldValue}
+            editId={editId}
           />
         );
       })}
 
-      <SemanticallyRelatedIncidents incident={incident} editable={editable} />
+      <SemanticallyRelatedIncidents
+        incident={incident}
+        setFieldValue={setFieldValue}
+        editId={editId}
+      />
     </ListGroup>
   );
 };
