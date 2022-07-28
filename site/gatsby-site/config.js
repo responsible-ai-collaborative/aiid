@@ -113,6 +113,7 @@ const config = {
     ogImage: null,
     docsLocation: '/',
     favicon: '/favicon.png',
+    twitterAccount: '@IncidentsDB',
   },
   pwa: {
     enabled: false, // disabling this will also remove the existing service worker.

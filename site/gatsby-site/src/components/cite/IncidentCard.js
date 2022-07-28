@@ -6,6 +6,7 @@ import { useUserContext } from 'contexts/userContext';
 import Actions from 'components/discover/Actions';
 import ReportText from 'components/reports/ReportText';
 import Card from '../../elements/Card';
+import WebArchiveLink from 'components/ui/WebArchiveLink';
 
 const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) => {
   const { isRole } = useUserContext();
@@ -24,8 +25,10 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
           )}
         </div>
         <p className="tw-m-0 tw-opacity-40 tw-pt-2.5">
-          {item.source_domain} &middot;{' '}
-          {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
+          <WebArchiveLink url={item.url}>
+            {item.source_domain} &middot;{' '}
+            {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
+          </WebArchiveLink>
         </p>
       </Card.Header>
       <Card.Body>

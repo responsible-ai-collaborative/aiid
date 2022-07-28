@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from 'components/Layout';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 import styled from 'styled-components';
 
 const Centered = styled.div`
@@ -14,9 +14,9 @@ const Centered = styled.div`
 const Default404 = (props) => {
   return (
     <Layout {...props} className={'fullWidth'}>
-      <Helmet>
+      <AiidHelmet>
         <title>Page not found</title>
-      </Helmet>
+      </AiidHelmet>
       <Centered>
         <h4>Unknown page.</h4>
         <h5>Please use the menus to navigate to an existing page.</h5>
