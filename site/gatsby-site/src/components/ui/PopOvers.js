@@ -26,7 +26,7 @@ export const submitters = Popover({
 
 export const incident_date = Popover({
   title: 'When did the incident first occur?',
-  text: `Many AI incidents are not discrete events ({i.e., they happen over a period of time}).
+  text: `Many AI incidents are not discrete events (i.e. they happen over a period of time).
   Further, it is often difficult to know when the incident first occured when the first
   public report follows some period of time after the first occurence. In this field
   you should enter either the date of the first report of the incident, or

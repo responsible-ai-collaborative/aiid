@@ -21,7 +21,7 @@ const Label = ({ popover, placement, trigger, label }) => {
         {label}{' '}
         <FontAwesomeIcon
           icon={faQuestionCircle}
-          style={{ color: 'rgb(210, 210, 210)' }}
+          style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
           className="far fa-question-circle"
           onClick={() => setShow(!show)}
         />{' '}
