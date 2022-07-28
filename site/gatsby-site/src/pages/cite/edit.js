@@ -10,6 +10,7 @@ import {
   DELETE_REPORT,
   useUpdateLinkedReports,
 } from '../../graphql/reports';
+import { UPDATE_INCIDENT } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { format, getUnixTime } from 'date-fns';
 import { stripMarkdown } from 'utils/typography';
@@ -17,9 +18,12 @@ import { Formik } from 'formik';
 import { gql } from '@apollo/client';
 
 const FIND_PARENT_INCIDENT = gql`
-  query FindParentIncident($report_number: Int) {
-    incident(query: { reports_in: { report_number: $report_number } }) {
+  query FindParentIncident($query: IncidentQueryInput) {
+    incident(query: $query) {
       incident_id
+      reports {
+        report_number
+      }
     }
   }
 `;
@@ -39,7 +43,19 @@ function EditCitePage(props) {
 
   const [updateReport] = useMutation(UPDATE_REPORT);
 
+  const [updateIncident] = useMutation(UPDATE_INCIDENT);
+
   const [deleteReport] = useMutation(DELETE_REPORT);
+
+  const { data: parentIncident } = useQuery(FIND_PARENT_INCIDENT, {
+    variables: {
+      query: {
+        reports_in: {
+          report_number: reportNumber,
+        },
+      },
+    },
+  });
 
   const updateLinkedReports = useUpdateLinkedReports();
 
@@ -84,6 +100,7 @@ function EditCitePage(props) {
         severity: SEVERITY.success,
       });
     } catch (e) {
+      console.error(e);
       addToast({
         message: `Error updating incident report ${reportNumber}`,
         severity: SEVERITY.danger,
@@ -101,11 +118,27 @@ function EditCitePage(props) {
         },
       });
 
+      await updateIncident({
+        variables: {
+          query: {
+            incident_id: parentIncident.incident.incident_id,
+          },
+          set: {
+            reports: {
+              link: parentIncident.incident.reports
+                .filter((report) => report.report_number != reportNumber)
+                .map((report) => report.report_number),
+            },
+          },
+        },
+      });
+
       addToast({
         message: `Incident report ${reportNumber} deleted successfully.`,
         severity: SEVERITY.success,
       });
     } catch (e) {
+      console.error(e);
       addToast({
         message: `Error deleting incident report ${reportNumber}`,
         severity: SEVERITY.danger,
