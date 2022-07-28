@@ -10,15 +10,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'light-grey': 'rgba(0,0,0,.03)',
-        'border-grey': 'rgba(0,0,0,.125)',
-        'disable-grey': '#dee2e6',
+        'light-gray': 'rgba(0,0,0,.03)',
+        'border-gray': 'rgba(0,0,0,.125)',
+        'disable-gray': '#dee2e6',
         'primary-blue': '#0d6efd',
-        'dark-grey': '#6c757d',
+        'dark-gray': '#6c757d',
         'deep-blue': '#0a58ca',
-        'secondary-grey': 'rgba(108,117,125,1)',
-        'text-light-grey': 'rgba(248,249,250,1)',
-        'border-light-grey': '#d9deee',
+        'secondary-gray': 'rgba(108,117,125,1)',
+        'text-light-gray': 'rgba(248,249,250,1)',
+        'border-light-gray': '#d9deee',
         'default-gray': 'rgb(128, 128, 128)',
         danger: '#dc3545',
         'gray-900': '#212529',

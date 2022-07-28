@@ -44,7 +44,7 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
           />
         </div>
       </div>
-      <Card.Footer className="tw-flex tw-w-full tw-flex-row tw-justify-around tw-items-center tw-text-dark-grey">
+      <Card.Footer className="tw-flex tw-w-full tw-flex-row tw-justify-around tw-items-center tw-text-dark-gray">
         <Actions
           item={item}
           authorsModal={authorsModal}
