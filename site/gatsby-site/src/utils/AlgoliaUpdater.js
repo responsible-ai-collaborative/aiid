@@ -210,6 +210,7 @@ class AlgoliaUpdater {
 
     await index.setSettings({
       ...algoliaSettings,
+      attributeForDistinct: 'incident_id',
       indexLanguages: [language],
       queryLanguages: [language],
     });
