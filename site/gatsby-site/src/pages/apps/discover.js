@@ -3,7 +3,7 @@ import { useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { Configure, InstantSearch } from 'react-instantsearch-dom';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 import { useModal, CustomModal } from 'hooks/useModal';
 
 import config from '../../../config';
@@ -221,9 +221,9 @@ function DiscoverApp(props) {
 
   return (
     <LayoutHideSidebar {...props}>
-      <Helmet>
+      <AiidHelmet>
         <title>Artificial Intelligence Incident Database</title>
-      </Helmet>
+      </AiidHelmet>
       <SearchContext.Provider value={{ searchState, indexName, searchClient, onSearchStateChange }}>
         <InstantSearch
           indexName={indexName}
