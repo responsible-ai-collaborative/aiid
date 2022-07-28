@@ -6,9 +6,9 @@ import Card from '../../elements/Card';
 
 function PostPreview({ post }) {
   return (
-    <Card className="tw-border tw-flex tw-break tw-bg-white tw-rounded tw-flex-row tw-min-w-0 tw-relative">
-      <div className="tw-flex tw-flex-col tw-w-full tw-max-w-full tw-w-2/6">
-        <LocalizedLink to={post.frontmatter.slug} className="tw-text-primary-blue">
+    <Card className="tw-border tw-flex tw-flex-col md:tw-flex-row tw-break tw-bg-white tw-rounded tw-min-w-0 tw-relative">
+      <div className="tw-flex tw-flex-col tw-w-full tw-max-w-full md:tw-w-2/6">
+        <LocalizedLink to={post.frontmatter.slug} className="tw-text-primary-blue tw-max-w-full">
           <Img
             alt="post-image"
             className="img-fluid tw-rounded-start tw-h-full tw-w-full tw-max-w-full tw-max-h-240 tw-rounded-l-lg tw-max-h-[240px]"
