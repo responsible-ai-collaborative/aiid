@@ -16,6 +16,7 @@ import 'bytemd/dist/index.css';
 import IncidentIdField from 'components/incidents/IncidentIdField';
 import getSourceDomain from '../../utils/getSourceDomain';
 import supportedLanguages from 'components/i18n/languages.json';
+import { useLocalization } from 'gatsby-theme-i18n';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -170,6 +171,8 @@ const IncidentReportForm = () => {
     [values]
   );
 
+  const { config } = useLocalization();
+
   return (
     <Form
       onSubmit={(event) => {
@@ -256,6 +259,22 @@ const IncidentReportForm = () => {
         <Label popover={POP_OVERS.text} label={'Text'} />
         <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
       </Form.Group>
+
+      {config
+        .filter((c) => c.code !== 'en')
+        .map((c) => {
+          const name = `translations_${c.code}`;
+
+          return (
+            <Form.Group className="mt-3" key={name}>
+              <Label label={`${c.name} Text`} />
+              <Editor
+                value={values[name].text}
+                onChange={(value) => setFieldValue(`${name}.text`, value)}
+              />
+            </Form.Group>
+          );
+        })}
 
       <Form.Group className="mt-3">
         <Label popover={POP_OVERS.language} label={'Language'} />
