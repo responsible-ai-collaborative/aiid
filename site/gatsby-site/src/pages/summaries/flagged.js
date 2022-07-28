@@ -1,5 +1,5 @@
 import React from 'react';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
 
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -93,9 +93,9 @@ export default function FlaggedIncidents({ data, ...props }) {
 
   return (
     <Layout {...props}>
-      <Helmet>
+      <AiidHelmet>
         <title>Incident List</title>
-      </Helmet>
+      </AiidHelmet>
       <div className={'titleWrapper'}>
         <StyledHeading>Flagged Incident List</StyledHeading>
       </div>

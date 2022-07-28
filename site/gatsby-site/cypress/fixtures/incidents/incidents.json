@@ -16,6 +16,7 @@
                 "date": "2015-05-18",
                 "description": "bueee",
                 "incident_id": 1,
+                "nlp_similar_incidents": [],
                 "reports": [
                     {
                         "__typename": "Report",
@@ -84,6 +85,7 @@
                 "date": "2018-11-16",
                 "description": "Twenty-four Amazon workers in New Jersey were hospitalized after a robot punctured a can of bear repellent spray in a warehouse.",
                 "incident_id": 2,
+                "nlp_similar_incidents": [],
                 "reports": [
                     {
                         "__typename": "Report",

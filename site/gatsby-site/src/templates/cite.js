@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import Helmet from 'react-helmet';
+import React, { useState, useEffect } from 'react';
+import AiidHelmet from 'components/AiidHelmet';
 import { Button, Col, Container, Pagination, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
@@ -15,6 +15,7 @@ import IncidentStatsCard from 'components/cite/IncidentStatsCard';
 import IncidentCard from 'components/cite/IncidentCard';
 import Taxonomy from 'components/taxa/Taxonomy';
 import { useUserContext } from 'contexts/userContext';
+import SimilarIncidents from 'components/cite/SimilarIncidents';
 import { Trans, useTranslation } from 'react-i18next';
 
 const CardContainer = styled.div`
@@ -56,7 +57,16 @@ const sortIncidentsByDatePublished = (incidentReports) => {
 
 function CitePage(props) {
   const {
-    pageContext: { incident, incidentReports, taxonomies, nextIncident, prevIncident },
+    pageContext: {
+      incident,
+      incidentReports,
+      nlp_similar_incidents,
+      editor_similar_incidents,
+      editor_dissimilar_incidents,
+      taxonomies,
+      nextIncident,
+      prevIncident,
+    },
   } = props;
 
   const { isRole, user } = useUserContext();
@@ -110,21 +120,9 @@ function CitePage(props) {
 
   return (
     <Layout {...props}>
-      <Helmet>
-        <meta property="og:url" content={canonicalUrl} />
-        {metaTitle ? <title>{metaTitle}</title> : null}
-        {metaTitle ? <meta name="title" content={metaTitle} /> : null}
-        {metaDescription ? <meta name="description" content={metaDescription} /> : null}
+      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
         <meta property="og:type" content="website" />
-        {metaTitle ? <meta property="og:title" content={metaTitle} /> : null}
-        {metaDescription ? <meta property="og:description" content={metaDescription} /> : null}
-        {metaImage ? <meta property="og:image" content={metaImage} /> : null}
-        {/* Meta tags for Twitter */}
-        {metaTitle ? <meta property="twitter:title" content={metaTitle} /> : null}
-        {metaDescription ? <meta property="twitter:description" content={metaDescription} /> : null}
-        {metaImage ? <meta property="twitter:image" content={metaImage} /> : null}
-        <link rel="canonical" href={canonicalUrl} />
-      </Helmet>
+      </AiidHelmet>
 
       <div className={'titleWrapper'}>
         <StyledHeading>{metaDescription}</StyledHeading>
@@ -279,6 +277,14 @@ function CitePage(props) {
             </Col>
           </Row>
         ))}
+
+        <SimilarIncidents
+          nlp_similar_incidents={nlp_similar_incidents}
+          editor_similar_incidents={editor_similar_incidents}
+          editor_dissimilar_incidents={editor_dissimilar_incidents}
+          flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
+          parentIncident={incident}
+        />
 
         <Pagination className="justify-content-between">
           <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>
