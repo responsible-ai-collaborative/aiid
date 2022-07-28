@@ -29,8 +29,7 @@ describe('Edit report', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) =>
-        req.body.operationName == 'FindParentIncident' && req.body.variables.report_number == 10,
+      (req) => req.body.operationName == 'FindParentIncident',
       'findIncident',
       incident
     );
