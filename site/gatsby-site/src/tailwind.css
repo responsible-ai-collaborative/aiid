@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .tw-card {
+    @apply tw-flex tw-flex-col tw-border tw-rounded-lg;
+  }
+
+  .tw-card-header {
+    @apply tw-flex tw-justify-between tw-items-center tw-border-b tw-border-border-gray tw-px-4 tw-py-2 tw-bg-light-gray;
+  }
+
+  .tw-card-title {
+    @apply tw-flex-1;
+  }
+
+  .tw-card-title h3 {
+    @apply tw-text-2xl tw-mb-2;
+  }
+
+  .tw-card-body {
+    @apply tw-flex tw-p-4;
+  }
+
+  .tw-post-listing {
+    @apply tw-flex tw-flex-wrap md:tw-grid tw-gap-4 tw-mt-10 lg:tw-gap-4 tw-max-w-[750px];
+  }
+}

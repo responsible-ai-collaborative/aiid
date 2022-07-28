@@ -15,6 +15,8 @@ module.exports = {
       colors: {
         'primary-blue': '#0d6efd',
         'muted-gray': '#6c757d',
+        'light-gray': 'rgba(0,0,0,.03)',
+        'border-gray': 'rgba(0,0,0,.125)',
       },
       gridTemplateColumns: {
         5: 'repeat(5, minmax(0, 1fr))',
