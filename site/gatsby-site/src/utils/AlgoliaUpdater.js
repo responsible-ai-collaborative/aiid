@@ -2,6 +2,8 @@ const algoliaSettings = require('./algoliaSettings');
 
 const { getUnixTime } = require('date-fns');
 
+const config = require('../../config');
+
 const truncate = (doc) => {
   for (const [key, value] of Object.entries(doc)) {
     if (typeof value == 'string') {
@@ -115,6 +117,7 @@ class AlgoliaUpdater {
             incident_id: incident.incident_id,
             incident_date: incident.date,
             epoch_incident_date: getUnixTime(new Date(incident.date)),
+            featured: config?.header?.search?.featured.includes(report.report_number) ? 1 : 0,
           };
 
           if (classificationsHash[entry.incident_id]) {
@@ -204,16 +207,30 @@ class AlgoliaUpdater {
   uploadToAlgolia = async ({ language, entries }) => {
     const indexName = `instant_search-${language}`;
 
+    const featuredReplicaIndexName = indexName + '-featured';
+
     const index = this.algoliaClient.initIndex(indexName);
 
     await index.saveObjects(entries);
 
-    await index.setSettings({
-      ...algoliaSettings,
-      attributeForDistinct: 'incident_id',
-      indexLanguages: [language],
-      queryLanguages: [language],
-    });
+    index
+      .setSettings({
+        ...algoliaSettings,
+        attributeForDistinct: 'incident_id',
+        indexLanguages: [language],
+        queryLanguages: [language],
+        replicas: [featuredReplicaIndexName],
+      })
+      .catch((e) => console.error(e))
+      .then(() => {
+        const featuredReplicaIndex = this.algoliaClient.initIndex(featuredReplicaIndexName);
+
+        featuredReplicaIndex
+          .setSettings({
+            ranking: ['desc(featured)', 'desc(text)'],
+          })
+          .catch((e) => console.error(e));
+      });
   };
 
   async generateIndex({ language }) {
