@@ -1,3 +1,4 @@
+import './src/tailwind.css';
 import './src/global.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-daterangepicker/daterangepicker.css';
