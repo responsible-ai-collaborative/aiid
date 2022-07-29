@@ -47,11 +47,16 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
 
   const [error, setError] = useState(null);
 
+  const initialDisplay = useRef(true);
+
   const debouncedUpdateSearch = useRef(
     debounce(async (incident) => {
       setLoading(true);
       setReports([]);
       setError(null);
+      if (setFieldValue) {
+        setFieldValue('nlp_similar_incidents', []);
+      }
 
       const fail = (errorMessage) => {
         setReports([]);
@@ -63,7 +68,10 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
 
       const minLength = 256;
 
-      if (plaintext.replace(/\s/, '').length < minLength) {
+      if (
+        plaintext.replace(/\s/, '')?.length < minLength &&
+        !(initialDisplay && incident?.nlp_similar_incidents?.length > 0)
+      ) {
         fail(
           `Reports must have at least ${minLength} non-space characters to compute semantic similarity.`
         );
@@ -72,17 +80,35 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
 
       let nlpResponse;
 
-      try {
-        nlpResponse = await semanticallyRelated(plaintext);
-      } catch (e) {
-        console.error(error);
-        fail('Could not compute semantic similarity');
-        return;
+      let nlp_similar_incidents;
+
+      if (
+        incident.nlp_similar_incidents &&
+        incident.nlp_similar_incidents.length > 0 &&
+        initialDisplay.current
+      ) {
+        nlp_similar_incidents = incident.nlp_similar_incidents.map((similarIncident) => ({
+          ...similarIncident,
+          __typename: undefined,
+        }));
+      } else {
+        try {
+          nlpResponse = await semanticallyRelated(plaintext);
+          nlp_similar_incidents = nlpResponse.incidents.sort((a, b) => b.similarity - a.similarity);
+        } catch (e) {
+          console.error(error);
+          fail('Could not compute semantic similarity');
+          return;
+        }
+      }
+
+      if (setFieldValue) {
+        setFieldValue('nlp_similar_incidents', nlp_similar_incidents);
       }
 
       if (setFieldValue) setFieldValue('embedding', nlpResponse.embedding);
 
-      const incidentIds = nlpResponse.incidents
+      const incidentIds = nlp_similar_incidents
         .sort((a, b) => b.similarity - a.similarity)
         .map((incident) => incident.incident_id);
 
@@ -116,6 +142,7 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
       );
 
       setLoading(false);
+      initialDisplay.current = false;
     }, 2000)
   ).current;
 

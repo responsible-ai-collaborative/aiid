@@ -65,6 +65,7 @@ const searchColumns = {
     query: relatedReportsQuery,
     getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) => {
+      if (!incident.date_published) return false;
       const parsedDate = parse(incident.date_published, 'yyyy-MM-dd', new Date());
 
       return isValid(parsedDate) && getUnixTime(parsedDate) > 0;
@@ -142,7 +143,6 @@ const RelatedIncidents = ({ incident, setFieldValue = null, editId = true, class
           variables[key] = null;
         }
       }
-
       setQueryVariables(variables);
     }, 1000)
   ).current;
@@ -154,11 +154,12 @@ const RelatedIncidents = ({ incident, setFieldValue = null, editId = true, class
   const search = useCallback(
     async (key, column) => {
       if (queryVariables[key]) {
+        if (key != 'byText') {
+          setLoading((loading) => ({ ...loading, [key]: true }));
+        }
         const variables = { query: queryVariables[key] };
 
         const query = column.query;
-
-        setLoading((loading) => ({ ...loading, [key]: true }));
 
         const result = await client.query({ query, variables });
 

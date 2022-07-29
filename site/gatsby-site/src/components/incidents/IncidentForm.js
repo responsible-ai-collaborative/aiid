@@ -1,9 +1,25 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Form as FormikForm, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import { Form } from 'react-bootstrap';
 import TagsControl from 'components/forms/TagsControl';
 import SemanticallyRelatedIncidents from '../SemanticallyRelatedIncidents';
+import RelatedIncidentsArea from '../RelatedIncidentsArea';
+import { gql, useQuery } from '@apollo/client';
+import { debounce } from 'debounce';
+
+const relatedIncidentIdsQuery = gql`
+  query IncidentWithReports($query: IncidentQueryInput) {
+    incidents(query: $query) {
+      incident_id
+      reports {
+        report_number
+        title
+        url
+      }
+    }
+  }
+`;
 
 export const schema = Yup.object().shape({
   title: Yup.string().required(),
@@ -16,6 +32,68 @@ export const schema = Yup.object().shape({
 
 function IncidentForm() {
   const { values, errors, handleChange, handleSubmit, setFieldValue } = useFormikContext();
+
+  const similarReportsByIdQuery = useQuery(relatedIncidentIdsQuery, {
+    variables: {
+      query: {
+        incident_id_in: [],
+      },
+    },
+  });
+
+  const selectedSimilarId = useRef(null);
+
+  const similarIdUpdate = useRef(
+    debounce((event) => {
+      const incident_id = Number(event.target.value);
+
+      selectedSimilarId.current = incident_id;
+
+      similarReportsByIdQuery.refetch({
+        query: {
+          incident_id_in: [incident_id],
+        },
+      });
+    })
+  ).current;
+
+  const similarReportsById =
+    similarReportsByIdQuery.loading ||
+    similarReportsByIdQuery.error ||
+    similarReportsByIdQuery.data.incidents.length == 0 ||
+    selectedSimilarId == null
+      ? []
+      : similarReportsByIdQuery.data.incidents[0].reports.map((report) => ({
+          incident_id: selectedSimilarId.current,
+          ...report,
+        }));
+
+  const editorSimilarIncidentReportsQuery = useQuery(relatedIncidentIdsQuery, {
+    variables: {
+      query: {
+        incident_id_in: (values?.editor_similar_incidents || []).concat(
+          values.editor_dissimilar_incidents
+        ),
+      },
+    },
+  });
+
+  const editorSimilarIncidentReports =
+    editorSimilarIncidentReportsQuery.loading ||
+    editorSimilarIncidentReportsQuery.error ||
+    editorSimilarIncidentReportsQuery.data.incidents.length == 0
+      ? []
+      : editorSimilarIncidentReportsQuery.data.incidents.reduce(
+          (reports, incident) =>
+            reports.concat(
+              incident.reports.map((report) => ({ ...report, incident_id: incident.incident_id }))
+            ),
+          []
+        );
+
+  useEffect(() => {
+    window.location.hash && document.querySelector(window.location.hash).scrollIntoView();
+  }, []);
 
   return (
     <FormikForm noValidate onSubmit={handleSubmit} data-cy={`incident-form`}>
@@ -62,10 +140,35 @@ function IncidentForm() {
         <TagsControl name="editors" />
       </Form.Group>
       <div id="similar-incidents">
+        <RelatedIncidentsArea
+          columnKey={'editor_similar_incidents'}
+          header={'Manually-selected similar and dissimilar incidents'}
+          reports={editorSimilarIncidentReports}
+          loading={false}
+          setFieldValue={setFieldValue}
+          editId={false}
+          error={false}
+        />
+
         <SemanticallyRelatedIncidents
           incident={values}
           setFieldValue={setFieldValue}
           editId={false}
+        />
+
+        <Form.Group className="mt-3">
+          <Form.Label>Similar Incident Id</Form.Label>
+          <Form.Control type="number" data-cy="similar-id-input" onChange={similarIdUpdate} />
+        </Form.Group>
+
+        <RelatedIncidentsArea
+          columnKey={'byId'}
+          header={'Reports'}
+          reports={similarReportsById}
+          loading={false}
+          setFieldValue={setFieldValue}
+          editId={false}
+          error={false}
         />
       </div>
     </FormikForm>

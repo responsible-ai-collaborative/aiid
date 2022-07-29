@@ -30,6 +30,12 @@ export const FIND_SUBMISSIONS = gql`
       url
       editor_notes
       tags
+      nlp_similar_incidents {
+        similarity
+        incident_id
+      }
+      editor_similar_incidents
+      editor_dissimilar_incidents
       plain_text
       embedding {
         vector
@@ -65,6 +71,12 @@ export const FIND_SUBMISSION = gql`
         vector
         from_text_hash
       }
+      nlp_similar_incidents {
+        similarity
+        incident_id
+      }
+      editor_similar_incidents
+      editor_dissimilar_incidents
     }
   }
 `;
@@ -95,6 +107,12 @@ export const UPDATE_SUBMISSION = gql`
         vector
         from_text_hash
       }
+      nlp_similar_incidents {
+        similarity
+        incident_id
+      }
+      editor_similar_incidents
+      editor_dissimilar_incidents
     }
   }
 `;

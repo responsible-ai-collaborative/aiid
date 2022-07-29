@@ -1,20 +1,19 @@
 import React from 'react';
-import Helmet from 'react-helmet';
-
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { StyledHeading } from 'components/styles/Docs';
 import SubmitForm from 'components/forms/SubmitForm';
 import { Trans, useTranslation } from 'react-i18next';
+import AiidHelmet from 'components/AiidHelmet';
 
 const SubmitPage = (props) => {
   const { t } = useTranslation(['submit']);
 
   return (
     <Layout {...props}>
-      <Helmet>
+      <AiidHelmet>
         <title>{t('New Incident Report')}</title>
-      </Helmet>
+      </AiidHelmet>
       <div className={'titleWrapper'}>
         <StyledHeading>
           <Trans ns="submit">New Incident Report</Trans>

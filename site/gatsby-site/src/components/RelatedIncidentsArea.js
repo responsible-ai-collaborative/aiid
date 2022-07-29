@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ListGroup, Card, Spinner, Button, ButtonToolbar } from 'react-bootstrap';
+import SimilaritySelector from './SimilaritySelector';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 
 const ListContainer = styled(Card)`
@@ -14,28 +15,30 @@ const ListContainer = styled(Card)`
 const ReportRow = styled(ListGroup.Item)`
   display: flex !important;
   align-items: center;
-  a:first-child {
+  > *:first-child {
     flex-shrink: 1;
     margin-right: auto;
   }
-  Button {
+  button.set-id {
     margin-left: 1ch;
     flex-shrink: 0 !important;
     width: 8em;
   }
-  @media (max-width: 400px) {
-    Button {
-      width: unset;
-    }
-    Button .incident-id {
-      display: block;
-    }
+  @media (max-width: 860px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5em;
   }
 `;
 
 const ReportToolbar = styled(ButtonToolbar)`
   flex-shrink: 0;
   align-items: center;
+`;
+
+const SelectorLabel = styled.label`
+  margin-left: 1ch;
+  margin-right: 1ch;
 `;
 
 const RelatedIncidentsArea = ({
@@ -75,6 +78,12 @@ const RelatedIncidentsArea = ({
                 </a>
               </span>
               <ReportToolbar>
+                {setFieldValue && (
+                  <>
+                    <SelectorLabel htmlFor="similar-selector">Related:</SelectorLabel>
+                    <SimilaritySelector incident_id={val.incident_id} />
+                  </>
+                )}
                 {val.incident_id && setFieldValue && editId && (
                   <Button
                     data-cy="set-id"
