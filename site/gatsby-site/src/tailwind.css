@@ -29,7 +29,7 @@
   }
 
   .tw-card-header {
-    @apply tw-flex tw-justify-between tw-border-b tw-border-border-gray tw-px-4 tw-py-2 tw-bg-light-gray;
+    @apply tw-bg-light-gray tw-border-b tw-border-b-border-gray tw-mb-0 tw-py-2 tw-px-4;
   }
 
   .tw-card-title {
@@ -84,10 +84,6 @@
     @apply tw-flex tw-flex-row tw-justify-start tw-w-full tw-flex-auto tw-p-4;
   }
 
-  .tw-card-body {
-    @apply tw-flex-auto tw-p-4;
-  }
-
   .tw-field {
     @apply tw-w-[20%] tw-border-r-2.5 tw-mr-4 tw-border-border-light-gray tw-text-default-gray tw-font-bold;
   }
@@ -98,10 +94,6 @@
 
   .tw-taxa-card-header p {
     @apply tw-m-0;
-  }
-
-  .tw-card-header {
-    @apply tw-bg-light-gray tw-border tw-border-b-border-gray tw-mb-0 tw-py-2 tw-px-4;
   }
 
   .tw-tooltip-wrapper {
