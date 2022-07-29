@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { Button, Col, Container, Pagination, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
@@ -17,6 +17,7 @@ import Taxonomy from 'components/taxa/Taxonomy';
 import { useUserContext } from 'contexts/userContext';
 import TsneVisualization from 'components/cite/TsneVisualization';
 import { LocalizedLink } from 'gatsby-theme-i18n';
+import SimilarIncidents from 'components/cite/SimilarIncidents';
 import { Trans, useTranslation } from 'react-i18next';
 
 const CardContainer = styled.div`
@@ -65,6 +66,9 @@ function CitePage(props) {
       nextIncident,
       prevIncident,
       spatialIncidents,
+      nlp_similar_incidents,
+      editor_similar_incidents,
+      editor_dissimilar_incidents,
     },
   } = props;
 
@@ -276,6 +280,14 @@ function CitePage(props) {
             </Col>
           </Row>
         ))}
+
+        <SimilarIncidents
+          nlp_similar_incidents={nlp_similar_incidents}
+          editor_similar_incidents={editor_similar_incidents}
+          editor_dissimilar_incidents={editor_dissimilar_incidents}
+          flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
+          parentIncident={incident}
+        />
 
         {spatialIncidents ? (
           <>

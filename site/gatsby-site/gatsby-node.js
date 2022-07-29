@@ -176,6 +176,24 @@ exports.createSchemaCustomization = ({ actions }) => {
       embedding: incidentEmbedding
     }
 
+    type nlpSimilarIncident {
+      incident_id: Int
+      similarity: Float
+    }
+
+    type mongodbAiidprodIncidents implements Node {
+      nlp_similar_incidents: [nlpSimilarIncident]
+      editor_similar_incidents: [Int]
+      editor_dissimilar_incidents: [Int]
+      flagged_dissimilar_incidents: [Int]
+    }
+    
+    type mongodbAiidprodSubmissions implements Node {
+      nlp_similar_incidents: [nlpSimilarIncident]
+      editor_similar_incidents: [Int]
+      editor_dissimilar_incidents: [Int]
+    }
+
     type mongodbAiidprodReports implements Node {
       cloudinary_id: String
       tags: [String]

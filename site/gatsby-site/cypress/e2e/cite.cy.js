@@ -224,6 +224,57 @@ describe('Cite pages', () => {
       `Olsson, Catherine. (2014-08-14) Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on ${date} from incidentdatabase.ai/cite/10.`
     );
   });
+
+  it('Should display similar incidents', () => {
+    cy.visit('/cite/9');
+
+    cy.get('[data-cy="similar-incident-card"]').should('exist');
+  });
+
+  it('Should not display duplicate similar incidents', () => {
+    cy.visit('/cite/9');
+
+    const hrefs = new Set();
+
+    cy.get('[data-cy="similar-incident-card"] [data-cy="cite-link"]').each((link) => {
+      const href = link[0].href;
+
+      expect(hrefs.has(href)).to.be.false;
+      hrefs.add(href);
+    });
+  });
+
+  it('Should not display edit link when not logged in', () => {
+    cy.visit('/cite/9');
+
+    cy.get('[data-cy="edit-similar-incidents"]').should('not.exist');
+  });
+
+  maybeIt('Should display edit link when logged in as editor', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.visit('/cite/9');
+
+    cy.get('[data-cy="edit-similar-incidents"]').should('exist');
+  });
+
+  it('Should flag an incident as not related', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateIncident',
+      'updateIncident'
+    );
+
+    cy.visit('/cite/9');
+
+    cy.get('[data-cy="flag-similar-incident"]').first().click();
+
+    cy.wait('@updateIncident').then((xhr) => {
+      expect(xhr.response.statusCode).to.equal(200);
+      expect(Boolean(xhr.request.body.variables.set.flagged_dissimilar_incidents)).to.be.true;
+    });
+  });
+
   it('Should have OpenGraph meta tags', () => {
     cy.visit(url);
 
