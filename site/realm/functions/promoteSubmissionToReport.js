@@ -10,7 +10,9 @@ exports = async (input) => {
   
   const parentIncidents = await incidents.find({incident_id: {$in: input.incident_ids }}).toArray();
   
-  if(parentIncidents.length == 0) {
+  const report_number = await reports.find({}).sort({report_number: -1}).limit(1).next().report_number + 1;
+
+  if (parentIncidents.length == 0) {
     
     const lastIncident = await incidents.find({}).sort({incident_id: -1}).limit(1).next();
     
@@ -22,7 +24,10 @@ exports = async (input) => {
       date: submission.incident_date,
       nlp_similar_incidents: submission.nlp_similar_incidents || [],
       editor_similar_incidents: submission.editor_similar_incidents || [],
-      editor_dissimilar_incidents: submission.editor_dissimilar_incidents || []
+      editor_dissimilar_incidents: submission.editor_dissimilar_incidents || [],
+      embedding: submission.embedding 
+        ? { vector: submission.embedding.vector, from_reports: [report_number] }
+        : undefined
     }
     
     await incidents.insertOne({...newIncident, incident_id: BSON.Int32(newIncident.incident_id)});
@@ -31,12 +36,11 @@ exports = async (input) => {
   }
   
   
-  const lastReport = await reports.find({}).sort({report_number: -1}).limit(1).next();
-  
   const newReport = {
-    title: submission.title,
-    report_number: lastReport.report_number + 1,
+    report_number,
     ref_number: BSON.Int32(parentIncidents[0].reports.length), // this won't make sense with many to many relationships
+    title: submission.title,
+    embedding: submission.embedding,
     date_downloaded: '',
     date_modified: '',
     date_published: '',
