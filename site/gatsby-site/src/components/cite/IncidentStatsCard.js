@@ -1,26 +1,6 @@
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import styled from 'styled-components';
-
-const StatsContainer = styled.div`
-  display: grid;
-  max-width: 100%;
-  grid-template-columns: 1fr 3fr;
-  padding: 1.25rem;
-`;
-
-const IncidentCardContainer = styled.div`
-  border: 1.5px solid #d9deee;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px 0px #e3e5ec;
-  display: flex;
-  flex-direction: column;
-  .subhead {
-    margin: 0;
-    opacity: 0.4;
-    padding-top: 10px;
-  }
-`;
+import Card from '../../elements/Card';
 
 const IncidentStatsCard = ({ incidentId, reportCount, incidentDate, editors }) => {
   const { t } = useTranslation();
@@ -56,13 +36,13 @@ const IncidentStatsCard = ({ incidentId, reportCount, incidentDate, editors }) =
   };
 
   return (
-    <IncidentCardContainer className="card">
-      <div className="card-header">
+    <Card className="tw-incident-stat-card">
+      <Card.Header>
         <h4>
           <Trans>Incident Stats</Trans>
         </h4>
-      </div>
-      <StatsContainer className="card-body">
+      </Card.Header>
+      <Card.Body className="tw-grid tw-max-w-full tw-p-5 tw-grid-cols-1fr-3fr">
         <div>
           {STATS.map((stat) => (
             <div key={stat.key}>{stat.label}</div>
@@ -73,8 +53,8 @@ const IncidentStatsCard = ({ incidentId, reportCount, incidentDate, editors }) =
             <div key={stat.key}>{stats[stat.key]}</div>
           ))}
         </div>
-      </StatsContainer>
-    </IncidentCardContainer>
+      </Card.Body>
+    </Card>
   );
 };
 

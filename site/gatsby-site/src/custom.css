@@ -2,3 +2,7 @@ a {
     text-decoration: none;
     color: var(--primary-blue);
 }
+
+h4 {
+    margin-bottom: 0;
+}

@@ -133,7 +133,7 @@ function CitePage(props) {
                   <Trans>Suggested citation format</Trans>
                 </h4>
               </Card.Header>
-              <Card.Body>
+              <Card.Body className="tw-block">
                 <Citation
                   nodes={incidentReports}
                   incidentDate={incident.date}

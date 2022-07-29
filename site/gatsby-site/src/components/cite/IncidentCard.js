@@ -12,7 +12,7 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
   const { isRole } = useUserContext();
 
   return (
-    <Card id={`r${item.mongodb_id}`}>
+    <Card id={`r${item.mongodb_id}`} className="IncidentCard">
       <Card.Header className="tw-flex-col">
         <div className="tw-flex tw-justify-between">
           <a href={`#r${item.mongodb_id}`}>
@@ -31,7 +31,7 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
           </WebArchiveLink>
         </p>
       </Card.Header>
-      <Card.Body>
+      <Card.Body className="tw-flex-col">
         <ReportText text={item.text} />
       </Card.Body>
       <div className="tw-align-bottom">

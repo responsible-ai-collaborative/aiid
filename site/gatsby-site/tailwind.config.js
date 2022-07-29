@@ -33,10 +33,17 @@ module.exports = {
         2: '2',
       },
       borderWidth: {
+        1.5: '1.5px',
         2.5: '2.5px',
       },
       padding: {
         0.8: '0.8rem',
+      },
+      gridTemplateColumns: {
+        '1fr-3fr': '1fr 3fr',
+      },
+      borderRadius: {
+        '5px': '5px',
       },
     },
   },

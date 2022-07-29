@@ -29,7 +29,7 @@
   }
 
   .tw-card-header {
-    @apply tw-flex tw-justify-between tw-items-center tw-border-b tw-border-border-gray tw-px-4 tw-py-2 tw-bg-light-gray;
+    @apply tw-flex tw-justify-between tw-border-b tw-border-border-gray tw-px-4 tw-py-2 tw-bg-light-gray;
   }
 
   .tw-card-title {
@@ -114,6 +114,14 @@
 
   .tw-tooltip-left .tw-tooltip .tw-tooltip-arrow {
     @apply tw-absolute tw-right-[-3px] tw-top-1/2 tw--z-10 tw-h-2 tw-w-2 tw--translate-y-1 tw-rotate-45 tw-rounded-sm tw-bg-black;
+  }
+
+  .tw-incident-stat-card {
+    @apply tw-flex tw-flex-col tw-shadow-card tw-rounded-5px tw-border-border-light-gray tw-border-1.5;
+  }
+
+  .tw-incident-stat-card .subhead {
+    @apply tw-m-0 tw-opacity-40 tw-pt-2.5;
   }
   
 }

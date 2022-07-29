@@ -208,7 +208,7 @@ describe('Cite pages', () => {
 
     const date = format(new Date(), 'MMMM d, y');
 
-    cy.get('[data-cy="citation"] .card-body').should(
+    cy.get('[data-cy="citation"] .tw-card-body').should(
       'contain.text',
       `Olsson, Catherine. (2014-08-14) Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on ${date} from incidentdatabase.ai/cite/10.`
     );

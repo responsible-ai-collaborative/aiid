@@ -2,7 +2,7 @@ import React from 'react';
 export default function Card(props) {
   return (
     <>
-      <div className={`tw-card ${props.className ? props.className : ''}`} {...props}>
+      <div {...props} className={`tw-card ${props.className ? props.className : ''}`}>
         {props.children}
       </div>
     </>
@@ -11,7 +11,7 @@ export default function Card(props) {
 
 Card.Header = function CardHeader(props) {
   return (
-    <div className={`tw-card-header ${props.className ? props.className : ''}`} {...props}>
+    <div {...props} className={`tw-card-header ${props.className ? props.className : ''}`}>
       {props.children}
     </div>
   );
