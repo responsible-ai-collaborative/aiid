@@ -260,22 +260,6 @@ const IncidentReportForm = () => {
         <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
       </Form.Group>
 
-      {config
-        .filter((c) => c.code !== 'en')
-        .map((c) => {
-          const name = `translations_${c.code}`;
-
-          return (
-            <Form.Group className="mt-3" key={name}>
-              <Label label={`${c.name} Text`} />
-              <Editor
-                value={values[name].text}
-                onChange={(value) => setFieldValue(`${name}.text`, value)}
-              />
-            </Form.Group>
-          );
-        })}
-
       <Form.Group className="mt-3">
         <Label popover={POP_OVERS.language} label={'Language'} />
         <Form.Select
@@ -327,6 +311,38 @@ const IncidentReportForm = () => {
         className="mt-3"
         {...TextInputGroupProps}
       />
+
+      <h4 className="mt-3">Translations</h4>
+
+      {config
+        .filter((c) => c.code !== values.language)
+        .map((c) => {
+          const name = `translations_${c.code}`;
+
+          return (
+            <div className="mt-3" key={name}>
+              <h5>{c.name}</h5>
+
+              <Form.Group className="mt-3">
+                <Label label="Title" />
+                <Form.Control
+                  type="text"
+                  name="description"
+                  value={values[name].title}
+                  onChange={(e) => setFieldValue(`${name}.title`, e.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group className="mt-3">
+                <Label label="Text" />
+                <Editor
+                  value={values[name].text}
+                  onChange={(value) => setFieldValue(`${name}.text`, value)}
+                />
+              </Form.Group>
+            </div>
+          );
+        })}
     </Form>
   );
 };

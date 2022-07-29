@@ -114,7 +114,7 @@ function EditCitePage(props) {
         },
       });
 
-      for (const { code } of config.filter((c) => c.code !== 'en')) {
+      for (const { code } of config.filter((c) => c.code !== values.language)) {
         const updatedTranslation = pick(values[`translations_${code}`], ['title', 'text']);
 
         await updateReportTranslations({

@@ -23,7 +23,7 @@ export const FIND_REPORT = gql`
 `;
 
 export const FIND_REPORT_WITH_TRANSLATIONS = gql`
-  query FindReport($query: ReportQueryInput!) {
+  query FindReportWithTranslations($query: ReportQueryInput!) {
     report(query: $query) {
       url
       title
@@ -40,6 +40,10 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql`
       editor_notes
       language
       translations_es: translations(input: "es") {
+        title
+        text
+      }
+      translations_en: translations(input: "en") {
         title
         text
       }
