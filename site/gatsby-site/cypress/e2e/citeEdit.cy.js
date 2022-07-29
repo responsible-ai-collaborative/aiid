@@ -8,8 +8,6 @@ import { format, getUnixTime } from 'date-fns';
 
 import incident from '../fixtures/incidents/incident.json';
 
-import report from '../fixtures/reports/report.json';
-
 import reportWithTranslations from '../fixtures/reports/reportWithTranslations.json';
 
 describe('Edit report', () => {
@@ -191,9 +189,9 @@ describe('Edit report', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'FindReport',
-      'findReport',
-      report
+      (req) => req.body.operationName == 'FindReportWithTranslations',
+      'findReportWithTranslations',
+      reportWithTranslations
     );
 
     cy.conditionalIntercept(
@@ -204,6 +202,8 @@ describe('Edit report', () => {
     );
 
     cy.visit(url);
+
+    cy.wait(['@findReportWithTranslations', '@findIncident']);
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -333,12 +333,14 @@ describe('Edit report', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'FindReport',
-      'findReport',
-      report
+      (req) => req.body.operationName == 'FindReportWithTranslations',
+      'findReportWithTranslations',
+      reportWithTranslations
     );
 
     cy.visit(`/cite/edit?report_number=23`);
+
+    cy.wait('@findReportWithTranslations');
 
     cy.get('form[data-cy="report"]').should('be.visible');
 
