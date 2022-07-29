@@ -43,6 +43,7 @@ const config = {
       algoliaAdminKey: process.env.ALGOLIA_ADMIN_KEY,
       featured: [
         12, // YouTube says it will crack down on bizarre videos targeting children
+        23, // Is Starbucks shortchanging its baristas?
         45, // Google's Anti-Bullying AI Mistakes Civility for Decency
         101, // Google Photo App Labels Black Couple 'Gorillas'
         217, // Tougher Turing Test Exposes Chatbots’ Stupidity
