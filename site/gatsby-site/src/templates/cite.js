@@ -91,10 +91,11 @@ function CitePage(props) {
 
   const flagReportModal = useModal();
 
-  const timeline = sortedReports.map(({ date_published, title, mongodb_id }) => ({
+  const timeline = sortedReports.map(({ date_published, title, mongodb_id, report_number }) => ({
     date_published,
     title,
     mongodb_id,
+    report_number,
   }));
 
   timeline.push({
