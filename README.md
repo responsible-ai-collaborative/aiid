@@ -50,8 +50,9 @@ After merge to staging, the code quality is everyone’s responsibility.
 
 ## Site Architecture
 
-![AIID project arquitecture](https://user-images.githubusercontent.com/6564809/181660368-990b54ea-503d-4cec-bd81-ca134f5e9ff2.jpeg)
-
+| ![AIID project arquitecture](https://user-images.githubusercontent.com/6564809/181660368-990b54ea-503d-4cec-bd81-ca134f5e9ff2.jpeg) |
+|:--:|
+| *Site architecture diagram. This is the link to view and edit the diagram on [Diagrams.net](https://drive.google.com/file/d/1kHT1EFrBjxGZOWewS0uUrOZ2QflqYUnA/view?usp=sharing)* |
 
 The site has three components that all be considered "serverless," meaning there is no dynamic backend templating the application or responding to API requests. The components include,
 
