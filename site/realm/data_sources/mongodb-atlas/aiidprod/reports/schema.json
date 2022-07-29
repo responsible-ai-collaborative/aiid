@@ -99,7 +99,9 @@
                     "bsonType": "double"
                 }
             },
-            "from_text_hash": "string"
+            "from_text_hash": {
+              "bsonType": "string"
+            }
           }
         }
     },
