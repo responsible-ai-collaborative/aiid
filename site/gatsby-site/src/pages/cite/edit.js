@@ -10,23 +10,11 @@ import {
   DELETE_REPORT,
   useUpdateLinkedReports,
 } from '../../graphql/reports';
-import { UPDATE_INCIDENT } from '../../graphql/incidents';
+import { UPDATE_INCIDENT, FIND_INCIDENT } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { format, getUnixTime } from 'date-fns';
 import { stripMarkdown } from 'utils/typography';
 import { Formik } from 'formik';
-import { gql } from '@apollo/client';
-
-const FIND_PARENT_INCIDENT = gql`
-  query FindParentIncident($query: IncidentQueryInput) {
-    incident(query: $query) {
-      incident_id
-      reports {
-        report_number
-      }
-    }
-  }
-`;
 
 function EditCitePage(props) {
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
@@ -35,19 +23,13 @@ function EditCitePage(props) {
     variables: { query: { report_number: reportNumber } },
   });
 
-  const { data: incidentData, loading: loadingIncident } = useQuery(FIND_PARENT_INCIDENT, {
-    variables: { report_number: reportNumber },
-  });
-
-  const loading = loadingIncident || loadingReport;
-
   const [updateReport] = useMutation(UPDATE_REPORT);
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
   const [deleteReport] = useMutation(DELETE_REPORT);
 
-  const { data: parentIncident } = useQuery(FIND_PARENT_INCIDENT, {
+  const { data: parentIncident, loadingIncident } = useQuery(FIND_INCIDENT, {
     variables: {
       query: {
         reports_in: {
@@ -56,6 +38,8 @@ function EditCitePage(props) {
       },
     },
   });
+
+  const loading = loadingIncident || loadingReport;
 
   const updateLinkedReports = useUpdateLinkedReports();
 
@@ -91,7 +75,7 @@ function EditCitePage(props) {
         },
       });
 
-      if (values.incident_id !== incidentData.incident.incident_id) {
+      if (values.incident_id !== parentIncident.incident.incident_id) {
         await updateLinkedReports({ reportNumber, incidentIds: [values.incident_id] });
       }
 
@@ -155,11 +139,11 @@ function EditCitePage(props) {
       )}
       {!reportData?.report && !loading && <div>Report not found</div>}
 
-      {!loading && reportData?.report && incidentData?.incident && (
+      {!loading && reportData?.report && parentIncident?.incident && (
         <Formik
           validationSchema={schema}
           onSubmit={handleSubmit}
-          initialValues={{ ...reportData.report, incident_id: incidentData.incident.incident_id }}
+          initialValues={{ ...reportData.report, incident_id: parentIncident.incident.incident_id }}
         >
           {({ isValid, isSubmitting, submitForm }) => (
             <>
