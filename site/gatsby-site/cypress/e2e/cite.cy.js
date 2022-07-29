@@ -69,13 +69,13 @@ describe('Cite pages', () => {
   maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    const id = 'r10';
+    const id = 'r3';
 
     cy.visit('/cite/1#' + id);
 
     cy.get(`#${id} [data-cy="edit-report"]`).click();
 
-    cy.url().should('contain', '/cite/edit?report_number=10');
+    cy.url().should('contain', '/cite/edit?report_number=3');
   });
 
   maybeIt('Should show the taxonomy form of CSET', () => {
