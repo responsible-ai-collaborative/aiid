@@ -283,7 +283,7 @@ describe('Cite pages', () => {
     }).then(({ data: { incidents } }) => {
       const incident = incidents[0];
 
-      const title = incident.title;
+      const title = `Incident ${incidentId}: ${incident.title}`;
 
       const description = incident.description;
 

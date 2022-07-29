@@ -82,7 +82,7 @@ function CitePage(props) {
     id: incident.incident_id,
   });
 
-  const metaTitle = incident.title;
+  const metaTitle = `Incident ${incident.incident_id}: ${incident.title}`;
 
   const metaDescription = incident.description;
 
