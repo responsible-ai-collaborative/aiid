@@ -338,6 +338,13 @@ describe('Edit report', () => {
       reportWithTranslations
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateReportTranslation',
+      'updateOneReportTranslation',
+      updateOneReportTranslation
+    );
+
     cy.visit(`/cite/edit?report_number=23`);
 
     cy.wait('@findReportWithTranslations');
