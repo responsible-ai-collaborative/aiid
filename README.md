@@ -50,7 +50,7 @@ After merge to staging, the code quality is everyone’s responsibility.
 
 ## Site Architecture
 
-| ![AIID project arquitecture](https://user-images.githubusercontent.com/6564809/181660368-990b54ea-503d-4cec-bd81-ca134f5e9ff2.jpeg) |
+| ![AIID project arquitecture](https://user-images.githubusercontent.com/6564809/181833549-794c3fd0-a324-4d97-9294-da4e7a4a6cc6.png) |
 |:--:|
 | *Site architecture diagram. This is the link to view and edit the diagram on [Diagrams.net](https://drive.google.com/file/d/1kHT1EFrBjxGZOWewS0uUrOZ2QflqYUnA/view?usp=sharing)* |
 
