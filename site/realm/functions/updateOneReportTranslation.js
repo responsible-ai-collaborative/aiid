@@ -2,17 +2,11 @@ exports = async (input) => {
   
   const translations = context.services.get('mongodb-atlas').db('translations').collection("reports_" + input.language);
   
-  const update = {};
-  
-  if(input.text) {
-    
-    update.text = input.text;
-  }
-  
-  if(input.title) {
-    
-    update.title = input.title;
-  }
+  const update = {
+    title: input.title,
+    text: input.text,
+    plain_text: input.plain_text
+  };
   
   await translations.updateOne({report_number: input.report_number}, {$set: {... update}}, {upsert: true});
   

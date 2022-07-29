@@ -6,6 +6,9 @@
             "language": {
                 "bsonType": "string"
             },
+            "plain_text": {
+                "bsonType": "string"
+            },
             "report_number": {
                 "bsonType": "int"
             },
@@ -20,7 +23,8 @@
             "language",
             "report_number",
             "text",
-            "title"
+            "title",
+            "plain_text"
         ],
         "title": "UpdateOneReportTranslationInput",
         "type": "object"
