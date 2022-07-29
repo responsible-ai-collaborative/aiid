@@ -50,6 +50,9 @@ After merge to staging, the code quality is everyone’s responsibility.
 
 ## Site Architecture
 
+![AIID project arquitecture](https://user-images.githubusercontent.com/6564809/181660368-990b54ea-503d-4cec-bd81-ca134f5e9ff2.jpeg)
+
+
 The site has three components that all be considered "serverless," meaning there is no dynamic backend templating the application or responding to API requests. The components include,
 
 1. Web host. This is the web server hosting the Gatsby-based web application. The site is hosted in production on [Netlify](https://www.netlify.com/).
