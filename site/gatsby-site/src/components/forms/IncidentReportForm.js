@@ -255,7 +255,7 @@ const IncidentReportForm = () => {
         {...TextInputGroupProps}
       />
 
-      <Form.Group className="mt-3" data-color-mode="light">
+      <Form.Group className="mt-3" data-color-mode="light" data-cy="text">
         <Label popover={POP_OVERS.text} label={'Text'} />
         <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
       </Form.Group>
@@ -320,14 +320,13 @@ const IncidentReportForm = () => {
           const name = `translations_${c.code}`;
 
           return (
-            <div className="mt-3" key={name}>
+            <div className="mt-5" key={name} data-cy={`translation-${c.code}`}>
               <h5>{c.name}</h5>
 
               <Form.Group className="mt-3">
                 <Label label="Title" />
                 <Form.Control
                   type="text"
-                  name="description"
                   value={values[name].title}
                   onChange={(e) => setFieldValue(`${name}.title`, e.target.value)}
                 />

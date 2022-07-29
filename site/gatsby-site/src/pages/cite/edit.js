@@ -29,8 +29,6 @@ const FIND_PARENT_INCIDENT = gql`
 const UPDATE_REPORT_TRANSLATION = gql`
   mutation UpdateReportTranslation($input: UpdateOneReportTranslationInput) {
     updateOneReportTranslation(input: $input) {
-      title
-      text
       report_number
     }
   }
