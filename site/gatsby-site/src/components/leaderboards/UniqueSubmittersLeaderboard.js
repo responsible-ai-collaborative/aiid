@@ -31,7 +31,7 @@ const UniqueSubmittersLeaderboard = ({ limit, className }) => {
     const incident = incidents.find((incident) => incident.reports.includes(report.report_number));
 
     if (!incident) {
-      console.error(`Report #{report.report_number} does not have an associated incident.`);
+      console.error(`Report #${report.report_number} does not have an associated incident.`);
       continue;
     }
     const id = incident.incident_id;
