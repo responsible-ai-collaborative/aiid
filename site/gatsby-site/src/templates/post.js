@@ -8,6 +8,7 @@ import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper, PostDate, Author } from 'components/styles/Post';
 import config from '../../config';
 import { format } from 'date-fns';
+import SocialShareButtons from 'components/ui/SocialShareButtons';
 
 const slug = (title) => title.toLowerCase().replace(/\s+/g, '');
 
@@ -41,6 +42,7 @@ export default function Post(props) {
       <div className={'titleWrapper'}>
         <StyledHeading>{mdx.fields.title}</StyledHeading>
         <PostDate>{format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')}</PostDate>
+        <SocialShareButtons metaTitle={metaTitle} canonicalUrl={canonicalUrl}></SocialShareButtons>
       </div>
       <StyledMainWrapper>
         <MDXProvider components={Components}>
