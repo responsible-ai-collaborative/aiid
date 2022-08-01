@@ -17,6 +17,7 @@ import Taxonomy from 'components/taxa/Taxonomy';
 import { useUserContext } from 'contexts/userContext';
 import SimilarIncidents from 'components/cite/SimilarIncidents';
 import { Trans, useTranslation } from 'react-i18next';
+import SocialShareButtons from 'components/ui/SocialShareButtons';
 
 const CardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -126,6 +127,7 @@ function CitePage(props) {
 
       <div className={'titleWrapper'}>
         <StyledHeading>{metaDescription}</StyledHeading>
+        <SocialShareButtons metaTitle={metaTitle} canonicalUrl={canonicalUrl}></SocialShareButtons>
       </div>
 
       <Container>
@@ -265,6 +267,15 @@ function CitePage(props) {
           </Col>
         </Row>
 
+        <Row>
+          <Col>
+            <SocialShareButtons
+              metaTitle={metaTitle}
+              canonicalUrl={canonicalUrl}
+            ></SocialShareButtons>
+          </Col>
+        </Row>
+
         {sortedReports.map((report) => (
           <Row className="mb-4" key={report.report_number}>
             <Col>
@@ -285,6 +296,15 @@ function CitePage(props) {
           flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
           parentIncident={incident}
         />
+
+        <Row>
+          <Col>
+            <SocialShareButtons
+              metaTitle={metaTitle}
+              canonicalUrl={canonicalUrl}
+            ></SocialShareButtons>
+          </Col>
+        </Row>
 
         <Pagination className="justify-content-between">
           <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>
