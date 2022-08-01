@@ -1,0 +1,36 @@
+{
+    "field_name": "updateOneReportTranslation",
+    "function_name": "updateOneReportTranslation",
+    "input_type": {
+        "properties": {
+            "language": {
+                "bsonType": "string"
+            },
+            "plain_text": {
+                "bsonType": "string"
+            },
+            "report_number": {
+                "bsonType": "int"
+            },
+            "text": {
+                "bsonType": "string"
+            },
+            "title": {
+                "bsonType": "string"
+            }
+        },
+        "required": [
+            "language",
+            "report_number",
+            "text",
+            "title",
+            "plain_text"
+        ],
+        "title": "UpdateOneReportTranslationInput",
+        "type": "object"
+    },
+    "input_type_format": "custom",
+    "on_type": "Mutation",
+    "payload_type": "Report",
+    "payload_type_format": "generated"
+}
