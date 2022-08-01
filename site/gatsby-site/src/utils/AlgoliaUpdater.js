@@ -221,15 +221,12 @@ class AlgoliaUpdater {
         queryLanguages: [language],
         replicas: [featuredReplicaIndexName],
       })
-      .catch((e) => console.error(e))
       .then(() => {
         const featuredReplicaIndex = this.algoliaClient.initIndex(featuredReplicaIndexName);
 
-        featuredReplicaIndex
-          .setSettings({
-            ranking: ['desc(featured)', 'desc(text)'],
-          })
-          .catch((e) => console.error(e));
+        featuredReplicaIndex.setSettings({
+          ranking: ['desc(featured)', 'desc(text)'],
+        });
       });
   };
 
