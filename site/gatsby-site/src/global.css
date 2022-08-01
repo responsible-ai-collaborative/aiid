@@ -924,3 +924,25 @@ img {
 div .bytemd {
   height: 480px;
 }
+
+/* Social Buttons */
+/* ---------------------------------------------------------- */
+
+.social-btn-container {
+  margin-bottom: 15px;
+}
+
+.social-btn {
+  position: relative;
+  display: block;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  color: white;
+  line-height: 48px;
+  text-align: center;
+  background-color: white;
+  border: none;
+}
+
+/* ---------------------------------------------------------- */
