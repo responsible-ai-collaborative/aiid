@@ -183,9 +183,16 @@ GATSBY_ALGOLIA_SEARCH_KEY=<YOUR SEARCH KEY>
 ALGOLIA_ADMIN_KEY=<YOUR ADMIN KEY>
 ```
 
-Algolia index settings are uploaded on build time, so you'll have to do that at least once from your local env:
+Algolia index settings are uploaded on build time, so they will take effect after running:
+
 ```
 gatsby build
+```
+
+Alternately, you can update the settings without rebuilding if from `site/gatsby-site` you run:
+
+```
+node src/scripts/algolia-update.js
 ```
 
 Restart Gatsby, and you should have a complete working environment!
