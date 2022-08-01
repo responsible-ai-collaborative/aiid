@@ -25,11 +25,15 @@ const FIND_PARENT_INCIDENT = gql`
 `;
 
 function EditCitePage(props) {
+  console.log('props', props);
+
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
 
   const { data: reportData, loading: loadingReport } = useQuery(FIND_REPORT, {
     variables: { query: { report_number: reportNumber } },
   });
+
+  console.log('reportData', reportData);
 
   const { data: incidentData, loading: loadingIncident } = useQuery(FIND_PARENT_INCIDENT, {
     variables: { report_number: reportNumber },
@@ -122,11 +126,14 @@ function EditCitePage(props) {
       )}
       {!reportData?.report && !loading && <div>Report not found</div>}
 
-      {!loading && reportData?.report && incidentData?.incident && (
+      {!loadingReport && reportData?.report && (
         <Formik
           validationSchema={schema}
           onSubmit={handleSubmit}
-          initialValues={{ ...reportData.report, incident_id: incidentData.incident.incident_id }}
+          initialValues={{
+            ...reportData.report,
+            incident_id: incidentData?.incident?.incident_id || 0,
+          }}
         >
           {({ isValid, isSubmitting, submitForm }) => (
             <>
