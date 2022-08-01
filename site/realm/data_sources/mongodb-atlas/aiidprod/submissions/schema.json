@@ -68,6 +68,32 @@
         },
         "editor_notes": {
             "bsonType": "string"
+        },
+        "nlp_similar_incidents": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "incident_id": {
+                        "bsonType": "int"
+                    },
+                    "similarity": {
+                        "bsonType": "double"
+                    }
+                }
+            }
+        },
+        "editor_similar_incidents": {
+           "bsonType": "array",
+           "items": {
+               "bsonType": "int"
+           }
+        },
+        "editor_dissimilar_incidents": {
+           "bsonType": "array",
+           "items": {
+               "bsonType": "int"
+           }
         }
     },
     "required": [

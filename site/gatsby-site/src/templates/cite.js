@@ -1,5 +1,5 @@
-import React from 'react';
-import Helmet from 'react-helmet';
+import React, { useState, useEffect } from 'react';
+import AiidHelmet from 'components/AiidHelmet';
 import { Button, Col, Container, Pagination, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
@@ -15,6 +15,7 @@ import IncidentStatsCard from 'components/cite/IncidentStatsCard';
 import IncidentCard from 'components/cite/IncidentCard';
 import Taxonomy from 'components/taxa/Taxonomy';
 import { useUserContext } from 'contexts/userContext';
+import SimilarIncidents from 'components/cite/SimilarIncidents';
 import { Trans, useTranslation } from 'react-i18next';
 
 const CardContainer = styled.div`
@@ -56,10 +57,19 @@ const sortIncidentsByDatePublished = (incidentReports) => {
 
 function CitePage(props) {
   const {
-    pageContext: { incident, incidentReports, taxonomies, nextIncident, prevIncident },
+    pageContext: {
+      incident,
+      incidentReports,
+      nlp_similar_incidents,
+      editor_similar_incidents,
+      editor_dissimilar_incidents,
+      taxonomies,
+      nextIncident,
+      prevIncident,
+    },
   } = props;
 
-  const { isRole } = useUserContext();
+  const { isRole, user } = useUserContext();
 
   const { t } = useTranslation();
 
@@ -72,6 +82,8 @@ function CitePage(props) {
   const canonicalUrl = getCanonicalUrl(incident.incident_id);
 
   const sortedReports = sortIncidentsByDatePublished(incidentReports);
+
+  const metaImage = sortedReports[0].image_url;
 
   const authorsModal = useModal();
 
@@ -92,18 +104,25 @@ function CitePage(props) {
     isOccurrence: true,
   });
 
+  const [taxonomiesList, setTaxonomiesList] = useState(
+    taxonomies.map((t) => ({ ...t, canEdit: false }))
+  );
+
+  useEffect(() => {
+    setTaxonomiesList((list) =>
+      list.map((t) => ({
+        ...t,
+        canEdit:
+          isRole('taxonomy_editor') || isRole('taxonomy_editor_' + t.namespace.toLowerCase()),
+      }))
+    );
+  }, [user]);
+
   return (
     <Layout {...props}>
-      <Helmet>
-        {metaTitle ? <title>{metaTitle}</title> : null}
-        {metaTitle ? <meta name="title" content={metaTitle} /> : null}
-        {metaDescription ? <meta name="description" content={metaDescription} /> : null}
-        {metaTitle ? <meta property="og:title" content={metaTitle} /> : null}
-        {metaDescription ? <meta property="og:description" content={metaDescription} /> : null}
-        {metaTitle ? <meta property="twitter:title" content={metaTitle} /> : null}
-        {metaDescription ? <meta property="twitter:description" content={metaDescription} /> : null}
-        <link rel="canonical" href={canonicalUrl} />
-      </Helmet>
+      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
+        <meta property="og:type" content="website" />
+      </AiidHelmet>
 
       <div className={'titleWrapper'}>
         <StyledHeading>{metaDescription}</StyledHeading>
@@ -212,20 +231,16 @@ function CitePage(props) {
         {taxonomies.length > 0 && (
           <Row id="taxa-area">
             <Col>
-              {taxonomies.map((t) => {
-                const canEdit =
-                  isRole('taxonomy_editor') ||
-                  isRole('taxonomy_editor_' + t.namespace.toLowerCase());
-
-                return canEdit || t.classificationsArray.length > 0 ? (
+              {taxonomiesList
+                .filter((t) => t.canEdit || t.classificationsArray.length > 0)
+                .map((t) => (
                   <Taxonomy
                     key={t.namespace}
                     taxonomy={t}
                     incidentId={incident.incident_id}
-                    canEdit={canEdit}
+                    canEdit={t.canEdit}
                   />
-                ) : null;
-              })}
+                ))}
             </Col>
           </Row>
         )}
@@ -262,6 +277,14 @@ function CitePage(props) {
             </Col>
           </Row>
         ))}
+
+        <SimilarIncidents
+          nlp_similar_incidents={nlp_similar_incidents}
+          editor_similar_incidents={editor_similar_incidents}
+          editor_dissimilar_incidents={editor_dissimilar_incidents}
+          flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
+          parentIncident={incident}
+        />
 
         <Pagination className="justify-content-between">
           <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>

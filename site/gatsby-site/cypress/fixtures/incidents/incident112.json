@@ -12,6 +12,7 @@
             "date": "2015-05-19",
             "description": "YouTube’s content filtering and recommendation algorithms exposed children to disturbing and inappropriate videos.",
             "incident_id": 112,
+            "nlp_similar_incidents": [],
             "reports": [
                 {
                     "__typename": "Report",
