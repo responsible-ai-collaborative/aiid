@@ -9,6 +9,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        '965px': { max: '965px' },
+        '50rem': { max: '50rem' },
+      },
       colors: {
         'light-grey': 'rgba(0,0,0,.03)',
         'border-grey': 'rgba(0,0,0,.125)',

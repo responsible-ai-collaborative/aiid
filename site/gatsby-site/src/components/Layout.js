@@ -1,29 +1,10 @@
 import React from 'react';
-import styled from 'styled-components';
 
 import Sidebar from './sidebar';
 import RightSidebar from './rightSidebar';
 import config from '../../config.js';
 import Footer from './layout/Footer';
 import Header from './ui/Header';
-
-const MaxWidth = styled.div`
-  @media only screen and (max-width: 50rem) {
-    width: 100%;
-    position: relative;
-  }
-`;
-
-const RightSideBarWidth = styled.div`
-  width: 224px;
-  margin-left: -24px;
-  z-index: 0;
-  position: relative;
-
-  @media (max-width: 965px) {
-    display: none;
-  }
-`;
 
 const Layout = ({ children, collapse, className, location }) => (
   <>
@@ -39,11 +20,11 @@ const Layout = ({ children, collapse, className, location }) => (
         />
       )}
       <div id="content" className="tw-content tw-mb-5">
-        <MaxWidth className={className}>{children}</MaxWidth>
+        <div className={`${className} 50rem:tw-w-full tw-relative`}>{children}</div>
       </div>
-      <RightSideBarWidth className={'hiddenMobile'}>
+      <div className={'hiddenMobile tw-w-[224px] tw-ml-[-24px] tw-z-0 tw-relative 965px:tw-hidden'}>
         <RightSidebar location={location} />
-      </RightSideBarWidth>
+      </div>
     </div>
     <Footer />
   </>

@@ -8,7 +8,7 @@
     }
 
     .tw-content {
-        @apply tw-flex tw-flex-grow tw-mt-0 tw-mr-[33px] tw-pt-12 tw-z-[1] tw-relative md:tw-w-[calc(100%-298px-66px)]; 
+        @apply tw-flex tw-flex-grow tw-mt-0 tw-mr-[33px] tw-pt-12 tw-z-[1] tw-relative md:tw-w-[calc((100%-298px)-66px)]; 
     }
 
     .tw-left-sidebar {
@@ -24,8 +24,8 @@
   @layer components {
 
   
-    .tw-container {
-      @apply xl:tw-max-w-[1140px] md:tw-max-w-[720px] lg:tw-max-w-[960px] sm:tw-max-w-[540px];
+    .tw-main-container {
+      @apply xl:tw-max-w-[1320px] md:tw-max-w-[720px] lg:tw-max-w-[960px] sm:tw-max-w-[540px];
     }
   
     .tw-bg-secondary {
