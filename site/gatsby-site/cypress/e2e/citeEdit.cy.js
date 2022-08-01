@@ -153,8 +153,6 @@ describe('Edit report', () => {
       incident
     );
 
-    cy.visit(url);
-
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'DeleteOneReport',
@@ -162,9 +160,19 @@ describe('Edit report', () => {
       { data: { deleteOneReport: { __typename: 'Report', report_number: 10 } } }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateIncident',
+      'updateIncident'
+    );
+
+    cy.visit(url);
+
     cy.contains('button', 'Delete this report', { timeout: 8000 }).click();
 
     cy.wait('@delete');
+
+    cy.wait('@updateIncident');
 
     cy.get('div[class^="ToastContext"]')
       .contains('Incident report 10 deleted successfully')
