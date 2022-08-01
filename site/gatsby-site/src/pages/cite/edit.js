@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Layout from 'components/Layout';
 import IncidentReportForm, { schema } from 'components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
@@ -15,6 +15,7 @@ import { format, getUnixTime } from 'date-fns';
 import { stripMarkdown } from 'utils/typography';
 import { Formik } from 'formik';
 import { gql } from '@apollo/client';
+import hash from 'object-hash';
 
 const FIND_PARENT_INCIDENT = gql`
   query FindParentIncident($report_number: Int) {
@@ -61,7 +62,21 @@ function EditCitePage(props) {
       values.epoch_date_published = getUnixTime(new Date(values.date_published));
       values.epoch_date_modified = getUnixTime(new Date(values.date_modified));
 
-      const updated = { ...values, incident_id: undefined, __typename: undefined };
+      const plain_text = await stripMarkdown(values.text);
+
+      let embedding = { ...reportData.report.embedding, __typename: undefined };
+
+      if (hash(plain_text) != embedding.from_text_hash) {
+        const semanticallyRelatedResponse = await fetch('/api/semanticallyRelated', {
+          method: 'POST',
+          body: JSON.stringify({
+            text: plain_text,
+            includeSimilar: false,
+          }),
+        });
+
+        embedding = (await semanticallyRelatedResponse.json()).embedding;
+      }
 
       await updateReport({
         variables: {
@@ -69,8 +84,11 @@ function EditCitePage(props) {
             report_number: reportNumber,
           },
           set: {
-            ...updated,
-            plain_text: await stripMarkdown(updated.text),
+            ...values,
+            plain_text,
+            embedding,
+            incident_id: undefined,
+            __typename: undefined,
           },
         },
       });
@@ -112,6 +130,10 @@ function EditCitePage(props) {
       });
     }
   };
+
+  useEffect(() => {
+    console.log('reportData', reportData);
+  }, [reportData]);
 
   return (
     <Layout {...props} className={'w-100'}>

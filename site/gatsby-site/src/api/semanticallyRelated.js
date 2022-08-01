@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 export default async function handler(req, res) {
-  const { text, max_retries, num } = JSON.parse(req.body);
+  const { text, max_retries, num, includeSimilar = true } = JSON.parse(req.body);
 
   // Example result
   // {
@@ -42,25 +42,33 @@ export default async function handler(req, res) {
 
         const embeddingString = JSON.stringify(embedding.vector);
 
-        similarResponse = await axios({
-          url: awsRoot + '/embed-to-db-similar',
-          method: 'POST',
-          data: {
-            num: String(num || 3),
-            embed: embeddingString,
-          },
-        });
-        console.log('similarResponse', similarResponse);
-        if (similarResponse?.status === 200) {
-          // See: https://github.com/responsible-ai-collaborative/nlp-lambdas/issues/9
-          const parsedEmbedding = JSON.parse(
-            similarResponse.data.body.msg.replace(/\(/g, '[').replace(/\)/g, ']')
-          );
-
-          res.status(200).json({
-            embedding,
-            incidents: parsedEmbedding.map((arr) => ({ incident_id: arr[1], similarity: arr[0] })),
+        if (includeSimilar) {
+          similarResponse = await axios({
+            url: awsRoot + '/embed-to-db-similar',
+            method: 'POST',
+            data: {
+              num: String(num || 3),
+              embed: embeddingString,
+            },
           });
+          console.log('similarResponse', similarResponse);
+          if (similarResponse?.status === 200) {
+            // See: https://github.com/responsible-ai-collaborative/nlp-lambdas/issues/9
+            const parsedEmbedding = JSON.parse(
+              similarResponse.data.body.msg.replace(/\(/g, '[').replace(/\)/g, ']')
+            );
+
+            res.status(200).json({
+              embedding,
+              incidents: parsedEmbedding.map((arr) => ({
+                incident_id: arr[1],
+                similarity: arr[0],
+              })),
+            });
+            return;
+          }
+        } else {
+          res.status(200).json({ embedding });
           return;
         }
       }
