@@ -524,7 +524,7 @@ blockquote {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
   border-bottom: 1px solid rgb(230, 236, 241);
   margin-bottom: 32px;
 }
@@ -928,8 +928,12 @@ div .bytemd {
 /* Social Buttons */
 /* ---------------------------------------------------------- */
 
-.social-btn-container {
-  margin-bottom: 15px;
+.social-btn-container.cite {
+  margin-left: 10px;
+}
+
+.social-btn-container.post {
+  margin-left: -10px;
 }
 
 .social-btn {
@@ -937,7 +941,7 @@ div .bytemd {
   display: block;
   align-items: center;
   width: 40px;
-  height: 40px;
+  height: 50px;
   color: white;
   line-height: 48px;
   text-align: center;

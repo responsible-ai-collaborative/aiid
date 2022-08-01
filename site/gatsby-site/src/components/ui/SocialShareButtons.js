@@ -3,9 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter, faLinkedin, faFacebook } from '@fortawesome/free-brands-svg-icons';
 
-const SocialShareButtons = ({ metaTitle, canonicalUrl }) => {
+const SocialShareButtons = ({ metaTitle, canonicalUrl, page }) => {
   return (
-    <div className={'d-flex social-btn-container'}>
+    <div className={`d-flex social-btn-container ${page}`}>
       {/* Twitter */}
       <button
         className={'social-btn'}

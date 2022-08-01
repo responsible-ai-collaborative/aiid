@@ -127,7 +127,11 @@ function CitePage(props) {
 
       <div className={'titleWrapper'}>
         <StyledHeading>{metaDescription}</StyledHeading>
-        <SocialShareButtons metaTitle={metaTitle} canonicalUrl={canonicalUrl}></SocialShareButtons>
+        <SocialShareButtons
+          metaTitle={metaTitle}
+          canonicalUrl={canonicalUrl}
+          page="cite"
+        ></SocialShareButtons>
       </div>
 
       <Container>
@@ -262,17 +266,13 @@ function CitePage(props) {
                 <StyledHeading>
                   <Trans>Incidents Reports</Trans>
                 </StyledHeading>
+                <SocialShareButtons
+                  metaTitle={metaTitle}
+                  canonicalUrl={canonicalUrl}
+                  page="cite"
+                ></SocialShareButtons>
               </div>
             </IncidnetsReportsTitle>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col>
-            <SocialShareButtons
-              metaTitle={metaTitle}
-              canonicalUrl={canonicalUrl}
-            ></SocialShareButtons>
           </Col>
         </Row>
 
@@ -296,15 +296,6 @@ function CitePage(props) {
           flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
           parentIncident={incident}
         />
-
-        <Row>
-          <Col>
-            <SocialShareButtons
-              metaTitle={metaTitle}
-              canonicalUrl={canonicalUrl}
-            ></SocialShareButtons>
-          </Col>
-        </Row>
 
         <Pagination className="justify-content-between">
           <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>

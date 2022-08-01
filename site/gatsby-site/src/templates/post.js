@@ -42,7 +42,11 @@ export default function Post(props) {
       <div className={'titleWrapper'}>
         <StyledHeading>{mdx.fields.title}</StyledHeading>
         <PostDate>{format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')}</PostDate>
-        <SocialShareButtons metaTitle={metaTitle} canonicalUrl={canonicalUrl}></SocialShareButtons>
+        <SocialShareButtons
+          metaTitle={metaTitle}
+          canonicalUrl={canonicalUrl}
+          page="post"
+        ></SocialShareButtons>
       </div>
       <StyledMainWrapper>
         <MDXProvider components={Components}>
