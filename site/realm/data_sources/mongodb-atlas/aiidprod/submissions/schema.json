@@ -71,7 +71,7 @@
         },
         "embedding": {
           "bsonType": "object",
-          "items": {
+          "properties": {
             "vector": {
                 "bsonType": "array",
                 "items": {
