@@ -84,7 +84,6 @@ function EditCitePage(props) {
         severity: SEVERITY.success,
       });
     } catch (e) {
-      console.error(e);
       addToast({
         message: `Error updating incident report ${reportNumber}`,
         severity: SEVERITY.danger,
@@ -122,7 +121,6 @@ function EditCitePage(props) {
         severity: SEVERITY.success,
       });
     } catch (e) {
-      console.error(e);
       addToast({
         message: `Error deleting incident report ${reportNumber}`,
         severity: SEVERITY.danger,
