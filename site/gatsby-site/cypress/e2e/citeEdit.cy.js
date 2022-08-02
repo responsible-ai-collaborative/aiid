@@ -8,6 +8,8 @@ import { format, getUnixTime } from 'date-fns';
 
 import incident from '../fixtures/incidents/incident.json';
 
+import incidentWithDeletedReport from '../fixtures/incidents/incidentWithDeletedReport.json';
+
 import reportWithTranslations from '../fixtures/reports/reportWithTranslations.json';
 
 describe('Edit report', () => {
@@ -210,7 +212,8 @@ describe('Edit report', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'UpdateIncident',
-      'updateIncident'
+      'updateIncident',
+      incidentWithDeletedReport
     );
 
     cy.visit(url);
