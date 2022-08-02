@@ -16,7 +16,15 @@
         "private": false
     },
     {
+        "name": "reportTranslations",
+        "private": false
+    },
+    {
         "name": "unlinkReportsFromIncidents",
+        "private": false
+    },
+    {
+        "name": "updateOneReportTranslation",
         "private": false
     }
 ]

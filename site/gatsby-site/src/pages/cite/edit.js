@@ -5,27 +5,63 @@ import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button, Spinner } from 'react-bootstrap';
 import {
-  FIND_REPORT,
   UPDATE_REPORT,
   DELETE_REPORT,
   useUpdateLinkedReports,
+  FIND_REPORT_WITH_TRANSLATIONS,
 } from '../../graphql/reports';
 import { UPDATE_INCIDENT, FIND_INCIDENT } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { format, getUnixTime } from 'date-fns';
 import { stripMarkdown } from 'utils/typography';
 import { Formik } from 'formik';
+import pick from 'lodash/pick';
+import { useLocalization } from 'gatsby-theme-i18n';
+import { gql } from '@apollo/client';
+
+const UPDATE_REPORT_TRANSLATION = gql`
+  mutation UpdateReportTranslation($input: UpdateOneReportTranslationInput) {
+    updateOneReportTranslation(input: $input) {
+      report_number
+    }
+  }
+`;
+
+const reportFields = [
+  'authors',
+  'cloudinary_id',
+  'date_downloaded',
+  'date_modified',
+  'date_published',
+  'editor_notes',
+  'epoch_date_downloaded',
+  'epoch_date_modified',
+  'epoch_date_published',
+  'flag',
+  'image_url',
+  'language',
+  'plain_text',
+  'report_number',
+  'source_domain',
+  'submitters',
+  'tags',
+  'text',
+  'title',
+  'url',
+];
 
 function EditCitePage(props) {
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
 
-  const { data: reportData, loading: loadingReport } = useQuery(FIND_REPORT, {
+  const { data: reportData, loading: loadingReport } = useQuery(FIND_REPORT_WITH_TRANSLATIONS, {
     variables: { query: { report_number: reportNumber } },
   });
 
   const [updateReport] = useMutation(UPDATE_REPORT);
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
+
+  const [updateReportTranslations] = useMutation(UPDATE_REPORT_TRANSLATION);
 
   const [deleteReport] = useMutation(DELETE_REPORT);
 
@@ -45,6 +81,8 @@ function EditCitePage(props) {
 
   const addToast = useToastContext();
 
+  const { config } = useLocalization();
+
   const handleSubmit = async (values) => {
     try {
       if (typeof values.authors === 'string') {
@@ -61,7 +99,7 @@ function EditCitePage(props) {
       values.epoch_date_published = getUnixTime(new Date(values.date_published));
       values.epoch_date_modified = getUnixTime(new Date(values.date_modified));
 
-      const updated = { ...values, incident_id: undefined, __typename: undefined };
+      const updated = pick(values, reportFields);
 
       await updateReport({
         variables: {
@@ -74,6 +112,21 @@ function EditCitePage(props) {
           },
         },
       });
+
+      for (const { code } of config.filter((c) => c.code !== values.language)) {
+        const updatedTranslation = pick(values[`translations_${code}`], ['title', 'text']);
+
+        await updateReportTranslations({
+          variables: {
+            input: {
+              ...updatedTranslation,
+              language: code,
+              report_number: reportNumber,
+              plain_text: await stripMarkdown(updatedTranslation.text),
+            },
+          },
+        });
+      }
 
       if (values.incident_id !== parentIncident.incident.incident_id) {
         await updateLinkedReports({ reportNumber, incidentIds: [values.incident_id] });
