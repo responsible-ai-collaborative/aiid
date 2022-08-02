@@ -10,6 +10,8 @@ import incident from '../fixtures/incidents/incident.json';
 
 import reportWithTranslations from '../fixtures/reports/reportWithTranslations.json';
 
+import incidentWithDeletedReport from '../fixtures/incidents/incidentWithDeletedReport.json';
+
 describe('Edit report', () => {
   const url = '/cite/edit?report_number=10';
 
@@ -211,7 +213,7 @@ describe('Edit report', () => {
       '**/graphql',
       (req) => req.body.operationName == 'UpdateIncident',
       'updateIncident',
-      incident
+      incidentWithDeletedReport
     );
 
     cy.visit(url);
