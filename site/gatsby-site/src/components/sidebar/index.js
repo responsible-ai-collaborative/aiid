@@ -88,19 +88,6 @@ const Divider = styled((props) => (
   }
 `;
 
-const SideBarUL = styled.ul`
-  li a {
-    color: ${({ theme }) => theme.colors.text} !important;
-  }
-
-  .item > a:hover {
-    background-color: var(--primary3);
-    color: #fff !important;
-
-    /* background: #F8F8F8 */
-  }
-`;
-
 const SidebarLayout = ({ collapse, setNavCollapsed }) => {
   return (
     <Sidebar collapse={collapse}>
@@ -111,7 +98,7 @@ const SidebarLayout = ({ collapse, setNavCollapsed }) => {
           dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
         />
       ) : null}
-      <SideBarUL className={'sideBarUL'}>
+      <ul className={'sideBarUL'}>
         <li className="hideFrontLine firstLevel item">
           <ul>
             <Tree setNavCollapsed={setNavCollapsed} />
@@ -128,7 +115,7 @@ const SidebarLayout = ({ collapse, setNavCollapsed }) => {
             );
           }
         })}
-      </SideBarUL>
+      </ul>
     </Sidebar>
   );
 };

@@ -1,3 +1,18 @@
+let safelist = [
+  'tw-btn-outline-primary',
+  'tw-btn',
+  'tw-bg-secondary',
+  'tw-tooltip-top',
+  'tw-tooltip-right',
+  'tw-tooltip-bottom',
+  'tw-tooltip-left',
+];
+
+// Whitelisting level options from ListItem component
+for (let i = 0; i < 100; i++) {
+  safelist.push(`tw-pl-[${2 + (i || 0) * 1}rem`);
+}
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   prefix: 'tw-',
@@ -27,6 +42,8 @@ module.exports = {
         danger: '#dc3545',
         'gray-900': '#212529',
         'light-orange': '#ec9982',
+        'list-gray': '#5c6975',
+        'light-blue': 'rgb(230,236,241)',
       },
       boxShadow: {
         card: '0 2px 5px 0px #e3e5ec',
@@ -43,16 +60,11 @@ module.exports = {
       padding: {
         0.8: '0.8rem',
       },
+      fontFamily: {
+        karla: 'Karla, sans-serif',
+      },
     },
   },
   plugins: [],
-  safelist: [
-    'tw-btn-outline-primary',
-    'tw-btn',
-    'tw-bg-secondary',
-    'tw-tooltip-top',
-    'tw-tooltip-right',
-    'tw-tooltip-bottom',
-    'tw-tooltip-left',
-  ],
+  safelist: safelist,
 };
