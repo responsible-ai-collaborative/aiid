@@ -210,7 +210,8 @@ describe('Edit report', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'UpdateIncident',
-      'updateIncident'
+      'updateIncident',
+      incident
     );
 
     cy.visit(url);
