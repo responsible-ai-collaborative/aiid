@@ -293,7 +293,7 @@ const SubmissionForm = () => {
         </Form.Group>
 
         <Form.Group className="mt-3">
-          <Label popover={POP_OVERS['language']} label={t('Tags')} />
+          <Label popover={POP_OVERS['tags']} label={t('Tags')} />
           <TagsControl name={'tags'} />
         </Form.Group>
 

@@ -16,6 +16,7 @@ import 'bytemd/dist/index.css';
 import IncidentIdField from 'components/incidents/IncidentIdField';
 import getSourceDomain from '../../utils/getSourceDomain';
 import supportedLanguages from 'components/i18n/languages.json';
+import { useLocalization } from 'gatsby-theme-i18n';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -170,6 +171,8 @@ const IncidentReportForm = () => {
     [values]
   );
 
+  const { config } = useLocalization();
+
   return (
     <Form
       onSubmit={(event) => {
@@ -252,7 +255,7 @@ const IncidentReportForm = () => {
         {...TextInputGroupProps}
       />
 
-      <Form.Group className="mt-3" data-color-mode="light">
+      <Form.Group className="mt-3" data-color-mode="light" data-cy="text">
         <Label popover={POP_OVERS.text} label={'Text'} />
         <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
       </Form.Group>
@@ -308,6 +311,37 @@ const IncidentReportForm = () => {
         className="mt-3"
         {...TextInputGroupProps}
       />
+
+      <h4 className="mt-3">Translations</h4>
+
+      {config
+        .filter((c) => c.code !== values.language)
+        .map((c) => {
+          const name = `translations_${c.code}`;
+
+          return (
+            <div className="mt-5" key={name} data-cy={`translation-${c.code}`}>
+              <h5>{c.name}</h5>
+
+              <Form.Group className="mt-3">
+                <Label label="Title" />
+                <Form.Control
+                  type="text"
+                  value={values[name].title}
+                  onChange={(e) => setFieldValue(`${name}.title`, e.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group className="mt-3">
+                <Label label="Text" />
+                <Editor
+                  value={values[name].text}
+                  onChange={(value) => setFieldValue(`${name}.text`, value)}
+                />
+              </Form.Group>
+            </div>
+          );
+        })}
     </Form>
   );
 };
