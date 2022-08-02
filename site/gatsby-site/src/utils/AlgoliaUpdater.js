@@ -209,7 +209,7 @@ class AlgoliaUpdater {
 
     const featuredReplicaIndexName = indexName + '-featured';
 
-    const index = this.algoliaClient.initIndex(indexName);
+    const index = await this.algoliaClient.initIndex(indexName);
 
     await index.saveObjects(entries);
 
