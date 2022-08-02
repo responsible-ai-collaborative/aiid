@@ -10,21 +10,14 @@ import {
   useUpdateLinkedReports,
   FIND_REPORT_WITH_TRANSLATIONS,
 } from '../../graphql/reports';
+import { UPDATE_INCIDENT, FIND_INCIDENT } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { format, getUnixTime } from 'date-fns';
 import { stripMarkdown } from 'utils/typography';
 import { Formik } from 'formik';
-import { gql } from '@apollo/client';
 import pick from 'lodash/pick';
 import { useLocalization } from 'gatsby-theme-i18n';
-
-const FIND_PARENT_INCIDENT = gql`
-  query FindParentIncident($report_number: Int) {
-    incident(query: { reports_in: { report_number: $report_number } }) {
-      incident_id
-    }
-  }
-`;
+import { gql } from '@apollo/client';
 
 const UPDATE_REPORT_TRANSLATION = gql`
   mutation UpdateReportTranslation($input: UpdateOneReportTranslationInput) {
@@ -64,17 +57,25 @@ function EditCitePage(props) {
     variables: { query: { report_number: reportNumber } },
   });
 
-  const { data: incidentData, loading: loadingIncident } = useQuery(FIND_PARENT_INCIDENT, {
-    variables: { report_number: reportNumber },
-  });
-
-  const loading = loadingIncident || loadingReport;
-
   const [updateReport] = useMutation(UPDATE_REPORT);
+
+  const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
   const [updateReportTranslations] = useMutation(UPDATE_REPORT_TRANSLATION);
 
   const [deleteReport] = useMutation(DELETE_REPORT);
+
+  const { data: parentIncident, loading: loadingIncident } = useQuery(FIND_INCIDENT, {
+    variables: {
+      query: {
+        reports_in: {
+          report_number: reportNumber,
+        },
+      },
+    },
+  });
+
+  const loading = loadingIncident || loadingReport;
 
   const updateLinkedReports = useUpdateLinkedReports();
 
@@ -127,7 +128,7 @@ function EditCitePage(props) {
         });
       }
 
-      if (values.incident_id !== incidentData.incident.incident_id) {
+      if (values.incident_id !== parentIncident.incident.incident_id) {
         await updateLinkedReports({ reportNumber, incidentIds: [values.incident_id] });
       }
 
@@ -153,6 +154,21 @@ function EditCitePage(props) {
         },
       });
 
+      await updateIncident({
+        variables: {
+          query: {
+            incident_id: parentIncident.incident.incident_id,
+          },
+          set: {
+            reports: {
+              link: parentIncident.incident.reports
+                .filter((report) => report.report_number != reportNumber)
+                .map((report) => report.report_number),
+            },
+          },
+        },
+      });
+
       addToast({
         message: `Incident report ${reportNumber} deleted successfully.`,
         severity: SEVERITY.success,
@@ -174,11 +190,11 @@ function EditCitePage(props) {
       )}
       {!reportData?.report && !loading && <div>Report not found</div>}
 
-      {!loading && reportData?.report && incidentData?.incident && (
+      {!loading && reportData?.report && parentIncident?.incident && (
         <Formik
           validationSchema={schema}
           onSubmit={handleSubmit}
-          initialValues={{ ...reportData.report, incident_id: incidentData.incident.incident_id }}
+          initialValues={{ ...reportData.report, incident_id: parentIncident.incident.incident_id }}
         >
           {({ isValid, isSubmitting, submitForm }) => (
             <>

@@ -10,6 +10,8 @@ import incident from '../fixtures/incidents/incident.json';
 
 import reportWithTranslations from '../fixtures/reports/reportWithTranslations.json';
 
+import incidentWithDeletedReport from '../fixtures/incidents/incidentWithDeletedReport.json';
+
 describe('Edit report', () => {
   const url = '/cite/edit?report_number=10';
 
@@ -31,8 +33,7 @@ describe('Edit report', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) =>
-        req.body.operationName == 'FindParentIncident' && req.body.variables.report_number == 10,
+      (req) => req.body.operationName == 'FindIncident',
       'findIncident',
       incident
     );
@@ -201,10 +202,6 @@ describe('Edit report', () => {
       incident
     );
 
-    cy.visit(url);
-
-    cy.wait(['@findReportWithTranslations', '@findIncident']);
-
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'DeleteOneReport',
@@ -212,9 +209,22 @@ describe('Edit report', () => {
       { data: { deleteOneReport: { __typename: 'Report', report_number: 10 } } }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateIncident',
+      'updateIncident',
+      incidentWithDeletedReport
+    );
+
+    cy.visit(url);
+
+    cy.wait(['@findReportWithTranslations', '@findIncident']);
+
     cy.contains('button', 'Delete this report', { timeout: 8000 }).click();
 
     cy.wait('@delete');
+
+    cy.wait('@updateIncident');
 
     cy.get('div[class^="ToastContext"]')
       .contains('Incident report 10 deleted successfully')
