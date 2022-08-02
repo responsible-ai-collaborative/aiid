@@ -38,7 +38,7 @@ describe('Edit report', () => {
 
     cy.visit(url);
 
-    cy.wait(['@findReportWithTranslations', '@findIncident']);
+    cy.wait(['@findReportWithTranslations', '@findIncident'], { timeout: 30000 });
 
     [
       'authors',
@@ -215,7 +215,7 @@ describe('Edit report', () => {
 
     cy.visit(url);
 
-    cy.wait(['@findReportWithTranslations', '@findIncident']);
+    cy.wait(['@findReportWithTranslations', '@findIncident'], { timeout: 30000 });
 
     cy.contains('button', 'Delete this report', { timeout: 8000 }).click();
 
@@ -354,7 +354,7 @@ describe('Edit report', () => {
 
     cy.visit(`/cite/edit?report_number=23`);
 
-    cy.wait('@findReportWithTranslations');
+    cy.wait('@findReportWithTranslations', { timeout: 30000 });
 
     cy.get('form[data-cy="report"]').should('be.visible');
 

@@ -65,7 +65,7 @@ function EditCitePage(props) {
 
   const [deleteReport] = useMutation(DELETE_REPORT);
 
-  const { data: parentIncident, loadingIncident } = useQuery(FIND_INCIDENT, {
+  const { data: parentIncident, loading: loadingIncident } = useQuery(FIND_INCIDENT, {
     variables: {
       query: {
         reports_in: {
