@@ -221,8 +221,8 @@ class AlgoliaUpdater {
         queryLanguages: [language],
         replicas: [featuredReplicaIndexName],
       })
-      .then(() => {
-        const featuredReplicaIndex = this.algoliaClient.initIndex(featuredReplicaIndexName);
+      .then(async () => {
+        const featuredReplicaIndex = await this.algoliaClient.initIndex(featuredReplicaIndexName);
 
         featuredReplicaIndex.setSettings({
           ranking: ['desc(featured)', 'desc(text)'],
