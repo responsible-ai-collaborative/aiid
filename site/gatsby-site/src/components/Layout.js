@@ -10,7 +10,7 @@ const Layout = ({ children, collapse, className, location }) => (
   <>
     <Header />
     <div className="tw-layout">
-      <div className={`tw-left-sidebar hiddenMobile ${collapse ? 'collapse' : ''}`}>
+      <div className={`hiddenMobile ${collapse ? 'collapse' : ''}`}>
         <Sidebar collapse={collapse} />
       </div>
       {config.sidebar.title && (

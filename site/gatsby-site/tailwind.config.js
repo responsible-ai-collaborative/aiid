@@ -25,6 +25,7 @@ module.exports = {
   theme: {
     extend: {
       screens: {
+        '767px': { max: '767px' },
         '965px': { max: '965px' },
         '50rem': { max: '50rem' },
       },

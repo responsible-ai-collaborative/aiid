@@ -1,7 +1,11 @@
 import SearchInput from 'components/forms/SearchInput';
 import { navigate } from 'gatsby';
 import React, { useState, useEffect } from 'react';
-import { Button, Card, Col, Form, Row } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
+import Button from '../../elements/Button';
+import Card from '../../elements/Card';
+import Col from '../../elements/Col';
+import Row from '../../elements/Row';
 import { Trans, useTranslation } from 'react-i18next';
 
 export default function QuickSearch({ className }) {

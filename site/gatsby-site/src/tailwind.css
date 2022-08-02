@@ -4,11 +4,19 @@
 
 @layer base {
     .tw-layout {
-        @apply tw-block md:tw-flex tw-content-between tw-bg-white;
+        @apply tw-flex md:tw-flex tw-content-between tw-bg-white 767px:tw-block;
+    }
+
+    .tw-layout li a {
+        @apply tw-text-black;
+    }
+
+    .tw-layout .item > a:hover {
+        @apply tw-bg-primary-blue tw-text-white;
     }
 
     .tw-content {
-        @apply tw-flex tw-flex-grow tw-mt-0 tw-mr-[33px] tw-pt-12 tw-z-[1] tw-relative md:tw-w-[calc((100%-298px)-66px)];
+        @apply tw-flex tw-flex-grow tw-mt-0 tw-mx-[33px] tw-pt-12 tw-z-[1] tw-relative md:tw-w-[calc((100%-298px)-66px)];
     }
 
     .tw-main-container {
@@ -115,4 +123,39 @@
     }
 
     /* TAILWIND Tooltip ends */
+}
+
+@layer utilities {
+    
+    .tw-side-bar-ul {
+        @apply tw-mt-4 tw-pl-0;
+    }
+
+    .tw-side-bar-ul ul{
+        @apply tw-pl-0;
+    }
+
+    .tw-side-bar-ul li{
+        @apply tw-list-none tw-w-auto;
+    }
+
+    .tw-side-bar-ul li a {
+        @apply tw-border tw-border-transparent tw-border-r-0 tw-text-sm tw-leading-normal tw-py-[7px] tw-pr-[25px] tw-pl-[10px];
+    }
+
+    .tw-side-bar-ul .item {
+        @apply tw-list-none tw-p-0;
+    }
+
+    .tw-side-bar-ul .item>a {
+        @apply tw-text-[rgb(59,69,78)] tw-items-center tw-flex tw-pl-4 tw-pr-8 tw-relative tw-no-underline tw-w-full;
+    }
+
+    .tw-side-bar-ul .item>a:hover {
+        @apply tw-bg-light-orange tw-text-white;
+    }
+
+    .tw-side-bar-ul .item .item {
+        @apply tw-ml-4;
+    }
 }
