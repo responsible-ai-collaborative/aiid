@@ -5,10 +5,11 @@ import { faTwitter, faLinkedin, faFacebook } from '@fortawesome/free-brands-svg-
 
 const SocialShareButtons = ({ metaTitle, canonicalUrl, page }) => {
   return (
-    <div className={`d-flex social-btn-container ${page}`}>
+    <div data-cy="social-share-buttons" className={`d-flex social-btn-container ${page}`}>
       {/* Twitter */}
       <button
         className={'social-btn'}
+        data-cy="btn-share-twitter"
         onClick={() => {
           window.open(
             `https://twitter.com/intent/tweet?text=${metaTitle}&url=${canonicalUrl}`,
@@ -29,6 +30,7 @@ const SocialShareButtons = ({ metaTitle, canonicalUrl, page }) => {
       {/* LinkedIn */}
       <button
         className={'social-btn'}
+        data-cy="btn-share-linkedin"
         onClick={() => {
           window.open(
             `https://www.linkedin.com/sharing/share-offsite/?url=${canonicalUrl}`,
@@ -49,6 +51,7 @@ const SocialShareButtons = ({ metaTitle, canonicalUrl, page }) => {
       {/* Email */}
       <button
         className={'social-btn'}
+        data-cy="btn-share-email"
         onClick={() => {
           window.open(
             `mailto:?subject=${metaTitle}&body=${canonicalUrl}`,
@@ -69,6 +72,7 @@ const SocialShareButtons = ({ metaTitle, canonicalUrl, page }) => {
       {/* Facebook */}
       <button
         className={'social-btn'}
+        data-cy="btn-share-facebook"
         onClick={() => {
           window.open(
             `https://www.facebook.com/sharer/sharer.php?u=${canonicalUrl}`,
