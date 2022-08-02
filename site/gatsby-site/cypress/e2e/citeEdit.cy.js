@@ -2,11 +2,13 @@ import { maybeIt } from '../support/utils';
 
 import updateOneReport from '../fixtures/reports/updateOneReport.json';
 
+import updateOneReportTranslation from '../fixtures/reports/updateOneReportTranslation.json';
+
 import { format, getUnixTime } from 'date-fns';
 
 import incident from '../fixtures/incidents/incident.json';
 
-import report from '../fixtures/reports/report.json';
+import reportWithTranslations from '../fixtures/reports/reportWithTranslations.json';
 
 describe('Edit report', () => {
   const url = '/cite/edit?report_number=10';
@@ -22,9 +24,9 @@ describe('Edit report', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'FindReport',
-      'findReport',
-      report
+      (req) => req.body.operationName == 'FindReportWithTranslations',
+      'findReportWithTranslations',
+      reportWithTranslations
     );
 
     cy.conditionalIntercept(
@@ -37,7 +39,7 @@ describe('Edit report', () => {
 
     cy.visit(url);
 
-    cy.wait(['@findReport', '@findIncident']);
+    cy.wait(['@findReportWithTranslations', '@findIncident']);
 
     [
       'authors',
@@ -48,14 +50,27 @@ describe('Edit report', () => {
       'title',
       'editor_notes',
     ].forEach((key) => {
-      cy.get(`[name=${key}]`).should('have.value', report.data.report[key].toString());
+      cy.get(`[name=${key}]`).should(
+        'have.value',
+        reportWithTranslations.data.report[key].toString()
+      );
     });
 
-    cy.getEditorText().should('eq', report.data.report.text);
+    cy.getEditorText().should('eq', reportWithTranslations.data.report.text);
 
     cy.get(`[name="incident_id"]`).should('have.value', incident.data.incident.incident_id);
 
     cy.get('[class*=Typeahead] [option="Test Tag"]').should('have.length', 1);
+
+    cy.get('[data-cy="translation-es"] [type="text"]').should(
+      'have.value',
+      reportWithTranslations.data.report.translations_es.title
+    );
+
+    cy.getEditorText('[data-cy="translation-es"] .CodeMirror').should(
+      'eq',
+      reportWithTranslations.data.report.translations_es.text
+    );
 
     const updates = {
       authors: 'Test Author',
@@ -72,21 +87,22 @@ describe('Edit report', () => {
       cy.get(`[name=${key}]`).clear().type(updates[key]);
     });
 
-    cy.get(`[name="language"]`).select('Spanish');
-
     cy.setEditorText(
-      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+      '## This is text in English\n\nthat is longer that eighty characters, yes eighty characters!',
+      '[data-cy="text"] .CodeMirror'
     );
 
     cy.get('[class*=Typeahead] [type="text"]').type('New Tag');
 
     cy.get('a[aria-label="New Tag"]').click();
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'UpdateReport',
-      'updateReport',
-      updateOneReport
+    cy.get('[data-cy="translation-es"] [type="text"]')
+      .clear()
+      .type('Este es un titulo en Espanol!');
+
+    cy.setEditorText(
+      '## Este es texto en espanol\n\nque es mas largo que ochenta caracters, si ochenta caracteres!',
+      '[data-cy="translation-es"] .CodeMirror'
     );
 
     // cypress doesn't provide a built-in way to check that a request wasn't made
@@ -100,9 +116,25 @@ describe('Edit report', () => {
       }
     });
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateReport',
+      'updateReport',
+      updateOneReport
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateReportTranslation',
+      'updateOneReportTranslation',
+      updateOneReportTranslation
+    );
+
     cy.contains('button', 'Submit').click();
 
     cy.wait('@updateReport').then((xhr) => {
+      expect(xhr.request.body.variables.query.report_number).eq(10);
+
       const date_modified = format(new Date(), 'yyyy-MM-dd');
 
       const epoch_date_modified = getUnixTime(new Date(date_modified));
@@ -121,13 +153,28 @@ describe('Edit report', () => {
       expect(xhr.request.body.variables.set.submitters).deep.eq(['Test Submitter']);
       expect(xhr.request.body.variables.set.tags).deep.eq(['Test Tag', 'New Tag']);
       expect(xhr.request.body.variables.set.text).eq(
-        'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+        '## This is text in English\n\nthat is longer that eighty characters, yes eighty characters!'
+      );
+      expect(xhr.request.body.variables.set.plain_text).eq(
+        'This is text in English\n\nthat is longer that eighty characters, yes eighty characters!\n'
       );
       expect(xhr.request.body.variables.set.title).eq('Test Title');
       expect(xhr.request.body.variables.set.url).eq('https://www.test.com/test');
       expect(xhr.request.body.variables.set.source_domain).eq('test.com');
       expect(xhr.request.body.variables.set.editor_notes).eq('Pro iustitia tantum');
-      expect(xhr.request.body.variables.set.language).eq('es');
+      expect(xhr.request.body.variables.set.language).eq('en');
+    });
+
+    cy.wait('@updateOneReportTranslation').then((xhr) => {
+      expect(xhr.request.body.variables.input.language).eq('es');
+      expect(xhr.request.body.variables.input.report_number).eq(10);
+      expect(xhr.request.body.variables.input.text).eq(
+        '## Este es texto en espanol\n\nque es mas largo que ochenta caracters, si ochenta caracteres!'
+      );
+      expect(xhr.request.body.variables.input.plain_text).eq(
+        'Este es texto en espanol\n\nque es mas largo que ochenta caracters, si ochenta caracteres!\n'
+      );
+      expect(xhr.request.body.variables.input.title).eq('Este es un titulo en Espanol!');
     });
 
     cy.wrap(updateIncidentInvoked).should('eq', false);
@@ -142,9 +189,9 @@ describe('Edit report', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'FindReport',
-      'findReport',
-      report
+      (req) => req.body.operationName == 'FindReportWithTranslations',
+      'findReportWithTranslations',
+      reportWithTranslations
     );
 
     cy.conditionalIntercept(
@@ -155,6 +202,8 @@ describe('Edit report', () => {
     );
 
     cy.visit(url);
+
+    cy.wait(['@findReportWithTranslations', '@findIncident']);
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -284,12 +333,21 @@ describe('Edit report', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'FindReport',
-      'findReport',
-      report
+      (req) => req.body.operationName == 'FindReportWithTranslations',
+      'findReportWithTranslations',
+      reportWithTranslations
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateReportTranslation',
+      'updateOneReportTranslation',
+      updateOneReportTranslation
     );
 
     cy.visit(`/cite/edit?report_number=23`);
+
+    cy.wait('@findReportWithTranslations');
 
     cy.get('form[data-cy="report"]').should('be.visible');
 
