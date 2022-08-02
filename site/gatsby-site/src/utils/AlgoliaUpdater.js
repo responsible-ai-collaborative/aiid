@@ -224,7 +224,7 @@ class AlgoliaUpdater {
       .then(async () => {
         const featuredReplicaIndex = await this.algoliaClient.initIndex(featuredReplicaIndexName);
 
-        featuredReplicaIndex.setSettings({
+        await featuredReplicaIndex.setSettings({
           ranking: ['desc(featured)', 'desc(text)'],
         });
       });
