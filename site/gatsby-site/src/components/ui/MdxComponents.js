@@ -1,6 +1,6 @@
 import React from 'react';
 import isString from 'lodash/isString';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import Link from './Link';
 
 const slug = (title) =>
   isString(title) ? title.toLowerCase().replace(/\s+/g, '') : title.props.children;
@@ -12,7 +12,7 @@ const Components = {
   h4: ({ children }) => <h4 id={slug(children)}>{children}</h4>,
   h5: ({ children }) => <h5 id={slug(children)}>{children}</h5>,
   h6: ({ children }) => <h6 id={slug(children)}>{children}</h6>,
-  a: ({ href, ...props }) => <LocalizedLink {...props} to={href} />,
+  a: ({ href, ...props }) => <Link {...props} to={href} />,
 };
 
 export default Components;
