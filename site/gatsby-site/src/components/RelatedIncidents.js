@@ -5,7 +5,6 @@ import { gql, useApolloClient } from '@apollo/client';
 import debounce from 'lodash/debounce';
 import isArray from 'lodash/isArray';
 import RelatedIncidentsArea from './RelatedIncidentsArea';
-import SemanticallyRelatedIncidents from './SemanticallyRelatedIncidents';
 
 const relatedIncidentsQuery = gql`
   query ProbablyRelatedIncidents($query: IncidentQueryInput) {
@@ -55,7 +54,7 @@ const reportsWithIncidentIds = async (reports, client) => {
   }));
 };
 
-const searchColumns = {
+const allSearchColumns = {
   byDatePublished: {
     header: (incident) => (
       <>
@@ -92,6 +91,8 @@ const searchColumns = {
       result.data.incidents.length ? result.data.incidents[0].reports : [],
     isSet: (incident) => incident.incident_id,
     getQueryVariables: (incident) => ({ incident_id_in: [incident.incident_id] }),
+    editSimilar: false,
+    editId: false,
   },
 
   byAuthors: {
@@ -118,10 +119,22 @@ const searchColumns = {
     getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) => incident.url,
     getQueryVariables: (incident) => ({ url_in: [incident.url] }),
+    editSimilar: false,
   },
 };
 
-const RelatedIncidents = ({ incident, setFieldValue = null, editId = true, className = '' }) => {
+const RelatedIncidents = ({
+  incident,
+  setFieldValue = null,
+  className = '',
+  columns = Object.keys(allSearchColumns),
+}) => {
+  const searchColumns = {};
+
+  for (const column of columns) {
+    searchColumns[column] = allSearchColumns[column];
+  }
+
   const [loading, setLoading] = useState({});
 
   const [relatedReports, setRelatedReports] = useState({});
@@ -183,15 +196,6 @@ const RelatedIncidents = ({ incident, setFieldValue = null, editId = true, class
     }
   }, [queryVariables]);
 
-  if (Object.keys(relatedReports).every((key) => relatedReports?.[key]?.length == 0)) {
-    return (
-      <div className="mt-4" data-cy="empty-message">
-        Preliminary checks failed to find incident reports with similar publication dates (+/- 2
-        weeks), similar incident dates (+/- 1 month), the same report URL, or the same authors.
-      </div>
-    );
-  }
-
   return (
     <ListGroup data-cy="related-reports" className={className}>
       {Object.keys(searchColumns).map((key) => {
@@ -205,16 +209,13 @@ const RelatedIncidents = ({ incident, setFieldValue = null, editId = true, class
             reports={relatedReports[key]}
             header={column.header(incident)}
             setFieldValue={setFieldValue}
-            editId={editId}
+            {...{
+              editId: column.editId,
+              editSimilar: column.editSimilar,
+            }}
           />
         );
       })}
-
-      <SemanticallyRelatedIncidents
-        incident={incident}
-        setFieldValue={setFieldValue}
-        editId={editId}
-      />
     </ListGroup>
   );
 };

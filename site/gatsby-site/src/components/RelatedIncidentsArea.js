@@ -7,7 +7,7 @@ import { LocalizedLink } from 'gatsby-theme-i18n';
 const ListContainer = styled(Card)`
   margin: 1em 0;
   .reports {
-    max-height: 80vh;
+    max-height: 50vh;
     overflow-y: auto;
   }
 `;
@@ -47,6 +47,7 @@ const RelatedIncidentsArea = ({
   reports,
   loading,
   setFieldValue,
+  editSimilar = true,
   editId = true,
   error,
 }) => {
@@ -78,7 +79,7 @@ const RelatedIncidentsArea = ({
                 </a>
               </span>
               <ReportToolbar>
-                {setFieldValue && (
+                {setFieldValue && editSimilar && (
                   <>
                     <SelectorLabel htmlFor="similar-selector">Related:</SelectorLabel>
                     <SimilaritySelector incident_id={val.incident_id} />

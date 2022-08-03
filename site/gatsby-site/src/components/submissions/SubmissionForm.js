@@ -17,6 +17,8 @@ import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
 import supportedLanguages from 'components/i18n/languages.json';
 import { Trans, useTranslation } from 'react-i18next';
+import RelatedIncidents from 'components/RelatedIncidents';
+import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -224,6 +226,7 @@ const SubmissionForm = () => {
             TextInputGroupProps.handleChange(e);
           }}
         />
+        <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
 
         <TextInputGroup
           name="title"
@@ -239,6 +242,9 @@ const SubmissionForm = () => {
           className="mt-3"
           {...TextInputGroupProps}
         />
+
+        <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byAuthors']} />
+
         <TextInputGroup
           name="submitters"
           label={t('Submitter CSV')}
@@ -254,6 +260,13 @@ const SubmissionForm = () => {
           className="mt-3"
           {...TextInputGroupProps}
         />
+
+        <RelatedIncidents
+          incident={values}
+          setFieldValue={setFieldValue}
+          columns={['byDatePublished']}
+        />
+
         <TextInputGroup
           name="date_downloaded"
           label={t('Date Downloaded')}
@@ -275,6 +288,8 @@ const SubmissionForm = () => {
           <Label popover={POP_OVERS.text} label={t('Text')} />
           <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
         </Form.Group>
+
+        <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
 
         <Form.Group className="mt-3">
           <Label popover={POP_OVERS['language']} label={t('Language')} />
@@ -302,6 +317,12 @@ const SubmissionForm = () => {
           className="mt-3"
           placeHolder={t('Leave empty to report a new incident')}
           showIncidentData={false}
+        />
+
+        <RelatedIncidents
+          incident={values}
+          setFieldValue={setFieldValue}
+          columns={['byIncidentId']}
         />
 
         {!values.incident_id && (

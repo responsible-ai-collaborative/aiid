@@ -3,7 +3,6 @@ import { Button, Container } from 'react-bootstrap';
 import { CSVReader } from 'react-papaparse';
 import { useQueryParams, StringParam, ArrayParam, encodeDate, withDefault } from 'use-query-params';
 import Link from 'components/ui/Link';
-import RelatedIncidents from 'components/RelatedIncidents';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, parse } from 'date-fns';
@@ -138,7 +137,7 @@ const SubmitForm = () => {
         initialValues={submission}
         enableReinitialize={true}
       >
-        {({ isSubmitting, submitForm, values, setFieldValue }) => (
+        {({ isSubmitting, submitForm }) => (
           <>
             <SubmissionForm />
 
@@ -159,8 +158,6 @@ const SubmitForm = () => {
             >
               <Trans>Submit</Trans>
             </Button>
-
-            <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
           </>
         )}
       </Formik>
