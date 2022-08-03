@@ -117,7 +117,7 @@ class AlgoliaUpdater {
             incident_id: incident.incident_id,
             incident_date: incident.date,
             epoch_incident_date: getUnixTime(new Date(incident.date)),
-            featured: config?.header?.search?.featured.includes(report.report_number) ? 1 : 0,
+            featured: config?.header?.search?.featured[report.report_number] || 0,
           };
 
           if (classificationsHash[entry.incident_id]) {
