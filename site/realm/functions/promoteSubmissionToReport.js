@@ -4,13 +4,11 @@ exports = async (input) => {
   const incidents = context.services.get('mongodb-atlas').db('aiidprod').collection("incidents");
   const reports = context.services.get('mongodb-atlas').db('aiidprod').collection("reports");
   
-  
   const {_id: undefined, ...submission} = await submissions.findOne({_id: input.submission_id});
-  
   
   const parentIncidents = await incidents.find({incident_id: {$in: input.incident_ids }}).toArray();
   
-  const report_number = await reports.find({}).sort({report_number: -1}).limit(1).next().report_number + 1;
+  const report_number = (await reports.find({}).sort({report_number: -1}).limit(1).next()).report_number + 1;
 
   if (parentIncidents.length == 0) {
     
@@ -18,7 +16,7 @@ exports = async (input) => {
     
     const newIncident = {
       title: submission.title,
-      incident_id: lastIncident.incident_id + 1,
+      incident_id: BSON.Int32(lastIncident.incident_id + 1),
       reports: [],
       editors: ["Sean McGregor"],
       date: submission.incident_date,
@@ -26,11 +24,15 @@ exports = async (input) => {
       editor_similar_incidents: submission.editor_similar_incidents || [],
       editor_dissimilar_incidents: submission.editor_dissimilar_incidents || [],
       embedding: submission.embedding 
-        ? { vector: submission.embedding.vector, from_reports: [report_number] }
+        ? { vector: submission.embedding.vector, from_reports: [BSON.Int32(report_number)] }
         : undefined
     }
+
+    for (let key of Object.keys(newIncident)) {
+      console.log('newIncident.' + key, JSON.stringify(newIncident[key]));
+    }
     
-    await incidents.insertOne({...newIncident, incident_id: BSON.Int32(newIncident.incident_id)});
+    await incidents.insertOne(newIncident);
     
     parentIncidents.push(newIncident);
   }
