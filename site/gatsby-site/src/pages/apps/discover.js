@@ -226,7 +226,12 @@ function DiscoverApp(props) {
       </AiidHelmet>
       <SearchContext.Provider value={{ searchState, indexName, searchClient, onSearchStateChange }}>
         <InstantSearch
-          indexName={indexName}
+          indexName={
+            indexName +
+            (searchState.query == '' && Object.keys(searchState.refinementList).length == 0
+              ? '-featured'
+              : '')
+          }
           searchClient={searchClient}
           searchState={searchState}
           onSearchStateChange={onSearchStateChange}
