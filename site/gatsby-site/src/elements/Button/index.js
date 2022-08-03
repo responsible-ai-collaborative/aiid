@@ -5,6 +5,7 @@ export default function Button(props) {
 
   classNames += props.className ? ` ${props.className}` : '';
   classNames += props.variant ? ` tw-btn-${props.variant}` : '';
+  classNames += props.size ? ` tw-btn-${props.size}` : '';
 
   return (
     <>

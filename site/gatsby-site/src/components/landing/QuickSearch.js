@@ -61,7 +61,7 @@ export default function QuickSearch({ className }) {
               }}
             />
             <Row>
-              <Col className="d-flex gap-2 justify-content-center">
+              <Col className="tw-flex tw-gap-2 tw-justify-center">
                 <Button size="lg" variant="primary" className="mt-4" type="submit">
                   <Trans>Search</Trans>
                 </Button>

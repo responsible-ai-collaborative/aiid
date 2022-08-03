@@ -1,4 +1,11 @@
 let safelist = [
+  'tw-btn-primary',
+  'tw-btn-secondary',
+  'tw-btn-xs',
+  'tw-btn-sm',
+  'tw-btn-m',
+  'tw-btn-lg',
+  'tw-btn-xl',
   'tw-btn-outline-primary',
   'tw-btn',
   'tw-bg-secondary',

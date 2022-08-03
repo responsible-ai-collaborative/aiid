@@ -7,7 +7,7 @@ export default function Card(props) {
         {...props}
         className={`tw-border tw-rounded-lg tw-flex tw-break-words ${
           props.className ? props.className : ''
-        } tw-flex-col tw-shadow-card ${props.bg ? 'tw-bg-' + props.bg : ''}`}
+        } tw-flex-col ${props.bg ? 'tw-bg-' + props.bg : ''}`}
       >
         {props.children}
       </div>

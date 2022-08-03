@@ -16,7 +16,7 @@
     }
 
     .tw-content {
-        @apply tw-flex tw-flex-grow tw-mt-0 tw-mx-[33px] tw-pt-12 tw-z-[1] tw-relative md:tw-w-[calc((100%-298px)-66px)];
+        @apply tw-flex tw-flex-grow tw-mt-0 tw-mx-[10px] md:tw-mx-[33px] tw-pt-12 tw-z-[1] tw-relative md:tw-w-[calc((100%-298px)-66px)];
     }
 
     .tw-main-container {
@@ -26,6 +26,10 @@
     .tw-bg-secondary {
         @apply tw-bg-secondary-grey tw-opacity-100 tw-text-text-light-grey;
     }
+
+    .tw-hidden-mobile {
+        @apply 767px:tw-hidden;
+    }
 }
 
 @layer components {
@@ -33,6 +37,18 @@
     /* TAILWIND Buttons begins */
     .tw-btn {
         @apply tw-bg-transparent tw-border tw-border-transparent tw-rounded tw-cursor-pointer tw-inline-block tw-text-base tw-font-normal tw-py-1.5 tw-px-3 tw-text-center tw-no-underline tw-select-none tw-align-middle tw-transition-btn;
+    }
+
+    .tw-btn-primary {
+        @apply tw-bg-blue-600 tw-border-blue-600 tw-text-white;
+    }
+
+    .tw-btn-secondary {
+        @apply tw-bg-dark-grey tw-border-dark-grey tw-text-white;
+    }
+
+    .tw-btn-lg {
+        @apply tw-rounded tw-text-xl tw-py-[0.5rem] tw-px-[1rem];
     }
 
     .tw-btn-outline-primary {
@@ -51,8 +67,12 @@
         @apply tw-flex tw-flex-wrap;
     }
 
+    .tw-row>* {
+        @apply tw-w-full;
+    }
+
     .tw-col {
-        @apply tw-flex-1;
+        @apply tw-w-full tw-flex-1;
     }
 
     .tw-pagination {
@@ -127,6 +147,7 @@
 
 @layer utilities {
     
+    /* TAILWIND Sidebar starts */
     .tw-side-bar-ul {
         @apply tw-mt-4 tw-pl-0;
     }
@@ -148,7 +169,7 @@
     }
 
     .tw-side-bar-ul .item>a {
-        @apply tw-text-[rgb(59,69,78)] tw-items-center tw-flex tw-pl-4 tw-pr-8 tw-relative tw-no-underline tw-w-full;
+        @apply tw-text-light-orange md:tw-text-[rgb(59,69,78)] tw-items-center tw-flex tw-pl-4 tw-pr-8 tw-relative tw-no-underline tw-w-full;
     }
 
     .tw-side-bar-ul .item>a:hover {
@@ -158,4 +179,17 @@
     .tw-side-bar-ul .item .item {
         @apply tw-ml-4;
     }
+
+    .tw-side-bar-title {
+        @apply tw-bg-gray-100 tw-text-lg tw-font-bold tw-text-gray-900 tw-flex tw-items-center tw-py-[18px] tw-px-[16px] tw-font-karla;
+    }
+
+    .tw-side-bar-title.tw-side-bar-show {
+        @apply tw-hidden;
+    }
+
+    .tw-side-bar-title a {
+        @apply tw-text-gray-900;
+    }
+    /* TAILWIND Sidebar ends */
 }
