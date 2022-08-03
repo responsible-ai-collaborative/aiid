@@ -50,10 +50,10 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
   const { isRole } = useUserContext();
 
   return (
-    <IncidentCardContainer id={`r${item.mongodb_id}`}>
+    <IncidentCardContainer id={`r${item.report_number}`}>
       <div className="card-header">
         <div className="d-flex justify-content-between">
-          <a href={`#r${item.mongodb_id}`}>
+          <a href={`#r${item.report_number}`}>
             <span>{item.title}</span>
           </a>
           {isRole('incident_editor') && (

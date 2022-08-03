@@ -27,6 +27,21 @@
         "description": {
             "bsonType": "string"
         },
+        "editor_dissimilar_incidents": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "int"
+            }
+        },
+        "editor_notes": {
+            "bsonType": "string"
+        },
+        "editor_similar_incidents": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "int"
+            }
+        },
         "image_url": {
             "bsonType": "string"
         },
@@ -38,6 +53,20 @@
         },
         "language": {
             "bsonType": "string"
+        },
+        "nlp_similar_incidents": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "incident_id": {
+                        "bsonType": "int"
+                    },
+                    "similarity": {
+                        "bsonType": "double"
+                    }
+                }
+            }
         },
         "plain_text": {
             "bsonType": "string"
@@ -65,35 +94,6 @@
         },
         "url": {
             "bsonType": "string"
-        },
-        "editor_notes": {
-            "bsonType": "string"
-        },
-        "nlp_similar_incidents": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "object",
-                "properties": {
-                    "incident_id": {
-                        "bsonType": "int"
-                    },
-                    "similarity": {
-                        "bsonType": "double"
-                    }
-                }
-            }
-        },
-        "editor_similar_incidents": {
-           "bsonType": "array",
-           "items": {
-               "bsonType": "int"
-           }
-        },
-        "editor_dissimilar_incidents": {
-           "bsonType": "array",
-           "items": {
-               "bsonType": "int"
-           }
         }
     },
     "required": [
