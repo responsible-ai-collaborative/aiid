@@ -189,7 +189,7 @@ Algolia index settings are uploaded on build time, so they will take effect afte
 gatsby build
 ```
 
-Alternately, you can update the settings without rebuilding if from `site/gatsby-site` you run:
+Alternatively, you can update the settings without rebuilding if from `site/gatsby-site` you run:
 
 ```
 node src/scripts/algolia-update.js
