@@ -21,6 +21,7 @@ import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { format, getUnixTime } from 'date-fns';
 import SubmissionEditModal from './SubmissionEditModal';
 import { Spinner } from 'react-bootstrap';
+import Link from 'components/ui/Link';
 
 const ListedGroup = ({ item, className = '', keysToRender }) => {
   return (
@@ -72,6 +73,8 @@ const SubmissionReview = ({ submission }) => {
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
+  const isNewIncident = submission.incident_id === 0;
+
   const [deleteSubmission, { loading: deleting }] = useMutation(DELETE_SUBMISSION, {
     update: (cache, { data }) => {
       // Apollo expects a `deleted` boolean field otherwise manual cache manipulation is needed
@@ -95,7 +98,7 @@ const SubmissionReview = ({ submission }) => {
       variables: {
         input: {
           submission_id: submission._id,
-          incident_ids: submission.incident_id === 0 ? [] : [submission.incident_id],
+          incident_ids: isNewIncident ? [] : [submission.incident_id],
         },
       },
       fetchPolicy: 'no-cache',
@@ -142,7 +145,7 @@ const SubmissionReview = ({ submission }) => {
       },
     });
 
-    if (submission.incident_id === 0) {
+    if (isNewIncident) {
       await updateIncident({
         variables: {
           query: {
@@ -161,10 +164,17 @@ const SubmissionReview = ({ submission }) => {
     }
 
     addToast({
-      message: (
+      message: isNewIncident ? (
         <>
           Successfully promoted submission to Incident {incident.incident_id} and Report{' '}
           {report_number}{' '}
+        </>
+      ) : (
+        <>
+          Successfully promoted submission to{' '}
+          <Link to={`/cite/${incident.incident_id}`}>
+            Incident {incident.incident_id} and Report {report_number}
+          </Link>{' '}
         </>
       ),
       severity: SEVERITY.success,
@@ -254,7 +264,7 @@ const SubmissionReview = ({ submission }) => {
               disabled={!isSubmitter || promoting}
               onClick={promoteSubmission}
             >
-              {submission.incident_id === 0 ? <>Add New Incident</> : <>Add New Report</>}
+              {isNewIncident ? <>Add New Incident</> : <>Add New Report</>}
               {promoting && (
                 <Spinner
                   as="span"
@@ -271,7 +281,7 @@ const SubmissionReview = ({ submission }) => {
               disabled={!isSubmitter || deleting}
               onClick={rejectReport}
             >
-              {submission.incident_id === 0 ? <>Reject New Incident</> : <>Reject New Report</>}
+              {isNewIncident ? <>Reject New Incident</> : <>Reject New Report</>}
               {deleting && (
                 <Spinner
                   as="span"
