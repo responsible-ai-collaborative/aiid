@@ -61,7 +61,13 @@ Puede encontrar la primera integración de esta herramienta disponible en [el fo
 
 Para admitir una correlación de similitud escalable, asíncrona y rápida, esta implementación utiliza una pila completa de herramientas de AWS, todas creadas e implementadas con AWS CDK v2. El lado de AWS de la solución consiste principalmente en una colección de AWS Lambdas y una API RESTful HTTP de AWS API Gateway. Este sistema y la cadena de compilación se diseñaron para ser altamente modulares y ampliables, de modo que se pudieran agregar nuevas funciones de Lambda o funciones de API en cualquier momento. Además, el modelo Longformer se puede cambiar fácilmente por otro modelo previamente entrenado o ajustado, de modo que el desarrollo futuro pueda ir en la dirección que mejor apoye el crecimiento de la base de datos.
 
-![Un diagrama de arquitectura que muestra las siguientes conexiones: 1. AWS Lambda → 2. Modelo LongFormer preentrenado (.bin), 1. AWS Lambda → 3. Estado de base de datos AIID (CLS Means), 4. Amazon ECR → 1. AWS Lambda, 1. AWS Lambda ↔ 5. Amazon EFS, 6. Amazon API Gateway (público) ↔ 1. AWS Lambda, 6. Amazon API Gateway (público) → Usuarios, 6. Amazon API Gateway (público) → Aplicaciones AIID. Los elementos 1 a 3 están dentro de un cuadro con la etiqueta "Contenedor Lambda Docker". Los elementos del 1 al 5 están dentro de un cuadro con la etiqueta VPC 10.0.0/16. En el borde de ese cuadro hay un ícono que muestra un marco de puerta con la etiqueta "Internet Gateway". Dentro de ese cuadro hay otro marcado con un icono de candado con la etiqueta "Subred pública". Los elementos del 1 al 6 están dentro de un cuadro etiquetado como "nube de AWS".](/images/nlp-lambdas-aws-architecture.png)
+<figure>
+  <img src="/images/nlp-lambdas-aws-architecture.png" alt="Un diagrama de arquitectura que muestra las siguientes conexiones" />
+  <figcaption>
+    1. AWS Lambda → 2. Modelo LongFormer preentrenado (.bin), 1. AWS Lambda → 3. Estado de base de datos AIID (CLS Means), 4. Amazon ECR → 1. AWS Lambda, 1. AWS Lambda ↔ 5. Amazon EFS, 6. Amazon API Gateway (público) ↔ 1. AWS Lambda, 6. Amazon API Gateway (público) → Usuarios, 6. Amazon API Gateway (público) → Aplicaciones AIID. Los elementos 1 a 3 están dentro de un cuadro con la etiqueta "Contenedor Lambda Docker". Los elementos del 1 al 5 están dentro de un cuadro con la etiqueta VPC 10.0.0/16. En el borde de ese cuadro hay un ícono que muestra un marco de puerta con la etiqueta "Internet Gateway". Dentro de ese cuadro hay otro marcado con un icono de candado con la etiqueta "Subred pública". Los elementos del 1 al 6 están dentro de un cuadro etiquetado como "nube de AWS".
+  </figcaption>
+</figure>
+
 
 Estas funciones modulares de Lambda realizan porciones o fragmentos completos de los diferentes cálculos que componen el proceso de texto a incidente similar. Actualmente, el sistema aloja algunas funciones de Lambda, cada una con un punto final dedicado en la API:
 
