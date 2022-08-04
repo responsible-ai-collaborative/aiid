@@ -16,7 +16,7 @@ exports = async (input) => {
     
     const newIncident = {
       title: submission.title,
-      incident_id: BSON.Int32(lastIncident.incident_id + 1),
+      incident_id: lastIncident.incident_id + 1,
       reports: [],
       editors: ["Sean McGregor"],
       date: submission.incident_date,
@@ -31,8 +31,10 @@ exports = async (input) => {
     for (let key of Object.keys(newIncident)) {
       console.log('newIncident.' + key, JSON.stringify(newIncident[key]));
     }
+    console.log('newIncident.embedding.vector', newIncident.embedding.vector);
+    console.log('newIncident.embedding.from_reports', newIncident.embedding.from_reports);
     
-    await incidents.insertOne(newIncident);
+    await incidents.insertOne({...newIncident, incident_id: BSON.Int32(newIncident.incident_id)});
     
     parentIncidents.push(newIncident);
   }
@@ -61,7 +63,6 @@ exports = async (input) => {
   };
   
   await reports.insertOne({...newReport, report_number: BSON.Int32(newReport.report_number)});
-  
 
   const incident_ids = parentIncidents.map(incident => incident.incident_id);
   const report_numbers = [ newReport.report_number];
