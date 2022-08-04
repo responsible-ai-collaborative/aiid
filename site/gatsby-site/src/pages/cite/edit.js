@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Layout from 'components/Layout';
 import IncidentReportForm, { schema } from 'components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
@@ -28,8 +28,7 @@ const UPDATE_REPORT_TRANSLATION = gql`
   }
 `;
 
-// Unused?
-/*const reportFields = [
+const reportFields = [
   'authors',
   'cloudinary_id',
   'date_downloaded',
@@ -50,7 +49,7 @@ const UPDATE_REPORT_TRANSLATION = gql`
   'text',
   'title',
   'url',
-];*/
+];
 
 function EditCitePage(props) {
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
@@ -115,10 +114,32 @@ function EditCitePage(props) {
         });
 
         embedding = (await semanticallyRelatedResponse.json()).embedding;
+
+        const num_reports = parentIncident.incident.embedding.from_reports.length;
+
+        await updateIncident({
+          variables: {
+            query: {
+              incident_id: parentIncident.incident.incident_id,
+            },
+            set: {
+              embedding: {
+                from_reports: parentIncident.incident.embedding.from_reports,
+                vector: parentIncident.incident.embedding.vector.map(
+                  (component, i) =>
+                    component -
+                    // Subtract the old embedding's contribution to the mean
+                    reportData.report.embedding.vector[i] / num_reports +
+                    // Add the new embedding's contribution to the mean
+                    embedding.vector[i] / num_reports
+                ),
+              },
+            },
+          },
+        });
       }
 
-      // Unused?
-      //const updated = pick(values, reportFields);
+      const updated = pick(values, reportFields);
 
       await updateReport({
         variables: {
@@ -126,7 +147,7 @@ function EditCitePage(props) {
             report_number: reportNumber,
           },
           set: {
-            ...values,
+            ...updated,
             plain_text,
             embedding,
             incident_id: undefined,
@@ -202,10 +223,6 @@ function EditCitePage(props) {
       });
     }
   };
-
-  useEffect(() => {
-    console.log('reportData', reportData);
-  }, [reportData]);
 
   return (
     <Layout {...props} className={'w-100'}>

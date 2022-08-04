@@ -18,6 +18,10 @@ export const FIND_INCIDENT = gql`
       editor_similar_incidents
       editor_dissimilar_incidents
       flagged_dissimilar_incidents
+      embedding {
+        from_reports
+        vector
+      }
       reports {
         report_number
       }
@@ -43,6 +47,10 @@ export const FIND_INCIDENTS = gql`
       editor_similar_incidents
       editor_dissimilar_incidents
       flagged_dissimilar_incidents
+      embedding {
+        from_reports
+        vector
+      }
       reports {
         report_number
       }
@@ -68,6 +76,10 @@ export const UPDATE_INCIDENT = gql`
       editor_similar_incidents
       editor_dissimilar_incidents
       flagged_dissimilar_incidents
+      embedding {
+        from_reports
+        vector
+      }
       reports {
         report_number
       }

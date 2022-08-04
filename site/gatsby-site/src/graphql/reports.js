@@ -51,6 +51,10 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql`
         title
         text
       }
+      embedding {
+        vector
+        from_text_hash
+      }
     }
   }
 `;

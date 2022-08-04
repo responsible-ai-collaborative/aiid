@@ -104,6 +104,7 @@ const SubmitForm = () => {
             : values.submitters
           : ['Anonymous'],
         plain_text: await stripMarkdown(values.text),
+        embedding: values.embedding || undefined,
       };
 
       await insertSubmission({ variables: { submission } });
