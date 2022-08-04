@@ -75,6 +75,10 @@ export const UserContextProvider = ({ children }) => {
     return realmApp.emailPasswordAuth.resetPassword(token, tokenId, password);
   };
 
+  const signUp = async ({ email, password }) => {
+    return realmApp.emailPasswordAuth.registerUser(email, password);
+  };
+
   const getValidAccessToken = async () => {
     if (!realmApp.currentUser) {
       await login();
@@ -104,6 +108,7 @@ export const UserContextProvider = ({ children }) => {
       value={{
         loading,
         user,
+        isLoggedIn: user && user.isLoggedIn,
         isRole(role) {
           return (
             user &&
@@ -122,6 +127,7 @@ export const UserContextProvider = ({ children }) => {
           logout,
           sendResetPasswordEmail,
           resetPassword,
+          signUp,
         },
       }}
     >

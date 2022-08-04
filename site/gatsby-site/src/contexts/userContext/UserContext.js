@@ -13,6 +13,7 @@ export const UserContext = createContext({
     logout: () => {},
     sendResetPasswordEmail: () => {},
     resetPassword: () => {},
+    signUp: () => {},
   },
 });
 
