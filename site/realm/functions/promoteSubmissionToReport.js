@@ -23,16 +23,13 @@ exports = async (input) => {
       nlp_similar_incidents: submission.nlp_similar_incidents || [],
       editor_similar_incidents: submission.editor_similar_incidents || [],
       editor_dissimilar_incidents: submission.editor_dissimilar_incidents || [],
-      embedding: submission.embedding 
-        ? { vector: submission.embedding.vector, from_reports: [BSON.Int32(report_number)] }
-        : undefined
     }
-
-    for (let key of Object.keys(newIncident)) {
-      console.log('newIncident.' + key, JSON.stringify(newIncident[key]));
+    if (submission.embedding) {
+      newIncident.embedding = { 
+        vector: submission.embedding.vector,
+        from_reports: [BSON.Int32(report_number)] 
+      } 
     }
-    console.log('newIncident.embedding.vector', newIncident.embedding.vector);
-    console.log('newIncident.embedding.from_reports', newIncident.embedding.from_reports);
     
     await incidents.insertOne({...newIncident, incident_id: BSON.Int32(newIncident.incident_id)});
     
@@ -82,7 +79,6 @@ exports = async (input) => {
     report_number,
     ref_number: BSON.Int32(parentIncidents[0].reports.length), // this won't make sense with many to many relationships
     title: submission.title,
-    embedding: submission.embedding,
     date_downloaded: '',
     date_modified: '',
     date_published: '',
@@ -99,6 +95,9 @@ exports = async (input) => {
     url: '',
     source_domain: ''
   };
+  if (submission.embedding) {
+    newReport.embedding = submission.embedding;
+  }
   
   await reports.insertOne({...newReport, report_number: BSON.Int32(newReport.report_number)});
 
