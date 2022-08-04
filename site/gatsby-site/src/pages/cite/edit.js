@@ -115,7 +115,7 @@ function EditCitePage(props) {
 
         embedding = (await semanticallyRelatedResponse.json()).embedding;
 
-        const num_reports = parentIncident.incident.embedding.from_reports.length;
+        const num_reports = parentIncident.incident.embedding?.from_reports?.length;
 
         await updateIncident({
           variables: {
@@ -123,17 +123,22 @@ function EditCitePage(props) {
               incident_id: parentIncident.incident.incident_id,
             },
             set: {
-              embedding: {
-                from_reports: parentIncident.incident.embedding.from_reports,
-                vector: parentIncident.incident.embedding.vector.map(
-                  (component, i) =>
-                    component -
-                    // Subtract the old embedding's contribution to the mean
-                    reportData.report.embedding.vector[i] / num_reports +
-                    // Add the new embedding's contribution to the mean
-                    embedding.vector[i] / num_reports
-                ),
-              },
+              embedding: parentIncident.incident.embedding
+                ? {
+                    from_reports: parentIncident.incident.embedding.from_reports,
+                    vector: parentIncident.incident.embedding.vector.map(
+                      (component, i) =>
+                        component -
+                        // Subtract the old embedding's contribution to the mean
+                        reportData.report.embedding.vector[i] / num_reports +
+                        // Add the new embedding's contribution to the mean
+                        embedding.vector[i] / num_reports
+                    ),
+                  }
+                : {
+                    from_reports: [reportData.report.report_number],
+                    vector: embedding.vector,
+                  },
             },
           },
         });
