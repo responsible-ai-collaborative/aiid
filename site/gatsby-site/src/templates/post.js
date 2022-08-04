@@ -3,23 +3,12 @@ import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 import { MDXProvider } from '@mdx-js/react';
-
 import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper, PostDate, Author } from 'components/styles/Post';
 import config from '../../config';
 import { format } from 'date-fns';
 import SocialShareButtons from 'components/ui/SocialShareButtons';
-
-const slug = (title) => title.toLowerCase().replace(/\s+/g, '');
-
-const Components = {
-  h1: ({ children }) => <h1 id={slug(children)}>{children}</h1>,
-  h2: ({ children }) => <h2 id={slug(children)}>{children}</h2>,
-  h3: ({ children }) => <h3 id={slug(children)}>{children}</h3>,
-  h4: ({ children }) => <h4 id={slug(children)}>{children}</h4>,
-  h5: ({ children }) => <h5 id={slug(children)}>{children}</h5>,
-  h6: ({ children }) => <h6 id={slug(children)}>{children}</h6>,
-};
+import MdxComponents from 'components/ui/MdxComponents';
 
 export default function Post(props) {
   const {
@@ -49,7 +38,7 @@ export default function Post(props) {
         ></SocialShareButtons>
       </div>
       <StyledMainWrapper>
-        <MDXProvider components={Components}>
+        <MDXProvider components={MdxComponents}>
           <MDXRenderer>{mdx.body}</MDXRenderer>
         </MDXProvider>
         <Author>By {mdx.frontmatter.author}</Author>
