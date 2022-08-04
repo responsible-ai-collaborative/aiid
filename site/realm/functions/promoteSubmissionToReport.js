@@ -37,6 +37,44 @@ exports = async (input) => {
     await incidents.insertOne({...newIncident, incident_id: BSON.Int32(newIncident.incident_id)});
     
     parentIncidents.push(newIncident);
+
+  } else if (submission.embedding) {
+
+    for (const parentIncident of parentIncidents) {
+      
+      const matchingReports = [];
+
+      for (const report_number of parentIncident.reports) {
+        matchingReports.push(await reports.findOne({report_number}));
+      }
+
+      const embeddings = matchingReports
+        .map(report => report.embedding)
+        .filter(e => e != null)
+        .concat([submission.embedding]);
+
+      const embedding = {
+        vector: 
+          embeddings.map(e => e.vector).reduce(
+            (sum, vector) => (
+              vector.map(
+                (component, i) => component + sum[i]
+              )
+            ), 
+            Array(embeddings[0].vector.length).fill(0)
+          ).map(component => component / embeddings.length),
+
+        from_reports: 
+          matchingReports
+            .map(report => BSON.Int32(report.report_number))
+            .concat([BSON.Int32(report_number)])
+      };
+
+      await incidents.updateOne(
+        { incident_id: BSON.Int32(parentIncident.incident_id) },
+        { $set : { ...parentIncident, embedding }}
+      );
+    }
   }
   
   
