@@ -12,6 +12,7 @@ import useLocalizePath from 'components/i18n/useLocalizePath';
 
 import { SourceDomainSubtitle, HeaderTitle } from './shared';
 import { Trans } from 'react-i18next';
+import TranslationBadge from 'components/i18n/TranslationBadge';
 
 const IncidentCardImage = styled(Image)`
   height: ${({ height }) => height};
@@ -50,6 +51,7 @@ export default function Details({
 
         <Card.Text className="flex-fill">
           <ReportText text={item.text} maxChars={400} />
+          <TranslationBadge originalLanguage={item.language} />
         </Card.Text>
 
         <div className="align-bottom">

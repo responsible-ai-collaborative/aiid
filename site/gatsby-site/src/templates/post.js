@@ -9,6 +9,7 @@ import { StyledHeading, StyledMainWrapper, PostDate, Author } from 'components/s
 import config from '../../config';
 import { format } from 'date-fns';
 import MdxComponents from 'components/ui/MdxComponents';
+import TranslationBadge from 'components/i18n/TranslationBadge';
 
 export default function Post(props) {
   const {
@@ -31,6 +32,7 @@ export default function Post(props) {
       <div className={'titleWrapper'}>
         <StyledHeading>{mdx.fields.title}</StyledHeading>
         <PostDate>{format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')}</PostDate>
+        {mdx.frontmatter.aiTranslation && <TranslationBadge />}
       </div>
       <StyledMainWrapper>
         <MDXProvider components={MdxComponents}>
@@ -68,6 +70,7 @@ export const pageQuery = graphql`
         metaDescription
         author
         date
+        aiTranslation
       }
     }
     allMdx {

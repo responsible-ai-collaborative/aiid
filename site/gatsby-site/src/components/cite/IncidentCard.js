@@ -7,6 +7,7 @@ import { useUserContext } from 'contexts/userContext';
 import Actions from 'components/discover/Actions';
 import ReportText from 'components/reports/ReportText';
 import WebArchiveLink from 'components/ui/WebArchiveLink';
+import TranslationBadge from 'components/i18n/TranslationBadge';
 
 const IncidentCardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -67,6 +68,7 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
             {item.source_domain} &middot;{' '}
             {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
           </WebArchiveLink>
+          <TranslationBadge className="mx-2" originalLanguage={item.language} />
         </p>
       </div>
       <CardBody className="card-body">
