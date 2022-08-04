@@ -4,7 +4,7 @@
 
 @layer base {
     .tw-layout {
-        @apply tw-flex md:tw-flex tw-content-between tw-bg-white 767px:tw-block;
+        @apply tw-flex md:tw-flex tw-content-between tw-bg-white 767px:tw-block tw-border-none;
     }
 
     .tw-layout li a {
@@ -68,7 +68,7 @@
     }
 
     .tw-row>* {
-        @apply tw-w-full;
+        @apply tw-w-full tw-pl-row-left tw-pr-row-right;
     }
 
     .tw-col {

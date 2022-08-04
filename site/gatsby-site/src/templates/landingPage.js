@@ -46,56 +46,66 @@ const LandingPage = (props) => {
           </Col>
         </Row>
 
-        <Row className="mt-2">
+        <Row className="tw-mt-2">
           <Col>
             <QuickSearch className="text-center border-0" />
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="tw-mt-4">
           <Col>
             <LatestReports />
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="tw-mt-4">
           <Col>
             <QuickAdd />
           </Col>
         </Row>
 
         <Row>
-          <Col className="mt-4" sm={12} md={12} lg={6}>
+          <Col
+            className="tw-mt-4 md:tw-flex-0-0-auto md:tw-w-full 992px:tw-flex-0-0-auto 992px:tw-w-2/4"
+            sm={12}
+            md={12}
+            lg={6}
+          >
             <AboutDatabase className="h-100" />
           </Col>
-          <Col className="mt-4" sm={12} md={12} lg={6}>
-            <Blog className="h-100" />
+          <Col
+            className="tw-mt-4 md:tw-flex-0-0-auto md:tw-w-full 992px:tw-flex-0-0-auto 992px:tw-w-2/4"
+            sm={12}
+            md={12}
+            lg={6}
+          >
+            <Blog />
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="tw-mt-4">
           <Col>
             <Featured />
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="tw-mt-4">
           <Col>
             <Leaderboards />
           </Col>
         </Row>
 
         <Row className="tw-flex-col">
-          <Col className="mt-4" md={12} lg={6}>
+          <Col className="tw-mt-4" md={12} lg={6}>
             <WordCounts localWordCounts={localWordCounts} />
           </Col>
-          <Col className="mt-4" md={12} lg={6}>
+          <Col className="tw-mt-4" md={12} lg={6}>
             <RandomReports />
           </Col>
         </Row>
 
         <Row>
-          <Col className="mt-4" md={12} lg={12}>
+          <Col className="tw-mt-4" md={12} lg={12}>
             <Sponsors className="h-100" />
           </Col>
         </Row>

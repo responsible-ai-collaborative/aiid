@@ -44,4 +44,4 @@ function PostPreview({ post, className }) {
   );
 }
 
-export default styled(PostPreview)``;
+export default PostPreview;

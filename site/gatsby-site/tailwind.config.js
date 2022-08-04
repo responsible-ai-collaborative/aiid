@@ -33,7 +33,9 @@ module.exports = {
     extend: {
       screens: {
         '767px': { max: '767px' },
+        'min-767px': { min: '767px' },
         '965px': { max: '965px' },
+        '992px': { min: '992px' },
         '50rem': { max: '50rem' },
       },
       colors: {
@@ -67,9 +69,14 @@ module.exports = {
       },
       padding: {
         0.8: '0.8rem',
+        'row-left': 'calc(var(--tw-gutter-x)*.5)',
+        'row-right': 'calc(var(--tw-gutter-x)*.5)',
       },
       fontFamily: {
         karla: 'Karla, sans-serif',
+      },
+      flex: {
+        '0-0-auto': '0 0 auto',
       },
     },
   },

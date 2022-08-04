@@ -10,6 +10,8 @@
   --secondary2: #6490e8;
   --secondary3: #ba5a4b;
   --secondary4: #071d49;
+  --tw-gutter-x: 1.5rem;
+  --tw-gutter-y: 0;
 }
 
 * {
