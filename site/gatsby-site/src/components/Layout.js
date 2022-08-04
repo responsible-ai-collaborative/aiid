@@ -34,6 +34,8 @@ const Content = styled('main')`
   margin: 0px 33px;
   padding-top: 3rem;
   background: ${({ theme }) => theme.colors.background};
+  z-index: 1;
+  position: relative;
 
   table tr {
     background: ${({ theme }) => theme.colors.background};
@@ -69,6 +71,8 @@ const LeftSideBarWidth = styled.div`
 const RightSideBarWidth = styled.div`
   width: 224px;
   margin-left: -24px;
+  z-index: 0;
+  position: relative;
 
   @media (max-width: 965px) {
     display: none;

@@ -27,14 +27,46 @@
         "description": {
             "bsonType": "string"
         },
+        "editor_dissimilar_incidents": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "int"
+            }
+        },
+        "editor_similar_incidents": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "int"
+            }
+        },
         "editors": {
             "bsonType": "array",
             "items": {
                 "bsonType": "string"
             }
         },
+        "flagged_dissimilar_incidents": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "int"
+            }
+        },
         "incident_id": {
             "bsonType": "int"
+        },
+        "nlp_similar_incidents": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "incident_id": {
+                        "bsonType": "int"
+                    },
+                    "similarity": {
+                        "bsonType": "double"
+                    }
+                }
+            }
         },
         "reports": {
             "bsonType": "array",

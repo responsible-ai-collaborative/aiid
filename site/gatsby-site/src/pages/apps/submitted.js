@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 import { ObjectId } from 'bson';
 import { Button, Spinner, Row, Col, Card, Badge, ListGroup } from 'react-bootstrap';
 import { useMutation, useQuery } from '@apollo/client';
@@ -78,9 +78,9 @@ const SubmittedIncidentsPage = ({ ...props }) => {
 
   return (
     <Layout {...props}>
-      <Helmet>
+      <AiidHelmet>
         <title>{t('Submitted Incident Report List')}</title>
-      </Helmet>
+      </AiidHelmet>
       <div className={'titleWrapper'}>
         <StyledHeading>
           <Trans ns="submitted">Submitted Incident Report List</Trans>
