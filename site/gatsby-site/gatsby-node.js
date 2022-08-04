@@ -22,6 +22,8 @@ const createDownloadIndexPage = require('./page-creators/createDownloadIndexPage
 
 const createDuplicatePages = require('./page-creators/createDuplicatePages');
 
+const createTsneVisualizationPage = require('./page-creators/createTsneVisualizationPage');
+
 const algoliasearch = require('algoliasearch');
 
 const Translator = require('./src/utils/Translator');
@@ -64,6 +66,7 @@ exports.createPages = ({ graphql, actions, reporter }) => {
     createTaxonomyPages(graphql, createPage),
     createDownloadIndexPage(graphql, createPage),
     createDuplicatePages(graphql, createPage),
+    createTsneVisualizationPage(graphql, createPage),
   ]);
 };
 
