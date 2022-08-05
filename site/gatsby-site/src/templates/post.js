@@ -1,15 +1,16 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
-import { graphql } from 'gatsby';
+import { graphql, Link } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 import { MDXProvider } from '@mdx-js/react';
 
 import Layout from 'components/Layout';
-import { StyledHeading, StyledMainWrapper, PostDate, Author } from 'components/styles/Post';
+import { StyledHeading, StyledMainWrapper, Author } from 'components/styles/Post';
 import config from '../../config';
 import { format } from 'date-fns';
 import MdxComponents from 'components/ui/MdxComponents';
 import TranslationBadge from 'components/i18n/TranslationBadge';
+import { Trans } from 'react-i18next';
 
 export default function Post(props) {
   const {
@@ -31,8 +32,17 @@ export default function Post(props) {
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl }} />
       <div className={'titleWrapper'}>
         <StyledHeading>{mdx.fields.title}</StyledHeading>
-        <PostDate>{format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')}</PostDate>
-        {mdx.frontmatter.aiTranslated && <TranslationBadge />}
+        <div className="d-inline-block pb-2">
+          <span>{format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')}</span>
+          {mdx.frontmatter.aiTranslated && (
+            <>
+              <TranslationBadge className="ms-2" />
+              <Link className="ms-2" to={mdx.frontmatter.slug}>
+                <Trans>View Original</Trans>
+              </Link>
+            </>
+          )}
+        </div>
       </div>
       <StyledMainWrapper>
         <MDXProvider components={MdxComponents}>
@@ -71,6 +81,7 @@ export const pageQuery = graphql`
         author
         date
         aiTranslated
+        slug
       }
     }
     allMdx {
