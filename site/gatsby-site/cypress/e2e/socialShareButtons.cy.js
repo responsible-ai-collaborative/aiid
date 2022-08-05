@@ -8,7 +8,12 @@ describe('Social Share buttons on pages', () => {
   const shareButtonsPerSection = 4;
 
   const urlsToTest = [
-    { page: 'Incident', url: incidentUrl, title: `Incident ${incidentId}`, shareButtonSections: 2 },
+    {
+      page: 'Incident',
+      url: incidentUrl,
+      title: `Incident 10: Starbucks Employees Assigned to Bad Shifts`,
+      shareButtonSections: 2,
+    },
     {
       page: 'Blog Post',
       url: blogPostUrl,
@@ -44,7 +49,7 @@ describe('Social Share buttons on pages', () => {
       cy.get('@popup_twitter').should('be.called');
       cy.url().should(
         'contain',
-        `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${canonicalUrl}`
+        `https://twitter.com/intent/tweet?text=${encodeURI(title)}&url=${canonicalUrl}`
       );
     });
 
