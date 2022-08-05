@@ -46,12 +46,11 @@ export default function Details({
       </a>
       <Card.Body className="d-flex flex-column ">
         <HeaderTitle item={item} />
-
         <SourceDomainSubtitle item={item} className="mb-2 text-muted" />
 
         <Card.Text className="flex-fill">
+          <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />
           <ReportText text={item.text} maxChars={400} />
-          <TranslationBadge originalLanguage={item.language} />
         </Card.Text>
 
         <div className="align-bottom">
