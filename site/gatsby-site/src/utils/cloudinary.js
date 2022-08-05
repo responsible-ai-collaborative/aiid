@@ -14,7 +14,7 @@ import { Trans } from 'react-i18next';
 const getCloudinaryPublicID = (url) => {
   // https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files
 
-  const publicID = `reports/${url.replace(/^https?:\/\//, '')}`;
+  const publicID = 'reports/' + url.replace(/^https?:\/\//, '');
 
   return publicID;
 };
@@ -47,8 +47,8 @@ const Image = ({ publicID, className, alt, transformation = null, plugins = [laz
     const useFallbackIfLoadFailed = () => {
       const img = imageElement.current?.imageRef.current;
 
-      if (!(img?.naturalHeight > 0)) {
-        if (img?.complete) {
+      if (!img || img.naturalHeight == undefined || img.naturalHeight == 0) {
+        if ((img.src || img.srcset) && img.complete) {
           setCloudinaryID('fallback.jpg');
         } else {
           fallbackTimeout = setTimeout(useFallbackIfLoadFailed, 1000);
