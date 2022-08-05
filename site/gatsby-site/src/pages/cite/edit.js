@@ -113,35 +113,37 @@ function EditCitePage(props) {
           }),
         });
 
-        embedding = (await semanticallyRelatedResponse.json()).embedding;
+        embedding = (await semanticallyRelatedResponse.json())?.embedding;
 
-        const num_reports = parentIncident.incident.embedding?.from_reports?.length;
+        if (embedding) {
+          const num_reports = parentIncident.incident.embedding?.from_reports?.length;
 
-        await updateIncident({
-          variables: {
-            query: {
-              incident_id: parentIncident.incident.incident_id,
+          await updateIncident({
+            variables: {
+              query: {
+                incident_id: parentIncident.incident.incident_id,
+              },
+              set: {
+                embedding: parentIncident.incident.embedding
+                  ? {
+                      from_reports: parentIncident.incident.embedding.from_reports,
+                      vector: parentIncident.incident.embedding.vector.map(
+                        (component, i) =>
+                          component -
+                          // Subtract the old embedding's contribution to the mean
+                          reportData.report.embedding.vector[i] / num_reports +
+                          // Add the new embedding's contribution to the mean
+                          embedding.vector[i] / num_reports
+                      ),
+                    }
+                  : {
+                      from_reports: [reportData.report.report_number],
+                      vector: embedding.vector,
+                    },
+              },
             },
-            set: {
-              embedding: parentIncident.incident.embedding
-                ? {
-                    from_reports: parentIncident.incident.embedding.from_reports,
-                    vector: parentIncident.incident.embedding.vector.map(
-                      (component, i) =>
-                        component -
-                        // Subtract the old embedding's contribution to the mean
-                        reportData.report.embedding.vector[i] / num_reports +
-                        // Add the new embedding's contribution to the mean
-                        embedding.vector[i] / num_reports
-                    ),
-                  }
-                : {
-                    from_reports: [reportData.report.report_number],
-                    vector: embedding.vector,
-                  },
-            },
-          },
-        });
+          });
+        }
       }
 
       const updated = pick(values, reportFields);
@@ -185,6 +187,7 @@ function EditCitePage(props) {
         severity: SEVERITY.success,
       });
     } catch (e) {
+      console.error(e);
       addToast({
         message: `Error updating incident report ${reportNumber}`,
         severity: SEVERITY.danger,
