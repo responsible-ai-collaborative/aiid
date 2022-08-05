@@ -10,10 +10,6 @@ export const StyledHeading = styled('h1')`
   color: ${(props) => props.theme.colors.heading};
 `;
 
-export const PostDate = styled.p`
-  margin-bottom: 0px;
-`;
-
 export const Author = styled.p`
   font-style: italic;
   padding: 1rem 0 2rem;
