@@ -8,7 +8,7 @@ const AiidHelmet = ({
   metaDescription,
   canonicalUrl,
   metaImage,
-  metaType,
+  metaType = 'website',
 }) => {
   const twitter = config.siteMetadata.twitterAccount;
 
@@ -26,7 +26,7 @@ const AiidHelmet = ({
       {metaImage && <meta property="twitter:image" content={metaImage} />}
       {metaImage && <meta property="og:image" content={metaImage} />}
 
-      <meta property="og:type" content={metaType || 'website'} />
+      <meta property="og:type" content={metaType} />
 
       {twitter && <meta name="twitter:site" content={twitter} />}
       {twitter && <meta name="twitter:creator" content={twitter} />}

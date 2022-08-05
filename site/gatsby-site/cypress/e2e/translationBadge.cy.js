@@ -3,6 +3,11 @@ describe('Translation Badges', () => {
     cy.visit('/es/blog/using-ai-to-connect-ai-incidents');
 
     cy.contains('.badge', 'Traducido por IA').should('be.visible');
+
+    cy.contains('a', 'Ver Original')
+      .should('be.visible')
+      .should('have.attr', 'href')
+      .and('eq', '/blog/using-ai-to-connect-ai-incidents');
   });
 
   it('Should be visible on the discover app', () => {
@@ -17,5 +22,16 @@ describe('Translation Badges', () => {
     cy.visit('/es/cite/1#r1');
 
     cy.get('#r1').contains('.badge', 'Traducido por IA').should('be.visible');
+  });
+
+  it('Should be visible on documentation pages', () => {
+    cy.visit('/es/about_apps');
+
+    cy.contains('.badge', 'Traducido por IA').should('be.visible');
+
+    cy.contains('a', 'Ver Original')
+      .should('be.visible')
+      .should('have.attr', 'href')
+      .and('eq', '/about_apps');
   });
 });

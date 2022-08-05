@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
-import { graphql } from 'gatsby';
+import { graphql, Link } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 
 import Layout from 'components/Layout';
@@ -8,6 +8,8 @@ import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import config from '../../config';
 import { MDXProvider } from '@mdx-js/react';
 import Components from 'components/ui/MdxComponents';
+import TranslationBadge from 'components/i18n/TranslationBadge';
+import { Trans } from 'react-i18next';
 
 export default class MDXRuntimeTest extends Component {
   render() {
@@ -34,6 +36,14 @@ export default class MDXRuntimeTest extends Component {
         <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl }} />
         <div className={'titleWrapper'}>
           <StyledHeading>{mdx.fields.title}</StyledHeading>
+          {mdx.frontmatter.aiTranslated && (
+            <div>
+              <TranslationBadge className="d-inline-block" />
+              <Link className="d-inline-block ms-2" to={mdx.frontmatter.slug}>
+                <Trans>View Original</Trans>
+              </Link>
+            </div>
+          )}
         </div>
         <StyledMainWrapper>
           <MDXProvider components={Components}>
@@ -69,6 +79,8 @@ export const pageQuery = graphql`
       frontmatter {
         metaTitle
         metaDescription
+        aiTranslated
+        slug
       }
     }
   }
