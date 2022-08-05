@@ -68,6 +68,7 @@ export default function QuickSearch({ className }) {
                 onKeyPress={(e) => {
                   e.key === 'Enter' && submit(e);
                 }}
+                aria-label={t('Search over 1600 reports of AI harms')}
               />
             </SearchInputWrapper>
             <Row>

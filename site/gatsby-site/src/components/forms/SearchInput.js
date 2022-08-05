@@ -34,6 +34,7 @@ export default withTranslation()(function SearchInput({
   size = 'sm',
   t,
   placeHolder = t('Type Here'),
+  ...props
 }) {
   return (
     <InputGroup className="position-relative">
@@ -44,6 +45,7 @@ export default withTranslation()(function SearchInput({
         value={value}
         onKeyPress={onKeyPress}
         onChange={(event) => onChange(event.currentTarget.value)}
+        {...props}
       />
       <SearchStatus>
         {value !== '' ? (
