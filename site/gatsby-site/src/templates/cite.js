@@ -1,5 +1,5 @@
-import React from 'react';
-import Helmet from 'react-helmet';
+import React, { useState, useEffect } from 'react';
+import AiidHelmet from 'components/AiidHelmet';
 import { Button, Col, Container, Pagination, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
@@ -15,6 +15,9 @@ import IncidentStatsCard from 'components/cite/IncidentStatsCard';
 import IncidentCard from 'components/cite/IncidentCard';
 import Taxonomy from 'components/taxa/Taxonomy';
 import { useUserContext } from 'contexts/userContext';
+import SimilarIncidents from 'components/cite/SimilarIncidents';
+import { Trans, useTranslation } from 'react-i18next';
+import { useLocalization } from 'gatsby-theme-i18n';
 
 const CardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -55,20 +58,39 @@ const sortIncidentsByDatePublished = (incidentReports) => {
 
 function CitePage(props) {
   const {
-    pageContext: { incident, incidentReports, taxonomies, nextIncident, prevIncident },
+    pageContext: {
+      incident,
+      incidentReports,
+      nlp_similar_incidents,
+      editor_similar_incidents,
+      editor_dissimilar_incidents,
+      taxonomies,
+      nextIncident,
+      prevIncident,
+    },
   } = props;
 
-  const { isRole } = useUserContext();
+  const { isRole, user } = useUserContext();
+
+  const { t } = useTranslation();
+
+  const { locale } = useLocalization();
 
   // meta tags
 
-  const metaTitle = 'Incident ' + incident.incident_id;
+  const defaultIncidentTitle = t('Citation record for Incident {{id}}', {
+    id: incident.incident_id,
+  });
 
-  const metaDescription = 'Citation record for Incident ' + incident.incident_id;
+  const metaTitle = `Incident ${incident.incident_id}: ${incident.title}`;
+
+  const metaDescription = incident.description;
 
   const canonicalUrl = getCanonicalUrl(incident.incident_id);
 
   const sortedReports = sortIncidentsByDatePublished(incidentReports);
+
+  const metaImage = sortedReports[0].image_url;
 
   const authorsModal = useModal();
 
@@ -76,10 +98,11 @@ function CitePage(props) {
 
   const flagReportModal = useModal();
 
-  const timeline = sortedReports.map(({ date_published, title, mongodb_id }) => ({
+  const timeline = sortedReports.map(({ date_published, title, mongodb_id, report_number }) => ({
     date_published,
     title,
     mongodb_id,
+    report_number,
   }));
 
   timeline.push({
@@ -89,21 +112,28 @@ function CitePage(props) {
     isOccurrence: true,
   });
 
+  const [taxonomiesList, setTaxonomiesList] = useState(
+    taxonomies.map((t) => ({ ...t, canEdit: false }))
+  );
+
+  useEffect(() => {
+    setTaxonomiesList((list) =>
+      list.map((t) => ({
+        ...t,
+        canEdit:
+          isRole('taxonomy_editor') || isRole('taxonomy_editor_' + t.namespace.toLowerCase()),
+      }))
+    );
+  }, [user]);
+
   return (
     <Layout {...props}>
-      <Helmet>
-        {metaTitle ? <title>{metaTitle}</title> : null}
-        {metaTitle ? <meta name="title" content={metaTitle} /> : null}
-        {metaDescription ? <meta name="description" content={metaDescription} /> : null}
-        {metaTitle ? <meta property="og:title" content={metaTitle} /> : null}
-        {metaDescription ? <meta property="og:description" content={metaDescription} /> : null}
-        {metaTitle ? <meta property="twitter:title" content={metaTitle} /> : null}
-        {metaDescription ? <meta property="twitter:description" content={metaDescription} /> : null}
-        <link rel="canonical" href={canonicalUrl} />
-      </Helmet>
+      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
+        <meta property="og:type" content="website" />
+      </AiidHelmet>
 
       <div className={'titleWrapper'}>
-        <StyledHeading>{metaDescription}</StyledHeading>
+        <StyledHeading>{locale == 'en' ? metaTitle : defaultIncidentTitle}</StyledHeading>
       </div>
 
       <Container>
@@ -111,7 +141,9 @@ function CitePage(props) {
           <Col>
             <CardContainer className="card" data-cy="citation">
               <div className="card-header">
-                <h4>Suggested citation format</h4>
+                <h4>
+                  <Trans>Suggested citation format</Trans>
+                </h4>
               </div>
               <div className="card-body">
                 <Citation
@@ -144,7 +176,9 @@ function CitePage(props) {
           <Col>
             <CardContainer className="card">
               <div className="card-header">
-                <h4>Reports Timeline</h4>
+                <h4>
+                  <Trans>Reports Timeline</Trans>
+                </h4>
               </div>
               <div className="card-body">
                 <Timeline data={timeline} />
@@ -157,7 +191,9 @@ function CitePage(props) {
           <Col>
             <CardContainer className="card">
               <div className="card-header">
-                <h4>Tools</h4>
+                <h4>
+                  <Trans>Tools</Trans>
+                </h4>
               </div>
               <div className="card-body">
                 <Button
@@ -168,17 +204,17 @@ function CitePage(props) {
                     'yyyy-MM-dd'
                   )}`}
                 >
-                  New Report
+                  <Trans>New Report</Trans>
                 </Button>
                 <Button variant="outline-primary" className="me-2" href={'/summaries/incidents'}>
-                  All Incidents
+                  <Trans>All Incidents</Trans>
                 </Button>
                 <Button
                   variant="outline-primary"
                   className="me-2"
                   href={'/apps/discover?incident_id=' + incident.incident_id}
                 >
-                  Discover
+                  <Trans>Discover</Trans>
                 </Button>
                 {isRole('incident_editor') && (
                   <Button
@@ -203,20 +239,16 @@ function CitePage(props) {
         {taxonomies.length > 0 && (
           <Row id="taxa-area">
             <Col>
-              {taxonomies.map((t) => {
-                const canEdit =
-                  isRole('taxonomy_editor') ||
-                  isRole('taxonomy_editor_' + t.namespace.toLowerCase());
-
-                return canEdit || t.classificationsArray.length > 0 ? (
+              {taxonomiesList
+                .filter((t) => t.canEdit || t.classificationsArray.length > 0)
+                .map((t) => (
                   <Taxonomy
                     key={t.namespace}
                     taxonomy={t}
                     incidentId={incident.incident_id}
-                    canEdit={canEdit}
+                    canEdit={t.canEdit}
                   />
-                ) : null;
-              })}
+                ))}
             </Col>
           </Row>
         )}
@@ -233,7 +265,9 @@ function CitePage(props) {
           <Col>
             <IncidnetsReportsTitle>
               <div className={'titleWrapper'}>
-                <StyledHeading>Incidents Reports</StyledHeading>
+                <StyledHeading>
+                  <Trans>Incidents Reports</Trans>
+                </StyledHeading>
               </div>
             </IncidnetsReportsTitle>
           </Col>
@@ -252,12 +286,20 @@ function CitePage(props) {
           </Row>
         ))}
 
+        <SimilarIncidents
+          nlp_similar_incidents={nlp_similar_incidents}
+          editor_similar_incidents={editor_similar_incidents}
+          editor_dissimilar_incidents={editor_dissimilar_incidents}
+          flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
+          parentIncident={incident}
+        />
+
         <Pagination className="justify-content-between">
           <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>
-            ‹ Previous Incident
+            ‹ <Trans>Previous Incident</Trans>
           </Pagination.Item>
           <Pagination.Item href={`/cite/${nextIncident}`} disabled={!nextIncident}>
-            Next Incident ›
+            <Trans>Next Incident</Trans> ›
           </Pagination.Item>
         </Pagination>
 

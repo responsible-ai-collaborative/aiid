@@ -4,7 +4,9 @@
             "__typename": "Incident",
             "date": "2015-05-19",
             "incident_id": 112,
+            "nlp_similar_incidents": [],
             "title": "Test title",
+            "nlp_similar_incidents": [],
             "reports": [
                 {
                     "__typename": "Report",

@@ -34,7 +34,7 @@ const AlgoliaUpdater = require('./src/utils/AlgoliaUpdater');
 
 const googleMapsApiClient = new GoogleMapsAPIClient({});
 
-exports.createPages = ({ graphql, actions }) => {
+exports.createPages = ({ graphql, actions, reporter }) => {
   const { createPage } = actions;
 
   const { createRedirect } = actions;
@@ -57,7 +57,7 @@ exports.createPages = ({ graphql, actions }) => {
   );
 
   return Promise.all([
-    createMdxPages(graphql, createPage),
+    createMdxPages(graphql, createPage, reporter),
     createCitationPages(graphql, createPage),
     createWordCountsPages(graphql, createPage),
     createBackupsPage(graphql, createPage),
@@ -162,6 +162,23 @@ exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
 
   const typeDefs = `
+    type nlpSimilarIncident {
+      incident_id: Int
+      similarity: Float
+    }
+    type mongodbAiidprodIncidents implements Node {
+      nlp_similar_incidents: [nlpSimilarIncident]
+      editor_similar_incidents: [Int]
+      editor_dissimilar_incidents: [Int]
+      flagged_dissimilar_incidents: [Int]
+    }
+    
+    type mongodbAiidprodSubmissions implements Node {
+      nlp_similar_incidents: [nlpSimilarIncident]
+      editor_similar_incidents: [Int]
+      editor_dissimilar_incidents: [Int]
+    }
+
     type mongodbAiidprodReports implements Node {
       cloudinary_id: String
       tags: [String]

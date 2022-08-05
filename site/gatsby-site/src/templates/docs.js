@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 
@@ -7,19 +7,7 @@ import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import config from '../../config';
 import { MDXProvider } from '@mdx-js/react';
-import isString from 'lodash/isString';
-
-const slug = (title) =>
-  isString(title) ? title.toLowerCase().replace(/\s+/g, '') : title.props.children;
-
-const Components = {
-  h1: ({ children }) => <h1 id={slug(children)}>{children}</h1>,
-  h2: ({ children }) => <h2 id={slug(children)}>{children}</h2>,
-  h3: ({ children }) => <h3 id={slug(children)}>{children}</h3>,
-  h4: ({ children }) => <h4 id={slug(children)}>{children}</h4>,
-  h5: ({ children }) => <h5 id={slug(children)}>{children}</h5>,
-  h6: ({ children }) => <h6 id={slug(children)}>{children}</h6>,
-};
+import Components from 'components/ui/MdxComponents';
 
 export default class MDXRuntimeTest extends Component {
   render() {
@@ -43,18 +31,7 @@ export default class MDXRuntimeTest extends Component {
 
     return (
       <Layout {...this.props}>
-        <Helmet>
-          {metaTitle ? <title>{metaTitle}</title> : null}
-          {metaTitle ? <meta name="title" content={metaTitle} /> : null}
-          {metaDescription ? <meta name="description" content={metaDescription} /> : null}
-          {metaTitle ? <meta property="og:title" content={metaTitle} /> : null}
-          {metaDescription ? <meta property="og:description" content={metaDescription} /> : null}
-          {metaTitle ? <meta property="twitter:title" content={metaTitle} /> : null}
-          {metaDescription ? (
-            <meta property="twitter:description" content={metaDescription} />
-          ) : null}
-          <link rel="canonical" href={canonicalUrl} />
-        </Helmet>
+        <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl }} />
         <div className={'titleWrapper'}>
           <StyledHeading>{mdx.fields.title}</StyledHeading>
         </div>
@@ -69,14 +46,14 @@ export default class MDXRuntimeTest extends Component {
 }
 
 export const pageQuery = graphql`
-  query ($id: String!) {
+  query DocsTemplateQuery($slug: String!, $locale: String!) {
     site {
       siteMetadata {
         title
         docsLocation
       }
     }
-    mdx(fields: { id: { eq: $id } }) {
+    mdx(fields: { locale: { eq: $locale } }, frontmatter: { slug: { eq: $slug } }) {
       fields {
         id
         title

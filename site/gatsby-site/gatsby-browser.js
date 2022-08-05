@@ -5,7 +5,6 @@ import './src/global.css';
 
 import React from 'react';
 import { wrapRootElement } from './wrapRootElement';
-import Header from 'components/ui/Header';
 import { QueryParamProvider } from 'use-query-params';
 import { navigate } from 'gatsby';
 import { UserContextProvider } from 'contexts/userContext';
@@ -30,10 +29,7 @@ export const wrapPageElement = ({ element }) => {
 
   return (
     <QueryParamProvider history={history}>
-      <UserContextProvider>
-        <Header />
-        {element}
-      </UserContextProvider>
+      <UserContextProvider>{element}</UserContextProvider>
     </QueryParamProvider>
   );
 };

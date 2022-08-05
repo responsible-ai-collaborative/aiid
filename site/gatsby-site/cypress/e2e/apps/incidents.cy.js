@@ -77,6 +77,18 @@ describe('Incidents App', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
+      (req) => req.body.operationName == 'IncidentWithReports',
+      'IncidentWithReports'
+    );
+
+    cy.get('[data-cy="similar-id-input"]').type('4');
+
+    cy.wait('@IncidentWithReports');
+
+    cy.get('[data-cy="related-byId"] [data-cy="similar"]').first().click();
+
+    cy.conditionalIntercept(
+      '**/graphql',
       (req) => req.body.operationName == 'UpdateIncident',
       'UpdateIncident',
       updateOneIncident
@@ -88,6 +100,7 @@ describe('Incidents App', () => {
       expect(xhr.request.body.operationName).to.eq('UpdateIncident');
       expect(xhr.request.body.variables.query.incident_id).to.eq(112);
       expect(xhr.request.body.variables.set.title).to.eq('Test title');
+      expect(xhr.request.body.variables.set.editor_similar_incidents).to.contain(4);
     });
 
     cy.get('[data-cy="incident-form"]').should('not.exist');
