@@ -5,7 +5,7 @@ import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Link, navigate } from 'gatsby';
+import { Link } from 'gatsby';
 
 const SignUpSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -33,10 +33,14 @@ const SignUp = (props) => {
         <Formik
           initialValues={{ email: '', password: '', passwordConfirm: '' }}
           validationSchema={SignUpSchema}
-          onSubmit={async ({ email, password }, { setSubmitting }) => {
+          onSubmit={async ({ email, password }, { setSubmitting, resetForm }) => {
             try {
               await signUp({ email, password });
-              navigate('/login');
+              addToast({
+                message: <>Account created</>,
+                severity: SEVERITY.success,
+              });
+              resetForm();
             } catch (e) {
               addToast({
                 message: <>{e.error || 'An unknown error has ocurred'}</>,
