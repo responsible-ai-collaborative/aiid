@@ -7,6 +7,7 @@ import { fill } from '@cloudinary/base/actions/resize';
 import { Card, Col, Row } from 'react-bootstrap';
 import Link from 'components/ui/Link';
 import ReportText from 'components/reports/ReportText';
+import { Trans } from 'react-i18next';
 
 const ThumbnailImg = styled(Image)`
   object-fit: cover;
@@ -35,7 +36,9 @@ const LatestIncidentReport = ({ className = '', report }) => {
             <Card.Subtitle>{format(epoch_date_submitted * 1000, 'MMM d, yyyy')}</Card.Subtitle>
             <Card.Text>
               <ReportText maxChars={240} text={text} />
-              <Link to={`/cite/${incident_id}`}>(Read More)</Link>
+              <Link to={`/cite/${incident_id}`}>
+                (<Trans>Read More</Trans>)
+              </Link>
             </Card.Text>
           </Card.Body>
         </Col>
