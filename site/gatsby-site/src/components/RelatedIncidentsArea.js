@@ -75,9 +75,9 @@ const RelatedIncidentsArea = ({
                     –{' '}
                   </>
                 )}
-                <LocalizedLink to={val.url || '/cite/' + val.incident_id} data-cy="title">
+                <a href={val.url || '/cite/' + val.incident_id} data-cy="title">
                   {val.title}
-                </LocalizedLink>
+                </a>
               </span>
               <ReportToolbar>
                 {setFieldValue && editSimilar && (
