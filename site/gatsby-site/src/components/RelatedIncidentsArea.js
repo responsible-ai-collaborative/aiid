@@ -45,13 +45,14 @@ const RelatedIncidentsArea = ({
   columnKey,
   header,
   reports,
+  incidents,
   loading,
   setFieldValue,
   editSimilar = true,
   editId = true,
   error,
 }) => {
-  if (!reports && !loading) {
+  if (!reports && !incidents && !loading) {
     return null;
   }
 
@@ -62,9 +63,9 @@ const RelatedIncidentsArea = ({
         {loading && <Spinner animation="border" size="sm" className="ms-2" />}
       </ListGroup.Item>
       <div className="reports">
-        {reports &&
-          reports.map((val) => (
-            <ReportRow key={val.url} data-cy="result">
+        {(reports || incidents) &&
+          (reports || incidents).map((val) => (
+            <ReportRow key={val.url || val.incident_id} data-cy="result">
               <span>
                 {val?.incident_id && (
                   <>
@@ -74,9 +75,9 @@ const RelatedIncidentsArea = ({
                     –{' '}
                   </>
                 )}
-                <a href={val.url} data-cy="title" target="_blank" rel="noreferrer">
+                <LocalizedLink to={val.url || '/cite/' + val.incident_id} data-cy="title">
                   {val.title}
-                </a>
+                </LocalizedLink>
               </span>
               <ReportToolbar>
                 {setFieldValue && editSimilar && (
@@ -97,7 +98,7 @@ const RelatedIncidentsArea = ({
               </ReportToolbar>
             </ReportRow>
           ))}
-        {!loading && reports?.length == 0 && (
+        {!loading && reports?.length == 0 && incidents?.length == 0 && (
           <ListGroup.Item>{error ? error : 'No related reports found.'}</ListGroup.Item>
         )}
       </div>

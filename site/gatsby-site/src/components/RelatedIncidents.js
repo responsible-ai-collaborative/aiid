@@ -10,6 +10,7 @@ const relatedIncidentsQuery = gql`
   query ProbablyRelatedIncidents($query: IncidentQueryInput) {
     incidents(query: $query) {
       incident_id
+      title
       reports {
         report_number
         title
@@ -83,16 +84,18 @@ const allSearchColumns = {
   byIncidentId: {
     header: (incident) => (
       <>
-        Incidents reports matched by ID: <b>{incident.incident_id}</b>
+        Incident matched by ID: <b>{incident.incident_id}</b>
       </>
     ),
     query: relatedIncidentsQuery,
     getReports: async (result) =>
       result.data.incidents.length ? result.data.incidents[0].reports : [],
+    getIncidents: async (result) => result.data.incidents,
     isSet: (incident) => incident.incident_id,
     getQueryVariables: (incident) => ({ incident_id_in: [incident.incident_id] }),
     editSimilar: false,
     editId: false,
+    showIncidents: true,
   },
 
   byAuthors: {
@@ -139,6 +142,8 @@ const RelatedIncidents = ({
 
   const [relatedReports, setRelatedReports] = useState({});
 
+  const [relatedIncidents, setRelatedIncidents] = useState({});
+
   const [queryVariables, setQueryVariables] = useState({});
 
   const client = useApolloClient();
@@ -181,6 +186,12 @@ const RelatedIncidents = ({
         setLoading((loading) => ({ ...loading, [key]: false }));
 
         setRelatedReports((related) => ({ ...related, [key]: reports }));
+
+        if (searchColumns[key].showIncidents) {
+          const incidents = await column.getIncidents(result, client);
+
+          setRelatedIncidents((related) => ({ ...related, [key]: incidents }));
+        }
       } else {
         setRelatedReports((related) => ({ ...related, [key]: null }));
       }
@@ -206,7 +217,8 @@ const RelatedIncidents = ({
             key={key}
             columnKey={key}
             loading={loading[key]}
-            reports={relatedReports[key]}
+            reports={searchColumns[key].showIncidents ? null : relatedReports[key]}
+            incidents={searchColumns[key].showIncidents ? relatedIncidents[key] : null}
             header={column.header(incident)}
             setFieldValue={setFieldValue}
             {...{

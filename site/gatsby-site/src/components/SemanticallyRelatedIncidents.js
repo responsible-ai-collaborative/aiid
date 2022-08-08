@@ -8,11 +8,7 @@ const relatedIncidentIdsQuery = gql`
   query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
     incidents(query: $query) {
       incident_id
-      reports {
-        report_number
-        title
-        url
-      }
+      title
     }
   }
 `;
@@ -39,7 +35,7 @@ const semanticallyRelated = async (text) => {
 const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }) => {
   const [loading, setLoading] = useState(false);
 
-  const [reports, setReports] = useState([]);
+  const [incidents, setIncidents] = useState([]);
 
   const client = useApolloClient();
 
@@ -50,14 +46,14 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
   const debouncedUpdateSearch = useRef(
     debounce(async (incident) => {
       setLoading(true);
-      setReports([]);
+      setIncidents([]);
       setError(null);
       if (setFieldValue) {
         setFieldValue('nlp_similar_incidents', []);
       }
 
       const fail = (errorMessage) => {
-        setReports([]);
+        setIncidents([]);
         setError(errorMessage);
         setLoading(false);
       };
@@ -122,18 +118,7 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
         fail('Could not retrieve related incidents from database');
       }
 
-      setReports(
-        dbResponse.data.incidents.reduce(
-          (reports, incident) =>
-            reports.concat(
-              incident.reports.map((report) => ({
-                incident_id: incident.incident_id,
-                ...report,
-              }))
-            ),
-          []
-        )
-      );
+      setIncidents(dbResponse.data.incidents);
 
       setLoading(false);
       initialDisplay.current = false;
@@ -151,8 +136,8 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
           key="byText"
           columnKey="byText"
           loading={loading}
-          reports={reports}
-          header="Most Semantically Similar Incident Reports (Experimental)"
+          incidents={incidents}
+          header="Most Semantically Similar Incidents (Experimental)"
           setFieldValue={setFieldValue}
           editId={editId}
           error={error}
