@@ -31,8 +31,16 @@ Card.Title = function CardTitle(props) {
   return (
     <>
       <div className={`tw-flex-1 ${props.className ? props.className : ''}`}>
-        <h3 className="tw-text-2xl tw-mb-2">{props.children}</h3>
+        <props.as className="tw-mb-2">{props.children}</props.as>
       </div>
+    </>
+  );
+};
+
+Card.Subtitle = function CardSubtitle(props) {
+  return (
+    <>
+      <div className={`tw-flex-1 ${props.className ? props.className : ''}`}>{props.children}</div>
     </>
   );
 };

@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 @layer base {
+
+    h2 {
+        font-size: 2rem;
+    }
+
     .tw-layout {
         @apply tw-flex md:tw-flex tw-content-between tw-bg-white 767px:tw-block tw-border-none;
     }

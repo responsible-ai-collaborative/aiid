@@ -95,7 +95,7 @@ const LandingPage = (props) => {
           </Col>
         </Row>
 
-        <Row className="tw-flex-col">
+        <Row>
           <Col className="tw-mt-4" md={12} lg={6}>
             <WordCounts localWordCounts={localWordCounts} />
           </Col>
