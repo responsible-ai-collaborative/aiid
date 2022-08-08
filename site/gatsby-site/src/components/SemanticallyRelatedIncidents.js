@@ -62,10 +62,12 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
 
       const minLength = 256;
 
-      if (
-        plaintext.replace(/\s/, '')?.length < minLength &&
-        !(initialDisplay && incident?.nlp_similar_incidents?.length > 0)
-      ) {
+      const textLength = plaintext.replace(/\s/, '')?.length;
+
+      const displayingCached =
+        initialDisplay.current && incident?.nlp_similar_incidents?.length > 0;
+
+      if (textLength < minLength && !displayingCached) {
         fail(
           `Reports must have at least ${minLength} non-space characters to compute semantic similarity.`
         );
@@ -131,7 +133,7 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
 
   return (
     <div data-cy="semantically-related-incidents">
-      {(incident?.text?.length > 0 || incident?.reports?.length > 0) && (
+      {incident?.text?.length > 0 && (
         <RelatedIncidentsArea
           key="byText"
           columnKey="byText"

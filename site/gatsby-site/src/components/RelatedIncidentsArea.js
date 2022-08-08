@@ -98,7 +98,7 @@ const RelatedIncidentsArea = ({
               </ReportToolbar>
             </ReportRow>
           ))}
-        {!loading && reports?.length == 0 && incidents?.length == 0 && (
+        {!loading && (error || reports?.length == 0 || incidents?.length == 0) && (
           <ListGroup.Item>{error ? error : 'No related reports found.'}</ListGroup.Item>
         )}
       </div>
