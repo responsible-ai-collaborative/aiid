@@ -86,7 +86,7 @@ export const pageQuery = graphql`
       }
     }
 
-    allMongodbAiidprodReports(filter: { flag: { eq: null } }) {
+    allMongodbAiidprodReports {
       nodes {
         id
         report_number

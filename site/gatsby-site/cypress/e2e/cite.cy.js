@@ -69,13 +69,13 @@ describe('Cite pages', () => {
   maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    const id = 'r5d34b8c29ced494f010ed463';
+    const id = 'r3';
 
     cy.visit('/cite/1#' + id);
 
     cy.get(`#${id} [data-cy="edit-report"]`).click();
 
-    cy.url().should('contain', '/cite/edit?report_number=10');
+    cy.url().should('contain', '/cite/edit?report_number=3');
   });
 
   maybeIt('Should show the taxonomy form of CSET', () => {
@@ -117,7 +117,7 @@ describe('Cite pages', () => {
 
   it('Should flag an incident', () => {
     // mock requests until a testing database is implemented
-    const _id = '5d34b8c29ced494f010ed470';
+    const _id = '23';
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -281,11 +281,13 @@ describe('Cite pages', () => {
         }
       `,
     }).then(({ data: { incidents } }) => {
-      const title = `Incident ${incidentId}`;
+      const incident = incidents[0];
 
-      const description = `Citation record for Incident ${incidentId}`;
+      const title = `Incident ${incidentId}: ${incident.title}`;
 
-      const imageUrl = [...incidents[0].reports].sort((a, b) =>
+      const description = incident.description;
+
+      const imageUrl = [...incident.reports].sort((a, b) =>
         a.date_published >= b.date_published ? 1 : -1
       )[0].image_url;
 
