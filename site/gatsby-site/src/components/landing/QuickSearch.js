@@ -1,49 +1,40 @@
 import SearchInput from 'components/forms/SearchInput';
 import { navigate } from 'gatsby';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '../../elements/Button';
 import Card from '../../elements/Card';
 import Col from '../../elements/Col';
 import Row from '../../elements/Row';
 import Form from '../../elements/Form';
 import { Trans, useTranslation } from 'react-i18next';
-import styled from 'styled-components';
-
-const SearchInputWrapper = styled.div`
-  position: relative;
-  max-width: 640px;
-  margin: auto;
-  :after {
-    color: var(--bs-gray-600);
-    font-size: 1.25rem;
-    position: absolute;
-    left: 1em;
-    top: 50%;
-    padding-top: -50%;
-    transform: translateY(-50%);
-    z-index: 3;
-    pointer-events: none;
-
-    content: '${(props) => props.t('Search reports')}';
-    @media (min-width: 350px) {
-      content: '${(props) => props.t('Search 1600+ reports')}';
-    }
-    @media (min-width: 450px) {
-      content: '${(props) => props.t('Search 1600+ AI harm reports')}';
-    }
-    @media (min-width: 500px) {
-      content: '${(props) => props.t('Search over 1600 reports of AI harms')}';
-    }
-  }
-  &.has-input {
-    :after {
-      content: '' !important;
-    }
-  }
-`;
 
 export default function QuickSearch({ className }) {
   const [searchTerm, setSearchTerm] = useState('');
+
+  const [searchPlaceholder, setSearchPlaceholder] = useState('Search reports');
+
+  const setInnerText = () => {
+    const width = window.innerWidth;
+
+    if (width >= 350 && width < 450) {
+      setSearchPlaceholder(t('Search 1600+ reports'));
+    } else if (width >= 450 && width < 500) {
+      setSearchPlaceholder(t('Search 1600+ AI harm reports'));
+    } else if (width >= 500) {
+      setSearchPlaceholder(t('Search over 1600 reports of AI harms'));
+    } else {
+      setSearchPlaceholder(t('Search reports'));
+    }
+  };
+
+  useEffect(() => {
+    setInnerText();
+    window.addEventListener('resize', setInnerText);
+
+    return () => {
+      window.removeEventListener('resize', setInnerText);
+    };
+  }, []);
 
   const submit = (e) => {
     e.preventDefault();
@@ -62,19 +53,23 @@ export default function QuickSearch({ className }) {
       <Card className={className}>
         <Card.Body>
           <Form onSubmit={submit} id="quickSearch">
-            <SearchInputWrapper t={t} className={searchTerm == '' ? '' : 'has-input'}>
+            <div
+              className={`${
+                searchTerm == '' ? '' : 'has-input'
+              } tw-relative tw-max-w-screen-sm tw-m-auto after:tw-text-dark-grey after:tw-text-xl after:tw-absolute after:tw-left-[1em] after:tw-top-1/2 after:tw-pt-[-50%] after:tw-translate-y-[-50%] after:tw-z-[3] after:tw-pointer-events-none after:tw-content-[attr(data-content)]`}
+            >
               <SearchInput
                 size="lg"
                 value={searchTerm}
                 onChange={setSearchTerm}
                 onClear={() => setSearchTerm('')}
-                placeHolder=""
+                placeHolder={searchPlaceholder}
                 onKeyPress={(e) => {
                   e.key === 'Enter' && submit(e);
                 }}
                 aria-label={t('Search over 1600 reports of AI harms')}
               />
-            </SearchInputWrapper>
+            </div>
             <Row>
               <Col className="tw-flex tw-gap-2 tw-justify-center">
                 <Button size="lg" variant="primary" className="mt-4" type="submit">
