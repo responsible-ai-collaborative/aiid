@@ -117,7 +117,7 @@ describe('Cite pages', () => {
 
   it('Should flag an incident', () => {
     // mock requests until a testing database is implemented
-    const _id = '23';
+    const _id = 'r23';
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -128,7 +128,7 @@ describe('Cite pages', () => {
 
     cy.visit(url + '#' + _id);
 
-    cy.get(`[id="r${_id}"`).find('[data-cy="flag-button"]').click();
+    cy.get(`[id="${_id}"`).find('[data-cy="flag-button"]').click();
 
     cy.get('[data-cy="flag-modal"]').as('modal').should('be.visible');
 
