@@ -18,12 +18,14 @@ const relatedIncidentIdsQuery = gql`
 `;
 
 const semanticallyRelated = async (text) => {
-  const url = `/api/semanticallyRelated?text=${text}`;
+  const url = `/api/semanticallyRelated`;
 
   let controller = new AbortController();
 
   setTimeout(() => controller.abort(), 33000);
   const response = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify({ text }),
     signal: controller.signal,
   });
 
@@ -36,7 +38,7 @@ const semanticallyRelated = async (text) => {
   return json;
 };
 
-const SemanticallyRelatedIncidents = ({ incident, editable }) => {
+const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }) => {
   const [loading, setLoading] = useState(false);
 
   const [reports, setReports] = useState([]);
@@ -45,11 +47,16 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
 
   const [error, setError] = useState(null);
 
+  const initialDisplay = useRef(true);
+
   const debouncedUpdateSearch = useRef(
     debounce(async (incident) => {
       setLoading(true);
       setReports([]);
       setError(null);
+      if (setFieldValue) {
+        setFieldValue('nlp_similar_incidents', []);
+      }
 
       const fail = (errorMessage) => {
         setReports([]);
@@ -61,7 +68,10 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
 
       const minLength = 256;
 
-      if (plaintext.replace(/\s/, '').length < minLength) {
+      if (
+        plaintext.replace(/\s/, '')?.length < minLength &&
+        !(initialDisplay && incident?.nlp_similar_incidents?.length > 0)
+      ) {
         fail(
           `Reports must have at least ${minLength} non-space characters to compute semantic similarity.`
         );
@@ -70,17 +80,33 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
 
       let nlpResponse;
 
-      try {
-        nlpResponse = await semanticallyRelated(plaintext);
-      } catch (e) {
-        console.error(error);
-        fail('Could not compute semantic similarity');
-        return;
+      let nlp_similar_incidents;
+
+      if (
+        incident.nlp_similar_incidents &&
+        incident.nlp_similar_incidents.length > 0 &&
+        initialDisplay.current
+      ) {
+        nlp_similar_incidents = incident.nlp_similar_incidents.map((similarIncident) => ({
+          ...similarIncident,
+          __typename: undefined,
+        }));
+      } else {
+        try {
+          nlpResponse = await semanticallyRelated(plaintext);
+          nlp_similar_incidents = nlpResponse.incidents.sort((a, b) => b.similarity - a.similarity);
+        } catch (e) {
+          console.error(error);
+          fail('Could not compute semantic similarity');
+          return;
+        }
       }
 
-      const incidentIds = nlpResponse.incidents
-        .sort((a, b) => b.similarity - a.similarity)
-        .map((incident) => incident.incident_id);
+      if (setFieldValue) {
+        setFieldValue('nlp_similar_incidents', nlp_similar_incidents);
+      }
+
+      const incidentIds = nlp_similar_incidents.map((incident) => incident.incident_id);
 
       let dbResponse;
 
@@ -112,6 +138,7 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
       );
 
       setLoading(false);
+      initialDisplay.current = false;
     }, 2000)
   ).current;
 
@@ -120,17 +147,20 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
   }, [incident.text]);
 
   return (
-    incident.text.length > 0 && (
-      <RelatedIncidentsArea
-        key="byText"
-        columnKey="byText"
-        loading={loading}
-        reports={reports}
-        header="Most Semantically Similar Incident Reports (Experimental)"
-        editable={editable}
-        error={error}
-      />
-    )
+    <div data-cy="semantically-related-incidents">
+      {(incident?.text?.length > 0 || incident?.reports?.length > 0) && (
+        <RelatedIncidentsArea
+          key="byText"
+          columnKey="byText"
+          loading={loading}
+          reports={reports}
+          header="Most Semantically Similar Incident Reports (Experimental)"
+          setFieldValue={setFieldValue}
+          editId={editId}
+          error={error}
+        />
+      )}
+    </div>
   );
 };
 

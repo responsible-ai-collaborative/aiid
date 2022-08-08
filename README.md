@@ -29,7 +29,30 @@ The steps for contributing changes are the following,
 
 Please make sure your code is well organized and commented before opening the pull request.
 
+## PR labeling strategy
+
+On a daily basis, all PRs should be labeled with one of the review process tags:
+- `PR: Needs Review`
+- `PR: Work Needed`
+- `PR: Mergeable`
+
+The person opening the PR should create it in a draft status until the work is finished, then she/he should click on "Ready for review" button and apply the `PR: Needs Review` label and assign it to someone as a reviewer as soon the PR is ready to be reviewed.
+
+For more information on how to create built-in draft pull requests, please refer to the [GitHub blog](https://github.blog/2019-02-14-introducing-draft-pull-requests/).
+
+The reviewer can change the PR label to `PR: Mergeable` or `PR: Work Needed` if the PR needs more work and assign it back to the corresponding developer.
+
+Please respond to review requests in a timely manner, or indicate if another reviewer would be better. Code review is everyone’s responsibility.
+
+When something is mergeable, then someone else (not the implementer or reviewer) can merge it to staging. They can optionally do a final review.
+
+After merge to staging, the code quality is everyone’s responsibility.
+
 ## Site Architecture
+
+| ![AIID project arquitecture](https://user-images.githubusercontent.com/6564809/181833549-794c3fd0-a324-4d97-9294-da4e7a4a6cc6.png) |
+|:--:|
+| *Site architecture diagram. This is the link to view and edit the diagram on [Diagrams.net](https://drive.google.com/file/d/1kHT1EFrBjxGZOWewS0uUrOZ2QflqYUnA/view?usp=sharing)* |
 
 The site has three components that all be considered "serverless," meaning there is no dynamic backend templating the application or responding to API requests. The components include,
 
@@ -84,10 +107,14 @@ MONGODB_REPLICA_SET=aiiddev-shard-00-02.6zxh5.mongodb.net,aiiddev-shard-00-01.6z
 
 GATSBY_ALGOLIA_APP_ID=JD5JCVZEVS
 GATSBY_ALGOLIA_SEARCH_KEY=c5e99d93261645721a1765fe4414389c
+GATSBY_AVAILABLE_LANGUAGES=en,es
+MONGODB_TRANSLATIONS_CONNECTION_STRING=[to be updated in MongoDB setup section]
 ```
 In the same folder, install dependencies using `npm` (do not use `yarn`, it will ignore the `package-lock.json` file):
 
-`npm install`
+```
+npm install
+```
 
 You are ready to start a local copy of the project:
 
@@ -103,7 +130,9 @@ The values you placed into the env file are all associated with a staging enviro
 If the feature you are working on includes structural changes to the MongoDB database or Realm functions, you'll need to create your own project by going to https://cloud.mongodb.com and following these steps:
 - Create a new MongoDB project (the free tier will be enough)
 - Create a new Atlas cluster with the name: `AIIDDev`
-- Create a new Realm App. The name should be `AIIDStitch2`. Realm will give it an id like `aiidstitch2-xxxxx`
+    - Choose "Username and Password" as authentication method.
+    - Choose "My Local Environment" as network access and add your current IP address. If your IP is dynamic, add `0.0.0.0` to the list of IP addresses.
+- Create a new Realm App. The name should be `AIIDStitch2`. Realm will give it an id like `aiidstitch2-<REALM_APP_ID>`
 - Create a new database user with admin access and another user with read-only permissions
 
 #### Replicating the Database
@@ -127,13 +156,13 @@ npm install --global mongodb-realm-cli
 Once authenticated, you can deploy the realm app by going to `site/realm` of this repo and running:
 
 ```
- realm-cli push --remote=aiidstitch2-<YOUR-NEW-APP-ID>
+ realm-cli push --remote=aiidstitch2-<REALM_APP_ID>
 ```
 
 Finally, update the previously created `.env`:
 
 ```
-GATSBY_REALM_APP_ID=`aiidstitch2-xxxxx`
+GATSBY_REALM_APP_ID=aiidstitch2-<REALM_APP_ID>
 MONGODB_CONNECTION_STRING=mongodb+srv://<username>:<password>@aiiddev.<CLUSTER>.mongodb.net
 MONGODB_REPLICA_SET=aiiddev-shard-00-00.<CLUSTER>.mongodb.net,aiiddev-shard-00-01.<CLUSTER>.mongodb.net,aiiddev-shard-00-02.<CLUSTER>.mongodb.net
 ```
@@ -154,9 +183,16 @@ GATSBY_ALGOLIA_SEARCH_KEY=<YOUR SEARCH KEY>
 ALGOLIA_ADMIN_KEY=<YOUR ADMIN KEY>
 ```
 
-Algolia index settings are uploaded on build time, so you'll have to do that at least once from your local env:
+Algolia index settings are uploaded on build time, so they will take effect after running:
+
 ```
 gatsby build
+```
+
+Alternatively, you can update the settings without rebuilding if from `site/gatsby-site` you run:
+
+```
+node src/scripts/algolia-update.js
 ```
 
 Restart Gatsby, and you should have a complete working environment!
@@ -186,6 +222,8 @@ To access this database, a user with read/write permissions needs to be provided
 MONGODB_TRANSLATIONS_CONNECTION_STRING=mongodb+srv://<user>:<password>@aiiddev.<host>.mongodb.net
 ```
 
+You can use the same value than defined on the MongoDB Setup environment variable ```MONGODB_CONNECTION_STRING```
+
 -3 Generate an Algolia index from each translated collection and upload them to Algolia. Each index has the following naming format:
 ```
 instant_search-{language code}
@@ -193,6 +231,15 @@ instant_search-{language code}
 After the first run, the following applies for subsequent runs:
 Translations of report fields load from the existing `translations/incident_reports_{language}/{doc}` document, and if not found, then the Translate API is hit.
 Algolia indexes are replaced every time the process runs
+
+
+#### UI Translations
+
+Https://react.i18next.com handles UI translations. To find missing keys enable debugging by setting the following environment variable:
+
+```
+GATSBY_I18N_DEBUG=true
+```
 
 ### Cost
 

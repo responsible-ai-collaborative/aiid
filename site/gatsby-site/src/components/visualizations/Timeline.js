@@ -109,7 +109,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
                         {b.isOccurrence ? (
                           <>{b.title}</>
                         ) : (
-                          <a href={`#r${b.mongodb_id}`}>{b.title}</a>
+                          <a href={`#r${b.report_number}`}>{b.title}</a>
                         )}
                       </GroupListItem>
                     ))}
@@ -130,7 +130,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
       {bucket[0].isOccurrence ? (
         <Title dx={16}>{bucket[0].title}</Title>
       ) : (
-        <a href={bucket[0].mongodb_id ? `#r${bucket[0].mongodb_id}` : ''}>
+        <a href={bucket[0].mongodb_id ? `#r${bucket[0].report_number}` : ''}>
           <Title dx={16}>{bucket[0].title}</Title>
         </a>
       )}

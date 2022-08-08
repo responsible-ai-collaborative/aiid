@@ -1,5 +1,5 @@
 import React from 'react';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 import ReactWordcloud from 'react-wordcloud';
 
 import Container from 'react-bootstrap/Container';
@@ -45,9 +45,9 @@ const WordCounts = ({ pageContext, ...props }) => {
 
   return (
     <Layout {...props}>
-      <Helmet>
+      <AiidHelmet>
         <title>Word Counts</title>
-      </Helmet>
+      </AiidHelmet>
       <div className="titleWrapper">
         <StyledHeading>Word Counts</StyledHeading>
       </div>

@@ -1,22 +1,21 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { Configure, InstantSearch } from 'react-instantsearch-dom';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 import { useModal, CustomModal } from 'hooks/useModal';
 
 import config from '../../../config';
 import Hits from 'components/discover/Hits';
 import SearchBox from 'components/discover/SearchBox';
 import Pagination from 'components/discover/Pagination';
-import FiltersModal from 'components/discover/FiltersModal';
+import OptionsModal from 'components/discover/OptionsModal';
 import { SearchContext } from 'components/discover/useSearch';
 import { queryConfig } from 'components/discover/queryParams';
 import VirtualFilters from 'components/discover/VirtualFilters';
 import Controls from 'components/discover/Controls';
 import { Container, Row, Col } from 'react-bootstrap';
-import LanguageSwitcher from 'components/i18n/LanguageSwitcher';
 import { useLocalization } from 'gatsby-theme-i18n';
 
 const searchClient = algoliasearch(
@@ -180,17 +179,15 @@ function DiscoverApp(props) {
 
   const { locale } = useLocalization();
 
-  const languageSwitcher = useRef(
-    typeof window !== 'undefined' && window.localStorage.getItem('i18n')
-  ).current;
-
-  const indexName = useRef(`instant_search-${locale}`).current;
+  const indexName = `instant_search-${locale}`;
 
   const [searchState, setSearchState] = useState(generateSearchState({ query }));
 
   const onSearchStateChange = (searchState) => {
     setSearchState({ ...searchState });
   };
+
+  const [hideDuplicates, setHideDuplicates] = useState(false);
 
   const toggleFilterByIncidentId = useCallback(
     (incidentId) => {
@@ -224,17 +221,22 @@ function DiscoverApp(props) {
 
   return (
     <LayoutHideSidebar {...props}>
-      <Helmet>
+      <AiidHelmet>
         <title>Artificial Intelligence Incident Database</title>
-      </Helmet>
+      </AiidHelmet>
       <SearchContext.Provider value={{ searchState, indexName, searchClient, onSearchStateChange }}>
         <InstantSearch
-          indexName={indexName}
+          indexName={
+            indexName +
+            (searchState.query == '' && Object.keys(searchState.refinementList).length == 0
+              ? '-featured'
+              : '')
+          }
           searchClient={searchClient}
           searchState={searchState}
           onSearchStateChange={onSearchStateChange}
         >
-          <Configure hitsPerPage={28} />
+          <Configure hitsPerPage={28} distinct={hideDuplicates} />
 
           <VirtualFilters />
 
@@ -243,16 +245,19 @@ function DiscoverApp(props) {
               <Col>
                 <SearchBox defaultRefinement={query.s} />
               </Col>
-              {languageSwitcher && (
-                <Col className="col-auto">
-                  <LanguageSwitcher />
-                </Col>
-              )}
             </Row>
 
-            <Controls query={query} />
+            <Controls
+              query={query}
+              setHideDuplicates={setHideDuplicates}
+              hideDuplicates={hideDuplicates}
+            />
 
-            <FiltersModal className="hiddenDesktop" />
+            <OptionsModal
+              className="hiddenDesktop"
+              setHideDuplicates={setHideDuplicates}
+              hideDuplicates={hideDuplicates}
+            />
           </Container>
 
           <Hits

@@ -1,5 +1,5 @@
 import React from 'react';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 
 import Container from 'react-bootstrap/Container';
 
@@ -22,7 +22,7 @@ const IncidentCite = ({ pageContext, ...props }) => {
 
   return (
     <Layout {...props}>
-      <Helmet>
+      <AiidHelmet>
         {metaTitle ? <title>{metaTitle}</title> : null}
         {metaTitle ? <meta name="title" content={metaTitle} /> : null}
         {metaDescription ? <meta name="description" content={metaDescription} /> : null}
@@ -31,7 +31,7 @@ const IncidentCite = ({ pageContext, ...props }) => {
         {metaTitle ? <meta property="twitter:title" content={metaTitle} /> : null}
         {metaDescription ? <meta property="twitter:description" content={metaDescription} /> : null}
         <link rel="canonical" href={canonicalUrl} />
-      </Helmet>
+      </AiidHelmet>
       <div className={'titleWrapper'}>
         <StyledHeading>{metaDescription}</StyledHeading>
       </div>

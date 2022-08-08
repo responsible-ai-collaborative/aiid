@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'gatsby';
+import { LocalizedLink } from 'gatsby-theme-i18n';
+import { Trans } from 'react-i18next';
 
 const Wrapper = styled.div`
   background-color: #f8f8f8;
@@ -25,14 +26,13 @@ const Circle = styled.div`
 export default function DiscoverQuickAccess({ className }) {
   return (
     <Wrapper className={`${className} p-2 p-md-4`}>
-      <Link to="/apps/discover" className="fs-5">
-        {' '}
-        Discover
-      </Link>
+      <LocalizedLink to="/apps/discover" className="fs-5">
+        <Trans>Discover</Trans>
+      </LocalizedLink>
       <Circle />
-      <Link to="/apps/submit" className="fs-5">
-        Submit
-      </Link>
+      <LocalizedLink to="/apps/submit" className="fs-5">
+        <Trans>Submit</Trans>
+      </LocalizedLink>
     </Wrapper>
   );
 }

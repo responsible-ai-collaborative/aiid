@@ -24,6 +24,9 @@ exports = async (input) => {
       "Alleged deployer of AI system": submission.deployers || [],
       "Alleged developer of AI system": submission.developers || [],
       "Alleged harmed or nearly harmed parties": submission.harmed_parties || [],
+      nlp_similar_incidents: submission.nlp_similar_incidents || [],
+      editor_similar_incidents: submission.editor_similar_incidents || [],
+      editor_dissimilar_incidents: submission.editor_dissimilar_incidents || []
     }
     
     await incidents.insertOne({...newIncident, incident_id: BSON.Int32(newIncident.incident_id)});

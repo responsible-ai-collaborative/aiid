@@ -3,6 +3,7 @@ import { OverlayTrigger, Tooltip, Button, Card } from 'react-bootstrap';
 import styled from 'styled-components';
 import Markdown from 'react-markdown';
 import TaxonomyForm from './TaxonomyForm';
+import { Trans } from 'react-i18next';
 
 const ClassificationContainer = styled.div`
   display: flex;
@@ -26,8 +27,14 @@ const Field = styled.div`
   width: 20%;
   border-right: 2.5px solid #d9deee;
   margin-right: 1em;
+  padding-right: 0.5em;
   color: grey;
   font-weight: 700;
+
+  @media only screen and (max-width: 767px) {
+    width: 50%;
+    min-width: 40%;
+  }
 `;
 
 const Value = styled(Markdown)`
@@ -59,7 +66,11 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
   return (
     <Card key={taxonomy.namespace} className="mt-4" data-cy={taxonomy.namespace}>
       <TaxaCardHeader className="card-header">
-        <TaxaHeader>{`${taxonomy.namespace} Taxonomy Classifications`}</TaxaHeader>
+        <TaxaHeader>
+          <Trans namespace={taxonomy.namespace}>
+            {{ namespace: taxonomy.namespace }} Taxonomy Classifications
+          </Trans>
+        </TaxaHeader>
         <>
           {isEditing ? (
             <Button onClick={() => setIsEditing(false)}>Cancel</Button>
@@ -71,7 +82,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
           style={{ order: 2, marginLeft: 'auto' }}
           href={`/taxonomy/${taxonomy.namespace.toLowerCase()}`}
         >
-          Taxonomy Details
+          <Trans>Taxonomy Details</Trans>
         </a>
       </TaxaCardHeader>
       <>
@@ -82,7 +93,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
                 <Card bg="secondary" style={{ width: '100%' }} text="light" className="mb-2">
                   <Card.Body>
                     <Card.Text>
-                      Classifications will update in production within 24 hours.
+                      <Trans>Classifications will update in production within 24 hours.</Trans>
                     </Card.Text>
                   </Card.Body>
                 </Card>
@@ -150,7 +161,9 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
               <div style={{ padding: '0.5em' }}>
                 <Card bg="secondary" style={{ width: '100%' }} text="light" className="mb-2">
                   <Card.Body>
-                    <Card.Text>No classifications for this taxonomy.</Card.Text>
+                    <Card.Text>
+                      <Trans>No classifications for this taxonomy.</Trans>
+                    </Card.Text>
                   </Card.Body>
                 </Card>
               </div>

@@ -1,0 +1,37 @@
+---
+title: "Roadmap de la base de datos"
+metaTitle: "Roadmap y desarrollo futuro"
+metaDescription: "Qué cambios puede esperar a través del tiempo a medida que se desarrolla el AIID"
+slug: "/research/2-roadmap"
+aiTranslated: true
+---
+
+# En desarrollo
+
+**Traducción de informes de incidentes:** La base de datos de incidentes actualmente se recopila y se presenta al mundo de la lectura en inglés, pero los sistemas inteligentes se implementan en todos los idiomas, culturas y ubicaciones. Este proyecto está trabajando para admitir todos los idiomas traducibles por máquina para que los informes de incidentes puedan obtenerse de cualquier idioma y presentarse a los idiomas que admiten más de 7 mil millones de usuarios potenciales.
+
+**Recursos de mejores prácticas:** Una motivación detrás de la base de datos de incidentes de IA es hacer que los incidentes se puedan compartir con los equipos de producto e ingeniería para que trabajen para prevenir o mitigar el incidente antes de la implementación. Actualmente, la base de datos solo presenta los problemas (es decir, incidentes), pero estamos trabajando para mostrar de forma selectiva los recursos que tienen más probabilidades de prevenir y mitigar el problema.
+
+**Informe post-mortem:** Los servicios alojados tienen la práctica de publicar "autopsias" después de las interrupciones del servicio donde la empresa explica qué sucedió, quién se vio afectado, por cuánto tiempo y qué hará la empresa para prevenir o mitigar tales cortes en el futuro. Esta es una práctica que la base de datos de incidentes de IA busca respaldar explícitamente al otorgar una ubicación especial en las páginas de citas de incidentes a las autopsias de incidentes de IA.
+
+**Monitoreo de incidentes:** A medida que se implementen más sistemas inteligentes en el mundo real, será cada vez más difícil monitorear, recopilar y categorizar los incidentes. Un raspador que monitoree las fuentes de contenido en busca de incidentes de IA y facilite la ingesta fácil de los mismos garantizaría que el AIID siga siendo relevante para los sistemas inteligentes desarrollados más recientemente. Un equipo de estudiantes está trabajando actualmente para desarrollar la API central para este proyecto.
+
+
+# Proyectos Futuros Potenciales
+
+**Taxonomía de fallas técnicas:** el AIID carece de una taxonomía técnica rigurosa que vincule los daños experimentados con sus elementos técnicos. Nos gustaría cerrar esta brecha con un equipo de ingenieros de aprendizaje automático aplicando su conocimiento sobre cómo se construyen los sistemas para clasificar incidentes.
+
+**Recopilación de datos de incidentes:** Muchos tipos de incidentes producen datos de incidentes que las empresas analizan y utilizan para evitar que se repitan internamente. Un investigador asociado podría encargarse de promover la divulgación voluntaria de datos de incidentes, que luego podrían asociarse con registros de incidentes. En el futuro, es probable que este tipo de divulgación sea obligatorio en algunas jurisdicciones y el AIID debería estar allí para respaldarlo.
+
+**Tu proyecto aquí:** La base de datos de incidentes de IA se rige por la Colaboración de IA responsable (RAIC). Debe considerar esto como una invitación abierta para colaborar en proyectos que coincidan con la tesis de impacto de la base de datos de incidentes de IA.
+
+# Entregado
+
+**Recopilación inicial de incidentes:** El conjunto de datos inicial se recopiló en 2019 mediante la combinación de listas de incidentes de
+[Roman Yampolskiy](http://cecs.louisville.edu/ry/),
+[Catherine Olsson](https://www.linkedin.com/in/catherineolsson/),
+y [Sam Yoon](https://www.linkedin.com/in/samyoonnz/). Estos incidentes están asociados con más de 1k informes de incidentes en total.
+
+**Aplicación de descubrimiento de incidentes:** Después de la recopilación inicial del conjunto de datos, [Sean McGregor](https://seanbmcgregor.com/) desarrolló una aplicación [Discover](/apps/discover) que admitía la indexación y limpieza de más de 1k informes recopilados en la recopilación de informes de incidentes iniciales.
+
+**Taxonomías:** Se están desarrollando sistemas inteligentes para cada segmento del mercado y función del gobierno. El desarrollo de la [calidad de la investigación](/research) del producto de datos requiere sistemas para regularizar y clasificar los incidentes según los tipos de incidentes, la escala, las tecnologías involucradas y las partes afectadas. Estas y otras clasificaciones son un punto de controversia en los sistemas de múltiples partes interesadas. Para avanzar en la utilidad de investigación de la base de datos sin requerir un consenso total sobre cada clasificación, es posible aplicar taxonomías independientemente de una autoridad taxonómica central. Cada "[alcance taxonómico](/research/4-taxonomies)" es administrado por un editor que desarrolla la taxonomía y es responsable de aplicar la taxonomía en todos los incidentes. [Contáctenos](/contact) para más información.

@@ -28,7 +28,8 @@
                 "editor_notes": "",
                 "developers": ["AI Dev"],
                 "deployers": ["Youtube"],
-                "harmed_parties": ["Adults"]
+                "harmed_parties": ["Adults"],
+                "nlp_similar_incidents": []
             },
             {
                 "__typename": "Submission",
@@ -47,6 +48,7 @@
                 "incident_id": 10,
                 "language": "en",
                 "source_domain": "skylightcyber.com",
+                "nlp_similar_incidents": [],
                 "submitters": [
                     "Kate Perkins"
                 ],
@@ -81,7 +83,8 @@
                 "text": "Submission 2 text",
                 "title": "Submission 1 title",
                 "url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/",
-                "editor_notes": ""
+                "editor_notes": "",
+                "nlp_similar_incidents": []
             }
         ]
     }

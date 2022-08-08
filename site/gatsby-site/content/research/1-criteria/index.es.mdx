@@ -1,0 +1,72 @@
+---
+title: "Criterios de aceptación de informes de incidentes"
+metaTitle: "Criterios de aceptación de informes de incidentes"
+metaDescription: "¿Cuáles son las razones por las que los informes de incidentes se aceptan o no en la base de datos de incidentes de AI?"
+slug: "/research/1-criteria"
+aiTranslated: true
+---
+
+# ¿Qué es un incidente de IA?
+
+La base de datos de incidentes de IA contiene registros de incidentes de IA. Un “incidente de IA” es una situación en la que los sistemas de IA _causaron_ o _casi causaron_ _daño en el mundo real_. Al aplicar esta definición, tenga en cuenta que pretende ser amplia. Si, después de una investigación cuidadosa, no está seguro de si un incidente califica, erre por el lado de enviarlo.
+
+# "IA"
+
+Para nuestros propósitos, "IA" se refiere a la capacidad de las máquinas para realizar funciones que normalmente se considera que requieren inteligencia humana, como el razonamiento, el reconocimiento de patrones o la comprensión del lenguaje natural. La IA incluye, entre otros, el aprendizaje automático: un conjunto de técnicas mediante las cuales un sistema informático aprende a realizar una tarea mediante el reconocimiento de patrones en los datos y la inferencia de reglas de decisión, en lugar de mediante instrucciones explícitas.
+
+# "sistema de IA"
+
+Por "sistemas de IA" nos referimos a tecnologías y procesos en los que la IA desempeña un papel significativo. Estos sistemas también pueden incluir componentes que no involucran inteligencia artificial, como componentes mecánicos.
+
+> **Ejemplos:** Un coche autónomo; software de reconocimiento facial; Google Translate; un algoritmo de puntuación de crédito.
+
+Los algoritmos que tradicionalmente no se consideran IA pueden considerarse un sistema de IA cuando un ser humano transfiere la autoridad de toma de decisiones al sistema.
+
+> **Ejemplo:** Un sistema hospitalario selecciona vacunas candidatas en función de una serie de reglas personalizadas en un algoritmo de caja negra.
+
+# "Causado"
+
+Cuando decimos que un sistema de IA "causó" daño, queremos decir que desempeñó un papel importante en la cadena de eventos que condujeron al daño. El sistema de IA no tiene por qué ser el único factor, ni siquiera el factor principal, que cause el daño. Pero al menos debería ser una causa "contrafáctica", es decir, si el sistema de IA no hubiera actuado de la forma en que lo hizo, el daño específico no se habría producido.
+
+No hacemos distinción entre daño accidental y deliberado (es decir, uso malicioso de IA). Para los propósitos de la base de datos de incidentes de AI, lo que importa es que se causó el daño, no si fue intencional.
+
+# "Casi causado"
+
+Cuando decimos que un sistema de IA “casi causa” daño, queremos decir que desempeñó un papel importante en una cadena de eventos que fácilmente podrían haber causado daño, pero algún factor externo impidió que ocurriera el daño. Este factor externo debería ser independiente del sistema de IA y no debería haberse establecido específicamente para prevenir el daño en cuestión.
+
+> **Ejemplo:** Un robot industrial comienza a girar fuera de control, pero un trabajador cercano logra cortar la alimentación del robot antes de que el robot o las personas cercanas sufran daños.
+
+> **Contraejemplo:** Un robot industrial comienza a girar fuera de control, pero su sensor de seguridad incorporado detecta la anomalía e inmediatamente apaga el robot.
+
+Una vez más, el sistema de IA no tiene por qué ser el único factor, ni siquiera el factor principal, en la cadena de eventos que podrían haber causado daño. Pero al menos debería ser una causa "contrafáctica", es decir, si el sistema de IA no hubiera actuado de la manera en que lo hizo, no habría habido una posibilidad significativa de que ocurriera el daño.
+
+# "Daño en el mundo real"
+
+Tenemos una definición amplia de "daño en el mundo real". Incluye, pero no se limita a:
+
+* Daño a la salud/seguridad física
+* Daño psicológico
+* Daño financiero
+* Daño a la propiedad física
+* Daño a la propiedad intangible (por ejemplo, robo de propiedad intelectual, daño a la reputación de una empresa)
+* Daño a los sistemas sociales o políticos (por ejemplo, interferencia electoral, pérdida de confianza en las autoridades)
+* Daño a las libertades civiles (por ejemplo, encarcelamiento injustificado u otro castigo, censura)
+
+Los daños no tienen que ser graves para cumplir con esta definición; un incidente que resulte en un gasto o inconveniente menor y fácilmente remediable aún cuenta como un daño para nuestros propósitos.
+
+En algunos casos, especialmente cuando se trata de daños psicológicos o intangibles, las personas razonables pueden no estar de acuerdo sobre si el daño realmente ocurrió (o casi ocurrió). Los contribuyentes deben usar su mejor juicio, errando por el lado de encontrar daño cuando hay un argumento plausible de que ocurrió daño.
+
+# ¿Qué no es un incidente de IA?
+
+Varias situaciones comunes _no_ cumplen con los criterios anteriores y no deben registrarse como incidentes en la base de datos de incidentes de AI. Éstos incluyen:
+
+| Tipo                                                                                                                                                      | Ejemplo                                                                                                                                                                                                                                                            |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Los sistemas de IA funcionan mal en control o tentornos de simulación, incluidos entornos simulados                                                       | [Las ligeras modificaciones de letreros de calles pueden engañar por completo a los algoritmos de aprendizaje automático](https://spectrum.ieee.org/cars-that-think/transportation/sensors/slight-street-sign-modifications-can-fool-machine-learning-algorithms)  |
+| Estudios que documentan fallas teóricas o conceptuales en la tecnología de IA                                                                             | [Las redes neuronales profundas se engañan fácilmente: predicciones de alta confianza para imágenes irreconocibles](https://www.cv-foundation.org/openaccess/content_cvpr_2015/html/Nguyen_Deep_Neural_Networks_2015_CVPR_paper.html)                              |
+| Experimentos mentales y ejemplos hipotéticos                                                                                                              | ["...la inteligencia general artificial, incluso una diseñada de manera competente y sin malicia, podría en última instancia destruir a la humanidad"](https://www.lesswrong.com/tag/paperclip-maximizer)                                                          |
+| El desarrollo o despliegue de productos de IA que parecen causar daño, pero no hay informes de situaciones específicas en las que se haya causado daño    | [Las redes neuronales profundas son más precisas que los humanos para detectar la orientación sexual a partir de imágenes faciales](https://osf.io/zn79k/)                                                                                                         |
+| Discusiones de amplios tipos de incidentes de IA o comportamientos dañinos de IA                                                                          | [Cómo un puñado de empresas tecnológicas controlan miles de millones de mentes todos los días](https://www.ted.com/talks/tristan_harris_how_a_handful_of_tech_companies_control_billions_of_minds_every_day)                                                       |
+| Marketing engañoso de productos de IA                                                                                                                     | [El misterio de Zach, la IA milagrosa, continuación: todo se vuelve más terrible](https://thespinoff.co.nz/the-best-of/09-03-2018/the-mystery-of-zach-the-milagro-ai-continuó-todo-simplemente-se-hace-terrible/)                                                  |
+
+Por supuesto, hay muchos otros tipos de situaciones que no califican como incidentes, pero estas son algunas de las más comunes que tienden a confundir a los colaboradores de AIID.

@@ -43,7 +43,7 @@ export default function DisplayModeSwitch() {
   };
 
   return (
-    <Buttons className="ms-4">
+    <Buttons>
       {Object.keys(modes).map((key) => (
         <ModeButton
           variant="secondary"

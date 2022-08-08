@@ -30,6 +30,12 @@ export const FIND_SUBMISSIONS = gql`
       url
       editor_notes
       tags
+      nlp_similar_incidents {
+        similarity
+        incident_id
+      }
+      editor_similar_incidents
+      editor_dissimilar_incidents
       plain_text
       developers
       deployers
@@ -63,6 +69,12 @@ export const FIND_SUBMISSION = gql`
       developers
       deployers
       harmed_parties
+      nlp_similar_incidents {
+        similarity
+        incident_id
+      }
+      editor_similar_incidents
+      editor_dissimilar_incidents
     }
   }
 `;
@@ -92,6 +104,12 @@ export const UPDATE_SUBMISSION = gql`
       developers
       deployers
       harmed_parties
+      nlp_similar_incidents {
+        similarity
+        incident_id
+      }
+      editor_similar_incidents
+      editor_dissimilar_incidents
     }
   }
 `;

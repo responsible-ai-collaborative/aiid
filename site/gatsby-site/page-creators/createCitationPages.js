@@ -64,9 +64,18 @@ const createCitationPages = async (graphql, createPage) => {
         allMongodbAiidprodIncidents {
           nodes {
             incident_id
+            title
+            description
             date
             reports
             editors
+            editor_similar_incidents
+            editor_dissimilar_incidents
+            flagged_dissimilar_incidents
+            nlp_similar_incidents {
+              incident_id
+              similarity
+            }
           }
         }
 
@@ -214,12 +223,37 @@ const createCitationPages = async (graphql, createPage) => {
       });
     });
 
+    const similarIncidents = {};
+
+    for (let key of [
+      'nlp_similar_incidents',
+      'editor_similar_incidents',
+      'editor_dissimilar_incidents',
+    ]) {
+      similarIncidents[key] = incident[key].map((similarIncident) => {
+        const similarIncidentId = similarIncident.incident_id || similarIncident;
+
+        const foundFullIncident = allMongodbAiidprodIncidents.nodes.find(
+          (fullIncident) => fullIncident.incident_id === similarIncidentId
+        );
+
+        return {
+          title: foundFullIncident?.title || null,
+          date: foundFullIncident?.date || null,
+          incident_id: similarIncidentId,
+          reports: incidentReportsMap[similarIncidentId],
+        };
+      });
+    }
+
     pageContexts.push({
       incident,
       incidentReports: incidentReportsMap[incident_id],
       taxonomies,
       nextIncident: i < keys.length - 1 ? keys[i + 1] : null,
       prevIncident: i > 0 ? keys[i - 1] : null,
+      similarIncidents,
+      ...similarIncidents,
     });
   }
 
