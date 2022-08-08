@@ -5,7 +5,7 @@ export default function Card(props) {
     <>
       <div
         {...props}
-        className={`tw-border tw-rounded-lg tw-flex tw-break-words ${
+        className={`tw-card tw-border tw-rounded-lg tw-flex tw-break-words ${
           props.className ? props.className : ''
         } tw-flex-col ${props.bg ? 'tw-bg-' + props.bg : ''}`}
       >
@@ -18,7 +18,7 @@ export default function Card(props) {
 Card.Header = function CardHeader(props) {
   return (
     <div
-      className={`tw-flex ${
+      className={`tw-card-header tw-flex ${
         props.className ? props.className : ''
       } tw-bg-light-grey tw-px-4 tw-py-2 tw-border-b tw-border-border-grey`}
     >
@@ -30,7 +30,7 @@ Card.Header = function CardHeader(props) {
 Card.Title = function CardTitle(props) {
   return (
     <>
-      <div className={`tw-flex-1 ${props.className ? props.className : ''}`}>
+      <div className={`tw-card-title tw-flex-1 ${props.className ? props.className : ''}`}>
         <props.as className="tw-mb-2">{props.children}</props.as>
       </div>
     </>
@@ -40,7 +40,9 @@ Card.Title = function CardTitle(props) {
 Card.Subtitle = function CardSubtitle(props) {
   return (
     <>
-      <div className={`tw-flex-1 ${props.className ? props.className : ''}`}>{props.children}</div>
+      <div className={`tw-card-subtitle tw-flex-1 ${props.className ? props.className : ''}`}>
+        {props.children}
+      </div>
     </>
   );
 };
@@ -48,7 +50,7 @@ Card.Subtitle = function CardSubtitle(props) {
 Card.Body = function CardBody(props) {
   return (
     <>
-      <div className={`tw-flex-1 tw-p-4 ${props.className ? props.className : ''}`}>
+      <div className={`tw-card-body tw-flex-1 tw-p-4 ${props.className ? props.className : ''}`}>
         {props.children}
       </div>
     </>
@@ -59,7 +61,7 @@ Card.Footer = function CardFooter(props) {
   return (
     <>
       <div
-        className={`tw-bg-light-grey tw-border-border-grey tw-py-2 tw-px-4 ${
+        className={` tw-card-footer tw-bg-light-grey tw-border-border-grey tw-py-2 tw-px-4 ${
           props.className ? props.className : ''
         }`}
       >
@@ -72,7 +74,7 @@ Card.Footer = function CardFooter(props) {
 Card.Text = function CardText(props) {
   return (
     <>
-      <p className={`${props.className ? props.className : ''}`}>{props.children}</p>
+      <p className={`tw-card-text ${props.className ? props.className : ''}`}>{props.children}</p>
     </>
   );
 };
