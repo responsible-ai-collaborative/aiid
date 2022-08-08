@@ -5,8 +5,8 @@ import { format } from 'date-fns';
 import { Image } from '../../utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { Card, Col, Row } from 'react-bootstrap';
-import ReactMarkdown from 'react-markdown';
 import Link from 'components/ui/Link';
+import ReportText from 'components/reports/ReportText';
 
 const ThumbnailImg = styled(Image)`
   object-fit: cover;
@@ -15,8 +15,7 @@ const ThumbnailImg = styled(Image)`
 `;
 
 const LatestIncidentReport = ({ className = '', report }) => {
-  const { image_url, cloudinary_id, title, description, epoch_date_submitted, incident_id } =
-    report;
+  const { image_url, cloudinary_id, title, text, epoch_date_submitted, incident_id } = report;
 
   return (
     <Card className={className}>
@@ -35,7 +34,7 @@ const LatestIncidentReport = ({ className = '', report }) => {
             </Card.Title>
             <Card.Subtitle>{format(epoch_date_submitted * 1000, 'MMM d, yyyy')}</Card.Subtitle>
             <Card.Text>
-              <ReactMarkdown>{description}</ReactMarkdown>...
+              <ReportText maxChars={240} text={text} />
               <Link to={`/cite/${incident_id}`}>(Read More)</Link>
             </Card.Text>
           </Card.Body>

@@ -130,7 +130,6 @@ export const query = graphql`
       title
       text
       epoch_date_submitted
-      description
       image_url
       report_number
       cloudinary_id
