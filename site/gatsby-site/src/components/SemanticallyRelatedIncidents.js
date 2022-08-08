@@ -22,7 +22,7 @@ const semanticallyRelated = async (text) => {
 
   let controller = new AbortController();
 
-  setTimeout(() => controller.abort(), 33000);
+  setTimeout(() => controller.abort(), 66000);
   const response = await fetch(url, {
     method: 'POST',
     body: JSON.stringify({ text }),

@@ -22,7 +22,7 @@ export default async function handler(req, res) {
 
   let error = null;
 
-  while (tries < (max_retries || 3) && (response?.status !== 200 || error)) {
+  while (tries < (max_retries || 6) && (response?.status !== 200 || error)) {
     try {
       response = await axios({
         url,
