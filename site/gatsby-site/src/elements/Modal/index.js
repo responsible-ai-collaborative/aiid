@@ -28,7 +28,9 @@ export default function Modal(props) {
 
 Modal.Title = function ModalTitle(props) {
   return (
-    <div className="modal-header tw-flex tw-flex-shrink-0 tw-items-center tw-justify-between tw-p-4 tw-border-b tw-border-gray-200 tw-rounded-t-md">
+    <div
+      className={`tw-flex tw-flex-shrink-0 tw-items-center tw-justify-between tw-p-4 tw-border-b tw-border-gray-200 tw-rounded-t-md ${props.className}`}
+    >
       <h5
         className="text-xl tw-font-medium tw-leading-normal tw-text-gray-800"
         id="exampleModalLabel"
@@ -48,9 +50,9 @@ Modal.Title = function ModalTitle(props) {
 Modal.Header = function ModalHeader(props) {
   return (
     <div
-      className={`tw-flex ${
+      className={`tw-flex tw-w-full ${
         props.className ? props.className : ''
-      } tw-bg-light-grey tw-px-4 tw-py-2 tw-border-b tw-border-border-grey`}
+      } tw-bg-light-grey tw-px-4 tw-py-2`}
     >
       {props.children}
     </div>

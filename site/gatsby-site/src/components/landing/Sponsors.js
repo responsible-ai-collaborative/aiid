@@ -23,7 +23,7 @@ const SponsorModal = ({ setModalState, modalState, modalName, children, imagePat
       data-cy="sponsor-modal"
     >
       <Modal.Header closeButton>
-        <Modal.Title>{title}</Modal.Title>
+        <Modal.Title className="tw-w-full">{title}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {children}
