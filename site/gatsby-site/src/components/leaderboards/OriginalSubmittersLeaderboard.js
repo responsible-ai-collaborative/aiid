@@ -30,9 +30,13 @@ const OriginalSubmitersLeaderboard = ({ limit, className }) => {
   const submitters = {};
 
   for (const report of reports) {
-    const { incident_id: id } = incidents.find((incident) =>
-      incident.reports.includes(report.report_number)
-    );
+    const incident = incidents.find((incident) => incident.reports.includes(report.report_number));
+
+    if (!incident) {
+      console.error(`Report #${report.report_number} does not have an associated incident.`);
+      continue;
+    }
+    const id = incident.incident_id;
 
     const {
       submitters: [submitter],

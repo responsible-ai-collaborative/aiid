@@ -52,6 +52,8 @@ const reportFields = [
 ];
 
 function EditCitePage(props) {
+  console.log('props', props);
+
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
 
   const { data: reportData, loading: loadingReport } = useQuery(FIND_REPORT_WITH_TRANSLATIONS, {
@@ -241,11 +243,14 @@ function EditCitePage(props) {
       )}
       {!reportData?.report && !loading && <div>Report not found</div>}
 
-      {!loading && reportData?.report && parentIncident?.incident && (
+      {!loadingReport && reportData?.report && (
         <Formik
           validationSchema={schema}
           onSubmit={handleSubmit}
-          initialValues={{ ...reportData.report, incident_id: parentIncident.incident.incident_id }}
+          initialValues={{
+            ...reportData.report,
+            incident_id: parentIncident?.incident?.incident_id || 0,
+          }}
         >
           {({ isValid, isSubmitting, submitForm }) => (
             <>
