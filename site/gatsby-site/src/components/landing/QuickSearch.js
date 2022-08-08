@@ -1,4 +1,5 @@
 import SearchInput from 'components/forms/SearchInput';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 import { navigate } from 'gatsby';
 import React, { useState } from 'react';
 import { Button, Card, Col, Form, Row } from 'react-bootstrap';
@@ -41,14 +42,16 @@ const SearchInputWrapper = styled.div`
 export default function QuickSearch({ className }) {
   const [searchTerm, setSearchTerm] = useState('');
 
+  const localizePath = useLocalizePath();
+
   const submit = (e) => {
     e.preventDefault();
-    navigate(`/apps/discover?s=${searchTerm}`);
+    navigate(localizePath({ path: `/apps/discover?s=${searchTerm}` }));
   };
 
   const discover = (e) => {
     e.preventDefault();
-    navigate(`/apps/discover`);
+    navigate(localizePath({ path: `/apps/discover` }));
   };
 
   const { t } = useTranslation(['translation', 'landing', 'actions']);
