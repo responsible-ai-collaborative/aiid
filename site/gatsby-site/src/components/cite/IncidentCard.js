@@ -6,6 +6,8 @@ import { fill } from '@cloudinary/base/actions/resize';
 import { useUserContext } from 'contexts/userContext';
 import Actions from 'components/discover/Actions';
 import ReportText from 'components/reports/ReportText';
+import WebArchiveLink from 'components/ui/WebArchiveLink';
+import TranslationBadge from 'components/i18n/TranslationBadge';
 
 const IncidentCardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -14,8 +16,11 @@ const IncidentCardContainer = styled.div`
   display: flex;
   flex-direction: column;
   .subhead {
+    color: var(--bs-gray-600);
+    a:not(:hover) {
+      color: inherit;
+    }
     margin: 0;
-    opacity: 0.4;
     padding-top: 10px;
   }
 `;
@@ -46,10 +51,10 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
   const { isRole } = useUserContext();
 
   return (
-    <IncidentCardContainer id={`r${item.mongodb_id}`}>
+    <IncidentCardContainer id={`r${item.report_number}`}>
       <div className="card-header">
         <div className="d-flex justify-content-between">
-          <a href={`#r${item.mongodb_id}`}>
+          <a href={`#r${item.report_number}`}>
             <span>{item.title}</span>
           </a>
           {isRole('incident_editor') && (
@@ -59,8 +64,11 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
           )}
         </div>
         <p className="subhead">
-          {item.source_domain} &middot;{' '}
-          {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
+          <WebArchiveLink url={item.url}>
+            {item.source_domain} &middot;{' '}
+            {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
+          </WebArchiveLink>
+          <TranslationBadge className="mx-2" originalLanguage={item.language} />
         </p>
       </div>
       <CardBody className="card-body">

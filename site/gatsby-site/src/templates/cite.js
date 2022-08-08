@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import Helmet from 'react-helmet';
+import React, { useState, useEffect } from 'react';
+import AiidHelmet from 'components/AiidHelmet';
 import { Button, Col, Container, Pagination, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
@@ -15,7 +15,9 @@ import IncidentStatsCard from 'components/cite/IncidentStatsCard';
 import IncidentCard from 'components/cite/IncidentCard';
 import Taxonomy from 'components/taxa/Taxonomy';
 import { useUserContext } from 'contexts/userContext';
+import SimilarIncidents from 'components/cite/SimilarIncidents';
 import { Trans, useTranslation } from 'react-i18next';
+import { useLocalization } from 'gatsby-theme-i18n';
 
 const CardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -56,22 +58,39 @@ const sortIncidentsByDatePublished = (incidentReports) => {
 
 function CitePage(props) {
   const {
-    pageContext: { incident, incidentReports, taxonomies, nextIncident, prevIncident },
+    pageContext: {
+      incident,
+      incidentReports,
+      nlp_similar_incidents,
+      editor_similar_incidents,
+      editor_dissimilar_incidents,
+      taxonomies,
+      nextIncident,
+      prevIncident,
+    },
   } = props;
 
   const { isRole, user } = useUserContext();
 
   const { t } = useTranslation();
 
+  const { locale } = useLocalization();
+
   // meta tags
 
-  const metaTitle = t('Incident {{id}}', { id: incident.incident_id });
+  const defaultIncidentTitle = t('Citation record for Incident {{id}}', {
+    id: incident.incident_id,
+  });
 
-  const metaDescription = t('Citation record for Incident {{id}}', { id: incident.incident_id });
+  const metaTitle = `Incident ${incident.incident_id}: ${incident.title}`;
+
+  const metaDescription = incident.description;
 
   const canonicalUrl = getCanonicalUrl(incident.incident_id);
 
   const sortedReports = sortIncidentsByDatePublished(incidentReports);
+
+  const metaImage = sortedReports[0].image_url;
 
   const authorsModal = useModal();
 
@@ -79,10 +98,11 @@ function CitePage(props) {
 
   const flagReportModal = useModal();
 
-  const timeline = sortedReports.map(({ date_published, title, mongodb_id }) => ({
+  const timeline = sortedReports.map(({ date_published, title, mongodb_id, report_number }) => ({
     date_published,
     title,
     mongodb_id,
+    report_number,
   }));
 
   timeline.push({
@@ -108,19 +128,12 @@ function CitePage(props) {
 
   return (
     <Layout {...props}>
-      <Helmet>
-        {metaTitle ? <title>{metaTitle}</title> : null}
-        {metaTitle ? <meta name="title" content={metaTitle} /> : null}
-        {metaDescription ? <meta name="description" content={metaDescription} /> : null}
-        {metaTitle ? <meta property="og:title" content={metaTitle} /> : null}
-        {metaDescription ? <meta property="og:description" content={metaDescription} /> : null}
-        {metaTitle ? <meta property="twitter:title" content={metaTitle} /> : null}
-        {metaDescription ? <meta property="twitter:description" content={metaDescription} /> : null}
-        <link rel="canonical" href={canonicalUrl} />
-      </Helmet>
+      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
+        <meta property="og:type" content="website" />
+      </AiidHelmet>
 
       <div className={'titleWrapper'}>
-        <StyledHeading>{metaDescription}</StyledHeading>
+        <StyledHeading>{locale == 'en' ? metaTitle : defaultIncidentTitle}</StyledHeading>
       </div>
 
       <Container>
@@ -272,6 +285,14 @@ function CitePage(props) {
             </Col>
           </Row>
         ))}
+
+        <SimilarIncidents
+          nlp_similar_incidents={nlp_similar_incidents}
+          editor_similar_incidents={editor_similar_incidents}
+          editor_dissimilar_incidents={editor_dissimilar_incidents}
+          flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
+          parentIncident={incident}
+        />
 
         <Pagination className="justify-content-between">
           <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>

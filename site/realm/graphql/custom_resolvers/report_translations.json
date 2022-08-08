@@ -1,0 +1,20 @@
+{
+    "field_name": "translations",
+    "function_name": "reportTranslations",
+    "input_type": "string",
+    "input_type_format": "scalar",
+    "on_type": "Report",
+    "payload_type": {
+        "properties": {
+            "text": {
+                "bsonType": "string"
+            },
+            "title": {
+                "bsonType": "string"
+            }
+        },
+        "title": "ReportTranslations",
+        "type": "object"
+    },
+    "payload_type_format": "custom"
+}

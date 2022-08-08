@@ -27,6 +27,9 @@
         "description": {
             "bsonType": "string"
         },
+        "editor_notes": {
+            "bsonType": "string"
+        },
         "epoch_date_downloaded": {
             "bsonType": "int"
         },
@@ -54,6 +57,9 @@
         "language": {
             "bsonType": "string"
         },
+        "plain_text": {
+            "bsonType": "string"
+        },
         "ref_number": {
             "bsonType": "int"
         },
@@ -69,17 +75,11 @@
                 "bsonType": "string"
             }
         },
-        "plain_text": {
-            "bsonType": "string"
-        },
         "tags": {
             "bsonType": "array",
             "items": {
                 "bsonType": "string"
             }
-        },
-        "editor_notes": {
-            "bsonType": "string"
         },
         "text": {
             "bsonType": "string"

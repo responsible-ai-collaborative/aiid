@@ -22,6 +22,35 @@ export const FIND_REPORT = gql`
   }
 `;
 
+export const FIND_REPORT_WITH_TRANSLATIONS = gql`
+  query FindReportWithTranslations($query: ReportQueryInput!) {
+    report(query: $query) {
+      url
+      title
+      authors
+      submitters
+      date_published
+      date_downloaded
+      image_url
+      text
+      plain_text
+      tags
+      flag
+      report_number
+      editor_notes
+      language
+      translations_es: translations(input: "es") {
+        title
+        text
+      }
+      translations_en: translations(input: "en") {
+        title
+        text
+      }
+    }
+  }
+`;
+
 export const UPDATE_REPORT = gql`
   mutation UpdateReport($query: ReportQueryInput!, $set: ReportUpdateInput!) {
     updateOneReport(query: $query, set: $set) {

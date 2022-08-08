@@ -1,5 +1,5 @@
 import React from 'react';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
 import Button from 'react-bootstrap/Button';
 import Layout from 'components/Layout';
@@ -57,9 +57,9 @@ export default function Incidents({ data, ...props }) {
 
   return (
     <Layout {...props}>
-      <Helmet>
+      <AiidHelmet>
         <title>Incident List</title>
-      </Helmet>
+      </AiidHelmet>
       <div className={'titleWrapper'}>
         <StyledHeading>Incident List</StyledHeading>
       </div>
@@ -86,7 +86,7 @@ export const pageQuery = graphql`
       }
     }
 
-    allMongodbAiidprodReports(filter: { flag: { eq: null } }) {
+    allMongodbAiidprodReports {
       nodes {
         id
         report_number

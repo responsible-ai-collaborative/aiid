@@ -101,4 +101,27 @@ describe('The Discover app', () => {
 
     cy.get('@modal').should('not.exist');
   });
+
+  it('Opens an archive link', () => {
+    cy.visit(url, {
+      onBeforeLoad: (win) => {
+        cy.stub(win, 'open', () => {}).as('windowOpen');
+      },
+    });
+
+    cy.get('[data-cy="web-archive-link"] .dropdown-toggle').first().click();
+
+    cy.get('[data-cy="original"]')
+      .first()
+      .should('be.visible')
+      .should('have.attr', 'target', '_blank')
+      .invoke('attr', 'href')
+      .then((href) => {
+        expect(href).to.not.contain('web.archive.org');
+      });
+
+    cy.get('[data-cy="wayback-machine"]').first().should('be.visible').click();
+
+    cy.get('@windowOpen').should('be.called');
+  });
 });

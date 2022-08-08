@@ -49,18 +49,18 @@ Cypress.Commands.add('clickOutside', () => {
   return cy.get('body').click(0, 0);
 });
 
-Cypress.Commands.add('setEditorText', (value) => {
+Cypress.Commands.add('setEditorText', (value, selector = '.CodeMirror') => {
   return cy
-    .get('.CodeMirror')
+    .get(selector)
     .first()
     .then((editor) => {
       editor[0].CodeMirror.setValue(value);
     });
 });
 
-Cypress.Commands.add('getEditorText', () => {
+Cypress.Commands.add('getEditorText', (selector = '.CodeMirror') => {
   return cy
-    .get('.CodeMirror')
+    .get(selector)
     .first()
     .then(({ 0: editor }) => {
       return editor.CodeMirror.options.value;

@@ -29,7 +29,30 @@ The steps for contributing changes are the following,
 
 Please make sure your code is well organized and commented before opening the pull request.
 
+## PR labeling strategy
+
+On a daily basis, all PRs should be labeled with one of the review process tags:
+- `PR: Needs Review`
+- `PR: Work Needed`
+- `PR: Mergeable`
+
+The person opening the PR should create it in a draft status until the work is finished, then she/he should click on "Ready for review" button and apply the `PR: Needs Review` label and assign it to someone as a reviewer as soon the PR is ready to be reviewed.
+
+For more information on how to create built-in draft pull requests, please refer to the [GitHub blog](https://github.blog/2019-02-14-introducing-draft-pull-requests/).
+
+The reviewer can change the PR label to `PR: Mergeable` or `PR: Work Needed` if the PR needs more work and assign it back to the corresponding developer.
+
+Please respond to review requests in a timely manner, or indicate if another reviewer would be better. Code review is everyone’s responsibility.
+
+When something is mergeable, then someone else (not the implementer or reviewer) can merge it to staging. They can optionally do a final review.
+
+After merge to staging, the code quality is everyone’s responsibility.
+
 ## Site Architecture
+
+| ![AIID project arquitecture](https://user-images.githubusercontent.com/6564809/181833549-794c3fd0-a324-4d97-9294-da4e7a4a6cc6.png) |
+|:--:|
+| *Site architecture diagram. This is the link to view and edit the diagram on [Diagrams.net](https://drive.google.com/file/d/1kHT1EFrBjxGZOWewS0uUrOZ2QflqYUnA/view?usp=sharing)* |
 
 The site has three components that all be considered "serverless," meaning there is no dynamic backend templating the application or responding to API requests. The components include,
 
@@ -160,9 +183,16 @@ GATSBY_ALGOLIA_SEARCH_KEY=<YOUR SEARCH KEY>
 ALGOLIA_ADMIN_KEY=<YOUR ADMIN KEY>
 ```
 
-Algolia index settings are uploaded on build time, so you'll have to do that at least once from your local env:
+Algolia index settings are uploaded on build time, so they will take effect after running:
+
 ```
 gatsby build
+```
+
+Alternatively, you can update the settings without rebuilding if from `site/gatsby-site` you run:
+
+```
+node src/scripts/algolia-update.js
 ```
 
 Restart Gatsby, and you should have a complete working environment!

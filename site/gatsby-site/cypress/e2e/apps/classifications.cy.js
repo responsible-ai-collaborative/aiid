@@ -10,7 +10,10 @@ describe('Classifications App', () => {
 
     cy.get('select[data-cy="taxonomy"]').select('CSET');
 
-    cy.contains('Incident 10').parents('tr').find('[data-cy=edit-classification]').click();
+    cy.get('a[href="/cite/10#taxa-area"]')
+      .parents('tr')
+      .find('[data-cy=edit-classification]')
+      .click();
 
     cy.get('[data-cy="taxonomy-form"]').should('exist').as('form');
 

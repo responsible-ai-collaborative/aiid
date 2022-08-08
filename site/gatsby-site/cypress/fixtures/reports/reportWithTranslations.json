@@ -19,7 +19,19 @@
             "plain_text": "Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.",
             "title": "Remove YouTube Kids app until it eliminates its inappropriate content",
             "url": "https://www.change.org/p/remove-youtube-kids-app-until-it-eliminates-its-inappropriate-content",
-            "editor_notes": ""
+            "nlp_similar_incidents": [],
+            "editor_notes": "",
+            "language": "en",
+            "translations_es": {
+                "__typename": "ReportTranslation",
+                "text": "Este es el Titulo",
+                "title": "Este es el texto que tiene un largo mayor a ochenta caracteres!"
+            },
+            "translations_en": {
+                "__typename": "ReportTranslation",
+                "text": "",
+                "title": ""
+            }
         }
     }
 }

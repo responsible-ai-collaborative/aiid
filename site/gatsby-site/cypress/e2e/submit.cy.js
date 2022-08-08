@@ -86,6 +86,10 @@ describe('The Submit form', () => {
 
     cy.get('[class*="Typeahead"]').type('New Tag{enter}');
 
+    cy.setEditorText(
+      `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
+    );
+
     cy.get('[name="editor_notes"').type('Here are some notes');
 
     cy.conditionalIntercept(
@@ -105,7 +109,17 @@ describe('The Submit form', () => {
       }
     );
 
-    cy.get('[name="incident_id"]').type('1');
+    // Set the ID from the button in the list of semantically similar incidents
+    cy.get('[data-cy=related-byText] [data-cy=result] [data-cy=set-id]')
+      .contains('#1')
+      .first()
+      .click();
+
+    cy.get(
+      '[data-cy=related-byText] [data-cy=result] [data-cy="similar-selector"] [data-cy="similar"]'
+    )
+      .last()
+      .click();
 
     cy.wait('@findIncident');
 
@@ -138,6 +152,7 @@ describe('The Submit form', () => {
         source_domain: `arstechnica.com`,
         editor_notes: 'Here are some notes',
       });
+      expect(xhr.request.body.variables.submission.editor_similar_incidents.length == 1).to.be.true;
     });
 
     cy.get('div[class^="ToastContext"]')
@@ -540,7 +555,10 @@ describe('The Submit form', () => {
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
     );
-    cy.get('[data-cy=related-byText] [data-cy=result] a').first().should('contain', 'YouTube');
+    cy.get('[data-cy=related-byText] [data-cy=result] a[data-cy=title]').should(
+      'contain',
+      'YouTube'
+    );
   });
 
   it('Should *not* show semantically related reports when the text is under 256 non-space characters', () => {
