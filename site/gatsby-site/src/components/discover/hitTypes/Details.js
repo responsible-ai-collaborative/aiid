@@ -12,6 +12,7 @@ import useLocalizePath from 'components/i18n/useLocalizePath';
 
 import { SourceDomainSubtitle, HeaderTitle } from './shared';
 import { Trans } from 'react-i18next';
+import TranslationBadge from 'components/i18n/TranslationBadge';
 
 const IncidentCardImage = styled(Image)`
   height: ${({ height }) => height};
@@ -45,10 +46,10 @@ export default function Details({
       </a>
       <Card.Body className="d-flex flex-column ">
         <HeaderTitle item={item} />
-
         <SourceDomainSubtitle item={item} className="mb-2 text-muted" />
 
         <Card.Text className="flex-fill">
+          <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />
           <ReportText text={item.text} maxChars={400} />
         </Card.Text>
 
