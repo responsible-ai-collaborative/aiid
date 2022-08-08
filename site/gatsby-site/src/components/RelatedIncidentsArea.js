@@ -7,7 +7,7 @@ import { LocalizedLink } from 'gatsby-theme-i18n';
 const ListContainer = styled(Card)`
   margin: 1em 0;
   .reports {
-    max-height: 50vh;
+    max-height: 33.3333vh;
     overflow-y: auto;
   }
 `;
