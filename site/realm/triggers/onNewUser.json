@@ -4,7 +4,8 @@
     "config": {
         "operation_type": "CREATE",
         "providers": [
-            "local-userpass"
+            "local-userpass",
+            "oauth2-facebook"
         ]
     },
     "disabled": false,

@@ -21,5 +21,17 @@
             "runResetFunction": false
         },
         "disabled": false
+    },
+    "oauth2-facebook": {
+        "name": "oauth2-facebook",
+        "type": "oauth2-facebook",
+        "disabled": false,
+        "config": {
+            "clientId": "%%values.facebookAppId"
+        },
+        "secret_config": {
+            "clientSecret": "%%values.facebookAppSecret"
+        },
+        "redirect_uris": ["%%values.facebookRedirectUri"]
     }
 }
