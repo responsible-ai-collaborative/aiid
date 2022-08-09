@@ -24,13 +24,13 @@ export default function Featured() {
             </Trans>
           </Card.Subtitle>
           <Row>
-            <Col lg className="mt-4">
+            <Col lg className="mt-4 tw-pl-0">
               <OriginalSubmitersLeaderboard limit={3} />
             </Col>
             <Col lg className="mt-4">
               <UniqueSubmittersLeaderboard limit={3} />
             </Col>
-            <Col lg className="mt-4">
+            <Col lg className="mt-4 tw-pr-0">
               <SubmittersLeaderboard limit={3} />
             </Col>
           </Row>
