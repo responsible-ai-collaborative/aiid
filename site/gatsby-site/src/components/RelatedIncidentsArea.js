@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { ListGroup, Card, Spinner, Button, ButtonToolbar } from 'react-bootstrap';
 import SimilaritySelector from './SimilaritySelector';
 import { LocalizedLink } from 'gatsby-theme-i18n';
+import { Trans, useTranslation } from 'react-i18next';
 
 const ListContainer = styled(Card)`
   margin: 1em 0;
@@ -52,6 +53,8 @@ const RelatedIncidentsArea = ({
   editId = true,
   error,
 }) => {
+  const { t } = useTranslation();
+
   if (!reports && !incidents && !loading) {
     return null;
   }
@@ -82,7 +85,9 @@ const RelatedIncidentsArea = ({
               <ReportToolbar>
                 {setFieldValue && editSimilar && (
                   <>
-                    <SelectorLabel htmlFor="similar-selector">Related:</SelectorLabel>
+                    <SelectorLabel htmlFor="similar-selector">
+                      <Trans>Related:</Trans>
+                    </SelectorLabel>
                     <SimilaritySelector incident_id={val.incident_id} />
                   </>
                 )}
@@ -91,15 +96,16 @@ const RelatedIncidentsArea = ({
                     data-cy="set-id"
                     className="set-id"
                     onClick={() => setFieldValue && setFieldValue('incident_id', val.incident_id)}
+                    style={{ whiteSpace: 'nowrap' }}
                   >
-                    Use&nbsp;ID&nbsp;<span className="incident-id">#{val.incident_id}</span>
+                    <Trans>Use ID</Trans> <span className="incident-id">#{val.incident_id}</span>
                   </Button>
                 )}
               </ReportToolbar>
             </ReportRow>
           ))}
         {!loading && (error || reports?.length == 0 || incidents?.length == 0) && (
-          <ListGroup.Item>{error ? error : 'No related reports found.'}</ListGroup.Item>
+          <ListGroup.Item>{error ? error : t('No related reports found.')}</ListGroup.Item>
         )}
       </div>
     </ListContainer>

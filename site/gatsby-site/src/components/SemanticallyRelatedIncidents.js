@@ -3,6 +3,7 @@ import { gql, useApolloClient } from '@apollo/client';
 import debounce from 'lodash/debounce';
 import RelatedIncidentsArea from './RelatedIncidentsArea';
 import { stripMarkdown } from '../utils/typography';
+import { useTranslation } from 'react-i18next';
 
 const relatedIncidentIdsQuery = gql`
   query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
@@ -33,6 +34,8 @@ const semanticallyRelated = async (text) => {
 };
 
 const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }) => {
+  const { t } = useTranslation();
+
   const [loading, setLoading] = useState(false);
 
   const [incidents, setIncidents] = useState([]);
@@ -69,7 +72,9 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
 
       if (textLength < minLength && !displayingCached) {
         fail(
-          `Reports must have at least ${minLength} non-space characters to compute semantic similarity.`
+          t(
+            `Reports must have at least ${minLength} non-space characters to compute semantic similarity.`
+          )
         );
         return;
       }
@@ -93,7 +98,7 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
           nlp_similar_incidents = nlpResponse.incidents.sort((a, b) => b.similarity - a.similarity);
         } catch (e) {
           console.error(error);
-          fail('Could not compute semantic similarity');
+          fail(t('Could not compute semantic similarity'));
           return;
         }
       }
@@ -117,7 +122,7 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
         });
       } catch (e) {
         console.error(e);
-        fail('Could not retrieve related incidents from database');
+        fail(t('Could not retrieve related incidents from database'));
       }
 
       setIncidents(dbResponse.data.incidents);
@@ -139,7 +144,7 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
           columnKey="byText"
           loading={loading}
           incidents={incidents}
-          header="Most Semantically Similar Incidents (Experimental)"
+          header={t('Most Semantically Similar Incidents (Experimental)')}
           setFieldValue={setFieldValue}
           editId={editId}
           error={error}

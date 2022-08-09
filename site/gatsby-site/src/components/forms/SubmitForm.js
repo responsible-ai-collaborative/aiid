@@ -57,7 +57,7 @@ const SubmitForm = () => {
 
   const addToast = useToastContext();
 
-  const { i18n } = useTranslation(['submit']);
+  const { i18n, t } = useTranslation(['submit']);
 
   // See https://github.com/apollographql/apollo-client/issues/5419
   useQuery(FIND_SUBMISSIONS);
@@ -72,7 +72,7 @@ const SubmitForm = () => {
 
   const handleCSVError = (err, file, inputElem, reason) => {
     addToast({
-      message: `Unable to upload: ${reason}`,
+      message: t(`Unable to upload: `) + reason,
       severity: SEVERITY.danger,
     });
   };

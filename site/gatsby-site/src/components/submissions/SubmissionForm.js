@@ -124,6 +124,8 @@ const SubmissionForm = () => {
     handleBlur,
   } = useFormikContext();
 
+  const { t } = useTranslation(['submit']);
+
   const TextInputGroupProps = { values, errors, touched, handleChange, handleBlur };
 
   const addToast = useToastContext();
@@ -146,7 +148,9 @@ const SubmissionForm = () => {
         const news = await response.json();
 
         addToast({
-          message: <>Please verify all information programmatically pulled from the report</>,
+          message: (
+            <Trans>Please verify all information programmatically pulled from the report</Trans>
+          ),
           severity: SEVERITY.info,
         });
 
@@ -160,8 +164,11 @@ const SubmissionForm = () => {
       } catch (e) {
         const message =
           e.message == 'Parser error'
-            ? `Error fetching news. Scraping was blocked by ${newsUrl}, Please enter the text manually.`
-            : `Error reaching news info endpoint, please try again in a few seconds.`;
+            ? t(
+                `Error fetching news. Scraping was blocked by {{newsUrl}}. Please enter the text manually.`,
+                { newsUrl }
+              )
+            : t(`Error reaching news info endpoint, please try again in a few seconds.`);
 
         addToast({
           message: <>{message}</>,
@@ -187,8 +194,6 @@ const SubmissionForm = () => {
   useEffect(() => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
-
-  const { t } = useTranslation(['submit']);
 
   return (
     <>

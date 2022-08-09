@@ -5,6 +5,7 @@ import { gql, useApolloClient } from '@apollo/client';
 import debounce from 'lodash/debounce';
 import isArray from 'lodash/isArray';
 import RelatedIncidentsArea from './RelatedIncidentsArea';
+import { Trans } from 'react-i18next';
 
 const relatedIncidentsQuery = gql`
   query ProbablyRelatedIncidents($query: IncidentQueryInput) {
@@ -59,7 +60,7 @@ const allSearchColumns = {
   byDatePublished: {
     header: (incident) => (
       <>
-        Incidents reports matched by published date: <b>{incident.date_published}</b>
+        <Trans>Incidents reports matched by published date:</Trans> <b>{incident.date_published}</b>
       </>
     ),
     query: relatedReportsQuery,
@@ -84,7 +85,7 @@ const allSearchColumns = {
   byIncidentId: {
     header: (incident) => (
       <>
-        Incident matched by ID: <b>{incident.incident_id}</b>
+        <Trans>Incident matched by ID:</Trans> <b>{incident.incident_id}</b>
       </>
     ),
     query: relatedIncidentsQuery,
@@ -101,7 +102,7 @@ const allSearchColumns = {
   byAuthors: {
     header: (incident) => (
       <>
-        Incidents reports matched by authors: <b>{incident.authors}</b>
+        <Trans>Incidents reports matched by authors:</Trans> <b>{incident.authors}</b>
       </>
     ),
     query: relatedReportsQuery,
@@ -115,7 +116,7 @@ const allSearchColumns = {
   byURL: {
     header: (incident) => (
       <>
-        Incidents reports matched by URL: <b>{incident.url}</b>
+        <Trans>Incidents reports matched by URL:</Trans> <b>{incident.url}</b>
       </>
     ),
     query: relatedReportsQuery,
