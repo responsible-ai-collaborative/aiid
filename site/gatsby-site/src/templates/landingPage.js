@@ -13,6 +13,8 @@ import QuickAdd from 'components/landing/QuickAdd';
 import RandomReports from 'components/landing/RandomReports';
 import Hero from 'components/landing/Hero';
 import { useTranslation } from 'react-i18next';
+import { graphql } from 'gatsby';
+import { useLocalization } from 'gatsby-theme-i18n';
 import Container from '../elements/Container';
 import Row from '../elements/Row';
 import Col from '../elements/Col';
@@ -20,9 +22,23 @@ import Col from '../elements/Col';
 const LandingPage = (props) => {
   const {
     pageContext: { wordCountsSorted },
+    data,
   } = props;
 
   const localWordCounts = wordCountsSorted.filter((word, index) => index < 10);
+
+  const { latestReport, latestReportIncident } = data;
+
+  latestReport.incident_id = latestReportIncident.incident_id;
+
+  const { locale: language } = useLocalization();
+
+  if (latestReport.language !== language) {
+    const translation = data[`latestReport_${language}`];
+
+    latestReport.title = translation.title;
+    latestReport.text = translation.text;
+  }
 
   const { t } = useTranslation(['translation', 'landing']);
 
@@ -54,7 +70,7 @@ const LandingPage = (props) => {
 
         <Row className="tw-mt-4">
           <Col>
-            <LatestReports />
+            <LatestReports latestReport={latestReport} />
           </Col>
         </Row>
 
@@ -115,3 +131,31 @@ const LandingPage = (props) => {
 };
 
 export default LandingPage;
+
+export const query = graphql`
+  query LandingPageQuery($latestReportNumber: Int) {
+    latestReportIncident: mongodbAiidprodIncidents(reports: { eq: $latestReportNumber }) {
+      incident_id
+    }
+
+    latestReport: mongodbAiidprodReports(report_number: { eq: $latestReportNumber }) {
+      title
+      text
+      epoch_date_submitted
+      image_url
+      report_number
+      cloudinary_id
+      language
+    }
+
+    latestReport_es: mongodbTranslationsReportsEs(report_number: { eq: $latestReportNumber }) {
+      title
+      text
+    }
+
+    latestReport_en: mongodbTranslationsReportsEn(report_number: { eq: $latestReportNumber }) {
+      title
+      text
+    }
+  }
+`;
