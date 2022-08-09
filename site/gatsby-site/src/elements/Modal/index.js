@@ -6,9 +6,14 @@ const ModalContext = createContext({
 });
 
 export default function Modal(props) {
+  let modalProps = {};
+
+  if (props['data-cy']) modalProps['data-cy'] = props['data-cy'];
+
   return (
     <ModalContext.Provider value={{ show: props.show, onHide: props.onHide }}>
       <div
+        {...modalProps}
         id={props.id}
         aria-hidden={props.show}
         className={`tw-fade tw-fixed tw-top-0 tw-left-0 tw-w-full tw-h-full tw-outline-none tw-overflow-x-hidden tw-overflow-y-auto ${

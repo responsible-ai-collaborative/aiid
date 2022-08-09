@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Link from 'components/ui/Link';
-// import { Modal } from 'react-bootstrap';
 import wu_foundation_blue_logo from './assets/wu-foundation-blue-logo.svg';
 import netlify_dark from './assets/netlify-dark.svg';
 import cloudinary_cloud_glyph_regular from './assets/cloudinary_cloud_glyph_regular.svg';
@@ -17,24 +16,32 @@ import { StyledSubtitle } from '../../elements/StyledTitle';
 
 const SponsorModal = ({ setModalState, modalState, modalName, children, imagePath, title }) => {
   return (
-    <Modal
-      show={modalState === modalName}
-      onHide={() => setModalState('close')}
-      data-cy="sponsor-modal"
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>{title}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {children}
-        <StyledImageModal src={imagePath} />
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => setModalState('close')} data-cy="close-modal">
-          Close
-        </Button>
-      </Modal.Footer>
-    </Modal>
+    <>
+      {modalState === modalName && (
+        <Modal
+          show={modalState === modalName}
+          onHide={() => setModalState('close')}
+          data-cy="sponsor-modal"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>{title}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {children}
+            <StyledImageModal src={imagePath} />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => setModalState('close')}
+              data-cy="close-modal"
+            >
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
+    </>
   );
 };
 
