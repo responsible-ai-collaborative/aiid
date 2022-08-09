@@ -1,7 +1,7 @@
 {
   "Clear Filters": "Borrar Filtros",
   "Filter Search": "Filtros",
-  "Type Here": "Escriba aqui",
+  "Type Here": "Escribe aqui",
   "<0>{{count}}</0> reports found": "<0>{{count}}</0> reportes",
   "Classifications": "Clasificaciones",
   "Source": "Origen",
@@ -62,5 +62,17 @@
   "Click to upload": "Click para subir",
   "Delete": "Borrar",
   "AI Translated": "Traducido por IA",
-  "View Original": "Ver Original"
+  "View Original": "Ver Original",
+  "Search over 1600 reports of AI harms": "Busca en más de 1600 reportes de daños de IA",
+  "Search 1600+ AI harm reports": "Busca +1600 daños de IA",
+  "Search 1600+ reports": "Buscar +1600 Reportes",
+  "Search reports": "Buscar Reportes",
+  "Discover Incidents": "Descubrir Incidentes",
+  "Submit Incident Reports": "Enviar Reportes de Incidentes",
+  "All Incidents in List Form": "Todos los Incidentes en una Lista",
+  "Submission Leaderboard": "Ranking de Reportadores",
+  "Classifications View": "Vista de Clasificationes",
+  "Flagged Incidents": "Reportes Denunciados",
+  "Word Counts": "Contadores de palabras",
+  "Read More": "Leer Mas"
 }
