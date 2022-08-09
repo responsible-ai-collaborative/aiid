@@ -3,7 +3,9 @@ import Layout from '../components/Layout';
 import * as Realm from 'realm-web';
 
 const LoginCallback = (props) => {
-  Realm.handleAuthRedirect();
+  if (props.location.hash.includes('client_app_id=')) {
+    Realm.handleAuthRedirect();
+  }
 
   return <Layout {...props}>Logging in...</Layout>;
 };
