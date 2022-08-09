@@ -474,8 +474,10 @@ Add these app values following the instructions in the [Atlas App Services docum
 
 ```
 facebookAppId = [Facebook App ID]
-facebookRedirectUri = [Facebook Authentication redirect URI, see section below]
+facebookRedirectUri = [Facebook Authentication redirect URI, see coment below]
 ```
+
+Facebook Authentication redirect URI is the URL that the user will be redirected to after successfully authenticating with Facebook. It should point to `/logincallback` page. For Production the URI is `https://incidentdatabase.ai/logincallback`
 
 Also add the following secret value to your Atlas App Service following the instructions in the [Atlas App Services documentation](https://www.mongodb.com/docs/atlas/app-services/values-and-secrets/define-and-manage-secrets/).
 
@@ -483,12 +485,6 @@ Also add the following secret value to your Atlas App Service following the inst
 facebookAppSecret = [Facebook App Secret]
 ```
 
-In the context where this application runs (Netlify or your local Node), an environment variable to Facebook authentication redirct URI pointing to the `/logincallback` page needs to be set:
-
-```
-REALM_FACEBOOK_REDIRECT_URI=[site domain]/logincallback
-// For Production site: https://incidentdatabase.ai/logincallback
-```
 About Facebook Authentication: https://www.mongodb.com/docs/realm/web/authenticate/#facebook-authentication
 
 ## Contact
