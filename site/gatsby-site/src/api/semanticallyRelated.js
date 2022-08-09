@@ -25,7 +25,7 @@ export default async function handler(req, res) {
   let error = null;
 
   while (
-    tries < (max_retries || 3) &&
+    tries < (max_retries || 6) &&
     (embeddingResponse?.status !== 200 || similarResponse?.status !== 200 || error)
   ) {
     error = null;

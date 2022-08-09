@@ -18,7 +18,6 @@ import { Formik } from 'formik';
 import pick from 'lodash/pick';
 import { useLocalization } from 'gatsby-theme-i18n';
 import { gql } from '@apollo/client';
-import hash from 'object-hash';
 
 const UPDATE_REPORT_TRANSLATION = gql`
   mutation UpdateReportTranslation($input: UpdateOneReportTranslationInput) {
@@ -52,8 +51,6 @@ const reportFields = [
 ];
 
 function EditCitePage(props) {
-  console.log('props', props);
-
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
 
   const { data: reportData, loading: loadingReport } = useQuery(FIND_REPORT_WITH_TRANSLATIONS, {
@@ -102,52 +99,6 @@ function EditCitePage(props) {
       values.epoch_date_published = getUnixTime(new Date(values.date_published));
       values.epoch_date_modified = getUnixTime(new Date(values.date_modified));
 
-      const plain_text = await stripMarkdown(values.text);
-
-      let embedding = { ...reportData.report.embedding, __typename: undefined };
-
-      if (hash(plain_text) != embedding.from_text_hash) {
-        const semanticallyRelatedResponse = await fetch('/api/semanticallyRelated', {
-          method: 'POST',
-          body: JSON.stringify({
-            text: plain_text,
-            includeSimilar: false,
-          }),
-        });
-
-        embedding = (await semanticallyRelatedResponse.json())?.embedding;
-
-        if (embedding) {
-          const num_reports = parentIncident.incident.embedding?.from_reports?.length;
-
-          await updateIncident({
-            variables: {
-              query: {
-                incident_id: parentIncident.incident.incident_id,
-              },
-              set: {
-                embedding: parentIncident.incident.embedding
-                  ? {
-                      from_reports: parentIncident.incident.embedding.from_reports,
-                      vector: parentIncident.incident.embedding.vector.map(
-                        (component, i) =>
-                          component -
-                          // Subtract the old embedding's contribution to the mean
-                          reportData.report.embedding.vector[i] / num_reports +
-                          // Add the new embedding's contribution to the mean
-                          embedding.vector[i] / num_reports
-                      ),
-                    }
-                  : {
-                      from_reports: [reportData.report.report_number],
-                      vector: embedding.vector,
-                    },
-              },
-            },
-          });
-        }
-      }
-
       const updated = pick(values, reportFields);
 
       await updateReport({
@@ -157,10 +108,7 @@ function EditCitePage(props) {
           },
           set: {
             ...updated,
-            plain_text,
-            embedding,
-            incident_id: undefined,
-            __typename: undefined,
+            plain_text: await stripMarkdown(updated.text),
           },
         },
       });
@@ -189,7 +137,6 @@ function EditCitePage(props) {
         severity: SEVERITY.success,
       });
     } catch (e) {
-      console.error(e);
       addToast({
         message: `Error updating incident report ${reportNumber}`,
         severity: SEVERITY.danger,
@@ -243,14 +190,11 @@ function EditCitePage(props) {
       )}
       {!reportData?.report && !loading && <div>Report not found</div>}
 
-      {!loadingReport && reportData?.report && (
+      {!loading && reportData?.report && parentIncident?.incident && (
         <Formik
           validationSchema={schema}
           onSubmit={handleSubmit}
-          initialValues={{
-            ...reportData.report,
-            incident_id: parentIncident?.incident?.incident_id || 0,
-          }}
+          initialValues={{ ...reportData.report, incident_id: parentIncident.incident.incident_id }}
         >
           {({ isValid, isSubmitting, submitForm }) => (
             <>
