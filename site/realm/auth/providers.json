@@ -32,6 +32,24 @@
         "secret_config": {
             "clientSecret": "%%values.facebookAppSecret"
         },
+        "metadata_fields": [
+            {
+                "required": false,
+                "name": "name"
+            },
+            {
+                "required": false,
+                "name": "first_name"
+            },
+            {
+                "required": false,
+                "name": "last_name"
+            },
+            {
+                "required": false,
+                "name": "email"
+            }
+        ],
         "redirect_uris": ["%%values.facebookRedirectUri"]
     }
 }
