@@ -51,13 +51,18 @@ export const UserContextProvider = ({ children }) => {
     await login();
   };
 
-  const login = async ({ email = null, password = null, provider = null } = {}) => {
+  const login = async ({
+    email = null,
+    password = null,
+    provider = null,
+    redirectUri = null,
+  } = {}) => {
     let credentials = null;
 
     if (email && password) {
       credentials = Realm.Credentials.emailPassword(email, password);
-    } else if (provider === 'facebook') {
-      credentials = Realm.Credentials.facebook(config.realm.facebookRedirectUri);
+    } else if (provider === 'facebook' && redirectUri) {
+      credentials = Realm.Credentials.facebook(redirectUri);
     } else {
       credentials = Realm.Credentials.anonymous();
     }

@@ -22,7 +22,7 @@ const Login = (props) => {
 
   const loginWithFacebook = async () => {
     try {
-      await login({ provider: 'facebook' });
+      await login({ provider: 'facebook', redirectUri: `${props.location.origin}/logincallback` });
     } catch (e) {
       console.error(e);
       addToast({
