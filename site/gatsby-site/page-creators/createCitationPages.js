@@ -66,6 +66,8 @@ const createCitationPages = async (graphql, createPage) => {
         allMongodbAiidprodIncidents {
           nodes {
             incident_id
+            title
+            description
             date
             reports
             editors

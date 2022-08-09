@@ -4,7 +4,7 @@ declare namespace Cypress {
         login(email: string, password: string): Chainable<Promise>;
         conditionalIntercept(url: string, condition: (req) => Boolean, alias: string, response: unknown?, options?: Omit<RouteMatcherOptions, 'url'>)
         clickOutside(): Chainable<Promise>;
-        setEditorText(value:string): Chainable<Promise>;
-        getEditorText(): Chainable<Promise>;
+        setEditorText(value:string, index?:string): Chainable<Promise>;
+        getEditorText(index?:string): Chainable<Promise>;
     }
 }
