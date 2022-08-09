@@ -18,6 +18,7 @@ const config = {
       db_collection: 'incidents',
     },
     graphqlApiKey: process.env.REALM_GRAPHQL_API_KEY,
+    facebookRedirectUri: process.env.REALM_FACEBOOK_REDIRECT_URI,
   },
   header: {
     logo: '/logos/White_Transparent_AIID_short.png',

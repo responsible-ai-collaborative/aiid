@@ -466,6 +466,30 @@ REALM_GRAPHQL_API_KEY=xxxxxxxxxx
 ```
 About Realm API Keys: https://www.mongodb.com/docs/realm/authentication/api-key/
 
+## Facebook login integration
+
+To allow users to login with Facebook, you will need to add the following configuration to your Atlas App Service.
+
+Add these app values following the instructions in the [Atlas App Services documentation](https://www.mongodb.com/docs/atlas/app-services/values-and-secrets/define-a-value/).
+
+```
+facebookAppId = [Facebook App ID]
+facebookRedirectUri = [Facebook Authentication redirect URI, see section below]
+```
+
+Also add the following secret value to your Atlas App Service following the instructions in the [Atlas App Services documentation](https://www.mongodb.com/docs/atlas/app-services/values-and-secrets/define-and-manage-secrets/).
+
+```
+facebookAppSecret = [Facebook App Secret]
+```
+
+In the context where this application runs (Netlify or your local Node), an environment variable to Facebook authentication redirct URI pointing to the `/logincallback` page needs to be set:
+
+```
+REALM_FACEBOOK_REDIRECT_URI=[site domain]/logincallback
+// For Production site: https://incidentdatabase.ai/logincallback
+```
+About Facebook Authentication: https://www.mongodb.com/docs/realm/web/authenticate/#facebook-authentication
 
 ## Contact
 
