@@ -6,7 +6,7 @@ const { cloneDeep } = require('lodash');
 
 const { switchLocalizedPath } = require('../i18n');
 
-const TSNE = require('tsne-js');
+const { getSpatialIncidents, updateTsneInDatabase } = require('../src/utils/updateTsne');
 
 const getClassificationsArray = (incidentClassifications, taxonomy) => {
   const classifications = incidentClassifications.filter(
@@ -202,74 +202,15 @@ const createCitationPages = async (graphql, createPage) => {
     ...allMongodbAiidprodResources.nodes.map((r) => ({ ...r, namespace: 'resources' })),
   ];
 
-  let spatialIncidents;
-
-  const incidentsWithEmbeddings = allMongodbAiidprodIncidents.nodes.filter(
-    (incident) => incident.embedding
-  );
-
-  const embeddings = incidentsWithEmbeddings.map((incident) => incident?.embedding?.vector);
-
-  const ids = incidentsWithEmbeddings.map((incident) => incident.incident_id);
-
-  const model = new TSNE({
-    dim: 2,
-    perplexity: 30.0,
-    earlyExaggeration: 3.0,
-    learningRate: 100.0,
-    nIter: 10000,
-    metric: 'euclidean',
-  });
-
-  // inputData is a nested array which can be converted into an ndarray
-  // alternatively, it can be an array of coordinates (second argument should be specified as 'sparse')
-  model.init({
-    data: embeddings,
-    type: 'dense',
-  });
-
-  // `error`,  `iter`: final error and iteration number
-  // note: computation-heavy action happens here
-  const [err, iter] = model.run();
-
-  if (err) {
-    console.error(err, iter);
-  }
-
-  // `outputScaled` is `output` scaled to a range of [-1, 1]
-  const outputScaled = model.getOutputScaled();
-
-  spatialIncidents = outputScaled.map((array, i) => {
-    const spatialIncident = {
-      incident_id: ids[i],
-      x: array[0],
-      y: array[1],
-      classifications: ((c) => {
-        if (!c) return null;
-        let classificationsSubset = {};
-
-        for (let axis of [
-          'Harm_Distribution_Basis',
-          'System_Developer',
-          'Problem_Nature',
-          'Sector_of_Deployment',
-          'Harm_Type',
-          'Intent',
-          'Near_Miss',
-          'Severity',
-        ]) {
-          classificationsSubset[c.namespace + ':' + axis] = c.classifications[axis];
-        }
-        return classificationsSubset;
-      })(allClassifications.find((c) => c.incident_id == ids[i])),
-    };
-
-    return spatialIncident;
-  });
-
   const keys = Object.keys(incidentReportsMap);
 
   const pageContexts = [];
+
+  await updateTsneInDatabase();
+
+  let spatialIncidents = await getSpatialIncidents();
+
+  console.log(`spatialIncidents`, spatialIncidents);
 
   for (let i = 0; i < keys.length; i++) {
     const incident_id = parseInt(keys[i]);

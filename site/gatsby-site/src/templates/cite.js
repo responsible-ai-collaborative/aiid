@@ -129,6 +129,8 @@ function CitePage(props) {
     );
   }, [user]);
 
+  console.log(`spatialIncidents`, spatialIncidents);
+
   return (
     <Layout {...props}>
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
