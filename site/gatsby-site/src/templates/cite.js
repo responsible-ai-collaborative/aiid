@@ -17,6 +17,7 @@ import Taxonomy from 'components/taxa/Taxonomy';
 import { useUserContext } from 'contexts/userContext';
 import SimilarIncidents from 'components/cite/SimilarIncidents';
 import { Trans, useTranslation } from 'react-i18next';
+import { useLocalization } from 'gatsby-theme-i18n';
 
 const CardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -73,11 +74,17 @@ function CitePage(props) {
 
   const { t } = useTranslation();
 
+  const { locale } = useLocalization();
+
   // meta tags
 
-  const metaTitle = t('Incident {{id}}', { id: incident.incident_id });
+  const defaultIncidentTitle = t('Citation record for Incident {{id}}', {
+    id: incident.incident_id,
+  });
 
-  const metaDescription = t('Citation record for Incident {{id}}', { id: incident.incident_id });
+  const metaTitle = `Incident ${incident.incident_id}: ${incident.title}`;
+
+  const metaDescription = incident.description;
 
   const canonicalUrl = getCanonicalUrl(incident.incident_id);
 
@@ -126,7 +133,7 @@ function CitePage(props) {
       </AiidHelmet>
 
       <div className={'titleWrapper'}>
-        <StyledHeading>{metaDescription}</StyledHeading>
+        <StyledHeading>{locale == 'en' ? metaTitle : defaultIncidentTitle}</StyledHeading>
       </div>
 
       <Container>

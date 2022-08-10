@@ -281,11 +281,13 @@ describe('Cite pages', () => {
         }
       `,
     }).then(({ data: { incidents } }) => {
-      const title = `Incident ${incidentId}`;
+      const incident = incidents[0];
 
-      const description = `Citation record for Incident ${incidentId}`;
+      const title = `Incident ${incidentId}: ${incident.title}`;
 
-      const imageUrl = [...incidents[0].reports].sort((a, b) =>
+      const description = incident.description;
+
+      const imageUrl = [...incident.reports].sort((a, b) =>
         a.date_published >= b.date_published ? 1 : -1
       )[0].image_url;
 

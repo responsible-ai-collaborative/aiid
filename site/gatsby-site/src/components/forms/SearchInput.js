@@ -26,11 +26,6 @@ const SearchFormControl = styled(FormControl)`
   border-bottom-right-radius: 0.3rem !important;
 `;
 
-const SearchInputGroup = styled(InputGroup)`
-  max-width: 640px;
-  margin: auto;
-`;
-
 export default withTranslation()(function SearchInput({
   value,
   onChange,
@@ -39,9 +34,10 @@ export default withTranslation()(function SearchInput({
   size = 'sm',
   t,
   placeHolder = t('Type Here'),
+  ...props
 }) {
   return (
-    <SearchInputGroup className="position-relative">
+    <InputGroup className="position-relative">
       <SearchFormControl
         size={size}
         placeholder={placeHolder}
@@ -49,6 +45,7 @@ export default withTranslation()(function SearchInput({
         value={value}
         onKeyPress={onKeyPress}
         onChange={(event) => onChange(event.currentTarget.value)}
+        {...props}
       />
       <SearchStatus>
         {value !== '' ? (
@@ -59,6 +56,6 @@ export default withTranslation()(function SearchInput({
           <FontAwesomeIcon opacity={0.5} icon={faSearch} className="pointer" />
         )}
       </SearchStatus>
-    </SearchInputGroup>
+    </InputGroup>
   );
 });
