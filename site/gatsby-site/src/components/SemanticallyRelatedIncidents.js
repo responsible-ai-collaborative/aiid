@@ -22,7 +22,7 @@ const semanticallyRelated = async (text) => {
 
   let controller = new AbortController();
 
-  setTimeout(() => controller.abort(), 33000);
+  setTimeout(() => controller.abort(), 66000);
   const response = await fetch(url, {
     method: 'POST',
     body: JSON.stringify({ text }),
@@ -106,7 +106,11 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
         setFieldValue('nlp_similar_incidents', nlp_similar_incidents);
       }
 
-      const incidentIds = nlp_similar_incidents.map((incident) => incident.incident_id);
+      if (setFieldValue) setFieldValue('embedding', nlpResponse.embedding);
+
+      const incidentIds = nlp_similar_incidents
+        .sort((a, b) => b.similarity - a.similarity)
+        .map((incident) => incident.incident_id);
 
       let dbResponse;
 
