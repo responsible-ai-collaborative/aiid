@@ -18,6 +18,7 @@ const ArchiveOriginalSplit = styled(SplitButton)`
   a {
     text-decoration: none;
     font-weight: inherit;
+    color: inherit;
   }
 `;
 

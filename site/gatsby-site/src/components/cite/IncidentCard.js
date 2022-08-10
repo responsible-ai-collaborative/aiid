@@ -25,8 +25,8 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
             </a>
           )}
         </div>
-        <p className="tw-m-0 tw-opacity-40 tw-pt-2.5">
-          <WebArchiveLink url={item.url}>
+        <p className="tw-m-0 tw-pt-2.5">
+          <WebArchiveLink url={item.url} className="tw-text-dark-gray">
             {item.source_domain} &middot;{' '}
             {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
           </WebArchiveLink>
