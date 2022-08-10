@@ -11,7 +11,6 @@ import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import ReadMoreText from 'components/ReadMoreText';
 import RelatedIncidents from 'components/RelatedIncidents';
 import isArray from 'lodash/isArray';
-
 import { useUserContext } from 'contexts/userContext';
 import { UPDATE_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
@@ -22,6 +21,7 @@ import { format, getUnixTime } from 'date-fns';
 import SubmissionEditModal from './SubmissionEditModal';
 import { Spinner } from 'react-bootstrap';
 import Link from 'components/ui/Link';
+import { Trans, useTranslation } from 'react-i18next';
 
 const ListedGroup = ({ item, className = '', keysToRender }) => {
   return (
@@ -74,6 +74,8 @@ const SubmissionReview = ({ submission }) => {
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
   const isNewIncident = submission.incident_id === 0;
+
+  const { i18n } = useTranslation(['submitted']);
 
   const [deleteSubmission, { loading: deleting }] = useMutation(DELETE_SUBMISSION, {
     update: (cache, { data }) => {
@@ -163,19 +165,21 @@ const SubmissionReview = ({ submission }) => {
       });
     }
 
+    const incident_id = incident.incident_id;
+
     addToast({
       message: isNewIncident ? (
-        <>
-          Successfully promoted submission to Incident {incident.incident_id} and Report{' '}
-          {report_number}{' '}
-        </>
+        <Trans i18n={i18n} ns="submitted" incident_id={incident_id} report_number={report_number}>
+          Successfully promoted submission to Incident {{ incident_id }} and Report{' '}
+          {{ report_number }}
+        </Trans>
       ) : (
-        <>
+        <Trans i18n={i18n} ns="submitted" incident_id={incident_id} report_number={report_number}>
           Successfully promoted submission to{' '}
-          <Link to={`/cite/${incident.incident_id}`}>
-            Incident {incident.incident_id} and Report {report_number}
-          </Link>{' '}
-        </>
+          <Link to={`/cite/${incident_id}`}>
+            Incident {{ incident_id }} and Report {{ report_number }}
+          </Link>
+        </Trans>
       ),
       severity: SEVERITY.success,
     });
