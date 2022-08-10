@@ -11,8 +11,7 @@ import { UPDATE_INCIDENT } from '../../graphql/incidents';
 import md5 from 'md5';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-
-const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
+import { LocalizedLink } from 'gatsby-theme-i18n';
 
 const SimilarIncidentsList = styled.div`
   margin-top: 2em;
@@ -252,11 +251,12 @@ const SimilarIncidents = ({
           <Subtitle>
             By textual similarity
             <ActionIcons>
-              {blogPostUrl && (
-                <a href={blogPostUrl} data-cy="about-similar-incidents">
-                  <FontAwesomeIcon icon={faQuestionCircle} />
-                </a>
-              )}
+              <LocalizedLink
+                to="/blog/using-ai-to-connect-ai-incidents"
+                data-cy="about-similar-incidents"
+              >
+                <FontAwesomeIcon icon={faQuestionCircle} />
+              </LocalizedLink>
               {isRole('incident_editor') && (
                 <EditIcon
                   href={`/incidents/edit?incident_id=${parentIncident.incident_id}#similar-incidents`}
