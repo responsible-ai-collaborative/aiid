@@ -47,7 +47,6 @@ const IncidentCardImage = styled(Image)`
 
 const CardFooter = styled.div`
   display: flex;
-  width: 100%;
   flex-direction: row;
   align-items: center;
   font-weight: 500;
