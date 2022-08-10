@@ -11,6 +11,8 @@ import { UPDATE_INCIDENT } from '../../graphql/incidents';
 import md5 from 'md5';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { useLocalization } from 'gatsby-theme-i18n';
+import { Trans, useTranslation } from 'react-i18next';
 
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
@@ -125,6 +127,10 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   const { isRole } = useUserContext();
 
+  const { locale } = useLocalization();
+
+  const { t } = useTranslation();
+
   const [isFlagged, setFlagged] = useState(flagged && isRole('incident_editor'));
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
@@ -141,7 +147,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
           transformation={fill().height(480)}
           alt=""
         />
-        <h3>{incident.title || incident.reports[0].title}</h3>
+        <h3>{locale == 'en' && incident.title ? incident.title : incident.reports[0].title}</h3>
       </a>
       <CardFooter>
         <div className="text-muted">
@@ -178,8 +184,10 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
               });
               addToast({
                 message: isFlagged
-                  ? `Flag reverted.`
-                  : `Incident flagged successfully. Our editors will remove it from this list if it not relevant.`,
+                  ? t(`Flag reverted.`)
+                  : t(
+                      `Incident flagged successfully. Our editors will remove it from this list if it not relevant.`
+                    ),
                 severity: SEVERITY.success,
               });
               setFlagged(!isFlagged);
@@ -249,7 +257,7 @@ const SimilarIncidents = ({
       {nlp_only_incidents.length > 0 && (
         <>
           <Subtitle>
-            By textual similarity
+            <Trans>By textual similarity</Trans>
             <ActionIcons>
               {blogPostUrl && (
                 <a href={blogPostUrl} data-cy="about-similar-incidents">
@@ -269,8 +277,10 @@ const SimilarIncidents = ({
           </Subtitle>
           <hr />
           <FlagPrompt className="text-muted">
-            Did <strong>our</strong> AI mess up? Flag <FontAwesomeIcon icon={faFlag} /> the
-            unrelated incidents
+            <Trans>
+              Did <strong>our</strong> AI mess up? Flag <FontAwesomeIcon icon={faFlag} /> the
+              unrelated incidents
+            </Trans>
           </FlagPrompt>
           <CardSet>
             {nlp_only_incidents.map((similarIncident) => (
