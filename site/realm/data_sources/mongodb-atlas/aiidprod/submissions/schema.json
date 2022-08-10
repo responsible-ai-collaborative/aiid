@@ -42,6 +42,20 @@
                 "bsonType": "int"
             }
         },
+        "embedding": {
+            "bsonType": "object",
+            "properties": {
+                "from_text_hash": {
+                    "bsonType": "string"
+                },
+                "vector": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "double"
+                    }
+                }
+            }
+        },
         "image_url": {
             "bsonType": "string"
         },
@@ -94,20 +108,8 @@
         },
         "url": {
             "bsonType": "string"
-        },
-        "embedding": {
-            "bsonType": "object",
-            "items": {
-              "vector": {
-                  "bsonType": "array",
-                  "items": {
-                      "bsonType": "double"
-                  }
-              },
-              "from_text_hash": "string"
-            }
-          }
-        },
+        }
+    },
     "required": [
         "authors",
         "cloudinary_id",
