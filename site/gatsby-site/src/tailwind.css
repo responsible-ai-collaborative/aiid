@@ -73,7 +73,7 @@
     }
 
     .tw-row>* {
-        @apply tw-w-full tw-pl-row-left tw-pr-row-right;
+        @apply tw-w-full;
     }
 
     .tw-col {
