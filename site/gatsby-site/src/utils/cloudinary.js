@@ -4,7 +4,6 @@ import { CloudinaryImage } from '@cloudinary/base';
 import { defaultImage, format, quality } from '@cloudinary/base/actions/delivery';
 import { auto } from '@cloudinary/base/qualifiers/format';
 import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
-import styled from 'styled-components';
 import config from '../../config';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import { Spinner } from 'react-bootstrap';
@@ -37,22 +36,6 @@ const Image = ({ publicID, className, alt, transformation = null, plugins = [laz
 
   return <AdvancedImage alt={alt} className={className} cldImg={image} plugins={plugins} />;
 };
-
-const PreviewImageContainer = styled.div`
-  height: 50vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const PreviewImage = styled(Image)`
-  margin: -1rem auto 1rem;
-  max-height: 50vh;
-`;
-
-const PreviewFigure = styled.figure`
-  text-align: center;
-`;
 
 const PreviewImageInputGroup = ({
   cloudinary_id,
@@ -135,18 +118,18 @@ const PreviewImageInputGroup = ({
         className={className}
         handleBlur={handleBlur}
       />
-      <PreviewFigure data-cy="image-preview-figure" id="image-preview-figure">
-        <PreviewImageContainer>
+      <figure data-cy="image-preview-figure" id="image-preview-figure" className="tw-text-center">
+        <div className="tw-h-[50vh] tw-flex tw-items-center tw-justify-center">
           {updatingImage ? (
             <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" />
           ) : (
-            <PreviewImage className={'mt-3'} publicID={cloudinaryID} />
+            <Image className={'mt-3 -tw-mt-4 tw-mr-auto tw-mb-4'} publicID={cloudinaryID} />
           )}
-        </PreviewImageContainer>
+        </div>
         <figcaption>
           <Trans>Selected Image</Trans>
         </figcaption>
-      </PreviewFigure>
+      </figure>
     </>
   );
 };
