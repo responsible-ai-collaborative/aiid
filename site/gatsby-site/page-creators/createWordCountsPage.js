@@ -17,81 +17,78 @@ const PAGES_WITH_WORDCOUNT = [
   },
 ];
 
-const createWordCountsPage = (graphql, createPage) => {
-  return new Promise((resolve, reject) => {
-    resolve(
-      graphql(
-        `
-          query WordCounts {
-            allMongodbAiidprodReports {
-              nodes {
-                text
-              }
-            }
-          }
-        `
-      ).then((result) => {
-        if (result.errors) {
-          console.log(result.errors); // eslint-disable-line no-console
-          reject(result.errors);
+const createWordCountsPage = async (graphql, createPage) => {
+  const result = await graphql(`
+    query WordCounts {
+      allMongodbAiidprodReports {
+        nodes {
+          text
         }
-
-        // Create wordcounts page
-        const wordCounts = {};
-
-        result.data.allMongodbAiidprodReports.nodes.forEach((element) => {
-          if (element['text']) {
-            const words = stopword.removeStopwords(element['text'].split(' '), customStopWords);
-
-            for (let i = 0; i < words.length; i++) {
-              let word = stemmer(words[i].toLowerCase().replace(/\W/g, ''));
-
-              if (word in wordCounts) {
-                wordCounts[word] += 1;
-              } else {
-                wordCounts[word] = 1;
-              }
-            }
-          }
-        });
-
-        const wordCountsSorted = [];
-
-        for (let word in wordCounts) {
-          if (wordCounts[word] > 99 && word.length > 2)
-            wordCountsSorted.push([word, wordCounts[word]]);
+      }
+      latestReport: allMongodbAiidprodReports(
+        sort: { order: DESC, fields: epoch_date_submitted }
+        limit: 1
+      ) {
+        nodes {
+          report_number
         }
+      }
+    }
+  `);
 
-        wordCountsSorted.sort(function (a, b) {
-          return b[1] - a[1];
-        });
+  // Create wordcounts page
+  const wordCounts = {};
 
-        const numWordClouds = 8;
+  result.data.allMongodbAiidprodReports.nodes.forEach((element) => {
+    if (element['text']) {
+      const words = stopword.removeStopwords(element['text'].split(' '), customStopWords);
 
-        const wordsPerCloud = 80;
+      for (let i = 0; i < words.length; i++) {
+        let word = stemmer(words[i].toLowerCase().replace(/\W/g, ''));
 
-        let wordClouds = [];
-
-        for (let i = 0; i < numWordClouds; i++) {
-          wordClouds.push([]);
-          for (var j = i * wordsPerCloud; j < (i + 1) * wordsPerCloud; j++) {
-            wordClouds[i].push({ text: wordCountsSorted[j][0], value: wordCountsSorted[j][1] });
-          }
+        if (word in wordCounts) {
+          wordCounts[word] += 1;
+        } else {
+          wordCounts[word] = 1;
         }
+      }
+    }
+  });
 
-        PAGES_WITH_WORDCOUNT.forEach((page) => {
-          createPage({
-            path: page.path,
-            component: path.resolve(page.componentPath),
-            context: {
-              wordClouds,
-              wordCountsSorted,
-              wordsPerCloud,
-            },
-          });
-        });
-      })
-    );
+  const wordCountsSorted = [];
+
+  for (let word in wordCounts) {
+    if (wordCounts[word] > 99 && word.length > 2) wordCountsSorted.push([word, wordCounts[word]]);
+  }
+
+  wordCountsSorted.sort(function (a, b) {
+    return b[1] - a[1];
+  });
+
+  const numWordClouds = 8;
+
+  const wordsPerCloud = 80;
+
+  let wordClouds = [];
+
+  for (let i = 0; i < numWordClouds; i++) {
+    wordClouds.push([]);
+    for (var j = i * wordsPerCloud; j < (i + 1) * wordsPerCloud; j++) {
+      wordClouds[i].push({ text: wordCountsSorted[j][0], value: wordCountsSorted[j][1] });
+    }
+  }
+
+  PAGES_WITH_WORDCOUNT.forEach((page) => {
+    createPage({
+      path: page.path,
+      component: path.resolve(page.componentPath),
+      context: {
+        wordClouds,
+        wordCountsSorted,
+        wordsPerCloud,
+        latestReportNumber: result.data.latestReport.nodes[0].report_number,
+      },
+    });
   });
 };
 

@@ -22,6 +22,7 @@ import Container from '../elements/Container';
 import Row from '../elements/Row';
 import Col from '../elements/Col';
 import Pagination from '../elements/Pagination';
+import { useLocalization } from 'gatsby-theme-i18n';
 
 const StatsContainer = styled.div`
   h4 {
@@ -69,11 +70,17 @@ function CitePage(props) {
 
   const { t } = useTranslation();
 
+  const { locale } = useLocalization();
+
   // meta tags
 
-  const metaTitle = t('Incident {{id}}', { id: incident.incident_id });
+  const defaultIncidentTitle = t('Citation record for Incident {{id}}', {
+    id: incident.incident_id,
+  });
 
-  const metaDescription = t('Citation record for Incident {{id}}', { id: incident.incident_id });
+  const metaTitle = `Incident ${incident.incident_id}: ${incident.title}`;
+
+  const metaDescription = incident.description;
 
   const canonicalUrl = getCanonicalUrl(incident.incident_id);
 
@@ -87,10 +94,11 @@ function CitePage(props) {
 
   const flagReportModal = useModal();
 
-  const timeline = sortedReports.map(({ date_published, title, mongodb_id }) => ({
+  const timeline = sortedReports.map(({ date_published, title, mongodb_id, report_number }) => ({
     date_published,
     title,
     mongodb_id,
+    report_number,
   }));
 
   timeline.push({
@@ -121,15 +129,18 @@ function CitePage(props) {
       </AiidHelmet>
 
       <div className={'titleWrapper'}>
-        <StyledHeading>{metaDescription}</StyledHeading>
+        <StyledHeading>{locale == 'en' ? metaTitle : defaultIncidentTitle}</StyledHeading>
       </div>
 
       <Container>
         <Row>
           <Col>
-            <Card data-cy="citation">
+            <Card
+              data-cy="citation"
+              className="tw-border-1.5 tw-border-border-light-gray tw-rounded-5px tw-shadow-card"
+            >
               <Card.Header className="tw-items-center tw-justify-between">
-                <h4>
+                <h4 className="tw-m-0">
                   <Trans>Suggested citation format</Trans>
                 </h4>
               </Card.Header>

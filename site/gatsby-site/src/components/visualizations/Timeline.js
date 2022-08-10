@@ -75,7 +75,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
                         {b.isOccurrence ? (
                           <>{b.title}</>
                         ) : (
-                          <a href={`#r${b.mongodb_id}`}>{b.title}</a>
+                          <a href={`#r${b.report_number}`}>{b.title}</a>
                         )}
                       </li>
                     ))}
@@ -102,7 +102,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
           {bucket[0].title}
         </text>
       ) : (
-        <a href={bucket[0].mongodb_id ? `#r${bucket[0].mongodb_id}` : ''}>
+        <a href={bucket[0].mongodb_id ? `#r${bucket[0].report_number}` : ''}>
           <text dominantBaseline="middle" className="tw-text-[14px]" dx={16}>
             {bucket[0].title}
           </text>

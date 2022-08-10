@@ -50,6 +50,10 @@ After merge to staging, the code quality is everyone’s responsibility.
 
 ## Site Architecture
 
+| ![AIID project arquitecture](https://user-images.githubusercontent.com/6564809/181833549-794c3fd0-a324-4d97-9294-da4e7a4a6cc6.png) |
+|:--:|
+| *Site architecture diagram. This is the link to view and edit the diagram on [Diagrams.net](https://drive.google.com/file/d/1kHT1EFrBjxGZOWewS0uUrOZ2QflqYUnA/view?usp=sharing)* |
+
 The site has three components that all be considered "serverless," meaning there is no dynamic backend templating the application or responding to API requests. The components include,
 
 1. Web host. This is the web server hosting the Gatsby-based web application. The site is hosted in production on [Netlify](https://www.netlify.com/).
@@ -179,9 +183,16 @@ GATSBY_ALGOLIA_SEARCH_KEY=<YOUR SEARCH KEY>
 ALGOLIA_ADMIN_KEY=<YOUR ADMIN KEY>
 ```
 
-Algolia index settings are uploaded on build time, so you'll have to do that at least once from your local env:
+Algolia index settings are uploaded on build time, so they will take effect after running:
+
 ```
 gatsby build
+```
+
+Alternatively, you can update the settings without rebuilding if from `site/gatsby-site` you run:
+
+```
+node src/scripts/algolia-update.js
 ```
 
 Restart Gatsby, and you should have a complete working environment!

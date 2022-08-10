@@ -7,15 +7,16 @@ import Actions from 'components/discover/Actions';
 import ReportText from 'components/reports/ReportText';
 import Card from '../../elements/Card';
 import WebArchiveLink from 'components/ui/WebArchiveLink';
+import TranslationBadge from 'components/i18n/TranslationBadge';
 
 const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) => {
   const { isRole } = useUserContext();
 
   return (
-    <Card id={`r${item.mongodb_id}`} className="IncidentCard">
+    <Card id={`r${item.report_number}`} className="IncidentCard">
       <Card.Header className="tw-flex-col">
         <div className="tw-flex tw-justify-between">
-          <a href={`#r${item.mongodb_id}`}>
+          <a href={`#r${item.report_number}`}>
             <span>{item.title}</span>
           </a>
           {isRole('incident_editor') && (
@@ -29,6 +30,7 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
             {item.source_domain} &middot;{' '}
             {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
           </WebArchiveLink>
+          <TranslationBadge className="mx-2" originalLanguage={item.language} />
         </p>
       </Card.Header>
       <Card.Body className="tw-flex-col">
