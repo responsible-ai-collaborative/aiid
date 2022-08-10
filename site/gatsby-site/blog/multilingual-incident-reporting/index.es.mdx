@@ -8,6 +8,8 @@ author: 'Sean McGregor and Cesar Varela'
 slug: '/blog/multilingual-incident-reporting'
 ---
 
+import SensitiveImage from '../../src/components/images/sensitive';
+
 La investigación y el desarrollo tienen un problema importante **sin resolver** en los sistemas de IA de última generación: **hacer que los sistemas funcionen más allá del entorno para el que fueron diseñados**. Si bien este problema tiene muchos nombres (por ejemplo, distributional shift, generalización del modelo, robustez de conjunto abierto, etc.), sus implicaciones ya son evidentes en el mundo real,
 
 <table>
@@ -202,7 +204,9 @@ Para extender un aforismo sobre la seguridad de los barcos, existe una variedad 
 
 Volviendo al contexto de la traducción por machine learning, el desafío de generalización sin resolver es uno de contexto y subtexto. Los humanos tienen un "modelo" para su audiencia que les permite comunicar más que la traducción literal del texto. Solucionar este subtexto es a menudo donde esta traducción falla. Por ejemplo, un colaborador de la base de datos de incidentes compartió recientemente esta imagen de la función de traducción basada en cámara de Google en Google Lens,
 
-![](./images/image4.jpg)
+<p>
+  <SensitiveImage src="/images/offensive-translation.jpg" />
+</p>
 
 Esta es una traducción que nunca debió realizarse en el contexto de un libro del primer ministro de cultura de Corea. Sin embargo, en conversaciones con lectores del idioma coreano, se puede ver cómo una traducción sin contexto que probablemente esté entrenada en comunicaciones por Internet (podría llegar a esta traducción).
 

@@ -2,11 +2,13 @@
 title: 'Multilingual Incident Reporting'
 metaTitle: 'Multilingual Incident Reporting'
 metaDescription: ''
-date: '2022-08-08'
+date: '2022-08-11'
 image: ./images/cover.jpg
 author: 'Sean McGregor and Cesar Varela'
 slug: '/blog/multilingual-incident-reporting'
 ---
+
+import SensitiveImage from '../../src/components/images/sensitive';
 
 Research and development has a major **unsolved problem** throughout state of the art AI systems: **making systems perform well beyond the environment for which they were engineered**. While this problem goes by many names (e.g., distributional shift, model generalization, open set robustness, etc.), its implications are already apparent in the real world,
 
@@ -204,7 +206,9 @@ To extend an aphorism on the safety of ships, there is a variety of supporting t
 
 Stepping back to the context of machine translation, the unsolved generalization challenge is one of context and subtext. Humans have a "model" for their audience that allows them to communicate more than the literal translation of the text. Solving for this subtext is often where machine translation goes wrong. For example, an Incident Database contributor recently shared this image from Google's camera-based translation feature on Google Lens,
 
-![](./images/image4.jpg)
+<p>
+  <SensitiveImage src="/images/offensive-translation.jpg" />
+</p>
 
 This is a translation that should never be produced in the context of a book from the first minister of culture in Korea. However, in discussion with readers of the Korean language, you can see how a no-context translation that is likely trained on internet communications could arrive at this translation.
 
