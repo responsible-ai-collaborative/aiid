@@ -45,7 +45,6 @@
   "Incident {{id}}": "Incidente {{id}}",
   "Citation record for Incident {{id}}": "Registro de citas para el Incidente {{id}}",
   "Search": "Buscar",
-  "Discover": "Descubrir",
   "Submit": "Enviar",
   "Report URL": "URL del Reporte",
   "Welcome to the AIID": "Bienvenido a la AIID",
@@ -74,5 +73,9 @@
   "Classifications View": "Vista de Clasificationes",
   "Flagged Incidents": "Reportes Denunciados",
   "Word Counts": "Contadores de palabras",
-  "Read More": "Leer Mas"
+  "Read More": "Leer Mas",
+  "Email address": "Correo electrónico",
+  "Password": "Contraseña",
+  "or": "o",
+  "An unknown error has ocurred": "Ha ocurrido un error desconocido"
 }
