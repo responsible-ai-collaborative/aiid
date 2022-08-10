@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { StaticQuery, graphql } from 'gatsby';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -109,10 +109,6 @@ const Header = () => {
 
   const topClass = navCollapsed ? 'topnav' : 'topnav responsive ';
 
-  const languageSwitcher = useRef(
-    typeof window !== 'undefined' && window.localStorage.getItem('i18n')
-  ).current;
-
   return (
     <StaticQuery
       query={graphql`
@@ -173,7 +169,7 @@ const Header = () => {
                 </Link>
               </div>
               <HeaderIconsContainer>
-                {languageSwitcher && <LanguageSwitcher />}
+                <LanguageSwitcher />
                 <li className="divider hiddenMobile"></li>
                 {config.header.social && (
                   <a
