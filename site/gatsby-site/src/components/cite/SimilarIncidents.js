@@ -13,6 +13,7 @@ import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { useLocalization } from 'gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
+import Link from 'components/ui/Link';
 
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
@@ -157,7 +158,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
             </>
           )}
           <span>
-            {incident.reports.length} {incident.reports.length == 1 ? 'report' : 'reports'}
+            {incident.reports.length} {incident.reports.length == 1 ? t('report') : t('reports')}
           </span>
         </div>
         <FlexSeparator />
@@ -226,12 +227,14 @@ const SimilarIncidents = ({
   return (
     <SimilarIncidentsList>
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
-        <h2 id="similar-incidents">Similar Incidents</h2>
+        <h2 id="similar-incidents">
+          <Trans>Similar Incidents</Trans>
+        </h2>
       )}
       {editor_similar_incidents.length > 0 && (
         <>
           <Subtitle>
-            Selected by our editors
+            <Trans>Selected by our editors</Trans>
             {isRole('incident_editor') && (
               <EditIcon
                 href={`/incidents/edit?incident_id=${parentIncident.incident_id}#similar-incidents`}
@@ -260,9 +263,9 @@ const SimilarIncidents = ({
             <Trans>By textual similarity</Trans>
             <ActionIcons>
               {blogPostUrl && (
-                <a href={blogPostUrl} data-cy="about-similar-incidents">
+                <Link to={blogPostUrl} data-cy="about-similar-incidents">
                   <FontAwesomeIcon icon={faQuestionCircle} />
-                </a>
+                </Link>
               )}
               {isRole('incident_editor') && (
                 <EditIcon
