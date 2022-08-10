@@ -76,5 +76,10 @@
   "Word Counts": "Contadores de palabras",
   "Read More": "Leer Mas",
   "View the original report at its source": "Ver el informe original en su fuente",
-  "View the report at the Internet Archive": "Ver el informe en el Archivo de Internet"
+  "View the report at the Internet Archive": "Ver el informe en el Archivo de Internet",
+  "Similar Incidents": "Incidentes Similares",
+  "By textual similarity": "Por similitud de texto",
+  "Did <strong>our</strong> AI mess up? Flag <3></3> the unrelated incidents": "¿Se equivocó <strong>nuestra</strong> IA? Marca <3></3> los incidentes no relacionados",
+  "reports": "reportes",
+  "report": "reporte"
 }
