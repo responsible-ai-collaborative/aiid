@@ -6,6 +6,9 @@ import useToastContext, { SEVERITY } from '../hooks/useToast';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Link, navigate } from 'gatsby';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFacebook } from '@fortawesome/free-brands-svg-icons';
+import { Trans } from 'react-i18next';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -92,16 +95,31 @@ const Login = (props) => {
                   </Form.Control.Feedback>
                 </Form.Group>
 
-                <Button variant="primary" type="submit" disabled={isSubmitting || !isValid}>
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={isSubmitting || !isValid}
+                  className="w-100"
+                >
                   Login
                 </Button>
               </Form>
             )}
           </Formik>
-          <div className="my-2">or</div>
+          <div className="my-2 d-flex justify-content-center">or</div>
           <div>
-            <Button variant="primary" onClick={loginWithFacebook}>
-              Login with Facebook
+            <Button variant="primary" onClick={loginWithFacebook} className={'btn-login-fb'}>
+              <div className={'d-flex justify-content-center'}>
+                <FontAwesomeIcon
+                  icon={faFacebook}
+                  color={'#ffffff'}
+                  className={'pointer fa fa-lg'}
+                  title="Share to Facebook"
+                />
+                <div className={'btn-text'}>
+                  <Trans>Login with Facebook</Trans>
+                </div>
+              </div>
             </Button>
           </div>
         </>
