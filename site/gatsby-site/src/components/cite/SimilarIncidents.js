@@ -11,13 +11,19 @@ import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import Card from '../../elements/Card';
 import Button from '../../elements/Button';
-
+import { useLocalization } from 'gatsby-theme-i18n';
+import { Trans, useTranslation } from 'react-i18next';
+import Link from 'components/ui/Link';
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
 const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncident }) => {
   const parsedDate = incident.date ? parse(incident.date, 'yyyy-MM-dd', new Date()) : null;
 
   const { isRole } = useUserContext();
+
+  const { locale } = useLocalization();
+
+  const { t } = useTranslation();
 
   const [isFlagged, setFlagged] = useState(flagged && isRole('incident_editor'));
 
@@ -36,7 +42,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
           transformation={fill().height(480)}
           alt=""
         />
-        <h3>{incident.title || incident.reports[0].title}</h3>
+        <h3>{locale == 'en' && incident.title ? incident.title : incident.reports[0].title}</h3>
       </a>
       <div className="tw-flex tw-w-full tw-flex-row tw-items-center tw-font-bold tw-mt-0 tw-my-4 tw-mr-4">
         <div className="text-muted">
@@ -46,7 +52,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
             </>
           )}
           <span>
-            {incident.reports.length} {incident.reports.length == 1 ? 'report' : 'reports'}
+            {incident.reports.length} {incident.reports.length == 1 ? t('report') : t('reports')}
           </span>
         </div>
         <div className="tw-inline-block tw-ml-auto tw-mr-auto" />
@@ -73,8 +79,10 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
               });
               addToast({
                 message: isFlagged
-                  ? `Flag reverted.`
-                  : `Incident flagged successfully. Our editors will remove it from this list if it not relevant.`,
+                  ? t(`Flag reverted.`)
+                  : t(
+                      `Incident flagged successfully. Our editors will remove it from this list if it not relevant.`
+                    ),
                 severity: SEVERITY.success,
               });
               setFlagged(!isFlagged);
@@ -113,12 +121,14 @@ const SimilarIncidents = ({
   return (
     <div className="tw-similar-incidents">
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
-        <h2 id="similar-incidents">Similar Incidents</h2>
+        <h2 id="similar-incidents">
+          <Trans>Similar Incidents</Trans>
+        </h2>
       )}
       {editor_similar_incidents.length > 0 && (
         <>
           <div className="tw-subtitle">
-            Selected by our editors
+            <Trans>Selected by our editors</Trans>
             {isRole('incident_editor') && (
               <a
                 className="tw-edit-icon"
@@ -145,12 +155,12 @@ const SimilarIncidents = ({
       {nlp_only_incidents.length > 0 && (
         <>
           <div className="tw-subtitle">
-            By textual similarity
+            <Trans>By textual similarity</Trans>
             <span className="tw-actions-icons">
               {blogPostUrl && (
-                <a href={blogPostUrl} data-cy="about-similar-incidents">
+                <Link to={blogPostUrl} data-cy="about-similar-incidents">
                   <FontAwesomeIcon icon={faQuestionCircle} />
-                </a>
+                </Link>
               )}
               {isRole('incident_editor') && (
                 <a
@@ -166,8 +176,10 @@ const SimilarIncidents = ({
           </div>
           <hr />
           <p className="tw-flag-prompt">
-            Did <strong>our</strong> AI mess up? Flag <FontAwesomeIcon icon={faFlag} /> the
-            unrelated incidents
+            <Trans>
+              Did <strong>our</strong> AI mess up? Flag <FontAwesomeIcon icon={faFlag} /> the
+              unrelated incidents
+            </Trans>
           </p>
           <div className="tw-card-set">
             {nlp_only_incidents.map((similarIncident) => (

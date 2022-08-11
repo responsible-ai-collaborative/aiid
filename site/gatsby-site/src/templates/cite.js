@@ -21,6 +21,7 @@ import Row from '../elements/Row';
 import Col from '../elements/Col';
 import Pagination from '../elements/Pagination';
 import { useLocalization } from 'gatsby-theme-i18n';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -59,6 +60,8 @@ function CitePage(props) {
   const { t } = useTranslation();
 
   const { locale } = useLocalization();
+
+  const localizePath = useLocalizePath();
 
   // meta tags
 
@@ -282,10 +285,16 @@ function CitePage(props) {
         />
 
         <Pagination className="justify-content-between">
-          <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>
+          <Pagination.Item
+            href={localizePath({ path: `/cite/${prevIncident}` })}
+            disabled={!prevIncident}
+          >
             ‹ <Trans>Previous Incident</Trans>
           </Pagination.Item>
-          <Pagination.Item href={`/cite/${nextIncident}`} disabled={!nextIncident}>
+          <Pagination.Item
+            href={localizePath({ path: `/cite/${nextIncident}` })}
+            disabled={!nextIncident}
+          >
             <Trans>Next Incident</Trans> ›
           </Pagination.Item>
         </Pagination>

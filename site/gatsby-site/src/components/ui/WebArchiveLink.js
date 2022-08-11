@@ -63,7 +63,7 @@ export default function WebArchiveLink({ url, date, children, className }) {
         rel="noopener noreferrer"
         data-cy="original"
       >
-        <Trans>View the page at its original source</Trans>
+        <Trans>View the original report at its source</Trans>
       </Dropdown.Item>
       <Dropdown.Item
         eventKey="2"
@@ -72,7 +72,7 @@ export default function WebArchiveLink({ url, date, children, className }) {
         rel="noopener noreferrer"
         data-cy="wayback-machine"
       >
-        <Trans>View the page archived by the Wayback Machine</Trans>
+        <Trans>View the report at the Internet Archive</Trans>
       </Dropdown.Item>
     </ArchiveOriginalSplit>
   );
