@@ -242,7 +242,7 @@ function DiscoverApp(props) {
 
           <VirtualFilters />
 
-          <Container className="container-xl mt-4">
+          <Container className="tw-container-xl tw-mt-6">
             <Row>
               <Col>
                 <SearchBox defaultRefinement={query.s} />

@@ -31,11 +31,14 @@ module.exports = {
   theme: {
     extend: {
       screens: {
-        '767px': { max: '767px' },
+        'min-576px': { min: '576px' },
         'min-767px': { min: '767px' },
-        '965px': { max: '965px' },
-        '992px': { min: '992px' },
+        'min-992px': { min: '992px' },
         '50rem': { max: '50rem' },
+        '767px': { max: '767px' },
+        '800px': { max: '800px' },
+        '965px': { max: '965px' },
+        '1240px': { max: '1240px' },
       },
       colors: {
         'light-grey': 'rgba(0,0,0,.03)',
@@ -76,6 +79,9 @@ module.exports = {
       },
       flex: {
         '0-0-auto': '0 0 auto',
+      },
+      transformOrigin: {
+        'center-left': 'center left',
       },
     },
   },

@@ -1,34 +1,15 @@
 import React, { useState } from 'react';
-import { Row, Col, Modal, Button, Accordion, Form } from 'react-bootstrap';
+import { Modal, Accordion, Form } from 'react-bootstrap';
 import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
 import { AccordionFilter } from './Filter';
 import Stats from './Stats';
 import ClearFilters from './ClearFilters';
 import { Trans } from 'react-i18next';
-import styled from 'styled-components';
 import DisplayModeSwitch from './DisplayModeSwitch';
+import Row from '../../elements/Row';
+import Col from '../../elements/Col';
+import Button from '../../elements/Button';
 // https://www.algolia.com/doc/guides/building-search-ui/going-further/native/react/?language=react#create-a-modal
-
-const Hbox = styled.div`
-  margin-bottom: 1em;
-  display: flex;
-  gap: 1.5em;
-  align-items: center;
-  > * {
-    line-height: 2em;
-    vertical-align: middle;
-    margin: 0px !important;
-  }
-  input {
-    vertical-align: middle;
-    margin: 0px;
-    transform-origin: center left;
-    transform: scale(1.5);
-  }
-  > *:last-child {
-    margin-left: auto !important;
-  }
-`;
 
 function OptionsModal({ setHideDuplicates, hideDuplicates }) {
   const [showModal, setShowModal] = useState(false);
@@ -37,11 +18,11 @@ function OptionsModal({ setHideDuplicates, hideDuplicates }) {
 
   return (
     <>
-      <Row className="my-3 d-md-none">
-        <Col className="d-flex align-items-center">
+      <Row className="tw-my-4 md:tw-hidden">
+        <Col className="tw-flex tw-items-center">
           <Stats />
         </Col>
-        <Col className="d-flex justify-content-end">
+        <Col className="tw-flex tw-justify-end">
           <ClearFilters>
             <Trans>Clear</Trans>
           </ClearFilters>
@@ -58,7 +39,7 @@ function OptionsModal({ setHideDuplicates, hideDuplicates }) {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Hbox>
+          <div className="tw-options-modal-hbox">
             <Form.Check
               type="switch"
               id="hide-duplicates-modal"
@@ -71,7 +52,7 @@ function OptionsModal({ setHideDuplicates, hideDuplicates }) {
               <Trans>1st report only</Trans>
             </Form.Label>
             <DisplayModeSwitch />
-          </Hbox>
+          </div>
           <Accordion defaultActiveKey="0">
             {REFINEMENT_LISTS.map((list) => (
               <AccordionFilter key={list.attribute} attribute={list.attribute} {...list} />
