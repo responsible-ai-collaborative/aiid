@@ -80,5 +80,6 @@
   "An unknown error has ocurred": "Ha ocurrido un error desconocido",
   "Invalid email": "Correo electrónico inválido",
   "Required": "Requerido",
-  "user not found": "usuario no encontrado"
+  "user not found": "usuario no encontrado",
+  "invalid username/password": "nombre de usuario/contraseña inválido"
 }

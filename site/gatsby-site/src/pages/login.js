@@ -35,7 +35,7 @@ const Login = (props) => {
     } catch (e) {
       console.error(e);
       addToast({
-        message: <>{e.error || 'An unknown error has ocurred'}</>,
+        message: <>{t(e.error || 'An unknown error has ocurred')}</>,
         severity: SEVERITY.danger,
       });
     }
@@ -64,7 +64,7 @@ const Login = (props) => {
                 navigate(localizePath({ path: `/` }));
               } catch (e) {
                 addToast({
-                  message: <>{e.error || t('An unknown error has ocurred')}</>,
+                  message: <>{t(e.error || 'An unknown error has ocurred')}</>,
                   severity: SEVERITY.danger,
                 });
               }
