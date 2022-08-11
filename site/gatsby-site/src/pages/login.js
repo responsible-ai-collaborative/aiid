@@ -129,7 +129,7 @@ const Login = (props) => {
             <Trans>or</Trans>
           </div>
 
-          <Button variant="primary" onClick={loginWithFacebook} className={'btn-login-fb w-100'}>
+          <Button variant="primary" onClick={loginWithFacebook} className={'tw-w-full'}>
             <div className={'d-flex justify-content-center'}>
               <FontAwesomeIcon
                 icon={faFacebook}
@@ -137,7 +137,7 @@ const Login = (props) => {
                 className={'pointer fa fa-lg'}
                 title="Share to Facebook"
               />
-              <div className={'btn-text'}>
+              <div className={'tw-ml-2'}>
                 <Trans ns="login">Login with Facebook</Trans>
               </div>
             </div>

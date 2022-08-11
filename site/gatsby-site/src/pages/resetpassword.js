@@ -66,7 +66,7 @@ const ResetPassword = (props) => {
         }}
       >
         {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, isValid }) => (
-          <Form onSubmit={handleSubmit} className={'reset-password-form'}>
+          <Form onSubmit={handleSubmit} className={'tw-w-64'}>
             <Form.Group className="mb-3">
               <Form.Label>
                 <Trans ns="login">Password</Trans>
