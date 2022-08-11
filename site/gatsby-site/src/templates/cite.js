@@ -18,6 +18,7 @@ import { useUserContext } from 'contexts/userContext';
 import SimilarIncidents from 'components/cite/SimilarIncidents';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'gatsby-theme-i18n';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 
 const CardContainer = styled.div`
   border: 1.5px solid #d9deee;
@@ -75,6 +76,8 @@ function CitePage(props) {
   const { t } = useTranslation();
 
   const { locale } = useLocalization();
+
+  const localizePath = useLocalizePath();
 
   // meta tags
 
@@ -295,10 +298,16 @@ function CitePage(props) {
         />
 
         <Pagination className="justify-content-between">
-          <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>
+          <Pagination.Item
+            href={localizePath({ path: `/cite/${prevIncident}` })}
+            disabled={!prevIncident}
+          >
             ‹ <Trans>Previous Incident</Trans>
           </Pagination.Item>
-          <Pagination.Item href={`/cite/${nextIncident}`} disabled={!nextIncident}>
+          <Pagination.Item
+            href={localizePath({ path: `/cite/${nextIncident}` })}
+            disabled={!nextIncident}
+          >
             <Trans>Next Incident</Trans> ›
           </Pagination.Item>
         </Pagination>
