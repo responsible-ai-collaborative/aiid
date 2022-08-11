@@ -82,7 +82,11 @@ export const UserContextProvider = ({ children }) => {
     return realmApp.emailPasswordAuth.resetPassword(token, tokenId, password);
   };
 
-  const signUp = async ({ email, password }) => {
+  const signUp = async ({ email, password, provider = null, redirectUri = null }) => {
+    if (provider === 'facebook' && redirectUri) {
+      return login({ provider, redirectUri });
+    }
+
     return realmApp.emailPasswordAuth.registerUser(email, password);
   };
 

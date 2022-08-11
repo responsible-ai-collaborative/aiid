@@ -87,18 +87,18 @@ const Login = (props) => {
                     onChange={handleChange}
                   />
                   <Form.Control.Feedback type="invalid">
-                    {errors.email && touched.email ? errors.email : null}
+                    <Trans>{errors.email && touched.email ? errors.email : null}</Trans>
                   </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                   <Form.Label>
-                    <Trans>Password</Trans>
+                    <Trans ns="login">Password</Trans>
                   </Form.Label>
                   <Form.Control
                     isInvalid={errors.password && touched.password}
                     type="password"
-                    placeholder={t('Password')}
+                    placeholder={t('Password', { ns: 'login' })}
                     name="password"
                     value={values.password}
                     onChange={handleChange}
@@ -109,7 +109,7 @@ const Login = (props) => {
                     </Link>
                   </Form.Text>
                   <Form.Control.Feedback type="invalid">
-                    {errors.password && touched.password ? errors.password : null}
+                    <Trans>{errors.password && touched.password ? errors.password : null}</Trans>
                   </Form.Control.Feedback>
                 </Form.Group>
 

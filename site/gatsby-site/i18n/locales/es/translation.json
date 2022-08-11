@@ -75,11 +75,13 @@
   "Word Counts": "Contadores de palabras",
   "Read More": "Leer Mas",
   "Email address": "Correo electrónico",
-  "Password": "Contraseña",
   "or": "o",
   "An unknown error has ocurred": "Ha ocurrido un error desconocido",
   "Invalid email": "Correo electrónico inválido",
+  "Passwords must match": "Las contraseñas deben coincidir",
   "Required": "Requerido",
   "user not found": "usuario no encontrado",
-  "invalid username/password": "nombre de usuario/contraseña inválido"
+  "invalid username/password": "nombre de usuario/contraseña inválido",
+  "password must be between 6 and 128 characters": "la contraseña debe tener entre 6 y 128 caracteres",
+  "name already in use": "nombre ya existente"
 }

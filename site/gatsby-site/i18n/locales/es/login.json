@@ -1,9 +1,14 @@
 {
   "Login": "Ingresar",
+  "Sign up": "Registrarse",
   "Log out": "Salir",
+  "Password": "Contraseña",
+  "Confirm password": "Confirmar contraseña",
   "Forgot password?": "¿Olvidó su contraseña?",
   "Login with Facebook": "Ingresar con Facebook",
+  "Sign up with Facebook": "Registrarse con Facebook",
   "Logged in as ": "Ingresado como ",
   "Logging you out...": "Saliendo...",
-  "Succesfully sent password reset email": "Se ha enviado un correo para restablecer la contraseña"
+  "Succesfully sent password reset email": "Se ha enviado un correo para restablecer la contraseña",
+  "Account created": "Cuenta creada"
 }
