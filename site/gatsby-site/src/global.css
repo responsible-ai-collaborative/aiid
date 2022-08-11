@@ -925,7 +925,7 @@ div .bytemd {
   height: 480px;
 }
 
-/* Start: Login page  */
+/* Start: Login  */
 .btn-login-fb {
   min-width: 180px;
   background-color: #1877f2;
@@ -934,4 +934,8 @@ div .bytemd {
 .btn-login-fb .btn-text {
   margin-left: 10px;
 }
-/* End: Login page  */
+
+.reset-password-form {
+  width: 230px;
+}
+/* End: Login  */

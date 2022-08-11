@@ -6,22 +6,27 @@ import { StringParam, useQueryParams } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Link } from 'gatsby';
+import { Trans, useTranslation } from 'react-i18next';
+import Link from 'components/ui/Link';
 
 const ResetPasswordSchema = Yup.object({
   password: Yup.string()
     .min(6, 'Password must be at least 6 characters long')
     .max(128, 'Password must be less than 128 characters long')
-    .required('Password is required'),
-  passwordConfirmation: Yup.string()
-    .required('Password confirmation is required')
-    .oneOf([Yup.ref('password'), null], 'Passwords must match'),
+    .required('Required'),
+  passwordConfirm: Yup.string()
+    .required('Required')
+    .test('passwords-match', 'Passwords must match', function (value) {
+      return this.parent.password === value;
+    }),
 });
 
 const ResetPassword = (props) => {
   const {
     actions: { resetPassword },
   } = useUserContext();
+
+  const { t } = useTranslation();
 
   const addToast = useToastContext();
 
@@ -33,7 +38,7 @@ const ResetPassword = (props) => {
   return (
     <Layout {...props}>
       <Formik
-        initialValues={{ password: '', passwordConfirmation: '' }}
+        initialValues={{ password: '', passwordConfirm: '' }}
         validationSchema={ResetPasswordSchema}
         onSubmit={async ({ password }, { setSubmitting }) => {
           try {
@@ -42,9 +47,9 @@ const ResetPassword = (props) => {
             addToast({
               message: (
                 <>
-                  Succesfully updated password, click here to{' '}
-                  <Link to="/login" color="#fff">
-                    Log in
+                  {t('Succesfully updated password, click here to ', { ns: 'login' })}
+                  <Link to="/login" className="sape">
+                    {t('Login', { ns: 'login' })}
                   </Link>
                 </>
               ),
@@ -52,7 +57,7 @@ const ResetPassword = (props) => {
             });
           } catch (e) {
             addToast({
-              message: <>{e.error || 'An unknown error ocurred.'}</>,
+              message: <>{t(e.error || 'An unknown error has ocurred')}</>,
               severity: SEVERITY.danger,
             });
           }
@@ -61,41 +66,47 @@ const ResetPassword = (props) => {
         }}
       >
         {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, isValid }) => (
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit} className={'reset-password-form'}>
             <Form.Group className="mb-3">
-              <Form.Label>Password</Form.Label>
+              <Form.Label>
+                <Trans ns="login">Password</Trans>
+              </Form.Label>
               <Form.Control
                 isInvalid={errors.password && touched.password}
                 type="password"
-                placeholder="Enter new password"
+                placeholder={t('Enter new password', { ns: 'login' })}
                 name="password"
                 value={values.password}
                 onChange={handleChange}
               />
               <Form.Control.Feedback type="invalid">
-                {errors.password && touched.password ? errors.password : null}
+                <Trans>{errors.password && touched.password ? errors.password : null}</Trans>
               </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Confirm password</Form.Label>
+              <Form.Label>
+                <Trans ns="login">Confirm new password</Trans>
+              </Form.Label>
               <Form.Control
-                isInvalid={errors.passwordConfirmation && touched.passwordConfirmation}
+                isInvalid={errors.passwordConfirm && touched.passwordConfirm}
                 type="password"
-                placeholder="Confirm password"
-                name="passwordConfirmation"
-                value={values.passwordConfirmation}
+                placeholder={t('Confirm password', { ns: 'login' })}
+                name="passwordConfirm"
+                value={values.passwordConfirm}
                 onChange={handleChange}
               />
               <Form.Control.Feedback type="invalid">
-                {errors.passwordConfirmation && touched.passwordConfirmation
-                  ? errors.passwordConfirmation
-                  : null}
+                <Trans>
+                  {errors.passwordConfirm && touched.passwordConfirm
+                    ? errors.passwordConfirm
+                    : null}
+                </Trans>
               </Form.Control.Feedback>
             </Form.Group>
 
             <Button variant="primary" type="submit" disabled={isSubmitting || !isValid}>
-              Submit
+              <Trans>Submit</Trans>
             </Button>
           </Form>
         )}
