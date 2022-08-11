@@ -1,3 +1,4 @@
+import Link from 'components/ui/Link';
 import { useLocalization } from 'gatsby-theme-i18n';
 import React from 'react';
 import { Badge } from 'react-bootstrap';
@@ -8,9 +9,11 @@ export default function TranslationBadge({ className = '', originalLanguage = ''
 
   if (locale !== originalLanguage) {
     return (
-      <Badge className={className} bg="secondary">
-        <Trans>AI Translated</Trans>
-      </Badge>
+      <Link to="/blog/multilingual-incident-reporting">
+        <Badge className={className} bg="secondary">
+          <Trans>AI Translated</Trans>
+        </Badge>
+      </Link>
     );
   }
 

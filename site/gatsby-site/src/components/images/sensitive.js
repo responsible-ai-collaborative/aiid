@@ -1,11 +1,21 @@
 import React, { useState } from 'react';
 import { Trans } from 'react-i18next';
 
-const SensitiveImage = (props) => {
+const SensitiveImage = ({ contentWarning, children }) => {
   const [blurred, setBlurred] = useState(true);
 
+  const wrappedInParagraph = children.props?.originalType == 'p';
+
+  function Container(props) {
+    return wrappedInParagraph ? (
+      <p {...props}>{props.children}</p>
+    ) : (
+      <div {...props}>{props.children}</div>
+    );
+  }
+
   return (
-    <div style={{ overflow: 'hidden', position: 'relative' }}>
+    <Container style={{ overflow: 'hidden', position: 'relative' }}>
       <button
         onClick={() => setBlurred(!blurred)}
         style={{
@@ -31,12 +41,18 @@ const SensitiveImage = (props) => {
               borderRadius: '.25em',
             }}
           >
-            <Trans>Sensitive: Click to view</Trans>
+            {contentWarning || <Trans>Sensitive: Click to view</Trans>}
           </span>
         )}
       </button>
-      <img style={blurred ? { filter: 'blur(20px)' } : {}} alt={props.alt} {...props} />
-    </div>
+      <div
+        style={{
+          filter: blurred ? 'blur(20px)' : undefined,
+        }}
+      >
+        {wrappedInParagraph ? children.props.children : children}
+      </div>
+    </Container>
   );
 };
 
