@@ -81,5 +81,7 @@
   "By textual similarity": "Por similitud de texto",
   "Did <strong>our</strong> AI mess up? Flag <3></3> the unrelated incidents": "¿Se equivocó <strong>nuestra</strong> IA? Marca <3></3> los incidentes no relacionados",
   "reports": "reportes",
-  "report": "reporte"
+  "report": "reporte",
+  "Flag reverted.": "Denuncia cancelada",
+  "Incident flagged successfully. Our editors will remove it from this list if it not relevant.": "Incidente denunciado con éxito. Nuestros editores lo eliminarán de la lista si no es relevante." 
 }
