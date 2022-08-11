@@ -1,13 +1,25 @@
 import React, { useState } from 'react';
 import { Spinner, Form } from 'react-bootstrap';
 import styled from 'styled-components';
-import { useApolloClient, gql } from '@apollo/client';
+import { useApolloClient, gql, useQuery } from '@apollo/client';
 import { Image } from '../../utils/cloudinary';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Color from 'color';
 import hash from 'object-hash';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans } from 'react-i18next';
+
+const spatialIncidentsQuery = gql`
+  query SpatialIncidents($query: IncidentQueryInput) {
+    incidents(query: $query) {
+      incident_id
+      tsne {
+        x
+        y
+      }
+    }
+  }
+`;
 
 const incidentQuery = gql`
   query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
@@ -218,10 +230,23 @@ const PlotPoint = ({ spatialIncident, incident, state, axis, darkenBySeverity })
   );
 };
 
-const TsneVisualization = ({ incident, spatialIncidents }) => {
+const TsneVisualization = ({ incident }) => {
   const [axis, setAxis] = useState('CSET:Harm_Distribution_Basis');
 
   const [darkenBySeverity, setDarkenBySeverity] = useState(false);
+
+  const { data: spatialIncidentsData } = useQuery(spatialIncidentsQuery, {
+    variables: {
+      query: {
+        tsne_exists: true,
+      },
+    },
+  });
+
+  const spatialIncidents = (spatialIncidentsData?.incidents || []).map((incident) => ({
+    incident_id: incident.incident_id,
+    ...incident.tsne,
+  }));
 
   const currentSpatialIncident = spatialIncidents.find(
     (spatialIncident) => spatialIncident.incident_id == incident.incident_id

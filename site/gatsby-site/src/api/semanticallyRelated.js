@@ -51,7 +51,6 @@ export default async function handler(req, res) {
               embed: embeddingString,
             },
           });
-          console.log('similarResponse', similarResponse);
           if (similarResponse?.status === 200) {
             // See: https://github.com/responsible-ai-collaborative/nlp-lambdas/issues/9
             const parsedEmbedding = JSON.parse(

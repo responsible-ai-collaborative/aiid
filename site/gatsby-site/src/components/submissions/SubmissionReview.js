@@ -169,6 +169,8 @@ const SubmissionReview = ({ submission }) => {
       ),
       severity: SEVERITY.success,
     });
+
+    fetch('/api/updateTsne');
   }, [submission]);
 
   const rejectReport = async () => {

@@ -4,23 +4,33 @@ const config = require('../../config');
 
 const { MongoClient } = require('mongodb');
 
+const BSON = require('bson');
+
 const updateTsneInDatabase = async () => {
   const mongo = new MongoClient(config.mongodb.translationsConnectionString);
 
+  console.log('await mongo.connect();');
   await mongo.connect();
 
+  console.log(
+    "const incidentsCollection = mongo.db(config.realm.production_db.db_name).collection('incidents');"
+  );
   const incidentsCollection = mongo.db(config.realm.production_db.db_name).collection('incidents');
 
+  console.log(`
   const incidentsWithEmbeddings = await incidentsCollection
     .find({ embedding: { $exists: true } })
     .toArray();
-
-  console.log(incidentsWithEmbeddings);
+  `);
+  const incidentsWithEmbeddings = await incidentsCollection
+    .find({ embedding: { $exists: true } })
+    .toArray();
 
   const embeddings = incidentsWithEmbeddings.map((incident) => incident?.embedding?.vector);
 
   const ids = incidentsWithEmbeddings.map((incident) => incident.incident_id);
 
+  console.log('Calculating TSNE');
   const model = new TSNE({
     dim: 2,
     perplexity: 30.0,
@@ -42,15 +52,30 @@ const updateTsneInDatabase = async () => {
     console.error(err, iter);
   }
 
+  console.log('Finished calculating TSNE');
+
   // `outputScaled` is `output` scaled to a range of [-1, 1]
   const outputScaled = model.getOutputScaled();
 
   for (let i = 0; i < outputScaled.length; i++) {
+    console.log(`Updating TSNE position for incident #${ids[i]}`, {
+      x: outputScaled[i][0],
+      y: outputScaled[i][1],
+    });
     incidentsCollection.updateOne(
       { incident_id: ids[i] },
-      { $set: { tsne: { x: outputScaled[i][0], y: outputScaled[i][1] } } }
+      {
+        $set: {
+          tsne: {
+            x: new BSON.Double(outputScaled[i][0]),
+            y: new BSON.Double(outputScaled[i][1]),
+          },
+        },
+      }
     );
   }
+
+  console.log('updateTsne() done');
 };
 
 const getSpatialIncidents = async () => {
@@ -92,4 +117,12 @@ const getSpatialIncidents = async () => {
   });
 };
 
-module.exports = { getSpatialIncidents, updateTsneInDatabase };
+module.exports = {
+  getSpatialIncidents,
+  updateTsneInDatabase,
+  external: {
+    'uglify-js': 'uglify-js',
+    mongodb: 'mongodb',
+    'tsne-js': 'tsne-js',
+  },
+};

@@ -210,8 +210,6 @@ const createCitationPages = async (graphql, createPage) => {
 
   let spatialIncidents = await getSpatialIncidents();
 
-  console.log(`spatialIncidents`, spatialIncidents);
-
   for (let i = 0; i < keys.length; i++) {
     const incident_id = parseInt(keys[i]);
 
