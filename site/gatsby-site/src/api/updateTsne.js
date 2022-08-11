@@ -1,7 +1,6 @@
 const { updateTsneInDatabase } = require('../utils/updateTsne.js');
 
 export default async function updateTsne(req, res) {
-  console.log('Running updateTsne');
   try {
     await updateTsneInDatabase();
   } catch (error) {
