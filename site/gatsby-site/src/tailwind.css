@@ -1,3 +1,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+
+    /* TAILWIND Buttons begins */
+    .tw-btn {
+        @apply tw-bg-transparent tw-border tw-border-transparent tw-rounded tw-cursor-pointer tw-inline-block tw-text-base tw-font-normal tw-py-1.5 tw-px-3 tw-text-center tw-no-underline tw-select-none tw-align-middle tw-transition-btn;
+    }
+
+    .tw-btn-primary {
+        @apply tw-bg-blue-600 tw-border-blue-600 tw-text-white;
+    }
+
+    .tw-btn-secondary {
+        @apply tw-bg-dark-grey tw-border-dark-grey tw-text-white;
+    }
+
+    .tw-btn-lg {
+        @apply tw-rounded tw-text-xl tw-py-[0.5rem] tw-px-[1rem];
+    }
+
+    .tw-btn-outline-primary {
+        @apply tw-border-primary-blue tw-text-primary-blue;
+    }
+
+    .tw-btn-outline-primary:hover {
+        @apply tw-bg-primary-blue tw-text-white tw-border-primary-blue;
+    }
+
+    /* TAILWIND Buttons ends */
+}
