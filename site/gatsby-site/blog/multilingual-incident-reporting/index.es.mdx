@@ -2,7 +2,7 @@
 title: 'Reportes de Incidentes Plurilingüe'
 metaTitle: 'Reportes de Incidentes Plurilingüe'
 metaDescription: ''
-date: '2022-08-08'
+date: '2022-08-11'
 image: ./images/cover.jpg
 author: 'Sean McGregor and Cesar Varela'
 slug: '/blog/multilingual-incident-reporting'
@@ -38,8 +38,7 @@ Esta incapacidad para "generalizar" es una de las razones por las que compartir 
 
 La Base de Datos de Incidentes de AI indexa "informes de incidentes", que hasta ahora han sido solamente en inglés. Ahora, cuando se informa un incidente, el informe se etiqueta con un idioma de origen y se traduce automáticamente a todos los idiomas soportados:
 
-<details>
-   <summary>Click para ver la Lista de lenguages que aceptamos</summary>
+<Details summary="Click para ver la Lista de lenguages que aceptamos">
 
 | [Lenguajes que aceptamos](https://en.wikipedia.org/wiki/Google_Translate#Supported_languages)                                              | Lenguajes que prensetamos                                                          |
 | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------|
@@ -177,7 +176,7 @@ La Base de Datos de Incidentes de AI indexa "informes de incidentes", que hasta 
 | [Yoruba](https://en.wikipedia.org/wiki/Yoruba_language)                                                                                  |                                                                                       |
 | [Zulu](https://en.wikipedia.org/wiki/Zulu_language)                                                                                      |                                                                                       |
 
-</details>
+</Details>
 
 ¿Por qué aceptamos 133 idiomas, pero solo presentamos dos? **Conveniencia y cautela**. Primero, traducir la interfaz de usuario (por ejemplo, botones, descripciones, etc.) a diferentes idiomas lleva tiempo. En segundo lugar, la Base de Datos de Incidentes de AI tiene muchos colaboradores que saben inglés y español y pueden corregir las malas traducciones. Si bien la traducción automática admite más de 130 idiomas, no creemos que la calidad  de las peores sea lo suficientemente sólida como para confiar en ellas. A medida que ganemos confianza en estas y/o ampliemos nuestra comunidad de colaboradores, i**remos agregando nuevos idiomas a la interfaz**. Esperamos agregar soporte en francés dentro del próximo mes.
 
@@ -202,7 +201,11 @@ Para extender un aforismo sobre la seguridad de los barcos, existe una variedad 
 
 Volviendo al contexto de la traducción por machine learning, el desafío de generalización sin resolver es uno de contexto y subtexto. Los humanos tienen un "modelo" para su audiencia que les permite comunicar más que la traducción literal del texto. Solucionar este subtexto es a menudo donde esta traducción falla. Por ejemplo, un colaborador de la base de datos de incidentes compartió recientemente esta imagen de la función de traducción basada en cámara de Google en Google Lens,
 
-![](./images/image4.jpg)
+<Details summary="Click para ver imagen ofensiva">
+
+   ![](./images/image4.jpg)
+
+</Details>
 
 Esta es una traducción que nunca debió realizarse en el contexto de un libro del primer ministro de cultura de Corea. Sin embargo, en conversaciones con lectores del idioma coreano, se puede ver cómo una traducción sin contexto que probablemente esté entrenada en comunicaciones por Internet (podría llegar a esta traducción).
 

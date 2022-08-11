@@ -2,7 +2,7 @@
 title: 'Multilingual Incident Reporting'
 metaTitle: 'Multilingual Incident Reporting'
 metaDescription: ''
-date: '2022-08-08'
+date: '2022-08-11'
 image: ./images/cover.jpg
 author: 'Sean McGregor and Cesar Varela'
 slug: '/blog/multilingual-incident-reporting'
@@ -40,8 +40,7 @@ This incapacity to "generalize" is among the reasons why sharing incidents acros
 
 The AI Incident Database indexes written "incident reports," which until now have entirely been in English. Now, when an incident is reported, the report is tagged with a source language and machine translated to all languages that are currently in support.
 
-<details>
-   <summary>List of supported languages</summary>
+<Details summary="List of supported languages">
 
 | [Languages We Accept Reports From](https://en.wikipedia.org/wiki/Google_Translate#Supported_languages)                                     | Languages Presented to Users                                                          |
 | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------|
@@ -179,7 +178,7 @@ The AI Incident Database indexes written "incident reports," which until now hav
 | [Yoruba](https://en.wikipedia.org/wiki/Yoruba_language)                                                                                  |                                                                                       |
 | [Zulu](https://en.wikipedia.org/wiki/Zulu_language)                                                                                      |                                                                                       |
 
-</details>
+</Details>
 
 Why are we accepting 133 languages, but only providing a user interface for two languages? **Expediency and caution.** First, translating the user interface (e.g., buttons, descriptions, etc.) to different languages takes time. Second, the AI Incident Database has many collaborators that know English and Spanish and can fix bad translations. While machine translation does support 130+ languages, we don't believe the worst translated languages among these are sufficiently robust to be relied upon. In fact, in our testing of performance between Spanish and English, we found the resulting text to be interpretable, but awkward and inconsistent. The translations are a good fit for the purpose of incident sharing and discovery, but are not good writing. As we gain confidence in the quality of machine translation of low-resource languages and/or expand our community of collaborators, **we will add languages to the database user interface**. We expect to add French support within the next month.
 
@@ -204,7 +203,11 @@ To extend an aphorism on the safety of ships, there is a variety of supporting t
 
 Stepping back to the context of machine translation, the unsolved generalization challenge is one of context and subtext. Humans have a "model" for their audience that allows them to communicate more than the literal translation of the text. Solving for this subtext is often where machine translation goes wrong. For example, an Incident Database contributor recently shared this image from Google's camera-based translation feature on Google Lens,
 
-![](./images/image4.jpg)
+<Details summary="Click to view offensive image">
+
+   ![](./images/image4.jpg)
+
+</Details>
 
 This is a translation that should never be produced in the context of a book from the first minister of culture in Korea. However, in discussion with readers of the Korean language, you can see how a no-context translation that is likely trained on internet communications could arrive at this translation.
 

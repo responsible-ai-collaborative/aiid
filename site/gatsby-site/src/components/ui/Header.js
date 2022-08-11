@@ -169,11 +169,11 @@ const Header = () => {
                 </Link>
               </div>
               <HeaderIconsContainer>
-                <LanguageSwitcher />
+                <LanguageSwitcher className="me-3 me-md-0" />
                 <li className="divider hiddenMobile"></li>
                 {config.header.social && (
                   <a
-                    className="paddingAround"
+                    className="paddingAround hiddenMobile"
                     href={'https://twitter.com/IncidentsDB'}
                     target="_blank"
                     rel="noreferrer"

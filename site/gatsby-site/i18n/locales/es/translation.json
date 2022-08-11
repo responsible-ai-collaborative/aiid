@@ -83,5 +83,14 @@
   "user not found": "usuario no encontrado",
   "invalid username/password": "nombre de usuario/contraseña inválido",
   "password must be between 6 and 128 characters": "la contraseña debe tener entre 6 y 128 caracteres",
-  "name already in use": "nombre ya existente"
+  "name already in use": "nombre ya existente",
+  "View the original report at its source": "Ver el informe original en su fuente",
+  "View the report at the Internet Archive": "Ver el informe en el Archivo de Internet",
+  "Similar Incidents": "Incidentes Similares",
+  "By textual similarity": "Por similitud de texto",
+  "Did <strong>our</strong> AI mess up? Flag <3></3> the unrelated incidents": "¿Se equivocó <strong>nuestra</strong> IA? Marca <3></3> los incidentes no relacionados",
+  "reports": "reportes",
+  "report": "reporte",
+  "Flag reverted.": "Denuncia cancelada",
+  "Incident flagged successfully. Our editors will remove it from this list if it not relevant.": "Incidente denunciado con éxito. Nuestros editores lo eliminarán de la lista si no es relevante."
 }
