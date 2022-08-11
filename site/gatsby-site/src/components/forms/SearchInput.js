@@ -7,7 +7,6 @@ import { withTranslation } from 'react-i18next';
 
 const SearchStatus = styled.div`
   position: absolute;
-  z-index: 4;
   width: 20px;
   height: 20px;
   top: 50%;
