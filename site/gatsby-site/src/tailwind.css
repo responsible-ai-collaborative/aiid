@@ -15,6 +15,10 @@
     @apply tw-flex-1;
   }
 
+  .tw-card-title a {
+    @apply tw-text-primary-blue;
+  }
+
   .tw-card-title h3 {
     @apply tw-text-2xl tw-mb-2;
   }
@@ -24,6 +28,6 @@
   }
 
   .tw-post-listing {
-    @apply tw-flex tw-flex-wrap md:tw-grid tw-gap-4 tw-mt-10 lg:tw-gap-4 tw-max-w-[750px];
+    @apply tw-flex tw-flex-wrap md:tw-grid tw-gap-4 lg:tw-gap-4 tw-max-w-[750px];
   }
 }
