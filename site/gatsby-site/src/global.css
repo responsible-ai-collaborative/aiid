@@ -5,10 +5,12 @@
   --primary2: #18181a;
   --primary3: #ec9982;
   --primary4: #0857c3;
+  --primary-blue: #0d6efd;
   --secondary1: #df8270;
   --secondary2: #6490e8;
   --secondary3: #ba5a4b;
   --secondary4: #071d49;
+  --dark-blue: #212529;
 }
 
 * {
