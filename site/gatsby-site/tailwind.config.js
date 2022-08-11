@@ -1,3 +1,20 @@
+let safelist = [
+  'tw-btn-primary',
+  'tw-btn-secondary',
+  'tw-btn-xs',
+  'tw-btn-sm',
+  'tw-btn-m',
+  'tw-btn-lg',
+  'tw-btn-xl',
+  'tw-btn-outline-primary',
+  'tw-btn',
+  'tw-bg-secondary',
+  'tw-tooltip-top',
+  'tw-tooltip-right',
+  'tw-tooltip-bottom',
+  'tw-tooltip-left',
+];
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   prefix: 'tw-',
@@ -29,4 +46,5 @@ module.exports = {
     },
   },
   plugins: [],
+  safelist: safelist,
 };
