@@ -19,7 +19,6 @@ let safelist = [
 for (let i = 0; i < 100; i++) {
   safelist.push(`tw-pl-[${2 + (i || 0) * 1}rem`);
 }
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   prefix: 'tw-',
