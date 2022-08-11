@@ -13,5 +13,7 @@
   "Account created": "Cuenta creada",
   "Enter new password": "Ingrese la nueva contraseña",
   "Confirm new password": "Confirme la nueva contraseña",
-  "Succesfully updated password, click here to ": "Se ha actualizado la contraseña, haga clic aquí para "
+  "Succesfully updated password, click here to ": "Se ha actualizado la contraseña, haga clic aquí para ",
+  "Don't have an account?": "¿No tiene una cuenta?",
+  "Already have an account?": "¿Ya tiene una cuenta?"
 }

@@ -165,6 +165,13 @@ const SignUp = (props) => {
               </div>
             </div>
           </Button>
+
+          <div className="mt-4">
+            <Trans ns="login">Already have an account?</Trans>{' '}
+            <Link to="/login">
+              <Trans ns="login">Login</Trans>
+            </Link>
+          </div>
         </>
       )}
     </Layout>
