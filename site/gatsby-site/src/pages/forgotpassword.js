@@ -1,11 +1,12 @@
 import React from 'react';
 import Layout from '../components/Layout';
-import { Form, Button } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Trans, useTranslation } from 'react-i18next';
+import Button from '../elements/Button';
 
 const ForgotPasswordSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),

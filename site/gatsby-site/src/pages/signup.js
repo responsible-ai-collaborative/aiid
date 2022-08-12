@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '../components/Layout';
-import { Form, Button } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import { Formik } from 'formik';
@@ -9,6 +9,7 @@ import Link from 'components/ui/Link';
 import { Trans, useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
+import Button from '../elements/Button';
 
 const SignUpSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -140,7 +141,7 @@ const SignUp = (props) => {
                   variant="primary"
                   type="submit"
                   disabled={isSubmitting || !isValid}
-                  className="w-100"
+                  className="tw-w-full"
                 >
                   <Trans ns="login">Sign up</Trans>
                 </Button>
@@ -152,7 +153,7 @@ const SignUp = (props) => {
             <Trans>or</Trans>
           </div>
 
-          <Button variant="primary" onClick={loginWithFacebook} className={'btn-login-fb w-100'}>
+          <Button variant="primary" onClick={loginWithFacebook} className={'tw-w-full'}>
             <div className={'d-flex justify-content-center'}>
               <FontAwesomeIcon
                 icon={faFacebook}

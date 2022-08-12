@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '../components/Layout';
-import { Form, Button } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { useUserContext } from 'contexts/userContext';
 import { StringParam, useQueryParams } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
@@ -8,6 +8,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
+import Button from '../elements/Button';
 
 const ResetPasswordSchema = Yup.object({
   password: Yup.string()
