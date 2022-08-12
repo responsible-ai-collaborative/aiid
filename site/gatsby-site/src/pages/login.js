@@ -2,12 +2,11 @@ import React from 'react';
 import Layout from '../components/Layout';
 import { Form } from 'react-bootstrap';
 import { useUserContext } from 'contexts/userContext';
-import useToastContext, { SEVERITY } from '../hooks/useToast';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { navigate } from 'gatsby';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook } from '@fortawesome/free-brands-svg-icons';
+import { faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import Link from 'components/ui/Link';
@@ -21,26 +20,14 @@ const LoginSchema = Yup.object().shape({
 const Login = (props) => {
   const {
     user,
-    actions: { login },
+    actions: { loginWithEmail, loginWithFacebook, loginWithGoogle },
   } = useUserContext();
 
   const { t } = useTranslation();
 
   const localizePath = useLocalizePath();
 
-  const addToast = useToastContext();
-
-  const loginWithFacebook = async () => {
-    try {
-      await login({ provider: 'facebook', redirectUri: `${props.location.origin}/logincallback` });
-    } catch (e) {
-      console.error(e);
-      addToast({
-        message: <>{t(e.error || 'An unknown error has ocurred')}</>,
-        severity: SEVERITY.danger,
-      });
-    }
-  };
+  const loginRedirectUri = `${props.location.origin}/logincallback`;
 
   return (
     <Layout {...props}>
@@ -60,16 +47,8 @@ const Login = (props) => {
             initialValues={{ email: '', password: '' }}
             validationSchema={LoginSchema}
             onSubmit={async ({ email, password }, { setSubmitting }) => {
-              try {
-                await login({ email, password });
-                navigate(localizePath({ path: `/` }));
-              } catch (e) {
-                addToast({
-                  message: <>{t(e.error || 'An unknown error has ocurred')}</>,
-                  severity: SEVERITY.danger,
-                });
-              }
-
+              await loginWithEmail({ email, password });
+              navigate(localizePath({ path: `/` }));
               setSubmitting(false);
             }}
           >
@@ -130,16 +109,42 @@ const Login = (props) => {
             <Trans>or</Trans>
           </div>
 
-          <Button variant="primary" onClick={loginWithFacebook} className={'tw-w-full'}>
+          <Button
+            variant="primary"
+            onClick={() => {
+              loginWithFacebook({ loginRedirectUri });
+            }}
+            className={'tw-w-full'}
+          >
             <div className={'d-flex justify-content-center'}>
               <FontAwesomeIcon
                 icon={faFacebook}
                 color={'#ffffff'}
                 className={'pointer fa fa-lg'}
-                title="Share to Facebook"
+                title="Login with Facebook"
               />
               <div className={'tw-ml-2'}>
                 <Trans ns="login">Login with Facebook</Trans>
+              </div>
+            </div>
+          </Button>
+
+          <Button
+            variant="primary"
+            onClick={() => {
+              loginWithGoogle({ loginRedirectUri });
+            }}
+            className={'tw-w-full tw-mt-5'}
+          >
+            <div className={'d-flex justify-content-center'}>
+              <FontAwesomeIcon
+                icon={faGoogle}
+                color={'#ffffff'}
+                className={'pointer fa fa-lg'}
+                title="Login with Google"
+              />
+              <div className={'tw-ml-2'}>
+                <Trans ns="login">Login with Google</Trans>
               </div>
             </div>
           </Button>

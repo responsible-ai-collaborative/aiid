@@ -5,6 +5,8 @@ import { UserContext } from './UserContext';
 import { ApolloProvider, ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import config from '../../../config';
 import fetch from 'cross-fetch';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { useTranslation } from 'react-i18next';
 
 // https://github.com/mongodb-university/realm-graphql-apollo-react/blob/master/src/index.js
 
@@ -44,6 +46,10 @@ export const UserContextProvider = ({ children }) => {
 
   const [user, setUser] = useState(realmApp.currentUser);
 
+  const { t } = useTranslation();
+
+  const addToast = useToastContext();
+
   const logout = async () => {
     await realmApp.currentUser.logOut();
 
@@ -55,23 +61,45 @@ export const UserContextProvider = ({ children }) => {
     email = null,
     password = null,
     provider = null,
-    redirectUri = null,
+    loginRedirectUri = null,
   } = {}) => {
-    let credentials = null;
+    try {
+      let credentials = null;
 
-    if (email && password) {
-      credentials = Realm.Credentials.emailPassword(email, password);
-    } else if (provider === 'facebook' && redirectUri) {
-      credentials = Realm.Credentials.facebook(redirectUri);
-    } else {
-      credentials = Realm.Credentials.anonymous();
+      if (email && password) {
+        credentials = Realm.Credentials.emailPassword(email, password);
+      } else if (provider === 'facebook' && loginRedirectUri) {
+        credentials = Realm.Credentials.facebook(loginRedirectUri);
+      } else if (provider === 'google' && loginRedirectUri) {
+        credentials = Realm.Credentials.google(loginRedirectUri);
+      } else {
+        credentials = Realm.Credentials.anonymous();
+      }
+
+      const user = await realmApp.logIn(credentials);
+
+      if (user.id === realmApp.currentUser.id) {
+        setUser(user);
+      }
+    } catch (e) {
+      console.error(e);
+      addToast({
+        message: <>{t(e.error || 'An unknown error has ocurred')}</>,
+        severity: SEVERITY.danger,
+      });
     }
+  };
 
-    const user = await realmApp.logIn(credentials);
+  const loginWithEmail = async ({ email, password }) => {
+    await login({ email, password });
+  };
 
-    if (user.id === realmApp.currentUser.id) {
-      setUser(user);
-    }
+  const loginWithFacebook = async ({ loginRedirectUri }) => {
+    await login({ provider: 'facebook', loginRedirectUri });
+  };
+
+  const loginWithGoogle = async ({ loginRedirectUri }) => {
+    await login({ provider: 'google', loginRedirectUri });
   };
 
   const sendResetPasswordEmail = async ({ email }) => {
@@ -82,11 +110,7 @@ export const UserContextProvider = ({ children }) => {
     return realmApp.emailPasswordAuth.resetPassword(token, tokenId, password);
   };
 
-  const signUp = async ({ email, password, provider = null, redirectUri = null }) => {
-    if (provider === 'facebook' && redirectUri) {
-      return login({ provider, redirectUri });
-    }
-
+  const signUp = async ({ email, password }) => {
     return realmApp.emailPasswordAuth.registerUser(email, password);
   };
 
@@ -134,7 +158,9 @@ export const UserContextProvider = ({ children }) => {
           user.customData.roles &&
           user.customData.roles.includes('admin'),
         actions: {
-          login,
+          loginWithEmail,
+          loginWithFacebook,
+          loginWithGoogle,
           logout,
           sendResetPasswordEmail,
           resetPassword,

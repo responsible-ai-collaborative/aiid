@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 import Link from 'components/ui/Link';
 import { Trans, useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook } from '@fortawesome/free-brands-svg-icons';
+import { faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import Button from '../elements/Button';
 
 const SignUpSchema = Yup.object().shape({
@@ -22,24 +22,14 @@ const SignUpSchema = Yup.object().shape({
 const SignUp = (props) => {
   const {
     user,
-    actions: { signUp },
+    actions: { signUp, loginWithFacebook, loginWithGoogle },
   } = useUserContext();
 
   const { t } = useTranslation();
 
   const addToast = useToastContext();
 
-  const loginWithFacebook = async () => {
-    try {
-      await signUp({ provider: 'facebook', redirectUri: `${props.location.origin}/logincallback` });
-    } catch (e) {
-      console.error(e);
-      addToast({
-        message: <>{t(e.error || 'An unknown error has ocurred')}</>,
-        severity: SEVERITY.danger,
-      });
-    }
-  };
+  const loginRedirectUri = `${props.location.origin}/logincallback`;
 
   return (
     <Layout {...props}>
@@ -68,7 +58,7 @@ const SignUp = (props) => {
                 resetForm();
               } catch (e) {
                 addToast({
-                  message: <>{t(e.error || 'An unknown error has ocurred')}</>,
+                  message: t(e.error || 'An unknown error has ocurred'),
                   severity: SEVERITY.danger,
                 });
               }
@@ -153,16 +143,42 @@ const SignUp = (props) => {
             <Trans>or</Trans>
           </div>
 
-          <Button variant="primary" onClick={loginWithFacebook} className={'tw-w-full'}>
+          <Button
+            variant="primary"
+            onClick={() => {
+              loginWithFacebook({ loginRedirectUri });
+            }}
+            className={'tw-w-full'}
+          >
             <div className={'d-flex justify-content-center'}>
               <FontAwesomeIcon
                 icon={faFacebook}
                 color={'#ffffff'}
                 className={'pointer fa fa-lg'}
-                title="Share to Facebook"
+                title="Sign up with Facebook"
               />
-              <div className={'btn-text'}>
+              <div className={'tw-ml-2'}>
                 <Trans ns="login">Sign up with Facebook</Trans>
+              </div>
+            </div>
+          </Button>
+
+          <Button
+            variant="primary"
+            onClick={() => {
+              loginWithGoogle({ loginRedirectUri });
+            }}
+            className={'tw-w-full tw-mt-5'}
+          >
+            <div className={'d-flex justify-content-center'}>
+              <FontAwesomeIcon
+                icon={faGoogle}
+                color={'#ffffff'}
+                className={'pointer fa fa-lg'}
+                title="Sign up with Google"
+              />
+              <div className={'tw-ml-2'}>
+                <Trans ns="login">Sign up with Google</Trans>
               </div>
             </div>
           </Button>
