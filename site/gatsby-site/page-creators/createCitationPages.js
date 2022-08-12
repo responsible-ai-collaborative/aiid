@@ -208,6 +208,12 @@ const createCitationPages = async (graphql, createPage) => {
 
   await updateTsneInDatabase();
 
+  const similarIncidentKeys = [
+    'nlp_similar_incidents',
+    'editor_similar_incidents',
+    'editor_dissimilar_incidents',
+  ];
+
   for (let i = 0; i < keys.length; i++) {
     const incident_id = parseInt(keys[i]);
 
@@ -232,11 +238,7 @@ const createCitationPages = async (graphql, createPage) => {
 
     const similarIncidents = {};
 
-    for (let key of [
-      'nlp_similar_incidents',
-      'editor_similar_incidents',
-      'editor_dissimilar_incidents',
-    ]) {
+    for (let key of similarIncidentKeys) {
       similarIncidents[key] = incident[key].map((similarIncident) => {
         const similarIncidentId = similarIncident.incident_id || similarIncident;
 
@@ -259,7 +261,7 @@ const createCitationPages = async (graphql, createPage) => {
       taxonomies,
       nextIncident: i < keys.length - 1 ? keys[i + 1] : null,
       prevIncident: i > 0 ? keys[i - 1] : null,
-      ...similarIncidents,
+      similarIncidents,
     });
   }
 
@@ -300,12 +302,30 @@ const createCitationPages = async (graphql, createPage) => {
         return report;
       });
 
+      const translatedSimilarIncidents = {};
+
+      for (const key of similarIncidentKeys) {
+        const incidents = context.similarIncidents[key];
+
+        translatedSimilarIncidents[key] = incidents.map((incident) => ({
+          ...incident,
+          reports: incident.reports
+            ? incident.reports.map((report) => ({
+                ...report,
+                ...translations.find((t) => t.report_number == report.report_number),
+              })) || incident.reports
+            : [],
+        }));
+      }
+
       createPage({
         path: pagePath,
         component: path.resolve('./src/templates/cite.js'),
         context: {
           ...context,
           incidentReports,
+          ...translatedSimilarIncidents,
+          similarIncidents: translatedSimilarIncidents,
         },
       });
     }
