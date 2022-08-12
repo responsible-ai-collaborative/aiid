@@ -1,3 +1,24 @@
+let safelist = [
+  'tw-btn-primary',
+  'tw-btn-secondary',
+  'tw-btn-xs',
+  'tw-btn-sm',
+  'tw-btn-m',
+  'tw-btn-lg',
+  'tw-btn-xl',
+  'tw-btn-outline-primary',
+  'tw-btn',
+  'tw-bg-secondary',
+  'tw-tooltip-top',
+  'tw-tooltip-right',
+  'tw-tooltip-bottom',
+  'tw-tooltip-left',
+];
+
+// Whitelisting level options from ListItem component
+for (let i = 0; i < 100; i++) {
+  safelist.push(`tw-pl-[${2 + (i || 0) * 1}rem`);
+}
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   prefix: 'tw-',
@@ -11,6 +32,14 @@ module.exports = {
     extend: {
       screens: {
         '1300px': { min: '1300px' },
+        'min-576px': { min: '576px' },
+        'min-767px': { min: '767px' },
+        'min-992px': { min: '992px' },
+        '50rem': { max: '50rem' },
+        '767px': { max: '767px' },
+        '800px': { max: '800px' },
+        '965px': { max: '965px' },
+        '1240px': { max: '1240px' },
       },
       colors: {
         'light-gray': 'rgba(0,0,0,.03)',
@@ -27,6 +56,9 @@ module.exports = {
         danger: '#dc3545',
         'gray-900': '#212529',
         '0-0-0-055': 'rgba(0, 0, 0, 0.55)',
+        'light-orange': '#ec9982',
+        'list-gray': '#5c6975',
+        'light-blue': 'rgb(230,236,241)',
       },
       boxShadow: {
         card: '0 2px 5px 0px #e3e5ec',
@@ -49,6 +81,8 @@ module.exports = {
       },
       borderRadius: {
         '5px': '5px',
+        'row-left': 'calc(var(--tw-gutter-x)*.5)',
+        'row-right': 'calc(var(--tw-gutter-x)*.5)',
       },
       fontFamily: {
         karla: 'Karla, sans-serif',
@@ -56,16 +90,14 @@ module.exports = {
       fontSize: {
         '32px': '32px',
       },
+      flex: {
+        '0-0-auto': '0 0 auto',
+      },
+      transformOrigin: {
+        'center-left': 'center left',
+      },
     },
   },
   plugins: [],
-  safelist: [
-    'tw-btn-outline-primary',
-    'tw-btn',
-    'tw-bg-secondary',
-    'tw-tooltip-top',
-    'tw-tooltip-right',
-    'tw-tooltip-bottom',
-    'tw-tooltip-left',
-  ],
+  safelist: safelist,
 };
