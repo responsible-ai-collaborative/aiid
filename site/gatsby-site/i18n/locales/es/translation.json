@@ -83,5 +83,9 @@
   "reports": "reportes",
   "report": "reporte",
   "Flag reverted.": "Denuncia cancelada",
-  "Incident flagged successfully. Our editors will remove it from this list if it not relevant.": "Incidente denunciado con éxito. Nuestros editores lo eliminarán de la lista si no es relevante." 
+  "Incident flagged successfully. Our editors will remove it from this list if it not relevant.": "Incidente denunciado con éxito. Nuestros editores lo eliminarán de la lista si no es relevante.",
+  "Color by editor’s classification": "Color por clasificación del editor",
+  "Darken by Severity": "Oscurecer por gravedad",
+  "This Incident in Semantic Space": "Este incidente en el espacio semántico",
+  "The visualization below plots incidents closer together according to the similarity of their reports texts, as identified through <0>our natural-language processing system</0>" : "La siguiente visualización representa los incidentes en proximidad proporcional a la similitud de los textos de sus informes, identificados a través de <0>nuestro sistema de procesamiento de lenguaje natural</0>." 
 }

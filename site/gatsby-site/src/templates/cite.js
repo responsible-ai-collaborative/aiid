@@ -305,11 +305,11 @@ function CitePage(props) {
         <p>
           <Trans>
             The visualization below plots incidents closer together according to the similarity of
-            their reports texts, as identified through
-          </Trans>{' '}
-          <LocalizedLink to="/blog/using-ai-to-connect-ai-incidents">
-            <Trans>our natural-language processing system</Trans>
-          </LocalizedLink>
+            their reports texts, as identified through{' '}
+            <LocalizedLink to="/blog/using-ai-to-connect-ai-incidents">
+              our natural-language processing system
+            </LocalizedLink>
+          </Trans>
           .
         </p>
         <TsneVisualization currentIncidentId={incident.incidentId} />
