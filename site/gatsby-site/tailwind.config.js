@@ -71,8 +71,8 @@ module.exports = {
       },
       padding: {
         0.8: '0.8rem',
-        'row-left': 'calc(var(--tw-gutter-x)*.5)',
-        'row-right': 'calc(var(--tw-gutter-x)*.5)',
+        'row-left': 'calc(1.5rem*.5)',
+        'row-right': 'calc(1.5rem*.5)',
       },
       fontFamily: {
         karla: 'Karla, sans-serif',

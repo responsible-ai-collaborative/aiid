@@ -16,7 +16,7 @@
         @apply tw-text-black;
     }
 
-    .tw-layout .item > a:hover {
+    .tw-layout .item>a:hover {
         @apply tw-bg-primary-blue tw-text-white;
     }
 
@@ -68,6 +68,14 @@
         @apply tw-bg-primary-blue tw-text-white tw-border-primary-blue;
     }
 
+    .tw-btn-menu {
+        @apply 767px:tw-hidden tw-w-[100px] tw-h-10 tw-fixed tw-left-56 tw-top-1/2 tw-rotate-90;
+    }
+
+    .tw-btn-menu.collapsed {
+        @apply -tw-left-8;
+    }
+
     /* TAILWIND Buttons ends */
 
     /* TAILWIND Container begins */
@@ -84,7 +92,7 @@
         @apply tw-flex tw-flex-wrap;
     }
 
-    .tw-row>* {
+    .tw-row > * {
         @apply tw-w-full tw-pl-row-left tw-pr-row-right;
     }
 
@@ -169,11 +177,11 @@
         @apply tw-mt-4 tw-pl-0;
     }
 
-    .tw-side-bar-ul ul{
+    .tw-side-bar-ul ul {
         @apply tw-pl-0;
     }
 
-    .tw-side-bar-ul li{
+    .tw-side-bar-ul li {
         @apply tw-list-none tw-w-auto;
     }
 
@@ -185,11 +193,11 @@
         @apply tw-list-none tw-p-0;
     }
 
-    .tw-side-bar-ul .item>a {
+    .tw-side-bar-ul .item > a {
         @apply tw-text-light-orange md:tw-text-[rgb(59,69,78)] tw-items-center tw-flex tw-pl-4 tw-pr-8 tw-relative tw-no-underline tw-w-full;
     }
 
-    .tw-side-bar-ul .item>a:hover {
+    .tw-side-bar-ul .item > a:hover {
         @apply tw-bg-light-orange tw-text-white;
     }
 
@@ -208,13 +216,14 @@
     .tw-side-bar-title a {
         @apply tw-text-gray-900;
     }
+
     /* TAILWIND Sidebar ends */
 
     .tw-hbox {
-        @apply tw-flex tw-gap-[0.25ch] tw-items-center tw-pr-0 
+        @apply tw-flex tw-gap-[0.25ch] tw-items-center tw-pr-0
     }
 
-    .tw-hbox > * {
+    .tw-hbox>* {
         @apply tw-leading-8 tw-align-middle tw-m-0;
     }
 
@@ -230,15 +239,15 @@
         @apply tw-mb-4 tw-flex tw-gap-6 tw-items-center;
     }
 
-    .tw-options-modal-hbox > * {
+    .tw-options-modal-hbox>* {
         @apply tw-leading-8 tw-align-middle tw-m-0;
     }
 
     .tw-options-modal-hbox input {
-        @apply tw-align-middle tw-m-0 tw-origin-center-left tw-scale-150	;
+        @apply tw-align-middle tw-m-0 tw-origin-center-left tw-scale-150;
     }
 
-    .tw-options-modal-hbox >*:last-child {
+    .tw-options-modal-hbox>*:last-child {
         @apply tw-ml-auto;
     }
 
@@ -246,7 +255,7 @@
         @apply tw-cursor-pointer;
     }
 
-    .tw-switch > * {
+    .tw-switch>* {
         @apply tw-cursor-pointer;
     }
 
@@ -257,12 +266,16 @@
     .tw-no-results p {
         @apply tw-text-center;
     }
-    
+
     .tw-hits-container {
-        @apply min-576px:tw-grid-cols-2 min-767px:tw-grid-cols-3 min-992px:tw-grid-cols-4;
+        @apply tw-grid min-576px:tw-grid-cols-2 min-767px:tw-grid-cols-3 min-992px:tw-grid-cols-4;
     }
 
-    .tw-hits-container.compact, .tw-hits-container.details {
+    /* .tw-hits-container.details {
+        @apply tw-grid tw-grid-cols-4 tw-gap-[6px];
+    } */
+
+    .tw-hits-container.compact {
         @apply tw-grid tw-grid-cols-1 tw-gap-[6px]
     }
 

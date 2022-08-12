@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 import Sidebar from './sidebar';
 import config from '../../config.js';
-import Button from 'react-bootstrap/Button';
 import Header from './ui/Header';
+import Button from '../elements/Button';
 
 const Wrapper = styled.div`
   display: flex;
@@ -66,31 +66,6 @@ const LeftSideBarWidth = styled.div`
   ${({ collapse }) => collapse && `width: 0;`}
 `;
 
-const SidebarToggleButton = styled(Button)`
-  width: 100px;
-  height: 40px;
-  position: fixed;
-  left: 220px;
-  ${({ collapse }) =>
-    collapse === 'true' &&
-    `
-      left: -30px;
-    `};
-  top: 50%;
-  -webkit-transform: rotate(90deg);
-  -moz-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  transform: rotate(90deg);
-
-  @media (max-width: 1440px) {
-    right: 41px;
-  }
-
-  @media (max-width: 767px) {
-    display: none;
-  }
-`;
-
 const LayoutHideSidebar = ({ children, location, menuCollapseCallback }) => {
   const [collapse, setCollapse] = useState(true);
 
@@ -115,9 +90,14 @@ const LayoutHideSidebar = ({ children, location, menuCollapseCallback }) => {
           />
         ) : null}
         <Content id="content">
-          <SidebarToggleButton onClick={() => toggleMenu()} collapse={collapse.toString()}>
+          <Button
+            variant="primary"
+            className={`tw-btn-menu ${collapse ? 'collapsed' : ''}`}
+            onClick={() => toggleMenu()}
+            collapse={collapse.toString()}
+          >
             MENU
-          </SidebarToggleButton>
+          </Button>
           <MaxWidth>{children}</MaxWidth>
         </Content>
       </Wrapper>
