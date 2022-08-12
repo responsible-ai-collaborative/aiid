@@ -1,6 +1,6 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
-import ReactWordcloud from 'react-wordcloud';
+import ReactWordcloud from 'react-d3-cloud';
 
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
@@ -11,21 +11,14 @@ import Link from 'components/ui/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import Wordlist from '../components/WordList';
 
-const wordCloudSize = [350, 350];
-
-const WordCloudCell = ({ wordCountsSorted, wordCloudOptions, wordCloudSize, wordCloud }) => {
+const WordCloudCell = ({ wordCountsSorted, wordCloud }) => {
   return (
     <Row>
       <Col xs={4} data-cy="wordlist-container">
         <Wordlist content={wordCountsSorted} />
       </Col>
       <Col xs={8}>
-        <ReactWordcloud
-          data-cy="wordcloud"
-          options={wordCloudOptions}
-          size={wordCloudSize}
-          words={wordCloud}
-        />
+        <ReactWordcloud data-cy="wordcloud" data={wordCloud} />
       </Col>
     </Row>
   );
@@ -37,11 +30,6 @@ const WordCounts = ({ pageContext, ...props }) => {
   if (!wordClouds || !wordCountsSorted) {
     return null;
   }
-
-  const wordCloudOptions = {
-    rotations: 3,
-    rotationAngles: [-90, 0],
-  };
 
   return (
     <Layout {...props}>
@@ -66,8 +54,6 @@ const WordCounts = ({ pageContext, ...props }) => {
               <WordCloudCell
                 key={`wordcloud-${idx}`}
                 wordCountsSorted={wordCountsSorted.slice(0, (idx + 1) * wordsPerCloud)}
-                wordCloudOptions={wordCloudOptions}
-                wordCloudSize={wordCloudSize}
                 wordCloud={wordCloud}
               />
             ))}
