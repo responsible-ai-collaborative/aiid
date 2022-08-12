@@ -1,6 +1,7 @@
 import React from 'react';
 import isString from 'lodash/isString';
 import Link from './Link';
+import SensitiveImage from '../images/sensitive';
 
 const slug = (title) =>
   isString(title) ? title.toLowerCase().replace(/\s+/g, '') : title.props.children;
@@ -23,6 +24,7 @@ const Components = {
   h6: ({ children }) => <h6 id={slug(children)}>{children}</h6>,
   a: ({ href, ...props }) => <Link {...props} to={href} />,
   Details,
+  SensitiveImage,
 };
 
 export default Components;
