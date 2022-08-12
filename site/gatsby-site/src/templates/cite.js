@@ -66,7 +66,6 @@ function CitePage(props) {
       taxonomies,
       nextIncident,
       prevIncident,
-      spatialIncidents,
       nlp_similar_incidents,
       editor_similar_incidents,
       editor_dissimilar_incidents,
@@ -297,26 +296,20 @@ function CitePage(props) {
           parentIncident={incident}
         />
 
-        {spatialIncidents ? (
-          <>
-            <StyledHeading>
-              <Trans>This Incident in Semantic Space</Trans>
-            </StyledHeading>
-            <p>
-              <Trans>
-                The visualization below plots incidents closer together according to the similarity
-                of their reports texts, as identified through
-              </Trans>{' '}
-              <LocalizedLink to="/blog/using-ai-to-connect-ai-incidents">
-                <Trans>our natural-language processing system</Trans>
-              </LocalizedLink>
-              .
-            </p>
-            <TsneVisualization incident={incident} spatialIncidents={spatialIncidents} />
-          </>
-        ) : (
-          <p>No Spatial incidents</p>
-        )}
+        <StyledHeading>
+          <Trans>This Incident in Semantic Space</Trans>
+        </StyledHeading>
+        <p>
+          <Trans>
+            The visualization below plots incidents closer together according to the similarity of
+            their reports texts, as identified through
+          </Trans>{' '}
+          <LocalizedLink to="/blog/using-ai-to-connect-ai-incidents">
+            <Trans>our natural-language processing system</Trans>
+          </LocalizedLink>
+          .
+        </p>
+        <TsneVisualization incident={incident} />
 
         <Pagination className="justify-content-between">
           <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>

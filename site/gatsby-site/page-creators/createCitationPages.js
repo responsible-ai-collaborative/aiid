@@ -6,7 +6,7 @@ const { cloneDeep } = require('lodash');
 
 const { switchLocalizedPath } = require('../i18n');
 
-const { getSpatialIncidents, updateTsneInDatabase } = require('../src/utils/updateTsne');
+const { updateTsneInDatabase } = require('../src/utils/updateTsne');
 
 const getClassificationsArray = (incidentClassifications, taxonomy) => {
   const classifications = incidentClassifications.filter(
@@ -208,8 +208,6 @@ const createCitationPages = async (graphql, createPage) => {
 
   await updateTsneInDatabase();
 
-  let spatialIncidents = await getSpatialIncidents();
-
   for (let i = 0; i < keys.length; i++) {
     const incident_id = parseInt(keys[i]);
 
@@ -261,7 +259,6 @@ const createCitationPages = async (graphql, createPage) => {
       taxonomies,
       nextIncident: i < keys.length - 1 ? keys[i + 1] : null,
       prevIncident: i > 0 ? keys[i - 1] : null,
-      spatialIncidents,
       ...similarIncidents,
     });
   }

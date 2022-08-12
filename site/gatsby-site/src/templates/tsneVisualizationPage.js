@@ -6,10 +6,6 @@ import TsneVisualization from 'components/cite/TsneVisualization';
 import { useTranslation } from 'react-i18next';
 
 function TsneVisulizationPage(props) {
-  const {
-    pageContext: { spatialIncidents },
-  } = props;
-
   const { t } = useTranslation();
 
   // meta tags
@@ -30,7 +26,7 @@ function TsneVisulizationPage(props) {
         <StyledHeading>{metaDescription}</StyledHeading>
       </div>
 
-      <TsneVisualization incident={{ incident_id: 1 }} spatialIncidents={spatialIncidents} />
+      <TsneVisualization incident={{ incident_id: 1 }} />
     </Layout>
   );
 }
