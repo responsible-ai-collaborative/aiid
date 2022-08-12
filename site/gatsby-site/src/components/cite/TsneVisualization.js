@@ -5,36 +5,8 @@ import { useApolloClient, gql, useQuery } from '@apollo/client';
 import { Image } from '../../utils/cloudinary';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Color from 'color';
-import hash from 'object-hash';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans } from 'react-i18next';
-
-const spatialIncidentsQuery = gql`
-  query SpatialIncidents($query: IncidentQueryInput) {
-    incidents(query: $query) {
-      incident_id
-      tsne {
-        x
-        y
-      }
-    }
-  }
-`;
-
-const incidentQuery = gql`
-  query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
-    incident(query: $query) {
-      incident_id
-      title
-      reports {
-        cloudinary_id
-        report_number
-        title
-        url
-      }
-    }
-  }
-`;
 
 const VisualizationWrapper = styled.div`
   > *,
@@ -105,7 +77,17 @@ const Visualization = styled.div`
   }
 `;
 
-const PlotPoint = ({ spatialIncident, incident, state, axis, darkenBySeverity }) => {
+const PlotPoint = ({
+  state,
+  incident,
+  classifications,
+  darkenBySeverity,
+  taxonColorMap,
+  axis,
+  currentIncidentId,
+}) => {
+  console.log('classifications', classifications);
+
   const client = useApolloClient();
 
   const [incidentData, setIncidentData] = useState(null);
@@ -118,22 +100,35 @@ const PlotPoint = ({ spatialIncident, incident, state, axis, darkenBySeverity })
   // but I'm not taking my chances.
   const sqrtScale = Math.sqrt(state.scale);
 
-  const classifications = spatialIncident.classifications;
+  const dbAxis = axis.replace(/ /g, '');
 
   const taxon =
-    classifications && classifications[axis]
-      ? Array.isArray(classifications[axis])
-        ? classifications[axis].length > 0 && String(classifications[axis][0].trim()).length > 0
-          ? String(classifications[axis][0])
+    classifications && classifications[dbAxis]
+      ? Array.isArray(classifications[dbAxis])
+        ? classifications[dbAxis].length > 0 && String(classifications[dbAxis][0].trim()).length > 0
+          ? String(classifications[dbAxis][0])
           : null
-        : String(classifications[axis]).length > 0
-        ? String(classifications[axis])
+        : String(classifications[dbAxis]).length > 0
+        ? String(classifications[dbAxis])
         : null
       : null;
 
-  const taxonHash = taxon ? hash(taxon, { encoding: 'hex' }) : null;
+  console.log(`taxon`, taxon);
 
-  const background = Color(taxonHash ? '#ff0000' : '#ffffff')
+  const background = (taxonColorMap[taxon] || Color('#ffffff'))
+    .darken(
+      darkenBySeverity && classifications && classifications['Severity']
+        ? (0.7 *
+            ['Negligible', 'Minor', 'Unclear/unknown', 'Moderate', 'Critical', 'Severe'].indexOf(
+              classifications['Severity']
+            )) /
+            5
+        : 0
+    )
+    .opaquer(-0.25);
+  // baseColor
+
+  /*Color(taxonHash ? '#ff0000' : '#ffffff')
     .rotate(taxonHash ? Number('0x' + taxonHash.slice(3, 6)) : 0)
     .desaturate(taxonHash ? (0.8 * Number('0x' + taxonHash.slice(0, 3))) / 4096 : 0)
     .darken(
@@ -146,6 +141,7 @@ const PlotPoint = ({ spatialIncident, incident, state, axis, darkenBySeverity })
         : 0
     )
     .opaquer(-0.25);
+    */
 
   // isDark() returns false for values that I find hard to read black text against,
   // so we pretend it's darker than it really is.
@@ -154,12 +150,12 @@ const PlotPoint = ({ spatialIncident, incident, state, axis, darkenBySeverity })
   return (
     <>
       <LocalizedLink
-        id={'spatial-incident-' + spatialIncident.incident_id}
-        to={'/cite/' + spatialIncident.incident_id}
+        id={'spatial-incident-' + incident.incident_id}
+        to={'/cite/' + incident.incident_id}
         data-cy="tsne-plotpoint"
         style={{
-          top: `calc(50% + 48% * ${spatialIncident.y})`,
-          left: `calc(50% + 48% * ${spatialIncident.x})`,
+          top: `calc(50% + 48% * ${incident.tsne.y})`,
+          left: `calc(50% + 48% * ${incident.tsne.x})`,
 
           // The points do not grow as fast as the space between them,
           // allowing the user to zoom to more accurately select
@@ -168,19 +164,28 @@ const PlotPoint = ({ spatialIncident, incident, state, axis, darkenBySeverity })
           background,
           color,
         }}
-        className={spatialIncident.incident_id == incident.incident_id ? 'current' : ''}
+        className={incident.incident_id == currentIncidentId ? 'current' : ''}
         onMouseLeave={() => setHover(false)}
         onMouseEnter={() => {
           setHover(true);
           if (!incidentData) {
             client
               .query({
-                query: incidentQuery,
-                variables: {
-                  query: {
-                    incident_id: spatialIncident.incident_id,
-                  },
-                },
+                query: gql`
+                  query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
+                    incident(query: $query) {
+                      incident_id
+                      title
+                      reports {
+                        cloudinary_id
+                        report_number
+                        title
+                        url
+                      }
+                    }
+                  }
+                `,
+                variables: { query: { incident_id: incident.incident_id } },
               })
               .then((res) => {
                 setIncidentData(res.data.incident);
@@ -188,13 +193,13 @@ const PlotPoint = ({ spatialIncident, incident, state, axis, darkenBySeverity })
           }
         }}
       >
-        {spatialIncident.incident_id}
+        {incident.incident_id}
       </LocalizedLink>
       {hover && (
         <div
           style={{
-            top: `calc(50% + 48% * ${spatialIncident.y} + ${0.75 / sqrtScale}em)`,
-            left: `calc(50% + 48% * ${spatialIncident.x} + ${0.75 / sqrtScale}em)`,
+            top: `calc(50% + 48% * ${incident.tsne.y} + ${0.75 / sqrtScale}em)`,
+            left: `calc(50% + 48% * ${incident.tsne.x} + ${0.75 / sqrtScale}em)`,
             transform: `scale(${1 / state.scale})`,
             transformOrigin: 'top left',
             zIndex: 10,
@@ -230,30 +235,89 @@ const PlotPoint = ({ spatialIncident, incident, state, axis, darkenBySeverity })
   );
 };
 
-const TsneVisualization = ({ incident }) => {
-  const [axis, setAxis] = useState('CSET:Harm_Distribution_Basis');
+const TsneVisualization = ({ currentIncidentId }) => {
+  const [axis, setAxis] = useState('Harm Distribution Basis');
 
   const [darkenBySeverity, setDarkenBySeverity] = useState(false);
 
-  const { data: spatialIncidentsData } = useQuery(spatialIncidentsQuery, {
-    variables: {
-      query: {
-        tsne_exists: true,
-      },
-    },
-  });
-
-  const spatialIncidents = (spatialIncidentsData?.incidents || []).map((incident) => ({
-    incident_id: incident.incident_id,
-    ...incident.tsne,
-  }));
-
-  const currentSpatialIncident = spatialIncidents.find(
-    (spatialIncident) => spatialIncident.incident_id == incident.incident_id
+  const { data: spatialIncidentsData } = useQuery(
+    gql`
+      query SpatialIncidents($query: IncidentQueryInput) {
+        incidents(query: $query) {
+          incident_id
+          tsne {
+            x
+            y
+          }
+        }
+      }
+    `,
+    {
+      variables: { query: { tsne_exists: true } },
+    }
   );
 
+  const incidents = spatialIncidentsData?.incidents || [];
+
+  const currentSpatialIncident = incidents.find(
+    (incident) => incident.incidentId == currentIncidentId
+  );
+
+  const csetClassifications = [
+    'Harm Distribution Basis',
+    'Harm Type',
+    'Intent',
+    'Near Miss',
+    'Problem Nature',
+    'Sector Of Deployment',
+    'System Developer',
+  ];
+
+  const { data: classificationsData } = useQuery(
+    gql`
+    query ClassificationsQuery($query: ClassificationQueryInput) {
+      classifications(query: $query) {
+        incident_id
+        namespace
+        classifications {
+          ${
+            csetClassifications.map((s) => s.replace(/ /g, '')).join('\n        ')
+            //axis.replace(/ /g, '')
+          }
+          Severity
+        }
+      }
+    }
+  `,
+    {
+      variables: {
+        query: {
+          incident_id_in: incidents.map((incident) => incident.incident_id),
+        },
+      },
+    }
+  );
+
+  console.log(`classificationsData`, classificationsData);
+
+  let taxonColorMap = {};
+
+  if (classificationsData) {
+    const taxons = Array.from(
+      new Set(
+        classificationsData.classifications
+          .map((c) => c.classifications[axis.replace(/ /g, '')])
+          .reduce((result, value) => result.concat(value), [])
+      )
+    );
+
+    for (let i = 0; i < taxons.length; i++) {
+      taxonColorMap[taxons[i]] = Color('#ff0000').rotate((360 * i) / taxons.length);
+    }
+  }
+
   return (
-    spatialIncidents && (
+    incidents && (
       <>
         <div style={{ display: 'flex', gap: '1em', alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', gap: '1em', alignItems: 'center' }}>
@@ -265,18 +329,9 @@ const TsneVisualization = ({ incident }) => {
               id="color-axis-select"
               onChange={(event) => setAxis(event.target.value)}
             >
-              {[
-                'CSET:Harm_Distribution_Basis',
-                'CSET:Harm_Type',
-                'CSET:Intent',
-                'CSET:Near_Miss',
-                'CSET:Problem_Nature',
-                'CSET:Sector_of_Deployment',
-                'CSET:System_Developer',
-                'CSET:None',
-              ].map((axis) => (
+              {csetClassifications.map((axis) => (
                 <option key={axis} value={axis}>
-                  {axis.replace(/_/g, ' ')}
+                  CSET:{axis}
                 </option>
               ))}
             </Form.Select>
@@ -304,14 +359,22 @@ const TsneVisualization = ({ incident }) => {
             {({ state }) => (
               <TransformComponent>
                 <Visualization>
-                  {spatialIncidents.map((spatialIncident) => (
+                  {incidents.map((incident) => (
                     <PlotPoint
-                      spatialIncident={spatialIncident}
                       state={state}
                       incident={incident}
-                      key={spatialIncident.incident_id}
-                      axis={axis}
+                      classifications={
+                        classificationsData?.classifications
+                          ? classificationsData.classifications.find(
+                              (classification) => classification.incident_id == incident.incident_id
+                            )?.classifications || {}
+                          : {}
+                      }
+                      key={incident.incident_id}
                       darkenBySeverity={darkenBySeverity}
+                      taxonColorMap={taxonColorMap}
+                      axis={axis}
+                      currentIncidentId={currentIncidentId}
                     />
                   ))}
                 </Visualization>

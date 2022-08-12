@@ -93,6 +93,17 @@
         },
         "title": {
             "bsonType": "string"
+        },
+        "tsne": {
+            "bsonType": "object",
+            "properties": {
+                "x": {
+                    "bsonType": "double"
+                },
+                "y": {
+                   "bsonType": "double"
+                }
+            }
         }
     },
     "required": [

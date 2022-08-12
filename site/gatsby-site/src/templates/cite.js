@@ -309,7 +309,7 @@ function CitePage(props) {
           </LocalizedLink>
           .
         </p>
-        <TsneVisualization incident={incident} />
+        <TsneVisualization currentIncidentId={incident.incidentId} />
 
         <Pagination className="justify-content-between">
           <Pagination.Item href={`/cite/${prevIncident}`} disabled={!prevIncident}>

@@ -18,6 +18,7 @@ import { Formik } from 'formik';
 import pick from 'lodash/pick';
 import { useLocalization } from 'gatsby-theme-i18n';
 import { gql } from '@apollo/client';
+import RelatedIncidents from 'components/RelatedIncidents';
 
 const UPDATE_REPORT_TRANSLATION = gql`
   mutation UpdateReportTranslation($input: UpdateOneReportTranslationInput) {
@@ -196,7 +197,7 @@ function EditCitePage(props) {
           onSubmit={handleSubmit}
           initialValues={{ ...reportData.report, incident_id: parentIncident.incident.incident_id }}
         >
-          {({ isValid, isSubmitting, submitForm }) => (
+          {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
             <>
               <IncidentReportForm />
 
@@ -219,6 +220,8 @@ function EditCitePage(props) {
               >
                 Delete this report
               </Button>
+
+              <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
             </>
           )}
         </Formik>
