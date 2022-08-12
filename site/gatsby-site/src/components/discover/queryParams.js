@@ -20,7 +20,6 @@ const queryConfig = {
   epoch_date_published_min: StringParam,
   epoch_date_published_max: StringParam,
   display: DisplayModeEnumParam,
-  lang: LanguageEnumParam,
   page: withDefault(NumberParam, 1),
 };
 
