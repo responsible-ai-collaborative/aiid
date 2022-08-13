@@ -204,7 +204,7 @@ const SubmissionReview = ({ submission }) => {
               aria-expanded={open}
               data-cy="review-button"
             >
-              review &gt;
+              <Trans>review</Trans> &gt;
             </Button>
           </Col>
           <Col xs={12} sm={10} lg={10}>
