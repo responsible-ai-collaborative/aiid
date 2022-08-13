@@ -268,7 +268,11 @@ const SubmissionReview = ({ submission }) => {
               disabled={!isSubmitter || promoting}
               onClick={promoteSubmission}
             >
-              {isNewIncident ? <>Add New Incident</> : <>Add New Report</>}
+              {isNewIncident ? (
+                <Trans ns="submitted">Add New Incident</Trans>
+              ) : (
+                <Trans ns="submitted">Add New Report</Trans>
+              )}
               {promoting && (
                 <Spinner
                   as="span"
@@ -285,7 +289,11 @@ const SubmissionReview = ({ submission }) => {
               disabled={!isSubmitter || deleting}
               onClick={rejectReport}
             >
-              {isNewIncident ? <>Reject New Incident</> : <>Reject New Report</>}
+              {isNewIncident ? (
+                <Trans ns="submitted">Reject New Incident</Trans>
+              ) : (
+                <Trans ns="submitted">Reject New Report</Trans>
+              )}
               {deleting && (
                 <Spinner
                   as="span"
