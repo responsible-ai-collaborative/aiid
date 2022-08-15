@@ -135,6 +135,26 @@ jobs:
           runTests: false
           install-command: npm ci --legacy-peer-deps
 
+      # Extract commit hash to use as a cache key
+      - name: Extract commit hash
+        shell: bash
+        run: echo "##[set-output name=commit;]$(echo ${GITHUB_SHA})"
+        id: extract_commit_hash
+
+      # Cache 'public' folder
+      - name: Cache public folder
+        uses: actions/cache@v3.0.5
+        env:
+          cache-name: cache-public-folder
+        with:
+          path: |
+            site/gatsby-site/public
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ steps.extract_commit_hash.outputs.commit }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
       # Extract branch name
       - name: Extract branch name
         shell: bash
@@ -153,8 +173,8 @@ jobs:
           parallel: true
           group: "Cypress e2e tests"
           tag: ${{ steps.extract_branch.outputs.branch }}
-          start: npm start
-          wait-on: http://localhost:8000/
+          start: gatsby serve
+          wait-on: http://localhost:9000/
           # wait for 10 minutes for the server to respond
           wait-on-timeout: 600
         env:
