@@ -683,7 +683,9 @@ describe('The Submit form', () => {
   });
 
   it('Should show a translated popover', () => {
-    cy.visit(`/es/${url}`);
+    cy.visit(`/es/apps/submit/`);
+
+    cy.wait(0);
 
     cy.get('[data-cy="label-title"]').trigger('mouseover');
 
