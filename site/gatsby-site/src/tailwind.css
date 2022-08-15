@@ -28,6 +28,10 @@
         @apply xl:tw-max-w-[1320px] md:tw-max-w-[720px] lg:tw-max-w-[960px] sm:tw-max-w-[540px];
     }
 
+    .tw-container-xl {
+        @apply tw-ml-auto tw-mr-auto tw-pl-container-left tw-pr-container-right tw-w-full lg:tw-max-w-[1140px] xl:tw-max-w-[1320px];
+    }
+
     .tw-bg-secondary {
         @apply tw-bg-secondary-grey tw-opacity-100 tw-text-text-light-grey;
     }
@@ -39,6 +43,7 @@
     .tw-col-auto {
         @apply tw-flex-0-0-auto tw-w-auto tw-max-w-none;
     }
+
 }
 
 @layer components {
@@ -77,14 +82,6 @@
     }
 
     /* TAILWIND Buttons ends */
-
-    /* TAILWIND Container begins */
-
-    .tw-container-xl {
-        @apply tw-w-full tw-pr-row-right tw-pl-row-left tw-mr-auto tw-ml-auto;
-    }
-
-    /* TAILWIND Container ends */
 
 
     /* TAILWIND Grid begins */
@@ -268,7 +265,7 @@
     }
 
     .tw-hits-container {
-        @apply tw-grid min-576px:tw-grid-cols-2 min-767px:tw-grid-cols-3 min-992px:tw-grid-cols-4;
+        @apply tw-grid min-576px:tw-grid-cols-2 min-767px:tw-grid-cols-3 min-992px:tw-grid-cols-4 tw-gap-1.5;
     }
 
     /* .tw-hits-container.details {
