@@ -11,6 +11,9 @@ import { UPDATE_INCIDENT } from '../../graphql/incidents';
 import md5 from 'md5';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { useLocalization } from 'gatsby-theme-i18n';
+import { Trans, useTranslation } from 'react-i18next';
+import Link from 'components/ui/Link';
 
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
@@ -47,7 +50,6 @@ const IncidentCardImage = styled(Image)`
 
 const CardFooter = styled.div`
   display: flex;
-  width: 100%;
   flex-direction: row;
   align-items: center;
   font-weight: 500;
@@ -126,6 +128,10 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   const { isRole } = useUserContext();
 
+  const { locale } = useLocalization();
+
+  const { t } = useTranslation();
+
   const [isFlagged, setFlagged] = useState(flagged && isRole('incident_editor'));
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
@@ -134,7 +140,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   return (
     <Card data-cy="similar-incident-card">
-      <a href={'/cite/' + incident.incident_id} data-cy="cite-link">
+      <Link to={'/cite/' + incident.incident_id} data-cy="cite-link">
         <IncidentCardImage
           publicID={
             incident.reports[0].cloudinary_id || `legacy/${md5(incident.reports[0].image_url)}`
@@ -142,8 +148,8 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
           transformation={fill().height(480)}
           alt=""
         />
-        <h3>{incident.title || incident.reports[0].title}</h3>
-      </a>
+        <h3>{locale == 'en' && incident.title ? incident.title : incident.reports[0].title}</h3>
+      </Link>
       <CardFooter>
         <div className="text-muted">
           {parsedDate && (
@@ -152,7 +158,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
             </>
           )}
           <span>
-            {incident.reports.length} {incident.reports.length == 1 ? 'report' : 'reports'}
+            {incident.reports.length} {incident.reports.length == 1 ? t('report') : t('reports')}
           </span>
         </div>
         <FlexSeparator />
@@ -179,8 +185,10 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
               });
               addToast({
                 message: isFlagged
-                  ? `Flag reverted.`
-                  : `Incident flagged successfully. Our editors will remove it from this list if it not relevant.`,
+                  ? t(`Flag reverted.`)
+                  : t(
+                      `Incident flagged successfully. Our editors will remove it from this list if it not relevant.`
+                    ),
                 severity: SEVERITY.success,
               });
               setFlagged(!isFlagged);
@@ -219,12 +227,14 @@ const SimilarIncidents = ({
   return (
     <SimilarIncidentsList>
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
-        <h2 id="similar-incidents">Similar Incidents</h2>
+        <h2 id="similar-incidents">
+          <Trans>Similar Incidents</Trans>
+        </h2>
       )}
       {editor_similar_incidents.length > 0 && (
         <>
           <Subtitle>
-            Selected by our editors
+            <Trans>Selected by our editors</Trans>
             {isRole('incident_editor') && (
               <EditIcon
                 href={`/incidents/edit?incident_id=${parentIncident.incident_id}#similar-incidents`}
@@ -250,12 +260,12 @@ const SimilarIncidents = ({
       {nlp_only_incidents.length > 0 && (
         <>
           <Subtitle>
-            By textual similarity
+            <Trans>By textual similarity</Trans>
             <ActionIcons>
               {blogPostUrl && (
-                <a href={blogPostUrl} data-cy="about-similar-incidents">
+                <Link to={blogPostUrl} data-cy="about-similar-incidents">
                   <FontAwesomeIcon icon={faQuestionCircle} />
-                </a>
+                </Link>
               )}
               {isRole('incident_editor') && (
                 <EditIcon
@@ -270,8 +280,10 @@ const SimilarIncidents = ({
           </Subtitle>
           <hr />
           <FlagPrompt className="text-muted">
-            Did <strong>our</strong> AI mess up? Flag <FontAwesomeIcon icon={faFlag} /> the
-            unrelated incidents
+            <Trans>
+              Did <strong>our</strong> AI mess up? Flag <FontAwesomeIcon icon={faFlag} /> the
+              unrelated incidents
+            </Trans>
           </FlagPrompt>
           <CardSet>
             {nlp_only_incidents.map((similarIncident) => (

@@ -110,7 +110,10 @@ describe('The Submit form', () => {
     );
 
     // Set the ID from the button in the list of semantically similar incidents
-    cy.get('[data-cy=related-byText] [data-cy=result] [data-cy=set-id]').first().click();
+    cy.get('[data-cy=related-byText] [data-cy=result] [data-cy=set-id]')
+      .contains('#1')
+      .first()
+      .click();
 
     cy.get(
       '[data-cy=related-byText] [data-cy=result] [data-cy="similar-selector"] [data-cy="similar"]'

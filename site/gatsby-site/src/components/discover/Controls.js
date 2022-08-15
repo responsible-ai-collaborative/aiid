@@ -47,6 +47,13 @@ const Hbox = styled(Col)`
   }
 `;
 
+const Switch = styled(Form.Check)`
+  cursor: pointer;
+  * {
+    cursor: pointer;
+  }
+`;
+
 const Controls = ({ query, setHideDuplicates, hideDuplicates }) => {
   const [expandFilters, setExpandFilters] = useState(false);
 
@@ -62,7 +69,7 @@ const Controls = ({ query, setHideDuplicates, hideDuplicates }) => {
           <DisplayModeSwitch />
         </Col>
         <Hbox>
-          <Form.Check
+          <Switch
             type="switch"
             id="hide-duplicates"
             checked={hideDuplicates}
