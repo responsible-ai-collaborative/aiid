@@ -46,10 +46,6 @@ const updateTsneInDatabase = async () => {
   const outputScaled = model.getOutputScaled();
 
   for (let i = 0; i < outputScaled.length; i++) {
-    console.log(`Updating TSNE position for incident #${ids[i]}`, {
-      x: outputScaled[i][0],
-      y: outputScaled[i][1],
-    });
     incidentsCollection.updateOne(
       { incident_id: ids[i] },
       {
