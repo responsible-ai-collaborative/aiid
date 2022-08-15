@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
-import Button from '../elements/Button';
+import Button from 'elements/Button';
 
 export const useModal = () => {
   const [isOpen, setIsOpen] = useState(false);

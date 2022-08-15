@@ -16,9 +16,9 @@ import { queryConfig } from 'components/discover/queryParams';
 import VirtualFilters from 'components/discover/VirtualFilters';
 import Controls from 'components/discover/Controls';
 import { useLocalization } from 'gatsby-theme-i18n';
-import Container from '../../elements/Container';
-import Row from '../../elements/Row';
-import Col from '../../elements/Col';
+import Container from 'elements/Container';
+import Row from 'elements/Row';
+import Col from 'elements/Col';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,

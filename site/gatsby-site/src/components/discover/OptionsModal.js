@@ -6,9 +6,9 @@ import Stats from './Stats';
 import ClearFilters from './ClearFilters';
 import { Trans } from 'react-i18next';
 import DisplayModeSwitch from './DisplayModeSwitch';
-import Row from '../../elements/Row';
-import Col from '../../elements/Col';
-import Button from '../../elements/Button';
+import Row from 'elements/Row';
+import Col from 'elements/Col';
+import Button from 'elements/Button';
 // https://www.algolia.com/doc/guides/building-search-ui/going-further/native/react/?language=react#create-a-modal
 
 function OptionsModal({ setHideDuplicates, hideDuplicates }) {

@@ -8,8 +8,8 @@ import { Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Trans } from 'react-i18next';
-import Row from '../../elements/Row';
-import Col from '../../elements/Col';
+import Row from 'elements/Row';
+import Col from 'elements/Col';
 
 const Controls = ({ query, setHideDuplicates, hideDuplicates }) => {
   const [expandFilters, setExpandFilters] = useState(false);

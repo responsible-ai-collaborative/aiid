@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { connectSearchBox } from 'react-instantsearch-dom';
 import { debounce } from 'debounce';
 import SearchInput from 'components/forms/SearchInput';
-import Row from '../../elements/Row';
-import Col from '../../elements/Col';
+import Row from 'elements/Row';
+import Col from 'elements/Col';
 
 function SearchBox({ currentRefinement, refine }) {
   const [query, setQuery] = useState(currentRefinement);

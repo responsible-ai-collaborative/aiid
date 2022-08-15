@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Sidebar from './sidebar';
 import config from '../../config.js';
 import Header from './ui/Header';
-import Button from '../elements/Button';
+import Button from 'elements/Button';
 
 const Wrapper = styled.div`
   display: flex;
