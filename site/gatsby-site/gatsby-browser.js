@@ -3,6 +3,7 @@ import './src/global.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-daterangepicker/daterangepicker.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
+import './src/custom.css';
 
 import React from 'react';
 import { wrapRootElement } from './wrapRootElement';

@@ -43,7 +43,6 @@ body {
 a {
   transition: color 0.15s;
   text-decoration: none !important;
-  color: var(--primary-blue) !important;
 }
 
 .visibleMobile {

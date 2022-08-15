@@ -26,7 +26,7 @@ export default withTranslation()(function SearchInput({
         onChange={(event) => onChange(event.currentTarget.value)}
         {...props}
       />
-      <div className="tw-absolute tw-z-[4] tw-w-5 tw-h-5 tw-top-1/2 tw-right-[0.3rem] -tw-translate-y-2/4">
+      <div className="tw-absolute tw-z-[4] tw-w-5 tw-h-5 tw-top-1/2 tw-right-[0.3rem] -tw-translate-y-1/2">
         {value !== '' ? (
           <button
             className="tw-bg-none tw-select-none tw-border-none"
