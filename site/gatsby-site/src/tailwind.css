@@ -7,6 +7,30 @@
     .tw-styled-heading {
         @apply tw-font-karla tw-text-32px tw-leading-normal tw-font-bold tw-flex-[1] tw-mt-0 tw-pt-0;
     }
+    
+    .tw-card {
+        @apply tw-flex tw-flex-col tw-border tw-rounded-lg;
+    }
+
+    .tw-card-header {
+        @apply tw-flex tw-justify-between tw-items-center tw-border-b tw-border-border-gray tw-px-4 tw-py-2 tw-bg-light-gray;
+    }
+
+    .tw-card-title a {
+        @apply tw-text-primary-blue;
+    }
+
+    .tw-card-title h3 {
+        @apply tw-text-2xl tw-mb-2;
+    }
+
+    .tw-card-body {
+        @apply tw-flex tw-p-4;
+    }
+
+    .tw-post-listing {
+        @apply tw-flex tw-flex-wrap md:tw-grid tw-gap-4 lg:tw-gap-4 tw-max-w-[750px];
+    }
 
     .tw-container {
         @apply xl:tw-max-w-[1140px] md:tw-max-w-[720px] lg:tw-max-w-[960px] sm:tw-max-w-[540px];

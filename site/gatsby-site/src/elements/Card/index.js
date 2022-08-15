@@ -20,7 +20,9 @@ Card.Header = function CardHeader(props) {
 Card.Title = function CardTitle(props) {
   return (
     <>
-      <div className="tw-card-title">{props.children}</div>
+      <div className={`tw-card-title ${props.className ? props.className : ''}`}>
+        {props.children}
+      </div>
     </>
   );
 };

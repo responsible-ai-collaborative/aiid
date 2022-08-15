@@ -1,8 +1,6 @@
+/* Custom styles meant to override global.css, tailwind and bootstrap */
+
 a {
     text-decoration: none;
-    color: var(--primary-blue);
-}
-
-h4 {
-    margin-bottom: 0;
+    color: #0d6efd;
 }
