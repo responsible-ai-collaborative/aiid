@@ -17,6 +17,7 @@ import Taxonomy from 'components/taxa/Taxonomy';
 import { useUserContext } from 'contexts/userContext';
 import SimilarIncidents from 'components/cite/SimilarIncidents';
 import { Trans, useTranslation } from 'react-i18next';
+import SocialShareButtons from 'components/ui/SocialShareButtons';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 
@@ -137,6 +138,11 @@ function CitePage(props) {
 
       <div className={'titleWrapper'}>
         <StyledHeading>{locale == 'en' ? metaTitle : defaultIncidentTitle}</StyledHeading>
+        <SocialShareButtons
+          metaTitle={metaTitle}
+          canonicalUrl={canonicalUrl}
+          page="cite"
+        ></SocialShareButtons>
       </div>
 
       <Container>
@@ -271,6 +277,11 @@ function CitePage(props) {
                 <StyledHeading>
                   <Trans>Incidents Reports</Trans>
                 </StyledHeading>
+                <SocialShareButtons
+                  metaTitle={metaTitle}
+                  canonicalUrl={canonicalUrl}
+                  page="cite"
+                ></SocialShareButtons>
               </div>
             </IncidnetsReportsTitle>
           </Col>
