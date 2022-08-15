@@ -282,6 +282,7 @@ GATSBY_ALGOLIA_SEARCH_KEY=
 GATSBY_REALM_APP_ID=
 MONGODB_CONNECTION_STRING=
 MONGODB_REPLICA_SET=
+GATSBY_EXCLUDE_DATASTORE_FROM_BUNDLE=1 # specific to Netlify, for large sites
 ```
 ### Github Actions
 Two workflows take care of deploying the Realm app to both `production` and `staging` environments, defined in `realm-production.yml` and `realm-staging.yml`. Each workflow looks for environment variables defined in a Github Environment named `production` and `staging`. 
