@@ -67,19 +67,18 @@ jobs:
       # Extract commit hash to use as a cache key
       - name: Extract commit hash
         shell: bash
-        run: echo "${GITHUB_SHA}"
+        run: echo "##[set-output name=commit;]$(echo ${GITHUB_SHA})"
         id: extract_commit_hash
 
       # Cache 'public' folder
       - name: Cache public folder
-        id: cache-public-folder
         uses: actions/cache@v3.0.5
         env:
           cache-name: cache-public-folder
         with:
           path: |
             site/gatsby-site/public
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ steps.extract_commit_hash.outputs.branch }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ steps.extract_commit_hash.outputs.commit }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
