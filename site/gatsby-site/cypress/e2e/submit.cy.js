@@ -669,4 +669,30 @@ describe('The Submit form', () => {
     cy.visit(url);
     cy.get('[name="editor_notes"').should('exist');
   });
+
+  it('Should show a popover', () => {
+    cy.visit(url);
+
+    cy.get('[data-cy="label-title"]').trigger('mouseover');
+
+    cy.get('[data-cy="popover-title"]').should('be.visible');
+
+    cy.get('[data-cy="popover-title"]').contains('h3', 'Headline').should('exist');
+
+    cy.get('[data-cy="popover-title"]').contains('div', 'Most works have a title').should('exist');
+  });
+
+  it('Should show a translated popover', () => {
+    cy.visit(`/es/${url}`);
+
+    cy.get('[data-cy="label-title"]').trigger('mouseover');
+
+    cy.get('[data-cy="popover-title"]').should('be.visible');
+
+    cy.get('[data-cy="popover-title"]').contains('h3', 'Título').should('exist');
+
+    cy.get('[data-cy="popover-title"]')
+      .contains('div', 'La mayoría de los trabajos tienen un')
+      .should('exist');
+  });
 });
