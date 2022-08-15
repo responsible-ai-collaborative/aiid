@@ -312,7 +312,7 @@ function CitePage(props) {
           </Trans>
           .
         </p>
-        <TsneVisualization currentIncidentId={incident.incidentId} />
+        <TsneVisualization currentIncidentId={incident.incident_id} />
 
         <Pagination className="justify-content-between">
           <Pagination.Item
