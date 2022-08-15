@@ -86,8 +86,6 @@ const PlotPoint = ({
   axis,
   currentIncidentId,
 }) => {
-  console.log('classifications', classifications);
-
   const client = useApolloClient();
 
   const [incidentData, setIncidentData] = useState(null);
@@ -113,8 +111,6 @@ const PlotPoint = ({
         : null
       : null;
 
-  console.log(`taxon`, taxon);
-
   const background = (taxonColorMap[taxon] || Color('#ffffff'))
     .darken(
       darkenBySeverity && classifications && classifications['Severity']
@@ -126,22 +122,6 @@ const PlotPoint = ({
         : 0
     )
     .opaquer(-0.25);
-  // baseColor
-
-  /*Color(taxonHash ? '#ff0000' : '#ffffff')
-    .rotate(taxonHash ? Number('0x' + taxonHash.slice(3, 6)) : 0)
-    .desaturate(taxonHash ? (0.8 * Number('0x' + taxonHash.slice(0, 3))) / 4096 : 0)
-    .darken(
-      darkenBySeverity && classifications && classifications['CSET:Severity']
-        ? (0.7 *
-            ['Negligible', 'Minor', 'Unclear/unknown', 'Moderate', 'Critical', 'Severe'].indexOf(
-              classifications['CSET:Severity']
-            )) /
-            5
-        : 0
-    )
-    .opaquer(-0.25);
-    */
 
   // isDark() returns false for values that I find hard to read black text against,
   // so we pretend it's darker than it really is.
@@ -280,10 +260,7 @@ const TsneVisualization = ({ currentIncidentId }) => {
         incident_id
         namespace
         classifications {
-          ${
-            csetClassifications.map((s) => s.replace(/ /g, '')).join('\n        ')
-            //axis.replace(/ /g, '')
-          }
+          ${csetClassifications.map((s) => s.replace(/ /g, '')).join('\n        ')}
           Severity
         }
       }
@@ -297,8 +274,6 @@ const TsneVisualization = ({ currentIncidentId }) => {
       },
     }
   );
-
-  console.log(`classificationsData`, classificationsData);
 
   let taxonColorMap = {};
 
