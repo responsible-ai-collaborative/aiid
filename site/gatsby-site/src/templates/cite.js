@@ -20,6 +20,7 @@ import Container from '../elements/Container';
 import Row from '../elements/Row';
 import Col from '../elements/Col';
 import Pagination from '../elements/Pagination';
+import SocialShareButtons from 'components/ui/SocialShareButtons';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 
@@ -121,6 +122,11 @@ function CitePage(props) {
 
       <div className={'titleWrapper'}>
         <h1 className="tw-styled-heading">{locale == 'en' ? metaTitle : defaultIncidentTitle}</h1>
+        <SocialShareButtons
+          metaTitle={metaTitle}
+          canonicalUrl={canonicalUrl}
+          page="cite"
+        ></SocialShareButtons>
       </div>
 
       <Container>
@@ -258,6 +264,11 @@ function CitePage(props) {
                 <h1 className="tw-styled-heading">
                   <Trans>Incidents Reports</Trans>
                 </h1>
+                <SocialShareButtons
+                  metaTitle={metaTitle}
+                  canonicalUrl={canonicalUrl}
+                  page="cite"
+                ></SocialShareButtons>
               </div>
             </div>
           </Col>
