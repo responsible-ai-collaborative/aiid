@@ -6,7 +6,7 @@ on:
 
 jobs:
   install:
-    name: NPM install and cache node_modules
+    name: NPM install and build site
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -74,7 +74,7 @@ jobs:
       - name: Cache public folder
         uses: actions/cache@v3.0.5
         env:
-          cache-name: cache-public-folder
+          cache-name: cache-public
         with:
           path: |
             site/gatsby-site/public
@@ -145,7 +145,7 @@ jobs:
       - name: Cache public folder
         uses: actions/cache@v3.0.5
         env:
-          cache-name: cache-public-folder
+          cache-name: cache-public
         with:
           path: |
             site/gatsby-site/public
