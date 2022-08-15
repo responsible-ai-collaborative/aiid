@@ -43,6 +43,10 @@ jobs:
           runTests: false
           install-command: npm ci --legacy-peer-deps
 
+      # Build Gatbsy site
+      - name: Build site
+        run: npm run build 
+
   cypress-run:
     name: Run Cypress tests
     runs-on: ubuntu-latest
