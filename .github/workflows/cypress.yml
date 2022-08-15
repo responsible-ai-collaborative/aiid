@@ -99,8 +99,8 @@ jobs:
       # https://github.com/cypress-io/github-action/issues/48
       fail-fast: false
       matrix:
-        # run 5 copies of the current job in parallel
-        containers: [1, 2, 3, 4, 5]
+        # run 10 copies of the current job in parallel
+        containers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     # stop the job if it runs over 20 minutes
     # to prevent a hanging process from using all your CI minutes
     timeout-minutes: 20
