@@ -30,6 +30,9 @@ module.exports = {
     './src/templates/**/*.{js,jsx,ts,tsx}',
   ],
   theme: {
+    maxHeight: {
+      240: '240px',
+    },
     extend: {
       screens: {
         '767px': { max: '767px' },
@@ -43,10 +46,13 @@ module.exports = {
         '1240px': { max: '1240px' },
       },
       colors: {
+        'primary-blue': '#0d6efd',
+        'muted-gray': '#6c757d',
+        'light-gray': 'rgba(0,0,0,.03)',
+        'border-gray': 'rgba(0,0,0,.125)',
         'light-grey': 'rgba(0,0,0,.03)',
         'border-grey': 'rgba(0,0,0,.125)',
         'disable-grey': '#dee2e6',
-        'primary-blue': '#0d6efd',
         'dark-grey': '#6c757d',
         'deep-blue': '#0a58ca',
         'secondary-grey': 'rgba(108,117,125,1)',
@@ -58,6 +64,14 @@ module.exports = {
         'light-orange': '#ec9982',
         'list-gray': '#5c6975',
         'light-blue': 'rgb(230,236,241)',
+      },
+      gridTemplateColumns: {
+        5: 'repeat(5, minmax(0, 1fr))',
+        6: 'repeat(6, minmax(0, 1fr))',
+        7: 'repeat(7, minmax(0, 1fr))',
+        8: 'repeat(8, minmax(0, 1fr))',
+        9: 'repeat(9, minmax(0, 1fr))',
+        10: 'repeat(10, minmax(0, 1fr))',
       },
       boxShadow: {
         card: '0 2px 5px 0px #e3e5ec',
