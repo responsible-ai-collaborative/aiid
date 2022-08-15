@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 import { Trans, useTranslation } from 'react-i18next';
+import Link from 'components/ui/Link';
 
 const Label = ({ popover, label }) => {
   const [show, setShow] = useState(false);
@@ -23,7 +24,7 @@ const Label = ({ popover, label }) => {
             <Trans ns="popovers" i18nKey={`${popover}.title`} />
           </Popover.Header>
           <Popover.Body>
-            <Trans ns="popovers" i18nKey={`${popover}.text`} />
+            <Trans ns="popovers" i18nKey={`${popover}.text`} components={{ linkto: <Link /> }} />
           </Popover.Body>
         </Popover>
       }

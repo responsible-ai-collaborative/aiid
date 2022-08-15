@@ -17,7 +17,7 @@
     },
     "date_published": {
         "title": "¿Cuándo estuvo disponible el informe?",
-        "text": "Los informes suelen tener una fecha de publicación en la URL, pero incluso cuando no la tiene, puede visitar el{' '} <a href=\"https://archive.org/web/\">Wayback Máquina</a> para encontrar cuándo se indexó por primera vez la URL del informe.texto:"
+        "text": "Los informes suelen tener una fecha de publicación en la URL, pero incluso cuando no la tiene, puede visitar el <linkto to=\"https://archive.org/web/\"> Wayback Machine</linkto> para encontrar cuándo se indexó por primera vez la URL del informe.texto:"
     },
     "date_downloaded": {
         "title": "¿Cuándo copiaste el contenido del informe en este formulario?",
