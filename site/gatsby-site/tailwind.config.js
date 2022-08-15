@@ -62,6 +62,7 @@ module.exports = {
       },
       transitionProperty: {
         btn: 'color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out',
+        'bg-color-02': 'color 0.2s ease-out',
       },
       zIndex: {
         2: '2',

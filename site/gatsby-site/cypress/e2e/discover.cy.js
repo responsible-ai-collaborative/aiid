@@ -11,7 +11,7 @@ describe('The Discover app', () => {
   it('Should load at least 30 hits', () => {
     cy.visit(url);
 
-    cy.get('div[class^="Hits__HitsContainer"]').children().should('have.length.at.least', 28);
+    cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 28);
   });
 
   it('Performs a search and filters results', () => {
@@ -24,7 +24,7 @@ describe('The Discover app', () => {
     cy.url().should('include', 's=starbucks');
 
     // a flaky assertion here, should improve once a testing enviqronment is set up
-    cy.get('div[class^="Hits__HitsContainer"]').children().should('have.length.at.least', 8);
+    cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 8);
   });
 
   it('Filters by incident Id using top filters', () => {
@@ -40,7 +40,7 @@ describe('The Discover app', () => {
 
     cy.url().should('include', 'incident_id=34');
 
-    cy.get('div[class^="Hits__HitsContainer"]').children().should('have.length.at.least', 28);
+    cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 28);
   });
 
   it('Filters by incident Id using card button', () => {
@@ -48,7 +48,7 @@ describe('The Discover app', () => {
 
     cy.get('[data-cy=expand-filters]').click();
 
-    cy.get('div[class^="Hits__HitsContainer"]')
+    cy.get('div[class^="tw-hits-container"]')
       .children()
       .get('[title="Filter by Incident ID #10"]')
       .first()
@@ -58,7 +58,7 @@ describe('The Discover app', () => {
 
     cy.url().should('include', 'incident_id=10');
 
-    cy.get('div[class^="Hits__HitsContainer"]').children().should('have.length.at.least', 10);
+    cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 10);
   });
 
   it('Should flag an incident', () => {

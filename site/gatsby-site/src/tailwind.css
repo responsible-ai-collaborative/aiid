@@ -282,4 +282,35 @@
     .tw-hits-container.list {
         @apply tw-grid tw-grid-cols-1 tw-gap-[6px]
     }
+
+    /* TAILWIND AIS PAGINATION START */
+
+    .tw-ais-pagination {
+        @apply tw-py-[50px] tw-px-0;
+    }
+
+    .tw-ais-pagination .ais-Pagination {
+        @apply tw-text-indigo-900;
+    }
+
+    .tw-ais-pagination .ais-Pagination-list {
+        @apply tw-m-0 tw-p-0 tw-flex tw-items-center tw-justify-center tw-list-none;
+    }
+
+    .tw-ais-pagination .ais-Pagination-item + .ais-Pagination-item {
+        @apply tw-ml-1;
+    }
+
+    .tw-ais-pagination .ais-Pagination-link {
+        @apply tw-text-blue-600 tw-block tw-rounded tw-transition-bg-color-02 tw-py-[0.3rem] tw-px-[0.6rem] tw-border tw-border-[#c4c8d8] hover:tw-text-[#0073a8] hover:tw-bg-[#e3e5ec] focus:tw-text-[#0073a8] focus:tw-bg-[#e3e5ec];
+    }
+
+    .tw-ais-pagination .ais-Pagination-item--disabled .ais-Pagination-link {
+        @apply tw-cursor-not-allowed tw-text-gray-500 tw-opacity-[0.6] hover:tw-text-gray-500 hover:tw-bg-white focus:tw-text-gray-500 focus:tw-bg-white ;
+    }
+
+    .tw-ais-pagination .ais-Pagination-item--selected .ais-Pagination-link {
+        @apply tw-text-white tw-bg-blue-600 tw-border-blue-600 hover:tw-text-white focus:tw-text-white;
+    }
+    /* TAILWIND AIS PAGINATION END */
 }
