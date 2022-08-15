@@ -173,8 +173,8 @@ jobs:
           parallel: true
           group: "Cypress e2e tests"
           tag: ${{ steps.extract_branch.outputs.branch }}
-          start: gatsby serve
-          wait-on: http://localhost:9000/
+          start: npm run serve
+          wait-on: http://localhost:8000/
           # wait for 10 minutes for the server to respond
           wait-on-timeout: 600
         env:

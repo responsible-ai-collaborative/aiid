@@ -100,6 +100,7 @@
   "scripts": {
     "start": "gatsby develop",
     "build": "gatsby build --prefix-paths",
+    "serve": "gatsby serve -p 8000",
     "format": "prettier --write \"{src,page-creators,pages,constants}/**/*.{js,jsx,css,json}\"",
     "lint": "eslint --fix \"{src,page-creators,pages,constants}/**/*.{js,jsx}\"",
     "cypress:open": "cypress open",
