@@ -72,7 +72,7 @@ jobs:
 
       # Cache 'public' folder
       - name: Cache public folder
-        id: cache-nodemodules
+        id: cache-public-folder
         uses: actions/cache@v3.0.5
         env:
           cache-name: cache-public-folder
