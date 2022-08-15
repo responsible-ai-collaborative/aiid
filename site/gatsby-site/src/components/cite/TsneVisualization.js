@@ -275,7 +275,19 @@ const TsneVisualization = ({ currentIncidentId }) => {
     }
   );
 
-  let taxonColorMap = {};
+  // These should have maximum value
+  // so the darkening by severity feature makes sense.
+  let taxonColorMap = {
+    Sex: Color('#ff0090'),
+    'Sexual orientation or gender identity': Color('#ca9bff'),
+    Race: Color('#ffa200'),
+    'Deliberate or expected': Color('#ff0000'),
+    'Harm caused': Color('#ff0000'),
+    'Near miss': Color('#00ff00'),
+    'Financial harm': Color('#4bff4b'),
+    'Financial means': Color('#4bff4b'),
+    'Financial services': Color('#4bff4b'),
+  };
 
   if (classificationsData) {
     const taxons = Array.from(
@@ -286,8 +298,43 @@ const TsneVisualization = ({ currentIncidentId }) => {
       )
     );
 
-    for (let i = 0; i < taxons.length; i++) {
-      taxonColorMap[taxons[i]] = Color('#ff0000').rotate((360 * i) / taxons.length);
+    // Select colors spaced evenly around the color wheel.
+    // Alternate the saturation so that adjacent items are more distinct.
+    let hueSteps = Array(taxons.length)
+      .fill()
+      .map((e, i) => {
+        const degrees = (360 * i) / taxons.length;
+
+        return {
+          degrees,
+          color: Color('#ff0000')
+            .rotate(degrees)
+            .desaturate(i % 2 == 0 ? 0.5 : 0),
+        };
+      });
+
+    // Remove those colors closest to predefined colors
+    for (const key of Object.keys(taxonColorMap).filter((key) => taxons.includes(key))) {
+      const color = taxonColorMap[key];
+
+      const hue = color.hue();
+
+      let closest;
+
+      for (const step of hueSteps) {
+        if (!closest || Math.abs(step.degrees - hue) < Math.abs(closest.degrees - hue)) {
+          closest = step;
+        }
+      }
+      hueSteps = hueSteps.filter((step) => step != closest);
+    }
+
+    // Assign the remaining colors arbitrarily
+    for (let step of hueSteps) {
+      const selection = taxons.find((taxon) => !taxonColorMap[taxon]);
+
+      taxonColorMap[selection] = step.color;
+      hueSteps = hueSteps.filter((s) => s != step);
     }
   }
 
