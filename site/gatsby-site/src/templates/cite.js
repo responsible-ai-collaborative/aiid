@@ -15,7 +15,6 @@ import IncidentStatsCard from 'components/cite/IncidentStatsCard';
 import IncidentCard from 'components/cite/IncidentCard';
 import Taxonomy from 'components/taxa/Taxonomy';
 import { useUserContext } from 'contexts/userContext';
-import TsneVisualization from 'components/cite/TsneVisualization';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import SimilarIncidents from 'components/cite/SimilarIncidents';
 import { Trans, useTranslation } from 'react-i18next';
@@ -312,7 +311,6 @@ function CitePage(props) {
           </Trans>
           .
         </p>
-        <TsneVisualization currentIncidentId={incident.incident_id} />
 
         <Pagination className="justify-content-between">
           <Pagination.Item

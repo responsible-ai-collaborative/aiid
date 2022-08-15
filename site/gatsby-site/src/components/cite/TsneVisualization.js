@@ -215,6 +215,9 @@ const PlotPoint = ({
   );
 };
 
+const circularDistance = (deg1, deg2) =>
+  Math.min(Math.abs(deg1 - deg2), 360 - Math.abs(deg1 - deg2)) % 360;
+
 const TsneVisualization = ({ currentIncidentId }) => {
   const [axis, setAxis] = useState('Harm Distribution Basis');
 
@@ -284,58 +287,95 @@ const TsneVisualization = ({ currentIncidentId }) => {
     'Deliberate or expected': Color('#ff0000'),
     'Harm caused': Color('#ff0000'),
     'Near miss': Color('#00ff00'),
-    'Financial harm': Color('#4bff4b'),
-    'Financial means': Color('#4bff4b'),
-    'Financial services': Color('#4bff4b'),
+    'Financial harm': Color('#00ff00'),
+    'Financial means': Color('#00ff00'),
+    'Financial services': Color('#00ff00'),
   };
 
   if (classificationsData) {
+    /*console.log(`classificationsData`, classificationsData.classifications.map(c => c.incident_id + c.classifications['HarmDistributionBasis'].join(', ') )
+    ) );*/
     const taxons = Array.from(
       new Set(
         classificationsData.classifications
           .map((c) => c.classifications[axis.replace(/ /g, '')])
+          .map((e) => (Array.isArray(e) ? e[0] : e))
           .reduce((result, value) => result.concat(value), [])
+          .filter((value) => value)
       )
     );
+
+    console.log(`taxons`, taxons);
 
     // Select colors spaced evenly around the color wheel.
     // Alternate the saturation so that adjacent items are more distinct.
     let hueSteps = Array(taxons.length)
       .fill()
       .map((e, i) => {
-        const degrees = (360 * i) / taxons.length;
+        const initialTaxon = taxons.find((taxon) => taxonColorMap[taxon]);
 
-        return {
-          degrees,
-          color: Color('#ff0000')
-            .rotate(degrees)
-            .desaturate(i % 2 == 0 ? 0.5 : 0),
-        };
+        const degrees =
+          (initialTaxon ? taxonColorMap[initialTaxon].hue() : 30) + (360 * i) / taxons.length;
+
+        const color = Color.hsv(degrees, i % 2 == 0 ? 128 : 256, 100);
+
+        return { degrees, color };
       });
+
+    console.log(`hueSteps`, hueSteps);
+    console.log(
+      `hueSteps.map(h => h.degrees)`,
+      hueSteps.map((h) => h.degrees)
+    );
 
     // Remove those colors closest to predefined colors
     for (const key of Object.keys(taxonColorMap).filter((key) => taxons.includes(key))) {
       const color = taxonColorMap[key];
+
+      console.log(key);
 
       const hue = color.hue();
 
       let closest;
 
       for (const step of hueSteps) {
-        if (!closest || Math.abs(step.degrees - hue) < Math.abs(closest.degrees - hue)) {
+        if (
+          !closest ||
+          circularDistance(step.degrees, hue) < circularDistance(closest.degrees, hue)
+        ) {
           closest = step;
         }
       }
+
+      console.log(`hue`, hue);
+      console.log(`closest.degrees`, closest.degrees);
+
       hueSteps = hueSteps.filter((step) => step != closest);
+
+      console.log(
+        `hueSteps.map(h => h.degrees)`,
+        hueSteps.map((h) => h.degrees)
+      );
     }
 
     // Assign the remaining colors arbitrarily
     for (let step of hueSteps) {
       const selection = taxons.find((taxon) => !taxonColorMap[taxon]);
 
+      console.log(`selection`, selection);
+
       taxonColorMap[selection] = step.color;
+
+      console.log(`step.color`, step.color);
+
       hueSteps = hueSteps.filter((s) => s != step);
+
+      console.log(
+        `hueSteps.map(h => h.degrees)`,
+        hueSteps.map((h) => h.degrees)
+      );
     }
+    console.log(`taxonColorMap`, taxonColorMap);
   }
 
   return (

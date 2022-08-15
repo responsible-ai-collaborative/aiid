@@ -14,6 +14,7 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { useLocalization } from 'gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
+import { LocalizedLink } from 'gatsby-theme-i18n';
 
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
@@ -228,7 +229,9 @@ const SimilarIncidents = ({
     <SimilarIncidentsList>
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
         <h2 id="similar-incidents">
-          <Trans>Similar Incidents</Trans>
+          <LocalizedLink to="/summaries/spatial">
+            <Trans>Similar Incidents</Trans>
+          </LocalizedLink>
         </h2>
       )}
       {editor_similar_incidents.length > 0 && (

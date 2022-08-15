@@ -26,7 +26,7 @@ function TsneVisulizationPage(props) {
         <StyledHeading>{metaDescription}</StyledHeading>
       </div>
 
-      <TsneVisualization currentIncidentId={1} />
+      <TsneVisualization currentIncidentId={-1} />
     </Layout>
   );
 }
