@@ -13,9 +13,9 @@
   "Logging you out...": "Saliendo...",
   "Succesfully sent password reset email": "Se ha enviado un correo para restablecer la contraseña",
   "Account created": "Cuenta creada",
-  "Enter new password": "Ingrese la nueva contraseña",
-  "Confirm new password": "Confirme la nueva contraseña",
-  "Succesfully updated password, click here to ": "Se ha actualizado la contraseña, haga clic aquí para ",
-  "Don't have an account?": "¿No tiene una cuenta?",
-  "Already have an account?": "¿Ya tiene una cuenta?"
+  "Enter new password": "Ingresa la nueva contraseña",
+  "Confirm new password": "Confirma la nueva contraseña",
+  "Succesfully updated password, click here to ": "Se ha actualizado la contraseña, haz clic aquí para ",
+  "Don't have an account?": "¿No tienes una cuenta?",
+  "Already have an account?": "¿Ya tienes una cuenta?"
 }
