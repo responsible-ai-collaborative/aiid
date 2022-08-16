@@ -14,3 +14,6 @@ TERM = "xterm"
     enable = true
     spa = true
     start = 'gatsby serve -p 8080'
+
+[functions]
+  included_files = ["!.cache/data/datastore/*"]
