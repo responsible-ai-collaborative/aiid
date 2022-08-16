@@ -13,7 +13,7 @@
     }
 
     .tw-card-header {
-        @apply tw-flex tw-justify-between tw-items-center tw-border-b tw-border-border-gray tw-px-4 tw-py-2 tw-bg-light-gray;
+        @apply tw-flex tw-justify-between tw-border-b tw-border-border-gray tw-px-4 tw-py-2 tw-bg-light-gray;
     }
 
     .tw-card-title a {
