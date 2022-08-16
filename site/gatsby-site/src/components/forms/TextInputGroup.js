@@ -1,8 +1,6 @@
 import React from 'react';
 import { Form, InputGroup } from 'react-bootstrap';
-
 import Label from './Label';
-import * as POP_OVERS from '../ui/PopOvers';
 import { Trans } from 'react-i18next';
 
 const TextInputGroup = ({
@@ -20,7 +18,7 @@ const TextInputGroup = ({
   ...props
 }) => (
   <Form.Group className={`form-group ${className}`}>
-    <Label popover={POP_OVERS[name]} label={label} />
+    <Label popover={name} label={label} />
     <InputGroup>
       <Form.Control
         type={type}

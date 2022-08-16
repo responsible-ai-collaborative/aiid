@@ -8,7 +8,6 @@ import { dateRegExp } from 'utils/date';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { graphql, useStaticQuery } from 'gatsby';
-import * as POP_OVERS from '../ui/PopOvers';
 import Label from './Label';
 import Typeahead from './Typeahead';
 import { Editor } from '@bytemd/react';
@@ -256,12 +255,12 @@ const IncidentReportForm = () => {
       />
 
       <Form.Group className="mt-3" data-color-mode="light" data-cy="text">
-        <Label popover={POP_OVERS.text} label={'Text'} />
+        <Label popover="text" label={'Text'} />
         <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
       </Form.Group>
 
       <Form.Group className="mt-3">
-        <Label popover={POP_OVERS.language} label={'Language'} />
+        <Label popover="language" label={'Language'} />
         <Form.Select
           name="language"
           placeholder="Report Language"
@@ -278,7 +277,7 @@ const IncidentReportForm = () => {
       </Form.Group>
 
       <Form.Group className="mt-3">
-        <Label popover={POP_OVERS['tags']} label={'Tags'} />
+        <Label popover="tags" label={'Tags'} />
         <Typeahead
           id="submit-report-tags"
           inputProps={{ id: 'submit-report-tags-input' }}
