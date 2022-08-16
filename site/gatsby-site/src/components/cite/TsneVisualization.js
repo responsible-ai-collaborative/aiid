@@ -40,11 +40,11 @@ const Visualization = styled.div`
     z-index: 1;
     text-align: center;
     line-height: 2em;
-    box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.15);
     transition: background 0.25s;
   }
   a + div {
-    min-height: 6em;
+    min-height: 15em;
     width: 15em;
     background: white;
     border-radius: 0.25rem;
@@ -81,7 +81,6 @@ const PlotPoint = ({
   state,
   incident,
   classifications,
-  darkenBySeverity,
   taxonColorMap,
   axis,
   currentIncidentId,
@@ -111,21 +110,19 @@ const PlotPoint = ({
         : null
       : null;
 
-  const background = (taxonColorMap[taxon] || Color('#ffffff'))
-    .darken(
-      darkenBySeverity && classifications && classifications['Severity']
-        ? (0.7 *
-            ['Negligible', 'Minor', 'Unclear/unknown', 'Moderate', 'Critical', 'Severe'].indexOf(
-              classifications['Severity']
-            )) /
-            5
-        : 0
-    )
-    .opaquer(-0.25);
+  const background = (taxonColorMap[taxon] || Color('#ffffff')).opaquer(-0.25);
+
+  const borderColor = background.darken(0.15).desaturate(0.2);
 
   // isDark() returns false for values that I find hard to read black text against,
   // so we pretend it's darker than it really is.
   const color = background?.darken(0.1).isDark() ? 'white' : 'black';
+
+  const [clientPosition, setClientPosition] = useState(null);
+
+  const onTop = clientPosition?.y < window.innerHeight / 2;
+
+  const onLeft = clientPosition?.x < window.innerWidth / 2;
 
   return (
     <>
@@ -141,13 +138,15 @@ const PlotPoint = ({
           // allowing the user to zoom to more accurately select
           // from points that are very close to each other.
           transform: `scale(${1 / sqrtScale})`,
+          border: '2px solid ' + borderColor.hex(),
           background,
           color,
         }}
         className={incident.incident_id == currentIncidentId ? 'current' : ''}
         onMouseLeave={() => setHover(false)}
-        onMouseEnter={() => {
+        onMouseEnter={(event) => {
           setHover(true);
+          setClientPosition({ x: event.clientX, y: event.clientY });
           if (!incidentData) {
             client
               .query({
@@ -178,11 +177,20 @@ const PlotPoint = ({
       {hover && (
         <div
           style={{
-            top: `calc(50% + 48% * ${incident.tsne.y} + ${0.75 / sqrtScale}em)`,
-            left: `calc(50% + 48% * ${incident.tsne.x} + ${0.75 / sqrtScale}em)`,
+            top: onTop ? `calc(50% + 48% * ${incident.tsne.y} + ${1 / sqrtScale}em)` : undefined,
+            bottom: !onTop
+              ? `calc(50% - 48% * ${incident.tsne.y} + ${1 / sqrtScale}em)`
+              : undefined,
+            left: onLeft ? `calc(50% + 48% * ${incident.tsne.x} + ${1 / sqrtScale}em)` : undefined,
+            right: !onLeft
+              ? `calc(50% - 48% * ${incident.tsne.x} + ${1 / sqrtScale}em)`
+              : undefined,
             transform: `scale(${1 / state.scale})`,
-            transformOrigin: 'top left',
+            transformOrigin: `${onTop ? 'top' : 'bottom'} ${onLeft ? 'left' : 'right'}`,
             zIndex: 10,
+            display: incidentData ? undefined : 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
           {incidentData ? (
@@ -207,7 +215,13 @@ const PlotPoint = ({
               )}
             </>
           ) : (
-            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+            <Spinner
+              as="span"
+              animation="border"
+              variant="secondary"
+              role="status"
+              aria-hidden="true"
+            />
           )}
         </div>
       )}
@@ -219,9 +233,7 @@ const circularDistance = (deg1, deg2) =>
   Math.min(Math.abs(deg1 - deg2), 360 - Math.abs(deg1 - deg2)) % 360;
 
 const TsneVisualization = ({ currentIncidentId }) => {
-  const [axis, setAxis] = useState('Harm Distribution Basis');
-
-  const [darkenBySeverity, setDarkenBySeverity] = useState(false);
+  const [axis, setAxis] = useState('Sector Of Deployment');
 
   const { data: spatialIncidentsData } = useQuery(
     gql`
@@ -243,16 +255,17 @@ const TsneVisualization = ({ currentIncidentId }) => {
   const incidents = spatialIncidentsData?.incidents || [];
 
   const currentSpatialIncident = incidents.find(
-    (incident) => incident.incidentId == currentIncidentId
+    (incident) => incident.incident_id == currentIncidentId
   );
 
   const csetClassifications = [
+    'Sector Of Deployment',
     'Harm Distribution Basis',
+    'Severity',
     'Harm Type',
     'Intent',
     'Near Miss',
     'Problem Nature',
-    'Sector Of Deployment',
     'System Developer',
   ];
 
@@ -264,7 +277,6 @@ const TsneVisualization = ({ currentIncidentId }) => {
         namespace
         classifications {
           ${csetClassifications.map((s) => s.replace(/ /g, '')).join('\n        ')}
-          Severity
         }
       }
     }
@@ -278,23 +290,32 @@ const TsneVisualization = ({ currentIncidentId }) => {
     }
   );
 
-  // These should have maximum value
-  // so the darkening by severity feature makes sense.
   let taxonColorMap = {
     Sex: Color('#ff0090'),
     'Sexual orientation or gender identity': Color('#ca9bff'),
-    Race: Color('#ffa200'),
+    Race: Color('#be9269'),
     'Deliberate or expected': Color('#ff0000'),
     'Harm caused': Color('#ff0000'),
     'Near miss': Color('#00ff00'),
-    'Financial harm': Color('#00ff00'),
-    'Financial means': Color('#00ff00'),
-    'Financial services': Color('#00ff00'),
+    'Financial harm': Color('#1aaa43'),
+    'Financial means': Color('#1aaa43'),
+    'Financial services': Color('#1aaa43'),
+    Negligible: Color('#fffdcd'),
+    Minor: Color('#fff349'),
+    'Unclear/unknown': Color('#ebebeb'),
+    Moderate: Color('#ffb534'),
+    Critical: Color('#ff771d'),
+    Severe: Color('#ff0000'),
+    Amazon: Color('#ff9a02'),
+    Google: Color('#4285F4'),
+    Twitter: Color('#1d9fee'),
+    Facebook: Color('#4267B2'),
+    Tesla: Color('#cc0202'),
+    Uber: Color('#000000'),
+    YouTube: Color('#FF0000'),
   };
 
   if (classificationsData) {
-    /*console.log(`classificationsData`, classificationsData.classifications.map(c => c.incident_id + c.classifications['HarmDistributionBasis'].join(', ') )
-    ) );*/
     const taxons = Array.from(
       new Set(
         classificationsData.classifications
@@ -304,8 +325,6 @@ const TsneVisualization = ({ currentIncidentId }) => {
           .filter((value) => value)
       )
     );
-
-    console.log(`taxons`, taxons);
 
     // Select colors spaced evenly around the color wheel.
     // Alternate the saturation so that adjacent items are more distinct.
@@ -317,22 +336,19 @@ const TsneVisualization = ({ currentIncidentId }) => {
         const degrees =
           (initialTaxon ? taxonColorMap[initialTaxon].hue() : 30) + (360 * i) / taxons.length;
 
-        const color = Color.hsv(degrees, i % 2 == 0 ? 128 : 256, 100);
+        const color = Color.hsv(
+          degrees,
+          i % 2 == 0 ? 50 : 100,
+
+          i % 3 == 0 ? 70 : i % 3 == 1 ? 85 : 100
+        );
 
         return { degrees, color };
       });
 
-    console.log(`hueSteps`, hueSteps);
-    console.log(
-      `hueSteps.map(h => h.degrees)`,
-      hueSteps.map((h) => h.degrees)
-    );
-
     // Remove those colors closest to predefined colors
     for (const key of Object.keys(taxonColorMap).filter((key) => taxons.includes(key))) {
       const color = taxonColorMap[key];
-
-      console.log(key);
 
       const hue = color.hue();
 
@@ -347,39 +363,22 @@ const TsneVisualization = ({ currentIncidentId }) => {
         }
       }
 
-      console.log(`hue`, hue);
-      console.log(`closest.degrees`, closest.degrees);
-
       hueSteps = hueSteps.filter((step) => step != closest);
-
-      console.log(
-        `hueSteps.map(h => h.degrees)`,
-        hueSteps.map((h) => h.degrees)
-      );
     }
 
     // Assign the remaining colors arbitrarily
     for (let step of hueSteps) {
       const selection = taxons.find((taxon) => !taxonColorMap[taxon]);
 
-      console.log(`selection`, selection);
-
       taxonColorMap[selection] = step.color;
 
-      console.log(`step.color`, step.color);
-
       hueSteps = hueSteps.filter((s) => s != step);
-
-      console.log(
-        `hueSteps.map(h => h.degrees)`,
-        hueSteps.map((h) => h.degrees)
-      );
     }
-    console.log(`taxonColorMap`, taxonColorMap);
   }
 
   return (
-    incidents && (
+    incidents &&
+    (currentSpatialIncident || !currentIncidentId || currentIncidentId < 1) && (
       <>
         <div style={{ display: 'flex', gap: '1em', alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', gap: '1em', alignItems: 'center' }}>
@@ -398,22 +397,12 @@ const TsneVisualization = ({ currentIncidentId }) => {
               ))}
             </Form.Select>
           </div>
-          <div style={{ display: 'flex', gap: '1em', alignItems: 'center' }}>
-            <label htmlFor="darken-by-severity-checkbox">
-              <Trans>Darken by Severity</Trans>
-            </label>
-            <Form.Check
-              type="switch"
-              id="darken-by-severity-checkbox"
-              onChange={(event) => setDarkenBySeverity(event.target.checked)}
-            />
-          </div>
         </div>
         <VisualizationWrapper data-cy="tsne-visualization">
           <TransformWrapper
-            initialScale={2}
-            initialPositionX={-500 + -500 * currentSpatialIncident?.x || 0}
-            initialPositionY={-500 + -500 * currentSpatialIncident?.y || 0}
+            initialScale={currentSpatialIncident ? 2 : 1}
+            initialPositionX={-500 + -500 * currentSpatialIncident?.tsne?.x || 0}
+            initialPositionY={-500 + -500 * currentSpatialIncident?.tsne?.y || 0}
             limitToBounds={false}
             minScale={0.5}
             maxScale={10}
@@ -433,7 +422,6 @@ const TsneVisualization = ({ currentIncidentId }) => {
                           : {}
                       }
                       key={incident.incident_id}
-                      darkenBySeverity={darkenBySeverity}
                       taxonColorMap={taxonColorMap}
                       axis={axis}
                       currentIncidentId={currentIncidentId}

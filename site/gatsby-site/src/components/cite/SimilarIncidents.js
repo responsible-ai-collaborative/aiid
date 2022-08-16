@@ -123,7 +123,7 @@ const SimilarIncidents = ({
     <div className="tw-similar-incidents">
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
         <h2 id="similar-incidents">
-          <LocalizedLink to="/summaries/spatial">
+          <LocalizedLink to={'/summaries/spatial?incident=' + parentIncident.incident_id}>
             <Trans>Similar Incidents</Trans>
           </LocalizedLink>
         </h2>

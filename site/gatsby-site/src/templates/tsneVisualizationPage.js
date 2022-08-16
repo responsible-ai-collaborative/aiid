@@ -23,6 +23,10 @@ function TsneVisulizationPage(props) {
         <meta property="og:type" content="website" />
       </AiidHelmet>
 
+      <div className={'titleWrapper'}>
+        <StyledHeading>{metaDescription}</StyledHeading>
+      </div>
+
       <p>
         <Trans>
           The visualization below plots incidents closer together according to the similarity of
@@ -33,11 +37,12 @@ function TsneVisulizationPage(props) {
         </Trans>
         .
       </p>
-      <div className={'titleWrapper'}>
-        <StyledHeading>{metaDescription}</StyledHeading>
-      </div>
 
-      <TsneVisualization currentIncidentId={-1} />
+      <TsneVisualization
+        currentIncidentId={
+          Number(new URLSearchParams(window.location.search).get('incident')) || -1
+        }
+      />
     </Layout>
   );
 }
