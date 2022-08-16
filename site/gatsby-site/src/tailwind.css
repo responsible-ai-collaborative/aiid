@@ -55,7 +55,7 @@
     }
 
     .tw-card-body {
-        @apply tw-flex tw-p-4;
+        @apply tw-flex tw-p-4 tw-flex-col;
     }
 
     .tw-post-listing {

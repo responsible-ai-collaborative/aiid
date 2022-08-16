@@ -55,7 +55,7 @@ export default function QuickSearch({ className }) {
     <>
       <Card className={className}>
         <Card.Body>
-          <Form onSubmit={submit} id="quickSearch">
+          <Form onSubmit={submit} id="quickSearch" className="tw-flex-1">
             <div
               className={`${
                 searchTerm == '' ? '' : 'has-input'
