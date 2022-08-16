@@ -17,7 +17,7 @@ import { stripMarkdown } from 'utils/typography';
 import { Formik } from 'formik';
 import pick from 'lodash/pick';
 import { useLocalization } from 'gatsby-theme-i18n';
-import { gql } from '@apollo/client';
+import { gql, useApolloClient } from '@apollo/client';
 import RelatedIncidents from 'components/RelatedIncidents';
 
 const UPDATE_REPORT_TRANSLATION = gql`
@@ -49,7 +49,35 @@ const reportFields = [
   'text',
   'title',
   'url',
+  'embedding',
 ];
+
+const siblingsQuery = gql`
+  query Siblings($query: ReportQueryInput!) {
+    reports(query: $query) {
+      report_number
+      embedding {
+        from_text_hash
+        vector
+      }
+    }
+  }
+`;
+
+const incidentEmbedding = (reports) => {
+  reports = reports.filter((report) => report.embedding);
+  return {
+    vector: reports
+      .map((report) => report.embedding.vector)
+      .reduce(
+        (sum, vector) => vector.map((component, i) => component + sum[i]),
+        Array(reports[0].embedding.vector.length).fill(0)
+      )
+      .map((component) => component / reports.length),
+
+    from_reports: reports.map((report) => report.report_number),
+  };
+};
 
 function EditCitePage(props) {
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
@@ -83,6 +111,8 @@ function EditCitePage(props) {
   const addToast = useToastContext();
 
   const { config } = useLocalization();
+
+  const client = useApolloClient();
 
   const handleSubmit = async (values) => {
     try {
@@ -131,7 +161,68 @@ function EditCitePage(props) {
 
       if (values.incident_id !== parentIncident.incident.incident_id) {
         await updateLinkedReports({ reportNumber, incidentIds: [values.incident_id] });
+
+        // If the parent incident has changed,
+        // recompute its embedding not including that of the current report.
+        const exSiblingsResponse = await client.query({
+          query: siblingsQuery,
+          variables: {
+            query: {
+              report_number_in: parentIncident.incident.reports
+                .map((report) => report.report_number)
+                .filter((report_number) => report_number != reportNumber),
+            },
+          },
+        });
+
+        const exSiblings = exSiblingsResponse.data.reports;
+
+        const embedding = incidentEmbedding(exSiblings);
+
+        await client.mutate({
+          mutation: UPDATE_INCIDENT,
+          variables: {
+            query: { incident_id: parentIncident.incident.incident_id },
+            set: { embedding },
+          },
+        });
       }
+
+      // Update the embedding of the parent incident
+      // to include the current report.
+      const siblingIdsResponse = await client.query({
+        query: gql`
+          query SiblingIds($query: IncidentQueryInput) {
+            incident(query: $query) {
+              reports {
+                report_number
+              }
+            }
+          }
+        `,
+        variables: { query: { incident_id: values.incident_id } },
+      });
+
+      const siblingIds = siblingIdsResponse.data.incident.reports
+        .map((report) => report.report_number)
+        .filter((report_number) => report_number != reportNumber);
+
+      const siblingsResponse = await client.query({
+        query: siblingsQuery,
+        variables: { query: { report_number_in: siblingIds } },
+      });
+
+      const siblings = siblingsResponse.data.reports;
+
+      const embedding = incidentEmbedding(siblings.concat(values));
+
+      await client.mutate({
+        mutation: UPDATE_INCIDENT,
+        variables: {
+          query: { incident_id: values.incident_id },
+          set: { embedding },
+        },
+      });
 
       addToast({
         message: `Incident report ${reportNumber} updated successfully.`,
@@ -167,6 +258,29 @@ function EditCitePage(props) {
                 .map((report) => report.report_number),
             },
           },
+        },
+      });
+
+      const exSiblingsResponse = await client.query({
+        query: siblingsQuery,
+        variables: {
+          query: {
+            report_number_in: parentIncident.incident.reports
+              .map((report) => report.report_number)
+              .filter((report_number) => report_number != reportNumber),
+          },
+        },
+      });
+
+      const exSiblings = exSiblingsResponse.data.reports;
+
+      const embedding = incidentEmbedding(exSiblings);
+
+      await client.mutate({
+        mutation: UPDATE_INCIDENT,
+        variables: {
+          query: { incident_id: parentIncident.incident.incident_id },
+          set: { embedding },
         },
       });
 

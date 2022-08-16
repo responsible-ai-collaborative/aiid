@@ -6,8 +6,6 @@ const { cloneDeep } = require('lodash');
 
 const { switchLocalizedPath } = require('../i18n');
 
-const { updateTsneInDatabase } = require('../src/utils/updateTsne');
-
 const getClassificationsArray = (incidentClassifications, taxonomy) => {
   const classifications = incidentClassifications.filter(
     (c) => c.namespace === taxonomy.namespace
@@ -205,8 +203,6 @@ const createCitationPages = async (graphql, createPage) => {
   const keys = Object.keys(incidentReportsMap);
 
   const pageContexts = [];
-
-  await updateTsneInDatabase();
 
   const similarIncidentKeys = [
     'nlp_similar_incidents',
