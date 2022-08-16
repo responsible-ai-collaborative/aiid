@@ -288,19 +288,19 @@
     }
 
     .tw-hits-container {
-        @apply tw-grid min-576px:tw-grid-cols-2 min-767px:tw-grid-cols-3 min-992px:tw-grid-cols-4 tw-gap-1.5;
+        @apply tw-grid tw-grid-cols-1 min-576px:tw-grid-cols-2 min-767px:tw-grid-cols-3 min-992px:tw-grid-cols-4 tw-gap-1.5;
     }
 
-    /* .tw-hits-container.details {
-        @apply tw-grid tw-grid-cols-4 tw-gap-[6px];
-    } */
+    .tw-hits-container.details {
+        @apply tw-grid md:tw-grid-cols-4 tw-gap-[6px];
+    }
 
     .tw-hits-container.compact {
-        @apply tw-grid tw-grid-cols-1 tw-gap-[6px]
+        @apply tw-grid md:tw-grid-cols-4 tw-gap-[6px];
     }
 
     .tw-hits-container.list {
-        @apply tw-grid tw-grid-cols-1 tw-gap-[6px]
+        @apply tw-grid tw-grid-cols-1 tw-gap-[6px];
     }
 
     /* TAILWIND AIS PAGINATION START */
