@@ -25,7 +25,7 @@
     }
 
     .tw-main-container {
-        @apply xl:tw-max-w-[1320px] md:tw-max-w-[720px] lg:tw-max-w-[960px] sm:tw-max-w-[540px];
+        @apply xl:tw-max-w-[1320px] md:tw-max-w-[720px] lg:tw-max-w-[960px] ;
     }
 
     .tw-bg-secondary {
@@ -92,6 +92,9 @@
     /* TAILWIND Grid begins */
     .tw-row {
         @apply tw-flex tw-flex-wrap;
+    }
+    .tw-row.tw-row-gap-2 .tw-col {
+        @apply tw-flex-1;
     }
 
     .tw-row.tw-row-gap-2 .tw-col:first-child {
