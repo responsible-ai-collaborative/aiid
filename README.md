@@ -473,9 +473,9 @@ REALM_GRAPHQL_API_KEY=xxxxxxxxxx
 ```
 About Realm API Keys: https://www.mongodb.com/docs/realm/authentication/api-key/
 
-## Facebook login integration
+## Social Networks login integration
 
-To allow users to login with Facebook, you will need to add the following configuration to your Atlas App Service.
+To enable social network logins, you will need to add the following configuration to your Atlas App Service.
 
 Add these app values following the instructions in the [Atlas App Services documentation](https://www.mongodb.com/docs/atlas/app-services/values-and-secrets/define-a-value/).
 
@@ -489,7 +489,7 @@ loginRedirectUri = [Login Authentication redirect URI, see comment below for mor
 - In order to get the Google Client ID (OAuth 2.0 Client ID) you should set up an OAuth 2.0 following these [instructions](https://support.google.com/cloud/answer/6158849?hl=en). After set it up, you can find the Google Client ID in your [Google Cloud Console](https://console.cloud.google.com/apis/credentials).
 - Login Authentication redirect URI is the URL that the user will be redirected to after successfully authenticating with Facebook or Google. It should point to `/logincallback` page. For Production the URI is `https://incidentdatabase.ai/logincallback`
 
-Also add the following secret value to your Atlas App Service following the instructions in the [Atlas App Services documentation](https://www.mongodb.com/docs/atlas/app-services/values-and-secrets/define-and-manage-secrets/).
+Also add these secret values to your Atlas App Service following the instructions in the [Atlas App Services documentation](https://www.mongodb.com/docs/atlas/app-services/values-and-secrets/define-and-manage-secrets/).
 
 ```
 facebookAppSecret = [Facebook App Secret, see comment below for more information]
