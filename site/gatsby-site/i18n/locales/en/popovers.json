@@ -21,7 +21,7 @@
     },
     "date_downloaded": {
         "title": "When did you copy the contents of the report into this form?",
-        "text": "Reports are often updated through time by news organizations. This date helps determine whether the contents could potentially be stale. Typically you will put todaytitle: 's date here."
+        "text": "Reports are often updated through time by news organizations. This date helps determine whether the contents could potentially be stale. Typically you will put today's date here."
     },
     "url": {
         "title": "Link to the publicly available report",
