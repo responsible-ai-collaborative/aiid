@@ -9,13 +9,16 @@ exports.up = async ({ context: { client } }) => {
   while (await classifications.hasNext()) {
     const classification = await classifications.next();
 
+    if (classification.incident_id == 40) {
+      continue;
+    }
+
     for (const category of Object.keys(classification.classifications).filter(
       (category) =>
         ![
           'Full Description',
           'Short Description',
           'AI System Description',
-          'Location',
           'Sector of Deployment',
           'notes',
         ].includes(category)
@@ -40,6 +43,19 @@ exports.up = async ({ context: { client } }) => {
       }
     }
   }
+  classificationsCollection.updateOne(
+    { incident_id: 76 },
+    {
+      $set: {
+        classifications: {
+          'Data Inputs': [
+            'photo IDs, names birthdays, and national IDs of people suspected of crimes',
+            'camera feed',
+          ],
+        },
+      },
+    }
+  );
 };
 
 /** @type {import('umzug').MigrationFn<any>} */
