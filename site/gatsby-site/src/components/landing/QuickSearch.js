@@ -59,7 +59,7 @@ export default function QuickSearch({ className }) {
             <div
               className={`${
                 searchTerm == '' ? '' : 'has-input'
-              } tw-relative tw-max-w-screen-sm tw-m-auto after:tw-text-dark-grey after:tw-text-xl after:tw-absolute after:tw-left-[1em] after:tw-top-1/2 after:tw-pt-[-50%] after:tw-translate-y-[-50%] after:tw-z-[3] after:tw-pointer-events-none after:tw-content-[attr(data-content)]`}
+              } tw-relative tw-max-w-screen-sm tw-m-auto after:tw-text-dark-gray after:tw-text-xl after:tw-absolute after:tw-left-[1em] after:tw-top-1/2 after:tw-pt-[-50%] after:tw-translate-y-[-50%] after:tw-z-[3] after:tw-pointer-events-none after:tw-content-[attr(data-content)]`}
             >
               <SearchInput
                 size="lg"
