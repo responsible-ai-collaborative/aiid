@@ -9,10 +9,10 @@ import Card from '../../elements/Card';
 import Col from '../../elements/Col';
 import Row from '../../elements/Row';
 import Button from '../../elements/Button';
-import Modal from '../../elements/Modal';
 
 import { StyledImage, StyledImageModal, StyledImageCover } from '../../elements/StyledImage';
 import { StyledSubtitle } from '../../elements/StyledTitle';
+import { Modal } from 'react-bootstrap';
 
 const SponsorModal = ({ setModalState, modalState, modalName, children, imagePath, title }) => {
   return (
