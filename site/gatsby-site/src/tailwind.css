@@ -272,7 +272,7 @@
     }
 
     .tw-switch {
-        @apply tw-cursor-pointer;
+        @apply tw-cursor-pointer tw-mb-2;
     }
 
     .tw-switch>* {
