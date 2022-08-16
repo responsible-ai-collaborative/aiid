@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
-import { Button, Col, Container, Pagination, Row } from 'react-bootstrap';
 import Layout from 'components/Layout';
-import { StyledHeading } from 'components/styles/Docs';
 import Citation from 'components/cite/Citation';
 import ImageCarousel from 'components/cite/ImageCarousel';
 import BibTex from 'components/BibTex';
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
-import styled from 'styled-components';
 import { format, isAfter, isEqual } from 'date-fns';
 import { useModal, CustomModal } from '../hooks/useModal';
 import Timeline from 'components/visualizations/Timeline';
@@ -17,28 +14,15 @@ import Taxonomy from 'components/taxa/Taxonomy';
 import { useUserContext } from 'contexts/userContext';
 import SimilarIncidents from 'components/cite/SimilarIncidents';
 import { Trans, useTranslation } from 'react-i18next';
+import Card from '../elements/Card';
+import Button from '../elements/Button';
+import Container from '../elements/Container';
+import Row from '../elements/Row';
+import Col from '../elements/Col';
+import Pagination from '../elements/Pagination';
 import SocialShareButtons from 'components/ui/SocialShareButtons';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
-
-const CardContainer = styled.div`
-  border: 1.5px solid #d9deee;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px 0px #e3e5ec;
-  h4 {
-    margin: 0 !important;
-  }
-`;
-
-const StatsContainer = styled.div`
-  h4 {
-    margin: 0 !important;
-  }
-`;
-
-const IncidnetsReportsTitle = styled.div`
-  padding-bottom: 20px;
-`;
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -137,7 +121,7 @@ function CitePage(props) {
       </AiidHelmet>
 
       <div className={'titleWrapper'}>
-        <StyledHeading>{locale == 'en' ? metaTitle : defaultIncidentTitle}</StyledHeading>
+        <h1 className="tw-styled-heading">{locale == 'en' ? metaTitle : defaultIncidentTitle}</h1>
         <SocialShareButtons
           metaTitle={metaTitle}
           canonicalUrl={canonicalUrl}
@@ -148,27 +132,30 @@ function CitePage(props) {
       <Container>
         <Row>
           <Col>
-            <CardContainer className="card" data-cy="citation">
-              <div className="card-header">
-                <h4>
+            <Card
+              data-cy="citation"
+              className="tw-border-1.5 tw-border-border-light-gray tw-rounded-5px tw-shadow-card"
+            >
+              <Card.Header className="tw-items-center tw-justify-between">
+                <h4 className="tw-m-0">
                   <Trans>Suggested citation format</Trans>
                 </h4>
-              </div>
-              <div className="card-body">
+              </Card.Header>
+              <Card.Body className="tw-block">
                 <Citation
                   nodes={incidentReports}
                   incidentDate={incident.date}
                   incident_id={incident.incident_id}
                   editors={incident.editors}
                 />
-              </div>
-            </CardContainer>
+              </Card.Body>
+            </Card>
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="tw-mt-6">
           <Col>
-            <StatsContainer data-cy={'incident-stats'}>
+            <div data-cy={'incident-stats'}>
               <IncidentStatsCard
                 {...{
                   incidentId: incident.incident_id,
@@ -177,37 +164,37 @@ function CitePage(props) {
                   editors: incident.editors.join(', '),
                 }}
               />
-            </StatsContainer>
+            </div>
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="tw-mt-6">
           <Col>
-            <CardContainer className="card">
-              <div className="card-header">
+            <Card className="tw-shadow-card">
+              <Card.Header className="tw-items-center tw-justify-between">
                 <h4>
                   <Trans>Reports Timeline</Trans>
                 </h4>
-              </div>
-              <div className="card-body">
+              </Card.Header>
+              <Card.Body>
                 <Timeline data={timeline} />
-              </div>
-            </CardContainer>
+              </Card.Body>
+            </Card>
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="tw-mt-6">
           <Col>
-            <CardContainer className="card">
-              <div className="card-header">
+            <Card className="tw-shadow-card">
+              <Card.Header className="tw-items-center tw-justify-between">
                 <h4>
                   <Trans>Tools</Trans>
                 </h4>
-              </div>
-              <div className="card-body">
+              </Card.Header>
+              <Card.Body>
                 <Button
                   variant="outline-primary"
-                  className="me-2"
+                  className="tw-mr-2"
                   href={`/apps/submit?incident_id=${incident.incident_id}&date_downloaded=${format(
                     new Date(),
                     'yyyy-MM-dd'
@@ -240,8 +227,8 @@ function CitePage(props) {
                   incident_id={incident.incident_id}
                   editors={incident.editors}
                 />
-              </div>
-            </CardContainer>
+              </Card.Body>
+            </Card>
           </Col>
         </Row>
 
@@ -262,28 +249,28 @@ function CitePage(props) {
           </Row>
         )}
 
-        <Row className="mt-4">
+        <Row className="tw-mt-6">
           <Col>
-            <CardContainer className="card">
+            <Card>
               <ImageCarousel nodes={incidentReports} />
-            </CardContainer>
+            </Card>
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="tw-mt-6">
           <Col>
-            <IncidnetsReportsTitle>
+            <div className="tw-pb-5">
               <div className={'titleWrapper'}>
-                <StyledHeading>
+                <h1 className="tw-styled-heading">
                   <Trans>Incidents Reports</Trans>
-                </StyledHeading>
+                </h1>
                 <SocialShareButtons
                   metaTitle={metaTitle}
                   canonicalUrl={canonicalUrl}
                   page="cite"
                 ></SocialShareButtons>
               </div>
-            </IncidnetsReportsTitle>
+            </div>
           </Col>
         </Row>
 
