@@ -3,7 +3,8 @@ import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
 import TsneVisualization from 'components/cite/TsneVisualization';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
+import { LocalizedLink } from 'gatsby-theme-i18n';
 
 function TsneVisulizationPage(props) {
   const { t } = useTranslation();
@@ -22,6 +23,16 @@ function TsneVisulizationPage(props) {
         <meta property="og:type" content="website" />
       </AiidHelmet>
 
+      <p>
+        <Trans>
+          The visualization below plots incidents closer together according to the similarity of
+          their reports texts, as identified through{' '}
+          <LocalizedLink to="/blog/using-ai-to-connect-ai-incidents">
+            our natural-language processing system
+          </LocalizedLink>
+        </Trans>
+        .
+      </p>
       <div className={'titleWrapper'}>
         <StyledHeading>{metaDescription}</StyledHeading>
       </div>
