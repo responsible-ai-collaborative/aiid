@@ -3,11 +3,11 @@ import AiidHelmet from 'components/AiidHelmet';
 import { graphql, Link } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 import { MDXProvider } from '@mdx-js/react';
-
 import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper, Author } from 'components/styles/Post';
 import config from '../../config';
 import { format } from 'date-fns';
+import SocialShareButtons from 'components/ui/SocialShareButtons';
 import MdxComponents from 'components/ui/MdxComponents';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import { Trans } from 'react-i18next';
@@ -32,6 +32,7 @@ export default function Post(props) {
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl }} />
       <div className={'titleWrapper'}>
         <StyledHeading>{mdx.fields.title}</StyledHeading>
+
         <div className="d-inline-block pb-2">
           <span>{format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')}</span>
           {mdx.frontmatter.aiTranslated && (
@@ -43,6 +44,12 @@ export default function Post(props) {
             </>
           )}
         </div>
+
+        <SocialShareButtons
+          metaTitle={metaTitle}
+          canonicalUrl={canonicalUrl}
+          page="post"
+        ></SocialShareButtons>
       </div>
       <StyledMainWrapper>
         <MDXProvider components={MdxComponents}>

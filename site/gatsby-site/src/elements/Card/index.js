@@ -1,5 +1,4 @@
 import React from 'react';
-
 export default function Card(props) {
   return (
     <>
@@ -20,7 +19,7 @@ Card.Header = function CardHeader(props) {
     <div
       className={`tw-card-header tw-flex ${
         props.className ? props.className : ''
-      } tw-bg-light-grey tw-px-4 tw-py-2 tw-border-b tw-border-border-grey`}
+      } tw-bg-light-gray tw-px-4 tw-py-2 tw-border-b tw-border-border-gray`}
     >
       {props.children}
     </div>
@@ -61,7 +60,7 @@ Card.Footer = function CardFooter(props) {
   return (
     <>
       <div
-        className={` tw-card-footer tw-bg-light-grey tw-border-border-grey tw-py-2 tw-px-4 ${
+        className={` tw-card-footer tw-bg-light-gray tw-border-border-gray tw-py-2 tw-px-4 ${
           props.className ? props.className : ''
         }`}
       >
