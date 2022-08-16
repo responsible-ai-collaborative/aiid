@@ -82,7 +82,6 @@ export const UserContextProvider = ({ children }) => {
         setUser(user);
       }
     } catch (e) {
-      console.error(e);
       addToast({
         message: <>{t(e.error || 'An unknown error has ocurred')}</>,
         severity: SEVERITY.danger,
