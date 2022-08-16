@@ -40,7 +40,9 @@ function TsneVisulizationPage(props) {
 
       <TsneVisualization
         currentIncidentId={Number(
-          window ? new URLSearchParams(window.location.search).get('incident') || -1 : -1
+          typeof window !== 'undefined'
+            ? new URLSearchParams(window.location.search).get('incident') || -1
+            : -1
         )}
       />
     </Layout>
