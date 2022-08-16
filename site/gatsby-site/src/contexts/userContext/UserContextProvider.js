@@ -81,16 +81,20 @@ export const UserContextProvider = ({ children }) => {
       if (user.id === realmApp.currentUser.id) {
         setUser(user);
       }
+      return true;
     } catch (e) {
       addToast({
-        message: <>{t(e.error || 'An unknown error has ocurred')}</>,
+        message: (
+          <label className="tw-capitalize">{t(e.error || 'An unknown error has ocurred')}</label>
+        ),
         severity: SEVERITY.danger,
       });
+      return false;
     }
   };
 
   const loginWithEmail = async ({ email, password }) => {
-    await login({ email, password });
+    return await login({ email, password });
   };
 
   const loginWithFacebook = async ({ loginRedirectUri }) => {

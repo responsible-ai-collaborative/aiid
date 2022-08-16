@@ -47,8 +47,11 @@ const Login = (props) => {
             initialValues={{ email: '', password: '' }}
             validationSchema={LoginSchema}
             onSubmit={async ({ email, password }, { setSubmitting }) => {
-              await loginWithEmail({ email, password });
-              navigate(localizePath({ path: `/` }));
+              const isLoginOK = await loginWithEmail({ email, password });
+
+              if (isLoginOK) {
+                navigate(localizePath({ path: `/` }));
+              }
               setSubmitting(false);
             }}
           >

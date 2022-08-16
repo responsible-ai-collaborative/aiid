@@ -58,7 +58,11 @@ const SignUp = (props) => {
                 resetForm();
               } catch (e) {
                 addToast({
-                  message: t(e.error || 'An unknown error has ocurred'),
+                  message: (
+                    <label className="tw-capitalize">
+                      {t(e.error || 'An unknown error has ocurred')}
+                    </label>
+                  ),
                   severity: SEVERITY.danger,
                 });
               }
