@@ -13,6 +13,24 @@ exports.up = async ({ context: { client } }) => {
       continue;
     }
 
+    if (classification.incident_id == 76) {
+      classificationsCollection.updateOne(
+        { incident_id: 76 },
+        {
+          $set: {
+            classifications: {
+              ...classification.classifications,
+              'Data Inputs': [
+                'photo IDs, names birthdays, and national IDs of people suspected of crimes',
+                'camera feed',
+              ],
+            },
+          },
+        }
+      );
+      continue;
+    }
+
     for (const category of Object.keys(classification.classifications).filter(
       (category) =>
         ![
@@ -27,11 +45,14 @@ exports.up = async ({ context: { client } }) => {
 
       if (Array.isArray(value)) {
         for (let string of value) {
-          if (string.includes('The Equal Credit Opportunity Act')) {
+          if (
+            string.includes('The Equal Credit Opportunity Act') ||
+            string.includes('user content (textposts, images, videos)')
+          ) {
             continue;
           }
           if (string.includes(',')) {
-            const updatedClassifications = {};
+            const updatedClassifications = classification.classifications;
 
             updatedClassifications[category] = string.split(',').map((s) => s.trim());
             await classificationsCollection.updateOne(
@@ -43,19 +64,6 @@ exports.up = async ({ context: { client } }) => {
       }
     }
   }
-  classificationsCollection.updateOne(
-    { incident_id: 76 },
-    {
-      $set: {
-        classifications: {
-          'Data Inputs': [
-            'photo IDs, names birthdays, and national IDs of people suspected of crimes',
-            'camera feed',
-          ],
-        },
-      },
-    }
-  );
 };
 
 /** @type {import('umzug').MigrationFn<any>} */
