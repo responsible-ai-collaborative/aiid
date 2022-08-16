@@ -23,7 +23,7 @@ export default function Featured() {
               <LocalizedLink to="/summaries/leaderboard">leaderboard page.</LocalizedLink>
             </Trans>
           </Card.Subtitle>
-          <Row>
+          <Row className="tw-row-gap-2">
             <Col lg className="mt-4 tw-pl-0">
               <OriginalSubmitersLeaderboard limit={3} />
             </Col>

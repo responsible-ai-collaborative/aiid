@@ -80,7 +80,7 @@ const LandingPage = (props) => {
           </Col>
         </Row>
 
-        <Row>
+        <Row className="tw-row-gap-2">
           <Col
             className="tw-mt-4 md:tw-flex-0-0-auto md:tw-w-full 992px:tw-flex-0-0-auto 992px:tw-w-2/4"
             sm={12}
@@ -111,7 +111,7 @@ const LandingPage = (props) => {
           </Col>
         </Row>
 
-        <Row>
+        <Row className="tw-row-gap-2">
           <Col className="tw-mt-4" md={12} lg={6}>
             <WordCounts localWordCounts={localWordCounts} />
           </Col>
