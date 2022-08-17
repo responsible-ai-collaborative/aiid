@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Card, Button } from 'react-bootstrap';
 import { formatISO, format, parse } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlag, faQuestionCircle, faEdit } from '@fortawesome/free-solid-svg-icons';
@@ -11,117 +9,12 @@ import { UPDATE_INCIDENT } from '../../graphql/incidents';
 import md5 from 'md5';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import Card from '../../elements/Card';
+import Button from '../../elements/Button';
 import { useLocalization } from 'gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
-
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
-
-const SimilarIncidentsList = styled.div`
-  margin-top: 2em;
-  margin-bottom: 2em;
-
-  .card {
-    overflow: hidden;
-    box-shadow: 0 2px 5px 0px #e3e5ec;
-
-    a:not(:hover) {
-      color: inherit;
-    }
-    h3 {
-      margin: 1rem 1rem 0.5rem 1rem;
-      font-size: 16pt;
-      hyphens: auto;
-    }
-  }
-  p + .card {
-    margin-top: 0px;
-  }
-  h2 {
-    font-size: 200%;
-  }
-`;
-
-const IncidentCardImage = styled(Image)`
-  object-fit: cover;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-`;
-
-const CardFooter = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  font-weight: 500;
-  margin: 0rem 1rem 1rem 1rem;
-`;
-
-const FlexSeparator = styled.div`
-  display: inline-block;
-  margin-left: auto;
-  margin-right: auto;
-`;
-
-const Subtitle = styled.p`
-  font-size: 120%;
-  font-weight: bold;
-  svg {
-    margin-left: 0.5ch;
-  }
-`;
-
-const ActionIcons = styled.span`
-  display: inline-flex;
-  align-items: center;
-  > * {
-    margin-left: 0.25ch;
-    margin-right: 0.25ch;
-  }
-`;
-
-const EditIcon = styled.a`
-  vertical-align: middle;
-  margin-top: -0.125em;
-`;
-
-const FlagPrompt = styled.p`
-  margin-top: 1em;
-  margin-bottom: 1em;
-  svg {
-    margin-left: 0.5ch;
-    margin-right: 0.5ch;
-  }
-`;
-
-const FlagButton = styled(Button)`
-  padding: 0px !important;
-  color: var(--bs-gray-600) !important;
-  &:hover {
-    color: var(--bs-gray-500) !important;
-  }
-  &.flagged {
-    color: var(--bs-red) !important;
-  }
-`;
-
-const CardSet = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-  margin-bottom: 2em;
-  @media (min-width: 1300px) {
-    flex-direction: row;
-
-    > * {
-      flex-basis: 0;
-      flex-grow: 1;
-    }
-  }
-
-  > * {
-    max-width: 700px;
-  }
-`;
 
 const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncident }) => {
   const parsedDate = incident.date ? parse(incident.date, 'yyyy-MM-dd', new Date()) : null;
@@ -140,8 +33,9 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   return (
     <Card data-cy="similar-incident-card">
-      <Link to={'/cite/' + incident.incident_id} data-cy="cite-link">
-        <IncidentCardImage
+      <a href={'/cite/' + incident.incident_id} data-cy="cite-link">
+        <Image
+          className="tw-object-cover tw-w-full tw-aspect-[16/9]"
           publicID={
             incident.reports[0].cloudinary_id || `legacy/${md5(incident.reports[0].image_url)}`
           }
@@ -149,8 +43,8 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
           alt=""
         />
         <h3>{locale == 'en' && incident.title ? incident.title : incident.reports[0].title}</h3>
-      </Link>
-      <CardFooter>
+      </a>
+      <div className="tw-flex tw-w-full tw-flex-row tw-items-center tw-font-bold tw-mt-0 tw-my-4 tw-mr-4">
         <div className="text-muted">
           {parsedDate && (
             <>
@@ -161,12 +55,12 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
             {incident.reports.length} {incident.reports.length == 1 ? t('report') : t('reports')}
           </span>
         </div>
-        <FlexSeparator />
+        <div className="tw-inline-block tw-ml-auto tw-mr-auto" />
 
         {flaggable && (
-          <FlagButton
+          <Button
             variant="link"
-            className={isFlagged ? ' flagged' : ''}
+            className={`tw-flag-button ${isFlagged ? ' flagged' : ''}`}
             data-cy="flag-similar-incident"
             onClick={async () => {
               await updateIncident({
@@ -195,9 +89,9 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
             }}
           >
             <FontAwesomeIcon icon={faFlag} />
-          </FlagButton>
+          </Button>
         )}
-      </CardFooter>
+      </div>
     </Card>
   );
 };
@@ -225,7 +119,7 @@ const SimilarIncidents = ({
   );
 
   return (
-    <SimilarIncidentsList>
+    <div className="tw-similar-incidents">
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
         <h2 id="similar-incidents">
           <Trans>Similar Incidents</Trans>
@@ -233,19 +127,20 @@ const SimilarIncidents = ({
       )}
       {editor_similar_incidents.length > 0 && (
         <>
-          <Subtitle>
+          <div className="tw-subtitle">
             <Trans>Selected by our editors</Trans>
             {isRole('incident_editor') && (
-              <EditIcon
+              <a
+                className="tw-edit-icon"
                 href={`/incidents/edit?incident_id=${parentIncident.incident_id}#similar-incidents`}
                 title="Change the displayed similar incidents"
                 data-cy="edit-similar-incidents"
               >
                 <FontAwesomeIcon icon={faEdit} />
-              </EditIcon>
+              </a>
             )}
-          </Subtitle>
-          <CardSet>
+          </div>
+          <div className="tw-card-set">
             {editor_similar_incidents.map((similarIncident) => (
               <SimilarIncidentCard
                 incident={similarIncident}
@@ -253,39 +148,40 @@ const SimilarIncidents = ({
                 key={similarIncident.incident_id}
               />
             ))}
-          </CardSet>
+          </div>
         </>
       )}
 
       {nlp_only_incidents.length > 0 && (
         <>
-          <Subtitle>
+          <div className="tw-subtitle">
             <Trans>By textual similarity</Trans>
-            <ActionIcons>
+            <span className="tw-actions-icons">
               {blogPostUrl && (
                 <Link to={blogPostUrl} data-cy="about-similar-incidents">
                   <FontAwesomeIcon icon={faQuestionCircle} />
                 </Link>
               )}
               {isRole('incident_editor') && (
-                <EditIcon
+                <a
+                  className="tw-edit-icon"
                   href={`/incidents/edit?incident_id=${parentIncident.incident_id}#similar-incidents`}
                   title="Change the displayed similar incidents"
                   data-cy="edit-similar-incidents"
                 >
                   <FontAwesomeIcon icon={faEdit} />
-                </EditIcon>
+                </a>
               )}
-            </ActionIcons>
-          </Subtitle>
+            </span>
+          </div>
           <hr />
-          <FlagPrompt className="text-muted">
+          <p className="tw-flag-prompt">
             <Trans>
               Did <strong>our</strong> AI mess up? Flag <FontAwesomeIcon icon={faFlag} /> the
               unrelated incidents
             </Trans>
-          </FlagPrompt>
-          <CardSet>
+          </p>
+          <div className="tw-card-set">
             {nlp_only_incidents.map((similarIncident) => (
               <SimilarIncidentCard
                 incident={similarIncident}
@@ -294,10 +190,10 @@ const SimilarIncidents = ({
                 parentIncident={parentIncident}
               />
             ))}
-          </CardSet>
+          </div>
         </>
       )}
-    </SimilarIncidentsList>
+    </div>
   );
 };
 
