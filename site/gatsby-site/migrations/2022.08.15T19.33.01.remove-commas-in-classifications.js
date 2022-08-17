@@ -43,15 +43,15 @@ exports.up = async ({ context: { client } }) => {
 
     const updatedClassifications = {};
 
-    for (const category of Object.keys(classification.classifications).filter(
-      (category) =>
-        ![
-          'Full Description',
-          'Short Description',
-          'AI System Description',
-          'Sector of Deployment',
-          'notes',
-        ].includes(category)
+    for (const category of Object.keys(classification.classifications).filter((category) =>
+      [
+        'AI Applications',
+        'AI Techniques',
+        'Data Inputs',
+        'Harm Distribution Basis',
+        'Laws Implicated',
+        'Named Entities',
+      ].includes(category)
     )) {
       const value = classification.classifications[category];
 
