@@ -14,22 +14,34 @@ exports.up = async ({ context: { client } }) => {
     }
 
     if (classification.incident_id == 76) {
+      const newDataInputs = [
+        'photo IDs, names birthdays, and national IDs of people suspected of crimes',
+        'camera feed',
+      ];
+
+      console.log(
+        '#' + classification.incident_id,
+        'Data Inputs :',
+        classification.classifications['Data Inputs'],
+        '→',
+        newDataInputs
+      );
+
       classificationsCollection.updateOne(
         { incident_id: 76 },
         {
           $set: {
             classifications: {
               ...classification.classifications,
-              'Data Inputs': [
-                'photo IDs, names birthdays, and national IDs of people suspected of crimes',
-                'camera feed',
-              ],
+              'Data Inputs': newDataInputs,
             },
           },
         }
       );
       continue;
     }
+
+    const updatedClassifications = {};
 
     for (const category of Object.keys(classification.classifications).filter(
       (category) =>
@@ -52,17 +64,34 @@ exports.up = async ({ context: { client } }) => {
             continue;
           }
           if (string.includes(',')) {
-            const updatedClassifications = classification.classifications;
+            const newValue = string.split(',').map((s) => s.trim());
 
-            updatedClassifications[category] = string.split(',').map((s) => s.trim());
-            await classificationsCollection.updateOne(
-              { incident_id: classification.incident_id },
-              { $set: { classifications: updatedClassifications } }
+            updatedClassifications[category] = newValue;
+
+            console.log(
+              '#' + classification.incident_id,
+              category,
+              ':',
+              classification.classifications[category],
+              '→',
+              newValue
             );
           }
         }
       }
     }
+
+    await classificationsCollection.updateOne(
+      { incident_id: classification.incident_id },
+      {
+        $set: {
+          classifications: {
+            ...classification.classifications,
+            ...updatedClassifications,
+          },
+        },
+      }
+    );
   }
 };
 
