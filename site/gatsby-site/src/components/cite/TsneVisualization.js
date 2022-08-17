@@ -130,6 +130,7 @@ const PlotPoint = ({
         id={'spatial-incident-' + incident.incident_id}
         to={'/cite/' + incident.incident_id}
         data-cy="tsne-plotpoint"
+        data-cy-background={taxonColorMap[taxon] ? background : undefined}
         style={{
           top: `calc(50% + 48% * ${incident.tsne.y})`,
           left: `calc(50% + 48% * ${incident.tsne.x})`,
@@ -176,6 +177,7 @@ const PlotPoint = ({
       </LocalizedLink>
       {hover && (
         <div
+          data-cy="incident-card"
           style={{
             top: onTop ? `calc(50% + 48% * ${incident.tsne.y} + ${1 / sqrtScale}em)` : undefined,
             bottom: !onTop
@@ -196,7 +198,7 @@ const PlotPoint = ({
           {incidentData ? (
             <>
               <Image publicID={incidentData.reports[0].cloudinary_id} />
-              <h3>{incidentData?.title || incidentData.reports[0].title}</h3>
+              <h3 data-cy="title">{incidentData?.title || incidentData.reports[0].title}</h3>
               {taxon && (
                 <div style={{ marginTop: '.5em' }}>
                   <span
@@ -389,6 +391,7 @@ const TsneVisualization = ({ currentIncidentId }) => {
               style={{ display: 'inline', width: 'unset' }}
               id="color-axis-select"
               onChange={(event) => setAxis(event.target.value)}
+              data-cy="color-axis-select"
             >
               {csetClassifications.map((axis) => (
                 <option key={axis} value={axis}>
