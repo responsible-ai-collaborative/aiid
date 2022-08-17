@@ -55,28 +55,33 @@ exports.up = async ({ context: { client } }) => {
     )) {
       const value = classification.classifications[category];
 
-      if (Array.isArray(value)) {
-        for (let string of value) {
-          if (
-            string.includes('The Equal Credit Opportunity Act') ||
-            string.includes('user content (textposts, images, videos)')
-          ) {
-            continue;
-          }
-          if (string.includes(',')) {
-            const newValue = string.split(',').map((s) => s.trim());
+      if (Array.isArray(value) && value.length == 1) {
+        const string = value[0];
 
-            updatedClassifications[category] = newValue;
+        if (
+          string.includes('The Equal Credit Opportunity Act') ||
+          string.includes('user content (textposts, images, videos)')
+        ) {
+          continue;
+        }
 
-            console.log(
-              '#' + classification.incident_id,
-              category,
-              ':',
-              classification.classifications[category],
-              '→',
-              newValue
-            );
-          }
+        const semicolon = string.includes(';');
+
+        const comma = string.includes(',');
+
+        if (semicolon || comma) {
+          const newValue = string.split(semicolon ? ';' : ',').map((s) => s.trim());
+
+          updatedClassifications[category] = newValue;
+
+          console.log(
+            '#' + classification.incident_id,
+            category,
+            ':',
+            classification.classifications[category],
+            '→',
+            newValue
+          );
         }
       }
     }
