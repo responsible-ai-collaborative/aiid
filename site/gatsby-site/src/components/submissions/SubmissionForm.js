@@ -8,7 +8,6 @@ import { dateRegExp } from 'utils/date';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { graphql, useStaticQuery } from 'gatsby';
-import * as POP_OVERS from '../ui/PopOvers';
 import Label from '../forms/Label';
 import TagsControl from 'components/forms/TagsControl';
 import IncidentIdField from 'components/incidents/IncidentIdField';
@@ -339,12 +338,12 @@ const SubmissionForm = () => {
         />
 
         <Form.Group className="mt-3" data-color-mode="light">
-          <Label popover={POP_OVERS.text} label={t('Text')} />
+          <Label popover="text" label={t('Text')} />
           <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
         </Form.Group>
 
         <Form.Group className="mt-3">
-          <Label popover={POP_OVERS['language']} label={t('Language')} />
+          <Label popover="language" label={t('Language')} />
           <Form.Select
             name="language"
             placeholder={t('Report Language')}
@@ -360,7 +359,7 @@ const SubmissionForm = () => {
         </Form.Group>
 
         <Form.Group className="mt-3">
-          <Label popover={POP_OVERS['tags']} label={t('Tags')} />
+          <Label popover="tags" label={t('Tags')} />
           <TagsControl name={'tags'} />
         </Form.Group>
 

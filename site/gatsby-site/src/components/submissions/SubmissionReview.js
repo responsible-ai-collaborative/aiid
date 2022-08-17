@@ -11,7 +11,6 @@ import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import ReadMoreText from 'components/ReadMoreText';
 import RelatedIncidents from 'components/RelatedIncidents';
 import isArray from 'lodash/isArray';
-
 import { useUserContext } from 'contexts/userContext';
 import { UPDATE_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
@@ -21,6 +20,8 @@ import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { format, getUnixTime } from 'date-fns';
 import SubmissionEditModal from './SubmissionEditModal';
 import { Spinner } from 'react-bootstrap';
+import Link from 'components/ui/Link';
+import { Trans, useTranslation } from 'react-i18next';
 
 const ListedGroup = ({ item, className = '', keysToRender }) => {
   return (
@@ -72,6 +73,10 @@ const SubmissionReview = ({ submission }) => {
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
+  const isNewIncident = submission.incident_id === 0;
+
+  const { i18n } = useTranslation(['submitted']);
+
   const [deleteSubmission, { loading: deleting }] = useMutation(DELETE_SUBMISSION, {
     update: (cache, { data }) => {
       // Apollo expects a `deleted` boolean field otherwise manual cache manipulation is needed
@@ -102,7 +107,7 @@ const SubmissionReview = ({ submission }) => {
       variables: {
         input: {
           submission_id: submission._id,
-          incident_ids: submission.incident_id === 0 ? [] : [submission.incident_id],
+          incident_ids: isNewIncident ? [] : [submission.incident_id],
         },
       },
       fetchPolicy: 'no-cache',
@@ -152,7 +157,7 @@ const SubmissionReview = ({ submission }) => {
       },
     });
 
-    if (submission.incident_id === 0) {
+    if (isNewIncident) {
       await updateIncident({
         variables: {
           query: {
@@ -167,12 +172,21 @@ const SubmissionReview = ({ submission }) => {
       });
     }
 
+    const incident_id = incident.incident_id;
+
     addToast({
-      message: (
-        <>
-          Successfully promoted submission to Incident {incident.incident_id} and Report{' '}
-          {report_number}{' '}
-        </>
+      message: isNewIncident ? (
+        <Trans i18n={i18n} ns="submitted" incident_id={incident_id} report_number={report_number}>
+          Successfully promoted submission to Incident {{ incident_id }} and Report{' '}
+          {{ report_number }}
+        </Trans>
+      ) : (
+        <Trans i18n={i18n} ns="submitted" incident_id={incident_id} report_number={report_number}>
+          Successfully promoted submission to{' '}
+          <Link to={`/cite/${incident_id}`}>
+            Incident {{ incident_id }} and Report {{ report_number }}
+          </Link>
+        </Trans>
       ),
       severity: SEVERITY.success,
     });
@@ -197,7 +211,7 @@ const SubmissionReview = ({ submission }) => {
               aria-expanded={open}
               data-cy="review-button"
             >
-              review &gt;
+              <Trans>review</Trans> &gt;
             </Button>
           </Col>
           <Col xs={12} sm={10} lg={10}>
@@ -261,7 +275,11 @@ const SubmissionReview = ({ submission }) => {
               disabled={!isSubmitter || promoting}
               onClick={promoteSubmission}
             >
-              {submission.incident_id === 0 ? <>Add New Incident</> : <>Add New Report</>}
+              {isNewIncident ? (
+                <Trans ns="submitted">Add New Incident</Trans>
+              ) : (
+                <Trans ns="submitted">Add New Report</Trans>
+              )}
               {promoting && (
                 <Spinner
                   as="span"
@@ -278,7 +296,11 @@ const SubmissionReview = ({ submission }) => {
               disabled={!isSubmitter || deleting}
               onClick={rejectReport}
             >
-              {submission.incident_id === 0 ? <>Reject New Incident</> : <>Reject New Report</>}
+              {isNewIncident ? (
+                <Trans ns="submitted">Reject New Incident</Trans>
+              ) : (
+                <Trans ns="submitted">Reject New Report</Trans>
+              )}
               {deleting && (
                 <Spinner
                   as="span"

@@ -5,7 +5,6 @@ import React, { useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import { FIND_INCIDENT } from '../../graphql/incidents';
-import * as POP_OVERS from '../ui/PopOvers';
 
 export default function IncidentIdField({
   name,
@@ -39,7 +38,7 @@ export default function IncidentIdField({
 
   return (
     <Form.Group className={className}>
-      <Label popover={POP_OVERS[name]} label={'Incident ID'} />
+      <Label popover={name} label={'Incident ID'} />
       <Form.Control
         type="number"
         name={name}
