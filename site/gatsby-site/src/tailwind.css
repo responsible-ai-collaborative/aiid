@@ -33,7 +33,7 @@
     }
 
     .tw-bg-secondary {
-        @apply tw-bg-secondary-grey tw-opacity-100 tw-text-text-light-grey;
+        @apply tw-bg-secondary-gray tw-opacity-100 tw-text-text-light-gray;
     }
 
     .tw-hidden-mobile {
@@ -266,7 +266,7 @@
     }
 
     .tw-btn-secondary {
-        @apply tw-bg-dark-grey tw-border-dark-grey tw-text-white;
+        @apply tw-bg-dark-gray tw-border-dark-gray tw-text-white;
     }
 
     .tw-btn-lg {
@@ -320,15 +320,15 @@
     }
 
     .tw-page-item.disabled .tw-page-link {
-        @apply tw-bg-white tw-border-disable-grey tw-text-dark-grey tw-pointer-events-none;
+        @apply tw-bg-white tw-border-disable-gray tw-text-dark-gray tw-pointer-events-none;
     }
 
     .tw-page-link {
-        @apply tw-py-[0.375rem] tw-px-[0.75rem] tw-bg-white tw-border tw-border-disable-grey tw-text-primary-blue tw-block tw-relative tw-no-underline tw-transition-btn;
+        @apply tw-py-[0.375rem] tw-px-[0.75rem] tw-bg-white tw-border tw-border-disable-gray tw-text-primary-blue tw-block tw-relative tw-no-underline tw-transition-btn;
     }
 
     .tw-page-link:hover {
-        @apply tw-bg-light-grey tw-text-deep-blue tw-border-disable-grey tw-z-2;
+        @apply tw-bg-light-gray tw-text-deep-blue tw-border-disable-gray tw-z-2;
     }
 
     .tw-classification-container {
@@ -338,7 +338,7 @@
     /* TAILWIND Card begins */
 
     .tw-card-header {
-        @apply tw-bg-light-grey tw-border tw-border-b-border-grey tw-mb-0 tw-py-2 tw-px-4;
+        @apply tw-bg-light-gray tw-border tw-border-b-border-gray tw-mb-0 tw-py-2 tw-px-4;
     }
 
     .tw-card-body {
@@ -348,7 +348,7 @@
     /* TAILWIND Card ends */
 
     .tw-field {
-        @apply tw-w-[20%] tw-border-r-2.5 tw-mr-4 tw-border-border-light-grey tw-text-default-gray tw-font-bold;
+        @apply tw-w-[20%] tw-border-r-2.5 tw-mr-4 tw-border-border-light-gray tw-text-default-gray tw-font-bold;
     }
 
     .tw-taxa-card-header {
