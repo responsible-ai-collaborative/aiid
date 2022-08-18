@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import { StaticQuery, graphql } from 'gatsby';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faRssSquare } from '@fortawesome/free-solid-svg-icons';
@@ -10,64 +9,6 @@ import config from '../../../config.js';
 
 import Sidebar from '../sidebar';
 import LanguageSwitcher from 'components/i18n/LanguageSwitcher';
-
-const SkipToContent = styled.a`
-  color: white;
-  background-color: #001934;
-  position: relative;
-  order: 1;
-  margin-left: auto;
-  opacity: 0;
-  width: 0px;
-  height: 0px;
-  overflow: hidden;
-  :focus {
-    opacity: 1;
-    padding: 0ch 1ch;
-    width: unset;
-    height: unset;
-  }
-  @media (max-width: 767px) {
-    font-size: 12px !important;
-  }
-`;
-
-const NavBarHeaderContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  .navbarHeader {
-    order: 0;
-  }
-  .divider {
-    width: 1px;
-  }
-  .navBarBrand > * {
-    flex-shrink: 0;
-  }
-  .navBarBrand > .headerTitle {
-    flex-shrink: 1;
-  }
-`;
-
-const HeaderIconsContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  order: 2;
-  .paddingAround {
-    padding-right: 10px;
-  }
-`;
-
-const HideOnDesktop = styled.div`
-  @media (min-width: 767px) {
-    display: none;
-  }
-`;
 
 const StarsCount = (props) => {
   const [count, setCount] = useState(null);
@@ -143,10 +84,12 @@ const Header = () => {
 
         return (
           <nav className={'navBarDefault'}>
-            <NavBarHeaderContainer>
-              <SkipToContent href="#content">Skip to Content</SkipToContent>
-              <div className={'navBarHeader'}>
-                <Link to={finalLogoLink} className={'navBarBrand'}>
+            <div className="tw-nav-header-container">
+              <a className="tw-skip-to-content" href="#content">
+                Skip to Content
+              </a>
+              <div className={'nav-bar-header'}>
+                <Link to={finalLogoLink} className={'nav-bar-brand'}>
                   <img
                     id="desktopLogo"
                     className={'hiddenMobile'}
@@ -154,13 +97,13 @@ const Header = () => {
                     src={logo.image !== '' ? logo.image : logoImg}
                     alt={'logo'}
                   />
-                  <HideOnDesktop>
+                  <div className="min-767:tw-hidden">
                     <img
                       style={{ width: 50 }}
                       src={logo.mobile !== '' ? logo.mobile : logoImg}
                       alt={'logo'}
                     />
-                  </HideOnDesktop>
+                  </div>
                   <div className="divider hiddenMobile"></div>
                   <div
                     className={'headerTitle displayInline'}
@@ -168,7 +111,7 @@ const Header = () => {
                   />
                 </Link>
               </div>
-              <HeaderIconsContainer>
+              <div className="tw-header-icons-container">
                 <LanguageSwitcher className="me-3 me-md-0" />
                 <li className="divider hiddenMobile"></li>
                 {config.header.social && (
@@ -221,7 +164,7 @@ const Header = () => {
                     />
                   </>
                 )}
-                <HideOnDesktop>
+                <div className="min-767:tw-hidden">
                   <FontAwesomeIcon
                     icon={faBars}
                     color={'white'}
@@ -230,9 +173,9 @@ const Header = () => {
                     title="Open Menu"
                     onClick={() => setNavCollapsed(!navCollapsed)}
                   />
-                </HideOnDesktop>
-              </HeaderIconsContainer>
-            </NavBarHeaderContainer>
+                </div>
+              </div>
+            </div>
             <div id="navbar" className={topClass}>
               <div className={'visibleMobile'}>
                 <Sidebar setNavCollapsed={setNavCollapsed} />
