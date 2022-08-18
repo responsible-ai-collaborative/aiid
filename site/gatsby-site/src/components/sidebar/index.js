@@ -42,6 +42,7 @@ const ListItem = styled(({ className, active, level, ...props }) => {
     svg {
       margin-left: 1ch;
       vertical-align: top;
+      display: inline;
     }
   }
 `;
