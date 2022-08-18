@@ -7,6 +7,7 @@ import Actions from '../Actions';
 import { HeaderTitle, SourceDomainSubtitle } from './shared';
 import md5 from 'md5';
 import ReportText from 'components/reports/ReportText';
+import TranslationBadge from 'components/i18n/TranslationBadge';
 
 const StyledCard = styled(Card)`
   overflow: hidden;
@@ -50,7 +51,10 @@ export default function Details({
           <Text>
             <HeaderTitle item={item} />
 
-            <SourceDomainSubtitle item={item} className="mb-2 text-muted" />
+            <div>
+              <SourceDomainSubtitle item={item} className="mb-2 text-muted d-inline-block" />
+              <TranslationBadge originalLanguage={item.language} />
+            </div>
 
             <ActionsContainer className="d-flex justify-content-start gap-4">
               <Actions

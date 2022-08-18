@@ -183,9 +183,16 @@ GATSBY_ALGOLIA_SEARCH_KEY=<YOUR SEARCH KEY>
 ALGOLIA_ADMIN_KEY=<YOUR ADMIN KEY>
 ```
 
-Algolia index settings are uploaded on build time, so you'll have to do that at least once from your local env:
+Algolia index settings are uploaded on build time, so they will take effect after running:
+
 ```
 gatsby build
+```
+
+Alternatively, you can update the settings without rebuilding if from `site/gatsby-site` you run:
+
+```
+node src/scripts/algolia-update.js
 ```
 
 Restart Gatsby, and you should have a complete working environment!
@@ -275,6 +282,7 @@ GATSBY_ALGOLIA_SEARCH_KEY=
 GATSBY_REALM_APP_ID=
 MONGODB_CONNECTION_STRING=
 MONGODB_REPLICA_SET=
+GATSBY_EXCLUDE_DATASTORE_FROM_BUNDLE=1 # specific to Netlify, for large sites
 ```
 ### Github Actions
 Two workflows take care of deploying the Realm app to both `production` and `staging` environments, defined in `realm-production.yml` and `realm-staging.yml`. Each workflow looks for environment variables defined in a Github Environment named `production` and `staging`. 

@@ -15,12 +15,14 @@ const relatedIncidentIdsQuery = gql`
 `;
 
 const semanticallyRelated = async (text) => {
-  const url = `/api/semanticallyRelated?text=${text}`;
+  const url = `/api/semanticallyRelated`;
 
   let controller = new AbortController();
 
   setTimeout(() => controller.abort(), 33000);
   const response = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify({ text }),
     signal: controller.signal,
   });
 

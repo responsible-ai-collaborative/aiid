@@ -208,7 +208,7 @@ function DiscoverApp(props) {
   useEffect(() => {
     const searchQuery = getQueryFromState(searchState);
 
-    const extraQuery = { display: query.display, lang: query.lang };
+    const extraQuery = { display: query.display };
 
     setQuery({ ...searchQuery, ...extraQuery }, 'push');
   }, [searchState]);
@@ -226,7 +226,12 @@ function DiscoverApp(props) {
       </AiidHelmet>
       <SearchContext.Provider value={{ searchState, indexName, searchClient, onSearchStateChange }}>
         <InstantSearch
-          indexName={indexName}
+          indexName={
+            indexName +
+            (searchState.query == '' && Object.keys(searchState.refinementList).length == 0
+              ? '-featured'
+              : '')
+          }
           searchClient={searchClient}
           searchState={searchState}
           onSearchStateChange={onSearchStateChange}

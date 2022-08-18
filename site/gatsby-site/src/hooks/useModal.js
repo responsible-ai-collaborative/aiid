@@ -1,8 +1,9 @@
 import React from 'react';
 import { useState } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import styled from 'styled-components';
+import Button from '../elements/Button';
 
 const StyledModal = styled(Modal)`
   .modal-dialog {

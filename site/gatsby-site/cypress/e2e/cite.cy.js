@@ -208,7 +208,7 @@ describe('Cite pages', () => {
 
     const date = format(new Date(), 'MMMM d, y');
 
-    cy.get('[data-cy="citation"] .card-body').should(
+    cy.get('[data-cy="citation"] .tw-card-body').should(
       'contain.text',
       `Olsson, Catherine. (2014-08-14) Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on ${date} from incidentdatabase.ai/cite/10.`
     );
@@ -281,11 +281,13 @@ describe('Cite pages', () => {
         }
       `,
     }).then(({ data: { incidents } }) => {
-      const title = `Incident ${incidentId}`;
+      const incident = incidents[0];
 
-      const description = `Citation record for Incident ${incidentId}`;
+      const title = `Incident ${incidentId}: ${incident.title}`;
 
-      const imageUrl = [...incidents[0].reports].sort((a, b) =>
+      const description = incident.description;
+
+      const imageUrl = [...incident.reports].sort((a, b) =>
         a.date_published >= b.date_published ? 1 : -1
       )[0].image_url;
 
