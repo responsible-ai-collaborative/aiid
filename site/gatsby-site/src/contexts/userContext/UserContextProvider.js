@@ -13,8 +13,7 @@ import { useTranslation } from 'react-i18next';
 const getApolloCLient = (getValidAccessToken) =>
   new ApolloClient({
     link: new HttpLink({
-      uri: `https://realm.mongodb.com/api/client/v2.0/app/${config.realm.production_db.realm_app_id}/graphql`,
-
+      uri: `${config.realm.production_db.realm_app_graphql_url}`,
       fetch: async (uri, options) => {
         const accessToken = await getValidAccessToken();
 
