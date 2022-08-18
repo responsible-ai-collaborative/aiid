@@ -78,65 +78,63 @@ const config = {
       },
     },
   },
+  footer: {
+    navConfig: [
+      {
+        title: 'Researcher Guide',
+        label: 'research',
+        url: '/research',
+        items: [
+          {
+            title: 'Incident Report Acceptance Criteria',
+            label: '1-criteria',
+            url: '/research/1-criteria',
+          },
+          { title: 'Database Roadmap', label: '2-roadmap', url: '/research/2-roadmap' },
+          {
+            title: 'Initial Collection Methodology',
+            label: '3-history',
+            url: '/research/3-history',
+          },
+        ],
+      },
+      {
+        title: 'Project and Community',
+        items: [
+          { title: 'Contact and Follow', label: 'contact', url: '/contact' },
+          { title: 'Launch Announcement', url: 'https://partnershiponai.org/aiincidentdatabase/' },
+          { title: 'About Apps', label: 'about_apps', url: '/about_apps' },
+          { title: 'Taxonomies', label: 'taxonomies', url: '/taxonomies' },
+        ],
+      },
+      {
+        title: 'Incidents',
+        items: [
+          {
+            title: 'All Incidents in List Form',
+            label: 'all-incidents',
+            url: '/summaries/incidents',
+          },
+          { title: 'Flagged Incidents', label: 'flagged', url: '/summaries/flagged' },
+          { title: 'Classifications View', label: 'classifications', url: '/apps/classifications' },
+        ],
+      },
+    ],
+  },
   sidebar: {
     navConfig: [
       { label: 'welcome', url: '/', items: [], title: 'Welcome to the AIID' },
       { label: 'about', url: '/about', items: [], title: 'About' },
       { label: 'blog', url: '/blog', items: [], title: 'AIID Blog' },
+      { label: 'discover', url: '/apps/discover', items: [], title: 'Discover Incidents' },
+      { label: 'submit', url: '/apps/submit', items: [], title: 'Submit Incident Reports' },
       {
-        label: 'about_apps',
-        url: '/about_apps',
-        items: [
-          { label: 'discover', url: '/apps/discover', items: [], title: 'Discover Incidents' },
-          { label: 'submit', url: '/apps/submit', items: [], title: 'Submit Incident Reports' },
-          {
-            label: 'all-incidents',
-            url: '/summaries/incidents',
-            items: [],
-            title: 'All Incidents in List Form',
-          },
-          {
-            label: 'leaderboard',
-            url: '/summaries/leaderboard',
-            items: [],
-            title: 'Submission Leaderboard',
-          },
-          {
-            label: 'classifications',
-            url: '/apps/classifications',
-            items: [],
-            title: 'Classifications View',
-          },
-          { label: 'flagged', url: '/summaries/flagged', items: [], title: 'Flagged Incidents' },
-          { label: 'wordcounts', url: '/summaries/wordcounts', items: [], title: 'Word Counts' },
-        ],
-        title: 'Database Apps',
+        label: 'leaderboard',
+        url: '/summaries/leaderboard',
+        items: [],
+        title: 'Submission Leaderboard',
       },
-      {
-        label: 'research',
-        url: '/research',
-        items: [
-          {
-            label: '1-criteria',
-            url: '/research/1-criteria',
-            items: [],
-            title: 'Incident Report Acceptance Criteria',
-          },
-          { label: '2-roadmap', url: '/research/2-roadmap', items: [], title: 'Database Roadmap' },
-          {
-            label: '3-history',
-            url: '/research/3-history',
-            items: [],
-            title: 'Initial Collection Methodology',
-          },
-        ],
-        title: 'Researcher Guide',
-      },
-      { label: 'taxonomies', url: '/taxonomies', items: [], title: 'Taxonomies' },
-      { label: 'contact', url: '/contact', items: [], title: 'Contact and Follow' },
-    ],
-    links: [
-      { text: 'Launch Announcement', link: 'https://partnershiponai.org/aiincidentdatabase/' },
+      { label: 'wordcounts', url: '/summaries/wordcounts', items: [], title: 'Word Counts' },
     ],
     frontline: true,
     ignoreIndex: false,

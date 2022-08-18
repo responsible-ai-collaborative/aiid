@@ -111,8 +111,8 @@ const SidebarLayout = ({ collapse, setNavCollapsed }) => {
             <Tree setNavCollapsed={setNavCollapsed} />
           </ul>
         </li>
-        {config.sidebar.links && config.sidebar.links.length > 0 && <Divider />}
-        {config.sidebar.links.map((link, key) => {
+        {config.sidebar.links && config.sidebar.links?.length > 0 && <Divider />}
+        {config.sidebar.links?.map((link, key) => {
           if (link.link !== '' && link.text !== '') {
             return (
               <ListItem key={key} to={link.link}>

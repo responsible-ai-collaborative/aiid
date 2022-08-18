@@ -11,6 +11,7 @@ const subtreeNav = (treeRoot, currentLocation = undefined) => {
     const defaultNavSetting = {
       url: item.url,
       label: item.label,
+      icon: item.icon,
       title: item.title,
       items: subtreeNav(item.items, currentLocation),
       collapsed: false,
