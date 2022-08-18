@@ -15,7 +15,7 @@ export default withTranslation()(function SearchInput({
   ...props
 }) {
   return (
-    <InputGroup className="tw-relative">
+    <InputGroup className="tw-max-w-[640px] tw-m-auto tw-relative">
       <FormControl
         className="tw-rounded-tr-[0.3rem] tw-rounded-br-[0.3rem]"
         size={size}

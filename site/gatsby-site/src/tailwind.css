@@ -16,7 +16,7 @@
         @apply tw-text-black;
     }
 
-    .tw-layout .item>a:hover {
+    .tw-layout .item > a:hover {
         @apply tw-bg-primary-blue tw-text-white;
     }
 
@@ -25,7 +25,7 @@
     }
 
     .tw-main-container {
-        @apply xl:tw-max-w-[1320px] md:tw-max-w-[720px] lg:tw-max-w-[960px] sm:tw-max-w-[540px];
+        @apply xl:tw-max-w-[1320px] md:tw-max-w-[720px] lg:tw-max-w-[960px];
     }
 
     .tw-container {
@@ -105,7 +105,7 @@
     }
 
     .tw-card-body {
-        @apply tw-flex tw-p-4;
+        @apply tw-flex tw-p-4 tw-flex-col;
     }
 
     .tw-card-footer {
@@ -153,15 +153,23 @@
 
     /* TAILWIND Grid begins */
     .tw-row {
-        @apply tw-flex tw-flex-wrap;
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: -0.75rem;
+        margin-right: 0;
+        margin-top: 0;
     }
 
     .tw-row > * {
-        @apply tw-w-full tw-pl-row-left tw-pr-row-right;
+        margin-top: 0;
+        max-width: 100%;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+        width: 100%;
     }
 
     .tw-col {
-        @apply tw-w-full tw-flex-1;
+        @apply tw-w-full lg:tw-flex-1;
     }
 
     .tw-pagination {

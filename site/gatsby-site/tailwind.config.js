@@ -19,6 +19,7 @@ let safelist = [
 for (let i = 0; i < 100; i++) {
   safelist.push(`tw-pl-[${2 + (i || 0) * 1}rem`);
 }
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   prefix: 'tw-',
@@ -40,8 +41,9 @@ module.exports = {
         'min-992px': { min: '992px' },
         '50rem': { max: '50rem' },
         '767px': { max: '767px' },
-        '800px': { max: '800px' },
         '965px': { max: '965px' },
+        '992px': { min: '992px' },
+        '800px': { max: '800px' },
         '1240px': { max: '1240px' },
       },
       colors: {

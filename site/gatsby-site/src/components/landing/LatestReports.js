@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card } from 'react-bootstrap';
 import LatestIncidentReport from 'components/landing/LatestIncidentReport';
 import { Trans } from 'react-i18next';
+import Card from '../../elements/Card';
 
 export default function LatestReports({ latestReport }) {
   return (
