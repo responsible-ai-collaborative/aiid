@@ -80,7 +80,7 @@ const LayoutHideSidebar = ({ children, location, menuCollapseCallback }) => {
     <>
       <Header />
       <Wrapper>
-        <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
+        <LeftSideBarWidth className={'tw-w-[298px] hiddenMobile'} collapse={collapse}>
           <Sidebar location={location} collapse={collapse} />
         </LeftSideBarWidth>
         {config.sidebar.title ? (
