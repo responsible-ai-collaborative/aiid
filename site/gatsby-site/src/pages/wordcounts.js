@@ -18,7 +18,7 @@ const WordCloudCell = ({ wordCountsSorted, wordCloud }) => {
         <Wordlist content={wordCountsSorted} />
       </Col>
       <Col xs={8}>
-        <ReactWordcloud data-cy="wordcloud" data={wordCloud} />
+        {typeof window !== 'undefined' && <ReactWordcloud data-cy="wordcloud" data={wordCloud} />}
       </Col>
     </Row>
   );
