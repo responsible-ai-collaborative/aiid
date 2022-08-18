@@ -3,16 +3,13 @@ import { gql, useApolloClient } from '@apollo/client';
 import debounce from 'lodash/debounce';
 import RelatedIncidentsArea from './RelatedIncidentsArea';
 import { stripMarkdown } from '../utils/typography';
+import { useTranslation } from 'react-i18next';
 
 const relatedIncidentIdsQuery = gql`
   query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
     incidents(query: $query) {
       incident_id
-      reports {
-        report_number
-        title
-        url
-      }
+      title
     }
   }
 `;
@@ -39,9 +36,11 @@ const semanticallyRelated = async (text) => {
 };
 
 const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }) => {
+  const { t } = useTranslation();
+
   const [loading, setLoading] = useState(false);
 
-  const [reports, setReports] = useState([]);
+  const [incidents, setIncidents] = useState([]);
 
   const client = useApolloClient();
 
@@ -52,14 +51,14 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
   const debouncedUpdateSearch = useRef(
     debounce(async (incident) => {
       setLoading(true);
-      setReports([]);
+      setIncidents([]);
       setError(null);
       if (setFieldValue) {
         setFieldValue('nlp_similar_incidents', []);
       }
 
       const fail = (errorMessage) => {
-        setReports([]);
+        setIncidents([]);
         setError(errorMessage);
         setLoading(false);
       };
@@ -68,12 +67,16 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
 
       const minLength = 256;
 
-      if (
-        plaintext.replace(/\s/, '')?.length < minLength &&
-        !(initialDisplay && incident?.nlp_similar_incidents?.length > 0)
-      ) {
+      const textLength = plaintext.replace(/\s/, '')?.length;
+
+      const displayingCached =
+        initialDisplay.current && incident?.nlp_similar_incidents?.length > 0;
+
+      if (textLength < minLength && !displayingCached) {
         fail(
-          `Reports must have at least ${minLength} non-space characters to compute semantic similarity.`
+          t(
+            `Reports must have at least ${minLength} non-space characters to compute semantic similarity.`
+          )
         );
         return;
       }
@@ -97,7 +100,7 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
           nlp_similar_incidents = nlpResponse.incidents.sort((a, b) => b.similarity - a.similarity);
         } catch (e) {
           console.error(error);
-          fail('Could not compute semantic similarity');
+          fail(t('Could not compute semantic similarity'));
           return;
         }
       }
@@ -121,21 +124,10 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
         });
       } catch (e) {
         console.error(e);
-        fail('Could not retrieve related incidents from database');
+        fail(t('Could not retrieve related incidents from database'));
       }
 
-      setReports(
-        dbResponse.data.incidents.reduce(
-          (reports, incident) =>
-            reports.concat(
-              incident.reports.map((report) => ({
-                incident_id: incident.incident_id,
-                ...report,
-              }))
-            ),
-          []
-        )
-      );
+      setIncidents(dbResponse.data.incidents);
 
       setLoading(false);
       initialDisplay.current = false;
@@ -148,13 +140,13 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
 
   return (
     <div data-cy="semantically-related-incidents">
-      {(incident?.text?.length > 0 || incident?.reports?.length > 0) && (
+      {incident?.text?.length > 0 && (
         <RelatedIncidentsArea
           key="byText"
           columnKey="byText"
           loading={loading}
-          reports={reports}
-          header="Most Semantically Similar Incident Reports (Experimental)"
+          incidents={incidents}
+          header={t('Most Semantically Similar Incidents (Experimental)')}
           setFieldValue={setFieldValue}
           editId={editId}
           error={error}
