@@ -4,3 +4,8 @@ a {
     text-decoration: none;
     color: #0d6efd;
 }
+
+[type=button], [type=reset], [type=submit], button {
+    appearance: none;
+    -webkit-appearance: none;
+}

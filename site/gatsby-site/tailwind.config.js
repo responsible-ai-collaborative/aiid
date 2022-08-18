@@ -80,6 +80,7 @@ module.exports = {
       },
       transitionProperty: {
         btn: 'color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out',
+        'bg-color-02': 'color 0.2s ease-out',
       },
       zIndex: {
         2: '2',
@@ -90,6 +91,10 @@ module.exports = {
       },
       padding: {
         0.8: '0.8rem',
+        'row-left': 'calc(1.5rem*.5)',
+        'row-right': 'calc(1.5rem*.5)',
+        'container-left': '.75rem',
+        'container-right': '.75rem',
       },
       borderRadius: {
         '5px': '5px',
