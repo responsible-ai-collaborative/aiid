@@ -5,10 +5,12 @@
   --primary2: #18181a;
   --primary3: #ec9982;
   --primary4: #0857c3;
+  --primary-blue: #0d6efd;
   --secondary1: #df8270;
   --secondary2: #6490e8;
   --secondary3: #ba5a4b;
   --secondary4: #071d49;
+  --dark-blue: #212529;
 }
 
 * {
@@ -524,7 +526,7 @@ blockquote {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
   border-bottom: 1px solid rgb(230, 236, 241);
   margin-bottom: 32px;
 }
@@ -924,3 +926,29 @@ img {
 div .bytemd {
   height: 480px;
 }
+
+/* Social Buttons */
+/* ---------------------------------------------------------- */
+
+.social-btn-container.cite {
+  margin-left: 10px;
+}
+
+.social-btn-container.post {
+  margin-left: -10px;
+}
+
+.social-btn {
+  position: relative;
+  display: block;
+  align-items: center;
+  width: 40px;
+  height: 50px;
+  color: white;
+  line-height: 48px;
+  text-align: center;
+  background-color: white;
+  border: none;
+}
+
+/* ---------------------------------------------------------- */

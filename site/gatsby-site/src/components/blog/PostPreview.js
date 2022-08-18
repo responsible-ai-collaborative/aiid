@@ -3,6 +3,7 @@ import { GatsbyImage as Img } from 'gatsby-plugin-image';
 import { format } from 'date-fns';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import Card from '../../elements/Card';
+import { Trans } from 'react-i18next';
 
 function PostPreview({ post }) {
   return (
@@ -29,7 +30,10 @@ function PostPreview({ post }) {
         </div>
         <div>
           {' '}
-          {post.excerpt}... <LocalizedLink to={post.frontmatter.slug}>(Read More)</LocalizedLink>
+          {post.excerpt}...{' '}
+          <LocalizedLink to={post.frontmatter.slug}>
+            <Trans>(Read More)</Trans>
+          </LocalizedLink>
         </div>
         <div className="tw-mt-4">
           <small className="tw-text-muted-gray tw-text-sm">By {post.frontmatter.author}</small>
