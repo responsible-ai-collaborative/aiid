@@ -125,22 +125,23 @@
 
     /* TAILWIND Grid begins */
     .tw-row {
-        @apply tw-flex tw-flex-wrap;
-    }
-    .tw-row.tw-row-gap-2 .tw-col {
-        @apply tw-flex-1 lg:tw-ml-2;
-    }
-
-    .tw-row.tw-row-gap-2 .tw-col:first-child {
-        @apply lg:tw-ml-0;
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: -0.75rem;
+        margin-right: 0;
+        margin-top: 0;
     }
 
     .tw-row > * {
-        @apply tw-w-full tw-pl-row-left tw-pr-row-right;
+        margin-top: 0;
+        max-width: 100%;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+        width: 100%;
     }
 
     .tw-col {
-        @apply tw-w-full tw-flex-1;
+        @apply tw-w-full lg:tw-flex-1;
     }
 
     .tw-pagination {

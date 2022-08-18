@@ -23,14 +23,14 @@ export default function Featured() {
               <LocalizedLink to="/summaries/leaderboard">leaderboard page.</LocalizedLink>
             </Trans>
           </Card.Subtitle>
-          <Row className="tw-row-gap-2">
-            <Col lg className="mt-4 tw-pl-0">
+          <Row>
+            <Col lg className="tw-mt-4">
               <OriginalSubmitersLeaderboard limit={3} />
             </Col>
-            <Col lg className="mt-4">
+            <Col lg className="tw-mt-4">
               <UniqueSubmittersLeaderboard limit={3} />
             </Col>
-            <Col lg className="mt-4 tw-pr-0">
+            <Col lg className="tw-mt-4">
               <SubmittersLeaderboard limit={3} />
             </Col>
           </Row>
