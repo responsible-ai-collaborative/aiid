@@ -504,6 +504,7 @@ About Facebook Authentication instructions: https://www.mongodb.com/docs/realm/w
 
 About Google Authentication instructions: https://www.mongodb.com/docs/realm/web/authenticate/#google-authentication
 
+
 ## Contact
 
 For inquiries, you are encouraged to open an issue on this repository or visit the [contact page](https://incidentdatabase.ai/contact).
