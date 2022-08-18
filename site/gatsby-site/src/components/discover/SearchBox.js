@@ -1,14 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { connectSearchBox } from 'react-instantsearch-dom';
-import styled from 'styled-components';
 import { debounce } from 'debounce';
-import { Row, Col } from 'react-bootstrap';
 import SearchInput from 'components/forms/SearchInput';
-
-const SearchForm = styled.form`
-  display: block;
-  position: relative;
-`;
+import Row from 'elements/Row';
+import Col from 'elements/Col';
 
 function SearchBox({ currentRefinement, refine }) {
   const [query, setQuery] = useState(currentRefinement);
@@ -33,7 +28,7 @@ function SearchBox({ currentRefinement, refine }) {
   return (
     <Row>
       <Col>
-        <SearchForm id="searchForm">
+        <form className="tw-block tw-relative" id="searchForm">
           <SearchInput
             value={query}
             onChange={setQuery}
@@ -42,7 +37,7 @@ function SearchBox({ currentRefinement, refine }) {
               e.key === 'Enter' && e.preventDefault();
             }}
           />
-        </SearchForm>
+        </form>
       </Col>
     </Row>
   );
