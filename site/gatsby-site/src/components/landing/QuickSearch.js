@@ -12,7 +12,7 @@ import { Trans, useTranslation } from 'react-i18next';
 export default function QuickSearch({ className }) {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const [searchPlaceholder, setSearchPlaceholder] = useState('Search reports');
+  const [searchPlaceholder, setSearchPlaceholder] = useState('');
 
   const setInnerText = () => {
     const width = window.innerWidth;
