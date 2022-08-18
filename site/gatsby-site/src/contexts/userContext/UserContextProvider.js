@@ -7,6 +7,8 @@ import config from '../../../config';
 import fetch from 'cross-fetch';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { useTranslation } from 'react-i18next';
+import { navigate } from 'gatsby';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 
 // https://github.com/mongodb-university/realm-graphql-apollo-react/blob/master/src/index.js
 
@@ -47,6 +49,8 @@ export const UserContextProvider = ({ children }) => {
 
   const { t } = useTranslation();
 
+  const localizePath = useLocalizePath();
+
   const addToast = useToastContext();
 
   const logout = async () => {
@@ -61,6 +65,7 @@ export const UserContextProvider = ({ children }) => {
     password = null,
     provider = null,
     loginRedirectUri = null,
+    redirectToHomePage = false,
   } = {}) => {
     try {
       let credentials = null;
@@ -76,6 +81,10 @@ export const UserContextProvider = ({ children }) => {
       }
 
       const user = await realmApp.logIn(credentials);
+
+      if (redirectToHomePage) {
+        navigate(localizePath({ path: `/` }));
+      }
 
       if (user.id === realmApp.currentUser.id) {
         setUser(user);
@@ -93,7 +102,7 @@ export const UserContextProvider = ({ children }) => {
   };
 
   const loginWithEmail = async ({ email, password }) => {
-    return await login({ email, password });
+    return await login({ email, password, redirectToHomePage: true });
   };
 
   const loginWithFacebook = async ({ loginRedirectUri }) => {

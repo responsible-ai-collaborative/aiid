@@ -1,14 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '../components/Layout';
-import { Form } from 'react-bootstrap';
+import { Form, Spinner } from 'react-bootstrap';
 import { useUserContext } from 'contexts/userContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { navigate } from 'gatsby';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { Trans, useTranslation } from 'react-i18next';
-import useLocalizePath from 'components/i18n/useLocalizePath';
 import Link from 'components/ui/Link';
 import Button from '../elements/Button';
 
@@ -23,15 +21,16 @@ const Login = (props) => {
     actions: { loginWithEmail, loginWithFacebook, loginWithGoogle },
   } = useUserContext();
 
-  const { t } = useTranslation();
+  const [displaySpinner, setDisplaySpinner] = useState(false);
 
-  const localizePath = useLocalizePath();
+  const { t } = useTranslation();
 
   const loginRedirectUri = `${props.location.origin}/logincallback`;
 
   return (
     <Layout {...props}>
-      {user && user.isLoggedIn && user.profile.email ? (
+      {displaySpinner && <Spinner animation="border" size="sm" role="status" aria-hidden="true" />}
+      {!displaySpinner && user && user.isLoggedIn && user.profile.email ? (
         <>
           <p>
             <Trans ns="login">Logged in as </Trans>
@@ -47,11 +46,11 @@ const Login = (props) => {
             initialValues={{ email: '', password: '' }}
             validationSchema={LoginSchema}
             onSubmit={async ({ email, password }, { setSubmitting }) => {
-              const isLoginOK = await loginWithEmail({ email, password });
+              setDisplaySpinner(true);
 
-              if (isLoginOK) {
-                navigate(localizePath({ path: `/` }));
-              }
+              await loginWithEmail({ email, password });
+
+              setDisplaySpinner(false);
               setSubmitting(false);
             }}
           >
@@ -102,7 +101,11 @@ const Login = (props) => {
                   disabled={isSubmitting || !isValid}
                   className="tw-w-full"
                 >
-                  <Trans ns="login">Login</Trans>
+                  {isSubmitting ? (
+                    <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
+                  ) : (
+                    <Trans ns="login">Login</Trans>
+                  )}
                 </Button>
               </Form>
             )}
