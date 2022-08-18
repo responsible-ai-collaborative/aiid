@@ -58,11 +58,17 @@ const reportsWithIncidentIds = async (reports, client) => {
 
 const allSearchColumns = {
   byDatePublished: {
-    header: (incident) => (
-      <>
-        <Trans>Incidents reports matched by published date:</Trans> <b>{incident.date_published}</b>
-      </>
-    ),
+    header: (incident) => {
+      const date = incident.date_published;
+
+      return (
+        <>
+          <Trans date={date}>
+            Incidents reports matched by published date: <b>{{ date }}</b>
+          </Trans>
+        </>
+      );
+    },
     query: relatedReportsQuery,
     getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) => {
@@ -83,11 +89,17 @@ const allSearchColumns = {
   },
 
   byIncidentId: {
-    header: (incident) => (
-      <>
-        <Trans>Incident matched by ID:</Trans> <b>{incident.incident_id}</b>
-      </>
-    ),
+    header: (incident) => {
+      const id = incident.incident_id;
+
+      return (
+        <>
+          <Trans id={id}>
+            Incident matched by ID: <b>{{ id }}</b>
+          </Trans>
+        </>
+      );
+    },
     query: relatedIncidentsQuery,
     getReports: async (result) =>
       result.data.incidents.length ? result.data.incidents[0].reports : [],
@@ -100,11 +112,17 @@ const allSearchColumns = {
   },
 
   byAuthors: {
-    header: (incident) => (
-      <>
-        <Trans>Incidents reports matched by authors:</Trans> <b>{incident.authors}</b>
-      </>
-    ),
+    header: (incident) => {
+      const authors = incident.authors;
+
+      return (
+        <>
+          <Trans authors={authors}>
+            Incidents reports matched by authors: <b>{{ authors }}</b>
+          </Trans>
+        </>
+      );
+    },
     query: relatedReportsQuery,
     getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) => incident.authors,
@@ -114,11 +132,17 @@ const allSearchColumns = {
   },
 
   byURL: {
-    header: (incident) => (
-      <>
-        <Trans>Incidents reports matched by URL:</Trans> <b>{incident.url}</b>
-      </>
-    ),
+    header: (incident) => {
+      const url = incident.url;
+
+      return (
+        <>
+          <Trans url={url}>
+            Incidents reports matched by URL: <b>{{ url }}</b>
+          </Trans>
+        </>
+      );
+    },
     query: relatedReportsQuery,
     getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) => incident.url,

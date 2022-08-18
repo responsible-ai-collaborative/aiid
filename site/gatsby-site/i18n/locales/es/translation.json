@@ -60,5 +60,10 @@
   "Previous": "Anterior",
   "Next": "Siguiente",
   "Click to upload": "Click para subir",
-  "Delete": "Borrar"
+  "Delete": "Borrar",
+  "Incidents reports matched by published date: <1>{{date}}</1>": "Informes de incidentes por fecha de publicación: <1>{{date}}</1>",
+  "Incident matched by ID: <1>{{id}}</1>": "Incidentes por ID: <1>{{id}}</1>",
+  "Incidents reports matched by authors: <1>{{authors}}</1>":
+  "Informes por autor: <1>{{authors}}</1>",
+  "Incidents reports matched by URL: <1>{{url}}</1>": "Informes por URL: <1>{{url}}</1>"
 }
