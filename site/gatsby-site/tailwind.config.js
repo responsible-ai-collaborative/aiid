@@ -91,8 +91,8 @@ module.exports = {
         0.8: '0.8rem',
         'row-left': 'calc(1.5rem*.5)',
         'row-right': 'calc(1.5rem*.5)',
-        'container-left': 'var(1.5rem,.75rem)',
-        'container-right': 'var(1.5rem,.75rem)',
+        'container-left': '.75rem',
+        'container-right': '.75rem',
       },
       borderRadius: {
         '5px': '5px',
