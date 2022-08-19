@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '../components/Layout';
-import { Form } from 'react-bootstrap';
+import { Form, Spinner } from 'react-bootstrap';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import { Formik } from 'formik';
@@ -25,11 +25,31 @@ const SignUp = (props) => {
     actions: { signUp, loginWithFacebook, loginWithGoogle },
   } = useUserContext();
 
+  const [displayFacebookSpinner, setDisplayFacebookSpinner] = useState(false);
+
+  const [displayGoogleSpinner, setDisplayGoogleSpinner] = useState(false);
+
   const { t } = useTranslation();
 
   const addToast = useToastContext();
 
   const loginRedirectUri = `${props.location.origin}/logincallback`;
+
+  const clickLoginWithFacebook = async () => {
+    setDisplayFacebookSpinner(true);
+
+    await loginWithFacebook({ loginRedirectUri });
+
+    setDisplayFacebookSpinner(false);
+  };
+
+  const clickLoginWithGoogle = async () => {
+    setDisplayGoogleSpinner(true);
+
+    await loginWithGoogle({ loginRedirectUri });
+
+    setDisplayGoogleSpinner(false);
+  };
 
   return (
     <Layout {...props}>
@@ -134,9 +154,14 @@ const SignUp = (props) => {
                 <Button
                   variant="primary"
                   type="submit"
-                  disabled={isSubmitting || !isValid}
+                  disabled={
+                    isSubmitting || !isValid || displayFacebookSpinner || displayGoogleSpinner
+                  }
                   className="tw-w-full"
                 >
+                  {isSubmitting && (
+                    <Spinner animation="border" size="sm" role="status" className="tw-mr-2" />
+                  )}
                   <Trans ns="login">Sign up</Trans>
                 </Button>
               </Form>
@@ -149,18 +174,21 @@ const SignUp = (props) => {
 
           <Button
             variant="primary"
-            onClick={() => {
-              loginWithFacebook({ loginRedirectUri });
-            }}
+            onClick={clickLoginWithFacebook}
             className={'tw-w-full'}
+            disabled={displayFacebookSpinner || displayGoogleSpinner}
           >
-            <div className={'d-flex justify-content-center'}>
-              <FontAwesomeIcon
-                icon={faFacebook}
-                color={'#ffffff'}
-                className={'pointer fa fa-lg'}
-                title="Sign up with Facebook"
-              />
+            <div className={'d-flex justify-content-center align-items-center'}>
+              {displayFacebookSpinner ? (
+                <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
+              ) : (
+                <FontAwesomeIcon
+                  icon={faFacebook}
+                  color={'#ffffff'}
+                  className={'pointer fa fa-lg'}
+                  title="Sign up with Facebook"
+                />
+              )}
               <div className={'tw-ml-2'}>
                 <Trans ns="login">Sign up with Facebook</Trans>
               </div>
@@ -169,18 +197,21 @@ const SignUp = (props) => {
 
           <Button
             variant="primary"
-            onClick={() => {
-              loginWithGoogle({ loginRedirectUri });
-            }}
+            onClick={clickLoginWithGoogle}
             className={'tw-w-full tw-mt-5'}
+            disabled={displayFacebookSpinner || displayGoogleSpinner}
           >
-            <div className={'d-flex justify-content-center'}>
-              <FontAwesomeIcon
-                icon={faGoogle}
-                color={'#ffffff'}
-                className={'pointer fa fa-lg'}
-                title="Sign up with Google"
-              />
+            <div className={'d-flex justify-content-center align-items-center'}>
+              {displayGoogleSpinner ? (
+                <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
+              ) : (
+                <FontAwesomeIcon
+                  icon={faGoogle}
+                  color={'#ffffff'}
+                  className={'pointer fa fa-lg'}
+                  title="Sign up with Google"
+                />
+              )}
               <div className={'tw-ml-2'}>
                 <Trans ns="login">Sign up with Google</Trans>
               </div>
