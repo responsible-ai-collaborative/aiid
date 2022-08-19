@@ -127,7 +127,6 @@
     "lint-staged": "^10.5.3",
     "netlify-plugin-cypress": "^2.2.0",
     "postcss": "^8.4.14",
-    "postcss-reporter": "^7.0.5",
     "prettier": "^2.2.1",
     "prism-react-renderer": "^1.2.0",
     "start-server-and-test": "^1.14.0",
