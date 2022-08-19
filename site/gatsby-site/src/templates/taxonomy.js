@@ -188,8 +188,6 @@ const getStats = (taxa, classification) => {
 
   const stats = {};
 
-  console.log(`taxa.field_list`, taxa.field_list);
-
   taxa.field_list
     .filter((field) => field.permitted_values && field.permitted_values.length > 0)
     .forEach((field) => {

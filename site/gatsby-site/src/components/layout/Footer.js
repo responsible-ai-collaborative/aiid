@@ -38,8 +38,6 @@ export default function Footer() {
     }
   `);
 
-  console.log(`faExternalLink`, faExternalLinkAlt);
-
   const {
     site: {
       siteMetadata: { githubUrl },
