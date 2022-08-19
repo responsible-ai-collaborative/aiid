@@ -1,5 +1,5 @@
 import { faGithubSquare, faTwitterSquare } from '@fortawesome/free-brands-svg-icons';
-import { faRssSquare } from '@fortawesome/free-solid-svg-icons';
+import { faExternalLinkAlt, faRssSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { graphql, useStaticQuery } from 'gatsby';
 import React from 'react';
@@ -7,7 +7,6 @@ import { Container } from 'react-bootstrap';
 import styled from 'styled-components';
 import config from '../../../config';
 import { LocalizedLink } from 'gatsby-theme-i18n';
-import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 
 const Icons = styled.div`
   display: flex;
