@@ -21,16 +21,33 @@ const Login = (props) => {
     actions: { loginWithEmail, loginWithFacebook, loginWithGoogle },
   } = useUserContext();
 
-  const [displaySpinner, setDisplaySpinner] = useState(false);
+  const [displayFacebookSpinner, setDisplayFacebookSpinner] = useState(false);
+
+  const [displayGoogleSpinner, setDisplayGoogleSpinner] = useState(false);
 
   const { t } = useTranslation();
 
   const loginRedirectUri = `${props.location.origin}/logincallback`;
 
+  const clickLoginWithFacebook = async () => {
+    setDisplayFacebookSpinner(true);
+
+    await loginWithFacebook({ loginRedirectUri });
+
+    setDisplayFacebookSpinner(false);
+  };
+
+  const clickLoginWithGoogle = async () => {
+    setDisplayGoogleSpinner(true);
+
+    await loginWithGoogle({ loginRedirectUri });
+
+    setDisplayGoogleSpinner(false);
+  };
+
   return (
     <Layout {...props}>
-      {displaySpinner && <Spinner animation="border" size="sm" role="status" aria-hidden="true" />}
-      {!displaySpinner && user && user.isLoggedIn && user.profile.email ? (
+      {user && user.isLoggedIn && user.profile.email ? (
         <>
           <p>
             <Trans ns="login">Logged in as </Trans>
@@ -46,11 +63,8 @@ const Login = (props) => {
             initialValues={{ email: '', password: '' }}
             validationSchema={LoginSchema}
             onSubmit={async ({ email, password }, { setSubmitting }) => {
-              setDisplaySpinner(true);
-
               await loginWithEmail({ email, password });
 
-              setDisplaySpinner(false);
               setSubmitting(false);
             }}
           >
@@ -101,11 +115,10 @@ const Login = (props) => {
                   disabled={isSubmitting || !isValid}
                   className="tw-w-full"
                 >
-                  {isSubmitting ? (
-                    <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
-                  ) : (
-                    <Trans ns="login">Login</Trans>
+                  {isSubmitting && (
+                    <Spinner animation="border" size="sm" role="status" className="tw-mr-2" />
                   )}
+                  <Trans ns="login">Login</Trans>
                 </Button>
               </Form>
             )}
@@ -117,38 +130,39 @@ const Login = (props) => {
 
           <Button
             variant="primary"
-            onClick={() => {
-              loginWithFacebook({ loginRedirectUri });
-            }}
+            onClick={clickLoginWithFacebook}
             className={'tw-w-full'}
+            disabled={displayFacebookSpinner}
           >
-            <div className={'d-flex justify-content-center'}>
-              <FontAwesomeIcon
-                icon={faFacebook}
-                color={'#ffffff'}
-                className={'pointer fa fa-lg'}
-                title="Login with Facebook"
-              />
+            <div className={'d-flex justify-content-center align-items-center'}>
+              {displayFacebookSpinner ? (
+                <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
+              ) : (
+                <FontAwesomeIcon
+                  icon={faFacebook}
+                  color={'#ffffff'}
+                  className={'pointer fa fa-lg'}
+                  title="Login with Facebook"
+                />
+              )}
               <div className={'tw-ml-2'}>
                 <Trans ns="login">Login with Facebook</Trans>
               </div>
             </div>
           </Button>
 
-          <Button
-            variant="primary"
-            onClick={() => {
-              loginWithGoogle({ loginRedirectUri });
-            }}
-            className={'tw-w-full tw-mt-5'}
-          >
-            <div className={'d-flex justify-content-center'}>
-              <FontAwesomeIcon
-                icon={faGoogle}
-                color={'#ffffff'}
-                className={'pointer fa fa-lg'}
-                title="Login with Google"
-              />
+          <Button variant="primary" onClick={clickLoginWithGoogle} className={'tw-w-full tw-mt-5'}>
+            <div className={'d-flex justify-content-center align-items-center'}>
+              {displayGoogleSpinner ? (
+                <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
+              ) : (
+                <FontAwesomeIcon
+                  icon={faGoogle}
+                  color={'#ffffff'}
+                  className={'pointer fa fa-lg'}
+                  title="Login with Google"
+                />
+              )}
               <div className={'tw-ml-2'}>
                 <Trans ns="login">Login with Google</Trans>
               </div>
