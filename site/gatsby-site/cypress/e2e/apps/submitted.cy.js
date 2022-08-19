@@ -452,7 +452,23 @@ describe('Submitted reports', () => {
 
       cy.get('@promoteForm').contains('review >').click();
 
+      Cypress.config('requestTimeout', 5000);
+
+      cy.on('fail', (err) => {
+        expect(err.message).to.include(
+          '`cy.wait()` timed out waiting `5000ms` for the 1st request to the route: `promotionInvoked`. No request ever occurred.'
+        );
+      });
+
+      cy.intercept('**/graphql', (req) => {
+        if (req.body.operationName === 'PromoteSubmission') {
+          req.alias = 'promotionInvoked';
+        }
+      });
+
       cy.get('@promoteForm').contains('button', 'Add New Incident').click();
+
+      cy.wait('@promotionInvoked');
 
       cy.get('[data-cy="toast"]')
         .contains('Please review submission before approving. Some data is missing.')
