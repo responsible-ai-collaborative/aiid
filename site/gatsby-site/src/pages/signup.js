@@ -22,6 +22,7 @@ const SignUpSchema = Yup.object().shape({
 const SignUp = (props) => {
   const {
     user,
+    loading,
     actions: { signUp, loginWithFacebook, loginWithGoogle },
   } = useUserContext();
 
@@ -53,7 +54,12 @@ const SignUp = (props) => {
 
   return (
     <Layout {...props}>
-      {user && user.isLoggedIn && user.profile.email ? (
+      {loading ? (
+        <>
+          <Spinner animation="border" size="sm" role="status" className="tw-mr-2" />
+          <Trans>Loading...</Trans>
+        </>
+      ) : user && user.isLoggedIn && user.profile.email ? (
         <>
           <p>
             <Trans ns="login">Logged in as </Trans>

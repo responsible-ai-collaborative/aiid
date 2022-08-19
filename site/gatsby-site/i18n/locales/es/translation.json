@@ -96,5 +96,6 @@
   "report": "informe",
   "Flag reverted.": "Denuncia cancelada",
   "Incident flagged successfully. Our editors will remove it from this list if it not relevant.": "Incidente denunciado con éxito. Nuestros editores lo eliminarán de la lista si no es relevante.",
-  "review": "revisar"
+  "review": "revisar",
+  "Loading...": "Cargando..."
 }

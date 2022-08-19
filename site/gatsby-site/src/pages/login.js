@@ -48,7 +48,12 @@ const Login = (props) => {
 
   return (
     <Layout {...props}>
-      {!loading && user && user.isLoggedIn && user.profile.email ? (
+      {loading ? (
+        <>
+          <Spinner animation="border" size="sm" role="status" className="tw-mr-2" />
+          <Trans>Loading...</Trans>
+        </>
+      ) : user && user.isLoggedIn && user.profile.email ? (
         <>
           <p>
             <Trans ns="login">Logged in as </Trans>
