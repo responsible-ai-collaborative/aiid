@@ -112,7 +112,9 @@ const Login = (props) => {
                 <Button
                   variant="primary"
                   type="submit"
-                  disabled={isSubmitting || !isValid}
+                  disabled={
+                    isSubmitting || !isValid || displayFacebookSpinner || displayGoogleSpinner
+                  }
                   className="tw-w-full"
                 >
                   {isSubmitting && (
@@ -132,7 +134,7 @@ const Login = (props) => {
             variant="primary"
             onClick={clickLoginWithFacebook}
             className={'tw-w-full'}
-            disabled={displayFacebookSpinner}
+            disabled={displayFacebookSpinner || displayGoogleSpinner}
           >
             <div className={'d-flex justify-content-center align-items-center'}>
               {displayFacebookSpinner ? (
@@ -151,7 +153,12 @@ const Login = (props) => {
             </div>
           </Button>
 
-          <Button variant="primary" onClick={clickLoginWithGoogle} className={'tw-w-full tw-mt-5'}>
+          <Button
+            variant="primary"
+            onClick={clickLoginWithGoogle}
+            className={'tw-w-full tw-mt-5'}
+            disabled={displayGoogleSpinner || displayFacebookSpinner}
+          >
             <div className={'d-flex justify-content-center align-items-center'}>
               {displayGoogleSpinner ? (
                 <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
