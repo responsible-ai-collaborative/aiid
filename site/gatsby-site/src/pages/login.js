@@ -18,6 +18,7 @@ const LoginSchema = Yup.object().shape({
 const Login = (props) => {
   const {
     user,
+    loading,
     actions: { loginWithEmail, loginWithFacebook, loginWithGoogle },
   } = useUserContext();
 
@@ -47,7 +48,7 @@ const Login = (props) => {
 
   return (
     <Layout {...props}>
-      {user && user.isLoggedIn && user.profile.email ? (
+      {!loading && user && user.isLoggedIn && user.profile.email ? (
         <>
           <p>
             <Trans ns="login">Logged in as </Trans>

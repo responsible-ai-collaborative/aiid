@@ -68,6 +68,8 @@ export const UserContextProvider = ({ children }) => {
     redirectToHomePage = false,
   } = {}) => {
     try {
+      setLoading(true);
+
       let credentials = null;
 
       if (email && password) {
@@ -106,11 +108,11 @@ export const UserContextProvider = ({ children }) => {
   };
 
   const loginWithFacebook = async ({ loginRedirectUri }) => {
-    await login({ provider: 'facebook', loginRedirectUri });
+    await login({ provider: 'facebook', loginRedirectUri, redirectToHomePage: true });
   };
 
   const loginWithGoogle = async ({ loginRedirectUri }) => {
-    await login({ provider: 'google', loginRedirectUri });
+    await login({ provider: 'google', loginRedirectUri, redirectToHomePage: true });
   };
 
   const sendResetPasswordEmail = async ({ email }) => {
