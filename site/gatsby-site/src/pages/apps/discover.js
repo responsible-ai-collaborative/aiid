@@ -15,8 +15,10 @@ import { SearchContext } from 'components/discover/useSearch';
 import { queryConfig } from 'components/discover/queryParams';
 import VirtualFilters from 'components/discover/VirtualFilters';
 import Controls from 'components/discover/Controls';
-import { Container, Row, Col } from 'react-bootstrap';
 import { useLocalization } from 'gatsby-theme-i18n';
+import Container from 'elements/Container';
+import Row from 'elements/Row';
+import Col from 'elements/Col';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -240,9 +242,9 @@ function DiscoverApp(props) {
 
           <VirtualFilters />
 
-          <Container className="container-xl mt-4">
-            <Row>
-              <Col>
+          <Container className="tw-container-xl tw-mt-6">
+            <Row className="tw-px-0 tw-mx-0">
+              <Col className="tw-px-0 tw-mx-0">
                 <SearchBox defaultRefinement={query.s} />
               </Col>
             </Row>

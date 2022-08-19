@@ -8,6 +8,9 @@
       "components/*": [
         "src/components/*"
       ],
+      "elements/*": [
+        "src/elements/*"
+      ],
       "hooks/*": [
         "src/hooks/*"
       ],
