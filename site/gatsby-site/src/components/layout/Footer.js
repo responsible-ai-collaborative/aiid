@@ -47,7 +47,7 @@ export default function Footer() {
   } = data;
 
   return (
-    <Container fluid as="footer" className="bg-light" style={{ position: 'relative' }}>
+    <Container fluid as="footer" className="bg-light tw-pt-6" style={{ position: 'relative' }}>
       <div className="sm:tw-grid sm:tw-grid-cols-2 md:tw-grid-cols-4 tw-gap-5 tw-p-5">
         {config.footer.navConfig.map((group) => (
           <div key={group.title}>
