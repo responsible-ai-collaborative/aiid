@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { LocalizedLink } from 'gatsby-theme-i18n';
+import Card from '../../elements/Card';
 
 export default function AboutDatabase({ className }) {
   return (

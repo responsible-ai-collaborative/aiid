@@ -191,7 +191,7 @@ function CitePage(props) {
                   <Trans>Tools</Trans>
                 </h4>
               </Card.Header>
-              <Card.Body>
+              <Card.Body className="tw-flex-row">
                 <Button
                   variant="outline-primary"
                   className="tw-mr-2"
