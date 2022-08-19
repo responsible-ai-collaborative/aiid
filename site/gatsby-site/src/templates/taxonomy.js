@@ -12,6 +12,7 @@ import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
 import Link from 'components/ui/Link';
 import LocationMap from 'components/visualizations/LocationMap';
+import { LocalizedLink } from 'gatsby-theme-i18n';
 
 const Row = styled.div`
   display: flex;
@@ -50,16 +51,17 @@ const FieldNameHeading = styled.h1`
 `;
 
 const StyledLi = styled.li`
-  margin-left: 1em;
+  display: inline;
+  margin-right: 1em;
 `;
 
 const StyledUl = styled.ul`
   padding: 0;
+  display: inline;
+  margin-left: 1em;
 `;
 
-const StatItemText = styled.span`
-  margin-right: 0.7em;
-`;
+const StatItemText = styled.span``;
 
 const StatItem = ({ text, value }) => {
   return (
@@ -122,6 +124,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
 
     return (
       <div>
+        <strong>Discover</strong>:
         <StyledUl>
           {sortedStatsArray
             .filter((item, index) => showAllStats || index < 5)
@@ -140,22 +143,25 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
         </StyledUl>
         {sortedStatsArray.length > 5 && (
           <Button
-            variant="outline-primary"
-            className="btn btn-sm assignment-button"
+            variant="link"
+            className="tw-mb-3 btn btn-sm assignment-button"
             onClick={toggleShowAllStats}
+            style={{ padding: '0px', margin: '0px', textDecoration: 'none' }}
           >
             {`Show ${showAllStats ? 'fewer stats' : 'more stats'}`}
           </Button>
         )}
-        {short_name == 'Location' ? (
-          <LocationMap
-            data={{ columns: sortedStatsArray.map((a) => [a.item, a.value]) }}
-            geocodes={geocodes}
-            className="mt-4 border rounded"
-          />
-        ) : (
-          <BillboardChart data={data} />
-        )}
+        <div className="tw-my-3">
+          {short_name == 'Location' ? (
+            <LocationMap
+              data={{ columns: sortedStatsArray.map((a) => [a.item, a.value]) }}
+              geocodes={geocodes}
+              className="mt-4 border rounded"
+            />
+          ) : (
+            <BillboardChart data={data} />
+          )}
+        </div>
       </div>
     );
   }
@@ -181,6 +187,8 @@ const getStats = (taxa, classification) => {
   const filteredClassification = classification.filter((c) => c.namespace === taxa.namespace);
 
   const stats = {};
+
+  console.log(`taxa.field_list`, taxa.field_list);
 
   taxa.field_list
     .filter((field) => field.permitted_values && field.permitted_values.length > 0)
@@ -278,7 +286,13 @@ const Taxonomy = (props) => {
   const { namespace, description, field_list } = props.pageContext.taxonomy;
 
   const sortedFieldsArray = field_list
-    .sort((a, b) => b.weight - a.weight)
+    .sort((a, b) =>
+      a.instant_facet && !b.instant_facet
+        ? -1
+        : b.instant_facet && !a.instant_facet
+        ? 1
+        : b.weight - a.weight
+    )
     .filter((entry) => entry.public === null || entry.public);
 
   const stats = getStats(props.pageContext.taxonomy, allMongodbAiidprodClassifications.nodes);
@@ -288,9 +302,10 @@ const Taxonomy = (props) => {
   return (
     <Layout {...props}>
       <div className={'titleWrapper'}>
-        <StyledHeading>{namespace}</StyledHeading>
+        <StyledHeading>
+          <LocalizedLink to="/taxonomies">Taxonomies</LocalizedLink> → {namespace}
+        </StyledHeading>
       </div>
-      <Description>{description}</Description>
       <h1 className="heading1">Taxonomy Fields</h1>
       {sortedFieldsArray
         .filter((f) => f.short_name !== 'Publish')
@@ -301,7 +316,6 @@ const Taxonomy = (props) => {
                 {long_name}{' '}
                 {instant_facet && <Badge bg="secondary">Searchable in Discover App</Badge>}
               </FieldNameHeading>
-              <Description>{long_description}</Description>
               <FacetList
                 namespace={namespace}
                 instant_facet={instant_facet}
@@ -310,9 +324,11 @@ const Taxonomy = (props) => {
                 stats={stats}
                 geocodes={geocodes}
               />
+              <Description>{'**Definition**: ' + long_description}</Description>
             </Card>
           </Row>
         ))}
+      <Description>{description}</Description>
     </Layout>
   );
 };

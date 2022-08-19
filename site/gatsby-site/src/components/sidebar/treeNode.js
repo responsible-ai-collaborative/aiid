@@ -11,6 +11,7 @@ import {
   faMedal,
   faSortAlphaDown,
   faNewspaper,
+  faChartPie,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -24,6 +25,7 @@ const getIcon = (label) =>
       <FontAwesomeIcon icon={faSortAlphaDown} className="pointer fa tw-mr-1" fixedWidth />
     ),
     blog: <FontAwesomeIcon icon={faNewspaper} className="pointer fa tw-mr-1" fixedWidth />,
+    taxonomies: <FontAwesomeIcon icon={faChartPie} className="pointer fa tw-mr-1" fixedWidth />,
   }[label]);
 
 const TreeNode = ({ className = '', setCollapsed, navSetting, item }) => {
