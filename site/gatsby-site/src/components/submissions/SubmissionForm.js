@@ -194,6 +194,12 @@ const SubmissionForm = () => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
 
+  const tooShort = values.text.length < 80;
+
+  const tooLong = values.text.length > 50000;
+
+  const textInvalid = touched['text'] && (tooLong || tooShort);
+
   return (
     <>
       <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
@@ -289,10 +295,34 @@ const SubmissionForm = () => {
           {...TextInputGroupProps}
         />
 
-        <Form.Group className="mt-3" data-color-mode="light">
+        <Form.Group className={'mt-3' + (textInvalid ? ' is-invalid' : '')} data-color-mode="light">
           <Label popover="text" label={t('Text')} />
-          <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
+          <div style={{ position: 'relative' }}>
+            {textInvalid && (
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: '0px',
+                  border: '1px solid var(--bs-red)',
+                  zIndex: 10,
+                }}
+              />
+            )}
+            <Editor
+              value={values.text}
+              onChange={(value) => {
+                setFieldValue('text', value);
+                setFieldTouched('text', true);
+              }}
+            />
+          </div>
         </Form.Group>
+        {textInvalid && (
+          <p className="invalid-feedback">
+            {tooShort && <Trans>*Text must have at least 80 characters</Trans>}
+            {tooLong && <Trans>*Text can’t be longer than 50,000 characters</Trans>}
+          </p>
+        )}
 
         <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
 
