@@ -49,38 +49,15 @@ export default function Footer() {
 
   return (
     <Container fluid as="footer" className="bg-light" style={{ position: 'relative' }}>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-around',
-          flexWrap: 'wrap',
-          paddingTop: '1.5em',
-        }}
-      >
+      <div className="sm:tw-grid sm:tw-grid-cols-2 md:tw-grid-cols-4 tw-gap-5 tw-p-5">
         {config.footer.navConfig.map((group) => (
-          <div style={{ padding: '0px', display: 'inline-block' }} key={group.title}>
-            <h3
-              style={{
-                display: 'inline-block',
-                float: 'left',
-                clear: 'both',
-                fontSize: '100%',
-              }}
-            >
-              {group.title}
-            </h3>
-            <ul style={{ padding: '0px', display: 'inline-block', float: 'left', clear: 'both' }}>
+          <div key={group.title}>
+            <h3 className="tw-text-base">{group.title}</h3>
+            <ul className="tw-p-0">
               {group.items.map(
                 (item) =>
                   item.title && (
-                    <li
-                      key={item.title}
-                      style={{
-                        display: 'inline-block',
-                        float: 'left',
-                        clear: 'both',
-                      }}
-                    >
+                    <li key={item.title}>
                       {item.url.includes('http') ? (
                         <a href={item.url}>
                           {item.title}{' '}
@@ -101,8 +78,12 @@ export default function Footer() {
           </div>
         ))}
         <div>
-          <h2 style={{ fontSize: '100%' }}>2022 - AI Incident Database</h2>
-          <Icons>
+          <h3 className="tw-text-base">2022 - AI Incident Database</h3>
+
+          <FooterLink href="/terms-of-use">Terms of use</FooterLink>
+          <br />
+          <FooterLink href="/privacy-policy">Privacy Policy</FooterLink>
+          <Icons className="tw-pt-3">
             <a href={'https://twitter.com/IncidentsDB'} target="_blank" rel="noreferrer">
               <FontAwesomeIcon
                 icon={faTwitterSquare}
@@ -130,9 +111,6 @@ export default function Footer() {
               />
             </a>
           </Icons>
-          <FooterLink href="/terms-of-use">Terms of use</FooterLink>
-          <br />
-          <FooterLink href="/privacy-policy">Privacy Policy</FooterLink>
         </div>
       </div>
     </Container>
