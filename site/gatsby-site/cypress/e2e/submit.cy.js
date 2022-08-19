@@ -66,9 +66,11 @@ describe('The Submit form', () => {
       });
     });
 
-    cy.get('div[class^="ToastContext"]')
+    cy.get('[data-cy="toast"]')
       .contains('Report successfully added to review queue')
-      .should('exist');
+      .should('be.visible');
+
+    cy.get('[data-cy="toast"] a').should('have.attr', 'href', '/apps/submitted');
   });
 
   it('Should submit a new report linked to incident 1 once all fields are filled properly', () => {
@@ -673,6 +675,8 @@ describe('The Submit form', () => {
   it('Should show a popover', () => {
     cy.visit(url);
 
+    cy.wait(0);
+
     cy.get('[data-cy="label-title"]').trigger('mouseover');
 
     cy.get('[data-cy="popover-title"]').should('be.visible');
@@ -696,5 +700,44 @@ describe('The Submit form', () => {
     cy.get('[data-cy="popover-title"]')
       .contains('div', 'La mayoría de los trabajos tienen un')
       .should('exist');
+  });
+
+  it('Should work with translated page', () => {
+    cy.visit(`/es/apps/submit/`);
+
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
+      'submitReport',
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
+
+    cy.get('input[name="url"]').type(
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    cy.get('[data-cy="fetch-info"]').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('input[name="submitters"]').type('Something');
+
+    cy.get('[name="incident_date"]').type('2020-01-01');
+
+    cy.get('[name="editor_notes"').type('Here are some notes');
+
+    cy.get('button[type="submit"]').click();
+
+    cy.wait('@submitReport');
+
+    cy.get('[data-cy="toast"]').should('be.visible');
+
+    cy.get('[data-cy="toast"] a').should('have.attr', 'href', '/es/apps/submitted');
   });
 });

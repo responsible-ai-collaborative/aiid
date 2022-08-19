@@ -206,6 +206,7 @@ const SubmissionForm = () => {
               className="outline-secondary"
               disabled={!!errors.url || !touched.url || parsingNews}
               onClick={() => parseNewsUrl(values.url)}
+              data-cy="fetch-info"
             >
               {' '}
               {!parsingNews ? (
