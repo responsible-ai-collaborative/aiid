@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import { ListGroup, Card, Spinner, Button, ButtonToolbar } from 'react-bootstrap';
 import SimilaritySelector from './SimilaritySelector';
 import { LocalizedLink } from 'gatsby-theme-i18n';
+import { Trans, useTranslation } from 'react-i18next';
 
 const ListContainer = styled(Card)`
   margin: 1em 0;
   .reports {
-    max-height: 80vh;
+    max-height: 33.3333vh;
     overflow-y: auto;
   }
 `;
@@ -45,12 +46,16 @@ const RelatedIncidentsArea = ({
   columnKey,
   header,
   reports,
+  incidents,
   loading,
   setFieldValue,
+  editSimilar = true,
   editId = true,
   error,
 }) => {
-  if (!reports && !loading) {
+  const { t } = useTranslation();
+
+  if (!reports && !incidents && !loading) {
     return null;
   }
 
@@ -61,9 +66,9 @@ const RelatedIncidentsArea = ({
         {loading && <Spinner animation="border" size="sm" className="ms-2" />}
       </ListGroup.Item>
       <div className="reports">
-        {reports &&
-          reports.map((val) => (
-            <ReportRow key={val.url} data-cy="result">
+        {(reports || incidents) &&
+          (reports || incidents).map((val) => (
+            <ReportRow key={val.url || val.incident_id} data-cy="result">
               <span>
                 {val?.incident_id && (
                   <>
@@ -73,14 +78,16 @@ const RelatedIncidentsArea = ({
                     –{' '}
                   </>
                 )}
-                <a href={val.url} data-cy="title" target="_blank" rel="noreferrer">
+                <a href={val.url || '/cite/' + val.incident_id} data-cy="title">
                   {val.title}
                 </a>
               </span>
               <ReportToolbar>
-                {setFieldValue && (
+                {setFieldValue && editSimilar && (
                   <>
-                    <SelectorLabel htmlFor="similar-selector">Related:</SelectorLabel>
+                    <SelectorLabel htmlFor="similar-selector">
+                      <Trans>Related:</Trans>
+                    </SelectorLabel>
                     <SimilaritySelector incident_id={val.incident_id} />
                   </>
                 )}
@@ -89,15 +96,16 @@ const RelatedIncidentsArea = ({
                     data-cy="set-id"
                     className="set-id"
                     onClick={() => setFieldValue && setFieldValue('incident_id', val.incident_id)}
+                    style={{ whiteSpace: 'nowrap' }}
                   >
-                    Use&nbsp;ID&nbsp;<span className="incident-id">#{val.incident_id}</span>
+                    <Trans>Use ID</Trans> <span className="incident-id">#{val.incident_id}</span>
                   </Button>
                 )}
               </ReportToolbar>
             </ReportRow>
           ))}
-        {!loading && reports?.length == 0 && (
-          <ListGroup.Item>{error ? error : 'No related reports found.'}</ListGroup.Item>
+        {!loading && (error || reports?.length == 0 || incidents?.length == 0) && (
+          <ListGroup.Item>{error ? error : t('No related reports found.')}</ListGroup.Item>
         )}
       </div>
     </ListContainer>

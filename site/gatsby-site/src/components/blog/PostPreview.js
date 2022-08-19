@@ -20,7 +20,7 @@ function PostPreview({ post }) {
         </LocalizedLink>
       </div>
       <Card.Body className="tw-flex-col">
-        <Card.Title>
+        <Card.Title as="h1">
           <LocalizedLink to={post.frontmatter.slug}>
             <h5>{post.fields.title}</h5>
           </LocalizedLink>

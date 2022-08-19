@@ -1,83 +1,47 @@
 import React, { useState } from 'react';
-import { Card, Col, Row } from 'react-bootstrap';
-import styled from 'styled-components';
 import Link from 'components/ui/Link';
-import { Button, Modal } from 'react-bootstrap';
 import wu_foundation_blue_logo from './assets/wu-foundation-blue-logo.svg';
 import netlify_dark from './assets/netlify-dark.svg';
 import cloudinary_cloud_glyph_regular from './assets/cloudinary_cloud_glyph_regular.svg';
 import partership_on_ai_logo from './assets/partership-on-ai-logo.png';
 import { Trans } from 'react-i18next';
+import Card from '../../elements/Card';
+import Col from '../../elements/Col';
+import Row from '../../elements/Row';
+import Button from '../../elements/Button';
 
-const StyledImageModal = styled.img`
-  display: flex;
-  margin-left: auto;
-  margin-right: auto;
-  justify-content: space-around;
-  align-items: center;
-  width: 85%;
-  max-width: 355px;
-  max-height: 80px;
-`;
-
-const StyledImage = styled.img`
-  display: flex;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 10px;
-  justify-content: space-around;
-  align-items: center;
-  width: 85%;
-  max-width: 355px;
-  max-height: 80px;
-  cursor: zoom-in;
-`;
-
-const StyledImageCover = styled.img`
-  display: flex;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 30px;
-  justify-content: space-around;
-  align-items: center;
-  max-width: 220px;
-  border: 1px solid black;
-`;
-
-const StyledSubtitle = styled(Card.Subtitle).attrs((props) => ({
-  top: props.top || '30px',
-  bottom: props.bottom || '30px',
-  margin: props.margin || '-.25rem',
-}))`
-  display: flex;
-  margin-left: auto;
-  margin-right: auto;
-  justify-content: space-around;
-  padding-top: ${(props) => props.top};
-  padding-bottom: ${(props) => props.bottom};
-  margin-top: ${(props) => props.margin} !important;
-`;
+import { StyledImage, StyledImageModal, StyledImageCover } from '../../elements/StyledImage';
+import { StyledSubtitle } from '../../elements/StyledTitle';
+import { Modal } from 'react-bootstrap';
 
 const SponsorModal = ({ setModalState, modalState, modalName, children, imagePath, title }) => {
   return (
-    <Modal
-      show={modalState === modalName}
-      onHide={() => setModalState('close')}
-      data-cy="sponsor-modal"
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>{title}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {children}
-        <StyledImageModal src={imagePath} />
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => setModalState('close')} data-cy="close-modal">
-          Close
-        </Button>
-      </Modal.Footer>
-    </Modal>
+    <>
+      {modalState === modalName && (
+        <Modal
+          show={modalState === modalName}
+          onHide={() => setModalState('close')}
+          data-cy="sponsor-modal"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>{title}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {children}
+            <StyledImageModal src={imagePath} />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => setModalState('close')}
+              data-cy="close-modal"
+            >
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
+    </>
   );
 };
 
