@@ -305,6 +305,7 @@ const SubmissionForm = () => {
                   inset: '0px',
                   border: '1px solid var(--bs-red)',
                   zIndex: 10,
+                  pointerEvents: 'none',
                 }}
               />
             )}

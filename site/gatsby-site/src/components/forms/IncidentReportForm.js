@@ -16,6 +16,7 @@ import IncidentIdField from 'components/incidents/IncidentIdField';
 import getSourceDomain from '../../utils/getSourceDomain';
 import supportedLanguages from 'components/i18n/languages.json';
 import { useLocalization } from 'gatsby-theme-i18n';
+import { Trans } from 'react-i18next';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -172,6 +173,12 @@ const IncidentReportForm = () => {
 
   const { config } = useLocalization();
 
+  const tooShort = values.text.length < 80;
+
+  const tooLong = values.text.length > 50000;
+
+  const textInvalid = touched['text'] && (tooLong || tooShort);
+
   return (
     <Form
       onSubmit={(event) => {
@@ -254,10 +261,39 @@ const IncidentReportForm = () => {
         {...TextInputGroupProps}
       />
 
-      <Form.Group className="mt-3" data-color-mode="light" data-cy="text">
+      <Form.Group
+        className={'mt-3' + (textInvalid ? ' is-invalid' : '')}
+        data-color-mode="light"
+        data-cy="text"
+      >
         <Label popover="text" label={'Text'} />
-        <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
+        <div style={{ position: 'relative' }}>
+          {textInvalid && (
+            <div
+              style={{
+                position: 'absolute',
+                inset: '0px',
+                border: '1px solid var(--bs-red)',
+                zIndex: 10,
+                pointerEvents: 'none',
+              }}
+            />
+          )}
+          <Editor
+            value={values.text}
+            onChange={(value) => {
+              setFieldValue('text', value);
+              setFieldTouched('text', true);
+            }}
+          />
+        </div>
       </Form.Group>
+      {textInvalid && (
+        <p className="invalid-feedback">
+          {tooShort && <Trans>*Text must have at least 80 characters</Trans>}
+          {tooLong && <Trans>*Text can’t be longer than 50,000 characters</Trans>}
+        </p>
+      )}
 
       <Form.Group className="mt-3">
         <Label popover="language" label={'Language'} />
