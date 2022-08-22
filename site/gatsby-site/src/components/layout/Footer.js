@@ -3,20 +3,8 @@ import { faRssSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { graphql, useStaticQuery } from 'gatsby';
 import React from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
-import styled from 'styled-components';
-
-const Icons = styled.div`
-  display: flex;
-  gap: 1rem;
-`;
-
-const FooterLink = styled.a`
-  color: inherit;
-  :hover {
-    color: var(--primary3);
-  }
-`;
+import Row from 'elements/Row';
+import Col from 'elements/Col';
 
 export default function Footer() {
   const data = useStaticQuery(graphql`
@@ -48,11 +36,11 @@ export default function Footer() {
   } = data;
 
   return (
-    <Container fluid as="footer" className="bg-light" style={{ position: 'relative' }}>
-      <Row className="justify-content-md-center p-4">
-        <Col xs="auto">2022 - AI Incident Database</Col>
-        <Col xs="auto">
-          <Icons>
+    <footer className="tw-bg-text-light-gray tw-relative">
+      <Row className="tw-flex-row tw-justify-center tw-p-4">
+        <Col className="tw-w-auto">2022 - AI Incident Database</Col>
+        <Col className="tw-w-auto">
+          <div className="tw-flex tw-gap-4">
             <a href={'https://twitter.com/IncidentsDB'} target="_blank" rel="noreferrer">
               <FontAwesomeIcon
                 icon={faTwitterSquare}
@@ -79,15 +67,19 @@ export default function Footer() {
                 title="Open RSS Feed"
               />
             </a>
-          </Icons>
+          </div>
         </Col>
-        <Col xs="auto">
-          <FooterLink href="/terms-of-use">Terms of use</FooterLink>
+        <Col className="tw-w-auto">
+          <a className="tw-footer-link" href="/terms-of-use">
+            Terms of use
+          </a>
         </Col>
-        <Col xs="auto">
-          <FooterLink href="/privacy-policy">Privacy</FooterLink>
+        <Col className="tw-w-auto">
+          <a className="tw-footer-link" href="/privacy-policy">
+            Privacy
+          </a>
         </Col>
       </Row>
-    </Container>
+    </footer>
   );
 }
