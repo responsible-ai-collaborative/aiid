@@ -40,6 +40,10 @@ import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncident
 // * date_modified: `2019-07-25` # (Date or null) Date the report was edited.
 // * language: "en" # (string) The language identifier of the report.
 
+const minTextLength = 80;
+
+const maxTextLength = 50000;
+
 // Schema for yup
 export const schema = yup.object().shape({
   title: yup
@@ -56,11 +60,7 @@ export const schema = yup.object().shape({
     .string()
     .min(3, '*Submitter must have at least 3 characters')
     .max(200, "*Submitter list can't be longer than 200 characters"),
-  text: yup
-    .string()
-    .min(80, '*Text must have at least 80 characters')
-    .max(50000, "*Text can't be longer than 50000 characters")
-    .required('*Text is required'),
+  text: yup.string().min(minTextLength).max(maxTextLength).required(),
   date_published: yup
     .string()
     .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
@@ -194,9 +194,9 @@ const SubmissionForm = () => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
 
-  const tooShort = values.text.length < 80;
+  const tooShort = values.text.length < minTextLength;
 
-  const tooLong = values.text.length > 50000;
+  const tooLong = values.text.length > maxTextLength;
 
   const textInvalid = touched['text'] && (tooLong || tooShort);
 
@@ -320,8 +320,16 @@ const SubmissionForm = () => {
         </Form.Group>
         {textInvalid && (
           <p className="invalid-feedback">
-            {tooShort && <Trans>*Text must have at least 80 characters</Trans>}
-            {tooLong && <Trans>*Text can’t be longer than 50,000 characters</Trans>}
+            {tooShort && (
+              <Trans minTextLength={minTextLength}>
+                *Text must have at least {{ minTextLength }} characters
+              </Trans>
+            )}
+            {tooLong && (
+              <Trans maxTextLength={maxTextLength}>
+                *Text can’t be longer than {{ maxTextLength }} characters
+              </Trans>
+            )}
           </p>
         )}
 
