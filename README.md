@@ -102,6 +102,7 @@ Create a `.env` file under `site/gatsby-site` with the following contents:
 
 ```
 GATSBY_REALM_APP_ID=aiidstitch2-vsdrv
+GATSBY_REALM_APP_GRAPHQL_URL=[to be updated in "Deploy the Realm App" section]
 MONGODB_CONNECTION_STRING=mongodb+srv://readonlyuser:gfz2JXY1SDmworgw@aiiddev.6zxh5.mongodb.net
 MONGODB_REPLICA_SET=aiiddev-shard-00-02.6zxh5.mongodb.net,aiiddev-shard-00-01.6zxh5.mongodb.net,aiiddev-shard-00-00.6zxh5.mongodb.net
 
@@ -163,9 +164,13 @@ Finally, update the previously created `.env`:
 
 ```
 GATSBY_REALM_APP_ID=aiidstitch2-<REALM_APP_ID>
+GATSBY_REALM_APP_GRAPHQL_URL=https://<REALM_APP_REGION>.aws.realm.mongodb.com/api/client/v2.0/app/aiidstitch2-<REALM_APP_ID>/graphql
 MONGODB_CONNECTION_STRING=mongodb+srv://<username>:<password>@aiiddev.<CLUSTER>.mongodb.net
 MONGODB_REPLICA_SET=aiiddev-shard-00-00.<CLUSTER>.mongodb.net,aiiddev-shard-00-01.<CLUSTER>.mongodb.net,aiiddev-shard-00-02.<CLUSTER>.mongodb.net
 ```
+
+To get the `GATSBY_REALM_APP_GRAPHQL_URL` value, go to Atlas Service App page, then select "GraphQL" on the left side of the page, and then copy the GraphQL Endpoint URL.
+
 Restart Gatsby, and your local app should fetch data from your MongoDB environment!
 
 ### Algolia environment setup
@@ -280,6 +285,7 @@ AWS_LAMBDA_JS_RUNTIME=nodejs14.x # required to run the Gatsby v4
 GATSBY_ALGOLIA_APP_ID=
 GATSBY_ALGOLIA_SEARCH_KEY=
 GATSBY_REALM_APP_ID=
+GATSBY_REALM_APP_GRAPHQL_URL=
 MONGODB_CONNECTION_STRING=
 MONGODB_REPLICA_SET=
 GATSBY_EXCLUDE_DATASTORE_FROM_BUNDLE=1 # specific to Netlify, for large sites
@@ -290,6 +296,7 @@ Two workflows take care of deploying the Realm app to both `production` and `sta
 These environments must contain the following variables:
 ```
 GATSBY_REALM_APP_ID=
+GATSBY_REALM_APP_GRAPHQL_URL=
 REALM_API_PRIVATE_KEY=
 REALM_API_PUBLIC_KEY=
 ```
