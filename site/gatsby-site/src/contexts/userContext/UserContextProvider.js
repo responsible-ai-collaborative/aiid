@@ -15,7 +15,7 @@ import useLocalizePath from 'components/i18n/useLocalizePath';
 const getApolloCLient = (getValidAccessToken) =>
   new ApolloClient({
     link: new HttpLink({
-      uri: `${config.realm.production_db.realm_app_graphql_url}`,
+      uri: `https://realm.mongodb.com/api/client/v2.0/app/${config.realm.production_db.realm_app_id}/graphql`,
       fetch: async (uri, options) => {
         const accessToken = await getValidAccessToken();
 

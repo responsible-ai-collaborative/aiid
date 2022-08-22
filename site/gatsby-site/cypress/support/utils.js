@@ -9,11 +9,11 @@ export const getApolloClient = () => {
 
   const password = Cypress.env('e2ePassword');
 
-  const realmAppGraphqlUrl = Cypress.env('realmAppGraphqlUrl');
+  const realmAppId = Cypress.env('realmAppId');
 
   const client = new ApolloClient({
     link: new HttpLink({
-      uri: `${realmAppGraphqlUrl}`,
+      uri: `https://realm.mongodb.com/api/client/v2.0/app/${realmAppId}/graphql`,
 
       fetch: async (uri, options) => {
         options.headers.email = email;

@@ -16,7 +16,6 @@ const config = {
       db_service: 'mongodb-atlas',
       db_name: 'aiidprod',
       db_collection: 'incidents',
-      realm_app_graphql_url: process.env.GATSBY_REALM_APP_GRAPHQL_URL,
     },
     graphqlApiKey: process.env.REALM_GRAPHQL_API_KEY,
   },
