@@ -24,11 +24,13 @@ describe('The Submit form', () => {
 
     cy.get('input[name="submitters"]').type('Something');
 
-    cy.get('[class*="Typeahead"]').type('New Tag{enter}');
-
     cy.get('[name="incident_date"]').type('2020-01-01');
 
     cy.get('[name="language"]').select('Spanish');
+
+    cy.get('[data-cy="extra-fields"]').click();
+
+    cy.get('[class*="Typeahead"]').type('New Tag{enter}');
 
     cy.get('[name="editor_notes"').type('Here are some notes');
 
@@ -76,24 +78,6 @@ describe('The Submit form', () => {
   it('Should submit a new report linked to incident 1 once all fields are filled properly', () => {
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
-    cy.visit(url);
-
-    cy.get('input[name="url"]').type(
-      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
-    );
-
-    cy.get('button').contains('Fetch info').click();
-
-    cy.get('input[name="submitters"]').type('Something');
-
-    cy.get('[class*="Typeahead"]').type('New Tag{enter}');
-
-    cy.setEditorText(
-      `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
-    );
-
-    cy.get('[name="editor_notes"').type('Here are some notes');
-
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
@@ -111,20 +95,6 @@ describe('The Submit form', () => {
       }
     );
 
-    // Set the ID from the button in the list of semantically similar incidents
-    cy.get('[data-cy=related-byText] [data-cy=result] [data-cy=set-id]')
-      .contains('#1')
-      .first()
-      .click();
-
-    cy.get(
-      '[data-cy=related-byText] [data-cy=result] [data-cy="similar-selector"] [data-cy="similar"]'
-    )
-      .last()
-      .click();
-
-    cy.wait('@findIncident');
-
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'InsertSubmission',
@@ -135,31 +105,6 @@ describe('The Submit form', () => {
         },
       }
     );
-
-    cy.get('button[type="submit"]').click();
-
-    cy.wait('@submitReport').then((xhr) => {
-      expect(xhr.request.body.variables.submission).to.deep.include({
-        title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
-        submitters: ['Something'],
-        authors: ['Valentina Palladino'],
-        date_published: '2017-11-10',
-        image_url:
-          'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
-        cloudinary_id:
-          'reports/cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
-        tags: ['New Tag'],
-        incident_id: 1,
-        url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
-        source_domain: `arstechnica.com`,
-        editor_notes: 'Here are some notes',
-      });
-      expect(xhr.request.body.variables.submission.editor_similar_incidents.length == 1).to.be.true;
-    });
-
-    cy.get('div[class^="ToastContext"]')
-      .contains('Report successfully added to review queue')
-      .should('exist');
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -191,6 +136,65 @@ describe('The Submit form', () => {
         },
       }
     );
+
+    cy.visit(url);
+
+    cy.get('input[name="url"]').type(
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    cy.get('button').contains('Fetch info').click();
+
+    cy.get('input[name="submitters"]').type('Something');
+
+    cy.setEditorText(
+      `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
+    );
+
+    // Set the ID from the button in the list of semantically similar incidents
+    cy.get('[data-cy=related-byText] [data-cy=result] [data-cy=set-id]')
+      .contains('#1')
+      .first()
+      .click();
+
+    cy.get(
+      '[data-cy=related-byText] [data-cy=result] [data-cy="similar-selector"] [data-cy="similar"]'
+    )
+      .last()
+      .click();
+
+    cy.wait('@findIncident');
+
+    cy.get('[data-cy="extra-fields"]').click();
+
+    cy.get('[class*="Typeahead"]').type('New Tag{enter}');
+
+    cy.get('[name="editor_notes"').type('Here are some notes');
+
+    cy.get('button[type="submit"]').click();
+
+    cy.wait('@submitReport').then((xhr) => {
+      expect(xhr.request.body.variables.submission).to.deep.include({
+        title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
+        submitters: ['Something'],
+        authors: ['Valentina Palladino'],
+        date_published: '2017-11-10',
+        image_url:
+          'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+        cloudinary_id:
+          'reports/cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+        tags: ['New Tag'],
+        incident_id: 1,
+        url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
+        source_domain: `arstechnica.com`,
+        editor_notes: 'Here are some notes',
+      });
+      expect(xhr.request.body.variables.submission.editor_similar_incidents.length == 1).to.be.true;
+    });
+
+    cy.get('div[class^="ToastContext"]')
+      .contains('Report successfully added to review queue')
+      .should('exist');
 
     cy.visit('/apps/submitted');
 
@@ -619,6 +623,8 @@ describe('The Submit form', () => {
       editor_notes: 'Here are some notes',
     };
 
+    cy.get('[data-cy="extra-fields"]').click();
+
     for (const key in values) {
       cy.get(`[name="${key}"]`).type(values[key]);
     }
@@ -655,6 +661,8 @@ describe('The Submit form', () => {
       image_url: 'https://test.com/image.jpg',
       editor_notes: 'Here are some notes',
     };
+
+    cy.get('[data-cy="extra-fields"]').click();
 
     for (const key in values) {
       cy.get(`[name="${key}"]`).type(values[key]);
@@ -729,6 +737,8 @@ describe('The Submit form', () => {
     cy.get('input[name="submitters"]').type('Something');
 
     cy.get('[name="incident_date"]').type('2020-01-01');
+
+    cy.get('[data-cy="extra-fields"]').click();
 
     cy.get('[name="editor_notes"').type('Here are some notes');
 

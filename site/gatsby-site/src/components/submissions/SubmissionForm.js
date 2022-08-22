@@ -164,8 +164,9 @@ const SubmissionForm = () => {
   const [parsingNews, setParsingNews] = useState(false);
 
   useEffect(() => {
-    setFieldValue('date_downloaded', new Date().toISOString().substr(0, 10));
-    console.log(`setFieldValue('date_downloaded')`);
+    if (!values['date_downloaded']) {
+      setFieldValue('date_downloaded', new Date().toISOString().substr(0, 10));
+    }
   }, []);
 
   const parseNewsUrl = useCallback(
@@ -376,7 +377,7 @@ const SubmissionForm = () => {
         )}
 
         <details className="tw-pt-5">
-          <summary>Tell us more...</summary>
+          <summary data-cy="extra-fields">Tell us more...</summary>
           <TextInputGroup
             name="description"
             label="Description"
