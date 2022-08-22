@@ -93,6 +93,8 @@ export const UserContextProvider = ({ children }) => {
       }
       return true;
     } catch (e) {
+      setLoading(false);
+
       addToast({
         message: (
           <label className="tw-capitalize">{t(e.error || 'An unknown error has ocurred')}</label>
