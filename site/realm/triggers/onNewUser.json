@@ -5,7 +5,8 @@
         "operation_type": "CREATE",
         "providers": [
             "local-userpass",
-            "oauth2-facebook"
+            "oauth2-facebook",
+            "oauth2-google"
         ]
     },
     "disabled": false,
