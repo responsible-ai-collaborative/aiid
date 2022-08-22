@@ -146,6 +146,10 @@ class AlgoliaUpdater {
     return this.mongoClient.db('aiidprod').collection(`incidents`).find({}).toArray();
   };
 
+  getDuplicates = async () => {
+    return this.mongoClient.db('aiidprod').collection(`duplicates`).find({}).toArray();
+  };
+
   getReports = async ({ language }) => {
     const projection = {
       _id: 1,
@@ -213,7 +217,7 @@ class AlgoliaUpdater {
 
     await index.saveObjects(entries);
 
-    index
+    await index
       .setSettings({
         ...algoliaSettings,
         attributeForDistinct: 'incident_id',
@@ -228,6 +232,25 @@ class AlgoliaUpdater {
           ranking: ['desc(featured)', 'desc(text)'],
         });
       });
+  };
+
+  deleteDuplicates = async ({ language }) => {
+    await this.mongoClient.connect();
+
+    const indexName = `instant_search-${language}`;
+
+    const index = await this.algoliaClient.initIndex(indexName);
+
+    const duplicates = await this.getDuplicates();
+
+    const filters = duplicates
+      .map((d) => d.duplicate_incident_number)
+      .map((id) => `incident_id = ${id}`)
+      .join(' OR ');
+
+    await index.deleteBy({ filters });
+
+    await this.mongoClient.close();
   };
 
   async generateIndex({ language }) {
@@ -254,6 +277,8 @@ class AlgoliaUpdater {
         `Uploading Algolia index of [${language}] with [${entries.length}] entries`
       );
       await this.uploadToAlgolia({ entries, language });
+
+      await this.deleteDuplicates({ language });
     }
   }
 }
