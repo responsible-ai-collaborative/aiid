@@ -131,6 +131,11 @@ const SubmissionForm = () => {
 
   const [parsingNews, setParsingNews] = useState(false);
 
+  useEffect(() => {
+    setFieldValue('date_downloaded', new Date().toISOString().substr(0, 10));
+    console.log(`setFieldValue('date_downloaded')`);
+  }, []);
+
   const parseNewsUrl = useCallback(
     async (newsUrl) => {
       setParsingNews(true);
