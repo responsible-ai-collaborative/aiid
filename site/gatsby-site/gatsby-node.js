@@ -238,43 +238,39 @@ exports.onPreBootstrap = async ({ reporter }) => {
       config.header.search.algoliaAdminKey &&
       config.header.search.algoliaAppId
     ) {
-      try {
-        if (process.env.TRANSLATE_DRY_RUN !== 'false') {
-          reporter.warn(
-            'Please set `TRANSLATE_DRY_RUN=false` to disble dry running of translation process.'
-          );
-        }
-
-        translationsActivity.setStatus('Translating incident reports...');
-
-        const translateClient = new Translate({ key: config.i18n.translateApikey });
-
-        const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
-
-        const languages = getLanguages();
-
-        const translator = new Translator({ mongoClient, translateClient, languages, reporter });
-
-        await translator.run();
-
-        translationsActivity.setStatus('Updating incidents indexes...');
-
-        const algoliaClient = algoliasearch(
-          config.header.search.algoliaAppId,
-          config.header.search.algoliaAdminKey
+      if (process.env.TRANSLATE_DRY_RUN !== 'false') {
+        reporter.warn(
+          'Please set `TRANSLATE_DRY_RUN=false` to disble dry running of translation process.'
         );
-
-        const algoliaUpdater = new AlgoliaUpdater({
-          languages,
-          mongoClient,
-          algoliaClient,
-          reporter,
-        });
-
-        await algoliaUpdater.run();
-      } catch (e) {
-        reporter.warn('Error running translation scripts:', e);
       }
+
+      translationsActivity.setStatus('Translating incident reports...');
+
+      const translateClient = new Translate({ key: config.i18n.translateApikey });
+
+      const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
+
+      const languages = getLanguages();
+
+      const translator = new Translator({ mongoClient, translateClient, languages, reporter });
+
+      await translator.run();
+
+      translationsActivity.setStatus('Updating incidents indexes...');
+
+      const algoliaClient = algoliasearch(
+        config.header.search.algoliaAppId,
+        config.header.search.algoliaAdminKey
+      );
+
+      const algoliaUpdater = new AlgoliaUpdater({
+        languages,
+        mongoClient,
+        algoliaClient,
+        reporter,
+      });
+
+      await algoliaUpdater.run();
     } else {
       throw `Missing environment variable, can't run translation process.`;
     }
