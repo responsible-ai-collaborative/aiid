@@ -27,7 +27,7 @@ const createEntitiesPages = async (graphql, createPage) => {
         const id = slugify(name, { lower: true });
 
         if (!entititiesHash[id]) {
-          entititiesHash[id] = { incidents: [] };
+          entititiesHash[id] = { name, incidents: [] };
         }
 
         if (!entititiesHash[id].incidents.includes(incident.incident_id)) {
@@ -47,10 +47,19 @@ const createEntitiesPages = async (graphql, createPage) => {
       component: path.resolve('./src/templates/entity.js'),
       context: {
         key,
+        name: entity.name,
         incidents: entity.incidents,
       },
     });
   }
+
+  createPage({
+    path: '/entities',
+    component: path.resolve('./src/templates/entities.js'),
+    context: {
+      entititiesHash,
+    },
+  });
 };
 
 module.exports = createEntitiesPages;
