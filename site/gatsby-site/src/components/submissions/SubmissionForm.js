@@ -279,43 +279,9 @@ const SubmissionForm = () => {
         />
 
         <TextInputGroup
-          name="description"
-          label="Description"
-          as="textarea"
-          placeholder="Report Description"
-          rows={3}
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
-
-        <TextInputGroup
-          name="developers"
-          label="Alleged developer of AI system"
-          placeholder="Alleged developer of AI system"
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
-
-        <TextInputGroup
-          name="deployers"
-          label="Alleged deployer of AI system"
-          placeholder="Alleged deployer of AI system"
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
-
-        <TextInputGroup
-          name="harmed_parties"
-          label="Alleged harmed or nearly harmed parties"
-          placeholder="Alleged harmed or nearly harmed parties"
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
-
-        <TextInputGroup
           name="authors"
-          label={t('Author CSV')}
-          placeholder={t('Author CSV')}
+          label={t('Author(s)')}
+          placeholder={t('The author or authors of the report, separated by commas')}
           className="mt-3"
           {...TextInputGroupProps}
         />
@@ -324,8 +290,8 @@ const SubmissionForm = () => {
 
         <TextInputGroup
           name="submitters"
-          label={t('Submitter CSV')}
-          placeholder={t('Submitter CSV')}
+          label={t('Submitter(s)')}
+          placeholder={t('Your name as you would like it to appear in the leaderboard')}
           className="mt-3"
           {...TextInputGroupProps}
         />
@@ -384,11 +350,6 @@ const SubmissionForm = () => {
           </Form.Select>
         </Form.Group>
 
-        <Form.Group className="mt-3">
-          <Label popover="tags" label={t('Tags')} />
-          <TagsControl name={'tags'} />
-        </Form.Group>
-
         <IncidentIdField
           name="incident_id"
           className="mt-3"
@@ -414,15 +375,56 @@ const SubmissionForm = () => {
           />
         )}
 
-        <TextInputGroup
-          name="editor_notes"
-          label={t('Editor Notes')}
-          as="textarea"
-          placeholder={t('Optional context and notes about the incident')}
-          rows={8}
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
+        <details className="tw-pt-5">
+          <summary>Tell us more...</summary>
+          <TextInputGroup
+            name="description"
+            label="Description"
+            as="textarea"
+            placeholder="Report Description"
+            rows={3}
+            className="mt-3"
+            {...TextInputGroupProps}
+          />
+
+          <Form.Group className="mt-3">
+            <Label popover="tags" label={t('Tags')} />
+            <TagsControl name={'tags'} />
+          </Form.Group>
+
+          <TextInputGroup
+            name="developers"
+            label="Alleged developer of AI system"
+            placeholder="Who created or built the technology involved in the incident"
+            className="mt-3"
+            {...TextInputGroupProps}
+          />
+
+          <TextInputGroup
+            name="deployers"
+            label="Alleged deployer of AI system"
+            placeholder="Who employed or was responsible for the technology?"
+            className="mt-3"
+            {...TextInputGroupProps}
+          />
+
+          <TextInputGroup
+            name="harmed_parties"
+            label="Alleged harmed or nearly harmed parties"
+            placeholder="Who experienced negative impacts"
+            className="mt-3"
+            {...TextInputGroupProps}
+          />
+          <TextInputGroup
+            name="editor_notes"
+            label={t('Editor Notes')}
+            as="textarea"
+            placeholder={t('Optional context and notes about the incident')}
+            rows={8}
+            className="mt-3"
+            {...TextInputGroupProps}
+          />
+        </details>
       </Form>
     </>
   );
