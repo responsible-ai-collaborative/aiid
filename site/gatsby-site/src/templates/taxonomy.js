@@ -12,7 +12,6 @@ import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
 import Link from 'components/ui/Link';
 import LocationMap from 'components/visualizations/LocationMap';
-import { LocalizedLink } from 'gatsby-theme-i18n';
 
 const Row = styled.div`
   display: flex;
@@ -300,9 +299,7 @@ const Taxonomy = (props) => {
   return (
     <Layout {...props}>
       <div className={'titleWrapper'}>
-        <StyledHeading>
-          <LocalizedLink to="/taxonomies">Taxonomies</LocalizedLink> → {namespace}
-        </StyledHeading>
+        <StyledHeading>{namespace}</StyledHeading>
       </div>
       <h1 className="heading1">Taxonomy Fields</h1>
       {sortedFieldsArray

@@ -127,7 +127,7 @@ const config = {
     navConfig: [
       { title: 'Welcome to the AIID', label: 'welcome', url: '/', items: [] },
       { title: 'Discover Incidents', label: 'discover', url: '/apps/discover', items: [] },
-      { title: 'Taxonomies', label: 'taxonomies', url: '/taxonomy/cset', items: [] },
+      { title: 'Taxonomies', label: 'taxonomies', url: '/taxonomies', items: [] },
       { title: 'Word Counts', label: 'wordcounts', url: '/summaries/wordcounts', items: [] },
       { title: 'Submit Incident Reports', label: 'submit', url: '/apps/submit', items: [] },
       {
