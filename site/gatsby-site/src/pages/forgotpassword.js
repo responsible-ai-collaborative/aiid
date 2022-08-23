@@ -37,7 +37,9 @@ const ForgotPassword = (props) => {
           } catch (e) {
             addToast({
               message: (
-                <div className={'capitalize'}>{t(e.error || 'An unknown error has ocurred')}</div>
+                <label className="tw-capitalize">
+                  {t(e.error || 'An unknown error has ocurred')}
+                </label>
               ),
               severity: SEVERITY.danger,
             });
