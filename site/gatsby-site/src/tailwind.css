@@ -305,6 +305,10 @@
     .tw-header-icons-container .paddingAround {
         @apply tw-pr-2;
     }
+    
+    .tw-footer-link {
+        @apply tw-text-inherit hover:tw-text-primary-blue;
+    }
 }
 
 @layer utilities {
