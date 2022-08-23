@@ -73,7 +73,7 @@
     }
 
     .tw-skip-to-content {
-        @apply tw-text-white tw-bg-gray-900 tw-relative tw-order-1 tw-ml-auto tw-opacity-0 tw-w-0 tw-h-0 tw-overflow-hidden focus:tw-opacity-100 focus:tw-py-[0ch] focus:tw-px-[1ch] 767px:tw-text-xs;
+        @apply tw-text-white tw-bg-transparent tw-relative tw-order-1 tw-ml-auto tw-opacity-0 tw-w-0 tw-h-0 tw-overflow-hidden focus:tw-opacity-100 focus:tw-py-[0ch] focus:tw-px-[1ch] focus:tw-w-[unset] focus:tw-h-[unset]  767px:tw-text-xs;
     }
 
 }
@@ -305,7 +305,7 @@
     .tw-header-icons-container .paddingAround {
         @apply tw-pr-2;
     }
-    
+
     .tw-footer-link {
         @apply tw-text-inherit hover:tw-text-primary-blue;
     }
