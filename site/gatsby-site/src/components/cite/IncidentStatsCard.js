@@ -42,7 +42,7 @@ const IncidentStatsCard = ({ incidentId, reportCount, incidentDate, editors }) =
           <Trans>Incident Stats</Trans>
         </h4>
       </Card.Header>
-      <Card.Body className="tw-grid tw-max-w-full tw-p-5 tw-grid-cols-1fr-3fr">
+      <Card.Body className="grid max-w-full p-5 grid-cols-1fr-3fr">
         <div>
           {STATS.map((stat) => (
             <div key={stat.key}>{stat.label}</div>

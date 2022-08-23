@@ -82,7 +82,7 @@ const LandingPage = (props) => {
 
         <Row>
           <Col
-            className="tw-mt-4 md:tw-flex-0-0-auto md:tw-w-full 992px:tw-flex-0-0-auto 992px:tw-w-2/4"
+            className="tw-mt-4 md:flex-0-0-auto md:w-full 992px:flex-0-0-auto 992px:w-2/4"
             sm={12}
             md={12}
             lg={6}
@@ -90,7 +90,7 @@ const LandingPage = (props) => {
             <AboutDatabase className="h-100" />
           </Col>
           <Col
-            className="tw-mt-4 md:tw-flex-0-0-auto md:tw-w-full 992px:tw-flex-0-0-auto 992px:tw-w-2/4"
+            className="tw-mt-4 md:flex-0-0-auto md:w-full 992px:flex-0-0-auto 992px:w-2/4"
             sm={12}
             md={12}
             lg={6}
@@ -112,10 +112,10 @@ const LandingPage = (props) => {
         </Row>
 
         <Row>
-          <Col className="tw-p-3 " md={12} lg={6}>
+          <Col className="p-3 " md={12} lg={6}>
             <WordCounts localWordCounts={localWordCounts} />
           </Col>
-          <Col className="tw-p-3" md={12} lg={6}>
+          <Col className="p-3" md={12} lg={6}>
             <RandomReports />
           </Col>
         </Row>

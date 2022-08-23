@@ -134,14 +134,14 @@ function CitePage(props) {
           <Col>
             <Card
               data-cy="citation"
-              className="tw-border-1.5 tw-border-border-light-gray tw-rounded-5px tw-shadow-card"
+              className="border-1.5 border-border-light-gray rounded-5px shadow-card"
             >
-              <Card.Header className="tw-items-center tw-justify-between">
-                <h4 className="tw-m-0">
+              <Card.Header className="items-center justify-between">
+                <h4 className="m-0">
                   <Trans>Suggested citation format</Trans>
                 </h4>
               </Card.Header>
-              <Card.Body className="tw-block">
+              <Card.Body className="block">
                 <Citation
                   nodes={incidentReports}
                   incidentDate={incident.date}
@@ -153,7 +153,7 @@ function CitePage(props) {
           </Col>
         </Row>
 
-        <Row className="tw-mt-6">
+        <Row className="mt-6">
           <Col>
             <div data-cy={'incident-stats'}>
               <IncidentStatsCard
@@ -168,10 +168,10 @@ function CitePage(props) {
           </Col>
         </Row>
 
-        <Row className="tw-mt-6">
+        <Row className="mt-6">
           <Col>
-            <Card className="tw-shadow-card">
-              <Card.Header className="tw-items-center tw-justify-between">
+            <Card className="shadow-card">
+              <Card.Header className="items-center justify-between">
                 <h4>
                   <Trans>Reports Timeline</Trans>
                 </h4>
@@ -183,18 +183,18 @@ function CitePage(props) {
           </Col>
         </Row>
 
-        <Row className="tw-mt-6">
+        <Row className="mt-6">
           <Col>
-            <Card className="tw-shadow-card">
-              <Card.Header className="tw-items-center tw-justify-between">
+            <Card className="shadow-card">
+              <Card.Header className="items-center justify-between">
                 <h4>
                   <Trans>Tools</Trans>
                 </h4>
               </Card.Header>
-              <Card.Body className="tw-flex-row">
+              <Card.Body className="flex-row">
                 <Button
                   variant="outline-primary"
-                  className="tw-mr-2"
+                  className="mr-2"
                   href={`/apps/submit?incident_id=${incident.incident_id}&date_downloaded=${format(
                     new Date(),
                     'yyyy-MM-dd'
@@ -249,7 +249,7 @@ function CitePage(props) {
           </Row>
         )}
 
-        <Row className="tw-mt-6">
+        <Row className="mt-6">
           <Col>
             <Card>
               <ImageCarousel nodes={incidentReports} />
@@ -257,9 +257,9 @@ function CitePage(props) {
           </Col>
         </Row>
 
-        <Row className="tw-mt-6">
+        <Row className="mt-6">
           <Col>
-            <div className="tw-pb-5">
+            <div className="pb-5">
               <div className={'titleWrapper'}>
                 <h1 className="tw-styled-heading">
                   <Trans>Incidents Reports</Trans>

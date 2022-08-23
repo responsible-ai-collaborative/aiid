@@ -18,11 +18,11 @@ function OptionsModal({ setHideDuplicates, hideDuplicates }) {
 
   return (
     <>
-      <Row className="tw-my-4 md:tw-hidden">
-        <Col className="tw-flex tw-items-center">
+      <Row className="tw-my-4 md:hidden">
+        <Col className="flex items-center">
           <Stats />
         </Col>
-        <Col className="tw-flex tw-justify-end">
+        <Col className="flex justify-end">
           <ClearFilters>
             <Trans>Clear</Trans>
           </ClearFilters>

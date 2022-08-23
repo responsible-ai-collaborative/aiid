@@ -26,7 +26,7 @@ export const useModal = () => {
 };
 
 export const CustomModal = ({ close, isOpen, target }) => (
-  <Modal dialogClassName="tw-max-w-[80%] 800px:tw-max-w-full" show={isOpen} onHide={close}>
+  <Modal dialogClassName="max-w-[80%] 800px:max-w-full" show={isOpen} onHide={close}>
     <Modal.Header closeButton>
       <Modal.Title>{target.title}</Modal.Title>
     </Modal.Header>

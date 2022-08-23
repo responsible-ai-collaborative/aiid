@@ -153,12 +153,12 @@ const PreviewImageInputGroup = ({
         className={className}
         handleBlur={handleBlur}
       />
-      <figure data-cy="image-preview-figure" id="image-preview-figure" className="tw-text-center">
-        <div className="tw-h-[50vh] tw-flex tw-items-center tw-justify-center">
+      <figure data-cy="image-preview-figure" id="image-preview-figure" className="text-center">
+        <div className="h-[50vh] flex items-center justify-center">
           {updatingImage ? (
             <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" />
           ) : (
-            <Image className={'mt-3 -tw-mt-4 tw-mr-auto tw-mb-4'} publicID={cloudinaryID} />
+            <Image className={'mt-3 -tw-mt-4 mr-auto mb-4'} publicID={cloudinaryID} />
           )}
         </div>
         <figcaption>

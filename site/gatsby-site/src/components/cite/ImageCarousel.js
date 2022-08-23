@@ -15,7 +15,7 @@ const ImageCarousel = ({ nodes }) => {
       {nodes.map((value, index) => (
         <Carousel.Item key={index}>
           <Image
-            className="tw-h-[640px] tw-object-cover tw-w-full"
+            className="h-[640px] object-cover w-full"
             publicID={value.cloudinary_id ? value.cloudinary_id : `legacy/${md5(value.image_url)}`}
             alt={value.title}
             transformation={fill().height(640)}

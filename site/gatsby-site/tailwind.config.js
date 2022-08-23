@@ -17,12 +17,11 @@ let safelist = [
 
 // Whitelisting level options from ListItem component
 for (let i = 0; i < 100; i++) {
-  safelist.push(`tw-pl-[${2 + (i || 0) * 1}rem`);
+  safelist.push(`pl-[${2 + (i || 0) * 1}rem`);
 }
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  prefix: 'tw-',
   content: [
     './src/pages/**/*.{js,jsx,ts,tsx}',
     './src/components/**/*.{js,jsx,ts,tsx}',

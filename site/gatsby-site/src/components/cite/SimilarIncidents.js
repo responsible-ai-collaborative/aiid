@@ -35,7 +35,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
     <Card data-cy="similar-incident-card">
       <a href={'/cite/' + incident.incident_id} data-cy="cite-link">
         <Image
-          className="tw-object-cover tw-w-full tw-aspect-[16/9]"
+          className="object-cover w-full aspect-[16/9]"
           publicID={
             incident.reports[0].cloudinary_id || `legacy/${md5(incident.reports[0].image_url)}`
           }
@@ -44,7 +44,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
         />
         <h3>{locale == 'en' && incident.title ? incident.title : incident.reports[0].title}</h3>
       </a>
-      <div className="tw-flex tw-w-full tw-flex-row tw-items-center tw-font-bold tw-mt-0 tw-my-4 tw-mr-4">
+      <div className="flex w-full flex-row items-center font-bold mt-0 my-4 mr-4">
         <div className="text-muted">
           {parsedDate && (
             <>
@@ -55,7 +55,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
             {incident.reports.length} {incident.reports.length == 1 ? t('report') : t('reports')}
           </span>
         </div>
-        <div className="tw-inline-block tw-ml-auto tw-mr-auto" />
+        <div className="inline-block ml-auto mr-auto" />
 
         {flaggable && (
           <Button

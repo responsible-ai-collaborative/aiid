@@ -53,7 +53,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
           <text
             textAnchor="middle"
             dominantBaseline="middle"
-            className="tw-fill-white tw-font-bold tw-text-[12px]"
+            className="tw-fill-white font-bold text-[12px]"
           >
             +{bucket.length - 1}
           </text>
@@ -64,12 +64,9 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
             overlay={
               <Popover>
                 <Popover.Body>
-                  <ul className="tw-m-0 tw-p-0 tw-list-none">
+                  <ul className="tw-m-0 p-0 list-none">
                     {bucket.slice(1).map((b) => (
-                      <li
-                        className="tw-text-[12px] tw-mt-[6px] first:tw-mt-[0%]"
-                        key={b.mongodb_id}
-                      >
+                      <li className="text-[12px] tw-mt-[6px] first:tw-mt-[0%]" key={b.mongodb_id}>
                         {timeFormat('%b %d, %Y')(new Date(b.date_published))}
                         <br />
                         {b.isOccurrence ? (
@@ -85,7 +82,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
             }
           >
             <foreignObject x={-8} y={-8} width={16} height={16}>
-              <div className="tw-w-[16px] tw-h-[16px] tw-cursor-pointer" />
+              <div className="w-[16px] h-[16px] cursor-pointer" />
             </foreignObject>
           </OverlayTrigger>
         </>
@@ -98,12 +95,12 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
       )}
 
       {bucket[0].isOccurrence ? (
-        <text dominantBaseline="middle" className="tw-text-[14px]" dx={16}>
+        <text dominantBaseline="middle" className="text-[14px]" dx={16}>
           {bucket[0].title}
         </text>
       ) : (
         <a href={bucket[0].mongodb_id ? `#r${bucket[0].report_number}` : ''}>
-          <text dominantBaseline="middle" className="tw-text-[14px]" dx={16}>
+          <text dominantBaseline="middle" className="text-[14px]" dx={16}>
             {bucket[0].title}
           </text>
         </a>

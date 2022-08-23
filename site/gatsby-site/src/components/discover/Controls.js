@@ -18,7 +18,7 @@ const Controls = ({ query, setHideDuplicates, hideDuplicates }) => {
 
   return (
     <>
-      <Row className="tw-content-start tw-items-center tw-mt-4 767px:tw-hidden hiddenMobile">
+      <Row className="tw-content-start items-center tw-mt-4 767px:hidden hiddenMobile">
         <Col className="col-auto">
           <Stats />
         </Col>
@@ -49,10 +49,10 @@ const Controls = ({ query, setHideDuplicates, hideDuplicates }) => {
             id="expand-filters"
             data-cy="expand-filters"
             onClick={() => setExpandFilters(!expandFilters)}
-            className="tw-select-none tw-cursor-pointer tw-bg-none tw-border-none"
+            className="select-none cursor-pointer tw-bg-none border-none"
           >
             <FontAwesomeIcon
-              className="-tw-align-[0.2rem]"
+              className="-align-[0.2rem]"
               icon={expandFilters ? faCaretDown : faCaretRight}
               fixedWidth
             />

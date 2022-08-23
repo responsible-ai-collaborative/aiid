@@ -36,11 +36,11 @@ export default function Footer() {
   } = data;
 
   return (
-    <footer className="tw-bg-text-light-gray tw-relative">
-      <Row className="tw-flex-row tw-justify-center tw-p-4">
-        <Col className="tw-w-auto tw-flex-0-0-auto">2022 - AI Incident Database</Col>
-        <Col className="tw-w-auto tw-flex-0-0-auto">
-          <div className="tw-flex tw-gap-4">
+    <footer className="tw-bg-text-light-gray relative">
+      <Row className="flex-row justify-center p-4">
+        <Col className="w-auto flex-0-0-auto">2022 - AI Incident Database</Col>
+        <Col className="w-auto flex-0-0-auto">
+          <div className="flex gap-4">
             <a href={'https://twitter.com/IncidentsDB'} target="_blank" rel="noreferrer">
               <FontAwesomeIcon
                 icon={faTwitterSquare}
@@ -69,12 +69,12 @@ export default function Footer() {
             </a>
           </div>
         </Col>
-        <Col className="tw-w-auto tw-flex-0-0-auto">
+        <Col className="w-auto flex-0-0-auto">
           <a className="tw-footer-link" href="/terms-of-use">
             Terms of use
           </a>
         </Col>
-        <Col className="tw-w-auto tw-flex-0-0-auto">
+        <Col className="w-auto flex-0-0-auto">
           <a className="tw-footer-link" href="/privacy-policy">
             Privacy
           </a>
