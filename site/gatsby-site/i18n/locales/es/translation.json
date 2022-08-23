@@ -89,7 +89,5 @@
   "report": "informe",
   "Flag reverted.": "Denuncia cancelada",
   "Incident flagged successfully. Our editors will remove it from this list if it not relevant.": "Incidente denunciado con éxito. Nuestros editores lo eliminarán de la lista si no es relevante.",
-  "review": "revisar",
-  "*Text must have at least {{minTextLength}} characters": "*Text must have at least {{minTextLength}} characters",
-  "*Text can’t be longer than {{maxTextLength}} characters": "*Text can’t be longer than {{maxTextLength}} characters"
+  "review": "revisar"
 }
