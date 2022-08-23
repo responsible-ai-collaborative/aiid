@@ -106,17 +106,6 @@ describe('Edit report', () => {
       '[data-cy="translation-es"] .CodeMirror'
     );
 
-    // cypress doesn't provide a built-in way to check that a request wasn't made
-    // in the context of this test this is an important assertion
-
-    let updateIncidentInvoked = false;
-
-    cy.intercept('**/graphql', (req) => {
-      if (req.body.operationName === 'UpdateIncident') {
-        updateIncidentInvoked = true;
-      }
-    });
-
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'UpdateReport',
@@ -129,6 +118,13 @@ describe('Edit report', () => {
       (req) => req.body.operationName == 'UpdateReportTranslation',
       'updateOneReportTranslation',
       updateOneReportTranslation
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateIncident',
+      'updateIncident',
+      {}
     );
 
     cy.contains('button', 'Submit').click();
@@ -178,7 +174,11 @@ describe('Edit report', () => {
       expect(xhr.request.body.variables.input.title).eq('Este es un titulo en Espanol!');
     });
 
-    cy.wrap(updateIncidentInvoked).should('eq', false);
+    cy.on('fail', (err) => {
+      expect(err.message).to.include('`updateIncident`. No request ever occurred.');
+    });
+
+    cy.wait('@updateIncident', { timeout: 1000 });
 
     cy.get('div[class^="ToastContext"]')
       .contains('Incident report 10 updated successfully.')
