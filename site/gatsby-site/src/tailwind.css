@@ -277,6 +277,10 @@
     .tw-card-set > * {
         @apply 1300px:tw-basis-0 1300px:tw-grow tw-max-w-[700px];
     }
+
+    .tw-footer-link {
+        @apply tw-text-inherit hover:tw-text-primary-blue;
+    }
 }
 
 @layer utilities {
