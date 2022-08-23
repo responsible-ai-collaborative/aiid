@@ -37,10 +37,6 @@ import { Trans } from 'react-i18next';
 // * date_modified: `2019-07-25` # (Date or null) Date the report was edited.
 // * language: "en" # (string) The language identifier of the report.
 
-const minTextLength = 80;
-
-const maxTextLength = 50000;
-
 // Schema for yup
 export const schema = yup.object().shape({
   title: yup
@@ -58,7 +54,11 @@ export const schema = yup.object().shape({
     .min(3, '*Submitter must have at least 3 characters')
     .max(200, "*Submitter list can't be longer than 200 characters")
     .required('*Submitter is required. Anonymous can be entered.'),
-  text: yup.string().min(minTextLength).max(maxTextLength).required(),
+  text: yup
+    .string()
+    .min(80, `*Text must have at least 80 characters`)
+    .max(50000, `*Text can’t be longer than 50000 characters`)
+    .required('*Text is required'),
   date_published: yup
     .string()
     .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
@@ -182,12 +182,6 @@ const IncidentReportForm = () => {
 
   const { config } = useLocalization();
 
-  const tooShort = values.text.length < minTextLength;
-
-  const tooLong = values.text.length > maxTextLength;
-
-  const textInvalid = touched['text'] && (tooLong || tooShort);
-
   return (
     <Form
       onSubmit={(event) => {
@@ -271,13 +265,13 @@ const IncidentReportForm = () => {
       />
 
       <Form.Group
-        className={'mt-3' + (textInvalid ? ' is-invalid' : '')}
+        className={'mt-3' + (touched['text'] && errors['text'] ? ' is-invalid' : '')}
         data-color-mode="light"
         data-cy="text"
       >
         <Label popover="text" label={'Text'} />
         <div style={{ position: 'relative' }}>
-          {textInvalid && (
+          {touched['text'] && errors['text'] && (
             <div
               style={{
                 position: 'absolute',
@@ -297,20 +291,9 @@ const IncidentReportForm = () => {
           />
         </div>
       </Form.Group>
-      {textInvalid && (
-        <p className="invalid-feedback">
-          {tooShort && (
-            <Trans minTextLength={minTextLength}>
-              *Text must have at least {{ minTextLength }} characters
-            </Trans>
-          )}
-          {tooLong && (
-            <Trans maxTextLength={maxTextLength}>
-              *Text can’t be longer than {{ maxTextLength }} characters
-            </Trans>
-          )}
-        </p>
-      )}
+      <Form.Control.Feedback type="invalid">
+        <Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans>
+      </Form.Control.Feedback>
 
       <Form.Group className="mt-3">
         <Label popover="language" label={'Language'} />

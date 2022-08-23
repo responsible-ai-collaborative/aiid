@@ -40,10 +40,6 @@ import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncident
 // * date_modified: `2019-07-25` # (Date or null) Date the report was edited.
 // * language: "en" # (string) The language identifier of the report.
 
-const minTextLength = 80;
-
-const maxTextLength = 50000;
-
 // Schema for yup
 export const schema = yup.object().shape({
   title: yup
@@ -60,7 +56,11 @@ export const schema = yup.object().shape({
     .string()
     .min(3, '*Submitter must have at least 3 characters')
     .max(200, "*Submitter list can't be longer than 200 characters"),
-  text: yup.string().min(minTextLength).max(maxTextLength).required(),
+  text: yup
+    .string()
+    .min(80, `*Text must have at least 80 characters`)
+    .max(50000, `*Text can’t be longer than 50000 characters`)
+    .required('*Text is required'),
   date_published: yup
     .string()
     .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
@@ -194,12 +194,6 @@ const SubmissionForm = () => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
 
-  const tooShort = values.text.length < minTextLength;
-
-  const tooLong = values.text.length > maxTextLength;
-
-  const textInvalid = touched['text'] && (tooLong || tooShort);
-
   return (
     <>
       <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
@@ -295,10 +289,13 @@ const SubmissionForm = () => {
           {...TextInputGroupProps}
         />
 
-        <Form.Group className={'mt-3' + (textInvalid ? ' is-invalid' : '')} data-color-mode="light">
+        <Form.Group
+          className={'mt-3' + (touched['text'] && errors['text'] ? ' is-invalid' : '')}
+          data-color-mode="light"
+        >
           <Label popover="text" label={t('Text')} />
           <div style={{ position: 'relative' }}>
-            {textInvalid && (
+            {touched['text'] && errors['text'] && (
               <div
                 style={{
                   position: 'absolute',
@@ -318,20 +315,9 @@ const SubmissionForm = () => {
             />
           </div>
         </Form.Group>
-        {textInvalid && (
-          <p className="invalid-feedback">
-            {tooShort && (
-              <Trans minTextLength={minTextLength}>
-                *Text must have at least {{ minTextLength }} characters
-              </Trans>
-            )}
-            {tooLong && (
-              <Trans maxTextLength={maxTextLength}>
-                *Text can’t be longer than {{ maxTextLength }} characters
-              </Trans>
-            )}
-          </p>
-        )}
+        <Form.Control.Feedback type="invalid">
+          <Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans>
+        </Form.Control.Feedback>
 
         <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
 
