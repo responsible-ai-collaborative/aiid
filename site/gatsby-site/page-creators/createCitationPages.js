@@ -249,6 +249,7 @@ const createCitationPages = async (graphql, createPage) => {
     }
 
     pageContexts.push({
+      incident_id: incident.incident_id,
       incident,
       incidentReports: incidentReportsMap[incident_id],
       taxonomies,
