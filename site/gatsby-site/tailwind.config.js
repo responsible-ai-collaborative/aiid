@@ -65,6 +65,7 @@ module.exports = {
         'light-orange': '#ec9982',
         'list-gray': '#5c6975',
         'light-blue': 'rgb(230,236,241)',
+        'side-bar': 'rgb(237, 231, 243)',
       },
       gridTemplateColumns: {
         5: 'repeat(5, minmax(0, 1fr))',
@@ -77,6 +78,7 @@ module.exports = {
       },
       boxShadow: {
         card: '0 2px 5px 0px #e3e5ec',
+        'left-side-bar': 'rgb(175 158 232 / 40%) -1px 0px 4px 1px',
       },
       transitionProperty: {
         btn: 'color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out',

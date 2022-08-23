@@ -12,10 +12,6 @@
         @apply tw-flex md:tw-flex tw-content-between tw-bg-white 767px:tw-block tw-border-none;
     }
 
-    .tw-layout li a {
-        @apply tw-text-black;
-    }
-
     .tw-layout .item > a:hover {
         @apply tw-bg-primary-blue tw-text-white;
     }
@@ -282,8 +278,57 @@
 @layer utilities {
     
     /* TAILWIND Sidebar starts */
+
+    .tw-side-bar {
+        @apply tw-font-bold  tw-min-w-[250px] tw-font-karla tw-w-full md:tw-w-64 tw-overflow-auto tw-sticky tw-pl-0 tw-top-0 tw-pr-0 tw-h-auto  md:tw-h-screen tw-shadow-left-side-bar;
+    }
+
+    .tw-side-bar.collapse {
+        @apply tw-hidden;
+    } 
+
+    .tw-li-divider {
+        @apply tw-list-none tw-py-4 tw-px-0;
+    }
+
+    .tw-li-divider hr {
+        @apply tw-m-0 tw-p-0 tw-border-b tw-border-solid tw-border-b-side-bar
+    }
+    
     .tw-side-bar-ul {
         @apply tw-mt-4 tw-pl-0;
+    }
+
+    .tw-side-bar-ul .hide-front-line .collapser {
+        @apply tw-bg-transparent tw-absolute tw-cursor-pointer tw-right-5 tw-z-[1];
+    }
+    
+    .tw-side-bar-ul .hide-front-line .active > a {
+        @apply tw-bg-light-orange tw-text-white;
+    }
+
+    .tw-side-bar-ul .side-bar-links {
+        @apply tw-list-none;
+    }
+
+    .tw-side-bar-ul .side-bar-links a {
+        @apply tw-text-list-gray tw-no-underline tw-py-2 tw-pr-0 tw-flex tw-items-center tw-relative tw-font-normal;
+    }
+
+    .tw-side-bar-ul .side-bar-links a.level-0 {
+        @apply tw-font-bold;
+    }
+
+    .tw-side-bar-ul .side-bar-links a:hover {
+        @apply tw-text-light-orange;
+    }
+
+    .tw-side-bar-ul .side-bar-links a.active {
+        @apply tw-border-light-blue tw-border-y tw-border-r-0 tw-border-l tw-bg-white;
+    }
+
+    .tw-side-bar-ul .side-bar-links a svg {
+        @apply tw-ml-[1ch] tw-align-top tw-inline;
     }
 
     .tw-side-bar-ul ul {
@@ -312,6 +357,22 @@
 
     .tw-side-bar-ul .item .item {
         @apply tw-ml-4;
+    }
+
+    .tw-side-bar-ul .first-level ul li .collapser svg path {
+        @apply tw-fill-white;
+    }
+    
+    .tw-side-bar-ul .active .collapser > svg > path {
+        @apply tw-fill-[#001933];
+    }
+  
+    .tw-side-bar-ul .first-level ul .item ul .item {
+        @apply tw-border-l tw-border-l-[#e6ecf1];
+    }
+
+    .tw-side-bar-ul .first-level > ul > .item {
+        @apply tw-ml-0;
     }
 
     .tw-side-bar-title {
