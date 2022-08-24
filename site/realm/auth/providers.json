@@ -51,6 +51,7 @@
             }
         ],
         "redirect_uris": [
+            "https://staging-aiid.netlify.app/logincallback",
             "https://incidentdatabase.ai/logincallback"
         ]
     },
@@ -83,6 +84,7 @@
             }
         ],
         "redirect_uris": [
+            "https://staging-aiid.netlify.app/logincallback",
             "https://incidentdatabase.ai/logincallback"
         ]
     }
