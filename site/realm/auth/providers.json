@@ -25,13 +25,10 @@
     "oauth2-facebook": {
         "name": "oauth2-facebook",
         "type": "oauth2-facebook",
-        "disabled": false,
-        "config": {
-            "clientId": "%%values.facebookAppId"
-        },
         "secret_config": {
             "clientSecret": "facebookAppSecret"
         },
+        "disabled": false,
         "metadata_fields": [
             {
                 "required": false,
@@ -50,14 +47,13 @@
                 "name": "email"
             }
         ],
-        "redirect_uris": ["%%values.loginRedirectUri"]
+        "redirect_uris": [
+            "https://incidentdatabase.ai/logincallback"
+        ]
     },
     "oauth2-google": {
         "name": "oauth2-google",
         "type": "oauth2-google",
-        "config": {
-            "clientId": "%%values.googleClientId"
-        },
         "secret_config": {
             "clientSecret": "googleClientSecret"
         },
@@ -80,6 +76,8 @@
                 "name": "email"
             }
         ],
-        "redirect_uris": ["%%values.loginRedirectUri"]
+        "redirect_uris": [
+            "https://incidentdatabase.ai/logincallback"
+        ]
     }
 }
