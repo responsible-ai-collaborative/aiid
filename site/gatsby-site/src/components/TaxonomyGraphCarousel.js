@@ -1,89 +1,153 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import { gql, useQuery } from '@apollo/client';
 import BillboardChart from 'react-billboardjs';
 import { donut } from 'billboard.js';
 
-const TaxonomyGraphCarousel = ({ namespace, fields }) => {
-  const dbFields = fields.map((field) => field.replace(/ /g, ''));
+// The BillboardCharts render based on
+// the rendered height of the containing element.
+// Since the carousel sets the hidden slides to `display: none`,
+// that means we have to create a new chart
+// each time carousel changes slides.
+// This convinces React to let use do so.
+const SlidingChart = ({ columns }) => <BillboardChart data={{ type: donut(), columns }} />;
+
+const NonSlidingChart = ({ columns }) => <BillboardChart data={{ type: donut(), columns }} />;
+
+const TaxonomyGraphCarousel = ({ namespace, axes }) => {
+  const { data: taxaData } = useQuery(gql`
+    query Taxa {
+      taxa (query: { namespace: "${namespace}" }) {
+        namespace
+        field_list {
+          permitted_values
+          short_name
+        }
+      }
+    }
+  `);
 
   const { data: classificationsData, loading: classificationsLoading } = useQuery(gql`
     query ClassificationsInNamespace {
       classifications(query: { namespace: "${namespace}" } ) {
         incident_id
         classifications {
-          ${dbFields.join('\n')}
+          ${axes.map((axis) => axis.replace(/ /g, '')).join('\n')}
+          Publish
         }
       }
     }
   `);
 
-  const billboardColumns = {};
+  const includedCategories = {};
 
+  if (taxaData) {
+    for (const axis in taxaData.taxa.field_list) {
+      includedCategories[axis] = taxaData.taxa.field_list[axis].permitted_values;
+    }
+  }
+
+  const categoryCounts = {};
+
+  // Format:
+  //
+  //  {
+  //    "HarmDistributionBasis": {    <-- axis
+  //      "Race": 23,                   <-- category
+  //      "Sex": 10,                    <-- category
+  //      ...
+  //    },
+  //    "Severity": {                 <-- axis
+  //      "Negligable": 40,             <-- category
+  //      "Minor": 20,                  <-- category
+  //      ...
+  //    }
+  //  }
   if (!classificationsLoading && classificationsData?.classifications) {
     for (const classification of classificationsData.classifications) {
+      if (!classification.classifications.Publish) {
+        continue;
+      }
       for (const axis in classification.classifications) {
-        billboardColumns[axis] ||= {};
+        categoryCounts[axis] ||= {};
         const value = classification.classifications[axis];
 
         if (Array.isArray(value)) {
-          for (const taxon of value) {
-            billboardColumns[axis][taxon] ||= 0;
-            billboardColumns[axis][taxon] += 1;
+          for (const category of value) {
+            categoryCounts[axis][category] ||= 0;
+            categoryCounts[axis][category] += 1;
           }
         } else {
-          billboardColumns[axis][value] ||= 0;
-          billboardColumns[axis][value] += 1;
+          categoryCounts[axis][value] ||= 0;
+          categoryCounts[axis][value] += 1;
         }
       }
     }
   }
 
-  for (const key of Object.keys(billboardColumns)) {
-    const topColumns = Object.keys(billboardColumns[key])
-      .filter((axis) => axis && !axis.includes('Other:') && axis != 'Other')
-      .sort((axis1, axis2) => billboardColumns[key][axis2] - billboardColumns[key][axis1])
+  for (const axis of Object.keys(categoryCounts)) {
+    const categories = Object.keys(categoryCounts[axis]);
+
+    const topCategories = categories
+      .filter(
+        (category) =>
+          category && (!includedCategories[axis] || includedCategories[axis].includes(category))
+      )
+      .sort(
+        (category1, category2) => categoryCounts[axis][category2] - categoryCounts[axis][category1]
+      )
       .slice(0, 9);
 
-    console.log(key, 'topcolumns', topColumns);
-    const nonTopColumns = Object.keys(billboardColumns[key]).filter(
-      (column) => !topColumns.includes(column)
+    const bottomCategories = Object.keys(categoryCounts[axis]).filter(
+      (category) => !topCategories.includes(category)
     );
 
-    console.log(key, 'nonTopColumns', nonTopColumns);
-    if (Object.keys(billboardColumns[key]).length > 8) {
-      billboardColumns[key]['All others'] = 0;
-      for (const column of nonTopColumns) {
-        billboardColumns[key]['All others'] += billboardColumns[key][column];
-        delete billboardColumns[key][column];
+    if (categories.length > 8) {
+      categoryCounts[axis]['All others'] = 0;
+      for (const category of bottomCategories) {
+        categoryCounts[axis]['All others'] += categoryCounts[axis][category];
+        delete categoryCounts[axis][category];
       }
     }
-    console.log(billboardColumns[key]);
   }
 
-  console.log(`billboardColumns`, billboardColumns);
+  const [sliding, setSlide] = useState(false);
 
   return (
     !classificationsLoading && (
-      <Carousel interval={60000}>
-        {!classificationsLoading &&
-          classificationsData?.classifications &&
-          fields.map((field, index) => (
-            <Carousel.Item key={index}>
-              <h3>{field}</h3>
-              <div style={{ height: '350px', maxHeight: '300px' }}>
-                <BillboardChart
-                  data={{
-                    type: donut(),
-                    columns: Object.keys(billboardColumns[field.replace(/ /g, '')])
-                      .map((key) => [key, billboardColumns[field.replace(/ /g, '')][key]])
-                      .sort((a, b) => (a[0] == 'All others' ? 1 : b[1] - a[1])),
-                  }}
-                />
-              </div>
-            </Carousel.Item>
-          ))}
-      </Carousel>
+      <>
+        <Carousel
+          interval={60000}
+          onSlide={() => setSlide(true)}
+          onSlid={() => setSlide(false)}
+          variant="dark"
+        >
+          {!classificationsLoading &&
+            classificationsData?.classifications &&
+            axes.map((axis, index) => {
+              const dbAxis = axis.replace(/ /g, '');
+
+              const columns = Object.keys(categoryCounts[dbAxis])
+                .map((category) => [category, categoryCounts[dbAxis][category]])
+                .sort((a, b) =>
+                  a[0] == 'All others' ? 1 : b[0] == 'All others' ? -1 : b[1] - a[1]
+                );
+
+              return (
+                <Carousel.Item key={index}>
+                  <h3 className="tw-text-base tw-text-center">{axis}</h3>
+                  <div className="tw-pb-8">
+                    {sliding ? (
+                      <SlidingChart columns={columns} />
+                    ) : (
+                      <NonSlidingChart columns={columns} />
+                    )}
+                  </div>
+                </Carousel.Item>
+              );
+            })}
+        </Carousel>
+      </>
     )
   );
 };
