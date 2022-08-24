@@ -14,6 +14,18 @@ let safelist = [
   'tw-tooltip-bottom',
   'tw-tooltip-left',
   'form-control-lg',
+  'modal',
+  'fade',
+  'modal-dialog',
+  'modal-content',
+  'modal-header',
+  'modal-title',
+  'modal-body',
+  'modal-footer',
+  'modal-backdrop',
+  'show',
+  'btn-close',
+  'h4',
 ];
 
 // Whitelisting level options from ListItem component
@@ -83,6 +95,8 @@ module.exports = {
         btn: 'color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out',
         'bg-color-02': 'color 0.2s ease-out',
         'form-control': 'border-color .15s ease-in-out,box-shadow .15s ease-in-out',
+        modal: 'opacity .15s linear',
+        'modal-fade': 'transform .3s ease-out',
       },
       zIndex: {
         2: '2',
