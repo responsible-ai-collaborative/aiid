@@ -586,7 +586,7 @@
     }
 
     .carousel-control-next, .carousel-control-prev {
-        @apply items-center bottom-0 text-white flex justify-center opacity-50 p-0 absolute text-center top: 0 border-0 transition-carousel-next-prev w-[15%] z-[1];
+        @apply items-center bottom-0 text-white flex justify-center opacity-50 p-0 absolute text-center top-0 border-0 transition-carousel-next-prev w-[15%] z-[1];
     }
 
     .carousel-control-prev {
@@ -610,7 +610,7 @@
     }
 
     .visually-hidden, .visually-hidden-focusable:not(:focus):not(:focus-within) {
-        @apply h-px -m-px overflow-hidden p-0 absolute whitespace-no-wrap w-px border-0;
+        @apply h-px -m-px overflow-hidden p-0 absolute whitespace-nowrap w-px border-0;
         clip: rect(0,0,0,0);
     }
 }
