@@ -69,6 +69,9 @@ const createCitationPages = async (graphql, createPage) => {
             date
             reports
             editors
+            embedding {
+              vector
+            }
             editor_similar_incidents
             editor_dissimilar_incidents
             flagged_dissimilar_incidents

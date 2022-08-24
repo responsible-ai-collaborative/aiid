@@ -108,6 +108,12 @@ const config = {
             title: 'Classifications View',
           },
           { label: 'flagged', url: '/summaries/flagged', items: [], title: 'Flagged Incidents' },
+          {
+            label: 'tsneVisualization',
+            url: '/summaries/spatial',
+            items: [],
+            title: 'Spatial Visualization',
+          },
           { label: 'wordcounts', url: '/summaries/wordcounts', items: [], title: 'Word Counts' },
         ],
         title: 'Database Apps',

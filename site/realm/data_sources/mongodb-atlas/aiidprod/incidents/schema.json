@@ -45,6 +45,23 @@
                 "bsonType": "string"
             }
         },
+        "embedding": {
+            "bsonType": "object",
+            "properties": {
+                "from_reports": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "int"
+                    }
+                },
+                "vector": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "double"
+                    }
+                }
+            }
+        },
         "flagged_dissimilar_incidents": {
             "bsonType": "array",
             "items": {
@@ -76,6 +93,17 @@
         },
         "title": {
             "bsonType": "string"
+        },
+        "tsne": {
+            "bsonType": "object",
+            "properties": {
+                "x": {
+                    "bsonType": "double"
+                },
+                "y": {
+                   "bsonType": "double"
+                }
+            }
         }
     },
     "required": [
