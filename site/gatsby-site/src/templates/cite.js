@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Spinner } from 'react-bootstrap';
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
 import Citation from 'components/cite/Citation';
@@ -23,6 +24,9 @@ import Pagination from '../elements/Pagination';
 import SocialShareButtons from 'components/ui/SocialShareButtons';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
+import { useMutation } from '@apollo/client';
+import { INSERT_SUBSCRIPTION } from '../graphql/subscriptions';
+import useToastContext, { SEVERITY } from 'hooks/useToast';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -86,6 +90,8 @@ function CitePage(props) {
 
   const flagReportModal = useModal();
 
+  const addToast = useToastContext();
+
   const timeline = sortedReports.map(({ date_published, title, mongodb_id, report_number }) => ({
     date_published,
     title,
@@ -113,6 +119,49 @@ function CitePage(props) {
       }))
     );
   }, [user]);
+
+  const [subscribeToNewReportsMutation, { loading: subscribing }] = useMutation(
+    INSERT_SUBSCRIPTION,
+    {
+      fetchPolicy: 'network-only',
+    }
+  );
+
+  const subscribeToNewReports = async () => {
+    if (isRole('subscriber')) {
+      try {
+        await subscribeToNewReportsMutation({
+          variables: {
+            subscription: {
+              userId: user.id,
+              incident_id: incident.incident_id,
+            },
+          },
+          fetchPolicy: 'no-cache',
+        });
+
+        addToast({
+          message: (
+            <>
+              {t(`You have successfully subscribed to updates on incident ${incident.incident_id}`)}
+            </>
+          ),
+          severity: SEVERITY.success,
+        });
+      } catch (e) {
+        console.log(e);
+        addToast({
+          message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
+          severity: SEVERITY.danger,
+        });
+      }
+    } else {
+      addToast({
+        message: <>{t(`Please log in to subscribe`)}</>,
+        severity: SEVERITY.success,
+      });
+    }
+  };
 
   return (
     <Layout {...props}>
@@ -192,6 +241,17 @@ function CitePage(props) {
                 </h4>
               </Card.Header>
               <Card.Body className="tw-flex-row">
+                <Button
+                  variant="outline-primary"
+                  className="tw-mr-2"
+                  onClick={subscribeToNewReports}
+                >
+                  {subscribing ? (
+                    <Spinner size="sm" animation="border" />
+                  ) : (
+                    <Trans>Notify Me of Updates</Trans>
+                  )}
+                </Button>
                 <Button
                   variant="outline-primary"
                   className="tw-mr-2"
