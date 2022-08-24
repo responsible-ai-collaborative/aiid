@@ -59,7 +59,7 @@ export default function Sponsors({ className }) {
         <Card.Title as="h2">
           <Trans ns="landing">The Responsible AI Collaborative</Trans>
         </Card.Title>
-        <Row className="g-0">
+        <Row className="g-0 tw-gap-2">
           <Col
             lg={5}
             md={12}
