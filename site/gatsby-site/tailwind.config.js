@@ -13,6 +13,7 @@ let safelist = [
   'tw-tooltip-right',
   'tw-tooltip-bottom',
   'tw-tooltip-left',
+  'form-control-lg',
 ];
 
 // Whitelisting level options from ListItem component
@@ -64,6 +65,7 @@ module.exports = {
         'light-orange': '#ec9982',
         'list-gray': '#5c6975',
         'light-blue': 'rgb(230,236,241)',
+        'form-control': '#ced4da',
       },
       gridTemplateColumns: {
         5: 'repeat(5, minmax(0, 1fr))',
@@ -80,6 +82,7 @@ module.exports = {
       transitionProperty: {
         btn: 'color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out',
         'bg-color-02': 'color 0.2s ease-out',
+        'form-control': 'border-color .15s ease-in-out,box-shadow .15s ease-in-out',
       },
       zIndex: {
         2: '2',

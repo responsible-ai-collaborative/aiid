@@ -4,8 +4,36 @@
 
 @layer base {
 
+    h1 {
+        font-size: calc(1.375rem + 1.5vw);
+    }
+
+    .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+        @apply font-medium mb-2 mt-0 leading-tight;
+    }
+
+    .h5, h5 {
+        @apply text-xl;
+    }
+
+    input {
+        @apply flex-auto;
+    }
+
+    .input-group>.form-control, .input-group>.form-floating, .input-group>.form-select {
+        @apply min-w-0 relative flex-auto;
+    }
+
+    .form-control-lg {
+        @apply rounded-lg text-xl py-2 px-4 min-h-[2.5rem];
+    }
+
+    .form-control {
+        @apply appearance-none bg-white rounded-md text-gray-900 block text-base font-normal leading-normal w-full py-1 px-3 transition-form-control bg-clip-padding border border-solid border-form-control;
+    }
+
     h2 {
-        font-size: 2rem;
+        @apply text-4xl;
     }
 
     .tw-layout {
@@ -426,4 +454,120 @@
         @apply text-white bg-blue-600 border-blue-600 hover:text-white focus:text-white;
     }
     /* TAILWIND AIS PAGINATION END */
+
+    /* Bootstrap modal */
+
+    .modal {
+        --bs-modal-zindex: 1055;
+        --bs-modal-width: 500px;
+        --bs-modal-padding: 1rem;
+        --bs-modal-margin: 0.5rem;
+        --bs-modal-color: ;
+        --bs-modal-bg: #fff;
+        --bs-modal-border-color: var(--bs-border-color-translucent);
+        --bs-modal-border-width: 1px;
+        --bs-modal-border-radius: 0.5rem;
+        --bs-modal-box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+        --bs-modal-inner-border-radius: calc(0.5rem - 1px);
+        --bs-modal-header-padding-x: 1rem;
+        --bs-modal-header-padding-y: 1rem;
+        --bs-modal-header-padding: 1rem 1rem;
+        --bs-modal-header-border-color: var(--bs-border-color);
+        --bs-modal-header-border-width: 1px;
+        --bs-modal-title-line-height: 1.5;
+        --bs-modal-footer-gap: 0.5rem;
+        --bs-modal-footer-bg: ;
+        --bs-modal-footer-border-color: var(--bs-border-color);
+        --bs-modal-footer-border-width: 1px;
+        display: none;
+        height: 100%;
+        left: 0;
+        outline: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: var(--bs-modal-zindex);
+    }
+ 
+    /* @media (min-width: 576px) .modal {
+        --bs-modal-margin: 1.75rem;
+        --bs-modal-box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+    } */
+
+    .fade {
+        transition: opacity .15s linear;
+    }
+
+    .modal.show .modal-dialog {
+        transform: none;
+    }
+    
+    .modal.fade .modal-dialog {
+        transform: translateY(-50px);
+        transition: transform .3s ease-out;
+    }
+
+    /* @media (min-width: 576px)
+    .modal-dialog {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: var(--bs-modal-width);
+    } */
+
+    .modal-dialog {
+        margin: var(--bs-modal-margin);
+        pointer-events: none;
+        position: relative;
+        width: auto;
+    }
+
+    .modal-content {
+        background-clip: padding-box;
+        background-color: var(--bs-modal-bg);
+        border: var(--bs-modal-border-width) solid var(--bs-modal-border-color);
+        border-radius: var(--bs-modal-border-radius);
+        color: var(--bs-modal-color);
+        display: flex;
+        flex-direction: column;
+        outline: 0;
+        pointer-events: auto;
+        position: relative;
+        width: 100%;
+    }
+
+    .modal-header {
+        align-items: center;
+        border-bottom: var(--bs-modal-header-border-width) solid var(--bs-modal-header-border-color);
+        border-top-left-radius: var(--bs-modal-inner-border-radius);
+        border-top-right-radius: var(--bs-modal-inner-border-radius);
+        display: flex;
+        flex-shrink: 0;
+        justify-content: space-between;
+        padding: var(--bs-modal-header-padding);
+    }
+
+    .modal-body {
+        flex: 1 1 auto;
+        padding: var(--bs-modal-padding);
+        position: relative;
+    }
+
+    .modal-footer {
+        align-items: center;
+        background-color: var(--bs-modal-footer-bg);
+        border-bottom-left-radius: var(--bs-modal-inner-border-radius);
+        border-bottom-right-radius: var(--bs-modal-inner-border-radius);
+        border-top: var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color);
+        display: flex;
+        flex-shrink: 0;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        padding: calc(var(--bs-modal-padding) - var(--bs-modal-footer-gap)*.5);
+    }
+
+    .modal-footer>* {
+        margin: calc(var(--bs-modal-footer-gap)*.5);
+    }
 }
