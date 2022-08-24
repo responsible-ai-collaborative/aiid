@@ -14,6 +14,8 @@ import { Formik } from 'formik';
 import { stripMarkdown } from 'utils/typography';
 import isArray from 'lodash/isArray';
 import { Trans, useTranslation } from 'react-i18next';
+import { useLocalization } from 'gatsby-theme-i18n';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -59,6 +61,8 @@ const SubmitForm = () => {
 
   const { i18n, t } = useTranslation(['submit']);
 
+  const { locale } = useLocalization();
+
   // See https://github.com/apollographql/apollo-client/issues/5419
   useQuery(FIND_SUBMISSIONS);
 
@@ -85,16 +89,20 @@ const SubmitForm = () => {
     setCsvIndex(Math.min(csvData.length - 1, csvIndex + 1));
   };
 
+  const localizePath = useLocalizePath();
+
   const handleSubmit = async (values, { resetForm }) => {
     try {
       const date_submitted = format(new Date(), 'yyyy-MM-dd');
+
+      const description = values.description ? values.description : values.text;
 
       const submission = {
         ...values,
         incident_id: values.incident_id == '' ? 0 : values.incident_id,
         date_submitted,
         date_modified: date_submitted,
-        description: values.text.substring(0, 200),
+        description: description.substring(0, 200),
         authors: isString(values.authors) ? values.authors.split(',') : values.authors,
         submitters: values.submitters
           ? !isArray(values.submitters)
@@ -102,6 +110,11 @@ const SubmitForm = () => {
             : values.submitters
           : ['Anonymous'],
         plain_text: await stripMarkdown(values.text),
+        developers: isString(values.developers) ? values.developers.split(',') : values.developers,
+        deployers: isString(values.deployers) ? values.deployers.split(',') : values.deployers,
+        harmed_parties: isString(values.harmed_parties)
+          ? values.harmed_parties.split(',')
+          : values.harmed_parties,
       };
 
       await insertSubmission({ variables: { submission } });
@@ -112,7 +125,10 @@ const SubmitForm = () => {
         message: (
           <Trans i18n={i18n} ns="submit">
             Report successfully added to review queue. It will appear on the{' '}
-            <Link to="/apps/submitted">review queue page</Link> within an hour.
+            <Link to={localizePath({ path: '/apps/submitted', language: locale })}>
+              review queue page
+            </Link>{' '}
+            within an hour.
           </Trans>
         ),
         severity: SEVERITY.success,
@@ -143,9 +159,12 @@ const SubmitForm = () => {
 
             <p className="mt-4">
               <Trans ns="submit" i18nKey="submitReviewDescription">
-                Submitted reports are added to a <Link to="/apps/submitted">review queue </Link> to
-                be resolved to a new or existing incident record. Incidents are reviewed and merged
-                into the database after enough incidents are pending.
+                Submitted reports are added to a{' '}
+                <Link locale={locale} to="/apps/submitted">
+                  review queue{' '}
+                </Link>{' '}
+                to be resolved to a new or existing incident record. Incidents are reviewed and
+                merged into the database after enough incidents are pending.
               </Trans>
             </p>
 
