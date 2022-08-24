@@ -26,6 +26,19 @@ let safelist = [
   'show',
   'btn-close',
   'h4',
+  'carousel',
+  'slide',
+  'carousel-indicators',
+  'carousel-inner',
+  'carousel-item',
+  'active',
+  'carousel-caption',
+  'carousel-control-next',
+  'carousel-control-prev',
+  'visually-hidden',
+  'visually-hidden-focusable',
+  'carousel-control-next-icon',
+  'carousel-control-prev-icon',
 ];
 
 // Whitelisting level options from ListItem component

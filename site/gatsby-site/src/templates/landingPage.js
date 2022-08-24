@@ -62,19 +62,19 @@ const LandingPage = (props) => {
           </Col>
         </Row>
 
-        <Row className="tw-mt-2">
+        <Row className="mt-2">
           <Col>
             <QuickSearch className="text-center border-0" />
           </Col>
         </Row>
 
-        <Row className="tw-mt-4">
+        <Row className="mt-4">
           <Col>
             <LatestReports latestReport={latestReport} />
           </Col>
         </Row>
 
-        <Row className="tw-mt-4">
+        <Row className="mt-4">
           <Col>
             <QuickAdd />
           </Col>
@@ -82,7 +82,7 @@ const LandingPage = (props) => {
 
         <Row>
           <Col
-            className="tw-mt-4 md:flex-0-0-auto md:w-full 992px:flex-0-0-auto 992px:w-2/4"
+            className="mt-4 md:flex-0-0-auto md:w-full 992px:flex-0-0-auto 992px:w-2/4"
             sm={12}
             md={12}
             lg={6}
@@ -90,7 +90,7 @@ const LandingPage = (props) => {
             <AboutDatabase className="h-100" />
           </Col>
           <Col
-            className="tw-mt-4 md:flex-0-0-auto md:w-full 992px:flex-0-0-auto 992px:w-2/4"
+            className="mt-4 md:flex-0-0-auto md:w-full 992px:flex-0-0-auto 992px:w-2/4"
             sm={12}
             md={12}
             lg={6}
@@ -99,13 +99,13 @@ const LandingPage = (props) => {
           </Col>
         </Row>
 
-        <Row className="tw-mt-4">
+        <Row className="mt-4">
           <Col>
             <Featured />
           </Col>
         </Row>
 
-        <Row className="tw-mt-4">
+        <Row className="mt-4">
           <Col>
             <Leaderboards />
           </Col>

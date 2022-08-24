@@ -66,7 +66,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
                 <Popover.Body>
                   <ul className="tw-m-0 p-0 list-none">
                     {bucket.slice(1).map((b) => (
-                      <li className="text-[12px] tw-mt-[6px] first:tw-mt-[0%]" key={b.mongodb_id}>
+                      <li className="text-[12px] mt-[6px] first:mt-[0%]" key={b.mongodb_id}>
                         {timeFormat('%b %d, %Y')(new Date(b.date_published))}
                         <br />
                         {b.isOccurrence ? (

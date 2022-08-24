@@ -158,7 +158,7 @@ const PreviewImageInputGroup = ({
           {updatingImage ? (
             <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" />
           ) : (
-            <Image className={'mt-3 -tw-mt-4 mr-auto mb-4'} publicID={cloudinaryID} />
+            <Image className={'mt-3 -mt-4 mr-auto mb-4'} publicID={cloudinaryID} />
           )}
         </div>
         <figcaption>
