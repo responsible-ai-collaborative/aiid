@@ -4,11 +4,15 @@
   --primary1: #868787;
   --primary2: #18181a;
   --primary3: #ec9982;
-  --primary4: #0857c3;
+  --primary4: #0857c3;  
+  --primary-blue: #0d6efd;
   --secondary1: #df8270;
   --secondary2: #6490e8;
   --secondary3: #ba5a4b;
   --secondary4: #071d49;
+  --tw-gutter-x: 1.5rem;
+  --tw-gutter-y: 0;
+  --dark-blue: #212529;
 }
 
 * {
@@ -42,7 +46,7 @@ body {
 
 a {
   transition: color 0.15s;
-  /* color: #663399; */
+  text-decoration: none !important;
 }
 
 .visibleMobile {
@@ -420,33 +424,6 @@ blockquote {
   width: 40px;
 }
 
-.sideBarUL {
-  margin-top: 16px;
-  padding-left: 0;
-}
-
-.sideBarUL ul {
-  padding-left: 0;
-}
-
-.sideBarUL li {
-  list-style-type: none;
-  width: auto;
-}
-
-.sideBarUL li a {
-  /* color: #fff; */
-  font-size: 14px;
-  /* font-weight: 500; */
-  line-height: 1.5;
-  padding: 7px 24px 7px 16px;
-  padding-left: 10px;
-  padding-right: 25px;
-  border-style: solid none solid solid;
-  border-width: 1px 0px 1px 1px;
-  border-color: transparent currentcolor transparent transparent;
-}
-
 .hideFrontLine .collapser {
   background: transparent;
   border: none;
@@ -524,7 +501,7 @@ blockquote {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
   border-bottom: 1px solid rgb(230, 236, 241);
   margin-bottom: 32px;
 }
@@ -924,3 +901,29 @@ img {
 div .bytemd {
   height: 480px;
 }
+
+/* Social Buttons */
+/* ---------------------------------------------------------- */
+
+.social-btn-container.cite {
+  margin-left: 10px;
+}
+
+.social-btn-container.post {
+  margin-left: -10px;
+}
+
+.social-btn {
+  position: relative;
+  display: block;
+  align-items: center;
+  width: 40px;
+  height: 50px;
+  color: white;
+  line-height: 48px;
+  text-align: center;
+  background-color: white;
+  border: none;
+}
+
+/* ---------------------------------------------------------- */

@@ -8,7 +8,6 @@ import { dateRegExp } from 'utils/date';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { graphql, useStaticQuery } from 'gatsby';
-import * as POP_OVERS from '../ui/PopOvers';
 import Label from '../forms/Label';
 import TagsControl from 'components/forms/TagsControl';
 import IncidentIdField from 'components/incidents/IncidentIdField';
@@ -17,6 +16,8 @@ import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
 import supportedLanguages from 'components/i18n/languages.json';
 import { Trans, useTranslation } from 'react-i18next';
+import RelatedIncidents from 'components/RelatedIncidents';
+import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -122,6 +123,8 @@ const SubmissionForm = () => {
     handleBlur,
   } = useFormikContext();
 
+  const { t } = useTranslation(['submit']);
+
   const TextInputGroupProps = { values, errors, touched, handleChange, handleBlur };
 
   const addToast = useToastContext();
@@ -144,7 +147,9 @@ const SubmissionForm = () => {
         const news = await response.json();
 
         addToast({
-          message: <>Please verify all information programmatically pulled from the report</>,
+          message: (
+            <Trans>Please verify all information programmatically pulled from the report</Trans>
+          ),
           severity: SEVERITY.info,
         });
 
@@ -158,8 +163,11 @@ const SubmissionForm = () => {
       } catch (e) {
         const message =
           e.message == 'Parser error'
-            ? `Error fetching news. Scraping was blocked by ${newsUrl}, Please enter the text manually.`
-            : `Error reaching news info endpoint, please try again in a few seconds.`;
+            ? t(
+                `Error fetching news. Scraping was blocked by {{newsUrl}}. Please enter the text manually.`,
+                { newsUrl }
+              )
+            : t(`Error reaching news info endpoint, please try again in a few seconds.`);
 
         addToast({
           message: <>{message}</>,
@@ -186,8 +194,6 @@ const SubmissionForm = () => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
 
-  const { t } = useTranslation(['submit']);
-
   return (
     <>
       <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
@@ -200,6 +206,7 @@ const SubmissionForm = () => {
               className="outline-secondary"
               disabled={!!errors.url || !touched.url || parsingNews}
               onClick={() => parseNewsUrl(values.url)}
+              data-cy="fetch-info"
             >
               {' '}
               {!parsingNews ? (
@@ -224,6 +231,7 @@ const SubmissionForm = () => {
             TextInputGroupProps.handleChange(e);
           }}
         />
+        <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
 
         <TextInputGroup
           name="title"
@@ -239,6 +247,9 @@ const SubmissionForm = () => {
           className="mt-3"
           {...TextInputGroupProps}
         />
+
+        <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byAuthors']} />
+
         <TextInputGroup
           name="submitters"
           label={t('Submitter CSV')}
@@ -254,6 +265,13 @@ const SubmissionForm = () => {
           className="mt-3"
           {...TextInputGroupProps}
         />
+
+        <RelatedIncidents
+          incident={values}
+          setFieldValue={setFieldValue}
+          columns={['byDatePublished']}
+        />
+
         <TextInputGroup
           name="date_downloaded"
           label={t('Date Downloaded')}
@@ -272,12 +290,14 @@ const SubmissionForm = () => {
         />
 
         <Form.Group className="mt-3" data-color-mode="light">
-          <Label popover={POP_OVERS.text} label={t('Text')} />
+          <Label popover="text" label={t('Text')} />
           <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
         </Form.Group>
 
+        <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
+
         <Form.Group className="mt-3">
-          <Label popover={POP_OVERS['language']} label={t('Language')} />
+          <Label popover="language" label={t('Language')} />
           <Form.Select
             name="language"
             placeholder={t('Report Language')}
@@ -293,7 +313,7 @@ const SubmissionForm = () => {
         </Form.Group>
 
         <Form.Group className="mt-3">
-          <Label popover={POP_OVERS['tags']} label={t('Tags')} />
+          <Label popover="tags" label={t('Tags')} />
           <TagsControl name={'tags'} />
         </Form.Group>
 
@@ -302,6 +322,12 @@ const SubmissionForm = () => {
           className="mt-3"
           placeHolder={t('Leave empty to report a new incident')}
           showIncidentData={false}
+        />
+
+        <RelatedIncidents
+          incident={values}
+          setFieldValue={setFieldValue}
+          columns={['byIncidentId']}
         />
 
         {!values.incident_id && (
