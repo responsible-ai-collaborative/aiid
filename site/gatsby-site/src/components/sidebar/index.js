@@ -42,6 +42,7 @@ const ListItem = styled(({ className, active, level, ...props }) => {
     svg {
       margin-left: 1ch;
       vertical-align: top;
+      display: inline;
     }
   }
 `;
@@ -101,11 +102,11 @@ const SidebarLayout = ({ collapse, setNavCollapsed }) => {
       <QuickAccess />
       {config.sidebar.title ? (
         <div
-          className={'sidebarTitle hiddenMobile'}
+          className={'tw-side-bar-title hiddenMobile'}
           dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
         />
       ) : null}
-      <ul className={'sideBarUL'}>
+      <ul className={'tw-side-bar-ul'}>
         <li className="hideFrontLine firstLevel item">
           <ul>
             <Tree setNavCollapsed={setNavCollapsed} />

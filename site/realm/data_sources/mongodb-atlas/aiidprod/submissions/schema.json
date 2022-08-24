@@ -9,6 +9,24 @@
                 "bsonType": "string"
             }
         },
+        "developers": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "deployers": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "harmed_parties": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
         "cloudinary_id": {
             "bsonType": "string"
         },

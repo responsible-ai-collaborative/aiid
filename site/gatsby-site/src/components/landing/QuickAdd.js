@@ -1,7 +1,7 @@
 import React from 'react';
 import QuickAddForm from 'components/forms/QuickAddForm';
-import { Card } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
+import Card from '../../elements/Card';
 
 export default function QuickAdd() {
   return (

@@ -110,7 +110,8 @@
         "incident_id",
         "editors",
         "reports",
-        "date"
+        "date",
+        "title"
     ],
     "title": "incident"
 }

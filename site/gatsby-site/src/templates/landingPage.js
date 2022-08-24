@@ -1,7 +1,6 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
-import { Container, Row, Col } from 'react-bootstrap';
 import Featured from 'components/landing/Featured';
 import Leaderboards from 'components/landing/Leaderboards';
 import Blog from 'components/landing/Blog';
@@ -16,6 +15,9 @@ import Hero from 'components/landing/Hero';
 import { useTranslation } from 'react-i18next';
 import { graphql } from 'gatsby';
 import { useLocalization } from 'gatsby-theme-i18n';
+import Container from '../elements/Container';
+import Row from '../elements/Row';
+import Col from '../elements/Col';
 
 const LandingPage = (props) => {
   const {
@@ -60,56 +62,66 @@ const LandingPage = (props) => {
           </Col>
         </Row>
 
-        <Row className="mt-2">
+        <Row className="tw-mt-2">
           <Col>
             <QuickSearch className="text-center border-0" />
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="tw-mt-4">
           <Col>
             <LatestReports latestReport={latestReport} />
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="tw-mt-4">
           <Col>
             <QuickAdd />
           </Col>
         </Row>
 
         <Row>
-          <Col className="mt-4" sm={12} md={12} lg={6}>
+          <Col
+            className="tw-mt-4 md:tw-flex-0-0-auto md:tw-w-full 992px:tw-flex-0-0-auto 992px:tw-w-2/4"
+            sm={12}
+            md={12}
+            lg={6}
+          >
             <AboutDatabase className="h-100" />
           </Col>
-          <Col className="mt-4" sm={12} md={12} lg={6}>
-            <Blog className="h-100" />
+          <Col
+            className="tw-mt-4 md:tw-flex-0-0-auto md:tw-w-full 992px:tw-flex-0-0-auto 992px:tw-w-2/4"
+            sm={12}
+            md={12}
+            lg={6}
+          >
+            <Blog />
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="tw-mt-4">
           <Col>
             <Featured />
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="tw-mt-4">
           <Col>
             <Leaderboards />
           </Col>
         </Row>
 
         <Row>
-          <Col className="mt-4" md={12} lg={6}>
+          <Col className="tw-p-3 " md={12} lg={6}>
             <WordCounts localWordCounts={localWordCounts} />
           </Col>
-          <Col className="mt-4" md={12} lg={6}>
+          <Col className="tw-p-3" md={12} lg={6}>
             <RandomReports />
           </Col>
         </Row>
 
         <Row>
-          <Col className="mt-4" md={12} lg={12}>
+          <Col md={12} lg={12}>
             <Sponsors className="h-100" />
           </Col>
         </Row>

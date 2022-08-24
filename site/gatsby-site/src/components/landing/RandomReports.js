@@ -1,11 +1,11 @@
 import RandomIncidentsCarousel from 'components/landing/RandomIncidentsCarousel';
 import React from 'react';
-import { Card } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
+import Card from '../../elements/Card';
 
 export default function RandomReports() {
   return (
-    <Card>
+    <Card className="tw-h-full">
       <Card.Body>
         <Card.Title as="h2">
           <Trans ns="landing">Random Reports</Trans>

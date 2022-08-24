@@ -37,6 +37,9 @@ export const FIND_SUBMISSIONS = gql`
       editor_similar_incidents
       editor_dissimilar_incidents
       plain_text
+      developers
+      deployers
+      harmed_parties
     }
   }
 `;
@@ -63,6 +66,9 @@ export const FIND_SUBMISSION = gql`
       url
       editor_notes
       tags
+      developers
+      deployers
+      harmed_parties
       nlp_similar_incidents {
         similarity
         incident_id
@@ -95,6 +101,9 @@ export const UPDATE_SUBMISSION = gql`
       url
       editor_notes
       tags
+      developers
+      deployers
+      harmed_parties
       nlp_similar_incidents {
         similarity
         incident_id

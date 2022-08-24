@@ -166,6 +166,7 @@ GATSBY_REALM_APP_ID=aiidstitch2-<REALM_APP_ID>
 MONGODB_CONNECTION_STRING=mongodb+srv://<username>:<password>@aiiddev.<CLUSTER>.mongodb.net
 MONGODB_REPLICA_SET=aiiddev-shard-00-00.<CLUSTER>.mongodb.net,aiiddev-shard-00-01.<CLUSTER>.mongodb.net,aiiddev-shard-00-02.<CLUSTER>.mongodb.net
 ```
+
 Restart Gatsby, and your local app should fetch data from your MongoDB environment!
 
 ### Algolia environment setup
@@ -473,6 +474,36 @@ The endpoint is implemented as a Gatsby function. In the context where this func
 REALM_GRAPHQL_API_KEY=xxxxxxxxxx
 ```
 About Realm API Keys: https://www.mongodb.com/docs/realm/authentication/api-key/
+
+## Social Networks login integration
+
+To enable social network logins, you will need to add the following configuration to your Atlas App Service.
+
+Add these app values following the instructions in the [Atlas App Services documentation](https://www.mongodb.com/docs/atlas/app-services/values-and-secrets/define-a-value/).
+
+```
+facebookAppId = [Facebook App ID, see comment below for more information]
+googleClientId = [Google Client ID, see comment below for more information]
+loginRedirectUri = [Login Authentication redirect URI, see comment below for more information]
+```
+
+- To get the Facebook App ID you should go to the [Facebook Developer Portal](https://developers.facebook.com/apps/), and check your app.
+- In order to get the Google Client ID (OAuth 2.0 Client ID) you should set up an OAuth 2.0 following these [instructions](https://support.google.com/cloud/answer/6158849?hl=en). After set it up, you can find the Google Client ID in your [Google Cloud Console](https://console.cloud.google.com/apis/credentials).
+- Login Authentication redirect URI is the URL that the user will be redirected to after successfully authenticating with Facebook or Google. It should point to `/logincallback` page. For Production the URI is `https://incidentdatabase.ai/logincallback`
+
+Also add these secret values to your Atlas App Service following the instructions in the [Atlas App Services documentation](https://www.mongodb.com/docs/atlas/app-services/values-and-secrets/define-and-manage-secrets/).
+
+```
+facebookAppSecret = [Facebook App Secret, see comment below for more information]
+googleClientSecret = [Google Client Secret, see comment below for more information]
+```
+
+- To get the Facebook App Secret you should go to the [Facebook Developer Portal](https://developers.facebook.com/apps/), and click on your app > Settings > Basic.
+- To get the Google Client Secret you should go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials), and click on the OAuth 2.0 Client ID item.
+
+About Facebook Authentication instructions: https://www.mongodb.com/docs/realm/web/authenticate/#facebook-authentication
+
+About Google Authentication instructions: https://www.mongodb.com/docs/realm/web/authenticate/#google-authentication
 
 
 ## Contact

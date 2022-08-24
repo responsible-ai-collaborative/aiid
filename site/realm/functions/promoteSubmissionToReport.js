@@ -16,10 +16,14 @@ exports = async (input) => {
     
     const newIncident = {
       title: submission.title,
+      description: submission.description,
       incident_id: lastIncident.incident_id + 1,
       reports: [],
       editors: ["Sean McGregor"],
       date: submission.incident_date,
+      "Alleged deployer of AI system": submission.deployers || [],
+      "Alleged developer of AI system": submission.developers || [],
+      "Alleged harmed or nearly harmed parties": submission.harmed_parties || [],
       nlp_similar_incidents: submission.nlp_similar_incidents || [],
       editor_similar_incidents: submission.editor_similar_incidents || [],
       editor_dissimilar_incidents: submission.editor_dissimilar_incidents || [],
