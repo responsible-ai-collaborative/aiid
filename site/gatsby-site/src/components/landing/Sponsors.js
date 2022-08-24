@@ -60,7 +60,12 @@ export default function Sponsors({ className }) {
           <Trans ns="landing">The Responsible AI Collaborative</Trans>
         </Card.Title>
         <Row className="g-0">
-          <Col lg={5} md={12} sm={12}>
+          <Col
+            lg={5}
+            md={12}
+            sm={12}
+            className="tw-border tw-border-solid tw-rounded-lg tw-border-border-gray tw-p-3"
+          >
             <Card.Text className="fst-italic">
               <Trans i18nKey="raicDescription" ns="landing">
                 The AI Incident Database is a project of the Responsible AI Collaborative, an
