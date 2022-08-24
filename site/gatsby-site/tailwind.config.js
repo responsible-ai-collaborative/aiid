@@ -1,3 +1,5 @@
+const plugin = require('tailwindcss/plugin');
+
 let safelist = [
   'tw-btn-primary',
   'tw-btn-secondary',
@@ -45,6 +47,17 @@ let safelist = [
 for (let i = 0; i < 100; i++) {
   safelist.push(`pl-[${2 + (i || 0) * 1}rem`);
 }
+
+const backfaceVisibility = plugin(function ({ addUtilities }) {
+  addUtilities({
+    '.backface-visible': {
+      'backface-visibility': 'visible',
+    },
+    '.backface-hidden': {
+      'backface-visibility': 'hidden',
+    },
+  });
+});
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -110,6 +123,8 @@ module.exports = {
         'form-control': 'border-color .15s ease-in-out,box-shadow .15s ease-in-out',
         modal: 'opacity .15s linear',
         'modal-fade': 'transform .3s ease-out',
+        'carousel-indicator': 'opacity .6s ease',
+        'carousel-next-prev': 'opacity .15s ease',
       },
       zIndex: {
         2: '2',
@@ -138,12 +153,28 @@ module.exports = {
       },
       flex: {
         '0-0-auto': '0 0 auto',
+        '0-1-auto': '0 1 auto',
       },
       transformOrigin: {
         'center-left': 'center left',
       },
+      backgroundImage: {
+        'btn-close':
+          "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3E%3C/svg%3E\")",
+        'carousel-control-prev-icon':
+          "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 16 16'%3E%3Cpath d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z'/%3E%3C/svg%3E\")",
+        'carousel-control-next-icon':
+          "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 16 16'%3E%3Cpath d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E\")",
+      },
+      backgroundPosition: {
+        'position-1/2': '50%',
+      },
+      backgroundSize: {
+        'size-btn-close': '1em',
+        'full-full': '100% 100%',
+      },
     },
   },
-  plugins: [],
+  plugins: [backfaceVisibility],
   safelist: safelist,
 };

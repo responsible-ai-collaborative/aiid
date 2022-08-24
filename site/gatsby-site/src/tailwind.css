@@ -490,41 +490,11 @@
     /* Bootstrap modal */
 
     .modal {
-        --bs-modal-zindex: 1055;
-        --bs-modal-width: 500px;
-        --bs-modal-padding: 1rem;
-        --bs-modal-margin: 0.5rem;
-        --bs-modal-color: ;
-        --bs-modal-bg: #fff;
-        --bs-border-color-translucent: rgba(0,0,0,0.175);
-        --bs-modal-border-color: var(--bs-border-color-translucent);
-        --bs-modal-border-width: 1px;
-        --bs-modal-border-radius: 0.5rem;
-        --bs-modal-box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
-        --bs-modal-inner-border-radius: calc(0.5rem - 1px);
-        --bs-modal-header-padding-x: 1rem;
-        --bs-modal-header-padding-y: 1rem;
-        --bs-modal-header-padding: 1rem 1rem;
-        --bs-border-color: #dee2e6;
-        --bs-modal-header-border-color: var(--bs-border-color);
-        --bs-modal-header-border-width: 1px;
-        --bs-modal-title-line-height: 1.5;
-        --bs-modal-footer-gap: 0.5rem;
-        --bs-modal-footer-bg: ;
-        --bs-modal-footer-border-color: var(--bs-border-color);
-        --bs-modal-footer-border-width: 1px;
         @apply hidden h-full left-0 outline-0 overflow-x-hidden overflow-y-auto fixed top-0 w-full z-[1055];
     }
  
     .modal-dialog {
         @apply m-2 pointer-events-none relative w-auto sm:ml-auto sm:mr-auto sm:max-w-md;
-    }
-    
-    @media (min-width: 576px) {
-        .modal {
-            --bs-modal-margin: 1.75rem;
-            --bs-modal-box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
-        }
     }
 
     .fade {
@@ -549,193 +519,98 @@
     }
 
     .btn-close {
-        background: transparent url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3E%3C/svg%3E") 50%/1em auto no-repeat;
-        border: 0;
-        border-radius: 0.375rem;
-        box-sizing: content-box;
-        color: #000;
-        height: 1em;
-        opacity: .5;
-        padding: 0.25em;
-        width: 1em;
+        @apply rounded-md box-content text-black opacity-50 h-4 p-1 w-4 border-0 bg-btn-close bg-transparent bg-no-repeat bg-position-1/2 bg-size-btn-close;
     }
 
     .modal-header .btn-close {
-        margin: calc(var(--bs-modal-header-padding-y)*-.5) calc(var(--bs-modal-header-padding-x)*-.5) calc(var(--bs-modal-header-padding-y)*-.5) auto;
-        padding: calc(var(--bs-modal-header-padding-y)*.5) calc(var(--bs-modal-header-padding-x)*.5);
+        @apply my-2 ml-2 mr-auto p-2;
     }
 
     .modal-title {
-        line-height: var(--bs-modal-title-line-height);
-        margin-bottom: 0;
+        @apply leading-normal mb-0;
     }
 
     .modal-body {
-        flex: 1 1 auto;
-        padding: var(--bs-modal-padding);
-        position: relative;
+        @apply p-4 relative flex-auto;
     }
 
     .modal-footer {
-        align-items: center;
-        background-color: var(--bs-modal-footer-bg);
-        border-bottom-left-radius: calc(0.5rem - 1px);
-        border-bottom-right-radius: calc(0.5rem - 1px);
-        border-top: var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color);
-        display: flex;
-        flex-shrink: 0;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-        padding: calc(var(--bs-modal-padding) - var(--bs-modal-footer-gap)*.5);
+        @apply items-center flex flex-shrink-0 flex-wrap justify-end rounded-bl-lg rounded-br-lg border-t border-solid border-[#dee2e6] p-1;
     }
 
     .modal-footer>* {
-        margin: calc(var(--bs-modal-footer-gap)*.5);
+        @apply m-1;
     }
 
     .modal-backdrop {
-        --bs-backdrop-zindex: 1050;
-        --bs-backdrop-bg: #000;
-        --bs-backdrop-opacity: 0.5;
-        background-color: var(--bs-backdrop-bg);
-        height: 100vh;
-        left: 0;
-        position: fixed;
-        top: 0;
-        width: 100vw;
-        z-index: var(--bs-backdrop-zindex);
+        @apply bg-black h-screen left-0 fixed top-0 w-screen z-[1050];
     }
 
     .modal-backdrop.fade {
-        opacity: 0;
+        @apply opacity-0;
     }
 
     .modal-backdrop.show {
-        opacity: var(--bs-backdrop-opacity);
+        @apply opacity-50;
     }
 
+    /* Bootstrap carousel */
+
     .carousel {
-        position: relative;
+        @apply relative;
     }
 
     .carousel-indicators {
-        bottom: 0;
-        display: flex;
-        justify-content: center;
-        left: 0;
-        list-style: none;
-        margin-bottom: 1rem;
-        margin-left: 15%;
-        margin-right: 15%;
-        padding: 0;
-        position: absolute;
-        right: 0;
-        z-index: 2;
+        @apply bottom-0 flex justify-center left-0 mb-4 p-0 absolute right-0 list-none ml-[15%] mr-[15%] z-[2];
     }
 
     .carousel-indicators [data-bs-target] {
-        background-clip: padding-box;
-        background-color: #fff;
-        border: 0;
-        border-bottom: 10px solid transparent;
-        border-top: 10px solid transparent;
-        box-sizing: content-box;
-        cursor: pointer;
-        flex: 0 1 auto;
-        height: 3px;
-        margin-left: 3px;
-        margin-right: 3px;
-        opacity: .5;
-        padding: 0;
-        text-indent: -999px;
-        transition: opacity .6s ease;
-        width: 30px;
+        @apply bg-white box-content cursor-pointer h-1 ml-1 mr-1 opacity-50 p-0 w-8 bg-clip-padding border-x-0 border-t-[10px] border-b-[10px] border-t-transparent border-b-transparent flex-0-1-auto -indent-[999px] transition-carousel-indicator;
     }
 
     .carousel-inner {
-        overflow: hidden;
-        position: relative;
-        width: 100%;
+        @apply overflow-hidden relative w-full;
     }
 
     .carousel-item {
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-        display: none;
-        float: left;
-        margin-right: -100%;
-        position: relative;
-        transition: transform .6s ease-in-out;
-        width: 100%;
+        @apply hidden float-left relative w-full transition-carousel-indicator -mr-[100%] backface-hidden;
+        
     }
 
     .carousel-item-next, .carousel-item-prev, .carousel-item.active {
-        display: block;
+        @apply block;
     }
 
     .carousel-caption {
-        bottom: 1.25rem;
-        color: #fff;
-        left: 15%;
-        padding-bottom: 1.25rem;
-        padding-top: 1.25rem;
-        position: absolute;
-        right: 15%;
-        text-align: center;
+        @apply text-white pb-5 pt-5 absolute text-center bottom-5 left-[15%] right-[15%];
     }
 
     .carousel-control-next, .carousel-control-prev {
-        align-items: center;
-        background: 0 0;
-        border: 0;
-        bottom: 0;
-        color: #fff;
-        display: flex;
-        justify-content: center;
-        opacity: .5;
-        padding: 0;
-        position: absolute;
-        text-align: center;
-        top: 0;
-        transition: opacity .15s ease;
-        width: 15%;
-        z-index: 1;
+        @apply items-center bottom-0 text-white flex justify-center opacity-50 p-0 absolute text-center top: 0 border-0 transition-carousel-next-prev w-[15%] z-[1];
     }
 
     .carousel-control-prev {
-        left: 0;
+        @apply left-0;
     }
 
     .carousel-control-next {
-        right: 0;
+        @apply right-0;
     }
 
     .carousel-control-next-icon {
-        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 16 16'%3E%3Cpath d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+        @apply bg-carousel-control-next-icon;
     }
 
     .carousel-control-prev-icon {
-        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 16 16'%3E%3Cpath d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z'/%3E%3C/svg%3E");
+        @apply bg-carousel-control-prev-icon;
     }
     
     .carousel-control-next-icon, .carousel-control-prev-icon {
-        background-position: 50%;
-        background-repeat: no-repeat;
-        background-size: 100% 100%;
-        display: inline-block;
-        height: 2rem;
-        width: 2rem;
+        @apply bg-no-repeat inline-block h-8 w-8 bg-position-1/2 bg-full-full;
     }
 
     .visually-hidden, .visually-hidden-focusable:not(:focus):not(:focus-within) {
-        clip: rect(0,0,0,0)!important;
-        border: 0!important;
-        height: 1px!important;
-        margin: -1px!important;
-        overflow: hidden!important;
-        padding: 0!important;
-        position: absolute!important;
-        white-space: nowrap!important;
-        width: 1px!important;
+        @apply h-px -m-px overflow-hidden p-0 absolute whitespace-no-wrap w-px border-0;
+        clip: rect(0,0,0,0);
     }
 }
