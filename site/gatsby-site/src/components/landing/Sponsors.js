@@ -87,13 +87,16 @@ export default function Sponsors({ className }) {
                     <div className="tw-flex tw-flex-wrap tw-justify-center tw-items-center">
                       {sponsor.items.map((item) => {
                         return (
-                          <Card.Text key={`sponsor-item-${item.modalName}`}>
+                          <div
+                            key={`sponsor-item-${item.modalName}`}
+                            className="tw-h-[100px] tw-p-3"
+                          >
                             <StyledImage
                               src={`images/${item.logo}`}
                               onClick={() => setModalState(item.modalName)}
                               data-cy={item.dataCy ? item.dataCy : ''}
                             />
-                          </Card.Text>
+                          </div>
                         );
                       })}
                     </div>
