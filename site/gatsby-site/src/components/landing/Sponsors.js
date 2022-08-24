@@ -73,42 +73,53 @@ export default function Sponsors({ className }) {
             </a>
           </Col>
           <Col lg={6} md={12} sm={12} className="offset-lg-1">
-            <StyledSubtitle top={'0px'} margin={'0px'}>
-              <Trans ns="landing">Organization Founding Sponsor</Trans>
-            </StyledSubtitle>
+            <div className="tw-border tw-border-border-gray tw-rounded-lg tw-mb-3 tw-p-1">
+              <StyledSubtitle top={'0px'} margin={'0px'}>
+                <Trans ns="landing">Organization Founding Sponsor</Trans>
+              </StyledSubtitle>
 
-            <Card.Text>
-              <StyledImage
-                src={wu_foundation_blue_logo}
-                onClick={() => setModalState('WU')}
-                data-cy="wu-modal-click"
-              />
-            </Card.Text>
-
-            <StyledSubtitle>
-              <Trans ns="landing">Database Founding Sponsor</Trans>
-            </StyledSubtitle>
-
-            <Card.Text>
-              <StyledImage src={partership_on_ai_logo} onClick={() => setModalState('PAI')} />
-            </Card.Text>
-            <StyledSubtitle>
-              <Trans ns="landing">In-Kind Sponsors</Trans>
-            </StyledSubtitle>
-            <Row className="g-0 tw-items-center">
-              <Col sm={6}>
-                <StyledImage src={netlify_dark} onClick={() => setModalState('N')} />
-              </Col>
-              <Col sm={6}>
+              <Card.Text>
                 <StyledImage
-                  src={cloudinary_cloud_glyph_regular}
-                  onClick={() => setModalState('CLOUDINARY')}
+                  src={wu_foundation_blue_logo}
+                  onClick={() => setModalState('WU')}
+                  data-cy="wu-modal-click"
                 />
-              </Col>
-              <Col sm={6}>
-                <StyledImage src={algolia_logo} onClick={() => setModalState('ALGOLIA')} />
-              </Col>
-            </Row>
+              </Card.Text>
+            </div>
+
+            <div className="tw-border tw-border-border-gray tw-rounded-lg tw-mb-3 tw-p-1">
+              <StyledSubtitle>
+                <Trans ns="landing">Database Founding Sponsor</Trans>
+              </StyledSubtitle>
+
+              <Card.Text>
+                <StyledImage src={partership_on_ai_logo} onClick={() => setModalState('PAI')} />
+              </Card.Text>
+            </div>
+
+            <div className="tw-border tw-border-border-gray tw-rounded-lg tw-mb-3 tw-p-1">
+              <StyledSubtitle>
+                <Trans ns="landing">In-Kind Sponsors</Trans>
+              </StyledSubtitle>
+              <Row className="g-0 tw-items-center tw-gap-2 tw-justify-between">
+                <Col sm={6}>
+                  <StyledImage src={netlify_dark} onClick={() => setModalState('N')} />
+                </Col>
+                <Col sm={6}>
+                  <StyledImage
+                    src={cloudinary_cloud_glyph_regular}
+                    onClick={() => setModalState('CLOUDINARY')}
+                  />
+                </Col>
+                <Col sm={6}>
+                  <StyledImage
+                    src={algolia_logo}
+                    onClick={() => setModalState('ALGOLIA')}
+                    className=""
+                  />
+                </Col>
+              </Row>
+            </div>
           </Col>
         </Row>
 
