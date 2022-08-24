@@ -1,0 +1,5 @@
+{
+    "name": "loginRedirectUri",
+    "value": "loginRedirectUri",
+    "from_secret": true
+}

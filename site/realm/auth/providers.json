@@ -30,7 +30,9 @@
             "clientId": "%%values.facebookAppId"
         },
         "secret_config": {
-            "clientSecret": "facebookAppSecret"
+            "clientSecret": "facebookAppSecret",
+            "clientId": "facebookAppId",
+            "redirect_uris": ["loginRedirectUri"]
         },
         "metadata_fields": [
             {
@@ -49,17 +51,15 @@
                 "required": false,
                 "name": "email"
             }
-        ],
-        "redirect_uris": ["%%values.loginRedirectUri"]
+        ]
     },
     "oauth2-google": {
         "name": "oauth2-google",
         "type": "oauth2-google",
-        "config": {
-            "clientId": "%%values.googleClientId"
-        },
         "secret_config": {
-            "clientSecret": "googleClientSecret"
+            "clientSecret": "googleClientSecret",
+            "clientId": "googleClientId",
+            "redirect_uris": "loginRedirectUri"
         },
         "disabled": false,
         "metadata_fields": [
@@ -79,7 +79,6 @@
                 "required": false,
                 "name": "email"
             }
-        ],
-        "redirect_uris": ["%%values.loginRedirectUri"]
+        ]
     }
 }
