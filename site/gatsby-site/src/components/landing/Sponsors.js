@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
 import Link from 'components/ui/Link';
-import wu_foundation_blue_logo from './assets/wu-foundation-blue-logo.svg';
-import netlify_dark from './assets/netlify-dark.svg';
-import cloudinary_cloud_glyph_regular from './assets/cloudinary_cloud_glyph_regular.svg';
-import partership_on_ai_logo from './assets/partership-on-ai-logo.png';
-import algolia_logo from './assets/Algolia-nebula.svg';
 import { Trans } from 'react-i18next';
 import Card from '../../elements/Card';
 import Col from '../../elements/Col';
@@ -82,53 +77,30 @@ export default function Sponsors({ className }) {
             </a>
           </Col>
           <Col lg={6} md={12} sm={12} className="offset-lg-1">
-            <div className="tw-border tw-border-border-gray tw-rounded-lg tw-mb-3 tw-p-1">
-              <StyledSubtitle top={'0px'} margin={'0px'}>
-                <Trans ns="landing">Organization Founding Sponsor</Trans>
-              </StyledSubtitle>
-
-              <Card.Text>
-                <StyledImage
-                  src={wu_foundation_blue_logo}
-                  onClick={() => setModalState('WU')}
-                  data-cy="wu-modal-click"
-                />
-              </Card.Text>
-            </div>
-
-            <div className="tw-border tw-border-border-gray tw-rounded-lg tw-mb-3 tw-p-1">
-              <StyledSubtitle>
-                <Trans ns="landing">Database Founding Sponsor</Trans>
-              </StyledSubtitle>
-
-              <Card.Text>
-                <StyledImage src={partership_on_ai_logo} onClick={() => setModalState('PAI')} />
-              </Card.Text>
-            </div>
-
-            <div className="tw-border tw-border-border-gray tw-rounded-lg tw-mb-3 tw-p-1">
-              <StyledSubtitle>
-                <Trans ns="landing">In-Kind Sponsors</Trans>
-              </StyledSubtitle>
-              <Row className="g-0 tw-items-center tw-gap-2 tw-justify-between">
-                <Col sm={6}>
-                  <StyledImage src={netlify_dark} onClick={() => setModalState('N')} />
-                </Col>
-                <Col sm={6}>
-                  <StyledImage
-                    src={cloudinary_cloud_glyph_regular}
-                    onClick={() => setModalState('CLOUDINARY')}
-                  />
-                </Col>
-                <Col sm={6}>
-                  <StyledImage
-                    src={algolia_logo}
-                    onClick={() => setModalState('ALGOLIA')}
-                    className=""
-                  />
-                </Col>
-              </Row>
-            </div>
+            {sponsors.map((sponsor) => {
+              return (
+                <>
+                  <div className="tw-border tw-border-border-gray tw-rounded-lg tw-mb-3 tw-p-1">
+                    <StyledSubtitle>
+                      <Trans ns="landing">{sponsor.name}</Trans>
+                    </StyledSubtitle>
+                    <div className="tw-flex tw-flex-wrap tw-justify-center tw-items-center">
+                      {sponsor.items.map((item) => {
+                        return (
+                          <Card.Text key={`sponsor-item-${item.modalName}`}>
+                            <StyledImage
+                              src={`images/${item.logo}`}
+                              onClick={() => setModalState(item.modalName)}
+                              data-cy={item.dataCy ? item.dataCy : ''}
+                            />
+                          </Card.Text>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </>
+              );
+            })}
           </Col>
         </Row>
 
