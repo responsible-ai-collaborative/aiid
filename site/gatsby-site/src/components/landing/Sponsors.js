@@ -4,6 +4,7 @@ import wu_foundation_blue_logo from './assets/wu-foundation-blue-logo.svg';
 import netlify_dark from './assets/netlify-dark.svg';
 import cloudinary_cloud_glyph_regular from './assets/cloudinary_cloud_glyph_regular.svg';
 import partership_on_ai_logo from './assets/partership-on-ai-logo.png';
+import algolia_logo from './assets/Algolia-nebula.svg';
 import { Trans } from 'react-i18next';
 import Card from '../../elements/Card';
 import Col from '../../elements/Col';
@@ -94,7 +95,7 @@ export default function Sponsors({ className }) {
             <StyledSubtitle>
               <Trans ns="landing">In-Kind Sponsors</Trans>
             </StyledSubtitle>
-            <Row className="g-0">
+            <Row className="g-0 tw-items-center">
               <Col sm={6}>
                 <StyledImage src={netlify_dark} onClick={() => setModalState('N')} />
               </Col>
@@ -103,6 +104,9 @@ export default function Sponsors({ className }) {
                   src={cloudinary_cloud_glyph_regular}
                   onClick={() => setModalState('CLOUDINARY')}
                 />
+              </Col>
+              <Col sm={6}>
+                <StyledImage src={algolia_logo} onClick={() => setModalState('ALGOLIA')} />
               </Col>
             </Row>
           </Col>
@@ -182,6 +186,22 @@ export default function Sponsors({ className }) {
             </a>{' '}
             provides discounted image and video hosting on their cloud hosting service. They are the
             reason so many images load quickly across the database.
+          </p>
+        </SponsorModal>
+
+        <SponsorModal
+          setModalState={setModalState}
+          modalState={modalState}
+          modalName={'ALGOLIA'}
+          title={'Algolia'}
+          imagePath={algolia_logo}
+        >
+          <p>
+            <a href="https://algolia.com/" target="_blank" rel="noreferrer">
+              Algolia
+            </a>{' '}
+            provides the Responsible AI Collaborative with generous search index of incident
+            reports.
           </p>
         </SponsorModal>
       </Card.Body>
