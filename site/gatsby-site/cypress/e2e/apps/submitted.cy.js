@@ -108,6 +108,9 @@ describe('Submitted reports', () => {
         data: {
           updateOneReport: {
             ...submission,
+            deployers: undefined,
+            developers: undefined,
+            harmed_parties: undefined,
             __typename: 'Report',
             report_number: 1565,
           },
@@ -181,10 +184,7 @@ describe('Submitted reports', () => {
 
         expect(set.title).eq(submission.title);
         expect(set.date).eq(submission.incident_date);
-        expect(set.description).eq('');
-        expect(set.AllegedDeployerOfAISystem).to.deep.eq([]);
-        expect(set.AllegedDeveloperOfAISystem).to.deep.eq([]);
-        expect(set.AllegedHarmedOrNearlyHarmedParties).to.deep.eq([]);
+        expect(set.description).eq(submission.description);
       });
 
     cy.get('[data-cy="toast"]')
@@ -419,4 +419,59 @@ describe('Submitted reports', () => {
 
     cy.get('@modal').should('not.exist');
   });
+
+  maybeIt(
+    'Does not allow promotion of submission if developers, deployers or harmed parties is missing.',
+    () => {
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+      const submission = submittedReports.data.submissions.find(
+        (r) =>
+          r.incident_id === 0 &&
+          (r.deployers === undefined ||
+            r.developers === undefined ||
+            r.harmed_parties === undefined)
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindSubmissions',
+        'FindSubmissions',
+        {
+          data: {
+            submissions: [submission],
+          },
+        }
+      );
+
+      cy.visit(url);
+
+      cy.wait('@FindSubmissions');
+
+      cy.get('[data-cy="submissions"] > div:nth-child(1)').as('promoteForm');
+
+      cy.get('@promoteForm').contains('review >').click();
+
+      cy.on('fail', (err) => {
+        expect(err.message).to.include(
+          '`cy.wait()` timed out waiting `2000ms` for the 1st request to the route: `promotionInvoked`. No request ever occurred.'
+        );
+      });
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName === 'PromoteSubmission',
+        'promotionInvoked',
+        {}
+      );
+
+      cy.get('@promoteForm').contains('button', 'Add New Incident').click();
+
+      cy.wait('@promotionInvoked', { timeout: 2000 });
+
+      cy.get('[data-cy="toast"]')
+        .contains('Please review submission before approving. Some data is missing.')
+        .should('exist');
+    }
+  );
 });
