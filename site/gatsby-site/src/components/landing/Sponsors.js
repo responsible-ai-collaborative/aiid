@@ -14,8 +14,17 @@ import Button from '../../elements/Button';
 import { StyledImage, StyledImageModal, StyledImageCover } from '../../elements/StyledImage';
 import { StyledSubtitle } from '../../elements/StyledTitle';
 import { Modal } from 'react-bootstrap';
+import sponsors from './sponsors.json';
 
-const SponsorModal = ({ setModalState, modalState, modalName, children, imagePath, title }) => {
+const SponsorModal = ({
+  setModalState,
+  modalState,
+  modalName,
+  children,
+  imagePath,
+  title,
+  linkTo,
+}) => {
   return (
     <>
       {modalState === modalName && (
@@ -29,7 +38,7 @@ const SponsorModal = ({ setModalState, modalState, modalName, children, imagePat
           </Modal.Header>
           <Modal.Body>
             {children}
-            <StyledImageModal src={imagePath} />
+            <StyledImageModal src={imagePath} linkTo={linkTo} />
           </Modal.Body>
           <Modal.Footer>
             <Button
@@ -123,98 +132,32 @@ export default function Sponsors({ className }) {
           </Col>
         </Row>
 
-        <SponsorModal
-          setModalState={setModalState}
-          modalState={modalState}
-          modalName={'PAI'}
-          title={'Partnership on AI'}
-          imagePath={partership_on_ai_logo}
-        >
-          <p>
-            As a{' '}
-            <a
-              href="https://partnershiponai.org/resource/tracking-when-ai-systems-fail/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              founding sponsor
-            </a>{' '}
-            of the AI Incident Database (AIID), Partnership on AI supported the start-up of the
-            database, including a grant to support the project prior to the founding of the
-            Responsible AI Collaborative. Partnership on AI also invested in promoting the social
-            benefits of the AIID to their Partners and other stakeholders and have an ongoing
-            interest in supporting its outcomes.
-          </p>
-        </SponsorModal>
+        {sponsors.map((sponsor) => {
+          return (
+            <>
+              {sponsor.items.map((item) => {
+                const text = item.text.replace(
+                  /\[\[((.*?))\]\]/g,
+                  `<a href="${item.link}" target="_blank" rel="noreferrer">$1</a>`
+                );
 
-        <SponsorModal
-          setModalState={setModalState}
-          modalState={modalState}
-          modalName={'N'}
-          title={'Netlify'}
-          imagePath={netlify_dark}
-        >
-          <p>
-            <a href="https://www.netlify.com/" target="_blank" rel="noreferrer">
-              Netlify
-            </a>{' '}
-            provides the Responsible AI Collaborative with free hosting, build minutes, and accounts
-            for the open source development of the AI Incident Database.
-          </p>
-        </SponsorModal>
-
-        <SponsorModal
-          setModalState={setModalState}
-          modalState={modalState}
-          modalName={'WU'}
-          title={'Waking Up Foundation'}
-          imagePath={wu_foundation_blue_logo}
-        >
-          <p>
-            On the recommendation of Longview Philanthropy, the{' '}
-            <a href="https://www.wakingup.com/foundation" target="_blank" rel="noreferrer">
-              Waking Up Foundation
-            </a>{' '}
-            contributed a founding grant of $550k USD directed to the AI Incident Database. $33k of
-            the total is committed to our fiscal sponsor for running the books and tax compliance
-            for the organization. Approximately $5k is dedicated to maintaining the RAIC non-profit
-            entity that directs the AIID programming sponsored by a fiscal sponsor. The remaining
-            funds are all dedicated to programmatic outputs, including staff time for programming
-            and research.
-          </p>
-        </SponsorModal>
-
-        <SponsorModal
-          setModalState={setModalState}
-          modalState={modalState}
-          modalName={'CLOUDINARY'}
-          title={'Cloudinary'}
-          imagePath={cloudinary_cloud_glyph_regular}
-        >
-          <p>
-            <a href="https://cloudinary.com/" target="_blank" rel="noreferrer">
-              Cloudinary
-            </a>{' '}
-            provides discounted image and video hosting on their cloud hosting service. They are the
-            reason so many images load quickly across the database.
-          </p>
-        </SponsorModal>
-
-        <SponsorModal
-          setModalState={setModalState}
-          modalState={modalState}
-          modalName={'ALGOLIA'}
-          title={'Algolia'}
-          imagePath={algolia_logo}
-        >
-          <p>
-            <a href="https://algolia.com/" target="_blank" rel="noreferrer">
-              Algolia
-            </a>{' '}
-            provides the Responsible AI Collaborative with generous search index of incident
-            reports.
-          </p>
-        </SponsorModal>
+                return (
+                  <SponsorModal
+                    key={`sponsor-${item.name}`}
+                    setModalState={setModalState}
+                    modalState={modalState}
+                    modalName={item.modalName}
+                    title={item.name}
+                    imagePath={`/images/${item.logo}`}
+                    linkTo={item.link}
+                  >
+                    <p dangerouslySetInnerHTML={{ __html: text }} />
+                  </SponsorModal>
+                );
+              })}
+            </>
+          );
+        })}
       </Card.Body>
     </Card>
   );

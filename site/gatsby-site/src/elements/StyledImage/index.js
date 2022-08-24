@@ -14,16 +14,29 @@ export function StyledImage(props) {
   );
 }
 
+function LogoImage(props) {
+  return (
+    <img
+      {...props}
+      alt={props.alt}
+      className={`tw-flex tw-ml-auto tw-mr-auto tw-mb-2 tw-justify-around tw-items-center tw-w-[85%] tw-max-w-[200px] tw-max-h-[80px] ${
+        props.className || ''
+      }`}
+    />
+  );
+}
+
 export function StyledImageModal(props) {
   return (
     <>
-      <img
-        {...props}
-        alt={props.alt}
-        className={`tw-flex tw-ml-auto tw-mr-auto tw-mb-2 tw-justify-around tw-items-center tw-w-[85%] tw-max-w-[200px] tw-max-h-[80px] ${
-          props.className || ''
-        }`}
-      />
+      {props.linkTo ? (
+        <a href={props.linkTo} target="_blank" rel="noreferrer">
+          {' '}
+          <LogoImage {...props} />{' '}
+        </a>
+      ) : (
+        <LogoImage {...props} />
+      )}
     </>
   );
 }
