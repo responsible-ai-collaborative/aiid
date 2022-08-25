@@ -22,6 +22,8 @@ const createDownloadIndexPage = require('./page-creators/createDownloadIndexPage
 
 const createDuplicatePages = require('./page-creators/createDuplicatePages');
 
+const createTsneVisualizationPage = require('./page-creators/createTsneVisualizationPage');
+
 const algoliasearch = require('algoliasearch');
 
 const Translator = require('./src/utils/Translator');
@@ -64,6 +66,7 @@ exports.createPages = ({ graphql, actions, reporter }) => {
     createTaxonomyPages(graphql, createPage),
     createDownloadIndexPage(graphql, createPage),
     createDuplicatePages(graphql, createPage),
+    createTsneVisualizationPage(graphql, createPage),
   ]);
 };
 
@@ -162,10 +165,25 @@ exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
 
   const typeDefs = `
+    type reportEmbedding {
+      vector: [Float]
+      from_text_hash: String
+    }
+
+    type incidentEmbedding {
+      vector: [Float]
+      from_reports: [Int]
+    }
+
+    type mongodbAiidprodIncidents implements Node {
+      embedding: incidentEmbedding
+    }
+
     type nlpSimilarIncident {
       incident_id: Int
       similarity: Float
     }
+
     type mongodbAiidprodIncidents implements Node {
       nlp_similar_incidents: [nlpSimilarIncident]
       editor_similar_incidents: [Int]
@@ -183,6 +201,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       cloudinary_id: String
       tags: [String]
       plain_text: String
+      embedding: reportEmbedding 
     }
 
     type mongodbAiidprodTaxaField_list implements Node {

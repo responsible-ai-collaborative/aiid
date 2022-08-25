@@ -60,6 +60,20 @@
                 "bsonType": "int"
             }
         },
+        "embedding": {
+            "bsonType": "object",
+            "properties": {
+                "from_text_hash": {
+                    "bsonType": "string"
+                },
+                "vector": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "double"
+                    }
+                }
+            }
+        },
         "image_url": {
             "bsonType": "string"
         },
