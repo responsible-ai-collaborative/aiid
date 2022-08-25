@@ -59,9 +59,7 @@ const ResetPassword = (props) => {
           } catch (e) {
             addToast({
               message: (
-                <label className="tw-capitalize">
-                  {t(e.error || 'An unknown error has ocurred')}
-                </label>
+                <label className="capitalize">{t(e.error || 'An unknown error has ocurred')}</label>
               ),
               severity: SEVERITY.danger,
             });
@@ -71,7 +69,7 @@ const ResetPassword = (props) => {
         }}
       >
         {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, isValid }) => (
-          <Form onSubmit={handleSubmit} className={'tw-w-64'}>
+          <Form onSubmit={handleSubmit} className={'w-64'}>
             <Form.Group className="mb-3">
               <Form.Label>
                 <Trans ns="login">Password</Trans>

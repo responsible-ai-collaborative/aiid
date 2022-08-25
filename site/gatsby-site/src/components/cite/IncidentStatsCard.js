@@ -38,7 +38,7 @@ const IncidentStatsCard = ({ incidentId, reportCount, incidentDate, editors }) =
   return (
     <Card className="tw-incident-stat-card">
       <Card.Header>
-        <h4 className="tw-m-0">
+        <h4 className="m-0">
           <Trans>Incident Stats</Trans>
         </h4>
       </Card.Header>

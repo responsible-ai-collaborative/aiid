@@ -49,7 +49,7 @@ const Controls = ({ query, setHideDuplicates, hideDuplicates }) => {
             id="expand-filters"
             data-cy="expand-filters"
             onClick={() => setExpandFilters(!expandFilters)}
-            className="select-none cursor-pointer tw-bg-none border-none"
+            className="select-none cursor-pointer bg-none border-none"
           >
             <FontAwesomeIcon
               className="-align-[0.2rem]"

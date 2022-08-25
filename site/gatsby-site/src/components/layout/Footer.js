@@ -36,7 +36,7 @@ export default function Footer() {
   } = data;
 
   return (
-    <footer className="tw-bg-text-light-gray relative">
+    <footer className="bg-text-light-gray relative">
       <Row className="flex-row justify-center p-4">
         <Col className="w-auto flex-0-0-auto">2022 - AI Incident Database</Col>
         <Col className="w-auto flex-0-0-auto">

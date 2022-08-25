@@ -64,7 +64,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
             overlay={
               <Popover>
                 <Popover.Body>
-                  <ul className="tw-m-0 p-0 list-none">
+                  <ul className="m-0 p-0 list-none">
                     {bucket.slice(1).map((b) => (
                       <li className="text-[12px] mt-[6px] first:mt-[0%]" key={b.mongodb_id}>
                         {timeFormat('%b %d, %Y')(new Date(b.date_published))}

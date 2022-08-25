@@ -97,7 +97,7 @@ const Header = () => {
                     src={logo.image !== '' ? logo.image : logoImg}
                     alt={'logo'}
                   />
-                  <div className="min-767px:tw-hidden">
+                  <div className="min-767px:hidden">
                     <img
                       style={{ width: 50 }}
                       src={logo.mobile !== '' ? logo.mobile : logoImg}
@@ -164,7 +164,7 @@ const Header = () => {
                     />
                   </>
                 )}
-                <div className="min-767px:tw-hidden">
+                <div className="min-767px:hidden">
                   <FontAwesomeIcon
                     icon={faBars}
                     color={'white'}

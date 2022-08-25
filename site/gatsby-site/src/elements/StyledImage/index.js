@@ -6,7 +6,7 @@ export function StyledImage(props) {
       <img
         {...props}
         alt={props.alt}
-        className={`flex ml-auto mr-auto mb-2 justify-around items-center w-[85%] max-w-[355px] tw-max-h-[80px] cursor-zoom-in ${
+        className={`flex ml-auto mr-auto mb-2 justify-around items-center w-[85%] max-w-[355px] max-h-[80px] cursor-zoom-in ${
           props.className || ''
         }`}
       />
@@ -20,7 +20,7 @@ export function StyledImageModal(props) {
       <img
         {...props}
         alt={props.alt}
-        className={`flex ml-auto mr-auto mb-2 justify-around items-center w-[85%] max-w-[355px] tw-max-h-[80px] ${
+        className={`flex ml-auto mr-auto mb-2 justify-around items-center w-[85%] max-w-[355px] max-h-[80px] ${
           props.className || ''
         }`}
       />

@@ -22,12 +22,12 @@ const ImageCarousel = ({ nodes }) => {
             plugins={[]}
           />
           <Carousel.Caption>
-            <h3 className="tw-bg-0-0-0-055">
+            <h3 className="bg-0-0-0-055">
               <a href={value.url} className="text-white" target="_blank" rel="noopener noreferrer">
                 {value.title}
               </a>
             </h3>
-            <p className="tw-bg-0-0-0-055">{value.source_domain}</p>
+            <p className="bg-0-0-0-055">{value.source_domain}</p>
           </Carousel.Caption>
         </Carousel.Item>
       ))}

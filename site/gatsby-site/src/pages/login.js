@@ -50,7 +50,7 @@ const Login = (props) => {
     <Layout {...props}>
       {loading ? (
         <>
-          <Spinner animation="border" size="sm" role="status" className="tw-mr-2" />
+          <Spinner animation="border" size="sm" role="status" className="mr-2" />
           <Trans>Loading...</Trans>
         </>
       ) : user && user.isLoggedIn && user.profile.email ? (
@@ -121,10 +121,10 @@ const Login = (props) => {
                   disabled={
                     isSubmitting || !isValid || displayFacebookSpinner || displayGoogleSpinner
                   }
-                  className="tw-w-full"
+                  className="w-full"
                 >
                   {isSubmitting && (
-                    <Spinner animation="border" size="sm" role="status" className="tw-mr-2" />
+                    <Spinner animation="border" size="sm" role="status" className="mr-2" />
                   )}
                   <Trans ns="login">Login</Trans>
                 </Button>
@@ -139,7 +139,7 @@ const Login = (props) => {
           <Button
             variant="primary"
             onClick={clickLoginWithFacebook}
-            className={'tw-w-full'}
+            className={'w-full'}
             disabled={displayFacebookSpinner || displayGoogleSpinner}
           >
             <div className={'d-flex justify-content-center align-items-center'}>
@@ -153,7 +153,7 @@ const Login = (props) => {
                   title="Login with Facebook"
                 />
               )}
-              <div className={'tw-ml-2'}>
+              <div className={'ml-2'}>
                 <Trans ns="login">Login with Facebook</Trans>
               </div>
             </div>
@@ -162,7 +162,7 @@ const Login = (props) => {
           <Button
             variant="primary"
             onClick={clickLoginWithGoogle}
-            className={'tw-w-full tw-mt-5'}
+            className={'w-full mt-5'}
             disabled={displayGoogleSpinner || displayFacebookSpinner}
           >
             <div className={'d-flex justify-content-center align-items-center'}>
@@ -176,7 +176,7 @@ const Login = (props) => {
                   title="Login with Google"
                 />
               )}
-              <div className={'tw-ml-2'}>
+              <div className={'ml-2'}>
                 <Trans ns="login">Login with Google</Trans>
               </div>
             </div>

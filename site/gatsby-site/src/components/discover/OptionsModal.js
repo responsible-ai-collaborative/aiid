@@ -18,7 +18,7 @@ function OptionsModal({ setHideDuplicates, hideDuplicates }) {
 
   return (
     <>
-      <Row className="tw-my-4 md:hidden">
+      <Row className="my-4 md:hidden">
         <Col className="flex items-center">
           <Stats />
         </Col>
