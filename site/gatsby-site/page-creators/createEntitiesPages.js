@@ -19,36 +19,80 @@ const createEntitiesPages = async (graphql, createPage) => {
 
   const entititiesHash = {};
 
-  const fields = ['Alleged_deployer_of_AI_system', 'Alleged_developer_of_AI_system'];
+  const fields = [
+    {
+      property: 'Alleged_deployer_of_AI_system',
+      key: 'incidentsAsDeployer',
+    },
+    {
+      property: 'Alleged_developer_of_AI_system',
+      key: 'incidentsAsDeveloper',
+    },
+  ];
 
   for (const incident of incidents.nodes) {
     for (const field of fields) {
-      for (const name of incident[field]) {
+      for (const name of incident[field.property]) {
         const id = slugify(name, { lower: true });
 
         if (!entititiesHash[id]) {
-          entititiesHash[id] = { name, incidents: [] };
+          entititiesHash[id] = {
+            name,
+            incidentsAsDeveloper: [],
+            incidentsAsDeployer: [],
+            incidentsAsBoth: [],
+            relatedEntities: [],
+          };
         }
 
-        if (!entititiesHash[id].incidents.includes(incident.incident_id)) {
-          entititiesHash[id].incidents.push(incident.incident_id);
+        if (!entititiesHash[id][field.key].includes(incident.incident_id)) {
+          entititiesHash[id][field.key].push(incident.incident_id);
+        }
+
+        if (fields.every((f) => entititiesHash[id][f.key].includes(incident.incident_id))) {
+          entititiesHash[id].incidentsAsBoth.push(incident.incident_id);
         }
       }
     }
   }
 
-  for (const key in entititiesHash) {
-    const entity = entititiesHash[key];
+  for (const id in entititiesHash) {
+    entititiesHash[id].relatedEntities = incidents.nodes
+      .filter((incident) =>
+        fields.some((field) =>
+          incident[field.property].map((p) => slugify(p, { lower: true })).includes(id)
+        )
+      )
+      .reduce((related, incident) => {
+        for (const field of fields) {
+          for (const name of incident[field.property]) {
+            const relatedId = slugify(name, { lower: true });
 
-    const pagePath = `/entities/${key}`;
+            if (relatedId !== id && !related.includes(relatedId)) {
+              related.push(relatedId);
+            }
+          }
+        }
+
+        return related;
+      }, []);
+  }
+
+  for (const id in entititiesHash) {
+    const entity = entititiesHash[id];
+
+    const pagePath = `/entities/${id}`;
 
     createPage({
       path: pagePath,
       component: path.resolve('./src/templates/entity.js'),
       context: {
-        key,
+        id,
         name: entity.name,
-        incidents: entity.incidents,
+        incidentsAsDeployer: entity.incidentsAsDeployer,
+        incidentsAsDeveloper: entity.incidentsAsDeveloper,
+        incidentsAsBoth: entity.incidentsAsBoth,
+        relatedEntities: entity.relatedEntities,
       },
     });
   }
