@@ -12,6 +12,7 @@ import {
   faSortAlphaDown,
   faNewspaper,
   faChartPie,
+  faTable,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -26,6 +27,7 @@ const getIcon = (label) =>
     ),
     blog: <FontAwesomeIcon icon={faNewspaper} className="pointer fa tw-mr-1" fixedWidth />,
     taxonomies: <FontAwesomeIcon icon={faChartPie} className="pointer fa tw-mr-1" fixedWidth />,
+    incidents: <FontAwesomeIcon icon={faTable} className="pointer fa tw-mr-1" fixedWidth />,
     spatial: (
       <svg
         xmlns="http://www.w3.org/2000/svg"

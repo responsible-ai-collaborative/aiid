@@ -78,6 +78,27 @@ const config = {
       },
     },
   },
+  sidebar: {
+    navConfig: [
+      { title: 'Welcome to the AIID', label: 'welcome', url: '/', items: [] },
+      { title: 'Discover Incidents', label: 'discover', url: '/apps/discover', items: [] },
+      { title: 'Spatial View', label: 'spatial', url: '/summaries/spatial', items: [] },
+      { title: 'Table View', label: 'incidents', url: '/apps/incidents', items: [] },
+      { title: 'Taxonomies', label: 'taxonomies', url: '/taxonomies', items: [] },
+      { title: 'Word Counts', label: 'wordcounts', url: '/summaries/wordcounts', items: [] },
+      { title: 'Submit Incident Reports', label: 'submit', url: '/apps/submit', items: [] },
+      {
+        title: 'Submission Leaderboard',
+        label: 'leaderboard',
+        url: '/summaries/leaderboard',
+        items: [],
+      },
+      { title: 'Blog', label: 'blog', url: '/blog', items: [] },
+    ],
+    frontline: true,
+    ignoreIndex: false,
+    title: '',
+  },
   footer: {
     navConfig: [
       {
@@ -122,26 +143,6 @@ const config = {
         ],
       },
     ],
-  },
-  sidebar: {
-    navConfig: [
-      { title: 'Welcome to the AIID', label: 'welcome', url: '/', items: [] },
-      { title: 'Discover Incidents', label: 'discover', url: '/apps/discover', items: [] },
-      { title: 'Taxonomies', label: 'taxonomies', url: '/taxonomies', items: [] },
-      { title: 'Spatial View', label: 'spatial', url: '/summaries/spatial', items: [] },
-      { title: 'Word Counts', label: 'wordcounts', url: '/summaries/wordcounts', items: [] },
-      { title: 'Submit Incident Reports', label: 'submit', url: '/apps/submit', items: [] },
-      {
-        title: 'Submission Leaderboard',
-        label: 'leaderboard',
-        url: '/summaries/leaderboard',
-        items: [],
-      },
-      { title: 'Blog', label: 'blog', url: '/blog', items: [] },
-    ],
-    frontline: true,
-    ignoreIndex: false,
-    title: '',
   },
   siteMetadata: {
     title: 'Artificial Intelligence Incident Database',
