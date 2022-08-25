@@ -142,7 +142,7 @@
     }
 
     .tw-btn-menu {
-        @apply 767px:tw-hidden tw-w-[100px] tw-h-10 tw-fixed tw-left-56 tw-top-1/2 tw-rotate-90;
+        @apply 767px:tw-hidden tw-w-[100px] tw-h-10 tw-fixed tw-left-56 tw-top-1/2 tw-rotate-90 tw-z-10;
     }
 
     .tw-btn-menu.collapsed {
