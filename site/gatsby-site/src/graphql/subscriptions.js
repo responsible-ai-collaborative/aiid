@@ -1,8 +1,11 @@
 import gql from 'graphql-tag';
 
-export const INSERT_SUBSCRIPTION = gql`
-  mutation InsertSubscription($subscription: SubscriptionInsertInput!) {
-    insertOneSubscription(data: $subscription) {
+export const UPSERT_SUBSCRIPTION = gql`
+  mutation UpsertSubscription(
+    $query: SubscriptionQueryInput
+    $subscription: SubscriptionInsertInput!
+  ) {
+    upsertOneSubscription(query: $query, data: $subscription) {
       _id
     }
   }
