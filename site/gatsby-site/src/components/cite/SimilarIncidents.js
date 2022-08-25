@@ -43,10 +43,12 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
           transformation={fill().height(480)}
           alt=""
         />
-        <h3>{locale == 'en' && incident.title ? incident.title : incident.reports[0].title}</h3>
+        <h3 className="tw-text-lg tw-m-4">
+          {locale == 'en' && incident.title ? incident.title : incident.reports[0].title}
+        </h3>
       </a>
       <div className="tw-flex tw-w-full tw-flex-row tw-items-center tw-font-bold tw-mt-0 tw-my-4 tw-mr-4">
-        <div className="text-muted">
+        <div className="text-muted tw-text-sm tw-mx-4">
           {parsedDate && (
             <>
               <time dateTime={formatISO(parsedDate)}>{format(parsedDate, 'MMM yyyy')}</time> ·{' '}
@@ -143,7 +145,7 @@ const SimilarIncidents = ({
               </a>
             )}
           </div>
-          <div className="tw-card-set">
+          <div className="tw-card-set tw-mt-4">
             {editor_similar_incidents.map((similarIncident) => (
               <SimilarIncidentCard
                 incident={similarIncident}
@@ -184,7 +186,7 @@ const SimilarIncidents = ({
               unrelated incidents
             </Trans>
           </p>
-          <div className="tw-card-set">
+          <div className="tw-card-set tw-mt-4">
             {nlp_only_incidents.map((similarIncident) => (
               <SimilarIncidentCard
                 incident={similarIncident}
