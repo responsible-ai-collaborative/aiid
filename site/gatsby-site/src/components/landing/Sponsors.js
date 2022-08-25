@@ -55,17 +55,12 @@ export default function Sponsors({ className }) {
 
   return (
     <Card className={className}>
+      <Card.Title as="h2">
+        <Trans ns="landing">The Responsible AI Collaborative</Trans>
+      </Card.Title>
       <Card.Body>
         <Row className="g-0 tw-gap-4">
-          <Col
-            lg={5}
-            md={12}
-            sm={12}
-            className="tw-border tw-border-border-gray tw-rounded-lg tw-p-3"
-          >
-            <Card.Title as="h2">
-              <Trans ns="landing">The Responsible AI Collaborative</Trans>
-            </Card.Title>
+          <Col lg={5} md={12} sm={12} className="tw-p-3">
             <Card.Text className="fst-italic">
               <Trans i18nKey="raicDescription" ns="landing">
                 The AI Incident Database is a project of the Responsible AI Collaborative, an
@@ -78,7 +73,7 @@ export default function Sponsors({ className }) {
               </Trans>
             </Card.Text>
             <a href="https://docsend.com/view/a45p7mgh44nu8x7j" target="_blank" rel="noreferrer">
-              <StyledImageCover src="/images/reportcover.png" />
+              <StyledImageCover src="/images/reportcover.png" className="tw-border" />
             </a>
           </Col>
           <Col
