@@ -51,12 +51,12 @@ function CitePage(props) {
     pageContext: {
       incident,
       incidentReports,
-      nlp_similar_incidents,
-      editor_similar_incidents,
-      editor_dissimilar_incidents,
       taxonomies,
       nextIncident,
       prevIncident,
+      nlp_similar_incidents,
+      editor_similar_incidents,
+      editor_dissimilar_incidents,
     },
   } = props;
 
