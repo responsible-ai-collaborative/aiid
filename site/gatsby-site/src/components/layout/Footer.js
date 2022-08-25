@@ -70,8 +70,13 @@ export default function Footer() {
         <LocalizedLink to="/terms-of-use">Terms of use</LocalizedLink>
         <br />
         <LocalizedLink to="/privacy-policy">Privacy Policy</LocalizedLink>
-        <div className="tw-flex-left tw-pt-3 flex gap-x-8">
-          <a href={'https://twitter.com/IncidentsDB'} target="_blank" rel="noreferrer">
+        <div className="tw-pt-3">
+          <a
+            href={'https://twitter.com/IncidentsDB'}
+            target="_blank"
+            rel="noreferrer"
+            className="tw-pr-2"
+          >
             <FontAwesomeIcon
               icon={faTwitterSquare}
               color={'gray'}
@@ -80,7 +85,7 @@ export default function Footer() {
             />
           </a>
 
-          <a href={githubUrl} target="_blank" rel="noreferrer">
+          <a href={githubUrl} target="_blank" rel="noreferrer" className="tw-pr-2">
             <FontAwesomeIcon
               icon={faGithubSquare}
               color={'gray'}
@@ -89,7 +94,7 @@ export default function Footer() {
             />
           </a>
 
-          <a href={'/rss.xml'} target="_blank" rel="noopener noreferrer">
+          <a href={'/rss.xml'} target="_blank" rel="noopener noreferrer" className="tw-pr-2">
             <FontAwesomeIcon
               icon={faRssSquare}
               color={'gray'}
