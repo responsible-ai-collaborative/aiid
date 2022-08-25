@@ -56,16 +56,16 @@ export default function Sponsors({ className }) {
   return (
     <Card className={className}>
       <Card.Body>
-        <Card.Title as="h2">
-          <Trans ns="landing">The Responsible AI Collaborative</Trans>
-        </Card.Title>
-        <Row className="g-0 tw-gap-2">
+        <Row className="g-0 tw-gap-4">
           <Col
             lg={5}
             md={12}
             sm={12}
-            className="tw-border tw-border-solid tw-rounded-lg tw-border-border-gray tw-p-3"
+            className="tw-border tw-border-border-gray tw-rounded-lg tw-p-3"
           >
+            <Card.Title as="h2">
+              <Trans ns="landing">The Responsible AI Collaborative</Trans>
+            </Card.Title>
             <Card.Text className="fst-italic">
               <Trans i18nKey="raicDescription" ns="landing">
                 The AI Incident Database is a project of the Responsible AI Collaborative, an
@@ -81,11 +81,16 @@ export default function Sponsors({ className }) {
               <StyledImageCover src="/images/reportcover.png" />
             </a>
           </Col>
-          <Col lg={6} md={12} sm={12} className="offset-lg-1">
+          <Col
+            lg={6}
+            md={12}
+            sm={12}
+            className="tw-flex tw-justify-between tw-flex-col tw-gap-2 tw-px-0"
+          >
             {sponsors.map((sponsor) => {
               return (
                 <>
-                  <div className="tw-border tw-border-border-gray tw-rounded-lg tw-mb-3 tw-p-1">
+                  <div className="tw-border tw-border-border-gray tw-rounded-lg  tw-p-1">
                     <StyledSubtitle>
                       <Trans ns="landing">{sponsor.name}</Trans>
                     </StyledSubtitle>
@@ -94,7 +99,7 @@ export default function Sponsors({ className }) {
                         return (
                           <div
                             key={`sponsor-item-${item.modalName}`}
-                            className="tw-h-[100px] tw-p-3"
+                            className="tw-h-[90px] tw-p-3"
                           >
                             <StyledImage
                               src={`images/${item.logo}`}
