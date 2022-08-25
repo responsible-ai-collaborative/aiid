@@ -30,6 +30,20 @@
         "editor_notes": {
             "bsonType": "string"
         },
+        "embedding": {
+            "bsonType": "object",
+            "properties": {
+                "from_text_hash": {
+                    "bsonType": "string"
+                },
+                "vector": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "double"
+                    }
+                }
+            }
+        },
         "epoch_date_downloaded": {
             "bsonType": "int"
         },

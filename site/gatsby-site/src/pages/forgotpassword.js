@@ -1,10 +1,12 @@
 import React from 'react';
 import Layout from '../components/Layout';
-import { Form, Button } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { Trans, useTranslation } from 'react-i18next';
+import Button from '../elements/Button';
 
 const ForgotPasswordSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -14,6 +16,8 @@ const ForgotPassword = (props) => {
   const {
     actions: { sendResetPasswordEmail },
   } = useUserContext();
+
+  const { t } = useTranslation();
 
   const addToast = useToastContext();
 
@@ -27,12 +31,16 @@ const ForgotPassword = (props) => {
             await sendResetPasswordEmail({ email });
 
             addToast({
-              message: <>Succesfully sent password reset email.</>,
+              message: <>{t('Succesfully sent password reset email', { ns: 'login' })}</>,
               severity: SEVERITY.success,
             });
           } catch (e) {
             addToast({
-              message: <>{e.error || 'An unknown error has ocurred'}</>,
+              message: (
+                <label className="tw-capitalize">
+                  {t(e.error || 'An unknown error has ocurred')}
+                </label>
+              ),
               severity: SEVERITY.danger,
             });
           }
@@ -43,21 +51,23 @@ const ForgotPassword = (props) => {
         {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, isValid }) => (
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Email address</Form.Label>
+              <Form.Label>
+                <Trans>Email address</Trans>
+              </Form.Label>
               <Form.Control
                 isInvalid={errors.email && touched.email}
                 type="email"
-                placeholder="Enter email"
+                placeholder={t('Email')}
                 name="email"
                 value={values.email}
                 onChange={handleChange}
               />
               <Form.Control.Feedback type="invalid">
-                {errors.email && touched.email ? errors.email : null}
+                <Trans>{errors.email && touched.email ? errors.email : null}</Trans>
               </Form.Control.Feedback>
             </Form.Group>
             <Button variant="primary" type="submit" disabled={isSubmitting || !isValid}>
-              Submit
+              <Trans>Submit</Trans>
             </Button>
           </Form>
         )}

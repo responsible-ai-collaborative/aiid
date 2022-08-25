@@ -11,9 +11,10 @@ import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import Card from '../../elements/Card';
 import Button from '../../elements/Button';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
+
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
 const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncident }) => {
@@ -122,7 +123,9 @@ const SimilarIncidents = ({
     <div className="tw-similar-incidents">
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
         <h2 id="similar-incidents">
-          <Trans>Similar Incidents</Trans>
+          <LocalizedLink to={'/summaries/spatial?incident=' + parentIncident.incident_id}>
+            <Trans>Similar Incidents</Trans>
+          </LocalizedLink>
         </h2>
       )}
       {editor_similar_incidents.length > 0 && (
