@@ -44,7 +44,7 @@ export default function Details({
           transformation={fill().height(480)}
         />
       </a>
-      <Card.Body className="d-flex flex-column ">
+      <Card.Body className="flex flex-column ">
         <HeaderTitle item={item} />
         <SourceDomainSubtitle item={item} className="mb-2 text-muted" />
 
@@ -74,7 +74,7 @@ export default function Details({
         </div>
       </Card.Body>
 
-      <Card.Footer className="d-flex justify-content-between">
+      <Card.Footer className="flex justify-between">
         <Actions
           authorsModal={authorsModal}
           flagReportModal={flagReportModal}

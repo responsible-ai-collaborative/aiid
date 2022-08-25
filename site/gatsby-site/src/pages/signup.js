@@ -174,7 +174,7 @@ const SignUp = (props) => {
             )}
           </Formik>
 
-          <div className="my-2 d-flex justify-content-center">
+          <div className="my-2 flex justify-center">
             <Trans>or</Trans>
           </div>
 
@@ -184,7 +184,7 @@ const SignUp = (props) => {
             className={'w-full'}
             disabled={displayFacebookSpinner || displayGoogleSpinner}
           >
-            <div className={'d-flex justify-content-center align-items-center'}>
+            <div className={'flex justify-center items-center'}>
               {displayFacebookSpinner ? (
                 <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
               ) : (
@@ -207,7 +207,7 @@ const SignUp = (props) => {
             className={'w-full mt-5'}
             disabled={displayFacebookSpinner || displayGoogleSpinner}
           >
-            <div className={'d-flex justify-content-center align-items-center'}>
+            <div className={'flex justify-center items-center'}>
               {displayGoogleSpinner ? (
                 <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
               ) : (

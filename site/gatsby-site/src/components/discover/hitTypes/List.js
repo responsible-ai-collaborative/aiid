@@ -56,7 +56,7 @@ export default function Details({
               <TranslationBadge originalLanguage={item.language} />
             </div>
 
-            <ActionsContainer className="d-flex justify-content-start gap-4">
+            <ActionsContainer className="flex justify-start gap-4">
               <Actions
                 authorsModal={authorsModal}
                 flagReportModal={flagReportModal}

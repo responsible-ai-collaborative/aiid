@@ -46,6 +46,10 @@ let safelist = [
   'form-group',
   'form-control',
   'invalid-feedback',
+  'list-group',
+  'list-group-item',
+  'bg-secondary',
+  'badge',
 ];
 
 // Whitelisting level options from ListItem component

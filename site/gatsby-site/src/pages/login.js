@@ -76,7 +76,7 @@ const Login = (props) => {
           >
             {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, isValid }) => (
               <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3 w-100" controlId="formBasicEmail">
+                <Form.Group className="mb-4 w-full" controlId="formBasicEmail">
                   <Form.Label>
                     <Trans>Email address</Trans>
                   </Form.Label>
@@ -93,7 +93,7 @@ const Login = (props) => {
                   </Form.Control.Feedback>
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Group className="mb-4" controlId="formBasicPassword">
                   <Form.Label>
                     <Trans ns="login">Password</Trans>
                   </Form.Label>
@@ -124,7 +124,7 @@ const Login = (props) => {
                   className="w-full"
                 >
                   {isSubmitting && (
-                    <Spinner animation="border" size="sm" role="status" className="mr-2" />
+                    <Spinner animation="border" size="sm" role="status" className="mr-4" />
                   )}
                   <Trans ns="login">Login</Trans>
                 </Button>
@@ -132,7 +132,7 @@ const Login = (props) => {
             )}
           </Formik>
 
-          <div className="my-2 d-flex justify-content-center">
+          <div className="my-2 flex justify-center">
             <Trans>or</Trans>
           </div>
 
@@ -142,7 +142,7 @@ const Login = (props) => {
             className={'w-full'}
             disabled={displayFacebookSpinner || displayGoogleSpinner}
           >
-            <div className={'d-flex justify-content-center align-items-center'}>
+            <div className={'flex justify-center items-center'}>
               {displayFacebookSpinner ? (
                 <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
               ) : (
@@ -153,7 +153,7 @@ const Login = (props) => {
                   title="Login with Facebook"
                 />
               )}
-              <div className={'ml-2'}>
+              <div className={'ml-4'}>
                 <Trans ns="login">Login with Facebook</Trans>
               </div>
             </div>
@@ -162,10 +162,10 @@ const Login = (props) => {
           <Button
             variant="primary"
             onClick={clickLoginWithGoogle}
-            className={'w-full mt-5'}
+            className={'w-full mt-7'}
             disabled={displayGoogleSpinner || displayFacebookSpinner}
           >
-            <div className={'d-flex justify-content-center align-items-center'}>
+            <div className={'flex justify-center items-center'}>
               {displayGoogleSpinner ? (
                 <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
               ) : (
@@ -176,13 +176,13 @@ const Login = (props) => {
                   title="Login with Google"
                 />
               )}
-              <div className={'ml-2'}>
+              <div className={'ml-4'}>
                 <Trans ns="login">Login with Google</Trans>
               </div>
             </div>
           </Button>
 
-          <div className="mt-4">
+          <div className="mt-5">
             <Trans ns="login">Don&apos;t have an account?</Trans>{' '}
             <Link to="/signup">
               <Trans ns="login">Sign up</Trans>

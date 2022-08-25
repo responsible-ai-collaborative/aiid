@@ -71,7 +71,7 @@ export const Leaderboard = ({
         {sortedArray.map((item, index) => (
           <StyledItem
             key={`${item.label}-${item.value}`}
-            className="d-flex justify-content-between align-items-center"
+            className="flex justify-between items-center"
           >
             <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
               <Medal className="pe-2">{medalMap(index + 1)}</Medal>

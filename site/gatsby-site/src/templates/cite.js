@@ -295,7 +295,7 @@ function CitePage(props) {
           parentIncident={incident}
         />
 
-        <Pagination className="justify-content-between">
+        <Pagination className="justify-between">
           <Pagination.Item
             href={localizePath({ path: `/cite/${prevIncident}` })}
             disabled={!prevIncident}

@@ -49,7 +49,7 @@ const RefinementList = ({
               refine(item.value);
             }}
           >
-            <div className="d-flex justify-content-between align-items-center">
+            <div className="flex justify-between items-center">
               {isFromSearch ? <Highlight attribute="label" hit={item} /> : item.label}&nbsp;
               <Badge bg="secondary">{item.count}</Badge>
             </div>
@@ -58,7 +58,7 @@ const RefinementList = ({
 
         {items.length === 0 && (
           <ListGroup.Item key="no-results">
-            <div className="d-flex justify-content-center">
+            <div className="flex justify-center">
               <Trans>No result</Trans>
             </div>
           </ListGroup.Item>

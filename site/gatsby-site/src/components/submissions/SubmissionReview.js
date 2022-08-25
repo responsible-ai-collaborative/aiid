@@ -29,7 +29,7 @@ const ListedGroup = ({ item, className = '', keysToRender }) => {
       {keysToRender
         .filter((key) => !!item[key])
         .map((key) => (
-          <ListGroup.Item key={key} className="d-flex gap-4" data-cy={key}>
+          <ListGroup.Item key={key} className="flex gap-4" data-cy={key}>
             <div style={{ width: 140 }} className="flex-grow">
               <b>{key}</b>
             </div>
@@ -260,7 +260,7 @@ const SubmissionReview = ({ submission }) => {
               <RelatedIncidents incident={submission} />
             </div>
           )}
-          <Card.Footer className="d-flex text-muted">
+          <Card.Footer className="flex text-muted">
             <Button
               className="me-auto"
               data-cy="edit-submission"

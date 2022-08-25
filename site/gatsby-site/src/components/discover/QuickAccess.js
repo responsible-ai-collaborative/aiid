@@ -25,12 +25,12 @@ const Circle = styled.div`
 
 export default function DiscoverQuickAccess({ className }) {
   return (
-    <Wrapper className={`${className} p-2 p-md-4`}>
-      <LocalizedLink to="/apps/discover" className="fs-5">
+    <Wrapper className={`${className} p-4 md:p-6`}>
+      <LocalizedLink to="/apps/discover" className="text-xl">
         <Trans>Discover</Trans>
       </LocalizedLink>
       <Circle />
-      <LocalizedLink to="/apps/submit" className="fs-5">
+      <LocalizedLink to="/apps/submit" className="text-xl">
         <Trans>Submit</Trans>
       </LocalizedLink>
     </Wrapper>

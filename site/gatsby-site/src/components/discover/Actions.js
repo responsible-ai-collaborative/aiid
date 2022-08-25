@@ -124,7 +124,7 @@ export default function Actions({
         <Button
           variant="link"
           aria-hidden="true"
-          className="d-flex align-items-center px-1"
+          className="flex items-center px-1"
           title={t(`Filter by Incident ID #{{id}}`, { id: item.incident_id })}
           onClick={() => toggleFilterByIncidentId(item.incident_id + '')}
         >

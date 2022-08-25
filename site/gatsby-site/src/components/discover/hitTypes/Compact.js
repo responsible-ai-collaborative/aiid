@@ -77,7 +77,7 @@ export default function Compact({
 }) {
   return (
     <StyledCard>
-      <StyledCardBody className="d-flex flex-column ">
+      <StyledCardBody className="flex flex-column ">
         <Contents className="ps-4 pe-4 pt-3">
           <StyledHeaderTitle item={item} />
           <StyledSubTitle item={item} className="my-2 small" />
@@ -91,7 +91,7 @@ export default function Compact({
         />
       </StyledCardBody>
 
-      <Card.Footer className="d-flex justify-content-between">
+      <Card.Footer className="flex justify-between">
         <Actions
           authorsModal={authorsModal}
           flagReportModal={flagReportModal}
