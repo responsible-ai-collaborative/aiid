@@ -1,12 +1,11 @@
 import React from 'react';
 
 import Sidebar from './sidebar';
-import RightSidebar from './rightSidebar';
 import config from '../../config.js';
 import Footer from './layout/Footer';
 import Header from './ui/Header';
 
-const Layout = ({ children, collapse, className, location }) => (
+const Layout = ({ children, collapse, className }) => (
   <>
     <Header />
     <div className="tw-layout">
@@ -27,9 +26,6 @@ const Layout = ({ children, collapse, className, location }) => (
         >
           {children}
         </div>
-      </div>
-      <div className={'tw-hidden-mobile w-[224px] ml-[-24px] z-0 relative 965px:hidden'}>
-        <RightSidebar location={location} />
       </div>
     </div>
     <Footer />
