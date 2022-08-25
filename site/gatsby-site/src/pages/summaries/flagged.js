@@ -20,14 +20,15 @@ const ReportList = ({ report }) => {
   tabbedRender.forEach((element) => untabbedRender.splice(untabbedRender.indexOf(element), 1));
   return (
     <>
-      <ListGroup data-cy="report">
+      <table data-cy="report" className="tw-my-4">
         {untabbedRender.map((key) => (
-          <ListGroup.Item key={uid + key}>
-            {key}: {report[key]}
-          </ListGroup.Item>
+          <tr key={uid + key}>
+            <td>{key}</td>
+            <td>{report[key]}</td>
+          </tr>
         ))}
-      </ListGroup>
-      <Tab.Container defaultActiveKey={uid + 'url'}>
+      </table>
+      <Tab.Container defaultActiveKey={uid + 'description'}>
         <Row>
           <Col xs={12} sm={6} lg={3}>
             <ListGroup>
@@ -58,7 +59,7 @@ const IncidentList = ({ incidents }) => {
     <>
       {incidents.map((incident) => (
         <div key={incident.incident_id}>
-          <h2>Incident {incident.incident_id}</h2>
+          <h2 className="tw-mt-4">Incident {incident.incident_id}</h2>
           {incident.reports.map((report) => (
             <ReportList key={report.report_number} report={report} />
           ))}
