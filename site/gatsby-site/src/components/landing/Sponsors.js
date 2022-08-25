@@ -55,10 +55,10 @@ export default function Sponsors({ className }) {
 
   return (
     <Card className={className}>
-      <Card.Title as="h2">
-        <Trans ns="landing">The Responsible AI Collaborative</Trans>
-      </Card.Title>
       <Card.Body>
+        <Card.Title as="h2">
+          <Trans ns="landing">The Responsible AI Collaborative</Trans>
+        </Card.Title>
         <Row className="g-0 tw-gap-4">
           <Col lg={5} md={12} sm={12} className="tw-p-3">
             <Card.Text className="fst-italic">
