@@ -50,6 +50,8 @@ let safelist = [
   'list-group-item',
   'bg-secondary',
   'badge',
+  'form-switch',
+  'form-check-input',
 ];
 
 // Whitelisting level options from ListItem component
@@ -113,6 +115,7 @@ module.exports = {
         'list-gray': '#5c6975',
         'light-blue': 'rgb(230,236,241)',
         'form-control': '#ced4da',
+        'form-check-input': 'rgba(0,0,0,.25)',
       },
       gridTemplateColumns: {
         5: 'repeat(5, minmax(0, 1fr))',
@@ -134,6 +137,7 @@ module.exports = {
         'modal-fade': 'transform .3s ease-out',
         'carousel-indicator': 'opacity .6s ease',
         'carousel-next-prev': 'opacity .15s ease',
+        'form-check-input': 'background-position .15s ease-in-out',
       },
       zIndex: {
         2: '2',
@@ -177,10 +181,13 @@ module.exports = {
           "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 16 16'%3E%3Cpath d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E\")",
         'form-control':
           "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3E%3Ccircle cx='6' cy='6' r='4.5'/%3E%3Cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3E%3Ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3E%3C/svg%3E\")",
+        'form-check-input':
+          "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3E%3Ccircle r='3' fill='rgba(0, 0, 0, 0.25)'/%3E%3C/svg%3E\")",
       },
       backgroundPosition: {
         'position-1/2': '50%',
         'form-control': 'right 0.57rem center',
+        'form-check-input': '0',
       },
       backgroundSize: {
         'size-btn-close': '1em',

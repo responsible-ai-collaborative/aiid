@@ -113,7 +113,7 @@ const Reports = ({ binned, yScale, radius, groupRadius, margin, size }) => {
   return (
     <g transform={`translate(${margin.left}, 0)`}>
       <line
-        className="tw-stroke-[#5b5b5b]"
+        className="stroke-[#5b5b5b]"
         strokeDasharray="2"
         x1={20}
         x2={20}

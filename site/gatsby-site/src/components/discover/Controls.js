@@ -18,7 +18,7 @@ const Controls = ({ query, setHideDuplicates, hideDuplicates }) => {
 
   return (
     <>
-      <Row className="tw-content-start items-center mt-4 767px:hidden hiddenMobile">
+      <Row className="content-start items-center mt-4 767px:hidden hiddenMobile">
         <Col className="col-auto">
           <Stats />
         </Col>

@@ -146,14 +146,20 @@
 
     /* TAILWIND Buttons begins */
     .tw-btn, .btn {
-        @apply bg-transparent border border-transparent rounded cursor-pointer inline-block text-base font-normal py-1.5 px-3 text-center no-underline select-none align-middle transition-btn;
+        @apply bg-transparent border border-transparent rounded cursor-pointer inline-block text-base font-normal py-1.5 px-2 text-center no-underline select-none align-middle transition-btn;
+    }
+
+    .btn-check:active+.btn, .btn-check:checked+.btn, .btn.active, .btn.show, .btn:active {
+        background-color: #565e64;
+        border-color: #51585e;
+        color: #fff;
     }
 
     .tw-btn-primary, .btn-primary {
         @apply bg-blue-600 border-blue-600 text-white;
     }
 
-    .tw-btn-secondary {
+    .tw-btn-secondary, .btn-secondary {
         @apply bg-dark-gray border-dark-gray text-white;
     }
 
@@ -646,52 +652,43 @@
     }   
 
     .list-group {
-        border-radius: 0.375rem;
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 0;
-        padding-left: 0;
+        @apply rounded-md flex flex-col mb-0 pl-0;
     }
 
     .list-group-item {
-        background-color: #fff;
-        border: 1px solid rgba(0,0,0,0.125);
-        color: #212529;
-        display: flex;
-        padding: 0.5rem 1rem;
-        position: relative;
-        text-decoration: none;
+        @apply bg-white border border-form-check-input text-gray-900 flex py-2 px-4 relative no-underline;
     }
 
     .list-group-item:first-child {
-        border-top-left-radius: inherit;
-        border-top-right-radius: inherit;
+        @apply rounded-tl-[inherit] rounded-tr-[inherit];
     }
 
     .list-group-item+.list-group-item {
-        border-top-width: 0;
+        @apply rounded-t-none;
     }
 
     .list-group-item:last-child {
-        border-bottom-left-radius: inherit;
-        border-bottom-right-radius: inherit;
+        @apply rounded-bl-[inherit] rounded-br-[inherit];
     }
 
     .badge {
-        border-radius: .375rem;
-        color: #fff;
-        display: inline-block;
-        font-size: 0.75em;
-        font-weight: 700;
-        line-height: 1;
-        padding: 0.35em 0.65em;
-        text-align: center;
-        vertical-align: baseline;
-        white-space: nowrap;
+        @apply rounded-md text-white inline-block text-xs font-bold py-2 px-3 text-center align-baseline whitespace-nowrap;
     }
 
     .bg-secondary {
-        background-color: rgba(108,117,125,1)!important;
+        @apply bg-secondary-gray;
+    }
+
+    .form-check-input {
+        @apply appearance-none bg-white bg-no-repeat bg-contain align-top bg-position-1/2 border border-form-check-input h-4 mt-1 w-4;
+    }
+
+    .form-check-input[type=checkbox] {
+        @apply rounded;
+    }
+
+    .form-switch .form-check-input {
+        @apply bg-form-check-input rounded-[2em] -ml-10 transition-form-check-input w-8;
     }
     
 }
