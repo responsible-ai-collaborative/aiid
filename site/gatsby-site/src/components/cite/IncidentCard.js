@@ -13,7 +13,7 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
   const { isRole } = useUserContext();
 
   return (
-    <Card id={`r${item.report_number}`} className="tw-shadow-card IncidentCard">
+    <Card id={`r${item.report_number}`} className="shadow-card IncidentCard">
       <Card.Header className="flex-col">
         <div className="flex justify-between">
           <a href={`#r${item.report_number}`}>

@@ -49,11 +49,11 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
     <g key={bucket.x0} transform={`translate(20,${(yScale(bucket.x0) + yScale(bucket.x1)) / 2})`}>
       {bucket.length > 1 ? (
         <>
-          <circle className="tw-fill-gray-900" cy={0} r={groupRadius} />
+          <circle className="fill-gray-900" cy={0} r={groupRadius} />
           <text
             textAnchor="middle"
             dominantBaseline="middle"
-            className="tw-fill-white font-bold text-[12px]"
+            className="fill-white font-bold text-[12px]"
           >
             +{bucket.length - 1}
           </text>
@@ -88,7 +88,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
         </>
       ) : (
         <circle
-          className={`${bucket[0].isOccurrence ? 'tw-fill-danger' : 'tw-fill-gray-900'}`}
+          className={`${bucket[0].isOccurrence ? 'fill-danger' : 'fill-gray-900'}`}
           cy={0}
           r={radius}
         />
