@@ -24,7 +24,7 @@ import SocialShareButtons from 'components/ui/SocialShareButtons';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { graphql } from 'gatsby';
-import { getTaxonomies } from 'utils/cite';
+import { getTaxonomies, getTranslatedReports } from 'utils/cite';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -55,6 +55,8 @@ function CitePage(props) {
       nlp_similar_incidents,
       editor_similar_incidents,
       editor_dissimilar_incidents,
+      allMongodbTranslationsReportsEs,
+      allMongodbTranslationsReportsEn,
     },
   } = props;
 
@@ -78,7 +80,11 @@ function CitePage(props) {
 
   const canonicalUrl = getCanonicalUrl(incident.incident_id);
 
-  const incidentReports = allMongodbAiidprodReports.nodes;
+  const incidentReports = getTranslatedReports({
+    allMongodbAiidprodReports,
+    translations: { en: allMongodbTranslationsReportsEn, es: allMongodbTranslationsReportsEs },
+    locale,
+  });
 
   const sortedReports = sortIncidentsByDatePublished(incidentReports);
 
@@ -339,6 +345,8 @@ export const query = graphql`
     $nlp_similar_incidents: [Int]
     $editor_similar_incidents: [Int]
     $editor_dissimilar_incidents: [Int]
+    $translate_es: Boolean!
+    $translate_en: Boolean!
   ) {
     mongodbAiidprodResources(
       classifications: { Publish: { eq: true } }
@@ -352,7 +360,6 @@ export const query = graphql`
         Publish
       }
     }
-
     mongodbAiidprodClassifications(
       classifications: { Publish: { eq: true } }
       incident_id: { eq: $incident_id }
@@ -397,7 +404,6 @@ export const query = graphql`
         Publish
       }
     }
-
     allMongodbAiidprodTaxa {
       nodes {
         id
@@ -416,7 +422,6 @@ export const query = graphql`
         }
       }
     }
-
     allMongodbAiidprodReports(filter: { report_number: { in: $report_numbers } }) {
       nodes {
         submitters
@@ -434,7 +439,6 @@ export const query = graphql`
         language
       }
     }
-
     nlp_similar_incidents: allMongodbAiidprodIncidents(
       filter: { incident_id: { in: $nlp_similar_incidents } }
     ) {
@@ -445,7 +449,6 @@ export const query = graphql`
         reports
       }
     }
-
     editor_similar_incidents: allMongodbAiidprodIncidents(
       filter: { incident_id: { in: $editor_similar_incidents } }
     ) {
@@ -456,7 +459,6 @@ export const query = graphql`
         reports
       }
     }
-
     editor_dissimilar_incidents: allMongodbAiidprodIncidents(
       filter: { incident_id: { in: $editor_dissimilar_incidents } }
     ) {
@@ -465,6 +467,22 @@ export const query = graphql`
         date
         incident_id
         reports
+      }
+    }
+    allMongodbTranslationsReportsEs(filter: { report_number: { in: $report_numbers } })
+      @include(if: $translate_es) {
+      nodes {
+        title
+        text
+        report_number
+      }
+    }
+    allMongodbTranslationsReportsEn(filter: { report_number: { in: $report_numbers } })
+      @include(if: $translate_en) {
+      nodes {
+        title
+        text
+        report_number
       }
     }
   }

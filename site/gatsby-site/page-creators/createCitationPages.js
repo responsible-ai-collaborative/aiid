@@ -2,8 +2,6 @@ const config = require('../config');
 
 const path = require('path');
 
-const { cloneDeep } = require('lodash');
-
 const { switchLocalizedPath } = require('../i18n');
 
 const createCitationPages = async (graphql, createPage) => {
@@ -72,40 +70,10 @@ const createCitationPages = async (graphql, createPage) => {
   }
 
   for (const language of config.i18n.availableLanguages) {
-    const { data: { translations: { nodes: translations } } = { translations: { nodes: [] } } } =
-      await graphql(`
-    {
-      translations: allMongodbTranslationsReports${language[0].toUpperCase()}${language.slice(1)} {
-        nodes  {
-          report_number
-          title
-          text
-        }
-      }
-    }`);
-
     for (const context of pageContexts) {
       const pagePath = switchLocalizedPath({
         newLang: language,
         path: '/cite/' + context.incident.incident_id,
-      });
-
-      const incidentReports = context.incidentReports.map((r) => {
-        let report = cloneDeep(r);
-
-        if (report.language !== language) {
-          const translation = translations.find((t) => t.report_number == report.report_number);
-
-          if (translation) {
-            const { title, text } = translation;
-
-            report = { ...report, title, text };
-          } else {
-            console.warn(`Missing translation for report ${report.report_number}`);
-          }
-        }
-
-        return report;
       });
 
       createPage({
@@ -114,7 +82,13 @@ const createCitationPages = async (graphql, createPage) => {
         context: {
           ...context,
           incident_id: context.incident.incident_id,
-          report_numbers: incidentReports.map((r) => r.report_number),
+          report_numbers: context.incident.reports,
+          translate_es: incidentReportsMap[context.incident.incident_id].some(
+            (r) => r.language !== 'es'
+          ),
+          translate_en: incidentReportsMap[context.incident.incident_id].some(
+            (r) => r.language !== 'en'
+          ),
         },
       });
     }

@@ -79,3 +79,13 @@ export const getTaxonomies = ({
 
   return taxonomies;
 };
+
+export const getTranslatedReports = ({ allMongodbAiidprodReports, translations, locale }) => {
+  return allMongodbAiidprodReports.nodes.map((r) => {
+    const translation = translations[locale]?.nodes.find(
+      (t) => t.report_number === r.report_number
+    );
+
+    return translation ? { ...r, text: translation.text, title: translation.title } : { ...r };
+  });
+};
