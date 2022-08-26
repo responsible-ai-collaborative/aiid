@@ -10,3 +10,13 @@ export const UPSERT_SUBSCRIPTION = gql`
     }
   }
 `;
+
+export const FIND_SUBSCRIPTIONS = gql`
+  query FindSubscriptions($query: SubscriptionQueryInput!) {
+    subscriptions(query: $query) {
+      userId {
+        userId
+      }
+    }
+  }
+`;

@@ -11,26 +11,28 @@ export default async function handler(req, res) {
     ? await fs.readFile(path.resolve(`./src/emailTemplates/${templateFileName}.html`), 'utf8')
     : body;
 
+  const personalizations = to.map((recipient) => {
+    return {
+      to: [
+        {
+          email: recipient,
+        },
+      ],
+      substitutions: { ...data, email: recipient },
+    };
+  });
+
   const msg = {
     to,
     from: 'notifications@incidentdatabase.ai',
     subject,
     text,
     html,
-    personalizations: [
-      {
-        to: [
-          {
-            email: to,
-          },
-        ],
-        substitutions: data,
-      },
-    ],
+    personalizations,
   };
 
   try {
-    const sendResult = await sgMail.send(msg);
+    const sendResult = await sgMail.send(msg, to.length > 1);
 
     res.status(200).json(sendResult);
   } catch (e) {

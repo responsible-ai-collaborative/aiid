@@ -16,12 +16,15 @@ import { UPDATE_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { DELETE_SUBMISSION, PROMOTE_SUBMISSION } from '../../graphql/submissions';
+import { FIND_SUBSCRIPTIONS } from '../../graphql/subscriptions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { format, getUnixTime } from 'date-fns';
 import SubmissionEditModal from './SubmissionEditModal';
 import { Spinner } from 'react-bootstrap';
 import Link from 'components/ui/Link';
 import { Trans, useTranslation } from 'react-i18next';
+import sendEmail from '../../utils/email';
+import { realmApp } from '../../services/realmApp';
 
 const ListedGroup = ({ item, className = '', keysToRender }) => {
   return (
@@ -90,6 +93,16 @@ const SubmissionReview = ({ submission }) => {
   });
 
   const addToast = useToastContext();
+
+  let subscriptionsData;
+
+  if (!isNewIncident) {
+    const findSubscriptionsResult = useQuery(FIND_SUBSCRIPTIONS, {
+      variables: { query: { incident_id: { incident_id: submission.incident_id } } },
+    });
+
+    subscriptionsData = findSubscriptionsResult.data;
+  }
 
   const promoteSubmission = useCallback(async () => {
     if (!submission.developers || !submission.deployers || !submission.harmed_parties) {
@@ -173,6 +186,36 @@ const SubmissionReview = ({ submission }) => {
     }
 
     const incident_id = incident.incident_id;
+
+    // Process subscriptions to incident updates
+    if (subscriptionsData?.subscriptions?.length > 0) {
+      const userIds = subscriptionsData.subscriptions.map(
+        (subscription) => subscription.userId.userId
+      );
+
+      const userEmails = userIds
+        .map((userId) => {
+          const user = realmApp.allUsers[userId];
+
+          return user && user.profile ? user.profile.email : null;
+        })
+        .filter((userEmail) => userEmail != null);
+
+      await sendEmail({
+        to: userEmails,
+        subject: 'Incident {{incidentId}} was updated',
+        templateFileName: 'incidentUpdated',
+        text: 'Incident {{incident_id}}: "{{incident_title}}" was updated.',
+        data: {
+          incidentId: `${incident_id}`,
+          incidentTitle: incident.title,
+          incidentUrl: `https://incidentdatabase.ai/cite/${incident_id}`,
+          reportUrl: `https://incidentdatabase.ai/cite/${incident_id}#r${report_number}`,
+          reportTitle: report.title,
+          reportAuthor: report.authors[0],
+        },
+      });
+    }
 
     addToast({
       message: isNewIncident ? (
