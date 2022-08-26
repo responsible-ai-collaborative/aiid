@@ -52,6 +52,7 @@ let safelist = [
   'badge',
   'form-switch',
   'form-check-input',
+  'form-select',
   'col-auto',
   'btn-group-sm',
   'btn-sm',
@@ -63,6 +64,9 @@ let safelist = [
   'dropdown-toggle',
   'dropdown-toggle-split',
   'btn-primary',
+  'table',
+  'table-bordered',
+  'table-striped-columns',
 ];
 
 // Whitelisting level options from ListItem component
@@ -127,6 +131,7 @@ module.exports = {
         'light-blue': 'rgb(230,236,241)',
         'form-control': '#ced4da',
         'black-25': 'rgba(0,0,0,.25)',
+        'table-text': 'rgba(0,0,0,0.05)',
       },
       gridTemplateColumns: {
         5: 'repeat(5, minmax(0, 1fr))',
@@ -139,6 +144,7 @@ module.exports = {
       },
       boxShadow: {
         card: '0 2px 5px 0px #e3e5ec',
+        table: 'inset 0 0 0 9999px transparent',
       },
       transitionProperty: {
         btn: 'color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out',
@@ -194,16 +200,20 @@ module.exports = {
           "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3E%3Ccircle cx='6' cy='6' r='4.5'/%3E%3Cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3E%3Ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3E%3C/svg%3E\")",
         'form-check-input':
           "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3E%3Ccircle r='3' fill='rgba(0, 0, 0, 0.25)'/%3E%3C/svg%3E\")",
+        'form-select':
+          "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E\")",
       },
       backgroundPosition: {
         'position-1/2': '50%',
         'form-control': 'right 0.57rem center',
         'form-check-input': '0',
+        'form-select': 'right 0.75rem center',
       },
       backgroundSize: {
         'size-btn-close': '1em',
         'full-full': '100% 100%',
         'form-control': '1.125rem 1.125rem',
+        'form-select': '16px 12px',
       },
     },
   },

@@ -651,7 +651,7 @@
     }
 
     label {
-        display: inline-block;
+        @apply inline-block;
     }
 
     .form-check-input {
@@ -668,6 +668,11 @@
 
     .form-switch .form-check-input {
         @apply bg-form-check-input rounded-[2em] -ml-10 transition-form-check-input w-8;
+    }
+
+    .form-select {
+        @apply appearance-none bg-white bg-no-repeat rounded-md text-gray-900 block text-base font-normal leading-normal w-full bg-form-select border border-solid border-form-control transition-form-control py-[0.375rem] pr-9 pl-3;
+        -moz-padding-start: calc(.75rem - 3px);
     }
     
     /* Bootstrap list */
@@ -739,11 +744,82 @@
         @apply absolute -m-[1px] h-[1px] w-[1px] overflow-hidden whitespace-nowrap border-0 p-0;
     }
 
+    .dropdown-toggle-split {
+        @apply pl-2 pr-2;
+    }
+    
+    .dropdown-toggle {
+        @apply whitespace-nowrap;
+    }
+
     .dropdown-toggle-split:after, .dropend .dropdown-toggle-split:after, .dropup .dropdown-toggle-split:after {
         @apply ml-0;
     }
     .dropdown-toggle:after {
-        @apply border-b-0 border-l-[0.3em] border-l-transparent border-solid border-y-[0.3em] border-t-[0.3em] inline-block ml-1 align-[0.255em];
+        @apply border-b-[0] border-l-[0.3em] border-r-[0.3em] border-l-transparent border-r-transparent inline-block ml-[0.255em] align-[0.255em];
         content: "";
+        border-top: 0.3em solid;
+    }
+
+    /* Bootstrap table */
+
+    .table {
+        @apply text-gray-900 mb-4 align-top w-full;
+        border-color: #dee2e6;
+    }
+
+    .table>thead {
+        @apply align-bottom;
+    }
+    
+    tbody, td, tfoot, th, thead, tr {
+        @apply border-[0] border-solid border-inherit;
+    }
+
+    .table>tbody {
+        @apply align-[inherit];
+    }
+    
+    tbody, td, tfoot, th, thead, tr {
+        @apply border-[0] border-solid;
+        border: [inherit];
+    }
+
+    .table-bordered>:not(caption)>* {
+        @apply border-y border-x-[0];
+    }
+    
+    table tr {
+        @apply border-t border-t-[#ccc] m-0;
+    }
+    table, table tr {
+        @apply p-0;
+    }
+    tbody, td, tfoot, th, thead, tr {
+        @apply border-[0] border-solid border-inherit;
+    }
+
+    table tr td :last-child, table tr th :last-child {
+        @apply mb-0;
+    }
+    
+    table tr td :first-child, table tr th :first-child {
+        @apply mt-0;
+    }
+
+    table tr td :last-child, table tr th :last-child {
+        @apply mb-0;
+    }
+    
+    table tr td :first-child, table tr th :first-child {
+        @apply mt-0;
+    }
+    
+    .table-striped-columns>:not(caption)>tr>:nth-child(2n), .table-striped>tbody>tr:nth-of-type(odd)>* {
+        @apply text-table-text;
+    }
+
+    .table>:not(caption)>*>* {
+        @apply bg-transparent border-b p-2 shadow-table;
     }
 }
