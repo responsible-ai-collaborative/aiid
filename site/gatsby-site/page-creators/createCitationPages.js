@@ -18,9 +18,6 @@ const createCitationPages = async (graphql, createPage) => {
             date
             reports
             editors
-            embedding {
-              vector
-            }
             editor_similar_incidents
             editor_dissimilar_incidents
             flagged_dissimilar_incidents
@@ -33,18 +30,7 @@ const createCitationPages = async (graphql, createPage) => {
 
         allMongodbAiidprodReports {
           nodes {
-            submitters
-            date_published
             report_number
-            title
-            url
-            image_url
-            cloudinary_id
-            source_domain
-            mongodb_id
-            text
-            authors
-            epoch_date_submitted
             language
           }
         }
@@ -67,12 +53,6 @@ const createCitationPages = async (graphql, createPage) => {
 
   const pageContexts = [];
 
-  const similarIncidentKeys = [
-    'nlp_similar_incidents',
-    'editor_similar_incidents',
-    'editor_dissimilar_incidents',
-  ];
-
   for (let i = 0; i < keys.length; i++) {
     const incident_id = parseInt(keys[i]);
 
@@ -80,31 +60,14 @@ const createCitationPages = async (graphql, createPage) => {
       (incident) => incident.incident_id === incident_id
     );
 
-    const similarIncidents = {};
-
-    for (let key of similarIncidentKeys) {
-      similarIncidents[key] = incident[key].map((similarIncident) => {
-        const similarIncidentId = similarIncident.incident_id || similarIncident;
-
-        const foundFullIncident = allMongodbAiidprodIncidents.nodes.find(
-          (fullIncident) => fullIncident.incident_id === similarIncidentId
-        );
-
-        return {
-          title: foundFullIncident?.title || null,
-          date: foundFullIncident?.date || null,
-          incident_id: similarIncidentId,
-          reports: incidentReportsMap[similarIncidentId],
-        };
-      });
-    }
-
     pageContexts.push({
       incident,
       incidentReports: incidentReportsMap[incident_id],
       nextIncident: i < keys.length - 1 ? keys[i + 1] : null,
       prevIncident: i > 0 ? keys[i - 1] : null,
-      similarIncidents,
+      nlp_similar_incidents: incident.nlp_similar_incidents.map((i) => i.incident_id),
+      editor_similar_incidents: incident.editor_similar_incidents,
+      editor_dissimilar_incidents: incident.editor_dissimilar_incidents,
     });
   }
 
@@ -145,31 +108,13 @@ const createCitationPages = async (graphql, createPage) => {
         return report;
       });
 
-      const translatedSimilarIncidents = {};
-
-      for (const key of similarIncidentKeys) {
-        const incidents = context.similarIncidents[key];
-
-        translatedSimilarIncidents[key] = incidents.map((incident) => ({
-          ...incident,
-          reports: incident.reports
-            ? incident.reports.map((report) => ({
-                ...report,
-                ...translations.find((t) => t.report_number == report.report_number),
-              })) || incident.reports
-            : [],
-        }));
-      }
-
       createPage({
         path: pagePath,
         component: path.resolve('./src/templates/cite.js'),
         context: {
-          incident_id: context.incident.incident_id,
           ...context,
-          incidentReports,
-          ...translatedSimilarIncidents,
-          similarIncidents: translatedSimilarIncidents,
+          incident_id: context.incident.incident_id,
+          report_numbers: incidentReports.map((r) => r.report_number),
         },
       });
     }

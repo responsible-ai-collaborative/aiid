@@ -46,16 +46,16 @@ const sortIncidentsByDatePublished = (incidentReports) => {
 
 function CitePage(props) {
   const {
-    pageContext: {
-      incident,
-      incidentReports,
-      nextIncident,
-      prevIncident,
+    pageContext: { incident, nextIncident, prevIncident },
+    data: {
+      allMongodbAiidprodTaxa,
+      mongodbAiidprodClassifications,
+      mongodbAiidprodResources,
+      allMongodbAiidprodReports,
       nlp_similar_incidents,
       editor_similar_incidents,
       editor_dissimilar_incidents,
     },
-    data: { allMongodbAiidprodTaxa, mongodbAiidprodClassifications, mongodbAiidprodResources },
   } = props;
 
   const { isRole, user } = useUserContext();
@@ -77,6 +77,8 @@ function CitePage(props) {
   const metaDescription = incident.description;
 
   const canonicalUrl = getCanonicalUrl(incident.incident_id);
+
+  const incidentReports = allMongodbAiidprodReports.nodes;
 
   const sortedReports = sortIncidentsByDatePublished(incidentReports);
 
@@ -300,9 +302,9 @@ function CitePage(props) {
         ))}
 
         <SimilarIncidents
-          nlp_similar_incidents={nlp_similar_incidents}
-          editor_similar_incidents={editor_similar_incidents}
-          editor_dissimilar_incidents={editor_dissimilar_incidents}
+          nlp_similar_incidents={nlp_similar_incidents.nodes}
+          editor_similar_incidents={editor_similar_incidents.nodes}
+          editor_dissimilar_incidents={editor_dissimilar_incidents.nodes}
           flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
           parentIncident={incident}
         />
@@ -331,7 +333,13 @@ function CitePage(props) {
 }
 
 export const query = graphql`
-  query CitationPageQuery($incident_id: Int) {
+  query CitationPageQuery(
+    $incident_id: Int
+    $report_numbers: [Int]
+    $nlp_similar_incidents: [Int]
+    $editor_similar_incidents: [Int]
+    $editor_dissimilar_incidents: [Int]
+  ) {
     mongodbAiidprodResources(
       classifications: { Publish: { eq: true } }
       incident_id: { eq: $incident_id }
@@ -406,6 +414,57 @@ export const query = graphql`
           short_description
           render_as
         }
+      }
+    }
+
+    allMongodbAiidprodReports(filter: { report_number: { in: $report_numbers } }) {
+      nodes {
+        submitters
+        date_published
+        report_number
+        title
+        url
+        image_url
+        cloudinary_id
+        source_domain
+        mongodb_id
+        text
+        authors
+        epoch_date_submitted
+        language
+      }
+    }
+
+    nlp_similar_incidents: allMongodbAiidprodIncidents(
+      filter: { incident_id: { in: $nlp_similar_incidents } }
+    ) {
+      nodes {
+        title
+        date
+        incident_id
+        reports
+      }
+    }
+
+    editor_similar_incidents: allMongodbAiidprodIncidents(
+      filter: { incident_id: { in: $editor_similar_incidents } }
+    ) {
+      nodes {
+        title
+        date
+        incident_id
+        reports
+      }
+    }
+
+    editor_dissimilar_incidents: allMongodbAiidprodIncidents(
+      filter: { incident_id: { in: $editor_dissimilar_incidents } }
+    ) {
+      nodes {
+        title
+        date
+        incident_id
+        reports
       }
     }
   }
