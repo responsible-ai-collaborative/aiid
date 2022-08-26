@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
 import Citation from 'components/cite/Citation';
@@ -23,6 +23,8 @@ import Pagination from '../elements/Pagination';
 import SocialShareButtons from 'components/ui/SocialShareButtons';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
+import { graphql } from 'gatsby';
+import { getTaxonomies } from 'utils/cite';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -47,13 +49,13 @@ function CitePage(props) {
     pageContext: {
       incident,
       incidentReports,
-      taxonomies,
       nextIncident,
       prevIncident,
       nlp_similar_incidents,
       editor_similar_incidents,
       editor_dissimilar_incidents,
     },
+    data: { allMongodbAiidprodTaxa, mongodbAiidprodClassifications, mongodbAiidprodResources },
   } = props;
 
   const { isRole, user } = useUserContext();
@@ -99,6 +101,16 @@ function CitePage(props) {
     mongodb_id: 0,
     isOccurrence: true,
   });
+
+  const taxonomies = useMemo(
+    () =>
+      getTaxonomies({
+        allMongodbAiidprodTaxa,
+        mongodbAiidprodClassifications,
+        mongodbAiidprodResources,
+      }),
+    []
+  );
 
   const [taxonomiesList, setTaxonomiesList] = useState(
     taxonomies.map((t) => ({ ...t, canEdit: false }))
@@ -317,5 +329,86 @@ function CitePage(props) {
     </Layout>
   );
 }
+
+export const query = graphql`
+  query CitationPageQuery($incident_id: Int) {
+    mongodbAiidprodResources(
+      classifications: { Publish: { eq: true } }
+      incident_id: { eq: $incident_id }
+    ) {
+      id
+      incident_id
+      notes
+      classifications {
+        Datasheets_for_Datasets
+        Publish
+      }
+    }
+
+    mongodbAiidprodClassifications(
+      classifications: { Publish: { eq: true } }
+      incident_id: { eq: $incident_id }
+    ) {
+      incident_id
+      id
+      namespace
+      notes
+      classifications {
+        Annotation_Status
+        Annotator
+        Ending_Date
+        Beginning_Date
+        Full_Description
+        Intent
+        Location
+        Named_Entities
+        Near_Miss
+        Quality_Control
+        Reviewer
+        Severity
+        Short_Description
+        Technology_Purveyor
+        AI_Applications
+        AI_System_Description
+        AI_Techniques
+        Data_Inputs
+        Financial_Cost
+        Harm_Distribution_Basis
+        Harm_Type
+        Infrastructure_Sectors
+        Laws_Implicated
+        Level_of_Autonomy
+        Lives_Lost
+        Nature_of_End_User
+        Physical_System
+        Problem_Nature
+        Public_Sector_Deployment
+        Relevant_AI_functions
+        Sector_of_Deployment
+        System_Developer
+        Publish
+      }
+    }
+
+    allMongodbAiidprodTaxa {
+      nodes {
+        id
+        namespace
+        weight
+        description
+        field_list {
+          public
+          display_type
+          long_name
+          short_name
+          long_description
+          weight
+          short_description
+          render_as
+        }
+      }
+    }
+  }
+`;
 
 export default CitePage;
