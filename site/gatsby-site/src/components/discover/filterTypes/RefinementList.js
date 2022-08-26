@@ -66,7 +66,7 @@ const RefinementList = ({
       </ListGroupScrollable>
       <Button
         variant="link secondary"
-        className="mt-4 text-decoration-none"
+        className="mt-4 no-underline"
         onClick={clear}
         disabled={!clearEnabled}
       >

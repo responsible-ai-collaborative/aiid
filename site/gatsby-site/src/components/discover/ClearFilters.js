@@ -5,7 +5,7 @@ import { Button } from 'react-bootstrap';
 const ClearButton = connectCurrentRefinements(({ items, refine, children }) => {
   return (
     <Button
-      className="text-decoration-none"
+      className="no-underline"
       variant="link secondary"
       onClick={() => {
         refine(items);

@@ -87,7 +87,7 @@ const LandingPage = (props) => {
             md={12}
             lg={6}
           >
-            <AboutDatabase className="h-100" />
+            <AboutDatabase className="h-full" />
           </Col>
           <Col
             className="mt-4 md:flex-0-0-auto md:w-full 992px:flex-0-0-auto 992px:w-2/4"
@@ -122,7 +122,7 @@ const LandingPage = (props) => {
 
         <Row>
           <Col md={12} lg={12}>
-            <Sponsors className="h-100" />
+            <Sponsors className="h-full" />
           </Col>
         </Row>
       </Container>

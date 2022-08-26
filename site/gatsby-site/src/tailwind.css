@@ -17,7 +17,7 @@
     }
 
     .h5, h5 {
-        @apply text-xl;
+        @apply text-xl leading-tight;
     }
 
     input {
@@ -146,7 +146,7 @@
 
     /* TAILWIND Buttons begins */
     .tw-btn, .btn {
-        @apply bg-transparent border border-transparent rounded cursor-pointer inline-block text-base font-normal py-1.5 px-2 text-center no-underline select-none align-middle transition-btn;
+        @apply bg-transparent border border-transparent rounded cursor-pointer inline-block text-base font-normal py-1 px-2 text-center no-underline select-none align-middle transition-btn;
     }
 
     .btn-check:active+.btn, .btn-check:checked+.btn, .btn.active, .btn.show, .btn:active {
@@ -611,6 +611,8 @@
         @apply bg-no-repeat inline-block h-8 w-8 bg-position-1/2 bg-full-full;
     }
 
+    /* Bootstrap form */
+
     .visually-hidden, .visually-hidden-focusable:not(:focus):not(:focus-within) {
         @apply h-px -m-px overflow-hidden p-0 absolute whitespace-nowrap w-px border-0;
         clip: rect(0,0,0,0);
@@ -647,16 +649,35 @@
     .invalid-feedback {
         @apply text-red-600 hidden mt-1 w-full text-sm;
     }
+
     label {
         display: inline-block;
-    }   
+    }
+
+    .form-check-input {
+        @apply appearance-none bg-white bg-no-repeat bg-contain align-top bg-position-1/2 border border-black-25 h-4 mt-1 w-4;
+    }
+
+    .form-check-input[type=checkbox] {
+        @apply rounded;
+    }
+
+    .form-switch {
+        @apply pl-10;
+    }
+
+    .form-switch .form-check-input {
+        @apply bg-form-check-input rounded-[2em] -ml-10 transition-form-check-input w-8;
+    }
+    
+    /* Bootstrap list */
 
     .list-group {
         @apply rounded-md flex flex-col mb-0 pl-0;
     }
 
     .list-group-item {
-        @apply bg-white border border-form-check-input text-gray-900 flex py-2 px-4 relative no-underline;
+        @apply bg-white border border-black-25 text-gray-900 flex py-2 px-4 relative no-underline;
     }
 
     .list-group-item:first-child {
@@ -679,16 +700,50 @@
         @apply bg-secondary-gray;
     }
 
-    .form-check-input {
-        @apply appearance-none bg-white bg-no-repeat bg-contain align-top bg-position-1/2 border border-form-check-input h-4 mt-1 w-4;
-    }
-
-    .form-check-input[type=checkbox] {
-        @apply rounded;
-    }
-
-    .form-switch .form-check-input {
-        @apply bg-form-check-input rounded-[2em] -ml-10 transition-form-check-input w-8;
+    .col-auto {
+        flex: 0 0 auto;
+        width: auto;
     }
     
+    .btn.disabled, .btn:disabled, fieldset:disabled .btn {
+        @apply border-transparent text-dark-gray opacity-70 pointer-events-none;
+    }
+
+    .btn-primary:disabled {
+        @apply bg-primary-blue border-primary-blue text-white opacity-70 pointer-events-none;
+    }
+
+    .btn-group-sm>.btn, .btn-sm {
+        @apply py-1 px-2 text-sm rounded-[0.25rem];
+    }
+
+    .dropdown-menu {
+        @apply bg-clip-padding bg-white border border-solid rounded-md text-gray-900 hidden text-base list-none m-0 min-w-[10rem] py-1 px-4 absolute text-left z-[1000];
+    }
+
+    /* Bootstrap dropdown */
+
+    .dropdown-menu.show {
+        @apply block;
+    }
+
+    .dropdown-item {
+        @apply bg-transparent border-0 clear-both text-gray-900 block font-normal py-1 px-4 no-underline whitespace-nowrap w-full;
+    }
+
+    .btn-group-vertical>.btn, .btn-group>.btn {
+        @apply flex-1-1-auto relative;
+    }
+
+    .visually-hidden, .visually-hidden-focusable:not(:focus):not(:focus-within) {
+        @apply absolute -m-[1px] h-[1px] w-[1px] overflow-hidden whitespace-nowrap border-0 p-0;
+    }
+
+    .dropdown-toggle-split:after, .dropend .dropdown-toggle-split:after, .dropup .dropdown-toggle-split:after {
+        @apply ml-0;
+    }
+    .dropdown-toggle:after {
+        @apply border-b-0 border-l-[0.3em] border-l-transparent border-solid border-y-[0.3em] border-t-[0.3em] inline-block ml-1 align-[0.255em];
+        content: "";
+    }
 }

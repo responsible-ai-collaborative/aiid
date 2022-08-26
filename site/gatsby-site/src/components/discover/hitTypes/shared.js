@@ -30,11 +30,7 @@ export function citationReportUrl(item) {
 export function HeaderTitle({ item, ...props }) {
   return (
     <HeaderCard {...props}>
-      <LocalizedLink
-        to={citationReportUrl(item)}
-        className="text-decoration-none"
-        title={item.title}
-      >
+      <LocalizedLink to={citationReportUrl(item)} className="no-underline" title={item.title}>
         <Highlight hit={item} attribute="title" />
       </LocalizedLink>
     </HeaderCard>

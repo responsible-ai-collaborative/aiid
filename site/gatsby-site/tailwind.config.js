@@ -52,6 +52,17 @@ let safelist = [
   'badge',
   'form-switch',
   'form-check-input',
+  'col-auto',
+  'btn-group-sm',
+  'btn-sm',
+  'dropdown-menu',
+  'show',
+  'dropdown-item',
+  'visually-hidden',
+  'visually-hidden-focusable',
+  'dropdown-toggle',
+  'dropdown-toggle-split',
+  'btn-primary',
 ];
 
 // Whitelisting level options from ListItem component
@@ -115,7 +126,7 @@ module.exports = {
         'list-gray': '#5c6975',
         'light-blue': 'rgb(230,236,241)',
         'form-control': '#ced4da',
-        'form-check-input': 'rgba(0,0,0,.25)',
+        'black-25': 'rgba(0,0,0,.25)',
       },
       gridTemplateColumns: {
         5: 'repeat(5, minmax(0, 1fr))',
