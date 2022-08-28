@@ -1,54 +1,54 @@
 {
     "title": {
-        "title": "Título",
-        "text": "La mayoría de los trabajos tienen un título que debe ingresarse aquí palabra por palabra. En caso de que el trabajo no tenga título, intenta resumir el contenido en unas pocas palabras sin editorializar. Este texto ocupa un lugar destacado en los registros de incidentes."
+        "title": "Titre",
+        "text": "La plupart des œuvres ont un titre qui doit être inscrit ici textuellement. Dans le cas où l'ouvrage n'a pas de titre, essayez d'en résumer le contenu en quelques mots sans éditorialiser. Ce texte figure en évidence dans les rapports d'incidents."
     },
     "authors": {
-        "title": "Autores",
-        "text": "Ingresa los nombres de los creadores del contenido vinculado. Debes ingresar a todas las personas que contribuyeron al trabajo escrito separados por comas."
+        "title": "Auteurs",
+        "text": "Entrez les noms des créateurs du contenu lié. Vous devez entrer toutes les personnes qui ont contribué au travail écrit séparées par des virgules."
     },
     "submitters": {
-        "title": "¡Este eres tú!",
-        "text": "Ingresa tu nombre aquí. Si más de una persona contribuyó a recopilar el incidente, puedes ingresar varias personas separadas por comas. Alternativamente, puede ingresar \"Anónimo\" como remitente si no deseas  que se te atribuya en la base de datos. Las entradas en este campo se agregarán a la clasificación pública."
+        "title": "C'est vous !",
+        "text": "Entrez votre nom ici. Si plusieurs personnes ont contribué à la collecte de l'incident, vous pouvez saisir plusieurs personnes séparées par des virgules. Alternativement, vous pouvez saisir \"Anonyme\" comme expéditeur si vous ne souhaitez pas être identifié dans la base de données. Les entrées dans ce champ seront ajoutées au classement public."
     },
     "incident_date": {
-        "title": "¿Cuándo ocurrió el incidente por primera vez?",
-        "text": "Muchos incidentes de IA no son eventos discretos (es decir, ocurren durante un período de tiempo). Además, a menudo es difícil saber cuándo ocurrió el incidente por primera vez cuando el primer informe público sigue un período de tiempo después de la primera ocurrencia. En este campo, debes ingresar la fecha del primer informe del incidente o una suposición fundamentada de cuándo ocurrió probablemente el incidente por primera vez. Por ejemplo, si el incidente pertenece a una característica del motor de búsqueda que se lanzó en enero y el primer el informe de incidente público es en febrero, debes asignar una fecha de incidente en enero."
+        "title": "Quand l'incident s'est-il produit pour la première fois ?",
+        "text": "De nombreux incidents d'IA ne sont pas des événements discrets (c'est-à-dire qu'ils se produisent sur une période de temps). De plus, il est souvent difficile de savoir quand l'incident s'est produit pour la première fois lorsque le premier rapport public suit une période de temps après le premier événement. Dans ce champ, vous devez entrer la date du premier rapport de l'incident ou une estimation justifié du moment où l'incident s'est probablement produit pour la première fois. Par exemple, si l'incident concerne une fonctionnalité de moteur de recherche publiée en janvier et que le premier rapport d'incident public date de février, vous devez attribuer la date d'incident à janvier."
     },
     "date_published": {
-        "title": "¿Cuándo estuvo disponible el informe?",
-        "text": "Los informes suelen tener una fecha de publicación en la URL, pero incluso cuando no la tiene, puede visitar el <linkto to=\"https://archive.org/web/\"> Wayback Machine</linkto> para encontrar cuándo se indexó por primera vez la URL del informe."
+        "title": "Quand le rapport a-t-il été disponible ?",
+        "text": "Les rapports ont souvent une date de publication dans l'URL, mais même lorsqu'ils ne l'ont pas, vous pouvez visiter la <linkto to=\"https://archive.org/web/\">Wayback Machine</linkto> pour savoir quand L'URL du rapport a été indexée pour la première fois."
     },
     "date_downloaded": {
-        "title": "¿Cuándo copiaste el contenido del informe en este formulario?",
-        "text": "Las organizaciones de noticias suelen actualizar los informes a lo largo del tiempo. Esta fecha ayuda a determinar si el contenido podría estar obsoleto. Por lo general, colocarás la fecha de hoy aquí."
+        "title": "Quand avez-vous copié le contenu du rapport dans ce formulaire ?",
+        "text": "Les agences de presse mettent souvent à jour leurs rapports au fil du temps. Cette date permet de déterminer si le contenu est peut-être obsolète. Typiquement, vous mettrez la date d'aujourd'hui ici."
     },
     "url": {
-        "title": "Enlace al informe disponible públicamente",
-        "text": "Esta dirección estará vinculada dentro de muchas interfaces de usuario de bases de datos de incidentes."
+        "title": "Lien vers le rapport accessible au public",
+        "text": "Cette adresse sera liée dans de nombreuses interfaces utilisateur de base de données d'incidents."
     },
     "image_url": {
-        "title": "Una imagen utilizada para obtener una vista previa del informe del incidente",
-        "text": "Esta debería ser una URL para una imagen que se indexará y se mostrará junto al informe. La mayoría de las publicaciones ahora tienen imágenes de titulares de las que puede obtener una URL haciendo clic con el botón derecho. También puede vincular imágenes de figuras aquí."
+        "title": "Une image utilisée pour prévisualiser le rapport d'incident",
+        "text": "Il s'agit de l'URL d'une image qui sera indexée et affichée à côté du rapport. La plupart des publications ont maintenant des images en titre dont vous pouvez obtenir une URL en cliquant avec le bouton droit de la souris. Vous pouvez également lier des images ici."
     },
     "incident_id": {
-        "title": "¿Es este un incidente existente?",
-        "text": "Muy a menudo, los informes se escriben sobre incidentes que ya están en la base de datos de incidentes. Antes de enviarlos, debes verificar si el incidente ya está en la base de datos visitando la aplicación \"Discover\" y buscando incidentes de similar naturaleza al que estás enviando ahora. Si existe un incidente para tu informe, pero el informe nunca se ha enviado, ingresa aquí el número de identificador de incidente correspondiente. Si el informe de incidente ya existe, no lo vuelvas a enviar."
+        "title": "Est-ce un incident existant ?",
+        "text": "Très souvent, des rapports sont rédigés sur des incidents déjà présents dans la base de données des incidents. Avant de soumettre, vous devez vérifier si l'incident est déjà dans la base de données en visitant l'application \"Découvrir\" et en recherchant des incidents de nature similaire à celui que vous soumettez maintenant. S'il y a un incident pour votre rapport, mais que le rapport n'a jamais été soumis, entrez ici le numéro d'identification de l'incident correspondant. Si le rapport d'incident existe déjà, veuillez ne pas le soumettre à nouveau."
     },
     "text": {
-        "title": "Texto del artículo o transcripción del rich media",
-        "text": "Copia, pega y valida que el contenido textual del informe de incidente coincida con el contenido de la URL vinculada anteriormente. Borra todos los anuncios y otros elementos que no deban indexarse."
+        "title": "Texte de l'article ou transcription rich media",
+        "text": "Copiez, collez et validez que le contenu textuel du rapport d'incident correspond au contenu de l'URL liée ci-dessus. Supprimez toutes les annonces et autres éléments qui ne doivent pas être indexés."
     },
     "reportAddress": {
-        "title": "Enlace al informe disponible públicamente",
-        "text": "Esta dirección estará vinculada dentro de muchas interfaces de usuario de bases de datos de incidentes."
+        "title": "Lien vers le rapport accessible au public",
+        "text": "Cette adresse sera liée dans de nombreuses interfaces utilisateur de base de données d'incidents."
     },
     "tags": {
-        "title": "Etiqueta el tipo de reporte de incidente",
-        "text": "El propósito de las etiquetas de informe es admitir la clasificación de informes en la página de citas para el incidente. En caso de duda, puede dejar este campo en blanco y un editor de base de datos seleccionará las etiquetas adecuadas en el momento de el procesamiento."
+        "title": "Étiquetez le type de rapport d'incident",
+        "text": "Le but des étiquettes de rapport est de prendre en charge la classification des rapports sur la page de citation de l'incident. En cas de doute, vous pouvez laisser ce champ vide et un éditeur de base de données sélectionnera les étiquettes appropriées au moment du traitement."
     },
     "language": {
-        "title": "Idioma del informe del incidente",
-        "text": "Este es el idioma escrito del texto que se encuentra en el informe, no el idioma de las personas o países involucrados en el informe. Los informes se traducirán a los idiomas admitidos cuando procesemos el texto."
+        "title": "Langue du rapport d'incident",
+        "text": "Il s'agit de la langue écrite dans le rapport, et non de la langue des personnes ou des pays impliqués dans le rapport. Les rapports seront traduits dans les langues prises en charge lorsque nous traiterons le texte."
     }
 }
