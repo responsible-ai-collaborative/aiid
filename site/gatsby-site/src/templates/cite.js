@@ -46,17 +46,21 @@ const sortIncidentsByDatePublished = (incidentReports) => {
 
 function CitePage(props) {
   const {
-    pageContext: { incident, nextIncident, prevIncident },
+    pageContext: {
+      nextIncident,
+      prevIncident,
+      nlp_similar_incidents,
+      editor_similar_incidents,
+      editor_dissimilar_incidents,
+    },
     data: {
       allMongodbAiidprodTaxa,
       mongodbAiidprodClassifications,
       mongodbAiidprodResources,
       allMongodbAiidprodReports,
-      nlp_similar_incidents,
-      editor_similar_incidents,
-      editor_dissimilar_incidents,
       allMongodbTranslationsReportsEs,
       allMongodbTranslationsReportsEn,
+      incident,
     },
   } = props;
 
@@ -308,9 +312,9 @@ function CitePage(props) {
         ))}
 
         <SimilarIncidents
-          nlp_similar_incidents={nlp_similar_incidents.nodes}
-          editor_similar_incidents={editor_similar_incidents.nodes}
-          editor_dissimilar_incidents={editor_dissimilar_incidents.nodes}
+          nlp_similar_incidents={nlp_similar_incidents}
+          editor_similar_incidents={editor_similar_incidents}
+          editor_dissimilar_incidents={editor_dissimilar_incidents}
           flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
           parentIncident={incident}
         />
@@ -342,9 +346,6 @@ export const query = graphql`
   query CitationPageQuery(
     $incident_id: Int
     $report_numbers: [Int]
-    $nlp_similar_incidents: [Int]
-    $editor_similar_incidents: [Int]
-    $editor_dissimilar_incidents: [Int]
     $translate_es: Boolean!
     $translate_en: Boolean!
   ) {
@@ -439,36 +440,6 @@ export const query = graphql`
         language
       }
     }
-    nlp_similar_incidents: allMongodbAiidprodIncidents(
-      filter: { incident_id: { in: $nlp_similar_incidents } }
-    ) {
-      nodes {
-        title
-        date
-        incident_id
-        reports
-      }
-    }
-    editor_similar_incidents: allMongodbAiidprodIncidents(
-      filter: { incident_id: { in: $editor_similar_incidents } }
-    ) {
-      nodes {
-        title
-        date
-        incident_id
-        reports
-      }
-    }
-    editor_dissimilar_incidents: allMongodbAiidprodIncidents(
-      filter: { incident_id: { in: $editor_dissimilar_incidents } }
-    ) {
-      nodes {
-        title
-        date
-        incident_id
-        reports
-      }
-    }
     allMongodbTranslationsReportsEs(filter: { report_number: { in: $report_numbers } })
       @include(if: $translate_es) {
       nodes {
@@ -484,6 +455,14 @@ export const query = graphql`
         text
         report_number
       }
+    }
+    incident: mongodbAiidprodIncidents(incident_id: { eq: $incident_id }) {
+      incident_id
+      reports
+      title
+      description
+      date
+      editors
     }
   }
 `;
