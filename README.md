@@ -204,7 +204,7 @@ The translation process runs on Gatsby's `postBuild` event and consists of 3 ste
 
 -1 Get the list of languages, which is pulled from the /src/components/i18n/languages.js using the `GATSBY_AVAILABLE_LANGUAGES` environment variable as a filter:
 ```
-GATSBY_AVAILABLE_LANGUAGES=en,es,it,af
+GATSBY_AVAILABLE_LANGUAGES=en,es,fr
 ```
 -2 Translate each incident report to each language, and save the translated reports to a `translations` database under a collection for each language:
 ```
@@ -214,6 +214,10 @@ translations
     |   |-- { title, text, report_number }
     |
     |--incident_report_es
+    |   |-- { title, text, report_number }
+        |-- { title, text, report_number }
+    |
+    |--incident_report_fr
     |   |-- { title, text, report_number }
         |-- { title, text, report_number }
 ```
