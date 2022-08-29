@@ -463,6 +463,7 @@ export const query = graphql`
       description
       date
       editors
+      flagged_dissimilar_incidents
     }
   }
 `;
