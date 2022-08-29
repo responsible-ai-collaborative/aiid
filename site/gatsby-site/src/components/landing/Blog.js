@@ -1,6 +1,6 @@
 import LatestPost from 'components/blog/LatestPost';
 import React from 'react';
-import { Card } from 'react-bootstrap';
+import Card from 'elements/Card';
 import { Trans } from 'react-i18next';
 
 export default function Blog() {

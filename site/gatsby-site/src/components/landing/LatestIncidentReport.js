@@ -24,7 +24,7 @@ const LatestIncidentReport = ({ report }) => {
         'border rounded-lg break-words flex flex-col md:flex-row break bg-white min-w-0 relative rounded-t-lg md:rounded-l-lg md:rounded-r-none '
       }
     >
-      <div>
+      <div className="flex-0-0-auto w-1/3">
         <ThumbnailImg
           publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
           transformation={fill().height(480)}

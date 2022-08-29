@@ -112,7 +112,7 @@ module.exports = {
       },
       colors: {
         'light-gray': 'rgba(0,0,0,.03)',
-        'border-gray': 'rgba(0,0,0,.125)',
+        'border-gray': 'rgba(0,0,0,.175)',
         'disable-gray': '#dee2e6',
         'primary-blue': '#0d6efd',
         'gray-500': '#adb5bd',

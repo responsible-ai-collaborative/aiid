@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, Col, Row } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
@@ -10,6 +10,9 @@ import { useMutation } from '@apollo/client';
 import getSourceDomain from '../../utils/getSourceDomain';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'gatsby-theme-i18n';
+import Row from 'elements/Row';
+import Col from 'elements/Col';
+import Button from 'elements/Button';
 
 // set in form //
 // * url: "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti" # The fully qualified URL to the report as hosted on the web.
@@ -78,7 +81,7 @@ const QuickAddForm = ({ className = '' }) => {
   return (
     <>
       <Form onSubmit={handleSubmit} className={className} data-cy="quick-add">
-        <Row>
+        <Row className="w-full">
           <Form.Group as={Col} controlId="formUrl">
             <Form.Control
               type="text"
@@ -92,7 +95,7 @@ const QuickAddForm = ({ className = '' }) => {
             <Form.Control.Feedback type="invalid">{errors.url}</Form.Control.Feedback>
           </Form.Group>
 
-          <Col xs="auto">
+          <Col xs="auto" className="flex-0-0-auto w-auto">
             <Button variant="primary" type="submit" disabled={isSubmitting || !!errors.url}>
               <Trans>Submit</Trans>
             </Button>

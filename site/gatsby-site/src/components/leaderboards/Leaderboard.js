@@ -2,8 +2,9 @@ import React from 'react';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
 import Badge from 'react-bootstrap/Badge';
-import { Card, ListGroup } from 'react-bootstrap';
+import { ListGroup } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
+import Card from 'elements/Card';
 
 const medalMap = (position) => {
   switch (position) {

@@ -117,7 +117,7 @@
     }
 
     .tw-card-header {
-        @apply flex justify-between border-b border-border-gray px-4 py-2 bg-light-gray border border-b-border-gray mb-0;
+        @apply flex justify-between border-t-0 border-r-0 border-l-0 border-b border-b-border-gray px-4 py-2 bg-light-gray border mb-0;
     }
 
     .tw-card-title {
@@ -674,6 +674,10 @@
         @apply appearance-none bg-white bg-no-repeat rounded-md text-gray-900 block text-base font-normal leading-normal w-full bg-form-select border border-solid border-form-control transition-form-control py-[0.375rem] pr-9 pl-3;
         -moz-padding-start: calc(.75rem - 3px);
     }
+
+    .text-muted {
+        color: #6c757d;
+    }
     
     /* Bootstrap list */
 
@@ -690,11 +694,30 @@
     }
 
     .list-group-item+.list-group-item {
-        @apply rounded-t-none;
+        @apply rounded-t-none border-t-0;
+    }
+
+    .list-group-flush>.list-group-item {
+        @apply border-b-[1px] border-t-0 border-l-0 border-r-0;
+    }
+    .list-group-flush>.list-group-item:last-child {
+        @apply border-b-0;
     }
 
     .list-group-item:last-child {
-        @apply rounded-bl-[inherit] rounded-br-[inherit];
+        @apply rounded-bl-lg rounded-br-lg;
+    }
+
+    .tw-card>.tw-card-header+.list-group, .tw-card>.list-group+.tw-card-footer {
+        @apply border-t-0;
+    }
+    
+    .tw-card>.list-group:last-child {
+        @apply rounded-bl-lg rounded-br-lg rounded-b-none;
+    }
+
+    .tw-card>.list-group {
+        @apply rounded-b-lg rounded-t-lg;
     }
 
     .badge {
