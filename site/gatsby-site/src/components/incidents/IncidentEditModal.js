@@ -5,6 +5,7 @@ import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { Button, Modal, Spinner } from 'react-bootstrap';
 import IncidentForm, { schema } from './IncidentForm';
 import { Formik } from 'formik';
+import { LocalizedLink } from 'gatsby-theme-i18n';
 
 export default function IncidentEditModal({ show, onClose, incidentId }) {
   const [incident, setIncident] = useState();
@@ -41,7 +42,12 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
       });
 
       addToast({
-        message: `Incident ${incidentId} updated successfully.`,
+        message: (
+          <>
+            <LocalizedLink to={'/cite/' + incidentId}>Incident {incidentId}</LocalizedLink> updated
+            successfully.
+          </>
+        ),
         severity: SEVERITY.success,
       });
 

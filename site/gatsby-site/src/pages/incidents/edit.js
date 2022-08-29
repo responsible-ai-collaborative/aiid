@@ -7,6 +7,7 @@ import { Button, Spinner } from 'react-bootstrap';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
+import { LocalizedLink } from 'gatsby-theme-i18n';
 
 function EditCitePage(props) {
   const [incident, setIncident] = useState();
@@ -45,7 +46,12 @@ function EditCitePage(props) {
       });
 
       addToast({
-        message: `Incident ${incidentId} updated successfully.`,
+        message: (
+          <>
+            <LocalizedLink to={'/cite/' + incidentId}>Incident {incidentId}</LocalizedLink> updated
+            successfully.
+          </>
+        ),
         severity: SEVERITY.success,
       });
     } catch (e) {

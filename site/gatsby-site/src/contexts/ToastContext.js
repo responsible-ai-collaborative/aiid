@@ -36,6 +36,10 @@ const ToastBodyContent = styled.div`
   svg {
     margin-right: 0.5em;
   }
+  a {
+    text-decoration: underline !important;
+    ${({ bg }) => (bg ? 'color: white};' : '')}
+  }
 `;
 
 const ToastBody = styled(Toast.Body)`
@@ -89,7 +93,7 @@ export function ToastContextProvider({ children }) {
         {toasts.map(({ message, severity, id }, index) => (
           <Toast key={id} style={{ background: severity.color, maxWidth: '100%' }} data-cy="toast">
             <ToastBody style={{ color: 'white' }}>
-              <ToastBodyContent>
+              <ToastBodyContent bg={severity.color}>
                 <FontAwesomeIcon icon={severity.icon} className={severity.faClass} />
                 {message}
               </ToastBodyContent>

@@ -16,7 +16,7 @@ import { format, getUnixTime } from 'date-fns';
 import { stripMarkdown } from 'utils/typography';
 import { Formik } from 'formik';
 import pick from 'lodash/pick';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
 import { gql, useApolloClient } from '@apollo/client';
 import RelatedIncidents from 'components/RelatedIncidents';
 
@@ -66,17 +66,19 @@ const siblingsQuery = gql`
 
 const incidentEmbedding = (reports) => {
   reports = reports.filter((report) => report.embedding);
-  return {
-    vector: reports
-      .map((report) => report.embedding.vector)
-      .reduce(
-        (sum, vector) => vector.map((component, i) => component + sum[i]),
-        Array(reports[0].embedding.vector.length).fill(0)
-      )
-      .map((component) => component / reports.length),
+  return reports.length == 0
+    ? null
+    : {
+        vector: reports
+          .map((report) => report.embedding.vector)
+          .reduce(
+            (sum, vector) => vector.map((component, i) => component + sum[i]),
+            Array(reports[0].embedding.vector.length).fill(0)
+          )
+          .map((component) => component / reports.length),
 
-    from_reports: reports.map((report) => report.report_number),
-  };
+        from_reports: reports.map((report) => report.report_number),
+      };
 };
 
 function EditCitePage(props) {
@@ -179,13 +181,15 @@ function EditCitePage(props) {
 
         const embedding = incidentEmbedding(exSiblings);
 
-        await client.mutate({
-          mutation: UPDATE_INCIDENT,
-          variables: {
-            query: { incident_id: parentIncident.incident.incident_id },
-            set: { embedding },
-          },
-        });
+        if (embedding) {
+          await client.mutate({
+            mutation: UPDATE_INCIDENT,
+            variables: {
+              query: { incident_id: parentIncident.incident.incident_id },
+              set: { embedding },
+            },
+          });
+        }
       }
 
       // Update the embedding of the parent incident
@@ -216,19 +220,29 @@ function EditCitePage(props) {
 
       const embedding = incidentEmbedding(siblings.concat(values));
 
-      await client.mutate({
-        mutation: UPDATE_INCIDENT,
-        variables: {
-          query: { incident_id: values.incident_id },
-          set: { embedding },
-        },
-      });
+      if (embedding) {
+        await client.mutate({
+          mutation: UPDATE_INCIDENT,
+          variables: {
+            query: { incident_id: values.incident_id },
+            set: { embedding },
+          },
+        });
+      }
 
       addToast({
-        message: `Incident report ${reportNumber} updated successfully.`,
+        message: (
+          <>
+            Incident report {reportNumber} updated successfully.{' '}
+            <LocalizedLink to={'/cite/' + values.incident_id}>
+              View Incident {values.incident_id}.
+            </LocalizedLink>
+          </>
+        ),
         severity: SEVERITY.success,
       });
     } catch (e) {
+      console.error(e);
       addToast({
         message: `Error updating incident report ${reportNumber}`,
         severity: SEVERITY.danger,
