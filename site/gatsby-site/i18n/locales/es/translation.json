@@ -106,5 +106,7 @@
   "This Incident in Semantic Space": "Este incidente en el espacio semántico",
   "The visualization below plots incidents closer together according to the similarity of their reports texts, as identified through <2>our natural-language processing system</2>" : "La siguiente visualización representa los incidentes en proximidad proporcional a la similitud de los textos de sus informes, identificados a través de <2>nuestro sistema de procesamiento de lenguaje natural</2>",
   "review": "revisar",
-  "Loading...": "Cargando..."
+  "Loading...": "Cargando...",
+  "Notify Me of Updates": "Notificarme de actualizaciones",
+  "Please <2>log in</2> to subscribe": "Por favor <2>inicie sesión</2> para subscribirse"
 }

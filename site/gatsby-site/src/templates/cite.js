@@ -27,6 +27,7 @@ import useLocalizePath from 'components/i18n/useLocalizePath';
 import { useMutation } from '@apollo/client';
 import { UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
+import Link from 'components/ui/Link';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -62,7 +63,7 @@ function CitePage(props) {
 
   const { isRole, user } = useUserContext();
 
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const { locale } = useLocalization();
 
@@ -160,7 +161,12 @@ function CitePage(props) {
       }
     } else {
       addToast({
-        message: <>{t(`Please log in to subscribe`)}</>,
+        message: (
+          <Trans i18n={i18n}>
+            Please <Link to={localizePath({ path: '/login', language: locale })}>log in</Link> to
+            subscribe
+          </Trans>
+        ),
         severity: SEVERITY.success,
       });
     }
