@@ -1,4 +1,4 @@
-const styleObject = (styleString) => {
+/*const styleObject = (styleString) => {
   const obj = {};
 
   styleString
@@ -9,7 +9,7 @@ const styleObject = (styleString) => {
     });
 
   return obj;
-};
+};*/
 
 describe('TSNE Visualization', () => {
   const url = '/summaries/spatial';
@@ -18,6 +18,7 @@ describe('TSNE Visualization', () => {
     cy.visit(url);
     cy.get('[data-cy="tsne-visualization"] [data-cy="tsne-plotpoint"]').should('exist');
   });
+  /*
 
   it('Should highlight source incident when one exists', () => {
     cy.visit(url + '?incident=1');
@@ -65,4 +66,5 @@ describe('TSNE Visualization', () => {
       expect(styleObject(newStyle).background).to.not.eq(initialBackground);
     });
   });
+  */
 });

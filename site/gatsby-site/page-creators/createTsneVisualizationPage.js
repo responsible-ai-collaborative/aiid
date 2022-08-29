@@ -1,9 +1,9 @@
 const path = require('path');
 
-const { updateTsneInDatabase } = require('../src/utils/updateTsne');
+//const { updateTsneInDatabase } = require('../src/utils/updateTsne');
 
 const createTsneVisualizationPage = async (graphql, createPage) => {
-  await updateTsneInDatabase();
+  //await updateTsneInDatabase();
 
   createPage({
     path: 'summaries/spatial',

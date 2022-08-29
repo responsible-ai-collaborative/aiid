@@ -240,7 +240,7 @@ const TsneVisualization = ({ currentIncidentId }) => {
   const { data: spatialIncidentsData } = useQuery(
     gql`
       query SpatialIncidents($query: IncidentQueryInput) {
-        incidents(query: $query) {
+        incidents(query: $query, limit: 9999) {
           incident_id
           tsne {
             x
@@ -274,7 +274,7 @@ const TsneVisualization = ({ currentIncidentId }) => {
   const { data: classificationsData } = useQuery(
     gql`
     query ClassificationsQuery($query: ClassificationQueryInput) {
-      classifications(query: $query) {
+      classifications(query: $query, limit: 9999) {
         incident_id
         namespace
         classifications {
