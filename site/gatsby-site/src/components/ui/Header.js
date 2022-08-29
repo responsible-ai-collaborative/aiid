@@ -112,7 +112,7 @@ const Header = () => {
                 </Link>
               </div>
               <div className="tw-header-icons-container">
-                <LanguageSwitcher className="me-3 me-md-0" />
+                <LanguageSwitcher className="mr-3 md:mr-0" />
                 <li className="divider hiddenMobile"></li>
                 {config.header.social && (
                   <a

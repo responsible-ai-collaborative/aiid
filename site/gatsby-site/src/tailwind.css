@@ -24,6 +24,10 @@
         @apply flex-auto;
     }
 
+    p {
+        @apply mb-4 mt-0;
+    }
+
     .input-group>.form-control, .input-group>.form-floating, .input-group>.form-select {
         @apply min-w-0 relative flex-auto;
     }
@@ -146,21 +150,19 @@
 
     /* TAILWIND Buttons begins */
     .tw-btn, .btn {
-        @apply bg-transparent border border-transparent rounded cursor-pointer inline-block text-base font-normal py-1 px-2 text-center no-underline select-none align-middle transition-btn;
+        @apply bg-transparent border border-transparent rounded cursor-pointer inline-block text-base font-normal py-1.5 px-2 text-center no-underline select-none align-middle transition-btn;
     }
 
     .btn-check:active+.btn, .btn-check:checked+.btn, .btn.active, .btn.show, .btn:active {
-        background-color: #565e64;
-        border-color: #51585e;
-        color: #fff;
+        @apply bg-btn-check-active border-btn-check-border text-white;
     }
 
     .tw-btn-primary, .btn-primary {
-        @apply bg-blue-600 border-blue-600 text-white;
+        @apply bg-blue-600 border-blue-600 text-white hover:bg-hover-blue hover:border-deep-blue hover:text-white;
     }
 
     .tw-btn-secondary, .btn-secondary {
-        @apply bg-dark-gray border-dark-gray text-white;
+        @apply bg-dark-gray border-dark-gray text-white  hover:bg-gray-600 hover:border-gray-600 hover:text-white;
     }
 
     .tw-btn-lg {
@@ -529,7 +531,7 @@
     }
 
     .modal-title {
-        @apply leading-normal mb-0;
+        @apply leading-normal mb-0 flex-1;
     }
 
     .modal-body {
@@ -729,8 +731,7 @@
     }
 
     .col-auto {
-        flex: 0 0 auto;
-        width: auto;
+        @apply flex-0-0-auto w-auto;
     }
     
     .btn.disabled, .btn:disabled, fieldset:disabled .btn {
@@ -739,6 +740,21 @@
 
     .btn-primary:disabled {
         @apply bg-primary-blue border-primary-blue text-white opacity-70 pointer-events-none;
+    }
+
+    .tw-btn-link, .btn-link {
+        @apply text-primary-blue;
+    }
+
+    .btn-group {
+        @apply rounded-md;
+    }
+    
+    .btn-group, .btn-group-vertical {
+        @apply inline-flex relative align-middle;
+    }
+    .dropdown, .dropdown-center, .dropend, .dropstart, .dropup, .dropup-center {
+        @apply relative;
     }
 
     .btn-group-sm>.btn, .btn-sm {

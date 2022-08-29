@@ -44,6 +44,7 @@ const IncidentCardImage = styled(Image)`
 `;
 
 const StyledHeaderTitle = styled(HeaderTitle)`
+  line-height: 1.1 !important;
   a {
     color: white !important;
   }
