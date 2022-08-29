@@ -4,6 +4,8 @@ import unflaggedReport from '../fixtures/reports/unflagged.json';
 import { format } from 'date-fns';
 const { gql } = require('@apollo/client');
 
+import updateOneIncidentFlagged from '../fixtures/incidents/updateOneIncidentFlagged.json';
+
 describe('Cite pages', () => {
   const discoverUrl = '/apps/discover';
 
@@ -251,7 +253,8 @@ describe('Cite pages', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'UpdateIncident',
-      'updateIncident'
+      'updateIncident',
+      updateOneIncidentFlagged
     );
 
     cy.visit('/cite/9');
@@ -259,8 +262,8 @@ describe('Cite pages', () => {
     cy.get('[data-cy="flag-similar-incident"]').first().click();
 
     cy.wait('@updateIncident').then((xhr) => {
-      expect(xhr.response.statusCode).to.equal(200);
-      expect(Boolean(xhr.request.body.variables.set.flagged_dissimilar_incidents)).to.be.true;
+      expect(xhr.request.body.variables.query).deep.eq({ incident_id: 9 });
+      expect(xhr.request.body.variables.set.flagged_dissimilar_incidents).deep.eq([11]);
     });
   });
 

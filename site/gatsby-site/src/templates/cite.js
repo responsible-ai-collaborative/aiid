@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
@@ -28,6 +28,8 @@ import { useMutation } from '@apollo/client';
 import { UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import Link from 'components/ui/Link';
+import { graphql } from 'gatsby';
+import { getTaxonomies, getTranslatedReports } from 'utils/cite';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -50,14 +52,20 @@ const sortIncidentsByDatePublished = (incidentReports) => {
 function CitePage(props) {
   const {
     pageContext: {
-      incident,
-      incidentReports,
-      taxonomies,
       nextIncident,
       prevIncident,
       nlp_similar_incidents,
       editor_similar_incidents,
       editor_dissimilar_incidents,
+    },
+    data: {
+      allMongodbAiidprodTaxa,
+      mongodbAiidprodClassifications,
+      mongodbAiidprodResources,
+      allMongodbAiidprodReports,
+      allMongodbTranslationsReportsEs,
+      allMongodbTranslationsReportsEn,
+      incident,
     },
   } = props;
 
@@ -80,6 +88,12 @@ function CitePage(props) {
   const metaDescription = incident.description;
 
   const canonicalUrl = getCanonicalUrl(incident.incident_id);
+
+  const incidentReports = getTranslatedReports({
+    allMongodbAiidprodReports,
+    translations: { en: allMongodbTranslationsReportsEn, es: allMongodbTranslationsReportsEs },
+    locale,
+  });
 
   const sortedReports = sortIncidentsByDatePublished(incidentReports);
 
@@ -106,6 +120,16 @@ function CitePage(props) {
     mongodb_id: 0,
     isOccurrence: true,
   });
+
+  const taxonomies = useMemo(
+    () =>
+      getTaxonomies({
+        allMongodbAiidprodTaxa,
+        mongodbAiidprodClassifications,
+        mongodbAiidprodResources,
+      }),
+    []
+  );
 
   const [taxonomiesList, setTaxonomiesList] = useState(
     taxonomies.map((t) => ({ ...t, canEdit: false }))
@@ -385,5 +409,131 @@ function CitePage(props) {
     </Layout>
   );
 }
+
+export const query = graphql`
+  query CitationPageQuery(
+    $incident_id: Int
+    $report_numbers: [Int]
+    $translate_es: Boolean!
+    $translate_en: Boolean!
+  ) {
+    mongodbAiidprodResources(
+      classifications: { Publish: { eq: true } }
+      incident_id: { eq: $incident_id }
+    ) {
+      id
+      incident_id
+      notes
+      classifications {
+        Datasheets_for_Datasets
+        Publish
+      }
+    }
+    mongodbAiidprodClassifications(
+      classifications: { Publish: { eq: true } }
+      incident_id: { eq: $incident_id }
+    ) {
+      incident_id
+      id
+      namespace
+      notes
+      classifications {
+        Annotation_Status
+        Annotator
+        Ending_Date
+        Beginning_Date
+        Full_Description
+        Intent
+        Location
+        Named_Entities
+        Near_Miss
+        Quality_Control
+        Reviewer
+        Severity
+        Short_Description
+        Technology_Purveyor
+        AI_Applications
+        AI_System_Description
+        AI_Techniques
+        Data_Inputs
+        Financial_Cost
+        Harm_Distribution_Basis
+        Harm_Type
+        Infrastructure_Sectors
+        Laws_Implicated
+        Level_of_Autonomy
+        Lives_Lost
+        Nature_of_End_User
+        Physical_System
+        Problem_Nature
+        Public_Sector_Deployment
+        Relevant_AI_functions
+        Sector_of_Deployment
+        System_Developer
+        Publish
+      }
+    }
+    allMongodbAiidprodTaxa {
+      nodes {
+        id
+        namespace
+        weight
+        description
+        field_list {
+          public
+          display_type
+          long_name
+          short_name
+          long_description
+          weight
+          short_description
+          render_as
+        }
+      }
+    }
+    allMongodbAiidprodReports(filter: { report_number: { in: $report_numbers } }) {
+      nodes {
+        submitters
+        date_published
+        report_number
+        title
+        url
+        image_url
+        cloudinary_id
+        source_domain
+        mongodb_id
+        text
+        authors
+        epoch_date_submitted
+        language
+      }
+    }
+    allMongodbTranslationsReportsEs(filter: { report_number: { in: $report_numbers } })
+      @include(if: $translate_es) {
+      nodes {
+        title
+        text
+        report_number
+      }
+    }
+    allMongodbTranslationsReportsEn(filter: { report_number: { in: $report_numbers } })
+      @include(if: $translate_en) {
+      nodes {
+        title
+        text
+        report_number
+      }
+    }
+    incident: mongodbAiidprodIncidents(incident_id: { eq: $incident_id }) {
+      incident_id
+      reports
+      title
+      description
+      date
+      editors
+      flagged_dissimilar_incidents
+    }
+  }
+`;
 
 export default CitePage;
