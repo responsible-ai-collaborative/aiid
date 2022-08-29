@@ -47,7 +47,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
           {locale == 'en' && incident.title ? incident.title : incident.reports[0].title}
         </h3>
       </a>
-      <div className="tw-flex tw-w-full tw-flex-row tw-items-center tw-font-bold tw-mt-0 tw-my-4 tw-mr-4">
+      <div className="tw-flex tw-w-full tw-flex-row tw-items-center tw-font-bold tw-mt-0 tw-my-4 tw-pr-4">
         <div className="text-muted tw-text-sm tw-mx-4">
           {parsedDate && (
             <>
