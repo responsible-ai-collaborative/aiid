@@ -10,6 +10,8 @@ import incident from '../fixtures/incidents/incident.json';
 
 import reportWithTranslations from '../fixtures/reports/reportWithTranslations.json';
 
+import reportSiblings from '../fixtures/reports/reportSiblings.json';
+
 import incidentWithDeletedReport from '../fixtures/incidents/incidentWithDeletedReport.json';
 
 describe('Edit report', () => {
@@ -207,6 +209,13 @@ describe('Edit report', () => {
       (req) => req.body.operationName == 'DeleteOneReport',
       'delete',
       { data: { deleteOneReport: { __typename: 'Report', report_number: 10 } } }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'Siblings',
+      'siblings',
+      reportSiblings
     );
 
     cy.conditionalIntercept(
