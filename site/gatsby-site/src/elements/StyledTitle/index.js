@@ -19,7 +19,7 @@ export function StyledSubtitle(props) {
   return (
     <>
       <Card.Subtitle
-        className={`tw-flex tw-ml-auto tw-mr-auto tw-mb-2 tw-justify-around tw-pt-[${
+        className={`tw-flex tw-ml-auto tw-mr-auto tw-mb-3 tw-justify-around tw-pt-[${
           props.top || '30px'
         }] tw-pb-[${props.bottom || '30px'}] tw-pt-[${props.margin || '-.25rem'}] ${
           props.className || ''
