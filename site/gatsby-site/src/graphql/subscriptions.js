@@ -20,3 +20,11 @@ export const FIND_SUBSCRIPTIONS = gql`
     }
   }
 `;
+
+export const DELETE_SUBSCRIPTIONS = gql`
+  mutation DeleteSubscriptions($query: SubscriptionQueryInput) {
+    deleteManySubscriptions(query: $query) {
+      deletedCount
+    }
+  }
+`;

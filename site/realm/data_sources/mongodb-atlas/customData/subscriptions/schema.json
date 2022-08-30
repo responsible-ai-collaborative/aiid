@@ -6,6 +6,9 @@
         "incident_id": {
             "bsonType": "int"
         },
+        "type": {
+            "bsonType": "string"
+        },
         "userId": {
             "bsonType": "string"
         }

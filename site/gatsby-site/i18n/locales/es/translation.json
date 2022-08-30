@@ -108,5 +108,13 @@
   "review": "revisar",
   "Loading...": "Cargando...",
   "Notify Me of Updates": "Notificarme de actualizaciones",
-  "Please <1>log in</1> to subscribe": "Por favor <1>inicie sesión</1> para subscribirse"
+  "Please <1>log in</1> to subscribe": "Por favor <1>inicie sesión</1> para subscribirse",
+  "Invalid parameters": "Parámetros inválidos",
+  "Unsubscribe": "Desuscribirse",
+  "Do you want to unsubscribe from <1>incident {{incidentId}}</1> updates?": "¿Quieres desuscribirse de las actualizaciones del <1>incidente {{incidentId}}</1>?",
+  "Do you want to unsubscribe from all notifications?": "¿Quieres desuscribirse de todas las notificaciones?",
+  "Confirm": "Confirmar",
+  "Continue": "Continuar",
+  "You have successfully unsubscribed.": "Has cancelado tu suscripción correctamente.",
+  "You have successfully subscribed to updates on incident {{incidentId}}": "Te has suscrito con éxito a las actualizaciones sobre el incidente {{incidentId}}"
 }
