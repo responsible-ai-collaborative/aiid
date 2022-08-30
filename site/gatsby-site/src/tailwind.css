@@ -291,7 +291,7 @@
     }
 
     .tw-card-set {
-        @apply tw-flex tw-flex-col tw-gap-4 tw-mb-8 1300px:tw-flex-row;
+        @apply tw-gap-4 tw-mb-8 tw-grid tw-grid-cols-1 md:tw-grid-cols-2 1300px:tw-grid-cols-3;
     }
 
     .tw-card-set > * {
