@@ -34,11 +34,11 @@ const Unsubscribe = (props) => {
   const unsubscribe = async () => {
     try {
       const query = {
-        type: subscriptionType,
         userId: { userId },
       };
 
       if (subscriptionType === 'incident') {
+        query.type = subscriptionType;
         query.incident_id = { incident_id: `${incidentId}` };
       }
 
