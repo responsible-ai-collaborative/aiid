@@ -214,6 +214,7 @@ const SubmissionReview = ({ submission }) => {
           reportTitle: report.title,
           reportAuthor: report.authors[0],
         },
+        userIds,
       });
     }
 
