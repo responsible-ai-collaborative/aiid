@@ -215,7 +215,6 @@ const SubmissionForm = () => {
               )
             : t(`Error reaching news info endpoint, please try again in a few seconds.`);
 
-        console.error(e);
         addToast({
           message: <>{message}</>,
           severity: SEVERITY.danger,

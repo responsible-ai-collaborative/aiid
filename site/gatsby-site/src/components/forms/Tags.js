@@ -9,8 +9,6 @@ export default function Tags({ id, inputId, placeHolder, value, onChange, name }
     ref.current.clear();
   };
 
-  console.log(`value`, value);
-
   return (
     <Typeahead
       ref={ref}
