@@ -21,5 +21,71 @@
             "runResetFunction": false
         },
         "disabled": false
+    },
+    "oauth2-facebook": {
+        "name": "oauth2-facebook",
+        "type": "oauth2-facebook",
+        "config": {
+            "clientId": "353371620329953"
+        },
+        "secret_config": {
+            "clientSecret": "facebookAppSecret"
+        },
+        "disabled": false,
+        "metadata_fields": [
+            {
+                "required": false,
+                "name": "name"
+            },
+            {
+                "required": false,
+                "name": "first_name"
+            },
+            {
+                "required": false,
+                "name": "last_name"
+            },
+            {
+                "required": false,
+                "name": "email"
+            }
+        ],
+        "redirect_uris": [
+            "https://staging-aiid.netlify.app/logincallback",
+            "https://incidentdatabase.ai/logincallback"
+        ]
+    },
+    "oauth2-google": {
+        "name": "oauth2-google",
+        "type": "oauth2-google",
+        "config": {
+            "clientId": "997117273781-cghhiafe9nubsooajccmh4gtifrijfo2.apps.googleusercontent.com"
+        },
+        "secret_config": {
+            "clientSecret": "googleClientSecret"
+        },
+        "disabled": false,
+        "metadata_fields": [
+            {
+                "required": false,
+                "name": "name"
+            },
+            {
+                "required": false,
+                "name": "first_name"
+            },
+            {
+                "required": false,
+                "name": "last_name"
+            },
+            {
+                "required": false,
+                "name": "email"
+            }
+        ],
+        "redirect_uris": [
+            "https://staging-aiid.netlify.app/logincallback",
+            "https://incidentdatabase.ai/logincallback"
+        ]
     }
 }
