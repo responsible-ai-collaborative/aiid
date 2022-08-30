@@ -43,8 +43,12 @@ const EntityPage = ({ pageContext, data, ...props }) => {
         </>
       ))}
 
-      <h4 className="tw-mt-24">Related Entities</h4>
-      <EntitiesCard entities={relatedEntities} className="tw-mt-6" />
+      {relatedEntities.length > 0 && (
+        <>
+          <h4 className="tw-mt-24">Related Entities</h4>
+          <EntitiesCard entities={relatedEntities} className="tw-mt-6" />
+        </>
+      )}
     </Layout>
   );
 };
