@@ -36,7 +36,7 @@ const AlgoliaUpdater = require('./src/utils/AlgoliaUpdater');
 
 const googleMapsApiClient = new GoogleMapsAPIClient({});
 
-exports.createPages = ({ graphql, actions, reporter }) => {
+exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions;
 
   const { createRedirect } = actions;
@@ -58,16 +58,14 @@ exports.createPages = ({ graphql, actions, reporter }) => {
     createRedirect({ fromPath: pair[0], toPath: pair[1], isPermanent: true })
   );
 
-  return Promise.all([
-    createMdxPages(graphql, createPage, reporter),
-    createCitationPages(graphql, createPage),
-    createWordCountsPages(graphql, createPage),
-    createBackupsPage(graphql, createPage),
-    createTaxonomyPages(graphql, createPage),
-    createDownloadIndexPage(graphql, createPage),
-    createDuplicatePages(graphql, createPage),
-    createTsneVisualizationPage(graphql, createPage),
-  ]);
+  await createMdxPages(graphql, createPage, reporter);
+  await createCitationPages(graphql, createPage);
+  await createWordCountsPages(graphql, createPage);
+  await createBackupsPage(graphql, createPage);
+  await createTaxonomyPages(graphql, createPage);
+  await createDownloadIndexPage(graphql, createPage);
+  await createDuplicatePages(graphql, createPage);
+  await createTsneVisualizationPage(graphql, createPage);
 };
 
 exports.onCreateWebpackConfig = ({ actions }) => {
