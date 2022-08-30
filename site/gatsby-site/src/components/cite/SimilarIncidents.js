@@ -11,9 +11,10 @@ import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import Card from '../../elements/Card';
 import Button from '../../elements/Button';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
+
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
 const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncident }) => {
@@ -34,14 +35,17 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
   return (
     <Card data-cy="similar-incident-card">
       <a href={'/cite/' + incident.incident_id} data-cy="cite-link">
-        <Image
-          className="tw-object-cover tw-w-full tw-aspect-[16/9]"
-          publicID={
-            incident.reports[0].cloudinary_id || `legacy/${md5(incident.reports[0].image_url)}`
-          }
-          transformation={fill().height(480)}
-          alt=""
-        />
+        {(incident.reports[0].cloudinary_id || incident.reports[0]?.image_url) && (
+          <Image
+            className="tw-object-cover tw-w-full tw-aspect-[16/9]"
+            publicID={
+              incident.reports[0]?.cloudinary_id || `legacy/${md5(incident.reports[0]?.image_url)}`
+            }
+            transformation={fill().height(480)}
+            alt=""
+          />
+        )}
+
         <h3>{locale == 'en' && incident.title ? incident.title : incident.reports[0].title}</h3>
       </a>
       <div className="tw-flex tw-w-full tw-flex-row tw-items-center tw-font-bold tw-mt-0 tw-my-4 tw-mr-4">
@@ -122,7 +126,9 @@ const SimilarIncidents = ({
     <div className="tw-similar-incidents">
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
         <h2 id="similar-incidents">
-          <Trans>Similar Incidents</Trans>
+          <LocalizedLink to={'/summaries/spatial?incident=' + parentIncident.incident_id}>
+            <Trans>Similar Incidents</Trans>
+          </LocalizedLink>
         </h2>
       )}
       {editor_similar_incidents.length > 0 && (

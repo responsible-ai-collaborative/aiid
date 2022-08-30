@@ -22,6 +22,8 @@ const createDownloadIndexPage = require('./page-creators/createDownloadIndexPage
 
 const createDuplicatePages = require('./page-creators/createDuplicatePages');
 
+const createTsneVisualizationPage = require('./page-creators/createTsneVisualizationPage');
+
 const createEntitiesPages = require('./page-creators/createEntitiesPages');
 
 const algoliasearch = require('algoliasearch');
@@ -36,7 +38,7 @@ const AlgoliaUpdater = require('./src/utils/AlgoliaUpdater');
 
 const googleMapsApiClient = new GoogleMapsAPIClient({});
 
-exports.createPages = ({ graphql, actions, reporter }) => {
+exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions;
 
   const { createRedirect } = actions;
@@ -58,16 +60,15 @@ exports.createPages = ({ graphql, actions, reporter }) => {
     createRedirect({ fromPath: pair[0], toPath: pair[1], isPermanent: true })
   );
 
-  return Promise.all([
-    createMdxPages(graphql, createPage, reporter),
-    createCitationPages(graphql, createPage),
-    createWordCountsPages(graphql, createPage),
-    createBackupsPage(graphql, createPage),
-    createTaxonomyPages(graphql, createPage),
-    createDownloadIndexPage(graphql, createPage),
-    createDuplicatePages(graphql, createPage),
-    createEntitiesPages(graphql, createPage),
-  ]);
+  await createMdxPages(graphql, createPage, reporter);
+  await createCitationPages(graphql, createPage);
+  await createWordCountsPages(graphql, createPage);
+  await createBackupsPage(graphql, createPage);
+  await createTaxonomyPages(graphql, createPage);
+  await createDownloadIndexPage(graphql, createPage);
+  await createDuplicatePages(graphql, createPage);
+  await createTsneVisualizationPage(graphql, createPage);
+  await createEntitiesPages(graphql, createPage);
 };
 
 exports.onCreateWebpackConfig = ({ actions }) => {
@@ -165,10 +166,25 @@ exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
 
   const typeDefs = `
+    type reportEmbedding {
+      vector: [Float]
+      from_text_hash: String
+    }
+
+    type incidentEmbedding {
+      vector: [Float]
+      from_reports: [Int]
+    }
+
+    type mongodbAiidprodIncidents implements Node {
+      embedding: incidentEmbedding
+    }
+
     type nlpSimilarIncident {
       incident_id: Int
       similarity: Float
     }
+
     type mongodbAiidprodIncidents implements Node {
       nlp_similar_incidents: [nlpSimilarIncident]
       editor_similar_incidents: [Int]
@@ -186,6 +202,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       cloudinary_id: String
       tags: [String]
       plain_text: String
+      embedding: reportEmbedding 
     }
 
     type mongodbAiidprodTaxaField_list implements Node {

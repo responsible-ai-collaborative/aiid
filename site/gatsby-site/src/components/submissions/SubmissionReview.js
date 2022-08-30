@@ -54,7 +54,7 @@ const dateRender = [
   'date_modified',
 ];
 
-const otherDetails = ['language', '_id'];
+const otherDetails = ['language', '_id', 'developers', 'deployers', 'harmed_parties'];
 
 const SubmissionReview = ({ submission }) => {
   const { isRole } = useUserContext();
@@ -92,6 +92,13 @@ const SubmissionReview = ({ submission }) => {
   const addToast = useToastContext();
 
   const promoteSubmission = useCallback(async () => {
+    if (!submission.developers || !submission.deployers || !submission.harmed_parties) {
+      addToast({
+        message: `Please review submission before approving. Some data is missing.`,
+        severity: SEVERITY.danger,
+      });
+      return;
+    }
     const {
       data: {
         promoteSubmissionToReport: { 0: incident },
@@ -118,6 +125,9 @@ const SubmissionReview = ({ submission }) => {
     const report = {
       ...submission,
       incident_id: undefined,
+      deployers: undefined,
+      developers: undefined,
+      harmed_parties: undefined,
       _id: undefined,
       __typename: undefined,
       nlp_similar_incidents: undefined,
@@ -156,10 +166,7 @@ const SubmissionReview = ({ submission }) => {
           set: {
             title: submission.title,
             date: submission.incident_date,
-            description: '',
-            AllegedDeployerOfAISystem: [],
-            AllegedDeveloperOfAISystem: [],
-            AllegedHarmedOrNearlyHarmedParties: [],
+            description: submission.description,
           },
         },
       });
