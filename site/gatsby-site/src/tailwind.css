@@ -48,6 +48,34 @@
         @apply tw-flex-0-0-auto tw-w-auto tw-max-w-none;
     }
 
+    .tw-nav-header-container {
+        @apply tw-flex tw-flex-row tw-justify-between tw-items-center tw-w-full;
+    }
+
+    .tw-nav-header-container .nav-bar-header {
+        @apply tw-order-[0];
+    }
+
+    .tw-nav-header-container .divider {
+        @apply tw-w-[1px];
+    }
+
+    .tw-nav-header-container .nav-bar-brand {
+        @apply tw-items-center tw-flex tw-p-0;
+    }
+
+    .tw-nav-header-container .nav-bar-brand > * {
+        @apply tw-shrink-0;
+    }
+
+    .tw-nav-header-container .nav-bar-brand > .headerTitle {
+        @apply tw-shrink;
+    }
+
+    .tw-skip-to-content {
+        @apply tw-text-white tw-bg-transparent tw-relative tw-order-1 tw-ml-auto tw-opacity-0 tw-w-0 tw-h-0 tw-overflow-hidden focus:tw-opacity-100 focus:tw-py-[0ch] focus:tw-px-[1ch] focus:tw-w-[unset] focus:tw-h-[unset]  767px:tw-text-xs;
+    }
+
 }
 
 @layer components {
@@ -125,19 +153,11 @@
 
     /* TAILWIND Grid begins */
     .tw-row {
-        display: flex;
-        flex-wrap: wrap;
-        margin-left: -0.75rem;
-        margin-right: 0;
-        margin-top: 0;
+        @apply tw-flex tw-flex-wrap tw-mr-0 tw-mt-0;
     }
 
     .tw-row > * {
-        margin-top: 0;
-        max-width: 100%;
-        padding-left: 0.75rem;
-        padding-right: 0.75rem;
-        width: 100%;
+        @apply tw-mt-0 tw-max-w-full tw-pl-3 tw-pr-3 tw-w-full;
     }
 
     .tw-col {
@@ -276,6 +296,14 @@
 
     .tw-card-set > * {
         @apply 1300px:tw-basis-0 1300px:tw-grow tw-max-w-[700px];
+    }
+
+    .tw-header-icons-container { 
+        @apply tw-flex tw-flex-row tw-justify-between tw-items-center tw-order-2;
+    }
+
+    .tw-header-icons-container .paddingAround {
+        @apply tw-pr-2;
     }
 
     .tw-footer-link {
