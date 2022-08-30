@@ -193,11 +193,19 @@ const SubmissionForm = () => {
 
         const cloudinary_id = getCloudinaryPublicID(news.image_url);
 
-        setValues({
+        const newValues = {
           ...values,
           ...news,
           cloudinary_id,
-        });
+        };
+
+        for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
+          if (newValues[key] && !Array.isArray(newValues[key])) {
+            newValues[key] = [newValues[key]];
+          }
+        }
+
+        setValues(newValues);
       } catch (e) {
         const message =
           e.message == 'Parser error'
@@ -207,6 +215,7 @@ const SubmissionForm = () => {
               )
             : t(`Error reaching news info endpoint, please try again in a few seconds.`);
 
+        console.error(e);
         addToast({
           message: <>{message}</>,
           severity: SEVERITY.danger,

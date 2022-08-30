@@ -30,7 +30,7 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="extra-fields"]').click();
 
-    cy.get('[class*="Typeahead"]').type('New Tag{enter}');
+    cy.get('[name="tags"]').type('New Tag{enter}');
 
     cy.get('[name="editor_notes"').type('Here are some notes');
 
@@ -167,7 +167,7 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="extra-fields"]').click();
 
-    cy.get('[class*="Typeahead"]').type('New Tag{enter}');
+    cy.get('[name="tags"]').type('New Tag{enter}');
 
     cy.get('[name="editor_notes"').type('Here are some notes');
 

@@ -17,7 +17,7 @@ function TagsControl({ name, placeholder }) {
       name={name}
       inputId={name}
       placeHolder={placeholder || t('Type and press Enter to add an item')}
-      value={value}
+      value={value || []}
       onChange={(value) => {
         setTouched(true);
         setValue(value);

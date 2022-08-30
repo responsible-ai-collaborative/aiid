@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import Typeahead from './Typeahead';
 
-export default function Tags({ id, inputId, placeHolder, value, onChange }) {
+export default function Tags({ id, inputId, placeHolder, value, onChange, name }) {
   const ref = useRef(null);
 
   const commitTag = (tag) => {
@@ -9,11 +9,13 @@ export default function Tags({ id, inputId, placeHolder, value, onChange }) {
     ref.current.clear();
   };
 
+  console.log(`value`, value);
+
   return (
     <Typeahead
       ref={ref}
       id={id}
-      inputProps={{ id: inputId }}
+      inputProps={{ id: inputId, name }}
       onKeyDown={(e) => {
         if (e.key === 'Enter' && e.target.value) {
           commitTag(e.target.value);
@@ -28,8 +30,8 @@ export default function Tags({ id, inputId, placeHolder, value, onChange }) {
       multiple
       renderMenu={() => null}
       onChange={(value) => onChange(value)}
-      selected={value}
       options={[]}
+      selected={value}
       placeholder={placeHolder}
     />
   );
