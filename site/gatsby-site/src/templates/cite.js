@@ -151,18 +151,20 @@ function CitePage(props) {
   const subscribeToNewReports = async () => {
     if (isRole('subscriber')) {
       try {
+        const incidentId = incident.incident_id;
+
         await subscribeToNewReportsMutation({
           variables: {
             query: {
               userId: { userId: user.id },
-              incident_id: { incident_id: incident.incident_id },
+              incident_id: { incident_id: incidentId },
             },
             subscription: {
               userId: {
                 link: user.id,
               },
               incident_id: {
-                link: incident.incident_id,
+                link: incidentId,
               },
             },
           },
@@ -171,7 +173,9 @@ function CitePage(props) {
         addToast({
           message: (
             <>
-              {t(`You have successfully subscribed to updates on incident ${incident.incident_id}`)}
+              {t(`You have successfully subscribed to updates on incident {{incidentId}}`, {
+                incidentId,
+              })}
             </>
           ),
           severity: SEVERITY.success,
