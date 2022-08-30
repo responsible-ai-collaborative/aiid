@@ -156,10 +156,12 @@ function CitePage(props) {
         await subscribeToNewReportsMutation({
           variables: {
             query: {
+              type: 'incident',
               userId: { userId: user.id },
               incident_id: { incident_id: incidentId },
             },
             subscription: {
+              type: 'incident',
               userId: {
                 link: user.id,
               },
