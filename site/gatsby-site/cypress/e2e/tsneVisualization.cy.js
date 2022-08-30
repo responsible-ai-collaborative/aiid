@@ -14,19 +14,19 @@ const styleObject = (styleString) => {
 describe('TSNE Visualization', () => {
   const url = '/summaries/spatial';
 
-  it('Should render the TSNE visualization', () => {
+  it.skip('Should render the TSNE visualization', () => {
     cy.visit(url);
     cy.get('[data-cy="tsne-visualization"] [data-cy="tsne-plotpoint"]').should('exist');
   });
 
-  it('Should highlight source incident when one exists', () => {
+  it.skip('Should highlight source incident when one exists', () => {
     cy.visit(url + '?incident=1');
     cy.get('[data-cy="tsne-visualization"] [data-cy="tsne-plotpoint"].current')
       .should('exist')
       .should('be.visible');
   });
 
-  it('Should show an incident card on hover', () => {
+  it.skip('Should show an incident card on hover', () => {
     cy.visit(url);
     cy.get('[data-cy="tsne-visualization"] #spatial-incident-1').trigger('mouseover');
     cy.get('[data-cy="tsne-visualization"] #spatial-incident-1 + [data-cy="incident-card"]').should(
@@ -34,7 +34,7 @@ describe('TSNE Visualization', () => {
     );
   });
 
-  it('Incident card should show title', () => {
+  it.skip('Incident card should show title', () => {
     cy.visit(url);
     cy.get('[data-cy="tsne-visualization"] #spatial-incident-1').trigger('mouseover');
     cy.get(
@@ -42,7 +42,7 @@ describe('TSNE Visualization', () => {
     ).should('be.visible');
   });
 
-  it('Should change the plotpoint color when the axis selection changes', () => {
+  it.skip('Should change the plotpoint color when the axis selection changes', () => {
     cy.visit(url);
 
     let initialBackground;
