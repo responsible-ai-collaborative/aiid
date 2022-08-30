@@ -64,8 +64,6 @@ function CitePage(props) {
       allMongodbTranslationsReportsEn,
       incident,
     },
-
-    data: { incident: incidentData },
   } = props;
 
   const { isRole, user } = useUserContext();
@@ -145,7 +143,7 @@ function CitePage(props) {
   const entities = [];
 
   for (const field of ['Alleged_deployer_of_AI_system', 'Alleged_developer_of_AI_system']) {
-    for (const name of incidentData[field]) {
+    for (const name of incident[field]) {
       entities.push({ name, id: slugify(name, { lower: true }) });
     }
   }
@@ -502,6 +500,8 @@ export const query = graphql`
       date
       editors
       flagged_dissimilar_incidents
+      Alleged_deployer_of_AI_system
+      Alleged_developer_of_AI_system
     }
   }
 `;
