@@ -45,11 +45,22 @@ describe('createEntitiesPages', () => {
         expect(page.context.incidentsAsDeployer).to.deep.eq([1]);
         expect(page.context.incidentsAsDeveloper).to.deep.eq([1, 2, 4]);
         expect(page.context.incidentsAsBoth).to.deep.eq([1]);
-        expect(page.context.relatedEntities).to.deep.eq([
-          'ai-deployer-1',
-          'ai-deployer-3',
-          'ai-developer-2',
-        ]);
+        expect(page.context.relatedEntities[0]).to.deep.eq({
+          id: 'ai-deployer-1',
+          name: 'AI Deployer 1',
+          incidents: 1,
+        });
+
+        expect(page.context.relatedEntities[1]).to.deep.eq({
+          id: 'ai-deployer-3',
+          name: 'AI Deployer 3',
+          incidents: 1,
+        });
+        expect(page.context.relatedEntities[2]).to.deep.eq({
+          id: 'ai-developer-2',
+          name: 'AI Developer 2',
+          incidents: 2,
+        });
       });
 
       cy.wrap(createPage.getCall(1).args[0]).then((page) => {
@@ -59,7 +70,14 @@ describe('createEntitiesPages', () => {
         expect(page.context.incidentsAsDeployer).to.deep.eq([2]);
         expect(page.context.incidentsAsDeveloper).to.deep.eq([]);
         expect(page.context.incidentsAsBoth).to.deep.eq([]);
-        expect(page.context.relatedEntities).to.deep.eq(['ai-developer-1']);
+        expect(page.context.relatedEntities).to.deep.eq([
+          {
+            id: 'ai-developer-1',
+            name: 'AI Developer 1',
+            incidents: 3,
+          },
+        ]);
+        expect(page.context.relatedEntities).to.have.lengthOf(1);
       });
 
       cy.wrap(createPage.getCall(2).args[0]).then((page) => {
@@ -70,10 +88,24 @@ describe('createEntitiesPages', () => {
         expect(page.context.incidentsAsDeveloper).to.deep.eq([3, 4]);
         expect(page.context.incidentsAsBoth).to.deep.eq([3]);
         expect(page.context.relatedEntities).to.deep.eq([
-          'ai-deployer-2',
-          'ai-deployer-3',
-          'ai-developer-1',
+          {
+            id: 'ai-deployer-2',
+            name: 'AI Deployer 2',
+            incidents: 1,
+          },
+          {
+            id: 'ai-deployer-3',
+            name: 'AI Deployer 3',
+            incidents: 1,
+          },
+          {
+            id: 'ai-developer-1',
+            name: 'AI Developer 1',
+            incidents: 3,
+          },
         ]);
+
+        expect(page.context.relatedEntities).to.have.lengthOf(3);
       });
 
       cy.wrap(createPage.getCall(3).args[0]).then((page) => {
@@ -83,7 +115,12 @@ describe('createEntitiesPages', () => {
         expect(page.context.incidentsAsDeployer).to.deep.eq([3]);
         expect(page.context.incidentsAsDeveloper).to.deep.eq([]);
         expect(page.context.incidentsAsBoth).to.deep.eq([]);
-        expect(page.context.relatedEntities).to.deep.eq(['ai-developer-2']);
+        expect(page.context.relatedEntities[0]).to.deep.eq({
+          id: 'ai-developer-2',
+          name: 'AI Developer 2',
+          incidents: 2,
+        });
+        expect(page.context.relatedEntities).to.have.lengthOf(1);
       });
 
       cy.wrap(createPage.getCall(4).args[0]).then((page) => {
@@ -93,7 +130,17 @@ describe('createEntitiesPages', () => {
         expect(page.context.incidentsAsDeployer).to.deep.eq([4]);
         expect(page.context.incidentsAsDeveloper).to.deep.eq([]);
         expect(page.context.incidentsAsBoth).to.deep.eq([]);
-        expect(page.context.relatedEntities).to.deep.eq(['ai-developer-1', 'ai-developer-2']);
+        expect(page.context.relatedEntities[0]).to.deep.eq({
+          id: 'ai-developer-1',
+          name: 'AI Developer 1',
+          incidents: 3,
+        });
+        expect(page.context.relatedEntities[1]).to.deep.eq({
+          id: 'ai-developer-2',
+          name: 'AI Developer 2',
+          incidents: 2,
+        });
+        expect(page.context.relatedEntities).to.have.lengthOf(2);
       });
 
       cy.wrap(createPage.getCall(5).args[0]).then((page) => {

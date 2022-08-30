@@ -10,6 +10,9 @@ export default function IncidentCard({ incident, className = '', ...props }) {
       <Link to={`/cite/${incident.incident_id}`}>
         <h4 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 tw-dark:text-white">
           <span className="tw-text-sm">Incident {incident.incident_id}</span>
+          <span className="tw-ml-2 tw-bg-red-100 tw-text-red-800 tw-text-xs tw-font-semibold tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-green-200 tw-dark:text-green-900">
+            {incident.reports.length} Report(s)
+          </span>
           <br />
           {incident.title}
         </h4>

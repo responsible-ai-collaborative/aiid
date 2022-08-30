@@ -1,6 +1,6 @@
+import EntitiesCard from 'components/entities/EntitiesCard';
 import IncidentCard from 'components/incidents/IncidentCard';
 import Layout from 'components/Layout';
-import Link from 'components/ui/Link';
 import { graphql } from 'gatsby';
 import React from 'react';
 
@@ -41,17 +41,8 @@ const EntityPage = ({ pageContext, data, ...props }) => {
         </>
       ))}
 
-      {relatedEntities.length > 0 && (
-        <>
-          <h4 className="tw-mt-6">Related Entities</h4>
-          {relatedEntities.map((entity) => (
-            <div key={entity.id}>
-              <h3 className="tw-pt-6">{entity}</h3>
-              <Link to={`/entities/${entity}`}>{entity}</Link>
-            </div>
-          ))}
-        </>
-      )}
+      <h4 className="tw-mt-6">Related Entities</h4>
+      <EntitiesCard entities={relatedEntities} />
     </Layout>
   );
 };
@@ -69,6 +60,7 @@ export const query = graphql`
         title
         description
         incident_id
+        reports
       }
     }
 
@@ -79,6 +71,7 @@ export const query = graphql`
         title
         description
         incident_id
+        reports
       }
     }
 
@@ -89,6 +82,7 @@ export const query = graphql`
         title
         description
         incident_id
+        reports
       }
     }
   }

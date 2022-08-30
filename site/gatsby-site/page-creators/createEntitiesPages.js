@@ -37,6 +37,7 @@ const createEntitiesPages = async (graphql, createPage) => {
 
         if (!entititiesHash[id]) {
           entititiesHash[id] = {
+            id,
             name,
             incidentsAsDeveloper: [],
             incidentsAsDeployer: [],
@@ -68,8 +69,16 @@ const createEntitiesPages = async (graphql, createPage) => {
           for (const name of incident[field.property]) {
             const relatedId = slugify(name, { lower: true });
 
-            if (relatedId !== id && !related.includes(relatedId)) {
-              related.push(relatedId);
+            if (relatedId !== id && !related.some((r) => r.id == relatedId)) {
+              const { id, name, incidentsAsDeveloper, incidentsAsDeployer, incidentsAsBoth } =
+                entititiesHash[relatedId];
+
+              related.push({
+                id,
+                name,
+                incidents:
+                  incidentsAsDeveloper.length + incidentsAsDeployer.length - incidentsAsBoth.length,
+              });
             }
           }
         }
