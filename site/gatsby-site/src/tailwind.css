@@ -153,7 +153,7 @@
 
     /* TAILWIND Grid begins */
     .tw-row {
-        @apply tw-flex tw-flex-wrap tw--ml-3 tw-mr-0 tw-mt-0;
+        @apply tw-flex tw-flex-wrap tw-mr-0 tw-mt-0;
     }
 
     .tw-row > * {
