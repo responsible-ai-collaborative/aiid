@@ -32,17 +32,19 @@ const EntityPage = ({ pageContext, data, ...props }) => {
         <>
           {section.incidents.length > 0 && (
             <>
-              <h4 className="tw-mt-6">{section.header}</h4>
-              {section.incidents.map((incident) => (
-                <IncidentCard key={incident.incident_id} incident={incident} className="tw-mt-4" />
-              ))}
+              <h4 className="tw-mt-24">{section.header}</h4>
+              <div className="tw-grid tw-gap-4 tw-grid-flow-row-dense md:tw-grid-cols-2 tw-mt-6">
+                {section.incidents.map((incident) => (
+                  <IncidentCard key={incident.incident_id} incident={incident} />
+                ))}
+              </div>
             </>
           )}
         </>
       ))}
 
-      <h4 className="tw-mt-6">Related Entities</h4>
-      <EntitiesCard entities={relatedEntities} />
+      <h4 className="tw-mt-24">Related Entities</h4>
+      <EntitiesCard entities={relatedEntities} className="tw-mt-6" />
     </Layout>
   );
 };
@@ -61,6 +63,7 @@ export const query = graphql`
         description
         incident_id
         reports
+        date
       }
     }
 
@@ -72,6 +75,7 @@ export const query = graphql`
         description
         incident_id
         reports
+        date
       }
     }
 
@@ -83,6 +87,7 @@ export const query = graphql`
         description
         incident_id
         reports
+        date
       }
     }
   }

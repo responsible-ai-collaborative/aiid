@@ -13,10 +13,13 @@ export default function IncidentCard({ incident, className = '', ...props }) {
           <span className="tw-ml-2 tw-bg-red-100 tw-text-red-800 tw-text-xs tw-font-semibold tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-green-200 tw-dark:text-green-900">
             {incident.reports.length} Report(s)
           </span>
+          <span></span>
           <br />
           {incident.title}
         </h4>
       </Link>
+
+      <p>{incident.date}</p>
       <p className="tw-font-normal tw-text-gray-700 tw-dark:text-gray-400">
         {incident.description}
       </p>
