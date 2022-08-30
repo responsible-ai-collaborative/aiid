@@ -3,7 +3,7 @@ import { Badge, ListGroup } from 'react-bootstrap';
 
 const Wordlist = ({ content }) => {
   return (
-    <>
+    <div className="bootstrap">
       <ListGroup>
         {content.map((value) => (
           <ListGroup.Item key={`word-${value[0]}`} className="flex justify-between items-center">
@@ -11,7 +11,7 @@ const Wordlist = ({ content }) => {
           </ListGroup.Item>
         ))}
       </ListGroup>
-    </>
+    </div>
   );
 };
 

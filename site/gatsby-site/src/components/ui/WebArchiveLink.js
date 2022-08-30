@@ -47,33 +47,35 @@ export default function WebArchiveLink({ url, date, children, className }) {
   };
 
   return (
-    <ArchiveOriginalSplit
-      variant="link"
-      title={children}
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={className}
-      data-cy="web-archive-link"
-    >
-      <Dropdown.Item
-        eventKey="1"
+    <div className="bootstrap">
+      <ArchiveOriginalSplit
+        variant="link"
+        title={children}
         href={url}
         target="_blank"
         rel="noopener noreferrer"
-        data-cy="original"
+        className={className}
+        data-cy="web-archive-link"
       >
-        <Trans>View the original report at its source</Trans>
-      </Dropdown.Item>
-      <Dropdown.Item
-        eventKey="2"
-        onClick={onClick}
-        target="_blank"
-        rel="noopener noreferrer"
-        data-cy="wayback-machine"
-      >
-        <Trans>View the report at the Internet Archive</Trans>
-      </Dropdown.Item>
-    </ArchiveOriginalSplit>
+        <Dropdown.Item
+          eventKey="1"
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-cy="original"
+        >
+          <Trans>View the original report at its source</Trans>
+        </Dropdown.Item>
+        <Dropdown.Item
+          eventKey="2"
+          onClick={onClick}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-cy="wayback-machine"
+        >
+          <Trans>View the report at the Internet Archive</Trans>
+        </Dropdown.Item>
+      </ArchiveOriginalSplit>
+    </div>
   );
 }

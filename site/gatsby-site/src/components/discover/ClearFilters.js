@@ -4,16 +4,18 @@ import { Button } from 'react-bootstrap';
 
 const ClearButton = connectCurrentRefinements(({ items, refine, children }) => {
   return (
-    <Button
-      className="no-underline"
-      variant="link secondary"
-      onClick={() => {
-        refine(items);
-      }}
-      disabled={items.length == 0}
-    >
-      {children}
-    </Button>
+    <div className="bootstrap">
+      <Button
+        className="no-underline"
+        variant="link secondary"
+        onClick={() => {
+          refine(items);
+        }}
+        disabled={items.length == 0}
+      >
+        {children}
+      </Button>
+    </div>
   );
 });
 

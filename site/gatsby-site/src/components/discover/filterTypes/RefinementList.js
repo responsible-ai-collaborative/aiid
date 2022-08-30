@@ -31,7 +31,7 @@ const RefinementList = ({
   const { t } = useTranslation();
 
   return (
-    <>
+    <div className="bootstrap">
       <Form onSubmit={(e) => e.preventDefault()}>
         <Form.Control
           type="search"
@@ -72,7 +72,7 @@ const RefinementList = ({
       >
         <Trans>Clear</Trans>
       </Button>
-    </>
+    </div>
   );
 };
 

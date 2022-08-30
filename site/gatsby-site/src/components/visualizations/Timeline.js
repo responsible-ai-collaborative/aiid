@@ -46,7 +46,11 @@ const AxisLeft = ({ yScale, margin, data }) => {
 
 const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
   return (
-    <g key={bucket.x0} transform={`translate(20,${(yScale(bucket.x0) + yScale(bucket.x1)) / 2})`}>
+    <g
+      key={bucket.x0}
+      transform={`translate(20,${(yScale(bucket.x0) + yScale(bucket.x1)) / 2})`}
+      className="bootstrap"
+    >
       {bucket.length > 1 ? (
         <>
           <circle className="fill-gray-900" cy={0} r={groupRadius} />

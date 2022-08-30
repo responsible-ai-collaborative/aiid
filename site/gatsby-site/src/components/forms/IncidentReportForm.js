@@ -173,175 +173,183 @@ const IncidentReportForm = () => {
   const { config } = useLocalization();
 
   return (
-    <Form
-      onSubmit={(event) => {
-        event.preventDefault();
-      }}
-      className="mx-auto"
-      data-cy="report"
-    >
-      <TextInputGroup
-        name="url"
-        label="Report Address"
-        placeholder="Report URL"
-        addOnComponent={
-          <Button
-            className="outline-secondary"
-            disabled={!!errors.url || !touched.url || parsingNews}
-            onClick={() => parseNewsUrl(values.url)}
-          >
-            {' '}
-            {!parsingNews ? (
-              <>Fetch info</>
-            ) : (
-              <>
-                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />{' '}
-                Fetching...
-              </>
-            )}
-          </Button>
-        }
-        {...TextInputGroupProps}
-        handleChange={(e) => {
-          setFieldTouched('url', true);
-          TextInputGroupProps.handleChange(e);
+    <div className="bootstrap">
+      <Form
+        onSubmit={(event) => {
+          event.preventDefault();
         }}
-      />
-
-      <TextInputGroup
-        name="title"
-        label="Title"
-        placeholder="Report title"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-      <TextInputGroup
-        name="authors"
-        label="Author CSV"
-        placeholder="Author CSV"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-      <TextInputGroup
-        name="submitters"
-        label="Submitter CSV"
-        placeholder="Submitter CSV"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-      <TextInputGroup
-        name="date_published"
-        label="Date Published"
-        type="date"
-        placeholder="YYYY-MM-DD"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-      <TextInputGroup
-        name="date_downloaded"
-        label="Date Downloaded"
-        type="date"
-        placeholder="YYYY-MM-DD"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-      <PreviewImageInputGroup
-        publicID={values.cloudinary_id}
-        name="image_url"
-        label="Image Address"
-        placeholder="Image URL"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-
-      <Form.Group className="mt-3" data-color-mode="light" data-cy="text">
-        <Label popover="text" label={'Text'} />
-        <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
-      </Form.Group>
-
-      <Form.Group className="mt-3">
-        <Label popover="language" label={'Language'} />
-        <Form.Select
-          name="language"
-          placeholder="Report Language"
-          className="mt-3"
-          value={values.language}
-          onChange={handleChange}
-        >
-          {supportedLanguages.map((l) => (
-            <option key={l.code} value={l.code}>
-              {l.name}
-            </option>
-          ))}
-        </Form.Select>
-      </Form.Group>
-
-      <Form.Group className="mt-3">
-        <Label popover="tags" label={'Tags'} />
-        <Typeahead
-          id="submit-report-tags"
-          inputProps={{ id: 'submit-report-tags-input' }}
-          allowNew
-          multiple
-          onBlur={handleBlur}
-          onChange={(value) => {
-            setFieldTouched('tags', true);
-            setFieldValue(
-              'tags',
-              value.map((v) => (v.label ? v.label : v))
-            );
+        className="mx-auto"
+        data-cy="report"
+      >
+        <TextInputGroup
+          name="url"
+          label="Report Address"
+          placeholder="Report URL"
+          addOnComponent={
+            <Button
+              className="outline-secondary"
+              disabled={!!errors.url || !touched.url || parsingNews}
+              onClick={() => parseNewsUrl(values.url)}
+            >
+              {' '}
+              {!parsingNews ? (
+                <>Fetch info</>
+              ) : (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />{' '}
+                  Fetching...
+                </>
+              )}
+            </Button>
+          }
+          {...TextInputGroupProps}
+          handleChange={(e) => {
+            setFieldTouched('url', true);
+            TextInputGroupProps.handleChange(e);
           }}
-          selected={values.tags}
-          options={tags}
-          placeholder="Choose several tags..."
         />
-      </Form.Group>
 
-      <IncidentIdField
-        name="incident_id"
-        className="mt-3"
-        placeHolder="Leave empty to report a new incident"
-      />
-      <TextInputGroup
-        name="editor_notes"
-        label="Editor Notes"
-        as="textarea"
-        rows={8}
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
+        <TextInputGroup
+          name="title"
+          label="Title"
+          placeholder="Report title"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+        <TextInputGroup
+          name="authors"
+          label="Author CSV"
+          placeholder="Author CSV"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+        <TextInputGroup
+          name="submitters"
+          label="Submitter CSV"
+          placeholder="Submitter CSV"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+        <TextInputGroup
+          name="date_published"
+          label="Date Published"
+          type="date"
+          placeholder="YYYY-MM-DD"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+        <TextInputGroup
+          name="date_downloaded"
+          label="Date Downloaded"
+          type="date"
+          placeholder="YYYY-MM-DD"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+        <PreviewImageInputGroup
+          publicID={values.cloudinary_id}
+          name="image_url"
+          label="Image Address"
+          placeholder="Image URL"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
 
-      <h4 className="mt-3">Translations</h4>
+        <Form.Group className="mt-3" data-color-mode="light" data-cy="text">
+          <Label popover="text" label={'Text'} />
+          <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
+        </Form.Group>
 
-      {config
-        .filter((c) => c.code !== values.language)
-        .map((c) => {
-          const name = `translations_${c.code}`;
+        <Form.Group className="mt-3">
+          <Label popover="language" label={'Language'} />
+          <Form.Select
+            name="language"
+            placeholder="Report Language"
+            className="mt-3"
+            value={values.language}
+            onChange={handleChange}
+          >
+            {supportedLanguages.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.name}
+              </option>
+            ))}
+          </Form.Select>
+        </Form.Group>
 
-          return (
-            <div className="mt-5" key={name} data-cy={`translation-${c.code}`}>
-              <h5>{c.name}</h5>
+        <Form.Group className="mt-3">
+          <Label popover="tags" label={'Tags'} />
+          <Typeahead
+            id="submit-report-tags"
+            inputProps={{ id: 'submit-report-tags-input' }}
+            allowNew
+            multiple
+            onBlur={handleBlur}
+            onChange={(value) => {
+              setFieldTouched('tags', true);
+              setFieldValue(
+                'tags',
+                value.map((v) => (v.label ? v.label : v))
+              );
+            }}
+            selected={values.tags}
+            options={tags}
+            placeholder="Choose several tags..."
+          />
+        </Form.Group>
 
-              <Form.Group className="mt-3">
-                <Label label="Title" />
-                <Form.Control
-                  type="text"
-                  value={values[name].title}
-                  onChange={(e) => setFieldValue(`${name}.title`, e.target.value)}
-                />
-              </Form.Group>
+        <IncidentIdField
+          name="incident_id"
+          className="mt-3"
+          placeHolder="Leave empty to report a new incident"
+        />
+        <TextInputGroup
+          name="editor_notes"
+          label="Editor Notes"
+          as="textarea"
+          rows={8}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
 
-              <Form.Group className="mt-3">
-                <Label label="Text" />
-                <Editor
-                  value={values[name].text}
-                  onChange={(value) => setFieldValue(`${name}.text`, value)}
-                />
-              </Form.Group>
-            </div>
-          );
-        })}
-    </Form>
+        <h4 className="mt-3">Translations</h4>
+
+        {config
+          .filter((c) => c.code !== values.language)
+          .map((c) => {
+            const name = `translations_${c.code}`;
+
+            return (
+              <div className="mt-5" key={name} data-cy={`translation-${c.code}`}>
+                <h5>{c.name}</h5>
+
+                <Form.Group className="mt-3">
+                  <Label label="Title" />
+                  <Form.Control
+                    type="text"
+                    value={values[name].title}
+                    onChange={(e) => setFieldValue(`${name}.title`, e.target.value)}
+                  />
+                </Form.Group>
+
+                <Form.Group className="mt-3">
+                  <Label label="Text" />
+                  <Editor
+                    value={values[name].text}
+                    onChange={(value) => setFieldValue(`${name}.text`, value)}
+                  />
+                </Form.Group>
+              </div>
+            );
+          })}
+      </Form>
+    </div>
   );
 };
 

@@ -49,7 +49,7 @@ export default function Sponsors({ className }) {
   const [modalState, setModalState] = useState('close');
 
   return (
-    <Card className={className}>
+    <Card className={className + ' bootstrap'}>
       <Card.Body>
         <Card.Title as="h2">
           <Trans ns="landing">The Responsible AI Collaborative</Trans>

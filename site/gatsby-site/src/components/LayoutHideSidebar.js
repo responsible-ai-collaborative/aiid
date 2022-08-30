@@ -66,7 +66,7 @@ const LeftSideBarWidth = styled.div`
   ${({ collapse }) => collapse && `width: 0;`}
 `;
 
-const LayoutHideSidebar = ({ children, location, menuCollapseCallback }) => {
+const LayoutHideSidebar = ({ children, location, menuCollapseCallback, className = '' }) => {
   const [collapse, setCollapse] = useState(true);
 
   const toggleMenu = () => {
@@ -79,7 +79,7 @@ const LayoutHideSidebar = ({ children, location, menuCollapseCallback }) => {
   return (
     <>
       <Header />
-      <Wrapper>
+      <Wrapper className={className}>
         <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
           <Sidebar location={location} collapse={collapse} />
         </LeftSideBarWidth>

@@ -3,11 +3,11 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Markdown from 'react-markdown';
 import TaxonomyForm from './TaxonomyForm';
 import { Trans } from 'react-i18next';
-import Card from '../../elements/Card';
-import Button from '../../elements/Button';
+import Card from 'elements/Card';
+import Button from 'elements/Button';
 
 const renderTooltip = (props, displayText) => (
-  <Tooltip id="button-tooltip" {...props}>
+  <Tooltip id="button-tooltip" {...props} className={`${props.className || ''}`}>
     {displayText}
   </Tooltip>
 );
@@ -64,7 +64,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
               <>
                 {canEdit && (
                   <div key={'NOTES'} className="tw-classification-container tw-card-body">
-                    <div className="tw-field">
+                    <div className="tw-field bootstrap">
                       <OverlayTrigger
                         placement="left"
                         delay={{ show: 100, hide: 400 }}
@@ -96,7 +96,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
                   })
                   .map((field) => (
                     <div key={field.name} className="tw-classification-container tw-card-body">
-                      <div className="tw-field">
+                      <div className="tw-field bootstrap">
                         <OverlayTrigger
                           placement="left"
                           delay={{ show: 100, hide: 400 }}

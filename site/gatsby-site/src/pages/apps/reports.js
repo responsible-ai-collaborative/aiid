@@ -444,6 +444,7 @@ export default function Incidents(props) {
     <LayoutHideSidebar
       {...props}
       menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
+      className="bootstrap"
     >
       <AiidHelmet>
         <title>Incident List</title>

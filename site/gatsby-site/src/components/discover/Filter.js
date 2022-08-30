@@ -10,7 +10,7 @@ import { Trans } from 'react-i18next';
 
 function ToggleContent({ label, touched, faIcon }) {
   return (
-    <>
+    <div className="bootstrap">
       <FontAwesomeIcon icon={faIcon} />
       &nbsp; <Trans>{label}</Trans> &nbsp;{' '}
       {touched > 0 && (
@@ -18,20 +18,22 @@ function ToggleContent({ label, touched, faIcon }) {
           {touched}
         </Badge>
       )}
-    </>
+    </div>
   );
 }
 
 function ButtonToggle({ trigger: { ref, ...triggerHandler }, label, faIcon, touched }) {
   return (
-    <Dropdown.Toggle
-      ref={ref}
-      variant={touched ? 'success' : 'primary'}
-      className="w-full"
-      {...triggerHandler}
-    >
-      <ToggleContent faIcon={faIcon} label={label} touched={touched} />
-    </Dropdown.Toggle>
+    <div className="bootstrap">
+      <Dropdown.Toggle
+        ref={ref}
+        variant={touched ? 'success' : 'primary'}
+        className="w-full"
+        {...triggerHandler}
+      >
+        <ToggleContent faIcon={faIcon} label={label} touched={touched} />
+      </Dropdown.Toggle>
+    </div>
   );
 }
 
@@ -53,7 +55,12 @@ const FilterOverlay = React.forwardRef(function Container(
   ref
 ) {
   return (
-    <div ref={ref} {...overlayProps} style={{ ...overlayProps.style, width: 320, zIndex: 1055 }}>
+    <div
+      ref={ref}
+      {...overlayProps}
+      style={{ ...overlayProps.style, width: 320, zIndex: 1055 }}
+      className="bootstrap"
+    >
       <Card className="shadow-lg">
         <Card.Body>
           <FilterContent type={type} filterProps={filterProps} />
@@ -75,7 +82,7 @@ export default function Filter({ type, ...filterProps }) {
   const touched = touchedCount({ searchState, attribute });
 
   return (
-    <>
+    <div className="bootstrap">
       <OverlayTrigger
         trigger="click"
         rootClose={true}
@@ -92,7 +99,7 @@ export default function Filter({ type, ...filterProps }) {
           />
         )}
       </OverlayTrigger>
-    </>
+    </div>
   );
 }
 

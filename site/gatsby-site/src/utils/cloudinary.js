@@ -154,7 +154,7 @@ const PreviewImageInputGroup = ({
         handleBlur={handleBlur}
       />
       <figure data-cy="image-preview-figure" id="image-preview-figure" className="text-center">
-        <div className="h-[50vh] flex items-center justify-center">
+        <div className="h-[50vh] flex items-center justify-center bootstrap">
           {updatingImage ? (
             <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" />
           ) : (

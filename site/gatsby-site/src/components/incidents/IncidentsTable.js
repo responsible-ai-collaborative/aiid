@@ -70,7 +70,7 @@ function DefaultColumnFilter({
   }
 
   return (
-    <>
+    <div className="bootstrap">
       <HeaderText>{Header}</HeaderText>
       <Form.Control
         data-cy={`input-filter-${Header}`}
@@ -82,7 +82,7 @@ function DefaultColumnFilter({
         }}
         placeholder={`Search ${count} records...`}
       />
-    </>
+    </div>
   );
 }
 
@@ -149,13 +149,15 @@ export default function IncidentsTable({ data }) {
       columns.push({
         Header: 'Actions',
         Cell: ({ row: { values } }) => (
-          <Button
-            data-cy="edit-incident"
-            variant="link"
-            onClick={() => setIncindentIdToEdit(values.incident_id)}
-          >
-            Edit
-          </Button>
+          <div className="bootstrap">
+            <Button
+              data-cy="edit-incident"
+              variant="link"
+              onClick={() => setIncindentIdToEdit(values.incident_id)}
+            >
+              Edit
+            </Button>
+          </div>
         ),
       });
     }
@@ -233,7 +235,7 @@ export default function IncidentsTable({ data }) {
         </div>
       </Table>
 
-      <div className="flex gap-2 justify-start items-center mt-3">
+      <div className="flex gap-2 justify-start items-center mt-3 bootstrap">
         <Pagination className="mb-0">
           <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage} />
           <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage} />

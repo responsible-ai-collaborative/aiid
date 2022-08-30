@@ -37,7 +37,7 @@ const ResetPassword = (props) => {
   });
 
   return (
-    <Layout {...props}>
+    <Layout {...props} className="bootstrap">
       <Formik
         initialValues={{ password: '', passwordConfirm: '' }}
         validationSchema={ResetPasswordSchema}

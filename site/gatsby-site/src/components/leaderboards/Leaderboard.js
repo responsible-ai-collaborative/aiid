@@ -68,20 +68,22 @@ export const Leaderboard = ({
       <Card.Header>
         <Trans ns="landing">{title}</Trans>
       </Card.Header>
-      <ListGroup variant="flush">
-        {sortedArray.map((item, index) => (
-          <StyledItem
-            key={`${item.label}-${item.value}`}
-            className="flex justify-between items-center"
-          >
-            <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
-              <Medal className="pe-2">{medalMap(index + 1)}</Medal>
-              {item.label}
-            </Link>
-            <Badge bg="secondary">{item.value}</Badge>
-          </StyledItem>
-        ))}
-      </ListGroup>
+      <div className="bootstrap">
+        <ListGroup variant="flush">
+          {sortedArray.map((item, index) => (
+            <StyledItem
+              key={`${item.label}-${item.value}`}
+              className="flex justify-between items-center"
+            >
+              <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
+                <Medal className="pe-2">{medalMap(index + 1)}</Medal>
+                {item.label}
+              </Link>
+              <Badge bg="secondary">{item.value}</Badge>
+            </StyledItem>
+          ))}
+        </ListGroup>
+      </div>
     </Card>
   );
 };

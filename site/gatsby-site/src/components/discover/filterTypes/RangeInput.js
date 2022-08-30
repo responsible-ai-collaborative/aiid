@@ -33,7 +33,7 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
   const clearEnabled = touchedMin || touchedMax;
 
   return (
-    <>
+    <div className="bootstrap">
       <Form className="px-3">
         <Form.Label>
           <Trans>From Date</Trans>:
@@ -77,14 +77,14 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
 
         <Button
           variant="link secondary"
-          className="mt-4 no-underline"
+          className="mt-4 no-underline bootstrap"
           onClick={clear}
           disabled={!clearEnabled}
         >
           <Trans>Clear</Trans>
         </Button>
       </Form>
-    </>
+    </div>
   );
 };
 

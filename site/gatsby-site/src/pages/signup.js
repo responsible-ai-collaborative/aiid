@@ -53,7 +53,7 @@ const SignUp = (props) => {
   };
 
   return (
-    <Layout {...props}>
+    <Layout {...props} className="bootstrap">
       {loading ? (
         <>
           <Spinner animation="border" size="sm" role="status" className="mr-2" />

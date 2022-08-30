@@ -286,7 +286,7 @@ const Taxonomy = (props) => {
   const geocodes = getGeocodes(allMongodbAiidprodClassifications.nodes);
 
   return (
-    <Layout {...props}>
+    <Layout {...props} className="bootstrap">
       <div className={'titleWrapper'}>
         <StyledHeading>{namespace}</StyledHeading>
       </div>
