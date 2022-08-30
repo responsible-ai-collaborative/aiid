@@ -24,5 +24,11 @@
   "CSVDescription": "Se supone que la fila de encabezado del archivo coincide con los nombres de las entradas en el formulario. Cada fila se procesará, una a la vez, para que fluya a través de las validaciones del formulario antes de enviarlo.",
   "Advanced: Add by CSV": "Avanzado: Agregar por CSV",
   "Was not able to create the report, please review the form and try again.": "No se pudo crear el informe, por favor revisa el formulario e intenta de nuevo.",
-  "Report successfully added to review queue. It will appear on the <2>review queue page</2> within an hour.": "Informe agregado a la cola de revisión. Aparecerá en la <2>página de la cola de revisión</2> dentro de una hora."
+  "Report successfully added to review queue. It will appear on the <2>review queue page</2> within an hour.": "Informe agregado a la cola de revisión. Aparecerá en la <2>página de la cola de revisión</2> dentro de una hora.",
+  "Alleged developer of AI system": "Alleged developer of AI system",
+  "Who created or built the technology involved in the incident?": "Who created or built the technology involved in the incident?",
+  "Alleged deployer of AI system": "Alleged deployer of AI system",
+  "Who employed or was responsible for the technology?": "Who employed or was responsible for the technology?",
+  "Alleged harmed or nearly harmed parties": "Alleged harmed or nearly harmed parties",
+  "Who experienced negative impacts?": "Who experienced negative impacts?"
 }

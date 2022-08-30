@@ -279,23 +279,26 @@ const SubmissionForm = () => {
           {...TextInputGroupProps}
         />
 
-        <TextInputGroup
-          name="authors"
-          label={t('Author(s)')}
-          placeholder={t('The author or authors of the report, separated by commas')}
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
+        <Form.Group className="mt-3">
+          <Label popover="authors" label={t('Author(s)')} />
+          <TagsControl
+            name="authors"
+            placeholder={t('The author or authors of the report')}
+            {...TextInputGroupProps}
+          />
+        </Form.Group>
 
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byAuthors']} />
 
-        <TextInputGroup
-          name="submitters"
-          label={t('Submitter(s)')}
-          placeholder={t('Your name as you would like it to appear in the leaderboard')}
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
+        <Form.Group className="mt-3">
+          <Label popover="submitters" label={t('Submitter(s)')} />
+          <TagsControl
+            name="submitters"
+            placeholder={t('Your name as you would like it to appear in the leaderboard')}
+            {...TextInputGroupProps}
+          />
+        </Form.Group>
+
         <TextInputGroup
           name="date_published"
           label={t('Date Published')}
@@ -393,29 +396,33 @@ const SubmissionForm = () => {
             <TagsControl name={'tags'} />
           </Form.Group>
 
-          <TextInputGroup
-            name="developers"
-            label="Alleged developer of AI system"
-            placeholder="Who created or built the technology involved in the incident"
-            className="mt-3"
-            {...TextInputGroupProps}
-          />
+          <Form.Group className="mt-3">
+            <Label popover="developers" label={t('Alleged developer of AI system')} />
+            <TagsControl
+              name="developers"
+              placeholder={t('Who created or built the technology involved in the incident?')}
+              {...TextInputGroupProps}
+            />
+          </Form.Group>
 
-          <TextInputGroup
-            name="deployers"
-            label="Alleged deployer of AI system"
-            placeholder="Who employed or was responsible for the technology?"
-            className="mt-3"
-            {...TextInputGroupProps}
-          />
+          <Form.Group className="mt-3">
+            <Label popover="deployers" label={t('Alleged deployer of AI system')} />
+            <TagsControl
+              name="deployers"
+              placeholder={t('Who employed or was responsible for the technology?')}
+              {...TextInputGroupProps}
+            />
+          </Form.Group>
 
-          <TextInputGroup
-            name="harmed_parties"
-            label="Alleged harmed or nearly harmed parties"
-            placeholder="Who experienced negative impacts"
-            className="mt-3"
-            {...TextInputGroupProps}
-          />
+          <Form.Group className="mt-3">
+            <Label popover="harmed_parties" label={t('Alleged harmed or nearly harmed parties')} />
+            <TagsControl
+              name="harmed_parties"
+              placeholder={t('Who experienced negative impacts?')}
+              {...TextInputGroupProps}
+            />
+          </Form.Group>
+
           <TextInputGroup
             name="editor_notes"
             label={t('Editor Notes')}
