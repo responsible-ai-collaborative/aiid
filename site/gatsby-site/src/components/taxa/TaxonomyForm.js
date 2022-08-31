@@ -272,7 +272,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
             ))}
           </>
         )}
-        <Form.Text className="text-muted mb-4 d-block">{rawField.short_description}</Form.Text>
+        <Form.Text className="text-muted-gray mb-4 d-block">{rawField.short_description}</Form.Text>
       </div>
     );
   };
@@ -346,7 +346,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
   };
 
   return (
-    <FormContainer data-cy="taxonomy-form bootstrap">
+    <FormContainer data-cy="taxonomy-form" className="bootstrap">
       <Formik initialValues={initialValues} onSubmit={submit} innerRef={formRef}>
         {({ values, handleChange, handleSubmit, setFieldTouched, setFieldValue, isSubmitting }) => (
           <Form onSubmit={handleSubmit}>

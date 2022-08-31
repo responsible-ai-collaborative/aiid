@@ -103,7 +103,7 @@ const QuickAddForm = ({ className = '' }) => {
         </Row>
         <Row className="mt-2">
           <Col>
-            <Form.Text className="text-muted">
+            <Form.Text className="text-muted-gray">
               <Trans i18nKey="quickaddDescription" ns="landing">
                 Submitted links are added to a{' '}
                 <LocalizedLink to="/apps/submitted">review queue </LocalizedLink>

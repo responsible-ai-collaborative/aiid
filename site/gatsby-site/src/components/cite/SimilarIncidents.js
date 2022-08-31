@@ -33,7 +33,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
   const addToast = useToastContext();
 
   return (
-    <Card data-cy="similar-incident-card" className="tw-relative tw-pb-8 tw-overflow-hidden">
+    <Card data-cy="similar-incident-card" className="relative pb-8 overflow-hidden">
       <a href={'/cite/' + incident.incident_id} data-cy="cite-link">
         {(incident.reports[0].cloudinary_id || incident.reports[0]?.image_url) && (
           <Image
@@ -51,7 +51,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
         </h3>
       </a>
       <div className="flex w-full flex-row items-center font-bold mt-0 absolute pr-4 bottom-4">
-        <div className="text-muted text-sm mx-4">
+        <div className="text-muted-gray text-sm mx-4">
           {parsedDate && (
             <>
               <time dateTime={formatISO(parsedDate)}>{format(parsedDate, 'MMM yyyy')}</time> ·{' '}
@@ -66,7 +66,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
         {flaggable && (
           <Button
             variant="link"
-            className={`tw-flag-button ${isFlagged ? ' flagged' : ''}`}
+            className={`tw-flag-button ${isFlagged ? ' flagged' : ''} z-3`}
             data-cy="flag-similar-incident"
             onClick={async () => {
               await updateIncident({

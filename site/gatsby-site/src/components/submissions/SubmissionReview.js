@@ -260,7 +260,7 @@ const SubmissionReview = ({ submission }) => {
               <RelatedIncidents incident={submission} />
             </div>
           )}
-          <Card.Footer className="flex text-muted">
+          <Card.Footer className="flex text-muted-gray">
             <Button
               className="me-auto"
               data-cy="edit-submission"

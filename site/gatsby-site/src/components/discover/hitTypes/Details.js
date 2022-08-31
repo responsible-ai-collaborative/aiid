@@ -46,7 +46,7 @@ export default function Details({
       </a>
       <Card.Body className="flex flex-col ">
         <HeaderTitle item={item} />
-        <SourceDomainSubtitle item={item} className="mb-2 text-muted" />
+        <SourceDomainSubtitle item={item} className="mb-2 text-muted-gray" />
 
         <Card.Text className="flex-1-1-auto mb-4">
           <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />

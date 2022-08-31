@@ -490,4 +490,10 @@
         @apply text-white bg-blue-600 border-blue-600 hover:text-white focus:text-white;
     }
     /* TAILWIND AIS PAGINATION END */
+
+    /* BOOTSTRAP missing styles */
+
+    .bootstrap .is-invalid~.invalid-feedback, .bootstrap .is-invalid~.invalid-tooltip, .bootstrap .was-validated :invalid~.invalid-feedback, .bootstrap .was-validated :invalid~.invalid-tooltip {
+        display: block;
+    }
 }

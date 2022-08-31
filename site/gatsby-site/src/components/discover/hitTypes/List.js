@@ -53,7 +53,7 @@ export default function Details({
             <HeaderTitle item={item} />
 
             <div>
-              <SourceDomainSubtitle item={item} className="mb-2 text-muted d-inline-block" />
+              <SourceDomainSubtitle item={item} className="mb-2 text-muted-gray d-inline-block" />
               <TranslationBadge originalLanguage={item.language} />
             </div>
 
