@@ -34,7 +34,7 @@ export function StyledImageCover(props) {
       <img
         {...props}
         alt={props.alt}
-        className={`tw-flex tw-ml-auto tw-mr-auto tw-mb-[30px] tw-justify-around tw-items-center tw-max-w-[220px] tw-rounded tw-border-black ${
+        className={`tw-flex tw-ml-auto tw-mr-auto tw-mb-[30px] tw-justify-around tw-items-center tw-max-w-[220px] tw-rounded tw-border-2 ${
           props.className || ''
         }`}
       />

@@ -264,11 +264,6 @@ function CitePage(props) {
                 <h1 className="tw-styled-heading">
                   <Trans>Incidents Reports</Trans>
                 </h1>
-                <SocialShareButtons
-                  metaTitle={metaTitle}
-                  canonicalUrl={canonicalUrl}
-                  page="cite"
-                ></SocialShareButtons>
               </div>
             </div>
           </Col>
