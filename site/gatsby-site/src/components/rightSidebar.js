@@ -68,7 +68,7 @@ const SidebarLayout = ({ location }) => {
         if (finalNavItems && finalNavItems.length) {
           return (
             <Sidebar>
-              <ul className={'rightSideBarUL'}>
+              <ul data-cy="outline" className={'rightSideBarUL'}>
                 <li className={'rightSideTitle'}>CONTENTS</li>
                 {finalNavItems}
               </ul>
