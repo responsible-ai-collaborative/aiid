@@ -38,7 +38,7 @@ export default function IncidentIdField({
 
   return (
     <Form.Group className={className}>
-      <Label popover={name} label={'Incident ID'} />
+      <Label popover={name} label={t('Incident ID')} />
       <Form.Control
         type="number"
         name={name}

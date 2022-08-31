@@ -388,12 +388,12 @@ const SubmissionForm = () => {
         )}
 
         <details className="tw-pt-5">
-          <summary data-cy="extra-fields">Tell us more...</summary>
+          <summary data-cy="extra-fields">{t('Tell us more...')}</summary>
           <TextInputGroup
             name="description"
-            label="Description"
+            label={t('Description')}
             as="textarea"
-            placeholder="Report Description"
+            placeholder={t('Report Description')}
             rows={3}
             className="mt-3"
             {...TextInputGroupProps}
