@@ -65,18 +65,18 @@ const createCitationPages = async (graphql, createPage) => {
           (incident) => incident.incident_id === incident_id
         ),
         similarity,
-        reports: incidentReportsMap[incident.incident_id],
+        reports: incidentReportsMap[incident_id],
       })
     );
 
     const editor_similar_incidents = incident.editor_similar_incidents.map((incident_id) => ({
       ...allMongodbAiidprodIncidents.nodes.find((incident) => incident.incident_id === incident_id),
-      reports: incidentReportsMap[incident.incident_id],
+      reports: incidentReportsMap[incident_id],
     }));
 
     const editor_dissimilar_incidents = incident.editor_dissimilar_incidents.map((incident_id) => ({
       ...allMongodbAiidprodIncidents.nodes.find((incident) => incident.incident_id === incident_id),
-      reports: incidentReportsMap[incident.incident_id],
+      reports: incidentReportsMap[incident_id],
     }));
 
     pageContexts.push({
