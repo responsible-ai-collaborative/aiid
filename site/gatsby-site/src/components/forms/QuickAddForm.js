@@ -82,7 +82,7 @@ const QuickAddForm = ({ className = '' }) => {
     <div className="bootstrap">
       <Form onSubmit={handleSubmit} className={className} data-cy="quick-add">
         <Row className="w-full">
-          <Form.Group as={Col} controlId="formUrl">
+          <Form.Group as={Col} controlId="formUrl" className="flex-1">
             <Form.Control
               type="text"
               name="url"

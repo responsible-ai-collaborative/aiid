@@ -4,7 +4,7 @@ export default function Card(props) {
     <>
       <div
         {...props}
-        className={`tw-card border rounded-lg flex break-words ${
+        className={`tw-card border-1 rounded-lg flex break-words ${
           props.className ? props.className : ''
         } flex-col ${props.bg ? 'bg-' + props.bg : ''}`}
       >

@@ -148,7 +148,7 @@ const SimilarIncidents = ({
               </a>
             )}
           </div>
-          <div className="tw-card-set tw-mt-4">
+          <div className="tw-card-set mt-4">
             {editor_similar_incidents.map((similarIncident) => (
               <SimilarIncidentCard
                 incident={similarIncident}
@@ -189,7 +189,7 @@ const SimilarIncidents = ({
               unrelated incidents
             </Trans>
           </p>
-          <div className="tw-card-set tw-mt-4">
+          <div className="tw-card-set mt-4">
             {nlp_only_incidents.map((similarIncident) => (
               <SimilarIncidentCard
                 incident={similarIncident}
