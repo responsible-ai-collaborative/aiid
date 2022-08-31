@@ -89,7 +89,7 @@ export default function Sponsors({ className }) {
                         return (
                           <div key={`sponsor-item-${item.modalName}`} className="h-[90px] p-3">
                             <StyledImage
-                              src={`images/${item.logo}`}
+                              src={`/images/${item.logo}`}
                               onClick={() => setModalState(item.modalName)}
                               data-cy={item.dataCy ? item.dataCy : ''}
                             />
