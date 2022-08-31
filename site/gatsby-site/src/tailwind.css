@@ -3,9 +3,12 @@
 @tailwind utilities;
 
 @layer base {
-
     h2 {
         font-size: 2rem;
+    }
+
+    ul, ol {
+      list-style: revert;
     }
 
     .tw-layout {
