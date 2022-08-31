@@ -9,6 +9,24 @@
                 "bsonType": "string"
             }
         },
+        "developers": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "deployers": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "harmed_parties": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
         "cloudinary_id": {
             "bsonType": "string"
         },
@@ -40,6 +58,20 @@
             "bsonType": "array",
             "items": {
                 "bsonType": "int"
+            }
+        },
+        "embedding": {
+            "bsonType": "object",
+            "properties": {
+                "from_text_hash": {
+                    "bsonType": "string"
+                },
+                "vector": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "double"
+                    }
+                }
             }
         },
         "image_url": {

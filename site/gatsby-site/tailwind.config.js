@@ -19,6 +19,7 @@ let safelist = [
 for (let i = 0; i < 100; i++) {
   safelist.push(`tw-pl-[${2 + (i || 0) * 1}rem`);
 }
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   prefix: 'tw-',
@@ -40,8 +41,9 @@ module.exports = {
         'min-992px': { min: '992px' },
         '50rem': { max: '50rem' },
         '767px': { max: '767px' },
-        '800px': { max: '800px' },
         '965px': { max: '965px' },
+        '992px': { min: '992px' },
+        '800px': { max: '800px' },
         '1240px': { max: '1240px' },
       },
       colors: {
@@ -52,10 +54,6 @@ module.exports = {
         'gray-500': '#adb5bd',
         'dark-gray': '#6c757d',
         'muted-gray': '#6c757d',
-        'light-grey': 'rgba(0,0,0,.03)',
-        'border-grey': 'rgba(0,0,0,.125)',
-        'disable-grey': '#dee2e6',
-        'dark-grey': '#6c757d',
         'deep-blue': '#0a58ca',
         'secondary-gray': 'rgba(108,117,125,1)',
         'text-light-gray': 'rgba(248,249,250,1)',
@@ -82,6 +80,7 @@ module.exports = {
       },
       transitionProperty: {
         btn: 'color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out',
+        'bg-color-02': 'color 0.2s ease-out',
       },
       zIndex: {
         2: '2',
@@ -92,6 +91,10 @@ module.exports = {
       },
       padding: {
         0.8: '0.8rem',
+        'row-left': 'calc(1.5rem*.5)',
+        'row-right': 'calc(1.5rem*.5)',
+        'container-left': '.75rem',
+        'container-right': '.75rem',
       },
       borderRadius: {
         '5px': '5px',

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import styled from 'styled-components';
+import Card from '../../elements/Card';
 
 const NewsImage = styled.img``;
 

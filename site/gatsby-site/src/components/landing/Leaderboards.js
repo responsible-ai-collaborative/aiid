@@ -1,10 +1,12 @@
 import React from 'react';
-import { Card, Col, Row } from 'react-bootstrap';
 import UniqueSubmittersLeaderboard from 'components/leaderboards/UniqueSubmittersLeaderboard';
 import OriginalSubmitersLeaderboard from 'components/leaderboards/OriginalSubmittersLeaderboard';
 import SubmittersLeaderboard from 'components/leaderboards/SubmittersLeaderboard';
 import { Trans } from 'react-i18next';
 import { LocalizedLink } from 'gatsby-theme-i18n';
+import Card from '../../elements/Card';
+import Col from '../../elements/Col';
+import Row from '../../elements/Row';
 
 export default function Featured() {
   return (
@@ -22,13 +24,13 @@ export default function Featured() {
             </Trans>
           </Card.Subtitle>
           <Row>
-            <Col lg className="mt-4">
+            <Col lg className="tw-mt-4">
               <OriginalSubmitersLeaderboard limit={3} />
             </Col>
-            <Col lg className="mt-4">
+            <Col lg className="tw-mt-4">
               <UniqueSubmittersLeaderboard limit={3} />
             </Col>
-            <Col lg className="mt-4">
+            <Col lg className="tw-mt-4">
               <SubmittersLeaderboard limit={3} />
             </Col>
           </Row>
