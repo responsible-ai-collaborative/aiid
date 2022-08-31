@@ -37,6 +37,7 @@ const RandomIncidentsCarousel = ({ className }) => {
             nodes {
               incident_id
               reports
+              title
             }
           }
 
@@ -44,7 +45,6 @@ const RandomIncidentsCarousel = ({ className }) => {
             nodes {
               id
               report_number
-              title
               image_url
             }
           }
@@ -60,9 +60,7 @@ const RandomIncidentsCarousel = ({ className }) => {
           )
           .map((report) => ({
             ...report,
-            incident_id: incidents.find((incident) =>
-              incident.reports.includes(report.report_number)
-            ).incident_id,
+            ...incidents.find((incident) => incident.reports.includes(report.report_number)),
           }));
 
         return (

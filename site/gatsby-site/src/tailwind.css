@@ -178,7 +178,7 @@
     }
 
     .tw-btn-menu {
-        @apply 767px:hidden w-[100px] h-10 fixed left-56 top-1/2 rotate-90;
+        @apply 767px:hidden w-[100px] h-10 fixed left-56 top-1/2 rotate-90 z-10;
     }
 
     .tw-btn-menu.collapsed {
@@ -327,7 +327,7 @@
     }
 
     .tw-card-set {
-        @apply flex flex-col gap-4 mb-8 1300px:flex-row;
+        @apply gap-4 mb-8 grid grid-cols-1 md:grid-cols-2 1300px:grid-cols-3;
     }
 
     .tw-card-set > * {

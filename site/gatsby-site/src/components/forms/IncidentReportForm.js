@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import { useFormikContext } from 'formik';
-import * as Yup from 'yup';
+import * as yup from 'yup';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { dateRegExp } from 'utils/date';
@@ -16,6 +16,7 @@ import IncidentIdField from 'components/incidents/IncidentIdField';
 import getSourceDomain from '../../utils/getSourceDomain';
 import supportedLanguages from 'components/i18n/languages.json';
 import { useLocalization } from 'gatsby-theme-i18n';
+import { Trans } from 'react-i18next';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -37,37 +38,46 @@ import { useLocalization } from 'gatsby-theme-i18n';
 // * language: "en" # (string) The language identifier of the report.
 
 // Schema for yup
-export const schema = Yup.object().shape({
-  title: Yup.string()
+export const schema = yup.object().shape({
+  title: yup
+    .string()
     .min(6, '*Title must have at least 6 characters')
     .max(500, "*Titles can't be longer than 500 characters")
     .required('*Title is required'),
-  authors: Yup.string()
+  authors: yup
+    .string()
     .min(3, '*Authors must have at least 3 characters')
     .max(200, "*Authors can't be longer than 200 characters")
     .required('*Author is required. Anonymous or the publication can be entered.'),
-  submitters: Yup.string()
+  submitters: yup
+    .string()
     .min(3, '*Submitter must have at least 3 characters')
     .max(200, "*Submitter list can't be longer than 200 characters")
     .required('*Submitter is required. Anonymous can be entered.'),
-  text: Yup.string()
-    .min(80, '*Text must have at least 80 characters')
-    .max(50000, "*Text can't be longer than 50000 characters")
+  text: yup
+    .string()
+    .min(80, `*Text must have at least 80 characters`)
+    .max(50000, `*Text can’t be longer than 50000 characters`)
     .required('*Text is required'),
-  date_published: Yup.string()
+  date_published: yup
+    .string()
     .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
     .required('*Date published is required'),
-  date_downloaded: Yup.string()
+  date_downloaded: yup
+    .string()
     .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
     .required('*Date downloaded required'),
-  url: Yup.string()
+  url: yup
+    .string()
     .url('*Must enter URL in http://www.example.com format')
     .required('*URL required'),
-  image_url: Yup.string().matches(
-    /((https?):\/\/)(\S)*$/,
-    '*Must enter URL in http://www.example.com/images/preview.png format'
-  ),
-  incident_id: Yup.number().positive().integer('*Must be an incident number').required(),
+  image_url: yup
+    .string()
+    .matches(
+      /((https?):\/\/)(\S)*$/,
+      '*Must enter URL in http://www.example.com/images/preview.png format'
+    ),
+  incident_id: yup.number().positive().integer('*Must be an incident number').required(),
 });
 
 const IncidentReportForm = () => {
@@ -261,10 +271,36 @@ const IncidentReportForm = () => {
           {...TextInputGroupProps}
         />
 
-        <Form.Group className="mt-3" data-color-mode="light" data-cy="text">
+        <Form.Group
+          className={'mt-3' + (touched['text'] && errors['text'] ? ' is-invalid' : '')}
+          data-color-mode="light"
+          data-cy="text"
+        >
           <Label popover="text" label={'Text'} />
-          <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
+          <div style={{ position: 'relative' }}>
+            {touched['text'] && errors['text'] && (
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: '0px',
+                  border: '1px solid var(--bs-red)',
+                  zIndex: 10,
+                  pointerEvents: 'none',
+                }}
+              />
+            )}
+            <Editor
+              value={values.text}
+              onChange={(value) => {
+                setFieldValue('text', value);
+                setFieldTouched('text', true);
+              }}
+            />
+          </div>
         </Form.Group>
+        <Form.Control.Feedback type="invalid">
+          <Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans>
+        </Form.Control.Feedback>
 
         <Form.Group className="mt-3">
           <Label popover="language" label={'Language'} />
