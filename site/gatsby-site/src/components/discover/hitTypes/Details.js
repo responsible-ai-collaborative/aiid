@@ -57,7 +57,7 @@ export default function Details({
           {toggleFilterByIncidentId && (
             <button
               type="button"
-              className="btn btn-secondary btn-sm w-100"
+              className="btn btn-secondary btn-sm w-full text-sm"
               onClick={() => {
                 const path = localizePath({
                   path: `/cite/${item.incident_id}#r${item.mongodb_id}`,
