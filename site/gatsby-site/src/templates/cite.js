@@ -24,9 +24,9 @@ import SocialShareButtons from 'components/ui/SocialShareButtons';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { graphql } from 'gatsby';
-import slugify from 'slugify';
-import Link from 'components/ui/Link';
 import { getTaxonomies, getTranslatedReports } from 'utils/cite';
+import EntitiesCard from 'components/entities/EntitiesCard';
+import { computeEntities } from 'utils/entities';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -140,15 +140,7 @@ function CitePage(props) {
     );
   }, [user]);
 
-  const entities = [];
-
-  for (const field of ['Alleged_deployer_of_AI_system', 'Alleged_developer_of_AI_system']) {
-    for (const name of incident[field]) {
-      entities.push({ name, id: slugify(name, { lower: true }) });
-    }
-  }
-
-  console.log(entities);
+  const entities = computeEntities({ incidents: [incident] });
 
   return (
     <Layout {...props}>
@@ -168,25 +160,8 @@ function CitePage(props) {
       <Container>
         <Row>
           <Col>
-            <Card
-              data-cy="citation"
-              className="tw-border-1.5 tw-border-border-light-gray tw-rounded-5px tw-shadow-card"
-            >
-              <Card.Header className="tw-items-center tw-justify-between">
-                <h4 className="tw-m-0">
-                  <Trans>Entities</Trans>
-                </h4>
-              </Card.Header>
-              <Card.Body className="tw-block">
-                {entities.map((entity) => {
-                  return (
-                    <div key={entity.id}>
-                      <Link to={`/entities/${entity.id}`}>{entity.name}</Link>
-                    </div>
-                  );
-                })}
-              </Card.Body>
-            </Card>
+            <h4>Entities</h4>
+            <EntitiesCard entities={entities} />
           </Col>
         </Row>
 
