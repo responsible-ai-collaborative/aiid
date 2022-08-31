@@ -21,7 +21,7 @@
     }
 
     .tw-content {
-        @apply tw-flex tw-flex-grow tw-mt-0 tw-mx-[10px] md:tw-mx-[33px] tw-pt-12 tw-z-[1] tw-relative md:tw-w-[calc((100%-298px)-66px)];
+        @apply tw-flex tw-flex-grow tw-mt-0 tw-mx-[10px] md:tw-mx-[33px] tw-pt-12 tw-z-[1] tw-relative;
     }
 
     .tw-main-container {
@@ -113,7 +113,7 @@
     }
 
     .tw-post-listing {
-        @apply tw-flex tw-flex-wrap md:tw-grid tw-gap-4 lg:tw-gap-4 tw-max-w-[750px];
+        @apply tw-flex tw-flex-wrap tw-gap-4 lg:tw-gap-4;
     }
 
     /* TAILWIND Buttons begins */
