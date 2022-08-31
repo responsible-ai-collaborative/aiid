@@ -113,7 +113,7 @@
     }
 
     .tw-post-listing {
-        @apply tw-flex tw-flex-wrap tw-gap-4 lg:tw-gap-4;
+        @apply tw-flex tw-flex-wrap lg:tw-grid lg:tw-grid-cols-2 xl:tw-grid-cols-3 tw-gap-4;
     }
 
     /* TAILWIND Buttons begins */
