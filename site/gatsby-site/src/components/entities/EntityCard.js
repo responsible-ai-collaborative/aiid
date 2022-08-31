@@ -11,9 +11,29 @@ export default function EntityCard({ entity, className = '', ...props }) {
       <h5 className="tw-mb-2 tw-font-bold tw-tracking-tight tw-text-gray-900 tw-dark:text-white">
         {entity.name}
       </h5>
-      <div className="tw-inline-block tw-bg-red-100 tw-text-red-800 tw-text-xs tw-font-semibold tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-green-200 tw-dark:text-green-900">
-        {entity.incidents} Incident(s)
-      </div>
+      {entity.incidents > 0 && (
+        <div className="tw-inline-block tw-bg-red-100 tw-text-red-800 tw-text-xs tw-font-semibold tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-green-200 tw-dark:text-green-900">
+          {entity.incidents} Incident(s)
+        </div>
+      )}
+
+      {entity.incidentsAsDeployer?.length > 0 && (
+        <div className="tw-inline-block tw-bg-red-100 tw-text-red-800 tw-text-xs tw-font-semibold tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-green-200 tw-dark:text-green-900">
+          {entity.incidentsAsDeployer.length} Incident(s) as Deployer
+        </div>
+      )}
+
+      {entity.incidentsAsDeveloper?.length > 0 && (
+        <div className="tw-inline-block tw-bg-red-100 tw-text-red-800 tw-text-xs tw-font-semibold tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-green-200 tw-dark:text-green-900">
+          {entity.incidentsAsDeveloper.length} Incident(s) as Developer
+        </div>
+      )}
+
+      {entity.incidentsAsBoth?.length > 0 && (
+        <div className="tw-inline-block tw-bg-red-100 tw-text-red-800 tw-text-xs tw-font-semibold tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-green-200 tw-dark:text-green-900">
+          {entity.incidentsAsBoth.length} Incident(s) as Developer and Deployer
+        </div>
+      )}
     </Link>
   );
 }
