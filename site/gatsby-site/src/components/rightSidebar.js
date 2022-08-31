@@ -27,7 +27,7 @@ const SidebarLayout = ({ location }) => (
         allMdx.edges.map((item) => {
           let innerItems;
 
-          if (item !== undefined) {
+          if (item?.node?.fields) {
             if (
               item.node.fields.slug === location.pathname ||
               config.gatsby.pathPrefix + item.node.fields.slug === location.pathname
