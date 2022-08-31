@@ -73,14 +73,14 @@ export default function Sponsors({ className }) {
               </Trans>
             </Card.Text>
             <a href="https://docsend.com/view/a45p7mgh44nu8x7j" target="_blank" rel="noreferrer">
-              <StyledImageCover src="/images/reportcover.png" className="border" />
+              <StyledImageCover src="/images/reportcover.png" className="border-1" />
             </a>
           </Col>
           <Col lg={6} md={12} sm={12} className="flex justify-between flex-col gap-2 px-0">
             {sponsors.map((sponsor) => {
               return (
                 <>
-                  <div className="border border-border-gray rounded-lg  p-1">
+                  <div className="border-1 border-border-gray rounded-lg  p-1">
                     <StyledSubtitle>
                       <Trans ns="landing">{sponsor.name}</Trans>
                     </StyledSubtitle>
