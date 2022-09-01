@@ -145,7 +145,7 @@
     }
 
     .tw-btn-menu {
-        @apply 767px:tw-hidden tw-w-[100px] tw-h-10 tw-fixed tw-left-56 tw-top-1/2 tw-rotate-90;
+        @apply 767px:tw-hidden tw-w-[100px] tw-h-10 tw-fixed tw-left-56 tw-top-1/2 tw-rotate-90 tw-z-10;
     }
 
     .tw-btn-menu.collapsed {
@@ -156,7 +156,7 @@
 
     /* TAILWIND Grid begins */
     .tw-row {
-        @apply tw-flex tw-flex-wrap tw--ml-3 tw-mr-0 tw-mt-0;
+        @apply tw-flex tw-flex-wrap tw-mr-0 tw-mt-0;
     }
 
     .tw-row > * {
@@ -294,7 +294,7 @@
     }
 
     .tw-card-set {
-        @apply tw-flex tw-flex-col tw-gap-4 tw-mb-8 1300px:tw-flex-row;
+        @apply tw-gap-4 tw-mb-8 tw-grid tw-grid-cols-1 md:tw-grid-cols-2 1300px:tw-grid-cols-3;
     }
 
     .tw-card-set > * {

@@ -52,7 +52,7 @@ const reportsWithIncidentIds = async (reports, client) => {
       incident.reports
         .map((incidentReport) => incidentReport.report_number)
         .includes(report.report_number)
-    )[0].incident_id,
+    )[0]?.incident_id,
   }));
 };
 
