@@ -18,16 +18,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const getIcon = (label) =>
   ({
-    welcome: <FontAwesomeIcon icon={faDoorOpen} className="pointer fa tw-mr-1" fixedWidth />,
-    discover: <FontAwesomeIcon icon={faSearch} className="pointer fa tw-mr-1" fixedWidth />,
-    submit: <FontAwesomeIcon icon={faPlusCircle} className="pointer fa tw-mr-1" fixedWidth />,
-    leaderboard: <FontAwesomeIcon icon={faMedal} className="pointer fa tw-mr-1" fixedWidth />,
-    wordcounts: (
-      <FontAwesomeIcon icon={faSortAlphaDown} className="pointer fa tw-mr-1" fixedWidth />
-    ),
-    blog: <FontAwesomeIcon icon={faNewspaper} className="pointer fa tw-mr-1" fixedWidth />,
-    taxonomies: <FontAwesomeIcon icon={faChartPie} className="pointer fa tw-mr-1" fixedWidth />,
-    incidents: <FontAwesomeIcon icon={faTable} className="pointer fa tw-mr-1" fixedWidth />,
+    welcome: <FontAwesomeIcon icon={faDoorOpen} className="pointer fa mr-1" fixedWidth />,
+    discover: <FontAwesomeIcon icon={faSearch} className="pointer fa mr-1" fixedWidth />,
+    submit: <FontAwesomeIcon icon={faPlusCircle} className="pointer fa mr-1" fixedWidth />,
+    leaderboard: <FontAwesomeIcon icon={faMedal} className="pointer fa mr-1" fixedWidth />,
+    wordcounts: <FontAwesomeIcon icon={faSortAlphaDown} className="pointer fa mr-1" fixedWidth />,
+    blog: <FontAwesomeIcon icon={faNewspaper} className="pointer fa mr-1" fixedWidth />,
+    taxonomies: <FontAwesomeIcon icon={faChartPie} className="pointer fa mr-1" fixedWidth />,
+    incidents: <FontAwesomeIcon icon={faTable} className="pointer fa mr-1" fixedWidth />,
     spatial: (
       <svg
         xmlns="http://www.w3.org/2000/svg"

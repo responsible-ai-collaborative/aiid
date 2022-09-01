@@ -143,14 +143,14 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
         {sortedStatsArray.length > 5 && (
           <Button
             variant="link"
-            className="tw-mb-3 btn btn-sm assignment-button"
+            className="mb-3 btn btn-sm assignment-button"
             onClick={toggleShowAllStats}
             style={{ padding: '0px', margin: '0px', textDecoration: 'none' }}
           >
             {`Show ${showAllStats ? 'fewer stats' : 'more stats'}`}
           </Button>
         )}
-        <div className="tw-my-3">
+        <div className="my-3">
           {short_name == 'Location' ? (
             <LocationMap
               data={{ columns: sortedStatsArray.map((a) => [a.item, a.value]) }}
@@ -297,7 +297,7 @@ const Taxonomy = (props) => {
   const geocodes = getGeocodes(allMongodbAiidprodClassifications.nodes);
 
   return (
-    <Layout {...props}>
+    <Layout {...props} className="bootstrap">
       <div className={'titleWrapper'}>
         <StyledHeading>{namespace}</StyledHeading>
       </div>

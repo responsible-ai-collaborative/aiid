@@ -36,27 +36,29 @@ export default function Footer() {
   } = data;
 
   return (
-    <footer className="tw-bg-text-light-gray tw-relative sm:tw-grid sm:tw-grid-cols-2 md:tw-grid-cols-4 tw-gap-5 tw-p-5">
+    <footer className="bg-text-light-gray relative sm:grid sm:grid-cols-2 md:grid-cols-4 gap-5 p-5">
       {config.footer.navConfig.map((group) => (
         <div key={group.title}>
-          <h3 className="tw-text-base">{group.title}</h3>
-          <ul className="tw-p-0">
+          <h3 className="text-base">{group.title}</h3>
+          <ul className="p-0">
             {group.items.map(
               (item) =>
                 item.title && (
                   <li key={item.title}>
                     {item.url.includes('http') ? (
-                      <a href={item.url}>
+                      <a href={item.url} className="tw-footer-link">
                         {item.title}{' '}
                         <FontAwesomeIcon
                           icon={faExternalLinkAlt}
                           color={'gray'}
-                          className="pointer fa fa-sm"
+                          className="pointer fa fa-sm "
                           title="External Link"
                         />
                       </a>
                     ) : (
-                      <LocalizedLink to={item.url}>{item.title}</LocalizedLink>
+                      <LocalizedLink to={item.url} className="tw-footer-link">
+                        {item.title}
+                      </LocalizedLink>
                     )}
                   </li>
                 )
@@ -65,17 +67,21 @@ export default function Footer() {
         </div>
       ))}
       <div>
-        <h3 className="tw-text-base">2022 - AI Incident Database</h3>
+        <h3 className="text-base">2022 - AI Incident Database</h3>
 
-        <LocalizedLink to="/terms-of-use">Terms of use</LocalizedLink>
+        <LocalizedLink to="/terms-of-use" className="tw-footer-link">
+          Terms of use
+        </LocalizedLink>
         <br />
-        <LocalizedLink to="/privacy-policy">Privacy Policy</LocalizedLink>
-        <div className="tw-pt-3">
+        <LocalizedLink to="/privacy-policy" className="tw-footer-link">
+          Privacy Policy
+        </LocalizedLink>
+        <div className="pt-3">
           <a
             href={'https://twitter.com/IncidentsDB'}
             target="_blank"
             rel="noreferrer"
-            className="tw-pr-2"
+            className="pr-2 tw-footer-link"
           >
             <FontAwesomeIcon
               icon={faTwitterSquare}
@@ -85,7 +91,7 @@ export default function Footer() {
             />
           </a>
 
-          <a href={githubUrl} target="_blank" rel="noreferrer" className="tw-pr-2">
+          <a href={githubUrl} target="_blank" rel="noreferrer" className="pr-2 tw-footer-link">
             <FontAwesomeIcon
               icon={faGithubSquare}
               color={'gray'}
@@ -94,7 +100,12 @@ export default function Footer() {
             />
           </a>
 
-          <a href={'/rss.xml'} target="_blank" rel="noopener noreferrer" className="tw-pr-2">
+          <a
+            href={'/rss.xml'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="pr-2 tw-footer-link"
+          >
             <FontAwesomeIcon
               icon={faRssSquare}
               color={'gray'}

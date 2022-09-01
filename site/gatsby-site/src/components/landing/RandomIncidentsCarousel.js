@@ -64,23 +64,25 @@ const RandomIncidentsCarousel = ({ className }) => {
           }));
 
         return (
-          <Carousel interval={60000} className={className}>
-            {randomIncidents.map(({ id, incident_id, title, image_url, cloudinary_id }) => (
-              <Carousel.Item key={id}>
-                <Link to={`/cite/${incident_id}`}>
-                  <CarouselImage
-                    publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
-                    alt={title}
-                    transformation={fill().height(480)}
-                    plugins={[]}
-                  />
-                  <Carousel.Caption>
-                    <Caption>{title}</Caption>
-                  </Carousel.Caption>
-                </Link>
-              </Carousel.Item>
-            ))}
-          </Carousel>
+          <div className="bootstrap">
+            <Carousel interval={60000} className={className}>
+              {randomIncidents.map(({ id, incident_id, title, image_url, cloudinary_id }) => (
+                <Carousel.Item key={id}>
+                  <Link to={`/cite/${incident_id}`}>
+                    <CarouselImage
+                      publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
+                      alt={title}
+                      transformation={fill().height(480)}
+                      plugins={[]}
+                    />
+                    <Carousel.Caption>
+                      <Caption>{title}</Caption>
+                    </Carousel.Caption>
+                  </Link>
+                </Carousel.Item>
+              ))}
+            </Carousel>
+          </div>
         );
       }}
     />

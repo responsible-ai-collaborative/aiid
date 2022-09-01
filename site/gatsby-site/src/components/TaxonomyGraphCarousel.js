@@ -115,7 +115,7 @@ const TaxonomyGraphCarousel = ({ namespace, axes }) => {
 
   return (
     !classificationsLoading && (
-      <>
+      <div className="bootstrap">
         <Carousel
           interval={60000}
           onSlide={() => setSlide(true)}
@@ -135,8 +135,8 @@ const TaxonomyGraphCarousel = ({ namespace, axes }) => {
 
               return (
                 <Carousel.Item key={index}>
-                  <h3 className="tw-text-base tw-text-center">{axis}</h3>
-                  <div className="tw-pb-8">
+                  <h3 className="text-base text-center">{axis}</h3>
+                  <div className="pb-8">
                     {sliding ? (
                       <SlidingChart columns={columns} />
                     ) : (
@@ -147,7 +147,7 @@ const TaxonomyGraphCarousel = ({ namespace, axes }) => {
               );
             })}
         </Carousel>
-      </>
+      </div>
     )
   );
 };

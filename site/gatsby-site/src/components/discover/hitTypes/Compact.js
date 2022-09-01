@@ -1,11 +1,11 @@
 import React from 'react';
-import { Card } from 'react-bootstrap';
 import { Image } from 'utils/cloudinary';
 import styled from 'styled-components';
 import { fill } from '@cloudinary/base/actions/resize';
 import md5 from 'md5';
 import Actions from '../Actions';
 import { HeaderTitle, SourceDomainSubtitle } from './shared';
+import Card from 'elements/Card';
 
 const StyledCard = styled(Card)`
   height: 240px;
@@ -44,6 +44,7 @@ const IncidentCardImage = styled(Image)`
 `;
 
 const StyledHeaderTitle = styled(HeaderTitle)`
+  line-height: 1.1 !important;
   a {
     color: white !important;
   }
@@ -77,8 +78,8 @@ export default function Compact({
 }) {
   return (
     <StyledCard>
-      <StyledCardBody className="d-flex flex-column ">
-        <Contents className="ps-4 pe-4 pt-3">
+      <StyledCardBody className="flex flex-col ">
+        <Contents className="pl-6 pr-6 pt-3">
           <StyledHeaderTitle item={item} />
           <StyledSubTitle item={item} className="my-2 small" />
         </Contents>
@@ -91,7 +92,7 @@ export default function Compact({
         />
       </StyledCardBody>
 
-      <Card.Footer className="d-flex justify-content-between">
+      <Card.Footer className="flex justify-between">
         <Actions
           authorsModal={authorsModal}
           flagReportModal={flagReportModal}
