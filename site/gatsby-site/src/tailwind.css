@@ -12,10 +12,6 @@
         @apply tw-flex md:tw-flex tw-content-between tw-bg-white 767px:tw-block tw-border-none;
     }
 
-    .tw-layout li a {
-        @apply tw-text-black;
-    }
-
     .tw-layout .item > a:hover {
         @apply tw-bg-primary-blue tw-text-white;
     }
