@@ -10,8 +10,11 @@ const createEntitiesPages = async (graphql, createPage) => {
       incidents: allMongodbAiidprodIncidents {
         nodes {
           incident_id
+          title
           Alleged_deployer_of_AI_system
           Alleged_developer_of_AI_system
+          Alleged_harmed_or_nearly_harmed_parties
+          reports
         }
       }
     }
@@ -30,9 +33,9 @@ const createEntitiesPages = async (graphql, createPage) => {
       context: {
         id,
         name: entity.name,
-        incidentsAsDeployer: entity.incidentsAsDeployer,
-        incidentsAsDeveloper: entity.incidentsAsDeveloper,
-        incidentsAsBoth: entity.incidentsAsBoth,
+        incidentsAsDeployer: entity.incidentsAsDeployer.map((incident) => incident.incident_id),
+        incidentsAsDeveloper: entity.incidentsAsDeveloper.map((incident) => incident.incident_id),
+        incidentsAsBoth: entity.incidentsAsBoth.map((incident) => incident.incident_id),
         relatedEntities: entity.relatedEntities,
       },
     });

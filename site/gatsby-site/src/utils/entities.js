@@ -30,12 +30,16 @@ module.exports.computeEntities = ({ incidents }) => {
           };
         }
 
-        if (!entititiesHash[id][field.key].includes(incident.incident_id)) {
-          entititiesHash[id][field.key].push(incident.incident_id);
+        if (!entititiesHash[id][field.key].some((i) => i.incident_id == incident.incident_id)) {
+          entititiesHash[id][field.key].push(incident);
         }
 
-        if (fields.every((f) => entititiesHash[id][f.key].includes(incident.incident_id))) {
-          entititiesHash[id].incidentsAsBoth.push(incident.incident_id);
+        if (
+          fields.every((f) =>
+            entititiesHash[id][f.key].some((i) => i.incident_id == incident.incident_id)
+          )
+        ) {
+          entititiesHash[id].incidentsAsBoth.push(incident);
         }
       }
     }
