@@ -10,7 +10,7 @@ export default function AboutDatabase({ className }) {
         <Card.Title as="h2">
           <Trans ns="landing">About the Database</Trans>
         </Card.Title>
-        <Card.Text className="tw-italic">
+        <Card.Text className="italic">
           <Trans i18nKey="aboutLine1" ns="landing">
             The AI Incident Database is dedicated to indexing the collective history of harms or
             near harms realized in the real world by the deployment of artificial intelligence
@@ -18,7 +18,7 @@ export default function AboutDatabase({ className }) {
             Database aims to learn from experience so we can prevent or mitigate bad outcomes.
           </Trans>
         </Card.Text>
-        <Card.Text className="tw-italic">
+        <Card.Text className="italic">
           <Trans i18nKey="aboutLine2" ns="landing">
             You are invited to <LocalizedLink to="/apps/submit">submit</LocalizedLink> incident
             reports, whereupon submissions will be indexed and made{' '}
