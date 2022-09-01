@@ -14,6 +14,8 @@
   --tw-gutter-y: 0;
   --dark-blue: #212529;
   --bs-secondary-rgb: 108,117,125;
+  --bs-border-color-translucent: rgba(0,0,0,0.175);
+  --bs-dropdown-border-color: var(--bs-border-color-translucent);
 }
 
 * {

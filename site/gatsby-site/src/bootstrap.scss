@@ -1,4 +1,11 @@
-
 .bootstrap, body.modal-open {
+    --bs-border-color-translucent: rgba(0,0,0,0.175);
+    --bs-border-color: #dee2e6;
+    --bs-accordion-border-color: var(--bs-border-color);
     @import 'bootstrap/scss/bootstrap.scss';
+}
+
+body.modal-open .accordion-item .accordion-button {
+    background-color: #0d6efd !important;
+    color: #fff !important;
 }
