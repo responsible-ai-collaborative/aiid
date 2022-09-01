@@ -8,7 +8,6 @@ export const StyledHeading = styled('h1')`
   flex: 1;
   margin-top: 0;
   padding-top: 0;
-  color: ${(props) => props.theme.colors.heading};
 `;
 
 export const Edit = styled.div`
