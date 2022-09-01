@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import { Form, Spinner } from 'react-bootstrap';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from '../contexts/userContext';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import Link from 'components/ui/Link';
+import Link from '../components/ui/Link';
 import { Trans, useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import Button from '../elements/Button';
+import { StringParam, useQueryParams } from 'use-query-params';
 
 const SignUpSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -36,10 +37,14 @@ const SignUp = (props) => {
 
   const loginRedirectUri = `${props.location.origin}/logincallback`;
 
+  let [{ redirectTo }] = useQueryParams({
+    redirectTo: StringParam,
+  });
+
   const clickLoginWithFacebook = async () => {
     setDisplayFacebookSpinner(true);
 
-    await loginWithFacebook({ loginRedirectUri });
+    await loginWithFacebook({ loginRedirectUri, redirectTo });
 
     setDisplayFacebookSpinner(false);
   };
@@ -47,7 +52,7 @@ const SignUp = (props) => {
   const clickLoginWithGoogle = async () => {
     setDisplayGoogleSpinner(true);
 
-    await loginWithGoogle({ loginRedirectUri });
+    await loginWithGoogle({ loginRedirectUri, redirectTo });
 
     setDisplayGoogleSpinner(false);
   };
@@ -76,7 +81,7 @@ const SignUp = (props) => {
             validationSchema={SignUpSchema}
             onSubmit={async ({ email, password }, { setSubmitting, resetForm }) => {
               try {
-                await signUp({ email, password });
+                await signUp({ email, password, redirectTo });
                 addToast({
                   message: t('Account created', { ns: 'login' }),
                   severity: SEVERITY.success,
@@ -204,7 +209,7 @@ const SignUp = (props) => {
           <Button
             variant="primary"
             onClick={clickLoginWithGoogle}
-            className={'w-full mt-5'}
+            className={'w-full mt-7'}
             disabled={displayFacebookSpinner || displayGoogleSpinner}
           >
             <div className={'flex justify-center items-center'}>
