@@ -15,7 +15,7 @@ const Hits = ({
 }) => {
   if (isSearchStalled) {
     return (
-      <div className="tw-no-results">
+      <div className="tw-no-results bootstrap">
         <Spinner animation="border" role="status" variant="primary">
           <span className="sr-only">Loading...</span>
         </Spinner>

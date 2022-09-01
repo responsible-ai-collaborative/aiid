@@ -5,7 +5,7 @@ import { faTwitter, faLinkedin, faFacebook } from '@fortawesome/free-brands-svg-
 
 const SocialShareButtons = ({ metaTitle, canonicalUrl, page }) => {
   return (
-    <div data-cy="social-share-buttons" className={`d-flex social-btn-container ${page}`}>
+    <div data-cy="social-share-buttons" className={`flex social-btn-container ${page}`}>
       {/* Twitter */}
       <button
         className={'social-btn'}

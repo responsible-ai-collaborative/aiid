@@ -51,8 +51,8 @@ function Points({ data, geocodes, projection }) {
       const radius = sizeScale(sizeValue(d));
 
       return (
-        <>
-          <Point key={place} cx={x} cy={y} r={radius} />
+        <div className="bootstrap" key={place}>
+          <Point cx={x} cy={y} r={radius} />
           <OverlayTrigger
             placement="right"
             trigger="click"
@@ -67,7 +67,7 @@ function Points({ data, geocodes, projection }) {
               <Trigger />
             </foreignObject>
           </OverlayTrigger>
-        </>
+        </div>
       );
     });
 }

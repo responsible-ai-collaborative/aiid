@@ -37,9 +37,7 @@ const ForgotPassword = (props) => {
           } catch (e) {
             addToast({
               message: (
-                <label className="tw-capitalize">
-                  {t(e.error || 'An unknown error has ocurred')}
-                </label>
+                <label className="capitalize">{t(e.error || 'An unknown error has ocurred')}</label>
               ),
               severity: SEVERITY.danger,
             });
@@ -49,27 +47,29 @@ const ForgotPassword = (props) => {
         }}
       >
         {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, isValid }) => (
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>
-                <Trans>Email address</Trans>
-              </Form.Label>
-              <Form.Control
-                isInvalid={errors.email && touched.email}
-                type="email"
-                placeholder={t('Email')}
-                name="email"
-                value={values.email}
-                onChange={handleChange}
-              />
-              <Form.Control.Feedback type="invalid">
-                <Trans>{errors.email && touched.email ? errors.email : null}</Trans>
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Button variant="primary" type="submit" disabled={isSubmitting || !isValid}>
-              <Trans>Submit</Trans>
-            </Button>
-          </Form>
+          <div className="bootstrap">
+            <Form onSubmit={handleSubmit}>
+              <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label>
+                  <Trans>Email address</Trans>
+                </Form.Label>
+                <Form.Control
+                  isInvalid={errors.email && touched.email}
+                  type="email"
+                  placeholder={t('Email')}
+                  name="email"
+                  value={values.email}
+                  onChange={handleChange}
+                />
+                <Form.Control.Feedback type="invalid">
+                  <Trans>{errors.email && touched.email ? errors.email : null}</Trans>
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Button variant="primary" type="submit" disabled={isSubmitting || !isValid}>
+                <Trans>Submit</Trans>
+              </Button>
+            </Form>
+          </div>
         )}
       </Formik>
     </Layout>
