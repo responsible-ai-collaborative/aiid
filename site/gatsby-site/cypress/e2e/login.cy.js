@@ -5,8 +5,20 @@ describe('Login', () => {
     cy.visit(url);
   });
 
-  it('Should redirect to home page after login', () => {
+  it('Should redirect to home page after login by default', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+  });
+
+  it('Should redirect to specific page after login if redirectTo is provided', () => {
+    const redirectTo = '/cite/10';
+
+    cy.clearLocalStorage();
+    cy.visit('/login?redirectTo=/cite/10');
+    cy.get('input[name=email]').type(Cypress.env('e2eUsername'));
+    cy.get('input[name=password]').type(Cypress.env('e2ePassword'));
+    cy.contains('Login').click();
+
+    cy.location('pathname', { timeout: 8000 }).should('eq', redirectTo);
   });
 
   it('Should display error toast if the email address or password is incorrect', () => {

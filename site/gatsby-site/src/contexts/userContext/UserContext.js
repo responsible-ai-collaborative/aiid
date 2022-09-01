@@ -10,15 +10,18 @@ export const UserContext = createContext({
   },
   actions: {
     // Dummy functions, will be replaced by actual functions in UserContextProvider.js
-    loginWithEmail: ({ email, password }) => {
+    loginWithEmail: ({ email, password, redirectTo }) => {
       email;
       password;
+      redirectTo;
     },
-    loginWithFacebook: ({ loginRedirectUri }) => {
+    loginWithFacebook: ({ loginRedirectUri, redirectTo }) => {
       loginRedirectUri;
+      redirectTo;
     },
-    loginWithGoogle: ({ loginRedirectUri }) => {
+    loginWithGoogle: ({ loginRedirectUri, redirectTo }) => {
       loginRedirectUri;
+      redirectTo;
     },
     logout: () => {},
     sendResetPasswordEmail: ({ email }) => {
@@ -29,9 +32,10 @@ export const UserContext = createContext({
       token;
       tokenId;
     },
-    signUp: ({ email, password }) => {
+    signUp: ({ email, password, redirectTo }) => {
       email;
       password;
+      redirectTo;
     },
   },
 });

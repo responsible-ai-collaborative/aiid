@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import { Form, Spinner } from 'react-bootstrap';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from '../contexts/userContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { Trans, useTranslation } from 'react-i18next';
-import Link from 'components/ui/Link';
+import Link from '../components/ui/Link';
 import Button from '../elements/Button';
+import { StringParam, useQueryParams } from 'use-query-params';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -30,10 +31,16 @@ const Login = (props) => {
 
   const loginRedirectUri = `${props.location.origin}/logincallback`;
 
+  let [{ redirectTo }] = useQueryParams({
+    redirectTo: StringParam,
+  });
+
+  redirectTo = redirectTo ?? '/';
+
   const clickLoginWithFacebook = async () => {
     setDisplayFacebookSpinner(true);
 
-    await loginWithFacebook({ loginRedirectUri });
+    await loginWithFacebook({ loginRedirectUri, redirectTo });
 
     setDisplayFacebookSpinner(false);
   };
@@ -41,7 +48,7 @@ const Login = (props) => {
   const clickLoginWithGoogle = async () => {
     setDisplayGoogleSpinner(true);
 
-    await loginWithGoogle({ loginRedirectUri });
+    await loginWithGoogle({ loginRedirectUri, redirectTo });
 
     setDisplayGoogleSpinner(false);
   };
@@ -69,7 +76,7 @@ const Login = (props) => {
             initialValues={{ email: '', password: '' }}
             validationSchema={LoginSchema}
             onSubmit={async ({ email, password }, { setSubmitting }) => {
-              await loginWithEmail({ email, password });
+              await loginWithEmail({ email, password, redirectTo });
 
               setSubmitting(false);
             }}
