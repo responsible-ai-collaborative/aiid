@@ -89,7 +89,7 @@ const LayoutHideSidebar = ({ children, location, menuCollapseCallback, className
             dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
           />
         ) : null}
-        <Content id="content" className="tw-overflow-y-auto tw-max-w-full">
+        <Content id="content" className="overflow-y-auto max-w-full">
           <Button
             variant="primary"
             className={`tw-btn-menu ${collapse ? 'collapsed' : ''}`}

@@ -46,7 +46,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
           />
         )}
 
-        <h3 className="tw-text-lg tw-m-4">
+        <h3 className="text-lg m-4">
           {locale == 'en' && incident.title ? incident.title : incident.reports[0].title}
         </h3>
       </a>
