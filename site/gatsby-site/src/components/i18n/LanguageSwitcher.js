@@ -25,6 +25,7 @@ export default function LanguageSwitcher({ className = '' }) {
       title={currentLocale.localName}
       data-cy="language-switcher"
       className={className}
+      variant="outline-light"
     >
       {config.map((locale) => (
         <Dropdown.Item key={locale.code} onClick={() => setLanguage(locale.code)}>
