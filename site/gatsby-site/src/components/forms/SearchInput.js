@@ -27,7 +27,7 @@ export default withTranslation()(function SearchInput({
           onChange={(event) => onChange(event.currentTarget.value)}
           {...props}
         />
-        <div className="absolute z-[4] w-5 h-5 top-1/2 right-[0.3rem] -translate-y-1/2">
+        <div className="absolute z-[4] w-5 top-1/2 right-[0.3rem] -translate-y-1/2 flex justify-center items-center">
           {value !== '' ? (
             <button
               className="bg-none select-none border-none"

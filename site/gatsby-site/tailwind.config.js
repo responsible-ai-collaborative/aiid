@@ -154,6 +154,8 @@ module.exports = {
         karla: 'Karla, sans-serif',
       },
       fontSize: {
+        h1: 'calc(1.375rem + 1.5vw)',
+        '2rem': '2rem',
         '32px': '32px',
       },
       flex: {
