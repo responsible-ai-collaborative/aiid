@@ -55,11 +55,11 @@ export default function QuickSearch({ className }) {
     <>
       <Card className={className}>
         <Card.Body>
-          <Form onSubmit={submit} id="quickSearch" className="tw-flex-1">
+          <Form onSubmit={submit} id="quickSearch" className="flex-1">
             <div
               className={`${
                 searchTerm == '' ? '' : 'has-input'
-              } tw-relative tw-max-w-screen-sm tw-m-auto after:tw-text-dark-gray after:tw-text-xl after:tw-absolute after:tw-left-[1em] after:tw-top-1/2 after:tw-pt-[-50%] after:tw-translate-y-[-50%] after:tw-z-[3] after:tw-pointer-events-none after:tw-content-[attr(data-content)]`}
+              } relative max-w-screen-sm m-auto after:text-dark-gray after:text-xl after:absolute after:left-[1em] after:top-1/2 after:pt-[-50%] after:translate-y-[-50%] after:z-[3] after:pointer-events-none after:content-[attr(data-content)]`}
             >
               <SearchInput
                 size="lg"
@@ -74,7 +74,7 @@ export default function QuickSearch({ className }) {
               />
             </div>
             <Row>
-              <Col className="tw-flex tw-gap-2 tw-justify-center">
+              <Col className="flex gap-2 justify-center">
                 <Button size="lg" variant="primary" className="mt-4" type="submit">
                   <Trans>Search</Trans>
                 </Button>

@@ -43,16 +43,18 @@ export default function DisplayModeSwitch() {
   };
 
   return (
-    <Buttons>
-      {Object.keys(modes).map((key) => (
-        <ModeButton
-          variant="secondary"
-          active={key == display}
-          key={key}
-          icon={modes[key].icon}
-          onClick={() => onChange(key)}
-        />
-      ))}
-    </Buttons>
+    <div className="bootstrap">
+      <Buttons>
+        {Object.keys(modes).map((key) => (
+          <ModeButton
+            variant="secondary"
+            active={key == display}
+            key={key}
+            icon={modes[key].icon}
+            onClick={() => onChange(key)}
+          />
+        ))}
+      </Buttons>
+    </div>
   );
 }

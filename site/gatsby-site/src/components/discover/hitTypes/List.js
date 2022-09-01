@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Card, Button } from 'react-bootstrap';
 import { Image } from 'utils/cloudinary';
 import styled from 'styled-components';
 import { fill } from '@cloudinary/base/actions/resize';
@@ -8,6 +7,8 @@ import { HeaderTitle, SourceDomainSubtitle } from './shared';
 import md5 from 'md5';
 import ReportText from 'components/reports/ReportText';
 import TranslationBadge from 'components/i18n/TranslationBadge';
+import Card from 'elements/Card';
+import Button from 'elements/Button';
 
 const StyledCard = styled(Card)`
   overflow: hidden;
@@ -52,11 +53,11 @@ export default function Details({
             <HeaderTitle item={item} />
 
             <div>
-              <SourceDomainSubtitle item={item} className="mb-2 text-muted d-inline-block" />
+              <SourceDomainSubtitle item={item} className="mb-2 text-muted-gray d-inline-block" />
               <TranslationBadge originalLanguage={item.language} />
             </div>
 
-            <ActionsContainer className="d-flex justify-content-start gap-4">
+            <ActionsContainer className="flex justify-start gap-4">
               <Actions
                 authorsModal={authorsModal}
                 flagReportModal={flagReportModal}

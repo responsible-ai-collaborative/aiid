@@ -6,40 +6,38 @@ import { Trans } from 'react-i18next';
 
 function PostPreview({ post }) {
   return (
-    <div className="tw-flex tw-flex-col tw-w-full tw-max-w-sm tw-bg-white tw-rounded-lg tw-border tw-border-gray-200 tw-shadow-md tw-dark:bg-gray-800 tw-dark:border-gray-700">
-      <LocalizedLink to={post.frontmatter.slug} className="tw-text-primary-blue tw-max-w-full">
+    <div className="flex flex-col w-full max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
+      <LocalizedLink to={post.frontmatter.slug} className="text-primary-blue max-w-full">
         <Img
           alt="post-image"
-          className="img-fluid tw-rounded-start tw-h-full  tw-max-w-full tw-max-h-240 tw-rounded-t-lg"
+          className="img-fluid rounded-start h-full  max-w-full max-h-240 rounded-t-lg"
           imgStyle={{ transition: '0.5s all ease-in-out' }}
-          imgClassName="hover:tw-scale-110 tw-object-cover"
+          imgClassName="hover:scale-110 object-cover"
           image={post.frontmatter.image.childImageSharp.gatsbyImageData}
         />
       </LocalizedLink>
-      <div className="tw-p-5 tw-flex tw-flex-col tw-justify-between tw-flex-1">
-        <h5 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 tw-dark:text-white">
+      <div className="p-5 flex flex-col justify-between flex-1">
+        <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           {post.fields.title}
         </h5>
-        <div className="tw-font-medium">
-          {format(new Date(post.frontmatter.date), 'MMM d, yyyy')}
-        </div>
-        <p className="tw-mb-3 tw-font-normal tw-text-gray-700 tw-dark:text-gray-400">
+        <div className="font-medium">{format(new Date(post.frontmatter.date), 'MMM d, yyyy')}</div>
+        <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
           {post.excerpt}...{' '}
           <LocalizedLink to={post.frontmatter.slug}>
             <Trans>(Read More)</Trans>
           </LocalizedLink>
         </p>
-        <div className="tw-mt-4 tw-mb-4">
-          <small className="tw-text-muted-gray tw-text-sm">By {post.frontmatter.author}</small>
+        <div className="mt-4 mb-4">
+          <small className="text-muted-gray text-sm">By {post.frontmatter.author}</small>
         </div>
         <LocalizedLink
           to={post.frontmatter.slug}
-          className="tw-inline-flex tw-items-center tw-py-2 tw-px-3 tw-text-sm tw-font-medium tw-text-center tw-text-white tw-bg-blue-700 tw-rounded-lg tw-hover:bg-blue-800 tw-focus:ring-4 tw-focus:outline-none tw-focus:ring-blue-300 tw-dark:bg-blue-600 tw-dark:hover:bg-blue-700 tw-dark:focus:ring-blue-800 tw-self-start"
+          className="inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 self-start"
         >
           Read more
           <svg
             aria-hidden="true"
-            className="tw-ml-2 -tw-mr-1 tw-w-4 tw-h-4"
+            className="ml-2 -mr-1 w-4 h-4"
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
