@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { Configure, InstantSearch } from 'react-instantsearch-dom';
@@ -45,8 +45,10 @@ const removeEmptyAttributes = (obj) => {
 
 const convertArrayToString = (obj) => {
   for (const attr in obj) {
-    if (obj[attr].length > 0) {
-      obj[attr] = obj[attr].join('||');
+    if (Array.isArray(obj[attr])) {
+      if (obj[attr].length > 0) {
+        obj[attr] = obj[attr].join('||');
+      }
     }
   }
   return { ...obj };
@@ -72,6 +74,10 @@ const convertStringToArray = (obj) => {
         newObj[attr][0] = newObj[attr][0].substr(4);
       } else {
         newObj[attr] = obj[attr].split('||');
+      }
+    } else {
+      if (obj[attr]) {
+        newObj[attr] = obj[attr];
       }
     }
   }
@@ -189,24 +195,6 @@ function DiscoverApp(props) {
     setSearchState({ ...searchState });
   };
 
-  const [hideDuplicates, setHideDuplicates] = useState(false);
-
-  const toggleFilterByIncidentId = useCallback(
-    (incidentId) => {
-      const newSearchState = {
-        ...searchState,
-        refinementList: {
-          ...searchState.refinementList,
-          incident_id: [incidentId],
-        },
-      };
-
-      setSearchState(newSearchState);
-      setQuery(getQueryFromState(newSearchState), 'push');
-    },
-    [searchState]
-  );
-
   useEffect(() => {
     const searchQuery = getQueryFromState(searchState);
 
@@ -238,7 +226,7 @@ function DiscoverApp(props) {
           searchState={searchState}
           onSearchStateChange={onSearchStateChange}
         >
-          <Configure hitsPerPage={28} distinct={hideDuplicates} />
+          <Configure hitsPerPage={28} distinct={searchState.refinementList.hideDuplicates} />
 
           <VirtualFilters />
 
@@ -249,21 +237,16 @@ function DiscoverApp(props) {
               </Col>
             </Row>
 
-            <Controls
-              query={query}
-              setHideDuplicates={setHideDuplicates}
-              hideDuplicates={hideDuplicates}
-            />
+            <Controls query={query} searchState={searchState} setSearchState={setSearchState} />
 
             <OptionsModal
               className="hiddenDesktop"
-              setHideDuplicates={setHideDuplicates}
-              hideDuplicates={hideDuplicates}
+              searchState={searchState}
+              setSearchState={setSearchState}
             />
           </Container>
 
           <Hits
-            toggleFilterByIncidentId={toggleFilterByIncidentId}
             authorsModal={authorsModal}
             submittersModal={submittersModal}
             flagReportModal={flagReportModal}

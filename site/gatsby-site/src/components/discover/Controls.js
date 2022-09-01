@@ -11,7 +11,7 @@ import { Trans } from 'react-i18next';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
 
-const Controls = ({ query, setHideDuplicates, hideDuplicates }) => {
+const Controls = ({ query, searchState, setSearchState }) => {
   const [expandFilters, setExpandFilters] = useState(false);
 
   useEffect(() => setExpandFilters(REFINEMENT_LISTS.some((r) => query[r.attribute])), []);
@@ -29,9 +29,15 @@ const Controls = ({ query, setHideDuplicates, hideDuplicates }) => {
           <Form.Check
             type="switch"
             id="hide-duplicates"
-            checked={hideDuplicates}
+            checked={searchState.refinementList.hideDuplicates}
             onClick={(event) => {
-              setHideDuplicates(event.target.checked);
+              setSearchState({
+                ...searchState,
+                refinementList: {
+                  ...searchState.refinementList,
+                  hideDuplicates: event.target.checked,
+                },
+              });
             }}
             className="tw-switch"
           />
