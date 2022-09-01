@@ -153,6 +153,11 @@ export const query = graphql`
       text
     }
 
+    latestReport_fr: mongodbTranslationsReportsFr(report_number: { eq: $latestReportNumber }) {
+      title
+      text
+    }
+
     latestReport_en: mongodbTranslationsReportsEn(report_number: { eq: $latestReportNumber }) {
       title
       text
