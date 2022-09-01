@@ -5,7 +5,14 @@ import { Spinner } from 'react-bootstrap';
 import { DisplayModeEnumParam } from './queryParams';
 import { useQueryParam } from 'use-query-params';
 
-const Hits = ({ hits, authorsModal, submittersModal, flagReportModal, isSearchStalled }) => {
+const Hits = ({
+  hits,
+  authorsModal,
+  submittersModal,
+  flagReportModal,
+  isSearchStalled,
+  toggleFilterByIncidentId,
+}) => {
   if (isSearchStalled) {
     return (
       <div className="tw-no-results">
@@ -36,6 +43,7 @@ const Hits = ({ hits, authorsModal, submittersModal, flagReportModal, isSearchSt
           authorsModal={authorsModal}
           submittersModal={submittersModal}
           flagReportModal={flagReportModal}
+          toggleFilterByIncidentId={toggleFilterByIncidentId}
         />
       ))}
     </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { Configure, InstantSearch } from 'react-instantsearch-dom';
@@ -195,6 +195,22 @@ function DiscoverApp(props) {
     setSearchState({ ...searchState });
   };
 
+  const toggleFilterByIncidentId = useCallback(
+    (incidentId) => {
+      const newSearchState = {
+        ...searchState,
+        refinementList: {
+          ...searchState.refinementList,
+          incident_id: [incidentId],
+        },
+      };
+
+      setSearchState(newSearchState);
+      setQuery(getQueryFromState(newSearchState), 'push');
+    },
+    [searchState]
+  );
+
   useEffect(() => {
     const searchQuery = getQueryFromState(searchState);
 
@@ -247,6 +263,7 @@ function DiscoverApp(props) {
           </Container>
 
           <Hits
+            toggleFilterByIncidentId={toggleFilterByIncidentId}
             authorsModal={authorsModal}
             submittersModal={submittersModal}
             flagReportModal={flagReportModal}
