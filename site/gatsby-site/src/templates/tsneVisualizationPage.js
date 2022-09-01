@@ -29,13 +29,12 @@ function TsneVisulizationPage(props) {
 
       <p>
         <Trans>
-          The visualization below plots incidents closer together according to the similarity of
-          their reports texts, as identified through{' '}
+          The visualization below shows incidents closer together when a{' '}
           <LocalizedLink to="/blog/using-ai-to-connect-ai-incidents">
-            our natural-language processing system
-          </LocalizedLink>
+            natural language processing system
+          </LocalizedLink>{' '}
+          identifies their text as being semantically similar.
         </Trans>
-        .
       </p>
 
       <TsneVisualization
