@@ -23,7 +23,7 @@ const Logout = (props) => {
   }, []);
 
   return (
-    <Layout {...props}>
+    <Layout {...props} className="bootstrap">
       <Spinner animation="border" size="sm" role="status" aria-hidden="true" />{' '}
       <Trans ns="login">Logging you out...</Trans>
     </Layout>

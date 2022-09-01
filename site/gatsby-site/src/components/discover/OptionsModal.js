@@ -17,12 +17,12 @@ function OptionsModal({ setHideDuplicates, hideDuplicates }) {
   const handleClose = () => setShowModal(false);
 
   return (
-    <>
-      <Row className="tw-my-4 md:tw-hidden">
-        <Col className="tw-flex tw-items-center">
+    <div className="bootstrap">
+      <Row className="my-4 md:hidden">
+        <Col className="flex items-center">
           <Stats />
         </Col>
-        <Col className="tw-flex tw-justify-end">
+        <Col className="flex justify-end">
           <ClearFilters>
             <Trans>Clear</Trans>
           </ClearFilters>
@@ -31,7 +31,6 @@ function OptionsModal({ setHideDuplicates, hideDuplicates }) {
           </Button>
         </Col>
       </Row>
-
       <Modal show={showModal} onHide={handleClose} enforceFocus={false} fullscreen>
         <Modal.Header closeButton>
           <Modal.Title>
@@ -53,6 +52,7 @@ function OptionsModal({ setHideDuplicates, hideDuplicates }) {
             </Form.Label>
             <DisplayModeSwitch />
           </div>
+
           <Accordion defaultActiveKey="0">
             {REFINEMENT_LISTS.map((list) => (
               <AccordionFilter key={list.attribute} attribute={list.attribute} {...list} />
@@ -65,7 +65,7 @@ function OptionsModal({ setHideDuplicates, hideDuplicates }) {
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </div>
   );
 }
 

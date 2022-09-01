@@ -4,10 +4,10 @@ import md5 from 'md5';
 import { format } from 'date-fns';
 import { Image } from '../../utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
-import { Card, Col, Row } from 'react-bootstrap';
 import Link from 'components/ui/Link';
 import ReportText from 'components/reports/ReportText';
 import { Trans } from 'react-i18next';
+import Card from 'elements/Card';
 
 const ThumbnailImg = styled(Image)`
   object-fit: cover;
@@ -15,34 +15,36 @@ const ThumbnailImg = styled(Image)`
   width: 100%;
 `;
 
-const LatestIncidentReport = ({ className = '', report }) => {
+const LatestIncidentReport = ({ report }) => {
   const { image_url, cloudinary_id, title, text, epoch_date_submitted, incident_id } = report;
 
   return (
-    <Card className={className}>
-      <Row className="g-0">
-        <Col md={4}>
-          <ThumbnailImg
-            publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
-            transformation={fill().height(480)}
-            alt={title}
-          />
-        </Col>
-        <Col md={8}>
-          <Card.Body>
-            <Card.Title>
-              <Link to={`/cite/${incident_id}`}>{title}</Link>
-            </Card.Title>
-            <Card.Subtitle>{format(epoch_date_submitted * 1000, 'MMM d, yyyy')}</Card.Subtitle>
-            <Card.Text>
-              <ReportText maxChars={240} text={text} />
-              <Link to={`/cite/${incident_id}`}>
-                (<Trans>Read More</Trans>)
-              </Link>
-            </Card.Text>
-          </Card.Body>
-        </Col>
-      </Row>
+    <Card
+      className={
+        'border rounded-lg break-words flex flex-col md:flex-row break bg-white min-w-0 relative rounded-t-lg md:rounded-l-lg md:rounded-r-none '
+      }
+    >
+      <div className="flex-0-0-auto w-full md:w-1/3">
+        <ThumbnailImg
+          publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
+          transformation={fill().height(480)}
+          alt={title}
+        />
+      </div>
+      <div>
+        <Card.Body>
+          <Card.Title as="h5">
+            <Link to={`/cite/${incident_id}`}>{title}</Link>
+          </Card.Title>
+          <Card.Subtitle>{format(epoch_date_submitted * 1000, 'MMM d, yyyy')}</Card.Subtitle>
+          <Card.Text>
+            <ReportText maxChars={240} text={text} />
+            <Link to={`/cite/${incident_id}`}>
+              (<Trans>Read More</Trans>)
+            </Link>
+          </Card.Text>
+        </Card.Body>
+      </div>
     </Card>
   );
 };
