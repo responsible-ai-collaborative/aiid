@@ -52,7 +52,7 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
   const jsx = <code style={{ whiteSpace: 'pre' }}>{bibTex}</code>;
 
   return (
-    <>
+    <div className="bootstrap">
       <Button variant="outline-primary" onClick={handleShow}>
         <Trans>BibTex Citation</Trans>
       </Button>
@@ -84,7 +84,7 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </div>
   );
 };
 

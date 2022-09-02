@@ -227,7 +227,7 @@ const SubmissionForm = () => {
   }, [values.image_url]);
 
   return (
-    <>
+    <div className="bootstrap">
       <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
         <TextInputGroup
           name="url"
@@ -444,7 +444,7 @@ const SubmissionForm = () => {
           {...TextInputGroupProps}
         />
       </Form>
-    </>
+    </div>
   );
 };
 

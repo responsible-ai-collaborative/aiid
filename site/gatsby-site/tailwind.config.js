@@ -1,3 +1,5 @@
+const plugin = require('tailwindcss/plugin');
+
 let safelist = [
   'tw-btn-primary',
   'tw-btn-secondary',
@@ -13,16 +15,28 @@ let safelist = [
   'tw-tooltip-right',
   'tw-tooltip-bottom',
   'tw-tooltip-left',
+  'tw-btn-link',
 ];
 
 // Whitelisting level options from ListItem component
 for (let i = 0; i < 100; i++) {
-  safelist.push(`tw-pl-[${2 + (i || 0) * 1}rem`);
+  safelist.push(`pl-[${2 + (i || 0) * 1}rem`);
 }
+
+const backfaceVisibility = plugin(function ({ addUtilities }) {
+  addUtilities({
+    '.backface-visible': {
+      'backface-visibility': 'visible',
+    },
+    '.backface-hidden': {
+      'backface-visibility': 'hidden',
+    },
+  });
+});
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  prefix: 'tw-',
+  important: true,
   content: [
     './src/pages/**/*.{js,jsx,ts,tsx}',
     './src/components/**/*.{js,jsx,ts,tsx}',
@@ -48,9 +62,10 @@ module.exports = {
       },
       colors: {
         'light-gray': 'rgba(0,0,0,.03)',
-        'border-gray': 'rgba(0,0,0,.125)',
+        'border-gray': 'rgba(0,0,0,.175)',
         'disable-gray': '#dee2e6',
         'primary-blue': '#0d6efd',
+        'hover-blue': '#0b5ed7',
         'gray-500': '#adb5bd',
         'dark-gray': '#6c757d',
         'muted-gray': '#6c757d',
@@ -65,6 +80,11 @@ module.exports = {
         'light-orange': '#ec9982',
         'list-gray': '#5c6975',
         'light-blue': 'rgb(230,236,241)',
+        'form-control': '#ced4da',
+        'black-25': 'rgba(0,0,0,.25)',
+        'table-text': 'rgba(0,0,0,0.05)',
+        'btn-check-active': '#565e64',
+        'btn-check-border': '#51585e',
       },
       gridTemplateColumns: {
         5: 'repeat(5, minmax(0, 1fr))',
@@ -77,15 +97,44 @@ module.exports = {
       },
       boxShadow: {
         card: '0 2px 5px 0px #e3e5ec',
+        table: 'inset 0 0 0 9999px transparent',
+      },
+      transitionDelay: {},
+      transitionDuration: {
+        btn: '.15s',
+        'modal-fade': '0.3s',
+        'bg-color-02': '0.2s',
+        'form-control': '.15s',
+        'carousel-indicator': '.6s',
+        'carousel-next-prev': '.15s',
+        'form-check-input': '.15s',
+        modal: '15s',
+      },
+      transitionTimingFunction: {
+        btn: 'ease-in-out',
+        'modal-fade': 'ease-out',
+        'bg-color-02': 'ease-out',
+        'form-control': 'ease-in-out',
+        'carousel-indicator': 'ease',
+        'carousel-next-prev': 'ease',
+        'form-check-input': 'ease-in-out',
+        modal: 'linear',
       },
       transitionProperty: {
-        btn: 'color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out',
-        'bg-color-02': 'color 0.2s ease-out',
+        btn: 'color,background-color,border-color,box-shadow',
+        'bg-color-02': 'color',
+        'form-control': 'border-color,box-shadow',
+        modal: 'opacity',
+        'modal-fade': 'transform',
+        'carousel-indicator': 'opacity',
+        'carousel-next-prev': 'opacity',
+        'form-check-input': 'background-position',
       },
       zIndex: {
         2: '2',
       },
       borderWidth: {
+        1: '1px',
         1.5: '1.5px',
         2.5: '2.5px',
       },
@@ -105,16 +154,46 @@ module.exports = {
         karla: 'Karla, sans-serif',
       },
       fontSize: {
+        h1: 'calc(1.375rem + 1.5vw)',
+        '2rem': '2rem',
         '32px': '32px',
       },
       flex: {
         '0-0-auto': '0 0 auto',
+        '0-1-auto': '0 1 auto',
+        '1-1-auto': '1 1 auto',
       },
       transformOrigin: {
         'center-left': 'center left',
       },
+      backgroundImage: {
+        'btn-close':
+          "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3E%3C/svg%3E\")",
+        'carousel-control-prev-icon':
+          "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 16 16'%3E%3Cpath d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z'/%3E%3C/svg%3E\")",
+        'carousel-control-next-icon':
+          "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 16 16'%3E%3Cpath d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E\")",
+        'form-control':
+          "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3E%3Ccircle cx='6' cy='6' r='4.5'/%3E%3Cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3E%3Ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3E%3C/svg%3E\")",
+        'form-check-input':
+          "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3E%3Ccircle r='3' fill='rgba(0, 0, 0, 0.25)'/%3E%3C/svg%3E\")",
+        'form-select':
+          "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E\")",
+      },
+      backgroundPosition: {
+        'position-1/2': '50%',
+        'form-control': 'right 0.57rem center',
+        'form-check-input': '0',
+        'form-select': 'right 0.75rem center',
+      },
+      backgroundSize: {
+        'size-btn-close': '1em',
+        'full-full': '100% 100%',
+        'form-control': '1.125rem 1.125rem',
+        'form-select': '16px 12px',
+      },
     },
   },
-  plugins: [],
+  plugins: [backfaceVisibility],
   safelist: safelist,
 };

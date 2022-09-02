@@ -125,7 +125,7 @@ const PlotPoint = ({
   const onLeft = clientPosition?.x < window.innerWidth / 2;
 
   return (
-    <>
+    <div className="bootstrap">
       <LocalizedLink
         id={'spatial-incident-' + incident.incident_id}
         to={'/cite/' + incident.incident_id}
@@ -227,7 +227,7 @@ const PlotPoint = ({
           )}
         </div>
       )}
-    </>
+    </div>
   );
 };
 
