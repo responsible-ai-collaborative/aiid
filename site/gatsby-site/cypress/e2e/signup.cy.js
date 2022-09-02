@@ -17,7 +17,6 @@ describe('Signup', () => {
 
     cy.contains('Sign up').click();
     cy.get('[data-cy="toast"]').contains('Account created').should('exist');
-    cy.location('pathname', { timeout: 8000 }).should('eq', url);
   });
 
   it('Should display the error toast message if the user already exists', () => {
