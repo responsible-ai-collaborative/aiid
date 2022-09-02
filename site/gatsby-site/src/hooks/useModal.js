@@ -26,15 +26,17 @@ export const useModal = () => {
 };
 
 export const CustomModal = ({ close, isOpen, target }) => (
-  <Modal dialogClassName="tw-max-w-[80%] 800px:tw-max-w-full" show={isOpen} onHide={close}>
-    <Modal.Header closeButton>
-      <Modal.Title>{target.title}</Modal.Title>
-    </Modal.Header>
-    <Modal.Body>{target.body()}</Modal.Body>
-    <Modal.Footer>
-      <Button variant="secondary" onClick={close}>
-        <Trans>Close</Trans>
-      </Button>
-    </Modal.Footer>
-  </Modal>
+  <div className="bootstrap">
+    <Modal dialogClassName="max-w-[80%] 800px:max-w-full bootstrap" show={isOpen} onHide={close}>
+      <Modal.Header closeButton>
+        <Modal.Title>{target.title}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>{target.body()}</Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={close}>
+          <Trans>Close</Trans>
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  </div>
 );

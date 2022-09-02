@@ -89,7 +89,7 @@ export function ToastContextProvider({ children }) {
   return (
     <ToastContext.Provider value={addToast}>
       {children}
-      <ToastsWrapper>
+      <ToastsWrapper className="bootstrap">
         {toasts.map(({ message, severity, id }, index) => (
           <Toast
             key={id}

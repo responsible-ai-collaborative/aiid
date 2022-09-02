@@ -53,10 +53,10 @@ const SignUp = (props) => {
   };
 
   return (
-    <Layout {...props}>
+    <Layout {...props} className="bootstrap">
       {loading ? (
         <>
-          <Spinner animation="border" size="sm" role="status" className="tw-mr-2" />
+          <Spinner animation="border" size="sm" role="status" className="mr-2" />
           <Trans>Loading...</Trans>
         </>
       ) : user && user.isLoggedIn && user.profile.email ? (
@@ -85,7 +85,7 @@ const SignUp = (props) => {
               } catch (e) {
                 addToast({
                   message: (
-                    <label className="tw-capitalize">
+                    <label className="capitalize">
                       {t(e.error || 'An unknown error has ocurred')}
                     </label>
                   ),
@@ -163,10 +163,10 @@ const SignUp = (props) => {
                   disabled={
                     isSubmitting || !isValid || displayFacebookSpinner || displayGoogleSpinner
                   }
-                  className="tw-w-full"
+                  className="w-full"
                 >
                   {isSubmitting && (
-                    <Spinner animation="border" size="sm" role="status" className="tw-mr-2" />
+                    <Spinner animation="border" size="sm" role="status" className="mr-2" />
                   )}
                   <Trans ns="login">Sign up</Trans>
                 </Button>
@@ -174,17 +174,17 @@ const SignUp = (props) => {
             )}
           </Formik>
 
-          <div className="my-2 d-flex justify-content-center">
+          <div className="my-2 flex justify-center">
             <Trans>or</Trans>
           </div>
 
           <Button
             variant="primary"
             onClick={clickLoginWithFacebook}
-            className={'tw-w-full'}
+            className={'w-full'}
             disabled={displayFacebookSpinner || displayGoogleSpinner}
           >
-            <div className={'d-flex justify-content-center align-items-center'}>
+            <div className={'flex justify-center items-center'}>
               {displayFacebookSpinner ? (
                 <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
               ) : (
@@ -195,7 +195,7 @@ const SignUp = (props) => {
                   title="Sign up with Facebook"
                 />
               )}
-              <div className={'tw-ml-2'}>
+              <div className={'ml-2'}>
                 <Trans ns="login">Sign up with Facebook</Trans>
               </div>
             </div>
@@ -204,10 +204,10 @@ const SignUp = (props) => {
           <Button
             variant="primary"
             onClick={clickLoginWithGoogle}
-            className={'tw-w-full tw-mt-5'}
+            className={'w-full mt-5'}
             disabled={displayFacebookSpinner || displayGoogleSpinner}
           >
-            <div className={'d-flex justify-content-center align-items-center'}>
+            <div className={'flex justify-center items-center'}>
               {displayGoogleSpinner ? (
                 <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
               ) : (
@@ -218,7 +218,7 @@ const SignUp = (props) => {
                   title="Sign up with Google"
                 />
               )}
-              <div className={'tw-ml-2'}>
+              <div className={'ml-2'}>
                 <Trans ns="login">Sign up with Google</Trans>
               </div>
             </div>

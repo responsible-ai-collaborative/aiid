@@ -617,14 +617,14 @@ export default function ClassificationsDbView(props) {
     }
 
     return (
-      <>
+      <div className="bootstrap">
         <TaxonomyForm
           ref={editFormRef}
           namespace={taxaData.namespace}
           incidentId={row.values.IncidentId}
           onSubmit={handleSubmit}
         />
-      </>
+      </div>
     );
   };
 
