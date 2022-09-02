@@ -3,11 +3,11 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Markdown from 'react-markdown';
 import TaxonomyForm from './TaxonomyForm';
 import { Trans } from 'react-i18next';
-import Card from '../../elements/Card';
-import Button from '../../elements/Button';
+import Card from 'elements/Card';
+import Button from 'elements/Button';
 
 const renderTooltip = (props, displayText) => (
-  <Tooltip id="button-tooltip" {...props}>
+  <Tooltip id="button-tooltip" {...props} className={`${props.className || ''}`}>
     {displayText}
   </Tooltip>
 );
@@ -27,7 +27,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
   return (
     <Card key={taxonomy.namespace} className="mt-4" data-cy={taxonomy.namespace}>
       <div className="tw-taxa-card-header tw-card-header">
-        <h4 className="tw-pr-0.8">
+        <h4 className="pr-0.8">
           <Trans namespace={taxonomy.namespace}>
             {{ namespace: taxonomy.namespace }} Taxonomy Classifications
           </Trans>
@@ -64,7 +64,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
               <>
                 {canEdit && (
                   <div key={'NOTES'} className="tw-classification-container tw-card-body">
-                    <div className="tw-field">
+                    <div className="tw-field bootstrap">
                       <OverlayTrigger
                         placement="left"
                         delay={{ show: 100, hide: 400 }}
@@ -73,7 +73,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
                         <p>{'Notes'}</p>
                       </OverlayTrigger>
                     </div>
-                    <Markdown className="tw-w-4/5">{taxonomy.notes}</Markdown>
+                    <Markdown className="w-4/5">{taxonomy.notes}</Markdown>
                   </div>
                 )}
                 {taxonomy.classificationsArray
@@ -96,7 +96,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
                   })
                   .map((field) => (
                     <div key={field.name} className="tw-classification-container tw-card-body">
-                      <div className="tw-field">
+                      <div className="tw-field bootstrap">
                         <OverlayTrigger
                           placement="left"
                           delay={{ show: 100, hide: 400 }}
@@ -105,7 +105,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
                           <p>{field.name}</p>
                         </OverlayTrigger>
                       </div>
-                      <Markdown className="tw-w-4/5">{field.value}</Markdown>
+                      <Markdown className="w-4/5">{field.value}</Markdown>
                     </div>
                   ))}
                 {taxonomy.classificationsArray.length > 2 && (
@@ -122,7 +122,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
               <div style={{ padding: '0.5em' }}>
                 <Card bg="secondary" style={{ width: '100%' }} text="light" className="mb-2">
                   <Card.Body>
-                    <Card.Text className="last:tw-mb-0">
+                    <Card.Text className="last:mb-0">
                       <Trans>No classifications for this taxonomy.</Trans>
                     </Card.Text>
                   </Card.Body>

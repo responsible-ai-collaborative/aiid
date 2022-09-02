@@ -21,77 +21,79 @@ const SimilaritySelector = ({ incident_id }) => {
   const { values, setFieldValue } = useFormikContext();
 
   return (
-    <ButtonGroup data-cy="similar-selector" id="similar-selector">
-      {[
-        {
-          identifier: 'dissimilar',
-          variant: 'danger',
-          icon: 'x',
-          show:
-            values.editor_dissimilar_incidents &&
-            values.editor_dissimilar_incidents.includes(incident_id),
-          onClick: () => {
-            setFieldValue(
-              'editor_dissimilar_incidents',
-              (values.editor_dissimilar_incidents || []).concat([incident_id])
-            );
-            setFieldValue(
-              'editor_similar_incidents',
-              (values.editor_similar_incidents || []).filter((id) => id != incident_id)
-            );
+    <div className="bootstrap">
+      <ButtonGroup data-cy="similar-selector" id="similar-selector">
+        {[
+          {
+            identifier: 'dissimilar',
+            variant: 'danger',
+            icon: 'x',
+            show:
+              values.editor_dissimilar_incidents &&
+              values.editor_dissimilar_incidents.includes(incident_id),
+            onClick: () => {
+              setFieldValue(
+                'editor_dissimilar_incidents',
+                (values.editor_dissimilar_incidents || []).concat([incident_id])
+              );
+              setFieldValue(
+                'editor_similar_incidents',
+                (values.editor_similar_incidents || []).filter((id) => id != incident_id)
+              );
+            },
           },
-        },
-        {
-          identifier: 'unspecified',
-          variant: 'secondary',
-          icon: '?',
-          show:
-            !values.editor_similar_incidents ||
-            !values.editor_dissimilar_incidents ||
-            (!values.editor_similar_incidents.includes(incident_id) &&
-              !values.editor_dissimilar_incidents.includes(incident_id)),
-          onClick: () => {
-            setFieldValue(
-              'editor_similar_incidents',
-              (values.editor_similar_incidents || []).filter((id) => id != incident_id)
-            );
-            setFieldValue(
-              'editor_dissimilar_incidents',
-              (values.editor_dissimilar_incidents || []).filter((id) => id != incident_id)
-            );
+          {
+            identifier: 'unspecified',
+            variant: 'secondary',
+            icon: '?',
+            show:
+              !values.editor_similar_incidents ||
+              !values.editor_dissimilar_incidents ||
+              (!values.editor_similar_incidents.includes(incident_id) &&
+                !values.editor_dissimilar_incidents.includes(incident_id)),
+            onClick: () => {
+              setFieldValue(
+                'editor_similar_incidents',
+                (values.editor_similar_incidents || []).filter((id) => id != incident_id)
+              );
+              setFieldValue(
+                'editor_dissimilar_incidents',
+                (values.editor_dissimilar_incidents || []).filter((id) => id != incident_id)
+              );
+            },
           },
-        },
-        {
-          identifier: 'similar',
-          variant: 'success',
-          icon: '✓',
-          show:
-            values.editor_similar_incidents &&
-            values.editor_similar_incidents.includes(incident_id),
-          onClick: () => {
-            setFieldValue(
-              'editor_similar_incidents',
-              (values.editor_similar_incidents || []).concat([incident_id])
-            );
-            setFieldValue(
-              'editor_dissimilar_incidents',
-              (values.editor_dissimilar_incidents || []).filter((id) => id != incident_id)
-            );
+          {
+            identifier: 'similar',
+            variant: 'success',
+            icon: '✓',
+            show:
+              values.editor_similar_incidents &&
+              values.editor_similar_incidents.includes(incident_id),
+            onClick: () => {
+              setFieldValue(
+                'editor_similar_incidents',
+                (values.editor_similar_incidents || []).concat([incident_id])
+              );
+              setFieldValue(
+                'editor_dissimilar_incidents',
+                (values.editor_dissimilar_incidents || []).filter((id) => id != incident_id)
+              );
+            },
           },
-        },
-      ].map((button) => (
-        <SimilarityButton
-          variant={button.show ? button.variant : 'secondary'}
-          aria-pressed={button.show}
-          disabled={button.show}
-          onClick={button.onClick}
-          key={button.icon}
-          data-cy={button.identifier}
-        >
-          {button.icon}
-        </SimilarityButton>
-      ))}
-    </ButtonGroup>
+        ].map((button) => (
+          <SimilarityButton
+            variant={button.show ? button.variant : 'secondary'}
+            aria-pressed={button.show}
+            disabled={button.show}
+            onClick={button.onClick}
+            key={button.icon}
+            data-cy={button.identifier}
+          >
+            {button.icon}
+          </SimilarityButton>
+        ))}
+      </ButtonGroup>
+    </div>
   );
 };
 
