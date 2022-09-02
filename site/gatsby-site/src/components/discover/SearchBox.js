@@ -28,7 +28,7 @@ function SearchBox({ currentRefinement, refine }) {
   return (
     <Row>
       <Col>
-        <form className="tw-block tw-relative" id="searchForm">
+        <form className="block relative" id="searchForm">
           <SearchInput
             value={query}
             onChange={setQuery}

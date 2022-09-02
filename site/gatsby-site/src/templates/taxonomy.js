@@ -151,7 +151,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
           <LocationMap
             data={{ columns: sortedStatsArray.map((a) => [a.item, a.value]) }}
             geocodes={geocodes}
-            className="mt-4 border rounded"
+            className="mt-4 border-1 rounded"
           />
         ) : (
           <BillboardChart data={data} />
@@ -286,7 +286,7 @@ const Taxonomy = (props) => {
   const geocodes = getGeocodes(allMongodbAiidprodClassifications.nodes);
 
   return (
-    <Layout {...props}>
+    <Layout {...props} className="bootstrap">
       <div className={'titleWrapper'}>
         <StyledHeading>{namespace}</StyledHeading>
       </div>

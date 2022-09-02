@@ -7,27 +7,25 @@ import { Trans } from 'react-i18next';
 
 function PostPreview({ post }) {
   return (
-    <Card className="tw-border tw-flex tw-flex-col md:tw-flex-row tw-break tw-bg-white tw-min-w-0 tw-relative tw-rounded-t-lg md:tw-rounded-l-lg md:tw-rounded-r-none">
-      <div className="tw-flex tw-flex-col tw-w-full tw-max-w-full md:tw-w-2/6">
-        <LocalizedLink to={post.frontmatter.slug} className="tw-text-primary-blue tw-max-w-full">
+    <Card className="border flex flex-col md:flex-row break bg-white min-w-0 relative rounded-t-lg md:rounded-l-lg md:rounded-r-none">
+      <div className="flex flex-col w-full max-w-full md:w-2/6">
+        <LocalizedLink to={post.frontmatter.slug} className="text-primary-blue max-w-full">
           <Img
             alt="post-image"
-            className="img-fluid tw-rounded-start tw-h-full tw-w-full tw-max-w-full tw-max-h-240 tw-rounded-t-lg md:tw-rounded-l-lg md:tw-rounded-r-none"
+            className="img-fluid rounded-start h-full w-full max-w-full max-h-240 rounded-t-lg md:rounded-l-lg md:rounded-r-none"
             imgStyle={{ transition: '0.5s all ease-in-out' }}
-            imgClassName="hover:tw-scale-110 tw-object-cover"
+            imgClassName="hover:scale-110 object-cover"
             image={post.frontmatter.image.childImageSharp.gatsbyImageData}
           />
         </LocalizedLink>
       </div>
-      <Card.Body className="tw-flex-col">
+      <Card.Body className="flex-col">
         <Card.Title as="h1">
           <LocalizedLink to={post.frontmatter.slug}>
             <h5>{post.fields.title}</h5>
           </LocalizedLink>
         </Card.Title>
-        <div className="tw-font-medium">
-          {format(new Date(post.frontmatter.date), 'MMM d, yyyy')}
-        </div>
+        <div className="font-medium">{format(new Date(post.frontmatter.date), 'MMM d, yyyy')}</div>
         <div>
           {' '}
           {post.excerpt}...{' '}
@@ -35,8 +33,8 @@ function PostPreview({ post }) {
             <Trans>(Read More)</Trans>
           </LocalizedLink>
         </div>
-        <div className="tw-mt-4">
-          <small className="tw-text-muted-gray tw-text-sm">By {post.frontmatter.author}</small>
+        <div className="mt-4">
+          <small className="text-muted-gray text-sm">By {post.frontmatter.author}</small>
         </div>
       </Card.Body>
     </Card>
