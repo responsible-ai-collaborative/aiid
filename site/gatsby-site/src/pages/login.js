@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import { Form, Spinner } from 'react-bootstrap';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from '../contexts/userContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { Trans, useTranslation } from 'react-i18next';
-import Link from 'components/ui/Link';
+import Link from '../components/ui/Link';
 import Button from '../elements/Button';
 
 const LoginSchema = Yup.object().shape({
@@ -159,30 +159,33 @@ const Login = (props) => {
             </div>
           </Button>
 
-          <Button
-            variant="primary"
-            onClick={clickLoginWithGoogle}
-            className={'w-full mt-7'}
-            disabled={displayGoogleSpinner || displayFacebookSpinner}
-          >
-            <div className={'flex justify-center items-center'}>
-              {displayGoogleSpinner ? (
-                <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
-              ) : (
-                <FontAwesomeIcon
-                  icon={faGoogle}
-                  color={'#ffffff'}
-                  className={'pointer fa fa-lg'}
-                  title="Login with Google"
-                />
-              )}
-              <div className={'ml-4'}>
-                <Trans ns="login">Login with Google</Trans>
+          {/* Hide Google login until brand name is supported */}
+          {false && (
+            <Button
+              variant="primary"
+              onClick={clickLoginWithGoogle}
+              className={'w-full mt-7'}
+              disabled={displayGoogleSpinner || displayFacebookSpinner}
+            >
+              <div className={'flex justify-center items-center'}>
+                {displayGoogleSpinner ? (
+                  <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
+                ) : (
+                  <FontAwesomeIcon
+                    icon={faGoogle}
+                    color={'#ffffff'}
+                    className={'pointer fa fa-lg'}
+                    title="Login with Google"
+                  />
+                )}
+                <div className={'ml-4'}>
+                  <Trans ns="login">Login with Google</Trans>
+                </div>
               </div>
-            </div>
-          </Button>
+            </Button>
+          )}
 
-          <div className="mt-5">
+          <div className="mt-3">
             <Trans ns="login">Don&apos;t have an account?</Trans>{' '}
             <Link to="/signup">
               <Trans ns="login">Sign up</Trans>
