@@ -1,19 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
-import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
-import Citation from 'components/cite/Citation';
-import ImageCarousel from 'components/cite/ImageCarousel';
-import BibTex from 'components/BibTex';
-import { getCanonicalUrl } from 'utils/getCanonicalUrl';
+import AiidHelmet from '../components/AiidHelmet';
+import Layout from '../components/Layout';
+import Citation from '../components/cite/Citation';
+import ImageCarousel from '../components/cite/ImageCarousel';
+import BibTex from '../components/BibTex';
+import { getCanonicalUrl } from '../utils/getCanonicalUrl';
 import { format, isAfter, isEqual } from 'date-fns';
 import { useModal, CustomModal } from '../hooks/useModal';
-import Timeline from 'components/visualizations/Timeline';
-import IncidentStatsCard from 'components/cite/IncidentStatsCard';
-import IncidentCard from 'components/cite/IncidentCard';
-import Taxonomy from 'components/taxa/Taxonomy';
-import { useUserContext } from 'contexts/userContext';
-import SimilarIncidents from 'components/cite/SimilarIncidents';
+import Timeline from '../components/visualizations/Timeline';
+import IncidentStatsCard from '../components/cite/IncidentStatsCard';
+import IncidentCard from '../components/cite/IncidentCard';
+import Taxonomy from '../components/taxa/Taxonomy';
+import { useUserContext } from '../contexts/userContext';
+import SimilarIncidents from '../components/cite/SimilarIncidents';
 import { Trans, useTranslation } from 'react-i18next';
 import Card from '../elements/Card';
 import Button from '../elements/Button';
@@ -21,15 +21,15 @@ import Container from '../elements/Container';
 import Row from '../elements/Row';
 import Col from '../elements/Col';
 import Pagination from '../elements/Pagination';
-import SocialShareButtons from 'components/ui/SocialShareButtons';
+import SocialShareButtons from '../components/ui/SocialShareButtons';
 import { useLocalization } from 'gatsby-theme-i18n';
-import useLocalizePath from 'components/i18n/useLocalizePath';
+import useLocalizePath from '../components/i18n/useLocalizePath';
 import { useMutation } from '@apollo/client';
 import { UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
-import useToastContext, { SEVERITY } from 'hooks/useToast';
-import Link from 'components/ui/Link';
+import useToastContext, { SEVERITY } from '../hooks/useToast';
+import Link from '../components/ui/Link';
 import { graphql } from 'gatsby';
-import { getTaxonomies, getTranslatedReports } from 'utils/cite';
+import { getTaxonomies, getTranslatedReports } from '../utils/cite';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -274,11 +274,7 @@ function CitePage(props) {
                 </h4>
               </Card.Header>
               <Card.Body className="flex-row">
-                <Button
-                  variant="outline-primary"
-                  className="tw-mr-2"
-                  onClick={subscribeToNewReports}
-                >
+                <Button variant="outline-primary" className="mr-2" onClick={subscribeToNewReports}>
                   <>
                     {subscribing && <Spinner size="sm" animation="border" className="tw-mr-2" />}
                     <Trans>Notify Me of Updates</Trans>
@@ -286,7 +282,7 @@ function CitePage(props) {
                 </Button>
                 <Button
                   variant="outline-primary"
-                  className="tw-mr-2"
+                  className="mr-2"
                   href={`/apps/submit?incident_id=${incident.incident_id}&date_downloaded=${format(
                     new Date(),
                     'yyyy-MM-dd'
@@ -294,12 +290,12 @@ function CitePage(props) {
                 >
                   <Trans>New Report</Trans>
                 </Button>
-                <Button variant="outline-primary" className="me-2" href={'/summaries/incidents'}>
+                <Button variant="outline-primary" className="mr-2" href={'/summaries/incidents'}>
                   <Trans>All Incidents</Trans>
                 </Button>
                 <Button
                   variant="outline-primary"
-                  className="me-2"
+                  className="mr-2"
                   href={'/apps/discover?incident_id=' + incident.incident_id}
                 >
                   <Trans>Discover</Trans>
@@ -307,7 +303,7 @@ function CitePage(props) {
                 {isRole('incident_editor') && (
                   <Button
                     variant="outline-primary"
-                    className="me-2"
+                    className="mr-2"
                     href={'/incidents/edit?incident_id=' + incident.incident_id}
                   >
                     Edit Incident
