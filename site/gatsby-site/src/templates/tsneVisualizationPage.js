@@ -11,7 +11,7 @@ function TsneVisulizationPage(props) {
 
   // meta tags
 
-  const metaTitle = t('Spatial visualization');
+  const metaTitle = t('Spatial Visualization');
 
   const metaDescription = t('Spatial Visualization');
 
