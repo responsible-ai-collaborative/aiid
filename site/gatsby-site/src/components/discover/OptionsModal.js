@@ -11,7 +11,7 @@ import Col from 'elements/Col';
 import Button from 'elements/Button';
 // https://www.algolia.com/doc/guides/building-search-ui/going-further/native/react/?language=react#create-a-modal
 
-function OptionsModal({ setHideDuplicates, hideDuplicates }) {
+function OptionsModal({ searchState, setSearchState }) {
   const [showModal, setShowModal] = useState(false);
 
   const handleClose = () => setShowModal(false);
@@ -42,9 +42,15 @@ function OptionsModal({ setHideDuplicates, hideDuplicates }) {
             <Form.Check
               type="switch"
               id="hide-duplicates-modal"
-              checked={hideDuplicates}
+              checked={searchState.refinementList.hideDuplicates}
               onClick={(event) => {
-                setHideDuplicates(event.target.checked);
+                setSearchState({
+                  ...searchState,
+                  refinementList: {
+                    ...searchState.refinementList,
+                    hideDuplicates: event.target.checked,
+                  },
+                });
               }}
             />
             <Form.Label for="hide-duplicates-modal">
