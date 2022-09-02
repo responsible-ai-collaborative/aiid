@@ -24,6 +24,14 @@
         @apply flex-auto;
     }
 
+    input:not(.error) {
+        @apply text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500;
+    }
+    
+    input.error {
+        @apply bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5;
+    }
+
     p {
         @apply mb-4 mt-0;
     }

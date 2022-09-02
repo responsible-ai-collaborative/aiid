@@ -64,7 +64,7 @@ const LandingPage = (props) => {
 
         <Row className="mt-2">
           <Col>
-            <QuickSearch className="text-center border-0" />
+            <QuickSearch className="text-center border-0 flex justify-center" />
           </Col>
         </Row>
 
@@ -74,8 +74,8 @@ const LandingPage = (props) => {
           </Col>
         </Row>
 
-        <Row className="mt-4">
-          <Col>
+        <Row className="mt-8">
+          <Col className="flex flex-col items-center">
             <QuickAdd />
           </Col>
         </Row>

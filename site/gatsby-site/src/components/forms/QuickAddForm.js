@@ -12,7 +12,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
-import Button from 'elements/Button';
 
 // set in form //
 // * url: "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti" # The fully qualified URL to the report as hosted on the web.
@@ -79,28 +78,48 @@ const QuickAddForm = ({ className = '' }) => {
   });
 
   return (
-    <div className="bootstrap">
-      <Form onSubmit={handleSubmit} className={className} data-cy="quick-add">
-        <Row className="w-full">
-          <Form.Group as={Col} controlId="formUrl" className="flex-1">
-            <Form.Control
-              type="text"
-              name="url"
-              placeholder={t('Report URL')}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.url}
-              isInvalid={!!errors.url}
-            />
-            <Form.Control.Feedback type="invalid">{errors.url}</Form.Control.Feedback>
-          </Form.Group>
+    <div className="">
+      <form onSubmit={handleSubmit} className={className} data-cy="quick-add">
+        <div className="relative">
+          <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+            <svg
+              aria-hidden="true"
+              className="w-5 h-5 text-gray-500 dark:text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              ></path>
+            </svg>
+          </div>
+          <input
+            type="text"
+            name="url"
+            placeholder={t('Report URL')}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            defaultValue={values.url}
+            // isInvalid={!!errors.url}
+            className={`block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
+              errors.url ? 'is-invalid' : ''
+            }`}
+          />
 
-          <Col xs="auto" className="flex-0-0-auto w-auto">
-            <Button variant="primary" type="submit" disabled={isSubmitting || !!errors.url}>
-              <Trans>Submit</Trans>
-            </Button>
-          </Col>
-        </Row>
+          <button
+            type="submit"
+            className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            disabled={isSubmitting || !!errors.url}
+          >
+            <Trans>Submit</Trans>
+          </button>
+        </div>
+        <p className="mt-2 text-sm text-red-600 dark:text-red-500">{errors.url}</p>
         <Row className="mt-2">
           <Col>
             <Form.Text className="text-muted-gray">
@@ -114,7 +133,7 @@ const QuickAddForm = ({ className = '' }) => {
             </Form.Text>
           </Col>
         </Row>
-      </Form>
+      </form>
     </div>
   );
 };

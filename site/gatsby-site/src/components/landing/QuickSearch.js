@@ -50,8 +50,8 @@ export default function QuickSearch({ className }) {
   return (
     <>
       <Card className={className}>
-        <Card.Body>
-          <Form onSubmit={submit} id="quickSearch" className="flex-1">
+        <Card.Body className="flex justify-center items-center">
+          <Form onSubmit={submit} id="quickSearch" className="flex-1 w-full md:max-w-3xl">
             <div className="relative">
               <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
                 <svg
