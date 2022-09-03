@@ -1,15 +1,15 @@
-import EntitiesCard from 'components/entities/EntitiesCard';
-import Layout from 'components/Layout';
+import EntitiesTable from 'components/entities/EntitiesTable';
+import LayoutHideSidebar from 'components/LayoutHideSidebar';
 import React from 'react';
 
 const EntitiesPage = ({ pageContext, ...props }) => {
   const { entities } = pageContext;
 
   return (
-    <Layout {...props}>
-      <h1>Entities</h1>
-      <EntitiesCard entities={entities} />
-    </Layout>
+    <LayoutHideSidebar {...props}>
+      <h1 className="text-5xl mt-6 font-extrabold dark:text-white">Entities</h1>
+      <EntitiesTable data={entities} className="mt-6" />
+    </LayoutHideSidebar>
   );
 };
 
