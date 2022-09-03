@@ -42,7 +42,7 @@ function PartiesList({ parties }) {
 }
 
 export default function AllegedEntities({ incident, entities }) {
-  if (entities.length == 1) {
+  if (entities.incidentsAsDeployer.length === 0 && entities.incidentsAsDeveloper === 0) {
     const [entity] = entities;
 
     return (
