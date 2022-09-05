@@ -42,14 +42,18 @@ function PartiesList({ parties }) {
 }
 
 export default function AllegedEntities({ incident, entities }) {
-  if (entities.incidentsAsDeployer.length === 0 && entities.incidentsAsDeveloper === 0) {
-    const [entity] = entities;
-
+  if (
+    entities.every(
+      (e) =>
+        e.incidentsAsBoth.length === e.incidentsAsDeveloper.length &&
+        e.incidentsAsBoth.length === e.incidentsAsDeployer.length
+    )
+  ) {
     return (
       <div>
         <Trans>
-          Alleged: <EntityBadge entity={entity} /> developed and deployed an AI system, which harmed{' '}
-          <PartiesList parties={incident.Alleged_harmed_or_nearly_harmed_parties} />.
+          Alleged: <EntitiesList entities={entities} /> developed and deployed an AI system, which
+          harmed <PartiesList parties={incident.Alleged_harmed_or_nearly_harmed_parties} />.
         </Trans>
       </div>
     );
