@@ -65,7 +65,7 @@ const ReadMoreText = ({ text, rows = 3, visibility, ...props }) => {
   }, [visibility]);
 
   return (
-    <div>
+    <div className="bootstrap">
       <Container ref={parentRef} showMore={showMore} rows={rows} {...props}>
         <Text ref={textRef}>
           {text.split('\n').map((p, key) => (

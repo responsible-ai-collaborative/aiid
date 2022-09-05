@@ -29,7 +29,7 @@ const ReportList = ({ report }) => (
 
 const IncidentList = ({ incidents }) => {
   return (
-    <>
+    <div className="bootstrap">
       {incidents.map((incident) => (
         <div key={incident.incident_id}>
           <h2 className="tw-mt-4">Incident {incident.incident_id}</h2>
@@ -38,7 +38,7 @@ const IncidentList = ({ incidents }) => {
           ))}
         </div>
       ))}
-    </>
+    </div>
   );
 };
 

@@ -35,6 +35,7 @@ const IncidentList = ({ incidents }) => {
               Discover
             </Button>
           </h2>
+          <div className="text-xl">“{incident.title}”</div>
           <ReportList items={incident.reports} />
         </div>
       ))}
