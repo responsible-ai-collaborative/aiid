@@ -87,7 +87,7 @@ const LandingPage = (props) => {
             md={12}
             lg={6}
           >
-            <AboutDatabase className="h-full" />
+            <AboutDatabase />
           </Col>
           <Col
             className="mt-4 md:flex-0-0-auto md:w-full 992px:flex-0-0-auto 992px:w-2/4"

@@ -1,18 +1,16 @@
 import LatestPost from 'components/blog/LatestPost';
+import { Card } from 'flowbite-react';
 import React from 'react';
-import Card from 'elements/Card';
 import { Trans } from 'react-i18next';
 
 export default function Blog() {
   return (
     <>
-      <Card className="h-full">
-        <Card.Body>
-          <Card.Title as="h2">
-            <Trans ns="landing">Latest Blog Post</Trans>
-          </Card.Title>
-          <LatestPost className="mt-3" />
-        </Card.Body>
+      <Card>
+        <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+          <Trans ns="landing">Latest Blog Post</Trans>
+        </h5>
+        <LatestPost className="mt-3" />
       </Card>
     </>
   );
