@@ -44,6 +44,10 @@
         @apply text-4xl;
     }
 
+    ul, ol {
+      list-style: revert;
+    }
+
     .tw-layout {
         @apply flex md:flex content-between bg-white 767px:block border-none;
     }
