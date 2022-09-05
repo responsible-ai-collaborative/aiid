@@ -4,13 +4,13 @@ import React from 'react';
 export default function IncidentCard({ incident, className = '', ...props }) {
   return (
     <div
-      className={`tw-p-6 tw-bg-white tw-rounded-lg tw-border tw-border-gray-200 tw-shadow-md tw-dark:bg-gray-800 tw-dark:border-gray-700 ${className}`}
+      className={`p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 ${className}`}
       {...props}
     >
       <Link to={`/cite/${incident.incident_id}`}>
-        <h4 className="tw-mb-2 tw-text-2xl tw-font-bold tw-tracking-tight tw-text-gray-900 tw-dark:text-white">
-          <span className="tw-text-sm">Incident {incident.incident_id}</span>
-          <span className="tw-ml-2 tw-bg-red-100 tw-text-red-800 tw-text-xs tw-font-semibold tw-mr-2 tw-px-2.5 tw-py-0.5 tw-rounded tw-dark:bg-green-200 tw-dark:text-green-900">
+        <h4 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+          <span className="text-sm">Incident {incident.incident_id}</span>
+          <span className="ml-2 bg-red-100 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">
             {incident.reports.length} Report(s)
           </span>
           <span></span>
@@ -20,19 +20,17 @@ export default function IncidentCard({ incident, className = '', ...props }) {
       </Link>
 
       <p>{incident.date}</p>
-      <p className="tw-font-normal tw-text-gray-700 tw-dark:text-gray-400">
-        {incident.description}
-      </p>
+      <p className="font-normal text-gray-700 dark:text-gray-400">{incident.description}</p>
 
       <Link
         to={`/cite/${incident.incident_id}`}
         href="#"
-        className="tw-inline-flex tw-items-center tw-py-2 tw-px-3 tw-text-sm tw-font-medium tw-text-center tw-text-white tw-bg-blue-700 tw-rounded-lg tw-hover:bg-blue-800 tw-focus:ring-4 tw-focus:outline-none tw-focus:ring-blue-300 tw-dark:bg-blue-600 tw-dark:hover:bg-blue-700 tw-dark:focus:ring-blue-800"
+        className="inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
       >
         Learn more
         <svg
           aria-hidden="true"
-          className="tw-ml-2 tw-mr-1 tw-w-4 tw-h-4"
+          className="ml-2 mr-1 w-4 h-4"
           fill="currentColor"
           viewBox="0 0 20 20"
           xmlns="http://www.w3.org/2000/svg"

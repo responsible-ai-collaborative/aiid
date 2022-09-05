@@ -32,8 +32,8 @@ const EntityPage = ({ pageContext, data, ...props }) => {
         <>
           {section.incidents.length > 0 && (
             <>
-              <h4 className="tw-mt-24">{section.header}</h4>
-              <div className="tw-grid tw-gap-4 tw-grid-flow-row-dense md:tw-grid-cols-2 tw-mt-6">
+              <h4 className="mt-24">{section.header}</h4>
+              <div className="grid gap-4 grid-flow-row-dense md:grid-cols-2 mt-6">
                 {section.incidents.map((incident) => (
                   <IncidentCard key={incident.incident_id} incident={incident} />
                 ))}
@@ -45,8 +45,8 @@ const EntityPage = ({ pageContext, data, ...props }) => {
 
       {relatedEntities.length > 0 && (
         <>
-          <h4 className="tw-mt-24">Related Entities</h4>
-          <EntitiesCard entities={relatedEntities} className="tw-mt-6" />
+          <h4 className="mt-24">Related Entities</h4>
+          <EntitiesCard entities={relatedEntities} className="mt-6" />
         </>
       )}
     </Layout>
