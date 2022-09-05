@@ -5,8 +5,8 @@ import { defaultImage, format, quality } from '@cloudinary/base/actions/delivery
 import { auto } from '@cloudinary/base/qualifiers/format';
 import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
 import config from '../../config';
-import TextInputGroup from 'components/forms/TextInputGroup';
-import { Spinner } from 'react-bootstrap';
+import TextInputGroup from '../components/forms/TextInputGroup';
+import { Spinner } from 'flowbite-react';
 import { isWebUri } from 'valid-url';
 import { Trans } from 'react-i18next';
 
@@ -154,11 +154,11 @@ const PreviewImageInputGroup = ({
         handleBlur={handleBlur}
       />
       <figure data-cy="image-preview-figure" id="image-preview-figure" className="text-center">
-        <div className="h-[50vh] flex items-center justify-center bootstrap">
+        <div className="h-[50vh] flex items-center justify-center bootstrap mt-4 mb-4">
           {updatingImage ? (
-            <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" />
+            <Spinner />
           ) : (
-            <Image className={'mt-3 -mt-4 mr-auto mb-4'} publicID={cloudinaryID} />
+            <Image className={'mr-auto'} publicID={cloudinaryID} alt="Selected Image" />
           )}
         </div>
         <figcaption>
