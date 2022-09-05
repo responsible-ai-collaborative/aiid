@@ -42,23 +42,23 @@ Labels help streamline the process and ensure issues do not get lost or neglecte
 
 1. Consider if the issue is an Initiative, Epic, or Story. All engineering issues aside from Bugs should fall in one of these categories and be assigned a label. Other types of issues (ex: Data Editor-related) may not have this label.
 
-  ![image1_top](https://user-images.githubusercontent.com/25443411/188503602-9c93c699-5008-495f-8684-a1f18e82afea.png)
+  ![](https://user-images.githubusercontent.com/25443411/188503602-9c93c699-5008-495f-8684-a1f18e82afea.png)
 
 2. Apply a descriptor label (when applicable):
 
-  ![image3](https://user-images.githubusercontent.com/25443411/188503793-039496b3-0256-4643-9dbd-e077b0dd3024.png)
+  ![](https://user-images.githubusercontent.com/25443411/188503793-039496b3-0256-4643-9dbd-e077b0dd3024.png)
 
 ### Assign Issue
 
 Add the label “Current Backlog” to trigger assigning a contributor. Either the assigner or the contributor adds the issue’s priority and effort labels.
 
-  ![image1_bottom](https://user-images.githubusercontent.com/25443411/188503632-e27a4b6e-549e-4bbf-ad9c-2e123a2df75e.png)
+![](https://user-images.githubusercontent.com/25443411/188503632-e27a4b6e-549e-4bbf-ad9c-2e123a2df75e.png)
 
 ### Review and Publish:
 
 Once the issue has a deliverable output(s), use the Pull Request (PR) labels to move through the workflow to review and publish.
 
-![image2](https://user-images.githubusercontent.com/25443411/188503429-b38012fa-944b-49db-afbd-29ebca64e3b2.png)
+![](https://user-images.githubusercontent.com/25443411/188503429-b38012fa-944b-49db-afbd-29ebca64e3b2.png)
 
 
 ## PR labeling strategy
