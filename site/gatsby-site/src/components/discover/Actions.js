@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spinner } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
 import WebArchiveLink from '../ui/WebArchiveLink';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -12,7 +12,7 @@ import {
 import { FIND_REPORT, UPDATE_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
-import Button from 'elements/Button';
+import Button from '../../elements/Button';
 
 function FlagModalContent({ reportNumber }) {
   const { data } = useQuery(FIND_REPORT, {
@@ -40,7 +40,9 @@ function FlagModalContent({ reportNumber }) {
         <div dangerouslySetInnerHTML={{ __html: t('flagReport', { ns: 'actions' }) }} />
 
         {!report ? (
-          <Spinner size="sm" animation="border" />
+          <div className="flex justify-center">
+            <Spinner />
+          </div>
         ) : report.flag ? (
           <Button className="w-100" variant="danger" disabled data-cy="flag-toggle">
             <Trans>Flagged</Trans>
@@ -51,8 +53,9 @@ function FlagModalContent({ reportNumber }) {
             variant="danger"
             onClick={() => flagReport()}
             data-cy="flag-toggle"
+            loading={loading}
           >
-            <Trans>Flag Report</Trans> {loading && <Spinner size="sm" animation="border" />}
+            <Trans>Flag Report</Trans>
           </Button>
         )}
       </div>
@@ -71,12 +74,7 @@ export default function Actions({
 
   return (
     <>
-      <WebArchiveLink
-        url={item.url}
-        date={item.date_submitted}
-        className="btn btn-link px-1"
-        title={t('Authors')}
-      >
+      <WebArchiveLink url={item.url} date={item.date_submitted} className="btn btn-link px-1">
         <FontAwesomeIcon icon={faNewspaper} className="fa-newspaper" title="Read the Source" />
       </WebArchiveLink>
 
