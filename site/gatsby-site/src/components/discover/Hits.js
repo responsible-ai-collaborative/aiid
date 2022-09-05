@@ -7,11 +7,11 @@ import { useQueryParam } from 'use-query-params';
 
 const Hits = ({
   hits,
-  toggleFilterByIncidentId,
   authorsModal,
   submittersModal,
   flagReportModal,
   isSearchStalled,
+  toggleFilterByIncidentId,
 }) => {
   if (isSearchStalled) {
     return (

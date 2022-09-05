@@ -61,7 +61,7 @@ export default function Sponsors({ className }) {
         </Card.Title>
         <Row className="g-0 gap-4">
           <Col lg={5} md={12} sm={12} className="p-3">
-            <Card.Text className="fst-italic">
+            <Card.Text className="italic">
               <Trans i18nKey="raicDescription" ns="landing">
                 The AI Incident Database is a project of the Responsible AI Collaborative, an
                 organization chartered to advance the AI Incident Database. The governance of the
