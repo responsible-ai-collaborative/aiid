@@ -352,7 +352,7 @@
     }
 
     .tw-footer-link {
-        @apply text-inherit hover:text-primary-blue;
+        @apply text-gray-700 hover:text-primary-blue;
     }
 }
 
