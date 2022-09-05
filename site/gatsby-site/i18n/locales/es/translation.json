@@ -101,12 +101,12 @@
   "report": "informe",
   "Flag reverted.": "Denuncia cancelada",
   "Incident flagged successfully. Our editors will remove it from this list if it not relevant.": "Incidente denunciado con éxito. Nuestros editores lo eliminarán de la lista si no es relevante.",
-  "Color by editor’s classification": "Color por clasificación del editor",
-  "Darken by Severity": "Oscurecer por gravedad",
+  "Color by incident classifications from taxonomies": "Colores basados en la clasificación de los incidentes por su taxonomía",
   "This Incident in Semantic Space": "Este incidente en el espacio semántico",
-  "The visualization below plots incidents closer together according to the similarity of their reports texts, as identified through <2>our natural-language processing system</2>" : "La siguiente visualización representa los incidentes en proximidad proporcional a la similitud de los textos de sus informes, identificados a través de <2>nuestro sistema de procesamiento de lenguaje natural</2>",
+  "The visualization below shows incidents closer together when a <2>natural language processing system</2> identifies their text as being semantically similar.": "La siguiente visualización muestra los incidentes en proximidad proporcional a la similitud semántica de sus textos, identificados a través de <2>nuestro sistema de procesamiento de lenguaje natural</2>",
   "review": "revisar",
   "Loading...": "Cargando...",
   "Fetching Incidents...": "Cargando Incidentes...",
-  "Fetching Reports...": "Cargando informes..."
+  "Fetching Reports...": "Cargando informes...",
+  "Spatial Visualization": "Visualización espacial"
 }

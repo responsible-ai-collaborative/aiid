@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ListGroup, Card, Button, ButtonToolbar } from 'react-bootstrap';
+import { ListGroup, Button, ButtonToolbar } from 'react-bootstrap';
 import { Spinner } from 'flowbite-react';
 import SimilaritySelector from './SimilaritySelector';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 
-const ListContainer = styled(Card)`
+const ListContainer = styled(ListGroup)`
   margin: 1em 0;
   .reports {
     max-height: 33.3333vh;
