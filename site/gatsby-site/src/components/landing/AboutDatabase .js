@@ -5,7 +5,7 @@ import { Card } from 'flowbite-react';
 
 export default function AboutDatabase() {
   return (
-    <Card href="#">
+    <Card>
       <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
         <Trans ns="landing">About the Database</Trans>
       </h5>
