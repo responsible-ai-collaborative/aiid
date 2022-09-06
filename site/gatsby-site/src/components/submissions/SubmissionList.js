@@ -11,7 +11,7 @@ const SubmissionList = () => {
   const { data, loading } = useQuery(FIND_SUBMISSIONS);
 
   return (
-    <>
+    <div className="bootstrap">
       <p className="paragraph">
         <Trans ns="submitted" i18nKey="description">
           The following incident reports have been <Link to="/apps/submit">submitted </Link> by
@@ -37,7 +37,7 @@ const SubmissionList = () => {
             </ListGroup.Item>
           ))}
       </ListGroup>
-    </>
+    </div>
   );
 };
 

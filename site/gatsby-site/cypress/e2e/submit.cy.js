@@ -157,9 +157,7 @@ describe('The Submit form', () => {
       expect(xhr.request.body.variables.submission.editor_similar_incidents.length == 1).to.be.true;
     });
 
-    cy.get('div[class^="ToastContext"]')
-      .contains('Report successfully added to review queue')
-      .should('exist');
+    cy.contains('Report successfully added to review queue').should('exist');
 
     cy.conditionalIntercept(
       '**/graphql',

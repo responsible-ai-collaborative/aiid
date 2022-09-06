@@ -32,7 +32,7 @@ const ListedGroup = ({ item, className = '', keysToRender }) => {
       {keysToRender
         .filter((key) => !!item[key])
         .map((key) => (
-          <ListGroup.Item key={key} className="d-flex gap-4" data-cy={key}>
+          <ListGroup.Item key={key} className="flex gap-4" data-cy={key}>
             <div style={{ width: 140 }} className="flex-grow">
               <b>{key}</b>
             </div>
@@ -245,7 +245,7 @@ const SubmissionReview = ({ submission }) => {
   });
 
   return (
-    <>
+    <div className="bootstrap">
       <Card.Header data-cy="submission">
         <Row>
           <Col xs={12} sm={2} lg={2}>
@@ -304,7 +304,7 @@ const SubmissionReview = ({ submission }) => {
               <RelatedIncidents incident={submission} />
             </div>
           )}
-          <Card.Footer className="d-flex text-muted">
+          <Card.Footer className="flex text-muted-gray">
             <Button
               className="me-auto"
               data-cy="edit-submission"
@@ -331,7 +331,7 @@ const SubmissionReview = ({ submission }) => {
                   size="sm"
                   role="status"
                   aria-hidden="true"
-                  className="ms-2"
+                  className="ms-2 bootstrap"
                 />
               )}
             </Button>
@@ -365,7 +365,7 @@ const SubmissionReview = ({ submission }) => {
         onHide={() => setIsEditing(false)}
         submissionId={submission._id}
       />
-    </>
+    </div>
   );
 };
 
