@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spinner } from 'react-bootstrap';
+import { Spinner, Button } from 'flowbite-react';
 import WebArchiveLink from '../ui/WebArchiveLink';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -12,7 +12,7 @@ import {
 import { FIND_REPORT, UPDATE_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
-import Button from 'elements/Button';
+import CustomButton from '../../elements/Button';
 
 function FlagModalContent({ reportNumber }) {
   const { data } = useQuery(FIND_REPORT, {
@@ -39,22 +39,24 @@ function FlagModalContent({ reportNumber }) {
       <div className="modal-body" data-cy="flag-modal">
         <div dangerouslySetInnerHTML={{ __html: t('flagReport', { ns: 'actions' }) }} />
 
-        {!report ? (
-          <Spinner size="sm" animation="border" />
-        ) : report.flag ? (
-          <Button className="w-100" variant="danger" disabled data-cy="flag-toggle">
-            <Trans>Flagged</Trans>
-          </Button>
-        ) : (
-          <Button
-            className="w-100"
-            variant="danger"
-            onClick={() => flagReport()}
-            data-cy="flag-toggle"
-          >
-            <Trans>Flag Report</Trans> {loading && <Spinner size="sm" animation="border" />}
-          </Button>
-        )}
+        <div className="flex justify-center">
+          {!report ? (
+            <Spinner />
+          ) : report.flag ? (
+            <Button color="warning" disabled data-cy="flag-toggle">
+              <Trans>Flagged</Trans>
+            </Button>
+          ) : (
+            <Button color="warning" onClick={() => flagReport()} data-cy="flag-toggle">
+              {loading && (
+                <div className="mr-2">
+                  <Spinner size="sm" color="warning" light={true} />
+                </div>
+              )}
+              <Trans>Flag Report</Trans>
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -80,7 +82,7 @@ export default function Actions({
         <FontAwesomeIcon icon={faNewspaper} className="fa-newspaper" title="Read the Source" />
       </WebArchiveLink>
 
-      <Button
+      <CustomButton
         variant="link"
         title={t('Authors')}
         onClick={() =>
@@ -91,9 +93,9 @@ export default function Actions({
         }
       >
         <FontAwesomeIcon icon={faIdCard} className="fa-id-card" />
-      </Button>
+      </CustomButton>
 
-      <Button
+      <CustomButton
         variant="link"
         title={t('Submitters')}
         className="px-1"
@@ -105,9 +107,9 @@ export default function Actions({
         }
       >
         <FontAwesomeIcon icon={faUserShield} className="fa-user-shield" />
-      </Button>
+      </CustomButton>
 
-      <Button
+      <CustomButton
         variant="link"
         title={t('Flag Report')}
         className="px-1"
@@ -120,10 +122,10 @@ export default function Actions({
         }
       >
         <FontAwesomeIcon icon={faFlag} className="fa-flag" />
-      </Button>
+      </CustomButton>
 
       {toggleFilterByIncidentId && (
-        <Button
+        <CustomButton
           variant="link"
           aria-hidden="true"
           className="flex items-center px-1"
@@ -132,7 +134,7 @@ export default function Actions({
         >
           <FontAwesomeIcon icon={faHashtag} className="fa-hashtag" title="Incident ID" />
           {item.incident_id}
-        </Button>
+        </CustomButton>
       )}
     </>
   );
