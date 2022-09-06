@@ -7,7 +7,7 @@ import { Trans } from 'react-i18next';
 function PostPreview({ post }) {
   return (
     <>
-      <div className="max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
+      <div className="max-w-full bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
         <LocalizedLink to={post.frontmatter.slug} className="text-primary-blue max-w-full">
           <Img
             alt="post-image"
