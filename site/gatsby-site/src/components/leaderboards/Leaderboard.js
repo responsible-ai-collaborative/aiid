@@ -70,7 +70,7 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
           <ul className="divide-y divide-gray-200 dark:divide-gray-700">
             {sortedArray.map((item, index) => (
               <li
-                className="py-3 sm:py-4"
+                className="py-3 sm:py-4 list-none"
                 key={`${item.label}-${item.value}`}
                 data-cy="leaderboard-item"
               >
