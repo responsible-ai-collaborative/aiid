@@ -208,7 +208,7 @@ const IncidentReportForm = () => {
                 <Trans ns="submit">Fetch info</Trans>
               ) : (
                 <div className="flex gap-2">
-                  <Spinner />
+                  <Spinner size="sm" />
                   <Trans ns="submit">Fetching...</Trans>
                 </div>
               )}
