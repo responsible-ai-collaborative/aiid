@@ -56,31 +56,31 @@ const LandingPage = (props) => {
         <meta name="description" content={metaDescription} />
       </AiidHelmet>
       <Container>
-        <Row>
+        <Row className="mb-10">
           <Col>
             <Hero />
           </Col>
         </Row>
 
-        <Row className="mt-2">
+        <Row className="mb-10">
           <Col>
             <QuickSearch />
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="mb-10">
           <Col>
             <LatestReports latestReport={latestReport} />
           </Col>
         </Row>
 
-        <Row className="mt-8">
+        <Row className="mb-10">
           <Col className="flex flex-col items-center">
             <QuickAdd />
           </Col>
         </Row>
 
-        <Row>
+        <Row className="mb-10">
           <Col
             className="mt-4 md:flex-0-0-auto md:w-full 992px:flex-0-0-auto 992px:w-2/4"
             sm={12}
@@ -99,19 +99,19 @@ const LandingPage = (props) => {
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="mb-10">
           <Col>
             <Featured />
           </Col>
         </Row>
 
-        <Row className="mt-4">
+        <Row className="mb-10">
           <Col>
             <Leaderboards />
           </Col>
         </Row>
 
-        <Row>
+        <Row className="mb-10">
           <Col className="p-3 " md={12} lg={6}>
             <WordCounts localWordCounts={localWordCounts} />
           </Col>
