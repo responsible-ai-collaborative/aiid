@@ -94,6 +94,7 @@ const config = {
         items: [],
       },
       { title: 'Blog', label: 'blog', url: '/blog', items: [] },
+      { title: 'Entities', label: 'entities', url: '/entities', items: [] },
     ],
     frontline: true,
     ignoreIndex: false,
