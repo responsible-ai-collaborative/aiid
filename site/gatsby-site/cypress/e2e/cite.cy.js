@@ -132,6 +132,9 @@ describe('Cite pages', () => {
 
     cy.get(`[id="r${_id}"`).find('[data-cy="flag-button"]').click();
 
+    // cypress has trouble with modals
+    cy.wait(0);
+
     cy.get('[data-cy="flag-modal"]').as('modal').should('be.visible');
 
     cy.wait('@fetchReport');
@@ -150,6 +153,8 @@ describe('Cite pages', () => {
     cy.get('@modal').find('[data-cy="flag-toggle"]').should('be.disabled');
 
     cy.contains('Close').click();
+
+    cy.wait(0);
 
     cy.get('@modal').should('not.exist');
   });
@@ -189,6 +194,8 @@ describe('Cite pages', () => {
 
     cy.contains('BibTex Citation').scrollIntoView().click();
 
+    cy.wait(0);
+
     cy.get('[data-cy="bibtext-modal"]').should('be.visible').as('modal');
 
     cy.get('@modal')
@@ -209,6 +216,8 @@ describe('Cite pages', () => {
     cy.visit(url);
 
     const date = format(new Date(), 'MMMM d, y');
+
+    cy.wait(0);
 
     cy.get('[data-cy="citation"] .tw-card-body').should(
       'contain.text',
