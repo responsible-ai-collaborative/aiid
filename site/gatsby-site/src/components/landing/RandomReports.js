@@ -9,7 +9,7 @@ export default function RandomReports() {
       <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
         <Trans ns="landing">Random Reports</Trans>
       </h5>
-      <RandomIncidentsCarousel className="mt-3" />
+      <RandomIncidentsCarousel />
     </Card>
   );
 }

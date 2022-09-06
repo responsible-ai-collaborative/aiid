@@ -122,7 +122,7 @@ const LandingPage = (props) => {
 
         <Row>
           <Col md={12} lg={12}>
-            <Sponsors className="h-full" />
+            <Sponsors />
           </Col>
         </Row>
       </Container>
