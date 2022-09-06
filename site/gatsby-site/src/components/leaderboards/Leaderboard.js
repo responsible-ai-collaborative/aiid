@@ -69,7 +69,11 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
         <div className="flow-root">
           <ul className="divide-y divide-gray-200 dark:divide-gray-700">
             {sortedArray.map((item, index) => (
-              <li className="py-3 sm:py-4" key={`${item.label}-${item.value}`}>
+              <li
+                className="py-3 sm:py-4"
+                key={`${item.label}-${item.value}`}
+                data-cy="leaderboard-item"
+              >
                 <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
                   <div className="flex items-center space-x-4">
                     <div className="shrink-0">
