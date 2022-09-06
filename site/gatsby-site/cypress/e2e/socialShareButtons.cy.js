@@ -12,7 +12,7 @@ describe('Social Share buttons on pages', () => {
       page: 'Incident',
       url: incidentUrl,
       title: `Incident 10: Starbucks Employees Assigned to Bad Shifts`,
-      shareButtonSections: 2,
+      shareButtonSections: 1,
     },
     {
       page: 'Blog Post',

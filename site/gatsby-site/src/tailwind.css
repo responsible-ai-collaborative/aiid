@@ -44,12 +44,12 @@
         @apply text-4xl;
     }
 
-    .tw-layout {
-        @apply flex md:flex content-between bg-white 767px:block border-none;
+    ul, ol {
+      list-style: revert;
     }
 
-    .tw-layout li a {
-        @apply text-black;
+    .tw-layout {
+        @apply flex md:flex content-between bg-white 767px:block border-none;
     }
 
     .tw-layout .item > a:hover {
@@ -352,7 +352,7 @@
     }
 
     .tw-footer-link {
-        @apply text-inherit hover:text-primary-blue;
+        @apply text-gray-700 hover:text-primary-blue;
     }
 }
 
