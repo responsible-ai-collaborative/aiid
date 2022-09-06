@@ -14,22 +14,7 @@ const ToastsWrapper = styled.div`
 `;
 
 const CloseButton = styled(Button)`
-  &&& {
-    background: ${({ bg }) => (bg ? bg : `white`)};
-    color: white;
-    border-color: ${({ bg }) => (bg ? bg : `white`)};
-
-    :active {
-      background: ${({ bg }) => (bg ? bg : `white`)} !important;
-      border-color: ${({ bg }) => (bg ? bg : `white`)} !important;
-      box-shadow: 0 0 0 0 !important;
-    }
-
-    :focus {
-      border-color: ${({ bg }) => (bg ? bg : `white`)} !important;
-      box-shadow: 0 0 0 0 !important;
-    }
-  }
+  color: white !important;
 `;
 
 const ToastBodyContent = styled.div`
@@ -38,7 +23,7 @@ const ToastBodyContent = styled.div`
   }
   a {
     text-decoration: underline !important;
-    ${({ bg }) => (bg ? 'color: white};' : '')}
+    color: white !important;
   }
 `;
 
@@ -102,7 +87,7 @@ export function ToastContextProvider({ children }) {
                 <FontAwesomeIcon icon={severity.icon} className={severity.faClass} />
                 {message}
               </ToastBodyContent>
-              <CloseButton bg={severity.color} onClick={(e) => removeToast(e, index)}>
+              <CloseButton onClick={(e) => removeToast(e, index)} variant="link">
                 <FontAwesomeIcon icon={faTimes} className="fas fa-times" />
               </CloseButton>
             </ToastBody>

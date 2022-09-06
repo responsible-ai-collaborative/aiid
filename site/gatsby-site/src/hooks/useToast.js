@@ -13,7 +13,7 @@ export const SEVERITY = {
     key: 'success',
     icon: faCheckCircle,
     faClass: 'far fa-check-circle fa-lg',
-    className: 'bg-green-700',
+    className: 'bg-green-600',
   },
   danger: {
     key: 'danger',
