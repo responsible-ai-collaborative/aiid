@@ -1,7 +1,7 @@
 import Link from 'components/ui/Link';
 import React from 'react';
 import { Form } from 'react-bootstrap';
-import { useBlockLayout, useFilters, usePagination, useResizeColumns, useTable } from 'react-table';
+import { useFilters, usePagination, useTable } from 'react-table';
 import { Pagination } from 'flowbite-react';
 
 function HeaderText({ children, ...props }) {
@@ -9,17 +9,6 @@ function HeaderText({ children, ...props }) {
     <h6 className="whitespace-nowrap overflow-hidden text-ellipsis" {...props}>
       {children}
     </h6>
-  );
-}
-
-function ResizeHandle({ isResizing, ...props }) {
-  return (
-    <div
-      {...props}
-      className={`inline-block w-[6px] h-full absolute right-0 top-0 translate-x-0.5 z-1 touch-none ${
-        isResizing ? 'bg-blue-100' : 'bg-gray-100'
-      }`}
-    />
   );
 }
 
@@ -96,8 +85,8 @@ const entitiesFilter = (rows, [field], value) =>
 export default function EntitiesTable({ data, className = '' }) {
   const defaultColumn = React.useMemo(
     () => ({
-      minWidth: 30,
-      width: 220,
+      minWidth: 240,
+      width: 320,
       maxWidth: 640,
       Filter: DefaultColumnFilter,
     }),
@@ -160,59 +149,69 @@ export default function EntitiesTable({ data, className = '' }) {
       columns,
       data,
       defaultColumn,
+      initialState: { pageSize: 50 },
     },
     useFilters,
-    useBlockLayout,
-    useResizeColumns,
     usePagination
   );
 
   return (
-    <>
+    <div className={`max-w-full ${className}`}>
       {/* eslint-disable react/jsx-key */}
 
-      <div
-        {...getTableProps()}
-        className={`inline-block text-sm text-left text-gray-500 dark:text-gray-400 ${className}`}
-        data-cy="table"
-      >
-        <div className="relative text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          {headerGroups.map((headerGroup) => (
-            <div {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <div {...column.getHeaderProps()} className="border-b border-right py-3 px-6">
-                  {column.render('Filter')}
-                  <ResizeHandle {...column.getResizerProps()} isResizing={column.isResizing} />
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-
-        {/* eslint-disable react/jsx-key */}
-
-        <div {...getTableBodyProps()}>
-          {page.map((row) => {
-            prepareRow(row);
-            return (
-              <div
-                {...row.getRowProps()}
-                className="relative bg-white border-b dark:bg-gray-900 dark:border-gray-700"
-                data-cy="row"
-              >
-                {row.cells.map((cell) => {
-                  return (
-                    <div {...cell.getCellProps()} className="py-4 px-6" data-cy="cell">
-                      {cell.render('Cell')}
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </div>
+      <div className="max-w-full overflow-x-scroll">
+        <table
+          {...getTableProps()}
+          className="w-full text-sm text-left text-gray-500 dark:text-gray-400 border-none overflow-hidden"
+        >
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            {headerGroups.map((headerGroup) => (
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  <th
+                    {...column.getHeaderProps({
+                      className:
+                        (column.collapse ? 'w-[0.0000000001%]' : 'w-[1%]') +
+                        'py-3 px-4 border-none',
+                    })}
+                  >
+                    {column.render('Filter')}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {page.map((row, i) => {
+              prepareRow(row);
+              return (
+                <tr
+                  {...row.getRowProps()}
+                  className={`border-b dark:bg-gray-800 dark:border-gray-700") + ${
+                    i % 2 == 0
+                      ? 'bg-gray-50 dark:bg-gray-800 dark:border-gray-700'
+                      : 'bg-white dark:bg-gray-900 dark:border-gray-700'
+                  }`}
+                >
+                  {row.cells.map((cell) => {
+                    return (
+                      <td
+                        {...cell.getCellProps({
+                          className:
+                            (cell.column.collapse ? 'w-[0.0000000001%]' : 'w-[1%]') +
+                            'py-4 px-4 border-none',
+                        })}
+                      >
+                        {cell.render('Cell')}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
-
       <div className="flex flex-col items-center mt-4 mb-6">
         <span className="text-sm text-gray-700 dark:text-gray-400">
           Page{' '}
@@ -227,6 +226,6 @@ export default function EntitiesTable({ data, className = '' }) {
           onPageChange={(page) => gotoPage(page)}
         />
       </div>
-    </>
+    </div>
   );
 }
