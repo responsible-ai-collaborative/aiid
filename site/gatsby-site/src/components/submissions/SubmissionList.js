@@ -32,7 +32,7 @@ const SubmissionList = () => {
             (a, b) => new Date(a.date_submitted).getTime() - new Date(b.date_submitted).getTime()
           )
           .map((submission) => (
-            <ListGroup.Item key={submission._id} className="m-0 p-0">
+            <ListGroup.Item key={submission._id} className="m-0 p-0" data-cy="submission">
               <SubmissionReview submission={submission} />
             </ListGroup.Item>
           ))}
