@@ -1,40 +1,49 @@
 import Link from 'components/ui/Link';
 import React from 'react';
 import { Form } from 'react-bootstrap';
-import { useFilters, usePagination, useTable } from 'react-table';
+import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import { Pagination } from 'flowbite-react';
 
-function HeaderText({ children, ...props }) {
+function SortButton({ column, ...props }) {
+  const { isSorted } = column;
+
   return (
-    <h6 className="whitespace-nowrap overflow-hidden text-ellipsis" {...props}>
-      {children}
+    <button {...props} className={isSorted ? 'text-blue-500' : ''}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="ml-1 w-3 h-3"
+        aria-hidden="true"
+        fill="currentColor"
+        viewBox="0 0 320 512"
+      >
+        <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
+      </svg>
+    </button>
+  );
+}
+
+function HeaderText({ column, ...props }) {
+  return (
+    <h6 className="whitespace-nowrap overflow-hidden text-ellipsis m-0" {...props}>
+      {column.Header}
     </h6>
   );
 }
 
-function DefaultColumnFilter({
-  column: { Header, canFilter, filterValue, preFilteredRows, setFilter },
-}) {
+function DefaultColumnFilter({ column: { Header, filterValue, preFilteredRows, setFilter } }) {
   const count = preFilteredRows.length;
 
-  if (!canFilter) {
-    return <HeaderText>{Header}</HeaderText>;
-  }
-
   return (
-    <>
-      <HeaderText>{Header}</HeaderText>
-      <Form.Control
-        data-cy={`input-filter-${Header}`}
-        className="w-100"
-        type="text"
-        value={filterValue || ''}
-        onChange={(e) => {
-          setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
-        }}
-        placeholder={`Search ${count} records...`}
-      />
-    </>
+    <Form.Control
+      data-cy={`input-filter-${Header}`}
+      className="w-100 mt-4"
+      type="text"
+      value={filterValue || ''}
+      onChange={(e) => {
+        setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
+      }}
+      placeholder={`Search ${count} records...`}
+    />
   );
 }
 
@@ -82,6 +91,10 @@ const entitiesFilter = (rows, [field], value) =>
     );
   });
 
+const sortByCount = (rowA, rowB, id) => {
+  return rowA.values[id].length - rowB.values[id].length;
+};
+
 export default function EntitiesTable({ data, className = '' }) {
   const defaultColumn = React.useMemo(
     () => ({
@@ -111,24 +124,28 @@ export default function EntitiesTable({ data, className = '' }) {
         accessor: 'incidentsAsBoth',
         Cell: IncidentsCell,
         filter: incidentFilter,
+        sortType: sortByCount,
       },
       {
         Header: 'As Deployer',
         accessor: 'incidentsAsDeployer',
         Cell: IncidentsCell,
         filter: incidentFilter,
+        sortType: sortByCount,
       },
       {
         Header: 'As Developer',
         accessor: 'incidentsAsDeveloper',
         Cell: IncidentsCell,
         filter: incidentFilter,
+        sortType: sortByCount,
       },
       {
         Header: 'Related Entities',
         accessor: 'relatedEntities',
         Cell: EntitiestCell,
         filter: entitiesFilter,
+        sortType: sortByCount,
       },
     ];
 
@@ -149,9 +166,10 @@ export default function EntitiesTable({ data, className = '' }) {
       columns,
       data,
       defaultColumn,
-      initialState: { pageSize: 50 },
+      initialState: { pageSize: 50, sortBy: [{ id: 'incidentsAsBoth', desc: true }] },
     },
     useFilters,
+    useSortBy,
     usePagination
   );
 
@@ -169,12 +187,15 @@ export default function EntitiesTable({ data, className = '' }) {
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
                   <th
-                    {...column.getHeaderProps({
-                      className:
-                        (column.collapse ? 'w-[0.0000000001%]' : 'w-[1%]') +
-                        'py-3 px-4 border-none',
-                    })}
+                    {...column.getHeaderProps()}
+                    className={`${
+                      column.collapse ? 'w-[0.0000000001%]' : 'w-[1%]'
+                    } py-3 px-4 border-none`}
                   >
+                    <div className="flex justify-between items-center">
+                      <HeaderText column={column} />
+                      <SortButton column={column} {...column.getSortByToggleProps()} />
+                    </div>
                     {column.render('Filter')}
                   </th>
                 ))}
