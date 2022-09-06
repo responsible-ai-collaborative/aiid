@@ -56,7 +56,7 @@ export default function Sponsors() {
         <div className="flex gap-2 flex-wrap">
           <div className="flex-1">
             <p className="italic">
-              <Trans i18nKey="leaderboardDescription" ns="landing">
+              <Trans i18nKey="raicDescription" ns="landing">
                 The AI Incident Database is a project of the Responsible AI Collaborative, an
                 organization chartered to advance the AI Incident Database. The governance of the
                 Collaborative is architected around the participation in its impact programming. For
