@@ -45,8 +45,10 @@ const removeEmptyAttributes = (obj) => {
 
 const convertArrayToString = (obj) => {
   for (const attr in obj) {
-    if (obj[attr].length > 0) {
-      obj[attr] = obj[attr].join('||');
+    if (Array.isArray(obj[attr])) {
+      if (obj[attr].length > 0) {
+        obj[attr] = obj[attr].join('||');
+      }
     }
   }
   return { ...obj };
@@ -72,6 +74,10 @@ const convertStringToArray = (obj) => {
         newObj[attr][0] = newObj[attr][0].substr(4);
       } else {
         newObj[attr] = obj[attr].split('||');
+      }
+    } else {
+      if (obj[attr]) {
+        newObj[attr] = obj[attr];
       }
     }
   }
@@ -189,8 +195,6 @@ function DiscoverApp(props) {
     setSearchState({ ...searchState });
   };
 
-  const [hideDuplicates, setHideDuplicates] = useState(false);
-
   const toggleFilterByIncidentId = useCallback(
     (incidentId) => {
       const newSearchState = {
@@ -238,27 +242,23 @@ function DiscoverApp(props) {
           searchState={searchState}
           onSearchStateChange={onSearchStateChange}
         >
-          <Configure hitsPerPage={28} distinct={hideDuplicates} />
+          <Configure hitsPerPage={28} distinct={searchState.refinementList.hideDuplicates} />
 
           <VirtualFilters />
 
-          <Container className="tw-container-xl tw-mt-6">
-            <Row className="tw-px-0 tw-mx-0">
-              <Col className="tw-px-0 tw-mx-0">
+          <Container className="tw-container-xl mt-6">
+            <Row className="px-0 mx-0">
+              <Col className="px-0 mx-0">
                 <SearchBox defaultRefinement={query.s} />
               </Col>
             </Row>
 
-            <Controls
-              query={query}
-              setHideDuplicates={setHideDuplicates}
-              hideDuplicates={hideDuplicates}
-            />
+            <Controls query={query} searchState={searchState} setSearchState={setSearchState} />
 
             <OptionsModal
               className="hiddenDesktop"
-              setHideDuplicates={setHideDuplicates}
-              hideDuplicates={hideDuplicates}
+              searchState={searchState}
+              setSearchState={setSearchState}
             />
           </Container>
 

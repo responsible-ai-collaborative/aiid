@@ -52,7 +52,7 @@ const reportsWithIncidentIds = async (reports, client) => {
       incident.reports
         .map((incidentReport) => incidentReport.report_number)
         .includes(report.report_number)
-    )[0].incident_id,
+    )[0]?.incident_id,
   }));
 };
 
@@ -233,27 +233,29 @@ const RelatedIncidents = ({
   }, [queryVariables]);
 
   return (
-    <ListGroup data-cy="related-reports" className={className}>
-      {Object.keys(searchColumns).map((key) => {
-        const column = searchColumns[key];
+    <div className="bootstrap">
+      <ListGroup data-cy="related-reports" className={className + ' bootstrap'}>
+        {Object.keys(searchColumns).map((key) => {
+          const column = searchColumns[key];
 
-        return (
-          <RelatedIncidentsArea
-            key={key}
-            columnKey={key}
-            loading={loading[key]}
-            reports={searchColumns[key].showIncidents ? null : relatedReports[key]}
-            incidents={searchColumns[key].showIncidents ? relatedIncidents[key] : null}
-            header={column.header(incident)}
-            setFieldValue={setFieldValue}
-            {...{
-              editId: column.editId,
-              editSimilar: column.editSimilar,
-            }}
-          />
-        );
-      })}
-    </ListGroup>
+          return (
+            <RelatedIncidentsArea
+              key={key}
+              columnKey={key}
+              loading={loading[key]}
+              reports={searchColumns[key].showIncidents ? null : relatedReports[key]}
+              incidents={searchColumns[key].showIncidents ? relatedIncidents[key] : null}
+              header={column.header(incident)}
+              setFieldValue={setFieldValue}
+              {...{
+                editId: column.editId,
+                editSimilar: column.editSimilar,
+              }}
+            />
+          );
+        })}
+      </ListGroup>
+    </div>
   );
 };
 

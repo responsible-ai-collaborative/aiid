@@ -29,7 +29,7 @@ const ListedGroup = ({ item, className = '', keysToRender }) => {
       {keysToRender
         .filter((key) => !!item[key])
         .map((key) => (
-          <ListGroup.Item key={key} className="d-flex gap-4" data-cy={key}>
+          <ListGroup.Item key={key} className="flex gap-4" data-cy={key}>
             <div style={{ width: 140 }} className="flex-grow">
               <b>{key}</b>
             </div>
@@ -54,7 +54,7 @@ const dateRender = [
   'date_modified',
 ];
 
-const otherDetails = ['language', '_id'];
+const otherDetails = ['language', '_id', 'developers', 'deployers', 'harmed_parties'];
 
 const SubmissionReview = ({ submission }) => {
   const { isRole } = useUserContext();
@@ -92,6 +92,13 @@ const SubmissionReview = ({ submission }) => {
   const addToast = useToastContext();
 
   const promoteSubmission = useCallback(async () => {
+    if (!submission.developers || !submission.deployers || !submission.harmed_parties) {
+      addToast({
+        message: `Please review submission before approving. Some data is missing.`,
+        severity: SEVERITY.danger,
+      });
+      return;
+    }
     const {
       data: {
         promoteSubmissionToReport: { 0: incident },
@@ -118,6 +125,9 @@ const SubmissionReview = ({ submission }) => {
     const report = {
       ...submission,
       incident_id: undefined,
+      deployers: undefined,
+      developers: undefined,
+      harmed_parties: undefined,
       _id: undefined,
       __typename: undefined,
       nlp_similar_incidents: undefined,
@@ -156,10 +166,7 @@ const SubmissionReview = ({ submission }) => {
           set: {
             title: submission.title,
             date: submission.incident_date,
-            description: '',
-            AllegedDeployerOfAISystem: [],
-            AllegedDeveloperOfAISystem: [],
-            AllegedHarmedOrNearlyHarmedParties: [],
+            description: submission.description,
           },
         },
       });
@@ -194,7 +201,7 @@ const SubmissionReview = ({ submission }) => {
   });
 
   return (
-    <>
+    <div className="bootstrap">
       <Card.Header data-cy="submission">
         <Row>
           <Col xs={12} sm={2} lg={2}>
@@ -253,7 +260,7 @@ const SubmissionReview = ({ submission }) => {
               <RelatedIncidents incident={submission} />
             </div>
           )}
-          <Card.Footer className="d-flex text-muted">
+          <Card.Footer className="flex text-muted-gray">
             <Button
               className="me-auto"
               data-cy="edit-submission"
@@ -280,7 +287,7 @@ const SubmissionReview = ({ submission }) => {
                   size="sm"
                   role="status"
                   aria-hidden="true"
-                  className="ms-2"
+                  className="ms-2 bootstrap"
                 />
               )}
             </Button>
@@ -314,7 +321,7 @@ const SubmissionReview = ({ submission }) => {
         onHide={() => setIsEditing(false)}
         submissionId={submission._id}
       />
-    </>
+    </div>
   );
 };
 

@@ -87,7 +87,7 @@ const SubmittedIncidentsPage = ({ ...props }) => {
         </StyledHeading>
       </div>
       <SubmissionList />
-      <StyledMainWrapper>
+      <StyledMainWrapper className="bootstrap">
         <h1>
           <Trans ns="submitted">Quick Add URLs</Trans>
         </h1>

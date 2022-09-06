@@ -47,6 +47,38 @@ export const schema = yup.object().shape({
     .min(6, '*Title must have at least 6 characters')
     .max(500, "*Titles can't be longer than 500 characters")
     .required('*Title is required'),
+  description: yup
+    .string()
+    .min(3, 'Description must have at least 3 characters')
+    .max(200, "Description can't be longer than 200 characters")
+    .when('_id', {
+      is: (_id) => _id !== undefined,
+      then: yup.string().required('*Incident Description required'),
+    }),
+  developers: yup
+    .string()
+    .min(3, 'Alleged Developer must have at least 3 characters')
+    .max(200, "Alleged Developers can't be longer than 200 characters")
+    .when('_id', {
+      is: (_id) => _id !== undefined,
+      then: yup.string().required('*Developer is required'),
+    }),
+  deployers: yup
+    .string()
+    .min(3, 'Alleged Deployers must have at least 3 characters')
+    .max(200, "Alleged Deployers can't be longer than 200 characters")
+    .when('_id', {
+      is: (_id) => _id !== undefined,
+      then: yup.string().required('*Deployer is required'),
+    }),
+  harmed_parties: yup
+    .string()
+    .min(3, 'Harmed Parties must have at least 3 characters')
+    .max(200, "Harmed Parties can't be longer than 200 characters")
+    .when('_id', {
+      is: (_id) => _id !== undefined,
+      then: yup.string().required('*Harm Parties is required'),
+    }),
   authors: yup
     .string()
     .min(3, '*Authors must have at least 3 characters')
@@ -58,8 +90,8 @@ export const schema = yup.object().shape({
     .max(200, "*Submitter list can't be longer than 200 characters"),
   text: yup
     .string()
-    .min(80, '*Text must have at least 80 characters')
-    .max(50000, "*Text can't be longer than 50000 characters")
+    .min(80, `*Text must have at least 80 characters`)
+    .max(50000, `*Text can’t be longer than 50000 characters`)
     .required('*Text is required'),
   date_published: yup
     .string()
@@ -195,7 +227,7 @@ const SubmissionForm = () => {
   }, [values.image_url]);
 
   return (
-    <>
+    <div className="bootstrap">
       <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
         <TextInputGroup
           name="url"
@@ -240,6 +272,41 @@ const SubmissionForm = () => {
           className="mt-3"
           {...TextInputGroupProps}
         />
+
+        <TextInputGroup
+          name="description"
+          label="Description"
+          as="textarea"
+          placeholder="Report Description"
+          rows={3}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
+        <TextInputGroup
+          name="developers"
+          label="Alleged developer of AI system"
+          placeholder="Alleged developer of AI system"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
+        <TextInputGroup
+          name="deployers"
+          label="Alleged deployer of AI system"
+          placeholder="Alleged deployer of AI system"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
+        <TextInputGroup
+          name="harmed_parties"
+          label="Alleged harmed or nearly harmed parties"
+          placeholder="Alleged harmed or nearly harmed parties"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
         <TextInputGroup
           name="authors"
           label={t('Author CSV')}
@@ -289,10 +356,35 @@ const SubmissionForm = () => {
           {...TextInputGroupProps}
         />
 
-        <Form.Group className="mt-3" data-color-mode="light">
+        <Form.Group
+          className={'mt-3' + (touched['text'] && errors['text'] ? ' is-invalid' : '')}
+          data-color-mode="light"
+        >
           <Label popover="text" label={t('Text')} />
-          <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
+          <div style={{ position: 'relative' }}>
+            {touched['text'] && errors['text'] && (
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: '0px',
+                  border: '1px solid var(--bs-red)',
+                  zIndex: 10,
+                  pointerEvents: 'none',
+                }}
+              />
+            )}
+            <Editor
+              value={values.text}
+              onChange={(value) => {
+                setFieldValue('text', value);
+                setFieldTouched('text', true);
+              }}
+            />
+          </div>
         </Form.Group>
+        <Form.Control.Feedback type="invalid">
+          <Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans>
+        </Form.Control.Feedback>
 
         <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
 
@@ -352,7 +444,7 @@ const SubmissionForm = () => {
           {...TextInputGroupProps}
         />
       </Form>
-    </>
+    </div>
   );
 };
 

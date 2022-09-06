@@ -15,18 +15,18 @@ const SidebarLayout = ({ collapse, setNavCollapsed }) => {
           dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
         />
       ) : null}
-      <ul className={'tw-side-bar-ul'}>
+      <ul className={'tw-side-bar-ul'} style={{ paddingLeft: '0px' }}>
         <li className="hide-front-line first-level item">
-          <ul>
+          <ul style={{ paddingLeft: '0px' }}>
             <Tree setNavCollapsed={setNavCollapsed} />
           </ul>
         </li>
-        {config.sidebar.links && config.sidebar.links.length > 0 && (
+        {config.sidebar.links && config.sidebar.links?.length > 0 && (
           <li className="tw-li-divider">
             <hr />
           </li>
         )}
-        {config.sidebar.links.map((link, key) => {
+        {config.sidebar.links?.map((link, key) => {
           if (link.link !== '' && link.text !== '') {
             return (
               <li className={'side-bar-links'} key={key}>

@@ -1,22 +1,10 @@
 import { faGithubSquare, faTwitterSquare } from '@fortawesome/free-brands-svg-icons';
-import { faRssSquare } from '@fortawesome/free-solid-svg-icons';
+import { faExternalLinkAlt, faRssSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { graphql, useStaticQuery } from 'gatsby';
 import React from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
-import styled from 'styled-components';
-
-const Icons = styled.div`
-  display: flex;
-  gap: 1rem;
-`;
-
-const FooterLink = styled.a`
-  color: inherit;
-  :hover {
-    color: var(--primary3);
-  }
-`;
+import config from '../../../config';
+import { LocalizedLink } from 'gatsby-theme-i18n';
 
 export default function Footer() {
   const data = useStaticQuery(graphql`
@@ -48,46 +36,85 @@ export default function Footer() {
   } = data;
 
   return (
-    <Container fluid as="footer" className="bg-light" style={{ position: 'relative' }}>
-      <Row className="justify-content-md-center p-4">
-        <Col xs="auto">2022 - AI Incident Database</Col>
-        <Col xs="auto">
-          <Icons>
-            <a href={'https://twitter.com/IncidentsDB'} target="_blank" rel="noreferrer">
-              <FontAwesomeIcon
-                icon={faTwitterSquare}
-                color={'gray'}
-                className="pointer fa fa-lg"
-                title="Open Twitter"
-              />
-            </a>
+    <footer className="bg-text-light-gray relative sm:grid sm:grid-cols-2 md:grid-cols-4 gap-5 p-5">
+      {config.footer.navConfig.map((group) => (
+        <div key={group.title}>
+          <h3 className="text-base">{group.title}</h3>
+          <ul className="p-0 list-none">
+            {group.items.map(
+              (item) =>
+                item.title && (
+                  <li key={item.title}>
+                    {item.url.includes('http') ? (
+                      <a href={item.url} className="tw-footer-link">
+                        {item.title}{' '}
+                        <FontAwesomeIcon
+                          icon={faExternalLinkAlt}
+                          color={'gray'}
+                          className="pointer fa fa-sm "
+                          title="External Link"
+                        />
+                      </a>
+                    ) : (
+                      <LocalizedLink to={item.url} className="tw-footer-link">
+                        {item.title}
+                      </LocalizedLink>
+                    )}
+                  </li>
+                )
+            )}
+          </ul>
+        </div>
+      ))}
+      <div>
+        <h3 className="text-base">2022 - AI Incident Database</h3>
 
-            <a href={githubUrl} target="_blank" rel="noreferrer">
-              <FontAwesomeIcon
-                icon={faGithubSquare}
-                color={'gray'}
-                className="pointer fa fa-lg"
-                title="Open github"
-              />
-            </a>
+        <LocalizedLink to="/terms-of-use" className="tw-footer-link">
+          Terms of use
+        </LocalizedLink>
+        <br />
+        <LocalizedLink to="/privacy-policy" className="tw-footer-link">
+          Privacy Policy
+        </LocalizedLink>
+        <div className="pt-3">
+          <a
+            href={'https://twitter.com/IncidentsDB'}
+            target="_blank"
+            rel="noreferrer"
+            className="pr-2 tw-footer-link"
+          >
+            <FontAwesomeIcon
+              icon={faTwitterSquare}
+              color={'gray'}
+              className="pointer fa fa-lg"
+              title="Open Twitter"
+            />
+          </a>
 
-            <a href={'/rss.xml'} target="_blank" rel="noopener noreferrer">
-              <FontAwesomeIcon
-                icon={faRssSquare}
-                color={'gray'}
-                className="pointer fa fa-lg"
-                title="Open RSS Feed"
-              />
-            </a>
-          </Icons>
-        </Col>
-        <Col xs="auto">
-          <FooterLink href="/terms-of-use">Terms of use</FooterLink>
-        </Col>
-        <Col xs="auto">
-          <FooterLink href="/privacy-policy">Privacy</FooterLink>
-        </Col>
-      </Row>
-    </Container>
+          <a href={githubUrl} target="_blank" rel="noreferrer" className="pr-2 tw-footer-link">
+            <FontAwesomeIcon
+              icon={faGithubSquare}
+              color={'gray'}
+              className="pointer fa fa-lg"
+              title="Open github"
+            />
+          </a>
+
+          <a
+            href={'/rss.xml'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="pr-2 tw-footer-link"
+          >
+            <FontAwesomeIcon
+              icon={faRssSquare}
+              color={'gray'}
+              className="pointer fa fa-lg"
+              title="Open RSS Feed"
+            />
+          </a>
+        </div>
+      </div>
+    </footer>
   );
 }

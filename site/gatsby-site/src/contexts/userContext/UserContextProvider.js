@@ -5,6 +5,10 @@ import { UserContext } from './UserContext';
 import { ApolloProvider, ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import config from '../../../config';
 import fetch from 'cross-fetch';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { useTranslation } from 'react-i18next';
+import { navigate } from 'gatsby';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 
 // https://github.com/mongodb-university/realm-graphql-apollo-react/blob/master/src/index.js
 
@@ -12,7 +16,6 @@ const getApolloCLient = (getValidAccessToken) =>
   new ApolloClient({
     link: new HttpLink({
       uri: `https://realm.mongodb.com/api/client/v2.0/app/${config.realm.production_db.realm_app_id}/graphql`,
-
       fetch: async (uri, options) => {
         const accessToken = await getValidAccessToken();
 
@@ -44,6 +47,12 @@ export const UserContextProvider = ({ children }) => {
 
   const [user, setUser] = useState(realmApp.currentUser);
 
+  const { t } = useTranslation();
+
+  const localizePath = useLocalizePath();
+
+  const addToast = useToastContext();
+
   const logout = async () => {
     await realmApp.currentUser.logOut();
 
@@ -51,20 +60,61 @@ export const UserContextProvider = ({ children }) => {
     await login();
   };
 
-  const login = async ({ email = null, password = null } = {}) => {
-    let credentials = null;
+  const login = async ({
+    email = null,
+    password = null,
+    provider = null,
+    loginRedirectUri = null,
+    redirectToHomePage = false,
+  } = {}) => {
+    try {
+      setLoading(true);
 
-    if (email && password) {
-      credentials = Realm.Credentials.emailPassword(email, password);
-    } else {
-      credentials = Realm.Credentials.anonymous();
+      let credentials = null;
+
+      if (email && password) {
+        credentials = Realm.Credentials.emailPassword(email, password);
+      } else if (provider === 'facebook' && loginRedirectUri) {
+        credentials = Realm.Credentials.facebook(loginRedirectUri);
+      } else if (provider === 'google' && loginRedirectUri) {
+        credentials = Realm.Credentials.google(loginRedirectUri);
+      } else {
+        credentials = Realm.Credentials.anonymous();
+      }
+
+      const user = await realmApp.logIn(credentials);
+
+      if (redirectToHomePage) {
+        navigate(localizePath({ path: `/` }));
+      }
+
+      if (user.id === realmApp.currentUser.id) {
+        setUser(user);
+      }
+      return true;
+    } catch (e) {
+      setLoading(false);
+
+      addToast({
+        message: (
+          <label className="capitalize">{t(e.error || 'An unknown error has ocurred')}</label>
+        ),
+        severity: SEVERITY.danger,
+      });
+      return false;
     }
+  };
 
-    const user = await realmApp.logIn(credentials);
+  const loginWithEmail = async ({ email, password }) => {
+    return await login({ email, password, redirectToHomePage: true });
+  };
 
-    if (user.id === realmApp.currentUser.id) {
-      setUser(user);
-    }
+  const loginWithFacebook = async ({ loginRedirectUri }) => {
+    await login({ provider: 'facebook', loginRedirectUri, redirectToHomePage: true });
+  };
+
+  const loginWithGoogle = async ({ loginRedirectUri }) => {
+    await login({ provider: 'google', loginRedirectUri, redirectToHomePage: true });
   };
 
   const sendResetPasswordEmail = async ({ email }) => {
@@ -73,6 +123,10 @@ export const UserContextProvider = ({ children }) => {
 
   const resetPassword = async ({ password, token, tokenId }) => {
     return realmApp.emailPasswordAuth.resetPassword(token, tokenId, password);
+  };
+
+  const signUp = async ({ email, password }) => {
+    return realmApp.emailPasswordAuth.registerUser(email, password);
   };
 
   const getValidAccessToken = async () => {
@@ -104,6 +158,7 @@ export const UserContextProvider = ({ children }) => {
       value={{
         loading,
         user,
+        isLoggedIn: user && user.isLoggedIn,
         isRole(role) {
           return (
             user &&
@@ -118,10 +173,13 @@ export const UserContextProvider = ({ children }) => {
           user.customData.roles &&
           user.customData.roles.includes('admin'),
         actions: {
-          login,
+          loginWithEmail,
+          loginWithFacebook,
+          loginWithGoogle,
           logout,
           sendResetPasswordEmail,
           resetPassword,
+          signUp,
         },
       }}
     >

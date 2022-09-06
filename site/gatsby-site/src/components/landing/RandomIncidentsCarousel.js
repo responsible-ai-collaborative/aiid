@@ -37,6 +37,7 @@ const RandomIncidentsCarousel = ({ className }) => {
             nodes {
               incident_id
               reports
+              title
             }
           }
 
@@ -44,7 +45,6 @@ const RandomIncidentsCarousel = ({ className }) => {
             nodes {
               id
               report_number
-              title
               image_url
             }
           }
@@ -60,29 +60,29 @@ const RandomIncidentsCarousel = ({ className }) => {
           )
           .map((report) => ({
             ...report,
-            incident_id: incidents.find((incident) =>
-              incident.reports.includes(report.report_number)
-            ).incident_id,
+            ...incidents.find((incident) => incident.reports.includes(report.report_number)),
           }));
 
         return (
-          <Carousel interval={60000} className={className}>
-            {randomIncidents.map(({ id, incident_id, title, image_url, cloudinary_id }) => (
-              <Carousel.Item key={id}>
-                <Link to={`/cite/${incident_id}`}>
-                  <CarouselImage
-                    publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
-                    alt={title}
-                    transformation={fill().height(480)}
-                    plugins={[]}
-                  />
-                  <Carousel.Caption>
-                    <Caption>{title}</Caption>
-                  </Carousel.Caption>
-                </Link>
-              </Carousel.Item>
-            ))}
-          </Carousel>
+          <div className="bootstrap">
+            <Carousel interval={60000} className={className}>
+              {randomIncidents.map(({ id, incident_id, title, image_url, cloudinary_id }) => (
+                <Carousel.Item key={id}>
+                  <Link to={`/cite/${incident_id}`}>
+                    <CarouselImage
+                      publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
+                      alt={title}
+                      transformation={fill().height(480)}
+                      plugins={[]}
+                    />
+                    <Carousel.Caption>
+                      <Caption>{title}</Caption>
+                    </Carousel.Caption>
+                  </Link>
+                </Carousel.Item>
+              ))}
+            </Carousel>
+          </div>
         );
       }}
     />

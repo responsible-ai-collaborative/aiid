@@ -9,11 +9,13 @@ export default function TranslationBadge({ className = '', originalLanguage = ''
 
   if (locale !== originalLanguage) {
     return (
-      <Link to="/blog/multilingual-incident-reporting">
-        <Badge className={className} bg="secondary">
-          <Trans>AI Translated</Trans>
-        </Badge>
-      </Link>
+      <div className="bootstrap">
+        <Link to="/blog/multilingual-incident-reporting">
+          <Badge className={className} bg="secondary">
+            <Trans>AI Translated</Trans>
+          </Badge>
+        </Link>
+      </div>
     );
   }
 
