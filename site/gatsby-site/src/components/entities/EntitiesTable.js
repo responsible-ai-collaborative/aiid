@@ -1,8 +1,9 @@
 import Link from 'components/ui/Link';
 import React from 'react';
 import { Form } from 'react-bootstrap';
-import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
+import { useExpanded, useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import { Pagination } from 'flowbite-react';
+import { Trans } from 'react-i18next';
 
 function SortButton({ column, ...props }) {
   const { isSorted } = column;
@@ -48,33 +49,62 @@ function DefaultColumnFilter({ column: { Header, filterValue, preFilteredRows, s
 }
 
 function IncidentsCell({ cell }) {
+  const { row } = cell;
+
   return (
     <div>
-      {cell.value.map((incident) => (
-        <Link
-          className="inline-block bg-red-100 text-red-800 text-xs font-semibold m-1 px-2.5 py-01 rounded dark:bg-green-200 dark:text-green-900"
-          to={`/cite/${incident.incident_id}`}
-          key={incident.incident_id}
-        >
-          {incident.incident_id}
-        </Link>
-      ))}
+      <div className={`text-black flex justify-between ${row.isExpanded && 'shadow'}`}>
+        {cell.value.length} Incidents{' '}
+        <button className="text-blue-600" onClick={() => cell.row.toggleRowExpanded()}>
+          {row.isExpanded ? <Trans>Collapse</Trans> : <Trans>Expand</Trans>}
+        </button>
+      </div>
+      {row.isExpanded && (
+        <ul className="divide-y divide-gray-200 dark:divide-gray-700 max-h-240 overflow-y-scroll">
+          {cell.value.map((incident) => (
+            <li className="py-2" key={incident.incident_id}>
+              <Link
+                className="inline-block bg-red-100 text-red-800 text-xs font-semibold m-1 px-2.5 py-01 rounded dark:bg-green-200 dark:text-green-900"
+                to={`/cite/${incident.incident_id}`}
+                key={incident.incident_id}
+              >
+                {incident.incident_id}
+              </Link>
+              <div className="inline text-black">{incident.title}</div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
 
 function EntitiestCell({ cell }) {
+  const { row } = cell;
+
   return (
     <div>
-      {cell.value.map((entity) => (
-        <Link
-          className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold m-1 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900"
-          to={`/entities/${entity.id}`}
-          key={entity.id}
-        >
-          {entity.name}
-        </Link>
-      ))}
+      <div className="text-black flex justify-between shadow">
+        {cell.value.length} Entities{' '}
+        <button className="text-blue-600" onClick={() => cell.row.toggleRowExpanded()}>
+          {row.isExpanded ? <Trans>Collapse</Trans> : <Trans>Expand</Trans>}
+        </button>
+      </div>
+      {row.isExpanded && (
+        <ul className="divide-y divide-gray-200 dark:divide-gray-700 max-h-240 overflow-y-scroll">
+          {cell.value.map((entity) => (
+            <li className="py-2" key={entity.id}>
+              <Link
+                className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold m-1 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900"
+                to={`/entities/${entity.id}`}
+                key={entity.id}
+              >
+                {entity.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
@@ -170,6 +200,7 @@ export default function EntitiesTable({ data, className = '' }) {
     },
     useFilters,
     useSortBy,
+    useExpanded,
     usePagination
   );
 
@@ -220,7 +251,7 @@ export default function EntitiesTable({ data, className = '' }) {
                         {...cell.getCellProps({
                           className:
                             (cell.column.collapse ? 'w-[0.0000000001%]' : 'w-[1%]') +
-                            'py-4 px-4 border-none',
+                            'py-4 px-4 border-none align-top',
                         })}
                       >
                         {cell.render('Cell')}
