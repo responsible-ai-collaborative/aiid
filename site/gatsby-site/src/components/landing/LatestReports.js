@@ -9,7 +9,7 @@ export default function LatestReports({ latestReport }) {
         <Trans ns="landing">Latest Incident Report</Trans>
       </h2>
 
-      <LatestIncidentReport className="mt-3 flex justify-center" report={latestReport} />
+      <LatestIncidentReport report={latestReport} />
     </div>
   );
 }
