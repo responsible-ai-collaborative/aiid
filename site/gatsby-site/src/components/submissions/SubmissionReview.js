@@ -8,19 +8,19 @@ import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
-import ReadMoreText from 'components/ReadMoreText';
-import RelatedIncidents from 'components/RelatedIncidents';
+import ReadMoreText from '../../components/ReadMoreText';
+import RelatedIncidents from '../../components/RelatedIncidents';
 import isArray from 'lodash/isArray';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from '../../contexts/userContext';
 import { UPDATE_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { DELETE_SUBMISSION, PROMOTE_SUBMISSION } from '../../graphql/submissions';
-import useToastContext, { SEVERITY } from 'hooks/useToast';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, getUnixTime } from 'date-fns';
 import SubmissionEditModal from './SubmissionEditModal';
-import { Spinner } from 'react-bootstrap';
-import Link from 'components/ui/Link';
+import { Spinner } from 'flowbite-react';
+import Link from '../../components/ui/Link';
 import { Trans, useTranslation } from 'react-i18next';
 
 const ListedGroup = ({ item, className = '', keysToRender }) => {
@@ -275,43 +275,28 @@ const SubmissionReview = ({ submission }) => {
               disabled={!isSubmitter || promoting}
               onClick={promoteSubmission}
             >
-              {isNewIncident ? (
-                <Trans ns="submitted">Add New Incident</Trans>
-              ) : (
-                <Trans ns="submitted">Add New Report</Trans>
-              )}
-              {promoting && (
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                  className="ms-2 bootstrap"
-                />
-              )}
+              <div className="flex gap-2">
+                {promoting && <Spinner size="sm" />}
+                {isNewIncident ? (
+                  <Trans ns="submitted">Add New Incident</Trans>
+                ) : (
+                  <Trans ns="submitted">Add New Report</Trans>
+                )}
+              </div>
             </Button>
             <Button
               variant="outline-secondary"
               disabled={!isSubmitter || deleting}
               onClick={rejectReport}
             >
-              {isNewIncident ? (
-                <Trans ns="submitted">Reject New Incident</Trans>
-              ) : (
-                <Trans ns="submitted">Reject New Report</Trans>
-              )}
-              {deleting && (
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                  className="ms-2"
-                  variant="secondary"
-                />
-              )}
+              <div className="flex gap-2">
+                {deleting && <Spinner size="sm" />}
+                {isNewIncident ? (
+                  <Trans ns="submitted">Reject New Incident</Trans>
+                ) : (
+                  <Trans ns="submitted">Reject New Report</Trans>
+                )}
+              </div>
             </Button>
           </Card.Footer>
         </div>
