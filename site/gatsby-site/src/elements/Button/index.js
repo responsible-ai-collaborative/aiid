@@ -1,26 +1,31 @@
 import { Spinner } from 'flowbite-react';
 import React from 'react';
 
-export default function Button(props) {
+export default function Button({
+  variant,
+  size = null,
+  href = null,
+  disabled = false,
+  loading = false,
+  ...props
+}) {
   let classNames = 'btn';
 
-  if (props.title === 'Flag Report') console.log('--- props.loading', props.loading);
-
   classNames += props.className ? ` ${props.className}` : '';
-  classNames += props.variant ? ` btn-${props.variant}` : '';
-  classNames += props.size ? ` btn-${props.size}` : '';
-  classNames += props.loading ? ` flex gap-2 justify-center` : '';
+  classNames += variant ? ` btn-${variant}` : '';
+  classNames += size ? ` btn-${size}` : '';
+  classNames += loading ? ` flex gap-2 justify-center` : '';
 
   return (
     <>
-      {props.href ? (
+      {href ? (
         <a {...props} className={`${classNames}`} role="button">
-          {props.loading && <Spinner />}
+          {loading && <Spinner />}
           {props.children}
         </a>
       ) : (
-        <button {...props} className={`${classNames}`}>
-          {props.loading && <Spinner />}
+        <button {...props} disabled={disabled} className={`${classNames}`}>
+          {loading && <Spinner />}
           {props.children}
         </button>
       )}
