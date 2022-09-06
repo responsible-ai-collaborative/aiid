@@ -9,17 +9,17 @@ export default function Button({
   loading = false,
   ...props
 }) {
-  let classNames = 'btn';
+  let classNames = 'tw-btn';
 
   classNames += props.className ? ` ${props.className}` : '';
-  classNames += variant ? ` btn-${variant}` : '';
-  classNames += size ? ` btn-${size}` : '';
+  classNames += variant ? ` tw-btn-${variant}` : '';
+  classNames += size ? ` tw-btn-${size}` : '';
   classNames += loading ? ` flex gap-2 justify-center` : '';
 
   return (
     <>
       {href ? (
-        <a {...props} className={`${classNames}`} role="button">
+        <a {...props} href={href} className={`${classNames}`} role="button">
           {loading && <Spinner />}
           {props.children}
         </a>
