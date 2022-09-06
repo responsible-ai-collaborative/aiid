@@ -361,19 +361,19 @@
     /* TAILWIND Sidebar starts */
 
     .tw-side-bar {
-        @apply tw-font-bold  tw-min-w-[250px] tw-font-karla tw-w-full md:tw-w-64 tw-overflow-auto tw-sticky tw-pl-0 tw-top-0 tw-pr-0 tw-h-auto  md:tw-h-screen tw-shadow-left-side-bar;
+        @apply font-bold  min-w-[250px] font-karla w-full md:w-64 overflow-auto sticky pl-0 top-0 pr-0 h-auto  md:h-screen shadow-left-side-bar;
     }
 
     .tw-side-bar.collapse {
-        @apply tw-hidden;
+        @apply hidden;
     } 
 
     .tw-li-divider {
-        @apply tw-list-none tw-py-4 tw-px-0;
+        @apply list-none py-4 px-0;
     }
 
     .tw-li-divider hr {
-        @apply tw-m-0 tw-p-0 tw-border-b tw-border-solid tw-border-b-side-bar
+        @apply m-0 p-0 border-b border-solid border-b-side-bar
     }
     
     .tw-side-bar-ul {
@@ -381,35 +381,35 @@
     }
 
     .tw-side-bar-ul .hide-front-line .collapser {
-        @apply tw-bg-transparent tw-absolute tw-cursor-pointer tw-right-5 tw-z-[1];
+        @apply bg-transparent absolute cursor-pointer right-5 z-[1];
     }
     
     .tw-side-bar-ul .hide-front-line .active > a {
-        @apply tw-bg-light-orange tw-text-white;
+        @apply bg-light-orange text-white;
     }
 
     .tw-side-bar-ul .side-bar-links {
-        @apply tw-list-none;
+        @apply list-none;
     }
 
     .tw-side-bar-ul .side-bar-links a {
-        @apply tw-text-list-gray tw-no-underline tw-py-2 tw-pr-0 tw-flex tw-items-center tw-relative tw-font-normal;
+        @apply text-list-gray no-underline py-2 pr-0 flex items-center relative font-normal;
     }
 
     .tw-side-bar-ul .side-bar-links a.level-0 {
-        @apply tw-font-bold;
+        @apply font-bold;
     }
 
     .tw-side-bar-ul .side-bar-links a:hover {
-        @apply tw-text-light-orange;
+        @apply text-light-orange;
     }
 
     .tw-side-bar-ul .side-bar-links a.active {
-        @apply tw-border-light-blue tw-border-y tw-border-r-0 tw-border-l tw-bg-white;
+        @apply border-light-blue border-y border-r-0 border-l bg-white;
     }
 
     .tw-side-bar-ul .side-bar-links a svg {
-        @apply tw-ml-[1ch] tw-align-top tw-inline;
+        @apply ml-[1ch] align-top inline;
     }
 
     .tw-side-bar-ul ul {
@@ -441,19 +441,19 @@
     }
 
     .tw-side-bar-ul .first-level ul li .collapser svg path {
-        @apply tw-fill-white;
+        @apply fill-white;
     }
     
     .tw-side-bar-ul .active .collapser > svg > path {
-        @apply tw-fill-[#001933];
+        @apply fill-[#001933];
     }
   
     .tw-side-bar-ul .first-level ul .item ul .item {
-        @apply tw-border-l tw-border-l-[#e6ecf1];
+        @apply border-l border-l-[#e6ecf1];
     }
 
     .tw-side-bar-ul .first-level > ul > .item {
-        @apply tw-ml-0;
+        @apply ml-0;
     }
 
     .tw-side-bar-title {
