@@ -1,5 +1,7 @@
 const { default: slugify } = require('slugify');
 
+const { uniqBy } = require('lodash');
+
 module.exports.computeEntities = ({ incidents }) => {
   const entititiesHash = {};
 
@@ -61,11 +63,15 @@ module.exports.computeEntities = ({ incidents }) => {
               const { id, name, incidentsAsDeveloper, incidentsAsDeployer, incidentsAsBoth } =
                 entititiesHash[relatedId];
 
+              const incidents = uniqBy(
+                [...incidentsAsDeveloper, ...incidentsAsDeployer, ...incidentsAsBoth],
+                'incident_id'
+              );
+
               related.push({
                 id,
                 name,
-                incidents:
-                  incidentsAsDeveloper.length + incidentsAsDeployer.length - incidentsAsBoth.length,
+                incidents,
               });
             }
           }

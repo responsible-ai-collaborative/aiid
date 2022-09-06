@@ -54,28 +54,24 @@ describe('createEntitiesPages', () => {
         expect(page.context.id).eq('ai-developer-1');
         expect(page.path).eq('/entities/ai-developer-1');
         expect(page.context.name).eq('AI Developer 1');
-        expect(page.context.incidentsAsDeployer).to.deep.eq([response.data.incidents.nodes[0]]);
-        expect(page.context.incidentsAsDeveloper).to.deep.eq([
-          response.data.incidents.nodes[0],
-          response.data.incidents.nodes[1],
-          response.data.incidents.nodes[3],
-        ]);
-        expect(page.context.incidentsAsBoth).to.deep.eq([response.data.incidents.nodes[0]]);
+        expect(page.context.incidentsAsDeployer).to.deep.eq([1]);
+        expect(page.context.incidentsAsDeveloper).to.deep.eq([1, 2, 4]);
+        expect(page.context.incidentsAsBoth).to.deep.eq([1]);
         expect(page.context.relatedEntities[0]).to.deep.eq({
           id: 'ai-deployer-1',
           name: 'AI Deployer 1',
-          incidents: 1,
+          incidents: [response.data.incidents.nodes[1]],
         });
 
         expect(page.context.relatedEntities[1]).to.deep.eq({
           id: 'ai-deployer-3',
           name: 'AI Deployer 3',
-          incidents: 1,
+          incidents: [response.data.incidents.nodes[3]],
         });
         expect(page.context.relatedEntities[2]).to.deep.eq({
           id: 'ai-developer-2',
           name: 'AI Developer 2',
-          incidents: 2,
+          incidents: [response.data.incidents.nodes[2], response.data.incidents.nodes[3]],
         });
       });
 
@@ -83,14 +79,18 @@ describe('createEntitiesPages', () => {
         expect(page.context.id).eq('ai-deployer-1');
         expect(page.path).eq('/entities/ai-deployer-1');
         expect(page.context.name).eq('AI Deployer 1');
-        expect(page.context.incidentsAsDeployer).to.deep.eq([response.data.incidents.nodes[1]]);
+        expect(page.context.incidentsAsDeployer).to.deep.eq([2]);
         expect(page.context.incidentsAsDeveloper).to.deep.eq([]);
         expect(page.context.incidentsAsBoth).to.deep.eq([]);
         expect(page.context.relatedEntities).to.deep.eq([
           {
             id: 'ai-developer-1',
             name: 'AI Developer 1',
-            incidents: 3,
+            incidents: [
+              response.data.incidents.nodes[0],
+              response.data.incidents.nodes[1],
+              response.data.incidents.nodes[3],
+            ],
           },
         ]);
         expect(page.context.relatedEntities).to.have.lengthOf(1);
@@ -100,28 +100,30 @@ describe('createEntitiesPages', () => {
         expect(page.context.id).eq('ai-developer-2');
         expect(page.path).eq('/entities/ai-developer-2');
         expect(page.context.name).eq('AI Developer 2');
-        expect(page.context.incidentsAsDeployer).to.deep.eq([response.data.incidents.nodes[2]]);
+        expect(page.context.incidentsAsDeployer).to.deep.eq([3]);
 
-        expect(page.context.incidentsAsDeveloper).to.deep.eq([
-          response.data.incidents.nodes[2],
-          response.data.incidents.nodes[3],
-        ]);
-        expect(page.context.incidentsAsBoth).to.deep.eq([response.data.incidents.nodes[2]]);
+        expect(page.context.incidentsAsDeveloper).to.deep.eq([3, 4]);
+        expect(page.context.incidentsAsBoth).to.deep.eq([3]);
+
         expect(page.context.relatedEntities).to.deep.eq([
           {
             id: 'ai-deployer-2',
             name: 'AI Deployer 2',
-            incidents: 1,
+            incidents: [response.data.incidents.nodes[2]],
           },
           {
             id: 'ai-deployer-3',
             name: 'AI Deployer 3',
-            incidents: 1,
+            incidents: [response.data.incidents.nodes[3]],
           },
           {
             id: 'ai-developer-1',
             name: 'AI Developer 1',
-            incidents: 3,
+            incidents: [
+              response.data.incidents.nodes[0],
+              response.data.incidents.nodes[1],
+              response.data.incidents.nodes[3],
+            ],
           },
         ]);
 
@@ -132,13 +134,13 @@ describe('createEntitiesPages', () => {
         expect(page.context.id).eq('ai-deployer-2');
         expect(page.path).eq('/entities/ai-deployer-2');
         expect(page.context.name).eq('AI Deployer 2');
-        expect(page.context.incidentsAsDeployer).to.deep.eq([response.data.incidents.nodes[2]]);
+        expect(page.context.incidentsAsDeployer).to.deep.eq([3]);
         expect(page.context.incidentsAsDeveloper).to.deep.eq([]);
         expect(page.context.incidentsAsBoth).to.deep.eq([]);
         expect(page.context.relatedEntities[0]).to.deep.eq({
           id: 'ai-developer-2',
           name: 'AI Developer 2',
-          incidents: 2,
+          incidents: [response.data.incidents.nodes[2], response.data.incidents.nodes[3]],
         });
         expect(page.context.relatedEntities).to.have.lengthOf(1);
       });
@@ -147,18 +149,22 @@ describe('createEntitiesPages', () => {
         expect(page.context.id).eq('ai-deployer-3');
         expect(page.path).eq('/entities/ai-deployer-3');
         expect(page.context.name).eq('AI Deployer 3');
-        expect(page.context.incidentsAsDeployer).to.deep.eq([response.data.incidents.nodes[3]]);
+        expect(page.context.incidentsAsDeployer).to.deep.eq([4]);
         expect(page.context.incidentsAsDeveloper).to.deep.eq([]);
         expect(page.context.incidentsAsBoth).to.deep.eq([]);
         expect(page.context.relatedEntities[0]).to.deep.eq({
           id: 'ai-developer-1',
           name: 'AI Developer 1',
-          incidents: 3,
+          incidents: [
+            response.data.incidents.nodes[0],
+            response.data.incidents.nodes[1],
+            response.data.incidents.nodes[3],
+          ],
         });
         expect(page.context.relatedEntities[1]).to.deep.eq({
           id: 'ai-developer-2',
           name: 'AI Developer 2',
-          incidents: 2,
+          incidents: [response.data.incidents.nodes[2], response.data.incidents.nodes[3]],
         });
         expect(page.context.relatedEntities).to.have.lengthOf(2);
       });
