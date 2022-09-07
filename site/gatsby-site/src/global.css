@@ -504,7 +504,6 @@ blockquote {
 .titleWrapper {
   flex-direction: column;
   align-items: flex-start;
-  padding-bottom: 20px;
   border-bottom: 1px solid rgb(230, 236, 241);
   min-height: 5rem;
   margin-bottom: 1rem;
