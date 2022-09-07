@@ -82,6 +82,7 @@ const config = {
     navConfig: [
       { title: 'Welcome to the AIID', label: 'welcome', url: '/', items: [] },
       { title: 'Discover Incidents', label: 'discover', url: '/apps/discover', items: [] },
+      { title: 'Entities', label: 'entities', url: '/entities', items: [] },
       { title: 'Spatial View', label: 'spatial', url: '/summaries/spatial', items: [] },
       { title: 'Table View', label: 'incidents', url: '/apps/incidents', items: [] },
       { title: 'Taxonomies', label: 'taxonomies', url: '/taxonomies', items: [] },
@@ -94,7 +95,6 @@ const config = {
         items: [],
       },
       { title: 'Blog', label: 'blog', url: '/blog', items: [] },
-      { title: 'Entities', label: 'entities', url: '/entities', items: [] },
     ],
     frontline: true,
     ignoreIndex: false,

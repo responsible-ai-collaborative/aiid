@@ -13,7 +13,7 @@ import {
   faNewspaper,
   faChartPie,
   faTable,
-  faUsers,
+  faBuilding,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -43,7 +43,7 @@ const getIcon = (label) =>
         <circle id="c5" cx="6.1704326" cy="1.5272532" r="1.2797676" />
       </svg>
     ),
-    entities: <FontAwesomeIcon icon={faUsers} className="pointer fa mr-1" fixedWidth />,
+    entities: <FontAwesomeIcon icon={faBuilding} className="pointer fa mr-1" fixedWidth />,
   }[label]);
 
 const TreeNode = ({ className = '', setCollapsed, navSetting, item }) => {
