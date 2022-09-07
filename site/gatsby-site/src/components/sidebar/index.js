@@ -106,14 +106,14 @@ const SidebarLayout = ({ collapse, setNavCollapsed }) => {
           dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
         />
       ) : null}
-      <ul className={'tw-side-bar-ul'}>
+      <ul className={'tw-side-bar-ul'} style={{ paddingLeft: '0px' }}>
         <li className="hideFrontLine firstLevel item">
-          <ul>
+          <ul style={{ paddingLeft: '0px' }}>
             <Tree setNavCollapsed={setNavCollapsed} />
           </ul>
         </li>
-        {config.sidebar.links && config.sidebar.links.length > 0 && <Divider />}
-        {config.sidebar.links.map((link, key) => {
+        {config.sidebar.links && config.sidebar.links?.length > 0 && <Divider />}
+        {config.sidebar.links?.map((link, key) => {
           if (link.link !== '' && link.text !== '') {
             return (
               <ListItem key={key} to={link.link}>
