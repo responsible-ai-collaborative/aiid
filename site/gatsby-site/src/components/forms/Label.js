@@ -16,18 +16,24 @@ const Label = ({ popover, label }) => {
   }
 
   return (
-    <div className="bootstrap">
+    <div className="bootstrap relative">
       <OverlayTrigger
         placement={'top'}
         overlay={
-          <Popover data-cy={`popover-${popover}`}>
-            <Popover.Header as="h3">
-              <Trans ns="popovers" i18nKey={`${popover}.title`} />
-            </Popover.Header>
-            <Popover.Body>
-              <Trans ns="popovers" i18nKey={`${popover}.text`} components={{ linkto: <Link /> }} />
-            </Popover.Body>
-          </Popover>
+          <div className="bootstrap lg:left-72 z-10">
+            <Popover data-cy={`popover-${popover}`}>
+              <Popover.Header as="h3">
+                <Trans ns="popovers" i18nKey={`${popover}.title`} />
+              </Popover.Header>
+              <Popover.Body>
+                <Trans
+                  ns="popovers"
+                  i18nKey={`${popover}.text`}
+                  components={{ linkto: <Link /> }}
+                />
+              </Popover.Body>
+            </Popover>
+          </div>
         }
         {...(show ? { show } : {})}
       >
