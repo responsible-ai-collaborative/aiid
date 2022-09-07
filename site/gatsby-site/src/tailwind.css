@@ -8,24 +8,24 @@
         @apply font-medium mb-2 mt-0 leading-tight;
     }
 
-    h1 {
-        font-size: calc(1.375rem + 1.5vw);
+    .h1, h1 {
+      @apply text-3xl
     }
 
-    h2 {
-        @apply text-4xl;
+    .h2, h2 {
+      @apply text-2xl 
     }
 
-    .tw-card-title h3 {
-        @apply text-2xl mb-2;
+    .h3, h3 {
+      @apply text-xl
     }
 
     .h4, h4 {
-        font-size: calc(1.275rem + .3vw);
+      @apply text-lg
     }
 
     .h5, h5 {
-        @apply text-xl leading-tight;
+      @apply text-base
     }
 
     input {
@@ -137,16 +137,16 @@
         @apply flex-1;
     }
 
-    h1 {
-        @apply text-h1;
-    }
-
     .tw-card-title h2 {
         @apply text-2rem;
     }
 
     .tw-card-title a {
         @apply text-primary-blue;
+    }
+    
+    .tw-card-title h3 {
+        @apply text-2xl mb-2;
     }
 
     .tw-card-body {
