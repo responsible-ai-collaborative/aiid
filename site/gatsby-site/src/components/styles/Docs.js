@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 export const StyledHeading = styled('h1')`
   font-family: Karla, sans-serif !important;
-  font-size: 32px;
   line-height: 1.5;
   font-weight: bold;
   flex: 1;
@@ -38,7 +37,6 @@ export const Edit = styled.div`
 
 export const StyledMainWrapper = styled.div`
   max-width: 800px;
-  padding: 10px;
   color: ${(props) => props.theme.colors.text};
 
   ul,

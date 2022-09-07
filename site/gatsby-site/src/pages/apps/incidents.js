@@ -9,7 +9,7 @@ export default function IncidentsPage(props) {
   const { data: incidentsData } = useQuery(FIND_INCIDENTS);
 
   return (
-    <LayoutHideSidebar {...props}>
+    <LayoutHideSidebar {...props} className="bootstrap">
       {!incidentsData && (
         <div className="p-2">
           <Spinner animation="border" size="sm" role="status" aria-hidden="true" /> Fetching

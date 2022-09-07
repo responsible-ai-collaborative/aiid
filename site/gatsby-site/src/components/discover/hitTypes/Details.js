@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card } from 'react-bootstrap';
 import { Image } from 'utils/cloudinary';
 import styled from 'styled-components';
 import { fill } from '@cloudinary/base/actions/resize';
@@ -13,6 +12,7 @@ import useLocalizePath from 'components/i18n/useLocalizePath';
 import { SourceDomainSubtitle, HeaderTitle } from './shared';
 import { Trans } from 'react-i18next';
 import TranslationBadge from 'components/i18n/TranslationBadge';
+import Card from 'elements/Card';
 
 const IncidentCardImage = styled(Image)`
   height: ${({ height }) => height};
@@ -34,7 +34,7 @@ export default function Details({
   const localizePath = useLocalizePath();
 
   return (
-    <Card className="h-100" data-cy={item.mongodb_id}>
+    <Card className="h-full" data-cy={item.mongodb_id}>
       <a href={'/cite/' + item.incident_id + '#r' + item.objectID}>
         <IncidentCardImage
           className="card-img-top"
@@ -44,11 +44,11 @@ export default function Details({
           transformation={fill().height(480)}
         />
       </a>
-      <Card.Body className="d-flex flex-column ">
+      <Card.Body className="flex flex-col ">
         <HeaderTitle item={item} />
-        <SourceDomainSubtitle item={item} className="mb-2 text-muted" />
+        <SourceDomainSubtitle item={item} className="mb-2 text-muted-gray" />
 
-        <Card.Text className="flex-fill">
+        <Card.Text className="flex-1-1-auto mb-4">
           <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />
           <ReportText text={item.text} maxChars={400} />
         </Card.Text>
@@ -57,7 +57,7 @@ export default function Details({
           {toggleFilterByIncidentId && (
             <button
               type="button"
-              className="btn btn-secondary btn-sm w-100"
+              className="btn btn-secondary btn-sm w-full text-sm"
               onClick={() => {
                 const path = localizePath({
                   path: `/cite/${item.incident_id}#r${item.mongodb_id}`,
@@ -74,7 +74,7 @@ export default function Details({
         </div>
       </Card.Body>
 
-      <Card.Footer className="d-flex justify-content-between">
+      <Card.Footer className="flex justify-between">
         <Actions
           authorsModal={authorsModal}
           flagReportModal={flagReportModal}

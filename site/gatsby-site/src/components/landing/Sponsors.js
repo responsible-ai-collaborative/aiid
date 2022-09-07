@@ -54,14 +54,14 @@ export default function Sponsors({ className }) {
   const [modalState, setModalState] = useState('close');
 
   return (
-    <Card className={className}>
+    <Card className={className + ' bootstrap'}>
       <Card.Body>
         <Card.Title as="h2">
           <Trans ns="landing">The Responsible AI Collaborative</Trans>
         </Card.Title>
-        <Row className="g-0 tw-gap-4">
-          <Col lg={5} md={12} sm={12} className="tw-p-3">
-            <Card.Text className="fst-italic">
+        <Row className="g-0 gap-4">
+          <Col lg={5} md={12} sm={12} className="p-3">
+            <Card.Text className="italic">
               <Trans i18nKey="raicDescription" ns="landing">
                 The AI Incident Database is a project of the Responsible AI Collaborative, an
                 organization chartered to advance the AI Incident Database. The governance of the
@@ -73,31 +73,23 @@ export default function Sponsors({ className }) {
               </Trans>
             </Card.Text>
             <a href="https://docsend.com/view/a45p7mgh44nu8x7j" target="_blank" rel="noreferrer">
-              <StyledImageCover src="/images/reportcover.png" className="tw-border" />
+              <StyledImageCover src="/images/reportcover.png" className="border-1" />
             </a>
           </Col>
-          <Col
-            lg={6}
-            md={12}
-            sm={12}
-            className="tw-flex tw-justify-between tw-flex-col tw-gap-2 tw-px-0"
-          >
+          <Col lg={6} md={12} sm={12} className="flex justify-between flex-col gap-2 px-0">
             {sponsors.map((sponsor) => {
               return (
                 <>
-                  <div className="tw-border tw-border-border-gray tw-rounded-lg  tw-p-1">
+                  <div className="border-1 border-border-gray rounded-lg  p-1">
                     <StyledSubtitle>
                       <Trans ns="landing">{sponsor.name}</Trans>
                     </StyledSubtitle>
-                    <div className="tw-flex tw-flex-wrap tw-justify-center tw-items-center">
+                    <div className="flex flex-wrap justify-center items-center">
                       {sponsor.items.map((item) => {
                         return (
-                          <div
-                            key={`sponsor-item-${item.modalName}`}
-                            className="tw-h-[90px] tw-p-3"
-                          >
+                          <div key={`sponsor-item-${item.modalName}`} className="h-[90px] p-3">
                             <StyledImage
-                              src={`images/${item.logo}`}
+                              src={`/images/${item.logo}`}
                               onClick={() => setModalState(item.modalName)}
                               data-cy={item.dataCy ? item.dataCy : ''}
                             />

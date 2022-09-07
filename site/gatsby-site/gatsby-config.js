@@ -223,6 +223,7 @@ const plugins = [
     },
   },
   'gatsby-plugin-postcss',
+  'gatsby-plugin-sass',
 ];
 
 module.exports = {

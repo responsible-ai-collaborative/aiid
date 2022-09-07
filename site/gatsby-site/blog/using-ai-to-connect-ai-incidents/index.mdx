@@ -2,7 +2,7 @@
 title: 'Using AI to Connect AI Incidents'
 metaTitle: 'Using AI to Connect AI Incidents'
 metaDescription: ''
-date: '2022-07-28'
+date: '2022-08-04'
 image: ../../src/images/nlp-lambdas-aws-architecture.png
 author: 'Nicholas Broce, Nicholas Olson, and Jason Scott-Hakanson'
 slug: '/blog/using-ai-to-connect-ai-incidents'
@@ -25,13 +25,13 @@ Each incident in the AIID is a collection of news reports about the same event, 
   alt="A screen recording of a user of the incident submission form entering an text and reviewing the headlines of reports identified as semantically related. The entered text concerns hackers exploiting the workings of Tesla's cameras to make the car mistakenly accelerate. The user uses their cursor to gesture to some of the results returned, including one about a self-driving car accident in a Tesla, another about an iPhone hack, and a third about a Google self-driving car accident."
 />
 
-This example is built around the <abbr title="Application Programming Interface">API</abbr> that takes arbitrary input text and outputs the IDs of the most similar incidents in the database.  The API is currently being used by AIID editors to when new submissions are already in the database. It is also planned for future use-cases, including:
+This example is built around the <abbr title="Application Programming Interface">API</abbr> that takes arbitrary input text and outputs the IDs of the most similar incidents in the database.  The API is currently being used by AIID editors to identify when new submissions are already in the database. It is also planned for future use-cases, including:
 
 - [seeding all incidents with a "Similar Incident" panel](https://github.com/responsible-ai-collaborative/aiid/pull/761)
 - [graphically visualizing relations between incidents in the AIID](https://github.com/responsible-ai-collaborative/aiid/pull/779)
 - automatically identifying news reports to be added to the database
 
-In testing, the Longformer model was about 94% accurate at correlating leave-one-out reports in the database back to their own incident IDs. The model is especially accurate with news reports or similarly long input texts, and less so with shorter input texts. We hope to tackle these and other issues in future iterations.
+In testing, the model was about 94% accurate at correlating leave-one-out reports in the database back to their own incident IDs. The model is especially accurate with news reports or similarly long input texts, and less so with shorter input texts. We hope to tackle these and other issues in future iterations.
 
 The project is [fully open source](https://github.com/responsible-ai-collaborative/nlp-lambdas) and is built to be modular, extensible, and easily changed for future development. New models, new techniques, and new features can and will be easily added to this API to fulfill future needs.
 

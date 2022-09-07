@@ -27,7 +27,7 @@ function ButtonToggle({ trigger: { ref, ...triggerHandler }, label, faIcon, touc
     <Dropdown.Toggle
       ref={ref}
       variant={touched ? 'success' : 'primary'}
-      className="w-100"
+      className="w-full"
       {...triggerHandler}
     >
       <ToggleContent faIcon={faIcon} label={label} touched={touched} />
@@ -53,7 +53,12 @@ const FilterOverlay = React.forwardRef(function Container(
   ref
 ) {
   return (
-    <div ref={ref} {...overlayProps} style={{ ...overlayProps.style, width: 320, zIndex: 1055 }}>
+    <div
+      ref={ref}
+      {...overlayProps}
+      style={{ ...overlayProps.style, width: 320, zIndex: 1055 }}
+      className="bootstrap"
+    >
       <Card className="shadow-lg">
         <Card.Body>
           <FilterContent type={type} filterProps={filterProps} />

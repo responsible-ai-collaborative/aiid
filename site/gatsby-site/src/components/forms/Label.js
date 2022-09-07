@@ -16,31 +16,33 @@ const Label = ({ popover, label }) => {
   }
 
   return (
-    <OverlayTrigger
-      placement={'top'}
-      overlay={
-        <Popover data-cy={`popover-${popover}`}>
-          <Popover.Header as="h3">
-            <Trans ns="popovers" i18nKey={`${popover}.title`} />
-          </Popover.Header>
-          <Popover.Body>
-            <Trans ns="popovers" i18nKey={`${popover}.text`} components={{ linkto: <Link /> }} />
-          </Popover.Body>
-        </Popover>
-      }
-      {...(show ? { show } : {})}
-    >
-      <Form.Label data-cy={`label-${popover}`}>
-        {label}{' '}
-        <FontAwesomeIcon
-          icon={faQuestionCircle}
-          style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-          className="far fa-question-circle"
-          onClick={() => setShow(!show)}
-        />{' '}
-        :
-      </Form.Label>
-    </OverlayTrigger>
+    <div className="bootstrap">
+      <OverlayTrigger
+        placement={'top'}
+        overlay={
+          <Popover data-cy={`popover-${popover}`}>
+            <Popover.Header as="h3">
+              <Trans ns="popovers" i18nKey={`${popover}.title`} />
+            </Popover.Header>
+            <Popover.Body>
+              <Trans ns="popovers" i18nKey={`${popover}.text`} components={{ linkto: <Link /> }} />
+            </Popover.Body>
+          </Popover>
+        }
+        {...(show ? { show } : {})}
+      >
+        <Form.Label data-cy={`label-${popover}`}>
+          {label}{' '}
+          <FontAwesomeIcon
+            icon={faQuestionCircle}
+            style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+            className="far fa-question-circle"
+            onClick={() => setShow(!show)}
+          />{' '}
+          :
+        </Form.Label>
+      </OverlayTrigger>
+    </div>
   );
 };
 

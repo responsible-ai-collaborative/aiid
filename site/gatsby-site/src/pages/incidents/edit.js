@@ -57,7 +57,7 @@ function EditCitePage(props) {
   };
 
   return (
-    <Layout {...props} className={'w-100'}>
+    <Layout {...props} className={'w-100 bootstrap'}>
       <h1 className="mb-5">Editing Incident {incidentId}</h1>
 
       {incident === undefined && (

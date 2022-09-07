@@ -5,7 +5,7 @@ export default function Tooltipss(props) {
     <>
       <div className={`tw-tooltip-${props.placement} tw-group tw-tooltip-wrapper`}>
         {props.children}
-        <div className="tw-tooltip group-hover:tw-opacity-100">
+        <div className="tw-tooltip group-hover:opacity-100">
           <span className="tw-tooltip-arrow"></span>
           {props.text}
         </div>
