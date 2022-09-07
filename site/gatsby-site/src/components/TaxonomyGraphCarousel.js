@@ -1,18 +1,8 @@
-import React, { useState } from 'react';
-import Carousel from 'react-bootstrap/Carousel';
+import React from 'react';
+import { Carousel } from 'flowbite-react';
 import { gql, useQuery } from '@apollo/client';
 import BillboardChart from 'react-billboardjs';
 import { donut } from 'billboard.js';
-
-// The BillboardCharts render based on
-// the rendered height of the containing element.
-// Since the carousel sets the hidden slides to `display: none`,
-// that means we have to create a new chart
-// each time carousel changes slides.
-// This convinces React to let use do so.
-const SlidingChart = ({ columns }) => <BillboardChart data={{ type: donut(), columns }} />;
-
-const NonSlidingChart = ({ columns }) => <BillboardChart data={{ type: donut(), columns }} />;
 
 const TaxonomyGraphCarousel = ({ namespace, axes }) => {
   const { data: taxaData } = useQuery(gql`
@@ -111,17 +101,10 @@ const TaxonomyGraphCarousel = ({ namespace, axes }) => {
     }
   }
 
-  const [sliding, setSlide] = useState(false);
-
   return (
     !classificationsLoading && (
-      <div className="bootstrap">
-        <Carousel
-          interval={60000}
-          onSlide={() => setSlide(true)}
-          onSlid={() => setSlide(false)}
-          variant="dark"
-        >
+      <div className="h-80 dark">
+        <Carousel>
           {!classificationsLoading &&
             classificationsData?.classifications &&
             axes.map((axis, index) => {
@@ -134,16 +117,12 @@ const TaxonomyGraphCarousel = ({ namespace, axes }) => {
                 );
 
               return (
-                <Carousel.Item key={index}>
+                <div key={index} className="h-80">
                   <h3 className="text-base text-center">{axis}</h3>
-                  <div className="pb-8">
-                    {sliding ? (
-                      <SlidingChart columns={columns} />
-                    ) : (
-                      <NonSlidingChart columns={columns} />
-                    )}
+                  <div className="h-72">
+                    <BillboardChart data={{ type: donut(), columns }} />
                   </div>
-                </Carousel.Item>
+                </div>
               );
             })}
         </Carousel>
