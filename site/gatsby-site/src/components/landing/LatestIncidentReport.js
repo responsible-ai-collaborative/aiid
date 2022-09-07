@@ -5,20 +5,24 @@ import { Image } from '../../utils/cloudinary';
 import Link from 'components/ui/Link';
 import ReportText from 'components/reports/ReportText';
 import { Trans } from 'react-i18next';
+import { LocalizedLink } from 'gatsby-theme-i18n';
 
 const LatestIncidentReport = ({ report }) => {
   const { image_url, cloudinary_id, title, text, epoch_date_submitted, incident_id } = report;
 
+  console.log('cloudinary_id', cloudinary_id);
   return (
-    <div className="flex flex-col items-center bg-white rounded-lg border shadow-md md:flex-row md:max-w-3xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
-      <Image
-        className={
-          'object-cover w-full h-96 rounded-t-lg md:h-auto md:w-48 md:rounded-none md:rounded-l-lg'
-        }
-        publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
-        // transformation={fill().height(480)}
-        alt={title}
-      />
+    <div className="max-w-3xl bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
+      <LocalizedLink to={`/cite/${incident_id}`} className="text-primary-blue max-w-full">
+        <Image
+          className={
+            'img-fluid rounded-start h-full w-full max-w-full max-h-240 rounded-t-lg md:rounded-l-lg md:rounded-r-none'
+          }
+          // transformation={{ transition: '0.5s all ease-in-out' }}
+          publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
+          alt={title}
+        />
+      </LocalizedLink>
       <div className="flex flex-col justify-between p-4 leading-normal">
         <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           {title}

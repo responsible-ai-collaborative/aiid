@@ -16,8 +16,6 @@ import { useTranslation } from 'react-i18next';
 import { graphql } from 'gatsby';
 import { useLocalization } from 'gatsby-theme-i18n';
 import Container from '../elements/Container';
-import Row from '../elements/Row';
-import Col from '../elements/Col';
 
 const LandingPage = (props) => {
   const {
@@ -56,75 +54,61 @@ const LandingPage = (props) => {
         <meta name="description" content={metaDescription} />
       </AiidHelmet>
       <Container>
-        <Row className="mb-10">
-          <Col>
-            <Hero />
-          </Col>
-        </Row>
+        <div className="mb-10">
+          <Hero />
+        </div>
 
-        <Row className="mb-10">
-          <Col>
-            <QuickSearch />
-          </Col>
-        </Row>
+        <div className="mb-10">
+          <QuickSearch />
+        </div>
 
-        <Row className="mb-10">
-          <Col>
+        <div className="mb-10">
+          <div>
             <LatestReports latestReport={latestReport} />
-          </Col>
-        </Row>
+          </div>
+        </div>
 
-        <Row className="mb-10">
-          <Col className="flex flex-col items-center">
+        <div className="mb-10">
+          <div className="flex flex-col items-center">
             <QuickAdd />
-          </Col>
-        </Row>
+          </div>
+        </div>
 
-        <Row className="mb-10">
-          <Col
-            className="mt-4 md:flex-0-0-auto md:w-full 992px:flex-0-0-auto 992px:w-2/4"
-            sm={12}
-            md={12}
-            lg={6}
-          >
+        <div className="flex flex-row gap-10 mb-10 flex-wrap">
+          <div className="flex-1 lg:max-w-[50%]">
             <AboutDatabase />
-          </Col>
-          <Col
-            className="mt-4 md:flex-0-0-auto md:w-full 992px:flex-0-0-auto 992px:w-2/4"
-            sm={12}
-            md={12}
-            lg={6}
-          >
+          </div>
+          <div className="flex-1 lg:max-w-[50%]">
             <Blog />
-          </Col>
-        </Row>
+          </div>
+        </div>
 
-        <Row className="mb-10">
-          <Col>
+        <div className="mb-10">
+          <div>
             <Featured />
-          </Col>
-        </Row>
+          </div>
+        </div>
 
-        <Row className="mb-10">
-          <Col>
+        <div className="mb-10">
+          <div>
             <Leaderboards />
-          </Col>
-        </Row>
+          </div>
+        </div>
 
-        <Row className="mb-10">
-          <Col className="p-3 " md={12} lg={6}>
+        <div className="mb-10 flex flex-row gap-10 flex-wrap">
+          <div className="flex-1 lg:max-w-[50%]">
             <WordCounts localWordCounts={localWordCounts} />
-          </Col>
-          <Col className="p-3" md={12} lg={6}>
+          </div>
+          <div className="flex-1 lg:max-w-[50%]">
             <RandomReports />
-          </Col>
-        </Row>
+          </div>
+        </div>
 
-        <Row>
-          <Col md={12} lg={12}>
+        <div>
+          <div md={12} lg={12}>
             <Sponsors />
-          </Col>
-        </Row>
+          </div>
+        </div>
       </Container>
     </Layout>
   );

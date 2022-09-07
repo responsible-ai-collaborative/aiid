@@ -2,7 +2,8 @@ import React from 'react';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
-import { Badge, Card } from 'flowbite-react';
+import { Badge } from 'flowbite-react';
+import { LocalizedLink } from 'gatsby-theme-i18n';
 
 const medalMap = (position) => {
   switch (position) {
@@ -53,18 +54,14 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
   }
 
   return (
-    <div className="max-w-sm flex-1-1-auto">
-      <Card>
-        <div className="mb-4 flex items-center justify-between">
-          <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
-            <Trans ns="landing">{title}</Trans>
-          </h5>
-          <a
-            href="/summaries/leaderboard"
-            className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
-          >
-            <Trans>View all</Trans>
-          </a>
+    <div className="max-w-sm flex-1">
+      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col px-6 pt-6 pb-3 sm:pb-2 w-full">
+        <div className="flex items-center justify-between">
+          <LocalizedLink to={`/summaries/leaderboard`}>
+            <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
+              <Trans ns="landing">{title}</Trans>
+            </h5>
+          </LocalizedLink>
         </div>
         <div className="flow-root">
           <ul className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -80,7 +77,7 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
                       <Medal className="pe-2">{medalMap(index + 1)}</Medal>
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-gray-900 dark:text-white mb-0">
+                      <p className="truncate text-sm font-medium text-gray-900 dark:text-w  hite mb-0">
                         {item.label}
                       </p>
                     </div>
@@ -93,7 +90,7 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
             ))}
           </ul>
         </div>
-      </Card>
+      </div>
     </div>
   );
 };

@@ -8,7 +8,7 @@ export default function QuickAdd() {
       <h2 className="mb-4 text-3xl font-extrabold tracking-tight leading-none text-gray-900 md:text-4xl dark:text-white">
         <Trans ns="landing">Quick Add New Report URL</Trans>
       </h2>
-      <div className="flex flex-col items-center p-4 bg-white rounded-lg border shadow-md md:flex-row md:max-w-3xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+      <div className="flex flex-col items-center p-4 bg-white rounded-lg border shadow-md md:flex-row dark:border-gray-700 dark:bg-gray-800">
         <QuickAddForm className="mt-3 w-full" />
       </div>
     </>
