@@ -5,7 +5,7 @@ import { useUserContext } from '../contexts/userContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from '../components/ui/Link';
 import Button from '../elements/Button';
@@ -19,12 +19,10 @@ const Login = (props) => {
   const {
     user,
     loading,
-    actions: { loginWithEmail, loginWithFacebook, loginWithGoogle },
+    actions: { loginWithEmail, loginWithFacebook },
   } = useUserContext();
 
   const [displayFacebookSpinner, setDisplayFacebookSpinner] = useState(false);
-
-  const [displayGoogleSpinner, setDisplayGoogleSpinner] = useState(false);
 
   const { t } = useTranslation();
 
@@ -36,14 +34,6 @@ const Login = (props) => {
     await loginWithFacebook({ loginRedirectUri });
 
     setDisplayFacebookSpinner(false);
-  };
-
-  const clickLoginWithGoogle = async () => {
-    setDisplayGoogleSpinner(true);
-
-    await loginWithGoogle({ loginRedirectUri });
-
-    setDisplayGoogleSpinner(false);
   };
 
   return (
@@ -118,9 +108,7 @@ const Login = (props) => {
                 <Button
                   variant="primary"
                   type="submit"
-                  disabled={
-                    isSubmitting || !isValid || displayFacebookSpinner || displayGoogleSpinner
-                  }
+                  disabled={isSubmitting || !isValid || displayFacebookSpinner}
                   className="w-full"
                 >
                   {isSubmitting && (
@@ -140,7 +128,7 @@ const Login = (props) => {
             variant="primary"
             onClick={clickLoginWithFacebook}
             className={'w-full'}
-            disabled={displayFacebookSpinner || displayGoogleSpinner}
+            disabled={displayFacebookSpinner}
           >
             <div className={'flex justify-center items-center'}>
               {displayFacebookSpinner ? (
@@ -158,32 +146,6 @@ const Login = (props) => {
               </div>
             </div>
           </Button>
-
-          {/* Hide Google login until brand name is supported */}
-          {false && (
-            <Button
-              variant="primary"
-              onClick={clickLoginWithGoogle}
-              className={'w-full mt-7'}
-              disabled={displayGoogleSpinner || displayFacebookSpinner}
-            >
-              <div className={'flex justify-center items-center'}>
-                {displayGoogleSpinner ? (
-                  <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
-                ) : (
-                  <FontAwesomeIcon
-                    icon={faGoogle}
-                    color={'#ffffff'}
-                    className={'pointer fa fa-lg'}
-                    title="Login with Google"
-                  />
-                )}
-                <div className={'ml-4'}>
-                  <Trans ns="login">Login with Google</Trans>
-                </div>
-              </div>
-            </Button>
-          )}
 
           <div className="mt-3">
             <Trans ns="login">Don&apos;t have an account?</Trans>{' '}
