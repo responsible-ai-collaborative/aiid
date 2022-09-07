@@ -11,7 +11,7 @@ function PostPreview({ post }) {
         <LocalizedLink to={post.frontmatter.slug} className="text-primary-blue max-w-full">
           <Img
             alt="post-image"
-            className="img-fluid rounded-start h-full w-full max-w-full max-h-240 rounded-t-lg md:rounded-l-lg md:rounded-r-none"
+            className="img-fluid h-full w-full max-w-full max-h-240 rounded-t-lg"
             imgStyle={{ transition: '0.5s all ease-in-out' }}
             imgClassName="hover:scale-110 object-cover"
             image={post.frontmatter.image.childImageSharp.gatsbyImageData}

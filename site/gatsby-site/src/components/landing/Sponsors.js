@@ -53,8 +53,8 @@ export default function Sponsors() {
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           <Trans ns="landing">The Responsible AI Collaborative</Trans>
         </h5>
-        <div className="flex gap-2 flex-wrap">
-          <div className="flex-1">
+        <div className="flex gap-10 flex-wrap">
+          <div className="flex-1 flex gap-6 flex-col">
             <p className="italic">
               <Trans i18nKey="raicDescription" ns="landing">
                 The AI Incident Database is a project of the Responsible AI Collaborative, an
@@ -73,24 +73,29 @@ export default function Sponsors() {
           <div className="flex justify-center items-center gap-6 flex-nowrap flex-col flex-1 min-w-[300px]">
             {sponsors.map((sponsor) => {
               return (
-                <Card key={`sponsor-${sponsor.name}`}>
-                  <StyledSubtitle>
-                    <Trans ns="landing">{sponsor.name}</Trans>
-                  </StyledSubtitle>
-                  <div className="flex flex-wrap justify-center items-center">
-                    {sponsor.items.map((item) => {
-                      return (
-                        <div key={`sponsor-item-${item.modalName}`} className="h-[90px] p-3">
-                          <StyledImage
-                            src={`/images/${item.logo}`}
-                            onClick={() => setModalState(item.modalName)}
-                            data-cy={item.dataCy ? item.dataCy : ''}
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                </Card>
+                <div className="flex-1 w-full" key={`sponsor-${sponsor.name}`}>
+                  <Card>
+                    <StyledSubtitle>
+                      <Trans ns="landing">{sponsor.name}</Trans>
+                    </StyledSubtitle>
+                    <div className="flex flex-wrap justify-center items-center">
+                      {sponsor.items.map((item) => {
+                        return (
+                          <div
+                            key={`sponsor-item-${item.modalName}`}
+                            className="h-[90px] p-3 flex-1"
+                          >
+                            <StyledImage
+                              src={`/images/${item.logo}`}
+                              onClick={() => setModalState(item.modalName)}
+                              data-cy={item.dataCy ? item.dataCy : ''}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </Card>
+                </div>
               );
             })}
           </div>
