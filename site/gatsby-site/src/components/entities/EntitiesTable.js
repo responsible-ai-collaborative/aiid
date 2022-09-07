@@ -3,7 +3,8 @@ import React from 'react';
 import { Form } from 'react-bootstrap';
 import { useExpanded, useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import { Pagination } from 'flowbite-react';
-import { Trans } from 'react-i18next';
+import { faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function SortButton({ column, ...props }) {
   const { isSorted } = column;
@@ -20,14 +21,6 @@ function SortButton({ column, ...props }) {
         <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
       </svg>
     </button>
-  );
-}
-
-function HeaderText({ column, ...props }) {
-  return (
-    <h6 className="whitespace-nowrap overflow-hidden text-ellipsis m-0" {...props}>
-      {column.Header}
-    </h6>
   );
 }
 
@@ -48,21 +41,32 @@ function DefaultColumnFilter({ column: { Header, filterValue, preFilteredRows, s
   );
 }
 
+function DefaultColumnHeader({ column, ...props }) {
+  return (
+    <div>
+      <div className="flex justify-between items-center">
+        <h6 className="whitespace-nowrap overflow-hidden text-ellipsis m-0" {...props}>
+          {column.title}
+        </h6>
+        <SortButton column={column} {...column.getSortByToggleProps()} />
+      </div>
+      {column.render('Filter')}
+    </div>
+  );
+}
+
 function IncidentsCell({ cell }) {
   const { row } = cell;
 
   return (
     <div>
-      <div className={`text-black flex justify-between ${row.isExpanded && 'shadow'}`}>
-        {cell.value.length} Incidents{' '}
-        <button className="text-blue-600" onClick={() => cell.row.toggleRowExpanded()}>
-          {row.isExpanded ? <Trans>Collapse</Trans> : <Trans>Expand</Trans>}
-        </button>
+      <div className={`text-black flex justify-between ${row.isExpanded && 'pb-4'}`}>
+        {cell.value.length} Incidents
       </div>
       {row.isExpanded && (
-        <ul className="divide-y divide-gray-200 dark:divide-gray-700 max-h-240 overflow-y-scroll">
+        <ul className="divide-y divide-gray-200 dark:divide-gray-700 max-h-240 -mx-4 border-t overflow-y-scroll">
           {cell.value.map((incident) => (
-            <li className="py-2" key={incident.incident_id}>
+            <li className="p-2 pr-3" key={incident.incident_id}>
               <Link
                 className="inline-block bg-red-100 text-red-800 text-xs font-semibold m-1 px-2.5 py-01 rounded dark:bg-green-200 dark:text-green-900"
                 to={`/cite/${incident.incident_id}`}
@@ -84,14 +88,11 @@ function EntitiestCell({ cell }) {
 
   return (
     <div>
-      <div className="text-black flex justify-between shadow">
-        {cell.value.length} Entities{' '}
-        <button className="text-blue-600" onClick={() => cell.row.toggleRowExpanded()}>
-          {row.isExpanded ? <Trans>Collapse</Trans> : <Trans>Expand</Trans>}
-        </button>
+      <div className={`text-black flex justify-between ${row.isExpanded && 'pb-4'}`}>
+        {cell.value.length} Entities
       </div>
       {row.isExpanded && (
-        <ul className="divide-y divide-gray-200 dark:divide-gray-700 max-h-240 overflow-y-scroll">
+        <ul className="divide-y divide-gray-200 dark:divide-gray-700 min-h-full max-h-240 -mx-4 border-t overflow-y-scroll">
           {cell.value.map((entity) => (
             <li className="py-2" key={entity.id}>
               <Link
@@ -128,10 +129,8 @@ const sortByCount = (rowA, rowB, id) => {
 export default function EntitiesTable({ data, className = '' }) {
   const defaultColumn = React.useMemo(
     () => ({
-      minWidth: 240,
-      width: 320,
-      maxWidth: 640,
       Filter: DefaultColumnFilter,
+      Header: DefaultColumnHeader,
     }),
     []
   );
@@ -139,8 +138,40 @@ export default function EntitiesTable({ data, className = '' }) {
   const columns = React.useMemo(() => {
     const columns = [
       {
-        Header: 'Entity',
+        id: 'expander',
+        width: 'w-[5%]',
+        Header: ({ getToggleAllRowsExpandedProps, isAllRowsExpanded }) => {
+          return (
+            <>
+              <span {...getToggleAllRowsExpandedProps()}>
+                {isAllRowsExpanded ? (
+                  <FontAwesomeIcon icon={faMinusCircle} />
+                ) : (
+                  <FontAwesomeIcon icon={faPlusCircle} />
+                )}
+              </span>
+            </>
+          );
+        },
+        Cell: ({ row }) => {
+          const { isExpanded, getToggleRowExpandedProps } = row;
+
+          return (
+            <span {...getToggleRowExpandedProps()}>
+              {' '}
+              {isExpanded ? (
+                <FontAwesomeIcon icon={faMinusCircle} />
+              ) : (
+                <FontAwesomeIcon icon={faPlusCircle} />
+              )}
+            </span>
+          );
+        },
+      },
+      {
+        title: 'Entity',
         accessor: 'id',
+        width: 'w-[10%]',
         Cell: ({ row: { values, original } }) => (
           <>
             <a className="d-flex" href={`/entities/${values.id}`}>
@@ -150,29 +181,30 @@ export default function EntitiesTable({ data, className = '' }) {
         ),
       },
       {
-        Header: 'As Deployer and Developer',
+        title: 'As Deployer and Developer',
         accessor: 'incidentsAsBoth',
         Cell: IncidentsCell,
         filter: incidentFilter,
         sortType: sortByCount,
       },
       {
-        Header: 'As Deployer',
+        title: 'As Deployer',
         accessor: 'incidentsAsDeployer',
         Cell: IncidentsCell,
         filter: incidentFilter,
         sortType: sortByCount,
       },
       {
-        Header: 'As Developer',
+        title: 'As Developer',
         accessor: 'incidentsAsDeveloper',
         Cell: IncidentsCell,
         filter: incidentFilter,
         sortType: sortByCount,
       },
       {
-        Header: 'Related Entities',
+        title: 'Related Entities',
         accessor: 'relatedEntities',
+        width: 'w-[0.1%]',
         Cell: EntitiestCell,
         filter: entitiesFilter,
         sortType: sortByCount,
@@ -211,7 +243,7 @@ export default function EntitiesTable({ data, className = '' }) {
       <div className="max-w-full overflow-x-scroll">
         <table
           {...getTableProps()}
-          className="w-full text-sm text-left text-gray-500 dark:text-gray-400 border-none overflow-hidden"
+          className="w-full text-sm text-left text-gray-500 dark:text-gray-400 border-none overflow-hidden h-[1px]"
         >
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             {headerGroups.map((headerGroup) => (
@@ -219,15 +251,9 @@ export default function EntitiesTable({ data, className = '' }) {
                 {headerGroup.headers.map((column) => (
                   <th
                     {...column.getHeaderProps()}
-                    className={`${
-                      column.collapse ? 'w-[0.0000000001%]' : 'w-[1%]'
-                    } py-3 px-4 border-none`}
+                    className={`${column.width} py-3 px-4 border-none`}
                   >
-                    <div className="flex justify-between items-center">
-                      <HeaderText column={column} />
-                      <SortButton column={column} {...column.getSortByToggleProps()} />
-                    </div>
-                    {column.render('Filter')}
+                    {column.render('Header')}
                   </th>
                 ))}
               </tr>
@@ -248,11 +274,8 @@ export default function EntitiesTable({ data, className = '' }) {
                   {row.cells.map((cell) => {
                     return (
                       <td
-                        {...cell.getCellProps({
-                          className:
-                            (cell.column.collapse ? 'w-[0.0000000001%]' : 'w-[1%]') +
-                            'py-4 px-4 border-none align-top',
-                        })}
+                        {...cell.getCellProps()}
+                        className={`${cell.column.width} py-3 px-4 border-none align-top h-full`}
                       >
                         {cell.render('Cell')}
                       </td>
