@@ -54,7 +54,7 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
   }
 
   return (
-    <div className="max-w-sm flex-1">
+    <div className="max-w-sm flex-1 self-stretch">
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col px-6 pt-6 pb-3 sm:pb-2 w-full">
         <div className="flex items-center justify-between">
           <LocalizedLink to={`/summaries/leaderboard`}>

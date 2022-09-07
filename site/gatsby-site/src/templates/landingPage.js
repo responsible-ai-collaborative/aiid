@@ -105,9 +105,7 @@ const LandingPage = (props) => {
         </div>
 
         <div>
-          <div md={12} lg={12}>
-            <Sponsors />
-          </div>
+          <Sponsors />
         </div>
       </Container>
     </Layout>
