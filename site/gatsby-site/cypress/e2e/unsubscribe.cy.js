@@ -40,4 +40,67 @@ describe('Unsubscribe pages', () => {
 
     cy.contains('Invalid parameters').should('not.exist');
   });
+
+  it('Should unsubscribe from all subscriptions', () => {
+    cy.visit(`${url}?type=all&userId=${userId}`);
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'DeleteSubscriptions' &&
+        req.body.variables.query.userId.userId == userId &&
+        !req.body.variables.query.incident_id,
+      'DeleteSubscriptions',
+      {
+        data: {
+          deleteManySubscriptions: {
+            __typename: 'DeleteManyPayload',
+            deletedCount: 0,
+          },
+        },
+      }
+    );
+
+    cy.contains('Confirm').click();
+
+    cy.wait('@DeleteSubscriptions');
+
+    cy.contains('You have successfully unsubscribed.').should('exist');
+
+    cy.contains('Continue').click();
+
+    cy.location('pathname', { timeout: 8000 }).should('eq', '/');
+  });
+
+  it('Should unsubscribe from an incident subscription', () => {
+    cy.visit(`${url}?type=incident&userId=${userId}&incidentId=${incidentId}`);
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'DeleteSubscriptions' &&
+        req.body.variables.query.type == 'incident' &&
+        req.body.variables.query.userId.userId == userId &&
+        req.body.variables.query.incident_id.incident_id == `${incidentId}`,
+      'DeleteSubscriptions',
+      {
+        data: {
+          deleteManySubscriptions: {
+            __typename: 'DeleteManyPayload',
+            deletedCount: 0,
+          },
+        },
+      }
+    );
+
+    cy.contains('Confirm').click();
+
+    cy.wait('@DeleteSubscriptions');
+
+    cy.contains('You have successfully unsubscribed.').should('exist');
+
+    cy.contains('Continue').click();
+
+    cy.location('pathname', { timeout: 8000 }).should('eq', '/');
+  });
 });

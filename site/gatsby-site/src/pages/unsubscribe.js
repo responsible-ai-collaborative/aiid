@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import { Trans, useTranslation } from 'react-i18next';
 import Button from '../elements/Button';
+import { Spinner } from 'flowbite-react';
 import Link from '../components/ui/Link';
 import { useMutation } from '@apollo/client';
 import { DELETE_SUBSCRIPTIONS } from '../graphql/subscriptions';
@@ -9,6 +10,8 @@ import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
 const Unsubscribe = (props) => {
   const [pageMessage, setPageMessage] = useState(null);
+
+  const [unsubscribing, setUnsubscribing] = useState(false);
 
   let errorMessage = null;
 
@@ -33,6 +36,8 @@ const Unsubscribe = (props) => {
 
   const unsubscribe = async () => {
     try {
+      setUnsubscribing(true);
+
       const query = {
         userId: { userId },
       };
@@ -47,6 +52,8 @@ const Unsubscribe = (props) => {
       setPageMessage(t('You have successfully unsubscribed.'));
     } catch (error) {
       setPageMessage(t('An unknown error has ocurred'));
+    } finally {
+      setUnsubscribing(false);
     }
   };
 
@@ -76,7 +83,10 @@ const Unsubscribe = (props) => {
             )}
           </p>
           <Button variant="primary" onClick={unsubscribe}>
-            <Trans>Confirm</Trans>
+            <div className="flex gap-2">
+              {unsubscribing && <Spinner size="sm" />}
+              <Trans>Confirm</Trans>
+            </div>
           </Button>
         </>
       )}
