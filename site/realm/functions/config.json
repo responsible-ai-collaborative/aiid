@@ -4,6 +4,10 @@
         "private": true
     },
     {
+        "name": "getUser",
+        "private": false
+    },
+    {
         "name": "linkReportsToIncidents",
         "private": false
     },
