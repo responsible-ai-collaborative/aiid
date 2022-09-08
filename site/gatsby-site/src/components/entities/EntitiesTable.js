@@ -1,8 +1,7 @@
 import Link from 'components/ui/Link';
 import React from 'react';
 import { Form } from 'react-bootstrap';
-import { useExpanded, useFilters, usePagination, useSortBy, useTable } from 'react-table';
-import { Pagination } from 'flowbite-react';
+import { useExpanded, useFilters, useSortBy, useTable } from 'react-table';
 import { faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -217,26 +216,16 @@ export default function EntitiesTable({ data, className = '' }) {
     return columns;
   }, []);
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    page,
-    pageOptions,
-    gotoPage,
-    state: { pageIndex },
-  } = useTable(
+  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
     {
       columns,
       data,
       defaultColumn,
-      initialState: { pageSize: 50, sortBy: [{ id: 'incidentsAsBoth', desc: true }] },
+      initialState: { sortBy: [{ id: 'incidentsAsBoth', desc: true }] },
     },
     useFilters,
     useSortBy,
-    useExpanded,
-    usePagination
+    useExpanded
   );
 
   return (
@@ -263,7 +252,7 @@ export default function EntitiesTable({ data, className = '' }) {
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {page.map((row, i) => {
+            {rows.map((row, i) => {
               prepareRow(row);
               return (
                 <tr
@@ -289,20 +278,6 @@ export default function EntitiesTable({ data, className = '' }) {
             })}
           </tbody>
         </table>
-      </div>
-      <div className="flex flex-col items-center mt-4 mb-6">
-        <span className="text-sm text-gray-700 dark:text-gray-400">
-          Page{' '}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{' '}
-        </span>
-
-        <Pagination
-          currentPage={pageIndex}
-          totalPages={pageOptions.length}
-          onPageChange={(page) => gotoPage(page)}
-        />
       </div>
     </div>
   );
