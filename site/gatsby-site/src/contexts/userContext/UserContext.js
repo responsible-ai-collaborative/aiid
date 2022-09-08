@@ -18,9 +18,6 @@ export const UserContext = createContext({
     loginWithFacebook: ({ loginRedirectUri }) => {
       loginRedirectUri;
     },
-    loginWithGoogle: ({ loginRedirectUri }) => {
-      loginRedirectUri;
-    },
     logout: () => {},
     sendResetPasswordEmail: ({ email }) => {
       email;
