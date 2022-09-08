@@ -1,0 +1,16 @@
+{
+  "field_name": "getUser",
+  "function_name": "getUser",
+  "input_type": {
+    "properties": {
+      "userId": {
+        "bsonType": "objectId"
+      }
+    },
+    "title": "GetUserInput",
+    "type": "object"
+  },
+  "input_type_format": "custom",
+  "on_type": "Query",
+  "payload_type_format": ""
+}
