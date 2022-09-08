@@ -55,7 +55,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
   const entitiesHash = makeEntitiesHash(entities);
 
   const relatedEntitiesData = relatedEntities.map((id) => {
-    const entity = entitiesHash[id];
+    const entity = { ...entitiesHash[id] };
 
     for (const field of incidentFields) {
       entity[field] = entity[field]

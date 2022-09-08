@@ -26,18 +26,21 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
   const entitiesData = useMemo(
     () =>
       entities.map((entity) => {
+        const updates = {};
+
         for (const field of incidentFields) {
-          entity[field] = entity[field]
+          updates[field] = entity[field]
             .map((id) => incidentsHash[id])
             .sort((a, b) => b.reports.length - a.reports.length);
         }
 
         for (const field of entitiesFields) {
-          entity[field] = entity[field].map((id) => entitiesHash[id]);
+          updates[field] = entity[field].map((id) => entitiesHash[id]);
         }
 
         return {
           ...entity,
+          ...updates,
         };
       }),
     [incidentsHash, entitiesHash]
