@@ -204,6 +204,14 @@ export default function EntitiesTable({ data, className = '' }) {
         sortType: sortByCount,
       },
       {
+        title: 'Harmed By',
+        width: 'w-[20%]',
+        accessor: 'incidentsHarmedBy',
+        Cell: IncidentsCell,
+        filter: incidentFilter,
+        sortType: sortByCount,
+      },
+      {
         title: 'Related Entities',
         width: 'w-[20%]',
         accessor: 'relatedEntities',
