@@ -48,128 +48,128 @@ describe('createEntitiesPages', () => {
     const createPage = cy.stub();
 
     cy.wrap(createEntitiesPages(graphql, createPage)).then(() => {
-      expect(createPage.callCount).to.eq(5 + 1);
+      expect(createPage.callCount).to.eq(8 + 1);
 
       cy.wrap(createPage.getCall(0).args[0]).then((page) => {
         expect(page.context.id).eq('ai-developer-1');
         expect(page.path).eq('/entities/ai-developer-1');
         expect(page.context.name).eq('AI Developer 1');
-        expect(page.context.incidentsAsDeployer).to.deep.eq([1]);
-        expect(page.context.incidentsAsDeveloper).to.deep.eq([1, 2, 4]);
+        expect(page.context.incidentsAsDeployer).to.deep.eq([]);
+        expect(page.context.incidentsAsDeveloper).to.deep.eq([2, 4]);
         expect(page.context.incidentsAsBoth).to.deep.eq([1]);
-        expect(page.context.relatedEntities[0]).to.deep.eq({
-          id: 'ai-deployer-1',
-          name: 'AI Deployer 1',
-          incidents: [response.data.incidents.nodes[1]],
-        });
-
-        expect(page.context.relatedEntities[1]).to.deep.eq({
-          id: 'ai-deployer-3',
-          name: 'AI Deployer 3',
-          incidents: [response.data.incidents.nodes[3]],
-        });
-        expect(page.context.relatedEntities[2]).to.deep.eq({
-          id: 'ai-developer-2',
-          name: 'AI Developer 2',
-          incidents: [response.data.incidents.nodes[2], response.data.incidents.nodes[3]],
-        });
+        expect(page.context.incidentsHarmedBy).to.deep.eq([]);
+        expect(page.context.relatedEntities).to.deep.eq([
+          'party-1',
+          'ai-deployer-1',
+          'party-2',
+          'ai-deployer-3',
+          'ai-developer-2',
+          'party-3',
+        ]);
       });
 
       cy.wrap(createPage.getCall(1).args[0]).then((page) => {
+        expect(page.context.id).eq('party-1');
+        expect(page.path).eq('/entities/party-1');
+        expect(page.context.name).eq('Party 1');
+        expect(page.context.incidentsAsDeployer).to.deep.eq([]);
+        expect(page.context.incidentsAsDeveloper).to.deep.eq([]);
+        expect(page.context.incidentsAsBoth).to.deep.eq([]);
+        expect(page.context.incidentsHarmedBy).to.deep.eq([1, 2]);
+        expect(page.context.relatedEntities).to.deep.eq([
+          'ai-developer-1',
+          'ai-deployer-1',
+          'party-2',
+        ]);
+      });
+
+      cy.wrap(createPage.getCall(2).args[0]).then((page) => {
         expect(page.context.id).eq('ai-deployer-1');
         expect(page.path).eq('/entities/ai-deployer-1');
         expect(page.context.name).eq('AI Deployer 1');
         expect(page.context.incidentsAsDeployer).to.deep.eq([2]);
         expect(page.context.incidentsAsDeveloper).to.deep.eq([]);
         expect(page.context.incidentsAsBoth).to.deep.eq([]);
-        expect(page.context.relatedEntities).to.deep.eq([
-          {
-            id: 'ai-developer-1',
-            name: 'AI Developer 1',
-            incidents: [
-              response.data.incidents.nodes[0],
-              response.data.incidents.nodes[1],
-              response.data.incidents.nodes[3],
-            ],
-          },
-        ]);
-        expect(page.context.relatedEntities).to.have.lengthOf(1);
-      });
-
-      cy.wrap(createPage.getCall(2).args[0]).then((page) => {
-        expect(page.context.id).eq('ai-developer-2');
-        expect(page.path).eq('/entities/ai-developer-2');
-        expect(page.context.name).eq('AI Developer 2');
-        expect(page.context.incidentsAsDeployer).to.deep.eq([3]);
-
-        expect(page.context.incidentsAsDeveloper).to.deep.eq([3, 4]);
-        expect(page.context.incidentsAsBoth).to.deep.eq([3]);
-
-        expect(page.context.relatedEntities).to.deep.eq([
-          {
-            id: 'ai-deployer-2',
-            name: 'AI Deployer 2',
-            incidents: [response.data.incidents.nodes[2]],
-          },
-          {
-            id: 'ai-deployer-3',
-            name: 'AI Deployer 3',
-            incidents: [response.data.incidents.nodes[3]],
-          },
-          {
-            id: 'ai-developer-1',
-            name: 'AI Developer 1',
-            incidents: [
-              response.data.incidents.nodes[0],
-              response.data.incidents.nodes[1],
-              response.data.incidents.nodes[3],
-            ],
-          },
-        ]);
-
-        expect(page.context.relatedEntities).to.have.lengthOf(3);
+        expect(page.context.incidentsHarmedBy).to.deep.eq([]);
+        expect(page.context.relatedEntities).to.deep.eq(['ai-developer-1', 'party-1', 'party-2']);
       });
 
       cy.wrap(createPage.getCall(3).args[0]).then((page) => {
+        expect(page.context.id).eq('party-2');
+        expect(page.path).eq('/entities/party-2');
+        expect(page.context.name).eq('Party 2');
+        expect(page.context.incidentsAsDeployer).to.deep.eq([]);
+        expect(page.context.incidentsAsDeveloper).to.deep.eq([]);
+        expect(page.context.incidentsAsBoth).to.deep.eq([]);
+        expect(page.context.incidentsHarmedBy).to.deep.eq([2, 3]);
+        expect(page.context.relatedEntities).to.deep.eq([
+          'ai-deployer-1',
+          'ai-developer-1',
+          'party-1',
+          'ai-developer-2',
+          'ai-deployer-2',
+        ]);
+      });
+
+      cy.wrap(createPage.getCall(4).args[0]).then((page) => {
+        expect(page.context.id).eq('ai-developer-2');
+        expect(page.path).eq('/entities/ai-developer-2');
+        expect(page.context.name).eq('AI Developer 2');
+        expect(page.context.incidentsAsDeployer).to.deep.eq([]);
+        expect(page.context.incidentsAsDeveloper).to.deep.eq([4]);
+        expect(page.context.incidentsAsBoth).to.deep.eq([3]);
+        expect(page.context.incidentsHarmedBy).to.deep.eq([]);
+        expect(page.context.relatedEntities).to.deep.eq([
+          'ai-deployer-2',
+          'party-2',
+          'ai-deployer-3',
+          'ai-developer-1',
+          'party-3',
+        ]);
+      });
+
+      cy.wrap(createPage.getCall(5).args[0]).then((page) => {
         expect(page.context.id).eq('ai-deployer-2');
         expect(page.path).eq('/entities/ai-deployer-2');
         expect(page.context.name).eq('AI Deployer 2');
         expect(page.context.incidentsAsDeployer).to.deep.eq([3]);
         expect(page.context.incidentsAsDeveloper).to.deep.eq([]);
         expect(page.context.incidentsAsBoth).to.deep.eq([]);
-        expect(page.context.relatedEntities[0]).to.deep.eq({
-          id: 'ai-developer-2',
-          name: 'AI Developer 2',
-          incidents: [response.data.incidents.nodes[2], response.data.incidents.nodes[3]],
-        });
-        expect(page.context.relatedEntities).to.have.lengthOf(1);
+        expect(page.context.incidentsHarmedBy).to.deep.eq([]);
+        expect(page.context.relatedEntities).to.deep.eq(['ai-developer-2', 'party-2']);
       });
 
-      cy.wrap(createPage.getCall(4).args[0]).then((page) => {
+      cy.wrap(createPage.getCall(6).args[0]).then((page) => {
         expect(page.context.id).eq('ai-deployer-3');
         expect(page.path).eq('/entities/ai-deployer-3');
         expect(page.context.name).eq('AI Deployer 3');
         expect(page.context.incidentsAsDeployer).to.deep.eq([4]);
         expect(page.context.incidentsAsDeveloper).to.deep.eq([]);
         expect(page.context.incidentsAsBoth).to.deep.eq([]);
-        expect(page.context.relatedEntities[0]).to.deep.eq({
-          id: 'ai-developer-1',
-          name: 'AI Developer 1',
-          incidents: [
-            response.data.incidents.nodes[0],
-            response.data.incidents.nodes[1],
-            response.data.incidents.nodes[3],
-          ],
-        });
-        expect(page.context.relatedEntities[1]).to.deep.eq({
-          id: 'ai-developer-2',
-          name: 'AI Developer 2',
-          incidents: [response.data.incidents.nodes[2], response.data.incidents.nodes[3]],
-        });
-        expect(page.context.relatedEntities).to.have.lengthOf(2);
+        expect(page.context.incidentsHarmedBy).to.deep.eq([]);
+        expect(page.context.relatedEntities).to.deep.eq([
+          'ai-developer-1',
+          'ai-developer-2',
+          'party-3',
+        ]);
       });
 
-      cy.wrap(createPage.getCall(5).args[0]).then((page) => {
+      cy.wrap(createPage.getCall(7).args[0]).then((page) => {
+        expect(page.context.id).eq('party-3');
+        expect(page.path).eq('/entities/party-3');
+        expect(page.context.name).eq('Party 3');
+        expect(page.context.incidentsAsDeployer).to.deep.eq([]);
+        expect(page.context.incidentsAsDeveloper).to.deep.eq([]);
+        expect(page.context.incidentsAsBoth).to.deep.eq([]);
+        expect(page.context.incidentsHarmedBy).to.deep.eq([4]);
+        expect(page.context.relatedEntities).to.deep.eq([
+          'ai-deployer-3',
+          'ai-developer-1',
+          'ai-developer-2',
+        ]);
+      });
+
+      cy.wrap(createPage.getCall(8).args[0]).then((page) => {
         expect(page.path).eq('/entities');
       });
     });

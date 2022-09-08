@@ -139,7 +139,7 @@ export default function EntitiesTable({ data, className = '' }) {
     const columns = [
       {
         id: 'expander',
-        width: 'w-[5%]',
+        width: 'w-[1%]',
         Header: ({ getToggleAllRowsExpandedProps, isAllRowsExpanded }) => {
           return (
             <>
@@ -182,6 +182,7 @@ export default function EntitiesTable({ data, className = '' }) {
       },
       {
         title: 'As Deployer and Developer',
+        width: 'w-[20%]',
         accessor: 'incidentsAsBoth',
         Cell: IncidentsCell,
         filter: incidentFilter,
@@ -189,6 +190,7 @@ export default function EntitiesTable({ data, className = '' }) {
       },
       {
         title: 'As Deployer',
+        width: 'w-[20%]',
         accessor: 'incidentsAsDeployer',
         Cell: IncidentsCell,
         filter: incidentFilter,
@@ -196,6 +198,7 @@ export default function EntitiesTable({ data, className = '' }) {
       },
       {
         title: 'As Developer',
+        width: 'w-[20%]',
         accessor: 'incidentsAsDeveloper',
         Cell: IncidentsCell,
         filter: incidentFilter,
@@ -203,8 +206,8 @@ export default function EntitiesTable({ data, className = '' }) {
       },
       {
         title: 'Related Entities',
+        width: 'w-[20%]',
         accessor: 'relatedEntities',
-        width: 'w-[0.1%]',
         Cell: EntitiestCell,
         filter: entitiesFilter,
         sortType: sortByCount,

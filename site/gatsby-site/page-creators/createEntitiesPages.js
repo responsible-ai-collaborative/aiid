@@ -33,9 +33,10 @@ const createEntitiesPages = async (graphql, createPage) => {
       context: {
         id,
         name: entity.name,
-        incidentsAsDeployer: entity.incidentsAsDeployer.map((incident) => incident.incident_id),
-        incidentsAsDeveloper: entity.incidentsAsDeveloper.map((incident) => incident.incident_id),
-        incidentsAsBoth: entity.incidentsAsBoth.map((incident) => incident.incident_id),
+        incidentsAsDeployer: entity.incidentsAsDeployer,
+        incidentsAsDeveloper: entity.incidentsAsDeveloper,
+        incidentsAsBoth: entity.incidentsAsBoth,
+        incidentsHarmedBy: entity.incidentsHarmedBy,
         relatedEntities: entity.relatedEntities,
       },
     });
