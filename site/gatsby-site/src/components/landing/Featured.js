@@ -5,7 +5,7 @@ import { Trans } from 'react-i18next';
 export default function Featured() {
   return (
     <Card>
-      <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+      <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white w-full text-center">
         <Trans ns="landing">The Database in Print</Trans>
       </h5>
       <p className="mb-5 text-base text-gray-500 dark:text-gray-400 sm:text-lg text-center">

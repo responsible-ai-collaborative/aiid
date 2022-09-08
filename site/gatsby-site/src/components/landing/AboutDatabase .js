@@ -1,11 +1,10 @@
 import React from 'react';
 import { Trans } from 'react-i18next';
 import { LocalizedLink } from 'gatsby-theme-i18n';
-import { Card } from 'flowbite-react';
 
 export default function AboutDatabase() {
   return (
-    <Card>
+    <div className="flex flex-col p-4 w-full bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
       <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
         <Trans ns="landing">About the Database</Trans>
       </h5>
@@ -26,6 +25,6 @@ export default function AboutDatabase() {
           learn from its failings. <LocalizedLink to={`/about`}>(Learn More)</LocalizedLink>
         </Trans>
       </p>
-    </Card>
+    </div>
   );
 }

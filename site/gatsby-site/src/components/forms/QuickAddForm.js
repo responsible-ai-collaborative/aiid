@@ -78,7 +78,7 @@ const QuickAddForm = ({ className = '' }) => {
   });
 
   return (
-    <div className="">
+    <div className="w-full">
       <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
         <Trans ns="landing">Quick Add New Report URL</Trans>
       </h5>
