@@ -40,7 +40,9 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
     () =>
       entities.map((entity) => {
         for (const field of incidentFields) {
-          entity[field] = entity[field].map((id) => incidentsHash[id]);
+          entity[field] = entity[field]
+            .map((id) => incidentsHash[id])
+            .sort((a, b) => b.reports.length - a.reports.length);
         }
 
         for (const field of entitiesFields) {
