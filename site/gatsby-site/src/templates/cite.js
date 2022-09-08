@@ -170,7 +170,7 @@ function CitePage(props) {
                 </h4>
               </Card.Header>
               <Card.Body className="block">
-                <AllegedEntities entities={entities} incident={incident} />
+                <AllegedEntities entities={entities} />
               </Card.Body>
             </Card>
           </Col>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import Link from 'components/ui/Link';
 import { Trans } from 'react-i18next';
 
@@ -15,45 +15,54 @@ function EntityBadge({ entity }) {
   );
 }
 
-function PartyBadge({ text }) {
+function PartyBadge({ entity }) {
+  const to = `/entities/${entity.id}`;
+
   return (
-    <span className="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-800">
-      {text}
-    </span>
+    <Link
+      to={to}
+      className="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-800"
+    >
+      {entity.name}
+    </Link>
   );
 }
 
 function EntitiesList({ entities }) {
   return entities.map((d, i) => (
-    <>
+    <Fragment key={d.id}>
       {i > 0 && <> {i < entities.length - 1 ? <>, </> : <> and </>} </>}
-      <EntityBadge key={d.id} entity={d} />
-    </>
+      <EntityBadge entity={d} />
+    </Fragment>
   ));
 }
 
-function PartiesList({ parties }) {
-  return parties.map((p, i) => (
-    <>
-      {i > 0 && <> {i < parties.length - 1 ? <>, </> : <> and </>} </>}
-      <PartyBadge text={p} />
-    </>
+function PartiesList({ entities }) {
+  return entities.map((entity, i) => (
+    <Fragment key={entity.id}>
+      {i > 0 && <> {i < entities.length - 1 ? <>, </> : <> and </>} </>}
+      <PartyBadge entity={entity} />
+    </Fragment>
   ));
 }
 
-export default function AllegedEntities({ incident, entities }) {
+export default function AllegedEntities({ entities }) {
+  const entitiesHarming = entities.filter((e) => e.incidentsHarmedBy.length === 0);
+
+  const entitiesHarmed = entities.filter((e) => e.incidentsHarmedBy.length > 0);
+
   if (
-    entities.every(
-      (e) =>
-        e.incidentsAsBoth.length === e.incidentsAsDeveloper.length &&
-        e.incidentsAsBoth.length === e.incidentsAsDeployer.length
+    entitiesHarming.every(
+      (e) => e.incidentsAsDeveloper.length == 0 && e.incidentsAsDeployer.length === 0
     )
   ) {
     return (
       <div>
         <Trans>
-          Alleged: <EntitiesList entities={entities} /> developed and deployed an AI system, which
-          harmed <PartiesList parties={incident.Alleged_harmed_or_nearly_harmed_parties} />.
+          Alleged:{' '}
+          <EntitiesList entities={entitiesHarming.length ? entitiesHarming : entitiesHarmed} />{' '}
+          developed and deployed an AI system, which harmed{' '}
+          <PartiesList entities={entitiesHarmed} />.
         </Trans>
       </div>
     );
@@ -68,7 +77,7 @@ export default function AllegedEntities({ incident, entities }) {
       <Trans>
         Alleged: <EntitiesList entities={developers} /> developed an AI system deployed by{' '}
         <EntitiesList entities={deployers} />, which harmed{' '}
-        <PartiesList parties={incident.Alleged_harmed_or_nearly_harmed_parties} />.
+        <PartiesList entities={entitiesHarmed} />.
       </Trans>
     </div>
   );
