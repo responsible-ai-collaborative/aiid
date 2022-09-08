@@ -92,3 +92,15 @@ module.exports.computeEntities = ({ incidents }) => {
 
   return Object.values(entititiesHash);
 };
+
+module.exports.makeIncidentsHash = (incidents) =>
+  incidents.reduce((hash, incident) => {
+    hash[incident.incident_id] = incident;
+    return hash;
+  }, {});
+
+module.exports.makeEntitiesHash = (entities) =>
+  entities.reduce((hash, entity) => {
+    hash[entity.id] = entity;
+    return hash;
+  }, {});

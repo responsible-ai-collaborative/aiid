@@ -3,6 +3,7 @@ import LayoutHideSidebar from 'components/LayoutHideSidebar';
 import Container from 'elements/Container';
 import { graphql } from 'gatsby';
 import React, { useMemo } from 'react';
+import { makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
 
 const incidentFields = [
   'incidentsAsBoth',
@@ -18,23 +19,9 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
 
   const { incidents } = data;
 
-  const incidentsHash = useMemo(
-    () =>
-      incidents.nodes.reduce((hash, incident) => {
-        hash[incident.incident_id] = incident;
-        return hash;
-      }, {}),
-    [incidents.nodes]
-  );
+  const incidentsHash = useMemo(() => makeIncidentsHash(incidents.nodes), [incidents.nodes]);
 
-  const entitiesHash = useMemo(
-    () =>
-      entities.reduce((hash, entity) => {
-        hash[entity.id] = entity;
-        return hash;
-      }, {}),
-    [entities]
-  );
+  const entitiesHash = useMemo(() => makeEntitiesHash(entities), [entities]);
 
   const entitiesData = useMemo(
     () =>
