@@ -27,6 +27,7 @@ import { graphql } from 'gatsby';
 import { getTaxonomies, getTranslatedReports } from 'utils/cite';
 import { computeEntities } from 'utils/entities';
 import AllegedEntities from 'components/entities/AllegedEntities';
+import Link from 'components/ui/Link';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -168,6 +169,9 @@ function CitePage(props) {
                 <h4 className="m-0">
                   <Trans>Entities</Trans>
                 </h4>
+                <Link to="/entities">
+                  <Trans>View All Entities</Trans>
+                </Link>
               </Card.Header>
               <Card.Body className="block">
                 <AllegedEntities entities={entities} />
