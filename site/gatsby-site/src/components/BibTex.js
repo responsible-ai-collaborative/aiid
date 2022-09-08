@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Trans } from 'react-i18next';
 
 const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
   const [show, setShow] = useState(false);
@@ -51,9 +52,9 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
   const jsx = <code style={{ whiteSpace: 'pre' }}>{bibTex}</code>;
 
   return (
-    <>
+    <div className="bootstrap">
       <Button variant="outline-primary" onClick={handleShow}>
-        BibTex Citation
+        <Trans>BibTex Citation</Trans>
       </Button>
       <Modal show={show} onHide={handleClose} data-cy="bibtext-modal">
         <Modal.Header closeButton>
@@ -83,7 +84,7 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </div>
   );
 };
 

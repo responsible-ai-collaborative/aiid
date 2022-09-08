@@ -1,0 +1,11 @@
+/* Custom styles meant to override global.css, tailwind and bootstrap */
+
+a {
+    text-decoration: none;
+    color: #0d6efd;
+}
+
+[type=button], [type=reset], [type=submit], button {
+    appearance: none;
+    -webkit-appearance: none;
+}

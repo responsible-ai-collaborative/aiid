@@ -1,0 +1,54 @@
+{
+    "title": {
+        "title": "Título",
+        "text": "La mayoría de los trabajos tienen un título que debe ingresarse aquí palabra por palabra. En caso de que el trabajo no tenga título, intenta resumir el contenido en unas pocas palabras sin editorializar. Este texto ocupa un lugar destacado en los registros de incidentes."
+    },
+    "authors": {
+        "title": "Autores",
+        "text": "Ingresa los nombres de los creadores del contenido vinculado. Debes ingresar a todas las personas que contribuyeron al trabajo escrito separados por comas."
+    },
+    "submitters": {
+        "title": "¡Este eres tú!",
+        "text": "Ingresa tu nombre aquí. Si más de una persona contribuyó a recopilar el incidente, puedes ingresar varias personas separadas por comas. Alternativamente, puede ingresar \"Anónimo\" como remitente si no deseas  que se te atribuya en la base de datos. Las entradas en este campo se agregarán a la clasificación pública."
+    },
+    "incident_date": {
+        "title": "¿Cuándo ocurrió el incidente por primera vez?",
+        "text": "Muchos incidentes de IA no son eventos discretos (es decir, ocurren durante un período de tiempo). Además, a menudo es difícil saber cuándo ocurrió el incidente por primera vez cuando el primer informe público sigue un período de tiempo después de la primera ocurrencia. En este campo, debes ingresar la fecha del primer informe del incidente o una suposición fundamentada de cuándo ocurrió probablemente el incidente por primera vez. Por ejemplo, si el incidente pertenece a una característica del motor de búsqueda que se lanzó en enero y el primer el informe de incidente público es en febrero, debes asignar una fecha de incidente en enero."
+    },
+    "date_published": {
+        "title": "¿Cuándo estuvo disponible el informe?",
+        "text": "Los informes suelen tener una fecha de publicación en la URL, pero incluso cuando no la tiene, puede visitar el <linkto to=\"https://archive.org/web/\"> Wayback Machine</linkto> para encontrar cuándo se indexó por primera vez la URL del informe."
+    },
+    "date_downloaded": {
+        "title": "¿Cuándo copiaste el contenido del informe en este formulario?",
+        "text": "Las organizaciones de noticias suelen actualizar los informes a lo largo del tiempo. Esta fecha ayuda a determinar si el contenido podría estar obsoleto. Por lo general, colocarás la fecha de hoy aquí."
+    },
+    "url": {
+        "title": "Enlace al informe disponible públicamente",
+        "text": "Esta dirección estará vinculada dentro de muchas interfaces de usuario de bases de datos de incidentes."
+    },
+    "image_url": {
+        "title": "Una imagen utilizada para obtener una vista previa del informe del incidente",
+        "text": "Esta debería ser una URL para una imagen que se indexará y se mostrará junto al informe. La mayoría de las publicaciones ahora tienen imágenes de titulares de las que puede obtener una URL haciendo clic con el botón derecho. También puede vincular imágenes de figuras aquí."
+    },
+    "incident_id": {
+        "title": "¿Es este un incidente existente?",
+        "text": "Muy a menudo, los informes se escriben sobre incidentes que ya están en la base de datos de incidentes. Antes de enviarlos, debes verificar si el incidente ya está en la base de datos visitando la aplicación \"Discover\" y buscando incidentes de similar naturaleza al que estás enviando ahora. Si existe un incidente para tu informe, pero el informe nunca se ha enviado, ingresa aquí el número de identificador de incidente correspondiente. Si el informe de incidente ya existe, no lo vuelvas a enviar."
+    },
+    "text": {
+        "title": "Texto del artículo o transcripción del rich media",
+        "text": "Copia, pega y valida que el contenido textual del informe de incidente coincida con el contenido de la URL vinculada anteriormente. Borra todos los anuncios y otros elementos que no deban indexarse."
+    },
+    "reportAddress": {
+        "title": "Enlace al informe disponible públicamente",
+        "text": "Esta dirección estará vinculada dentro de muchas interfaces de usuario de bases de datos de incidentes."
+    },
+    "tags": {
+        "title": "Etiqueta el tipo de reporte de incidente",
+        "text": "El propósito de las etiquetas de informe es admitir la clasificación de informes en la página de citas para el incidente. En caso de duda, puede dejar este campo en blanco y un editor de base de datos seleccionará las etiquetas adecuadas en el momento de el procesamiento."
+    },
+    "language": {
+        "title": "Idioma del informe del incidente",
+        "text": "Este es el idioma escrito del texto que se encuentra en el informe, no el idioma de las personas o países involucrados en el informe. Los informes se traducirán a los idiomas admitidos cuando procesemos el texto."
+    }
+}

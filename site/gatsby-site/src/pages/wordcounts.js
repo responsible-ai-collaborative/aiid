@@ -1,6 +1,6 @@
 import React from 'react';
-import Helmet from 'react-helmet';
-import ReactWordcloud from 'react-wordcloud';
+import AiidHelmet from 'components/AiidHelmet';
+import ReactWordcloud from 'react-d3-cloud';
 
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
@@ -11,21 +11,18 @@ import Link from 'components/ui/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import Wordlist from '../components/WordList';
 
-const wordCloudSize = [350, 350];
-
-const WordCloudCell = ({ wordCountsSorted, wordCloudOptions, wordCloudSize, wordCloud }) => {
+const WordCloudCell = ({ wordCountsSorted, wordCloud }) => {
   return (
     <Row>
       <Col xs={4} data-cy="wordlist-container">
         <Wordlist content={wordCountsSorted} />
       </Col>
       <Col xs={8}>
-        <ReactWordcloud
-          data-cy="wordcloud"
-          options={wordCloudOptions}
-          size={wordCloudSize}
-          words={wordCloud}
-        />
+        {typeof window !== 'undefined' && (
+          <div data-cy="wordcloud">
+            <ReactWordcloud data={wordCloud} />
+          </div>
+        )}
       </Col>
     </Row>
   );
@@ -38,16 +35,11 @@ const WordCounts = ({ pageContext, ...props }) => {
     return null;
   }
 
-  const wordCloudOptions = {
-    rotations: 3,
-    rotationAngles: [-90, 0],
-  };
-
   return (
     <Layout {...props}>
-      <Helmet>
+      <AiidHelmet>
         <title>Word Counts</title>
-      </Helmet>
+      </AiidHelmet>
       <div className="titleWrapper">
         <StyledHeading>Word Counts</StyledHeading>
       </div>
@@ -66,8 +58,6 @@ const WordCounts = ({ pageContext, ...props }) => {
               <WordCloudCell
                 key={`wordcloud-${idx}`}
                 wordCountsSorted={wordCountsSorted.slice(0, (idx + 1) * wordsPerCloud)}
-                wordCloudOptions={wordCloudOptions}
-                wordCloudSize={wordCloudSize}
                 wordCloud={wordCloud}
               />
             ))}

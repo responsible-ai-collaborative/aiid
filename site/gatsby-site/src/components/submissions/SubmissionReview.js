@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import ReadMoreText from 'components/ReadMoreText';
 import RelatedIncidents from 'components/RelatedIncidents';
-
+import isArray from 'lodash/isArray';
 import { useUserContext } from 'contexts/userContext';
 import { UPDATE_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
@@ -20,6 +20,8 @@ import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { format, getUnixTime } from 'date-fns';
 import SubmissionEditModal from './SubmissionEditModal';
 import { Spinner } from 'react-bootstrap';
+import Link from 'components/ui/Link';
+import { Trans, useTranslation } from 'react-i18next';
 
 const ListedGroup = ({ item, className = '', keysToRender }) => {
   return (
@@ -27,12 +29,12 @@ const ListedGroup = ({ item, className = '', keysToRender }) => {
       {keysToRender
         .filter((key) => !!item[key])
         .map((key) => (
-          <ListGroup.Item key={key} className="d-flex gap-4" data-cy={key}>
+          <ListGroup.Item key={key} className="flex gap-4" data-cy={key}>
             <div style={{ width: 140 }} className="flex-grow">
               <b>{key}</b>
             </div>
             <div className="text-break">
-              {item[key] == 'object' && item[key] !== null ? item[key].join(', ') : item[key]}
+              {isArray(item[key]) ? item[key].join(', ') : item[key]}
             </div>
           </ListGroup.Item>
         ))}
@@ -52,7 +54,7 @@ const dateRender = [
   'date_modified',
 ];
 
-const otherDetails = ['language', '_id'];
+const otherDetails = ['language', '_id', 'developers', 'deployers', 'harmed_parties'];
 
 const SubmissionReview = ({ submission }) => {
   const { isRole } = useUserContext();
@@ -71,6 +73,10 @@ const SubmissionReview = ({ submission }) => {
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
+  const isNewIncident = submission.incident_id === 0;
+
+  const { i18n } = useTranslation(['submitted']);
+
   const [deleteSubmission, { loading: deleting }] = useMutation(DELETE_SUBMISSION, {
     update: (cache, { data }) => {
       // Apollo expects a `deleted` boolean field otherwise manual cache manipulation is needed
@@ -86,6 +92,13 @@ const SubmissionReview = ({ submission }) => {
   const addToast = useToastContext();
 
   const promoteSubmission = useCallback(async () => {
+    if (!submission.developers || !submission.deployers || !submission.harmed_parties) {
+      addToast({
+        message: `Please review submission before approving. Some data is missing.`,
+        severity: SEVERITY.danger,
+      });
+      return;
+    }
     const {
       data: {
         promoteSubmissionToReport: { 0: incident },
@@ -94,7 +107,7 @@ const SubmissionReview = ({ submission }) => {
       variables: {
         input: {
           submission_id: submission._id,
-          incident_ids: submission.incident_id === 0 ? [] : [submission.incident_id],
+          incident_ids: isNewIncident ? [] : [submission.incident_id],
         },
       },
       fetchPolicy: 'no-cache',
@@ -109,7 +122,18 @@ const SubmissionReview = ({ submission }) => {
       },
     });
 
-    const report = { ...submission, incident_id: undefined, _id: undefined, __typename: undefined };
+    const report = {
+      ...submission,
+      incident_id: undefined,
+      deployers: undefined,
+      developers: undefined,
+      harmed_parties: undefined,
+      _id: undefined,
+      __typename: undefined,
+      nlp_similar_incidents: undefined,
+      editor_similar_incidents: undefined,
+      editor_dissimilar_incidents: undefined,
+    };
 
     report.date_modified = format(new Date(), 'yyyy-MM-dd');
 
@@ -133,7 +157,7 @@ const SubmissionReview = ({ submission }) => {
       },
     });
 
-    if (submission.incident_id === 0) {
+    if (isNewIncident) {
       await updateIncident({
         variables: {
           query: {
@@ -142,21 +166,27 @@ const SubmissionReview = ({ submission }) => {
           set: {
             title: submission.title,
             date: submission.incident_date,
-            description: '',
-            AllegedDeployerOfAISystem: [],
-            AllegedDeveloperOfAISystem: [],
-            AllegedHarmedOrNearlyHarmedParties: [],
+            description: submission.description,
           },
         },
       });
     }
 
+    const incident_id = incident.incident_id;
+
     addToast({
-      message: (
-        <>
-          Successfully promoted submission to Incident {incident.incident_id} and Report{' '}
-          {report_number}{' '}
-        </>
+      message: isNewIncident ? (
+        <Trans i18n={i18n} ns="submitted" incident_id={incident_id} report_number={report_number}>
+          Successfully promoted submission to Incident {{ incident_id }} and Report{' '}
+          {{ report_number }}
+        </Trans>
+      ) : (
+        <Trans i18n={i18n} ns="submitted" incident_id={incident_id} report_number={report_number}>
+          Successfully promoted submission to{' '}
+          <Link to={`/cite/${incident_id}`}>
+            Incident {{ incident_id }} and Report {{ report_number }}
+          </Link>
+        </Trans>
       ),
       severity: SEVERITY.success,
     });
@@ -171,7 +201,7 @@ const SubmissionReview = ({ submission }) => {
   });
 
   return (
-    <>
+    <div className="bootstrap">
       <Card.Header data-cy="submission">
         <Row>
           <Col xs={12} sm={2} lg={2}>
@@ -181,7 +211,7 @@ const SubmissionReview = ({ submission }) => {
               aria-expanded={open}
               data-cy="review-button"
             >
-              review &gt;
+              <Trans>review</Trans> &gt;
             </Button>
           </Col>
           <Col xs={12} sm={10} lg={10}>
@@ -227,10 +257,10 @@ const SubmissionReview = ({ submission }) => {
           {open && (
             <div className="mx-3">
               <h5>Possible related incidents</h5>
-              <RelatedIncidents editable={false} incident={submission} />
+              <RelatedIncidents incident={submission} />
             </div>
           )}
-          <Card.Footer className="d-flex text-muted">
+          <Card.Footer className="flex text-muted-gray">
             <Button
               className="me-auto"
               data-cy="edit-submission"
@@ -245,7 +275,11 @@ const SubmissionReview = ({ submission }) => {
               disabled={!isSubmitter || promoting}
               onClick={promoteSubmission}
             >
-              {submission.incident_id === 0 ? <>Add New Incident</> : <>Add New Report</>}
+              {isNewIncident ? (
+                <Trans ns="submitted">Add New Incident</Trans>
+              ) : (
+                <Trans ns="submitted">Add New Report</Trans>
+              )}
               {promoting && (
                 <Spinner
                   as="span"
@@ -253,7 +287,7 @@ const SubmissionReview = ({ submission }) => {
                   size="sm"
                   role="status"
                   aria-hidden="true"
-                  className="ms-2"
+                  className="ms-2 bootstrap"
                 />
               )}
             </Button>
@@ -262,7 +296,11 @@ const SubmissionReview = ({ submission }) => {
               disabled={!isSubmitter || deleting}
               onClick={rejectReport}
             >
-              {submission.incident_id === 0 ? <>Reject New Incident</> : <>Reject New Report</>}
+              {isNewIncident ? (
+                <Trans ns="submitted">Reject New Incident</Trans>
+              ) : (
+                <Trans ns="submitted">Reject New Report</Trans>
+              )}
               {deleting && (
                 <Spinner
                   as="span"
@@ -283,7 +321,7 @@ const SubmissionReview = ({ submission }) => {
         onHide={() => setIsEditing(false)}
         submissionId={submission._id}
       />
-    </>
+    </div>
   );
 };
 

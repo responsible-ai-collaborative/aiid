@@ -1,0 +1,216 @@
+---
+title: 'Reportes de Incidentes Plurilingüe'
+metaTitle: 'Reportes de Incidentes Plurilingüe'
+metaDescription: ''
+date: '2022-08-11'
+image: ./images/cover.jpg
+author: 'Sean McGregor and Cesar Varela'
+slug: '/blog/multilingual-incident-reporting'
+---
+
+La investigación y el desarrollo tienen un problema importante **sin resolver** en los sistemas de IA de última generación: **hacer que los sistemas funcionen más allá del entorno para el que fueron diseñados**. Si bien este problema tiene muchos nombres (por ejemplo, distributional shift, generalización del modelo, robustez de conjunto abierto, etc.), sus implicaciones ya son evidentes en el mundo real,
+
+<table>
+  <tr>
+   <td>
+
+![](./images/image5.png)
+
+   </td>
+   <td>
+
+![](./images/image2.png)
+
+   </td>
+  </tr>
+  <tr>
+   <td><a href="/cite/171">Incidente 171</a>: Un conductor es multado después de que la camiseta de una mujer es confundida por la matrícula de su auto. El sistema no está diseñado para diferenciar camisetas y matrículas, por lo que no resuelve el problema del conjunto abierto.</td>
+   <td><a href="/cite/36">Incidente 36</a>: Una mujer es condenada en China por cruzar la calle imprudentemente porque su imagen está en el costado de un autobús. El sistema de detección de personas no está diseñado para diferenciar la imagen de una persona o una persona real.</td>
+  </tr>
+</table>
+
+
+Esta incapacidad para "generalizar" es una de las razones por las que compartir incidentes entre culturas, geografías e idiomas es tan importante: un sistema producido originalmente en un país y desplegado en otro producirá incidentes imprevistos de los que todo el mundo necesita aprender. Por este motivo, la base de datos de incidentes de IA ha comenzado a indexar los incidentes de IA en varios idiomas.
+
+![](./images/image3.jpg) 
+
+## ¿Como funciona?
+
+La Base de Datos de Incidentes de AI indexa "informes de incidentes", que hasta ahora han sido solamente en inglés. Ahora, cuando se informa un incidente, el informe se etiqueta con un idioma de origen y se traduce automáticamente a todos los idiomas soportados:
+
+<Details summary="Click para ver la Lista de lenguages que aceptamos">
+
+| [Lenguajes que aceptamos](https://en.wikipedia.org/wiki/Google_Translate#Supported_languages)                                              | Lenguajes que prensetamos                                                          |
+| ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------|
+| [Afrikaans](https://en.wikipedia.org/wiki/Afrikaans)                                                                                     | [English](https://incidentdatabase.ai) and [Spanish](https://incidentdatabase.ai/es/) |
+| [Albanian](https://en.wikipedia.org/wiki/Albanian_language)                                                                              |                                                                                       |
+| [Amharic](https://en.wikipedia.org/wiki/Amharic)                                                                                         |                                                                                       |
+| [Arabic](https://en.wikipedia.org/wiki/Arabic)                                                                                           |                                                                                       |
+| [Armenian](https://en.wikipedia.org/wiki/Armenian_language)                                                                              |                                                                                       |
+| [Assamese](https://en.wikipedia.org/wiki/Assamese_language)                                                                              |                                                                                       |
+| [Aymara](https://en.wikipedia.org/wiki/Aymara_language)                                                                                  |                                                                                       |
+| [Azerbaijani](https://en.wikipedia.org/wiki/Azerbaijani_language)                                                                        |                                                                                       |
+| [Bambara](https://en.wikipedia.org/wiki/Bambara_language)                                                                                |                                                                                       |
+| [Basque](https://en.wikipedia.org/wiki/Basque_language)                                                                                  |                                                                                       |
+| [Belarusian](https://en.wikipedia.org/wiki/Belarusian_language)                                                                          |                                                                                       |
+| [Bengali](https://en.wikipedia.org/wiki/Bengali_language)                                                                                |                                                                                       |
+| [Bhojpuri](https://en.wikipedia.org/wiki/Bhojpuri_language)                                                                              |                                                                                       |
+| [Bosnian](https://en.wikipedia.org/wiki/Bosnian_language)                                                                                |                                                                                       |
+| [Bulgarian](https://en.wikipedia.org/wiki/Bulgarian_language)                                                                            |                                                                                       |
+| [Burmese](https://en.wikipedia.org/wiki/Burmese_language) (Myanmar)                                                                      |                                                                                       |
+| [Catalan](https://en.wikipedia.org/wiki/Catalan_language)                                                                                |                                                                                       |
+| [Cebuano](https://en.wikipedia.org/wiki/Cebuano_language)                                                                                |                                                                                       | 
+| [Chewa](https://en.wikipedia.org/wiki/Chewa_language) (Chichewa)                                                                         |                                                                                       |
+| [Chinese](https://en.wikipedia.org/wiki/Chinese_language) ([Simplified](https://en.wikipedia.org/wiki/Simplified_Chinese_characters))    |                                                                                       |
+| [Chinese](https://en.wikipedia.org/wiki/Chinese_language) ([Traditional](https://en.wikipedia.org/wiki/Traditional_Chinese_characters))  |                                                                                       |
+| [Corsican](https://en.wikipedia.org/wiki/Corsican_language)                                                                              |                                                                                       |
+| [Croatian](https://en.wikipedia.org/wiki/Croatian_language)                                                                              |                                                                                       |
+| [Czech](https://en.wikipedia.org/wiki/Czech_language)                                                                                    |                                                                                       |
+| [Danish](https://en.wikipedia.org/wiki/Danish_language)                                                                                  |                                                                                       |
+| [Dogri](https://en.wikipedia.org/wiki/Dogri_language)                                                                                    |                                                                                       |
+| [Dutch](https://en.wikipedia.org/wiki/Dutch_language)                                                                                    |                                                                                       |
+| [English](https://en.wikipedia.org/wiki/English_language)                                                                                |                                                                                       |
+| [Esperanto](https://en.wikipedia.org/wiki/Esperanto)                                                                                     |                                                                                       |
+| [Estonian](https://en.wikipedia.org/wiki/Estonian_language)                                                                              |                                                                                       |
+| [Ewe](https://en.wikipedia.org/wiki/Ewe_language)                                                                                        |                                                                                       |
+| [Finnish](https://en.wikipedia.org/wiki/Finnish_language)                                                                                |                                                                                       |
+| [French](https://en.wikipedia.org/wiki/French_language)                                                                                  |                                                                                       |
+| [Galician](https://en.wikipedia.org/wiki/Galician_language)                                                                              |                                                                                       |
+| [Georgian](https://en.wikipedia.org/wiki/Georgian_language)                                                                              |                                                                                       |
+| [German](https://en.wikipedia.org/wiki/German_language)                                                                                  |                                                                                       |
+| [Greek](https://en.wikipedia.org/wiki/Greek_language)                                                                                    |                                                                                       |
+| [Guarani](https://en.wikipedia.org/wiki/Guarani_language)                                                                                |                                                                                       |
+| [Gujarati](https://en.wikipedia.org/wiki/Gujarati_language)                                                                              |                                                                                       |
+| [Haitian Creole](https://en.wikipedia.org/wiki/Haitian_Creole)                                                                           |                                                                                       |
+| [Hausa](https://en.wikipedia.org/wiki/Hausa_language)                                                                                    |                                                                                       |
+| [Hawaiian](https://en.wikipedia.org/wiki/Hawaiian_language)                                                                              |                                                                                       |
+| [Hebrew](https://en.wikipedia.org/wiki/Hebrew_language)                                                                                  |                                                                                       |
+| [Hindi](https://en.wikipedia.org/wiki/Hindi)                                                                                             |                                                                                       |
+| [Hmong](https://en.wikipedia.org/wiki/Hmong_language)                                                                                    |                                                                                       |
+| [Hungarian](https://en.wikipedia.org/wiki/Hungarian_language)                                                                            |                                                                                       |
+| [Icelandic](https://en.wikipedia.org/wiki/Icelandic_language)                                                                            |                                                                                       |
+| [Igbo](https://en.wikipedia.org/wiki/Igbo_language)                                                                                      |                                                                                       |
+| [Ilocano](https://en.wikipedia.org/wiki/Ilocano_language)                                                                                |                                                                                       |
+| [Indonesian](https://en.wikipedia.org/wiki/Indonesian_language)                                                                          |                                                                                       |
+| [Irish](https://en.wikipedia.org/wiki/Irish_language)                                                                                    |                                                                                       |
+| [Italian](https://en.wikipedia.org/wiki/Italian_language)                                                                                |                                                                                       |
+| [Japanese](https://en.wikipedia.org/wiki/Japanese_language)                                                                              |                                                                                       |
+| [Javanese](https://en.wikipedia.org/wiki/Javanese_language)                                                                              |                                                                                       |
+| [Kannada](https://en.wikipedia.org/wiki/Kannada)                                                                                         |                                                                                       |
+| [Kazakh](https://en.wikipedia.org/wiki/Kazakh_language)                                                                                  |                                                                                       |
+| [Khmer](https://en.wikipedia.org/wiki/Khmer_language)                                                                                    |                                                                                       |
+| [Kinyarwanda](https://en.wikipedia.org/wiki/Kinyarwanda)                                                                                 |                                                                                       |
+| [Konkani](https://en.wikipedia.org/wiki/Konkani_language)                                                                                |                                                                                       |
+| [Korean](https://en.wikipedia.org/wiki/Korean_language)                                                                                  |                                                                                       |
+| [Krio](https://en.wikipedia.org/wiki/Krio_language)                                                                                      |                                                                                       |
+| [Kurdish](https://en.wikipedia.org/wiki/Kurdish_languages) ([Kurmanji](https://en.wikipedia.org/wiki/Kurmanji))                          |                                                                                       |
+| [Kurdish](https://en.wikipedia.org/wiki/Kurdish_languages) ([Sorani](https://en.wikipedia.org/wiki/Sorani))                              |                                                                                       |
+| [Kyrgyz](https://en.wikipedia.org/wiki/Kyrgyz_language)                                                                                  |                                                                                       |
+| [Lao](https://en.wikipedia.org/wiki/Lao_language)                                                                                        |                                                                                       |
+| [Latin](https://en.wikipedia.org/wiki/Latin)                                                                                             |                                                                                       |
+| [Latvian](https://en.wikipedia.org/wiki/Latvian_language)                                                                                |                                                                                       |
+| [Lingala](https://en.wikipedia.org/wiki/Lingala)                                                                                         |                                                                                       |
+| [Lithuanian](https://en.wikipedia.org/wiki/Lithuanian_language)                                                                          |                                                                                       |
+| [Luganda](https://en.wikipedia.org/wiki/Luganda)                                                                                         |                                                                                       |
+| [Luxembourgish](https://en.wikipedia.org/wiki/Luxembourgish)                                                                             |                                                                                       |
+| [Macedonian](https://en.wikipedia.org/wiki/Macedonian_language)                                                                          |                                                                                       |
+| [Maithili](https://en.wikipedia.org/wiki/Maithili_language)                                                                              |                                                                                       |
+| [Malagasy](https://en.wikipedia.org/wiki/Malagasy_language)                                                                              |                                                                                       |
+| [Malay](https://en.wikipedia.org/wiki/Malay_language)                                                                                    |                                                                                       |
+| [Malayalam](https://en.wikipedia.org/wiki/Malayalam)                                                                                     |                                                                                       |
+| [Maldivian](https://en.wikipedia.org/wiki/Maldivian_language) (Dhivehi)                                                                  |                                                                                       |
+| [Maltese](https://en.wikipedia.org/wiki/Maltese_language)                                                                                |                                                                                       |
+| [Māori](https://en.wikipedia.org/wiki/M%C4%81ori_language) (Maori)                                                                       |                                                                                       |
+| [Marathi](https://en.wikipedia.org/wiki/Marathi_language)                                                                                |                                                                                       |
+| [Meitei](https://en.wikipedia.org/wiki/Meitei_language) (Manipuri, Meiteilon)                                                            |                                                                                       |
+| [Mizo](https://en.wikipedia.org/wiki/Mizo_language)                                                                                      |                                                                                       |
+| [Mongolian](https://en.wikipedia.org/wiki/Mongolian_language)                                                                            |                                                                                       |
+| [Nepali](https://en.wikipedia.org/wiki/Nepali_language)                                                                                  |                                                                                       |
+| [Northern Sotho](https://en.wikipedia.org/wiki/Northern_Sotho_language) (Sepedi)                                                         |                                                                                       |
+| [Norwegian](https://en.wikipedia.org/wiki/Norwegian_language)                                                                            |                                                                                       |
+| [Odia](https://en.wikipedia.org/wiki/Odia_language) (Oriya)                                                                              |                                                                                       |
+| [Oromo](https://en.wikipedia.org/wiki/Oromo_language)                                                                                    |                                                                                       |
+| [Pashto](https://en.wikipedia.org/wiki/Pashto)                                                                                           |                                                                                       |
+| [Persian](https://en.wikipedia.org/wiki/Persian_language)                                                                                |                                                                                       |
+| [Polish](https://en.wikipedia.org/wiki/Polish_language)                                                                                  |                                                                                       |
+| [Portuguese](https://en.wikipedia.org/wiki/Portuguese_language)                                                                          |                                                                                       |
+| [Punjabi](https://en.wikipedia.org/wiki/Punjabi_language)                                                                                |                                                                                       |
+| [Quechua](https://en.wikipedia.org/wiki/Southern_Quechua)                                                                                |                                                                                       |
+| [Romanian](https://en.wikipedia.org/wiki/Romanian_language)                                                                              |                                                                                       |
+| [Russian](https://en.wikipedia.org/wiki/Russian_language)                                                                                |                                                                                       |
+| [Samoan](https://en.wikipedia.org/wiki/Samoan_language)                                                                                  |                                                                                       |
+| [Sanskrit](https://en.wikipedia.org/wiki/Sanskrit)                                                                                       |                                                                                       |
+| [Scottish Gaelic](https://en.wikipedia.org/wiki/Scottish_Gaelic) (Scots Gaelic)                                                          |                                                                                       |
+| [Serbian](https://en.wikipedia.org/wiki/Serbian_language)                                                                                |                                                                                       |
+| [Sesotho](https://en.wikipedia.org/wiki/Sotho_language)                                                                                  |                                                                                       |
+| [Shona](https://en.wikipedia.org/wiki/Shona_language)                                                                                    |                                                                                       |
+| [Sindhi](https://en.wikipedia.org/wiki/Sindhi_language)                                                                                  |                                                                                       |
+| [Sinhala](https://en.wikipedia.org/wiki/Sinhala_language)                                                                                |                                                                                       |
+| [Slovak](https://en.wikipedia.org/wiki/Slovak_language)                                                                                  |                                                                                       |
+| [Slovenian](https://en.wikipedia.org/wiki/Slovene_language)                                                                              |                                                                                       |
+| [Somali](https://en.wikipedia.org/wiki/Somali_language)                                                                                  |                                                                                       |
+| [Spanish](https://en.wikipedia.org/wiki/Spanish_language)                                                                                |                                                                                       |
+| [Sundanese](https://en.wikipedia.org/wiki/Sundanese_language)                                                                            |                                                                                       |
+| [Swahili](https://en.wikipedia.org/wiki/Swahili_language)                                                                                |                                                                                       |
+| [Swedish](https://en.wikipedia.org/wiki/Swedish_language)                                                                                |                                                                                       |
+| [Tagalog](https://en.wikipedia.org/wiki/Tagalog_language) ([Filipino](https://en.wikipedia.org/wiki/Filipino_language))                  |                                                                                       |
+| [Tajik](https://en.wikipedia.org/wiki/Tajik_language)                                                                                    |                                                                                       |
+| [Tamil](https://en.wikipedia.org/wiki/Tamil_language)                                                                                    |                                                                                       |
+| [Tatar](https://en.wikipedia.org/wiki/Tatar_language)                                                                                    |                                                                                       |
+| [Telugu](https://en.wikipedia.org/wiki/Telugu_language)                                                                                  |                                                                                       |
+| [Thai](https://en.wikipedia.org/wiki/Thai_language)                                                                                      |                                                                                       |
+| [Tigrinya](https://en.wikipedia.org/wiki/Tigrinya_language)                                                                              |                                                                                       |
+| [Tsonga](https://en.wikipedia.org/wiki/Tsonga_language)                                                                                  |                                                                                       |
+| [Turkish](https://en.wikipedia.org/wiki/Turkish_language)                                                                                |                                                                                       |
+| [Turkmen](https://en.wikipedia.org/wiki/Turkmen_language)                                                                                |                                                                                       |
+| [Twi](https://en.wikipedia.org/wiki/Twi)                                                                                                 |                                                                                       |
+| [Ukrainian](https://en.wikipedia.org/wiki/Ukrainian_language)                                                                            |                                                                                       |
+| [Urdu](https://en.wikipedia.org/wiki/Urdu)                                                                                               |                                                                                       |
+| [Uyghur](https://en.wikipedia.org/wiki/Uyghur_language)                                                                                  |                                                                                       |
+| [Uzbek](https://en.wikipedia.org/wiki/Uzbek_language)                                                                                    |                                                                                       |
+| [Vietnamese](https://en.wikipedia.org/wiki/Vietnamese_language)                                                                          |                                                                                       |
+| [Welsh](https://en.wikipedia.org/wiki/Welsh_language)                                                                                    |                                                                                       |
+| [West Frisian](https://en.wikipedia.org/wiki/West_Frisian_language) (Frisian)                                                            |                                                                                       |
+| [Xhosa](https://en.wikipedia.org/wiki/Xhosa_language)                                                                                    |                                                                                       |
+| [Yiddish](https://en.wikipedia.org/wiki/Yiddish)                                                                                         |                                                                                       |
+| [Yoruba](https://en.wikipedia.org/wiki/Yoruba_language)                                                                                  |                                                                                       |
+| [Zulu](https://en.wikipedia.org/wiki/Zulu_language)                                                                                      |                                                                                       |
+
+</Details>
+
+¿Por qué aceptamos 133 idiomas, pero solo presentamos dos? **Conveniencia y cautela**. Primero, traducir la interfaz de usuario (por ejemplo, botones, descripciones, etc.) a diferentes idiomas lleva tiempo. En segundo lugar, la Base de Datos de Incidentes de AI tiene muchos colaboradores que saben inglés y español y pueden corregir las malas traducciones. Si bien la traducción automática admite más de 130 idiomas, no creemos que la calidad  de las peores sea lo suficientemente sólida como para confiar en ellas. A medida que ganemos confianza en estas y/o ampliemos nuestra comunidad de colaboradores, i**remos agregando nuevos idiomas a la interfaz**. Esperamos agregar soporte en francés dentro del próximo mes.
+
+En resumen: el camino a seguir más conveniente y cauteloso es agregar un solo idioma antes de escalar la funcionalidad. Tu puedes ayudar a acelerar nuestros planes para indexar nuevos idiomas, desde Afrikáans hasta Zulú.
+
+![](./images/image1.png)
+
+## Llamado a la acción
+
+Fundamos la Responsible AI Collaborative (la organización que rige la Base de Datos de Incidentes de IA) para desarrollar colaborativamente los sistemas necesarios para compartir incidentes entre culturas, idiomas y geografías. Necesitamos tu ayuda para garantizar que nuestras traducciones sirvan a nuestra teoría del cambio. Ponte en [contacto](/contact) con nosotros si deseas ayudar a traducir y localizar idiomas distintos del inglés.
+
+
+## Anexo: Riesgos y mejores prácticas
+
+> Advertencia: aquí damos un ejemplo de una mala traducción para ilustrar cómo traducir utlizando machine learning **inevitablemente producirá incidentes de IA**. El incidente en cuestión es ofensivo e insultante.
+
+Esta traducción es un caso ilustrativo ideal de por qué la recopilación y difusión de incidentes de IA es tan importante. Pocos argumentaran que el mundo estaría mejor sin la traducción por machine learning, y de hecho la tecnología produce regularmente [incidentes ofensivos y, a veces, peligrosos](/cite/72).
+
+> _Un barco en el puerto es seguro, pero no es para eso que ha sido construido._
+
+Para extender un aforismo sobre la seguridad de los barcos, existe una variedad de tecnologías de apoyo (satélites meteorológicos, radar, etc.) y procesos (¡cerrar las escotillas!) que determinan cómo y si es apropiado zarpar. Las empresas, incluida la Responsible AI collaborative, deben crear sistemas y procesos para el seguimiento, la mejora y la notificación de incidentes..
+
+Volviendo al contexto de la traducción por machine learning, el desafío de generalización sin resolver es uno de contexto y subtexto. Los humanos tienen un "modelo" para su audiencia que les permite comunicar más que la traducción literal del texto. Solucionar este subtexto es a menudo donde esta traducción falla. Por ejemplo, un colaborador de la base de datos de incidentes compartió recientemente esta imagen de la función de traducción basada en cámara de Google en Google Lens,
+
+<SensitiveImage contentWarning="Click para ver imagen ofensiva">
+
+  ![](images/image4.jpg)
+
+</SensitiveImage>
+
+Esta es una traducción que nunca debió realizarse en el contexto de un libro del primer ministro de cultura de Corea. Sin embargo, en conversaciones con lectores del idioma coreano, se puede ver cómo una traducción sin contexto que probablemente esté entrenada en comunicaciones por Internet (podría llegar a esta traducción).
+
+El título del libro se traduce literalmente como "eso, eso", que también significa "en la punta de la lengua". Esto sumado con el uso coreano de "eso" como jerga para los genitales masculinos, y podemos deducir cómo llegamos a esta desafortunada mala traducción. Sin que el contexto del texto traducido sea el título de un libro de una persona seria, la traducción más probable (y más ofensiva) es la que se encontraría en foros de Internet.
+
+**_¿Podemos evitar agregar la base de datos de incidentes de IA como un incidente en la base de datos de incidentes de IA?_**
+
+No. Pero **podemos reducir la probabilidad y los impactos negativos**. Hacia esto, las mejores prácticas que identificamos son: (1) identificar siempre en la interfaz de usuario cuando el contenido ha sido traducido por machine learning, (2) proporcionar un enlace al texto sin traducir, (3) proporcionar la capacidad para que las personas informen, corrijan y mejorar las malas traducciones, (4) validar la efectividad de las traducciones entre idiomas antes de hacer que esas traducciones estén disponibles para el público en general, y (5) desarrollar una comunidad de personas que puedan interpretar y responder a los problemas en las traducciones en caso de que ocurran.

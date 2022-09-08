@@ -1,25 +1,31 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { AdvancedImage, lazyload } from '@cloudinary/react';
 import { CloudinaryImage } from '@cloudinary/base';
 import { defaultImage, format, quality } from '@cloudinary/base/actions/delivery';
 import { auto } from '@cloudinary/base/qualifiers/format';
 import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
-import styled from 'styled-components';
 import config from '../../config';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import { Spinner } from 'react-bootstrap';
 import { isWebUri } from 'valid-url';
+import { Trans } from 'react-i18next';
 
 const getCloudinaryPublicID = (url) => {
   // https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files
 
-  const publicID = `reports/${url.replace(/^https?:\/\//, '')}`;
+  const publicID = 'reports/' + url.replace(/^https?:\/\//, '');
 
   return publicID;
 };
 
 const Image = ({ publicID, className, alt, transformation = null, plugins = [lazyload()] }) => {
-  const image = new CloudinaryImage(publicID, { cloudName: config.cloudinary.cloudName });
+  const [cloudinaryId, setCloudinaryID] = useState(publicID);
+
+  const imageElement = useRef(null);
+
+  const image = new CloudinaryImage(cloudinaryId.replace(/%/g, '%25'), {
+    cloudName: config.cloudinary.cloudName,
+  });
 
   //TODO: this is a fix for this issue: https://github.com/PartnershipOnAI/aiid/issues/260
   // Setting transformation as a string skips the safe url check here: https://github.com/cloudinary/js-url-gen/blob/9a3d0a29ea77ddfd6f7181251615f34c2d8a6c5d/src/assets/CloudinaryFile.ts#L279
@@ -34,24 +40,37 @@ const Image = ({ publicID, className, alt, transformation = null, plugins = [laz
 
   image.transformation = tmpImage.transformation.toString();
 
-  return <AdvancedImage alt={alt} className={className} cldImg={image} plugins={plugins} />;
+  useEffect(() => {
+    let fallbackTimeout;
+
+    const useFallbackIfLoadFailed = () => {
+      const img = imageElement.current?.imageRef.current;
+
+      if (!img || img.naturalHeight == undefined || img.naturalHeight == 0) {
+        if ((img.src || img.srcset) && img.complete) {
+          setCloudinaryID('fallback.jpg');
+        } else {
+          fallbackTimeout = setTimeout(useFallbackIfLoadFailed, 1000);
+        }
+      }
+    };
+
+    setCloudinaryID(publicID);
+    useFallbackIfLoadFailed();
+
+    return () => clearTimeout(fallbackTimeout);
+  }, [publicID]);
+
+  return (
+    <AdvancedImage
+      ref={imageElement}
+      alt={alt}
+      className={className}
+      cldImg={image}
+      plugins={plugins}
+    />
+  );
 };
-
-const PreviewImageContainer = styled.div`
-  height: 50vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const PreviewImage = styled(Image)`
-  margin: -1rem auto 1rem;
-  max-height: 50vh;
-`;
-
-const PreviewFigure = styled.figure`
-  text-align: center;
-`;
 
 const PreviewImageInputGroup = ({
   cloudinary_id,
@@ -134,16 +153,18 @@ const PreviewImageInputGroup = ({
         className={className}
         handleBlur={handleBlur}
       />
-      <PreviewFigure data-cy="image-preview-figure" id="image-preview-figure">
-        <PreviewImageContainer>
+      <figure data-cy="image-preview-figure" id="image-preview-figure" className="text-center">
+        <div className="h-[50vh] flex items-center justify-center bootstrap">
           {updatingImage ? (
             <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" />
           ) : (
-            <PreviewImage className={'mt-3'} publicID={cloudinaryID} />
+            <Image className={'mt-3 -mt-4 mr-auto mb-4'} publicID={cloudinaryID} />
           )}
-        </PreviewImageContainer>
-        <figcaption>Selected Image</figcaption>
-      </PreviewFigure>
+        </div>
+        <figcaption>
+          <Trans>Selected Image</Trans>
+        </figcaption>
+      </figure>
     </>
   );
 };

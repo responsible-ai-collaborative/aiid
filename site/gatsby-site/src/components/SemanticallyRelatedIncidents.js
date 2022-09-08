@@ -3,27 +3,26 @@ import { gql, useApolloClient } from '@apollo/client';
 import debounce from 'lodash/debounce';
 import RelatedIncidentsArea from './RelatedIncidentsArea';
 import { stripMarkdown } from '../utils/typography';
+import { useTranslation } from 'react-i18next';
 
 const relatedIncidentIdsQuery = gql`
   query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
     incidents(query: $query) {
       incident_id
-      reports {
-        report_number
-        title
-        url
-      }
+      title
     }
   }
 `;
 
 const semanticallyRelated = async (text) => {
-  const url = `/api/semanticallyRelated?text=${text}`;
+  const url = `/api/semanticallyRelated`;
 
   let controller = new AbortController();
 
-  setTimeout(() => controller.abort(), 33000);
+  setTimeout(() => controller.abort(), 66000);
   const response = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify({ text }),
     signal: controller.signal,
   });
 
@@ -36,23 +35,30 @@ const semanticallyRelated = async (text) => {
   return json;
 };
 
-const SemanticallyRelatedIncidents = ({ incident, editable }) => {
+const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }) => {
+  const { t } = useTranslation();
+
   const [loading, setLoading] = useState(false);
 
-  const [reports, setReports] = useState([]);
+  const [incidents, setIncidents] = useState([]);
 
   const client = useApolloClient();
 
   const [error, setError] = useState(null);
 
+  const initialDisplay = useRef(true);
+
   const debouncedUpdateSearch = useRef(
     debounce(async (incident) => {
       setLoading(true);
-      setReports([]);
+      setIncidents([]);
       setError(null);
+      if (setFieldValue) {
+        setFieldValue('nlp_similar_incidents', []);
+      }
 
       const fail = (errorMessage) => {
-        setReports([]);
+        setIncidents([]);
         setError(errorMessage);
         setLoading(false);
       };
@@ -61,24 +67,51 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
 
       const minLength = 256;
 
-      if (plaintext.replace(/\s/, '').length < minLength) {
+      const textLength = plaintext.replace(/\s/, '')?.length;
+
+      const displayingCached =
+        initialDisplay.current && incident?.nlp_similar_incidents?.length > 0;
+
+      if (textLength < minLength && !displayingCached) {
         fail(
-          `Reports must have at least ${minLength} non-space characters to compute semantic similarity.`
+          t(
+            `Reports must have at least ${minLength} non-space characters to compute semantic similarity.`
+          )
         );
         return;
       }
 
       let nlpResponse;
 
-      try {
-        nlpResponse = await semanticallyRelated(plaintext);
-      } catch (e) {
-        console.error(error);
-        fail('Could not compute semantic similarity');
-        return;
+      let nlp_similar_incidents;
+
+      if (
+        incident.nlp_similar_incidents &&
+        incident.nlp_similar_incidents.length > 0 &&
+        initialDisplay.current
+      ) {
+        nlp_similar_incidents = incident.nlp_similar_incidents.map((similarIncident) => ({
+          ...similarIncident,
+          __typename: undefined,
+        }));
+      } else {
+        try {
+          nlpResponse = await semanticallyRelated(plaintext);
+          nlp_similar_incidents = nlpResponse.incidents.sort((a, b) => b.similarity - a.similarity);
+        } catch (e) {
+          console.error(error);
+          fail(t('Could not compute semantic similarity'));
+          return;
+        }
       }
 
-      const incidentIds = nlpResponse.incidents
+      if (setFieldValue) {
+        setFieldValue('nlp_similar_incidents', nlp_similar_incidents);
+      }
+
+      if (setFieldValue) setFieldValue('embedding', nlpResponse.embedding);
+
+      const incidentIds = nlp_similar_incidents
         .sort((a, b) => b.similarity - a.similarity)
         .map((incident) => incident.incident_id);
 
@@ -95,23 +128,13 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
         });
       } catch (e) {
         console.error(e);
-        fail('Could not retrieve related incidents from database');
+        fail(t('Could not retrieve related incidents from database'));
       }
 
-      setReports(
-        dbResponse.data.incidents.reduce(
-          (reports, incident) =>
-            reports.concat(
-              incident.reports.map((report) => ({
-                incident_id: incident.incident_id,
-                ...report,
-              }))
-            ),
-          []
-        )
-      );
+      setIncidents(dbResponse.data.incidents);
 
       setLoading(false);
+      initialDisplay.current = false;
     }, 2000)
   ).current;
 
@@ -120,17 +143,20 @@ const SemanticallyRelatedIncidents = ({ incident, editable }) => {
   }, [incident.text]);
 
   return (
-    incident.text.length > 0 && (
-      <RelatedIncidentsArea
-        key="byText"
-        columnKey="byText"
-        loading={loading}
-        reports={reports}
-        header="Most Semantically Similar Incident Reports (Experimental)"
-        editable={editable}
-        error={error}
-      />
-    )
+    <div data-cy="semantically-related-incidents">
+      {incident?.text?.length > 0 && (
+        <RelatedIncidentsArea
+          key="byText"
+          columnKey="byText"
+          loading={loading}
+          incidents={incidents}
+          header={t('Most Semantically Similar Incidents (Experimental)')}
+          setFieldValue={setFieldValue}
+          editId={editId}
+          error={error}
+        />
+      )}
+    </div>
   );
 };
 

@@ -3,7 +3,6 @@ import { Button, Container } from 'react-bootstrap';
 import { CSVReader } from 'react-papaparse';
 import { useQueryParams, StringParam, ArrayParam, encodeDate, withDefault } from 'use-query-params';
 import Link from 'components/ui/Link';
-import RelatedIncidents from 'components/RelatedIncidents';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, parse } from 'date-fns';
@@ -14,6 +13,9 @@ import SubmissionForm, { schema } from 'components/submissions/SubmissionForm';
 import { Formik } from 'formik';
 import { stripMarkdown } from 'utils/typography';
 import isArray from 'lodash/isArray';
+import { Trans, useTranslation } from 'react-i18next';
+import { useLocalization } from 'gatsby-theme-i18n';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -41,6 +43,7 @@ const queryConfig = {
   text: withDefault(StringParam, ''),
   editor_notes: withDefault(StringParam, ''),
   tags: withDefault(ArrayParam, []),
+  language: withDefault(StringParam, 'en'),
 };
 
 const SubmitForm = () => {
@@ -56,6 +59,10 @@ const SubmitForm = () => {
 
   const addToast = useToastContext();
 
+  const { i18n, t } = useTranslation(['submit']);
+
+  const { locale } = useLocalization();
+
   // See https://github.com/apollographql/apollo-client/issues/5419
   useQuery(FIND_SUBMISSIONS);
 
@@ -69,7 +76,7 @@ const SubmitForm = () => {
 
   const handleCSVError = (err, file, inputElem, reason) => {
     addToast({
-      message: `Unable to upload: ${reason}`,
+      message: t(`Unable to upload: `) + reason,
       severity: SEVERITY.danger,
     });
   };
@@ -82,24 +89,33 @@ const SubmitForm = () => {
     setCsvIndex(Math.min(csvData.length - 1, csvIndex + 1));
   };
 
+  const localizePath = useLocalizePath();
+
   const handleSubmit = async (values, { resetForm }) => {
     try {
       const date_submitted = format(new Date(), 'yyyy-MM-dd');
+
+      const description = values.description ? values.description : values.text;
 
       const submission = {
         ...values,
         incident_id: values.incident_id == '' ? 0 : values.incident_id,
         date_submitted,
         date_modified: date_submitted,
-        description: values.text.substring(0, 200),
+        description: description.substring(0, 200),
         authors: isString(values.authors) ? values.authors.split(',') : values.authors,
         submitters: values.submitters
           ? !isArray(values.submitters)
             ? values.submitters.split(',').map((s) => s.trim())
             : values.submitters
           : ['Anonymous'],
-        language: 'en',
         plain_text: await stripMarkdown(values.text),
+        embedding: values.embedding || undefined,
+        developers: isString(values.developers) ? values.developers.split(',') : values.developers,
+        deployers: isString(values.deployers) ? values.deployers.split(',') : values.deployers,
+        harmed_parties: isString(values.harmed_parties)
+          ? values.harmed_parties.split(',')
+          : values.harmed_parties,
       };
 
       await insertSubmission({ variables: { submission } });
@@ -108,16 +124,23 @@ const SubmitForm = () => {
 
       addToast({
         message: (
-          <>
-            {'Report successfully added to review queue. It will appear on the  '}
-            <Link to="/apps/submitted">review queue page</Link> within an hour.
-          </>
+          <Trans i18n={i18n} ns="submit">
+            Report successfully added to review queue. It will appear on the{' '}
+            <Link to={localizePath({ path: '/apps/submitted', language: locale })}>
+              review queue page
+            </Link>{' '}
+            within an hour.
+          </Trans>
         ),
         severity: SEVERITY.success,
       });
     } catch (e) {
       addToast({
-        message: 'Was not able to create the report, please review the form and try again.',
+        message: (
+          <Trans i18n={i18n} ns="submit">
+            Was not able to create the report, please review the form and try again.
+          </Trans>
+        ),
         severity: SEVERITY.warning,
       });
     }
@@ -131,47 +154,56 @@ const SubmitForm = () => {
         initialValues={submission}
         enableReinitialize={true}
       >
-        {({ isSubmitting, submitForm, values }) => (
+        {({ isSubmitting, submitForm }) => (
           <>
             <SubmissionForm />
 
             <p className="mt-4">
-              Submitted reports are added to a <Link to="/apps/submitted">review queue </Link>
-              to be resolved to a new or existing incident record. Incidents are reviewed and merged
-              into the database after enough incidents are pending.
+              <Trans ns="submit" i18nKey="submitReviewDescription">
+                Submitted reports are added to a{' '}
+                <Link locale={locale} to="/apps/submitted">
+                  review queue{' '}
+                </Link>{' '}
+                to be resolved to a new or existing incident record. Incidents are reviewed and
+                merged into the database after enough incidents are pending.
+              </Trans>
             </p>
 
             <Button
               onClick={submitForm}
-              className="mt-3"
+              className="mt-3 bootstrap"
               variant="primary"
               type="submit"
               disabled={isSubmitting}
             >
-              Submit
+              <Trans>Submit</Trans>
             </Button>
-
-            <RelatedIncidents incident={values} />
           </>
         )}
       </Formik>
 
       {isRole('submitter') && (
-        <Container className="mt-5 p-0">
-          <h2>Advanced: Add by CSV</h2>
+        <Container className="mt-5 p-0 bootstrap">
+          <h2>
+            <Trans ns="submit">Advanced: Add by CSV</Trans>
+          </h2>
           <p>
-            The header row of the file is assumed to match the names of the inputs in the form. Each
-            row will be processed, one at a time, so that it flows through the form validations
-            before submitting.
+            <Trans ns="submit" i18nKey="CSVDescription">
+              The header row of the file is assumed to match the names of the inputs in the form.
+              Each row will be processed, one at a time, so that it flows through the form
+              validations before submitting.
+            </Trans>
           </p>
           <p>
             Record {csvIndex + 1} of {csvData.length}
           </p>
-          <div className="d-flex justify-content-center my-3">
+          <div className="flex justify-center my-3">
             <Button className="me-4" onClick={previousRecord}>
-              &lt; Previous
+              &lt; <Trans>Previous</Trans>
             </Button>
-            <Button onClick={nextRecord}>Next &gt;</Button>
+            <Button onClick={nextRecord}>
+              <Trans>Next</Trans> &gt;
+            </Button>
           </div>
           <CSVReader
             onDrop={(data) => {
@@ -186,7 +218,9 @@ const SubmitForm = () => {
             noDrag
             addRemoveButton
           >
-            <span>Click to upload.</span>
+            <span>
+              <Trans>Click to upload</Trans>
+            </span>
           </CSVReader>
         </Container>
       )}

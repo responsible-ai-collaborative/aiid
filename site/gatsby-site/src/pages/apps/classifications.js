@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
 import TaxonomyForm from 'components/taxa/TaxonomyForm';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 import styled from 'styled-components';
 import { useMongo } from 'hooks/useMongo';
 import config from '../../../config';
@@ -156,7 +156,11 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
 
       preFilteredRows.forEach((row) => {
         if (row.values[id]) {
-          row.values[id].split('; ').forEach((s) => {
+          let valuesCollection = Array.isArray(row.values[id])
+            ? row.values[id]
+            : row.values[id].split('; ');
+
+          valuesCollection.forEach((s) => {
             if (s !== '') {
               options.add(s);
             }
@@ -187,7 +191,13 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
     }, [id, preFilteredRows]);
   }
 
-  const filteredOptions = options.filter((o) => o !== '-');
+  const filteredOptions = [
+    ...new Set(
+      options
+        .filter((o) => o && String(o).replace(/\s/g, '').length > 0 && o !== '-')
+        .map((o) => String(o).trim())
+    ),
+  ].sort((a, b) => (String(a).toLowerCase() >= String(b).toLowerCase() ? 1 : -1));
 
   return (
     <Form.Select
@@ -446,28 +456,10 @@ export default function ClassificationsDbView(props) {
         return row;
       };
 
-      const formatArrayFields = (c) => {
-        const row = {};
-
-        for (const key in c) {
-          if (Array.isArray(c[key])) {
-            row[key] = c[key].toString();
-            if (c[key].toString() === '') {
-              row[key] = DEFAULT_EMPTY_CELL_DATA;
-            }
-          } else {
-            row[key] = c[key];
-          }
-        }
-
-        return row;
-      };
-
       tableData = classifications
         .map(classificationsToRowsMap) // should be first map function
         .map(classificationFormatBoolean)
-        .map(replaceEmptyValuesMap)
-        .map(formatArrayFields);
+        .map(replaceEmptyValuesMap);
 
       return tableData;
     };
@@ -625,14 +617,14 @@ export default function ClassificationsDbView(props) {
     }
 
     return (
-      <>
+      <div className="bootstrap">
         <TaxonomyForm
           ref={editFormRef}
           namespace={taxaData.namespace}
           incidentId={row.values.IncidentId}
           onSubmit={handleSubmit}
         />
-      </>
+      </div>
     );
   };
 
@@ -760,7 +752,11 @@ export default function ClassificationsDbView(props) {
             } else {
               return (
                 <td key={cell.id} {...cell.getCellProps()}>
-                  <ScrollCell>{cell.render('Cell')}</ScrollCell>
+                  <ScrollCell>
+                    {((value) => (Array.isArray(value) ? value.join(', ') : value))(
+                      cell.render('Cell').props.cell.value
+                    )}
+                  </ScrollCell>
                 </td>
               );
             }
@@ -776,9 +772,9 @@ export default function ClassificationsDbView(props) {
       {...props}
       menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
     >
-      <Helmet>
+      <AiidHelmet>
         <title>Artificial Intelligence Incident Database</title>
-      </Helmet>
+      </AiidHelmet>
       <CustomModal style={{ maxWidth: '80%' }} {...editClassificationModal} />
       <Container isWide={collapse}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>

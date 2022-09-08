@@ -1,25 +1,48 @@
-import React from 'react';
-import { OverlayTrigger, Form } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { OverlayTrigger, Form, Popover } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
+import { Trans, useTranslation } from 'react-i18next';
+import Link from 'components/ui/Link';
 
-const Label = ({ popover, placement, trigger, label }) => {
-  if (!popover) {
+const Label = ({ popover, label }) => {
+  const [show, setShow] = useState(false);
+
+  const { i18n } = useTranslation(['popovers']);
+
+  if (!i18n.exists(popover, { ns: 'popovers' })) {
     return <Form.Label>{label} :</Form.Label>;
   }
+
   return (
-    <OverlayTrigger trigger={trigger} placement={placement} overlay={popover}>
-      <Form.Label>
-        {label}{' '}
-        <FontAwesomeIcon
-          icon={faQuestionCircle}
-          style={{ color: 'rgb(210, 210, 210)' }}
-          className="far fa-question-circle"
-        />{' '}
-        :
-      </Form.Label>
-    </OverlayTrigger>
+    <div className="bootstrap">
+      <OverlayTrigger
+        placement={'top'}
+        overlay={
+          <Popover data-cy={`popover-${popover}`}>
+            <Popover.Header as="h3">
+              <Trans ns="popovers" i18nKey={`${popover}.title`} />
+            </Popover.Header>
+            <Popover.Body>
+              <Trans ns="popovers" i18nKey={`${popover}.text`} components={{ linkto: <Link /> }} />
+            </Popover.Body>
+          </Popover>
+        }
+        {...(show ? { show } : {})}
+      >
+        <Form.Label data-cy={`label-${popover}`}>
+          {label}{' '}
+          <FontAwesomeIcon
+            icon={faQuestionCircle}
+            style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+            className="far fa-question-circle"
+            onClick={() => setShow(!show)}
+          />{' '}
+          :
+        </Form.Label>
+      </OverlayTrigger>
+    </div>
   );
 };
 

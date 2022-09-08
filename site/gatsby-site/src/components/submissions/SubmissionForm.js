@@ -8,13 +8,16 @@ import { dateRegExp } from 'utils/date';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { graphql, useStaticQuery } from 'gatsby';
-import * as POP_OVERS from '../ui/PopOvers';
 import Label from '../forms/Label';
 import TagsControl from 'components/forms/TagsControl';
 import IncidentIdField from 'components/incidents/IncidentIdField';
 import getSourceDomain from '../../utils/getSourceDomain';
 import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
+import supportedLanguages from 'components/i18n/languages.json';
+import { Trans, useTranslation } from 'react-i18next';
+import RelatedIncidents from 'components/RelatedIncidents';
+import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -44,6 +47,38 @@ export const schema = yup.object().shape({
     .min(6, '*Title must have at least 6 characters')
     .max(500, "*Titles can't be longer than 500 characters")
     .required('*Title is required'),
+  description: yup
+    .string()
+    .min(3, 'Description must have at least 3 characters')
+    .max(200, "Description can't be longer than 200 characters")
+    .when('_id', {
+      is: (_id) => _id !== undefined,
+      then: yup.string().required('*Incident Description required'),
+    }),
+  developers: yup
+    .string()
+    .min(3, 'Alleged Developer must have at least 3 characters')
+    .max(200, "Alleged Developers can't be longer than 200 characters")
+    .when('_id', {
+      is: (_id) => _id !== undefined,
+      then: yup.string().required('*Developer is required'),
+    }),
+  deployers: yup
+    .string()
+    .min(3, 'Alleged Deployers must have at least 3 characters')
+    .max(200, "Alleged Deployers can't be longer than 200 characters")
+    .when('_id', {
+      is: (_id) => _id !== undefined,
+      then: yup.string().required('*Deployer is required'),
+    }),
+  harmed_parties: yup
+    .string()
+    .min(3, 'Harmed Parties must have at least 3 characters')
+    .max(200, "Harmed Parties can't be longer than 200 characters")
+    .when('_id', {
+      is: (_id) => _id !== undefined,
+      then: yup.string().required('*Harm Parties is required'),
+    }),
   authors: yup
     .string()
     .min(3, '*Authors must have at least 3 characters')
@@ -55,8 +90,8 @@ export const schema = yup.object().shape({
     .max(200, "*Submitter list can't be longer than 200 characters"),
   text: yup
     .string()
-    .min(80, '*Text must have at least 80 characters')
-    .max(50000, "*Text can't be longer than 50000 characters")
+    .min(80, `*Text must have at least 80 characters`)
+    .max(50000, `*Text can’t be longer than 50000 characters`)
     .required('*Text is required'),
   date_published: yup
     .string()
@@ -120,6 +155,8 @@ const SubmissionForm = () => {
     handleBlur,
   } = useFormikContext();
 
+  const { t } = useTranslation(['submit']);
+
   const TextInputGroupProps = { values, errors, touched, handleChange, handleBlur };
 
   const addToast = useToastContext();
@@ -142,7 +179,9 @@ const SubmissionForm = () => {
         const news = await response.json();
 
         addToast({
-          message: <>Please verify all information programmatically pulled from the report</>,
+          message: (
+            <Trans>Please verify all information programmatically pulled from the report</Trans>
+          ),
           severity: SEVERITY.info,
         });
 
@@ -156,8 +195,11 @@ const SubmissionForm = () => {
       } catch (e) {
         const message =
           e.message == 'Parser error'
-            ? `Error fetching news. Scraping was blocked by ${newsUrl}, Please enter the text manually.`
-            : `Error reaching news info endpoint, please try again in a few seconds.`;
+            ? t(
+                `Error fetching news. Scraping was blocked by {{newsUrl}}. Please enter the text manually.`,
+                { newsUrl }
+              )
+            : t(`Error reaching news info endpoint, please try again in a few seconds.`);
 
         addToast({
           message: <>{message}</>,
@@ -185,21 +227,22 @@ const SubmissionForm = () => {
   }, [values.image_url]);
 
   return (
-    <>
+    <div className="bootstrap">
       <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
         <TextInputGroup
           name="url"
-          label="Report Address"
-          placeholder="Report URL"
+          label={t('Report Address')}
+          placeholder={t('Report URL')}
           addOnComponent={
             <Button
               className="outline-secondary"
               disabled={!!errors.url || !touched.url || parsingNews}
               onClick={() => parseNewsUrl(values.url)}
+              data-cy="fetch-info"
             >
               {' '}
               {!parsingNews ? (
-                <>Fetch info</>
+                <Trans ns="submit">Fetch info</Trans>
               ) : (
                 <>
                   <Spinner
@@ -209,7 +252,7 @@ const SubmissionForm = () => {
                     role="status"
                     aria-hidden="true"
                   />{' '}
-                  Fetching...
+                  <Trans>Fetching...</Trans>
                 </>
               )}
             </Button>
@@ -220,75 +263,170 @@ const SubmissionForm = () => {
             TextInputGroupProps.handleChange(e);
           }}
         />
+        <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
 
         <TextInputGroup
           name="title"
-          label="Title"
-          placeholder="Report title"
+          label={t('Title')}
+          placeholder={t('Report title')}
           className="mt-3"
           {...TextInputGroupProps}
         />
+
+        <TextInputGroup
+          name="description"
+          label="Description"
+          as="textarea"
+          placeholder="Report Description"
+          rows={3}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
+        <TextInputGroup
+          name="developers"
+          label="Alleged developer of AI system"
+          placeholder="Alleged developer of AI system"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
+        <TextInputGroup
+          name="deployers"
+          label="Alleged deployer of AI system"
+          placeholder="Alleged deployer of AI system"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
+        <TextInputGroup
+          name="harmed_parties"
+          label="Alleged harmed or nearly harmed parties"
+          placeholder="Alleged harmed or nearly harmed parties"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
         <TextInputGroup
           name="authors"
-          label="Author CSV"
-          placeholder="Author CSV"
+          label={t('Author CSV')}
+          placeholder={t('Author CSV')}
           className="mt-3"
           {...TextInputGroupProps}
         />
+
+        <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byAuthors']} />
+
         <TextInputGroup
           name="submitters"
-          label="Submitter CSV"
-          placeholder="Submitter CSV"
+          label={t('Submitter CSV')}
+          placeholder={t('Submitter CSV')}
           className="mt-3"
           {...TextInputGroupProps}
         />
         <TextInputGroup
           name="date_published"
-          label="Date Published"
+          label={t('Date Published')}
           type="date"
-          placeholder="YYYY-MM-DD"
+          placeholder={t('YYYY-MM-DD')}
           className="mt-3"
           {...TextInputGroupProps}
         />
+
+        <RelatedIncidents
+          incident={values}
+          setFieldValue={setFieldValue}
+          columns={['byDatePublished']}
+        />
+
         <TextInputGroup
           name="date_downloaded"
-          label="Date Downloaded"
+          label={t('Date Downloaded')}
           type="date"
-          placeholder="YYYY-MM-DD"
+          placeholder={t('YYYY-MM-DD')}
           className="mt-3"
           {...TextInputGroupProps}
         />
         <PreviewImageInputGroup
           publicID={values.cloudinary_id}
           name="image_url"
-          label="Image Address"
-          placeholder="Image URL"
+          label={t('Image Address')}
+          placeholder={t('Image URL')}
           className="mt-3"
           {...TextInputGroupProps}
         />
 
-        <Form.Group className="mt-3" data-color-mode="light">
-          <Label popover={POP_OVERS.text} label={'Text'} />
-          <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
+        <Form.Group
+          className={'mt-3' + (touched['text'] && errors['text'] ? ' is-invalid' : '')}
+          data-color-mode="light"
+        >
+          <Label popover="text" label={t('Text')} />
+          <div style={{ position: 'relative' }}>
+            {touched['text'] && errors['text'] && (
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: '0px',
+                  border: '1px solid var(--bs-red)',
+                  zIndex: 10,
+                  pointerEvents: 'none',
+                }}
+              />
+            )}
+            <Editor
+              value={values.text}
+              onChange={(value) => {
+                setFieldValue('text', value);
+                setFieldTouched('text', true);
+              }}
+            />
+          </div>
+        </Form.Group>
+        <Form.Control.Feedback type="invalid">
+          <Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans>
+        </Form.Control.Feedback>
+
+        <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
+
+        <Form.Group className="mt-3">
+          <Label popover="language" label={t('Language')} />
+          <Form.Select
+            name="language"
+            placeholder={t('Report Language')}
+            value={values.language}
+            onChange={handleChange}
+          >
+            {supportedLanguages.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.name}
+              </option>
+            ))}
+          </Form.Select>
         </Form.Group>
 
         <Form.Group className="mt-3">
-          <Label popover={POP_OVERS['tags']} label={'Tags'} />
+          <Label popover="tags" label={t('Tags')} />
           <TagsControl name={'tags'} />
         </Form.Group>
 
         <IncidentIdField
           name="incident_id"
           className="mt-3"
-          placeHolder="Leave empty to report a new incident"
+          placeHolder={t('Leave empty to report a new incident')}
           showIncidentData={false}
+        />
+
+        <RelatedIncidents
+          incident={values}
+          setFieldValue={setFieldValue}
+          columns={['byIncidentId']}
         />
 
         {!values.incident_id && (
           <TextInputGroup
             name="incident_date"
-            label="Incident Date"
-            placeholder="Incident Date"
+            label={t('Incident Date')}
+            placeholder={t('Incident Date')}
             type="date"
             className="mt-3"
             disabled={values.incident_id}
@@ -298,15 +436,15 @@ const SubmissionForm = () => {
 
         <TextInputGroup
           name="editor_notes"
-          label="Editor Notes"
+          label={t('Editor Notes')}
           as="textarea"
-          placeholder="Optional context and notes about the incident"
+          placeholder={t('Optional context and notes about the incident')}
           rows={8}
           className="mt-3"
           {...TextInputGroupProps}
         />
       </Form>
-    </>
+    </div>
   );
 };
 

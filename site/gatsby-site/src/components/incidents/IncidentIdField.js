@@ -3,8 +3,8 @@ import Label from 'components/forms/Label';
 import { useField } from 'formik';
 import React, { useEffect } from 'react';
 import { Form } from 'react-bootstrap';
+import { Trans, useTranslation } from 'react-i18next';
 import { FIND_INCIDENT } from '../../graphql/incidents';
-import * as POP_OVERS from '../ui/PopOvers';
 
 export default function IncidentIdField({
   name,
@@ -12,12 +12,14 @@ export default function IncidentIdField({
   className = '',
   showIncidentData = true,
 }) {
+  const { t } = useTranslation(['validation']);
+
   const validate = async (value) => {
     if (value) {
       const result = await refetch({ query: { incident_id: value } });
 
       if (!result.data?.incident) {
-        return `Incident ID ${value} not found!`;
+        return t(`Incident ID {{value}} not found!`, { value });
       }
     }
   };
@@ -35,32 +37,38 @@ export default function IncidentIdField({
   }, []);
 
   return (
-    <Form.Group className={className}>
-      <Label popover={POP_OVERS[name]} label={'Incident ID'} />
-      <Form.Control
-        type="number"
-        name={name}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        onWheel={(event) => event.currentTarget.blur()}
-        isInvalid={!!error}
-        placeholder={placeHolder}
-      />
-      <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
+    <div className="bootstrap">
+      <Form.Group className={className + ' bootstrap'}>
+        <Label popover={name} label={'Incident ID'} />
+        <Form.Control
+          type="number"
+          name={name}
+          value={value}
+          onChange={onChange}
+          onBlur={onBlur}
+          onWheel={(event) => event.currentTarget.blur()}
+          isInvalid={!!error}
+          placeholder={placeHolder}
+        />
+        <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
 
-      {showIncidentData && value !== '' && !error && (
-        <div className="pt-1">
-          {loadingIncident && <div className="small">Searching...</div>}
+        {showIncidentData && value !== '' && !error && (
+          <div className="pt-1">
+            {loadingIncident && (
+              <div className="small">
+                <Trans>Searching...</Trans>
+              </div>
+            )}
 
-          {incident?.incident && (
-            <>
-              <div className="small">{incident.incident.date}</div>
-              <a href={`/cite/${incident.incident.incident_id}`}> {incident.incident.title}</a>
-            </>
-          )}
-        </div>
-      )}
-    </Form.Group>
+            {incident?.incident && (
+              <>
+                <div className="small">{incident.incident.date}</div>
+                <a href={`/cite/${incident.incident.incident_id}`}> {incident.incident.title}</a>
+              </>
+            )}
+          </div>
+        )}
+      </Form.Group>
+    </div>
   );
 }

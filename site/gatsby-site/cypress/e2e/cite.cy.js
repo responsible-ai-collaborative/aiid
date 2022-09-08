@@ -2,11 +2,16 @@ import { maybeIt } from '../support/utils';
 import flaggedReport from '../fixtures/reports/flagged.json';
 import unflaggedReport from '../fixtures/reports/unflagged.json';
 import { format } from 'date-fns';
+const { gql } = require('@apollo/client');
+
+import updateOneIncidentFlagged from '../fixtures/incidents/updateOneIncidentFlagged.json';
 
 describe('Cite pages', () => {
   const discoverUrl = '/apps/discover';
 
-  const url = '/cite/10';
+  const incidentId = 10;
+
+  const url = `/cite/${incidentId}`;
 
   it('Successfully loads', () => {
     cy.visit(url);
@@ -66,13 +71,13 @@ describe('Cite pages', () => {
   maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    const id = 'r5d34b8c29ced494f010ed463';
+    const id = 'r3';
 
     cy.visit('/cite/1#' + id);
 
     cy.get(`#${id} [data-cy="edit-report"]`).click();
 
-    cy.url().should('contain', '/cite/edit?report_number=10');
+    cy.url().should('contain', '/cite/edit?report_number=3');
   });
 
   maybeIt('Should show the taxonomy form of CSET', () => {
@@ -114,7 +119,7 @@ describe('Cite pages', () => {
 
   it('Should flag an incident', () => {
     // mock requests until a testing database is implemented
-    const _id = '5d34b8c29ced494f010ed470';
+    const _id = '23';
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -126,6 +131,9 @@ describe('Cite pages', () => {
     cy.visit(url + '#' + _id);
 
     cy.get(`[id="r${_id}"`).find('[data-cy="flag-button"]').click();
+
+    // cypress has trouble with modals
+    cy.wait(0);
 
     cy.get('[data-cy="flag-modal"]').as('modal').should('be.visible');
 
@@ -145,6 +153,8 @@ describe('Cite pages', () => {
     cy.get('@modal').find('[data-cy="flag-toggle"]').should('be.disabled');
 
     cy.contains('Close').click();
+
+    cy.wait(0);
 
     cy.get('@modal').should('not.exist');
   });
@@ -184,6 +194,8 @@ describe('Cite pages', () => {
 
     cy.contains('BibTex Citation').scrollIntoView().click();
 
+    cy.wait(0);
+
     cy.get('[data-cy="bibtext-modal"]').should('be.visible').as('modal');
 
     cy.get('@modal')
@@ -205,9 +217,114 @@ describe('Cite pages', () => {
 
     const date = format(new Date(), 'MMMM d, y');
 
-    cy.get('[data-cy="citation"] .card-body').should(
+    cy.wait(0);
+
+    cy.get('[data-cy="citation"] .tw-card-body').should(
       'contain.text',
       `Olsson, Catherine. (2014-08-14) Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on ${date} from incidentdatabase.ai/cite/10.`
     );
+  });
+
+  it('Should display similar incidents', () => {
+    cy.visit('/cite/9');
+
+    cy.get('[data-cy="similar-incident-card"]').should('exist');
+  });
+
+  it('Should not display duplicate similar incidents', () => {
+    cy.visit('/cite/9');
+
+    const hrefs = new Set();
+
+    cy.get('[data-cy="similar-incident-card"] [data-cy="cite-link"]').each((link) => {
+      const href = link[0].href;
+
+      expect(hrefs.has(href)).to.be.false;
+      hrefs.add(href);
+    });
+  });
+
+  it('Should not display edit link when not logged in', () => {
+    cy.visit('/cite/9');
+
+    cy.get('[data-cy="edit-similar-incidents"]').should('not.exist');
+  });
+
+  maybeIt('Should display edit link when logged in as editor', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.visit('/cite/9');
+
+    cy.get('[data-cy="edit-similar-incidents"]').should('exist');
+  });
+
+  it('Should flag an incident as not related', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateIncident',
+      'updateIncident',
+      updateOneIncidentFlagged
+    );
+
+    cy.visit('/cite/9');
+
+    cy.get('[data-cy="flag-similar-incident"]').first().click();
+
+    cy.wait('@updateIncident').then((xhr) => {
+      expect(xhr.request.body.variables.query).deep.eq({ incident_id: 9 });
+      expect(xhr.request.body.variables.set.flagged_dissimilar_incidents).deep.eq([11]);
+    });
+  });
+
+  it('Should have OpenGraph meta tags', () => {
+    cy.visit(url);
+
+    cy.query({
+      query: gql`
+        query {
+          incidents(query: { incident_id: ${incidentId} }, limit: 1) {
+            title
+            description
+            reports {
+              image_url
+              date_published
+            }
+          }
+        }
+      `,
+    }).then(({ data: { incidents } }) => {
+      const incident = incidents[0];
+
+      const title = `Incident ${incidentId}: ${incident.title}`;
+
+      const description = incident.description;
+
+      const imageUrl = [...incident.reports].sort((a, b) =>
+        a.date_published >= b.date_published ? 1 : -1
+      )[0].image_url;
+
+      cy.get('head meta[name="title"]').should('have.attr', 'content', title);
+      cy.get('head meta[name="description"]').should('have.attr', 'content', description);
+
+      cy.get('head meta[name="twitter:site"]').should('have.attr', 'content', '@IncidentsDB');
+      cy.get('head meta[name="twitter:creator"]').should('have.attr', 'content', '@IncidentsDB');
+
+      cy.get('head meta[property="og:url"]').should(
+        'have.attr',
+        'content',
+        `https://incidentdatabase.ai${url}`
+      );
+      cy.get('head meta[property="og:type"]').should('have.attr', 'content', 'website');
+      cy.get('head meta[property="og:title"]').should('have.attr', 'content', title);
+      cy.get('head meta[property="og:description"]').should('have.attr', 'content', description);
+      cy.get('head meta[property="og:image"]').should('have.attr', 'content', imageUrl);
+      cy.get('head meta[property="twitter:title"]').should('have.attr', 'content', title);
+      cy.get('head meta[property="twitter:description"]').should(
+        'have.attr',
+        'content',
+        description
+      );
+      cy.get('head meta[property="twitter:image"]').should('have.attr', 'content', imageUrl);
+    });
   });
 });

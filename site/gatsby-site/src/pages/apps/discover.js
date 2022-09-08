@@ -1,23 +1,24 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { Configure, InstantSearch } from 'react-instantsearch-dom';
 import LayoutHideSidebar from 'components/LayoutHideSidebar';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 import { useModal, CustomModal } from 'hooks/useModal';
 
 import config from '../../../config';
 import Hits from 'components/discover/Hits';
 import SearchBox from 'components/discover/SearchBox';
 import Pagination from 'components/discover/Pagination';
-import FiltersModal from 'components/discover/FiltersModal';
+import OptionsModal from 'components/discover/OptionsModal';
 import { SearchContext } from 'components/discover/useSearch';
 import { queryConfig } from 'components/discover/queryParams';
 import VirtualFilters from 'components/discover/VirtualFilters';
 import Controls from 'components/discover/Controls';
-import { Container, Row, Col } from 'react-bootstrap';
-import LanguageSwitcher from 'components/i18n/LanguageSwitcher';
 import { useLocalization } from 'gatsby-theme-i18n';
+import Container from 'elements/Container';
+import Row from 'elements/Row';
+import Col from 'elements/Col';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -44,8 +45,10 @@ const removeEmptyAttributes = (obj) => {
 
 const convertArrayToString = (obj) => {
   for (const attr in obj) {
-    if (obj[attr].length > 0) {
-      obj[attr] = obj[attr].join('||');
+    if (Array.isArray(obj[attr])) {
+      if (obj[attr].length > 0) {
+        obj[attr] = obj[attr].join('||');
+      }
     }
   }
   return { ...obj };
@@ -71,6 +74,10 @@ const convertStringToArray = (obj) => {
         newObj[attr][0] = newObj[attr][0].substr(4);
       } else {
         newObj[attr] = obj[attr].split('||');
+      }
+    } else {
+      if (obj[attr]) {
+        newObj[attr] = obj[attr];
       }
     }
   }
@@ -180,11 +187,7 @@ function DiscoverApp(props) {
 
   const { locale } = useLocalization();
 
-  const languageSwitcher = useRef(
-    typeof window !== 'undefined' && window.localStorage.getItem('i18n')
-  ).current;
-
-  const indexName = useRef(`instant_search-${locale}`).current;
+  const indexName = `instant_search-${locale}`;
 
   const [searchState, setSearchState] = useState(generateSearchState({ query }));
 
@@ -211,7 +214,7 @@ function DiscoverApp(props) {
   useEffect(() => {
     const searchQuery = getQueryFromState(searchState);
 
-    const extraQuery = { display: query.display, lang: query.lang };
+    const extraQuery = { display: query.display };
 
     setQuery({ ...searchQuery, ...extraQuery }, 'push');
   }, [searchState]);
@@ -224,35 +227,39 @@ function DiscoverApp(props) {
 
   return (
     <LayoutHideSidebar {...props}>
-      <Helmet>
+      <AiidHelmet>
         <title>Artificial Intelligence Incident Database</title>
-      </Helmet>
+      </AiidHelmet>
       <SearchContext.Provider value={{ searchState, indexName, searchClient, onSearchStateChange }}>
         <InstantSearch
-          indexName={indexName}
+          indexName={
+            indexName +
+            (searchState.query == '' && Object.keys(searchState.refinementList).length == 0
+              ? '-featured'
+              : '')
+          }
           searchClient={searchClient}
           searchState={searchState}
           onSearchStateChange={onSearchStateChange}
         >
-          <Configure hitsPerPage={28} />
+          <Configure hitsPerPage={28} distinct={searchState.refinementList.hideDuplicates} />
 
           <VirtualFilters />
 
-          <Container className="container-xl mt-4">
-            <Row>
-              <Col>
+          <Container className="tw-container-xl mt-6">
+            <Row className="px-0 mx-0">
+              <Col className="px-0 mx-0">
                 <SearchBox defaultRefinement={query.s} />
               </Col>
-              {languageSwitcher && (
-                <Col className="col-auto">
-                  <LanguageSwitcher />
-                </Col>
-              )}
             </Row>
 
-            <Controls query={query} />
+            <Controls query={query} searchState={searchState} setSearchState={setSearchState} />
 
-            <FiltersModal className="hiddenDesktop" />
+            <OptionsModal
+              className="hiddenDesktop"
+              searchState={searchState}
+              setSearchState={setSearchState}
+            />
           </Container>
 
           <Hits

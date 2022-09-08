@@ -55,39 +55,45 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
   };
 
   return (
-    <Modal show={show} onHide={onClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>Edit Incident</Modal.Title>
-      </Modal.Header>
+    <div className="bootstrap">
+      <Modal show={show} onHide={onClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Incident</Modal.Title>
+        </Modal.Header>
 
-      {!incident && (
-        <Modal.Body>
-          {incident === undefined && (
-            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-          )}
-          {incident === null && <div>Report not found</div>}
-        </Modal.Body>
-      )}
+        {!incident && (
+          <Modal.Body>
+            {incident === undefined && (
+              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+            )}
+            {incident === null && <div>Report not found</div>}
+          </Modal.Body>
+        )}
 
-      {incident && (
-        <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={incident}>
-          {({ isValid, isSubmitting, submitForm }) => (
-            <>
-              <Modal.Body>
-                <IncidentForm />
-              </Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={onClose}>
-                  Close
-                </Button>
-                <Button variant="primary" onClick={submitForm} disabled={isSubmitting || !isValid}>
-                  Update
-                </Button>
-              </Modal.Footer>
-            </>
-          )}
-        </Formik>
-      )}
-    </Modal>
+        {incident && (
+          <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={incident}>
+            {({ isValid, isSubmitting, submitForm }) => (
+              <>
+                <Modal.Body>
+                  <IncidentForm />
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={onClose}>
+                    Close
+                  </Button>
+                  <Button
+                    variant="primary"
+                    onClick={submitForm}
+                    disabled={isSubmitting || !isValid}
+                  >
+                    Update
+                  </Button>
+                </Modal.Footer>
+              </>
+            )}
+          </Formik>
+        )}
+      </Modal>
+    </div>
   );
 }

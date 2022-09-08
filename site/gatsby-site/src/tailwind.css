@@ -1,0 +1,512 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+
+    h1 {
+        font-size: calc(1.375rem + 1.5vw);
+    }
+
+    .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+        @apply font-medium mb-2 mt-0 leading-tight;
+    }
+
+    .h4, h4 {
+        font-size: calc(1.275rem + .3vw);
+    }
+
+    .h5, h5 {
+        @apply text-xl leading-tight;
+    }
+
+    input {
+        @apply flex-auto;
+    }
+
+    p {
+        @apply mb-4 mt-0;
+    }
+
+    .input-group>.form-control, .input-group>.form-floating, .input-group>.form-select {
+        @apply min-w-0 relative flex-auto;
+    }
+
+    .form-control-lg {
+        @apply rounded-lg text-xl py-2 px-4 min-h-[2.5rem];
+    }
+
+    .form-control {
+        @apply appearance-none bg-white rounded-md text-gray-900 block text-base font-normal leading-normal w-full py-1 px-3 transition-form-control bg-clip-padding border-1 border-solid border-form-control;
+    }
+
+    h2 {
+        @apply text-4xl;
+    }
+
+    ul, ol {
+      list-style: revert;
+    }
+
+    .tw-layout {
+        @apply flex md:flex content-between bg-white 767px:block border-none;
+    }
+
+    .tw-layout .item > a:hover {
+        @apply bg-primary-blue text-white;
+    }
+
+    .tw-content {
+        @apply flex flex-grow mt-0 mx-[10px] md:mx-[33px] pt-12 z-[1] relative overflow-hidden flex-1;
+    }
+
+    .tw-container {
+        @apply xl:max-w-[1140px] md:max-w-[520px] lg:max-w-[960px] sm:max-w-[540px];
+    }
+
+    .tw-container-xl {
+        @apply ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-[1140px] xl:max-w-[1320px];
+    }
+
+    .tw-bg-secondary {
+        @apply bg-secondary-gray opacity-100 text-text-light-gray;
+    }
+
+    .tw-hidden-mobile {
+        @apply 767px:hidden;
+    }
+
+    .tw-col-auto {
+        @apply flex-0-0-auto w-auto max-w-none;
+    }
+
+    .tw-nav-header-container {
+        @apply flex flex-row justify-between items-center w-full;
+    }
+
+    .tw-nav-header-container .nav-bar-header {
+        @apply order-[0];
+    }
+
+    .tw-nav-header-container .divider {
+        @apply w-[1px];
+    }
+
+    .tw-nav-header-container .nav-bar-brand {
+        @apply items-center flex p-0;
+    }
+
+    .tw-nav-header-container .nav-bar-brand > * {
+        @apply shrink-0;
+    }
+
+    .tw-nav-header-container .nav-bar-brand > .headerTitle {
+        @apply shrink;
+    }
+
+    .tw-skip-to-content {
+        @apply text-white bg-transparent relative order-1 ml-auto opacity-0 w-0 h-0 overflow-hidden focus:opacity-100 focus:py-[0ch] focus:px-[1ch] focus:w-[unset] focus:h-[unset]  767px:text-xs;
+    }
+
+}
+
+@layer components {
+    /** Styled Heading **/
+    .tw-styled-heading {
+        @apply font-karla text-32px leading-normal font-bold flex-[1] mt-0 pt-0;
+    }
+    
+    .tw-card {
+        @apply flex flex-col border-1 rounded-lg;
+    }
+
+    .tw-card-header {
+        @apply flex justify-between border-t-0 border-r-0 border-l-0 border-b border-b-border-gray px-4 py-2 bg-light-gray border-1 mb-0;
+    }
+
+    .tw-card-title {
+        @apply flex-1;
+    }
+
+    h1 {
+        @apply text-h1;
+    }
+
+    .tw-card-title h2 {
+        @apply text-2rem;
+    }
+
+    .tw-card-title a {
+        @apply text-primary-blue;
+    }
+
+    .tw-card-title h3 {
+        @apply text-2xl mb-2;
+    }
+
+    .tw-card-body {
+        @apply flex p-4 flex-col;
+    }
+
+    .tw-card-footer {
+        @apply bg-light-gray border-border-gray py-2 px-4;
+    }
+
+    .tw-post-listing {
+        @apply flex flex-wrap md:grid gap-4 lg:gap-4 max-w-[750px];
+    }
+
+    /* TAILWIND Buttons begins */
+    .tw-btn, .btn {
+        @apply bg-transparent border-1 border-transparent rounded cursor-pointer inline-block text-base font-normal py-1.5 px-2 text-center no-underline select-none align-middle transition-btn;
+        border-radius: 0.25rem !important;
+    }
+
+    .btn-check:active+.btn, .btn-check:checked+.btn, .btn.active, .btn.show, .btn:active {
+        @apply bg-btn-check-active border-btn-check-border text-white;
+    }
+
+    .tw-btn-primary, .btn-primary {
+        @apply bg-blue-600 border-blue-600 text-white hover:bg-hover-blue hover:border-deep-blue hover:text-white;
+    }
+
+    .tw-btn-secondary, .btn-secondary {
+        @apply bg-dark-gray border-dark-gray text-white  hover:bg-gray-600 hover:border-gray-600 hover:text-white;
+    }
+
+    .tw-btn-lg {
+        @apply rounded text-xl py-[0.5rem] px-[1rem];
+    }
+
+    .tw-btn-outline-primary {
+        @apply border-primary-blue text-primary-blue;
+    }
+
+    .tw-btn-outline-primary:hover {
+        @apply bg-primary-blue text-white border-primary-blue;
+    }
+
+    .tw-btn-menu {
+        @apply 767px:hidden w-[100px] h-10 fixed left-56 top-1/2 rotate-90 z-10;
+    }
+
+    .tw-btn-menu.collapsed {
+        @apply -left-8;
+    }
+
+    /* TAILWIND Buttons ends */
+
+    /* TAILWIND Grid begins */
+    .tw-row {
+        @apply flex flex-wrap -ml-3 mr-0 mt-0;
+    }
+
+    .tw-row > * {
+        @apply mt-0 max-w-full pl-3 pr-3 w-full;
+    }
+
+    .tw-col {
+        @apply w-full lg:flex-1;
+    }
+
+    .tw-pagination {
+        @apply flex pl-0 list-none;
+    }
+
+    /* TAILWIND Grid ends */
+
+    .tw-page-item:last-child .tw-page-link {
+        @apply rounded-br rounded-tr;
+    }
+
+    .tw-page-item:not(:first-child) .tw-page-link {
+        @apply ml-[-1px];
+    }
+
+    .tw-page-item.disabled .tw-page-link {
+        @apply bg-white border-disable-gray text-dark-gray pointer-events-none;
+    }
+
+    .tw-page-link {
+        @apply py-[0.375rem] px-[0.75rem] bg-white border-1 border-disable-gray text-primary-blue block relative no-underline transition-btn;
+    }
+
+    .tw-page-link:hover {
+        @apply bg-light-gray text-deep-blue border-disable-gray z-2;
+    }
+
+    .tw-classification-container {
+        @apply flex flex-row justify-start w-full flex-auto p-4;
+    }
+
+    .tw-field {
+        @apply w-[20%] border-r-2.5 mr-4 border-border-light-gray text-default-gray font-bold;
+    }
+
+    .tw-taxa-card-header {
+        @apply flex flex-row justify-start items-center     
+    }
+
+    .tw-taxa-card-header p {
+        @apply m-0;
+    }
+
+    /* TAILWIND Tooltip begins */
+    .tw-tooltip-wrapper {
+        @apply relative inline-block;
+    }
+
+    .tw-tooltip-left .tw-tooltip {
+        @apply absolute right-full top-[-3px] mr-[10px] z-20 mb-3 whitespace-nowrap rounded bg-black py-[6px] px-4 text-sm font-semibold text-white opacity-0;
+    }
+
+    .tw-tooltip-left .tw-tooltip .tw-tooltip-arrow {
+        @apply absolute right-[-3px] top-1/2 -z-10 h-2 w-2 -translate-y-1 rotate-45 rounded-sm bg-black;
+    }
+
+    /* TAILWIND Tooltip ends */
+
+    .tw-incident-stat-card {
+        @apply flex flex-col shadow-card rounded-5px border-border-light-gray border-1.5;
+    }
+
+    .tw-incident-stat-card .subhead {
+        @apply m-0 opacity-40 pt-2.5;
+    }
+
+    .tw-similar-incidents {
+        @apply mt-8 mb-8;
+    }
+
+    .tw-similar-incidents .card {
+        @apply overflow-hidden shadow-card;
+    }
+
+    .tw-similar-incidents .card a:not(hover){
+        @apply text-inherit;
+    }
+
+    .tw-similar-incidents .card h3{
+        @apply mt-4 my-4 mb-2 text-[16pt];
+        hyphens: auto;  
+    }
+
+    .tw-similar-incidents p + .card {
+        @apply mt-0;
+    }
+
+    .tw-similar-incidents h2 {
+        @apply text-[200%];
+    }
+    
+    .tw-subtitle {
+        @apply text-[120%] font-bold;
+    }
+
+    .tw-subtitle svg {
+        @apply ml-[0.5ch];
+    }
+
+    .tw-actions-icons {
+        @apply inline-flex items-center;
+    }
+
+    .tw-actions-icons > * {
+        @apply ml-[0.25ch] mr-[0.25ch];
+    }
+
+    .tw-edit-icon {
+        @apply align-middle -mt-0.5;
+    }
+
+    .tw-flag-prompt {
+        @apply mt-4 mb-4;
+    }
+
+    .tw-flag-prompt svg {
+        @apply ml-[0.5ch] mr-[0.5ch] text-dark-gray;
+    }
+
+    .tw-flag-button {
+        @apply p-0 text-dark-gray hover:text-gray-500;
+    }
+
+    .tw-flag-button.flagged {
+        @apply text-red-50;
+    }
+
+    .tw-card-set {
+        @apply gap-4 mb-8 grid grid-cols-1 md:grid-cols-2 1300px:grid-cols-3;
+    }
+
+    .tw-card-set > * {
+        @apply 1300px:basis-0 1300px:grow max-w-[700px];
+    }
+
+    .tw-header-icons-container { 
+        @apply flex flex-row justify-between items-center order-2;
+    }
+
+    .tw-header-icons-container .paddingAround {
+        @apply pr-2;
+    }
+
+    .tw-footer-link {
+        @apply text-gray-700 hover:text-primary-blue;
+    }
+}
+
+@layer utilities {
+    
+    /* TAILWIND Sidebar starts */
+    .tw-side-bar-ul {
+        @apply mt-4 pl-0;
+    }
+
+    .tw-side-bar-ul ul {
+        @apply pl-0;
+    }
+
+    .tw-side-bar-ul li {
+        @apply list-none w-auto;
+    }
+
+    .tw-side-bar-ul li a {
+        @apply border-1 border-transparent border-r-0 text-sm leading-normal py-[7px] pr-[25px] pl-[10px];
+    }
+
+    .tw-side-bar-ul .item {
+        @apply list-none p-0;
+    }
+
+    .tw-side-bar-ul .item > a {
+        @apply text-light-orange md:text-[rgb(59,69,78)] items-center flex pl-4 pr-8 relative no-underline w-full;
+    }
+
+    .tw-side-bar-ul .item > a:hover {
+        @apply bg-light-orange text-white;
+    }
+
+    .tw-side-bar-ul .item .item {
+        @apply ml-4;
+    }
+
+    .tw-side-bar-title {
+        @apply bg-gray-100 text-lg font-bold text-gray-900 flex items-center py-[18px] px-[16px] font-karla;
+    }
+
+    .tw-side-bar-title.tw-side-bar-show {
+        @apply hidden;
+    }
+
+    .tw-side-bar-title a {
+        @apply text-gray-900;
+    }
+
+    /* TAILWIND Sidebar ends */
+
+    .tw-hbox {
+        @apply flex gap-[0.25ch] items-center pr-0
+    }
+
+    .tw-hbox>* {
+        @apply leading-8 align-middle m-0;
+    }
+
+    .tw-hbox input {
+        @apply align-middle m-0
+    }
+
+    .tw-hbox label {
+        @apply whitespace-nowrap;
+    }
+
+    .tw-options-modal-hbox {
+        @apply mb-4 flex gap-6 items-center;
+    }
+
+    .tw-options-modal-hbox>* {
+        @apply leading-8 align-middle m-0;
+    }
+
+    .tw-options-modal-hbox input {
+        @apply align-middle m-0 origin-center-left scale-150;
+    }
+
+    .tw-options-modal-hbox>*:last-child {
+        @apply ml-auto;
+    }
+
+    .tw-switch {
+        @apply cursor-pointer;
+    }
+
+    .tw-switch>* {
+        @apply cursor-pointer;
+    }
+
+    .tw-no-results {
+        @apply 1240px:col-start-1 w-full flex content-center items-center flex-col col-start-2 col-end-3;
+    }
+
+    .tw-no-results p {
+        @apply text-center;
+    }
+
+    .tw-hits-container {
+        @apply grid grid-cols-1 min-576px:grid-cols-2 min-767px:grid-cols-3 min-992px:grid-cols-4 gap-1.5;
+    }
+
+    .tw-hits-container.details {
+        @apply grid md:grid-cols-4 gap-[6px];
+    }
+
+    .tw-hits-container.compact {
+        @apply grid md:grid-cols-4 gap-[6px];
+    }
+
+    .tw-hits-container.list {
+        @apply grid grid-cols-1 gap-[6px];
+    }
+
+    /* TAILWIND AIS PAGINATION START */
+
+    .tw-ais-pagination {
+        @apply py-[50px] px-0;
+    }
+
+    .tw-ais-pagination .ais-Pagination {
+        @apply text-indigo-900;
+    }
+
+    .tw-ais-pagination .ais-Pagination-list {
+        @apply m-0 p-0 flex items-center justify-center list-none;
+    }
+
+    .tw-ais-pagination .ais-Pagination-item + .ais-Pagination-item {
+        @apply ml-1;
+    }
+
+    .tw-ais-pagination .ais-Pagination-link {
+        @apply text-blue-600 block rounded transition-bg-color-02 py-[0.3rem] px-[0.6rem] border-1 border-[#c4c8d8] hover:text-[#0073a8] hover:bg-[#e3e5ec] focus:text-[#0073a8] focus:bg-[#e3e5ec];
+    }
+
+    .tw-ais-pagination .ais-Pagination-item--disabled .ais-Pagination-link {
+        @apply cursor-not-allowed text-gray-500 opacity-[0.6] hover:text-gray-500 hover:bg-white focus:text-gray-500 focus:bg-white ;
+    }
+
+    .tw-ais-pagination .ais-Pagination-item--selected .ais-Pagination-link {
+        @apply text-white bg-blue-600 border-blue-600 hover:text-white focus:text-white;
+    }
+    /* TAILWIND AIS PAGINATION END */
+
+    /* BOOTSTRAP missing styles */
+
+    .bootstrap .is-invalid~.invalid-feedback, .bootstrap .is-invalid~.invalid-tooltip, .bootstrap .was-validated :invalid~.invalid-feedback, .bootstrap .was-validated :invalid~.invalid-tooltip {
+        display: block;
+    }
+
+    .bootstrap .list-group-item+.list-group-item {
+        border-top-width: 0;
+    }
+}

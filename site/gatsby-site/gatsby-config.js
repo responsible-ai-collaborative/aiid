@@ -206,13 +206,25 @@ const plugins = [
     options: {
       locales: `./i18n/locales`,
       i18nextOptions: {
-        ns: ['translation'],
+        ns: [
+          'translation',
+          'actions',
+          'landing',
+          'submit',
+          'validation',
+          'submitted',
+          'login',
+          'popovers',
+        ],
+        debug: process.env.GATSBY_I18N_DEBUG,
+        nsSeparator: false,
+        keySeparator: '.',
       },
     },
   },
+  'gatsby-plugin-postcss',
+  'gatsby-plugin-sass',
 ];
-
-plugins.push(`gatsby-plugin-client-side-redirect`);
 
 module.exports = {
   pathPrefix: config.gatsby.pathPrefix,

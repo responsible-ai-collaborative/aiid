@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { ExternalLink } from 'react-feather';
 import config from '../../../config';
 import QuickAccess from 'components/discover/QuickAccess';
+import { Trans } from 'react-i18next';
 
 // eslint-disable-next-line no-unused-vars
 const ListItem = styled(({ className, active, level, ...props }) => {
@@ -41,6 +42,7 @@ const ListItem = styled(({ className, active, level, ...props }) => {
     svg {
       margin-left: 1ch;
       vertical-align: top;
+      display: inline;
     }
   }
 `;
@@ -100,22 +102,22 @@ const SidebarLayout = ({ collapse, setNavCollapsed }) => {
       <QuickAccess />
       {config.sidebar.title ? (
         <div
-          className={'sidebarTitle hiddenMobile'}
+          className={'tw-side-bar-title hiddenMobile'}
           dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
         />
       ) : null}
-      <ul className={'sideBarUL'}>
+      <ul className={'tw-side-bar-ul'} style={{ paddingLeft: '0px' }}>
         <li className="hideFrontLine firstLevel item">
-          <ul>
+          <ul style={{ paddingLeft: '0px' }}>
             <Tree setNavCollapsed={setNavCollapsed} />
           </ul>
         </li>
-        {config.sidebar.links && config.sidebar.links.length > 0 && <Divider />}
-        {config.sidebar.links.map((link, key) => {
+        {config.sidebar.links && config.sidebar.links?.length > 0 && <Divider />}
+        {config.sidebar.links?.map((link, key) => {
           if (link.link !== '' && link.text !== '') {
             return (
               <ListItem key={key} to={link.link}>
-                {link.text}
+                <Trans>{link.text}</Trans>
                 <ExternalLink size={14} />
               </ListItem>
             );

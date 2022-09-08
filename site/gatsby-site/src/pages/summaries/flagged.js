@@ -1,5 +1,5 @@
 import React from 'react';
-import Helmet from 'react-helmet';
+import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
 
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -55,7 +55,7 @@ const ReportList = ({ report }) => {
 
 const IncidentList = ({ incidents }) => {
   return (
-    <>
+    <div className="bootstrap">
       {incidents.map((incident) => (
         <div key={incident.incident_id}>
           <h2>Incident {incident.incident_id}</h2>
@@ -64,7 +64,7 @@ const IncidentList = ({ incidents }) => {
           ))}
         </div>
       ))}
-    </>
+    </div>
   );
 };
 
@@ -93,9 +93,9 @@ export default function FlaggedIncidents({ data, ...props }) {
 
   return (
     <Layout {...props}>
-      <Helmet>
+      <AiidHelmet>
         <title>Incident List</title>
-      </Helmet>
+      </AiidHelmet>
       <div className={'titleWrapper'}>
         <StyledHeading>Flagged Incident List</StyledHeading>
       </div>

@@ -9,6 +9,24 @@
                 "bsonType": "string"
             }
         },
+        "developers": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "deployers": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "harmed_parties": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
         "cloudinary_id": {
             "bsonType": "string"
         },
@@ -27,6 +45,35 @@
         "description": {
             "bsonType": "string"
         },
+        "editor_dissimilar_incidents": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "int"
+            }
+        },
+        "editor_notes": {
+            "bsonType": "string"
+        },
+        "editor_similar_incidents": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "int"
+            }
+        },
+        "embedding": {
+            "bsonType": "object",
+            "properties": {
+                "from_text_hash": {
+                    "bsonType": "string"
+                },
+                "vector": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "double"
+                    }
+                }
+            }
+        },
         "image_url": {
             "bsonType": "string"
         },
@@ -38,6 +85,20 @@
         },
         "language": {
             "bsonType": "string"
+        },
+        "nlp_similar_incidents": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "incident_id": {
+                        "bsonType": "int"
+                    },
+                    "similarity": {
+                        "bsonType": "double"
+                    }
+                }
+            }
         },
         "plain_text": {
             "bsonType": "string"
@@ -64,9 +125,6 @@
             "bsonType": "string"
         },
         "url": {
-            "bsonType": "string"
-        },
-        "editor_notes": {
             "bsonType": "string"
         }
     },

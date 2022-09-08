@@ -2,6 +2,8 @@ const algoliaSettings = require('./algoliaSettings');
 
 const { getUnixTime } = require('date-fns');
 
+const config = require('../../config');
+
 const truncate = (doc) => {
   for (const [key, value] of Object.entries(doc)) {
     if (typeof value == 'string') {
@@ -115,6 +117,7 @@ class AlgoliaUpdater {
             incident_id: incident.incident_id,
             incident_date: incident.date,
             epoch_incident_date: getUnixTime(new Date(incident.date)),
+            featured: config?.header?.search?.featured[report.report_number] || 0,
           };
 
           if (classificationsHash[entry.incident_id]) {
@@ -141,6 +144,10 @@ class AlgoliaUpdater {
 
   getIncidents = async () => {
     return this.mongoClient.db('aiidprod').collection(`incidents`).find({}).toArray();
+  };
+
+  getDuplicates = async () => {
+    return this.mongoClient.db('aiidprod').collection(`duplicates`).find({}).toArray();
   };
 
   getReports = async ({ language }) => {
@@ -204,15 +211,46 @@ class AlgoliaUpdater {
   uploadToAlgolia = async ({ language, entries }) => {
     const indexName = `instant_search-${language}`;
 
-    const index = this.algoliaClient.initIndex(indexName);
+    const featuredReplicaIndexName = indexName + '-featured';
+
+    const index = await this.algoliaClient.initIndex(indexName);
 
     await index.saveObjects(entries);
 
-    await index.setSettings({
-      ...algoliaSettings,
-      indexLanguages: [language],
-      queryLanguages: [language],
-    });
+    await index
+      .setSettings({
+        ...algoliaSettings,
+        attributeForDistinct: 'incident_id',
+        indexLanguages: [language],
+        queryLanguages: [language],
+        replicas: [featuredReplicaIndexName],
+      })
+      .then(async () => {
+        const featuredReplicaIndex = await this.algoliaClient.initIndex(featuredReplicaIndexName);
+
+        await featuredReplicaIndex.setSettings({
+          ranking: ['desc(featured)', 'desc(text)'],
+        });
+      });
+  };
+
+  deleteDuplicates = async ({ language }) => {
+    await this.mongoClient.connect();
+
+    const indexName = `instant_search-${language}`;
+
+    const index = await this.algoliaClient.initIndex(indexName);
+
+    const duplicates = await this.getDuplicates();
+
+    const filters = duplicates
+      .map((d) => d.duplicate_incident_number)
+      .map((id) => `incident_id = ${id}`)
+      .join(' OR ');
+
+    await index.deleteBy({ filters });
+
+    await this.mongoClient.close();
   };
 
   async generateIndex({ language }) {
@@ -239,6 +277,8 @@ class AlgoliaUpdater {
         `Uploading Algolia index of [${language}] with [${entries.length}] entries`
       );
       await this.uploadToAlgolia({ entries, language });
+
+      await this.deleteDuplicates({ language });
     }
   }
 }

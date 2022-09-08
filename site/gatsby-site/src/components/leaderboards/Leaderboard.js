@@ -2,7 +2,9 @@ import React from 'react';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
 import Badge from 'react-bootstrap/Badge';
-import { Card, ListGroup } from 'react-bootstrap';
+import { ListGroup } from 'react-bootstrap';
+import { Trans } from 'react-i18next';
+import Card from 'elements/Card';
 
 const medalMap = (position) => {
   switch (position) {
@@ -63,21 +65,25 @@ export const Leaderboard = ({
 
   return (
     <Card className={className}>
-      <Card.Header>{title}</Card.Header>
-      <ListGroup variant="flush">
-        {sortedArray.map((item, index) => (
-          <StyledItem
-            key={`${item.label}-${item.value}`}
-            className="d-flex justify-content-between align-items-center"
-          >
-            <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
-              <Medal className="pe-2">{medalMap(index + 1)}</Medal>
-              {item.label}
-            </Link>
-            <Badge bg="secondary">{item.value}</Badge>
-          </StyledItem>
-        ))}
-      </ListGroup>
+      <Card.Header>
+        <Trans ns="landing">{title}</Trans>
+      </Card.Header>
+      <div className="bootstrap">
+        <ListGroup variant="flush">
+          {sortedArray.map((item, index) => (
+            <StyledItem
+              key={`${item.label}-${item.value}`}
+              className="flex justify-between items-center"
+            >
+              <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
+                <Medal className="pe-2">{medalMap(index + 1)}</Medal>
+                {item.label}
+              </Link>
+              <Badge bg="secondary">{item.value}</Badge>
+            </StyledItem>
+          ))}
+        </ListGroup>
+      </div>
     </Card>
   );
 };
