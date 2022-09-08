@@ -101,7 +101,7 @@
                     "bsonType": "double"
                 },
                 "y": {
-                   "bsonType": "double"
+                    "bsonType": "double"
                 }
             }
         }

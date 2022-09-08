@@ -8,23 +8,24 @@ import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
-import ReadMoreText from 'components/ReadMoreText';
-import RelatedIncidents from 'components/RelatedIncidents';
+import ReadMoreText from '../../components/ReadMoreText';
+import RelatedIncidents from '../../components/RelatedIncidents';
 import isArray from 'lodash/isArray';
-import { useUserContext } from 'contexts/userContext';
+import uniq from 'lodash/uniq';
+import { useUserContext } from '../../contexts/userContext';
 import { UPDATE_REPORT } from '../../graphql/reports';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery, useLazyQuery } from '@apollo/client';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { DELETE_SUBMISSION, PROMOTE_SUBMISSION } from '../../graphql/submissions';
 import { FIND_SUBSCRIPTIONS } from '../../graphql/subscriptions';
-import useToastContext, { SEVERITY } from 'hooks/useToast';
+import { GET_USER } from '../../graphql/users';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, getUnixTime } from 'date-fns';
 import SubmissionEditModal from './SubmissionEditModal';
 import { Spinner } from 'react-bootstrap';
-import Link from 'components/ui/Link';
+import Link from '../../components/ui/Link';
 import { Trans, useTranslation } from 'react-i18next';
 import sendEmail from '../../utils/email';
-import { realmApp } from '../../services/realmApp';
 
 const ListedGroup = ({ item, className = '', keysToRender }) => {
   return (
@@ -72,6 +73,10 @@ const SubmissionReview = ({ submission }) => {
     fetchPolicy: 'network-only',
   });
 
+  const [getUser] = useMutation(GET_USER);
+
+  const [findSubscriptions] = useLazyQuery(FIND_SUBSCRIPTIONS);
+
   const [updateReport] = useMutation(UPDATE_REPORT);
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
@@ -94,17 +99,57 @@ const SubmissionReview = ({ submission }) => {
 
   const addToast = useToastContext();
 
-  let subscriptionsData;
+  const sendEmailNotifications = async (incidentId, reportNumber, incidentTitle, report) => {
+    console.log('--- SAPE 3', incidentId);
 
-  if (!isNewIncident) {
-    const findSubscriptionsResult = useQuery(FIND_SUBSCRIPTIONS, {
-      variables: { query: { incident_id: { incident_id: submission.incident_id } } },
+    const { data: subscriptionsData } = await findSubscriptions({
+      variables: { query: { incident_id: { incident_id: incidentId } } },
     });
 
-    subscriptionsData = findSubscriptionsResult.data;
-  }
+    console.log('-- subscriptionsData', incidentId, subscriptionsData);
+
+    // Process subscriptions to incident updates
+    if (subscriptionsData?.subscriptions?.length > 0) {
+      const userIds = uniq(
+        subscriptionsData.subscriptions.map((subscription) => subscription.userId.userId)
+      );
+
+      console.log('--- userIds', userIds);
+
+      const userEmails = [];
+
+      for (const userId of userIds) {
+        const userResponse = await getUser({ variables: { input: { userId } } });
+
+        console.log('-- userResponse', userId, userResponse.data.getUser.email);
+
+        if (userResponse.data && userResponse.data.getUser && userResponse.data.getUser.email) {
+          userEmails.push(userResponse.data.getUser.email);
+        }
+      }
+
+      console.log('-- userEmails', userEmails);
+      console.log('-- uniq', uniq(userEmails));
+
+      await sendEmail({
+        to: uniq(userEmails),
+        subject: 'Incident {{incidentId}} was updated',
+        templateFileName: 'incidentUpdated',
+        text: 'Incident {{incident_id}}: "{{incident_title}}" was updated.',
+        data: {
+          incidentId: `${incidentId}`,
+          incidentTitle: incidentTitle,
+          incidentUrl: `https://incidentdatabase.ai/cite/${incidentId}`,
+          reportUrl: `https://incidentdatabase.ai/cite/${incidentId}#r${reportNumber}`,
+          reportTitle: report.title,
+          reportAuthor: report.authors[0],
+        },
+      });
+    }
+  };
 
   const promoteSubmission = useCallback(async () => {
+    console.log('--- SAPE 0');
     if (!submission.developers || !submission.deployers || !submission.harmed_parties) {
       addToast({
         message: `Please review submission before approving. Some data is missing.`,
@@ -134,6 +179,8 @@ const SubmissionReview = ({ submission }) => {
         });
       },
     });
+
+    console.log('--- SAPE 1');
 
     const report = {
       ...submission,
@@ -170,6 +217,8 @@ const SubmissionReview = ({ submission }) => {
       },
     });
 
+    console.log('--- SAPE 2');
+
     if (isNewIncident) {
       await updateIncident({
         variables: {
@@ -185,36 +234,12 @@ const SubmissionReview = ({ submission }) => {
       });
     }
 
+    console.log('--- SAPE 3');
+
     const incident_id = incident.incident_id;
 
-    // Process subscriptions to incident updates
-    if (subscriptionsData?.subscriptions?.length > 0) {
-      const userIds = subscriptionsData.subscriptions.map(
-        (subscription) => subscription.userId.userId
-      );
-
-      const userEmails = userIds
-        .map((userId) => {
-          const user = realmApp.allUsers[userId];
-
-          return user && user.profile ? user.profile.email : null;
-        })
-        .filter((userEmail) => userEmail != null);
-
-      await sendEmail({
-        to: userEmails,
-        subject: 'Incident {{incidentId}} was updated',
-        templateFileName: 'incidentUpdated',
-        text: 'Incident {{incident_id}}: "{{incident_title}}" was updated.',
-        data: {
-          incidentId: `${incident_id}`,
-          incidentTitle: incident.title,
-          incidentUrl: `https://incidentdatabase.ai/cite/${incident_id}`,
-          reportUrl: `https://incidentdatabase.ai/cite/${incident_id}#r${report_number}`,
-          reportTitle: report.title,
-          reportAuthor: report.authors[0],
-        },
-      });
+    if (!isNewIncident) {
+      sendEmailNotifications(incident_id, report_number, incident.title, report);
     }
 
     addToast({
