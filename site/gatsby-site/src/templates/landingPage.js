@@ -74,11 +74,11 @@ const LandingPage = (props) => {
           </div>
         </div>
 
-        <div className="flex flex-row gap-10 mb-10 flex-wrap">
-          <div className="flex-1 lg:max-w-[50%]">
+        <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-10 mb-10 flex-wrap">
+          <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
             <AboutDatabase />
           </div>
-          <div className="flex-1 lg:max-w-[50%]">
+          <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
             <Blog />
           </div>
         </div>

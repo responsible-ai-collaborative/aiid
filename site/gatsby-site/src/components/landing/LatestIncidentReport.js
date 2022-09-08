@@ -10,9 +10,8 @@ import { LocalizedLink } from 'gatsby-theme-i18n';
 const LatestIncidentReport = ({ report }) => {
   const { image_url, cloudinary_id, title, text, epoch_date_submitted, incident_id } = report;
 
-  console.log('cloudinary_id', cloudinary_id);
   return (
-    <div className="max-w-3xl bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
+    <div className="flex flex-col items-center bg-white rounded-lg border shadow-md md:flex-row dark:border-gray-700 dark:bg-gray-800">
       <LocalizedLink to={`/cite/${incident_id}`} className="text-primary-blue max-w-full">
         <Image
           className={
@@ -24,9 +23,14 @@ const LatestIncidentReport = ({ report }) => {
         />
       </LocalizedLink>
       <div className="flex flex-col justify-between p-4 leading-normal">
-        <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-          {title}
-        </h5>
+        <LocalizedLink to={`/cite/${incident_id}`} className="max-w-full cursor-pointer">
+          <h5 className="text-base font-bold tracking-tight text-gray-900 dark:text-white relative block hover:text-primary-blue">
+            {title}
+            <span className="bg-blue-100 text-blue-800 text-sm font-semibold ml-2 px-1.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-900">
+              <Trans ns="landing">Latest Incident Report</Trans>
+            </span>
+          </h5>
+        </LocalizedLink>
         <span className="text-sm text-gray-500 dark:text-gray-400">
           {format(epoch_date_submitted * 1000, 'MMM d, yyyy')}
         </span>

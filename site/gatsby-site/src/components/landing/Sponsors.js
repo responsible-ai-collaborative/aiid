@@ -3,7 +3,6 @@ import Link from 'components/ui/Link';
 import { Trans } from 'react-i18next';
 
 import { StyledImage, StyledImageModal, StyledImageCover } from '../../elements/StyledImage';
-import { StyledSubtitle } from '../../elements/StyledTitle';
 import sponsors from './sponsors.json';
 import { Button, Card, Modal } from 'flowbite-react';
 
@@ -49,7 +48,7 @@ export default function Sponsors() {
 
   return (
     <>
-      <Card>
+      <div className="block p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           <Trans ns="landing">The Responsible AI Collaborative</Trans>
         </h5>
@@ -75,9 +74,9 @@ export default function Sponsors() {
               return (
                 <div className="flex-1 w-full" key={`sponsor-${sponsor.name}`}>
                   <Card>
-                    <StyledSubtitle>
+                    <h6 className="text-lg dark:text-white">
                       <Trans ns="landing">{sponsor.name}</Trans>
-                    </StyledSubtitle>
+                    </h6>
                     <div className="flex flex-wrap justify-center items-center">
                       {sponsor.items.map((item) => {
                         return (
@@ -100,7 +99,7 @@ export default function Sponsors() {
             })}
           </div>
         </div>
-      </Card>
+      </div>
       {sponsors.map((sponsor) => {
         return (
           <>

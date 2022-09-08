@@ -79,6 +79,9 @@ const QuickAddForm = ({ className = '' }) => {
 
   return (
     <div className="">
+      <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+        <Trans ns="landing">Quick Add New Report URL</Trans>
+      </h5>
       <form onSubmit={handleSubmit} className={className} data-cy="quick-add">
         <div className="relative">
           <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
