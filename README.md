@@ -481,29 +481,22 @@ About Realm API Keys: https://www.mongodb.com/docs/realm/authentication/api-key/
 
 ## Social Networks login integration
 
-To enable social network logins, you will need to add the following configuration to your Atlas App Service.
+To enable social network login, you will need to add the following configuration to your Atlas App Service.
 
-Add these secret values to your Atlas App Service following the instructions in the [Atlas App Services documentation](https://www.mongodb.com/docs/atlas/app-services/values-and-secrets/define-and-manage-secrets/).
+Add this secret value to your Atlas App Service following the instructions in the [Atlas App Services documentation](https://www.mongodb.com/docs/atlas/app-services/values-and-secrets/define-and-manage-secrets/).
 
 ```
 facebookAppSecret = [Facebook App Secret, see comment below for more information]
-googleClientSecret = [Google Client Secret, see comment below for more information]
 ```
 
 - To get the Facebook App Secret you should go to the [Facebook Developer Portal](https://developers.facebook.com/apps/), and click on your app > Settings > Basic.
-- To get the Google Client Secret you should go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials), and click on the OAuth 2.0 Client ID item.
 
 On Facebook Authentication settings, set the "Client ID" with the Facebook App Id. To get the Facebook App ID you should go to the [Facebook Developer Portal](https://developers.facebook.com/apps/), and check your app.
-
-On Google Authentication settings, set the "Client ID" with the Google Client ID (OAuth 2.0 Client ID). In order to get the Google Client ID (OAuth 2.0 Client ID) you should set up an OAuth 2.0 following these [instructions](https://support.google.com/cloud/answer/6158849?hl=en). After set it up, you can find the Google Client ID in your [Google Cloud Console](https://console.cloud.google.com/apis/credentials).
-
 
 Redirect URIs, is the URL that the user will be redirected to after successfully authenticating with Facebook or Google. It should point to `/logincallback` page. For Production the URI is `https://incidentdatabase.ai/logincallback`, for Staging the URI is `https://staging-aiid.netlify.app/logincallback`
 
 
 About Facebook Authentication instructions: https://www.mongodb.com/docs/realm/web/authenticate/#facebook-authentication
-
-About Google Authentication instructions: https://www.mongodb.com/docs/realm/web/authenticate/#google-authentication
 
 
 ## Contact
