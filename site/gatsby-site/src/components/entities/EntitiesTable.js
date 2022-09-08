@@ -55,16 +55,24 @@ function DefaultColumnHeader({ column, ...props }) {
 }
 
 function IncidentsCell({ cell }) {
-  const { row } = cell;
+  const { row, column } = cell;
+
+  const filtered = column.filterValue
+    ? cell.value.filter((incident) =>
+        ['incident_id', 'title'].some((field) =>
+          incident[field].toString().toLowerCase().includes(column.filterValue)
+        )
+      )
+    : cell.value;
 
   return (
     <div>
       <div className={`text-black flex justify-between ${row.isExpanded && 'pb-4'}`}>
-        {cell.value.length} Incidents
+        {filtered.length} Incidents
       </div>
       {row.isExpanded && (
         <ul className="divide-y divide-gray-200 dark:divide-gray-700 max-h-240 -mx-4 border-t overflow-y-scroll">
-          {cell.value.map((incident) => (
+          {filtered.map((incident) => (
             <li className="p-2 pr-3" key={incident.incident_id}>
               <Link
                 className="inline-block bg-red-100 text-red-800 text-xs font-semibold m-1 px-2.5 py-01 rounded dark:bg-green-200 dark:text-green-900"
@@ -83,16 +91,24 @@ function IncidentsCell({ cell }) {
 }
 
 function EntitiestCell({ cell }) {
-  const { row } = cell;
+  const { row, column } = cell;
+
+  const filtered = column.filterValue
+    ? cell.value.filter((entity) =>
+        ['name'].some((field) =>
+          entity[field].toString().toLowerCase().includes(column.filterValue)
+        )
+      )
+    : cell.value;
 
   return (
     <div>
       <div className={`text-black flex justify-between ${row.isExpanded && 'pb-4'}`}>
-        {cell.value.length} Entities
+        {filtered.length} Entities
       </div>
       {row.isExpanded && (
         <ul className="divide-y divide-gray-200 dark:divide-gray-700 min-h-full max-h-240 -mx-4 border-t overflow-y-scroll">
-          {cell.value.map((entity) => (
+          {filtered.map((entity) => (
             <li className="py-2" key={entity.id}>
               <Link
                 className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold m-1 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900"
@@ -111,7 +127,11 @@ function EntitiestCell({ cell }) {
 
 const incidentFilter = (rows, [field], value) =>
   rows.filter((row) => {
-    return row.values[field].some((incident) => incident.incident_id.toString() === value);
+    return row.values[field].some((incident) =>
+      ['incident_id', 'title'].some((field) =>
+        incident[field].toString().toLowerCase().includes(value)
+      )
+    );
   });
 
 const entitiesFilter = (rows, [field], value) =>
