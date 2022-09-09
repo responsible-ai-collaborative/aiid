@@ -83,13 +83,13 @@ const LandingPage = (props) => {
           </div>
         </div>
 
-        <div className="mb-10">
+        <div className="mb-16">
           <div>
             <Featured />
           </div>
         </div>
 
-        <div className="mb-10">
+        <div className="mb-16">
           <div>
             <Leaderboards />
           </div>

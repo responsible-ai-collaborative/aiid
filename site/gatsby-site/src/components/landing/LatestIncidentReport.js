@@ -12,16 +12,18 @@ const LatestIncidentReport = ({ report }) => {
 
   return (
     <div className="flex flex-col items-center bg-white rounded-lg border shadow-md md:flex-row dark:border-gray-700 dark:bg-gray-800">
-      <LocalizedLink to={`/cite/${incident_id}`} className="text-primary-blue max-w-full">
-        <Image
-          className={
-            'img-fluid rounded-start h-full w-full max-w-full max-h-240 rounded-t-lg md:rounded-l-lg md:rounded-r-none'
-          }
-          // transformation={{ transition: '0.5s all ease-in-out' }}
-          publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
-          alt={title}
-        />
-      </LocalizedLink>
+      <div className="flex self-stretch justify-center items-center border-r">
+        <LocalizedLink to={`/cite/${incident_id}`} className="text-primary-blue max-w-full">
+          <Image
+            className={
+              'img-fluid rounded-start h-full w-full max-w-full max-h-240 rounded-t-lg md:rounded-l-lg md:rounded-r-none border-r'
+            }
+            // transformation={{ transition: '0.5s all ease-in-out' }}
+            publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
+            alt={title}
+          />
+        </LocalizedLink>
+      </div>
       <div className="flex flex-col justify-between p-4 leading-normal">
         <LocalizedLink to={`/cite/${incident_id}`} className="max-w-full cursor-pointer">
           <h5 className="text-base font-bold tracking-tight text-gray-900 dark:text-white relative block hover:text-primary-blue">
