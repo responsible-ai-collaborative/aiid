@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { OverlayTrigger, Form, Popover } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
@@ -15,42 +15,39 @@ const Label = ({ popover, label }) => {
     return <Form.Label>{label} :</Form.Label>;
   }
 
-  const ref = useRef(null);
+  const Tooltip = (
+    <div
+      className="inline-block absolute z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm tooltip dark:bg-gray-700 max-w-xs bottom-2 imtooltip left-0"
+      onMouseEnter={() => setShow(true)}
+      onMouseLeave={() => setShow(false)}
+    >
+      <h5>
+        <Trans ns="popovers" i18nKey={`${popover}.title`} />
+      </h5>
+      <Trans ns="popovers" i18nKey={`${popover}.text`} components={{ linkto: <Link /> }} />
+      <div className="tooltip-arrow right-28" data-popper-arrow></div>
+    </div>
+  );
 
   return (
     <>
-      <div className="bootstrap" ref={ref}>
-        <OverlayTrigger
-          placement={'top'}
-          container={ref}
-          overlay={
-            <UpdatingPopover data-cy={`popover-${popover}`}>
-              <Popover.Header as="h3">
-                <Trans ns="popovers" i18nKey={`${popover}.title`} />
-              </Popover.Header>
-              <Popover.Body>
-                <Trans
-                  ns="popovers"
-                  i18nKey={`${popover}.text`}
-                  components={{ linkto: <Link /> }}
-                />
-              </Popover.Body>
-            </UpdatingPopover>
-          }
-          {...(show ? { show } : {})}
-        >
-          <Form.Label data-cy={`label-${popover}`} className="relative">
-            {label}{' '}
-            <FontAwesomeIcon
-              icon={faQuestionCircle}
-              style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-              className="far fa-question-circle"
-              onClick={() => setShow(!show)}
-            />{' '}
-            :
-          </Form.Label>
-        </OverlayTrigger>
-      </div>
+      <OverlayTrigger
+        placement="top"
+        overlay={Tooltip}
+        {...(show ? { show } : {})}
+        delay={{ show: 0, hide: 300 }}
+      >
+        <Form.Label data-cy={`label-${popover}`} className="relative">
+          {label}{' '}
+          <FontAwesomeIcon
+            icon={faQuestionCircle}
+            style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+            className="far fa-question-circle"
+            onClick={() => setShow(!show)}
+          />{' '}
+          :
+        </Form.Label>
+      </OverlayTrigger>
     </>
   );
 };
