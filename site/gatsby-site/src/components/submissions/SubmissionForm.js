@@ -90,8 +90,8 @@ export const schema = yup.object().shape({
     .max(200, "*Submitter list can't be longer than 200 characters"),
   text: yup
     .string()
-    .min(80, '*Text must have at least 80 characters')
-    .max(50000, "*Text can't be longer than 50000 characters")
+    .min(80, `*Text must have at least 80 characters`)
+    .max(50000, `*Text can’t be longer than 50000 characters`)
     .required('*Text is required'),
   date_published: yup
     .string()
@@ -227,7 +227,7 @@ const SubmissionForm = () => {
   }, [values.image_url]);
 
   return (
-    <>
+    <div className="bootstrap">
       <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
         <TextInputGroup
           name="url"
@@ -356,10 +356,35 @@ const SubmissionForm = () => {
           {...TextInputGroupProps}
         />
 
-        <Form.Group className="mt-3" data-color-mode="light">
+        <Form.Group
+          className={'mt-3' + (touched['text'] && errors['text'] ? ' is-invalid' : '')}
+          data-color-mode="light"
+        >
           <Label popover="text" label={t('Text')} />
-          <Editor value={values.text} onChange={(value) => setFieldValue('text', value)} />
+          <div style={{ position: 'relative' }}>
+            {touched['text'] && errors['text'] && (
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: '0px',
+                  border: '1px solid var(--bs-red)',
+                  zIndex: 10,
+                  pointerEvents: 'none',
+                }}
+              />
+            )}
+            <Editor
+              value={values.text}
+              onChange={(value) => {
+                setFieldValue('text', value);
+                setFieldTouched('text', true);
+              }}
+            />
+          </div>
         </Form.Group>
+        <Form.Control.Feedback type="invalid">
+          <Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans>
+        </Form.Control.Feedback>
 
         <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
 
@@ -419,7 +444,7 @@ const SubmissionForm = () => {
           {...TextInputGroupProps}
         />
       </Form>
-    </>
+    </div>
   );
 };
 

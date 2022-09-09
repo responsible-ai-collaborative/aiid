@@ -85,7 +85,7 @@ export function ToastContextProvider({ children }) {
   return (
     <ToastContext.Provider value={addToast}>
       {children}
-      <ToastsWrapper>
+      <ToastsWrapper className="bootstrap">
         {toasts.map(({ message, severity, id }, index) => (
           <Toast key={id} style={{ background: severity.color, maxWidth: '100%' }} data-cy="toast">
             <ToastBody style={{ color: 'white' }}>

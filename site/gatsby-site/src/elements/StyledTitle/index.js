@@ -5,7 +5,7 @@ export function StyledTitle(props) {
   return (
     <>
       <div
-        className={`tw-flex tw-ml-auto tw-mr-auto tw-mb-2 tw-justify-around tw-items-center tw-w-[85%] tw-max-w-[355px] tw-max-h-[80px] tw-cursor-zoom-in ${
+        className={`flex ml-auto mr-auto mb-2 justify-around items-center w-[85%] max-w-[355px] max-h-[80px] cursor-zoom-in ${
           props.className || ''
         }`}
       >
@@ -19,11 +19,9 @@ export function StyledSubtitle(props) {
   return (
     <>
       <Card.Subtitle
-        className={`tw-flex tw-ml-auto tw-mr-auto tw-mb-2 tw-justify-around tw-pt-[${
-          props.top || '30px'
-        }] tw-pb-[${props.bottom || '30px'}] tw-pt-[${props.margin || '-.25rem'}] ${
-          props.className || ''
-        }`}
+        className={`flex ml-auto mr-auto mb-3 justify-around pt-[${props.top || '30px'}] pb-[${
+          props.bottom || '30px'
+        }] pt-[${props.margin || '-.25rem'}] ${props.className || ''}`}
       >
         {props.children}
       </Card.Subtitle>

@@ -1,0 +1,56 @@
+[{
+        "name": "Organization Founding Sponsor",
+        "items": [
+            {
+                "name": "Waking Up Foundation",
+                "modalName": "WU",
+                "logo": "wu-foundation-blue-logo.svg",
+                "text": "On the recommendation of Longview Philanthropy, the [[Waking Up Foundation]] contributed a founding grant of $550k USD directed to the AI Incident Database. $33k of the total is committed to our fiscal sponsor for running the books and tax compliance for the organization. Approximately $5k is dedicated to maintaining the RAIC non-profit entity that directs the AIID programming sponsored by a fiscal sponsor. The remaining funds are all dedicated to programmatic outputs, including staff time for programming and research.",
+                "link": "https://www.wakingup.com/foundation",
+                "dataCy": "wu-modal-click"
+            }
+        ]
+    },
+    {
+        "name": "Database Founding Sponsor",
+        "items": [
+            {
+                "name": "Partnership on AI",
+                "modalName": "PAI",
+                "text": "As a [[founding sponsor]] of the AI Incident Database (AIID), Partnership on AI supported the start-up of the database, including a grant to support the project prior to the founding of the Responsible AI Collaborative. Partnership on AI also invested in promoting the social benefits of the AIID to their Partners and other stakeholders and have an ongoing interest in supporting its outcomes.",
+                "logo": "partership-on-ai-logo.png",
+                "link": "https://partnershiponai.org/resource/tracking-when-ai-systems-fail/",
+                "dataCy": null
+            }
+        ]
+    },
+    {
+        "name": "In-Kind Sponsors",
+        "items": [
+            {
+                "name": "Netlify",
+                "modalName": "N",
+                "text": "[[Netlify]] provides the Responsible AI Collaborative with free hosting, build minutes, and accounts for the open source development of the AI Incident Database.",
+                "logo": "netlify-dark.svg",
+                "link": "https://www.netlify.com/",
+                "dataCy": null
+            },
+            {
+                "name": "Cloudinary",
+                "modalName": "CLOUDINARY",
+                "text": "[[Cloudinary]] provides discounted image and video hosting on their cloud hosting service. They are the reason so many images load quickly across the database.",
+                "logo": "cloudinary_cloud_glyph_regular.svg",
+                "link": "https://www.cloudinary.com/",
+                "dataCy": null
+            },
+            {
+                "name": "Algolia",
+                "modalName": "ALGOLIA",
+                "text": "[[Algolia]] provides the Responsible AI Collaborative with an instant search index of incident reports.",
+                "logo": "Algolia-nebula.svg",
+                "link": "https://algolia.com/",
+                "dataCy": null
+            }
+        ]
+    }
+]

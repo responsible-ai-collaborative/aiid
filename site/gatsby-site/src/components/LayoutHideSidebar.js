@@ -66,7 +66,7 @@ const LeftSideBarWidth = styled.div`
   ${({ collapse }) => collapse && `width: 0;`}
 `;
 
-const LayoutHideSidebar = ({ children, location, menuCollapseCallback }) => {
+const LayoutHideSidebar = ({ children, location, menuCollapseCallback, className = '' }) => {
   const [collapse, setCollapse] = useState(true);
 
   const toggleMenu = () => {
@@ -79,8 +79,8 @@ const LayoutHideSidebar = ({ children, location, menuCollapseCallback }) => {
   return (
     <>
       <Header />
-      <Wrapper>
-        <LeftSideBarWidth className={'tw-w-[298px] hiddenMobile'} collapse={collapse}>
+      <Wrapper className={className}>
+        <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
           <Sidebar location={location} collapse={collapse} />
         </LeftSideBarWidth>
         {config.sidebar.title ? (
@@ -89,7 +89,7 @@ const LayoutHideSidebar = ({ children, location, menuCollapseCallback }) => {
             dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
           />
         ) : null}
-        <Content id="content">
+        <Content id="content" className="overflow-y-auto max-w-full">
           <Button
             variant="primary"
             className={`tw-btn-menu ${collapse ? 'collapsed' : ''}`}

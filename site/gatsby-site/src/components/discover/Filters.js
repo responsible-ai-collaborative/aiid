@@ -5,6 +5,7 @@ import Filter from './Filter';
 import styled from 'styled-components';
 
 const StyledFilter = styled(Filter)`
+  width: 100%;
   .dropdown-toggle {
     width: 100%;
   }
@@ -12,15 +13,16 @@ const StyledFilter = styled(Filter)`
 
 function Filters() {
   return (
-    <>
-      <Row xs={1} md={2} lg={4} className="d-none d-md-flex g-2 mt-1">
-        {REFINEMENT_LISTS.map((list) => (
-          <Col key={list.attribute}>
-            <StyledFilter type={list.type} {...list} />
-          </Col>
-        ))}
-      </Row>
-    </>
+    <Row xs={1} md={2} lg={4} className="hidden md:flex gap-y-2 mt-1 flex-wrap">
+      {REFINEMENT_LISTS.map((list) => (
+        <Col
+          key={list.attribute}
+          className="w-full flex-0-0-auto md:w-1/2 992px:w-1/4 px-2 bootstrap"
+        >
+          <StyledFilter type={list.type} {...list} />
+        </Col>
+      ))}
+    </Row>
   );
 }
 

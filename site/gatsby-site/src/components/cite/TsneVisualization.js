@@ -125,7 +125,7 @@ const PlotPoint = ({
   const onLeft = clientPosition?.x < window.innerWidth / 2;
 
   return (
-    <>
+    <div className="bootstrap">
       <LocalizedLink
         id={'spatial-incident-' + incident.incident_id}
         to={'/cite/' + incident.incident_id}
@@ -227,7 +227,7 @@ const PlotPoint = ({
           )}
         </div>
       )}
-    </>
+    </div>
   );
 };
 
@@ -385,7 +385,7 @@ const TsneVisualization = ({ currentIncidentId }) => {
         <div style={{ display: 'flex', gap: '1em', alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', gap: '1em', alignItems: 'center' }}>
             <label htmlFor="color-axis-select">
-              <Trans>Color by editor’s classification</Trans>
+              <Trans>Color by incident classifications from taxonomies</Trans>
             </label>
             <Form.Select
               style={{ display: 'inline', width: 'unset' }}
