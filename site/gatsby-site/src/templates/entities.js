@@ -3,6 +3,7 @@ import LayoutHideSidebar from 'components/LayoutHideSidebar';
 import Container from 'elements/Container';
 import { graphql } from 'gatsby';
 import React, { useMemo } from 'react';
+import { Trans } from 'react-i18next';
 import { makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
 
 const incidentFields = [
@@ -49,7 +50,9 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
   return (
     <LayoutHideSidebar {...props}>
       <Container className="tw-container-xl mt-6">
-        <h1 className="text-5xl mt-6 font-extrabold dark:text-white">Entities</h1>
+        <h1 className="text-5xl mt-6 font-extrabold dark:text-white">
+          <Trans ns="entities">Entities</Trans>
+        </h1>
         <EntitiesTable data={entitiesData} className="mt-6" />
       </Container>
     </LayoutHideSidebar>

@@ -4,6 +4,7 @@ import { Form } from 'react-bootstrap';
 import { useExpanded, useFilters, useSortBy, useTable } from 'react-table';
 import { faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Trans, useTranslation } from 'react-i18next';
 
 function SortButton({ column, ...props }) {
   const { isSorted } = column;
@@ -26,6 +27,8 @@ function SortButton({ column, ...props }) {
 function DefaultColumnFilter({ column: { Header, filterValue, preFilteredRows, setFilter } }) {
   const count = preFilteredRows.length;
 
+  const { t } = useTranslation(['entities']);
+
   return (
     <Form.Control
       data-cy={`input-filter-${Header}`}
@@ -35,7 +38,7 @@ function DefaultColumnFilter({ column: { Header, filterValue, preFilteredRows, s
       onChange={(e) => {
         setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
       }}
-      placeholder={`Search ${count} records...`}
+      placeholder={t(`Search {{count}} records...`, { count })}
     />
   );
 }
@@ -45,7 +48,7 @@ function DefaultColumnHeader({ column, ...props }) {
     <div>
       <div className="flex justify-between items-center">
         <h6 className="whitespace-nowrap overflow-hidden text-ellipsis m-0" {...props}>
-          {column.title}
+          <Trans ns="entities">{column.title}</Trans>
         </h6>
         <SortButton column={column} {...column.getSortByToggleProps()} />
       </div>
@@ -68,7 +71,9 @@ function IncidentsCell({ cell }) {
   return (
     <div>
       <div className={`text-black flex justify-between ${row.isExpanded && 'pb-4'}`}>
-        {filtered.length} Incidents
+        <Trans ns="entities" count={filtered.length}>
+          {{ count: filtered.length }} Incident
+        </Trans>
       </div>
       {row.isExpanded && (
         <ul className="divide-y divide-gray-200 dark:divide-gray-700 max-h-240 -mx-4 border-t overflow-y-scroll">
@@ -79,9 +84,9 @@ function IncidentsCell({ cell }) {
                 to={`/cite/${incident.incident_id}`}
                 key={incident.incident_id}
               >
-                {incident.incident_id}
+                Incident {incident.incident_id}
               </Link>
-              <div className="inline text-black">{incident.title}</div>
+              <div className="text-black ml-1">{incident.title}</div>
             </li>
           ))}
         </ul>
@@ -104,7 +109,9 @@ function EntitiestCell({ cell }) {
   return (
     <div>
       <div className={`text-black flex justify-between ${row.isExpanded && 'pb-4'}`}>
-        {filtered.length} Entities
+        <Trans ns="entities" count={filtered.length}>
+          {{ count: filtered.length }} Entity
+        </Trans>
       </div>
       {row.isExpanded && (
         <ul className="divide-y divide-gray-200 dark:divide-gray-700 min-h-full max-h-240 -mx-4 border-t overflow-y-scroll">

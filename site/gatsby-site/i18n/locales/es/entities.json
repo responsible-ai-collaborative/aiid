@@ -1,7 +1,18 @@
 {
-    "Entities": "Entidates",
+    "Entities": "Entidades",
     "Common Entities": "Entidades comunes",
     "View all entities": "Ver todas las entidades",
     "Involved in <2>{{incidentsCount}}</2> incidents,": "Involucradas en <2>{{incidentsCount}} incidentes,",
-    "alledgely harming <2>{{harmedCount}}</2> entities.": "presuntamente afectando <2>{{harmedCount}} entidades."
+    "alledgely harming <2>{{harmedCount}}</2> entities.": "presuntamente afectando <2>{{harmedCount}} entidades.",
+    "{{count}} Incident": "{{count}} Incidente",
+    "{{count}} Incident_plural": "{{count}} Incidentes",
+    "{{count}} Entity": "{{count}} Entidad",
+    "{{count}} Entity_plural": "{{count}} Entidades",
+    "As Deployer and Developer": "Como Deployador y Desarrollador",
+    "As Deployer": "Como Deployador",
+    "As Developer": "Como Desarrollador",
+    "Harmed By": "Afectado Por",
+    "Related Entities": "Entidades Relacionadas",
+    "Search {{count}} records...": "Busca en {{count}} registros...",
+    "Entity": "Entidad"
 }
