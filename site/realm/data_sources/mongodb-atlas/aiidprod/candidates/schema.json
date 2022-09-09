@@ -41,8 +41,20 @@
         "language": {
             "bsonType": "string"
         },
+        "match": {
+            "bsonType": "boolean"
+        },
+        "matching_keywords": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
         "plain_text": {
             "bsonType": "string"
+        },
+        "similarity": {
+            "bsonType": "double"
         },
         "source_domain": {
             "bsonType": "string"
@@ -58,10 +70,8 @@
         }
     },
     "required": [
-        "title",
-        "text",
-        "plaintext",
-        "url"
+        "url",
+        "match"
     ],
     "title": "report"
 }
