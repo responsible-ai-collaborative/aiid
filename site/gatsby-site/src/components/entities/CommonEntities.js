@@ -35,10 +35,13 @@ export default function CommonEntities() {
 
   return (
     <Card>
-      <Card.Body>
-        <Card.Title as="h2">
+      <div className="flex justify-between p-4">
+        <h2>
           <Trans ns="landing">Common Entities</Trans>
-        </Card.Title>
+        </h2>
+        <Link to="/entities">View all entities</Link>
+      </div>
+      <Card.Body className="pt-0">
         <div className="grid sm:grid-cols-3 gap-2">
           {commonEntities.map((entity, index) => {
             const incidentsCount =
