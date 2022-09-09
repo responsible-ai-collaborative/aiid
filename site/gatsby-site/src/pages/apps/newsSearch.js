@@ -21,11 +21,7 @@ const NewsSearchPage = (props) => {
     }
   `);
 
-  console.log(newsArticlesData);
-
   const newsArticles = loading ? [] : [...newsArticlesData?.candidates];
-
-  console.log('newsArticles', newsArticles);
 
   return (
     <Layout {...props}>
@@ -37,24 +33,27 @@ const NewsSearchPage = (props) => {
           <Trans>News Search</Trans>
         </StyledHeading>
       </div>
-      <p>Sorted by textual similarity to existing reports in the database</p>
+      <p>
+        Stories from around the web matched by keywords and sorted by textual similarity to existing
+        reports in the database
+      </p>
       <div className="tw-card-set">
         {loading && <p>Searching...</p>}
         {newsArticles
           .sort((b, a) => a.similarity - b.similarity)
           .map((newsArticle) => (
-            <div className="tw-card tw-p-4" key={newsArticle.url}>
+            <div className="tw-card p-4" key={newsArticle.url}>
               <a href={newsArticle.url}>
-                <h3 className="tw-text-xl">{newsArticle.title}</h3>
+                <h3 className="text-xl">{newsArticle.title}</h3>
               </a>
               <p>
                 <strong>Similarity</strong>:{' '}
                 {newsArticle.similarity < 0.997 ? (
-                  <span className="tw-text-yellow-500">Minimal</span>
+                  <span className="text-yellow-500">Minimal</span>
                 ) : newsArticle.similarity < 0.9975 ? (
-                  <span className="tw-text-lime-500">Moderate</span>
+                  <span className="text-lime-500">Moderate</span>
                 ) : (
-                  <span className="tw-text-green-500">High</span>
+                  <span className="text-green-500">High</span>
                 )}{' '}
                 ({newsArticle.similarity})
               </p>
@@ -71,7 +70,7 @@ const NewsSearchPage = (props) => {
                 }
                 target="_blank"
               >
-                <button className="tw-btn-primary tw-btn tw-mt-4">Submit</button>
+                <button className="btn-primary btn mt-4">Submit</button>
               </LocalizedLink>
             </div>
           ))}
