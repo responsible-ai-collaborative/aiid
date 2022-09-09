@@ -1,0 +1,67 @@
+{
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "authors": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "date_downloaded": {
+            "bsonType": "string"
+        },
+        "date_published": {
+            "bsonType": "string"
+        },
+        "embedding": {
+            "bsonType": "object",
+            "properties": {
+                "from_text_hash": {
+                    "bsonType": "string"
+                },
+                "vector": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "double"
+                    }
+                }
+            }
+        },
+        "epoch_date_downloaded": {
+            "bsonType": "int"
+        },
+        "epoch_date_published": {
+            "bsonType": "int"
+        },
+        "image_url": {
+            "bsonType": "string"
+        },
+        "language": {
+            "bsonType": "string"
+        },
+        "plain_text": {
+            "bsonType": "string"
+        },
+        "source_domain": {
+            "bsonType": "string"
+        },
+        "text": {
+            "bsonType": "string"
+        },
+        "title": {
+            "bsonType": "string"
+        },
+        "url": {
+            "bsonType": "string"
+        }
+    },
+    "required": [
+        "title",
+        "text",
+        "plaintext",
+        "url"
+    ],
+    "title": "report"
+}
