@@ -34,18 +34,22 @@ export default function CommonEntities() {
   ).current;
 
   return (
-    <Card>
+    <Card data-cy="common-entities ">
       <div className="flex justify-between p-4">
         <h2>
-          <Trans ns="landing">Common Entities</Trans>
+          <Trans ns="entities">Common Entities</Trans>
         </h2>
-        <Link to="/entities">View all entities</Link>
+        <Link to="/entities" ns="entities">
+          <Trans ns="entities">View all entities</Trans>
+        </Link>
       </div>
       <Card.Body className="pt-0">
         <div className="grid sm:grid-cols-3 gap-2">
           {commonEntities.map((entity, index) => {
             const incidentsCount =
               entity.incidentsAsBoth.length + entity.incidentsAsDeployer.length;
+
+            const harmedCount = entity.harmedEntities.length;
 
             return (
               <div
@@ -60,25 +64,29 @@ export default function CommonEntities() {
                 </Link>
                 <ul>
                   <li>
-                    Involved in{' '}
-                    <span className="font-semibold text-gray-900 dark:text-white">
-                      {incidentsCount}
-                    </span>{' '}
-                    incidents,
+                    <Trans ns="entities">
+                      Involved in{' '}
+                      <span className="font-semibold text-gray-900 dark:text-white">
+                        {{ incidentsCount }}
+                      </span>{' '}
+                      incidents,
+                    </Trans>
                   </li>
                   <li>
-                    alledgely harming{' '}
-                    <span className="font-semibold text-gray-900 dark:text-white">
-                      {entity.harmedEntities.length}
-                    </span>{' '}
-                    entities.
+                    <Trans ns="entities">
+                      alledgely harming{' '}
+                      <span className="font-semibold text-gray-900 dark:text-white">
+                        {{ harmedCount }}
+                      </span>{' '}
+                      entities.
+                    </Trans>
                   </li>
                 </ul>
                 <Link
                   className="mt-4 inline-flex items-center py-2 px-3 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   to={`/entities/${entity.id}`}
                 >
-                  More
+                  <Trans>More</Trans>
                   <svg
                     aria-hidden="true"
                     className="ml-2 -mr-1 w-4 h-4"
