@@ -40,6 +40,7 @@ module.exports.computeEntities = ({ incidents }) => {
             incidentsAsBoth: [],
             relatedEntities: [],
             incidentsHarmedBy: [],
+            harmedEntities: [],
           };
         }
 
@@ -71,9 +72,7 @@ module.exports.computeEntities = ({ incidents }) => {
   for (const id in entititiesHash) {
     entititiesHash[id].relatedEntities = incidents
       .filter((incident) =>
-        entityFields.some((field) =>
-          incident[field.property].map((p) => slugify(p, { lower: true })).includes(id)
-        )
+        entityFields.some((field) => incident[field.property].map((p) => getId(p)).includes(id))
       )
       .reduce((related, incident) => {
         for (const field of entityFields) {
@@ -87,6 +86,28 @@ module.exports.computeEntities = ({ incidents }) => {
         }
 
         return related;
+      }, []);
+
+    entititiesHash[id].harmedEntities = incidents
+      .filter((incident) =>
+        [
+          ...entititiesHash[id].incidentsAsBoth,
+          ...entititiesHash[id].incidentsAsDeployer,
+          ...entititiesHash[id].incidentsAsDeveloper,
+        ].includes(incident.incident_id)
+      )
+      .reduce((harmed, incident) => {
+        for (const property of harmedProperties) {
+          for (const name of incident[property]) {
+            const harmedId = getId(name);
+
+            if (harmedId !== id && !harmed.some((r) => r == harmedId)) {
+              harmed.push(harmedId);
+            }
+          }
+        }
+
+        return harmed;
       }, []);
   }
 
