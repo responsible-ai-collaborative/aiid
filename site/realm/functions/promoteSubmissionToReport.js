@@ -111,5 +111,5 @@ exports = async (input) => {
 
   await submissions.deleteOne({ _id: input.submission_id });
 
-  return incidents.find({ incident_id: { $in: incident_ids } }, { incident_id: 1, reports: 1 }).toArray();
+  return incidents.find({ incident_id: { $in: incident_ids } }, { incident_id: 1, title: 1, reports: 1 }).toArray();
 };
