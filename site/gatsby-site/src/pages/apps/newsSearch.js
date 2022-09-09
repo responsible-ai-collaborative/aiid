@@ -5,6 +5,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import AiidHelmet from 'components/AiidHelmet';
 import { gql, useQuery } from '@apollo/client';
+import { Card, Button, Badge } from 'flowbite-react';
+import { format, parse } from 'date-fns';
 
 const NewsSearchPage = (props) => {
   const { t } = useTranslation(['submit']);
@@ -17,6 +19,7 @@ const NewsSearchPage = (props) => {
         similarity
         matching_keywords
         text
+        date_published
       }
     }
   `);
@@ -40,39 +43,67 @@ const NewsSearchPage = (props) => {
       <div className="tw-card-set">
         {loading && <p>Searching...</p>}
         {newsArticles
+          .filter(
+            (newsArticle) =>
+              !newsArticle.date_published ||
+              (new Date().getTime() -
+                parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()).getTime()) /
+                (1000 * 60 * 60 * 24) <
+                30
+          )
           .sort((b, a) => a.similarity - b.similarity)
           .map((newsArticle) => (
-            <div className="tw-card p-4" key={newsArticle.url}>
-              <a href={newsArticle.url}>
-                <h3 className="text-xl">{newsArticle.title}</h3>
-              </a>
-              <p>
-                <strong>Similarity</strong>:{' '}
-                {newsArticle.similarity < 0.997 ? (
-                  <span className="text-yellow-500">Minimal</span>
-                ) : newsArticle.similarity < 0.9975 ? (
-                  <span className="text-lime-500">Moderate</span>
-                ) : (
-                  <span className="text-green-500">High</span>
-                )}{' '}
-                ({newsArticle.similarity})
-              </p>
-              <p>
-                <strong>Matching Keywords</strong>:{' '}
-                {newsArticle.matching_keywords.map((keyword) => keyword.trim()).join(', ')}
-              </p>
-              <LocalizedLink
-                to={
-                  '/apps/submit?' +
-                  ['url', 'title', 'text']
-                    .map((e) => `${e}=${encodeURIComponent(newsArticle[e])}`)
-                    .join('&')
-                }
-                target="_blank"
-              >
-                <button className="btn-primary btn mt-4">Submit</button>
-              </LocalizedLink>
-            </div>
+            <Card
+              style={{ justifyContent: 'flex-start' }}
+              className="gap-0"
+              key={newsArticle.incident_id}
+            >
+              <div>
+                <a href={newsArticle.url}>
+                  <h3 className="text-xl mt-0 mb-0">{newsArticle.title}</h3>
+                </a>
+                <div className="text-lg text-gray-600 my-2">
+                  {format(
+                    parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()),
+                    'MMM d, yyyy'
+                  )}
+                </div>
+                <div className="flex">
+                  {newsArticle.similarity < 0.997 ? (
+                    <Badge color="warning" title={'cosine similarity: ' + newsArticle.similarity}>
+                      Weak match
+                    </Badge>
+                  ) : newsArticle.similarity < 0.9975 ? (
+                    <Badge color="success" title={'cosine similarity: ' + newsArticle.similarity}>
+                      Match
+                    </Badge>
+                  ) : (
+                    <Badge color="success" title={'cosine similarity: ' + newsArticle.similarity}>
+                      Strong match
+                    </Badge>
+                  )}{' '}
+                  {newsArticle.matching_keywords.map((keyword) => (
+                    <span className="inline-block ml-1 mr-1" key={keyword}>
+                      <Badge>{keyword}</Badge>
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="mt-auto flex justify-end">
+                <LocalizedLink
+                  to={
+                    '/apps/submit?' +
+                    ['url', 'title', 'text']
+                      .map((e) => `${e}=${encodeURIComponent(newsArticle[e])}`)
+                      .join('&')
+                  }
+                  target="_blank"
+                  className="inline"
+                >
+                  <Button>Submit</Button>
+                </LocalizedLink>
+              </div>
+            </Card>
           ))}
       </div>
     </Layout>
