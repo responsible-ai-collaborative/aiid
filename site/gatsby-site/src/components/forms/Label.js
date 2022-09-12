@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { OverlayTrigger, Form, Popover } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { OverlayTrigger } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
@@ -12,12 +12,16 @@ const Label = ({ popover, label }) => {
   const { i18n } = useTranslation(['popovers']);
 
   if (!i18n.exists(popover, { ns: 'popovers' })) {
-    return <Form.Label>{label} :</Form.Label>;
+    return (
+      <label className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 relative">
+        {label}
+      </label>
+    );
   }
 
   const Tooltip = (
     <div
-      className="inline-block absolute z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm tooltip dark:bg-gray-700 max-w-xs bottom-2 imtooltip left-0"
+      className="inline-block absolute z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm tooltip dark:bg-gray-700 max-w-xs bottom-2 imtooltip"
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
     >
@@ -25,7 +29,7 @@ const Label = ({ popover, label }) => {
         <Trans ns="popovers" i18nKey={`${popover}.title`} />
       </h5>
       <Trans ns="popovers" i18nKey={`${popover}.text`} components={{ linkto: <Link /> }} />
-      <div className="tooltip-arrow right-28" data-popper-arrow></div>
+      <div className="tooltip-arrow left-4 sm:left-1/2" data-popper-arrow></div>
     </div>
   );
 
@@ -37,7 +41,10 @@ const Label = ({ popover, label }) => {
         {...(show ? { show } : {})}
         delay={{ show: 0, hide: 300 }}
       >
-        <Form.Label data-cy={`label-${popover}`} className="relative">
+        <label
+          data-cy={`label-${popover}`}
+          className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 relative"
+        >
           {label}{' '}
           <FontAwesomeIcon
             icon={faQuestionCircle}
@@ -45,8 +52,7 @@ const Label = ({ popover, label }) => {
             className="far fa-question-circle"
             onClick={() => setShow(!show)}
           />{' '}
-          :
-        </Form.Label>
+        </label>
       </OverlayTrigger>
     </>
   );
@@ -78,22 +84,5 @@ Label.defaultProps = {
   placement: 'top',
   trigger: ['hover', 'focus'],
 };
-
-// This is used to force the popover to re-render to adjust correctly to the label's position
-const UpdatingPopover = React.forwardRef(({ popper, children, ...props }, ref) => {
-  useEffect(() => {
-    setTimeout(() => {
-      popper.scheduleUpdate();
-    }, 0);
-  }, [children, popper]);
-
-  return (
-    <Popover ref={ref} {...props}>
-      {children}
-    </Popover>
-  );
-});
-
-UpdatingPopover.displayName = 'UpdatingPopover';
 
 export default Label;

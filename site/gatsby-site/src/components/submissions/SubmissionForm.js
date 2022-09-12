@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Form, Button, Spinner } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { useFormikContext } from 'formik';
 import * as yup from 'yup';
 import TextInputGroup from 'components/forms/TextInputGroup';
@@ -18,6 +18,8 @@ import supportedLanguages from 'components/i18n/languages.json';
 import { Trans, useTranslation } from 'react-i18next';
 import RelatedIncidents from 'components/RelatedIncidents';
 import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
+import { Select } from 'flowbite-react';
+import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -228,33 +230,20 @@ const SubmissionForm = () => {
 
   return (
     <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
-      <TextInputGroup
+      <Label label={t('Report Address')} popover="url"></Label>
+      <FlowbiteSearchInput
         name="url"
         label={t('Report Address')}
         placeholder={t('Report URL')}
-        addOnComponent={
-          <Button
-            className="outline-secondary"
-            disabled={!!errors.url || !touched.url || parsingNews}
-            onClick={() => parseNewsUrl(values.url)}
-            data-cy="fetch-info"
-          >
-            {' '}
-            {!parsingNews ? (
-              <Trans ns="submit">Fetch info</Trans>
-            ) : (
-              <>
-                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />{' '}
-                <Trans>Fetching...</Trans>
-              </>
-            )}
-          </Button>
-        }
         {...TextInputGroupProps}
         handleChange={(e) => {
           setFieldTouched('url', true);
           TextInputGroupProps.handleChange(e);
         }}
+        btnClick={() => parseNewsUrl(values.url)}
+        loading={parsingNews}
+        btnDisabled={!!errors.url || !touched.url || parsingNews}
+        btnText={t('Fetch info')}
       />
       <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
 
@@ -269,7 +258,7 @@ const SubmissionForm = () => {
       <TextInputGroup
         name="description"
         label="Description"
-        as="textarea"
+        type="textarea"
         placeholder="Report Description"
         rows={3}
         className="mt-3"
@@ -383,7 +372,7 @@ const SubmissionForm = () => {
 
       <Form.Group className="mt-3">
         <Label popover="language" label={t('Language')} />
-        <Form.Select
+        <Select
           name="language"
           placeholder={t('Report Language')}
           value={values.language}
@@ -394,7 +383,7 @@ const SubmissionForm = () => {
               {l.name}
             </option>
           ))}
-        </Form.Select>
+        </Select>
       </Form.Group>
 
       <Form.Group className="mt-3">
@@ -430,7 +419,7 @@ const SubmissionForm = () => {
       <TextInputGroup
         name="editor_notes"
         label={t('Editor Notes')}
-        as="textarea"
+        type="textarea"
         placeholder={t('Optional context and notes about the incident')}
         rows={8}
         className="mt-3"
