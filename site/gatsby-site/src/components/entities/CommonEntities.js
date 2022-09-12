@@ -34,7 +34,7 @@ export default function CommonEntities() {
   ).current;
 
   return (
-    <Card data-cy="common-entities ">
+    <Card data-cy="common-entities">
       <div className="flex justify-between p-4">
         <h2>
           <Trans ns="entities">Common Entities</Trans>
