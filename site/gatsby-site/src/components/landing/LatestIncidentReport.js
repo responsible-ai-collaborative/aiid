@@ -11,7 +11,7 @@ const LatestIncidentReport = ({ report }) => {
   const { image_url, cloudinary_id, title, text, epoch_date_submitted, incident_id } = report;
 
   return (
-    <div className="flex flex-col items-center bg-white rounded-lg border border-primary-blue shadow-sm shadow-primary-blue md:flex-row dark:border-gray-700 dark:bg-gray-800">
+    <div className="flex flex-col items-center bg-white rounded-lg border  shadow-md md:flex-row dark:border-gray-700 dark:bg-gray-800">
       <div className="flex self-stretch justify-center items-center border-r">
         <LocalizedLink to={`/cite/${incident_id}`} className="text-primary-blue max-w-full">
           <Image
@@ -28,9 +28,6 @@ const LatestIncidentReport = ({ report }) => {
         <LocalizedLink to={`/cite/${incident_id}`} className="max-w-full cursor-pointer">
           <h5 className="text-base font-bold tracking-tight text-gray-900 dark:text-white relative block hover:text-primary-blue">
             {title}
-            <span className="bg-blue-100 text-blue-800 text-sm font-semibold ml-2 px-1.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-900">
-              <Trans ns="landing">Latest Incident Report</Trans>
-            </span>
           </h5>
         </LocalizedLink>
         <span className="text-sm text-gray-500 dark:text-gray-400">

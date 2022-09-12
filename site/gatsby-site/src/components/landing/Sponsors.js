@@ -5,6 +5,8 @@ import { Trans } from 'react-i18next';
 import { StyledImage, StyledImageModal, StyledImageCover } from '../../elements/StyledImage';
 import sponsors from './sponsors.json';
 import { Button, Card, Modal } from 'flowbite-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faQuoteLeft } from '@fortawesome/free-solid-svg-icons';
 
 const SponsorModal = ({
   setModalState,
@@ -54,20 +56,27 @@ export default function Sponsors() {
         </h5>
         <div className="flex gap-10 flex-wrap">
           <div className="flex-1 flex gap-6 flex-col">
-            <p className="italic">
-              <Trans i18nKey="raicDescription" ns="landing">
-                The AI Incident Database is a project of the Responsible AI Collaborative, an
-                organization chartered to advance the AI Incident Database. The governance of the
-                Collaborative is architected around the participation in its impact programming. For
-                more details, we invite you to read the{' '}
-                <a href="https://docsend.com/view/a45p7mgh44nu8x7j">founding report</a> and learn
-                more on our <Link to="/about?lang=en#boardofdirectors">board and contributors</Link>
-                .
-              </Trans>
-            </p>
-            <a href="https://docsend.com/view/a45p7mgh44nu8x7j" target="_blank" rel="noreferrer">
-              <StyledImageCover src="/images/reportcover.png" className="border-1" />
-            </a>
+            <span className="relative z-2 pt-8">
+              <FontAwesomeIcon
+                icon={faQuoteLeft}
+                className="text-gray-300 absolute -z-2 opacity-50 -top-0"
+                size="5x"
+              />
+              <p className="italic">
+                <Trans i18nKey="raicDescription" ns="landing">
+                  The AI Incident Database is a project of the Responsible AI Collaborative, an
+                  organization chartered to advance the AI Incident Database. The governance of the
+                  Collaborative is architected around the participation in its impact programming.
+                  For more details, we invite you to read the{' '}
+                  <a href="https://docsend.com/view/a45p7mgh44nu8x7j">founding report</a> and learn
+                  more on our{' '}
+                  <Link to="/about?lang=en#boardofdirectors">board and contributors</Link>.
+                </Trans>
+              </p>
+              <a href="https://docsend.com/view/a45p7mgh44nu8x7j" target="_blank" rel="noreferrer">
+                <StyledImageCover src="/images/reportcover.png" className="border-1" />
+              </a>
+            </span>
           </div>
           <div className="flex justify-center items-center gap-6 flex-nowrap flex-col flex-1 min-w-[300px]">
             {sponsors.map((sponsor) => {

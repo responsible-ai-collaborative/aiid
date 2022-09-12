@@ -8,7 +8,7 @@ import { LocalizedLink } from 'gatsby-theme-i18n';
 export default function Featured() {
   return (
     <>
-      <div className="flex flex-col">
+      <div className="flex flex-col items-center">
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           <Trans ns="landing">Incident Report Submission Leaderboards</Trans>
         </h5>
@@ -19,7 +19,7 @@ export default function Featured() {
             <LocalizedLink to="/summaries/leaderboard">leaderboard page.</LocalizedLink>
           </Trans>
         </p>
-        <div className="flex justify-center items-center gap-6 flex-wrap">
+        <div className="flex justify-center items-center gap-6 flex-wrap w-full">
           <OriginalSubmitersLeaderboard limit={3} className="flex-1-1-auto" />
           <UniqueSubmittersLeaderboard limit={3} className="flex-1-1-auto" />
           <SubmittersLeaderboard limit={3} className="flex-1-1-auto" />
