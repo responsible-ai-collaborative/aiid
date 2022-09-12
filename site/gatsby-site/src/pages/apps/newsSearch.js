@@ -171,8 +171,6 @@ const NewsSearchPage = (props) => {
 
   const [dismissedArticles, setDismissedArticles] = useState({});
 
-  console.log(dismissedArticles);
-
   const displayedDismissed = newsArticles.filter(
     (newsArticle) =>
       (newsArticle.dismissed && dismissedArticles[newsArticle.url] === undefined) ||
