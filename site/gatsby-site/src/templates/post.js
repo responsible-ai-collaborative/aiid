@@ -1,6 +1,6 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
-import { graphql, Link } from 'gatsby';
+import { graphql } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 import { MDXProvider } from '@mdx-js/react';
 import Layout from 'components/Layout';
@@ -11,6 +11,7 @@ import SocialShareButtons from 'components/ui/SocialShareButtons';
 import MdxComponents from 'components/ui/MdxComponents';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import { Trans } from 'react-i18next';
+import Link from 'components/ui/Link';
 
 export default function Post(props) {
   const {
@@ -33,12 +34,12 @@ export default function Post(props) {
       <div className={'titleWrapper'}>
         <StyledHeading>{mdx.fields.title}</StyledHeading>
 
-        <div className="d-inline-block pb-2">
+        <div className="inline-block pb-2">
           <span>{format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')}</span>
           {mdx.frontmatter.aiTranslated && (
             <>
-              <TranslationBadge className="ms-2" />
-              <Link className="ms-2" to={mdx.frontmatter.slug}>
+              <TranslationBadge className="ml-2" />
+              <Link className="ml-2" to={mdx.frontmatter.slug}>
                 <Trans>View Original</Trans>
               </Link>
             </>
