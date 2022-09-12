@@ -8,11 +8,11 @@ exports = async (input) => {
 
   const parentIncidents = await incidents.find({ incident_id: { $in: input.incident_ids } }).toArray();
 
-  const report_number = (await reports.find({}, { report_number: 1 }).sort({ report_number: -1 }).limit(1).next()).report_number + 1;
+  const report_number = (await reports.find({}).sort({ report_number: -1 }).limit(1).next()).report_number + 1;
 
   if (parentIncidents.length == 0) {
 
-    const lastIncident = await incidents.find({}, { incident_id: 1 }).sort({ incident_id: -1 }).limit(1).next();
+    const lastIncident = await incidents.find({}).sort({ incident_id: -1 }).limit(1).next();
 
     const newIncident = {
       title: submission.title,
@@ -111,5 +111,5 @@ exports = async (input) => {
 
   await submissions.deleteOne({ _id: input.submission_id });
 
-  return incidents.find({ incident_id: { $in: incident_ids } }, { incident_id: 1, title: 1, reports: 1 }).toArray();
+  return incidents.find({ incident_id: { $in: incident_ids } }).toArray();
 };
