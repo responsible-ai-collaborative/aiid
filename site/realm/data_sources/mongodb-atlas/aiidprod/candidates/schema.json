@@ -15,6 +15,9 @@
         "date_published": {
             "bsonType": "string"
         },
+        "dismissed": {
+            "bsonType": "boolean"
+        },
         "embedding": {
             "bsonType": "object",
             "properties": {
