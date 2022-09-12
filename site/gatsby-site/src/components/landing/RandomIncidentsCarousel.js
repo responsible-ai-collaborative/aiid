@@ -53,22 +53,24 @@ const RandomIncidentsCarousel = () => {
           }));
 
         return (
-          <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
-            <Carousel slideInterval={6000} slide={false}>
-              {randomIncidents.map(({ id, incident_id, title, image_url, cloudinary_id }) => (
-                <Link to={`/cite/${incident_id}`} key={id} className="h-full">
-                  <h5 className="text-sm sm:text-lg font-bold tracking-tight text-gray-900 dark:text-white">
-                    {title}
-                  </h5>
-                  <Image
-                    publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
-                    alt={title}
-                    transformation={fill().height(480)}
-                    plugins={[]}
-                  />
-                </Link>
-              ))}
-            </Carousel>
+          <div className="flex-1 flex justify-center items-center">
+            <div className="h-56 sm:h-64 xl:h-80 2xl:h-96 w-full">
+              <Carousel slideInterval={6000} slide={false}>
+                {randomIncidents.map(({ id, incident_id, title, image_url, cloudinary_id }) => (
+                  <Link to={`/cite/${incident_id}`} key={id} className="h-full">
+                    <h5 className="text-sm sm:text-lg font-bold tracking-tight text-gray-900 dark:text-white">
+                      {title}
+                    </h5>
+                    <Image
+                      publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
+                      alt={title}
+                      transformation={fill().height(480)}
+                      plugins={[]}
+                    />
+                  </Link>
+                ))}
+              </Carousel>
+            </div>
           </div>
         );
       }}
