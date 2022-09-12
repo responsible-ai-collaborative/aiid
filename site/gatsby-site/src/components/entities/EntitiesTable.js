@@ -24,14 +24,14 @@ function SortButton({ column, ...props }) {
   );
 }
 
-function DefaultColumnFilter({ column: { Header, filterValue, preFilteredRows, setFilter } }) {
+function DefaultColumnFilter({ column: { title, filterValue, preFilteredRows, setFilter } }) {
   const count = preFilteredRows.length;
 
   const { t } = useTranslation(['entities']);
 
   return (
     <Form.Control
-      data-cy={`input-filter-${Header}`}
+      data-cy={`input-filter-${title}`}
       className="w-100 mt-4"
       type="text"
       value={filterValue || ''}
@@ -148,11 +148,15 @@ const entitiesFilter = (rows, [field], value) =>
     );
   });
 
+const entityFilter = (rows, _, value) => {
+  return rows.filter((row) => row.original.name.toLowerCase().includes(value.toLowerCase()));
+};
+
 const sortByCount = (rowA, rowB, id) => {
   return rowA.values[id].length - rowB.values[id].length;
 };
 
-export default function EntitiesTable({ data, className = '' }) {
+export default function EntitiesTable({ data, className = '', ...props }) {
   const defaultColumn = React.useMemo(
     () => ({
       Filter: DefaultColumnFilter,
@@ -205,6 +209,7 @@ export default function EntitiesTable({ data, className = '' }) {
             </a>
           </>
         ),
+        filter: entityFilter,
       },
       {
         title: 'As Deployer and Developer',
@@ -264,7 +269,7 @@ export default function EntitiesTable({ data, className = '' }) {
   );
 
   return (
-    <div className={`max-w-full ${className}`}>
+    <div className={`max-w-full ${className}`} {...props}>
       {/* eslint-disable react/jsx-key */}
 
       <div className="max-w-full overflow-x-scroll">
@@ -279,6 +284,7 @@ export default function EntitiesTable({ data, className = '' }) {
                   <th
                     {...column.getHeaderProps()}
                     className={`${column.width} py-3 px-4 border-none`}
+                    data-cy={`header-${column.id}`}
                   >
                     {column.render('Header')}
                   </th>
@@ -297,12 +303,14 @@ export default function EntitiesTable({ data, className = '' }) {
                       ? 'bg-gray-50 dark:bg-gray-800 dark:border-gray-700'
                       : 'bg-white dark:bg-gray-900 dark:border-gray-700'
                   }`}
+                  data-cy={`row-${row.values.id}`}
                 >
                   {row.cells.map((cell) => {
                     return (
                       <td
                         {...cell.getCellProps()}
                         className={`${cell.column.width} py-3 px-4 border-none align-top h-full`}
+                        data-cy={`cell-${cell.column.id}`}
                       >
                         {cell.render('Cell')}
                       </td>

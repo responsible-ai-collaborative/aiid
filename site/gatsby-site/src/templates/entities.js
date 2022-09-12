@@ -53,7 +53,7 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
         <h1 className="text-5xl mt-6 font-extrabold dark:text-white">
           <Trans ns="entities">Entities</Trans>
         </h1>
-        <EntitiesTable data={entitiesData} className="mt-6" />
+        <EntitiesTable data={entitiesData} className="mt-6" data-cy="entities" />
       </Container>
     </LayoutHideSidebar>
   );
