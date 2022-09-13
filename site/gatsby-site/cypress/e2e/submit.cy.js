@@ -37,7 +37,7 @@ describe('The Submit form', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'InsertSubmission',
-      'submitReport',
+      'insertSubmission',
       {
         data: {
           insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
@@ -47,7 +47,7 @@ describe('The Submit form', () => {
 
     cy.get('button[type="submit"]').click();
 
-    cy.wait('@submitReport').then((xhr) => {
+    cy.wait('@insertSubmission').then((xhr) => {
       expect(xhr.request.body.variables.submission).to.deep.nested.include({
         title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
         submitters: ['Something'],
@@ -98,7 +98,7 @@ describe('The Submit form', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'InsertSubmission',
-      'submitReport',
+      'insertSubmission',
       {
         data: {
           insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
@@ -108,7 +108,7 @@ describe('The Submit form', () => {
 
     cy.get('button[type="submit"]').click();
 
-    cy.wait('@submitReport').then((xhr) => {
+    cy.wait('@insertSubmission').then((xhr) => {
       expect(xhr.request.body.variables.submission).to.deep.include({
         title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
         submitters: ['Something'],
