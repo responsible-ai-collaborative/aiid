@@ -1,4 +1,4 @@
-const TEMPLATE_ID = "d-bc63fc7a96604d02ae60b49636633840";
+const TEMPLATE_ID = "d-bc63fc7a96604d02ae60b49636633840"; // SendGrid Template name: "Confirm email"
 const SENDER = "notifications@incidentdatabase.ai";
 
 exports = async ({ token, tokenId, username }) => {
