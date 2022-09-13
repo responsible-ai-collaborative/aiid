@@ -385,7 +385,7 @@ const TsneVisualization = ({ currentIncidentId }) => {
         <div style={{ display: 'flex', gap: '1em', alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', gap: '1em', alignItems: 'center' }}>
             <label htmlFor="color-axis-select">
-              <Trans>Color by editor’s classification</Trans>
+              <Trans>Color by incident classifications from taxonomies</Trans>
             </label>
             <Form.Select
               style={{ display: 'inline', width: 'unset' }}

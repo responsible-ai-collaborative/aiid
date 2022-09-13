@@ -179,7 +179,7 @@ const SubmitForm = () => {
 
             <Button
               onClick={submitForm}
-              className="mt-3"
+              className="mt-3 bootstrap"
               variant="primary"
               type="submit"
               disabled={isSubmitting}
@@ -191,7 +191,7 @@ const SubmitForm = () => {
       </Formik>
 
       {isRole('submitter') && (
-        <Container className="mt-5 p-0">
+        <Container className="mt-5 p-0 bootstrap">
           <h2>
             <Trans ns="submit">Advanced: Add by CSV</Trans>
           </h2>
@@ -205,7 +205,7 @@ const SubmitForm = () => {
           <p>
             Record {csvIndex + 1} of {csvData.length}
           </p>
-          <div className="d-flex justify-content-center my-3">
+          <div className="flex justify-center my-3">
             <Button className="me-4" onClick={previousRecord}>
               &lt; <Trans>Previous</Trans>
             </Button>

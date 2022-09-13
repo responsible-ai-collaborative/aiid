@@ -37,36 +37,38 @@ export default function IncidentIdField({
   }, []);
 
   return (
-    <Form.Group className={className}>
-      <Label popover={name} label={t('Incident ID')} />
-      <Form.Control
-        type="number"
-        name={name}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        onWheel={(event) => event.currentTarget.blur()}
-        isInvalid={!!error}
-        placeholder={placeHolder}
-      />
-      <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
+    <div className="bootstrap">
+      <Form.Group className={className + ' bootstrap'}>
+        <Label popover={name} label={'Incident ID'} />
+        <Form.Control
+          type="number"
+          name={name}
+          value={value}
+          onChange={onChange}
+          onBlur={onBlur}
+          onWheel={(event) => event.currentTarget.blur()}
+          isInvalid={!!error}
+          placeholder={placeHolder}
+        />
+        <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
 
-      {showIncidentData && value !== '' && !error && (
-        <div className="pt-1">
-          {loadingIncident && (
-            <div className="small">
-              <Trans>Searching...</Trans>
-            </div>
-          )}
+        {showIncidentData && value !== '' && !error && (
+          <div className="pt-1">
+            {loadingIncident && (
+              <div className="small">
+                <Trans>Searching...</Trans>
+              </div>
+            )}
 
-          {incident?.incident && (
-            <>
-              <div className="small">{incident.incident.date}</div>
-              <a href={`/cite/${incident.incident.incident_id}`}> {incident.incident.title}</a>
-            </>
-          )}
-        </div>
-      )}
-    </Form.Group>
+            {incident?.incident && (
+              <>
+                <div className="small">{incident.incident.date}</div>
+                <a href={`/cite/${incident.incident.incident_id}`}> {incident.incident.title}</a>
+              </>
+            )}
+          </div>
+        )}
+      </Form.Group>
+    </div>
   );
 }

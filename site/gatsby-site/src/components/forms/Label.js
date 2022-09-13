@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { OverlayTrigger, Form, Popover } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
@@ -15,32 +15,43 @@ const Label = ({ popover, label }) => {
     return <Form.Label>{label} :</Form.Label>;
   }
 
+  const ref = useRef(null);
+
   return (
-    <OverlayTrigger
-      placement={'top'}
-      overlay={
-        <Popover data-cy={`popover-${popover}`}>
-          <Popover.Header as="h3">
-            <Trans ns="popovers" i18nKey={`${popover}.title`} />
-          </Popover.Header>
-          <Popover.Body>
-            <Trans ns="popovers" i18nKey={`${popover}.text`} components={{ linkto: <Link /> }} />
-          </Popover.Body>
-        </Popover>
-      }
-      {...(show ? { show } : {})}
-    >
-      <Form.Label data-cy={`label-${popover}`}>
-        {label}{' '}
-        <FontAwesomeIcon
-          icon={faQuestionCircle}
-          style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-          className="far fa-question-circle"
-          onClick={() => setShow(!show)}
-        />{' '}
-        :
-      </Form.Label>
-    </OverlayTrigger>
+    <>
+      <div className="bootstrap" ref={ref}>
+        <OverlayTrigger
+          placement={'top'}
+          container={ref}
+          overlay={
+            <UpdatingPopover data-cy={`popover-${popover}`}>
+              <Popover.Header as="h3">
+                <Trans ns="popovers" i18nKey={`${popover}.title`} />
+              </Popover.Header>
+              <Popover.Body>
+                <Trans
+                  ns="popovers"
+                  i18nKey={`${popover}.text`}
+                  components={{ linkto: <Link /> }}
+                />
+              </Popover.Body>
+            </UpdatingPopover>
+          }
+          {...(show ? { show } : {})}
+        >
+          <Form.Label data-cy={`label-${popover}`} className="relative">
+            {label}{' '}
+            <FontAwesomeIcon
+              icon={faQuestionCircle}
+              style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+              className="far fa-question-circle"
+              onClick={() => setShow(!show)}
+            />{' '}
+            :
+          </Form.Label>
+        </OverlayTrigger>
+      </div>
+    </>
   );
 };
 
@@ -70,5 +81,22 @@ Label.defaultProps = {
   placement: 'top',
   trigger: ['hover', 'focus'],
 };
+
+// This is used to force the popover to re-render to adjust correctly to the label's position
+const UpdatingPopover = React.forwardRef(({ popper, children, ...props }, ref) => {
+  useEffect(() => {
+    setTimeout(() => {
+      popper.scheduleUpdate();
+    }, 0);
+  }, [children, popper]);
+
+  return (
+    <Popover ref={ref} {...props}>
+      {children}
+    </Popover>
+  );
+});
+
+UpdatingPopover.displayName = 'UpdatingPopover';
 
 export default Label;

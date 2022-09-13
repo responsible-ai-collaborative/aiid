@@ -71,45 +71,47 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
   };
 
   return (
-    <Modal size="lg" show={show} data-cy="submission-modal">
-      <Modal.Header closeButton onHide={onHide}>
-        <Modal.Title>Edit Submission</Modal.Title>
-      </Modal.Header>
-      {loading && (
-        <Modal.Body>
-          <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-        </Modal.Body>
-      )}
-      {!loading && data?.submission && (
-        <Formik
-          validationSchema={schema}
-          onSubmit={handleSubmit}
-          initialValues={{
-            ...data.submission,
-            incident_id: data.submission.incident_id == 0 ? '' : data.submission.incident_id,
-          }}
-        >
-          {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
-            <>
-              <Modal.Body>
-                <SubmissionForm />
-                <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  onClick={submitForm}
-                  className="mt-3"
-                  variant="primary"
-                  type="submit"
-                  disabled={isSubmitting || !isValid}
-                >
-                  Update
-                </Button>
-              </Modal.Footer>
-            </>
-          )}
-        </Formik>
-      )}
-    </Modal>
+    <div className="bootstrap">
+      <Modal size="lg" show={show} data-cy="submission-modal">
+        <Modal.Header closeButton onHide={onHide}>
+          <Modal.Title>Edit Submission</Modal.Title>
+        </Modal.Header>
+        {loading && (
+          <Modal.Body>
+            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+          </Modal.Body>
+        )}
+        {!loading && data?.submission && (
+          <Formik
+            validationSchema={schema}
+            onSubmit={handleSubmit}
+            initialValues={{
+              ...data.submission,
+              incident_id: data.submission.incident_id == 0 ? '' : data.submission.incident_id,
+            }}
+          >
+            {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
+              <>
+                <Modal.Body>
+                  <SubmissionForm />
+                  <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    onClick={submitForm}
+                    className="mt-3"
+                    variant="primary"
+                    type="submit"
+                    disabled={isSubmitting || !isValid}
+                  >
+                    Update
+                  </Button>
+                </Modal.Footer>
+              </>
+            )}
+          </Formik>
+        )}
+      </Modal>
+    </div>
   );
 }
