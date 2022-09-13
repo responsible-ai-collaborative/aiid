@@ -1,0 +1,37 @@
+---
+title: "Feuille de route de la base de données"
+metaTitle: "Feuille de route et développement futur"
+metaDescription: "à quels changements vous pouvez vous attendre au fil du temps à mesure que l'AIID se développe"
+slug: "/research/2-roadmap"
+aiTranslated: true
+---
+
+# En développement
+
+**Traduction du rapport d'incident :** La base de données des incidents est actuellement collectée et présentée au monde de la lecture en anglais, mais des systèmes intelligents sont déployés dans différentes langues, cultures et lieux. Ce projet travaille à la prise en charge de toutes les langues traduisibles par machine afin que les rapports d'incident puissent provenir de n'importe quelle langue et être présentés dans des langues prenant en charge plus de 7 milliards d'utilisateurs potentiels.
+
+**Ressources sur les meilleures pratiques :** L'une des motivations derrière la base de données d'incidents d'IA est de rendre les incidents partageables avec les équipes de produits et d'ingénierie afin qu'elles travaillent à prévenir ou à atténuer l'incident avant le déploiement. Actuellement, la base de données ne présente que les problèmes (c'est-à-dire les incidents), mais nous nous efforçons d'afficher de manière sélective les ressources les plus susceptibles de prévenir et d'atténuer le problème.
+
+**Rapports post-mortem :** Les services hébergés ont pour habitude de publier des "post-mortems" après les interruptions de service, dans lesquels l'entreprise explique ce qui s'est passé, qui a été affecté, pendant combien de temps et ce que l'entreprise fera pour prévenir ou atténuer de telles pannes à l'avenir. Il s'agit d'une pratique que la base de données d'incidents d'IA cherche à soutenir explicitement en accordant un emplacement spécial sur les pages de citation d'incidents aux post-mortems d'incidents d'IA.
+
+**Surveillance des incidents :** À mesure que de plus en plus de systèmes intelligents sont déployés dans le monde réel, il deviendra de plus en plus difficile de surveiller, de collecter et de catégoriser les incidents. Un grattoir qui surveille les sources de contenu pour les incidents d'IA et facilite leur ingestion garantirait que l'AIID continue d'être pertinent pour les systèmes intelligents les plus récemment développés. Une équipe d'étudiants travaille actuellement au développement de l'API de base pour ce projet.
+
+
+# Projets futurs potentiels
+
+**Taxonomie des défaillances techniques :** l'AIID ne dispose pas d'une taxonomie technique rigoureuse reliant les dommages subis à leurs éléments techniques. Nous aimerions combler cette lacune avec une équipe d'ingénieurs en apprentissage automatique en appliquant leurs connaissances sur la façon dont les systèmes sont construits pour classer les incidents.
+
+**Collecte de données d'incident :** De nombreux types d'incidents produisent des données d'incident qui sont analysées par les entreprises et utilisées pour éviter qu'elles ne se reproduisent en interne. Un associé de recherche pourrait être chargé de promouvoir la divulgation volontaire des données d'incident, qui pourraient ensuite être associées aux dossiers d'incident. À l'avenir, ce type de divulgation sera probablement obligatoire dans certaines juridictions et l'AIID devrait être là pour le soutenir.
+
+**Votre projet ici :** La base de données des incidents d'IA est régie par le Responsible AI Collaborative (RAIC). Vous devez considérer ceci comme une invitation ouverte à collaborer sur des projets qui correspondent à la thèse d'impact de la base de données d'incidents d'IA.
+
+# Livré
+
+**Collection initiale des incidents :** L'ensemble de données initial a été collecté en 2019 en combinant les listes d'incidents de
+[Roman Yampolskiy](http://cecs.louisville.edu/ry/),
+[Catherine Olsson](https://www.linkedin.com/in/catherineolsson/),
+et [Sam Yoon](https://www.linkedin.com/in/samyoonnz/). Ces incidents sont associés à plus de 1 000 rapports d'incidents au total.
+
+**Application de découverte d'incident :** Suite à la collecte initiale de l'ensemble de données, [Sean McGregor](https://seanbmcgregor.com/) a développé une application [Discover](/apps/discover) qui a pris en charge l'indexation et le nettoyage de plus de 1 000 rapports rassemblés dans la collection initiale de rapports d'incident.
+
+**Taxonomies :** Des systèmes intelligents sont en cours de développement pour chaque segment de marché et chaque fonction du gouvernement. Développer la [qualité de la recherche](/recherche) du produit de données nécessite des systèmes de régularisation et de classification des incidents en fonction des types d'incidents, de l'échelle, des technologies impliquées et des parties concernées. Ces classifications et d'autres sont un point de discorde dans les systèmes multipartites. Pour faire progresser l'utilité de la base de données pour la recherche sans exiger un consensus total sur chaque classification, il est possible d'appliquer des taxonomies indépendamment d'une autorité taxonomique centrale. Chaque "[périmètre taxonomique](/research/4-taxonomies)" est géré par un éditeur qui développe la taxonomie et est responsable de l'application de la taxonomie à travers les incidents. [Contactez-nous](/contact) pour plus d'informations.

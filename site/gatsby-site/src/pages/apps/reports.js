@@ -11,6 +11,7 @@ import DateRangePicker from 'react-bootstrap-daterangepicker';
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
 import { Table, InputGroup, FormControl, Form, Button, Spinner } from 'react-bootstrap';
 import { gql, useQuery } from '@apollo/client';
+import { Trans } from 'react-i18next';
 
 const TableStyles = styled.div`
   padding: 1rem 1rem 1rem 0;
@@ -452,8 +453,8 @@ export default function Incidents(props) {
 
       {loading && (
         <div className="p-2">
-          <Spinner animation="border" size="sm" role="status" aria-hidden="true" /> Fetching
-          Reports...
+          <Spinner animation="border" size="sm" role="status" aria-hidden="true" />{' '}
+          <Trans>Fetching Reports...</Trans>
         </div>
       )}
 

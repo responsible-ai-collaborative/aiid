@@ -34,7 +34,9 @@ function PostPreview({ post }) {
           </LocalizedLink>
         </div>
         <div className="mt-4">
-          <small className="text-muted-gray text-sm">By {post.frontmatter.author}</small>
+          <small className="text-muted-gray text-sm">
+            <Trans>By</Trans> {post.frontmatter.author}
+          </small>
         </div>
       </Card.Body>
     </Card>

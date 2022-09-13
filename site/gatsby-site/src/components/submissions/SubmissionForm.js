@@ -275,7 +275,7 @@ const SubmissionForm = () => {
 
         <TextInputGroup
           name="description"
-          label="Description"
+          label={t('Description')}
           as="textarea"
           placeholder="Report Description"
           rows={3}
@@ -285,7 +285,7 @@ const SubmissionForm = () => {
 
         <TextInputGroup
           name="developers"
-          label="Alleged developer of AI system"
+          label={t('Alleged developer of AI system')}
           placeholder="Alleged developer of AI system"
           className="mt-3"
           {...TextInputGroupProps}
@@ -293,7 +293,7 @@ const SubmissionForm = () => {
 
         <TextInputGroup
           name="deployers"
-          label="Alleged deployer of AI system"
+          label={t('Alleged deployer of AI system')}
           placeholder="Alleged deployer of AI system"
           className="mt-3"
           {...TextInputGroupProps}
@@ -301,7 +301,7 @@ const SubmissionForm = () => {
 
         <TextInputGroup
           name="harmed_parties"
-          label="Alleged harmed or nearly harmed parties"
+          label={t('Alleged harmed or nearly harmed parties')}
           placeholder="Alleged harmed or nearly harmed parties"
           className="mt-3"
           {...TextInputGroupProps}
