@@ -1,6 +1,6 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
-import { graphql } from 'gatsby';
+import { graphql, Link } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 import { MDXProvider } from '@mdx-js/react';
 import Layout from 'components/Layout';
@@ -11,7 +11,6 @@ import SocialShareButtons from 'components/ui/SocialShareButtons';
 import MdxComponents from 'components/ui/MdxComponents';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import { Trans } from 'react-i18next';
-import Link from 'components/ui/Link';
 
 export default function Post(props) {
   const {
