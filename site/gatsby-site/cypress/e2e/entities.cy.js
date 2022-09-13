@@ -10,7 +10,7 @@ describe('Entities page', () => {
 
     cy.get('[data-cy="entities"]').should('be.visible');
 
-    cy.get('[data-cy="entities"] tr').should('have.length.at.least', 706);
+    cy.get('[data-cy="entities"] tr').should('have.length.at.least', 658);
   });
 
   it('Filter entities by name', () => {
@@ -50,13 +50,6 @@ describe('Entities page', () => {
   it('Should be able to sort', () => {
     cy.visit(url);
 
-    cy.get('[data-cy="header-id"] button').click();
-
-    cy.get('[data-cy="header-id"] button').click();
-
-    cy.get('[data-cy="entities"] tbody tr')
-      .first()
-      .find('[data-cy="cell-id"]')
-      .contains('a', '15.ai users');
+    cy.get('[data-cy="entities"] tbody tr:nth-child(1) [data-cy="cell-id"]').contains('a', 'Tesla');
   });
 });
