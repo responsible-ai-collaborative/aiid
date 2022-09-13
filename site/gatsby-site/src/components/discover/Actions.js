@@ -12,7 +12,7 @@ import {
 import { FIND_REPORT, UPDATE_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
-import Button from 'elements/Button';
+import { Button } from 'flowbite-react';
 
 function FlagModalContent({ reportNumber }) {
   const { data } = useQuery(FIND_REPORT, {
@@ -42,16 +42,11 @@ function FlagModalContent({ reportNumber }) {
         {!report ? (
           <Spinner size="sm" animation="border" />
         ) : report.flag ? (
-          <Button className="w-100" variant="danger" disabled data-cy="flag-toggle">
+          <Button disabled data-cy="flag-toggle">
             <Trans>Flagged</Trans>
           </Button>
         ) : (
-          <Button
-            className="w-100"
-            variant="danger"
-            onClick={() => flagReport()}
-            data-cy="flag-toggle"
-          >
+          <Button color={'failure'} onClick={() => flagReport()} data-cy="flag-toggle">
             <Trans>Flag Report</Trans> {loading && <Spinner size="sm" animation="border" />}
           </Button>
         )}
