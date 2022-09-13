@@ -14,7 +14,7 @@ import isArray from 'lodash/isArray';
 import uniq from 'lodash/uniq';
 import { useUserContext } from '../../contexts/userContext';
 import { UPDATE_REPORT } from '../../graphql/reports';
-import { useMutation, useQuery, useLazyQuery } from '@apollo/client';
+import { useMutation, useQuery, useApolloClient } from '@apollo/client';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { DELETE_SUBMISSION, PROMOTE_SUBMISSION } from '../../graphql/submissions';
 import { FIND_SUBSCRIPTIONS } from '../../graphql/subscriptions';
@@ -73,9 +73,9 @@ const SubmissionReview = ({ submission }) => {
     fetchPolicy: 'network-only',
   });
 
-  const [getUser] = useMutation(GET_USER);
+  const client = useApolloClient();
 
-  const [findSubscriptions] = useLazyQuery(FIND_SUBSCRIPTIONS);
+  const [getUser] = useMutation(GET_USER);
 
   const [updateReport] = useMutation(UPDATE_REPORT);
 
@@ -100,13 +100,11 @@ const SubmissionReview = ({ submission }) => {
   const addToast = useToastContext();
 
   const sendEmailNotifications = async (incidentId, reportNumber, incidentTitle, report) => {
-    console.log('--- SAPE 3', incidentId);
 
-    const { data: subscriptionsData } = await findSubscriptions({
-      variables: { query: { incident_id: { incident_id: incidentId } } },
+    const { data: subscriptionsData } = await client.query({
+      query: FIND_SUBSCRIPTIONS,
+      variables: { query: { incident_id: { incident_id: incidentId } } }
     });
-
-    console.log('-- subscriptionsData', incidentId, subscriptionsData);
 
     // Process subscriptions to incident updates
     if (subscriptionsData?.subscriptions?.length > 0) {
@@ -114,25 +112,18 @@ const SubmissionReview = ({ submission }) => {
         subscriptionsData.subscriptions.map((subscription) => subscription.userId.userId)
       );
 
-      console.log('--- userIds', userIds);
-
       const userEmails = [];
 
       for (const userId of userIds) {
         const userResponse = await getUser({ variables: { input: { userId } } });
-
-        console.log('-- userResponse', userId, userResponse.data.getUser.email);
 
         if (userResponse.data && userResponse.data.getUser && userResponse.data.getUser.email) {
           userEmails.push(userResponse.data.getUser.email);
         }
       }
 
-      console.log('-- userEmails', userEmails);
-      console.log('-- uniq', uniq(userEmails));
-
       await sendEmail({
-        to: uniq(userEmails),
+        to: userEmails,
         subject: 'Incident {{incidentId}} was updated',
         templateFileName: 'incidentUpdated',
         text: 'Incident {{incident_id}}: "{{incident_title}}" was updated.',
@@ -149,7 +140,6 @@ const SubmissionReview = ({ submission }) => {
   };
 
   const promoteSubmission = useCallback(async () => {
-    console.log('--- SAPE 0');
     if (!submission.developers || !submission.deployers || !submission.harmed_parties) {
       addToast({
         message: `Please review submission before approving. Some data is missing.`,
@@ -179,8 +169,6 @@ const SubmissionReview = ({ submission }) => {
         });
       },
     });
-
-    console.log('--- SAPE 1');
 
     const report = {
       ...submission,
@@ -217,8 +205,6 @@ const SubmissionReview = ({ submission }) => {
       },
     });
 
-    console.log('--- SAPE 2');
-
     if (isNewIncident) {
       await updateIncident({
         variables: {
@@ -233,8 +219,6 @@ const SubmissionReview = ({ submission }) => {
         },
       });
     }
-
-    console.log('--- SAPE 3');
 
     const incident_id = incident.incident_id;
 
