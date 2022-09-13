@@ -51,7 +51,7 @@ export default function Post(props) {
           page="post"
         ></SocialShareButtons>
       </div>
-      <StyledMainWrapper>
+      <StyledMainWrapper className="max-w-full">
         <MDXProvider components={MdxComponents}>
           <MDXRenderer>{mdx.body}</MDXRenderer>
         </MDXProvider>
