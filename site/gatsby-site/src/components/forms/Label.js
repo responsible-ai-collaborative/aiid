@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { OverlayTrigger, Form, Popover } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
+import UpdatingPopover from 'elements/UpdatingPopover';
 
 const Label = ({ popover, label }) => {
   const [show, setShow] = useState(false);
@@ -15,14 +16,11 @@ const Label = ({ popover, label }) => {
     return <Form.Label>{label} :</Form.Label>;
   }
 
-  const ref = useRef(null);
-
   return (
     <>
-      <div className="bootstrap" ref={ref}>
+      <div className="bootstrap">
         <OverlayTrigger
           placement={'top'}
-          container={ref}
           overlay={
             <UpdatingPopover data-cy={`popover-${popover}`}>
               <Popover.Header as="h3">
@@ -81,22 +79,5 @@ Label.defaultProps = {
   placement: 'top',
   trigger: ['hover', 'focus'],
 };
-
-// This is used to force the popover to re-render to adjust correctly to the label's position
-const UpdatingPopover = React.forwardRef(({ popper, children, ...props }, ref) => {
-  useEffect(() => {
-    setTimeout(() => {
-      popper.scheduleUpdate();
-    }, 0);
-  }, [children, popper]);
-
-  return (
-    <Popover ref={ref} {...props}>
-      {children}
-    </Popover>
-  );
-});
-
-UpdatingPopover.displayName = 'UpdatingPopover';
 
 export default Label;

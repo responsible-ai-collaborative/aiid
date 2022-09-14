@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
 import Markdown from 'react-markdown';
 import TaxonomyForm from './TaxonomyForm';
 import { Trans } from 'react-i18next';
 import Card from 'elements/Card';
 import Button from 'elements/Button';
+import UpdatingPopover from 'elements/UpdatingPopover';
 
 const renderTooltip = (props, displayText) => (
-  <Tooltip id="button-tooltip" {...props} className={`${props.className || ''}`}>
-    {displayText}
-  </Tooltip>
+  <UpdatingPopover {...props}>
+    <Popover.Body>{displayText}</Popover.Body>
+  </UpdatingPopover>
 );
 
 const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
@@ -66,7 +67,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
                   <div key={'NOTES'} className="tw-classification-container tw-card-body">
                     <div className="tw-field bootstrap">
                       <OverlayTrigger
-                        placement="left"
+                        placement="top"
                         delay={{ show: 100, hide: 400 }}
                         overlay={(e) => renderTooltip(e, 'Admin notes')}
                       >
@@ -98,7 +99,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
                     <div key={field.name} className="tw-classification-container tw-card-body">
                       <div className="tw-field bootstrap">
                         <OverlayTrigger
-                          placement="left"
+                          placement="top"
                           delay={{ show: 100, hide: 400 }}
                           overlay={(e) => renderTooltip(e, field.shortDescription)}
                         >
