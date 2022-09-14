@@ -68,7 +68,7 @@ const SignUp = (props) => {
               try {
                 await signUp({ email, password });
                 addToast({
-                  message: t('Account created', { ns: 'login' }),
+                  message: t('Verification email sent to {{email}}', { email, ns: 'login' }),
                   severity: SEVERITY.success,
                 });
                 resetForm();
