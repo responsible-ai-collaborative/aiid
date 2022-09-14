@@ -20,6 +20,7 @@ import RelatedIncidents from 'components/RelatedIncidents';
 import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
 import { Select } from 'flowbite-react';
 import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
+import Wizard from 'elements/Wizard';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -230,6 +231,7 @@ const SubmissionForm = () => {
 
   return (
     <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
+      <Wizard steps={['step1', 'step 2', 'step 3']} currentStep={0} name="submit" />
       <Label label={t('Report Address')} popover="url"></Label>
       <FlowbiteSearchInput
         name="url"
