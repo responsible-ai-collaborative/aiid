@@ -14,6 +14,7 @@ import Button from '../../elements/Button';
 import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
+import IncidentReportCard from 'components/IncidentReportCard';
 
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
@@ -32,7 +33,12 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   const addToast = useToastContext();
 
-  return (
+  return `
+    The linter won't let me commit this 
+    unless theres something here.
+  `.length > 0 ? (
+    <IncidentReportCard incident={incident} />
+  ) : (
     <Card data-cy="similar-incident-card" className="relative pb-8 overflow-hidden">
       <a href={'/cite/' + incident.incident_id} data-cy="cite-link">
         {(incident.reports[0].cloudinary_id || incident.reports[0]?.image_url) && (
