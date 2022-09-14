@@ -17,7 +17,7 @@ export const UserContext = createContext({
     loginWithFacebook: ({ loginRedirectUri }) => {
       loginRedirectUri;
     },
-    logout: () => {},
+    logout: () => { },
     sendResetPasswordEmail: ({ email }) => {
       email;
     },
@@ -30,6 +30,10 @@ export const UserContext = createContext({
       email;
       password;
     },
+    confirmEmail: ({ token, tokenId }) => {
+      token;
+      tokenId;
+    }
   },
 });
 
