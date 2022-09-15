@@ -512,6 +512,12 @@ To get your Public and Private API Key, follow these [instructions](https://www.
 To get the group ID and the app ID, the easiest way is to navigate to your Atlas Service App dashboard and copy from the URL.
 The URL format is https://realm.mongodb.com/groups/[groupId]/apps/[appId]/dashboard
 
+In addition to that, this value should be added to the `.env` file:
+
+```
+SENDGRID_API_KEY=[SendGrid API key from https://app.sendgrid.com/settings/api_keys]
+```
+
 ## Contact
 
 For inquiries, you are encouraged to open an issue on this repository or visit the [contact page](https://incidentdatabase.ai/contact).
