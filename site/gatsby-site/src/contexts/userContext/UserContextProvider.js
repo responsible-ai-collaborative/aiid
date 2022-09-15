@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as Realm from 'realm-web';
-import { realmApp } from 'services/realmApp';
+import { realmApp } from '../../services/realmApp';
 import { UserContext } from './UserContext';
 import { ApolloProvider, ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import config from '../../../config';
@@ -8,7 +8,7 @@ import fetch from 'cross-fetch';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { useTranslation } from 'react-i18next';
 import { navigate } from 'gatsby';
-import useLocalizePath from 'components/i18n/useLocalizePath';
+import useLocalizePath from '../../components/i18n/useLocalizePath';
 
 // https://github.com/mongodb-university/realm-graphql-apollo-react/blob/master/src/index.js
 
@@ -76,8 +76,6 @@ export const UserContextProvider = ({ children }) => {
         credentials = Realm.Credentials.emailPassword(email, password);
       } else if (provider === 'facebook' && loginRedirectUri) {
         credentials = Realm.Credentials.facebook(loginRedirectUri);
-      } else if (provider === 'google' && loginRedirectUri) {
-        credentials = Realm.Credentials.google(loginRedirectUri);
       } else {
         credentials = Realm.Credentials.anonymous();
       }
@@ -111,10 +109,6 @@ export const UserContextProvider = ({ children }) => {
 
   const loginWithFacebook = async ({ loginRedirectUri }) => {
     await login({ provider: 'facebook', loginRedirectUri, redirectToHomePage: true });
-  };
-
-  const loginWithGoogle = async ({ loginRedirectUri }) => {
-    await login({ provider: 'google', loginRedirectUri, redirectToHomePage: true });
   };
 
   const sendResetPasswordEmail = async ({ email }) => {
@@ -175,7 +169,6 @@ export const UserContextProvider = ({ children }) => {
         actions: {
           loginWithEmail,
           loginWithFacebook,
-          loginWithGoogle,
           logout,
           sendResetPasswordEmail,
           resetPassword,
