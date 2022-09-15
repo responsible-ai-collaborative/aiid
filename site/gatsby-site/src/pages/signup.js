@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import { Form, Spinner } from 'react-bootstrap';
-import { useUserContext } from 'contexts/userContext';
+import { useUserContext } from '../contexts/userContext';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import Link from 'components/ui/Link';
+import Link from '../components/ui/Link';
 import { Trans, useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import Button from '../elements/Button';
 
 const SignUpSchema = Yup.object().shape({
@@ -23,12 +23,10 @@ const SignUp = (props) => {
   const {
     user,
     loading,
-    actions: { signUp, loginWithFacebook, loginWithGoogle },
+    actions: { signUp, loginWithFacebook },
   } = useUserContext();
 
   const [displayFacebookSpinner, setDisplayFacebookSpinner] = useState(false);
-
-  const [displayGoogleSpinner, setDisplayGoogleSpinner] = useState(false);
 
   const { t } = useTranslation();
 
@@ -42,14 +40,6 @@ const SignUp = (props) => {
     await loginWithFacebook({ loginRedirectUri });
 
     setDisplayFacebookSpinner(false);
-  };
-
-  const clickLoginWithGoogle = async () => {
-    setDisplayGoogleSpinner(true);
-
-    await loginWithGoogle({ loginRedirectUri });
-
-    setDisplayGoogleSpinner(false);
   };
 
   return (
@@ -160,9 +150,7 @@ const SignUp = (props) => {
                 <Button
                   variant="primary"
                   type="submit"
-                  disabled={
-                    isSubmitting || !isValid || displayFacebookSpinner || displayGoogleSpinner
-                  }
+                  disabled={isSubmitting || !isValid || displayFacebookSpinner}
                   className="w-full"
                 >
                   {isSubmitting && (
@@ -182,7 +170,7 @@ const SignUp = (props) => {
             variant="primary"
             onClick={clickLoginWithFacebook}
             className={'w-full'}
-            disabled={displayFacebookSpinner || displayGoogleSpinner}
+            disabled={displayFacebookSpinner}
           >
             <div className={'flex justify-center items-center'}>
               {displayFacebookSpinner ? (
@@ -197,29 +185,6 @@ const SignUp = (props) => {
               )}
               <div className={'ml-2'}>
                 <Trans ns="login">Sign up with Facebook</Trans>
-              </div>
-            </div>
-          </Button>
-
-          <Button
-            variant="primary"
-            onClick={clickLoginWithGoogle}
-            className={'w-full mt-5'}
-            disabled={displayFacebookSpinner || displayGoogleSpinner}
-          >
-            <div className={'flex justify-center items-center'}>
-              {displayGoogleSpinner ? (
-                <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
-              ) : (
-                <FontAwesomeIcon
-                  icon={faGoogle}
-                  color={'#ffffff'}
-                  className={'pointer fa fa-lg'}
-                  title="Sign up with Google"
-                />
-              )}
-              <div className={'ml-2'}>
-                <Trans ns="login">Sign up with Google</Trans>
               </div>
             </div>
           </Button>

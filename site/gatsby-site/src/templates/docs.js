@@ -39,7 +39,7 @@ export default class MDXRuntimeTest extends Component {
           {mdx.frontmatter.aiTranslated && (
             <div>
               <TranslationBadge className="d-inline-block" />
-              <Link className="d-inline-block ms-2" to={mdx.frontmatter.slug}>
+              <Link className="d-inline-block ml-2" to={mdx.frontmatter.slug}>
                 <Trans>View Original</Trans>
               </Link>
             </div>
