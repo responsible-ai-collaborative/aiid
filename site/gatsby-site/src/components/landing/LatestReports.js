@@ -6,7 +6,7 @@ export default function LatestReports({ latestReport }) {
   return (
     <>
       <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-        <Trans>Latest Incident Report</Trans>
+        <Trans ns="landing">Latest Incident Report</Trans>
       </h5>
       <div className="flex flex-col items-center">
         <LatestIncidentReport report={latestReport} />
