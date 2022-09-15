@@ -60,55 +60,57 @@ const RelatedIncidentsArea = ({
   }
 
   return (
-    <ListContainer data-cy={`related-${columnKey}`}>
-      <ListGroup.Item variant="secondary" key={'header'}>
-        {header}
-        {loading && <Spinner animation="border" size="sm" className="ms-2" />}
-      </ListGroup.Item>
-      <div className="reports">
-        {(reports || incidents) &&
-          (reports || incidents).map((val) => (
-            <ReportRow key={val.url || val.incident_id} data-cy="result">
-              <span>
-                {val?.incident_id && (
-                  <>
-                    <LocalizedLink to={'/cite/' + val.incident_id}>
-                      #{val.incident_id}
-                    </LocalizedLink>{' '}
-                    –{' '}
-                  </>
-                )}
-                <a href={val.url || '/cite/' + val.incident_id} data-cy="title">
-                  {val.title}
-                </a>
-              </span>
-              <ReportToolbar>
-                {setFieldValue && editSimilar && (
-                  <>
-                    <SelectorLabel htmlFor="similar-selector">
-                      <Trans>Related:</Trans>
-                    </SelectorLabel>
-                    <SimilaritySelector incident_id={val.incident_id} />
-                  </>
-                )}
-                {val.incident_id && setFieldValue && editId && (
-                  <Button
-                    data-cy="set-id"
-                    className="set-id"
-                    onClick={() => setFieldValue && setFieldValue('incident_id', val.incident_id)}
-                    style={{ whiteSpace: 'nowrap' }}
-                  >
-                    <Trans>Use ID</Trans> <span className="incident-id">#{val.incident_id}</span>
-                  </Button>
-                )}
-              </ReportToolbar>
-            </ReportRow>
-          ))}
-        {!loading && (error || reports?.length == 0 || incidents?.length == 0) && (
-          <ListGroup.Item>{error ? error : t('No related reports found.')}</ListGroup.Item>
-        )}
-      </div>
-    </ListContainer>
+    <div className="bootstrap">
+      <ListContainer data-cy={`related-${columnKey}`}>
+        <ListGroup.Item variant="secondary" key={'header'}>
+          {header}
+          {loading && <Spinner animation="border" size="sm" className="ms-2" />}
+        </ListGroup.Item>
+        <div className="reports">
+          {(reports || incidents) &&
+            (reports || incidents).map((val) => (
+              <ReportRow key={val.url || val.incident_id} data-cy="result">
+                <span>
+                  {val?.incident_id && (
+                    <>
+                      <LocalizedLink to={'/cite/' + val.incident_id}>
+                        #{val.incident_id}
+                      </LocalizedLink>{' '}
+                      –{' '}
+                    </>
+                  )}
+                  <a href={val.url || '/cite/' + val.incident_id} data-cy="title">
+                    {val.title}
+                  </a>
+                </span>
+                <ReportToolbar>
+                  {setFieldValue && editSimilar && (
+                    <>
+                      <SelectorLabel htmlFor="similar-selector">
+                        <Trans>Related:</Trans>
+                      </SelectorLabel>
+                      <SimilaritySelector incident_id={val.incident_id} />
+                    </>
+                  )}
+                  {val.incident_id && setFieldValue && editId && (
+                    <Button
+                      data-cy="set-id"
+                      className="set-id"
+                      onClick={() => setFieldValue && setFieldValue('incident_id', val.incident_id)}
+                      style={{ whiteSpace: 'nowrap' }}
+                    >
+                      <Trans>Use ID</Trans> <span className="incident-id">#{val.incident_id}</span>
+                    </Button>
+                  )}
+                </ReportToolbar>
+              </ReportRow>
+            ))}
+          {!loading && (error || reports?.length == 0 || incidents?.length == 0) && (
+            <ListGroup.Item>{error ? error : t('No related reports found.')}</ListGroup.Item>
+          )}
+        </div>
+      </ListContainer>
+    </div>
   );
 };
 

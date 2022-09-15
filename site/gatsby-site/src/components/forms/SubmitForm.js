@@ -95,12 +95,14 @@ const SubmitForm = () => {
     try {
       const date_submitted = format(new Date(), 'yyyy-MM-dd');
 
+      const description = values.description ? values.description : values.text;
+
       const submission = {
         ...values,
         incident_id: values.incident_id == '' ? 0 : values.incident_id,
         date_submitted,
         date_modified: date_submitted,
-        description: values.text.substring(0, 200),
+        description: description.substring(0, 200),
         authors: isString(values.authors) ? values.authors.split(',') : values.authors,
         submitters: values.submitters
           ? !isArray(values.submitters)
@@ -108,6 +110,12 @@ const SubmitForm = () => {
             : values.submitters
           : ['Anonymous'],
         plain_text: await stripMarkdown(values.text),
+        embedding: values.embedding || undefined,
+        developers: isString(values.developers) ? values.developers.split(',') : values.developers,
+        deployers: isString(values.deployers) ? values.deployers.split(',') : values.deployers,
+        harmed_parties: isString(values.harmed_parties)
+          ? values.harmed_parties.split(',')
+          : values.harmed_parties,
       };
 
       await insertSubmission({ variables: { submission } });
@@ -163,7 +171,7 @@ const SubmitForm = () => {
 
             <Button
               onClick={submitForm}
-              className="mt-3"
+              className="mt-3 bootstrap"
               variant="primary"
               type="submit"
               disabled={isSubmitting}
@@ -175,7 +183,7 @@ const SubmitForm = () => {
       </Formik>
 
       {isRole('submitter') && (
-        <Container className="mt-5 p-0">
+        <Container className="mt-5 p-0 bootstrap">
           <h2>
             <Trans ns="submit">Advanced: Add by CSV</Trans>
           </h2>
@@ -189,7 +197,7 @@ const SubmitForm = () => {
           <p>
             Record {csvIndex + 1} of {csvData.length}
           </p>
-          <div className="d-flex justify-content-center my-3">
+          <div className="flex justify-center my-3">
             <Button className="me-4" onClick={previousRecord}>
               &lt; <Trans>Previous</Trans>
             </Button>

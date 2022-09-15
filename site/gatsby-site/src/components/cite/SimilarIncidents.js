@@ -11,9 +11,10 @@ import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import Card from '../../elements/Card';
 import Button from '../../elements/Button';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
+
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
 const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncident }) => {
@@ -32,20 +33,25 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
   const addToast = useToastContext();
 
   return (
-    <Card data-cy="similar-incident-card">
+    <Card data-cy="similar-incident-card" className="relative pb-8 overflow-hidden">
       <a href={'/cite/' + incident.incident_id} data-cy="cite-link">
-        <Image
-          className="tw-object-cover tw-w-full tw-aspect-[16/9]"
-          publicID={
-            incident.reports[0].cloudinary_id || `legacy/${md5(incident.reports[0].image_url)}`
-          }
-          transformation={fill().height(480)}
-          alt=""
-        />
-        <h3>{locale == 'en' && incident.title ? incident.title : incident.reports[0].title}</h3>
+        {(incident.reports[0].cloudinary_id || incident.reports[0]?.image_url) && (
+          <Image
+            className="object-cover w-full aspect-[16/9]"
+            publicID={
+              incident.reports[0]?.cloudinary_id || `legacy/${md5(incident.reports[0]?.image_url)}`
+            }
+            transformation={fill().height(480)}
+            alt=""
+          />
+        )}
+
+        <h3 className="text-lg m-4">
+          {locale == 'en' && incident.title ? incident.title : incident.reports[0].title}
+        </h3>
       </a>
-      <div className="tw-flex tw-w-full tw-flex-row tw-items-center tw-font-bold tw-mt-0 tw-my-4 tw-mr-4">
-        <div className="text-muted">
+      <div className="flex w-full flex-row items-center font-bold mt-0 absolute pr-4 bottom-4">
+        <div className="text-muted-gray text-sm mx-4">
           {parsedDate && (
             <>
               <time dateTime={formatISO(parsedDate)}>{format(parsedDate, 'MMM yyyy')}</time> ·{' '}
@@ -55,12 +61,12 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
             {incident.reports.length} {incident.reports.length == 1 ? t('report') : t('reports')}
           </span>
         </div>
-        <div className="tw-inline-block tw-ml-auto tw-mr-auto" />
+        <div className="inline-block ml-auto mr-auto" />
 
         {flaggable && (
           <Button
             variant="link"
-            className={`tw-flag-button ${isFlagged ? ' flagged' : ''}`}
+            className={`tw-flag-button ${isFlagged ? ' flagged' : ''} z-3`}
             data-cy="flag-similar-incident"
             onClick={async () => {
               await updateIncident({
@@ -122,7 +128,9 @@ const SimilarIncidents = ({
     <div className="tw-similar-incidents">
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
         <h2 id="similar-incidents">
-          <Trans>Similar Incidents</Trans>
+          <LocalizedLink to={'/summaries/spatial?incident=' + parentIncident.incident_id}>
+            <Trans>Similar Incidents</Trans>
+          </LocalizedLink>
         </h2>
       )}
       {editor_similar_incidents.length > 0 && (
@@ -140,7 +148,7 @@ const SimilarIncidents = ({
               </a>
             )}
           </div>
-          <div className="tw-card-set">
+          <div className="tw-card-set mt-4">
             {editor_similar_incidents.map((similarIncident) => (
               <SimilarIncidentCard
                 incident={similarIncident}
@@ -181,7 +189,7 @@ const SimilarIncidents = ({
               unrelated incidents
             </Trans>
           </p>
-          <div className="tw-card-set">
+          <div className="tw-card-set mt-4">
             {nlp_only_incidents.map((similarIncident) => (
               <SimilarIncidentCard
                 incident={similarIncident}

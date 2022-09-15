@@ -1,19 +1,21 @@
 import Link from 'components/ui/Link';
 import { useLocalization } from 'gatsby-theme-i18n';
 import React from 'react';
-import { Badge } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
+import { Badge } from 'flowbite-react';
 
 export default function TranslationBadge({ className = '', originalLanguage = '' }) {
   const { locale } = useLocalization();
 
   if (locale !== originalLanguage) {
     return (
-      <Link to="/blog/multilingual-incident-reporting">
-        <Badge className={className} bg="secondary">
-          <Trans>AI Translated</Trans>
-        </Badge>
-      </Link>
+      <div className={`inline-block ${className}`} data-cy="translation-badge">
+        <Link to="/blog/multilingual-incident-reporting">
+          <Badge>
+            <Trans>AI Translated</Trans>
+          </Badge>
+        </Link>
+      </div>
     );
   }
 

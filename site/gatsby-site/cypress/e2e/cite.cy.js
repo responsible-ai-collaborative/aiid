@@ -4,6 +4,8 @@ import unflaggedReport from '../fixtures/reports/unflagged.json';
 import { format } from 'date-fns';
 const { gql } = require('@apollo/client');
 
+import updateOneIncidentFlagged from '../fixtures/incidents/updateOneIncidentFlagged.json';
+
 describe('Cite pages', () => {
   const discoverUrl = '/apps/discover';
 
@@ -130,6 +132,9 @@ describe('Cite pages', () => {
 
     cy.get(`[id="r${_id}"`).find('[data-cy="flag-button"]').click();
 
+    // cypress has trouble with modals
+    cy.wait(0);
+
     cy.get('[data-cy="flag-modal"]').as('modal').should('be.visible');
 
     cy.wait('@fetchReport');
@@ -148,6 +153,8 @@ describe('Cite pages', () => {
     cy.get('@modal').find('[data-cy="flag-toggle"]').should('be.disabled');
 
     cy.contains('Close').click();
+
+    cy.wait(0);
 
     cy.get('@modal').should('not.exist');
   });
@@ -187,6 +194,8 @@ describe('Cite pages', () => {
 
     cy.contains('BibTex Citation').scrollIntoView().click();
 
+    cy.wait(0);
+
     cy.get('[data-cy="bibtext-modal"]').should('be.visible').as('modal');
 
     cy.get('@modal')
@@ -207,6 +216,8 @@ describe('Cite pages', () => {
     cy.visit(url);
 
     const date = format(new Date(), 'MMMM d, y');
+
+    cy.wait(0);
 
     cy.get('[data-cy="citation"] .tw-card-body').should(
       'contain.text',
@@ -251,7 +262,8 @@ describe('Cite pages', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'UpdateIncident',
-      'updateIncident'
+      'updateIncident',
+      updateOneIncidentFlagged
     );
 
     cy.visit('/cite/9');
@@ -259,8 +271,8 @@ describe('Cite pages', () => {
     cy.get('[data-cy="flag-similar-incident"]').first().click();
 
     cy.wait('@updateIncident').then((xhr) => {
-      expect(xhr.response.statusCode).to.equal(200);
-      expect(Boolean(xhr.request.body.variables.set.flagged_dissimilar_incidents)).to.be.true;
+      expect(xhr.request.body.variables.query).deep.eq({ incident_id: 9 });
+      expect(xhr.request.body.variables.set.flagged_dissimilar_incidents).deep.eq([11]);
     });
   });
 

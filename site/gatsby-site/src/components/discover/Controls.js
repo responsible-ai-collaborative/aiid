@@ -11,14 +11,14 @@ import { Trans } from 'react-i18next';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
 
-const Controls = ({ query, setHideDuplicates, hideDuplicates }) => {
+const Controls = ({ query, searchState, setSearchState }) => {
   const [expandFilters, setExpandFilters] = useState(false);
 
   useEffect(() => setExpandFilters(REFINEMENT_LISTS.some((r) => query[r.attribute])), []);
 
   return (
     <>
-      <Row className="tw-content-start tw-items-center tw-mt-4 767px:tw-hidden hiddenMobile">
+      <Row className="content-start items-center mt-4 767px:hidden hiddenMobile bootstrap">
         <Col className="col-auto">
           <Stats />
         </Col>
@@ -29,9 +29,15 @@ const Controls = ({ query, setHideDuplicates, hideDuplicates }) => {
           <Form.Check
             type="switch"
             id="hide-duplicates"
-            checked={hideDuplicates}
+            checked={searchState.refinementList.hideDuplicates}
             onClick={(event) => {
-              setHideDuplicates(event.target.checked);
+              setSearchState({
+                ...searchState,
+                refinementList: {
+                  ...searchState.refinementList,
+                  hideDuplicates: event.target.checked,
+                },
+              });
             }}
             className="tw-switch"
           />
@@ -49,10 +55,10 @@ const Controls = ({ query, setHideDuplicates, hideDuplicates }) => {
             id="expand-filters"
             data-cy="expand-filters"
             onClick={() => setExpandFilters(!expandFilters)}
-            className="tw-select-none tw-cursor-pointer tw-bg-none tw-border-none"
+            className="select-none cursor-pointer bg-none border-none"
           >
             <FontAwesomeIcon
-              className="-tw-align-[0.2rem]"
+              className="-align-[0.2rem]"
               icon={expandFilters ? faCaretDown : faCaretRight}
               fixedWidth
             />
