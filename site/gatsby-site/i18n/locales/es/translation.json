@@ -120,5 +120,6 @@
   "Search {{count}} records...": "Buscar {{count}} registros...",
   "Report Authorship": "Autor del reporte",
   "Report Domains": "Dominios del reporte",
-  "By": "Por"
+  "By": "Por",
+  "Table View": "Vista Tabular"
 }
