@@ -20,7 +20,7 @@ import RelatedIncidents from 'components/RelatedIncidents';
 import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
 import { Button, Select } from 'flowbite-react';
 import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
-import WizardProgress from 'elements/WizardProgress';
+import Wizard from 'elements/Wizard';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -251,11 +251,11 @@ const SubmissionForm = ({ onSubmit, isSubmitting }) => {
 
   return (
     <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
-      <WizardProgress steps={wizardSteps} currentStep={currentWizardStep} name="submit" />
-      <div
-        className={`p-6 border rounded-lg mt-6 relative ${currentWizardStep === 0 ? '' : 'hidden'}`}
+      <Wizard.Progress steps={wizardSteps} currentStep={currentWizardStep} name="submit" />
+      <Wizard.StepContainer
+        header="Step 1 - Main information"
+        currentWizardStep={currentWizardStep === 0}
       >
-        <div className="absolute -top-5 bg-white px-4 text-primary-blue text-2xl">Step 1</div>
         <Label label={t('Report Address')} popover="url"></Label>
         <FlowbiteSearchInput
           name="url"
@@ -291,7 +291,7 @@ const SubmissionForm = ({ onSubmit, isSubmitting }) => {
           {...TextInputGroupProps}
         />
 
-        <TextInputGroup
+        {/* <TextInputGroup
           name="developers"
           label="Alleged developer of AI system"
           placeholder="Alleged developer of AI system"
@@ -305,23 +305,7 @@ const SubmissionForm = ({ onSubmit, isSubmitting }) => {
           placeholder="Alleged deployer of AI system"
           className="mt-3"
           {...TextInputGroupProps}
-        />
-        <div className="flex justify-end mt-4">
-          <Button onClick={() => setCurrentWizardStep(1)}>Next</Button>
-        </div>
-      </div>
-
-      <div
-        className={`p-6 border rounded-lg mt-6 relative ${currentWizardStep === 1 ? '' : 'hidden'}`}
-      >
-        <div className="absolute -top-5 bg-white px-4 text-primary-blue text-2xl">Step 2</div>
-        <TextInputGroup
-          name="harmed_parties"
-          label="Alleged harmed or nearly harmed parties"
-          placeholder="Alleged harmed or nearly harmed parties"
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
+        /> */}
 
         <TextInputGroup
           name="authors"
@@ -331,8 +315,6 @@ const SubmissionForm = ({ onSubmit, isSubmitting }) => {
           {...TextInputGroupProps}
         />
 
-        <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byAuthors']} />
-
         <TextInputGroup
           name="submitters"
           label={t('Submitter CSV')}
@@ -340,6 +322,26 @@ const SubmissionForm = ({ onSubmit, isSubmitting }) => {
           className="mt-3"
           {...TextInputGroupProps}
         />
+
+        <div className="flex justify-end mt-4">
+          <Wizard.Next onClick={() => setCurrentWizardStep(1)} />
+        </div>
+      </Wizard.StepContainer>
+
+      <Wizard.StepContainer
+        header={'Step 2 - Dates and image'}
+        currentWizardStep={currentWizardStep === 1}
+      >
+        {/* <TextInputGroup
+          name="harmed_parties"
+          label="Alleged harmed or nearly harmed parties"
+          placeholder="Alleged harmed or nearly harmed parties"
+          className="mt-3"
+          {...TextInputGroupProps}
+        /> */}
+
+        <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byAuthors']} />
+
         <TextInputGroup
           name="date_published"
           label={t('Date Published')}
@@ -348,16 +350,6 @@ const SubmissionForm = ({ onSubmit, isSubmitting }) => {
           className="mt-3"
           {...TextInputGroupProps}
         />
-        <div className="flex justify-between mt-4">
-          <Button onClick={() => setCurrentWizardStep(0)}>Previous</Button>
-          <Button onClick={() => setCurrentWizardStep(2)}>Next</Button>
-        </div>
-      </div>
-
-      <div
-        className={`p-6 border rounded-lg mt-6 relative ${currentWizardStep === 2 ? '' : 'hidden'}`}
-      >
-        <div className="absolute -top-5 bg-white px-4 text-primary-blue text-2xl">Step 3</div>
         <RelatedIncidents
           incident={values}
           setFieldValue={setFieldValue}
@@ -381,6 +373,16 @@ const SubmissionForm = ({ onSubmit, isSubmitting }) => {
           {...TextInputGroupProps}
         />
 
+        <div className="flex justify-between mt-4">
+          <Wizard.Previous onClick={() => setCurrentWizardStep(0)} />
+          <Wizard.Next onClick={() => setCurrentWizardStep(2)} />
+        </div>
+      </Wizard.StepContainer>
+
+      <Wizard.StepContainer
+        header="Step 3 - Additional information"
+        currentWizardStep={currentWizardStep === 2}
+      >
         <Form.Group
           className={'mt-3' + (touched['text'] && errors['text'] ? ' is-invalid' : '')}
           data-color-mode="light"
@@ -470,12 +472,12 @@ const SubmissionForm = ({ onSubmit, isSubmitting }) => {
         />
 
         <div className="flex justify-between mt-4">
-          <Button onClick={() => setCurrentWizardStep(1)}>Previous</Button>
+          <Wizard.Previous onClick={() => setCurrentWizardStep(1)} />
           <Button color={'success'} type="submit" onClick={onSubmit} disabled={isSubmitting}>
             Submit
           </Button>
         </div>
-      </div>
+      </Wizard.StepContainer>
     </Form>
   );
 };

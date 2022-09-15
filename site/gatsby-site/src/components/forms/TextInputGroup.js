@@ -15,11 +15,12 @@ const TextInputGroup = ({
   handleBlur,
   addOnComponent = null,
   className = '',
+  inputClassName = '',
   ...props
 }) => (
   <Form.Group className={`form-group ${className}`}>
     <Label popover={name} label={label} />
-    <InputGroup>
+    <InputGroup className="mt-1">
       {type === 'textarea' ? (
         <TextAreaInput
           name={name}
@@ -32,7 +33,7 @@ const TextInputGroup = ({
           handleChange={handleChange}
           handleBlur={handleBlur}
           addOnComponent={addOnComponent}
-          className={className}
+          className={inputClassName}
           {...props}
         />
       ) : (
@@ -47,7 +48,7 @@ const TextInputGroup = ({
           handleChange={handleChange}
           handleBlur={handleBlur}
           addOnComponent={addOnComponent}
-          className={className}
+          className={inputClassName}
           {...props}
         />
       )}
