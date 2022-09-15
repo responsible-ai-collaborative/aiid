@@ -39,7 +39,7 @@ function FlagModalContent({ reportNumber }) {
       <div className="modal-body" data-cy="flag-modal">
         <div dangerouslySetInnerHTML={{ __html: t('flagReport', { ns: 'actions' }) }} />
 
-        <div className="flex justify-center">
+        <div className="flex justify-center w-full">
           {!report ? (
             <Spinner />
           ) : report.flag ? (

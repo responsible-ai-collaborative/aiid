@@ -33,12 +33,12 @@ export default function Post(props) {
       <div className={'titleWrapper'}>
         <StyledHeading>{mdx.fields.title}</StyledHeading>
 
-        <div className="d-inline-block pb-2">
+        <div className="inline-block pb-2">
           <span>{format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')}</span>
           {mdx.frontmatter.aiTranslated && (
             <>
-              <TranslationBadge className="ms-2" />
-              <Link className="ms-2" to={mdx.frontmatter.slug}>
+              <TranslationBadge className="ml-2" />
+              <Link className="ml-2" to={mdx.frontmatter.slug}>
                 <Trans>View Original</Trans>
               </Link>
             </>
