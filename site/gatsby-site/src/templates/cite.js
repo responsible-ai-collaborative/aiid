@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Spinner } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
 import AiidHelmet from '../components/AiidHelmet';
 import Layout from '../components/Layout';
 import Citation from '../components/cite/Citation';
@@ -275,10 +275,14 @@ function CitePage(props) {
               </Card.Header>
               <Card.Body className="flex-row">
                 <Button variant="outline-primary" className="mr-2" onClick={subscribeToNewReports}>
-                  <>
-                    {subscribing && <Spinner size="sm" animation="border" className="tw-mr-2" />}
+                  <div className="flex gap-2 items-center">
+                    {subscribing &&
+                      <div className="mr-2">
+                        <Spinner size="sm" />
+                      </div>
+                    }
                     <Trans>Notify Me of Updates</Trans>
-                  </>
+                  </div>
                 </Button>
                 <Button
                   variant="outline-primary"
