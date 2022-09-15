@@ -118,7 +118,7 @@
     "test:e2e:ci": "start-server-and-test start http://localhost:8000 cypress:run"
   },
   "devDependencies": {
-    "@netlify/plugin-gatsby": "^3.4.2",
+    "@netlify/plugin-gatsby": "^3.4.6",
     "@robinmetral/gatsby-source-s3": "^2.1.1",
     "autoprefixer": "^10.4.7",
     "babel-eslint": "^10.1.0",

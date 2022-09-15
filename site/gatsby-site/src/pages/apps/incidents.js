@@ -4,13 +4,19 @@ import { Spinner } from 'flowbite-react';
 import IncidentsTable from '../../components/incidents/IncidentsTable';
 import { FIND_INCIDENTS } from '../../graphql/incidents';
 import { useQuery } from '@apollo/client';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
+import AiidHelmet from '../../components/AiidHelmet';
 
 export default function IncidentsPage(props) {
   const { data: incidentsData } = useQuery(FIND_INCIDENTS);
 
+  const { t } = useTranslation();
+
   return (
     <LayoutHideSidebar {...props} className="bootstrap">
+      <AiidHelmet>
+        <title>{t('Incidents')}</title>
+      </AiidHelmet>
       {!incidentsData && (
         <div className="p-4 flex justify-center align-items-center gap-2">
           <Spinner />
