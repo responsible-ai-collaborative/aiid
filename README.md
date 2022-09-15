@@ -242,6 +242,31 @@ Https://react.i18next.com handles UI translations. To find missing keys enable d
 GATSBY_I18N_DEBUG=true
 ```
 
+### Cost
+
+The translate API charges ~20USD per million characters and can translate to 111 languages.
+
+At the time of writing, there are 1336 Incident Reports, each report consisting of ~4000 characters, with a total sum of ~5 million characters.
+
+Considering the pricing above, translating all ingested reports to one language will cost `(5 million / 1 million) * $20 = ~$100`, and translating all incident reports to all languages `$100 * 111= ~$11k`.
+
+The translation process defaults to a **dry run** mode that prepends a string to every translated text instead of hitting Google's API.
+
+Therefore, Translated texts in this mode will look like: `translated-{language}-YouTube to crack down on inappropriate content masked as kids’ cartoons`
+
+The dry run is disabled through an environment variable as follows:
+
+```
+TRANSLATE_DRY_RUN=false
+```
+
+### Geocoding
+If the feature you are working on depends on Google's Geocoding API, please add the following environment variable with the appropriate value to your .env file.
+
+```
+GOOGLE_MAPS_API_KEY=XXXXXXXXXXXX
+```
+
 ## Front-end development
 
 ### Tailwind CSS & Flowbite
@@ -275,31 +300,6 @@ If you want to customize a [Flowbite button](https://flowbite.com/docs/component
 const YourComponent = () => {
     return <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Default</button>
 }
-```
-
-### Cost
-
-The translate API charges ~20USD per million characters and can translate to 111 languages.
-
-At the time of writing, there are 1336 Incident Reports, each report consisting of ~4000 characters, with a total sum of ~5 million characters.
-
-Considering the pricing above, translating all ingested reports to one language will cost `(5 million / 1 million) * $20 = ~$100`, and translating all incident reports to all languages `$100 * 111= ~$11k`.
-
-The translation process defaults to a **dry run** mode that prepends a string to every translated text instead of hitting Google's API.
-
-Therefore, Translated texts in this mode will look like: `translated-{language}-YouTube to crack down on inappropriate content masked as kids’ cartoons`
-
-The dry run is disabled through an environment variable as follows:
-
-```
-TRANSLATE_DRY_RUN=false
-```
-
-### Geocoding
-If the feature you are working on depends on Google's Geocoding API, please add the following environment variable with the appropriate value to your .env file.
-
-```
-GOOGLE_MAPS_API_KEY=XXXXXXXXXXXX
 ```
 
 ## Deployment Setup
