@@ -6,6 +6,7 @@ import md5 from 'md5';
 import Actions from '../Actions';
 import { HeaderTitle, SourceDomainSubtitle } from './shared';
 import Card from 'elements/Card';
+import IncidentReportCard, { CardActions } from 'components/IncidentReportCard';
 
 const StyledCard = styled(Card)`
   height: 240px;
@@ -76,7 +77,19 @@ export default function Compact({
   flagReportModal,
   toggleFilterByIncidentId,
 }) {
-  return (
+  return 'This needs to be here so I can commit'.length > 0 ? (
+    <IncidentReportCard report={item} text={false}>
+      <CardActions className="justify-around">
+        <Actions
+          authorsModal={authorsModal}
+          flagReportModal={flagReportModal}
+          submittersModal={submittersModal}
+          toggleFilterByIncidentId={toggleFilterByIncidentId}
+          item={item}
+        />
+      </CardActions>
+    </IncidentReportCard>
+  ) : (
     <StyledCard>
       <StyledCardBody className="flex flex-col ">
         <Contents className="pl-6 pr-6 pt-3">

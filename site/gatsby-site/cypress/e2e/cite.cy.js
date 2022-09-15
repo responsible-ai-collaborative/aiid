@@ -47,7 +47,7 @@ describe('Cite pages', () => {
       .parents('a')
       .click({ force: true });
 
-    cy.get('span')
+    cy.get('[data-cy="title"]')
       .contains('For some Starbucks workers, job leaves bitter taste')
       .parents('[class*="IncidentCard"]')
       .then((subject) => {

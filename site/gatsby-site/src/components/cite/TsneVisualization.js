@@ -7,6 +7,7 @@ import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Color from 'color';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans } from 'react-i18next';
+import IncidentReportCard, { CardActions } from 'components/IncidentReportCard';
 
 const VisualizationWrapper = styled.div`
   > *,
@@ -43,26 +44,10 @@ const Visualization = styled.div`
     box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.15);
     transition: background 0.25s;
   }
-  a + div {
+  > a + div {
     min-height: 15em;
-    width: 15em;
-    background: white;
-    border-radius: 0.25rem;
-    box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.25);
+    width: 20em;
     position: absolute;
-    padding: 1em;
-    overflow: hidden;
-    img {
-      margin: -1em -1em 1em -1em;
-      max-width: unset;
-      width: calc(100% + 4em);
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-    }
-    h3 {
-      font-size: 110%;
-      margin: 0px;
-    }
   }
   > a:hover:not(.current) {
     background: #dedede;
@@ -156,6 +141,7 @@ const PlotPoint = ({
                     incident(query: $query) {
                       incident_id
                       title
+                      date
                       reports {
                         cloudinary_id
                         report_number
@@ -176,6 +162,45 @@ const PlotPoint = ({
         {incident.incident_id}
       </LocalizedLink>
       {hover && (
+        <IncidentReportCard
+          incident={incidentData}
+          loading={incidentData == null}
+          style={{
+            top: onTop ? `calc(50% + 48% * ${incident.tsne.y} + ${1 / sqrtScale}em)` : undefined,
+            bottom: !onTop
+              ? `calc(50% - 48% * ${incident.tsne.y} + ${1 / sqrtScale}em)`
+              : undefined,
+            left: onLeft ? `calc(50% + 48% * ${incident.tsne.x} + ${1 / sqrtScale}em)` : undefined,
+            right: !onLeft
+              ? `calc(50% - 48% * ${incident.tsne.x} + ${1 / sqrtScale}em)`
+              : undefined,
+            transform: `scale(${1 / state.scale})`,
+            transformOrigin: `${onTop ? 'top' : 'bottom'} ${onLeft ? 'left' : 'right'}`,
+            zIndex: 10,
+            height: incidentData == null ? '20em' : undefined,
+          }}
+        >
+          <CardActions>
+            {taxon && (
+              <div>
+                <span
+                  style={{
+                    height: '.75em',
+                    width: '.75em',
+                    borderRadius: '.2em',
+                    margin: '0em .2em -.05em 0px',
+                    verticalAlign: 'center',
+                    display: 'inline-block',
+                    background,
+                  }}
+                />
+                {taxon}
+              </div>
+            )}
+          </CardActions>
+        </IncidentReportCard>
+      )}
+      {false && (
         <div
           data-cy="incident-card"
           style={{

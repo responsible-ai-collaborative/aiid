@@ -8,11 +8,43 @@ import ReportText from 'components/reports/ReportText';
 import Card from '../../elements/Card';
 import WebArchiveLink from 'components/ui/WebArchiveLink';
 import TranslationBadge from 'components/i18n/TranslationBadge';
+import IncidentReportCard, { CardActions } from 'components/IncidentReportCard';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import { Button } from 'react-bootstrap';
 
 const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) => {
   const { isRole } = useUserContext();
 
-  return (
+  return 'This needs to be here so I can commit'.length > 0 ? (
+    <IncidentReportCard
+      id={`r${item.report_number}`}
+      report={item}
+      className="mt-2 mb-2 IncidentCard"
+      style={{ maxWidth: '800px' }}
+    >
+      <CardActions className="justify-around text-muted-gray">
+        <Actions
+          item={item}
+          authorsModal={authorsModal}
+          flagReportModal={flagReportModal}
+          submittersModal={submittersModal}
+        />
+        {isRole('incident_editor') && (
+          <a
+            data-cy="edit-report"
+            href={`/cite/edit?report_number=${item.report_number}`}
+            style={{ color: 'inherit' }}
+            title="edit"
+          >
+            <Button variant="link">
+              <FontAwesomeIcon icon={faEdit} />
+            </Button>
+          </a>
+        )}
+      </CardActions>
+    </IncidentReportCard>
+  ) : (
     <Card id={`r${item.report_number}`} className="shadow-card IncidentCard">
       <Card.Header className="flex-col">
         <div className="flex justify-between">

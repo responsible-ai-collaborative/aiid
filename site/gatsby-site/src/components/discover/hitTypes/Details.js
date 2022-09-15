@@ -13,6 +13,7 @@ import { SourceDomainSubtitle, HeaderTitle } from './shared';
 import { Trans } from 'react-i18next';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import Card from 'elements/Card';
+import IncidentReportCard, { CardActions } from 'components/IncidentReportCard';
 
 const IncidentCardImage = styled(Image)`
   height: ${({ height }) => height};
@@ -33,7 +34,20 @@ export default function Details({
 }) {
   const localizePath = useLocalizePath();
 
-  return (
+  return 'This needs to be here so I can commit'.length > 0 ? (
+    <IncidentReportCard report={item} textMaxChars={400 - item.title.length * 2}>
+      <CardActions className="justify-around">
+        <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />
+        <Actions
+          authorsModal={authorsModal}
+          flagReportModal={flagReportModal}
+          submittersModal={submittersModal}
+          toggleFilterByIncidentId={toggleFilterByIncidentId}
+          item={item}
+        />
+      </CardActions>
+    </IncidentReportCard>
+  ) : (
     <Card className="h-full" data-cy={item.mongodb_id}>
       <a href={'/cite/' + item.incident_id + '#r' + item.objectID}>
         <IncidentCardImage

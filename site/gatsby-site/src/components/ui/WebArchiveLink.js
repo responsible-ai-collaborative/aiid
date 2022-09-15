@@ -4,12 +4,15 @@ import styled from 'styled-components';
 import { Trans } from 'react-i18next';
 
 const ArchiveOriginalSplit = styled(SplitButton)`
+  line-height: inherit !important;
+  color: inherit !important;
+
   > *.dropdown-toggle {
     padding: 0px !important;
     margin: 0px !important;
     margin-left: 2px !important;
     width: 2ch;
-    color: inherit;
+    color: inherit !important;
   }
   > *:not(.dropdown-toggle) {
     padding: 0px !important;
@@ -17,8 +20,10 @@ const ArchiveOriginalSplit = styled(SplitButton)`
   }
   a {
     text-decoration: none;
-    font-weight: inherit;
-    color: inherit;
+    font-weight: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    color: inherit !important;
   }
 `;
 

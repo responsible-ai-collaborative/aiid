@@ -275,7 +275,7 @@ function CitePage(props) {
 
         <Row className="mt-6">
           <Col>
-            <Card>
+            <Card style={{ maxWidth: '800px', overflow: 'hidden' }}>
               <ImageCarousel nodes={incidentReports} />
             </Card>
           </Col>

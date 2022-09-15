@@ -9,6 +9,7 @@ import ReportText from 'components/reports/ReportText';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import Card from 'elements/Card';
 import Button from 'elements/Button';
+import IncidentReportCard, { CardActions } from 'components/IncidentReportCard';
 
 const StyledCard = styled(Card)`
   overflow: hidden;
@@ -39,7 +40,20 @@ export default function Details({
 }) {
   const [viewMore, setViewMore] = useState(false);
 
-  return (
+  return 'This needs to be here so I can commit'.length > 0 ? (
+    <IncidentReportCard report={item} textMaxChars={400} imagePosition="left">
+      <CardActions className="justify-around">
+        <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />
+        <Actions
+          authorsModal={authorsModal}
+          flagReportModal={flagReportModal}
+          submittersModal={submittersModal}
+          toggleFilterByIncidentId={toggleFilterByIncidentId}
+          item={item}
+        />
+      </CardActions>
+    </IncidentReportCard>
+  ) : (
     <StyledCard>
       <StyledCardBody>
         <Contents className="gap-3">

@@ -1,7 +1,7 @@
 import React from 'react';
-import LatestIncidentReport from 'components/landing/LatestIncidentReport';
 import { Trans } from 'react-i18next';
 import Card from '../../elements/Card';
+import IncidentReportCard from 'components/IncidentReportCard';
 
 export default function LatestReports({ latestReport }) {
   return (
@@ -10,7 +10,7 @@ export default function LatestReports({ latestReport }) {
         <Card.Title as="h2">
           <Trans ns="landing">Latest Incident Report</Trans>
         </Card.Title>
-        <LatestIncidentReport className="mt-3" report={latestReport} />
+        <IncidentReportCard report={latestReport} imagePosition="left" textMaxChars={400} />
       </Card.Body>
     </Card>
   );
