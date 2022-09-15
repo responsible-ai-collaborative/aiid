@@ -68,6 +68,21 @@ More details are available in the `Production System` information below. We reco
 2. [Husky](https://github.com/typicode/husky#readme) and [lint-staged](https://github.com/okonet/lint-staged) are installed and `pre-commit` hook added to check lint/prettier issues on staged files and fix them automatically before making commit.
 3. `format` and `lint` scripts can be used manually to fix style issues.
 
+## Front-end development
+
+### Tailwind CSS & Flowbite
+
+This project uses [Tailwind CSS](https://tailwindcss.com/) framework with its class syntax. 
+More specifically, we base our components on [Flowbite React](https://flowbite-react.com/) and [Flowbite](https://flowbite.com/) which is built on top of TailwindCSS.
+
+### Steps for developing
+
+In order to keep styling consistency on the site, we follow a set of steps when developing.
+
+1. Build your component using [Flowbite React components](https://flowbite-react.com/)
+2. If your components is not fully contemplated by Flowbite react, check [Flowbite components](https://flowbite.com/#components) and use the provided HTML.
+3. If you need to improve styling, use only Tailwind CSS classes.
+
 ## Production System
 
 ### Netlify
