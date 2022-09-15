@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Wizard = ({ name, steps = [], currentStep = 0 }) => {
+const WizardProgress = ({ name, steps = [], currentStep = 0 }) => {
   return (
     <div className="w-full">
       <div className="flex flex-row items-center flex-nowrap">
@@ -9,9 +9,9 @@ const Wizard = ({ name, steps = [], currentStep = 0 }) => {
             <>
               <span
                 className={`inline-flex items-center p-1 text-sm font-semibold ${
-                  index < currentStep ? 'text-green-500' : 'text-gray-400'
+                  index < currentStep ? 'text-green-500' : 'text-gray-500'
                 } ${
-                  index === currentStep ? 'bg-blue-300 ' : 'bg-gray-100'
+                  index === currentStep ? 'bg-blue-500 ' : 'bg-gray-100'
                 } rounded-full dark:bg-gray-700 dark:text-gray-300`}
               >
                 <div className="h-6 w-6">
@@ -30,7 +30,10 @@ const Wizard = ({ name, steps = [], currentStep = 0 }) => {
                       ></path>
                     </svg>
                   ) : (
-                    <div className={`flex w-full h-full justify-center items-center`}>
+                    <div
+                      className={`flex w-full h-full justify-center items-center 
+                    ${index === currentStep ? 'text-white ' : ''}`}
+                    >
                       {index + 1}
                     </div>
                   )}
@@ -57,4 +60,4 @@ const Wizard = ({ name, steps = [], currentStep = 0 }) => {
   );
 };
 
-export default Wizard;
+export default WizardProgress;

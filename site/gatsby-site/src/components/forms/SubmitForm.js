@@ -156,7 +156,7 @@ const SubmitForm = () => {
       >
         {({ isSubmitting, submitForm }) => (
           <>
-            <SubmissionForm />
+            <SubmissionForm onSubmit={submitForm} isSubmitting={isSubmitting} />
 
             <p className="mt-4">
               <Trans ns="submit" i18nKey="submitReviewDescription">
@@ -169,7 +169,7 @@ const SubmitForm = () => {
               </Trans>
             </p>
 
-            <Button
+            {/* <Button
               onClick={submitForm}
               className="mt-3 bootstrap"
               variant="primary"
@@ -177,7 +177,7 @@ const SubmitForm = () => {
               disabled={isSubmitting}
             >
               <Trans>Submit</Trans>
-            </Button>
+            </Button> */}
           </>
         )}
       </Formik>

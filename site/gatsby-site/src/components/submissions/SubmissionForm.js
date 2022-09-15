@@ -18,9 +18,9 @@ import supportedLanguages from 'components/i18n/languages.json';
 import { Trans, useTranslation } from 'react-i18next';
 import RelatedIncidents from 'components/RelatedIncidents';
 import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
-import { Select } from 'flowbite-react';
+import { Button, Select } from 'flowbite-react';
 import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
-import Wizard from 'elements/Wizard';
+import WizardProgress from 'elements/WizardProgress';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -121,7 +121,7 @@ export const schema = yup.object().shape({
   }),
 });
 
-const SubmissionForm = () => {
+const SubmissionForm = ({ onSubmit, isSubmitting }) => {
   const data = useStaticQuery(graphql`
     query SubmissionFormQuery {
       allMongodbAiidprodReports {
@@ -165,6 +165,10 @@ const SubmissionForm = () => {
   const addToast = useToastContext();
 
   const [parsingNews, setParsingNews] = useState(false);
+
+  const [wizardSteps, setWizardSteps] = useState([]);
+
+  const [currentWizardStep, setCurrentWizardStep] = useState(0);
 
   const parseNewsUrl = useCallback(
     async (newsUrl) => {
@@ -229,204 +233,249 @@ const SubmissionForm = () => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
 
+  useEffect(() => {
+    const steps = [
+      {
+        name: 'Step 1 - Main information',
+      },
+      {
+        name: 'Step 2 - Additional information',
+      },
+      {
+        name: 'Step 3 - Advanced',
+      },
+    ];
+
+    setWizardSteps(steps);
+  }, []);
+
   return (
     <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
-      <Wizard steps={['step1', 'step 2', 'step 3']} currentStep={0} name="submit" />
-      <Label label={t('Report Address')} popover="url"></Label>
-      <FlowbiteSearchInput
-        name="url"
-        label={t('Report Address')}
-        placeholder={t('Report URL')}
-        {...TextInputGroupProps}
-        handleChange={(e) => {
-          setFieldTouched('url', true);
-          TextInputGroupProps.handleChange(e);
-        }}
-        btnClick={() => parseNewsUrl(values.url)}
-        loading={parsingNews}
-        btnDisabled={!!errors.url || !touched.url || parsingNews}
-        btnText={t('Fetch info')}
-      />
-      <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
-
-      <TextInputGroup
-        name="title"
-        label={t('Title')}
-        placeholder={t('Report title')}
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-
-      <TextInputGroup
-        name="description"
-        label="Description"
-        type="textarea"
-        placeholder="Report Description"
-        rows={3}
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-
-      <TextInputGroup
-        name="developers"
-        label="Alleged developer of AI system"
-        placeholder="Alleged developer of AI system"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-
-      <TextInputGroup
-        name="deployers"
-        label="Alleged deployer of AI system"
-        placeholder="Alleged deployer of AI system"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-
-      <TextInputGroup
-        name="harmed_parties"
-        label="Alleged harmed or nearly harmed parties"
-        placeholder="Alleged harmed or nearly harmed parties"
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-
-      <TextInputGroup
-        name="authors"
-        label={t('Author CSV')}
-        placeholder={t('Author CSV')}
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-
-      <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byAuthors']} />
-
-      <TextInputGroup
-        name="submitters"
-        label={t('Submitter CSV')}
-        placeholder={t('Submitter CSV')}
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-      <TextInputGroup
-        name="date_published"
-        label={t('Date Published')}
-        type="date"
-        placeholder={t('YYYY-MM-DD')}
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-
-      <RelatedIncidents
-        incident={values}
-        setFieldValue={setFieldValue}
-        columns={['byDatePublished']}
-      />
-
-      <TextInputGroup
-        name="date_downloaded"
-        label={t('Date Downloaded')}
-        type="date"
-        placeholder={t('YYYY-MM-DD')}
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-      <PreviewImageInputGroup
-        publicID={values.cloudinary_id}
-        name="image_url"
-        label={t('Image Address')}
-        placeholder={t('Image URL')}
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
-
-      <Form.Group
-        className={'mt-3' + (touched['text'] && errors['text'] ? ' is-invalid' : '')}
-        data-color-mode="light"
+      <WizardProgress steps={wizardSteps} currentStep={currentWizardStep} name="submit" />
+      <div
+        className={`p-6 border rounded-lg mt-6 relative ${currentWizardStep === 0 ? '' : 'hidden'}`}
       >
-        <Label popover="text" label={t('Text')} />
-        <div style={{ position: 'relative' }}>
-          {touched['text'] && errors['text'] && (
-            <div
-              style={{
-                position: 'absolute',
-                inset: '0px',
-                border: '1px solid var(--bs-red)',
-                zIndex: 10,
-                pointerEvents: 'none',
-              }}
-            />
-          )}
-          <Editor
-            value={values.text}
-            onChange={(value) => {
-              setFieldValue('text', value);
-              setFieldTouched('text', true);
-            }}
-          />
-        </div>
-      </Form.Group>
-      <Form.Control.Feedback type="invalid">
-        <Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans>
-      </Form.Control.Feedback>
+        <div className="absolute -top-5 bg-white px-4 text-primary-blue text-2xl">Step 1</div>
+        <Label label={t('Report Address')} popover="url"></Label>
+        <FlowbiteSearchInput
+          name="url"
+          label={t('Report Address')}
+          placeholder={t('Report URL')}
+          {...TextInputGroupProps}
+          handleChange={(e) => {
+            setFieldTouched('url', true);
+            TextInputGroupProps.handleChange(e);
+          }}
+          btnClick={() => parseNewsUrl(values.url)}
+          loading={parsingNews}
+          btnDisabled={!!errors.url || !touched.url || parsingNews}
+          btnText={t('Fetch info')}
+        />
+        <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
 
-      <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
-
-      <Form.Group className="mt-3">
-        <Label popover="language" label={t('Language')} />
-        <Select
-          name="language"
-          placeholder={t('Report Language')}
-          value={values.language}
-          onChange={handleChange}
-        >
-          {supportedLanguages.map((l) => (
-            <option key={l.code} value={l.code}>
-              {l.name}
-            </option>
-          ))}
-        </Select>
-      </Form.Group>
-
-      <Form.Group className="mt-3">
-        <Label popover="tags" label={t('Tags')} />
-        <TagsControl name={'tags'} />
-      </Form.Group>
-
-      <IncidentIdField
-        name="incident_id"
-        className="mt-3"
-        placeHolder={t('Leave empty to report a new incident')}
-        showIncidentData={false}
-      />
-
-      <RelatedIncidents
-        incident={values}
-        setFieldValue={setFieldValue}
-        columns={['byIncidentId']}
-      />
-
-      {!values.incident_id && (
         <TextInputGroup
-          name="incident_date"
-          label={t('Incident Date')}
-          placeholder={t('Incident Date')}
-          type="date"
+          name="title"
+          label={t('Title')}
+          placeholder={t('Report title')}
           className="mt-3"
-          disabled={values.incident_id}
           {...TextInputGroupProps}
         />
-      )}
 
-      <TextInputGroup
-        name="editor_notes"
-        label={t('Editor Notes')}
-        type="textarea"
-        placeholder={t('Optional context and notes about the incident')}
-        rows={8}
-        className="mt-3"
-        {...TextInputGroupProps}
-      />
+        <TextInputGroup
+          name="description"
+          label="Description"
+          type="textarea"
+          placeholder="Report Description"
+          rows={3}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
+        <TextInputGroup
+          name="developers"
+          label="Alleged developer of AI system"
+          placeholder="Alleged developer of AI system"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
+        <TextInputGroup
+          name="deployers"
+          label="Alleged deployer of AI system"
+          placeholder="Alleged deployer of AI system"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+        <div className="flex justify-end mt-4">
+          <Button onClick={() => setCurrentWizardStep(1)}>Next</Button>
+        </div>
+      </div>
+
+      <div
+        className={`p-6 border rounded-lg mt-6 relative ${currentWizardStep === 1 ? '' : 'hidden'}`}
+      >
+        <div className="absolute -top-5 bg-white px-4 text-primary-blue text-2xl">Step 2</div>
+        <TextInputGroup
+          name="harmed_parties"
+          label="Alleged harmed or nearly harmed parties"
+          placeholder="Alleged harmed or nearly harmed parties"
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
+        <TextInputGroup
+          name="authors"
+          label={t('Author CSV')}
+          placeholder={t('Author CSV')}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
+        <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byAuthors']} />
+
+        <TextInputGroup
+          name="submitters"
+          label={t('Submitter CSV')}
+          placeholder={t('Submitter CSV')}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+        <TextInputGroup
+          name="date_published"
+          label={t('Date Published')}
+          type="date"
+          placeholder={t('YYYY-MM-DD')}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+        <div className="flex justify-between mt-4">
+          <Button onClick={() => setCurrentWizardStep(0)}>Previous</Button>
+          <Button onClick={() => setCurrentWizardStep(2)}>Next</Button>
+        </div>
+      </div>
+
+      <div
+        className={`p-6 border rounded-lg mt-6 relative ${currentWizardStep === 2 ? '' : 'hidden'}`}
+      >
+        <div className="absolute -top-5 bg-white px-4 text-primary-blue text-2xl">Step 3</div>
+        <RelatedIncidents
+          incident={values}
+          setFieldValue={setFieldValue}
+          columns={['byDatePublished']}
+        />
+
+        <TextInputGroup
+          name="date_downloaded"
+          label={t('Date Downloaded')}
+          type="date"
+          placeholder={t('YYYY-MM-DD')}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+        <PreviewImageInputGroup
+          publicID={values.cloudinary_id}
+          name="image_url"
+          label={t('Image Address')}
+          placeholder={t('Image URL')}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
+        <Form.Group
+          className={'mt-3' + (touched['text'] && errors['text'] ? ' is-invalid' : '')}
+          data-color-mode="light"
+        >
+          <Label popover="text" label={t('Text')} />
+          <div style={{ position: 'relative' }}>
+            {touched['text'] && errors['text'] && (
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: '0px',
+                  border: '1px solid var(--bs-red)',
+                  zIndex: 10,
+                  pointerEvents: 'none',
+                }}
+              />
+            )}
+            <Editor
+              value={values.text}
+              onChange={(value) => {
+                setFieldValue('text', value);
+                setFieldTouched('text', true);
+              }}
+            />
+          </div>
+        </Form.Group>
+        <Form.Control.Feedback type="invalid">
+          <Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans>
+        </Form.Control.Feedback>
+
+        <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
+
+        <Form.Group className="mt-3">
+          <Label popover="language" label={t('Language')} />
+          <Select
+            name="language"
+            placeholder={t('Report Language')}
+            value={values.language}
+            onChange={handleChange}
+          >
+            {supportedLanguages.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.name}
+              </option>
+            ))}
+          </Select>
+        </Form.Group>
+
+        <Form.Group className="mt-3">
+          <Label popover="tags" label={t('Tags')} />
+          <TagsControl name={'tags'} />
+        </Form.Group>
+
+        <IncidentIdField
+          name="incident_id"
+          className="mt-3"
+          placeHolder={t('Leave empty to report a new incident')}
+          showIncidentData={false}
+        />
+
+        <RelatedIncidents
+          incident={values}
+          setFieldValue={setFieldValue}
+          columns={['byIncidentId']}
+        />
+
+        {!values.incident_id && (
+          <TextInputGroup
+            name="incident_date"
+            label={t('Incident Date')}
+            placeholder={t('Incident Date')}
+            type="date"
+            className="mt-3"
+            disabled={values.incident_id}
+            {...TextInputGroupProps}
+          />
+        )}
+
+        <TextInputGroup
+          name="editor_notes"
+          label={t('Editor Notes')}
+          type="textarea"
+          placeholder={t('Optional context and notes about the incident')}
+          rows={8}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
+        <div className="flex justify-between mt-4">
+          <Button onClick={() => setCurrentWizardStep(1)}>Previous</Button>
+          <Button color={'success'} type="submit" onClick={onSubmit} disabled={isSubmitting}>
+            Submit
+          </Button>
+        </div>
+      </div>
     </Form>
   );
 };
