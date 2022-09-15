@@ -40,7 +40,7 @@ describe('The CSET taxonomy page', () => {
         cy.get('[data-cy*="field-"]').should('have.length', field_list.length);
 
         field_list.forEach((field) => {
-          cy.contains('h1', field.long_name)
+          cy.contains('h5', field.long_name)
             .should('exist')
             .contains('span', 'Searchable in Discover App')
             .should(field.instant_facet ? 'exist' : 'not.exist');
