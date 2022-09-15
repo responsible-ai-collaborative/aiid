@@ -184,7 +184,7 @@ describe('Cite pages', () => {
 
     cy.url().should('contain', '/incidents/edit?incident_id=10');
 
-    cy.get('[data-cy="incident-form').should('be.visible');
+    cy.get('[data-cy="incident-form"]').should('be.visible');
   });
 
   it('Should display correct BibTex Citation', () => {
