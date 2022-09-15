@@ -1,5 +1,5 @@
 import Layout from 'components/Layout';
-import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
+import { StyledHeading } from 'components/styles/Docs';
 import { graphql } from 'gatsby';
 import React from 'react';
 import PostsListing from '../../components/blog/PostsListing';
@@ -14,9 +14,9 @@ export default function BlogPage(props) {
       <div className={'titleWrapper'}>
         <StyledHeading>Blog</StyledHeading>
       </div>
-      <StyledMainWrapper>
+      <div>
         <PostsListing posts={posts} />
-      </StyledMainWrapper>
+      </div>
     </Layout>
   );
 }
