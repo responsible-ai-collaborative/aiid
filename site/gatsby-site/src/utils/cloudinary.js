@@ -18,7 +18,14 @@ const getCloudinaryPublicID = (url) => {
   return publicID;
 };
 
-const Image = ({ publicID, className, alt, transformation = null, plugins = [lazyload()] }) => {
+const Image = ({
+  publicID,
+  className,
+  alt,
+  transformation = null,
+  plugins = [lazyload()],
+  style,
+}) => {
   const [cloudinaryId, setCloudinaryID] = useState(publicID);
 
   const imageElement = useRef(null);
@@ -68,6 +75,7 @@ const Image = ({ publicID, className, alt, transformation = null, plugins = [laz
       className={className}
       cldImg={image}
       plugins={plugins}
+      style={style}
     />
   );
 };
@@ -154,14 +162,17 @@ const PreviewImageInputGroup = ({
         handleBlur={handleBlur}
       />
       <figure data-cy="image-preview-figure" id="image-preview-figure" className="text-center">
-        <div className="h-[50vh] flex items-center justify-center bootstrap">
+        <div
+          className="flex items-center justify-center bootstrap"
+          style={{ height: '50vh', marginTop: '1rem' }}
+        >
           {updatingImage ? (
             <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" />
           ) : (
-            <Image className={'mt-3 -mt-4 mr-auto mb-4'} publicID={cloudinaryID} />
+            <Image publicID={cloudinaryID} style={{ maxHeight: '100%' }} />
           )}
         </div>
-        <figcaption>
+        <figcaption className="mt-2">
           <Trans>Selected Image</Trans>
         </figcaption>
       </figure>
