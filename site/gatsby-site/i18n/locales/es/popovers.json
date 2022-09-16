@@ -50,5 +50,17 @@
     "language": {
         "title": "Idioma del informe del incidente",
         "text": "Este es el idioma escrito del texto que se encuentra en el informe, no el idioma de las personas o países involucrados en el informe. Los informes se traducirán a los idiomas admitidos cuando procesemos el texto."
-    }
+    },
+    "harmed_parties": {
+       "title": "Partes presuntamente perjudicadas o casi perjudicadas",
+       "text": "Si son múltiples, presione “enter” después del elemento para ingresar uno nuevo"
+     },
+     "deployers": {
+       "title": "Presunto implementador del sistema de IA",
+       "text": "Si son múltiples, presione “enter” después del elemento para ingresar uno nuevo"
+     },
+     "developers": {
+       "title": "Presunto desarrollador del sistema de IA",
+       "text": "Si son múltiples, presione “enter” después del elemento para ingresar uno nuevo"
+     }
 }
