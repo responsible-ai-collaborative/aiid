@@ -201,9 +201,9 @@ const SubmissionReview = ({ submission }) => {
   });
 
   return (
-    <div className="bootstrap">
+    <>
       <Card.Header data-cy="submission">
-        <Row>
+        <Row className="flex items-center p-2">
           <Col xs={12} sm={2} lg={2}>
             <Button
               onClick={() => setOpen(!open)}
@@ -260,9 +260,9 @@ const SubmissionReview = ({ submission }) => {
               <RelatedIncidents incident={submission} />
             </div>
           )}
-          <Card.Footer className="flex text-muted-gray">
+          <Card.Footer className="flex text-muted-gray m-3">
             <Button
-              className="me-auto"
+              className="mr-auto"
               data-cy="edit-submission"
               disabled={!isSubmitter}
               onClick={() => setIsEditing(true)}
@@ -270,7 +270,7 @@ const SubmissionReview = ({ submission }) => {
               <FontAwesomeIcon icon={faEdit} />
             </Button>
             <Button
-              className="me-2"
+              className="mr-2 text-xs md:text-base"
               variant="outline-primary"
               disabled={!isSubmitter || promoting}
               onClick={promoteSubmission}
@@ -295,6 +295,7 @@ const SubmissionReview = ({ submission }) => {
               variant="outline-secondary"
               disabled={!isSubmitter || deleting}
               onClick={rejectReport}
+              className="text-xs md:text-base"
             >
               {isNewIncident ? (
                 <Trans ns="submitted">Reject New Incident</Trans>
@@ -321,7 +322,7 @@ const SubmissionReview = ({ submission }) => {
         onHide={() => setIsEditing(false)}
         submissionId={submission._id}
       />
-    </div>
+    </>
   );
 };
 
