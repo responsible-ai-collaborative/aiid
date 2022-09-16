@@ -29,6 +29,38 @@ The steps for contributing changes are the following,
 
 Please make sure your code is well organized and commented before opening the pull request.
 
+## AIID Engineering Process
+
+The AI Incident Database is an open source project inviting contributions from the global community. Anyone with code changes that advance the change thesis of making the world better in the future by remembering the negative outcomes of the past are welcome to submit pull requests. To ensure that submitted changes are likely to be accepted, we recommend becoming familiar with the manner in which we organize our work items and open an issue on GitHub.
+
+The process of completing work through GitHub issues at the highest level is:
+Create Issue -> Assign Issue -> Review and Publish
+
+Labels help streamline the process and ensure issues do not get lost or neglected. Label [descriptions are on GitHub](https://github.com/responsible-ai-collaborative/aiid/labels). The following describes when/how to use a label.
+
+### Create Issue
+
+1. Consider if the issue is an Initiative, Epic, or Story. All engineering issues aside from Bugs should fall in one of these categories and be assigned a label. Other types of issues (ex: Data Editor-related) may not have this label.
+
+  ![](https://user-images.githubusercontent.com/25443411/188503602-9c93c699-5008-495f-8684-a1f18e82afea.png)
+
+2. Apply a descriptor label (when applicable):
+
+  ![](https://user-images.githubusercontent.com/25443411/188503793-039496b3-0256-4643-9dbd-e077b0dd3024.png)
+
+### Assign Issue
+
+Add the label “Current Backlog” to trigger assigning a contributor. Either the assigner or the contributor adds the issue’s priority and effort labels.
+
+![](https://user-images.githubusercontent.com/25443411/188503632-e27a4b6e-549e-4bbf-ad9c-2e123a2df75e.png)
+
+### Review and Publish:
+
+Once the issue has a deliverable output(s), use the Pull Request (PR) labels to move through the workflow to review and publish.
+
+![](https://user-images.githubusercontent.com/25443411/188503429-b38012fa-944b-49db-afbd-29ebca64e3b2.png)
+
+
 ## PR labeling strategy
 
 On a daily basis, all PRs should be labeled with one of the review process tags:
