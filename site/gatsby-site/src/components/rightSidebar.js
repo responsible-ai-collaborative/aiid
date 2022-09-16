@@ -43,15 +43,17 @@ const SidebarLayout = ({ location }) => {
             return [slug, prefixedSlug].includes(indexName) && page.node.tableOfContents.items;
           });
 
-          navItems = matchingPage.node.tableOfContents.items.map((item, index) => {
-            const itemId = item.title ? item.title.replace(/\s+/g, '').toLowerCase() : '#';
+          navItems =
+            matchingPage?.node &&
+            matchingPage.node.tableOfContents.items.map((item, index) => {
+              const itemId = item.title ? item.title.replace(/\s+/g, '').toLowerCase() : '#';
 
-            return (
-              <ListItem key={index} to={`#${itemId}`} level={1}>
-                {item.title}
-              </ListItem>
-            );
-          });
+              return (
+                <ListItem key={index} to={`#${itemId}`} level={1}>
+                  {item.title}
+                </ListItem>
+              );
+            });
         }
 
         return (
