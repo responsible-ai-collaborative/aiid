@@ -15,7 +15,7 @@ describe('Signup', () => {
       statusCode: 201,
     });
 
-    cy.contains('Sign up').click();
+    cy.get('[data-cy="signup-btn"]').click();
     cy.get('[data-cy="toast"]').contains('Account created').should('exist');
   });
 
@@ -24,7 +24,7 @@ describe('Signup', () => {
     cy.get('input[name=email]').type(Cypress.env('e2eUsername'));
     cy.get('input[name=password]').type('anyPassword');
     cy.get('input[name=passwordConfirm]').type('anyPassword');
-    cy.contains('Sign up').click();
+    cy.get('[data-cy="signup-btn"]').click();
     cy.get('[data-cy="toast"]').contains('name already in use').should('exist');
   });
 
@@ -41,7 +41,7 @@ describe('Signup', () => {
       },
     });
 
-    cy.contains('Sign up').click();
+    cy.get('[data-cy="signup-btn"]').click();
     cy.get('[data-cy="toast"]').contains('Something bad happened :(').should('exist');
   });
 });
