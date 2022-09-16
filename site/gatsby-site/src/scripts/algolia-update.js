@@ -13,7 +13,7 @@ const AlgoliaUpdater = require('../utils/AlgoliaUpdater');
 
 const { MongoClient } = require('mongodb');
 
-const { getLanguages } = require('../../i18n');
+const languagesConfig = require('../../i18n/config.json');
 
 const reporter = { log: console.log };
 
@@ -22,7 +22,7 @@ const reporter = { log: console.log };
 
   const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
 
-  const languages = getLanguages();
+  const languages = languagesConfig.map((l) => l.code);
 
   const algoliaClient = algoliasearch(
     config.header.search.algoliaAppId,

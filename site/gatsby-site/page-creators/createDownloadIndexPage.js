@@ -6,14 +6,14 @@ const AlgoliaUpdater = require('../src/utils/AlgoliaUpdater');
 
 const algoliasearch = require('algoliasearch');
 
-const { getLanguages } = require('../i18n');
+const languagesConfig = require('../i18n/config.json');
 
 const config = require('../config');
 
 const createDownloadIndexPage = async (_, createPage) => {
   const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
 
-  const languages = getLanguages();
+  const languages = languagesConfig.map((l) => l.code);
 
   const algoliaClient = algoliasearch(
     config.header.search.algoliaAppId,

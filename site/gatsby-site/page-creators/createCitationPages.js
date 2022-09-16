@@ -1,6 +1,6 @@
-const config = require('../config');
-
 const path = require('path');
+
+const languagesConfig = require('../i18n/config.json');
 
 const { switchLocalizedPath } = require('../i18n');
 
@@ -91,7 +91,7 @@ const createCitationPages = async (graphql, createPage) => {
     });
   }
 
-  for (const language of config.i18n.availableLanguages) {
+  for (const { code: language } of languagesConfig) {
     for (const context of pageContexts) {
       const pagePath = switchLocalizedPath({
         newLang: language,
