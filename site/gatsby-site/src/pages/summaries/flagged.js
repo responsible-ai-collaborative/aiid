@@ -1,64 +1,38 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
-
-import ListGroup from 'react-bootstrap/ListGroup';
-import Tab from 'react-bootstrap/Tab';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-
 import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 
-const ReportList = ({ report }) => {
-  const uid = '#' + report['report_number'];
-
-  const tabbedRender = ['description', 'text'];
-
-  let untabbedRender = Object.keys(report);
-
-  tabbedRender.forEach((element) => untabbedRender.splice(untabbedRender.indexOf(element), 1));
-  return (
-    <>
-      <ListGroup data-cy="report">
-        {untabbedRender.map((key) => (
-          <ListGroup.Item key={uid + key}>
-            {key}: {report[key]}
-          </ListGroup.Item>
-        ))}
-      </ListGroup>
-      <Tab.Container defaultActiveKey={uid + 'url'}>
-        <Row>
-          <Col xs={12} sm={6} lg={3}>
-            <ListGroup>
-              {tabbedRender.map((key) => (
-                <ListGroup.Item action eventKey={uid + key} key={uid + key}>
-                  {key}
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-          </Col>
-          <Col xs={12} sm={6} lg={9}>
-            <Tab.Content>
-              {tabbedRender.map((key) => (
-                <Tab.Pane eventKey={uid + key} key={uid + key}>
-                  {report[key]}
-                </Tab.Pane>
-              ))}
-            </Tab.Content>
-          </Col>
-        </Row>
-      </Tab.Container>
-    </>
-  );
-};
+const ReportList = ({ report }) => (
+  <dl
+    data-cy="report"
+    className="tw-my-4 tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-border-2 tw-rounded"
+  >
+    {Object.keys(report).map((key, i) => (
+      <>
+        <dt className={'tw-border-gray tw-p-2' + (i % 2 == 0 ? ' tw-bg-gray-100' : '')}>{key}</dt>
+        <dd
+          style={{ maxHeight: '400px' }}
+          className={
+            'tw-mb-0 tw-p-2 tw-overflow-y-auto tw-overflow-x-hidden' +
+            (i % 2 == 0 ? ' tw-bg-gray-100' : '') +
+            (key.includes('url') ? ' tw-break-words' : '')
+          }
+        >
+          {key.includes('url') ? <a href={report[key]}>{report[key]}</a> : <>{report[key]}</>}
+        </dd>
+      </>
+    ))}
+  </dl>
+);
 
 const IncidentList = ({ incidents }) => {
   return (
     <div className="bootstrap">
       {incidents.map((incident) => (
         <div key={incident.incident_id}>
-          <h2>Incident {incident.incident_id}</h2>
+          <h2 className="tw-mt-4">Incident {incident.incident_id}</h2>
           {incident.reports.map((report) => (
             <ReportList key={report.report_number} report={report} />
           ))}

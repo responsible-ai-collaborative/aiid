@@ -4,73 +4,71 @@ import { StaticQuery, graphql } from 'gatsby';
 import config from '../../config';
 import { Sidebar, ListItem } from './styles/Sidebar';
 
-const SidebarLayout = ({ location }) => (
-  <StaticQuery
-    query={graphql`
-      query {
-        allMdx {
-          edges {
-            node {
-              fields {
-                slug
+import { useLocalization } from 'gatsby-theme-i18n';
+
+const SidebarLayout = ({ location }) => {
+  const { locale } = useLocalization();
+
+  return (
+    <StaticQuery
+      query={graphql`
+        query {
+          allMdx {
+            edges {
+              node {
+                fields {
+                  slug
+                }
+                tableOfContents
               }
-              tableOfContents
             }
           }
         }
-      }
-    `}
-    render={({ allMdx }) => {
-      let finalNavItems;
+      `}
+      render={({ allMdx }) => {
+        let navItems;
 
-      if (allMdx.edges !== undefined && allMdx.edges.length > 0) {
-        allMdx.edges.map((item) => {
-          let innerItems;
+        if (allMdx.edges && allMdx.edges.length > 0) {
+          const indexName = (
+            location.pathname.replace(`/${locale}`, '') +
+            '/index' +
+            (locale == 'en' ? '' : `.${locale}`)
+          ).replace(/\/+/g, '/');
 
-          if (item?.node?.fields) {
-            if (
-              item.node.fields.slug === location.pathname ||
-              config.gatsby.pathPrefix + item.node.fields.slug === location.pathname
-            ) {
-              if (item.node.tableOfContents.items) {
-                innerItems = item.node.tableOfContents.items.map((innerItem, index) => {
-                  const itemId = innerItem.title
-                    ? innerItem.title.replace(/\s+/g, '').toLowerCase()
-                    : '#';
+          const matchingPage = allMdx.edges.find((page) => {
+            const slug = page?.node?.fields?.slug;
 
-                  return (
-                    <ListItem key={index} to={`#${itemId}`} level={1}>
-                      {innerItem.title}
-                    </ListItem>
-                  );
-                });
-              }
-            }
-          }
-          if (innerItems) {
-            finalNavItems = innerItems;
-          }
-        });
-      }
+            const prefixedSlug = slug && config.gatsby.pathPrefix + slug;
 
-      if (finalNavItems && finalNavItems.length) {
+            return [slug, prefixedSlug].includes(indexName) && page.node.tableOfContents.items;
+          });
+
+          navItems = matchingPage.node.tableOfContents.items.map((item, index) => {
+            const itemId = item.title ? item.title.replace(/\s+/g, '').toLowerCase() : '#';
+
+            return (
+              <ListItem key={index} to={`#${itemId}`} level={1}>
+                {item.title}
+              </ListItem>
+            );
+          });
+        }
+
         return (
           <Sidebar>
-            <ul className={'rightSideBarUL'}>
-              <li className={'rightSideTitle'}>CONTENTS</li>
-              {finalNavItems}
+            <ul data-cy="outline" className={'rightSideBarUL'}>
+              {navItems && navItems.length > 0 && (
+                <>
+                  <li className={'rightSideTitle'}>CONTENTS</li>
+                  {navItems}
+                </>
+              )}
             </ul>
           </Sidebar>
         );
-      } else {
-        return (
-          <Sidebar>
-            <ul></ul>
-          </Sidebar>
-        );
-      }
-    }}
-  />
-);
+      }}
+    />
+  );
+};
 
 export default SidebarLayout;
