@@ -62,7 +62,7 @@ export default function CommonEntities() {
                     {index + 1}. {entity.name}
                   </h5>
                 </Link>
-                <ul>
+                <ul className="list-none">
                   <li>
                     <Trans ns="entities">
                       Involved in{' '}
