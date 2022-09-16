@@ -106,6 +106,8 @@
   "The visualization below shows incidents closer together when a <2>natural language processing system</2> identifies their text as being semantically similar.": "La siguiente visualización muestra los incidentes en proximidad proporcional a la similitud semántica de sus textos, identificados a través de <2>nuestro sistema de procesamiento de lenguaje natural</2>",
   "review": "revisar",
   "Loading...": "Cargando...",
+  "Fetching Incidents...": "Cargando Incidentes...",
+  "Fetching Reports...": "Cargando informes...",
   "Spatial Visualization": "Visualización espacial",
   "Read more": "Leer más",
   "Table View": "Vista Tabular"

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
-import useToastContext, { SEVERITY } from 'hooks/useToast';
-import { Button, Modal, Spinner } from 'react-bootstrap';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { Button, Modal } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
 import IncidentForm, { schema } from './IncidentForm';
 import { Formik } from 'formik';
 
@@ -64,7 +65,9 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         {!incident && (
           <Modal.Body>
             {incident === undefined && (
-              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+              <div className="flex justify-center">
+                <Spinner />
+              </div>
             )}
             {incident === null && <div>Report not found</div>}
           </Modal.Body>
