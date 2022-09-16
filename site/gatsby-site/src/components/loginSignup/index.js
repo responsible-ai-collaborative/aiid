@@ -1,5 +1,5 @@
 import { useUserContext } from 'contexts/userContext';
-import { Button } from 'flowbite-react';
+import { Button, Tooltip } from 'flowbite-react';
 import React from 'react';
 
 const LoginSinup = ({ className = '', logoutClassName = '', loginClassName = '' }) => {
@@ -9,7 +9,7 @@ const LoginSinup = ({ className = '', logoutClassName = '', loginClassName = '' 
     <>
       <div className={`flex items-center ${className}`}>
         {user && user.isLoggedIn && user.profile.email ? (
-          <Logout className={logoutClassName} />
+          <Logout className={logoutClassName} user={user} />
         ) : (
           <Login className={loginClassName} />
         )}
@@ -30,12 +30,14 @@ const Login = ({ className = '' }) => (
   </>
 );
 
-const Logout = ({ className = '' }) => (
-  <>
-    <a href="/logout" className={`${className}`}>
-      Sign out
-    </a>
-  </>
+const Logout = ({ className = '', user }) => (
+  <div className="flex flex-col text-xs w-full justify-center items-center">
+    <Tooltip content={`Logged in as ${user.profile.email}`}>
+      <a href="/logout" className={`${className}`}>
+        Sign out
+      </a>
+    </Tooltip>
+  </div>
 );
 
 export default LoginSinup;
