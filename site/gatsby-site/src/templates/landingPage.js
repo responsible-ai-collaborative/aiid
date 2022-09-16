@@ -47,7 +47,7 @@ const LandingPage = (props) => {
   });
 
   return (
-    <Layout {...props}>
+    <Layout {...props} className="max-w-6xl">
       <AiidHelmet>
         <title>{title}</title>
         <meta name="title" content={title} />

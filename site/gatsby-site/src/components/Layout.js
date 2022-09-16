@@ -20,11 +20,7 @@ const Layout = ({ children, collapse, className, location }) => (
         />
       )}
       <div id="content" className="tw-content pb-5">
-        <div
-          className={`${
-            className ? className : ''
-          } 50rem:max-w-full 50rem:relative min-767px:max-w-full`}
-        >
+        <div className={`${className ? className : ''} 50rem:max-w-full 50rem:relative`}>
           {children}
         </div>
       </div>
