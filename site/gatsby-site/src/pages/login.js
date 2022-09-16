@@ -110,6 +110,7 @@ const Login = (props) => {
                   type="submit"
                   disabled={isSubmitting || !isValid || displayFacebookSpinner}
                   className="w-full"
+                  data-cy="login-btn"
                 >
                   {isSubmitting && (
                     <Spinner animation="border" size="sm" role="status" className="mr-4" />

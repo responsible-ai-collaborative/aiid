@@ -13,7 +13,7 @@ describe('Login', () => {
     cy.visit(url);
     cy.get('input[name=email]').type('fakeUser@test.com');
     cy.get('input[name=password]').type('fakePassword');
-    cy.contains('Login').click();
+    cy.get('[data-cy="login-btn"]').click();
 
     cy.get('[data-cy="toast"]').contains('invalid username/password').should('exist');
   });
@@ -22,10 +22,10 @@ describe('Login', () => {
     cy.visit(url);
     cy.get('input[name=email]').type('fakeUser');
     cy.get('input[name=password]').type('fakePassword');
-    cy.contains('Login').should('be.disabled');
+    cy.get('[data-cy="login-btn"]').should('be.disabled');
 
     cy.get('input[name=email]').clear().type('fakeUser@test.com');
-    cy.contains('Login').should('not.be.disabled');
+    cy.get('[data-cy="login-btn"]').should('not.be.disabled');
   });
 
   it('Should redirect to forgot password page if the user clicks on "Forgot password?" link', () => {
