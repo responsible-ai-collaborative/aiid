@@ -39,8 +39,8 @@ export default function Footer() {
     <footer className="bg-text-light-gray relative sm:grid sm:grid-cols-2 md:grid-cols-4 gap-5 p-5">
       {config.footer.navConfig.map((group) => (
         <div key={group.title}>
-          <h3 className="text-base">{group.title}</h3>
-          <ul className="p-0 list-none">
+          <h3 className="text-base mt-4">{group.title}</h3>
+          <ul className="p-0 list-none mb-2">
             {group.items.map(
               (item) =>
                 item.title && (
@@ -67,7 +67,7 @@ export default function Footer() {
         </div>
       ))}
       <div>
-        <h3 className="text-base">2022 - AI Incident Database</h3>
+        <h3 className="text-base mt-4">2022 - AI Incident Database</h3>
 
         <LocalizedLink to="/terms-of-use" className="tw-footer-link">
           Terms of use
@@ -76,7 +76,7 @@ export default function Footer() {
         <LocalizedLink to="/privacy-policy" className="tw-footer-link">
           Privacy Policy
         </LocalizedLink>
-        <div className="pt-3">
+        <div className="pt-3 mb-2">
           <a
             href={'https://twitter.com/IncidentsDB'}
             target="_blank"
