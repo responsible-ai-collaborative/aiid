@@ -5,6 +5,7 @@ import { ExternalLink } from 'react-feather';
 import config from '../../../config';
 import QuickAccess from 'components/discover/QuickAccess';
 import { Trans } from 'react-i18next';
+import LoginSinup from 'components/loginSignup';
 
 // eslint-disable-next-line no-unused-vars
 const ListItem = styled(({ className, active, level, ...props }) => {
@@ -124,6 +125,12 @@ const SidebarLayout = ({ collapse, setNavCollapsed }) => {
           }
         })}
       </ul>
+      <div className="flex items-center justify-center w-full py-3 border-t">
+        <LoginSinup
+          logoutClassName="text-gray-700 text-sm hover:text-primary-blue"
+          loginClassName="text-gray-300 md:text-gray-700 hover:text-primary-blue"
+        />
+      </div>
     </Sidebar>
   );
 };

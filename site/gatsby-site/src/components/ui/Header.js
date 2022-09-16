@@ -9,6 +9,7 @@ import config from '../../../config.js';
 
 import Sidebar from '../sidebar';
 import LanguageSwitcher from 'components/i18n/LanguageSwitcher';
+import LoginSinup from 'components/loginSignup';
 
 const StarsCount = (props) => {
   const [count, setCount] = useState(null);
@@ -174,6 +175,11 @@ const Header = () => {
                     onClick={() => setNavCollapsed(!navCollapsed)}
                   />
                 </div>
+                <LoginSinup
+                  className="hidden lg:flex ml-4"
+                  logoutClassName="text-white hover:text-primary-blue"
+                  loginClassName="text-white hover:text-primary-blue"
+                />
               </div>
             </div>
             <div id="navbar" className={topClass}>
