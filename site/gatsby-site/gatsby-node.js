@@ -58,14 +58,24 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     createRedirect({ fromPath: pair[0], toPath: pair[1], isPermanent: true })
   );
 
-  await createMdxPages(graphql, createPage, reporter);
-  await createCitationPages(graphql, createPage);
-  await createWordCountsPages(graphql, createPage);
-  await createBackupsPage(graphql, createPage);
-  await createTaxonomyPages(graphql, createPage);
-  await createDownloadIndexPage(graphql, createPage);
-  await createDuplicatePages(graphql, createPage);
-  await createTsneVisualizationPage(graphql, createPage);
+  for (const pageCreator of [
+    createMdxPages,
+    createCitationPages,
+    createWordCountsPages,
+    createBackupsPage,
+    createTaxonomyPages,
+    createDownloadIndexPage,
+    createDuplicatePages,
+    createTsneVisualizationPage,
+  ]) {
+    if (!(process.env.SKIP_PAGE_CREATOR || '').split(',').includes(pageCreator.name)) {
+      if (pageCreator.name == 'createMdxPages') {
+        await pageCreator(graphql, createPage, reporter);
+      } else {
+        await pageCreator(graphql, createPage);
+      }
+    }
+  }
 };
 
 exports.onCreateWebpackConfig = ({ actions }) => {
