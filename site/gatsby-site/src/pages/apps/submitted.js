@@ -107,10 +107,10 @@ const SubmittedIncidentsPage = ({ ...props }) => {
             </div>
           )}
           {sortedQuickAdds.map(({ _id, url, date_submitted }) => (
-            <ListGroup.Item key={_id} className="m-0 p-0">
+            <ListGroup.Item key={_id} className="m-0 p-2">
               <Card.Header>
                 <Row>
-                  <Col xs={12} sm={2} lg={2}>
+                  <Col xs={12} sm={2} lg={2} className="flex items-center">
                     <Button
                       variant="outline-secondary"
                       disabled={!isAdmin}
