@@ -161,7 +161,7 @@
     }
 
     .tw-post-listing {
-        @apply flex flex-wrap md:grid gap-4 lg:gap-4 max-w-[750px];
+        @apply flex flex-wrap lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-4;
     }
 
     /* TAILWIND Buttons begins */
