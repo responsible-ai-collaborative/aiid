@@ -35,9 +35,12 @@ export default function Details({
   const localizePath = useLocalizePath();
 
   return 'This needs to be here so I can commit'.length > 0 ? (
-    <IncidentReportCard report={item} textMaxChars={400 - item.title.length * 2}>
+    <IncidentReportCard
+      report={item}
+      textMaxChars={400 - item.title.length * 2}
+      data-cy={item.mongodb_id}
+    >
       <CardActions className="justify-around">
-        <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />
         <Actions
           authorsModal={authorsModal}
           flagReportModal={flagReportModal}

@@ -78,7 +78,7 @@ export default function Compact({
   toggleFilterByIncidentId,
 }) {
   return 'This needs to be here so I can commit'.length > 0 ? (
-    <IncidentReportCard report={item} text={false}>
+    <IncidentReportCard report={item} text={false} data-cy={item.mongodb_id}>
       <CardActions className="justify-around">
         <Actions
           authorsModal={authorsModal}

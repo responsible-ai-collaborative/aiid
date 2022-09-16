@@ -3,11 +3,12 @@ import { Card, Spinner } from 'flowbite-react';
 import { Image } from '../utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import md5 from 'md5';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink, useLocalization } from 'gatsby-theme-i18n';
 import { formatISO, format, parse } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import WebArchiveLink from 'components/ui/WebArchiveLink';
 import ReportText from 'components/reports/ReportText';
+import TranslationBadge from 'components/i18n/TranslationBadge';
 
 const CardActions = ({ children, position = 'row', className, style }) => (
   <div
@@ -47,6 +48,7 @@ const IncidentReportCard = (props) => {
     url,
     text,
     report_number,
+    language,
 
     // If the card represent a report,
     // the incident_id is the id of the corresponding incident.
@@ -69,6 +71,8 @@ const IncidentReportCard = (props) => {
   if (incident && report) {
     throw 'An IncidentReportCard can render an incident or a report, but not both';
   }
+
+  const { locale } = useLocalization();
 
   const { t } = useTranslation();
 
@@ -103,6 +107,9 @@ const IncidentReportCard = (props) => {
   if (date === undefined) {
     date = incident?.date || report?.date_published;
   }
+  if (language === undefined) {
+    language = report?.language || locale;
+  }
 
   const parsedDate = date ? parse(date, 'yyyy-MM-dd', new Date()) : null;
 
@@ -119,8 +126,8 @@ const IncidentReportCard = (props) => {
       <Image
         className={
           imagePosition == 'left'
-            ? 'object-cover absolute bottom-0 top-0 left-0 w-60 h-full'
-            : 'object-cover w-full aspect-[16/9]'
+            ? 'object-cover absolute bottom-0 top-0 left-0 w-60 h-full rounded-l-lg'
+            : 'object-cover w-full aspect-[16/9] rounded-t-lg'
         }
         publicID={cloudinary_id || `legacy/${md5(image_url)}`}
         transformation={fill().width(900)}
@@ -131,7 +138,7 @@ const IncidentReportCard = (props) => {
 
   return (
     <div data-cy={props['data-cy']} className={className} style={style} id={id}>
-      <Card style={{ overflow: 'hidden', position: 'relative', height: '100%' }}>
+      <Card style={{ position: 'relative', height: '100%' }}>
         {loading ? (
           <div className="text-center">
             <Spinner size="xl" />
@@ -188,6 +195,7 @@ const IncidentReportCard = (props) => {
                     {incident.reports.length == 1 ? t('report') : t('reports')}{' '}
                   </>
                 )}
+                <TranslationBadge originalLanguage={language} className="my-2 mr-1" />
                 {source_domain && <WebArchiveLink url={url}>{source_domain}</WebArchiveLink>}
               </div>
               {text && (

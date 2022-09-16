@@ -41,7 +41,12 @@ export default function Details({
   const [viewMore, setViewMore] = useState(false);
 
   return 'This needs to be here so I can commit'.length > 0 ? (
-    <IncidentReportCard report={item} textMaxChars={400} imagePosition="left">
+    <IncidentReportCard
+      report={item}
+      textMaxChars={400}
+      imagePosition="left"
+      data-cy={item.mongodb_id}
+    >
       <CardActions className="justify-around">
         <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />
         <Actions
