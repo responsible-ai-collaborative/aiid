@@ -113,6 +113,22 @@ const IncidentReportCard = (props) => {
   if (incident_id) {
     link = `/cite/${incident_id}` + (report_number ? `#r${report_number}` : '');
   }
+
+  const img = (
+    <>
+      <Image
+        className={
+          imagePosition == 'left'
+            ? 'object-cover absolute bottom-0 top-0 left-0 w-60 h-full'
+            : 'object-cover w-full aspect-[16/9]'
+        }
+        publicID={cloudinary_id || `legacy/${md5(image_url)}`}
+        transformation={fill().width(900)}
+        alt=""
+      />
+    </>
+  );
+
   return (
     <div data-cy={props['data-cy']} className={className} style={style} id={id}>
       <Card style={{ overflow: 'hidden', position: 'relative', height: '100%' }}>
@@ -127,26 +143,27 @@ const IncidentReportCard = (props) => {
               'h-full flex justify-start ' + (imagePosition == 'left' ? 'flex-row' : 'flex-col')
             }
           >
-            {(cloudinary_id || image_url) && (
-              <LocalizedLink
-                data-cy="image-container"
-                to={link}
-                className={
-                  imagePosition == 'left' ? 'h-full -m-6 mr-6 w-60 shrink-0' : '-m-6 mb-6 block'
-                }
-              >
-                <Image
+            {(cloudinary_id || image_url) &&
+              (link ? (
+                <LocalizedLink
+                  to={link}
+                  data-cy="image-container"
                   className={
-                    imagePosition == 'left'
-                      ? 'object-cover absolute bottom-0 top-0 left-0 w-60 h-full'
-                      : 'object-cover w-full aspect-[16/9]'
+                    imagePosition == 'left' ? 'h-full -m-6 mr-6 w-60 shrink-0' : '-m-6 mb-6 block'
                   }
-                  publicID={cloudinary_id || `legacy/${md5(image_url)}`}
-                  transformation={fill().width(900)}
-                  alt=""
-                />
-              </LocalizedLink>
-            )}
+                >
+                  {img}
+                </LocalizedLink>
+              ) : (
+                <div
+                  data-cy="image-container"
+                  className={
+                    imagePosition == 'left' ? 'h-full -m-6 mr-6 w-60 shrink-0' : '-m-6 mb-6 block'
+                  }
+                >
+                  {img}
+                </div>
+              ))}
             <div data-cy="card-content" className="h-full flex flex-col">
               <h3 className="text-lg" data-cy="title">
                 {link ? (
