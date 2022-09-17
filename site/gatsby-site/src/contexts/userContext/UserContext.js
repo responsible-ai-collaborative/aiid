@@ -33,6 +33,7 @@ export const UserContext = createContext({
     confirmEmail: ({ token, tokenId }) => {
       token;
       tokenId;
+      return new Promise(() => {});
     }
   },
 });
