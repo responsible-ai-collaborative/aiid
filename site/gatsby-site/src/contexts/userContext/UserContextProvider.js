@@ -124,7 +124,7 @@ export const UserContextProvider = ({ children }) => {
   };
 
   const confirmEmail = async ({ token, tokenId }) => {
-    return realmApp.emailPasswordAuth.confirmUser(token, tokenId);
+    return realmApp.emailPasswordAuth.confirmUser({token, tokenId});
   };
 
   const getValidAccessToken = async () => {
