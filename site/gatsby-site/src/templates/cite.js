@@ -161,10 +161,7 @@ function CitePage(props) {
       <Container>
         <Row>
           <Col>
-            <Card
-              data-cy="citation"
-              className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6"
-            >
+            <Card className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6">
               <Card.Header className="items-center justify-between">
                 <h4 className="m-0">
                   <Trans>Entities</Trans>
@@ -173,7 +170,7 @@ function CitePage(props) {
                   <Trans>View All Entities</Trans>
                 </Link>
               </Card.Header>
-              <Card.Body className="block">
+              <Card.Body className="block" data-cy="alleged-entities">
                 <AllegedEntities entities={entities} />
               </Card.Body>
             </Card>

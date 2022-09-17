@@ -47,7 +47,7 @@ function PartiesList({ entities }) {
 }
 
 export default function AllegedEntities({ entities }) {
-  const entitiesHarming = entities.filter((e) => e.incidentsHarmedBy.length === 0);
+  const entitiesHarming = entities.filter((e) => e.harmedEntities.length > 0);
 
   const entitiesHarmed = entities.filter((e) => e.incidentsHarmedBy.length > 0);
 
@@ -57,28 +57,26 @@ export default function AllegedEntities({ entities }) {
     )
   ) {
     return (
-      <div>
-        <Trans>
-          Alleged:{' '}
-          <EntitiesList entities={entitiesHarming.length ? entitiesHarming : entitiesHarmed} />{' '}
-          developed and deployed an AI system, which harmed{' '}
-          <PartiesList entities={entitiesHarmed} />.
-        </Trans>
-      </div>
+      <Trans>
+        Alleged:{' '}
+        <EntitiesList entities={entitiesHarming.length ? entitiesHarming : entitiesHarmed} />{' '}
+        developed and deployed an AI system, which harmed <PartiesList entities={entitiesHarmed} />.
+      </Trans>
     );
   }
 
-  const deployers = entities.filter((e) => e.incidentsAsDeployer.length > 0);
+  const deployers = entitiesHarming.filter(
+    (e) => e.incidentsAsDeployer.length > 0 || e.incidentsAsBoth.length > 0
+  );
 
-  const developers = entities.filter((e) => e.incidentsAsDeveloper.length > 0);
+  const developers = entitiesHarming.filter(
+    (e) => e.incidentsAsDeveloper.length > 0 || e.incidentsAsBoth.length > 0
+  );
 
   return (
-    <div>
-      <Trans>
-        Alleged: <EntitiesList entities={developers} /> developed an AI system deployed by{' '}
-        <EntitiesList entities={deployers} />, which harmed{' '}
-        <PartiesList entities={entitiesHarmed} />.
-      </Trans>
-    </div>
+    <Trans>
+      Alleged: <EntitiesList entities={developers} /> developed an AI system deployed by{' '}
+      <EntitiesList entities={deployers} />, which harmed <PartiesList entities={entitiesHarmed} />.
+    </Trans>
   );
 }

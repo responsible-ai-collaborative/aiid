@@ -327,4 +327,27 @@ describe('Cite pages', () => {
       cy.get('head meta[property="twitter:image"]').should('have.attr', 'content', imageUrl);
     });
   });
+
+  it('Should show proper entities card text', () => {
+    cy.visit('/cite/67/');
+
+    cy.get('[data-cy="alleged-entities"]').should(
+      'have.text',
+      'Alleged: Tesla developed an AI system deployed by Tesla  and  Motorist, which harmed Motorists.'
+    );
+
+    cy.visit('/cite/72/');
+
+    cy.get('[data-cy="alleged-entities"]').should(
+      'have.text',
+      'Alleged: Facebook developed and deployed an AI system, which harmed unnamed Palestinian Facebook user ,  Palestinian Facebook users ,  Arabic-speaking Facebook users  and  Facebook users.'
+    );
+
+    cy.visit('/cite/30');
+
+    cy.get('[data-cy="alleged-entities"]').should(
+      'have.text',
+      'Alleged: Tesla developed and deployed an AI system, which harmed Tesla.'
+    );
+  });
 });
