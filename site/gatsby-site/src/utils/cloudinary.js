@@ -167,7 +167,7 @@ const PreviewImageInputGroup = ({
           style={{ height: '50vh', marginTop: '1rem' }}
         >
           {updatingImage ? (
-            <Spinner />
+            <Spinner size="xl" />
           ) : (
             <Image publicID={cloudinaryID} style={{ maxHeight: '100%' }} alt="Selected image" />
           )}
