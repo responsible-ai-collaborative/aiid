@@ -73,20 +73,40 @@ const EntityPage = ({ pageContext, data, ...props }) => {
       </h3>
       <h1>{name}</h1>
 
-      {sections.map((section) => (
-        <div key={section.header}>
-          {entityIncidents[section.key].length > 0 && (
-            <>
-              <h4 className="mt-24">{section.header}</h4>
-              <div className="grid gap-4 grid-flow-row-dense md:grid-cols-2 mt-6">
-                {entityIncidents[section.key].map((incident) => (
-                  <IncidentCard key={incident.incident_id} incident={incident} />
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      ))}
+      {sections.map((section) => {
+        const [open, setOpen] = useState(false);
+
+        const visible = 4;
+
+        const hidden = entityIncidents[section.key].length - visible;
+
+        return (
+          <div key={section.header}>
+            {entityIncidents[section.key].length > 0 && (
+              <>
+                <h4 className="mt-24">{section.header}</h4>
+                <div className="grid gap-4 grid-flow-row-dense md:grid-cols-2 mt-6">
+                  {entityIncidents[section.key].map((incident, index) => {
+                    if (index >= visible && !open) {
+                      return null;
+                    }
+
+                    return <IncidentCard key={incident.incident_id} incident={incident} />;
+                  })}
+                </div>
+                {entityIncidents[section.key].length > 3 && (
+                  <button
+                    onClick={() => setOpen((open) => !open)}
+                    className="text-blue-700 border mt-4 ml-1 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-xs p-1.5 text-center inline-flex items-center mr-2  dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
+                  >
+                    {open ? <Trans>View Less</Trans> : <Trans>View ({{ hidden }}) more</Trans>}
+                  </button>
+                )}
+              </>
+            )}
+          </div>
+        );
+      })}
 
       {relatedEntitiesData.length > 0 && (
         <>
@@ -114,9 +134,9 @@ const EntityPage = ({ pageContext, data, ...props }) => {
                   return (
                     <Fragment key={section.key}>
                       <h5 className="mt-6">{section.header}</h5>
-                      <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+                      <ul className="divide-y divide-gray-200 dark:divide-gray-700 list-none">
                         {entity[section.key].sort(sortByReports).map((incident, index) => {
-                          if (index > 2 && !open) {
+                          if (index >= visible && !open) {
                             return null;
                           }
 
