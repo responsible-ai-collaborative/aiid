@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { OverlayTrigger, Form, Popover } from 'react-bootstrap';
+import { OverlayTrigger, Form, Popover as BootstrapPopover } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
-import UpdatingPopover from 'elements/UpdatingPopover';
+import Popover from 'elements/Popover';
 
 const Label = ({ popover, label }) => {
   const [show, setShow] = useState(false);
@@ -22,18 +22,18 @@ const Label = ({ popover, label }) => {
         <OverlayTrigger
           placement={'top'}
           overlay={
-            <UpdatingPopover data-cy={`popover-${popover}`}>
-              <Popover.Header as="h3">
+            <Popover data-cy={`popover-${popover}`}>
+              <BootstrapPopover.Header as="h3">
                 <Trans ns="popovers" i18nKey={`${popover}.title`} />
-              </Popover.Header>
-              <Popover.Body>
+              </BootstrapPopover.Header>
+              <BootstrapPopover.Body>
                 <Trans
                   ns="popovers"
                   i18nKey={`${popover}.text`}
                   components={{ linkto: <Link /> }}
                 />
-              </Popover.Body>
-            </UpdatingPopover>
+              </BootstrapPopover.Body>
+            </Popover>
           }
           {...(show ? { show } : {})}
         >

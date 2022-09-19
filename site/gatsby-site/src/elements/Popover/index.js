@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { Popover } from 'react-bootstrap';
+import { Popover as BootstrapPopover } from 'react-bootstrap';
 
 // This is used to force the popover to re-render to adjust correctly to the label's position
-const UpdatingPopover = React.forwardRef(({ popper, children, ...props }, ref) => {
+const Popover = React.forwardRef(({ popper, children, ...props }, ref) => {
   useEffect(() => {
     setTimeout(() => {
       popper.scheduleUpdate();
@@ -11,13 +11,13 @@ const UpdatingPopover = React.forwardRef(({ popper, children, ...props }, ref) =
 
   return (
     <div className="bootstrap">
-      <Popover ref={ref} {...props}>
+      <BootstrapPopover ref={ref} {...props}>
         {children}
-      </Popover>
+      </BootstrapPopover>
     </div>
   );
 });
 
-UpdatingPopover.displayName = 'UpdatingPopover';
+Popover.displayName = 'Popover';
 
-export default UpdatingPopover;
+export default Popover;
