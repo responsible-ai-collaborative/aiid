@@ -51,7 +51,15 @@ const SubmitForm = () => {
 
   const [query] = useQueryParams(queryConfig);
 
-  const [submission, setSubmission] = useState({ ...query });
+  const queryParams = { ...query };
+
+  for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
+    if (queryParams[key] && !Array.isArray(queryParams[key])) {
+      queryParams[key] = [queryParams[key]];
+    }
+  }
+
+  const [submission, setSubmission] = useState({ ...queryParams });
 
   const [csvData, setCsvData] = useState([]);
 
