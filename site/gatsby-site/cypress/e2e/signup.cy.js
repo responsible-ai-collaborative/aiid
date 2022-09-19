@@ -7,7 +7,10 @@ describe('Signup', () => {
 
   it('Should display success a toast message after a sign up', () => {
     cy.visit(url);
-    cy.get('input[name=email]').type('newUser@test.com');
+
+    const email = 'newUser@test.com';
+
+    cy.get('input[name=email]').type(email);
     cy.get('input[name=password]').type('newUserPassword');
     cy.get('input[name=passwordConfirm]').type('newUserPassword');
 
@@ -16,7 +19,7 @@ describe('Signup', () => {
     });
 
     cy.contains('Sign up').click();
-    cy.get('[data-cy="toast"]').contains('Account created').should('exist');
+    cy.get('[data-cy="toast"]').contains(`Verification email sent to ${email}`).should('exist');
   });
 
   it('Should display the error toast message if the user already exists', () => {

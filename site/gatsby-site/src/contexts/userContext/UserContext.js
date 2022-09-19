@@ -19,7 +19,7 @@ export const UserContext = createContext({
       loginRedirectUri;
       redirectTo;
     },
-    logout: () => {},
+    logout: () => { },
     sendResetPasswordEmail: ({ email }) => {
       email;
     },
@@ -33,6 +33,11 @@ export const UserContext = createContext({
       password;
       redirectTo;
     },
+    confirmEmail: ({ token, tokenId }) => {
+      token;
+      tokenId;
+      return new Promise(() => {});
+    }
   },
 });
 
