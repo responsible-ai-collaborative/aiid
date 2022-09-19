@@ -8,8 +8,11 @@ import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
 import { LocalizedLink } from 'gatsby-theme-i18n';
+import { useTranslation } from 'react-i18next';
 
 function EditCitePage(props) {
+  const { t } = useTranslation();
+
   const [incident, setIncident] = useState();
 
   const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
@@ -32,7 +35,15 @@ function EditCitePage(props) {
 
   const handleSubmit = async (values) => {
     try {
-      const updated = { ...values, reports: undefined, __typename: undefined };
+      const updated = {
+        ...values,
+        reports: undefined,
+        embedding: {
+          ...values.embedding,
+          __typename: undefined,
+        },
+        __typename: undefined,
+      };
 
       await updateIncident({
         variables: {
@@ -48,15 +59,18 @@ function EditCitePage(props) {
       addToast({
         message: (
           <>
-            <LocalizedLink to={'/cite/' + incidentId}>Incident {incidentId}</LocalizedLink> updated
-            successfully.
+            {t('Incident {{ incidentId }} updated.', { incidentId })}{' '}
+            <LocalizedLink to={'/cite/' + incidentId}>
+              {t('View incident {{ incidentId }}', { incidentId })}
+            </LocalizedLink>
+            .
           </>
         ),
         severity: SEVERITY.success,
       });
     } catch (e) {
       addToast({
-        message: `Error updating incident ${incident} \n ${e.message}`,
+        message: t('Error updating incident {{ incidentId }}', { incidentId }),
         severity: SEVERITY.danger,
       });
     }

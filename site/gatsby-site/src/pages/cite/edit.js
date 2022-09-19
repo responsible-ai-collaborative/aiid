@@ -19,6 +19,7 @@ import pick from 'lodash/pick';
 import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
 import { gql, useApolloClient } from '@apollo/client';
 import RelatedIncidents from 'components/RelatedIncidents';
+import { useTranslation } from 'react-i18next';
 
 const UPDATE_REPORT_TRANSLATION = gql`
   mutation UpdateReportTranslation($input: UpdateOneReportTranslationInput) {
@@ -82,6 +83,8 @@ const incidentEmbedding = (reports) => {
 };
 
 function EditCitePage(props) {
+  const { t } = useTranslation();
+
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
 
   const { data: reportData, loading: loadingReport } = useQuery(FIND_REPORT_WITH_TRANSLATIONS, {
@@ -117,6 +120,29 @@ function EditCitePage(props) {
   const client = useApolloClient();
 
   const handleSubmit = async (values) => {
+    addToast({
+      message: t(`Error updating incident report {{reportNumber}}`, { reportNumber }),
+      severity: SEVERITY.danger,
+    });
+    addToast({
+      message: (
+        <>
+          {t('Incident report {{ reportNumber }} updated successfully.', { reportNumber })}{' '}
+          <LocalizedLink to={'/cite/' + values.incident_id}>
+            {t('View Incident {{ incidentId }}', { incidentId: values.incident_id })}.
+          </LocalizedLink>
+        </>
+      ),
+      severity: SEVERITY.success,
+    });
+    addToast({
+      message: t(`Incident report {{reportNumber}} deleted successfully.`, { reportNumber }),
+      severity: SEVERITY.success,
+    });
+    addToast({
+      message: t(`Error deleting incident report {{reportNumber}}`, { reportNumber }),
+      severity: SEVERITY.danger,
+    });
     try {
       if (typeof values.authors === 'string') {
         values.authors = values.authors.split(',').map((s) => s.trim());
@@ -233,9 +259,9 @@ function EditCitePage(props) {
       addToast({
         message: (
           <>
-            Incident report {reportNumber} updated successfully.{' '}
+            {t('Incident report {{ reportNumber }} updated successfully.', { reportNumber })}{' '}
             <LocalizedLink to={'/cite/' + values.incident_id}>
-              View Incident {values.incident_id}.
+              {t('View Incident {{ incidentId }}', { incidentId: values.incident_id })}.
             </LocalizedLink>
           </>
         ),
@@ -243,7 +269,7 @@ function EditCitePage(props) {
       });
     } catch (e) {
       addToast({
-        message: `Error updating incident report ${reportNumber}`,
+        message: t(`Error updating incident report {{reportNumber}}`, { reportNumber }),
         severity: SEVERITY.danger,
       });
     }
@@ -298,12 +324,12 @@ function EditCitePage(props) {
       });
 
       addToast({
-        message: `Incident report ${reportNumber} deleted successfully.`,
+        message: t(`Incident report {{reportNumber}} deleted successfully.`, { reportNumber }),
         severity: SEVERITY.success,
       });
     } catch (e) {
       addToast({
-        message: `Error deleting incident report ${reportNumber}`,
+        message: t(`Error deleting incident report {{reportNumber}}`, { reportNumber }),
         severity: SEVERITY.danger,
       });
     }
@@ -342,7 +368,7 @@ function EditCitePage(props) {
                 className="mt-3 text-danger"
                 variant="link"
                 onClick={() => {
-                  confirm('Sure you want to delete this report?') && handleDelete();
+                  confirm(t('Sure you want to delete this report?')) && handleDelete();
                 }}
               >
                 Delete this report
