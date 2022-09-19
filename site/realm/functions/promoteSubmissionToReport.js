@@ -97,7 +97,8 @@ exports = async (input) => {
     submitters: [],
     text: '',
     url: '',
-    source_domain: ''
+    source_domain: '',
+    is_incident_report: true,
   };
   if (submission.embedding) {
     newReport.embedding = submission.embedding;
