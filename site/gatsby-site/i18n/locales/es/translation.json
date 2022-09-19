@@ -112,7 +112,7 @@
   "Sure you want to delete this report?" : "~Sure you want to delete this report?",
   "Incident report {{reportNumber}} deleted successfully.": "~Incident report {{reportNumber}} deleted successfully.",
   "Error deleting incident report {{reportNumber}}": "~Error deleting incident report {{reportNumber}}",
-  "Incident {{ incidentId }} updated.": "~Incident {{ incidentId }} updated.",
+  "Incident {{ incidentId }} updated successfully.": "~Incident {{ incidentId }} updated successfully.",
   "Error updating incident {{ incidentId }}": "~Error updating incident {{ incidentId }}",
   "View Incident {{ incidentId }}": "~View Incident {{ incidentId }}",
   "Fetching Incidents...": "Cargando Incidentes...",
