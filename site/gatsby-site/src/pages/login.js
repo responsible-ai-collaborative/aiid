@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
-<<<<<<< HEAD
-import { Form, Spinner } from 'react-bootstrap';
-=======
 import { Form } from 'react-bootstrap';
 import { Spinner } from 'flowbite-react';
->>>>>>> staging-REMOTE
 import { useUserContext } from '../contexts/userContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
