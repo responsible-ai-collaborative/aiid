@@ -1,7 +1,7 @@
-const TEMPLATE_ID = "d-bc63fc7a96604d02ae60b49636633840"; // SendGrid Template name: "Confirm email"
+const TEMPLATE_ID = "d-e9e4033e4b2b4ebcadfa9dc0e9c6b015"; // SendGrid Template name: "Password reset"
 const SENDER = "notifications@incidentdatabase.ai";
 
-exports = async ({ token, tokenId, username }) => {
+exports = async ({ token, tokenId, username, password }) => {
 
     const sendGridApiUrl = "https://api.sendgrid.com/v3/mail/send";
 
@@ -36,7 +36,7 @@ exports = async ({ token, tokenId, username }) => {
 */
 function BuildEmailData(token, tokenId, username) {
 
-    var subject = "Confirm your email address";
+    var subject = "Here's a link to reset your password";
 
     const emailData = {
         "from": {

@@ -533,8 +533,9 @@ About Facebook Authentication instructions: https://www.mongodb.com/docs/realm/w
 To allow email notifications add these secret values to your Atlas App Service following the instructions in the [Atlas App Services documentation](https://www.mongodb.com/docs/atlas/app-services/values-and-secrets/define-and-manage-secrets/).
 
 ```
+SendGridApiKey = [SendGrid API key from https://app.sendgrid.com/settings/api_keys]
 publicApiKey = [Public API key from the Atlas Organization. See comment below for more information]
-publicApiKey = [Private API key from the Atlas Organization. See comment below for more information]
+privateApiKey = [Private API key from the Atlas Organization. See comment below for more information]
 groupId = [Atlas Service App group ID, ie: "62cc90978bc4600cafdcf16e"]
 appId = [Atlas Service App ID, ie: "62cc98647e6a26c53d5b4b53"]
 ```
