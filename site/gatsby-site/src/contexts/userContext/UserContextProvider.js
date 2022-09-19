@@ -65,7 +65,7 @@ export const UserContextProvider = ({ children }) => {
     password = null,
     provider = null,
     loginRedirectUri = null,
-    redirectToHomePage = false,
+    redirectTo = null,
   } = {}) => {
     try {
       setLoading(true);
@@ -82,8 +82,8 @@ export const UserContextProvider = ({ children }) => {
 
       const user = await realmApp.logIn(credentials);
 
-      if (redirectToHomePage) {
-        navigate(localizePath({ path: `/` }));
+      if (redirectTo) {
+        navigate(localizePath({ path: redirectTo }));
       }
 
       if (user.id === realmApp.currentUser.id) {
@@ -103,12 +103,12 @@ export const UserContextProvider = ({ children }) => {
     }
   };
 
-  const loginWithEmail = async ({ email, password }) => {
-    return await login({ email, password, redirectToHomePage: true });
+  const loginWithEmail = async ({ email, password, redirectTo }) => {
+    return await login({ email, password, redirectTo });
   };
 
-  const loginWithFacebook = async ({ loginRedirectUri }) => {
-    await login({ provider: 'facebook', loginRedirectUri, redirectToHomePage: true });
+  const loginWithFacebook = async ({ loginRedirectUri, redirectTo }) => {
+    await login({ provider: 'facebook', loginRedirectUri, redirectTo });
   };
 
   const sendResetPasswordEmail = async ({ email }) => {
@@ -119,8 +119,11 @@ export const UserContextProvider = ({ children }) => {
     return realmApp.emailPasswordAuth.resetPassword(token, tokenId, password);
   };
 
-  const signUp = async ({ email, password }) => {
-    return realmApp.emailPasswordAuth.registerUser(email, password);
+  const signUp = async ({ email, password, redirectTo }) => {
+    await realmApp.emailPasswordAuth.registerUser(email, password);
+    if (redirectTo) {
+      navigate(localizePath({ path: redirectTo }));
+    }
   };
 
   const getValidAccessToken = async () => {
