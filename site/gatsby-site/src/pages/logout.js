@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import Layout from '../components/Layout';
-import { Spinner } from 'react-bootstrap';
-import { useUserContext } from 'contexts/userContext';
+import { Spinner } from 'flowbite-react';
+import { useUserContext } from '../contexts/userContext';
 import { navigate } from 'gatsby';
 import { Trans } from 'react-i18next';
-import useLocalizePath from 'components/i18n/useLocalizePath';
+import useLocalizePath from '../components/i18n/useLocalizePath';
 
 const Logout = (props) => {
   const {
@@ -24,8 +24,10 @@ const Logout = (props) => {
 
   return (
     <Layout {...props} className="bootstrap">
-      <Spinner animation="border" size="sm" role="status" aria-hidden="true" />{' '}
-      <Trans ns="login">Logging you out...</Trans>
+      <div className="flex flex-wrap gap-2">
+        <Spinner />
+        <Trans ns="login">Logging you out...</Trans>
+      </div>
     </Layout>
   );
 };

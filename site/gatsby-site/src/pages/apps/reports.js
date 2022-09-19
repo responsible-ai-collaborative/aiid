@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import AiidHelmet from 'components/AiidHelmet';
-import LayoutHideSidebar from 'components/LayoutHideSidebar';
+import AiidHelmet from '../../components/AiidHelmet';
+import LayoutHideSidebar from '../../components/LayoutHideSidebar';
 import { format } from 'date-fns';
-import Link from 'components/ui/Link';
-import { StyledHeading } from 'components/styles/Docs';
+import Link from '../../components/ui/Link';
+import { StyledHeading } from '../../components/styles/Docs';
 import styled from 'styled-components';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
-import { Table, InputGroup, FormControl, Form, Button, Spinner } from 'react-bootstrap';
+import { Table, InputGroup, FormControl, Form, Button } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
 import { gql, useQuery } from '@apollo/client';
+import { Trans } from 'react-i18next';
 
 const TableStyles = styled.div`
   padding: 1rem 1rem 1rem 0;
@@ -451,9 +453,9 @@ export default function Incidents(props) {
       </AiidHelmet>
 
       {loading && (
-        <div className="p-2">
-          <Spinner animation="border" size="sm" role="status" aria-hidden="true" /> Fetching
-          Reports...
+        <div className="p-4 flex justify-center align-items-center gap-2">
+          <Spinner />
+          <Trans>Fetching Reports...</Trans>
         </div>
       )}
 
