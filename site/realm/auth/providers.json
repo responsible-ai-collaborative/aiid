@@ -15,10 +15,9 @@
         "config": {
             "autoConfirm": false,
             "confirmationFunctionName": "confirmUser",
-            "resetPasswordSubject": "",
-            "resetPasswordUrl": "https://incidentdatabase.ai/resetpassword",
+            "resetFunctionName": "passwordReset",
             "runConfirmationFunction": true,
-            "runResetFunction": false
+            "runResetFunction": true
         },
         "disabled": false
     },
