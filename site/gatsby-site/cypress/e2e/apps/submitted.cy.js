@@ -1,5 +1,6 @@
 import { maybeIt } from '../../support/utils';
 import submittedReports from '../../fixtures/submissions/submitted.json';
+import quickAdds from '../../fixtures/submissions/quickadds.json';
 import { format, getUnixTime } from 'date-fns';
 
 describe('Submitted reports', () => {
@@ -13,9 +14,22 @@ describe('Submitted reports', () => {
       submittedReports
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'AllQuickAdd',
+      'AllQuickAdd',
+      {
+        data: {
+          quickadds: [quickAdds],
+        },
+      }
+    );
+
     cy.visit(url);
 
     cy.wait('@FindSubmission');
+
+    cy.wait('@AllQuickAdd');
 
     const submissions = submittedReports.data.submissions;
 
@@ -69,11 +83,24 @@ describe('Submitted reports', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'AllQuickAdd',
+      'AllQuickAdd',
+      {
+        data: {
+          quickadds: [quickAdds],
+        },
+      }
+    );
+
     cy.visit(url);
 
     cy.wait('@FindSubmissions');
 
-    cy.get('[data-cy="submissions"] > div:nth-child(1)').as('promoteForm');
+    cy.wait('@AllQuickAdd');
+
+    cy.get('[data-cy="submission"]').first().as('promoteForm');
 
     cy.get('@promoteForm').contains('review >').click();
 
@@ -208,11 +235,24 @@ describe('Submitted reports', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'AllQuickAdd',
+      'AllQuickAdd',
+      {
+        data: {
+          quickadds: [quickAdds],
+        },
+      }
+    );
+
     cy.visit(url);
 
     cy.wait('@FindSubmissions');
 
-    cy.get('[data-cy="submissions"] > div:nth-child(1)').as('promoteForm');
+    cy.wait('@AllQuickAdd');
+
+    cy.get('[data-cy="submission"]').first().as('promoteForm');
 
     cy.get('@promoteForm').contains('review >').click();
 
@@ -322,11 +362,24 @@ describe('Submitted reports', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'AllQuickAdd',
+      'AllQuickAdd',
+      {
+        data: {
+          quickadds: [quickAdds],
+        },
+      }
+    );
+
     cy.visit(url);
 
     cy.wait('@FindSubmissions');
 
-    cy.get('[data-cy="submissions"] > div:nth-child(1)').as('promoteForm');
+    cy.wait('@AllQuickAdd');
+
+    cy.get('[data-cy="submission"]').first().as('promoteForm');
 
     cy.get('@promoteForm').contains('review >').click();
 
@@ -375,7 +428,7 @@ describe('Submitted reports', () => {
 
     cy.wait('@FindSubmissions');
 
-    cy.get('[data-cy="submissions"] > div:nth-child(1)').as('promoteForm');
+    cy.get('[data-cy="submission"]').first().as('promoteForm');
 
     cy.get('@promoteForm').contains('review >').click();
 
@@ -444,11 +497,24 @@ describe('Submitted reports', () => {
         }
       );
 
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'AllQuickAdd',
+        'AllQuickAdd',
+        {
+          data: {
+            quickadds: [quickAdds],
+          },
+        }
+      );
+
       cy.visit(url);
 
       cy.wait('@FindSubmissions');
 
-      cy.get('[data-cy="submissions"] > div:nth-child(1)').as('promoteForm');
+      cy.wait('@AllQuickAdd');
+
+      cy.get('[data-cy="submission"]').first().as('promoteForm');
 
       cy.get('@promoteForm').contains('review >').click();
 

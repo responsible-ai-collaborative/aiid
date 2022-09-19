@@ -1,7 +1,7 @@
 import React from 'react';
 import { connectHits, connectStateResults } from 'react-instantsearch-dom';
 import Hit from './Hit';
-import { Spinner } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
 import { DisplayModeEnumParam } from './queryParams';
 import { useQueryParam } from 'use-query-params';
 
@@ -16,9 +16,7 @@ const Hits = ({
   if (isSearchStalled) {
     return (
       <div className="tw-no-results bootstrap">
-        <Spinner animation="border" role="status" variant="primary">
-          <span className="sr-only">Loading...</span>
-        </Spinner>
+        <Spinner size={'xl'} />
       </div>
     );
   }

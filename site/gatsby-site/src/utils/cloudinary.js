@@ -5,8 +5,8 @@ import { defaultImage, format, quality } from '@cloudinary/base/actions/delivery
 import { auto } from '@cloudinary/base/qualifiers/format';
 import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
 import config from '../../config';
-import TextInputGroup from 'components/forms/TextInputGroup';
-import { Spinner } from 'react-bootstrap';
+import TextInputGroup from '../components/forms/TextInputGroup';
+import { Spinner } from 'flowbite-react';
 import { isWebUri } from 'valid-url';
 import { Trans } from 'react-i18next';
 
@@ -20,7 +20,7 @@ const getCloudinaryPublicID = (url) => {
 
 const Image = ({
   publicID,
-  className,
+  className = '',
   alt,
   transformation = null,
   plugins = [lazyload()],
@@ -167,9 +167,9 @@ const PreviewImageInputGroup = ({
           style={{ height: '50vh', marginTop: '1rem' }}
         >
           {updatingImage ? (
-            <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" />
+            <Spinner size="xl"/>
           ) : (
-            <Image publicID={cloudinaryID} style={{ maxHeight: '100%' }} />
+            <Image publicID={cloudinaryID} style={{ maxHeight: '100%' }} alt="Selected image"/>
           )}
         </div>
         <figcaption className="mt-2">

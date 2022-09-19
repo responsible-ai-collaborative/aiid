@@ -4,6 +4,7 @@
   "Report Address": "URL del Informe",
   "submitReviewDescription": "Los informes enviados se agregan a una <1>cola de revisión </1> para que se resuelvan en un registro de incidente nuevo o existente. Los incidentes se revisan y fusionan en la base de datos después de que haya suficientes incidentes pendientes.",
   "Fetch info": "Obtener información",
+  "Fetching...": "Obteniendo...",
   "Title": "Título",
   "Report title": "Título del Informe",
   "Author(s)": "Autores",

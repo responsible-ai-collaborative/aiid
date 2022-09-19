@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { ListGroup, Spinner, Button, ButtonToolbar } from 'react-bootstrap';
+import { ListGroup, Button, ButtonToolbar } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
 import SimilaritySelector from './SimilaritySelector';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
@@ -95,9 +96,9 @@ const RelatedIncidentsArea = ({
   return (
     <div className="bootstrap">
       <ListContainer data-cy={`related-${columnKey}`} className={listOpened ? 'open' : ''}>
-        <ListGroup.Item variant="secondary" key={'header'}>
+        <ListGroup.Item variant="secondary" key={'header'} className="flex gap-1">
           {header}
-          {loading && <Spinner animation="border" size="sm" className="ms-2" />}
+          {loading && <Spinner size={'sm'} />}
         </ListGroup.Item>
         <div className={reportsOpened ? 'reports open' : 'reports'}>
           {(reports || incidents) &&
