@@ -12,6 +12,10 @@
         "private": true
     },
     {
+        "name": "passwordReset",
+        "private": true
+    },
+    {
         "name": "promoteSubmissionToReport",
         "private": false
     },

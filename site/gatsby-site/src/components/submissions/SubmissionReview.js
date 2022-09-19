@@ -20,7 +20,7 @@ import { FIND_SUBSCRIPTIONS } from '../../graphql/subscriptions';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, getUnixTime } from 'date-fns';
 import SubmissionEditModal from './SubmissionEditModal';
-import { Spinner } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
 import Link from '../../components/ui/Link';
 import { Trans, useTranslation } from 'react-i18next';
 import sendEmail from '../../utils/email';
@@ -245,9 +245,9 @@ const SubmissionReview = ({ submission }) => {
   });
 
   return (
-    <div className="bootstrap">
+    <>
       <Card.Header data-cy="submission">
-        <Row>
+        <Row className="flex items-center p-2">
           <Col xs={12} sm={2} lg={2}>
             <Button
               onClick={() => setOpen(!open)}
@@ -304,9 +304,9 @@ const SubmissionReview = ({ submission }) => {
               <RelatedIncidents incident={submission} />
             </div>
           )}
-          <Card.Footer className="flex text-muted-gray">
+          <Card.Footer className="flex text-muted-gray m-3">
             <Button
-              className="me-auto"
+              className="mr-auto"
               data-cy="edit-submission"
               disabled={!isSubmitter}
               onClick={() => setIsEditing(true)}
@@ -314,48 +314,34 @@ const SubmissionReview = ({ submission }) => {
               <FontAwesomeIcon icon={faEdit} />
             </Button>
             <Button
-              className="me-2"
+              className="mr-2 text-xs md:text-base"
               variant="outline-primary"
               disabled={!isSubmitter || promoting}
               onClick={promoteSubmission}
             >
-              {isNewIncident ? (
-                <Trans ns="submitted">Add New Incident</Trans>
-              ) : (
-                <Trans ns="submitted">Add New Report</Trans>
-              )}
-              {promoting && (
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                  className="ms-2 bootstrap"
-                />
-              )}
+              <div className="flex gap-2">
+                {promoting && <Spinner size="sm" />}
+                {isNewIncident ? (
+                  <Trans ns="submitted">Add New Incident</Trans>
+                ) : (
+                  <Trans ns="submitted">Add New Report</Trans>
+                )}
+              </div>
             </Button>
             <Button
               variant="outline-secondary"
               disabled={!isSubmitter || deleting}
               onClick={rejectReport}
+              className="text-xs md:text-base"
             >
-              {isNewIncident ? (
-                <Trans ns="submitted">Reject New Incident</Trans>
-              ) : (
-                <Trans ns="submitted">Reject New Report</Trans>
-              )}
-              {deleting && (
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                  className="ms-2"
-                  variant="secondary"
-                />
-              )}
+              <div className="flex gap-2">
+                {deleting && <Spinner size="sm" />}
+                {isNewIncident ? (
+                  <Trans ns="submitted">Reject New Incident</Trans>
+                ) : (
+                  <Trans ns="submitted">Reject New Report</Trans>
+                )}
+              </div>
             </Button>
           </Card.Footer>
         </div>
@@ -365,7 +351,7 @@ const SubmissionReview = ({ submission }) => {
         onHide={() => setIsEditing(false)}
         submissionId={submission._id}
       />
-    </div>
+    </>
   );
 };
 

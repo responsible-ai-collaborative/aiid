@@ -116,5 +116,10 @@
   "Continue": "Continuar",
   "You have successfully unsubscribed.": "Has cancelado tu suscripción correctamente.",
   "You have successfully subscribed to updates on incident {{incidentId}}": "Te has suscrito con éxito a las actualizaciones sobre el incidente {{incidentId}}",
-  "Spatial Visualization": "Visualización espacial"
+  "Fetching Incidents...": "Cargando Incidentes...",
+  "Fetching Reports...": "Cargando informes...",
+  "Spatial Visualization": "Visualización espacial",
+  "Thank you for verifying your account.": "Gracias por verificar tu cuenta.",
+  "Read more": "Leer más",
+  "Table View": "Vista Tabular"
 }

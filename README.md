@@ -29,6 +29,38 @@ The steps for contributing changes are the following,
 
 Please make sure your code is well organized and commented before opening the pull request.
 
+## AIID Engineering Process
+
+The AI Incident Database is an open source project inviting contributions from the global community. Anyone with code changes that advance the change thesis of making the world better in the future by remembering the negative outcomes of the past are welcome to submit pull requests. To ensure that submitted changes are likely to be accepted, we recommend becoming familiar with the manner in which we organize our work items and open an issue on GitHub.
+
+The process of completing work through GitHub issues at the highest level is:
+Create Issue -> Assign Issue -> Review and Publish
+
+Labels help streamline the process and ensure issues do not get lost or neglected. Label [descriptions are on GitHub](https://github.com/responsible-ai-collaborative/aiid/labels). The following describes when/how to use a label.
+
+### Create Issue
+
+1. Consider if the issue is an Initiative, Epic, or Story. All engineering issues aside from Bugs should fall in one of these categories and be assigned a label. Other types of issues (ex: Data Editor-related) may not have this label.
+
+  ![](https://user-images.githubusercontent.com/25443411/188503602-9c93c699-5008-495f-8684-a1f18e82afea.png)
+
+2. Apply a descriptor label (when applicable):
+
+  ![](https://user-images.githubusercontent.com/25443411/188503793-039496b3-0256-4643-9dbd-e077b0dd3024.png)
+
+### Assign Issue
+
+Add the label “Current Backlog” to trigger assigning a contributor. Either the assigner or the contributor adds the issue’s priority and effort labels.
+
+![](https://user-images.githubusercontent.com/25443411/188503632-e27a4b6e-549e-4bbf-ad9c-2e123a2df75e.png)
+
+### Review and Publish:
+
+Once the issue has a deliverable output(s), use the Pull Request (PR) labels to move through the workflow to review and publish.
+
+![](https://user-images.githubusercontent.com/25443411/188503429-b38012fa-944b-49db-afbd-29ebca64e3b2.png)
+
+
 ## PR labeling strategy
 
 On a daily basis, all PRs should be labeled with one of the review process tags:
@@ -477,30 +509,41 @@ About Realm API Keys: https://www.mongodb.com/docs/realm/authentication/api-key/
 
 ## Social Networks login integration
 
-To enable social network logins, you will need to add the following configuration to your Atlas App Service.
+To enable social network login, you will need to add the following configuration to your Atlas App Service.
 
-Add these secret values to your Atlas App Service following the instructions in the [Atlas App Services documentation](https://www.mongodb.com/docs/atlas/app-services/values-and-secrets/define-and-manage-secrets/).
+Add this secret value to your Atlas App Service following the instructions in the [Atlas App Services documentation](https://www.mongodb.com/docs/atlas/app-services/values-and-secrets/define-and-manage-secrets/).
 
 ```
 facebookAppSecret = [Facebook App Secret, see comment below for more information]
-googleClientSecret = [Google Client Secret, see comment below for more information]
 ```
 
 - To get the Facebook App Secret you should go to the [Facebook Developer Portal](https://developers.facebook.com/apps/), and click on your app > Settings > Basic.
-- To get the Google Client Secret you should go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials), and click on the OAuth 2.0 Client ID item.
 
 On Facebook Authentication settings, set the "Client ID" with the Facebook App Id. To get the Facebook App ID you should go to the [Facebook Developer Portal](https://developers.facebook.com/apps/), and check your app.
-
-On Google Authentication settings, set the "Client ID" with the Google Client ID (OAuth 2.0 Client ID). In order to get the Google Client ID (OAuth 2.0 Client ID) you should set up an OAuth 2.0 following these [instructions](https://support.google.com/cloud/answer/6158849?hl=en). After set it up, you can find the Google Client ID in your [Google Cloud Console](https://console.cloud.google.com/apis/credentials).
-
 
 Redirect URIs, is the URL that the user will be redirected to after successfully authenticating with Facebook or Google. It should point to `/logincallback` page. For Production the URI is `https://incidentdatabase.ai/logincallback`, for Staging the URI is `https://staging-aiid.netlify.app/logincallback`
 
 
 About Facebook Authentication instructions: https://www.mongodb.com/docs/realm/web/authenticate/#facebook-authentication
 
-About Google Authentication instructions: https://www.mongodb.com/docs/realm/web/authenticate/#google-authentication
+## Email subscriptions
 
+[Sendgrid](https://sendgrid.com/) is used to send email notifications.
+
+To allow email notifications add these secret values to your Atlas App Service following the instructions in the [Atlas App Services documentation](https://www.mongodb.com/docs/atlas/app-services/values-and-secrets/define-and-manage-secrets/).
+
+```
+SendGridApiKey = [SendGrid API key from https://app.sendgrid.com/settings/api_keys]
+publicApiKey = [Public API key from the Atlas Organization. See comment below for more information]
+privateApiKey = [Private API key from the Atlas Organization. See comment below for more information]
+groupId = [Atlas Service App group ID, ie: "62cc90978bc4600cafdcf16e"]
+appId = [Atlas Service App ID, ie: "62cc98647e6a26c53d5b4b53"]
+```
+
+To get your Public and Private API Key, follow these [instructions](https://www.mongodb.com/docs/atlas/configure-api-access/#std-label-create-org-api-key).
+
+To get the group ID and the app ID, the easiest way is to navigate to your Atlas Service App dashboard and copy from the URL.
+The URL format is https://realm.mongodb.com/groups/[groupId]/apps/[appId]/dashboard
 
 ## Contact
 

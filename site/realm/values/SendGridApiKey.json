@@ -1,0 +1,5 @@
+{
+    "name": "SendGridApiKey",
+    "value": "SendGridApiKey",
+    "from_secret": true
+}
