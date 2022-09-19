@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { OverlayTrigger, Popover as BootstrapPopover } from 'react-bootstrap';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
 import Markdown from 'react-markdown';
 import TaxonomyForm from './TaxonomyForm';
 import { Trans } from 'react-i18next';
 import Card from 'elements/Card';
 import Button from 'elements/Button';
-import Popover from 'elements/Popover';
+import PopoverWrapper from 'elements/PopoverWrapper';
 
 const renderTooltip = (props, displayText) => (
-  <Popover {...props}>
-    <BootstrapPopover.Body>{displayText}</BootstrapPopover.Body>
-  </Popover>
+  <PopoverWrapper {...props}>
+    <Popover.Body>{displayText}</Popover.Body>
+  </PopoverWrapper>
 );
 
 const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {

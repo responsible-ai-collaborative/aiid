@@ -10,8 +10,8 @@ import {
   timeMonth,
   timeWeek,
 } from 'd3';
-import { OverlayTrigger, Popover as BootstrapPopover } from 'react-bootstrap';
-import Popover from 'elements/Popover';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
+import PopoverWrapper from 'elements/PopoverWrapper';
 
 const formatDay = timeFormat('%b %d');
 
@@ -67,8 +67,8 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
             trigger="click"
             rootClose={true}
             overlay={
-              <Popover>
-                <BootstrapPopover.Body>
+              <PopoverWrapper>
+                <Popover.Body>
                   <ul className="m-0 p-0 list-none">
                     {bucket.slice(1).map((b) => (
                       <li className="text-[12px] mt-[6px] first:mt-[0%]" key={b.mongodb_id}>
@@ -82,8 +82,8 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
                       </li>
                     ))}
                   </ul>
-                </BootstrapPopover.Body>
-              </Popover>
+                </Popover.Body>
+              </PopoverWrapper>
             }
           >
             <foreignObject x={-8} y={-8} width={16} height={16}>
