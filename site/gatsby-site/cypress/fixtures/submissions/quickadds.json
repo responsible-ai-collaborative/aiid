@@ -1,0 +1,475 @@
+{
+    "data": {
+        "quickadds": [
+            {
+                "__typename": "Quickadd",
+                "_id": "5f8cce8c5e48da1847ef9ce4",
+                "date_submitted": "2020-10-18",
+                "source_domain": "www.brusselstimes.com",
+                "url": "https://www.brusselstimes.com/all-news/belgium-all-news/politics/106320/xr-belgium-posts-deepfake-of-belgian-premier-linking-covid-19-with-climate-crisis/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5fc6e045a476d2d8102ce5a2",
+                "date_submitted": "2020-12-02",
+                "source_domain": "arstechnica.com",
+                "url": "https://arstechnica.com/information-technology/2020/12/amazon-to-roll-out-tools-to-monitor-factory-workers-and-machines/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5f8ccea47105801c878bd562",
+                "date_submitted": "2020-10-18",
+                "source_domain": "www.technologyreview.com",
+                "url": "https://www.technologyreview.com/2020/06/23/1004333/ai-science-publishers-perpetuate-racist-face-recognition"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5f8ccec8475a62fb16f82320",
+                "date_submitted": "2020-10-18",
+                "source_domain": "venturebeat.com",
+                "url": "https://venturebeat.com/2020/09/15/google-meet-hardware-promises-ai-features-starting-at-2700/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5f8cced57105801c878be9aa",
+                "date_submitted": "2020-10-18",
+                "source_domain": "thenextweb.com",
+                "url": "https://thenextweb.com/neural/2020/10/07/someone-let-a-gpt-3-bot-loose-on-reddit-it-didnt-end-well/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5fc5dddf5a08a8112e70308b",
+                "date_submitted": "2020-12-01",
+                "source_domain": "www.insidehook.com",
+                "url": "https://www.insidehook.com/daily_brief/vehicles/dubai-police-hoversurf-hoverbike-crash-video"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5fd83df5e74359c20743b285",
+                "date_submitted": "2020-12-15",
+                "source_domain": "www.insidehighered.com",
+                "url": "https://www.insidehighered.com/admissions/article/2020/12/14/u-texas-will-stop-using-controversial-algorithm-evaluate-phd"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5fde7009e68bed98304878d4",
+                "date_submitted": "2020-12-19",
+                "source_domain": "www.washingtonpost.com",
+                "url": "https://www.washingtonpost.com/business/2019/11/11/apple-card-algorithm-sparks-gender-bias-allegations-against-goldman-sachs/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5ffcb61486ed7e93c1af70b3",
+                "date_submitted": "2021-01-11",
+                "source_domain": "www.forbes.com",
+                "url": "https://www.forbes.com/sites/kennethcorbin/2019/03/28/hud-suing-facebook-for-housing-discrimination/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "6011ad38cabeb70d8a233515",
+                "date_submitted": "2021-01-27",
+                "source_domain": "www.theverge.com",
+                "url": "https://www.theverge.com/2020/10/20/21519322/deepfake-fake-nudes-telegram-bot-deepnude-sensity-report"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "6093322b88b4938e37352ea4",
+                "date_submitted": "2021-05-06",
+                "source_domain": "www.washingtonpost.com",
+                "url": "https://www.washingtonpost.com/health/2019/10/24/racial-bias-medical-algorithm-favors-white-patients-over-sicker-black-patients/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "60a2c73e9814d95f80ae9f18",
+                "date_submitted": "2021-05-17",
+                "source_domain": "www.cnbc.com",
+                "url": "https://www.cnbc.com/2018/08/08/transgender-uber-driver-suspended-tech-oversight-facial-recognition.html"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "60b8743062bb6668c6e276f7",
+                "date_submitted": "2021-06-03",
+                "source_domain": "www.wired.com",
+                "url": "https://www.wired.com/story/ai-fueled-dungeon-game-got-much-darker/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "60b91a9c646de5c50fcde39e",
+                "date_submitted": "2021-06-03",
+                "source_domain": "www.statnews.com",
+                "url": "https://www.statnews.com/2021/06/02/machine-learning-ai-methodology-research-flaws/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "60b933109fa4e92491dc2cc7",
+                "date_submitted": "2021-06-03",
+                "source_domain": "www.nytimes.com",
+                "url": "https://www.nytimes.com/2021/06/03/world/africa/libya-drone.html"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "60d515c4d7e7eed44389c0c7",
+                "date_submitted": "2021-06-24",
+                "source_domain": "www.technologyreview.com",
+                "url": "https://www.technologyreview.com/2021/04/09/1022217/facebook-ad-algorithm-sex-discrimination/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "60db3a4de1f6bf50b94313a5",
+                "date_submitted": "2021-06-29",
+                "source_domain": "arstechnica.com",
+                "url": "https://arstechnica.com/tech-policy/2021/06/amazon-is-firing-flex-workers-using-algorithms-with-little-human-intervention/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "6163115d732f8874937ca044",
+                "date_submitted": "2021-10-10",
+                "source_domain": "www.google.com",
+                "url": "https://www.google.com/amp/s/www.nytimes.com/2017/10/09/science/stanford-sexual-orientation-study.amp.html"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "61932078a3efdfc437720d80",
+                "date_submitted": "2021-11-16",
+                "source_domain": "www.wsj.com",
+                "url": "https://www.wsj.com/articles/ohio-sues-meta-alleging-facebook-parent-misled-public-about-its-products-effect-on-children-11637011332"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "62a175eda906d850fa146aaa",
+                "date_submitted": "2022-06-08",
+                "source_domain": "algorithmtips.org",
+                "url": "http://algorithmtips.org/resources/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "62aa965939f008e6fa2c5b73",
+                "date_submitted": "2022-06-15",
+                "source_domain": "www.smh.com.au",
+                "url": "https://www.smh.com.au/business/consumer-affairs/major-retailers-using-facial-recognition-technology-on-unsuspecting-customers-choice-20220615-p5atrc.html"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "62b7c1ae1db4bcbf343c4e84",
+                "date_submitted": "2022-06-25",
+                "source_domain": "arxiv.org",
+                "url": "https://arxiv.org/abs/2202.11760"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5fc6e3ee2f3471ab2879e678",
+                "date_submitted": "2020-12-02",
+                "source_domain": "www.theregister.com",
+                "url": "https://www.theregister.com/2020/07/30/genderify_shuts_down/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "60016e2863ebd081dfbe2885",
+                "date_submitted": "2021-01-15",
+                "source_domain": "www.theguardian.com",
+                "url": "https://www.theguardian.com/world/2021/jan/14/time-to-properly-socialise-hate-speech-ai-chatbot-pulled-from-facebook"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "600473630c792623e3388051",
+                "date_submitted": "2021-01-17",
+                "source_domain": "www.kb.cert.org",
+                "url": "https://www.kb.cert.org/vuls/id/489481"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "6014dc858f669be81d140bd5",
+                "date_submitted": "2021-01-30",
+                "source_domain": "thenextweb.com",
+                "url": "https://thenextweb.com/neural/2021/01/14/chatbot-shut-down-after-saying-it-really-hates-lesbians-and-using-racist-slurs/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "6025b6d1b16be250a0a806d4",
+                "date_submitted": "2021-02-11",
+                "source_domain": "arxiv.org",
+                "url": "https://arxiv.org/pdf/2101.05783v1.pdf"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "604d7d4fba0ea0ece01097da",
+                "date_submitted": "2021-03-14",
+                "source_domain": "venturebeat.com",
+                "url": "https://venturebeat.com/2021/01/30/what-algorithm-auditing-startups-need-to-succeed/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "60a2c6eb9814d95f80ae511c",
+                "date_submitted": "2021-05-17",
+                "source_domain": "www.propublica.org",
+                "url": "https://www.propublica.org/article/tsa-transgender-travelers-scanners-invasive-searches-often-wait-on-the-other-side"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "60b9203a3f225db591bfdc7d",
+                "date_submitted": "2021-06-03",
+                "source_domain": "www.nytimes.com",
+                "url": "https://www.nytimes.com/2021/06/03/world/africa/libya-drone.html"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "60db3ac417bf61f78cf97f40",
+                "date_submitted": "2021-06-29",
+                "source_domain": "thenextweb.com",
+                "url": "https://thenextweb.com/news/surveillance-group-exposes-disturbing-huawei-patent-for-ai-powered-uighur-detection#:~:text=The%20patent%20was%20exposed%20by,as%2Da%2Dservice.%E2%80%9D"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "622835dac1eb6016861ec476",
+                "date_submitted": "2022-03-09",
+                "source_domain": "www.washingtonpost.com",
+                "url": "https://www.washingtonpost.com/technology/2022/03/07/voice-assistants-wrong-answers/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "622835e8301d42db020ac0f0",
+                "date_submitted": "2022-03-09",
+                "source_domain": "www.wired.com",
+                "url": "https://www.wired.com/story/hidden-role-facial-recognition-tech-arrests/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "62e6081eeac42ca100addd34",
+                "date_submitted": "2022-07-30",
+                "source_domain": "theverge.com",
+                "url": "https://www.theverge.com/2022/3/17/22983197/ai-new-possible-chemical-weapons-generative-models-vx"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5f8cce967105801c878bcf96",
+                "date_submitted": "2020-10-18",
+                "source_domain": "www.theguardian.com",
+                "url": "https://www.theguardian.com/technology/2020/jun/09/microsofts-robot-journalist-confused-by-mixed-race-little-mix-singers"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5f8cceab530249e7c0205c3a",
+                "date_submitted": "2020-10-18",
+                "source_domain": "www.marketwatch.com",
+                "url": "https://www.marketwatch.com/story/southwest-replaced-flight-control-sensors-of-the-kind-implicated-in-lion-air-crash-2018-11-16"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5fbbdf22b1826fe8e25f4161",
+                "date_submitted": "2020-11-23",
+                "source_domain": "www.theverge.com",
+                "url": "https://www.theverge.com/2020/8/17/21372045/uk-a-level-results-algorithm-biased-coronavirus-covid-19-pandemic-university-applications"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5fc2d51b58a09deb6399d144",
+                "date_submitted": "2020-11-28",
+                "source_domain": "www.abc.net.au",
+                "url": "https://www.abc.net.au/news/2020-05-29/federal-government-refund-robodebt-scheme-repay-debts/12299410?utm_medium=content_shared\u0026utm_source=abc_news_amp\u0026utm_campaign=abc_news_amp\u0026utm_content=mail"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5fc44026ec84c7fee9efd08c",
+                "date_submitted": "2020-11-30",
+                "source_domain": "www.bankinfosecurity.asia",
+                "url": "https://www.bankinfosecurity.asia/researcher-two-india-hospitals-leaking-patient-information-a-13487"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5fc5de76244ccadea8adb3a8",
+                "date_submitted": "2020-12-01",
+                "source_domain": "www.engadget.com",
+                "url": "https://www.engadget.com/roborace-self-driving-race-car-drives-into-wall-142758048.html"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "6015f7e0eec212afd8d16ef9",
+                "date_submitted": "2021-01-31",
+                "source_domain": "arxiv.org",
+                "url": "https://arxiv.org/abs/1912.04255"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "603675c343b395a385dbff2f",
+                "date_submitted": "2021-02-24",
+                "source_domain": "www.theguardian.com",
+                "url": "https://www.theguardian.com/technology/2017/oct/13/chinese-messaging-app-error-sees-n-word-used-in-translation"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "60bb63d0f4fe8fe5ee3f7367",
+                "date_submitted": "2021-06-05",
+                "source_domain": "twitter.com",
+                "url": "https://twitter.com/FSD_in_6m/status/1400207129479352323"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "60c0a4bbc2e3cfd30f55644d",
+                "date_submitted": "2021-06-09",
+                "source_domain": "www.deccanherald.com",
+                "url": "https://www.deccanherald.com/metrolife/metrolife-your-bond-with-bengaluru/insult-to-kannada-shows-google-ai-in-a-poor-light-995307.html"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "60d952014e8a83ec3cff7b85",
+                "date_submitted": "2021-06-28",
+                "source_domain": "www.pnas.org",
+                "url": "https://www.pnas.org/content/117/14/7684"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "611b3936a91bdfb67048fe7b",
+                "date_submitted": "2021-08-17",
+                "source_domain": "techcrunch.com",
+                "url": "https://techcrunch.com/2021/08/14/how-the-law-got-it-wrong-with-apple-card/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "6214192eb4bbe23bb6b61568",
+                "date_submitted": "2022-02-21",
+                "source_domain": "github.com",
+                "url": "https://github.com/daviddao/awful-ai"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "62ee80474240948816dbd1cb",
+                "date_submitted": "2022-08-06",
+                "source_domain": "tj-tool.com",
+                "url": "https://tj-tool.com/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "62fb1c0bc23b69c946639f5e",
+                "date_submitted": "2022-08-15",
+                "source_domain": "twitter.com",
+                "url": "https://twitter.com/ISusmelj/status/1558912252119482368?t=kTqsKS4GAJ4xREnoarucjQ\u0026s=19"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5f8cbc765e48da1847e7880b",
+                "date_submitted": "2020-10-18",
+                "source_domain": "skylightcyber.com",
+                "url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5f8cce6a475a62fb16f7fbfa",
+                "date_submitted": "2020-10-18",
+                "source_domain": "spectrum.ieee.org",
+                "url": "https://spectrum.ieee.org/cars-that-think/transportation/sensors/slight-street-sign-modifications-can-fool-machine-learning-algorithms"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5f8cce7c7105801c878bc453",
+                "date_submitted": "2020-10-18",
+                "source_domain": "phys.org",
+                "url": "https://phys.org/news/2019-09-artificial-intelligence-sales-human-employees.html"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5f8cce845e48da1847ef9963",
+                "date_submitted": "2020-10-18",
+                "source_domain": "www.businesstimes.com.sg",
+                "url": "https://www.businesstimes.com.sg/asean-business/harnessing-the-potential-of-ai-for-public-safety"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5f8ccec1530249e7c020653b",
+                "date_submitted": "2020-10-18",
+                "source_domain": "www.nytimes.com",
+                "url": "https://www.nytimes.com/2019/06/26/technology/google-university-chicago-data-sharing-lawsuit.html"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5f8ccecf5e48da1847efb81a",
+                "date_submitted": "2020-10-18",
+                "source_domain": "advances.sciencemag.org",
+                "url": "https://advances.sciencemag.org/content/4/1/eaao5580"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5fbd7c0f244ccadea895fc76",
+                "date_submitted": "2020-11-24",
+                "source_domain": "www.cnbc.com",
+                "url": "https://www.cnbc.com/2020/08/21/computer-algorithm-caused-a-grading-crisis-in-british-schools.html"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5fec7ec4ffdcfbf64be008df",
+                "date_submitted": "2020-12-30",
+                "source_domain": "www.nytimes.com",
+                "url": "https://www.nytimes.com/2020/12/29/technology/facial-recognition-misidentify-jail.html"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "5ffb3b255304f0af53041066",
+                "date_submitted": "2021-01-10",
+                "source_domain": "arstechnica.com",
+                "url": "https://arstechnica.com/tech-policy/2021/01/new-york-city-proposes-regulating-algorithms-used-in-hiring/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "604d7d77ba0ea0ece010b3ca",
+                "date_submitted": "2021-03-14",
+                "source_domain": "www.wired.com",
+                "url": "https://www.wired.com/story/job-screening-service-halts-facial-analysis-applicants/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "6051c67e31b9eed2de652b38",
+                "date_submitted": "2021-03-17",
+                "source_domain": "blogs.wsj.com",
+                "url": "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "60b91a7edae42bdeb0e69da9",
+                "date_submitted": "2021-06-03",
+                "source_domain": "www.nature.com",
+                "url": "https://www.nature.com/articles/s42256-021-00307-0"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "60c20e7b179d8510236a6c24",
+                "date_submitted": "2021-06-10",
+                "source_domain": "www.vice.com",
+                "url": "https://www.vice.com/en/article/jgq35d/how-a-discriminatory-algorithm-wrongly-accused-thousands-of-families-of-fraud"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "610016a1013e4d339329ce1e",
+                "date_submitted": "2021-07-27",
+                "source_domain": "www.statnews.com",
+                "url": "https://www.statnews.com/2021/07/26/epic-hospital-algorithms-sepsis-investigation/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "61931467034385f0c94e57e7",
+                "date_submitted": "2021-11-16",
+                "source_domain": "arstechnica.com",
+                "url": "https://arstechnica.com/tech-policy/2021/11/amazon-liable-for-crash-because-software-micromanages-delivery-drivers-victim-says/"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "62951a3bd50929fc8d857314",
+                "date_submitted": "2022-05-30",
+                "source_domain": "www.thelancet.com",
+                "url": "https://www.thelancet.com/journals/landig/article/PIIS2589-7500(22)00063-2/fulltext"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "62dcd93b90cc4983907c3fd7",
+                "date_submitted": "2022-07-23",
+                "source_domain": "newsweek.com",
+                "url": "https://www.newsweek.com/chess-robot-goes-rogue-breaks-seven-year-old-player-child-finger-1727104"
+            },
+            {
+                "__typename": "Quickadd",
+                "_id": "62ebec3da076fc957ef5dff9",
+                "date_submitted": "2022-08-04",
+                "source_domain": "tj-tool.com",
+                "url": "https://tj-tool.com/"
+            }
+        ]
+    }
+}

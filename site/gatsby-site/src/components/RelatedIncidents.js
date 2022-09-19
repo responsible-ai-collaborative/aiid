@@ -234,7 +234,7 @@ const RelatedIncidents = ({
 
   return (
     <div className="bootstrap">
-      <ListGroup data-cy="related-reports" className={className + ' bootstrap'}>
+      <ListGroup data-cy="related-reports" className={className + ' bootstrap break-words'}>
         {Object.keys(searchColumns).map((key) => {
           const column = searchColumns[key];
 

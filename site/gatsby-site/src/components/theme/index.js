@@ -4,7 +4,6 @@ export const theme = {
     heading: '#000',
     text: '#3B454E',
     preFormattedText: 'rgb(245, 247, 249)',
-    link: '#1000EE',
     primary1: '#868787',
     primary2: '#18181a',
     primary3: '#ec9982',

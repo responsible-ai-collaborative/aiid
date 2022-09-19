@@ -1,9 +1,10 @@
 import React from 'react';
-import Layout from 'components/Layout';
-import IncidentReportForm, { schema } from 'components/forms/IncidentReportForm';
+import Layout from '../../components/Layout';
+import IncidentReportForm, { schema } from '../../components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Button, Spinner } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
 import {
   UPDATE_REPORT,
   DELETE_REPORT,
@@ -13,13 +14,13 @@ import {
 import { UPDATE_INCIDENT, FIND_INCIDENT } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { format, getUnixTime } from 'date-fns';
-import { stripMarkdown } from 'utils/typography';
+import { stripMarkdown } from '../../utils/typography';
 import { Formik } from 'formik';
 import pick from 'lodash/pick';
 import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
 import { gql, useApolloClient } from '@apollo/client';
-import RelatedIncidents from 'components/RelatedIncidents';
 import { useTranslation } from 'react-i18next';
+import RelatedIncidents from '../../components/RelatedIncidents';
 
 const UPDATE_REPORT_TRANSLATION = gql`
   mutation UpdateReportTranslation($input: UpdateOneReportTranslationInput) {
@@ -336,11 +337,13 @@ function EditCitePage(props) {
   };
 
   return (
-    <Layout {...props} className={'w-100 boostrap'}>
+    <Layout {...props} className={'w-full boostrap'}>
       <h1 className="mb-5">Editing Incident Report {reportNumber}</h1>
 
       {loading && (
-        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+        <div className="flex justify-center">
+          <Spinner />
+        </div>
       )}
       {!reportData?.report && !loading && <div>Report not found</div>}
 

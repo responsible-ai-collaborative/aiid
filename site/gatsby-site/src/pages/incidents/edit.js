@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import Layout from 'components/Layout';
-import IncidentForm, { schema } from 'components/incidents/IncidentForm';
+import Layout from '../../components/Layout';
+import IncidentForm, { schema } from '../../components/incidents/IncidentForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Button, Spinner } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
@@ -80,9 +81,7 @@ function EditCitePage(props) {
     <Layout {...props} className={'w-100 bootstrap'}>
       <h1 className="mb-5">Editing Incident {incidentId}</h1>
 
-      {incident === undefined && (
-        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-      )}
+      {incident === undefined && <Spinner />}
       {incident === null && <div>Report not found</div>}
 
       {incident && (

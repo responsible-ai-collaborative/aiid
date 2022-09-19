@@ -114,5 +114,10 @@
   "Error deleting incident report {{reportNumber}}": "~Error deleting incident report {{reportNumber}}",
   "Incident {{ incidentId }} updated.": "~Incident {{ incidentId }} updated.",
   "Error updating incident {{ incidentId }}": "~Error updating incident {{ incidentId }}",
-  "View Incident {{ incidentId }}": "~View Incident {{ incidentId }}"
+  "View Incident {{ incidentId }}": "~View Incident {{ incidentId }}",
+  "Fetching Incidents...": "Cargando Incidentes...",
+  "Fetching Reports...": "Cargando informes...",
+  "Spatial Visualization": "Visualización espacial",
+  "Read more": "Leer más",
+  "Table View": "Vista Tabular"
 }
