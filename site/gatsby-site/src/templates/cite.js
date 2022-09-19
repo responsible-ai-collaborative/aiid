@@ -226,12 +226,12 @@ function CitePage(props) {
                 >
                   <Trans>New Report</Trans>
                 </Button>
-                <Button variant="outline-primary" className="me-2" href={'/summaries/incidents'}>
+                <Button variant="outline-primary" className="mr-2" href={'/summaries/incidents'}>
                   <Trans>All Incidents</Trans>
                 </Button>
                 <Button
                   variant="outline-primary"
-                  className="me-2"
+                  className="mr-2"
                   href={'/apps/discover?incident_id=' + incident.incident_id}
                 >
                   <Trans>Discover</Trans>
@@ -239,7 +239,7 @@ function CitePage(props) {
                 {isRole('incident_editor') && (
                   <Button
                     variant="outline-primary"
-                    className="me-2"
+                    className="mr-2"
                     href={'/incidents/edit?incident_id=' + incident.incident_id}
                   >
                     Edit Incident
@@ -288,11 +288,6 @@ function CitePage(props) {
                 <h1 className="tw-styled-heading">
                   <Trans>Incidents Reports</Trans>
                 </h1>
-                <SocialShareButtons
-                  metaTitle={metaTitle}
-                  canonicalUrl={canonicalUrl}
-                  page="cite"
-                ></SocialShareButtons>
               </div>
             </div>
           </Col>

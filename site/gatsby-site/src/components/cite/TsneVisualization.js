@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Spinner, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
 import styled from 'styled-components';
 import { useApolloClient, gql, useQuery } from '@apollo/client';
 import { Image } from '../../utils/cloudinary';
@@ -125,7 +126,7 @@ const PlotPoint = ({
   const onLeft = clientPosition?.x < window.innerWidth / 2;
 
   return (
-    <div className="bootstrap">
+    <>
       <LocalizedLink
         id={'spatial-incident-' + incident.incident_id}
         to={'/cite/' + incident.incident_id}
@@ -217,17 +218,11 @@ const PlotPoint = ({
               )}
             </>
           ) : (
-            <Spinner
-              as="span"
-              animation="border"
-              variant="secondary"
-              role="status"
-              aria-hidden="true"
-            />
+            <Spinner />
           )}
         </div>
       )}
-    </div>
+    </>
   );
 };
 
@@ -385,7 +380,7 @@ const TsneVisualization = ({ currentIncidentId }) => {
         <div style={{ display: 'flex', gap: '1em', alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', gap: '1em', alignItems: 'center' }}>
             <label htmlFor="color-axis-select">
-              <Trans>Color by editor’s classification</Trans>
+              <Trans>Color by incident classifications from taxonomies</Trans>
             </label>
             <Form.Select
               style={{ display: 'inline', width: 'unset' }}

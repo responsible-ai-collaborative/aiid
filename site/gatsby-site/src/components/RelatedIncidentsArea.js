@@ -1,14 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { ListGroup, Card, Spinner, Button, ButtonToolbar } from 'react-bootstrap';
+import { ListGroup, Button, ButtonToolbar } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
 import SimilaritySelector from './SimilaritySelector';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 
-const ListContainer = styled(Card)`
-  margin: 1em 0;
+const ListContainer = styled(ListGroup)`
+  max-height: 0px;
+  overflow: hidden;
+  transition: max-height 1s ease-in;
+
   .reports {
-    max-height: 33.3333vh;
+    max-height: 0px;
+    &.open {
+      max-height: 33.3333vh;
+      overflow-y: auto;
+    }
+    overflow: hidden;
+    transition: max-height 0.5s ease-in;
+  }
+
+  &.open {
+    margin: 1em 0;
+    max-height: 100vh;
     overflow-y: auto;
   }
 `;
@@ -55,18 +70,37 @@ const RelatedIncidentsArea = ({
 }) => {
   const { t } = useTranslation();
 
-  if (!reports && !incidents && !loading) {
+  const [listOpened, setListOpened] = useState(false);
+
+  const [reportsOpened, setReportsOpened] = useState(false);
+
+  const visible = reports || incidents || loading;
+
+  const reportsExist = (reports || incidents) && !loading;
+
+  useEffect(() => {
+    if (visible) {
+      setListOpened(true);
+    }
+  }, [visible]);
+
+  useEffect(() => {
+    if (reportsExist) {
+      setReportsOpened(true);
+    }
+  }, [reportsExist]);
+
+  if (!visible) {
     return null;
   }
-
   return (
     <div className="bootstrap">
-      <ListContainer data-cy={`related-${columnKey}`}>
-        <ListGroup.Item variant="secondary" key={'header'}>
+      <ListContainer data-cy={`related-${columnKey}`} className={listOpened ? 'open' : ''}>
+        <ListGroup.Item variant="secondary" key={'header'} className="flex gap-1">
           {header}
-          {loading && <Spinner animation="border" size="sm" className="ms-2" />}
+          {loading && <Spinner size={'sm'} />}
         </ListGroup.Item>
-        <div className="reports">
+        <div className={reportsOpened ? 'reports open' : 'reports'}>
           {(reports || incidents) &&
             (reports || incidents).map((val) => (
               <ReportRow key={val.url || val.incident_id} data-cy="result">

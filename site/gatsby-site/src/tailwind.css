@@ -44,12 +44,12 @@
         @apply text-4xl;
     }
 
-    .tw-layout {
-        @apply flex md:flex content-between bg-white 767px:block border-none;
+    ul, ol {
+      list-style: revert;
     }
 
-    .tw-layout li a {
-        @apply text-black;
+    .tw-layout {
+        @apply flex md:flex content-between bg-white 767px:block border-none;
     }
 
     .tw-layout .item > a:hover {
@@ -153,7 +153,7 @@
     }
 
     .tw-post-listing {
-        @apply flex flex-wrap md:grid gap-4 lg:gap-4 max-w-[750px];
+        @apply flex flex-wrap lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-4;
     }
 
     /* TAILWIND Buttons begins */
@@ -352,7 +352,7 @@
     }
 
     .tw-footer-link {
-        @apply text-inherit hover:text-primary-blue;
+        @apply text-gray-700 hover:text-primary-blue;
     }
 }
 

@@ -19,10 +19,6 @@ export const UserContext = createContext({
       loginRedirectUri;
       redirectTo;
     },
-    loginWithGoogle: ({ loginRedirectUri, redirectTo }) => {
-      loginRedirectUri;
-      redirectTo;
-    },
     logout: () => {},
     sendResetPasswordEmail: ({ email }) => {
       email;
