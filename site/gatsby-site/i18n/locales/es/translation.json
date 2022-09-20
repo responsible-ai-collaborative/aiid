@@ -111,5 +111,7 @@
   "Spatial Visualization": "Visualización espacial",
   "More": "Más",
   "Read more": "Leer más",
-  "Table View": "Vista Tabular"
+  "Table View": "Vista Tabular",
+  "View Less": "Ver Menos",
+  "View ({{hidden}}) more": "Ver ({{hidden}}) más"
 }

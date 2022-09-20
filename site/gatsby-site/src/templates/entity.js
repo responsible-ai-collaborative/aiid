@@ -84,7 +84,9 @@ const EntityPage = ({ pageContext, data, ...props }) => {
           <div key={section.header}>
             {entityIncidents[section.key].length > 0 && (
               <>
-                <h4 className="mt-24">{section.header}</h4>
+                <h4 className="mt-24">
+                  <Trans ns="entities">{section.header}</Trans>
+                </h4>
                 <div className="grid gap-4 grid-flow-row-dense md:grid-cols-2 mt-6">
                   {entityIncidents[section.key].map((incident, index) => {
                     if (index >= visible && !open) {
@@ -110,7 +112,9 @@ const EntityPage = ({ pageContext, data, ...props }) => {
 
       {relatedEntitiesData.length > 0 && (
         <>
-          <h4 className="mt-24">Related Entities</h4>
+          <h4 className="mt-24">
+            <Trans ns="entities">Related Entities</Trans>
+          </h4>
           {relatedEntitiesData.map((entity) => (
             <div
               key={entity.id}
@@ -133,7 +137,9 @@ const EntityPage = ({ pageContext, data, ...props }) => {
 
                   return (
                     <Fragment key={section.key}>
-                      <h5 className="mt-6">{section.header}</h5>
+                      <h5 className="mt-6">
+                        <Trans ns="entities">{section.header}</Trans>
+                      </h5>
                       <ul className="divide-y divide-gray-200 dark:divide-gray-700 list-none">
                         {entity[section.key].sort(sortByReports).map((incident, index) => {
                           if (index >= visible && !open) {
@@ -148,10 +154,12 @@ const EntityPage = ({ pageContext, data, ...props }) => {
                               >
                                 <div className="m-0">
                                   <div className="inline-block text-muted-gray">
-                                    Incident {incident.incident_id}
+                                    <Trans>Incident {{ id: incident.incident_id }}</Trans>
                                   </div>
                                   <div className="ml-2 inline-block bg-red-100 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">
-                                    {incident.reports.length} Reports(s)
+                                    <Trans count={incident.reports.length} ns="entities">
+                                      {{ count: incident.reports.length }} Report
+                                    </Trans>
                                   </div>
                                 </div>
                                 <p className="mt-1 mb-0 text-md">{incident.title}</p>

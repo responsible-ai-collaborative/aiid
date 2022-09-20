@@ -16,5 +16,7 @@
     "Search {{count}} records...": "Busca en {{count}} registros...",
     "Entity": "Entidad",
     "{{count}} Report": "{{count}} Reporte",
-    "{{count}} Report_plural": "{{count}} Reportes"
+    "{{count}} Report_plural": "{{count}} Reportes",
+    "Incidents involved as both Developer and Deployer": "Incidentes involucrados como desarrollador e implementador",
+    "Incindents Harmed By": "Afectado por Incidentes"
 }
