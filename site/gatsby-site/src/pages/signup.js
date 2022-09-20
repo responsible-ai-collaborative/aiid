@@ -11,6 +11,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import Button from '../elements/Button';
+import { StringParam, useQueryParams } from 'use-query-params';
 
 const SignUpSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -35,10 +36,14 @@ const SignUp = (props) => {
 
   const loginRedirectUri = `${props.location.origin}/logincallback`;
 
+  let [{ redirectTo }] = useQueryParams({
+    redirectTo: StringParam,
+  });
+
   const clickLoginWithFacebook = async () => {
     setDisplayFacebookSpinner(true);
 
-    await loginWithFacebook({ loginRedirectUri });
+    await loginWithFacebook({ loginRedirectUri, redirectTo });
 
     setDisplayFacebookSpinner(false);
   };
@@ -67,9 +72,9 @@ const SignUp = (props) => {
             validationSchema={SignUpSchema}
             onSubmit={async ({ email, password }, { setSubmitting, resetForm }) => {
               try {
-                await signUp({ email, password });
+                await signUp({ email, password, redirectTo });
                 addToast({
-                  message: t('Account created', { ns: 'login' }),
+                  message: t('Verification email sent to {{email}}', { email, ns: 'login' }),
                   severity: SEVERITY.success,
                 });
                 resetForm();
