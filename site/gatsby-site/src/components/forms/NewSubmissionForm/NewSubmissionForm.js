@@ -1,14 +1,24 @@
 import useToastContext, { SEVERITY } from 'hooks/useToast';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { getCloudinaryPublicID } from 'utils/cloudinary';
+import getSourceDomain from 'utils/getSourceDomain';
 import StepOne from './StepOne';
 import StepTwo from './StepTwo';
+import StepThree from './StepThree';
 
 const NewSubmissionForm = () => {
   const [data, setData] = useState({
-    title: '',
+    authors: null,
+    cloudinary_id: '',
+    date_downloaded: '',
+    date_published: null,
+    image_url: '',
     submitters: '',
+    text: '',
+    title: '',
+    url: '',
+    source_domain: '',
   });
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -62,6 +72,7 @@ const NewSubmissionForm = () => {
         const newValues = {
           ...data,
           ...news,
+          url: newsUrl,
           cloudinary_id,
         };
 
@@ -92,6 +103,21 @@ const NewSubmissionForm = () => {
     [data]
   );
 
+  console.log('data', data);
+
+  useEffect(() => {
+    try {
+      const url = new URL(data?.url);
+
+      setData({
+        ...data,
+        source_domain: getSourceDomain(url),
+      });
+    } catch (e) {
+      // eslint-disable-next-line no-empty
+    } // just ignore it
+  }, [data?.url]);
+
   const steps = [
     <StepOne
       key={'submission-step-1'}
@@ -107,6 +133,13 @@ const NewSubmissionForm = () => {
       previous={handlePreviousStep}
       data={data}
       name="Step 2"
+    />,
+    <StepThree
+      key={'submission-step-3'}
+      next={handleNextStep}
+      previous={handlePreviousStep}
+      data={data}
+      name="Step 3"
     />,
   ];
 

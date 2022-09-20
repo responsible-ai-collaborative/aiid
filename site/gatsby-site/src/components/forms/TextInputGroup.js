@@ -53,7 +53,9 @@ const TextInputGroup = ({
         />
       )}
       <Form.Control.Feedback type="invalid">
-        <Trans ns="validation">{errors[name] && touched[name] ? errors[name] : null}</Trans>
+        <span className="text-red-700 text-sm">
+          <Trans ns="validation">{errors[name] && touched[name] ? errors[name] : null}</Trans>
+        </span>
       </Form.Control.Feedback>
     </InputGroup>
   </Form.Group>

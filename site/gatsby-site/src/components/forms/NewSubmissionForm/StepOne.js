@@ -7,20 +7,52 @@ import * as yup from 'yup';
 import Label from '../Label';
 import FlowbiteSearchInput from '../FlowbiteSearchInput';
 import RelatedIncidents from 'components/RelatedIncidents';
+import { dateRegExp } from 'utils/date';
 // import { PreviewImageInputGroup } from 'utils/cloudinary';
 
 const StepOne = (props) => {
   const { t } = useTranslation(['submit']);
 
   const stepOneValidationSchema = yup.object().shape({
-    title: yup.string().required(t('Title is required')),
+    title: yup
+      .string()
+      .min(6, '*Title must have at least 6 characters')
+      .max(500, "*Titles can't be longer than 500 characters")
+      .required('*Title is required')
+      .nullable(),
+    authors: yup
+      .string()
+      .min(3, '*Authors must have at least 3 characters')
+      .max(200, "*Authors can't be longer than 200 characters")
+      .required('*Author is required. Anonymous or the publication can be entered.')
+      .nullable(),
+    submitters: yup
+      .string()
+      .min(3, '*Submitter must have at least 3 characters')
+      .max(200, "*Submitter list can't be longer than 200 characters")
+      .nullable(),
+    date_published: yup
+      .string()
+      .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
+      .required('*Date published is required')
+      .nullable(),
+    date_downloaded: yup
+      .string()
+      .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
+      .required('*Date downloaded required')
+      .nullable(),
+    url: yup
+      .string()
+      .url('*Must enter URL in http://www.example.com format')
+      .required('*URL required')
+      .nullable(),
   });
 
   const handleSubmit = (values) => {
     props.next(values);
   };
 
-  // console.log(props.data)
+  console.log('props.data', props.data);
 
   return (
     <div className={`p-6 border rounded-lg mt-6 relative `}>
@@ -29,126 +61,144 @@ const StepOne = (props) => {
         initialValues={props.data}
         onSubmit={handleSubmit}
         validationSchema={stepOneValidationSchema}
+        enableReinitialize
       >
-        {(TextInputGroupProps) => (
-          <Form>
-            <Label label={t('Report Address')} popover="url"></Label>
-            <FlowbiteSearchInput
-              name="url"
-              label={t('Report Address')}
-              placeholder={t('Report URL')}
-              addOnComponent={
-                <Button
-                  // className="outline-secondary"
-                  disabled={
-                    !!TextInputGroupProps.errors.url ||
-                    !TextInputGroupProps.touched.url ||
-                    props.parsingNews
-                  }
-                  onClick={() => props.parseNewsUrl(TextInputGroupProps.values.url)}
-                  data-cy="fetch-info"
-                >
-                  {!props.parsingNews ? (
-                    <Trans ns="submit">Fetch info</Trans>
-                  ) : (
-                    <div className="flex gap-2">
-                      <Spinner size="sm" />
-                      <Trans ns="submit">Fetching...</Trans>
-                    </div>
-                  )}
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          setFieldValue,
+          setFieldTouched,
+        }) => {
+          console.log('errors', errors);
+          return (
+            <Form>
+              <>!!!{errors['authors']}!!!</>
+              <Label label={t('Report Address')} popover="url"></Label>
+              <FlowbiteSearchInput
+                name="url"
+                label={t('Report Address')}
+                placeholder={t('Report URL')}
+                defaultValue={values?.url || ''}
+                addOnComponent={
+                  <Button
+                    // className="outline-secondary"
+                    disabled={!!errors.url || !touched.url || props.parsingNews}
+                    onClick={() => props.parseNewsUrl(values.url)}
+                    data-cy="fetch-info"
+                  >
+                    {!props.parsingNews ? (
+                      <Trans ns="submit">Fetch info</Trans>
+                    ) : (
+                      <div className="flex gap-2">
+                        <Spinner size="sm" />
+                        <Trans ns="submit">Fetching...</Trans>
+                      </div>
+                    )}
+                  </Button>
+                }
+                values={values}
+                errors={errors}
+                touched={touched}
+                handleBlur={handleBlur}
+                handleChange={(e) => {
+                  setFieldTouched('url', true);
+                  handleChange(e);
+                }}
+                btnClick={() => props.parseNewsUrl(values.url)}
+                loading={props.parsingNews}
+                btnDisabled={!!errors.url || !touched.url || props.parsingNews}
+                btnText={t('Fetch info')}
+              />
+
+              <RelatedIncidents
+                incident={values}
+                setFieldValue={setFieldValue}
+                columns={['byURL']}
+              />
+
+              <TextInputGroup
+                name="title"
+                label={t('Title')}
+                placeholder={t('Report title')}
+                className="mt-3"
+                values={values}
+                errors={errors}
+                touched={touched}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+              />
+
+              <TextInputGroup
+                name="authors"
+                label={t('Author CSV')}
+                placeholder={t('Author CSV')}
+                className="mt-3"
+                values={values}
+                errors={errors}
+                touched={touched}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+              />
+
+              <RelatedIncidents
+                incident={values}
+                setFieldValue={setFieldValue}
+                columns={['byAuthors']}
+              />
+
+              <TextInputGroup
+                name="submitters"
+                label={t('Submitter CSV')}
+                placeholder={t('Submitter CSV')}
+                className="mt-3"
+                values={values}
+                errors={errors}
+                touched={touched}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+              />
+
+              <TextInputGroup
+                name="date_published"
+                label={t('Date Published')}
+                type="date"
+                placeholder={t('YYYY-MM-DD')}
+                className="mt-3"
+                values={values}
+                errors={errors}
+                touched={touched}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+              />
+              <RelatedIncidents
+                incident={values}
+                setFieldValue={setFieldValue}
+                columns={['byDatePublished']}
+              />
+
+              <TextInputGroup
+                name="date_downloaded"
+                label={t('Date Downloaded')}
+                type="date"
+                placeholder={t('YYYY-MM-DD')}
+                className="mt-3"
+                values={values}
+                errors={errors}
+                touched={touched}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+              />
+              <div className="flex justify-end mt-4">
+                <Button type="submit">
+                  <Trans>Next</Trans>
                 </Button>
-              }
-              {...TextInputGroupProps}
-              handleChange={(e) => {
-                TextInputGroupProps.setFieldTouched('url', true);
-                TextInputGroupProps.handleChange(e);
-              }}
-              btnClick={() => props.parseNewsUrl(TextInputGroupProps.values.url)}
-              loading={props.parsingNews}
-              btnDisabled={
-                !!TextInputGroupProps.errors.url ||
-                !TextInputGroupProps.touched.url ||
-                props.parsingNews
-              }
-              btnText={t('Fetch info')}
-            />
-            <RelatedIncidents
-              incident={TextInputGroupProps.values}
-              setFieldValue={TextInputGroupProps.setFieldValue}
-              columns={['byURL']}
-            />
-
-            <TextInputGroup
-              name="title"
-              label={t('Title')}
-              placeholder={t('Report title')}
-              className="mt-3"
-              {...TextInputGroupProps}
-            />
-
-            <TextInputGroup
-              name="authors"
-              label={t('Author CSV')}
-              placeholder={t('Author CSV')}
-              className="mt-3"
-              {...TextInputGroupProps}
-            />
-
-            <RelatedIncidents
-              incident={TextInputGroupProps.values}
-              setFieldValue={TextInputGroupProps.setFieldValue}
-              columns={['byAuthors']}
-            />
-
-            <TextInputGroup
-              name="submitters"
-              label={t('Submitter CSV')}
-              placeholder={t('Submitter CSV')}
-              className="mt-3"
-              {...TextInputGroupProps}
-            />
-
-            <TextInputGroup
-              name="date_published"
-              label={t('Date Published')}
-              type="date"
-              placeholder={t('YYYY-MM-DD')}
-              className="mt-3"
-              {...TextInputGroupProps}
-            />
-            <RelatedIncidents
-              incident={TextInputGroupProps.values}
-              setFieldValue={TextInputGroupProps.setFieldValue}
-              columns={['byDatePublished']}
-            />
-
-            <TextInputGroup
-              name="date_downloaded"
-              label={t('Date Downloaded')}
-              type="date"
-              placeholder={t('YYYY-MM-DD')}
-              className="mt-3"
-              {...TextInputGroupProps}
-            />
-            {/* <PreviewImageInputGroup
-                            publicID={TextInputGroupProps.values.cloudinary_id}
-                            name="image_url"
-                            label={t('Image Address')}
-                            placeholder={t('Image URL')}
-                            className="mt-3"
-                            {...TextInputGroupProps}
-                        /> */}
-            <TextInputGroup
-              name="title"
-              label={t('Title')}
-              placeholder={t('Report title')}
-              className="mt-3"
-              {...TextInputGroupProps}
-            />
-            {/* <ErrorMessage name="title" /> */}
-            <Button type="submit">Next</Button>
-          </Form>
-        )}
+              </div>
+            </Form>
+          );
+        }}
       </Formik>
     </div>
   );
