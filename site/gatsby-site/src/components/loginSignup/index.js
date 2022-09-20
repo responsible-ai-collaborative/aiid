@@ -3,7 +3,7 @@ import { Button, Tooltip } from 'flowbite-react';
 import React from 'react';
 import { Trans } from 'react-i18next';
 
-const LoginSinup = ({ className = '', logoutClassName = '', loginClassName = '' }) => {
+const LoginSignup = ({ className = '', logoutClassName = '', loginClassName = '' }) => {
   const { user } = useUserContext();
 
   return (
@@ -43,4 +43,4 @@ const Logout = ({ className = '', user }) => (
   </div>
 );
 
-export default LoginSinup;
+export default LoginSignup;

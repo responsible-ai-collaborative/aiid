@@ -4,7 +4,7 @@ import { ExternalLink } from 'react-feather';
 import config from '../../../config';
 import QuickAccess from 'components/discover/QuickAccess';
 import { Trans } from 'react-i18next';
-import LoginSinup from 'components/loginSignup';
+import LoginSignup from 'components/loginSignup';
 
 const SidebarLayout = ({ collapse, setNavCollapsed }) => {
   return (
@@ -41,7 +41,7 @@ const SidebarLayout = ({ collapse, setNavCollapsed }) => {
         })}
       </ul>
       <div className="flex items-center justify-center w-full py-3 border-t">
-        <LoginSinup
+        <LoginSignup
           logoutClassName="text-gray-700 text-sm hover:text-primary-blue"
           loginClassName="text-gray-300 md:text-gray-700 hover:text-primary-blue"
         />
