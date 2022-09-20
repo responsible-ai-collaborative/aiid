@@ -31,7 +31,7 @@ function PartyBadge({ entity }) {
 function EntitiesList({ entities }) {
   return entities.map((d, i) => (
     <Fragment key={d.id}>
-      {i > 0 && <> {i < entities.length - 1 ? <>, </> : <> and </>} </>}
+      {i > 0 && <> {i < entities.length - 1 ? <>,</> : <Trans>and</Trans>} </>}
       <EntityBadge entity={d} />
     </Fragment>
   ));
@@ -40,7 +40,7 @@ function EntitiesList({ entities }) {
 function PartiesList({ entities }) {
   return entities.map((entity, i) => (
     <Fragment key={entity.id}>
-      {i > 0 && <> {i < entities.length - 1 ? <>, </> : <> and </>} </>}
+      {i > 0 && <> {i < entities.length - 1 ? <>,</> : <Trans>and</Trans>} </>}
       <PartyBadge entity={entity} />
     </Fragment>
   ));
@@ -57,7 +57,7 @@ export default function AllegedEntities({ entities }) {
     )
   ) {
     return (
-      <Trans>
+      <Trans ns="entities">
         Alleged:{' '}
         <EntitiesList entities={entitiesHarming.length ? entitiesHarming : entitiesHarmed} />{' '}
         developed and deployed an AI system, which harmed <PartiesList entities={entitiesHarmed} />.
@@ -74,7 +74,7 @@ export default function AllegedEntities({ entities }) {
   );
 
   return (
-    <Trans>
+    <Trans ns="entities">
       Alleged: <EntitiesList entities={developers} /> developed an AI system deployed by{' '}
       <EntitiesList entities={deployers} />, which harmed <PartiesList entities={entitiesHarmed} />.
     </Trans>
