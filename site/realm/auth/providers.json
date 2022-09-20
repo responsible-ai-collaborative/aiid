@@ -13,12 +13,11 @@
         "name": "local-userpass",
         "type": "local-userpass",
         "config": {
-            "autoConfirm": true,
+            "autoConfirm": false,
             "confirmationFunctionName": "confirmUser",
-            "resetPasswordSubject": "",
-            "resetPasswordUrl": "https://incidentdatabase.ai/resetpassword",
-            "runConfirmationFunction": false,
-            "runResetFunction": false
+            "resetFunctionName": "passwordReset",
+            "runConfirmationFunction": true,
+            "runResetFunction": true
         },
         "disabled": false
     },
