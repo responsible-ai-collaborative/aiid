@@ -171,6 +171,7 @@ describe('createEntitiesPages', () => {
 
       cy.wrap(createPage.getCall(8).args[0]).then((page) => {
         expect(page.path).eq('/entities');
+        expect(page.context.entities.length).eq(8);
       });
     });
   });
