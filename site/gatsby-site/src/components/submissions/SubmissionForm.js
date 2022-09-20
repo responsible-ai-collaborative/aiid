@@ -411,7 +411,7 @@ const SubmissionForm = () => {
             name="description"
             label={t('Description')}
             as="textarea"
-            placeholder={t('Report Description')}
+            placeholder={t('Incident Description')}
             rows={3}
             className="mt-3"
             {...TextInputGroupProps}
