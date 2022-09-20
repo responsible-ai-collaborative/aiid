@@ -123,7 +123,7 @@ const NewSubmissionForm = () => {
       key={'submission-step-1'}
       next={handleNextStep}
       data={data}
-      name="Step 1"
+      name="Step 1 - main information"
       parseNewsUrl={parseNewsUrl}
       parsingNews={parsingNews}
     />,
@@ -132,23 +132,18 @@ const NewSubmissionForm = () => {
       next={handleNextStep}
       previous={handlePreviousStep}
       data={data}
-      name="Step 2"
+      name="Step 2 - additional information"
     />,
     <StepThree
       key={'submission-step-3'}
       next={handleNextStep}
       previous={handlePreviousStep}
       data={data}
-      name="Step 3"
+      name="Step 3 - Tell us more"
     />,
   ];
 
-  return (
-    <div>
-      <h1>New Submission Form</h1>
-      {steps[currentStep]}
-    </div>
-  );
+  return <>{steps[currentStep]}</>;
 };
 
 export default NewSubmissionForm;

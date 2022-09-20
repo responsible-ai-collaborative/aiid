@@ -7,6 +7,7 @@ import * as yup from 'yup';
 import Label from '../Label';
 import { Form as BsForm } from 'react-bootstrap';
 import TagsControl from '../TagsControl';
+import StepContainer from './StepContainer';
 
 const StepThree = (props) => {
   const { t } = useTranslation(['submit']);
@@ -53,14 +54,11 @@ const StepThree = (props) => {
   });
 
   const handleSubmit = (values) => {
-    props.next(values);
+    props.next(values, true);
   };
 
-  console.log('props.data', props.data);
-
   return (
-    <div className={`p-6 border rounded-lg mt-6 relative `}>
-      <div className="absolute -top-5 bg-white px-4 text-primary-blue text-xl">{props.name}</div>
+    <StepContainer name={props.name}>
       <Formik
         initialValues={props.data}
         onSubmit={handleSubmit}
@@ -135,7 +133,7 @@ const StepThree = (props) => {
           </Form>
         )}
       </Formik>
-    </div>
+    </StepContainer>
   );
 };
 

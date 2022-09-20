@@ -11,6 +11,7 @@ import RelatedIncidents from 'components/RelatedIncidents';
 import supportedLanguages from '../../../components/i18n/languages.json';
 import { Editor } from '@bytemd/react';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
+import StepContainer from './StepContainer';
 
 const StepTwo = (props) => {
   const { t } = useTranslation(['submit']);
@@ -47,8 +48,7 @@ const StepTwo = (props) => {
   }, [data.image_url]);
 
   return (
-    <div className={`p-6 border rounded-lg mt-6 relative `}>
-      <div className="absolute -top-5 bg-white px-4 text-primary-blue text-xl">{props.name}</div>
+    <StepContainer name={props.name}>
       <Formik
         initialValues={data}
         onSubmit={handleSubmit}
@@ -165,7 +165,7 @@ const StepTwo = (props) => {
           </Form>
         )}
       </Formik>
-    </div>
+    </StepContainer>
   );
 };
 

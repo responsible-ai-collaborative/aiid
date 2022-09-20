@@ -8,6 +8,7 @@ import Label from '../Label';
 import FlowbiteSearchInput from '../FlowbiteSearchInput';
 import RelatedIncidents from 'components/RelatedIncidents';
 import { dateRegExp } from 'utils/date';
+import StepContainer from './StepContainer';
 // import { PreviewImageInputGroup } from 'utils/cloudinary';
 
 const StepOne = (props) => {
@@ -55,8 +56,7 @@ const StepOne = (props) => {
   console.log('props.data', props.data);
 
   return (
-    <div className={`p-6 border rounded-lg mt-6 relative `}>
-      <div className="absolute -top-5 bg-white px-4 text-primary-blue text-xl">{props.name}</div>
+    <StepContainer name={props.name}>
       <Formik
         initialValues={props.data}
         onSubmit={handleSubmit}
@@ -199,7 +199,7 @@ const StepOne = (props) => {
           );
         }}
       </Formik>
-    </div>
+    </StepContainer>
   );
 };
 
