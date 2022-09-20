@@ -204,9 +204,9 @@ export default function EntitiesTable({ data, className = '', ...props }) {
         width: 'w-[10%]',
         Cell: ({ row: { values, original } }) => (
           <>
-            <a className="d-flex" href={`/entities/${values.id}`}>
+            <Link className="d-flex" to={`/entities/${values.id}`}>
               {original.name}
-            </a>
+            </Link>
           </>
         ),
         filter: entityFilter,
