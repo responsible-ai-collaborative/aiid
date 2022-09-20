@@ -60,7 +60,7 @@ function EditCitePage(props) {
       addToast({
         message: (
           <>
-            {t('Incident {{ incidentId }} updated.', { incidentId })}{' '}
+            {t('Incident {{ incidentId }} updated successfully.', { incidentId })}{' '}
             <LocalizedLink to={'/cite/' + incidentId}>
               {t('View incident {{ incidentId }}', { incidentId })}
             </LocalizedLink>
