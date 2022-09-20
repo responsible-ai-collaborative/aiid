@@ -16,7 +16,7 @@ describe('Login', () => {
     cy.visit(`${url}?redirectTo=${redirectTo}`);
     cy.get('input[name=email]').type(Cypress.env('e2eUsername'));
     cy.get('input[name=password]').type(Cypress.env('e2ePassword'));
-    cy.contains('Login').click();
+    cy.get('[data-cy="login-btn"]').click();
 
     cy.location('pathname', { timeout: 8000 }).should('eq', redirectTo);
   });

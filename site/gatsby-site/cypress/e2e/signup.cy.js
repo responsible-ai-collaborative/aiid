@@ -60,7 +60,7 @@ describe('Signup', () => {
       statusCode: 201,
     });
 
-    cy.contains('Sign up').click();
+    cy.get('[data-cy="signup-btn"]').click();
     cy.location('pathname', { timeout: 8000 }).should('eq', redirectTo);
   });
 });
