@@ -12,7 +12,7 @@ const LatestIncidentReport = ({ report }) => {
 
   return (
     <div className="flex flex-col items-center bg-white rounded-lg border  shadow-md md:flex-row dark:border-gray-700 dark:bg-gray-800">
-      <div className="flex self-stretch justify-center items-center border-r">
+      <div className="flex self-stretch justify-center items-center md:border-r md:max-w-sm">
         <LocalizedLink to={`/cite/${incident_id}`} className="text-primary-blue max-w-full h-full">
           <Image
             className={
