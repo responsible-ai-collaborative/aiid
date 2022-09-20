@@ -4,20 +4,28 @@
 
 @layer base {
 
-    h1 {
-        font-size: calc(1.375rem + 1.5vw);
-    }
-
     .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
         @apply font-medium mb-2 mt-0 leading-tight;
     }
 
+    .h1, h1 {
+      @apply text-3xl
+    }
+
+    .h2, h2 {
+      @apply text-2xl 
+    }
+
+    .h3, h3 {
+      @apply text-xl
+    }
+
     .h4, h4 {
-        font-size: calc(1.275rem + .3vw);
+      @apply text-lg
     }
 
     .h5, h5 {
-        @apply text-xl leading-tight;
+      @apply text-base
     }
 
     input {
@@ -40,9 +48,6 @@
         @apply appearance-none bg-white rounded-md text-gray-900 block text-base font-normal leading-normal w-full py-1 px-3 transition-form-control bg-clip-padding border-1 border-solid border-form-control;
     }
 
-    h2 {
-        @apply text-4xl;
-    }
 
     ul, ol {
       list-style: revert;
@@ -57,7 +62,7 @@
     }
 
     .tw-content {
-        @apply flex flex-grow mt-0 mx-[10px] md:mx-[33px] pt-12 z-[1] relative overflow-hidden flex-1;
+        @apply flex flex-grow mt-0 mx-[10px] md:mx-[33px] pt-4 z-[1] relative overflow-hidden flex-1;
     }
 
     .tw-container {
@@ -100,6 +105,10 @@
         @apply shrink-0;
     }
 
+    #desktopLogo {
+      @apply ml-[10px] mr-[10px];
+    }
+
     .tw-nav-header-container .nav-bar-brand > .headerTitle {
         @apply shrink;
     }
@@ -128,10 +137,6 @@
         @apply flex-1;
     }
 
-    h1 {
-        @apply text-h1;
-    }
-
     .tw-card-title h2 {
         @apply text-2rem;
     }
@@ -139,7 +144,7 @@
     .tw-card-title a {
         @apply text-primary-blue;
     }
-
+    
     .tw-card-title h3 {
         @apply text-2xl mb-2;
     }
