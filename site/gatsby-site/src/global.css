@@ -428,31 +428,6 @@ blockquote {
   width: 40px;
 }
 
-.hideFrontLine .collapser {
-  background: transparent;
-  border: none;
-  outline: none;
-  position: absolute;
-  right: 20px;
-  z-index: 1;
-  cursor: pointer;
-}
-
-.hideFrontLine .active > a {
-  background-color: var(--primary3);
-  color: #fff !important;
-}
-.firstLevel ul li .collapser svg path {
-  fill: #fff !important;
-}
-.active .collapser > svg > path {
-  fill: #001933 !important;
-}
-
-.firstLevel ul .item ul .item {
-  border-left: 1px solid #e6ecf1;
-}
-
 .sideBarUL .item {
   list-style: none;
   padding: 0;
@@ -473,17 +448,8 @@ blockquote {
   background-color: #001933;
 }
 
-.showFrontLine .active > a {
-  /* color: #fff; */
-  background-color: #001933;
-}
-
 .sideBarUL .item .item {
   margin-left: 16px;
-}
-
-.firstLevel > ul > .item {
-  margin-left: 0 !important;
 }
 
 .showFrontLine .item .item {
