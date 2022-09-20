@@ -1,5 +1,6 @@
 import Link from 'components/ui/Link';
 import React from 'react';
+import { Trans } from 'react-i18next';
 
 export default function IncidentCard({ incident, className = '', ...props }) {
   return (
@@ -9,11 +10,14 @@ export default function IncidentCard({ incident, className = '', ...props }) {
     >
       <Link to={`/cite/${incident.incident_id}`}>
         <h4 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-          <span className="text-sm">Incident {incident.incident_id}</span>
-          <span className="ml-2 bg-red-100 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">
-            {incident.reports.length} Report(s)
+          <span className="text-sm">
+            <Trans>Incident {{ id: incident.incident_id }}</Trans>
           </span>
-          <span></span>
+          <span className="ml-2 bg-red-100 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">
+            <Trans ns="entities" count={incident.reports.length}>
+              {{ count: incident.reports.length }} Report
+            </Trans>
+          </span>
           <br />
           {incident.title}
         </h4>

@@ -14,5 +14,7 @@
     "Harmed By": "Afectado Por",
     "Related Entities": "Entidades Relacionadas",
     "Search {{count}} records...": "Busca en {{count}} registros...",
-    "Entity": "Entidad"
+    "Entity": "Entidad",
+    "{{count}} Report": "{{count}} Reporte",
+    "{{count}} Report_plural": "{{count}} Reportes"
 }
