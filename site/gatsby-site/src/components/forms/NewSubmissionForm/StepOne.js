@@ -75,7 +75,6 @@ const StepOne = (props) => {
           console.log('errors', errors);
           return (
             <Form>
-              <>!!!{errors['authors']}!!!</>
               <Label label={t('Report Address')} popover="url"></Label>
               <FlowbiteSearchInput
                 name="url"

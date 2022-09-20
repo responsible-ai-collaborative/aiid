@@ -65,7 +65,7 @@ const StepTwo = (props) => {
         }) => (
           <Form>
             <PreviewImageInputGroup
-              publicID={data.cloudinary_id}
+              cloudinary_id={data.cloudinary_id}
               name="image_url"
               label={t('Image Address')}
               placeholder={t('Image URL')}
