@@ -164,10 +164,10 @@ function CitePage(props) {
             <Card className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6">
               <Card.Header className="items-center justify-between">
                 <h4 className="m-0">
-                  <Trans>Entities</Trans>
+                  <Trans ns="entities">Entities</Trans>
                 </h4>
                 <Link to="/entities">
-                  <Trans>View All Entities</Trans>
+                  <Trans ns="entities">View all entities</Trans>
                 </Link>
               </Card.Header>
               <Card.Body className="block" data-cy="alleged-entities">
