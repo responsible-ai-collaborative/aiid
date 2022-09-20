@@ -76,7 +76,7 @@
     "react-billboardjs": "^3.0.1",
     "react-bootstrap": "^2.0.0-rc.1",
     "react-bootstrap-daterangepicker": "^7.0.0",
-    "react-bootstrap-typeahead": "^6.0.0-alpha.6",
+    "react-bootstrap-typeahead": "6.0.0-alpha.6",
     "react-d3-cloud": "^1.0.5",
     "react-dom": "^17.0.2",
     "react-feather": "^2.0.9",
