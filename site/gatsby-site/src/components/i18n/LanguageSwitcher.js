@@ -28,7 +28,7 @@ export default function LanguageSwitcher({ className = '' }) {
           <span className="flex">
             {currentLocale.localName}
             {currentLocale.code === 'fr' && (
-              <span className="mx-2 rounded">
+              <span className="mx-2 rounded hidden sm:flex">
                 <Badge>Beta</Badge>
               </span>
             )}
