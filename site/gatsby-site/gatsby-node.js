@@ -24,6 +24,8 @@ const createDuplicatePages = require('./page-creators/createDuplicatePages');
 
 const createTsneVisualizationPage = require('./page-creators/createTsneVisualizationPage');
 
+const createEntitiesPages = require('./page-creators/createEntitiesPages');
+
 const algoliasearch = require('algoliasearch');
 
 const Translator = require('./src/utils/Translator');
@@ -58,24 +60,15 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     createRedirect({ fromPath: pair[0], toPath: pair[1], isPermanent: true })
   );
 
-  for (const pageCreator of [
-    createMdxPages,
-    createCitationPages,
-    createWordCountsPages,
-    createBackupsPage,
-    createTaxonomyPages,
-    createDownloadIndexPage,
-    createDuplicatePages,
-    createTsneVisualizationPage,
-  ]) {
-    if (!(process.env.SKIP_PAGE_CREATOR || '').split(',').includes(pageCreator.name)) {
-      if (pageCreator.name == 'createMdxPages') {
-        await pageCreator(graphql, createPage, reporter);
-      } else {
-        await pageCreator(graphql, createPage);
-      }
-    }
-  }
+  await createMdxPages(graphql, createPage, reporter);
+  await createCitationPages(graphql, createPage);
+  await createWordCountsPages(graphql, createPage);
+  await createBackupsPage(graphql, createPage);
+  await createTaxonomyPages(graphql, createPage);
+  await createDownloadIndexPage(graphql, createPage);
+  await createDuplicatePages(graphql, createPage);
+  await createTsneVisualizationPage(graphql, createPage);
+  await createEntitiesPages(graphql, createPage);
 };
 
 exports.onCreateWebpackConfig = ({ actions }) => {

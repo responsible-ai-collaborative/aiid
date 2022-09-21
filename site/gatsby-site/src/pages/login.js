@@ -43,7 +43,7 @@ const Login = (props) => {
 
     setDisplayFacebookSpinner(false);
   };
-  
+
   return (
     <Layout {...props} className="bootstrap">
       {loading ? (
