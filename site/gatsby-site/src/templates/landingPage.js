@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { graphql } from 'gatsby';
 import { useLocalization } from 'gatsby-theme-i18n';
 import Container from '../elements/Container';
+import CommonEntities from 'components/entities/CommonEntities';
 
 const LandingPage = (props) => {
   const {
@@ -65,6 +66,12 @@ const LandingPage = (props) => {
         <div className="mb-10">
           <div>
             <LatestReports latestReport={latestReport} />
+          </div>
+        </div>
+
+        <div className="mb-8">
+          <div>
+            <CommonEntities />
           </div>
         </div>
 
