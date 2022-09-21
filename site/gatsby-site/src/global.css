@@ -238,7 +238,7 @@ a:hover {
   line-height: 1.5;
   font-weight: bold;
   color: #fff !important;
-  margin-left: 24px;
+  margin-left: 36px;
   text-transform: uppercase;
   word-spacing: 3px;
 }
@@ -468,12 +468,17 @@ blockquote {
 }
 
 .titleWrapper {
-  display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding-bottom: 20px;
   border-bottom: 1px solid rgb(230, 236, 241);
-  margin-bottom: 32px;
+  min-height: 5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+.titleWrapper > h1 {
+  margin: 0px;
+  flex-grow: 0;
 }
 
 .gitBtn {

@@ -25,7 +25,7 @@
         "name": "oauth2-facebook",
         "type": "oauth2-facebook",
         "config": {
-            "clientId": "353371620329953"
+            "clientId": "1313947142744767"
         },
         "secret_config": {
             "clientSecret": "facebookAppSecret"
