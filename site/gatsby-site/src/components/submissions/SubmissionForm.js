@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Form, Button } from 'react-bootstrap';
 import { Spinner } from 'flowbite-react';
 import { useFormikContext } from 'formik';
 import * as yup from 'yup';
@@ -17,11 +17,8 @@ import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
 import supportedLanguages from '../../components/i18n/languages.json';
 import { Trans, useTranslation } from 'react-i18next';
-import RelatedIncidents from 'components/RelatedIncidents';
-import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
-import { Button, Select } from 'flowbite-react';
-import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
-import Wizard from 'elements/Wizard';
+import RelatedIncidents from '../../components/RelatedIncidents';
+import SemanticallyRelatedIncidents from '../../components/SemanticallyRelatedIncidents';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -122,7 +119,7 @@ export const schema = yup.object().shape({
   }),
 });
 
-const SubmissionForm = ({ onSubmit, isSubmitting }) => {
+const SubmissionForm = () => {
   const data = useStaticQuery(graphql`
     query SubmissionFormQuery {
       allMongodbAiidprodReports {
@@ -166,12 +163,6 @@ const SubmissionForm = ({ onSubmit, isSubmitting }) => {
   const addToast = useToastContext();
 
   const [parsingNews, setParsingNews] = useState(false);
-
-  const [wizardSteps, setWizardSteps] = useState([]);
-
-  const [currentWizardStep, setCurrentWizardStep] = useState(0);
-
-  const formRef = useRef(null);
 
   useEffect(() => {
     if (!values['date_downloaded']) {
@@ -250,47 +241,16 @@ const SubmissionForm = ({ onSubmit, isSubmitting }) => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
 
-  useEffect(() => {
-    const steps = [
-      {
-        name: 'Step 1 - Primary information',
-      },
-      {
-        name: 'Step 2 - Incident information',
-      },
-      {
-        name: 'Step 3 - Tell us more',
-      },
-    ];
-
-    setWizardSteps(steps);
-  }, []);
-
-  const Next = () => {
-    setCurrentWizardStep(currentWizardStep + 1);
-    formRef.current.scrollIntoView();
-  };
-
-  const Previous = () => {
-    setCurrentWizardStep(currentWizardStep - 1);
-    formRef.current.scrollIntoView();
-  };
-
   return (
-    <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report" ref={formRef}>
-      <Wizard.Progress steps={wizardSteps} currentStep={currentWizardStep} name="submit" />
-      <Wizard.StepContainer
-        header={wizardSteps[0]?.name || ''}
-        currentWizardStep={currentWizardStep === 0}
-      >
-        <Label label={t('Report Address')} popover="url"></Label>
-        <FlowbiteSearchInput
+    <div className="bootstrap">
+      <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
+        <TextInputGroup
           name="url"
           label={t('Report Address')}
           placeholder={t('Report URL')}
           addOnComponent={
             <Button
-              // className="outline-secondary"
+              className="outline-secondary"
               disabled={!!errors.url || !touched.url || parsingNews}
               onClick={() => parseNewsUrl(values.url)}
               data-cy="fetch-info"
@@ -310,10 +270,6 @@ const SubmissionForm = ({ onSubmit, isSubmitting }) => {
             setFieldTouched('url', true);
             TextInputGroupProps.handleChange(e);
           }}
-          btnClick={() => parseNewsUrl(values.url)}
-          loading={parsingNews}
-          btnDisabled={!!errors.url || !touched.url || parsingNews}
-          btnText={t('Fetch info')}
         />
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
 
@@ -325,40 +281,25 @@ const SubmissionForm = ({ onSubmit, isSubmitting }) => {
           {...TextInputGroupProps}
         />
 
-        {/* <Form.Group className="mt-3">
+        <Form.Group className="mt-3">
           <Label popover="authors" label={t('Author(s)')} />
           <TagsControl
             name="authors"
             placeholder={t('The author or authors of the report')}
             {...TextInputGroupProps}
           />
-        </Form.Group> */}
-
-        <TextInputGroup
-          name="authors"
-          label={t('Author CSV')}
-          placeholder={t('Author CSV')}
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
+        </Form.Group>
 
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byAuthors']} />
 
-        {/* <Form.Group className="mt-3">
+        <Form.Group className="mt-3">
           <Label popover="submitters" label={t('Submitter(s)')} />
           <TagsControl
             name="submitters"
             placeholder={t('Your name as you would like it to appear in the leaderboard')}
             {...TextInputGroupProps}
           />
-        </Form.Group> */}
-        <TextInputGroup
-          name="submitters"
-          label={t('Submitter CSV')}
-          placeholder={t('Submitter CSV')}
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
+        </Form.Group>
 
         <TextInputGroup
           name="date_published"
@@ -368,6 +309,7 @@ const SubmissionForm = ({ onSubmit, isSubmitting }) => {
           className="mt-3"
           {...TextInputGroupProps}
         />
+
         <RelatedIncidents
           incident={values}
           setFieldValue={setFieldValue}
@@ -391,15 +333,6 @@ const SubmissionForm = ({ onSubmit, isSubmitting }) => {
           {...TextInputGroupProps}
         />
 
-        <div className="flex justify-end mt-4">
-          <Wizard.Next onClick={Next} />
-        </div>
-      </Wizard.StepContainer>
-
-      <Wizard.StepContainer
-        header={wizardSteps[1]?.name || ''}
-        currentWizardStep={currentWizardStep === 1}
-      >
         <Form.Group
           className={'mt-3' + (touched['text'] && errors['text'] ? ' is-invalid' : '')}
           data-color-mode="light"
@@ -434,7 +367,7 @@ const SubmissionForm = ({ onSubmit, isSubmitting }) => {
 
         <Form.Group className="mt-3">
           <Label popover="language" label={t('Language')} />
-          <Select
+          <Form.Select
             name="language"
             placeholder={t('Report Language')}
             value={values.language}
@@ -445,7 +378,7 @@ const SubmissionForm = ({ onSubmit, isSubmitting }) => {
                 {l.name}
               </option>
             ))}
-          </Select>
+          </Form.Select>
         </Form.Group>
 
         <IncidentIdField
@@ -473,86 +406,62 @@ const SubmissionForm = ({ onSubmit, isSubmitting }) => {
           />
         )}
 
-        <div className="flex justify-between mt-4">
-          <Wizard.Previous onClick={Previous} />
-          <Wizard.Next onClick={Next} />
-        </div>
-      </Wizard.StepContainer>
-      <Wizard.StepContainer
-        header={wizardSteps[2]?.name || ''}
-        currentWizardStep={currentWizardStep === 2}
-      >
-        {/* <details className="mt-3">
-          <summary data-cy="extra-fields">{t('Tell us more...')}</summary> */}
-        <TextInputGroup
-          name="description"
-          label={t('Description')}
-          as="textarea"
-          placeholder={t('Report Description')}
-          rows={3}
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
-
-        <Form.Group className="mt-3">
-          <Label popover="tags" label={t('Tags')} />
-          <TagsControl name={'tags'} />
-        </Form.Group>
-
-        <Form.Group className="mt-3">
-          <Label popover="developers" label={t('Alleged developer of AI system')} />
-          <TagsControl
-            name="developers"
-            placeholder={t('Who created or built the technology involved in the incident?')}
+        <details className="mt-3">
+          <summary data-cy="extra-fields">{t('Tell us more...')}</summary>
+          <TextInputGroup
+            name="description"
+            label={t('Description')}
+            as="textarea"
+            placeholder={t('Report Description')}
+            rows={3}
+            className="mt-3"
             {...TextInputGroupProps}
           />
-        </Form.Group>
 
-        <Form.Group className="mt-3">
-          <Label popover="deployers" label={t('Alleged deployer of AI system')} />
-          <TagsControl
-            name="deployers"
-            placeholder={t('Who employed or was responsible for the technology?')}
+          <Form.Group className="mt-3">
+            <Label popover="tags" label={t('Tags')} />
+            <TagsControl name={'tags'} />
+          </Form.Group>
+
+          <Form.Group className="mt-3">
+            <Label popover="developers" label={t('Alleged developer of AI system')} />
+            <TagsControl
+              name="developers"
+              placeholder={t('Who created or built the technology involved in the incident?')}
+              {...TextInputGroupProps}
+            />
+          </Form.Group>
+
+          <Form.Group className="mt-3">
+            <Label popover="deployers" label={t('Alleged deployer of AI system')} />
+            <TagsControl
+              name="deployers"
+              placeholder={t('Who employed or was responsible for the technology?')}
+              {...TextInputGroupProps}
+            />
+          </Form.Group>
+
+          <Form.Group className="mt-3">
+            <Label popover="harmed_parties" label={t('Alleged harmed or nearly harmed parties')} />
+            <TagsControl
+              name="harmed_parties"
+              placeholder={t('Who experienced negative impacts?')}
+              {...TextInputGroupProps}
+            />
+          </Form.Group>
+
+          <TextInputGroup
+            name="editor_notes"
+            label={t('Editor Notes')}
+            as="textarea"
+            placeholder={t('Optional context and notes about the incident')}
+            rows={8}
+            className="mt-3"
             {...TextInputGroupProps}
           />
-        </Form.Group>
-
-        <Form.Group className="mt-3">
-          <Label popover="harmed_parties" label={t('Alleged harmed or nearly harmed parties')} />
-          <TagsControl
-            name="harmed_parties"
-            placeholder={t('Who experienced negative impacts?')}
-            {...TextInputGroupProps}
-          />
-        </Form.Group>
-
-        <TextInputGroup
-          name="editor_notes"
-          label={t('Editor Notes')}
-          type="textarea"
-          placeholder={t('Optional context and notes about the incident')}
-          rows={8}
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
-        {/* </details> */}
-        <div className="flex justify-between mt-4">
-          <Wizard.Previous onClick={Previous} />
-          <Button color={'success'} type="submit" onClick={onSubmit} disabled={isSubmitting}>
-            {isSubmitting ? (
-              <>
-                <Spinner />
-                <span className="pl-3">
-                  <Trans>Loading...</Trans>
-                </span>
-              </>
-            ) : (
-              <Trans>Submit</Trans>
-            )}
-          </Button>
-        </div>
-      </Wizard.StepContainer>
-    </Form>
+        </details>
+      </Form>
+    </div>
   );
 };
 
