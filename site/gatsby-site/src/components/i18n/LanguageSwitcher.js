@@ -24,9 +24,18 @@ export default function LanguageSwitcher({ className = '' }) {
     <div className="bootstrap">
       <DropdownButton
         id="dropdown-basic-button"
-        title={currentLocale.localName}
+        title={
+          <span className="flex">
+            {currentLocale.localName}
+            {currentLocale.code === 'fr' && (
+              <span className="mx-2 rounded">
+                <Badge>Beta</Badge>
+              </span>
+            )}
+          </span>
+        }
         data-cy="language-switcher"
-        className={className}
+        className={className + ' flex items-center'}
         variant="outline-light"
       >
         {config.map((locale) => (

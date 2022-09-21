@@ -131,5 +131,6 @@
   "Search {{count}} records...": "Rechercher {{count}} enregistrements...",
   "Report Authorship": "Auteur du rapport",
   "Report Domains": "Domaines du rapport",
-  "By": "Par"
+  "By": "Par",
+  "More": "Plus"
 }
