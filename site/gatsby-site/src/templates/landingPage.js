@@ -26,7 +26,7 @@ const LandingPage = (props) => {
 
   const localWordCounts = wordCountsSorted.filter((word, index) => index < 10);
 
-  const { latestReport, latestReportIncident } = data;
+  const { latestReport, latestReportIncident, latestPost } = data;
 
   latestReport.incident_id = latestReportIncident.incident_id;
 
@@ -86,7 +86,7 @@ const LandingPage = (props) => {
             <AboutDatabase />
           </div>
           <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
-            <Blog />
+            <Blog post={latestPost.nodes[0]} />
           </div>
         </div>
 
@@ -122,7 +122,7 @@ const LandingPage = (props) => {
 export default LandingPage;
 
 export const query = graphql`
-  query LandingPageQuery($latestReportNumber: Int) {
+  query LandingPageQuery($latestReportNumber: Int, $locale: String!) {
     latestReportIncident: mongodbAiidprodIncidents(reports: { eq: $latestReportNumber }) {
       incident_id
     }
@@ -150,6 +150,33 @@ export const query = graphql`
     latestReport_en: mongodbTranslationsReportsEn(report_number: { eq: $latestReportNumber }) {
       title
       text
+    }
+
+    latestPost: allMdx(
+      filter: { fields: { slug: { glob: "/blog/**" }, locale: { eq: $locale } } }
+      sort: { order: DESC, fields: frontmatter___date }
+      limit: 1
+    ) {
+      nodes {
+        fileAbsolutePath
+        fields {
+          slug
+          title
+          locale
+        }
+        slug
+        excerpt
+        frontmatter {
+          date
+          author
+          slug
+          image {
+            childImageSharp {
+              gatsbyImageData(layout: FIXED)
+            }
+          }
+        }
+      }
     }
   }
 `;
