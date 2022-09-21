@@ -87,8 +87,12 @@ export const schema = yup.object().shape({
     .required('*Author is required. Anonymous or the publication can be entered.'),
   submitters: yup
     .string()
-    .min(3, '*Submitter must have at least 3 characters')
-    .max(200, "*Submitter list can't be longer than 200 characters"),
+    .max(200, "*Submitter list can't be longer than 200 characters")
+    .test(
+      'len',
+      '*Submitter must have at least 3 characters',
+      (val) => val === undefined || val.length == 0 || 3 <= val.length
+    ),
   text: yup
     .string()
     .min(80, `*Text must have at least 80 characters`)
@@ -251,7 +255,7 @@ const SubmissionForm = () => {
           placeholder={t('Report URL')}
           addOnComponent={
             <Button
-              className="outline-secondary"
+              className="outline-secondary rounded-l-none"
               disabled={!!errors.url || !touched.url || parsingNews}
               onClick={() => parseNewsUrl(values.url)}
               data-cy="fetch-info"

@@ -36,8 +36,8 @@ const TextInputGroup = ({
             onChange={handleChange}
             onBlur={handleBlur}
             value={values[name] || ''}
-            className={touched[name] && errors[name] ? 'has-error' : null}
             isInvalid={errors[name] && touched[name]}
+            className={addOnComponent ? 'rounded-r-none' : 'rounded-md'}
             {...props}
           />
           {addOnComponent}

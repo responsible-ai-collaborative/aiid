@@ -893,6 +893,18 @@ img {
   }
 }
 
+/* Needed to get bootstrap error styles for Tag Input */
+.tags-control-wrapper {
+  padding: 0px !important;
+}
+.tags-control-wrapper .form-control {
+  border: 0px !important;
+  background-color: rgba(255, 255, 255, 0) !important;
+}
+.tags-control-wrapper.is-invalid .form-control.focus {
+  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+}
+
 /* disable Github Permalink */
 .bytemd-toolbar-right [bytemd-tippy-path='5'] {
   display: none;

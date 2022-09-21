@@ -13,14 +13,22 @@ const TagsInputGroup = ({ name, label, placeholder, errors, touched, schema, cla
     }
   }, []);
 
+  const isInvalid = errors[name] && touched[name];
+
   return (
     <div className="bootstrap">
       <Form.Group className={`form-group ${className}`}>
         <Label popover={name} label={(optional ? '' : '*') + label} />
-        <TagsControl name={name} placeholder={placeholder} />
         <InputGroup>
+          <div
+            className={
+              'tags-control-wrapper rounded-md form-control' + (isInvalid ? ' is-invalid' : '')
+            }
+          >
+            <TagsControl name={name} placeholder={placeholder} />
+          </div>
           <Form.Control.Feedback type="invalid">
-            <Trans ns="validation">{errors[name] && touched[name] ? errors[name] : null}</Trans>
+            <Trans ns="validation">{isInvalid ? errors[name] : null}</Trans>
           </Form.Control.Feedback>
         </InputGroup>
       </Form.Group>
