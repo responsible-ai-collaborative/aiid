@@ -26,61 +26,48 @@ const SidebarLayout = ({ location }) => {
         }
       `}
       render={({ allMdx }) => {
-        let finalNavItems;
+        let navItems;
 
-        if (allMdx.edges !== undefined && allMdx.edges.length > 0) {
-          allMdx.edges.map((item) => {
-            let innerItems;
+        if (allMdx.edges && allMdx.edges.length > 0) {
+          const indexName = (
+            location.pathname.replace(`/${locale}`, '') +
+            '/index' +
+            (locale == 'en' ? '' : `.${locale}`)
+          ).replace(/\/+/g, '/');
 
-            if (item !== undefined) {
-              const indexName = (
-                location.pathname.replace(`/${locale}`, '') +
-                '/index' +
-                (locale == 'en' ? '' : `.${locale}`)
-              ).replace(/\/+/g, '/');
+          const matchingPage = allMdx.edges.find((page) => {
+            const slug = page?.node?.fields?.slug;
 
-              if (
-                [item.node.fields.slug, config.gatsby.pathPrefix + item.node.fields.slug].includes(
-                  indexName
-                )
-              ) {
-                if (item.node.tableOfContents.items) {
-                  innerItems = item.node.tableOfContents.items.map((innerItem, index) => {
-                    const itemId = innerItem.title
-                      ? innerItem.title.replace(/\s+/g, '').toLowerCase()
-                      : '#';
+            const prefixedSlug = slug && config.gatsby.pathPrefix + slug;
 
-                    return (
-                      <ListItem key={index} to={`#${itemId}`} level={1}>
-                        {innerItem.title}
-                      </ListItem>
-                    );
-                  });
-                }
-              }
-            }
-            if (innerItems) {
-              finalNavItems = innerItems;
-            }
+            return [slug, prefixedSlug].includes(indexName) && page.node.tableOfContents.items;
           });
+
+          navItems =
+            matchingPage?.node &&
+            matchingPage.node.tableOfContents.items.map((item, index) => {
+              const itemId = item.title ? item.title.replace(/\s+/g, '').toLowerCase() : '#';
+
+              return (
+                <ListItem key={index} to={`#${itemId}`} level={1}>
+                  {item.title}
+                </ListItem>
+              );
+            });
         }
 
-        if (finalNavItems && finalNavItems.length) {
-          return (
-            <Sidebar>
-              <ul data-cy="outline" className={'rightSideBarUL'}>
-                <li className={'rightSideTitle'}>CONTENTS</li>
-                {finalNavItems}
-              </ul>
-            </Sidebar>
-          );
-        } else {
-          return (
-            <Sidebar>
-              <ul></ul>
-            </Sidebar>
-          );
-        }
+        return (
+          <Sidebar>
+            <ul data-cy="outline" className={'rightSideBarUL'}>
+              {navItems && navItems.length > 0 && (
+                <>
+                  <li className={'rightSideTitle'}>CONTENTS</li>
+                  {navItems}
+                </>
+              )}
+            </ul>
+          </Sidebar>
+        );
       }}
     />
   );

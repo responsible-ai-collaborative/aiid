@@ -68,7 +68,7 @@ describe('The Submit form', () => {
       });
     });
 
-    cy.wait(3000); // wait until the info toast disappear
+    cy.wait(0);
 
     cy.get('[data-cy="toast"]')
       .contains('Report successfully added to review queue')
