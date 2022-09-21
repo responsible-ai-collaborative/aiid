@@ -10,6 +10,7 @@ import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import Wordlist from '../components/WordList';
+import { Trans } from 'react-i18next';
 
 const WordCloudCell = ({ wordCountsSorted, wordCloud }) => {
   return (
@@ -45,12 +46,14 @@ const WordCounts = ({ pageContext, ...props }) => {
       </div>
       <StyledMainWrapper>
         <p className="paragraph">
-          This is a list of the words in incident reports ranked by their counts. Common words
-          (i.e., &quot;stop words&quot;) are removed from the list, and the stems of the words are
-          displayed rather than the conjugations found within the text. Words with fewer than 10
-          appearances and fewer than 3 letters are not included. If you would like to explore the
-          contents of the reports, you should work through the
-          <Link to="/apps/discover"> Discover app</Link>.
+          <Trans i18nKey="wordcountAbout" ns="wordcount">
+            This is a list of the words in incident reports ranked by their counts. Common words
+            (i.e., &quot;stop words&quot;) are removed from the list, and the stems of the words are
+            displayed rather than the conjugations found within the text. Words with fewer than 10
+            appearances and fewer than 3 letters are not included. If you would like to explore the
+            contents of the reports, you should work through the
+            <Link to="/apps/discover"> Discover app</Link>.
+          </Trans>
         </p>
         <Container>
           <ul>

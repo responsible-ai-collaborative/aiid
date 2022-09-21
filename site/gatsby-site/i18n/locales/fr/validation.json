@@ -1,0 +1,10 @@
+{
+  "*URL required": "*URL obligatoire",
+  "*Title is required": "*Titre obligatoire",
+  "*Author is required. Anonymous or the publication can be entered.": "*Auteur obligatoire. Anonyme ou la publication peut être saisi",
+  "*Date published is required": "*Date de publication obligatoire",
+  "*Date downloaded required": "*Date de téléchargement obligatoire",
+  "*Must enter URL in http://www.example.com/images/preview.png format": "*Vous devez entrer l'URL avec le format http://www.example.com/images/preview.png",
+  "Incident ID {{value}} not found!": "Incident {{value}} introuvable !",
+  "Type and press Enter to add an item": "Ecrivez et appuyez Enter pour ajouter un élément"
+}

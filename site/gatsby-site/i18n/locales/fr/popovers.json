@@ -1,0 +1,54 @@
+{
+    "title": {
+        "title": "Titre",
+        "text": "La plupart des œuvres ont un titre qui doit être inscrit ici textuellement. Dans le cas où l'ouvrage n'a pas de titre, essayez d'en résumer le contenu en quelques mots sans éditorialiser. Ce texte figure en évidence dans les rapports d'incidents."
+    },
+    "authors": {
+        "title": "Auteurs",
+        "text": "Entrez les noms des créateurs du contenu lié. Vous devez entrer toutes les personnes qui ont contribué au travail écrit séparées par des virgules."
+    },
+    "submitters": {
+        "title": "C'est vous !",
+        "text": "Entrez votre nom ici. Si plusieurs personnes ont contribué à la collecte de l'incident, vous pouvez saisir plusieurs personnes séparées par des virgules. Alternativement, vous pouvez saisir \"Anonyme\" comme expéditeur si vous ne souhaitez pas être identifié dans la base de données. Les entrées dans ce champ seront ajoutées au classement public."
+    },
+    "incident_date": {
+        "title": "Quand l'incident s'est-il produit pour la première fois ?",
+        "text": "De nombreux incidents d'IA ne sont pas des événements discrets (c'est-à-dire qu'ils se produisent sur une période de temps). De plus, il est souvent difficile de savoir quand l'incident s'est produit pour la première fois lorsque le premier rapport public suit une période de temps après le premier événement. Dans ce champ, vous devez entrer la date du premier rapport de l'incident ou une estimation justifié du moment où l'incident s'est probablement produit pour la première fois. Par exemple, si l'incident concerne une fonctionnalité de moteur de recherche publiée en janvier et que le premier rapport d'incident public date de février, vous devez attribuer la date d'incident à janvier."
+    },
+    "date_published": {
+        "title": "Quand le rapport a-t-il été disponible ?",
+        "text": "Les rapports ont souvent une date de publication dans l'URL, mais même lorsqu'ils ne l'ont pas, vous pouvez visiter la <linkto to=\"https://archive.org/web/\">Wayback Machine</linkto> pour savoir quand L'URL du rapport a été indexée pour la première fois."
+    },
+    "date_downloaded": {
+        "title": "Quand avez-vous copié le contenu du rapport dans ce formulaire ?",
+        "text": "Les agences de presse mettent souvent à jour leurs rapports au fil du temps. Cette date permet de déterminer si le contenu est peut-être obsolète. Typiquement, vous mettrez la date d'aujourd'hui ici."
+    },
+    "url": {
+        "title": "Lien vers le rapport accessible au public",
+        "text": "Cette adresse sera liée dans de nombreuses interfaces utilisateur de base de données d'incidents."
+    },
+    "image_url": {
+        "title": "Une image utilisée pour prévisualiser le rapport d'incident",
+        "text": "Il s'agit de l'URL d'une image qui sera indexée et affichée à côté du rapport. La plupart des publications ont maintenant des images en titre dont vous pouvez obtenir une URL en cliquant avec le bouton droit de la souris. Vous pouvez également lier des images ici."
+    },
+    "incident_id": {
+        "title": "Est-ce un incident existant ?",
+        "text": "Très souvent, des rapports sont rédigés sur des incidents déjà présents dans la base de données des incidents. Avant de soumettre, vous devez vérifier si l'incident est déjà dans la base de données en visitant l'application \"Découvrir\" et en recherchant des incidents de nature similaire à celui que vous soumettez maintenant. S'il y a un incident pour votre rapport, mais que le rapport n'a jamais été soumis, entrez ici le numéro d'identification de l'incident correspondant. Si le rapport d'incident existe déjà, veuillez ne pas le soumettre à nouveau."
+    },
+    "text": {
+        "title": "Texte de l'article ou transcription rich media",
+        "text": "Copiez, collez et validez que le contenu textuel du rapport d'incident correspond au contenu de l'URL liée ci-dessus. Supprimez toutes les annonces et autres éléments qui ne doivent pas être indexés."
+    },
+    "reportAddress": {
+        "title": "Lien vers le rapport accessible au public",
+        "text": "Cette adresse sera liée dans de nombreuses interfaces utilisateur de base de données d'incidents."
+    },
+    "tags": {
+        "title": "Étiquetez le type de rapport d'incident",
+        "text": "Le but des étiquettes de rapport est de prendre en charge la classification des rapports sur la page de citation de l'incident. En cas de doute, vous pouvez laisser ce champ vide et un éditeur de base de données sélectionnera les étiquettes appropriées au moment du traitement."
+    },
+    "language": {
+        "title": "Langue du rapport d'incident",
+        "text": "Il s'agit de la langue écrite dans le rapport, et non de la langue des personnes ou des pays impliqués dans le rapport. Les rapports seront traduits dans les langues prises en charge lorsque nous traiterons le texte."
+    }
+}
