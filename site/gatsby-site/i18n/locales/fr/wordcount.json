@@ -1,0 +1,3 @@
+{
+    "wordcountAbout": "C'est une liste de mots dans les rapports d'incident classés selon leur nombre. Les mots courants (c'est-à-dire les \"mots vides\" sont supprimés de la liste et les radicaux des mots sont affichés plutôt que les conjugaisons trouvées dans le texte. Les mots avec moins de 10 apparitions et moins de 3 lettres ne sont pas inclus. Si vous souhaitez explorer le contenu des rapports, vous devez utiliser l'<1> application Discover </1>."
+}

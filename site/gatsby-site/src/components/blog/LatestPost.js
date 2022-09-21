@@ -3,7 +3,7 @@ import { useStaticQuery, graphql } from 'gatsby';
 import PostPreview from './PostPreview';
 import { useLocalization } from 'gatsby-theme-i18n';
 
-export default function LatestPost({ className }) {
+export default function LatestPost() {
   const {
     allMdx: { nodes: posts },
   } = useStaticQuery(graphql`
@@ -40,5 +40,5 @@ export default function LatestPost({ className }) {
 
   const post = posts.find((p) => p.fields.locale == locale);
 
-  return <PostPreview post={post} className={className} />;
+  return <PostPreview post={post} latestPost={true} />;
 }
