@@ -215,6 +215,8 @@ const plugins = [
           'submitted',
           'login',
           'popovers',
+          'wordcount',
+          'leaderboard',
           'entities',
         ],
         debug: process.env.GATSBY_I18N_DEBUG,

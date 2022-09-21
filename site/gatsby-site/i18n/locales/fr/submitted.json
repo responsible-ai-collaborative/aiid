@@ -1,0 +1,13 @@
+{
+    "Submitted Incident Report List": "Liste des incidents envoyés",
+    "description": "Les incidents suivants ont été <1>soumis</1> par les utilisateurs et sont en attente de révision par les éditeurs. Seuls les éditeurs peuvent les promouvoir dans la base de données.",
+    "Quick Add URLs": "URLs d'ajout rapide",
+    "quickaddDescription": "ECes rapports ont été ajoutés de manière anonyme par les utilisateurs dans le formulaire d'ajout rapide sur la page d'accueil",
+    "Loading Quick Adds...": "Chargement rapide des rapports agrégés...",
+    "Successfully promoted submission to Incident {{incident_id}} and Report {{report_number}}": "Incident {{incident_id}} et rapport {{report_number}} promus avec succès",
+    "Successfully promoted submission to <2>Incident {{incident_id}} and Report {{report_number}}</2>": "<2>Incident {{incident_id}} et rapport {{report_number}}</2> promus avec succès",
+    "Add New Incident": "Ajouter un nouvel incident",
+    "Add New Report": "Ajouter un nouveau rapport",
+    "Reject New Incident": "Rejeter le Nouvel Incident",
+    "Reject New Report": "Refuser le Nouveau Rapport"
+}
