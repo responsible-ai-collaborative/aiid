@@ -82,6 +82,7 @@ const config = {
     navConfig: [
       { title: 'Welcome to the AIID', label: 'welcome', url: '/', items: [] },
       { title: 'Discover Incidents', label: 'discover', url: '/apps/discover', items: [] },
+      { title: 'Entities', label: 'entities', url: '/entities', items: [] },
       // temporarily hide tsne
       // { title: 'Spatial View', label: 'spatial', url: '/summaries/spatial', items: [] },
       { title: 'Table View', label: 'incidents', url: '/apps/incidents', items: [] },

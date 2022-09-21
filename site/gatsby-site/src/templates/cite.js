@@ -30,6 +30,8 @@ import useToastContext, { SEVERITY } from '../hooks/useToast';
 import Link from '../components/ui/Link';
 import { graphql } from 'gatsby';
 import { getTaxonomies, getTranslatedReports } from '../utils/cite';
+import { computeEntities } from '../utils/entities';
+import AllegedEntities from '../components/entities/AllegedEntities';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -202,6 +204,8 @@ function CitePage(props) {
     }
   };
 
+  const entities = computeEntities({ incidents: [incident] });
+
   return (
     <Layout {...props}>
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
@@ -220,9 +224,27 @@ function CitePage(props) {
       <Container>
         <Row>
           <Col>
+            <Card className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6">
+              <Card.Header className="items-center justify-between">
+                <h4 className="m-0">
+                  <Trans ns="entities">Entities</Trans>
+                </h4>
+                <Link to="/entities">
+                  <Trans ns="entities">View all entities</Trans>
+                </Link>
+              </Card.Header>
+              <Card.Body className="block" data-cy="alleged-entities">
+                <AllegedEntities entities={entities} />
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
             <Card
               data-cy="citation"
-              className="border-1.5 border-border-light-gray rounded-5px shadow-card"
+              className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6"
             >
               <Card.Header className="items-center justify-between">
                 <h4 className="m-0">
@@ -529,6 +551,9 @@ export const query = graphql`
       date
       editors
       flagged_dissimilar_incidents
+      Alleged_developer_of_AI_system
+      Alleged_deployer_of_AI_system
+      Alleged_harmed_or_nearly_harmed_parties
     }
   }
 `;
