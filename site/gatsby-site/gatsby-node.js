@@ -22,7 +22,7 @@ const createDownloadIndexPage = require('./page-creators/createDownloadIndexPage
 
 const createDuplicatePages = require('./page-creators/createDuplicatePages');
 
-const createTsneVisualizationPage = require('./page-creators/createTsneVisualizationPage');
+// const createTsneVisualizationPage = require('./page-creators/createTsneVisualizationPage');
 
 const createEntitiesPages = require('./page-creators/createEntitiesPages');
 
@@ -67,7 +67,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   await createTaxonomyPages(graphql, createPage);
   await createDownloadIndexPage(graphql, createPage);
   await createDuplicatePages(graphql, createPage);
-  await createTsneVisualizationPage(graphql, createPage);
+  // await createTsneVisualizationPage(graphql, createPage);
   await createEntitiesPages(graphql, createPage);
 };
 
