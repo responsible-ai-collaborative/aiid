@@ -2,9 +2,10 @@ import React from 'react';
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { StyledHeading } from 'components/styles/Docs';
-import SubmitForm from 'components/forms/SubmitForm';
+// import SubmitForm from 'components/forms/SubmitForm';
 import { Trans, useTranslation } from 'react-i18next';
 import AiidHelmet from 'components/AiidHelmet';
+import NewSubmissionForm from 'components/forms/NewSubmissionForm/NewSubmissionForm';
 
 const SubmitPage = (props) => {
   const { t } = useTranslation(['submit']);
@@ -29,7 +30,7 @@ const SubmitPage = (props) => {
           <Link to="/contact">contact us with questions.</Link>{' '}
         </Trans>
       </p>
-      <SubmitForm />
+      <NewSubmissionForm />
     </Layout>
   );
 };

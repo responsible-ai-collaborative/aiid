@@ -1,5 +1,5 @@
 import useToastContext, { SEVERITY } from 'hooks/useToast';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { getCloudinaryPublicID } from 'utils/cloudinary';
 import getSourceDomain from 'utils/getSourceDomain';
@@ -25,6 +25,8 @@ const NewSubmissionForm = () => {
 
   const [parsingNews, setParsingNews] = useState(false);
 
+  const stepsRef = useRef(null);
+
   const handleNextStep = (newData, final = false) => {
     setData((prev) => ({ ...prev, ...newData }));
 
@@ -33,11 +35,14 @@ const NewSubmissionForm = () => {
       return;
     }
 
+    stepsRef?.current?.scrollIntoView();
+
     setCurrentStep((prev) => prev + 1);
   };
 
   const handlePreviousStep = (newData) => {
     setData((prev) => ({ ...prev, ...newData }));
+    stepsRef?.current?.scrollIntoView();
     setCurrentStep((prev) => prev - 1);
   };
 
@@ -103,8 +108,6 @@ const NewSubmissionForm = () => {
     [data]
   );
 
-  console.log('data', data);
-
   useEffect(() => {
     try {
       const url = new URL(data?.url);
@@ -143,7 +146,7 @@ const NewSubmissionForm = () => {
     />,
   ];
 
-  return <>{steps[currentStep]}</>;
+  return <div ref={stepsRef}>{steps[currentStep]}</div>;
 };
 
 export default NewSubmissionForm;
