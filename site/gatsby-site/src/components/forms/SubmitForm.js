@@ -9,13 +9,14 @@ import { format, parse } from 'date-fns';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
 import isString from 'lodash/isString';
-import SubmissionForm, { schema } from 'components/submissions/SubmissionForm';
-import { Formik } from 'formik';
+// import SubmissionForm, { schema } from 'components/submissions/SubmissionForm';
+// import { Formik } from 'formik';
 import { stripMarkdown } from 'utils/typography';
 import isArray from 'lodash/isArray';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
+import NewSubmissionForm from './NewSubmissionForm/NewSubmissionForm';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -59,7 +60,7 @@ const SubmitForm = () => {
     }
   }
 
-  const [submission, setSubmission] = useState({ ...queryParams });
+  const [setSubmission] = useState({ ...queryParams });
 
   const [csvData, setCsvData] = useState([]);
 
@@ -99,7 +100,7 @@ const SubmitForm = () => {
 
   const localizePath = useLocalizePath();
 
-  const handleSubmit = async (values, { resetForm }) => {
+  const handleSubmit = async (values) => {
     try {
       const date_submitted = format(new Date(), 'yyyy-MM-dd');
 
@@ -128,7 +129,7 @@ const SubmitForm = () => {
 
       await insertSubmission({ variables: { submission } });
 
-      resetForm();
+      // resetForm();
 
       addToast({
         message: (
@@ -156,28 +157,28 @@ const SubmitForm = () => {
 
   return (
     <div className="my-5">
-      <Formik
+      {/* <Formik
         validationSchema={schema}
         onSubmit={handleSubmit}
         initialValues={submission}
         enableReinitialize={true}
       >
-        {({ isSubmitting, submitForm }) => (
-          <>
-            <SubmissionForm />
+        {({ isSubmitting, submitForm }) => ( */}
+      {/* <> */}
+      <NewSubmissionForm submitForm={handleSubmit} />
 
-            <p className="mt-4">
-              <Trans ns="submit" i18nKey="submitReviewDescription">
-                Submitted reports are added to a{' '}
-                <Link locale={locale} to="/apps/submitted">
-                  review queue{' '}
-                </Link>{' '}
-                to be resolved to a new or existing incident record. Incidents are reviewed and
-                merged into the database after enough incidents are pending.
-              </Trans>
-            </p>
+      <p className="mt-4">
+        <Trans ns="submit" i18nKey="submitReviewDescription">
+          Submitted reports are added to a{' '}
+          <Link locale={locale} to="/apps/submitted">
+            review queue{' '}
+          </Link>{' '}
+          to be resolved to a new or existing incident record. Incidents are reviewed and merged
+          into the database after enough incidents are pending.
+        </Trans>
+      </p>
 
-            <Button
+      {/* <Button
               onClick={submitForm}
               className="mt-3 bootstrap"
               variant="primary"
@@ -187,8 +188,8 @@ const SubmitForm = () => {
               <Trans>Submit</Trans>
             </Button>
           </>
-        )}
-      </Formik>
+        )} */}
+      {/* </Formik> */}
 
       {isRole('submitter') && (
         <Container className="mt-5 p-0 bootstrap">

@@ -9,6 +9,7 @@ import FlowbiteSearchInput from '../FlowbiteSearchInput';
 import RelatedIncidents from 'components/RelatedIncidents';
 import { dateRegExp } from 'utils/date';
 import StepContainer from './StepContainer';
+import { isEmpty } from 'lodash';
 // import { PreviewImageInputGroup } from 'utils/cloudinary';
 
 const StepOne = (props) => {
@@ -52,8 +53,6 @@ const StepOne = (props) => {
   const handleSubmit = (values) => {
     props.next(values);
   };
-
-  console.log('props.data', props.data);
 
   return (
     <StepContainer name={props.name}>
@@ -197,7 +196,7 @@ const StepOne = (props) => {
                   handleBlur={handleBlur}
                 />
                 <div className="flex justify-end mt-4">
-                  <Button type="submit">
+                  <Button type="submit" disabled={!isEmpty(errors)}>
                     <Trans>Next</Trans>
                   </Button>
                 </div>

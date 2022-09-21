@@ -17,49 +17,51 @@ const TextInputGroup = ({
   className = '',
   inputClassName = '',
   ...props
-}) => (
-  <Form.Group className={`form-group ${className}`}>
-    <Label popover={name} label={label} />
-    <InputGroup className="mt-1">
-      {type === 'textarea' ? (
-        <TextAreaInput
-          name={name}
-          label={label}
-          placeholder={placeholder}
-          values={values}
-          errors={errors}
-          touched={touched}
-          type={type}
-          handleChange={handleChange}
-          handleBlur={handleBlur}
-          addOnComponent={addOnComponent}
-          className={inputClassName}
-          {...props}
-        />
-      ) : (
-        <Input
-          name={name}
-          label={label}
-          placeholder={placeholder}
-          values={values}
-          errors={errors}
-          touched={touched}
-          type={type}
-          handleChange={handleChange}
-          handleBlur={handleBlur}
-          addOnComponent={addOnComponent}
-          className={inputClassName}
-          {...props}
-        />
-      )}
-      <Form.Control.Feedback type="invalid">
-        <span className="text-red-700 text-sm">
-          <Trans ns="validation">{errors[name] && touched[name] ? errors[name] : null}</Trans>
-        </span>
-      </Form.Control.Feedback>
-    </InputGroup>
-  </Form.Group>
-);
+}) => {
+  return (
+    <Form.Group className={`form-group ${className}`}>
+      <Label popover={name} label={label} />
+      <InputGroup className="mt-1">
+        {type === 'textarea' ? (
+          <TextAreaInput
+            name={name}
+            label={label}
+            placeholder={placeholder}
+            values={values}
+            errors={errors}
+            touched={touched}
+            type={type}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            addOnComponent={addOnComponent}
+            className={inputClassName}
+            {...props}
+          />
+        ) : (
+          <Input
+            name={name}
+            label={label}
+            placeholder={placeholder}
+            values={values}
+            errors={errors}
+            touched={touched}
+            type={type}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            addOnComponent={addOnComponent}
+            className={inputClassName}
+            {...props}
+          />
+        )}
+        <Form.Control.Feedback type="invalid">
+          <span className="text-red-700 text-sm">
+            <Trans ns="validation">{errors[name] ? errors[name] : null}</Trans>
+          </span>
+        </Form.Control.Feedback>
+      </InputGroup>
+    </Form.Group>
+  );
+};
 
 const TextAreaInput = ({
   name,

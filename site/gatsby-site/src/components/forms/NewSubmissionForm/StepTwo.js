@@ -12,6 +12,7 @@ import supportedLanguages from '../../../components/i18n/languages.json';
 import { Editor } from '@bytemd/react';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
 import StepContainer from './StepContainer';
+import { isEmpty } from 'lodash';
 
 const StepTwo = (props) => {
   const { t } = useTranslation(['submit']);
@@ -53,6 +54,7 @@ const StepTwo = (props) => {
         initialValues={data}
         onSubmit={handleSubmit}
         validationSchema={stepTwoValidationSchema}
+        enableReinitialize
       >
         {({
           values,
@@ -63,7 +65,6 @@ const StepTwo = (props) => {
           setFieldValue,
           setFieldTouched,
         }) => {
-          console.log(errors);
           return (
             <Form>
               <PreviewImageInputGroup
@@ -160,7 +161,7 @@ const StepTwo = (props) => {
                 <Button type="button" onClick={() => props.previous(values)}>
                   <Trans>Previous</Trans>
                 </Button>
-                <Button type="submit">
+                <Button type="submit" disabled={!isEmpty(errors)}>
                   <Trans>Next</Trans>
                 </Button>
               </div>
