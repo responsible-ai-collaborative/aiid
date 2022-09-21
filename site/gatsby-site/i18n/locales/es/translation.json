@@ -62,8 +62,7 @@
   "Delete": "Borrar",
   "Incidents reports matched by published date: <1>{{date}}</1>": "Informes de incidentes por fecha de publicación: <1>{{date}}</1>",
   "Incident matched by ID: <1>{{id}}</1>": "Incidentes por ID: <1>{{id}}</1>",
-  "Incidents reports matched by authors: <1>{{authors}}</1>":
-  "Informes por autor: <1>{{authors}}</1>",
+  "Incidents reports matched by authors: <1>{{authors}}</1>": "Informes por autor: <1>{{authors}}</1>",
   "Incidents reports matched by URL: <1>{{url}}</1>": "Informes por URL: <1>{{url}}</1>",
   "AI Translated": "Traducido por IA",
   "View Original": "Ver Original",
@@ -106,10 +105,10 @@
   "The visualization below shows incidents closer together when a <2>natural language processing system</2> identifies their text as being semantically similar.": "La siguiente visualización muestra los incidentes en proximidad proporcional a la similitud semántica de sus textos, identificados a través de <2>nuestro sistema de procesamiento de lenguaje natural</2>",
   "review": "revisar",
   "Loading...": "Cargando...",
+  "Fetching Incidents...": "Cargando Incidentes...",
+  "Fetching Reports...": "Cargando informes...",
   "Spatial Visualization": "Visualización espacial",
   "Fetching...": "Cargando...",
-  "Fetching Incidents...": "Cargando incidentes",
-  "Fetching Reports...": "Cargando reportes",
   "Title": "Título",
   "Description": "Descripción",
   "date": "fecha",
@@ -121,6 +120,11 @@
   "Report Authorship": "Autor del reporte",
   "Report Domains": "Dominios del reporte",
   "By": "Por",
+  "More": "Más",
+  "Thank you for verifying your account.": "Gracias por verificar tu cuenta.",
   "Read more": "Leer más",
-  "Table View": "Vista Tabular"
+  "Table View": "Vista Tabular",
+  "View Less": "Ver Menos",
+  "View ({{hidden}}) more": "Ver ({{hidden}}) más",
+  "and": "y"
 }

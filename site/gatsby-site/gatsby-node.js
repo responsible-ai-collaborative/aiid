@@ -24,6 +24,8 @@ const createDuplicatePages = require('./page-creators/createDuplicatePages');
 
 const createTsneVisualizationPage = require('./page-creators/createTsneVisualizationPage');
 
+const createEntitiesPages = require('./page-creators/createEntitiesPages');
+
 const algoliasearch = require('algoliasearch');
 
 const Translator = require('./src/utils/Translator');
@@ -66,6 +68,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   await createDownloadIndexPage(graphql, createPage);
   await createDuplicatePages(graphql, createPage);
   await createTsneVisualizationPage(graphql, createPage);
+  await createEntitiesPages(graphql, createPage);
 };
 
 exports.onCreateWebpackConfig = ({ actions }) => {

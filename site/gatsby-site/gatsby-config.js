@@ -217,6 +217,7 @@ const plugins = [
           'popovers',
           'wordcount',
           'leaderboard',
+          'entities',
         ],
         debug: process.env.GATSBY_I18N_DEBUG,
         nsSeparator: false,

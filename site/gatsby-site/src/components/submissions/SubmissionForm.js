@@ -1,23 +1,24 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Form, Button, Spinner } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
 import { useFormikContext } from 'formik';
 import * as yup from 'yup';
-import TextInputGroup from 'components/forms/TextInputGroup';
+import TextInputGroup from '../../components/forms/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { dateRegExp } from 'utils/date';
-import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
+import { dateRegExp } from '../../utils/date';
+import { getCloudinaryPublicID, PreviewImageInputGroup } from '../../utils/cloudinary';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { graphql, useStaticQuery } from 'gatsby';
 import Label from '../forms/Label';
-import TagsControl from 'components/forms/TagsControl';
-import IncidentIdField from 'components/incidents/IncidentIdField';
+import TagsControl from '../../components/forms/TagsControl';
+import IncidentIdField from '../../components/incidents/IncidentIdField';
 import getSourceDomain from '../../utils/getSourceDomain';
 import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
-import supportedLanguages from 'components/i18n/languages.json';
+import supportedLanguages from '../../components/i18n/languages.json';
 import { Trans, useTranslation } from 'react-i18next';
-import RelatedIncidents from 'components/RelatedIncidents';
-import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
+import RelatedIncidents from '../../components/RelatedIncidents';
+import SemanticallyRelatedIncidents from '../../components/SemanticallyRelatedIncidents';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -163,6 +164,12 @@ const SubmissionForm = () => {
 
   const [parsingNews, setParsingNews] = useState(false);
 
+  useEffect(() => {
+    if (!values['date_downloaded']) {
+      setFieldValue('date_downloaded', new Date().toISOString().substr(0, 10));
+    }
+  }, []);
+
   const parseNewsUrl = useCallback(
     async (newsUrl) => {
       setParsingNews(true);
@@ -187,11 +194,19 @@ const SubmissionForm = () => {
 
         const cloudinary_id = getCloudinaryPublicID(news.image_url);
 
-        setValues({
+        const newValues = {
           ...values,
           ...news,
           cloudinary_id,
-        });
+        };
+
+        for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
+          if (newValues[key] && !Array.isArray(newValues[key])) {
+            newValues[key] = [newValues[key]];
+          }
+        }
+
+        setValues(newValues);
       } catch (e) {
         const message =
           e.message == 'Parser error'
@@ -240,20 +255,13 @@ const SubmissionForm = () => {
               onClick={() => parseNewsUrl(values.url)}
               data-cy="fetch-info"
             >
-              {' '}
               {!parsingNews ? (
                 <Trans ns="submit">Fetch info</Trans>
               ) : (
-                <>
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />{' '}
-                  <Trans>Fetching...</Trans>
-                </>
+                <div className="flex gap-2">
+                  <Spinner size="sm" />
+                  <Trans ns="submit">Fetching...</Trans>
+                </div>
               )}
             </Button>
           }
@@ -273,57 +281,26 @@ const SubmissionForm = () => {
           {...TextInputGroupProps}
         />
 
-        <TextInputGroup
-          name="description"
-          label={t('Description')}
-          as="textarea"
-          placeholder="Report Description"
-          rows={3}
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
-
-        <TextInputGroup
-          name="developers"
-          label={t('Alleged developer of AI system')}
-          placeholder="Alleged developer of AI system"
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
-
-        <TextInputGroup
-          name="deployers"
-          label={t('Alleged deployer of AI system')}
-          placeholder="Alleged deployer of AI system"
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
-
-        <TextInputGroup
-          name="harmed_parties"
-          label={t('Alleged harmed or nearly harmed parties')}
-          placeholder="Alleged harmed or nearly harmed parties"
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
-
-        <TextInputGroup
-          name="authors"
-          label={t('Author CSV')}
-          placeholder={t('Author CSV')}
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
+        <Form.Group className="mt-3">
+          <Label popover="authors" label={t('Author(s)')} />
+          <TagsControl
+            name="authors"
+            placeholder={t('The author or authors of the report')}
+            {...TextInputGroupProps}
+          />
+        </Form.Group>
 
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byAuthors']} />
 
-        <TextInputGroup
-          name="submitters"
-          label={t('Submitter CSV')}
-          placeholder={t('Submitter CSV')}
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
+        <Form.Group className="mt-3">
+          <Label popover="submitters" label={t('Submitter(s)')} />
+          <TagsControl
+            name="submitters"
+            placeholder={t('Your name as you would like it to appear in the leaderboard')}
+            {...TextInputGroupProps}
+          />
+        </Form.Group>
+
         <TextInputGroup
           name="date_published"
           label={t('Date Published')}
@@ -404,11 +381,6 @@ const SubmissionForm = () => {
           </Form.Select>
         </Form.Group>
 
-        <Form.Group className="mt-3">
-          <Label popover="tags" label={t('Tags')} />
-          <TagsControl name={'tags'} />
-        </Form.Group>
-
         <IncidentIdField
           name="incident_id"
           className="mt-3"
@@ -434,15 +406,60 @@ const SubmissionForm = () => {
           />
         )}
 
-        <TextInputGroup
-          name="editor_notes"
-          label={t('Editor Notes')}
-          as="textarea"
-          placeholder={t('Optional context and notes about the incident')}
-          rows={8}
-          className="mt-3"
-          {...TextInputGroupProps}
-        />
+        <details className="mt-3">
+          <summary data-cy="extra-fields">{t('Tell us more...')}</summary>
+          <TextInputGroup
+            name="description"
+            label={t('Description')}
+            as="textarea"
+            placeholder={t('Report Description')}
+            rows={3}
+            className="mt-3"
+            {...TextInputGroupProps}
+          />
+
+          <Form.Group className="mt-3">
+            <Label popover="tags" label={t('Tags')} />
+            <TagsControl name={'tags'} />
+          </Form.Group>
+
+          <Form.Group className="mt-3">
+            <Label popover="developers" label={t('Alleged developer of AI system')} />
+            <TagsControl
+              name="developers"
+              placeholder={t('Who created or built the technology involved in the incident?')}
+              {...TextInputGroupProps}
+            />
+          </Form.Group>
+
+          <Form.Group className="mt-3">
+            <Label popover="deployers" label={t('Alleged deployer of AI system')} />
+            <TagsControl
+              name="deployers"
+              placeholder={t('Who employed or was responsible for the technology?')}
+              {...TextInputGroupProps}
+            />
+          </Form.Group>
+
+          <Form.Group className="mt-3">
+            <Label popover="harmed_parties" label={t('Alleged harmed or nearly harmed parties')} />
+            <TagsControl
+              name="harmed_parties"
+              placeholder={t('Who experienced negative impacts?')}
+              {...TextInputGroupProps}
+            />
+          </Form.Group>
+
+          <TextInputGroup
+            name="editor_notes"
+            label={t('Editor Notes')}
+            as="textarea"
+            placeholder={t('Optional context and notes about the incident')}
+            rows={8}
+            className="mt-3"
+            {...TextInputGroupProps}
+          />
+        </details>
       </Form>
     </div>
   );

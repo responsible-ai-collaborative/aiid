@@ -18,6 +18,7 @@ import { useLocalization } from 'gatsby-theme-i18n';
 import Container from '../elements/Container';
 import Row from '../elements/Row';
 import Col from '../elements/Col';
+import CommonEntities from 'components/entities/CommonEntities';
 
 const LandingPage = (props) => {
   const {
@@ -71,6 +72,12 @@ const LandingPage = (props) => {
         <Row className="mt-4">
           <Col>
             <LatestReports latestReport={latestReport} />
+          </Col>
+        </Row>
+
+        <Row className="mt-4">
+          <Col>
+            <CommonEntities />
           </Col>
         </Row>
 
