@@ -55,7 +55,7 @@ const LandingPage = (props) => {
         <meta name="description" content={metaDescription} />
       </AiidHelmet>
       <Container>
-        <div className="mb-10">
+        <div>
           <Hero />
         </div>
 
