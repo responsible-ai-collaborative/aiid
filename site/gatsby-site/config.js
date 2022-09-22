@@ -104,12 +104,10 @@ const config = {
   footer: {
     navConfig: [
       {
-        title: 'Researcher Guide',
-        label: 'research',
-        url: '/research',
+        title: 'Research',
         items: [
           {
-            title: 'Incident Report Acceptance Criteria',
+            title: 'Defining an “AI Incident”',
             label: '1-criteria',
             url: '/research/1-criteria',
           },
@@ -118,6 +116,16 @@ const config = {
             title: 'Initial Collection Methodology',
             label: '3-history',
             url: '/research/3-history',
+          },
+          {
+            title: 'Related Work',
+            label: 'related-work',
+            url: '/research/related-work',
+          },
+          {
+            title: 'Download Complete Database',
+            label: 'snapshots',
+            url: '/research/snapshots',
           },
         ],
       },
