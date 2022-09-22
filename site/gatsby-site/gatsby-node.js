@@ -4,7 +4,7 @@ const { Client: GoogleMapsAPIClient } = require('@googlemaps/google-maps-service
 
 const { Translate } = require('@google-cloud/translate').v2;
 
-const { startCase } = require('lodash');
+const { startCase, differenceWith } = require('lodash');
 
 const config = require('./config');
 
@@ -250,6 +250,22 @@ exports.onPreBootstrap = async ({ reporter }) => {
     const translationsActivity = reporter.activityTimer(`Translations`);
 
     translationsActivity.start();
+
+    const configuredLanguages = getLanguages();
+
+    const unavailableLanguages = differenceWith(
+      config.i18n.availableLanguages,
+      configuredLanguages,
+      (aLang, cLang) => {
+        return cLang.code === aLang;
+      }
+    );
+
+    if (unavailableLanguages.length > 0) {
+      throw `Language config error. Review your GATSBY_AVAILABLE_LANGUAGES variable. You've included a language that hasn't been configured yet: ${unavailableLanguages
+        .map((l) => l)
+        .join(', ')}`;
+    }
 
     if (
       config.mongodb.translationsConnectionString &&

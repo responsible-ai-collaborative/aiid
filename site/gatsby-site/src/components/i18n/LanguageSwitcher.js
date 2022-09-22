@@ -3,6 +3,7 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { useLocalization } from 'gatsby-theme-i18n';
 import { navigate } from 'gatsby';
 import useLocalizePath from './useLocalizePath';
+import { Badge } from 'flowbite-react';
 
 export default function LanguageSwitcher({ className = '' }) {
   const { locale: currentLang, config } = useLocalization();
@@ -23,14 +24,32 @@ export default function LanguageSwitcher({ className = '' }) {
     <div className="bootstrap">
       <DropdownButton
         id="dropdown-basic-button"
-        title={currentLocale.localName}
+        title={
+          <span className="flex">
+            {currentLocale.localName}
+            {currentLocale.code === 'fr' && (
+              <span className="mx-2 rounded hidden sm:flex">
+                <Badge>Beta</Badge>
+              </span>
+            )}
+          </span>
+        }
         data-cy="language-switcher"
-        className={className}
+        className={className + ' flex items-center'}
         variant="outline-light"
       >
         {config.map((locale) => (
-          <Dropdown.Item key={locale.code} onClick={() => setLanguage(locale.code)}>
+          <Dropdown.Item
+            key={locale.code}
+            onClick={() => setLanguage(locale.code)}
+            className="flex"
+          >
             {locale.name}
+            {locale.code === 'fr' && (
+              <span className="ml-2 rounded">
+                <Badge>Beta</Badge>
+              </span>
+            )}
           </Dropdown.Item>
         ))}
       </DropdownButton>
