@@ -1,6 +1,6 @@
-import { Button, Spinner } from 'flowbite-react';
+import { Badge, Button, Spinner } from 'flowbite-react';
 import { Formik, Form, useFormikContext } from 'formik';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TextInputGroup from '../TextInputGroup';
 import * as yup from 'yup';
@@ -71,6 +71,12 @@ const FormDetails = ({ parsingNews, parseNewsUrl }) => {
   const { values, errors, touched, handleChange, handleBlur, setFieldValue, setFieldTouched } =
     useFormikContext();
 
+  useEffect(() => {
+    if (!values['date_downloaded']) {
+      setFieldValue('date_downloaded', new Date().toISOString().substr(0, 10));
+    }
+  }, []);
+
   const fetchNews = async (url) => {
     await parseNewsUrl(url);
     Object.keys(errors).map((key) => {
@@ -85,7 +91,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl }) => {
           <Spinner size="xl" />
         </div>
       )}
-      {values.incident_id && <p>Pre-filling incident {values.incident_id}</p>}
+      {values.incident_id && <span className='flex mb-4' data-cy='prefilled-incident-id'><Badge><Trans>Adding a new report to incident {values.incident_id}</Trans></Badge></span>}
       <Form className={`relative z-2 ${parsingNews ? 'opacity-50' : ''}`}>
         <Label label={t('Report Address')} popover="url"></Label>
         <FlowbiteSearchInput
@@ -194,7 +200,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl }) => {
           handleBlur={handleBlur}
         />
         <div className="flex justify-end mt-4">
-          <Button type="submit" disabled={!isEmpty(errors)}>
+          <Button type="submit" disabled={!isEmpty(errors)} data-cy="to-step-2">
             <Trans>Next</Trans>
           </Button>
         </div>

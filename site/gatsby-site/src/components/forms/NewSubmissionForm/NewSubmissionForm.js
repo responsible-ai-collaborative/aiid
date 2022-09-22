@@ -21,7 +21,7 @@ const NewSubmissionForm = ({ submitForm, initialValues }) => {
     setData((prev) => ({ ...prev, ...newData }));
 
     if (final) {
-      await submitForm(data);
+      await submitForm({...data, ...newData});
     }
 
     stepsRef?.current?.scrollIntoView();
@@ -70,7 +70,7 @@ const NewSubmissionForm = ({ submitForm, initialValues }) => {
           cloudinary_id,
         };
 
-        for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
+        for (const key of ['tags', 'authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
           if (newValues[key] && !Array.isArray(newValues[key])) {
             newValues[key] = [newValues[key]];
           }

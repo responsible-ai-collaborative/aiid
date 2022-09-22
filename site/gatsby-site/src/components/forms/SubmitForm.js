@@ -54,7 +54,7 @@ const SubmitForm = () => {
 
   const queryParams = { ...query };
 
-  for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
+  for (const key of ['tags', 'authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
     if (queryParams[key] && !Array.isArray(queryParams[key])) {
       queryParams[key] = [queryParams[key]];
     }
@@ -120,6 +120,7 @@ const SubmitForm = () => {
           : ['Anonymous'],
         plain_text: await stripMarkdown(values.text),
         embedding: values.embedding || undefined,
+        tags: isString(values.tags) ? values.tags.split(',') : values.tags,
         developers: isString(values.developers) ? values.developers.split(',') : values.developers,
         deployers: isString(values.deployers) ? values.deployers.split(',') : values.deployers,
         harmed_parties: isString(values.harmed_parties)

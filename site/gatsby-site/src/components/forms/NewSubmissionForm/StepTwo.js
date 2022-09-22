@@ -39,13 +39,6 @@ const StepTwo = (props) => {
     setData(props.data);
   }, [props.data]);
 
-  useEffect(() => {
-    setData({
-      ...data,
-      cloudinary_id: data.image_url ? getCloudinaryPublicID(data.image_url) : '',
-    });
-  }, [data.image_url]);
-
   return (
     <StepContainer name={props.name}>
       <Formik
@@ -71,6 +64,10 @@ const FormDetails = ({ data, previous }) => {
       setFieldTouched(key, true);
     });
   }, [data, errors]);
+
+  useEffect(() => {
+    setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
+  }, [values.image_url]);
 
   return (
     <Form>
@@ -157,7 +154,7 @@ const FormDetails = ({ data, previous }) => {
         <Button type="button" onClick={() => previous(values)}>
           <Trans>Previous</Trans>
         </Button>
-        <Button type="submit" disabled={!isEmpty(errors)}>
+        <Button type="submit" disabled={!isEmpty(errors)} data-cy="to-step-3">
           <Trans>Next</Trans>
         </Button>
       </div>

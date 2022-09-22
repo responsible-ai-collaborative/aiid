@@ -35,11 +35,13 @@ describe('The Submit form', () => {
 
     cy.get('input[name="submitters"]').type('Something');
 
+    cy.get('[data-cy="to-step-2"]').click();
+
     cy.get('[name="incident_date"]').type('2020-01-01');
 
     cy.get('[name="language"]').select('Spanish');
 
-    cy.get('[data-cy="extra-fields"]').click();
+    cy.get('[data-cy="to-step-3"]').click();
 
     cy.get('[name="tags"]').type('New Tag{enter}');
 
@@ -48,6 +50,7 @@ describe('The Submit form', () => {
     cy.get('button[type="submit"]').click();
 
     cy.wait('@insertSubmission').then((xhr) => {
+      console.log(xhr.request.body.variables.submission)
       expect(xhr.request.body.variables.submission).to.deep.nested.include({
         title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
         submitters: ['Something'],
@@ -70,11 +73,11 @@ describe('The Submit form', () => {
 
     cy.wait(0);
 
-    cy.get('[data-cy="toast"]')
+    cy.get('[data-cy="submission-success"]')
       .contains('Report successfully added to review queue')
       .should('be.visible');
 
-    cy.get('[data-cy="toast"] a').should('have.attr', 'href', '/apps/submitted');
+    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
   });
 
   it('Should submit a new report linked to incident 1 once all fields are filled properly', () => {
@@ -149,6 +152,8 @@ describe('The Submit form', () => {
 
     cy.get('input[name="submitters"]').type('Something');
 
+    cy.get('[data-cy="to-step-2"]').click();
+
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
     );
@@ -167,7 +172,7 @@ describe('The Submit form', () => {
 
     cy.wait('@findIncident');
 
-    cy.get('[data-cy="extra-fields"]').click();
+    cy.get('[data-cy="to-step-3"]').click();
 
     cy.get('[name="tags"]').type('New Tag{enter}');
 
@@ -293,6 +298,10 @@ describe('The Submit form', () => {
 
     cy.visit(url + `?${params.toString()}`);
 
+    cy.get('[data-cy="to-step-2"]').click();
+
+    cy.get('[data-cy="to-step-3"]').click();
+
     cy.wait('@findIncident');
 
     cy.get('button[type="submit"]').scrollIntoView().click();
@@ -395,7 +404,7 @@ describe('The Submit form', () => {
       (req) =>
         req.body.operationName == 'ProbablyRelatedReports' &&
         req.body.variables.query?.url_in?.[0] ==
-          'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
+        'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
       'RelatedReportsByURL',
       relatedReports.byURL
     );
@@ -498,7 +507,7 @@ describe('The Submit form', () => {
       (req) =>
         req.body.operationName == 'ProbablyRelatedReports' &&
         req.body.variables.query?.url_in?.[0] ==
-          'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
+        'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
       'RelatedReportsByURL',
       relatedReports.byURL
     );
@@ -557,7 +566,25 @@ describe('The Submit form', () => {
   });
 
   it('Should show related reports based on semantic similarity', () => {
-    cy.visit(url);
+    const values = {
+      url: 'https://test.com',
+      title: 'test title',
+      authors: 'test author',
+      submitters: 'test submitter',
+      incident_date: '2022-01-01',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+      image_url: 'https://test.com/image.jpg',
+      incident_id: '1',
+    };
+
+    const params = new URLSearchParams(values);
+
+
+    cy.visit(url + `?${params.toString()}`);
+
+    cy.get('[data-cy="to-step-2"]').click();
+
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
     );
@@ -568,48 +595,6 @@ describe('The Submit form', () => {
   });
 
   it('Should *not* show semantically related reports when the text is under 256 non-space characters', () => {
-    cy.visit(url);
-    cy.setEditorText(
-      `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube.`
-    );
-    cy.get('[data-cy=related-byText]').contains('Reports must have at least').should('exist');
-  });
-
-  it('Should show fallback preview image on initial load', () => {
-    const imageUrl =
-      'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/fallback.jpg';
-
-    cy.visit(url);
-    cy.get('[data-cy="image-preview-figure"] img').should('have.attr', 'src', imageUrl);
-  });
-
-  it('Should update preview image when url is typed', () => {
-    const suffix = 'github.com/favicon.ico';
-
-    const newImageUrl = 'https://' + suffix;
-
-    const cloudinaryImageUrl =
-      'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/v1/reports/' +
-      suffix;
-
-    cy.visit(url);
-    cy.get('input[name=image_url]').scrollIntoView().type(newImageUrl);
-    cy.get('[data-cy=image-preview-figure] img', { timeout: 30000 })
-      .scrollIntoView()
-      .should('have.attr', 'src', cloudinaryImageUrl);
-  });
-
-  it("Should not submit form when linking to an Incident that doesn't exist", () => {
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 3456456,
-      'findIncident',
-      { data: { incident: null } }
-    );
-
-    cy.visit(url);
-
     const values = {
       url: 'https://test.com',
       title: 'test title',
@@ -619,135 +604,229 @@ describe('The Submit form', () => {
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
       image_url: 'https://test.com/image.jpg',
-      incident_id: '3456456',
-      editor_notes: 'Here are some notes',
+      incident_id: '1',
     };
 
-    cy.get('[data-cy="extra-fields"]').click();
+    const params = new URLSearchParams(values);
 
-    for (const key in values) {
-      cy.get(`[name="${key}"]`).type(values[key]);
-    }
+    cy.visit(url + `?${params.toString()}`);
 
+    cy.get('[data-cy="to-step-2"]').click();
     cy.setEditorText(
-      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+      `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube.`
     );
-
-    cy.wait('@findIncident');
-
-    cy.get('[name="incident_date"]').should('not.exist');
-
-    cy.contains('.invalid-feedback', 'Incident ID 3456456 not found!').should('be.visible');
+    cy.get('[data-cy=related-byText]').contains('Reports must have at least').should('exist');
   });
 
-  it('Should require incident_date when incident_id is not set', () => {
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 3456456,
-      'findIncident',
-      { data: { incident: null } }
-    );
+  it('Should show fallback preview image on initial load', () => {
 
-    cy.visit(url);
+    const imageUrl = 'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/fallback.jpg';
 
     const values = {
       url: 'https://test.com',
       title: 'test title',
       authors: 'test author',
       submitters: 'test submitter',
+      incident_date: '2022-01-01',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
-      image_url: 'https://test.com/image.jpg',
-      editor_notes: 'Here are some notes',
+      image_url: imageUrl,
+      incident_id: '1',
     };
 
-    cy.get('[data-cy="extra-fields"]').click();
+    const params = new URLSearchParams(values);
 
-    for (const key in values) {
-      cy.get(`[name="${key}"]`).type(values[key]);
-    }
+    cy.visit(url + `?${params.toString()}`);
 
-    cy.get('[name="incident_date"]').should('be.visible');
+    cy.get('[data-cy="to-step-2"]').click();
 
-    cy.contains('button', 'Submit').click();
-
-    cy.contains('.invalid-feedback', '*Incident Date required').should('be.visible');
+    cy.get('[data-cy="image-preview-figure"] img').should('have.attr', 'src', imageUrl);
   });
 
-  it('Should show the editor notes field', () => {
-    cy.visit(url);
-    cy.get('[name="editor_notes"').should('exist');
+  it('Should update preview image when url is typed', () => {
+
+    const values = {
+      url: 'https://test.com',
+      title: 'test title',
+      authors: 'test author',
+      submitters: 'test submitter',
+      incident_date: '2022-01-01',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+      incident_id: '1',
+    };
+
+    const params = new URLSearchParams(values);
+
+    cy.visit(url + `?${params.toString()}`);
+
+    const suffix = 'github.com/favicon.ico';
+
+    const newImageUrl = 'https://' + suffix;
+
+    const cloudinaryImageUrl =
+      'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/v1/reports/' +
+      suffix;
+
+    
+    cy.get('[data-cy="to-step-2"]').click();
+    
+    cy.get('input[name=image_url]').scrollIntoView().type(newImageUrl);
+
+    cy.get('[data-cy=image-preview-figure] img', { timeout: 30000 })
+      .scrollIntoView()
+      .should('have.attr', 'src', cloudinaryImageUrl);
   });
 
-  it('Should show a popover', () => {
-    cy.visit(url);
+  // it("Should not submit form when linking to an Incident that doesn't exist", () => {
+  //   cy.conditionalIntercept(
+  //     '**/graphql',
+  //     (req) =>
+  //       req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 3456456,
+  //     'findIncident',
+  //     { data: { incident: null } }
+  //   );
 
-    cy.wait(0);
+  //   cy.visit(url);
 
-    cy.get('[data-cy="label-title"]').trigger('mouseover');
+  //   const values = {
+  //     url: 'https://test.com',
+  //     title: 'test title',
+  //     authors: 'test author',
+  //     submitters: 'test submitter',
+  //     incident_date: '2022-01-01',
+  //     date_published: '2021-01-02',
+  //     date_downloaded: '2021-01-03',
+  //     image_url: 'https://test.com/image.jpg',
+  //     incident_id: '3456456',
+  //     editor_notes: 'Here are some notes',
+  //   };
 
-    cy.get('[data-cy="popover-title"]').should('be.visible');
+  //   cy.get('[data-cy="to-step-3"]').click();
 
-    cy.get('[data-cy="popover-title"]').contains('h3', 'Headline').should('exist');
+  //   for (const key in values) {
+  //     cy.get(`[name="${key}"]`).type(values[key]);
+  //   }
 
-    cy.get('[data-cy="popover-title"]').contains('div', 'Most works have a title').should('exist');
-  });
+  //   cy.setEditorText(
+  //     'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+  //   );
 
-  it('Should show a translated popover', () => {
-    cy.visit(`/es/apps/submit/`);
+  //   cy.wait('@findIncident');
 
-    cy.wait(0);
+  //   cy.get('[name="incident_date"]').should('not.exist');
 
-    cy.get('[data-cy="label-title"]').trigger('mouseover');
+  //   cy.contains('.invalid-feedback', 'Incident ID 3456456 not found!').should('be.visible');
+  // });
 
-    cy.get('[data-cy="popover-title"]').should('be.visible');
+  // it('Should require incident_date when incident_id is not set', () => {
+  //   cy.conditionalIntercept(
+  //     '**/graphql',
+  //     (req) =>
+  //       req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 3456456,
+  //     'findIncident',
+  //     { data: { incident: null } }
+  //   );
 
-    cy.get('[data-cy="popover-title"]').contains('h3', 'Título').should('exist');
+  //   cy.visit(url);
 
-    cy.get('[data-cy="popover-title"]')
-      .contains('div', 'La mayoría de los trabajos tienen un')
-      .should('exist');
-  });
+  //   const values = {
+  //     url: 'https://test.com',
+  //     title: 'test title',
+  //     authors: 'test author',
+  //     submitters: 'test submitter',
+  //     date_published: '2021-01-02',
+  //     date_downloaded: '2021-01-03',
+  //     image_url: 'https://test.com/image.jpg',
+  //     editor_notes: 'Here are some notes',
+  //   };
 
-  it('Should work with translated page', () => {
-    cy.visit(`/es/apps/submit/`);
+  //   cy.get('[data-cy="to-step-3"]').click();
 
-    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+  //   for (const key in values) {
+  //     cy.get(`[name="${key}"]`).type(values[key]);
+  //   }
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'InsertSubmission',
-      'insertSubmission',
-      {
-        data: {
-          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
-        },
-      }
-    );
+  //   cy.get('[name="incident_date"]').should('be.visible');
 
-    cy.get('input[name="url"]').type(
-      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
-    );
+  //   cy.contains('button', 'Submit').click();
 
-    cy.get('[data-cy="fetch-info"]').click();
+  //   cy.contains('.invalid-feedback', '*Incident Date required').should('be.visible');
+  // });
 
-    cy.wait('@parseNews');
+  // it('Should show the editor notes field', () => {
+  //   cy.visit(url);
+  //   cy.get('[name="editor_notes"').should('exist');
+  // });
 
-    cy.get('input[name="submitters"]').type('Something');
+  // it('Should show a popover', () => {
+  //   cy.visit(url);
 
-    cy.get('[name="incident_date"]').type('2020-01-01');
+  //   cy.wait(0);
 
-    cy.get('[data-cy="extra-fields"]').click();
+  //   cy.get('[data-cy="label-title"]').trigger('mouseover');
 
-    cy.get('[name="editor_notes"').type('Here are some notes');
+  //   cy.get('[data-cy="popover-title"]').should('be.visible');
 
-    cy.get('button[type="submit"]').click();
+  //   cy.get('[data-cy="popover-title"]').contains('h3', 'Headline').should('exist');
 
-    cy.wait('@insertSubmission');
+  //   cy.get('[data-cy="popover-title"]').contains('div', 'Most works have a title').should('exist');
+  // });
 
-    cy.get('[data-cy="toast"]').should('be.visible');
+  // it('Should show a translated popover', () => {
+  //   cy.visit(`/es/apps/submit/`);
 
-    cy.get('[data-cy="toast"] a').should('have.attr', 'href', '/es/apps/submitted');
-  });
+  //   cy.wait(0);
+
+  //   cy.get('[data-cy="label-title"]').trigger('mouseover');
+
+  //   cy.get('[data-cy="popover-title"]').should('be.visible');
+
+  //   cy.get('[data-cy="popover-title"]').contains('h3', 'Título').should('exist');
+
+  //   cy.get('[data-cy="popover-title"]')
+  //     .contains('div', 'La mayoría de los trabajos tienen un')
+  //     .should('exist');
+  // });
+
+  // it('Should work with translated page', () => {
+  //   cy.visit(`/es/apps/submit/`);
+
+  //   cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
+  //   cy.conditionalIntercept(
+  //     '**/graphql',
+  //     (req) => req.body.operationName == 'InsertSubmission',
+  //     'insertSubmission',
+  //     {
+  //       data: {
+  //         insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+  //       },
+  //     }
+  //   );
+
+  //   cy.get('input[name="url"]').type(
+  //     `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+  //   );
+
+  //   cy.get('[data-cy="fetch-info"]').click();
+
+  //   cy.wait('@parseNews');
+
+  //   cy.get('input[name="submitters"]').type('Something');
+
+  //   cy.get('[name="incident_date"]').type('2020-01-01');
+
+  //   cy.get('[data-cy="to-step-3"]').click();
+
+  //   cy.get('[name="editor_notes"').type('Here are some notes');
+
+  //   cy.get('button[type="submit"]').click();
+
+  //   cy.wait('@insertSubmission');
+
+  //   cy.get('[data-cy="submission-success"]').should('be.visible');
+
+  //   cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/es/apps/submitted');
+  // });
 });

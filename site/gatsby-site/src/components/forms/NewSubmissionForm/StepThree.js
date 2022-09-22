@@ -8,6 +8,7 @@ import Label from '../Label';
 import { Form as BsForm } from 'react-bootstrap';
 import TagsControl from '../TagsControl';
 import StepContainer from './StepContainer';
+import { graphql, useStaticQuery } from 'gatsby';
 
 const StepThree = (props) => {
   const { t } = useTranslation(['submit']);
@@ -56,6 +57,30 @@ const StepThree = (props) => {
   const handleSubmit = (values) => {
     props.next(values, true);
   };
+
+  const data = useStaticQuery(graphql`
+      query SubmissionFormQuery {
+        allMongodbAiidprodReports {
+          edges {
+            node {
+              tags
+            }
+          }
+        }
+      }
+    `);
+
+  const tags = [];
+
+  for (const node of data.allMongodbAiidprodReports.edges) {
+    if (node.node.tags) {
+      for (const tag of node.node.tags) {
+        if (!tags.includes(tag)) {
+          tags.push(tag);
+        }
+      }
+    }
+  }
 
   return (
     <StepContainer name={props.name}>
