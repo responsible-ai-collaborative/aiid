@@ -44,6 +44,10 @@ const IncidentReportCard = (props) => {
     reports,
     link,
     date,
+    date_published,
+    date_submitted,
+    epoch_date_published,
+    epoch_date_submitted,
     source_domain,
     url,
     text,
@@ -105,7 +109,16 @@ const IncidentReportCard = (props) => {
     source_domain = report?.source_domain;
   }
   if (date === undefined) {
-    date = incident?.date || report?.date_published;
+    date =
+      incident?.date ||
+      date_published ||
+      (epoch_date_published && format(epoch_date_published * 1000, 'yyyy-MM-dd')) ||
+      date_submitted ||
+      (epoch_date_submitted && format(epoch_date_submitted * 1000, 'yyyy-MM-dd')) ||
+      report?.date_published ||
+      (report?.epoch_date_published && format(report.epoch_date_published * 1000, 'yyyy-MM-dd')) ||
+      report?.date_submitted ||
+      (report?.epoch_date_submitted && format(report.epoch_date_submitted * 1000, 'yyyy-MM-dd'));
   }
   if (language === undefined) {
     language = report?.language || locale;
@@ -184,19 +197,33 @@ const IncidentReportCard = (props) => {
                 )}
               </h3>
               <div data-cy="subtitle" className="text-muted-gray text-sm">
-                {parsedDate && (
-                  <>
-                    <time dateTime={formatISO(parsedDate)}>{format(parsedDate, 'MMM yyyy')}</time> ·{' '}
-                  </>
-                )}
-                {reports && reports.length > 0 && (
-                  <>
-                    {incident.reports.length}{' '}
-                    {incident.reports.length == 1 ? t('report') : t('reports')}{' '}
-                  </>
-                )}
+                {[]
+                  .concat([
+                    parsedDate && (
+                      <time dateTime={formatISO(parsedDate)}>{format(parsedDate, 'MMM yyyy')}</time>
+                    ),
+                  ])
+                  .concat([
+                    reports && reports.length > 0 && (
+                      <>
+                        {incident.reports.length}{' '}
+                        {incident.reports.length == 1 ? t('report') : t('reports')}{' '}
+                      </>
+                    ),
+                  ])
+                  .concat([
+                    source_domain && <WebArchiveLink url={url}>{source_domain}</WebArchiveLink>,
+                  ])
+                  .filter((item) => item)
+                  .reduce((items, item, i) => {
+                    console.log(`items`, items);
+                    if (i > 0) {
+                      items.push(<> · </>);
+                    }
+                    items.push(item);
+                    return items;
+                  }, [])}
                 <TranslationBadge originalLanguage={language} className="my-2 mr-1" />
-                {source_domain && <WebArchiveLink url={url}>{source_domain}</WebArchiveLink>}
               </div>
               {text && (
                 <div className="mt-4">

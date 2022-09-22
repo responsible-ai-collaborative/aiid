@@ -238,7 +238,7 @@ a:hover {
   line-height: 1.5;
   font-weight: bold;
   color: #fff !important;
-  margin-left: 24px;
+  margin-left: 36px;
   text-transform: uppercase;
   word-spacing: 3px;
 }
@@ -428,31 +428,6 @@ blockquote {
   width: 40px;
 }
 
-.hideFrontLine .collapser {
-  background: transparent;
-  border: none;
-  outline: none;
-  position: absolute;
-  right: 20px;
-  z-index: 1;
-  cursor: pointer;
-}
-
-.hideFrontLine .active > a {
-  background-color: var(--primary3);
-  color: #fff !important;
-}
-.firstLevel ul li .collapser svg path {
-  fill: #fff !important;
-}
-.active .collapser > svg > path {
-  fill: #001933 !important;
-}
-
-.firstLevel ul .item ul .item {
-  border-left: 1px solid #e6ecf1;
-}
-
 .sideBarUL .item {
   list-style: none;
   padding: 0;
@@ -473,17 +448,8 @@ blockquote {
   background-color: #001933;
 }
 
-.showFrontLine .active > a {
-  /* color: #fff; */
-  background-color: #001933;
-}
-
 .sideBarUL .item .item {
   margin-left: 16px;
-}
-
-.firstLevel > ul > .item {
-  margin-left: 0 !important;
 }
 
 .showFrontLine .item .item {
@@ -502,12 +468,17 @@ blockquote {
 }
 
 .titleWrapper {
-  display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding-bottom: 20px;
   border-bottom: 1px solid rgb(230, 236, 241);
-  margin-bottom: 32px;
+  min-height: 5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+.titleWrapper > h1 {
+  margin: 0px;
+  flex-grow: 0;
 }
 
 .gitBtn {
@@ -558,44 +529,7 @@ blockquote {
 }
 
 /* tables.css */
-table {
-  padding: 0;
-}
 
-table tr {
-  border-top: 1px solid #cccccc;
-  margin: 0;
-  padding: 0;
-}
-
-table tr:nth-child(2n) {
-  background-color: #f8f8f8;
-}
-
-table tr th {
-  font-weight: bold;
-  border: 1px solid #cccccc;
-  text-align: left;
-  margin: 0;
-  padding: 6px 13px;
-}
-
-table tr td {
-  border: 1px solid #cccccc;
-  text-align: left;
-  margin: 0;
-  padding: 6px 13px;
-}
-
-table tr th :first-child,
-table tr td :first-child {
-  margin-top: 0;
-}
-
-table tr th :last-child,
-table tr td :last-child {
-  margin-bottom: 0;
-}
 /* end - tables.css */
 
 /* Image styling */

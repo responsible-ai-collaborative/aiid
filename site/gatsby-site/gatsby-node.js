@@ -4,7 +4,7 @@ const { Client: GoogleMapsAPIClient } = require('@googlemaps/google-maps-service
 
 const { Translate } = require('@google-cloud/translate').v2;
 
-const { startCase } = require('lodash');
+const { startCase, differenceWith } = require('lodash');
 
 const config = require('./config');
 
@@ -23,6 +23,8 @@ const createDownloadIndexPage = require('./page-creators/createDownloadIndexPage
 const createDuplicatePages = require('./page-creators/createDuplicatePages');
 
 const createTsneVisualizationPage = require('./page-creators/createTsneVisualizationPage');
+
+const createEntitiesPages = require('./page-creators/createEntitiesPages');
 
 const algoliasearch = require('algoliasearch');
 
@@ -58,24 +60,15 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     createRedirect({ fromPath: pair[0], toPath: pair[1], isPermanent: true })
   );
 
-  for (const pageCreator of [
-    createMdxPages,
-    createCitationPages,
-    createWordCountsPages,
-    createBackupsPage,
-    createTaxonomyPages,
-    createDownloadIndexPage,
-    createDuplicatePages,
-    createTsneVisualizationPage,
-  ]) {
-    if (!(process.env.SKIP_PAGE_CREATOR || '').split(',').includes(pageCreator.name)) {
-      if (pageCreator.name == 'createMdxPages') {
-        await pageCreator(graphql, createPage, reporter);
-      } else {
-        await pageCreator(graphql, createPage);
-      }
-    }
-  }
+  await createMdxPages(graphql, createPage, reporter);
+  await createCitationPages(graphql, createPage);
+  await createWordCountsPages(graphql, createPage);
+  await createBackupsPage(graphql, createPage);
+  await createTaxonomyPages(graphql, createPage);
+  await createDownloadIndexPage(graphql, createPage);
+  await createDuplicatePages(graphql, createPage);
+  await createTsneVisualizationPage(graphql, createPage);
+  await createEntitiesPages(graphql, createPage);
 };
 
 exports.onCreateWebpackConfig = ({ actions }) => {
@@ -257,6 +250,22 @@ exports.onPreBootstrap = async ({ reporter }) => {
     const translationsActivity = reporter.activityTimer(`Translations`);
 
     translationsActivity.start();
+
+    const configuredLanguages = getLanguages();
+
+    const unavailableLanguages = differenceWith(
+      config.i18n.availableLanguages,
+      configuredLanguages,
+      (aLang, cLang) => {
+        return cLang.code === aLang;
+      }
+    );
+
+    if (unavailableLanguages.length > 0) {
+      throw `Language config error. Review your GATSBY_AVAILABLE_LANGUAGES variable. You've included a language that hasn't been configured yet: ${unavailableLanguages
+        .map((l) => l)
+        .join(', ')}`;
+    }
 
     if (
       config.mongodb.translationsConnectionString &&

@@ -11,6 +11,7 @@ import {
   timeWeek,
 } from 'd3';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
+import PopoverWrapper from 'elements/PopoverWrapper';
 
 const formatDay = timeFormat('%b %d');
 
@@ -62,11 +63,11 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
             +{bucket.length - 1}
           </text>
           <OverlayTrigger
-            placement="right"
+            placement="top"
             trigger="click"
             rootClose={true}
             overlay={
-              <Popover>
+              <PopoverWrapper>
                 <Popover.Body>
                   <ul className="m-0 p-0 list-none">
                     {bucket.slice(1).map((b) => (
@@ -82,7 +83,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
                     ))}
                   </ul>
                 </Popover.Body>
-              </Popover>
+              </PopoverWrapper>
             }
           >
             <foreignObject x={-8} y={-8} width={16} height={16}>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Spinner, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
 import styled from 'styled-components';
 import { useApolloClient, gql, useQuery } from '@apollo/client';
 import { Image } from '../../utils/cloudinary';
@@ -242,13 +243,7 @@ const PlotPoint = ({
               )}
             </>
           ) : (
-            <Spinner
-              as="span"
-              animation="border"
-              variant="secondary"
-              role="status"
-              aria-hidden="true"
-            />
+            <Spinner />
           )}
         </div>
       )}
