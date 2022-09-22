@@ -1,22 +1,11 @@
 import React from 'react';
 import { StaticQuery, graphql, Link } from 'gatsby';
-import styled from 'styled-components';
 import md5 from 'md5';
-import Carousel from 'react-bootstrap/Carousel';
 import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
+import { Carousel } from 'flowbite-react';
 
-const Caption = styled.h3`
-  background: rgba(0, 0, 0, 0.55);
-`;
-
-const CarouselImage = styled(Image)`
-  height: 480px;
-  object-fit: cover;
-  width: 100%;
-`;
-
-const RandomIncidentsCarousel = ({ className }) => {
+const RandomIncidentsCarousel = () => {
   const generateRandomIncidents = () => {
     const array = [];
 
@@ -64,24 +53,24 @@ const RandomIncidentsCarousel = ({ className }) => {
           }));
 
         return (
-          <div className="bootstrap">
-            <Carousel interval={60000} className={className}>
-              {randomIncidents.map(({ id, incident_id, title, image_url, cloudinary_id }) => (
-                <Carousel.Item key={id}>
-                  <Link to={`/cite/${incident_id}`}>
-                    <CarouselImage
+          <div className="flex-1 flex justify-center items-center">
+            <div className="h-56 sm:h-64 xl:h-80 2xl:h-96 w-full">
+              <Carousel slideInterval={6000} slide={false}>
+                {randomIncidents.map(({ id, incident_id, title, image_url, cloudinary_id }) => (
+                  <Link to={`/cite/${incident_id}`} key={id} className="h-full">
+                    <h5 className="text-sm sm:text-lg font-bold tracking-tight text-gray-900 dark:text-white">
+                      {title}
+                    </h5>
+                    <Image
                       publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
                       alt={title}
                       transformation={fill().height(480)}
                       plugins={[]}
                     />
-                    <Carousel.Caption>
-                      <Caption>{title}</Caption>
-                    </Carousel.Caption>
                   </Link>
-                </Carousel.Item>
-              ))}
-            </Carousel>
+                ))}
+              </Carousel>
+            </div>
           </div>
         );
       }}
