@@ -1,5 +1,5 @@
 import { Button, Select } from 'flowbite-react';
-import { Formik, Form } from 'formik';
+import { Formik, Form, useFormikContext } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TextInputGroup from '../TextInputGroup';
@@ -15,8 +15,6 @@ import StepContainer from './StepContainer';
 import { isEmpty } from 'lodash';
 
 const StepTwo = (props) => {
-  const { t } = useTranslation(['submit']);
-
   const [data, setData] = useState(props.data);
 
   // Schema for yup
@@ -56,120 +54,114 @@ const StepTwo = (props) => {
         validationSchema={stepTwoValidationSchema}
         enableReinitialize
       >
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          setFieldValue,
-          setFieldTouched,
-        }) => {
-          return (
-            <Form>
-              <PreviewImageInputGroup
-                cloudinary_id={data.cloudinary_id}
-                name="image_url"
-                label={t('Image Address')}
-                placeholder={t('Image URL')}
-                className="mt-3"
-                values={values}
-                errors={errors}
-                touched={touched}
-                handleChange={handleChange}
-                handleBlur={handleBlur}
-              />
-              {/* <Form.Group
-                            className={'mt-3' + (touched['text'] && errors['text'] ? ' is-invalid' : '')}
-                            data-color-mode="light"
-                        > */}
-              <Label popover="text" label={t('Text')} />
-              <div style={{ position: 'relative' }}>
-                {touched['text'] && errors['text'] && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      inset: '0px',
-                      border: '1px solid var(--bs-red)',
-                      zIndex: 10,
-                      pointerEvents: 'none',
-                    }}
-                  />
-                )}
-                <Editor
-                  value={values.text}
-                  onChange={(value) => {
-                    setFieldValue('text', value);
-                    setFieldTouched('text', true);
-                  }}
-                />
-              </div>
-              {/* </Form.Group> */}
-              {/* <Form.Control.Feedback type="invalid"> */}
-              <Trans ns="validation">
-                {errors['text'] && touched['text'] ? errors['text'] : null}
-              </Trans>
-              {/* </Form.Control.Feedback> */}
-
-              <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
-
-              {/* <Form.Group className="mt-3"> */}
-              <Label popover="language" label={t('Language')} />
-              <Select
-                name="language"
-                placeholder={t('Report Language')}
-                value={values.language}
-                onChange={handleChange}
-              >
-                {supportedLanguages.map((l) => (
-                  <option key={l.code} value={l.code}>
-                    {l.name}
-                  </option>
-                ))}
-              </Select>
-              {/* </Form.Group> */}
-
-              <IncidentIdField
-                name="incident_id"
-                className="mt-3"
-                placeHolder={t('Leave empty to report a new incident')}
-                showIncidentData={false}
-              />
-
-              <RelatedIncidents
-                incident={values}
-                setFieldValue={setFieldValue}
-                columns={['byIncidentId']}
-              />
-
-              {!values.incident_id && (
-                <TextInputGroup
-                  name="incident_date"
-                  label={t('Incident Date')}
-                  placeholder={t('Incident Date')}
-                  type="date"
-                  className="mt-3"
-                  disabled={values.incident_id}
-                  values={values}
-                  errors={errors}
-                  touched={touched}
-                  handleChange={handleChange}
-                  handleBlur={handleBlur}
-                />
-              )}
-              <div className="flex justify-between mt-4">
-                <Button type="button" onClick={() => props.previous(values)}>
-                  <Trans>Previous</Trans>
-                </Button>
-                <Button type="submit" disabled={!isEmpty(errors)}>
-                  <Trans>Next</Trans>
-                </Button>
-              </div>
-            </Form>
-          );
-        }}
+        <FormDetails data={data} previous={props.previous} />
       </Formik>
     </StepContainer>
+  );
+};
+
+const FormDetails = ({ data, previous }) => {
+  const { t } = useTranslation(['submit']);
+
+  const { values, errors, touched, handleChange, handleBlur, setFieldValue, setFieldTouched } =
+    useFormikContext();
+
+  useEffect(() => {
+    Object.keys(errors).map((key) => {
+      setFieldTouched(key, true);
+    });
+  }, [data]);
+
+  return (
+    <Form>
+      <PreviewImageInputGroup
+        cloudinary_id={data.cloudinary_id}
+        name="image_url"
+        label={t('Image Address')}
+        placeholder={t('Image URL')}
+        className="mt-3"
+        values={values}
+        errors={errors}
+        touched={touched}
+        handleChange={handleChange}
+        handleBlur={handleBlur}
+      />
+      <Label popover="text" label={t('Text')} />
+      <div style={{ position: 'relative' }}>
+        {touched['text'] && errors['text'] && (
+          <div
+            style={{
+              position: 'absolute',
+              inset: '0px',
+              border: '1px solid var(--bs-red)',
+              zIndex: 10,
+              pointerEvents: 'none',
+            }}
+          />
+        )}
+        <Editor
+          value={values.text}
+          onChange={(value) => {
+            setFieldValue('text', value);
+            setFieldTouched('text', true);
+          }}
+        />
+      </div>
+      <Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans>
+
+      <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
+
+      <Label popover="language" label={t('Language')} />
+      <Select
+        name="language"
+        placeholder={t('Report Language')}
+        value={values.language}
+        onChange={handleChange}
+      >
+        {supportedLanguages.map((l) => (
+          <option key={l.code} value={l.code}>
+            {l.name}
+          </option>
+        ))}
+      </Select>
+
+      <IncidentIdField
+        name="incident_id"
+        className="mt-3"
+        placeHolder={t('Leave empty to report a new incident')}
+        showIncidentData={false}
+      />
+
+      <RelatedIncidents
+        incident={values}
+        setFieldValue={setFieldValue}
+        columns={['byIncidentId']}
+      />
+
+      {!values.incident_id && (
+        <TextInputGroup
+          name="incident_date"
+          label={t('Incident Date')}
+          placeholder={t('Incident Date')}
+          type="date"
+          className="mt-3"
+          disabled={values.incident_id}
+          values={values}
+          errors={errors}
+          touched={touched}
+          handleChange={handleChange}
+          handleBlur={handleBlur}
+        />
+      )}
+      <div className="flex justify-between mt-4">
+        <Button type="button" onClick={() => previous(values)}>
+          <Trans>Previous</Trans>
+        </Button>
+        <Button type="submit" disabled={!isEmpty(errors)}>
+          <Trans>Next</Trans>
+        </Button>
+      </div>
+    </Form>
   );
 };
 

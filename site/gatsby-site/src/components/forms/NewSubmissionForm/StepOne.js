@@ -1,5 +1,5 @@
 import { Button, Spinner } from 'flowbite-react';
-import { Formik, Form } from 'formik';
+import { Formik, Form, useFormikContext } from 'formik';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TextInputGroup from '../TextInputGroup';
@@ -10,11 +10,8 @@ import RelatedIncidents from 'components/RelatedIncidents';
 import { dateRegExp } from 'utils/date';
 import StepContainer from './StepContainer';
 import { isEmpty } from 'lodash';
-// import { PreviewImageInputGroup } from 'utils/cloudinary';
 
 const StepOne = (props) => {
-  const { t } = useTranslation(['submit']);
-
   const stepOneValidationSchema = yup.object().shape({
     title: yup
       .string()
@@ -62,150 +59,146 @@ const StepOne = (props) => {
         validationSchema={stepOneValidationSchema}
         enableReinitialize
       >
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          setFieldValue,
-          setFieldTouched,
-        }) => {
-          console.log('errors', errors);
-          return (
-            <>
-              {props.parsingNews && (
-                <div className="absolute top-1/2 left-1/2 z-10">
-                  <Spinner size="xl" />
-                </div>
-              )}
-              <Form className={`relative z-2 ${props.parsingNews ? 'opacity-50' : ''}`}>
-                <Label label={t('Report Address')} popover="url"></Label>
-                <FlowbiteSearchInput
-                  name="url"
-                  label={t('Report Address')}
-                  placeholder={t('Report URL')}
-                  defaultValue={values?.url || ''}
-                  addOnComponent={
-                    <Button
-                      // className="outline-secondary"
-                      disabled={!!errors.url || !touched.url || props.parsingNews}
-                      onClick={() => props.parseNewsUrl(values.url)}
-                      data-cy="fetch-info"
-                    >
-                      {!props.parsingNews ? (
-                        <Trans ns="submit">Fetch info</Trans>
-                      ) : (
-                        <div className="flex gap-2">
-                          <Spinner size="sm" />
-                          <Trans ns="submit">Fetching...</Trans>
-                        </div>
-                      )}
-                    </Button>
-                  }
-                  values={values}
-                  errors={errors}
-                  touched={touched}
-                  handleBlur={handleBlur}
-                  handleChange={(e) => {
-                    setFieldTouched('url', true);
-                    handleChange(e);
-                  }}
-                  btnClick={() => props.parseNewsUrl(values.url)}
-                  loading={props.parsingNews}
-                  btnDisabled={!!errors.url || !touched.url || props.parsingNews}
-                  btnText={t('Fetch info')}
-                />
-
-                <RelatedIncidents
-                  incident={values}
-                  setFieldValue={setFieldValue}
-                  columns={['byURL']}
-                />
-
-                <TextInputGroup
-                  name="title"
-                  label={t('Title')}
-                  placeholder={t('Report title')}
-                  className="mt-3"
-                  values={values}
-                  errors={errors}
-                  touched={touched}
-                  handleChange={handleChange}
-                  handleBlur={handleBlur}
-                />
-
-                <TextInputGroup
-                  name="authors"
-                  label={t('Author CSV')}
-                  placeholder={t('Author CSV')}
-                  className="mt-3"
-                  values={values}
-                  errors={errors}
-                  touched={touched}
-                  handleChange={handleChange}
-                  handleBlur={handleBlur}
-                />
-
-                <RelatedIncidents
-                  incident={values}
-                  setFieldValue={setFieldValue}
-                  columns={['byAuthors']}
-                />
-
-                <TextInputGroup
-                  name="submitters"
-                  label={t('Submitter CSV')}
-                  placeholder={t('Submitter CSV')}
-                  className="mt-3"
-                  values={values}
-                  errors={errors}
-                  touched={touched}
-                  handleChange={handleChange}
-                  handleBlur={handleBlur}
-                />
-
-                <TextInputGroup
-                  name="date_published"
-                  label={t('Date Published')}
-                  type="date"
-                  placeholder={t('YYYY-MM-DD')}
-                  className="mt-3"
-                  values={values}
-                  errors={errors}
-                  touched={touched}
-                  handleChange={handleChange}
-                  handleBlur={handleBlur}
-                />
-                <RelatedIncidents
-                  incident={values}
-                  setFieldValue={setFieldValue}
-                  columns={['byDatePublished']}
-                />
-
-                <TextInputGroup
-                  name="date_downloaded"
-                  label={t('Date Downloaded')}
-                  type="date"
-                  placeholder={t('YYYY-MM-DD')}
-                  className="mt-3"
-                  values={values}
-                  errors={errors}
-                  touched={touched}
-                  handleChange={handleChange}
-                  handleBlur={handleBlur}
-                />
-                <div className="flex justify-end mt-4">
-                  <Button type="submit" disabled={!isEmpty(errors)}>
-                    <Trans>Next</Trans>
-                  </Button>
-                </div>
-              </Form>
-            </>
-          );
-        }}
+        <FormDetails parsingNews={props.parsingNews} parseNewsUrl={props.parseNewsUrl} />
       </Formik>
     </StepContainer>
+  );
+};
+
+const FormDetails = ({ parsingNews, parseNewsUrl }) => {
+  const { t } = useTranslation(['submit']);
+
+  const { values, errors, touched, handleChange, handleBlur, setFieldValue, setFieldTouched } =
+    useFormikContext();
+
+  const fetchNews = async (url) => {
+    await parseNewsUrl(url);
+    Object.keys(errors).map((key) => {
+      setFieldTouched(key, true);
+    });
+  };
+
+  return (
+    <>
+      {parsingNews && (
+        <div className="absolute top-1/2 left-1/2 z-10">
+          <Spinner size="xl" />
+        </div>
+      )}
+      <Form className={`relative z-2 ${parsingNews ? 'opacity-50' : ''}`}>
+        <Label label={t('Report Address')} popover="url"></Label>
+        <FlowbiteSearchInput
+          name="url"
+          label={t('Report Address')}
+          placeholder={t('Report URL')}
+          defaultValue={values?.url || ''}
+          addOnComponent={
+            <Button
+              disabled={!!errors.url || !touched.url || parsingNews}
+              onClick={() => fetchNews(values.url)}
+              data-cy="fetch-info"
+            >
+              {!parsingNews ? (
+                <Trans ns="submit">Fetch info</Trans>
+              ) : (
+                <div className="flex gap-2">
+                  <Spinner size="sm" />
+                  <Trans ns="submit">Fetching...</Trans>
+                </div>
+              )}
+            </Button>
+          }
+          values={values}
+          errors={errors}
+          touched={touched}
+          handleBlur={handleBlur}
+          handleChange={(e) => {
+            setFieldTouched('url', true);
+            handleChange(e);
+          }}
+          btnClick={() => fetchNews(values.url)}
+          loading={parsingNews}
+          btnDisabled={!!errors.url || !touched.url || parsingNews}
+          btnText={t('Fetch info')}
+        />
+
+        <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
+
+        <TextInputGroup
+          name="title"
+          label={t('Title')}
+          placeholder={t('Report title')}
+          className="mt-3"
+          values={values}
+          errors={errors}
+          touched={touched}
+          handleChange={handleChange}
+          handleBlur={handleBlur}
+        />
+
+        <TextInputGroup
+          name="authors"
+          label={t('Author CSV')}
+          placeholder={t('Author CSV')}
+          className="mt-3"
+          values={values}
+          errors={errors}
+          touched={touched}
+          handleChange={handleChange}
+          handleBlur={handleBlur}
+        />
+
+        <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byAuthors']} />
+
+        <TextInputGroup
+          name="submitters"
+          label={t('Submitter CSV')}
+          placeholder={t('Submitter CSV')}
+          className="mt-3"
+          values={values}
+          errors={errors}
+          touched={touched}
+          handleChange={handleChange}
+          handleBlur={handleBlur}
+        />
+
+        <TextInputGroup
+          name="date_published"
+          label={t('Date Published')}
+          type="date"
+          placeholder={t('YYYY-MM-DD')}
+          className="mt-3"
+          values={values}
+          errors={errors}
+          touched={touched}
+          handleChange={handleChange}
+          handleBlur={handleBlur}
+        />
+        <RelatedIncidents
+          incident={values}
+          setFieldValue={setFieldValue}
+          columns={['byDatePublished']}
+        />
+
+        <TextInputGroup
+          name="date_downloaded"
+          label={t('Date Downloaded')}
+          type="date"
+          placeholder={t('YYYY-MM-DD')}
+          className="mt-3"
+          values={values}
+          errors={errors}
+          touched={touched}
+          handleChange={handleChange}
+          handleBlur={handleBlur}
+        />
+        <div className="flex justify-end mt-4">
+          <Button type="submit" disabled={!isEmpty(errors)}>
+            <Trans>Next</Trans>
+          </Button>
+        </div>
+      </Form>
+    </>
   );
 };
 

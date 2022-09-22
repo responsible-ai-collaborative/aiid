@@ -12,6 +12,7 @@ import isString from 'lodash/isString';
 import isArray from 'lodash/isArray';
 import { useMutation } from '@apollo/client';
 import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../../graphql/submissions';
+import StepFour from './StepFour';
 
 const NewSubmissionForm = () => {
   const [data, setData] = useState({
@@ -32,6 +33,7 @@ const NewSubmissionForm = () => {
     developers: '',
     deployers: '',
     harmed_parties: '',
+    incident_date: '',
   });
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -183,6 +185,7 @@ const NewSubmissionForm = () => {
       data={data}
       name="Step 3 - Tell us more"
     />,
+    <StepFour key={'submission-step-4'} />,
   ];
 
   return <div ref={stepsRef}>{steps[currentStep]}</div>;
