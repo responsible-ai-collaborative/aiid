@@ -104,7 +104,6 @@ const createCitationPages = async (graphql, createPage) => {
         context: {
           ...context,
           translate_es: incidentReportsMap[context.incident_id].some((r) => r.language !== 'es'),
-          translate_fr: incidentReportsMap[context.incident_id].some((r) => r.language !== 'fr'),
           translate_en: incidentReportsMap[context.incident_id].some((r) => r.language !== 'en'),
         },
       });
