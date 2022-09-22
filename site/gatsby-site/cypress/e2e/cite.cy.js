@@ -130,7 +130,7 @@ describe('Cite pages', () => {
 
     cy.visit(url + '#' + _id);
 
-    cy.get(`[id="r${_id}"`).find('[data-cy="flag-button"]').click();
+    cy.get(`[id="r${_id}"`).find('[data-cy="flag-button"]').scrollIntoView().click();
 
     // cypress has trouble with modals
     cy.wait(0);
