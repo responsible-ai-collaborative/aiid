@@ -28,6 +28,10 @@
         "private": false
     },
     {
+        "name": "sendEmail",
+        "private": false
+    },
+    {
         "name": "unlinkReportsFromIncidents",
         "private": false
     },

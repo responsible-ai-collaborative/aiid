@@ -25,7 +25,6 @@ import SubmissionEditModal from './SubmissionEditModal';
 import { Spinner } from 'flowbite-react';
 import Link from '../../components/ui/Link';
 import { Trans, useTranslation } from 'react-i18next';
-import sendEmail from '../../utils/email';
 
 const ListedGroup = ({ item, className = '', keysToRender }) => {
   return (
@@ -61,7 +60,7 @@ const dateRender = [
 const otherDetails = ['language', '_id', 'developers', 'deployers', 'harmed_parties'];
 
 const SubmissionReview = ({ submission }) => {
-  const { isRole } = useUserContext();
+  const { isRole, user } = useUserContext();
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -100,10 +99,9 @@ const SubmissionReview = ({ submission }) => {
   const addToast = useToastContext();
 
   const sendEmailNotifications = async (incidentId, reportNumber, incidentTitle, report) => {
-
     const { data: subscriptionsData } = await client.query({
       query: FIND_SUBSCRIPTIONS,
-      variables: { query: { incident_id: { incident_id: incidentId } } }
+      variables: { query: { incident_id: { incident_id: incidentId } } },
     });
 
     // Process subscriptions to incident updates
@@ -122,12 +120,10 @@ const SubmissionReview = ({ submission }) => {
         }
       }
 
-      await sendEmail({
+      await user.functions.sendEmail({
         to: userEmails,
         subject: 'Incident {{incidentId}} was updated',
-        templateFileName: 'incidentUpdated',
-        text: 'Incident {{incident_id}}: "{{incident_title}}" was updated.',
-        data: {
+        dynamicData: {
           incidentId: `${incidentId}`,
           incidentTitle: incidentTitle,
           incidentUrl: `https://incidentdatabase.ai/cite/${incidentId}`,
@@ -135,6 +131,7 @@ const SubmissionReview = ({ submission }) => {
           reportTitle: report.title,
           reportAuthor: report.authors[0],
         },
+        templateId: 'd-6cebfe690b83416387ec75b21f99108a', // SendGrid Template name: "Incident updated"
       });
     }
   };
