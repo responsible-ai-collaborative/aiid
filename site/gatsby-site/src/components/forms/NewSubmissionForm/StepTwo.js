@@ -70,7 +70,7 @@ const FormDetails = ({ data, previous }) => {
     Object.keys(errors).map((key) => {
       setFieldTouched(key, true);
     });
-  }, [data]);
+  }, [data, errors]);
 
   return (
     <Form>
