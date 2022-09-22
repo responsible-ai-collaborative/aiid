@@ -682,10 +682,11 @@ describe('The Submit form', () => {
 
   it('Should show a popover', () => {
     cy.visit(url);
-
     cy.wait(0);
 
     cy.get('[data-cy="label-title"]').trigger('mouseover');
+
+    cy.wait(0);
 
     cy.get('[data-cy="popover-title"]').should('be.visible');
 

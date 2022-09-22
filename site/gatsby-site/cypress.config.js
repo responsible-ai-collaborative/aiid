@@ -7,7 +7,7 @@ module.exports = defineConfig({
   defaultCommandTimeout: 30000,
   requestTimeout: 15000,
   retries: {
-    runMode: 2,
+    runMode: 4,
     openMode: 0,
   },
   e2e: {
