@@ -9,7 +9,7 @@ const customStopWords = require('../constants/customStopWords');
 const PAGES_WITH_WORDCOUNT = [
   {
     path: '/summaries/wordcounts',
-    componentPath: './src/pages/wordcounts.js',
+    componentPath: './src/templates/wordcounts.js',
   },
   {
     path: '/',

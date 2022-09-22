@@ -13,7 +13,7 @@ const plugins = [
   {
     resolve: `gatsby-plugin-netlify`,
     options: {
-      headers: {},
+      mergeCachingHeaders: false,
     },
   },
   {

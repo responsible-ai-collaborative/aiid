@@ -91,15 +91,5 @@ export const pageQuery = graphql`
         slug
       }
     }
-    allMdx {
-      edges {
-        node {
-          fields {
-            slug
-            title
-          }
-        }
-      }
-    }
   }
 `;
