@@ -85,6 +85,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl }) => {
           <Spinner size="xl" />
         </div>
       )}
+      {values.incident_id && <p>Pre-filling incident {values.incident_id}</p>}
       <Form className={`relative z-2 ${parsingNews ? 'opacity-50' : ''}`}>
         <Label label={t('Report Address')} popover="url"></Label>
         <FlowbiteSearchInput

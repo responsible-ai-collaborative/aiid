@@ -60,7 +60,7 @@ const SubmitForm = () => {
     }
   }
 
-  const [setSubmission] = useState({ ...queryParams });
+  const [submission, setSubmission] = useState({ ...queryParams });
 
   const [csvData, setCsvData] = useState([]);
 
@@ -165,7 +165,7 @@ const SubmitForm = () => {
       >
         {({ isSubmitting, submitForm }) => ( */}
       {/* <> */}
-      <NewSubmissionForm submitForm={handleSubmit} />
+      <NewSubmissionForm submitForm={handleSubmit} initialValues={submission} />
 
       <p className="mt-4">
         <Trans ns="submit" i18nKey="submitReviewDescription">

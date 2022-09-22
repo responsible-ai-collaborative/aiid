@@ -6,35 +6,10 @@ import getSourceDomain from 'utils/getSourceDomain';
 import StepOne from './StepOne';
 import StepTwo from './StepTwo';
 import StepThree from './StepThree';
-import { stripMarkdown } from 'utils/typography';
-import { format } from 'date-fns';
-import isString from 'lodash/isString';
-import isArray from 'lodash/isArray';
-import { useMutation } from '@apollo/client';
-import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../../graphql/submissions';
 import StepFour from './StepFour';
 
-const NewSubmissionForm = () => {
-  const [data, setData] = useState({
-    authors: null,
-    cloudinary_id: '',
-    date_downloaded: '',
-    date_published: null,
-    image_url: '',
-    submitters: '',
-    text: '',
-    title: '',
-    url: '',
-    source_domain: '',
-    language: 'en',
-    description: '',
-    incident_id: '',
-    embedding: undefined,
-    developers: '',
-    deployers: '',
-    harmed_parties: '',
-    incident_date: '',
-  });
+const NewSubmissionForm = ({ submitForm, initialValues }) => {
+  const [data, setData] = useState(initialValues);
 
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -42,38 +17,11 @@ const NewSubmissionForm = () => {
 
   const stepsRef = useRef(null);
 
-  const [insertSubmission] = useMutation(INSERT_SUBMISSION, { refetchQueries: [FIND_SUBMISSIONS] });
-
   const handleNextStep = async (newData, final = false) => {
     setData((prev) => ({ ...prev, ...newData }));
 
     if (final) {
-      const date_submitted = format(new Date(), 'yyyy-MM-dd');
-
-      const description = data.description ? data.description : data.text;
-
-      const submission = {
-        ...data,
-        incident_id: data.incident_id == '' ? 0 : data.incident_id,
-        date_submitted,
-        date_modified: date_submitted,
-        description: description.substring(0, 200),
-        authors: isString(data.authors) ? data.authors.split(',') : data.authors,
-        submitters: data.submitters
-          ? !isArray(data.submitters)
-            ? data.submitters.split(',').map((s) => s.trim())
-            : data.submitters
-          : ['Anonymous'],
-        plain_text: await stripMarkdown(data.text),
-        embedding: data.embedding || undefined,
-        developers: isString(data.developers) ? data.developers.split(',') : data.developers,
-        deployers: isString(data.deployers) ? data.deployers.split(',') : data.deployers,
-        harmed_parties: isString(data.harmed_parties)
-          ? data.harmed_parties.split(',')
-          : data.harmed_parties,
-      };
-
-      await insertSubmission({ variables: { submission } });
+      await submitForm(data);
     }
 
     stepsRef?.current?.scrollIntoView();
