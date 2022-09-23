@@ -779,18 +779,18 @@ describe('The Submit form', () => {
     cy.wait(200);
 
     const valuesStep2 = {
-      incident_date: '2022-01-01',
-      image_url: 'https://test.com/image.jpg',
-      incident_id: '3456456',
+      image_url: 'https://test.com/image.jpg'
     };
 
     for (const key in valuesStep2) {
       cy.get(`[name="${key}"]`).type(valuesStep2[key]);
     }
 
-    cy.get('[name="incident_date"]').should('be.visible');
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
 
-    cy.contains('button', 'Submit').click();
+    cy.get('[name="incident_date"]').should('be.visible');
 
     cy.contains('.invalid-feedback', '*Incident Date required').should('be.visible');
   });
