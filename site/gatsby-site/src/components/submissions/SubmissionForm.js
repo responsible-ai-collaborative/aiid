@@ -4,13 +4,13 @@ import { Spinner } from 'flowbite-react';
 import { useFormikContext } from 'formik';
 import * as yup from 'yup';
 import TextInputGroup from '../../components/forms/TextInputGroup';
+import TagsInputGroup from '../../components/forms/TagsInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { dateRegExp } from '../../utils/date';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from '../../utils/cloudinary';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { graphql, useStaticQuery } from 'gatsby';
 import Label from '../forms/Label';
-import TagsControl from '../../components/forms/TagsControl';
 import IncidentIdField from '../../components/incidents/IncidentIdField';
 import getSourceDomain from '../../utils/getSourceDomain';
 import { Editor } from '@bytemd/react';
@@ -51,7 +51,7 @@ export const schema = yup.object().shape({
   description: yup
     .string()
     .min(3, 'Description must have at least 3 characters')
-    .max(200, "Description can't be longer than 200 characters")
+    .max(500, "Description can't be longer than 500 characters")
     .when('_id', {
       is: (_id) => _id !== undefined,
       then: yup.string().required('*Incident Description required'),
@@ -78,7 +78,7 @@ export const schema = yup.object().shape({
     .max(200, "Harmed Parties can't be longer than 200 characters")
     .when('_id', {
       is: (_id) => _id !== undefined,
-      then: yup.string().required('*Harm Parties is required'),
+      then: yup.string().required('*Harmed Parties is required'),
     }),
   authors: yup
     .string()
@@ -87,8 +87,12 @@ export const schema = yup.object().shape({
     .required('*Author is required. Anonymous or the publication can be entered.'),
   submitters: yup
     .string()
-    .min(3, '*Submitter must have at least 3 characters')
-    .max(200, "*Submitter list can't be longer than 200 characters"),
+    .max(200, "*Submitter list can't be longer than 200 characters")
+    .test(
+      'len',
+      '*Submitter must have at least 3 characters',
+      (val) => val === undefined || val.length == 0 || 3 <= val.length
+    ),
   text: yup
     .string()
     .min(80, `*Text must have at least 80 characters`)
@@ -117,6 +121,7 @@ export const schema = yup.object().shape({
     is: (incident_id) => incident_id == '' || incident_id === undefined,
     then: yup.date().required('*Incident Date required'),
   }),
+  editor_notes: yup.string(),
 });
 
 const SubmissionForm = () => {
@@ -158,7 +163,7 @@ const SubmissionForm = () => {
 
   const { t } = useTranslation(['submit']);
 
-  const TextInputGroupProps = { values, errors, touched, handleChange, handleBlur };
+  const TextInputGroupProps = { values, errors, touched, handleChange, handleBlur, schema };
 
   const addToast = useToastContext();
 
@@ -250,7 +255,7 @@ const SubmissionForm = () => {
           placeholder={t('Report URL')}
           addOnComponent={
             <Button
-              className="outline-secondary"
+              className="outline-secondary rounded-l-none"
               disabled={!!errors.url || !touched.url || parsingNews}
               onClick={() => parseNewsUrl(values.url)}
               data-cy="fetch-info"
@@ -281,25 +286,23 @@ const SubmissionForm = () => {
           {...TextInputGroupProps}
         />
 
-        <Form.Group className="mt-3">
-          <Label popover="authors" label={t('Author(s)')} />
-          <TagsControl
-            name="authors"
-            placeholder={t('The author or authors of the report')}
-            {...TextInputGroupProps}
-          />
-        </Form.Group>
+        <TagsInputGroup
+          name="authors"
+          label={t('Author(s)')}
+          placeholder={t('The author or authors of the report')}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
 
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byAuthors']} />
 
-        <Form.Group className="mt-3">
-          <Label popover="submitters" label={t('Submitter(s)')} />
-          <TagsControl
-            name="submitters"
-            placeholder={t('Your name as you would like it to appear in the leaderboard')}
-            {...TextInputGroupProps}
-          />
-        </Form.Group>
+        <TagsInputGroup
+          name="submitters"
+          placeholder={t('Your name as you would like it to appear in the leaderboard')}
+          label={t('Submitter(s)')}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
 
         <TextInputGroup
           name="date_published"
@@ -412,43 +415,41 @@ const SubmissionForm = () => {
             name="description"
             label={t('Description')}
             as="textarea"
-            placeholder={t('Report Description')}
+            placeholder={t('Incident Description')}
             rows={3}
             className="mt-3"
             {...TextInputGroupProps}
           />
 
-          <Form.Group className="mt-3">
-            <Label popover="tags" label={t('Tags')} />
-            <TagsControl name={'tags'} />
-          </Form.Group>
+          <TagsInputGroup name="tags" label={t('Tags')} className="mt-3" {...TextInputGroupProps} />
 
-          <Form.Group className="mt-3">
-            <Label popover="developers" label={t('Alleged developer of AI system')} />
-            <TagsControl
-              name="developers"
-              placeholder={t('Who created or built the technology involved in the incident?')}
-              {...TextInputGroupProps}
-            />
-          </Form.Group>
+          {!values.incident_id && (
+            <>
+              <TagsInputGroup
+                name="developers"
+                label={t('Alleged developer of AI system')}
+                placeholder={t('Who created or built the technology involved in the incident?')}
+                className="mt-3"
+                {...TextInputGroupProps}
+              />
 
-          <Form.Group className="mt-3">
-            <Label popover="deployers" label={t('Alleged deployer of AI system')} />
-            <TagsControl
-              name="deployers"
-              placeholder={t('Who employed or was responsible for the technology?')}
-              {...TextInputGroupProps}
-            />
-          </Form.Group>
+              <TagsInputGroup
+                name="deployers"
+                label={t('Alleged deployer of AI system')}
+                placeholder={t('Who employed or was responsible for the technology?')}
+                className="mt-3"
+                {...TextInputGroupProps}
+              />
 
-          <Form.Group className="mt-3">
-            <Label popover="harmed_parties" label={t('Alleged harmed or nearly harmed parties')} />
-            <TagsControl
-              name="harmed_parties"
-              placeholder={t('Who experienced negative impacts?')}
-              {...TextInputGroupProps}
-            />
-          </Form.Group>
+              <TagsInputGroup
+                name="harmed_parties"
+                label={t('Alleged harmed or nearly harmed parties')}
+                placeholder={t('Who experienced negative impacts?')}
+                className="mt-3"
+                {...TextInputGroupProps}
+              />
+            </>
+          )}
 
           <TextInputGroup
             name="editor_notes"
