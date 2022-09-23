@@ -3,12 +3,23 @@
     "database": "customData",
     "roles": [
         {
-            "name": "readAndWriteAll",
-            "apply_when": {},
+            "name": "Owner of the document",
+            "apply_when": {
+                "userId": "%%user.id"
+            },
             "read": true,
             "write": true,
             "insert": true,
             "delete": true,
+            "search": true
+        },
+        {
+            "name": "default",
+            "apply_when": {},
+            "read": true,
+            "write": true,
+            "insert": false,
+            "delete": false,
             "search": true
         }
     ]

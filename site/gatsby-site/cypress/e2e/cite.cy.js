@@ -348,6 +348,8 @@ describe('Cite pages', () => {
 
     cy.contains('Notify Me of Updates').scrollIntoView().click();
 
+    cy.wait(1000);
+
     cy.get('[data-cy="toast"]')
       .contains(`You have successfully subscribed to updates on incident ${incidentId}`)
       .should('exist');

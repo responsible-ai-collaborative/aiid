@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Spinner } from 'flowbite-react';
-import AiidHelmet from '../components/AiidHelmet';
-import Layout from '../components/Layout';
-import Citation from '../components/cite/Citation';
-import ImageCarousel from '../components/cite/ImageCarousel';
-import BibTex from '../components/BibTex';
-import { getCanonicalUrl } from '../utils/getCanonicalUrl';
+import AiidHelmet from 'components/AiidHelmet';
+import Layout from 'components/Layout';
+import Citation from 'components/cite/Citation';
+import ImageCarousel from 'components/cite/ImageCarousel';
+import BibTex from 'components/BibTex';
+import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 import { format, isAfter, isEqual } from 'date-fns';
 import { useModal, CustomModal } from '../hooks/useModal';
 import Timeline from '../components/visualizations/Timeline';
@@ -27,11 +27,11 @@ import useLocalizePath from '../components/i18n/useLocalizePath';
 import { useMutation } from '@apollo/client';
 import { UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
-import Link from '../components/ui/Link';
+import Link from 'components/ui/Link';
 import { graphql } from 'gatsby';
-import { getTaxonomies, getTranslatedReports } from '../utils/cite';
-import { computeEntities } from '../utils/entities';
-import AllegedEntities from '../components/entities/AllegedEntities';
+import { getTaxonomies, getTranslatedReports } from 'utils/cite';
+import { computeEntities } from 'utils/entities';
+import AllegedEntities from 'components/entities/AllegedEntities';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -304,7 +304,11 @@ function CitePage(props) {
               <Card.Body className="flex-row">
                 <Button variant="outline-primary" className="mr-2" onClick={subscribeToNewReports}>
                   <div className="flex gap-2 items-center">
-                    {subscribing && <Spinner size="sm" />}
+                    {subscribing && (
+                      <div className="mr-2">
+                        <Spinner size="sm" />
+                      </div>
+                    )}
                     <Trans>Notify Me of Updates</Trans>
                   </div>
                 </Button>
