@@ -5,6 +5,7 @@ module.exports = defineConfig({
   videoUploadOnPasses: false,
   chromeWebSecurity: false,
   defaultCommandTimeout: 15000,
+  screenshotOnRunFailure: false,
   requestTimeout: 15000,
   retries: {
     runMode: 4,
