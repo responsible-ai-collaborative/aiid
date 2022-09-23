@@ -5,14 +5,14 @@ import Layout from 'components/Layout';
 import Citation from 'components/cite/Citation';
 import ImageCarousel from 'components/cite/ImageCarousel';
 import BibTex from 'components/BibTex';
-import { getCanonicalUrl } from '../utils/getCanonicalUrl';
+import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 import { format, isAfter, isEqual } from 'date-fns';
 import { useModal, CustomModal } from '../hooks/useModal';
 import Timeline from 'components/visualizations/Timeline';
 import IncidentStatsCard from 'components/cite/IncidentStatsCard';
 import IncidentCard from 'components/cite/IncidentCard';
 import Taxonomy from 'components/taxa/Taxonomy';
-import { useUserContext } from '../contexts/userContext';
+import { useUserContext } from 'contexts/userContext';
 import SimilarIncidents from 'components/cite/SimilarIncidents';
 import { Trans, useTranslation } from 'react-i18next';
 import Card from '../elements/Card';
@@ -29,8 +29,8 @@ import { UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import Link from 'components/ui/Link';
 import { graphql } from 'gatsby';
-import { getTaxonomies, getTranslatedReports } from '../utils/cite';
-import { computeEntities } from '../utils/entities';
+import { getTaxonomies, getTranslatedReports } from 'utils/cite';
+import { computeEntities } from 'utils/entities';
 import AllegedEntities from 'components/entities/AllegedEntities';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
