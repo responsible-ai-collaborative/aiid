@@ -17,7 +17,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import Card from '../elements/Card';
 import Button from '../elements/Button';
 import Container from '../elements/Container';
-import Row from '../elements/Row';
 import Pagination from '../elements/Pagination';
 import SocialShareButtons from 'components/ui/SocialShareButtons';
 import { useLocalization } from 'gatsby-theme-i18n';
@@ -158,7 +157,7 @@ function CitePage(props) {
       </div>
 
       <Container>
-        <Row>
+        <div className='flex flex-wrap mr-0 mt-0'>
           <div className='w-full lg:flex-1'>
             <Card className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6">
               <Card.Header className="items-center justify-between">
@@ -174,9 +173,9 @@ function CitePage(props) {
               </Card.Body>
             </Card>
           </div>
-        </Row>
+        </div>
 
-        <Row>
+        <div className='flex flex-wrap mr-0 mt-0'>
           <div className='w-full lg:flex-1'>
             <Card
               data-cy="citation"
@@ -197,9 +196,9 @@ function CitePage(props) {
               </Card.Body>
             </Card>
           </div>
-        </Row>
+        </div>
 
-        <Row className="mt-6">
+        <div className="flex flex-wrap mr-0 mt-6">
           <div className='w-full lg:flex-1'>
             <div data-cy={'incident-stats'}>
               <IncidentStatsCard
@@ -212,9 +211,9 @@ function CitePage(props) {
               />
             </div>
           </div>
-        </Row>
+        </div>
 
-        <Row className="mt-6">
+        <div className="flex flex-wrap mr-0 mt-6">
           <div className='w-full lg:flex-1'>
             <Card className="shadow-card">
               <Card.Header className="items-center justify-between">
@@ -227,9 +226,9 @@ function CitePage(props) {
               </Card.Body>
             </Card>
           </div>
-        </Row>
+        </div>
 
-        <Row className="mt-6">
+        <div className="mt-6">
           <div className='w-full lg:flex-1'>
             <Card className="shadow-card">
               <Card.Header className="items-center justify-between">
@@ -276,10 +275,10 @@ function CitePage(props) {
               </Card.Body>
             </Card>
           </div>
-        </Row>
+        </div>
 
         {taxonomies.length > 0 && (
-          <Row id="taxa-area">
+          <div id="taxa-area" className='flex flex-wrap mr-0 mt-0'>
             <div className='w-full lg:flex-1'>
               {taxonomiesList
                 .filter((t) => t.canEdit || t.classificationsArray.length > 0)
@@ -292,18 +291,18 @@ function CitePage(props) {
                   />
                 ))}
             </div>
-          </Row>
+          </div>
         )}
 
-        <Row className="mt-6">
+        <div className="flex flex-wrap mr-0 mt-6">
           <div className='w-full lg:flex-1'>
             <Card>
               <ImageCarousel nodes={incidentReports} />
             </Card>
           </div>
-        </Row>
+        </div>
 
-        <Row className="mt-6">
+        <div className="flex flex-wrap mr-0 mt-6">
           <div className='w-full lg:flex-1'>
             <div className="pb-5">
               <div className={'titleWrapper'}>
@@ -313,10 +312,10 @@ function CitePage(props) {
               </div>
             </div>
           </div>
-        </Row>
+        </div>
 
         {sortedReports.map((report) => (
-          <Row className="mb-4" key={report.report_number}>
+          <div className="flex flex-wrap mr-0 mt-0 mb-4" key={report.report_number}>
             <div className='w-full lg:flex-1'>
               <IncidentCard
                 item={report}
@@ -325,7 +324,7 @@ function CitePage(props) {
                 flagReportModal={flagReportModal}
               />
             </div>
-          </Row>
+          </div>
         ))}
 
         <SimilarIncidents

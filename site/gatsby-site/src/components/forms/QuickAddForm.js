@@ -10,7 +10,6 @@ import { useMutation } from '@apollo/client';
 import getSourceDomain from '../../utils/getSourceDomain';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'gatsby-theme-i18n';
-import Row from 'elements/Row';
 
 // set in form //
 // * url: "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti" # The fully qualified URL to the report as hosted on the web.
@@ -122,7 +121,7 @@ const QuickAddForm = ({ className = '' }) => {
           </button>
         </div>
         <p className="mt-2 text-sm text-red-600 dark:text-red-500">{errors.url}</p>
-        <Row className="mt-2">
+        <div className="flex flex-wrap -ml-3 mr-0 mt-0 mt-2">
           <div className='w-full lg:flex-1'>
             <Form.Text className="text-muted-gray">
               <Trans i18nKey="quickaddDescription" ns="landing">
@@ -134,7 +133,7 @@ const QuickAddForm = ({ className = '' }) => {
               </Trans>
             </Form.Text>
           </div>
-        </Row>
+        </div>
       </form>
     </div>
   );

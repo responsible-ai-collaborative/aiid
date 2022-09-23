@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { connectSearchBox } from 'react-instantsearch-dom';
 import { debounce } from 'debounce';
 import SearchInput from 'components/forms/SearchInput';
-import Row from 'elements/Row';
 
 function SearchBox({ currentRefinement, refine }) {
   const [query, setQuery] = useState(currentRefinement);
@@ -25,7 +24,7 @@ function SearchBox({ currentRefinement, refine }) {
   };
 
   return (
-    <Row>
+    <div className='flex flex-wrap -ml-3 mr-0 mt-0'>
       <div className='w-full lg:flex-1'>
         <form className="block relative" id="searchForm">
           <SearchInput
@@ -38,7 +37,7 @@ function SearchBox({ currentRefinement, refine }) {
           />
         </form>
       </div>
-    </Row>
+    </div>
   );
 }
 

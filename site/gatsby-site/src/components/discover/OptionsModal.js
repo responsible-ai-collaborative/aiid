@@ -6,7 +6,6 @@ import Stats from './Stats';
 import ClearFilters from './ClearFilters';
 import { Trans } from 'react-i18next';
 import DisplayModeSwitch from './DisplayModeSwitch';
-import Row from 'elements/Row';
 import Button from 'elements/Button';
 // https://www.algolia.com/doc/guides/building-search-ui/going-further/native/react/?language=react#create-a-modal
 
@@ -17,7 +16,7 @@ function OptionsModal({ searchState, setSearchState }) {
 
   return (
     <div className="bootstrap">
-      <Row className="my-4 md:hidden">
+      <div className="flex flex-wrap -ml-3 mr-0 mt-0 my-4 md:hidden">
         <div className="flex items-center w-full lg:flex-1">
           <Stats />
         </div>
@@ -29,7 +28,7 @@ function OptionsModal({ searchState, setSearchState }) {
             <Trans>Options</Trans>
           </Button>
         </div>
-      </Row>
+      </div>
       <Modal show={showModal} onHide={handleClose} enforceFocus={false} fullscreen>
         <Modal.Header closeButton>
           <Modal.Title>

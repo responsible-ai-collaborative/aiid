@@ -8,7 +8,6 @@ import { Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Trans } from 'react-i18next';
-import Row from 'elements/Row';
 
 const Controls = ({ query, searchState, setSearchState }) => {
   const [expandFilters, setExpandFilters] = useState(false);
@@ -17,39 +16,35 @@ const Controls = ({ query, searchState, setSearchState }) => {
 
   return (
     <>
-      <Row className="content-start items-center mt-4 767px:hidden hiddenMobile bootstrap">
-        <div className="w-full lg:flex-1 col-auto">
+      <div className="flex flex-wrap -ml-3 mr-0 content-start items-center mt-4 767px:hidden hiddenMobile">
+        <div className="w-auto flex-0-0-auto col-auto px-3">
           <Stats />
         </div>
-        <div className="w-full lg:flex-1 col-auto">
+        <div className="w-auto flex-0-0-auto col-auto px-3">
           <DisplayModeSwitch />
         </div>
-        <div className="w-full lg:flex-1 tw-hbox">
-          <Form.Check
-            type="switch"
-            id="hide-duplicates"
-            checked={searchState.refinementList.hideDuplicates}
-            onClick={(event) => {
-              setSearchState({
-                ...searchState,
-                refinementList: {
-                  ...searchState.refinementList,
-                  hideDuplicates: event.target.checked,
-                },
-              });
-            }}
-            className="tw-switch"
-          />
-          <Form.Label for="hide-duplicates">
-            <Trans>1st report only</Trans>
-          </Form.Label>
+        <div className="w-full lg:flex-1 items-center flex gap-1 pr-0">
+          <label htmlFor="default-toggle" className="inline-flex relative items-center cursor-pointer">
+            <input type="checkbox"
+              id="hide-duplicates" className="sr-only peer" checked={searchState.refinementList.hideDuplicates} onClick={(event) => {
+                setSearchState({
+                  ...searchState,
+                  refinementList: {
+                    ...searchState.refinementList,
+                    hideDuplicates: event.target.checked,
+                  },
+                });
+              }} />
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300"><Trans>1st report only</Trans></span>
+          </label>
         </div>
-        <div className="w-full lg:flex-1 col-auto">
+        <div className="w-auto flex-0-0-auto bootstrap">
           <ClearFilters>
             <Trans>Clear Filters</Trans>
           </ClearFilters>
         </div>
-        <div className="w-full lg:flex-1 col-auto">
+        <div className="w-auto flex-0-0-auto bootstrap">
           <button
             id="expand-filters"
             data-cy="expand-filters"
@@ -64,8 +59,8 @@ const Controls = ({ query, searchState, setSearchState }) => {
             <Trans>Filter Search</Trans>
           </button>
         </div>
-      </Row>
-      <Row className="mb-3 hiddenMobile">{expandFilters && <Filters />}</Row>
+      </div>
+      <div className="flex flex-wrap -ml-3 mr-0 mt-0 mb-3 hiddenMobile">{expandFilters && <Filters />}</div>
     </>
   );
 };

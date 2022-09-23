@@ -17,7 +17,6 @@ import VirtualFilters from 'components/discover/VirtualFilters';
 import Controls from 'components/discover/Controls';
 import { useLocalization } from 'gatsby-theme-i18n';
 import Container from 'elements/Container';
-import Row from 'elements/Row';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -246,11 +245,11 @@ function DiscoverApp(props) {
           <VirtualFilters />
 
           <Container className="tw-container-xl mt-6">
-            <Row className="px-0 mx-0">
+            <div className="flex flex-wrap -ml-3 mr-0 mt-0 px-0 mx-0">
               <div className="w-full lg:flex-1 px-0 mx-0">
                 <SearchBox defaultRefinement={query.s} />
               </div>
-            </Row>
+            </div>
 
             <Controls query={query} searchState={searchState} setSearchState={setSearchState} />
 
