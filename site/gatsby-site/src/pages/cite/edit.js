@@ -19,7 +19,7 @@ import { Formik } from 'formik';
 import pick from 'lodash/pick';
 import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
 import { gql, useApolloClient } from '@apollo/client';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import RelatedIncidents from '../../components/RelatedIncidents';
 
 const UPDATE_REPORT_TRANSLATION = gql`
@@ -84,7 +84,7 @@ const incidentEmbedding = (reports) => {
 };
 
 function EditCitePage(props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
 
@@ -120,30 +120,32 @@ function EditCitePage(props) {
 
   const client = useApolloClient();
 
+  const updateSuccessToast = ({ reportNumber, incidentId }) => ({
+    message: (
+      <Trans i18n={i18n} reportNumber={reportNumber} incidentId={incidentId}>
+        Incident report {{ reportNumber }} updated successfully.{' '}
+        <LocalizedLink to={'/cite/' + incidentId}>View Incident {{ incidentId }}</LocalizedLink>.
+      </Trans>
+    ),
+    severity: SEVERITY.success,
+  });
+
+  const updateErrorToast = ({ reportNumber }) => ({
+    message: t(`Error updating incident report {{reportNumber}}.`, { reportNumber }),
+    severity: SEVERITY.danger,
+  });
+
+  const deleteSuccessToast = ({ reportNumber }) => ({
+    message: t(`Incident report {{reportNumber}} deleted successfully.`, { reportNumber }),
+    severity: SEVERITY.success,
+  });
+
+  const deleteErrorToast = ({ reportNumber }) => ({
+    message: t(`Error deleting incident report {{reportNumber}}.`, { reportNumber }),
+    severity: SEVERITY.danger,
+  });
+
   const handleSubmit = async (values) => {
-    addToast({
-      message: t(`Error updating incident report {{reportNumber}}`, { reportNumber }),
-      severity: SEVERITY.danger,
-    });
-    addToast({
-      message: (
-        <>
-          {t('Incident report {{ reportNumber }} updated successfully.', { reportNumber })}{' '}
-          <LocalizedLink to={'/cite/' + values.incident_id}>
-            {t('View Incident {{ incidentId }}', { incidentId: values.incident_id })}.
-          </LocalizedLink>
-        </>
-      ),
-      severity: SEVERITY.success,
-    });
-    addToast({
-      message: t(`Incident report {{reportNumber}} deleted successfully.`, { reportNumber }),
-      severity: SEVERITY.success,
-    });
-    addToast({
-      message: t(`Error deleting incident report {{reportNumber}}`, { reportNumber }),
-      severity: SEVERITY.danger,
-    });
     try {
       if (typeof values.authors === 'string') {
         values.authors = values.authors.split(',').map((s) => s.trim());
@@ -257,22 +259,9 @@ function EditCitePage(props) {
         });
       }
 
-      addToast({
-        message: (
-          <>
-            {t('Incident report {{ reportNumber }} updated successfully.', { reportNumber })}{' '}
-            <LocalizedLink to={'/cite/' + values.incident_id}>
-              {t('View Incident {{ incidentId }}', { incidentId: values.incident_id })}.
-            </LocalizedLink>
-          </>
-        ),
-        severity: SEVERITY.success,
-      });
+      addToast(updateSuccessToast({ reportNumber, incidentId: values.incident_id }));
     } catch (e) {
-      addToast({
-        message: t(`Error updating incident report {{reportNumber}}`, { reportNumber }),
-        severity: SEVERITY.danger,
-      });
+      addToast(updateErrorToast({ reportNumber }));
     }
   };
 
@@ -324,15 +313,9 @@ function EditCitePage(props) {
         },
       });
 
-      addToast({
-        message: t(`Incident report {{reportNumber}} deleted successfully.`, { reportNumber }),
-        severity: SEVERITY.success,
-      });
+      addToast(deleteSuccessToast({ reportNumber }));
     } catch (e) {
-      addToast({
-        message: t(`Error deleting incident report {{reportNumber}}`, { reportNumber }),
-        severity: SEVERITY.danger,
-      });
+      addToast(deleteErrorToast({ reportNumber }));
     }
   };
 
@@ -371,7 +354,7 @@ function EditCitePage(props) {
                 className="mt-3 text-danger"
                 variant="link"
                 onClick={() => {
-                  confirm(t('Sure you want to delete this report?')) && handleDelete();
+                  confirm(t('Are you sure you want to delete this report?')) && handleDelete();
                 }}
               >
                 Delete this report

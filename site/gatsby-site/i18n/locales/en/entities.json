@@ -1,0 +1,8 @@
+{
+    "{{count}} Incident": "{{count}} Incident",
+    "{{count}} Incident_plural": "{{count}} Incidents",
+    "{{count}} Entity": "{{count}} Entity",
+    "{{count}} Entity_plural": "{{count}} Entities",
+    "{{count}} Report": "{{count}} Report",
+    "{{count}} Report_plural": "{{count}} Reports"
+}

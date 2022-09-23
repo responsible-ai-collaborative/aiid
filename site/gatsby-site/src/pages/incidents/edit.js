@@ -9,10 +9,10 @@ import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
 import { LocalizedLink } from 'gatsby-theme-i18n';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 
 function EditCitePage(props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [incident, setIncident] = useState();
 
@@ -25,6 +25,21 @@ function EditCitePage(props) {
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
   const addToast = useToastContext();
+
+  const updateSuccessToast = ({ incidentId }) => ({
+    message: (
+      <Trans i18n={i18n} incidentId={incidentId}>
+        Incident {{ incidentId }} updated successfully.{' '}
+        <LocalizedLink to={'/cite/' + incidentId}>View incident {{ incidentId }}</LocalizedLink>.
+      </Trans>
+    ),
+    severity: SEVERITY.success,
+  });
+
+  const updateErrorToast = ({ incidentId }) => ({
+    message: t('Error updating incident {{incidentId}}.', { incidentId }),
+    severity: SEVERITY.danger,
+  });
 
   useEffect(() => {
     if (incidentData?.incident) {
@@ -57,23 +72,9 @@ function EditCitePage(props) {
         },
       });
 
-      addToast({
-        message: (
-          <>
-            {t('Incident {{ incidentId }} updated successfully.', { incidentId })}{' '}
-            <LocalizedLink to={'/cite/' + incidentId}>
-              {t('View incident {{ incidentId }}', { incidentId })}
-            </LocalizedLink>
-            .
-          </>
-        ),
-        severity: SEVERITY.success,
-      });
+      addToast(updateSuccessToast({ incidentId }));
     } catch (e) {
-      addToast({
-        message: t('Error updating incident {{ incidentId }}', { incidentId }),
-        severity: SEVERITY.danger,
-      });
+      addToast(updateErrorToast({ incidentId }));
     }
   };
 

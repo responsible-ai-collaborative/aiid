@@ -49,7 +49,10 @@ Card.Subtitle = function CardSubtitle(props) {
 Card.Body = function CardBody(props) {
   return (
     <>
-      <div className={`tw-card-body flex-1 p-4 ${props.className ? props.className : ''}`}>
+      <div
+        {...props}
+        className={`tw-card-body flex-1 p-4 ${props.className ? props.className : ''}`}
+      >
         {props.children}
       </div>
     </>
