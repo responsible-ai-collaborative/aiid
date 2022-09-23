@@ -106,13 +106,11 @@
   "review": "revisar",
   "Loading...": "Cargando...",
   "Spatial Visualization": "Visualización espacial",
-  "Incident report {{reportNumber}} updated successfully. <4>View Incident {{incidentId}}</4>.": 
-  "~Incident report {{reportNumber}} updated successfully. <4>View Incident {{incidentId}}</4>.",
+  "Incident report {{reportNumber}} updated successfully. <4>View Incident {{incidentId}}</4>.": "~Incident report {{reportNumber}} updated successfully. <4>View Incident {{incidentId}}</4>.",
   "Error updating incident report {{reportNumber}}.": "~Error updating incident report {{reportNumber}}.",
   "Incident report {{reportNumber}} deleted successfully.": "~Incident report {{reportNumber}} deleted successfully.",
   "Error deleting incident report {{reportNumber}}.": "~Error deleting incident report {{reportNumber}}.",
-  "Incident {{incidentId}} updated successfully. <4>View incident {{incidentId}}</4>.": 
-  "~Incident {{incidentId}} updated successfully. <4>View incident {{incidentId}}</4>.",
+  "Incident {{incidentId}} updated successfully. <4>View incident {{incidentId}}</4>.": "~Incident {{incidentId}} updated successfully. <4>View incident {{incidentId}}</4>.",
   "Error updating incident {{incidentId}}.": "~Error updating incident {{incidentId}}.",
   "Are you sure you want to delete this report?": "~Are you sure you want to delete this report?",
   "View all": "Ver todos",
