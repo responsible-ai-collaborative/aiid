@@ -37,11 +37,15 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="to-step-2"]').click();
 
+    cy.wait(200);
+
     cy.get('[name="incident_date"]').type('2020-01-01');
 
     cy.get('[name="language"]').select('Spanish');
 
     cy.get('[data-cy="to-step-3"]').click();
+
+    cy.wait(200);
 
     cy.get('[name="tags"]').type('New Tag{enter}');
 
@@ -154,6 +158,8 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="to-step-2"]').click();
 
+    cy.wait(200);
+
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
     );
@@ -173,6 +179,8 @@ describe('The Submit form', () => {
     cy.wait('@findIncident');
 
     cy.get('[data-cy="to-step-3"]').click();
+
+    cy.wait(200);
 
     cy.get('[name="tags"]').type('New Tag{enter}');
 
@@ -300,7 +308,11 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="to-step-2"]').click();
 
+    cy.wait(200);
+
     cy.get('[data-cy="to-step-3"]').click();
+
+    cy.wait(200);
 
     cy.wait('@findIncident');
 
@@ -585,6 +597,8 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="to-step-2"]').click();
 
+    cy.wait(200);
+
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
     );
@@ -612,6 +626,9 @@ describe('The Submit form', () => {
     cy.visit(url + `?${params.toString()}`);
 
     cy.get('[data-cy="to-step-2"]').click();
+
+    cy.wait(200);
+
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube.`
     );
@@ -639,6 +656,8 @@ describe('The Submit form', () => {
     cy.visit(url + `?${params.toString()}`);
 
     cy.get('[data-cy="to-step-2"]').click();
+
+    cy.wait(200);
 
     cy.get('[data-cy="image-preview-figure"] img').should('have.attr', 'src', imageUrl);
   });
@@ -670,6 +689,8 @@ describe('The Submit form', () => {
 
     
     cy.get('[data-cy="to-step-2"]').click();
+
+    cy.wait(200);
     
     cy.get('input[name=image_url]').scrollIntoView().type(newImageUrl);
 
@@ -704,6 +725,8 @@ describe('The Submit form', () => {
     }
     
     cy.get('[data-cy="to-step-2"]').click();
+
+    cy.wait(200);
 
     const valuesStep2 = {
       incident_date: '2022-01-01',
@@ -753,6 +776,8 @@ describe('The Submit form', () => {
     
     cy.get('[data-cy="to-step-2"]').click();
 
+    cy.wait(200);
+
     const valuesStep2 = {
       incident_date: '2022-01-01',
       image_url: 'https://test.com/image.jpg',
@@ -789,6 +814,8 @@ describe('The Submit form', () => {
     
     cy.get('[data-cy="to-step-2"]').click();
 
+    cy.wait(200);
+
     const valuesStep2 = {
       incident_date: '2022-01-01',
       image_url: 'https://test.com/image.jpg',
@@ -803,6 +830,8 @@ describe('The Submit form', () => {
     );
 
     cy.get('[data-cy="to-step-3"]').click();
+
+    cy.wait(200);
 
     const valuesStep3 = {
       editor_notes: 'Here are some notes',
@@ -876,6 +905,8 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="to-step-2"]').click();
 
+    cy.wait(200);
+
     cy.setEditorText(
       'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
       );
@@ -883,6 +914,8 @@ describe('The Submit form', () => {
     cy.get('[name="incident_date"]').type('2020-01-01');
 
     cy.get('[data-cy="to-step-3"]').click();
+
+    cy.wait(200);
 
     cy.get('[name="editor_notes"').type('Here are some notes');
 
