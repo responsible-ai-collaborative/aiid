@@ -9,8 +9,6 @@ import { format, parse } from 'date-fns';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
 import isString from 'lodash/isString';
-// import SubmissionForm, { schema } from 'components/submissions/SubmissionForm';
-// import { Formik } from 'formik';
 import { stripMarkdown } from 'utils/typography';
 import isArray from 'lodash/isArray';
 import { Trans, useTranslation } from 'react-i18next';
@@ -83,7 +81,7 @@ const SubmitForm = () => {
     }
   }, [csvIndex, csvData]);
 
-  const handleCSVError = (err, file, inputElem, reason) => {
+  const handleCSVError = (_err, _file, _inputElem, reason) => {
     addToast({
       message: t(`Unable to upload: `) + reason,
       severity: SEVERITY.danger,
