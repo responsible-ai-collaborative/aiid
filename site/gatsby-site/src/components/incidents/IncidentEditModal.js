@@ -7,8 +7,11 @@ import { Spinner } from 'flowbite-react';
 import IncidentForm, { schema } from './IncidentForm';
 import { Formik } from 'formik';
 import { LocalizedLink } from 'gatsby-theme-i18n';
+import { useTranslation, Trans } from 'react-i18next';
 
 export default function IncidentEditModal({ show, onClose, incidentId }) {
+  const { t, i18n } = useTranslation();
+
   const [incident, setIncident] = useState();
 
   const { data: incidentData } = useQuery(FIND_INCIDENT, {
@@ -27,6 +30,21 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
     }
   }, [incidentData]);
 
+  const updateSuccessToast = ({ incidentId }) => ({
+    message: (
+      <Trans i18n={i18n} incidentId={incidentId}>
+        Incident {{ incidentId }} updated successfully.{' '}
+        <LocalizedLink to={'/cite/' + incidentId}>View incident {{ incidentId }}</LocalizedLink>.
+      </Trans>
+    ),
+    severity: SEVERITY.success,
+  });
+
+  const updateErrorToast = ({ incidentId, message }) => ({
+    message: t('Error updating incident {{incident}}. \n {{message}}', { incidentId, message }),
+    severity: SEVERITY.danger,
+  });
+
   const handleSubmit = async (values) => {
     try {
       const updated = { ...values, reports: undefined, __typename: undefined };
@@ -42,22 +60,11 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         },
       });
 
-      addToast({
-        message: (
-          <>
-            <LocalizedLink to={'/cite/' + incidentId}>Incident {incidentId}</LocalizedLink> updated
-            successfully.
-          </>
-        ),
-        severity: SEVERITY.success,
-      });
+      addToast(updateSuccessToast({ incidentId }));
 
       onClose();
     } catch (e) {
-      addToast({
-        message: `Error updating incident ${incident} \n ${e.message}`,
-        severity: SEVERITY.danger,
-      });
+      addToast(updateErrorToast({ incidentId, message: e.message }));
     }
   };
 
