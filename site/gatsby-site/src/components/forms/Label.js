@@ -24,6 +24,7 @@ const Label = ({ popover, label }) => {
       className="inline-block absolute z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm tooltip dark:bg-gray-700 max-w-xs bottom-2 imtooltip"
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
+      data-cy={`popover-${popover}`}
     >
       <h5>
         <Trans ns="popovers" i18nKey={`${popover}.title`} />

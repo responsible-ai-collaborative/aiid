@@ -8,9 +8,10 @@ const FlowbiteSearchInput = ({
   handleBlur,
   className = '',
   btnText = '',
-  btnClick = () => {},
+  btnClick = () => { },
   loading = false,
   btnDisabled = false,
+  dataCy = '',
   ...props
 }) => (
   <div className="relative">
@@ -40,12 +41,12 @@ const FlowbiteSearchInput = ({
       {...props}
     />
     {loading ? (
-      <FetchButton btnDisabled={btnDisabled} btnClick={btnClick}>
+      <FetchButton btnDisabled={btnDisabled} btnClick={btnClick} data-cy={dataCy}>
         <Spinner aria-label="Alternate spinner button example" />
         <span className="pl-3">Fetching...</span>
       </FetchButton>
     ) : (
-      <FetchButton btnDisabled={btnDisabled} btnClick={btnClick}>
+      <FetchButton btnDisabled={btnDisabled} btnClick={btnClick} data-cy={dataCy}>
         {btnText}
       </FetchButton>
     )}

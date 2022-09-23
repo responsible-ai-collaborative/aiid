@@ -678,155 +678,219 @@ describe('The Submit form', () => {
       .should('have.attr', 'src', cloudinaryImageUrl);
   });
 
-  // it("Should not submit form when linking to an Incident that doesn't exist", () => {
-  //   cy.conditionalIntercept(
-  //     '**/graphql',
-  //     (req) =>
-  //       req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 3456456,
-  //     'findIncident',
-  //     { data: { incident: null } }
-  //   );
+  it("Should not submit form when linking to an Incident that doesn't exist", () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 3456456,
+      'findIncident',
+      { data: { incident: null } }
+    );
 
-  //   cy.visit(url);
+    cy.visit(url);
 
-  //   const values = {
-  //     url: 'https://test.com',
-  //     title: 'test title',
-  //     authors: 'test author',
-  //     submitters: 'test submitter',
-  //     incident_date: '2022-01-01',
-  //     date_published: '2021-01-02',
-  //     date_downloaded: '2021-01-03',
-  //     image_url: 'https://test.com/image.jpg',
-  //     incident_id: '3456456',
-  //     editor_notes: 'Here are some notes',
-  //   };
+    const valuesStep1 = {
+      url: 'https://test.com',
+      title: 'test title',
+      authors: 'test author',
+      submitters: 'test submitter',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+    };
 
-  //   cy.get('[data-cy="to-step-3"]').click();
+    
+    for (const key in valuesStep1) {
+      cy.get(`[name="${key}"]`).type(valuesStep1[key]);
+    }
+    
+    cy.get('[data-cy="to-step-2"]').click();
 
-  //   for (const key in values) {
-  //     cy.get(`[name="${key}"]`).type(values[key]);
-  //   }
+    const valuesStep2 = {
+      incident_date: '2022-01-01',
+      image_url: 'https://test.com/image.jpg',
+      incident_id: '3456456',
+    };
 
-  //   cy.setEditorText(
-  //     'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
-  //   );
+    for (const key in valuesStep2) {
+      cy.get(`[name="${key}"]`).type(valuesStep2[key]);
+    }
 
-  //   cy.wait('@findIncident');
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
 
-  //   cy.get('[name="incident_date"]').should('not.exist');
+    cy.wait('@findIncident');
 
-  //   cy.contains('.invalid-feedback', 'Incident ID 3456456 not found!').should('be.visible');
-  // });
+    cy.get('[name="incident_date"]').should('not.exist');
 
-  // it('Should require incident_date when incident_id is not set', () => {
-  //   cy.conditionalIntercept(
-  //     '**/graphql',
-  //     (req) =>
-  //       req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 3456456,
-  //     'findIncident',
-  //     { data: { incident: null } }
-  //   );
+    cy.contains('.invalid-feedback', 'Incident ID 3456456 not found!').should('be.visible');
+  });
 
-  //   cy.visit(url);
+  it('Should require incident_date when incident_id is not set', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 3456456,
+      'findIncident',
+      { data: { incident: null } }
+    );
 
-  //   const values = {
-  //     url: 'https://test.com',
-  //     title: 'test title',
-  //     authors: 'test author',
-  //     submitters: 'test submitter',
-  //     date_published: '2021-01-02',
-  //     date_downloaded: '2021-01-03',
-  //     image_url: 'https://test.com/image.jpg',
-  //     editor_notes: 'Here are some notes',
-  //   };
+    cy.visit(url);
 
-  //   cy.get('[data-cy="to-step-3"]').click();
+    const valuesStep1 = {
+      url: 'https://test.com',
+      title: 'test title',
+      authors: 'test author',
+      submitters: 'test submitter',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+    };
 
-  //   for (const key in values) {
-  //     cy.get(`[name="${key}"]`).type(values[key]);
-  //   }
+    
+    for (const key in valuesStep1) {
+      cy.get(`[name="${key}"]`).type(valuesStep1[key]);
+    }
+    
+    cy.get('[data-cy="to-step-2"]').click();
 
-  //   cy.get('[name="incident_date"]').should('be.visible');
+    const valuesStep2 = {
+      incident_date: '2022-01-01',
+      image_url: 'https://test.com/image.jpg',
+      incident_id: '3456456',
+    };
 
-  //   cy.contains('button', 'Submit').click();
+    for (const key in valuesStep2) {
+      cy.get(`[name="${key}"]`).type(valuesStep2[key]);
+    }
 
-  //   cy.contains('.invalid-feedback', '*Incident Date required').should('be.visible');
-  // });
+    cy.get('[name="incident_date"]').should('be.visible');
 
-  // it('Should show the editor notes field', () => {
-  //   cy.visit(url);
-  //   cy.get('[name="editor_notes"').should('exist');
-  // });
+    cy.contains('button', 'Submit').click();
 
-  // it('Should show a popover', () => {
-  //   cy.visit(url);
+    cy.contains('.invalid-feedback', '*Incident Date required').should('be.visible');
+  });
 
-  //   cy.wait(0);
+  it('Should show the editor notes field', () => {
+    cy.visit(url);
 
-  //   cy.get('[data-cy="label-title"]').trigger('mouseover');
+    const valuesStep1 = {
+      url: 'https://test.com',
+      title: 'test title',
+      authors: 'test author',
+      submitters: 'test submitter',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+    };
 
-  //   cy.get('[data-cy="popover-title"]').should('be.visible');
+    
+    for (const key in valuesStep1) {
+      cy.get(`[name="${key}"]`).type(valuesStep1[key]);
+    }
+    
+    cy.get('[data-cy="to-step-2"]').click();
 
-  //   cy.get('[data-cy="popover-title"]').contains('h3', 'Headline').should('exist');
+    const valuesStep2 = {
+      incident_date: '2022-01-01',
+      image_url: 'https://test.com/image.jpg',
+    };
 
-  //   cy.get('[data-cy="popover-title"]').contains('div', 'Most works have a title').should('exist');
-  // });
+    for (const key in valuesStep2) {
+      cy.get(`[name="${key}"]`).type(valuesStep2[key]);
+    }
+    
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
 
-  // it('Should show a translated popover', () => {
-  //   cy.visit(`/es/apps/submit/`);
+    cy.get('[data-cy="to-step-3"]').click();
 
-  //   cy.wait(0);
+    const valuesStep3 = {
+      editor_notes: 'Here are some notes',
+    };
 
-  //   cy.get('[data-cy="label-title"]').trigger('mouseover');
+    for (const key in valuesStep3) {
+      cy.get(`[name="${key}"]`).type(valuesStep3[key]);
+    }
 
-  //   cy.get('[data-cy="popover-title"]').should('be.visible');
+    cy.get('[name="editor_notes"').should('exist');
+  });
 
-  //   cy.get('[data-cy="popover-title"]').contains('h3', 'Título').should('exist');
+  it('Should show a popover', () => {
+    cy.visit(url);
 
-  //   cy.get('[data-cy="popover-title"]')
-  //     .contains('div', 'La mayoría de los trabajos tienen un')
-  //     .should('exist');
-  // });
+    cy.wait(0);
 
-  // it('Should work with translated page', () => {
-  //   cy.visit(`/es/apps/submit/`);
+    cy.get('[data-cy="label-title"]').trigger('mouseover');
 
-  //   cy.intercept('GET', parserURL, parseNews).as('parseNews');
+    cy.get('[data-cy="popover-title"]').should('be.visible');
 
-  //   cy.conditionalIntercept(
-  //     '**/graphql',
-  //     (req) => req.body.operationName == 'InsertSubmission',
-  //     'insertSubmission',
-  //     {
-  //       data: {
-  //         insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
-  //       },
-  //     }
-  //   );
+    cy.get('[data-cy="popover-title"]').contains('h5', 'Headline').should('exist');
 
-  //   cy.get('input[name="url"]').type(
-  //     `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
-  //   );
+    cy.get('[data-cy="popover-title"]').contains('div', 'Most works have a title').should('exist');
+  });
 
-  //   cy.get('[data-cy="fetch-info"]').click();
+  it('Should show a translated popover', () => {
+    cy.visit(`/es/apps/submit/`);
 
-  //   cy.wait('@parseNews');
+    cy.wait(0);
 
-  //   cy.get('input[name="submitters"]').type('Something');
+    cy.get('[data-cy="label-title"]').trigger('mouseover');
 
-  //   cy.get('[name="incident_date"]').type('2020-01-01');
+    cy.get('[data-cy="popover-title"]').should('be.visible');
 
-  //   cy.get('[data-cy="to-step-3"]').click();
+    cy.get('[data-cy="popover-title"]').contains('h5', 'Título').should('exist');
 
-  //   cy.get('[name="editor_notes"').type('Here are some notes');
+    cy.get('[data-cy="popover-title"]')
+      .contains('div', 'La mayoría de los trabajos tienen un')
+      .should('exist');
+  });
 
-  //   cy.get('button[type="submit"]').click();
+  it('Should work with translated page', () => {
+    cy.visit(`/es/apps/submit/`);
 
-  //   cy.wait('@insertSubmission');
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
-  //   cy.get('[data-cy="submission-success"]').should('be.visible');
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
+      'insertSubmission',
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
 
-  //   cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/es/apps/submitted');
-  // });
+    cy.get('input[name="url"]').type(
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    cy.get('[data-cy="fetch-info"]').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('input[name="authors"]').type('Something');
+
+    cy.get('input[name="submitters"]').type('Something');
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+      );
+
+    cy.get('[name="incident_date"]').type('2020-01-01');
+
+    cy.get('[data-cy="to-step-3"]').click();
+
+    cy.get('[name="editor_notes"').type('Here are some notes');
+
+    cy.get('button[type="submit"]').click();
+
+    cy.wait('@insertSubmission');
+
+    cy.get('[data-cy="submission-success"]').should('be.visible');
+
+    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/es/apps/submitted');
+  });
 });

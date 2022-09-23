@@ -99,22 +99,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl }) => {
           label={t('Report Address')}
           placeholder={t('Report URL')}
           defaultValue={values?.url || ''}
-          addOnComponent={
-            <Button
-              disabled={!!errors.url || !touched.url || parsingNews}
-              onClick={() => fetchNews(values.url)}
-              data-cy="fetch-info"
-            >
-              {!parsingNews ? (
-                <Trans ns="submit">Fetch info</Trans>
-              ) : (
-                <div className="flex gap-2">
-                  <Spinner size="sm" />
-                  <Trans ns="submit">Fetching...</Trans>
-                </div>
-              )}
-            </Button>
-          }
+          dataCy='fetch-info'
           values={values}
           errors={errors}
           touched={touched}
