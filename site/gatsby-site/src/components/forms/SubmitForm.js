@@ -16,7 +16,7 @@ import isArray from 'lodash/isArray';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
-import NewSubmissionForm from './NewSubmissionForm/NewSubmissionForm';
+import NewSubmissionForm from '../submissions/NewSubmissionForm';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -158,14 +158,6 @@ const SubmitForm = () => {
 
   return (
     <div className="my-5">
-      {/* <Formik
-        validationSchema={schema}
-        onSubmit={handleSubmit}
-        initialValues={submission}
-        enableReinitialize={true}
-      >
-        {({ isSubmitting, submitForm }) => ( */}
-      {/* <> */}
       <NewSubmissionForm submitForm={handleSubmit} initialValues={submission} />
 
       <p className="mt-4">
@@ -178,19 +170,6 @@ const SubmitForm = () => {
           into the database after enough incidents are pending.
         </Trans>
       </p>
-
-      {/* <Button
-              onClick={submitForm}
-              className="mt-3 bootstrap"
-              variant="primary"
-              type="submit"
-              disabled={isSubmitting}
-            >
-              <Trans>Submit</Trans>
-            </Button>
-          </>
-        )} */}
-      {/* </Formik> */}
 
       {isRole('submitter') && (
         <Container className="mt-5 p-0 bootstrap">

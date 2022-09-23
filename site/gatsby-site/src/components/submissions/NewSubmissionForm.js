@@ -3,10 +3,10 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { getCloudinaryPublicID } from 'utils/cloudinary';
 import getSourceDomain from 'utils/getSourceDomain';
-import StepOne from './StepOne';
-import StepTwo from './StepTwo';
-import StepThree from './StepThree';
-import StepFour from './StepFour';
+import StepOne from '../forms/NewSubmissionForm/StepOne';
+import StepTwo from '../forms/NewSubmissionForm/StepTwo';
+import StepThree from '../forms/NewSubmissionForm/StepThree';
+import StepFour from '../forms/NewSubmissionForm/StepFour';
 
 const NewSubmissionForm = ({ submitForm, initialValues }) => {
   const [data, setData] = useState(initialValues);
