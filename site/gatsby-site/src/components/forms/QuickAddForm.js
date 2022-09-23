@@ -11,7 +11,6 @@ import getSourceDomain from '../../utils/getSourceDomain';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import Row from 'elements/Row';
-import Col from 'elements/Col';
 
 // set in form //
 // * url: "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti" # The fully qualified URL to the report as hosted on the web.
@@ -124,7 +123,7 @@ const QuickAddForm = ({ className = '' }) => {
         </div>
         <p className="mt-2 text-sm text-red-600 dark:text-red-500">{errors.url}</p>
         <Row className="mt-2">
-          <Col>
+          <div className='w-full lg:flex-1'>
             <Form.Text className="text-muted-gray">
               <Trans i18nKey="quickaddDescription" ns="landing">
                 Submitted links are added to a{' '}
@@ -134,7 +133,7 @@ const QuickAddForm = ({ className = '' }) => {
                 URLs not possessing the full details.
               </Trans>
             </Form.Text>
-          </Col>
+          </div>
         </Row>
       </form>
     </div>

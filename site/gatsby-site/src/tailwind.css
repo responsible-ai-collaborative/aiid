@@ -218,10 +218,6 @@
         @apply mt-0 max-w-full pl-3 pr-3 w-full;
     }
 
-    .tw-col {
-        @apply w-full lg:flex-1;
-    }
-
     .tw-pagination {
         @apply flex pl-0 list-none;
     }

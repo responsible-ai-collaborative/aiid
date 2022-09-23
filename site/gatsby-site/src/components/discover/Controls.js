@@ -9,7 +9,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Trans } from 'react-i18next';
 import Row from 'elements/Row';
-import Col from 'elements/Col';
 
 const Controls = ({ query, searchState, setSearchState }) => {
   const [expandFilters, setExpandFilters] = useState(false);
@@ -19,13 +18,13 @@ const Controls = ({ query, searchState, setSearchState }) => {
   return (
     <>
       <Row className="content-start items-center mt-4 767px:hidden hiddenMobile bootstrap">
-        <Col className="col-auto">
+        <div className="w-full lg:flex-1 col-auto">
           <Stats />
-        </Col>
-        <Col className="col-auto">
+        </div>
+        <div className="w-full lg:flex-1 col-auto">
           <DisplayModeSwitch />
-        </Col>
-        <Col className="tw-hbox">
+        </div>
+        <div className="w-full lg:flex-1 tw-hbox">
           <Form.Check
             type="switch"
             id="hide-duplicates"
@@ -44,13 +43,13 @@ const Controls = ({ query, searchState, setSearchState }) => {
           <Form.Label for="hide-duplicates">
             <Trans>1st report only</Trans>
           </Form.Label>
-        </Col>
-        <Col className="col-auto">
+        </div>
+        <div className="w-full lg:flex-1 col-auto">
           <ClearFilters>
             <Trans>Clear Filters</Trans>
           </ClearFilters>
-        </Col>
-        <Col className="col-auto">
+        </div>
+        <div className="w-full lg:flex-1 col-auto">
           <button
             id="expand-filters"
             data-cy="expand-filters"
@@ -64,7 +63,7 @@ const Controls = ({ query, searchState, setSearchState }) => {
             />
             <Trans>Filter Search</Trans>
           </button>
-        </Col>
+        </div>
       </Row>
       <Row className="mb-3 hiddenMobile">{expandFilters && <Filters />}</Row>
     </>

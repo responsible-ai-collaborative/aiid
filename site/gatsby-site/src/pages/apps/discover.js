@@ -18,7 +18,6 @@ import Controls from 'components/discover/Controls';
 import { useLocalization } from 'gatsby-theme-i18n';
 import Container from 'elements/Container';
 import Row from 'elements/Row';
-import Col from 'elements/Col';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -248,9 +247,9 @@ function DiscoverApp(props) {
 
           <Container className="tw-container-xl mt-6">
             <Row className="px-0 mx-0">
-              <Col className="px-0 mx-0">
+              <div className="w-full lg:flex-1 px-0 mx-0">
                 <SearchBox defaultRefinement={query.s} />
-              </Col>
+              </div>
             </Row>
 
             <Controls query={query} searchState={searchState} setSearchState={setSearchState} />

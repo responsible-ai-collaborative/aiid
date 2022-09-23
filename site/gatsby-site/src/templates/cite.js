@@ -18,7 +18,6 @@ import Card from '../elements/Card';
 import Button from '../elements/Button';
 import Container from '../elements/Container';
 import Row from '../elements/Row';
-import Col from '../elements/Col';
 import Pagination from '../elements/Pagination';
 import SocialShareButtons from 'components/ui/SocialShareButtons';
 import { useLocalization } from 'gatsby-theme-i18n';
@@ -160,7 +159,7 @@ function CitePage(props) {
 
       <Container>
         <Row>
-          <Col>
+          <div className='w-full lg:flex-1'>
             <Card className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6">
               <Card.Header className="items-center justify-between">
                 <h4 className="m-0">
@@ -174,11 +173,11 @@ function CitePage(props) {
                 <AllegedEntities entities={entities} />
               </Card.Body>
             </Card>
-          </Col>
+          </div>
         </Row>
 
         <Row>
-          <Col>
+          <div className='w-full lg:flex-1'>
             <Card
               data-cy="citation"
               className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6"
@@ -197,11 +196,11 @@ function CitePage(props) {
                 />
               </Card.Body>
             </Card>
-          </Col>
+          </div>
         </Row>
 
         <Row className="mt-6">
-          <Col>
+          <div className='w-full lg:flex-1'>
             <div data-cy={'incident-stats'}>
               <IncidentStatsCard
                 {...{
@@ -212,11 +211,11 @@ function CitePage(props) {
                 }}
               />
             </div>
-          </Col>
+          </div>
         </Row>
 
         <Row className="mt-6">
-          <Col>
+          <div className='w-full lg:flex-1'>
             <Card className="shadow-card">
               <Card.Header className="items-center justify-between">
                 <h4>
@@ -227,11 +226,11 @@ function CitePage(props) {
                 <Timeline data={timeline} />
               </Card.Body>
             </Card>
-          </Col>
+          </div>
         </Row>
 
         <Row className="mt-6">
-          <Col>
+          <div className='w-full lg:flex-1'>
             <Card className="shadow-card">
               <Card.Header className="items-center justify-between">
                 <h4>
@@ -276,12 +275,12 @@ function CitePage(props) {
                 />
               </Card.Body>
             </Card>
-          </Col>
+          </div>
         </Row>
 
         {taxonomies.length > 0 && (
           <Row id="taxa-area">
-            <Col>
+            <div className='w-full lg:flex-1'>
               {taxonomiesList
                 .filter((t) => t.canEdit || t.classificationsArray.length > 0)
                 .map((t) => (
@@ -292,20 +291,20 @@ function CitePage(props) {
                     canEdit={t.canEdit}
                   />
                 ))}
-            </Col>
+            </div>
           </Row>
         )}
 
         <Row className="mt-6">
-          <Col>
+          <div className='w-full lg:flex-1'>
             <Card>
               <ImageCarousel nodes={incidentReports} />
             </Card>
-          </Col>
+          </div>
         </Row>
 
         <Row className="mt-6">
-          <Col>
+          <div className='w-full lg:flex-1'>
             <div className="pb-5">
               <div className={'titleWrapper'}>
                 <h1 className="tw-styled-heading">
@@ -313,19 +312,19 @@ function CitePage(props) {
                 </h1>
               </div>
             </div>
-          </Col>
+          </div>
         </Row>
 
         {sortedReports.map((report) => (
           <Row className="mb-4" key={report.report_number}>
-            <Col>
+            <div className='w-full lg:flex-1'>
               <IncidentCard
                 item={report}
                 authorsModal={authorsModal}
                 submittersModal={submittersModal}
                 flagReportModal={flagReportModal}
               />
-            </Col>
+            </div>
           </Row>
         ))}
 
