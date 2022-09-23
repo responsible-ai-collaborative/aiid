@@ -9,11 +9,13 @@ import { Form as BsForm } from 'react-bootstrap';
 import TagsControl from '../TagsControl';
 import StepContainer from './StepContainer';
 import { graphql, useStaticQuery } from 'gatsby';
+import TagsInputGroup from '../TagsInputGroup';
 
 const StepThree = (props) => {
   const { t } = useTranslation(['submit']);
 
-  const stepOneValidationSchema = yup.object().shape({
+  const stepThreeValidationSchema = yup.object().shape({
+    editor_notes: yup.string(),
     description: yup
       .string()
       .min(3, 'Description must have at least 3 characters')
@@ -87,7 +89,7 @@ const StepThree = (props) => {
       <Formik
         initialValues={props.data}
         onSubmit={handleSubmit}
-        validationSchema={stepOneValidationSchema}
+        validationSchema={stepThreeValidationSchema}
         enableReinitialize
       >
         {(TextInputGroupProps) => (
@@ -96,46 +98,45 @@ const StepThree = (props) => {
               name="description"
               label={t('Description')}
               as="textarea"
-              placeholder={t('Report Description')}
+              placeholder={t('Incident Description')}
               rows={3}
               className="mt-3"
               {...TextInputGroupProps}
+              schema={stepThreeValidationSchema}
             />
 
-            <BsForm.Group className="mt-3">
-              <Label popover="tags" label={t('Tags')} />
-              <TagsControl name={'tags'} placeholder="Tags" />
-            </BsForm.Group>
+            <TagsInputGroup name="tags" label={t('Tags')} className="mt-3" {...TextInputGroupProps} placeholder={t('Tags')} schema={stepThreeValidationSchema} />
 
-            <BsForm.Group className="mt-3">
-              <Label popover="developers" label={t('Alleged developer of AI system')} />
-              <TagsControl
-                name="developers"
-                placeholder={t('Who created or built the technology involved in the incident?')}
-                {...TextInputGroupProps}
-              />
-            </BsForm.Group>
+            {!props.data.incident_id && (
+              <>
+                <TagsInputGroup
+                  name="developers"
+                  label={t('Alleged developer of AI system')}
+                  placeholder={t('Who created or built the technology involved in the incident?')}
+                  className="mt-3"
+                  {...TextInputGroupProps}
+                  schema={stepThreeValidationSchema}
+                />
 
-            <BsForm.Group className="mt-3">
-              <Label popover="deployers" label={t('Alleged deployer of AI system')} />
-              <TagsControl
-                name="deployers"
-                placeholder={t('Who employed or was responsible for the technology?')}
-                {...TextInputGroupProps}
-              />
-            </BsForm.Group>
+                <TagsInputGroup
+                  name="deployers"
+                  label={t('Alleged deployer of AI system')}
+                  placeholder={t('Who employed or was responsible for the technology?')}
+                  className="mt-3"
+                  {...TextInputGroupProps}
+                  schema={stepThreeValidationSchema}
+                />
 
-            <BsForm.Group className="mt-3">
-              <Label
-                popover="harmed_parties"
-                label={t('Alleged harmed or nearly harmed parties')}
-              />
-              <TagsControl
-                name="harmed_parties"
-                placeholder={t('Who experienced negative impacts?')}
-                {...TextInputGroupProps}
-              />
-            </BsForm.Group>
+                <TagsInputGroup
+                  name="harmed_parties"
+                  label={t('Alleged harmed or nearly harmed parties')}
+                  placeholder={t('Who experienced negative impacts?')}
+                  className="mt-3"
+                  {...TextInputGroupProps}
+                  schema={stepThreeValidationSchema}
+                />
+              </>
+            )}
 
             <TextInputGroup
               name="editor_notes"
@@ -145,6 +146,7 @@ const StepThree = (props) => {
               rows={8}
               className="mt-3"
               {...TextInputGroupProps}
+              schema={stepThreeValidationSchema}
             />
 
             <div className="flex justify-between mt-4">

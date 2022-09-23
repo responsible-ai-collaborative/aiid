@@ -19,6 +19,7 @@ const StepTwo = (props) => {
 
   // Schema for yup
   const stepTwoValidationSchema = yup.object().shape({
+    image_url: yup.string(),
     text: yup
       .string()
       .min(80, `*Text must have at least 80 characters`)
@@ -47,13 +48,13 @@ const StepTwo = (props) => {
         validationSchema={stepTwoValidationSchema}
         enableReinitialize
       >
-        <FormDetails data={data} previous={props.previous} />
+        <FormDetails data={data} previous={props.previous} schema={stepTwoValidationSchema}/>
       </Formik>
     </StepContainer>
   );
 };
 
-const FormDetails = ({ data, previous }) => {
+const FormDetails = ({ data, previous, schema }) => {
   const { t } = useTranslation(['submit']);
 
   const { values, errors, touched, handleChange, handleBlur, setFieldValue, setFieldTouched } =
@@ -82,6 +83,7 @@ const FormDetails = ({ data, previous }) => {
         touched={touched}
         handleChange={handleChange}
         handleBlur={handleBlur}
+        schema={schema}
       />
       <Label popover="text" label={t('Text')} />
       <div style={{ position: 'relative' }}>
@@ -148,6 +150,7 @@ const FormDetails = ({ data, previous }) => {
           touched={touched}
           handleChange={handleChange}
           handleBlur={handleBlur}
+          schema={schema}
         />
       )}
       <div className="flex justify-between mt-4">

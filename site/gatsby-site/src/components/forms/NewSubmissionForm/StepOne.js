@@ -10,6 +10,7 @@ import RelatedIncidents from 'components/RelatedIncidents';
 import { dateRegExp } from 'utils/date';
 import StepContainer from './StepContainer';
 import { isEmpty } from 'lodash';
+import TagsInputGroup from '../TagsInputGroup';
 
 const StepOne = (props) => {
   const stepOneValidationSchema = yup.object().shape({
@@ -59,13 +60,13 @@ const StepOne = (props) => {
         validationSchema={stepOneValidationSchema}
         enableReinitialize
       >
-        <FormDetails parsingNews={props.parsingNews} parseNewsUrl={props.parseNewsUrl} />
+        <FormDetails parsingNews={props.parsingNews} parseNewsUrl={props.parseNewsUrl} schema={stepOneValidationSchema}/>
       </Formik>
     </StepContainer>
   );
 };
 
-const FormDetails = ({ parsingNews, parseNewsUrl }) => {
+const FormDetails = ({ parsingNews, parseNewsUrl, schema }) => {
   const { t } = useTranslation(['submit']);
 
   const { values, errors, touched, handleChange, handleBlur, setFieldValue, setFieldTouched } =
@@ -126,32 +127,29 @@ const FormDetails = ({ parsingNews, parseNewsUrl }) => {
           touched={touched}
           handleChange={handleChange}
           handleBlur={handleBlur}
+          schema={schema}
         />
 
-        <TextInputGroup
+        <TagsInputGroup
           name="authors"
-          label={t('Author CSV')}
-          placeholder={t('Author CSV')}
+          label={t('Author(s)')}
+          placeholder={t('The author or authors of the report')}
           className="mt-3"
-          values={values}
           errors={errors}
           touched={touched}
-          handleChange={handleChange}
-          handleBlur={handleBlur}
+          schema={schema}
         />
 
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byAuthors']} />
 
-        <TextInputGroup
+        <TagsInputGroup
           name="submitters"
-          label={t('Submitter CSV')}
-          placeholder={t('Submitter CSV')}
+          placeholder={t('Your name as you would like it to appear in the leaderboard')}
+          label={t('Submitter(s)')}
           className="mt-3"
-          values={values}
           errors={errors}
           touched={touched}
-          handleChange={handleChange}
-          handleBlur={handleBlur}
+          schema={schema}
         />
 
         <TextInputGroup
@@ -165,6 +163,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl }) => {
           touched={touched}
           handleChange={handleChange}
           handleBlur={handleBlur}
+          schema={schema}
         />
         <RelatedIncidents
           incident={values}
@@ -183,9 +182,10 @@ const FormDetails = ({ parsingNews, parseNewsUrl }) => {
           touched={touched}
           handleChange={handleChange}
           handleBlur={handleBlur}
+          schema={schema}
         />
         <div className="flex justify-end mt-4">
-          <Button type="submit" disabled={!isEmpty(errors)} data-cy="to-step-2">
+          <Button type="submit" data-cy="to-step-2">
             <Trans>Next</Trans>
           </Button>
         </div>
