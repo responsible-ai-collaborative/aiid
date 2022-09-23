@@ -2,7 +2,7 @@ import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
 import { graphql } from 'gatsby';
 import React from 'react';
-import PostsListing from '../../components/blog/PostsListing';
+import PostsListing from 'components/blog/PostsListing';
 
 export default function BlogPage(props) {
   const {
