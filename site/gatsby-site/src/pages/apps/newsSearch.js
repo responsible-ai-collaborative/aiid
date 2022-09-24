@@ -15,108 +15,125 @@ const CandidateCard = ({
   setDismissedArticles,
   updateCandidate,
   dismissed = false,
-}) => (
-  <Card style={{ justifyContent: 'flex-start' }} className="gap-0" key={newsArticle.incident_id}>
-    <div>
-      <a href={newsArticle.url}>
-        <h3 className="text-xl mt-0 mb-0">{newsArticle.title.replace(/\s(-|\|).*/g, '')}</h3>
-      </a>
-      <div className="text-lg text-gray-600 mb-3 mt-1">
-        {format(parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()), 'MMM d')} •{' '}
-        {new URL(newsArticle.url).host.replace('www.', '')}
-      </div>
-      <div className="flex flex-wrap">
-        <span className="mb-1 mr-1">
-          {newsArticle.similarity < 0.997 ? (
-            <Badge color="warning" title={'cosine similarity: ' + newsArticle.similarity}>
-              Weak match
-            </Badge>
-          ) : newsArticle.similarity < 0.9975 ? (
-            <Badge color="success" title={'cosine similarity: ' + newsArticle.similarity}>
-              Match
-            </Badge>
-          ) : (
-            <Badge color="success" title={'cosine similarity: ' + newsArticle.similarity}>
-              Strong match
-            </Badge>
-          )}{' '}
-        </span>
-        {newsArticle.matching_keywords.map((keyword) => (
-          <span className="inline-block mr-1 mb-1" key={keyword}>
-            <Badge>{keyword}</Badge>
+}) => {
+  let date;
+
+  try {
+    date = format(parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()), 'MMM d');
+  } catch (e) {
+    date = null;
+  }
+  let domain;
+
+  try {
+    domain = new URL(newsArticle.url).host.replace('www.', '');
+  } catch (e) {
+    domain = null;
+  }
+  return (
+    <Card style={{ justifyContent: 'flex-start' }} className="gap-0" key={newsArticle.incident_id}>
+      <div>
+        <a href={newsArticle.url}>
+          <h3 className="text-xl mt-0 mb-0">{newsArticle.title.replace(/\s(-|\|).*/g, '')}</h3>
+        </a>
+        <div className="text-lg text-gray-600 mb-3 mt-1">
+          {date}
+          {domain && date && <> • </>}
+          {domain}
+        </div>
+        <div className="flex flex-wrap">
+          <span className="mb-1 mr-1">
+            {newsArticle.similarity < 0.997 ? (
+              <Badge color="warning" title={'cosine similarity: ' + newsArticle.similarity}>
+                Weak match
+              </Badge>
+            ) : newsArticle.similarity < 0.9975 ? (
+              <Badge color="success" title={'cosine similarity: ' + newsArticle.similarity}>
+                Match
+              </Badge>
+            ) : (
+              <Badge color="success" title={'cosine similarity: ' + newsArticle.similarity}>
+                Strong match
+              </Badge>
+            )}{' '}
           </span>
-        ))}
+          {newsArticle.matching_keywords.map((keyword) => (
+            <span className="inline-block mr-1 mb-1" key={keyword}>
+              <Badge>{keyword}</Badge>
+            </span>
+          ))}
+        </div>
       </div>
-    </div>
-    <div className="mt-auto flex">
-      {dismissed ? (
-        <Button
-          color="light"
-          onClick={() => {
-            setDismissedArticles((dismissedArticles) => {
-              const updatedValue = { ...dismissedArticles };
+      <div className="mt-auto flex">
+        {dismissed ? (
+          <Button
+            color="light"
+            onClick={() => {
+              setDismissedArticles((dismissedArticles) => {
+                const updatedValue = { ...dismissedArticles };
 
-              updatedValue[newsArticle.url] = false;
-              return updatedValue;
-            });
-            updateCandidate({
-              variables: {
-                query: { url: newsArticle.url },
-                set: { dismissed: false },
-              },
-            });
-          }}
-        >
-          <FontAwesomeIcon icon={faArrowUp} className="pointer fa mr-1" fixedWidth />
-          Restore
-        </Button>
-      ) : (
-        <Button
-          color="light"
-          onClick={() => {
-            setDismissedArticles((dismissedArticles) => {
-              const updatedValue = { ...dismissedArticles };
+                updatedValue[newsArticle.url] = false;
+                return updatedValue;
+              });
+              updateCandidate({
+                variables: {
+                  query: { url: newsArticle.url },
+                  set: { dismissed: false },
+                },
+              });
+            }}
+          >
+            <FontAwesomeIcon icon={faArrowUp} className="pointer fa mr-1" fixedWidth />
+            Restore
+          </Button>
+        ) : (
+          <Button
+            color="light"
+            onClick={() => {
+              setDismissedArticles((dismissedArticles) => {
+                const updatedValue = { ...dismissedArticles };
 
-              updatedValue[newsArticle.url] = true;
-              return updatedValue;
-            });
-            updateCandidate({
-              variables: {
-                query: { url: newsArticle.url },
-                set: { dismissed: true },
-              },
-            });
-          }}
+                updatedValue[newsArticle.url] = true;
+                return updatedValue;
+              });
+              updateCandidate({
+                variables: {
+                  query: { url: newsArticle.url },
+                  set: { dismissed: true },
+                },
+              });
+            }}
+          >
+            <FontAwesomeIcon icon={faTrash} className="pointer fa mr-1" fixedWidth />
+            Dismiss
+          </Button>
+        )}
+        <LocalizedLink
+          to={
+            '/apps/submit?' +
+            ['url', 'title', 'text']
+              .map((e) => `${e}=${encodeURIComponent(newsArticle[e])}`)
+              .join('&')
+          }
+          target="_blank"
+          className="inline ml-1"
         >
-          <FontAwesomeIcon icon={faTrash} className="pointer fa mr-1" fixedWidth />
-          Dismiss
-        </Button>
-      )}
-      <LocalizedLink
-        to={
-          '/apps/submit?' +
-          ['url', 'title', 'text']
-            .map((e) => `${e}=${encodeURIComponent(newsArticle[e])}`)
-            .join('&')
-        }
-        target="_blank"
-        className="inline ml-1"
-      >
-        <Button color="light">
-          <FontAwesomeIcon icon={faPlusCircle} className="pointer fa mr-1" fixedWidth />
-          Submit
-        </Button>
-      </LocalizedLink>
-    </div>
-  </Card>
-);
+          <Button color="light">
+            <FontAwesomeIcon icon={faPlusCircle} className="pointer fa mr-1" fixedWidth />
+            Submit
+          </Button>
+        </LocalizedLink>
+      </div>
+    </Card>
+  );
+};
 
 const NewsSearchPage = (props) => {
   const { t } = useTranslation(['submit']);
 
   const { data: newsArticlesData, loading } = useQuery(gql`
     query NewsArticles {
-      candidates(query: { match: true }) {
+      candidates(query: { match: true }, limit: 9999) {
         title
         url
         similarity
@@ -135,7 +152,7 @@ const NewsSearchPage = (props) => {
   const { data: submissionsData } = useQuery(
     gql`
       query ExistingSubmissions($query: SubmissionQueryInput!) {
-        submissions(query: $query) {
+        submissions(query: $query, limit: 9999) {
           url
         }
       }
@@ -146,7 +163,7 @@ const NewsSearchPage = (props) => {
   const { data: reportsData } = useQuery(
     gql`
       query ExistingReports($query: ReportQueryInput!) {
-        reports(query: $query) {
+        reports(query: $query, limit: 9999) {
           report_number
           url
         }
