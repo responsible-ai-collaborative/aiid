@@ -31,7 +31,15 @@ function EditCitePage(props) {
 
   const handleSubmit = async (values) => {
     try {
-      const updated = { ...values, reports: undefined, __typename: undefined };
+      const updated = {
+        ...values,
+        reports: undefined,
+        embedding: {
+          ...values.embedding,
+          __typename: undefined,
+        },
+        __typename: undefined,
+      };
 
       await updateIncident({
         variables: {
