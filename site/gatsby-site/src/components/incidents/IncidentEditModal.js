@@ -27,7 +27,12 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
 
   const handleSubmit = async (values) => {
     try {
-      const updated = { ...values, reports: undefined, __typename: undefined };
+      const updated = {
+        ...values,
+        reports: undefined,
+        __typename: undefined,
+        embedding: undefined,
+      };
 
       await updateIncident({
         variables: {
