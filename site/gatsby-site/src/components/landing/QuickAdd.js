@@ -1,17 +1,12 @@
 import React from 'react';
 import QuickAddForm from 'components/forms/QuickAddForm';
-import { Trans } from 'react-i18next';
-import Card from '../../elements/Card';
 
 export default function QuickAdd() {
   return (
-    <Card>
-      <Card.Body>
-        <Card.Title as="h2">
-          <Trans ns="landing">Quick Add New Report URL</Trans>
-        </Card.Title>
-        <QuickAddForm className="mt-3" />
-      </Card.Body>
-    </Card>
+    <>
+      <div className="flex flex-col items-center p-4 bg-white rounded-lg border shadow-md md:flex-row dark:border-gray-700 dark:bg-gray-800 w-full">
+        <QuickAddForm className="mt-3 w-full" />
+      </div>
+    </>
   );
 }

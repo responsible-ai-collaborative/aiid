@@ -1,17 +1,16 @@
 import React from 'react';
 import LatestIncidentReport from 'components/landing/LatestIncidentReport';
 import { Trans } from 'react-i18next';
-import Card from '../../elements/Card';
 
 export default function LatestReports({ latestReport }) {
   return (
-    <Card>
-      <Card.Body>
-        <Card.Title as="h2">
-          <Trans ns="landing">Latest Incident Report</Trans>
-        </Card.Title>
-        <LatestIncidentReport className="mt-3" report={latestReport} />
-      </Card.Body>
-    </Card>
+    <>
+      <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+        <Trans ns="landing">Latest Incident Report</Trans>
+      </h5>
+      <div className="flex flex-col items-center">
+        <LatestIncidentReport report={latestReport} />
+      </div>
+    </>
   );
 }

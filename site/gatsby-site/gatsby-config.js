@@ -13,7 +13,7 @@ const plugins = [
   {
     resolve: `gatsby-plugin-netlify`,
     options: {
-      headers: {},
+      mergeCachingHeaders: false,
     },
   },
   {
@@ -215,6 +215,9 @@ const plugins = [
           'submitted',
           'login',
           'popovers',
+          'wordcount',
+          'leaderboard',
+          'entities',
         ],
         debug: process.env.GATSBY_I18N_DEBUG,
         nsSeparator: false,
