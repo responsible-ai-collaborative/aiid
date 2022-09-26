@@ -5,9 +5,6 @@ import { Trans } from 'react-i18next';
 export default function LatestReports({ latestReport }) {
   return (
     <>
-      <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-        <Trans ns="landing">Latest Incident Report</Trans>
-      </h5>
       <div className="flex flex-col items-center">
         <LatestIncidentReport report={latestReport} />
       </div>
