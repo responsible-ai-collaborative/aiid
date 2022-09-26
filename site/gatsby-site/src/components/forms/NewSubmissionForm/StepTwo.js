@@ -48,7 +48,7 @@ const StepTwo = (props) => {
         validationSchema={stepTwoValidationSchema}
         enableReinitialize
       >
-        <FormDetails data={data} previous={props.previous} schema={stepTwoValidationSchema}/>
+        <FormDetails data={data} previous={props.previous} schema={stepTwoValidationSchema} />
       </Formik>
     </StepContainer>
   );
@@ -70,6 +70,12 @@ const FormDetails = ({ data, previous, schema }) => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
 
+  const styles = {
+    border: errors['text'] && touched['text'] ? '1px solid red' : 'none',
+    borderRadius: errors['text'] && touched['text'] ? '4px' : 'none',
+    padding: errors['text'] && touched['text'] ? '0.5rem' : '0',
+  }
+
   return (
     <Form>
       <PreviewImageInputGroup
@@ -85,8 +91,11 @@ const FormDetails = ({ data, previous, schema }) => {
         handleBlur={handleBlur}
         schema={schema}
       />
-      <Label popover="text" label={t('Text')} />
-      <div style={{ position: 'relative' }}>
+      <Label popover="text" label={'*' + t('Text')} />
+      <div style={{
+        position: 'relative',
+        ...styles
+      }}>
         {touched['text'] && errors['text'] && (
           <div
             style={{
@@ -106,7 +115,7 @@ const FormDetails = ({ data, previous, schema }) => {
           }}
         />
       </div>
-      <Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans>
+      <span className='text-red-700 text-sm'><Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans></span>
 
       <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
 
@@ -154,7 +163,7 @@ const FormDetails = ({ data, previous, schema }) => {
         />
       )}
       <div className="flex justify-between mt-4">
-        <Button type="button" color={'light'}  onClick={() => previous(values)}>
+        <Button type="button" color={'light'} onClick={() => previous(values)}>
           <Trans>Previous</Trans>
         </Button>
         <Button type="submit" disabled={!isEmpty(errors)} data-cy="to-step-3">
