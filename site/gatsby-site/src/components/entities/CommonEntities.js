@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useMemo } from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
 import { computeEntities } from 'utils/entities';
 import Card from 'elements/Card';
@@ -22,16 +22,18 @@ export default function CommonEntities() {
     }
   `);
 
-  const commonEntities = useRef(
-    computeEntities({ incidents: incidents.nodes })
-      .sort(
-        (a, b) =>
-          b.incidentsAsBoth.length +
-          b.incidentsAsDeployer.length -
-          (a.incidentsAsBoth.length + a.incidentsAsDeployer.length)
-      )
-      .slice(0, 3)
-  ).current;
+  const commonEntities = useMemo(
+    () =>
+      computeEntities({ incidents: incidents.nodes })
+        .sort(
+          (a, b) =>
+            b.incidentsAsBoth.length +
+            b.incidentsAsDeployer.length -
+            (a.incidentsAsBoth.length + a.incidentsAsDeployer.length)
+        )
+        .slice(0, 3),
+    [incidents.nodes]
+  );
 
   return (
     <Card data-cy="common-entities">
