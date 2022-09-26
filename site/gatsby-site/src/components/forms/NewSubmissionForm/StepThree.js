@@ -97,6 +97,7 @@ const StepThree = (props) => {
             <TextInputGroup
               name="description"
               label={t('Description')}
+              type="textarea"
               as="textarea"
               placeholder={t('Incident Description')}
               rows={3}
