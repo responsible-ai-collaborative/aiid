@@ -73,7 +73,11 @@ const SubmissionReview = ({ submission }) => {
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
-  const isNewIncident = submission.incident_id === 0;
+  const isNewIncident = submission.incident_id === 0 && submission.is_incident_report;
+
+  const isNewReport = submission.incident_id !== 0 && submission.is_incident_report;
+
+  const isNewIssue = !isNewIncident && !isNewReport;
 
   const { i18n } = useTranslation(['submitted']);
 
@@ -277,11 +281,9 @@ const SubmissionReview = ({ submission }) => {
             >
               <div className="flex gap-2">
                 {promoting && <Spinner size="sm" />}
-                {isNewIncident ? (
-                  <Trans ns="submitted">Add New Incident</Trans>
-                ) : (
-                  <Trans ns="submitted">Add New Report</Trans>
-                )}
+                {isNewIncident && <Trans ns="submitted">Add New Incident</Trans>}
+                {isNewReport && <Trans ns="submitted">Add New Report</Trans>}
+                {isNewIssue && <Trans ns="submitted">Add New Issue</Trans>}
               </div>
             </Button>
             <Button
@@ -292,11 +294,9 @@ const SubmissionReview = ({ submission }) => {
             >
               <div className="flex gap-2">
                 {deleting && <Spinner size="sm" />}
-                {isNewIncident ? (
-                  <Trans ns="submitted">Reject New Incident</Trans>
-                ) : (
-                  <Trans ns="submitted">Reject New Report</Trans>
-                )}
+                {isNewIncident && <Trans ns="submitted">Reject New Incident</Trans>}
+                {isNewReport && <Trans ns="submitted">Reject New Report</Trans>}
+                {isNewIssue && <Trans ns="submitted">Reject New Issue</Trans>}
               </div>
             </Button>
           </Card.Footer>
