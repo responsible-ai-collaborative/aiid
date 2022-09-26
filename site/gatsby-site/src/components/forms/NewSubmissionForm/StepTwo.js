@@ -74,7 +74,7 @@ const FormDetails = ({ data, previous, schema }) => {
     border: errors['text'] && touched['text'] ? '1px solid red' : 'none',
     borderRadius: errors['text'] && touched['text'] ? '4px' : 'none',
     padding: errors['text'] && touched['text'] ? '0.5rem' : '0',
-  }
+  };
 
   return (
     <Form>
@@ -92,10 +92,12 @@ const FormDetails = ({ data, previous, schema }) => {
         schema={schema}
       />
       <Label popover="text" label={'*' + t('Text')} />
-      <div style={{
-        position: 'relative',
-        ...styles
-      }}>
+      <div
+        style={{
+          position: 'relative',
+          ...styles,
+        }}
+      >
         {touched['text'] && errors['text'] && (
           <div
             style={{
@@ -115,7 +117,9 @@ const FormDetails = ({ data, previous, schema }) => {
           }}
         />
       </div>
-      <span className='text-red-700 text-sm'><Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans></span>
+      <span className="text-red-700 text-sm">
+        <Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans>
+      </span>
 
       <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
 

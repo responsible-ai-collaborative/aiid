@@ -9,7 +9,6 @@ import FlowbiteSearchInput from '../FlowbiteSearchInput';
 import RelatedIncidents from 'components/RelatedIncidents';
 import { dateRegExp } from 'utils/date';
 import StepContainer from './StepContainer';
-import { isEmpty } from 'lodash';
 import TagsInputGroup from '../TagsInputGroup';
 
 const StepOne = (props) => {
@@ -60,7 +59,11 @@ const StepOne = (props) => {
         validationSchema={stepOneValidationSchema}
         enableReinitialize
       >
-        <FormDetails parsingNews={props.parsingNews} parseNewsUrl={props.parseNewsUrl} schema={stepOneValidationSchema}/>
+        <FormDetails
+          parsingNews={props.parsingNews}
+          parseNewsUrl={props.parseNewsUrl}
+          schema={stepOneValidationSchema}
+        />
       </Formik>
     </StepContainer>
   );
@@ -92,7 +95,13 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema }) => {
           <Spinner size="xl" />
         </div>
       )}
-      {values.incident_id && <span className='flex mb-4' data-cy='prefilled-incident-id'><Badge><Trans>Adding a new report to incident {values.incident_id}</Trans></Badge></span>}
+      {values.incident_id && (
+        <span className="flex mb-4" data-cy="prefilled-incident-id">
+          <Badge>
+            <Trans>Adding a new report to incident {values.incident_id}</Trans>
+          </Badge>
+        </span>
+      )}
       <Form className={`relative z-2 ${parsingNews ? 'opacity-50' : ''}`}>
         <Label label={t('Report Address')} popover="url"></Label>
         <FlowbiteSearchInput
@@ -100,7 +109,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema }) => {
           label={t('Report Address')}
           placeholder={t('Report URL')}
           defaultValue={values?.url || ''}
-          dataCy='fetch-info'
+          dataCy="fetch-info"
           values={values}
           errors={errors}
           touched={touched}
