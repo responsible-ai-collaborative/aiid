@@ -209,14 +209,6 @@
 
     /* TAILWIND Buttons ends */
 
-    .tw-page-link {
-        @apply py-[0.375rem] px-[0.75rem] bg-white border-1 border-disable-gray text-primary-blue block relative no-underline transition-btn;
-    }
-
-    .tw-page-link:hover {
-        @apply bg-light-gray text-deep-blue border-disable-gray z-2;
-    }
-
     .tw-classification-container {
         @apply flex flex-row justify-start w-full flex-auto p-4;
     }
