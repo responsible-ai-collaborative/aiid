@@ -145,7 +145,7 @@ const NewsSearchPage = (props) => {
     }
   `);
 
-  const newsArticles = loading ? [] : [...newsArticlesData?.candidates];
+  const newsArticles = newsArticlesData?.candidates ? [...newsArticlesData?.candidates] : [];
 
   const newsArticleUrls = newsArticles.map((newsArticle) => newsArticle.url);
 
@@ -188,6 +188,19 @@ const NewsSearchPage = (props) => {
 
   const [dismissedArticles, setDismissedArticles] = useState({});
 
+  const displayedArticles = newsArticles.filter(
+    (newsArticle) =>
+      ((dismissedArticles[newsArticle.url] == undefined && !newsArticle.dismissed) ||
+        dismissedArticles[newsArticle.url] === false) &&
+      (!newsArticle.date_published ||
+        (new Date().getTime() -
+          parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()).getTime()) /
+          (1000 * 60 * 60 * 24) <
+          30) &&
+      !existingSubmissions.includes(newsArticle.url) &&
+      !existingReports.includes(newsArticle.url)
+  );
+
   const displayedDismissed = newsArticles.filter(
     (newsArticle) =>
       (newsArticle.dismissed && dismissedArticles[newsArticle.url] === undefined) ||
@@ -210,19 +223,8 @@ const NewsSearchPage = (props) => {
       </p>
       <div className="tw-card-set">
         {loading && <p>Searching...</p>}
-        {newsArticles
-          .filter(
-            (newsArticle) =>
-              ((dismissedArticles[newsArticle.url] == undefined && !newsArticle.dismissed) ||
-                dismissedArticles[newsArticle.url] === false) &&
-              (!newsArticle.date_published ||
-                (new Date().getTime() -
-                  parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()).getTime()) /
-                  (1000 * 60 * 60 * 24) <
-                  30) &&
-              !existingSubmissions.includes(newsArticle.url) &&
-              !existingReports.includes(newsArticle.url)
-          )
+        {!loading && displayedArticles.length == 0 && <p>No results</p>}
+        {displayedArticles
           .sort((b, a) => a.similarity - b.similarity)
           .map((newsArticle) => (
             <CandidateCard
