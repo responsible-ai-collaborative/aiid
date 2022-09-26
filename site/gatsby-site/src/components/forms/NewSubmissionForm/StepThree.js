@@ -151,7 +151,7 @@ const StepThree = (props) => {
             />
 
             <div className="flex justify-between mt-4">
-              <Button type="button" onClick={() => props.previous(TextInputGroupProps.values)}>
+              <Button type="button" color={'light'} onClick={() => props.previous(TextInputGroupProps.values)}>
                 <Trans>Previous</Trans>
               </Button>
               <Button color={'success'} type="submit">

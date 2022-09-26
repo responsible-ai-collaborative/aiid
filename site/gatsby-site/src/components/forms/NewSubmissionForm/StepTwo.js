@@ -154,7 +154,7 @@ const FormDetails = ({ data, previous, schema }) => {
         />
       )}
       <div className="flex justify-between mt-4">
-        <Button type="button" onClick={() => previous(values)}>
+        <Button type="button" color={'light'}  onClick={() => previous(values)}>
           <Trans>Previous</Trans>
         </Button>
         <Button type="submit" disabled={!isEmpty(errors)} data-cy="to-step-3">
