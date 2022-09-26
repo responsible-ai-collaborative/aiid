@@ -695,7 +695,7 @@ describe('The Submit form', () => {
     cy.get('[data-cy="popover-title"]').contains('div', 'Most works have a title').should('exist');
   });
 
-  it('Should show a translated popover', () => {
+  it.skip('Should show a translated popover', () => {
     cy.visit(`/es/apps/submit/`);
 
     cy.wait(0);
