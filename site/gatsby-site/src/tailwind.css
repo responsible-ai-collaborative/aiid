@@ -209,33 +209,6 @@
 
     /* TAILWIND Buttons ends */
 
-    /* TAILWIND Grid begins */
-    .tw-row {
-        @apply flex flex-wrap -ml-3 mr-0 mt-0;
-    }
-
-    .tw-row > * {
-        @apply mt-0 max-w-full pl-3 pr-3 w-full;
-    }
-
-    .tw-pagination {
-        @apply flex pl-0 list-none;
-    }
-
-    /* TAILWIND Grid ends */
-
-    .tw-page-item:last-child .tw-page-link {
-        @apply rounded-br rounded-tr;
-    }
-
-    .tw-page-item:not(:first-child) .tw-page-link {
-        @apply ml-[-1px];
-    }
-
-    .tw-page-item.disabled .tw-page-link {
-        @apply bg-white border-disable-gray text-dark-gray pointer-events-none;
-    }
-
     .tw-page-link {
         @apply py-[0.375rem] px-[0.75rem] bg-white border-1 border-disable-gray text-primary-blue block relative no-underline transition-btn;
     }

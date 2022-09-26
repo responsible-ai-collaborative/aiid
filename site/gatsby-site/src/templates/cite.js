@@ -17,7 +17,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import Card from '../elements/Card';
 import Button from '../elements/Button';
 import Container from '../elements/Container';
-import Pagination from '../elements/Pagination';
+// import Pagination from '../elements/Pagination';
 import SocialShareButtons from 'components/ui/SocialShareButtons';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
@@ -26,6 +26,8 @@ import { getTaxonomies, getTranslatedReports } from 'utils/cite';
 import { computeEntities } from 'utils/entities';
 import AllegedEntities from 'components/entities/AllegedEntities';
 import Link from 'components/ui/Link';
+import { Pagination } from 'flowbite-react';
+import { id } from 'date-fns/locale';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -140,6 +142,10 @@ function CitePage(props) {
   }, [user]);
 
   const entities = computeEntities({ incidents: [incident] });
+
+  const goToIncident = (id) => {
+    window.location.href = localizePath({ path: `/cite/${id}` });
+  };
 
   return (
     <Layout {...props}>
@@ -335,20 +341,17 @@ function CitePage(props) {
           parentIncident={incident}
         />
 
-        <Pagination className="justify-between">
-          <Pagination.Item
-            href={localizePath({ path: `/cite/${prevIncident}` })}
-            disabled={!prevIncident}
-          >
-            ‹ <Trans>Previous Incident</Trans>
-          </Pagination.Item>
-          <Pagination.Item
-            href={localizePath({ path: `/cite/${nextIncident}` })}
-            disabled={!nextIncident}
-          >
-            <Trans>Next Incident</Trans> ›
-          </Pagination.Item>
-        </Pagination>
+        <div className='justify-between flex'>
+          <button disabled={!prevIncident} onClick={() => goToIncident(prevIncident)} className="inline-flex items-center py-2 px-4 text-sm font-medium text-gray-800 bg-white rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+            <svg aria-hidden="true" className="mr-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd"></path></svg>
+            <Trans>Previous Incident</Trans>
+          </button>
+
+          <button disabled={!nextIncident} className="inline-flex items-center py-2 px-4 ml-3 text-sm font-medium text-gray-800 bg-white rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white" onClick={() => goToIncident(nextIncident)}>
+            <Trans>Next Incident</Trans>
+            <svg aria-hidden="true" className="ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+          </button>
+        </div>
 
         <CustomModal {...authorsModal} />
         <CustomModal {...submittersModal} />
