@@ -3,7 +3,7 @@
     "Common Entities": "Entités communes",
     "View all entities": "Voir toutes les entités",
     "Involved in <2>{{incidentsCount}}</2> incidents,": "Impliqué dans <2>{{incidentsCount}} incidents,",
-    "alledgely harming <2>{{harmedCount}}</2> entities.": "affectant vraisemblablement <2>{{harmedCount}} entités.",
+    "allegedly harming <2>{{harmedCount}}</2> entities.": "affectant vraisemblablement <2>{{harmedCount}} entités.",
     "{{count}} Incident": "{{count}} Incident",
     "{{count}} Incident_plural": "{{count}} Incidents",
     "{{count}} Entity": "{{count}} Entité",
