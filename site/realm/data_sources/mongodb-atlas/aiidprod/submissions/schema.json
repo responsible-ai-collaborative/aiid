@@ -83,6 +83,9 @@
         "incident_id": {
             "bsonType": "int"
         },
+        "is_incident_report": {
+            "bsonType": "bool"
+        },
         "language": {
             "bsonType": "string"
         },
@@ -137,6 +140,7 @@
         "date_published",
         "date_submitted",
         "description",
+        "is_incident_report",
         "language",
         "source_domain",
         "submitters",
