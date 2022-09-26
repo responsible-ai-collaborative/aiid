@@ -22,11 +22,12 @@ const SubmitPage = (props) => {
       <p>
         <Trans ns="submit" i18nKey="submitFormDescription">
           The following form will create a new incident report for{' '}
-          <Link to="/apps/submitted">review </Link> and inclusion into the AI Incident Database.
-          Please carefully check your entries for content issues (e.g., accidental copy and paste of
-          advertisements). For details on the database ingestion process, please check the{' '}
+          <Link to="/apps/submitted">review</Link> and inclusion into the AI Incident Database.
+          Fields beginning with an asterisk (*) are required. Please carefully check your entries
+          for content issues (e.g., accidental copy and paste of advertisements). For details on the
+          database ingestion process, please check the{' '}
           <Link to="/research/1-criteria/">research pages</Link> or{' '}
-          <Link to="/contact">contact us with questions.</Link>{' '}
+          <Link to="/contact">contact us with questions</Link>.
         </Trans>
       </p>
       <SubmitForm />

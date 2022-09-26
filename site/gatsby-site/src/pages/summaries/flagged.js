@@ -109,7 +109,6 @@ export const pageQuery = graphql`
         ref_number
         source_domain
         submitters
-        text
       }
     }
   }

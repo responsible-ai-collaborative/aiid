@@ -26,7 +26,7 @@ const updateTsneInDatabase = async () => {
     perplexity: 30.0,
     earlyExaggeration: 3.0,
     learningRate: 100.0,
-    nIter: 10000,
+    nIter: 1000,
     metric: 'euclidean',
   });
 
