@@ -8,6 +8,9 @@
         },
         "userId": {
             "bsonType": "string"
+        },
+        "type": {
+            "bsonType": "string"
         }
     },
     "title": "subscription"
