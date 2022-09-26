@@ -4,9 +4,6 @@ import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TextInputGroup from '../TextInputGroup';
 import * as yup from 'yup';
-import Label from '../Label';
-import { Form as BsForm } from 'react-bootstrap';
-import TagsControl from '../TagsControl';
 import StepContainer from './StepContainer';
 import { graphql, useStaticQuery } from 'gatsby';
 import TagsInputGroup from '../TagsInputGroup';
@@ -61,16 +58,16 @@ const StepThree = (props) => {
   };
 
   const data = useStaticQuery(graphql`
-      query SubmissionFormQuery {
-        allMongodbAiidprodReports {
-          edges {
-            node {
-              tags
-            }
+    query SubmissionFormQuery {
+      allMongodbAiidprodReports {
+        edges {
+          node {
+            tags
           }
         }
       }
-    `);
+    }
+  `);
 
   const tags = [];
 
@@ -106,7 +103,14 @@ const StepThree = (props) => {
               schema={stepThreeValidationSchema}
             />
 
-            <TagsInputGroup name="tags" label={t('Tags')} className="mt-3" {...TextInputGroupProps} placeholder={t('Tags')} schema={stepThreeValidationSchema} />
+            <TagsInputGroup
+              name="tags"
+              label={t('Tags')}
+              className="mt-3"
+              {...TextInputGroupProps}
+              placeholder={t('Tags')}
+              schema={stepThreeValidationSchema}
+            />
 
             {!props.data.incident_id && (
               <>
@@ -151,7 +155,11 @@ const StepThree = (props) => {
             />
 
             <div className="flex justify-between mt-4">
-              <Button type="button" color={'light'} onClick={() => props.previous(TextInputGroupProps.values)}>
+              <Button
+                type="button"
+                color={'light'}
+                onClick={() => props.previous(TextInputGroupProps.values)}
+              >
                 <Trans>Previous</Trans>
               </Button>
               <Button gradientDuoTone="greenToBlue" type="submit">
