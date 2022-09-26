@@ -8,7 +8,7 @@ import Label from '../Label';
 import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
 import IncidentIdField from 'components/incidents/IncidentIdField';
 import RelatedIncidents from 'components/RelatedIncidents';
-import supportedLanguages from '../../../components/i18n/languages.json';
+import supportedLanguages from '../../i18n/languages.json';
 import { Editor } from '@bytemd/react';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
 import StepContainer from './StepContainer';

@@ -3,12 +3,12 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { getCloudinaryPublicID } from 'utils/cloudinary';
 import getSourceDomain from 'utils/getSourceDomain';
-import StepOne from '../forms/NewSubmissionForm/StepOne';
-import StepTwo from '../forms/NewSubmissionForm/StepTwo';
-import StepThree from '../forms/NewSubmissionForm/StepThree';
-import StepFour from '../forms/NewSubmissionForm/StepFour';
+import StepOne from '../forms/SubmissionWizard/StepOne';
+import StepTwo from '../forms/SubmissionWizard/StepTwo';
+import StepThree from '../forms/SubmissionWizard/StepThree';
+import StepFour from '../forms/SubmissionWizard/StepFour';
 
-const NewSubmissionForm = ({ submitForm, initialValues }) => {
+const SubmissionWizard = ({ submitForm, initialValues }) => {
   const [data, setData] = useState(initialValues);
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -21,7 +21,7 @@ const NewSubmissionForm = ({ submitForm, initialValues }) => {
     setData((prev) => ({ ...prev, ...newData }));
 
     if (final) {
-      await submitForm({...data, ...newData});
+      await submitForm({ ...data, ...newData });
     }
 
     stepsRef?.current?.scrollIntoView();
@@ -70,7 +70,14 @@ const NewSubmissionForm = ({ submitForm, initialValues }) => {
           cloudinary_id,
         };
 
-        for (const key of ['tags', 'authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
+        for (const key of [
+          'tags',
+          'authors',
+          'submitters',
+          'developers',
+          'deployers',
+          'harmed_parties',
+        ]) {
           if (newValues[key] && !Array.isArray(newValues[key])) {
             newValues[key] = [newValues[key]];
           }
@@ -139,4 +146,4 @@ const NewSubmissionForm = ({ submitForm, initialValues }) => {
   return <div ref={stepsRef}>{steps[currentStep]}</div>;
 };
 
-export default NewSubmissionForm;
+export default SubmissionWizard;

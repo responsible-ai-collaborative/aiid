@@ -14,7 +14,7 @@ import isArray from 'lodash/isArray';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
-import NewSubmissionForm from '../submissions/NewSubmissionForm';
+import SubmissionWizard from '../submissions/SubmissionWizard';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -52,7 +52,14 @@ const SubmitForm = () => {
 
   const queryParams = { ...query };
 
-  for (const key of ['tags', 'authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
+  for (const key of [
+    'tags',
+    'authors',
+    'submitters',
+    'developers',
+    'deployers',
+    'harmed_parties',
+  ]) {
     if (queryParams[key] && !Array.isArray(queryParams[key])) {
       queryParams[key] = [queryParams[key]];
     }
@@ -156,7 +163,7 @@ const SubmitForm = () => {
 
   return (
     <div className="my-5">
-      <NewSubmissionForm submitForm={handleSubmit} initialValues={submission} />
+      <SubmissionWizard submitForm={handleSubmit} initialValues={submission} />
 
       <p className="mt-4">
         <Trans ns="submit" i18nKey="submitReviewDescription">

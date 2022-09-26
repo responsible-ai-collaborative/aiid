@@ -13,8 +13,7 @@ const StepFour = () => {
   const localizedPath = useLocalizePath();
 
   return (
-    <span
-      data-cy="submission-success">
+    <span data-cy="submission-success">
       <Alert
         color="success"
         additionalContent={
