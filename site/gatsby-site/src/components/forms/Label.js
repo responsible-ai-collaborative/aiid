@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
 
-const Label = ({ popover, label }) => {
+const Label = ({ popover, label, required = false }) => {
   const [show, setShow] = useState(false);
 
   const { i18n } = useTranslation(['popovers']);
@@ -14,23 +14,25 @@ const Label = ({ popover, label }) => {
   if (!i18n.exists(popover, { ns: 'popovers' })) {
     return (
       <label className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 relative">
-        {label}
+        {required && <>*{' '}</>}{label}
       </label>
     );
   }
 
   const Tooltip = (
     <div
-      className="inline-block absolute z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm tooltip dark:bg-gray-700 max-w-xs bottom-2 imtooltip"
+      className="inline-block absolute z-10 text-sm font-medium  bg-gray-200 rounded-lg shadow-sm tooltip dark:bg-gray-700 max-w-xs bottom-2 imtooltip"
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
       data-cy={`popover-${popover}`}
     >
-      <h5>
+      <h5 className='bg-gray-900 border border-gray-900 py-2 px-3 rounded-t-lg text-gray-50'>
         <Trans ns="popovers" i18nKey={`${popover}.title`} />
       </h5>
-      <Trans ns="popovers" i18nKey={`${popover}.text`} components={{ linkto: <Link /> }} />
-      <div className="tooltip-arrow left-4 sm:left-1/2" data-popper-arrow></div>
+      <div className='py-2 px-3 text-black'>
+        <Trans ns="popovers" i18nKey={`${popover}.text`} components={{ linkto: <Link /> }} />
+      </div>
+      <div className="tooltip-arrow left-4 sm:left-1/2 " data-popper-arrow></div>
     </div>
   );
 
@@ -46,7 +48,7 @@ const Label = ({ popover, label }) => {
           data-cy={`label-${popover}`}
           className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 relative"
         >
-          {label}{' '}
+          {required && <>*{' '}</>}{label}{' '}
           <FontAwesomeIcon
             icon={faQuestionCircle}
             style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
