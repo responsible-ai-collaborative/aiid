@@ -204,7 +204,7 @@
     }
 
     .tw-btn-menu.collapsed {
-        @apply -left-8; 
+        @apply -left-8;
     }
 
     /* TAILWIND Buttons ends */
