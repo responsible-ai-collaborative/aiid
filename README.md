@@ -9,7 +9,7 @@ Information about the goals and organization of the AI Incident Database can be 
 3. Contribute a **new taxonomy** to the AI Incident Database. Details on taxonomies are available in the arXiv paper.
 4. Contribute a **new application** facilitating a new use case for the database.
 
-## Project Communications 
+## Project Communications
 
 In most cases unless you are contributing quick fixes, we recommend opening an issue before contributing to the project. You can also [Contact](https://incidentdatabase.ai/contact) us for an invitation to the project's Slack installation. Lurking is encouraged. Finally, for major announcements you can join the [announcements-only mailing list](https://groups.google.com/g/incidentsdb).
 
