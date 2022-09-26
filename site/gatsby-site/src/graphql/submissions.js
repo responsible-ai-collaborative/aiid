@@ -40,6 +40,7 @@ export const FIND_SUBMISSIONS = gql`
       developers
       deployers
       harmed_parties
+      is_incident_report
     }
   }
 `;

@@ -27,14 +27,14 @@ const ListedGroup = ({ item, className = '', keysToRender }) => {
   return (
     <ListGroup className={className}>
       {keysToRender
-        .filter((key) => !!item[key])
+        .filter((key) => item[key] !== undefined && item[key] !== null)
         .map((key) => (
           <ListGroup.Item key={key} className="flex gap-4" data-cy={key}>
             <div style={{ width: 140 }} className="flex-grow">
               <b>{key}</b>
             </div>
             <div className="text-break">
-              {isArray(item[key]) ? item[key].join(', ') : item[key]}
+              {isArray(item[key]) ? item[key].join(', ') : item[key].toString()}
             </div>
           </ListGroup.Item>
         ))}
@@ -42,7 +42,7 @@ const ListedGroup = ({ item, className = '', keysToRender }) => {
   );
 };
 
-const leadItems = ['source_domain', 'authors', 'submitters', 'incident_id'];
+const leadItems = ['is_incident_report', 'source_domain', 'authors', 'submitters', 'incident_id'];
 
 const urls = ['url', 'image_url'];
 
