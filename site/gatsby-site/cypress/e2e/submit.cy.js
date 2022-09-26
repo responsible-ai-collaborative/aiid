@@ -680,7 +680,7 @@ describe('The Submit form', () => {
     cy.get('[name="editor_notes"').should('exist');
   });
 
-  it('Should show a popover', () => {
+  it.skip('Should show a popover', () => {
     cy.visit(url);
     cy.wait(0);
 
