@@ -74,7 +74,7 @@ export default function CommonEntities() {
                   </li>
                   <li>
                     <Trans ns="entities">
-                      alledgely harming{' '}
+                      allegedly harming{' '}
                       <span className="font-semibold text-gray-900 dark:text-white">
                         {{ harmedCount }}
                       </span>{' '}
