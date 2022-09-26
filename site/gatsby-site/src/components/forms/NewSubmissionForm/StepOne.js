@@ -1,5 +1,5 @@
 import { Badge, Button, Spinner } from 'flowbite-react';
-import { Formik, Form, useFormikContext } from 'formik';
+import { Formik, Form, useFormikContext, Field } from 'formik';
 import React, { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TextInputGroup from '../TextInputGroup';
@@ -9,7 +9,6 @@ import FlowbiteSearchInput from '../FlowbiteSearchInput';
 import RelatedIncidents from 'components/RelatedIncidents';
 import { dateRegExp } from 'utils/date';
 import StepContainer from './StepContainer';
-import { isEmpty } from 'lodash';
 import TagsInputGroup from '../TagsInputGroup';
 
 const StepOne = (props) => {
@@ -60,9 +59,65 @@ const StepOne = (props) => {
         validationSchema={stepOneValidationSchema}
         enableReinitialize
       >
-        <FormDetails parsingNews={props.parsingNews} parseNewsUrl={props.parseNewsUrl} schema={stepOneValidationSchema}/>
+        <FormDetails
+          parsingNews={props.parsingNews}
+          parseNewsUrl={props.parseNewsUrl}
+          schema={stepOneValidationSchema}
+        />
       </Formik>
     </StepContainer>
+  );
+};
+
+const IsIncidentReportField = () => {
+  return (
+    <Field name="is_incident_report">
+      {({ field, form }) => {
+        return (
+          <div
+            className="flex mt-4 mb-4"
+            role="group"
+            aria-labelledby="my-radio-group"
+            onChange={(e) => form.setFieldValue(field.name, e.target.value === 'true')}
+          >
+            <div className="flex items-center mr-4">
+              <input
+                id="incident-radio"
+                style={{ appearance: 'auto' }}
+                type="radio"
+                name={field.name}
+                value="true"
+                checked={field.value}
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
+              <label
+                htmlFor="incident-radio"
+                className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+              >
+                Incident
+              </label>
+            </div>
+            <div className="flex items-center mr-4">
+              <input
+                id="issue-radio"
+                style={{ appearance: 'auto' }}
+                type="radio"
+                name={field.name}
+                value="false"
+                checked={!field.value}
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
+              <label
+                htmlFor="issue-radio"
+                className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+              >
+                Issue
+              </label>
+            </div>
+          </div>
+        );
+      }}
+    </Field>
   );
 };
 
@@ -92,15 +147,24 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema }) => {
           <Spinner size="xl" />
         </div>
       )}
-      {values.incident_id && <span className='flex mb-4' data-cy='prefilled-incident-id'><Badge><Trans>Adding a new report to incident {values.incident_id}</Trans></Badge></span>}
+      {values.incident_id && (
+        <span className="flex mb-4" data-cy="prefilled-incident-id">
+          <Badge>
+            <Trans>Adding a new report to incident {values.incident_id}</Trans>
+          </Badge>
+        </span>
+      )}
       <Form className={`relative z-2 ${parsingNews ? 'opacity-50' : ''}`}>
+        <Label label={t('Is this an Incident Report?')} popover="is_incident_report"></Label>
+        <IsIncidentReportField />
+
         <Label label={t('Report Address')} popover="url"></Label>
         <FlowbiteSearchInput
           name="url"
           label={t('Report Address')}
           placeholder={t('Report URL')}
           defaultValue={values?.url || ''}
-          dataCy='fetch-info'
+          dataCy="fetch-info"
           values={values}
           errors={errors}
           touched={touched}
