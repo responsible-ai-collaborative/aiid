@@ -18,6 +18,7 @@ import supportedLanguages from '../../components/i18n/languages.json';
 import { Trans, useTranslation } from 'react-i18next';
 import RelatedIncidents from '../../components/RelatedIncidents';
 import SemanticallyRelatedIncidents from '../../components/SemanticallyRelatedIncidents';
+import IsIncidentReportField from './IsIncidentReportField';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -42,6 +43,7 @@ import SemanticallyRelatedIncidents from '../../components/SemanticallyRelatedIn
 
 // Schema for yup
 export const schema = yup.object().shape({
+  is_incident_report: yup.bool().required(),
   title: yup
     .string()
     .min(6, '*Title must have at least 6 characters')
@@ -124,7 +126,6 @@ export const schema = yup.object().shape({
 });
 
 const SubmissionForm = () => {
-
   const {
     values,
     errors,
@@ -225,10 +226,14 @@ const SubmissionForm = () => {
   return (
     <div className="bootstrap">
       <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
+        <Label label={t('Is this an Incident Report?')} popover="is_incident_report"></Label>
+        <IsIncidentReportField className="mt-2" />
+
         <TextInputGroup
           name="url"
           label={t('Report Address')}
           placeholder={t('Report URL')}
+          className="mt-4"
           addOnComponent={
             <Button
               className="outline-secondary rounded-l-none"

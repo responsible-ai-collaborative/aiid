@@ -75,6 +75,7 @@ export const FIND_SUBMISSION = gql`
       }
       editor_similar_incidents
       editor_dissimilar_incidents
+      is_incident_report
     }
   }
 `;
@@ -110,6 +111,7 @@ export const UPDATE_SUBMISSION = gql`
       }
       editor_similar_incidents
       editor_dissimilar_incidents
+      is_incident_report
     }
   }
 `;

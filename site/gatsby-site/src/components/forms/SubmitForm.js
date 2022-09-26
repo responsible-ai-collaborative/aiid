@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Container } from 'react-bootstrap';
 import { CSVReader } from 'react-papaparse';
-import { useQueryParams, StringParam, ArrayParam, encodeDate, withDefault } from 'use-query-params';
+import {
+  useQueryParams,
+  StringParam,
+  ArrayParam,
+  encodeDate,
+  withDefault,
+  BooleanParam,
+} from 'use-query-params';
 import Link from 'components/ui/Link';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
@@ -43,6 +50,7 @@ const queryConfig = {
   editor_notes: withDefault(StringParam, ''),
   tags: withDefault(ArrayParam, []),
   language: withDefault(StringParam, 'en'),
+  is_incident_report: withDefault(BooleanParam, true),
 };
 
 const SubmitForm = () => {
@@ -52,7 +60,14 @@ const SubmitForm = () => {
 
   const queryParams = { ...query };
 
-  for (const key of ['tags', 'authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
+  for (const key of [
+    'tags',
+    'authors',
+    'submitters',
+    'developers',
+    'deployers',
+    'harmed_parties',
+  ]) {
     if (queryParams[key] && !Array.isArray(queryParams[key])) {
       queryParams[key] = [queryParams[key]];
     }
