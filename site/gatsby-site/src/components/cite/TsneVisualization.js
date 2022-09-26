@@ -21,7 +21,7 @@ const VisualizationWrapper = styled.div`
 `;
 
 const Visualization = styled.div`
-  max-height: 100vh;
+  max-height: calc(100vh - 2em);
   max-width: 100vh;
   height: 1000px;
   width: 1000px;
@@ -98,6 +98,8 @@ const PlotPoint = ({
   // but I'm not taking my chances.
   const sqrtScale = Math.sqrt(state.scale);
 
+  const scaleMultiplier = 1 / sqrtScale;
+
   const dbAxis = axis.replace(/ /g, '');
 
   const taxon =
@@ -139,7 +141,7 @@ const PlotPoint = ({
           // The points do not grow as fast as the space between them,
           // allowing the user to zoom to more accurately select
           // from points that are very close to each other.
-          transform: `scale(${1 / sqrtScale})`,
+          transform: `scale(${scaleMultiplier})`,
           border: '2px solid ' + borderColor.hex(),
           background,
           color,
@@ -180,13 +182,15 @@ const PlotPoint = ({
         <div
           data-cy="incident-card"
           style={{
-            top: onTop ? `calc(50% + 48% * ${incident.tsne.y} + ${1 / sqrtScale}em)` : undefined,
+            top: onTop ? `calc(50% + 48% * ${incident.tsne.y} + ${scaleMultiplier}em)` : undefined,
             bottom: !onTop
-              ? `calc(50% - 48% * ${incident.tsne.y} + ${1 / sqrtScale}em)`
+              ? `calc(50% - 48% * ${incident.tsne.y} + ${scaleMultiplier}em)`
               : undefined,
-            left: onLeft ? `calc(50% + 48% * ${incident.tsne.x} + ${1 / sqrtScale}em)` : undefined,
+            left: onLeft
+              ? `calc(50% + 48% * ${incident.tsne.x} + ${scaleMultiplier}em)`
+              : undefined,
             right: !onLeft
-              ? `calc(50% - 48% * ${incident.tsne.x} + ${1 / sqrtScale}em)`
+              ? `calc(50% - 48% * ${incident.tsne.x} + ${scaleMultiplier}em)`
               : undefined,
             transform: `scale(${1 / state.scale})`,
             transformOrigin: `${onTop ? 'top' : 'bottom'} ${onLeft ? 'left' : 'right'}`,
@@ -234,8 +238,8 @@ const TsneVisualization = ({ currentIncidentId }) => {
 
   const { data: spatialIncidentsData } = useQuery(
     gql`
-      query SpatialIncidents($query: IncidentQueryInput) {
-        incidents(query: $query) {
+      query SpatialIncidents {
+        incidents(query: { tsne_exists: true }, limit: 9999) {
           incident_id
           tsne {
             x
@@ -243,10 +247,7 @@ const TsneVisualization = ({ currentIncidentId }) => {
           }
         }
       }
-    `,
-    {
-      variables: { query: { tsne_exists: true } },
-    }
+    `
   );
 
   const incidents = spatialIncidentsData?.incidents || [];
@@ -269,7 +270,7 @@ const TsneVisualization = ({ currentIncidentId }) => {
   const { data: classificationsData } = useQuery(
     gql`
     query ClassificationsQuery($query: ClassificationQueryInput) {
-      classifications(query: $query) {
+      classifications(query: $query, limit: 9999) {
         incident_id
         namespace
         classifications {
