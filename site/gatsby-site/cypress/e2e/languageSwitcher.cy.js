@@ -13,7 +13,7 @@ describe('The Language switcher', () => {
     );
   });
 
-  it('Should update the path with the selected language', () => {
+  it.skip('Should update the path with the selected language', () => {
     cy.visit('/');
 
     cy.get('[data-cy="language-switcher"]').click();
