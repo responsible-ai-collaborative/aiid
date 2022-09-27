@@ -7,6 +7,8 @@ import Link from 'components/ui/Link';
 import facebook from '../../images/facebook.svg';
 import google from '../../images/google.svg';
 import tesla from '../../images/tesla.svg';
+import amazon from '../../images/amazon.svg';
+import youtube from '../../images/youtube.svg';
 
 export default function CommonEntities() {
   const { incidents } = useStaticQuery(graphql`
@@ -57,22 +59,33 @@ export default function CommonEntities() {
           return (
             <div
               key={entity.id}
-              className="p-4 pb-16 gap-4 bg-white rounded-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 
-                  flex 
-                  lg:flex-col
-                  xl:flex-row 
-                  relative
-                "
+              className="
+                p-4 pb-16 gap-4 
+                bg-white dark:bg-gray-800
+                rounded-lg 
+                border border-gray-200 dark:border-gray-700 
+                flex 
+                lg:flex-col
+                xl:flex-row 
+                relative
+              "
             >
               <div className="shrink-0 w-1/4 lg:w-full xl:w-1/4">
                 <img
-                  className="mx-auto w-28 lg:h-28 lg:w-auto"
+                  className="
+                    mx-auto 
+                    w-28 h-auto 
+                    lg:w-auto lg:h-28
+                    xl:w-full xl:h-auto
+                  "
                   alt=""
                   src={
                     {
                       Google: google,
                       Facebook: facebook,
                       Tesla: tesla,
+                      YouTube: youtube,
+                      Amazon: amazon,
                     }[entity.name]
                   }
                 />
