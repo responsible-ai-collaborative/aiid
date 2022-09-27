@@ -2,8 +2,10 @@ import React, { useEffect } from 'react';
 import * as d3 from 'd3';
 
 function MultiLineChart({ data, id, params }) {
+  {
+    /* d3 wants to manipulate the dom on its own */
+  }
   useEffect(() => {
-    document.getElementById(id).innerHTML = '';
     d3LineChart(data, '#' + id, params);
   }, []);
 
@@ -26,10 +28,10 @@ function d3LineChart(
     title, // given d in data, returns the title text
     defined, // for gaps in data
     curve = d3.curveLinear, // method of interpolation between points
-    marginTop = 40, // top margin, in pixels
+    marginTop = 60, // top margin, in pixels
     marginRight = 40, // right margin, in pixels
     marginBottom = 40, // bottom margin, in pixels
-    marginLeft = 40, // left margin, in pixels
+    marginLeft = 80, // left margin, in pixels
     width = 640, // outer width, in pixels
     height = 400, // outer height, in pixels
     xType = d3.scaleUtc, // type of x-scale
@@ -44,7 +46,7 @@ function d3LineChart(
     color = 'currentColor', // stroke color of line, as a constant or a function of *z*
     strokeLinecap, // stroke line cap of line
     strokeLinejoin, // stroke line join of line
-    strokeWidth = 1.5, // stroke width of line
+    strokeWidth = 2, // stroke width of line
     strokeOpacity, // stroke opacity of line
     mixBlendMode = 'multiply', // blend mode of lines
     voronoi = false, // show a Voronoi overlay? (for debugging)
@@ -92,7 +94,7 @@ function d3LineChart(
     .tickFormat(d3.timeFormat("%b '%y"));
 
   const yAxis = d3.axisLeft(yScale).tickValues(
-    yScale.ticks(3).filter((i) => i != yDomain[0]),
+    yScale.ticks(5).filter((i) => i != yDomain[0]),
     yFormat
   );
 
@@ -164,7 +166,7 @@ function d3LineChart(
       g
         .append('text')
         .attr('x', -marginLeft)
-        .attr('y', marginTop - 10)
+        .attr('y', marginTop - 30)
         .attr('fill', 'currentColor')
         .attr('text-anchor', 'start')
         .attr('font-size', fontSize)
@@ -222,7 +224,6 @@ function d3LineChart(
     svg.node().value = null;
     svg.dispatch('input', { bubbles: true });
   }
-  console.log(`svg`, svg);
 }
 
 export default MultiLineChart;
