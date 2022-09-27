@@ -1,5 +1,5 @@
 import { useUserContext } from 'contexts/userContext';
-import { Button, Tooltip } from 'flowbite-react';
+import { Button } from 'flowbite-react';
 import React from 'react';
 import { Trans } from 'react-i18next';
 
@@ -33,13 +33,11 @@ const Login = ({ className = '' }) => (
   </>
 );
 
-const Logout = ({ className = '', user }) => (
+const Logout = ({ className = '' }) => (
   <div className="flex flex-col text-xs w-full justify-center items-center">
-    <Tooltip content={`Logged in as ${user.profile.email}`}>
-      <a href="/logout" className={`${className}`}>
-        <Trans ns="login">Log out</Trans>
-      </a>
-    </Tooltip>
+    <a href="/logout" className={`${className}`}>
+      <Trans ns="login">Log out</Trans>
+    </a>
   </div>
 );
 
