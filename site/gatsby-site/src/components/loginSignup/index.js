@@ -33,10 +33,10 @@ const Login = ({ className = '' }) => (
   </>
 );
 
-const Logout = ({ className = '' }) => (
+const Logout = ({ className = '', user }) => (
   <div className="flex flex-col text-xs w-full justify-center items-center">
-    <a href="/logout" className={`${className}`}>
-      <Trans ns="login">Log out</Trans>
+    <a href="/login" className={`${className}`}>
+      <Trans ns="login">{user?.profile?.email}</Trans>
     </a>
   </div>
 );
