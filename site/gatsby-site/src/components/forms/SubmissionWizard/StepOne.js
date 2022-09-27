@@ -126,10 +126,6 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema }) => {
           btnText={t('Fetch info')}
         />
 
-        <span className="text-red-700 text-sm">
-          <Trans ns="validation">{errors.url && touched.url ? errors.url : null}</Trans>
-        </span>
-
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
 
         <TextInputGroup
