@@ -8,12 +8,12 @@ import BibTex from 'components/BibTex';
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 import { format, isAfter, isEqual } from 'date-fns';
 import { useModal, CustomModal } from '../hooks/useModal';
-import Timeline from 'components/visualizations/Timeline';
-import IncidentStatsCard from 'components/cite/IncidentStatsCard';
-import IncidentCard from 'components/cite/IncidentCard';
-import Taxonomy from 'components/taxa/Taxonomy';
-import { useUserContext } from 'contexts/userContext';
-import SimilarIncidents from 'components/cite/SimilarIncidents';
+import Timeline from '../components/visualizations/Timeline';
+import IncidentStatsCard from '../components/cite/IncidentStatsCard';
+import IncidentCard from '../components/cite/IncidentCard';
+import Taxonomy from '../components/taxa/Taxonomy';
+import { useUserContext } from '../contexts/userContext';
+import SimilarIncidents from '../components/cite/SimilarIncidents';
 import { Trans, useTranslation } from 'react-i18next';
 import Card from '../elements/Card';
 import Button from '../elements/Button';
@@ -21,9 +21,9 @@ import Container from '../elements/Container';
 import Row from '../elements/Row';
 import Col from '../elements/Col';
 import Pagination from '../elements/Pagination';
-import SocialShareButtons from 'components/ui/SocialShareButtons';
+import SocialShareButtons from '../components/ui/SocialShareButtons';
 import { useLocalization } from 'gatsby-theme-i18n';
-import useLocalizePath from 'components/i18n/useLocalizePath';
+import useLocalizePath from '../components/i18n/useLocalizePath';
 import { useMutation } from '@apollo/client';
 import { UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
@@ -153,12 +153,14 @@ function CitePage(props) {
   const subscribeToNewReports = async () => {
     if (isRole('subscriber')) {
       try {
+        const incidentId = incident.incident_id;
+
         await subscribeToNewReportsMutation({
           variables: {
             query: {
               type: 'incident',
               userId: { userId: user.id },
-              incident_id: { incident_id: incident.incident_id },
+              incident_id: { incident_id: incidentId },
             },
             subscription: {
               type: 'incident',
@@ -166,7 +168,7 @@ function CitePage(props) {
                 link: user.id,
               },
               incident_id: {
-                link: incident.incident_id,
+                link: incidentId,
               },
             },
           },
@@ -175,7 +177,9 @@ function CitePage(props) {
         addToast({
           message: (
             <>
-              {t(`You have successfully subscribed to updates on incident ${incident.incident_id}`)}
+              {t(`You have successfully subscribed to updates on incident {{incidentId}}`, {
+                incidentId,
+              })}
             </>
           ),
           severity: SEVERITY.success,
