@@ -4,6 +4,10 @@
         "private": true
     },
     {
+        "name": "getUser",
+        "private": false
+    },
+    {
         "name": "linkReportsToIncidents",
         "private": false
     },
@@ -21,6 +25,10 @@
     },
     {
         "name": "reportTranslations",
+        "private": false
+    },
+    {
+        "name": "sendEmail",
         "private": false
     },
     {

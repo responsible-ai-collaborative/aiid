@@ -91,6 +91,7 @@ const PreviewImageInputGroup = ({
   handleChange,
   handleBlur,
   className = '',
+  schema,
 }) => {
   const [cloudinaryID, setCloudinaryID] = useState(cloudinary_id);
 
@@ -160,6 +161,7 @@ const PreviewImageInputGroup = ({
         handleChange={handleChange}
         className={className}
         handleBlur={handleBlur}
+        schema={schema}
       />
       <figure data-cy="image-preview-figure" id="image-preview-figure" className="text-center">
         <div
