@@ -7,10 +7,14 @@ import { Trans } from 'react-i18next';
 const TagsInputGroup = ({ name, label, placeholder, errors, touched, schema, className = '' }) => {
   const [optional, setOptional] = useState(true);
 
-  useEffect(async () => {
+  const setOptionalField = async () => {
     if (schema?.fields[name]) {
       setOptional(await schema.fields[name].isValid(undefined));
     }
+  };
+
+  useEffect(() => {
+    setOptionalField();
   }, []);
 
   const isInvalid = errors[name] && touched[name];

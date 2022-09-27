@@ -20,8 +20,12 @@ const TextInputGroup = ({
 }) => {
   const [optional, setOptional] = useState(true);
 
-  useEffect(async () => {
+  const setOptionalField = async () => {
     setOptional(await schema.fields[name].isValid(undefined));
+  };
+
+  useEffect(() => {
+    setOptionalField();
   }, []);
 
   return (

@@ -14,7 +14,9 @@ import Col from 'elements/Col';
 const Controls = ({ query, searchState, setSearchState }) => {
   const [expandFilters, setExpandFilters] = useState(false);
 
-  useEffect(() => setExpandFilters(REFINEMENT_LISTS.some((r) => query[r.attribute])), []);
+  useEffect(() => {
+    setExpandFilters(REFINEMENT_LISTS.some((r) => query[r.attribute])), [];
+  });
 
   return (
     <>
