@@ -88,6 +88,8 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema }) => {
     });
   };
 
+  console.log('LOGGGG', errors, touched, parsingNews, !!errors.url || !touched.url || parsingNews);
+
   return (
     <>
       {parsingNews && (
@@ -123,6 +125,10 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema }) => {
           btnDisabled={!!errors.url || !touched.url || parsingNews}
           btnText={t('Fetch info')}
         />
+
+        <span className="text-red-700 text-sm">
+          <Trans ns="validation">{errors.url && touched.url ? errors.url : null}</Trans>
+        </span>
 
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
 
