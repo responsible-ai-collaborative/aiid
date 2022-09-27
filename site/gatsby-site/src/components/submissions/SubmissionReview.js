@@ -11,11 +11,14 @@ import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import ReadMoreText from '../../components/ReadMoreText';
 import RelatedIncidents from '../../components/RelatedIncidents';
 import isArray from 'lodash/isArray';
+import uniq from 'lodash/uniq';
 import { useUserContext } from '../../contexts/userContext';
 import { UPDATE_REPORT } from '../../graphql/reports';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery, useApolloClient } from '@apollo/client';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { DELETE_SUBMISSION, PROMOTE_SUBMISSION } from '../../graphql/submissions';
+import { FIND_SUBSCRIPTIONS } from '../../graphql/subscriptions';
+import { GET_USER } from '../../graphql/users';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, getUnixTime } from 'date-fns';
 import SubmissionEditModal from './SubmissionEditModal';
@@ -57,7 +60,7 @@ const dateRender = [
 const otherDetails = ['language', '_id', 'developers', 'deployers', 'harmed_parties'];
 
 const SubmissionReview = ({ submission }) => {
-  const { isRole } = useUserContext();
+  const { isRole, user } = useUserContext();
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -68,6 +71,10 @@ const SubmissionReview = ({ submission }) => {
   const [promoteSubmissionToReport, { loading: promoting }] = useMutation(PROMOTE_SUBMISSION, {
     fetchPolicy: 'network-only',
   });
+
+  const client = useApolloClient();
+
+  const [getUser] = useMutation(GET_USER);
 
   const [updateReport] = useMutation(UPDATE_REPORT);
 
@@ -90,6 +97,44 @@ const SubmissionReview = ({ submission }) => {
   });
 
   const addToast = useToastContext();
+
+  const sendEmailNotifications = async (incidentId, reportNumber, incidentTitle, report) => {
+    const { data: subscriptionsData } = await client.query({
+      query: FIND_SUBSCRIPTIONS,
+      variables: { query: { incident_id: { incident_id: incidentId } } },
+    });
+
+    // Process subscriptions to incident updates
+    if (subscriptionsData?.subscriptions?.length > 0) {
+      const userIds = uniq(
+        subscriptionsData.subscriptions.map((subscription) => subscription.userId.userId)
+      );
+
+      const userEmails = [];
+
+      for (const userId of userIds) {
+        const userResponse = await getUser({ variables: { input: { userId } } });
+
+        if (userResponse.data && userResponse.data.getUser && userResponse.data.getUser.email) {
+          userEmails.push(userResponse.data.getUser.email);
+        }
+      }
+
+      await user.functions.sendEmail({
+        to: userEmails,
+        subject: 'Incident {{incidentId}} was updated',
+        dynamicData: {
+          incidentId: `${incidentId}`,
+          incidentTitle: incidentTitle,
+          incidentUrl: `https://incidentdatabase.ai/cite/${incidentId}`,
+          reportUrl: `https://incidentdatabase.ai/cite/${incidentId}#r${reportNumber}`,
+          reportTitle: report.title,
+          reportAuthor: report.authors[0],
+        },
+        templateId: 'd-6cebfe690b83416387ec75b21f99108a', // SendGrid Template name: "Incident updated"
+      });
+    }
+  };
 
   const promoteSubmission = useCallback(async () => {
     if (!submission.developers || !submission.deployers || !submission.harmed_parties) {
@@ -173,6 +218,10 @@ const SubmissionReview = ({ submission }) => {
     }
 
     const incident_id = incident.incident_id;
+
+    if (!isNewIncident) {
+      sendEmailNotifications(incident_id, report_number, incident.title, report);
+    }
 
     addToast({
       message: isNewIncident ? (

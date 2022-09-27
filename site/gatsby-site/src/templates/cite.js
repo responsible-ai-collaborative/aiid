@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Spinner } from 'flowbite-react';
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
 import Citation from 'components/cite/Citation';
@@ -23,11 +24,14 @@ import Pagination from '../elements/Pagination';
 import SocialShareButtons from 'components/ui/SocialShareButtons';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
+import { useMutation } from '@apollo/client';
+import { UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
+import useToastContext, { SEVERITY } from '../hooks/useToast';
+import Link from 'components/ui/Link';
 import { graphql } from 'gatsby';
 import { getTaxonomies, getTranslatedReports } from 'utils/cite';
 import { computeEntities } from 'utils/entities';
 import AllegedEntities from 'components/entities/AllegedEntities';
-import Link from 'components/ui/Link';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -69,7 +73,7 @@ function CitePage(props) {
 
   const { isRole, user } = useUserContext();
 
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const { locale } = useLocalization();
 
@@ -102,6 +106,8 @@ function CitePage(props) {
   const submittersModal = useModal();
 
   const flagReportModal = useModal();
+
+  const addToast = useToastContext();
 
   const timeline = sortedReports.map(({ date_published, title, mongodb_id, report_number }) => ({
     date_published,
@@ -140,6 +146,59 @@ function CitePage(props) {
       }))
     );
   }, [user]);
+
+  const [subscribeToNewReportsMutation, { loading: subscribing }] =
+    useMutation(UPSERT_SUBSCRIPTION);
+
+  const subscribeToNewReports = async () => {
+    if (isRole('subscriber')) {
+      try {
+        await subscribeToNewReportsMutation({
+          variables: {
+            query: {
+              type: 'incident',
+              userId: { userId: user.id },
+              incident_id: { incident_id: incident.incident_id },
+            },
+            subscription: {
+              type: 'incident',
+              userId: {
+                link: user.id,
+              },
+              incident_id: {
+                link: incident.incident_id,
+              },
+            },
+          },
+        });
+
+        addToast({
+          message: (
+            <>
+              {t(`You have successfully subscribed to updates on incident ${incident.incident_id}`)}
+            </>
+          ),
+          severity: SEVERITY.success,
+        });
+      } catch (e) {
+        console.log(e);
+        addToast({
+          message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
+          severity: SEVERITY.danger,
+        });
+      }
+    } else {
+      addToast({
+        message: (
+          <Trans i18n={i18n}>
+            Please <Link to={localizePath({ path: '/login', language: locale })}>log in</Link> to
+            subscribe
+          </Trans>
+        ),
+        severity: SEVERITY.success,
+      });
+    }
+  };
 
   const entities = computeEntities({ incidents: [incident] });
 
@@ -239,6 +298,16 @@ function CitePage(props) {
                 </h4>
               </Card.Header>
               <Card.Body className="flex-row">
+                <Button variant="outline-primary" className="mr-2" onClick={subscribeToNewReports}>
+                  <div className="flex gap-2 items-center">
+                    {subscribing && (
+                      <div className="mr-2">
+                        <Spinner size="sm" />
+                      </div>
+                    )}
+                    <Trans>Notify Me of Updates</Trans>
+                  </div>
+                </Button>
                 <Button
                   variant="outline-primary"
                   className="mr-2"

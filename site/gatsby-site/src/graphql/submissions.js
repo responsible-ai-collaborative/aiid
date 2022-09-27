@@ -126,6 +126,7 @@ export const PROMOTE_SUBMISSION = gql`
   mutation PromoteSubmission($input: PromoteSubmissionToReportInput!) {
     promoteSubmissionToReport(input: $input) {
       incident_id
+      title
       reports {
         report_number
         ref_number

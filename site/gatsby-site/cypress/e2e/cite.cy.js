@@ -328,6 +328,54 @@ describe('Cite pages', () => {
     });
   });
 
+  it('Should subscribe to incident updates (user authenticated)', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.visit(url);
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpsertSubscription',
+      'upsertSubscription',
+      {
+        data: {
+          upsertOneSubscription: {
+            _id: 'dummyIncidentId',
+          },
+        },
+      }
+    );
+
+    cy.contains('Notify Me of Updates').scrollIntoView().click();
+
+    cy.wait(1000);
+
+    cy.get('[data-cy="toast"]')
+      .contains(`You have successfully subscribed to updates on incident ${incidentId}`)
+      .should('exist');
+  });
+
+  it('Shouldn not subscribe to incident updates (user unauthenticated)', () => {
+    cy.visit(url);
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpsertSubscription',
+      'upsertSubscription',
+      {
+        data: {
+          upsertOneSubscription: {
+            _id: 'dummyIncidentId',
+          },
+        },
+      }
+    );
+
+    cy.contains('Notify Me of Updates').scrollIntoView().click();
+
+    cy.get('[data-cy="toast"]').contains(`Please log in to subscribe`).should('exist');
+  });
+
   it('Should show proper entities card text', () => {
     cy.visit('/cite/67/');
 
