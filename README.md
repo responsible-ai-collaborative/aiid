@@ -1,4 +1,4 @@
-# Artificial Intelligence Incident Database (AIID) 
+# Artificial Intelligence Incident Database (AIID)
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/9eb0dda2-916c-46f9-a0bd-9ddab3879c6e/deploy-status)](https://app.netlify.com/sites/aiid/deploys)
 
