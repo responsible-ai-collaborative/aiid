@@ -78,6 +78,7 @@ export const schema = yup.object().shape({
       /((https?):\/\/)(\S)*$/,
       '*Must enter URL in http://www.example.com/images/preview.png format'
     ),
+  editor_notes: yup.string(),
   incident_id: yup.number().positive().integer('*Must be an incident number').required(),
 });
 
@@ -119,7 +120,7 @@ const IncidentReportForm = () => {
     }
   }
 
-  const TextInputGroupProps = { values, errors, touched, handleChange, handleBlur };
+  const TextInputGroupProps = { values, errors, touched, handleChange, handleBlur, schema };
 
   const addToast = useToastContext();
 
