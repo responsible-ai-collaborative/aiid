@@ -28,7 +28,7 @@ const LatestIncidentReport = ({ report }) => {
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white w-full p-4">
           <Trans ns="landing">Latest Incident Report</Trans>
         </h5>
-        <div className='px-4 pb-4'>
+        <div className="px-4 pb-4">
           <LocalizedLink to={`/cite/${incident_id}`} className="max-w-full cursor-pointer">
             <h5 className="text-base font-bold tracking-tight text-gray-900 dark:text-white relative block hover:text-primary-blue">
               {title}
