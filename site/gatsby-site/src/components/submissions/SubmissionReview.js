@@ -110,18 +110,21 @@ const SubmissionReview = ({ submission }) => {
         subscriptionsData.subscriptions.map((subscription) => subscription.userId.userId)
       );
 
-      const userEmails = [];
+      const recipients = [];
 
       for (const userId of userIds) {
         const userResponse = await getUser({ variables: { input: { userId } } });
 
         if (userResponse.data && userResponse.data.getUser && userResponse.data.getUser.email) {
-          userEmails.push(userResponse.data.getUser.email);
+          recipients.push({
+            email: userResponse.data.getUser.email,
+            userId
+          });
         }
       }
 
       await user.functions.sendEmail({
-        to: userEmails,
+        recipients,
         subject: 'Incident {{incidentId}} was updated',
         dynamicData: {
           incidentId: `${incidentId}`,

@@ -1,6 +1,6 @@
 const SENDER = "notifications@incidentdatabase.ai";
 
-exports = async ({ to, subject, dynamicData, templateId }) => {
+exports = async ({ recipients, subject, dynamicData, templateId }) => {
 
     const userCustomData = context.user.custom_data;
 
@@ -16,7 +16,7 @@ exports = async ({ to, subject, dynamicData, templateId }) => {
 
     const sendGridApiKey = context.values.get("SendGridApiKey");
 
-    var emailData = BuildEmailData(to, subject, dynamicData, templateId);
+    var emailData = BuildEmailData(recipients, subject, dynamicData, templateId);
 
     const emailResult = await context.http.post({
         url: sendGridApiUrl,
@@ -33,24 +33,24 @@ exports = async ({ to, subject, dynamicData, templateId }) => {
 /**
  * This function returns a JSON object that respects the format of SendGrid API Request Body
  * 
- * @param {string[]} to An array of recipients email addresses
+ * @param {string{string, string}} recipients An array of recipients email addresses and userIds
  * @param {string} subject The recipient email address
  * @param {object} dynamicData A JSON object that contains the data to be replaced in the email body
  * @param {string} templateId SendGrid template ID (ie: "d-bc63fc7a96604d02ae60b49636633840")
  * @return {object} returns a JSON object
  * 
 */
-function BuildEmailData(to, subject, dynamicData, templateId) {
+function BuildEmailData(recipients, subject, dynamicData, templateId) {
 
-    const personalizations = to.map((recipient) => {
+    const personalizations = recipients.map((recipient) => {
         return {
             to: [
                 {
-                    email: recipient,
+                    email: recipient.email,
                 },
             ],
             subject,
-            dynamic_template_data: { ...dynamicData, email: recipient },
+            dynamic_template_data: { ...dynamicData, email: recipient.email, userId: recipient.userId },
         };
     });
 
