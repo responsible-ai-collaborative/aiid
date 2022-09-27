@@ -533,11 +533,11 @@ describe('Submitted reports', () => {
 
       cy.get('@promoteForm').contains('button', 'Add New Incident').click();
 
-      cy.wait('@promotionInvoked', { timeout: 2000 });
-
       cy.get('[data-cy="toast"]')
         .contains('Please review submission before approving. Some data is missing.')
         .should('exist');
+
+      cy.wait('@promotionInvoked', { timeout: 2000 });
     }
   );
 });
