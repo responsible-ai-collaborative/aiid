@@ -29,6 +29,38 @@ The steps for contributing changes are the following,
 
 Please make sure your code is well organized and commented before opening the pull request.
 
+## AIID Engineering Process
+
+The AI Incident Database is an open source project inviting contributions from the global community. Anyone with code changes that advance the change thesis of making the world better in the future by remembering the negative outcomes of the past are welcome to submit pull requests. To ensure that submitted changes are likely to be accepted, we recommend becoming familiar with the manner in which we organize our work items and open an issue on GitHub.
+
+The process of completing work through GitHub issues at the highest level is:
+Create Issue -> Assign Issue -> Review and Publish
+
+Labels help streamline the process and ensure issues do not get lost or neglected. Label [descriptions are on GitHub](https://github.com/responsible-ai-collaborative/aiid/labels). The following describes when/how to use a label.
+
+### Create Issue
+
+1. Consider if the issue is an Initiative, Epic, or Story. All engineering issues aside from Bugs should fall in one of these categories and be assigned a label. Other types of issues (ex: Data Editor-related) may not have this label.
+
+  ![](https://user-images.githubusercontent.com/25443411/188503602-9c93c699-5008-495f-8684-a1f18e82afea.png)
+
+2. Apply a descriptor label (when applicable):
+
+  ![](https://user-images.githubusercontent.com/25443411/188503793-039496b3-0256-4643-9dbd-e077b0dd3024.png)
+
+### Assign Issue
+
+Add the label “Current Backlog” to trigger assigning a contributor. Either the assigner or the contributor adds the issue’s priority and effort labels.
+
+![](https://user-images.githubusercontent.com/25443411/188503632-e27a4b6e-549e-4bbf-ad9c-2e123a2df75e.png)
+
+### Review and Publish:
+
+Once the issue has a deliverable output(s), use the Pull Request (PR) labels to move through the workflow to review and publish.
+
+![](https://user-images.githubusercontent.com/25443411/188503429-b38012fa-944b-49db-afbd-29ebca64e3b2.png)
+
+
 ## PR labeling strategy
 
 On a daily basis, all PRs should be labeled with one of the review process tags:
@@ -204,7 +236,7 @@ The translation process runs on Gatsby's `postBuild` event and consists of 3 ste
 
 -1 Get the list of languages, which is pulled from the /src/components/i18n/languages.js using the `GATSBY_AVAILABLE_LANGUAGES` environment variable as a filter:
 ```
-GATSBY_AVAILABLE_LANGUAGES=en,es,it,af
+GATSBY_AVAILABLE_LANGUAGES=en,es,fr
 ```
 -2 Translate each incident report to each language, and save the translated reports to a `translations` database under a collection for each language:
 ```
@@ -214,6 +246,10 @@ translations
     |   |-- { title, text, report_number }
     |
     |--incident_report_es
+    |   |-- { title, text, report_number }
+        |-- { title, text, report_number }
+    |
+    |--incident_report_fr
     |   |-- { title, text, report_number }
         |-- { title, text, report_number }
 ```
@@ -265,6 +301,41 @@ If the feature you are working on depends on Google's Geocoding API, please add 
 
 ```
 GOOGLE_MAPS_API_KEY=XXXXXXXXXXXX
+```
+
+## Front-end development
+
+### Tailwind CSS & Flowbite
+
+This project uses [Tailwind CSS](https://tailwindcss.com/) framework with its class syntax. 
+More specifically, we base our components on [Flowbite React](https://flowbite-react.com/) and [Flowbite](https://flowbite.com/) which is built on top of TailwindCSS.
+
+### Steps for developing
+
+In order to keep styling consistency on the site, we follow a set of steps when developing. This is also to make the development process more agile and simple.
+
+1. Develop your component using [Flowbite React components](https://flowbite-react.com/)
+2. If your components is not fully contemplated by Flowbite react, check [Flowbite components](https://flowbite.com/#components) and use the provided HTMLs.
+3. If you need to improve styling, use only Tailwind CSS classes.
+
+**Examples**
+If you want to place a new [Flowbite React button](https://flowbite-react.com/buttons):
+
+```javascript
+import { Button } from 'flowbite-react';
+
+const YourComponent = () => {
+    return <Button color='success'>New button</Button>
+}
+
+```
+
+If you want to customize a [Flowbite button](https://flowbite.com/docs/components/buttons/):
+
+```javascript
+const YourComponent = () => {
+    return <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Default</button>
+}
 ```
 
 ## Deployment Setup
@@ -494,6 +565,24 @@ Redirect URIs, is the URL that the user will be redirected to after successfully
 
 About Facebook Authentication instructions: https://www.mongodb.com/docs/realm/web/authenticate/#facebook-authentication
 
+## Email subscriptions
+
+[Sendgrid](https://sendgrid.com/) is used to send email notifications.
+
+To allow email notifications add these secret values to your Atlas App Service following the instructions in the [Atlas App Services documentation](https://www.mongodb.com/docs/atlas/app-services/values-and-secrets/define-and-manage-secrets/).
+
+```
+SendGridApiKey = [SendGrid API key from https://app.sendgrid.com/settings/api_keys]
+publicApiKey = [Public API key from the Atlas Organization. See comment below for more information]
+privateApiKey = [Private API key from the Atlas Organization. See comment below for more information]
+groupId = [Atlas Service App group ID, ie: "62cc90978bc4600cafdcf16e"]
+appId = [Atlas Service App ID, ie: "62cc98647e6a26c53d5b4b53"]
+```
+
+To get your Public and Private API Key, follow these [instructions](https://www.mongodb.com/docs/atlas/configure-api-access/#std-label-create-org-api-key).
+
+To get the group ID and the app ID, the easiest way is to navigate to your Atlas Service App dashboard and copy from the URL.
+The URL format is https://realm.mongodb.com/groups/[groupId]/apps/[appId]/dashboard
 
 ## Contact
 

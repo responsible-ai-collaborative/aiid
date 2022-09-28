@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
-import { Form, Spinner } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
 import { useUserContext } from '../contexts/userContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -9,6 +10,7 @@ import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from '../components/ui/Link';
 import Button from '../elements/Button';
+import { StringParam, useQueryParams } from 'use-query-params';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -28,10 +30,16 @@ const Login = (props) => {
 
   const loginRedirectUri = `${props.location.origin}/logincallback`;
 
+  let [{ redirectTo }] = useQueryParams({
+    redirectTo: StringParam,
+  });
+
+  redirectTo = redirectTo ?? '/';
+
   const clickLoginWithFacebook = async () => {
     setDisplayFacebookSpinner(true);
 
-    await loginWithFacebook({ loginRedirectUri });
+    await loginWithFacebook({ loginRedirectUri, redirectTo });
 
     setDisplayFacebookSpinner(false);
   };
@@ -39,10 +47,10 @@ const Login = (props) => {
   return (
     <Layout {...props} className="bootstrap">
       {loading ? (
-        <>
-          <Spinner animation="border" size="sm" role="status" className="mr-2" />
+        <div className="flex flex-wrap gap-2">
+          <Spinner />
           <Trans>Loading...</Trans>
-        </>
+        </div>
       ) : user && user.isLoggedIn && user.profile.email ? (
         <>
           <p>
@@ -59,7 +67,7 @@ const Login = (props) => {
             initialValues={{ email: '', password: '' }}
             validationSchema={LoginSchema}
             onSubmit={async ({ email, password }, { setSubmitting }) => {
-              await loginWithEmail({ email, password });
+              await loginWithEmail({ email, password, redirectTo });
 
               setSubmitting(false);
             }}
@@ -111,10 +119,10 @@ const Login = (props) => {
                   disabled={isSubmitting || !isValid || displayFacebookSpinner}
                   className="w-full"
                 >
-                  {isSubmitting && (
-                    <Spinner animation="border" size="sm" role="status" className="mr-4" />
-                  )}
-                  <Trans ns="login">Login</Trans>
+                  {isSubmitting && <Spinner />}
+                  <span className="pl-3">
+                    <Trans ns="login">Login</Trans>
+                  </span>
                 </Button>
               </Form>
             )}
@@ -130,9 +138,9 @@ const Login = (props) => {
             className={'w-full'}
             disabled={displayFacebookSpinner}
           >
-            <div className={'flex justify-center items-center'}>
+            <div className={'flex justify-center items-center gap-2'}>
               {displayFacebookSpinner ? (
-                <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
+                <Spinner />
               ) : (
                 <FontAwesomeIcon
                   icon={faFacebook}
@@ -141,9 +149,7 @@ const Login = (props) => {
                   title="Login with Facebook"
                 />
               )}
-              <div className={'ml-4'}>
-                <Trans ns="login">Login with Facebook</Trans>
-              </div>
+              <Trans ns="login">Login with Facebook</Trans>
             </div>
           </Button>
 

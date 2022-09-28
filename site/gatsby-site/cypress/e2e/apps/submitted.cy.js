@@ -1,5 +1,6 @@
 import { maybeIt } from '../../support/utils';
 import submittedReports from '../../fixtures/submissions/submitted.json';
+import quickAdds from '../../fixtures/submissions/quickadds.json';
 import { format, getUnixTime } from 'date-fns';
 
 describe('Submitted reports', () => {
@@ -13,9 +14,22 @@ describe('Submitted reports', () => {
       submittedReports
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'AllQuickAdd',
+      'AllQuickAdd',
+      {
+        data: {
+          quickadds: [quickAdds],
+        },
+      }
+    );
+
     cy.visit(url);
 
     cy.wait('@FindSubmission');
+
+    cy.wait('@AllQuickAdd');
 
     const submissions = submittedReports.data.submissions;
 
@@ -69,11 +83,24 @@ describe('Submitted reports', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'AllQuickAdd',
+      'AllQuickAdd',
+      {
+        data: {
+          quickadds: [quickAdds],
+        },
+      }
+    );
+
     cy.visit(url);
 
     cy.wait('@FindSubmissions');
 
-    cy.get('[data-cy="submissions"] > div:nth-child(1)').as('promoteForm');
+    cy.wait('@AllQuickAdd');
+
+    cy.get('[data-cy="submission"]').first().as('promoteForm');
 
     cy.get('@promoteForm').contains('review >').click();
 
@@ -208,11 +235,24 @@ describe('Submitted reports', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'AllQuickAdd',
+      'AllQuickAdd',
+      {
+        data: {
+          quickadds: [quickAdds],
+        },
+      }
+    );
+
     cy.visit(url);
 
     cy.wait('@FindSubmissions');
 
-    cy.get('[data-cy="submissions"] > div:nth-child(1)').as('promoteForm');
+    cy.wait('@AllQuickAdd');
+
+    cy.get('[data-cy="submission"]').first().as('promoteForm');
 
     cy.get('@promoteForm').contains('review >').click();
 
@@ -322,11 +362,24 @@ describe('Submitted reports', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'AllQuickAdd',
+      'AllQuickAdd',
+      {
+        data: {
+          quickadds: [quickAdds],
+        },
+      }
+    );
+
     cy.visit(url);
 
     cy.wait('@FindSubmissions');
 
-    cy.get('[data-cy="submissions"] > div:nth-child(1)').as('promoteForm');
+    cy.wait('@AllQuickAdd');
+
+    cy.get('[data-cy="submission"]').first().as('promoteForm');
 
     cy.get('@promoteForm').contains('review >').click();
 
@@ -350,7 +403,7 @@ describe('Submitted reports', () => {
     cy.get('[data-cy="submissions"]').children().should('have.length', 0);
   });
 
-  maybeIt('Edits a submission', () => {
+  maybeIt('Edits a submission - update just a text', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -375,7 +428,7 @@ describe('Submitted reports', () => {
 
     cy.wait('@FindSubmissions');
 
-    cy.get('[data-cy="submissions"] > div:nth-child(1)').as('promoteForm');
+    cy.get('[data-cy="submission"]').first().as('promoteForm');
 
     cy.get('@promoteForm').contains('review >').click();
 
@@ -420,6 +473,77 @@ describe('Submitted reports', () => {
     cy.get('@modal').should('not.exist');
   });
 
+  maybeIt('Associate an Incident ID to a submission without developers, deployers or harmed parties', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'FindSubmissions',
+      submittedReports
+    );
+
+    const submission = submittedReports.data.submissions[2];
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmission',
+      'FindSubmission',
+      {
+        data: {
+          submission
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.wait('@FindSubmissions');
+
+    cy.get('[data-cy="submission"]').first().as('promoteForm');
+
+    cy.get('@promoteForm').contains('review >').click();
+
+    cy.get('[data-cy="edit-submission"]').eq(0).click();
+
+    cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
+
+    cy.get('[name="incident_id"').type('333');
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName === 'UpdateSubmission',
+      'UpdateSubmission',
+      {
+        data: {
+          updateOneSubmission: {
+            ...submission,
+            incident_id: 333,
+          },
+        },
+      }
+    );
+
+    cy.get('[data-cy="update-btn"]').click();
+
+    cy.wait('@UpdateSubmission').then((xhr) => {
+      expect(xhr.request.body.variables.query).to.deep.nested.include({
+        _id: submission._id,
+      });
+
+      expect(xhr.request.body.variables.set).to.deep.nested.include({
+        incident_id: 333,
+      });
+    });
+
+    cy.get('@modal').should('not.exist');
+
+    cy.get('[data-cy="toast"]')
+      .contains('Submission updated successfully.')
+      .should('exist');
+
+  });
+
   maybeIt(
     'Does not allow promotion of submission if developers, deployers or harmed parties is missing.',
     () => {
@@ -444,11 +568,24 @@ describe('Submitted reports', () => {
         }
       );
 
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'AllQuickAdd',
+        'AllQuickAdd',
+        {
+          data: {
+            quickadds: [quickAdds],
+          },
+        }
+      );
+
       cy.visit(url);
 
       cy.wait('@FindSubmissions');
 
-      cy.get('[data-cy="submissions"] > div:nth-child(1)').as('promoteForm');
+      cy.wait('@AllQuickAdd');
+
+      cy.get('[data-cy="submission"]').first().as('promoteForm');
 
       cy.get('@promoteForm').contains('review >').click();
 
@@ -467,11 +604,11 @@ describe('Submitted reports', () => {
 
       cy.get('@promoteForm').contains('button', 'Add New Incident').click();
 
-      cy.wait('@promotionInvoked', { timeout: 2000 });
-
       cy.get('[data-cy="toast"]')
         .contains('Please review submission before approving. Some data is missing.')
         .should('exist');
+
+      cy.wait('@promotionInvoked', { timeout: 2000 });
     }
   );
 });

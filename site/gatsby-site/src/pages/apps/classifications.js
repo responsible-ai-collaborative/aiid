@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import LayoutHideSidebar from 'components/LayoutHideSidebar';
-import TaxonomyForm from 'components/taxa/TaxonomyForm';
-import AiidHelmet from 'components/AiidHelmet';
+import LayoutHideSidebar from '../../components/LayoutHideSidebar';
+import TaxonomyForm from '../../components/taxa/TaxonomyForm';
+import AiidHelmet from '../../components/AiidHelmet';
 import styled from 'styled-components';
-import { useMongo } from 'hooks/useMongo';
+import { useMongo } from '../../hooks/useMongo';
 import config from '../../../config';
-
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
-import { Table, Spinner, Form, InputGroup, FormControl, Button } from 'react-bootstrap';
-import Link from 'components/ui/Link';
+import { Table, Form, InputGroup, FormControl, Button } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
+import Link from '../../components/ui/Link';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useModal, CustomModal } from 'hooks/useModal';
-import { useUserContext } from 'contexts/userContext';
+import { useModal, CustomModal } from '../../hooks/useModal';
+import { useUserContext } from '../../contexts/userContext';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import { format } from 'date-fns';
 
@@ -778,10 +778,10 @@ export default function ClassificationsDbView(props) {
       <CustomModal style={{ maxWidth: '80%' }} {...editClassificationModal} />
       <Container isWide={collapse}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-          <TaxonomySelectContainer>
+          <TaxonomySelectContainer className="gap-2">
             Showing the
             <Form.Select
-              style={{ width: 120, margin: '0 10px' }}
+              style={{ width: 120 }}
               onChange={(e) => setCurrentTaxonomy(e.target.value)}
               value={currentTaxonomy}
               data-cy="taxonomy"
@@ -793,16 +793,7 @@ export default function ClassificationsDbView(props) {
               ))}
             </Form.Select>
             taxonomy
-            {loading && (
-              <Spinner
-                animation="border"
-                role="status"
-                variant="primary"
-                style={{ marginLeft: 10 }}
-              >
-                <span className="sr-only">Loading...</span>
-              </Spinner>
-            )}
+            {loading && <Spinner />}
           </TaxonomySelectContainer>
           <Link to={`/taxonomy/${currentTaxonomy.toLowerCase()}`} style={{ paddingBottom: '1em' }}>
             {currentTaxonomy} taxonomy page

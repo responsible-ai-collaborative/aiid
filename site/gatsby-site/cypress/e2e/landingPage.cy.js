@@ -50,4 +50,16 @@ describe('The Landing page', () => {
       )
       .should('exist');
   });
+
+  it('Should display common entities card', () => {
+    cy.visit('/');
+
+    cy.get('[data-cy="common-entities"]')
+      .scrollIntoView()
+      .should('be.visible')
+      .within(() => {
+        cy.contains('h2', 'Common Entities').should('exist');
+        cy.get('.grid > div').should('have.length', 3);
+      });
+  });
 });
