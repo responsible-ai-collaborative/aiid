@@ -92,7 +92,8 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
               ...data.submission,
               developers: data.submission.developers === null ? [] : data.submission.developers,
               deployers: data.submission.deployers === null ? [] : data.submission.deployers,
-              harmed_parties: data.submission.harmed_parties === null ? [] : data.submission.harmed_parties,
+              harmed_parties:
+                data.submission.harmed_parties === null ? [] : data.submission.harmed_parties,
               incident_id: data.submission.incident_id == 0 ? '' : data.submission.incident_id,
             }}
           >

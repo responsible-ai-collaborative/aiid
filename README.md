@@ -366,6 +366,35 @@ REALM_API_PRIVATE_KEY=
 REALM_API_PUBLIC_KEY=
 ```
 
+### Cypress test run on Github Action
+
+The `Cypress e2e tests` Github Action workflow runs the Cypress test suite. This workflow is defined on `cypress.yml`.
+It requires a set of Github secrets variables to be set on the repository. Keep the same values as the ones defined in the `.env` file.
+
+These Github secrets must contain the following variables:
+
+```
+CYPRESS_PROJECT_ID=
+CYPRESS_RECORD_KEY=
+ALGOLIA_ADMIN_KEY=
+GATSBY_ALGOLIA_APP_ID=
+GATSBY_ALGOLIA_SEARCH_KEY=
+GATSBY_AVAILABLE_LANGUAGES=
+GATSBY_REALM_APP_ID=
+GATSBY_REALM_APP_GRAPHQL_URL=
+GOOGLE_TRANSLATE_API_KEY=xxxx
+MONGODB_CONNECTION_STRING=
+MONGODB_REPLICA_SET=
+MONGODB_TRANSLATIONS_CONNECTION_STRING=
+MONGODB_MIGRATIONS_CONNECTION_STRING=
+```
+
+Additional notes:
+
+`CYPRESS_PROJECT_ID` is the Cypress project ID. For more information, see [Cypress Project ID](https://docs.cypress.io/guides/dashboard/projects#Identification)
+
+`CYPRESS_RECORD_KEY` is the Cypress record ID. For more information, see [Cypress Record ID](https://docs.cypress.io/guides/dashboard/projects#Project-ID)
+
 ### Testing
 
 For integration testing, we use Cypress. You can run the desktop app continuously as part of your development environment or run it on demand in headless mode.
@@ -587,4 +616,3 @@ The URL format is https://realm.mongodb.com/groups/[groupId]/apps/[appId]/dashbo
 ## Contact
 
 For inquiries, you are encouraged to open an issue on this repository or visit the [contact page](https://incidentdatabase.ai/contact).
- 
