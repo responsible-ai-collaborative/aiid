@@ -1,5 +1,5 @@
 import { useUserContext } from 'contexts/userContext';
-import { Button } from 'flowbite-react';
+import { Button, Spinner } from 'flowbite-react';
 import React from 'react';
 import { Trans } from 'react-i18next';
 import Link from 'components/ui/Link';
@@ -7,7 +7,9 @@ import useLocalizePath from '../../components/i18n/useLocalizePath';
 import { useLocalization } from 'gatsby-theme-i18n';
 
 const LoginSignup = ({ className = '', logoutClassName = '', loginClassName = '' }) => {
-  const { user } = useUserContext();
+  const { user, loading } = useUserContext();
+
+  if (loading) return <Spinner />;
 
   return (
     <>
