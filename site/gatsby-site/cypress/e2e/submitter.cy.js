@@ -6,9 +6,9 @@ describe('Submitter Selection', () => {
 
     cy.contains('Incident Report Submission Leaderboards').scrollIntoView();
 
-    cy.get('div[class^="Leaderboard__StyledItem"] a').its('length').should('be.gt', 1);
+    cy.get('[data-cy="leaderboard-item"] a').its('length').should('be.gt', 1);
 
-    cy.get('div[class^="Leaderboard__StyledItem"] a').first().click();
+    cy.get('[data-cy="leaderboard-item"] a').first().click();
 
     cy.url().should('include', 'submitters=');
   });

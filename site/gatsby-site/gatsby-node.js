@@ -4,7 +4,7 @@ const { Client: GoogleMapsAPIClient } = require('@googlemaps/google-maps-service
 
 const { Translate } = require('@google-cloud/translate').v2;
 
-const { startCase } = require('lodash');
+const { startCase, differenceWith } = require('lodash');
 
 const config = require('./config');
 
@@ -24,6 +24,8 @@ const createDuplicatePages = require('./page-creators/createDuplicatePages');
 
 const createTsneVisualizationPage = require('./page-creators/createTsneVisualizationPage');
 
+const createEntitiesPages = require('./page-creators/createEntitiesPages');
+
 const algoliasearch = require('algoliasearch');
 
 const Translator = require('./src/utils/Translator');
@@ -36,10 +38,8 @@ const AlgoliaUpdater = require('./src/utils/AlgoliaUpdater');
 
 const googleMapsApiClient = new GoogleMapsAPIClient({});
 
-exports.createPages = async ({ graphql, actions, reporter }) => {
-  const { createPage } = actions;
-
-  const { createRedirect } = actions;
+exports.createPages = async ({ actions, graphql, reporter }) => {
+  const { createRedirect, createPage } = actions;
 
   const redirects = [
     ['/about_apps/1-discover', '/about_apps'],
@@ -58,14 +58,22 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     createRedirect({ fromPath: pair[0], toPath: pair[1], isPermanent: true })
   );
 
-  await createMdxPages(graphql, createPage, reporter);
-  await createCitationPages(graphql, createPage);
-  await createWordCountsPages(graphql, createPage);
-  await createBackupsPage(graphql, createPage);
-  await createTaxonomyPages(graphql, createPage);
-  await createDownloadIndexPage(graphql, createPage);
-  await createDuplicatePages(graphql, createPage);
-  await createTsneVisualizationPage(graphql, createPage);
+  for (const pageCreator of [
+    createMdxPages,
+    createCitationPages,
+    createWordCountsPages,
+    createBackupsPage,
+    createTaxonomyPages,
+    createDownloadIndexPage,
+    createDuplicatePages,
+    createTsneVisualizationPage,
+    createEntitiesPages,
+  ]) {
+    if (!(process.env.SKIP_PAGE_CREATOR || '').split(',').includes(pageCreator.name)) {
+      reporter.info(`Page creation: ${pageCreator.name}`);
+      await pageCreator(graphql, createPage, reporter);
+    }
+  }
 };
 
 exports.onCreateWebpackConfig = ({ actions }) => {
@@ -247,6 +255,22 @@ exports.onPreBootstrap = async ({ reporter }) => {
     const translationsActivity = reporter.activityTimer(`Translations`);
 
     translationsActivity.start();
+
+    const configuredLanguages = getLanguages();
+
+    const unavailableLanguages = differenceWith(
+      config.i18n.availableLanguages,
+      configuredLanguages,
+      (aLang, cLang) => {
+        return cLang.code === aLang;
+      }
+    );
+
+    if (unavailableLanguages.length > 0) {
+      throw `Language config error. Review your GATSBY_AVAILABLE_LANGUAGES variable. You've included a language that hasn't been configured yet: ${unavailableLanguages
+        .map((l) => l)
+        .join(', ')}`;
+    }
 
     if (
       config.mongodb.translationsConnectionString &&

@@ -1,11 +1,13 @@
 import React, { useRef } from 'react';
 import Typeahead from './Typeahead';
 
-export default function Tags({ id, inputId, placeHolder, value, onChange }) {
+export default function Tags({ id, inputId, placeHolder, value, onChange, name }) {
   const ref = useRef(null);
 
   const commitTag = (tag) => {
-    onChange(value ? value.concat(tag) : [tag]);
+    const splitTags = tag.split(',').map((tag) => tag.trim());
+
+    onChange(value ? value.concat(splitTags) : splitTags);
     ref.current.clear();
   };
 
@@ -13,9 +15,12 @@ export default function Tags({ id, inputId, placeHolder, value, onChange }) {
     <Typeahead
       ref={ref}
       id={id}
-      inputProps={{ id: inputId }}
+      inputProps={{ id: inputId, name }}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' && e.target.value) {
+        if (e.key === ',') {
+          e.preventDefault();
+        }
+        if (['Enter', ','].includes(e.key) && e.target.value) {
           commitTag(e.target.value);
         }
       }}
@@ -28,8 +33,8 @@ export default function Tags({ id, inputId, placeHolder, value, onChange }) {
       multiple
       renderMenu={() => null}
       onChange={(value) => onChange(value)}
-      selected={value}
       options={[]}
+      selected={value}
       placeholder={placeHolder}
     />
   );

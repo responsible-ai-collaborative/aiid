@@ -1,22 +1,23 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Form, Button, Spinner } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
 import { useFormikContext } from 'formik';
 import * as yup from 'yup';
-import TextInputGroup from 'components/forms/TextInputGroup';
+import TextInputGroup from '../../components/forms/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { dateRegExp } from 'utils/date';
-import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
+import { dateRegExp } from '../../utils/date';
+import { getCloudinaryPublicID, PreviewImageInputGroup } from '../../utils/cloudinary';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { graphql, useStaticQuery } from 'gatsby';
 import Label from './Label';
 import Typeahead from './Typeahead';
 import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
-import IncidentIdField from 'components/incidents/IncidentIdField';
+import IncidentIdField from '../../components/incidents/IncidentIdField';
 import getSourceDomain from '../../utils/getSourceDomain';
-import supportedLanguages from 'components/i18n/languages.json';
+import supportedLanguages from '../../components/i18n/languages.json';
 import { useLocalization } from 'gatsby-theme-i18n';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -77,6 +78,7 @@ export const schema = yup.object().shape({
       /((https?):\/\/)(\S)*$/,
       '*Must enter URL in http://www.example.com/images/preview.png format'
     ),
+  editor_notes: yup.string(),
   incident_id: yup.number().positive().integer('*Must be an incident number').required(),
 });
 
@@ -91,6 +93,8 @@ const IncidentReportForm = () => {
     setFieldValue,
     setValues,
   } = useFormikContext();
+
+  const { t } = useTranslation(['submit']);
 
   const data = useStaticQuery(graphql`
     query IncidentReportFormQuery {
@@ -116,7 +120,7 @@ const IncidentReportForm = () => {
     }
   }
 
-  const TextInputGroupProps = { values, errors, touched, handleChange, handleBlur };
+  const TextInputGroupProps = { values, errors, touched, handleChange, handleBlur, schema };
 
   const addToast = useToastContext();
 
@@ -193,28 +197,21 @@ const IncidentReportForm = () => {
       >
         <TextInputGroup
           name="url"
-          label="Report Address"
-          placeholder="Report URL"
+          label={t('Report Address')}
+          placeholder={t('Report URL')}
           addOnComponent={
             <Button
               className="outline-secondary"
               disabled={!!errors.url || !touched.url || parsingNews}
               onClick={() => parseNewsUrl(values.url)}
             >
-              {' '}
               {!parsingNews ? (
-                <>Fetch info</>
+                <Trans ns="submit">Fetch info</Trans>
               ) : (
-                <>
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />{' '}
-                  Fetching...
-                </>
+                <div className="flex gap-2">
+                  <Spinner size="sm" />
+                  <Trans ns="submit">Fetching...</Trans>
+                </div>
               )}
             </Button>
           }

@@ -4,24 +4,40 @@
 
 @layer base {
 
-    h1 {
-        font-size: calc(1.375rem + 1.5vw);
-    }
-
     .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
         @apply font-medium mb-2 mt-0 leading-tight;
     }
 
+    .h1, h1 {
+      @apply text-3xl
+    }
+
+    .h2, h2 {
+      @apply text-2xl 
+    }
+
+    .h3, h3 {
+      @apply text-xl
+    }
+
     .h4, h4 {
-        font-size: calc(1.275rem + .3vw);
+      @apply text-lg
     }
 
     .h5, h5 {
-        @apply text-xl leading-tight;
+      @apply text-base
     }
 
     input {
         @apply flex-auto;
+    }
+
+    input:not(.error) {
+        @apply text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500;
+    }
+    
+    input.error {
+        @apply bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5;
     }
 
     p {
@@ -40,9 +56,6 @@
         @apply appearance-none bg-white rounded-md text-gray-900 block text-base font-normal leading-normal w-full py-1 px-3 transition-form-control bg-clip-padding border-1 border-solid border-form-control;
     }
 
-    h2 {
-        @apply text-4xl;
-    }
 
     ul, ol {
       list-style: revert;
@@ -57,7 +70,7 @@
     }
 
     .tw-content {
-        @apply flex flex-grow mt-0 mx-[10px] md:mx-[33px] pt-12 z-[1] relative overflow-hidden flex-1;
+        @apply flex flex-grow mt-0 mx-[10px] md:mx-[33px] pt-4 z-[1] relative overflow-hidden flex-1;
     }
 
     .tw-container {
@@ -100,6 +113,10 @@
         @apply shrink-0;
     }
 
+    #desktopLogo {
+      @apply ml-[10px] mr-[10px];
+    }
+
     .tw-nav-header-container .nav-bar-brand > .headerTitle {
         @apply shrink;
     }
@@ -128,10 +145,6 @@
         @apply flex-1;
     }
 
-    h1 {
-        @apply text-h1;
-    }
-
     .tw-card-title h2 {
         @apply text-2rem;
     }
@@ -139,7 +152,7 @@
     .tw-card-title a {
         @apply text-primary-blue;
     }
-
+    
     .tw-card-title h3 {
         @apply text-2xl mb-2;
     }
@@ -153,7 +166,7 @@
     }
 
     .tw-post-listing {
-        @apply flex flex-wrap md:grid gap-4 lg:gap-4 max-w-[750px];
+        @apply flex flex-wrap lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-4;
     }
 
     /* TAILWIND Buttons begins */
@@ -359,8 +372,57 @@
 @layer utilities {
     
     /* TAILWIND Sidebar starts */
+
+    .tw-side-bar {
+        @apply font-bold  min-w-[250px] font-karla w-full md:w-64 overflow-auto sticky pl-0 top-0 pr-0 h-auto  md:h-screen shadow-left-side-bar;
+    }
+
+    .tw-side-bar.collapse {
+        @apply hidden;
+    } 
+
+    .tw-li-divider {
+        @apply list-none py-4 px-0;
+    }
+
+    .tw-li-divider hr {
+        @apply m-0 p-0 border-b border-solid border-b-side-bar
+    }
+    
     .tw-side-bar-ul {
         @apply mt-4 pl-0;
+    }
+
+    .tw-side-bar-ul .hide-front-line .collapser {
+        @apply bg-transparent absolute cursor-pointer right-5 z-[1];
+    }
+    
+    .tw-side-bar-ul .hide-front-line .active > a {
+        @apply bg-light-orange text-white;
+    }
+
+    .tw-side-bar-ul .side-bar-links {
+        @apply list-none;
+    }
+
+    .tw-side-bar-ul .side-bar-links a {
+        @apply text-list-gray no-underline py-2 pr-0 flex items-center relative font-normal;
+    }
+
+    .tw-side-bar-ul .side-bar-links a.level-0 {
+        @apply font-bold;
+    }
+
+    .tw-side-bar-ul .side-bar-links a:hover {
+        @apply text-light-orange;
+    }
+
+    .tw-side-bar-ul .side-bar-links a.active {
+        @apply border-light-blue border-y border-r-0 border-l bg-white;
+    }
+
+    .tw-side-bar-ul .side-bar-links a svg {
+        @apply ml-[1ch] align-top inline;
     }
 
     .tw-side-bar-ul ul {
@@ -389,6 +451,22 @@
 
     .tw-side-bar-ul .item .item {
         @apply ml-4;
+    }
+
+    .tw-side-bar-ul .first-level ul li .collapser svg path {
+        @apply fill-white;
+    }
+    
+    .tw-side-bar-ul .active .collapser > svg > path {
+        @apply fill-[#001933];
+    }
+  
+    .tw-side-bar-ul .first-level ul .item ul .item {
+        @apply border-l border-l-[#e6ecf1];
+    }
+
+    .tw-side-bar-ul .first-level > ul > .item {
+        @apply ml-0;
     }
 
     .tw-side-bar-title {
