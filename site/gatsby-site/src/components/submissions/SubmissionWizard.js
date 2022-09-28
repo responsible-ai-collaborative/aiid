@@ -22,11 +22,12 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
 
     if (final) {
       await submitForm({ ...data, ...newData });
+      setCurrentStep(3);
+    } else {
+      setCurrentStep((prev) => prev + 1);
     }
 
     stepsRef?.current?.scrollIntoView();
-
-    setCurrentStep((prev) => prev + 1);
   };
 
   const handlePreviousStep = (newData) => {

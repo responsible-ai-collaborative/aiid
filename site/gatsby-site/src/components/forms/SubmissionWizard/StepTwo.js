@@ -5,26 +5,24 @@ import { Trans, useTranslation } from 'react-i18next';
 import TextInputGroup from '../TextInputGroup';
 import * as yup from 'yup';
 import Label from '../Label';
-import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
 import IncidentIdField from 'components/incidents/IncidentIdField';
 import RelatedIncidents from 'components/RelatedIncidents';
 import supportedLanguages from '../../i18n/languages.json';
-import { Editor } from '@bytemd/react';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
 import StepContainer from './StepContainer';
-import { isEmpty } from 'lodash';
+import TagsInputGroup from '../TagsInputGroup';
 
 const StepTwo = (props) => {
   const [data, setData] = useState(props.data);
 
   // Schema for yup
   const stepTwoValidationSchema = yup.object().shape({
-    image_url: yup.string(),
-    text: yup
+    submitters: yup
       .string()
-      .min(80, `*Text must have at least 80 characters`)
-      .max(50000, `*Text can’t be longer than 50000 characters`)
-      .required('*Text is required'),
+      .min(3, '*Submitter must have at least 3 characters')
+      .max(200, "*Submitter list can't be longer than 200 characters")
+      .nullable(),
+    image_url: yup.string(),
     incident_id: yup.number().positive().integer('*Must be an incident number or empty'),
     incident_date: yup.date().when('incident_id', {
       is: (incident_id) => incident_id == '' || incident_id === undefined,
@@ -32,8 +30,8 @@ const StepTwo = (props) => {
     }),
   });
 
-  const handleSubmit = (values) => {
-    props.next(values);
+  const handleSubmit = (values, last) => {
+    props.next(values, last);
   };
 
   useEffect(() => {
@@ -44,17 +42,22 @@ const StepTwo = (props) => {
     <StepContainer name={props.name}>
       <Formik
         initialValues={data}
-        onSubmit={handleSubmit}
+        onSubmit={() => {}}
         validationSchema={stepTwoValidationSchema}
         enableReinitialize
       >
-        <FormDetails data={data} previous={props.previous} schema={stepTwoValidationSchema} />
+        <FormDetails
+          data={data}
+          previous={props.previous}
+          schema={stepTwoValidationSchema}
+          onSubmit={handleSubmit}
+        />
       </Formik>
     </StepContainer>
   );
 };
 
-const FormDetails = ({ data, previous, schema }) => {
+const FormDetails = ({ data, previous, schema, onSubmit }) => {
   const { t } = useTranslation(['submit']);
 
   const { values, errors, touched, handleChange, handleBlur, setFieldValue, setFieldTouched } =
@@ -70,14 +73,18 @@ const FormDetails = ({ data, previous, schema }) => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
 
-  const styles = {
-    border: errors['text'] && touched['text'] ? '1px solid red' : 'none',
-    borderRadius: errors['text'] && touched['text'] ? '4px' : 'none',
-    padding: errors['text'] && touched['text'] ? '0.5rem' : '0',
-  };
-
   return (
     <Form>
+      <TagsInputGroup
+        name="submitters"
+        placeholder={t('Your name as you would like it to appear in the leaderboard')}
+        label={t('Submitter(s)')}
+        className="mt-3"
+        errors={errors}
+        touched={touched}
+        schema={schema}
+      />
+
       <PreviewImageInputGroup
         cloudinary_id={data.cloudinary_id}
         name="image_url"
@@ -91,37 +98,6 @@ const FormDetails = ({ data, previous, schema }) => {
         handleBlur={handleBlur}
         schema={schema}
       />
-      <Label popover="text" label={'*' + t('Text')} />
-      <div
-        style={{
-          position: 'relative',
-          ...styles,
-        }}
-      >
-        {touched['text'] && errors['text'] && (
-          <div
-            style={{
-              position: 'absolute',
-              inset: '0px',
-              border: '1px solid var(--bs-red)',
-              zIndex: 10,
-              pointerEvents: 'none',
-            }}
-          />
-        )}
-        <Editor
-          value={values.text}
-          onChange={(value) => {
-            setFieldValue('text', value);
-            setFieldTouched('text', true);
-          }}
-        />
-      </div>
-      <span className="text-red-700 text-sm">
-        <Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans>
-      </span>
-
-      <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
 
       <Label popover="language" label={t('Language')} />
       <Select
@@ -168,11 +144,53 @@ const FormDetails = ({ data, previous, schema }) => {
       )}
       <div className="flex justify-between mt-4">
         <Button type="button" color={'light'} onClick={() => previous(values)}>
+          <svg
+            aria-hidden="true"
+            className="mr-2 w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+              clipRule="evenodd"
+            ></path>
+          </svg>
           <Trans>Previous</Trans>
         </Button>
-        <Button type="submit" disabled={!isEmpty(errors)} data-cy="to-step-3">
-          <Trans>Next</Trans>
-        </Button>
+        <div className="flex justify-end gap-2">
+          <Button
+            gradientDuoTone="greenToBlue"
+            onClick={() => {
+              onSubmit(values, true);
+            }}
+          >
+            <Trans ns="submit">Submit</Trans>
+          </Button>
+          <Button
+            data-cy="to-step-2"
+            color={'light'}
+            onClick={() => {
+              onSubmit(values, false);
+            }}
+          >
+            <Trans>Add more info</Trans>
+            <svg
+              aria-hidden="true"
+              className="ml-2 w-5 h-5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              ></path>
+            </svg>
+          </Button>
+        </div>
       </div>
     </Form>
   );

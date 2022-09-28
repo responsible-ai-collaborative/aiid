@@ -10,6 +10,8 @@ import RelatedIncidents from 'components/RelatedIncidents';
 import { dateRegExp } from 'utils/date';
 import StepContainer from './StepContainer';
 import TagsInputGroup from '../TagsInputGroup';
+import { Editor } from '@bytemd/react';
+import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
 
 const StepOne = (props) => {
   const stepOneValidationSchema = yup.object().shape({
@@ -24,11 +26,6 @@ const StepOne = (props) => {
       .min(3, '*Authors must have at least 3 characters')
       .max(200, "*Authors can't be longer than 200 characters")
       .required('*Author is required. Anonymous or the publication can be entered.')
-      .nullable(),
-    submitters: yup
-      .string()
-      .min(3, '*Submitter must have at least 3 characters')
-      .max(200, "*Submitter list can't be longer than 200 characters")
       .nullable(),
     date_published: yup
       .string()
@@ -45,17 +42,22 @@ const StepOne = (props) => {
       .url('*Must enter URL in http://www.example.com format')
       .required('*URL required')
       .nullable(),
+    text: yup
+      .string()
+      .min(80, `*Text must have at least 80 characters`)
+      .max(50000, `*Text can’t be longer than 50000 characters`)
+      .required('*Text is required'),
   });
 
-  const handleSubmit = (values) => {
-    props.next(values);
+  const handleSubmit = (values, last = false) => {
+    props.next(values, last);
   };
 
   return (
     <StepContainer name={props.name}>
       <Formik
         initialValues={props.data}
-        onSubmit={handleSubmit}
+        onSubmit={() => {}}
         validationSchema={stepOneValidationSchema}
         enableReinitialize
       >
@@ -63,13 +65,14 @@ const StepOne = (props) => {
           parsingNews={props.parsingNews}
           parseNewsUrl={props.parseNewsUrl}
           schema={stepOneValidationSchema}
+          onSubmit={handleSubmit}
         />
       </Formik>
     </StepContainer>
   );
 };
 
-const FormDetails = ({ parsingNews, parseNewsUrl, schema }) => {
+const FormDetails = ({ parsingNews, parseNewsUrl, schema, onSubmit }) => {
   const { t } = useTranslation(['submit']);
 
   const { values, errors, touched, handleChange, handleBlur, setFieldValue, setFieldTouched } =
@@ -86,6 +89,12 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema }) => {
     Object.keys(errors).map((key) => {
       setFieldTouched(key, true);
     });
+  };
+
+  const styles = {
+    border: errors['text'] && touched['text'] ? '1px solid red' : 'none',
+    borderRadius: errors['text'] && touched['text'] ? '4px' : 'none',
+    padding: errors['text'] && touched['text'] ? '0.5rem' : '0',
   };
 
   return (
@@ -151,16 +160,6 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema }) => {
 
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byAuthors']} />
 
-        <TagsInputGroup
-          name="submitters"
-          placeholder={t('Your name as you would like it to appear in the leaderboard')}
-          label={t('Submitter(s)')}
-          className="mt-3"
-          errors={errors}
-          touched={touched}
-          schema={schema}
-        />
-
         <TextInputGroup
           name="date_published"
           label={t('Date Published')}
@@ -185,7 +184,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema }) => {
           label={t('Date Downloaded')}
           type="date"
           placeholder={t('YYYY-MM-DD')}
-          className="mt-3"
+          className="mt-3 mb-2"
           values={values}
           errors={errors}
           touched={touched}
@@ -193,9 +192,68 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema }) => {
           handleBlur={handleBlur}
           schema={schema}
         />
-        <div className="flex justify-end mt-4">
-          <Button type="submit" data-cy="to-step-2">
-            <Trans>Next</Trans>
+
+        <Label popover="text" label={'*' + t('Text')} />
+        <div
+          style={{
+            position: 'relative',
+            ...styles,
+          }}
+        >
+          {touched['text'] && errors['text'] && (
+            <div
+              style={{
+                position: 'absolute',
+                inset: '0px',
+                border: '1px solid var(--bs-red)',
+                zIndex: 10,
+                pointerEvents: 'none',
+              }}
+            />
+          )}
+          <Editor
+            value={values.text}
+            onChange={(value) => {
+              setFieldValue('text', value);
+              setFieldTouched('text', true);
+            }}
+          />
+        </div>
+        <span className="text-red-700 text-sm">
+          <Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans>
+        </span>
+
+        <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
+        <div className="flex justify-end mt-4 gap-2">
+          <Button
+            gradientDuoTone="greenToBlue"
+            onClick={() => {
+              onSubmit(values, true);
+            }}
+          >
+            <Trans ns="submit">Submit</Trans>
+          </Button>
+          <Button
+            data-cy="to-step-2"
+            color={'light'}
+            onClick={() => {
+              onSubmit(values, false);
+            }}
+          >
+            <Trans>Add more info</Trans>
+            <svg
+              aria-hidden="true"
+              className="ml-2 w-5 h-5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              ></path>
+            </svg>
           </Button>
         </div>
       </Form>
