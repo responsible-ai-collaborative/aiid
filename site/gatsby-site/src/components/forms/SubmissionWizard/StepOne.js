@@ -88,8 +88,6 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema }) => {
     });
   };
 
-  console.log('LOGGGG', errors, touched, parsingNews, !!errors.url || !touched.url || parsingNews);
-
   return (
     <>
       {parsingNews && (
