@@ -56,30 +56,30 @@ export const schema = yup.object().shape({
       is: (_id) => _id !== undefined,
       then: yup.string().required('*Incident Description required'),
     }),
-  developers: yup
-    .string()
-    .min(3, 'Alleged Developer must have at least 3 characters')
-    .max(200, "Alleged Developers can't be longer than 200 characters")
-    .when('_id', {
-      is: (_id) => _id !== undefined,
-      then: yup.string().required('*Developer is required'),
-    }),
-  deployers: yup
-    .string()
-    .min(3, 'Alleged Deployers must have at least 3 characters')
-    .max(200, "Alleged Deployers can't be longer than 200 characters")
-    .when('_id', {
-      is: (_id) => _id !== undefined,
-      then: yup.string().required('*Deployer is required'),
-    }),
-  harmed_parties: yup
-    .string()
-    .min(3, 'Harmed Parties must have at least 3 characters')
-    .max(200, "Harmed Parties can't be longer than 200 characters")
-    .when('_id', {
-      is: (_id) => _id !== undefined,
-      then: yup.string().required('*Harmed Parties is required'),
-    }),
+  developers: yup.string().when(['_id', 'incident_id'], {
+    is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
+    then: yup
+      .string()
+      .min(3, 'Alleged Developer must have at least 3 characters')
+      .max(200, "Alleged Developers can't be longer than 200 characters")
+      .required('*Developer is required'),
+  }),
+  deployers: yup.string().when(['_id', 'incident_id'], {
+    is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
+    then: yup
+      .string()
+      .min(3, 'Alleged Deployers must have at least 3 characters')
+      .max(200, "Alleged Deployers can't be longer than 200 characters")
+      .required('*Deployer is required'),
+  }),
+  harmed_parties: yup.string().when(['_id', 'incident_id'], {
+    is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
+    then: yup
+      .string()
+      .min(3, 'Harmed Parties must have at least 3 characters')
+      .max(200, "Harmed Parties can't be longer than 200 characters")
+      .required('*Harmed Parties is required'),
+  }),
   authors: yup
     .string()
     .min(3, '*Authors must have at least 3 characters')
