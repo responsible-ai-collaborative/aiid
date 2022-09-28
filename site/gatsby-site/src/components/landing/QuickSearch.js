@@ -14,11 +14,11 @@ export default function QuickSearch() {
     const width = window.innerWidth;
 
     if (width >= 350 && width < 450) {
-      setSearchPlaceholder(t('Search 1600+ reports'));
+      setSearchPlaceholder(t('Search 1800+ reports'));
     } else if (width >= 450 && width < 500) {
-      setSearchPlaceholder(t('Search 1600+ AI harm reports'));
+      setSearchPlaceholder(t('Search 1800+ AI harm reports'));
     } else if (width >= 500) {
-      setSearchPlaceholder(t('Search over 1600 reports of AI harms'));
+      setSearchPlaceholder(t('Search over 1800 reports of AI harms'));
     } else {
       setSearchPlaceholder(t('Search reports'));
     }
@@ -82,7 +82,7 @@ export default function QuickSearch() {
             onKeyPress={(e) => {
               e.key === 'Enter' && submit(e);
             }}
-            aria-label={t('Search over 1600 reports of AI harms')}
+            aria-label={t('Search over 1800 reports of AI harms')}
           />
         </div>
         <div className="flex flex-row items-center justify-center mt-7 gap-2">
