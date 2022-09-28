@@ -21,7 +21,6 @@ module.exports = (on, config) => {
   config.env.e2eUsername = process.env.E2E_ADMIN_USERNAME;
   config.env.e2ePassword = process.env.E2E_ADMIN_PASSWORD;
   config.env.realmAppId = process.env.GATSBY_REALM_APP_ID;
-  config.env.realmAppGraphqlUrl = process.env.GATSBY_REALM_APP_GRAPHQL_URL;
 
   return config;
 };
