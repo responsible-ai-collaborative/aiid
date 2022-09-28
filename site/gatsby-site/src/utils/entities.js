@@ -1,14 +1,6 @@
 const { default: slugify } = require('slugify');
 
-const idHash = {};
-
-const getId = (name) => {
-  if (!idHash[name]) {
-    idHash[name] = slugify(name, { lower: true });
-  }
-
-  return idHash[name];
-};
+const getId = (name) => slugify(name, { lower: true });
 
 module.exports.computeEntities = ({ incidents }) => {
   const entititiesHash = {};
