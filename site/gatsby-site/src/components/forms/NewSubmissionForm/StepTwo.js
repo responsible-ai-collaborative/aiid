@@ -25,11 +25,16 @@ const StepTwo = (props) => {
       .min(80, `*Text must have at least 80 characters`)
       .max(50000, `*Text can’t be longer than 50000 characters`)
       .required('*Text is required'),
-    incident_id: yup.number().positive().integer('*Must be an incident number or empty'),
-    incident_date: yup.date().when('incident_id', {
-      is: (incident_id) => incident_id == '' || incident_id === undefined,
-      then: yup.date().required('*Incident Date required').nullable(),
-    }),
+    incident_id: yup
+      .number()
+      .positive()
+      .integer('*Must be an incident number or empty'),
+    incident_date: yup
+      .date()
+      .when('incident_id', {
+        is: (incident_id) => (incident_id == '' || incident_id === undefined) && ,
+        then: yup.date().required('*Incident Date required').nullable(),
+      }),
   });
 
   const handleSubmit = (values) => {
@@ -48,7 +53,7 @@ const StepTwo = (props) => {
         validationSchema={stepTwoValidationSchema}
         enableReinitialize
       >
-        <FormDetails data={data} previous={props.previous} schema={stepTwoValidationSchema}/>
+        <FormDetails data={data} previous={props.previous} schema={stepTwoValidationSchema} />
       </Formik>
     </StepContainer>
   );
@@ -124,20 +129,23 @@ const FormDetails = ({ data, previous, schema }) => {
         ))}
       </Select>
 
-      <IncidentIdField
-        name="incident_id"
-        className="mt-3"
-        placeHolder={t('Leave empty to report a new incident')}
-        showIncidentData={false}
-      />
+      {data.is_incident_report && (<>
+        <IncidentIdField
+          name="incident_id"
+          className="mt-3"
+          placeHolder={t('Leave empty to report a new incident')}
+          showIncidentData={false}
+        />
 
-      <RelatedIncidents
-        incident={values}
-        setFieldValue={setFieldValue}
-        columns={['byIncidentId']}
-      />
+        <RelatedIncidents
+          incident={values}
+          setFieldValue={setFieldValue}
+          columns={['byIncidentId']}
+        />
+      </>)}
 
-      {!values.incident_id && (
+
+      {!values.incident_id && data.is_incident_report && (
         <TextInputGroup
           name="incident_date"
           label={t('Incident Date')}

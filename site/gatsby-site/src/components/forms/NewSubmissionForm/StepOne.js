@@ -1,6 +1,6 @@
 import { Badge, Button, Spinner } from 'flowbite-react';
 import { Formik, Form, useFormikContext } from 'formik';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TextInputGroup from '../TextInputGroup';
 import * as yup from 'yup';
@@ -11,9 +11,14 @@ import { dateRegExp } from 'utils/date';
 import StepContainer from './StepContainer';
 import TagsInputGroup from '../TagsInputGroup';
 import IsIncidentReportField from 'components/submissions/IsIncidentReportField';
+import useToastContext, { SEVERITY } from 'hooks/useToast';
+import { getCloudinaryPublicID } from 'utils/cloudinary';
 
 const StepOne = (props) => {
   const stepOneValidationSchema = yup.object().shape({
+    is_incident_report: yup
+      .bool()
+      .required(),
     title: yup
       .string()
       .min(6, '*Title must have at least 6 characters')
@@ -61,8 +66,6 @@ const StepOne = (props) => {
         enableReinitialize
       >
         <FormDetails
-          parsingNews={props.parsingNews}
-          parseNewsUrl={props.parseNewsUrl}
           schema={stepOneValidationSchema}
         />
       </Formik>
@@ -70,10 +73,10 @@ const StepOne = (props) => {
   );
 };
 
-const FormDetails = ({ parsingNews, parseNewsUrl, schema }) => {
+const FormDetails = ({ schema }) => {
   const { t } = useTranslation(['submit']);
 
-  const { values, errors, touched, handleChange, handleBlur, setFieldValue, setFieldTouched } =
+  const { values, errors, touched, handleChange, handleBlur, setFieldValue, setValues, setFieldTouched } =
     useFormikContext();
 
   useEffect(() => {
@@ -82,12 +85,60 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema }) => {
     }
   }, []);
 
-  const fetchNews = async (url) => {
-    await parseNewsUrl(url);
-    Object.keys(errors).map((key) => {
-      setFieldTouched(key, true);
-    });
-  };
+  const addToast = useToastContext();
+
+  const [parsingNews, setParsingNews] = useState(false);
+
+  const parseNewsUrl = async (newsUrl) => {
+    setParsingNews(true);
+
+    try {
+      const url = `/api/parseNews?url=${encodeURIComponent(newsUrl)}`;
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error('Parser error');
+      }
+
+      const news = await response.json();
+
+      addToast({
+        message: (
+          <Trans>Please verify all information programmatically pulled from the report</Trans>
+        ),
+        severity: SEVERITY.info,
+      });
+
+      const cloudinary_id = getCloudinaryPublicID(news.image_url);
+
+      const newValues = {
+        ...news,
+        url: newsUrl,
+        cloudinary_id,
+      };
+
+      for (const field in newValues) {
+        setFieldValue(field, ['authors'].includes(field) ? [newValues[field]] : newValues[field]);
+      }
+
+    } catch (e) {
+      const message =
+        e.message == 'Parser error'
+          ? t(
+            `Error fetching news. Scraping was blocked by {{newsUrl}}. Please enter the text manually.`,
+            { newsUrl }
+          )
+          : t(`Error reaching news info endpoint, please try again in a few seconds.`);
+
+      addToast({
+        message: <>{message}</>,
+        severity: SEVERITY.danger,
+      });
+    }
+
+    setParsingNews(false);
+  }
 
   return (
     <>
@@ -122,7 +173,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema }) => {
             setFieldTouched('url', true);
             handleChange(e);
           }}
-          btnClick={() => fetchNews(values.url)}
+          btnClick={() => parseNewsUrl(values.url)}
           loading={parsingNews}
           btnDisabled={!!errors.url || !touched.url || parsingNews}
           btnText={t('Fetch info')}
