@@ -1,37 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import MultiLineChart from 'components/visualizations/MultiLineChart';
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
 import { graphql } from 'gatsby';
+import { TextInput, Label } from 'flowbite-react';
+import { format } from 'date-fns';
 
 const countByDate = (items, series, startDate) =>
   items.reduce((points, item, i) => {
-    if (series == 'incidents') {
-      console.log(item);
-    }
     const date = new Date(Date.parse(item.date_submitted));
 
+    const newPoint = { date, count: i + 1, series };
+
+    const previous = points[points.length - 1];
+
     if (date < startDate) {
-      if (series == 'incidents') {
-        console.log('date', date, 'is less than startDate', startDate);
-      }
-      return [{ date: startDate, count: i + 1, series }];
-    }
-    const result = points.concat([{ date, count: i + 1, series }]);
-
-    if (series == 'incidents') {
-      console.log(`result`, result);
+      return [{ ...newPoint, date: startDate }];
     }
 
-    return result;
+    if (previous && date.valueOf() == previous.date.valueOf()) {
+      return points.slice(0, points.length - 1).concat([newPoint]);
+    }
+
+    return points.concat([newPoint]);
   }, []);
 
 export default function IncidentsOverTimePage({ data, ...props }) {
   const metaTitle = 'Incidents Over Time';
 
-  const startDate = new Date(2022, 2, 28);
+  const [startDate, setStartDate] = useState(new Date(2022, 2, 28));
 
-  console.log(`data.allMongodbAiidprodIncidents`, data.allMongodbAiidprodIncidents);
+  const [startAtZero, setStartAtZero] = useState(false);
 
   const incidentsByDate = data.allMongodbAiidprodIncidents.nodes
     .map((incident) => {
@@ -48,29 +47,22 @@ export default function IncidentsOverTimePage({ data, ...props }) {
     })
     .sort((a, b) => Date.parse(a.date_submitted) - Date.parse(b.date_submitted));
 
-  console.log(`incidentsByDate`, incidentsByDate);
-
   const incidentsData = countByDate(incidentsByDate, 'incidents', startDate);
 
-  console.log(`incidentsData`, incidentsData);
-
   const reportsData = countByDate(data.allMongodbAiidprodReports.nodes, 'reports', startDate);
-
-  console.log(`reportsData`, reportsData);
 
   const params = {
     x: (d) => d.date,
     y: (d) => d.count,
     z: (d) => d.series,
-    title: (d) => d.count + ' ' + d.series,
+    title: (d) => format(d.date, 'M/d/yy') + ' – ' + d.count + ' ' + d.series,
     width: 500,
     height: 500,
     color: (z) => ({ incidents: '#021b35', reports: '#ec9982' }[z]),
     xDomain: [startDate.valueOf(), new Date().valueOf()],
+    startAtZero,
     //voronoi: true, // if true, show Voronoi overlay
   };
-
-  console.log(`params.yDomain`, params.yDomain);
 
   return (
     <Layout {...props}>
@@ -81,17 +73,42 @@ export default function IncidentsOverTimePage({ data, ...props }) {
       <div className={'titleWrapper'}>
         <h1 className="tw-styled-heading">{metaTitle}</h1>
       </div>
-      <div className="flex">
+      <div className="flex flex-wrap md:flex-nowrap">
         <MultiLineChart
           id="test-chart"
           data={reportsData}
-          params={{ ...params, yDomain: [1400, 2100], yLabel: 'Reports' }}
+          params={{ ...params, yLabel: '', chartTitle: 'Reports' }}
         />
         <MultiLineChart
           id="incidents-chart"
           data={incidentsData}
-          params={{ ...params, yDomain: [175, 350], yLabel: 'Incidents' }}
+          params={{ ...params, modSize: 50, yLabel: '', chartTitle: 'Incidents' }}
         />
+      </div>
+
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <Label htmlFor="from-date" value="From" />
+          <TextInput
+            type="date"
+            id="from-date"
+            value={format(startDate, 'yyyy-MM-dd')}
+            onChange={(evt) => {
+              setStartDate(Date.parse(evt.target.value));
+            }}
+          />
+        </div>
+        <div className="flex gap-2 items-center">
+          <input
+            type="checkbox"
+            id="start-at-zero"
+            className="rounded grow-0 inline"
+            onChange={() => {
+              setStartAtZero(!startAtZero);
+            }}
+          />
+          <Label htmlFor="start-at-zero">y-axis starts at zero</Label>
+        </div>
       </div>
     </Layout>
   );

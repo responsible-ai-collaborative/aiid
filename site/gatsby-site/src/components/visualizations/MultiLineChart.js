@@ -2,12 +2,11 @@ import React, { useEffect } from 'react';
 import * as d3 from 'd3';
 
 function MultiLineChart({ data, id, params }) {
-  {
-    /* d3 wants to manipulate the dom on its own */
-  }
+  // d3 wants to manipulate the dom on its own,
   useEffect(() => {
+    document.getElementById(id).innerHTML = '';
     d3LineChart(data, '#' + id, params);
-  }, []);
+  }, [params]);
 
   return <div id={id}></div>;
 }
@@ -27,11 +26,11 @@ function d3LineChart(
     z = () => 1, // given d in data, returns the (categorical) z-value
     title, // given d in data, returns the title text
     defined, // for gaps in data
-    curve = d3.curveLinear, // method of interpolation between points
+    curve = d3.curveBasis, // method of interpolation between points
     marginTop = 60, // top margin, in pixels
-    marginRight = 40, // right margin, in pixels
-    marginBottom = 40, // bottom margin, in pixels
-    marginLeft = 80, // left margin, in pixels
+    marginRight = 60, // right margin, in pixels
+    marginBottom = 60, // bottom margin, in pixels
+    marginLeft = 60, // left margin, in pixels
     width = 640, // outer width, in pixels
     height = 400, // outer height, in pixels
     xType = d3.scaleUtc, // type of x-scale
@@ -45,14 +44,19 @@ function d3LineChart(
     zDomain, // array of z-values
     color = 'currentColor', // stroke color of line, as a constant or a function of *z*
     strokeLinecap, // stroke line cap of line
-    strokeLinejoin, // stroke line join of line
-    strokeWidth = 2, // stroke width of line
+    strokeLinejoin = 'round', // stroke line join of line
+    strokeWidth = 3, // stroke width of line
     strokeOpacity, // stroke opacity of line
     mixBlendMode = 'multiply', // blend mode of lines
     voronoi = false, // show a Voronoi overlay? (for debugging)
-    fontSize = '16pt',
+    fontSizePx = 20,
+    modSize = 100, // The y-axis starts at the nearest multiple of `modSize`
+    startAtZero = false,
+    chartTitle,
   } = {}
 ) {
+  const fontSize = fontSizePx + 'px';
+
   // Compute values.
   const X = d3.map(data, x);
 
@@ -67,7 +71,14 @@ function d3LineChart(
 
   // Compute default domains, and unique the z-domain.
   if (xDomain === undefined) xDomain = d3.extent(X);
-  if (yDomain === undefined) yDomain = [0, d3.max(Y, (d) => (typeof d === 'string' ? +d : d))];
+  if (yDomain === undefined)
+    yDomain = [
+      startAtZero
+        ? 0
+        : Math.floor(d3.min(Y, (d) => (typeof d === 'string' ? +d : d)) / modSize) * modSize,
+      d3.max(Y, (d) => (typeof d === 'string' ? +d : d)),
+    ];
+
   if (zDomain === undefined) zDomain = Z;
   zDomain = new d3.InternSet(zDomain);
 
@@ -81,22 +92,27 @@ function d3LineChart(
 
   const xAxis = d3
     .axisBottom(xScale)
-    .tickValues(
-      xDomain.concat(
-        [...Array(2)].map((e, i) => {
-          const interval = xDomain[1] - xDomain[0];
-
-          return xDomain[0] + (interval * (i + 1)) / 3;
-        })
-      )
-    )
     .tickSizeOuter(0)
-    .tickFormat(d3.timeFormat("%b '%y"));
+    .tickValues(
+      xDomain
+        .concat(
+          [...Array(2)].map((e, i) => {
+            const interval = xDomain[1] - xDomain[0];
 
-  const yAxis = d3.axisLeft(yScale).tickValues(
-    yScale.ticks(5).filter((i) => i != yDomain[0]),
-    yFormat
-  );
+            return xDomain[0] + (interval * (i + 1)) / 3;
+          })
+        )
+        .sort((a, b) => a - b)
+    )
+    .tickFormat(d3.timeFormat('%b ′%y'));
+
+  const yAxis = d3
+    .axisLeft(yScale)
+    .tickSizeOuter(0)
+    .tickValues(
+      yScale.ticks(5).filter((i) => i != yDomain[0]),
+      yFormat
+    );
 
   // Compute titles.
   const T = title === undefined ? Z : title === null ? null : d3.map(data, title);
@@ -143,15 +159,23 @@ function d3LineChart(
   svg
     .append('g')
     .attr('transform', `translate(0,${height - marginBottom})`)
-    .style('font-size', fontSize)
+    .style('font-size', fontSizePx * 0.8 + 'px')
+    .attr('class', 'x-axis')
     .call(xAxis);
+
+  const ticks = d3.selectAll(selector + ' .x-axis .tick line');
+
+  ticks.each(function (d, i) {
+    if (i == 0 || i == ticks.size() - 1) {
+      this.remove();
+    }
+  });
 
   svg
     .append('g')
     .attr('transform', `translate(${marginLeft},0)`)
-    .style('font-size', fontSize)
+    .style('font-size', fontSizePx * 0.8 + 'px')
     .call(yAxis)
-    //.call(g => g.select(".domain").remove())
     .call(
       voronoi
         ? () => {}
@@ -190,14 +214,27 @@ function d3LineChart(
 
   const dot = svg.append('g').attr('display', 'none');
 
-  dot.append('circle').attr('r', 2.5);
+  dot.append('circle').attr('r', 1.5 * strokeWidth);
 
   dot
     .append('text')
     .attr('font-family', 'sans-serif')
     .attr('font-size', fontSize)
     .attr('text-anchor', 'middle')
-    .attr('y', -8);
+    .attr('y', -10);
+
+  svg.append('g').call((group) =>
+    group
+      .append('text')
+      .attr('font-family', 'sans-serif')
+      .attr('font-size', fontSize)
+      .attr('font-weight', 'bold')
+      .attr('fill', 'currentColor')
+      .attr('text-anchor', 'middle')
+      .attr('y', marginTop - 10)
+      .attr('x', (width - marginLeft) / 2)
+      .text(chartTitle)
+  );
 
   function pointermoved(event) {
     const [xm, ym] = d3.pointer(event);
