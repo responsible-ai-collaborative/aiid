@@ -5,11 +5,11 @@
     },
     "authors": {
         "title": "Creator of the Linked Content",
-        "text": "Enter the names of the creators of the linked content. You should enter all persons contributing to the written work as a single row of a CSV."
+        "text": "Enter the names of the creators of the linked content. Press “enter” to begin a new item."
     },
     "submitters": {
         "title": "This is you!",
-        "text": "Enter your name here. If more than one person contributed to collecting the incident, you can enter multiple people separated with commas. Alternatively, you can enter \"Anonymous\" as submitter if you do not want to be attributed in the database. Entries in this field will be added to the public leaderboard."
+        "text": "Enter your name here. If more than one person contributed to collecting the incident, press “enter” to begin a new item. Alternatively, you can enter \"Anonymous\" as submitter if you do not want to be attributed in the database. Entries in this field will be added to the public leaderboard."
     },
     "incident_date": {
         "title": "When did the incident first occur?",
@@ -50,5 +50,17 @@
     "language": {
         "title": "Language of the incident report",
         "text": "This is the written language of the text found in the report, not the language of the people or countries involved in the report. The reports will be translated to supported languages when we ingest the text."
+    },
+    "harmed_parties": {
+      "title": "Alleged harmed or nearly harmed parties",
+      "text": "If multiple, press “enter” to begin a new item"
+    },
+    "deployers": {
+      "title": "Alleged deployer of AI system",
+      "text": "If multiple, press “enter” to begin a new item"
+    },
+    "developers": {
+      "title": "Alleged developer of AI system",
+      "text": "If multiple, press “enter” to begin a new item"
     }
 }

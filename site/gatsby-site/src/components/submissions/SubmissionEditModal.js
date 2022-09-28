@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
-import { Button, Modal, Spinner } from 'react-bootstrap';
-import SubmissionForm, { schema } from 'components/submissions/SubmissionForm';
+import { Button, Modal } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
+import SubmissionForm, { schema } from '../../components/submissions/SubmissionForm';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { FIND_SUBMISSION, UPDATE_SUBMISSION } from '../../graphql/submissions';
 import { Formik } from 'formik';
-import useToastContext, { SEVERITY } from 'hooks/useToast';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import isArray from 'lodash/isArray';
-import { stripMarkdown } from 'utils/typography';
-import RelatedIncidents from 'components/RelatedIncidents';
+import { stripMarkdown } from '../../utils/typography';
+import RelatedIncidents from '../../components/RelatedIncidents';
 
 export default function SubmissionEditModal({ show, onHide, submissionId }) {
   const [findSubmission, { data, loading }] = useLazyQuery(FIND_SUBMISSION);
@@ -71,45 +72,54 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
   };
 
   return (
-    <Modal size="lg" show={show} data-cy="submission-modal">
-      <Modal.Header closeButton onHide={onHide}>
-        <Modal.Title>Edit Submission</Modal.Title>
-      </Modal.Header>
-      {loading && (
-        <Modal.Body>
-          <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-        </Modal.Body>
-      )}
-      {!loading && data?.submission && (
-        <Formik
-          validationSchema={schema}
-          onSubmit={handleSubmit}
-          initialValues={{
-            ...data.submission,
-            incident_id: data.submission.incident_id == 0 ? '' : data.submission.incident_id,
-          }}
-        >
-          {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
-            <>
-              <Modal.Body>
-                <SubmissionForm />
-                <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  onClick={submitForm}
-                  className="mt-3"
-                  variant="primary"
-                  type="submit"
-                  disabled={isSubmitting || !isValid}
-                >
-                  Update
-                </Button>
-              </Modal.Footer>
-            </>
-          )}
-        </Formik>
-      )}
-    </Modal>
+    <div className="bootstrap">
+      <Modal size="lg" show={show} data-cy="submission-modal">
+        <Modal.Header closeButton onHide={onHide}>
+          <Modal.Title>Edit Submission</Modal.Title>
+        </Modal.Header>
+        {loading && (
+          <Modal.Body>
+            <div className="flex justify-center">
+              <Spinner />
+            </div>
+          </Modal.Body>
+        )}
+        {!loading && data?.submission && (
+          <Formik
+            validationSchema={schema}
+            onSubmit={handleSubmit}
+            initialValues={{
+              ...data.submission,
+              developers: data.submission.developers === null ? [] : data.submission.developers,
+              deployers: data.submission.deployers === null ? [] : data.submission.deployers,
+              harmed_parties:
+                data.submission.harmed_parties === null ? [] : data.submission.harmed_parties,
+              incident_id: data.submission.incident_id == 0 ? '' : data.submission.incident_id,
+            }}
+          >
+            {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
+              <>
+                <Modal.Body>
+                  <SubmissionForm />
+                  <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    onClick={submitForm}
+                    className="mt-3"
+                    variant="primary"
+                    type="submit"
+                    disabled={isSubmitting || !isValid}
+                    data-cy="update-btn"
+                  >
+                    Update
+                  </Button>
+                </Modal.Footer>
+              </>
+            )}
+          </Formik>
+        )}
+      </Modal>
+    </div>
   );
 }

@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
-import { Form, Spinner } from 'react-bootstrap';
-import { useUserContext } from 'contexts/userContext';
+import { Form } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
+import { useUserContext } from '../contexts/userContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { Trans, useTranslation } from 'react-i18next';
-import Link from 'components/ui/Link';
+import Link from '../components/ui/Link';
 import Button from '../elements/Button';
+import { StringParam, useQueryParams } from 'use-query-params';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -19,40 +21,36 @@ const Login = (props) => {
   const {
     user,
     loading,
-    actions: { loginWithEmail, loginWithFacebook, loginWithGoogle },
+    actions: { loginWithEmail, loginWithFacebook },
   } = useUserContext();
 
   const [displayFacebookSpinner, setDisplayFacebookSpinner] = useState(false);
-
-  const [displayGoogleSpinner, setDisplayGoogleSpinner] = useState(false);
 
   const { t } = useTranslation();
 
   const loginRedirectUri = `${props.location.origin}/logincallback`;
 
+  let [{ redirectTo }] = useQueryParams({
+    redirectTo: StringParam,
+  });
+
+  redirectTo = redirectTo ?? '/';
+
   const clickLoginWithFacebook = async () => {
     setDisplayFacebookSpinner(true);
 
-    await loginWithFacebook({ loginRedirectUri });
+    await loginWithFacebook({ loginRedirectUri, redirectTo });
 
     setDisplayFacebookSpinner(false);
   };
 
-  const clickLoginWithGoogle = async () => {
-    setDisplayGoogleSpinner(true);
-
-    await loginWithGoogle({ loginRedirectUri });
-
-    setDisplayGoogleSpinner(false);
-  };
-
   return (
-    <Layout {...props}>
+    <Layout {...props} className="bootstrap">
       {loading ? (
-        <>
-          <Spinner animation="border" size="sm" role="status" className="tw-mr-2" />
+        <div className="flex flex-wrap gap-2">
+          <Spinner />
           <Trans>Loading...</Trans>
-        </>
+        </div>
       ) : user && user.isLoggedIn && user.profile.email ? (
         <>
           <p>
@@ -69,14 +67,14 @@ const Login = (props) => {
             initialValues={{ email: '', password: '' }}
             validationSchema={LoginSchema}
             onSubmit={async ({ email, password }, { setSubmitting }) => {
-              await loginWithEmail({ email, password });
+              await loginWithEmail({ email, password, redirectTo });
 
               setSubmitting(false);
             }}
           >
             {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, isValid }) => (
               <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3 w-100" controlId="formBasicEmail">
+                <Form.Group className="mb-4 w-full" controlId="formBasicEmail">
                   <Form.Label>
                     <Trans>Email address</Trans>
                   </Form.Label>
@@ -93,7 +91,7 @@ const Login = (props) => {
                   </Form.Control.Feedback>
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Group className="mb-4" controlId="formBasicPassword">
                   <Form.Label>
                     <Trans ns="login">Password</Trans>
                   </Form.Label>
@@ -118,33 +116,31 @@ const Login = (props) => {
                 <Button
                   variant="primary"
                   type="submit"
-                  disabled={
-                    isSubmitting || !isValid || displayFacebookSpinner || displayGoogleSpinner
-                  }
-                  className="tw-w-full"
+                  disabled={isSubmitting || !isValid || displayFacebookSpinner}
+                  className="w-full"
                 >
-                  {isSubmitting && (
-                    <Spinner animation="border" size="sm" role="status" className="tw-mr-2" />
-                  )}
-                  <Trans ns="login">Login</Trans>
+                  {isSubmitting && <Spinner />}
+                  <span className="pl-3">
+                    <Trans ns="login">Login</Trans>
+                  </span>
                 </Button>
               </Form>
             )}
           </Formik>
 
-          <div className="my-2 d-flex justify-content-center">
+          <div className="my-2 flex justify-center">
             <Trans>or</Trans>
           </div>
 
           <Button
             variant="primary"
             onClick={clickLoginWithFacebook}
-            className={'tw-w-full'}
-            disabled={displayFacebookSpinner || displayGoogleSpinner}
+            className={'w-full'}
+            disabled={displayFacebookSpinner}
           >
-            <div className={'d-flex justify-content-center align-items-center'}>
+            <div className={'flex justify-center items-center gap-2'}>
               {displayFacebookSpinner ? (
-                <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
+                <Spinner />
               ) : (
                 <FontAwesomeIcon
                   icon={faFacebook}
@@ -153,36 +149,11 @@ const Login = (props) => {
                   title="Login with Facebook"
                 />
               )}
-              <div className={'tw-ml-2'}>
-                <Trans ns="login">Login with Facebook</Trans>
-              </div>
+              <Trans ns="login">Login with Facebook</Trans>
             </div>
           </Button>
 
-          <Button
-            variant="primary"
-            onClick={clickLoginWithGoogle}
-            className={'tw-w-full tw-mt-5'}
-            disabled={displayGoogleSpinner || displayFacebookSpinner}
-          >
-            <div className={'d-flex justify-content-center align-items-center'}>
-              {displayGoogleSpinner ? (
-                <Spinner animation="border" size="sm" role="status" aria-hidden="true" />
-              ) : (
-                <FontAwesomeIcon
-                  icon={faGoogle}
-                  color={'#ffffff'}
-                  className={'pointer fa fa-lg'}
-                  title="Login with Google"
-                />
-              )}
-              <div className={'tw-ml-2'}>
-                <Trans ns="login">Login with Google</Trans>
-              </div>
-            </div>
-          </Button>
-
-          <div className="mt-4">
+          <div className="mt-3">
             <Trans ns="login">Don&apos;t have an account?</Trans>{' '}
             <Link to="/signup">
               <Trans ns="login">Sign up</Trans>

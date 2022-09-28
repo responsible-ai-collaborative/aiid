@@ -4,6 +4,7 @@ import { Button, Form, Pagination } from 'react-bootstrap';
 import { useBlockLayout, useFilters, usePagination, useResizeColumns, useTable } from 'react-table';
 import IncidentEditModal from './IncidentEditModal';
 import styled from 'styled-components';
+import { Trans, useTranslation } from 'react-i18next';
 
 const Table = styled.div`
   display: inline-block;
@@ -65,12 +66,14 @@ function DefaultColumnFilter({
 }) {
   const count = preFilteredRows.length;
 
+  const { t } = useTranslation();
+
   if (!canFilter) {
     return <HeaderText>{Header}</HeaderText>;
   }
 
   return (
-    <>
+    <div className="bootstrap">
       <HeaderText>{Header}</HeaderText>
       <Form.Control
         data-cy={`input-filter-${Header}`}
@@ -80,9 +83,9 @@ function DefaultColumnFilter({
         onChange={(e) => {
           setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
         }}
-        placeholder={`Search ${count} records...`}
+        placeholder={t(`Search {{count}} records...`, { count })}
       />
-    </>
+    </div>
   );
 }
 
@@ -111,35 +114,35 @@ export default function IncidentsTable({ data }) {
         Header: 'Incident ID',
         accessor: 'incident_id',
         Cell: ({ row: { values } }) => (
-          <a className="d-flex" href={`/cite/${values.incident_id}`}>
+          <a className="flex" href={`/cite/${values.incident_id}`}>
             Incident {values.incident_id}
           </a>
         ),
       },
       {
-        Header: 'Title',
+        Header: <Trans>Title</Trans>,
         accessor: 'title',
       },
       {
-        Header: 'Description',
+        Header: <Trans>Description</Trans>,
         accessor: 'description',
       },
       {
-        Header: 'date',
+        Header: <Trans>date</Trans>,
         accessor: 'date',
       },
       {
-        Header: 'Alleged Deployer of AI System',
+        Header: <Trans>Alleged Deployer of AI System</Trans>,
         accessor: 'AllegedDeployerOfAISystem',
         Cell: ListCell,
       },
       {
-        Header: 'Alleged Developer of AISystem',
+        Header: <Trans>Alleged Developer of AISystem</Trans>,
         accessor: 'AllegedDeveloperOfAISystem',
         Cell: ListCell,
       },
       {
-        Header: 'Alleged Harmed or Nearly Harmed Parties',
+        Header: <Trans>Alleged Harmed or Nearly Harmed Parties</Trans>,
         accessor: 'AllegedHarmedOrNearlyHarmedParties',
         Cell: ListCell,
       },
@@ -149,13 +152,15 @@ export default function IncidentsTable({ data }) {
       columns.push({
         Header: 'Actions',
         Cell: ({ row: { values } }) => (
-          <Button
-            data-cy="edit-incident"
-            variant="link"
-            onClick={() => setIncindentIdToEdit(values.incident_id)}
-          >
-            Edit
-          </Button>
+          <div className="bootstrap">
+            <Button
+              data-cy="edit-incident"
+              variant="link"
+              onClick={() => setIncindentIdToEdit(values.incident_id)}
+            >
+              Edit
+            </Button>
+          </div>
         ),
       });
     }
@@ -233,7 +238,7 @@ export default function IncidentsTable({ data }) {
         </div>
       </Table>
 
-      <div className="d-flex gap-2 justify-content-start align-items-center mt-3">
+      <div className="flex gap-2 justify-start items-center mt-3 bootstrap">
         <Pagination className="mb-0">
           <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage} />
           <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage} />

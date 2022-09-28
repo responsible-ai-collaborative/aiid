@@ -11,8 +11,8 @@ describe('Social Share buttons on pages', () => {
     {
       page: 'Incident',
       url: incidentUrl,
-      title: `Incident 10: Starbucks Employees Assigned to Bad Shifts`,
-      shareButtonSections: 2,
+      title: `Incident 10: Kronos’s Algorithm Allegedly Created Scheduling and Financial Issues for Starbucks Employees`,
+      shareButtonSections: 1,
     },
     {
       page: 'Blog Post',
