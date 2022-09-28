@@ -103,15 +103,6 @@ const StepThree = (props) => {
               schema={stepThreeValidationSchema}
             />
 
-            <TagsInputGroup
-              name="tags"
-              label={t('Tags')}
-              className="mt-3"
-              {...TextInputGroupProps}
-              placeholder={t('Tags')}
-              schema={stepThreeValidationSchema}
-            />
-
             {!props.data.incident_id && (
               <>
                 <TagsInputGroup
@@ -142,6 +133,15 @@ const StepThree = (props) => {
                 />
               </>
             )}
+
+            <TagsInputGroup
+              name="tags"
+              label={t('Tags')}
+              className="mt-3"
+              {...TextInputGroupProps}
+              placeholder={t('Tags')}
+              schema={stepThreeValidationSchema}
+            />
 
             <TextInputGroup
               name="editor_notes"
