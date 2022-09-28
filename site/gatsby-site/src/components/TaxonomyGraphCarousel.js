@@ -1,39 +1,20 @@
 import React from 'react';
 import { Carousel } from 'flowbite-react';
-import { gql, useQuery } from '@apollo/client';
 import BillboardChart from 'react-billboardjs';
 import { donut } from 'billboard.js';
 
-const TaxonomyGraphCarousel = ({ namespace, axes }) => {
-  const { data: taxaData } = useQuery(gql`
-    query Taxa {
-      taxa (query: { namespace: "${namespace}" }) {
-        namespace
-        field_list {
-          permitted_values
-          short_name
-        }
-      }
-    }
-  `);
+const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
+  const taxaData = data.allMongodbAiidprodTaxa;
 
-  const { data: classificationsData, loading: classificationsLoading } = useQuery(gql`
-    query ClassificationsInNamespace {
-      classifications(query: { namespace: "${namespace}" } ) {
-        incident_id
-        classifications {
-          ${axes.map((axis) => axis.replace(/ /g, '')).join('\n')}
-          Publish
-        }
-      }
-    }
-  `);
+  const classificationsData = data.allMongodbAiidprodClassifications;
+
+  const classificationsLoading = false;
 
   const includedCategories = {};
 
   if (taxaData) {
-    for (const axis in taxaData.taxa.field_list) {
-      includedCategories[axis] = taxaData.taxa.field_list[axis].permitted_values;
+    for (const axis in taxaData.nodes.field_list) {
+      includedCategories[axis] = taxaData.nodes.field_list[axis].permitted_values;
     }
   }
 
@@ -53,9 +34,12 @@ const TaxonomyGraphCarousel = ({ namespace, axes }) => {
   //      ...
   //    }
   //  }
-  if (!classificationsLoading && classificationsData?.classifications) {
-    for (const classification of classificationsData.classifications) {
+  if (!classificationsLoading && classificationsData?.nodes) {
+    for (const classification of classificationsData.nodes) {
       if (!classification.classifications.Publish) {
+        continue;
+      }
+      if (classification.namespace != namespace) {
         continue;
       }
       for (const axis in classification.classifications) {
@@ -106,9 +90,9 @@ const TaxonomyGraphCarousel = ({ namespace, axes }) => {
       <div className="h-80 dark">
         <Carousel>
           {!classificationsLoading &&
-            classificationsData?.classifications &&
+            classificationsData?.nodes &&
             axes.map((axis, index) => {
-              const dbAxis = axis.replace(/ /g, '');
+              const dbAxis = axis.replace(/ /g, '_');
 
               const columns = Object.keys(categoryCounts[dbAxis])
                 .map((category) => [category, categoryCounts[dbAxis][category]])
