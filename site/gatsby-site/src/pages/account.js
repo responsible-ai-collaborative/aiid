@@ -6,6 +6,7 @@ import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import AiidHelmet from 'components/AiidHelmet';
 import { StyledHeading } from 'components/styles/Docs';
+import UserSubscriptions from 'components/UserSubscriptions';
 
 const Account = (props) => {
   const { user, loading } = useUserContext();
@@ -28,22 +29,28 @@ const Account = (props) => {
           <Trans>Loading...</Trans>
         </div>
       ) : user && user.isLoggedIn && user.profile.email ? (
-        <div className="block p-6 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
-          <p>
-            <Trans>Email address</Trans>
-            {': '}
-            {user.profile.email}
-          </p>
-          <Link to="/logout">
-            <Trans ns="login">Log out</Trans>
-          </Link>
-        </div>
-      ) : (
         <>
-          <Link to="/login">
-            <Trans ns="login">Login</Trans>
-          </Link>
+          <div className="block p-6 rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
+            <p>
+              <Trans>Email address</Trans>
+              {': '}
+              {user.profile.email}
+            </p>
+            <Link to="/logout">
+              <Trans ns="login">Log out</Trans>
+            </Link>
+          </div>
+          <div className="block mt-6 p-6 rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
+            <h1>
+              <Trans ns="account">Subscriptions</Trans>
+            </h1>
+            <UserSubscriptions />
+          </div>
         </>
+      ) : (
+        <Link to="/login">
+          <Trans ns="login">Login</Trans>
+        </Link>
       )}
     </Layout>
   );
