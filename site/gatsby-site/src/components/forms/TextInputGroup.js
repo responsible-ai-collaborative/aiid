@@ -19,7 +19,6 @@ const TextInputGroup = ({
   inputClassName = '',
   ...props
 }) => {
-
   const [optional, setOptional] = useState(true);
 
   useEffect(async () => {
@@ -28,7 +27,7 @@ const TextInputGroup = ({
 
   return (
     <Form.Group className={`form-group ${className}`}>
-      <Label popover={name} label={(optional ? '' : '*') + label}   />
+      <Label popover={name} label={(optional ? '' : '*') + label} />
       <InputGroup className="mt-1">
         {type === 'textarea' ? (
           <TextAreaInput
@@ -84,8 +83,11 @@ const TextAreaInput = ({
 }) => (
   <textarea
     name={name}
-    className={`block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${className} ${touched[name] && errors[name] ? 'border-red-600' : null
-      } ${className}`}
+    className={`block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white ${className} ${
+      touched[name] && errors[name]
+        ? 'border-red-600 focus:ring-red-500'
+        : 'border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-500'
+    } ${className}`}
     placeholder={placeholder}
     defaultValue={values[name] || ''}
     {...props}
@@ -109,8 +111,11 @@ const Input = ({
   <input
     type={type}
     name={name}
-    className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${touched[name] && errors[name] ? 'border-red-600' : null
-      } ${className}`}
+    className={`bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white ${
+      touched[name] && errors[name]
+        ? 'border-red-600 focus:ring-red-500'
+        : 'border-gray-300 dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-500'
+    } ${className}`}
     placeholder={placeholder}
     defaultValue={values[name] || ''}
     {...props}

@@ -2,11 +2,8 @@ import { Button, Select } from 'flowbite-react';
 import { Formik, Form, useFormikContext } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import TextInputGroup from '../TextInputGroup';
 import * as yup from 'yup';
 import Label from '../Label';
-import IncidentIdField from 'components/incidents/IncidentIdField';
-import RelatedIncidents from 'components/RelatedIncidents';
 import supportedLanguages from '../../i18n/languages.json';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
 import StepContainer from './StepContainer';
@@ -22,12 +19,12 @@ const StepTwo = (props) => {
       .min(3, '*Submitter must have at least 3 characters')
       .max(200, "*Submitter list can't be longer than 200 characters")
       .nullable(),
-    image_url: yup.string(),
-    incident_id: yup.number().positive().integer('*Must be an incident number or empty'),
-    incident_date: yup.date().when('incident_id', {
-      is: (incident_id) => incident_id == '' || incident_id === undefined,
-      then: yup.date().required('*Incident Date required').nullable(),
-    }),
+    image_url: yup
+      .string()
+      .matches(
+        /((https?):\/\/)(\S)*$/,
+        '*Must enter URL in http://www.example.com/images/preview.png format'
+      ),
   });
 
   const handleSubmit = (values, last) => {
@@ -50,18 +47,27 @@ const StepTwo = (props) => {
           data={data}
           previous={props.previous}
           schema={stepTwoValidationSchema}
-          onSubmit={handleSubmit}
+          submitForm={handleSubmit}
         />
       </Formik>
     </StepContainer>
   );
 };
 
-const FormDetails = ({ data, previous, schema, onSubmit }) => {
+const FormDetails = ({ data, previous, schema, submitForm }) => {
   const { t } = useTranslation(['submit']);
 
-  const { values, errors, touched, handleChange, handleBlur, setFieldValue, setFieldTouched } =
-    useFormikContext();
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    setFieldValue,
+    setFieldTouched,
+    isValid,
+    validateForm,
+  } = useFormikContext();
 
   useEffect(() => {
     Object.keys(errors).map((key) => {
@@ -72,6 +78,18 @@ const FormDetails = ({ data, previous, schema, onSubmit }) => {
   useEffect(() => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
+
+  const validateAndSubmitForm = async (last = false) => {
+    if (!isValid) {
+      const invalidFields = await validateForm();
+
+      Object.keys(invalidFields).map((key) => {
+        setFieldTouched(key, true);
+      });
+    } else {
+      submitForm(values, last);
+    }
+  };
 
   return (
     <Form>
@@ -113,35 +131,6 @@ const FormDetails = ({ data, previous, schema, onSubmit }) => {
         ))}
       </Select>
 
-      <IncidentIdField
-        name="incident_id"
-        className="mt-3"
-        placeHolder={t('Leave empty to report a new incident')}
-        showIncidentData={false}
-      />
-
-      <RelatedIncidents
-        incident={values}
-        setFieldValue={setFieldValue}
-        columns={['byIncidentId']}
-      />
-
-      {!values.incident_id && (
-        <TextInputGroup
-          name="incident_date"
-          label={t('Incident Date')}
-          placeholder={t('Incident Date')}
-          type="date"
-          className="mt-3"
-          disabled={values.incident_id}
-          values={values}
-          errors={errors}
-          touched={touched}
-          handleChange={handleChange}
-          handleBlur={handleBlur}
-          schema={schema}
-        />
-      )}
       <div className="flex justify-between mt-4">
         <Button type="button" color={'light'} onClick={() => previous(values)}>
           <svg
@@ -163,16 +152,16 @@ const FormDetails = ({ data, previous, schema, onSubmit }) => {
           <Button
             gradientDuoTone="greenToBlue"
             onClick={() => {
-              onSubmit(values, true);
+              validateAndSubmitForm(true);
             }}
           >
             <Trans ns="submit">Submit</Trans>
           </Button>
           <Button
-            data-cy="to-step-3"
+            data-cy="to-step-2"
             color={'light'}
             onClick={() => {
-              onSubmit(values, false);
+              validateAndSubmitForm(false);
             }}
           >
             <Trans>Add more info</Trans>

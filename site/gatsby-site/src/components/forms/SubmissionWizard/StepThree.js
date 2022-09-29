@@ -16,41 +16,19 @@ const StepThree = (props) => {
     description: yup
       .string()
       .min(3, 'Description must have at least 3 characters')
-      .max(200, "Description can't be longer than 200 characters")
-      .when('_id', {
-        is: (_id) => _id !== undefined,
-        then: yup.string().required('*Incident Description required'),
-      }),
+      .max(200, "Description can't be longer than 200 characters"),
     developers: yup
       .string()
       .min(3, 'Alleged Developer must have at least 3 characters')
-      .max(200, "Alleged Developers can't be longer than 200 characters")
-      .when('_id', {
-        is: (_id) => _id !== undefined,
-        then: yup.string().required('*Developer is required'),
-      }),
+      .max(200, "Alleged Developers can't be longer than 200 characters"),
     deployers: yup
       .string()
       .min(3, 'Alleged Deployers must have at least 3 characters')
-      .max(200, "Alleged Deployers can't be longer than 200 characters")
-      .when('_id', {
-        is: (_id) => _id !== undefined,
-        then: yup.string().required('*Deployer is required'),
-      }),
+      .max(200, "Alleged Deployers can't be longer than 200 characters"),
     harmed_parties: yup
       .string()
       .min(3, 'Harmed Parties must have at least 3 characters')
-      .max(200, "Harmed Parties can't be longer than 200 characters")
-      .when('_id', {
-        is: (_id) => _id !== undefined,
-        then: yup.string().required('*Harm Parties is required'),
-      }),
-    image_url: yup
-      .string()
-      .matches(
-        /((https?):\/\/)(\S)*$/,
-        '*Must enter URL in http://www.example.com/images/preview.png format'
-      ),
+      .max(200, "Harmed Parties can't be longer than 200 characters"),
   });
 
   const handleSubmit = (values) => {

@@ -12,6 +12,7 @@ import StepContainer from './StepContainer';
 import TagsInputGroup from '../TagsInputGroup';
 import { Editor } from '@bytemd/react';
 import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
+import IncidentIdField from 'components/incidents/IncidentIdField';
 
 const StepOne = (props) => {
   const stepOneValidationSchema = yup.object().shape({
@@ -47,6 +48,11 @@ const StepOne = (props) => {
       .min(80, `*Text must have at least 80 characters`)
       .max(50000, `*Text can’t be longer than 50000 characters`)
       .required('*Text is required'),
+    incident_id: yup.number().positive().integer('*Must be an incident number or empty'),
+    incident_date: yup.date().when('incident_id', {
+      is: (incident_id) => incident_id == '' || incident_id === undefined,
+      then: yup.date().required('*Incident Date required').nullable(),
+    }),
   });
 
   const handleSubmit = (values, last = false) => {
@@ -65,18 +71,27 @@ const StepOne = (props) => {
           parsingNews={props.parsingNews}
           parseNewsUrl={props.parseNewsUrl}
           schema={stepOneValidationSchema}
-          onSubmit={handleSubmit}
+          submitForm={handleSubmit}
         />
       </Formik>
     </StepContainer>
   );
 };
 
-const FormDetails = ({ parsingNews, parseNewsUrl, schema, onSubmit }) => {
+const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm }) => {
   const { t } = useTranslation(['submit']);
 
-  const { values, errors, touched, handleChange, handleBlur, setFieldValue, setFieldTouched } =
-    useFormikContext();
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    setFieldValue,
+    setFieldTouched,
+    isValid,
+    validateForm,
+  } = useFormikContext();
 
   useEffect(() => {
     if (!values['date_downloaded']) {
@@ -95,6 +110,18 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, onSubmit }) => {
     border: errors['text'] && touched['text'] ? '1px solid red' : 'none',
     borderRadius: errors['text'] && touched['text'] ? '4px' : 'none',
     padding: errors['text'] && touched['text'] ? '0.5rem' : '0',
+  };
+
+  const validateAndSubmitForm = async (last = false) => {
+    if (!isValid) {
+      const invalidFields = await validateForm();
+
+      Object.keys(invalidFields).map((key) => {
+        setFieldTouched(key, true);
+      });
+    } else {
+      submitForm(values, last);
+    }
   };
 
   return (
@@ -173,6 +200,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, onSubmit }) => {
           handleBlur={handleBlur}
           schema={schema}
         />
+
         <RelatedIncidents
           incident={values}
           setFieldValue={setFieldValue}
@@ -224,11 +252,42 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, onSubmit }) => {
         </span>
 
         <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
+
+        <IncidentIdField
+          name="incident_id"
+          className="mt-3"
+          placeHolder={t('Leave empty to report a new incident')}
+          showIncidentData={false}
+        />
+
+        <RelatedIncidents
+          incident={values}
+          setFieldValue={setFieldValue}
+          columns={['byIncidentId']}
+        />
+
+        {!values.incident_id && (
+          <TextInputGroup
+            name="incident_date"
+            label={t('Incident Date')}
+            placeholder={t('Incident Date')}
+            type="date"
+            className="mt-3"
+            disabled={values.incident_id}
+            values={values}
+            errors={errors}
+            touched={touched}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            schema={schema}
+          />
+        )}
+
         <div className="flex justify-end mt-4 gap-2">
           <Button
             gradientDuoTone="greenToBlue"
             onClick={() => {
-              onSubmit(values, true);
+              validateAndSubmitForm(true);
             }}
           >
             <Trans ns="submit">Submit</Trans>
@@ -237,7 +296,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, onSubmit }) => {
             data-cy="to-step-2"
             color={'light'}
             onClick={() => {
-              onSubmit(values, false);
+              validateAndSubmitForm(false);
             }}
           >
             <Trans>Add more info</Trans>
