@@ -33,9 +33,9 @@ describe('The Submit form', () => {
 
     cy.wait('@parseNews');
 
-    cy.get('input[name="submitters"]').type('Something');
-
     cy.get('[data-cy="to-step-2"]').click();
+
+    cy.get('input[name="submitters"]').type('Something');
 
     cy.wait(200);
 
@@ -54,7 +54,7 @@ describe('The Submit form', () => {
     cy.get('button[type="submit"]').click();
 
     cy.wait('@insertSubmission').then((xhr) => {
-      console.log(xhr.request.body.variables.submission)
+      console.log(xhr.request.body.variables.submission);
       expect(xhr.request.body.variables.submission).to.deep.nested.include({
         title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
         submitters: ['Something'],
@@ -154,12 +154,6 @@ describe('The Submit form', () => {
 
     cy.get('button').contains('Fetch info').click();
 
-    cy.get('input[name="submitters"]').type('Something');
-
-    cy.get('[data-cy="to-step-2"]').click();
-
-    cy.wait(200);
-
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
     );
@@ -175,6 +169,12 @@ describe('The Submit form', () => {
     )
       .last()
       .click();
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    cy.wait(200);
+
+    cy.get('input[name="submitters"]').type('Something');
 
     cy.wait('@findIncident');
 
@@ -416,7 +416,7 @@ describe('The Submit form', () => {
       (req) =>
         req.body.operationName == 'ProbablyRelatedReports' &&
         req.body.variables.query?.url_in?.[0] ==
-        'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
+          'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
       'RelatedReportsByURL',
       relatedReports.byURL
     );
@@ -519,7 +519,7 @@ describe('The Submit form', () => {
       (req) =>
         req.body.operationName == 'ProbablyRelatedReports' &&
         req.body.variables.query?.url_in?.[0] ==
-        'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
+          'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
       'RelatedReportsByURL',
       relatedReports.byURL
     );
@@ -592,20 +592,20 @@ describe('The Submit form', () => {
 
     const params = new URLSearchParams(values);
 
-
     cy.visit(url + `?${params.toString()}`);
-
-    cy.get('[data-cy="to-step-2"]').click();
-
-    cy.wait(200);
 
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
     );
+
     cy.get('[data-cy=related-byText] [data-cy=result] a[data-cy=title]').should(
       'contain',
       'YouTube'
     );
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    cy.wait(200);
   });
 
   it('Should *not* show semantically related reports when the text is under 256 non-space characters', () => {
@@ -625,19 +625,20 @@ describe('The Submit form', () => {
 
     cy.visit(url + `?${params.toString()}`);
 
-    cy.get('[data-cy="to-step-2"]').click();
-
-    cy.wait(200);
-
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube.`
     );
+
     cy.get('[data-cy=related-byText]').contains('Reports must have at least').should('exist');
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    cy.wait(200);
   });
 
   it('Should show fallback preview image on initial load', () => {
-
-    const imageUrl = 'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/fallback.jpg';
+    const imageUrl =
+      'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/fallback.jpg';
 
     const values = {
       url: 'https://test.com',
@@ -663,7 +664,6 @@ describe('The Submit form', () => {
   });
 
   it('Should update preview image when url is typed', () => {
-
     const values = {
       url: 'https://test.com',
       title: 'test title',
@@ -687,11 +687,10 @@ describe('The Submit form', () => {
       'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/v1/reports/' +
       suffix;
 
-    
     cy.get('[data-cy="to-step-2"]').click();
 
     cy.wait(200);
-    
+
     cy.get('input[name=image_url]').scrollIntoView().type(newImageUrl);
 
     cy.get('[data-cy=image-preview-figure] img', { timeout: 30000 })
@@ -714,21 +713,24 @@ describe('The Submit form', () => {
       url: 'https://test.com',
       title: 'test title',
       authors: 'test author',
-      submitters: 'test submitter',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
     };
 
-    
     for (const key in valuesStep1) {
       cy.get(`[name="${key}"]`).type(valuesStep1[key]);
     }
-    
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
+
     cy.get('[data-cy="to-step-2"]').click();
 
     cy.wait(200);
 
     const valuesStep2 = {
+      submitters: 'test submitter',
       incident_date: '2022-01-01',
       image_url: 'https://test.com/image.jpg',
       incident_id: '3456456',
@@ -737,10 +739,6 @@ describe('The Submit form', () => {
     for (const key in valuesStep2) {
       cy.get(`[name="${key}"]`).type(valuesStep2[key]);
     }
-
-    cy.setEditorText(
-      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
-    );
 
     cy.wait('@findIncident');
 
@@ -764,31 +762,30 @@ describe('The Submit form', () => {
       url: 'https://test.com',
       title: 'test title',
       authors: 'test author',
-      submitters: 'test submitter',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
     };
 
-    
     for (const key in valuesStep1) {
       cy.get(`[name="${key}"]`).type(valuesStep1[key]);
-    }
-    
-    cy.get('[data-cy="to-step-2"]').click();
-
-    cy.wait(200);
-
-    const valuesStep2 = {
-      image_url: 'https://test.com/image.jpg'
-    };
-
-    for (const key in valuesStep2) {
-      cy.get(`[name="${key}"]`).type(valuesStep2[key]);
     }
 
     cy.setEditorText(
       'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
     );
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    cy.wait(200);
+
+    const valuesStep2 = {
+      submitters: 'test submitter',
+      image_url: 'https://test.com/image.jpg',
+    };
+
+    for (const key in valuesStep2) {
+      cy.get(`[name="${key}"]`).type(valuesStep2[key]);
+    }
 
     cy.get('[name="incident_date"]').should('be.visible');
 
@@ -802,21 +799,24 @@ describe('The Submit form', () => {
       url: 'https://test.com',
       title: 'test title',
       authors: 'test author',
-      submitters: 'test submitter',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
     };
 
-    
     for (const key in valuesStep1) {
       cy.get(`[name="${key}"]`).type(valuesStep1[key]);
     }
-    
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
+
     cy.get('[data-cy="to-step-2"]').click();
 
     cy.wait(200);
 
     const valuesStep2 = {
+      submitters: 'test submitter',
       incident_date: '2022-01-01',
       image_url: 'https://test.com/image.jpg',
     };
@@ -824,10 +824,6 @@ describe('The Submit form', () => {
     for (const key in valuesStep2) {
       cy.get(`[name="${key}"]`).type(valuesStep2[key]);
     }
-    
-    cy.setEditorText(
-      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
-    );
 
     cy.get('[data-cy="to-step-3"]').click();
 
@@ -901,15 +897,15 @@ describe('The Submit form', () => {
 
     cy.get('input[name="authors"]').type('Something');
 
-    cy.get('input[name="submitters"]').type('Something');
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
 
     cy.get('[data-cy="to-step-2"]').click();
 
     cy.wait(200);
 
-    cy.setEditorText(
-      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
-      );
+    cy.get('input[name="submitters"]').type('Something');
 
     cy.get('[name="incident_date"]').type('2020-01-01');
 

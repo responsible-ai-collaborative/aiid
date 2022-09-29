@@ -169,7 +169,7 @@ const FormDetails = ({ data, previous, schema, onSubmit }) => {
             <Trans ns="submit">Submit</Trans>
           </Button>
           <Button
-            data-cy="to-step-2"
+            data-cy="to-step-3"
             color={'light'}
             onClick={() => {
               onSubmit(values, false);
