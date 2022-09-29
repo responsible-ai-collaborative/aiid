@@ -87,11 +87,11 @@ const SubmittedIncidentsPage = ({ ...props }) => {
           <Trans ns="submitted">Submitted Incident Report List</Trans>
         </StyledHeading>
       </div>
-      <SubmissionList />
       <StyledMainWrapper className="bootstrap">
-        <h1>
+        <SubmissionList />
+        <h2>
           <Trans ns="submitted">Quick Add URLs</Trans>
-        </h1>
+        </h2>
         <p>
           <Trans ns="submitted" i18nKey="quickaddDescription">
             These reports were added anonymously by users in the Quick Add form on the landing page
