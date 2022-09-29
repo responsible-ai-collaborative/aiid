@@ -1,37 +1,41 @@
-import useToastContext, { SEVERITY } from 'hooks/useToast';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { getCloudinaryPublicID } from 'utils/cloudinary';
 import getSourceDomain from 'utils/getSourceDomain';
-import StepOne from '../forms/NewSubmissionForm/StepOne';
-import StepTwo from '../forms/NewSubmissionForm/StepTwo';
-import StepThree from '../forms/NewSubmissionForm/StepThree';
-import StepFour from '../forms/NewSubmissionForm/StepFour';
+import StepOne from '../forms/SubmissionWizard/StepOne';
+import StepTwo from '../forms/SubmissionWizard/StepTwo';
+import StepThree from '../forms/SubmissionWizard/StepThree';
+import StepFour from '../forms/SubmissionWizard/StepFour';
 
-const NewSubmissionForm = ({ submitForm, initialValues }) => {
+const SubmissionWizard = ({ submitForm, initialValues }) => {
   const [data, setData] = useState(initialValues);
 
   const [currentStep, setCurrentStep] = useState(0);
 
   const stepsRef = useRef(null);
 
-  const handleNextStep = useCallback(async (newData, final = false) => {
-    setData((prev) => ({ ...prev, ...newData }));
+  const handleNextStep = useCallback(
+    async (newData, final = false) => {
+      setData((prev) => ({ ...prev, ...newData }));
 
-    if (final) {
-      await submitForm({ ...data, ...newData });
-    }
+      if (final) {
+        await submitForm({ ...data, ...newData });
+        setCurrentStep(3);
+      } else {
+        setCurrentStep((prev) => prev + 1);
+      }
 
-    stepsRef?.current?.scrollIntoView();
+      stepsRef?.current?.scrollIntoView();
+    },
+    [stepsRef]
+  );
 
-    setCurrentStep((prev) => prev + 1);
-  }, [stepsRef])
-
-  const handlePreviousStep = useCallback((newData) => {
-    setData((prev) => ({ ...prev, ...newData }));
-    stepsRef?.current?.scrollIntoView();
-    setCurrentStep((prev) => prev - 1);
-  }, [stepsRef]);
+  const handlePreviousStep = useCallback(
+    (newData) => {
+      setData((prev) => ({ ...prev, ...newData }));
+      stepsRef?.current?.scrollIntoView();
+      setCurrentStep((prev) => prev - 1);
+    },
+    [stepsRef]
+  );
 
   useEffect(() => {
     try {
@@ -73,4 +77,4 @@ const NewSubmissionForm = ({ submitForm, initialValues }) => {
   return <div ref={stepsRef}>{steps[currentStep]}</div>;
 };
 
-export default NewSubmissionForm;
+export default SubmissionWizard;

@@ -4,9 +4,6 @@ import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TextInputGroup from '../TextInputGroup';
 import * as yup from 'yup';
-import Label from '../Label';
-import { Form as BsForm } from 'react-bootstrap';
-import TagsControl from '../TagsControl';
 import StepContainer from './StepContainer';
 import { graphql, useStaticQuery } from 'gatsby';
 import TagsInputGroup from '../TagsInputGroup';
@@ -61,16 +58,16 @@ const StepThree = (props) => {
   };
 
   const data = useStaticQuery(graphql`
-      query SubmissionFormQuery {
-        allMongodbAiidprodReports {
-          edges {
-            node {
-              tags
-            }
+    query SubmissionFormQuery {
+      allMongodbAiidprodReports {
+        edges {
+          node {
+            tags
           }
         }
       }
-    `);
+    }
+  `);
 
   const tags = [];
 
@@ -97,6 +94,7 @@ const StepThree = (props) => {
             <TextInputGroup
               name="description"
               label={t('Description')}
+              type="textarea"
               as="textarea"
               placeholder={t('Incident Description')}
               rows={3}
@@ -104,8 +102,6 @@ const StepThree = (props) => {
               {...TextInputGroupProps}
               schema={stepThreeValidationSchema}
             />
-
-            <TagsInputGroup name="tags" label={t('Tags')} className="mt-3" {...TextInputGroupProps} placeholder={t('Tags')} schema={stepThreeValidationSchema} />
 
             {!props.data.incident_id && (
               <>
@@ -138,6 +134,15 @@ const StepThree = (props) => {
               </>
             )}
 
+            <TagsInputGroup
+              name="tags"
+              label={t('Tags')}
+              className="mt-3"
+              {...TextInputGroupProps}
+              placeholder={t('Tags')}
+              schema={stepThreeValidationSchema}
+            />
+
             <TextInputGroup
               name="editor_notes"
               label={t('Editor Notes')}
@@ -150,10 +155,14 @@ const StepThree = (props) => {
             />
 
             <div className="flex justify-between mt-4">
-              <Button type="button" onClick={() => props.previous(TextInputGroupProps.values)}>
+              <Button
+                type="button"
+                color={'light'}
+                onClick={() => props.previous(TextInputGroupProps.values)}
+              >
                 <Trans>Previous</Trans>
               </Button>
-              <Button color={'success'} type="submit">
+              <Button gradientDuoTone="greenToBlue" type="submit">
                 <Trans ns="submit">Submit</Trans>
               </Button>
             </div>

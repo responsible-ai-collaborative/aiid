@@ -21,7 +21,7 @@ import isArray from 'lodash/isArray';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
-import NewSubmissionForm from '../submissions/NewSubmissionForm';
+import SubmissionWizard from '../submissions/SubmissionWizard';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -171,7 +171,7 @@ const SubmitForm = () => {
 
   return (
     <div className="my-5">
-      <NewSubmissionForm submitForm={handleSubmit} initialValues={submission} />
+      <SubmissionWizard submitForm={handleSubmit} initialValues={submission} />
 
       <p className="mt-4">
         <Trans ns="submit" i18nKey="submitReviewDescription">
