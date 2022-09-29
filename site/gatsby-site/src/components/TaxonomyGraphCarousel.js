@@ -77,9 +77,9 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
     );
 
     if (categories.length > 8) {
-      categoryCounts[axis]['All others'] = 0;
+      categoryCounts[axis]['All Others'] = 0;
       for (const category of bottomCategories) {
-        categoryCounts[axis]['All others'] += categoryCounts[axis][category];
+        categoryCounts[axis]['All Others'] += categoryCounts[axis][category];
         delete categoryCounts[axis][category];
       }
     }
@@ -87,7 +87,7 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
 
   return (
     !classificationsLoading && (
-      <div className="h-80 dark">
+      <div className="h-96 dark">
         <Carousel>
           {!classificationsLoading &&
             classificationsData?.nodes &&
@@ -97,14 +97,29 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
               const columns = Object.keys(categoryCounts[dbAxis])
                 .map((category) => [category, categoryCounts[dbAxis][category]])
                 .sort((a, b) =>
-                  a[0] == 'All others' ? 1 : b[0] == 'All others' ? -1 : b[1] - a[1]
+                  a[0] == 'All Others' ? 1 : b[0] == 'All Others' ? -1 : b[1] - a[1]
                 );
 
               return (
-                <div key={index} className="h-80">
+                <div key={index} className="h-96">
                   <h3 className="text-base text-center">{axis}</h3>
-                  <div className="h-72">
-                    <BillboardChart data={{ type: donut(), columns }} />
+                  <div className="h-96">
+                    <BillboardChart
+                      data={{
+                        columns,
+                        type: donut(),
+                        onclick: (column) => {
+                          if (column.name == 'All Others') {
+                            window.open('/apps/discover');
+                          } else {
+                            window.open(
+                              '/apps/discover?classifications=' +
+                                [namespace, axis, column.name].join(':')
+                            );
+                          }
+                        },
+                      }}
+                    />
                   </div>
                 </div>
               );
