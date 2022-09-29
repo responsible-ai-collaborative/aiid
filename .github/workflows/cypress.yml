@@ -1,8 +1,11 @@
 name: Cypress e2e tests
 
-on:
+on:  
+  push:
   pull_request:
-    types: ['opened', 'edited', 'synchronize']
+    branches:
+      - master
+      - staging
 
 jobs:
   install:
