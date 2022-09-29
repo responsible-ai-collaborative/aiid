@@ -30,7 +30,10 @@ export default function EntityCard({ entity, ...props }) {
       className={`mt-6 p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700`}
       {...props}
     >
-      <Link to={`/entities/${entity.id}`}>
+      <Link to={`/entities/${entity.id}`} className="hover:underline">
+        <span className="text-sm text-black dark:text-white">
+          <Trans>Entity</Trans>
+        </span>
         <h3 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           {entity.name}
         </h3>
@@ -61,7 +64,7 @@ export default function EntityCard({ entity, ...props }) {
                       <li key={incident.incident_id} className="py-3 sm:py-4">
                         <Link
                           to={`/cite/${incident.incident_id}`}
-                          className="tracking-tight text-gray-900 dark:text-white"
+                          className="tracking-tight text-gray-900 dark:text-white hover:underline"
                         >
                           <div className="m-0">
                             <div className="inline-block text-muted-gray">
