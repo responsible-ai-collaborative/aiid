@@ -1,0 +1,79 @@
+---
+title: 'User Story Spotlights: Behind the Scenes of Database Developments'
+metaTitle: 'User Story Spotlights: Behind the Scenes of Database Developments'
+metaDescription: 'User Story Spotlights: Behind the Scenes of Database Developments'
+date: '2022-09-30'
+image: 'images/spotlight.png'
+author: 'Janet Schwartz'
+slug: '/blog/user-story-spotlights'
+---
+
+<!-- This will block quote it, which should have the effect of telling people that they can choose to read the lead in text, or not. -->
+
+> Each major feature of the AI Incident Database (AIID) is built as a series of incremental developments within the "Agile" framework, whereby capabilities are grounded in user stories detailing the wins achieved by the feature. We will be spotlighting these user stories over time to show how our efforts build upon each other in the direction of promoting responsible AI by learning from past mistakes.
+
+In the past month, user experience (UX) engineer [Luna McNulty](https://lmcnulty.me), database editor [Khoa Lam](http://linkedin.com/in/khoalklam), and full stack engineer [Cesar Varela](https://cesarvarela.com) each accomplished milestones supporting the ability to visualize and group incidents to drive user insights.
+
+
+## Spatial Visualization
+
+> **User Story**: "I want to understand incident clusters so I I can motivate my {research, policy, advocacy, engineering} work"
+
+[![A screenshot of the spatial visualization showing a large number of numbered, colored circles arranged according to the similarity of the incidents they represent](images/tsne.png)](/summaries/spatial)
+
+<figure className="p-4 text-center" style="width: 200px; float: right">
+  <div className="rounded-full overflow-hidden">
+    <img
+      alt="A vector drawing showing the black silhouette of Luna McNulty against the moon" 
+      src="images/luna.png" 
+    />
+  </div>
+  <figcaption className="mt-2">Luna McNulty</figcaption>
+</figure>
+
+A key function of the AIID is the discoverability of incidents, especially as incidents increase through time. The AIID’s first [taxonomy](/taxonomies) provided by the Center for Security and Emerging Technology at Georgetown University gave users a powerful tool to search and discover by classification filters, but incident reports contain far more information than can be captured in a single taxonomy. UX engineer Luna McNulty added a layer on top of this taxonomy and the [incident embedding model](/blog/using-ai-to-connect-ai-incidents) to group incidents according to their textual properties. The [data visualization](/summaries/spatial) plots incidents closer to similar incidents based on the embedding model, and incidents are colored based on the selected CSET classification type. As the number of incidents increases and the incident data becomes richer, additional ways to visualize the data will help tell a story about past AI harms.
+
+
+## Featured User Story: Enriching Incident Data
+
+> **User Story**: "I want incidents to have titles so I can refer to them in discussion with other {researchers, policy makers, engineers, people}"
+
+<figure className="p-4 text-center" style="width: 200px; float: right">
+
+  <img alt="Photograph of Khoa Lam" src="images/khoa.png"/>
+
+  <figcaption className="mt-2">Khoa Lam</figcaption>
+
+</figure>
+
+From its start, the AIID has collected individual reports (e.g., news articles) of AI harms and retrospectively grouped them into incident pages presenting context and information about the same event. As the database has grown, it has become necessary to distill the information presented by incident reports into comprehensive summaries of each incident. Summaries allow database users to cut through sensationalized headlines into consensus views of what occurred. The figure below shows the distinction between reports and incidents, and gives an example of how the individual report titles translate to composite incident titles.
+
+![A diagram titled “Incident vs Report - What's the Difference?” It shows three tabs, each labeled “Report,” extending from a full-width box labeled “AIID Incident.” The contents of the Incident box read “Tesla Model 3 Sedan on Autopilot Killed Motorcyclist in a Rear-Eng Collision in Utah.” The report tabs read, respectively, “Motorcyclist dies on I-15 after Tesla on auto-pilot crashed into back of bike / July 23, 2022 / ABC4”, “Tesla driver using Autopilot kills motorcyclist, prompting another NHTSA investigation / July 27, 2022 / The Verge”, and “US agency probes Tesla crashes the killed 2 motorcyclists / August 4, 2022 / AP News”
+](images/incident-vs-report.png)
+
+Database editor Khoa Lam systematically worked through all incident records to add titles, descriptions, and alleged parties {deployers, developers, harmed parties}. The new metadata opens opportunities for many future database developments to group and present incidents in ways that power insights and trends in AI harms.
+
+Both of these user stories ultimately support our mission to build responsible AI practices by understanding the past, but we also want to foster a culture of responsibility for responding to incidents after they occur. This brings us to the final user story of the blog post with Cesar's developments.
+
+
+## Featured User Story: Entity Pages
+
+> **User Story**: "I want to see pages summarizing my organization according to the incidents we are associated with so I can develop a program mitigating the effects"
+
+[![A screenshot of a page displaying a list of entities and their associated properties](images/entities.png)](/entities)
+
+<figure className="p-4 text-center" style="width: 200px; float: right">
+
+  <img alt="Photograph of Cesar Varela" src="images/cesar.png"/>
+
+  <figcaption className="mt-2">Cesar Varela</figcaption>
+
+</figure>
+
+Building upon Khoa’s work enriching incidents with key metadata, full stack engineer Cesar Varela developed [a way to view incidents grouped by “entity”](/entities). Database visitors can view pages highlighting the incidents generated and responded to by various companies. In a future release, we will provide these entities with the ability to add incident responses (i.e., details from their perspective on what happened, why it happened, and what they will do to prevent/mitigate its recurrence). As a practice for building a collective sense of responsibility for future AI incidents, these response processes are critical to the production and deployment of socially beneficial AI systems.
+
+
+## Looking to Dig Deeper?
+
+Our goal is not only to be a repository of AI incidents, but to contribute to the mission of responsible AI development and deployment with data presentation supporting insights. If you have an idea for a new way of visualizing or searching incidents, please [contact us](/contact)!
+
