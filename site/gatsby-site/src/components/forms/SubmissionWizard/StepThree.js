@@ -103,7 +103,7 @@ const StepThree = (props) => {
               schema={stepThreeValidationSchema}
             />
 
-            {!props.data.incident_id && (
+            {!props.data.incident_id && props.data.is_incident_report && (
               <>
                 <TagsInputGroup
                   name="developers"
