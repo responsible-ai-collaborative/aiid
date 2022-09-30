@@ -36,9 +36,11 @@ const FlowbiteSearchInput = ({
       </div>
       <input
         name={name}
-        className={`block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${className} ${
-          props.touched[name] && props.errors[name] ? 'border-red-600' : 'border-gray-300'
-        }`}
+        className={`block p-4 pl-10 w-full text-sm bg-gray-50 border text-gray-900 rounded-lg dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white  ${
+          props.touched[name] && props.errors[name]
+            ? 'border-red-600 focus:border-red-600 focus:ring-red-500'
+            : 'border-gray-300 dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-500'
+        } ${className}`}
         placeholder={placeholder}
         onChange={handleChange}
         onBlur={handleBlur}

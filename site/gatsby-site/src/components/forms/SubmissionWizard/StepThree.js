@@ -1,4 +1,4 @@
-import { Button } from 'flowbite-react';
+import { Button, Spinner } from 'flowbite-react';
 import { Formik, Form } from 'formik';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -84,18 +84,18 @@ const StepThree = (props) => {
             {!props.data.incident_id && (
               <>
                 <TagsInputGroup
-                  name="developers"
-                  label={t('Alleged developer of AI system')}
-                  placeholder={t('Who created or built the technology involved in the incident?')}
+                  name="deployers"
+                  label={t('Alleged deployer of AI system')}
+                  placeholder={t('Who employed or was responsible for the technology?')}
                   className="mt-3"
                   {...TextInputGroupProps}
                   schema={stepThreeValidationSchema}
                 />
 
                 <TagsInputGroup
-                  name="deployers"
-                  label={t('Alleged deployer of AI system')}
-                  placeholder={t('Who employed or was responsible for the technology?')}
+                  name="developers"
+                  label={t('Alleged developer of AI system')}
+                  placeholder={t('Who created or built the technology involved in the incident?')}
                   className="mt-3"
                   {...TextInputGroupProps}
                   schema={stepThreeValidationSchema}
@@ -136,11 +136,30 @@ const StepThree = (props) => {
               <Button
                 type="button"
                 color={'light'}
+                disabled={TextInputGroupProps.isSubmitting}
                 onClick={() => props.previous(TextInputGroupProps.values)}
               >
+                <svg
+                  aria-hidden="true"
+                  className="mr-2 w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
                 <Trans>Previous</Trans>
               </Button>
               <Button gradientDuoTone="greenToBlue" type="submit">
+                {TextInputGroupProps.isSubmitting && (
+                  <div className="mr-3">
+                    <Spinner size="sm" light={true} />
+                  </div>
+                )}
                 <Trans ns="submit">Submit</Trans>
               </Button>
             </div>

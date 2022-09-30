@@ -1,6 +1,6 @@
 import { Badge, Button, Spinner } from 'flowbite-react';
 import { Formik, Form, useFormikContext } from 'formik';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TextInputGroup from '../TextInputGroup';
 import * as yup from 'yup';
@@ -72,14 +72,17 @@ const StepOne = (props) => {
           parseNewsUrl={props.parseNewsUrl}
           schema={stepOneValidationSchema}
           submitForm={handleSubmit}
+          validateAndSubmitForm={props.validateAndSubmitForm}
         />
       </Formik>
     </StepContainer>
   );
 };
 
-const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm }) => {
+const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAndSubmitForm }) => {
   const { t } = useTranslation(['submit']);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     values,
@@ -112,18 +115,6 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm }) => {
     padding: errors['text'] && touched['text'] ? '0.5rem' : '0',
   };
 
-  const validateAndSubmitForm = async (last = false) => {
-    if (!isValid) {
-      const invalidFields = await validateForm();
-
-      Object.keys(invalidFields).map((key) => {
-        setFieldTouched(key, true);
-      });
-    } else {
-      submitForm(values, last);
-    }
-  };
-
   return (
     <>
       {parsingNews && (
@@ -139,7 +130,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm }) => {
         </span>
       )}
       <Form className={`relative z-2 ${parsingNews ? 'opacity-50' : ''}`}>
-        <Label label={t('Report Address')} popover="url"></Label>
+        <Label label={'*' + t('Report Address')} popover="url"></Label>
         <FlowbiteSearchInput
           name="url"
           label={t('Report Address')}
@@ -286,17 +277,40 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm }) => {
         <div className="flex justify-end mt-4 gap-2">
           <Button
             gradientDuoTone="greenToBlue"
+            disabled={isSubmitting}
             onClick={() => {
-              validateAndSubmitForm(true);
+              validateAndSubmitForm(
+                true,
+                setIsSubmitting,
+                isValid,
+                validateForm,
+                setFieldTouched,
+                values,
+                submitForm
+              );
             }}
           >
+            {isSubmitting && (
+              <div className="mr-3">
+                <Spinner size="sm" light={true} />
+              </div>
+            )}
             <Trans ns="submit">Submit</Trans>
           </Button>
           <Button
             data-cy="to-step-2"
             color={'light'}
+            disabled={isSubmitting}
             onClick={() => {
-              validateAndSubmitForm(false);
+              validateAndSubmitForm(
+                false,
+                setIsSubmitting,
+                isValid,
+                validateForm,
+                setFieldTouched,
+                values,
+                submitForm
+              );
             }}
           >
             <Trans>Add more info</Trans>

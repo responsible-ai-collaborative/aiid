@@ -37,10 +37,15 @@ export default function IncidentIdField({
   }, []);
 
   return (
-    <div className="bootstrap">
-      <Form.Group className={className + ' bootstrap'}>
+    <div className="">
+      <Form.Group className={className + ' '}>
         <Label popover={name} label={'Incident ID'} />
         <Form.Control
+          className={`mt-1 bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white ${
+            error
+              ? 'border-red-600 focus:ring-red-500'
+              : 'border-gray-300 dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-500'
+          }`}
           type="number"
           name={name}
           value={value}

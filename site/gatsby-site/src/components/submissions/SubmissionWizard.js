@@ -105,6 +105,28 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
     [data]
   );
 
+  const validateAndSubmitForm = async (
+    last = false,
+    setIsSubmitting,
+    isValid,
+    validateForm,
+    setFieldTouched,
+    values,
+    submitForm
+  ) => {
+    setIsSubmitting(true);
+    if (!isValid) {
+      const invalidFields = await validateForm();
+
+      Object.keys(invalidFields).map((key) => {
+        setFieldTouched(key, true);
+      });
+      setIsSubmitting(false);
+    } else {
+      submitForm(values, last);
+    }
+  };
+
   useEffect(() => {
     try {
       const url = new URL(data?.url);
@@ -126,6 +148,7 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
       name="Step 1 - main information"
       parseNewsUrl={parseNewsUrl}
       parsingNews={parsingNews}
+      validateAndSubmitForm={validateAndSubmitForm}
     />,
     <StepTwo
       key={'submission-step-2'}
@@ -133,6 +156,7 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
       previous={handlePreviousStep}
       data={data}
       name="Step 2 - additional information"
+      validateAndSubmitForm={validateAndSubmitForm}
     />,
     <StepThree
       key={'submission-step-3'}

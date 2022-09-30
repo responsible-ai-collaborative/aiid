@@ -1,4 +1,4 @@
-import { Button, Select } from 'flowbite-react';
+import { Button, Select, Spinner } from 'flowbite-react';
 import { Formik, Form, useFormikContext } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -48,14 +48,17 @@ const StepTwo = (props) => {
           previous={props.previous}
           schema={stepTwoValidationSchema}
           submitForm={handleSubmit}
+          validateAndSubmitForm={props.validateAndSubmitForm}
         />
       </Formik>
     </StepContainer>
   );
 };
 
-const FormDetails = ({ data, previous, schema, submitForm }) => {
+const FormDetails = ({ data, previous, schema, submitForm, validateAndSubmitForm }) => {
   const { t } = useTranslation(['submit']);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     values,
@@ -78,18 +81,6 @@ const FormDetails = ({ data, previous, schema, submitForm }) => {
   useEffect(() => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
-
-  const validateAndSubmitForm = async (last = false) => {
-    if (!isValid) {
-      const invalidFields = await validateForm();
-
-      Object.keys(invalidFields).map((key) => {
-        setFieldTouched(key, true);
-      });
-    } else {
-      submitForm(values, last);
-    }
-  };
 
   return (
     <Form>
@@ -151,17 +142,40 @@ const FormDetails = ({ data, previous, schema, submitForm }) => {
         <div className="flex justify-end gap-2">
           <Button
             gradientDuoTone="greenToBlue"
+            disabled={isSubmitting}
             onClick={() => {
-              validateAndSubmitForm(true);
+              validateAndSubmitForm(
+                true,
+                setIsSubmitting,
+                isValid,
+                validateForm,
+                setFieldTouched,
+                values,
+                submitForm
+              );
             }}
           >
+            {isSubmitting && (
+              <div className="mr-3">
+                <Spinner size="sm" light={true} />
+              </div>
+            )}
             <Trans ns="submit">Submit</Trans>
           </Button>
           <Button
             data-cy="to-step-2"
             color={'light'}
+            disabled={isSubmitting}
             onClick={() => {
-              validateAndSubmitForm(false);
+              validateAndSubmitForm(
+                true,
+                setIsSubmitting,
+                isValid,
+                validateForm,
+                setFieldTouched,
+                values,
+                submitForm
+              );
             }}
           >
             <Trans>Add more info</Trans>
