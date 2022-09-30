@@ -103,7 +103,7 @@ const LandingPage = (props) => {
         </div>
 
         <div className="mb-10 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-10 flex-wrap">
-          <div className="flex-1 lg:max-w-[50%]">
+          <div className="flex-1 lg:max-w-[50%] grow">
             <WordCounts localWordCounts={localWordCounts} />
           </div>
           <div className="flex-1 lg:max-w-[50%] self-stretch">
