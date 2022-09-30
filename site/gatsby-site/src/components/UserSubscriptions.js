@@ -63,6 +63,7 @@ const UserSubscriptions = () => {
               <div
                 className={`p-3 ${index < subscriptions.length - 1 ? 'border-b' : ''}`}
                 key={`subscription-${subscription.id}`}
+                data-cy="subscription-item"
               >
                 <div className="flex flex-row w-full justify-between gap-3 items-center">
                   <div className="items-center">
@@ -80,6 +81,7 @@ const UserSubscriptions = () => {
                     color={'failure'}
                     disabled={deleting && deletingId === subscription.id}
                     onClick={() => handleDeleteSubscription(subscription.id)}
+                    data-cy="delete-btn"
                   >
                     {deleting && deletingId === subscription.id ? (
                       <Spinner size={'xs'} />

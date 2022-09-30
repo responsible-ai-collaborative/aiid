@@ -41,9 +41,9 @@ const Account = (props) => {
             </Link>
           </div>
           <div className="block mt-6 p-6 rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
-            <h1>
+            <h2>
               <Trans ns="account">Subscriptions</Trans>
-            </h1>
+            </h2>
             <UserSubscriptions />
           </div>
         </>
