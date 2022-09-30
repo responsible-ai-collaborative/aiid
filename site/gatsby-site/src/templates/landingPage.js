@@ -56,7 +56,7 @@ const LandingPage = (props) => {
   return (
     <Layout {...props} className="max-w-full 2xl:max-w-6xl">
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
-        <meta name="title" content={title} />
+        <title>{title}</title>
         <meta property="og:type" content="website" />
       </AiidHelmet>
       <Container>
