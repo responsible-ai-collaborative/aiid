@@ -1,14 +1,16 @@
-name: Realm Deploy Staging
-
+name: Realm Deploy
 on:
-  push:
-    branches:
-      - staging
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        description: Environment to deploy to
+        required: true
 
 jobs:
   push:
     runs-on: ubuntu-latest
-    environment: staging
+    environment: ${{ inputs.environment }}
     steps:
       - uses: actions/checkout@v2
       - name: "Install the Realm CLI"

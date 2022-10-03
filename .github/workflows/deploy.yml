@@ -7,8 +7,8 @@ on:
         description: Environment to deploy to
         required: true
 
-jobs:
-  install:
+jobs:   
+  install-and-build:
     name: NPM install and build site
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
@@ -88,11 +88,11 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-  cypress-run:
+  test:
     name: Run Cypress tests
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
-    needs: install
+    needs: install-and-build
     defaults:
       run:
         shell: bash
@@ -203,3 +203,4 @@ jobs:
           GATSBY_REALM_APP_GRAPHQL_URL: ${{ secrets.GATSBY_REALM_APP_GRAPHQL_URL }}
           # Since this is triggered on a pull request, we set the commit message to the pull request title
           COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
+

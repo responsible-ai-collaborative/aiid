@@ -6,8 +6,14 @@ on:
       - staging
 
 jobs:
+  call-realm:
+    uses: ./.github/workflows/realm.yml
+    secrets: inherit
+    with:
+      environment: staging
   call-deploy:
     uses: ./.github/workflows/deploy.yml
     secrets: inherit
     with:
       environment: staging
+    needs: call-realm
