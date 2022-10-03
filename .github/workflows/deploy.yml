@@ -1,12 +1,16 @@
-name: Cypress e2e tests
-
+name: Deploy
 on:
-  pull_request:
-    types: ['opened', 'edited', 'synchronize']
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        description: Environment to deploy to
+        required: true
 
 jobs:
   install:
     name: NPM install and build site
+    environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -86,6 +90,7 @@ jobs:
 
   cypress-run:
     name: Run Cypress tests
+    environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     needs: install
     defaults:
