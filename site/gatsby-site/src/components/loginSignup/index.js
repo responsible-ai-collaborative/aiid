@@ -36,13 +36,17 @@ const Login = ({ className = '' }) => {
 
   return (
     <>
-      <Link to={localizePath({ path: '/login', language: locale })} className={`${className}`}>
+      <Link
+        to={localizePath({ path: '/login', language: locale })}
+        className={`${className}`}
+        data-cy="login-link"
+      >
         <Trans ns="login">Login</Trans>
       </Link>
       <span className="mx-2 text-gray-300">
         <Trans>or</Trans>
       </span>
-      <Button color={'gray'} href="/signup" size={'sm'}>
+      <Button color={'gray'} href="/signup" size={'sm'} data-cy="signup-link">
         <Trans ns="login">Sign up</Trans>
       </Button>
     </>
@@ -56,7 +60,11 @@ const Logout = ({ className = '', user }) => {
 
   return (
     <div className="flex flex-col text-xs w-full justify-center items-center">
-      <Link to={localizePath({ path: '/account', language: locale })} className={`${className}`}>
+      <Link
+        to={localizePath({ path: '/account', language: locale })}
+        className={`${className}`}
+        data-cy="account-link"
+      >
         <Trans ns="login">{user?.profile?.email}</Trans>
       </Link>
     </div>

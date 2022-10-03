@@ -62,4 +62,24 @@ describe('The Landing page', () => {
         cy.get('.grid > div').should('have.length', 3);
       });
   });
+
+  it('Should redirect to the account page when logged in', () => {
+    cy.visit('/');
+
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.location('pathname', { timeout: 8000 }).should('eq', '/');
+
+    cy.get('[data-cy="account-link"]').filter(':visible').first().click();
+
+    cy.location('pathname', { timeout: 8000 }).should('eq', '/account');
+  });
+
+  it('Should redirect to the login page when logged out', () => {
+    cy.visit('/');
+
+    cy.get('[data-cy="login-link"]').filter(':visible').click();
+
+    cy.location('pathname', { timeout: 8000 }).should('eq', '/login');
+  });
 });
