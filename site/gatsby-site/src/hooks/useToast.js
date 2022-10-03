@@ -13,25 +13,25 @@ export const SEVERITY = {
     key: 'success',
     icon: faCheckCircle,
     faClass: 'far fa-check-circle fa-lg',
-    color: '#43a047',
+    className: 'bg-green-600',
   },
   danger: {
     key: 'danger',
     icon: faTimesCircle,
     faClass: 'far fa-times-circle fa-lg',
-    color: '#d32f2f',
+    className: 'bg-red-700',
   },
   warning: {
     key: 'warning',
     icon: faExclamationTriangle,
     faClass: 'far fa-exclamation-triangle fa-lg',
-    color: '#ffa000',
+    className: 'bg-amber-400',
   },
   info: {
     key: 'info',
     icon: faInfoCircle,
     faClass: 'far fa-info-circle fa-lg',
-    color: '#2979ff',
+    className: 'bg-blue-600',
   },
 };
 
