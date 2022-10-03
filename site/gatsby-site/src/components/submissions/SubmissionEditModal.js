@@ -90,6 +90,9 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
             onSubmit={handleSubmit}
             initialValues={{
               ...data.submission,
+              developers: data.submission.developers === null ? [] : data.submission.developers,
+              deployers: data.submission.deployers === null ? [] : data.submission.deployers,
+              harmed_parties: data.submission.harmed_parties === null ? [] : data.submission.harmed_parties,
               incident_id: data.submission.incident_id == 0 ? '' : data.submission.incident_id,
             }}
           >
@@ -106,6 +109,7 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
                     variant="primary"
                     type="submit"
                     disabled={isSubmitting || !isValid}
+                    data-cy="update-btn"
                   >
                     Update
                   </Button>
