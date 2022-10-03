@@ -8,6 +8,7 @@ import Row from 'react-bootstrap/Row';
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
+import { LocalizedLink } from 'gatsby-theme-i18n';
 
 const Backups = ({ pageContext, ...props }) => {
   const { backups } = pageContext;
@@ -27,12 +28,16 @@ const Backups = ({ pageContext, ...props }) => {
       <StyledMainWrapper>
         <p className="paragraph">
           In many cases it is necessary to have an unchanging and shared version of the database
-          (e.g., if you are doing natural language processing research). This page lists weekly
-          snapshots of the database taken through time by the&nbsp;
-          <Link to="https://github.com/aiincidentdatabase/mongodb-awesome-backup">
+          This page lists weekly snapshots of the database in JSON, MongoDB, and CSV format taken
+          through time by the{' '}
+          <a href="https://github.com/aiincidentdatabase/mongodb-awesome-backup">
             GitHub backup workflow
-          </Link>
-          .
+          </a>
+          . We maintain these snapshots so you can create stable datasets for natural language
+          processing research and academic analysis. Please{' '}
+          <LocalizedLink to="/contact">contact us</LocalizedLink>
+          to let us know what you are using the database for so we can list your work in the
+          incident database and ensure your use case is not dropped from support.
         </p>
         <Container>
           <Row>
@@ -53,6 +58,25 @@ const Backups = ({ pageContext, ...props }) => {
             </Col>
           </Row>
         </Container>
+        <h2>Citing the Database as a Whole</h2>
+        <p>We invite you to cite:</p>
+        <blockquote>
+          McGregor, S. (2021) Preventing Repeated Real World AI Failures by Cataloging Incidents:
+          The AI Incident Database. In Proceedings of the Thirty-Third Annual Conference on
+          Innovative Applications of Artificial Intelligence (IAAI-21). Virtual Conference.
+        </blockquote>
+        <p>
+          The <a href="https://arxiv.org/abs/2011.08512">pre-print</a> is available on arXiv
+        </p>
+        <h2>Citing a Specific Incident</h2>
+        <p>
+          Every incident has its own suggested citation that credits both the submitter(s) of the
+          incident and the editor(s) of the incident. The submitters are the people that submitted
+          reports associated with the incident and their names are listed in the order in which
+          their submissions were added to the AIID. Since reports can be added to an incident record
+          through time, our suggested citation format includes the access date. You can find
+          incident citations at <code>https://incidentdatabase.ai/cite/INSERT_NUMBER_HERE</code>.
+        </p>
       </StyledMainWrapper>
     </Layout>
   );
