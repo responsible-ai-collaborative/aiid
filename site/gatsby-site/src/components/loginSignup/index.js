@@ -9,7 +9,12 @@ import { useLocalization } from 'gatsby-theme-i18n';
 const LoginSignup = ({ className = '', logoutClassName = '', loginClassName = '' }) => {
   const { user, loading } = useUserContext();
 
-  if (loading) return <Spinner />;
+  if (loading)
+    return (
+      <span className="hidden md:flex">
+        <Spinner />
+      </span>
+    );
 
   return (
     <>
@@ -51,7 +56,7 @@ const Logout = ({ className = '', user }) => {
 
   return (
     <div className="flex flex-col text-xs w-full justify-center items-center">
-      <Link to={localizePath({ path: '/login', language: locale })} className={`${className}`}>
+      <Link to={localizePath({ path: '/account', language: locale })} className={`${className}`}>
         <Trans ns="login">{user?.profile?.email}</Trans>
       </Link>
     </div>
