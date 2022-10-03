@@ -98,6 +98,8 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
         try {
           nlpResponse = await semanticallyRelated(plaintext);
           nlp_similar_incidents = nlpResponse.incidents.sort((a, b) => b.similarity - a.similarity);
+
+          if (setFieldValue) setFieldValue('embedding', nlpResponse.embedding);
         } catch (e) {
           console.error(error);
           fail(t('Could not compute semantic similarity'));
@@ -108,8 +110,6 @@ const SemanticallyRelatedIncidents = ({ incident, setFieldValue, editId = true }
       if (setFieldValue) {
         setFieldValue('nlp_similar_incidents', nlp_similar_incidents);
       }
-
-      if (setFieldValue) setFieldValue('embedding', nlpResponse.embedding);
 
       const incidentIds = nlp_similar_incidents
         .sort((a, b) => b.similarity - a.similarity)

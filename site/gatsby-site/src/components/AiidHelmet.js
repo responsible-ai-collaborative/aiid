@@ -4,10 +4,10 @@ import config from '../../config';
 
 const AiidHelmet = ({
   children,
-  metaTitle,
-  metaDescription,
-  canonicalUrl,
-  metaImage,
+  metaTitle = null,
+  metaDescription = null,
+  canonicalUrl = null,
+  metaImage = null,
   metaType = 'website',
 }) => {
   const twitter = config.siteMetadata.twitterAccount;
