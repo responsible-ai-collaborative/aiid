@@ -1,16 +1,17 @@
 {
-    "id": "633752d124ee46d7884d8e1f",
     "name": "onIncidentUpdate",
     "type": "DATABASE",
     "config": {
-        "operation_types": ["UPDATE"],
+        "operation_types": [
+            "UPDATE"
+        ],
         "database": "aiidprod",
         "collection": "incidents",
-        "service_name": "",
+        "service_name": "mongodb-atlas",
         "match": {},
         "project": {},
         "full_document": true,
-        "full_document_before_change": false,
+        "full_document_before_change": true,
         "unordered": false,
         "skip_catchup_events": false
     },
@@ -18,7 +19,7 @@
     "event_processors": {
         "FUNCTION": {
             "config": {
-            "function_name": "onIncidentUpdate"
+                "function_name": "onIncidentUpdate"
             }
         }
     }
