@@ -153,7 +153,7 @@ export const UserContextProvider = ({ children }) => {
     }
 
     checkUser();
-  }, []);
+  }, [user]);
 
   return (
     <UserContext.Provider
