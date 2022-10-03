@@ -118,7 +118,7 @@ const SubmissionReview = ({ submission }) => {
         if (userResponse.data && userResponse.data.getUser && userResponse.data.getUser.email) {
           recipients.push({
             email: userResponse.data.getUser.email,
-            userId
+            userId,
           });
         }
       }

@@ -134,5 +134,13 @@
   "By": "Par",
   "More": "Plus",
   "Home": "Accueil",
-  "Add more info": "Ajouter plus d'informations"
+  "Add more info": "Ajouter plus d'informations",
+  "Incident report {{reportNumber}} updated successfully. <4>View Incident {{incidentId}}</4>.": "Le rapport {{reportNumber}} a été mis à jour avec succès. <4>Voir l'incident {{incidentId}}</4>.",
+  "Error updating incident report {{reportNumber}}.": "Erreur dans la mis à jour du rapport {{reportNumber}}.",
+  "Incident report {{reportNumber}} deleted successfully.": "Le rapport {{reportNumber}} a été supprimé avec succès.",
+  "Error deleting incident report {{reportNumber}}.": "Erreur dans la suppression du rapport {{reportNumber}}.",
+  "Incident {{incidentId}} updated successfully. <4>View incident {{incidentId}}</4>.": "L'incident {{incidentId}} a été mis à jour avec succès. <4>Voir l'incident {{incidentId}}</4>.",
+  "Error updating incident {{incidentId}}.": "Erreur dans la mis à jour de l'incident {{incidentId}}.",
+  "Error updating incident {{incident}}. \n {{message}}": "Erreur dans la mis à jour de l'incident {{incidentId}}. \n {{message}}",
+  "Are you sure you want to delete this report?": "Voulez-vous vraiment supprimer ce rapport?"
 }
