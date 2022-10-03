@@ -4,11 +4,13 @@ exports = async ({ recipients, subject, dynamicData, templateId }) => {
 
     const userCustomData = context.user.custom_data;
 
-    // Only "admin" and "incident_editor" roles can send emails
-    if (!userCustomData.roles || (!userCustomData.roles.includes('admin') && !userCustomData.roles.includes('incident_editor'))) {
-        return {
-            statusCode: 403,
-            status: "403 Forbidden",
+    // Only "system" or "admin" and "incident_editor" roles can send emails
+    if (context.user.type != 'system') {
+        if (!userCustomData.roles || (!userCustomData.roles.includes('admin') && !userCustomData.roles.includes('incident_editor'))) {
+            return {
+                statusCode: 403,
+                status: "403 Forbidden",
+            }
         }
     }
 
