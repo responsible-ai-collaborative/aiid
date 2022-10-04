@@ -6,6 +6,7 @@ import { Button, Modal } from 'react-bootstrap';
 import { Spinner } from 'flowbite-react';
 import IncidentForm, { schema } from './IncidentForm';
 import { Formik } from 'formik';
+import { Trans } from 'react-i18next';
 
 export default function IncidentEditModal({ show, onClose, incidentId }) {
   const [incident, setIncident] = useState();
@@ -93,8 +94,16 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
                     variant="primary"
                     onClick={submitForm}
                     disabled={isSubmitting || !isValid}
+                    className="bootstrap flex gap-2 disabled:opacity-50"
                   >
-                    Update
+                    {isSubmitting ? (
+                      <>
+                        <Spinner size="sm" />
+                        <Trans>Updating</Trans>
+                      </>
+                    ) : (
+                      <Trans>Update</Trans>
+                    )}
                   </Button>
                 </Modal.Footer>
               </>

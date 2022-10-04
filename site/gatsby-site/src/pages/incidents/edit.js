@@ -8,6 +8,7 @@ import { Spinner } from 'flowbite-react';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
+import { Trans } from 'react-i18next';
 
 function EditCitePage(props) {
   const [incident, setIncident] = useState();
@@ -79,11 +80,20 @@ function EditCitePage(props) {
               <IncidentForm />
               <Button
                 onClick={submitForm}
-                className="mt-3"
                 type="submit"
                 disabled={!isValid || isSubmitting}
+                className="mt-3 bootstrap flex disabled:opacity-50"
               >
-                Save
+                {isSubmitting ? (
+                  <>
+                    <Spinner size="sm" />
+                    <div className="ml-2">
+                      <Trans>Updating...</Trans>
+                    </div>
+                  </>
+                ) : (
+                  <Trans>Save</Trans>
+                )}
               </Button>
             </>
           )}

@@ -20,6 +20,7 @@ import pick from 'lodash/pick';
 import { useLocalization } from 'gatsby-theme-i18n';
 import { gql, useApolloClient } from '@apollo/client';
 import RelatedIncidents from '../../components/RelatedIncidents';
+import { Trans } from 'react-i18next';
 
 const UPDATE_REPORT_TRANSLATION = gql`
   mutation UpdateReportTranslation($input: UpdateOneReportTranslationInput) {
@@ -323,18 +324,20 @@ function EditCitePage(props) {
                   type="submit"
                   disabled={!isValid || isSubmitting}
                   onClick={submitForm}
-                  className="mr-4 disabled:opacity-50"
+                  className="mr-4 disabled:opacity-50 flex"
                 >
-                  Submit
+                  {isSubmitting ? (
+                    <>
+                      <Spinner size="sm" />
+                      <div className="ml-2">
+                        <Trans>Updating...</Trans>
+                      </div>
+                    </>
+                  ) : (
+                    <Trans>Submit</Trans>
+                  )}
                 </Button>
-                {isSubmitting && (
-                  <>
-                    <Spinner />
-                    <div className="ml-2">Updating report...</div>
-                  </>
-                )}
               </div>
-
               <Button
                 className="mt-3 text-danger"
                 variant="link"
