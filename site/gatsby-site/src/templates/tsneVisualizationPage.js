@@ -9,6 +9,12 @@ import { LocalizedLink } from 'gatsby-theme-i18n';
 function TsneVisulizationPage(props) {
   const { t } = useTranslation();
 
+  const spatialIncidents = props.pageContext.spatialIncidents;
+
+  const classifications = props.pageContext.classifications;
+
+  const csetClassifications = props.pageContext.csetClassifications;
+
   // meta tags
 
   const metaTitle = t('Spatial Visualization');
@@ -43,6 +49,9 @@ function TsneVisulizationPage(props) {
             ? new URLSearchParams(window.location.search).get('incident') || -1
             : -1
         )}
+        incidents={spatialIncidents}
+        classifications={classifications}
+        csetClassifications={csetClassifications}
       />
     </Layout>
   );

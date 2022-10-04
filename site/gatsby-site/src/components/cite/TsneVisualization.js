@@ -2,30 +2,38 @@ import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { Spinner } from 'flowbite-react';
 import styled from 'styled-components';
-import { useApolloClient, gql, useQuery } from '@apollo/client';
+import { useApolloClient, gql } from '@apollo/client';
 import { Image } from '../../utils/cloudinary';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Color from 'color';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans } from 'react-i18next';
 
+// TransformWrapper > TransformComponent > Visualization
 const VisualizationWrapper = styled.div`
-  > *,
-  > * > * {
+  height: calc(100vh - 2em);
+  flex-shrink: shrink;
+  overflow-x: hidden;
+  background: #ccc;
+
+  > .react-transform-wrapper {
     width: 100% !important;
-    height: 90vh;
-    background: #ccc;
+    height: 100%;
+
+    > .react-transform-component {
+      height: calc(100vh - 2em);
+      width: calc(100vh - 2em);
+      overflow: visible !important;
+    }
   }
-  margin-bottom: 1em;
-  margin-top: 1em;
 `;
 
 const Visualization = styled.div`
-  max-height: calc(100vh - 2em);
-  max-width: 100vh;
-  height: 1000px;
-  width: 1000px;
+  border: 1px solid green;
+  width: 100% !important;
+  height: 100%;
   position: relative;
+  overflow: visible;
   aspect-ratio: 1 / 1;
   > a {
     color: inherit;
@@ -78,9 +86,24 @@ const Visualization = styled.div`
   }
 `;
 
+const Swatch = ({ color }) => (
+  <span
+    style={{
+      height: '.75em',
+      width: '.75em',
+      borderRadius: '.2em',
+      margin: '0em .2em -.05em 0px',
+      verticalAlign: 'center',
+      display: 'inline-block',
+      background: color,
+    }}
+  />
+);
+
 const PlotPoint = ({
   state,
   incident,
+  scaleMultiplier,
   classifications,
   taxonColorMap,
   axis,
@@ -91,16 +114,10 @@ const PlotPoint = ({
   const [incidentData, setIncidentData] = useState(null);
 
   // We have to track this and render the incident card only when hovered.
-  // Just hiding it with css is too slow and mages zooming laggy.
+  // Just hiding it with css is too slow and makes zooming laggy.
   const [hover, setHover] = useState(false);
 
-  // I'm pretty sure the JS engine is smart enough to memoize this,
-  // but I'm not taking my chances.
-  const sqrtScale = Math.sqrt(state.scale);
-
-  const scaleMultiplier = 1 / sqrtScale;
-
-  const dbAxis = axis.replace(/ /g, '');
+  const dbAxis = axis.replace(/ /g, '_');
 
   const taxon =
     classifications && classifications[dbAxis]
@@ -206,17 +223,7 @@ const PlotPoint = ({
               <h3 data-cy="title">{incidentData?.title || incidentData.reports[0].title}</h3>
               {taxon && (
                 <div style={{ marginTop: '.5em' }}>
-                  <span
-                    style={{
-                      height: '.75em',
-                      width: '.75em',
-                      borderRadius: '.2em',
-                      margin: '0em .2em -.05em 0px',
-                      verticalAlign: 'center',
-                      display: 'inline-block',
-                      background,
-                    }}
-                  />
+                  <Swatch color={background} />
                   {taxon}
                 </div>
               )}
@@ -233,59 +240,16 @@ const PlotPoint = ({
 const circularDistance = (deg1, deg2) =>
   Math.min(Math.abs(deg1 - deg2), 360 - Math.abs(deg1 - deg2)) % 360;
 
-const TsneVisualization = ({ currentIncidentId }) => {
-  const [axis, setAxis] = useState('Sector Of Deployment');
-
-  const { data: spatialIncidentsData } = useQuery(
-    gql`
-      query SpatialIncidents {
-        incidents(query: { tsne_exists: true }, limit: 9999) {
-          incident_id
-          tsne {
-            x
-            y
-          }
-        }
-      }
-    `
-  );
-
-  const incidents = spatialIncidentsData?.incidents || [];
+const TsneVisualization = ({
+  currentIncidentId,
+  incidents,
+  classifications,
+  csetClassifications,
+}) => {
+  const [axis, setAxis] = useState('Sector of Deployment');
 
   const currentSpatialIncident = incidents.find(
     (incident) => incident.incident_id == currentIncidentId
-  );
-
-  const csetClassifications = [
-    'Sector Of Deployment',
-    'Harm Distribution Basis',
-    'Severity',
-    'Harm Type',
-    'Intent',
-    'Near Miss',
-    'Problem Nature',
-    'System Developer',
-  ];
-
-  const { data: classificationsData } = useQuery(
-    gql`
-    query ClassificationsQuery($query: ClassificationQueryInput) {
-      classifications(query: $query, limit: 9999) {
-        incident_id
-        namespace
-        classifications {
-          ${csetClassifications.map((s) => s.replace(/ /g, '')).join('\n        ')}
-        }
-      }
-    }
-  `,
-    {
-      variables: {
-        query: {
-          incident_id_in: incidents.map((incident) => incident.incident_id),
-        },
-      },
-    }
   );
 
   let taxonColorMap = {
@@ -313,65 +277,64 @@ const TsneVisualization = ({ currentIncidentId }) => {
     YouTube: Color('#FF0000'),
   };
 
-  if (classificationsData) {
-    const taxons = Array.from(
-      new Set(
-        classificationsData.classifications
-          .map((c) => c.classifications[axis.replace(/ /g, '')])
-          .map((e) => (Array.isArray(e) ? e[0] : e))
-          .reduce((result, value) => result.concat(value), [])
-          .filter((value) => value)
-      )
-    );
+  const taxons = Array.from(
+    new Set(
+      classifications
+        .map((c) => c.classifications[axis.replace(/ /g, '_')])
+        .map((e) => (Array.isArray(e) ? e[0] : e))
+        .reduce((result, value) => result.concat(value), [])
+        .filter((value) => value)
+    )
+  );
 
-    // Select colors spaced evenly around the color wheel.
-    // Alternate the saturation so that adjacent items are more distinct.
-    let hueSteps = Array(taxons.length)
-      .fill()
-      .map((e, i) => {
-        const initialTaxon = taxons.find((taxon) => taxonColorMap[taxon]);
+  // Select colors spaced evenly around the color wheel.
+  // Alternate the saturation and value
+  // so that adjacent items are more distinct.
+  let hueSteps = Array(taxons.length)
+    .fill()
+    .map((e, i) => {
+      const initialTaxon = taxons.find((taxon) => taxonColorMap[taxon]);
 
-        const degrees =
-          (initialTaxon ? taxonColorMap[initialTaxon].hue() : 30) + (360 * i) / taxons.length;
+      const degrees =
+        (initialTaxon ? taxonColorMap[initialTaxon].hue() : 30) + (360 * i) / taxons.length;
 
-        const color = Color.hsv(
-          degrees,
-          i % 2 == 0 ? 50 : 100,
+      const color = Color.hsv(
+        degrees,
+        i % 2 == 0 ? 50 : 100,
 
-          i % 3 == 0 ? 70 : i % 3 == 1 ? 85 : 100
-        );
+        i % 3 == 0 ? 70 : i % 3 == 1 ? 85 : 100
+      );
 
-        return { degrees, color };
-      });
+      return { degrees, color };
+    });
 
-    // Remove those colors closest to predefined colors
-    for (const key of Object.keys(taxonColorMap).filter((key) => taxons.includes(key))) {
-      const color = taxonColorMap[key];
+  // Remove those colors closest to predefined colors
+  for (const key of Object.keys(taxonColorMap).filter((key) => taxons.includes(key))) {
+    const color = taxonColorMap[key];
 
-      const hue = color.hue();
+    const hue = color.hue();
 
-      let closest;
+    let closest;
 
-      for (const step of hueSteps) {
-        if (
-          !closest ||
-          circularDistance(step.degrees, hue) < circularDistance(closest.degrees, hue)
-        ) {
-          closest = step;
-        }
+    for (const step of hueSteps) {
+      if (
+        !closest ||
+        circularDistance(step.degrees, hue) < circularDistance(closest.degrees, hue)
+      ) {
+        closest = step;
       }
-
-      hueSteps = hueSteps.filter((step) => step != closest);
     }
 
-    // Assign the remaining colors arbitrarily
-    for (let step of hueSteps) {
-      const selection = taxons.find((taxon) => !taxonColorMap[taxon]);
+    hueSteps = hueSteps.filter((step) => step != closest);
+  }
 
-      taxonColorMap[selection] = step.color;
+  // Assign the remaining colors arbitrarily
+  for (let step of hueSteps) {
+    const selection = taxons.find((taxon) => !taxonColorMap[taxon]);
 
-      hueSteps = hueSteps.filter((s) => s != step);
-    }
+    taxonColorMap[selection] = step.color;
+
+    hueSteps = hueSteps.filter((s) => s != step);
   }
 
   return (
@@ -397,40 +360,62 @@ const TsneVisualization = ({ currentIncidentId }) => {
             </Form.Select>
           </div>
         </div>
-        <VisualizationWrapper data-cy="tsne-visualization">
-          <TransformWrapper
-            initialScale={currentSpatialIncident ? 2 : 1}
-            initialPositionX={-500 + -500 * currentSpatialIncident?.tsne?.x || 0}
-            initialPositionY={-500 + -500 * currentSpatialIncident?.tsne?.y || 0}
-            limitToBounds={false}
-            minScale={0.5}
-            maxScale={10}
-          >
-            {({ state }) => (
-              <TransformComponent>
-                <Visualization>
-                  {incidents.map((incident) => (
-                    <PlotPoint
-                      state={state}
-                      incident={incident}
-                      classifications={
-                        classificationsData?.classifications
-                          ? classificationsData.classifications.find(
+        <div
+          className="flex"
+          style={{
+            height: 'calc(100vh - 2em)',
+          }}
+        >
+          <VisualizationWrapper data-cy="tsne-visualization">
+            <TransformWrapper
+              initialScale={currentSpatialIncident ? 2 : 1}
+              initialPositionX={-500 + -500 * currentSpatialIncident?.tsne?.x || 0}
+              initialPositionY={-500 + -500 * currentSpatialIncident?.tsne?.y || 0}
+              limitToBounds={false}
+              minScale={0.5}
+              maxScale={10}
+            >
+              {({ state }) => (
+                <TransformComponent className="h-full">
+                  <Visualization className="h-full">
+                    {incidents.map((incident) => {
+                      // I'm pretty sure the JS engine is smart enough to memoize this,
+                      // but I'm not taking my chances.
+                      const scaleMultiplier = 1 / Math.sqrt(state.scale);
+
+                      return (
+                        <PlotPoint
+                          state={state}
+                          scaleMultiplier={scaleMultiplier}
+                          incident={incident}
+                          classifications={
+                            classifications.find(
                               (classification) => classification.incident_id == incident.incident_id
                             )?.classifications || {}
-                          : {}
-                      }
-                      key={incident.incident_id}
-                      taxonColorMap={taxonColorMap}
-                      axis={axis}
-                      currentIncidentId={currentIncidentId}
-                    />
-                  ))}
-                </Visualization>
-              </TransformComponent>
-            )}
-          </TransformWrapper>
-        </VisualizationWrapper>
+                          }
+                          key={incident.incident_id}
+                          taxonColorMap={taxonColorMap}
+                          axis={axis}
+                          currentIncidentId={currentIncidentId}
+                        />
+                      );
+                    })}
+                  </Visualization>
+                </TransformComponent>
+              )}
+            </TransformWrapper>
+          </VisualizationWrapper>
+          <div className="p-4 border-2 border-gray-300 h-full overflow-auto">
+            <ul className="list-none">
+              {taxons.map((taxon) => (
+                <li key={taxon}>
+                  <Swatch color={taxonColorMap[taxon]} />
+                  {taxon}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </>
     )
   );
