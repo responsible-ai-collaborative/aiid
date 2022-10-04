@@ -54,7 +54,7 @@ exports = async function (changeEvent) {
             reportTitle: newReport.title,
             reportAuthor: newReport.authors[0],
           },
-          templateId: 'd-6cebfe690b83416387ec75b21f99108a', // SendGrid Template name: "Incident updated"
+          templateId: 'IncidentUpdate' // Template value from "site/realm/functions/sendEmail.js" EMAIL_TEMPLATES constant
         };
         const sendEmailresult = await context.functions.execute('sendEmail', sendEmailParams);
 
