@@ -43,16 +43,21 @@ const LandingPage = (props) => {
 
   const title = t('Welcome to the Artificial Intelligence Incident Database', { ns: 'landing' });
 
+  const metaTitle = title;
+
   const metaDescription = t('The starting point for information about the AI Incident Database', {
     ns: 'landing',
   });
 
+  const canonicalUrl = 'https://incidentdatabase.ai';
+
+  const metaImage = 'https://incidentdatabase.ai/logos/AIID_1000x1000px.png';
+
   return (
     <Layout {...props} className="max-w-full 2xl:max-w-6xl">
-      <AiidHelmet>
+      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
         <title>{title}</title>
-        <meta name="title" content={title} />
-        <meta name="description" content={metaDescription} />
+        <meta property="og:type" content="website" />
       </AiidHelmet>
       <Container>
         <div>

@@ -48,37 +48,33 @@ export const schema = yup.object().shape({
     .min(6, '*Title must have at least 6 characters')
     .max(500, "*Titles can't be longer than 500 characters")
     .required('*Title is required'),
-  description: yup
-    .string()
-    .min(3, 'Description must have at least 3 characters')
-    .max(500, "Description can't be longer than 500 characters")
-    .when('_id', {
-      is: (_id) => _id !== undefined,
-      then: yup.string().required('*Incident Description required'),
-    }),
+  description: yup.string().when(['_id', 'incident_id'], {
+    is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
+    then: yup
+      .string()
+      .min(3, 'Description must have at least 3 characters')
+      .max(500, "Description can't be longer than 500 characters"),
+  }),
   developers: yup.string().when(['_id', 'incident_id'], {
     is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
     then: yup
       .string()
       .min(3, 'Alleged Developer must have at least 3 characters')
-      .max(200, "Alleged Developers can't be longer than 200 characters")
-      .required('*Developer is required'),
+      .max(200, "Alleged Developers can't be longer than 200 characters"),
   }),
   deployers: yup.string().when(['_id', 'incident_id'], {
     is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
     then: yup
       .string()
       .min(3, 'Alleged Deployers must have at least 3 characters')
-      .max(200, "Alleged Deployers can't be longer than 200 characters")
-      .required('*Deployer is required'),
+      .max(200, "Alleged Deployers can't be longer than 200 characters"),
   }),
   harmed_parties: yup.string().when(['_id', 'incident_id'], {
     is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
     then: yup
       .string()
       .min(3, 'Harmed Parties must have at least 3 characters')
-      .max(200, "Harmed Parties can't be longer than 200 characters")
-      .required('*Harmed Parties is required'),
+      .max(200, "Harmed Parties can't be longer than 200 characters"),
   }),
   authors: yup
     .string()
@@ -411,20 +407,21 @@ const SubmissionForm = () => {
 
         <details className="mt-3">
           <summary data-cy="extra-fields">{t('Tell us more...')}</summary>
-          <TextInputGroup
-            name="description"
-            label={t('Description')}
-            as="textarea"
-            placeholder={t('Incident Description')}
-            rows={3}
-            className="mt-3"
-            {...TextInputGroupProps}
-          />
 
           <TagsInputGroup name="tags" label={t('Tags')} className="mt-3" {...TextInputGroupProps} />
 
           {!values.incident_id && (
             <>
+              <TextInputGroup
+                name="description"
+                label={t('Description')}
+                as="textarea"
+                placeholder={t('Incident Description')}
+                rows={3}
+                className="mt-3"
+                {...TextInputGroupProps}
+              />
+
               <TagsInputGroup
                 name="developers"
                 label={t('Alleged developer of AI system')}
