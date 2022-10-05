@@ -7,9 +7,6 @@ export default function LatestReports({ latestReport }) {
   console.log(`latestReport`, latestReport);
   return (
     <>
-      <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-        <Trans ns="landing">Latest Incident Report</Trans>
-      </h5>
       <div className="flex flex-col items-center">
         <IncidentReportCard report={latestReport} imagePosition="left" textMaxChars={400}>
           <CardActions>

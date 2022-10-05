@@ -8,8 +8,12 @@ import { Spinner } from 'flowbite-react';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
+import { LocalizedLink } from 'gatsby-theme-i18n';
+import { useTranslation, Trans } from 'react-i18next';
 
 function EditCitePage(props) {
+  const { t, i18n } = useTranslation();
+
   const [incident, setIncident] = useState();
 
   const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
@@ -22,6 +26,21 @@ function EditCitePage(props) {
 
   const addToast = useToastContext();
 
+  const updateSuccessToast = ({ incidentId }) => ({
+    message: (
+      <Trans i18n={i18n} incidentId={incidentId}>
+        Incident {{ incidentId }} updated successfully.{' '}
+        <LocalizedLink to={'/cite/' + incidentId}>View incident {{ incidentId }}</LocalizedLink>.
+      </Trans>
+    ),
+    severity: SEVERITY.success,
+  });
+
+  const updateErrorToast = ({ incidentId }) => ({
+    message: t('Error updating incident {{incidentId}}.', { incidentId }),
+    severity: SEVERITY.danger,
+  });
+
   useEffect(() => {
     if (incidentData?.incident) {
       setIncident({
@@ -32,7 +51,15 @@ function EditCitePage(props) {
 
   const handleSubmit = async (values) => {
     try {
-      const updated = { ...values, reports: undefined, __typename: undefined };
+      const updated = {
+        ...values,
+        reports: undefined,
+        embedding: {
+          ...values.embedding,
+          __typename: undefined,
+        },
+        __typename: undefined,
+      };
 
       await updateIncident({
         variables: {
@@ -45,15 +72,9 @@ function EditCitePage(props) {
         },
       });
 
-      addToast({
-        message: `Incident ${incidentId} updated successfully.`,
-        severity: SEVERITY.success,
-      });
+      addToast(updateSuccessToast({ incidentId }));
     } catch (e) {
-      addToast({
-        message: `Error updating incident ${incident} \n ${e.message}`,
-        severity: SEVERITY.danger,
-      });
+      addToast(updateErrorToast({ incidentId }));
     }
   };
 

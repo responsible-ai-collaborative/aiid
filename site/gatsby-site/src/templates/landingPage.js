@@ -26,7 +26,7 @@ const LandingPage = (props) => {
 
   const localWordCounts = wordCountsSorted.filter((word, index) => index < 10);
 
-  const { latestReport, latestReportIncident } = data;
+  const { latestReport, latestReportIncident, latestPost } = data;
 
   latestReport.incident_id = latestReportIncident.incident_id;
 
@@ -43,19 +43,24 @@ const LandingPage = (props) => {
 
   const title = t('Welcome to the Artificial Intelligence Incident Database', { ns: 'landing' });
 
+  const metaTitle = title;
+
   const metaDescription = t('The starting point for information about the AI Incident Database', {
     ns: 'landing',
   });
 
+  const canonicalUrl = 'https://incidentdatabase.ai';
+
+  const metaImage = 'https://incidentdatabase.ai/logos/AIID_1000x1000px.png';
+
   return (
     <Layout {...props} className="max-w-full 2xl:max-w-6xl">
-      <AiidHelmet>
+      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
         <title>{title}</title>
-        <meta name="title" content={title} />
-        <meta name="description" content={metaDescription} />
+        <meta property="og:type" content="website" />
       </AiidHelmet>
       <Container>
-        <div className="mb-10">
+        <div>
           <Hero />
         </div>
 
@@ -86,7 +91,7 @@ const LandingPage = (props) => {
             <AboutDatabase />
           </div>
           <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
-            <Blog />
+            <Blog post={latestPost.nodes[0]} />
           </div>
         </div>
 
@@ -103,7 +108,7 @@ const LandingPage = (props) => {
         </div>
 
         <div className="mb-10 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-10 flex-wrap">
-          <div className="flex-1 lg:max-w-[50%]">
+          <div className="flex-1 lg:max-w-[50%] grow">
             <WordCounts localWordCounts={localWordCounts} />
           </div>
           <div className="flex-1 lg:max-w-[50%] self-stretch">
@@ -122,7 +127,7 @@ const LandingPage = (props) => {
 export default LandingPage;
 
 export const query = graphql`
-  query LandingPageQuery($latestReportNumber: Int) {
+  query LandingPageQuery($latestReportNumber: Int, $locale: String!) {
     latestReportIncident: mongodbAiidprodIncidents(reports: { eq: $latestReportNumber }) {
       incident_id
     }
@@ -145,6 +150,33 @@ export const query = graphql`
     latestReport_en: mongodbTranslationsReportsEn(report_number: { eq: $latestReportNumber }) {
       title
       text
+    }
+
+    latestPost: allMdx(
+      filter: { fields: { slug: { glob: "/blog/**" }, locale: { eq: $locale } } }
+      sort: { order: DESC, fields: frontmatter___date }
+      limit: 1
+    ) {
+      nodes {
+        fileAbsolutePath
+        fields {
+          slug
+          title
+          locale
+        }
+        slug
+        excerpt
+        frontmatter {
+          date
+          author
+          slug
+          image {
+            childImageSharp {
+              gatsbyImageData(layout: FIXED)
+            }
+          }
+        }
+      }
     }
   }
 `;

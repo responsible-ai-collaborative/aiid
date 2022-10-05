@@ -67,9 +67,9 @@
   "Incidents reports matched by URL: <1>{{url}}</1>": "Rapports par URL : <1>{{url}}</1>",
   "AI Translated": "Traduit par IA",
   "View Original": "Voir l'original",
-  "Search over 1600 reports of AI harms": "Recherchez parmi +1600 rapports de dégâts causés par l'IA",
-  "Search 1600+ AI harm reports": "Rechercher +1600 dégâts d'IA",
-  "Search 1600+ reports": "Rechercher +1600 rapports",
+  "Search over 1800 reports of AI harms": "Recherchez parmi +1800 rapports de dégâts causés par l'IA",
+  "Search 1800+ AI harm reports": "Rechercher +1800 dégâts d'IA",
+  "Search 1800+ reports": "Rechercher +1800 rapports",
   "Search reports": "Recherche de rapports",
   "Discover Incidents": "Découvrir les incidents",
   "Submit Incident Reports": "Soumettre des rapports d'incident",
@@ -132,5 +132,13 @@
   "Report Authorship": "Auteur du rapport",
   "Report Domains": "Domaines du rapport",
   "By": "Par",
-  "More": "Plus"
+  "More": "Plus",
+  "Incident report {{reportNumber}} updated successfully. <4>View Incident {{incidentId}}</4>.": "Le rapport {{reportNumber}} a été mis à jour avec succès. <4>Voir l'incident {{incidentId}}</4>.",
+  "Error updating incident report {{reportNumber}}.": "Erreur dans la mis à jour du rapport {{reportNumber}}.",
+  "Incident report {{reportNumber}} deleted successfully.": "Le rapport {{reportNumber}} a été supprimé avec succès.",
+  "Error deleting incident report {{reportNumber}}.": "Erreur dans la suppression du rapport {{reportNumber}}.",
+  "Incident {{incidentId}} updated successfully. <4>View incident {{incidentId}}</4>.": "L'incident {{incidentId}} a été mis à jour avec succès. <4>Voir l'incident {{incidentId}}</4>.",
+  "Error updating incident {{incidentId}}.": "Erreur dans la mis à jour de l'incident {{incidentId}}.",
+  "Error updating incident {{incident}}. \n {{message}}": "Erreur dans la mis à jour de l'incident {{incidentId}}. \n {{message}}",
+  "Are you sure you want to delete this report?": "Voulez-vous vraiment supprimer ce rapport?"
 }

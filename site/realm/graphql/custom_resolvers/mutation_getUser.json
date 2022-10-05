@@ -1,0 +1,25 @@
+{
+    "field_name": "getUser",
+    "function_name": "getUser",
+    "input_type": {
+        "properties": {
+            "userId": {
+                "bsonType": "objectId"
+            }
+        },
+        "title": "GetUserInput",
+        "type": "object"
+    },
+    "input_type_format": "custom",
+    "on_type": "Mutation",
+    "payload_type": {
+        "properties": {
+            "email": {
+                "bsonType": "string"
+            }
+        },
+        "title": "AppUser",
+        "type": "object"
+    },
+    "payload_type_format": "custom"
+}

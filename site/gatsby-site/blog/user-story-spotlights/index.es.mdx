@@ -1,0 +1,79 @@
+---
+title: 'User Story en Foco: Detrás de escena de los desarrollos de bases de datos'
+metaTitle: 'User Story en Foco: Detrás de escena de los desarrollos de bases de datos'
+metaDescription: 'User Story Spotlights: Detrás de escena de los desarrollos de bases de datos'
+date: '2022-09-30'
+image: 'images/spotlight.png'
+author: 'Janet Schwartz'
+slug: '/blog/user-story-spotlights'
+aiTranslated: true
+---
+
+<!-- Esto bloqueará la cita, lo que debería tener el efecto de decirles a las personas que pueden elegir leer el encabezado en el texto o no. -->
+
+> Cada función principal de la base de datos de incidentes de IA (AIID) se construye como una serie de desarrollos incrementales dentro del marco "ágil", en el que las capacidades se basan en historias de usuarios que detallan las ganancias logradas por la función. Estaremos destacando estas historias de usuarios a lo largo del tiempo para mostrar cómo nuestros esfuerzos se complementan entre sí en la dirección de promover una IA responsable aprendiendo de los errores del pasado.
+
+El mes pasado, la ingeniera de experiencia de usuario (UX) [Luna McNulty](https://lmcnulty.me), editor de base de datos [Khoa Lam](http://linkedin.com/in/khoalklam) e ingeniero full stack [César Varela](https://cesarvarela.com) cada uno logró hitos que respaldan la capacidad de visualizar y agrupar incidentes para generar información del usuario.
+
+
+## Visión espacial
+
+> **Historia de usuario**: "Quiero comprender los grupos de incidentes para poder motivar mi trabajo de {investigación, política, defensa, ingeniería}"
+
+[![Una captura de pantalla de la visualización espacial que muestra una gran cantidad de círculos de colores numerados dispuestos según la similitud de los incidentes que representan](images/tsne.png)](/summaries/spatial)
+
+<figure className="p-4 text-center" style="width: 200px; float: right">
+  <div className="redondeado-completo desbordamiento-oculto">
+    <img
+      alt="Un dibujo vectorial que muestra la silueta negra de Luna McNulty contra la luna"
+      src="imágenes/luna.png"
+    />
+  </div>
+  <figcaption className="mt-2">Luna McNulty</figcaption>
+</figure>
+
+Una función clave del AIID es la capacidad de detección de incidentes, especialmente a medida que aumentan los incidentes con el tiempo. La primera [taxonomía](/taxonomías) del AIID proporcionada por el Centro de Seguridad y Tecnología Emergente de la Universidad de Georgetown proporcionó a los usuarios una poderosa herramienta para buscar y descubrir mediante filtros de clasificación, pero los informes de incidentes contienen mucha más información de la que se puede capturar en una sola taxonomía. . La ingeniera de UX Luna McNulty agregó una capa sobre esta taxonomía y el [modelo de incrustación de incidentes](/blog/using-ai-to-connect-ai-incidents) para agrupar incidentes según sus propiedades textuales. La [visualización de datos](/summaries/spatial) representa los incidentes más cerca de incidentes similares según el modelo integrado, y los incidentes se colorean según el tipo de clasificación CSET seleccionado. A medida que aumenta la cantidad de incidentes y los datos de incidentes se vuelven más ricos, las formas adicionales de visualizar los datos ayudarán a contar una historia sobre los daños de la IA en el pasado.
+
+
+## Historia de usuario destacada: Enriquecimiento de los datos de incidentes
+
+> **Historia de usuario**: "Quiero que los incidentes tengan títulos para poder consultarlos en conversaciones con otros {investigadores, responsables políticos, ingenieros, personas}"
+
+<figure className="p-4 text-center" style="width: 200px; float: right">
+
+  <img alt="Fotografía de Khoa Lam" src="images/khoa.png"/>
+
+  <figcaption className="mt-2">Khoa Lam</figcaption>
+
+</figure>
+
+Desde su inicio, el AIID ha recopilado informes individuales (p. ej., artículos de noticias) de daños causados ​​por la IA y los ha agrupado retrospectivamente en páginas de incidentes que presentan el contexto y la información sobre el mismo evento. A medida que la base de datos creció, se hizo necesario destilar la información presentada por los informes de incidentes en resúmenes completos de cada incidente. Los resúmenes permiten a los usuarios de la base de datos pasar de los titulares sensacionalistas a las opiniones consensuadas de lo que ocurrió. La siguiente figura muestra la distinción entre informes e incidentes y ofrece un ejemplo de cómo los títulos de informes individuales se traducen en títulos de incidentes compuestos.
+
+![Un diagrama titulado “Incidente vs Informe - ¿Cuál es la diferencia?” Muestra tres pestañas, cada una con la etiqueta "Informe", que se extiende desde un cuadro de ancho completo con la etiqueta "Incidente AIID". El contenido de la caja del incidente decía "Tesla Model 3 Sedán en piloto automático mató a un motociclista en una colisión trasera en Utah". Las pestañas del informe dicen, respectivamente, "Motoriclista muere en la I-15 después de que Tesla en piloto automático se estrellara contra la parte trasera de la bicicleta / 23 de julio de 2022 / ABC4", "Conductor de Tesla que usa piloto automático mata a motociclista, lo que provocó otra investigación de la NHTSA / 27 de julio de 2022 / The Verge”, y “La agencia estadounidense investiga que Tesla choca contra los 2 motociclistas muertos / 4 de agosto de 2022 / Noticias AP”
+](images/incidente-vs-informe.png)
+
+El editor de la base de datos, Khoa Lam, analizó sistemáticamente todos los registros de incidentes para agregar títulos, descripciones y presuntas partes {implementadores, desarrolladores, partes perjudicadas}. Los nuevos metadatos abren oportunidades para muchos desarrollos futuros de bases de datos para agrupar y presentar incidentes de manera que impulsen los conocimientos y las tendencias en los daños de la IA.
+
+Ambas historias de usuarios respaldan en última instancia nuestra misión de desarrollar una práctica de IA responsables mediante la comprensión del pasado, pero también queremos fomentar una cultura de responsabilidad para responder a los incidentes después de que ocurran. Esto nos lleva a la historia de usuario final de la publicación de blog con los desarrollos de César.
+
+
+## Historia de usuario destacada: páginas de entidad
+
+> **Historia de usuario**: "Quiero ver páginas que resumen mi organización según los incidentes con los que estamos asociados para poder desarrollar un programa que mitigue los efectos"
+
+[![Una captura de pantalla de una página que muestra una lista de entidades y sus propiedades asociadas](images/entities.png)](/entities)
+
+<figure className="p-4 text-center" style="width: 200px; float: right">
+
+  <img alt="Fotografía de César Varela" src="images/cesar.png"/>
+
+  <figcaption className="mt-2">César Varela</figcaption>
+
+</figure>
+
+Sobre la base del trabajo de Khoa que enriquece los incidentes con metadatos clave, el ingeniero de pila completa César Varela desarrolló [una forma de ver los incidentes agrupados por "entidad"](/entities). Los visitantes de la base de datos pueden ver páginas que destacan los incidentes generados y respondidos por varias empresas. En una versión futura, proporcionaremos a estas entidades la capacidad de agregar respuestas a incidentes (es decir, detalles desde su perspectiva sobre lo que sucedió, por qué sucedió y qué harán para prevenir/mitigar su recurrencia). Como práctica para desarrollar un sentido colectivo de responsabilidad por futuros incidentes de IA, estos procesos de respuesta son fundamentales para la producción y el despliegue de sistemas de IA socialmente beneficiosos.
+
+
+## ¿Buscas profundizar más?
+
+Nuestro objetivo no es solo ser un repositorio de incidentes de IA, sino también contribuir a la misión de desarrollo e implementación responsable de IA con información de apoyo para la presentación de datos. Si tiene una idea para una nueva forma de visualizar o buscar incidentes, [contáctenos](/contact)!

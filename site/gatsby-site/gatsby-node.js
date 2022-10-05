@@ -38,10 +38,8 @@ const AlgoliaUpdater = require('./src/utils/AlgoliaUpdater');
 
 const googleMapsApiClient = new GoogleMapsAPIClient({});
 
-exports.createPages = async ({ graphql, actions, reporter }) => {
-  const { createPage } = actions;
-
-  const { createRedirect } = actions;
+exports.createPages = async ({ actions, graphql, reporter }) => {
+  const { createRedirect, createPage } = actions;
 
   const redirects = [
     ['/about_apps/1-discover', '/about_apps'],
@@ -54,21 +52,29 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     ['/about/1-governance', '/about'],
     ['/about/blog', '/blog'],
     ['/research/4-taxonomies', '/taxonomies'],
+    ['/research', 'research/snapshots'],
   ];
 
   redirects.forEach((pair) =>
     createRedirect({ fromPath: pair[0], toPath: pair[1], isPermanent: true })
   );
 
-  await createMdxPages(graphql, createPage, reporter);
-  await createCitationPages(graphql, createPage);
-  await createWordCountsPages(graphql, createPage);
-  await createBackupsPage(graphql, createPage);
-  await createTaxonomyPages(graphql, createPage);
-  await createDownloadIndexPage(graphql, createPage);
-  await createDuplicatePages(graphql, createPage);
-  await createTsneVisualizationPage(graphql, createPage);
-  await createEntitiesPages(graphql, createPage);
+  for (const pageCreator of [
+    createMdxPages,
+    createCitationPages,
+    createWordCountsPages,
+    createBackupsPage,
+    createTaxonomyPages,
+    createDownloadIndexPage,
+    createDuplicatePages,
+    createTsneVisualizationPage,
+    createEntitiesPages,
+  ]) {
+    if (!(process.env.SKIP_PAGE_CREATOR || '').split(',').includes(pageCreator.name)) {
+      reporter.info(`Page creation: ${pageCreator.name}`);
+      await pageCreator(graphql, createPage, reporter);
+    }
+  }
 };
 
 exports.onCreateWebpackConfig = ({ actions }) => {
