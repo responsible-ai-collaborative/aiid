@@ -18,5 +18,7 @@
   "Succesfully updated password, click here to ": "Se ha actualizado la contraseña, haz clic aquí para ",
   "Don't have an account?": "¿No tienes una cuenta?",
   "Already have an account?": "¿Ya tienes una cuenta?",
-  "Verification email sent to {{email}}": "Email de verificación enviado a {{email}}"
+  "Verification email sent to {{email}}": "Email de verificación enviado a {{email}}",
+  "Your Account": "Tu cuenta",
+  "Subscribe": "Suscribirse"
 }
