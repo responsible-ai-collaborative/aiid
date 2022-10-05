@@ -92,11 +92,20 @@ function EditCitePage(props) {
               <IncidentForm />
               <Button
                 onClick={submitForm}
-                className="mt-3"
                 type="submit"
                 disabled={!isValid || isSubmitting}
+                className="mt-3 bootstrap flex disabled:opacity-50"
               >
-                Save
+                {isSubmitting ? (
+                  <>
+                    <Spinner size="sm" />
+                    <div className="ml-2">
+                      <Trans>Updating...</Trans>
+                    </div>
+                  </>
+                ) : (
+                  <Trans>Save</Trans>
+                )}
               </Button>
             </>
           )}
