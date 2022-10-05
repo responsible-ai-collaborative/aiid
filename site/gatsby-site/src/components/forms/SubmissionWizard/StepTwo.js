@@ -163,12 +163,12 @@ const FormDetails = ({ data, previous, schema, submitForm, validateAndSubmitForm
             <Trans ns="submit">Submit</Trans>
           </Button>
           <Button
-            data-cy="to-step-2"
+            data-cy="to-step-3"
             color={'light'}
             disabled={isSubmitting}
             onClick={() => {
               validateAndSubmitForm(
-                true,
+                false,
                 setIsSubmitting,
                 isValid,
                 validateForm,
