@@ -9,98 +9,142 @@ import Color from 'color';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans } from 'react-i18next';
 
-// TransformWrapper > TransformComponent > Visualization
-const VisualizationWrapper = styled.div`
-  height: calc(100vh - 2em);
-  flex-shrink: shrink;
-  overflow-x: hidden;
-  background: #ccc;
+export default function TsneVisualization({
+  currentIncidentId,
+  incidents,
+  classifications,
+  csetClassifications,
+}) {
+  const [axis, setAxis] = useState('Sector of Deployment');
 
-  > .react-transform-wrapper {
-    width: 100% !important;
-    height: 100%;
+  const [highlightedCategory, setHighlightedCategory] = useState(null);
 
-    > .react-transform-component {
-      height: calc(100vh - 2em);
-      width: calc(100vh - 2em);
-      overflow: visible !important;
-    }
-  }
-`;
+  const currentSpatialIncident = incidents.find(
+    (incident) => incident.incident_id == currentIncidentId
+  );
 
-const Visualization = styled.div`
-  border: 1px solid green;
-  width: 100% !important;
-  height: 100%;
-  position: relative;
-  overflow: visible;
-  aspect-ratio: 1 / 1;
-  > a {
-    color: inherit;
-    position: absolute;
-    font-size: 75%;
-    height: 2em;
-    width: 2em;
-    padding-left: 2px;
-    padding-right: 2px;
-    border-radius: 50%;
-    margin-left: -1em;
-    margin-top: -1em;
-    z-index: 1;
-    text-align: center;
-    line-height: 2em;
-    box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.15);
-    transition: background 0.25s;
-  }
-  a + div {
-    min-height: 15em;
-    width: 15em;
-    background: white;
-    border-radius: 0.25rem;
-    box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.25);
-    position: absolute;
-    padding: 1em;
-    overflow: hidden;
-    img {
-      margin: -1em -1em 1em -1em;
-      max-width: unset;
-      width: calc(100% + 4em);
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-    }
-    h3 {
-      font-size: 110%;
-      margin: 0px;
-    }
-  }
-  > a:hover:not(.current) {
-    background: #dedede;
-    z-index: 3;
-    color: var(--primary3) !important;
-  }
-  > a.current {
-    border: 1px solid grey;
-    background: #001a32;
-    box-shadow: 0px 0px 3px 3px rgba(255, 255, 255, 0.75);
-    z-index: 2;
-  }
-`;
+  const taxons = Array.from(
+    new Set(
+      classifications
+        .map((c) => c.classifications[axis.replace(/ /g, '_')])
+        .map((e) => (Array.isArray(e) ? e[0] : e))
+        .reduce((result, value) => result.concat(value), [])
+        .filter((value) => value)
+    )
+  );
 
-const Swatch = ({ color }) => (
-  <span
-    style={{
-      height: '.75em',
-      width: '.75em',
-      borderRadius: '.2em',
-      margin: '0em .2em -.05em 0px',
-      verticalAlign: 'center',
-      display: 'inline-block',
-      background: color,
-    }}
-  />
-);
+  const taxonColorMap = getTaxonColorMap({ taxons });
 
-const PlotPoint = ({
+  return (
+    incidents &&
+    (currentSpatialIncident || !currentIncidentId || currentIncidentId < 1) && (
+      <>
+        <VisualizationLayout>
+          <VisualizationView
+            {...{
+              incidents,
+              classifications,
+              currentSpatialIncident,
+              currentIncidentId,
+              taxonColorMap,
+              axis,
+              highlightedCategory,
+            }}
+          />
+          <Sidebar>
+            <label htmlFor="color-axis-select">
+              <Trans>Color by incident classifications from taxonomies</Trans>
+            </label>
+            <Form.Select
+              className="my-4 w-full"
+              id="color-axis-select"
+              onChange={(event) => setAxis(event.target.value)}
+              data-cy="color-axis-select"
+            >
+              {csetClassifications.map((axis) => (
+                <option key={axis} value={axis}>
+                  CSET:{axis}
+                </option>
+              ))}
+            </Form.Select>
+            <ul className="list-none">
+              {taxons.map((taxon) => (
+                <li
+                  key={taxon}
+                  onMouseEnter={() => setHighlightedCategory(taxon)}
+                  onMouseLeave={() => setHighlightedCategory(null)}
+                  className={
+                    highlightedCategory && highlightedCategory != taxon ? 'opacity-25' : ''
+                  }
+                >
+                  <Swatch color={taxonColorMap[taxon]} />
+                  {taxon}
+                </li>
+              ))}
+            </ul>
+          </Sidebar>
+        </VisualizationLayout>
+      </>
+    )
+  );
+}
+
+function VisualizationView({
+  incidents,
+  classifications,
+  currentSpatialIncident,
+  currentIncidentId,
+  taxonColorMap,
+  axis,
+  highlightedCategory,
+}) {
+  return (
+    <VisualizationWrapper data-cy="tsne-visualization">
+      <TransformWrapper
+        initialScale={currentSpatialIncident ? 2 : 1}
+        initialPositionX={-500 + -500 * currentSpatialIncident?.tsne?.x || 0}
+        initialPositionY={-500 + -500 * currentSpatialIncident?.tsne?.y || 0}
+        limitToBounds={false}
+        minScale={0.5}
+        maxScale={10}
+      >
+        {({ state }) => (
+          <TransformComponent className="h-full">
+            <Visualization className="h-full">
+              {incidents.map((incident) => {
+                // I'm pretty sure the JS engine is smart enough to memoize this,
+                // but I'm not taking my chances.
+                const scaleMultiplier = 1 / Math.sqrt(state.scale);
+
+                return (
+                  <PlotPoint
+                    classifications={
+                      classifications.find(
+                        (classification) => classification.incident_id == incident.incident_id
+                      )?.classifications || {}
+                    }
+                    key={incident.incident_id}
+                    {...{
+                      highlightedCategory,
+                      currentIncidentId,
+                      axis,
+                      taxonColorMap,
+                      scaleMultiplier,
+                      state,
+                      incident,
+                    }}
+                  />
+                );
+              })}
+            </Visualization>
+          </TransformComponent>
+        )}
+      </TransformWrapper>
+    </VisualizationWrapper>
+  );
+}
+
+function PlotPoint({
   state,
   incident,
   scaleMultiplier,
@@ -108,7 +152,8 @@ const PlotPoint = ({
   taxonColorMap,
   axis,
   currentIncidentId,
-}) => {
+  highlightedCategory,
+}) {
   const client = useApolloClient();
 
   const [incidentData, setIncidentData] = useState(null);
@@ -116,6 +161,10 @@ const PlotPoint = ({
   // We have to track this and render the incident card only when hovered.
   // Just hiding it with css is too slow and makes zooming laggy.
   const [hover, setHover] = useState(false);
+
+  const [touchScreen, setTouchScreen] = useState(false);
+
+  const [hoverTimeout, setHoverTimeout] = useState(null);
 
   const dbAxis = axis.replace(/ /g, '_');
 
@@ -144,6 +193,34 @@ const PlotPoint = ({
 
   const onLeft = clientPosition?.x < window.innerWidth / 2;
 
+  const showIncidentCard = (event) => {
+    setHover(true);
+    setClientPosition({ x: event.clientX, y: event.clientY });
+    if (!incidentData) {
+      client
+        .query({
+          query: gql`
+            query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
+              incident(query: $query) {
+                incident_id
+                title
+                reports {
+                  cloudinary_id
+                  report_number
+                  title
+                  url
+                }
+              }
+            }
+          `,
+          variables: { query: { incident_id: incident.incident_id } },
+        })
+        .then((res) => {
+          setIncidentData(res.data.incident);
+        });
+    }
+  };
+
   return (
     <>
       <LocalizedLink
@@ -154,50 +231,54 @@ const PlotPoint = ({
         style={{
           top: `calc(50% + 48% * ${incident.tsne.y})`,
           left: `calc(50% + 48% * ${incident.tsne.x})`,
+          border: '2px solid ' + borderColor.hex(),
+          opacity: highlightedCategory && highlightedCategory != taxon ? 0.1 : 1,
+          zIndex: highlightedCategory == taxon ? 2 : 1,
+          background,
+          color,
 
           // The points do not grow as fast as the space between them,
           // allowing the user to zoom to more accurately select
           // from points that are very close to each other.
           transform: `scale(${scaleMultiplier})`,
-          border: '2px solid ' + borderColor.hex(),
-          background,
-          color,
         }}
         className={incident.incident_id == currentIncidentId ? 'current' : ''}
-        onMouseLeave={() => setHover(false)}
+        onTouchStart={() => {
+          setTouchScreen(true);
+        }}
         onMouseEnter={(event) => {
-          setHover(true);
-          setClientPosition({ x: event.clientX, y: event.clientY });
-          if (!incidentData) {
-            client
-              .query({
-                query: gql`
-                  query ProbablyRelatedIncidentIds($query: IncidentQueryInput) {
-                    incident(query: $query) {
-                      incident_id
-                      title
-                      reports {
-                        cloudinary_id
-                        report_number
-                        title
-                        url
-                      }
-                    }
-                  }
-                `,
-                variables: { query: { incident_id: incident.incident_id } },
-              })
-              .then((res) => {
-                setIncidentData(res.data.incident);
-              });
+          // Timeout prevents the cards from showing up
+          // when you're just moving the mouse across the screen
+          if (!touchScreen) {
+            setHoverTimeout(
+              setTimeout(() => {
+                showIncidentCard(event);
+              }, 200)
+            );
+          }
+        }}
+        onMouseLeave={() => {
+          // This gives time to move the mouse over the card before it disappears
+          clearTimeout(hoverTimeout);
+          setHoverTimeout(setTimeout(() => setHover(false), 500));
+        }}
+        onClick={(event) => {
+          if (touchScreen) {
+            if (!hover) {
+              event.preventDefault();
+              showIncidentCard(event);
+            }
           }
         }}
       >
-        {incident.incident_id}
+        <span>{incident.incident_id}</span>
       </LocalizedLink>
-      {hover && (
-        <div
+
+      {hover && ( // Incident Card
+        <LocalizedLink
+          to={'/cite/' + incident.incident_id}
           data-cy="incident-card"
+          className="incident-card"
           style={{
             top: onTop ? `calc(50% + 48% * ${incident.tsne.y} + ${scaleMultiplier}em)` : undefined,
             bottom: !onTop
@@ -216,6 +297,11 @@ const PlotPoint = ({
             alignItems: 'center',
             justifyContent: 'center',
           }}
+          onMouseEnter={() => {
+            clearTimeout(hoverTimeout);
+            setHoverTimeout(null);
+          }}
+          onMouseLeave={() => setHoverTimeout(setTimeout(() => setHover(false), 500))}
         >
           {incidentData ? (
             <>
@@ -231,27 +317,13 @@ const PlotPoint = ({
           ) : (
             <Spinner />
           )}
-        </div>
+        </LocalizedLink>
       )}
     </>
   );
-};
+}
 
-const circularDistance = (deg1, deg2) =>
-  Math.min(Math.abs(deg1 - deg2), 360 - Math.abs(deg1 - deg2)) % 360;
-
-const TsneVisualization = ({
-  currentIncidentId,
-  incidents,
-  classifications,
-  csetClassifications,
-}) => {
-  const [axis, setAxis] = useState('Sector of Deployment');
-
-  const currentSpatialIncident = incidents.find(
-    (incident) => incident.incident_id == currentIncidentId
-  );
-
+function getTaxonColorMap({ taxons }) {
   let taxonColorMap = {
     Sex: Color('#ff0090'),
     'Sexual orientation or gender identity': Color('#ca9bff'),
@@ -277,16 +349,6 @@ const TsneVisualization = ({
     YouTube: Color('#FF0000'),
   };
 
-  const taxons = Array.from(
-    new Set(
-      classifications
-        .map((c) => c.classifications[axis.replace(/ /g, '_')])
-        .map((e) => (Array.isArray(e) ? e[0] : e))
-        .reduce((result, value) => result.concat(value), [])
-        .filter((value) => value)
-    )
-  );
-
   // Select colors spaced evenly around the color wheel.
   // Alternate the saturation and value
   // so that adjacent items are more distinct.
@@ -307,6 +369,9 @@ const TsneVisualization = ({
 
       return { degrees, color };
     });
+
+  const circularDistance = (deg1, deg2) =>
+    Math.min(Math.abs(deg1 - deg2), 360 - Math.abs(deg1 - deg2)) % 360;
 
   // Remove those colors closest to predefined colors
   for (const key of Object.keys(taxonColorMap).filter((key) => taxons.includes(key))) {
@@ -336,89 +401,138 @@ const TsneVisualization = ({
 
     hueSteps = hueSteps.filter((s) => s != step);
   }
+  return taxonColorMap;
+}
 
+function Swatch({ color }) {
   return (
-    incidents &&
-    (currentSpatialIncident || !currentIncidentId || currentIncidentId < 1) && (
-      <>
-        <div style={{ display: 'flex', gap: '1em', alignItems: 'center', flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', gap: '1em', alignItems: 'center' }}>
-            <label htmlFor="color-axis-select">
-              <Trans>Color by incident classifications from taxonomies</Trans>
-            </label>
-            <Form.Select
-              style={{ display: 'inline', width: 'unset' }}
-              id="color-axis-select"
-              onChange={(event) => setAxis(event.target.value)}
-              data-cy="color-axis-select"
-            >
-              {csetClassifications.map((axis) => (
-                <option key={axis} value={axis}>
-                  CSET:{axis}
-                </option>
-              ))}
-            </Form.Select>
-          </div>
-        </div>
-        <div
-          className="flex"
-          style={{
-            height: 'calc(100vh - 2em)',
-          }}
-        >
-          <VisualizationWrapper data-cy="tsne-visualization">
-            <TransformWrapper
-              initialScale={currentSpatialIncident ? 2 : 1}
-              initialPositionX={-500 + -500 * currentSpatialIncident?.tsne?.x || 0}
-              initialPositionY={-500 + -500 * currentSpatialIncident?.tsne?.y || 0}
-              limitToBounds={false}
-              minScale={0.5}
-              maxScale={10}
-            >
-              {({ state }) => (
-                <TransformComponent className="h-full">
-                  <Visualization className="h-full">
-                    {incidents.map((incident) => {
-                      // I'm pretty sure the JS engine is smart enough to memoize this,
-                      // but I'm not taking my chances.
-                      const scaleMultiplier = 1 / Math.sqrt(state.scale);
-
-                      return (
-                        <PlotPoint
-                          state={state}
-                          scaleMultiplier={scaleMultiplier}
-                          incident={incident}
-                          classifications={
-                            classifications.find(
-                              (classification) => classification.incident_id == incident.incident_id
-                            )?.classifications || {}
-                          }
-                          key={incident.incident_id}
-                          taxonColorMap={taxonColorMap}
-                          axis={axis}
-                          currentIncidentId={currentIncidentId}
-                        />
-                      );
-                    })}
-                  </Visualization>
-                </TransformComponent>
-              )}
-            </TransformWrapper>
-          </VisualizationWrapper>
-          <div className="p-4 border-2 border-gray-300 h-full overflow-auto">
-            <ul className="list-none">
-              {taxons.map((taxon) => (
-                <li key={taxon}>
-                  <Swatch color={taxonColorMap[taxon]} />
-                  {taxon}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </>
-    )
+    <span
+      style={{
+        height: '.75em',
+        width: '.75em',
+        borderRadius: '.2em',
+        margin: '0em .2em -.05em 0px',
+        verticalAlign: 'center',
+        display: 'inline-block',
+        background: color,
+      }}
+    />
   );
-};
+}
 
-export default TsneVisualization;
+var visualizationHeight = 'calc(100vh - 2rem)';
+
+function VisualizationLayout({ children }) {
+  return (
+    // Add a little extra padding on mobile
+    // so there's space to swipe for scrolling
+    <div
+      className="flex flex-col xl:flex-row mt-4 px-2 md:px-0"
+      style={{
+        height: visualizationHeight,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function Sidebar({ children }) {
+  return (
+    <div
+      className="
+      p-4 border-2 border-gray-300 overflow-auto
+      w-full  h-60
+      xl:w-80 xl:h-full
+    "
+    >
+      {children}
+    </div>
+  );
+}
+
+// TransformWrapper > TransformComponent > Visualization
+var VisualizationWrapper = styled.div`
+  width: 100%;
+  height: ${visualizationHeight};
+  flex-shrink: shrink;
+  overflow-x: hidden;
+  background: #ccc;
+
+  > .react-transform-wrapper {
+    width: 100% !important;
+    height: 100%;
+
+    > .react-transform-component {
+      height: ${visualizationHeight};
+      width: ${visualizationHeight};
+      overflow: visible !important;
+    }
+  }
+`;
+
+var Visualization = styled.div`
+  width: 100% !important;
+  height: 100%;
+  position: relative;
+  overflow: visible;
+  aspect-ratio: 1 / 1;
+  > a:not(.incident-card) {
+    color: inherit;
+    position: absolute;
+    font-size: 75%;
+    height: 2em;
+    width: 2em;
+    padding-left: 2px;
+    padding-right: 2px;
+    border-radius: 50%;
+    margin-left: -1em;
+    margin-top: -1em;
+    z-index: 1;
+    text-align: center;
+    line-height: 2em;
+    box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.15);
+    transition: background, opacity 0.25s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .incident-card {
+    display: block;
+    min-height: 15em;
+    width: 15em;
+    background: white;
+    border-radius: 0.25rem;
+    box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.25);
+    position: absolute;
+    padding: 1em;
+    overflow: hidden;
+    img {
+      margin: -1em -1em 1em -1em;
+      max-width: unset;
+      width: calc(100% + 4em);
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+    }
+    h3 {
+      font-size: 110%;
+      margin: 0px;
+      line-height: 1.5;
+    }
+  }
+  .incident-card:not(:hover) {
+    color: black;
+  }
+
+  > a:hover:not(.current):not(.incident-card) {
+    background: #dedede;
+    z-index: 3;
+    color: var(--primary3) !important;
+  }
+  > a.current {
+    border: 1px solid grey;
+    background: #001a32;
+    box-shadow: 0px 0px 3px 3px rgba(255, 255, 255, 0.75);
+    z-index: 2;
+  }
+`;

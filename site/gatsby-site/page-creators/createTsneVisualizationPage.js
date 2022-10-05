@@ -49,8 +49,6 @@ const createTsneVisualizationPage = async (graphql, createPage) => {
 
   const classifications = classificationsQuery.data.allMongodbAiidprodClassifications.nodes;
 
-  console.log(`classifications`, classifications);
-
   createPage({
     path: 'summaries/spatial',
     component: path.resolve('./src/templates/tsneVisualizationPage.js'),
