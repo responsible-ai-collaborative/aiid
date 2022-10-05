@@ -1,6 +1,10 @@
+const config = require('../config');
+
 const path = require('path');
 
 const { updateTsneInDatabase } = require('../src/utils/updateTsne');
+
+const { switchLocalizedPath } = require('../i18n');
 
 const createTsneVisualizationPage = async (graphql, createPage) => {
   await updateTsneInDatabase();
@@ -49,15 +53,22 @@ const createTsneVisualizationPage = async (graphql, createPage) => {
 
   const classifications = classificationsQuery.data.allMongodbAiidprodClassifications.nodes;
 
-  createPage({
-    path: 'summaries/spatial',
-    component: path.resolve('./src/templates/tsneVisualizationPage.js'),
-    context: {
-      spatialIncidents,
-      classifications,
-      csetClassifications,
-    },
-  });
+  for (const language of config.i18n.availableLanguages) {
+    const pagePath = switchLocalizedPath({
+      newLang: language,
+      path: 'summaries/spatial',
+    });
+
+    createPage({
+      path: pagePath,
+      component: path.resolve('./src/templates/tsneVisualizationPage.js'),
+      context: {
+        spatialIncidents,
+        classifications,
+        csetClassifications,
+      },
+    });
+  }
 };
 
 module.exports = createTsneVisualizationPage;
