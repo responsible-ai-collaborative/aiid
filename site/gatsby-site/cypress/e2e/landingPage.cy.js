@@ -70,16 +70,16 @@ describe('The Landing page', () => {
 
     cy.location('pathname', { timeout: 8000 }).should('eq', '/');
 
-    cy.get('[data-cy="account-link"]').filter(':visible').first().click();
+    cy.get('[data-cy="account-btn"]').filter(':visible').first().click();
 
     cy.location('pathname', { timeout: 8000 }).should('eq', '/account');
   });
 
-  it('Should redirect to the login page when logged out', () => {
+  it('Should redirect to the signup page when logged out', () => {
     cy.visit('/');
 
-    cy.get('[data-cy="login-link"]').filter(':visible').click();
+    cy.get('[data-cy="subscribe-btn"]').filter(':visible').click();
 
-    cy.location('pathname', { timeout: 8000 }).should('eq', '/login');
+    cy.location('pathname', { timeout: 8000 }).should('eq', '/signup');
   });
 });
