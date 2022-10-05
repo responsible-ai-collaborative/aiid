@@ -8,7 +8,35 @@
         "database": "aiidprod",
         "collection": "incidents",
         "service_name": "mongodb-atlas",
-        "match": {},
+        "match": {
+            "$or": [
+                {
+                    "updateDescription.updatedFields.title": {
+                        "$exists": true
+                    }
+                },
+                {
+                    "updateDescription.updatedFields.description": {
+                        "$exists": true
+                    }
+                },
+                {
+                    "updateDescription.updatedFields.date": {
+                        "$exists": true
+                    }
+                },
+                {
+                    "updateDescription.updatedFields.editors": {
+                        "$exists": true
+                    }
+                },
+                {
+                    "updateDescription.updatedFields.reports": {
+                        "$exists": true
+                    }
+                }
+            ]
+        },
         "project": {},
         "full_document": true,
         "full_document_before_change": true,
