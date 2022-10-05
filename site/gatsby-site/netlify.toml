@@ -10,8 +10,8 @@ TERM = "xterm"
   [plugins.inputs]
     enable = false
   [plugins.inputs.postBuild]
+    enable = false
     record = true
-    enable = true
     spa = true
     start = 'gatsby serve -p 8080'
     browser = 'chromium'
