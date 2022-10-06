@@ -35,9 +35,11 @@ describe('The Submit form', () => {
 
     cy.get('[name="incident_date"]').type('2020-01-01');
 
+    cy.wait(0);
+
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('input[name="submitters"]').type('Something');
 
@@ -45,7 +47,7 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="to-step-3"]').click();
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('[name="tags"]').type('New Tag{enter}');
 
@@ -170,11 +172,11 @@ describe('The Submit form', () => {
       .last()
       .click();
 
-    cy.get('[name="incident_date"]').type('2020-01-01');
+    cy.wait(200);
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('input[name="submitters"]').type('Something');
 
@@ -182,7 +184,7 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="to-step-3"]').click();
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('[name="tags"]').type('New Tag{enter}');
 
@@ -310,11 +312,7 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(200);
-
     cy.get('[data-cy="to-step-3"]').click();
-
-    cy.wait(200);
 
     cy.wait('@findIncident');
 
@@ -632,10 +630,6 @@ describe('The Submit form', () => {
     );
 
     cy.get('[data-cy=related-byText]').contains('Reports must have at least').should('exist');
-
-    cy.get('[data-cy="to-step-2"]').click();
-
-    cy.wait(200);
   });
 
   it('Should show fallback preview image on initial load', () => {
@@ -729,22 +723,9 @@ describe('The Submit form', () => {
       'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
     );
 
-    cy.get('[data-cy="to-step-2"]').click();
-
-    cy.wait(200);
-
-    const valuesStep2 = {
-      submitters: 'test submitter',
-      image_url: 'https://test.com/image.jpg',
-    };
-
-    for (const key in valuesStep2) {
-      cy.get(`[name="${key}"]`).type(valuesStep2[key]);
-    }
+    cy.get('[name="incident_date"]').should('not.exist');
 
     cy.wait('@findIncident');
-
-    cy.get('[name="incident_date"]').should('not.exist');
 
     cy.contains('.invalid-feedback', 'Incident ID 3456456 not found!').should('be.visible');
   });
@@ -779,17 +760,6 @@ describe('The Submit form', () => {
     cy.get('[name="incident_date"]').should('be.visible');
 
     cy.get('[data-cy="to-step-2"]').click();
-
-    cy.wait(400);
-
-    const valuesStep2 = {
-      submitters: 'test submitter',
-      image_url: 'https://test.com/image.jpg',
-    };
-
-    for (const key in valuesStep2) {
-      cy.get(`[name="${key}"]`).type(valuesStep2[key]);
-    }
 
     cy.contains('.invalid-feedback', '*Incident Date required').should('be.visible');
   });
