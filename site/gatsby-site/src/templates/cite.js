@@ -221,6 +221,10 @@ function CitePage(props) {
         ></SocialShareButtons>
       </div>
 
+      <div>
+        <strong>Description</strong>: {incident.description}
+      </div>
+
       <Container>
         <Row>
           <Col>
