@@ -6,6 +6,7 @@ exports = async function (changeEvent) {
   const incidentId = fullDocument.incident_id;
 
   console.log(`Processing updates on incident ${incidentId}`);
+  console.log('updateDescription', JSON.stringify(updateDescription));
 
   const subscriptionsCollection = context.services.get('mongodb-atlas').db('customData').collection("subscriptions");
   const subscriptions = await subscriptionsCollection.find({ type: 'incident', incident_id: incidentId }).toArray();
@@ -55,7 +56,7 @@ exports = async function (changeEvent) {
             incidentUrl: `https://incidentdatabase.ai/cite/${incidentId}`,
             reportUrl: `https://incidentdatabase.ai/cite/${incidentId}#r${newReportNumber}`,
             reportTitle: newReport.title,
-            reportAuthor: newReport.authors[0],
+            reportAuthor: newReport.authors[0] ? newReport.authors[0] : '',
           },
           templateId: 'NewReportAddedToAnIncident' // Template value from "site/realm/functions/sendEmail.js" EMAIL_TEMPLATES constant
         };
