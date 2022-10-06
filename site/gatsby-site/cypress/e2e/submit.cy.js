@@ -33,13 +33,13 @@ describe('The Submit form', () => {
 
     cy.wait('@parseNews');
 
-    cy.get('[data-cy="to-step-2"]').click();
+    cy.get('[name="incident_date"]').type('2020-01-01');
 
-    cy.get('input[name="submitters"]').type('Something');
+    cy.get('[data-cy="to-step-2"]').click();
 
     cy.wait(200);
 
-    cy.get('[name="incident_date"]').type('2020-01-01');
+    cy.get('input[name="submitters"]').type('Something');
 
     cy.get('[name="language"]').select('Spanish');
 
@@ -169,6 +169,8 @@ describe('The Submit form', () => {
     )
       .last()
       .click();
+
+    cy.get('[name="incident_date"]').type('2020-01-01');
 
     cy.get('[data-cy="to-step-2"]').click();
 
@@ -715,6 +717,8 @@ describe('The Submit form', () => {
       authors: 'test author',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
+      incident_date: '2022-01-01',
+      incident_id: '3456456',
     };
 
     for (const key in valuesStep1) {
@@ -731,9 +735,7 @@ describe('The Submit form', () => {
 
     const valuesStep2 = {
       submitters: 'test submitter',
-      incident_date: '2022-01-01',
       image_url: 'https://test.com/image.jpg',
-      incident_id: '3456456',
     };
 
     for (const key in valuesStep2) {
@@ -774,9 +776,11 @@ describe('The Submit form', () => {
       'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
     );
 
+    cy.get('[name="incident_date"]').should('be.visible');
+
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(200);
+    cy.wait(400);
 
     const valuesStep2 = {
       submitters: 'test submitter',
@@ -786,8 +790,6 @@ describe('The Submit form', () => {
     for (const key in valuesStep2) {
       cy.get(`[name="${key}"]`).type(valuesStep2[key]);
     }
-
-    cy.get('[name="incident_date"]').should('be.visible');
 
     cy.contains('.invalid-feedback', '*Incident Date required').should('be.visible');
   });
@@ -801,6 +803,7 @@ describe('The Submit form', () => {
       authors: 'test author',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
+      incident_date: '2022-01-01',
     };
 
     for (const key in valuesStep1) {
@@ -817,7 +820,6 @@ describe('The Submit form', () => {
 
     const valuesStep2 = {
       submitters: 'test submitter',
-      incident_date: '2022-01-01',
       image_url: 'https://test.com/image.jpg',
     };
 
@@ -901,13 +903,13 @@ describe('The Submit form', () => {
       'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
     );
 
+    cy.get('[name="incident_date"]').type('2020-01-01');
+
     cy.get('[data-cy="to-step-2"]').click();
 
     cy.wait(200);
 
     cy.get('input[name="submitters"]').type('Something');
-
-    cy.get('[name="incident_date"]').type('2020-01-01');
 
     cy.get('[data-cy="to-step-3"]').click();
 
