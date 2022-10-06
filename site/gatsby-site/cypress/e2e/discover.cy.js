@@ -36,7 +36,7 @@ describe('The Discover app', () => {
 
     cy.get('.card [placeholder="Type Here"]').type('34').type('{enter}');
 
-    cy.get('.list-group-item:contains("34")').click();
+    cy.get('.list-group-item:contains("34")').first().click();
 
     cy.url().should('include', 'incident_id=34');
 
