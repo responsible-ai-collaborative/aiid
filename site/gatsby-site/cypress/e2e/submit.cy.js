@@ -45,6 +45,8 @@ describe('The Submit form', () => {
 
     cy.get('[name="language"]').select('Spanish');
 
+    cy.wait(200);
+
     cy.get('[data-cy="to-step-3"]').click();
 
     cy.wait(0);
@@ -182,6 +184,8 @@ describe('The Submit form', () => {
 
     cy.wait('@findIncident');
 
+    cy.wait(200);
+
     cy.get('[data-cy="to-step-3"]').click();
 
     cy.wait(0);
@@ -310,9 +314,15 @@ describe('The Submit form', () => {
 
     cy.visit(url + `?${params.toString()}`);
 
+    cy.wait(200);
+
     cy.get('[data-cy="to-step-2"]').click();
 
+    cy.wait(200);
+
     cy.get('[data-cy="to-step-3"]').click();
+
+    cy.wait(200);
 
     cy.wait('@findIncident');
 
@@ -603,6 +613,8 @@ describe('The Submit form', () => {
       'YouTube'
     );
 
+    cy.wait(200);
+
     cy.get('[data-cy="to-step-2"]').click();
 
     cy.wait(200);
@@ -652,6 +664,8 @@ describe('The Submit form', () => {
 
     cy.visit(url + `?${params.toString()}`);
 
+    cy.wait(200);
+
     cy.get('[data-cy="to-step-2"]').click();
 
     cy.wait(200);
@@ -682,6 +696,8 @@ describe('The Submit form', () => {
     const cloudinaryImageUrl =
       'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/v1/reports/' +
       suffix;
+
+    cy.wait(200);
 
     cy.get('[data-cy="to-step-2"]').click();
 
@@ -784,6 +800,8 @@ describe('The Submit form', () => {
       'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
     );
 
+    cy.wait(200);
+
     cy.get('[data-cy="to-step-2"]').click();
 
     cy.wait(200);
@@ -796,6 +814,8 @@ describe('The Submit form', () => {
     for (const key in valuesStep2) {
       cy.get(`[name="${key}"]`).type(valuesStep2[key]);
     }
+
+    cy.wait(200);
 
     cy.get('[data-cy="to-step-3"]').click();
 
@@ -875,11 +895,15 @@ describe('The Submit form', () => {
 
     cy.get('[name="incident_date"]').type('2020-01-01');
 
+    cy.wait(200);
+
     cy.get('[data-cy="to-step-2"]').click();
 
     cy.wait(200);
 
     cy.get('input[name="submitters"]').type('Something');
+
+    cy.wait(200);
 
     cy.get('[data-cy="to-step-3"]').click();
 
