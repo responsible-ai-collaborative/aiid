@@ -218,6 +218,7 @@ const plugins = [
           'wordcount',
           'leaderboard',
           'entities',
+          'account',
         ],
         debug: process.env.GATSBY_I18N_DEBUG,
         nsSeparator: false,
