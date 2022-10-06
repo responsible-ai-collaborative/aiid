@@ -23,6 +23,15 @@ function TsneVisulizationPage(props) {
 
   const canonicalUrl = 'https://incidentdatabase.ai/summaries/spatial';
 
+  //      <p>
+  //        <Trans>
+  //          The visualization below shows incidents closer together when a{' '}
+  //          <LocalizedLink to="/blog/using-ai-to-connect-ai-incidents">
+  //            natural language processing system
+  //          </LocalizedLink>{' '}
+  //          identifies their text as being semantically similar.
+  //        </Trans>
+  //      </p>
   return (
     <Layout {...props}>
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl }}>
@@ -32,16 +41,6 @@ function TsneVisulizationPage(props) {
       <div className={'titleWrapper'}>
         <StyledHeading>{metaDescription}</StyledHeading>
       </div>
-
-      <p>
-        <Trans>
-          The visualization below shows incidents closer together when a{' '}
-          <LocalizedLink to="/blog/using-ai-to-connect-ai-incidents">
-            natural language processing system
-          </LocalizedLink>{' '}
-          identifies their text as being semantically similar.
-        </Trans>
-      </p>
 
       <TsneVisualization
         currentIncidentId={Number(
@@ -53,6 +52,19 @@ function TsneVisulizationPage(props) {
         classifications={classifications}
         csetClassifications={csetClassifications}
       />
+      <p className="mt-4" style={{ maxWidth: '1000px' }}>
+        <Trans>
+          The spatial view above shows each incident in the database as a plot point containing its
+          incident ID number. Incidents are positioned so that those with similar report texts fall
+          closer together. For example, incidents concerning autonomous vehicles form a tight
+          cluster. We determine incident similarity using a natural language processing system,
+          which you can read more about in{' '}
+          <LocalizedLink to="/blog/using-ai-to-connect-ai-incidents">
+            our blog post on its rollout
+          </LocalizedLink>
+          .
+        </Trans>
+      </p>
     </Layout>
   );
 }
