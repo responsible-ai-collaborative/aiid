@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
-import { formatISO, format, parse } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlag, faQuestionCircle, faEdit } from '@fortawesome/free-solid-svg-icons';
-import { Image } from '../../utils/cloudinary';
-import { fill } from '@cloudinary/base/actions/resize';
 import { useMutation } from '@apollo/client/react/hooks';
 import { UPDATE_INCIDENT } from '../../graphql/incidents';
-import md5 from 'md5';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import Card from '../../elements/Card';
 import Button from '../../elements/Button';
-import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
 import IncidentReportCard, { CardActions } from 'components/IncidentReportCard';
@@ -19,11 +14,7 @@ import IncidentReportCard, { CardActions } from 'components/IncidentReportCard';
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
 const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncident }) => {
-  const parsedDate = incident.date ? parse(incident.date, 'yyyy-MM-dd', new Date()) : null;
-
   const { isRole } = useUserContext();
-
-  const { locale } = useLocalization();
 
   const { t } = useTranslation();
 
@@ -33,10 +24,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   const addToast = useToastContext();
 
-  return `
-    The linter won't let me commit this 
-    unless theres something here.
-  `.length > 0 ? (
+  return (
     <IncidentReportCard incident={incident} data-cy="similar-incident-card">
       <CardActions position="rightCorner">
         {flaggable && (
@@ -75,38 +63,6 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
         )}
       </CardActions>
     </IncidentReportCard>
-  ) : (
-    <Card data-cy="similar-incident-card" className="relative pb-8 overflow-hidden">
-      <a href={'/cite/' + incident.incident_id} data-cy="cite-link">
-        {(incident.reports[0].cloudinary_id || incident.reports[0]?.image_url) && (
-          <Image
-            className="object-cover w-full aspect-[16/9]"
-            publicID={
-              incident.reports[0]?.cloudinary_id || `legacy/${md5(incident.reports[0]?.image_url)}`
-            }
-            transformation={fill().height(480)}
-            alt=""
-          />
-        )}
-
-        <h3 className="text-lg m-4">
-          {locale == 'en' && incident.title ? incident.title : incident.reports[0].title}
-        </h3>
-      </a>
-      <div className="flex w-full flex-row items-center font-bold mt-0 absolute pr-4 bottom-4">
-        <div className="text-muted-gray text-sm mx-4">
-          {parsedDate && (
-            <>
-              <time dateTime={formatISO(parsedDate)}>{format(parsedDate, 'MMM yyyy')}</time> ·{' '}
-            </>
-          )}
-          <span>
-            {incident.reports.length} {incident.reports.length == 1 ? t('report') : t('reports')}
-          </span>
-        </div>
-        <div className="inline-block ml-auto mr-auto" />
-      </div>
-    </Card>
   );
 };
 
