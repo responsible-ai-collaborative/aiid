@@ -3,6 +3,7 @@ import { StaticQuery, graphql } from 'gatsby';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faRssSquare } from '@fortawesome/free-solid-svg-icons';
 import { faTwitterSquare, faGithubSquare } from '@fortawesome/free-brands-svg-icons';
+import LoginSignup from 'components/loginSignup';
 
 import Link from './Link';
 import config from '../../../config.js';
@@ -174,6 +175,11 @@ const Header = () => {
                     onClick={() => setNavCollapsed(!navCollapsed)}
                   />
                 </div>
+                <LoginSignup
+                  className="hidden lg:flex ml-4"
+                  logoutClassName="text-white hover:text-primary-blue"
+                  loginClassName="text-white hover:text-primary-blue"
+                />
               </div>
             </div>
             <div id="navbar" className={topClass}>
