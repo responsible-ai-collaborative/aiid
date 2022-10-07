@@ -11,6 +11,10 @@ body.modal-open .accordion-item .accordion-button {
     color: #fff !important;
 }
 
+.fade.modal.show {
+    backdrop-filter: blur(10px);
+}
+
 #dropdown-basic-button {
     display: flex;
     align-items: center;
