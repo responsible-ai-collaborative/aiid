@@ -366,7 +366,7 @@ const IncidentReportForm = () => {
                   <Label label="Title" />
                   <Form.Control
                     type="text"
-                    value={values[name].title}
+                    value={values[name]?.title || ''}
                     onChange={(e) => setFieldValue(`${name}.title`, e.target.value)}
                   />
                 </Form.Group>
@@ -374,7 +374,7 @@ const IncidentReportForm = () => {
                 <Form.Group className="mt-3">
                   <Label label="Text" />
                   <Editor
-                    value={values[name].text}
+                    value={values[name]?.text || ''}
                     onChange={(value) => setFieldValue(`${name}.text`, value)}
                   />
                 </Form.Group>
