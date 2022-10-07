@@ -339,17 +339,26 @@ function EditCitePage(props) {
           {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
             <>
               <IncidentReportForm />
-
-              <Button
-                className="mt-3"
-                variant="primary"
-                type="submit"
-                disabled={!isValid || isSubmitting}
-                onClick={submitForm}
-              >
-                Submit
-              </Button>
-
+              <div className="mt-3 flex items-center">
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={!isValid || isSubmitting}
+                  onClick={submitForm}
+                  className="mr-4 disabled:opacity-50 flex"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Spinner size="sm" />
+                      <div className="ml-2">
+                        <Trans>Updating...</Trans>
+                      </div>
+                    </>
+                  ) : (
+                    <Trans>Submit</Trans>
+                  )}
+                </Button>
+              </div>
               <Button
                 className="mt-3 text-danger"
                 variant="link"
