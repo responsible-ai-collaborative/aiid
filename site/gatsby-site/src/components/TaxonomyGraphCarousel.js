@@ -1,49 +1,20 @@
-import React, { useState } from 'react';
-import Carousel from 'react-bootstrap/Carousel';
-import { gql, useQuery } from '@apollo/client';
+import React from 'react';
+import { Carousel } from 'flowbite-react';
 import BillboardChart from 'react-billboardjs';
 import { donut } from 'billboard.js';
 
-// The BillboardCharts render based on
-// the rendered height of the containing element.
-// Since the carousel sets the hidden slides to `display: none`,
-// that means we have to create a new chart
-// each time carousel changes slides.
-// This convinces React to let use do so.
-const SlidingChart = ({ columns }) => <BillboardChart data={{ type: donut(), columns }} />;
+const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
+  const taxaData = data.allMongodbAiidprodTaxa;
 
-const NonSlidingChart = ({ columns }) => <BillboardChart data={{ type: donut(), columns }} />;
+  const classificationsData = data.allMongodbAiidprodClassifications;
 
-const TaxonomyGraphCarousel = ({ namespace, axes }) => {
-  const { data: taxaData } = useQuery(gql`
-    query Taxa {
-      taxa (query: { namespace: "${namespace}" }) {
-        namespace
-        field_list {
-          permitted_values
-          short_name
-        }
-      }
-    }
-  `);
-
-  const { data: classificationsData, loading: classificationsLoading } = useQuery(gql`
-    query ClassificationsInNamespace {
-      classifications(query: { namespace: "${namespace}" } ) {
-        incident_id
-        classifications {
-          ${axes.map((axis) => axis.replace(/ /g, '')).join('\n')}
-          Publish
-        }
-      }
-    }
-  `);
+  const classificationsLoading = false;
 
   const includedCategories = {};
 
   if (taxaData) {
-    for (const axis in taxaData.taxa.field_list) {
-      includedCategories[axis] = taxaData.taxa.field_list[axis].permitted_values;
+    for (const axis in taxaData.nodes.field_list) {
+      includedCategories[axis] = taxaData.nodes.field_list[axis].permitted_values;
     }
   }
 
@@ -63,9 +34,12 @@ const TaxonomyGraphCarousel = ({ namespace, axes }) => {
   //      ...
   //    }
   //  }
-  if (!classificationsLoading && classificationsData?.classifications) {
-    for (const classification of classificationsData.classifications) {
+  if (!classificationsLoading && classificationsData?.nodes) {
+    for (const classification of classificationsData.nodes) {
       if (!classification.classifications.Publish) {
+        continue;
+      }
+      if (classification.namespace != namespace) {
         continue;
       }
       for (const axis in classification.classifications) {
@@ -103,47 +77,51 @@ const TaxonomyGraphCarousel = ({ namespace, axes }) => {
     );
 
     if (categories.length > 8) {
-      categoryCounts[axis]['All others'] = 0;
+      categoryCounts[axis]['All Others'] = 0;
       for (const category of bottomCategories) {
-        categoryCounts[axis]['All others'] += categoryCounts[axis][category];
+        categoryCounts[axis]['All Others'] += categoryCounts[axis][category];
         delete categoryCounts[axis][category];
       }
     }
   }
 
-  const [sliding, setSlide] = useState(false);
-
   return (
     !classificationsLoading && (
-      <div className="bootstrap">
-        <Carousel
-          interval={60000}
-          onSlide={() => setSlide(true)}
-          onSlid={() => setSlide(false)}
-          variant="dark"
-        >
+      <div className="h-96 dark">
+        <Carousel>
           {!classificationsLoading &&
-            classificationsData?.classifications &&
+            classificationsData?.nodes &&
             axes.map((axis, index) => {
-              const dbAxis = axis.replace(/ /g, '');
+              const dbAxis = axis.replace(/ /g, '_');
 
               const columns = Object.keys(categoryCounts[dbAxis])
                 .map((category) => [category, categoryCounts[dbAxis][category]])
                 .sort((a, b) =>
-                  a[0] == 'All others' ? 1 : b[0] == 'All others' ? -1 : b[1] - a[1]
+                  a[0] == 'All Others' ? 1 : b[0] == 'All Others' ? -1 : b[1] - a[1]
                 );
 
               return (
-                <Carousel.Item key={index}>
+                <div key={index} className="h-96">
                   <h3 className="text-base text-center">{axis}</h3>
-                  <div className="pb-8">
-                    {sliding ? (
-                      <SlidingChart columns={columns} />
-                    ) : (
-                      <NonSlidingChart columns={columns} />
-                    )}
+                  <div className="h-96">
+                    <BillboardChart
+                      data={{
+                        columns,
+                        type: donut(),
+                        onclick: (column) => {
+                          if (column.name == 'All Others') {
+                            window.open('/apps/discover');
+                          } else {
+                            window.open(
+                              '/apps/discover?classifications=' +
+                                [namespace, axis, column.name].join(':')
+                            );
+                          }
+                        },
+                      }}
+                    />
                   </div>
-                </Carousel.Item>
+                </div>
               );
             })}
         </Carousel>
