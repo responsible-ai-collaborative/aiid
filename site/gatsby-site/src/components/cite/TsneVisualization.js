@@ -74,7 +74,8 @@ export default function TsneVisualization({
                   onMouseEnter={() => setHighlightedCategory(taxon)}
                   onMouseLeave={() => setHighlightedCategory(null)}
                   className={
-                    highlightedCategory && highlightedCategory != taxon ? 'opacity-25' : ''
+                    '-indent-4 pl-4 cursor-default' +
+                    (highlightedCategory && highlightedCategory != taxon ? ' opacity-25' : '')
                   }
                 >
                   <Swatch color={taxonColorMap[taxon]} />
@@ -406,17 +407,7 @@ function getTaxonColorMap({ taxons }) {
 
 function Swatch({ color }) {
   return (
-    <span
-      style={{
-        height: '.75em',
-        width: '.75em',
-        borderRadius: '.2em',
-        margin: '0em .2em -.05em 0px',
-        verticalAlign: 'center',
-        display: 'inline-block',
-        background: color,
-      }}
-    />
+    <span className="inline-block w-3 h-3 mr-1 -mb-px rounded" style={{ background: color }} />
   );
 }
 
@@ -441,7 +432,7 @@ function Sidebar({ children }) {
   return (
     <div
       className="
-      p-4 border-2 border-gray-300 overflow-auto
+      p-4 border-2 border-l-0 border-gray-200 overflow-auto
       w-full  h-60
       xl:w-80 xl:h-full
     "
