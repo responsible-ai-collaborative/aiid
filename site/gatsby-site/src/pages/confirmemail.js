@@ -27,13 +27,15 @@ const ConfirmEmail = (props) => {
   }
 
   useEffect(() => {
-    confirmEmail({ token, tokenId })
-      .then(() => {
-        setPageMessage(t('Thank you for verifying your account.'));
-      })
-      .catch(() => {
-        setPageMessage(t('An unknown error has ocurred'));
-      });
+    if (token && tokenId) {
+      confirmEmail({ token, tokenId })
+        .then(() => {
+          setPageMessage(t('Thank you for verifying your account.'));
+        })
+        .catch(() => {
+          setPageMessage(t('An unknown error has ocurred'));
+        });
+    }
   }, []);
 
   return (
@@ -44,7 +46,7 @@ const ConfirmEmail = (props) => {
             {errorMessage}
             {pageMessage}
           </p>
-          <Link to={'/login'}>
+          <Link to={'/login?redirectTo=/account'} data-cy="confirm-login-btn">
             <Trans>Login</Trans>
           </Link>
         </>
