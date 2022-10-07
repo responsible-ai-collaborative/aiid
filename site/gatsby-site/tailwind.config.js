@@ -37,7 +37,7 @@ const backfaceVisibility = plugin(function ({ addUtilities }) {
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   important: true,
-  darkMode: 'false', // Remove line if you wish to enable dark mode
+  darkMode: 'class', // This lets us use it for specific components where useful
   content: [
     './src/pages/**/*.{js,jsx,ts,tsx}',
     './src/components/**/*.{js,jsx,ts,tsx}',
