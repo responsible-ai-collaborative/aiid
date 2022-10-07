@@ -4,3 +4,4 @@ TERM = "xterm"
 
 [[plugins]]
   package = "@netlify/plugin-gatsby"
+
