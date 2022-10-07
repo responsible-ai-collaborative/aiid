@@ -3,6 +3,13 @@
     "type": "mongodb-atlas",
     "config": {
         "clusterName": "AIIDDev",
+        "namespacePreimageConfigs": [
+            {
+                "collectionName": "incidents",
+                "dbName": "aiidprod",
+                "recordPreimages": true
+            }
+        ],
         "readPreference": "primary",
         "wireProtocolEnabled": false
     },
