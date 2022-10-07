@@ -17,5 +17,6 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       return require('./cypress/plugins/index.js')(on, config);
     },
+    baseUrl: process.env.NETLIFY != 'true' ? 'http://localhost:8000' : undefined,
   },
 });
