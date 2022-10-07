@@ -55,7 +55,9 @@ export default function IncidentIdField({
           isInvalid={!!error}
           placeholder={placeHolder}
         />
-        <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
+        <span className="text-red-700 text-sm">
+          <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
+        </span>
 
         {showIncidentData && value !== '' && !error && (
           <div className="pt-1">
