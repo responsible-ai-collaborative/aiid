@@ -9,6 +9,8 @@ describe('The Language switcher', () => {
     cy.visit('/');
 
     cy.contains('h1', 'Welcome to the').should('be.visible');
+
+    cy.contains('h1', 'AI Incident Database').should('be.visible');
   });
 
   it.skip('Should update the path with the selected language', () => {
