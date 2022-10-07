@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Button, Modal } from 'react-bootstrap';
 import { getFormattedName } from '../utils/typography';
 import { format } from 'date-fns';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Trans } from 'react-i18next';
+import { Button, Modal } from 'flowbite-react';
+import { Button as BSButton } from 'react-bootstrap';
 
 const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
   const [show, setShow] = useState(false);
@@ -53,12 +54,12 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
 
   return (
     <div className="bootstrap">
-      <Button variant="outline-primary" onClick={handleShow}>
+      <BSButton variant="outline-primary" onClick={handleShow}>
         <Trans>BibTex Citation</Trans>
-      </Button>
-      <Modal show={show} onHide={handleClose} data-cy="bibtext-modal">
-        <Modal.Header closeButton>
-          <Modal.Title>BibTex Citation</Modal.Title>
+      </BSButton>
+      <Modal show={show} onClose={handleClose} data-cy="bibtext-modal">
+        <Modal.Header>
+          <h5>BibTex Citation</h5>
         </Modal.Header>
         <Modal.Body>{jsx}</Modal.Body>
         <Modal.Footer>
