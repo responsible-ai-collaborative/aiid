@@ -3,6 +3,11 @@ exports = async function (changeEvent) {
   // Destructure out fields from the change stream event object
   const { updateDescription, fullDocument, fullDocumentBeforeChange } = changeEvent;
 
+  if(!updateDescription || !fullDocumentBeforeChange || !fullDocument) {
+    console.log('Invalid changeEvent:', JSON.stringify(changeEvent));
+    return;
+  }
+
   const incidentId = fullDocument.incident_id;
 
   console.log(`Processing updates on incident ${incidentId}`);
