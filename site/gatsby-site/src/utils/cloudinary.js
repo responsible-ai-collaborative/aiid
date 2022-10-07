@@ -149,6 +149,10 @@ const PreviewImageInputGroup = ({
     childErrors.image_url ||= '*Url must point to a valid image';
   }
 
+  useEffect(() => {
+    setCloudinaryID(cloudinary_id);
+  }, [cloudinary_id]);
+
   return (
     <>
       <TextInputGroup
