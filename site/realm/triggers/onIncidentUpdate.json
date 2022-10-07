@@ -9,30 +9,15 @@
         "collection": "incidents",
         "service_name": "mongodb-atlas",
         "match": {
-            "$or": [
+            "$and": [
                 {
-                    "updateDescription.updatedFields.title": {
-                        "$exists": true
+                    "updateDescription.updatedFields.tsne": {
+                        "$exists": false
                     }
                 },
                 {
-                    "updateDescription.updatedFields.description": {
-                        "$exists": true
-                    }
-                },
-                {
-                    "updateDescription.updatedFields.date": {
-                        "$exists": true
-                    }
-                },
-                {
-                    "updateDescription.updatedFields.editors": {
-                        "$exists": true
-                    }
-                },
-                {
-                    "updateDescription.updatedFields.reports": {
-                        "$exists": true
+                    "updateDescription.updatedFields.embedding": {
+                        "$exists": false
                     }
                 }
             ]
