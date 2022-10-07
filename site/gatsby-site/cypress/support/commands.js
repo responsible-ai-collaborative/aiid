@@ -19,7 +19,7 @@ Cypress.Commands.add('login', (email, password) => {
 
   cy.get('input[name=password]').type(password);
 
-  cy.contains('Login').click();
+  cy.get('[data-cy="login-btn"]').click();
 
   return cy.location('pathname', { timeout: 8000 }).should('eq', '/');
 });

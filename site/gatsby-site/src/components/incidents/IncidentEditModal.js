@@ -106,8 +106,16 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
                     variant="primary"
                     onClick={submitForm}
                     disabled={isSubmitting || !isValid}
+                    className="bootstrap flex gap-2 disabled:opacity-50"
                   >
-                    Update
+                    {isSubmitting ? (
+                      <>
+                        <Spinner size="sm" />
+                        <Trans>Updating</Trans>
+                      </>
+                    ) : (
+                      <Trans>Update</Trans>
+                    )}
                   </Button>
                 </Modal.Footer>
               </>

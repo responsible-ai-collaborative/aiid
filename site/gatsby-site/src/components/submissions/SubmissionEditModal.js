@@ -9,6 +9,7 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import isArray from 'lodash/isArray';
 import { stripMarkdown } from '../../utils/typography';
 import RelatedIncidents from '../../components/RelatedIncidents';
+import { Trans } from 'react-i18next';
 
 export default function SubmissionEditModal({ show, onHide, submissionId }) {
   const [findSubmission, { data, loading }] = useLazyQuery(FIND_SUBMISSION);
@@ -92,7 +93,8 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
               ...data.submission,
               developers: data.submission.developers === null ? [] : data.submission.developers,
               deployers: data.submission.deployers === null ? [] : data.submission.deployers,
-              harmed_parties: data.submission.harmed_parties === null ? [] : data.submission.harmed_parties,
+              harmed_parties:
+                data.submission.harmed_parties === null ? [] : data.submission.harmed_parties,
               incident_id: data.submission.incident_id == 0 ? '' : data.submission.incident_id,
             }}
           >
@@ -105,13 +107,22 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
                 <Modal.Footer>
                   <Button
                     onClick={submitForm}
-                    className="mt-3"
+                    className="mt-3 flex disabled:opacity-50"
                     variant="primary"
                     type="submit"
                     disabled={isSubmitting || !isValid}
                     data-cy="update-btn"
                   >
-                    Update
+                    {isSubmitting ? (
+                      <>
+                        <Spinner size="sm" />
+                        <div className="ml-2">
+                          <Trans>Updating...</Trans>
+                        </div>
+                      </>
+                    ) : (
+                      <Trans>Update</Trans>
+                    )}
                   </Button>
                 </Modal.Footer>
               </>
