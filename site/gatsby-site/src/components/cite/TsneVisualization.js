@@ -190,9 +190,9 @@ function PlotPoint({
 
   const [clientPosition, setClientPosition] = useState(null);
 
-  const onTop = window && clientPosition?.y < window.innerHeight / 2;
+  const onTop = typeof window != 'undefined' && clientPosition?.y < window.innerHeight / 2;
 
-  const onLeft = window && clientPosition?.x < window.innerWidth / 2;
+  const onLeft = typeof window != 'undefined' && clientPosition?.x < window.innerWidth / 2;
 
   const showIncidentCard = (event) => {
     setHover(true);
