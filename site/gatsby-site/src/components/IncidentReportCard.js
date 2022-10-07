@@ -134,7 +134,9 @@ const IncidentReportCard = (props) => {
     link = `/cite/${incident_id}` + (report_number ? `#r${report_number}` : '');
   }
 
-  const img = (
+  const img = loading ? (
+    <></>
+  ) : (
     <>
       <Image
         className={
@@ -216,7 +218,6 @@ const IncidentReportCard = (props) => {
                   ])
                   .filter((item) => item)
                   .reduce((items, item, i) => {
-                    console.log(`items`, items);
                     if (i > 0) {
                       items.push(<> · </>);
                     }

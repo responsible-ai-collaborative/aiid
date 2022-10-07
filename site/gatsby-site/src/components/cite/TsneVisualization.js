@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
 import styled from 'styled-components';
 import { useApolloClient, gql, useQuery } from '@apollo/client';
-import { Image } from '../../utils/cloudinary';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Color from 'color';
 import { LocalizedLink } from 'gatsby-theme-i18n';
@@ -202,54 +200,6 @@ const PlotPoint = ({
             )}
           </CardActions>
         </IncidentReportCard>
-      )}
-      {false && (
-        <div
-          data-cy="incident-card"
-          style={{
-            top: onTop ? `calc(50% + 48% * ${incident.tsne.y} + ${scaleMultiplier}em)` : undefined,
-            bottom: !onTop
-              ? `calc(50% - 48% * ${incident.tsne.y} + ${scaleMultiplier}em)`
-              : undefined,
-            left: onLeft
-              ? `calc(50% + 48% * ${incident.tsne.x} + ${scaleMultiplier}em)`
-              : undefined,
-            right: !onLeft
-              ? `calc(50% - 48% * ${incident.tsne.x} + ${scaleMultiplier}em)`
-              : undefined,
-            transform: `scale(${1 / state.scale})`,
-            transformOrigin: `${onTop ? 'top' : 'bottom'} ${onLeft ? 'left' : 'right'}`,
-            zIndex: 10,
-            display: incidentData ? undefined : 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          {incidentData ? (
-            <>
-              <Image publicID={incidentData.reports[0].cloudinary_id} />
-              <h3 data-cy="title">{incidentData?.title || incidentData.reports[0].title}</h3>
-              {taxon && (
-                <div style={{ marginTop: '.5em' }}>
-                  <span
-                    style={{
-                      height: '.75em',
-                      width: '.75em',
-                      borderRadius: '.2em',
-                      margin: '0em .2em -.05em 0px',
-                      verticalAlign: 'center',
-                      display: 'inline-block',
-                      background,
-                    }}
-                  />
-                  {taxon}
-                </div>
-              )}
-            </>
-          ) : (
-            <Spinner />
-          )}
-        </div>
       )}
     </>
   );
