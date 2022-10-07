@@ -28,3 +28,16 @@ export const DELETE_SUBSCRIPTIONS = gql`
     }
   }
 `;
+
+export const FIND_USER_SUBSCRIPTIONS = gql`
+  query FindUserSubscriptions($query: SubscriptionQueryInput!) {
+    subscriptions(query: $query) {
+      _id
+      incident_id {
+        incident_id
+        title
+      }
+      type
+    }
+  }
+`;

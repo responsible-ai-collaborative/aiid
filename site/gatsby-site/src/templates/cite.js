@@ -221,6 +221,10 @@ function CitePage(props) {
         ></SocialShareButtons>
       </div>
 
+      <div>
+        <strong>Description</strong>: {incident.description}
+      </div>
+
       <Container>
         <Row>
           <Col>
@@ -438,6 +442,7 @@ export const query = graphql`
     $incident_id: Int
     $report_numbers: [Int]
     $translate_es: Boolean!
+    $translate_fr: Boolean!
     $translate_en: Boolean!
   ) {
     mongodbAiidprodResources(
@@ -533,6 +538,14 @@ export const query = graphql`
     }
     allMongodbTranslationsReportsEs(filter: { report_number: { in: $report_numbers } })
       @include(if: $translate_es) {
+      nodes {
+        title
+        text
+        report_number
+      }
+    }
+    allMongodbTranslationsReportsFr(filter: { report_number: { in: $report_numbers } })
+      @include(if: $translate_fr) {
       nodes {
         title
         text

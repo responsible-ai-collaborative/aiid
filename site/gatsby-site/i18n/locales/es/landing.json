@@ -1,5 +1,6 @@
 {
   "Welcome to the Artificial Intelligence Incident Database": "Bienvenido a la base de datos de incidentes de Inteligencia Artificial",
+  "<0>Welcome to the</0><1>AI Incident Database</1>": "<0>Bienvenido a</0><1>la base de datos de incidentes de IA</1>",
   "The starting point for information about the AI Incident Database": "El punto de partida para la información sobre la base de datos de incidentes de IA",
   "Search reports": "Buscar informes",
   "Latest Incident Report": "Último informe",

@@ -16,6 +16,7 @@ import isArray from 'lodash/isArray';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
+import { Spinner } from 'flowbite-react';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -179,12 +180,19 @@ const SubmitForm = () => {
 
             <Button
               onClick={submitForm}
-              className="mt-3 bootstrap"
+              className="mt-3 bootstrap flex gap-2 disabled:opacity-50"
               variant="primary"
               type="submit"
               disabled={isSubmitting}
             >
-              <Trans>Submit</Trans>
+              {isSubmitting ? (
+                <>
+                  <Spinner size="sm" />
+                  <Trans>Submitting</Trans>
+                </>
+              ) : (
+                <Trans>Submit</Trans>
+              )}
             </Button>
           </>
         )}

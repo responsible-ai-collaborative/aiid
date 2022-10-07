@@ -8,7 +8,7 @@ export default function IncidentCard({ incident, className = '', ...props }) {
       className={`p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 ${className}`}
       {...props}
     >
-      <Link to={`/cite/${incident.incident_id}`}>
+      <Link to={`/cite/${incident.incident_id}`} className="hover:underline">
         <h4 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           <span className="text-sm">
             <Trans>Incident {{ id: incident.incident_id }}</Trans>
