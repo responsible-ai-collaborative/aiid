@@ -4,6 +4,7 @@ import { connectRange } from 'react-instantsearch-dom';
 import { Form, Button } from 'react-bootstrap';
 import useSearch from '../useSearch';
 import { Trans } from 'react-i18next';
+import { debounce } from 'debounce';
 
 const formatDate = (epoch) => new Date(epoch * 1000).toISOString().substr(0, 10);
 
@@ -47,11 +48,16 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
               ? max
               : Math.min(max, currentRefinement.max)
           )}
-          value={formatDate(currentRefinement.min)}
-          onChange={(event) =>
-            onChange({ min: dateToEpoch(event.target.value), max: currentRefinement.max })
-          }
-          onKeyDown={(e) => e.preventDefault()}
+          defaultValue={formatDate(currentRefinement.min)}
+          onChange={(event) => {
+            const newMin = dateToEpoch(event.target.value);
+
+            if (newMin >= min || currentRefinement.min != min) {
+              debounce(() =>
+                onChange({ min: Math.max(min, newMin), max: currentRefinement.max })
+              )();
+            }
+          }}
           className={touchedMin && 'border border-success'}
         />
 
@@ -66,12 +72,17 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
               ? min
               : Math.max(min, currentRefinement.min)
           )}
-          max={formatDate(max)}
-          value={formatDate(currentRefinement.max)}
-          onChange={(event) =>
-            onChange({ min: currentRefinement.min, max: dateToEpoch(event.target.value) })
-          }
-          onKeyDown={(e) => e.preventDefault()}
+          max={formatDate(new Date().valueOf())}
+          defaultValue={formatDate(currentRefinement.max)}
+          onChange={(event) => {
+            const newMax = dateToEpoch(event.target.value);
+
+            if (newMax <= max || currentRefinement.max != max) {
+              debounce(() =>
+                onChange({ min: currentRefinement.min, max: Math.min(max, newMax) })
+              )();
+            }
+          }}
           className={touchedMax && 'border border-success'}
         />
 
