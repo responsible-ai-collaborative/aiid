@@ -5,9 +5,11 @@ workflows:
   build:
     jobs:
       - cypress/install:
+          context: staging
           install-command: npm ci --legacy-peer-deps
           build: npm run build
       - cypress/run:
+          context: staging
           requires:
             - cypress/install
           record: true
