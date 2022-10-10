@@ -1,11 +1,16 @@
 const config = require('../config');
 
-/** @type {import('umzug').MigrationFn<any>} */
-exports.up = async ({ context: { client } }) => {
-  client.db(config.realm.production_db.db_name).createCollection('candidates');
-};
+/**
+ *
+ * @param {{context: {client: import('mongodb').MongoClient}}} context
+ */
 
-/** @type {import('umzug').MigrationFn<any>} */
-exports.down = async ({ context: { client } }) => {
-  client.db(config.realm.production_db.db_name).collection('candidates').drop();
+exports.up = async ({ context: { client } }) => {
+  await client.connect();
+
+  try {
+    await client.db(config.realm.production_db.db_name).createCollection('candidates');
+  } catch (e) {
+    console.log(e.message);
+  }
 };
