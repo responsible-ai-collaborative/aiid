@@ -1,0 +1,16 @@
+version: 2.1
+orbs:
+  cypress: cypress-io/cypress@2
+workflows:
+  build:
+    jobs:
+      - cypress/install:
+          install-command: npm ci --legacy-peer-deps
+          build: npm run build
+      - cypress/run:
+          requires:
+            - cypress/install
+          record: true
+          parallel: true
+          parallelism: 3
+          group: 3x
