@@ -200,7 +200,7 @@ describe('Subscriptions', () => {
       (req) =>
         req.body.operationName == 'DeleteSubscriptions' &&
         req.body.variables.query.userId.userId == USER_ID &&
-        req.body.variables.query.type == 'all',
+        req.body.variables.query.type == 'new-incidents',
       'DeleteSubscription',
       {
         data: {

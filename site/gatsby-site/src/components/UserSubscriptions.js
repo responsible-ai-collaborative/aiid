@@ -54,7 +54,7 @@ const UserSubscriptions = () => {
       data?.subscriptions.filter((subscription) => subscription.type === 'incident')
     );
 
-    const hasSubscription = data?.subscriptions.some((s) => s.type == 'all');
+    const hasSubscription = data?.subscriptions.some((s) => s.type == 'new-incidents');
 
     setIsSubscribeToNewIncidents(hasSubscription);
   }, [user, data]);
@@ -64,11 +64,11 @@ const UserSubscriptions = () => {
       await subscribeToNewIncidentsMutation({
         variables: {
           query: {
-            type: 'all',
+            type: 'new-incidents',
             userId: { userId: user.id },
           },
           subscription: {
-            type: 'all',
+            type: 'new-incidents',
             userId: {
               link: user.id,
             },
@@ -77,7 +77,7 @@ const UserSubscriptions = () => {
       });
     } else {
       await deleteSubscriptions({
-        variables: { query: { type: 'all', userId: { userId: user.id } } },
+        variables: { query: { type: 'new-incidents', userId: { userId: user.id } } },
       });
     }
     setIsSubscribeToNewIncidents(checked);

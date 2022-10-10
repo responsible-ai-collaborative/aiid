@@ -29,7 +29,9 @@ const Unsubscribe = (props) => {
     !subscriptionType ||
     !userId ||
     (subscriptionType == 'incident' && !incidentId) ||
-    (subscriptionType !== 'all' && subscriptionType !== 'incident')
+    (subscriptionType !== 'all' &&
+      subscriptionType !== 'new-incidents' &&
+      subscriptionType !== 'incident')
   ) {
     errorMessage = t('Invalid parameters');
   }
@@ -45,6 +47,8 @@ const Unsubscribe = (props) => {
       if (subscriptionType === 'incident') {
         query.type = subscriptionType;
         query.incident_id = { incident_id: `${incidentId}` };
+      } else if (subscriptionType === 'new-incidents') {
+        query.type = subscriptionType;
       }
 
       await DeleteSubscriptions({ variables: { query } });
@@ -77,6 +81,9 @@ const Unsubscribe = (props) => {
                 Do you want to unsubscribe from{' '}
                 <Link to={`/cite/${incidentId}`}>incident {{ incidentId }}</Link> updates?
               </Trans>
+            )}
+            {subscriptionType === 'new-incidents' && (
+              <Trans>Do you want to unsubscribe from new Incidents notifications?</Trans>
             )}
             {subscriptionType === 'all' && (
               <Trans>Do you want to unsubscribe from all notifications?</Trans>
