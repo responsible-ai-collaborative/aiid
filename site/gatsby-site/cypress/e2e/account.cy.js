@@ -51,7 +51,7 @@ describe('Account', () => {
 
     cy.get('[data-cy="subscription-item"]').should('not.exist');
 
-    cy.contains("You don't have active subscriptions").should('exist');
+    cy.contains("You don't have active subscriptions to Incident updates").should('exist');
   });
 
   it('Delete a user subscription', () => {
@@ -127,6 +127,6 @@ describe('Account', () => {
 
     cy.get('[data-cy="subscription-item"]').should('not.exist');
 
-    cy.contains("You don't have active subscriptions").should('exist');
+    cy.contains("You don't have active subscriptions to Incident updates").should('exist');
   });
 });
