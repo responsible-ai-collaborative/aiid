@@ -18,7 +18,7 @@ export default function ToggleSwitch({
 
   return (
     <>
-      <button onClick={handleClick}>
+      <button onClick={handleClick} data-cy={`${name}-toggle`}>
         <label
           htmlFor={`${name}-toggle`}
           className="inline-flex relative items-center mb-4 cursor-pointer"
