@@ -23,4 +23,4 @@ workflows:
           parallel: true
           parallelism: 3
           group: 3x
-          start: 'npm start'
+          start: 'npm run serve'
