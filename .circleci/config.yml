@@ -19,7 +19,6 @@ workflows:
             cache--v2-{{ arch }}-{{ .Branch }}-{{ checksum "site/gatsby-site/package-lock.json"}}
           requires:
             - cypress/install
-          record: true
           parallel: true
           parallelism: 3
           group: 3x
