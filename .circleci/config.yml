@@ -5,17 +5,16 @@ workflows:
   build:
     jobs:
       - cypress/install:
-          working_directory: site/gatsby-site
           context: staging
-          install-command: npm ci --legacy-peer-deps
+          working_directory: site/gatsby-site
+          cache-key: >-
+            cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "site/gatsby-site/package-lock.json"}}
           build: npm run build
-          cache-key: >-
-            cache-{{ arch }}-{{ .Branch }}-{{ checksum "site/gatsby-site/package-lock.json"}}
       - cypress/run:
+          context: staging
           working_directory: site/gatsby-site
           cache-key: >-
-            cache-{{ arch }}-{{ .Branch }}-{{ checksum "site/gatsby-site/package-lock.json"}}
-          context: staging
+            cache--v1-{{ arch }}-{{ .Branch }}-{{ checksum "site/gatsby-site/package-lock.json"}}
           requires:
             - cypress/install
           record: true
