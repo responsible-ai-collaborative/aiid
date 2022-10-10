@@ -5,7 +5,7 @@ workflows:
   build:
     jobs:
       - cypress/install:
-          executor: cypress/base-16
+          executor: cypress/base-16-14-2-slim
           context: staging
           working_directory: site/gatsby-site
           cache-key: >-
