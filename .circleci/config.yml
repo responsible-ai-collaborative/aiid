@@ -5,6 +5,7 @@ workflows:
   build:
     jobs:
       - cypress/install:
+          executor: cypress/base-16
           context: staging
           working_directory: site/gatsby-site
           cache-key: >-
@@ -21,3 +22,4 @@ workflows:
           parallel: true
           parallelism: 3
           group: 3x
+          start: 'npm start'
