@@ -5,10 +5,12 @@ workflows:
   build:
     jobs:
       - cypress/install:
+          working_directory: site/gatsby-site
           context: staging
           install-command: npm ci --legacy-peer-deps
           build: npm run build
       - cypress/run:
+          working_directory: site/gatsby-site
           context: staging
           requires:
             - cypress/install
