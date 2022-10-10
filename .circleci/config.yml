@@ -9,13 +9,13 @@ workflows:
           context: staging
           working_directory: site/gatsby-site
           cache-key: >-
-            cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "site/gatsby-site/package-lock.json"}}
+            cache-v2-{{ arch }}-{{ .Branch }}-{{ checksum "site/gatsby-site/package-lock.json"}}
           build: npm run build
       - cypress/run:
           context: staging
           working_directory: site/gatsby-site
           cache-key: >-
-            cache--v1-{{ arch }}-{{ .Branch }}-{{ checksum "site/gatsby-site/package-lock.json"}}
+            cache--v2-{{ arch }}-{{ .Branch }}-{{ checksum "site/gatsby-site/package-lock.json"}}
           requires:
             - cypress/install
           record: true
