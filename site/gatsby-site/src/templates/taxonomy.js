@@ -126,7 +126,21 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
               className="mt-4 border rounded"
             />
           ) : (
-            <BillboardChart data={data} />
+            <BillboardChart
+              data={{
+                ...data,
+                onclick: (column) => {
+                  if (column.name == 'All Others') {
+                    window.open('/apps/discover');
+                  } else {
+                    window.open(
+                      '/apps/discover?classifications=' +
+                        [namespace, short_name, column.name].join(':')
+                    );
+                  }
+                },
+              }}
+            />
           )}
         </div>
       </div>

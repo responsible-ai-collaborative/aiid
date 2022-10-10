@@ -25,9 +25,11 @@ const LatestIncidentReport = ({ report }) => {
         </LocalizedLink>
       </div>
       <div className="flex flex-col justify-between leading-normal">
-        <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white w-full p-4">
-          <Trans ns="landing">Latest Incident Report</Trans>
-        </h5>
+        <LocalizedLink to={`/cite/${incident_id}`} className="max-w-full cursor-pointer">
+          <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white w-full p-4 hover:text-primary-blue">
+            <Trans ns="landing">Latest Incident Report</Trans>
+          </h5>
+        </LocalizedLink>
         <div className="px-4 pb-4">
           <LocalizedLink to={`/cite/${incident_id}`} className="max-w-full cursor-pointer">
             <h5 className="text-base font-bold tracking-tight text-gray-900 dark:text-white relative block hover:text-primary-blue">
