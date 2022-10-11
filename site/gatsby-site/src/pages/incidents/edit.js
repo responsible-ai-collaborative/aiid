@@ -18,7 +18,7 @@ function EditCitePage(props) {
 
   const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
 
-  const { data: incidentData } = useQuery(FIND_INCIDENT, {
+  const { data: incidentData, loading } = useQuery(FIND_INCIDENT, {
     variables: { query: { incident_id: incidentId } },
   });
 
@@ -80,7 +80,7 @@ function EditCitePage(props) {
 
   return (
     <Layout {...props} className={'w-100 bootstrap'}>
-      <h1 className="mb-5">Editing Incident {incidentId}</h1>
+      {!loading && <h1 className="mb-5">Editing Incident {incidentId}</h1>}
 
       {incident === undefined && <Spinner />}
       {incident === null && <div>Report not found</div>}
