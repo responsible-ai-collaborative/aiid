@@ -93,11 +93,9 @@ export default function CommonEntities() {
                 />
               </div>
               <div className="w-full">
-                <Link to={`/entities/${entity.id}`}>
-                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    {index + 1}.&nbsp;{entity.name}
-                  </h5>
-                </Link>
+                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  {index + 1}.&nbsp;{entity.name}
+                </h5>
                 <ul className="list-none text-black dark:text-white">
                   <li>
                     <Trans ns="entities">
