@@ -5,11 +5,8 @@ import config from '../../../config';
 import QuickAccess from 'components/discover/QuickAccess';
 import { Trans } from 'react-i18next';
 import LoginSignup from 'components/loginSignup';
-import useLocalizePath from 'components/i18n/useLocalizePath';
 
 const SidebarLayout = ({ collapse, setNavCollapsed }) => {
-  const localizePath = useLocalizePath();
-
   return (
     <aside className={`tw-side-bar ${collapse ? 'collapse' : ''}`}>
       <QuickAccess />
@@ -22,7 +19,7 @@ const SidebarLayout = ({ collapse, setNavCollapsed }) => {
       <ul className={'tw-side-bar-ul'} style={{ paddingLeft: '0px' }}>
         <li className="hide-front-line first-level item">
           <ul style={{ paddingLeft: '0px' }}>
-            <Tree setNavCollapsed={setNavCollapsed} localizePath={localizePath} />
+            <Tree setNavCollapsed={setNavCollapsed} />
           </ul>
         </li>
         {config.sidebar.links && config.sidebar.links?.length > 0 && (

@@ -4,7 +4,7 @@ import TreeNode from './treeNode';
 
 const navConfig = config.sidebar.navConfig;
 
-const subtreeNav = (treeRoot, currentLocation = undefined, localizePath) => {
+const subtreeNav = (treeRoot, currentLocation = undefined) => {
   let subs = [];
 
   treeRoot.forEach((item) => {
@@ -12,7 +12,7 @@ const subtreeNav = (treeRoot, currentLocation = undefined, localizePath) => {
       url: item.url,
       label: item.label,
       title: item.title,
-      items: subtreeNav(item.items, currentLocation, localizePath),
+      items: subtreeNav(item.items, currentLocation),
       collapsed: false,
       childVisit: false,
       current: false,
@@ -26,18 +26,14 @@ const subtreeNav = (treeRoot, currentLocation = undefined, localizePath) => {
 
     currentVisit =
       currentLocation &&
-      (localizePath({ path: currentLocation }) === localizePath({ path: item.url }) ||
-        localizePath({ path: currentLocation }) ===
-          localizePath({ path: config.gatsby.pathPrefix + item.url }));
+      (currentLocation === item.url || currentLocation === config.gatsby.pathPrefix + item.url);
 
     childVisit = false;
     defaultNavSetting.items.forEach((item) => {
       if (
         !childVisit &&
         currentLocation &&
-        (localizePath({ path: currentLocation }) === localizePath({ path: item.url }) ||
-          localizePath({ path: currentLocation }) ===
-            localizePath({ path: config.gatsby.pathPrefix + item.url }))
+        (currentLocation === item.url || currentLocation === config.gatsby.pathPrefix + item.url)
       ) {
         childVisit = true;
       }
@@ -52,30 +48,26 @@ const subtreeNav = (treeRoot, currentLocation = undefined, localizePath) => {
   return subs;
 };
 
-const Tree = ({ setNavCollapsed = null, localizePath }) => {
-  const defaultNavSettings = subtreeNav(navConfig, undefined, localizePath);
+const Tree = ({ setNavCollapsed }) => {
+  const defaultNavSettings = subtreeNav(navConfig);
 
   const [navSettings, setNavSetting] = useState(defaultNavSettings);
 
   const toggle = (url) => {
-    setNavSetting(subtreeNav(navConfig, url, localizePath));
+    setNavSetting(subtreeNav(navConfig, url));
     setNavCollapsed && setNavCollapsed(true);
   };
 
-  return (
-    <>
-      {navSettings.map((cur, index) => {
-        return (
-          <TreeNode
-            key={cur.url + index.toString()}
-            setCollapsed={toggle}
-            navSettings={navSettings}
-            item={cur}
-          />
-        );
-      })}
-    </>
-  );
+  return navSettings.map((cur, index) => {
+    return (
+      <TreeNode
+        key={cur.url + index.toString()}
+        setCollapsed={toggle}
+        navSettings={navSettings}
+        item={cur}
+      />
+    );
+  });
 };
 
 export default Tree;
