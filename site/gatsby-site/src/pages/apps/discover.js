@@ -135,13 +135,17 @@ const generateSearchState = ({ query }) => {
     query: '',
     refinementList: {},
     range: {},
+    sortBy: '',
   };
 
   const cleanQuery = removeUndefinedAttributes(query);
 
   const querySearch = cleanQuery.s || '';
 
+  const sortBy = cleanQuery.sortBy;
+
   delete cleanQuery.s;
+  delete cleanQuery.sortBy;
 
   return {
     ...searchState,
@@ -153,6 +157,7 @@ const generateSearchState = ({ query }) => {
     range: {
       ...convertStringToRange(cleanQuery),
     },
+    sortBy,
   };
 };
 
@@ -236,6 +241,8 @@ function DiscoverApp(props) {
             indexName +
             (searchState.query == '' && Object.keys(searchState.refinementList).length == 0
               ? '-featured'
+              : searchState.sortBy
+              ? '-' + searchState.sortBy
               : '')
           }
           searchClient={searchClient}

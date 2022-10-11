@@ -28,6 +28,7 @@ const queryConfig = {
   display: DisplayModeEnumParam,
   page: withDefault(NumberParam, 1),
   hideDuplicates: BooleanParam,
+  sortBy: StringParam,
 };
 
 export { queryConfig, DisplayModeEnumParam, LanguageEnumParam };

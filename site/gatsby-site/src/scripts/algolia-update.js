@@ -31,7 +31,11 @@ const reporter = { log: console.log };
 
   const algoliaUpdater = new AlgoliaUpdater({ languages, mongoClient, algoliaClient, reporter });
 
-  await algoliaUpdater.run();
+  try {
+    await algoliaUpdater.run();
+  } catch (e) {
+    console.error(e);
+  }
 
   console.log('Done');
 

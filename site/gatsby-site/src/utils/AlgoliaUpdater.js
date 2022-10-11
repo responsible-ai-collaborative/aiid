@@ -211,27 +211,36 @@ class AlgoliaUpdater {
   uploadToAlgolia = async ({ language, entries }) => {
     const indexName = `instant_search-${language}`;
 
-    const featuredReplicaIndexName = indexName + '-featured';
+    //const featuredReplicaIndexName = indexName + '-featured';
+    const datePublishedReplicaIndexName = indexName + '-date-published';
 
     const index = await this.algoliaClient.initIndex(indexName);
 
     await index.saveObjects(entries);
 
-    await index
-      .setSettings({
-        ...algoliaSettings,
-        attributeForDistinct: 'incident_id',
-        indexLanguages: [language],
-        queryLanguages: [language],
-        replicas: [featuredReplicaIndexName],
-      })
-      .then(async () => {
-        const featuredReplicaIndex = await this.algoliaClient.initIndex(featuredReplicaIndexName);
+    await index.setSettings({
+      ...algoliaSettings,
+      attributeForDistinct: 'incident_id',
+      indexLanguages: [language],
+      queryLanguages: [language],
+      replicas: [
+        //featuredReplicaIndexName,
+        datePublishedReplicaIndexName,
+      ],
+    });
 
-        await featuredReplicaIndex.setSettings({
-          ranking: ['desc(featured)', 'desc(text)'],
-        });
-      });
+    //    const featuredReplicaIndex = await this.algoliaClient.initIndex(featuredReplicaIndexName);
+    //    await featuredReplicaIndex.setSettings({
+    //      ranking: ['desc(featured)', 'desc(text)'],
+    //    });
+
+    const datePublishedReplicaIndex = await this.algoliaClient.initIndex(
+      datePublishedReplicaIndexName
+    );
+
+    await datePublishedReplicaIndex.setSettings({
+      ranking: ['desc(epoch_date_published)', 'desc(text)'],
+    });
   };
 
   deleteDuplicates = async ({ language }) => {
