@@ -20,8 +20,9 @@ const TextInputGroup = ({
 }) => {
   const [optional, setOptional] = useState(true);
 
-  useEffect(async () => {
-    setOptional(await schema.fields[name].isValid(undefined));
+  // this causes an unncessary re-render
+  useEffect(() => {
+    schema.fields[name].isValid(undefined).then((result) => setOptional(result));
   }, []);
 
   return (
