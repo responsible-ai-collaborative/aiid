@@ -20,6 +20,6 @@ workflows:
           requires:
             - cypress/install
           parallel: true
-          parallelism: 3
-          group: 3x
+          parallelism: 5
+          group: 5x
           start: 'npm run serve'
