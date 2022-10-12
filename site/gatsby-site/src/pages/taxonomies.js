@@ -31,7 +31,7 @@ export default function Taxonomies({ data, ...props }) {
           <Trans>Applied Taxonomies</Trans>
         </h2>
         <ul>
-          <li>
+          <li className="list-none">
             <p>
               <Trans>
                 <LocalizedLink to="/taxonomy/cset">
@@ -53,7 +53,7 @@ export default function Taxonomies({ data, ...props }) {
           <Trans>In-Development Taxonomies</Trans>
         </h2>
         <ul>
-          <li>
+          <li className="list-none">
             <p>
               <Trans>
                 <LocalizedLink to="/taxonomy/resources">Resources</LocalizedLink>. This is a
