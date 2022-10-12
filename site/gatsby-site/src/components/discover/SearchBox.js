@@ -20,6 +20,12 @@ function SearchBox({ currentRefinement, refine }) {
     setQuery(currentRefinement);
   }, [currentRefinement]);
 
+  // SearchInput component was causing rehydration errors
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
   const clear = () => {
     setQuery('');
     refine('');
@@ -29,14 +35,16 @@ function SearchBox({ currentRefinement, refine }) {
     <Row>
       <Col>
         <form className="block relative" id="searchForm">
-          <SearchInput
-            value={query}
-            onChange={setQuery}
-            onClear={clear}
-            onKeyPress={(e) => {
-              e.key === 'Enter' && e.preventDefault();
-            }}
-          />
+          {mounted && (
+            <SearchInput
+              value={query}
+              onChange={setQuery}
+              onClear={clear}
+              onKeyPress={(e) => {
+                e.key === 'Enter' && e.preventDefault();
+              }}
+            />
+          )}
         </form>
       </Col>
     </Row>
