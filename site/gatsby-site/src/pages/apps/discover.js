@@ -135,17 +135,13 @@ const generateSearchState = ({ query }) => {
     query: '',
     refinementList: {},
     range: {},
-    sortBy: '',
   };
 
   const cleanQuery = removeUndefinedAttributes(query);
 
   const querySearch = cleanQuery.s || '';
 
-  const sortBy = cleanQuery.sortBy;
-
   delete cleanQuery.s;
-  delete cleanQuery.sortBy;
 
   return {
     ...searchState,
@@ -157,7 +153,7 @@ const generateSearchState = ({ query }) => {
     range: {
       ...convertStringToRange(cleanQuery),
     },
-    sortBy,
+    sortBy: cleanQuery.sortBy,
   };
 };
 
@@ -180,6 +176,9 @@ const getQueryFromState = (searchState) => {
       ...query,
       ...convertRangeToQueryString(removeEmptyAttributes(searchState.range)),
     };
+  }
+  if (searchState?.sortBy) {
+    query.sortBy = searchState.sortBy;
   }
 
   query.page = searchState.page;
@@ -230,6 +229,14 @@ function DiscoverApp(props) {
 
   const flagReportModal = useModal();
 
+  let replicaName = indexName;
+
+  if (searchState.sortBy) {
+    replicaName = indexName + '-' + searchState.sortBy;
+  } else if (searchState.query == '' && Object.keys(searchState.refinementList).length == 0) {
+    replicaName = indexName + '-featured';
+  }
+
   return (
     <LayoutHideSidebar {...props}>
       <AiidHelmet>
@@ -237,14 +244,7 @@ function DiscoverApp(props) {
       </AiidHelmet>
       <SearchContext.Provider value={{ searchState, indexName, searchClient, onSearchStateChange }}>
         <InstantSearch
-          indexName={
-            indexName +
-            (searchState.query == '' && Object.keys(searchState.refinementList).length == 0
-              ? '-featured'
-              : searchState.sortBy
-              ? '-' + searchState.sortBy
-              : '')
-          }
+          indexName={replicaName}
           searchClient={searchClient}
           searchState={searchState}
           onSearchStateChange={onSearchStateChange}

@@ -211,35 +211,41 @@ class AlgoliaUpdater {
   uploadToAlgolia = async ({ language, entries }) => {
     const indexName = `instant_search-${language}`;
 
-    //const featuredReplicaIndexName = indexName + '-featured';
-    const datePublishedReplicaIndexName = indexName + '-date-published';
-
     const index = await this.algoliaClient.initIndex(indexName);
 
     await index.saveObjects(entries);
+
+    // Each replica gives us another sort order,
+    // but also duplicates all of the entries.
+    // We may eventually want to switch to virtual replicas*,
+    // but those don't allow us to use `distinct`
+    // and might complicate the setup of a dev environment
+    // since they are not available on the free plan.
+    //
+    // *https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/how-to/creating-replicas/#virtual-replicas
+    //
+    const replicas = [
+      { suffix: '-featured', ranking: ['desc(featured)'] },
+      { suffix: '-date-published', ranking: ['desc(epoch_date_published)'] },
+      { suffix: '-date-published-rev', ranking: ['asc(epoch_date_published)'] },
+      { suffix: '-incident-date', ranking: ['desc(epoch_incident_date)'] },
+      { suffix: '-incident-date-rev', ranking: ['asc(epoch_incident_date)'] },
+    ];
+
+    for (const replica of replicas) {
+      const replicaIndexName = indexName + replica.suffix;
+
+      const replicaIndex = await this.algoliaClient.initIndex(replicaIndexName);
+
+      await replicaIndex.setSettings({ ranking: replica.ranking });
+    }
 
     await index.setSettings({
       ...algoliaSettings,
       attributeForDistinct: 'incident_id',
       indexLanguages: [language],
       queryLanguages: [language],
-      replicas: [
-        //featuredReplicaIndexName,
-        datePublishedReplicaIndexName,
-      ],
-    });
-
-    //    const featuredReplicaIndex = await this.algoliaClient.initIndex(featuredReplicaIndexName);
-    //    await featuredReplicaIndex.setSettings({
-    //      ranking: ['desc(featured)', 'desc(text)'],
-    //    });
-
-    const datePublishedReplicaIndex = await this.algoliaClient.initIndex(
-      datePublishedReplicaIndexName
-    );
-
-    await datePublishedReplicaIndex.setSettings({
-      ranking: ['desc(epoch_date_published)', 'desc(text)'],
+      replicas: replicas.map((replica) => indexName + replica.suffix),
     });
   };
 

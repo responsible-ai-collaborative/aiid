@@ -26,6 +26,27 @@ const Controls = ({ query, searchState, setSearchState }) => {
           <DisplayModeSwitch />
         </Col>
         <Col className="tw-hbox">
+          <Form.Label for="sort-by">
+            <Trans>Sort By</Trans>
+          </Form.Label>
+          <Form.Select
+            id="sort-by"
+            label="Sort By"
+            onChange={(event) => {
+              setSearchState({
+                ...searchState,
+                sortBy: event.target.value,
+              });
+            }}
+          >
+            <option value="">Default</option>
+            <option value="date-published">Date Published (Newest First)</option>
+            <option value="date-published-rev">Date Published (Oldest First)</option>
+            <option value="incident-date">Incident Date (Newest First)</option>
+            <option value="incident-date-rev">Incident Date (Oldest First)</option>
+          </Form.Select>
+        </Col>
+        <Col className="tw-hbox">
           <Form.Check
             type="switch"
             id="hide-duplicates"
