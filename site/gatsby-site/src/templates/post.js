@@ -33,7 +33,7 @@ export default function Post(props) {
 
   canonicalUrl =
     config.gatsby.pathPrefix !== '/' ? canonicalUrl + config.gatsby.pathPrefix : canonicalUrl;
-  canonicalUrl = canonicalUrl + mdx.fields.slug;
+  canonicalUrl = canonicalUrl + mdx.frontmatter.slug;
 
   return (
     <Layout {...props}>
@@ -79,9 +79,7 @@ export const pageQuery = graphql`
     }
     mdx(fields: { locale: { eq: $locale } }, frontmatter: { slug: { eq: $slug } }) {
       fields {
-        id
         title
-        slug
       }
       body
       tableOfContents
