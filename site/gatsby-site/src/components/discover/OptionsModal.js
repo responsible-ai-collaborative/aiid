@@ -56,10 +56,32 @@ function OptionsModal({ searchState, setSearchState }) {
             <Form.Label for="hide-duplicates-modal">
               <Trans>1st report only</Trans>
             </Form.Label>
+
             <DisplayModeSwitch />
           </div>
+          <div className="tw-hbox">
+            <Form.Label for="sort-by" className="mt-2 mr-2">
+              <Trans>Sort By</Trans>
+            </Form.Label>
+            <Form.Select
+              id="sort-by"
+              label="Sort By"
+              onChange={(event) => {
+                setSearchState({
+                  ...searchState,
+                  sortBy: event.target.value,
+                });
+              }}
+            >
+              <option value="">Default</option>
+              <option value="date-published">Date Published (Newest First)</option>
+              <option value="date-published-rev">Date Published (Oldest First)</option>
+              <option value="incident-date">Incident Date (Newest First)</option>
+              <option value="incident-date-rev">Incident Date (Oldest First)</option>
+            </Form.Select>
+          </div>
 
-          <Accordion defaultActiveKey="0">
+          <Accordion defaultActiveKey="0" className="mt-2">
             {REFINEMENT_LISTS.map((list) => (
               <AccordionFilter key={list.attribute} attribute={list.attribute} {...list} />
             ))}

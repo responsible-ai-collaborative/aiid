@@ -25,8 +25,8 @@ const Controls = ({ query, searchState, setSearchState }) => {
         <Col className="col-auto">
           <DisplayModeSwitch />
         </Col>
-        <Col className="tw-hbox">
-          <Form.Label for="sort-by">
+        <Col className="tw-hbox items-center">
+          <Form.Label for="sort-by" className="mt-2 mr-2">
             <Trans>Sort By</Trans>
           </Form.Label>
           <Form.Select

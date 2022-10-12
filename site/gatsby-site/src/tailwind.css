@@ -500,7 +500,7 @@
     }
 
     .tw-options-modal-hbox {
-        @apply mb-4 flex gap-6 items-center;
+        @apply flex gap-6 items-center;
     }
 
     .tw-options-modal-hbox>* {
