@@ -91,7 +91,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
     return (
       <div>
         <strong>Discover</strong>:
-        <ul className="list-disc text-gray-500 dark:text-gray-400 mt-4 ml-4">
+        <ul className="list-none text-gray-500 dark:text-gray-400 mt-4 ml-4">
           {sortedStatsArray
             .filter((item, index) => showAllStats || index < 5)
             .map(({ item, value }) => (
