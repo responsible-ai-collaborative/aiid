@@ -39,9 +39,9 @@ const LatestIncidentReport = ({ report }) => {
           <span className="text-sm text-gray-500 dark:text-gray-400">
             {format(epoch_date_submitted * 1000, 'MMM d, yyyy')}
           </span>
-          <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+          <div className="mb-3 font-normal text-gray-700 dark:text-gray-400">
             <ReportText maxChars={240} text={text} />
-          </p>
+          </div>
           <div className="flex justify-end">
             <Link
               to={`/cite/${incident_id}`}

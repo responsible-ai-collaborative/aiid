@@ -71,7 +71,7 @@ function CitePage(props) {
     },
   } = props;
 
-  const { isRole, user } = useUserContext();
+  const { isRole, user, loading } = useUserContext();
 
   const { i18n, t } = useTranslation();
 
@@ -336,7 +336,7 @@ function CitePage(props) {
                 >
                   <Trans>Discover</Trans>
                 </Button>
-                {isRole('incident_editor') && (
+                {!loading && isRole('incident_editor') && (
                   <Button
                     variant="outline-primary"
                     className="mr-2"
