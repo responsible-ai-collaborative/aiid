@@ -34,8 +34,8 @@
             },
             "translations_fr": {
                 "__typename": "ReportTranslation",
-                "text": "Crosissant",
-                "title": "Zidane"
+                "text": "",
+                "title": ""
             }
         }
     }
