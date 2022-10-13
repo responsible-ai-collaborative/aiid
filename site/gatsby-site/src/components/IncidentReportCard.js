@@ -12,6 +12,7 @@ import TranslationBadge from 'components/i18n/TranslationBadge';
 
 const CardActions = ({ children, position = 'row', className, style }) => (
   <div
+    data-cy="card-actions"
     style={style}
     className={
       className +
@@ -199,23 +200,18 @@ const IncidentReportCard = (props) => {
                 )}
               </h3>
               <div data-cy="subtitle" className="text-muted-gray text-sm">
-                {[]
-                  .concat([
-                    parsedDate && (
-                      <time dateTime={formatISO(parsedDate)}>{format(parsedDate, 'MMM yyyy')}</time>
-                    ),
-                  ])
-                  .concat([
-                    reports && reports.length > 0 && (
-                      <>
-                        {incident.reports.length}{' '}
-                        {incident.reports.length == 1 ? t('report') : t('reports')}{' '}
-                      </>
-                    ),
-                  ])
-                  .concat([
-                    source_domain && <WebArchiveLink url={url}>{source_domain}</WebArchiveLink>,
-                  ])
+                {[
+                  parsedDate && (
+                    <time dateTime={formatISO(parsedDate)}>{format(parsedDate, 'MMM yyyy')}</time>
+                  ),
+                  reports && reports.length > 0 && (
+                    <>
+                      {incident.reports.length}{' '}
+                      {incident.reports.length == 1 ? t('report') : t('reports')}{' '}
+                    </>
+                  ),
+                  source_domain && <WebArchiveLink url={url}>{source_domain}</WebArchiveLink>,
+                ]
                   .filter((item) => item)
                   .reduce((items, item, i) => {
                     if (i > 0) {
@@ -231,8 +227,8 @@ const IncidentReportCard = (props) => {
                   <ReportText text={text} maxChars={textMaxChars} />
                 </div>
               )}
-              <div className="mt-auto">
-                {children && children.filter((child) => child.type.name == 'CardActions')}
+              <div className="mt-auto" data-cy="card-actions-container">
+                {children}
               </div>
             </div>
           </div>

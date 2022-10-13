@@ -274,9 +274,12 @@ function DiscoverApp(props) {
 
               return (
                 <p className="tw-container-xl mt-4">
-                  <Trans>
-                    Viewing reports for incident #{id}.{' '}
-                    <LocalizedLink to={'/cite/' + id}>View details on incident #{id}</LocalizedLink>
+                  <Trans values={{ id }}>
+                    Viewing reports for incident #{{ id }}.{' '}
+                    <LocalizedLink to={'/cite/' + id}>
+                      {' '}
+                      View details on incident #{{ id }}
+                    </LocalizedLink>
                     .
                   </Trans>
                 </p>

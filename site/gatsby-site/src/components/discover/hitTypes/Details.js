@@ -17,6 +17,7 @@ export default function Details({
       data-cy={item.mongodb_id}
     >
       <CardActions className="justify-around">
+        Pokemon go to the polls
         <Actions
           {...{
             authorsModal,
