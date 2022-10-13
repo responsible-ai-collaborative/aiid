@@ -95,7 +95,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
           {sortedStatsArray
             .filter((item, index) => showAllStats || index < 5)
             .map(({ item, value }) => (
-              <li key={`${short_name}-${item}`} className="mb-2">
+              <li key={`${short_name}-${item}`} className="mb-2 list-none">
                 <Link
                   to={
                     `/apps/discover?classifications=` +
