@@ -3,6 +3,7 @@ import { geoPath, geoGraticule, geoEquirectangular, scaleLinear, extent, zoom, s
 import styled from 'styled-components';
 import { useWorldAtlas } from './useWorldAtlas';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
+import PopoverWrapper from 'elements/PopoverWrapper';
 
 const Point = styled.circle`
   fill: #f00;
@@ -51,23 +52,23 @@ function Points({ data, geocodes, projection }) {
       const radius = sizeScale(sizeValue(d));
 
       return (
-        <div className="bootstrap" key={place}>
+        <React.Fragment key={place}>
           <Point cx={x} cy={y} r={radius} />
           <OverlayTrigger
             placement="right"
             trigger="click"
             rootClose={true}
             overlay={
-              <Popover>
+              <PopoverWrapper>
                 <Popover.Body>{place}</Popover.Body>
-              </Popover>
+              </PopoverWrapper>
             }
           >
             <foreignObject x={x - radius} y={y - radius} width={radius * 2} height={radius * 2}>
               <Trigger />
             </foreignObject>
           </OverlayTrigger>
-        </div>
+        </React.Fragment>
       );
     });
 }
@@ -122,7 +123,7 @@ function LocationMap({ land, data, geocodes, className }) {
     .translate([size.width / 2, size.height / 2]);
 
   return (
-    <div className={className}>
+    <div className={`${className} bootstrap`}>
       <svg ref={svgRef} width="100%" viewBox={`0 0 ${size.width} ${size.height}`}>
         <g ref={mapRef}>
           <WorldMap land={land} projection={projection} />
