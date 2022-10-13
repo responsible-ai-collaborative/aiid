@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 import { Spinner } from 'flowbite-react';
 import styled from 'styled-components';
@@ -30,10 +30,23 @@ export default function TsneVisualization({
         .map((e) => (Array.isArray(e) ? e[0] : e))
         .reduce((result, value) => result.concat(value), [])
         .filter((value) => value)
+        .concat('Unclassified')
     )
   );
 
   const taxonColorMap = getTaxonColorMap({ taxons });
+
+  const getTaxonVisibility = () =>
+    [...taxons].reduce((visibility, taxon) => ({ ...visibility, [taxon]: true }), {
+      Unclassified: true,
+    });
+
+  const [taxonVisibility, setTaxonVisibility] = useState(getTaxonVisibility());
+
+  useEffect(() => {
+    setHighlightedCategory(null);
+    setTaxonVisibility(getTaxonVisibility());
+  }, [axis]);
 
   return (
     incidents &&
@@ -47,6 +60,7 @@ export default function TsneVisualization({
               currentSpatialIncident,
               currentIncidentId,
               taxonColorMap,
+              taxonVisibility,
               axis,
               highlightedCategory,
             }}
@@ -71,15 +85,29 @@ export default function TsneVisualization({
               {taxons.map((taxon) => (
                 <li
                   key={taxon}
-                  onMouseEnter={() => setHighlightedCategory(taxon)}
-                  onMouseLeave={() => setHighlightedCategory(null)}
                   className={
-                    '-indent-4 pl-4 cursor-default' +
-                    (highlightedCategory && highlightedCategory != taxon ? ' opacity-25' : '')
+                    '-indent-4 pl-4 cursor-pointer' +
+                    (taxonVisibility[taxon]
+                      ? highlightedCategory && highlightedCategory != taxon
+                        ? ' opacity-50'
+                        : ''
+                      : ' opacity-10')
                   }
                 >
-                  <Swatch color={taxonColorMap[taxon]} />
-                  {taxon}
+                  <button
+                    style={{ background: 'none', padding: '0px', margin: '0px', border: 'none' }}
+                    onMouseEnter={() => setHighlightedCategory(taxon)}
+                    onMouseLeave={() => setHighlightedCategory(null)}
+                    onClick={() =>
+                      setTaxonVisibility((taxonVisibility) => ({
+                        ...taxonVisibility,
+                        [taxon]: !taxonVisibility[taxon],
+                      }))
+                    }
+                  >
+                    <Swatch color={taxonColorMap[taxon]} />
+                    {taxon}
+                  </button>
                 </li>
               ))}
             </ul>
@@ -96,6 +124,7 @@ function VisualizationView({
   currentSpatialIncident,
   currentIncidentId,
   taxonColorMap,
+  taxonVisibility,
   axis,
   highlightedCategory,
 }) {
@@ -130,6 +159,7 @@ function VisualizationView({
                       currentIncidentId,
                       axis,
                       taxonColorMap,
+                      taxonVisibility,
                       scaleMultiplier,
                       state,
                       incident,
@@ -151,6 +181,7 @@ function PlotPoint({
   scaleMultiplier,
   classifications,
   taxonColorMap,
+  taxonVisibility,
   axis,
   currentIncidentId,
   highlightedCategory,
@@ -174,11 +205,11 @@ function PlotPoint({
       ? Array.isArray(classifications[dbAxis])
         ? classifications[dbAxis].length > 0 && String(classifications[dbAxis][0].trim()).length > 0
           ? String(classifications[dbAxis][0])
-          : null
+          : 'Unclassified'
         : String(classifications[dbAxis]).length > 0
         ? String(classifications[dbAxis])
-        : null
-      : null;
+        : 'Unclassified'
+      : 'Unclassified';
 
   const background = (taxonColorMap[taxon] || Color('#ffffff')).opaquer(-0.25);
 
@@ -221,6 +252,10 @@ function PlotPoint({
         });
     }
   };
+
+  if (taxonVisibility[taxon] === false) {
+    return null;
+  }
 
   return (
     <>
@@ -348,12 +383,13 @@ function getTaxonColorMap({ taxons }) {
     Tesla: Color('#cc0202'),
     Uber: Color('#000000'),
     YouTube: Color('#FF0000'),
+    Unclassified: Color('#FFFFFF'),
   };
 
   // Select colors spaced evenly around the color wheel.
   // Alternate the saturation and value
   // so that adjacent items are more distinct.
-  let hueSteps = Array(taxons.length)
+  let hueSteps = Array(taxons.length - 1)
     .fill()
     .map((e, i) => {
       const initialTaxon = taxons.find((taxon) => taxonColorMap[taxon]);
@@ -375,7 +411,9 @@ function getTaxonColorMap({ taxons }) {
     Math.min(Math.abs(deg1 - deg2), 360 - Math.abs(deg1 - deg2)) % 360;
 
   // Remove those colors closest to predefined colors
-  for (const key of Object.keys(taxonColorMap).filter((key) => taxons.includes(key))) {
+  for (const key of Object.keys(taxonColorMap).filter(
+    (key) => taxons.includes(key) && key != 'Unclassified'
+  )) {
     const color = taxonColorMap[key];
 
     const hue = color.hue();
@@ -407,7 +445,10 @@ function getTaxonColorMap({ taxons }) {
 
 function Swatch({ color }) {
   return (
-    <span className="inline-block w-3 h-3 mr-1 -mb-px rounded" style={{ background: color }} />
+    <span
+      className="inline-block w-3 h-3 mr-1 -mb-px rounded"
+      style={{ background: color, border: '2px solid ' + color.darken(0.15).desaturate(0.2) }}
+    />
   );
 }
 
