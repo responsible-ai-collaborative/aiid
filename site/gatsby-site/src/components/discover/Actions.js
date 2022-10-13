@@ -68,6 +68,7 @@ export default function Actions({
   authorsModal,
   submittersModal,
   flagReportModal,
+  setExpandFilters,
 }) {
   const { t } = useTranslation();
 
@@ -130,7 +131,10 @@ export default function Actions({
           aria-hidden="true"
           className="flex items-center px-1"
           title={t(`Filter by Incident ID #{{id}}`, { id: item.incident_id })}
-          onClick={() => toggleFilterByIncidentId(item.incident_id + '')}
+          onClick={() => {
+            toggleFilterByIncidentId(item.incident_id + '');
+            setExpandFilters(true);
+          }}
         >
           <FontAwesomeIcon icon={faHashtag} className="fa-hashtag" title="Incident ID" />
           {item.incident_id}

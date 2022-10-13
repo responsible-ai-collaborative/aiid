@@ -8,6 +8,7 @@ export default function Details({
   submittersModal,
   flagReportModal,
   toggleFilterByIncidentId,
+  setExpandFilters,
 }) {
   return (
     <IncidentReportCard
@@ -17,11 +18,14 @@ export default function Details({
     >
       <CardActions className="justify-around">
         <Actions
-          authorsModal={authorsModal}
-          flagReportModal={flagReportModal}
-          submittersModal={submittersModal}
-          toggleFilterByIncidentId={toggleFilterByIncidentId}
-          item={item}
+          {...{
+            authorsModal,
+            flagReportModal,
+            submittersModal,
+            toggleFilterByIncidentId,
+            item,
+            setExpandFilters,
+          }}
         />
       </CardActions>
     </IncidentReportCard>

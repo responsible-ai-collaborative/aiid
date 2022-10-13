@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import REFINEMENT_LISTS from './REFINEMENT_LISTS';
+import React from 'react';
 import Stats from './Stats';
 import ClearFilters from './ClearFilters';
 import DisplayModeSwitch from './DisplayModeSwitch';
@@ -11,11 +10,7 @@ import { Trans } from 'react-i18next';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
 
-const Controls = ({ query, searchState, setSearchState }) => {
-  const [expandFilters, setExpandFilters] = useState(false);
-
-  useEffect(() => setExpandFilters(REFINEMENT_LISTS.some((r) => query[r.attribute])), []);
-
+const Controls = ({ searchState, setSearchState, expandFilters, setExpandFilters }) => {
   return (
     <>
       <Row className="content-start items-center mt-4 767px:hidden hiddenMobile bootstrap">

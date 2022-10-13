@@ -12,6 +12,7 @@ const Hits = ({
   flagReportModal,
   isSearchStalled,
   toggleFilterByIncidentId,
+  setExpandFilters,
 }) => {
   if (isSearchStalled) {
     return (
@@ -38,10 +39,13 @@ const Hits = ({
         <Hit
           key={hit.objectID}
           item={hit}
-          authorsModal={authorsModal}
-          submittersModal={submittersModal}
-          flagReportModal={flagReportModal}
-          toggleFilterByIncidentId={toggleFilterByIncidentId}
+          {...{
+            authorsModal,
+            submittersModal,
+            flagReportModal,
+            toggleFilterByIncidentId,
+            setExpandFilters,
+          }}
         />
       ))}
     </div>

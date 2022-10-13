@@ -15,10 +15,12 @@ import { SearchContext } from 'components/discover/useSearch';
 import { queryConfig } from 'components/discover/queryParams';
 import VirtualFilters from 'components/discover/VirtualFilters';
 import Controls from 'components/discover/Controls';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
 import Container from 'elements/Container';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
+import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
+import { Trans } from 'react-i18next';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -191,6 +193,10 @@ function DiscoverApp(props) {
 
   const [searchState, setSearchState] = useState(generateSearchState({ query }));
 
+  const [expandFilters, setExpandFilters] = useState(false);
+
+  useEffect(() => setExpandFilters(REFINEMENT_LISTS.some((r) => query[r.attribute])), []);
+
   const onSearchStateChange = (searchState) => {
     setSearchState({ ...searchState });
   };
@@ -253,7 +259,7 @@ function DiscoverApp(props) {
               </Col>
             </Row>
 
-            <Controls query={query} searchState={searchState} setSearchState={setSearchState} />
+            <Controls {...{ searchState, setSearchState, expandFilters, setExpandFilters }} />
 
             <OptionsModal
               className="hiddenDesktop"
@@ -262,11 +268,29 @@ function DiscoverApp(props) {
             />
           </Container>
 
+          {searchState?.refinementList?.incident_id?.length == 1 &&
+            (() => {
+              const id = searchState.refinementList.incident_id[0];
+
+              return (
+                <p className="tw-container-xl mt-4">
+                  <Trans>
+                    Viewing reports for incident #{id}.{' '}
+                    <LocalizedLink to={'/cite/' + id}>View details on incident #{id}</LocalizedLink>
+                    .
+                  </Trans>
+                </p>
+              );
+            })()}
+
           <Hits
-            toggleFilterByIncidentId={toggleFilterByIncidentId}
-            authorsModal={authorsModal}
-            submittersModal={submittersModal}
-            flagReportModal={flagReportModal}
+            {...{
+              toggleFilterByIncidentId,
+              authorsModal,
+              submittersModal,
+              flagReportModal,
+              setExpandFilters,
+            }}
           />
 
           <CustomModal {...authorsModal} />

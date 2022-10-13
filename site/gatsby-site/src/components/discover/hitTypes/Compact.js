@@ -8,16 +8,20 @@ export default function Compact({
   submittersModal,
   flagReportModal,
   toggleFilterByIncidentId,
+  setExpandFilters,
 }) {
   return (
     <IncidentReportCard report={item} text={false} data-cy={item.mongodb_id}>
       <CardActions className="justify-around">
         <Actions
-          authorsModal={authorsModal}
-          flagReportModal={flagReportModal}
-          submittersModal={submittersModal}
-          toggleFilterByIncidentId={toggleFilterByIncidentId}
-          item={item}
+          {...{
+            authorsModal,
+            flagReportModal,
+            submittersModal,
+            toggleFilterByIncidentId,
+            item,
+            setExpandFilters,
+          }}
         />
       </CardActions>
     </IncidentReportCard>
