@@ -123,7 +123,7 @@ function LocationMap({ land, data, geocodes, className }) {
     .translate([size.width / 2, size.height / 2]);
 
   return (
-    <div className={`${className} bootstrap`}>
+    <div className={className}>
       <svg ref={svgRef} width="100%" viewBox={`0 0 ${size.width} ${size.height}`}>
         <g ref={mapRef}>
           <WorldMap land={land} projection={projection} />
