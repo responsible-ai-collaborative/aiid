@@ -114,7 +114,7 @@ const Header = () => {
               </div>
               <div className="tw-header-icons-container">
                 <LanguageSwitcher className="mr-3 md:mr-0" />
-                <li className="divider hiddenMobile"></li>
+                <li className="divider hiddenMobile list-none"></li>
                 {config.header.social && (
                   <a
                     className="paddingAround hiddenMobile"
