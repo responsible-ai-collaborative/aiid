@@ -7,8 +7,9 @@ import Link from '../components/ui/Link';
 import { Spinner } from 'flowbite-react';
 
 const ConfirmEmail = (props) => {
-
-  const { actions: { confirmEmail }, } = useUserContext();
+  const {
+    actions: { confirmEmail },
+  } = useUserContext();
 
   let errorMessage = null;
 
@@ -33,11 +34,11 @@ const ConfirmEmail = (props) => {
       .catch(() => {
         setPageMessage(t('An unknown error has ocurred'));
       });
-  }, [])
+  }, []);
 
-  return <Layout {...props}>
-    {
-      errorMessage || pageMessage ? (
+  return (
+    <Layout {...props}>
+      {errorMessage || pageMessage ? (
         <>
           <p>
             {errorMessage}
@@ -52,9 +53,9 @@ const ConfirmEmail = (props) => {
           <Spinner size="md" />
           <Trans>Loading...</Trans>
         </div>
-      )
-    }
-  </Layout>;
+      )}
+    </Layout>
+  );
 };
 
 export default ConfirmEmail;

@@ -112,7 +112,8 @@ export const UserContextProvider = ({ children }) => {
   };
 
   const sendResetPasswordEmail = async ({ email }) => {
-    return realmApp.emailPasswordAuth.sendResetPasswordEmail(email);
+    // Pass a dummy valid password. It won't be used to reset the password
+    return realmApp.emailPasswordAuth.callResetPasswordFunction(email, '123456');
   };
 
   const resetPassword = async ({ password, token, tokenId }) => {
@@ -127,7 +128,7 @@ export const UserContextProvider = ({ children }) => {
   };
 
   const confirmEmail = async ({ token, tokenId }) => {
-    return realmApp.emailPasswordAuth.confirmUser({token, tokenId});
+    return realmApp.emailPasswordAuth.confirmUser({ token, tokenId });
   };
 
   const getValidAccessToken = async () => {
@@ -152,7 +153,7 @@ export const UserContextProvider = ({ children }) => {
     }
 
     checkUser();
-  }, []);
+  }, [user]);
 
   return (
     <UserContext.Provider

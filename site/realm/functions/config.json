@@ -4,11 +4,23 @@
         "private": true
     },
     {
+        "name": "getUser",
+        "private": false
+    },
+    {
         "name": "linkReportsToIncidents",
         "private": false
     },
     {
+        "name": "onIncidentUpdate",
+        "private": true
+    },
+    {
         "name": "onNewUser",
+        "private": true
+    },
+    {
+        "name": "passwordReset",
         "private": true
     },
     {
@@ -17,6 +29,10 @@
     },
     {
         "name": "reportTranslations",
+        "private": false
+    },
+    {
+        "name": "sendEmail",
         "private": false
     },
     {

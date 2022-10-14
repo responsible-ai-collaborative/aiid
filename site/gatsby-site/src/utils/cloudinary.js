@@ -91,6 +91,7 @@ const PreviewImageInputGroup = ({
   handleChange,
   handleBlur,
   className = '',
+  schema,
 }) => {
   const [cloudinaryID, setCloudinaryID] = useState(cloudinary_id);
 
@@ -160,6 +161,7 @@ const PreviewImageInputGroup = ({
         handleChange={handleChange}
         className={className}
         handleBlur={handleBlur}
+        schema={schema}
       />
       <figure data-cy="image-preview-figure" id="image-preview-figure" className="text-center">
         <div
@@ -167,9 +169,9 @@ const PreviewImageInputGroup = ({
           style={{ height: '50vh', marginTop: '1rem' }}
         >
           {updatingImage ? (
-            <Spinner size="xl"/>
+            <Spinner size="xl" />
           ) : (
-            <Image publicID={cloudinaryID} style={{ maxHeight: '100%' }} alt="Selected image"/>
+            <Image publicID={cloudinaryID} style={{ maxHeight: '100%' }} alt="Selected image" />
           )}
         </div>
         <figcaption className="mt-2">

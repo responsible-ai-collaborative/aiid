@@ -16,6 +16,7 @@ import isArray from 'lodash/isArray';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
+import { Spinner } from 'flowbite-react';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -47,19 +48,31 @@ const queryConfig = {
 };
 
 const SubmitForm = () => {
-  const { isRole } = useUserContext();
+  const { isRole, loading } = useUserContext();
 
   const [query] = useQueryParams(queryConfig);
 
-  const queryParams = { ...query };
+  const [submission, setSubmission] = useState({
+    image_url: '',
+    text: '',
+    authors: [],
+    submitters: [],
+    developers: [],
+    deployers: [],
+    harmed_parties: [],
+  });
 
-  for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
-    if (queryParams[key] && !Array.isArray(queryParams[key])) {
-      queryParams[key] = [queryParams[key]];
+  useEffect(() => {
+    const queryParams = { ...query };
+
+    for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
+      if (queryParams[key] && !Array.isArray(queryParams[key])) {
+        queryParams[key] = [queryParams[key]];
+      }
     }
-  }
 
-  const [submission, setSubmission] = useState({ ...queryParams });
+    setSubmission(queryParams);
+  }, []);
 
   const [csvData, setCsvData] = useState([]);
 
@@ -103,14 +116,11 @@ const SubmitForm = () => {
     try {
       const date_submitted = format(new Date(), 'yyyy-MM-dd');
 
-      const description = values.description ? values.description : values.text;
-
       const submission = {
         ...values,
         incident_id: values.incident_id == '' ? 0 : values.incident_id,
         date_submitted,
         date_modified: date_submitted,
-        description: description.substring(0, 200),
         authors: isString(values.authors) ? values.authors.split(',') : values.authors,
         submitters: values.submitters
           ? !isArray(values.submitters)
@@ -179,18 +189,25 @@ const SubmitForm = () => {
 
             <Button
               onClick={submitForm}
-              className="mt-3 bootstrap"
+              className="mt-3 bootstrap flex gap-2 disabled:opacity-50"
               variant="primary"
               type="submit"
               disabled={isSubmitting}
             >
-              <Trans>Submit</Trans>
+              {isSubmitting ? (
+                <>
+                  <Spinner size="sm" />
+                  <Trans>Submitting</Trans>
+                </>
+              ) : (
+                <Trans>Submit</Trans>
+              )}
             </Button>
           </>
         )}
       </Formik>
 
-      {isRole('submitter') && (
+      {!loading && isRole('submitter') && (
         <Container className="mt-5 p-0 bootstrap">
           <h2>
             <Trans ns="submit">Advanced: Add by CSV</Trans>

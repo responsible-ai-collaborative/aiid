@@ -17,6 +17,7 @@ const createCitationPages = async (graphql, createPage) => {
             editor_similar_incidents
             editor_dissimilar_incidents
             flagged_dissimilar_incidents
+            description
             nlp_similar_incidents {
               incident_id
               similarity
@@ -104,6 +105,7 @@ const createCitationPages = async (graphql, createPage) => {
         context: {
           ...context,
           translate_es: incidentReportsMap[context.incident_id].some((r) => r.language !== 'es'),
+          translate_fr: incidentReportsMap[context.incident_id].some((r) => r.language !== 'fr'),
           translate_en: incidentReportsMap[context.incident_id].some((r) => r.language !== 'en'),
         },
       });

@@ -16,7 +16,7 @@ describe('Login', () => {
     cy.visit(`${url}?redirectTo=${redirectTo}`);
     cy.get('input[name=email]').type(Cypress.env('e2eUsername'));
     cy.get('input[name=password]').type(Cypress.env('e2ePassword'));
-    cy.contains('Login').click();
+    cy.get('[data-cy="login-btn"]').click();
 
     cy.location('pathname', { timeout: 8000 }).should('eq', redirectTo);
   });
@@ -25,7 +25,7 @@ describe('Login', () => {
     cy.visit(url);
     cy.get('input[name=email]').type('fakeUser@test.com');
     cy.get('input[name=password]').type('fakePassword');
-    cy.contains('Login').click();
+    cy.get('[data-cy="login-btn"]').click();
 
     cy.get('[data-cy="toast"]').contains('invalid username/password').should('exist');
   });
@@ -34,10 +34,10 @@ describe('Login', () => {
     cy.visit(url);
     cy.get('input[name=email]').type('fakeUser');
     cy.get('input[name=password]').type('fakePassword');
-    cy.contains('Login').should('be.disabled');
+    cy.get('[data-cy="login-btn"]').should('be.disabled');
 
     cy.get('input[name=email]').clear().type('fakeUser@test.com');
-    cy.contains('Login').should('not.be.disabled');
+    cy.get('[data-cy="login-btn"]').should('not.be.disabled');
   });
 
   it('Should redirect to forgot password page if the user clicks on "Forgot password?" link', () => {

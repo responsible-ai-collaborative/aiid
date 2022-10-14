@@ -1,0 +1,21 @@
+{
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "incident_id": {
+            "bsonType": "int"
+        },
+        "type": {
+            "bsonType": "string"
+        },
+        "userId": {
+            "bsonType": "string"
+        }
+    },
+    "required": [
+        "type",
+        "userId"
+    ],
+    "title": "subscription"
+}

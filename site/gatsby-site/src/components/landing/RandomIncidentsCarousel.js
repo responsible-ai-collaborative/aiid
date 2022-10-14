@@ -1,34 +1,11 @@
 import React from 'react';
 import { StaticQuery, graphql, Link } from 'gatsby';
-import styled from 'styled-components';
 import md5 from 'md5';
-import Carousel from 'react-bootstrap/Carousel';
 import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
+import { Carousel } from 'flowbite-react';
 
-const Caption = styled.h3`
-  background: rgba(0, 0, 0, 0.55);
-`;
-
-const CarouselImage = styled(Image)`
-  height: 480px;
-  object-fit: cover;
-  width: 100%;
-`;
-
-const RandomIncidentsCarousel = ({ className }) => {
-  const generateRandomIncidents = () => {
-    const array = [];
-
-    for (let index = 0; index < 5; index++) {
-      array.push(Math.floor(Math.random() * 50 + 1));
-    }
-
-    return array;
-  };
-
-  const randomArray = generateRandomIncidents();
-
+const RandomIncidentsCarousel = () => {
   return (
     <StaticQuery
       query={graphql`
@@ -40,12 +17,12 @@ const RandomIncidentsCarousel = ({ className }) => {
               title
             }
           }
-
           allMongodbAiidprodReports(limit: 50, sort: { order: ASC, fields: id }) {
             nodes {
               id
               report_number
               image_url
+              cloudinary_id
             }
           }
         }
@@ -54,34 +31,70 @@ const RandomIncidentsCarousel = ({ className }) => {
         allMongodbAiidprodReports: { nodes: reports },
         allMongodbAiidprodIncidents: { nodes: incidents },
       }) => {
-        const randomIncidents = reports
-          .filter(
-            (node, index) => randomArray.includes(index) && node.image_url !== 'placeholder.svg'
-          )
-          .map((report) => ({
-            ...report,
-            ...incidents.find((incident) => incident.reports.includes(report.report_number)),
-          }));
+        // this cannot be really random because it causes rehydration problems
 
+        const selected = [];
+
+        for (let i = 0; i < reports.length && selected.length < 5; i++) {
+          const report = reports[i];
+
+          const incident = incidents.find((incident) =>
+            incident.reports.includes(report.report_number)
+          );
+
+          if (!selected.some((s) => s.incident_id == incident.incident_id)) {
+            selected.push({
+              ...report,
+              incident_id: incident.incident_id,
+              title: incident.title || report.title,
+            });
+          }
+        }
         return (
-          <div className="bootstrap">
-            <Carousel interval={60000} className={className}>
-              {randomIncidents.map(({ id, incident_id, title, image_url, cloudinary_id }) => (
-                <Carousel.Item key={id}>
-                  <Link to={`/cite/${incident_id}`}>
-                    <CarouselImage
+          <div className="flex-1 flex justify-center items-center">
+            <div className="h-full w-full relative">
+              <div className="absolute h-3 inset-x-0 top-0 bg-white filler z-50 block w-50">
+                {/* The carousel insists on using rounded corners, *
+                 * so we have to cover them up on top.            */}
+              </div>
+              <Carousel slideInterval={6000} slide={false}>
+                {selected.map(({ incident_id, title, image_url, cloudinary_id }) => (
+                  <Link
+                    to={`/cite/${incident_id}`}
+                    key={incident_id}
+                    className="block h-full relative"
+                  >
+                    <Image
                       publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
                       alt={title}
-                      transformation={fill().height(480)}
+                      transformation={fill().height(800).width(1000)}
                       plugins={[]}
+                      className="w-full h-full object-cover"
                     />
-                    <Carousel.Caption>
-                      <Caption>{title}</Caption>
-                    </Carousel.Caption>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <h5
+                        className="
+                      text-sm sm:text-lg 
+                      font-bold 
+                      tracking-tight 
+                      text-gray-900 dark:text-white 
+                      w-1/2
+                      backdrop-blur-md
+                      p-6
+                      rounded-md
+                      bg-white/50
+                      top-0
+                      inset-x-0
+                      shadow-lg
+                    "
+                      >
+                        {title}
+                      </h5>
+                    </div>
                   </Link>
-                </Carousel.Item>
-              ))}
-            </Carousel>
+                ))}
+              </Carousel>
+            </div>
           </div>
         );
       }}

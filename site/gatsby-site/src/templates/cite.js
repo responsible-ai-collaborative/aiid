@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Spinner } from 'flowbite-react';
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
 import Citation from 'components/cite/Citation';
@@ -7,12 +8,12 @@ import BibTex from 'components/BibTex';
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 import { format, isAfter, isEqual } from 'date-fns';
 import { useModal, CustomModal } from '../hooks/useModal';
-import Timeline from 'components/visualizations/Timeline';
-import IncidentStatsCard from 'components/cite/IncidentStatsCard';
-import IncidentCard from 'components/cite/IncidentCard';
-import Taxonomy from 'components/taxa/Taxonomy';
-import { useUserContext } from 'contexts/userContext';
-import SimilarIncidents from 'components/cite/SimilarIncidents';
+import Timeline from '../components/visualizations/Timeline';
+import IncidentStatsCard from '../components/cite/IncidentStatsCard';
+import IncidentCard from '../components/cite/IncidentCard';
+import Taxonomy from '../components/taxa/Taxonomy';
+import { useUserContext } from '../contexts/userContext';
+import SimilarIncidents from '../components/cite/SimilarIncidents';
 import { Trans, useTranslation } from 'react-i18next';
 import Card from '../elements/Card';
 import Button from '../elements/Button';
@@ -20,11 +21,17 @@ import Container from '../elements/Container';
 import Row from '../elements/Row';
 import Col from '../elements/Col';
 import Pagination from '../elements/Pagination';
-import SocialShareButtons from 'components/ui/SocialShareButtons';
+import SocialShareButtons from '../components/ui/SocialShareButtons';
 import { useLocalization } from 'gatsby-theme-i18n';
-import useLocalizePath from 'components/i18n/useLocalizePath';
+import useLocalizePath from '../components/i18n/useLocalizePath';
+import { useMutation } from '@apollo/client';
+import { UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
+import useToastContext, { SEVERITY } from '../hooks/useToast';
+import Link from 'components/ui/Link';
 import { graphql } from 'gatsby';
 import { getTaxonomies, getTranslatedReports } from 'utils/cite';
+import { computeEntities } from 'utils/entities';
+import AllegedEntities from 'components/entities/AllegedEntities';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -64,9 +71,9 @@ function CitePage(props) {
     },
   } = props;
 
-  const { isRole, user } = useUserContext();
+  const { isRole, user, loading } = useUserContext();
 
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const { locale } = useLocalization();
 
@@ -99,6 +106,8 @@ function CitePage(props) {
   const submittersModal = useModal();
 
   const flagReportModal = useModal();
+
+  const addToast = useToastContext();
 
   const timeline = sortedReports.map(({ date_published, title, mongodb_id, report_number }) => ({
     date_published,
@@ -138,6 +147,65 @@ function CitePage(props) {
     );
   }, [user]);
 
+  const [subscribeToNewReportsMutation, { loading: subscribing }] =
+    useMutation(UPSERT_SUBSCRIPTION);
+
+  const subscribeToNewReports = async () => {
+    if (isRole('subscriber')) {
+      try {
+        const incidentId = incident.incident_id;
+
+        await subscribeToNewReportsMutation({
+          variables: {
+            query: {
+              type: 'incident',
+              userId: { userId: user.id },
+              incident_id: { incident_id: incidentId },
+            },
+            subscription: {
+              type: 'incident',
+              userId: {
+                link: user.id,
+              },
+              incident_id: {
+                link: incidentId,
+              },
+            },
+          },
+        });
+
+        addToast({
+          message: (
+            <>
+              {t(`You have successfully subscribed to updates on incident {{incidentId}}`, {
+                incidentId,
+              })}
+            </>
+          ),
+          severity: SEVERITY.success,
+        });
+      } catch (e) {
+        console.log(e);
+        addToast({
+          message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
+          severity: SEVERITY.danger,
+        });
+      }
+    } else {
+      addToast({
+        message: (
+          <Trans i18n={i18n}>
+            Please <Link to={localizePath({ path: '/login', language: locale })}>log in</Link> to
+            subscribe
+          </Trans>
+        ),
+        severity: SEVERITY.success,
+      });
+    }
+  };
+
+  const entities = computeEntities({ incidents: [incident] });
+
   return (
     <Layout {...props}>
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
@@ -153,12 +221,34 @@ function CitePage(props) {
         ></SocialShareButtons>
       </div>
 
+      <div>
+        <strong>Description</strong>: {incident.description}
+      </div>
+
       <Container>
+        <Row>
+          <Col>
+            <Card className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6">
+              <Card.Header className="items-center justify-between">
+                <h4 className="m-0">
+                  <Trans ns="entities">Entities</Trans>
+                </h4>
+                <Link to="/entities">
+                  <Trans ns="entities">View all entities</Trans>
+                </Link>
+              </Card.Header>
+              <Card.Body className="block" data-cy="alleged-entities">
+                <AllegedEntities entities={entities} />
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+
         <Row>
           <Col>
             <Card
               data-cy="citation"
-              className="border-1.5 border-border-light-gray rounded-5px shadow-card"
+              className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6"
             >
               <Card.Header className="items-center justify-between">
                 <h4 className="m-0">
@@ -215,10 +305,19 @@ function CitePage(props) {
                   <Trans>Tools</Trans>
                 </h4>
               </Card.Header>
-              <Card.Body className="flex-row">
+              <Card.Body className="flex-row flex-wrap gap-2">
+                <Button variant="outline-primary" onClick={subscribeToNewReports}>
+                  <div className="flex gap-2 items-center">
+                    {subscribing && (
+                      <div>
+                        <Spinner size="sm" />
+                      </div>
+                    )}
+                    <Trans>Notify Me of Updates</Trans>
+                  </div>
+                </Button>
                 <Button
                   variant="outline-primary"
-                  className="mr-2"
                   href={`/apps/submit?incident_id=${incident.incident_id}&date_downloaded=${format(
                     new Date(),
                     'yyyy-MM-dd'
@@ -226,20 +325,18 @@ function CitePage(props) {
                 >
                   <Trans>New Report</Trans>
                 </Button>
-                <Button variant="outline-primary" className="mr-2" href={'/summaries/incidents'}>
+                <Button variant="outline-primary" href={'/summaries/incidents'}>
                   <Trans>All Incidents</Trans>
                 </Button>
                 <Button
                   variant="outline-primary"
-                  className="mr-2"
                   href={'/apps/discover?incident_id=' + incident.incident_id}
                 >
                   <Trans>Discover</Trans>
                 </Button>
-                {isRole('incident_editor') && (
+                {!loading && isRole('incident_editor') && (
                   <Button
                     variant="outline-primary"
-                    className="mr-2"
                     href={'/incidents/edit?incident_id=' + incident.incident_id}
                   >
                     Edit Incident
@@ -342,6 +439,7 @@ export const query = graphql`
     $incident_id: Int
     $report_numbers: [Int]
     $translate_es: Boolean!
+    $translate_fr: Boolean!
     $translate_en: Boolean!
   ) {
     mongodbAiidprodResources(
@@ -443,6 +541,14 @@ export const query = graphql`
         report_number
       }
     }
+    allMongodbTranslationsReportsFr(filter: { report_number: { in: $report_numbers } })
+      @include(if: $translate_fr) {
+      nodes {
+        title
+        text
+        report_number
+      }
+    }
     allMongodbTranslationsReportsEn(filter: { report_number: { in: $report_numbers } })
       @include(if: $translate_en) {
       nodes {
@@ -459,6 +565,9 @@ export const query = graphql`
       date
       editors
       flagged_dissimilar_incidents
+      Alleged_developer_of_AI_system
+      Alleged_deployer_of_AI_system
+      Alleged_harmed_or_nearly_harmed_parties
     }
   }
 `;

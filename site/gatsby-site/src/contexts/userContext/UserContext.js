@@ -5,7 +5,8 @@ export const UserContext = createContext({
   user: undefined,
   isAdmin: undefined,
   isLoggedIn: undefined,
-  isRole() {
+  isRole(role) {
+    role;
     return false;
   },
   actions: {
@@ -19,7 +20,7 @@ export const UserContext = createContext({
       loginRedirectUri;
       redirectTo;
     },
-    logout: () => { },
+    logout: () => {},
     sendResetPasswordEmail: ({ email }) => {
       email;
     },
@@ -37,7 +38,7 @@ export const UserContext = createContext({
       token;
       tokenId;
       return new Promise(() => {});
-    }
+    },
   },
 });
 
