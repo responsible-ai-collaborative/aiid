@@ -23,13 +23,21 @@ export default function Post(props) {
 
   let canonicalUrl = config.gatsby.siteUrl;
 
+  const postImage = mdx.frontmatter.image?.childImageSharp?.gatsbyImageData?.images?.fallback?.src;
+
+  let metaImage = null;
+
+  if (postImage) {
+    metaImage = `${canonicalUrl}${postImage}`;
+  }
+
   canonicalUrl =
     config.gatsby.pathPrefix !== '/' ? canonicalUrl + config.gatsby.pathPrefix : canonicalUrl;
-  canonicalUrl = canonicalUrl + mdx.fields.slug;
+  canonicalUrl = canonicalUrl + mdx.frontmatter.slug;
 
   return (
     <Layout {...props}>
-      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl }} />
+      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }} />
       <div className={'titleWrapper'}>
         <StyledHeading>{mdx.fields.title}</StyledHeading>
 
@@ -71,9 +79,7 @@ export const pageQuery = graphql`
     }
     mdx(fields: { locale: { eq: $locale } }, frontmatter: { slug: { eq: $slug } }) {
       fields {
-        id
         title
-        slug
       }
       body
       tableOfContents
@@ -89,6 +95,11 @@ export const pageQuery = graphql`
         date
         aiTranslated
         slug
+        image {
+          childImageSharp {
+            gatsbyImageData(layout: FIXED)
+          }
+        }
       }
     }
   }

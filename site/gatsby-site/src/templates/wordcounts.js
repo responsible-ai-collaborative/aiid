@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import ReactWordcloud from 'react-d3-cloud';
 
@@ -13,13 +13,17 @@ import Wordlist from '../components/WordList';
 import { Trans } from 'react-i18next';
 
 const WordCloudCell = ({ wordCountsSorted, wordCloud }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
   return (
     <Row>
       <Col xs={4} data-cy="wordlist-container">
         <Wordlist content={wordCountsSorted} />
       </Col>
       <Col xs={8}>
-        {typeof window !== 'undefined' && (
+        {mounted && (
           <div data-cy="wordcloud">
             <ReactWordcloud data={wordCloud} />
           </div>
@@ -31,10 +35,6 @@ const WordCloudCell = ({ wordCountsSorted, wordCloud }) => {
 
 const WordCounts = ({ pageContext, ...props }) => {
   const { wordClouds, wordCountsSorted, wordsPerCloud } = pageContext;
-
-  if (!wordClouds || !wordCountsSorted) {
-    return null;
-  }
 
   return (
     <Layout {...props}>
@@ -57,13 +57,15 @@ const WordCounts = ({ pageContext, ...props }) => {
         </p>
         <Container>
           <ul>
-            {wordClouds.map((wordCloud, idx) => (
-              <WordCloudCell
-                key={`wordcloud-${idx}`}
-                wordCountsSorted={wordCountsSorted.slice(0, (idx + 1) * wordsPerCloud)}
-                wordCloud={wordCloud}
-              />
-            ))}
+            {wordClouds &&
+              wordCountsSorted &&
+              wordClouds.map((wordCloud, idx) => (
+                <WordCloudCell
+                  key={`wordcloud-${idx}`}
+                  wordCountsSorted={wordCountsSorted.slice(0, (idx + 1) * wordsPerCloud)}
+                  wordCloud={wordCloud}
+                />
+              ))}
           </ul>
         </Container>
       </StyledMainWrapper>

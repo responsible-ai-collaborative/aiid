@@ -31,6 +31,11 @@
                 "__typename": "ReportTranslation",
                 "text": "",
                 "title": ""
+            },
+            "translations_fr": {
+                "__typename": "ReportTranslation",
+                "text": "",
+                "title": ""
             }
         }
     }

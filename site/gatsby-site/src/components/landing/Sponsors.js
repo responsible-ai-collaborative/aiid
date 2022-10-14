@@ -110,30 +110,26 @@ export default function Sponsors() {
         </div>
       </div>
       {sponsors.map((sponsor) => {
-        return (
-          <>
-            {sponsor.items.map((item) => {
-              const text = item.text.replace(
-                /\[\[((.*?))\]\]/g,
-                `<a href="${item.link}" target="_blank" rel="noreferrer">$1</a>`
-              );
+        return sponsor.items.map((item) => {
+          const text = item.text.replace(
+            /\[\[((.*?))\]\]/g,
+            `<a href="${item.link}" target="_blank" rel="noreferrer">$1</a>`
+          );
 
-              return (
-                <SponsorModal
-                  key={`sponsor-${item.name}`}
-                  setModalState={setModalState}
-                  modalState={modalState}
-                  modalName={item.modalName}
-                  title={item.name}
-                  imagePath={`/images/${item.logo}`}
-                  linkTo={item.link}
-                >
-                  <p dangerouslySetInnerHTML={{ __html: text }} />
-                </SponsorModal>
-              );
-            })}
-          </>
-        );
+          return (
+            <SponsorModal
+              key={`sponsor-${item.name}`}
+              setModalState={setModalState}
+              modalState={modalState}
+              modalName={item.modalName}
+              title={item.name}
+              imagePath={`/images/${item.logo}`}
+              linkTo={item.link}
+            >
+              <p dangerouslySetInnerHTML={{ __html: text }} />
+            </SponsorModal>
+          );
+        });
       })}
     </>
   );
