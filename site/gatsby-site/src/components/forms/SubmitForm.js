@@ -132,8 +132,6 @@ const SubmitForm = () => {
 
       await insertSubmission({ variables: { submission } });
 
-      // resetForm();
-
       addToast({
         message: (
           <Trans i18n={i18n} ns="submit">

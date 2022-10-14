@@ -7,6 +7,7 @@ import StepOne from '../forms/SubmissionWizard/StepOne';
 import StepTwo from '../forms/SubmissionWizard/StepTwo';
 import StepThree from '../forms/SubmissionWizard/StepThree';
 import StepFour from '../forms/SubmissionWizard/StepFour';
+import { navigate } from 'gatsby';
 
 const SubmissionWizard = ({ submitForm, initialValues }) => {
   const [data, setData] = useState(initialValues);
@@ -22,7 +23,7 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
 
     if (final) {
       await submitForm({ ...data, ...newData });
-      setCurrentStep(3);
+      navigate(`/submit/success`);
     } else {
       setCurrentStep((prev) => prev + 1);
     }
