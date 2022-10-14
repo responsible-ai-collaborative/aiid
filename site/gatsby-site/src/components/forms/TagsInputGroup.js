@@ -4,7 +4,16 @@ import Label from './Label';
 import TagsControl from './TagsControl';
 import { Trans } from 'react-i18next';
 
-const TagsInputGroup = ({ name, label, placeholder, errors, touched, schema, className = '' }) => {
+const TagsInputGroup = ({
+  name,
+  label,
+  placeholder,
+  errors,
+  touched,
+  schema,
+  className = '',
+  disabled = false,
+}) => {
   const [optional, setOptional] = useState(true);
 
   useEffect(async () => {
@@ -25,7 +34,7 @@ const TagsInputGroup = ({ name, label, placeholder, errors, touched, schema, cla
               'tags-control-wrapper rounded-md form-control' + (isInvalid ? ' is-invalid' : '')
             }
           >
-            <TagsControl name={name} placeholder={placeholder} />
+            <TagsControl name={name} placeholder={placeholder} disabled={disabled} />
           </div>
           <Form.Control.Feedback type="invalid">
             <Trans ns="validation">{isInvalid ? errors[name] : null}</Trans>

@@ -11,6 +11,7 @@ export default function IncidentIdField({
   placeHolder = '',
   className = '',
   showIncidentData = true,
+  disabled = false,
 }) {
   const { t } = useTranslation(['validation']);
 
@@ -53,6 +54,7 @@ export default function IncidentIdField({
         onWheel={(event) => event.currentTarget.blur()}
         isInvalid={!!error}
         placeholder={placeHolder}
+        disabled={disabled}
       />
       <span className="text-red-700 text-sm">
         <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>

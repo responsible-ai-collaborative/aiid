@@ -164,6 +164,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
           handleChange={handleChange}
           handleBlur={handleBlur}
           schema={schema}
+          disabled={parsingNews}
         />
 
         <TagsInputGroup
@@ -174,6 +175,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
           errors={errors}
           touched={touched}
           schema={schema}
+          disabled={parsingNews}
         />
 
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byAuthors']} />
@@ -190,6 +192,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
           handleChange={handleChange}
           handleBlur={handleBlur}
           schema={schema}
+          disabled={parsingNews}
         />
 
         <RelatedIncidents
@@ -210,6 +213,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
           handleChange={handleChange}
           handleBlur={handleBlur}
           schema={schema}
+          disabled={parsingNews}
         />
 
         <Label popover="text" label={'*' + t('Text')} />
@@ -249,6 +253,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
           className="mt-3"
           placeHolder={t('Leave empty to report a new incident')}
           showIncidentData={false}
+          disabled={parsingNews}
         />
 
         <RelatedIncidents
@@ -264,7 +269,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
             placeholder={t('Incident Date')}
             type="date"
             className="mt-3"
-            disabled={values.incident_id}
+            disabled={values.incident_id || parsingNews}
             values={values}
             errors={errors}
             touched={touched}
@@ -277,7 +282,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
         <div className="flex justify-end mt-4 gap-2">
           <Button
             gradientDuoTone="greenToBlue"
-            disabled={isSubmitting}
+            disabled={isSubmitting || parsingNews}
             onClick={() => {
               validateAndSubmitForm(
                 true,
@@ -300,7 +305,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
           <Button
             data-cy="to-step-2"
             color={'light'}
-            disabled={isSubmitting}
+            disabled={isSubmitting || parsingNews}
             onClick={() => {
               validateAndSubmitForm(
                 false,
