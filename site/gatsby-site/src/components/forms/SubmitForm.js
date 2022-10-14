@@ -48,19 +48,31 @@ const queryConfig = {
 };
 
 const SubmitForm = () => {
-  const { isRole } = useUserContext();
+  const { isRole, loading } = useUserContext();
 
   const [query] = useQueryParams(queryConfig);
 
-  const queryParams = { ...query };
+  const [submission, setSubmission] = useState({
+    image_url: '',
+    text: '',
+    authors: [],
+    submitters: [],
+    developers: [],
+    deployers: [],
+    harmed_parties: [],
+  });
 
-  for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
-    if (queryParams[key] && !Array.isArray(queryParams[key])) {
-      queryParams[key] = [queryParams[key]];
+  useEffect(() => {
+    const queryParams = { ...query };
+
+    for (const key of ['authors', 'submitters', 'developers', 'deployers', 'harmed_parties']) {
+      if (queryParams[key] && !Array.isArray(queryParams[key])) {
+        queryParams[key] = [queryParams[key]];
+      }
     }
-  }
 
-  const [submission, setSubmission] = useState({ ...queryParams });
+    setSubmission(queryParams);
+  }, []);
 
   const [csvData, setCsvData] = useState([]);
 
@@ -195,7 +207,7 @@ const SubmitForm = () => {
         )}
       </Formik>
 
-      {isRole('submitter') && (
+      {!loading && isRole('submitter') && (
         <Container className="mt-5 p-0 bootstrap">
           <h2>
             <Trans ns="submit">Advanced: Add by CSV</Trans>

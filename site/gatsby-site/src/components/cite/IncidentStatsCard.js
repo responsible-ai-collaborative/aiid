@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import Card from '../../elements/Card';
 
@@ -44,12 +44,10 @@ const IncidentStatsCard = ({ incidentId, reportCount, incidentDate, editors }) =
       </Card.Header>
       <Card.Body className="grid max-w-full p-5 grid-cols-2 lg:grid-cols-1fr-3fr items-center">
         {STATS.map((stat) => (
-          <>
-            <div key={stat.key} className="pr-4 my-0.5">
-              {stat.label}
-            </div>
-            <div key={stat.key}>{stats[stat.key]}</div>
-          </>
+          <Fragment key={stat.key}>
+            <div className="pr-4 my-0.5">{stat.label}</div>
+            <div>{stats[stat.key]}</div>
+          </Fragment>
         ))}
       </Card.Body>
     </Card>

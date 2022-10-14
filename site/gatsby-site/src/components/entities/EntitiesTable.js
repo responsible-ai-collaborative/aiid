@@ -78,7 +78,7 @@ function IncidentsCell({ cell }) {
       {row.isExpanded && (
         <ul className="divide-y divide-gray-200 dark:divide-gray-700 max-h-240 -mx-4 border-t overflow-y-scroll">
           {filtered.map((incident) => (
-            <li className="p-2 pr-3" key={incident.incident_id}>
+            <li className="p-2 pr-3 list-none" key={incident.incident_id}>
               <Link
                 className="inline-block bg-red-100 text-red-800 text-xs font-semibold m-1 px-2.5 py-01 rounded dark:bg-green-200 dark:text-green-900"
                 to={`/cite/${incident.incident_id}`}
@@ -116,7 +116,7 @@ function EntitiestCell({ cell }) {
       {row.isExpanded && (
         <ul className="divide-y divide-gray-200 dark:divide-gray-700 min-h-full max-h-240 -mx-4 border-t overflow-y-scroll">
           {filtered.map((entity) => (
-            <li className="py-2" key={entity.id}>
+            <li className="py-2 list-none" key={entity.id}>
               <Link
                 className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold m-1 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900"
                 to={`/entities/${entity.id}`}
