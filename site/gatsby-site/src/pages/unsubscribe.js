@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import { Trans, useTranslation } from 'react-i18next';
 import Button from '../elements/Button';
@@ -24,6 +24,13 @@ const Unsubscribe = (props) => {
     incidentId: NumberParam,
     userId: StringParam,
   });
+
+  // this is to get through hydration errors but the page should be refactored
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   if (
     !subscriptionType ||
@@ -59,35 +66,39 @@ const Unsubscribe = (props) => {
 
   return (
     <Layout {...props}>
-      {errorMessage || pageMessage ? (
+      {mounted && (
         <>
-          <p>
-            {errorMessage}
-            {pageMessage}
-          </p>
-          <Link to={'/'}>
-            <Trans>Continue</Trans>
-          </Link>
-        </>
-      ) : (
-        <>
-          <p>
-            {subscriptionType === 'incident' && (
-              <Trans>
-                Do you want to unsubscribe from{' '}
-                <Link to={`/cite/${incidentId}`}>incident {{ incidentId }}</Link> updates?
-              </Trans>
-            )}
-            {subscriptionType === 'all' && (
-              <Trans>Do you want to unsubscribe from all notifications?</Trans>
-            )}
-          </p>
-          <Button variant="primary" onClick={unsubscribe}>
-            <div className="flex gap-2">
-              {unsubscribing && <Spinner size="sm" />}
-              <Trans>Confirm</Trans>
-            </div>
-          </Button>
+          {errorMessage || pageMessage ? (
+            <>
+              <p>
+                {errorMessage}
+                {pageMessage}
+              </p>
+              <Link to={'/'}>
+                <Trans>Continue</Trans>
+              </Link>
+            </>
+          ) : (
+            <>
+              <p>
+                {subscriptionType === 'incident' && (
+                  <Trans>
+                    Do you want to unsubscribe from{' '}
+                    <Link to={`/cite/${incidentId}`}>incident {{ incidentId }}</Link> updates?
+                  </Trans>
+                )}
+                {subscriptionType === 'all' && (
+                  <Trans>Do you want to unsubscribe from all notifications?</Trans>
+                )}
+              </p>
+              <Button variant="primary" onClick={unsubscribe}>
+                <div className="flex gap-2">
+                  {unsubscribing && <Spinner size="sm" />}
+                  <Trans>Confirm</Trans>
+                </div>
+              </Button>
+            </>
+          )}
         </>
       )}
     </Layout>

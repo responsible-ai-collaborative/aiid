@@ -47,6 +47,10 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql`
         title
         text
       }
+      translations_fr: translations(input: "fr") {
+        title
+        text
+      }
     }
   }
 `;

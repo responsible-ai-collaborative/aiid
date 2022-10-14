@@ -164,7 +164,10 @@ describe('Cite pages', () => {
 
     cy.contains('New Report').scrollIntoView().click();
 
-    cy.get('[data-cy="prefilled-incident-id"]').should('contain.text', 'Adding a new report to incident 10');
+    cy.get('[data-cy="prefilled-incident-id"]').should(
+      'contain.text',
+      'Adding a new report to incident 10'
+    );
   });
 
   it('should render Next and Previous incident buttons', () => {
@@ -187,7 +190,7 @@ describe('Cite pages', () => {
     cy.get('[data-cy="incident-form"]').should('be.visible');
   });
 
-  it.only('Should display correct BibTex Citation', () => {
+  it('Should display correct BibTex Citation', () => {
     cy.visit(url);
 
     const date = format(new Date(), 'MMMMd,y');
