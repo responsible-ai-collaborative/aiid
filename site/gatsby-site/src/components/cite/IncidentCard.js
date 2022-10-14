@@ -10,7 +10,7 @@ import WebArchiveLink from 'components/ui/WebArchiveLink';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 
 const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) => {
-  const { isRole } = useUserContext();
+  const { isRole, loading } = useUserContext();
 
   return (
     <Card id={`r${item.report_number}`} className="shadow-card IncidentCard">
@@ -19,19 +19,19 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
           <a href={`#r${item.report_number}`}>
             <span>{item.title}</span>
           </a>
-          {isRole('incident_editor') && (
+          {!loading && isRole('incident_editor') && (
             <a data-cy="edit-report" href={`/cite/edit?report_number=${item.report_number}`}>
               Edit
             </a>
           )}
         </div>
-        <p className="m-0 pt-2.5">
+        <div className="m-0 pt-2.5">
           <WebArchiveLink url={item.url} className="text-dark-gray">
             {item.source_domain} &middot;{' '}
             {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
           </WebArchiveLink>
           <TranslationBadge className="mx-2" originalLanguage={item.language} />
-        </p>
+        </div>
       </Card.Header>
       <Card.Body className="flex-col">
         <ReportText text={item.text} />

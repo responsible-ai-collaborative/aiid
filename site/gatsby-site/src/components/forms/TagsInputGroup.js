@@ -7,10 +7,9 @@ import { Trans } from 'react-i18next';
 const TagsInputGroup = ({ name, label, placeholder, errors, touched, schema, className = '' }) => {
   const [optional, setOptional] = useState(true);
 
-  useEffect(async () => {
-    if (schema?.fields[name]) {
-      setOptional(await schema.fields[name].isValid(undefined));
-    }
+  // this causes an unnecessary re render, I'm hotfixing to get it working with react 18
+  useEffect(() => {
+    schema?.fields[name]?.isValid(undefined).then((result) => setOptional(result));
   }, []);
 
   const isInvalid = errors[name] && touched[name];
