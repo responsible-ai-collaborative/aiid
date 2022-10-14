@@ -1,8 +1,9 @@
 import subscriptionsData from '../fixtures/subscriptions/subscriptions.json';
 import emptySubscriptionsData from '../fixtures/subscriptions/empty-subscriptions.json';
+import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 
 const subscriptions = subscriptionsData.data.subscriptions
-  .filter((subscription) => subscription.type === 'incident')
+  .filter((subscription) => subscription.type === SUBSCRIPTION_TYPE.incident)
   .sort((a, b) => a.incident_id.incident_id - b.incident_id.incident_id);
 
 const USER_ID = '63320ce63ec803072c9f529c';
@@ -200,7 +201,7 @@ describe('Subscriptions', () => {
       (req) =>
         req.body.operationName == 'DeleteSubscriptions' &&
         req.body.variables.query.userId.userId == USER_ID &&
-        req.body.variables.query.type == 'new-incidents',
+        req.body.variables.query.type == SUBSCRIPTION_TYPE.newIncidents,
       'DeleteSubscription',
       {
         data: {
