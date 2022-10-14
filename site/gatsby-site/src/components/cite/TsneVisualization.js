@@ -86,16 +86,25 @@ export default function TsneVisualization({
                 <li
                   key={taxon}
                   className={
-                    '-indent-4 pl-4 cursor-pointer' +
+                    'cursor-pointer' +
                     (taxonVisibility[taxon]
-                      ? highlightedCategory && highlightedCategory != taxon
+                      ? highlightedCategory &&
+                        taxonVisibility[highlightedCategory] &&
+                        highlightedCategory != taxon
                         ? ' opacity-50'
                         : ''
                       : ' opacity-10')
                   }
                 >
                   <button
-                    style={{ background: 'none', padding: '0px', margin: '0px', border: 'none' }}
+                    style={{
+                      background: 'none',
+                      padding: '0px',
+                      margin: '0px',
+                      border: 'none',
+                      textAlign: 'left',
+                    }}
+                    className="-indent-4 pl-4"
                     onMouseEnter={() => setHighlightedCategory(taxon)}
                     onMouseLeave={() => setHighlightedCategory(null)}
                     onClick={() =>
@@ -200,16 +209,22 @@ function PlotPoint({
 
   const dbAxis = axis.replace(/ /g, '_');
 
-  const taxon =
-    classifications && classifications[dbAxis]
-      ? Array.isArray(classifications[dbAxis])
-        ? classifications[dbAxis].length > 0 && String(classifications[dbAxis][0].trim()).length > 0
-          ? String(classifications[dbAxis][0])
-          : 'Unclassified'
-        : String(classifications[dbAxis]).length > 0
-        ? String(classifications[dbAxis])
-        : 'Unclassified'
-      : 'Unclassified';
+  let taxon = 'Unclassified';
+
+  if (classifications && classifications[dbAxis]) {
+    let initialString = null;
+
+    if (Array.isArray(classifications[dbAxis])) {
+      if (classifications[dbAxis].length > 0) {
+        initialString = String(classifications[dbAxis][0]);
+      }
+    } else {
+      initialString = String(classifications[dbAxis]);
+    }
+    if (initialString && initialString.trim().length > 0) {
+      taxon = initialString;
+    }
+  }
 
   const background = (taxonColorMap[taxon] || Color('#ffffff')).opaquer(-0.25);
 
@@ -268,7 +283,12 @@ function PlotPoint({
           top: `calc(50% + 48% * ${incident.tsne.y})`,
           left: `calc(50% + 48% * ${incident.tsne.x})`,
           border: '2px solid ' + borderColor.hex(),
-          opacity: highlightedCategory && highlightedCategory != taxon ? 0.1 : 1,
+          opacity:
+            highlightedCategory &&
+            taxonVisibility[highlightedCategory] &&
+            highlightedCategory != taxon
+              ? 0.1
+              : 1,
           zIndex: highlightedCategory == taxon ? 2 : 1,
           background,
           color,
