@@ -1,4 +1,4 @@
-import { ListGroup, Spinner, Button } from 'flowbite-react';
+import { ListGroup, Spinner, Button, ToggleSwitch } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
@@ -11,7 +11,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useUserContext } from 'contexts/userContext';
 import Link from 'components/ui/Link';
-import ToggleSwitch from 'elements/ToggleSwitch';
 
 const UserSubscriptions = () => {
   const { user } = useUserContext();
