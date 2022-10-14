@@ -9,26 +9,14 @@
                 "bsonType": "string"
             }
         },
-        "cloudinary_id": {
-            "bsonType": "string"
-        },
         "date_downloaded": {
-            "bsonType": "string"
-        },
-        "date_modified": {
             "bsonType": "string"
         },
         "date_published": {
             "bsonType": "string"
         },
-        "date_submitted": {
-            "bsonType": "string"
-        },
-        "description": {
-            "bsonType": "string"
-        },
-        "editor_notes": {
-            "bsonType": "string"
+        "dismissed": {
+            "bsonType": "boolean"
         },
         "embedding": {
             "bsonType": "object",
@@ -47,17 +35,8 @@
         "epoch_date_downloaded": {
             "bsonType": "int"
         },
-        "epoch_date_modified": {
-            "bsonType": "int"
-        },
         "epoch_date_published": {
             "bsonType": "int"
-        },
-        "epoch_date_submitted": {
-            "bsonType": "int"
-        },
-        "flag": {
-            "bsonType": "bool"
         },
         "image_url": {
             "bsonType": "string"
@@ -65,29 +44,23 @@
         "language": {
             "bsonType": "string"
         },
+        "match": {
+            "bsonType": "boolean"
+        },
+        "matching_keywords": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
         "plain_text": {
             "bsonType": "string"
         },
-        "ref_number": {
-            "bsonType": "int"
-        },
-        "report_number": {
-            "bsonType": "int"
+        "similarity": {
+            "bsonType": "double"
         },
         "source_domain": {
             "bsonType": "string"
-        },
-        "submitters": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "string"
-            }
-        },
-        "tags": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "string"
-            }
         },
         "text": {
             "bsonType": "string"
@@ -100,24 +73,8 @@
         }
     },
     "required": [
-        "report_number",
-        "ref_number",
-        "date_downloaded",
-        "date_modified",
-        "date_published",
-        "date_submitted",
-        "epoch_date_downloaded",
-        "epoch_date_modified",
-        "epoch_date_published",
-        "epoch_date_submitted",
-        "image_url",
-        "cloudinary_id",
-        "authors",
-        "submitters",
-        "title",
-        "text",
         "url",
-        "source_domain"
+        "match"
     ],
-    "title": "report"
+    "title": "candidates"
 }

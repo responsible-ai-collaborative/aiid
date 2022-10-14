@@ -321,7 +321,7 @@ function EditCitePage(props) {
 
   return (
     <Layout {...props} className={'w-full boostrap'}>
-      <h1 className="mb-5">Editing Incident Report {reportNumber}</h1>
+      {!loading && <h1 className="mb-5">Editing Incident Report {reportNumber}</h1>}
 
       {loading && (
         <div className="flex justify-center">

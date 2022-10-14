@@ -8,9 +8,9 @@ describe('The Language switcher', () => {
   it('Language should default to English', () => {
     cy.visit('/');
 
-    cy.contains('h1', 'Welcome to the Artificial Intelligence Incident Database').should(
-      'be.visible'
-    );
+    cy.contains('h1', 'Welcome to the').should('be.visible');
+
+    cy.contains('h1', 'AI Incident Database').should('be.visible');
   });
 
   it.skip('Should update the path with the selected language', () => {

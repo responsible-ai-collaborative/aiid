@@ -9,6 +9,12 @@ import { LocalizedLink } from 'gatsby-theme-i18n';
 function TsneVisulizationPage(props) {
   const { t } = useTranslation();
 
+  const spatialIncidents = props.pageContext.spatialIncidents;
+
+  const classifications = props.pageContext.classifications;
+
+  const csetClassifications = props.pageContext.csetClassifications;
+
   // meta tags
 
   const metaTitle = t('Spatial Visualization');
@@ -27,23 +33,30 @@ function TsneVisulizationPage(props) {
         <StyledHeading>{metaDescription}</StyledHeading>
       </div>
 
-      <p>
-        <Trans>
-          The visualization below shows incidents closer together when a{' '}
-          <LocalizedLink to="/blog/using-ai-to-connect-ai-incidents">
-            natural language processing system
-          </LocalizedLink>{' '}
-          identifies their text as being semantically similar.
-        </Trans>
-      </p>
-
       <TsneVisualization
         currentIncidentId={Number(
           typeof window !== 'undefined'
             ? new URLSearchParams(window.location.search).get('incident') || -1
             : -1
         )}
+        incidents={spatialIncidents}
+        classifications={classifications}
+        csetClassifications={csetClassifications}
       />
+      <p className="mt-4" style={{ maxWidth: '1000px' }}>
+        <Trans i18nKey="tsneDescription">
+          The spatial view above shows each incident in the database as a plot point containing its
+          incident ID number. Incidents are positioned so that those with similar report texts fall
+          closer together. For example, incidents concerning autonomous vehicles form a tight
+          cluster. We determine incident similarity using a natural language processing system,
+          which you can read more about in{' '}
+          <LocalizedLink to="/blog/using-ai-to-connect-ai-incidents">
+            {' '}
+            our blog post on its rollout
+          </LocalizedLink>
+          .
+        </Trans>
+      </p>
     </Layout>
   );
 }
