@@ -56,16 +56,10 @@
         "epoch_date_submitted": {
             "bsonType": "int"
         },
-        "epoch_incident_date": {
-            "bsonType": "int"
-        },
         "flag": {
             "bsonType": "bool"
         },
         "image_url": {
-            "bsonType": "string"
-        },
-        "incident_date": {
             "bsonType": "string"
         },
         "language": {
