@@ -129,7 +129,6 @@ export const PROMOTE_SUBMISSION = gql`
       title
       reports {
         report_number
-        ref_number
       }
     }
   }
