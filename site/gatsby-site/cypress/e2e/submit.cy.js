@@ -45,7 +45,7 @@ describe('The Submit form', () => {
 
     cy.get('[name="language"]').select('Spanish');
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('[data-cy="to-step-3"]').click();
 
@@ -58,7 +58,6 @@ describe('The Submit form', () => {
     cy.get('button[type="submit"]').click();
 
     cy.wait('@insertSubmission').then((xhr) => {
-      console.log(xhr.request.body.variables.submission);
       expect(xhr.request.body.variables.submission).to.deep.nested.include({
         title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
         submitters: ['Something'],
@@ -174,7 +173,7 @@ describe('The Submit form', () => {
       .last()
       .click();
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('[data-cy="to-step-2"]').click();
 
@@ -184,7 +183,7 @@ describe('The Submit form', () => {
 
     cy.wait('@findIncident');
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('[data-cy="to-step-3"]').click();
 
@@ -314,15 +313,15 @@ describe('The Submit form', () => {
 
     cy.visit(url + `?${params.toString()}`);
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('[data-cy="to-step-3"]').click();
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.wait('@findIncident');
 
@@ -613,11 +612,11 @@ describe('The Submit form', () => {
       'YouTube'
     );
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(200);
+    cy.wait(0);
   });
 
   it('Should *not* show semantically related reports when the text is under 256 non-space characters', () => {
@@ -664,11 +663,11 @@ describe('The Submit form', () => {
 
     cy.visit(url + `?${params.toString()}`);
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('[data-cy="image-preview-figure"] img').should('have.attr', 'src', imageUrl);
   });
@@ -697,11 +696,11 @@ describe('The Submit form', () => {
       'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/v1/reports/' +
       suffix;
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('input[name=image_url]').scrollIntoView().type(newImageUrl);
 
@@ -800,11 +799,11 @@ describe('The Submit form', () => {
       'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
     );
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(200);
+    cy.wait(0);
 
     const valuesStep2 = {
       submitters: 'test submitter',
@@ -815,11 +814,11 @@ describe('The Submit form', () => {
       cy.get(`[name="${key}"]`).type(valuesStep2[key]);
     }
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('[data-cy="to-step-3"]').click();
 
-    cy.wait(200);
+    cy.wait(0);
 
     const valuesStep3 = {
       editor_notes: 'Here are some notes',
@@ -895,19 +894,19 @@ describe('The Submit form', () => {
 
     cy.get('[name="incident_date"]').type('2020-01-01');
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('input[name="submitters"]').type('Something');
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('[data-cy="to-step-3"]').click();
 
-    cy.wait(200);
+    cy.wait(0);
 
     cy.get('[name="editor_notes"').type('Here are some notes');
 

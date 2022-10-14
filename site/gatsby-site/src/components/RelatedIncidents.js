@@ -118,7 +118,7 @@ const allSearchColumns = {
       return (
         <>
           <Trans authors={authors}>
-            Incidents reports matched by authors: <b className="break-all">{{ authors }}</b>
+            Incidents reports matched by authors: <b className="break-words">{{ authors }}</b>
           </Trans>
         </>
       );
