@@ -1,4 +1,4 @@
-const { SUBSCRIPTION_TYPE } = require('utils/subscriptions');
+const { SUBSCRIPTION_TYPE } = require('../../src/utils/subscriptions');
 
 describe('Unsubscribe pages', () => {
   const userId = '6304204e580ff154aefea0c6';
