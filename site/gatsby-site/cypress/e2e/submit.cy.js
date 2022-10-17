@@ -37,21 +37,21 @@ describe('The Submit form', () => {
 
     cy.get('[name="incident_date"]').type('2020-01-01');
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('input[name="submitters"]').type('Something');
 
     cy.get('[name="language"]').select('Spanish');
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[data-cy="to-step-3"]').click();
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[name="tags"]').type('New Tag{enter}');
 
@@ -80,7 +80,7 @@ describe('The Submit form', () => {
       });
     });
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[data-cy="submission-success"]')
       .contains('Report successfully added to review queue')
@@ -177,21 +177,21 @@ describe('The Submit form', () => {
       .last()
       .click();
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('input[name="submitters"]').type('Something');
 
     cy.wait('@findIncident');
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[data-cy="to-step-3"]').click();
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[name="tags"]').type('New Tag{enter}');
 
@@ -317,15 +317,15 @@ describe('The Submit form', () => {
 
     cy.visit(url + `?${params.toString()}`);
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[data-cy="to-step-3"]').click();
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.wait('@findIncident');
 
@@ -602,11 +602,11 @@ describe('The Submit form', () => {
       'YouTube'
     );
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(0);
+    cy.wait(200);
   });
 
   // cy.setEditorText doesn't seem to trigger a render of the relateBbyText component
@@ -639,11 +639,11 @@ describe('The Submit form', () => {
 
     cy.visit(url + `?${params.toString()}`);
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[data-cy="image-preview-figure"] img').should('have.attr', 'src', imageUrl);
   });
@@ -672,11 +672,11 @@ describe('The Submit form', () => {
       'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/v1/reports/' +
       suffix;
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('input[name=image_url]').scrollIntoView().type(newImageUrl);
 
@@ -775,11 +775,11 @@ describe('The Submit form', () => {
       'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
     );
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(0);
+    cy.wait(200);
 
     const valuesStep2 = {
       submitters: 'test submitter',
@@ -790,11 +790,11 @@ describe('The Submit form', () => {
       cy.get(`[name="${key}"]`).type(valuesStep2[key]);
     }
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[data-cy="to-step-3"]').click();
 
-    cy.wait(0);
+    cy.wait(200);
 
     const valuesStep3 = {
       editor_notes: 'Here are some notes',
@@ -809,11 +809,11 @@ describe('The Submit form', () => {
 
   it.skip('Should show a popover', () => {
     cy.visit(url);
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[data-cy="label-title"]').trigger('mouseover');
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[data-cy="popover-title"]').should('be.visible');
 
@@ -825,7 +825,7 @@ describe('The Submit form', () => {
   it.skip('Should show a translated popover', () => {
     cy.visit(`/es/apps/submit/`);
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[data-cy="label-title"]').trigger('mouseover');
 
@@ -870,19 +870,19 @@ describe('The Submit form', () => {
 
     cy.get('[name="incident_date"]').type('2020-01-01');
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('input[name="submitters"]').type('Something');
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[data-cy="to-step-3"]').click();
 
-    cy.wait(0);
+    cy.wait(200);
 
     cy.get('[name="editor_notes"').type('Here are some notes');
 
@@ -893,5 +893,97 @@ describe('The Submit form', () => {
     cy.get('[data-cy="submission-success"]').should('be.visible');
 
     cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/es/apps/submitted');
+  });
+
+  it('Should submit on first step', () => {
+    cy.visit(`/es/apps/submit/`);
+
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
+      'insertSubmission',
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
+
+    cy.get('input[name="url"]').type(
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    cy.get('[data-cy="fetch-info"]').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('input[name="authors"]').type('Something');
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
+
+    cy.get('[name="incident_date"]').type('2020-01-01');
+
+    cy.wait(200);
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    cy.wait(200);
+
+    cy.get('input[name="submitters"]').type('Something');
+
+    cy.wait(200);
+
+    cy.get('[data-cy="submit-step-2"]').click();
+
+    cy.get('[data-cy="submission-success"]')
+      .contains('Report successfully added to review queue')
+      .should('be.visible');
+
+    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
+  });
+
+  it('Should submit on step 2', () => {
+    cy.visit(`/es/apps/submit/`);
+
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
+      'insertSubmission',
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
+
+    cy.get('input[name="url"]').type(
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    cy.get('[data-cy="fetch-info"]').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('input[name="authors"]').type('Something');
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
+
+    cy.get('[name="incident_date"]').type('2020-01-01');
+
+    cy.get('[data-cy="submit-step-1"]').click();
+
+    cy.get('[data-cy="submission-success"]')
+      .contains('Report successfully added to review queue')
+      .should('be.visible');
+
+    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
   });
 });

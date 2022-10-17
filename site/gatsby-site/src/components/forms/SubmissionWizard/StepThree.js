@@ -15,20 +15,44 @@ const StepThree = (props) => {
     editor_notes: yup.string(),
     description: yup
       .string()
-      .min(3, 'Description must have at least 3 characters')
-      .max(200, "Description can't be longer than 200 characters"),
+      .matches(/.{3,}/, {
+        excludeEmptyString: true,
+        message: 'Description must have at least 3 characters',
+      })
+      .matches(/.{,200}/, {
+        excludeEmptyString: true,
+        message: "Description can't be longer than 200 characters",
+      }),
     developers: yup
       .string()
-      .min(3, 'Alleged Developer must have at least 3 characters')
-      .max(200, "Alleged Developers can't be longer than 200 characters"),
+      .matches(/.{3,}/, {
+        excludeEmptyString: true,
+        message: 'Alleged Developer must have at least 3 characters',
+      })
+      .matches(/.{,200}/, {
+        excludeEmptyString: true,
+        message: "Alleged Developers can't be longer than 200 characters",
+      }),
     deployers: yup
       .string()
-      .min(3, 'Alleged Deployers must have at least 3 characters')
-      .max(200, "Alleged Deployers can't be longer than 200 characters"),
+      .matches(/.{3,}/, {
+        excludeEmptyString: true,
+        message: 'Alleged Deployers must have at least 3 characters',
+      })
+      .matches(/.{,200}/, {
+        excludeEmptyString: true,
+        message: "Alleged Deployers can't be longer than 200 characters",
+      }),
     harmed_parties: yup
       .string()
-      .min(3, 'Harmed Parties must have at least 3 characters')
-      .max(200, "Harmed Parties can't be longer than 200 characters"),
+      .matches(/.{3,}/, {
+        excludeEmptyString: true,
+        message: 'Harmed Parties must have at least 3 characters',
+      })
+      .matches(/.{,200}/, {
+        excludeEmptyString: true,
+        message: "Harmed Parties can't be longer than 200 characters",
+      }),
   });
 
   const handleSubmit = (values) => {

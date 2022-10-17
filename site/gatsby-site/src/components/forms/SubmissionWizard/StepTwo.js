@@ -16,9 +16,14 @@ const StepTwo = (props) => {
   const stepTwoValidationSchema = yup.object().shape({
     submitters: yup
       .string()
-      .min(3, '*Submitter must have at least 3 characters')
-      .max(200, "*Submitter list can't be longer than 200 characters")
-      .nullable(),
+      .matches(/.{3,}/, {
+        excludeEmptyString: true,
+        message: '*Submitter must have at least 3 characters',
+      })
+      .matches(/.{,200}/, {
+        excludeEmptyString: true,
+        message: "*Submitter list can't be longer than 200 characters",
+      }),
     image_url: yup
       .string()
       .matches(
@@ -141,6 +146,7 @@ const FormDetails = ({ data, previous, schema, submitForm, validateAndSubmitForm
         </Button>
         <div className="flex justify-end gap-2">
           <Button
+            data-cy="submit-step-2"
             gradientDuoTone="greenToBlue"
             disabled={isSubmitting}
             onClick={() => {
