@@ -1,4 +1,4 @@
-const { SUBSCRIPTION_TYPE } = require('utils/subscriptions');
+const { SUBSCRIPTION_TYPE } = require('../../src/utils/subscriptions');
 
 describe('Unsubscribe pages', () => {
   const userId = '6304204e580ff154aefea0c6';
@@ -44,7 +44,7 @@ describe('Unsubscribe pages', () => {
   });
 
   it('Should not display an Invalid Params message if "new-incidents" subscription params are OK', () => {
-    cy.visit(`${url}?type=new-incidents&userId=${userId}`);
+    cy.visit(`${url}?type=${SUBSCRIPTION_TYPE.newIncidents}&userId=${userId}`);
 
     cy.contains('Invalid parameters').should('not.exist');
   });
@@ -81,7 +81,7 @@ describe('Unsubscribe pages', () => {
   });
 
   it('Should unsubscribe from an incident subscription', () => {
-    cy.visit(`${url}?type=incident&userId=${userId}&incidentId=${incidentId}`);
+    cy.visit(`${url}?type=${SUBSCRIPTION_TYPE.incident}&userId=${userId}&incidentId=${incidentId}`);
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -113,13 +113,13 @@ describe('Unsubscribe pages', () => {
   });
 
   it('Should unsubscribe from new incidents subscription', () => {
-    cy.visit(`${url}?type=new-incidents&userId=${userId}`);
+    cy.visit(`${url}?type=${SUBSCRIPTION_TYPE.newIncidents}&userId=${userId}`);
 
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
         req.body.operationName == 'DeleteSubscriptions' &&
-        req.body.variables.query.type == 'new-incidents' &&
+        req.body.variables.query.type == SUBSCRIPTION_TYPE.newIncidents &&
         req.body.variables.query.userId.userId == userId &&
         !req.body.variables.query.incident_id,
       'DeleteSubscriptions',
