@@ -36,7 +36,6 @@ import SemanticallyRelatedIncidents from '../../components/SemanticallyRelatedIn
 // * source_domain: "blogs.wsj.com" # (string) The domain name hosting the report.
 // * incident_id: 1 # (int) The incrementing primary key for incidents, which are a collection of reports.
 // * date_submitted:`2019-07-25` # (Date) Date the report was submitted to the AIID. This determines citation order.
-// * ref_number: 25 # (int) The reference number scoped to the incident ID.
 // * report_number: 2379 # (int) the incrementing primary key for the report. This is a global resource identifier.
 // * date_modified: `2019-07-25` # (Date or null) Date the report was edited.
 // * language: "en" # (string) The language identifier of the report.
