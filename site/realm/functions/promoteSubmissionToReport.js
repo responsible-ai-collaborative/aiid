@@ -81,7 +81,6 @@ exports = async (input) => {
   
   const newReport = {
     report_number,
-    ref_number: BSON.Int32(parentIncidents[0].reports.length), // this won't make sense with many to many relationships
     title: submission.title,
     date_downloaded: '',
     date_modified: '',
