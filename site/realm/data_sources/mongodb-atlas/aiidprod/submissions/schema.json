@@ -130,13 +130,11 @@
     },
     "required": [
         "authors",
-        "cloudinary_id",
         "image_url",
         "date_downloaded",
         "date_modified",
         "date_published",
         "date_submitted",
-        "description",
         "language",
         "source_domain",
         "submitters",
