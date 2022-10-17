@@ -1,4 +1,4 @@
-import { ListGroup, Spinner, Button } from 'flowbite-react';
+import { ListGroup, Spinner, Button, ToggleSwitch } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useUserContext } from 'contexts/userContext';
 import Link from 'components/ui/Link';
-import ToggleSwitch from 'elements/ToggleSwitch';
+import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 
 const UserSubscriptions = () => {
   const { user } = useUserContext();
@@ -40,7 +40,8 @@ const UserSubscriptions = () => {
       await deleteSubscriptions({ variables: { query: { _id: subscriptionId } } });
 
       const newList = subscriptions.filter(
-        (subscription) => subscription.type === 'incident' && subscription._id !== subscriptionId
+        (subscription) =>
+          subscription.type === SUBSCRIPTION_TYPE.incident && subscription._id !== subscriptionId
       );
 
       setSubscriptions(newList);
@@ -51,10 +52,12 @@ const UserSubscriptions = () => {
 
   useEffect(() => {
     setSubscriptions(
-      data?.subscriptions.filter((subscription) => subscription.type === 'incident')
+      data?.subscriptions.filter((subscription) => subscription.type === SUBSCRIPTION_TYPE.incident)
     );
 
-    const hasSubscription = data?.subscriptions.some((s) => s.type == 'new-incidents');
+    const hasSubscription = data?.subscriptions.some(
+      (s) => s.type == SUBSCRIPTION_TYPE.newIncidents
+    );
 
     setIsSubscribeToNewIncidents(hasSubscription);
   }, [user, data]);
@@ -64,11 +67,11 @@ const UserSubscriptions = () => {
       await subscribeToNewIncidentsMutation({
         variables: {
           query: {
-            type: 'new-incidents',
+            type: SUBSCRIPTION_TYPE.newIncidents,
             userId: { userId: user.id },
           },
           subscription: {
-            type: 'new-incidents',
+            type: SUBSCRIPTION_TYPE.newIncidents,
             userId: {
               link: user.id,
             },
@@ -77,7 +80,7 @@ const UserSubscriptions = () => {
       });
     } else {
       await deleteSubscriptions({
-        variables: { query: { type: 'new-incidents', userId: { userId: user.id } } },
+        variables: { query: { type: SUBSCRIPTION_TYPE.newIncidents, userId: { userId: user.id } } },
       });
     }
     setIsSubscribeToNewIncidents(checked);
@@ -117,7 +120,7 @@ const UserSubscriptions = () => {
               >
                 <div className="flex flex-row w-full justify-between gap-3 items-center">
                   <div className="items-center">
-                    {subscription.type === 'incident' && (
+                    {subscription.type === SUBSCRIPTION_TYPE.incident && (
                       <>
                         <Trans ns="account">Updates on incident </Trans>
                         <Link to={`/cite/${subscription.incidentId}`}>
