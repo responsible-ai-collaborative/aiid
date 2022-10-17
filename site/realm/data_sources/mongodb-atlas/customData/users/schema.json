@@ -13,5 +13,9 @@
             "bsonType": "string"
         }
     },
+    "required": [
+        "roles",
+        "userId"
+    ],
     "title": "user"
 }

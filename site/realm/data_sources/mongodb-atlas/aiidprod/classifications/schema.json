@@ -146,6 +146,9 @@
                     "items": {
                         "bsonType": "string"
                     }
+                },
+                "notes": {
+                    "bsonType": "string"
                 }
             }
         },
