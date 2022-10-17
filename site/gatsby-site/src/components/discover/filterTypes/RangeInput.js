@@ -27,9 +27,11 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
 
   const { searchState } = useSearch();
 
-  const touchedMin = searchState.range[attribute] && searchState.range[attribute].min;
+  const touchedMin =
+    searchState.range && searchState.range[attribute] && searchState.range[attribute].min;
 
-  const touchedMax = searchState.range[attribute] && searchState.range[attribute].max;
+  const touchedMax =
+    searchState.range && searchState.range[attribute] && searchState.range[attribute].max;
 
   const clearEnabled = touchedMin || touchedMax;
 
@@ -83,7 +85,7 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
               )();
             }
           }}
-          className={touchedMax && 'border border-success'}
+          className={touchedMax ? 'border border-success' : ''}
         />
 
         <Button
@@ -100,6 +102,7 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
 };
 
 export const touchedCount = ({ searchState, attribute }) =>
+  searchState.range &&
   searchState.range[attribute] &&
   (searchState.range[attribute].min || searchState.range[attribute].max)
     ? 1
