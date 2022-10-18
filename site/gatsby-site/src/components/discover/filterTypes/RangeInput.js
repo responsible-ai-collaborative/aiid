@@ -11,7 +11,14 @@ const formatDate = (epoch) => new Date(epoch * 1000).toISOString().substr(0, 10)
 const dateToEpoch = (date) => new Date(date).getTime() / 1000;
 
 const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
+  console.log('RangeInput.js');
+  console.log(`min`, min);
+  console.log(`max`, max);
+  console.log(`currentRefinement`, currentRefinement);
+  console.log(`refine`, refine);
+  console.log(`attribute `, attribute);
   if (!min || !max) {
+    console.log('Missing min or max!');
     return null;
   }
 
@@ -35,6 +42,27 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
 
   const clearEnabled = touchedMin || touchedMax;
 
+  const toMin = formatDate(
+    currentRefinement.min > currentRefinement.max ? min : Math.max(min, currentRefinement.min)
+  );
+
+  const toMax = formatDate(new Date().valueOf());
+
+  const fromMax = formatDate(
+    currentRefinement.min > currentRefinement.max ? max : Math.min(max, currentRefinement.max)
+  );
+
+  const fromMin = formatDate(min);
+
+  console.log(`searchState`, searchState);
+  console.log(`touchedMin`, touchedMin);
+  console.log(`touchedMin`, touchedMax);
+  console.log(`clearEnabled`, clearEnabled);
+  console.log(`fromMin`, fromMin);
+  console.log(`fromMax`, fromMax);
+  console.log(`toMin`, toMin);
+  console.log(`toMax`, toMax);
+
   return (
     <div className="bootstrap">
       <Form className="px-3">
@@ -44,20 +72,19 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
         <Form.Control
           required={true}
           type="date"
-          min={formatDate(min)}
-          max={formatDate(
-            currentRefinement.min > currentRefinement.max
-              ? max
-              : Math.min(max, currentRefinement.max)
-          )}
+          min={fromMin}
+          max={fromMax}
           defaultValue={formatDate(currentRefinement.min)}
           onChange={(event) => {
-            const newMin = dateToEpoch(event.target.value);
+            const selectedMin = dateToEpoch(event.target.value);
 
-            if (newMin >= min || currentRefinement.min != min) {
-              debounce(() =>
-                onChange({ min: Math.max(min, newMin), max: currentRefinement.max })
-              )();
+            if (selectedMin >= min || currentRefinement.min != min) {
+              debounce(() => {
+                const newRange = { min: Math.max(min, selectedMin), max: currentRefinement.max };
+
+                console.log(`newRange`, newRange);
+                onChange(newRange);
+              })();
             }
           }}
           className={touchedMin && 'border border-success'}
@@ -69,20 +96,19 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
         <Form.Control
           required={true}
           type="date"
-          min={formatDate(
-            currentRefinement.min > currentRefinement.max
-              ? min
-              : Math.max(min, currentRefinement.min)
-          )}
-          max={formatDate(new Date().valueOf())}
+          min={toMin}
+          max={toMax}
           defaultValue={formatDate(currentRefinement.max)}
           onChange={(event) => {
-            const newMax = dateToEpoch(event.target.value);
+            const selectedMax = dateToEpoch(event.target.value);
 
-            if (newMax <= max || currentRefinement.max != max) {
-              debounce(() =>
-                onChange({ min: currentRefinement.min, max: Math.min(max, newMax) })
-              )();
+            if (selectedMax <= max || currentRefinement.max != max) {
+              debounce(() => {
+                const newRange = { min: currentRefinement.min, max: Math.min(max, selectedMax) };
+
+                console.log(`newRange`, newRange);
+                onChange(newRange);
+              })();
             }
           }}
           className={touchedMax ? 'border border-success' : ''}

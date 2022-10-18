@@ -52,6 +52,9 @@ const FilterOverlay = React.forwardRef(function Container(
   { type, filterProps, ...overlayProps },
   ref
 ) {
+  console.log('Filter.js:FilterOverlay');
+  console.log(`overlayProps`, overlayProps);
+  console.log(`filterProps`, filterProps);
   return (
     <div
       ref={ref}
