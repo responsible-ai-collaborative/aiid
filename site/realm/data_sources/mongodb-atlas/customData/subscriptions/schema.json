@@ -6,12 +6,16 @@
         "incident_id": {
             "bsonType": "int"
         },
-        "userId": {
+        "type": {
             "bsonType": "string"
         },
-        "type": {
+        "userId": {
             "bsonType": "string"
         }
     },
+    "required": [
+        "type",
+        "userId"
+    ],
     "title": "subscription"
 }

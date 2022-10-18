@@ -139,7 +139,6 @@ export const pageQuery = graphql`
         flag
         image_url
         language
-        ref_number
         source_domain
         submitters
       }

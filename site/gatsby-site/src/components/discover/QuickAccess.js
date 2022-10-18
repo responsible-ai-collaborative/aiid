@@ -13,7 +13,7 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   a {
-    color: #001934;
+    color: #001934 !important;
   }
 `;
 
