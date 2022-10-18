@@ -82,7 +82,6 @@ describe('Download Algolia Index', () => {
           submitters: ['Anonymous'],
           report_number: 922,
           incident_id: 6,
-          ref_number: 23,
         });
 
         expect(report.classifications.length).to.eq(testClassifications.length);

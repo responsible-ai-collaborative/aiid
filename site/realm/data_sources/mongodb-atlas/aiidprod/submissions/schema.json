@@ -9,24 +9,6 @@
                 "bsonType": "string"
             }
         },
-        "developers": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "string"
-            }
-        },
-        "deployers": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "string"
-            }
-        },
-        "harmed_parties": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "string"
-            }
-        },
         "cloudinary_id": {
             "bsonType": "string"
         },
@@ -42,8 +24,20 @@
         "date_submitted": {
             "bsonType": "string"
         },
+        "deployers": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
         "description": {
             "bsonType": "string"
+        },
+        "developers": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
         },
         "editor_dissimilar_incidents": {
             "bsonType": "array",
@@ -72,6 +66,12 @@
                         "bsonType": "double"
                     }
                 }
+            }
+        },
+        "harmed_parties": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
             }
         },
         "image_url": {

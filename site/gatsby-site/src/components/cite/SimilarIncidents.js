@@ -109,7 +109,7 @@ const SimilarIncidents = ({
   editor_dissimilar_incidents,
   flagged_dissimilar_incidents,
 }) => {
-  const { isRole } = useUserContext();
+  const { isRole, loading } = useUserContext();
 
   nlp_similar_incidents ||= [];
   editor_dissimilar_incidents ||= [];
@@ -137,7 +137,7 @@ const SimilarIncidents = ({
         <>
           <div className="tw-subtitle">
             <Trans>Selected by our editors</Trans>
-            {isRole('incident_editor') && (
+            {!loading && isRole('incident_editor') && (
               <a
                 className="tw-edit-icon"
                 href={`/incidents/edit?incident_id=${parentIncident.incident_id}#similar-incidents`}
@@ -170,7 +170,7 @@ const SimilarIncidents = ({
                   <FontAwesomeIcon icon={faQuestionCircle} />
                 </Link>
               )}
-              {isRole('incident_editor') && (
+              {!loading && isRole('incident_editor') && (
                 <a
                   className="tw-edit-icon"
                   href={`/incidents/edit?incident_id=${parentIncident.incident_id}#similar-incidents`}

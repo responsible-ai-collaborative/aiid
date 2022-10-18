@@ -31,20 +31,22 @@ const RandomIncidentsCarousel = () => {
         allMongodbAiidprodReports: { nodes: reports },
         allMongodbAiidprodIncidents: { nodes: incidents },
       }) => {
-        const randomIncidents = [];
+        // this cannot be really random because it causes rehydration problems
 
-        while (randomIncidents.length < 5) {
-          const incident = incidents.splice(Math.floor(Math.random() * incidents.length), 1)[0];
+        const selected = [];
 
-          const reportWithImage = reports.find(
-            (report) => incident.reports.includes(report.report_number) && report.cloudinary_id
+        for (let i = 0; i < reports.length && selected.length < 5; i++) {
+          const report = reports[i];
+
+          const incident = incidents.find((incident) =>
+            incident.reports.includes(report.report_number)
           );
 
-          if (reportWithImage) {
-            randomIncidents.push({
-              ...reportWithImage,
+          if (!selected.some((s) => s.incident_id == incident.incident_id)) {
+            selected.push({
+              ...report,
               incident_id: incident.incident_id,
-              title: incident.title || reportWithImage.title,
+              title: incident.title || report.title,
             });
           }
         }
@@ -56,7 +58,7 @@ const RandomIncidentsCarousel = () => {
                  * so we have to cover them up on top.            */}
               </div>
               <Carousel slideInterval={6000} slide={false}>
-                {randomIncidents.map(({ incident_id, title, image_url, cloudinary_id }) => (
+                {selected.map(({ incident_id, title, image_url, cloudinary_id }) => (
                   <Link
                     to={`/cite/${incident_id}`}
                     key={incident_id}

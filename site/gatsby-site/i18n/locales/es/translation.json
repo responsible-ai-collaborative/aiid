@@ -103,6 +103,7 @@
   "Color by incident classifications from taxonomies": "Colores basados en la clasificación de los incidentes por su taxonomía",
   "This Incident in Semantic Space": "Este incidente en el espacio semántico",
   "The visualization below shows incidents closer together when a <2>natural language processing system</2> identifies their text as being semantically similar.": "La siguiente visualización muestra los incidentes en proximidad proporcional a la similitud semántica de sus textos, identificados a través de <2>nuestro sistema de procesamiento de lenguaje natural</2>",
+  "tsneDescription":"La vista espacial anterior muestra cada incidente en la base de datos como un punto que contiene su número de incidente. Los incidentes se colocan de modo que aquellos con textos similares estén más cerca unos de otros. Por ejemplo, los incidentes relacionados con vehículos autónomos forman un grupo compacto. Determinamos la similitud de los incidentes mediante un sistema de procesamiento de lenguaje natural, sobre el que puede obtener más información en <1> nuestra publicación de blog sobre su implementación</1>.",
   "review": "revisar",
   "Loading...": "Cargando...",
   "Incident report {{reportNumber}} updated successfully. <4>View Incident {{incidentId}}</4>.": "~Incident report {{reportNumber}} updated successfully. <4>View Incident {{incidentId}}</4>.",
