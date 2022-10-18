@@ -67,6 +67,7 @@ function CitePage(props) {
       allMongodbAiidprodReports,
       allMongodbTranslationsReportsEs,
       allMongodbTranslationsReportsEn,
+      allMongodbTranslationsReportsFr,
       incident,
     },
   } = props;
@@ -93,7 +94,11 @@ function CitePage(props) {
 
   const incidentReports = getTranslatedReports({
     allMongodbAiidprodReports,
-    translations: { en: allMongodbTranslationsReportsEn, es: allMongodbTranslationsReportsEs },
+    translations: {
+      en: allMongodbTranslationsReportsEn,
+      es: allMongodbTranslationsReportsEs,
+      fr: allMongodbTranslationsReportsFr,
+    },
     locale,
   });
 

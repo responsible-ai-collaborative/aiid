@@ -4,7 +4,7 @@ module.exports = {
   hitsPerPage: 30,
   maxValuesPerFacet: 100,
   version: 2,
-  searchableAttributes: ['title', 'description', 'text', 'ref_number'],
+  searchableAttributes: ['title', 'description', 'text'],
   numericAttributesToIndex: null,
   attributesToRetrieve: null,
   advancedSyntax: true,
