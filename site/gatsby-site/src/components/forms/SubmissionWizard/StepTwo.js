@@ -16,11 +16,11 @@ const StepTwo = (props) => {
   const stepTwoValidationSchema = yup.object().shape({
     submitters: yup
       .string()
-      .matches(/.{3,}/, {
+      .matches(/^.{3,}$/, {
         excludeEmptyString: true,
         message: '*Submitter must have at least 3 characters',
       })
-      .matches(/.{,200}/, {
+      .matches(/^.{3,200}$/, {
         excludeEmptyString: true,
         message: "*Submitter list can't be longer than 200 characters",
       }),

@@ -116,7 +116,7 @@ const SubmitForm = () => {
 
       const submission = {
         ...values,
-        incident_id: values.incident_id == '' ? 0 : values.incident_id,
+        incident_id: !values.incident_id || values.incident_id == '' ? 0 : values.incident_id,
         date_submitted,
         date_modified: date_submitted,
         authors: isString(values.authors) ? values.authors.split(',') : values.authors,
@@ -178,6 +178,7 @@ const SubmitForm = () => {
 
       {!loading && isRole('submitter') && (
         <Container className="mt-5 p-0 bootstrap">
+          ``
           <h2>
             <Trans ns="submit">Advanced: Add by CSV</Trans>
           </h2>

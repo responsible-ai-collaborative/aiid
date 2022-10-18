@@ -1,6 +1,6 @@
 import { Button, Spinner } from 'flowbite-react';
 import { Formik, Form } from 'formik';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TextInputGroup from '../TextInputGroup';
 import * as yup from 'yup';
@@ -11,45 +11,47 @@ import TagsInputGroup from '../TagsInputGroup';
 const StepThree = (props) => {
   const { t } = useTranslation(['submit']);
 
+  const [data, setData] = useState(props.data);
+
   const stepThreeValidationSchema = yup.object().shape({
     editor_notes: yup.string(),
     description: yup
       .string()
-      .matches(/.{3,}/, {
+      .matches(/^.{3,}$/, {
         excludeEmptyString: true,
         message: 'Description must have at least 3 characters',
       })
-      .matches(/.{,200}/, {
+      .matches(/^.{3,200}$/, {
         excludeEmptyString: true,
         message: "Description can't be longer than 200 characters",
       }),
     developers: yup
       .string()
-      .matches(/.{3,}/, {
+      .matches(/^.{3,}$/, {
         excludeEmptyString: true,
         message: 'Alleged Developer must have at least 3 characters',
       })
-      .matches(/.{,200}/, {
+      .matches(/^.{3,200}$/, {
         excludeEmptyString: true,
         message: "Alleged Developers can't be longer than 200 characters",
       }),
     deployers: yup
       .string()
-      .matches(/.{3,}/, {
+      .matches(/^.{3,}$/, {
         excludeEmptyString: true,
         message: 'Alleged Deployers must have at least 3 characters',
       })
-      .matches(/.{,200}/, {
+      .matches(/^.{3,200}$/, {
         excludeEmptyString: true,
         message: "Alleged Deployers can't be longer than 200 characters",
       }),
     harmed_parties: yup
       .string()
-      .matches(/.{3,}/, {
+      .matches(/^.{3,}$/, {
         excludeEmptyString: true,
         message: 'Harmed Parties must have at least 3 characters',
       })
-      .matches(/.{,200}/, {
+      .matches(/^.{3,200}$/, {
         excludeEmptyString: true,
         message: "Harmed Parties can't be longer than 200 characters",
       }),
@@ -59,7 +61,11 @@ const StepThree = (props) => {
     props.next(values, true);
   };
 
-  const data = useStaticQuery(graphql`
+  useEffect(() => {
+    setData(props.data);
+  }, [props.data]);
+
+  const staticQueryData = useStaticQuery(graphql`
     query SubmissionFormQuery {
       allMongodbAiidprodReports {
         edges {
@@ -73,7 +79,7 @@ const StepThree = (props) => {
 
   const tags = [];
 
-  for (const node of data.allMongodbAiidprodReports.edges) {
+  for (const node of staticQueryData.allMongodbAiidprodReports.edges) {
     if (node.node.tags) {
       for (const tag of node.node.tags) {
         if (!tags.includes(tag)) {
@@ -86,7 +92,7 @@ const StepThree = (props) => {
   return (
     <StepContainer name={props.name}>
       <Formik
-        initialValues={props.data}
+        initialValues={data}
         onSubmit={handleSubmit}
         validationSchema={stepThreeValidationSchema}
         enableReinitialize
@@ -105,7 +111,7 @@ const StepThree = (props) => {
               schema={stepThreeValidationSchema}
             />
 
-            {!props.data.incident_id && (
+            {!data.incident_id && (
               <>
                 <TagsInputGroup
                   name="deployers"

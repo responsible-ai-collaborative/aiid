@@ -26,8 +26,6 @@ const createTsneVisualizationPage = require('./page-creators/createTsneVisualiza
 
 const createEntitiesPages = require('./page-creators/createEntitiesPages');
 
-const createSubmitSuccessPage = require('./page-creators/createSubmitSuccessPage');
-
 const algoliasearch = require('algoliasearch');
 
 const Translator = require('./src/utils/Translator');
@@ -71,7 +69,6 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     createDuplicatePages,
     createTsneVisualizationPage,
     createEntitiesPages,
-    createSubmitSuccessPage,
   ]) {
     if (!(process.env.SKIP_PAGE_CREATOR || '').split(',').includes(pageCreator.name)) {
       reporter.info(`Page creation: ${pageCreator.name}`);

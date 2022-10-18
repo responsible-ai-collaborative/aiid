@@ -13,8 +13,11 @@ import TagsInputGroup from '../TagsInputGroup';
 import { Editor } from '@bytemd/react';
 import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
 import IncidentIdField from 'components/incidents/IncidentIdField';
+import isEmpty from 'lodash/isEmpty';
 
 const StepOne = (props) => {
+  const [data, setData] = useState(props.data);
+
   const stepOneValidationSchema = yup.object().shape({
     title: yup
       .string()
@@ -59,10 +62,14 @@ const StepOne = (props) => {
     props.next(values, last);
   };
 
+  useEffect(() => {
+    setData(props.data);
+  }, [props.data]);
+
   return (
     <StepContainer name={props.name}>
       <Formik
-        initialValues={props.data}
+        initialValues={data}
         onSubmit={() => {}}
         validationSchema={stepOneValidationSchema}
         enableReinitialize
@@ -129,7 +136,11 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
           </Badge>
         </span>
       )}
-      <Form className={`relative z-2 ${parsingNews ? 'opacity-50' : ''}`}>
+      <Form
+        className={`relative z-2 ${parsingNews ? 'opacity-50' : ''} ${
+          !isEmpty(errors) ? 'form-has-errors' : ''
+        }`}
+      >
         <Label label={'*' + t('Report Address')} popover="url"></Label>
         <FlowbiteSearchInput
           name="url"

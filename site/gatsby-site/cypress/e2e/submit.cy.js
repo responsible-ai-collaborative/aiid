@@ -37,21 +37,15 @@ describe('The Submit form', () => {
 
     cy.get('[name="incident_date"]').type('2020-01-01');
 
-    cy.wait(200);
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
-
-    cy.wait(200);
 
     cy.get('input[name="submitters"]').type('Something');
 
     cy.get('[name="language"]').select('Spanish');
 
-    cy.wait(200);
-
     cy.get('[data-cy="to-step-3"]').click();
-
-    cy.wait(200);
 
     cy.get('[name="tags"]').type('New Tag{enter}');
 
@@ -79,8 +73,6 @@ describe('The Submit form', () => {
         editor_notes: 'Here are some notes',
       });
     });
-
-    cy.wait(200);
 
     cy.get('[data-cy="submission-success"]')
       .contains('Report successfully added to review queue')
@@ -177,21 +169,15 @@ describe('The Submit form', () => {
       .last()
       .click();
 
-    cy.wait(200);
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
-
-    cy.wait(200);
 
     cy.get('input[name="submitters"]').type('Something');
 
     cy.wait('@findIncident');
 
-    cy.wait(200);
-
     cy.get('[data-cy="to-step-3"]').click();
-
-    cy.wait(200);
 
     cy.get('[name="tags"]').type('New Tag{enter}');
 
@@ -316,16 +302,11 @@ describe('The Submit form', () => {
     );
 
     cy.visit(url + `?${params.toString()}`);
-
-    cy.wait(200);
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(200);
-
     cy.get('[data-cy="to-step-3"]').click();
-
-    cy.wait(200);
 
     cy.wait('@findIncident');
 
@@ -601,17 +582,15 @@ describe('The Submit form', () => {
       'contain',
       'YouTube'
     );
-
-    cy.wait(200);
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
-
-    cy.wait(200);
   });
 
   // cy.setEditorText doesn't seem to trigger a render of the relateBbyText component
   it.skip('Should *not* show semantically related reports when the text is under 256 non-space characters', () => {
     cy.visit(url);
+
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube.`
     );
@@ -638,12 +617,9 @@ describe('The Submit form', () => {
     const params = new URLSearchParams(values);
 
     cy.visit(url + `?${params.toString()}`);
-
-    cy.wait(200);
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
-
-    cy.wait(200);
 
     cy.get('[data-cy="image-preview-figure"] img').should('have.attr', 'src', imageUrl);
   });
@@ -672,11 +648,9 @@ describe('The Submit form', () => {
       'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/v1/reports/' +
       suffix;
 
-    cy.wait(200);
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
-
-    cy.wait(200);
 
     cy.get('input[name=image_url]').scrollIntoView().type(newImageUrl);
 
@@ -749,6 +723,7 @@ describe('The Submit form', () => {
     );
 
     cy.get('[name="incident_date"]').should('be.visible');
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
 
@@ -774,12 +749,9 @@ describe('The Submit form', () => {
     cy.setEditorText(
       'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
     );
-
-    cy.wait(200);
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
-
-    cy.wait(200);
 
     const valuesStep2 = {
       submitters: 'test submitter',
@@ -790,11 +762,7 @@ describe('The Submit form', () => {
       cy.get(`[name="${key}"]`).type(valuesStep2[key]);
     }
 
-    cy.wait(200);
-
     cy.get('[data-cy="to-step-3"]').click();
-
-    cy.wait(200);
 
     const valuesStep3 = {
       editor_notes: 'Here are some notes',
@@ -809,11 +777,8 @@ describe('The Submit form', () => {
 
   it.skip('Should show a popover', () => {
     cy.visit(url);
-    cy.wait(200);
 
     cy.get('[data-cy="label-title"]').trigger('mouseover');
-
-    cy.wait(200);
 
     cy.get('[data-cy="popover-title"]').should('be.visible');
 
@@ -824,8 +789,6 @@ describe('The Submit form', () => {
 
   it.skip('Should show a translated popover', () => {
     cy.visit(`/es/apps/submit/`);
-
-    cy.wait(200);
 
     cy.get('[data-cy="label-title"]').trigger('mouseover');
 
@@ -869,20 +832,13 @@ describe('The Submit form', () => {
     );
 
     cy.get('[name="incident_date"]').type('2020-01-01');
-
-    cy.wait(200);
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(200);
-
     cy.get('input[name="submitters"]').type('Something');
 
-    cy.wait(200);
-
     cy.get('[data-cy="to-step-3"]').click();
-
-    cy.wait(200);
 
     cy.get('[name="editor_notes"').type('Here are some notes');
 
@@ -926,16 +882,11 @@ describe('The Submit form', () => {
     );
 
     cy.get('[name="incident_date"]').type('2020-01-01');
-
-    cy.wait(200);
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait(200);
-
     cy.get('input[name="submitters"]').type('Something');
-
-    cy.wait(200);
 
     cy.get('[data-cy="submit-step-2"]').click();
 

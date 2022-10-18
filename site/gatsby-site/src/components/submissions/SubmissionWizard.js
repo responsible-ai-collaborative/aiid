@@ -7,12 +7,13 @@ import StepOne from '../forms/SubmissionWizard/StepOne';
 import StepTwo from '../forms/SubmissionWizard/StepTwo';
 import StepThree from '../forms/SubmissionWizard/StepThree';
 import StepFour from '../forms/SubmissionWizard/StepFour';
-import { navigate } from 'gatsby';
 
 const SubmissionWizard = ({ submitForm, initialValues }) => {
   const [data, setData] = useState(initialValues);
 
   const [currentStep, setCurrentStep] = useState(0);
+
+  const [steps, setSteps] = useState([]);
 
   const [parsingNews, setParsingNews] = useState(false);
 
@@ -23,7 +24,7 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
 
     if (final) {
       await submitForm({ ...data, ...newData });
-      navigate(`/submit/success`);
+      setCurrentStep(steps.length - 1);
     } else {
       setCurrentStep((prev) => prev + 1);
     }
@@ -36,6 +37,10 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
     stepsRef?.current?.scrollIntoView();
     setCurrentStep((prev) => prev - 1);
   };
+
+  useEffect(() => {
+    setData(initialValues);
+  }, [initialValues]);
 
   const addToast = useToastContext();
 
@@ -141,33 +146,37 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
     } // just ignore it
   }, [data?.url]);
 
-  const steps = [
-    <StepOne
-      key={'submission-step-1'}
-      next={handleNextStep}
-      data={data}
-      name="Step 1 - main information"
-      parseNewsUrl={parseNewsUrl}
-      parsingNews={parsingNews}
-      validateAndSubmitForm={validateAndSubmitForm}
-    />,
-    <StepTwo
-      key={'submission-step-2'}
-      next={handleNextStep}
-      previous={handlePreviousStep}
-      data={data}
-      name="Step 2 - additional information"
-      validateAndSubmitForm={validateAndSubmitForm}
-    />,
-    <StepThree
-      key={'submission-step-3'}
-      next={handleNextStep}
-      previous={handlePreviousStep}
-      data={data}
-      name="Step 3 - Tell us more"
-    />,
-    <StepFour key={'submission-step-4'} />,
-  ];
+  useEffect(() => {
+    const steps = [
+      <StepOne
+        key={'submission-step-1'}
+        next={handleNextStep}
+        data={data}
+        name="Step 1 - main information"
+        parseNewsUrl={parseNewsUrl}
+        parsingNews={parsingNews}
+        validateAndSubmitForm={validateAndSubmitForm}
+      />,
+      <StepTwo
+        key={'submission-step-2'}
+        next={handleNextStep}
+        previous={handlePreviousStep}
+        data={data}
+        name="Step 2 - additional information"
+        validateAndSubmitForm={validateAndSubmitForm}
+      />,
+      <StepThree
+        key={'submission-step-3'}
+        next={handleNextStep}
+        previous={handlePreviousStep}
+        data={data}
+        name="Step 3 - Tell us more"
+      />,
+      <StepFour key={'submission-step-4'} />,
+    ];
+
+    setSteps(steps);
+  }, []);
 
   return <div ref={stepsRef}>{steps[currentStep]}</div>;
 };
