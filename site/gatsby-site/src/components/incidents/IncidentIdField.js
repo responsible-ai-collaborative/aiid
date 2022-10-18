@@ -11,6 +11,7 @@ export default function IncidentIdField({
   placeHolder = '',
   className = '',
   showIncidentData = true,
+  required = false,
 }) {
   const { t } = useTranslation(['validation']);
 
@@ -39,7 +40,7 @@ export default function IncidentIdField({
   return (
     <div className="bootstrap">
       <Form.Group className={className + ' bootstrap'}>
-        <Label popover={name} label={'Incident ID'} />
+        <Label popover={name} label={(required ? '*' : '') + 'Incident ID'} />
         <Form.Control
           type="number"
           name={name}
