@@ -17,7 +17,7 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
   console.log(`currentRefinement`, currentRefinement);
   console.log(`refine`, refine);
   console.log(`attribute `, attribute);
-  if (!min || !max) {
+  if ((!min && min !== 0) || !max) {
     console.log('Missing min or max!');
     return null;
   }
