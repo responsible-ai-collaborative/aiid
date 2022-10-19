@@ -7,7 +7,7 @@ import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'react-bootstrap';
 
 const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) => {
-  const { isRole } = useUserContext();
+  const { isRole, loading } = useUserContext();
 
   return (
     <IncidentReportCard
@@ -23,7 +23,7 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
           flagReportModal={flagReportModal}
           submittersModal={submittersModal}
         />
-        {isRole('incident_editor') && (
+        {!loading && isRole('incident_editor') && (
           <a
             data-cy="edit-report"
             href={`/cite/edit?report_number=${item.report_number}`}

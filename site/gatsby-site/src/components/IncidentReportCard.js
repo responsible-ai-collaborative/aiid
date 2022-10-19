@@ -43,6 +43,7 @@ const IncidentReportCard = (props) => {
     cloudinary_id,
     image_url,
     reports,
+    reportsCount,
     link,
     date,
     date_published,
@@ -71,6 +72,8 @@ const IncidentReportCard = (props) => {
     className,
     style,
     id,
+    onMouseEnter,
+    onMouseLeave,
   } = props;
 
   if (incident && report) {
@@ -83,6 +86,10 @@ const IncidentReportCard = (props) => {
 
   reports = reports || incident?.reports;
   const firstReport = reports && reports.length > 0 ? reports[0] : null;
+
+  if (reportsCount === undefined && reports?.length) {
+    reportsCount = reports.length;
+  }
 
   // We can't do ||= because items are disable by passing `false` as a parameter
   if (title === undefined) {
@@ -153,7 +160,7 @@ const IncidentReportCard = (props) => {
   );
 
   return (
-    <div data-cy={props['data-cy']} className={className} style={style} id={id}>
+    <div data-cy={props['data-cy']} {...{ id, className, style, onMouseEnter, onMouseLeave }}>
       <Card style={{ position: 'relative', height: '100%' }}>
         {loading ? (
           <div className="text-center">
@@ -204,10 +211,9 @@ const IncidentReportCard = (props) => {
                   parsedDate && (
                     <time dateTime={formatISO(parsedDate)}>{format(parsedDate, 'MMM yyyy')}</time>
                   ),
-                  reports && reports.length > 0 && (
+                  reportsCount > 0 && (
                     <>
-                      {incident.reports.length}{' '}
-                      {incident.reports.length == 1 ? t('report') : t('reports')}{' '}
+                      {reportsCount} {reportsCount == 1 ? t('report') : t('reports')}{' '}
                     </>
                   ),
                   source_domain && <WebArchiveLink url={url}>{source_domain}</WebArchiveLink>,
