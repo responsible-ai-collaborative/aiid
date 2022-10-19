@@ -32,6 +32,8 @@ import { graphql } from 'gatsby';
 import { getTaxonomies, getTranslatedReports } from 'utils/cite';
 import { computeEntities } from 'utils/entities';
 import AllegedEntities from 'components/entities/AllegedEntities';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -67,6 +69,7 @@ function CitePage(props) {
       allMongodbAiidprodReports,
       allMongodbTranslationsReportsEs,
       allMongodbTranslationsReportsEn,
+      allMongodbTranslationsReportsFr,
       incident,
     },
   } = props;
@@ -93,7 +96,11 @@ function CitePage(props) {
 
   const incidentReports = getTranslatedReports({
     allMongodbAiidprodReports,
-    translations: { en: allMongodbTranslationsReportsEn, es: allMongodbTranslationsReportsEs },
+    translations: {
+      en: allMongodbTranslationsReportsEn,
+      es: allMongodbTranslationsReportsEs,
+      fr: allMongodbTranslationsReportsFr,
+    },
     locale,
   });
 
@@ -308,10 +315,12 @@ function CitePage(props) {
               <Card.Body className="flex-row flex-wrap gap-2">
                 <Button variant="outline-primary" onClick={subscribeToNewReports}>
                   <div className="flex gap-2 items-center">
-                    {subscribing && (
+                    {subscribing ? (
                       <div>
                         <Spinner size="sm" />
                       </div>
+                    ) : (
+                      <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
                     )}
                     <Trans>Notify Me of Updates</Trans>
                   </div>
