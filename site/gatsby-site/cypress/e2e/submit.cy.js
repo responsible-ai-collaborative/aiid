@@ -37,6 +37,8 @@ describe('The Submit form', () => {
 
     cy.get('[name="incident_date"]').type('2020-01-01');
 
+    cy.clickOutside();
+
     cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
@@ -168,6 +170,8 @@ describe('The Submit form', () => {
     )
       .last()
       .click();
+
+    cy.clickOutside();
 
     cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
@@ -302,6 +306,8 @@ describe('The Submit form', () => {
     );
 
     cy.visit(url + `?${params.toString()}`);
+    cy.clickOutside();
+
     cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
@@ -582,6 +588,8 @@ describe('The Submit form', () => {
       'contain',
       'YouTube'
     );
+    cy.clickOutside();
+
     cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
@@ -617,6 +625,13 @@ describe('The Submit form', () => {
     const params = new URLSearchParams(values);
 
     cy.visit(url + `?${params.toString()}`);
+
+    cy.setEditorText(
+      `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
+    );
+
+    cy.clickOutside();
+
     cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
@@ -647,6 +662,12 @@ describe('The Submit form', () => {
     const cloudinaryImageUrl =
       'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/v1/reports/' +
       suffix;
+
+    cy.setEditorText(
+      `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
+    );
+
+    cy.clickOutside();
 
     cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
@@ -723,7 +744,8 @@ describe('The Submit form', () => {
     );
 
     cy.get('[name="incident_date"]').should('be.visible');
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+
+    cy.clickOutside();
 
     cy.get('[data-cy="to-step-2"]').click();
 
@@ -749,6 +771,8 @@ describe('The Submit form', () => {
     cy.setEditorText(
       'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
     );
+    cy.clickOutside();
+
     cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
@@ -832,6 +856,8 @@ describe('The Submit form', () => {
     );
 
     cy.get('[name="incident_date"]').type('2020-01-01');
+    cy.clickOutside();
+
     cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
@@ -851,54 +877,8 @@ describe('The Submit form', () => {
     cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/es/apps/submitted');
   });
 
-  it('Should submit on first step', () => {
-    cy.visit(`/es/apps/submit/`);
-
-    cy.intercept('GET', parserURL, parseNews).as('parseNews');
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'InsertSubmission',
-      'insertSubmission',
-      {
-        data: {
-          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
-        },
-      }
-    );
-
-    cy.get('input[name="url"]').type(
-      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
-    );
-
-    cy.get('[data-cy="fetch-info"]').click();
-
-    cy.wait('@parseNews');
-
-    cy.get('input[name="authors"]').type('Something');
-
-    cy.setEditorText(
-      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
-    );
-
-    cy.get('[name="incident_date"]').type('2020-01-01');
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
-
-    cy.get('[data-cy="to-step-2"]').click();
-
-    cy.get('input[name="submitters"]').type('Something');
-
-    cy.get('[data-cy="submit-step-2"]').click();
-
-    cy.get('[data-cy="submission-success"]')
-      .contains('Report successfully added to review queue')
-      .should('be.visible');
-
-    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
-  });
-
-  it('Should submit on step 2', () => {
-    cy.visit(`/es/apps/submit/`);
+  it('Should submit on step 1', () => {
+    cy.visit(url);
 
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
@@ -930,6 +910,55 @@ describe('The Submit form', () => {
     cy.get('[name="incident_date"]').type('2020-01-01');
 
     cy.get('[data-cy="submit-step-1"]').click();
+
+    cy.get('[data-cy="submission-success"]')
+      .contains('Report successfully added to review queue')
+      .should('be.visible');
+
+    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
+  });
+
+  it('Should submit on step 2', () => {
+    cy.visit(url);
+
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
+      'insertSubmission',
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
+
+    cy.get('input[name="url"]').type(
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    cy.get('[data-cy="fetch-info"]').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('input[name="authors"]').type('Something');
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
+
+    cy.get('[name="incident_date"]').type('2020-01-01');
+
+    cy.clickOutside();
+
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    cy.get('input[name="submitters"]').type('Something');
+
+    cy.get('[data-cy="submit-step-2"]').click();
 
     cy.get('[data-cy="submission-success"]')
       .contains('Report successfully added to review queue')

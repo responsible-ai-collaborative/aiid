@@ -176,7 +176,7 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
     ];
 
     setSteps(steps);
-  }, []);
+  }, [data]);
 
   return <div ref={stepsRef}>{steps[currentStep]}</div>;
 };
