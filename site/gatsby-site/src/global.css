@@ -48,6 +48,21 @@ body {
   font-size: 16px;
 }
 
+/********************************************************** 
+ * This allows us to set `flex-grow` on the main content  *
+ * so that the footer rests at the bottom of the viewport *
+ * if the content is not large enough to fill it.         *
+ **********************************************************/
+html, body, #___gatsby {
+  height: 100%;
+}
+#gatsby-focus-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+/**********************************************************/
+
 a {
   transition: color 0.15s;
   text-decoration: none !important;
