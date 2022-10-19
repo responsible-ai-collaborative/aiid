@@ -3,7 +3,7 @@ import React from 'react';
 
 const Wordlist = ({ content }) => {
   return (
-    <ListGroup className="ml-0">
+    <ListGroup>
       {content.map((value, index) => (
         <div
           className={`p-3 ${index < content.length - 1 ? 'border-b' : ''}`}
