@@ -238,6 +238,15 @@ const SubmissionForm = () => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
 
+  useEffect(() => {
+    if (values._id) {
+      // Only display form errors on Edit mode
+      Object.keys(errors).map((key) => {
+        setFieldTouched(key, true);
+      });
+    }
+  }, [errors]);
+
   return (
     <div className="bootstrap">
       <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
