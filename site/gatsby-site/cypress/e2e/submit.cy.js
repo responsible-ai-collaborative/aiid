@@ -762,7 +762,7 @@ describe('The Submit form', () => {
     cy.get('[data-cy="toast"] a').should('have.attr', 'href', '/es/apps/submitted');
   });
 
-  it.only('Should display an error message if data is missing', () => {
+  it('Should display an error message if data is missing', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
