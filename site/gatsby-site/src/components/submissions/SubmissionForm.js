@@ -411,7 +411,17 @@ const SubmissionForm = () => {
         )}
 
         <details className="mt-3">
-          <summary data-cy="extra-fields">{t('Tell us more...')}</summary>
+          <summary data-cy="extra-fields">
+            {t('Tell us more...')}
+            {(errors['description'] ||
+              errors['developers'] ||
+              errors['deployers'] ||
+              errors['harmed_parties']) && (
+              <div className="text-red-500 pl-4">
+                <Trans ns="validation">Some data is missing.</Trans>
+              </div>
+            )}
+          </summary>
 
           <TagsInputGroup name="tags" label={t('Tags')} className="mt-3" {...TextInputGroupProps} />
 
