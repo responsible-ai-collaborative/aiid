@@ -10,6 +10,8 @@
   "Type and press Enter to add an item": "Escribe y presiona Enter para agregar un elemento",
   "*Text must have at least 80 characters": "*Text must have at least 80 characters",
   "*Text can’t be longer than 50000 characters": "*Text can’t be longer than 50000 characters",
-  "Please review report. Some data is missing.": "Por favor revisa el reporte. Hay algunos datos faltantes.",
-  "Please review submission. Some data is missing.": "Por favor revisa el incidente. Hay algunos datos faltantes."
+  "Please review report. Some data is missing.": "Por favor revisa el reporte. Faltan algunos datos.",
+  "Please review submission. Some data is missing.": "Por favor revisa el incidente. Faltan algunos datos.",
+  "Some data is missing.": "Faltan algunos datos.",
+  "Please review. Some data is missing.": "Por favor revisa el formulario. Faltan algunos datos."
 }
