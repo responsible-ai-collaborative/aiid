@@ -12,12 +12,10 @@ import ReadMoreText from '../../components/ReadMoreText';
 import RelatedIncidents from '../../components/RelatedIncidents';
 import isArray from 'lodash/isArray';
 import { useUserContext } from '../../contexts/userContext';
-import { UPDATE_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
-import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
+import { FIND_INCIDENT } from '../../graphql/incidents';
 import { DELETE_SUBMISSION, PROMOTE_SUBMISSION } from '../../graphql/submissions';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { format, getUnixTime } from 'date-fns';
 import SubmissionEditModal from './SubmissionEditModal';
 import { Spinner } from 'flowbite-react';
 import Link from '../../components/ui/Link';
@@ -69,13 +67,9 @@ const SubmissionReview = ({ submission }) => {
     fetchPolicy: 'network-only',
   });
 
-  const [updateReport] = useMutation(UPDATE_REPORT);
-
-  const [updateIncident] = useMutation(UPDATE_INCIDENT);
-
   const isNewIncident = submission.incident_id === 0;
 
-  const { i18n } = useTranslation(['submitted']);
+  const { i18n, t } = useTranslation(['submitted']);
 
   const [deleteSubmission, { loading: deleting }] = useMutation(DELETE_SUBMISSION, {
     update: (cache, { data }) => {
@@ -91,106 +85,103 @@ const SubmissionReview = ({ submission }) => {
 
   const addToast = useToastContext();
 
-  const promoteSubmission = useCallback(async () => {
-    if (!submission.developers || !submission.deployers || !submission.harmed_parties) {
-      addToast({
-        message: `Please review submission before approving. Some data is missing.`,
-        severity: SEVERITY.danger,
-      });
-      return;
-    }
-    const {
-      data: {
-        promoteSubmissionToReport: { 0: incident },
-      },
-    } = await promoteSubmissionToReport({
-      variables: {
-        input: {
-          submission_id: submission._id,
-          incident_ids: isNewIncident ? [] : [submission.incident_id],
-        },
-      },
-      fetchPolicy: 'no-cache',
-      update: (cache) => {
-        cache.modify({
-          fields: {
-            submissions(refs, { readField }) {
-              return refs.filter((s) => submission._id !== readField('_id', s));
-            },
-          },
+  const promoteSubmission = useCallback(
+    async ({ is_incident_report = true }) => {
+      if (
+        !is_incident_report &&
+        !confirm(t('Sure you want to promote this submission to an issue?'))
+      ) {
+        return;
+      }
+
+      if (
+        is_incident_report &&
+        (!submission.developers || !submission.deployers || !submission.harmed_parties)
+      ) {
+        addToast({
+          message: `Please review submission before approving. Some data is missing.`,
+          severity: SEVERITY.danger,
         });
-      },
-    });
-
-    const report = {
-      ...submission,
-      incident_id: undefined,
-      deployers: undefined,
-      developers: undefined,
-      harmed_parties: undefined,
-      _id: undefined,
-      __typename: undefined,
-      nlp_similar_incidents: undefined,
-      editor_similar_incidents: undefined,
-      editor_dissimilar_incidents: undefined,
-    };
-
-    report.date_modified = format(new Date(), 'yyyy-MM-dd');
-
-    report.epoch_date_modified = getUnixTime(new Date(report.date_modified));
-    report.epoch_date_published = getUnixTime(new Date(report.date_published));
-    report.epoch_date_downloaded = getUnixTime(new Date(report.date_downloaded));
-    report.epoch_date_submitted = getUnixTime(new Date(report.date_submitted));
-
-    const report_number = incident.reports
-      .sort((a, b) => b.report_number - a.report_number)
-      .shift().report_number;
-
-    await updateReport({
-      variables: {
-        query: {
-          report_number,
+        return;
+      }
+      const {
+        data: {
+          promoteSubmissionToReport: {
+            incident_ids: { 0: incident_id },
+            report_number,
+          },
         },
-        set: {
-          ...report,
-        },
-      },
-    });
-
-    if (isNewIncident) {
-      await updateIncident({
+      } = await promoteSubmissionToReport({
         variables: {
-          query: {
-            incident_id: incident.incident_id,
+          input: {
+            submission_id: submission._id,
+            incident_ids: isNewIncident ? [] : [submission.incident_id],
+            is_incident_report,
           },
-          set: {
-            title: submission.title,
-            date: submission.incident_date,
-            description: submission.description,
-          },
+        },
+        fetchPolicy: 'no-cache',
+        update: (cache) => {
+          cache.modify({
+            fields: {
+              submissions(refs, { readField }) {
+                return refs.filter((s) => submission._id !== readField('_id', s));
+              },
+            },
+          });
         },
       });
-    }
 
-    const incident_id = incident.incident_id;
-
-    addToast({
-      message: isNewIncident ? (
-        <Trans i18n={i18n} ns="submitted" incident_id={incident_id} report_number={report_number}>
-          Successfully promoted submission to Incident {{ incident_id }} and Report{' '}
-          {{ report_number }}
-        </Trans>
-      ) : (
-        <Trans i18n={i18n} ns="submitted" incident_id={incident_id} report_number={report_number}>
-          Successfully promoted submission to{' '}
-          <Link to={`/cite/${incident_id}`}>
-            Incident {{ incident_id }} and Report {{ report_number }}
-          </Link>
-        </Trans>
-      ),
-      severity: SEVERITY.success,
-    });
-  }, [submission]);
+      if (is_incident_report) {
+        if (isNewIncident) {
+          addToast({
+            message: (
+              <Trans
+                i18n={i18n}
+                ns="submitted"
+                incident_id={incident_id}
+                report_number={report_number}
+              >
+                Successfully promoted submission to new Incident {{ incident_id }} and Report{' '}
+                {{ report_number }}
+              </Trans>
+            ),
+            severity: SEVERITY.success,
+          });
+        } else {
+          addToast({
+            message: (
+              <Trans
+                i18n={i18n}
+                ns="submitted"
+                incident_id={incident_id}
+                report_number={report_number}
+              >
+                Successfully promoted submission to Report {{ report_number }} linked to Incident{' '}
+                {{ incident_id }}
+              </Trans>
+            ),
+            severity: SEVERITY.success,
+          });
+        }
+      } else {
+        addToast({
+          message: (
+            <Trans
+              i18n={i18n}
+              ns="submitted"
+              incident_id={incident_id}
+              report_number={report_number}
+            >
+              Successfully promoted submission to issue{' '}
+              <Link to={`/reports/${report_number}`}>Report {{ report_number }}</Link>
+            </Trans>
+          ),
+          severity: SEVERITY.success,
+        });
+      }
+    },
+    [submission]
+  );
 
   const rejectReport = async () => {
     await deleteSubmission({ variables: { _id: submission._id } });
@@ -269,6 +260,19 @@ const SubmissionReview = ({ submission }) => {
             >
               <FontAwesomeIcon icon={faEdit} />
             </Button>
+
+            <Button
+              className="mr-2 text-xs md:text-base"
+              variant="outline-primary"
+              disabled={!isSubmitter || promoting}
+              onClick={() => promoteSubmission({ is_incident_report: false })}
+            >
+              <div className="flex gap-2">
+                {promoting && <Spinner size="sm" />}
+                <Trans ns="submitted">Add New Issue</Trans>
+              </div>
+            </Button>
+
             <Button
               className="mr-2 text-xs md:text-base"
               variant="outline-primary"
