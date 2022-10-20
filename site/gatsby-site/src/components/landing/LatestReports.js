@@ -7,7 +7,12 @@ export default function LatestReports({ latestReport }) {
   return (
     <>
       <div className="flex flex-col items-center">
-        <IncidentReportCard report={latestReport} imagePosition="left" textMaxChars={400}>
+        <IncidentReportCard
+          report={latestReport}
+          imagePosition="left"
+          textMaxChars={400}
+          dateFormat="MMM d, yyyy"
+        >
           <CardFooter>
             <Link
               to={`/cite/${latestReport.incident_id}`}
