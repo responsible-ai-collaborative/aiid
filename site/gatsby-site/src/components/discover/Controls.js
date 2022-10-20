@@ -10,6 +10,25 @@ import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Trans } from 'react-i18next';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
+import { connectRefinementList } from 'react-instantsearch-dom';
+
+const ToggleDisplayIssues = connectRefinementList(({ currentRefinement, refine, id }) => {
+  return (
+    <Form.Check
+      type="switch"
+      id={id}
+      checked={currentRefinement.includes('false')}
+      onClick={() => {
+        if (currentRefinement.includes('true')) {
+          refine(['false']);
+        } else {
+          refine(['true']);
+        }
+      }}
+      className="tw-switch ml-2"
+    />
+  );
+});
 
 const Controls = ({ query, searchState, setSearchState }) => {
   const [expandFilters, setExpandFilters] = useState(false);
@@ -41,10 +60,16 @@ const Controls = ({ query, searchState, setSearchState }) => {
             }}
             className="tw-switch"
           />
-          <Form.Label for="hide-duplicates">
+          <Form.Label htmlFor="hide-duplicates">
             <Trans>1st report only</Trans>
           </Form.Label>
+
+          <ToggleDisplayIssues attribute="is_incident_report" id="display-issues" />
+          <Form.Label htmlFor="display-issues">
+            <Trans>Display Issues</Trans>
+          </Form.Label>
         </Col>
+        <Col className="tw-hbox"></Col>
         <Col className="col-auto">
           <ClearFilters>
             <Trans>Clear Filters</Trans>
