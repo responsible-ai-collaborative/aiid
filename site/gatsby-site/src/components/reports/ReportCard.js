@@ -9,7 +9,7 @@ import Card from '../../elements/Card';
 import WebArchiveLink from 'components/ui/WebArchiveLink';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 
-const ReportCard = ({ item, authorsModal, submittersModal, flagReportModal }) => {
+const ReportCard = ({ item }) => {
   const { isRole, loading } = useUserContext();
 
   return (
@@ -47,12 +47,7 @@ const ReportCard = ({ item, authorsModal, submittersModal, flagReportModal }) =>
         </div>
       </div>
       <Card.Footer className="flex w-full flex-row justify-around items-center text-dark-gray">
-        <Actions
-          item={item}
-          authorsModal={authorsModal}
-          flagReportModal={flagReportModal}
-          submittersModal={submittersModal}
-        />
+        <Actions item={item} />
       </Card.Footer>
     </Card>
   );
