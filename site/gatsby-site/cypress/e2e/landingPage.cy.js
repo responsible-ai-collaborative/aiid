@@ -59,7 +59,7 @@ describe('The Landing page', () => {
       .should('be.visible')
       .within(() => {
         cy.contains('h2', 'Common Entities').should('exist');
-        cy.get('.grid > div').should('have.length', 3);
+        cy.get('.grid > a').should('have.length', 3);
       });
   });
 

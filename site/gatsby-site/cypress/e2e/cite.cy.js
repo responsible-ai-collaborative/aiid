@@ -187,7 +187,7 @@ describe('Cite pages', () => {
     cy.get('[data-cy="incident-form"]').should('be.visible');
   });
 
-  it.only('Should display correct BibTex Citation', () => {
+  it('Should display correct BibTex Citation', () => {
     cy.visit(url);
 
     const date = format(new Date(), 'MMMMd,y');

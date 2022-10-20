@@ -104,7 +104,7 @@
   "Color by editor’s classification": "Couleur par classification de l'éditeur",
   "Darken by Severity": "Obscurcissement par gravité",
   "This Incident in Semantic Space": "Cet incident dans l'espace sémantique",
-  "The visualization below plots incidents closer together according to the similarity of their reports texts, as identified through <2>our natural-language processing system</2>" : "La visualisation suivante représente les incidents à proximité proportionnelle à la similitude des textes de leurs rapports, identifiés grâce à <2>notre système de traitement du langage naturel</2>",
+  "tsneDescription":"La vue spatiale ci-dessus montre chaque incident dans la base de données avec un point qui contient son numéro d'ID. Les incidents sont positionnés afin que ceux qui ont des textes de rapport similaires soient plus proches. Par exemple, les incidents qui concernent les véhicules autonomes forment un amas compact. Nous déterminons la similarité des incidents avec un système de traitement du langage naturel, sur lequel vous pouvez lire plus dans <1> notre article de blog sur son déploiement</1>.",
   "review": "reviser",
   "Loading...": "Chargement...",
   "Spatial View": "Vue Spatiale",

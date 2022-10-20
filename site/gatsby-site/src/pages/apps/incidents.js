@@ -13,21 +13,23 @@ export default function IncidentsPage(props) {
   const { t } = useTranslation();
 
   return (
-    <LayoutHideSidebar {...props} className="bootstrap">
+    <LayoutHideSidebar {...props}>
       <AiidHelmet>
         <title>{t('Incidents')}</title>
       </AiidHelmet>
-      {!incidentsData && (
-        <div className="p-4 flex justify-center align-items-center gap-2">
-          <Spinner />
-          <Trans>Fetching Incidents...</Trans>
-        </div>
-      )}
-      {incidentsData && incidentsData.incidents && (
-        <div className="ms-3 mt-2 mb-2">
-          <IncidentsTable data={incidentsData.incidents} />
-        </div>
-      )}
+      <div className="bootstrap">
+        {!incidentsData && (
+          <div className="p-4 flex justify-center align-items-center gap-2">
+            <Spinner />
+            <Trans>Fetching Incidents...</Trans>
+          </div>
+        )}
+        {incidentsData && incidentsData.incidents && (
+          <div className="ms-3 mt-2 mb-2">
+            <IncidentsTable data={incidentsData.incidents} />
+          </div>
+        )}
+      </div>
     </LayoutHideSidebar>
   );
 }

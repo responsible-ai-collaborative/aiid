@@ -118,7 +118,6 @@ describe('Submitted reports', () => {
                 {
                   __typename: 'Report',
                   report_number: 1565,
-                  ref_number: 1,
                 },
               ],
             },
@@ -270,12 +269,10 @@ describe('Submitted reports', () => {
                 {
                   __typename: 'Report',
                   report_number: 1565,
-                  ref_number: 1,
                 },
                 {
                   __typename: 'Report',
                   report_number: 1566,
-                  ref_number: 2,
                 },
               ],
             },
@@ -294,7 +291,6 @@ describe('Submitted reports', () => {
             ...submission,
             __typename: 'Report',
             report_number: 1566,
-            ref_number: 2,
           },
         },
       }
