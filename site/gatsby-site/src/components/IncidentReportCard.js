@@ -123,7 +123,7 @@ export default function IncidentReportCard(props) {
         <Image
           className={
             imagePosition == 'left'
-              ? 'object-cover absolute bottom-0 top-0 left-0 w-60 h-full rounded-l-lg'
+              ? 'object-cover absolute bottom-0 top-0 left-0 w-96 max-w-[33%] h-full rounded-l-lg'
               : 'object-cover w-full aspect-[16/9] rounded-t-lg'
           }
           publicID={cloudinary_id || `legacy/${md5(image_url)}`}
@@ -132,6 +132,8 @@ export default function IncidentReportCard(props) {
         />
       </>
     );
+
+  console.log(`children[0].props`, children[0].props);
 
   return (
     <div data-cy={props['data-cy']} {...{ id, className, style, onMouseEnter, onMouseLeave }}>
@@ -153,7 +155,9 @@ export default function IncidentReportCard(props) {
                   to={link}
                   data-cy="image-container"
                   className={
-                    imagePosition == 'left' ? 'h-full -m-6 mr-6 w-60 shrink-0' : '-m-6 mb-6 block'
+                    imagePosition == 'left'
+                      ? 'h-full -m-6 mr-10 w-96 max-w-[33%] shrink-0'
+                      : '-m-6 mb-6 block'
                   }
                 >
                   {img}
@@ -162,17 +166,22 @@ export default function IncidentReportCard(props) {
                 <div
                   data-cy="image-container"
                   className={
-                    imagePosition == 'left' ? 'h-full -m-6 mr-6 w-60 shrink-0' : '-m-6 mb-6 block'
+                    imagePosition == 'left' ? 'h-full -m-6 mr-10 w-60 shrink-0' : '-m-6 mb-6 block'
                   }
                 >
                   {img}
                 </div>
               ))}
             <div data-cy="card-content" className="h-full flex flex-col">
-              <h3 className="text-lg" data-cy="title">
+              {children.filter((child) => child.props.position == 'header')}
+              <h3 className="text-lg font-semibold" data-cy="title">
                 {link ? (
                   <div className="flex">
-                    <Link to={link} data-cy="cite-link">
+                    <Link
+                      to={link}
+                      data-cy="cite-link"
+                      className="text-gray-900 dark:text-white hover:text-primary-blue"
+                    >
                       {title}
                     </Link>
                   </div>
@@ -203,11 +212,13 @@ export default function IncidentReportCard(props) {
                 <TranslationBadge originalLanguage={language} className="my-2 mr-1" />
               </div>
               {text && (
-                <div className="mt-4">
+                <div>
                   <ReportText text={text} maxChars={textMaxChars} />
                 </div>
               )}
-              {children}
+              {children.filter(
+                (child) => child.props.position == 'footer' || child.props.position == 'bottomRight'
+              )}
             </div>
           </div>
         )}
@@ -216,20 +227,20 @@ export default function IncidentReportCard(props) {
   );
 }
 
-export function CardFooter({ children, className, style }) {
-  return (
-    <div data-cy="card-actions" style={style} className={`flex mt-4 ${className || ''}`}>
-      {children}
-    </div>
-  );
-}
+export function CardChild({ children, className, style, position }) {
+  if (!position) {
+    throw 'CardChild must have specified `position`';
+  }
+  const positionClassName = {
+    footer: 'flex mt-4',
+    bottomRight: 'absolute bottom-6 right-6',
+  }[position];
 
-export function CardBottomRight({ children, className, style }) {
   return (
     <div
       data-cy="card-actions"
       style={style}
-      className={`absolute bottom-6 right-6 ${className || ''}`}
+      className={[positionClassName, className].filter((e) => e).join(' ')}
     >
       {children}
     </div>

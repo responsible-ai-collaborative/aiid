@@ -1,6 +1,6 @@
 import React from 'react';
 import Actions from '../Actions';
-import IncidentReportCard, { CardFooter } from 'components/IncidentReportCard';
+import IncidentReportCard, { CardChild } from 'components/IncidentReportCard';
 
 export default function Details({
   item,
@@ -16,8 +16,7 @@ export default function Details({
       textMaxChars={400 - item.title.length * 2}
       data-cy={item.mongodb_id}
     >
-      <CardFooter className="justify-around">
-        Pokemon go to the polls
+      <CardChild position="footer" className="justify-around">
         <Actions
           {...{
             authorsModal,
@@ -28,7 +27,7 @@ export default function Details({
             setExpandFilters,
           }}
         />
-      </CardFooter>
+      </CardChild>
     </IncidentReportCard>
   );
 }

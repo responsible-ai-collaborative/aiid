@@ -298,12 +298,12 @@ function PlotPoint({
           }}
           onMouseLeave={() => setHoverTimeout(setTimeout(() => setHover(false), 500))}
         >
-          <CardFooter>
+          <CardChild position="footer">
             <div>
               <Swatch color={background} />
               {taxon}
             </div>
-          </CardFooter>
+          </CardChild>
         </IncidentReportCard>
       )}
     </>
@@ -566,4 +566,4 @@ import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Color from 'color';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans } from 'react-i18next';
-import IncidentReportCard, { CardFooter } from 'components/IncidentReportCard';
+import IncidentReportCard, { CardChild } from 'components/IncidentReportCard';

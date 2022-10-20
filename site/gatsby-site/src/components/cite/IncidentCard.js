@@ -1,7 +1,7 @@
 import React from 'react';
 import { useUserContext } from 'contexts/userContext';
 import Actions from 'components/discover/Actions';
-import IncidentReportCard, { CardFooter } from 'components/IncidentReportCard';
+import IncidentReportCard, { CardChild } from 'components/IncidentReportCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'react-bootstrap';
@@ -16,7 +16,7 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
       className="mt-2 mb-2 IncidentCard"
       style={{ maxWidth: '800px' }}
     >
-      <CardFooter className="justify-around text-muted-gray">
+      <CardChild position="footer" className="justify-around text-muted-gray">
         <Actions
           item={item}
           authorsModal={authorsModal}
@@ -35,7 +35,7 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
             </Button>
           </a>
         )}
-      </CardFooter>
+      </CardChild>
     </IncidentReportCard>
   );
 };

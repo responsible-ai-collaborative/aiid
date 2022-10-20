@@ -1,7 +1,7 @@
 import React from 'react';
 import Actions from '../Actions';
 import TranslationBadge from 'components/i18n/TranslationBadge';
-import IncidentReportCard, { CardFooter } from 'components/IncidentReportCard';
+import IncidentReportCard, { CardChild } from 'components/IncidentReportCard';
 
 export default function Details({
   item,
@@ -18,7 +18,7 @@ export default function Details({
       imagePosition="left"
       data-cy={item.mongodb_id}
     >
-      <CardFooter className="justify-around">
+      <CardChild position="footer" className="justify-around">
         <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />
         <Actions
           {...{
@@ -30,7 +30,7 @@ export default function Details({
             setExpandFilters,
           }}
         />
-      </CardFooter>
+      </CardChild>
     </IncidentReportCard>
   );
 }

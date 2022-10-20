@@ -143,7 +143,7 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
       dateFormat="MMM d"
       {...{ source_domain, title }}
     >
-      <CardFooter className="flex-wrap mb-4">
+      <CardChild position="footer" className="flex-wrap mb-4">
         <span className="mb-1 mr-1">
           {newsArticle.similarity < 0.997 ? (
             <Badge color="warning" title={'cosine similarity: ' + newsArticle.similarity}>
@@ -164,8 +164,8 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
             <Badge>{keyword}</Badge>
           </span>
         ))}
-      </CardFooter>
-      <CardFooter className="mt-auto flex-wrap">
+      </CardChild>
+      <CardChild position="footer" className="mt-auto flex-wrap">
         {dismissed ? (
           <Button
             color="light"
@@ -224,7 +224,7 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
             Submit
           </Button>
         </LocalizedLink>
-      </CardFooter>
+      </CardChild>
     </IncidentReportCard>
   );
 }
@@ -240,4 +240,4 @@ import { Button, Badge } from 'flowbite-react';
 import { parse } from 'date-fns';
 import { faPlusCircle, faTrash, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import IncidentReportCard, { CardFooter } from 'components/IncidentReportCard';
+import IncidentReportCard, { CardChild } from 'components/IncidentReportCard';

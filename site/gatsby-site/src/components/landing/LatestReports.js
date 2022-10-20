@@ -1,6 +1,6 @@
 import React from 'react';
 import { Trans } from 'react-i18next';
-import IncidentReportCard, { CardFooter } from 'components/IncidentReportCard';
+import IncidentReportCard, { CardChild } from 'components/IncidentReportCard';
 import Link from 'components/ui/Link';
 
 export default function LatestReports({ latestReport }) {
@@ -10,10 +10,17 @@ export default function LatestReports({ latestReport }) {
         <IncidentReportCard
           report={latestReport}
           imagePosition="left"
-          textMaxChars={400}
+          textMaxChars={200}
           dateFormat="MMM d, yyyy"
         >
-          <CardFooter>
+          <CardChild position="header">
+            <Link to={`/cite/${latestReport.incident_id}`}>
+              <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white w-full hover:text-primary-blue">
+                Latest Incident Report
+              </h2>
+            </Link>
+          </CardChild>
+          <CardChild position="footer">
             <Link
               to={`/cite/${latestReport.incident_id}`}
               className="inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ml-auto"
@@ -33,7 +40,7 @@ export default function LatestReports({ latestReport }) {
                 ></path>
               </svg>
             </Link>
-          </CardFooter>
+          </CardChild>
         </IncidentReportCard>
       </div>
     </>
