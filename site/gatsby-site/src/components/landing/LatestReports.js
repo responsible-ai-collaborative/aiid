@@ -4,7 +4,6 @@ import IncidentReportCard, { CardFooter } from 'components/IncidentReportCard';
 import Link from 'components/ui/Link';
 
 export default function LatestReports({ latestReport }) {
-  console.log(`latestReport`, latestReport);
   return (
     <>
       <div className="flex flex-col items-center">
