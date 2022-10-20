@@ -9,7 +9,7 @@ import Card from '../../elements/Card';
 import WebArchiveLink from 'components/ui/WebArchiveLink';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 
-const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) => {
+const ReportCard = ({ item, authorsModal, submittersModal, flagReportModal }) => {
   const { isRole, loading } = useUserContext();
 
   return (
@@ -58,4 +58,4 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
   );
 };
 
-export default IncidentCard;
+export default ReportCard;
