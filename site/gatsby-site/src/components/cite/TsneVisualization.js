@@ -1,26 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Form } from 'react-bootstrap';
-import styled from 'styled-components';
-import { useApolloClient, gql } from '@apollo/client';
-import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-import Color from 'color';
-import { LocalizedLink } from 'gatsby-theme-i18n';
-import { Trans } from 'react-i18next';
-import IncidentReportCard, { CardActions } from 'components/IncidentReportCard';
-
 export default function TsneVisualization({
-  currentIncidentId,
-  incidents,
-  classifications,
-  csetClassifications,
+  currentIncidentId, // The id if linked from the /cite/{incident_id}, otherwise -1
+  incidents, // List of incidents containing `incident_id` and `tsne`
+  classifications, // List of nodes in the `classifications` collection
+  csetClassifications, // List of CSET categories shown, like "Harm Type"
 }) {
-  const [axis, setAxis] = useState('Sector of Deployment');
-
-  const [highlightedCategory, setHighlightedCategory] = useState(null);
-
   const currentSpatialIncident = incidents.find(
     (incident) => incident.incident_id == currentIncidentId
   );
+
+  const [axis, setAxis] = useState('Sector of Deployment');
 
   const taxons = Array.from(
     new Set(
@@ -32,6 +20,10 @@ export default function TsneVisualization({
         .concat('Unclassified')
     )
   );
+
+  // When a category is hovered in the sidebar, it becomes highlighted,
+  // with PlotPoints from all other categories faded out.
+  const [highlightedCategory, setHighlightedCategory] = useState(null);
 
   const taxonColorMap = getTaxonColorMap({ taxons });
 
@@ -47,81 +39,29 @@ export default function TsneVisualization({
     setTaxonVisibility(getTaxonVisibility());
   }, [axis]);
 
+  const childData = {
+    incidents,
+    classifications,
+    csetClassifications,
+    currentSpatialIncident,
+    currentIncidentId,
+    taxons,
+    taxonColorMap,
+    taxonVisibility,
+    setTaxonVisibility,
+    axis,
+    setAxis,
+    highlightedCategory,
+    setHighlightedCategory,
+  };
+
   return (
     incidents &&
     (currentSpatialIncident || !currentIncidentId || currentIncidentId < 1) && (
-      <>
-        <VisualizationLayout>
-          <VisualizationView
-            {...{
-              incidents,
-              classifications,
-              currentSpatialIncident,
-              currentIncidentId,
-              taxonColorMap,
-              taxonVisibility,
-              axis,
-              highlightedCategory,
-            }}
-          />
-          <Sidebar>
-            <label htmlFor="color-axis-select">
-              <Trans>Color by incident classifications from taxonomies</Trans>
-            </label>
-            <Form.Select
-              className="my-4 w-full"
-              id="color-axis-select"
-              onChange={(event) => setAxis(event.target.value)}
-              data-cy="color-axis-select"
-            >
-              {csetClassifications.map((axis) => (
-                <option key={axis} value={axis}>
-                  CSET:{axis}
-                </option>
-              ))}
-            </Form.Select>
-            <ul className="list-none">
-              {taxons.map((taxon) => (
-                <li
-                  key={taxon}
-                  className={
-                    'cursor-pointer' +
-                    (taxonVisibility[taxon]
-                      ? highlightedCategory &&
-                        taxonVisibility[highlightedCategory] &&
-                        highlightedCategory != taxon
-                        ? ' opacity-50'
-                        : ''
-                      : ' opacity-10')
-                  }
-                >
-                  <button
-                    style={{
-                      background: 'none',
-                      padding: '0px',
-                      margin: '0px',
-                      border: 'none',
-                      textAlign: 'left',
-                    }}
-                    className="-indent-4 pl-4"
-                    onMouseEnter={() => setHighlightedCategory(taxon)}
-                    onMouseLeave={() => setHighlightedCategory(null)}
-                    onClick={() =>
-                      setTaxonVisibility((taxonVisibility) => ({
-                        ...taxonVisibility,
-                        [taxon]: !taxonVisibility[taxon],
-                      }))
-                    }
-                  >
-                    <Swatch color={taxonColorMap[taxon]} />
-                    {taxon}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </Sidebar>
-        </VisualizationLayout>
-      </>
+      <VisualizationLayout>
+        <VisualizationView {...childData} />
+        <Sidebar {...childData} />
+      </VisualizationLayout>
     )
   );
 }
@@ -150,7 +90,7 @@ function VisualizationView({
           <TransformComponent className="h-full">
             <Visualization className="h-full">
               {incidents.map((incident) => {
-                // I'm pretty sure the JS engine is smart enough to memoize this,
+                // I hope the JS engine is smart enough to memoize this,
                 // but I'm not taking my chances.
                 const scaleMultiplier = 1 / Math.sqrt(state.scale);
 
@@ -329,13 +269,12 @@ function PlotPoint({
         <span>{incident.incident_id}</span>
       </LocalizedLink>
 
-      {hover && ( // Incident Card
+      {hover && (
         <IncidentReportCard
           loading={!incidentData}
           incident={incidentData}
           reportsCount={false}
           data-cy="incident-card"
-          //className="incident-card"
           style={{
             top: onTop ? `calc(50% + 48% * ${incident.tsne.y} + ${scaleMultiplier}em)` : undefined,
             bottom: !onTop
@@ -352,9 +291,6 @@ function PlotPoint({
             zIndex: 10,
             position: 'absolute',
             width: '20em',
-            //display: incidentData ? undefined : 'flex',
-            //alignItems: 'center',
-            //justifyContent: 'center',
           }}
           onMouseEnter={() => {
             clearTimeout(hoverTimeout);
@@ -362,28 +298,18 @@ function PlotPoint({
           }}
           onMouseLeave={() => setHoverTimeout(setTimeout(() => setHover(false), 500))}
         >
-          <CardActions>
+          <CardFooter>
             <div>
               <Swatch color={background} />
               {taxon}
             </div>
-          </CardActions>
+          </CardFooter>
         </IncidentReportCard>
       )}
     </>
   );
 }
 
-//            <>
-//              <Image publicID={incidentData.reports[0].cloudinary_id} />
-//              <h3 data-cy="title">{incidentData?.title || incidentData.reports[0].title}</h3>
-//              {taxon && (
-//                <div style={{ marginTop: '.5em' }}>
-//                  <Swatch color={background} />
-//                  {taxon}
-//                </div>
-//              )}
-//            </>
 function getTaxonColorMap({ taxons }) {
   let taxonColorMap = {
     Sex: Color('#ff0090'),
@@ -494,16 +420,80 @@ function VisualizationLayout({ children }) {
   );
 }
 
-function Sidebar({ children }) {
+function Sidebar({
+  csetClassifications,
+  taxons,
+  taxonColorMap,
+  taxonVisibility,
+  setTaxonVisibility,
+  setAxis,
+  highlightedCategory,
+  setHighlightedCategory,
+}) {
+  const className = `
+    p-4 
+    border-2 border-l-0 border-gray-200
+    overflow-auto
+    w-full  h-60
+    xl:w-80 xl:h-full
+  `;
+
   return (
-    <div
-      className="
-      p-4 border-2 border-l-0 border-gray-200 overflow-auto
-      w-full  h-60
-      xl:w-80 xl:h-full
-    "
-    >
-      {children}
+    <div className={className}>
+      <label htmlFor="color-axis-select">
+        <Trans>Color by incident classifications from taxonomies</Trans>
+      </label>
+      <Form.Select
+        className="my-4 w-full"
+        id="color-axis-select"
+        onChange={(event) => setAxis(event.target.value)}
+        data-cy="color-axis-select"
+      >
+        {csetClassifications.map((axis) => (
+          <option key={axis} value={axis}>
+            CSET:{axis}
+          </option>
+        ))}
+      </Form.Select>
+      <ul className="list-none">
+        {taxons.map((taxon) => (
+          <li
+            key={taxon}
+            className={
+              'cursor-pointer' +
+              (taxonVisibility[taxon]
+                ? highlightedCategory &&
+                  taxonVisibility[highlightedCategory] &&
+                  highlightedCategory != taxon
+                  ? ' opacity-50'
+                  : ''
+                : ' opacity-10')
+            }
+          >
+            <button
+              style={{
+                background: 'none',
+                padding: '0px',
+                margin: '0px',
+                border: 'none',
+                textAlign: 'left',
+              }}
+              className="-indent-4 pl-4"
+              onMouseEnter={() => setHighlightedCategory(taxon)}
+              onMouseLeave={() => setHighlightedCategory(null)}
+              onClick={() =>
+                setTaxonVisibility((taxonVisibility) => ({
+                  ...taxonVisibility,
+                  [taxon]: !taxonVisibility[taxon],
+                }))
+              }
+            >
+              <Swatch color={taxonColorMap[taxon]} />
+              {taxon}
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -534,7 +524,7 @@ var Visualization = styled.div`
   position: relative;
   overflow: visible;
   aspect-ratio: 1 / 1;
-  > a:not(.incident-card) {
+  > a {
     color: inherit;
     position: absolute;
     font-size: 75%;
@@ -554,34 +544,8 @@ var Visualization = styled.div`
     justify-content: center;
     align-items: center;
   }
-  .incident-card {
-    display: block;
-    min-height: 15em;
-    width: 15em;
-    background: white;
-    border-radius: 0.25rem;
-    box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.25);
-    position: absolute;
-    padding: 1em;
-    overflow: hidden;
-    img {
-      margin: -1em -1em 1em -1em;
-      max-width: unset;
-      width: calc(100% + 4em);
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-    }
-    h3 {
-      font-size: 110%;
-      margin: 0px;
-      line-height: 1.5;
-    }
-  }
-  .incident-card:not(:hover) {
-    color: black;
-  }
 
-  > a:hover:not(.current):not(.incident-card) {
+  > a:hover:not(.current) {
     background: #dedede;
     z-index: 3;
     color: var(--primary3) !important;
@@ -593,3 +557,13 @@ var Visualization = styled.div`
     z-index: 2;
   }
 `;
+
+import React, { useState, useEffect } from 'react';
+import { Form } from 'react-bootstrap';
+import styled from 'styled-components';
+import { useApolloClient, gql } from '@apollo/client';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import Color from 'color';
+import { LocalizedLink } from 'gatsby-theme-i18n';
+import { Trans } from 'react-i18next';
+import IncidentReportCard, { CardFooter } from 'components/IncidentReportCard';

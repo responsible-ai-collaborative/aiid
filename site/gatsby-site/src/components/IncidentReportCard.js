@@ -1,34 +1,4 @@
-import React from 'react';
-import { Card, Spinner } from 'flowbite-react';
-import { Image } from '../utils/cloudinary';
-import { fill } from '@cloudinary/base/actions/resize';
-import md5 from 'md5';
-import { LocalizedLink, useLocalization } from 'gatsby-theme-i18n';
-import { formatISO, format, parse } from 'date-fns';
-import { useTranslation } from 'react-i18next';
-import WebArchiveLink from 'components/ui/WebArchiveLink';
-import ReportText from 'components/reports/ReportText';
-import TranslationBadge from 'components/i18n/TranslationBadge';
-
-const CardActions = ({ children, position = 'row', className, style }) => (
-  <div
-    data-cy="card-actions"
-    style={style}
-    className={
-      className +
-      ' ' +
-      (position == 'rightCorner'
-        ? 'absolute bottom-6 right-6'
-        : position == 'row'
-        ? 'flex mt-4'
-        : '')
-    }
-  >
-    {children}
-  </div>
-);
-
-const IncidentReportCard = (props) => {
+export default function IncidentReportCard(props) {
   let {
     // You can pass an object containing the incident OR the report to be rendered
     incident,
@@ -56,7 +26,7 @@ const IncidentReportCard = (props) => {
     report_number,
     language,
 
-    // If the card represent a report,
+    // If the card represents a report,
     // the incident_id is the id of the corresponding incident.
     incident_id,
 
@@ -66,6 +36,7 @@ const IncidentReportCard = (props) => {
     // Card config
     textMaxChars,
     imagePosition,
+    dateFormat = 'MMM yyyy',
 
     // React
     children,
@@ -140,24 +111,27 @@ const IncidentReportCard = (props) => {
 
   if (incident_id) {
     link = `/cite/${incident_id}` + (report_number ? `#r${report_number}` : '');
+  } else if (url) {
+    link = url;
   }
 
-  const img = loading ? (
-    <></>
-  ) : (
-    <>
-      <Image
-        className={
-          imagePosition == 'left'
-            ? 'object-cover absolute bottom-0 top-0 left-0 w-60 h-full rounded-l-lg'
-            : 'object-cover w-full aspect-[16/9] rounded-t-lg'
-        }
-        publicID={cloudinary_id || `legacy/${md5(image_url)}`}
-        transformation={fill().width(900)}
-        alt=""
-      />
-    </>
-  );
+  const img =
+    loading || (!cloudinary_id && !image_url) ? (
+      <></>
+    ) : (
+      <>
+        <Image
+          className={
+            imagePosition == 'left'
+              ? 'object-cover absolute bottom-0 top-0 left-0 w-60 h-full rounded-l-lg'
+              : 'object-cover w-full aspect-[16/9] rounded-t-lg'
+          }
+          publicID={cloudinary_id || `legacy/${md5(image_url)}`}
+          transformation={fill().width(900)}
+          alt=""
+        />
+      </>
+    );
 
   return (
     <div data-cy={props['data-cy']} {...{ id, className, style, onMouseEnter, onMouseLeave }}>
@@ -175,7 +149,7 @@ const IncidentReportCard = (props) => {
           >
             {(cloudinary_id || image_url) &&
               (link ? (
-                <LocalizedLink
+                <Link
                   to={link}
                   data-cy="image-container"
                   className={
@@ -183,7 +157,7 @@ const IncidentReportCard = (props) => {
                   }
                 >
                   {img}
-                </LocalizedLink>
+                </Link>
               ) : (
                 <div
                   data-cy="image-container"
@@ -198,9 +172,9 @@ const IncidentReportCard = (props) => {
               <h3 className="text-lg" data-cy="title">
                 {link ? (
                   <div className="flex">
-                    <LocalizedLink to={link} data-cy="cite-link">
+                    <Link to={link} data-cy="cite-link">
                       {title}
-                    </LocalizedLink>
+                    </Link>
                   </div>
                 ) : (
                   <>{title}</>
@@ -209,7 +183,7 @@ const IncidentReportCard = (props) => {
               <div data-cy="subtitle" className="text-muted-gray text-sm">
                 {[
                   parsedDate && (
-                    <time dateTime={formatISO(parsedDate)}>{format(parsedDate, 'MMM yyyy')}</time>
+                    <time dateTime={formatISO(parsedDate)}>{format(parsedDate, dateFormat)}</time>
                   ),
                   reportsCount > 0 && (
                     <>
@@ -233,15 +207,44 @@ const IncidentReportCard = (props) => {
                   <ReportText text={text} maxChars={textMaxChars} />
                 </div>
               )}
-              <div className="mt-auto" data-cy="card-actions-container">
-                {children}
-              </div>
+              {children}
             </div>
           </div>
         )}
       </Card>
     </div>
   );
-};
+}
 
-export { IncidentReportCard as default, CardActions };
+export function CardFooter({ children, className, style }) {
+  return (
+    <div data-cy="card-actions" style={style} className={`flex mt-4 ${className || ''}`}>
+      {children}
+    </div>
+  );
+}
+
+export function CardBottomRight({ children, className, style }) {
+  return (
+    <div
+      data-cy="card-actions"
+      style={style}
+      className={`absolute bottom-6 right-6 ${className || ''}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+import React from 'react';
+import { Card, Spinner } from 'flowbite-react';
+import { Image } from '../utils/cloudinary';
+import { fill } from '@cloudinary/base/actions/resize';
+import md5 from 'md5';
+import { useLocalization } from 'gatsby-theme-i18n';
+import { formatISO, format, parse } from 'date-fns';
+import { useTranslation } from 'react-i18next';
+import WebArchiveLink from 'components/ui/WebArchiveLink';
+import ReportText from 'components/reports/ReportText';
+import TranslationBadge from 'components/i18n/TranslationBadge';
+import Link from 'components/ui/Link';

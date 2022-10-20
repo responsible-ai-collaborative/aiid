@@ -1,6 +1,6 @@
 import React from 'react';
 import Actions from '../Actions';
-import IncidentReportCard, { CardActions } from 'components/IncidentReportCard';
+import IncidentReportCard, { CardFooter } from 'components/IncidentReportCard';
 
 export default function Compact({
   item,
@@ -12,7 +12,7 @@ export default function Compact({
 }) {
   return (
     <IncidentReportCard report={item} text={false} data-cy={item.mongodb_id}>
-      <CardActions className="justify-around">
+      <CardFooter className="justify-around">
         <Actions
           {...{
             authorsModal,
@@ -23,7 +23,7 @@ export default function Compact({
             setExpandFilters,
           }}
         />
-      </CardActions>
+      </CardFooter>
     </IncidentReportCard>
   );
 }

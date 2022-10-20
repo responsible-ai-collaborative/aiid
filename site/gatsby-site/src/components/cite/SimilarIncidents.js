@@ -9,7 +9,7 @@ import Button from '../../elements/Button';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
-import IncidentReportCard, { CardActions } from 'components/IncidentReportCard';
+import IncidentReportCard, { CardBottomRight } from 'components/IncidentReportCard';
 
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
@@ -26,7 +26,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   return (
     <IncidentReportCard incident={incident} data-cy="similar-incident-card">
-      <CardActions position="rightCorner">
+      <CardBottomRight position="rightCorner">
         {flaggable && (
           <Button
             variant="link"
@@ -61,7 +61,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
             <FontAwesomeIcon icon={faFlag} />
           </Button>
         )}
-      </CardActions>
+      </CardBottomRight>
     </IncidentReportCard>
   );
 };
@@ -73,7 +73,7 @@ const SimilarIncidents = ({
   editor_dissimilar_incidents,
   flagged_dissimilar_incidents,
 }) => {
-  const { isRole } = useUserContext();
+  const { isRole, loading } = useUserContext();
 
   nlp_similar_incidents ||= [];
   editor_dissimilar_incidents ||= [];
@@ -101,7 +101,7 @@ const SimilarIncidents = ({
         <>
           <div className="tw-subtitle">
             <Trans>Selected by our editors</Trans>
-            {isRole('incident_editor') && (
+            {!loading && isRole('incident_editor') && (
               <a
                 className="tw-edit-icon"
                 href={`/incidents/edit?incident_id=${parentIncident.incident_id}#similar-incidents`}
@@ -134,7 +134,7 @@ const SimilarIncidents = ({
                   <FontAwesomeIcon icon={faQuestionCircle} />
                 </Link>
               )}
-              {isRole('incident_editor') && (
+              {!loading && isRole('incident_editor') && (
                 <a
                   className="tw-edit-icon"
                   href={`/incidents/edit?incident_id=${parentIncident.incident_id}#similar-incidents`}
