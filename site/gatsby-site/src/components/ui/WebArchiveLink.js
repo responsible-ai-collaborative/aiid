@@ -47,7 +47,7 @@ export default function WebArchiveLink({ url, date, children, className }) {
   };
 
   return (
-    <div className="bootstrap">
+    <div className="bootstrap inline-block">
       <ArchiveOriginalSplit
         variant="link"
         title={children}

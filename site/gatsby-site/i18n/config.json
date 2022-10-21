@@ -14,5 +14,13 @@
     "localName": "Español",
     "langDir": "ltr",
     "dateFormat": "DD-MM-YYYY"
+  },
+  {
+    "code": "fr",
+    "hrefLang": "fr",
+    "name": "French",
+    "localName": "Français",
+    "langDir": "ltr",
+    "dateFormat": "DD-MM-YYYY"
   }
 ]

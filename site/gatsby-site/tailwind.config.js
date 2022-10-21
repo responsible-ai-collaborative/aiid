@@ -16,6 +16,7 @@ let safelist = [
   'tw-tooltip-bottom',
   'tw-tooltip-left',
   'tw-btn-link',
+  'bg-amber-400',
 ];
 
 // Whitelisting level options from ListItem component
@@ -37,7 +38,7 @@ const backfaceVisibility = plugin(function ({ addUtilities }) {
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   important: true,
-  darkMode: 'false', // Remove line if you wish to enable dark mode
+  darkMode: 'class', // This lets us use it for specific components where useful
   content: [
     './src/pages/**/*.{js,jsx,ts,tsx}',
     './src/components/**/*.{js,jsx,ts,tsx}',
@@ -82,6 +83,7 @@ module.exports = {
         'light-orange': '#ec9982',
         'list-gray': '#5c6975',
         'light-blue': 'rgb(230,236,241)',
+        'side-bar': 'rgb(237, 231, 243)',
         'form-control': '#ced4da',
         'black-25': 'rgba(0,0,0,.25)',
         'table-text': 'rgba(0,0,0,0.05)',
@@ -99,6 +101,7 @@ module.exports = {
       },
       boxShadow: {
         card: '0 2px 5px 0px #e3e5ec',
+        'left-side-bar': 'rgb(175 158 232 / 40%) -1px 0px 4px 1px',
         table: 'inset 0 0 0 9999px transparent',
       },
       transitionDelay: {},
@@ -164,6 +167,7 @@ module.exports = {
         '0-0-auto': '0 0 auto',
         '0-1-auto': '0 1 auto',
         '1-1-auto': '1 1 auto',
+        '2-1-auto': '1 1 0',
       },
       transformOrigin: {
         'center-left': 'center left',

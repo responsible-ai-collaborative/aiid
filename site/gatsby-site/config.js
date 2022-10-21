@@ -84,6 +84,7 @@ const config = {
       { title: 'Discover Incidents', label: 'discover', url: '/apps/discover', items: [] },
       { title: 'Spatial View', label: 'spatial', url: '/summaries/spatial', items: [] },
       { title: 'Table View', label: 'incidents', url: '/apps/incidents', items: [] },
+      { title: 'Entities', label: 'entities', url: '/entities', items: [] },
       { title: 'Taxonomies', label: 'taxonomies', url: '/taxonomies', items: [] },
       { title: 'Word Counts', label: 'wordcounts', url: '/summaries/wordcounts', items: [] },
       { title: 'Submit Incident Reports', label: 'submit', url: '/apps/submit', items: [] },
@@ -102,12 +103,10 @@ const config = {
   footer: {
     navConfig: [
       {
-        title: 'Researcher Guide',
-        label: 'research',
-        url: '/research',
+        title: 'Research',
         items: [
           {
-            title: 'Incident Report Acceptance Criteria',
+            title: 'Defining an “AI Incident”',
             label: '1-criteria',
             url: '/research/1-criteria',
           },
@@ -116,6 +115,16 @@ const config = {
             title: 'Initial Collection Methodology',
             label: '3-history',
             url: '/research/3-history',
+          },
+          {
+            title: 'Related Work',
+            label: 'related-work',
+            url: '/research/related-work',
+          },
+          {
+            title: 'Download Complete Database',
+            label: 'snapshots',
+            url: '/research/snapshots',
           },
         ],
       },

@@ -4,6 +4,7 @@ import { Button, Form, Pagination } from 'react-bootstrap';
 import { useBlockLayout, useFilters, usePagination, useResizeColumns, useTable } from 'react-table';
 import IncidentEditModal from './IncidentEditModal';
 import styled from 'styled-components';
+import { Trans, useTranslation } from 'react-i18next';
 
 const Table = styled.div`
   display: inline-block;
@@ -65,6 +66,8 @@ function DefaultColumnFilter({
 }) {
   const count = preFilteredRows.length;
 
+  const { t } = useTranslation();
+
   if (!canFilter) {
     return <HeaderText>{Header}</HeaderText>;
   }
@@ -80,7 +83,7 @@ function DefaultColumnFilter({
         onChange={(e) => {
           setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
         }}
-        placeholder={`Search ${count} records...`}
+        placeholder={t(`Search {{count}} records...`, { count })}
       />
     </div>
   );
@@ -117,29 +120,29 @@ export default function IncidentsTable({ data }) {
         ),
       },
       {
-        Header: 'Title',
+        Header: <Trans>Title</Trans>,
         accessor: 'title',
       },
       {
-        Header: 'Description',
+        Header: <Trans>Description</Trans>,
         accessor: 'description',
       },
       {
-        Header: 'date',
+        Header: <Trans>date</Trans>,
         accessor: 'date',
       },
       {
-        Header: 'Alleged Deployer of AI System',
+        Header: <Trans>Alleged Deployer of AI System</Trans>,
         accessor: 'AllegedDeployerOfAISystem',
         Cell: ListCell,
       },
       {
-        Header: 'Alleged Developer of AISystem',
+        Header: <Trans>Alleged Developer of AISystem</Trans>,
         accessor: 'AllegedDeveloperOfAISystem',
         Cell: ListCell,
       },
       {
-        Header: 'Alleged Harmed or Nearly Harmed Parties',
+        Header: <Trans>Alleged Harmed or Nearly Harmed Parties</Trans>,
         accessor: 'AllegedHarmedOrNearlyHarmedParties',
         Cell: ListCell,
       },

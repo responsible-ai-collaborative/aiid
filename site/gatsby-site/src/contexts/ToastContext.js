@@ -14,27 +14,16 @@ const ToastsWrapper = styled.div`
 `;
 
 const CloseButton = styled(Button)`
-  &&& {
-    background: ${({ bg }) => (bg ? bg : `white`)};
-    color: white;
-    border-color: ${({ bg }) => (bg ? bg : `white`)};
-
-    :active {
-      background: ${({ bg }) => (bg ? bg : `white`)} !important;
-      border-color: ${({ bg }) => (bg ? bg : `white`)} !important;
-      box-shadow: 0 0 0 0 !important;
-    }
-
-    :focus {
-      border-color: ${({ bg }) => (bg ? bg : `white`)} !important;
-      box-shadow: 0 0 0 0 !important;
-    }
-  }
+  color: white !important;
 `;
 
 const ToastBodyContent = styled.div`
   svg {
     margin-right: 0.5em;
+  }
+  a {
+    text-decoration: underline !important;
+    color: white !important;
   }
 `;
 
@@ -87,13 +76,18 @@ export function ToastContextProvider({ children }) {
       {children}
       <ToastsWrapper className="bootstrap">
         {toasts.map(({ message, severity, id }, index) => (
-          <Toast key={id} style={{ background: severity.color, maxWidth: '100%' }} data-cy="toast">
+          <Toast
+            key={id}
+            className={severity.className}
+            style={{ maxWidth: '100%' }}
+            data-cy="toast"
+          >
             <ToastBody style={{ color: 'white' }}>
               <ToastBodyContent>
                 <FontAwesomeIcon icon={severity.icon} className={severity.faClass} />
                 {message}
               </ToastBodyContent>
-              <CloseButton bg={severity.color} onClick={(e) => removeToast(e, index)}>
+              <CloseButton onClick={(e) => removeToast(e, index)} variant="link">
                 <FontAwesomeIcon icon={faTimes} className="fas fa-times" />
               </CloseButton>
             </ToastBody>

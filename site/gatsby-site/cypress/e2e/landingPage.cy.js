@@ -50,4 +50,36 @@ describe('The Landing page', () => {
       )
       .should('exist');
   });
+
+  it('Should display common entities card', () => {
+    cy.visit('/');
+
+    cy.get('[data-cy="common-entities"]')
+      .scrollIntoView()
+      .should('be.visible')
+      .within(() => {
+        cy.contains('h2', 'Common Entities').should('exist');
+        cy.get('.grid > a').should('have.length', 3);
+      });
+  });
+
+  it('Should redirect to the account page when logged in', () => {
+    cy.visit('/');
+
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.location('pathname', { timeout: 8000 }).should('eq', '/');
+
+    cy.get('[data-cy="account-btn"]').filter(':visible').first().click();
+
+    cy.location('pathname', { timeout: 8000 }).should('eq', '/account');
+  });
+
+  it('Should redirect to the signup page when logged out', () => {
+    cy.visit('/');
+
+    cy.get('[data-cy="subscribe-btn"]').filter(':visible').click();
+
+    cy.location('pathname', { timeout: 8000 }).should('eq', '/signup');
+  });
 });

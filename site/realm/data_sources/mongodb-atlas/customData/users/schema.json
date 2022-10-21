@@ -1,0 +1,21 @@
+{
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "roles": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "userId": {
+            "bsonType": "string"
+        }
+    },
+    "required": [
+        "roles",
+        "userId"
+    ],
+    "title": "user"
+}

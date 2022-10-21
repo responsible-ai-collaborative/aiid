@@ -5,6 +5,7 @@ import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
+import PopoverWrapper from 'elements/PopoverWrapper';
 
 const Label = ({ popover, label }) => {
   const [show, setShow] = useState(false);
@@ -16,33 +17,39 @@ const Label = ({ popover, label }) => {
   }
 
   return (
-    <div className="bootstrap">
-      <OverlayTrigger
-        placement={'top'}
-        overlay={
-          <Popover data-cy={`popover-${popover}`}>
-            <Popover.Header as="h3">
-              <Trans ns="popovers" i18nKey={`${popover}.title`} />
-            </Popover.Header>
-            <Popover.Body>
-              <Trans ns="popovers" i18nKey={`${popover}.text`} components={{ linkto: <Link /> }} />
-            </Popover.Body>
-          </Popover>
-        }
-        {...(show ? { show } : {})}
-      >
-        <Form.Label data-cy={`label-${popover}`}>
-          {label}{' '}
-          <FontAwesomeIcon
-            icon={faQuestionCircle}
-            style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-            className="far fa-question-circle"
-            onClick={() => setShow(!show)}
-          />{' '}
-          :
-        </Form.Label>
-      </OverlayTrigger>
-    </div>
+    <>
+      <div className="bootstrap">
+        <OverlayTrigger
+          placement={'top'}
+          overlay={
+            <PopoverWrapper data-cy={`popover-${popover}`}>
+              <Popover.Header as="h3">
+                <Trans ns="popovers" i18nKey={`${popover}.title`} />
+              </Popover.Header>
+              <Popover.Body>
+                <Trans
+                  ns="popovers"
+                  i18nKey={`${popover}.text`}
+                  components={{ linkto: <Link /> }}
+                />
+              </Popover.Body>
+            </PopoverWrapper>
+          }
+          {...(show ? { show } : {})}
+        >
+          <Form.Label data-cy={`label-${popover}`} className="relative">
+            {label}{' '}
+            <FontAwesomeIcon
+              icon={faQuestionCircle}
+              style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+              className="far fa-question-circle"
+              onClick={() => setShow(!show)}
+            />{' '}
+            :
+          </Form.Label>
+        </OverlayTrigger>
+      </div>
+    </>
   );
 };
 

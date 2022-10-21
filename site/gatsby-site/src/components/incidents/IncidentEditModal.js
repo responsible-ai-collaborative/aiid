@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
-import useToastContext, { SEVERITY } from 'hooks/useToast';
-import { Button, Modal, Spinner } from 'react-bootstrap';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import { Button, Modal } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
 import IncidentForm, { schema } from './IncidentForm';
 import { Formik } from 'formik';
+import { LocalizedLink } from 'gatsby-theme-i18n';
+import { useTranslation, Trans } from 'react-i18next';
 
 export default function IncidentEditModal({ show, onClose, incidentId }) {
+  const { t, i18n } = useTranslation();
+
   const [incident, setIncident] = useState();
 
   const { data: incidentData } = useQuery(FIND_INCIDENT, {
@@ -25,9 +30,29 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
     }
   }, [incidentData]);
 
+  const updateSuccessToast = ({ incidentId }) => ({
+    message: (
+      <Trans i18n={i18n} incidentId={incidentId}>
+        Incident {{ incidentId }} updated successfully.{' '}
+        <LocalizedLink to={'/cite/' + incidentId}>View incident {{ incidentId }}</LocalizedLink>.
+      </Trans>
+    ),
+    severity: SEVERITY.success,
+  });
+
+  const updateErrorToast = ({ incidentId, message }) => ({
+    message: t('Error updating incident {{incident}}. \n {{message}}', { incidentId, message }),
+    severity: SEVERITY.danger,
+  });
+
   const handleSubmit = async (values) => {
     try {
-      const updated = { ...values, reports: undefined, __typename: undefined };
+      const updated = {
+        ...values,
+        reports: undefined,
+        __typename: undefined,
+        embedding: undefined,
+      };
 
       await updateIncident({
         variables: {
@@ -40,17 +65,11 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         },
       });
 
-      addToast({
-        message: `Incident ${incidentId} updated successfully.`,
-        severity: SEVERITY.success,
-      });
+      addToast(updateSuccessToast({ incidentId }));
 
       onClose();
     } catch (e) {
-      addToast({
-        message: `Error updating incident ${incident} \n ${e.message}`,
-        severity: SEVERITY.danger,
-      });
+      addToast(updateErrorToast({ incidentId, message: e.message }));
     }
   };
 
@@ -64,7 +83,9 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         {!incident && (
           <Modal.Body>
             {incident === undefined && (
-              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+              <div className="flex justify-center">
+                <Spinner />
+              </div>
             )}
             {incident === null && <div>Report not found</div>}
           </Modal.Body>
@@ -85,8 +106,16 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
                     variant="primary"
                     onClick={submitForm}
                     disabled={isSubmitting || !isValid}
+                    className="bootstrap flex gap-2 disabled:opacity-50"
                   >
-                    Update
+                    {isSubmitting ? (
+                      <>
+                        <Spinner size="sm" />
+                        <Trans>Updating</Trans>
+                      </>
+                    ) : (
+                      <Trans>Update</Trans>
+                    )}
                   </Button>
                 </Modal.Footer>
               </>

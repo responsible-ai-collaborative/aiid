@@ -1,25 +1,45 @@
 import React, { useEffect, useState } from 'react';
-import Layout from 'components/Layout';
-import IncidentForm, { schema } from 'components/incidents/IncidentForm';
+import Layout from '../../components/Layout';
+import IncidentForm, { schema } from '../../components/incidents/IncidentForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Button, Spinner } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
+import { LocalizedLink } from 'gatsby-theme-i18n';
+import { useTranslation, Trans } from 'react-i18next';
 
 function EditCitePage(props) {
+  const { t, i18n } = useTranslation();
+
   const [incident, setIncident] = useState();
 
   const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
 
-  const { data: incidentData } = useQuery(FIND_INCIDENT, {
+  const { data: incidentData, loading } = useQuery(FIND_INCIDENT, {
     variables: { query: { incident_id: incidentId } },
   });
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
   const addToast = useToastContext();
+
+  const updateSuccessToast = ({ incidentId }) => ({
+    message: (
+      <Trans i18n={i18n} incidentId={incidentId}>
+        Incident {{ incidentId }} updated successfully.{' '}
+        <LocalizedLink to={'/cite/' + incidentId}>View incident {{ incidentId }}</LocalizedLink>.
+      </Trans>
+    ),
+    severity: SEVERITY.success,
+  });
+
+  const updateErrorToast = ({ incidentId }) => ({
+    message: t('Error updating incident {{incidentId}}.', { incidentId }),
+    severity: SEVERITY.danger,
+  });
 
   useEffect(() => {
     if (incidentData?.incident) {
@@ -31,7 +51,15 @@ function EditCitePage(props) {
 
   const handleSubmit = async (values) => {
     try {
-      const updated = { ...values, reports: undefined, __typename: undefined };
+      const updated = {
+        ...values,
+        reports: undefined,
+        embedding: {
+          ...values.embedding,
+          __typename: undefined,
+        },
+        __typename: undefined,
+      };
 
       await updateIncident({
         variables: {
@@ -44,25 +72,17 @@ function EditCitePage(props) {
         },
       });
 
-      addToast({
-        message: `Incident ${incidentId} updated successfully.`,
-        severity: SEVERITY.success,
-      });
+      addToast(updateSuccessToast({ incidentId }));
     } catch (e) {
-      addToast({
-        message: `Error updating incident ${incident} \n ${e.message}`,
-        severity: SEVERITY.danger,
-      });
+      addToast(updateErrorToast({ incidentId }));
     }
   };
 
   return (
     <Layout {...props} className={'w-100 bootstrap'}>
-      <h1 className="mb-5">Editing Incident {incidentId}</h1>
+      {!loading && <h1 className="mb-5">Editing Incident {incidentId}</h1>}
 
-      {incident === undefined && (
-        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-      )}
+      {incident === undefined && <Spinner />}
       {incident === null && <div>Report not found</div>}
 
       {incident && (
@@ -72,11 +92,20 @@ function EditCitePage(props) {
               <IncidentForm />
               <Button
                 onClick={submitForm}
-                className="mt-3"
                 type="submit"
                 disabled={!isValid || isSubmitting}
+                className="mt-3 bootstrap flex disabled:opacity-50"
               >
-                Save
+                {isSubmitting ? (
+                  <>
+                    <Spinner size="sm" />
+                    <div className="ml-2">
+                      <Trans>Updating...</Trans>
+                    </div>
+                  </>
+                ) : (
+                  <Trans>Save</Trans>
+                )}
               </Button>
             </>
           )}
