@@ -9,6 +9,7 @@ import DisplayModeSwitch from './DisplayModeSwitch';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
 import Button from 'elements/Button';
+import { ToggleDisplayIssues, ToggleOnlyIssues } from './toggles';
 // https://www.algolia.com/doc/guides/building-search-ui/going-further/native/react/?language=react#create-a-modal
 
 function OptionsModal({ searchState, setSearchState }) {
@@ -56,6 +57,17 @@ function OptionsModal({ searchState, setSearchState }) {
             <Form.Label for="hide-duplicates-modal">
               <Trans>1st report only</Trans>
             </Form.Label>
+
+            <ToggleDisplayIssues attribute="is_incident_report" id="display-issues" />
+            <Form.Label htmlFor="display-issues">
+              <Trans>Display Issues</Trans>
+            </Form.Label>
+
+            <ToggleOnlyIssues attribute="is_incident_report" id="only-issues" />
+            <Form.Label htmlFor="only-issues">
+              <Trans>Only Issues</Trans>
+            </Form.Label>
+
             <DisplayModeSwitch />
           </div>
 

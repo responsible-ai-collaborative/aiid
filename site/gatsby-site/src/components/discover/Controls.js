@@ -10,25 +10,7 @@ import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Trans } from 'react-i18next';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
-import { connectRefinementList } from 'react-instantsearch-dom';
-
-const ToggleDisplayIssues = connectRefinementList(({ currentRefinement, refine, id }) => {
-  return (
-    <Form.Check
-      type="switch"
-      id={id}
-      checked={currentRefinement.includes('false')}
-      onClick={() => {
-        if (currentRefinement.includes('true')) {
-          refine(['false']);
-        } else {
-          refine(['true']);
-        }
-      }}
-      className="tw-switch ml-2"
-    />
-  );
-});
+import { ToggleDisplayIssues, ToggleOnlyIssues } from './toggles';
 
 const Controls = ({ query, searchState, setSearchState }) => {
   const [expandFilters, setExpandFilters] = useState(false);
@@ -67,6 +49,11 @@ const Controls = ({ query, searchState, setSearchState }) => {
           <ToggleDisplayIssues attribute="is_incident_report" id="display-issues" />
           <Form.Label htmlFor="display-issues">
             <Trans>Display Issues</Trans>
+          </Form.Label>
+
+          <ToggleOnlyIssues attribute="is_incident_report" id="only-issues" />
+          <Form.Label htmlFor="only-issues">
+            <Trans>Only Issues</Trans>
           </Form.Label>
         </Col>
         <Col className="tw-hbox"></Col>
