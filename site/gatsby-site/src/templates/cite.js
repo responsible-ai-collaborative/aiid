@@ -33,6 +33,8 @@ import { getTaxonomies, getTranslatedReports } from 'utils/cite';
 import { computeEntities } from 'utils/entities';
 import AllegedEntities from 'components/entities/AllegedEntities';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -68,6 +70,7 @@ function CitePage(props) {
       allMongodbAiidprodReports,
       allMongodbTranslationsReportsEs,
       allMongodbTranslationsReportsEn,
+      allMongodbTranslationsReportsFr,
       incident,
     },
   } = props;
@@ -94,7 +97,11 @@ function CitePage(props) {
 
   const incidentReports = getTranslatedReports({
     allMongodbAiidprodReports,
-    translations: { en: allMongodbTranslationsReportsEn, es: allMongodbTranslationsReportsEs },
+    translations: {
+      en: allMongodbTranslationsReportsEn,
+      es: allMongodbTranslationsReportsEs,
+      fr: allMongodbTranslationsReportsFr,
+    },
     locale,
   });
 
@@ -306,20 +313,21 @@ function CitePage(props) {
                   <Trans>Tools</Trans>
                 </h4>
               </Card.Header>
-              <Card.Body className="flex-row">
-                <Button variant="outline-primary" className="mr-2" onClick={subscribeToNewReports}>
+              <Card.Body className="flex-row flex-wrap gap-2">
+                <Button variant="outline-primary" onClick={subscribeToNewReports}>
                   <div className="flex gap-2 items-center">
-                    {subscribing && (
-                      <div className="mr-2">
+                    {subscribing ? (
+                      <div>
                         <Spinner size="sm" />
                       </div>
+                    ) : (
+                      <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
                     )}
                     <Trans>Notify Me of Updates</Trans>
                   </div>
                 </Button>
                 <Button
                   variant="outline-primary"
-                  className="mr-2"
                   href={`/apps/submit?incident_id=${incident.incident_id}&date_downloaded=${format(
                     new Date(),
                     'yyyy-MM-dd'
@@ -327,12 +335,11 @@ function CitePage(props) {
                 >
                   <Trans>New Report</Trans>
                 </Button>
-                <Button variant="outline-primary" className="mr-2" href={'/summaries/incidents'}>
+                <Button variant="outline-primary" href={'/summaries/incidents'}>
                   <Trans>All Incidents</Trans>
                 </Button>
                 <Button
                   variant="outline-primary"
-                  className="mr-2"
                   href={'/apps/discover?incident_id=' + incident.incident_id}
                 >
                   <Trans>Discover</Trans>
@@ -340,7 +347,6 @@ function CitePage(props) {
                 {!loading && isRole('incident_editor') && (
                   <Button
                     variant="outline-primary"
-                    className="mr-2"
                     href={'/incidents/edit?incident_id=' + incident.incident_id}
                   >
                     Edit Incident
