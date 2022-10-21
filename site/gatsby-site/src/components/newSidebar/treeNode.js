@@ -121,7 +121,7 @@ const getIcon = (label, current = false) =>
     ),
   }[label]);
 
-const TreeNode = ({ className = '', setCollapsed, navSetting, item }) => {
+const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed = false }) => {
   const calculatedClassName = `${className} item ${
     item.current
       ? 'bg-light-orange text-white dark:bg-gray-700'
@@ -146,14 +146,18 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item }) => {
             className={`flex rounded-lg items-center p-2 text-base font-normal group ${calculatedClassName}`}
           >
             {icon && <>{icon} </>}
-            <span className="ml-3">
-              <Trans>{item.title}</Trans>
-            </span>
-            {!config.sidebar.frontLine && item.title && hasChildren ? (
-              <button onClick={click} aria-label="collapse" className="collapser">
-                {!item.collapsed ? <OpenedSvg /> : <ClosedSvg />}
-              </button>
-            ) : null}
+            {!isCollapsed && (
+              <>
+                <span className="ml-3">
+                  <Trans>{item.title}</Trans>
+                </span>
+                {!config.sidebar.frontLine && item.title && hasChildren ? (
+                  <button onClick={click} aria-label="collapse" className="collapser">
+                    {!item.collapsed ? <OpenedSvg /> : <ClosedSvg />}
+                  </button>
+                ) : null}
+              </>
+            )}
           </Link>
         )}
 

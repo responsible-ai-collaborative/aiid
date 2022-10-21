@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Tree from './tree';
 import { ExternalLink } from 'react-feather';
 import config from '../../../config';
@@ -6,17 +6,25 @@ import QuickAccess from 'components/discover/QuickAccess';
 import { Trans } from 'react-i18next';
 import LoginSignup from 'components/loginSignup';
 import useLocalizePath from 'components/i18n/useLocalizePath';
+import { faChevronCircleLeft, faChevronCircleRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const NewSidebarLayout = ({ collapse = false, setNavCollapsed }) => {
+const NewSidebarLayout = () => {
   const localizePath = useLocalizePath();
+
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
     <>
-      <aside
-        className={`w-64 sticky top-0 ${collapse ? 'TODO:do something' : ''}`}
-        aria-label="Sidebar"
-      >
-        <QuickAccess />
+      <aside className={`${!isCollapsed ? 'w-64' : ''} sticky top-0 relative`} aria-label="Sidebar">
+        <FontAwesomeIcon
+          icon={isCollapsed ? faChevronCircleRight : faChevronCircleLeft}
+          color={'white'}
+          className="cursor-pointer fa fa-twitter-square fa-lg text-gray-300 w-8 h-8 absolute -right-4 top-1/2"
+          title="Open Twitter"
+          onClick={() => setIsCollapsed(!isCollapsed)}
+        />
+        {!isCollapsed && <QuickAccess />}
         {config.sidebar.title ? (
           <div
             className={'tw-hidden-mobile'}
@@ -25,7 +33,11 @@ const NewSidebarLayout = ({ collapse = false, setNavCollapsed }) => {
         ) : null}
         <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded dark:bg-gray-800">
           <ul className="space-y-2 list-none">
-            <Tree setNavCollapsed={setNavCollapsed} localizePath={localizePath} />
+            <Tree
+              setNavCollapsed={() => {}}
+              isCollapsed={isCollapsed}
+              localizePath={localizePath}
+            />
             {config.sidebar.links && config.sidebar.links?.length > 0 && (
               <li className="tw-li-divider">
                 <hr />
@@ -44,9 +56,11 @@ const NewSidebarLayout = ({ collapse = false, setNavCollapsed }) => {
               }
             })}
           </ul>
-          <div className="flex items-center justify-center w-full p-3 border-t">
-            <LoginSignup />
-          </div>
+          {!isCollapsed && (
+            <div className="flex items-center justify-center w-full p-3 border-t">
+              <LoginSignup />
+            </div>
+          )}
         </div>
       </aside>
     </>
