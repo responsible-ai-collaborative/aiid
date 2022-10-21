@@ -77,6 +77,8 @@ describe('The Submit form', () => {
       .should('be.visible');
 
     cy.get('[data-cy="toast"] a').should('have.attr', 'href', '/apps/submitted');
+
+    cy.contains('Please review. Some data is missing.').should('not.exist');
   });
 
   it('Should submit a new report linked to incident 1 once all fields are filled properly', () => {
@@ -229,6 +231,8 @@ describe('The Submit form', () => {
     for (let key in expectedValues) {
       cy.get(`[data-cy="${key}"]`).contains(expectedValues[key]).should('exist');
     }
+
+    cy.contains('Please review. Some data is missing.').should('not.exist');
   });
 
   it('Should show a toast on error when failing to reach parsing endpoint', () => {
@@ -756,5 +760,21 @@ describe('The Submit form', () => {
     cy.get('[data-cy="toast"]').should('be.visible');
 
     cy.get('[data-cy="toast"] a').should('have.attr', 'href', '/es/apps/submitted');
+  });
+
+  it('Should display an error message if data is missing', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 3456456,
+      'findIncident',
+      { data: { incident: null } }
+    );
+
+    cy.visit(url);
+
+    cy.contains('button', 'Submit').click();
+
+    cy.contains('Please review. Some data is missing.').should('exist');
   });
 });

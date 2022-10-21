@@ -238,6 +238,15 @@ const SubmissionForm = () => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
 
+  useEffect(() => {
+    if (values._id) {
+      // Only display form errors on Edit mode
+      Object.keys(errors).map((key) => {
+        setFieldTouched(key, true);
+      });
+    }
+  }, [errors]);
+
   return (
     <div className="bootstrap">
       <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
@@ -402,7 +411,17 @@ const SubmissionForm = () => {
         )}
 
         <details className="mt-3">
-          <summary data-cy="extra-fields">{t('Tell us more...')}</summary>
+          <summary data-cy="extra-fields">
+            {t('Tell us more...')}
+            {(errors['description'] ||
+              errors['developers'] ||
+              errors['deployers'] ||
+              errors['harmed_parties']) && (
+              <div className="text-red-500 pl-4">
+                <Trans ns="validation">Some data is missing.</Trans>
+              </div>
+            )}
+          </summary>
 
           <TagsInputGroup name="tags" label={t('Tags')} className="mt-3" {...TextInputGroupProps} />
 
