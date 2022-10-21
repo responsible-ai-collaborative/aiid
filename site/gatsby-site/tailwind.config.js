@@ -46,6 +46,11 @@ module.exports = {
     './src/templates/**/*.{js,jsx,ts,tsx}',
     'node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}',
   ],
+  variants: {
+    extend: {
+      textColor: ['group-hover'],
+    },
+  },
   theme: {
     maxHeight: {
       240: '240px',
