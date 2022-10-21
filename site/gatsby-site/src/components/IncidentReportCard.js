@@ -37,6 +37,7 @@ export default function IncidentReportCard(props) {
     textMaxChars,
     imagePosition,
     dateFormat = 'MMM yyyy',
+    truncateTitle = false,
 
     // React
     children,
@@ -122,9 +123,10 @@ export default function IncidentReportCard(props) {
       <>
         <Image
           className={
-            imagePosition == 'left'
-              ? 'object-cover absolute bottom-0 top-0 left-0 w-96 max-w-[33%] h-full rounded-l-lg'
-              : 'object-cover w-full aspect-[16/9] rounded-t-lg'
+            'object-cover w-full sm:aspect-[16/9] rounded-t-lg ' +
+            (imagePosition == 'left'
+              ? 'md:absolute md:bottom-0 md:top-0 md:left-0 md:w-96 md:max-w-[33%] md:h-full md:rounded-l-lg md:rounded-r-none'
+              : 'aspect-[16/9]')
           }
           publicID={cloudinary_id || `legacy/${md5(image_url)}`}
           transformation={fill().width(900)}
@@ -133,10 +135,12 @@ export default function IncidentReportCard(props) {
       </>
     );
 
-  console.log(`children[0].props`, children[0].props);
-
   return (
-    <div data-cy={props['data-cy']} {...{ id, className, style, onMouseEnter, onMouseLeave }}>
+    <div
+      data-cy={props['data-cy']}
+      {...{ id, className, style, onMouseEnter, onMouseLeave }}
+      className="max-w-full"
+    >
       <Card style={{ position: 'relative', height: '100%' }}>
         {loading ? (
           <div className="text-center">
@@ -146,7 +150,7 @@ export default function IncidentReportCard(props) {
           <div
             data-cy="card-inner"
             className={
-              'h-full flex justify-start ' + (imagePosition == 'left' ? 'flex-row' : 'flex-col')
+              'h-full flex justify-start flex-col ' + (imagePosition == 'left' ? 'md:flex-row' : '')
             }
           >
             {(cloudinary_id || image_url) &&
@@ -155,9 +159,10 @@ export default function IncidentReportCard(props) {
                   to={link}
                   data-cy="image-container"
                   className={
-                    imagePosition == 'left'
-                      ? 'h-full -m-6 mr-10 w-96 max-w-[33%] shrink-0'
-                      : '-m-6 mb-6 block'
+                    '-m-6 mb-6 block ' +
+                    (imagePosition == 'left'
+                      ? 'md:h-full md:-m-6 md:mr-10 md:w-96 md:max-w-[33%] md:shrink-0'
+                      : '')
                   }
                 >
                   {img}
@@ -166,7 +171,10 @@ export default function IncidentReportCard(props) {
                 <div
                   data-cy="image-container"
                   className={
-                    imagePosition == 'left' ? 'h-full -m-6 mr-10 w-60 shrink-0' : '-m-6 mb-6 block'
+                    '-m-6 mb-6 block ' +
+                    (imagePosition == 'left'
+                      ? 'md:h-full md:-m-6 md:mr-10 md:w-96 md:max-w-[33%] md:shrink-0'
+                      : '')
                   }
                 >
                   {img}
@@ -174,7 +182,12 @@ export default function IncidentReportCard(props) {
               ))}
             <div data-cy="card-content" className="h-full flex flex-col">
               {children.filter((child) => child.props.position == 'header')}
-              <h3 className="text-lg font-semibold" data-cy="title">
+              <h3
+                title={title}
+                className="text-lg font-semibold overflow-hidden relative"
+                style={{ maxHeight: truncateTitle ? '9rem' : undefined }}
+                data-cy="title"
+              >
                 {link ? (
                   <div className="flex">
                     <Link
@@ -188,6 +201,21 @@ export default function IncidentReportCard(props) {
                 ) : (
                   <>{title}</>
                 )}
+                {
+                  // Makes fifth line fade out
+                  truncateTitle && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: '7rem',
+                        height: '3rem',
+                        right: '0px',
+                        width: '50%',
+                        background: 'linear-gradient(to right, rgba(255, 255, 255, 0), white)',
+                      }}
+                    />
+                  )
+                }
               </h3>
               <div data-cy="subtitle" className="text-muted-gray text-sm">
                 {[

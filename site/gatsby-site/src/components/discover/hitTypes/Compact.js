@@ -11,8 +11,8 @@ export default function Compact({
   setExpandFilters,
 }) {
   return (
-    <IncidentReportCard report={item} text={false} data-cy={item.mongodb_id}>
-      <CardChild className="justify-around" position="footer">
+    <IncidentReportCard report={item} text={false} data-cy={item.mongodb_id} truncateTitle={true}>
+      <CardChild className="justify-around mt-auto" position="footer">
         <Actions
           {...{
             authorsModal,
