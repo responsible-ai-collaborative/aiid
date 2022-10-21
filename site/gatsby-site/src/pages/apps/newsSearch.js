@@ -91,7 +91,7 @@ export default function NewsSearchPage(props) {
         Stories from around the web matched by keywords and sorted by textual similarity to existing
         reports in the database
       </p>
-      <div className="tw-card-set">
+      <div data-cy="results" className="tw-card-set">
         {loading && <p>Searching...</p>}
         {!loading && displayedArticles.length == 0 && <p>No results</p>}
         {displayedArticles
@@ -107,8 +107,8 @@ export default function NewsSearchPage(props) {
       </div>
       {displayedDismissed.length > 0 && (
         <details>
-          <summary>Dismissed News Reports</summary>
-          <div className="tw-card-set mt-2">
+          <summary data-cy="dismissed-summary">Dismissed News Reports</summary>
+          <div data-cy="dismissed" className="tw-card-set mt-2">
             {displayedDismissed.map((newsArticle) => (
               <CandidateCard
                 newsArticle={newsArticle}
