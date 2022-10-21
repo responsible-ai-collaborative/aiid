@@ -8,7 +8,7 @@ import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 
 const ReportList = ({ items }) => {
   return (
-    <ul>
+    <ul className="pl-8 leading-6 my-4">
       {items.map((report) => (
         <li key={report.report_number} data-cy={`report-${report.report_number}`}>
           <a href={report.url}>{report.title}</a>
