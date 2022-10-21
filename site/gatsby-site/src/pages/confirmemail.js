@@ -33,9 +33,9 @@ const ConfirmEmail = (props) => {
           setPageMessage(t('Thank you for verifying your account.'));
         })
         .catch((e) => {
+          setPageMessage(t('An unknown error has ocurred'));
           // eslint-disable-next-line no-undef
           Rollbar.error(e);
-          setPageMessage(t('An unknown error has ocurred'));
         });
     }
   }, []);
