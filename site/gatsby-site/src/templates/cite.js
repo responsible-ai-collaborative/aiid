@@ -403,6 +403,7 @@ function CitePage(props) {
           <Row className="mb-4" key={report.report_number}>
             <Col>
               <IncidentCard
+                key={report.report_number}
                 item={report}
                 authorsModal={authorsModal}
                 submittersModal={submittersModal}

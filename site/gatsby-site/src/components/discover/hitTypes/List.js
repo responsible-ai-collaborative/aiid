@@ -18,7 +18,7 @@ export default function Details({
       imagePosition="left"
       data-cy={item.mongodb_id}
     >
-      <CardChild position="footer" className="justify-around">
+      <CardChild position="footer" className="justify-around flex-wrap w-auto">
         <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />
         <Actions
           {...{

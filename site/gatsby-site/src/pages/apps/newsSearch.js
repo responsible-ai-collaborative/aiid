@@ -165,7 +165,7 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
           </span>
         ))}
       </CardChild>
-      <CardChild position="footer" className="mt-auto flex-wrap">
+      <CardChild position="footer" className="mt-auto flex-wrap gap-2">
         {dismissed ? (
           <Button
             color="light"

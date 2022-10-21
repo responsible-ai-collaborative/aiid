@@ -16,7 +16,7 @@ export default function Details({
       textMaxChars={400 - item.title.length * 2}
       data-cy={item.mongodb_id}
     >
-      <CardChild position="footer" className="justify-around mt-auto">
+      <CardChild position="footer" className="justify-around mt-auto flex-wrap w-full">
         <Actions
           {...{
             authorsModal,

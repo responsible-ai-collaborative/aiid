@@ -146,6 +146,13 @@ function PlotPoint({
 
   const [hoverTimeout, setHoverTimeout] = useState(null);
 
+  useEffect(
+    () => () => {
+      clearTimeout(hoverTimeout);
+    },
+    []
+  );
+
   const dbAxis = axis.replace(/ /g, '_');
 
   let taxon = 'Unclassified';

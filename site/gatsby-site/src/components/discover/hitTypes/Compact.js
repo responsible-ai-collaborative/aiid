@@ -12,7 +12,7 @@ export default function Compact({
 }) {
   return (
     <IncidentReportCard report={item} text={false} data-cy={item.mongodb_id} truncateTitle={true}>
-      <CardChild className="justify-around mt-auto" position="footer">
+      <CardChild className="justify-around mt-auto flex-wrap w-full" position="footer">
         <Actions
           {...{
             authorsModal,

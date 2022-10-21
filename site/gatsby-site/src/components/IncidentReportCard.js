@@ -135,12 +135,14 @@ export default function IncidentReportCard(props) {
       </>
     );
 
+  style ||= {};
+
+  if (!style.maxWidth) {
+    style.maxWidth = '100%';
+  }
+
   return (
-    <div
-      data-cy={props['data-cy']}
-      {...{ id, className, style, onMouseEnter, onMouseLeave }}
-      className="max-w-full"
-    >
+    <div data-cy={props['data-cy']} {...{ id, className, style, onMouseEnter, onMouseLeave }}>
       <Card style={{ position: 'relative', height: '100%' }}>
         {loading ? (
           <div className="text-center">
@@ -181,7 +183,7 @@ export default function IncidentReportCard(props) {
                 </div>
               ))}
             <div data-cy="card-content" className="h-full flex flex-col">
-              {children.filter((child) => child.props.position == 'header')}
+              {React.Children.toArray(children.filter((child) => child.props.position == 'header'))}
               <h3
                 title={title}
                 className="text-lg font-semibold overflow-hidden relative"
@@ -236,7 +238,10 @@ export default function IncidentReportCard(props) {
                     }
                     items.push(item);
                     return items;
-                  }, [])}
+                  }, [])
+                  .map((item, i) => (
+                    <span key={i}>{item}</span>
+                  ))}
                 <TranslationBadge originalLanguage={language} className="my-2 mr-1" />
               </div>
               {text && (
@@ -244,8 +249,11 @@ export default function IncidentReportCard(props) {
                   <ReportText text={text} maxChars={textMaxChars} />
                 </div>
               )}
-              {children.filter(
-                (child) => child.props.position == 'footer' || child.props.position == 'bottomRight'
+              {React.Children.toArray(
+                children.filter(
+                  (child) =>
+                    child.props.position == 'footer' || child.props.position == 'bottomRight'
+                )
               )}
             </div>
           </div>
@@ -270,7 +278,7 @@ export function CardChild({ children, className, style, position }) {
       style={style}
       className={[positionClassName, className].filter((e) => e).join(' ')}
     >
-      {children}
+      {React.Children.toArray(children)}
     </div>
   );
 }
