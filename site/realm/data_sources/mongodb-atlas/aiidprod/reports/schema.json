@@ -68,9 +68,6 @@
         "plain_text": {
             "bsonType": "string"
         },
-        "ref_number": {
-            "bsonType": "int"
-        },
         "report_number": {
             "bsonType": "int"
         },
@@ -101,7 +98,6 @@
     },
     "required": [
         "report_number",
-        "ref_number",
         "date_downloaded",
         "date_modified",
         "date_published",
