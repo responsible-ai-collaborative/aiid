@@ -16,6 +16,7 @@ let safelist = [
   'tw-tooltip-bottom',
   'tw-tooltip-left',
   'tw-btn-link',
+  'bg-amber-400',
 ];
 
 // Whitelisting level options from ListItem component

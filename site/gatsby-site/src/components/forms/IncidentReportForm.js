@@ -33,7 +33,6 @@ import { Trans, useTranslation } from 'react-i18next';
 // * source_domain: "blogs.wsj.com" # (string) The domain name hosting the report.
 // * incident_id: 1 # (int) The incrementing primary key for incidents, which are a collection of reports.
 // * date_submitted:`2019-07-25` # (Date) Date the report was submitted to the AIID. This determines citation order.
-// * ref_number: 25 # (int) The reference number scoped to the incident ID.
 // * report_number: 2379 # (int) the incrementing primary key for the report. This is a global resource identifier.
 // * date_modified: `2019-07-25` # (Date or null) Date the report was edited.
 // * language: "en" # (string) The language identifier of the report.
@@ -78,8 +77,12 @@ export const schema = yup.object().shape({
       /((https?):\/\/)(\S)*$/,
       '*Must enter URL in http://www.example.com/images/preview.png format'
     ),
-  editor_notes: yup.string(),
-  incident_id: yup.number().positive().integer('*Must be an incident number').required(),
+  editor_notes: yup.string().nullable(),
+  incident_id: yup
+    .number()
+    .positive()
+    .integer('*Must be an incident number')
+    .required('Incident ID is a required field'),
 });
 
 const IncidentReportForm = () => {
@@ -139,6 +142,12 @@ const IncidentReportForm = () => {
   useEffect(() => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
+
+  useEffect(() => {
+    Object.keys(errors).map((key) => {
+      setFieldTouched(key, true);
+    });
+  }, [errors]);
 
   const parseNewsUrl = useCallback(
     async (newsUrl) => {
@@ -340,7 +349,8 @@ const IncidentReportForm = () => {
         <IncidentIdField
           name="incident_id"
           className="mt-3"
-          placeHolder="Leave empty to report a new incident"
+          placeHolder={t('Enter a valid Incident ID')}
+          required={true}
         />
         <TextInputGroup
           name="editor_notes"

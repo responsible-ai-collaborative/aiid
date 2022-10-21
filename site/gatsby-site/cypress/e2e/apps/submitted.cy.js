@@ -118,7 +118,6 @@ describe('Submitted reports', () => {
                 {
                   __typename: 'Report',
                   report_number: 1565,
-                  ref_number: 1,
                 },
               ],
             },
@@ -270,12 +269,10 @@ describe('Submitted reports', () => {
                 {
                   __typename: 'Report',
                   report_number: 1565,
-                  ref_number: 1,
                 },
                 {
                   __typename: 'Report',
                   report_number: 1566,
-                  ref_number: 2,
                 },
               ],
             },
@@ -294,7 +291,6 @@ describe('Submitted reports', () => {
             ...submission,
             __typename: 'Report',
             report_number: 1566,
-            ref_number: 2,
           },
         },
       }
@@ -473,76 +469,76 @@ describe('Submitted reports', () => {
     cy.get('@modal').should('not.exist');
   });
 
-  maybeIt('Associate an Incident ID to a submission without developers, deployers or harmed parties', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+  maybeIt(
+    'Associate an Incident ID to a submission without developers, deployers or harmed parties',
+    () => {
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindSubmissions',
-      'FindSubmissions',
-      submittedReports
-    );
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindSubmissions',
+        'FindSubmissions',
+        submittedReports
+      );
 
-    const submission = submittedReports.data.submissions[2];
+      const submission = submittedReports.data.submissions[2];
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindSubmission',
-      'FindSubmission',
-      {
-        data: {
-          submission
-        },
-      }
-    );
-
-    cy.visit(url);
-
-    cy.wait('@FindSubmissions');
-
-    cy.get('[data-cy="submission"]').first().as('promoteForm');
-
-    cy.get('@promoteForm').contains('review >').click();
-
-    cy.get('[data-cy="edit-submission"]').eq(0).click();
-
-    cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
-
-    cy.get('[name="incident_id"').type('333');
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName === 'UpdateSubmission',
-      'UpdateSubmission',
-      {
-        data: {
-          updateOneSubmission: {
-            ...submission,
-            incident_id: 333,
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindSubmission',
+        'FindSubmission',
+        {
+          data: {
+            submission,
           },
-        },
-      }
-    );
+        }
+      );
 
-    cy.get('[data-cy="update-btn"]').click();
+      cy.visit(url);
 
-    cy.wait('@UpdateSubmission').then((xhr) => {
-      expect(xhr.request.body.variables.query).to.deep.nested.include({
-        _id: submission._id,
+      cy.wait('@FindSubmissions');
+
+      cy.get('[data-cy="submission"]').first().as('promoteForm');
+
+      cy.get('@promoteForm').contains('review >').click();
+
+      cy.get('[data-cy="edit-submission"]').eq(0).click();
+
+      cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
+
+      cy.get('[name="incident_id"').type('333');
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName === 'UpdateSubmission',
+        'UpdateSubmission',
+        {
+          data: {
+            updateOneSubmission: {
+              ...submission,
+              incident_id: 333,
+            },
+          },
+        }
+      );
+
+      cy.get('[data-cy="update-btn"]').click();
+
+      cy.wait('@UpdateSubmission').then((xhr) => {
+        expect(xhr.request.body.variables.query).to.deep.nested.include({
+          _id: submission._id,
+        });
+
+        expect(xhr.request.body.variables.set).to.deep.nested.include({
+          incident_id: 333,
+        });
       });
 
-      expect(xhr.request.body.variables.set).to.deep.nested.include({
-        incident_id: 333,
-      });
-    });
+      cy.get('@modal').should('not.exist');
 
-    cy.get('@modal').should('not.exist');
-
-    cy.get('[data-cy="toast"]')
-      .contains('Submission updated successfully.')
-      .should('exist');
-
-  });
+      cy.get('[data-cy="toast"]').contains('Submission updated successfully.').should('exist');
+    }
+  );
 
   maybeIt(
     'Does not allow promotion of submission if developers, deployers or harmed parties is missing.',
@@ -611,4 +607,62 @@ describe('Submitted reports', () => {
       cy.wait('@promotionInvoked', { timeout: 2000 });
     }
   );
+
+  maybeIt('Should display an error message if data is missing', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'FindSubmissions',
+      submittedReports
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmission',
+      'FindSubmission',
+      {
+        data: {
+          submission: submittedReports.data.submissions[2],
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.wait('@FindSubmissions');
+
+    cy.get('[data-cy="submission"]').first().as('promoteForm');
+
+    cy.get('@promoteForm').contains('review >').click();
+
+    cy.get('[data-cy="edit-submission"]').eq(0).click();
+
+    cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
+
+    cy.get('@modal').contains('Please review submission. Some data is missing.').should('exist');
+
+    cy.get('[data-cy="extra-fields"]').contains('Some data is missing.').should('exist');
+
+    cy.get('[data-cy="update-btn"]').should('be.disabled');
+
+    cy.get('[data-cy="extra-fields"]').click();
+
+    // Fill missing fields and check error messages again
+
+    cy.get('input[name=developers]').type('developerTest{enter}');
+
+    cy.get('input[name=deployers]').type('deployersTest{enter}');
+
+    cy.get('input[name=harmed_parties]').type('harmedPartiesTest{enter}test{enter}');
+
+    cy.get('@modal')
+      .contains('Please review submission. Some data is missing.')
+      .should('not.exist');
+
+    cy.get('[data-cy="extra-fields"]').contains('Some data is missing.').should('not.exist');
+
+    cy.get('[data-cy="update-btn"]').should('not.be.disabled');
+  });
 });

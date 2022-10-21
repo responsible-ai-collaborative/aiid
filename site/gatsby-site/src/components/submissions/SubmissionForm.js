@@ -36,7 +36,6 @@ import SemanticallyRelatedIncidents from '../../components/SemanticallyRelatedIn
 // * source_domain: "blogs.wsj.com" # (string) The domain name hosting the report.
 // * incident_id: 1 # (int) The incrementing primary key for incidents, which are a collection of reports.
 // * date_submitted:`2019-07-25` # (Date) Date the report was submitted to the AIID. This determines citation order.
-// * ref_number: 25 # (int) The reference number scoped to the incident ID.
 // * report_number: 2379 # (int) the incrementing primary key for the report. This is a global resource identifier.
 // * date_modified: `2019-07-25` # (Date or null) Date the report was edited.
 // * language: "en" # (string) The language identifier of the report.
@@ -239,6 +238,15 @@ const SubmissionForm = () => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
 
+  useEffect(() => {
+    if (values._id) {
+      // Only display form errors on Edit mode
+      Object.keys(errors).map((key) => {
+        setFieldTouched(key, true);
+      });
+    }
+  }, [errors]);
+
   return (
     <div className="bootstrap">
       <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
@@ -403,7 +411,17 @@ const SubmissionForm = () => {
         )}
 
         <details className="mt-3">
-          <summary data-cy="extra-fields">{t('Tell us more...')}</summary>
+          <summary data-cy="extra-fields">
+            {t('Tell us more...')}
+            {(errors['description'] ||
+              errors['developers'] ||
+              errors['deployers'] ||
+              errors['harmed_parties']) && (
+              <div className="text-red-500 pl-4">
+                <Trans ns="validation">Some data is missing.</Trans>
+              </div>
+            )}
+          </summary>
 
           <TagsInputGroup name="tags" label={t('Tags')} className="mt-3" {...TextInputGroupProps} />
 
