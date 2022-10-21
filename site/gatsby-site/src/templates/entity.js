@@ -2,10 +2,19 @@ import EntityCard from 'components/entities/EntityCard';
 import IncidentCard from 'components/incidents/IncidentCard';
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
+import { useUserContext } from 'contexts/userContext';
+import { Button, Spinner } from 'flowbite-react';
 import { graphql } from 'gatsby';
-import React, { Fragment, useState } from 'react';
-import { Trans } from 'react-i18next';
+import useToastContext, { SEVERITY } from '../hooks/useToast';
+import React, { useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { computeEntities, makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
+import useLocalizePath from 'components/i18n/useLocalizePath';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { useMutation } from '@apollo/client';
+import { UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
+import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 
 const sortByReports = (a, b) => b.reports.length - a.reports.length;
 
@@ -18,6 +27,14 @@ const incidentFields = [
 
 const EntityPage = ({ pageContext, data, ...props }) => {
   const { name, relatedEntities } = pageContext;
+
+  const { isRole, user } = useUserContext();
+
+  const addToast = useToastContext();
+
+  const localizePath = useLocalizePath();
+
+  const { i18n, t } = useTranslation();
 
   const { incidentsAsDeployer, incidentsAsDeveloper, incidentsAsBoth, incidentsHarmedBy } = data;
 
@@ -67,12 +84,80 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     return entity;
   });
 
+  const [subscribeToEntityMutation, { loading: subscribing }] = useMutation(UPSERT_SUBSCRIPTION);
+
+  const subscribeToEntity = async () => {
+    if (isRole('subscriber')) {
+      try {
+        const entityId = name;
+
+        await subscribeToEntityMutation({
+          variables: {
+            query: {
+              type: SUBSCRIPTION_TYPE.entity,
+              userId: { userId: user.id },
+              entityId,
+            },
+            subscription: {
+              type: SUBSCRIPTION_TYPE.entity,
+              userId: {
+                link: user.id,
+              },
+              entityId,
+            },
+          },
+        });
+
+        addToast({
+          message: (
+            <>
+              {t(`You have successfully subscribed to new ${name} incidents`, {
+                name,
+              })}
+            </>
+          ),
+          severity: SEVERITY.success,
+        });
+      } catch (e) {
+        console.log(e);
+        addToast({
+          message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
+          severity: SEVERITY.danger,
+        });
+      }
+    } else {
+      addToast({
+        message: (
+          <Trans i18n={i18n}>
+            Please <Link to={localizePath({ path: '/login' })}>log in</Link> to subscribe
+          </Trans>
+        ),
+        severity: SEVERITY.success,
+      });
+    }
+  };
+
   return (
     <Layout {...props}>
       <h3>
         <Link to="/entities">Entities</Link>
       </h3>
-      <h1>{name}</h1>
+      <div className="flex justify-between">
+        <h1>{name}</h1>
+
+        <Button onClick={subscribeToEntity}>
+          <div className="flex gap-2 items-center">
+            {subscribing ? (
+              <div>
+                <Spinner size="sm" />
+              </div>
+            ) : (
+              <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
+            )}
+            <Trans>Notify Me of New {name} Incidents</Trans>
+          </div>
+        </Button>
+      </div>
 
       {sections.map((section) => {
         const [open, setOpen] = useState(false);
