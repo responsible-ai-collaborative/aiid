@@ -37,5 +37,6 @@
   "Description": "Descripción",
   "Report Description": "Descripción del informe",
   "Tags": "Etiquetas",
-  "Tell us more...": "Cuéntanos más..."
+  "Tell us more...": "Cuéntanos más...",
+  "Enter a valid Incident ID": "Ingrese un ID de Incidente válido"
 }

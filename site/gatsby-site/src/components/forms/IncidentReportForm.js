@@ -77,8 +77,12 @@ export const schema = yup.object().shape({
       /((https?):\/\/)(\S)*$/,
       '*Must enter URL in http://www.example.com/images/preview.png format'
     ),
-  editor_notes: yup.string(),
-  incident_id: yup.number().positive().integer('*Must be an incident number').required(),
+  editor_notes: yup.string().nullable(),
+  incident_id: yup
+    .number()
+    .positive()
+    .integer('*Must be an incident number')
+    .required('Incident ID is a required field'),
 });
 
 const IncidentReportForm = () => {
@@ -138,6 +142,12 @@ const IncidentReportForm = () => {
   useEffect(() => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
+
+  useEffect(() => {
+    Object.keys(errors).map((key) => {
+      setFieldTouched(key, true);
+    });
+  }, [errors]);
 
   const parseNewsUrl = useCallback(
     async (newsUrl) => {
@@ -339,7 +349,8 @@ const IncidentReportForm = () => {
         <IncidentIdField
           name="incident_id"
           className="mt-3"
-          placeHolder="Leave empty to report a new incident"
+          placeHolder={t('Enter a valid Incident ID')}
+          required={true}
         />
         <TextInputGroup
           name="editor_notes"
