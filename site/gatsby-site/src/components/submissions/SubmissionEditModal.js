@@ -105,25 +105,30 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
                   <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
                 </Modal.Body>
                 <Modal.Footer>
-                  <Button
-                    onClick={submitForm}
-                    className="mt-3 flex disabled:opacity-50"
-                    variant="primary"
-                    type="submit"
-                    disabled={isSubmitting || !isValid}
-                    data-cy="update-btn"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Spinner size="sm" />
-                        <div className="ml-2">
-                          <Trans>Updating...</Trans>
-                        </div>
-                      </>
-                    ) : (
-                      <Trans>Update</Trans>
+                  <div className="flex items-center gap-3 text-red-500">
+                    {!isValid && (
+                      <Trans ns="validation">Please review submission. Some data is missing.</Trans>
                     )}
-                  </Button>
+                    <Button
+                      onClick={submitForm}
+                      className="flex disabled:opacity-50"
+                      variant="primary"
+                      type="submit"
+                      disabled={isSubmitting || !isValid}
+                      data-cy="update-btn"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Spinner size="sm" />
+                          <div className="ml-2">
+                            <Trans>Updating...</Trans>
+                          </div>
+                        </>
+                      ) : (
+                        <Trans>Update</Trans>
+                      )}
+                    </Button>
+                  </div>
                 </Modal.Footer>
               </>
             )}
