@@ -404,4 +404,31 @@ describe('Edit report', () => {
         expect(variables.set).to.deep.equal({ reports: { link: [42, 23] } });
       });
   });
+
+  it('Should display an error message if data is missing', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindReportWithTranslations',
+      'findReportWithTranslations',
+      reportWithTranslations
+    );
+
+    cy.visit(`/cite/edit?report_number=23`);
+
+    cy.wait('@findReportWithTranslations');
+
+    cy.get('form[data-cy="report"]').should('be.visible');
+
+    cy.get('[name="incident_id"]').clear();
+
+    cy.contains('button', 'Submit').click();
+
+    cy.contains('Please review report. Some data is missing.').should('exist');
+
+    cy.contains('button', 'Submit').should('be.disabled');
+
+    cy.get('[name="incident_id"]').type('12');
+
+    cy.contains('button', 'Submit').should('not.be.disabled');
+  });
 });
