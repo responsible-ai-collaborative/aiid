@@ -161,7 +161,7 @@ describe('Subscriptions', () => {
     cy.get('button[role=switch][aria-checked=true]').should('exist');
   });
 
-  it.only('Subscribe/Unsubscribe to new incidents', () => {
+  it('Subscribe/Unsubscribe to new incidents', () => {
     cy.conditionalIntercept(
       '**/login',
       (req) => req.body.username == Cypress.env('e2eUsername'),
