@@ -31,7 +31,13 @@ const CandidateCard = ({
     domain = null;
   }
   return (
-    <Card style={{ justifyContent: 'flex-start' }} className="gap-0" key={newsArticle.incident_id}>
+    <Card
+      data-cy="candidate-card"
+      data-id={newsArticle.url}
+      style={{ justifyContent: 'flex-start' }}
+      className="gap-0"
+      key={newsArticle.url}
+    >
       <div>
         <a href={newsArticle.url}>
           <h3 className="text-xl mt-0 mb-0">{newsArticle.title.replace(/\s(-|\|).*/g, '')}</h3>
@@ -67,6 +73,7 @@ const CandidateCard = ({
       <div className="mt-auto flex">
         {dismissed ? (
           <Button
+            data-cy="restore-button"
             color="light"
             onClick={() => {
               setDismissedArticles((dismissedArticles) => {
@@ -88,6 +95,7 @@ const CandidateCard = ({
           </Button>
         ) : (
           <Button
+            data-cy="dismiss-button"
             color="light"
             onClick={() => {
               setDismissedArticles((dismissedArticles) => {
@@ -109,8 +117,9 @@ const CandidateCard = ({
           </Button>
         )}
         <LocalizedLink
+          data-cy="submit-button"
           to={
-            '/apps/submit?' +
+            '/apps/submit/?' +
             ['url', 'title', 'text']
               .map((e) => `${e}=${encodeURIComponent(newsArticle[e])}`)
               .join('&')
@@ -221,7 +230,7 @@ const NewsSearchPage = (props) => {
         Stories from around the web matched by keywords and sorted by textual similarity to existing
         reports in the database
       </p>
-      <div className="tw-card-set">
+      <div data-cy="results" className="tw-card-set">
         {loading && <p>Searching...</p>}
         {!loading && displayedArticles.length == 0 && <p>No results</p>}
         {displayedArticles
@@ -237,8 +246,8 @@ const NewsSearchPage = (props) => {
       </div>
       {displayedDismissed.length > 0 && (
         <details>
-          <summary>Dismissed News Reports</summary>
-          <div className="tw-card-set mt-2">
+          <summary data-cy="dismissed-summary">Dismissed News Reports</summary>
+          <div data-cy="dismissed" className="tw-card-set mt-2">
             {displayedDismissed.map((newsArticle) => (
               <CandidateCard
                 newsArticle={newsArticle}
