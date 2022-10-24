@@ -2,7 +2,7 @@ version: 2.1
 orbs:
   cypress: cypress-io/cypress@2
 workflows:
-  build:
+  staging:
     jobs:
       - cypress/install:
           executor: cypress/base-16-14-2-slim
@@ -11,6 +11,12 @@ workflows:
           cache-key: >-
             cache-v2-{{ arch }}-{{ .Branch }}-{{ checksum "site/gatsby-site/package-lock.json"}}
           build: GATSBY_CPU_COUNT=2 npm run build
+          filters:
+            branches:
+              only:
+                - feature-circle-ci-tests
+                - staging
+
       - cypress/run:
           executor: cypress/base-16-14-2-slim
           context: staging
@@ -22,4 +28,40 @@ workflows:
           parallel: true
           parallelism: 5
           group: 5x
-          start: 'npm run serve'
+          start: "npm run serve"
+          filters:
+            branches:
+              only:
+                - feature-circle-ci-tests
+                - staging
+
+  production:
+    jobs:
+      # production, (couldn't find a way to not duplicate these)
+      - cypress/install:
+          executor: cypress/base-16-14-2-slim
+          context: production
+          working_directory: site/gatsby-site
+          cache-key: >-
+            cache-v2-{{ arch }}-{{ .Branch }}-{{ checksum "site/gatsby-site/package-lock.json"}}
+          build: GATSBY_CPU_COUNT=2 npm run build
+          filters:
+            branches:
+              only:
+                - master
+      - cypress/run:
+          executor: cypress/base-16-14-2-slim
+          context: production
+          working_directory: site/gatsby-site
+          cache-key: >-
+            cache--v2-{{ arch }}-{{ .Branch }}-{{ checksum "site/gatsby-site/package-lock.json"}}
+          requires:
+            - cypress/install
+          parallel: true
+          parallelism: 5
+          group: 5x
+          start: "npm run serve"
+          filters:
+            branches:
+              only:
+                - master
