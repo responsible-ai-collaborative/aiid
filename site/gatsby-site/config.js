@@ -156,7 +156,7 @@ const config = {
   siteMetadata: {
     title: 'Artificial Intelligence Incident Database',
     description: 'a collection of intelligent system harms in the real world ',
-    ogImage: null,
+    ogImage: 'https://incidentdatabase.ai/logos/AIID_1000x1000px.png',
     docsLocation: '/',
     favicon: '/favicon.png',
     twitterAccount: '@IncidentsDB',

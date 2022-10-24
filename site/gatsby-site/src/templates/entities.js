@@ -5,6 +5,7 @@ import { graphql } from 'gatsby';
 import React, { useMemo } from 'react';
 import { Trans } from 'react-i18next';
 import { makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
+import AiidHelmet from 'components/AiidHelmet';
 
 const incidentFields = [
   'incidentsAsBoth',
@@ -48,14 +49,23 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
   );
 
   return (
-    <LayoutHideSidebar {...props}>
-      <Container className="tw-container-xl mt-6">
-        <h1 className="text-5xl mt-6 font-extrabold dark:text-white">
-          <Trans ns="entities">Entities</Trans>
-        </h1>
-        <EntitiesTable data={entitiesData} className="mt-6" data-cy="entities" />
-      </Container>
-    </LayoutHideSidebar>
+    <>
+      <AiidHelmet
+        {...{
+          metaTitle: 'Entities',
+          metaDescription: 'Entities involved in AI Incidents',
+          canonicalUrl: 'https://incidentdatabase.ai/entities',
+        }}
+      />
+      <LayoutHideSidebar {...props}>
+        <Container className="tw-container-xl mt-6">
+          <h1 className="text-5xl mt-6 font-extrabold dark:text-white">
+            <Trans ns="entities">Entities</Trans>
+          </h1>
+          <EntitiesTable data={entitiesData} className="mt-6" data-cy="entities" />
+        </Container>
+      </LayoutHideSidebar>
+    </>
   );
 };
 
