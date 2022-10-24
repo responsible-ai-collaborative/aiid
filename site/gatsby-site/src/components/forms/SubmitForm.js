@@ -172,7 +172,7 @@ const SubmitForm = () => {
         initialValues={submission}
         enableReinitialize={true}
       >
-        {({ isSubmitting, submitForm }) => (
+        {({ isSubmitting, submitForm, isValid, submitCount }) => (
           <>
             <SubmissionForm />
 
@@ -187,22 +187,30 @@ const SubmitForm = () => {
               </Trans>
             </p>
 
-            <Button
-              onClick={submitForm}
-              className="mt-3 bootstrap flex gap-2 disabled:opacity-50"
-              variant="primary"
-              type="submit"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <>
-                  <Spinner size="sm" />
-                  <Trans>Submitting</Trans>
-                </>
-              ) : (
-                <Trans>Submit</Trans>
+            <div className="mt-3 flex items-center gap-3">
+              <Button
+                onClick={submitForm}
+                className="bootstrap flex gap-2 disabled:opacity-50"
+                variant="primary"
+                type="submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Spinner size="sm" />
+                    <Trans>Submitting</Trans>
+                  </>
+                ) : (
+                  <Trans>Submit</Trans>
+                )}
+              </Button>
+
+              {!isValid && submitCount > 0 && (
+                <div className="text-danger">
+                  <Trans ns="validation">Please review. Some data is missing.</Trans>
+                </div>
               )}
-            </Button>
+            </div>
           </>
         )}
       </Formik>
