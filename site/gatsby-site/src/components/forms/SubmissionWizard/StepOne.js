@@ -101,6 +101,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
     setFieldTouched,
     isValid,
     validateForm,
+    submitCount,
   } = useFormikContext();
 
   useEffect(() => {
@@ -347,6 +348,12 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
           </Button>
         </div>
       </Form>
+
+      {!isValid && submitCount > 0 && (
+        <div className="text-danger">
+          <Trans ns="validation">Please review. Some data is missing.</Trans>
+        </div>
+      )}
     </>
   );
 };
