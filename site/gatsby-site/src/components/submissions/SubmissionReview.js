@@ -92,7 +92,12 @@ const SubmissionReview = ({ submission }) => {
   const addToast = useToastContext();
 
   const promoteSubmission = useCallback(async () => {
-    if (!submission.developers || !submission.deployers || !submission.harmed_parties) {
+    if (
+      !submission.description ||
+      !submission.developers ||
+      !submission.deployers ||
+      !submission.harmed_parties
+    ) {
       addToast({
         message: `Please review submission before approving. Some data is missing.`,
         severity: SEVERITY.danger,
