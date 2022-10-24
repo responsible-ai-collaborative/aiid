@@ -91,6 +91,8 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [submitCount, setSubmitCount] = useState(0);
+
   const {
     values,
     errors,
@@ -101,7 +103,6 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
     setFieldTouched,
     isValid,
     validateForm,
-    submitCount,
   } = useFormikContext();
 
   useEffect(() => {
@@ -297,6 +298,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
             gradientDuoTone="greenToBlue"
             disabled={isSubmitting || parsingNews}
             onClick={() => {
+              setSubmitCount(submitCount + 1);
               validateAndSubmitForm(
                 true,
                 setIsSubmitting,
@@ -320,6 +322,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
             color={'light'}
             disabled={isSubmitting || parsingNews}
             onClick={() => {
+              setSubmitCount(submitCount + 1);
               validateAndSubmitForm(
                 false,
                 setIsSubmitting,
@@ -350,7 +353,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
       </Form>
 
       {!isValid && submitCount > 0 && (
-        <div className="text-danger">
+        <div className="text-danger text-right">
           <Trans ns="validation">Please review. Some data is missing.</Trans>
         </div>
       )}

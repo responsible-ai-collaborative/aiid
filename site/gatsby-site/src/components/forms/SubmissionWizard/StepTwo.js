@@ -65,6 +65,8 @@ const FormDetails = ({ data, previous, schema, submitForm, validateAndSubmitForm
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [submitCount, setSubmitCount] = useState(0);
+
   const {
     values,
     errors,
@@ -75,7 +77,6 @@ const FormDetails = ({ data, previous, schema, submitForm, validateAndSubmitForm
     setFieldTouched,
     isValid,
     validateForm,
-    submitCount,
   } = useFormikContext();
 
   useEffect(() => {
@@ -152,6 +153,7 @@ const FormDetails = ({ data, previous, schema, submitForm, validateAndSubmitForm
               gradientDuoTone="greenToBlue"
               disabled={isSubmitting}
               onClick={() => {
+                setSubmitCount(submitCount + 1);
                 validateAndSubmitForm(
                   true,
                   setIsSubmitting,
@@ -175,6 +177,7 @@ const FormDetails = ({ data, previous, schema, submitForm, validateAndSubmitForm
               color={'light'}
               disabled={isSubmitting}
               onClick={() => {
+                setSubmitCount(submitCount + 1);
                 validateAndSubmitForm(
                   false,
                   setIsSubmitting,
