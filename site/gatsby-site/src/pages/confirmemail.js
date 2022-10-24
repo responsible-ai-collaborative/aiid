@@ -27,13 +27,17 @@ const ConfirmEmail = (props) => {
   }
 
   useEffect(() => {
-    confirmEmail({ token, tokenId })
-      .then(() => {
-        setPageMessage(t('Thank you for verifying your account.'));
-      })
-      .catch(() => {
-        setPageMessage(t('An unknown error has ocurred'));
-      });
+    if (token && tokenId) {
+      confirmEmail({ token, tokenId })
+        .then(() => {
+          setPageMessage(t('Thank you for verifying your account.'));
+        })
+        .catch((e) => {
+          setPageMessage(t('An unknown error has ocurred'));
+          // eslint-disable-next-line no-undef
+          Rollbar.error(e);
+        });
+    }
   }, []);
 
   return (
@@ -44,7 +48,7 @@ const ConfirmEmail = (props) => {
             {errorMessage}
             {pageMessage}
           </p>
-          <Link to={'/login'}>
+          <Link to={'/login?redirectTo=/account'} data-cy="confirm-login-btn">
             <Trans>Login</Trans>
           </Link>
         </>

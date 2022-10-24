@@ -9,6 +9,15 @@ exports = async ({ recipients, subject, dynamicData, templateId }) => {
         }
     }
 
+    const sendGridApiKey = context.values.get("SendGridApiKey");
+
+    if(!sendGridApiKey || sendGridApiKey.trim() === '') {
+        return {
+            statusCode: 202,
+            status: "No email sent",
+        }
+    }
+
     const userCustomData = context.user.custom_data;
 
     // Only "system" or "admin" and "incident_editor" roles can send emails
@@ -21,9 +30,7 @@ exports = async ({ recipients, subject, dynamicData, templateId }) => {
         }
     }
 
-    const sendGridApiUrl = "https://api.sendgrid.com/v3/mail/send";
-
-    const sendGridApiKey = context.values.get("SendGridApiKey");
+    const sendGridApiUrl = "https://api.sendgrid.com/v3/mail/send";    
 
     var emailData = BuildEmailData(recipients, subject, dynamicData, templateId);
 
