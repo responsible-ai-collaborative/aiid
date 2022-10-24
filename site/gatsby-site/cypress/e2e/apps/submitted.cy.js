@@ -608,6 +608,69 @@ describe('Submitted reports', () => {
     }
   );
 
+  maybeIt('Does not allow promotion of submission if description is missing.', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    const submission = submittedReports.data.submissions.find(
+      (r) => r.incident_id === 0 && r.description === undefined
+    );
+
+    console.log(submission);
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'FindSubmissions',
+      {
+        data: {
+          submissions: [submission],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'AllQuickAdd',
+      'AllQuickAdd',
+      {
+        data: {
+          quickadds: [quickAdds],
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.wait('@FindSubmissions');
+
+    cy.wait('@AllQuickAdd');
+
+    cy.get('[data-cy="submission"]').first().as('promoteForm');
+
+    cy.get('@promoteForm').contains('review >').click();
+
+    cy.on('fail', (err) => {
+      expect(err.message).to.include(
+        '`cy.wait()` timed out waiting `2000ms` for the 1st request to the route: `promotionInvoked`. No request ever occurred.'
+      );
+    });
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName === 'PromoteSubmission',
+      'promotionInvoked',
+      {}
+    );
+
+    cy.get('@promoteForm').contains('button', 'Add New Incident').click();
+
+    cy.get('[data-cy="toast"]')
+      .contains('Please review submission before approving. Some data is missing.')
+      .should('exist');
+
+    cy.wait('@promotionInvoked', { timeout: 2000 });
+  });
+
   maybeIt('Should display an error message if data is missing', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
@@ -650,6 +713,8 @@ describe('Submitted reports', () => {
     cy.get('[data-cy="extra-fields"]').click();
 
     // Fill missing fields and check error messages again
+
+    cy.get('textarea[name=description]').type('Test description');
 
     cy.get('input[name=developers]').type('developerTest{enter}');
 
