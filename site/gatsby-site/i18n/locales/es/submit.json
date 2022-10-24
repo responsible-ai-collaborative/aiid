@@ -41,5 +41,6 @@
   "Report successfully added to review queue": "Informe agregado a la cola de revisión",
   "Review queue": "Cola de revisión",
   "Author CSV": "Autor CSV",
-  "Submitter CSV": "Reportador CSV"
+  "Submitter CSV": "Reportador CSV",
+  "Enter a valid Incident ID": "Ingrese un ID de Incidente válido"
 }
