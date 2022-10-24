@@ -11,7 +11,7 @@ const formatDate = (epoch) => new Date(epoch * 1000).toISOString().substr(0, 10)
 const dateToEpoch = (date) => new Date(date).getTime() / 1000;
 
 const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
-  if (!min || !max) {
+  if ((!min && min !== 0) || (!max && max !== 0)) {
     return null;
   }
 

@@ -42,7 +42,7 @@ const Backups = ({ pageContext, ...props }) => {
         <Container>
           <Row>
             <Col xs={12}>
-              <ul>
+              <ul className="pl-8 leading-6">
                 {backups
                   .map((b) => ({
                     ...b,

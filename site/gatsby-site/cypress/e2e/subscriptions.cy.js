@@ -1,6 +1,6 @@
 import subscriptionsData from '../fixtures/subscriptions/subscriptions.json';
 import emptySubscriptionsData from '../fixtures/subscriptions/empty-subscriptions.json';
-import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
+import { SUBSCRIPTION_TYPE } from '../../src/utils/subscriptions';
 
 const subscriptions = subscriptionsData.data.subscriptions
   .filter((subscription) => subscription.type === SUBSCRIPTION_TYPE.incident)
@@ -139,7 +139,9 @@ describe('Subscriptions', () => {
 
     cy.visit(url);
 
-    cy.get('#subscribe-all-toggle').should('not.checked');
+    cy.get('input[name=subscribe-all]').should('not.exist');
+
+    cy.get('button[role=switch][aria-checked=false]').should('exist');
   });
 
   it('Should display the switch toggle on if user have a subscription to new incidents', () => {
@@ -154,7 +156,9 @@ describe('Subscriptions', () => {
 
     cy.visit(url);
 
-    cy.get('#subscribe-all-toggle').should('be.checked');
+    cy.get('input[name=subscribe-all]').should('be.checked');
+
+    cy.get('button[role=switch][aria-checked=true]').should('exist');
   });
 
   it('Subscribe/Unsubscribe to new incidents', () => {
@@ -216,19 +220,21 @@ describe('Subscriptions', () => {
     cy.wait(1000); // Wait for subscriptions
 
     // Subscribe to new Incidents
-    cy.get('[data-cy=subscribe-all-toggle]').scrollIntoView().click();
+    cy.get('button[role=switch]').scrollIntoView().click();
 
     cy.wait('@UpsertSubscription');
 
-    cy.get('#subscribe-all-toggle').should('be.checked');
+    cy.get('input[name=subscribe-all]').should('be.checked');
 
-    cy.wait(1000); // Wait for subscriptions
+    cy.get('button[role=switch][aria-checked=true]').should('exist');
 
     // Unsubscribe to new Incidents
-    cy.get('[data-cy=subscribe-all-toggle]').scrollIntoView().click();
+    cy.get('button[role=switch]').scrollIntoView().click();
 
     cy.wait('@DeleteSubscription');
 
-    cy.get('#subscribe-all-toggle').should('not.checked');
+    cy.get('input[name=subscribe-all]').should('not.exist');
+
+    cy.get('button[role=switch][aria-checked=false]').should('exist');
   });
 });

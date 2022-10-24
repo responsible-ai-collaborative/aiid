@@ -39,8 +39,8 @@ export const StyledMainWrapper = styled.div`
   max-width: 800px;
   color: ${(props) => props.theme.colors.text};
 
-  ul,
-  ol {
+  > ul,
+  > ol {
     -webkit-padding-start: 40px;
     -moz-padding-start: 40px;
     -o-padding-start: 40px;
