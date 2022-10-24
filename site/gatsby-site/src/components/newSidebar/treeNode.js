@@ -16,6 +16,7 @@ import {
   faBuilding,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Tooltip } from 'flowbite-react';
 
 const getIcon = (label, current = false) =>
   ({
@@ -138,16 +139,22 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed 
 
   return (
     <>
-      <li>
+      <li className="z-50">
         {item.title && (
-          <Link
-            to={item.url}
-            onClick={click}
-            className={`flex rounded-lg items-center p-2 text-base font-normal group ${calculatedClassName}`}
-          >
-            {icon && <>{icon} </>}
-            {!isCollapsed && (
-              <>
+          <Tooltip content={item.title} placement="right">
+            <Link
+              to={item.url}
+              onClick={click}
+              className={`flex rounded-lg items-center p-2 text-base font-normal group ${calculatedClassName} ${
+                isCollapsed ? 'justify-center' : ''
+              }`}
+            >
+              {icon && <>{icon} </>}
+              <span
+                className={`${
+                  isCollapsed ? 'h-0 w-0 opacity-0 ' : 'opacity-100'
+                } transition-opacity duration-500`}
+              >
                 <span className="ml-3">
                   <Trans>{item.title}</Trans>
                 </span>
@@ -156,9 +163,9 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed 
                     {!item.collapsed ? <OpenedSvg /> : <ClosedSvg />}
                   </button>
                 ) : null}
-              </>
-            )}
-          </Link>
+              </span>
+            </Link>
+          </Tooltip>
         )}
 
         {!item.collapsed && hasChildren ? (

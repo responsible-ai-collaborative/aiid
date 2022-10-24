@@ -6,7 +6,7 @@ import QuickAccess from 'components/discover/QuickAccess';
 import { Trans } from 'react-i18next';
 import LoginSignup from 'components/loginSignup';
 import useLocalizePath from 'components/i18n/useLocalizePath';
-import { faChevronCircleLeft, faChevronCircleRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronCircleLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const NewSidebarLayout = () => {
@@ -16,11 +16,16 @@ const NewSidebarLayout = () => {
 
   return (
     <>
-      <aside className={`${!isCollapsed ? 'w-64' : ''} sticky top-0 relative`} aria-label="Sidebar">
+      <aside
+        className={`${!isCollapsed ? 'w-64' : 'w-20'} sticky top-0 transition-width duration-1000`}
+        aria-label="Sidebar"
+      >
         <FontAwesomeIcon
-          icon={isCollapsed ? faChevronCircleRight : faChevronCircleLeft}
+          icon={faChevronCircleLeft}
           color={'white'}
-          className="cursor-pointer fa fa-twitter-square fa-lg text-gray-300 w-8 h-8 absolute -right-4 top-1/2"
+          className={`transition-rotate-180 duration-500 cursor-pointer fa fa-twitter-square fa-lg text-gray-300 w-8 h-8 absolute -right-4 top-1/2 ${
+            isCollapsed ? 'rotate-180' : ''
+          }`}
           title="Open Twitter"
           onClick={() => setIsCollapsed(!isCollapsed)}
         />
@@ -31,7 +36,11 @@ const NewSidebarLayout = () => {
             dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
           />
         ) : null}
-        <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded dark:bg-gray-800">
+        <div
+          className={`${
+            isCollapsed ? 'overflow-hidden' : 'overflow-y-auto'
+          } py-4 px-3 bg-gray-50 rounded dark:bg-gray-800`}
+        >
           <ul className="space-y-2 list-none">
             <Tree
               setNavCollapsed={() => {}}
