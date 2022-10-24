@@ -78,7 +78,7 @@ const LayoutHideSidebar = ({ children, location, menuCollapseCallback, className
   };
 
   return (
-    <>
+    <div className="flex flex-col h-full">
       <Header />
       <Wrapper className={`grow ${className}`}>
         <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
@@ -103,7 +103,7 @@ const LayoutHideSidebar = ({ children, location, menuCollapseCallback, className
         </Content>
       </Wrapper>
       <Footer />
-    </>
+    </div>
   );
 };
 
