@@ -41,7 +41,7 @@
     }
 
     p {
-        @apply mb-4 mt-0;
+        @apply mb-4 mt-4;
     }
 
     .input-group>.form-control, .input-group>.form-floating, .input-group>.form-select {

@@ -339,35 +339,43 @@ function EditCitePage(props) {
           {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
             <>
               <IncidentReportForm />
-              <div className="mt-3 flex items-center">
-                <Button
-                  variant="primary"
-                  type="submit"
-                  disabled={!isValid || isSubmitting}
-                  onClick={submitForm}
-                  className="mr-4 disabled:opacity-50 flex"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Spinner size="sm" />
-                      <div className="ml-2">
-                        <Trans>Updating...</Trans>
-                      </div>
-                    </>
-                  ) : (
-                    <Trans>Submit</Trans>
+              <div className="mt-4 flex items-center justify-between">
+                <div className="flex items-center">
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    disabled={!isValid || isSubmitting}
+                    onClick={submitForm}
+                    className="mr-4 disabled:opacity-50 flex"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Spinner size="sm" />
+                        <div className="ml-2">
+                          <Trans>Updating...</Trans>
+                        </div>
+                      </>
+                    ) : (
+                      <Trans>Submit</Trans>
+                    )}
+                  </Button>
+                  {!isValid && (
+                    <div className="text-danger">
+                      <Trans ns="validation">Please review report. Some data is missing.</Trans>
+                    </div>
                   )}
+                </div>
+                <Button
+                  className="text-danger"
+                  variant="link"
+                  disabled={isSubmitting}
+                  onClick={() => {
+                    confirm(t('Are you sure you want to delete this report?')) && handleDelete();
+                  }}
+                >
+                  Delete this report
                 </Button>
               </div>
-              <Button
-                className="mt-3 text-danger"
-                variant="link"
-                onClick={() => {
-                  confirm(t('Are you sure you want to delete this report?')) && handleDelete();
-                }}
-              >
-                Delete this report
-              </Button>
 
               <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
             </>
