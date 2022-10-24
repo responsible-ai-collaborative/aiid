@@ -80,7 +80,7 @@ const LayoutHideSidebar = ({ children, location, menuCollapseCallback, className
   return (
     <>
       <Header />
-      <Wrapper className={`grow ${className || ''}`}>
+      <Wrapper className={`grow ${className}`}>
         <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
           <Sidebar location={location} collapse={collapse} />
         </LeftSideBarWidth>
