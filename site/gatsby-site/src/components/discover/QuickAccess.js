@@ -22,7 +22,7 @@ export default function DiscoverQuickAccess({ className }) {
     <Wrapper className={`${className} p-4 md:bg-text-light-gray h-24`}>
       <LocalizedLink
         to="/apps/discover"
-        className="fs-5 tw-btn text-center shadow w-1/2 h-16 bg-white hover:bg-primary-blue hover:text-white"
+        className="fs-5 tw-btn text-center shadow w-1/2 h-16 bg-white hover:bg-blue-700 hover:text-white"
       >
         <div className="text-2xl">
           <FontAwesomeIcon icon={faSearch} />
@@ -33,7 +33,7 @@ export default function DiscoverQuickAccess({ className }) {
       </LocalizedLink>
       <LocalizedLink
         to="/apps/submit"
-        className="ml-3 fs-5 pb-2 tw-btn text-center shadow w-1/2 h-16  bg-white hover:bg-primary-blue hover:text-white"
+        className="ml-3 fs-5 pb-2 tw-btn text-center shadow w-1/2 h-16  bg-white hover:bg-blue-700 hover:text-white"
       >
         <div className="text-2xl">
           <FontAwesomeIcon icon={faPlus} />

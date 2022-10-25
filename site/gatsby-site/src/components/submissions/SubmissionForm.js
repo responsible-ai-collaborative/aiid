@@ -49,8 +49,14 @@ export const schema = yup.object().shape({
     .required('*Title is required'),
   description: yup
     .string()
+    .nullable()
     .min(3, 'Description must have at least 3 characters')
-    .max(500, "Description can't be longer than 500 characters"),
+    .max(500, "Description can't be longer than 500 characters")
+    .when(['_id', 'incident_id'], {
+      is: (_id, incident_id) =>
+        _id !== undefined && (incident_id == '' || incident_id === undefined),
+      then: yup.string().required('*Description is required.'),
+    }),
   developers: yup.string().when(['_id', 'incident_id'], {
     is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
     then: yup
