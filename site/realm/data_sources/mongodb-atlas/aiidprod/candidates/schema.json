@@ -53,6 +53,12 @@
                 "bsonType": "string"
             }
         },
+        "matching_harm_keywords": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
         "matching_entities": {
             "bsonType": "array",
             "items": {

@@ -8,6 +8,7 @@ export default function NewsSearchPage(props) {
         url
         similarity
         matching_keywords
+        matching_harm_keywords
         matching_entities
         text
         date_published
@@ -195,6 +196,15 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
                 </LocalizedLink>
               </span>
             ))}
+          {newsArticle.matching_harm_keywords &&
+            newsArticle.matching_harm_keywords.map((keyword) => (
+              <span className="inline-block mr-1 mb-1" key={keyword}>
+                <Badge color="failure">
+                  <FontAwesomeIcon icon={faBolt} className="pointer fa mr-1" fixedWidth />
+                  {keyword}
+                </Badge>
+              </span>
+            ))}
         </div>
       </div>
       <div className="mt-auto flex">
@@ -279,5 +289,6 @@ import {
   faArrowUp,
   faBuilding,
   faTag,
+  faBolt,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
