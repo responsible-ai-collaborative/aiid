@@ -138,6 +138,7 @@ const SubmissionReview = ({ submission }) => {
       nlp_similar_incidents: undefined,
       editor_similar_incidents: undefined,
       editor_dissimilar_incidents: undefined,
+      incident_date: undefined,
     };
 
     report.date_modified = format(new Date(), 'yyyy-MM-dd');
