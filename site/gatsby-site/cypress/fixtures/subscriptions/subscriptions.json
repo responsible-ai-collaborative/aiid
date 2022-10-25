@@ -2,6 +2,11 @@
   "data": {
     "subscriptions": [
       {
+        "_id": "6335e4ce290efe73c71b2e50",
+        "incident_id": null,
+        "type": "new-incidents"
+      },
+      {
         "_id": "6335e4ce290efe73c71b2e55",
         "incident_id": {
           "incident_id": 11,

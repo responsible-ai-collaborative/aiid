@@ -1,3 +1,5 @@
+const { SUBSCRIPTION_TYPE } = require('../../src/utils/subscriptions');
+
 describe('Unsubscribe pages', () => {
   const userId = '6304204e580ff154aefea0c6';
 
@@ -79,7 +81,7 @@ describe('Unsubscribe pages', () => {
       '**/graphql',
       (req) =>
         req.body.operationName == 'DeleteSubscriptions' &&
-        req.body.variables.query.type == 'incident' &&
+        req.body.variables.query.type == SUBSCRIPTION_TYPE.incident &&
         req.body.variables.query.userId.userId == userId &&
         req.body.variables.query.incident_id.incident_id == `${incidentId}`,
       'DeleteSubscriptions',
