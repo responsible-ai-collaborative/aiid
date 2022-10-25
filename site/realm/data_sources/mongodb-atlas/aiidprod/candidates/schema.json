@@ -53,6 +53,12 @@
                 "bsonType": "string"
             }
         },
+        "matching_entities": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
         "plain_text": {
             "bsonType": "string"
         },
