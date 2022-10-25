@@ -1,16 +1,16 @@
-const { default: slugify } = require('slugify');
-
 const idHash = {};
 
-const getId = (name) => {
-  if (!idHash[name]) {
-    idHash[name] = slugify(name, { lower: true });
+const getName = (entities, id) => {
+  if (!idHash[id]) {
+    const entity = entities.find((entity) => entity.entity_id == id);
+
+    idHash[id] = entity ? entity.name : id;
   }
 
-  return idHash[name];
+  return idHash[id];
 };
 
-module.exports.computeEntities = ({ incidents }) => {
+module.exports.computeEntities = ({ incidents, entities }) => {
   const entititiesHash = {};
 
   const entityFields = [
@@ -36,8 +36,8 @@ module.exports.computeEntities = ({ incidents }) => {
     const { incident_id } = incident;
 
     for (const field of entityFields) {
-      for (const name of incident[field.property]) {
-        const id = getId(name);
+      for (const id of incident[field.property]) {
+        const name = getName(entities, id);
 
         if (!entititiesHash[id]) {
           entititiesHash[id] = {
@@ -54,7 +54,7 @@ module.exports.computeEntities = ({ incidents }) => {
 
         if (harmingProperties.some((f) => f == field.property)) {
           const isBoth = harmingProperties.every((property) =>
-            incident[property].some((name) => getId(name) === id)
+            incident[property].some((entityId) => entityId === id)
           );
 
           if (isBoth) {
@@ -79,14 +79,10 @@ module.exports.computeEntities = ({ incidents }) => {
 
   for (const id in entititiesHash) {
     entititiesHash[id].relatedEntities = incidents
-      .filter((incident) =>
-        entityFields.some((field) => incident[field.property].map((p) => getId(p)).includes(id))
-      )
+      .filter((incident) => entityFields.some((field) => incident[field.property].includes(id)))
       .reduce((related, incident) => {
         for (const field of entityFields) {
-          for (const name of incident[field.property]) {
-            const relatedId = getId(name);
-
+          for (const relatedId of incident[field.property]) {
             if (relatedId !== id && !related.some((r) => r == relatedId)) {
               related.push(relatedId);
             }
@@ -106,9 +102,7 @@ module.exports.computeEntities = ({ incidents }) => {
       )
       .reduce((harmed, incident) => {
         for (const property of harmedProperties) {
-          for (const name of incident[property]) {
-            const harmedId = getId(name);
-
+          for (const harmedId of incident[property]) {
             if (harmedId !== id && !harmed.some((r) => r == harmedId)) {
               harmed.push(harmedId);
             }

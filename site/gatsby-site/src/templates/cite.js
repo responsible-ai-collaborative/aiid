@@ -71,6 +71,7 @@ function CitePage(props) {
       allMongodbTranslationsReportsEn,
       allMongodbTranslationsReportsFr,
       incident,
+      entities: entitiesData,
     },
   } = props;
 
@@ -211,7 +212,7 @@ function CitePage(props) {
     }
   };
 
-  const entities = computeEntities({ incidents: [incident] });
+  const entities = computeEntities({ incidents: [incident], entities: entitiesData.nodes });
 
   return (
     <Layout {...props}>
@@ -577,6 +578,13 @@ export const query = graphql`
       Alleged_developer_of_AI_system
       Alleged_deployer_of_AI_system
       Alleged_harmed_or_nearly_harmed_parties
+    }
+
+    entities: allMongodbAiidprodEntities {
+      nodes {
+        entity_id
+        name
+      }
     }
   }
 `;
