@@ -21,41 +21,55 @@ run: &run
   group: 5x
   start: "npm run serve"
 
+staging-context: &staging-context
+  context: staging
+  filters:
+    branches:
+      only:
+        - feature-circle-ci-tests
+        - staging
+
+production-context: &production-context
+  context: production
+  filters:
+    branches:
+      only:
+        - master
+
+jobs:
+  deploy:
+    docker:
+      - image: cimg/base:2022.03
+    steps:
+      - run:
+          name: Netlify deploy
+          command: |
+            curl -X POST -d '{}' ${NETLIFY_HOOK}
+
 workflows:
   staging:
     jobs:
       - cypress/install:
           <<: *install
-          context: staging
-          filters:
-            branches:
-              only:
-                - feature-circle-ci-tests
-                - staging
+          <<: *staging-context
 
       - cypress/run:
           <<: *run
-          context: staging
-          filters:
-            branches:
-              only:
-                - feature-circle-ci-tests
-                - staging
+          <<: *staging-context
+
+      - deploy:
+          <<: *staging-context
 
   production:
     jobs:
       # production, (couldn't find a way to not duplicate these)
       - cypress/install:
           <<: *install
-          context: production
-          filters:
-            branches:
-              only:
-                - master
+          <<: *production-context
       - cypress/run:
           <<: *run
-          context: production
-          filters:
-            branches:
-              only:
-                - master
+          <<: *production-context
+      - deploy:
+          <<: *staging-context
+          requires: 
+              - cypress/run
