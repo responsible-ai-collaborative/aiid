@@ -7,6 +7,7 @@ import Link from '../components/ui/Link';
 import { useMutation } from '@apollo/client';
 import { DELETE_SUBSCRIPTIONS } from '../graphql/subscriptions';
 import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
+import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 
 const Unsubscribe = (props) => {
   const [pageMessage, setPageMessage] = useState(null);
@@ -35,8 +36,10 @@ const Unsubscribe = (props) => {
   if (
     !subscriptionType ||
     !userId ||
-    (subscriptionType == 'incident' && !incidentId) ||
-    (subscriptionType !== 'all' && subscriptionType !== 'incident')
+    (subscriptionType == SUBSCRIPTION_TYPE.incident && !incidentId) ||
+    (subscriptionType !== SUBSCRIPTION_TYPE.all &&
+      subscriptionType !== SUBSCRIPTION_TYPE.newIncidents &&
+      subscriptionType !== SUBSCRIPTION_TYPE.incident)
   ) {
     errorMessage = t('Invalid parameters');
   }
@@ -49,9 +52,11 @@ const Unsubscribe = (props) => {
         userId: { userId },
       };
 
-      if (subscriptionType === 'incident') {
+      if (subscriptionType === SUBSCRIPTION_TYPE.incident) {
         query.type = subscriptionType;
         query.incident_id = { incident_id: `${incidentId}` };
+      } else if (subscriptionType === SUBSCRIPTION_TYPE.newIncidents) {
+        query.type = subscriptionType;
       }
 
       await DeleteSubscriptions({ variables: { query } });
@@ -81,13 +86,13 @@ const Unsubscribe = (props) => {
           ) : (
             <>
               <p>
-                {subscriptionType === 'incident' && (
+                {subscriptionType === SUBSCRIPTION_TYPE.incident && (
                   <Trans>
                     Do you want to unsubscribe from{' '}
                     <Link to={`/cite/${incidentId}`}>incident {{ incidentId }}</Link> updates?
                   </Trans>
                 )}
-                {subscriptionType === 'all' && (
+                {subscriptionType === SUBSCRIPTION_TYPE.all && (
                   <Trans>Do you want to unsubscribe from all notifications?</Trans>
                 )}
               </p>

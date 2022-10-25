@@ -32,6 +32,7 @@ import { graphql } from 'gatsby';
 import { getTaxonomies, getTranslatedReports } from 'utils/cite';
 import { computeEntities } from 'utils/entities';
 import AllegedEntities from 'components/entities/AllegedEntities';
+import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -165,12 +166,12 @@ function CitePage(props) {
         await subscribeToNewReportsMutation({
           variables: {
             query: {
-              type: 'incident',
+              type: SUBSCRIPTION_TYPE.incident,
               userId: { userId: user.id },
               incident_id: { incident_id: incidentId },
             },
             subscription: {
-              type: 'incident',
+              type: SUBSCRIPTION_TYPE.incident,
               userId: {
                 link: user.id,
               },
