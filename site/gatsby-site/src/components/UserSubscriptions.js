@@ -1,13 +1,17 @@
-import { ListGroup, Spinner } from 'flowbite-react';
+import { ListGroup, Spinner, Button, ToggleSwitch } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
-import { DELETE_SUBSCRIPTIONS, FIND_USER_SUBSCRIPTIONS } from '../graphql/subscriptions';
+import {
+  DELETE_SUBSCRIPTIONS,
+  FIND_USER_SUBSCRIPTIONS,
+  UPSERT_SUBSCRIPTION,
+} from '../graphql/subscriptions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Button } from 'flowbite-react';
 import { useUserContext } from 'contexts/userContext';
 import Link from 'components/ui/Link';
+import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 
 const UserSubscriptions = () => {
   const { user } = useUserContext();
@@ -18,11 +22,16 @@ const UserSubscriptions = () => {
 
   const [deletingId, setDeletingId] = useState(null);
 
+  const [isSubscribeToNewIncidents, setIsSubscribeToNewIncidents] = useState(false);
+
   const { data, loading } = useQuery(FIND_USER_SUBSCRIPTIONS, {
     variables: { query: { userId: { userId: user.id } } },
   });
 
   const [deleteSubscriptions, { loading: deleting }] = useMutation(DELETE_SUBSCRIPTIONS);
+
+  const [subscribeToNewIncidentsMutation, { loading: subscribingToNewIncidents }] =
+    useMutation(UPSERT_SUBSCRIPTION);
 
   const handleDeleteSubscription = async (subscriptionId) => {
     if (confirm(t('Do you want to delete this subscription?'))) {
@@ -30,7 +39,10 @@ const UserSubscriptions = () => {
 
       await deleteSubscriptions({ variables: { query: { _id: subscriptionId } } });
 
-      const newList = subscriptions.filter((subscription) => subscription._id !== subscriptionId);
+      const newList = subscriptions.filter(
+        (subscription) =>
+          subscription.type === SUBSCRIPTION_TYPE.incident && subscription._id !== subscriptionId
+      );
 
       setSubscriptions(newList);
 
@@ -39,11 +51,52 @@ const UserSubscriptions = () => {
   };
 
   useEffect(() => {
-    setSubscriptions(data?.subscriptions);
+    setSubscriptions(
+      data?.subscriptions.filter((subscription) => subscription.type === SUBSCRIPTION_TYPE.incident)
+    );
+
+    const hasSubscription = data?.subscriptions.some(
+      (s) => s.type == SUBSCRIPTION_TYPE.newIncidents
+    );
+
+    setIsSubscribeToNewIncidents(hasSubscription);
   }, [user, data]);
+
+  const onSusbcribeToggle = async (checked) => {
+    if (checked) {
+      await subscribeToNewIncidentsMutation({
+        variables: {
+          query: {
+            type: SUBSCRIPTION_TYPE.newIncidents,
+            userId: { userId: user.id },
+          },
+          subscription: {
+            type: SUBSCRIPTION_TYPE.newIncidents,
+            userId: {
+              link: user.id,
+            },
+          },
+        },
+      });
+    } else {
+      await deleteSubscriptions({
+        variables: { query: { type: SUBSCRIPTION_TYPE.newIncidents, userId: { userId: user.id } } },
+      });
+    }
+    setIsSubscribeToNewIncidents(checked);
+  };
 
   return (
     <div className="mt-4">
+      <div className="my-4">
+        <ToggleSwitch
+          checked={isSubscribeToNewIncidents}
+          label={t('Notify me of new Incidents')}
+          onChange={onSusbcribeToggle}
+          name="subscribe-all"
+          disabled={loading || deleting || subscribingToNewIncidents}
+        />
+      </div>
       {loading ? (
         <div className="flex flex-wrap gap-2">
           <Spinner />
@@ -67,7 +120,7 @@ const UserSubscriptions = () => {
               >
                 <div className="flex flex-row w-full justify-between gap-3 items-center">
                   <div className="items-center">
-                    {subscription.type === 'incident' && (
+                    {subscription.type === SUBSCRIPTION_TYPE.incident && (
                       <>
                         <Trans ns="account">Updates on incident </Trans>
                         <Link to={`/cite/${subscription.incidentId}`}>
@@ -94,7 +147,7 @@ const UserSubscriptions = () => {
             ))}
         </ListGroup>
       ) : (
-        <Trans ns="account">You don&apos;t have active subscriptions</Trans>
+        <Trans ns="account">You don&apos;t have active subscriptions to Incident updates</Trans>
       )}
     </div>
   );
