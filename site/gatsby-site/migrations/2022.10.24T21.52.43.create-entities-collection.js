@@ -14,7 +14,7 @@ exports.up = async ({ context: { client } }) => {
     .db(config.realm.production_db.db_name)
     .createCollection('entities');
 
-  entitiesCollection.createIndex({ id: -1 }, { name: 'id_idx', unique: true });
+  entitiesCollection.createIndex({ entity_id: -1 }, { name: 'entity_id_idx', unique: true });
 
   const incidentsCollection = client.db(config.realm.production_db.db_name).collection('incidents');
 
@@ -41,7 +41,7 @@ exports.up = async ({ context: { client } }) => {
 
         if (!entitiesHash[entityId]) {
           entitiesHash[entityId] = {
-            id: entityId,
+            entity_id: entityId,
             name: entityName.trim(),
           };
         }

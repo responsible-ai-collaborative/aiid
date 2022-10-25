@@ -3,7 +3,7 @@
         "_id": {
             "bsonType": "objectId"
         },
-        "id": {
+        "entity_id": {
             "bsonType": "string"
         },
         "name": {
