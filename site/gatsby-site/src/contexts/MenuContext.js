@@ -19,7 +19,6 @@ export function MenuContextProvider({ children }) {
       }}
     >
       {children}
-      {/* <NewSidebarLayout /> */}
     </MenuContext.Provider>
   );
 }

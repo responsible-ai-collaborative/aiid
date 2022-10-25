@@ -34,7 +34,13 @@ const NewSidebarLayout = () => {
           title="Open Twitter"
           onClick={collapseMenu}
         />
-        {!isCollapsed && <QuickAccess />}
+        <span
+          className={`transition-opacity duration-1000 ${
+            isCollapsed ? 'opacity-0' : 'opacity-100'
+          }`}
+        >
+          {!isCollapsed && <QuickAccess />}
+        </span>
         {config.sidebar.title ? (
           <div
             className={'tw-hidden-mobile'}

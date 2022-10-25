@@ -139,7 +139,7 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed 
 
   return (
     <>
-      <li className="z-50">
+      <li className={`z-50 ${isCollapsed ? 'flex justify-center' : ''}`}>
         {item.title &&
           (isCollapsed ? (
             <Tooltip content={item.title} placement="right">
@@ -195,7 +195,7 @@ const NodeLink = ({ item, isCollapsed = false, click, icon, hasChildren, calcula
         isCollapsed ? 'h-0 w-0 opacity-0 ' : 'opacity-100'
       } transition-opacity duration-500`}
     >
-      <span className="ml-3">
+      <span className="ml-3 block">
         <Trans>{item.title}</Trans>
       </span>
       {!config.sidebar.frontLine && item.title && hasChildren ? (
