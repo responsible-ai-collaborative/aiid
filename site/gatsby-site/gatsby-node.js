@@ -57,8 +57,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   ];
 
   redirects.forEach((pair) => {
-    console.log('redirect', pair);
-    console.log(createRedirect({ fromPath: pair[0], toPath: pair[1], isPermanent: true }));
+    createRedirect({ fromPath: pair[0], toPath: pair[1], isPermanent: true });
   });
 
   for (const pageCreator of [
