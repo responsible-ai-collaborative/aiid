@@ -1,16 +1,32 @@
 version: 2.1
 orbs:
   cypress: cypress-io/cypress@2
+
+install: &install
+  executor: cypress/base-16-14-2-slim
+  working_directory: site/gatsby-site
+  cache-key: >-
+    cache-v2-{{ arch }}-{{ .Branch }}-{{ checksum "site/gatsby-site/package-lock.json"}}
+  build: GATSBY_CPU_COUNT=2 npm run build
+
+run: &run
+  executor: cypress/base-16-14-2-slim
+  working_directory: site/gatsby-site
+  cache-key: >-
+    cache--v2-{{ arch }}-{{ .Branch }}-{{ checksum "site/gatsby-site/package-lock.json"}}
+  requires:
+    - cypress/install
+  parallel: true
+  parallelism: 5
+  group: 5x
+  start: "npm run serve"
+
 workflows:
   staging:
     jobs:
       - cypress/install:
-          executor: cypress/base-16-14-2-slim
+          <<: *install
           context: staging
-          working_directory: site/gatsby-site
-          cache-key: >-
-            cache-v2-{{ arch }}-{{ .Branch }}-{{ checksum "site/gatsby-site/package-lock.json"}}
-          build: GATSBY_CPU_COUNT=2 npm run build
           filters:
             branches:
               only:
@@ -18,17 +34,8 @@ workflows:
                 - staging
 
       - cypress/run:
-          executor: cypress/base-16-14-2-slim
+          <<: *run
           context: staging
-          working_directory: site/gatsby-site
-          cache-key: >-
-            cache--v2-{{ arch }}-{{ .Branch }}-{{ checksum "site/gatsby-site/package-lock.json"}}
-          requires:
-            - cypress/install
-          parallel: true
-          parallelism: 5
-          group: 5x
-          start: "npm run serve"
           filters:
             branches:
               only:
@@ -39,28 +46,15 @@ workflows:
     jobs:
       # production, (couldn't find a way to not duplicate these)
       - cypress/install:
-          executor: cypress/base-16-14-2-slim
+          <<: *install
           context: production
-          working_directory: site/gatsby-site
-          cache-key: >-
-            cache-v2-{{ arch }}-{{ .Branch }}-{{ checksum "site/gatsby-site/package-lock.json"}}
-          build: GATSBY_CPU_COUNT=2 npm run build
           filters:
             branches:
               only:
                 - master
       - cypress/run:
-          executor: cypress/base-16-14-2-slim
+          <<: *run
           context: production
-          working_directory: site/gatsby-site
-          cache-key: >-
-            cache--v2-{{ arch }}-{{ .Branch }}-{{ checksum "site/gatsby-site/package-lock.json"}}
-          requires:
-            - cypress/install
-          parallel: true
-          parallelism: 5
-          group: 5x
-          start: "npm run serve"
           filters:
             branches:
               only:
