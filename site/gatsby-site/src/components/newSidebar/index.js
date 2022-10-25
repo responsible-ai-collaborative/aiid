@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Tree from './tree';
 import { ExternalLink } from 'react-feather';
 import config from '../../../config';
@@ -6,13 +6,18 @@ import QuickAccess from 'components/discover/QuickAccess';
 import { Trans } from 'react-i18next';
 import LoginSignup from 'components/loginSignup';
 import useLocalizePath from 'components/i18n/useLocalizePath';
-import { faChevronCircleLeft } from '@fortawesome/free-solid-svg-icons';
+import { faChevronCircleLeft, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from 'gatsby';
+import { useUserContext } from 'contexts/userContext';
+import { useMenuContext } from 'contexts/MenuContext';
 
 const NewSidebarLayout = () => {
   const localizePath = useLocalizePath();
 
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const { user } = useUserContext();
+
+  const { isCollapsed, collapseMenu } = useMenuContext();
 
   return (
     <>
@@ -27,7 +32,7 @@ const NewSidebarLayout = () => {
             isCollapsed ? 'rotate-180' : ''
           }`}
           title="Open Twitter"
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={collapseMenu}
         />
         {!isCollapsed && <QuickAccess />}
         {config.sidebar.title ? (
@@ -65,11 +70,25 @@ const NewSidebarLayout = () => {
               }
             })}
           </ul>
-          {!isCollapsed && (
-            <div className="flex items-center justify-center w-full p-3 border-t">
+          <div className="flex items-center justify-center w-full px-2 py-3 border-t">
+            {isCollapsed ? (
+              <Link
+                to={user && user.isLoggedIn && user.profile.email ? '/account' : '/login'}
+                className={`flex rounded-lg items-center text-base font-normal group ${
+                  isCollapsed ? 'justify-center' : ''
+                }`}
+              >
+                <FontAwesomeIcon
+                  className={`w-6 h-6 text-gray-500' transition duration-75 dark:text-gray-400 group-hover:text-gray-500 dark:group-hover:text-white pointer fa mr-1`}
+                  fixedWidth
+                  icon={faUser}
+                  title=""
+                />
+              </Link>
+            ) : (
               <LoginSignup />
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </aside>
     </>

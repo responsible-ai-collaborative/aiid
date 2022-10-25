@@ -140,33 +140,28 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed 
   return (
     <>
       <li className="z-50">
-        {item.title && (
-          <Tooltip content={item.title} placement="right">
-            <Link
-              to={item.url}
-              onClick={click}
-              className={`flex rounded-lg items-center p-2 text-base font-normal group ${calculatedClassName} ${
-                isCollapsed ? 'justify-center' : ''
-              }`}
-            >
-              {icon && <>{icon} </>}
-              <span
-                className={`${
-                  isCollapsed ? 'h-0 w-0 opacity-0 ' : 'opacity-100'
-                } transition-opacity duration-500`}
-              >
-                <span className="ml-3">
-                  <Trans>{item.title}</Trans>
-                </span>
-                {!config.sidebar.frontLine && item.title && hasChildren ? (
-                  <button onClick={click} aria-label="collapse" className="collapser">
-                    {!item.collapsed ? <OpenedSvg /> : <ClosedSvg />}
-                  </button>
-                ) : null}
-              </span>
-            </Link>
-          </Tooltip>
-        )}
+        {item.title &&
+          (isCollapsed ? (
+            <Tooltip content={item.title} placement="right">
+              <NodeLink
+                item={item}
+                isCollapsed={isCollapsed}
+                click={click}
+                icon={icon}
+                hasChildren={hasChildren}
+                calculatedClassName={calculatedClassName}
+              />
+            </Tooltip>
+          ) : (
+            <NodeLink
+              item={item}
+              isCollapsed={isCollapsed}
+              click={click}
+              icon={icon}
+              hasChildren={hasChildren}
+              calculatedClassName={calculatedClassName}
+            />
+          ))}
 
         {!item.collapsed && hasChildren ? (
           <ul>
@@ -185,5 +180,31 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed 
     </>
   );
 };
+
+const NodeLink = ({ item, isCollapsed = false, click, icon, hasChildren, calculatedClassName }) => (
+  <Link
+    to={item.url}
+    onClick={click}
+    className={`flex rounded-lg items-center p-2 text-base font-normal group ${calculatedClassName} ${
+      isCollapsed ? 'justify-center' : ''
+    }`}
+  >
+    {icon && <>{icon} </>}
+    <span
+      className={`${
+        isCollapsed ? 'h-0 w-0 opacity-0 ' : 'opacity-100'
+      } transition-opacity duration-500`}
+    >
+      <span className="ml-3">
+        <Trans>{item.title}</Trans>
+      </span>
+      {!config.sidebar.frontLine && item.title && hasChildren ? (
+        <button onClick={click} aria-label="collapse" className="collapser">
+          {!item.collapsed ? <OpenedSvg /> : <ClosedSvg />}
+        </button>
+      ) : null}
+    </span>
+  </Link>
+);
 
 export default TreeNode;
