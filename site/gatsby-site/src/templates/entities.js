@@ -3,7 +3,7 @@ import LayoutHideSidebar from 'components/LayoutHideSidebar';
 import Container from 'elements/Container';
 import { graphql } from 'gatsby';
 import React, { useMemo } from 'react';
-import { Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
 import AiidHelmet from 'components/AiidHelmet';
 
@@ -17,6 +17,8 @@ const incidentFields = [
 const entitiesFields = ['relatedEntities'];
 
 const EntitiesPage = ({ pageContext, data, ...props }) => {
+  const { t } = useTranslation(['entities']);
+
   const { entities } = pageContext;
 
   const { incidents } = data;
@@ -48,20 +50,20 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
     [incidentsHash, entitiesHash]
   );
 
+  const metaTitle = t('Entities');
+
   return (
     <>
       <AiidHelmet
         {...{
-          metaTitle: 'Entities',
-          metaDescription: 'Entities involved in AI Incidents',
+          metaTitle,
+          metaDescription: t('Entities involved in AI Incidents'),
           canonicalUrl: 'https://incidentdatabase.ai/entities',
         }}
       />
       <LayoutHideSidebar {...props}>
         <Container className="tw-container-xl mt-6">
-          <h1 className="text-5xl mt-6 font-extrabold dark:text-white">
-            <Trans ns="entities">Entities</Trans>
-          </h1>
+          <h1 className="text-5xl mt-6 font-extrabold dark:text-white">{t(metaTitle)}</h1>
           <EntitiesTable data={entitiesData} className="mt-6" data-cy="entities" />
         </Container>
       </LayoutHideSidebar>
