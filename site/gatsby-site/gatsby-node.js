@@ -53,11 +53,13 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     ['/about/blog', '/blog'],
     ['/research/4-taxonomies', '/taxonomies'],
     ['/research', '/research/snapshots'],
+    ['/apps/newsSearch', '/apps/newsdigest'],
   ];
 
-  redirects.forEach((pair) =>
-    createRedirect({ fromPath: pair[0], toPath: pair[1], isPermanent: true })
-  );
+  redirects.forEach((pair) => {
+    console.log('redirect', pair);
+    console.log(createRedirect({ fromPath: pair[0], toPath: pair[1], isPermanent: true }));
+  });
 
   for (const pageCreator of [
     createMdxPages,
