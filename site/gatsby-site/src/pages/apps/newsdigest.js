@@ -7,6 +7,10 @@ export default function NewsSearchPage(props) {
         title
         url
         similarity
+        classification_similarity {
+          classification
+          similarity
+        }
         matching_keywords
         matching_harm_keywords
         matching_entities
@@ -65,10 +69,10 @@ export default function NewsSearchPage(props) {
       ((dismissedArticles[newsArticle.url] == undefined && !newsArticle.dismissed) ||
         dismissedArticles[newsArticle.url] === false) &&
       (!newsArticle.date_published ||
-        (new Date().getTime() -
-          parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()).getTime()) /
-          (1000 * 60 * 60 * 24) <
-          30) &&
+        millisToDays(
+          new Date().getTime() -
+            parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()).getTime()
+        ) < 30) &&
       !existingSubmissions.includes(newsArticle.url) &&
       !existingReports.includes(newsArticle.url)
   );
@@ -92,14 +96,37 @@ export default function NewsSearchPage(props) {
         </StyledHeading>
       </div>
       <p>
-        Stories from around the web matched by keywords and sorted by textual similarity to existing
-        reports in the database
+        <Trans>
+          This digest shows news stories from around the web matching a set of AI-related{' '}
+          <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+            <FontAwesomeIcon icon={faTag} className="pointer fa mr-1" fixedWidth />
+            keywords
+          </span>
+          . These stories are{' '}
+          <span className="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">
+            match
+          </span>
+          ed to reports in the database according to textual similarity as identified by an{' '}
+          <LocalizedLink to="/blog/using-ai-to-connect-ai-incidents">NLP system</LocalizedLink>.
+          Also shown are mentioned{' '}
+          <span className="bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+            <FontAwesomeIcon icon={faBuilding} className="pointer fa mr-1" fixedWidth />
+            entities
+          </span>{' '}
+          <LocalizedLink to="/entities">in the database</LocalizedLink> and keywords related to{' '}
+          <span className="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-900">
+            <FontAwesomeIcon icon={faBolt} className="pointer fa mr-1" fixedWidth />
+            harm
+          </span>
+          . Some of the stories below may qualify as incident reports and can be submitted to the
+          database. However, the majority are simply AI-related.
+        </Trans>
       </p>
       <div data-cy="results" className="tw-card-set">
         {loading && <p>Searching...</p>}
         {!loading && displayedArticles.length == 0 && <p>No results</p>}
         {displayedArticles
-          .sort((b, a) => a.similarity - b.similarity)
+          .sort((a, b) => ranking(b) - ranking(a))
           .map((newsArticle) => (
             <CandidateCard
               newsArticle={newsArticle}
@@ -144,6 +171,18 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
   } catch (e) {
     domain = null;
   }
+
+  const generalSimilarity = { classification: 'General', similarity: newsArticle.similarity };
+
+  const similarities = [generalSimilarity].concat(newsArticle.classification_similarity || []);
+
+  let greatestSimilarity = similarities.sort((a, b) => b.similarity - a.similarity)[0];
+
+  // Use general match unless the match for a classification is substantially higher
+  if (greatestSimilarity.similarity - generalSimilarity.similarity < 0.001) {
+    greatestSimilarity = generalSimilarity;
+  }
+
   return (
     <Card
       data-cy="candidate-card"
@@ -163,16 +202,16 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
         </div>
         <div className="flex flex-wrap">
           <span className="mb-1 mr-1">
-            {newsArticle.similarity < 0.997 ? (
-              <Badge color="warning" title={'cosine similarity: ' + newsArticle.similarity}>
+            {greatestSimilarity.similarity < 0.997 ? (
+              <Badge color="warning" title={'cosine similarity: ' + greatestSimilarity.similarity}>
                 Weak match
               </Badge>
-            ) : newsArticle.similarity < 0.9975 ? (
-              <Badge color="success" title={'cosine similarity: ' + newsArticle.similarity}>
+            ) : greatestSimilarity.similarity < 0.9975 ? (
+              <Badge color="success" title={'cosine similarity: ' + greatestSimilarity.similarity}>
                 Match
               </Badge>
             ) : (
-              <Badge color="success" title={'cosine similarity: ' + newsArticle.similarity}>
+              <Badge color="success" title={'cosine similarity: ' + greatestSimilarity.similarity}>
                 Strong match
               </Badge>
             )}{' '}
@@ -185,17 +224,6 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
               </Badge>
             </span>
           ))}
-          {newsArticle.matching_entities &&
-            newsArticle.matching_entities.map((entity) => (
-              <span className="inline-block mr-1 mb-1" key={entity}>
-                <LocalizedLink to={'/entities/' + entity.toLowerCase().split(' ').join('-')}>
-                  <Badge>
-                    <FontAwesomeIcon icon={faBuilding} className="pointer fa mr-1" fixedWidth />
-                    {entity}
-                  </Badge>
-                </LocalizedLink>
-              </span>
-            ))}
           {newsArticle.matching_harm_keywords &&
             newsArticle.matching_harm_keywords.map((keyword) => (
               <span className="inline-block mr-1 mb-1" key={keyword}>
@@ -205,8 +233,24 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
                 </Badge>
               </span>
             ))}
+          {newsArticle.matching_entities &&
+            newsArticle.matching_entities.map((entity) => (
+              <span className="inline-block mr-1 mb-1" key={entity}>
+                <LocalizedLink to={'/entities/' + entity.toLowerCase().split(' ').join('-')}>
+                  <Badge color="gray">
+                    <FontAwesomeIcon icon={faBuilding} className="pointer fa mr-1" fixedWidth />
+                    {entity}
+                  </Badge>
+                </LocalizedLink>
+              </span>
+            ))}
         </div>
       </div>
+      {greatestSimilarity != generalSimilarity && (
+        <div>
+          <strong>Matching classification</strong>: {greatestSimilarity.classification}
+        </div>
+      )}
       <div className="mt-auto flex">
         {dismissed ? (
           <Button
@@ -272,6 +316,25 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
       </div>
     </Card>
   );
+}
+
+function ranking(newsArticle) {
+  const s = (newsArticle.similarity - 0.99) / 0.01; // Similarity
+
+  const k = newsArticle.matching_keywords.length; // AI Keywords
+
+  const h = newsArticle.matching_harm_keywords.length; // Harm Keywords
+
+  const a = millisToDays(
+    // Age
+    new Date().getTime() - parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()).getTime()
+  );
+
+  return (s * (k + 2 * h)) / a;
+}
+
+function millisToDays(millis) {
+  return millis / (1000 * 60 * 60 * 24);
 }
 
 import React, { useState } from 'react';

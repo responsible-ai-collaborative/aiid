@@ -71,6 +71,20 @@
         "similarity": {
             "bsonType": "double"
         },
+        "classification_similarity": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "classification": {
+                        "bsonType": "string"
+                    },
+                    "similarity": {
+                        "bsonType": "double"
+                    }
+                }
+            }
+        },
         "source_domain": {
             "bsonType": "string"
         },
