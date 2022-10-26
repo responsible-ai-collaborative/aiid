@@ -615,8 +615,6 @@ describe('Submitted reports', () => {
       (r) => r.incident_id === 0 && r.description === undefined
     );
 
-    console.log(submission);
-
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'FindSubmissions',
