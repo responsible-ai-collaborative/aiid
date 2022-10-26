@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Tree from './tree';
 import { ExternalLink } from 'react-feather';
 import config from '../../../config';
@@ -12,28 +12,27 @@ import { Link } from 'gatsby';
 import { useUserContext } from 'contexts/userContext';
 import { useMenuContext } from 'contexts/MenuContext';
 
-const NewSidebarLayout = () => {
+const NewSidebarLayout = ({ defaultCollapsed = false }) => {
   const localizePath = useLocalizePath();
 
   const { user } = useUserContext();
 
   const { isCollapsed, collapseMenu } = useMenuContext();
 
+  useEffect(() => {
+    if (defaultCollapsed && !isCollapsed) {
+      collapseMenu(true);
+    }
+  }, [defaultCollapsed]);
+
   return (
     <>
       <aside
-        className={`${!isCollapsed ? 'w-64' : 'w-20'} sticky top-0 transition-width duration-1000`}
+        className={`${
+          !isCollapsed ? 'w-64' : 'w-20'
+        } sticky relative top-0 transition-width duration-1000`}
         aria-label="Sidebar"
       >
-        <FontAwesomeIcon
-          icon={faChevronCircleLeft}
-          color={'white'}
-          className={`transition-rotate-180 duration-500 cursor-pointer fa fa-twitter-square fa-lg text-gray-300 w-8 h-8 absolute -right-4 top-1/2 ${
-            isCollapsed ? 'rotate-180' : ''
-          }`}
-          title="Open Twitter"
-          onClick={collapseMenu}
-        />
         <span className={``}>
           <QuickAccess isCollapsed={isCollapsed} />
         </span>
@@ -91,6 +90,15 @@ const NewSidebarLayout = () => {
               <LoginSignup />
             )}
           </div>
+          <FontAwesomeIcon
+            icon={faChevronCircleLeft}
+            color={'white'}
+            className={`transition-rotate-180 duration-500 cursor-pointer fa fa-twitter-square fa-lg text-gray-300 w-8 h-8 absolute -right-4 top-1/2 ${
+              isCollapsed ? 'rotate-180' : ''
+            }`}
+            title="Open Twitter"
+            onClick={() => collapseMenu(!isCollapsed)}
+          />
         </div>
       </aside>
     </>

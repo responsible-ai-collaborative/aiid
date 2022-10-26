@@ -1,14 +1,19 @@
 import React, { useState, createContext, useContext } from 'react';
 
-const MenuContext = createContext({ isCollapsed: false, collapseMenu: () => {} });
+const MenuContext = createContext({
+  isCollapsed: false,
+  collapseMenu: (value) => {
+    value;
+  },
+});
 
 export default MenuContext;
 
 export function MenuContextProvider({ children }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const collapseMenu = () => {
-    setIsCollapsed(!isCollapsed);
+  const collapseMenu = (value) => {
+    setIsCollapsed(value);
   };
 
   return (

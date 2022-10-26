@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
-import Sidebar from './sidebar';
 import config from '../../config.js';
 import Header from './ui/Header';
-import Button from 'elements/Button';
+import NewSidebarLayout from './newSidebar';
 
 const Wrapper = styled.div`
   display: flex;
@@ -61,28 +60,14 @@ const MaxWidth = styled.div`
   }
 `;
 
-const LeftSideBarWidth = styled.div`
-  width: 298px;
-  ${({ collapse }) => collapse && `width: 0;`}
-`;
-
-const LayoutHideSidebar = ({ children, location, menuCollapseCallback, className = '' }) => {
-  const [collapse, setCollapse] = useState(true);
-
-  const toggleMenu = () => {
-    setCollapse(!collapse);
-    if (menuCollapseCallback) {
-      menuCollapseCallback(!collapse);
-    }
-  };
-
+const LayoutHideSidebar = ({ children, className = '' }) => {
   return (
     <>
       <Header />
       <Wrapper className={className}>
-        <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
-          <Sidebar location={location} collapse={collapse} />
-        </LeftSideBarWidth>
+        <div className={`tw-hidden-mobile z-2`}>
+          <NewSidebarLayout defaultCollapsed={true} />
+        </div>
         {config.sidebar.title ? (
           <div
             className={'sidebarTitle sideBarShow'}
@@ -90,14 +75,6 @@ const LayoutHideSidebar = ({ children, location, menuCollapseCallback, className
           />
         ) : null}
         <Content id="content" className="overflow-y-auto max-w-full">
-          <Button
-            variant="primary"
-            className={`tw-btn-menu ${collapse ? 'collapsed' : ''}`}
-            onClick={() => toggleMenu()}
-            collapse={collapse.toString()}
-          >
-            MENU
-          </Button>
           <MaxWidth>{children}</MaxWidth>
         </Content>
       </Wrapper>
