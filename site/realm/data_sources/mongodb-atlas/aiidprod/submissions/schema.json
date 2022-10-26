@@ -39,6 +39,12 @@
                 "bsonType": "string"
             }
         },
+        "editors": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
         "editor_dissimilar_incidents": {
             "bsonType": "array",
             "items": {
@@ -82,6 +88,9 @@
         },
         "incident_id": {
             "bsonType": "int"
+        },
+        "incident_title": {
+            "bsonType": "string"
         },
         "language": {
             "bsonType": "string"

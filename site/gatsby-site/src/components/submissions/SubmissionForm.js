@@ -19,6 +19,7 @@ import supportedLanguages from '../../components/i18n/languages.json';
 import { Trans, useTranslation } from 'react-i18next';
 import RelatedIncidents from '../../components/RelatedIncidents';
 import SemanticallyRelatedIncidents from '../../components/SemanticallyRelatedIncidents';
+import { useUserContext } from 'contexts/userContext';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -119,6 +120,7 @@ export const schema = yup.object().shape({
     is: (incident_id) => incident_id == '' || incident_id === undefined,
     then: yup.date().required('*Incident Date required'),
   }),
+  incident_title: yup.string(),
   editor_notes: yup.string(),
 });
 
@@ -160,6 +162,8 @@ const SubmissionForm = () => {
   } = useFormikContext();
 
   const { t } = useTranslation(['submit']);
+
+  const { isRole } = useUserContext();
 
   const TextInputGroupProps = { values, errors, touched, handleChange, handleBlur, schema };
 
@@ -433,12 +437,28 @@ const SubmissionForm = () => {
 
           {!values.incident_id && (
             <>
+              {isRole('incident_editor') && (
+                <TextInputGroup
+                  name="incident_title"
+                  label={t('Incident Title')}
+                  placeholder={t('Incident title')}
+                  className="mt-3"
+                  {...TextInputGroupProps}
+                />
+              )}
               <TextInputGroup
                 name="description"
                 label={t('Description')}
                 as="textarea"
                 placeholder={t('Incident Description')}
                 rows={3}
+                className="mt-3"
+                {...TextInputGroupProps}
+              />
+
+              <TagsInputGroup
+                name="editors"
+                label={t('Editors')}
                 className="mt-3"
                 {...TextInputGroupProps}
               />
