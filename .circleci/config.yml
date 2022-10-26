@@ -59,17 +59,3 @@ workflows:
 
       - deploy:
           <<: *staging-context
-
-  production:
-    jobs:
-      # production, (couldn't find a way to not duplicate these)
-      - cypress/install:
-          <<: *install
-          <<: *production-context
-      - cypress/run:
-          <<: *run
-          <<: *production-context
-      - deploy:
-          <<: *staging-context
-          requires: 
-              - cypress/run
