@@ -11,7 +11,7 @@ import isArray from 'lodash/isArray';
 import { stripMarkdown } from '../../utils/typography';
 import RelatedIncidents from '../../components/RelatedIncidents';
 import { Trans } from 'react-i18next';
-import { getEntityId } from '../../utils/entities';
+import { processEntities } from '../../utils/entities';
 import { graphql, useStaticQuery } from 'gatsby';
 
 export default function SubmissionEditModal({ show, onHide, submissionId }) {
@@ -42,46 +42,23 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
     }
   }, [show, submissionId]);
 
-  // Save new Entities into "entities" collection
-  const processEntities = async (entitiesNames) => {
-    entitiesNames = !isArray(entitiesNames)
-      ? entitiesNames.split(',').map((s) => s.trim())
-      : entitiesNames;
-
-    const entityIds = [];
-
-    for (const entityName of entitiesNames) {
-      const entityId = getEntityId(entityName);
-
-      entityIds.push(entityId);
-
-      if (!allEntities.find((entity) => entity.entity_id === entityId)) {
-        await createEntityMutation({
-          variables: {
-            query: {
-              entity_id: entityId,
-            },
-            entity: {
-              entity_id: entityId,
-              name: entityName,
-            },
-          },
-        });
-      }
-    }
-
-    return entityIds;
-  };
-
   const handleSubmit = async (values) => {
     try {
       const update = { ...values, __typename: undefined, _id: undefined };
 
-      update.deployers = { link: await processEntities(values.deployers) };
+      update.deployers = await processEntities(allEntities, values.deployers, createEntityMutation);
 
-      update.developers = { link: await processEntities(values.developers) };
+      update.developers = await processEntities(
+        allEntities,
+        values.developers,
+        createEntityMutation
+      );
 
-      update.harmed_parties = { link: await processEntities(values.harmed_parties) };
+      update.harmed_parties = await processEntities(
+        allEntities,
+        values.harmed_parties,
+        createEntityMutation
+      );
 
       await updateSubmission({
         variables: {
