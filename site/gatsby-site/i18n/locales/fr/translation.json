@@ -147,5 +147,5 @@
   "Error updating incident {{incidentId}}.": "Erreur dans la mis à jour de l'incident {{incidentId}}.",
   "Error updating incident {{incident}}. \n {{message}}": "Erreur dans la mis à jour de l'incident {{incidentId}}. \n {{message}}",
   "Are you sure you want to delete this report?": "Voulez-vous vraiment supprimer ce rapport?",
-  "Viewing reports for incident #{{id}}. <3> View details on incident #{{id}}</3>.": "^Viewing reports for incident #{{id}}. <3>View details on incident #{{id}}</3>."
+  "Viewing reports for incident #{{id}}. <4> View details on incident #{{id}}</4>.": "Vous regardez les rapports de l'incident #{{id}}. <4>Voir les détails sur l'incident #{{id}}</4>."
 }
