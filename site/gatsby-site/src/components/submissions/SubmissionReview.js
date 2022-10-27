@@ -62,9 +62,11 @@ const SubmissionReview = ({ submission }) => {
 
   const isSubmitter = isRole('submitter');
 
-  const [promoteSubmissionToReport, { loading: promoting }] = useMutation(PROMOTE_SUBMISSION, {
+  const [promoteSubmissionToReport] = useMutation(PROMOTE_SUBMISSION, {
     fetchPolicy: 'network-only',
   });
+
+  const [promoting, setPromoting] = useState('');
 
   const isNewIncident = submission.incident_id === 0;
 
@@ -108,6 +110,8 @@ const SubmissionReview = ({ submission }) => {
         return;
       }
 
+      setPromoting(is_incident_report ? 'incident' : 'issue');
+
       const {
         data: {
           promoteSubmissionToReport: {
@@ -134,6 +138,8 @@ const SubmissionReview = ({ submission }) => {
           });
         },
       });
+
+      setPromoting('');
 
       if (is_incident_report) {
         if (isNewIncident) {
@@ -271,7 +277,7 @@ const SubmissionReview = ({ submission }) => {
               onClick={() => promoteSubmission({ is_incident_report: false })}
             >
               <div className="flex gap-2">
-                {promoting && <Spinner size="sm" />}
+                {promoting === 'issue' && <Spinner size="sm" />}
                 <Trans ns="submitted">Add New Issue</Trans>
               </div>
             </Button>
@@ -283,7 +289,7 @@ const SubmissionReview = ({ submission }) => {
               onClick={promoteSubmission}
             >
               <div className="flex gap-2">
-                {promoting && <Spinner size="sm" />}
+                {promoting === 'incident' && <Spinner size="sm" />}
                 {isNewIncident ? (
                   <Trans ns="submitted">Add New Incident</Trans>
                 ) : (
