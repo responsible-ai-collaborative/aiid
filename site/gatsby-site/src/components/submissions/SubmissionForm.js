@@ -457,7 +457,7 @@ const SubmissionForm = () => {
               />
 
               <TagsInputGroup
-                name="editors"
+                name="incident_editors"
                 label={t('Editors')}
                 className="mt-3"
                 {...TextInputGroupProps}

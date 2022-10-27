@@ -54,7 +54,15 @@ const dateRender = [
   'date_modified',
 ];
 
-const otherDetails = ['language', '_id', 'developers', 'deployers', 'harmed_parties'];
+const otherDetails = [
+  'language',
+  '_id',
+  'developers',
+  'deployers',
+  'harmed_parties',
+  'incident_title',
+  'incident_editors',
+];
 
 const SubmissionReview = ({ submission }) => {
   const { isRole } = useUserContext();
@@ -131,6 +139,8 @@ const SubmissionReview = ({ submission }) => {
     const report = {
       ...submission,
       incident_id: undefined,
+      incident_title: undefined,
+      incident_editors: undefined,
       deployers: undefined,
       developers: undefined,
       harmed_parties: undefined,
@@ -171,7 +181,7 @@ const SubmissionReview = ({ submission }) => {
             incident_id: incident.incident_id,
           },
           set: {
-            title: submission.title,
+            title: submission.incident_title || submission.title,
             date: submission.incident_date,
             description: submission.description,
           },
