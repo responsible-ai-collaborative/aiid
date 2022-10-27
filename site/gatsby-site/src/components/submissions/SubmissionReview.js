@@ -95,8 +95,11 @@ const SubmissionReview = ({ submission }) => {
       }
 
       if (
-        is_incident_report &&
-        (!submission.developers || !submission.deployers || !submission.harmed_parties)
+        isNewIncident &&
+        (!submission.description ||
+          !submission.developers ||
+          !submission.deployers ||
+          !submission.harmed_parties)
       ) {
         addToast({
           message: `Please review submission before approving. Some data is missing.`,
@@ -104,6 +107,7 @@ const SubmissionReview = ({ submission }) => {
         });
         return;
       }
+
       const {
         data: {
           promoteSubmissionToReport: {

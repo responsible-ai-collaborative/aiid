@@ -49,8 +49,14 @@ export const schema = yup.object().shape({
     .required('*Title is required'),
   description: yup
     .string()
+    .nullable()
     .min(3, 'Description must have at least 3 characters')
-    .max(500, "Description can't be longer than 500 characters"),
+    .max(500, "Description can't be longer than 500 characters")
+    .when(['_id', 'incident_id'], {
+      is: (_id, incident_id) =>
+        _id !== undefined && (incident_id == '' || incident_id === undefined),
+      then: yup.string().required('*Description is required.'),
+    }),
   developers: yup.string().when(['_id', 'incident_id'], {
     is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
     then: yup
@@ -238,6 +244,15 @@ const SubmissionForm = () => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
 
+  useEffect(() => {
+    if (values._id) {
+      // Only display form errors on Edit mode
+      Object.keys(errors).map((key) => {
+        setFieldTouched(key, true);
+      });
+    }
+  }, [errors]);
+
   return (
     <div className="bootstrap">
       <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
@@ -402,7 +417,17 @@ const SubmissionForm = () => {
         )}
 
         <details className="mt-3">
-          <summary data-cy="extra-fields">{t('Tell us more...')}</summary>
+          <summary data-cy="extra-fields">
+            {t('Tell us more...')}
+            {(errors['description'] ||
+              errors['developers'] ||
+              errors['deployers'] ||
+              errors['harmed_parties']) && (
+              <div className="text-red-500 pl-4">
+                <Trans ns="validation">Some data is missing.</Trans>
+              </div>
+            )}
+          </summary>
 
           <TagsInputGroup name="tags" label={t('Tags')} className="mt-3" {...TextInputGroupProps} />
 

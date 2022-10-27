@@ -34,7 +34,7 @@ const Medal = styled.div`
   display: inline-block;
 `;
 
-export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit }) => {
+export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit, className }) => {
   let sortedArray = [];
 
   for (const item in dataHash) {
@@ -54,7 +54,7 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
   }
 
   return (
-    <div className="max-w-sm flex-1 self-stretch">
+    <div className={`max-w-sm flex-1 self-stretch ${className || ''}`}>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-full">
         <div className="flex items-center justify-between px-6 pt-6 pb-4 hover:bg-gray-100 dark:hover:bg-gray-700">
           <LocalizedLink to={`/summaries/leaderboard`}>
@@ -77,7 +77,7 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
                       <Medal className="pr-2">{medalMap(index + 1)}</Medal>
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-gray-900 dark:text-w  hite mb-0">
+                      <p className="truncate text-sm font-medium text-gray-900 dark:text-w  hite mb-0 my-0">
                         {item.label}
                       </p>
                     </div>
