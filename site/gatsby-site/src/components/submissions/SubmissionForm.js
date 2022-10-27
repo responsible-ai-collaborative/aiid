@@ -456,12 +456,14 @@ const SubmissionForm = () => {
                 {...TextInputGroupProps}
               />
 
-              <TagsInputGroup
-                name="incident_editors"
-                label={t('Editors')}
-                className="mt-3"
-                {...TextInputGroupProps}
-              />
+              {isRole('incident_editor') && (
+                <TagsInputGroup
+                  name="incident_editors"
+                  label={t('Editors')}
+                  className="mt-3"
+                  {...TextInputGroupProps}
+                />
+              )}
 
               <TagsInputGroup
                 name="developers"

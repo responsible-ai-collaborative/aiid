@@ -105,7 +105,8 @@ const SubmissionReview = ({ submission }) => {
       (!submission.description ||
         !submission.developers ||
         !submission.deployers ||
-        !submission.harmed_parties)
+        !submission.harmed_parties ||
+        !submission.incident_title)
     ) {
       addToast({
         message: `Please review submission before approving. Some data is missing.`,
