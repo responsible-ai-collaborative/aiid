@@ -89,12 +89,13 @@ const SubmissionReview = ({ submission }) => {
     async ({ is_incident_report = true }) => {
       if (
         !is_incident_report &&
-        !confirm(t('Sure you want to promote this submission to an issue?'))
+        !confirm(t('Sure you want to promote this Submission to an Issue?'))
       ) {
         return;
       }
 
       if (
+        is_incident_report &&
         isNewIncident &&
         (!submission.description ||
           !submission.developers ||
@@ -102,7 +103,7 @@ const SubmissionReview = ({ submission }) => {
           !submission.harmed_parties)
       ) {
         addToast({
-          message: `Please review submission before approving. Some data is missing.`,
+          message: t(`Please review submission before approving. Some data is missing.`),
           severity: SEVERITY.danger,
         });
         return;
