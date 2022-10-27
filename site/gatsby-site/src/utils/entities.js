@@ -1,3 +1,5 @@
+const { default: slugify } = require('slugify');
+
 const idHash = {};
 
 const getName = (entities, id) => {
@@ -8,6 +10,10 @@ const getName = (entities, id) => {
   }
 
   return idHash[id];
+};
+
+module.exports.getEntityId = (name) => {
+  return slugify(name, { lower: true });
 };
 
 module.exports.computeEntities = ({ incidents, entities }) => {
