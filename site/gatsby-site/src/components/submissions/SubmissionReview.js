@@ -98,6 +98,26 @@ const SubmissionReview = ({ submission }) => {
       if (
         is_incident_report &&
         isNewIncident &&
+        !confirm(t('Sure you want to promote this Submission to a new Incident?'))
+      ) {
+        return;
+      }
+
+      if (
+        is_incident_report &&
+        !isNewIncident &&
+        !confirm(
+          t('Sure you want to promote this Submission and link it to Incident {{ incident_id }}?', {
+            incident_id: submission.incident_id,
+          })
+        )
+      ) {
+        return;
+      }
+
+      if (
+        is_incident_report &&
+        isNewIncident &&
         (!submission.description ||
           !submission.developers ||
           !submission.deployers ||
