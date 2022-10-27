@@ -1,3 +1,13 @@
+import React, { useState, useEffect } from 'react';
+import { Form } from 'react-bootstrap';
+import styled from 'styled-components';
+import { useApolloClient, gql } from '@apollo/client';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import Color from 'color';
+import { LocalizedLink } from 'gatsby-theme-i18n';
+import { Trans } from 'react-i18next';
+import IncidentReportCard, { CardChild } from 'components/IncidentReportCard';
+
 export default function TsneVisualization({
   currentIncidentId, // The id if linked from the /cite/{incident_id}, otherwise -1
   incidents, // List of incidents containing `incident_id` and `tsne`
@@ -565,13 +575,3 @@ var Visualization = styled.div`
     z-index: 2;
   }
 `;
-
-import React, { useState, useEffect } from 'react';
-import { Form } from 'react-bootstrap';
-import styled from 'styled-components';
-import { useApolloClient, gql } from '@apollo/client';
-import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-import Color from 'color';
-import { LocalizedLink } from 'gatsby-theme-i18n';
-import { Trans } from 'react-i18next';
-import IncidentReportCard, { CardChild } from 'components/IncidentReportCard';

@@ -1,3 +1,16 @@
+import React, { useState } from 'react';
+import Layout from 'components/Layout';
+import { StyledHeading } from 'components/styles/Docs';
+import { Trans, useTranslation } from 'react-i18next';
+import { LocalizedLink } from 'gatsby-theme-i18n';
+import AiidHelmet from 'components/AiidHelmet';
+import { gql, useQuery, useMutation } from '@apollo/client';
+import { Button, Badge } from 'flowbite-react';
+import { parse } from 'date-fns';
+import { faPlusCircle, faTrash, faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import IncidentReportCard, { CardChild } from 'components/IncidentReportCard';
+
 export default function NewsSearchPage(props) {
   const { t } = useTranslation(['submit']);
 
@@ -228,16 +241,3 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
     </IncidentReportCard>
   );
 }
-
-import React, { useState } from 'react';
-import Layout from 'components/Layout';
-import { StyledHeading } from 'components/styles/Docs';
-import { Trans, useTranslation } from 'react-i18next';
-import { LocalizedLink } from 'gatsby-theme-i18n';
-import AiidHelmet from 'components/AiidHelmet';
-import { gql, useQuery, useMutation } from '@apollo/client';
-import { Button, Badge } from 'flowbite-react';
-import { parse } from 'date-fns';
-import { faPlusCircle, faTrash, faArrowUp } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import IncidentReportCard, { CardChild } from 'components/IncidentReportCard';

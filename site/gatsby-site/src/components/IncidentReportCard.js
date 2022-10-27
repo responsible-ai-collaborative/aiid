@@ -1,3 +1,16 @@
+import React from 'react';
+import { Card, Spinner } from 'flowbite-react';
+import { Image } from '../utils/cloudinary';
+import { fill } from '@cloudinary/base/actions/resize';
+import md5 from 'md5';
+import { useLocalization } from 'gatsby-theme-i18n';
+import { formatISO, format, parse } from 'date-fns';
+import { useTranslation } from 'react-i18next';
+import WebArchiveLink from 'components/ui/WebArchiveLink';
+import ReportText from 'components/reports/ReportText';
+import TranslationBadge from 'components/i18n/TranslationBadge';
+import Link from 'components/ui/Link';
+
 export default function IncidentReportCard(props) {
   let {
     // You can pass an object containing the incident OR the report to be rendered
@@ -282,16 +295,3 @@ export function CardChild({ children, className, style, position }) {
     </div>
   );
 }
-
-import React from 'react';
-import { Card, Spinner } from 'flowbite-react';
-import { Image } from '../utils/cloudinary';
-import { fill } from '@cloudinary/base/actions/resize';
-import md5 from 'md5';
-import { useLocalization } from 'gatsby-theme-i18n';
-import { formatISO, format, parse } from 'date-fns';
-import { useTranslation } from 'react-i18next';
-import WebArchiveLink from 'components/ui/WebArchiveLink';
-import ReportText from 'components/reports/ReportText';
-import TranslationBadge from 'components/i18n/TranslationBadge';
-import Link from 'components/ui/Link';
