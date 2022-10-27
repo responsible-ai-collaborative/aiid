@@ -14,7 +14,6 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
       id={`r${item.report_number}`}
       report={item}
       className="mt-2 mb-2 IncidentCard"
-      style={{ maxWidth: '800px' }}
     >
       <CardChild position="footer" className="justify-around text-muted-gray">
         <Actions

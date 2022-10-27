@@ -119,8 +119,12 @@ export default function IncidentReportCard(props) {
 
   const parsedDate = date ? parse(date, 'yyyy-MM-dd', new Date()) : null;
 
-  if (children && !Array.isArray(children)) {
-    children = [children];
+  if (children) {
+    if (!Array.isArray(children)) {
+      children = React.Children.toArray([children]);
+    } else {
+      children = React.Children.toArray(children);
+    }
   }
 
   if (incident_id) {
@@ -196,7 +200,7 @@ export default function IncidentReportCard(props) {
                 </div>
               ))}
             <div data-cy="card-content" className="h-full flex flex-col">
-              {React.Children.toArray(children.filter((child) => child.props.position == 'header'))}
+              {children.filter((child) => child.props.position == 'header')}
               <h3
                 title={title}
                 className="text-lg font-semibold overflow-hidden relative"
@@ -262,11 +266,8 @@ export default function IncidentReportCard(props) {
                   <ReportText text={text} maxChars={textMaxChars} />
                 </div>
               )}
-              {React.Children.toArray(
-                children.filter(
-                  (child) =>
-                    child.props.position == 'footer' || child.props.position == 'bottomRight'
-                )
+              {children.filter(
+                (child) => child.props.position == 'footer' || child.props.position == 'bottomRight'
               )}
             </div>
           </div>
