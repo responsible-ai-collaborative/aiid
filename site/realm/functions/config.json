@@ -16,6 +16,10 @@
         "private": true
     },
     {
+        "name": "onNewIncident",
+        "private": true
+    },
+    {
         "name": "onNewUser",
         "private": true
     },
