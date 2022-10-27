@@ -299,7 +299,7 @@ const SubmissionReview = ({ submission }) => {
             </Button>
             <Button
               variant="outline-secondary"
-              disabled={!isSubmitter || deleting}
+              disabled={!isSubmitter || deleting || promoting}
               onClick={rejectReport}
               className="text-xs md:text-base"
             >
