@@ -18,7 +18,6 @@ import { DELETE_SUBMISSION, PROMOTE_SUBMISSION } from '../../graphql/submissions
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import SubmissionEditModal from './SubmissionEditModal';
 import { Spinner } from 'flowbite-react';
-import Link from '../../components/ui/Link';
 import { Trans, useTranslation } from 'react-i18next';
 
 const ListedGroup = ({ item, className = '', keysToRender }) => {
@@ -177,8 +176,7 @@ const SubmissionReview = ({ submission }) => {
               incident_id={incident_id}
               report_number={report_number}
             >
-              Successfully promoted submission to issue{' '}
-              <Link to={`/reports/${report_number}`}>Report {{ report_number }}</Link>
+              Successfully promoted submission to Issue {{ report_number }}
             </Trans>
           ),
           severity: SEVERITY.success,
