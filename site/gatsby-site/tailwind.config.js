@@ -168,6 +168,7 @@ module.exports = {
         '0-1-auto': '0 1 auto',
         '1-1-auto': '1 1 auto',
         '2-1-auto': '1 1 0',
+        '1/3': '1 0 32%',
       },
       transformOrigin: {
         'center-left': 'center left',

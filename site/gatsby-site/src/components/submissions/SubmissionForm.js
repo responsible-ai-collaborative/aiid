@@ -254,7 +254,7 @@ const SubmissionForm = () => {
   }, [errors]);
 
   return (
-    <div className="bootstrap">
+    <div className="">
       <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
         <TextInputGroup
           name="url"
