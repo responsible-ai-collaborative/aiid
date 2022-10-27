@@ -6,7 +6,7 @@ const NewSimilaritySelector = ({ incident_id }) => {
   const { values, setFieldValue } = useFormikContext();
 
   return (
-    <div className="">
+    <div>
       <Button.Group data-cy="similar-selector" id="similar-selector">
         {[
           {
@@ -86,7 +86,7 @@ const NewSimilaritySelector = ({ incident_id }) => {
 
           return (
             <Button {...btnProps} key={button.icon}>
-              <p className="text-xs m-0">{button.icon}</p>
+              <p className="text-xs m-0 break-keep whitespace-nowrap">{button.icon}</p>
             </Button>
           );
         })}
