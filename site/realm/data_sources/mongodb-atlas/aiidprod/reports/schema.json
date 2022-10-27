@@ -116,7 +116,8 @@
         "title",
         "text",
         "url",
-        "source_domain"
+        "source_domain",
+        "language"
     ],
     "title": "report"
 }
