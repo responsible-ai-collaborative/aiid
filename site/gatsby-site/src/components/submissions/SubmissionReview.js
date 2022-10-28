@@ -134,10 +134,7 @@ const SubmissionReview = ({ submission }) => {
 
       const {
         data: {
-          promoteSubmissionToReport: {
-            incident_ids: { 0: incident_id },
-            report_number,
-          },
+          promoteSubmissionToReport: { incident_ids, report_number },
         },
       } = await promoteSubmissionToReport({
         variables: {
@@ -162,13 +159,15 @@ const SubmissionReview = ({ submission }) => {
       setPromoting('');
 
       if (is_incident_report) {
+        const incident_id = incident_ids[0];
+
         if (isNewIncident) {
           addToast({
             message: (
               <Trans
                 i18n={i18n}
                 ns="submitted"
-                incident_id={incident_id}
+                incident_id={incident_ids}
                 report_number={report_number}
               >
                 Successfully promoted submission to new Incident {{ incident_id }} and Report{' '}
@@ -196,12 +195,7 @@ const SubmissionReview = ({ submission }) => {
       } else {
         addToast({
           message: (
-            <Trans
-              i18n={i18n}
-              ns="submitted"
-              incident_id={incident_id}
-              report_number={report_number}
-            >
+            <Trans i18n={i18n} ns="submitted" report_number={report_number}>
               Successfully promoted submission to Issue {{ report_number }}
             </Trans>
           ),
