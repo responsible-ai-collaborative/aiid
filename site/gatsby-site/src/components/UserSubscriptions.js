@@ -88,7 +88,7 @@ const UserSubscriptions = () => {
 
   return (
     <div className="mt-4">
-      <div className="my-4">
+      <div className="my-4 hidden">
         <ToggleSwitch
           checked={isSubscribeToNewIncidents}
           label={t('Notify me of new Incidents')}
