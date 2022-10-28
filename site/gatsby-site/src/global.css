@@ -53,8 +53,8 @@ a {
   text-decoration: none !important;
 }
 
-li {
-  list-style-position:inside;
+ol, ul {
+  padding-left: 2em;
 }
 
 .visibleMobile {
