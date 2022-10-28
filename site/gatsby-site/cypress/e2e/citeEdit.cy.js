@@ -10,6 +10,8 @@ import incident from '../fixtures/incidents/incident.json';
 
 import reportWithTranslations from '../fixtures/reports/reportWithTranslations.json';
 
+import issueWithTranslations from '../fixtures/reports/issueWithTranslations.json';
+
 import reportSiblings from '../fixtures/reports/reportSiblings.json';
 
 import incidentWithDeletedReport from '../fixtures/incidents/incidentWithDeletedReport.json';
@@ -185,6 +187,157 @@ describe('Edit report', () => {
     cy.get('div[class^="ToastContext"]')
       .contains('Incident report 10 updated successfully.')
       .should('exist');
+  });
+
+  maybeIt('Should load and update Issue values', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindReportWithTranslations',
+      'findReportWithTranslations',
+      issueWithTranslations
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncident',
+      'findIncident',
+      { data: { incident: null } }
+    );
+
+    cy.visit(url);
+
+    cy.wait(['@findReportWithTranslations', '@findIncident']);
+
+    [
+      'authors',
+      'date_downloaded',
+      'date_published',
+      'image_url',
+      'submitters',
+      'title',
+      'editor_notes',
+    ].forEach((key) => {
+      cy.get(`[name=${key}]`).should(
+        'have.value',
+        reportWithTranslations.data.report[key].toString()
+      );
+    });
+
+    cy.getEditorText().should('eq', reportWithTranslations.data.report.text);
+
+    cy.get(`[name="incident_id"]`).should('not.exist');
+
+    cy.get('[class*=Typeahead] [option="Test Tag"]').should('have.length', 1);
+
+    cy.get('[data-cy="translation-es"] [type="text"]').should(
+      'have.value',
+      reportWithTranslations.data.report.translations_es.title
+    );
+
+    cy.getEditorText('[data-cy="translation-es"] .CodeMirror').should(
+      'eq',
+      reportWithTranslations.data.report.translations_es.text
+    );
+
+    const updates = {
+      authors: 'Test Author',
+      date_downloaded: '2022-01-01',
+      date_published: '2022-02-02',
+      image_url: 'https://test.com/test.jpg',
+      submitters: 'Test Submitter',
+      title: 'Test Title',
+      url: 'https://www.test.com/test',
+      editor_notes: 'Pro iustitia tantum',
+    };
+
+    Object.keys(updates).forEach((key) => {
+      cy.get(`[name=${key}]`).clear().type(updates[key]);
+    });
+
+    cy.setEditorText(
+      '## This is text in English\n\nthat is longer that eighty characters, yes eighty characters!',
+      '[data-cy="text"] .CodeMirror'
+    );
+
+    cy.get('[class*=Typeahead] [type="text"]').type('New Tag');
+
+    cy.get('a[aria-label="New Tag"]').click();
+
+    cy.get('[data-cy="translation-es"] [type="text"]')
+      .clear()
+      .type('Este es un titulo en Espanol!');
+
+    cy.setEditorText(
+      '## Este es texto en espanol\n\nque es mas largo que ochenta caracters, si ochenta caracteres!',
+      '[data-cy="translation-es"] .CodeMirror'
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateReport',
+      'updateReport',
+      updateOneReport
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateReportTranslation',
+      'updateOneReportTranslation',
+      updateOneReportTranslation
+    );
+
+    cy.contains('button', 'Submit').click();
+
+    cy.wait('@updateReport').then((xhr) => {
+      expect(xhr.request.body.variables.query.report_number).eq(10);
+
+      const date_modified = format(new Date(), 'yyyy-MM-dd');
+
+      const epoch_date_modified = getUnixTime(new Date(date_modified));
+
+      expect(xhr.request.body.variables.set.authors).deep.eq(['Test Author']);
+      expect(xhr.request.body.variables.set.cloudinary_id).eq('reports/test.com/test.jpg');
+      expect(xhr.request.body.variables.set.date_downloaded).eq('2022-01-01');
+      expect(xhr.request.body.variables.set.date_modified).eq(date_modified);
+      expect(xhr.request.body.variables.set.date_published).eq('2022-02-02');
+      expect(xhr.request.body.variables.set.epoch_date_downloaded).eq(1640995200);
+      expect(xhr.request.body.variables.set.epoch_date_modified).eq(epoch_date_modified);
+      expect(xhr.request.body.variables.set.epoch_date_published).eq(1643760000);
+      expect(xhr.request.body.variables.set.flag).eq(null);
+      expect(xhr.request.body.variables.set.image_url).eq('https://test.com/test.jpg');
+      expect(xhr.request.body.variables.set.report_number).eq(10);
+      expect(xhr.request.body.variables.set.submitters).deep.eq(['Test Submitter']);
+      expect(xhr.request.body.variables.set.tags).deep.eq(['Test Tag', 'New Tag']);
+      expect(xhr.request.body.variables.set.text).eq(
+        '## This is text in English\n\nthat is longer that eighty characters, yes eighty characters!'
+      );
+      expect(xhr.request.body.variables.set.plain_text).eq(
+        'This is text in English\n\nthat is longer that eighty characters, yes eighty characters!\n'
+      );
+      expect(xhr.request.body.variables.set.title).eq('Test Title');
+      expect(xhr.request.body.variables.set.url).eq('https://www.test.com/test');
+      expect(xhr.request.body.variables.set.source_domain).eq('test.com');
+      expect(xhr.request.body.variables.set.editor_notes).eq('Pro iustitia tantum');
+      expect(xhr.request.body.variables.set.language).eq('en');
+    });
+
+    cy.wait('@updateOneReportTranslation').then((xhr) => {
+      expect(xhr.request.body.variables.input.language).eq('es');
+      expect(xhr.request.body.variables.input.report_number).eq(10);
+      expect(xhr.request.body.variables.input.text).eq(
+        '## Este es texto en espanol\n\nque es mas largo que ochenta caracters, si ochenta caracteres!'
+      );
+      expect(xhr.request.body.variables.input.plain_text).eq(
+        'Este es texto en espanol\n\nque es mas largo que ochenta caracters, si ochenta caracteres!\n'
+      );
+      expect(xhr.request.body.variables.input.title).eq('Este es un titulo en Espanol!');
+    });
+
+    cy.contains('[data-cy="toast"]', 'Issue 10 updated successfully. View Issue 10.').should(
+      'exist'
+    );
   });
 
   maybeIt('Should delete incident report', () => {
