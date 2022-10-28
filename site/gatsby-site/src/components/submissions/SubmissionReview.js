@@ -161,37 +161,20 @@ const SubmissionReview = ({ submission }) => {
       if (is_incident_report) {
         const incident_id = incident_ids[0];
 
-        if (isNewIncident) {
-          addToast({
-            message: (
-              <Trans
-                i18n={i18n}
-                ns="submitted"
-                incident_id={incident_ids}
-                report_number={report_number}
-              >
-                Successfully promoted submission to new Incident {{ incident_id }} and Report{' '}
-                {{ report_number }}
-              </Trans>
-            ),
-            severity: SEVERITY.success,
-          });
-        } else {
-          addToast({
-            message: (
-              <Trans
-                i18n={i18n}
-                ns="submitted"
-                incident_id={incident_id}
-                report_number={report_number}
-              >
-                Successfully promoted submission to Report {{ report_number }} linked to Incident{' '}
-                {{ incident_id }}
-              </Trans>
-            ),
-            severity: SEVERITY.success,
-          });
-        }
+        addToast({
+          message: (
+            <Trans
+              i18n={i18n}
+              ns="submitted"
+              incident_id={incident_id}
+              report_number={report_number}
+            >
+              Successfully promoted submission to Incident {{ incident_id }} and Report{' '}
+              {{ report_number }}
+            </Trans>
+          ),
+          severity: SEVERITY.success,
+        });
       } else {
         addToast({
           message: (

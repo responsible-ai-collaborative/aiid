@@ -128,7 +128,7 @@ describe('Submitted reports', () => {
 
     cy.contains(
       '[data-cy="toast"]',
-      'Successfully promoted submission to new Incident 182 and Report 1565'
+      'Successfully promoted submission to Incident 182 and Report 1565'
     ).should('exist');
   });
 
@@ -194,7 +194,7 @@ describe('Submitted reports', () => {
 
     cy.contains(
       '[data-cy="toast"]',
-      'Successfully promoted submission to Report 1566 linked to Incident 10'
+      'Successfully promoted submission to Incident 10 and Report 1566'
     ).should('exist');
   });
 
