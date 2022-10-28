@@ -7,7 +7,7 @@ slug: '/editors-guide'
 
 ## Definitions
 
-The AI Incident Database contains records of AI "incidents" and "issues".
+The AI Incident Database contains records of AI “incidents” and “issues”.
 
 - **AI incident**: 
   an alleged harm or near harm event to people, property, or the environment 
@@ -135,7 +135,7 @@ an incident, variant, issue, or not relevant to the AIID.
 
 ### Examples and Discussion
 
-#### Case Analysis of "Incidents"
+#### Case Analysis of “Incidents”
 
 Several common situations do not meet the above criteria 
 and should not be recorded as incidents in the AI Incident Database.
@@ -314,9 +314,9 @@ otherwise assign the incident the report should be associated with.
 
 Format the text of reports according to the following,
 
-1. One empty space between paragraphs
+1. One empty line between paragraphs
 2. Strip advertisement text, caption text
-3. Format with Markdown (i.e., if you are providing links within the text)
+3. Format with [Markdown](https://daringfireball.net/projects/markdown/) (e.g. to provide links within the text)
 4. If “Fetch info” is used, make sure that all of the text is fetched, 
    otherwise, copy and paste the rest of the text
 
@@ -330,16 +330,16 @@ and not directly provided by the incident reports.
 #### Objectives
 
 - Should be short and concise
-- Should ideally be distinguishable from that of other reports
+- Should ideally be distinguishable from titles of other reports
 - Should communicate AI system of interest and the nature of harm
-- Little effort to decipher the AI element for non-technical users 
-- Ideally requires little update and correction over time, 
+- Should be easily understood without any specialized knowledge of AI
+- Should ideally require little update and correction over time, 
   regardless of follow-up events
 
 #### Rule set
 
-1. Use title case <!-- Needs definition -->
-2. Use past tense
+1. Use [title case](https://en.wikipedia.org/wiki/Title_case)
+2. Use past tense (e.g. “they found” not “they have found” or “they find”)
 3. Use acronyms and abbreviations when applicable (e.g., US DHS, Tesla FSD)
    - Ideally, acronym and abbreviations are spelled out in description
 4. Use operational keywords for factual reporting (e.g, allegedly, reportedly)
@@ -390,12 +390,12 @@ All incidents have manually populated tags for,
 
       - *Example:* [if an employee shift management system gives employees 
          terrible shift scheduling requirements at Starbucks](/cite/10),
-        then the impacted class is "starbucks employees". 
-        We cannot identify "hourly employees," as the harmed party 
+        then the impacted class is “starbucks employees”. 
+        We cannot identify “hourly employees,” as the harmed party 
         because this would imply a broader scope to the incident 
         than solely Starbucks.
 
-   2. Individuals (e.g., "John Basilone"): 
+   2. Individuals (e.g., “John Basilone”): 
       Further, in some cases it may be possible 
       to identify specific people that have been harmed. 
       They can be specifically tagged, 
@@ -432,18 +432,35 @@ by Sean McGregor, Khoa Lam, and Zachary Arnold
 Editors working with automated systems as set up for the editors 
 should all the more be vigilant of various biases 
 as they permeate the work we do. 
-The following is a list of documented bi
-ases as experienced by editors of the AIID:
+The following is a list of documented biases
+as experienced by editors of the AIID:
 
 1. Automation bias
    1. What is it?
+      - Bias introduced by the use of automated tooling
    2. What does it look like in practice?
       - Trusting the automated tool to do what it does without checking
         (e.g., “Fetch Info” sometimes does not extract all the text from the site)
 2. Confirmation bias
-3. Cultural bias
-   1. What is it? Interpretation and judgment by standards 
-      inherent to one's own culture.
+   1. What is it?
+      - The tendency to accept or reject new information
+        based on whether it conforms to pre-existing beliefs.
    2. What does it look like in practice?
-      - Perception of harms in AI varies by culture, 
-        making some incidents easily or harder to pass ingestion criteria
+      - Favoring submissions, wording, other content
+        that conforms to pre-existing beliefs
+        (e.g. Accepting, with insufficient evidence,
+         that allegations against an entity are accurate
+         because of general distaste for that entity)
+3. Cultural bias
+   1. What is it? 
+      - Interpretation and judgment by standards 
+        inherent to one's own culture
+   2. What does it look like in practice?
+      - making it easier or harder 
+        for certain incidents to pass ingestion criteria
+        because of cultural perceptions 
+        of what is harmful, 
+        of how responsibility should be determined,
+        or of other factors that may be viewed differently
+        in other cultural contexts.
+
