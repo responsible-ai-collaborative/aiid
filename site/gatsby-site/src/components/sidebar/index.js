@@ -44,10 +44,7 @@ const SidebarLayout = ({ collapse, setNavCollapsed }) => {
         })}
       </ul>
       <div className="flex items-center justify-center w-full py-3 border-t">
-        <LoginSignup
-          logoutClassName="text-gray-700 text-sm hover:text-primary-blue"
-          loginClassName="text-gray-300 md:text-gray-700 hover:text-primary-blue"
-        />
+        <LoginSignup />
       </div>
     </aside>
   );
