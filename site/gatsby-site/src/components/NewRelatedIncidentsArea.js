@@ -107,7 +107,9 @@ const NewRelatedIncidentsArea = ({
         {!loading && (error || reports?.length == 0 || incidents?.length == 0) && (
           <span>{error ? error : t('No related reports found.')}</span>
         )}
-        {similarList.length > maxIncidents && (
+      </div>
+      {similarList.length > maxIncidents && (
+        <div className="mt-2">
           <Button
             size={'xs'}
             color="light"
@@ -123,8 +125,8 @@ const NewRelatedIncidentsArea = ({
               style={{ marginRight: '1ch' }}
             />
           </Button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
