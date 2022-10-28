@@ -4,7 +4,7 @@ import { gql, useApolloClient } from '@apollo/client';
 import debounce from 'lodash/debounce';
 import isArray from 'lodash/isArray';
 import { Trans } from 'react-i18next';
-import NewRelatedIncidentsArea from './NewRelatedIncidentsArea';
+import RelatedIncidentsArea from './RelatedIncidentsArea';
 
 const relatedIncidentsQuery = gql`
   query ProbablyRelatedIncidents($query: IncidentQueryInput) {
@@ -236,7 +236,7 @@ const RelatedIncidents = ({
         const column = searchColumns[key];
 
         return (
-          <NewRelatedIncidentsArea
+          <RelatedIncidentsArea
             key={key}
             columnKey={key}
             loading={loading[key]}

@@ -1,33 +1,18 @@
 import React from 'react';
-import { Button, ButtonGroup } from 'react-bootstrap';
-import styled from 'styled-components';
 import { useFormikContext } from 'formik';
-
-const SimilarityButton = styled(Button)`
-  transition: 0.2s ease-in all !important;
-  opacity: 0.8 !important;
-  width: 2.5em;
-  padding-left: 0px !important;
-  padding-right: 0px !important;
-  text-align: center;
-
-  :disabled {
-    opacity: 1 !important;
-    box-shadow: inset 0px 0px 4px 4px rgba(0, 0, 0, 0.05);
-  }
-`;
+import { Button } from 'flowbite-react';
 
 const SimilaritySelector = ({ incident_id }) => {
   const { values, setFieldValue } = useFormikContext();
 
   return (
-    <div className="bootstrap">
-      <ButtonGroup data-cy="similar-selector" id="similar-selector">
+    <div>
+      <Button.Group data-cy="similar-selector" id="similar-selector">
         {[
           {
             identifier: 'dissimilar',
-            variant: 'danger',
-            icon: 'x',
+            variant: 'failure',
+            icon: 'No',
             show:
               values.editor_dissimilar_incidents &&
               values.editor_dissimilar_incidents.includes(incident_id),
@@ -44,8 +29,8 @@ const SimilaritySelector = ({ incident_id }) => {
           },
           {
             identifier: 'unspecified',
-            variant: 'secondary',
-            icon: '?',
+            variant: null,
+            icon: 'Not sure',
             show:
               !values.editor_similar_incidents ||
               !values.editor_dissimilar_incidents ||
@@ -65,7 +50,7 @@ const SimilaritySelector = ({ incident_id }) => {
           {
             identifier: 'similar',
             variant: 'success',
-            icon: '✓',
+            icon: 'Yes',
             show:
               values.editor_similar_incidents &&
               values.editor_similar_incidents.includes(incident_id),
@@ -80,19 +65,32 @@ const SimilaritySelector = ({ incident_id }) => {
               );
             },
           },
-        ].map((button) => (
-          <SimilarityButton
-            variant={button.show ? button.variant : 'secondary'}
-            aria-pressed={button.show}
-            disabled={button.show}
-            onClick={button.onClick}
-            key={button.icon}
-            data-cy={button.identifier}
-          >
-            {button.icon}
-          </SimilarityButton>
-        ))}
-      </ButtonGroup>
+        ].map((button) => {
+          let btnProps = {
+            size: 'sm',
+            'aria-pressed': button.show,
+            onClick: button.onClick,
+            key: button.icon,
+            'data-cy': button.identifier,
+          };
+
+          if (button.variant) {
+            if (button.show) {
+              btnProps.color = button.variant;
+            } else {
+              btnProps.color = 'light';
+            }
+          } else if (!button.show) {
+            btnProps.color = 'light';
+          }
+
+          return (
+            <Button {...btnProps} key={button.icon}>
+              <p className="text-xs m-0 break-keep whitespace-nowrap">{button.icon}</p>
+            </Button>
+          );
+        })}
+      </Button.Group>
     </div>
   );
 };
