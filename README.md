@@ -577,9 +577,19 @@ About Facebook Authentication instructions: https://www.mongodb.com/docs/realm/w
 
 ## Email subscriptions
 
+### Subscription types
+
+- **All**: This subscription type is not defined yet.
+- **Incident**: Users with this subscription type will be notified when the incident associated is updated. This subscription type needs an incident_id value associated.
+- **New Incident**: Users with this subscription type will be notified when a new Incident is created.
+
+These subscription types are also documented in [subscriptions.js](site/gatsby-site/src/utils/subscriptions.js) file.
+
 [Sendgrid](https://sendgrid.com/) is used to send email notifications.
 
 To allow email notifications add these secret values to your Atlas App Service following the instructions in the [Atlas App Services documentation](https://www.mongodb.com/docs/atlas/app-services/values-and-secrets/define-and-manage-secrets/).
+
+To disable all email noticications, fill the following `SendGridApiKey` secret value with an empty string. If this secret value is an empty string, the emails will be ignored.
 
 ```
 SendGridApiKey = [SendGrid API key from https://app.sendgrid.com/settings/api_keys]
