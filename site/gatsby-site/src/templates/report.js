@@ -19,7 +19,7 @@ function ReportPage(props) {
 
   const { locale } = useLocalization();
 
-  if (report.locale !== locale) {
+  if (report.language !== locale) {
     report.title = data[locale].title;
     report.text = data[locale].text;
   }
