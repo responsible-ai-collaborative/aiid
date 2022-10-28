@@ -12,7 +12,7 @@ const SimilaritySelector = ({ incident_id }) => {
           {
             identifier: 'dissimilar',
             variant: 'failure',
-            icon: 'No',
+            text: 'No',
             show:
               values.editor_dissimilar_incidents &&
               values.editor_dissimilar_incidents.includes(incident_id),
@@ -30,7 +30,7 @@ const SimilaritySelector = ({ incident_id }) => {
           {
             identifier: 'unspecified',
             variant: null,
-            icon: 'Not sure',
+            text: 'Not sure',
             show:
               !values.editor_similar_incidents ||
               !values.editor_dissimilar_incidents ||
@@ -50,7 +50,7 @@ const SimilaritySelector = ({ incident_id }) => {
           {
             identifier: 'similar',
             variant: 'success',
-            icon: 'Yes',
+            text: 'Yes',
             show:
               values.editor_similar_incidents &&
               values.editor_similar_incidents.includes(incident_id),
@@ -70,7 +70,7 @@ const SimilaritySelector = ({ incident_id }) => {
             size: 'sm',
             'aria-pressed': button.show,
             onClick: button.onClick,
-            key: button.icon,
+            key: button.text,
             'data-cy': button.identifier,
           };
 
@@ -85,8 +85,8 @@ const SimilaritySelector = ({ incident_id }) => {
           }
 
           return (
-            <Button {...btnProps} key={button.icon}>
-              <p className="text-xs m-0 break-keep whitespace-nowrap">{button.icon}</p>
+            <Button {...btnProps} key={button.text}>
+              <p className="text-xs m-0 break-keep whitespace-nowrap">{button.text}</p>
             </Button>
           );
         })}
