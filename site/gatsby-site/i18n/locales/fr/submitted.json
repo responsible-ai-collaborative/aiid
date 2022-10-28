@@ -9,5 +9,11 @@
     "Add New Incident": "Ajouter un nouvel incident",
     "Add New Report": "Ajouter un nouveau rapport",
     "Reject New Incident": "Rejeter le Nouvel Incident",
-    "Reject New Report": "Refuser le Nouveau Rapport"
+    "Reject New Report": "Refuser le Nouveau Rapport",
+    "Loading Submissions...": "Chargement des soumissions...",
+    "Add New Issue": "Ajouter un nouveau problème",
+    "Sure you want to promote this Submission to an Issue?": "Êtes-vous sûr de vouloir promouvoir cette soumission dans un numéro?",
+    "Successfully promoted submission to Issue {{report_number}}": "Soumission promue avec succès au problème {{report_number}}",
+    "Sure you want to promote this Submission to a new Incident?": "Êtes-vous sûr de vouloir promouvoir cette soumission dans un nouvel incident?",
+    "Sure you want to promote this Submission and link it to Incident {{incident_id}}?": "Voulez-vous vraiment promouvoir cette soumission et la lier à l'incident {{incident_id}}?"
 }
