@@ -126,3 +126,7 @@ exports = async (input) => {
     report_number,
   }
 };
+
+if (typeof module === 'object') {
+  module.exports = exports;
+}
