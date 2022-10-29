@@ -42,7 +42,6 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
 
   useEffect(() => {
     if (incidentData?.incident) {
-      console.log('-- incident', incidentData.incident);
       setIncident({ ...incidentData.incident });
     } else {
       setIncident(undefined);
