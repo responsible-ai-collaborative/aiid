@@ -57,6 +57,13 @@ ol, ul {
   padding-left: 2em;
 }
 
+#content ol ol {
+  list-style: lower-alpha; /* a  b  c  d  */
+}
+#content ol ol ol {
+  list-style: upper-roman; /* I II III IV */
+}
+
 .visibleMobile {
   display: none;
 }
