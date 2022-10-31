@@ -143,7 +143,7 @@ export default function IncidentReportCard(props) {
             'object-cover w-full sm:aspect-[16/9] rounded-t-lg ' +
             (imagePosition == 'left'
               ? 'md:absolute md:bottom-0 md:top-0 md:left-0 md:w-96 md:max-w-[33%] md:h-full md:rounded-l-lg md:rounded-r-none'
-              : 'aspect-[16/9]')
+              : 'aspect-[16/9] max-h-[50vh]')
           }
           publicID={cloudinary_id || `legacy/${md5(image_url)}`}
           transformation={fill().width(900)}
