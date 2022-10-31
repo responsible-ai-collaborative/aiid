@@ -58,7 +58,7 @@
 
 
     ul, ol {
-      list-style: revert;
+      list-style: auto;
     }
 
     .tw-layout {
