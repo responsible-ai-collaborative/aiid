@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Sidebar from './sidebar';
 import config from '../../config.js';
 import Header from './ui/Header';
+import Footer from './layout/Footer';
 import Button from 'elements/Button';
 
 const Wrapper = styled.div`
@@ -77,9 +78,9 @@ const LayoutHideSidebar = ({ children, location, menuCollapseCallback, className
   };
 
   return (
-    <>
+    <div className="flex flex-col h-full">
       <Header />
-      <Wrapper className={className}>
+      <Wrapper className={`grow ${className}`}>
         <LeftSideBarWidth className={'hiddenMobile'} collapse={collapse}>
           <Sidebar location={location} collapse={collapse} />
         </LeftSideBarWidth>
@@ -89,7 +90,7 @@ const LayoutHideSidebar = ({ children, location, menuCollapseCallback, className
             dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
           />
         ) : null}
-        <Content id="content" className="overflow-y-auto max-w-full">
+        <Content id="content" className="overflow-y-auto max-w-full pb-4">
           <Button
             variant="primary"
             className={`tw-btn-menu ${collapse ? 'collapsed' : ''}`}
@@ -101,7 +102,8 @@ const LayoutHideSidebar = ({ children, location, menuCollapseCallback, className
           <MaxWidth>{children}</MaxWidth>
         </Content>
       </Wrapper>
-    </>
+      <Footer />
+    </div>
   );
 };
 
