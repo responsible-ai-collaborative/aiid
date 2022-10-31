@@ -145,6 +145,13 @@ export default function NewsSearchPage(props) {
         {loading && <p>Searching...</p>}
         {!loading && displayedArticles.length == 0 && <p>No results</p>}
         {displayedArticles
+          .filter(
+            (newsArticle) =>
+              newsArticle.similarity > 0.997 &&
+              (newsArticle?.matching_keywords?.length || 0) +
+                (newsArticle?.matching_harm_keywords?.length || 0) >
+                1
+          )
           .sort((a, b) => ranking(b) - ranking(a))
           .map((newsArticle) => (
             <CandidateCard
