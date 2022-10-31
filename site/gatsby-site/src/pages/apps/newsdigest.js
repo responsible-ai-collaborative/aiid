@@ -1,3 +1,22 @@
+import React, { useState } from 'react';
+import Layout from 'components/Layout';
+import { StyledHeading } from 'components/styles/Docs';
+import { Trans, useTranslation } from 'react-i18next';
+import { LocalizedLink } from 'gatsby-theme-i18n';
+import AiidHelmet from 'components/AiidHelmet';
+import { gql, useQuery, useMutation } from '@apollo/client';
+import { Card, Button, Badge } from 'flowbite-react';
+import { format, parse } from 'date-fns';
+import {
+  faPlusCircle,
+  faTrash,
+  faArrowUp,
+  faBuilding,
+  faTag,
+  faBolt,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 export default function NewsSearchPage(props) {
   const { t } = useTranslation(['submit']);
 
@@ -321,9 +340,9 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
 function ranking(newsArticle) {
   const s = (newsArticle.similarity - 0.99) / 0.01; // Similarity
 
-  const k = newsArticle.matching_keywords.length; // AI Keywords
+  const k = newsArticle.matching_keywords?.length || 1; // AI Keywords
 
-  const h = newsArticle.matching_harm_keywords.length; // Harm Keywords
+  const h = newsArticle.matching_harm_keywords?.length || 0; // Harm Keywords
 
   const a = millisToDays(
     // Age
@@ -336,22 +355,3 @@ function ranking(newsArticle) {
 function millisToDays(millis) {
   return millis / (1000 * 60 * 60 * 24);
 }
-
-import React, { useState } from 'react';
-import Layout from 'components/Layout';
-import { StyledHeading } from 'components/styles/Docs';
-import { Trans, useTranslation } from 'react-i18next';
-import { LocalizedLink } from 'gatsby-theme-i18n';
-import AiidHelmet from 'components/AiidHelmet';
-import { gql, useQuery, useMutation } from '@apollo/client';
-import { Card, Button, Badge } from 'flowbite-react';
-import { format, parse } from 'date-fns';
-import {
-  faPlusCircle,
-  faTrash,
-  faArrowUp,
-  faBuilding,
-  faTag,
-  faBolt,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
