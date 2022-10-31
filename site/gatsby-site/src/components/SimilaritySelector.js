@@ -29,7 +29,7 @@ const SimilaritySelector = ({ incident_id }) => {
           },
           {
             identifier: 'unspecified',
-            variant: null,
+            variant: 'dark',
             text: 'Not sure',
             show:
               !values.editor_similar_incidents ||
@@ -74,13 +74,9 @@ const SimilaritySelector = ({ incident_id }) => {
             'data-cy': button.identifier,
           };
 
-          if (button.variant) {
-            if (button.show) {
-              btnProps.color = button.variant;
-            } else {
-              btnProps.color = 'light';
-            }
-          } else if (!button.show) {
+          if (button.show) {
+            btnProps.color = button.variant;
+          } else {
             btnProps.color = 'light';
           }
 

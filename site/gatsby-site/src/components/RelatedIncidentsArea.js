@@ -48,29 +48,34 @@ const RelatedIncidentsArea = ({
   }
   return (
     <div data-cy={`related-${columnKey}`}>
-      <div key={'header'}>
+      <div key={'header'} className="py-2">
         {header}
-        {loading && <Spinner size={'sm'} />}
+        {loading && (
+          <span className="ml-2">
+            <Spinner size={'sm'} />
+          </span>
+        )}
       </div>
       <div className={`${reportsOpened ? 'reports open' : 'reports'} flex flex-wrap gap-2`}>
         {similarList &&
           similarList.slice(0, maxIncidents).map((val) => (
             <div
-              className="py-2 px-3 max-w-sm bg-blue-100 border-blue-200 rounded-lg border shadow-md dark:bg-gray-800 dark:border-gray-700 flex-1/3 flex flex-col justify-between"
+              className="py-2 px-3 bg-blue-100 border-blue-200 rounded-lg border shadow-md dark:bg-gray-800 dark:border-gray-700 flex-1 flex flex-col justify-between"
               key={val.url || val.incident_id}
               data-cy="result"
             >
               <span>
                 {val?.incident_id && (
-                  <div className="text-lg">
+                  <span className="text-lg">
                     <LocalizedLink
                       to={'/cite/' + val.incident_id}
                       className="text-black hover:text-blue-700"
                     >
                       #{val.incident_id}
                     </LocalizedLink>
-                  </div>
+                  </span>
                 )}
+                {` `}-{` `}
                 <a
                   href={val.url || '/cite/' + val.incident_id}
                   data-cy="title"
@@ -95,7 +100,7 @@ const RelatedIncidentsArea = ({
                       data-cy="set-id"
                       onClick={() => setFieldValue && setFieldValue('incident_id', val.incident_id)}
                     >
-                      <p className="m-0">
+                      <p className="m-0 whitespace-nowrap">
                         <Trans>Use ID</Trans> #{val.incident_id}
                       </p>
                     </Button>
