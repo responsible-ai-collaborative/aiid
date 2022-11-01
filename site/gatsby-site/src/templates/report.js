@@ -24,7 +24,7 @@ function ReportPage(props) {
     report.text = data[locale].text;
   }
 
-  const defaultTitle = t('report {{report_number}}', { ...report });
+  const defaultTitle = t('Report {{report_number}}', { ...report });
 
   const metaTitle = `Report ${report.report_number}: ${report.title}`;
 
