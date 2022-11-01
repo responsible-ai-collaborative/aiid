@@ -13,11 +13,11 @@ import Label from './Label';
 import Typeahead from './Typeahead';
 import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
-import IncidentIdField from '../../components/incidents/IncidentIdField';
 import getSourceDomain from '../../utils/getSourceDomain';
 import supportedLanguages from '../../components/i18n/languages.json';
 import { useLocalization } from 'gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
+import IncidentsField from 'components/incidents/IncidentsField';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -351,12 +351,10 @@ const IncidentReportForm = () => {
         </Form.Group>
 
         {values.is_incident_report && (
-          <IncidentIdField
-            name="incident_id"
-            className="mt-3"
-            placeHolder={t('Enter a valid Incident ID')}
-            required={true}
-          />
+          <>
+            <Label popover={'incident_ids'} label={'* Incident IDs'} />
+            <IncidentsField name="incident_ids" />
+          </>
         )}
 
         <TextInputGroup
