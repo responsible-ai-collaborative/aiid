@@ -30,7 +30,7 @@ function ReportPage(props) {
 
   const metaDescription = report.description;
 
-  const canonicalUrl = `${config.gatsby.siteUrl}/reports${report.report_number}`;
+  const canonicalUrl = `${config.gatsby.siteUrl}/reports/${report.report_number}`;
 
   const metaImage = report.image_url;
 
