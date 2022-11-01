@@ -323,8 +323,8 @@ exports.onPreBootstrap = async ({ reporter }) => {
   }
 };
 
-exports.onPreBuild = function () {
+exports.onPreBuild = function ({ reporter }) {
   if (!config.google.mapsApiKey) {
-    console.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
+    reporter.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
   }
 };
