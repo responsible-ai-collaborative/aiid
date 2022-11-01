@@ -95,7 +95,7 @@ const REFINEMENT_LISTS = [
   {
     attribute: 'is_incident_report',
     placeholder: 'none',
-    label: 'dsad',
+    label: '',
     faIcon: null,
     faClasses: '',
     type: 'refinement',
