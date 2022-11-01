@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import config from '../../config.js';
 import Header from './ui/Header';
-import NewSidebarLayout from './newSidebar';
+import SidebarLayout from './sidebar';
 
 const Wrapper = styled.div`
   display: flex;
@@ -66,7 +66,7 @@ const LayoutHideSidebar = ({ children, className = '' }) => {
       <Header />
       <Wrapper className={className}>
         <div className={`tw-hidden-mobile z-2`}>
-          <NewSidebarLayout defaultCollapsed={true} />
+          <SidebarLayout defaultCollapsed={true} />
         </div>
         {config.sidebar.title ? (
           <div

@@ -52,7 +52,7 @@ const subtreeNav = (treeRoot, currentLocation = undefined, localizePath) => {
   return subs;
 };
 
-const Tree = ({ setNavCollapsed = null, localizePath }) => {
+const Tree = ({ setNavCollapsed = null, localizePath, isCollapsed = false }) => {
   const defaultNavSettings = subtreeNav(navConfig, undefined, localizePath);
 
   const [navSettings, setNavSetting] = useState(defaultNavSettings);
@@ -71,6 +71,7 @@ const Tree = ({ setNavCollapsed = null, localizePath }) => {
             setCollapsed={toggle}
             navSettings={navSettings}
             item={cur}
+            isCollapsed={isCollapsed}
           />
         );
       })}

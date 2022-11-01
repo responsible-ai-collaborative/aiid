@@ -16,17 +16,82 @@ import {
   faBuilding,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Tooltip } from 'flowbite-react';
 
-const getIcon = (label) =>
+const getIcon = (label, current = false) =>
   ({
-    welcome: <FontAwesomeIcon icon={faDoorOpen} className="pointer fa mr-1" fixedWidth />,
-    discover: <FontAwesomeIcon icon={faSearch} className="pointer fa mr-1" fixedWidth />,
-    submit: <FontAwesomeIcon icon={faPlusCircle} className="pointer fa mr-1" fixedWidth />,
-    leaderboard: <FontAwesomeIcon icon={faMedal} className="pointer fa mr-1" fixedWidth />,
-    wordcounts: <FontAwesomeIcon icon={faSortAlphaDown} className="pointer fa mr-1" fixedWidth />,
-    blog: <FontAwesomeIcon icon={faNewspaper} className="pointer fa mr-1" fixedWidth />,
-    taxonomies: <FontAwesomeIcon icon={faChartPie} className="pointer fa mr-1" fixedWidth />,
-    incidents: <FontAwesomeIcon icon={faTable} className="pointer fa mr-1" fixedWidth />,
+    welcome: (
+      <FontAwesomeIcon
+        icon={faDoorOpen}
+        className={`w-6 h-6 ${
+          current ? 'text-white' : 'text-gray-500'
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        fixedWidth
+      />
+    ),
+    discover: (
+      <FontAwesomeIcon
+        icon={faSearch}
+        className={`w-6 h-6 ${
+          current ? 'text-white' : 'text-gray-500'
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        fixedWidth
+      />
+    ),
+    submit: (
+      <FontAwesomeIcon
+        icon={faPlusCircle}
+        className={`w-6 h-6 ${
+          current ? 'text-white' : 'text-gray-500'
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        fixedWidth
+      />
+    ),
+    leaderboard: (
+      <FontAwesomeIcon
+        icon={faMedal}
+        className={`w-6 h-6 ${
+          current ? 'text-white' : 'text-gray-500'
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        fixedWidth
+      />
+    ),
+    wordcounts: (
+      <FontAwesomeIcon
+        icon={faSortAlphaDown}
+        className={`w-6 h-6 ${
+          current ? 'text-white' : 'text-gray-500'
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        fixedWidth
+      />
+    ),
+    blog: (
+      <FontAwesomeIcon
+        icon={faNewspaper}
+        className={`w-6 h-6 ${
+          current ? 'text-white' : 'text-gray-500'
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        fixedWidth
+      />
+    ),
+    taxonomies: (
+      <FontAwesomeIcon
+        icon={faChartPie}
+        className={`w-6 h-6 ${
+          current ? 'text-white' : 'text-gray-500'
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        fixedWidth
+      />
+    ),
+    incidents: (
+      <FontAwesomeIcon
+        icon={faTable}
+        className={`w-6 h-6 ${
+          current ? 'text-white' : 'text-gray-500'
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        fixedWidth
+      />
+    ),
     spatial: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -35,6 +100,9 @@ const getIcon = (label) =>
         style={{ width: '1.25em', marginRight: '0.25rem' }}
         fill="currentColor"
         stroke="none"
+        className={`w-6 h-6 ${
+          current ? 'text-white' : 'text-gray-500'
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white`}
       >
         <circle id="c1" cx="1.4249661" cy="3.3814588" r="1.2797676" />
         <circle id="c2" cx="2.6276002" cy="6.9394135" r="1.2797676" />
@@ -43,11 +111,23 @@ const getIcon = (label) =>
         <circle id="c5" cx="6.1704326" cy="1.5272532" r="1.2797676" />
       </svg>
     ),
-    entities: <FontAwesomeIcon icon={faBuilding} className="pointer fa mr-1" fixedWidth />,
+    entities: (
+      <FontAwesomeIcon
+        icon={faBuilding}
+        className={`w-6 h-6 ${
+          current ? 'text-white' : 'text-gray-500'
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        fixedWidth
+      />
+    ),
   }[label]);
 
-const TreeNode = ({ className = '', setCollapsed, navSetting, item }) => {
-  const calculatedClassName = `${className} item ${item.current ? 'active' : 'inactive'}`;
+const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed = false }) => {
+  const calculatedClassName = `${className} item ${
+    item.current
+      ? 'bg-light-orange text-white dark:bg-gray-700'
+      : 'text-gray-900 hover:bg-light-orange dark:text-white  hover:text-white dark:hover:bg-gray-700'
+  }`;
 
   const hasChildren = item.items.length > 0;
 
@@ -55,37 +135,76 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item }) => {
     setCollapsed(item['url']);
   };
 
-  const icon = getIcon(item.label);
+  const icon = getIcon(item.label, item.current);
 
   return (
-    <li className={calculatedClassName}>
-      {item.title && (
-        <Link to={item.url} onClick={click}>
-          {icon && <>{icon} </>}
-          <Trans>{item.title}</Trans>
-          {!config.sidebar.frontLine && item.title && hasChildren ? (
-            <button onClick={click} aria-label="collapse" className="collapser">
-              {!item.collapsed ? <OpenedSvg /> : <ClosedSvg />}
-            </button>
-          ) : null}
-        </Link>
-      )}
-
-      {!item.collapsed && hasChildren ? (
-        <ul>
-          {item.items.map((item, index) => (
-            <TreeNode
-              className="subtree"
-              key={item.url + index.toString()}
-              setCollapsed={setCollapsed}
-              navSetting={navSetting}
+    <>
+      <li className={`z-50 ${isCollapsed ? 'flex justify-center' : ''}`}>
+        {item.title &&
+          (isCollapsed ? (
+            <Tooltip content={item.title} placement="right">
+              <NodeLink
+                item={item}
+                isCollapsed={isCollapsed}
+                click={click}
+                icon={icon}
+                hasChildren={hasChildren}
+                calculatedClassName={calculatedClassName}
+              />
+            </Tooltip>
+          ) : (
+            <NodeLink
               item={item}
+              isCollapsed={isCollapsed}
+              click={click}
+              icon={icon}
+              hasChildren={hasChildren}
+              calculatedClassName={calculatedClassName}
             />
           ))}
-        </ul>
-      ) : null}
-    </li>
+
+        {!item.collapsed && hasChildren ? (
+          <ul>
+            {item.items.map((item, index) => (
+              <TreeNode
+                className="subtree"
+                key={item.url + index.toString()}
+                setCollapsed={setCollapsed}
+                navSetting={navSetting}
+                item={item}
+              />
+            ))}
+          </ul>
+        ) : null}
+      </li>
+    </>
   );
 };
+
+const NodeLink = ({ item, isCollapsed = false, click, icon, hasChildren, calculatedClassName }) => (
+  <Link
+    to={item.url}
+    onClick={click}
+    className={`flex rounded-lg items-center p-2 text-base font-normal group ${calculatedClassName} ${
+      isCollapsed ? 'justify-center' : ''
+    }`}
+  >
+    {icon && <>{icon} </>}
+    <span
+      className={`${
+        isCollapsed ? 'h-0 w-0 opacity-0 ' : 'opacity-100'
+      } transition-opacity duration-500`}
+    >
+      <span className="ml-3 block">
+        <Trans>{item.title}</Trans>
+      </span>
+      {!config.sidebar.frontLine && item.title && hasChildren ? (
+        <button onClick={click} aria-label="collapse" className="collapser">
+          {!item.collapsed ? <OpenedSvg /> : <ClosedSvg />}
+        </button>
+      ) : null}
+    </span>
+  </Link>
+);
 
 export default TreeNode;

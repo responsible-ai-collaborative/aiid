@@ -1,5 +1,5 @@
 import React from 'react';
-import NewSidebar from './newSidebar';
+import Sidebar from './sidebar';
 import RightSidebar from './rightSidebar';
 import config from '../../config.js';
 import Footer from './layout/Footer';
@@ -11,7 +11,7 @@ const Layout = ({ children, className, location }) => {
       <Header />
       <div className="tw-layout">
         <div className={`tw-hidden-mobile z-2`}>
-          <NewSidebar />
+          <Sidebar />
         </div>
         {config.sidebar.title && (
           <div
