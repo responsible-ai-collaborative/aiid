@@ -120,7 +120,7 @@ function AccordionFilter({ type, ...filterProps }) {
   const touched = touchedCount({ searchState, attribute });
 
   return (
-    <Accordion.Item eventKey={attribute}>
+    <Accordion.Item eventKey={attribute} className={`${filterProps.hidden ? 'hidden' : ''}`}>
       <StyledAccordionHeader bg={touched ? 'success' : 'primary'}>
         <ToggleContent faIcon={faIcon} label={label} touched={touched} />
       </StyledAccordionHeader>
