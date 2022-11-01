@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import config from '../../config.js';
 import Header from './ui/Header';
 import SidebarLayout from './sidebar';
+import Footer from './layout/Footer';
 
 const Wrapper = styled.div`
   display: flex;
@@ -62,7 +63,7 @@ const MaxWidth = styled.div`
 
 const LayoutHideSidebar = ({ children, className = '' }) => {
   return (
-    <>
+    <div className="flex flex-col h-full">
       <Header />
       <Wrapper className={className}>
         <div className={`tw-hidden-mobile z-2`}>
@@ -78,7 +79,8 @@ const LayoutHideSidebar = ({ children, className = '' }) => {
           <MaxWidth>{children}</MaxWidth>
         </Content>
       </Wrapper>
-    </>
+      <Footer />
+    </div>
   );
 };
 

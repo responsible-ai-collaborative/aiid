@@ -48,6 +48,10 @@ body {
   font-size: 16px;
 }
 
+html, body, #___gatsby, #gatsby-focus-wrapper {
+  height: 100%;
+}
+
 a {
   transition: color 0.15s;
   text-decoration: none !important;
