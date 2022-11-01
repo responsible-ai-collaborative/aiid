@@ -3,8 +3,8 @@ import { Trans } from 'react-i18next';
 
 export default function Hero() {
   return (
-    <div className="px-4 mt-2 text-center">
-      <h1 className="mx-auto my-4 max-w-xl">
+    <div className="px-4 text-center mt-10">
+      <h1 className="mx-auto mb-4 max-w-xl">
         <Trans ns="landing">
           <div
             className="

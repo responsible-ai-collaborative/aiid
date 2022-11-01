@@ -5,7 +5,7 @@ export const StyledHeading = styled('h1')`
   line-height: 1.5;
   font-weight: bold;
   flex: 1;
-  margin-top: 0;
+  margin-top: -1.5rem;
   padding-top: 0;
 `;
 

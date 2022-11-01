@@ -74,7 +74,7 @@ const LandingPage = (props) => {
           </div>
         </div>
 
-        <div className="mb-8">
+        <div className="mb-10">
           <div>
             <CommonEntities />
           </div>
