@@ -4,11 +4,15 @@
         "private": true
     },
     {
-        "name": "getUser",
+        "name": "linkReportsToIncidents",
         "private": false
     },
     {
-        "name": "linkReportsToIncidents",
+        "name": "reportTranslations",
+        "private": false
+    },
+    {
+        "name": "getUser",
         "private": false
     },
     {
@@ -20,11 +24,11 @@
         "private": true
     },
     {
-        "name": "onNewUser",
-        "private": true
+        "name": "sendEmail",
+        "private": false
     },
     {
-        "name": "passwordReset",
+        "name": "onNewUser",
         "private": true
     },
     {
@@ -32,19 +36,11 @@
         "private": false
     },
     {
-        "name": "reportTranslations",
-        "private": false
-    },
-    {
-        "name": "sendEmail",
-        "private": false
-    },
-    {
-        "name": "unlinkReportsFromIncidents",
-        "private": false
-    },
-    {
         "name": "updateOneReportTranslation",
         "private": false
+    },
+    {
+        "name": "passwordReset",
+        "private": true
     }
 ]
