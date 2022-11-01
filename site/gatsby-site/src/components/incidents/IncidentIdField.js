@@ -5,6 +5,8 @@ import React, { useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import { FIND_INCIDENT } from '../../graphql/incidents';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHashtag } from '@fortawesome/free-solid-svg-icons';
 
 export default function IncidentIdField({
   name,
@@ -40,7 +42,15 @@ export default function IncidentIdField({
   return (
     <div className="bootstrap">
       <Form.Group className={className + ' bootstrap'}>
-        <Label popover={name} label={(required ? '*' : '') + 'Incident ID'} />
+        <div className="flex items-center">
+          <FontAwesomeIcon
+            fixedWidth
+            icon={faHashtag}
+            title={t('Incident ID')}
+            className="mb-2 mr-1"
+          />
+          <Label popover={name} label={(required ? '*' : '') + 'Incident ID'} />
+        </div>
         <Form.Control
           type="number"
           name={name}

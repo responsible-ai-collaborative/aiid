@@ -92,6 +92,7 @@ const PreviewImageInputGroup = ({
   handleBlur,
   className = '',
   schema,
+  icon,
 }) => {
   const [cloudinaryID, setCloudinaryID] = useState(cloudinary_id);
 
@@ -154,6 +155,7 @@ const PreviewImageInputGroup = ({
       <TextInputGroup
         name={name}
         label={label}
+        icon={icon}
         placeholder={placeholder}
         values={values}
         errors={childErrors}

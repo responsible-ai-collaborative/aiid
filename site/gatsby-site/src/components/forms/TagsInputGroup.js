@@ -3,8 +3,18 @@ import { Form, InputGroup } from 'react-bootstrap';
 import Label from './Label';
 import TagsControl from './TagsControl';
 import { Trans } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const TagsInputGroup = ({ name, label, placeholder, errors, touched, schema, className = '' }) => {
+const TagsInputGroup = ({
+  name,
+  label,
+  placeholder,
+  errors,
+  touched,
+  schema,
+  className = '',
+  icon,
+}) => {
   const [optional, setOptional] = useState(true);
 
   // this causes an unnecessary re render, I'm hotfixing to get it working with react 18
@@ -17,7 +27,10 @@ const TagsInputGroup = ({ name, label, placeholder, errors, touched, schema, cla
   return (
     <div className="bootstrap">
       <Form.Group className={`form-group ${className}`}>
-        <Label popover={name} label={(optional ? '' : '*') + label} />
+        <div className="flex items-center">
+          {icon && <FontAwesomeIcon fixedWidth icon={icon} title={label} className="mb-2 mr-1" />}
+          <Label popover={name} label={(optional ? '' : '*') + label} />
+        </div>
         <InputGroup>
           <div
             className={

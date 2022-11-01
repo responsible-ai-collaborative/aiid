@@ -19,6 +19,24 @@ import supportedLanguages from '../../components/i18n/languages.json';
 import { Trans, useTranslation } from 'react-i18next';
 import RelatedIncidents from '../../components/RelatedIncidents';
 import SemanticallyRelatedIncidents from '../../components/SemanticallyRelatedIncidents';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faHandPointRight,
+  faCode,
+  faBolt,
+  faTag,
+  faPenNib,
+  faMedal,
+  faCalendar,
+  faImage,
+  faLink,
+  faLanguage,
+  faDownload,
+  faNewspaper,
+  faAlignLeft,
+  faStickyNote,
+  faTenge,
+} from '@fortawesome/free-solid-svg-icons';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -259,6 +277,7 @@ const SubmissionForm = () => {
         <TextInputGroup
           name="url"
           label={t('Report Address')}
+          icon={faLink}
           placeholder={t('Report URL')}
           addOnComponent={
             <Button
@@ -288,6 +307,7 @@ const SubmissionForm = () => {
         <TextInputGroup
           name="title"
           label={t('Title')}
+          icon={faTenge}
           placeholder={t('Report title')}
           className="mt-3"
           {...TextInputGroupProps}
@@ -296,6 +316,7 @@ const SubmissionForm = () => {
         <TagsInputGroup
           name="authors"
           label={t('Author(s)')}
+          icon={faPenNib}
           placeholder={t('The author or authors of the report')}
           className="mt-3"
           {...TextInputGroupProps}
@@ -307,6 +328,7 @@ const SubmissionForm = () => {
           name="submitters"
           placeholder={t('Your name as you would like it to appear in the leaderboard')}
           label={t('Submitter(s)')}
+          icon={faMedal}
           className="mt-3"
           {...TextInputGroupProps}
         />
@@ -317,6 +339,7 @@ const SubmissionForm = () => {
           type="date"
           placeholder={t('YYYY-MM-DD')}
           className="mt-3"
+          icon={faCalendar}
           {...TextInputGroupProps}
         />
 
@@ -329,15 +352,18 @@ const SubmissionForm = () => {
         <TextInputGroup
           name="date_downloaded"
           label={t('Date Downloaded')}
+          icon={faDownload}
           type="date"
           placeholder={t('YYYY-MM-DD')}
           className="mt-3"
           {...TextInputGroupProps}
         />
+
         <PreviewImageInputGroup
           publicID={values.cloudinary_id}
           name="image_url"
           label={t('Image Address')}
+          icon={faImage}
           placeholder={t('Image URL')}
           className="mt-3"
           {...TextInputGroupProps}
@@ -347,7 +373,16 @@ const SubmissionForm = () => {
           className={'mt-3' + (touched['text'] && errors['text'] ? ' is-invalid' : '')}
           data-color-mode="light"
         >
-          <Label popover="text" label={t('Text')} />
+          <div className="flex items-center">
+            <FontAwesomeIcon
+              fixedWidth
+              icon={faNewspaper}
+              title={t('Text')}
+              className="mb-2 mr-1"
+            />
+            <Label popover="text" label={t('Text')} />
+          </div>
+
           <div style={{ position: 'relative' }}>
             {touched['text'] && errors['text'] && (
               <div
@@ -376,7 +411,15 @@ const SubmissionForm = () => {
         <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
 
         <Form.Group className="mt-3">
-          <Label popover="language" label={t('Language')} />
+          <div className="flex items-center">
+            <FontAwesomeIcon
+              fixedWidth
+              icon={faLanguage}
+              title={t('Language')}
+              className="mb-2 mr-1"
+            />
+            <Label popover="language" label={t('Language')} />
+          </div>
           <Form.Select
             name="language"
             placeholder={t('Report Language')}
@@ -408,6 +451,7 @@ const SubmissionForm = () => {
           <TextInputGroup
             name="incident_date"
             label={t('Incident Date')}
+            icon={faCalendar}
             placeholder={t('Incident Date')}
             type="date"
             className="mt-3"
@@ -429,13 +473,20 @@ const SubmissionForm = () => {
             )}
           </summary>
 
-          <TagsInputGroup name="tags" label={t('Tags')} className="mt-3" {...TextInputGroupProps} />
+          <TagsInputGroup
+            name="tags"
+            label={t('Tags')}
+            icon={faTag}
+            className="mt-3"
+            {...TextInputGroupProps}
+          />
 
           {!values.incident_id && (
             <>
               <TextInputGroup
                 name="description"
                 label={t('Description')}
+                icon={faAlignLeft}
                 as="textarea"
                 placeholder={t('Incident Description')}
                 rows={3}
@@ -446,6 +497,7 @@ const SubmissionForm = () => {
               <TagsInputGroup
                 name="developers"
                 label={t('Alleged developer of AI system')}
+                icon={faCode}
                 placeholder={t('Who created or built the technology involved in the incident?')}
                 className="mt-3"
                 {...TextInputGroupProps}
@@ -454,6 +506,7 @@ const SubmissionForm = () => {
               <TagsInputGroup
                 name="deployers"
                 label={t('Alleged deployer of AI system')}
+                icon={faHandPointRight}
                 placeholder={t('Who employed or was responsible for the technology?')}
                 className="mt-3"
                 {...TextInputGroupProps}
@@ -462,6 +515,7 @@ const SubmissionForm = () => {
               <TagsInputGroup
                 name="harmed_parties"
                 label={t('Alleged harmed or nearly harmed parties')}
+                icon={faBolt}
                 placeholder={t('Who experienced negative impacts?')}
                 className="mt-3"
                 {...TextInputGroupProps}
@@ -472,6 +526,7 @@ const SubmissionForm = () => {
           <TextInputGroup
             name="editor_notes"
             label={t('Editor Notes')}
+            icon={faStickyNote}
             as="textarea"
             placeholder={t('Optional context and notes about the incident')}
             rows={8}
