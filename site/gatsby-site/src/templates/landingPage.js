@@ -68,25 +68,25 @@ const LandingPage = (props) => {
           <QuickSearch />
         </div>
 
-        <div className="mb-10">
+        <div className="mb-4 md:mb-10">
           <div>
             <LatestReports latestReport={latestReport} />
           </div>
         </div>
 
-        <div className="mb-10">
+        <div className="mb-4 md:mb-10">
           <div>
             <CommonEntities />
           </div>
         </div>
 
-        <div className="mb-10">
+        <div className="mb-4 md:mb-10">
           <div className="flex flex-col items-center">
             <QuickAdd />
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-10 mb-10 flex-wrap">
+        <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-4 md:gap-10 mb-4 md:mb-10 flex-wrap">
           <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
             <AboutDatabase />
           </div>
@@ -95,19 +95,19 @@ const LandingPage = (props) => {
           </div>
         </div>
 
-        <div className="mb-16">
+        <div className="mb-10 md:mb-16">
           <div>
             <Featured />
           </div>
         </div>
 
-        <div className="mb-16">
+        <div className="mb-10 md:mb-16">
           <div>
             <Leaderboards />
           </div>
         </div>
 
-        <div className="mb-10 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-10 flex-wrap">
+        <div className="mb-4 md:mb-10 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-4 md:gap-10 flex-wrap">
           <div className="flex-1 lg:max-w-[50%] grow">
             <WordCounts localWordCounts={localWordCounts} />
           </div>

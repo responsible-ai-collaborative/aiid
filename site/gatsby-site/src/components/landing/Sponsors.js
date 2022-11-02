@@ -78,7 +78,7 @@ export default function Sponsors() {
               </a>
             </span>
           </div>
-          <div className="flex justify-center items-center gap-6 flex-nowrap flex-col flex-1 min-w-[300px]">
+          <div className="flex justify-center items-center gap-4 md:gap-6 flex-nowrap flex-col flex-1">
             {sponsors.map((sponsor) => {
               return (
                 <div className="flex-1 w-full" key={`sponsor-${sponsor.name}`}>

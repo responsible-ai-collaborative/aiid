@@ -19,7 +19,7 @@ export default function Featured() {
             <LocalizedLink to="/summaries/leaderboard">leaderboard page.</LocalizedLink>
           </Trans>
         </p>
-        <div className="flex justify-center items-center gap-6 flex-wrap w-full">
+        <div className="flex justify-center items-center gap-4 md:gap-6 flex-wrap w-full">
           <OriginalSubmitersLeaderboard limit={3} className="flex-1-1-auto" />
           <UniqueSubmittersLeaderboard limit={3} className="flex-1-1-auto" />
           <SubmittersLeaderboard limit={3} className="flex-1-1-auto" />
