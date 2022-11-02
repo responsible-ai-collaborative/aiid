@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useField } from 'formik';
-import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+import { AsyncTypeahead, Token } from 'react-bootstrap-typeahead';
 import { useQuery } from '@apollo/client';
 import { FIND_INCIDENTS_TITLE } from '../../graphql/incidents';
 
@@ -19,7 +19,7 @@ export default function IncidentsField({ id, name }) {
 
   const [options, setOptions] = useState([]);
 
-  const [selected, setSelected] = useState(value.map((id) => ({ id })));
+  const [selected, setSelected] = useState(value.map((id) => ({ id, title: '' })));
 
   useEffect(() => {
     if (data?.incidents) {
@@ -71,21 +71,20 @@ export default function IncidentsField({ id, name }) {
           setTouched(true);
           setValue(value.map((item) => item.id));
         }}
+        renderToken={(option, { onRemove }, index) => (
+          <Token key={index} onRemove={onRemove} option={option} title={option.title}>
+            <div className="flex">
+              <b>{option.id}</b>
+              <span className="block w-[20ch] truncate overflow-ellipsis ml-2">{option.title}</span>
+            </div>
+          </Token>
+        )}
         renderMenuItemChildren={(option) => (
           <span>
             {option.id} - {option.title}
           </span>
         )}
       />
-      <div>
-        {selected.map((item) => {
-          return (
-            <div key={item.id}>
-              {item.id} - {item.title}
-            </div>
-          );
-        })}
-      </div>
     </>
   );
 }
