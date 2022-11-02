@@ -8,10 +8,10 @@ import { Spinner } from 'flowbite-react';
 import {
   UPDATE_REPORT,
   DELETE_REPORT,
-  useUpdateLinkedReports,
   FIND_REPORT_WITH_TRANSLATIONS,
+  LINK_REPORTS_TO_INCIDENTS,
 } from '../../graphql/reports';
-import { UPDATE_INCIDENT, FIND_INCIDENT } from '../../graphql/incidents';
+import { UPDATE_INCIDENT, FIND_INCIDENTS } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { format, getUnixTime } from 'date-fns';
 import { stripMarkdown } from '../../utils/typography';
@@ -21,6 +21,7 @@ import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
 import { gql, useApolloClient } from '@apollo/client';
 import { useTranslation, Trans } from 'react-i18next';
 import RelatedIncidents from '../../components/RelatedIncidents';
+import { isEqual } from 'lodash';
 
 const UPDATE_REPORT_TRANSLATION = gql`
   mutation UpdateReportTranslation($input: UpdateOneReportTranslationInput) {
@@ -94,13 +95,11 @@ function EditCitePage(props) {
 
   const [updateReport] = useMutation(UPDATE_REPORT);
 
-  const [updateIncident] = useMutation(UPDATE_INCIDENT);
-
   const [updateReportTranslations] = useMutation(UPDATE_REPORT_TRANSLATION);
 
   const [deleteReport] = useMutation(DELETE_REPORT);
 
-  const { data: parentIncident, loading: loadingIncident } = useQuery(FIND_INCIDENT, {
+  const { data: parentIncidents, loading: loadingIncident } = useQuery(FIND_INCIDENTS, {
     variables: {
       query: {
         reports_in: {
@@ -110,9 +109,11 @@ function EditCitePage(props) {
     },
   });
 
+  const incident_ids = parentIncidents?.incidents.map((incident) => incident.incident_id);
+
   const loading = loadingIncident || loadingReport;
 
-  const updateLinkedReports = useUpdateLinkedReports();
+  const [linkReportsToIncidents] = useMutation(LINK_REPORTS_TO_INCIDENTS);
 
   const addToast = useToastContext();
 
@@ -202,73 +203,85 @@ function EditCitePage(props) {
       }
 
       if (values.is_incident_report) {
-        if (values.incident_id !== parentIncident.incident.incident_id) {
-          await updateLinkedReports({ reportNumber, incidentIds: [values.incident_id] });
-
-          // If the parent incident has changed,
-          // recompute its embedding not including that of the current report.
-          const exSiblingsResponse = await client.query({
-            query: siblingsQuery,
+        if (!isEqual(values.incident_ids, incident_ids)) {
+          await linkReportsToIncidents({
             variables: {
-              query: {
-                report_number_in: parentIncident.incident.reports
-                  .map((report) => report.report_number)
-                  .filter((report_number) => report_number != reportNumber),
+              input: {
+                incident_ids: values.incident_ids,
+                report_numbers: [reportNumber],
               },
             },
           });
 
-          const exSiblings = exSiblingsResponse.data.reports;
+          for (const incident of parentIncidents.incidents) {
+            // If the parent incident has changed,
+            // recompute its embedding not including that of the current report.
+            const exSiblingsResponse = await client.query({
+              query: siblingsQuery,
+              variables: {
+                query: {
+                  report_number_in: incident.reports
+                    .map((report) => report.report_number)
+                    .filter((report_number) => report_number != reportNumber),
+                },
+              },
+            });
 
-          const embedding = incidentEmbedding(exSiblings);
+            const exSiblings = exSiblingsResponse.data.reports;
+
+            const embedding = incidentEmbedding(exSiblings);
+
+            if (embedding) {
+              await client.mutate({
+                mutation: UPDATE_INCIDENT,
+                variables: {
+                  query: { incident_id: incident.incident_id },
+                  set: { embedding },
+                },
+              });
+            }
+          }
+        }
+
+        for (const incident_id of values.incident_ids) {
+          // Update the embedding of the parent incident
+          // to include the current report.
+          const siblingIdsResponse = await client.query({
+            query: gql`
+              query SiblingIds($query: IncidentQueryInput) {
+                incident(query: $query) {
+                  incident_id
+                  reports {
+                    report_number
+                  }
+                }
+              }
+            `,
+            variables: { query: { incident_id } },
+          });
+
+          const siblingIds = siblingIdsResponse.data.incident.reports
+            .map((report) => report.report_number)
+            .filter((report_number) => report_number != reportNumber);
+
+          const siblingsResponse = await client.query({
+            query: siblingsQuery,
+            variables: { query: { report_number_in: siblingIds } },
+          });
+
+          const siblings = siblingsResponse.data.reports;
+
+          const embedding = incidentEmbedding(siblings.concat(values));
 
           if (embedding) {
             await client.mutate({
               mutation: UPDATE_INCIDENT,
               variables: {
-                query: { incident_id: parentIncident.incident.incident_id },
+                query: { incident_id },
                 set: { embedding },
               },
             });
           }
-        }
-
-        // Update the embedding of the parent incident
-        // to include the current report.
-        const siblingIdsResponse = await client.query({
-          query: gql`
-            query SiblingIds($query: IncidentQueryInput) {
-              incident(query: $query) {
-                reports {
-                  report_number
-                }
-              }
-            }
-          `,
-          variables: { query: { incident_id: values.incident_id } },
-        });
-
-        const siblingIds = siblingIdsResponse.data.incident.reports
-          .map((report) => report.report_number)
-          .filter((report_number) => report_number != reportNumber);
-
-        const siblingsResponse = await client.query({
-          query: siblingsQuery,
-          variables: { query: { report_number_in: siblingIds } },
-        });
-
-        const siblings = siblingsResponse.data.reports;
-
-        const embedding = incidentEmbedding(siblings.concat(values));
-
-        if (embedding) {
-          await client.mutate({
-            mutation: UPDATE_INCIDENT,
-            variables: {
-              query: { incident_id: values.incident_id },
-              set: { embedding },
-            },
-          });
         }
 
         addToast(updateSuccessToast({ reportNumber, incidentId: values.incident_id }));
@@ -290,43 +303,39 @@ function EditCitePage(props) {
         },
       });
 
-      await updateIncident({
+      await linkReportsToIncidents({
         variables: {
-          query: {
-            incident_id: parentIncident.incident.incident_id,
+          input: {
+            incident_ids: [],
+            report_numbers: [reportNumber],
           },
-          set: {
-            reports: {
-              link: parentIncident.incident.reports
-                .filter((report) => report.report_number != reportNumber)
-                .map((report) => report.report_number),
+        },
+      });
+
+      for (const incident of parentIncidents.incidents) {
+        const exSiblingsResponse = await client.query({
+          query: siblingsQuery,
+          variables: {
+            query: {
+              report_number_in: incident.reports
+                .map((report) => report.report_number)
+                .filter((report_number) => report_number != reportNumber),
             },
           },
-        },
-      });
+        });
 
-      const exSiblingsResponse = await client.query({
-        query: siblingsQuery,
-        variables: {
-          query: {
-            report_number_in: parentIncident.incident.reports
-              .map((report) => report.report_number)
-              .filter((report_number) => report_number != reportNumber),
+        const exSiblings = exSiblingsResponse.data.reports;
+
+        const embedding = incidentEmbedding(exSiblings);
+
+        await client.mutate({
+          mutation: UPDATE_INCIDENT,
+          variables: {
+            query: { incident_id: incident.incident_id },
+            set: { embedding },
           },
-        },
-      });
-
-      const exSiblings = exSiblingsResponse.data.reports;
-
-      const embedding = incidentEmbedding(exSiblings);
-
-      await client.mutate({
-        mutation: UPDATE_INCIDENT,
-        variables: {
-          query: { incident_id: parentIncident.incident.incident_id },
-          set: { embedding },
-        },
-      });
+        });
+      }
 
       addToast(deleteSuccessToast({ reportNumber }));
     } catch (e) {
@@ -347,15 +356,13 @@ function EditCitePage(props) {
 
       {!loading &&
         reportData?.report &&
-        (!reportData.report.is_incident_report || parentIncident?.incident) && (
+        (!reportData.report.is_incident_report || parentIncidents?.incidents) && (
           <Formik
             validationSchema={schema}
             onSubmit={handleSubmit}
             initialValues={{
               ...reportData.report,
-              incident_id: reportData.report.is_incident_report
-                ? parentIncident.incident.incident_id
-                : '',
+              incident_ids,
             }}
           >
             {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
