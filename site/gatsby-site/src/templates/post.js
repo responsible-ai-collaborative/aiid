@@ -57,6 +57,7 @@ export default function Post(props) {
           metaTitle={metaTitle}
           canonicalUrl={canonicalUrl}
           page="post"
+          className="-mt-1"
         ></SocialShareButtons>
       </div>
       <StyledMainWrapper>

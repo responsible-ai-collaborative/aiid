@@ -226,6 +226,7 @@ function CitePage(props) {
           metaTitle={metaTitle}
           canonicalUrl={canonicalUrl}
           page="cite"
+          className="-mt-1"
         ></SocialShareButtons>
       </div>
 
