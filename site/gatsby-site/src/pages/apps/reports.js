@@ -446,7 +446,6 @@ export default function Incidents(props) {
     <LayoutHideSidebar
       {...props}
       menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
-      className="bootstrap"
     >
       <AiidHelmet>
         <title>Incident List</title>
@@ -460,7 +459,7 @@ export default function Incidents(props) {
       )}
 
       {!loading && (
-        <Container isWide={collapse}>
+        <Container isWide={collapse} className="bootstrap">
           <StyledHeading>Incident Report Table</StyledHeading>
           <Button onClick={() => setAllFilters([])}>Reset filters</Button>
           <TableStyles>
