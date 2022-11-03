@@ -1,6 +1,6 @@
 {
     "collection": "notifications",
-    "database": "aiidprod",
+    "database": "customData",
     "roles": [
         {
             "name": "role is admin",

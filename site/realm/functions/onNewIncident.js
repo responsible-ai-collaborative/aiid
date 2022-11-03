@@ -12,7 +12,7 @@ exports = async function (changeEvent) {
 
   console.log(`New Incident #${incidentId}`);
 
-  const notificationsCollection = context.services.get('mongodb-atlas').db('aiidprod').collection("notifications");
+  const notificationsCollection = context.services.get('mongodb-atlas').db('customData').collection("notifications");
   const subscriptionsCollection = context.services.get('mongodb-atlas').db('customData').collection("subscriptions");
   const subscriptionsToNewIncidents = await subscriptionsCollection.find({ type: 'new-incidents' }).toArray();
 

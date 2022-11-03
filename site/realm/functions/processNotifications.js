@@ -1,6 +1,6 @@
 exports = async function () {
 
-  const notificationsCollection = context.services.get('mongodb-atlas').db('aiidprod').collection("notifications");
+  const notificationsCollection = context.services.get('mongodb-atlas').db('customData').collection("notifications");
   const subscriptionsCollection = context.services.get('mongodb-atlas').db('customData').collection("subscriptions");
   const incidentsCollection = context.services.get('mongodb-atlas').db('aiidprod').collection("incidents");
 

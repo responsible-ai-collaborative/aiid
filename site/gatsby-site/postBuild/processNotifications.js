@@ -28,23 +28,7 @@ const client = new ApolloClient({
       return fetch(uri, options);
     },
   }),
-  cache: new InMemoryCache({
-    typePolicies: {
-      Incident: {
-        keyFields: ['incident_id'],
-        fields: {
-          reports: {
-            merge(existing, incoming = []) {
-              return [...incoming];
-            },
-          },
-        },
-      },
-      Report: {
-        keyFields: ['report_number'],
-      },
-    },
-  }),
+  cache: new InMemoryCache(),
 });
 
 const processNotifications = async () => {
