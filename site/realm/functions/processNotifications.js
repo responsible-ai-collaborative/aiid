@@ -75,3 +75,7 @@ exports = async function () {
 
   return pendingNotificationsToNewIncidents;
 };
+
+if (typeof module === 'object') {
+  module.exports = exports;
+}
