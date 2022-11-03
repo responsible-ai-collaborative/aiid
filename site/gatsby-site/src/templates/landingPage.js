@@ -54,7 +54,8 @@ const LandingPage = (props) => {
   const metaImage = 'https://incidentdatabase.ai/logos/AIID_1000x1000px.png';
 
   return (
-    <Layout {...props} className="max-w-full 2xl:max-w-6xl">
+    // Tailwind has max-w-6xl but no plain w-6xl... 72rem = 6xl
+    <Layout {...props} className="max-w-full 2xl:w-[72rem]">
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
         <title>{title}</title>
         <meta property="og:type" content="website" />

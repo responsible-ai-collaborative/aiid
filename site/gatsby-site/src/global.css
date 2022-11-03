@@ -478,8 +478,8 @@ blockquote {
 .titleWrapper {
   border-bottom: 1px solid rgb(230, 236, 241);
   margin-bottom: 1rem;
-  min-height: 6rem;
-  padding-top: 1.75rem;
+  min-height: 4.5rem;
+  padding-top: 0.25rem;
 
   @media (min-width: 768px) {
     display: flex;
