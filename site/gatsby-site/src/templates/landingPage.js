@@ -69,25 +69,27 @@ const LandingPage = (props) => {
           <QuickSearch />
         </div>
 
-        <div className="mb-4 md:mb-10">
+        {/* The shadows on the card bottoms make the gap between cards look smaller,  *
+         /* so mb-5 appears to match the p-4 of the content                           */}
+        <div className="mb-5 md:mb-10">
           <div>
             <LatestReports latestReport={latestReport} />
           </div>
         </div>
 
-        <div className="mb-4 md:mb-10">
+        <div className="mb-5 md:mb-10">
           <div>
             <CommonEntities />
           </div>
         </div>
 
-        <div className="mb-4 md:mb-10">
+        <div className="mb-5 md:mb-10">
           <div className="flex flex-col items-center">
             <QuickAdd />
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-4 md:gap-10 mb-4 md:mb-10 flex-wrap">
+        <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-5 md:gap-10 mb-5 md:mb-10 flex-wrap">
           <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
             <AboutDatabase />
           </div>
@@ -108,7 +110,7 @@ const LandingPage = (props) => {
           </div>
         </div>
 
-        <div className="mb-4 md:mb-10 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-4 md:gap-10 flex-wrap">
+        <div className="mb-5 md:mb-10 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-5 md:gap-10 flex-wrap">
           <div className="flex-1 lg:max-w-[50%] grow">
             <WordCounts localWordCounts={localWordCounts} />
           </div>

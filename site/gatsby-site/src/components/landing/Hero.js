@@ -4,7 +4,7 @@ import { Trans } from 'react-i18next';
 export default function Hero() {
   return (
     <div className="px-4 text-center mt-4">
-      <h1 className="mx-auto mb-4 max-w-xl">
+      <h1 className="mx-auto mb-2 md:mb-4 max-w-xl">
         <Trans ns="landing">
           <div
             className="
