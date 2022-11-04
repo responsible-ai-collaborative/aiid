@@ -86,18 +86,18 @@ export default function Sponsors() {
                     <h6 className="text-lg dark:text-white mb-0">
                       <Trans ns="landing">{sponsor.name}</Trans>
                     </h6>
-                    <div className="flex justify-center items-center gap-4">
+                    <div className="flex justify-around gap-4">
                       {sponsor.items.map((item) => {
                         return (
                           <div
                             key={`sponsor-item-${item.modalName}`}
-                            className="max-w-xs w-full max-h-[90px] ml-0 mr-0"
+                            className="max-w-xs w-full max-h-[90px] ml-0 mr-0 text-center"
                           >
                             <StyledImage
                               src={`/images/${item.logo}`}
                               onClick={() => setModalState(item.modalName)}
                               data-cy={item.dataCy ? item.dataCy : ''}
-                              className="max-h-[90px] ml-0 mr-0 mb-0"
+                              className="max-h-[90px] ml-0 mr-0 mb-0 inline-flex"
                             />
                           </div>
                         );
