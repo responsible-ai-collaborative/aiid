@@ -297,7 +297,6 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
         <div className="flex justify-end mt-4 gap-2">
           <Button
             data-cy="submit-step-1"
-            gradientDuoTone="greenToBlue"
             disabled={isSubmitting || parsingNews}
             onClick={() => {
               setSubmitCount(submitCount + 1);

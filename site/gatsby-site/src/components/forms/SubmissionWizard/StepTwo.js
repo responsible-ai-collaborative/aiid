@@ -150,7 +150,6 @@ const FormDetails = ({ data, previous, schema, submitForm, validateAndSubmitForm
           <div className="flex justify-end gap-2">
             <Button
               data-cy="submit-step-2"
-              gradientDuoTone="greenToBlue"
               disabled={isSubmitting}
               onClick={() => {
                 setSubmitCount(submitCount + 1);

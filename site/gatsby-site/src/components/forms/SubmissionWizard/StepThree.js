@@ -185,7 +185,7 @@ const StepThree = (props) => {
                   </svg>
                   <Trans>Previous</Trans>
                 </Button>
-                <Button gradientDuoTone="greenToBlue" type="submit">
+                <Button type="submit">
                   {TextInputGroupProps.isSubmitting && (
                     <div className="mr-3">
                       <Spinner size="sm" light={true} />
