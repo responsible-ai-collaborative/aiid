@@ -90,7 +90,7 @@ const TextAreaInput = ({
         : 'border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-500'
     } ${className}`}
     placeholder={placeholder}
-    value={values[name] || ''}
+    value={values[name] || props.defaultValue || ''}
     {...props}
     onChange={handleChange}
     onBlur={handleBlur}
@@ -118,7 +118,7 @@ const Input = ({
         : 'border-gray-300 dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-500'
     } ${className}`}
     placeholder={placeholder}
-    value={values[name] || ''}
+    value={values[name] || props.defaultValue || ''}
     {...props}
     onChange={handleChange}
     onBlur={handleBlur}

@@ -14,6 +14,7 @@ import { Editor } from '@bytemd/react';
 import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
 import IncidentIdField from 'components/incidents/IncidentIdField';
 import isEmpty from 'lodash/isEmpty';
+import { format } from 'date-fns';
 
 const StepOne = (props) => {
   const [data, setData] = useState(props.data);
@@ -227,6 +228,7 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
           handleBlur={handleBlur}
           schema={schema}
           disabled={parsingNews}
+          defaultValue={format(new Date(), 'yyyy-MM-dd')}
         />
 
         <Label popover="text" label={'*' + t('Text')} />
