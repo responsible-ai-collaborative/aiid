@@ -72,6 +72,8 @@ const SubmitForm = () => {
     setSubmission(queryParams);
   }, []);
 
+  const [displayCsvSection] = useState(false);
+
   const [csvData, setCsvData] = useState([]);
 
   const [csvIndex, setCsvIndex] = useState(0);
@@ -176,7 +178,7 @@ const SubmitForm = () => {
         </Trans>
       </p>
 
-      {!loading && isRole('submitter') && (
+      {!loading && isRole('submitter') && displayCsvSection && (
         <Container className="mt-5 p-0 bootstrap">
           ``
           <h2>
