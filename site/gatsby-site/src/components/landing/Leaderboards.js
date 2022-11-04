@@ -12,7 +12,7 @@ export default function Featured() {
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-0">
           <Trans ns="landing">Incident Report Submission Leaderboards</Trans>
         </h5>
-        <p className="mb-5">
+        <p className="mt-2">
           <Trans i18nKey="leaderboardDescription" ns="landing">
             These are the persons and entities credited with creating and submitted incident
             reports. More details are available on the{' '}
