@@ -8,6 +8,7 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, parse } from 'date-fns';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
+import { UPSERT_ENTITY } from '../../graphql/entities';
 import isString from 'lodash/isString';
 import SubmissionForm, { schema } from 'components/submissions/SubmissionForm';
 import { Formik } from 'formik';
@@ -17,6 +18,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { Spinner } from 'flowbite-react';
+import { graphql, useStaticQuery } from 'gatsby';
+import { processEntities } from '../../utils/entities';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -62,6 +65,19 @@ const SubmitForm = () => {
     harmed_parties: [],
   });
 
+  const {
+    entities: { nodes: allEntities },
+  } = useStaticQuery(graphql`
+    {
+      entities: allMongodbAiidprodEntities {
+        nodes {
+          entity_id
+          name
+        }
+      }
+    }
+  `);
+
   useEffect(() => {
     const queryParams = { ...query };
 
@@ -88,6 +104,8 @@ const SubmitForm = () => {
   useQuery(FIND_SUBMISSIONS);
 
   const [insertSubmission] = useMutation(INSERT_SUBMISSION, { refetchQueries: [FIND_SUBMISSIONS] });
+
+  const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
   useEffect(() => {
     if (csvData[csvIndex]) {
@@ -129,12 +147,25 @@ const SubmitForm = () => {
           : ['Anonymous'],
         plain_text: await stripMarkdown(values.text),
         embedding: values.embedding || undefined,
-        developers: isString(values.developers) ? values.developers.split(',') : values.developers,
-        deployers: isString(values.deployers) ? values.deployers.split(',') : values.deployers,
-        harmed_parties: isString(values.harmed_parties)
-          ? values.harmed_parties.split(',')
-          : values.harmed_parties,
       };
+
+      submission.deployers = await processEntities(
+        allEntities,
+        values.deployers,
+        createEntityMutation
+      );
+
+      submission.developers = await processEntities(
+        allEntities,
+        values.developers,
+        createEntityMutation
+      );
+
+      submission.harmed_parties = await processEntities(
+        allEntities,
+        values.harmed_parties,
+        createEntityMutation
+      );
 
       await insertSubmission({ variables: { submission } });
 

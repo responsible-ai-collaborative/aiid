@@ -1,3 +1,7 @@
+const { default: slugify } = require('slugify');
+
+const isArray = require('lodash/isArray');
+
 const idHash = {};
 
 const getName = (entities, id) => {
@@ -8,6 +12,10 @@ const getName = (entities, id) => {
   }
 
   return idHash[id];
+};
+
+const getEntityId = (name) => {
+  return slugify(name, { lower: true });
 };
 
 module.exports.computeEntities = ({ incidents, entities }) => {
@@ -127,3 +135,34 @@ module.exports.makeEntitiesHash = (entities) =>
     hash[entity.id] = entity;
     return hash;
   }, {});
+
+// Save new Entities into "entities" collection
+module.exports.processEntities = async (allEntities, entitiesNames, createEntityMutation) => {
+  entitiesNames = !isArray(entitiesNames)
+    ? entitiesNames.split(',').map((s) => s.trim())
+    : entitiesNames;
+
+  const entityIds = [];
+
+  for (const entityName of entitiesNames) {
+    const entityId = getEntityId(entityName);
+
+    entityIds.push(entityId);
+
+    if (!allEntities.find((entity) => entity.entity_id === entityId)) {
+      await createEntityMutation({
+        variables: {
+          query: {
+            entity_id: entityId,
+          },
+          entity: {
+            entity_id: entityId,
+            name: entityName,
+          },
+        },
+      });
+    }
+  }
+
+  return { link: entityIds };
+};
