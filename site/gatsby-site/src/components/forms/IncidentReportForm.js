@@ -78,14 +78,7 @@ export const schema = yup.object().shape({
       '*Must enter URL in http://www.example.com/images/preview.png format'
     ),
   editor_notes: yup.string().nullable(),
-  incident_id: yup
-    .number()
-    .positive()
-    .integer('*Must be an incident number')
-    .when('is_incident_report', {
-      is: true,
-      then: (schema) => schema.required('Incident ID is a required field'),
-    }),
+  incident_ids: yup.array().of(yup.number().positive()),
   is_incident_report: yup.boolean().required(),
 });
 
@@ -351,10 +344,10 @@ const IncidentReportForm = () => {
         </Form.Group>
 
         {values.is_incident_report && (
-          <>
+          <div className="mt-3">
             <Label popover={'incident_ids'} label={'* Incident IDs'} />
-            <IncidentsField name="incident_ids" />
-          </>
+            <IncidentsField id="incident_ids" name="incident_ids" />
+          </div>
         )}
 
         <TextInputGroup
