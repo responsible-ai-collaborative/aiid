@@ -3,12 +3,14 @@ import { Button as BSButton } from 'react-bootstrap';
 import { getFormattedName } from '../utils/typography';
 import { format } from 'date-fns';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
-import { faCopy } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { Modal, Button } from 'flowbite-react';
+import { faCopy, faQuoteLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
+  const { t } = useTranslation();
+
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -56,6 +58,7 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
     <>
       <div className="bootstrap">
         <BSButton variant="outline-primary" onClick={handleShow}>
+          <FontAwesomeIcon className="mr-2 -mt-1" icon={faQuoteLeft} title={t('BibTex Citation')} />
           <Trans>BibTex Citation</Trans>
         </BSButton>
       </div>
