@@ -21,6 +21,10 @@ const SignUpSchema = Yup.object().shape({
   }),
 });
 
+const SubscribeSchema = Yup.object().shape({
+  emailSubscription: Yup.string().email('Invalid email').required('Required'),
+});
+
 const SignUp = (props) => {
   const {
     user,
@@ -66,7 +70,75 @@ const SignUp = (props) => {
           </Link>
         </>
       ) : (
-        <>
+        <div className="max-w-lg">
+          <Formik
+            initialValues={{ emailSubscription: '' }}
+            validationSchema={SubscribeSchema}
+            onSubmit={async ({ emailSubscription }, { setSubmitting, resetForm }) => {
+              try {
+                await signUp({ email: emailSubscription, password: '123456', redirectTo });
+                addToast({
+                  message: t('Thanks for subscribing to our Newsletter!', { email: emailSubscription, ns: 'login' }),
+                  severity: SEVERITY.success,
+                });
+                resetForm();
+              } catch (e) {
+                addToast({
+                  message: (
+                    <label className="capitalize">
+                      {t(e.error || 'An unknown error has ocurred')}
+                    </label>
+                  ),
+                  severity: SEVERITY.danger,
+                });
+              }
+
+              setSubmitting(false);
+            }}
+          >
+            {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, isValid }) => (
+              <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-3" controlId="formBasicEmailSubscription">
+                  <Form.Label>
+                    <Trans>Subscribe to our Newsletter ONLY</Trans>
+                  </Form.Label>
+                  <Form.Control
+                    isInvalid={errors.emailSubscription && touched.emailSubscription}
+                    type="email"
+                    placeholder={t('Email')}
+                    name="emailSubscription"
+                    value={values.emailSubscription}
+                    onChange={handleChange}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    <Trans>{errors.emailSubscription && touched.emailSubscription ? errors.emailSubscription : null}</Trans>
+                  </Form.Control.Feedback>
+                </Form.Group>
+
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={isSubmitting || !isValid}
+                  className="w-full"
+                  data-cy="signup-btn"
+                >
+                  {isSubmitting && <Spinner />}
+                  <span className="pl-3">
+                    <Trans ns="login">Subscribe to our Newsletter</Trans>
+                  </span>
+                </Button>
+              </Form>
+            )}
+          </Formik>
+
+          <div className="my-2 flex justify-center">
+            <Trans>or</Trans>
+          </div>
+
+          <div className="my-2 flex justify-center">
+            <Trans>Create a user account to follow individual incidents and/or receive a notification about all new incidents (you will also be subscribed to our Newsletter)</Trans>
+          </div>
+
           <Formik
             initialValues={{ email: '', password: '', passwordConfirm: '' }}
             validationSchema={SignUpSchema}
@@ -200,7 +272,7 @@ const SignUp = (props) => {
               <Trans ns="login">Login</Trans>
             </Link>
           </div>
-        </>
+        </div>
       )}
     </Layout>
   );
