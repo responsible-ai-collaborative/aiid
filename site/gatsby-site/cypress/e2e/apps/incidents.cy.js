@@ -36,18 +36,31 @@ describe('Incidents App', () => {
         cy.get('[data-cy="cell"]').eq(3).should('have.text', incident.date);
         cy.get('[data-cy="cell"]')
           .eq(4)
-          .should('have.text', incident.AllegedDeployerOfAISystem.join(', '));
+          .should('have.text', incident.AllegedDeployerOfAISystem.map((i) => i['name']).join(', '));
         cy.get('[data-cy="cell"]')
           .eq(5)
-          .should('have.text', incident.AllegedDeveloperOfAISystem.join(', '));
+          .should(
+            'have.text',
+            incident.AllegedDeveloperOfAISystem.map((i) => i['name']).join(', ')
+          );
         cy.get('[data-cy="cell"]')
           .eq(6)
-          .should('have.text', incident.AllegedHarmedOrNearlyHarmedParties.join(', '));
+          .should(
+            'have.text',
+            incident.AllegedHarmedOrNearlyHarmedParties.map((i) => i['name']).join(', ')
+          );
       });
   });
 
-  maybeIt('Successfully filter and edit incident 11', () => {
+  maybeIt('Successfully filter and edit incident 112', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidents',
+      'FindIncidents',
+      incidents
+    );
 
     cy.visit(url);
 

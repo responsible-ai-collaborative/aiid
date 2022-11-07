@@ -1,17 +1,25 @@
 const { default: slugify } = require('slugify');
 
+const isArray = require('lodash/isArray');
+
 const idHash = {};
 
-const getId = (name) => {
-  if (!idHash[name]) {
-    idHash[name] = slugify(name, { lower: true });
+const getName = (entities, id) => {
+  if (!idHash[id]) {
+    const entity = entities.find((entity) => entity.entity_id == id);
+
+    idHash[id] = entity ? entity.name : id;
   }
 
-  return idHash[name];
+  return idHash[id];
 };
 
-module.exports.computeEntities = ({ incidents }) => {
-  const entititiesHash = {};
+const getEntityId = (name) => {
+  return slugify(name, { lower: true });
+};
+
+module.exports.computeEntities = ({ incidents, entities }) => {
+  const entitiesHash = {};
 
   const entityFields = [
     {
@@ -36,11 +44,11 @@ module.exports.computeEntities = ({ incidents }) => {
     const { incident_id } = incident;
 
     for (const field of entityFields) {
-      for (const name of incident[field.property]) {
-        const id = getId(name);
+      for (const id of incident[field.property]) {
+        const name = getName(entities, id);
 
-        if (!entititiesHash[id]) {
-          entititiesHash[id] = {
+        if (!entitiesHash[id]) {
+          entitiesHash[id] = {
             id,
             name,
             incidentsAsDeveloper: [],
@@ -54,39 +62,35 @@ module.exports.computeEntities = ({ incidents }) => {
 
         if (harmingProperties.some((f) => f == field.property)) {
           const isBoth = harmingProperties.every((property) =>
-            incident[property].some((name) => getId(name) === id)
+            incident[property].some((entityId) => entityId === id)
           );
 
           if (isBoth) {
-            if (!entititiesHash[id].incidentsAsBoth.includes(incident_id)) {
-              entititiesHash[id].incidentsAsBoth.push(incident_id);
+            if (!entitiesHash[id].incidentsAsBoth.includes(incident_id)) {
+              entitiesHash[id].incidentsAsBoth.push(incident_id);
             }
           } else {
-            if (!entititiesHash[id][field.key].some((i) => i.incident_id == incident_id)) {
-              entititiesHash[id][field.key].push(incident_id);
+            if (!entitiesHash[id][field.key].some((i) => i.incident_id == incident_id)) {
+              entitiesHash[id][field.key].push(incident_id);
             }
           }
         }
 
         if (harmedProperties.some((f) => f === field.property)) {
-          if (!entititiesHash[id][field.key].some((i) => i.incident_id == incident_id)) {
-            entititiesHash[id][field.key].push(incident_id);
+          if (!entitiesHash[id][field.key].some((i) => i.incident_id == incident_id)) {
+            entitiesHash[id][field.key].push(incident_id);
           }
         }
       }
     }
   }
 
-  for (const id in entititiesHash) {
-    entititiesHash[id].relatedEntities = incidents
-      .filter((incident) =>
-        entityFields.some((field) => incident[field.property].map((p) => getId(p)).includes(id))
-      )
+  for (const id in entitiesHash) {
+    entitiesHash[id].relatedEntities = incidents
+      .filter((incident) => entityFields.some((field) => incident[field.property].includes(id)))
       .reduce((related, incident) => {
         for (const field of entityFields) {
-          for (const name of incident[field.property]) {
-            const relatedId = getId(name);
-
+          for (const relatedId of incident[field.property]) {
             if (relatedId !== id && !related.some((r) => r == relatedId)) {
               related.push(relatedId);
             }
@@ -96,19 +100,17 @@ module.exports.computeEntities = ({ incidents }) => {
         return related;
       }, []);
 
-    entititiesHash[id].harmedEntities = incidents
+    entitiesHash[id].harmedEntities = incidents
       .filter((incident) =>
         [
-          ...entititiesHash[id].incidentsAsBoth,
-          ...entititiesHash[id].incidentsAsDeployer,
-          ...entititiesHash[id].incidentsAsDeveloper,
+          ...entitiesHash[id].incidentsAsBoth,
+          ...entitiesHash[id].incidentsAsDeployer,
+          ...entitiesHash[id].incidentsAsDeveloper,
         ].includes(incident.incident_id)
       )
       .reduce((harmed, incident) => {
         for (const property of harmedProperties) {
-          for (const name of incident[property]) {
-            const harmedId = getId(name);
-
+          for (const harmedId of incident[property]) {
             if (harmedId !== id && !harmed.some((r) => r == harmedId)) {
               harmed.push(harmedId);
             }
@@ -119,7 +121,7 @@ module.exports.computeEntities = ({ incidents }) => {
       }, []);
   }
 
-  return Object.values(entititiesHash);
+  return Object.values(entitiesHash);
 };
 
 module.exports.makeIncidentsHash = (incidents) =>
@@ -133,3 +135,34 @@ module.exports.makeEntitiesHash = (entities) =>
     hash[entity.id] = entity;
     return hash;
   }, {});
+
+// Save new Entities into "entities" collection
+module.exports.processEntities = async (allEntities, entitiesNames, createEntityMutation) => {
+  entitiesNames = !isArray(entitiesNames)
+    ? entitiesNames.split(',').map((s) => s.trim())
+    : entitiesNames;
+
+  const entityIds = [];
+
+  for (const entityName of entitiesNames) {
+    const entityId = getEntityId(entityName);
+
+    entityIds.push(entityId);
+
+    if (!allEntities.find((entity) => entity.entity_id === entityId)) {
+      await createEntityMutation({
+        variables: {
+          query: {
+            entity_id: entityId,
+          },
+          entity: {
+            entity_id: entityId,
+            name: entityName,
+          },
+        },
+      });
+    }
+  }
+
+  return { link: entityIds };
+};

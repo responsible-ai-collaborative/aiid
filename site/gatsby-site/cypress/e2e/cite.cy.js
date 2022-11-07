@@ -384,7 +384,7 @@ describe('Cite pages', () => {
 
     cy.get('[data-cy="alleged-entities"]').should(
       'have.text',
-      'Alleged: Tesla developed an AI system deployed by Tesla and Motorist, which harmed Motorists.'
+      'Alleged: Tesla developed an AI system deployed by Tesla and Motorist, which harmed motorists.'
     );
 
     cy.visit('/cite/72/');

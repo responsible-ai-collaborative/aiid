@@ -2,7 +2,6 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import styled from 'styled-components';
 
 export default styled(Typeahead)`
-
   .rbt-input-multi .rbt-input-wrapper {
     background-color: rgb(249 250 251 / 1) !important;
     padding-left: 0.625rem !important;
