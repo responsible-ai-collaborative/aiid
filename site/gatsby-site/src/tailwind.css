@@ -120,6 +120,10 @@
         @apply text-white bg-transparent relative order-1 ml-auto opacity-0 w-0 h-0 overflow-hidden focus:opacity-100 focus:py-[0ch] focus:px-[1ch] focus:w-[unset] focus:h-[unset]  767px:text-xs;
     }
 
+    ul, ol {
+        list-style: revert;
+    }
+
 }
 
 @layer components {
