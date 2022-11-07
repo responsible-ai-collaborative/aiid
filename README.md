@@ -7,7 +7,7 @@ Information about the goals and organization of the AI Incident Database can be 
 1. Contribute **changes** to the current AI Incident Database.
 2. Contribute a **new summary** to the AI Incident Database. A "summary" is a programmatically generated summary of the database contents. Examples are available [here](https://incidentdatabase.ai/summaries).
 3. Contribute a **new taxonomy** to the AI Incident Database. Details on taxonomies are available in the arXiv paper.
-4. Contribute a **new application** facilitating a new use case for the database.
+4. Contribute a **new application** facilitating a new use case for the database. 
 
 ## Project Communications
 
