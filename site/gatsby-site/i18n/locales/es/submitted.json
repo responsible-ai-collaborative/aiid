@@ -11,7 +11,7 @@
     "Reject New Incident": "Rechazar Nuevo Incidente",
     "Reject New Report": "Rechazar Nuevo Informe",
     "Loading Submissions...": "Cargando incidentes enviados...",
-    "Add New Issue": "Agregar Nuevo Problema",
+    "Add as issue": "Agregar como problema",
     "Sure you want to promote this Submission to an Issue?": "¿Seguro que desea promocionar este informe a un Problema?",
     "Successfully promoted submission to Issue {{report_number}}": "Envío promocionado con éxito al Problema {{report_number}}",
     "Sure you want to promote this Submission to a new Incident?": "¿Seguro que desea promocionar este Envío a un nuevo Incidente?",
