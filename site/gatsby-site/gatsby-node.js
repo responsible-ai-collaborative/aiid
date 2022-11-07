@@ -323,8 +323,24 @@ exports.onPreBootstrap = async ({ reporter }) => {
   }
 };
 
-exports.onPreBuild = function () {
+exports.onPreBuild = function ({ reporter }) {
   if (!config.google.mapsApiKey) {
-    console.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
+    reporter.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
+  }
+};
+
+exports.onPostBuild = async ({ reporter }) => {
+  reporter.info('Site has been built!');
+
+  reporter.info('Processing pending notifications...');
+
+  const processNotifications = require('./postBuild/processNotifications');
+
+  try {
+    const result = await processNotifications();
+
+    reporter.info(`${result?.data?.processNotifications?.length} notifications were processed!`);
+  } catch (error) {
+    reporter.error('Error processing pending notifications:', error);
   }
 };

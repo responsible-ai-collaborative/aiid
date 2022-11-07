@@ -581,9 +581,11 @@ About Facebook Authentication instructions: https://www.mongodb.com/docs/realm/w
 
 - **All**: This subscription type is not defined yet.
 - **Incident**: Users with this subscription type will be notified when the incident associated is updated. This subscription type needs an incident_id value associated.
-- **New Incident**: Users with this subscription type will be notified when a new Incident is created.
+- **New Incident**: Users with this subscription type will be notified when a new Incident is created. The notification will be sent after finish the next site build when the Incident page is actually created.
 
 These subscription types are also documented in [subscriptions.js](site/gatsby-site/src/utils/subscriptions.js) file.
+
+### Email notifications
 
 [Sendgrid](https://sendgrid.com/) is used to send email notifications.
 
@@ -604,6 +606,9 @@ To get your Public and Private API Key, follow these [instructions](https://www.
 To get the group ID and the app ID, the easiest way is to navigate to your Atlas Service App dashboard and copy from the URL.
 The URL format is https://realm.mongodb.com/groups/[groupId]/apps/[appId]/dashboard
 
+Email notifications to New Incidents (subscription type **New Incident**) are sent when the next build finishes. This is because we have to wait until the new Incident page is created and accessible.
+When a new Incident is created, a pending notification item is saved into the `notifications` DB collection with `processed=false` field.
+And finally, as part of the site build process, we processed all pending notifications (`processed=false`), send the emails to all recipients, and update the items with `processed=true` and `sentDate=[now]`.
 ## Contact
 
 For inquiries, you are encouraged to open an issue on this repository or visit the [contact page](https://incidentdatabase.ai/contact).
