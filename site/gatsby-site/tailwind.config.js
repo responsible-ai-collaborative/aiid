@@ -200,6 +200,6 @@ module.exports = {
       },
     },
   },
-  plugins: [backfaceVisibility, require('flowbite/plugin')],
+  plugins: [backfaceVisibility, require('flowbite/plugin'), require('@tailwindcss/typography')],
   safelist: safelist,
 };
