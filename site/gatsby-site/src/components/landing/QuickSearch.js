@@ -85,7 +85,7 @@ export default function QuickSearch() {
             aria-label={t('Search over 1800 reports of AI harms')}
           />
         </div>
-        <div className="flex flex-row items-center justify-center mt-7 gap-2">
+        <div className="flex flex-row items-center justify-center mt-4 md:mt-6 gap-2">
           <Button type="submit">
             <Trans>Search</Trans>
           </Button>

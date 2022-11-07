@@ -20,8 +20,8 @@ exports = async ({ recipients, subject, dynamicData, templateId }) => {
 
     const userCustomData = context.user.custom_data;
 
-    // Only "system" or "admin" and "incident_editor" roles can send emails
-    if (context.user.type != 'system') {
+    // Only "system", "server" or "admin" and "incident_editor" roles can send emails
+    if (context.user.type != 'system' && context.user.type != 'server') {
         if (!userCustomData.roles || (!userCustomData.roles.includes('admin') && !userCustomData.roles.includes('incident_editor'))) {
             return {
                 statusCode: 403,
