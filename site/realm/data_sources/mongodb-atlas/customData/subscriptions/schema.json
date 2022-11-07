@@ -11,6 +11,9 @@
         },
         "userId": {
             "bsonType": "string"
+        },
+        "entityId": {
+            "bsonType": "string"
         }
     },
     "required": [
