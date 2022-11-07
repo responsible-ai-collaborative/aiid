@@ -3,7 +3,7 @@ import React from 'react';
 export default function Pagination(props) {
   return (
     <>
-      <ul {...props} className={`tw-pagination ${props.classNames || ''} justify-between`}>
+      <ul {...props} className={`tw-pagination ${props.className || ''}`}>
         {props.children}
       </ul>
     </>

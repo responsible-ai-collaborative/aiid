@@ -9,11 +9,11 @@ import Card from '../../elements/Card';
 import WebArchiveLink from 'components/ui/WebArchiveLink';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 
-const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) => {
+const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal, className }) => {
   const { isRole, loading } = useUserContext();
 
   return (
-    <Card id={`r${item.report_number}`} className="shadow-card IncidentCard">
+    <Card id={`r${item.report_number}`} className={`shadow-card IncidentCard ${className}`}>
       <Card.Header className="flex-col">
         <div className="flex justify-between">
           <a href={`#r${item.report_number}`}>

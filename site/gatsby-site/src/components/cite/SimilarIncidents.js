@@ -189,7 +189,6 @@ const SimilarIncidents = ({
               )}
             </span>
           </div>
-          <hr />
           <p className="tw-flag-prompt">
             <Trans>
               Did <strong>our</strong> AI mess up? Flag <FontAwesomeIcon icon={faFlag} /> the
