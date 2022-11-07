@@ -25,7 +25,6 @@
     "@philpl/buble": "^0.19.7",
     "@postlight/mercury-parser": "^2.2.1",
     "@sendgrid/mail": "^7.7.0",
-    "@tailwindcss/typography": "^0.5.8",
     "algoliasearch": "^4.10.5",
     "async": "^3.2.2",
     "babel-plugin-styled-components": "^1.12.0",
