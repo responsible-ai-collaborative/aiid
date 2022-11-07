@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Tree from './tree';
 import { ExternalLink } from 'react-feather';
 import config from '../../../config';
@@ -19,22 +19,24 @@ const SidebarLayout = ({ defaultCollapsed = false }) => {
 
   const { isCollapsed, collapseMenu } = useMenuContext();
 
+  const [collapsedMenu, setCollapsedMenu] = useState(isCollapsed || defaultCollapsed);
+
   useEffect(() => {
-    if (defaultCollapsed && !isCollapsed) {
-      collapseMenu(true);
+    if (defaultCollapsed) {
+      setCollapsedMenu(true);
     }
-  }, [defaultCollapsed]);
+  }, []);
 
   return (
     <>
       <aside
         className={`${
-          !isCollapsed ? 'w-64' : 'w-20'
-        } sticky relative top-0 transition-width duration-1000`}
+          !collapsedMenu ? 'w-64' : 'w-20'
+        } sticky relative top-0 transition-width duration-500`}
         aria-label="Sidebar"
       >
         <span className={``}>
-          <QuickAccess isCollapsed={isCollapsed} />
+          <QuickAccess isCollapsed={collapsedMenu} />
         </span>
         {config.sidebar.title ? (
           <div
@@ -44,13 +46,13 @@ const SidebarLayout = ({ defaultCollapsed = false }) => {
         ) : null}
         <div
           className={`${
-            isCollapsed ? 'overflow-hidden' : 'overflow-y-auto'
+            collapsedMenu ? 'overflow-hidden' : 'overflow-y-auto'
           } py-4 px-3 bg-gray-50 rounded dark:bg-gray-800`}
         >
           <ul className="space-y-2 list-none">
             <Tree
               setNavCollapsed={() => {}}
-              isCollapsed={isCollapsed}
+              isCollapsed={collapsedMenu}
               localizePath={localizePath}
             />
             {config.sidebar.links && config.sidebar.links?.length > 0 && (
@@ -72,11 +74,11 @@ const SidebarLayout = ({ defaultCollapsed = false }) => {
             })}
           </ul>
           <div className="flex items-center justify-center w-full px-2 py-3 border-t">
-            {isCollapsed ? (
+            {collapsedMenu ? (
               <Link
                 to={user && user.isLoggedIn && user.profile.email ? '/account' : '/login'}
                 className={`flex rounded-lg items-center text-base font-normal group ${
-                  isCollapsed ? 'justify-center' : ''
+                  collapsedMenu ? 'justify-center' : ''
                 }`}
               >
                 <FontAwesomeIcon
@@ -93,11 +95,13 @@ const SidebarLayout = ({ defaultCollapsed = false }) => {
           <FontAwesomeIcon
             icon={faChevronCircleLeft}
             color={'white'}
-            className={`transition-rotate-180 duration-500 cursor-pointer fa fa-twitter-square fa-lg text-gray-300 w-8 h-8 absolute -right-4 top-1/2 ${
+            className={`transition-rotate-180 duration-500 cursor-pointer fa fa-twitter-square fa-lg text-gray-300 hover:text-gray-500 w-8 h-8 absolute -right-4 top-1/2 ${
               isCollapsed ? 'rotate-180' : ''
             }`}
-            title="Open Twitter"
-            onClick={() => collapseMenu(!isCollapsed)}
+            title="Collapse"
+            onClick={() => {
+              collapseMenu(!collapsedMenu), setCollapsedMenu(!collapsedMenu);
+            }}
           />
         </div>
       </aside>
