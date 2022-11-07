@@ -50,7 +50,7 @@ export default function CommonEntities() {
           <Trans ns="entities">View all entities</Trans>
         </Link>
       </div>
-      <div className="grid lg:grid-cols-3 gap-4">
+      <div className="grid lg:grid-cols-3 gap-4 md:gap-6">
         {commonEntities.map((entity, index) => {
           const incidentsCount = entity.incidentsAsBoth.length + entity.incidentsAsDeployer.length;
 
