@@ -108,8 +108,13 @@ const SimilarIncidents = ({
   editor_similar_incidents,
   editor_dissimilar_incidents,
   flagged_dissimilar_incidents,
+  orientation,
 }) => {
   const { isRole, loading } = useUserContext();
+
+  console.log(`orientation`, orientation);
+
+  console.log(`orientation == 'column'`, orientation == 'column');
 
   nlp_similar_incidents ||= [];
   editor_dissimilar_incidents ||= [];
@@ -148,7 +153,9 @@ const SimilarIncidents = ({
               </a>
             )}
           </div>
-          <div className="tw-card-set mt-4">
+          <div
+            className={(orientation == 'column' ? 'flex flex-col gap-5' : 'tw-card-set') + ' mt-5'}
+          >
             {editor_similar_incidents.map((similarIncident) => (
               <SimilarIncidentCard
                 incident={similarIncident}
@@ -189,7 +196,9 @@ const SimilarIncidents = ({
               unrelated incidents
             </Trans>
           </p>
-          <div className="tw-card-set mt-4">
+          <div
+            className={(orientation == 'column' ? 'flex flex-col gap-5' : 'tw-card-set') + ' mt-5'}
+          >
             {nlp_only_incidents.map((similarIncident) => (
               <SimilarIncidentCard
                 incident={similarIncident}

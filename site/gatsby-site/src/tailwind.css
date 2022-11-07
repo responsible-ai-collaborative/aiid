@@ -287,10 +287,6 @@
         @apply m-0 opacity-40 pt-2.5;
     }
 
-    .tw-similar-incidents {
-        @apply mt-8 mb-8;
-    }
-
     .tw-similar-incidents .card {
         @apply overflow-hidden shadow-card;
     }

@@ -214,8 +214,23 @@ function CitePage(props) {
 
   const entities = computeEntities({ incidents: [incident] });
 
+  const rightSidebar = (
+    <>
+      <div className="max-w-xs 2xl:max-w-sm pr-5 py-5">
+        <SimilarIncidents
+          nlp_similar_incidents={nlp_similar_incidents}
+          editor_similar_incidents={editor_similar_incidents}
+          editor_dissimilar_incidents={editor_dissimilar_incidents}
+          flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
+          parentIncident={incident}
+          orientation="column"
+        />
+      </div>
+    </>
+  );
+
   return (
-    <Layout {...props}>
+    <Layout {...{ ...props, rightSidebar }}>
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
@@ -412,14 +427,6 @@ function CitePage(props) {
             </Col>
           </Row>
         ))}
-
-        <SimilarIncidents
-          nlp_similar_incidents={nlp_similar_incidents}
-          editor_similar_incidents={editor_similar_incidents}
-          editor_dissimilar_incidents={editor_dissimilar_incidents}
-          flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
-          parentIncident={incident}
-        />
 
         <Pagination className="justify-between">
           <Pagination.Item
