@@ -35,13 +35,19 @@ describe('The Submit form', () => {
 
     cy.wait('@parseNews');
 
-    cy.get('input[name="submitters"]').type('Something');
-
     cy.get('[name="incident_date"]').type('2020-01-01');
+
+    cy.clickOutside();
+
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    cy.get('input[name="submitters"]').type('Something');
 
     cy.get('[name="language"]').select('Spanish');
 
-    cy.get('[data-cy="extra-fields"]').click();
+    cy.get('[data-cy="to-step-3"]').click();
 
     cy.get('[name="tags"]').type('New Tag{enter}');
 
@@ -70,13 +76,11 @@ describe('The Submit form', () => {
       });
     });
 
-    cy.wait(0);
-
-    cy.get('[data-cy="toast"]')
+    cy.get('[data-cy="submission-success"]')
       .contains('Report successfully added to review queue')
       .should('be.visible');
 
-    cy.get('[data-cy="toast"] a').should('have.attr', 'href', '/apps/submitted');
+    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
 
     cy.contains('Please review. Some data is missing.').should('not.exist');
   });
@@ -153,8 +157,6 @@ describe('The Submit form', () => {
 
     cy.get('button').contains('Fetch info').click();
 
-    cy.get('input[name="submitters"]').type('Something');
-
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
     );
@@ -171,9 +173,17 @@ describe('The Submit form', () => {
       .last()
       .click();
 
+    cy.clickOutside();
+
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    cy.get('input[name="submitters"]').type('Something');
+
     cy.wait('@findIncident');
 
-    cy.get('[data-cy="extra-fields"]').click();
+    cy.get('[data-cy="to-step-3"]').click();
 
     cy.get('[name="tags"]').type('New Tag{enter}');
 
@@ -300,6 +310,13 @@ describe('The Submit form', () => {
     );
 
     cy.visit(url + `?${params.toString()}`);
+    cy.clickOutside();
+
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    cy.get('[data-cy="to-step-3"]').click();
 
     cy.wait('@findIncident');
 
@@ -570,18 +587,26 @@ describe('The Submit form', () => {
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
     );
+
     cy.get('[data-cy=related-byText] [data-cy=result] a[data-cy=title]').should(
       'contain',
       'YouTube'
     );
+    cy.clickOutside();
+
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+
+    cy.get('[data-cy="to-step-2"]').click();
   });
 
   // cy.setEditorText doesn't seem to trigger a render of the relateBbyText component
   it.skip('Should *not* show semantically related reports when the text is under 256 non-space characters', () => {
     cy.visit(url);
+
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube.`
     );
+
     cy.get('[data-cy=related-byText]').contains('Reports must have at least').should('exist');
   });
 
@@ -589,11 +614,51 @@ describe('The Submit form', () => {
     const imageUrl =
       'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/fallback.jpg';
 
-    cy.visit(url);
+    const values = {
+      url: 'https://test.com',
+      title: 'test title',
+      authors: 'test author',
+      submitters: 'test submitter',
+      incident_date: '2022-01-01',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+      image_url: imageUrl,
+      incident_id: '1',
+    };
+
+    const params = new URLSearchParams(values);
+
+    cy.visit(url + `?${params.toString()}`);
+
+    cy.setEditorText(
+      `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
+    );
+
+    cy.clickOutside();
+
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+
+    cy.get('[data-cy="to-step-2"]').click();
+
     cy.get('[data-cy="image-preview-figure"] img').should('have.attr', 'src', imageUrl);
   });
 
   it('Should update preview image when url is typed', () => {
+    const values = {
+      url: 'https://test.com',
+      title: 'test title',
+      authors: 'test author',
+      submitters: 'test submitter',
+      incident_date: '2022-01-01',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+      incident_id: '1',
+    };
+
+    const params = new URLSearchParams(values);
+
+    cy.visit(url + `?${params.toString()}`);
+
     const suffix = 'github.com/favicon.ico';
 
     const newImageUrl = 'https://' + suffix;
@@ -602,8 +667,18 @@ describe('The Submit form', () => {
       'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/v1/reports/' +
       suffix;
 
-    cy.visit(url);
+    cy.setEditorText(
+      `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
+    );
+
+    cy.clickOutside();
+
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+
+    cy.get('[data-cy="to-step-2"]').click();
+
     cy.get('input[name=image_url]').scrollIntoView().type(newImageUrl);
+
     cy.get('[data-cy=image-preview-figure] img', { timeout: 30000 })
       .scrollIntoView()
       .should('have.attr', 'src', cloudinaryImageUrl);
@@ -620,32 +695,27 @@ describe('The Submit form', () => {
 
     cy.visit(url);
 
-    const values = {
+    const valuesStep1 = {
       url: 'https://test.com',
       title: 'test title',
       authors: 'test author',
-      submitters: 'test submitter',
-      incident_date: '2022-01-01',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
-      image_url: 'https://test.com/image.jpg',
+      incident_date: '2022-01-01',
       incident_id: '3456456',
-      editor_notes: 'Here are some notes',
     };
 
-    cy.get('[data-cy="extra-fields"]').click();
-
-    for (const key in values) {
-      cy.get(`[name="${key}"]`).type(values[key]);
+    for (const key in valuesStep1) {
+      cy.get(`[name="${key}"]`).type(valuesStep1[key]);
     }
 
     cy.setEditorText(
       'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
     );
 
-    cy.wait('@findIncident');
-
     cy.get('[name="incident_date"]').should('not.exist');
+
+    cy.wait('@findIncident');
 
     cy.contains('.invalid-feedback', 'Incident ID 3456456 not found!').should('be.visible');
   });
@@ -661,46 +731,86 @@ describe('The Submit form', () => {
 
     cy.visit(url);
 
-    const values = {
+    const valuesStep1 = {
       url: 'https://test.com',
       title: 'test title',
       authors: 'test author',
-      submitters: 'test submitter',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
-      image_url: 'https://test.com/image.jpg',
-      editor_notes: 'Here are some notes',
     };
 
-    cy.get('[data-cy="extra-fields"]').click();
-
-    for (const key in values) {
-      cy.get(`[name="${key}"]`).type(values[key]);
+    for (const key in valuesStep1) {
+      cy.get(`[name="${key}"]`).type(valuesStep1[key]);
     }
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
 
     cy.get('[name="incident_date"]').should('be.visible');
 
-    cy.contains('button', 'Submit').click();
+    cy.clickOutside();
+
+    cy.get('[data-cy="to-step-2"]').click();
 
     cy.contains('.invalid-feedback', '*Incident Date required').should('be.visible');
   });
 
   it('Should show the editor notes field', () => {
     cy.visit(url);
+
+    const valuesStep1 = {
+      url: 'https://test.com',
+      title: 'test title',
+      authors: 'test author',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+      incident_date: '2022-01-01',
+    };
+
+    for (const key in valuesStep1) {
+      cy.get(`[name="${key}"]`).type(valuesStep1[key]);
+    }
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
+    cy.clickOutside();
+
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    const valuesStep2 = {
+      submitters: 'test submitter',
+      image_url: 'https://test.com/image.jpg',
+    };
+
+    for (const key in valuesStep2) {
+      cy.get(`[name="${key}"]`).type(valuesStep2[key]);
+    }
+
+    cy.get('[data-cy="to-step-3"]').click();
+
+    const valuesStep3 = {
+      editor_notes: 'Here are some notes',
+    };
+
+    for (const key in valuesStep3) {
+      cy.get(`[name="${key}"]`).type(valuesStep3[key]);
+    }
+
     cy.get('[name="editor_notes"').should('exist');
   });
 
   it.skip('Should show a popover', () => {
     cy.visit(url);
-    cy.wait(0);
 
     cy.get('[data-cy="label-title"]').trigger('mouseover');
 
-    cy.wait(0);
-
     cy.get('[data-cy="popover-title"]').should('be.visible');
 
-    cy.get('[data-cy="popover-title"]').contains('h3', 'Headline').should('exist');
+    cy.get('[data-cy="popover-title"]').contains('h5', 'Headline').should('exist');
 
     cy.get('[data-cy="popover-title"]').contains('div', 'Most works have a title').should('exist');
   });
@@ -708,13 +818,11 @@ describe('The Submit form', () => {
   it.skip('Should show a translated popover', () => {
     cy.visit(`/es/apps/submit/`);
 
-    cy.wait(0);
-
     cy.get('[data-cy="label-title"]').trigger('mouseover');
 
     cy.get('[data-cy="popover-title"]').should('be.visible');
 
-    cy.get('[data-cy="popover-title"]').contains('h3', 'Título').should('exist');
+    cy.get('[data-cy="popover-title"]').contains('h5', 'Título').should('exist');
 
     cy.get('[data-cy="popover-title"]')
       .contains('div', 'La mayoría de los trabajos tienen un')
@@ -745,11 +853,22 @@ describe('The Submit form', () => {
 
     cy.wait('@parseNews');
 
-    cy.get('input[name="submitters"]').type('Something');
+    cy.get('input[name="authors"]').type('Something');
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
 
     cy.get('[name="incident_date"]').type('2020-01-01');
+    cy.clickOutside();
 
-    cy.get('[data-cy="extra-fields"]').click();
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    cy.get('input[name="submitters"]').type('Something');
+
+    cy.get('[data-cy="to-step-3"]').click();
 
     cy.get('[name="editor_notes"').type('Here are some notes');
 
@@ -757,9 +876,99 @@ describe('The Submit form', () => {
 
     cy.wait('@insertSubmission');
 
-    cy.get('[data-cy="toast"]').should('be.visible');
+    cy.get('[data-cy="submission-success"]').should('be.visible');
 
-    cy.get('[data-cy="toast"] a').should('have.attr', 'href', '/es/apps/submitted');
+    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/es/apps/submitted');
+  });
+
+  it('Should submit on step 1', () => {
+    cy.visit(url);
+
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
+      'insertSubmission',
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
+
+    cy.get('input[name="url"]').type(
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    cy.get('[data-cy="fetch-info"]').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('input[name="authors"]').type('Something');
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
+
+    cy.get('[name="incident_date"]').type('2020-01-01');
+
+    cy.get('[data-cy="submit-step-1"]').click();
+
+    cy.get('[data-cy="submission-success"]')
+      .contains('Report successfully added to review queue')
+      .should('be.visible');
+
+    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
+  });
+
+  it('Should submit on step 2', () => {
+    cy.visit(url);
+
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
+      'insertSubmission',
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
+
+    cy.get('input[name="url"]').type(
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    cy.get('[data-cy="fetch-info"]').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('input[name="authors"]').type('Something');
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
+
+    cy.get('[name="incident_date"]').type('2020-01-01');
+
+    cy.clickOutside();
+
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    cy.get('input[name="submitters"]').type('Something');
+
+    cy.get('[data-cy="submit-step-2"]').click();
+
+    cy.get('[data-cy="submission-success"]')
+      .contains('Report successfully added to review queue')
+      .should('be.visible');
+
+    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
   });
 
   it('Should display an error message if data is missing', () => {

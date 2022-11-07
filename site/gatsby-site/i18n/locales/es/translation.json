@@ -145,8 +145,12 @@
   "Thank you for verifying your account.": "Gracias por verificar tu cuenta.",
   "Read more": "Leer más",
   "Table View": "Vista Tabular",
+  "Submitting...": "Enviando...",
   "View Less": "Ver Menos",
   "View ({{hidden}}) more": "Ver ({{hidden}}) más",
+  "and": "y",
+  "Home": "Inicio",
+  "Add more info": "Añadir más información",
   "List of taxonomies": "Listado de Taxonomías",
   "This is the list of taxonomies supported in AIID": "Esta es la lista de taxonomías soportadas en AIID",
   "Applied Taxonomies": "Taxonomías aplicadas",
@@ -154,6 +158,5 @@
   "In-Development Taxonomies": "Taxonomías en desarrollo",
   "<0>Resources</0>. This is a taxonomy that will associate incidents with resources that help understand, mitigate, and prevent incidents from recurring in the future.": "Esta es una taxonomía que asociará incidentes con recursos que ayudarán a comprender, mitigar y evitar que los incidentes se repitan en el futuro.",
   "About Taxonomies": "Acerca de las taxonomías",
-  "Taxonomies are contributed to the AI Incident Database by persons and organizations working to structure the data and provide views into the data. Each taxonomy must be of sufficient quality and completeness to be included in the AI Incident Database, but the taxonomies are the responsibility of the persons and organizations contributing them.": "Las taxonomías son aportadas a la base de datos de incidentes de IA por personas y organizaciones que trabajan para estructurar los datos y proporcionar vistas de los datos. Cada taxonomía debe tener la calidad y la exhaustividad suficientes para incluirse en la base de datos de incidentes de IA, pero las taxonomías son responsabilidad de las personas y organizaciones que las aportan.",
-  "and": "y"
+  "Taxonomies are contributed to the AI Incident Database by persons and organizations working to structure the data and provide views into the data. Each taxonomy must be of sufficient quality and completeness to be included in the AI Incident Database, but the taxonomies are the responsibility of the persons and organizations contributing them.": "Las taxonomías son aportadas a la base de datos de incidentes de IA por personas y organizaciones que trabajan para estructurar los datos y proporcionar vistas de los datos. Cada taxonomía debe tener la calidad y la exhaustividad suficientes para incluirse en la base de datos de incidentes de IA, pero las taxonomías son responsabilidad de las personas y organizaciones que las aportan."
 }

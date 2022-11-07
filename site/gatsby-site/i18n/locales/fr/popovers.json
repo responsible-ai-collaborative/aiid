@@ -50,5 +50,9 @@
     "language": {
         "title": "Langue du rapport d'incident",
         "text": "Il s'agit de la langue écrite dans le rapport, et non de la langue des personnes ou des pays impliqués dans le rapport. Les rapports seront traduits dans les langues prises en charge lorsque nous traiterons le texte."
+    },
+    "description": {
+       "title": "Description",
+       "text": "Une description courte, factuelle, neutre sur le plan journalistique et complète de l'incident mentionnant l'incident/le problème, le lieu et le dégât."
     }
 }

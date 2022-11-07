@@ -11,6 +11,7 @@ export default function IncidentIdField({
   placeHolder = '',
   className = '',
   showIncidentData = true,
+  disabled = false,
   required = false,
 }) {
   const { t } = useTranslation(['validation']);
@@ -38,38 +39,44 @@ export default function IncidentIdField({
   }, []);
 
   return (
-    <div className="bootstrap">
-      <Form.Group className={className + ' bootstrap'}>
-        <Label popover={name} label={(required ? '*' : '') + 'Incident ID'} />
-        <Form.Control
-          type="number"
-          name={name}
-          value={value}
-          onChange={onChange}
-          onBlur={onBlur}
-          onWheel={(event) => event.currentTarget.blur()}
-          isInvalid={!!error}
-          placeholder={placeHolder}
-        />
+    <Form.Group className={className + ' '}>
+      <Label popover={name} label={(required ? '*' : '') + 'Incident ID'} />
+      <Form.Control
+        className={`mt-1 bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white ${
+          error
+            ? 'border-red-600 focus:ring-red-500'
+            : 'border-gray-300 dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-500'
+        }`}
+        type="number"
+        name={name}
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
+        onWheel={(event) => event.currentTarget.blur()}
+        isInvalid={!!error}
+        placeholder={placeHolder}
+        disabled={disabled}
+      />
+      <span className="text-red-700 text-sm">
         <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
+      </span>
 
-        {showIncidentData && value !== '' && !error && (
-          <div className="pt-1">
-            {loadingIncident && (
-              <div className="small">
-                <Trans>Searching...</Trans>
-              </div>
-            )}
+      {showIncidentData && value !== '' && !error && (
+        <div className="pt-1">
+          {loadingIncident && (
+            <div className="small">
+              <Trans>Searching...</Trans>
+            </div>
+          )}
 
-            {incident?.incident && (
-              <>
-                <div className="small">{incident.incident.date}</div>
-                <a href={`/cite/${incident.incident.incident_id}`}> {incident.incident.title}</a>
-              </>
-            )}
-          </div>
-        )}
-      </Form.Group>
-    </div>
+          {incident?.incident && (
+            <>
+              <div className="small">{incident.incident.date}</div>
+              <a href={`/cite/${incident.incident.incident_id}`}> {incident.incident.title}</a>
+            </>
+          )}
+        </div>
+      )}
+    </Form.Group>
   );
 }
