@@ -1,54 +1,62 @@
 import React, { useState } from 'react';
-import { OverlayTrigger, Form, Popover } from 'react-bootstrap';
+import { OverlayTrigger } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
-import PopoverWrapper from 'elements/PopoverWrapper';
 
-const Label = ({ popover, label }) => {
+const Label = ({ popover, label, required = false }) => {
   const [show, setShow] = useState(false);
 
   const { i18n } = useTranslation(['popovers']);
 
   if (!i18n.exists(popover, { ns: 'popovers' })) {
-    return <Form.Label>{label} :</Form.Label>;
+    return (
+      <label className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 relative">
+        {required && <>*{' '}</>}{label}
+      </label>
+    );
   }
+
+  const Tooltip = (
+    <div
+      className="inline-block absolute z-10 text-sm font-medium  bg-gray-200 rounded-lg shadow-sm tooltip dark:bg-gray-700 max-w-xs bottom-2 imtooltip"
+      onMouseEnter={() => setShow(true)}
+      onMouseLeave={() => setShow(false)}
+      data-cy={`popover-${popover}`}
+    >
+      <h5 className='bg-gray-900 border border-gray-900 py-2 px-3 rounded-t-lg text-gray-50'>
+        <Trans ns="popovers" i18nKey={`${popover}.title`} />
+      </h5>
+      <div className='py-2 px-3 text-black'>
+        <Trans ns="popovers" i18nKey={`${popover}.text`} components={{ linkto: <Link /> }} />
+      </div>
+      <div className="tooltip-arrow left-4 sm:left-1/2 " data-popper-arrow></div>
+    </div>
+  );
 
   return (
     <>
-      <div className="bootstrap">
-        <OverlayTrigger
-          placement={'top'}
-          overlay={
-            <PopoverWrapper data-cy={`popover-${popover}`}>
-              <Popover.Header as="h3">
-                <Trans ns="popovers" i18nKey={`${popover}.title`} />
-              </Popover.Header>
-              <Popover.Body>
-                <Trans
-                  ns="popovers"
-                  i18nKey={`${popover}.text`}
-                  components={{ linkto: <Link /> }}
-                />
-              </Popover.Body>
-            </PopoverWrapper>
-          }
-          {...(show ? { show } : {})}
+      <OverlayTrigger
+        placement="top"
+        overlay={Tooltip}
+        {...(show ? { show } : {})}
+        delay={{ show: 0, hide: 300 }}
+      >
+        <label
+          data-cy={`label-${popover}`}
+          className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 relative"
         >
-          <Form.Label data-cy={`label-${popover}`} className="relative">
-            {label}{' '}
-            <FontAwesomeIcon
-              icon={faQuestionCircle}
-              style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-              className="far fa-question-circle"
-              onClick={() => setShow(!show)}
-            />{' '}
-            :
-          </Form.Label>
-        </OverlayTrigger>
-      </div>
+          {required && <>*{' '}</>}{label}{' '}
+          <FontAwesomeIcon
+            icon={faQuestionCircle}
+            style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+            className="far fa-question-circle"
+            onClick={() => setShow(!show)}
+          />{' '}
+        </label>
+      </OverlayTrigger>
     </>
   );
 };

@@ -70,7 +70,7 @@
     }
 
     .tw-content {
-        @apply flex flex-grow mt-0 mx-[10px] md:mx-[33px] pt-4 z-[1] relative overflow-hidden flex-1;
+        @apply flex flex-grow p-4 pb-5 md:px-10 md:pb-10 md:pt-6 z-[1] relative overflow-hidden flex-1;
     }
 
     .tw-container {
