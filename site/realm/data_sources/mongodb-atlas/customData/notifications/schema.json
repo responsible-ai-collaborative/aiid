@@ -1,0 +1,20 @@
+{
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "incident_id": {
+            "bsonType": "int"
+        },
+        "processed": {
+            "bsonType": "bool"
+        },
+        "sentDate": {
+            "bsonType": "date"
+        },
+        "type": {
+            "bsonType": "string"
+        }
+    },
+    "title": "notification"
+}

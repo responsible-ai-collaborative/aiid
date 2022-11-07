@@ -10,48 +10,27 @@ exports = async function (changeEvent) {
 
   const incidentId = fullDocument.incident_id;
 
-  console.log(`Processing subscriptions to new incident ${incidentId}`);
+  console.log(`New Incident #${incidentId}`);
 
+  const notificationsCollection = context.services.get('mongodb-atlas').db('customData').collection("notifications");
   const subscriptionsCollection = context.services.get('mongodb-atlas').db('customData').collection("subscriptions");
-  const subscriptions = await subscriptionsCollection.find({ type: 'new-incidents' }).toArray();
+  const subscriptionsToNewIncidents = await subscriptionsCollection.find({ type: 'new-incidents' }).toArray();
 
-  // Process subscriptions to new incidents
-  if (subscriptions.length > 0) {
+  console.log(`There are ${subscriptionsToNewIncidents.length} subscribers to New Incidents.`);
 
-    const userIds = subscriptions.map((subscription) => subscription.userId);
+  // If there are subscribers to New Incidents > Insert a pending notification to process in the next build
+  if (subscriptionsToNewIncidents.length > 0) {
 
-    const recipients = [];
-
-    for (const userId of userIds) {
-      const userResponse = await context.functions.execute('getUser', { userId });
-
-      if (userResponse.email) {
-        recipients.push({
-          email: userResponse.email,
-          userId,
-        });
-      }
-    }
-
-    //Send email notification
-    const sendEmailParams = {
-      recipients,
-      subject: 'New Incident {{incidentId}} was created',
-      dynamicData: {
-        incidentId: `${incidentId}`,
-        incidentTitle: fullDocument.title,
-        incidentUrl: `https://incidentdatabase.ai/cite/${incidentId}`,
-      },
-      templateId: 'NewIncident' // Template value from "site/realm/functions/sendEmail.js" EMAIL_TEMPLATES constant
-    };
-    const sendEmailresult = await context.functions.execute('sendEmail', sendEmailParams);
-
-    console.log('sendEmailParams', JSON.stringify(sendEmailParams));
-    console.log(JSON.stringify(sendEmailresult));
-
-    return sendEmailresult;
+    await notificationsCollection.insertOne({
+      type: 'new-incidents',
+      incident_id: incidentId,
+      processed: false,
+    })
   }
 
-  console.log('No email subscriptions to process');
   return;
 };
+
+if (typeof module === 'object') {
+  module.exports = exports;
+}
