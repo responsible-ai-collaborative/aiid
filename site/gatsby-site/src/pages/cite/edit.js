@@ -320,7 +320,7 @@ function EditCitePage(props) {
   };
 
   return (
-    <Layout {...props} className={'w-full boostrap'}>
+    <Layout {...props} className={'w-full boostrap p-1'}>
       {!loading && <h1 className="mb-5">Editing Incident Report {reportNumber}</h1>}
 
       {loading && (

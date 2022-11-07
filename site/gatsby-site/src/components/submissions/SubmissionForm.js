@@ -9,7 +9,6 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { dateRegExp } from '../../utils/date';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from '../../utils/cloudinary';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-import { graphql, useStaticQuery } from 'gatsby';
 import Label from '../forms/Label';
 import IncidentIdField from '../../components/incidents/IncidentIdField';
 import getSourceDomain from '../../utils/getSourceDomain';
@@ -123,30 +122,6 @@ export const schema = yup.object().shape({
 });
 
 const SubmissionForm = () => {
-  const data = useStaticQuery(graphql`
-    query SubmissionFormQuery {
-      allMongodbAiidprodReports {
-        edges {
-          node {
-            tags
-          }
-        }
-      }
-    }
-  `);
-
-  const tags = [];
-
-  for (const node of data.allMongodbAiidprodReports.edges) {
-    if (node.node.tags) {
-      for (const tag of node.node.tags) {
-        if (!tags.includes(tag)) {
-          tags.push(tag);
-        }
-      }
-    }
-  }
-
   const {
     values,
     errors,
