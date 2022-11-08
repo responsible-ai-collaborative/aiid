@@ -54,7 +54,7 @@ const Controls = ({ query }) => {
           </div>
         </div>
       </div>
-      <div className="mb-3 md:hidden">{expandFilters && <Filters />}</div>
+      <div className="mb-3 hidden md:block">{expandFilters && <Filters />}</div>
     </>
   );
 };
