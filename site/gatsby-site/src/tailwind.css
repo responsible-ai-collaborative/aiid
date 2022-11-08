@@ -122,6 +122,7 @@
 
     ul, ol {
         list-style: revert;
+        padding-left: 2rem;
     }
 
 }
