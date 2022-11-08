@@ -19,7 +19,11 @@ const Wrapper = styled.div`
 
 export default function DiscoverQuickAccess({ className = '', isCollapsed = false }) {
   return (
-    <Wrapper className={`${className} px-4 pt-4 pb-1 md:bg-text-light-gray h-24`}>
+    <Wrapper
+      className={`${className} ${
+        isCollapsed ? 'invisible' : ''
+      } px-4 pt-4 pb-1 md:bg-text-light-gray h-24`}
+    >
       <LocalizedLink
         to="/apps/discover"
         className={`fs-5 border-1 border-transparent rounded cursor-pointer inline-block text-base font-normal text-center no-underline select-none align-middle transition-btn shadow w-1/2 ${

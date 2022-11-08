@@ -3,7 +3,7 @@ import Tree from './tree';
 import { ExternalLink } from 'react-feather';
 import config from '../../../config';
 import QuickAccess from 'components/discover/QuickAccess';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import LoginSignup from 'components/loginSignup';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { faChevronCircleLeft, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -15,17 +15,42 @@ import { useMenuContext } from 'contexts/MenuContext';
 const Sidebar = ({ defaultCollapsed = false }) => {
   const localizePath = useLocalizePath();
 
+  const { t } = useTranslation();
+
   const { user } = useUserContext();
 
   const { isCollapsed, collapseMenu } = useMenuContext();
 
   const [collapsedMenu, setCollapsedMenu] = useState(isCollapsed || defaultCollapsed);
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
   useEffect(() => {
     if (defaultCollapsed) {
       setCollapsedMenu(true);
     }
-  }, []);
+    if (isMobile) {
+      setCollapsedMenu(false);
+    }
+  }, [isMobile]);
+
+  React.useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth <= 768 && !isMobile) {
+        setIsMobile(true);
+      } else if (window.innerWidth > 768 && isMobile) {
+        setIsMobile(false);
+      }
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  });
+
+  console.log(collapsedMenu);
 
   return (
     <>
@@ -35,7 +60,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
         } sticky relative top-0 transition-width duration-500`}
         aria-label="Sidebar"
       >
-        <span className={`hidden md:block`}>
+        <span>
           <QuickAccess isCollapsed={collapsedMenu} />
         </span>
         {config.sidebar.title ? (
@@ -95,10 +120,10 @@ const Sidebar = ({ defaultCollapsed = false }) => {
           <FontAwesomeIcon
             icon={faChevronCircleLeft}
             color={'white'}
-            className={`hidden md:inline-block transition-rotate-180 duration-500 cursor-pointer fa fa-twitter-square fa-lg text-gray-300 hover:text-gray-500 w-8 h-8 absolute -right-4 top-1/2 ${
-              isCollapsed ? 'rotate-180' : ''
+            className={`hidden md:inline-block transition-rotate-180 duration-500 cursor-pointer fa fa-twitter-square fa-lg text-light-orange hover:text-gray-500 w-8 h-8 absolute  ${
+              collapsedMenu ? 'rotate-180 left-5 top-9' : '-right-5 top-9'
             }`}
-            title="Collapse"
+            title={isCollapsed ? t('Expand') : t('Collapse')}
             onClick={() => {
               collapseMenu(!collapsedMenu), setCollapsedMenu(!collapsedMenu);
             }}
