@@ -375,13 +375,9 @@ function CitePage(props) {
         <ImageCarousel nodes={incidentReports} />
       </Card>
 
-      <div className="pb-5">
-        <div className={'titleWrapper'}>
-          <h1 className="tw-styled-heading">
-            <Trans>Incidents Reports</Trans>
-          </h1>
-        </div>
-      </div>
+      <h1 className="tw-styled-heading mt-10">
+        <Trans>Incidents Reports</Trans>
+      </h1>
 
       {sortedReports.map((report) => (
         <IncidentCard
@@ -394,7 +390,7 @@ function CitePage(props) {
         />
       ))}
 
-      <div className="block xl:hidden">
+      <div className="block xl:hidden mt-6">
         <SimilarIncidents
           nlp_similar_incidents={nlp_similar_incidents}
           editor_similar_incidents={editor_similar_incidents}

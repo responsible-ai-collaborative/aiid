@@ -132,7 +132,7 @@ const SimilarIncidents = ({
   return (
     <div className="tw-similar-incidents">
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
-        <h2 id="similar-incidents">
+        <h2 id="similar-incidents" className="leading-9">
           <LocalizedLink to={'/summaries/spatial?incident=' + parentIncident.incident_id}>
             <Trans>Similar Incidents</Trans>
           </LocalizedLink>
@@ -189,7 +189,7 @@ const SimilarIncidents = ({
               )}
             </span>
           </div>
-          <p className="tw-flag-prompt">
+          <p className="tw-flag-prompt mt-2">
             <Trans>
               Did <strong>our</strong> AI mess up? Flag <FontAwesomeIcon icon={faFlag} /> the
               unrelated incidents
