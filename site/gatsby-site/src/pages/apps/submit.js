@@ -5,13 +5,14 @@ import { StyledHeading } from 'components/styles/Docs';
 import SubmitForm from 'components/forms/SubmitForm';
 import { Trans, useTranslation } from 'react-i18next';
 import AiidHelmet from 'components/AiidHelmet';
+import config from '../../../config';
 
 const SubmitPage = (props) => {
   const { t } = useTranslation(['submit']);
 
   return (
     <Layout {...props} className="md:max-w-5xl">
-      <AiidHelmet>
+      <AiidHelmet canonicalUrl={config.gatsby.siteUrl + '/apps/submit'}>
         <title>{t('New Incident Report')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>

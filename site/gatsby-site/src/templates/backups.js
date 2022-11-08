@@ -9,6 +9,7 @@ import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import { LocalizedLink } from 'gatsby-theme-i18n';
+import config from '../../config';
 
 const Backups = ({ pageContext, ...props }) => {
   const { backups } = pageContext;
@@ -19,7 +20,7 @@ const Backups = ({ pageContext, ...props }) => {
 
   return (
     <Layout {...props}>
-      <AiidHelmet>
+      <AiidHelmet canonicalUrl={config.gatsby.siteUrl + '/research/snapshots'}>
         <title>Database Backups and Snapshots</title>
       </AiidHelmet>
       <div className="titleWrapper">

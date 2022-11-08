@@ -7,6 +7,7 @@ import Link from 'components/ui/Link';
 import AiidHelmet from 'components/AiidHelmet';
 import { StyledHeading } from 'components/styles/Docs';
 import UserSubscriptions from 'components/UserSubscriptions';
+import config from '../../config';
 
 const Account = (props) => {
   const { user, loading } = useUserContext();
@@ -15,7 +16,7 @@ const Account = (props) => {
 
   return (
     <Layout {...props}>
-      <AiidHelmet>
+      <AiidHelmet canonicalUrl={config.gatsby.siteUrl + '/account'}>
         <title>{t('Account Details')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>

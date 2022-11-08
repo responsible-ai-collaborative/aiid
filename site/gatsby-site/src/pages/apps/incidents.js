@@ -6,6 +6,7 @@ import { FIND_INCIDENTS } from '../../graphql/incidents';
 import { useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
 import AiidHelmet from '../../components/AiidHelmet';
+import config from '../../../config';
 
 export default function IncidentsPage(props) {
   const { data: incidentsData } = useQuery(FIND_INCIDENTS);
@@ -14,7 +15,7 @@ export default function IncidentsPage(props) {
 
   return (
     <LayoutHideSidebar {...props}>
-      <AiidHelmet>
+      <AiidHelmet canonicalUrl={config.gatsby.siteUrl + '/apps/incidents'}>
         <title>{t('Incidents')}</title>
       </AiidHelmet>
       <div className="bootstrap">

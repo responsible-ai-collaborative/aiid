@@ -227,7 +227,7 @@ function DiscoverApp(props) {
 
   return (
     <LayoutHideSidebar {...props}>
-      <AiidHelmet>
+      <AiidHelmet canonicalUrl={`${config.gatsby.siteUrl}/apps/discover`}>
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
       <SearchContext.Provider value={{ searchState, indexName, searchClient, onSearchStateChange }}>

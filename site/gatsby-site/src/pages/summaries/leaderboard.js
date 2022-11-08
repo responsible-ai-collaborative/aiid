@@ -10,12 +10,13 @@ import DomainsLeaderboard from 'components/leaderboards/DomainsLeaderboard';
 import OriginalSubmittersLeaderboard from 'components/leaderboards/OriginalSubmittersLeaderboard';
 import UniqueSubmittersLeaderboard from 'components/leaderboards/UniqueSubmittersLeaderboard';
 import { Trans } from 'react-i18next';
+import config from '../../../config';
 
 export default class Authors extends Component {
   render() {
     return (
       <Layout {...this.props}>
-        <AiidHelmet>
+        <AiidHelmet canonicalUrl={config.gatsby.siteUrl + '/summaries/leaderboard'}>
           <title>Submissions Leaderboard</title>
         </AiidHelmet>
         <div className={'titleWrapper'}>

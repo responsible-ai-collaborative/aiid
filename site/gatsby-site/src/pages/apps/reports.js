@@ -13,6 +13,7 @@ import { Table, InputGroup, FormControl, Form, Button } from 'react-bootstrap';
 import { Spinner } from 'flowbite-react';
 import { gql, useQuery } from '@apollo/client';
 import { Trans } from 'react-i18next';
+import config from '../../../config';
 
 const TableStyles = styled.div`
   padding: 1rem 1rem 1rem 0;
@@ -447,7 +448,7 @@ export default function Incidents(props) {
       {...props}
       menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
     >
-      <AiidHelmet>
+      <AiidHelmet canonicalUrl={config.gatsby.siteUrl + '/apps/reports'}>
         <title>Incident List</title>
       </AiidHelmet>
 
