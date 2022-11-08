@@ -23,7 +23,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
 
   const [collapsedMenu, setCollapsedMenu] = useState(isCollapsed || defaultCollapsed);
 
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     if (defaultCollapsed) {
@@ -49,8 +49,6 @@ const Sidebar = ({ defaultCollapsed = false }) => {
       window.removeEventListener('resize', handleResize);
     };
   });
-
-  console.log(collapsedMenu);
 
   return (
     <>
