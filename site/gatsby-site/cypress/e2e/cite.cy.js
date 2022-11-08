@@ -358,7 +358,7 @@ describe('Cite pages', () => {
       .should('exist');
   });
 
-  it('Shouldn not subscribe to incident updates (user unauthenticated)', () => {
+  it('Should not subscribe to incident updates (user unauthenticated)', () => {
     cy.visit(url);
 
     cy.conditionalIntercept(

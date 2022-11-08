@@ -2,16 +2,20 @@ import subscriptionsData from '../fixtures/subscriptions/subscriptions.json';
 import emptySubscriptionsData from '../fixtures/subscriptions/empty-subscriptions.json';
 import { SUBSCRIPTION_TYPE } from '../../src/utils/subscriptions';
 
-const subscriptions = subscriptionsData.data.subscriptions
+const incidentSubscriptions = subscriptionsData.data.subscriptions
   .filter((subscription) => subscription.type === SUBSCRIPTION_TYPE.incident)
   .sort((a, b) => a.incident_id.incident_id - b.incident_id.incident_id);
+
+const entitySubscriptions = subscriptionsData.data.subscriptions
+  .filter((subscription) => subscription.type === SUBSCRIPTION_TYPE.entity)
+  .sort((a, b) => a.entityId.name - b.entityId.name);
 
 const USER_ID = '63320ce63ec803072c9f529c';
 
 describe('Subscriptions', () => {
   const url = '/account';
 
-  it('Should display user subscriptions to incident updates', () => {
+  it('Incident Updates: Should display user subscriptions', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -23,18 +27,21 @@ describe('Subscriptions', () => {
 
     cy.visit(url);
 
-    cy.get('[data-cy="subscription-item"]').should('have.length', subscriptions.length);
+    cy.get('[data-cy="incident-subscription-item"]').should(
+      'have.length',
+      incidentSubscriptions.length
+    );
 
-    subscriptions.forEach((subscription, index) => {
+    incidentSubscriptions.forEach((subscription, index) => {
       const incident = subscription.incident_id;
 
-      cy.get('[data-cy="subscription-item"] > div')
+      cy.get('[data-cy="incident-subscription-item"] > div')
         .eq(index)
         .contains(`Updates on incident #${incident.incident_id}: ${incident.title}`);
     });
   });
 
-  it("Should display a information message if the user does't have subscriptions to incident updates", () => {
+  it("Incident Updates: Should display a information message if the user does't have subscriptions", () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -46,12 +53,12 @@ describe('Subscriptions', () => {
 
     cy.visit(url);
 
-    cy.get('[data-cy="subscription-item"]').should('not.exist');
+    cy.get('[data-cy="incident-subscription-item"]').should('not.exist');
 
     cy.contains("You don't have active subscriptions to Incident updates").should('exist');
   });
 
-  it('Delete a user subscription to incident updates', () => {
+  it('Incident Updates: Delete a user subscription', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -65,7 +72,7 @@ describe('Subscriptions', () => {
       '**/graphql',
       (req) =>
         req.body.operationName == 'DeleteSubscriptions' &&
-        req.body.variables.query._id == subscriptions[0]._id,
+        req.body.variables.query._id == incidentSubscriptions[0]._id,
       'DeleteSubscription',
       {
         data: {
@@ -79,14 +86,17 @@ describe('Subscriptions', () => {
 
     cy.visit(url);
 
-    cy.get('[data-cy="delete-btn"]').first().click();
+    cy.get('[data-cy="incident-delete-btn"]').first().click();
 
     cy.wait('@DeleteSubscription');
 
-    cy.get('[data-cy="subscription-item"]').should('have.length', subscriptions.length - 1);
+    cy.get('[data-cy="incident-subscription-item"]').should(
+      'have.length',
+      incidentSubscriptions.length - 1
+    );
   });
 
-  it('Delete the last subscription to incident updates', () => {
+  it('Incident Updates: Delete the last subscription', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -95,7 +105,7 @@ describe('Subscriptions', () => {
       'FindUserSubscriptions',
       {
         data: {
-          subscriptions: [subscriptions[0]],
+          subscriptions: [incidentSubscriptions[0]],
         },
       }
     );
@@ -104,7 +114,7 @@ describe('Subscriptions', () => {
       '**/graphql',
       (req) =>
         req.body.operationName == 'DeleteSubscriptions' &&
-        req.body.variables.query._id == subscriptions[0]._id,
+        req.body.variables.query._id == incidentSubscriptions[0]._id,
       'DeleteSubscription',
       {
         data: {
@@ -118,16 +128,16 @@ describe('Subscriptions', () => {
 
     cy.visit(url);
 
-    cy.get('[data-cy="delete-btn"]').first().click();
+    cy.get('[data-cy="incident-delete-btn"]').first().click();
 
     cy.wait('@DeleteSubscription');
 
-    cy.get('[data-cy="subscription-item"]').should('not.exist');
+    cy.get('[data-cy="incident-subscription-item"]').should('not.exist');
 
     cy.contains("You don't have active subscriptions to Incident updates").should('exist');
   });
 
-  it("Should display the switch toggle off if user does't have a subscription to new incidents", () => {
+  it("New Incidents: Should display the switch toggle off if user does't have a subscription", () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -144,7 +154,7 @@ describe('Subscriptions', () => {
     cy.get('button[role=switch][aria-checked=false]').should('exist');
   });
 
-  it('Should display the switch toggle on if user have a subscription to new incidents', () => {
+  it('New Incidents: Should display the switch toggle on if user have a subscription', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -161,7 +171,7 @@ describe('Subscriptions', () => {
     cy.get('button[role=switch][aria-checked=true]').should('exist');
   });
 
-  it('Subscribe/Unsubscribe to new incidents', () => {
+  it('New Incidents: Subscribe/Unsubscribe', () => {
     cy.conditionalIntercept(
       '**/login',
       (req) => req.body.username == Cypress.env('e2eUsername'),
@@ -236,5 +246,127 @@ describe('Subscriptions', () => {
     cy.get('input[name=subscribe-all]').should('not.exist');
 
     cy.get('button[role=switch][aria-checked=false]').should('exist');
+  });
+
+  it('Entity: Should display user subscriptions', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindUserSubscriptions',
+      'FindUserSubscriptions',
+      subscriptionsData
+    );
+
+    cy.visit(url);
+
+    cy.get('[data-cy="entity-subscription-item"]').should(
+      'have.length',
+      entitySubscriptions.length
+    );
+
+    entitySubscriptions.forEach((subscription, index) => {
+      const entity = subscription.entityId;
+
+      cy.get('[data-cy="entity-subscription-item"] > div')
+        .eq(index)
+        .contains(`New ${entity.name} Entity incidents`);
+    });
+  });
+
+  it("Entity: Should display a information message if the user does't have subscriptions", () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindUserSubscriptions',
+      'FindUserSubscriptions',
+      emptySubscriptionsData
+    );
+
+    cy.visit(url);
+
+    cy.get('[data-cy="entity-subscription-item"]').should('not.exist');
+
+    cy.contains("You don't have active subscriptions to Entities").should('exist');
+  });
+
+  it('Entity: Delete a user subscription', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindUserSubscriptions',
+      'FindUserSubscriptions',
+      subscriptionsData
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'DeleteSubscriptions' &&
+        req.body.variables.query._id == entitySubscriptions[0]._id,
+      'DeleteSubscription',
+      {
+        data: {
+          deleteManySubscriptions: {
+            __typename: 'DeleteManyPayload',
+            deletedCount: 1,
+          },
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.get('[data-cy="entity-delete-btn"]').first().click();
+
+    cy.wait('@DeleteSubscription');
+
+    cy.get('[data-cy="entity-subscription-item"]').should(
+      'have.length',
+      entitySubscriptions.length - 1
+    );
+  });
+
+  it('Entity: Delete the last subscription', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindUserSubscriptions',
+      'FindUserSubscriptions',
+      {
+        data: {
+          subscriptions: [entitySubscriptions[0]],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'DeleteSubscriptions' &&
+        req.body.variables.query._id == entitySubscriptions[0]._id,
+      'DeleteSubscription',
+      {
+        data: {
+          deleteManySubscriptions: {
+            __typename: 'DeleteManyPayload',
+            deletedCount: 1,
+          },
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.get('[data-cy="entity-delete-btn"]').first().click();
+
+    cy.wait('@DeleteSubscription');
+
+    cy.get('[data-cy="entity-subscription-item"]').should('not.exist');
+
+    cy.contains("You don't have active subscriptions to Entities").should('exist');
   });
 });

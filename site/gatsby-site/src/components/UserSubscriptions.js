@@ -130,7 +130,7 @@ const UserSubscriptions = () => {
                   <div
                     className={`p-3 ${index < incidentSubscriptions.length - 1 ? 'border-b' : ''}`}
                     key={`subscription-${subscription.id}`}
-                    data-cy="subscription-item"
+                    data-cy="incident-subscription-item"
                   >
                     <div className="flex flex-row w-full justify-between gap-3 items-center">
                       <div className="items-center">
@@ -144,7 +144,7 @@ const UserSubscriptions = () => {
                         color={'failure'}
                         disabled={deleting && deletingId === subscription.id}
                         onClick={() => handleDeleteSubscription(subscription.id)}
-                        data-cy="delete-btn"
+                        data-cy="incident-delete-btn"
                       >
                         {deleting && deletingId === subscription.id ? (
                           <Spinner size={'xs'} />
@@ -174,7 +174,7 @@ const UserSubscriptions = () => {
                     <div
                       className={`p-3 ${index < entitySubscriptions.length - 1 ? 'border-b' : ''}`}
                       key={`subscription-${subscription.id}`}
-                      data-cy="subscription-item"
+                      data-cy="entity-subscription-item"
                     >
                       <div className="flex flex-row w-full justify-between gap-3 items-center">
                         <div className="items-center">
@@ -191,7 +191,7 @@ const UserSubscriptions = () => {
                           color={'failure'}
                           disabled={deleting && deletingId === subscription.id}
                           onClick={() => handleDeleteSubscription(subscription.id)}
-                          data-cy="delete-btn"
+                          data-cy="entity-delete-btn"
                         >
                           {deleting && deletingId === subscription.id ? (
                             <Spinner size={'xs'} />
