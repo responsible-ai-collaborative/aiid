@@ -14,6 +14,7 @@ const TagsInputGroup = ({
   schema,
   className = '',
   icon,
+  disabled = false,
 }) => {
   const [optional, setOptional] = useState(true);
 
@@ -31,13 +32,13 @@ const TagsInputGroup = ({
           {icon && <FontAwesomeIcon fixedWidth icon={icon} title={label} className="mb-2 mr-1" />}
           <Label popover={name} label={(optional ? '' : '*') + label} />
         </div>
-        <InputGroup>
+        <InputGroup style={{ marginTop: '0.25rem' }}>
           <div
             className={
               'tags-control-wrapper rounded-md form-control' + (isInvalid ? ' is-invalid' : '')
             }
           >
-            <TagsControl name={name} placeholder={placeholder} />
+            <TagsControl name={name} placeholder={placeholder} disabled={disabled} />
           </div>
           <Form.Control.Feedback type="invalid">
             <Trans ns="validation">{isInvalid ? errors[name] : null}</Trans>

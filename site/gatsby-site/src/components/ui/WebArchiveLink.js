@@ -69,6 +69,7 @@ export default function WebArchiveLink({ url, date, children, className }) {
         <Dropdown.Item
           eventKey="2"
           onClick={onClick}
+          onAuxClick={onClick}
           target="_blank"
           rel="noopener noreferrer"
           data-cy="wayback-machine"
