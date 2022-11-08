@@ -23,7 +23,11 @@ const Layout = ({ children, collapse, className, rightSidebar }) => (
           {children}
         </div>
       </div>
-      <div className={'tw-hidden-mobile tw-[224px] z-0 relative hidden xl:block'}>
+      <div
+        className={
+          'tw-hidden-mobile tw-[224px] z-0 relative hidden xl:block xl:max-w-sm 2xl:max-w-md'
+        }
+      >
         {rightSidebar}
       </div>
     </div>
