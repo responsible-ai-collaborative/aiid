@@ -213,7 +213,7 @@ function CitePage(props) {
 
   const rightSidebar = (
     <>
-      <div className="max-w-xs 2xl:max-w-sm pr-10 py-8">
+      <div className="max-w-[18rem] 2xl:max-w-sm pr-10 py-8">
         <SimilarIncidents
           nlp_similar_incidents={nlp_similar_incidents}
           editor_similar_incidents={editor_similar_incidents}
