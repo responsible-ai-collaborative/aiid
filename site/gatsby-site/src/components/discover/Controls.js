@@ -4,81 +4,57 @@ import Stats from './Stats';
 import ClearFilters from './ClearFilters';
 import DisplayModeSwitch from './DisplayModeSwitch';
 import Filters from './Filters';
-import { Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Trans } from 'react-i18next';
-import Row from 'elements/Row';
-import Col from 'elements/Col';
-import { ToggleDisplayIssues, ToggleOnlyIssues } from './toggles';
+import DisplayOptions from './DisplayOptions';
 
-const Controls = ({ query, searchState, setSearchState }) => {
+const Controls = ({ query }) => {
   const [expandFilters, setExpandFilters] = useState(false);
 
   useEffect(() => setExpandFilters(REFINEMENT_LISTS.some((r) => query[r.attribute])), []);
 
   return (
     <>
-      <Row className="content-start items-center mt-4 767px:hidden hiddenMobile bootstrap">
-        <Col className="col-auto">
-          <Stats />
-        </Col>
-        <Col className="col-auto">
-          <DisplayModeSwitch />
-        </Col>
-        <Col className="tw-hbox">
-          <Form.Check
-            type="switch"
-            id="hide-duplicates"
-            checked={searchState.refinementList.hideDuplicates}
-            onClick={(event) => {
-              setSearchState({
-                ...searchState,
-                refinementList: {
-                  ...searchState.refinementList,
-                  hideDuplicates: event.target.checked,
-                },
-              });
-            }}
-            className="tw-switch"
-          />
-          <Form.Label htmlFor="hide-duplicates">
-            <Trans>1st report only</Trans>
-          </Form.Label>
+      <div className="justify-between gap-2 mt-4 hidden md:flex">
+        <div className="flex gap-4">
+          <div className="flex items-center">
+            <Stats />
+          </div>
+          <div className="place-self-center">
+            <DisplayModeSwitch />
+          </div>
 
-          <ToggleDisplayIssues attribute="is_incident_report" id="display-issues" />
-          <Form.Label htmlFor="display-issues">
-            <Trans>Display Issues</Trans>
-          </Form.Label>
+          <div>
+            <DisplayOptions />
+          </div>
+        </div>
 
-          <ToggleOnlyIssues attribute="is_incident_report" id="only-issues" />
-          <Form.Label htmlFor="only-issues">
-            <Trans>Only Issues</Trans>
-          </Form.Label>
-        </Col>
-        <Col className="tw-hbox"></Col>
-        <Col className="col-auto">
-          <ClearFilters>
-            <Trans>Clear Filters</Trans>
-          </ClearFilters>
-        </Col>
-        <Col className="col-auto">
-          <button
-            id="expand-filters"
-            data-cy="expand-filters"
-            onClick={() => setExpandFilters(!expandFilters)}
-            className="select-none cursor-pointer bg-none border-none"
-          >
-            <FontAwesomeIcon
-              className="-align-[0.2rem]"
-              icon={expandFilters ? faCaretDown : faCaretRight}
-              fixedWidth
-            />
-            <Trans>Filter Search</Trans>
-          </button>
-        </Col>
-      </Row>
-      <Row className="mb-3 hiddenMobile">{expandFilters && <Filters />}</Row>
+        <div className="flex">
+          <div className="justify-end">
+            <ClearFilters>
+              <Trans>Clear Filters</Trans>
+            </ClearFilters>
+          </div>
+
+          <div className="grid place-content-center">
+            <button
+              id="expand-filters"
+              data-cy="expand-filters"
+              onClick={() => setExpandFilters(!expandFilters)}
+              className="select-none cursor-pointer bg-none border-none"
+            >
+              <FontAwesomeIcon
+                className="-align-[0.2rem]"
+                icon={expandFilters ? faCaretDown : faCaretRight}
+                fixedWidth
+              />
+              <Trans>Filter Search</Trans>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="mb-3 md:hidden">{expandFilters && <Filters />}</div>
     </>
   );
 };
