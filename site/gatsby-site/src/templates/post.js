@@ -36,8 +36,6 @@ export default function Post(props) {
     config.gatsby.pathPrefix !== '/' ? canonicalUrl + config.gatsby.pathPrefix : canonicalUrl;
   canonicalUrl = canonicalUrl + mdx.frontmatter.slug;
 
-  console.log(`canonicalUrl`, canonicalUrl);
-
   const loc = new URL(canonicalUrl);
 
   const rightSidebar = (

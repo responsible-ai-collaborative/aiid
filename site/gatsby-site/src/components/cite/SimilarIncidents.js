@@ -112,10 +112,6 @@ const SimilarIncidents = ({
 }) => {
   const { isRole, loading } = useUserContext();
 
-  console.log(`orientation`, orientation);
-
-  console.log(`orientation == 'column'`, orientation == 'column');
-
   nlp_similar_incidents ||= [];
   editor_dissimilar_incidents ||= [];
   editor_similar_incidents ||= [];
