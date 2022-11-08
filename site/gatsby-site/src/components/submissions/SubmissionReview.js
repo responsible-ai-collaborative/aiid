@@ -288,7 +288,7 @@ const SubmissionReview = ({ submission }) => {
               <div className="flex gap-2">
                 {promoting === 'incident' && <Spinner size="sm" />}
                 {isNewIncident ? (
-                  <Trans ns="submitted">Add New Incident</Trans>
+                  <Trans ns="submitted">Add new Incident</Trans>
                 ) : (
                   <Trans ns="submitted" id={submission.incident_id}>
                     Add to incident {{ id: submission.incident_id }}

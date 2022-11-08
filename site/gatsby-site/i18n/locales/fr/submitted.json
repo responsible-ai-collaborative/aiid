@@ -6,7 +6,7 @@
     "Loading Quick Adds...": "Chargement rapide des rapports agrégés...",
     "Successfully promoted submission to Incident {{incident_id}} and Report {{report_number}}": "Incident {{incident_id}} et rapport {{report_number}} promus avec succès",
     "Successfully promoted submission to <2>Incident {{incident_id}} and Report {{report_number}}</2>": "<2>Incident {{incident_id}} et rapport {{report_number}}</2> promus avec succès",
-    "Add New Incident": "Ajouter un nouvel incident",
+    "Add new Incident": "Ajouter un nouvel incident",
     "Add to incident {{id}}": "Ajouter un nouveau rapport",
     "Reject New Incident": "Rejeter le Nouvel Incident",
     "Reject New Report": "Refuser le Nouveau Rapport",
