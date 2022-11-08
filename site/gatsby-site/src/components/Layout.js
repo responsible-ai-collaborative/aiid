@@ -5,13 +5,13 @@ import config from '../../config.js';
 import Footer from './layout/Footer';
 import Header from './ui/Header';
 
-const Layout = ({ children, className, location }) => {
+const Layout = ({ children, className, location, sidebarCollapsed = false }) => {
   return (
     <>
       <Header />
       <div className="tw-layout">
         <div className={`tw-hidden-mobile z-2`}>
-          <Sidebar />
+          <Sidebar defaultCollapsed={sidebarCollapsed} />
         </div>
         {config.sidebar.title && (
           <div

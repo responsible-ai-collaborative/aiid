@@ -49,7 +49,7 @@ const Header = () => {
 
   const [navCollapsed, setNavCollapsed] = useState(true);
 
-  const topClass = navCollapsed ? 'topnav' : 'topnav responsive ';
+  const topClass = navCollapsed ? 'topnav border-none' : 'topnav responsive border-none';
 
   return (
     <StaticQuery
@@ -184,7 +184,7 @@ const Header = () => {
             </div>
             <div id="navbar" className={topClass}>
               <div className={'visibleMobile'}>
-                <Sidebar setNavCollapsed={setNavCollapsed} />
+                <Sidebar />
                 <hr />
               </div>
               <ul className={'navBarUL navBarNav navBarULRight'}>

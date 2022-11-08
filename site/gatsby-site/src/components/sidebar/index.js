@@ -12,7 +12,7 @@ import { Link } from 'gatsby';
 import { useUserContext } from 'contexts/userContext';
 import { useMenuContext } from 'contexts/MenuContext';
 
-const SidebarLayout = ({ defaultCollapsed = false }) => {
+const Sidebar = ({ defaultCollapsed = false }) => {
   const localizePath = useLocalizePath();
 
   const { user } = useUserContext();
@@ -31,11 +31,11 @@ const SidebarLayout = ({ defaultCollapsed = false }) => {
     <>
       <aside
         className={`${
-          !collapsedMenu ? 'w-64' : 'w-20'
+          !collapsedMenu ? 'md:w-64' : 'md:w-20'
         } sticky relative top-0 transition-width duration-500`}
         aria-label="Sidebar"
       >
-        <span className={``}>
+        <span className={`hidden md:block`}>
           <QuickAccess isCollapsed={collapsedMenu} />
         </span>
         {config.sidebar.title ? (
@@ -47,7 +47,7 @@ const SidebarLayout = ({ defaultCollapsed = false }) => {
         <div
           className={`${
             collapsedMenu ? 'overflow-hidden' : 'overflow-y-auto'
-          } py-4 px-3 bg-gray-50 rounded dark:bg-gray-800`}
+          } pb-4 pt-2 px-3 bg-gray-50 rounded dark:bg-gray-800`}
         >
           <ul className="space-y-2 list-none">
             <Tree
@@ -95,7 +95,7 @@ const SidebarLayout = ({ defaultCollapsed = false }) => {
           <FontAwesomeIcon
             icon={faChevronCircleLeft}
             color={'white'}
-            className={`transition-rotate-180 duration-500 cursor-pointer fa fa-twitter-square fa-lg text-gray-300 hover:text-gray-500 w-8 h-8 absolute -right-4 top-1/2 ${
+            className={`hidden md:inline-block transition-rotate-180 duration-500 cursor-pointer fa fa-twitter-square fa-lg text-gray-300 hover:text-gray-500 w-8 h-8 absolute -right-4 top-1/2 ${
               isCollapsed ? 'rotate-180' : ''
             }`}
             title="Collapse"
@@ -109,4 +109,4 @@ const SidebarLayout = ({ defaultCollapsed = false }) => {
   );
 };
 
-export default SidebarLayout;
+export default Sidebar;

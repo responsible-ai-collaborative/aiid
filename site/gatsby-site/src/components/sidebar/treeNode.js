@@ -139,7 +139,7 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed 
 
   return (
     <>
-      <li className={`z-50 ${isCollapsed ? 'flex justify-center' : ''}`}>
+      <li className={`z-50`}>
         {item.title &&
           (isCollapsed ? (
             <Tooltip content={item.title} placement="right">
