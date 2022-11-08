@@ -12,7 +12,7 @@
     "Reject New Report": "Refuser le Nouveau Rapport",
     "Loading Submissions...": "Chargement des soumissions...",
     "Add as issue": "Ajouter comme problème",
-    "Sure you want to promote this Submission to an Issue?": "Êtes-vous sûr de vouloir promouvoir cette soumission dans un numéro?",
+    "Are you sure this is a new issue? Any data entered that is associated with incident records will not be added": "Êtes-vous sûr qu'il s'agit d'un nouveau problème? Toutes les données saisies qui sont associées aux enregistrements d'incident ne seront pas ajoutées",
     "Successfully promoted submission to Issue {{report_number}}": "Soumission promue avec succès au problème {{report_number}}",
     "Sure you want to promote this Submission to a new Incident?": "Êtes-vous sûr de vouloir promouvoir cette soumission dans un nouvel incident?",
     "Sure you want to promote this Submission and link it to Incident {{incident_id}}?": "Voulez-vous vraiment promouvoir cette soumission et la lier à l'incident {{incident_id}}?"

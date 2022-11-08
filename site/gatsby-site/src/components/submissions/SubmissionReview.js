@@ -90,7 +90,11 @@ const SubmissionReview = ({ submission }) => {
     async ({ is_incident_report = true }) => {
       if (
         !is_incident_report &&
-        !confirm(t('Sure you want to promote this Submission to an Issue?'))
+        !confirm(
+          t(
+            'Are you sure this is a new issue? Any data entered that is associated with incident records will not be added'
+          )
+        )
       ) {
         return;
       }
