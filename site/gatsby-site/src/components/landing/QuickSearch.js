@@ -14,11 +14,11 @@ export default function QuickSearch() {
     const width = window.innerWidth;
 
     if (width >= 350 && width < 450) {
-      setSearchPlaceholder(t('Search 1800+ reports'));
+      setSearchPlaceholder(t('Search 2000+ reports'));
     } else if (width >= 450 && width < 500) {
-      setSearchPlaceholder(t('Search 1800+ AI harm reports'));
+      setSearchPlaceholder(t('Search 2000+ AI harm reports'));
     } else if (width >= 500) {
-      setSearchPlaceholder(t('Search over 1800 reports of AI harms'));
+      setSearchPlaceholder(t('Search over 2000 reports of AI harms'));
     } else {
       setSearchPlaceholder(t('Search reports'));
     }
@@ -85,7 +85,7 @@ export default function QuickSearch() {
             aria-label={t('Search over 1800 reports of AI harms')}
           />
         </div>
-        <div className="flex flex-row items-center justify-center mt-7 gap-2">
+        <div className="flex flex-row items-center justify-center mt-4 md:mt-6 gap-2">
           <Button type="submit">
             <Trans>Search</Trans>
           </Button>

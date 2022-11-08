@@ -164,7 +164,10 @@ describe('Cite pages', () => {
 
     cy.contains('New Report').scrollIntoView().click();
 
-    cy.get('[name="incident_id"]').should('have.value', '10');
+    cy.get('[data-cy="prefilled-incident-id"]').should(
+      'contain.text',
+      'Adding a new report to incident 10'
+    );
   });
 
   it('should render Next and Previous incident buttons', () => {
@@ -381,7 +384,7 @@ describe('Cite pages', () => {
 
     cy.get('[data-cy="alleged-entities"]').should(
       'have.text',
-      'Alleged: Tesla developed an AI system deployed by Tesla and Motorist, which harmed Motorists.'
+      'Alleged: Tesla developed an AI system deployed by Tesla and Motorist, which harmed motorists.'
     );
 
     cy.visit('/cite/72/');

@@ -3,9 +3,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter, faLinkedin, faFacebook } from '@fortawesome/free-brands-svg-icons';
 
-const SocialShareButtons = ({ metaTitle, canonicalUrl, page }) => {
+const SocialShareButtons = ({ metaTitle, canonicalUrl, page, className }) => {
   return (
-    <div data-cy="social-share-buttons" className={`flex social-btn-container ${page}`}>
+    <div
+      data-cy="social-share-buttons"
+      className={`flex social-btn-container ${page} ${className}`}
+    >
       {/* Twitter */}
       <button
         className={'social-btn'}

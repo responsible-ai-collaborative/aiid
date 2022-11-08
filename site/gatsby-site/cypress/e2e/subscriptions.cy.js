@@ -127,7 +127,7 @@ describe('Subscriptions', () => {
     cy.contains("You don't have active subscriptions to Incident updates").should('exist');
   });
 
-  it.skip("Should display the switch toggle off if user does't have a subscription to new incidents", () => {
+  it("Should display the switch toggle off if user does't have a subscription to new incidents", () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -144,7 +144,7 @@ describe('Subscriptions', () => {
     cy.get('button[role=switch][aria-checked=false]').should('exist');
   });
 
-  it.skip('Should display the switch toggle on if user have a subscription to new incidents', () => {
+  it('Should display the switch toggle on if user have a subscription to new incidents', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -161,7 +161,7 @@ describe('Subscriptions', () => {
     cy.get('button[role=switch][aria-checked=true]').should('exist');
   });
 
-  it.skip('Subscribe/Unsubscribe to new incidents', () => {
+  it('Subscribe/Unsubscribe to new incidents', () => {
     cy.conditionalIntercept(
       '**/login',
       (req) => req.body.username == Cypress.env('e2eUsername'),

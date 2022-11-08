@@ -163,10 +163,14 @@ const PreviewImageInputGroup = ({
         handleBlur={handleBlur}
         schema={schema}
       />
-      <figure data-cy="image-preview-figure" id="image-preview-figure" className="text-center">
+      <figure
+        data-cy="image-preview-figure"
+        id="image-preview-figure"
+        className="text-center md:flex md:items-center md:justify-center md:flex-col"
+      >
         <div
-          className="flex items-center justify-center bootstrap"
-          style={{ height: '50vh', marginTop: '1rem' }}
+          className="flex items-center justify-center bootstrap md:max-w-prose"
+          style={{ height: '20vh', marginTop: '1rem' }}
         >
           {updatingImage ? (
             <Spinner size="xl" />

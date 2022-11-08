@@ -62,5 +62,9 @@
      "developers": {
        "title": "Presunto desarrollador del sistema de IA",
        "text": "Si son múltiples, presione “enter” después del elemento para ingresar uno nuevo"
+     },
+     "description": {
+        "title": "Descripción",
+        "text": "Una descripción breve, fáctica, periodísticamente neutral y completa del incidente que mencione el incidente/problema, la ubicación y el daño."
      }
 }

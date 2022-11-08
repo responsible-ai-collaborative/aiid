@@ -1,0 +1,8 @@
+{
+    "field_name": "processNotifications",
+    "function_name": "processNotifications",
+    "input_type_format": "",
+    "on_type": "Mutation",
+    "payload_type": "Notification",
+    "payload_type_format": "generated-list"
+}
