@@ -17,7 +17,7 @@ function PostPreview({ post, latestPost = false }) {
             image={post.frontmatter.image.childImageSharp.gatsbyImageData}
           />
         </LocalizedLink>
-        <div className="p-5">
+        <div className="p-6">
           <LocalizedLink to={post.frontmatter.slug} className="">
             <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white relative block hover:text-primary-blue">
               {post.fields.title}
@@ -34,7 +34,7 @@ function PostPreview({ post, latestPost = false }) {
           </p>
           <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{post.excerpt}... </p>
         </div>
-        <div className="flex items-end flex-1 p-5">
+        <div className="flex items-end flex-1 p-6">
           <a
             href={post.frontmatter.slug}
             className="inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

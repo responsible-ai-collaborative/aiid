@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
+import { UPSERT_ENTITY } from '../../graphql/entities';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button, Modal } from 'react-bootstrap';
 import { Spinner } from 'flowbite-react';
@@ -8,17 +9,34 @@ import IncidentForm, { schema } from './IncidentForm';
 import { Formik } from 'formik';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
+import { graphql, useStaticQuery } from 'gatsby';
+import { processEntities } from '../../utils/entities';
 
 export default function IncidentEditModal({ show, onClose, incidentId }) {
   const { t, i18n } = useTranslation();
 
-  const [incident, setIncident] = useState();
+  const [incident, setIncident] = useState(null);
 
   const { data: incidentData } = useQuery(FIND_INCIDENT, {
     variables: { query: { incident_id: incidentId } },
   });
 
+  const {
+    entities: { nodes: allEntities },
+  } = useStaticQuery(graphql`
+    {
+      entities: allMongodbAiidprodEntities {
+        nodes {
+          entity_id
+          name
+        }
+      }
+    }
+  `);
+
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
+
+  const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
   const addToast = useToastContext();
 
@@ -53,6 +71,24 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         __typename: undefined,
         embedding: undefined,
       };
+
+      updated.AllegedDeveloperOfAISystem = await processEntities(
+        allEntities,
+        values.AllegedDeveloperOfAISystem,
+        createEntityMutation
+      );
+
+      updated.AllegedDeployerOfAISystem = await processEntities(
+        allEntities,
+        values.AllegedDeployerOfAISystem,
+        createEntityMutation
+      );
+
+      updated.AllegedHarmedOrNearlyHarmedParties = await processEntities(
+        allEntities,
+        values.AllegedHarmedOrNearlyHarmedParties,
+        createEntityMutation
+      );
 
       await updateIncident({
         variables: {
@@ -92,7 +128,25 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         )}
 
         {incident && (
-          <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={incident}>
+          <Formik
+            validationSchema={schema}
+            onSubmit={handleSubmit}
+            initialValues={{
+              ...incident,
+              AllegedDeveloperOfAISystem:
+                incident.AllegedDeveloperOfAISystem === null
+                  ? []
+                  : incident.AllegedDeveloperOfAISystem.map((item) => item.name),
+              AllegedDeployerOfAISystem:
+                incident.AllegedDeployerOfAISystem === null
+                  ? []
+                  : incident.AllegedDeployerOfAISystem.map((item) => item.name),
+              AllegedHarmedOrNearlyHarmedParties:
+                incident.AllegedHarmedOrNearlyHarmedParties === null
+                  ? []
+                  : incident.AllegedHarmedOrNearlyHarmedParties.map((item) => item.name),
+            }}
+          >
             {({ isValid, isSubmitting, submitForm }) => (
               <>
                 <Modal.Body>

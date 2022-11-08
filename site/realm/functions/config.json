@@ -4,24 +4,16 @@
         "private": true
     },
     {
-        "name": "getUser",
-        "private": false
-    },
-    {
-        "name": "linkReportsToIncidents",
-        "private": false
-    },
-    {
         "name": "onIncidentUpdate",
-        "private": true
-    },
-    {
-        "name": "onNewIncident",
         "private": true
     },
     {
         "name": "onNewUser",
         "private": true
+    },
+    {
+        "name": "getUser",
+        "private": false
     },
     {
         "name": "passwordReset",
@@ -32,6 +24,11 @@
         "private": false
     },
     {
+        "name": "onNewIncident",
+        "private": false,
+        "disable_arg_logs": true
+    },
+    {
         "name": "reportTranslations",
         "private": false
     },
@@ -40,11 +37,19 @@
         "private": false
     },
     {
+        "name": "linkReportsToIncidents",
+        "private": false
+    },
+    {
         "name": "unlinkReportsFromIncidents",
         "private": false
     },
     {
         "name": "updateOneReportTranslation",
+        "private": false
+    },
+    {
+        "name": "processNotifications",
         "private": false
     }
 ]
