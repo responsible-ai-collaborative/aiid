@@ -8,7 +8,7 @@ import { graphql } from 'gatsby';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { computeEntities, makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
+import { computeEntities, makeEntitiesHash, makeIncidentsHash, getEntityId } from 'utils/entities';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -95,21 +95,19 @@ const EntityPage = ({ pageContext, data, ...props }) => {
   const subscribeToEntity = async () => {
     if (isRole('subscriber')) {
       try {
-        const entityId = name;
+        const entityId = getEntityId(name);
 
         await subscribeToEntityMutation({
           variables: {
             query: {
               type: SUBSCRIPTION_TYPE.entity,
               userId: { userId: user.id },
-              entityId,
+              entityId: { entity_id: entityId },
             },
             subscription: {
               type: SUBSCRIPTION_TYPE.entity,
-              userId: {
-                link: user.id,
-              },
-              entityId,
+              userId: { link: user.id },
+              entityId: { link: entityId },
             },
           },
         });

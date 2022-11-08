@@ -37,6 +37,10 @@ export const FIND_USER_SUBSCRIPTIONS = gql`
         incident_id
         title
       }
+      entityId {
+        entity_id
+        name
+      }
       type
     }
   }
