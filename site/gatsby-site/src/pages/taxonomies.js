@@ -7,6 +7,7 @@ import TaxonomyGraphCarousel from '../../src/components/TaxonomyGraphCarousel.js
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import TranslationBadge from 'components/i18n/TranslationBadge';
+import config from '../../config';
 
 export default function Taxonomies({ data, ...props }) {
   const { t } = useTranslation();
@@ -17,9 +18,11 @@ export default function Taxonomies({ data, ...props }) {
 
   const metaDescription = t('This is the list of taxonomies supported in AIID');
 
+  const canonicalUrl = config.gatsby.siteUrl + '/taxonomies';
+
   return (
     <Layout {...props}>
-      <AiidHelmet {...{ title, metaTitle, metaDescription }}>
+      <AiidHelmet {...{ title, metaTitle, metaDescription, canonicalUrl }}>
         <title>{title}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
