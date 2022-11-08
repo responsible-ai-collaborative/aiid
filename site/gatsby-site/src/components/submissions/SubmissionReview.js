@@ -290,7 +290,9 @@ const SubmissionReview = ({ submission }) => {
                 {isNewIncident ? (
                   <Trans ns="submitted">Add New Incident</Trans>
                 ) : (
-                  <Trans ns="submitted">Add New Report</Trans>
+                  <Trans ns="submitted" id={submission.incident_id}>
+                    Add to incident {{ id: submission.incident_id }}
+                  </Trans>
                 )}
               </div>
             </Button>
