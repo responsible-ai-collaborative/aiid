@@ -181,7 +181,7 @@ const UserSubscriptions = () => {
                           <Trans ns="account">
                             New{' '}
                             <Link to={`/entities/${subscription.entityId}`}>
-                              {subscription.entityName}
+                              {{ name: subscription.entityName }}
                             </Link>{' '}
                             Entity incidents
                           </Trans>
