@@ -102,7 +102,11 @@ const SubmissionReview = ({ submission }) => {
       if (
         is_incident_report &&
         isNewIncident &&
-        !confirm(t('Sure you want to promote this Submission to a new Incident?'))
+        !confirm(
+          t(
+            'Are you sure this is a new incident? This will create a permanent record with all the details you provided about the incident.'
+          )
+        )
       ) {
         return;
       }
