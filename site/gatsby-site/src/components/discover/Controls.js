@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import REFINEMENT_LISTS from './REFINEMENT_LISTS';
 import Stats from './Stats';
 import ClearFilters from './ClearFilters';
 import DisplayModeSwitch from './DisplayModeSwitch';
@@ -8,11 +7,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Trans } from 'react-i18next';
 import DisplayOptions from './DisplayOptions';
+import useSearch from './useSearch';
 
-const Controls = ({ query }) => {
+const Controls = () => {
+  const { searchState } = useSearch();
+
   const [expandFilters, setExpandFilters] = useState(false);
 
-  useEffect(() => setExpandFilters(REFINEMENT_LISTS.some((r) => query[r.attribute])), []);
+  useEffect(() => {
+    const defaultKeys = ['is_incident_report', 'page', 'display'];
+
+    const expand = Object.keys(searchState.refinementList).some(
+      (key) => !defaultKeys.includes(key)
+    );
+
+    setExpandFilters(expand);
+  }, []);
 
   return (
     <>
