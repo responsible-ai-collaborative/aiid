@@ -11,8 +11,9 @@ import { Link } from 'gatsby';
 import { useUserContext } from 'contexts/userContext';
 import { useMenuContext } from 'contexts/MenuContext';
 import { Tooltip } from 'flowbite-react';
+import { globalHistory } from '@reach/router';
 
-const Sidebar = ({ defaultCollapsed = false, location }) => {
+const Sidebar = ({ defaultCollapsed = false }) => {
   const localizePath = useLocalizePath();
 
   const { t } = useTranslation();
@@ -53,7 +54,7 @@ const Sidebar = ({ defaultCollapsed = false, location }) => {
   const isUserLoggedIn = user && user.isLoggedIn && user.profile.email;
 
   const isAccountCurrentPath =
-    localizePath({ path: location.pathname }) ===
+    localizePath({ path: globalHistory.location.pathname }) ===
     localizePath({ path: isUserLoggedIn ? '/account' : '/login' });
 
   const LoginSignupNode = (
