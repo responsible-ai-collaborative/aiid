@@ -47,10 +47,10 @@ const Label = ({ popover, label, required = false }) => {
       >
         <label
           data-cy={`label-${popover}`}
-          className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 relative"
+          className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 relative whitespace-nowrap"
         >
           {required && <>* </>}
-          {label}{' '}
+          <span className="whitespace-normal mr-1">{label}</span>
           <FontAwesomeIcon
             icon={faQuestionCircle}
             style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
