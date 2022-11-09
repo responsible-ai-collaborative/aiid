@@ -36,7 +36,7 @@ const DisplayOptions = () => {
   });
 
   return (
-    <Dropdown label={selectedIndex > -1 && displayOptions[selectedIndex].text} size="sm">
+    <Dropdown label={selectedIndex > -1 && displayOptions[selectedIndex].text} size="sm" inline>
       {displayOptions.map(({ text }, index) => (
         <Dropdown.Item key={text} onClick={() => setDisplay(index)}>
           {text}

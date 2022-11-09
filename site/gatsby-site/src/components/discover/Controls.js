@@ -6,7 +6,6 @@ import Filters from './Filters';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Trans } from 'react-i18next';
-import DisplayOptions from './DisplayOptions';
 import useSearch from './useSearch';
 
 const Controls = () => {
@@ -33,10 +32,6 @@ const Controls = () => {
           </div>
           <div className="place-self-center">
             <DisplayModeSwitch />
-          </div>
-
-          <div>
-            <DisplayOptions />
           </div>
         </div>
 
