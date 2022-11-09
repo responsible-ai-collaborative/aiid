@@ -165,7 +165,12 @@ const FormDetails = ({ data, previous, schema, submitForm, validateAndSubmitForm
                 );
               }}
             >
-              <Trans>Add more info</Trans>
+              <span className="lg:hidden">
+                <Trans>More</Trans>
+              </span>
+              <span className="hidden lg:inline">
+                <Trans>Add more info</Trans>
+              </span>
               <svg
                 aria-hidden="true"
                 className="ml-2 w-5 h-5"
@@ -204,7 +209,7 @@ const FormDetails = ({ data, previous, schema, submitForm, validateAndSubmitForm
                 <Spinner size="sm" light={true} />
               </div>
             )}
-            <Trans ns="submit">Submit</Trans>
+            <Trans>Submit</Trans>
           </Button>
         </div>
       </Form>

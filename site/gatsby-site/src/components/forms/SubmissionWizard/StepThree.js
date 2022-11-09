@@ -191,7 +191,7 @@ const StepThree = (props) => {
                       <Spinner size="sm" light={true} />
                     </div>
                   )}
-                  <Trans ns="submit">Submit</Trans>
+                  <Trans>Submit</Trans>
                 </Button>
               </div>
             </Form>

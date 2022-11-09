@@ -26,6 +26,7 @@
   "Advanced: Add by CSV": "Avanzado: Agregar por CSV",
   "Was not able to create the report, please review the form and try again.": "No se pudo crear el informe, por favor revisa el formulario e intenta de nuevo.",
   "It will appear on the <2>review queue page</2> within an hour.": "Aparecerá en la <2>página de la cola de revisión</2> dentro de una hora.",
+  "Incident Description": "Descripción del incidente",
   "Alleged developer of AI system": "Presunto desarrollador del sistema de IA",
   "Alleged deployer of AI system": "Presunto implementador del sistema de IA",
   "Alleged harmed or nearly harmed parties": "Partes presuntamente perjudicadas o casi perjudicadas",
@@ -42,5 +43,8 @@
   "Review queue": "Cola de revisión",
   "Author CSV": "Autor CSV",
   "Submitter CSV": "Reportador CSV",
-  "Enter a valid Incident ID": "Ingrese un ID de Incidente válido"
+  "Enter a valid Incident ID": "Ingrese un ID de Incidente válido",
+  "Step 1 - main information": "Step 1 - main information",
+  "Step 2 - additional information": "Step 2 - additional information",
+  "Step 3 - Tell us more": "Step 3 - Tell us more"
 }
