@@ -12,7 +12,7 @@ import { useUserContext } from 'contexts/userContext';
 import { useMenuContext } from 'contexts/MenuContext';
 import { Tooltip } from 'flowbite-react';
 
-const Sidebar = ({ defaultCollapsed = false }) => {
+const Sidebar = ({ defaultCollapsed = false, location }) => {
   const localizePath = useLocalizePath();
 
   const { t } = useTranslation();
@@ -53,7 +53,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
   const isUserLoggedIn = user && user.isLoggedIn && user.profile.email;
 
   const isAccountCurrentPath =
-    localizePath({ path: window.location.pathname }) ===
+    localizePath({ path: location.pathname }) ===
     localizePath({ path: isUserLoggedIn ? '/account' : '/login' });
 
   const LoginSignupNode = (
