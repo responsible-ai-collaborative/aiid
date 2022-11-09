@@ -69,7 +69,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
       <FontAwesomeIcon
         icon={faUser}
         className={`w-6 h-6 ${
-          isAccountCurrentPath ? 'text-white' : 'text-gray-500'
+          isAccountCurrentPath ? 'text-white' : 'text-gray-600'
         } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
         fixedWidth
       />
@@ -88,7 +88,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
       <aside
         className={`${
           !collapsedMenu ? 'md:w-64' : 'md:w-20'
-        } sticky relative top-0 transition-width duration-500`}
+        } relative top-0 transition-width duration-500 md:bg-gray-50 md:dark:bg-gray-800 h-full`}
         aria-label="Sidebar"
       >
         <span>
@@ -103,7 +103,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
         <div
           className={`${
             collapsedMenu ? 'overflow-hidden' : 'overflow-y-auto'
-          } pb-4 pt-2 px-3 bg-gray-50 rounded dark:bg-gray-800`}
+          } pb-4 pt-2 px-3 rounded bg-gray-50 dark:bg-gray-800`}
         >
           <ul className="space-y-2 list-none">
             <Tree
@@ -141,8 +141,8 @@ const Sidebar = ({ defaultCollapsed = false }) => {
           <FontAwesomeIcon
             icon={faChevronCircleLeft}
             color={'white'}
-            className={`hidden md:inline-block transition-rotate-180 duration-500 cursor-pointer fa fa-twitter-square fa-lg text-light-orange hover:text-gray-500 w-8 h-8 absolute  ${
-              collapsedMenu ? 'rotate-180 left-5 top-9' : '-right-5 top-9'
+            className={`scale-90 hidden md:inline-block transition-rotate-180 duration-500 cursor-pointer fa fa-twitter-square fa-lg text-light-orange hover:text-gray-500 w-8 h-8 absolute z-30 ${
+              collapsedMenu ? 'rotate-180 left-5 top-[2.375rem]' : 'right-28 top-[2.375rem]'
             }`}
             title={isCollapsed ? t('Expand') : t('Collapse')}
             onClick={() => {

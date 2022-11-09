@@ -24,7 +24,7 @@ const getIcon = (label, current = false) =>
       <FontAwesomeIcon
         icon={faDoorOpen}
         className={`w-6 h-6 ${
-          current ? 'text-white' : 'text-gray-500'
+          current ? 'text-white' : 'text-gray-600'
         } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
         fixedWidth
       />
@@ -33,7 +33,7 @@ const getIcon = (label, current = false) =>
       <FontAwesomeIcon
         icon={faSearch}
         className={`w-6 h-6 ${
-          current ? 'text-white' : 'text-gray-500'
+          current ? 'text-white' : 'text-gray-600'
         } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
         fixedWidth
       />
@@ -42,7 +42,7 @@ const getIcon = (label, current = false) =>
       <FontAwesomeIcon
         icon={faPlusCircle}
         className={`w-6 h-6 ${
-          current ? 'text-white' : 'text-gray-500'
+          current ? 'text-white' : 'text-gray-600'
         } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
         fixedWidth
       />
@@ -51,7 +51,7 @@ const getIcon = (label, current = false) =>
       <FontAwesomeIcon
         icon={faMedal}
         className={`w-6 h-6 ${
-          current ? 'text-white' : 'text-gray-500'
+          current ? 'text-white' : 'text-gray-600'
         } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
         fixedWidth
       />
@@ -60,7 +60,7 @@ const getIcon = (label, current = false) =>
       <FontAwesomeIcon
         icon={faSortAlphaDown}
         className={`w-6 h-6 ${
-          current ? 'text-white' : 'text-gray-500'
+          current ? 'text-white' : 'text-gray-600'
         } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
         fixedWidth
       />
@@ -69,7 +69,7 @@ const getIcon = (label, current = false) =>
       <FontAwesomeIcon
         icon={faNewspaper}
         className={`w-6 h-6 ${
-          current ? 'text-white' : 'text-gray-500'
+          current ? 'text-white' : 'text-gray-600'
         } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
         fixedWidth
       />
@@ -78,7 +78,7 @@ const getIcon = (label, current = false) =>
       <FontAwesomeIcon
         icon={faChartPie}
         className={`w-6 h-6 ${
-          current ? 'text-white' : 'text-gray-500'
+          current ? 'text-white' : 'text-gray-600'
         } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
         fixedWidth
       />
@@ -87,7 +87,7 @@ const getIcon = (label, current = false) =>
       <FontAwesomeIcon
         icon={faTable}
         className={`w-6 h-6 ${
-          current ? 'text-white' : 'text-gray-500'
+          current ? 'text-white' : 'text-gray-600'
         } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
         fixedWidth
       />
@@ -101,7 +101,7 @@ const getIcon = (label, current = false) =>
         fill="currentColor"
         stroke="none"
         className={`w-6 h-6 ${
-          current ? 'text-white' : 'text-gray-500'
+          current ? 'text-white' : 'text-gray-600'
         } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white`}
       >
         <circle id="c1" cx="1.4249661" cy="3.3814588" r="1.2797676" />
@@ -115,7 +115,7 @@ const getIcon = (label, current = false) =>
       <FontAwesomeIcon
         icon={faBuilding}
         className={`w-6 h-6 ${
-          current ? 'text-white' : 'text-gray-500'
+          current ? 'text-white' : 'text-gray-600'
         } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
         fixedWidth
       />
