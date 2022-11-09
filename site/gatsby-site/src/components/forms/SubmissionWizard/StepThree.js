@@ -163,7 +163,7 @@ const StepThree = (props) => {
                 schema={stepThreeValidationSchema}
               />
 
-              <div className="flex justify-between mt-4">
+              <div className="flex justify-between mt-8">
                 <Button
                   type="button"
                   color={'light'}
