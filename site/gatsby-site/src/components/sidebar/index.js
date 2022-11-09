@@ -4,13 +4,13 @@ import { ExternalLink } from 'react-feather';
 import config from '../../../config';
 import QuickAccess from 'components/discover/QuickAccess';
 import { Trans, useTranslation } from 'react-i18next';
-import LoginSignup from 'components/loginSignup';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { faChevronCircleLeft, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'gatsby';
 import { useUserContext } from 'contexts/userContext';
 import { useMenuContext } from 'contexts/MenuContext';
+import { Tooltip } from 'flowbite-react';
 
 const Sidebar = ({ defaultCollapsed = false }) => {
   const localizePath = useLocalizePath();
@@ -49,6 +49,38 @@ const Sidebar = ({ defaultCollapsed = false }) => {
       window.removeEventListener('resize', handleResize);
     };
   });
+
+  const isUserLoggedIn = user && user.isLoggedIn && user.profile.email;
+
+  const isAccountCurrentPath =
+    localizePath({ path: window.location.pathname }) ===
+    localizePath({ path: isUserLoggedIn ? '/account' : '/login' });
+
+  const LoginSignupNode = (
+    <Link
+      to={isUserLoggedIn ? '/account' : '/login'}
+      className={`flex rounded-lg items-center p-2 text-base font-normal group ${
+        isAccountCurrentPath
+          ? 'bg-light-orange text-white dark:bg-gray-700'
+          : 'text-gray-900 hover:bg-light-orange dark:text-white  hover:text-white dark:hover:bg-gray-700'
+      }`}
+    >
+      <FontAwesomeIcon
+        icon={faUser}
+        className={`w-6 h-6 ${
+          isAccountCurrentPath ? 'text-white' : 'text-gray-500'
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        fixedWidth
+      />
+      {!isCollapsed && (
+        <span>
+          <span className="ml-3 block">
+            <Trans>{isUserLoggedIn ? 'Account' : 'Subscribe'}</Trans>
+          </span>
+        </span>
+      )}
+    </Link>
+  );
 
   return (
     <>
@@ -95,26 +127,16 @@ const Sidebar = ({ defaultCollapsed = false }) => {
                 );
               }
             })}
+            <li className="border-t pt-2">
+              {isCollapsed ? (
+                <Tooltip content={isUserLoggedIn ? t('Account') : t('Subscribe')}>
+                  {LoginSignupNode}
+                </Tooltip>
+              ) : (
+                <>{LoginSignupNode}</>
+              )}
+            </li>
           </ul>
-          <div className="flex items-center justify-center w-full px-2 py-3 border-t">
-            {collapsedMenu ? (
-              <Link
-                to={user && user.isLoggedIn && user.profile.email ? '/account' : '/login'}
-                className={`flex rounded-lg items-center text-base font-normal group ${
-                  collapsedMenu ? 'justify-center' : ''
-                }`}
-              >
-                <FontAwesomeIcon
-                  className={`w-6 h-6 text-gray-500' transition duration-75 dark:text-gray-400 group-hover:text-gray-500 dark:group-hover:text-white pointer fa mr-1`}
-                  fixedWidth
-                  icon={faUser}
-                  title=""
-                />
-              </Link>
-            ) : (
-              <LoginSignup />
-            )}
-          </div>
           <FontAwesomeIcon
             icon={faChevronCircleLeft}
             color={'white'}
