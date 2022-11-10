@@ -11,7 +11,6 @@ import Link from 'components/ui/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import Wordlist from '../components/WordList';
 import { Trans } from 'react-i18next';
-import config from '../../config';
 
 const WordCloudCell = ({ wordCountsSorted, wordCloud }) => {
   const [mounted, setMounted] = useState(false);
@@ -39,7 +38,7 @@ const WordCounts = ({ pageContext, ...props }) => {
 
   return (
     <Layout {...props}>
-      <AiidHelmet canonicalUrl={config.gatsby.siteUrl + '/summaries/wordcounts'}>
+      <AiidHelmet canonicalUrl={'/summaries/wordcounts'}>
         <title>Word Counts</title>
       </AiidHelmet>
       <div className="titleWrapper">

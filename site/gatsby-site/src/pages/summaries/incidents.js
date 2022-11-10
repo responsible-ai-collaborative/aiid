@@ -5,7 +5,6 @@ import Button from 'react-bootstrap/Button';
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
-import config from '../../../config';
 
 const ReportList = ({ items }) => {
   return (
@@ -59,7 +58,7 @@ export default function Incidents({ data, ...props }) {
 
   return (
     <Layout {...props}>
-      <AiidHelmet canonicalUrl={config.gatsby.siteUrl + '/summaries/incidents'}>
+      <AiidHelmet canonicalUrl={'/summaries/incidents'}>
         <title>Incident List</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>

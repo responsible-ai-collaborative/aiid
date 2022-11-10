@@ -6,7 +6,6 @@ import { graphql } from 'gatsby';
 import React, { Fragment, useState } from 'react';
 import { Trans } from 'react-i18next';
 import { computeEntities, makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
-import config from '../../config';
 import AiidHelmet from 'components/AiidHelmet';
 
 const sortByReports = (a, b) => b.reports.length - a.reports.length;
@@ -19,7 +18,7 @@ const incidentFields = [
 ];
 
 const EntityPage = ({ pageContext, data, ...props }) => {
-  const { name, relatedEntities } = pageContext;
+  const { id, name, relatedEntities } = pageContext;
 
   const {
     incidentsAsDeployer,
@@ -77,10 +76,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
 
   return (
     <Layout {...props}>
-      <AiidHelmet
-        metaTitle={'Entity: ' + name}
-        canonicalUrl={config.gatsby.siteUrl + '/entities/' + name.toLowerCase()}
-      />
+      <AiidHelmet metaTitle={'Entity: ' + name} canonicalUrl={'/entities/' + id} />
       <h3>
         <Link to="/entities">
           <Trans ns="entities">Entities</Trans>

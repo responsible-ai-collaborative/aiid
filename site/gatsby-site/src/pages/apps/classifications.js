@@ -772,7 +772,7 @@ export default function ClassificationsDbView(props) {
       {...props}
       menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
     >
-      <AiidHelmet canonicalUrl={config.gatsby.siteUrl + '/apps/classifications'}>
+      <AiidHelmet canonicalUrl={'/apps/classifications'}>
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
       <CustomModal style={{ maxWidth: '80%' }} {...editClassificationModal} />

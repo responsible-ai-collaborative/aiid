@@ -3,7 +3,6 @@ import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
 import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
-import config from '../../../config';
 
 const ReportList = ({ report }) => (
   <dl data-cy="report" className="my-4 grid grid-cols-1 md:grid-cols-2 border-2 rounded">
@@ -65,7 +64,7 @@ export default function FlaggedIncidents({ data, ...props }) {
 
   return (
     <Layout {...props}>
-      <AiidHelmet canonicalUrl={config.gatsby.siteUrl + '/summaries/flagged'}>
+      <AiidHelmet canonicalUrl={'/summaries/flagged'}>
         <title>Incident List</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>

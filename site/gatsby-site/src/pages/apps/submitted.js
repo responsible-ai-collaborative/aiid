@@ -11,7 +11,6 @@ import { StyledHeading, StyledMainWrapper } from '../../components/styles/Docs';
 import SubmissionList from '../../components/submissions/SubmissionList';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Trans, useTranslation } from 'react-i18next';
-import config from '../../../config';
 
 const SubmittedIncidentsPage = ({ ...props }) => {
   const { isRole } = useUserContext();
@@ -80,7 +79,7 @@ const SubmittedIncidentsPage = ({ ...props }) => {
 
   return (
     <Layout {...props}>
-      <AiidHelmet canonicalUrl={config.gatsby.siteUrl + '/apps/submitted'}>
+      <AiidHelmet canonicalUrl={'/apps/submitted'}>
         <title>{t('Submitted Incident Report List')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>

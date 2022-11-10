@@ -3,7 +3,6 @@ import { StyledHeading } from 'components/styles/Docs';
 import { graphql } from 'gatsby';
 import React from 'react';
 import PostsListing from 'components/blog/PostsListing';
-import config from '../../../config';
 import AiidHelmet from 'components/AiidHelmet';
 
 export default function BlogPage(props) {
@@ -13,7 +12,7 @@ export default function BlogPage(props) {
 
   return (
     <Layout {...props}>
-      <AiidHelmet metaTitle={'AIID Blog'} canonicalUrl={config.gatsby.siteUrl + '/blog'} />
+      <AiidHelmet metaTitle={'AIID Blog'} canonicalUrl={'/blog'} />
       <div className={'titleWrapper'}>
         <StyledHeading>Blog</StyledHeading>
       </div>
