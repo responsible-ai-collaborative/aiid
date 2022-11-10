@@ -176,7 +176,7 @@ const SubmitForm = () => {
             <Link to={localizePath({ path: '/apps/submitted', language: locale })}>
               review queue page
             </Link>{' '}
-            within an hour.
+            right away.
           </Trans>
         ),
         severity: SEVERITY.success,

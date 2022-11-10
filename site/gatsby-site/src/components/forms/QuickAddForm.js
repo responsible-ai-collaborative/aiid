@@ -60,7 +60,7 @@ const QuickAddForm = ({ className = '' }) => {
           message: (
             <>
               {'Report successfully added to review queue. It will appear on the  '}
-              <LocalizedLink to="/apps/submitted">review queue page</LocalizedLink> within an hour.
+              <LocalizedLink to="/apps/submitted">review queue page</LocalizedLink> right away.
             </>
           ),
           severity: SEVERITY.success,

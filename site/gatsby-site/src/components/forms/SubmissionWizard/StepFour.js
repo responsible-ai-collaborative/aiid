@@ -23,7 +23,7 @@ const StepFour = () => {
               <Link to={localizedPath({ path: '/apps/submitted', language: locale })}>
                 review queue page
               </Link>{' '}
-              within an hour.
+              right away.
             </Trans>
             <div className="flex mt-4">
               <Link to={localizedPath({ path: '/apps/submitted', language: locale })}>
