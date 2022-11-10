@@ -1,31 +1,42 @@
-const processNotifications = require('../../../../realm/functions/processNotifications');
+const { SUBSCRIPTION_TYPE } = require('../../../src/utils/subscriptions');
 
-//should be on its own /cypress/unit folder or something
+const processNotifications = require('../../../../realm/functions/processNotifications');
 
 const pendingNotificationsToNewIncidents = [
   {
-    _id: '63616f37d0db19c07d0813d7',
-    type: 'new-incidents',
+    _id: '63616f37d0db19c07d081300',
+    type: SUBSCRIPTION_TYPE.newIncidents,
     incident_id: 217,
     processed: false,
   },
   {
-    _id: '63616f82d0db19c07d0813d8',
-    type: 'new-incidents',
+    _id: '63616f82d0db19c07d081301',
+    type: SUBSCRIPTION_TYPE.newIncidents,
     incident_id: 218,
     processed: false,
+  },
+];
+
+const pendingNotificationsToNewEntityIncidents = [
+  {
+    _id: '63616f82d0db19c07d081302',
+    type: SUBSCRIPTION_TYPE.entity,
+    incident_id: 219,
+    entity_id: 'google',
+    processed: false,
+    sentDate: '1668043573925',
   },
 ];
 
 const subscriptionsToNewIncidents = [
   {
     _id: '6356e39e863169c997309586',
-    type: 'new-incidents',
+    type: SUBSCRIPTION_TYPE.newIncidents,
     userId: '63320ce63ec803072c9f529c',
   },
   {
     _id: '6356e39e863169c997309586',
-    type: 'new-incidents',
+    type: SUBSCRIPTION_TYPE.newIncidents,
     userId: '63321072f27421740a80af29',
   },
 ];
@@ -68,19 +79,62 @@ const incidents = [
   },
 ];
 
+const entities = [
+  {
+    entity_id: 'google',
+    name: 'Google',
+  },
+  {
+    entity_id: 'facebook',
+    name: 'Facebook',
+  },
+  {
+    entity_id: 'boston-university',
+    name: 'Boston University',
+  },
+];
+
 describe('Functions', () => {
-  it('Should send pending notifications to New Incidents subscribers', () => {
+  it('New Incidents - Should send pending notifications', () => {
     const notificationsCollection = {
-      find: cy.stub().returns({
-        toArray: cy.stub().resolves(pendingNotificationsToNewIncidents),
-      }),
+      find: (() => {
+        const stub = cy.stub();
+
+        stub
+          .withArgs({ processed: false, type: SUBSCRIPTION_TYPE.newIncidents })
+          .returns({ toArray: () => pendingNotificationsToNewIncidents });
+
+        stub
+          .withArgs({ processed: false, type: SUBSCRIPTION_TYPE.entity })
+          .returns({ toArray: () => pendingNotificationsToNewEntityIncidents });
+
+        return stub;
+      })(),
       updateOne: cy.stub().resolves(),
     };
 
     const subscriptionsCollection = {
-      find: cy.stub().returns({
-        toArray: cy.stub().resolves(subscriptionsToNewIncidents),
-      }),
+      find: (() => {
+        const stub = cy.stub();
+
+        stub
+          .withArgs({ type: SUBSCRIPTION_TYPE.newIncidents })
+          .returns({
+            toArray: () =>
+              subscriptionsToNewIncidents.filter((n) => n.type == SUBSCRIPTION_TYPE.newIncidents),
+          });
+
+        for (const pendingNotification of pendingNotificationsToNewEntityIncidents) {
+          stub
+            .withArgs({ type: SUBSCRIPTION_TYPE.entity, entityId: pendingNotification.entity_id })
+            .returns({
+              toArray: () =>
+                subscriptionsToNewIncidents.filter((n) => n.type == SUBSCRIPTION_TYPE.entity),
+            });
+        }
+
+        return stub;
+      })(),
     };
 
     const incidentsCollection = {
@@ -99,6 +153,12 @@ describe('Functions', () => {
       })(),
     };
 
+    const entitiesCollection = {
+      find: cy.stub().returns({
+        toArray: cy.stub().resolves(entities),
+      }),
+    };
+
     global.context = {
       // @ts-ignore
       services: {
@@ -110,6 +170,7 @@ describe('Functions', () => {
               stub.withArgs('notifications').returns(notificationsCollection);
               stub.withArgs('subscriptions').returns(subscriptionsCollection);
               stub.withArgs('incidents').returns(incidentsCollection);
+              stub.withArgs('entities').returns(entitiesCollection);
 
               return stub;
             })(),
@@ -139,11 +200,11 @@ describe('Functions', () => {
     cy.wrap(processNotifications()).then(() => {
       expect(notificationsCollection.find.firstCall.args[0]).to.deep.equal({
         processed: false,
-        type: 'new-incidents',
+        type: SUBSCRIPTION_TYPE.newIncidents,
       });
 
       expect(subscriptionsCollection.find.firstCall.args[0]).to.deep.equal({
-        type: 'new-incidents',
+        type: SUBSCRIPTION_TYPE.newIncidents,
       });
 
       for (const subscription of subscriptionsToNewIncidents) {
@@ -187,7 +248,7 @@ describe('Functions', () => {
     });
   });
 
-  it('Should mark pending notifications as processed if there are no New Incidents subscribers', () => {
+  it('New Incidents - Should mark pending notifications as processed if there are no subscribers', () => {
     const notificationsCollection = {
       find: cy.stub().returns({
         toArray: cy.stub().resolves(pendingNotificationsToNewIncidents),
@@ -201,6 +262,12 @@ describe('Functions', () => {
       }),
     };
 
+    const entitiesCollection = {
+      find: cy.stub().returns({
+        toArray: cy.stub().resolves(entities),
+      }),
+    };
+
     global.context = {
       // @ts-ignore
       services: {
@@ -211,6 +278,7 @@ describe('Functions', () => {
 
               stub.withArgs('notifications').returns(notificationsCollection);
               stub.withArgs('subscriptions').returns(subscriptionsCollection);
+              stub.withArgs('entities').returns(entitiesCollection);
 
               return stub;
             })(),
@@ -240,11 +308,11 @@ describe('Functions', () => {
     cy.wrap(processNotifications()).then(() => {
       expect(notificationsCollection.find.firstCall.args[0]).to.deep.equal({
         processed: false,
-        type: 'new-incidents',
+        type: SUBSCRIPTION_TYPE.newIncidents,
       });
 
       expect(subscriptionsCollection.find.firstCall.args[0]).to.deep.equal({
-        type: 'new-incidents',
+        type: SUBSCRIPTION_TYPE.newIncidents,
       });
 
       for (let i = 0; i < pendingNotificationsToNewIncidents.length; i++) {
