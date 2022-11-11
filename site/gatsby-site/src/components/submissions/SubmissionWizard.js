@@ -2,7 +2,6 @@ import useToastContext, { SEVERITY } from 'hooks/useToast';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { getCloudinaryPublicID } from 'utils/cloudinary';
-import getSourceDomain from 'utils/getSourceDomain';
 import StepOne from '../forms/SubmissionWizard/StepOne';
 import StepTwo from '../forms/SubmissionWizard/StepTwo';
 import StepThree from '../forms/SubmissionWizard/StepThree';
@@ -142,19 +141,6 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
       submitForm(values, last);
     }
   };
-
-  useEffect(() => {
-    try {
-      const url = new URL(data?.url);
-
-      setData({
-        ...data,
-        source_domain: getSourceDomain(url),
-      });
-    } catch (e) {
-      // eslint-disable-next-line no-empty
-    } // just ignore it
-  }, [data?.url]);
 
   useEffect(() => {
     const steps = [

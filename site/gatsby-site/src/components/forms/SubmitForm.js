@@ -18,6 +18,7 @@ import useLocalizePath from 'components/i18n/useLocalizePath';
 import { graphql, useStaticQuery } from 'gatsby';
 import { processEntities } from '../../utils/entities';
 import SubmissionWizard from '../submissions/SubmissionWizard';
+import getSourceDomain from 'utils/getSourceDomain';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -134,8 +135,13 @@ const SubmitForm = () => {
     try {
       const date_submitted = format(new Date(), 'yyyy-MM-dd');
 
+      const url = new URL(values?.url);
+
+      const source_domain = getSourceDomain(url);
+
       const submission = {
         ...values,
+        source_domain,
         incident_id: !values.incident_id || values.incident_id == '' ? 0 : values.incident_id,
         date_submitted,
         date_modified: date_submitted,
