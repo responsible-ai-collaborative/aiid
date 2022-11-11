@@ -5,78 +5,47 @@ import { fill } from '@cloudinary/base/actions/resize';
 import md5 from 'md5';
 import { formatISO, format, parse } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { useLocalization } from 'gatsby-theme-i18n';
 import WebArchiveLink from 'components/ui/WebArchiveLink';
 import ReportText from 'components/reports/ReportText';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import Link from 'components/ui/Link';
 
+/**
+ * @typedef {Object} IncidentReportCardProps
+ * @property title
+ * @property cloudinary_id
+ * @property image_url
+ * @property reports
+ * @property reportsCount
+ * @property link
+ * @property date
+ * @property parsedDate
+ * @property source_domain
+ * @property url
+ * @property text
+ * @property report_number
+ * @property language
+ * @property incident_id
+ * @property loading
+ * @property textMaxChars
+ * @property imagePosition
+ * @property dateFormat
+ * @property truncateTitle
+ * @property children
+ * @property className
+ * @property style
+ * @property id
+ * @property onMouseEnter
+ * @property onMouseLeave
+ *
+ * @param {IncidentReportCardProps} props
+ */
 export default function IncidentReportCard(props) {
-  let {
-    title,
-    cloudinary_id,
-    image_url,
-    reports,
-    reportsCount,
-    link,
-    date,
-    parsedDate,
-    source_domain,
-    url,
-    text,
-    report_number,
-    language,
+  const propsWithDefaults = pickDefaults(props);
 
-    // If the card represents a report,
-    // the incident_id is the id of the corresponding incident.
-    incident_id,
-
-    // Card state
-    loading = false,
-
-    // Card config
-    textMaxChars,
-    imagePosition,
-    dateFormat = 'MMM yyyy',
-    truncateTitle = false,
-
-    // React
-    children,
-    className,
-    style,
-    id,
-    onMouseEnter,
-    onMouseLeave,
-  } = props;
-
-  if (!cloudinary_id && cloudinary_id !== false && reports?.length > 0) {
-    for (const report of reports) {
-      cloudinary_id ||= report.cloudinary_id;
-    }
-  }
-  console.log(`title`, title);
-  console.log(`language`, language);
-
-  parsedDate = date && !parsedDate ? parse(date, 'yyyy-MM-dd', new Date()) : null;
-
-  if (incident_id) {
-    link = `/cite/${incident_id}` + (report_number ? `#r${report_number}` : '');
-  } else if (url) {
-    link = url;
-  }
-
-  if (children) {
-    if (Array.isArray(children)) {
-      children = React.Children.toArray(children);
-    } else {
-      children = React.Children.toArray([children]);
-    }
-  }
-
-  style ||= {};
-
-  if (!style.maxWidth) {
-    style.maxWidth = '100%';
-  }
+  const { loading, imagePosition, className, style, id, onMouseEnter, onMouseLeave } =
+    propsWithDefaults;
 
   return (
     <div data-cy={props['data-cy']} {...{ id, className, style, onMouseEnter, onMouseLeave }}>
@@ -85,74 +54,192 @@ export default function IncidentReportCard(props) {
           <div className="text-center">
             <Spinner size="xl" />
           </div>
+        ) : imagePosition == 'left' ? (
+          <HorizontalCardLayout {...propsWithDefaults}>
+            <CardBody {...propsWithDefaults} />
+          </HorizontalCardLayout>
         ) : (
-          <div
-            data-cy="card-inner"
-            className={
-              'h-full flex justify-start flex-col ' + (imagePosition == 'left' ? 'md:flex-row' : '')
-            }
-          >
-            {(cloudinary_id || image_url) && (
-              <CardImage {...{ imagePosition, cloudinary_id, image_url, link }} />
-            )}
-            <div data-cy="card-content" className="h-full flex flex-col">
-              {children.filter((child) => child.props.position == 'header')}
-
-              <CardTitle {...{ title, truncateTitle, maxLength: 80, link }} />
-              <Subtitle
-                {...{ parsedDate, reportsCount, source_domain, url, language, dateFormat }}
-              />
-              {text && (
-                <div>
-                  <ReportText text={text} maxChars={textMaxChars} />
-                </div>
-              )}
-              {children.filter(
-                (child) => child.props.position == 'footer' || child.props.position == 'bottomRight'
-              )}
-            </div>
-          </div>
+          <VerticalCardLayout {...propsWithDefaults}>
+            <CardBody {...propsWithDefaults} />
+          </VerticalCardLayout>
         )}
       </Card>
     </div>
   );
 }
 
-function CardImage({ imagePosition, cloudinary_id, image_url, link }) {
+function CardBody(props) {
+  console.log(`CardBody props`, props);
+  const {
+    children,
+
+    parsedDate,
+    dateFormat,
+    reportsCount,
+    source_domain,
+    language,
+
+    text,
+    textMaxChars,
+    title,
+    titleMaxChars,
+    link,
+    url,
+  } = props;
+
+  const { locale } = useLocalization();
+
+  const { t } = useTranslation();
+
   return (
-    <Link
-      to={link}
-      data-cy="image-container"
-      className={
-        '-m-6 mb-6 block ' +
-        (imagePosition == 'left'
-          ? 'md:h-full md:-m-6 md:mr-10 md:w-96 md:max-w-[33%] md:shrink-0'
-          : '')
-      }
-    >
-      <Image
-        className={
-          'object-cover w-full sm:aspect-[16/9] rounded-t-lg ' +
-          (imagePosition == 'left'
-            ? 'md:absolute md:bottom-0 md:top-0 md:left-0 md:w-96 md:max-w-[33%] md:h-full md:rounded-l-lg md:rounded-r-none'
-            : 'aspect-[16/9] max-h-[50vh]')
-        }
-        publicID={cloudinary_id || (image_url && `legacy/${md5(image_url)}`)}
-        transformation={fill().width(900)}
-        alt=""
-      />
-    </Link>
+    <>
+      {children.filter((child) => child.props.position == 'header')}
+
+      <CardTitle {...{ title, titleMaxChars, link }} />
+      <Subtitle>
+        {parsedDate && (
+          <time dateTime={formatISO(parsedDate)}>{format(parsedDate, dateFormat)}</time>
+        )}
+        {reportsCount > 0 && (
+          <>
+            {reportsCount} {reportsCount == 1 ? t('report') : t('reports')}{' '}
+          </>
+        )}
+        {source_domain && <WebArchiveLink url={url}>{source_domain}</WebArchiveLink>}
+        {language && language != locale && (
+          <TranslationBadge originalLanguage={language} className="my-2 mr-1" />
+        )}
+      </Subtitle>
+      {text && (
+        <div>
+          <ReportText text={text} maxChars={textMaxChars} />
+        </div>
+      )}
+      {children.filter(
+        (child) => child.props.position == 'footer' || child.props.position == 'bottomRight'
+      )}
+    </>
   );
 }
 
-function CardTitle({ title, truncateTitle, maxLength, link }) {
+function HorizontalCardLayout(props) {
+  const { dateFormat, cloudinary_id, image_url, link, children } = props;
+
+  console.log('HorizontalCardLayout', `dateFormat`, dateFormat);
+  return (
+    <div data-cy="card-inner" className="h-full flex justify-start flex-col md:flex-row">
+      {(cloudinary_id || image_url) && (
+        <Link
+          to={link}
+          data-cy="image-container"
+          className="-m-6 mb-6 block md:h-full md:-m-6 md:mr-10 md:w-96 md:max-w-[33%] md:shrink-0"
+        >
+          <Image
+            className="
+              object-cover
+              w-full
+              rounded-t-lg
+              sm:aspect-[16/9]
+
+              md:absolute
+              md:bottom-0
+              md:top-0
+              md:left-0
+
+              md:h-full
+              md:w-96
+              md:max-w-[33%]
+
+              md:rounded-l-lg
+              md:rounded-r-none
+            "
+            publicID={cloudinary_id || (image_url && `legacy/${md5(image_url)}`)}
+            transformation={fill().width(900)}
+            alt=""
+          />
+        </Link>
+      )}
+      <div data-cy="card-content" className="h-full flex flex-col">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function VerticalCardLayout(props) {
+  const { cloudinary_id, image_url, link, children } = props;
+
+  return (
+    <div data-cy="card-inner" className="h-full flex justify-start flex-col">
+      {(cloudinary_id || image_url) && (
+        <Link to={link} data-cy="image-container" className={'-m-6 mb-6 block'}>
+          <Image
+            className="object-cover w-full sm:aspect-[16/9] rounded-t-lg aspect-[16/9] max-h-[50vh]"
+            publicID={cloudinary_id || (image_url && `legacy/${md5(image_url)}`)}
+            transformation={fill().width(900)}
+            alt=""
+          />
+        </Link>
+      )}
+      <div data-cy="card-content" className="h-full flex flex-col">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function pickDefaults(props) {
+  let p = { ...props };
+
+  p.dateFormat ||= 'MMM yyyy';
+
+  p.date ||= p.date_published;
+  p.date ||= p.incident_date;
+
+  p.parsedDate = p.date && !p.parsedDate ? parse(p.date, 'yyyy-MM-dd', new Date()) : null;
+
+  p.reportsCount = p.reports?.length;
+
+  if (p.url) {
+    p.source_domain = new URL(p.url).hostname.replace(/^www\./, '');
+  }
+
+  if (!p.cloudinary_id && p.cloudinary_id !== false && p.reports?.length > 0) {
+    for (const report of p.reports) {
+      p.cloudinary_id ||= report.cloudinary_id;
+    }
+  }
+
+  if (p.incident_id && !p.link) {
+    p.link = `/cite/${p.incident_id}` + (p.report_number ? `#r${p.report_number}` : '');
+  } else if (p.url) {
+    p.link = p.url;
+  }
+
+  if (p.children) {
+    if (Array.isArray(p.children)) {
+      p.children = React.Children.toArray(p.children);
+    } else {
+      p.children = React.Children.toArray([p.children]);
+    }
+  }
+
+  p.style ||= {};
+  if (!p.style.maxWidth) {
+    p.style.maxWidth = '100%';
+  }
+
+  return p;
+}
+
+function CardTitle({ title, titleMaxChars, link }) {
   let truncatedTitle = null;
 
-  if (truncateTitle) {
+  if (titleMaxChars) {
     for (const word of title.split(' ')) {
       const extendedTitle = truncatedTitle ? truncatedTitle + ' ' + word : word;
 
-      if (extendedTitle.length <= maxLength) {
+      if (extendedTitle.length <= titleMaxChars) {
         truncatedTitle = extendedTitle;
       } else {
         truncatedTitle += '…';
@@ -168,40 +255,27 @@ function CardTitle({ title, truncateTitle, maxLength, link }) {
         data-cy="cite-link"
         className="text-gray-900 dark:text-white hover:text-primary-blue"
       >
-        {truncateTitle ? truncatedTitle : title}
+        {titleMaxChars ? truncatedTitle : title}
       </Link>
     </h3>
   );
 }
 
-function Subtitle({ parsedDate, reportsCount, source_domain, url, language, dateFormat }) {
-  const { t } = useTranslation();
-
+function Subtitle({ children }) {
   return (
     <div data-cy="subtitle" className="text-muted-gray text-sm">
-      {[
-        parsedDate && (
-          <time dateTime={formatISO(parsedDate)}>{format(parsedDate, dateFormat)}</time>
-        ),
-        reportsCount > 0 && (
-          <>
-            {reportsCount} {reportsCount == 1 ? t('report') : t('reports')}{' '}
-          </>
-        ),
-        source_domain && <WebArchiveLink url={url}>{source_domain}</WebArchiveLink>,
-      ]
-        .filter((item) => item)
-        .reduce((items, item, i) => {
+      {children
+        .filter((child) => child)
+        .reduce((items, child, i) => {
           if (i > 0) {
             items.push(<> · </>);
           }
-          items.push(item);
+          items.push(child);
           return items;
         }, [])
         .map((item, i) => (
           <span key={i}>{item}</span>
         ))}
-      {language && <TranslationBadge originalLanguage={language} className="my-2 mr-1" />}
     </div>
   );
 }

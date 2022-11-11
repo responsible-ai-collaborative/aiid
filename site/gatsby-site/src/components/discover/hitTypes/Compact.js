@@ -11,7 +11,7 @@ export default function Compact({
   setExpandFilters,
 }) {
   return (
-    <IncidentReportCard {...item} text={undefined} data-cy={item.mongodb_id} truncateTitle={true}>
+    <IncidentReportCard {...item} text={undefined} data-cy={item.mongodb_id} titleMaxChars={80}>
       <CardChild className="justify-around mt-auto flex-wrap w-full" position="footer">
         <Actions
           {...{

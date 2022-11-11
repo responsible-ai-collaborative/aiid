@@ -292,7 +292,7 @@ function PlotPoint({
           {...incidentData}
           loading={!incidentData}
           reportsCount={false}
-          truncateTitle={true}
+          titleMaxChars={80}
           data-cy="incident-card"
           style={{
             top: onTop ? `calc(50% + 48% * ${incident.tsne.y} + ${scaleMultiplier}em)` : undefined,
