@@ -9,9 +9,6 @@ const Wrapper = styled.div`
   font-family: Karla, sans-serif !important;
   font-weight: bold;
   color: #001934;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   a {
     color: #001934 !important;
   }
@@ -22,13 +19,13 @@ export default function DiscoverQuickAccess({ className = '', isCollapsed = fals
     <Wrapper
       className={`${className} ${
         isCollapsed ? 'invisible' : ''
-      } px-4 pt-4 pb-1 md:bg-text-light-gray h-24`}
+      } px-4 pt-4 pb-1 md:bg-text-light-gray h-24 flex items-center justify-between gap-2`}
     >
       <LocalizedLink
         to="/apps/discover"
-        className={`ml-3 fs-5 border-1 border-transparent rounded cursor-pointer inline-block text-base font-normal text-center no-underline select-none align-middle transition-btn shadow w-1/2 ${
+        className={`fs-5 border-1 border-transparent rounded cursor-pointer inline-block text-base font-normal text-center no-underline select-none align-middle transition-btn shadow w-1/2 ${
           isCollapsed ? 'py-1 px-1' : 'pb-2 py-1.5 px-2 h-16'
-        }  bg-white hover:bg-blue-700 hover:text-white`}
+        }  bg-white hover:bg-blue-700 hover:text-white flex-1`}
       >
         <div className={`${isCollapsed ? '' : 'text-2xl'}`}>
           <FontAwesomeIcon icon={faSearch} />
@@ -43,9 +40,9 @@ export default function DiscoverQuickAccess({ className = '', isCollapsed = fals
       </LocalizedLink>
       <LocalizedLink
         to="/apps/submit"
-        className={`ml-3 fs-5 border-1 border-transparent rounded cursor-pointer inline-block text-base font-normal text-center no-underline select-none align-middle transition-btn shadow w-1/2 ${
+        className={`fs-5 border-1 border-transparent rounded cursor-pointer inline-block text-base font-normal text-center no-underline select-none align-middle transition-btn shadow w-1/2 ${
           isCollapsed ? 'py-1 px-1' : 'pb-2 py-1.5 px-2 h-16'
-        }  bg-white hover:bg-blue-700 hover:text-white`}
+        }  bg-white hover:bg-blue-700 hover:text-white flex-1`}
       >
         <div className={`${isCollapsed ? '' : 'text-2xl'}`}>
           <FontAwesomeIcon icon={faPlus} />

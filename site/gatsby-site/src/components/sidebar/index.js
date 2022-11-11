@@ -88,12 +88,12 @@ const Sidebar = ({ defaultCollapsed = false }) => {
       <aside
         className={`${
           !collapsedMenu ? 'md:w-64' : 'md:w-20'
-        } sticky relative top-0 transition-width duration-500`}
+        } sticky relative top-0 transition-width duration-500 bg-text-light-gray`}
         aria-label="Sidebar"
       >
-        <span>
+        <div className={`md:bg-text-light-gray ${!collapsedMenu ? 'md:w-56' : ''}`}>
           <QuickAccess isCollapsed={collapsedMenu} />
-        </span>
+        </div>
         {config.sidebar.title ? (
           <div
             className={'tw-hidden-mobile'}
@@ -141,8 +141,8 @@ const Sidebar = ({ defaultCollapsed = false }) => {
           <FontAwesomeIcon
             icon={faChevronCircleLeft}
             color={'white'}
-            className={`hidden md:inline-block transition-rotate-180 duration-500 cursor-pointer fa fa-twitter-square fa-lg text-light-orange hover:text-gray-500 w-8 h-8 absolute  ${
-              collapsedMenu ? 'rotate-180 left-5 top-9' : '-right-5 top-9'
+            className={`hidden md:inline-block transition-rotate-180 duration-500 cursor-pointer fa fa-twitter-square fa-lg text-light-orange hover:text-gray-500 absolute  ${
+              collapsedMenu ? 'rotate-180 left-5 top-9 w-8 h-8 ' : 'right-3 top-11 w-6 h-6 '
             }`}
             title={isCollapsed ? t('Expand') : t('Collapse')}
             onClick={() => {
