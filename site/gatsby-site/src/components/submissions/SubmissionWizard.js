@@ -31,7 +31,7 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
       } catch (error) {
         setTimeout(() => {
           setSubmissionFailed(true);
-        }, 100);
+        }, 0);
         throw error;
       }
       setCurrentStep(steps.length - 1);
