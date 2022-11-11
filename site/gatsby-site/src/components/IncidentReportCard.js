@@ -56,11 +56,11 @@ export default function IncidentReportCard(props) {
           </div>
         ) : imagePosition == 'left' ? (
           <HorizontalCardLayout {...propsWithDefaults}>
-            <CardBody {...propsWithDefaults} />
+            <IncidentReportCardBody {...propsWithDefaults} />
           </HorizontalCardLayout>
         ) : (
           <VerticalCardLayout {...propsWithDefaults}>
-            <CardBody {...propsWithDefaults} />
+            <IncidentReportCardBody {...propsWithDefaults} />
           </VerticalCardLayout>
         )}
       </Card>
@@ -68,8 +68,7 @@ export default function IncidentReportCard(props) {
   );
 }
 
-function CardBody(props) {
-  console.log(`CardBody props`, props);
+function IncidentReportCardBody(props) {
   const {
     children,
 
@@ -121,6 +120,55 @@ function CardBody(props) {
     </>
   );
 }
+
+// Derives the values to display in an IncidentReportCard
+function pickDefaults(props) {
+  let p = { ...props };
+
+  p.dateFormat ||= 'MMM yyyy';
+
+  p.date ||= p.date_published;
+  p.date ||= p.incident_date;
+
+  p.parsedDate = p.date && !p.parsedDate ? parse(p.date, 'yyyy-MM-dd', new Date()) : null;
+
+  p.reportsCount = p.reports?.length;
+
+  if (p.url) {
+    p.source_domain = new URL(p.url).hostname.replace(/^www\./, '');
+  }
+
+  if (!p.cloudinary_id && p.cloudinary_id !== false && p.reports?.length > 0) {
+    for (const report of p.reports) {
+      p.cloudinary_id ||= report.cloudinary_id;
+    }
+  }
+
+  if (p.incident_id && !p.link) {
+    p.link = `/cite/${p.incident_id}` + (p.report_number ? `#r${p.report_number}` : '');
+  } else if (p.url) {
+    p.link = p.url;
+  }
+
+  if (p.children) {
+    if (Array.isArray(p.children)) {
+      p.children = React.Children.toArray(p.children);
+    } else {
+      p.children = React.Children.toArray([p.children]);
+    }
+  }
+
+  p.style ||= {};
+  if (!p.style.maxWidth) {
+    p.style.maxWidth = '100%';
+  }
+
+  return p;
+}
+
+// The components from here on out should only contain display logic,
+// and could potentially be used for things
+// that aren't that much like AI incidents.
 
 function HorizontalCardLayout(props) {
   const { dateFormat, cloudinary_id, image_url, link, children } = props;
@@ -186,50 +234,6 @@ function VerticalCardLayout(props) {
       </div>
     </div>
   );
-}
-
-function pickDefaults(props) {
-  let p = { ...props };
-
-  p.dateFormat ||= 'MMM yyyy';
-
-  p.date ||= p.date_published;
-  p.date ||= p.incident_date;
-
-  p.parsedDate = p.date && !p.parsedDate ? parse(p.date, 'yyyy-MM-dd', new Date()) : null;
-
-  p.reportsCount = p.reports?.length;
-
-  if (p.url) {
-    p.source_domain = new URL(p.url).hostname.replace(/^www\./, '');
-  }
-
-  if (!p.cloudinary_id && p.cloudinary_id !== false && p.reports?.length > 0) {
-    for (const report of p.reports) {
-      p.cloudinary_id ||= report.cloudinary_id;
-    }
-  }
-
-  if (p.incident_id && !p.link) {
-    p.link = `/cite/${p.incident_id}` + (p.report_number ? `#r${p.report_number}` : '');
-  } else if (p.url) {
-    p.link = p.url;
-  }
-
-  if (p.children) {
-    if (Array.isArray(p.children)) {
-      p.children = React.Children.toArray(p.children);
-    } else {
-      p.children = React.Children.toArray([p.children]);
-    }
-  }
-
-  p.style ||= {};
-  if (!p.style.maxWidth) {
-    p.style.maxWidth = '100%';
-  }
-
-  return p;
 }
 
 function CardTitle({ title, titleMaxChars, link }) {
