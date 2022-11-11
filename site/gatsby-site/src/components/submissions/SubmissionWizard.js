@@ -15,15 +15,25 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
 
   const [steps, setSteps] = useState([]);
 
+  const [submissionFailed, setSubmissionFailed] = useState(false);
+
   const [parsingNews, setParsingNews] = useState(false);
 
   const stepsRef = useRef(null);
 
   const handleNextStep = async (newData, final = false) => {
+    setSubmissionFailed(false);
     setData((prev) => ({ ...prev, ...newData }));
 
     if (final) {
-      await submitForm({ ...data, ...newData });
+      try {
+        await submitForm({ ...data, ...newData });
+      } catch (error) {
+        setTimeout(() => {
+          setSubmissionFailed(true);
+        }, 0);
+        throw error;
+      }
       setCurrentStep(steps.length - 1);
     } else {
       setCurrentStep((prev) => prev + 1);
@@ -156,6 +166,7 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
         parseNewsUrl={parseNewsUrl}
         parsingNews={parsingNews}
         validateAndSubmitForm={validateAndSubmitForm}
+        submissionFailed={submissionFailed}
       />,
       <StepTwo
         key={'submission-step-2'}
@@ -164,6 +175,7 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
         data={data}
         name="Step 2 - additional information"
         validateAndSubmitForm={validateAndSubmitForm}
+        submissionFailed={submissionFailed}
       />,
       <StepThree
         key={'submission-step-3'}
@@ -171,12 +183,13 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
         previous={handlePreviousStep}
         data={data}
         name="Step 3 - Tell us more"
+        submissionFailed={submissionFailed}
       />,
       <StepFour key={'submission-step-4'} />,
     ];
 
     setSteps(steps);
-  }, [data]);
+  }, [data, submissionFailed]);
 
   return <div ref={stepsRef}>{steps[currentStep]}</div>;
 };

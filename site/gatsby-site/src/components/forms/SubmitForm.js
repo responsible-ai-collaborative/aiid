@@ -190,6 +190,7 @@ const SubmitForm = () => {
         ),
         severity: SEVERITY.warning,
       });
+      throw e;
     }
   };
 
