@@ -220,6 +220,7 @@ function PlotPoint({
         })
         .then((res) => {
           setIncidentData(res.data.incident);
+          console.log(`res.data.incident`, res.data.incident);
         });
     }
   };
@@ -288,8 +289,8 @@ function PlotPoint({
 
       {hover && (
         <IncidentReportCard
+          {...incidentData}
           loading={!incidentData}
-          incident={incidentData}
           reportsCount={false}
           truncateTitle={true}
           data-cy="incident-card"

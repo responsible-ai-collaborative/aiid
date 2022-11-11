@@ -12,12 +12,7 @@ export default function Details({
   setExpandFilters,
 }) {
   return (
-    <IncidentReportCard
-      report={item}
-      textMaxChars={400}
-      imagePosition="left"
-      data-cy={item.mongodb_id}
-    >
+    <IncidentReportCard {...item} textMaxChars={400} imagePosition="left" data-cy={item.mongodb_id}>
       <CardChild position="footer" className="justify-around flex-wrap w-auto">
         <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />
         <Actions

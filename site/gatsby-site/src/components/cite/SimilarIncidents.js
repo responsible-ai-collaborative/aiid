@@ -24,8 +24,10 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   const addToast = useToastContext();
 
+  console.log(`incident`, incident);
+
   return (
-    <IncidentReportCard incident={incident} data-cy="similar-incident-card">
+    <IncidentReportCard {...incident} data-cy="similar-incident-card">
       <CardChild position="bottomRight">
         {flaggable && (
           <Button

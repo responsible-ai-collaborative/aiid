@@ -12,7 +12,7 @@ export default function Details({
 }) {
   return (
     <IncidentReportCard
-      report={item}
+      {...item}
       textMaxChars={400 - item.title.length * 2}
       data-cy={item.mongodb_id}
     >

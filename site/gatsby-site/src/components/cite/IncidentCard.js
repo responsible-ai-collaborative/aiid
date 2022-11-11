@@ -10,11 +10,7 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
   const { isRole, loading } = useUserContext();
 
   return (
-    <IncidentReportCard
-      id={`r${item.report_number}`}
-      report={item}
-      className="mt-2 mb-2 IncidentCard"
-    >
+    <IncidentReportCard {...item} id={`r${item.report_number}`} className="mt-2 mb-2 IncidentCard">
       <CardChild position="footer" className="justify-around text-muted-gray">
         <Actions
           item={item}

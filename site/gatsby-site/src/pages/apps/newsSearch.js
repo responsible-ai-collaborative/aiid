@@ -151,7 +151,7 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
 
   return (
     <IncidentReportCard
-      report={newsArticle}
+      {...newsArticle}
       text={false}
       dateFormat="MMM d"
       {...{ source_domain, title }}
