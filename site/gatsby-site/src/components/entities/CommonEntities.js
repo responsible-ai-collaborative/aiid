@@ -11,7 +11,7 @@ import amazon from '../../images/amazon.svg';
 import youtube from '../../images/youtube.svg';
 
 export default function CommonEntities() {
-  const { incidents } = useStaticQuery(graphql`
+  const { incidents, entities: entitiesData } = useStaticQuery(graphql`
     {
       incidents: allMongodbAiidprodIncidents {
         nodes {
@@ -24,12 +24,18 @@ export default function CommonEntities() {
           Alleged_harmed_or_nearly_harmed_parties
         }
       }
+      entities: allMongodbAiidprodEntities {
+        nodes {
+          entity_id
+          name
+        }
+      }
     }
   `);
 
   const commonEntities = useMemo(
     () =>
-      computeEntities({ incidents: incidents.nodes })
+      computeEntities({ incidents: incidents.nodes, entities: entitiesData.nodes })
         .sort(
           (a, b) =>
             b.incidentsAsBoth.length +
@@ -50,7 +56,7 @@ export default function CommonEntities() {
           <Trans ns="entities">View all entities</Trans>
         </Link>
       </div>
-      <div className="grid lg:grid-cols-3 gap-4">
+      <div className="grid lg:grid-cols-3 gap-4 md:gap-6">
         {commonEntities.map((entity, index) => {
           const incidentsCount = entity.incidentsAsBoth.length + entity.incidentsAsDeployer.length;
 

@@ -8,15 +8,17 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, parse } from 'date-fns';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
+import { UPSERT_ENTITY } from '../../graphql/entities';
 import isString from 'lodash/isString';
-import SubmissionForm, { schema } from 'components/submissions/SubmissionForm';
-import { Formik } from 'formik';
 import { stripMarkdown } from 'utils/typography';
 import isArray from 'lodash/isArray';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
-import { Spinner } from 'flowbite-react';
+import { graphql, useStaticQuery } from 'gatsby';
+import { processEntities } from '../../utils/entities';
+import SubmissionWizard from '../submissions/SubmissionWizard';
+import getSourceDomain from 'utils/getSourceDomain';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -62,6 +64,19 @@ const SubmitForm = () => {
     harmed_parties: [],
   });
 
+  const {
+    entities: { nodes: allEntities },
+  } = useStaticQuery(graphql`
+    {
+      entities: allMongodbAiidprodEntities {
+        nodes {
+          entity_id
+          name
+        }
+      }
+    }
+  `);
+
   useEffect(() => {
     const queryParams = { ...query };
 
@@ -73,6 +88,8 @@ const SubmitForm = () => {
 
     setSubmission(queryParams);
   }, []);
+
+  const [displayCsvSection] = useState(false);
 
   const [csvData, setCsvData] = useState([]);
 
@@ -89,13 +106,15 @@ const SubmitForm = () => {
 
   const [insertSubmission] = useMutation(INSERT_SUBMISSION, { refetchQueries: [FIND_SUBMISSIONS] });
 
+  const [createEntityMutation] = useMutation(UPSERT_ENTITY);
+
   useEffect(() => {
     if (csvData[csvIndex]) {
       setSubmission(csvData[csvIndex]);
     }
   }, [csvIndex, csvData]);
 
-  const handleCSVError = (err, file, inputElem, reason) => {
+  const handleCSVError = (_err, _file, _inputElem, reason) => {
     addToast({
       message: t(`Unable to upload: `) + reason,
       severity: SEVERITY.danger,
@@ -112,13 +131,18 @@ const SubmitForm = () => {
 
   const localizePath = useLocalizePath();
 
-  const handleSubmit = async (values, { resetForm }) => {
+  const handleSubmit = async (values) => {
     try {
       const date_submitted = format(new Date(), 'yyyy-MM-dd');
 
+      const url = new URL(values?.url);
+
+      const source_domain = getSourceDomain(url);
+
       const submission = {
         ...values,
-        incident_id: values.incident_id == '' ? 0 : values.incident_id,
+        source_domain,
+        incident_id: !values.incident_id || values.incident_id == '' ? 0 : values.incident_id,
         date_submitted,
         date_modified: date_submitted,
         authors: isString(values.authors) ? values.authors.split(',') : values.authors,
@@ -129,16 +153,27 @@ const SubmitForm = () => {
           : ['Anonymous'],
         plain_text: await stripMarkdown(values.text),
         embedding: values.embedding || undefined,
-        developers: isString(values.developers) ? values.developers.split(',') : values.developers,
-        deployers: isString(values.deployers) ? values.deployers.split(',') : values.deployers,
-        harmed_parties: isString(values.harmed_parties)
-          ? values.harmed_parties.split(',')
-          : values.harmed_parties,
       };
 
-      await insertSubmission({ variables: { submission } });
+      submission.deployers = await processEntities(
+        allEntities,
+        values.deployers,
+        createEntityMutation
+      );
 
-      resetForm();
+      submission.developers = await processEntities(
+        allEntities,
+        values.developers,
+        createEntityMutation
+      );
+
+      submission.harmed_parties = await processEntities(
+        allEntities,
+        values.harmed_parties,
+        createEntityMutation
+      );
+
+      await insertSubmission({ variables: { submission } });
 
       addToast({
         message: (
@@ -161,62 +196,28 @@ const SubmitForm = () => {
         ),
         severity: SEVERITY.warning,
       });
+      throw e;
     }
   };
 
   return (
     <div className="my-5">
-      <Formik
-        validationSchema={schema}
-        onSubmit={handleSubmit}
-        initialValues={submission}
-        enableReinitialize={true}
-      >
-        {({ isSubmitting, submitForm, isValid, submitCount }) => (
-          <>
-            <SubmissionForm />
+      <SubmissionWizard submitForm={handleSubmit} initialValues={submission} />
 
-            <p className="mt-4">
-              <Trans ns="submit" i18nKey="submitReviewDescription">
-                Submitted reports are added to a{' '}
-                <Link locale={locale} to="/apps/submitted">
-                  review queue{' '}
-                </Link>{' '}
-                to be resolved to a new or existing incident record. Incidents are reviewed and
-                merged into the database after enough incidents are pending.
-              </Trans>
-            </p>
+      <p className="mt-4">
+        <Trans ns="submit" i18nKey="submitReviewDescription">
+          Submitted reports are added to a{' '}
+          <Link locale={locale} to="/apps/submitted">
+            review queue{' '}
+          </Link>{' '}
+          to be resolved to a new or existing incident record. Incidents are reviewed and merged
+          into the database after enough incidents are pending.
+        </Trans>
+      </p>
 
-            <div className="mt-3 flex items-center gap-3">
-              <Button
-                onClick={submitForm}
-                className="bootstrap flex gap-2 disabled:opacity-50"
-                variant="primary"
-                type="submit"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <>
-                    <Spinner size="sm" />
-                    <Trans>Submitting</Trans>
-                  </>
-                ) : (
-                  <Trans>Submit</Trans>
-                )}
-              </Button>
-
-              {!isValid && submitCount > 0 && (
-                <div className="text-danger">
-                  <Trans ns="validation">Please review. Some data is missing.</Trans>
-                </div>
-              )}
-            </div>
-          </>
-        )}
-      </Formik>
-
-      {!loading && isRole('submitter') && (
+      {!loading && isRole('submitter') && displayCsvSection && (
         <Container className="mt-5 p-0 bootstrap">
+          ``
           <h2>
             <Trans ns="submit">Advanced: Add by CSV</Trans>
           </h2>

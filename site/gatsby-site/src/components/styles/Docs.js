@@ -2,10 +2,8 @@ import styled from 'styled-components';
 
 export const StyledHeading = styled('h1')`
   font-family: Karla, sans-serif !important;
-  line-height: 1.5;
   font-weight: bold;
   flex: 1;
-  margin-top: 0;
   padding-top: 0;
 `;
 
@@ -66,9 +64,5 @@ export const StyledMainWrapper = styled.div`
     font-size: 0.9375em;
 
     background: ${(props) => props.theme.colors.background};
-  }
-
-  @media (max-width: 767px) {
-    padding: 0 15px;
   }
 `;

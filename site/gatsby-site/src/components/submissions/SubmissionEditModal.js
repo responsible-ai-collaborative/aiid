@@ -4,17 +4,35 @@ import { Spinner } from 'flowbite-react';
 import SubmissionForm, { schema } from '../../components/submissions/SubmissionForm';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { FIND_SUBMISSION, UPDATE_SUBMISSION } from '../../graphql/submissions';
+import { UPSERT_ENTITY } from '../../graphql/entities';
 import { Formik } from 'formik';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import isArray from 'lodash/isArray';
 import { stripMarkdown } from '../../utils/typography';
 import RelatedIncidents from '../../components/RelatedIncidents';
 import { Trans } from 'react-i18next';
+import { processEntities } from '../../utils/entities';
+import { graphql, useStaticQuery } from 'gatsby';
 
 export default function SubmissionEditModal({ show, onHide, submissionId }) {
+  const {
+    entities: { nodes: allEntities },
+  } = useStaticQuery(graphql`
+    {
+      entities: allMongodbAiidprodEntities {
+        nodes {
+          entity_id
+          name
+        }
+      }
+    }
+  `);
+
   const [findSubmission, { data, loading }] = useLazyQuery(FIND_SUBMISSION);
 
   const [updateSubmission] = useMutation(UPDATE_SUBMISSION);
+
+  const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
   const addToast = useToastContext();
 
@@ -27,6 +45,20 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
   const handleSubmit = async (values) => {
     try {
       const update = { ...values, __typename: undefined, _id: undefined };
+
+      update.deployers = await processEntities(allEntities, values.deployers, createEntityMutation);
+
+      update.developers = await processEntities(
+        allEntities,
+        values.developers,
+        createEntityMutation
+      );
+
+      update.harmed_parties = await processEntities(
+        allEntities,
+        values.harmed_parties,
+        createEntityMutation
+      );
 
       await updateSubmission({
         variables: {
@@ -45,15 +77,6 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
                 : values.submitters
               : ['Anonymous'],
             plain_text: await stripMarkdown(update.text),
-            deployers: !isArray(values.deployers)
-              ? values.deployers.split(',').map((s) => s.trim())
-              : values.deployers,
-            developers: !isArray(values.developers)
-              ? values.developers.split(',').map((s) => s.trim())
-              : values.developers,
-            harmed_parties: !isArray(values.harmed_parties)
-              ? values.harmed_parties.split(',').map((s) => s.trim())
-              : values.harmed_parties,
           },
         },
       });
@@ -91,10 +114,18 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
             onSubmit={handleSubmit}
             initialValues={{
               ...data.submission,
-              developers: data.submission.developers === null ? [] : data.submission.developers,
-              deployers: data.submission.deployers === null ? [] : data.submission.deployers,
+              developers:
+                data.submission.developers === null
+                  ? []
+                  : data.submission.developers.map((item) => item.name),
+              deployers:
+                data.submission.deployers === null
+                  ? []
+                  : data.submission.deployers.map((item) => item.name),
               harmed_parties:
-                data.submission.harmed_parties === null ? [] : data.submission.harmed_parties,
+                data.submission.harmed_parties === null
+                  ? []
+                  : data.submission.harmed_parties.map((item) => item.name),
               incident_id: data.submission.incident_id == 0 ? '' : data.submission.incident_id,
             }}
           >

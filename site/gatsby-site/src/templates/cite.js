@@ -33,7 +33,7 @@ import { getTaxonomies, getTranslatedReports } from 'utils/cite';
 import { computeEntities } from 'utils/entities';
 import AllegedEntities from 'components/entities/AllegedEntities';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
@@ -72,6 +72,7 @@ function CitePage(props) {
       allMongodbTranslationsReportsEn,
       allMongodbTranslationsReportsFr,
       incident,
+      entities: entitiesData,
     },
   } = props;
 
@@ -212,7 +213,7 @@ function CitePage(props) {
     }
   };
 
-  const entities = computeEntities({ incidents: [incident] });
+  const entities = computeEntities({ incidents: [incident], entities: entitiesData.nodes });
 
   return (
     <Layout {...props}>
@@ -226,6 +227,7 @@ function CitePage(props) {
           metaTitle={metaTitle}
           canonicalUrl={canonicalUrl}
           page="cite"
+          className="-mt-1"
         ></SocialShareButtons>
       </div>
 
@@ -333,15 +335,14 @@ function CitePage(props) {
                     'yyyy-MM-dd'
                   )}`}
                 >
+                  <FontAwesomeIcon icon={faPlus} title={t('New Report')} className="mr-2" />
                   <Trans>New Report</Trans>
-                </Button>
-                <Button variant="outline-primary" href={'/summaries/incidents'}>
-                  <Trans>All Incidents</Trans>
                 </Button>
                 <Button
                   variant="outline-primary"
                   href={'/apps/discover?incident_id=' + incident.incident_id}
                 >
+                  <FontAwesomeIcon className="mr-2" icon={faSearch} title={t('Discover')} />
                   <Trans>Discover</Trans>
                 </Button>
                 {!loading && isRole('incident_editor') && (
@@ -349,7 +350,8 @@ function CitePage(props) {
                     variant="outline-primary"
                     href={'/incidents/edit?incident_id=' + incident.incident_id}
                   >
-                    Edit Incident
+                    <FontAwesomeIcon className="mr-2" icon={faEdit} title={t('Edit Incident')} />
+                    <Trans>Edit Incident</Trans>
                   </Button>
                 )}
                 <BibTex
@@ -578,6 +580,13 @@ export const query = graphql`
       Alleged_developer_of_AI_system
       Alleged_deployer_of_AI_system
       Alleged_harmed_or_nearly_harmed_parties
+    }
+
+    entities: allMongodbAiidprodEntities {
+      nodes {
+        entity_id
+        name
+      }
     }
   }
 `;
