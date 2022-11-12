@@ -45,7 +45,7 @@ exports = async function (changeEvent) {
   }
 
   for (const entityId of entities) {
-    // Find subscriptions to this spscific entity
+    // Find subscriptions to this specific entity
     const subscriptionsToEntity = await subscriptionsCollection.find({
       type: 'entity',
       entityId
@@ -55,7 +55,6 @@ exports = async function (changeEvent) {
 
     // If there are subscribers to Entities > Insert a pending notification to process in the next build
     if (subscriptionsToEntity.length > 0) {
-
       await notificationsCollection.insertOne({
         type: 'entity',
         incident_id: incidentId,
