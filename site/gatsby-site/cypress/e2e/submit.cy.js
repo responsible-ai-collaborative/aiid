@@ -66,9 +66,9 @@ describe('The Submit form', () => {
           'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
         tags: ['New Tag'],
         incident_id: 0,
-        text: "## Recent news stories and blog\n\nposts _highlighted_ the underbelly of YouTube Kids, Google's children-friendly version.",
+        text: "## Recent news stories and blog\n\nposts _highlighted_ the underbelly of YouTube Kids, Google's children-friendly version. This is more text to reach the 256 charactrs minimum, becuase otherwise the text by similarity component doesnt fetch, which surprisingly is way more character that I initially imagined when I started writing this.",
         plain_text:
-          "Recent news stories and blog\n\nposts highlighted the underbelly of YouTube Kids, Google's children-friendly version.\n",
+          "Recent news stories and blog\n\nposts highlighted the underbelly of YouTube Kids, Google's children-friendly version. This is more text to reach the 256 charactrs minimum, becuase otherwise the text by similarity component doesnt fetch, which surprisingly is way more character that I initially imagined when I started writing this.\n",
         url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
         source_domain: `arstechnica.com`,
         language: 'es',
@@ -179,8 +179,6 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.get('input[name="submitters"]').type('Something');
-
     cy.wait('@findIncident');
 
     cy.get('[data-cy="to-step-3"]').click();
@@ -194,7 +192,7 @@ describe('The Submit form', () => {
     cy.wait('@insertSubmission').then((xhr) => {
       expect(xhr.request.body.variables.submission).to.deep.include({
         title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
-        submitters: ['Something'],
+        submitters: ['Anonymous'],
         authors: ['Valentina Palladino'],
         date_published: '2017-11-10',
         image_url:
