@@ -141,7 +141,7 @@ const FormDetails = ({
 
   return (
     <>
-      {true && (
+      {parsingNews && (
         <>
           <div className="absolute top-0 left-0 z-10 w-full h-full flex justify-center items-start opacity-30 bg-gray-200"></div>
           <span className="absolute top-0 left-1/2 pt-20 z-10">
