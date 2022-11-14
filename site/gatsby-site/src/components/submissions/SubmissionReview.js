@@ -11,6 +11,7 @@ import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import ReadMoreText from '../../components/ReadMoreText';
 import RelatedIncidents from '../../components/RelatedIncidents';
 import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
 import { useUserContext } from '../../contexts/userContext';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_INCIDENT } from '../../graphql/incidents';
@@ -20,7 +21,7 @@ import SubmissionEditModal from './SubmissionEditModal';
 import { Spinner } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 
-const ListedGroup = ({ item, className = '', keysToRender }) => {
+const ListedGroup = ({ item, className = '', keysToRender, objectKeyToDisplay = '' }) => {
   return (
     <ListGroup className={className}>
       {keysToRender
@@ -31,7 +32,9 @@ const ListedGroup = ({ item, className = '', keysToRender }) => {
               <b>{key}</b>
             </div>
             <div className="text-break">
-              {isArray(item[key]) ? item[key].join(', ') : item[key]}
+              {isArray(item[key])
+                ? item[key].map((i) => (isObject(i) ? i[objectKeyToDisplay] : i)).join(', ')
+                : item[key]}
             </div>
           </ListGroup.Item>
         ))}
@@ -241,7 +244,12 @@ const SubmissionReview = ({ submission }) => {
           <ListedGroup className="mx-3" item={submission} keysToRender={leadItems} />
           <ListedGroup className="mt-2 mx-3" item={submission} keysToRender={dateRender} />
           <ListedGroup className="mt-2 mx-3" item={submission} keysToRender={urls} />
-          <ListedGroup className="mt-2 mx-3" item={submission} keysToRender={otherDetails} />
+          <ListedGroup
+            className="mt-2 mx-3"
+            item={submission}
+            keysToRender={otherDetails}
+            objectKeyToDisplay="name"
+          />
 
           <Card className="m-3" data-cy="text">
             <Card.Header>Text</Card.Header>

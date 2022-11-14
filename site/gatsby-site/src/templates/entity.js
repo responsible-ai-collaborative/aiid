@@ -19,7 +19,13 @@ const incidentFields = [
 const EntityPage = ({ pageContext, data, ...props }) => {
   const { name, relatedEntities } = pageContext;
 
-  const { incidentsAsDeployer, incidentsAsDeveloper, incidentsAsBoth, incidentsHarmedBy } = data;
+  const {
+    incidentsAsDeployer,
+    incidentsAsDeveloper,
+    incidentsAsBoth,
+    incidentsHarmedBy,
+    entities: entitiesData,
+  } = data;
 
   const entityIncidents = {
     incidentsAsBoth: incidentsAsBoth.nodes.sort(sortByReports),
@@ -49,7 +55,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
 
   const incidents = sections.reduce((array, s) => array.concat(entityIncidents[s.key]), []);
 
-  const entities = computeEntities({ incidents });
+  const entities = computeEntities({ incidents, entities: entitiesData.nodes });
 
   const incidentsHash = makeIncidentsHash(incidents);
 
@@ -191,6 +197,13 @@ export const query = graphql`
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
         Alleged_harmed_or_nearly_harmed_parties
+      }
+    }
+
+    entities: allMongodbAiidprodEntities {
+      nodes {
+        entity_id
+        name
       }
     }
   }

@@ -6,15 +6,18 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button } from 'react-bootstrap';
 import { Spinner } from 'flowbite-react';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
+import { UPSERT_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
+import { graphql, useStaticQuery } from 'gatsby';
+import { processEntities } from '../../utils/entities';
 
 function EditCitePage(props) {
   const { t, i18n } = useTranslation();
 
-  const [incident, setIncident] = useState();
+  const [incident, setIncident] = useState(null);
 
   const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
 
@@ -22,7 +25,22 @@ function EditCitePage(props) {
     variables: { query: { incident_id: incidentId } },
   });
 
+  const {
+    entities: { nodes: allEntities },
+  } = useStaticQuery(graphql`
+    {
+      entities: allMongodbAiidprodEntities {
+        nodes {
+          entity_id
+          name
+        }
+      }
+    }
+  `);
+
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
+
+  const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
   const addToast = useToastContext();
 
@@ -61,6 +79,24 @@ function EditCitePage(props) {
         __typename: undefined,
       };
 
+      updated.AllegedDeveloperOfAISystem = await processEntities(
+        allEntities,
+        values.AllegedDeveloperOfAISystem,
+        createEntityMutation
+      );
+
+      updated.AllegedDeployerOfAISystem = await processEntities(
+        allEntities,
+        values.AllegedDeployerOfAISystem,
+        createEntityMutation
+      );
+
+      updated.AllegedHarmedOrNearlyHarmedParties = await processEntities(
+        allEntities,
+        values.AllegedHarmedOrNearlyHarmedParties,
+        createEntityMutation
+      );
+
       await updateIncident({
         variables: {
           query: {
@@ -86,7 +122,25 @@ function EditCitePage(props) {
       {incident === null && <div>Report not found</div>}
 
       {incident && (
-        <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={incident}>
+        <Formik
+          validationSchema={schema}
+          onSubmit={handleSubmit}
+          initialValues={{
+            ...incident,
+            AllegedDeveloperOfAISystem:
+              incident.AllegedDeveloperOfAISystem === null
+                ? []
+                : incident.AllegedDeveloperOfAISystem.map((item) => item.name),
+            AllegedDeployerOfAISystem:
+              incident.AllegedDeployerOfAISystem === null
+                ? []
+                : incident.AllegedDeployerOfAISystem.map((item) => item.name),
+            AllegedHarmedOrNearlyHarmedParties:
+              incident.AllegedHarmedOrNearlyHarmedParties === null
+                ? []
+                : incident.AllegedHarmedOrNearlyHarmedParties.map((item) => item.name),
+          }}
+        >
           {({ isValid, isSubmitting, submitForm }) => (
             <>
               <IncidentForm />
