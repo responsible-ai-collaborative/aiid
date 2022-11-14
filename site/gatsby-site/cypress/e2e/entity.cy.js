@@ -1,3 +1,4 @@
+import { maybeIt } from '../support/utils';
 const { SUBSCRIPTION_TYPE } = require('../../src/utils/subscriptions');
 
 const entity = {
@@ -12,7 +13,7 @@ describe('Entities page', () => {
     cy.visit(url);
   });
 
-  it('Should subscribe to new Entity incidents (authenticated user)', () => {
+  maybeIt('Should subscribe to new Entity incidents (authenticated user)', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.visit(url);
