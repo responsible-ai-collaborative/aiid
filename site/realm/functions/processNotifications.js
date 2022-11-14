@@ -68,7 +68,7 @@ exports = async function () {
             incidentTitle: incident.title,
             incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
           },
-          templateId: 'NewIncident' // Template value from "site/realm/functions/sendEmail.js" EMAIL_TEMPLATES constant
+          templateId: 'NewIncident' // Template value from function name sufix from "site/realm/functions/config.json"
         };
         const sendEmailResult = await context.functions.execute('sendEmail', sendEmailParams);
 
@@ -120,10 +120,13 @@ exports = async function () {
 
         const entity = allEntities.find(entity => entity.entity_id === pendingNotification.entity_id);
 
+        const isIncidentUpdate = pendingNotification.isUpdate;
+
         //Send email notification
         const sendEmailParams = {
           recipients,
-          subject: 'A new incident has just been added for an entity you monitor: {{entityName}}',
+          subject: isIncidentUpdate ? 'A Incident involving {{entityName}} has just been updated.'
+            : 'A new incident has just been added for an entity you monitor: {{entityName}}',
           dynamicData: {
             incidentId: `${incident.incident_id}`,
             incidentTitle: incident.title,
@@ -136,7 +139,8 @@ exports = async function () {
             deployers: buildEntityList(allEntities, incident['Alleged deployer of AI system']),
             entitiesHarmed: buildEntityList(allEntities, incident['Alleged harmed or nearly harmed parties']),
           },
-          templateId: 'NewEntityIncident' // Template value from "site/realm/functions/sendEmail.js" EMAIL_TEMPLATES constant
+          // Template value from function name sufix from "site/realm/functions/config.json"
+          templateId: isIncidentUpdate ? 'EntityIncidentUpdated' : 'NewEntityIncident'
         };
         const sendEmailResult = await context.functions.execute('sendEmail', sendEmailParams);
 

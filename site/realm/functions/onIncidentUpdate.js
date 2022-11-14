@@ -66,7 +66,7 @@ exports = async function (changeEvent) {
             reportTitle: newReport.title,
             reportAuthor: newReport.authors[0] ? newReport.authors[0] : '',
           },
-          templateId: 'NewReportAddedToAnIncident' // Template value from "site/realm/functions/sendEmail.js" EMAIL_TEMPLATES constant
+          templateId: 'NewReportAddedToAnIncident' // Template value from function name sufix from "site/realm/functions/config.json"
         };
         const sendEmailresult = await context.functions.execute('sendEmail', sendEmailParams);
 
@@ -90,7 +90,7 @@ exports = async function (changeEvent) {
         incidentTitle: fullDocument.title,
         incidentUrl: `https://incidentdatabase.ai/cite/${incidentId}`,
       },
-      templateId: 'IncidentUpdate' // Template value from "site/realm/functions/sendEmail.js" EMAIL_TEMPLATES constant
+      templateId: 'IncidentUpdate' // Template value from function name sufix from "site/realm/functions/config.json"
     };
     const sendEmailresult = await context.functions.execute('sendEmail', sendEmailParams);
 

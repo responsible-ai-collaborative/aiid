@@ -296,7 +296,7 @@ describe('Functions', () => {
             incidentTitle: incident.title,
             incidentUrl: `https://incidentdatabase.ai/cite/${pendingNotification.incident_id}`,
           },
-          templateId: 'NewIncident', // Template value from "site/realm/functions/sendEmail.js" EMAIL_TEMPLATES constant
+          templateId: 'NewIncident', // Template value from function name sufix from "site/realm/functions/config.json"
         };
 
         expect(global.context.functions.execute).to.be.calledWith('sendEmail', sendEmailParams);
@@ -379,7 +379,7 @@ describe('Functions', () => {
               incident['Alleged harmed or nearly harmed parties']
             ),
           },
-          templateId: 'NewEntityIncident', // Template value from "site/realm/functions/sendEmail.js" EMAIL_TEMPLATES constant
+          templateId: 'NewEntityIncident', // Template value from function name sufix from "site/realm/functions/config.json"
         };
 
         expect(global.context.functions.execute).to.be.calledWith('sendEmail', sendEmailParams);
