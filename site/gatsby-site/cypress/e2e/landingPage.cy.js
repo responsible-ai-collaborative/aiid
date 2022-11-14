@@ -1,3 +1,4 @@
+import { maybeIt } from '../support/utils';
 const { format } = require('date-fns');
 
 describe('The Landing page', () => {
@@ -63,9 +64,7 @@ describe('The Landing page', () => {
       });
   });
 
-  it('Should redirect to the account page when logged in', () => {
-    cy.visit('/');
-
+  maybeIt('Should redirect to the account page when logged in', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.location('pathname', { timeout: 8000 }).should('eq', '/');
