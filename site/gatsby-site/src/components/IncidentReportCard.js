@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Spinner } from 'flowbite-react';
+import { Spinner, Card } from 'flowbite-react';
 import { Image } from '../utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import md5 from 'md5';
@@ -171,9 +171,8 @@ function pickDefaults(props) {
 // that aren't that much like AI incidents.
 
 function HorizontalCardLayout(props) {
-  const { dateFormat, cloudinary_id, image_url, link, children } = props;
+  const { cloudinary_id, image_url, link, children } = props;
 
-  console.log('HorizontalCardLayout', `dateFormat`, dateFormat);
   return (
     <div data-cy="card-inner" className="h-full flex justify-start flex-col md:flex-row">
       {(cloudinary_id || image_url) && (
@@ -200,6 +199,7 @@ function HorizontalCardLayout(props) {
 
               md:rounded-l-lg
               md:rounded-r-none
+
             "
             publicID={cloudinary_id || (image_url && `legacy/${md5(image_url)}`)}
             transformation={fill().width(900)}
@@ -220,9 +220,42 @@ function VerticalCardLayout(props) {
   return (
     <div data-cy="card-inner" className="h-full flex justify-start flex-col">
       {(cloudinary_id || image_url) && (
-        <Link to={link} data-cy="image-container" className={'-m-6 mb-6 block'}>
+        <Link
+          to={link}
+          data-cy="image-container"
+          className="
+          block 
+          overflow-hidden
+          
+          shrink-0
+          aspect-[16/9]
+          max-h-[50vh]
+
+          rounded-t-lg 
+          relative
+        "
+          style={{
+            width: 'calc(100% + 3rem + 2px)',
+            margin: 'calc(-1.5rem - 1px)',
+            marginBottom: '1.5rem',
+          }}
+        >
           <Image
-            className="object-cover w-full sm:aspect-[16/9] rounded-t-lg aspect-[16/9] max-h-[50vh]"
+            className="
+              absolute
+
+              inset-0
+
+              min-h-full
+              min-w-full
+              object-cover
+
+              rounded-t-lg 
+
+              hover:scale-110
+              transition
+              duration-500
+            "
             publicID={cloudinary_id || (image_url && `legacy/${md5(image_url)}`)}
             transformation={fill().width(900)}
             alt=""
