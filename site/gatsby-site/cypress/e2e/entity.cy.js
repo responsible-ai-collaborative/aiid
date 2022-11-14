@@ -38,8 +38,6 @@ describe('Entities page', () => {
 
     cy.contains(`Notify Me of New ${entity.name} Incidents`).scrollIntoView().click();
 
-    cy.wait(1000);
-
     cy.get('[data-cy="toast"]')
       .contains(`You have successfully subscribed to new ${entity.name} incidents`)
       .should('exist');
