@@ -54,15 +54,25 @@ const SubmitForm = () => {
 
   const [query] = useQueryParams(queryConfig);
 
-  const [submission, setSubmission] = useState({
+  const initialValues = {
+    url: '',
+    title: '',
+    incident_date: '',
+    date_published: '',
+    date_downloaded: '',
     image_url: '',
+    incident_id: '',
     text: '',
     authors: [],
     submitters: [],
     developers: [],
     deployers: [],
     harmed_parties: [],
-  });
+    editor_notes: '',
+    language: 'en',
+  };
+
+  const [submission, setSubmission] = useState(initialValues);
 
   const {
     entities: { nodes: allEntities },
@@ -174,6 +184,8 @@ const SubmitForm = () => {
       );
 
       await insertSubmission({ variables: { submission } });
+
+      setSubmission(initialValues);
 
       addToast({
         message: (

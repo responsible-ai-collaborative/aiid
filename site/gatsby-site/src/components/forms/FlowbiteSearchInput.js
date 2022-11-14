@@ -13,6 +13,7 @@ const FlowbiteSearchInput = ({
   loading = false,
   btnDisabled = false,
   dataCy = '',
+  values = {},
   ...props
 }) => (
   <>
@@ -44,6 +45,7 @@ const FlowbiteSearchInput = ({
         placeholder={placeholder}
         onChange={handleChange}
         onBlur={handleBlur}
+        value={values[name] || props.defaultValue || ''}
         {...props}
       />
       {loading ? (
