@@ -506,7 +506,7 @@ describe('Submitted reports', () => {
 
       cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
 
-      cy.get('[name="incident_id"').type('333');
+      cy.get('[name="incident_id"]').type('333');
 
       cy.conditionalIntercept(
         '**/graphql',
