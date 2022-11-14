@@ -54,13 +54,21 @@ const StepTwo = (props) => {
           schema={stepTwoValidationSchema}
           submitForm={handleSubmit}
           validateAndSubmitForm={props.validateAndSubmitForm}
+          submissionFailed={props.submissionFailed}
         />
       </Formik>
     </StepContainer>
   );
 };
 
-const FormDetails = ({ data, previous, schema, submitForm, validateAndSubmitForm }) => {
+const FormDetails = ({
+  data,
+  previous,
+  schema,
+  submitForm,
+  validateAndSubmitForm,
+  submissionFailed,
+}) => {
   const { t } = useTranslation(['submit']);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -88,6 +96,12 @@ const FormDetails = ({ data, previous, schema, submitForm, validateAndSubmitForm
   useEffect(() => {
     setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
   }, [values.image_url]);
+
+  useEffect(() => {
+    if (submissionFailed) {
+      setIsSubmitting(false);
+    }
+  }, [submissionFailed]);
 
   return (
     <>

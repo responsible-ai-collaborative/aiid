@@ -81,13 +81,21 @@ const StepOne = (props) => {
           schema={stepOneValidationSchema}
           submitForm={handleSubmit}
           validateAndSubmitForm={props.validateAndSubmitForm}
+          submissionFailed={props.submissionFailed}
         />
       </Formik>
     </StepContainer>
   );
 };
 
-const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAndSubmitForm }) => {
+const FormDetails = ({
+  parsingNews,
+  parseNewsUrl,
+  schema,
+  submitForm,
+  validateAndSubmitForm,
+  submissionFailed,
+}) => {
   const { t } = useTranslation(['submit']);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -111,6 +119,12 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
       setFieldValue('date_downloaded', new Date().toISOString().substr(0, 10));
     }
   }, []);
+
+  useEffect(() => {
+    if (submissionFailed) {
+      setIsSubmitting(false);
+    }
+  }, [submissionFailed]);
 
   const fetchNews = async (url) => {
     await parseNewsUrl(url);
