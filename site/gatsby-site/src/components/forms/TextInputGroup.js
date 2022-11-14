@@ -26,8 +26,6 @@ const TextInputGroup = ({
     schema.fields[name].isValid(undefined).then((result) => setOptional(result));
   }, []);
 
-  console.log(errors[name], touched[name]);
-
   return (
     <Form.Group className={`form-group ${className}`}>
       <Label popover={name} label={(optional ? '' : '*') + label} />
