@@ -8,8 +8,14 @@ describe('The Discover app', () => {
     cy.visit(url);
   });
 
-  it('Should load at least 30 hits', () => {
+  it('Should default to incident reports and show at least 30', () => {
     cy.visit(url);
+
+    cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=true');
+
+    cy.contains('[data-cy="display-options"]', 'Incident Reports')
+      .should('exist')
+      .and('be.visible');
 
     cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 28);
   });
@@ -123,5 +129,17 @@ describe('The Discover app', () => {
     cy.get('[data-cy="wayback-machine"]').first().should('be.visible').click();
 
     cy.get('@windowOpen').should('be.called');
+  });
+
+  it("Let's you filter by type", () => {
+    cy.visit(url);
+
+    cy.contains('[data-cy="display-options"]', 'Incident Reports').scrollIntoView().click();
+
+    cy.contains('li', /^Issue Reports$/).click();
+
+    cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=false');
+
+    cy.contains('[data-cy="display-options"]', 'Issue Reports').should('be.be.visible');
   });
 });
