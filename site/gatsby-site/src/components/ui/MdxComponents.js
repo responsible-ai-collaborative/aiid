@@ -3,8 +3,16 @@ import isString from 'lodash/isString';
 import Link from './Link';
 import SensitiveImage from '../images/sensitive';
 
-const slug = (title) =>
-  isString(title) ? title.toLowerCase().replace(/\s+/g, '') : title.props.children;
+const slug = (title) => {
+  console.log(`title`, title);
+  if (isString(title)) {
+    return title.toLowerCase().replace(/\s+/g, '');
+  }
+  if (Array.isArray(title)) {
+    return title.map((e) => slug(e)).join('');
+  }
+  return title.props.children;
+};
 
 const Details = ({ children, summary }) => {
   return (
