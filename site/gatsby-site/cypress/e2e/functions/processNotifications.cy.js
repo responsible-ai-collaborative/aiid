@@ -482,8 +482,6 @@ describe('Functions', () => {
 
       expect(global.context.functions.execute).not.to.be.called;
 
-      console.log(notificationsCollection.updateOne.getCalls());
-
       for (let i = 0; i < pendingNotificationsToNewIncidents.length; i++) {
         const pendingNotification = pendingNotificationsToNewIncidents[i];
 
