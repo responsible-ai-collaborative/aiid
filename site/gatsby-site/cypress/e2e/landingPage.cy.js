@@ -45,9 +45,7 @@ describe('The Landing page', () => {
     });
 
     cy.get('div[class^="ToastContext"]')
-      .contains(
-        'Report successfully added to review queue. It will appear on the review queue page right away.'
-      )
+      .contains('Report successfully added to review queue. You can see your submission here.')
       .should('exist');
   });
 
