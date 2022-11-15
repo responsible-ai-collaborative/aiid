@@ -1,143 +1,142 @@
 ---
-title: 'AI Incident Roundup – October ‘22'
-metaTitle: 'AI Incident Roundup – October ‘22'
-metaDescription: 'Collection of AI incidents, developments, and ingestion in October of 2022, providing a digestible recap on the latest incidents and reports of the AIID.'
+title: 'Resumen de incidentes de IA - 22 de octubre'
+metaTitle: 'Resumen de incidentes de IA - 22 de octubre'
+metaDescription: 'Recopilación de incidentes, desarrollos e ingestión de IA en octubre de 2022, que proporciona un resumen digerible de los últimos incidentes e informes de AIID'
 date: '2022-11-14'
 image: './images/aiid-october.webp'
-author: 'Janet Schwartz & Khoa Lam'
+author: 'Janet Schwartz y Khoa Lam'
 slug: '/blog/incident-report-2022-october'
+aiTranslated: true
 ---
+Bienvenido a la edición de este mes de _The Monthly Roundup_, un boletín informativo diseñado para brindarle un resumen digerible de los últimos incidentes e informes de la base de datos de incidentes de AI.
 
-Welcome to this month’s edition of _The Monthly Roundup_, a newsletter designed to give you a digestible recap on the latest incidents and reports of the AI Incident Database.
+**Tiempo estimado de lectura:** 5 minutos
 
-**Estimated reading time:** 5 minutes
+## 🗞️ Nuevos incidentes
 
-## 🗞️ New Incidents
+_Incidentes que ocurrieron el mes pasado:_
 
-_Emerging incidents that occurred last month:_
+**Incidente n.º 377:** [El modelo de Weibo tiene dificultades para detectar cambios en el habla censurada](/cite/377)
 
-**Incident #377:** [Weibo Model Has Difficulty Detecting Shifts in Censored Speech](/cite/377)
+* **¿Qué sucedió?** El modelo de moderación de usuarios del sitio de redes sociales chino Weibo tiene dificultades para mantenerse al día con la jerga cambiante de los usuarios en desafío a los censores estatales chinos.
+* **¿Cómo _no_ funciona la IA?** Aunque el sitio dice que ha perfeccionado su "modelo de identificación de palabras clave" para poder filtrar el uso de palabras homófonas y mal escritas intencionalmente, la diversidad y la naturaleza en constante evolución del lenguaje en línea en China hace que sea poco probable que su modelo pueda prohibir por completo el lenguaje controvertido.
+* **¿Cuál fue el impacto de este incidente?** Los ciudadanos chinos pudieron socavar los esfuerzos de Weibo para imponer la censura del lenguaje prohibido, lo que les permitió discutir temas controvertidos como la corrupción gubernamental.
+* **¿Quién estuvo involucrado?** [Weibo](/entities/weibo) desarrolló e implementó un sistema de IA que perjudicó a Weibo y al [gobierno chino](/entities/chinese-government).
+* 🚨 **Nota del editor:** La definición de presunto "daño" a una parte no indica que sea responsabilidad de la comunidad en general mitigar o prevenir ese daño. Aunque este incidente cumple con los criterios, los editores de la base de datos no afirman si se debe evitar que este incidente se repita. El AIID indexa todos los incidentes que cumplen con su [definición](/research/1-criteria) de incidente; nuestra responsabilidad es dar a conocer tales incidentes (por ejemplo, [Incidente #13](/cite/13), donde se demostró que los modelos de toxicidad del lenguaje son fáciles de engañar).
 
-* **What happened?** The Chinese social media site Weibo's user moderation model has difficulty keeping up with shifting user slang in defiance of Chinese state censors.
-* **How is the AI _not_ working?** Although the site says it has refined its “keyword identification model” to be able to filter the use of intentionally misspelled words and homophones, the diversity and ever-evolving nature of online language in China makes it unlikely its model will be able to fully ban controversial language.
-* **What was the impact of this incident?** Chinese citizens were able to undermine the efforts of Weibo to impose censorship of banned language, thus allowing them to discuss controversial topics such as government corruption.
-* **Who was involved?** [Weibo](/entities/weibo) developed and deployed an AI system, which harmed Weibo and the [Chinese government](/entities/chinese-government).
-* 🚨 **Editor's Note:** The definition of alleged "harm" to a party does not indicate it is the responsibility of the broader community to mitigate or prevent that harm. Although this incident meets the criteria, database editors are making no claims about whether this incident should be prevented from recurring. The AIID indexes all incidents meeting its incident [definition](/research/1-criteria); our responsibility is to make such incidents known (e.g., [Incident #13](/cite/13), where language toxicity models were shown to be easily fooled).
+**Incidente n.º 383:** [Se informa que el minialtavoz de Google Home lee N-Word en el título de la canción en voz alta](/cite/383)
 
-**Incident #383:** [Google Home Mini Speaker Reportedly Read N-Word in Song Title Aloud](/cite/383)
+* **¿Qué sucedió?** Los usuarios denunciaron que el altavoz Google Home Mini anunciaba en voz alta la palabra n previamente censurada en el título de una canción. No está claro cuándo o cómo los oradores de Google dejaron de censurar la palabra n.
+* **¿Quién estuvo involucrado?** [Google Home](/entities/google-home) desarrolló e implementó un sistema de IA que perjudicó a [usuarios negros de Google Home Mini](/entities/black-google-home-mini-users ) y [usuarios de Google Home Mini](/entities/google-home-mini-users).
 
-* **What happened?** Google Home Mini speaker was reported by users for announcing aloud the previously-censored n-word in a song title. It is unclear when or how Google's speakers stopped censoring the n-word.
-* **Who was involved?** [Google Home](/entities/google-home) developed and deployed an AI system, which harmed [Black Google Home Mini users](/entities/black-google-home-mini-users) and [Google Home Mini users](/entities/google-home-mini-users).
+**Incidente n.º 384:** [Conductor de Glovo en Italia despedido por correo electrónico automatizado después de morir en un accidente](/cite/384)
 
-**Incident #384:** [Glovo Driver in Italy Fired via Automated Email after Being Killed in Accident](/cite/384)
+* **¿Qué sucedió?** El sistema automatizado de la empresa de entregas Glovo envió un correo electrónico para despedir a un empleado por "incumplimiento de los términos y condiciones" después de que el empleado muriera en un accidente automovilístico mientras realizaba una entrega en nombre de Glovo.
+* **¿Quién estuvo involucrado?** [Glovo](/entities/glovo) desarrolló e implementó un sistema de IA que perjudicó a [Sebastian Galassi](/entities/sebastian-galassi) y a [la familia de Sebastian Galassi](/entities/sebastian -la-familia-de-galassi).
 
-* **What happened?** Delivery company Glovo's automated system sent an email terminating an employee for "non-compliance terms and conditions" after the employee was killed in a car accident while making a delivery on Glovo's behalf.
-* **Who was involved?** [Glovo](/entities/glovo) developed and deployed an AI system, which harmed [Sebastian Galassi](/entities/sebastian-galassi) and [Sebastian Galassi's family](/entities/sebastian-galassi's-family).
+**Incidente n.° 385:** [Publicación de la policía canadiense de la foto facial generada por IA del sospechoso supuestamente reforzó la elaboración de perfiles raciales](/cite/385)
 
-**Incident #385:** [Canadian Police's Release of Suspect's AI-Generated Facial Photo Reportedly Reinforced Racial Profiling](/cite/385)
-
-* **What happened?** The Edmonton Police Service (EPS) in Canada released a facial image of a Black male suspect generated by an algorithm using DNA phenotyping, which was denounced by the local community as racial profiling.
-* **How does the AI work?** The AI system called Snapshot creates a composite facial sketch based on physical appearance attributes generated by DNA phenotyping is the process of predicting physical appearance and ancestry from unidentified DNA evidence.
-* **How did this AI cause harm?** DNA phenotyping composites are approximations of appearance, and it is not clear that the Snapshot profiles match their subjects. In this case since the AI-generated suspect was Black, it raised concerns about racial profiling in a marginalized community.
-* **Who was involved?** [Parabon Nanolabs](/entities/parabon-nanolabs) developed an AI system deployed by [Edmonton Police Service](/entities/edmonton-police-service), which harmed [Black residents in Edmonton](/entities/black-residents-in-edmonton).
+* **¿Qué sucedió?** El Servicio de Policía de Edmonton (EPS) en Canadá publicó una imagen facial de un hombre afroamericano sospechoso generada por un algoritmo que usa fenotipado de ADN, que fue denunciado por la comunidad local como perfilado racial.
+* **¿Cómo funciona la IA?** El sistema de IA llamado Instantánea crea un boceto facial compuesto basado en atributos de apariencia física generados por fenotipado de ADN, es el proceso de predecir la apariencia física y la ascendencia a partir de evidencia de ADN no identificada.
+* **¿Cómo causó daño esta IA?** Los compuestos de fenotipado de ADN son aproximaciones de apariencia, y no está claro si los perfiles Snapshot coinciden con sus sujetos. En este caso, dado que el sospechoso generado por IA era negro, planteó preocupaciones sobre la discriminación racial en una comunidad marginada.
+* **¿Quién estuvo involucrado?** [Parabon Nanolabs](/entities/parabon-nanolabs) desarrolló un sistema de IA desplegado por el [Servicio de Policía de Edmonton](/entities/edmonton-police-service), que perjudicó a [residentes negros en Edmonton ](/entities/black-edmonton-residents).
 
 <br/>
 
-## 📎 New Developments
+## 📎 Nuevos desarrollos
 
-_Older incidents that have new reports or updates._
+_Incidentes antiguos que tienen nuevos informes o actualizaciones._
 
-<table className="border-1 border-gray-200 my-4">
+<table className="border-1 borde-gris-200 my-4">
  <tr>
-  <th align="center">Original incident</th>
-  <th align="center">New report(s)</th>
+  <th align="center">Incidente original</th>
+  <th align="center">Nuevo(s) informe(s)</th>
  </tr>
  <tr>
-  <td className="align-top border-1 border-gray-200 px-4 py-2">
-    <strong>Incident #376:</strong> <a href="/cite/376">RealPage's Algorithm Pushed Rent Prices High, Allegedly Artificially</a>
+  <td className="alinear-borde superior-1 borde-gris-200 px-4 py-2">
+    <strong>Incidente n.° 376:</strong> <a href="/cite/376">El algoritmo de RealPage elevó los precios de alquiler, supuestamente de forma artificial</a>
   </td>
-  <td className="align-top border-1 border-gray-200 px-4 py-2">
+  <td className="alinear-borde superior-1 border-gris-200 px-4 py-2">
    <ul className="pl-0">
-    <li>How a Secret Rent Algorithm Pushes Rents Higher –<em> <a href="https://www.propublica.org/article/yieldstar-rent-increase-realpage-rent">ProPublica</a>, October 15, 2022</em>
+    <li>Cómo un algoritmo de alquiler secreto aumenta los alquileres: <em> <a href="https://www.propublica.org/article/yieldstar-rent-increase-realpage-rent">ProPublica</a>, octubre 15, 2022</em>
     </li>
-    <li>Is an Algorithm Raising Your Rent? A New Class Action Lawsuit Says Yes - <em><a href="https://gizmodo.com/realpage-yieldstar-high-rent-housing-class-action-suit-1849683731">Gizmodo</a>, October 21, 2022</em>
+    <li>¿Un algoritmo está aumentando su renta? Una nueva demanda colectiva dice que sí - <em><a href="https://gizmodo.com/realpage-yieldstar-high-rent-housing-class-action-suit-1849683731">Gizmodo</a>, octubre 21, 2022</em>
     </li>
-    <li>RealPage’s YieldStar Software May Be Driving Up Rents - <em><a href="https://therealdeal.com/2022/10/17/realpage-algorithm-could-be-driving-up-rents/">The Real Deal</a>, October 17, 2022</em>
+    <li>El software YieldStar de RealPage puede estar aumentando los alquileres - <em><a href="https://therealdeal.com/2022/10/17/realpage-algorithm-could-be-driven-up-rents/"> El trato real</a>, 17 de octubre de 2022</em>
     </li>
    </ul>
   </td>
  </tr>
  <tr>
-  <td className="align-top border-1 border-gray-200 px-4 py-2">
-    <strong>Incident #373:</strong> <a href="/cite/373">Michigan's Unemployment Benefits Algorithm MiDAS Issued False Fraud Claims for Thousands of People</a>
+  <td className="alinear-borde superior-1 borde-gris-200 px-4 py-2">
+    <strong>Incidente n.° 373:</strong> <a href="/cite/373">El algoritmo MiDAS de beneficios de desempleo de Michigan emitió reclamos de fraude falsos para miles de personas</a>
   </td>
-  <td className="align-top border-1 border-gray-200 px-4 py-2">
+  <td className="alinear-borde superior-1 borde-gris-200 px-4 py-2">
    <ul className="pl-0">
-    <li>The Seven-Year Struggle to Hold an Out-of-Control Algorithm to Account - <em><a href="https://themarkup.org/newsletter/hello-world/the-seven-year-struggle-to-hold-an-out-of-control-algorithm-to-account">The Markup</a>, October 8, 2022</em>
+    <li>La lucha de siete años para mantener un algoritmo fuera de control para dar cuenta - <em><a href="https://themarkup.org/newsletter/hello-world/the-seven-year-struggle- para-mantener-un-algoritmo-fuera-de-control-a-la-cuenta">El marcado</a>, 8 de octubre de 2022</em>
     </li>
-    <li>Michigan will settle 2015 unemployment false fraud lawsuit for $20 million - <em><a href="https://www.freep.com/story/news/local/michigan/2022/10/20/michiganunemployment-false-fraud-lawsuit/69577567007/">Detroit Free Press</a>, October 20, 2022</em>
+    <li>Michigan resolverá la demanda por falso fraude de desempleo de 2015 por $20 millones - <em><a href="https://www.freep.com/story/news/local/michigan/2022/10/20/michiganunemployment-false -fraud-lawsuit/69577567007/">Detroit Free Press</a>, 20 de octubre de 2022</em>
     </li>
    </ul>
   </td>
  </tr>
  <tr>
-  <td className="align-top border-1 border-gray-200 px-4 py-2">
-    <strong>Incident #267:</strong> <a href="/cite/267">Clearview AI Algorithm Built on Photos Scraped from Social Media Profiles without Consent</a>
+  <td className="alinear-borde superior-1 borde-gris-200 px-4 py-2">
+    <strong>Incidente n.° 267:</strong> <a href="/cite/267">Algoritmo de inteligencia artificial Clearview creado a partir de fotos extraídas de perfiles de redes sociales sin consentimiento</a>
   </td>
-  <td className="align-top border-1 border-gray-200 px-4 py-2">
+  <td className="alinear-borde superior-1 borde-gris-200 px-4 py-2">
    <ul className="pl-0">
-     <li>French regulator fines US face recognition firm Clearview AI €20 million, <em><a href="https://www.lemonde.fr/en/pixels/article/2022/10/20/french-regulator-fines-us-face-recognition-firm-clearview-ai-20-million_6001116_13.html">Le Monde</a>, October 20, 2022</em>
+     <li>El regulador francés multa a la empresa estadounidense de reconocimiento facial Clearview AI con 20 millones de euros, <em><a href="https://www.lemonde.fr/en/pixels/article/2022/10/20/french-regulator- fines-us-face-recognition-firm-clearview-ai-20-million_6001116_13.html">Le Monde</a>, 20 de octubre de 2022</em>
      </li>
    </ul>
   </td>
  </tr>
  <tr>
-  <td className="align-top border-1 border-gray-200 px-4 py-2">
-    <strong>Incident #382:</strong> <a href="/cite/382">Instagram's Exposure of Harmful Content Contributed to Teenage Girl’s Suicide</a>
+  <td className="alinear-borde superior-1 borde-gris-200 px-4 py-2">
+    <strong>Incidente n.° 382:</strong> <a href="/cite/382">La exposición de contenido dañino en Instagram contribuyó al suicidio de una adolescente</a>
   </td>
-  <td className="align-top border-1 border-gray-200 px-4 py-2">
+  <td className="alinear-borde superior-1 borde-gris-200 px-4 py-2">
    <ul className="pl-0">
-     <li>British Ruling Pins Blame on Social Media for Teenager’s Suicide - <em><a href="https://www.nytimes.com/2022/10/01/business/instagram-suicide-ruling-britain.html">New York Times</a>, October 1, 2022</em>
+     <li>Gobierno británico culpa a las redes sociales por suicidio de adolescente - <em><a href="https://www.nytimes.com/2022/10/01/business/instagram-suicide-ruling-britain.html" >New York Times</a>, 1 de octubre de 2022</em>
      </li>
    </ul>
   </td>
  </tr>
 </table>
 
-## 🗄 From the Archives
+## 🗄 De los archivos
 
-_Every edition, we feature one or more historical incidents that we find thought-provoking._
+_Cada edición, destacamos uno o más incidentes históricos que encontramos estimulantes._
 
-While in October we saw humans outwitting an automated system to avoid state censorship in China, other historical incidents recently added to the database highlight AI systems violating privacy in furtherance of state or commercial interests. An incident from 2019 echoes the concerns of state surveillance with the Ugandan government reportedly using facial recognition software to monitor political opposition. Meanwhile in the private sector, Uber allegedly violated drivers’ data privacy rights in order to monitor performance in 2020 and McDonald’s faced a lawsuit in 2021 for potentially violating Illinois privacy laws by collecting voice data through their drive-through chatbot.
+Mientras que en octubre vimos a humanos burlando un sistema automatizado para evitar la censura estatal en China, otros incidentes históricos agregados recientemente a la base de datos destacan los sistemas de IA que violan la privacidad para promover intereses estatales o comerciales. Un incidente de 2019 se hace eco de las preocupaciones de la vigilancia estatal con el gobierno de Uganda, según se informa, utilizando software de reconocimiento facial para monitorear a la oposición política. Mientras tanto, en el sector privado, Uber supuestamente violó los derechos de privacidad de los datos de los conductores para monitorear el desempeño en 2020 y McDonald's enfrentó una demanda en 2021 por violar potencialmente las leyes de privacidad de Illinois al recopilar datos de voz a través de su chatbot de acceso directo.
 
-Outside of the deliberate use of AI systems to collect and use private data, there are several previous examples of automated systems mistakenly collecting or sharing that data. In 2018, an Amazon Echo mistakenly sent a recorded private conversation between a husband and wife to one of the husband’s employees without either of their knowledge. GPT-2, the predecessor to GPT-3, was reportedly able to recite Personal Identifiable Information (PII) that it learned through training on massive amounts of data from the internet.
+Aparte del uso deliberado de los sistemas de inteligencia artificial para recopilar y utilizar datos privados, hay varios ejemplos anteriores de sistemas automatizados que recopilan o comparten esos datos por error. En 2018, Amazon Echo envió por error una conversación privada grabada entre marido y mujer a uno de los empleados del marido sin que ninguno de ellos lo supiera. Según los informes, GPT-2, el predecesor de GPT-3, pudo recitar información de identificación personal (PII) que aprendió a través del entrenamiento en cantidades masivas de datos de Internet.
 
-These occurrences from the last few years highlight common themes of privacy concerns that are increasingly concerns of legal systems providing rights to privacy and data protection.
+Estos sucesos de los últimos años resaltan temas comunes de preocupaciones de privacidad que son cada vez más preocupaciones de los sistemas legales que brindan derechos a la privacidad y la protección de datos.
 
-_– by Janet Schwartz_
+_– por Janet Schwartz_
 
-## 👇 Diving Deeper
+## 👇 Profundizando más
 
-* All new incidents _added_ to the database in the last month, grouped by topic:
-    - **Privacy & surveillance**: [#354](/cite/354), [#357](/cite/357), [#360](/cite/360), [#361](/cite/361), [#371](/cite/371), [#372](/cite/372), [#377](/cite/377)
-    - **Facial recognition:** [#358](/cite/358), [#365](/cite/365), [#368](/cite/368), [#373](/cite/373), [#375](/cite/375), [#385](/cite/385)
-    - **Bias & discrimination:** [#355](/cite/355), [#356](/cite/356), [#359](/cite/359), [#367](/cite/367), [#374](/cite/374), [#383](/cite/383/)
-    - **Social media:** [#362](/cite/362), [#363](/cite/363), [#366](/cite/366), [#380](/cite/380), [#382](/cite/382)
-    - **Impactful errors:** [#364](/cite/364), [#379](/cite/379), [#384](/cite/384)
-    - **Unfair competition:** [#370](/cite/370), [#376](/cite/376)
-    - **Autonomous vehicles:** [#378](/cite/378), [#381](/cite/381)
-    - **Labor displacement:** [#369](/cite/369)
-* Explore clusters of similar incidents in [Spatial Visualization](/summaries/spatial)
-* Check out [Table View](/apps/incidents) for a complete view of all incidents
-* Learn about alleged developers, deployers, and harmed parties in [Entities Page](/entities)
+* Todos los nuevos incidentes _agregados_ a la base de datos en el último mes, agrupados por tema:
+    - **Privacidad y vigilancia**: [#354](/cite/354), [#357](/cite/357), [#360](/cite/360), [#361](/cite/ 361), [#371](/cite/371), [#372](/cite/372), [#377](/cite/377)
+    - **Reconocimiento facial:** [#358](/cite/358), [#365](/cite/365), [#368](/cite/368), [#373](/cite/373 ), [#375](/cite/375), [#385](/citar/385)
+    - **Sesgo y discriminación:** [#355](/cite/355), [#356](/cite/356), [#359](/cite/359), [#367](/cite/ 367), [#374](/cite/374), [#383](/cita/383/)
+    - **Redes sociales:** [#362](/cite/362), [#363](/cite/363), [#366](/cite/366), [#380](/cite/380 ), [#382](/cite/382)
+    - **ImpactoErrores completos:** [#364](/cite/364), [#379](/cite/379), [#384](/cite/384)
+     - **Competencia desleal:** [#370](/cite/370), [#376](/cite/376)
+     - **Vehículos autónomos:** [#378](/cite/378), [#381](/cite/381)
+     - **Desplazamiento laboral:** [#369](/cite/369)
+* Explore grupos de incidentes similares en [Visualización espacial](/summaries/spatial)
+* Consulte [Vista de tabla](/apps/incidents) para obtener una vista completa de todos los incidentes
+* Obtenga información sobre presuntos desarrolladores, implementadores y partes perjudicadas en [Página de entidades](/entities)
 
 <hr className="my-4"/>
 
-## 🦾 Support our Efforts
+## 🦾 Apoya nuestros esfuerzos
 
-Still reading? Help us change the world for the better!
+¿Seguir leyendo? ¡Ayúdanos a cambiar el mundo para mejor!
 
-1. Share this newsletter on [LinkedIn](https://www.linkedin.com/company/responsible-ai-collaborative), [Twitter](https://twitter.com/IncidentsDB), and [Facebook](https://www.facebook.com/IncidentsDB)
-2. [Submit](/apps/submit) incidents to the database
-3. [Contribute](https://github.com/responsible-ai-collaborative/aiid) to the database’s functionality
-
+1. Comparta este boletín en [LinkedIn](https://www.linkedin.com/company/responsible-ai-collaborative), [Twitter](https://twitter.com/IncidentsDB) y [Facebook](https ://www.facebook.com/IncidentsDB)
+2. [Enviar](/apps/submit) incidentes a la base de datos
+3. [Contribuir](https://github.com/responsible-ai-collaborative/aiid) a la funcionalidad de la base de datos
