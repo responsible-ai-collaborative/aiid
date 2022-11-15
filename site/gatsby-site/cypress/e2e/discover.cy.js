@@ -103,7 +103,7 @@ describe('The Discover app', () => {
 
     cy.get('@modal').find('[data-cy="flag-toggle"]').should('be.disabled');
 
-    cy.contains('Close').click();
+    cy.get('[aria-label="Close"]').click();
 
     cy.get('@modal').should('not.exist');
   });
