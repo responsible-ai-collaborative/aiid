@@ -102,10 +102,15 @@ const Sidebar = ({ defaultCollapsed = false }) => {
         ) : null}
         <div
           className={`${
-            collapsedMenu ? 'overflow-hidden' : 'overflow-y-auto'
+            collapsedMenu ? '' : 'overflow-y-auto'
           } pb-4 pt-2 px-3 bg-gray-50 rounded dark:bg-gray-800`}
+          style={{ height: 'calc(100vh - 80px - 6rem' }}
         >
-          <ul className="space-y-2 list-none">
+          <ul
+            className={`${
+              collapsedMenu ? '-translate-y-16' : ''
+            } space-y-2 list-none z-20 transition-transform duration-500`}
+          >
             <Tree
               setNavCollapsed={() => {}}
               isCollapsed={collapsedMenu}
@@ -141,8 +146,8 @@ const Sidebar = ({ defaultCollapsed = false }) => {
           <FontAwesomeIcon
             icon={faChevronCircleLeft}
             color={'white'}
-            className={`hidden md:inline-block transition-rotate-180 duration-500 cursor-pointer fa fa-twitter-square fa-lg text-light-orange hover:text-gray-500 w-8 h-8 absolute  ${
-              collapsedMenu ? 'rotate-180 left-5 top-9' : '-right-5 top-9'
+            className={`hidden md:inline-block transition-transform duration-500 cursor-pointer fa fa-twitter-square fa-lg text-light-orange hover:text-gray-500 w-8 h-8 absolute bottom-5 ${
+              collapsedMenu ? 'rotate-180 translate-x-1' : 'translate-x-48'
             }`}
             title={isCollapsed ? t('Expand') : t('Collapse')}
             onClick={() => {
