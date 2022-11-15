@@ -5,15 +5,11 @@ import styled from 'styled-components';
 import DisplayOptions from './DisplayOptions';
 
 function Stats({ className, nbHits: count }) {
-  if (count == 0) {
-    return null;
-  }
-
   return (
     <div className={'flex gap-3 items-center ' + className}>
       <Trans count={count}>
         <b>{{ count }}</b>{' '}
-        <span className="py-1 px-2 rounded border-1 border-gray-700">
+        <span className="py-1 px-2 rounded border-1 border-gray-700" data-cy="display-options">
           <DisplayOptions />
         </span>{' '}
         found
