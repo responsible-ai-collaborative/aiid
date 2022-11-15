@@ -8,12 +8,16 @@ import { graphql } from 'gatsby';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { computeEntities, makeEntitiesHash, makeIncidentsHash, getEntityId } from 'utils/entities';
+import { computeEntities, makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import { useMutation } from '@apollo/client';
-import { UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
+import { NetworkStatus, useMutation, useQuery } from '@apollo/client';
+import {
+  DELETE_SUBSCRIPTIONS,
+  FIND_USER_SUBSCRIPTIONS,
+  UPSERT_SUBSCRIPTION,
+} from '../graphql/subscriptions';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 
 const sortByReports = (a, b) => b.reports.length - a.reports.length;
@@ -26,7 +30,7 @@ const incidentFields = [
 ];
 
 const EntityPage = ({ pageContext, data, ...props }) => {
-  const { name, relatedEntities } = pageContext;
+  const { id, name, relatedEntities } = pageContext;
 
   const { isRole, user } = useUserContext();
 
@@ -92,30 +96,49 @@ const EntityPage = ({ pageContext, data, ...props }) => {
 
   const [subscribeToEntityMutation, { loading: subscribing }] = useMutation(UPSERT_SUBSCRIPTION);
 
+  const [unsubscribeToEntityMutation, { loading: unsubscribing }] =
+    useMutation(DELETE_SUBSCRIPTIONS);
+
+  const {
+    data: subscriptions,
+    loading: loadingSubscription,
+    refetch: refetchSubscription,
+    networkStatus: subscriptionNetworkStatus,
+  } = useQuery(FIND_USER_SUBSCRIPTIONS, {
+    variables: {
+      query: {
+        type: SUBSCRIPTION_TYPE.entity,
+        userId: { userId: user?.id },
+        entityId: { entity_id: id },
+      },
+    },
+    notifyOnNetworkStatusChange: true,
+  });
+
   const subscribeToEntity = async () => {
     if (isRole('subscriber')) {
       try {
-        const entityId = getEntityId(name);
-
         await subscribeToEntityMutation({
           variables: {
             query: {
               type: SUBSCRIPTION_TYPE.entity,
               userId: { userId: user.id },
-              entityId: { entity_id: entityId },
+              entityId: { entity_id: id },
             },
             subscription: {
               type: SUBSCRIPTION_TYPE.entity,
               userId: { link: user.id },
-              entityId: { link: entityId },
+              entityId: { link: id },
             },
           },
         });
 
+        await refetchSubscription();
+
         addToast({
           message: (
             <>
-              {t(`You have successfully subscribed to new ${name} incidents`, {
+              {t(`You have successfully subscribed to new {{name}} incidents`, {
                 name,
               })}
             </>
@@ -141,6 +164,39 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     }
   };
 
+  const unsubscribeToEntity = async () => {
+    try {
+      await unsubscribeToEntityMutation({
+        variables: {
+          query: {
+            type: SUBSCRIPTION_TYPE.entity,
+            userId: { userId: user.id },
+            entityId: { entity_id: id },
+          },
+        },
+      });
+
+      await refetchSubscription();
+
+      addToast({
+        message: (
+          <>
+            {t(`You have successfully unsubscribed to new {{name}} incidents`, {
+              name,
+            })}
+          </>
+        ),
+        severity: SEVERITY.success,
+      });
+    } catch (e) {
+      console.log(e);
+      addToast({
+        message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
+        severity: SEVERITY.danger,
+      });
+    }
+  };
+
   return (
     <Layout {...props}>
       <h3>
@@ -149,18 +205,42 @@ const EntityPage = ({ pageContext, data, ...props }) => {
       <div className="flex justify-between">
         <h1>{name}</h1>
 
-        <Button onClick={subscribeToEntity}>
-          <div className="flex gap-2 items-center">
-            {subscribing ? (
-              <div>
-                <Spinner size="sm" />
-              </div>
-            ) : (
-              <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
-            )}
-            <Trans>Notify Me of New {{ name }} Incidents</Trans>
-          </div>
-        </Button>
+        {loadingSubscription && subscriptionNetworkStatus === NetworkStatus.loading ? (
+          <Spinner size="sm" />
+        ) : subscriptions?.subscriptions.length > 0 ? (
+          <Button
+            onClick={unsubscribeToEntity}
+            color={'success'}
+            disabled={unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
+          >
+            <div className="flex gap-2 items-center">
+              {unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
+                <div>
+                  <Spinner size="sm" />
+                </div>
+              ) : (
+                <FontAwesomeIcon icon={faEnvelope} title={t('Cancel Subscription')} />
+              )}
+              <Trans>Unsubscribe from New {{ name }} Incidents</Trans>
+            </div>
+          </Button>
+        ) : (
+          <Button
+            onClick={subscribeToEntity}
+            disabled={subscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
+          >
+            <div className="flex gap-2 items-center">
+              {subscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
+                <div>
+                  <Spinner size="sm" />
+                </div>
+              ) : (
+                <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
+              )}
+              <Trans>Notify Me of New {{ name }} Incidents</Trans>
+            </div>
+          </Button>
+        )}
       </div>
 
       {sections.map((section) => {
