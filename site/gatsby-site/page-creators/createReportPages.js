@@ -8,7 +8,7 @@ const createReportPages = async (graphql, createPage) => {
   const result = await graphql(
     `
       query ReportPages {
-        reports: allMongodbAiidprodReports(filter: { is_incident_report: { eq: false } }) {
+        reports: allMongodbAiidprodReports {
           nodes {
             report_number
             language
