@@ -3,6 +3,9 @@
         "_id": {
             "bsonType": "objectId"
         },
+        "entityId": {
+            "bsonType": "string"
+        },
         "incident_id": {
             "bsonType": "int"
         },
