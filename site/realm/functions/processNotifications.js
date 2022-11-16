@@ -125,8 +125,8 @@ exports = async function () {
         //Send email notification
         const sendEmailParams = {
           recipients,
-          subject: isIncidentUpdate ? 'A Incident involving {{entityName}} has just been updated.'
-            : 'A new incident has just been added for an entity you monitor: {{entityName}}',
+          subject: isIncidentUpdate ? 'Update Incident for {{entityName}}'
+            : 'New Incident for {{entityName}}',
           dynamicData: {
             incidentId: `${incident.incident_id}`,
             incidentTitle: incident.title,

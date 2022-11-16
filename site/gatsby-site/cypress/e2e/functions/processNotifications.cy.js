@@ -30,6 +30,7 @@ const pendingNotificationsToNewEntityIncidents = [
     type: SUBSCRIPTION_TYPE.entity,
     incident_id: 219,
     entity_id: 'facebook',
+    isUpdate: true,
     processed: false,
   },
 ];
@@ -361,9 +362,13 @@ describe('Functions', () => {
           (entity) => entity.entity_id === pendingNotification.entity_id
         );
 
+        const isIncidentUpdate = pendingNotification.isUpdate;
+
         const sendEmailParams = {
           recipients: recipients.filter((r) => userIds.includes(r.userId)),
-          subject: 'A new incident has just been added for an entity you monitor: {{entityName}}',
+          subject: isIncidentUpdate
+            ? 'Update Incident for {{entityName}}'
+            : 'New Incident for {{entityName}}',
           dynamicData: {
             incidentId: `${incident.incident_id}`,
             incidentTitle: incident.title,
@@ -379,7 +384,8 @@ describe('Functions', () => {
               incident['Alleged harmed or nearly harmed parties']
             ),
           },
-          templateId: 'NewEntityIncident', // Template value from function name sufix from "site/realm/functions/config.json"
+          // Template value from function name sufix from "site/realm/functions/config.json"
+          templateId: isIncidentUpdate ? 'EntityIncidentUpdated' : 'NewEntityIncident',
         };
 
         expect(global.context.functions.execute).to.be.calledWith('sendEmail', sendEmailParams);
