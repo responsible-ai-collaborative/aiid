@@ -56,6 +56,9 @@ module.exports = {
       240: '240px',
     },
     extend: {
+      height: {
+        'desktop-sidebar': 'calc(100vh - 80px)',
+      },
       screens: {
         '1300px': { min: '1300px' },
         'min-576px': { min: '576px' },
