@@ -142,4 +142,34 @@ describe('The Discover app', () => {
 
     cy.contains('[data-cy="display-options"]', 'Issue Reports').should('be.be.visible');
   });
+
+  it('Clear filters button should be enabled if other than Incident Reports is selected', () => {
+    cy.visit(url);
+
+    cy.contains('button', 'Clear Filter').should('be.disabled');
+
+    cy.contains('[data-cy="display-options"]', 'Incident Reports').scrollIntoView().click();
+
+    cy.contains('li', /^Incidents$/).click();
+
+    cy.contains('button', 'Clear Filter').should('not.be.disabled');
+
+    cy.contains('[data-cy="display-options"]', 'Incidents').click();
+
+    cy.contains('li', /^Issue Reports$/).click();
+
+    cy.contains('button', 'Clear Filter').should('not.be.disabled');
+
+    cy.contains('[data-cy="display-options"]', 'Issue Reports').click();
+
+    cy.contains('li', /^Incident and Issue Reports$/).click();
+
+    cy.contains('button', 'Clear Filter').should('not.be.disabled');
+
+    cy.contains('[data-cy="display-options"]', 'Incident and Issue Reports').click();
+
+    cy.contains('li', /^Incident Reports$/).click();
+
+    cy.contains('button', 'Clear Filter').should('be.disabled');
+  });
 });

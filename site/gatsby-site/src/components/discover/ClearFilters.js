@@ -4,9 +4,12 @@ import { Button } from 'react-bootstrap';
 import useSearch from './useSearch';
 
 const ClearButton = connectCurrentRefinements(({ items, children }) => {
-  const { setSearchState } = useSearch();
+  const { setSearchState, searchState } = useSearch();
 
-  const disabled = items.length == 1 && items?.[0]?.currentRefinement?.[0] == 'true';
+  const disabled =
+    items.length == 1 &&
+    items?.[0]?.currentRefinement?.[0] == 'true' &&
+    !searchState.refinementList.hideDuplicates;
 
   return (
     <div className="bootstrap">
