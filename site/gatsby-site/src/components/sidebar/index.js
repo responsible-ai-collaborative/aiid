@@ -73,7 +73,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
         } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
         fixedWidth
       />
-      {!isCollapsed && (
+      {!collapsedMenu && (
         <span>
           <span className="ml-3 block">
             <Trans>{isUserLoggedIn ? 'Account' : 'Subscribe'}</Trans>
@@ -131,7 +131,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
               }
             })}
             <li className="border-t pt-2">
-              {isCollapsed ? (
+              {collapsedMenu ? (
                 <Tooltip content={isUserLoggedIn ? t('Account') : t('Subscribe')}>
                   {LoginSignupNode}
                 </Tooltip>
