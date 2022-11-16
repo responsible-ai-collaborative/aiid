@@ -18,7 +18,9 @@ const UserSubscriptions = () => {
 
   const { t } = useTranslation(['account']);
 
-  const [subscriptions, setSubscriptions] = useState(null);
+  const [incidentSubscriptions, setIncidentSubscriptions] = useState(null);
+
+  const [entitySubscriptions, setEntitySubscriptions] = useState(null);
 
   const [deletingId, setDeletingId] = useState(null);
 
@@ -39,20 +41,31 @@ const UserSubscriptions = () => {
 
       await deleteSubscriptions({ variables: { query: { _id: subscriptionId } } });
 
-      const newList = subscriptions.filter(
+      const newIncidentSubscriptionList = incidentSubscriptions.filter(
         (subscription) =>
           subscription.type === SUBSCRIPTION_TYPE.incident && subscription._id !== subscriptionId
       );
 
-      setSubscriptions(newList);
+      setIncidentSubscriptions(newIncidentSubscriptionList);
+
+      const newEntitySubscriptionList = entitySubscriptions.filter(
+        (subscription) =>
+          subscription.type === SUBSCRIPTION_TYPE.entity && subscription._id !== subscriptionId
+      );
+
+      setEntitySubscriptions(newEntitySubscriptionList);
 
       setDeletingId(null);
     }
   };
 
   useEffect(() => {
-    setSubscriptions(
+    setIncidentSubscriptions(
       data?.subscriptions.filter((subscription) => subscription.type === SUBSCRIPTION_TYPE.incident)
+    );
+
+    setEntitySubscriptions(
+      data?.subscriptions.filter((subscription) => subscription.type === SUBSCRIPTION_TYPE.entity)
     );
 
     const hasSubscription = data?.subscriptions.some(
@@ -102,52 +115,101 @@ const UserSubscriptions = () => {
           <Spinner />
           <Trans>Loading...</Trans>
         </div>
-      ) : subscriptions?.length > 0 ? (
-        <ListGroup>
-          {subscriptions
-            .map((subscription) => ({
-              id: subscription._id,
-              type: subscription.type,
-              incidentId: subscription.incident_id.incident_id,
-              incidentTitle: subscription.incident_id.title,
-            }))
-            .sort((a, b) => a.incidentId - b.incidentId) // sort subscriptions by Incident ID ascendant
-            .map((subscription, index) => (
-              <div
-                className={`p-3 ${index < subscriptions.length - 1 ? 'border-b' : ''}`}
-                key={`subscription-${subscription.id}`}
-                data-cy="subscription-item"
-              >
-                <div className="flex flex-row w-full justify-between gap-3 items-center">
-                  <div className="items-center">
-                    {subscription.type === SUBSCRIPTION_TYPE.incident && (
-                      <>
+      ) : (
+        <>
+          {incidentSubscriptions?.length > 0 ? (
+            <ListGroup>
+              {incidentSubscriptions
+                .map((subscription) => ({
+                  id: subscription._id,
+                  incidentId: subscription.incident_id.incident_id,
+                  incidentTitle: subscription.incident_id.title,
+                }))
+                .sort((a, b) => a.incidentId - b.incidentId) // sort subscriptions by Incident ID ascendant
+                .map((subscription, index) => (
+                  <div
+                    className={`p-3 ${index < incidentSubscriptions.length - 1 ? 'border-b' : ''}`}
+                    key={`subscription-${subscription.id}`}
+                    data-cy="incident-subscription-item"
+                  >
+                    <div className="flex flex-row w-full justify-between gap-3 items-center">
+                      <div className="items-center">
                         <Trans ns="account">Updates on incident </Trans>
                         <Link to={`/cite/${subscription.incidentId}`}>
                           #{subscription.incidentId}: {subscription.incidentTitle}
                         </Link>
-                      </>
-                    )}
+                      </div>
+                      <Button
+                        size={'xs'}
+                        color={'failure'}
+                        disabled={deleting && deletingId === subscription.id}
+                        onClick={() => handleDeleteSubscription(subscription.id)}
+                        data-cy="incident-delete-btn"
+                      >
+                        {deleting && deletingId === subscription.id ? (
+                          <Spinner size={'xs'} />
+                        ) : (
+                          <FontAwesomeIcon icon={faTrash} />
+                        )}
+                      </Button>
+                    </div>
                   </div>
-                  <Button
-                    size={'xs'}
-                    color={'failure'}
-                    disabled={deleting && deletingId === subscription.id}
-                    onClick={() => handleDeleteSubscription(subscription.id)}
-                    data-cy="delete-btn"
-                  >
-                    {deleting && deletingId === subscription.id ? (
-                      <Spinner size={'xs'} />
-                    ) : (
-                      <FontAwesomeIcon icon={faTrash} />
-                    )}
-                  </Button>
-                </div>
-              </div>
-            ))}
-        </ListGroup>
-      ) : (
-        <Trans ns="account">You don&apos;t have active subscriptions to Incident updates</Trans>
+                ))}
+            </ListGroup>
+          ) : (
+            <Trans ns="account">You don&apos;t have active subscriptions to Incident updates</Trans>
+          )}
+
+          {entitySubscriptions?.length > 0 ? (
+            <div className="mt-4">
+              <ListGroup>
+                {entitySubscriptions
+                  .map((subscription) => ({
+                    id: subscription._id,
+                    entityId: subscription.entityId.entity_id,
+                    entityName: subscription.entityId.name,
+                  }))
+                  .sort((a, b) => a.entityName - b.entityName) // sort subscriptions by Entity name ascendant
+                  .map((subscription, index) => (
+                    <div
+                      className={`p-3 ${index < entitySubscriptions.length - 1 ? 'border-b' : ''}`}
+                      key={`subscription-${subscription.id}`}
+                      data-cy="entity-subscription-item"
+                    >
+                      <div className="flex flex-row w-full justify-between gap-3 items-center">
+                        <div className="items-center">
+                          <Trans ns="account">
+                            New{' '}
+                            <Link to={`/entities/${subscription.entityId}`}>
+                              {{ name: subscription.entityName }}
+                            </Link>{' '}
+                            Entity incidents
+                          </Trans>
+                        </div>
+                        <Button
+                          size={'xs'}
+                          color={'failure'}
+                          disabled={deleting && deletingId === subscription.id}
+                          onClick={() => handleDeleteSubscription(subscription.id)}
+                          data-cy="entity-delete-btn"
+                        >
+                          {deleting && deletingId === subscription.id ? (
+                            <Spinner size={'xs'} />
+                          ) : (
+                            <FontAwesomeIcon icon={faTrash} />
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+              </ListGroup>
+            </div>
+          ) : (
+            <div className="mt-4">
+              <Trans ns="account">You don&apos;t have active subscriptions to Entities</Trans>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

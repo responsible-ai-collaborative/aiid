@@ -53,12 +53,14 @@ describe('Incidents', () => {
       expect(xhr.request.body.variables.set.title).to.eq('Test title');
       expect(xhr.request.body.variables.set.description).to.eq('Test description');
       expect(xhr.request.body.variables.set.date).to.eq('2021-01-02');
-      expect(xhr.request.body.variables.set.AllegedDeployerOfAISystem).to.deep.eq([
-        'YouTube',
-        'Test Deployer',
+      expect(xhr.request.body.variables.set.AllegedDeployerOfAISystem.link).to.deep.eq([
+        'youtube',
+        'test-deployer',
       ]);
-      expect(xhr.request.body.variables.set.AllegedDeveloperOfAISystem).to.deep.eq(['YouTube']);
-      expect(xhr.request.body.variables.set.AllegedHarmedOrNearlyHarmedParties).to.deep.eq([]);
+      expect(xhr.request.body.variables.set.AllegedDeveloperOfAISystem.link).to.deep.eq([
+        'youtube',
+      ]);
+      expect(xhr.request.body.variables.set.AllegedHarmedOrNearlyHarmedParties.link).to.deep.eq([]);
       expect(xhr.request.body.variables.set.editors).to.deep.eq(['Sean McGregor', 'Test Editor']);
     });
 
