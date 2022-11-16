@@ -62,5 +62,9 @@
     "developers": {
       "title": "Alleged developer of AI system",
       "text": "If multiple, press “enter” to begin a new item"
+    },
+    "description": {
+       "title": "Description",
+       "text": "A short, factual, journalistically neutral, and complete description of the incident mentioning the incident/issue, location, and harm."
     }
 }

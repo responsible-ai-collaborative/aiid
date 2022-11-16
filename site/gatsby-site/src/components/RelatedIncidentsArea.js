@@ -94,7 +94,7 @@ const RelatedIncidentsArea = ({
     return null;
   }
   return (
-    <div className="bootstrap">
+    <div className="bootstrap flex">
       <ListContainer data-cy={`related-${columnKey}`} className={listOpened ? 'open' : ''}>
         <ListGroup.Item variant="secondary" key={'header'} className="flex gap-1">
           {header}

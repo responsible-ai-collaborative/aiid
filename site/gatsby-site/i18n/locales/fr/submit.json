@@ -27,6 +27,9 @@
   "CSVDescription": "La ligne d'en-tête du fichier est censée correspondre aux noms des entrées du formulaire. Chaque ligne sera traitée, une à la fois, pour passer par les validations du formulaire avant la soumission.",
   "Advanced: Add by CSV": "Avancé : Ajouter par CSV",
   "Was not able to create the report, please review the form and try again.": "Le rapport n'a pas pu être créé, veuillez revoir le formulaire et réessayer.",
+  "It will appear on the <2>review queue page</2> within an hour.": "Il apparaîtra sur la <2>page de la file d'attente d'examen</2> dans l'heure qui suit.",
+  "Report successfully added to review queue": "Rapport ajouté à la file d'attente des révisions",
+  "Review queue": "File d'attente",
   "Report successfully added to review queue. It will appear on the <2>review queue page</2> within an hour.": "Rapport ajouté à la file d'attente des révisions. Il apparaîtra sur la <2>page de la file d'attente d'examen</2> dans l'heure qui suit.",
   "Enter a valid Incident ID": "Entrez un ID d'incident valide"
 }
