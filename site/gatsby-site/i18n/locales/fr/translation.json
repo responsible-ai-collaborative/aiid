@@ -152,5 +152,7 @@
   "Display Issues": "Problèmes d'affichage",
   "Only Issues": "Seuls les problèmes",
   "Report {{report_number}}": "Problème {{report_number}}",
-  "Show Details on Issue #{{id}}": "Afficher les détails du problème #{{id}}"
+  "Show Details on Issue #{{id}}": "Afficher les détails du problème #{{id}}",
+  "Notify Me of New {{name}} Incidents": "M'avertir des nouveaux Incidents de {{name}}",
+  "Unsubscribe from New {{name}} Incidents": "Désinscrire des nouveaux Incidents de {{name}}"
 }
