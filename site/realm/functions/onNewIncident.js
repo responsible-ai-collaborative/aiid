@@ -28,6 +28,42 @@ exports = async function (changeEvent) {
     })
   }
 
+  // Process Entity Subscriptions
+  const entityFields = [
+    'Alleged deployer of AI system',
+    'Alleged developer of AI system',
+    'Alleged harmed or nearly harmed parties',
+  ];
+  const entities = [];
+
+  for (const field of entityFields) {
+    for (const entityId of fullDocument[field]) {
+      if (!entities.includes(entityId)) {
+        entities.push(entityId);
+      }
+    }
+  }
+
+  for (const entityId of entities) {
+    // Find subscriptions to this specific entity
+    const subscriptionsToEntity = await subscriptionsCollection.find({
+      type: 'entity',
+      entityId
+    }).toArray();
+
+    console.log(`There are ${subscriptionsToEntity.length} subscribers to Entity:`, entityId);
+
+    // If there are subscribers to Entities > Insert a pending notification to process in the next build
+    if (subscriptionsToEntity.length > 0) {
+      await notificationsCollection.insertOne({
+        type: 'entity',
+        incident_id: incidentId,
+        entity_id: entityId,
+        processed: false,
+      })
+    }
+  }
+
   return;
 };
 
