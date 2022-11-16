@@ -175,7 +175,7 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
     ];
 
     setSteps(steps);
-  }, [data, submissionFailed]);
+  }, [data, submissionFailed, parsingNews]);
 
   return <div ref={stepsRef}>{steps[currentStep]}</div>;
 };
