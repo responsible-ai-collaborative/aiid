@@ -210,7 +210,7 @@ const IncidentReportForm = () => {
           placeholder={t('Report URL')}
           addOnComponent={
             <Button
-              className="outline-secondary"
+              className="outline-secondary whitespace-nowrap"
               disabled={!!errors.url || !touched.url || parsingNews}
               onClick={() => parseNewsUrl(values.url)}
             >
@@ -356,6 +356,7 @@ const IncidentReportForm = () => {
           name="editor_notes"
           label="Editor Notes"
           as="textarea"
+          type="textarea"
           rows={8}
           className="mt-3"
           {...TextInputGroupProps}
