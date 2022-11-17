@@ -36,6 +36,8 @@ const buildEntityList = (allEntities, entityIds) => {
 
 exports = async function () {
 
+  let result = 0; // Pending notifications processed count
+
   const notificationsCollection = context.services.get('mongodb-atlas').db('customData').collection("notifications");
   const subscriptionsCollection = context.services.get('mongodb-atlas').db('customData').collection("subscriptions");
   const incidentsCollection = context.services.get('mongodb-atlas').db('aiidprod').collection("incidents");
@@ -45,6 +47,8 @@ exports = async function () {
   const pendingNotificationsToNewIncidents = await notificationsCollection.find({ processed: false, type: 'new-incidents' }).toArray();
 
   if (pendingNotificationsToNewIncidents.length > 0) {
+
+    result += pendingNotificationsToNewIncidents.length;
 
     const subscriptionsToNewIncidents = await subscriptionsCollection.find({ type: 'new-incidents' }).toArray();
 
@@ -99,6 +103,8 @@ exports = async function () {
   const pendingNotificationsToNewEntityIncidents = await notificationsCollection.find({ processed: false, type: 'entity' }).toArray();
 
   if (pendingNotificationsToNewEntityIncidents.length > 0) {
+
+    result += pendingNotificationsToNewEntityIncidents.length;
 
     const allEntities = await entitiesCollection.find({}).toArray();
 
@@ -167,7 +173,7 @@ exports = async function () {
     console.log('New Entity Incidents: No pending notifications to process.');
   }
 
-  return true;
+  return result;
 };
 
 if (typeof module === 'object') {
