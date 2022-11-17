@@ -46,6 +46,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     incidentsAsBoth,
     incidentsHarmedBy,
     entities: entitiesData,
+    responses,
   } = data;
 
   const entityIncidents = {
@@ -76,7 +77,11 @@ const EntityPage = ({ pageContext, data, ...props }) => {
 
   const incidents = sections.reduce((array, s) => array.concat(entityIncidents[s.key]), []);
 
-  const entities = computeEntities({ incidents, entities: entitiesData.nodes });
+  const entities = computeEntities({
+    incidents,
+    entities: entitiesData.nodes,
+    responses: responses.nodes,
+  });
 
   const incidentsHash = makeIncidentsHash(incidents);
 
@@ -367,6 +372,12 @@ export const query = graphql`
       nodes {
         entity_id
         name
+      }
+    }
+
+    responses: allMongodbAiidprodReports(filter: { tags: { in: ["response"] } }) {
+      nodes {
+        report_number
       }
     }
   }
