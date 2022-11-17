@@ -45,9 +45,9 @@ module.exports.computeEntities = ({ incidents, entities, responses }) => {
   for (const incident of incidents) {
     const { incident_id, reports } = incident;
 
-    const incidentResponses = responses
-      .filter((response) => reports.includes(response.report_number))
-      .map((r) => r.report_number);
+    const incidentResponses = responses.filter((response) =>
+      reports.includes(response.report_number)
+    );
 
     for (const field of entityFields) {
       for (const id of incident[field.property]) {
@@ -90,8 +90,12 @@ module.exports.computeEntities = ({ incidents, entities, responses }) => {
         }
 
         for (const incidentResponse of incidentResponses) {
-          if (!entitiesHash[id].responses.includes(incidentResponse)) {
-            entitiesHash[id].responses.push(incidentResponse);
+          if (
+            !entitiesHash[id].responses.some(
+              (r) => r.report_number == incidentResponse.report_number
+            )
+          ) {
+            entitiesHash[id].responses.push({ ...incidentResponse, incident_id });
           }
         }
       }

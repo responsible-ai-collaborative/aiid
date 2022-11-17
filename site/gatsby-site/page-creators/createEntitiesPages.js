@@ -26,6 +26,7 @@ const createEntitiesPages = async (graphql, createPage) => {
       responses: allMongodbAiidprodReports(filter: { tags: { in: ["response"] } }) {
         nodes {
           report_number
+          title
         }
       }
     }
