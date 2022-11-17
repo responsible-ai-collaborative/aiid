@@ -332,15 +332,17 @@ exports.onPreBuild = function ({ reporter }) {
 exports.onPostBuild = async ({ reporter }) => {
   reporter.info('Site has been built!');
 
-  reporter.info('Processing pending notifications...');
+  if (process.env.CONTEXT == 'production') {
+    reporter.info('Processing pending notifications...');
 
-  const processNotifications = require('./postBuild/processNotifications');
+    const processNotifications = require('./postBuild/processNotifications');
 
-  try {
-    const result = await processNotifications();
+    try {
+      const result = await processNotifications();
 
-    reporter.info(`${result?.data?.processNotifications?.length} notifications were processed!`);
-  } catch (error) {
-    reporter.error('Error processing pending notifications:', error);
+      reporter.info(`${result?.data?.processNotifications} notifications were processed!`);
+    } catch (error) {
+      reporter.error('Error processing pending notifications:', error);
+    }
   }
 };
