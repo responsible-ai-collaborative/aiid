@@ -23,11 +23,12 @@ const createEntitiesPages = async (graphql, createPage) => {
           name
         }
       }
-      responses: allMongodbAiidprodReports(filter: {tags: {in: ["response"]}}) {
+      responses: allMongodbAiidprodReports(filter: { tags: { in: ["response"] } }) {
         nodes {
           report_number
         }
       }
+    }
   `);
 
   const entities = computeEntities({
