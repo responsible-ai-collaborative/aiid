@@ -355,7 +355,6 @@ const IncidentReportForm = () => {
         <TextInputGroup
           name="editor_notes"
           label="Editor Notes"
-          as="textarea"
           type="textarea"
           rows={8}
           className="mt-3"

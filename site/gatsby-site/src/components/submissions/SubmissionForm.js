@@ -447,7 +447,7 @@ const SubmissionForm = () => {
           <TextInputGroup
             name="editor_notes"
             label={t('Editor Notes')}
-            as="textarea"
+            type="textarea"
             placeholder={t('Optional context and notes about the incident')}
             rows={8}
             className="mt-3"
