@@ -54,7 +54,8 @@ const LandingPage = (props) => {
   const metaImage = 'https://incidentdatabase.ai/logos/AIID_1000x1000px.png';
 
   return (
-    <Layout {...props} className="max-w-full 2xl:max-w-6xl">
+    // Tailwind has max-w-6xl but no plain w-6xl... 72rem = 6xl
+    <Layout {...props} className="max-w-full 2xl:w-[72rem]">
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
         <title>{title}</title>
         <meta property="og:type" content="website" />
@@ -68,25 +69,27 @@ const LandingPage = (props) => {
           <QuickSearch />
         </div>
 
-        <div className="mb-10">
+        {/* The shadows on the card bottoms make the gap between cards look smaller,  *
+         /* so mb-5 appears to match the p-4 of the content                           */}
+        <div className="mb-5 md:mb-10">
           <div>
             <LatestReports latestReport={latestReport} />
           </div>
         </div>
 
-        <div className="mb-8">
+        <div className="mb-5 md:mb-10">
           <div>
             <CommonEntities />
           </div>
         </div>
 
-        <div className="mb-10">
+        <div className="mb-5 md:mb-10">
           <div className="flex flex-col items-center">
             <QuickAdd />
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-10 mb-10 flex-wrap">
+        <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-5 md:gap-10 mb-5 md:mb-10 flex-wrap">
           <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
             <AboutDatabase />
           </div>
@@ -95,19 +98,19 @@ const LandingPage = (props) => {
           </div>
         </div>
 
-        <div className="mb-16">
+        <div className="mb-10 md:mb-16">
           <div>
             <Featured />
           </div>
         </div>
 
-        <div className="mb-16">
+        <div className="mb-10 md:mb-16">
           <div>
             <Leaderboards />
           </div>
         </div>
 
-        <div className="mb-10 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-10 flex-wrap">
+        <div className="mb-5 md:mb-10 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-5 md:gap-10 flex-wrap">
           <div className="flex-1 lg:max-w-[50%] grow">
             <WordCounts localWordCounts={localWordCounts} />
           </div>

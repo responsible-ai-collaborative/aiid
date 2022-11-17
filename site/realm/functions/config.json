@@ -1,33 +1,5 @@
 [
     {
-        "name": "confirmUser",
-        "private": true
-    },
-    {
-        "name": "linkReportsToIncidents",
-        "private": false
-    },
-    {
-        "name": "reportTranslations",
-        "private": false
-    },
-    {
-        "name": "getUser",
-        "private": false
-    },
-    {
-        "name": "onIncidentUpdate",
-        "private": true
-    },
-    {
-        "name": "onNewIncident",
-        "private": true
-    },
-    {
-        "name": "sendEmail",
-        "private": false
-    },
-    {
         "name": "onNewUser",
         "private": true
     },
@@ -40,7 +12,72 @@
         "private": false
     },
     {
+        "name": "confirmUser",
+        "private": true
+    },
+    {
+        "name": "processNotifications",
+        "private": false
+    },
+    {
+        "name": "linkReportsToIncidents",
+        "private": false
+    },
+    {
+        "name": "onNewIncident",
+        "private": false,
+        "disable_arg_logs": true
+    },
+    {
+        "name": "sendEmail",
+        "private": false
+    },
+    {
+        "name": "unlinkReportsFromIncidents",
+        "private": false
+    },
+    {
+        "name": "getUser",
+        "private": false
+    },
+    {
+        "name": "onIncidentUpdate",
+        "private": true
+    },
+    {
         "name": "passwordReset",
+        "private": true
+    },
+    {
+        "name": "reportTranslations",
+        "private": false
+    },
+    {
+        "name": "getEmailTemplateConfirmEmail",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplatePasswordReset",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplateNewReportAddedToAnIncident",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplateIncidentUpdate",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplateNewIncident",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplateNewEntityIncident",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplateEntityIncidentUpdated",
         "private": true
     }
 ]

@@ -55,7 +55,7 @@ describe('Issues', () => {
       }
     );
 
-    cy.get('@promoteForm').contains('button', 'Add New Issue').click();
+    cy.get('@promoteForm').contains('button', 'Add as issue').click();
 
     cy.wait('@promoteSubmission')
       .its('request.body.variables.input')

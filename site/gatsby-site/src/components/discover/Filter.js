@@ -11,7 +11,7 @@ import { Trans } from 'react-i18next';
 function ToggleContent({ label, touched, faIcon }) {
   return (
     <>
-      <FontAwesomeIcon icon={faIcon} />
+      {faIcon && <FontAwesomeIcon icon={faIcon} />}
       &nbsp; <Trans>{label}</Trans> &nbsp;{' '}
       {touched > 0 && (
         <Badge bg="light" text="dark">

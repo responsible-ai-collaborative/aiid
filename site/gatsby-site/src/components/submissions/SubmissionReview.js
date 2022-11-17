@@ -11,6 +11,7 @@ import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import ReadMoreText from '../../components/ReadMoreText';
 import RelatedIncidents from '../../components/RelatedIncidents';
 import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
 import { useUserContext } from '../../contexts/userContext';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_INCIDENT } from '../../graphql/incidents';
@@ -20,7 +21,7 @@ import SubmissionEditModal from './SubmissionEditModal';
 import { Spinner } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 
-const ListedGroup = ({ item, className = '', keysToRender }) => {
+const ListedGroup = ({ item, className = '', keysToRender, objectKeyToDisplay = '' }) => {
   return (
     <ListGroup className={className}>
       {keysToRender
@@ -31,7 +32,9 @@ const ListedGroup = ({ item, className = '', keysToRender }) => {
               <b>{key}</b>
             </div>
             <div className="text-break">
-              {isArray(item[key]) ? item[key].join(', ') : item[key]}
+              {isArray(item[key])
+                ? item[key].map((i) => (isObject(i) ? i[objectKeyToDisplay] : i)).join(', ')
+                : item[key]}
             </div>
           </ListGroup.Item>
         ))}
@@ -90,7 +93,11 @@ const SubmissionReview = ({ submission }) => {
     async ({ is_incident_report = true }) => {
       if (
         !is_incident_report &&
-        !confirm(t('Sure you want to promote this Submission to an Issue?'))
+        !confirm(
+          t(
+            'Are you sure this is a new issue? Any data entered that is associated with incident records will not be added'
+          )
+        )
       ) {
         return;
       }
@@ -98,7 +105,11 @@ const SubmissionReview = ({ submission }) => {
       if (
         is_incident_report &&
         isNewIncident &&
-        !confirm(t('Sure you want to promote this Submission to a new Incident?'))
+        !confirm(
+          t(
+            'Are you sure this is a new incident? This will create a permanent record with all the details you provided about the incident.'
+          )
+        )
       ) {
         return;
       }
@@ -233,7 +244,12 @@ const SubmissionReview = ({ submission }) => {
           <ListedGroup className="mx-3" item={submission} keysToRender={leadItems} />
           <ListedGroup className="mt-2 mx-3" item={submission} keysToRender={dateRender} />
           <ListedGroup className="mt-2 mx-3" item={submission} keysToRender={urls} />
-          <ListedGroup className="mt-2 mx-3" item={submission} keysToRender={otherDetails} />
+          <ListedGroup
+            className="mt-2 mx-3"
+            item={submission}
+            keysToRender={otherDetails}
+            objectKeyToDisplay="name"
+          />
 
           <Card className="m-3" data-cy="text">
             <Card.Header>Text</Card.Header>
@@ -275,7 +291,7 @@ const SubmissionReview = ({ submission }) => {
             >
               <div className="flex gap-2">
                 {promoting === 'issue' && <Spinner size="sm" />}
-                <Trans ns="submitted">Add New Issue</Trans>
+                <Trans ns="submitted">Add as issue</Trans>
               </div>
             </Button>
 
@@ -288,9 +304,11 @@ const SubmissionReview = ({ submission }) => {
               <div className="flex gap-2">
                 {promoting === 'incident' && <Spinner size="sm" />}
                 {isNewIncident ? (
-                  <Trans ns="submitted">Add New Incident</Trans>
+                  <Trans ns="submitted">Add new Incident</Trans>
                 ) : (
-                  <Trans ns="submitted">Add New Report</Trans>
+                  <Trans ns="submitted" id={submission.incident_id}>
+                    Add to incident {{ id: submission.incident_id }}
+                  </Trans>
                 )}
               </div>
             </Button>

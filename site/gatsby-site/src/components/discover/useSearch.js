@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 
 const SearchContext = React.createContext({
   searchState: {},
+  setSearchState: null,
   indexName: null,
   searchClient: null,
   onSearchStateChange: null,

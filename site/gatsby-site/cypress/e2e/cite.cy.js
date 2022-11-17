@@ -164,7 +164,10 @@ describe('Cite pages', () => {
 
     cy.contains('New Report').scrollIntoView().click();
 
-    cy.get('[name="incident_id"]').should('have.value', '10');
+    cy.get('[data-cy="prefilled-incident-id"]').should(
+      'contain.text',
+      'Adding a new report to incident 10'
+    );
   });
 
   it('should render Next and Previous incident buttons', () => {
@@ -355,7 +358,7 @@ describe('Cite pages', () => {
       .should('exist');
   });
 
-  it('Shouldn not subscribe to incident updates (user unauthenticated)', () => {
+  it('Should not subscribe to incident updates (user unauthenticated)', () => {
     cy.visit(url);
 
     cy.conditionalIntercept(

@@ -117,7 +117,7 @@ describe('Submitted reports', () => {
       }
     );
 
-    cy.get('@promoteForm').contains('button', 'Add New Incident').click();
+    cy.get('@promoteForm').contains('button', 'Add new Incident').click();
 
     cy.wait('@promoteSubmission')
       .its('request.body.variables.input')
@@ -183,7 +183,7 @@ describe('Submitted reports', () => {
       }
     );
 
-    cy.get('@promoteForm').contains('button', 'Add New Report').click();
+    cy.get('@promoteForm').contains('button', 'Add to incident 10').click();
 
     cy.wait('@promoteSubmission')
       .its('request.body.variables.input')
@@ -362,7 +362,7 @@ describe('Submitted reports', () => {
 
       cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
 
-      cy.get('[name="incident_id"').type('333');
+      cy.get('[name="incident_id"]').type('333');
 
       cy.conditionalIntercept(
         '**/graphql',
@@ -454,7 +454,7 @@ describe('Submitted reports', () => {
         {}
       );
 
-      cy.get('@promoteForm').contains('button', 'Add New Incident').click();
+      cy.get('@promoteForm').contains('button', 'Add new Incident').click();
 
       cy.get('[data-cy="toast"]')
         .contains('Please review submission before approving. Some data is missing.')
@@ -516,7 +516,7 @@ describe('Submitted reports', () => {
       {}
     );
 
-    cy.get('@promoteForm').contains('button', 'Add New Incident').click();
+    cy.get('@promoteForm').contains('button', 'Add new Incident').click();
 
     cy.get('[data-cy="toast"]')
       .contains('Please review submission before approving. Some data is missing.')
