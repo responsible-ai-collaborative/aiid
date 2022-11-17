@@ -22,9 +22,7 @@ exports = async (input) => {
 
   // unlink
 
-  const exParentIncidents = await incidentsCollection
-    .find({ reports: { $in: input.report_numbers } })
-    .toArray();
+  const exParentIncidents = await incidentsCollection.find({ reports: { $in: input.report_numbers } }).toArray();
 
   for (const incident of exParentIncidents) {
 
@@ -42,15 +40,11 @@ exports = async (input) => {
 
   await incidentsCollection.updateMany({ incident_id: { $in: input.incident_ids } }, { $addToSet: { reports: { $each: input.report_numbers.map(BSON.Int32) } } });
 
-  const parentIncidents = await incidentsCollection
-    .find({ reports: { $in: input.report_numbers } })
-    .toArray();
+  const parentIncidents = await incidentsCollection.find({ reports: { $in: input.report_numbers } }).toArray();
 
   for (const incident of parentIncidents) {
 
-    const reports = await reportsCollection
-      .find({ report_number: { $in: incident.reports } })
-      .toArray();
+    const reports = await reportsCollection.find({ report_number: { $in: incident.reports } }).toArray();
 
     const embedding = incidentEmbedding(reports);
 
@@ -59,3 +53,7 @@ exports = async (input) => {
 
   return incidentsCollection.find({ reports: { $in: input.report_numbers } }).toArray();
 };
+
+if (typeof module === 'object') {
+  module.exports = exports;
+}
