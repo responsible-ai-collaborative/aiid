@@ -262,7 +262,9 @@ describe('Functions', () => {
     const { notificationsCollection, subscriptionsCollection, incidentsCollection } =
       stubEverything();
 
-    cy.wrap(processNotifications()).then(() => {
+    cy.wrap(processNotifications()).then((result) => {
+      expect(result, 'Notifications processed count').to.be.equal(4);
+
       expect(notificationsCollection.find.firstCall.args[0]).to.deep.equal({
         processed: false,
         type: SUBSCRIPTION_TYPE.newIncidents,
@@ -324,7 +326,9 @@ describe('Functions', () => {
       entitiesCollection,
     } = stubEverything();
 
-    cy.wrap(processNotifications()).then(() => {
+    cy.wrap(processNotifications()).then((result) => {
+      expect(result, 'Notifications processed count').to.be.equal(4);
+
       expect(notificationsCollection.find.secondCall.args[0]).to.deep.equal({
         processed: false,
         type: SUBSCRIPTION_TYPE.entity,
@@ -476,7 +480,9 @@ describe('Functions', () => {
 
     global.BSON = { Int32: (x) => x };
 
-    cy.wrap(processNotifications()).then(() => {
+    cy.wrap(processNotifications()).then((result) => {
+      expect(result, 'Notifications processed count').to.be.equal(4);
+
       expect(notificationsCollection.find.firstCall.args[0]).to.deep.equal({
         processed: false,
         type: SUBSCRIPTION_TYPE.newIncidents,
