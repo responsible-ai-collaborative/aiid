@@ -543,6 +543,7 @@ export const query = graphql`
         authors
         epoch_date_submitted
         language
+        tags
       }
     }
     allMongodbTranslationsReportsEs(filter: { report_number: { in: $report_numbers } })
