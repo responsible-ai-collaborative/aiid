@@ -238,7 +238,7 @@ const SubmissionForm = () => {
           addOnComponent={
             <Button
               className="outline-secondary rounded-l-none"
-              disabled={!!errors.url || !touched.url || parsingNews}
+              disabled={!!errors.url || !values?.url || parsingNews}
               onClick={() => parseNewsUrl(values.url)}
               data-cy="fetch-info"
             >

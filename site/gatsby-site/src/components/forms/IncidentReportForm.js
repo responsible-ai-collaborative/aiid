@@ -211,7 +211,7 @@ const IncidentReportForm = () => {
           addOnComponent={
             <Button
               className="outline-secondary whitespace-nowrap"
-              disabled={!!errors.url || !touched.url || parsingNews}
+              disabled={!!errors.url || !values?.url || parsingNews}
               onClick={() => parseNewsUrl(values.url)}
             >
               {!parsingNews ? (
