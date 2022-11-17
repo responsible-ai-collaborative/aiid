@@ -30,7 +30,7 @@ import useToastContext, { SEVERITY } from '../hooks/useToast';
 import Link from 'components/ui/Link';
 import { graphql } from 'gatsby';
 import { getTaxonomies, getTranslatedReports } from 'utils/cite';
-import { computeEntities } from 'utils/entities';
+import { computeEntities, RESPONSE_TAG } from 'utils/entities';
 import AllegedEntities from 'components/entities/AllegedEntities';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -337,6 +337,10 @@ function CitePage(props) {
                 >
                   <FontAwesomeIcon icon={faPlus} title={t('New Report')} className="mr-2" />
                   <Trans>New Report</Trans>
+                </Button>
+                <Button variant="outline-primary" href={`/apps/submit?tags=${RESPONSE_TAG}`}>
+                  <FontAwesomeIcon icon={faPlus} title={t('New Response')} className="mr-2" />
+                  <Trans>New Response</Trans>
                 </Button>
                 <Button
                   variant="outline-primary"
