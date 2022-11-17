@@ -26,38 +26,6 @@ const Backups = ({ pageContext, ...props }) => {
         <StyledHeading>Database Snapshots</StyledHeading>
       </div>
       <StyledMainWrapper>
-        <p className="paragraph">
-          In many cases it is necessary to have an unchanging and shared version of the database
-          This page lists weekly snapshots of the database in JSON, MongoDB, and CSV format taken
-          through time by the{' '}
-          <a href="https://github.com/aiincidentdatabase/mongodb-awesome-backup">
-            GitHub backup workflow
-          </a>
-          . We maintain these snapshots so you can create stable datasets for natural language
-          processing research and academic analysis. Please{' '}
-          <LocalizedLink to="/contact">contact us</LocalizedLink>
-          to let us know what you are using the database for so we can list your work in the
-          incident database and ensure your use case is not dropped from support.
-        </p>
-        <Container>
-          <Row>
-            <Col xs={12}>
-              <ul className="pl-8 leading-6">
-                {backups
-                  .map((b) => ({
-                    ...b,
-                    Url: `https://s3.amazonaws.com/aiid-backups-public/${b.Key}`,
-                  }))
-                  .map((value) => (
-                    <li key={`snapshot-${value['Key']}`}>
-                      {value['LastModified']} &middot; {value['Size'] / 1000000} MB &middot;{' '}
-                      <Link to={value['Url']}>{value['Key']}</Link>
-                    </li>
-                  ))}
-              </ul>
-            </Col>
-          </Row>
-        </Container>
         <h2>Citing the Database as a Whole</h2>
         <p>We invite you to cite:</p>
         <blockquote>
@@ -77,6 +45,39 @@ const Backups = ({ pageContext, ...props }) => {
           through time, our suggested citation format includes the access date. You can find
           incident citations at <code>https://incidentdatabase.ai/cite/INSERT_NUMBER_HERE</code>.
         </p>
+        <p className="paragraph">
+          In many cases it is necessary to have an unchanging and shared version of the database
+          This page lists weekly snapshots of the database in JSON, MongoDB, and CSV format taken
+          through time by the{' '}
+          <a href="https://github.com/aiincidentdatabase/mongodb-awesome-backup">
+            GitHub backup workflow
+          </a>
+          . We maintain these snapshots so you can create stable datasets for natural language
+          processing research and academic analysis. Please{' '}
+          <LocalizedLink to="/contact">contact us</LocalizedLink>{' '}
+          to let us know what you are using the database for so we can list your work in the
+          incident database and ensure your use case is not dropped from support.
+        </p>
+        <h2>Download</h2>
+        <Container>
+          <Row>
+            <Col xs={12}>
+              <ul className="pl-8 leading-6">
+                {backups
+                  .map((b) => ({
+                    ...b,
+                    Url: `https://s3.amazonaws.com/aiid-backups-public/${b.Key}`,
+                  }))
+                  .map((value) => (
+                    <li key={`snapshot-${value['Key']}`}>
+                      {value['LastModified']} &middot; {value['Size'] / 1000000} MB &middot;{' '}
+                      <Link to={value['Url']}>{value['Key']}</Link>
+                    </li>
+                  ))}
+              </ul>
+            </Col>
+          </Row>
+        </Container>
       </StyledMainWrapper>
     </Layout>
   );
