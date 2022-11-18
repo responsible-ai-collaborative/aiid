@@ -37,7 +37,7 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
           </WebArchiveLink>
           <div className="flex ">
             <TranslationBadge className="mx-2" originalLanguage={item.language} />
-            {item.tags && item.tags.findIndex((t) => t === RESPONSE_TAG) > -1 && (
+            {item.tags && item.tags.includes(RESPONSE_TAG) && (
               <div className="flex-1">
                 <Badge color={'success'}>
                   <Trans>{{ authors }} post-incident response</Trans>
