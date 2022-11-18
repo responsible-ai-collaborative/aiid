@@ -180,7 +180,7 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
     ];
 
     setSteps(steps);
-  }, [data, submissionFailed, submissionComplete]);
+  }, [data, submissionFailed, parsingNews, submissionComplete]);
 
   return <div ref={stepsRef}>{steps[currentStep]}</div>;
 };

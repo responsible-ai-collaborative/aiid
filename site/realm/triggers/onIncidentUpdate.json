@@ -1,0 +1,39 @@
+{
+    "name": "onIncidentUpdate",
+    "type": "DATABASE",
+    "config": {
+        "operation_types": [
+            "UPDATE"
+        ],
+        "database": "aiidprod",
+        "collection": "incidents",
+        "service_name": "mongodb-atlas",
+        "match": {
+            "$and": [
+                {
+                    "updateDescription.updatedFields.tsne": {
+                        "$exists": false
+                    }
+                },
+                {
+                    "updateDescription.updatedFields.embedding": {
+                        "$exists": false
+                    }
+                }
+            ]
+        },
+        "project": {},
+        "full_document": true,
+        "full_document_before_change": true,
+        "unordered": false,
+        "skip_catchup_events": false
+    },
+    "disabled": false,
+    "event_processors": {
+        "FUNCTION": {
+            "config": {
+                "function_name": "onIncidentUpdate"
+            }
+        }
+    }
+}

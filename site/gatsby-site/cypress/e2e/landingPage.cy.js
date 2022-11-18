@@ -1,3 +1,4 @@
+import { maybeIt } from '../support/utils';
 const { format } = require('date-fns');
 
 describe('The Landing page', () => {
@@ -45,9 +46,7 @@ describe('The Landing page', () => {
     });
 
     cy.get('div[class^="ToastContext"]')
-      .contains(
-        'Report successfully added to review queue. It will appear on the review queue page within an hour.'
-      )
+      .contains('Report successfully added to review queue. You can see your submission here.')
       .should('exist');
   });
 
@@ -63,9 +62,7 @@ describe('The Landing page', () => {
       });
   });
 
-  it('Should redirect to the account page when logged in', () => {
-    cy.visit('/');
-
+  maybeIt('Should redirect to the account page when logged in', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.location('pathname', { timeout: 8000 }).should('eq', '/');

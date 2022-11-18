@@ -381,11 +381,32 @@ describe('Edit report', () => {
         expect(variables.set.incident_id).to.equal(undefined);
       });
 
-    cy.wait('@RelatedIncidents')
+    cy.wait('@updateOneReportTranslation')
       .its('request.body.variables')
       .then((variables) => {
-        expect(variables.incidentIds).to.deep.equal([12]);
-        expect(variables.reports).to.deep.equal([{ report_number: 23 }]);
+        expect(variables.input.title).to.eq('Este es el Titulo');
+        expect(variables.input.text).to.eq(
+          'Este es el texto que tiene un largo mayor a ochenta caracteres!'
+        );
+        expect(variables.input.language).to.eq('es');
+        expect(variables.input.report_number).to.eq(23);
+        expect(variables.input.plain_text).to.eq(
+          'Este es el texto que tiene un largo mayor a ochenta caracteres!\n'
+        );
+      });
+
+    cy.wait('@updateOneReportTranslation')
+      .its('request.body.variables')
+      .then((variables) => {
+        expect(variables.input.title).to.eq('Este es el Titulo en frances');
+        expect(variables.input.text).to.eq(
+          'Este es el texto que tiene un largo mayor a ochenta caracteres en frances!'
+        );
+        expect(variables.input.language).to.eq('fr');
+        expect(variables.input.report_number).to.eq(23);
+        expect(variables.input.plain_text).to.eq(
+          'Este es el texto que tiene un largo mayor a ochenta caracteres en frances!\n'
+        );
       });
 
     cy.wait('@UpdateIncident10')
