@@ -124,7 +124,7 @@ function CitePage(props) {
       title,
       mongodb_id,
       report_number,
-      isResponse: tags.includes(RESPONSE_TAG),
+      isResponse: tags && tags.includes(RESPONSE_TAG),
     })
   );
 
@@ -218,7 +218,9 @@ function CitePage(props) {
 
   const entities = computeEntities({ incidents: [incident], entities: entitiesData.nodes });
 
-  const incidentResponded = sortedReports.some((report) => report.tags.includes(RESPONSE_TAG));
+  const incidentResponded = sortedReports.some(
+    (report) => report.tags && report.tags.includes(RESPONSE_TAG)
+  );
 
   return (
     <Layout {...props}>
