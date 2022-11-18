@@ -30,7 +30,7 @@ import useToastContext, { SEVERITY } from '../hooks/useToast';
 import Link from 'components/ui/Link';
 import { graphql } from 'gatsby';
 import { getTaxonomies, getTranslatedReports } from 'utils/cite';
-import { computeEntities } from 'utils/entities';
+import { computeEntities, RESPONSE_TAG } from 'utils/entities';
 import AllegedEntities from 'components/entities/AllegedEntities';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -118,12 +118,15 @@ function CitePage(props) {
 
   const addToast = useToastContext();
 
-  const timeline = sortedReports.map(({ date_published, title, mongodb_id, report_number }) => ({
-    date_published,
-    title,
-    mongodb_id,
-    report_number,
-  }));
+  const timeline = sortedReports.map(
+    ({ date_published, title, mongodb_id, report_number, tags }) => ({
+      date_published,
+      title,
+      mongodb_id,
+      report_number,
+      isResponse: tags.includes(RESPONSE_TAG),
+    })
+  );
 
   timeline.push({
     date_published: incident.date,
@@ -543,6 +546,7 @@ export const query = graphql`
         authors
         epoch_date_submitted
         language
+        tags
       }
     }
     allMongodbTranslationsReportsEs(filter: { report_number: { in: $report_numbers } })
