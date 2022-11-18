@@ -278,11 +278,7 @@ const FormDetails = ({
             value={values.text}
             onChange={(value) => {
               setFieldValue('text', value);
-              if (value === '') {
-                setFieldTouched('text', false);
-              } else {
-                setFieldTouched('text', true);
-              }
+              setFieldTouched('text', value !== '');
             }}
           />
         </div>
