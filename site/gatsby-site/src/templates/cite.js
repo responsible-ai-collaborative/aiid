@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Spinner } from 'flowbite-react';
+import { Badge, Spinner } from 'flowbite-react';
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
 import Citation from 'components/cite/Citation';
@@ -218,6 +218,8 @@ function CitePage(props) {
 
   const entities = computeEntities({ incidents: [incident], entities: entitiesData.nodes });
 
+  const incidentResponded = sortedReports.some((report) => report.tags.includes(RESPONSE_TAG));
+
   return (
     <Layout {...props}>
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
@@ -226,12 +228,19 @@ function CitePage(props) {
 
       <div className={'titleWrapper'}>
         <h1 className="tw-styled-heading">{locale == 'en' ? metaTitle : defaultIncidentTitle}</h1>
-        <SocialShareButtons
-          metaTitle={metaTitle}
-          canonicalUrl={canonicalUrl}
-          page="cite"
-          className="-mt-1"
-        ></SocialShareButtons>
+        <div className="flex">
+          <SocialShareButtons
+            metaTitle={metaTitle}
+            canonicalUrl={canonicalUrl}
+            page="cite"
+            className="-mt-1"
+          ></SocialShareButtons>
+          {incidentResponded && (
+            <div className="self-center">
+              <Badge color="success">{t('Responded')}</Badge>
+            </div>
+          )}
+        </div>
       </div>
 
       <div>
