@@ -178,11 +178,8 @@ const SubmitForm = () => {
       addToast({
         message: (
           <Trans i18n={i18n} ns="submit">
-            Report successfully added to review queue. It will appear on the{' '}
-            <Link to={localizePath({ path: '/apps/submitted', language: locale })}>
-              review queue page
-            </Link>{' '}
-            within an hour.
+            Report successfully added to review queue. You can see your submission{' '}
+            <Link to={localizePath({ path: '/apps/submitted', language: locale })}>here</Link>.
           </Trans>
         ),
         severity: SEVERITY.success,
