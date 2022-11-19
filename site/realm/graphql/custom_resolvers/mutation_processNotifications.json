@@ -3,6 +3,6 @@
     "function_name": "processNotifications",
     "input_type_format": "",
     "on_type": "Mutation",
-    "payload_type": "Notification",
-    "payload_type_format": "generated-list"
+    "payload_type": "int",
+    "payload_type_format": "scalar"
 }

@@ -56,27 +56,27 @@ export const schema = yup.object().shape({
         _id !== undefined && (incident_id == '' || incident_id === undefined),
       then: yup.string().required('*Description is required.'),
     }),
-  developers: yup.string().when(['_id', 'incident_id'], {
-    is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
-    then: yup
-      .string()
-      .min(3, 'Alleged Developer must have at least 3 characters')
-      .max(200, "Alleged Developers can't be longer than 200 characters"),
-  }),
-  deployers: yup.string().when(['_id', 'incident_id'], {
-    is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
-    then: yup
-      .string()
-      .min(3, 'Alleged Deployers must have at least 3 characters')
-      .max(200, "Alleged Deployers can't be longer than 200 characters"),
-  }),
-  harmed_parties: yup.string().when(['_id', 'incident_id'], {
-    is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
-    then: yup
-      .string()
-      .min(3, 'Harmed Parties must have at least 3 characters')
-      .max(200, "Harmed Parties can't be longer than 200 characters"),
-  }),
+  developers: yup
+    .string()
+    .trim()
+    .transform((value) => (value === '' ? undefined : value))
+    .notRequired()
+    .min(3, 'Alleged Developer must have at least 3 characters')
+    .max(200, "Alleged Developers can't be longer than 200 characters"),
+  deployers: yup
+    .string()
+    .trim()
+    .transform((value) => (value === '' ? undefined : value))
+    .notRequired()
+    .min(3, 'Alleged Deployers must have at least 3 characters')
+    .max(200, "Alleged Deployers can't be longer than 200 characters"),
+  harmed_parties: yup
+    .string()
+    .trim()
+    .transform((value) => (value === '' ? undefined : value))
+    .notRequired()
+    .min(3, 'Harmed Parties must have at least 3 characters')
+    .max(200, "Harmed Parties can't be longer than 200 characters"),
   authors: yup
     .string()
     .min(3, '*Authors must have at least 3 characters')
@@ -392,17 +392,7 @@ const SubmissionForm = () => {
         )}
 
         <details className="mt-3">
-          <summary data-cy="extra-fields">
-            {t('Tell us more...')}
-            {(errors['description'] ||
-              errors['developers'] ||
-              errors['deployers'] ||
-              errors['harmed_parties']) && (
-              <div className="text-red-500 pl-4">
-                <Trans ns="validation">Some data is missing.</Trans>
-              </div>
-            )}
-          </summary>
+          <summary data-cy="extra-fields">{t('Tell us more...')}</summary>
 
           <TagsInputGroup name="tags" label={t('Tags')} className="mt-3" {...TextInputGroupProps} />
 
