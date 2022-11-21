@@ -56,7 +56,7 @@ const WordCounts = ({ pageContext, ...props }) => {
           </Trans>
         </p>
         <Container>
-          <ul className="pl-0">
+          <ul className="pl-0 list-revert">
             {wordClouds &&
               wordCountsSorted &&
               wordClouds.map((wordCloud, idx) => (
