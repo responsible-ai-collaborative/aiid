@@ -411,7 +411,7 @@ const SubmissionForm = () => {
               <TextInputGroup
                 name="description"
                 label={t('Description')}
-                as="textarea"
+                type="textarea"
                 placeholder={t('Incident Description')}
                 rows={3}
                 className="mt-3"

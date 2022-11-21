@@ -18,6 +18,8 @@ const getEntityId = (name) => {
   return slugify(name, { lower: true });
 };
 
+module.exports.getEntityId = getEntityId;
+
 module.exports.computeEntities = ({ incidents, entities }) => {
   const entitiesHash = {};
 
@@ -138,9 +140,11 @@ module.exports.makeEntitiesHash = (entities) =>
 
 // Save new Entities into "entities" collection
 module.exports.processEntities = async (allEntities, entitiesNames, createEntityMutation) => {
-  entitiesNames = !isArray(entitiesNames)
-    ? entitiesNames.split(',').map((s) => s.trim())
-    : entitiesNames;
+  entitiesNames = entitiesNames
+    ? !isArray(entitiesNames)
+      ? entitiesNames.split(',').map((s) => s.trim())
+      : entitiesNames
+    : [];
 
   const entityIds = [];
 

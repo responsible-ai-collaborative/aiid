@@ -77,7 +77,17 @@ describe('Incidents App', () => {
       incident
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 112,
+      'FindIncident',
+      incident
+    );
+
     cy.contains('Edit').click();
+
+    cy.wait('@FindIncident');
 
     cy.wait('@FindIncident').then((xhr) => {
       expect(xhr.request.body.operationName).to.eq('FindIncident');

@@ -81,13 +81,21 @@ const StepOne = (props) => {
           schema={stepOneValidationSchema}
           submitForm={handleSubmit}
           validateAndSubmitForm={props.validateAndSubmitForm}
+          submissionFailed={props.submissionFailed}
         />
       </Formik>
     </StepContainer>
   );
 };
 
-const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAndSubmitForm }) => {
+const FormDetails = ({
+  parsingNews,
+  parseNewsUrl,
+  schema,
+  submitForm,
+  validateAndSubmitForm,
+  submissionFailed,
+}) => {
   const { t } = useTranslation(['submit']);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -112,6 +120,12 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
     }
   }, []);
 
+  useEffect(() => {
+    if (submissionFailed) {
+      setIsSubmitting(false);
+    }
+  }, [submissionFailed]);
+
   const fetchNews = async (url) => {
     await parseNewsUrl(url);
     Object.keys(errors).map((key) => {
@@ -128,9 +142,12 @@ const FormDetails = ({ parsingNews, parseNewsUrl, schema, submitForm, validateAn
   return (
     <>
       {parsingNews && (
-        <div className="absolute top-1/2 left-1/2 z-10">
-          <Spinner size="xl" />
-        </div>
+        <>
+          <div className="absolute top-0 left-0 z-10 w-full h-full flex justify-center items-start opacity-30 bg-gray-200"></div>
+          <span className="absolute top-0 left-1/2 pt-20 z-10">
+            <Spinner size="xl" />
+          </span>
+        </>
       )}
       {values.incident_id && (
         <span className="flex mb-4" data-cy="prefilled-incident-id">
