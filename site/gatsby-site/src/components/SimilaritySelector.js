@@ -29,7 +29,7 @@ const SimilaritySelector = ({ incident_id }) => {
           },
           {
             identifier: 'unspecified',
-            variant: 'dark',
+            variant: 'warning',
             text: 'Not sure',
             show:
               !values.editor_similar_incidents ||
@@ -67,7 +67,7 @@ const SimilaritySelector = ({ incident_id }) => {
           },
         ].map((button) => {
           let btnProps = {
-            size: 'sm',
+            size: 'xs',
             'aria-pressed': button.show,
             onClick: button.onClick,
             key: button.text,
