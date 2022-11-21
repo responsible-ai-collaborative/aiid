@@ -63,7 +63,7 @@ const allSearchColumns = {
       return (
         <>
           <Trans date={date}>
-            Incidents reports matched by published date: <b>{{ date }}</b>
+            Incidents reports matched by published date: <b className="break-all">{{ date }}</b>
           </Trans>
         </>
       );
@@ -117,7 +117,7 @@ const allSearchColumns = {
       return (
         <>
           <Trans authors={authors}>
-            Incidents reports matched by authors: <b>{{ authors }}</b>
+            Incidents reports matched by authors: <b className="break-words">{{ authors }}</b>
           </Trans>
         </>
       );
@@ -137,7 +137,7 @@ const allSearchColumns = {
       return (
         <>
           <Trans url={url}>
-            Incidents reports matched by URL: <b>{{ url }}</b>
+            Incidents reports matched by URL: <b className="break-all">{{ url }}</b>
           </Trans>
         </>
       );

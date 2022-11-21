@@ -1,0 +1,26 @@
+{
+    "collection": "entities",
+    "database": "aiidprod",
+    "roles": [
+        {
+            "name": "role is admin",
+            "apply_when": {
+                "%%user.custom_data.roles": "admin"
+            },
+            "read": true,
+            "write": true,
+            "insert": true,
+            "delete": true,
+            "search": true
+        },
+        {
+            "name": "deafult",
+            "apply_when": {},
+            "read": true,
+            "write": false,
+            "insert": false,
+            "delete": false,
+            "search": true
+        }
+    ]
+}

@@ -50,11 +50,7 @@ const RelatedIncidentsArea = ({
     <div data-cy={`related-${columnKey}`}>
       <div key={'header'} className="py-2">
         {header}
-        {loading && (
-          <span className="ml-2">
-            <Spinner size={'sm'} />
-          </span>
-        )}
+        {loading && <Spinner size={'sm'} />}
       </div>
       <div className={`${reportsOpened ? 'reports open' : 'reports'} flex flex-wrap gap-2`}>
         {similarList &&

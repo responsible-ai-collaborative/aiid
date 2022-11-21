@@ -78,25 +78,26 @@ export default function Sponsors() {
               </a>
             </span>
           </div>
-          <div className="flex justify-center items-center gap-6 flex-nowrap flex-col flex-1 min-w-[300px]">
+          <div className="flex justify-center items-center gap-5 md:gap-6 flex-nowrap flex-col flex-1">
             {sponsors.map((sponsor) => {
               return (
                 <div className="flex-1 w-full" key={`sponsor-${sponsor.name}`}>
                   <Card>
-                    <h6 className="text-lg dark:text-white">
+                    <h6 className="text-lg dark:text-white mb-0">
                       <Trans ns="landing">{sponsor.name}</Trans>
                     </h6>
-                    <div className="flex flex-wrap justify-center items-center">
+                    <div className="flex justify-around gap-4">
                       {sponsor.items.map((item) => {
                         return (
                           <div
                             key={`sponsor-item-${item.modalName}`}
-                            className="h-[90px] p-3 flex-1"
+                            className="max-w-xs w-full max-h-[90px] ml-0 mr-0 text-center"
                           >
                             <StyledImage
                               src={`/images/${item.logo}`}
                               onClick={() => setModalState(item.modalName)}
                               data-cy={item.dataCy ? item.dataCy : ''}
+                              className="max-h-[90px] ml-0 mr-0 mb-0 inline-flex"
                             />
                           </div>
                         );
