@@ -60,7 +60,7 @@ export default function Post(props) {
           className="-mt-1"
         ></SocialShareButtons>
       </div>
-      <StyledMainWrapper>
+      <StyledMainWrapper className="prose">
         <MDXProvider components={MdxComponents}>
           <MDXRenderer>{mdx.body}</MDXRenderer>
         </MDXProvider>
