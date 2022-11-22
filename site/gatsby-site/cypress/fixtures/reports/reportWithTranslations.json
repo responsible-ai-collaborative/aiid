@@ -24,8 +24,8 @@
             "language": "en",
             "translations_es": {
                 "__typename": "ReportTranslation",
-                "text": "Este es el Titulo",
-                "title": "Este es el texto que tiene un largo mayor a ochenta caracteres!"
+                "text": "Este es el texto que tiene un largo mayor a ochenta caracteres!",
+                "title": "Este es el Titulo"
             },
             "translations_en": {
                 "__typename": "ReportTranslation",
@@ -34,8 +34,8 @@
             },
             "translations_fr": {
                 "__typename": "ReportTranslation",
-                "text": "",
-                "title": ""
+                "text": "Este es el texto que tiene un largo mayor a ochenta caracteres en frances!",
+                "title": "Este es el Titulo en frances"
             }
         }
     }
