@@ -607,7 +607,7 @@ To get your Public and Private API Key, follow these [instructions](https://www.
 To get the group ID and the app ID, the easiest way is to navigate to your Atlas Service App dashboard and copy from the URL.
 The URL format is https://realm.mongodb.com/groups/[groupId]/apps/[appId]/dashboard
 
-Email notifications to New Incidents (subscription type **New Incident**) are sent when the next build finishes. This is because we have to wait until the new Incident page is created and accessible.
+Email notifications to New Incidents (subscription type **New Incident**) are sent when the next build finishes. This is because we have to wait until the new Incident page is generated and accessible.
 When a new Incident is created, a pending notification item is saved into the `notifications` DB collection with `processed=false` field.
 And finally, as part of the site build process, we processed all pending notifications (`processed=false`), send the emails to all recipients, and update the items with `processed=true` and `sentDate=[now]`.
 ## Contact
