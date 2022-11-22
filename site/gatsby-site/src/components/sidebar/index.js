@@ -83,14 +83,55 @@ const Sidebar = ({ defaultCollapsed = false }) => {
     </Link>
   );
 
+  // We want the bottom edge of the sidebar
+  // to be at the bottom edge of the viewport.
+  // Since the sidebar has `position: sticky`,
+  // that means that in the initial view,
+  // its height should be:
+  //
+  //   100vh - the height of the header
+  //
+  // Then, when we scroll down, its height should be 100vh.
+  // CSS doesn't provide use with a way
+  // to detect whether a sticky element is "stuck"
+  // so we have to check ourselves with an IntersectionObserver.
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([e]) => {
+        console.log('intersect');
+        console.log(e);
+        e.target.classList.toggle('h-[100vh]');
+      },
+      { threshold: [1] }
+    );
+
+    observer.observe(document.querySelector('#sidebar'));
+
+    return () => {
+      observer.disconnect();
+    };
+  });
+
   return (
     <>
       <aside
+        id="sidebar"
         className={`${
           !collapsedMenu ? 'md:w-64' : 'md:w-20'
         } sticky relative top-0 transition-width duration-500`}
         aria-label="Sidebar"
       >
+        <FontAwesomeIcon
+          icon={faChevronCircleLeft}
+          color={'white'}
+          className={`hidden md:inline-block transition-transform duration-500 cursor-pointer fa fa-twitter-square fa-lg text-light-orange hover:text-gray-500 w-8 h-8 fixed bottom-5 ${
+            collapsedMenu ? 'rotate-180 translate-x-1' : 'translate-x-48'
+          }`}
+          title={isCollapsed ? t('Expand') : t('Collapse')}
+          onClick={() => {
+            collapseMenu(!collapsedMenu), setCollapsedMenu(!collapsedMenu);
+          }}
+        />
         <span>
           <QuickAccess isCollapsed={collapsedMenu} />
         </span>
@@ -100,61 +141,44 @@ const Sidebar = ({ defaultCollapsed = false }) => {
             dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
           />
         ) : null}
-        <div
+
+        <ul
           className={`${
-            collapsedMenu ? '' : 'overflow-y-auto'
-          } pb-4 pt-2 px-3 bg-gray-50 rounded dark:bg-gray-800`}
-          style={{ height: 'calc(100vh - 80px - 6rem' }}
+            collapsedMenu ? '-translate-y-16' : ''
+          } space-y-2 list-none z-20 transition-transform duration-500`}
         >
-          <ul
-            className={`${
-              collapsedMenu ? '-translate-y-16' : ''
-            } space-y-2 list-none z-20 transition-transform duration-500`}
-          >
-            <Tree
-              setNavCollapsed={() => {}}
-              isCollapsed={collapsedMenu}
-              localizePath={localizePath}
-            />
-            {config.sidebar.links && config.sidebar.links?.length > 0 && (
-              <li className="tw-li-divider">
-                <hr />
-              </li>
-            )}
-            {config.sidebar.links?.map((link, key) => {
-              if (link.link !== '' && link.text !== '') {
-                return (
-                  <li className={'side-bar-links'} key={key}>
-                    <a href={link.link} className={``} target="_blank" rel="noopener noreferrer">
-                      <Trans>{link.text}</Trans>
-                      <ExternalLink size={14} />
-                    </a>
-                  </li>
-                );
-              }
-            })}
-            <li className="border-t pt-2">
-              {isCollapsed ? (
-                <Tooltip content={isUserLoggedIn ? t('Account') : t('Subscribe')}>
-                  {LoginSignupNode}
-                </Tooltip>
-              ) : (
-                <>{LoginSignupNode}</>
-              )}
-            </li>
-          </ul>
-          <FontAwesomeIcon
-            icon={faChevronCircleLeft}
-            color={'white'}
-            className={`hidden md:inline-block transition-transform duration-500 cursor-pointer fa fa-twitter-square fa-lg text-light-orange hover:text-gray-500 w-8 h-8 absolute bottom-5 ${
-              collapsedMenu ? 'rotate-180 translate-x-1' : 'translate-x-48'
-            }`}
-            title={isCollapsed ? t('Expand') : t('Collapse')}
-            onClick={() => {
-              collapseMenu(!collapsedMenu), setCollapsedMenu(!collapsedMenu);
-            }}
+          <Tree
+            setNavCollapsed={() => {}}
+            isCollapsed={collapsedMenu}
+            localizePath={localizePath}
           />
-        </div>
+          {config.sidebar.links && config.sidebar.links?.length > 0 && (
+            <li className="tw-li-divider">
+              <hr />
+            </li>
+          )}
+          {config.sidebar.links?.map((link, key) => {
+            if (link.link !== '' && link.text !== '') {
+              return (
+                <li className={'side-bar-links'} key={key}>
+                  <a href={link.link} className={``} target="_blank" rel="noopener noreferrer">
+                    <Trans>{link.text}</Trans>
+                    <ExternalLink size={14} />
+                  </a>
+                </li>
+              );
+            }
+          })}
+          <li className="border-t pt-2">
+            {isCollapsed ? (
+              <Tooltip content={isUserLoggedIn ? t('Account') : t('Subscribe')}>
+                {LoginSignupNode}
+              </Tooltip>
+            ) : (
+              <>{LoginSignupNode}</>
+            )}
+          </li>
+        </ul>
       </aside>
     </>
   );

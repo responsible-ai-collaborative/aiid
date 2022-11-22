@@ -16,7 +16,6 @@ import {
   faBuilding,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Tooltip } from 'flowbite-react';
 
 const getIcon = (label, current = false) =>
   ({
@@ -140,28 +139,15 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed 
   return (
     <>
       <li className={`z-50`}>
-        {item.title &&
-          (isCollapsed ? (
-            <Tooltip content={item.title} placement="right">
-              <NodeLink
-                item={item}
-                isCollapsed={isCollapsed}
-                click={click}
-                icon={icon}
-                hasChildren={hasChildren}
-                calculatedClassName={calculatedClassName}
-              />
-            </Tooltip>
-          ) : (
-            <NodeLink
-              item={item}
-              isCollapsed={isCollapsed}
-              click={click}
-              icon={icon}
-              hasChildren={hasChildren}
-              calculatedClassName={calculatedClassName}
-            />
-          ))}
+        <NodeLink
+          item={item}
+          title={isCollapsed ? item.title : undefined}
+          isCollapsed={isCollapsed}
+          click={click}
+          icon={icon}
+          hasChildren={hasChildren}
+          calculatedClassName={calculatedClassName}
+        />
 
         {!item.collapsed && hasChildren ? (
           <ul>
@@ -181,8 +167,17 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed 
   );
 };
 
-const NodeLink = ({ item, isCollapsed = false, click, icon, hasChildren, calculatedClassName }) => (
+const NodeLink = ({
+  item,
+  isCollapsed = false,
+  click,
+  icon,
+  hasChildren,
+  calculatedClassName,
+  title,
+}) => (
   <Link
+    title={title}
     to={item.url}
     onClick={click}
     className={`flex rounded-lg items-center p-2 text-base font-normal group ${calculatedClassName} ${
