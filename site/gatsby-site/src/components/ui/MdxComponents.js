@@ -4,7 +4,6 @@ import Link from './Link';
 import SensitiveImage from '../images/sensitive';
 
 const slug = (title) => {
-  console.log(`title`, title);
   if (isString(title)) {
     return title.toLowerCase().replace(/\s+/g, '');
   }
