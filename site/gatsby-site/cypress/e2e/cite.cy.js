@@ -358,7 +358,7 @@ describe('Cite pages', () => {
       .should('exist');
   });
 
-  it('Shouldn not subscribe to incident updates (user unauthenticated)', () => {
+  it('Should not subscribe to incident updates (user unauthenticated)', () => {
     cy.visit(url);
 
     cy.conditionalIntercept(
@@ -384,7 +384,7 @@ describe('Cite pages', () => {
 
     cy.get('[data-cy="alleged-entities"]').should(
       'have.text',
-      'Alleged: Tesla developed an AI system deployed by Tesla and Motorist, which harmed motorists.'
+      'Alleged: Tesla developed an AI system deployed by Tesla and Motorist, which harmed Motorists.'
     );
 
     cy.visit('/cite/72/');
