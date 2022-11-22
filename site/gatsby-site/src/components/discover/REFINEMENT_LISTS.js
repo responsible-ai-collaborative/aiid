@@ -92,6 +92,15 @@ const REFINEMENT_LISTS = [
     faClasses: 'far fa-flag',
     type: 'refinement',
   },
+  {
+    attribute: 'is_incident_report',
+    placeholder: 'none',
+    label: '',
+    faIcon: null,
+    faClasses: '',
+    type: 'refinement',
+    hidden: true,
+  },
 ];
 
 export default REFINEMENT_LISTS;

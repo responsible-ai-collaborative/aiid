@@ -24,6 +24,8 @@ module.exports = {
     'searchable(source_domain)',
     'searchable(submitters)',
     'filterOnly(v1_incident)',
+    'flag',
+    'is_incident_report',
   ],
   attributesToSnippet: ['description:200', 'text:15'],
   attributesToHighlight: ['description', 'text', 'title'],
