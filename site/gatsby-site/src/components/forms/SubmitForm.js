@@ -214,7 +214,7 @@ const SubmitForm = () => {
         <title>{t(isIncidentResponse ? 'New Incident Response' : 'New Incident Report')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <StyledHeading>
+        <StyledHeading data-cy="submit-form-title">
           <Trans ns="submit">
             {isIncidentResponse ? 'New Incident Response' : 'New Incident Report'}
           </Trans>
