@@ -53,14 +53,10 @@ a {
   text-decoration: none !important;
 }
 
-ol, ul {
-  padding-left: 2em;
-}
-
-#content ol ol {
+.outline ol ol {
   list-style: lower-alpha; /* a  b  c  d  */
 }
-#content ol ol ol {
+.outline ol ol ol {
   list-style: upper-roman; /* I II III IV */
 }
 
