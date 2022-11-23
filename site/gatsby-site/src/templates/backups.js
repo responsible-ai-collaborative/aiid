@@ -54,9 +54,9 @@ const Backups = ({ pageContext, ...props }) => {
           </a>
           . We maintain these snapshots so you can create stable datasets for natural language
           processing research and academic analysis. Please{' '}
-          <LocalizedLink to="/contact">contact us</LocalizedLink>{' '}
-          to let us know what you are using the database for so we can list your work in the
-          incident database and ensure your use case is not dropped from support.
+          <LocalizedLink to="/contact">contact us</LocalizedLink> to let us know what you are using
+          the database for so we can list your work in the incident database and ensure your use
+          case is not dropped from support.
         </p>
         <h2>Download</h2>
         <Container>
