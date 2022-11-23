@@ -124,3 +124,7 @@ exports = async function (changeEvent) {
 
   return;
 };
+
+if (typeof module === 'object') {
+  module.exports = exports;
+}
