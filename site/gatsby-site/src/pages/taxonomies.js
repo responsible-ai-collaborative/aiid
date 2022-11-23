@@ -30,7 +30,7 @@ export default function Taxonomies({ data, ...props }) {
         <h2>
           <Trans>Applied Taxonomies</Trans>
         </h2>
-        <ul>
+        <ul className="list-revert pl-8">
           <li className="list-none">
             <p>
               <Trans>

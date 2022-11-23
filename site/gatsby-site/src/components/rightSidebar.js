@@ -58,7 +58,7 @@ const SidebarLayout = ({ location }) => {
 
         return (
           <Sidebar>
-            <ul data-cy="outline" className={'rightSideBarUL'}>
+            <ul data-cy="outline" className={'rightSideBarUL list-revert pl-8'}>
               {navItems && navItems.length > 0 && (
                 <>
                   <li className={'rightSideTitle'}>CONTENTS</li>
