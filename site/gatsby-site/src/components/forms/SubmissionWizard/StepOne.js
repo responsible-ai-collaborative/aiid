@@ -53,10 +53,7 @@ const StepOne = (props) => {
       .max(50000, `*Text can’t be longer than 50000 characters`)
       .required('*Text is required'),
     incident_id: yup.number().positive().integer('*Must be an incident number or empty'),
-    incident_date: yup.date().when('incident_id', {
-      is: (incident_id) => incident_id == '' || incident_id === undefined,
-      then: yup.date().required('*Incident Date required').nullable(),
-    }),
+    incident_date: yup.date(),
   });
 
   const handleSubmit = (values, last = false) => {

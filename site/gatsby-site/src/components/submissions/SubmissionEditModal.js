@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { Spinner } from 'flowbite-react';
-import SubmissionForm, { schema } from '../../components/submissions/SubmissionForm';
+import SubmissionForm from '../../components/submissions/SubmissionForm';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { FIND_SUBMISSION, UPDATE_SUBMISSION } from '../../graphql/submissions';
 import { UPSERT_ENTITY } from '../../graphql/entities';
@@ -13,6 +13,7 @@ import RelatedIncidents from '../../components/RelatedIncidents';
 import { Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
 import { graphql, useStaticQuery } from 'gatsby';
+import { schema } from './schemas';
 
 export default function SubmissionEditModal({ show, onHide, submissionId }) {
   const {
