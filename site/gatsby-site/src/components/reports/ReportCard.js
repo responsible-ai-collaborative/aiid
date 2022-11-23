@@ -12,7 +12,7 @@ import { Badge } from 'flowbite-react';
 import { RESPONSE_TAG } from 'utils/entities';
 import { Trans } from 'react-i18next';
 
-const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) => {
+const ReportCard = ({ item }) => {
   const { isRole, loading } = useUserContext();
 
   const authors = item.authors.join(', ');
@@ -61,15 +61,10 @@ const IncidentCard = ({ item, authorsModal, submittersModal, flagReportModal }) 
         </div>
       </div>
       <Card.Footer className="flex w-full flex-row justify-around items-center text-dark-gray">
-        <Actions
-          item={item}
-          authorsModal={authorsModal}
-          flagReportModal={flagReportModal}
-          submittersModal={submittersModal}
-        />
+        <Actions item={item} />
       </Card.Footer>
     </Card>
   );
 };
 
-export default IncidentCard;
+export default ReportCard;

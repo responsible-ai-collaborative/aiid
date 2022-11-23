@@ -7,10 +7,9 @@ import ImageCarousel from 'components/cite/ImageCarousel';
 import BibTex from 'components/BibTex';
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 import { format, isAfter, isEqual } from 'date-fns';
-import { useModal, CustomModal } from '../hooks/useModal';
 import Timeline from '../components/visualizations/Timeline';
 import IncidentStatsCard from '../components/cite/IncidentStatsCard';
-import IncidentCard from '../components/cite/IncidentCard';
+import ReportCard from '../components/reports/ReportCard';
 import Taxonomy from '../components/taxa/Taxonomy';
 import { useUserContext } from '../contexts/userContext';
 import SimilarIncidents from '../components/cite/SimilarIncidents';
@@ -109,12 +108,6 @@ function CitePage(props) {
   const sortedReports = sortIncidentsByDatePublished(incidentReports);
 
   const metaImage = sortedReports[0].image_url;
-
-  const authorsModal = useModal();
-
-  const submittersModal = useModal();
-
-  const flagReportModal = useModal();
 
   const addToast = useToastContext();
 
@@ -405,12 +398,7 @@ function CitePage(props) {
         {sortedReports.map((report) => (
           <Row className="mb-4" key={report.report_number}>
             <Col>
-              <IncidentCard
-                item={report}
-                authorsModal={authorsModal}
-                submittersModal={submittersModal}
-                flagReportModal={flagReportModal}
-              />
+              <ReportCard item={report} />
             </Col>
           </Row>
         ))}
@@ -437,10 +425,6 @@ function CitePage(props) {
             <Trans>Next Incident</Trans> ›
           </Pagination.Item>
         </Pagination>
-
-        <CustomModal {...authorsModal} />
-        <CustomModal {...submittersModal} />
-        <CustomModal {...flagReportModal} />
       </Container>
     </Layout>
   );

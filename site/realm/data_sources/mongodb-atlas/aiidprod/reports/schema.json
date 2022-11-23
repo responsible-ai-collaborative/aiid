@@ -62,6 +62,9 @@
         "image_url": {
             "bsonType": "string"
         },
+        "is_incident_report": {
+            "bsonType": "bool"
+        },
         "language": {
             "bsonType": "string"
         },
@@ -113,7 +116,8 @@
         "title",
         "text",
         "url",
-        "source_domain"
+        "source_domain",
+        "language"
     ],
     "title": "report"
 }
