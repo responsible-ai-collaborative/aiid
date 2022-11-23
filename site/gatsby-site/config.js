@@ -118,8 +118,8 @@ const config = {
           },
           {
             title: 'Related Work',
-            label: 'related-work',
-            url: '/research/related-work',
+            label: '4-related-work',
+            url: '/research/4-related-work',
           },
           {
             title: 'Download Complete Database',

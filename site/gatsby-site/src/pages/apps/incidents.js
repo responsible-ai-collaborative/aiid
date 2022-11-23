@@ -14,7 +14,7 @@ export default function IncidentsPage(props) {
 
   return (
     <LayoutHideSidebar {...props}>
-      <AiidHelmet>
+      <AiidHelmet canonicalUrl={'/apps/incidents'}>
         <title>{t('Incidents')}</title>
       </AiidHelmet>
       <div className="bootstrap">

@@ -13,6 +13,7 @@ import { StyledHeading } from 'components/styles/Docs';
 import Link from 'components/ui/Link';
 import LocationMap from 'components/visualizations/LocationMap';
 import { Card, Badge } from 'flowbite-react';
+import AiidHelmet from 'components/AiidHelmet';
 
 const Description = styled(Markdown)`
   h1 {
@@ -280,6 +281,11 @@ const Taxonomy = (props) => {
 
   return (
     <Layout {...props} className="">
+      <AiidHelmet
+        metaTitle={'Taxonomy: ' + namespace}
+        canonicalUrl={'/taxonomies/' + namespace.toLowerCase()}
+      />
+
       <div className={'titleWrapper'}>
         <StyledHeading>{namespace}</StyledHeading>
       </div>
