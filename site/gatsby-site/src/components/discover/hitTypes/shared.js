@@ -24,7 +24,15 @@ const SubdomainCard = styled(Card.Subtitle)`
 `;
 
 export function citationReportUrl(item) {
-  return '/cite/' + item.incident_id + '#r' + item.objectID;
+  let path = null;
+
+  if (item.is_incident_report) {
+    path = '/cite/' + item.incident_id + '#r' + item.objectID;
+  } else {
+    path = `/reports/${item.report_number}`;
+  }
+
+  return path;
 }
 
 export function HeaderTitle({ item, ...props }) {

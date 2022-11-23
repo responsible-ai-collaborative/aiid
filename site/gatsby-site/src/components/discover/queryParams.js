@@ -28,6 +28,7 @@ const queryConfig = {
   display: DisplayModeEnumParam,
   page: withDefault(NumberParam, 1),
   hideDuplicates: BooleanParam,
+  is_incident_report: withDefault(StringParam, 'true'),
 };
 
 export { queryConfig, DisplayModeEnumParam, LanguageEnumParam };

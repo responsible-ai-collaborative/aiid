@@ -56,11 +56,6 @@
         @apply appearance-none bg-white rounded-md text-gray-900 block text-base font-normal leading-normal w-full py-1 px-3 transition-form-control bg-clip-padding border-1 border-solid border-form-control;
     }
 
-
-    ul, ol {
-      list-style: revert;
-    }
-
     .tw-layout {
         @apply flex md:flex content-between bg-white 767px:block border-none;
     }

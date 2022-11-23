@@ -8,13 +8,17 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, parse } from 'date-fns';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
+import { UPSERT_ENTITY } from '../../graphql/entities';
 import isString from 'lodash/isString';
 import { stripMarkdown } from 'utils/typography';
 import isArray from 'lodash/isArray';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
+import { graphql, useStaticQuery } from 'gatsby';
+import { processEntities } from '../../utils/entities';
 import SubmissionWizard from '../submissions/SubmissionWizard';
+import getSourceDomain from 'utils/getSourceDomain';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -60,6 +64,19 @@ const SubmitForm = () => {
     harmed_parties: [],
   });
 
+  const {
+    entities: { nodes: allEntities },
+  } = useStaticQuery(graphql`
+    {
+      entities: allMongodbAiidprodEntities {
+        nodes {
+          entity_id
+          name
+        }
+      }
+    }
+  `);
+
   useEffect(() => {
     const queryParams = { ...query };
 
@@ -89,6 +106,8 @@ const SubmitForm = () => {
 
   const [insertSubmission] = useMutation(INSERT_SUBMISSION, { refetchQueries: [FIND_SUBMISSIONS] });
 
+  const [createEntityMutation] = useMutation(UPSERT_ENTITY);
+
   useEffect(() => {
     if (csvData[csvIndex]) {
       setSubmission(csvData[csvIndex]);
@@ -116,8 +135,13 @@ const SubmitForm = () => {
     try {
       const date_submitted = format(new Date(), 'yyyy-MM-dd');
 
+      const url = new URL(values?.url);
+
+      const source_domain = getSourceDomain(url);
+
       const submission = {
         ...values,
+        source_domain,
         incident_id: !values.incident_id || values.incident_id == '' ? 0 : values.incident_id,
         date_submitted,
         date_modified: date_submitted,
@@ -129,24 +153,33 @@ const SubmitForm = () => {
           : ['Anonymous'],
         plain_text: await stripMarkdown(values.text),
         embedding: values.embedding || undefined,
-        tags: isString(values.tags) ? values.tags.split(',') : values.tags,
-        developers: isString(values.developers) ? values.developers.split(',') : values.developers,
-        deployers: isString(values.deployers) ? values.deployers.split(',') : values.deployers,
-        harmed_parties: isString(values.harmed_parties)
-          ? values.harmed_parties.split(',')
-          : values.harmed_parties,
       };
+
+      submission.deployers = await processEntities(
+        allEntities,
+        values.deployers,
+        createEntityMutation
+      );
+
+      submission.developers = await processEntities(
+        allEntities,
+        values.developers,
+        createEntityMutation
+      );
+
+      submission.harmed_parties = await processEntities(
+        allEntities,
+        values.harmed_parties,
+        createEntityMutation
+      );
 
       await insertSubmission({ variables: { submission } });
 
       addToast({
         message: (
           <Trans i18n={i18n} ns="submit">
-            Report successfully added to review queue. It will appear on the{' '}
-            <Link to={localizePath({ path: '/apps/submitted', language: locale })}>
-              review queue page
-            </Link>{' '}
-            within an hour.
+            Report successfully added to review queue. You can see your submission{' '}
+            <Link to={localizePath({ path: '/apps/submitted', language: locale })}>here</Link>.
           </Trans>
         ),
         severity: SEVERITY.success,
@@ -160,6 +193,7 @@ const SubmitForm = () => {
         ),
         severity: SEVERITY.warning,
       });
+      throw e;
     }
   };
 

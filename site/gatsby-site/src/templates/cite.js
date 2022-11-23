@@ -7,10 +7,9 @@ import ImageCarousel from 'components/cite/ImageCarousel';
 import BibTex from 'components/BibTex';
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 import { format, isAfter, isEqual } from 'date-fns';
-import { useModal, CustomModal } from '../hooks/useModal';
 import Timeline from '../components/visualizations/Timeline';
 import IncidentStatsCard from '../components/cite/IncidentStatsCard';
-import IncidentCard from '../components/cite/IncidentCard';
+import ReportCard from '../components/reports/ReportCard';
 import Taxonomy from '../components/taxa/Taxonomy';
 import { useUserContext } from '../contexts/userContext';
 import SimilarIncidents from '../components/cite/SimilarIncidents';
@@ -69,6 +68,7 @@ function CitePage(props) {
       allMongodbTranslationsReportsEn,
       allMongodbTranslationsReportsFr,
       incident,
+      entities: entitiesData,
     },
   } = props;
 
@@ -105,12 +105,6 @@ function CitePage(props) {
   const sortedReports = sortIncidentsByDatePublished(incidentReports);
 
   const metaImage = sortedReports[0].image_url;
-
-  const authorsModal = useModal();
-
-  const submittersModal = useModal();
-
-  const flagReportModal = useModal();
 
   const addToast = useToastContext();
 
@@ -209,7 +203,7 @@ function CitePage(props) {
     }
   };
 
-  const entities = computeEntities({ incidents: [incident] });
+  const entities = computeEntities({ incidents: [incident], entities: entitiesData.nodes });
 
   const rightSidebar = (
     <>
@@ -376,18 +370,10 @@ function CitePage(props) {
       </Card>
 
       <h1 className="tw-styled-heading mt-10">
-        <Trans>Incidents Reports</Trans>
+        <Trans>Incident Reports</Trans>
       </h1>
-
       {sortedReports.map((report) => (
-        <IncidentCard
-          key={report.report_number}
-          item={report}
-          authorsModal={authorsModal}
-          submittersModal={submittersModal}
-          flagReportModal={flagReportModal}
-          className="mt-6"
-        />
+        <ReportCard item={report} key={report.report_number} className="mt-6" />
       ))}
 
       <div className="block xl:hidden mt-6">
@@ -414,10 +400,6 @@ function CitePage(props) {
           <Trans>Next Incident</Trans> ›
         </Pagination.Item>
       </Pagination>
-
-      <CustomModal {...authorsModal} />
-      <CustomModal {...submittersModal} />
-      <CustomModal {...flagReportModal} />
     </Layout>
   );
 }
@@ -556,6 +538,13 @@ export const query = graphql`
       Alleged_developer_of_AI_system
       Alleged_deployer_of_AI_system
       Alleged_harmed_or_nearly_harmed_parties
+    }
+
+    entities: allMongodbAiidprodEntities {
+      nodes {
+        entity_id
+        name
+      }
     }
   }
 `;

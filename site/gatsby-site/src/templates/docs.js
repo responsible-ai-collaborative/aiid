@@ -56,7 +56,7 @@ export default class MDXRuntimeTest extends Component {
             </div>
           )}
         </div>
-        <StyledMainWrapper>
+        <StyledMainWrapper className="prose">
           <MDXProvider components={Components}>
             <MDXRenderer>{mdx.body}</MDXRenderer>
           </MDXProvider>

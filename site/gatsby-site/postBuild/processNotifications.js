@@ -34,13 +34,7 @@ const client = new ApolloClient({
 const processNotifications = async () => {
   const PROCESS_NOTIFICATIONS = gql`
     mutation ProcessNotifications {
-      processNotifications {
-        _id
-        incident_id
-        processed
-        sentDate
-        type
-      }
+      processNotifications
     }
   `;
 

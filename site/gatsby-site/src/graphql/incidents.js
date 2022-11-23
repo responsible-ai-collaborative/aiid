@@ -8,9 +8,18 @@ export const FIND_INCIDENT = gql`
       description
       editors
       date
-      AllegedDeployerOfAISystem
-      AllegedDeveloperOfAISystem
-      AllegedHarmedOrNearlyHarmedParties
+      AllegedDeployerOfAISystem {
+        entity_id
+        name
+      }
+      AllegedDeveloperOfAISystem {
+        entity_id
+        name
+      }
+      AllegedHarmedOrNearlyHarmedParties {
+        entity_id
+        name
+      }
       nlp_similar_incidents {
         incident_id
         similarity
@@ -37,9 +46,18 @@ export const FIND_INCIDENTS = gql`
       description
       editors
       date
-      AllegedDeployerOfAISystem
-      AllegedDeveloperOfAISystem
-      AllegedHarmedOrNearlyHarmedParties
+      AllegedDeployerOfAISystem {
+        entity_id
+        name
+      }
+      AllegedDeveloperOfAISystem {
+        entity_id
+        name
+      }
+      AllegedHarmedOrNearlyHarmedParties {
+        entity_id
+        name
+      }
       nlp_similar_incidents {
         incident_id
         similarity
@@ -66,9 +84,18 @@ export const UPDATE_INCIDENT = gql`
       description
       editors
       date
-      AllegedDeployerOfAISystem
-      AllegedDeveloperOfAISystem
-      AllegedHarmedOrNearlyHarmedParties
+      AllegedDeployerOfAISystem {
+        entity_id
+        name
+      }
+      AllegedDeveloperOfAISystem {
+        entity_id
+        name
+      }
+      AllegedHarmedOrNearlyHarmedParties {
+        entity_id
+        name
+      }
       nlp_similar_incidents {
         incident_id
         similarity
