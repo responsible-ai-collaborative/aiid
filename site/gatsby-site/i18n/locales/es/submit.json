@@ -45,5 +45,7 @@
   "Review queue": "Cola de revisión",
   "Author CSV": "Autor CSV",
   "Submitter CSV": "Reportador CSV",
-  "Enter a valid Incident ID": "Ingrese un ID de Incidente válido"
+  "Enter a valid Incident ID": "Ingrese un ID de Incidente válido",
+  "Adding a new report to incident {{incident_id}}": "Agregando un nuevo informe al incidente {{incident_id}}",
+  "Adding a new response to incident {{incident_id}}": "Agregando una nueva respuesta al incidente {{incident_id}}"
 }
