@@ -24,20 +24,20 @@
             "language": "en",
             "translations_es": {
                 "__typename": "ReportTranslation",
-                "text": "Este es el texto que tiene un largo mayor a ochenta caracteres!",
-                "title": "Este es el Titulo"
+                "title": "Este es el Titulo",
+                "text": "Este es el texto que tiene un largo mayor a ochenta caracteres!"
             },
             "translations_en": {
                 "__typename": "ReportTranslation",
-                "text": "",
-                "title": ""
+                "title": "",
+                "text": ""
             },
             "translations_fr": {
                 "__typename": "ReportTranslation",
-                "text": "Este es el texto que tiene un largo mayor a ochenta caracteres en frances!",
-                "title": "Este es el Titulo en frances"
+                "title": "",
+                "text": ""
             },
-            "is_incident_report": true
+            "is_incident_report": false
         }
     }
 }

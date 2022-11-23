@@ -1,7 +1,19 @@
 import { gql } from '@apollo/client';
 
+const isLinked = (reportNumber, incidents) => {
+  for (const incident of incidents) {
+    for (const linkedReport of incident.reports) {
+      if (linkedReport.report_number == reportNumber) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
+
 describe('Integrity', () => {
-  it('Should have repeated report numbers', () => {
+  it(`Shouldn't have repeated report numbers`, () => {
     cy.query({
       query: gql`
         query {
@@ -32,7 +44,7 @@ describe('Integrity', () => {
     });
   });
 
-  it(`Shouldn't be any orphan reports`, () => {
+  it(`is_incident_report should be true for reports assigned to incidents and vice versa`, () => {
     cy.query({
       query: gql`
         query {
@@ -43,31 +55,20 @@ describe('Integrity', () => {
           }
           reports(limit: 9999) {
             report_number
+            is_incident_report
           }
         }
       `,
     }).then(({ data: { incidents, reports } }) => {
-      const isLinked = (reportNumber) => {
-        for (const incident of incidents) {
-          for (const linkedReport of incident.reports) {
-            if (linkedReport.report_number == reportNumber) {
-              return true;
-            }
-          }
-        }
+      const invalidReports = [];
 
-        return false;
-      };
-
-      const orphanReports = [];
-
-      for (const reportNumber of reports.map((r) => r.report_number)) {
-        if (!isLinked(reportNumber)) {
-          orphanReports.push(reportNumber);
+      for (const { report_number, is_incident_report } of reports) {
+        if (isLinked(report_number, incidents) !== is_incident_report) {
+          invalidReports.push(report_number);
         }
       }
 
-      expect(orphanReports.length, `Orphan reports: [${orphanReports.toString()}]`).eq(0);
+      expect(invalidReports.length, `Invalid reports: [${invalidReports.toString()}]`).eq(0);
     });
   });
 });
