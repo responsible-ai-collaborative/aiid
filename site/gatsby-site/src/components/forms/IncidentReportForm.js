@@ -82,7 +82,11 @@ export const schema = yup.object().shape({
     .number()
     .positive()
     .integer('*Must be an incident number')
-    .required('Incident ID is a required field'),
+    .when('is_incident_report', {
+      is: true,
+      then: (schema) => schema.required('Incident ID is a required field'),
+    }),
+  is_incident_report: yup.boolean().required(),
 });
 
 const IncidentReportForm = () => {
@@ -346,12 +350,15 @@ const IncidentReportForm = () => {
           />
         </Form.Group>
 
-        <IncidentIdField
-          name="incident_id"
-          className="mt-3"
-          placeHolder={t('Enter a valid Incident ID')}
-          required={true}
-        />
+        {values.is_incident_report && (
+          <IncidentIdField
+            name="incident_id"
+            className="mt-3"
+            placeHolder={t('Enter a valid Incident ID')}
+            required={true}
+          />
+        )}
+
         <TextInputGroup
           name="editor_notes"
           label="Editor Notes"

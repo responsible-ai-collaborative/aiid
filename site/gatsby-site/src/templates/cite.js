@@ -7,10 +7,9 @@ import ImageCarousel from 'components/cite/ImageCarousel';
 import BibTex from 'components/BibTex';
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 import { format, isAfter, isEqual } from 'date-fns';
-import { useModal, CustomModal } from '../hooks/useModal';
 import Timeline from '../components/visualizations/Timeline';
 import IncidentStatsCard from '../components/cite/IncidentStatsCard';
-import IncidentCard from '../components/cite/IncidentCard';
+import ReportCard from '../components/reports/ReportCard';
 import Taxonomy from '../components/taxa/Taxonomy';
 import { useUserContext } from '../contexts/userContext';
 import SimilarIncidents from '../components/cite/SimilarIncidents';
@@ -33,7 +32,7 @@ import { getTaxonomies, getTranslatedReports } from 'utils/cite';
 import { computeEntities } from 'utils/entities';
 import AllegedEntities from 'components/entities/AllegedEntities';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
@@ -72,6 +71,7 @@ function CitePage(props) {
       allMongodbTranslationsReportsEn,
       allMongodbTranslationsReportsFr,
       incident,
+      entities: entitiesData,
     },
   } = props;
 
@@ -108,12 +108,6 @@ function CitePage(props) {
   const sortedReports = sortIncidentsByDatePublished(incidentReports);
 
   const metaImage = sortedReports[0].image_url;
-
-  const authorsModal = useModal();
-
-  const submittersModal = useModal();
-
-  const flagReportModal = useModal();
 
   const addToast = useToastContext();
 
@@ -212,7 +206,7 @@ function CitePage(props) {
     }
   };
 
-  const entities = computeEntities({ incidents: [incident] });
+  const entities = computeEntities({ incidents: [incident], entities: entitiesData.nodes });
 
   return (
     <Layout {...props}>
@@ -226,6 +220,7 @@ function CitePage(props) {
           metaTitle={metaTitle}
           canonicalUrl={canonicalUrl}
           page="cite"
+          className="-mt-1"
         ></SocialShareButtons>
       </div>
 
@@ -333,15 +328,14 @@ function CitePage(props) {
                     'yyyy-MM-dd'
                   )}`}
                 >
+                  <FontAwesomeIcon icon={faPlus} title={t('New Report')} className="mr-2" />
                   <Trans>New Report</Trans>
-                </Button>
-                <Button variant="outline-primary" href={'/summaries/incidents'}>
-                  <Trans>All Incidents</Trans>
                 </Button>
                 <Button
                   variant="outline-primary"
                   href={'/apps/discover?incident_id=' + incident.incident_id}
                 >
+                  <FontAwesomeIcon className="mr-2" icon={faSearch} title={t('Discover')} />
                   <Trans>Discover</Trans>
                 </Button>
                 {!loading && isRole('incident_editor') && (
@@ -349,7 +343,8 @@ function CitePage(props) {
                     variant="outline-primary"
                     href={'/incidents/edit?incident_id=' + incident.incident_id}
                   >
-                    Edit Incident
+                    <FontAwesomeIcon className="mr-2" icon={faEdit} title={t('Edit Incident')} />
+                    <Trans>Edit Incident</Trans>
                   </Button>
                 )}
                 <BibTex
@@ -403,12 +398,7 @@ function CitePage(props) {
         {sortedReports.map((report) => (
           <Row className="mb-4" key={report.report_number}>
             <Col>
-              <IncidentCard
-                item={report}
-                authorsModal={authorsModal}
-                submittersModal={submittersModal}
-                flagReportModal={flagReportModal}
-              />
+              <ReportCard item={report} />
             </Col>
           </Row>
         ))}
@@ -435,10 +425,6 @@ function CitePage(props) {
             <Trans>Next Incident</Trans> ›
           </Pagination.Item>
         </Pagination>
-
-        <CustomModal {...authorsModal} />
-        <CustomModal {...submittersModal} />
-        <CustomModal {...flagReportModal} />
       </Container>
     </Layout>
   );
@@ -578,6 +564,13 @@ export const query = graphql`
       Alleged_developer_of_AI_system
       Alleged_deployer_of_AI_system
       Alleged_harmed_or_nearly_harmed_parties
+    }
+
+    entities: allMongodbAiidprodEntities {
+      nodes {
+        entity_id
+        name
+      }
     }
   }
 `;

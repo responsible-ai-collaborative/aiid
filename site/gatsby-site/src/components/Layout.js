@@ -19,7 +19,7 @@ const Layout = ({ children, collapse, className, location }) => (
           dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
         />
       )}
-      <div id="content" className="tw-content pb-5">
+      <div id="content" className="tw-content">
         <div className={`${className ? className : ''} 50rem:max-w-full 50rem:relative`}>
           {children}
         </div>

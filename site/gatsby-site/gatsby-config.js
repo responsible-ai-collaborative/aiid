@@ -91,6 +91,7 @@ const plugins = [
         'classifications',
         'resources',
         'reports',
+        'entities',
       ],
       connectionString: config.mongodb.connectionString,
       extraParams: {

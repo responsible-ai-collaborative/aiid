@@ -10,8 +10,8 @@ const SubmitPage = (props) => {
   const { t } = useTranslation(['submit']);
 
   return (
-    <Layout {...props}>
-      <AiidHelmet>
+    <Layout {...props} className="md:max-w-5xl">
+      <AiidHelmet canonicalUrl={'/apps/submit'}>
         <title>{t('New Incident Report')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>

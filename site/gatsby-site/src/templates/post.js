@@ -41,7 +41,7 @@ export default function Post(props) {
       <div className={'titleWrapper'}>
         <StyledHeading>{mdx.fields.title}</StyledHeading>
 
-        <div className="inline-block pb-2">
+        <div className="inline-block">
           <span>{format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')}</span>
           {mdx.frontmatter.aiTranslated && (
             <>
@@ -57,9 +57,10 @@ export default function Post(props) {
           metaTitle={metaTitle}
           canonicalUrl={canonicalUrl}
           page="post"
+          className="-mt-1"
         ></SocialShareButtons>
       </div>
-      <StyledMainWrapper>
+      <StyledMainWrapper className="prose">
         <MDXProvider components={MdxComponents}>
           <MDXRenderer>{mdx.body}</MDXRenderer>
         </MDXProvider>

@@ -11,7 +11,7 @@ import amazon from '../../images/amazon.svg';
 import youtube from '../../images/youtube.svg';
 
 export default function CommonEntities() {
-  const { incidents } = useStaticQuery(graphql`
+  const { incidents, entities: entitiesData } = useStaticQuery(graphql`
     {
       incidents: allMongodbAiidprodIncidents {
         nodes {
@@ -24,12 +24,18 @@ export default function CommonEntities() {
           Alleged_harmed_or_nearly_harmed_parties
         }
       }
+      entities: allMongodbAiidprodEntities {
+        nodes {
+          entity_id
+          name
+        }
+      }
     }
   `);
 
   const commonEntities = useMemo(
     () =>
-      computeEntities({ incidents: incidents.nodes })
+      computeEntities({ incidents: incidents.nodes, entities: entitiesData.nodes })
         .sort(
           (a, b) =>
             b.incidentsAsBoth.length +
@@ -50,7 +56,7 @@ export default function CommonEntities() {
           <Trans ns="entities">View all entities</Trans>
         </Link>
       </div>
-      <div className="grid lg:grid-cols-3 gap-4">
+      <div className="grid lg:grid-cols-3 gap-4 md:gap-6">
         {commonEntities.map((entity, index) => {
           const incidentsCount = entity.incidentsAsBoth.length + entity.incidentsAsDeployer.length;
 
@@ -96,7 +102,7 @@ export default function CommonEntities() {
                 <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                   {index + 1}.&nbsp;{entity.name}
                 </h5>
-                <ul className="list-none text-black dark:text-white">
+                <ul className="text-black dark:text-white">
                   <li>
                     <Trans ns="entities">
                       Involved in{' '}

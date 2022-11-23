@@ -4,7 +4,7 @@ const { computeEntities } = require('../src/utils/entities');
 
 const createEntitiesPages = async (graphql, createPage) => {
   const {
-    data: { incidents },
+    data: { incidents, entities: entitiesData },
   } = await graphql(`
     {
       incidents: allMongodbAiidprodIncidents {
@@ -17,10 +17,19 @@ const createEntitiesPages = async (graphql, createPage) => {
           reports
         }
       }
+      entities: allMongodbAiidprodEntities {
+        nodes {
+          entity_id
+          name
+        }
+      }
     }
   `);
 
-  const entities = computeEntities({ incidents: incidents.nodes });
+  const entities = computeEntities({
+    incidents: incidents.nodes,
+    entities: entitiesData.nodes,
+  });
 
   for (const entity of entities) {
     const { id } = entity;
