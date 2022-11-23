@@ -27,9 +27,11 @@ export default class MDXRuntimeTest extends Component {
 
     let canonicalUrl = config.gatsby.siteUrl;
 
-    canonicalUrl =
-      config.gatsby.pathPrefix !== '/' ? canonicalUrl + config.gatsby.pathPrefix : canonicalUrl;
-    canonicalUrl = canonicalUrl + mdx.fields.slug;
+    if (config.gatsby.pathPrefix != '/') {
+      canonicalUrl += config.gatsby.pathPrefix;
+    }
+    canonicalUrl += mdx.fields.slug;
+    canonicalUrl = canonicalUrl.replace(/\/index(\...|)$/, '');
 
     return (
       <Layout {...this.props}>
@@ -45,7 +47,7 @@ export default class MDXRuntimeTest extends Component {
             </div>
           )}
         </div>
-        <StyledMainWrapper>
+        <StyledMainWrapper className="prose">
           <MDXProvider components={Components}>
             <MDXRenderer>{mdx.body}</MDXRenderer>
           </MDXProvider>

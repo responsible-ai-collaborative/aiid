@@ -3,6 +3,7 @@ import { StyledHeading } from 'components/styles/Docs';
 import { graphql } from 'gatsby';
 import React from 'react';
 import PostsListing from 'components/blog/PostsListing';
+import AiidHelmet from 'components/AiidHelmet';
 
 export default function BlogPage(props) {
   const {
@@ -11,6 +12,7 @@ export default function BlogPage(props) {
 
   return (
     <Layout {...props}>
+      <AiidHelmet metaTitle={'AIID Blog'} canonicalUrl={'/blog'} />
       <div className={'titleWrapper'}>
         <StyledHeading>Blog</StyledHeading>
       </div>

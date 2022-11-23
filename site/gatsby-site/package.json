@@ -122,6 +122,7 @@
   "devDependencies": {
     "@netlify/plugin-gatsby": "^3.4.7",
     "@robinmetral/gatsby-source-s3": "^2.1.1",
+    "@tailwindcss/typography": "^0.5.8",
     "autoprefixer": "^10.4.7",
     "babel-eslint": "^10.1.0",
     "cypress": "^10.3.0",
