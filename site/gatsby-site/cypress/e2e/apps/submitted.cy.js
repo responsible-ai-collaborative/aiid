@@ -1,7 +1,6 @@
 import { maybeIt } from '../../support/utils';
 import submittedReports from '../../fixtures/submissions/submitted.json';
 import quickAdds from '../../fixtures/submissions/quickadds.json';
-import { format, getUnixTime } from 'date-fns';
 
 describe('Submitted reports', () => {
   const url = '/apps/submitted';
@@ -110,61 +109,15 @@ describe('Submitted reports', () => {
       'promoteSubmission',
       {
         data: {
-          promoteSubmissionToReport: [
-            {
-              __typename: 'Incident',
-              incident_id: 182,
-              reports: [
-                {
-                  __typename: 'Report',
-                  report_number: 1565,
-                },
-              ],
-            },
-          ],
-        },
-      }
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'UpdateReport',
-      'updateReport',
-      {
-        data: {
-          updateOneReport: {
-            ...submission,
-            deployers: undefined,
-            developers: undefined,
-            harmed_parties: undefined,
-            __typename: 'Report',
+          promoteSubmissionToReport: {
+            incident_ids: [182],
             report_number: 1565,
           },
         },
       }
     );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'UpdateIncident',
-      'updateIncident',
-      {
-        data: {
-          updateOneIncident: {
-            __typename: 'Incident',
-            incident_id: 182,
-            reports: [
-              {
-                __typename: 'Report',
-                report_number: 1565,
-              },
-            ],
-          },
-        },
-      }
-    );
-
-    cy.get('@promoteForm').contains('button', 'Add New Incident').click();
+    cy.get('@promoteForm').contains('button', 'Add new Incident').click();
 
     cy.wait('@promoteSubmission')
       .its('request.body.variables.input')
@@ -173,49 +126,10 @@ describe('Submitted reports', () => {
         expect(input.submission_id).to.eq('5f9c3ebfd4896d392493f03c');
       });
 
-    cy.wait('@updateReport')
-      .its('request.body.variables')
-      .then(({ set, query }) => {
-        expect(query.report_number).eq(1565);
-
-        expect(set.text).eq(submission.text);
-        expect(set.plain_text).eq(submission.plain_text);
-        expect(set.title).eq(submission.title);
-        expect(set.authors).deep.eq(submission.authors);
-        expect(set.submitters).deep.eq(submission.submitters);
-        expect(set.source_domain).eq(submission.source_domain);
-        expect(set.url).eq(submission.url);
-        expect(set.cloudinary_id).eq(submission.cloudinary_id);
-        expect(set.image_url).eq(submission.image_url);
-
-        const date_modified = format(new Date(), 'yyyy-MM-dd');
-
-        const epoch_date_modified = getUnixTime(new Date(date_modified));
-
-        expect(set.date_modified).eq(date_modified);
-        expect(set.date_downloaded).eq('2020-10-30');
-        expect(set.date_published).eq('2017-05-03');
-        expect(set.date_submitted).eq('2020-10-30');
-
-        expect(set.epoch_date_modified).eq(epoch_date_modified);
-        expect(set.epoch_date_downloaded).eq(1604016000);
-        expect(set.epoch_date_published).eq(1493769600);
-        expect(set.epoch_date_submitted).eq(1604016000);
-      });
-
-    cy.wait('@updateIncident')
-      .its('request.body.variables')
-      .then(({ query, set }) => {
-        expect(query.incident_id).eq(182);
-
-        expect(set.title).eq(submission.title);
-        expect(set.date).eq(submission.incident_date);
-        expect(set.description).eq(submission.description);
-      });
-
-    cy.get('[data-cy="toast"]')
-      .contains('Successfully promoted submission to Incident 182 and Report 1565')
-      .should('exist');
+    cy.contains(
+      '[data-cy="toast"]',
+      'Successfully promoted submission to Incident 182 and Report 1565'
+    ).should('exist');
   });
 
   maybeIt('Promotes a submission to a new report and links it to an existing incident', () => {
@@ -261,42 +175,15 @@ describe('Submitted reports', () => {
       'promoteSubmission',
       {
         data: {
-          promoteSubmissionToReport: [
-            {
-              __typename: 'Incident',
-              incident_id: 10,
-              reports: [
-                {
-                  __typename: 'Report',
-                  report_number: 1565,
-                },
-                {
-                  __typename: 'Report',
-                  report_number: 1566,
-                },
-              ],
-            },
-          ],
-        },
-      }
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'UpdateReport',
-      'updateReport',
-      {
-        data: {
-          updateOneReport: {
-            ...submission,
-            __typename: 'Report',
+          promoteSubmissionToReport: {
+            incident_ids: [10],
             report_number: 1566,
           },
         },
       }
     );
 
-    cy.get('@promoteForm').contains('button', 'Add New Report').click();
+    cy.get('@promoteForm').contains('button', 'Add to incident 10').click();
 
     cy.wait('@promoteSubmission')
       .its('request.body.variables.input')
@@ -305,41 +192,10 @@ describe('Submitted reports', () => {
         expect(input.submission_id).to.eq('6123bf345e740c1a81850e89');
       });
 
-    cy.wait('@updateReport')
-      .its('request.body.variables')
-      .then(({ set, query }) => {
-        expect(query.report_number).eq(1566);
-
-        expect(set.text).eq(submission.text);
-        expect(set.plain_text).eq(submission.plain_text);
-        expect(set.title).eq(submission.title);
-        expect(set.authors).deep.eq(submission.authors);
-        expect(set.submitters).deep.eq(submission.submitters);
-        expect(set.source_domain).eq(submission.source_domain);
-        expect(set.url).eq(submission.url);
-        expect(set.source_domain).eq(submission.source_domain);
-        expect(set.cloudinary_id).eq(submission.cloudinary_id);
-        expect(set.image_url).eq(submission.image_url);
-
-        const date_modified = format(new Date(), 'yyyy-MM-dd');
-
-        const epoch_date_modified = getUnixTime(new Date(date_modified));
-
-        expect(set.date_modified).eq(date_modified);
-
-        expect(set.date_downloaded).eq('2021-08-23');
-        expect(set.date_published).eq('2019-07-18');
-        expect(set.date_submitted).eq('2021-08-23');
-
-        expect(set.epoch_date_modified).eq(epoch_date_modified);
-        expect(set.epoch_date_downloaded).eq(1629676800);
-        expect(set.epoch_date_published).eq(1563408000);
-        expect(set.epoch_date_submitted).eq(1629676800);
-      });
-
-    cy.get('[data-cy="toast"]')
-      .contains('Successfully promoted submission to Incident 10 and Report 1566')
-      .should('exist');
+    cy.contains(
+      '[data-cy="toast"]',
+      'Successfully promoted submission to Incident 10 and Report 1566'
+    ).should('exist');
   });
 
   maybeIt('Rejects a submission', () => {
@@ -598,7 +454,7 @@ describe('Submitted reports', () => {
         {}
       );
 
-      cy.get('@promoteForm').contains('button', 'Add New Incident').click();
+      cy.get('@promoteForm').contains('button', 'Add new Incident').click();
 
       cy.get('[data-cy="toast"]')
         .contains('Please review submission before approving. Some data is missing.')
@@ -660,7 +516,7 @@ describe('Submitted reports', () => {
       {}
     );
 
-    cy.get('@promoteForm').contains('button', 'Add New Incident').click();
+    cy.get('@promoteForm').contains('button', 'Add new Incident').click();
 
     cy.get('[data-cy="toast"]')
       .contains('Please review submission before approving. Some data is missing.')

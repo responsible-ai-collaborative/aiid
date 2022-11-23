@@ -1,72 +1,65 @@
 import React, { useState, useEffect } from 'react';
-import REFINEMENT_LISTS from './REFINEMENT_LISTS';
 import Stats from './Stats';
 import ClearFilters from './ClearFilters';
 import DisplayModeSwitch from './DisplayModeSwitch';
 import Filters from './Filters';
-import { Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Trans } from 'react-i18next';
-import Row from 'elements/Row';
-import Col from 'elements/Col';
+import useSearch from './useSearch';
 
-const Controls = ({ query, searchState, setSearchState }) => {
+const Controls = () => {
+  const { searchState } = useSearch();
+
   const [expandFilters, setExpandFilters] = useState(false);
 
-  useEffect(() => setExpandFilters(REFINEMENT_LISTS.some((r) => query[r.attribute])), []);
+  useEffect(() => {
+    const defaultKeys = ['is_incident_report', 'page', 'display'];
+
+    const expand = Object.keys(searchState.refinementList).some(
+      (key) => !defaultKeys.includes(key)
+    );
+
+    setExpandFilters(expand);
+  }, []);
 
   return (
     <>
-      <Row className="content-start items-center mt-4 767px:hidden hiddenMobile bootstrap">
-        <Col className="col-auto">
-          <Stats />
-        </Col>
-        <Col className="col-auto">
-          <DisplayModeSwitch />
-        </Col>
-        <Col className="tw-hbox">
-          <Form.Check
-            type="switch"
-            id="hide-duplicates"
-            checked={searchState.refinementList.hideDuplicates}
-            onClick={(event) => {
-              setSearchState({
-                ...searchState,
-                refinementList: {
-                  ...searchState.refinementList,
-                  hideDuplicates: event.target.checked,
-                },
-              });
-            }}
-            className="tw-switch"
-          />
-          <Form.Label for="hide-duplicates">
-            <Trans>1st report only</Trans>
-          </Form.Label>
-        </Col>
-        <Col className="col-auto">
-          <ClearFilters>
-            <Trans>Clear Filters</Trans>
-          </ClearFilters>
-        </Col>
-        <Col className="col-auto">
-          <button
-            id="expand-filters"
-            data-cy="expand-filters"
-            onClick={() => setExpandFilters(!expandFilters)}
-            className="select-none cursor-pointer bg-none border-none"
-          >
-            <FontAwesomeIcon
-              className="-align-[0.2rem]"
-              icon={expandFilters ? faCaretDown : faCaretRight}
-              fixedWidth
-            />
-            <Trans>Filter Search</Trans>
-          </button>
-        </Col>
-      </Row>
-      <Row className="mb-3 hiddenMobile">{expandFilters && <Filters />}</Row>
+      <div className="justify-between gap-2 mt-4 hidden md:flex">
+        <div className="flex gap-4">
+          <div className="flex items-center">
+            <Stats />
+          </div>
+          <div className="place-self-center">
+            <DisplayModeSwitch />
+          </div>
+        </div>
+
+        <div className="flex">
+          <div className="justify-end">
+            <ClearFilters>
+              <Trans>Clear Filters</Trans>
+            </ClearFilters>
+          </div>
+
+          <div className="grid place-content-center">
+            <button
+              id="expand-filters"
+              data-cy="expand-filters"
+              onClick={() => setExpandFilters(!expandFilters)}
+              className="select-none cursor-pointer bg-none border-none"
+            >
+              <FontAwesomeIcon
+                className="-align-[0.2rem]"
+                icon={expandFilters ? faCaretDown : faCaretRight}
+                fixedWidth
+              />
+              <Trans>Filter Search</Trans>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="mb-3 hidden md:block">{expandFilters && <Filters />}</div>
     </>
   );
 };
