@@ -150,5 +150,12 @@
   "Error updating incident {{incident}}. \n {{message}}": "Erreur dans la mis à jour de l'incident {{incidentId}}. \n {{message}}",
   "Are you sure you want to delete this report?": "Voulez-vous vraiment supprimer ce rapport?",
   "Collapse": "Fermer",
-  "Expand": "Ouvrir"
+  "Expand": "Ouvrir",
+  "Display Issues": "Problèmes d'affichage",
+  "Only Issues": "Seuls les problèmes",
+  "Report {{report_number}}": "Problème {{report_number}}",
+  "Show Details on Issue #{{id}}": "Afficher les détails du problème #{{id}}",
+  "Entities": "Entités",
+  "Notify Me of New {{name}} Incidents": "M'avertir des nouveaux Incidents de {{name}}",
+  "Unsubscribe from New {{name}} Incidents": "Désinscrire des nouveaux Incidents de {{name}}"
 }

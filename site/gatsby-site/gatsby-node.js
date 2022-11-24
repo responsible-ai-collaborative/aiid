@@ -26,6 +26,8 @@ const createTsneVisualizationPage = require('./page-creators/createTsneVisualiza
 
 const createEntitiesPages = require('./page-creators/createEntitiesPages');
 
+const createReportPages = require('./page-creators/createReportPages');
+
 const algoliasearch = require('algoliasearch');
 
 const Translator = require('./src/utils/Translator');
@@ -53,6 +55,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     ['/about/blog', '/blog'],
     ['/research/4-taxonomies', '/taxonomies'],
     ['/research', '/research/snapshots'],
+    ['/research/related-work', '/research/4-related-work'],
   ];
 
   redirects.forEach((pair) =>
@@ -69,6 +72,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     createDuplicatePages,
     createTsneVisualizationPage,
     createEntitiesPages,
+    createReportPages,
   ]) {
     if (!(process.env.SKIP_PAGE_CREATOR || '').split(',').includes(pageCreator.name)) {
       reporter.info(`Page creation: ${pageCreator.name}`);
@@ -332,15 +336,17 @@ exports.onPreBuild = function ({ reporter }) {
 exports.onPostBuild = async ({ reporter }) => {
   reporter.info('Site has been built!');
 
-  reporter.info('Processing pending notifications...');
+  if (process.env.CONTEXT == 'production') {
+    reporter.info('Processing pending notifications...');
 
-  const processNotifications = require('./postBuild/processNotifications');
+    const processNotifications = require('./postBuild/processNotifications');
 
-  try {
-    const result = await processNotifications();
+    try {
+      const result = await processNotifications();
 
-    reporter.info(`${result?.data?.processNotifications?.length} notifications were processed!`);
-  } catch (error) {
-    reporter.error('Error processing pending notifications:', error);
+      reporter.info(`${result?.data?.processNotifications} notifications were processed!`);
+    } catch (error) {
+      reporter.error('Error processing pending notifications:', error);
+    }
   }
 };

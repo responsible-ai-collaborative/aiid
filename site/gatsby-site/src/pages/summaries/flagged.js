@@ -64,7 +64,7 @@ export default function FlaggedIncidents({ data, ...props }) {
 
   return (
     <Layout {...props}>
-      <AiidHelmet>
+      <AiidHelmet canonicalUrl={'/summaries/flagged'}>
         <title>Incident List</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
