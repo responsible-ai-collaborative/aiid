@@ -39,6 +39,7 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql`
       report_number
       editor_notes
       language
+      is_incident_report
       translations_es: translations(input: "es") {
         title
         text

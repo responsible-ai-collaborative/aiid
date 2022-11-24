@@ -19,11 +19,8 @@ const StepFour = () => {
         additionalContent={
           <>
             <Trans i18n={i18n} ns="submit">
-              It will appear on the{' '}
-              <Link to={localizedPath({ path: '/apps/submitted', language: locale })}>
-                review queue page
-              </Link>{' '}
-              within an hour.
+              You can see your submission{' '}
+              <Link to={localizedPath({ path: '/apps/submitted', language: locale })}>here</Link>.
             </Trans>
             <div className="flex mt-4">
               <Link to={localizedPath({ path: '/apps/submitted', language: locale })}>

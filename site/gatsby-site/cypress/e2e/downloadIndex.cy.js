@@ -19,7 +19,7 @@ const testClassifications = [
   'CSET:AI Applications:language output',
   'CSET:AI Applications:chatbot',
   'CSET:AI Techniques:content creation',
-  'CSET:AI Techniques:language recognitionl natural language processing',
+  'CSET:AI Techniques:language recognition natural language processing',
   'CSET:Harm Type:Psychological harm',
   'CSET:Harm Type:Harm to social or political systems',
   'CSET:Level of Autonomy:Medium',

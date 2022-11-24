@@ -40,7 +40,7 @@ export default function Footer() {
       {config.footer.navConfig.map((group) => (
         <div key={group.title}>
           <h3 className="text-base mt-4">{group.title}</h3>
-          <ul className="p-0 list-none mb-2">
+          <ul className="p-0 mb-2">
             {group.items.map(
               (item) =>
                 item.title && (
