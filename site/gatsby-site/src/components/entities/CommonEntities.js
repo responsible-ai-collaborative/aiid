@@ -102,7 +102,7 @@ export default function CommonEntities() {
                 <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                   {index + 1}.&nbsp;{entity.name}
                 </h5>
-                <ul className="list-none text-black dark:text-white">
+                <ul className="text-black dark:text-white">
                   <li>
                     <Trans ns="entities">
                       Involved in{' '}

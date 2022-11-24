@@ -33,9 +33,17 @@ export default function Details({
 }) {
   const localizePath = useLocalizePath();
 
+  const detailsPath = item.is_incident_report
+    ? localizePath({
+        path: `/cite/${item.incident_id}#r${item.objectID}`,
+      })
+    : localizePath({
+        path: `/reports/${item.report_number}`,
+      });
+
   return (
     <Card className="h-full" data-cy={item.mongodb_id}>
-      <a href={'/cite/' + item.incident_id + '#r' + item.objectID}>
+      <a href={detailsPath}>
         <IncidentCardImage
           className="card-img-top"
           publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
@@ -58,16 +66,14 @@ export default function Details({
             <button
               type="button"
               className="btn btn-secondary btn-sm w-full text-sm"
-              onClick={() => {
-                const path = localizePath({
-                  path: `/cite/${item.incident_id}#r${item.mongodb_id}`,
-                });
-
-                navigate(path);
-              }}
+              onClick={() => navigate(detailsPath)}
             >
               <StyledLabel>
-                <Trans>Show Details on Incident #{{ id: item.incident_id }}</Trans>
+                {item.is_incident_report ? (
+                  <Trans>Show Details on Incident #{{ id: item.incident_id }}</Trans>
+                ) : (
+                  <Trans>Show Details on Issue #{{ id: item.report_number }}</Trans>
+                )}
               </StyledLabel>
             </button>
           )}

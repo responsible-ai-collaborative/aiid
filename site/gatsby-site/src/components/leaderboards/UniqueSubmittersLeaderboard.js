@@ -15,7 +15,7 @@ const UniqueSubmittersLeaderboard = ({ limit, className }) => {
         }
       }
 
-      allMongodbAiidprodReports {
+      allMongodbAiidprodReports(filter: { is_incident_report: { eq: true } }) {
         nodes {
           report_number
           submitters
