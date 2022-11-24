@@ -167,5 +167,6 @@
   "Only Issues": "Sólo Problemas",
   "Report {{report_number}}": "Problema {{report_number}}",
   "Show Details on Issue #{{id}}": "Ver detalles del Problema #{{id}}",
-  "Entities": "Entidades"
+  "Entities": "Entidades",
+  "Expand": "Expandir"
 }
