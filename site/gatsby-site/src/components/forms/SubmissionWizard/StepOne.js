@@ -116,7 +116,7 @@ const FormDetails = ({
     if (!values['date_downloaded']) {
       setFieldValue('date_downloaded', new Date().toISOString().substr(0, 10));
     }
-  }, [values['date_downloaded']]);
+  }, values['date_downloaded']);
 
   useEffect(() => {
     if (submissionFailed) {
