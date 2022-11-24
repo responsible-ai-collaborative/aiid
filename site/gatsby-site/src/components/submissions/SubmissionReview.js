@@ -237,7 +237,7 @@ const SubmissionReview = ({ submission }) => {
         input: {
           submission_id: submission._id,
           incident_ids: [],
-          is_incident_report: false,
+          is_incident_report: true,
         },
       },
     });
