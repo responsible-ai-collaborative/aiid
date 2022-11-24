@@ -10,6 +10,8 @@ import { Spinner } from 'flowbite-react';
 import { isWebUri } from 'valid-url';
 import { Trans } from 'react-i18next';
 
+const IMG_FALLBACK = 'fallback.jpg';
+
 const getCloudinaryPublicID = (url) => {
   // https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files
 
@@ -38,7 +40,7 @@ const Image = ({
   // Setting transformation as a string skips the safe url check here: https://github.com/cloudinary/js-url-gen/blob/9a3d0a29ea77ddfd6f7181251615f34c2d8a6c5d/src/assets/CloudinaryFile.ts#L279
   const tmpImage = new CloudinaryImage();
 
-  tmpImage.delivery(defaultImage('fallback.jpg'));
+  tmpImage.delivery(defaultImage(IMG_FALLBACK));
   tmpImage.delivery(format(auto())).delivery(quality(qAuto()));
 
   if (transformation) {
@@ -55,7 +57,7 @@ const Image = ({
 
       if (!img || img.naturalHeight == undefined || img.naturalHeight == 0) {
         if ((img.src || img.srcset) && img.complete) {
-          setCloudinaryID('fallback.jpg');
+          setCloudinaryID(IMG_FALLBACK);
         } else {
           fallbackTimeout = setTimeout(useFallbackIfLoadFailed, 1000);
         }
@@ -93,7 +95,7 @@ const PreviewImageInputGroup = ({
   className = '',
   schema,
 }) => {
-  const [cloudinaryID, setCloudinaryID] = useState(cloudinary_id);
+  const [cloudinaryID, setCloudinaryID] = useState(IMG_FALLBACK);
 
   // Track whether the image is waiting to update so we can show a spinner.
   const [updatingImage, setUpdatingImage] = useState(false);
@@ -117,11 +119,11 @@ const PreviewImageInputGroup = ({
         setCloudinaryID(getCloudinaryPublicID(values.image_url));
       };
       img.onerror = () => {
-        setCloudinaryID();
+        setCloudinaryID(IMG_FALLBACK);
         setImageReferenceError(true);
       };
     } else {
-      setCloudinaryID();
+      setCloudinaryID(IMG_FALLBACK);
     }
     setUpdatingImage(false);
   };
@@ -136,11 +138,15 @@ const PreviewImageInputGroup = ({
     timeoutID.current = setTimeout(updateCloudinaryID, 2000);
   }
 
-  // Default to fallback so we don't have to hit cloudinary API
-  // when we know there will be no match
-  if (!cloudinaryID || cloudinaryID == 'reports/') {
-    setCloudinaryID('fallback.jpg');
-  }
+  useEffect(() => {
+    // Default to fallback so we don't have to hit cloudinary API
+    // when we know there will be no match
+    if (!cloudinary_id || cloudinary_id == 'reports/') {
+      setCloudinaryID(IMG_FALLBACK);
+    } else {
+      setCloudinaryID(cloudinary_id);
+    }
+  }, [cloudinary_id]);
 
   const childErrors = { ...errors };
 
