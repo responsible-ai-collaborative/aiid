@@ -18,6 +18,8 @@ const getEntityId = (name) => {
   return slugify(name, { lower: true });
 };
 
+module.exports.getEntityId = getEntityId;
+
 module.exports.computeEntities = ({ incidents, entities }) => {
   const entitiesHash = {};
 

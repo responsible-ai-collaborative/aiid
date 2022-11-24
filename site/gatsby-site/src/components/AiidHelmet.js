@@ -14,6 +14,10 @@ const AiidHelmet = ({
 
   metaImage ||= config.siteMetadata.ogImage;
 
+  if (canonicalUrl && canonicalUrl[0] == '/') {
+    canonicalUrl = config.gatsby.siteUrl + canonicalUrl;
+  }
+
   return (
     <Helmet>
       {metaTitle && <title>{metaTitle}</title>}

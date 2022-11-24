@@ -15,7 +15,7 @@ export default class Authors extends Component {
   render() {
     return (
       <Layout {...this.props}>
-        <AiidHelmet>
+        <AiidHelmet canonicalUrl={'/summaries/leaderboard'}>
           <title>Submissions Leaderboard</title>
         </AiidHelmet>
         <div className={'titleWrapper'}>

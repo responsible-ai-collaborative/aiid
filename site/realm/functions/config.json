@@ -1,26 +1,26 @@
 [
     {
-        "name": "confirmUser",
-        "private": true
-    },
-    {
-        "name": "onIncidentUpdate",
-        "private": true
-    },
-    {
         "name": "onNewUser",
         "private": true
     },
     {
-        "name": "getUser",
+        "name": "promoteSubmissionToReport",
         "private": false
     },
     {
-        "name": "passwordReset",
+        "name": "updateOneReportTranslation",
+        "private": false
+    },
+    {
+        "name": "confirmUser",
         "private": true
     },
     {
-        "name": "promoteSubmissionToReport",
+        "name": "processNotifications",
+        "private": false
+    },
+    {
+        "name": "linkReportsToIncidents",
         "private": false
     },
     {
@@ -29,15 +29,7 @@
         "disable_arg_logs": true
     },
     {
-        "name": "reportTranslations",
-        "private": false
-    },
-    {
         "name": "sendEmail",
-        "private": false
-    },
-    {
-        "name": "linkReportsToIncidents",
         "private": false
     },
     {
@@ -45,11 +37,47 @@
         "private": false
     },
     {
-        "name": "updateOneReportTranslation",
+        "name": "getUser",
         "private": false
     },
     {
-        "name": "processNotifications",
+        "name": "onIncidentUpdate",
+        "private": true
+    },
+    {
+        "name": "passwordReset",
+        "private": true
+    },
+    {
+        "name": "reportTranslations",
         "private": false
+    },
+    {
+        "name": "getEmailTemplateConfirmEmail",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplatePasswordReset",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplateNewReportAddedToAnIncident",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplateIncidentUpdate",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplateNewIncident",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplateNewEntityIncident",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplateEntityIncidentUpdated",
+        "private": true
     }
 ]
