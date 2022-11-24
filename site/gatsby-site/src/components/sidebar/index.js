@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Tree from './tree';
 import { ExternalLink } from 'react-feather';
 import config from '../../../config';
@@ -10,7 +10,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'gatsby';
 import { useUserContext } from 'contexts/userContext';
 import { useMenuContext } from 'contexts/MenuContext';
-import { Tooltip } from 'flowbite-react';
 import { globalHistory } from '@reach/router';
 
 const Sidebar = ({ defaultCollapsed = false }) => {
@@ -60,7 +59,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
   const LoginSignupNode = (
     <Link
       to={isUserLoggedIn ? '/account' : '/login'}
-      className={`flex rounded-lg items-center p-2 text-base font-normal group ${
+      className={`flex rounded-lg p-2 text-base font-normal group overflow-hidden ${
         isAccountCurrentPath
           ? 'bg-light-orange text-white dark:bg-gray-700'
           : 'text-gray-900 hover:bg-light-orange dark:text-white  hover:text-white dark:hover:bg-gray-700'
@@ -83,55 +82,51 @@ const Sidebar = ({ defaultCollapsed = false }) => {
     </Link>
   );
 
+  const [headerVisiblePixels, setHeaderVisiblePixels] = useState(80);
+
   // We want the bottom edge of the sidebar
   // to be at the bottom edge of the viewport.
   // Since the sidebar has `position: sticky`,
   // that means that in the initial view,
-  // its height should be:
-  //
-  //   100vh - the height of the header
-  //
+  // its height should be 100vh - 80px (the height of the header)
   // Then, when we scroll down, its height should be 100vh.
   // CSS doesn't provide use with a way
   // to detect whether a sticky element is "stuck"
   // so we have to check ourselves with an IntersectionObserver.
+  const sidebar = useRef(null);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([e]) => {
-        console.log('intersect');
-        console.log(e);
-        e.target.classList.toggle('h-[100vh]');
+        setHeaderVisiblePixels(e.boundingClientRect.height * e.intersectionRatio);
       },
-      { threshold: [1] }
+      {
+        threshold: Array(1000)
+          .fill()
+          .map((e, i) => i / 1000)
+          .concat([1]),
+      }
     );
 
-    observer.observe(document.querySelector('#sidebar'));
+    observer.observe(document.querySelector('nav.navBarDefault'));
 
     return () => {
       observer.disconnect();
     };
-  });
+  }, [sidebar]);
 
   return (
     <>
       <aside
         id="sidebar"
-        className={`${
-          !collapsedMenu ? 'md:w-64' : 'md:w-20'
-        } sticky relative top-0 transition-width duration-500`}
+        ref={sidebar}
+        className={`
+          ${!collapsedMenu ? 'md:w-64' : 'md:w-[3.5rem]'} 
+          sticky relative top-0 transition-all duration-500 flex flex-col
+        `}
+        style={{ height: `calc(100vh - ${headerVisiblePixels}px)` }}
         aria-label="Sidebar"
       >
-        <FontAwesomeIcon
-          icon={faChevronCircleLeft}
-          color={'white'}
-          className={`hidden md:inline-block transition-transform duration-500 cursor-pointer fa fa-twitter-square fa-lg text-light-orange hover:text-gray-500 w-8 h-8 fixed bottom-5 ${
-            collapsedMenu ? 'rotate-180 translate-x-1' : 'translate-x-48'
-          }`}
-          title={isCollapsed ? t('Expand') : t('Collapse')}
-          onClick={() => {
-            collapseMenu(!collapsedMenu), setCollapsedMenu(!collapsedMenu);
-          }}
-        />
         <span>
           <QuickAccess isCollapsed={collapsedMenu} />
         </span>
@@ -143,9 +138,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
         ) : null}
 
         <ul
-          className={`${
-            collapsedMenu ? '-translate-y-16' : ''
-          } space-y-2 list-none z-20 transition-transform duration-500`}
+          className={`space-y-2 list-none z-20 transition-transform duration-500 shrink overflow-auto p-2`}
         >
           <Tree
             setNavCollapsed={() => {}}
@@ -160,7 +153,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
           {config.sidebar.links?.map((link, key) => {
             if (link.link !== '' && link.text !== '') {
               return (
-                <li className={'side-bar-links'} key={key}>
+                <li className={'side-bar-links overflow-hidden w-full'} key={key}>
                   <a href={link.link} className={``} target="_blank" rel="noopener noreferrer">
                     <Trans>{link.text}</Trans>
                     <ExternalLink size={14} />
@@ -169,16 +162,27 @@ const Sidebar = ({ defaultCollapsed = false }) => {
               );
             }
           })}
-          <li className="border-t pt-2">
+          <li className="side-bar-links justify-center overflow-hidden w-full">
             {isCollapsed ? (
-              <Tooltip content={isUserLoggedIn ? t('Account') : t('Subscribe')}>
-                {LoginSignupNode}
-              </Tooltip>
+              <span title={isUserLoggedIn ? t('Account') : t('Subscribe')}>{LoginSignupNode}</span>
             ) : (
               <>{LoginSignupNode}</>
             )}
           </li>
         </ul>
+        <div className="flex justify-end mt-auto p-3 border-t-2 border-gray-200">
+          <FontAwesomeIcon
+            icon={faChevronCircleLeft}
+            color={'white'}
+            className={`hidden md:inline-block transition-transform duration-500 cursor-pointer fa fa-twitter-square fa-lg text-light-orange hover:text-gray-500 w-8 h-8 ${
+              collapsedMenu ? 'rotate-180' : ''
+            }`}
+            title={isCollapsed ? t('Expand') : t('Collapse')}
+            onClick={() => {
+              collapseMenu(!collapsedMenu), setCollapsedMenu(!collapsedMenu);
+            }}
+          />
+        </div>
       </aside>
     </>
   );

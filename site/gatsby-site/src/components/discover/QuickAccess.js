@@ -21,8 +21,8 @@ export default function DiscoverQuickAccess({ className = '', isCollapsed = fals
   return (
     <Wrapper
       className={`${className} ${
-        isCollapsed ? 'invisible' : ''
-      } px-4 pt-4 pb-1 md:bg-text-light-gray h-24`}
+        isCollapsed ? 'opacity-0 h-0 p-0 m-0' : 'px-4 pt-4 pb-1 h-24'
+      } md:bg-text-light-gray transition-all duration-500 opacity-1`}
     >
       <LocalizedLink
         to="/apps/discover"
@@ -38,7 +38,7 @@ export default function DiscoverQuickAccess({ className = '', isCollapsed = fals
             isCollapsed ? 'w-0 h-0 opacity-0' : 'opacity-1'
           } -mt-1 transition-opacity duration-1000`}
         >
-          <Trans>Discover</Trans>
+          {!isCollapsed && <Trans>Discover</Trans>}
         </div>
       </LocalizedLink>
       <LocalizedLink
@@ -55,7 +55,7 @@ export default function DiscoverQuickAccess({ className = '', isCollapsed = fals
             isCollapsed ? 'w-0 h-0 opacity-0' : 'opacity-1'
           } -mt-1 transition-opacity duration-1000`}
         >
-          <Trans>Submit</Trans>
+          {!isCollapsed && <Trans>Submit</Trans>}
         </div>
       </LocalizedLink>
     </Wrapper>

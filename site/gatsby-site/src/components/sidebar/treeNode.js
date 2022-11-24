@@ -24,7 +24,7 @@ const getIcon = (label, current = false) =>
         icon={faDoorOpen}
         className={`w-6 h-6 ${
           current ? 'text-white' : 'text-gray-500'
-        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa`}
         fixedWidth
       />
     ),
@@ -33,7 +33,7 @@ const getIcon = (label, current = false) =>
         icon={faSearch}
         className={`w-6 h-6 ${
           current ? 'text-white' : 'text-gray-500'
-        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa`}
         fixedWidth
       />
     ),
@@ -42,7 +42,7 @@ const getIcon = (label, current = false) =>
         icon={faPlusCircle}
         className={`w-6 h-6 ${
           current ? 'text-white' : 'text-gray-500'
-        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa`}
         fixedWidth
       />
     ),
@@ -51,7 +51,7 @@ const getIcon = (label, current = false) =>
         icon={faMedal}
         className={`w-6 h-6 ${
           current ? 'text-white' : 'text-gray-500'
-        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa`}
         fixedWidth
       />
     ),
@@ -60,7 +60,7 @@ const getIcon = (label, current = false) =>
         icon={faSortAlphaDown}
         className={`w-6 h-6 ${
           current ? 'text-white' : 'text-gray-500'
-        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa`}
         fixedWidth
       />
     ),
@@ -69,7 +69,7 @@ const getIcon = (label, current = false) =>
         icon={faNewspaper}
         className={`w-6 h-6 ${
           current ? 'text-white' : 'text-gray-500'
-        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa`}
         fixedWidth
       />
     ),
@@ -78,7 +78,7 @@ const getIcon = (label, current = false) =>
         icon={faChartPie}
         className={`w-6 h-6 ${
           current ? 'text-white' : 'text-gray-500'
-        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa`}
         fixedWidth
       />
     ),
@@ -87,7 +87,7 @@ const getIcon = (label, current = false) =>
         icon={faTable}
         className={`w-6 h-6 ${
           current ? 'text-white' : 'text-gray-500'
-        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa`}
         fixedWidth
       />
     ),
@@ -96,10 +96,9 @@ const getIcon = (label, current = false) =>
         xmlns="http://www.w3.org/2000/svg"
         version="1.1"
         viewBox="0 0 8.4666665 8.4666669"
-        style={{ width: '1.25em', marginRight: '0.25rem' }}
         fill="currentColor"
         stroke="none"
-        className={`w-6 h-6 ${
+        className={`shrink-0 w-6 h-6 ${
           current ? 'text-white' : 'text-gray-500'
         } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white`}
       >
@@ -115,7 +114,7 @@ const getIcon = (label, current = false) =>
         icon={faBuilding}
         className={`w-6 h-6 ${
           current ? 'text-white' : 'text-gray-500'
-        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
+        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa`}
         fixedWidth
       />
     ),
@@ -187,8 +186,8 @@ const NodeLink = ({
     {icon && <>{icon} </>}
     <span
       className={`${
-        isCollapsed ? 'h-0 w-0 opacity-0 ' : 'opacity-100'
-      } transition-opacity duration-500`}
+        isCollapsed ? 'h-0 w-0 m-0 p-0 overflow-hidden opacity-0 ' : 'opacity-100'
+      } transition-all duration-500 w-full`}
     >
       <span className="ml-3 block">
         <Trans>{item.title}</Trans>
