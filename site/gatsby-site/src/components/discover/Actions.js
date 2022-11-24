@@ -133,7 +133,7 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         </Modal.Body>
       </Modal>
 
-      {toggleFilterByIncidentId && (
+      {toggleFilterByIncidentId && item.is_incident_report && (
         <CustomButton
           variant="link"
           aria-hidden="true"
