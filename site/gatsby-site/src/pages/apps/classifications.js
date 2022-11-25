@@ -773,7 +773,7 @@ export default function ClassificationsDbView(props) {
       menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
       sidebarCollapsed={true}
     >
-      <AiidHelmet>
+      <AiidHelmet canonicalUrl={'/apps/classifications'}>
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
       <CustomModal style={{ maxWidth: '80%' }} {...editClassificationModal} />

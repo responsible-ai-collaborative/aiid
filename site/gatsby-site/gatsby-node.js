@@ -55,6 +55,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     ['/about/blog', '/blog'],
     ['/research/4-taxonomies', '/taxonomies'],
     ['/research', '/research/snapshots'],
+    ['/research/related-work', '/research/4-related-work'],
   ];
 
   redirects.forEach((pair) =>

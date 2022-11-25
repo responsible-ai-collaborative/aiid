@@ -221,7 +221,7 @@ function DiscoverApp(props) {
 
   return (
     <Layout {...props} sidebarCollapsed={true}>
-      <AiidHelmet>
+      <AiidHelmet canonicalUrl="/apps/discover">
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
       <SearchContext.Provider

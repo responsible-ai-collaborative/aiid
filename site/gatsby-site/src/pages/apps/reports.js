@@ -445,7 +445,7 @@ export default function Incidents(props) {
 
   return (
     <Layout {...props} sidebarCollapsed={true}>
-      <AiidHelmet>
+      <AiidHelmet canonicalUrl={'/apps/reports'}>
         <title>Incident List</title>
       </AiidHelmet>
 
