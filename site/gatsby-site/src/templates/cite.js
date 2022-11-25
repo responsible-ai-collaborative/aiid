@@ -72,6 +72,7 @@ function CitePage(props) {
       allMongodbTranslationsReportsFr,
       incident,
       entities: entitiesData,
+      responses,
     },
   } = props;
 
@@ -206,7 +207,11 @@ function CitePage(props) {
     }
   };
 
-  const entities = computeEntities({ incidents: [incident], entities: entitiesData.nodes });
+  const entities = computeEntities({
+    incidents: [incident],
+    entities: entitiesData.nodes,
+    responses: responses.nodes,
+  });
 
   return (
     <Layout {...props}>
@@ -571,6 +576,12 @@ export const query = graphql`
       nodes {
         entity_id
         name
+      }
+    }
+
+    responses: allMongodbAiidprodReports(filter: { tags: { in: ["response"] } }) {
+      nodes {
+        report_number
       }
     }
   }
