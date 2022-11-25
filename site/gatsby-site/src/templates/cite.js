@@ -354,6 +354,13 @@ function CitePage(props) {
                 </Button>
                 <Button
                   variant="outline-primary"
+                  href={`/apps/submit?tags=${RESPONSE_TAG}&incident_id=${incident.incident_id}`}
+                >
+                  <FontAwesomeIcon icon={faPlus} title={t('New Response')} className="mr-2" />
+                  <Trans>New Response</Trans>
+                </Button>
+                <Button
+                  variant="outline-primary"
                   href={'/apps/discover?incident_id=' + incident.incident_id}
                 >
                   <FontAwesomeIcon className="mr-2" icon={faSearch} title={t('Discover')} />
