@@ -409,4 +409,12 @@ describe('Cite pages', () => {
 
     cy.get('[data-cy="timeline-text-response"]').should('exist');
   });
+
+  it('Should not display response in timeline or in badge', () => {
+    cy.visit('/cite/1');
+
+    cy.get('[data-cy="responded-badge"]').should('not.exist');
+
+    cy.get('[data-cy="timeline-text-response"]').should('not.exist');
+  });
 });
