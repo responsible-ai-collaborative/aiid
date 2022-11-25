@@ -402,9 +402,21 @@ describe('Cite pages', () => {
     );
   });
 
-  it('Should display response badge', () => {
+  it('Should display response in timeline and as badge', () => {
     cy.visit('/cite/51#r1765');
 
     cy.get('#r1765').scrollIntoView().contains('post-incident response').should('exist');
+
+    cy.get('[data-cy="responded-badge"]').should('exist');
+
+    cy.get('[data-cy="timeline-text-response"]').should('exist');
+  });
+
+  it('Should not display response in timeline or in badge', () => {
+    cy.visit('/cite/1');
+
+    cy.get('[data-cy="responded-badge"]').should('not.exist');
+
+    cy.get('[data-cy="timeline-text-response"]').should('not.exist');
   });
 });
