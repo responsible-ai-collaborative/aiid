@@ -11,7 +11,7 @@ const SubmitPage = (props) => {
 
   return (
     <Layout {...props} className="md:max-w-5xl">
-      <AiidHelmet>
+      <AiidHelmet canonicalUrl={'/apps/submit'}>
         <title>{t('New Incident Report')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>

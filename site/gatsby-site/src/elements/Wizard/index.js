@@ -7,7 +7,6 @@ const Wizard = (props) => {
 };
 
 Wizard.StepContainer = ({ header, currentWizardStep, ...props }) => {
-  console.log(header);
   return (
     <div className={`p-6 border rounded-lg mt-6 relative ${currentWizardStep ? '' : 'hidden'}`}>
       <div className="absolute -top-5 bg-white px-4 text-primary-blue text-xl">{header}</div>

@@ -8,8 +8,14 @@ describe('The Discover app', () => {
     cy.visit(url);
   });
 
-  it('Should load at least 30 hits', () => {
+  it('Should default to incident reports and show at least 30', () => {
     cy.visit(url);
+
+    cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=true');
+
+    cy.contains('[data-cy="display-options"]', 'Incident Reports')
+      .should('exist')
+      .and('be.visible');
 
     cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 28);
   });
@@ -97,7 +103,7 @@ describe('The Discover app', () => {
 
     cy.get('@modal').find('[data-cy="flag-toggle"]').should('be.disabled');
 
-    cy.contains('Close').click();
+    cy.get('[aria-label="Close"]').click();
 
     cy.get('@modal').should('not.exist');
   });
@@ -123,5 +129,47 @@ describe('The Discover app', () => {
     cy.get('[data-cy="wayback-machine"]').first().should('be.visible').click();
 
     cy.get('@windowOpen').should('be.called');
+  });
+
+  it("Let's you filter by type", () => {
+    cy.visit(url);
+
+    cy.contains('[data-cy="display-options"]', 'Incident Reports').scrollIntoView().click();
+
+    cy.contains('li', /^Issue Reports$/).click();
+
+    cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=false');
+
+    cy.contains('[data-cy="display-options"]', 'Issue Reports').should('be.be.visible');
+  });
+
+  it('Clear filters button should be enabled if other than Incident Reports is selected', () => {
+    cy.visit(url);
+
+    cy.contains('button', 'Clear Filter').should('be.disabled');
+
+    cy.contains('[data-cy="display-options"]', 'Incident Reports').scrollIntoView().click();
+
+    cy.contains('li', /^Incidents$/).click();
+
+    cy.contains('button', 'Clear Filter').should('not.be.disabled');
+
+    cy.contains('[data-cy="display-options"]', 'Incidents').click();
+
+    cy.contains('li', /^Issue Reports$/).click();
+
+    cy.contains('button', 'Clear Filter').should('not.be.disabled');
+
+    cy.contains('[data-cy="display-options"]', 'Issue Reports').click();
+
+    cy.contains('li', /^Incident and Issue Reports$/).click();
+
+    cy.contains('button', 'Clear Filter').should('not.be.disabled');
+
+    cy.contains('[data-cy="display-options"]', 'Incident and Issue Reports').click();
+
+    cy.contains('li', /^Incident Reports$/).click();
+
+    cy.contains('button', 'Clear Filter').should('be.disabled');
   });
 });

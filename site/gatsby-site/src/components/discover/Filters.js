@@ -17,7 +17,9 @@ function Filters() {
       {REFINEMENT_LISTS.map((list) => (
         <Col
           key={list.attribute}
-          className="w-full flex-0-0-auto md:w-1/2 992px:w-1/4 px-2 bootstrap"
+          className={`w-full flex-0-0-auto md:w-1/2 992px:w-1/4 px-2 bootstrap ${
+            list.hidden ? 'hidden' : ''
+          }`}
         >
           <StyledFilter type={list.type} {...list} />
         </Col>
