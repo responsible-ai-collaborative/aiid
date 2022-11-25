@@ -91,7 +91,7 @@ const SubmitForm = () => {
       }
     }
 
-    if (queryParams['tags'].includes(RESPONSE_TAG) && queryParams['incident_id']) {
+    if (queryParams.tags && queryParams.tags.includes(RESPONSE_TAG) && queryParams.incident_id) {
       setIsIncidentResponse(true);
     }
 
