@@ -31,7 +31,7 @@ describe('Entities page', () => {
     cy.get('[data-cy="row-cruise"]').should('be.visible');
   });
 
-  it('Entities row shold be exapandable', () => {
+  it('Entities row should be expandable', () => {
     cy.visit(url);
 
     cy.get('[data-cy="input-filter-Entity"]').type('Amazon');
@@ -45,6 +45,18 @@ describe('Entities page', () => {
     cy.get('@cell').find('ul').should('be.visible');
 
     cy.get('@cell').find('ul').children().should('have.length.at.least', 14);
+  });
+
+  it('Should display Entity responses', () => {
+    cy.visit(url);
+
+    cy.get('[data-cy="header-responses"]').should('exist');
+
+    cy.get('[data-cy="cell-responses"]').should('have.length.at.least', 658);
+
+    cy.get('[data-cy="input-filter-Incident Responses"]').type('google');
+
+    cy.get('[data-cy="cell-responses"]').should('have.length.lessThan', 200);
   });
 
   it.skip('Should be able to sort', () => {

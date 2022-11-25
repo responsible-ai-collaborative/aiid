@@ -166,6 +166,7 @@
   "Entities": "Entidades",
   "Response": "Respuesta",
   "Responded": "Respondido",
+  "{{authors}} post-incident response": "Respuesta post-incidente de {{authors}}",
   "Display Issues": "Incluir Problemas",
   "Only Issues": "Sólo Problemas",
   "Report {{report_number}}": "Problema {{report_number}}",

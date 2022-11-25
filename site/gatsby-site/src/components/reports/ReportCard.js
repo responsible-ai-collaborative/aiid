@@ -8,9 +8,14 @@ import ReportText from 'components/reports/ReportText';
 import Card from '../../elements/Card';
 import WebArchiveLink from 'components/ui/WebArchiveLink';
 import TranslationBadge from 'components/i18n/TranslationBadge';
+import { Badge } from 'flowbite-react';
+import { RESPONSE_TAG } from 'utils/entities';
+import { Trans } from 'react-i18next';
 
 const ReportCard = ({ item }) => {
   const { isRole, loading } = useUserContext();
+
+  const authors = item.authors.join(', ');
 
   return (
     <Card id={`r${item.report_number}`} className="shadow-card IncidentCard">
@@ -25,12 +30,21 @@ const ReportCard = ({ item }) => {
             </a>
           )}
         </div>
-        <div className="m-0 pt-2.5">
+        <div className="m-0 pt-2.5 flex flex-wrap">
           <WebArchiveLink url={item.url} className="text-dark-gray">
             {item.source_domain} &middot;{' '}
             {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
           </WebArchiveLink>
-          <TranslationBadge className="mx-2" originalLanguage={item.language} />
+          <div className="flex ">
+            <TranslationBadge className="mx-2" originalLanguage={item.language} />
+            {item.tags && item.tags.includes(RESPONSE_TAG) && (
+              <div className="flex-1">
+                <Badge color={'success'}>
+                  <Trans>{{ authors }} post-incident response</Trans>
+                </Badge>
+              </div>
+            )}
+          </div>
         </div>
       </Card.Header>
       <Card.Body className="flex-col">

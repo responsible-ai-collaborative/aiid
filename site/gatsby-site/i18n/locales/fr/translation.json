@@ -157,5 +157,6 @@
   "Notify Me of New {{name}} Incidents": "M'avertir des nouveaux Incidents de {{name}}",
   "Unsubscribe from New {{name}} Incidents": "Désinscrire des nouveaux Incidents de {{name}}",
   "Response": "Réponse",
-  "Responded": "Répondu"
+  "Responded": "Répondu",
+  "{{authors}} post-incident response": "Réponse post-incident de {{authors}}"
 }
