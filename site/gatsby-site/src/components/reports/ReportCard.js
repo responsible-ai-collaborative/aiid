@@ -23,17 +23,21 @@ const ReportCard = ({ item }) => {
       id={`r${item.report_number}`}
       ref={ref}
     >
-      {!fullText && (
-        <div className="flex self-stretch justify-center items-center md:border-r md:max-w-xs">
-          <Image
-            className="img-fluid rounded-start h-full w-full max-w-full rounded-t-lg md:rounded-l-lg md:rounded-r-none border-r object-cover"
-            publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
-            alt={item.title}
-            transformation={fill().height(480)}
-          />
-        </div>
-      )}
-      <div className="flex flex-col justify-between leading-normal p-4">
+      <div
+        className={`${
+          fullText ? 'md:hidden' : ''
+        } flex self-stretch justify-center items-center md:border-r md:w-1/3`}
+      >
+        <Image
+          className="img-fluid rounded-start h-full w-full max-w-full rounded-t-lg md:rounded-l-lg md:rounded-r-none border-r object-cover"
+          publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
+          alt={item.title}
+          transformation={fill().height(480)}
+        />
+      </div>
+      <div
+        className={`flex flex-col justify-between leading-normal p-4 ${fullText ? '' : 'md:w-2/3'}`}
+      >
         <div className="flex items-center w-full justify-between">
           <div>
             <LocalizedLink to={`#r${item.report_number}`} className="max-w-full cursor-pointer">
@@ -57,7 +61,7 @@ const ReportCard = ({ item }) => {
             </Button>
           )}
         </div>
-        <div className={fullText ? '' : 'max-w-md'}>
+        <div>
           <ReportText text={item.text} maxChars={fullText ? null : 240} />
         </div>
         <div className="flex justify-end mt-4">
