@@ -402,7 +402,7 @@ describe('Cite pages', () => {
     );
   });
 
-  it.only('Should display response in timeline and as badge', () => {
+  it('Should display response in timeline and as badge', () => {
     cy.visit('/cite/51#r1765');
 
     cy.get('[data-cy="responded-badge"]').should('exist');
