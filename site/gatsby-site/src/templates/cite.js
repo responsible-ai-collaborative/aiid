@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Spinner } from 'flowbite-react';
+import { Badge, Spinner } from 'flowbite-react';
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
 import Citation from 'components/cite/Citation';
@@ -29,7 +29,7 @@ import useToastContext, { SEVERITY } from '../hooks/useToast';
 import Link from 'components/ui/Link';
 import { graphql } from 'gatsby';
 import { getTaxonomies, getTranslatedReports } from 'utils/cite';
-import { computeEntities } from 'utils/entities';
+import { computeEntities, RESPONSE_TAG } from 'utils/entities';
 import AllegedEntities from 'components/entities/AllegedEntities';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -112,12 +112,15 @@ function CitePage(props) {
 
   const addToast = useToastContext();
 
-  const timeline = sortedReports.map(({ date_published, title, mongodb_id, report_number }) => ({
-    date_published,
-    title,
-    mongodb_id,
-    report_number,
-  }));
+  const timeline = sortedReports.map(
+    ({ date_published, title, mongodb_id, report_number, tags }) => ({
+      date_published,
+      title,
+      mongodb_id,
+      report_number,
+      isResponse: tags && tags.includes(RESPONSE_TAG),
+    })
+  );
 
   timeline.push({
     date_published: incident.date,
@@ -213,6 +216,10 @@ function CitePage(props) {
     responses: responses.nodes,
   });
 
+  const incidentResponded = sortedReports.some(
+    (report) => report.tags && report.tags.includes(RESPONSE_TAG)
+  );
+
   return (
     <Layout {...props}>
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
@@ -221,12 +228,21 @@ function CitePage(props) {
 
       <div className={'titleWrapper'}>
         <h1 className="tw-styled-heading">{locale == 'en' ? metaTitle : defaultIncidentTitle}</h1>
-        <SocialShareButtons
-          metaTitle={metaTitle}
-          canonicalUrl={canonicalUrl}
-          page="cite"
-          className="-mt-1"
-        ></SocialShareButtons>
+        <div className="flex">
+          <SocialShareButtons
+            metaTitle={metaTitle}
+            canonicalUrl={canonicalUrl}
+            page="cite"
+            className="-mt-1"
+          ></SocialShareButtons>
+          {incidentResponded && (
+            <div className="self-center">
+              <Badge color="success" data-cy="responded-badge">
+                {t('Responded')}
+              </Badge>
+            </div>
+          )}
+        </div>
       </div>
 
       <div>
