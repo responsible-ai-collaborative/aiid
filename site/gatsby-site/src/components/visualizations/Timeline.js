@@ -12,7 +12,6 @@ import {
 } from 'd3';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import PopoverWrapper from 'elements/PopoverWrapper';
-import { Badge } from 'flowbite-react';
 import { Trans } from 'react-i18next';
 
 const formatDay = timeFormat('%b %d');
@@ -134,7 +133,6 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
           </text>
         </a>
       )}
-      {bucket[0].isResponse && <Badge color={'success'}>RESPONSE_TAG</Badge>}
     </g>
   );
 };
