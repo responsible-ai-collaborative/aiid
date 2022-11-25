@@ -232,7 +232,9 @@ function CitePage(props) {
           ></SocialShareButtons>
           {incidentResponded && (
             <div className="self-center">
-              <Badge color="success">{t('Responded')}</Badge>
+              <Badge color="success" data-cy="responded-badge">
+                {t('Responded')}
+              </Badge>
             </div>
           )}
         </div>

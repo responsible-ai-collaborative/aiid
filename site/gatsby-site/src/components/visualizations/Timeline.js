@@ -107,6 +107,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
           dominantBaseline="middle"
           className={`text-[14px] ${bucket[0].isResponse ? 'fill-green-700' : ''}`}
           dx={16}
+          data-cy={`timeline-text-${bucket[0].isResponse ? 'response' : 'occurrence'}`}
         >
           {bucket[0].title}
           {bucket[0].isResponse && (
@@ -122,6 +123,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
             dominantBaseline="middle"
             className={`text-[14px] ${bucket[0].isResponse ? 'fill-green-700' : ''}`}
             dx={16}
+            data-cy={`timeline-text-${bucket[0].isResponse ? 'response' : 'occurrence'}`}
           >
             {bucket[0].title}
             {bucket[0].isResponse && (

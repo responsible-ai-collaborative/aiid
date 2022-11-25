@@ -401,4 +401,12 @@ describe('Cite pages', () => {
       'Alleged: Tesla developed and deployed an AI system, which harmed Tesla.'
     );
   });
+
+  it.only('Should display response in timeline and as badge', () => {
+    cy.visit('/cite/51#r1765');
+
+    cy.get('[data-cy="responded-badge"]').should('exist');
+
+    cy.get('[data-cy="timeline-text-response"]').should('exist');
+  });
 });
