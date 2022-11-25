@@ -155,7 +155,7 @@ const SignUp = (props) => {
                       onClick={() => toogleForm(FORMS.SubscribeToIncidents)}
                     >
                       <span className="pl-3">
-                        <Trans ns="login">Subscribe to Incidents</Trans>
+                        <Trans ns="login">Subscribe to New Incidents</Trans>
                       </span>
                     </Button>
                   </div>
@@ -272,7 +272,7 @@ const SignUp = (props) => {
                     >
                       {isSubmitting && <Spinner />}
                       <span className="pl-3">
-                        <Trans ns="login">Subscribe to Incidents</Trans>
+                        <Trans ns="login">Subscribe to New Incidents</Trans>
                       </span>
                     </Button>
                   </div>
