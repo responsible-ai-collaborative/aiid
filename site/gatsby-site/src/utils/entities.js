@@ -170,3 +170,5 @@ module.exports.processEntities = async (allEntities, entitiesNames, createEntity
 
   return { link: entityIds };
 };
+
+module.exports.RESPONSE_TAG = 'response';
