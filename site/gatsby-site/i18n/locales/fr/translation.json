@@ -156,5 +156,6 @@
   "Entities": "Entités",
   "Notify Me of New {{name}} Incidents": "M'avertir des nouveaux Incidents de {{name}}",
   "Unsubscribe from New {{name}} Incidents": "Désinscrire des nouveaux Incidents de {{name}}",
-  "New Response": "Nouvelle Réponse"
+  "New Response": "Nouvelle Réponse",
+  "{{authors}} post-incident response": "Réponse post-incident de {{authors}}"
 }
