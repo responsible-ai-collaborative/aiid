@@ -20,6 +20,7 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import SubmissionEditModal from './SubmissionEditModal';
 import { Spinner } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
+import { incidentSchema, issueSchema, reportSchema } from './schemas';
 
 const ListedGroup = ({ item, className = '', keysToRender, objectKeyToDisplay = '' }) => {
   return (
@@ -69,6 +70,21 @@ const SubmissionReview = ({ submission }) => {
     fetchPolicy: 'network-only',
   });
 
+  const promoteSubmission = ({ submission, variables }) =>
+    promoteSubmissionToReport({
+      variables,
+      fetchPolicy: 'no-cache',
+      update: (cache) => {
+        cache.modify({
+          fields: {
+            submissions(refs, { readField }) {
+              return refs.filter((s) => submission._id !== readField('_id', s));
+            },
+          },
+        });
+      },
+    });
+
   const [promoting, setPromoting] = useState('');
 
   const isNewIncident = submission.incident_id === 0;
@@ -89,119 +105,157 @@ const SubmissionReview = ({ submission }) => {
 
   const addToast = useToastContext();
 
-  const promoteSubmission = useCallback(
-    async ({ is_incident_report = true }) => {
-      if (
-        !is_incident_report &&
-        !confirm(
-          t(
-            'Are you sure this is a new issue? Any data entered that is associated with incident records will not be added'
-          )
+  const validateSchema = async ({ submission, schema }) => {
+    try {
+      await schema.validate(submission);
+    } catch (e) {
+      const [error] = e.errors;
+
+      addToast({ message: t(error), severity: SEVERITY.danger });
+
+      return false;
+    }
+
+    return true;
+  };
+
+  const promoteToIssue = useCallback(async () => {
+    if (!(await validateSchema({ submission, schema: issueSchema }))) {
+      return;
+    }
+
+    if (
+      !confirm(
+        t(
+          'Are you sure this is a new issue? Any data entered that is associated with incident records will not be added'
         )
-      ) {
-        return;
-      }
+      )
+    ) {
+      return;
+    }
 
-      if (
-        is_incident_report &&
-        isNewIncident &&
-        !confirm(
-          t(
-            'Are you sure this is a new incident? This will create a permanent record with all the details you provided about the incident.'
-          )
+    setPromoting('issue');
+
+    const {
+      data: {
+        promoteSubmissionToReport: { report_number },
+      },
+    } = await promoteSubmission({
+      submission,
+      variables: {
+        input: {
+          submission_id: submission._id,
+          incident_ids: [],
+          is_incident_report: false,
+        },
+      },
+    });
+
+    addToast({
+      message: (
+        <Trans i18n={i18n} ns="submitted" report_number={report_number}>
+          Successfully promoted submission to Issue {{ report_number }}
+        </Trans>
+      ),
+      severity: SEVERITY.success,
+    });
+
+    setPromoting('');
+  }, [submission]);
+
+  const promoteToReport = useCallback(async () => {
+    if (!(await validateSchema({ submission, schema: reportSchema }))) {
+      return;
+    }
+
+    if (
+      !confirm(
+        t('Sure you want to promote this Submission and link it to Incident {{ incident_id }}?', {
+          incident_id: submission.incident_id,
+        })
+      )
+    ) {
+      return;
+    }
+
+    setPromoting('incident');
+
+    const {
+      data: {
+        promoteSubmissionToReport: { report_number, incident_ids },
+      },
+    } = await promoteSubmission({
+      submission,
+      variables: {
+        input: {
+          submission_id: submission._id,
+          incident_ids: [submission.incident_id],
+          is_incident_report: true,
+        },
+      },
+    });
+
+    const incident_id = incident_ids[0];
+
+    addToast({
+      message: (
+        <Trans i18n={i18n} ns="submitted" incident_id={incident_id} report_number={report_number}>
+          Successfully promoted submission to Incident {{ incident_id }} and Report{' '}
+          {{ report_number }}
+        </Trans>
+      ),
+      severity: SEVERITY.success,
+    });
+
+    setPromoting('');
+  }, [submission]);
+
+  const promoteToIncident = useCallback(async () => {
+    if (!(await validateSchema({ submission, schema: incidentSchema }))) {
+      return;
+    }
+
+    if (
+      !confirm(
+        t(
+          'Are you sure this is a new incident? This will create a permanent record with all the details you provided about the incident.'
         )
-      ) {
-        return;
-      }
+      )
+    ) {
+      return;
+    }
 
-      if (
-        is_incident_report &&
-        !isNewIncident &&
-        !confirm(
-          t('Sure you want to promote this Submission and link it to Incident {{ incident_id }}?', {
-            incident_id: submission.incident_id,
-          })
-        )
-      ) {
-        return;
-      }
+    setPromoting('incident');
 
-      if (
-        is_incident_report &&
-        isNewIncident &&
-        (!submission.description ||
-          !submission.developers ||
-          submission.description?.length ||
-          !submission.deployers ||
-          submission.deployers?.length ||
-          !submission.harmed_parties ||
-          submission.harmed_parties?.length)
-      ) {
-        addToast({
-          message: t(`Please review submission before approving. Some data is missing.`),
-          severity: SEVERITY.danger,
-        });
-        return;
-      }
-
-      setPromoting(is_incident_report ? 'incident' : 'issue');
-
-      const {
-        data: {
-          promoteSubmissionToReport: { incident_ids, report_number },
+    const {
+      data: {
+        promoteSubmissionToReport: { report_number, incident_ids },
+      },
+    } = await promoteSubmission({
+      submission,
+      variables: {
+        input: {
+          submission_id: submission._id,
+          incident_ids: [],
+          is_incident_report: true,
         },
-      } = await promoteSubmissionToReport({
-        variables: {
-          input: {
-            submission_id: submission._id,
-            incident_ids: isNewIncident ? [] : [submission.incident_id],
-            is_incident_report,
-          },
-        },
-        fetchPolicy: 'no-cache',
-        update: (cache) => {
-          cache.modify({
-            fields: {
-              submissions(refs, { readField }) {
-                return refs.filter((s) => submission._id !== readField('_id', s));
-              },
-            },
-          });
-        },
-      });
+      },
+    });
 
-      setPromoting('');
+    const incident_id = incident_ids[0];
 
-      if (is_incident_report) {
-        const incident_id = incident_ids[0];
+    addToast({
+      message: (
+        <Trans i18n={i18n} ns="submitted" incident_id={incident_id} report_number={report_number}>
+          Successfully promoted submission to Incident {{ incident_id }} and Report{' '}
+          {{ report_number }}
+        </Trans>
+      ),
+      severity: SEVERITY.success,
+    });
 
-        addToast({
-          message: (
-            <Trans
-              i18n={i18n}
-              ns="submitted"
-              incident_id={incident_id}
-              report_number={report_number}
-            >
-              Successfully promoted submission to Incident {{ incident_id }} and Report{' '}
-              {{ report_number }}
-            </Trans>
-          ),
-          severity: SEVERITY.success,
-        });
-      } else {
-        addToast({
-          message: (
-            <Trans i18n={i18n} ns="submitted" report_number={report_number}>
-              Successfully promoted submission to Issue {{ report_number }}
-            </Trans>
-          ),
-          severity: SEVERITY.success,
-        });
-      }
-    },
-    [submission]
-  );
+    setPromoting('');
+  }, [submission]);
 
   const rejectReport = async () => {
     await deleteSubmission({ variables: { _id: submission._id } });
@@ -290,7 +344,7 @@ const SubmissionReview = ({ submission }) => {
               className="mr-2 text-xs md:text-base"
               variant="outline-primary"
               disabled={!isSubmitter || promoting}
-              onClick={() => promoteSubmission({ is_incident_report: false })}
+              onClick={() => promoteToIssue()}
             >
               <div className="flex gap-2">
                 {promoting === 'issue' && <Spinner size="sm" />}
@@ -302,7 +356,7 @@ const SubmissionReview = ({ submission }) => {
               className="mr-2 text-xs md:text-base"
               variant="outline-primary"
               disabled={!isSubmitter || promoting}
-              onClick={promoteSubmission}
+              onClick={() => (isNewIncident ? promoteToIncident() : promoteToReport())}
             >
               <div className="flex gap-2">
                 {promoting === 'incident' && <Spinner size="sm" />}
