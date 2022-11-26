@@ -38,18 +38,25 @@ exports = async (input) => {
 
   // link
 
-  await incidentsCollection.updateMany({ incident_id: { $in: input.incident_ids } }, { $addToSet: { reports: { $each: input.report_numbers.map(BSON.Int32) } } });
+  if (input.incident_ids.length > 0) {
 
-  const parentIncidents = await incidentsCollection.find({ reports: { $in: input.report_numbers } }).toArray();
+    await incidentsCollection.updateMany({ incident_id: { $in: input.incident_ids } }, { $addToSet: { reports: { $each: input.report_numbers.map(BSON.Int32) } } });
 
-  for (const incident of parentIncidents) {
+    const parentIncidents = await incidentsCollection.find({ reports: { $in: input.report_numbers } }).toArray();
 
-    const reports = await reportsCollection.find({ report_number: { $in: incident.reports } }).toArray();
+    for (const incident of parentIncidents) {
 
-    const embedding = incidentEmbedding(reports);
+      const reports = await reportsCollection.find({ report_number: { $in: incident.reports } }).toArray();
 
-    await incidentsCollection.updateOne({ incident_id: incident.incident_id }, { $set: { embedding } });
+      const embedding = incidentEmbedding(reports);
+
+      await incidentsCollection.updateOne({ incident_id: incident.incident_id }, { $set: { embedding } });
+    }
   }
+
+  //
+
+  await reportsCollection.updateMany({ report_number: { $in: input.report_numbers } }, { $set: { is_incident_report: input.incident_ids.length > 0 } });
 
   return incidentsCollection.find({ reports: { $in: input.report_numbers } }).toArray();
 };

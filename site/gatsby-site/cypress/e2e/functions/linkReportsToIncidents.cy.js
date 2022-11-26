@@ -90,7 +90,8 @@ describe('Functions', () => {
         .returns({
           toArray: cy.stub().resolves([report_3]),
         }),
-      insertOne: cy.stub().resolves(),
+      updateOne: cy.stub().resolves(),
+      updateMany: cy.stub().resolves({}),
     };
 
     global.context = {
@@ -165,6 +166,99 @@ describe('Functions', () => {
             from_reports: [3],
           },
         },
+      });
+
+      expect(reportsCollection.updateMany.firstCall.args[0]).to.deep.equal({
+        report_number: { $in: [3] },
+      });
+      expect(reportsCollection.updateMany.firstCall.args[1]).to.deep.equal({
+        $set: { is_incident_report: true },
+      });
+    });
+  });
+
+  it('Should unlink a report from an incident and set it to issue', () => {
+    const incidentsCollection = {
+      find: cy
+        .stub()
+        .onFirstCall()
+        .returns({
+          toArray: cy.stub().resolves([incident_2]),
+        })
+        .onSecondCall()
+        .returns({
+          toArray: cy.stub().resolves([]),
+        })
+        .onThirdCall()
+        .returns({
+          toArray: cy.stub().resolves([]),
+        }),
+      updateMany: cy.stub().resolves({}),
+      updateOne: cy.stub().resolves({}),
+    };
+
+    const reportsCollection = {
+      find: cy
+        .stub()
+        .onFirstCall()
+        .returns({
+          toArray: cy.stub().resolves([]),
+        }),
+      updateOne: cy.stub().resolves(),
+      updateMany: cy.stub().resolves({}),
+    };
+
+    global.context = {
+      // @ts-ignore
+      services: {
+        get: cy.stub().returns({
+          db: cy.stub().returns({
+            collection: (() => {
+              const stub = cy.stub();
+
+              stub.withArgs('incidents').returns(incidentsCollection);
+              stub.withArgs('reports').returns(reportsCollection);
+
+              return stub;
+            })(),
+          }),
+        }),
+      },
+      functions: {
+        execute: cy.stub(),
+      },
+    };
+
+    chai.config.truncateThreshold = 0;
+
+    global.BSON = { Int32: (x) => x };
+
+    cy.wrap(linkReportsToIncidents({ incident_ids: [], report_numbers: [3] })).then(() => {
+      expect(incidentsCollection.find.firstCall.args[0]).to.deep.equal({
+        reports: { $in: [3] },
+      });
+
+      expect(incidentsCollection.updateMany.firstCall.args[0]).to.deep.equal({
+        reports: { $in: [3] },
+      });
+      expect(incidentsCollection.updateMany.firstCall.args[1]).to.deep.equal({
+        $pull: { reports: { $in: [3] } },
+      });
+
+      expect(reportsCollection.find.firstCall.args[0]).to.deep.equal({
+        report_number: { $in: [] },
+      });
+
+      expect(incidentsCollection.updateOne.firstCall.args[0]).to.deep.equal({ incident_id: 2 });
+      expect(incidentsCollection.updateOne.firstCall.args[1]).to.deep.equal({
+        $set: { embedding: null },
+      });
+
+      expect(reportsCollection.updateMany.firstCall.args[0]).to.deep.equal({
+        report_number: { $in: [3] },
+      });
+      expect(reportsCollection.updateMany.firstCall.args[1]).to.deep.equal({
+        $set: { is_incident_report: false },
       });
     });
   });
