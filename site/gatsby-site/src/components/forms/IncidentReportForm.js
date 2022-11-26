@@ -343,12 +343,10 @@ const IncidentReportForm = () => {
           />
         </Form.Group>
 
-        {values.is_incident_report && (
-          <div className="mt-3">
-            <Label popover={'incident_ids'} label={'* Incident IDs'} />
-            <IncidentsField id="incident_ids" name="incident_ids" />
-          </div>
-        )}
+        <div className="mt-3">
+          <Label popover={'incident_ids'} label={'* Incident IDs'} />
+          <IncidentsField id="incident_ids" name="incident_ids" />
+        </div>
 
         <TextInputGroup
           name="editor_notes"
