@@ -49,8 +49,6 @@ export default function IncidentsField({ id, name }) {
     [data, selected]
   );
 
-  console.log('boe', value);
-
   return (
     <>
       <AsyncTypeahead
