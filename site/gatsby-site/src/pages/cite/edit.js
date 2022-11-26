@@ -60,7 +60,11 @@ function EditCitePage(props) {
 
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
 
-  const { data: reportData, loading: loadingReport } = useQuery(FIND_REPORT_WITH_TRANSLATIONS, {
+  const {
+    data: reportData,
+    loading: loadingReport,
+    refetch: refetchReport,
+  } = useQuery(FIND_REPORT_WITH_TRANSLATIONS, {
     variables: { query: { report_number: reportNumber } },
   });
 
@@ -70,7 +74,11 @@ function EditCitePage(props) {
 
   const [deleteReport] = useMutation(DELETE_REPORT);
 
-  const { data: parentIncidents, loading: loadingIncident } = useQuery(FIND_INCIDENTS, {
+  const {
+    data: incidentsData,
+    loading: loadingIncident,
+    refetch: refetchIncidents,
+  } = useQuery(FIND_INCIDENTS, {
     variables: {
       query: {
         reports_in: {
@@ -80,7 +88,7 @@ function EditCitePage(props) {
     },
   });
 
-  const incident_ids = parentIncidents?.incidents.map((incident) => incident.incident_id);
+  const incident_ids = incidentsData?.incidents.map((incident) => incident.incident_id);
 
   const loading = loadingIncident || loadingReport;
 
@@ -128,6 +136,22 @@ function EditCitePage(props) {
 
   const handleSubmit = async (values) => {
     try {
+      if (
+        values.incident_ids.length == 0 &&
+        incident_ids.length > 0 &&
+        !confirm(t('Empty incidents list will Transform the report to an Issue, are you sure?'))
+      ) {
+        return;
+      }
+
+      if (
+        values.incident_ids.length > 0 &&
+        incident_ids.length == 0 &&
+        !confirm(t('This issue will now be an incident report, are you sure?'))
+      ) {
+        return;
+      }
+
       if (typeof values.authors === 'string') {
         values.authors = values.authors.split(',').map((s) => s.trim());
       }
@@ -171,18 +195,22 @@ function EditCitePage(props) {
         });
       }
 
-      if (values.is_incident_report) {
-        if (!isEqual(values.incident_ids, incident_ids)) {
-          await linkReportsToIncidents({
-            variables: {
-              input: {
-                incident_ids: values.incident_ids,
-                report_numbers: [reportNumber],
-              },
+      if (!isEqual(values.incident_ids, incident_ids)) {
+        await linkReportsToIncidents({
+          variables: {
+            input: {
+              incident_ids: values.incident_ids,
+              report_numbers: [reportNumber],
             },
-          });
-        }
+          },
+        });
 
+        await refetchReport();
+
+        await refetchIncidents();
+      }
+
+      if (values.incident_ids.length > 0) {
         addToast(updateSuccessToast({ reportNumber, incidentId: values.incident_id }));
       } else {
         addToast(updateIssueSuccessToast({ reportNumber }));
@@ -219,74 +247,81 @@ function EditCitePage(props) {
 
   return (
     <Layout {...props} className={'w-full boostrap p-1'}>
-      {!loading && <h1 className="mb-5">Editing Incident Report {reportNumber}</h1>}
-
       {loading && (
         <div className="flex justify-center">
           <Spinner />
         </div>
       )}
-      {!reportData?.report && !loading && <div>Report not found</div>}
 
-      {!loading &&
-        reportData?.report &&
-        (!reportData.report.is_incident_report || parentIncidents?.incidents) && (
-          <Formik
-            validationSchema={schema}
-            onSubmit={handleSubmit}
-            initialValues={{
-              ...reportData.report,
-              incident_ids,
-            }}
-          >
-            {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
-              <>
-                <IncidentReportForm />
-                <div className="mt-4 flex items-center justify-between">
-                  <div className="flex items-center">
-                    <Button
-                      variant="primary"
-                      type="submit"
-                      disabled={!isValid || isSubmitting}
-                      onClick={submitForm}
-                      className="mr-4 disabled:opacity-50 flex"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Spinner size="sm" />
-                          <div className="ml-2">
-                            <Trans>Updating...</Trans>
+      {!loading && (
+        <>
+          {!reportData?.report ? (
+            <div>Report not found</div>
+          ) : (
+            <>
+              <h1 className="mb-5">Editing Incident Report {reportNumber}</h1>
+              <Formik
+                validationSchema={schema}
+                onSubmit={handleSubmit}
+                initialValues={{
+                  ...reportData.report,
+                  incident_ids,
+                }}
+              >
+                {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
+                  <>
+                    <IncidentReportForm />
+                    <div className="mt-4 flex items-center justify-between">
+                      <div className="flex items-center">
+                        <Button
+                          variant="primary"
+                          type="submit"
+                          disabled={!isValid || isSubmitting}
+                          onClick={submitForm}
+                          className="mr-4 disabled:opacity-50 flex"
+                        >
+                          {isSubmitting ? (
+                            <>
+                              <Spinner size="sm" />
+                              <div className="ml-2">
+                                <Trans>Updating...</Trans>
+                              </div>
+                            </>
+                          ) : (
+                            <Trans>Submit</Trans>
+                          )}
+                        </Button>
+                        {!isValid && (
+                          <div className="text-danger">
+                            <Trans ns="validation">
+                              Please review report. Some data is missing.
+                            </Trans>
                           </div>
-                        </>
-                      ) : (
-                        <Trans>Submit</Trans>
-                      )}
-                    </Button>
-                    {!isValid && (
-                      <div className="text-danger">
-                        <Trans ns="validation">Please review report. Some data is missing.</Trans>
+                        )}
                       </div>
-                    )}
-                  </div>
-                  <Button
-                    className="text-danger"
-                    variant="link"
-                    disabled={isSubmitting}
-                    onClick={() => {
-                      confirm(t('Are you sure you want to delete this report?')) && handleDelete();
-                    }}
-                  >
-                    Delete this report
-                  </Button>
-                </div>
+                      <Button
+                        className="text-danger"
+                        variant="link"
+                        disabled={isSubmitting}
+                        onClick={() => {
+                          confirm(t('Are you sure you want to delete this report?')) &&
+                            handleDelete();
+                        }}
+                      >
+                        Delete this report
+                      </Button>
+                    </div>
 
-                {reportData.report.is_incident_report && (
-                  <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
+                    {reportData.report.is_incident_report && (
+                      <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
+                    )}
+                  </>
                 )}
-              </>
-            )}
-          </Formik>
-        )}
+              </Formik>
+            </>
+          )}
+        </>
+      )}
     </Layout>
   );
 }
