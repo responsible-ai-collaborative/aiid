@@ -87,8 +87,8 @@ const Sidebar = ({ defaultCollapsed = false }) => {
     <>
       <aside
         className={`${
-          !collapsedMenu ? 'md:w-64' : 'md:w-20'
-        } sticky relative top-0 transition-width duration-500 bg-text-light-gray pb-6 h-auto md:h-desktop-sidebar`}
+          !collapsedMenu ? 'md:w-64' : 'md:w-auto'
+        } sticky top-0 bg-text-light-gray pb-6 h-auto md:h-desktop-sidebar`}
         aria-label="Sidebar"
       >
         {!collapsedMenu && (
