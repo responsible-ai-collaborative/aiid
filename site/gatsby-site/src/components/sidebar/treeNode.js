@@ -142,7 +142,7 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed 
       <li className={`z-50`}>
         {item.title &&
           (isCollapsed ? (
-            <Tooltip content={item.title} placement="right">
+            <Tooltip content={item.title} placement="right" className="min-w-max">
               <NodeLink
                 item={item}
                 isCollapsed={isCollapsed}

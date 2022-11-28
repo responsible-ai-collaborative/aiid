@@ -132,7 +132,11 @@ const Sidebar = ({ defaultCollapsed = false }) => {
             })}
             <li className="border-t pt-2">
               {collapsedMenu ? (
-                <Tooltip content={isUserLoggedIn ? t('Account') : t('Subscribe')}>
+                <Tooltip
+                  placement="right"
+                  content={isUserLoggedIn ? t('Account') : t('Subscribe')}
+                  className="min-w-max"
+                >
                   {LoginSignupNode}
                 </Tooltip>
               ) : (
