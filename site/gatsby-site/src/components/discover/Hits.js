@@ -33,7 +33,9 @@ const Hits = ({
   const [display] = useQueryParam('display', DisplayModeEnumParam);
 
   return (
-    <div className={`tw-hits-container tw-container-xl ${display} mt-4`}>
+    <div
+      className={`tw-hits-container ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl ${display} mt-4`}
+    >
       {hits.map((hit) => (
         <Hit
           key={hit.objectID}
