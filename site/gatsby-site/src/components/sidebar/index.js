@@ -1,16 +1,14 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import Tree from './tree';
 import { ExternalLink } from 'react-feather';
 import config from '../../../config';
 import QuickAccess from 'components/discover/QuickAccess';
 import { Trans, useTranslation } from 'react-i18next';
 import useLocalizePath from 'components/i18n/useLocalizePath';
-import { faChevronCircleLeft, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from 'gatsby';
 import { useUserContext } from 'contexts/userContext';
 import { useMenuContext } from 'contexts/MenuContext';
-import { globalHistory } from '@reach/router';
 
 const Sidebar = ({ defaultCollapsed = false }) => {
   const localizePath = useLocalizePath();
@@ -34,7 +32,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
     }
   }, [isMobile]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     function handleResize() {
       if (window.innerWidth <= 768 && !isMobile) {
         setIsMobile(true);
@@ -52,77 +50,62 @@ const Sidebar = ({ defaultCollapsed = false }) => {
 
   const isUserLoggedIn = user && user.isLoggedIn && user.profile.email;
 
-  const isAccountCurrentPath =
-    localizePath({ path: globalHistory.location.pathname }) ===
-    localizePath({ path: isUserLoggedIn ? '/account' : '/login' });
-
-  const LoginSignupNode = (
-    <Link
-      to={isUserLoggedIn ? '/account' : '/login'}
-      className={`flex rounded-lg p-2 text-base font-normal group overflow-hidden ${
-        isAccountCurrentPath
-          ? 'bg-light-orange text-white dark:bg-gray-700'
-          : 'text-gray-900 hover:bg-light-orange dark:text-white  hover:text-white dark:hover:bg-gray-700'
-      }`}
-    >
-      <FontAwesomeIcon
-        icon={faUser}
-        className={`w-6 h-6 ${
-          isAccountCurrentPath ? 'text-white' : 'text-gray-500'
-        } transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white pointer fa mr-1`}
-        fixedWidth
-      />
-      {!isCollapsed && (
-        <span>
-          <span className="ml-3 block">
-            <Trans>{isUserLoggedIn ? 'Account' : 'Subscribe'}</Trans>
-          </span>
-        </span>
-      )}
-    </Link>
-  );
-
-  const [headerVisiblePixels, setHeaderVisiblePixels] = useState(80);
-
   // We want the bottom edge of the sidebar
-  // to be at the bottom edge of the viewport.
+  // to rest at bottom edge of the viewport.
   // Since the sidebar has `position: sticky`,
   // that means that in the initial view,
-  // its height should be 100vh - 80px (the height of the header)
+  // its height should be 100vh - (the visible height of the header)
   // Then, when we scroll down, its height should be 100vh.
-  // CSS doesn't provide use with a way
-  // to detect whether a sticky element is "stuck"
+  // There's no way to do this in pure CSS
   // so we have to check ourselves with an IntersectionObserver.
-  const sidebar = useRef(null);
+  const [headerVisiblePixels, setHeaderVisiblePixels] = useState(80);
+
+  const threshold = Array(1000)
+    .fill()
+    .map((e, i) => i / 1000)
+    .concat([1]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([e]) => {
-        setHeaderVisiblePixels(e.boundingClientRect.height * e.intersectionRatio);
+        const headerRect = e.target.getBoundingClientRect();
+
+        setHeaderVisiblePixels(headerRect.height + Math.max(-headerRect.height, headerRect.top));
       },
-      {
-        threshold: Array(1000)
-          .fill()
-          .map((e, i) => i / 1000)
-          .concat([1]),
-      }
+      { threshold }
     );
 
     observer.observe(document.querySelector('nav.navBarDefault'));
+    return () => observer.disconnect();
+  });
 
-    return () => {
-      observer.disconnect();
-    };
-  }, [sidebar]);
+  // When we've scrolled to where the footer is visible,
+  // the collapse button should no longer be at the bottom of the viewport,
+  // so we need to unset `position: fixed`.
+  // This can result in the collapse button flashing into view,
+  // but that seems to be the least objectionable option.
+  const [atBottom, setAtBottom] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([e]) => setAtBottom(e.isIntersecting), {
+      threshold,
+    });
+
+    observer.observe(document.querySelector('#main-footer'));
+    return () => observer.disconnect();
+  });
+
+  const sidebarWidth = !collapsedMenu ? 'md:w-64' : 'md:w-[3.5rem]';
 
   return (
     <>
       <aside
         id="sidebar"
-        ref={sidebar}
         className={`
-          ${!collapsedMenu ? 'md:w-64' : 'md:w-[3.5rem]'} 
-          sticky relative top-0 transition-all duration-500 flex flex-col
+          ${sidebarWidth} 
+          sticky top-0 
+          transition-all duration-500 
+          flex flex-col
         `}
         style={{ height: `calc(100vh - ${headerVisiblePixels}px)` }}
         aria-label="Sidebar"
@@ -137,13 +120,19 @@ const Sidebar = ({ defaultCollapsed = false }) => {
           />
         ) : null}
 
-        <ul
-          className={`space-y-2 list-none z-20 transition-transform duration-500 shrink overflow-auto p-2`}
-        >
+        <ul className={`space-y-2 shrink list-none overflow-auto p-2 mb-12`}>
           <Tree
             setNavCollapsed={() => {}}
             isCollapsed={collapsedMenu}
             localizePath={localizePath}
+            additionalNodes={[
+              {
+                label: 'user',
+                url: isUserLoggedIn ? '/account' : '/login',
+                title: isUserLoggedIn ? 'Account' : 'Subscribe',
+                items: [],
+              },
+            ]}
           />
           {config.sidebar.links && config.sidebar.links?.length > 0 && (
             <li className="tw-li-divider">
@@ -162,21 +151,29 @@ const Sidebar = ({ defaultCollapsed = false }) => {
               );
             }
           })}
-          <li className="side-bar-links justify-center overflow-hidden w-full">
-            {isCollapsed ? (
-              <span title={isUserLoggedIn ? t('Account') : t('Subscribe')}>{LoginSignupNode}</span>
-            ) : (
-              <>{LoginSignupNode}</>
-            )}
-          </li>
         </ul>
-        <div className="flex justify-end mt-auto p-3 border-t-2 border-gray-200">
+        <div
+          className={`
+          ${sidebarWidth} h-12
+          flex justify-end items-center
+          transition-all duration-500
+          border-t-1 border-gray-200
+          bg-white z-40
+          ${atBottom ? 'absolute' : 'fixed'} bottom-0
+        `}
+        >
           <FontAwesomeIcon
-            icon={faChevronCircleLeft}
+            icon={faChevronLeft}
             color={'white'}
-            className={`hidden md:inline-block transition-transform duration-500 cursor-pointer fa fa-twitter-square fa-lg text-light-orange hover:text-gray-500 w-8 h-8 ${
-              collapsedMenu ? 'rotate-180' : ''
-            }`}
+            className={`
+              w-6 h-6
+              hidden md:inline-block 
+              cursor-pointer fa
+              text-gray-500
+              hover:text-gray-200 
+              ${collapsedMenu ? 'rotate-180 -translate-x-3' : ''}
+              transition-transform duration-500 
+            `}
             title={isCollapsed ? t('Expand') : t('Collapse')}
             onClick={() => {
               collapseMenu(!collapsedMenu), setCollapsedMenu(!collapsedMenu);

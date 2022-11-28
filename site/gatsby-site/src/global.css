@@ -485,7 +485,7 @@ blockquote {
 }
 @media (min-width: 768px) {
   .titleWrapper {
-    margin-top: 0.25rem;
+    padding-top: 0.25rem;
     margin-bottom: 1.75rem;
     padding-bottom: 0rem;
 

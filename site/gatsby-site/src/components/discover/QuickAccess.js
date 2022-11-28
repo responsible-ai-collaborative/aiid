@@ -21,12 +21,12 @@ export default function DiscoverQuickAccess({ className = '', isCollapsed = fals
   return (
     <Wrapper
       className={`${className} ${
-        isCollapsed ? 'opacity-0 h-0 p-0 m-0' : 'px-4 pt-4 pb-1 h-24'
+        isCollapsed ? 'opacity-0 h-0 p-0 m-0' : 'p-4 h-24'
       } md:bg-text-light-gray transition-all duration-500 opacity-1`}
     >
       <LocalizedLink
         to="/apps/discover"
-        className={`ml-3 fs-5 border-1 border-transparent rounded cursor-pointer inline-block text-base font-normal text-center no-underline select-none align-middle transition-btn shadow w-1/2 ${
+        className={`fs-5 border-1 border-transparent rounded cursor-pointer inline-block text-base font-normal text-center no-underline select-none align-middle transition-btn shadow w-1/2 ${
           isCollapsed ? 'py-1 px-1' : 'pb-2 py-1.5 px-2 h-16'
         }  bg-white hover:bg-blue-700 hover:text-white`}
       >

@@ -36,7 +36,10 @@ export default function Footer() {
   } = data;
 
   return (
-    <footer className="bg-text-light-gray relative sm:grid sm:grid-cols-2 md:grid-cols-4 gap-5 p-5">
+    <footer
+      id="main-footer"
+      className="bg-text-light-gray relative sm:grid sm:grid-cols-2 md:grid-cols-4 gap-5 p-5 z-50"
+    >
       {config.footer.navConfig.map((group) => (
         <div key={group.title}>
           <h3 className="text-base mt-4">{group.title}</h3>
