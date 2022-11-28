@@ -2,7 +2,12 @@ import React from 'react';
 import { useFormikContext } from 'formik';
 import { Button } from 'flowbite-react';
 
-const SimilaritySelector = ({ incident_id }) => {
+const SimilaritySelector = ({
+  incident_id,
+  notSureList,
+  addToNotSureList,
+  removeFromNotSureList,
+}) => {
   const { values, setFieldValue } = useFormikContext();
 
   return (
@@ -25,17 +30,14 @@ const SimilaritySelector = ({ incident_id }) => {
                 'editor_similar_incidents',
                 (values.editor_similar_incidents || []).filter((id) => id != incident_id)
               );
+              removeFromNotSureList(incident_id);
             },
           },
           {
             identifier: 'unspecified',
             variant: 'warning',
             text: 'Not sure',
-            show:
-              !values.editor_similar_incidents ||
-              !values.editor_dissimilar_incidents ||
-              (!values.editor_similar_incidents.includes(incident_id) &&
-                !values.editor_dissimilar_incidents.includes(incident_id)),
+            show: (notSureList || []).includes(incident_id),
             onClick: () => {
               setFieldValue(
                 'editor_similar_incidents',
@@ -45,6 +47,7 @@ const SimilaritySelector = ({ incident_id }) => {
                 'editor_dissimilar_incidents',
                 (values.editor_dissimilar_incidents || []).filter((id) => id != incident_id)
               );
+              addToNotSureList(incident_id);
             },
           },
           {
@@ -63,6 +66,7 @@ const SimilaritySelector = ({ incident_id }) => {
                 'editor_dissimilar_incidents',
                 (values.editor_dissimilar_incidents || []).filter((id) => id != incident_id)
               );
+              removeFromNotSureList(incident_id);
             },
           },
         ].map((button) => {

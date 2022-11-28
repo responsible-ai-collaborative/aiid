@@ -25,6 +25,8 @@ const RelatedIncidentsArea = ({
 
   const [similarList, setSimilarList] = useState(reports || incidents || []);
 
+  const [notSureList, setNotSureList] = useState([]);
+
   const visible = reports || incidents || loading;
 
   const reportsExist = (reports || incidents) && !loading;
@@ -42,6 +44,16 @@ const RelatedIncidentsArea = ({
       setSimilarList([]);
     }
   }, [reports, incidents]);
+
+  const addToNotSureList = (id) => {
+    if (!notSureList.includes(id)) {
+      setNotSureList([...notSureList, id]);
+    }
+  };
+
+  const removeFromNotSureList = (id) => {
+    setNotSureList(notSureList.filter((item) => item !== id));
+  };
 
   if (!visible) {
     return null;
@@ -86,7 +98,12 @@ const RelatedIncidentsArea = ({
                     <p className="text-xs my-2">
                       <Trans>Is this incident related?</Trans>
                     </p>
-                    <SimilaritySelector incident_id={val.incident_id} />
+                    <SimilaritySelector
+                      incident_id={val.incident_id}
+                      addToNotSureList={addToNotSureList}
+                      removeFromNotSureList={removeFromNotSureList}
+                      notSureList={notSureList}
+                    />
                   </div>
                 )}
                 {val.incident_id && setFieldValue && editId && (
