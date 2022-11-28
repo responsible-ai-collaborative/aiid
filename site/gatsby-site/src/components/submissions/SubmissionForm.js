@@ -2,11 +2,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { Spinner } from 'flowbite-react';
 import { useFormikContext } from 'formik';
-import * as yup from 'yup';
 import TextInputGroup from '../../components/forms/TextInputGroup';
 import TagsInputGroup from '../../components/forms/TagsInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { dateRegExp } from '../../utils/date';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from '../../utils/cloudinary';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import Label from '../forms/Label';
@@ -18,108 +16,7 @@ import supportedLanguages from '../../components/i18n/languages.json';
 import { Trans, useTranslation } from 'react-i18next';
 import RelatedIncidents from '../../components/RelatedIncidents';
 import SemanticallyRelatedIncidents from '../../components/SemanticallyRelatedIncidents';
-
-// set in form //
-// * title: "title of the report" # (string) The title of the report that is indexed.
-// * text: "Long text for the report" # (string) This is the complete text for the report in the MongoDB instance, and a shortened subset in the Algolia index
-// * date_downloaded:`2019-07-25` # (Date) Date the report was downloaded.
-// * submitters: Array(string) # People that submitted the incident report
-// * authors: Array(string) # People that wrote the incident report
-// * date_published: `2019-07-25` # (Date or null) The publication date of the report.
-// * image_url: "http://si.wsj.net/public/resources/images/BN-IM269_YouTub_P_2015051817" # (string) The URL for the image that is indexed. This will be stored on the server as a hash of the URL.
-// * url: "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti" # The fully qualified URL to the report as hosted on the web.
-// * tags: Array(string) # Open tag set tags applied to the report
-// * incident_date: `2019-07-25` (Date or null) The date in which the incident took place
-
-// set in DB function //
-// * source_domain: "blogs.wsj.com" # (string) The domain name hosting the report.
-// * incident_id: 1 # (int) The incrementing primary key for incidents, which are a collection of reports.
-// * date_submitted:`2019-07-25` # (Date) Date the report was submitted to the AIID. This determines citation order.
-// * report_number: 2379 # (int) the incrementing primary key for the report. This is a global resource identifier.
-// * date_modified: `2019-07-25` # (Date or null) Date the report was edited.
-// * language: "en" # (string) The language identifier of the report.
-
-// Schema for yup
-export const schema = yup.object().shape({
-  title: yup
-    .string()
-    .min(6, '*Title must have at least 6 characters')
-    .max(500, "*Titles can't be longer than 500 characters")
-    .required('*Title is required'),
-  description: yup
-    .string()
-    .nullable()
-    .min(3, 'Description must have at least 3 characters')
-    .max(500, "Description can't be longer than 500 characters")
-    .when(['_id', 'incident_id'], {
-      is: (_id, incident_id) =>
-        _id !== undefined && (incident_id == '' || incident_id === undefined),
-      then: yup.string().required('*Description is required.'),
-    }),
-  developers: yup.string().when(['_id', 'incident_id'], {
-    is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
-    then: yup
-      .string()
-      .min(3, 'Alleged Developer must have at least 3 characters')
-      .max(200, "Alleged Developers can't be longer than 200 characters"),
-  }),
-  deployers: yup.string().when(['_id', 'incident_id'], {
-    is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
-    then: yup
-      .string()
-      .min(3, 'Alleged Deployers must have at least 3 characters')
-      .max(200, "Alleged Deployers can't be longer than 200 characters"),
-  }),
-  harmed_parties: yup.string().when(['_id', 'incident_id'], {
-    is: (_id, incident_id) => _id !== undefined && (incident_id == '' || incident_id === undefined),
-    then: yup
-      .string()
-      .min(3, 'Harmed Parties must have at least 3 characters')
-      .max(200, "Harmed Parties can't be longer than 200 characters"),
-  }),
-  authors: yup
-    .string()
-    .min(3, '*Authors must have at least 3 characters')
-    .max(200, "*Authors can't be longer than 200 characters")
-    .required('*Author is required. Anonymous or the publication can be entered.'),
-  submitters: yup
-    .string()
-    .max(200, "*Submitter list can't be longer than 200 characters")
-    .test(
-      'len',
-      '*Submitter must have at least 3 characters',
-      (val) => val === undefined || val.length == 0 || 3 <= val.length
-    ),
-  text: yup
-    .string()
-    .min(80, `*Text must have at least 80 characters`)
-    .max(50000, `*Text can’t be longer than 50000 characters`)
-    .required('*Text is required'),
-  date_published: yup
-    .string()
-    .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
-    .required('*Date published is required'),
-  date_downloaded: yup
-    .string()
-    .matches(dateRegExp, '*Date is not valid, must be `YYYY-MM-DD`')
-    .required('*Date downloaded required'),
-  url: yup
-    .string()
-    .url('*Must enter URL in http://www.example.com format')
-    .required('*URL required'),
-  image_url: yup
-    .string()
-    .matches(
-      /((https?):\/\/)(\S)*$/,
-      '*Must enter URL in http://www.example.com/images/preview.png format'
-    ),
-  incident_id: yup.number().positive().integer('*Must be an incident number or empty'),
-  incident_date: yup.date().when('incident_id', {
-    is: (incident_id) => incident_id == '' || incident_id === undefined,
-    then: yup.date().required('*Incident Date required'),
-  }),
-  editor_notes: yup.string(),
-});
+import { schema } from './schemas';
 
 const SubmissionForm = () => {
   const {
@@ -392,17 +289,7 @@ const SubmissionForm = () => {
         )}
 
         <details className="mt-3">
-          <summary data-cy="extra-fields">
-            {t('Tell us more...')}
-            {(errors['description'] ||
-              errors['developers'] ||
-              errors['deployers'] ||
-              errors['harmed_parties']) && (
-              <div className="text-red-500 pl-4">
-                <Trans ns="validation">Some data is missing.</Trans>
-              </div>
-            )}
-          </summary>
+          <summary data-cy="extra-fields">{t('Tell us more...')}</summary>
 
           <TagsInputGroup name="tags" label={t('Tags')} className="mt-3" {...TextInputGroupProps} />
 

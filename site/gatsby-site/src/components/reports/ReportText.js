@@ -9,7 +9,11 @@ function ReportText({ text, maxChars = null }) {
     rehypePlugins.push([rehypeTruncate, { maxChars }]);
   }
 
-  return <ReactMarkdown rehypePlugins={rehypePlugins}>{text}</ReactMarkdown>;
+  return (
+    <ReactMarkdown rehypePlugins={rehypePlugins} className="prose max-w-full">
+      {text}
+    </ReactMarkdown>
+  );
 }
 
 export default ReportText;

@@ -198,8 +198,11 @@ module.exports = {
         'form-control': '1.125rem 1.125rem',
         'form-select': '16px 12px',
       },
+      listStyleType: {
+        revert: 'revert',
+      },
     },
   },
-  plugins: [backfaceVisibility, require('flowbite/plugin')],
+  plugins: [backfaceVisibility, require('flowbite/plugin'), require('@tailwindcss/typography')],
   safelist: safelist,
 };

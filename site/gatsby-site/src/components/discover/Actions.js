@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Spinner, Button } from 'flowbite-react';
 import WebArchiveLink from '../ui/WebArchiveLink';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,6 +13,7 @@ import { FIND_REPORT, UPDATE_REPORT } from '../../graphql/reports';
 import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
 import CustomButton from '../../elements/Button';
+import { Modal } from 'flowbite-react';
 
 function FlagModalContent({ reportNumber }) {
   const { data } = useQuery(FIND_REPORT, {
@@ -62,14 +63,14 @@ function FlagModalContent({ reportNumber }) {
   );
 }
 
-export default function Actions({
-  item,
-  toggleFilterByIncidentId = null,
-  authorsModal,
-  submittersModal,
-  flagReportModal,
-}) {
+export default function Actions({ item, toggleFilterByIncidentId = null }) {
   const { t } = useTranslation();
+
+  const [showAuthors, setShowAuthors] = useState(false);
+
+  const [showSubmitters, setShowSubmitters] = useState(false);
+
+  const [showFlag, setShowFlag] = useState(false);
 
   return (
     <>
@@ -82,49 +83,57 @@ export default function Actions({
         <FontAwesomeIcon icon={faNewspaper} className="fa-newspaper" title="Read the Source" />
       </WebArchiveLink>
 
-      <CustomButton
-        variant="link"
-        title={t('Authors')}
-        onClick={() =>
-          authorsModal.openFor({
-            title: t('Authors'),
-            body: () => item.authors.join(', '),
-          })
-        }
-      >
+      <CustomButton variant="link" title={t('Authors')} onClick={() => setShowAuthors(true)}>
         <FontAwesomeIcon icon={faIdCard} className="fa-id-card" />
       </CustomButton>
+
+      <Modal show={showAuthors} onClose={() => setShowAuthors(false)}>
+        <Modal.Header>
+          <Trans>Authors</Trans>
+        </Modal.Header>
+        <Modal.Body>
+          <>{item.authors.join(', ')}</>
+        </Modal.Body>
+      </Modal>
 
       <CustomButton
         variant="link"
         title={t('Submitters')}
         className="px-1"
-        onClick={() =>
-          submittersModal.openFor({
-            title: t('Submitters'),
-            body: () => item.submitters.join(', '),
-          })
-        }
+        onClick={() => setShowSubmitters(true)}
       >
         <FontAwesomeIcon icon={faUserShield} className="fa-user-shield" />
       </CustomButton>
+
+      <Modal show={showSubmitters} onClose={() => setShowSubmitters(false)}>
+        <Modal.Header>
+          <Trans>Submitters</Trans>
+        </Modal.Header>
+        <Modal.Body>
+          <>{item.submitters.join(', ')}</>
+        </Modal.Body>
+      </Modal>
 
       <CustomButton
         variant="link"
         title={t('Flag Report')}
         className="px-1"
         data-cy="flag-button"
-        onClick={() =>
-          flagReportModal.openFor({
-            title: t('Flag Report'),
-            body: () => <FlagModalContent reportNumber={item.report_number} />,
-          })
-        }
+        onClick={() => setShowFlag(true)}
       >
         <FontAwesomeIcon icon={faFlag} className="fa-flag" />
       </CustomButton>
 
-      {toggleFilterByIncidentId && (
+      <Modal show={showFlag} onClose={() => setShowFlag(false)}>
+        <Modal.Header>
+          <Trans>Flag Report</Trans>
+        </Modal.Header>
+        <Modal.Body>
+          <FlagModalContent reportNumber={item.report_number} />
+        </Modal.Body>
+      </Modal>
+
+      {toggleFilterByIncidentId && item.is_incident_report && (
         <CustomButton
           variant="link"
           aria-hidden="true"
