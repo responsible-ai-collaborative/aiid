@@ -220,7 +220,7 @@ function DiscoverApp(props) {
   const flagReportModal = useModal();
 
   return (
-    <Layout {...props} sidebarCollapsed={true}>
+    <Layout {...props} sidebarCollapsed={true} className="w-full xl:w-3/4">
       <AiidHelmet canonicalUrl="/apps/discover">
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
@@ -242,7 +242,7 @@ function DiscoverApp(props) {
 
           <VirtualFilters />
 
-          <Container className="tw-container-xl mt-6">
+          <Container className="ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl mt-6">
             <Row className="px-0 mx-0">
               <Col className="px-0 mx-0">
                 <SearchBox defaultRefinement={query.s} />
