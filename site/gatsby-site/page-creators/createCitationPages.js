@@ -25,7 +25,7 @@ const createCitationPages = async (graphql, createPage) => {
           }
         }
 
-        allMongodbAiidprodReports {
+        allMongodbAiidprodReports(filter: { is_incident_report: { eq: true } }) {
           nodes {
             title
             report_number
