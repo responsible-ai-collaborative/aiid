@@ -13,7 +13,7 @@ import Actions from 'components/discover/Actions';
 const ReportCard = ({ item }) => {
   const { isRole, loading } = useUserContext();
 
-  const [fullText, setFullText] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const ref = useRef(null);
 
@@ -25,7 +25,7 @@ const ReportCard = ({ item }) => {
     >
       <div
         className={`${
-          fullText ? 'md:hidden' : ''
+          expanded ? 'md:hidden' : ''
         } flex self-stretch justify-center items-center md:border-r md:w-1/3`}
       >
         <Image
@@ -36,7 +36,7 @@ const ReportCard = ({ item }) => {
         />
       </div>
       <div
-        className={`flex flex-col justify-between leading-normal p-4 ${fullText ? '' : 'md:w-2/3'}`}
+        className={`flex flex-col justify-between leading-normal p-4 ${expanded ? '' : 'md:w-2/3'}`}
       >
         <div className="flex items-center w-full justify-between">
           <div>
@@ -62,29 +62,43 @@ const ReportCard = ({ item }) => {
           )}
         </div>
         <div>
-          <ReportText text={item.text} maxChars={fullText ? null : 240} />
+          <ReportText text={item.text} maxChars={expanded ? null : 240} />
         </div>
         <div className="flex justify-end mt-4">
-          {!fullText && (
-            <Button size={'xs'} onClick={() => setFullText(true)}>
-              <Trans>Expand</Trans>
-              <svg
-                aria-hidden="true"
-                className="ml-2 -mr-1 w-4 h-4"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+          <button
+            onClick={() => {
+              setExpanded(!expanded);
+              if (expanded) {
+                ref.current.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+            className="text-blue-700 border mt-4 ml-1 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-xs p-1.5 text-center inline-flex items-center mr-2  dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
+          >
+            <Trans>{expanded ? 'Collapse' : 'Expand'}</Trans>
+            <svg
+              aria-hidden="true"
+              className="ml-2 -mr-1 w-4 h-4"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {expanded ? (
+                <path
+                  fillRule="evenodd"
+                  d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z"
+                  clipRule="evenodd"
+                ></path>
+              ) : (
                 <path
                   fillRule="evenodd"
                   d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z"
                   clipRule="evenodd"
                 ></path>
-              </svg>
-            </Button>
-          )}
+              )}
+            </svg>
+          </button>
         </div>
-        {fullText && (
+        {expanded && (
           <div className="flex w-full flex-row justify-around items-center text-dark-gray">
             <Actions item={item} />
           </div>
