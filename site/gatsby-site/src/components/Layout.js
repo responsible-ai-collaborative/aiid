@@ -5,7 +5,7 @@ import Footer from './layout/Footer';
 import Header from './ui/Header';
 import RightSidebar from './rightSidebar';
 
-const Layout = ({ children, className, sidebarCollapsed = false }) => {
+const Layout = ({ children, className, sidebarCollapsed = false, location }) => {
   return (
     <>
       <Header />
