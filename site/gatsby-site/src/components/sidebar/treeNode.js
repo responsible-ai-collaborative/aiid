@@ -72,7 +72,7 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item }) => {
       )}
 
       {!item.collapsed && hasChildren ? (
-        <ul>
+        <ul className="list-revert">
           {item.items.map((item, index) => (
             <TreeNode
               className="subtree"

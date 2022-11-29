@@ -63,6 +63,41 @@ const getClassificationArray = (cObj, namespace) => {
   return cArray;
 };
 
+const reportToEntry = ({ incident = null, report }) => {
+  const entry = {
+    authors: report.authors,
+    description: report.description,
+    epoch_date_downloaded: report.epoch_date_downloaded,
+    epoch_date_modified: report.epoch_date_modified,
+    epoch_date_published: report.epoch_date_published,
+    epoch_date_submitted: report.epoch_date_submitted,
+    image_url: report.image_url,
+    language: report.language,
+    report_number: report.report_number,
+    source_domain: report.source_domain,
+    submitters: report.submitters,
+    title: report.title,
+    url: report.url,
+    tags: report.tags,
+    editor_notes: report.editor_notes,
+    cloudinary_id: report.cloudinary_id,
+    text: report.plain_text,
+    mongodb_id: report._id.toString(),
+    objectID: report.report_number.toString(),
+    featured: config?.header?.search?.featured[report.report_number] || 0,
+    flag: report.flag,
+    is_incident_report: report.is_incident_report,
+  };
+
+  if (incident) {
+    entry.incident_id = incident.incident_id;
+    entry.incident_date = incident.date;
+    entry.epoch_incident_date = getUnixTime(new Date(incident.date));
+  }
+
+  return entry;
+};
+
 class AlgoliaUpdater {
   constructor({ mongoClient, algoliaClient, reporter, languages }) {
     /**
@@ -72,6 +107,10 @@ class AlgoliaUpdater {
     this.mongoClient = mongoClient;
     this.reporter = reporter;
     this.languages = languages;
+    /**
+     * @type {import('algoliasearch').SearchClient}
+     * @public
+     */
     this.algoliaClient = algoliaClient;
   }
 
@@ -89,35 +128,7 @@ class AlgoliaUpdater {
         if (reports.some((r) => r.report_number == report_number)) {
           const report = reports.find((r) => r.report_number == report_number) || {};
 
-          const entry = {
-            authors: report.authors,
-            description: report.description,
-            epoch_date_downloaded: report.epoch_date_downloaded,
-            epoch_date_modified: report.epoch_date_modified,
-            epoch_date_published: report.epoch_date_published,
-            epoch_date_submitted: report.epoch_date_submitted,
-            image_url: report.image_url,
-            language: report.language,
-            report_number: report.report_number,
-            source_domain: report.source_domain,
-            submitters: report.submitters,
-            title: report.title,
-            url: report.url,
-            tags: report.tags,
-            editor_notes: report.editor_notes,
-            cloudinary_id: report.cloudinary_id,
-
-            text: report.plain_text,
-
-            mongodb_id: report._id.toString(),
-
-            objectID: report.report_number.toString(),
-
-            incident_id: incident.incident_id,
-            incident_date: incident.date,
-            epoch_incident_date: getUnixTime(new Date(incident.date)),
-            featured: config?.header?.search?.featured[report.report_number] || 0,
-          };
+          const entry = reportToEntry({ incident, report });
 
           if (classificationsHash[entry.incident_id]) {
             entry.classifications = classificationsHash[entry.incident_id];
@@ -126,6 +137,12 @@ class AlgoliaUpdater {
           downloadData.push(entry);
         }
       }
+    }
+
+    for (const report of reports.filter((r) => r.is_incident_report == false)) {
+      const entry = reportToEntry({ report });
+
+      downloadData.push(entry);
     }
 
     const truncatedData = downloadData.map(truncate);
@@ -172,6 +189,8 @@ class AlgoliaUpdater {
       plain_text: 1,
       editor_notes: 1,
       cloudinary_id: 1,
+      is_incident_report: 1,
+      flag: 1,
     };
 
     const reports = await this.mongoClient
@@ -213,7 +232,7 @@ class AlgoliaUpdater {
 
     const index = await this.algoliaClient.initIndex(indexName);
 
-    await index.saveObjects(entries);
+    await index.replaceAllObjects(entries);
 
     await index
       .setSettings({
