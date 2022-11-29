@@ -68,9 +68,11 @@ const Sidebar = ({ defaultCollapsed = false }) => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([e]) => {
-        const headerRect = e.target.getBoundingClientRect();
+        const h = e.target.getBoundingClientRect();
 
-        setHeaderVisiblePixels(headerRect.height + Math.max(-headerRect.height, headerRect.top));
+        setHeaderVisiblePixels(
+          window.innerWidth > 768 ? h.height + Math.max(h.top, -h.height) : null
+        );
       },
       { threshold }
     );
@@ -101,16 +103,15 @@ const Sidebar = ({ defaultCollapsed = false }) => {
     <>
       <aside
         id="sidebar"
-        className={`
-          ${sidebarWidth} 
-          sticky top-0 
-          flex flex-col
-        `}
+        aria-label="Sidebar"
+        className={`${sidebarWidth} sticky top-0 flex flex-col`}
         style={{
-          height: `calc(100vh - ${headerVisiblePixels}px)`,
+          height:
+            (headerVisiblePixels && !isMobile) || window.innerWidth > 768
+              ? `calc(100vh - ${headerVisiblePixels}px)`
+              : undefined,
           transition: 'width 500ms ease, height 75ms ease',
         }}
-        aria-label="Sidebar"
       >
         <span>
           <QuickAccess isCollapsed={collapsedMenu} />
@@ -122,7 +123,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
           />
         ) : null}
 
-        <ul className={`space-y-2 shrink list-none overflow-auto p-2 mb-12`}>
+        <ul className={`space-y-2 shrink list-none overflow-auto p-2 md:mb-12`}>
           <Tree
             setNavCollapsed={() => {}}
             isCollapsed={collapsedMenu}
@@ -154,34 +155,36 @@ const Sidebar = ({ defaultCollapsed = false }) => {
             }
           })}
         </ul>
-        <div
-          className={`
-            ${sidebarWidth} h-12
-            flex justify-end items-center
-            transition-all duration-500
-            border-t-1 border-gray-200
-            bg-white z-40
-            ${atBottom ? 'absolute' : 'fixed'} bottom-0
-          `}
-        >
-          <FontAwesomeIcon
-            icon={faChevronLeft}
-            color={'white'}
+        {!isMobile && (
+          <div
             className={`
-              w-6 h-6
-              hidden md:inline-block 
-              cursor-pointer fa
-              text-gray-500
-              hover:text-gray-200 
-              ${collapsedMenu ? 'rotate-180 -translate-x-3' : ''}
-              transition-transform duration-500 
+              ${sidebarWidth} h-12
+              flex justify-end items-center
+              transition-all duration-500
+              border-t-1 border-gray-200
+              bg-white z-40
+              ${atBottom ? 'absolute' : 'fixed'} bottom-0
             `}
-            title={isCollapsed ? t('Expand') : t('Collapse')}
-            onClick={() => {
-              collapseMenu(!collapsedMenu), setCollapsedMenu(!collapsedMenu);
-            }}
-          />
-        </div>
+          >
+            <FontAwesomeIcon
+              icon={faChevronLeft}
+              color={'white'}
+              className={`
+                w-6 h-6
+                hidden md:inline-block 
+                cursor-pointer fa
+                text-gray-500
+                hover:text-gray-200 
+                ${collapsedMenu ? 'rotate-180 -translate-x-3' : ''}
+                transition-transform duration-500 
+              `}
+              title={isCollapsed ? t('Expand') : t('Collapse')}
+              onClick={() => {
+                collapseMenu(!collapsedMenu), setCollapsedMenu(!collapsedMenu);
+              }}
+            />
+          </div>
+        )}
       </aside>
     </>
   );

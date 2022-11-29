@@ -22,7 +22,7 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed 
   const calculatedClassName = `${className} item ${
     item.current
       ? 'bg-light-orange text-white dark:bg-gray-700'
-      : 'text-gray-900 hover:bg-light-orange dark:text-white hover:text-white dark:hover:bg-gray-700'
+      : 'md:text-gray-900 hover:bg-light-orange dark:text-white hover:text-white dark:hover:bg-gray-700'
   }`;
 
   const hasChildren = item.items.length > 0;
@@ -77,7 +77,7 @@ const NodeLink = ({
     title={title}
     to={item.url}
     onClick={click}
-    className={`flex rounded-lg items-center p-2 text-base font-normal group transition-none ${calculatedClassName}`}
+    className={`flex rounded-lg items-center p-2  text-white md:text-base font-normal group transition-none ${calculatedClassName}`}
   >
     {icon && <>{icon} </>}
     <span
@@ -107,8 +107,7 @@ function getIcon(label, current = false) {
     dark:group-hover:text-white 
     pointer fa
     
-    dark:text-gray-400 
-    ${current ? 'text-white' : 'text-gray-600'}
+    ${current ? 'text-white' : 'text-gray-400 md:text-gray-600'}
   `;
 
   return {
@@ -129,9 +128,11 @@ function getIcon(label, current = false) {
         viewBox="0 0 8.4666665 8.4666669"
         fill="currentColor"
         stroke="none"
-        className={`shrink-0 w-6 h-6 ${
-          current ? 'text-white' : 'text-gray-600'
-        } dark:text-gray-400 group-hover:text-white dark:group-hover:text-white`}
+        className={`
+          w-6 h-6 shrink-0
+          ${current ? 'text-white' : 'text-gray-400 md:text-gray-600'}
+          group-hover:text-white dark:group-hover:text-white
+        `}
       >
         <circle id="c1" cx="1.4249661" cy="3.3814588" r="1.2797676" />
         <circle id="c2" cx="2.6276002" cy="6.9394135" r="1.2797676" />
