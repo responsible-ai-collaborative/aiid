@@ -104,10 +104,12 @@ const Sidebar = ({ defaultCollapsed = false }) => {
         className={`
           ${sidebarWidth} 
           sticky top-0 
-          transition-all duration-500 
           flex flex-col
         `}
-        style={{ height: `calc(100vh - ${headerVisiblePixels}px)` }}
+        style={{
+          height: `calc(100vh - ${headerVisiblePixels}px)`,
+          transition: 'width 500ms ease, height 75ms ease',
+        }}
         aria-label="Sidebar"
       >
         <span>
@@ -154,13 +156,13 @@ const Sidebar = ({ defaultCollapsed = false }) => {
         </ul>
         <div
           className={`
-          ${sidebarWidth} h-12
-          flex justify-end items-center
-          transition-all duration-500
-          border-t-1 border-gray-200
-          bg-white z-40
-          ${atBottom ? 'absolute' : 'fixed'} bottom-0
-        `}
+            ${sidebarWidth} h-12
+            flex justify-end items-center
+            transition-all duration-500
+            border-t-1 border-gray-200
+            bg-white z-40
+            ${atBottom ? 'absolute' : 'fixed'} bottom-0
+          `}
         >
           <FontAwesomeIcon
             icon={faChevronLeft}
