@@ -5,6 +5,10 @@ const MenuContext = createContext({
   collapseMenu: (value) => {
     value;
   },
+  manual: false,
+  setManual: (value) => {
+    value;
+  },
 });
 
 export default MenuContext;
@@ -12,8 +16,14 @@ export default MenuContext;
 export function MenuContextProvider({ children }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
+  const [manual, setIsManual] = useState(false);
+
   const collapseMenu = (value) => {
     setIsCollapsed(value);
+  };
+
+  const setManual = (value) => {
+    setIsManual(value);
   };
 
   return (
@@ -21,6 +31,8 @@ export function MenuContextProvider({ children }) {
       value={{
         isCollapsed,
         collapseMenu,
+        manual,
+        setManual,
       }}
     >
       {children}

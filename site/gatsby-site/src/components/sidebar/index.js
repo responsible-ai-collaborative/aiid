@@ -17,18 +17,17 @@ const Sidebar = ({ defaultCollapsed = false }) => {
 
   const { user } = useUserContext();
 
-  const { isCollapsed, collapseMenu } = useMenuContext();
-
-  const [collapsedMenu, setCollapsedMenu] = useState(isCollapsed || defaultCollapsed);
+  const { isCollapsed, collapseMenu, manual, setManual } = useMenuContext();
 
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    if (defaultCollapsed) {
-      setCollapsedMenu(true);
+    if (!manual) {
+      collapseMenu(defaultCollapsed);
     }
     if (isMobile) {
-      setCollapsedMenu(false);
+      collapseMenu(false);
+      setManual(false);
     }
   }, [isMobile]);
 
@@ -97,7 +96,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
     return () => observer.disconnect();
   });
 
-  const sidebarWidth = !collapsedMenu ? 'md:w-64' : 'md:w-[3.5rem]';
+  const sidebarWidth = !isCollapsed ? 'md:w-64' : 'md:w-[3.5rem]';
 
   return (
     <>
@@ -113,8 +112,8 @@ const Sidebar = ({ defaultCollapsed = false }) => {
           transition: 'width 500ms ease, height 75ms ease',
         }}
       >
-        <span>
-          <QuickAccess isCollapsed={collapsedMenu} />
+        <span className="border-b-1 border-b-gray-200">
+          <QuickAccess isCollapsed={isCollapsed} />
         </span>
         {config.sidebar.title ? (
           <div
@@ -126,7 +125,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
         <ul className={`space-y-2 shrink list-none overflow-auto p-2 md:mb-12`}>
           <Tree
             setNavCollapsed={() => {}}
-            isCollapsed={collapsedMenu}
+            isCollapsed={isCollapsed}
             localizePath={localizePath}
             additionalNodes={[
               {
@@ -162,8 +161,9 @@ const Sidebar = ({ defaultCollapsed = false }) => {
               flex justify-end items-center
               transition-all duration-500
               border-t-1 border-gray-200
-              bg-white z-40
+              bg-text-light-gray z-40
               ${atBottom ? 'absolute' : 'fixed'} bottom-0
+              ${isCollapsed ? '' : 'pr-3'}
             `}
           >
             <FontAwesomeIcon
@@ -175,12 +175,21 @@ const Sidebar = ({ defaultCollapsed = false }) => {
                 cursor-pointer fa
                 text-gray-500
                 hover:text-gray-200 
-                ${collapsedMenu ? 'rotate-180 -translate-x-3' : ''}
+                ${isCollapsed ? 'rotate-180 -translate-x-3' : ''}
                 transition-transform duration-500 
               `}
               title={isCollapsed ? t('Expand') : t('Collapse')}
               onClick={() => {
-                collapseMenu(!collapsedMenu), setCollapsedMenu(!collapsedMenu);
+                // If the user, e.g. from the landing page
+                // collapses the sidebar and then uncollapses it,
+                // navigating to /discover
+                // should still cause the sidebar to collapse.
+                // However, when changing the collapsed state
+                // to one that is not its default value,
+                // that state should be preserved across pages.
+                setManual(defaultCollapsed == isCollapsed);
+
+                collapseMenu(!isCollapsed);
               }}
             />
           </div>

@@ -5,12 +5,12 @@ import Footer from './layout/Footer';
 import Header from './ui/Header';
 import RightSidebar from './rightSidebar';
 
-const Layout = ({ children, className, sidebarCollapsed = false }) => {
+const Layout = ({ children, className, sidebarCollapsed = false, location }) => {
   return (
     <>
       <Header />
       <div className="tw-layout">
-        <div className={`tw-hidden-mobile z-2`}>
+        <div className={`tw-hidden-mobile z-2 bg-text-light-gray shadow`}>
           <Sidebar defaultCollapsed={sidebarCollapsed} />
         </div>
         {config.sidebar.title && (
