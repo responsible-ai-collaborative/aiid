@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { Button, Modal } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
+import { Button } from 'react-bootstrap';
+import { Modal, Spinner } from 'flowbite-react';
 import SubmissionForm from '../../components/submissions/SubmissionForm';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { FIND_SUBMISSION, UPDATE_SUBMISSION } from '../../graphql/submissions';
@@ -97,76 +97,80 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
   };
 
   return (
-    <div className="bootstrap">
-      <Modal size="lg" show={show} data-cy="submission-modal">
-        <Modal.Header closeButton onHide={onHide}>
-          <Modal.Title>Edit Submission</Modal.Title>
-        </Modal.Header>
-        {loading && (
-          <Modal.Body>
-            <div className="flex justify-center">
-              <Spinner />
-            </div>
-          </Modal.Body>
-        )}
-        {!loading && data?.submission && (
-          <Formik
-            validationSchema={schema}
-            onSubmit={handleSubmit}
-            initialValues={{
-              ...data.submission,
-              developers:
-                data.submission.developers === null
-                  ? []
-                  : data.submission.developers.map((item) => item.name),
-              deployers:
-                data.submission.deployers === null
-                  ? []
-                  : data.submission.deployers.map((item) => item.name),
-              harmed_parties:
-                data.submission.harmed_parties === null
-                  ? []
-                  : data.submission.harmed_parties.map((item) => item.name),
-              incident_id: data.submission.incident_id == 0 ? '' : data.submission.incident_id,
-            }}
-          >
-            {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
-              <>
-                <Modal.Body>
-                  <SubmissionForm />
-                  <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
-                </Modal.Body>
-                <Modal.Footer>
-                  <div className="flex items-center gap-3 text-red-500">
-                    {!isValid && (
-                      <Trans ns="validation">Please review submission. Some data is missing.</Trans>
+    <Modal
+      size="3xl"
+      show={show}
+      data-cy="submission-modal"
+      onClose={onHide}
+      className="submission-modal"
+    >
+      <Modal.Header>
+        <h5>Edit Submission</h5>
+      </Modal.Header>
+      {loading && (
+        <Modal.Body>
+          <div className="flex justify-center">
+            <Spinner />
+          </div>
+        </Modal.Body>
+      )}
+      {!loading && data?.submission && (
+        <Formik
+          validationSchema={schema}
+          onSubmit={handleSubmit}
+          initialValues={{
+            ...data.submission,
+            developers:
+              data.submission.developers === null
+                ? []
+                : data.submission.developers.map((item) => item.name),
+            deployers:
+              data.submission.deployers === null
+                ? []
+                : data.submission.deployers.map((item) => item.name),
+            harmed_parties:
+              data.submission.harmed_parties === null
+                ? []
+                : data.submission.harmed_parties.map((item) => item.name),
+            incident_id: data.submission.incident_id == 0 ? '' : data.submission.incident_id,
+          }}
+        >
+          {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
+            <>
+              <Modal.Body>
+                <SubmissionForm />
+                <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
+              </Modal.Body>
+              <Modal.Footer>
+                <div className="flex items-center gap-3 text-red-500">
+                  {!isValid && (
+                    <Trans ns="validation">Please review submission. Some data is missing.</Trans>
+                  )}
+                  <Button
+                    onClick={submitForm}
+                    className="flex disabled:opacity-50"
+                    variant="primary"
+                    type="submit"
+                    disabled={isSubmitting || !isValid}
+                    data-cy="update-btn"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Spinner size="sm" />
+                        <div className="ml-2">
+                          <Trans>Updating...</Trans>
+                        </div>
+                      </>
+                    ) : (
+                      <Trans>Update</Trans>
                     )}
-                    <Button
-                      onClick={submitForm}
-                      className="flex disabled:opacity-50"
-                      variant="primary"
-                      type="submit"
-                      disabled={isSubmitting || !isValid}
-                      data-cy="update-btn"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Spinner size="sm" />
-                          <div className="ml-2">
-                            <Trans>Updating...</Trans>
-                          </div>
-                        </>
-                      ) : (
-                        <Trans>Update</Trans>
-                      )}
-                    </Button>
-                  </div>
-                </Modal.Footer>
-              </>
-            )}
-          </Formik>
-        )}
-      </Modal>
-    </div>
+                  </Button>
+                </div>
+              </Modal.Footer>
+            </>
+          )}
+        </Formik>
+      )}
+    </Modal>
   );
 }
