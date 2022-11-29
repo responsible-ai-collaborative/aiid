@@ -100,20 +100,20 @@ const StepThree = (props) => {
         {(TextInputGroupProps) => (
           <>
             <Form>
-              <TextInputGroup
-                name="description"
-                label={t('Description')}
-                type="textarea"
-                as="textarea"
-                placeholder={t('Incident Description')}
-                rows={3}
-                className="mt-3"
-                {...TextInputGroupProps}
-                schema={stepThreeValidationSchema}
-              />
-
               {!data.incident_id && (
                 <>
+                  <TextInputGroup
+                    name="description"
+                    label={t('Description')}
+                    type="textarea"
+                    as="textarea"
+                    placeholder={t('Incident Description')}
+                    rows={3}
+                    className="mt-3"
+                    {...TextInputGroupProps}
+                    schema={stepThreeValidationSchema}
+                  />
+
                   <TagsInputGroup
                     name="deployers"
                     label={t('Alleged deployer of AI system')}
