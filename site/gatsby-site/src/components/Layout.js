@@ -3,6 +3,7 @@ import Sidebar from './sidebar';
 import config from '../../config.js';
 import Footer from './layout/Footer';
 import Header from './ui/Header';
+import RightSidebar from './rightSidebar';
 
 const Layout = ({ children, className, sidebarCollapsed = false }) => {
   return (
@@ -22,6 +23,12 @@ const Layout = ({ children, className, sidebarCollapsed = false }) => {
           <div className={`${className ? className : ''} 50rem:max-w-full 50rem:relative`}>
             {children}
           </div>
+        </div>
+        <div
+          id="right-sidebar-container"
+          className={'tw-hidden-mobile tw-[224px] -ml-[24px] z-0 relative 965px:hidden'}
+        >
+          <RightSidebar location={location} />
         </div>
       </div>
       <Footer />
