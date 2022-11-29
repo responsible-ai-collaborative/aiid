@@ -20,7 +20,7 @@ const getEntityId = (name) => {
 
 module.exports.getEntityId = getEntityId;
 
-module.exports.computeEntities = ({ incidents, entities }) => {
+module.exports.computeEntities = ({ incidents, entities, responses }) => {
   const entitiesHash = {};
 
   const entityFields = [
@@ -43,7 +43,11 @@ module.exports.computeEntities = ({ incidents, entities }) => {
   const harmedProperties = ['Alleged_harmed_or_nearly_harmed_parties'];
 
   for (const incident of incidents) {
-    const { incident_id } = incident;
+    const { incident_id, reports } = incident;
+
+    const incidentResponses = responses.filter((response) =>
+      reports.includes(response.report_number)
+    );
 
     for (const field of entityFields) {
       for (const id of incident[field.property]) {
@@ -59,6 +63,7 @@ module.exports.computeEntities = ({ incidents, entities }) => {
             relatedEntities: [],
             incidentsHarmedBy: [],
             harmedEntities: [],
+            responses: [],
           };
         }
 
@@ -81,6 +86,16 @@ module.exports.computeEntities = ({ incidents, entities }) => {
         if (harmedProperties.some((f) => f === field.property)) {
           if (!entitiesHash[id][field.key].some((i) => i.incident_id == incident_id)) {
             entitiesHash[id][field.key].push(incident_id);
+          }
+        }
+
+        for (const incidentResponse of incidentResponses) {
+          if (
+            !entitiesHash[id].responses.some(
+              (r) => r.report_number == incidentResponse.report_number
+            )
+          ) {
+            entitiesHash[id].responses.push({ ...incidentResponse, incident_id });
           }
         }
       }
@@ -170,3 +185,5 @@ module.exports.processEntities = async (allEntities, entitiesNames, createEntity
 
   return { link: entityIds };
 };
+
+module.exports.RESPONSE_TAG = 'response';
