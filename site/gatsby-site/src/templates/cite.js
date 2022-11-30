@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Spinner } from 'flowbite-react';
+import { Badge, Spinner } from 'flowbite-react';
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
 import Citation from 'components/cite/Citation';
@@ -16,6 +16,9 @@ import SimilarIncidents from '../components/cite/SimilarIncidents';
 import { Trans, useTranslation } from 'react-i18next';
 import Card from '../elements/Card';
 import Button from '../elements/Button';
+import Container from '../elements/Container';
+import Row from '../elements/Row';
+import Col from '../elements/Col';
 import Pagination from '../elements/Pagination';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
 import { useLocalization } from 'gatsby-theme-i18n';
@@ -26,7 +29,7 @@ import useToastContext, { SEVERITY } from '../hooks/useToast';
 import Link from 'components/ui/Link';
 import { graphql } from 'gatsby';
 import { getTaxonomies, getTranslatedReports } from 'utils/cite';
-import { computeEntities } from 'utils/entities';
+import { computeEntities, RESPONSE_TAG } from 'utils/entities';
 import AllegedEntities from 'components/entities/AllegedEntities';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -69,6 +72,7 @@ function CitePage(props) {
       allMongodbTranslationsReportsFr,
       incident,
       entities: entitiesData,
+      responses,
     },
   } = props;
 
@@ -108,12 +112,15 @@ function CitePage(props) {
 
   const addToast = useToastContext();
 
-  const timeline = sortedReports.map(({ date_published, title, mongodb_id, report_number }) => ({
-    date_published,
-    title,
-    mongodb_id,
-    report_number,
-  }));
+  const timeline = sortedReports.map(
+    ({ date_published, title, mongodb_id, report_number, tags }) => ({
+      date_published,
+      title,
+      mongodb_id,
+      report_number,
+      isResponse: tags && tags.includes(RESPONSE_TAG),
+    })
+  );
 
   timeline.push({
     date_published: incident.date,
@@ -203,11 +210,19 @@ function CitePage(props) {
     }
   };
 
-  const entities = computeEntities({ incidents: [incident], entities: entitiesData.nodes });
+  const entities = computeEntities({
+    incidents: [incident],
+    entities: entitiesData.nodes,
+    responses: responses.nodes,
+  });
+
+  const incidentResponded = sortedReports.some(
+    (report) => report.tags && report.tags.includes(RESPONSE_TAG)
+  );
 
   const rightSidebar = (
     <>
-      <div className="max-w-[18rem] 2xl:max-w-sm pr-10 py-8">
+      <div className="max-w-[16rem] 2xl:max-w-[18rem] ml-2 pr-4 py-8">
         <SimilarIncidents
           nlp_similar_incidents={nlp_similar_incidents}
           editor_similar_incidents={editor_similar_incidents}
@@ -221,162 +236,216 @@ function CitePage(props) {
   );
 
   return (
-    <Layout {...{ ...props, rightSidebar }}>
+    <Layout {...{ props, rightSidebar }}>
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
 
       <div className={'titleWrapper'}>
         <h1 className="tw-styled-heading">{locale == 'en' ? metaTitle : defaultIncidentTitle}</h1>
-        <SocialShareButtons
-          metaTitle={metaTitle}
-          canonicalUrl={canonicalUrl}
-          page="cite"
-          className="-mt-1"
-        ></SocialShareButtons>
+        <div className="flex">
+          <SocialShareButtons
+            metaTitle={metaTitle}
+            canonicalUrl={canonicalUrl}
+            page="cite"
+            className="-mt-1"
+          ></SocialShareButtons>
+          {incidentResponded && (
+            <div className="self-center">
+              <Badge color="success" data-cy="responded-badge">
+                {t('Responded')}
+              </Badge>
+            </div>
+          )}
+        </div>
       </div>
 
       <div>
         <strong>Description</strong>: {incident.description}
       </div>
 
-      <Card className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6">
-        <Card.Header className="items-center justify-between">
-          <h4 className="m-0">
-            <Trans ns="entities">Entities</Trans>
-          </h4>
-          <Link to="/entities">
-            <Trans ns="entities">View all entities</Trans>
-          </Link>
-        </Card.Header>
-        <Card.Body className="block" data-cy="alleged-entities">
-          <AllegedEntities entities={entities} />
-        </Card.Body>
-      </Card>
+      <Container>
+        <Row>
+          <Col>
+            <Card className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6">
+              <Card.Header className="items-center justify-between">
+                <h4 className="m-0">
+                  <Trans ns="entities">Entities</Trans>
+                </h4>
+                <Link to="/entities">
+                  <Trans ns="entities">View all entities</Trans>
+                </Link>
+              </Card.Header>
+              <Card.Body className="block" data-cy="alleged-entities">
+                <AllegedEntities entities={entities} />
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
 
-      <Card
-        data-cy="citation"
-        className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6"
-      >
-        <Card.Header className="items-center justify-between">
-          <h4 className="m-0">
-            <Trans>Suggested citation format</Trans>
-          </h4>
-        </Card.Header>
-        <Card.Body className="block">
-          <Citation
-            nodes={incidentReports}
-            incidentDate={incident.date}
-            incident_id={incident.incident_id}
-            editors={incident.editors}
-          />
-        </Card.Body>
-      </Card>
-
-      <div data-cy={'incident-stats'} className="mt-6">
-        <IncidentStatsCard
-          {...{
-            incidentId: incident.incident_id,
-            reportCount: incidentReports.length,
-            incidentDate: incident.date,
-            editors: incident.editors.join(', '),
-          }}
-        />
-      </div>
-
-      <Card className="shadow-card mt-6">
-        <Card.Header className="items-center justify-between">
-          <h4>
-            <Trans>Reports Timeline</Trans>
-          </h4>
-        </Card.Header>
-        <Card.Body>
-          <Timeline data={timeline} />
-        </Card.Body>
-      </Card>
-
-      <Card className="shadow-card mt-6">
-        <Card.Header className="items-center justify-between">
-          <h4>
-            <Trans>Tools</Trans>
-          </h4>
-        </Card.Header>
-        <Card.Body className="flex-row flex-wrap gap-2">
-          <Button variant="outline-primary" onClick={subscribeToNewReports}>
-            <div className="flex gap-2 items-center">
-              {subscribing ? (
-                <div>
-                  <Spinner size="sm" />
-                </div>
-              ) : (
-                <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
-              )}
-              <Trans>Notify Me of Updates</Trans>
-            </div>
-          </Button>
-
-          <Button
-            variant="outline-primary"
-            href={`/apps/submit?incident_id=${incident.incident_id}&date_downloaded=${format(
-              new Date(),
-              'yyyy-MM-dd'
-            )}`}
-          >
-            <FontAwesomeIcon icon={faPlus} title={t('New Report')} className="mr-2" />
-            <Trans>New Report</Trans>
-          </Button>
-
-          <Button
-            variant="outline-primary"
-            href={'/apps/discover?incident_id=' + incident.incident_id}
-          >
-            <FontAwesomeIcon className="mr-2" icon={faSearch} title={t('Discover')} />
-            <Trans>Discover</Trans>
-          </Button>
-
-          {!loading && isRole('incident_editor') && (
-            <Button
-              variant="outline-primary"
-              href={'/incidents/edit?incident_id=' + incident.incident_id}
+        <Row>
+          <Col>
+            <Card
+              data-cy="citation"
+              className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6"
             >
-              <FontAwesomeIcon className="mr-2" icon={faEdit} title={t('Edit Incident')} />
-              <Trans>Edit Incident</Trans>
-            </Button>
-          )}
+              <Card.Header className="items-center justify-between">
+                <h4 className="m-0">
+                  <Trans>Suggested citation format</Trans>
+                </h4>
+              </Card.Header>
+              <Card.Body className="block">
+                <Citation
+                  nodes={incidentReports}
+                  incidentDate={incident.date}
+                  incident_id={incident.incident_id}
+                  editors={incident.editors}
+                />
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
 
-          <BibTex
-            nodes={incidentReports}
-            incidentDate={incident.date}
-            incident_id={incident.incident_id}
-            editors={incident.editors}
-          />
-        </Card.Body>
-      </Card>
+        <Row className="mt-6">
+          <Col>
+            <div data-cy={'incident-stats'}>
+              <IncidentStatsCard
+                {...{
+                  incidentId: incident.incident_id,
+                  reportCount: incidentReports.length,
+                  incidentDate: incident.date,
+                  editors: incident.editors.join(', '),
+                }}
+              />
+            </div>
+          </Col>
+        </Row>
 
-      {taxonomies.length > 0 &&
-        taxonomiesList
-          .filter((t) => t.canEdit || t.classificationsArray.length > 0)
-          .map((t) => (
-            <Taxonomy
-              key={t.namespace}
-              taxonomy={t}
-              incidentId={incident.incident_id}
-              canEdit={t.canEdit}
-            />
-          ))}
+        <Row className="mt-6">
+          <Col>
+            <Card className="shadow-card">
+              <Card.Header className="items-center justify-between">
+                <h4>
+                  <Trans>Reports Timeline</Trans>
+                </h4>
+              </Card.Header>
+              <Card.Body>
+                <Timeline data={timeline} />
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
 
-      <Card className="mt-6">
-        <ImageCarousel nodes={incidentReports} />
-      </Card>
+        <Row className="mt-6">
+          <Col>
+            <Card className="shadow-card">
+              <Card.Header className="items-center justify-between">
+                <h4>
+                  <Trans>Tools</Trans>
+                </h4>
+              </Card.Header>
+              <Card.Body className="flex-row flex-wrap gap-2">
+                <Button variant="outline-primary" onClick={subscribeToNewReports}>
+                  <div className="flex gap-2 items-center">
+                    {subscribing ? (
+                      <div>
+                        <Spinner size="sm" />
+                      </div>
+                    ) : (
+                      <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
+                    )}
+                    <Trans>Notify Me of Updates</Trans>
+                  </div>
+                </Button>
+                <Button
+                  variant="outline-primary"
+                  href={`/apps/submit?incident_id=${incident.incident_id}&date_downloaded=${format(
+                    new Date(),
+                    'yyyy-MM-dd'
+                  )}`}
+                >
+                  <FontAwesomeIcon icon={faPlus} title={t('New Report')} className="mr-2" />
+                  <Trans>New Report</Trans>
+                </Button>
+                <Button
+                  variant="outline-primary"
+                  href={`/apps/submit?tags=${RESPONSE_TAG}&incident_id=${incident.incident_id}`}
+                >
+                  <FontAwesomeIcon icon={faPlus} title={t('New Response')} className="mr-2" />
+                  <Trans>New Response</Trans>
+                </Button>
+                <Button
+                  variant="outline-primary"
+                  href={'/apps/discover?incident_id=' + incident.incident_id}
+                >
+                  <FontAwesomeIcon className="mr-2" icon={faSearch} title={t('Discover')} />
+                  <Trans>Discover</Trans>
+                </Button>
+                {!loading && isRole('incident_editor') && (
+                  <Button
+                    variant="outline-primary"
+                    href={'/incidents/edit?incident_id=' + incident.incident_id}
+                  >
+                    <FontAwesomeIcon className="mr-2" icon={faEdit} title={t('Edit Incident')} />
+                    <Trans>Edit Incident</Trans>
+                  </Button>
+                )}
+                <BibTex
+                  nodes={incidentReports}
+                  incidentDate={incident.date}
+                  incident_id={incident.incident_id}
+                  editors={incident.editors}
+                />
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
 
-      <h1 className="tw-styled-heading mt-10">
-        <Trans>Incident Reports</Trans>
-      </h1>
-      {sortedReports.map((report) => (
-        <ReportCard item={report} key={report.report_number} className="mt-6" />
-      ))}
+        {taxonomies.length > 0 && (
+          <Row id="taxa-area">
+            <Col>
+              {taxonomiesList
+                .filter((t) => t.canEdit || t.classificationsArray.length > 0)
+                .map((t) => (
+                  <Taxonomy
+                    key={t.namespace}
+                    taxonomy={t}
+                    incidentId={incident.incident_id}
+                    canEdit={t.canEdit}
+                  />
+                ))}
+            </Col>
+          </Row>
+        )}
 
-      <div className="block xl:hidden mt-6">
+        <Row className="mt-6">
+          <Col>
+            <Card>
+              <ImageCarousel nodes={incidentReports} />
+            </Card>
+          </Col>
+        </Row>
+
+        <Row className="mt-6">
+          <Col>
+            <div className="pb-5">
+              <div className={'titleWrapper'}>
+                <h1 className="tw-styled-heading">
+                  <Trans>Incidents Reports</Trans>
+                </h1>
+              </div>
+            </div>
+          </Col>
+        </Row>
+
+        {sortedReports.map((report) => (
+          <Row className="mb-4" key={report.report_number}>
+            <Col>
+              <ReportCard item={report} />
+            </Col>
+          </Row>
+        ))}
+
         <SimilarIncidents
           nlp_similar_incidents={nlp_similar_incidents}
           editor_similar_incidents={editor_similar_incidents}
@@ -384,22 +453,22 @@ function CitePage(props) {
           flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
           parentIncident={incident}
         />
-      </div>
 
-      <Pagination className="justify-between mt-6">
-        <Pagination.Item
-          href={localizePath({ path: `/cite/${prevIncident}` })}
-          disabled={!prevIncident}
-        >
-          ‹ <Trans>Previous Incident</Trans>
-        </Pagination.Item>
-        <Pagination.Item
-          href={localizePath({ path: `/cite/${nextIncident}` })}
-          disabled={!nextIncident}
-        >
-          <Trans>Next Incident</Trans> ›
-        </Pagination.Item>
-      </Pagination>
+        <Pagination className="justify-between">
+          <Pagination.Item
+            href={localizePath({ path: `/cite/${prevIncident}` })}
+            disabled={!prevIncident}
+          >
+            ‹ <Trans>Previous Incident</Trans>
+          </Pagination.Item>
+          <Pagination.Item
+            href={localizePath({ path: `/cite/${nextIncident}` })}
+            disabled={!nextIncident}
+          >
+            <Trans>Next Incident</Trans> ›
+          </Pagination.Item>
+        </Pagination>
+      </Container>
     </Layout>
   );
 }
@@ -501,6 +570,7 @@ export const query = graphql`
         authors
         epoch_date_submitted
         language
+        tags
       }
     }
     allMongodbTranslationsReportsEs(filter: { report_number: { in: $report_numbers } })
@@ -544,6 +614,12 @@ export const query = graphql`
       nodes {
         entity_id
         name
+      }
+    }
+
+    responses: allMongodbAiidprodReports(filter: { tags: { in: ["response"] } }) {
+      nodes {
+        report_number
       }
     }
   }
