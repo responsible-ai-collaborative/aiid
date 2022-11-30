@@ -718,42 +718,6 @@ describe('The Submit form', () => {
     cy.contains('.invalid-feedback', 'Incident ID 3456456 not found!').should('be.visible');
   });
 
-  it('Should require incident_date when incident_id is not set', () => {
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 3456456,
-      'findIncident',
-      { data: { incident: null } }
-    );
-
-    cy.visit(url);
-
-    const valuesStep1 = {
-      url: 'https://test.com',
-      title: 'test title',
-      authors: 'test author',
-      date_published: '2021-01-02',
-      date_downloaded: '2021-01-03',
-    };
-
-    for (const key in valuesStep1) {
-      cy.get(`[name="${key}"]`).type(valuesStep1[key]);
-    }
-
-    cy.setEditorText(
-      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
-    );
-
-    cy.get('[name="incident_date"]').should('be.visible');
-
-    cy.clickOutside();
-
-    cy.get('[data-cy="to-step-2"]').click();
-
-    cy.contains('.invalid-feedback', '*Incident Date required').should('be.visible');
-  });
-
   it('Should show the editor notes field', () => {
     cy.visit(url);
 
