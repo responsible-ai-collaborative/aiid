@@ -40,6 +40,8 @@ const SignUp = (props) => {
 
   const [displayFacebookSpinner, setDisplayFacebookSpinner] = useState(false);
 
+  const [emailValue, setEmailValue] = useState('');
+
   const [currentForm, setCurrentForm] = useState(FORMS.SubscribeToMajorUpdates);
 
   const { t } = useTranslation();
@@ -85,7 +87,7 @@ const SignUp = (props) => {
         <div className="max-w-lg">
           {currentForm == FORMS.SubscribeToMajorUpdates && (
             <Formik
-              initialValues={{ emailSubscription: '' }}
+              initialValues={{ emailSubscription: emailValue }}
               validationSchema={SubscribeSchema}
               onSubmit={async ({ emailSubscription }, { setSubmitting, resetForm }) => {
                 try {
@@ -124,7 +126,10 @@ const SignUp = (props) => {
                       placeholder={t('Email')}
                       name="emailSubscription"
                       value={values.emailSubscription}
-                      onChange={handleChange}
+                      onChange={(event) => {
+                        setEmailValue(event.target.value);
+                        handleChange(event);
+                      }}
                     />
                     <Form.Control.Feedback type="invalid">
                       <Trans>
@@ -174,7 +179,7 @@ const SignUp = (props) => {
 
           {currentForm == FORMS.SubscribeToIncidents && (
             <Formik
-              initialValues={{ email: '', password: '', passwordConfirm: '' }}
+              initialValues={{ email: emailValue, password: '', passwordConfirm: '' }}
               validationSchema={SignUpSchema}
               onSubmit={async ({ email, password }, { setSubmitting, resetForm }) => {
                 try {
@@ -210,7 +215,10 @@ const SignUp = (props) => {
                       placeholder={t('Email')}
                       name="email"
                       value={values.email}
-                      onChange={handleChange}
+                      onChange={(event) => {
+                        setEmailValue(event.target.value);
+                        handleChange(event);
+                      }}
                     />
                     <Form.Control.Feedback type="invalid">
                       <Trans>{errors.email && touched.email ? errors.email : null}</Trans>
