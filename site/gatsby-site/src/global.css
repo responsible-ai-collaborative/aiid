@@ -57,10 +57,10 @@ a {
   text-decoration: none !important;
 }
 
-.outline ol ol {
+.outlineDocument ol ol {
   list-style: lower-alpha; /* a  b  c  d  */
 }
-.outline ol ol ol {
+.outlineDocument ol ol ol {
   list-style: upper-roman; /* I II III IV */
 }
 
