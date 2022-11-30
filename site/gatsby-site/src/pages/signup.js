@@ -145,7 +145,7 @@ const SignUp = (props) => {
                       variant="primary"
                       type="submit"
                       disabled={isSubmitting || !isValid}
-                      data-cy="signup-btn"
+                      data-cy="subscribe-to-updates-btn"
                     >
                       <div className="flex gap-2 items-center">
                         {isSubmitting ? (
@@ -272,7 +272,7 @@ const SignUp = (props) => {
                       variant="primary"
                       type="button"
                       disabled={isSubmitting}
-                      data-cy="signup-btn"
+                      data-cy="subscribe-to-updates-btn"
                       onClick={() => toogleForm(FORMS.SubscribeToMajorUpdates)}
                     >
                       <div className="flex gap-2 items-center">
