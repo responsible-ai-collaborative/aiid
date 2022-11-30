@@ -73,7 +73,7 @@ const RelatedIncidentsArea = ({
         {similarList &&
           similarList.slice(0, maxIncidents).map((val) => (
             <div
-              className="py-2 px-2 bg-blue-100 border-blue-200 rounded-lg border shadow-md dark:bg-gray-800 dark:border-gray-700 flex-1 flex flex-col justify-between"
+              className="py-2 px-2 bg-blue-100 border-blue-200 rounded-lg border shadow-md dark:bg-gray-800 dark:border-gray-700 flex-1 md:flex-1/3-fixed flex flex-col justify-between"
               key={val.url || val.incident_id}
               data-cy="result"
             >
