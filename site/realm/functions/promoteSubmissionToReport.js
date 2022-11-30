@@ -22,11 +22,11 @@ exports = async (input) => {
       const lastIncident = await incidents.find({}).sort({incident_id: -1}).limit(1).next();
       
       const newIncident = {
-        title: submission.title,
+        title: submission.incident_title || submission.title,
         description: submission.description,
         incident_id: lastIncident.incident_id + 1,
         reports: [],
-        editors: ["Sean McGregor"],
+        editors: submission.incident_editors || ["Sean McGregor"],
         date: submission.incident_date,
         "Alleged deployer of AI system": submission.deployers || [],
         "Alleged developer of AI system": submission.developers || [],

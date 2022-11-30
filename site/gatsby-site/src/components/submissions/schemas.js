@@ -24,12 +24,16 @@ const harmed_parties = yup.array(
 
 const incident_id = yup.number().integer().positive();
 
-const incident_date = yup.date();
+const incident_date = yup
+  .date()
+  .nullable()
+  .transform((curr, orig) => (orig === '' ? null : curr));
 
 const description = yup
   .string()
   .min(3, 'Description must have at least 3 characters')
-  .max(500, "Description can't be longer than 500 characters");
+  .max(500, "Description can't be longer than 500 characters")
+  .nullable();
 
 export const schema = yup.object().shape({
   title: yup
@@ -74,11 +78,12 @@ export const schema = yup.object().shape({
     .required('*URL required'),
   image_url: yup
     .string()
-    .matches(
-      /((https?):\/\/)(\S)*$/,
-      '*Must enter URL in http://www.example.com/images/preview.png format'
-    )
-    .optional(),
+    .matches(/((https?):\/\/)(\S)*$/, {
+      message: '*Must enter URL in http://www.example.com/images/preview.png format',
+      excludeEmptyString: true,
+    })
+    .optional()
+    .nullable(),
   incident_id,
   incident_date,
   editor_notes: yup.string(),

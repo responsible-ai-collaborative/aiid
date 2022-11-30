@@ -7,24 +7,40 @@ import * as yup from 'yup';
 import StepContainer from './StepContainer';
 import { graphql, useStaticQuery } from 'gatsby';
 import TagsInputGroup from '../TagsInputGroup';
+import { useUserContext } from 'contexts/userContext';
 
 const StepThree = (props) => {
   const { t } = useTranslation(['submit']);
 
   const [data, setData] = useState(props.data);
 
+  const { isRole } = useUserContext();
+
   const stepThreeValidationSchema = yup.object().shape({
     editor_notes: yup.string(),
+    incident_title: yup.string(),
+    incident_editors: yup
+      .string()
+      .matches(/^.{3,}$/, {
+        excludeEmptyString: true,
+        message: 'Incident Editor must have at least 3 characters',
+      })
+      .matches(/^.{3,200}$/, {
+        excludeEmptyString: true,
+        message: "Incident Editor can't be longer than 200 characters",
+      })
+      .nullable(),
     description: yup
       .string()
       .matches(/^.{3,}$/, {
         excludeEmptyString: true,
         message: 'Description must have at least 3 characters',
       })
-      .matches(/^.{3,200}$/, {
+      .matches(/^.{3,500}$/, {
         excludeEmptyString: true,
-        message: "Description can't be longer than 200 characters",
-      }),
+        message: "Description can't be longer than 500 characters",
+      })
+      .nullable(),
     developers: yup
       .string()
       .matches(/^.{3,}$/, {
@@ -34,7 +50,8 @@ const StepThree = (props) => {
       .matches(/^.{3,200}$/, {
         excludeEmptyString: true,
         message: "Alleged Developers can't be longer than 200 characters",
-      }),
+      })
+      .nullable(),
     deployers: yup
       .string()
       .matches(/^.{3,}$/, {
@@ -44,7 +61,8 @@ const StepThree = (props) => {
       .matches(/^.{3,200}$/, {
         excludeEmptyString: true,
         message: "Alleged Deployers can't be longer than 200 characters",
-      }),
+      })
+      .nullable(),
     harmed_parties: yup
       .string()
       .matches(/^.{3,}$/, {
@@ -54,7 +72,8 @@ const StepThree = (props) => {
       .matches(/^.{3,200}$/, {
         excludeEmptyString: true,
         message: "Harmed Parties can't be longer than 200 characters",
-      }),
+      })
+      .nullable(),
   });
 
   const handleSubmit = (values) => {
@@ -100,20 +119,41 @@ const StepThree = (props) => {
         {(TextInputGroupProps) => (
           <>
             <Form>
-              <TextInputGroup
-                name="description"
-                label={t('Description')}
-                type="textarea"
-                as="textarea"
-                placeholder={t('Incident Description')}
-                rows={3}
-                className="mt-3"
-                {...TextInputGroupProps}
-                schema={stepThreeValidationSchema}
-              />
-
               {!data.incident_id && (
                 <>
+                  {isRole('incident_editor') && (
+                    <TextInputGroup
+                      name="incident_title"
+                      label={t('Incident Title')}
+                      placeholder={t('Incident title')}
+                      className="mt-3"
+                      schema={stepThreeValidationSchema}
+                      {...TextInputGroupProps}
+                    />
+                  )}
+
+                  <TextInputGroup
+                    name="description"
+                    label={t('Description')}
+                    type="textarea"
+                    as="textarea"
+                    placeholder={t('Incident Description')}
+                    rows={3}
+                    className="mt-3"
+                    {...TextInputGroupProps}
+                    schema={stepThreeValidationSchema}
+                  />
+
+                  {isRole('incident_editor') && (
+                    <TagsInputGroup
+                      name="incident_editors"
+                      label={t('Editors')}
+                      className="mt-3"
+                      schema={stepThreeValidationSchema}
+                      {...TextInputGroupProps}
+                    />
+                  )}
+
                   <TagsInputGroup
                     name="deployers"
                     label={t('Alleged deployer of AI system')}
