@@ -21,8 +21,8 @@
                 "submitters": [
                     "Kate Perkins"
                 ],
-                "text": "## Submission 1 text\n\n_Markdown content whichis longer than eighty characters!_",
-                "plain_text": "Submission 1 text\n\nMarkdown content whichis longer than eighty characters!",
+                "text": "## Submission 1 text\n\n_Markdown content whichis longer than eighty characters, necessary to pass validation!_",
+                "plain_text": "Submission 1 text\n\nMarkdown content whichis longer than eighty characters, necessary to pass validation!",
                 "title": "Submisssion 1 title",
                 "url": "https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/",
                 "editor_notes": "",

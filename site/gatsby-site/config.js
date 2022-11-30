@@ -110,6 +110,11 @@ const config = {
             label: '1-criteria',
             url: '/research/1-criteria',
           },
+          {
+            title: 'Defining an “AI Incident Response”',
+            label: '5-response',
+            url: '/research/5-response',
+          },
           { title: 'Database Roadmap', label: '2-roadmap', url: '/research/2-roadmap' },
           {
             title: 'Initial Collection Methodology',
