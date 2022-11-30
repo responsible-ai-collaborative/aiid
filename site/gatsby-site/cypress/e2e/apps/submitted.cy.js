@@ -69,7 +69,9 @@ describe('Submitted reports', () => {
   maybeIt('Promotes a submission to a new report and links it to a new incident', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    const submission = submittedReports.data.submissions.find((r) => r.incident_id === 0);
+    const submission = submittedReports.data.submissions.find(
+      (r) => r._id === '5f9c3ebfd4896d392493f03c'
+    );
 
     cy.conditionalIntercept(
       '**/graphql',

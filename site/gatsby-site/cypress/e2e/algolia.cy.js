@@ -165,7 +165,7 @@ describe('Algolia', () => {
     };
 
     const esIndex = {
-      saveObjects: cy.stub().resolves({ objectIDs: ['1', '2'] }),
+      replaceAllObjects: cy.stub().resolves({ objectIDs: ['1', '2'] }),
       setSettings: cy.stub().resolves({}),
       deleteBy: cy.stub().resolves({}),
     };
@@ -175,7 +175,7 @@ describe('Algolia', () => {
     };
 
     const enIndex = {
-      saveObjects: cy.stub().resolves({ objectIDs: ['1', '2'] }),
+      replaceAllObjects: cy.stub().resolves({ objectIDs: ['1', '2'] }),
       setSettings: cy.stub().resolves({}),
       deleteBy: cy.stub().resolves({}),
     };
@@ -208,9 +208,9 @@ describe('Algolia', () => {
     cy.wrap(updater.run()).then(() => {
       expect(mongoClient.connect.callCount).to.eq(4);
 
-      expect(enIndex.saveObjects.getCall(0).args[0].length).eq(2);
+      expect(enIndex.replaceAllObjects.getCall(0).args[0].length).eq(2);
 
-      expect(enIndex.saveObjects.getCall(0).args[0][0]).to.deep.nested.include({
+      expect(enIndex.replaceAllObjects.getCall(0).args[0][0]).to.deep.nested.include({
         authors: ['Alistair Barr'],
         description: 'Description of report 1',
         epoch_date_downloaded: 1555113600,
@@ -238,7 +238,7 @@ describe('Algolia', () => {
         ],
       });
 
-      expect(enIndex.saveObjects.getCall(0).args[0][1]).to.deep.nested.include({
+      expect(enIndex.replaceAllObjects.getCall(0).args[0][1]).to.deep.nested.include({
         authors: ['Alistair Barr'],
         description: 'Description of report 2',
         epoch_date_downloaded: 1555113600,
@@ -266,7 +266,7 @@ describe('Algolia', () => {
         ],
       });
 
-      expect(esIndex.saveObjects.getCall(0).args[0][0]).to.deep.nested.include({
+      expect(esIndex.replaceAllObjects.getCall(0).args[0][0]).to.deep.nested.include({
         authors: ['Alistair Barr'],
         description: 'Description of report 1',
         epoch_date_downloaded: 1555113600,
@@ -294,7 +294,7 @@ describe('Algolia', () => {
         ],
       });
 
-      expect(esIndex.saveObjects.getCall(0).args[0][1]).to.deep.nested.include({
+      expect(esIndex.replaceAllObjects.getCall(0).args[0][1]).to.deep.nested.include({
         authors: ['Alistair Barr'],
         description: 'Description of report 2',
         epoch_date_downloaded: 1555113600,
