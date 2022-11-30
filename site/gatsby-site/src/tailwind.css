@@ -282,10 +282,6 @@
         @apply m-0 opacity-40 pt-2.5;
     }
 
-    .tw-similar-incidents {
-        @apply mt-8 mb-8;
-    }
-
     .tw-similar-incidents .card {
         @apply overflow-hidden shadow-card;
     }
@@ -344,7 +340,7 @@
     }
 
     .tw-card-set {
-        @apply gap-4 mb-8 grid grid-cols-1 md:grid-cols-2 1300px:grid-cols-3;
+        @apply gap-4 mb-8 grid grid-cols-1 lg:grid-cols-2 1300px:grid-cols-3;
     }
 
     .tw-card-set > * {

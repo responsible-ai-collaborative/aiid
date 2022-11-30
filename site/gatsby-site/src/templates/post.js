@@ -11,6 +11,7 @@ import SocialShareButtons from 'components/ui/SocialShareButtons';
 import MdxComponents from 'components/ui/MdxComponents';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import { Trans } from 'react-i18next';
+import Outline from 'components/Outline';
 
 export default function Post(props) {
   const {
@@ -35,8 +36,16 @@ export default function Post(props) {
     config.gatsby.pathPrefix !== '/' ? canonicalUrl + config.gatsby.pathPrefix : canonicalUrl;
   canonicalUrl = canonicalUrl + mdx.frontmatter.slug;
 
+  const loc = new URL(canonicalUrl);
+
+  const rightSidebar = (
+    <>
+      <Outline location={loc} />
+    </>
+  );
+
   return (
-    <Layout {...props}>
+    <Layout {...{ ...props, rightSidebar }}>
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }} />
       <div className={'titleWrapper'}>
         <StyledHeading>{mdx.fields.title}</StyledHeading>
