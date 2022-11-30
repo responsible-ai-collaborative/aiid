@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import Button from '../elements/Button';
 import { StringParam, useQueryParams } from 'use-query-params';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 const SignUpSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -141,10 +142,16 @@ const SignUp = (props) => {
                       disabled={isSubmitting || !isValid}
                       data-cy="signup-btn"
                     >
-                      {isSubmitting && <Spinner />}
-                      <span className="pl-3">
+                      <div className="flex gap-2 items-center">
+                        {isSubmitting ? (
+                          <div>
+                            <Spinner size="sm" />
+                          </div>
+                        ) : (
+                          <FontAwesomeIcon icon={faEnvelope} />
+                        )}
                         <Trans ns="login">Subscribe to Major Updates</Trans>
-                      </span>
+                      </div>
                     </Button>
 
                     <Button
@@ -154,9 +161,10 @@ const SignUp = (props) => {
                       data-cy="signup-btn"
                       onClick={() => toogleForm(FORMS.SubscribeToIncidents)}
                     >
-                      <span className="pl-3">
+                      <div className="flex gap-2 items-center">
+                        <FontAwesomeIcon icon={faEnvelope} />
                         <Trans ns="login">Subscribe to New Incidents</Trans>
-                      </span>
+                      </div>
                     </Button>
                   </div>
                 </Form>
@@ -259,9 +267,10 @@ const SignUp = (props) => {
                       data-cy="signup-btn"
                       onClick={() => toogleForm(FORMS.SubscribeToMajorUpdates)}
                     >
-                      <span className="pl-3">
+                      <div className="flex gap-2 items-center">
+                        <FontAwesomeIcon icon={faEnvelope} />
                         <Trans ns="login">Subscribe to Major Updates</Trans>
-                      </span>
+                      </div>
                     </Button>
 
                     <Button
@@ -270,10 +279,16 @@ const SignUp = (props) => {
                       disabled={isSubmitting || !isValid || displayFacebookSpinner}
                       data-cy="signup-btn"
                     >
-                      {isSubmitting && <Spinner />}
-                      <span className="pl-3">
+                      <div className="flex gap-2 items-center">
+                        {isSubmitting ? (
+                          <div>
+                            <Spinner size="sm" />
+                          </div>
+                        ) : (
+                          <FontAwesomeIcon icon={faEnvelope} />
+                        )}
                         <Trans ns="login">Subscribe to New Incidents</Trans>
-                      </span>
+                      </div>
                     </Button>
                   </div>
                 </Form>
