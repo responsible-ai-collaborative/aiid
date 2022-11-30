@@ -83,7 +83,7 @@ const config = {
       { title: 'Welcome to the AIID', label: 'welcome', url: '/', items: [] },
       { title: 'Discover Incidents', label: 'discover', url: '/apps/discover', items: [] },
       { title: 'Spatial View', label: 'spatial', url: '/summaries/spatial', items: [] },
-      
+      { title: 'Table View', label: 'incidents', url: '/apps/incidents', items: [] },
       { title: 'Entities', label: 'entities', url: '/entities', items: [] },
       { title: 'Taxonomies', label: 'taxonomies', url: '/taxonomies', items: [] },
       { title: 'Word Counts', label: 'wordcounts', url: '/summaries/wordcounts', items: [] },
