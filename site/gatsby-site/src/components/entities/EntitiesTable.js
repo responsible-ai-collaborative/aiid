@@ -95,7 +95,7 @@ function IncidentsCell({ cell }) {
   );
 }
 
-function EntitiestCell({ cell }) {
+function EntitiesCell({ cell }) {
   const { row, column } = cell;
 
   const filtered = column.filterValue
@@ -132,6 +132,47 @@ function EntitiestCell({ cell }) {
   );
 }
 
+function ResponseCell({ cell }) {
+  const { row, column } = cell;
+
+  const filtered = column.filterValue
+    ? cell.value.filter((response) =>
+        ['report_number', 'title'].some((field) =>
+          response[field].toString().toLowerCase().includes(column.filterValue)
+        )
+      )
+    : cell.value;
+
+  return (
+    <div>
+      <div className={`text-black flex justify-between ${row.isExpanded && 'pb-4'}`}>
+        <Trans ns="entities" count={filtered.length}>
+          {{ count: filtered.length }} Incident responses
+        </Trans>
+      </div>
+      {row.isExpanded && (
+        <ul className="divide-y divide-gray-200 dark:divide-gray-700 min-h-full max-h-240 -mx-4 border-t overflow-y-scroll">
+          {filtered.map((response) => (
+            <li
+              className="py-2 list-none"
+              key={`${response.incident_id}#r${response.report_number}`}
+            >
+              <Link
+                className="inline-block bg-green-100 text-green-800 text-xs font-semibold m-1 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900"
+                to={`/cite/${response.incident_id}#r${response.report_number}`}
+                key={`${response.incident_id}#r${response.report_number}`}
+              >
+                Response {response.report_number}
+              </Link>
+              <div className="text-black ml-1">{response.title}</div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 const incidentFilter = (rows, [field], value) =>
   rows.filter((row) => {
     return row.values[field].some((incident) =>
@@ -151,6 +192,15 @@ const entitiesFilter = (rows, [field], value) =>
 const entityFilter = (rows, _, value) => {
   return rows.filter((row) => row.original.name.toLowerCase().includes(value.toLowerCase()));
 };
+
+const responseFilter = (rows, [field], value) =>
+  rows.filter((row) => {
+    return row.values[field].some((response) =>
+      ['report_number', 'title'].some((field) =>
+        response[field].toString().toLowerCase().includes(value)
+      )
+    );
+  });
 
 const sortByCount = (rowA, rowB, id) => {
   return rowA.values[id].length - rowB.values[id].length;
@@ -247,8 +297,16 @@ export default function EntitiesTable({ data, className = '', ...props }) {
         title: 'Related Entities',
         width: 'w-[20%]',
         accessor: 'relatedEntities',
-        Cell: EntitiestCell,
+        Cell: EntitiesCell,
         filter: entitiesFilter,
+        sortType: sortByCount,
+      },
+      {
+        title: 'Incident Responses',
+        width: 'w-[20%]',
+        accessor: 'responses',
+        Cell: ResponseCell,
+        filter: responseFilter,
         sortType: sortByCount,
       },
     ];

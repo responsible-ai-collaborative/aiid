@@ -6,9 +6,14 @@
     "Loading Quick Adds...": "Cargando informes agregados rápidamente...",
     "Successfully promoted submission to Incident {{incident_id}} and Report {{report_number}}": "Incidente {{incident_id}} e Informe {{report_number}} promovido exitosamente",
     "Successfully promoted submission to <2>Incident {{incident_id}} and Report {{report_number}}</2>": "<2>Incidente {{incident_id}} e Informe {{report_number}}</2> promovido exitosamente",
-    "Add New Incident": "Agregar Nuevo Incidente",
-    "Add New Report": "Agregar Nuevo Informe",
+    "Add new Incident": "Agregar Nuevo Incidente",
+    "Add to incident {{id}}": "Agregar al incidente {{id}}",
     "Reject New Incident": "Rechazar Nuevo Incidente",
     "Reject New Report": "Rechazar Nuevo Informe",
-    "Loading Submissions...": "Cargando incidentes enviados..."
+    "Loading Submissions...": "Cargando incidentes enviados...",
+    "Add as issue": "Agregar como problema",
+    "Are you sure this is a new issue? Any data entered that is associated with incident records will not be added": "¿Estás seguro de que se trata de un problema nuevo? Cualquier dato ingresado que esté asociado con un incidente no se agregará",
+    "Successfully promoted submission to Issue {{report_number}}": "Envío promocionado con éxito al Problema {{report_number}}",
+    "Are you sure this is a new incident? This will create a permanent record with all the details you provided about the incident.": "¿Seguro que desea promocionar este Envío a un nuevo Incidente?",
+    "Sure you want to promote this Submission and link it to Incident {{incident_id}}?": "¿Seguro que desea promocionar este Envío y vincularlo al Incidente {{incident_id}}?"
 }

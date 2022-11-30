@@ -13,6 +13,7 @@ import { StyledHeading } from 'components/styles/Docs';
 import Link from 'components/ui/Link';
 import LocationMap from 'components/visualizations/LocationMap';
 import { Card, Badge } from 'flowbite-react';
+import AiidHelmet from 'components/AiidHelmet';
 
 const Description = styled(Markdown)`
   h1 {
@@ -91,7 +92,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
     return (
       <div>
         <strong>Discover</strong>:
-        <ul className="list-none text-gray-500 dark:text-gray-400 mt-4 ml-4">
+        <ul className="text-gray-500 dark:text-gray-400 mt-4 ml-4">
           {sortedStatsArray
             .filter((item, index) => showAllStats || index < 5)
             .map(({ item, value }) => (
@@ -280,6 +281,11 @@ const Taxonomy = (props) => {
 
   return (
     <Layout {...props} className="">
+      <AiidHelmet
+        metaTitle={'Taxonomy: ' + namespace}
+        canonicalUrl={'/taxonomies/' + namespace.toLowerCase()}
+      />
+
       <div className={'titleWrapper'}>
         <StyledHeading>{namespace}</StyledHeading>
       </div>

@@ -38,7 +38,7 @@ const WordCounts = ({ pageContext, ...props }) => {
 
   return (
     <Layout {...props}>
-      <AiidHelmet>
+      <AiidHelmet canonicalUrl={'/summaries/wordcounts'}>
         <title>Word Counts</title>
       </AiidHelmet>
       <div className="titleWrapper">
@@ -56,7 +56,7 @@ const WordCounts = ({ pageContext, ...props }) => {
           </Trans>
         </p>
         <Container>
-          <ul className="pl-0">
+          <ul className="pl-0 list-revert">
             {wordClouds &&
               wordCountsSorted &&
               wordClouds.map((wordCloud, idx) => (

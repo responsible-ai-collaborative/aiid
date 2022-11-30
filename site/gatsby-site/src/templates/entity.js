@@ -9,6 +9,7 @@ import useToastContext, { SEVERITY } from '../hooks/useToast';
 import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { computeEntities, makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
+import AiidHelmet from 'components/AiidHelmet';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -46,6 +47,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     incidentsAsBoth,
     incidentsHarmedBy,
     entities: entitiesData,
+    responses,
   } = data;
 
   const entityIncidents = {
@@ -76,7 +78,11 @@ const EntityPage = ({ pageContext, data, ...props }) => {
 
   const incidents = sections.reduce((array, s) => array.concat(entityIncidents[s.key]), []);
 
-  const entities = computeEntities({ incidents, entities: entitiesData.nodes });
+  const entities = computeEntities({
+    incidents,
+    entities: entitiesData.nodes,
+    responses: responses.nodes,
+  });
 
   const incidentsHash = makeIncidentsHash(incidents);
 
@@ -199,8 +205,11 @@ const EntityPage = ({ pageContext, data, ...props }) => {
 
   return (
     <Layout {...props}>
+      <AiidHelmet metaTitle={'Entity: ' + name} canonicalUrl={'/entities/' + id} />
       <h3>
-        <Link to="/entities">Entities</Link>
+        <Link to="/entities">
+          <Trans ns="entities">Entities</Trans>
+        </Link>
       </h3>
       <div className="flex justify-between">
         <h1>{name}</h1>
@@ -367,6 +376,12 @@ export const query = graphql`
       nodes {
         entity_id
         name
+      }
+    }
+
+    responses: allMongodbAiidprodReports(filter: { tags: { in: ["response"] } }) {
+      nodes {
+        report_number
       }
     }
   }

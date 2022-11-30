@@ -79,7 +79,7 @@ const SubmittedIncidentsPage = ({ ...props }) => {
 
   return (
     <Layout {...props}>
-      <AiidHelmet>
+      <AiidHelmet canonicalUrl={'/apps/submitted'}>
         <title>{t('Submitted Incident Report List')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>

@@ -36,7 +36,8 @@
                 "__typename": "ReportTranslation",
                 "text": "Este es el texto que tiene un largo mayor a ochenta caracteres en frances!",
                 "title": "Este es el Titulo en frances"
-            }
+            },
+            "is_incident_report": true
         }
     }
 }
