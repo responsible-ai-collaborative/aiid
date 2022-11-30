@@ -1,6 +1,8 @@
 {
   "New Incident Report": "Nuevo Informe de Incidente",
+  "New Incident Response": "Nueva Respuesta de Incidente",
   "submitFormDescription": "El siguiente formulario creará un nuevo informe de incidentes para <2>revisión</2> e inclusión en la base de datos de incidentes de AI. Verifique cuidadosamente sus entradas para detectar problemas de contenido (por ejemplo, copiar y pegar accidentalmente anuncios). Para obtener detalles sobre el proceso de ingestión de la base de datos, consulte las <5>páginas de investigación</5> o <8>contáctenos si tiene preguntas.</8>",
+  "submitFormResponseDescription": "El siguiente formulario creará un nueva respuesta para el incidente <2>#{{incident_id}}</2> para <5>revisión</5> e inclusión en la base de datos de incidentes de AI. Verifique cuidadosamente sus entradas para detectar problemas de contenido (por ejemplo, copiar y pegar accidentalmente anuncios). Para obtener detalles sobre el proceso de ingestión de la base de datos, consulte las <8>páginas de investigación</8> o <11>contáctenos si tiene preguntas.</11>",
   "Report Address": "URL del Informe",
   "submitReviewDescription": "Los informes enviados se agregan a una <1>cola de revisión </1> para que se resuelvan en un registro de incidente nuevo o existente. Los incidentes se revisan y fusionan en la base de datos después de que haya suficientes incidentes pendientes.",
   "Fetch info": "Obtener información",
@@ -43,5 +45,7 @@
   "Review queue": "Cola de revisión",
   "Author CSV": "Autor CSV",
   "Submitter CSV": "Reportador CSV",
-  "Enter a valid Incident ID": "Ingrese un ID de Incidente válido"
+  "Enter a valid Incident ID": "Ingrese un ID de Incidente válido",
+  "Adding a new report to incident {{incident_id}}": "Agregando un nuevo informe al incidente {{incident_id}}",
+  "Adding a new response to incident {{incident_id}}": "Agregando una nueva respuesta al incidente {{incident_id}}"
 }
