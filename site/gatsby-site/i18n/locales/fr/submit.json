@@ -1,6 +1,8 @@
 {
   "New Incident Report": "Nouveau rapport d'incident",
+  "New Incident Response": "Nouvelle Réponse d'incident",
   "submitFormDescription": "Le formulaire suivant créera un nouveau rapport d'incident pour <2>révision</2> et inclusion dans la base de données des incidents AI. Vérifiez attentivement vos messages pour détecter des problèmes de contenu (par exemple, copier et coller accidentellement des publicités). Pour plus de détails sur le processus d'intégration de la base de données, consultez les <5>pages de recherche</5> ou <8>contactez-nous si vous avez des questions.</8>",
+  "submitFormResponseDescription": "Le formulaire suivant créera une nouvelle réponse d'incident pour l'incident <2>#{{incident_id}}</2> pour <5>révision</5> et inclusion dans la base de données des incidents AI. Vérifiez attentivement vos messages pour détecter des problèmes de contenu (par exemple, copier et coller accidentellement des publicités). Pour plus de détails sur le processus d'intégration de la base de données, consultez les <8>pages de recherche</8> ou <11>contactez-nous si vous avez des questions.</11>",
   "Report Address": "URL du rapport",
   "submitReviewDescription": "Les rapports soumis sont ajoutés à une <1>file d'attente pour révision </1> pour être résolus sur un enregistrement d'incident nouveau ou existant. Les incidents sont examinés et fusionnés dans la base de données lorsqu'il y a suffisamment d'incidents en attente..",
   "Fetch info": "Récupérer les informations",
@@ -31,5 +33,7 @@
   "Report successfully added to review queue": "Rapport ajouté à la file d'attente des révisions",
   "Review queue": "File d'attente",
   "Report successfully added to review queue. You can see your submission <2>here</2>.": "Rapport ajouté à la file d'attente des révisions. Vous pouvez voir votre soumission <2>ici</2>.",
-  "Enter a valid Incident ID": "Entrez un ID d'incident valide"
+  "Enter a valid Incident ID": "Entrez un ID d'incident valide",
+  "Adding a new report to incident {{incident_id}}": "Ajout d'un nouveau rapport à l'incident {{incident_id}}",
+  "Adding a new response to incident {{incident_id}}": "Ajout d'une nouvelle réponse à l'incident {{incident_id}}"
 }

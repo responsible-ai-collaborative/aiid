@@ -107,6 +107,10 @@ class AlgoliaUpdater {
     this.mongoClient = mongoClient;
     this.reporter = reporter;
     this.languages = languages;
+    /**
+     * @type {import('algoliasearch').SearchClient}
+     * @public
+     */
     this.algoliaClient = algoliaClient;
   }
 
@@ -228,7 +232,7 @@ class AlgoliaUpdater {
 
     const index = await this.algoliaClient.initIndex(indexName);
 
-    await index.saveObjects(entries);
+    await index.replaceAllObjects(entries);
 
     await index
       .setSettings({
