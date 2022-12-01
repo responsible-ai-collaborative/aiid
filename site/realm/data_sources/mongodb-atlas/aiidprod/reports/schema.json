@@ -115,9 +115,11 @@
         "submitters",
         "title",
         "text",
+        "plain_text",
         "url",
         "source_domain",
-        "language"
+        "language",
+        "tags"
     ],
     "title": "report"
 }

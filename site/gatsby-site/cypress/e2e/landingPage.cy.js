@@ -58,7 +58,29 @@ describe('The Landing page', () => {
       .should('be.visible')
       .within(() => {
         cy.contains('h2', 'Common Entities').should('exist');
+        cy.contains('a', 'View all entities').should('have.attr', 'href', '/entities');
         cy.get('.grid > a').should('have.length', 3);
+
+        for (let i = 0; i < 3; i++) {
+          cy.get('.grid > a')
+            .eq(i)
+            .get('li')
+            .eq(0)
+            .contains(/Involved in \d+ incidents,/)
+            .should('exist');
+          cy.get('.grid > a')
+            .eq(i)
+            .get('li')
+            .eq(1)
+            .contains(/allegedly harming \d+ entities,/)
+            .should('exist');
+          cy.get('.grid > a')
+            .eq(i)
+            .get('li')
+            .eq(2)
+            .contains(/with \d+ incident responses./)
+            .should('exist');
+        }
       });
   });
 
