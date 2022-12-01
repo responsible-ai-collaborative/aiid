@@ -30,7 +30,7 @@ export default function IncidentsOverTimePage({ data, ...props }) {
 
   const [startDate, setStartDate] = useState(new Date(2019, 5, 27));
 
-  const [startAtZero, setStartAtZero] = useState(false);
+  const [startAtZero, setStartAtZero] = useState(true);
 
   const incidentsByDate = data.allMongodbAiidprodIncidents.nodes
     .map((incident) => {
