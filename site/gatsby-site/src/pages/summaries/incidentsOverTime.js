@@ -103,6 +103,7 @@ export default function IncidentsOverTimePage({ data, ...props }) {
             type="checkbox"
             id="start-at-zero"
             className="rounded grow-0 inline"
+            checked={startAtZero}
             onChange={() => {
               setStartAtZero(!startAtZero);
             }}
