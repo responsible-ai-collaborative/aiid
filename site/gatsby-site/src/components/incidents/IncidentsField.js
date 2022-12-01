@@ -70,7 +70,7 @@ export default function IncidentsField({ id, name }) {
         }}
         renderToken={(option, { onRemove }, index) => (
           <Token key={index} onRemove={onRemove} option={option} title={option.title}>
-            <div className="flex">
+            <div className="flex" data-cy="token">
               <b>{option.id}</b>
               <span className="block max-w-[20ch] truncate overflow-ellipsis ml-2">
                 {option.title}
