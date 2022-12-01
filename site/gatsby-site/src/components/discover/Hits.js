@@ -4,6 +4,7 @@ import Hit from './Hit';
 import { Spinner } from 'flowbite-react';
 import { DisplayModeEnumParam } from './queryParams';
 import { useQueryParam } from 'use-query-params';
+import ListSkeleton from 'elements/Skeletons/List';
 
 const Hits = ({
   hits,
@@ -16,7 +17,8 @@ const Hits = ({
   if (isSearchStalled) {
     return (
       <div className="tw-no-results bootstrap">
-        <Spinner size={'xl'} />
+        <Spinner />
+        <ListSkeleton />
       </div>
     );
   }
