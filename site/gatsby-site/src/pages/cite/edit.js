@@ -21,6 +21,7 @@ import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
 import { gql, useApolloClient } from '@apollo/client';
 import { useTranslation, Trans } from 'react-i18next';
 import RelatedIncidents from '../../components/RelatedIncidents';
+import DefaultSkeleton from 'elements/Skeletons/Default';
 
 const UPDATE_REPORT_TRANSLATION = gql`
   mutation UpdateReportTranslation($input: UpdateOneReportTranslationInput) {
@@ -336,11 +337,11 @@ function EditCitePage(props) {
 
   return (
     <Layout {...props} className={'w-full boostrap p-1'}>
-      {!loading && <h1 className="mb-5">Editing Incident Report {reportNumber}</h1>}
+      <h1 className="mb-5">Editing Incident Report {reportNumber}</h1>
 
       {loading && (
-        <div className="flex justify-center">
-          <Spinner />
+        <div className="flex">
+          <DefaultSkeleton />
         </div>
       )}
       {!reportData?.report && !loading && <div>Report not found</div>}
