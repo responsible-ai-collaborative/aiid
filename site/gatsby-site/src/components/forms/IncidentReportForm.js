@@ -200,7 +200,7 @@ const IncidentReportForm = () => {
   const { config } = useLocalization();
 
   return (
-    <div className="bootstrap">
+    <div>
       <Form
         onSubmit={(event) => {
           event.preventDefault();

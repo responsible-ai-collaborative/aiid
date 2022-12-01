@@ -3,15 +3,14 @@ import Layout from '../../components/Layout';
 import IncidentForm, { schema } from '../../components/incidents/IncidentForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Button } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
+import { Button, Spinner } from 'flowbite-react';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { UPSERT_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
-import { graphql, useStaticQuery } from 'gatsby';
+import { graphql, Link, useStaticQuery } from 'gatsby';
 import { processEntities } from '../../utils/entities';
 
 function EditCitePage(props) {
@@ -115,8 +114,19 @@ function EditCitePage(props) {
   };
 
   return (
-    <Layout {...props} className={'w-100 bootstrap'}>
-      {!loading && <h1 className="mb-5">Editing Incident {incidentId}</h1>}
+    <Layout {...props} className={'w-full'}>
+      {!loading && (
+        <div className="flex flex-row justify-between flex-wrap">
+          <h1 className="mb-5">
+            <Trans>Editing Incident {{ incidentId }}</Trans>
+          </h1>
+          <Link to={`/cite/${incidentId}`} className="mb-5">
+            <Button outline={true} color={'light'}>
+              <Trans>Back to Incident {{ incidentId }}</Trans>
+            </Button>
+          </Link>
+        </div>
+      )}
 
       {incident === undefined && <Spinner />}
       {incident === null && <div>Report not found</div>}
