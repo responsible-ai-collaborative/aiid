@@ -13,6 +13,7 @@ import { Table, InputGroup, FormControl, Form, Button } from 'react-bootstrap';
 import { Spinner } from 'flowbite-react';
 import { gql, useQuery } from '@apollo/client';
 import { Trans } from 'react-i18next';
+import ListSkeleton from 'elements/Skeletons/List';
 
 const TableStyles = styled.div`
   padding: 1rem 1rem 1rem 0;
@@ -452,10 +453,13 @@ export default function Incidents(props) {
       </AiidHelmet>
 
       {loading && (
-        <div className="p-4 flex justify-center align-items-center gap-2">
-          <Spinner />
-          <Trans>Fetching Reports...</Trans>
-        </div>
+        <>
+          <div className="p-4 flex justify-center align-items-center gap-2">
+            <Spinner />
+            <Trans>Fetching Reports...</Trans>
+          </div>
+          <ListSkeleton />
+        </>
       )}
 
       {!loading && (

@@ -6,6 +6,7 @@ import { FIND_INCIDENTS } from '../../graphql/incidents';
 import { useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
 import AiidHelmet from '../../components/AiidHelmet';
+import ListSkeleton from 'elements/Skeletons/List';
 
 export default function IncidentsPage(props) {
   const { data: incidentsData } = useQuery(FIND_INCIDENTS);
@@ -19,10 +20,13 @@ export default function IncidentsPage(props) {
       </AiidHelmet>
       <div className="bootstrap">
         {!incidentsData && (
-          <div className="p-4 flex justify-center align-items-center gap-2">
-            <Spinner />
-            <Trans>Fetching Incidents...</Trans>
-          </div>
+          <>
+            <div className="p-4 flex justify-center align-items-center gap-2">
+              <Spinner />
+              <Trans>Fetching Incidents...</Trans>
+            </div>
+            <ListSkeleton />
+          </>
         )}
         {incidentsData && incidentsData.incidents && (
           <div className="ms-3 mt-2 mb-2">

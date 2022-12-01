@@ -11,6 +11,7 @@ import { StyledHeading, StyledMainWrapper } from '../../components/styles/Docs';
 import SubmissionList from '../../components/submissions/SubmissionList';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Trans, useTranslation } from 'react-i18next';
+import ListSkeleton from 'elements/Skeletons/List';
 
 const SubmittedIncidentsPage = ({ ...props }) => {
   const { isRole } = useUserContext();
@@ -99,12 +100,15 @@ const SubmittedIncidentsPage = ({ ...props }) => {
         </p>
         <ListGroup className="mb-5">
           {sortedQuickAdds.length < 1 && (
-            <div className="flex gap-2">
-              <Spinner />
-              <p>
-                <Trans ns="submitted">Loading Quick Adds...</Trans>
-              </p>
-            </div>
+            <>
+              <div className="flex gap-2">
+                <Spinner />
+                <p>
+                  <Trans ns="submitted">Loading Quick Adds...</Trans>
+                </p>
+              </div>
+              <ListSkeleton />
+            </>
           )}
           {sortedQuickAdds.map(({ _id, url, date_submitted }) => (
             <ListGroup.Item key={_id} className="m-0 p-2">
