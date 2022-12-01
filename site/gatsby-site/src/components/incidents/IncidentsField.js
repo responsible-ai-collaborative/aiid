@@ -54,8 +54,7 @@ export default function IncidentsField({ id, name }) {
       <AsyncTypeahead
         filterBy={() => true}
         id={id}
-        inputId={'input-' + id}
-        name={name}
+        inputProps={{ id: 'input-' + id, name }}
         selected={selected}
         placeHolder="Something"
         options={options}
@@ -73,7 +72,9 @@ export default function IncidentsField({ id, name }) {
           <Token key={index} onRemove={onRemove} option={option} title={option.title}>
             <div className="flex">
               <b>{option.id}</b>
-              <span className="block w-[20ch] truncate overflow-ellipsis ml-2">{option.title}</span>
+              <span className="block max-w-[20ch] truncate overflow-ellipsis ml-2">
+                {option.title}
+              </span>
             </div>
           </Token>
         )}

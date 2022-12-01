@@ -77,7 +77,7 @@ export const FIND_INCIDENTS = gql`
 `;
 
 export const FIND_INCIDENTS_TITLE = gql`
-  query FindIncidents($query: IncidentQueryInput) {
+  query FindIncidentsTitles($query: IncidentQueryInput) {
     incidents(query: $query, limit: 999) {
       incident_id
       title

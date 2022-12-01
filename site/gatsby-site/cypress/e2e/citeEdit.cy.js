@@ -605,4 +605,126 @@ describe('Edit report', () => {
 
     cy.contains('button', 'Submit').should('not.be.disabled');
   });
+
+  maybeIt('Should convert an issue to a incident report', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedReports',
+      'ProbablyRelatedReports',
+      {
+        data: { reports: [] },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedIncidents',
+      'ProbablyRelatedIncidents',
+      {
+        data: { incidents: [] },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindReportWithTranslations',
+      'FindReportWithTranslations',
+      issueWithTranslations
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidents',
+      'FindIncidents',
+      { data: { incidents: [] } }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidentsTitles',
+      'FindIncidentsTitles',
+      {
+        data: {
+          incidents: [
+            {
+              _typename: 'Incident',
+              incident_id: 1,
+              title: 'Incident 1',
+            },
+            {
+              _typename: 'Incident',
+              incident_id: 2,
+              title: 'Incident 2',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.visit(`/cite/edit?report_number=23`);
+
+    cy.wait('@FindIncidents');
+
+    cy.wait('@FindReportWithTranslations');
+
+    cy.wait('@FindIncidentsTitles');
+
+    cy.get('form[data-cy="report"]').should('be.visible');
+
+    cy.get('[name="incident_ids"]').type('1');
+
+    cy.get('[id="incident_ids-item-0"]').click();
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateReport',
+      'UpdateReport',
+      updateOneReport
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateReportTranslation',
+      'UpdateReportTranslation',
+      updateOneReportTranslation
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'LinkReportsToIncidents',
+      'LinkReportsToIncidents',
+      {
+        data: {
+          linkReportsToIncidents: [
+            {
+              __typename: 'Incident',
+              incident_id: 1,
+              reports: [{ __typename: 'Report', report_number: 23 }],
+            },
+          ],
+        },
+      }
+    );
+
+    cy.window().then((win) => cy.stub(win, 'confirm').as('confirm').returns(true));
+
+    cy.contains('button', 'Submit').click();
+
+    cy.get('@confirm').should('have.been.calledOnce').invoke('restore');
+
+    cy.wait('@UpdateReport');
+
+    cy.wait('@UpdateReportTranslation');
+
+    cy.wait('@UpdateReportTranslation');
+
+    cy.wait('@LinkReportsToIncidents').then((xhr) => {
+      expect(xhr.request.body.variables.input).to.deep.eq({
+        incident_ids: [1],
+        report_numbers: [23],
+      });
+    });
+  });
 });
