@@ -344,7 +344,7 @@ const IncidentReportForm = () => {
         </Form.Group>
 
         <div className="mt-3">
-          <Label popover={'incident_ids'} label={'* Incident IDs'} />
+          <Label popover={'incident_ids'} label="Incident IDs" />
           <IncidentsField id="incident_ids" name="incident_ids" />
         </div>
 
