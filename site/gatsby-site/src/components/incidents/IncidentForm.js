@@ -25,9 +25,19 @@ export const schema = Yup.object().shape({
   title: Yup.string().required(),
   description: Yup.string().required(),
   date: Yup.date().required(),
-  AllegedDeployerOfAISystem: Yup.array(),
-  AllegedDeveloperOfAISystem: Yup.array(),
-  AllegedHarmedOrNearlyHarmedParties: Yup.array(),
+  AllegedDeployerOfAISystem: Yup.array().required(),
+  AllegedDeveloperOfAISystem: Yup.array().required(),
+  AllegedHarmedOrNearlyHarmedParties: Yup.array().required(),
+  editors: Yup.string()
+    .matches(/^.{3,}$/, {
+      excludeEmptyString: true,
+      message: 'Incident Editor must have at least 3 characters',
+    })
+    .matches(/^.{3,200}$/, {
+      excludeEmptyString: true,
+      message: "Incident Editor can't be longer than 200 characters",
+    })
+    .required(),
 });
 
 function IncidentForm() {
@@ -108,9 +118,11 @@ function IncidentForm() {
           <Form.Label>Description</Form.Label>
           <Form.Control
             type="text"
+            as="textarea"
             name="description"
             value={values.description}
             onChange={handleChange}
+            style={{ height: '6em' }}
           />
           <Form.Control.Feedback type="invalid">{errors.description}</Form.Control.Feedback>
         </Form.Group>
