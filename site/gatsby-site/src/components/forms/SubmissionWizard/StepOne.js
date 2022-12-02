@@ -315,30 +315,7 @@ const FormDetails = ({
           />
         )}
 
-        <div className="flex justify-end mt-4 gap-2">
-          <Button
-            data-cy="submit-step-1"
-            disabled={isSubmitting || parsingNews}
-            onClick={() => {
-              setSubmitCount(submitCount + 1);
-              validateAndSubmitForm(
-                true,
-                setIsSubmitting,
-                isValid,
-                validateForm,
-                setFieldTouched,
-                values,
-                submitForm
-              );
-            }}
-          >
-            {isSubmitting && (
-              <div className="mr-3">
-                <Spinner size="sm" light={true} />
-              </div>
-            )}
-            <Trans ns="submit">Submit</Trans>
-          </Button>
+        <div className="flex justify-end mt-8 gap-2">
           <Button
             data-cy="to-step-2"
             color={'light'}
@@ -370,6 +347,31 @@ const FormDetails = ({
                 clipRule="evenodd"
               ></path>
             </svg>
+          </Button>
+        </div>
+        <div className="flex justify-end mt-4 gap-2">
+          <Button
+            data-cy="submit-step-1"
+            disabled={isSubmitting || parsingNews}
+            onClick={() => {
+              setSubmitCount(submitCount + 1);
+              validateAndSubmitForm(
+                true,
+                setIsSubmitting,
+                isValid,
+                validateForm,
+                setFieldTouched,
+                values,
+                submitForm
+              );
+            }}
+          >
+            {isSubmitting && (
+              <div className="mr-3">
+                <Spinner size="sm" light={true} />
+              </div>
+            )}
+            <Trans>Submit</Trans>
           </Button>
         </div>
       </Form>
