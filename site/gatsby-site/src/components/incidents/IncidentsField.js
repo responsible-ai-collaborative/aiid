@@ -72,9 +72,20 @@ export default function IncidentsField({ id, name }) {
           <Token key={index} onRemove={onRemove} option={option} title={option.title}>
             <div className="flex" data-cy="token">
               <b>{option.id}</b>
-              <span className="block max-w-[20ch] truncate overflow-ellipsis ml-2">
-                {option.title}
-              </span>
+              {option.title ? (
+                <>
+                  <span className="block max-w-[20ch] truncate overflow-ellipsis ml-2">
+                    {option.title}
+                  </span>
+                  )
+                </>
+              ) : (
+                <>
+                  <div role="status" className="w-[20ch] animate-pulse">
+                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 my-1"></div>
+                  </div>
+                </>
+              )}
             </div>
           </Token>
         )}
