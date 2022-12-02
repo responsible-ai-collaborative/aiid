@@ -86,6 +86,18 @@ export const schema = yup.object().shape({
     .nullable(),
   incident_id,
   incident_date,
+  incident_title: yup.string().nullable(),
+  incident_editors: yup
+    .string()
+    .matches(/^.{3,}$/, {
+      excludeEmptyString: true,
+      message: 'Incident Editor must have at least 3 characters',
+    })
+    .matches(/^.{3,200}$/, {
+      excludeEmptyString: true,
+      message: "Incident Editor can't be longer than 200 characters",
+    })
+    .nullable(),
   editor_notes: yup.string(),
 });
 

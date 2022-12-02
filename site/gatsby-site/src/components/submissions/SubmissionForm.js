@@ -263,6 +263,8 @@ const SubmissionForm = () => {
           </Form.Select>
         </Form.Group>
 
+        <TagsInputGroup name="tags" label={t('Tags')} className="mt-3" {...TextInputGroupProps} />
+
         <IncidentIdField
           name="incident_id"
           className="mt-3"
@@ -277,70 +279,76 @@ const SubmissionForm = () => {
         />
 
         {!values.incident_id && (
-          <TextInputGroup
-            name="incident_date"
-            label={t('Incident Date')}
-            placeholder={t('Incident Date')}
-            type="date"
-            className="mt-3"
-            disabled={values.incident_id}
-            {...TextInputGroupProps}
-          />
+          <>
+            <hr />
+            <h3 className="text-lg">Incident Data</h3>
+            <TextInputGroup
+              name="incident_title"
+              label={t('Incident Title')}
+              placeholder={t('Incident title')}
+              className="mt-3"
+              {...TextInputGroupProps}
+            />
+            <TextInputGroup
+              name="incident_date"
+              label={t('Incident Date')}
+              placeholder={t('Incident Date')}
+              type="date"
+              className="mt-3"
+              disabled={values.incident_id}
+              {...TextInputGroupProps}
+            />
+            <TextInputGroup
+              name="description"
+              label={t('Description')}
+              type="textarea"
+              placeholder={t('Incident Description')}
+              rows={3}
+              className="mt-3"
+              {...TextInputGroupProps}
+            />
+            <TagsInputGroup
+              name="incident_editors"
+              label={t('Editors')}
+              className="mt-3"
+              {...TextInputGroupProps}
+            />
+            <TagsInputGroup
+              name="developers"
+              label={t('Alleged developer of AI system')}
+              placeholder={t('Who created or built the technology involved in the incident?')}
+              className="mt-3"
+              {...TextInputGroupProps}
+            />
+
+            <TagsInputGroup
+              name="deployers"
+              label={t('Alleged deployer of AI system')}
+              placeholder={t('Who employed or was responsible for the technology?')}
+              className="mt-3"
+              {...TextInputGroupProps}
+            />
+
+            <TagsInputGroup
+              name="harmed_parties"
+              label={t('Alleged harmed or nearly harmed parties')}
+              placeholder={t('Who experienced negative impacts?')}
+              className="mt-3"
+              {...TextInputGroupProps}
+            />
+            <hr />
+          </>
         )}
 
-        <details className="mt-3">
-          <summary data-cy="extra-fields">{t('Tell us more...')}</summary>
-
-          <TagsInputGroup name="tags" label={t('Tags')} className="mt-3" {...TextInputGroupProps} />
-
-          {!values.incident_id && (
-            <>
-              <TextInputGroup
-                name="description"
-                label={t('Description')}
-                type="textarea"
-                placeholder={t('Incident Description')}
-                rows={3}
-                className="mt-3"
-                {...TextInputGroupProps}
-              />
-
-              <TagsInputGroup
-                name="developers"
-                label={t('Alleged developer of AI system')}
-                placeholder={t('Who created or built the technology involved in the incident?')}
-                className="mt-3"
-                {...TextInputGroupProps}
-              />
-
-              <TagsInputGroup
-                name="deployers"
-                label={t('Alleged deployer of AI system')}
-                placeholder={t('Who employed or was responsible for the technology?')}
-                className="mt-3"
-                {...TextInputGroupProps}
-              />
-
-              <TagsInputGroup
-                name="harmed_parties"
-                label={t('Alleged harmed or nearly harmed parties')}
-                placeholder={t('Who experienced negative impacts?')}
-                className="mt-3"
-                {...TextInputGroupProps}
-              />
-            </>
-          )}
-
-          <TextInputGroup
-            name="editor_notes"
-            label={t('Editor Notes')}
-            as="textarea"
-            placeholder={t('Optional context and notes about the incident')}
-            rows={8}
-            className="mt-3"
-            {...TextInputGroupProps}
-          />
-        </details>
+        <TextInputGroup
+          name="editor_notes"
+          label={t('Editor Notes')}
+          as="textarea"
+          placeholder={t('Optional context and notes about the incident')}
+          rows={8}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
       </Form>
     </div>
   );
