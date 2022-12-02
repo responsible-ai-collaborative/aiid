@@ -206,57 +206,56 @@ const EntityPage = ({ pageContext, data, ...props }) => {
           <Trans ns="entities">Entities</Trans>
         </Link>
       </h3>
-      <div className="flex items-center flex-wrap">
-        <h1 className="mr-auto mb-0">{name}</h1>
-        <div className="flex items-center">
-          {loadingSubscription && subscriptionNetworkStatus === NetworkStatus.loading ? (
-            <Spinner size="sm" />
-          ) : subscriptions?.subscriptions.length > 0 ? (
-            <Trans>
-              <Button
-                onClick={unsubscribeToEntity}
-                color={'light'}
-                disabled={unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
-                className="mr-1"
-              >
-                <div className="flex gap-2 items-center">
-                  {unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
-                    <div>
-                      <Spinner size="sm" />
-                    </div>
-                  ) : (
-                    <FontAwesomeIcon icon={faEnvelope} title={t('Cancel Subscription')} />
-                  )}
-                  Unsubscribe
-                </div>
-              </Button>
-              {/*from New {{ name }} Incidents*/}
-            </Trans>
-          ) : (
-            <Trans>
-              Want to be notified of new incidents involving {{ name }}?
-              <Button
-                onClick={subscribeToEntity}
-                disabled={subscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
-                className="ml-1"
-              >
-                <div className="flex gap-2 items-center">
-                  {subscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
-                    <div>
-                      <Spinner size="sm" />
-                    </div>
-                  ) : (
-                    <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
-                  )}
-                  {/*Notify Me*/}
-                  Subscribe
-                </div>
-              </Button>
-              {/*of New {{ name }} Incidents*/}
-            </Trans>
-          )}
-        </div>
+      {/*<div className="flex items-center flex-wrap">*/}
+      <h1 className="mr-auto mb-4">{name}</h1>
+      <div className="flex items-center">
+        {loadingSubscription && subscriptionNetworkStatus === NetworkStatus.loading ? (
+          <Spinner size="sm" />
+        ) : subscriptions?.subscriptions.length > 0 ? (
+          <Trans>
+            <Button
+              onClick={unsubscribeToEntity}
+              color={'light'}
+              disabled={unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
+              className="mr-1"
+            >
+              <div className="flex gap-2 items-center">
+                {unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
+                  <div>
+                    <Spinner size="sm" />
+                  </div>
+                ) : (
+                  <FontAwesomeIcon icon={faEnvelope} title={t('Cancel Subscription')} />
+                )}
+                Unsubscribe
+              </div>
+            </Button>
+            {/*from New {{ name }} Incidents*/}
+          </Trans>
+        ) : (
+          <Trans>
+            <Button
+              onClick={subscribeToEntity}
+              disabled={subscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
+              className="mr-2 whitespace-nowrap"
+            >
+              <div className="flex gap-2 items-center">
+                {subscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
+                  <div>
+                    <Spinner size="sm" />
+                  </div>
+                ) : (
+                  <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
+                )}
+                Notify Me
+              </div>
+            </Button>{' '}
+            of new incidents involving this entity.
+            {/*of New {{ name }} Incidents*/}
+          </Trans>
+        )}
       </div>
+      {/*</div>*/}
 
       {sections.map((section) => {
         const [open, setOpen] = useState(false);
