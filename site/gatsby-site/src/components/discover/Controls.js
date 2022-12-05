@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Trans } from 'react-i18next';
 import useSearch from './useSearch';
+import Sorting from './Sorting';
 
 const Controls = () => {
   const { searchState } = useSearch();
@@ -60,6 +61,7 @@ const Controls = () => {
         </div>
       </div>
       <div className="mb-3 hidden md:block">{expandFilters && <Filters />}</div>
+      <Sorting />
     </>
   );
 };
