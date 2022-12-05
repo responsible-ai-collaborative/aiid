@@ -19,7 +19,7 @@ export default function IncidentsField({ id, name }) {
 
   const [options, setOptions] = useState([]);
 
-  const [selected, setSelected] = useState(value.map((id) => ({ id, title: '' })));
+  const [selected, setSelected] = useState(value.sort().map((id) => ({ id, title: '' })));
 
   useEffect(() => {
     if (data?.incidents) {
@@ -56,7 +56,6 @@ export default function IncidentsField({ id, name }) {
         id={id}
         inputProps={{ id: 'input-' + id, name }}
         selected={selected}
-        placeHolder="Something"
         options={options}
         multiple
         labelKey={(option) => `${option.id}`}
