@@ -40,7 +40,7 @@ export default function IncidentIdField({
 
   return (
     <Form.Group className={className + ' '}>
-      <Label popover={name} label={(required ? '*' : '') + 'Incident ID'} />
+      <Label popover={name} label={(required ? '*' : '') + t('Incident ID')} />
       <Form.Control
         className={`mt-1 bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white ${
           error

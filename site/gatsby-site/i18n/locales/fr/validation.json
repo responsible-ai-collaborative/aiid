@@ -6,5 +6,6 @@
   "*Date downloaded required": "*Date de téléchargement obligatoire",
   "*Must enter URL in http://www.example.com/images/preview.png format": "*Vous devez entrer l'URL avec le format http://www.example.com/images/preview.png",
   "Incident ID {{value}} not found!": "Incident {{value}} introuvable !",
+  "Incident ID": "ID de l'incident",
   "Type and press Enter to add an item": "Ecrivez et appuyez Enter pour ajouter un élément"
 }
