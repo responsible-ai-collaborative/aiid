@@ -1025,4 +1025,40 @@ describe('The Submit form', () => {
       });
     });
   });
+
+  it('Should show related reports based on author', () => {
+    cy.visit(url);
+
+    const valuesStep1 = {
+      authors: 'BBC News',
+    };
+
+    for (const key in valuesStep1) {
+      cy.get(`[name="${key}"]`).type(valuesStep1[key]);
+    }
+
+    cy.clickOutside();
+
+    cy.get('[data-cy="related-byAuthors"] [data-cy="result"] a[data-cy="title"]')
+      .should('be.visible')
+      .should('contain', 'Amazon workers injured in bear spray accident');
+  });
+
+  it('Should *not* show related reports based on author', () => {
+    cy.visit(url);
+
+    const valuesStep1 = {
+      authors: 'test author',
+    };
+
+    for (const key in valuesStep1) {
+      cy.get(`[name="${key}"]`).type(valuesStep1[key]);
+    }
+
+    cy.clickOutside();
+
+    cy.get('[data-cy="related-byAuthors"] ')
+      .should('be.visible')
+      .should('contain', 'No related reports found.');
+  });
 });
