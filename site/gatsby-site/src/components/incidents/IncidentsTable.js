@@ -97,15 +97,15 @@ function ListCell({ cell }) {
 
         if (v.url) {
           return (
-            <a key={`entity-${v.name}`} href={v.url}>
+            <a key={`entity-${v.name}`} href={v.url} data-cy="cell-entity-link">
               {v.name}
-              {!isLast ? ', ' : ' '}
+              {!isLast ? ', ' : ''}
             </a>
           );
         } else {
           return (
             <>
-              {v.name} {!isLast ? ', ' : ' '}
+              {v.name} {!isLast ? ', ' : ''}
             </>
           );
         }
