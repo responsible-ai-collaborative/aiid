@@ -148,7 +148,7 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
         key={'submission-step-1'}
         next={handleNextStep}
         data={data}
-        name="Step 1 - main information"
+        name={t('Step 1 - main information')}
         parseNewsUrl={parseNewsUrl}
         parsingNews={parsingNews}
         validateAndSubmitForm={validateAndSubmitForm}
@@ -159,7 +159,7 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
         next={handleNextStep}
         previous={handlePreviousStep}
         data={data}
-        name="Step 2 - additional information"
+        name={t('Step 2 - additional information')}
         validateAndSubmitForm={validateAndSubmitForm}
         submissionFailed={submissionFailed}
       />,
@@ -168,7 +168,7 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
         next={handleNextStep}
         previous={handlePreviousStep}
         data={data}
-        name="Step 3 - Tell us more"
+        name={t('Step 3 - Tell us more')}
         submissionFailed={submissionFailed}
       />,
       <StepFour key={'submission-step-4'} />,

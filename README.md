@@ -365,6 +365,7 @@ GATSBY_REALM_APP_ID=
 MONGODB_CONNECTION_STRING=
 MONGODB_REPLICA_SET=
 GATSBY_EXCLUDE_DATASTORE_FROM_BUNDLE=1 # specific to Netlify, for large sites
+GATSBY_CPU_COUNT=2 # limits the number of Gatsby threads, helping with deployments stability
 ```
 ### Github Actions
 Two workflows take care of deploying the Realm app to both `production` and `staging` environments, defined in `realm-production.yml` and `realm-staging.yml`. Each workflow looks for environment variables defined in a Github Environment named `production` and `staging`. 
@@ -580,9 +581,35 @@ About Facebook Authentication instructions: https://www.mongodb.com/docs/realm/w
 ### Subscription types
 
 - **All**: This subscription type is not defined yet.
+    ```
+    {
+        "userId": "63320ce63ec803072c9f529c"
+        "type": "all",
+    }
+    ```
 - **Incident**: Users with this subscription type will be notified when the incident associated is updated. This subscription type needs an incident_id value associated.
+    ```
+    {
+        "userId": "63320ce63ec803072c9f529c"
+        "type": "incident",
+        "incident_id": 10,
+    }
+    ```
 - **New Incident**: Users with this subscription type will be notified when a new Incident is created. The notification will be sent after finish the next site build when the Incident page is actually created.
+    ```
+    {
+        "userId": "63320ce63ec803072c9f529c"
+        "type": "new-incidents",
+    }
+    ```
 - **Entities**: Users can subscribe to an specific Entity. The user with this subscription type will be notified when a new Incident associated with an specific Entity is created or when an existing Incident is updated to be associated with that Entity.
+    ```
+    {
+        "userId": "63320ce63ec803072c9f529c",
+        "type": "entity"
+        "entityId": "openai",
+    }
+    ```
 
 These subscription types are also documented in [subscriptions.js](site/gatsby-site/src/utils/subscriptions.js) file.
 
@@ -607,9 +634,47 @@ To get your Public and Private API Key, follow these [instructions](https://www.
 To get the group ID and the app ID, the easiest way is to navigate to your Atlas Service App dashboard and copy from the URL.
 The URL format is https://realm.mongodb.com/groups/[groupId]/apps/[appId]/dashboard
 
-Email notifications to New Incidents (subscription type **New Incident**) are sent when the next build finishes. This is because we have to wait until the new Incident page is created and accessible.
-When a new Incident is created, a pending notification item is saved into the `notifications` DB collection with `processed=false` field.
+Email notifications to New Incidents (subscription type **New Incident**) and Incident updates (subscription type **Incident**) are sent when the next build finishes. This is because we have to wait until the new Incident page is generated and accessible.
+When a new Incident is created or updates, a pending notification item is saved into the `notifications` DB collection with `processed=false` field.
 And finally, as part of the site build process, we processed all pending notifications (`processed=false`), send the emails to all recipients, and update the items with `processed=true` and `sentDate=[now]`.
+
+### Notifications collection definition
+
+- **Incident Updated**
+    ```
+    {
+        "type": "incident-updated",
+        "incident_id": 374,
+        "processed": false
+    }
+    ```
+- **New Incident Report**
+    ```
+    {
+        "type": "new-report-incident",
+        "incident_id": 374,
+        "report_number": 2172,
+        "processed": false
+    }
+    ```
+- **New Incident**
+    ```
+    {
+        "type": 'new-incidents',
+        "incident_id": incidentId,
+        "processed": false,
+    }
+    ```
+- **Entities**
+    ```
+    {
+        "type": "entity",
+        "incident_id": 374,
+        "entity_id": "openai",
+        "isUpdate": true,
+        "processed": false
+    }
+    ```
 ## Contact
 
 For inquiries, you are encouraged to open an issue on this repository or visit the [contact page](https://incidentdatabase.ai/contact).
