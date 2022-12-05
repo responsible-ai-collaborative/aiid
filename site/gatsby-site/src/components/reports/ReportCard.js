@@ -12,13 +12,13 @@ import { Badge } from 'flowbite-react';
 import { RESPONSE_TAG } from 'utils/entities';
 import { Trans } from 'react-i18next';
 
-const ReportCard = ({ item }) => {
+const ReportCard = ({ item, className }) => {
   const { isRole, loading } = useUserContext();
 
   const authors = item.authors.join(', ');
 
   return (
-    <Card id={`r${item.report_number}`} className="shadow-card IncidentCard">
+    <Card id={`r${item.report_number}`} className={`shadow-card IncidentCard ${className}`}>
       <Card.Header className="flex-col">
         <div className="flex justify-between">
           <a href={`#r${item.report_number}`}>

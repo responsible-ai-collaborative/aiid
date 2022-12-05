@@ -26,7 +26,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
   };
 
   return (
-    <Card key={taxonomy.namespace} className="mt-4" data-cy={taxonomy.namespace}>
+    <Card key={taxonomy.namespace} className="mt-6" data-cy={taxonomy.namespace}>
       <div className="tw-taxa-card-header tw-card-header">
         <h4 className="pr-0.8">
           <Trans namespace={taxonomy.namespace}>
