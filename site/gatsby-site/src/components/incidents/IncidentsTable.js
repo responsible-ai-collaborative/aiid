@@ -175,7 +175,7 @@ export default function IncidentsTable({ data }) {
         id: 'AllegedHarmedOrNearlyHarmedParties',
         accessor: (data) =>
           data.AllegedHarmedOrNearlyHarmedParties.map((i) => {
-            return { name: i.name };
+            return { name: i.name, url: `/entities/${i.entity_id}` };
           }),
         Cell: ListCell,
       },
