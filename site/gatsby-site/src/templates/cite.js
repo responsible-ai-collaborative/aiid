@@ -452,6 +452,7 @@ function CitePage(props) {
           editor_dissimilar_incidents={editor_dissimilar_incidents}
           flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
           parentIncident={incident}
+          className="xl:hidden"
         />
 
         <Pagination className="justify-between">
