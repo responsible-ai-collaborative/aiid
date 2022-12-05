@@ -1,6 +1,5 @@
 import React from 'react';
 import ListGroup from 'react-bootstrap/ListGroup';
-import { Spinner } from 'flowbite-react';
 import Link from '../../components/ui/Link';
 import SubmissionReview from '../../components/submissions/SubmissionReview';
 import { FIND_SUBMISSIONS } from '../../graphql/submissions';
@@ -21,15 +20,7 @@ const SubmissionList = () => {
         </Trans>
       </p>
       <ListGroup className="mb-5" data-cy="submissions">
-        {loading && (
-          <>
-            <div className="flex gap-2">
-              <Spinner />
-              <Trans ns="submitted">Loading Submissions...</Trans>
-            </div>
-            <ListSkeleton />
-          </>
-        )}
+        {loading && <ListSkeleton />}
         {data?.submissions
           .map((submission) => ({ ...submission, __typename: undefined }))
           .sort(

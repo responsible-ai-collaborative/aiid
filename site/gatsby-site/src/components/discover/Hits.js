@@ -1,7 +1,6 @@
 import React from 'react';
 import { connectHits, connectStateResults } from 'react-instantsearch-dom';
 import Hit from './Hit';
-import { Spinner } from 'flowbite-react';
 import { DisplayModeEnumParam } from './queryParams';
 import { useQueryParam } from 'use-query-params';
 import ListSkeleton from 'elements/Skeletons/List';
@@ -17,7 +16,6 @@ const Hits = ({
   if (isSearchStalled) {
     return (
       <div className="tw-no-results bootstrap">
-        <Spinner />
         <ListSkeleton />
       </div>
     );

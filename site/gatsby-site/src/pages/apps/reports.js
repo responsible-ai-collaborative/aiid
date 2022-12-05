@@ -10,9 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
 import { Table, InputGroup, FormControl, Form, Button } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
 import { gql, useQuery } from '@apollo/client';
-import { Trans } from 'react-i18next';
 import ListSkeleton from 'elements/Skeletons/List';
 
 const TableStyles = styled.div`
@@ -452,15 +450,7 @@ export default function Incidents(props) {
         <title>Incident List</title>
       </AiidHelmet>
 
-      {loading && (
-        <>
-          <div className="p-4 flex justify-center align-items-center gap-2">
-            <Spinner />
-            <Trans>Fetching Reports...</Trans>
-          </div>
-          <ListSkeleton />
-        </>
-      )}
+      {loading && <ListSkeleton />}
 
       {!loading && (
         <Container isWide={collapse} className="bootstrap">
