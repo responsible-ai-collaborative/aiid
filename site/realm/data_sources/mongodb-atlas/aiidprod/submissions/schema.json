@@ -140,7 +140,8 @@
         "submitters",
         "text",
         "title",
-        "url"
+        "url",
+        "tags"
     ],
     "title": "submission"
 }

@@ -431,7 +431,7 @@ function CitePage(props) {
             <div className="pb-5">
               <div className={'titleWrapper'}>
                 <h1 className="tw-styled-heading">
-                  <Trans>Incidents Reports</Trans>
+                  <Trans>Incident Reports</Trans>
                 </h1>
               </div>
             </div>
