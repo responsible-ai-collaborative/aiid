@@ -15,6 +15,7 @@ import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncident
 import IncidentIdField from 'components/incidents/IncidentIdField';
 import isEmpty from 'lodash/isEmpty';
 import { format } from 'date-fns';
+import { RESPONSE_TAG } from 'utils/entities';
 
 const StepOne = (props) => {
   const [data, setData] = useState(props.data);
@@ -53,10 +54,7 @@ const StepOne = (props) => {
       .max(50000, `*Text can’t be longer than 50000 characters`)
       .required('*Text is required'),
     incident_id: yup.number().positive().integer('*Must be an incident number or empty'),
-    incident_date: yup.date().when('incident_id', {
-      is: (incident_id) => incident_id == '' || incident_id === undefined,
-      then: yup.date().required('*Incident Date required').nullable(),
-    }),
+    incident_date: yup.date(),
   });
 
   const handleSubmit = (values, last = false) => {
@@ -118,10 +116,10 @@ const FormDetails = ({
   } = useFormikContext();
 
   useEffect(() => {
-    if (!values['date_downloaded']) {
+    if (!values.date_downloaded) {
       setFieldValue('date_downloaded', new Date().toISOString().substr(0, 10));
     }
-  }, []);
+  }, [values.date_downloaded]);
 
   useEffect(() => {
     if (submissionFailed || submissionComplete) {
@@ -147,6 +145,8 @@ const FormDetails = ({
     padding: errors['text'] && touched['text'] ? '0.5rem' : '0',
   };
 
+  const incident_id = values.incident_id;
+
   return (
     <>
       {parsingNews && (
@@ -157,10 +157,14 @@ const FormDetails = ({
           </span>
         </>
       )}
-      {values.incident_id && (
+      {incident_id && (
         <span className="flex mb-4" data-cy="prefilled-incident-id">
           <Badge>
-            <Trans>Adding a new report to incident {values.incident_id}</Trans>
+            {values.tags && values.tags.includes(RESPONSE_TAG) ? (
+              <Trans ns="submit">Adding a new response to incident {{ incident_id }}</Trans>
+            ) : (
+              <Trans ns="submit">Adding a new report to incident {{ incident_id }}</Trans>
+            )}
           </Badge>
         </span>
       )}
@@ -322,30 +326,7 @@ const FormDetails = ({
           />
         )}
 
-        <div className="flex justify-end mt-4 gap-2">
-          <Button
-            data-cy="submit-step-1"
-            disabled={isSubmitting || parsingNews}
-            onClick={() => {
-              setSubmitCount(submitCount + 1);
-              validateAndSubmitForm(
-                true,
-                setIsSubmitting,
-                isValid,
-                validateForm,
-                setFieldTouched,
-                values,
-                submitForm
-              );
-            }}
-          >
-            {isSubmitting && (
-              <div className="mr-3">
-                <Spinner size="sm" light={true} />
-              </div>
-            )}
-            <Trans ns="submit">Submit</Trans>
-          </Button>
+        <div className="flex justify-end mt-8 gap-2">
           <Button
             data-cy="to-step-2"
             color={'light'}
@@ -377,6 +358,31 @@ const FormDetails = ({
                 clipRule="evenodd"
               ></path>
             </svg>
+          </Button>
+        </div>
+        <div className="flex justify-end mt-4 gap-2">
+          <Button
+            data-cy="submit-step-1"
+            disabled={isSubmitting || parsingNews}
+            onClick={() => {
+              setSubmitCount(submitCount + 1);
+              validateAndSubmitForm(
+                true,
+                setIsSubmitting,
+                isValid,
+                validateForm,
+                setFieldTouched,
+                values,
+                submitForm
+              );
+            }}
+          >
+            {isSubmitting && (
+              <div className="mr-3">
+                <Spinner size="sm" light={true} />
+              </div>
+            )}
+            <Trans>Submit</Trans>
           </Button>
         </div>
       </Form>

@@ -172,7 +172,7 @@ const StepThree = (props) => {
                 schema={stepThreeValidationSchema}
               />
 
-              <div className="flex justify-between mt-4">
+              <div className="flex justify-between mt-8">
                 <Button
                   type="button"
                   color={'light'}
@@ -200,7 +200,7 @@ const StepThree = (props) => {
                       <Spinner size="sm" light={true} />
                     </div>
                   )}
-                  <Trans ns="submit">Submit</Trans>
+                  <Trans>Submit</Trans>
                 </Button>
               </div>
             </Form>

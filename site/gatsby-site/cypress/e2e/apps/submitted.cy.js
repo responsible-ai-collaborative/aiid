@@ -1,7 +1,6 @@
 import { maybeIt } from '../../support/utils';
 import submittedReports from '../../fixtures/submissions/submitted.json';
 import quickAdds from '../../fixtures/submissions/quickadds.json';
-import { format, getUnixTime } from 'date-fns';
 
 describe('Submitted reports', () => {
   const url = '/apps/submitted';
@@ -70,7 +69,9 @@ describe('Submitted reports', () => {
   maybeIt('Promotes a submission to a new report and links it to a new incident', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    const submission = submittedReports.data.submissions.find((r) => r.incident_id === 0);
+    const submission = submittedReports.data.submissions.find(
+      (r) => r._id === '5f9c3ebfd4896d392493f03c'
+    );
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -110,112 +111,28 @@ describe('Submitted reports', () => {
       'promoteSubmission',
       {
         data: {
-          promoteSubmissionToReport: [
-            {
-              __typename: 'Incident',
-              incident_id: 182,
-              reports: [
-                {
-                  __typename: 'Report',
-                  report_number: 1565,
-                },
-              ],
-            },
-          ],
-        },
-      }
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'UpdateReport',
-      'updateReport',
-      {
-        data: {
-          updateOneReport: {
-            ...submission,
-            deployers: undefined,
-            developers: undefined,
-            harmed_parties: undefined,
-            __typename: 'Report',
+          promoteSubmissionToReport: {
+            incident_ids: [182],
             report_number: 1565,
           },
         },
       }
     );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'UpdateIncident',
-      'updateIncident',
-      {
-        data: {
-          updateOneIncident: {
-            __typename: 'Incident',
-            incident_id: 182,
-            reports: [
-              {
-                __typename: 'Report',
-                report_number: 1565,
-              },
-            ],
-          },
-        },
-      }
-    );
-
-    cy.get('@promoteForm').contains('button', 'Add New Incident').click();
+    cy.get('@promoteForm').contains('button', 'Add new Incident').click();
 
     cy.wait('@promoteSubmission')
       .its('request.body.variables.input')
       .then((input) => {
         expect(input.incident_ids).to.deep.eq([]);
         expect(input.submission_id).to.eq('5f9c3ebfd4896d392493f03c');
+        expect(input.is_incident_report).to.eq(true);
       });
 
-    cy.wait('@updateReport')
-      .its('request.body.variables')
-      .then(({ set, query }) => {
-        expect(query.report_number).eq(1565);
-
-        expect(set.text).eq(submission.text);
-        expect(set.plain_text).eq(submission.plain_text);
-        expect(set.title).eq(submission.title);
-        expect(set.authors).deep.eq(submission.authors);
-        expect(set.submitters).deep.eq(submission.submitters);
-        expect(set.source_domain).eq(submission.source_domain);
-        expect(set.url).eq(submission.url);
-        expect(set.cloudinary_id).eq(submission.cloudinary_id);
-        expect(set.image_url).eq(submission.image_url);
-
-        const date_modified = format(new Date(), 'yyyy-MM-dd');
-
-        const epoch_date_modified = getUnixTime(new Date(date_modified));
-
-        expect(set.date_modified).eq(date_modified);
-        expect(set.date_downloaded).eq('2020-10-30');
-        expect(set.date_published).eq('2017-05-03');
-        expect(set.date_submitted).eq('2020-10-30');
-
-        expect(set.epoch_date_modified).eq(epoch_date_modified);
-        expect(set.epoch_date_downloaded).eq(1604016000);
-        expect(set.epoch_date_published).eq(1493769600);
-        expect(set.epoch_date_submitted).eq(1604016000);
-      });
-
-    cy.wait('@updateIncident')
-      .its('request.body.variables')
-      .then(({ query, set }) => {
-        expect(query.incident_id).eq(182);
-
-        expect(set.title).eq(submission.title);
-        expect(set.date).eq(submission.incident_date);
-        expect(set.description).eq(submission.description);
-      });
-
-    cy.get('[data-cy="toast"]')
-      .contains('Successfully promoted submission to Incident 182 and Report 1565')
-      .should('exist');
+    cy.contains(
+      '[data-cy="toast"]',
+      'Successfully promoted submission to Incident 182 and Report 1565'
+    ).should('exist');
   });
 
   maybeIt('Promotes a submission to a new report and links it to an existing incident', () => {
@@ -261,85 +178,96 @@ describe('Submitted reports', () => {
       'promoteSubmission',
       {
         data: {
-          promoteSubmissionToReport: [
-            {
-              __typename: 'Incident',
-              incident_id: 10,
-              reports: [
-                {
-                  __typename: 'Report',
-                  report_number: 1565,
-                },
-                {
-                  __typename: 'Report',
-                  report_number: 1566,
-                },
-              ],
-            },
-          ],
-        },
-      }
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'UpdateReport',
-      'updateReport',
-      {
-        data: {
-          updateOneReport: {
-            ...submission,
-            __typename: 'Report',
+          promoteSubmissionToReport: {
+            incident_ids: [10],
             report_number: 1566,
           },
         },
       }
     );
 
-    cy.get('@promoteForm').contains('button', 'Add New Report').click();
+    cy.get('@promoteForm').contains('button', 'Add to incident 10').click();
 
     cy.wait('@promoteSubmission')
       .its('request.body.variables.input')
       .then((input) => {
         expect(input.incident_ids).to.deep.eq([10]);
         expect(input.submission_id).to.eq('6123bf345e740c1a81850e89');
+        expect(input.is_incident_report).to.eq(true);
       });
 
-    cy.wait('@updateReport')
-      .its('request.body.variables')
-      .then(({ set, query }) => {
-        expect(query.report_number).eq(1566);
+    cy.contains(
+      '[data-cy="toast"]',
+      'Successfully promoted submission to Incident 10 and Report 1566'
+    ).should('exist');
+  });
 
-        expect(set.text).eq(submission.text);
-        expect(set.plain_text).eq(submission.plain_text);
-        expect(set.title).eq(submission.title);
-        expect(set.authors).deep.eq(submission.authors);
-        expect(set.submitters).deep.eq(submission.submitters);
-        expect(set.source_domain).eq(submission.source_domain);
-        expect(set.url).eq(submission.url);
-        expect(set.source_domain).eq(submission.source_domain);
-        expect(set.cloudinary_id).eq(submission.cloudinary_id);
-        expect(set.image_url).eq(submission.image_url);
+  maybeIt('Promotes a submission to a new issue', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-        const date_modified = format(new Date(), 'yyyy-MM-dd');
+    const submission = submittedReports.data.submissions.find(
+      (r) => r._id === '62d561606b4bb5e39605555'
+    );
 
-        const epoch_date_modified = getUnixTime(new Date(date_modified));
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'FindSubmissions',
+      {
+        data: {
+          submissions: [submission],
+        },
+      }
+    );
 
-        expect(set.date_modified).eq(date_modified);
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'AllQuickAdd',
+      'AllQuickAdd',
+      {
+        data: {
+          quickadds: [quickAdds],
+        },
+      }
+    );
 
-        expect(set.date_downloaded).eq('2021-08-23');
-        expect(set.date_published).eq('2019-07-18');
-        expect(set.date_submitted).eq('2021-08-23');
+    cy.visit(url);
 
-        expect(set.epoch_date_modified).eq(epoch_date_modified);
-        expect(set.epoch_date_downloaded).eq(1629676800);
-        expect(set.epoch_date_published).eq(1563408000);
-        expect(set.epoch_date_submitted).eq(1629676800);
+    cy.wait('@FindSubmissions');
+
+    cy.wait('@AllQuickAdd');
+
+    cy.get('[data-cy="submission"]').first().as('promoteForm');
+
+    cy.get('@promoteForm').contains('review >').click();
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'PromoteSubmission',
+      'promoteSubmission',
+      {
+        data: {
+          promoteSubmissionToReport: {
+            incident_ids: [10],
+            report_number: 1566,
+          },
+        },
+      }
+    );
+
+    cy.get('@promoteForm').contains('button', 'Add as issue').click();
+
+    cy.wait('@promoteSubmission')
+      .its('request.body.variables.input')
+      .then((input) => {
+        expect(input.incident_ids).to.deep.eq([]);
+        expect(input.submission_id).to.eq('62d561606b4bb5e39605555');
+        expect(input.is_incident_report).to.eq(false);
       });
 
-    cy.get('[data-cy="toast"]')
-      .contains('Successfully promoted submission to Incident 10 and Report 1566')
-      .should('exist');
+    cy.contains('[data-cy="toast"]', 'Successfully promoted submission to Issue 1566').should(
+      'exist'
+    );
   });
 
   maybeIt('Rejects a submission', () => {
@@ -470,87 +398,12 @@ describe('Submitted reports', () => {
   });
 
   maybeIt(
-    'Associate an Incident ID to a submission without developers, deployers or harmed parties',
-    () => {
-      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-      cy.conditionalIntercept(
-        '**/graphql',
-        (req) => req.body.operationName == 'FindSubmissions',
-        'FindSubmissions',
-        submittedReports
-      );
-
-      const submission = submittedReports.data.submissions[2];
-
-      cy.conditionalIntercept(
-        '**/graphql',
-        (req) => req.body.operationName == 'FindSubmission',
-        'FindSubmission',
-        {
-          data: {
-            submission,
-          },
-        }
-      );
-
-      cy.visit(url);
-
-      cy.wait('@FindSubmissions');
-
-      cy.get('[data-cy="submission"]').first().as('promoteForm');
-
-      cy.get('@promoteForm').contains('review >').click();
-
-      cy.get('[data-cy="edit-submission"]').eq(0).click();
-
-      cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
-
-      cy.get('[name="incident_id"]').type('333');
-
-      cy.conditionalIntercept(
-        '**/graphql',
-        (req) => req.body.operationName === 'UpdateSubmission',
-        'UpdateSubmission',
-        {
-          data: {
-            updateOneSubmission: {
-              ...submission,
-              incident_id: 333,
-            },
-          },
-        }
-      );
-
-      cy.get('[data-cy="update-btn"]').click();
-
-      cy.wait('@UpdateSubmission').then((xhr) => {
-        expect(xhr.request.body.variables.query).to.deep.nested.include({
-          _id: submission._id,
-        });
-
-        expect(xhr.request.body.variables.set).to.deep.nested.include({
-          incident_id: 333,
-        });
-      });
-
-      cy.get('@modal').should('not.exist');
-
-      cy.get('[data-cy="toast"]').contains('Submission updated successfully.').should('exist');
-    }
-  );
-
-  maybeIt(
-    'Does not allow promotion of submission if developers, deployers or harmed parties is missing.',
+    'Does not allow promotion of submission to Incident if schema is invalid (missing Description).',
     () => {
       cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
       const submission = submittedReports.data.submissions.find(
-        (r) =>
-          r.incident_id === 0 &&
-          (r.deployers === undefined ||
-            r.developers === undefined ||
-            r.harmed_parties === undefined)
+        (r) => r._id === '62d561606b4bb5e396034444'
       );
 
       cy.conditionalIntercept(
@@ -598,21 +451,143 @@ describe('Submitted reports', () => {
         {}
       );
 
-      cy.get('@promoteForm').contains('button', 'Add New Incident').click();
+      cy.get('@promoteForm').contains('button', 'Add new Incident').click();
 
-      cy.get('[data-cy="toast"]')
-        .contains('Please review submission before approving. Some data is missing.')
-        .should('exist');
+      cy.contains('[data-cy="toast"]', 'Description is required.').should('exist');
 
       cy.wait('@promotionInvoked', { timeout: 2000 });
     }
   );
 
-  maybeIt('Does not allow promotion of submission if description is missing.', () => {
+  maybeIt(
+    'Does not allow promotion of submission to Issue if schema is invalid (missing Title).',
+    () => {
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+      const submission = submittedReports.data.submissions.find(
+        (r) => r._id === '123461606b4bb5e39601234'
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindSubmissions',
+        'FindSubmissions',
+        {
+          data: {
+            submissions: [submission],
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'AllQuickAdd',
+        'AllQuickAdd',
+        {
+          data: {
+            quickadds: [quickAdds],
+          },
+        }
+      );
+
+      cy.visit(url);
+
+      cy.wait('@FindSubmissions');
+
+      cy.wait('@AllQuickAdd');
+
+      cy.get('[data-cy="submission"]').first().as('promoteForm');
+
+      cy.get('@promoteForm').contains('review >').click();
+
+      cy.on('fail', (err) => {
+        expect(err.message).to.include(
+          '`cy.wait()` timed out waiting `2000ms` for the 1st request to the route: `promotionInvoked`. No request ever occurred.'
+        );
+      });
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName === 'PromoteSubmission',
+        'promotionInvoked',
+        {}
+      );
+
+      cy.get('@promoteForm').contains('button', 'Add as issue').click();
+
+      cy.contains('[data-cy="toast"]', 'Title is required').should('exist');
+
+      cy.wait('@promotionInvoked', { timeout: 2000 });
+    }
+  );
+
+  maybeIt(
+    'Does not allow promotion of submission to Report if schema is invalid (missing Date).',
+    () => {
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+      const submission = submittedReports.data.submissions.find(
+        (r) => r._id === '333561606b4bb5e39601234'
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindSubmissions',
+        'FindSubmissions',
+        {
+          data: {
+            submissions: [submission],
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'AllQuickAdd',
+        'AllQuickAdd',
+        {
+          data: {
+            quickadds: [quickAdds],
+          },
+        }
+      );
+
+      cy.visit(url);
+
+      cy.wait('@FindSubmissions');
+
+      cy.wait('@AllQuickAdd');
+
+      cy.get('[data-cy="submission"]').first().as('promoteForm');
+
+      cy.get('@promoteForm').contains('review >').click();
+
+      cy.on('fail', (err) => {
+        expect(err.message).to.include(
+          '`cy.wait()` timed out waiting `2000ms` for the 1st request to the route: `promotionInvoked`. No request ever occurred.'
+        );
+      });
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName === 'PromoteSubmission',
+        'promotionInvoked',
+        {}
+      );
+
+      cy.get('@promoteForm').contains('button', 'Add to incident 12').click();
+
+      cy.contains('[data-cy="toast"]', '*Date is not valid, must be `YYYY-MM-DD`').should('exist');
+
+      cy.wait('@promotionInvoked', { timeout: 2000 });
+    }
+  );
+
+  maybeIt('Should display an error message if data is missing', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const submission = submittedReports.data.submissions.find(
-      (r) => r.incident_id === 0 && r.description === undefined
+      (r) => r._id === '62d561606b4bb5e39601234'
     );
 
     cy.conditionalIntercept(
@@ -628,64 +603,11 @@ describe('Submitted reports', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'AllQuickAdd',
-      'AllQuickAdd',
-      {
-        data: {
-          quickadds: [quickAdds],
-        },
-      }
-    );
-
-    cy.visit(url);
-
-    cy.wait('@FindSubmissions');
-
-    cy.wait('@AllQuickAdd');
-
-    cy.get('[data-cy="submission"]').first().as('promoteForm');
-
-    cy.get('@promoteForm').contains('review >').click();
-
-    cy.on('fail', (err) => {
-      expect(err.message).to.include(
-        '`cy.wait()` timed out waiting `2000ms` for the 1st request to the route: `promotionInvoked`. No request ever occurred.'
-      );
-    });
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName === 'PromoteSubmission',
-      'promotionInvoked',
-      {}
-    );
-
-    cy.get('@promoteForm').contains('button', 'Add New Incident').click();
-
-    cy.get('[data-cy="toast"]')
-      .contains('Please review submission before approving. Some data is missing.')
-      .should('exist');
-
-    cy.wait('@promotionInvoked', { timeout: 2000 });
-  });
-
-  maybeIt('Should display an error message if data is missing', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindSubmissions',
-      'FindSubmissions',
-      submittedReports
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
       (req) => req.body.operationName == 'FindSubmission',
       'FindSubmission',
       {
         data: {
-          submission: submittedReports.data.submissions[2],
+          submission,
         },
       }
     );
@@ -704,27 +626,25 @@ describe('Submitted reports', () => {
 
     cy.get('@modal').contains('Please review submission. Some data is missing.').should('exist');
 
-    cy.get('[data-cy="extra-fields"]').contains('Some data is missing.').should('exist');
-
     cy.get('[data-cy="update-btn"]').should('be.disabled');
 
-    cy.get('[data-cy="extra-fields"]').click();
+    cy.get('input[name="title"]').type(
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry'
+    );
 
-    // Fill missing fields and check error messages again
+    cy.get('input[name=authors]').type('Author{enter}');
 
-    cy.get('textarea[name=description]').type('Test description');
+    cy.setEditorText(
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco'
+    );
 
-    cy.get('input[name=developers]').type('developerTest{enter}');
+    cy.get('input[name=date_published]').type('3033-01-01');
 
-    cy.get('input[name=deployers]').type('deployersTest{enter}');
-
-    cy.get('input[name=harmed_parties]').type('harmedPartiesTest{enter}test{enter}');
+    cy.get('input[name=date_downloaded]').type('3033-01-01');
 
     cy.get('@modal')
       .contains('Please review submission. Some data is missing.')
       .should('not.exist');
-
-    cy.get('[data-cy="extra-fields"]').contains('Some data is missing.').should('not.exist');
 
     cy.get('[data-cy="update-btn"]').should('not.be.disabled');
   });

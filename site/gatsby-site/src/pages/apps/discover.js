@@ -62,6 +62,7 @@ const convertStringToArray = (obj) => {
     'incident_id',
     'flag',
     'classifications',
+    'is_incident_report',
   ];
 
   let newObj = {};
@@ -131,12 +132,6 @@ const convertStringToRange = (query) => {
 };
 
 const generateSearchState = ({ query }) => {
-  const searchState = {
-    query: '',
-    refinementList: {},
-    range: {},
-  };
-
   const cleanQuery = removeUndefinedAttributes(query);
 
   const querySearch = cleanQuery.s || '';
@@ -144,7 +139,6 @@ const generateSearchState = ({ query }) => {
   delete cleanQuery.s;
 
   return {
-    ...searchState,
     page: query.page,
     query: querySearch,
     refinementList: {
@@ -227,10 +221,12 @@ function DiscoverApp(props) {
 
   return (
     <LayoutHideSidebar {...props}>
-      <AiidHelmet>
+      <AiidHelmet canonicalUrl="/apps/discover">
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
-      <SearchContext.Provider value={{ searchState, indexName, searchClient, onSearchStateChange }}>
+      <SearchContext.Provider
+        value={{ searchState, setSearchState, indexName, searchClient, onSearchStateChange }}
+      >
         <InstantSearch
           indexName={
             indexName +

@@ -81,7 +81,7 @@ export default function TsneVisualization({
                 </option>
               ))}
             </Form.Select>
-            <ul className="list-none">
+            <ul>
               {taxons.map((taxon) => (
                 <li
                   key={taxon}

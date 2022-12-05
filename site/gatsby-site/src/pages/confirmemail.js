@@ -11,8 +11,6 @@ const ConfirmEmail = (props) => {
     actions: { confirmEmail },
   } = useUserContext();
 
-  let errorMessage = null;
-
   const [pageMessage, setPageMessage] = useState(null);
 
   const { t } = useTranslation();
@@ -21,10 +19,6 @@ const ConfirmEmail = (props) => {
     token: StringParam,
     tokenId: StringParam,
   });
-
-  if (!token || !tokenId) {
-    errorMessage = t('Invalid parameters');
-  }
 
   useEffect(() => {
     if (token && tokenId) {
@@ -37,17 +31,16 @@ const ConfirmEmail = (props) => {
           // eslint-disable-next-line no-undef
           Rollbar.error(e);
         });
+    } else {
+      setPageMessage(t('Invalid parameters'));
     }
   }, []);
 
   return (
     <Layout {...props}>
-      {errorMessage || pageMessage ? (
+      {pageMessage ? (
         <>
-          <p>
-            {errorMessage}
-            {pageMessage}
-          </p>
+          <p>{pageMessage}</p>
           <Link to={'/login?redirectTo=/account'} data-cy="confirm-login-btn">
             <Trans>Login</Trans>
           </Link>

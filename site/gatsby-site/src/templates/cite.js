@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Spinner } from 'flowbite-react';
+import { Badge, Spinner } from 'flowbite-react';
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
 import Citation from 'components/cite/Citation';
@@ -7,10 +7,9 @@ import ImageCarousel from 'components/cite/ImageCarousel';
 import BibTex from 'components/BibTex';
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 import { format, isAfter, isEqual } from 'date-fns';
-import { useModal, CustomModal } from '../hooks/useModal';
 import Timeline from '../components/visualizations/Timeline';
 import IncidentStatsCard from '../components/cite/IncidentStatsCard';
-import IncidentCard from '../components/cite/IncidentCard';
+import ReportCard from '../components/reports/ReportCard';
 import Taxonomy from '../components/taxa/Taxonomy';
 import { useUserContext } from '../contexts/userContext';
 import SimilarIncidents from '../components/cite/SimilarIncidents';
@@ -30,7 +29,7 @@ import useToastContext, { SEVERITY } from '../hooks/useToast';
 import Link from 'components/ui/Link';
 import { graphql } from 'gatsby';
 import { getTaxonomies, getTranslatedReports } from 'utils/cite';
-import { computeEntities } from 'utils/entities';
+import { computeEntities, RESPONSE_TAG } from 'utils/entities';
 import AllegedEntities from 'components/entities/AllegedEntities';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -73,6 +72,7 @@ function CitePage(props) {
       allMongodbTranslationsReportsFr,
       incident,
       entities: entitiesData,
+      responses,
     },
   } = props;
 
@@ -110,20 +110,17 @@ function CitePage(props) {
 
   const metaImage = sortedReports[0].image_url;
 
-  const authorsModal = useModal();
-
-  const submittersModal = useModal();
-
-  const flagReportModal = useModal();
-
   const addToast = useToastContext();
 
-  const timeline = sortedReports.map(({ date_published, title, mongodb_id, report_number }) => ({
-    date_published,
-    title,
-    mongodb_id,
-    report_number,
-  }));
+  const timeline = sortedReports.map(
+    ({ date_published, title, mongodb_id, report_number, tags }) => ({
+      date_published,
+      title,
+      mongodb_id,
+      report_number,
+      isResponse: tags && tags.includes(RESPONSE_TAG),
+    })
+  );
 
   timeline.push({
     date_published: incident.date,
@@ -213,22 +210,54 @@ function CitePage(props) {
     }
   };
 
-  const entities = computeEntities({ incidents: [incident], entities: entitiesData.nodes });
+  const entities = computeEntities({
+    incidents: [incident],
+    entities: entitiesData.nodes,
+    responses: responses.nodes,
+  });
+
+  const incidentResponded = sortedReports.some(
+    (report) => report.tags && report.tags.includes(RESPONSE_TAG)
+  );
+
+  const rightSidebar = (
+    <>
+      <div className="max-w-[16rem] 2xl:max-w-[18rem] ml-2 pr-4 py-8">
+        <SimilarIncidents
+          nlp_similar_incidents={nlp_similar_incidents}
+          editor_similar_incidents={editor_similar_incidents}
+          editor_dissimilar_incidents={editor_dissimilar_incidents}
+          flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
+          parentIncident={incident}
+          orientation="column"
+        />
+      </div>
+    </>
+  );
 
   return (
-    <Layout {...props}>
+    <Layout {...{ props, rightSidebar }}>
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
 
       <div className={'titleWrapper'}>
         <h1 className="tw-styled-heading">{locale == 'en' ? metaTitle : defaultIncidentTitle}</h1>
-        <SocialShareButtons
-          metaTitle={metaTitle}
-          canonicalUrl={canonicalUrl}
-          page="cite"
-          className="-mt-1"
-        ></SocialShareButtons>
+        <div className="flex">
+          <SocialShareButtons
+            metaTitle={metaTitle}
+            canonicalUrl={canonicalUrl}
+            page="cite"
+            className="-mt-1"
+          ></SocialShareButtons>
+          {incidentResponded && (
+            <div className="self-center">
+              <Badge color="success" data-cy="responded-badge">
+                {t('Responded')}
+              </Badge>
+            </div>
+          )}
+        </div>
       </div>
 
       <div>
@@ -340,6 +369,13 @@ function CitePage(props) {
                 </Button>
                 <Button
                   variant="outline-primary"
+                  href={`/apps/submit?tags=${RESPONSE_TAG}&incident_id=${incident.incident_id}`}
+                >
+                  <FontAwesomeIcon icon={faPlus} title={t('New Response')} className="mr-2" />
+                  <Trans>New Response</Trans>
+                </Button>
+                <Button
+                  variant="outline-primary"
                   href={'/apps/discover?incident_id=' + incident.incident_id}
                 >
                   <FontAwesomeIcon className="mr-2" icon={faSearch} title={t('Discover')} />
@@ -395,7 +431,7 @@ function CitePage(props) {
             <div className="pb-5">
               <div className={'titleWrapper'}>
                 <h1 className="tw-styled-heading">
-                  <Trans>Incidents Reports</Trans>
+                  <Trans>Incident Reports</Trans>
                 </h1>
               </div>
             </div>
@@ -405,12 +441,7 @@ function CitePage(props) {
         {sortedReports.map((report) => (
           <Row className="mb-4" key={report.report_number}>
             <Col>
-              <IncidentCard
-                item={report}
-                authorsModal={authorsModal}
-                submittersModal={submittersModal}
-                flagReportModal={flagReportModal}
-              />
+              <ReportCard item={report} />
             </Col>
           </Row>
         ))}
@@ -437,10 +468,6 @@ function CitePage(props) {
             <Trans>Next Incident</Trans> ›
           </Pagination.Item>
         </Pagination>
-
-        <CustomModal {...authorsModal} />
-        <CustomModal {...submittersModal} />
-        <CustomModal {...flagReportModal} />
       </Container>
     </Layout>
   );
@@ -543,6 +570,7 @@ export const query = graphql`
         authors
         epoch_date_submitted
         language
+        tags
       }
     }
     allMongodbTranslationsReportsEs(filter: { report_number: { in: $report_numbers } })
@@ -586,6 +614,12 @@ export const query = graphql`
       nodes {
         entity_id
         name
+      }
+    }
+
+    responses: allMongodbAiidprodReports(filter: { tags: { in: ["response"] } }) {
+      nodes {
+        report_number
       }
     }
   }
