@@ -220,8 +220,23 @@ function CitePage(props) {
     (report) => report.tags && report.tags.includes(RESPONSE_TAG)
   );
 
+  const rightSidebar = (
+    <>
+      <div className="max-w-[16rem] 2xl:max-w-[18rem] ml-2 pr-4 py-8">
+        <SimilarIncidents
+          nlp_similar_incidents={nlp_similar_incidents}
+          editor_similar_incidents={editor_similar_incidents}
+          editor_dissimilar_incidents={editor_dissimilar_incidents}
+          flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
+          parentIncident={incident}
+          orientation="column"
+        />
+      </div>
+    </>
+  );
+
   return (
-    <Layout {...props}>
+    <Layout {...{ props, rightSidebar }}>
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
@@ -416,7 +431,7 @@ function CitePage(props) {
             <div className="pb-5">
               <div className={'titleWrapper'}>
                 <h1 className="tw-styled-heading">
-                  <Trans>Incidents Reports</Trans>
+                  <Trans>Incident Reports</Trans>
                 </h1>
               </div>
             </div>

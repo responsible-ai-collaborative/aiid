@@ -161,7 +161,7 @@ const FormDetails = ({
           </Select>
         </FieldContainer>
 
-        <div className="flex justify-between mt-4">
+        <div className="flex justify-between mt-8">
           <Button type="button" color={'light'} onClick={() => previous(values)}>
             <svg
               aria-hidden="true"
@@ -180,29 +180,6 @@ const FormDetails = ({
           </Button>
           <div className="flex justify-end gap-2">
             <Button
-              data-cy="submit-step-2"
-              disabled={isSubmitting}
-              onClick={() => {
-                setSubmitCount(submitCount + 1);
-                validateAndSubmitForm(
-                  true,
-                  setIsSubmitting,
-                  isValid,
-                  validateForm,
-                  setFieldTouched,
-                  values,
-                  submitForm
-                );
-              }}
-            >
-              {isSubmitting && (
-                <div className="mr-3">
-                  <Spinner size="sm" light={true} />
-                </div>
-              )}
-              <Trans ns="submit">Submit</Trans>
-            </Button>
-            <Button
               data-cy="to-step-3"
               color={'light'}
               disabled={isSubmitting}
@@ -219,7 +196,12 @@ const FormDetails = ({
                 );
               }}
             >
-              <Trans>Add more info</Trans>
+              <span className="lg:hidden">
+                <Trans>More</Trans>
+              </span>
+              <span className="hidden lg:inline">
+                <Trans>Add more info</Trans>
+              </span>
               <svg
                 aria-hidden="true"
                 className="ml-2 w-5 h-5"
@@ -235,6 +217,31 @@ const FormDetails = ({
               </svg>
             </Button>
           </div>
+        </div>
+        <div className="flex justify-end mt-4">
+          <Button
+            data-cy="submit-step-2"
+            disabled={isSubmitting}
+            onClick={() => {
+              setSubmitCount(submitCount + 1);
+              validateAndSubmitForm(
+                true,
+                setIsSubmitting,
+                isValid,
+                validateForm,
+                setFieldTouched,
+                values,
+                submitForm
+              );
+            }}
+          >
+            {isSubmitting && (
+              <div className="mr-3">
+                <Spinner size="sm" light={true} />
+              </div>
+            )}
+            <Trans>Submit</Trans>
+          </Button>
         </div>
       </Form>
 
