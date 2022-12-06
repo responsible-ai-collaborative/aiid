@@ -115,7 +115,7 @@ const SubmittedIncidentsPage = ({ ...props }) => {
                   </Col>
                   <Col xs={12} sm={10} lg={10}>
                     {' '}
-                    <a href={url} className="break-words inline-block -mt-1">
+                    <a href={url} style={{ overflowWrap: 'break-word' }}>
                       {url}
                     </a>
                     <br />
