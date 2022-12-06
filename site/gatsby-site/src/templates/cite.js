@@ -23,8 +23,9 @@ import Pagination from '../elements/Pagination';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from '../components/i18n/useLocalizePath';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
+import { FIND_INCIDENT_VARIANTS } from '../graphql/variants';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import Link from 'components/ui/Link';
 import { graphql } from 'gatsby';
@@ -34,6 +35,7 @@ import AllegedEntities from 'components/entities/AllegedEntities';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import VariantList from 'components/cite/VariantList';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -61,6 +63,7 @@ function CitePage(props) {
       nlp_similar_incidents,
       editor_similar_incidents,
       editor_dissimilar_incidents,
+      report_numbers,
     },
     data: {
       allMongodbAiidprodTaxa,
@@ -127,6 +130,10 @@ function CitePage(props) {
     title: 'Incident Occurrence',
     mongodb_id: 0,
     isOccurrence: true,
+  });
+
+  const { data: variants, loading: loadingVariants } = useQuery(FIND_INCIDENT_VARIANTS, {
+    variables: { report_numbers },
   });
 
   const taxonomies = useMemo(
@@ -445,6 +452,11 @@ function CitePage(props) {
             </Col>
           </Row>
         ))}
+
+        <VariantList
+          loading={loadingVariants}
+          variants={variants ? variants.reports : []}
+        ></VariantList>
 
         <SimilarIncidents
           nlp_similar_incidents={nlp_similar_incidents}

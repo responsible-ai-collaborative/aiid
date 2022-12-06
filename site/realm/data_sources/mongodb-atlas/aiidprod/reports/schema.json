@@ -97,6 +97,12 @@
         },
         "url": {
             "bsonType": "string"
+        },
+        "text_inputs": {
+            "bsonType": "string"
+        },
+        "text_outputs": {
+            "bsonType": "string"
         }
     },
     "required": [
