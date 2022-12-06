@@ -139,7 +139,9 @@ function EditCitePage(props) {
       if (
         values.incident_ids.length == 0 &&
         incident_ids.length > 0 &&
-        !confirm(t('Empty incidents list will Transform the report to an Issue, are you sure?'))
+        !confirm(
+          t('Removing all incidents transforms the report to an issue report, are you sure?')
+        )
       ) {
         return;
       }
@@ -147,7 +149,11 @@ function EditCitePage(props) {
       if (
         values.incident_ids.length > 0 &&
         incident_ids.length == 0 &&
-        !confirm(t('This issue will now be an incident report, are you sure?'))
+        !confirm(
+          t(
+            'You are converting the report from an issue report to an incident report, are you sure?'
+          )
+        )
       ) {
         return;
       }
