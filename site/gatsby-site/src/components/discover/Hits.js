@@ -3,6 +3,7 @@ import { connectHits, connectStateResults } from 'react-instantsearch-dom';
 import Hit from './Hit';
 import { DisplayModeEnumParam } from './queryParams';
 import { useQueryParam } from 'use-query-params';
+import CardSkeleton from 'elements/Skeletons/Card';
 import ListSkeleton from 'elements/Skeletons/List';
 
 const Hits = ({
@@ -13,10 +14,12 @@ const Hits = ({
   isSearchStalled,
   toggleFilterByIncidentId,
 }) => {
+  const [display] = useQueryParam('display', DisplayModeEnumParam);
+
   if (isSearchStalled) {
     return (
       <div className="tw-no-results bootstrap">
-        <ListSkeleton />
+        {display === 'list' ? <ListSkeleton /> : <CardSkeleton />}
       </div>
     );
   }
@@ -29,8 +32,6 @@ const Hits = ({
       </div>
     );
   }
-
-  const [display] = useQueryParam('display', DisplayModeEnumParam);
 
   return (
     <div className={`tw-hits-container tw-container-xl ${display} mt-4`}>
