@@ -110,8 +110,14 @@ const SubmittedIncidentsPage = ({ ...props }) => {
             <ListGroup.Item key={_id} className="m-0 p-2">
               <Card.Header>
                 <Row>
-                  <Col xs={12} sm={2} lg={2} className="flex-col items-center">
-                    <DeleteButton {...{ submitDeleteQuickAdd, _id }} disabled={!isAdmin} />
+                  <Col xs={12} sm={2} lg={2} className="flex items-center">
+                    <Button
+                      variant="outline-secondary"
+                      disabled={!isAdmin}
+                      onClick={() => submitDeleteQuickAdd(_id)}
+                    >
+                      <Trans>Delete</Trans>&gt;
+                    </Button>
                   </Col>
                   <Col xs={12} sm={10} lg={10}>
                     {' '}
@@ -130,46 +136,5 @@ const SubmittedIncidentsPage = ({ ...props }) => {
     </Layout>
   );
 };
-
-function DeleteButton({ _id, disabled, submitDeleteQuickAdd }) {
-  const [pressCount, setPressCount] = useState(0);
-
-  const [timer, setTimer] = useState(null);
-
-  useEffect(
-    () => () => {
-      if (timer) {
-        clearTimeout(timer);
-      }
-    },
-    []
-  );
-  return (
-    <>
-      <Button
-        variant="outline-secondary"
-        disabled={disabled}
-        onClick={() => {
-          if (pressCount == 0) {
-            setTimer(setTimeout(() => setPressCount(0), 3000));
-            setPressCount(1);
-          } else {
-            if (timer) {
-              clearTimeout(timer);
-            }
-            submitDeleteQuickAdd(_id);
-          }
-        }}
-      >
-        <Trans>Delete</Trans>&gt;
-      </Button>
-      {pressCount > 0 && (
-        <div className="mt-2 text-red-500">
-          <Trans>Click again to confirm</Trans>
-        </div>
-      )}
-    </>
-  );
-}
 
 export default SubmittedIncidentsPage;
