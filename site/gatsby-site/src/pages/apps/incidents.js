@@ -18,7 +18,11 @@ export default function IncidentsPage(props) {
         <title>{t('Incidents')}</title>
       </AiidHelmet>
       <div className="bootstrap">
-        {!incidentsData && <ListSkeleton />}
+        {!incidentsData && (
+          <div className="px-3">
+            <ListSkeleton />
+          </div>
+        )}
         {incidentsData && incidentsData.incidents && (
           <div className="ms-3 mt-2 mb-2">
             <IncidentsTable data={incidentsData.incidents} />
