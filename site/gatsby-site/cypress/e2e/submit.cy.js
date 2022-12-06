@@ -948,4 +948,81 @@ describe('The Submit form', () => {
 
     cy.contains('Please review. Some data is missing.').should('exist');
   });
+
+  it('Should submit a new report response', () => {
+    const values = {
+      url: 'https://test.com',
+      title: 'test title',
+      authors: 'test author',
+      submitters: 'test submitter',
+      incident_date: '2022-01-01',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+      image_url: 'https://test.com/image.jpg',
+      incident_id: '1',
+      text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
+      tags: 'response',
+      editor_notes: 'Here are some notes',
+    };
+
+    const params = new URLSearchParams(values);
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
+      'insertSubmission',
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 1,
+      'findIncident',
+      {
+        data: {
+          incident: {
+            __typename: 'Incident',
+            incident_id: 1,
+            title: 'Test title',
+            date: '2022-01-01',
+          },
+        },
+      }
+    );
+
+    cy.visit(url + `?${params.toString()}`);
+    cy.clickOutside();
+
+    cy.get('[data-cy="submit-form-title"]').contains('New Incident Response').should('exist');
+
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    cy.get('[data-cy="to-step-3"]').click();
+
+    cy.wait('@findIncident');
+
+    cy.get('button[type="submit"]').scrollIntoView().click();
+
+    cy.wait('@insertSubmission').then((xhr) => {
+      expect(xhr.request.body.variables.submission).to.deep.nested.include({
+        ...values,
+        incident_id: '1',
+        authors: [values.authors],
+        submitters: [values.submitters],
+        tags: [values.tags],
+        plain_text:
+          'Sit quo accusantium\n\nquia assumenda. Quod delectus similique labore optio quaease\n',
+        source_domain: `test.com`,
+        cloudinary_id: `reports/test.com/image.jpg`,
+        editor_notes: 'Here are some notes',
+      });
+    });
+  });
 });

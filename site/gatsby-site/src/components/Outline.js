@@ -55,7 +55,6 @@ const SidebarLayout = ({ location }) => {
               );
             });
         }
-
         return (
           <Sidebar>
             <ul data-cy="outline" className={'rightSideBarUL list-revert pl-8'}>

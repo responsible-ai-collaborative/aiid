@@ -1,12 +1,11 @@
 import React from 'react';
 
 import Sidebar from './sidebar';
-import RightSidebar from './rightSidebar';
 import config from '../../config.js';
 import Footer from './layout/Footer';
 import Header from './ui/Header';
 
-const Layout = ({ children, collapse, className, location }) => (
+const Layout = ({ children, collapse, className, rightSidebar }) => (
   <>
     <Header />
     <div className="tw-layout">
@@ -19,13 +18,17 @@ const Layout = ({ children, collapse, className, location }) => (
           dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
         />
       )}
-      <div id="content" className="tw-content">
+      <div id="content" className={'tw-content' + (rightSidebar ? ' xl:pr-5' : '')}>
         <div className={`${className ? className : ''} 50rem:max-w-full 50rem:relative`}>
           {children}
         </div>
       </div>
-      <div className={'tw-hidden-mobile tw-[224px] -ml-[24px] z-0 relative 965px:hidden'}>
-        <RightSidebar location={location} />
+      <div
+        className={
+          'tw-hidden-mobile tw-[224px] z-0 relative hidden xl:block xl:max-w-sm 2xl:max-w-md'
+        }
+      >
+        {rightSidebar}
       </div>
     </div>
     <Footer />

@@ -108,6 +108,7 @@ const SimilarIncidents = ({
   editor_similar_incidents,
   editor_dissimilar_incidents,
   flagged_dissimilar_incidents,
+  orientation,
 }) => {
   const { isRole, loading } = useUserContext();
 
@@ -127,7 +128,7 @@ const SimilarIncidents = ({
   return (
     <div className="tw-similar-incidents">
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
-        <h2 id="similar-incidents">
+        <h2 id="similar-incidents" className="leading-9">
           <LocalizedLink to={'/summaries/spatial?incident=' + parentIncident.incident_id}>
             <Trans>Similar Incidents</Trans>
           </LocalizedLink>
@@ -148,7 +149,9 @@ const SimilarIncidents = ({
               </a>
             )}
           </div>
-          <div className="tw-card-set mt-4">
+          <div
+            className={(orientation == 'column' ? 'flex flex-col gap-5' : 'tw-card-set') + ' mt-5'}
+          >
             {editor_similar_incidents.map((similarIncident) => (
               <SimilarIncidentCard
                 incident={similarIncident}
@@ -182,14 +185,15 @@ const SimilarIncidents = ({
               )}
             </span>
           </div>
-          <hr />
-          <p className="tw-flag-prompt">
+          <p className="tw-flag-prompt mt-2">
             <Trans>
               Did <strong>our</strong> AI mess up? Flag <FontAwesomeIcon icon={faFlag} /> the
               unrelated incidents
             </Trans>
           </p>
-          <div className="tw-card-set mt-4">
+          <div
+            className={(orientation == 'column' ? 'flex flex-col gap-5' : 'tw-card-set') + ' mt-5'}
+          >
             {nlp_only_incidents.map((similarIncident) => (
               <SimilarIncidentCard
                 incident={similarIncident}
