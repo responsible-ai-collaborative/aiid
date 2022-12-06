@@ -6,15 +6,9 @@ import updateOneReportTranslation from '../fixtures/reports/updateOneReportTrans
 
 import { format, getUnixTime } from 'date-fns';
 
-import incident from '../fixtures/incidents/incident.json';
-
 import reportWithTranslations from '../fixtures/reports/reportWithTranslations.json';
 
 import issueWithTranslations from '../fixtures/reports/issueWithTranslations.json';
-
-import reportSiblings from '../fixtures/reports/reportSiblings.json';
-
-import incidentWithDeletedReport from '../fixtures/incidents/incidentWithDeletedReport.json';
 
 describe('Edit report', () => {
   const url = '/cite/edit?report_number=10';
@@ -31,20 +25,52 @@ describe('Edit report', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'FindReportWithTranslations',
-      'findReportWithTranslations',
+      'FindReportWithTranslations',
       reportWithTranslations
     );
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'FindIncident',
-      'findIncident',
-      incident
+      (req) => req.body.operationName == 'FindIncidents',
+      'FindIncidents',
+      {
+        data: {
+          incidents: [
+            {
+              _typename: 'Incident',
+              incident_id: 1,
+              title: 'Incident 1',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidentsTitles',
+      'FindIncidentsTitles',
+      {
+        data: {
+          incidents: [
+            {
+              _typename: 'Incident',
+              incident_id: 1,
+              title: 'Incident 1',
+            },
+            {
+              _typename: 'Incident',
+              incident_id: 2,
+              title: 'Incident 2',
+            },
+          ],
+        },
+      }
     );
 
     cy.visit(url);
 
-    cy.wait(['@findReportWithTranslations', '@findIncident']);
+    cy.wait(['@FindReportWithTranslations', '@FindIncidents']);
 
     [
       'authors',
@@ -63,7 +89,10 @@ describe('Edit report', () => {
 
     cy.getEditorText().should('eq', reportWithTranslations.data.report.text);
 
-    cy.get(`[name="incident_id"]`).should('have.value', incident.data.incident.incident_id);
+    cy.contains('label', 'Incident IDs')
+      .next()
+      .contains('[data-cy="token"]', 'Incident 1')
+      .should('be.visible');
 
     cy.get('[class*=Typeahead] [option="Test Tag"]').should('have.length', 1);
 
@@ -124,13 +153,6 @@ describe('Edit report', () => {
       updateOneReportTranslation
     );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'UpdateIncident',
-      'updateIncident',
-      {}
-    );
-
     cy.contains('button', 'Submit').click();
 
     cy.wait('@updateReport').then((xhr) => {
@@ -178,12 +200,6 @@ describe('Edit report', () => {
       expect(xhr.request.body.variables.input.title).eq('Este es un titulo en Espanol!');
     });
 
-    cy.on('fail', (err) => {
-      expect(err.message).to.include('`updateIncident`. No request ever occurred.');
-    });
-
-    cy.wait('@updateIncident', { timeout: 1000 });
-
     cy.get('div[class^="ToastContext"]')
       .contains('Incident report 10 updated successfully.')
       .should('exist');
@@ -195,20 +211,41 @@ describe('Edit report', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'FindReportWithTranslations',
-      'findReportWithTranslations',
+      'FindReportWithTranslations',
       issueWithTranslations
     );
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'FindIncident',
-      'findIncident',
-      { data: { incident: null } }
+      (req) => req.body.operationName == 'FindIncidents',
+      'FindIncidents',
+      {
+        data: {
+          incidents: [],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidentsTitles',
+      'FindIncidentsTitles',
+      {
+        data: {
+          incidents: [
+            {
+              _typename: 'Incident',
+              incident_id: 1,
+              title: 'Incident 1',
+            },
+          ],
+        },
+      }
     );
 
     cy.visit(url);
 
-    cy.wait(['@findReportWithTranslations', '@findIncident']);
+    cy.wait(['@FindIncidents', '@FindReportWithTranslations']);
 
     [
       'authors',
@@ -335,9 +372,7 @@ describe('Edit report', () => {
       expect(xhr.request.body.variables.input.title).eq('Este es un titulo en Espanol!');
     });
 
-    cy.contains('[data-cy="toast"]', 'Issue 10 updated successfully. View Issue 10.').should(
-      'exist'
-    );
+    cy.contains('[data-cy="toast"]', 'Issue 10 updated successfully').should('exist');
   });
 
   maybeIt('Should delete incident report', () => {
@@ -346,16 +381,41 @@ describe('Edit report', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'FindReportWithTranslations',
-      'findReportWithTranslations',
-      reportWithTranslations
+      'FindReportWithTranslations',
+      issueWithTranslations
     );
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'FindIncident',
-      'findIncident',
-      incident
+      (req) => req.body.operationName == 'FindIncidents',
+      'FindIncidents',
+      {
+        data: {
+          incidents: [],
+        },
+      }
     );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidentsTitles',
+      'FindIncidentsTitles',
+      {
+        data: {
+          incidents: [
+            {
+              _typename: 'Incident',
+              incident_id: 1,
+              title: 'Incident 1',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.wait(['@FindIncidents', '@FindIncidentsTitles', '@FindReportWithTranslations']);
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -366,31 +426,29 @@ describe('Edit report', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'Siblings',
-      'siblings',
-      reportSiblings
+      (req) => req.body.operationName == 'LinkReportsToIncidents',
+      'LinkReportsToIncidents',
+      {
+        data: {
+          linkReportsToIncidents: [],
+        },
+      }
     );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'UpdateIncident',
-      'updateIncident',
-      incidentWithDeletedReport
-    );
+    cy.contains('button', 'Delete this report').click();
 
-    cy.visit(url);
+    cy.wait('@delete').then((xhr) => {
+      expect(xhr.request.body.variables.query).to.deep.eq({ report_number: 10 });
+    });
 
-    cy.wait(['@findReportWithTranslations', '@findIncident']);
+    cy.wait('@LinkReportsToIncidents').then((xhr) => {
+      expect(xhr.request.body.variables.input).to.deep.eq({
+        incident_ids: [],
+        report_numbers: [10],
+      });
+    });
 
-    cy.contains('button', 'Delete this report', { timeout: 8000 }).click();
-
-    cy.wait('@delete');
-
-    cy.wait('@updateIncident');
-
-    cy.get('div[class^="ToastContext"]')
-      .contains('Incident report 10 deleted successfully')
-      .should('exist');
+    cy.contains('[data-cy="toast"]', 'Incident report 10 deleted successfully').should('exist');
   });
 
   maybeIt('Should link a report to another incident', () => {
@@ -398,117 +456,79 @@ describe('Edit report', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'UpdateReport',
-      'UpdateReport',
+      (req) => req.body.operationName == 'ProbablyRelatedReports',
+      'ProbablyRelatedReports',
       {
-        data: {
-          updateOneReport: {
-            __typename: 'Report',
-            authors: ['Aimee Picchi'],
-            date_downloaded: '2019-04-13',
-            date_published: '2015-09-24',
-            flag: true,
-            image_url:
-              'https://cbsnews1.cbsistatic.com/hub/i/r/2015/03/17/01a38576-5108-40f7-8df8-5416164ed878/thumbnail/1200x630/ca8d35fe6bc065b5c9a747d92bc6d94c/154211248.jpg',
-            report_number: 23,
-            submitters: ['Catherine Olsson'],
-            tags: ['boe'],
-            text: '## Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.',
-            plain_text:
-              'Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.',
-            title: '​Is Starbucks shortchanging its baristas?',
-            url: 'https://www.cbsnews.com/news/is-starbucks-shortchanging-its-baristas/',
-          },
-        },
+        data: { reports: [] },
       }
     );
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'RelatedIncidents',
-      'RelatedIncidents',
+      (req) => req.body.operationName == 'ProbablyRelatedIncidents',
+      'ProbablyRelatedIncidents',
       {
-        data: {
-          incidentsToLink: [
-            {
-              __typename: 'Incident',
-              incident_id: 12,
-              reports: [{ __typename: 'Report', report_number: 42 }],
-            },
-          ],
-          incidentsToUnlink: [
-            {
-              __typename: 'Incident',
-              incident_id: 10,
-              reports: [
-                { __typename: 'Report', report_number: 16 },
-                { __typename: 'Report', report_number: 17 },
-                { __typename: 'Report', report_number: 18 },
-                { __typename: 'Report', report_number: 19 },
-                { __typename: 'Report', report_number: 20 },
-                { __typename: 'Report', report_number: 21 },
-                { __typename: 'Report', report_number: 22 },
-                { __typename: 'Report', report_number: 23 },
-                { __typename: 'Report', report_number: 24 },
-                { __typename: 'Report', report_number: 25 },
-              ],
-            },
-          ],
-        },
-      }
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'UpdateIncident' && req.body.variables.query.incident_id === 10,
-      'UpdateIncident10',
-      {
-        data: {
-          updateOneIncident: {
-            __typename: 'Incident',
-            incident_id: 10,
-            reports: [
-              { __typename: 'Report', report_number: 16 },
-              { __typename: 'Report', report_number: 17 },
-              { __typename: 'Report', report_number: 18 },
-              { __typename: 'Report', report_number: 19 },
-              { __typename: 'Report', report_number: 20 },
-              { __typename: 'Report', report_number: 21 },
-              { __typename: 'Report', report_number: 22 },
-              { __typename: 'Report', report_number: 24 },
-              { __typename: 'Report', report_number: 25 },
-            ],
-          },
-        },
-      }
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'UpdateIncident' && req.body.variables.query.incident_id === 12,
-      'UpdateIncident12',
-      {
-        data: {
-          updateOneIncident: {
-            __typename: 'Incident',
-            incident_id: 12,
-            reports: [
-              { __typename: 'Report', report_number: 23 },
-              { __typename: 'Report', report_number: 42 },
-            ],
-          },
-        },
+        data: { incidents: [] },
       }
     );
 
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'FindReportWithTranslations',
-      'findReportWithTranslations',
+      'FindReportWithTranslations',
       reportWithTranslations
     );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidents',
+      'FindIncidents',
+      {
+        data: {
+          incidents: [
+            {
+              __typename: 'Incident',
+              incident_id: 1,
+              title: 'Incident 1',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidentsTitles',
+      'FindIncidentsTitles',
+      {
+        data: {
+          incidents: [
+            {
+              _typename: 'Incident',
+              incident_id: 1,
+              title: 'Incident 1',
+            },
+            {
+              _typename: 'Incident',
+              incident_id: 2,
+              title: 'Incident 2',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.visit(`/cite/edit?report_number=23`);
+
+    cy.wait(['@FindReportWithTranslations', '@FindIncidents', '@FindIncidentsTitles']);
+
+    cy.get('form[data-cy="report"]').should('be.visible');
+
+    cy.contains('div', 'Incident 1').next().click();
+
+    cy.get('[name="incident_ids"]').type('2');
+
+    cy.get('[id="incident_ids-item-0"]').click();
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -517,13 +537,23 @@ describe('Edit report', () => {
       updateOneReportTranslation
     );
 
-    cy.visit(`/cite/edit?report_number=23`);
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateReport',
+      'UpdateReport',
+      updateOneReport
+    );
 
-    cy.wait('@findReportWithTranslations');
-
-    cy.get('form[data-cy="report"]').should('be.visible');
-
-    cy.get('[name="incident_id"]').clear().type('12');
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'LinkReportsToIncidents',
+      'LinkReportsToIncidents',
+      {
+        data: {
+          linkReportsToIncidents: [],
+        },
+      }
+    );
 
     cy.contains('button', 'Submit').click();
 
@@ -531,7 +561,6 @@ describe('Edit report', () => {
       .its('request.body.variables')
       .then((variables) => {
         expect(variables.query.report_number).to.equal(23);
-        expect(variables.set.incident_id).to.equal(undefined);
       });
 
     cy.wait('@updateOneReportTranslation')
@@ -562,29 +591,47 @@ describe('Edit report', () => {
         );
       });
 
-    cy.wait('@UpdateIncident10')
-      .its('request.body.variables')
-      .then((variables) => {
-        expect(variables.query).to.deep.equal({ incident_id: 10 });
-        expect(variables.set).to.deep.equal({
-          reports: { link: [16, 17, 18, 19, 20, 21, 22, 24, 25] },
-        });
+    cy.wait('@LinkReportsToIncidents').then((xhr) => {
+      expect(xhr.request.body.variables.input).to.deep.eq({
+        incident_ids: [2],
+        report_numbers: [23],
       });
+    });
 
-    cy.wait('@UpdateIncident12')
-      .its('request.body.variables')
-      .then((variables) => {
-        expect(variables.query).to.deep.equal({ incident_id: 12 });
-        expect(variables.set).to.deep.equal({ reports: { link: [42, 23] } });
-      });
+    cy.contains('[data-cy="toast"]', 'Incident report 23 updated successfully');
   });
 
-  it('Should display an error message if data is missing', () => {
+  maybeIt('Should display an error message if data is missing', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'FindReportWithTranslations',
       'findReportWithTranslations',
       reportWithTranslations
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedReports',
+      'ProbablyRelatedReports',
+      {
+        data: { reports: [] },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedIncidents',
+      'ProbablyRelatedIncidents',
+      {
+        data: { incidents: [] },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidents',
+      'FindIncidents',
+      { data: { incidents: [] } }
     );
 
     cy.visit(`/cite/edit?report_number=23`);
@@ -593,17 +640,267 @@ describe('Edit report', () => {
 
     cy.get('form[data-cy="report"]').should('be.visible');
 
-    cy.get('[name="incident_id"]').clear();
-
-    cy.contains('button', 'Submit').click();
+    cy.get('[name="title"]').clear();
 
     cy.contains('Please review report. Some data is missing.').should('exist');
 
     cy.contains('button', 'Submit').should('be.disabled');
 
-    cy.get('[name="incident_id"]').type('12');
+    cy.get('[name="title"]').type(
+      'Remove YouTube Kids app until it eliminates its inappropriate content'
+    );
 
     cy.contains('button', 'Submit').should('not.be.disabled');
+  });
+
+  maybeIt('Should convert an issue to a incident report', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedReports',
+      'ProbablyRelatedReports',
+      {
+        data: { reports: [] },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedIncidents',
+      'ProbablyRelatedIncidents',
+      {
+        data: { incidents: [] },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindReportWithTranslations',
+      'FindReportWithTranslations',
+      issueWithTranslations
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidents',
+      'FindIncidents',
+      { data: { incidents: [] } }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidentsTitles',
+      'FindIncidentsTitles',
+      {
+        data: {
+          incidents: [
+            {
+              _typename: 'Incident',
+              incident_id: 1,
+              title: 'Incident 1',
+            },
+            {
+              _typename: 'Incident',
+              incident_id: 2,
+              title: 'Incident 2',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.visit(`/cite/edit?report_number=23`);
+
+    cy.wait('@FindIncidents');
+
+    cy.wait('@FindReportWithTranslations');
+
+    cy.wait('@FindIncidentsTitles');
+
+    cy.get('form[data-cy="report"]').should('be.visible');
+
+    cy.get('[name="incident_ids"]').type('1');
+
+    cy.get('[id="incident_ids-item-0"]').click();
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateReport',
+      'UpdateReport',
+      updateOneReport
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateReportTranslation',
+      'UpdateReportTranslation',
+      updateOneReportTranslation
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'LinkReportsToIncidents',
+      'LinkReportsToIncidents',
+      {
+        data: {
+          linkReportsToIncidents: [
+            {
+              __typename: 'Incident',
+              incident_id: 1,
+              reports: [{ __typename: 'Report', report_number: 23 }],
+            },
+          ],
+        },
+      }
+    );
+
+    cy.window().then((win) => cy.stub(win, 'confirm').as('confirm').returns(true));
+
+    cy.contains('button', 'Submit').click();
+
+    cy.get('@confirm').should('have.been.calledOnce').invoke('restore');
+
+    cy.wait('@UpdateReport');
+
+    cy.wait('@UpdateReportTranslation');
+
+    cy.wait('@UpdateReportTranslation');
+
+    cy.wait('@LinkReportsToIncidents').then((xhr) => {
+      expect(xhr.request.body.variables.input).to.deep.eq({
+        incident_ids: [1],
+        report_numbers: [23],
+      });
+    });
+
+    cy.contains('[data-cy="toast"]', 'Incident report 23 updated successfully.');
+  });
+
+  maybeIt('Should convert an incident report to an issue', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedReports',
+      'ProbablyRelatedReports',
+      {
+        data: { reports: [] },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedIncidents',
+      'ProbablyRelatedIncidents',
+      {
+        data: { incidents: [] },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindReportWithTranslations',
+      'FindReportWithTranslations',
+      reportWithTranslations
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidents',
+      'FindIncidents',
+      {
+        data: {
+          incidents: [
+            {
+              _typename: 'Incident',
+              incident_id: 1,
+              title: 'Incident 1',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidentsTitles',
+      'FindIncidentsTitles',
+      {
+        data: {
+          incidents: [
+            {
+              _typename: 'Incident',
+              incident_id: 1,
+              title: 'Incident 1',
+            },
+            {
+              _typename: 'Incident',
+              incident_id: 2,
+              title: 'Incident 2',
+            },
+          ],
+        },
+      }
+    );
+
+    cy.visit(`/cite/edit?report_number=23`);
+
+    cy.wait('@FindIncidents');
+
+    cy.wait('@FindReportWithTranslations');
+
+    cy.wait('@FindIncidentsTitles');
+
+    cy.get('form[data-cy="report"]').should('be.visible');
+
+    cy.contains('div', 'Incident 1').next().click();
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateReport',
+      'UpdateReport',
+      updateOneReport
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'UpdateReportTranslation',
+      'UpdateReportTranslation',
+      updateOneReportTranslation
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'LinkReportsToIncidents',
+      'LinkReportsToIncidents',
+      {
+        data: {
+          linkReportsToIncidents: [],
+        },
+      }
+    );
+
+    cy.window().then((win) => cy.stub(win, 'confirm').as('confirm').returns(true));
+
+    cy.contains('button', 'Submit').click();
+
+    cy.get('@confirm').should('have.been.calledOnce').invoke('restore');
+
+    cy.wait('@UpdateReport');
+
+    cy.wait('@UpdateReportTranslation');
+
+    cy.wait('@UpdateReportTranslation');
+
+    cy.wait('@LinkReportsToIncidents').then((xhr) => {
+      expect(xhr.request.body.variables.input).to.deep.eq({
+        incident_ids: [],
+        report_numbers: [23],
+      });
+    });
+
+    cy.contains('[data-cy="toast"]', 'Issue 23 updated successfully');
   });
 
   it('Should display the report image', () => {
