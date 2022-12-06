@@ -273,7 +273,7 @@ const IncidentReportForm = () => {
           {...TextInputGroupProps}
         />
         <PreviewImageInputGroup
-          publicID={values.cloudinary_id}
+          cloudinary_id={values.cloudinary_id}
           name="image_url"
           label="Image Address"
           placeholder="Image URL"
