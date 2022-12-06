@@ -902,4 +902,14 @@ describe('Edit report', () => {
 
     cy.contains('[data-cy="toast"]', 'Issue 23 updated successfully');
   });
+
+  it('Should display the report image', () => {
+    cy.visit(url);
+
+    cy.get('[data-cy="image-preview-figure"] img').should(
+      'have.attr',
+      'src',
+      'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/v1/reports/assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975'
+    );
+  });
 });
