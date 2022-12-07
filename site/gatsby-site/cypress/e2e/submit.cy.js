@@ -76,11 +76,9 @@ describe('The Submit form', () => {
       });
     });
 
-    cy.get('[data-cy="submission-success"]')
-      .contains('Report successfully added to review queue')
-      .should('be.visible');
-
-    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
+    cy.get('div[class^="ToastContext"]')
+      .contains('Report successfully added to review queue. You can see your submission')
+      .should('exist');
 
     cy.contains('Please review. Some data is missing.').should('not.exist');
   });
@@ -838,9 +836,9 @@ describe('The Submit form', () => {
 
     cy.wait('@insertSubmission');
 
-    cy.get('[data-cy="submission-success"]').should('be.visible');
-
-    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/es/apps/submitted');
+    cy.get('div[class^="ToastContext"]')
+      .contains('Informe agregado exitosamente a la cola de revisión.')
+      .should('exist');
   });
 
   it('Should submit on step 1', () => {
@@ -877,11 +875,9 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="submit-step-1"]').click();
 
-    cy.get('[data-cy="submission-success"]')
-      .contains('Report successfully added to review queue')
-      .should('be.visible');
-
-    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
+    cy.get('div[class^="ToastContext"]')
+      .contains('Report successfully added to review queue. You can see your submission')
+      .should('exist');
   });
 
   it('Should submit on step 2', () => {
@@ -926,11 +922,9 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="submit-step-2"]').click();
 
-    cy.get('[data-cy="submission-success"]')
-      .contains('Report successfully added to review queue')
-      .should('be.visible');
-
-    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
+    cy.get('div[class^="ToastContext"]')
+      .contains('Report successfully added to review queue. You can see your submission')
+      .should('exist');
   });
 
   it('Should display an error message if data is missing', () => {
@@ -1002,7 +996,11 @@ describe('The Submit form', () => {
 
     cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
+    cy.wait(0);
+
     cy.get('[data-cy="to-step-2"]').click();
+
+    cy.wait(0);
 
     cy.get('[data-cy="to-step-3"]').click();
 
