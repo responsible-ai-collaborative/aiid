@@ -251,7 +251,7 @@ describe('Functions', () => {
 
       expect(incidentsCollection.updateOne.firstCall.args[0]).to.deep.equal({ incident_id: 2 });
       expect(incidentsCollection.updateOne.firstCall.args[1]).to.deep.equal({
-        $set: { embedding: null },
+        $unset: { embedding: '' },
       });
 
       expect(reportsCollection.updateMany.firstCall.args[0]).to.deep.equal({
