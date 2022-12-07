@@ -1,10 +1,10 @@
 import React from 'react';
 
-export default function CardSkeleton() {
+export default function CardSkeleton({ className = '' }) {
   return (
     <div
       role="status"
-      className="p-4 max-w-sm rounded border border-gray-200 shadow animate-pulse md:p-6 dark:border-gray-700"
+      className={`p-4 max-w-sm rounded border border-gray-200 shadow animate-pulse md:p-6 dark:border-gray-700 ${className}`}
     >
       <div className="flex justify-center items-center mb-4 h-48 bg-gray-300 rounded dark:bg-gray-700">
         <svg

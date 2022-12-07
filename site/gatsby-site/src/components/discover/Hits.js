@@ -19,7 +19,16 @@ const Hits = ({
   if (isSearchStalled) {
     return (
       <div className="tw-no-results bootstrap">
-        {display === 'list' ? <ListSkeleton /> : <CardSkeleton />}
+        {display === 'list' ? (
+          <ListSkeleton />
+        ) : (
+          <div className="flex">
+            <CardSkeleton />
+            <CardSkeleton className="hidden sm:inline-block ml-3" />
+            <CardSkeleton className="hidden lg:inline-block ml-3" />
+            <CardSkeleton className="hidden xl:inline-block ml-3" />
+          </div>
+        )}
       </div>
     );
   }
