@@ -9,17 +9,22 @@ import { Button } from 'flowbite-react';
 import { Trans } from 'react-i18next';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import Actions from 'components/discover/Actions';
+import TranslationBadge from 'components/i18n/TranslationBadge';
+import { Badge } from 'flowbite-react';
+import { RESPONSE_TAG } from 'utils/entities';
 
-const ReportCard = ({ item }) => {
+const ReportCard = ({ item, className }) => {
   const { isRole, loading } = useUserContext();
 
   const [expanded, setExpanded] = useState(false);
 
   const ref = useRef(null);
 
+  const authors = item.authors.join(', ');
+
   return (
     <div
-      className="flex flex-col items-center bg-white rounded-lg border  shadow-md md:flex-row dark:border-gray-700 dark:bg-gray-800"
+      className={`flex flex-col items-center bg-white rounded-lg border  shadow-md md:flex-row dark:border-gray-700 dark:bg-gray-800 ${className}}`}
       id={`r${item.report_number}`}
       ref={ref}
     >
@@ -49,6 +54,16 @@ const ReportCard = ({ item }) => {
               {item.source_domain} &middot;{' '}
               {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
             </WebArchiveLink>
+            <div className="flex ">
+              <TranslationBadge className="mx-2" originalLanguage={item.language} />
+              {item.tags && item.tags.includes(RESPONSE_TAG) && (
+                <div className="flex-1">
+                  <Badge color={'success'}>
+                    <Trans>{{ authors }} post-incident response</Trans>
+                  </Badge>
+                </div>
+              )}
+            </div>
           </div>
           {!loading && isRole('incident_editor') && (
             <Button

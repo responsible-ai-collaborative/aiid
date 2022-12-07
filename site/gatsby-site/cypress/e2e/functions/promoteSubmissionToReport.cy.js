@@ -5,7 +5,7 @@ const promoteSubmissionToReport = require('../../../../realm/functions/promoteSu
 const submission = {
   _id: '5f9c3ebfd4896d392493f03c',
   authors: ['Nedi Bedi and Kathleen McGrory'],
-  cloudinary_id: null,
+  cloudinary_id: 'something',
   date_downloaded: '2020-10-30',
   date_modified: '2021-07-27',
   date_published: '2017-05-03',
@@ -125,7 +125,7 @@ describe('Functions', () => {
         title: 'Submisssion 1 title',
       });
 
-      expect(reportsCollection.insertOne.firstCall.args[0]).to.deep.equal({
+      expect(reportsCollection.insertOne.firstCall.args[0]).to.deep.nested.include({
         report_number: 2,
         is_incident_report: true,
         title: 'Submisssion 1 title',
@@ -138,13 +138,15 @@ describe('Functions', () => {
         epoch_date_published: 1493769600,
         epoch_date_submitted: 1604016000,
         image_url: 'https://s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg',
-        cloudinary_id: null,
+        cloudinary_id: 'something',
         authors: ['Nedi Bedi and Kathleen McGrory'],
         submitters: ['Kate Perkins'],
         text: '## Submission 1 text\n\n_Markdown content!_',
+        plain_text: 'Submission 1 text\n\nMarkdown content!',
         url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/',
         source_domain: 'projects.tampabay.com',
         language: 'en',
+        tags: [],
       });
 
       expect(submissionsCollection.deleteOne).to.be.calledOnceWith({ _id: 1 });
@@ -220,7 +222,7 @@ describe('Functions', () => {
     ).then(() => {
       expect(incidentsCollection.insertOne.callCount).to.eq(0);
 
-      expect(reportsCollection.insertOne.firstCall.args[0]).to.deep.equal({
+      expect(reportsCollection.insertOne.firstCall.args[0]).to.deep.nested.include({
         report_number: 2,
         is_incident_report: true,
         title: 'Submisssion 1 title',
@@ -233,13 +235,15 @@ describe('Functions', () => {
         epoch_date_published: 1493769600,
         epoch_date_submitted: 1604016000,
         image_url: 'https://s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg',
-        cloudinary_id: null,
+        cloudinary_id: 'something',
         authors: ['Nedi Bedi and Kathleen McGrory'],
         submitters: ['Kate Perkins'],
         text: '## Submission 1 text\n\n_Markdown content!_',
+        plain_text: 'Submission 1 text\n\nMarkdown content!',
         url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/',
         source_domain: 'projects.tampabay.com',
         language: 'en',
+        tags: [],
       });
 
       expect(submissionsCollection.deleteOne).to.be.calledOnceWith({ _id: 1 });
@@ -315,7 +319,7 @@ describe('Functions', () => {
     ).then(() => {
       expect(incidentsCollection.insertOne.callCount).to.equal(0);
 
-      expect(reportsCollection.insertOne.firstCall.args[0]).to.deep.equal({
+      expect(reportsCollection.insertOne.firstCall.args[0]).to.deep.nested.include({
         report_number: 2,
         is_incident_report: false,
         title: 'Submisssion 1 title',
@@ -328,13 +332,15 @@ describe('Functions', () => {
         epoch_date_published: 1493769600,
         epoch_date_submitted: 1604016000,
         image_url: 'https://s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg',
-        cloudinary_id: null,
+        cloudinary_id: 'something',
         authors: ['Nedi Bedi and Kathleen McGrory'],
         submitters: ['Kate Perkins'],
         text: '## Submission 1 text\n\n_Markdown content!_',
+        plain_text: 'Submission 1 text\n\nMarkdown content!',
         url: 'https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/',
         source_domain: 'projects.tampabay.com',
         language: 'en',
+        tags: [],
       });
 
       expect(submissionsCollection.deleteOne).to.be.calledOnceWith({ _id: 1 });

@@ -11,7 +11,11 @@ import amazon from '../../images/amazon.svg';
 import youtube from '../../images/youtube.svg';
 
 export default function CommonEntities() {
-  const { incidents, entities: entitiesData } = useStaticQuery(graphql`
+  const {
+    incidents,
+    entities: entitiesData,
+    responses,
+  } = useStaticQuery(graphql`
     {
       incidents: allMongodbAiidprodIncidents {
         nodes {
@@ -30,12 +34,21 @@ export default function CommonEntities() {
           name
         }
       }
+      responses: allMongodbAiidprodReports(filter: { tags: { in: ["response"] } }) {
+        nodes {
+          report_number
+        }
+      }
     }
   `);
 
   const commonEntities = useMemo(
     () =>
-      computeEntities({ incidents: incidents.nodes, entities: entitiesData.nodes })
+      computeEntities({
+        incidents: incidents.nodes,
+        entities: entitiesData.nodes,
+        responses: responses.nodes,
+      })
         .sort(
           (a, b) =>
             b.incidentsAsBoth.length +
@@ -61,6 +74,8 @@ export default function CommonEntities() {
           const incidentsCount = entity.incidentsAsBoth.length + entity.incidentsAsDeployer.length;
 
           const harmedCount = entity.harmedEntities.length;
+
+          const responsesCount = entity.responses.length;
 
           return (
             <Link
@@ -118,7 +133,16 @@ export default function CommonEntities() {
                       <span className="font-semibold text-gray-900 dark:text-white">
                         {{ harmedCount }}
                       </span>{' '}
-                      entities.
+                      entities,
+                    </Trans>
+                  </li>
+                  <li>
+                    <Trans ns="entities">
+                      with{' '}
+                      <span className="font-semibold text-gray-900 dark:text-white">
+                        {{ responsesCount }}
+                      </span>{' '}
+                      incident responses.
                     </Trans>
                   </li>
                 </ul>

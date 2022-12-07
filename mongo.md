@@ -17,6 +17,8 @@ Administering data requires administrative access to the database. This access i
 * `duplicates`: All the incident numbers that have been migrated to an earlier incident number.
 * `taxa`: Metadata describing the taxonomies of the classifications collection.
 * `classifications`: All the taxonomic classifications of incident records.
+* `entities`: The organizations and individuals related to incidents.
+
 
 ## Incidents Collection Details
 
@@ -396,6 +398,13 @@ It is not specified.
 }
 ```
 
- 
+## Entities Collection
+
+### Systems
+
+* `entity_id`: `google` # Identifies an Entity, it is generaly the computed slug from the Entity's name.
+* `name`: `Google` # Name of the Entity.
+
+
 
 
