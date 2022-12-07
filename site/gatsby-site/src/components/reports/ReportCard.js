@@ -54,7 +54,7 @@ const ReportCard = ({ item, className }) => {
               {item.source_domain} &middot;{' '}
               {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
             </WebArchiveLink>
-            <div className="flex ">
+            <div className="flex w-fit">
               <TranslationBadge className="mx-2" originalLanguage={item.language} />
               {item.tags && item.tags.includes(RESPONSE_TAG) && (
                 <div className="flex-1">
