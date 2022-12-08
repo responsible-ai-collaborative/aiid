@@ -577,7 +577,13 @@ export const query = graphql`
         }
       }
     }
-    allMongodbAiidprodReports(filter: { report_number: { in: $report_numbers } }) {
+    allMongodbAiidprodReports(
+      filter: {
+        report_number: { in: $report_numbers }
+        text_inputs: { in: [null, ""] }
+        text_outputs: { in: [null, ""] }
+      }
+    ) {
       nodes {
         submitters
         date_published
