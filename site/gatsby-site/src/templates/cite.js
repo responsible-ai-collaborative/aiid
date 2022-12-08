@@ -132,7 +132,11 @@ function CitePage(props) {
     isOccurrence: true,
   });
 
-  const { data: variants, loading: loadingVariants } = useQuery(FIND_INCIDENT_VARIANTS, {
+  const {
+    data: variants,
+    loading: loadingVariants,
+    refetch: refetchVariants,
+  } = useQuery(FIND_INCIDENT_VARIANTS, {
     variables: { report_numbers },
   });
 
@@ -445,6 +449,9 @@ function CitePage(props) {
 
             <VariantList
               loading={loadingVariants}
+              refetch={refetchVariants}
+              incidentId={incident.incident_id}
+              report_numbers={report_numbers}
               variants={variants ? variants.reports : []}
             ></VariantList>
 

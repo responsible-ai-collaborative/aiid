@@ -12,6 +12,7 @@ export const FIND_INCIDENT_VARIANTS = gql`
           { text_outputs_ne: "" }
         ]
       }
+      sortBy: REPORT_NUMBER_ASC
     ) {
       report_number
       title
@@ -23,9 +24,10 @@ export const FIND_INCIDENT_VARIANTS = gql`
   }
 `;
 
-export const INSERT_VARIANT = gql`
-  mutation InsertVariant($report: ReportInsertInput!) {
-    insertOneReport(data: $report) {
+export const CREATE_VARIANT = gql`
+  mutation CreateVariant($input: CreateVariantInput!) {
+    createVariant(input: $input) {
+      incident_id
       report_number
     }
   }

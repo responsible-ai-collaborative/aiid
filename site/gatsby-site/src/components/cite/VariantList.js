@@ -1,11 +1,13 @@
 import React from 'react';
+import Markdown from 'react-markdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import Card from '../../elements/Card';
+import { faPlus, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { Spinner, Tooltip } from 'flowbite-react';
-import { getVariantStatus, VARIANT_STATUS } from 'utils/variants';
-import Markdown from 'react-markdown';
+import Card from '../../elements/Card';
+import { getVariantStatus, VARIANT_STATUS, getVariantStatusText } from 'utils/variants';
+import VariantForm from 'components/forms/VariantForm';
+import Button from 'elements/Button';
 
 const VariantStatusBadge = ({ status }) => {
   let badgeClass;
@@ -26,7 +28,7 @@ const VariantStatusBadge = ({ status }) => {
 
   return (
     <div className={`${badgeClass} text-xs font-semibold px-2.5 py-0.5 rounded capitalize`}>
-      <Trans>{status}</Trans>
+      <Trans>{getVariantStatusText(status)}</Trans>
     </div>
   );
 };
@@ -85,12 +87,14 @@ const VariantCard = ({ variant }) => {
   );
 };
 
-const VariantList = ({ variants, loading }) => {
+const VariantList = ({ incidentId, report_numbers, variants, loading, refetch }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="my-6">
       {loading && <Spinner />}
 
-      {!loading && variants.length > 0 && (
+      {!loading && (
         <>
           <h1>
             <Trans>Variants</Trans>
@@ -107,6 +111,17 @@ const VariantList = ({ variants, loading }) => {
               <VariantCard variant={variant} key={`variant-${variant.report_number}`} />
             ))}
           </div>
+
+          <Button variant="outline-primary">
+            <FontAwesomeIcon icon={faPlus} title={t('Add Variant')} className="mr-2" />
+            <Trans>Add Variant</Trans>
+          </Button>
+
+          <VariantForm
+            incidentId={incidentId}
+            report_numbers={report_numbers}
+            refetch={refetch}
+          ></VariantForm>
         </>
       )}
     </div>

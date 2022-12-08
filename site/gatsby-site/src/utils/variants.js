@@ -1,7 +1,7 @@
 const VARIANT_STATUS = {
-  unreviewed: 'unreviewed',
-  approved: 'approved',
-  rejected: 'rejected',
+  unreviewed: 'variant:unreviewed',
+  approved: 'variant:approved',
+  rejected: 'variant:rejected',
 };
 
 /**
@@ -23,4 +23,8 @@ module.exports.getVariantStatus = (variant) => {
   }
 
   return VARIANT_STATUS.unreviewed;
+};
+
+module.exports.getVariantStatusText = (tag) => {
+  return Object.keys(VARIANT_STATUS).find((key) => VARIANT_STATUS[key] === tag);
 };
