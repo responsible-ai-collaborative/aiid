@@ -2,7 +2,6 @@ import React from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { Spinner, Tooltip } from 'flowbite-react';
 import { Formik } from 'formik';
-import Markdown from 'react-markdown';
 import { useMutation } from '@apollo/client';
 import * as yup from 'yup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
@@ -39,49 +38,7 @@ const VariantForm = ({ incidentId, report_numbers, refetch }) => {
   };
 
   return (
-    <Card className="mt-4">
-      <div className="flex w-full flex-row items-center mt-2 gap-4">
-        <div className="w-1/2">
-          <div className="font-bold flex items-center gap-2">
-            <Trans>Input and circumstances</Trans>
-            <Tooltip
-              content={t(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-              )}
-              trigger="click"
-            >
-              <FontAwesomeIcon
-                icon={faQuestionCircle}
-                style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-                className="far fa-question-circle"
-              />
-            </Tooltip>
-          </div>
-          <div className="border-1 rounded-lg px-3 mt-2">
-            <Markdown>{''}</Markdown>
-          </div>
-        </div>
-        <div className="w-1/2">
-          <div className="font-bold flex items-center gap-2">
-            <Trans>Output and outcomes</Trans>
-            <Tooltip
-              content={t(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-              )}
-              trigger="click"
-            >
-              <FontAwesomeIcon
-                icon={faQuestionCircle}
-                style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-                className="far fa-question-circle"
-              />
-            </Tooltip>
-          </div>
-          <div className="border-1 rounded-lg px-3 mt-2">
-            <Markdown>{''}</Markdown>
-          </div>
-        </div>
-      </div>
+    <Card className="p-4 mt-4 bootstrap">
       <Formik
         initialValues={{ textInputs: '', textOutputs: '' }}
         validationSchema={schema}
@@ -108,48 +65,86 @@ const VariantForm = ({ incidentId, report_numbers, refetch }) => {
       >
         {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, isValid }) => (
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="formTextInputs">
-              <Form.Label>
-                <Trans>Input and circumstances</Trans>
-              </Form.Label>
-              <Form.Control
-                isInvalid={errors.textInputs && touched.textInputs}
-                type="text"
-                placeholder={t('Input and circumstances')}
-                name="textInputs"
-                value={values.textInputs}
-                onChange={handleChange}
-              />
-              <Form.Control.Feedback type="invalid">
-                <Trans>{errors.textInputs && touched.textInputs ? errors.textInputs : null}</Trans>
-              </Form.Control.Feedback>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>
-                <Trans ns="login">Output and outcomes</Trans>
-              </Form.Label>
-              <Form.Control
-                isInvalid={errors.textOutputs && touched.textOutputs}
-                type="text"
-                placeholder={t('Output and outcomes')}
-                name="textOutputs"
-                value={values.textOutputs}
-                onChange={handleChange}
-              />
-              <Form.Control.Feedback type="invalid">
-                <Trans>
-                  {errors.textOutputs && touched.textOutputs ? errors.textOutputs : null}
-                </Trans>
-              </Form.Control.Feedback>
-            </Form.Group>
-
-            <div className="flex justify-between gap-3">
+            <div className="flex w-full flex-row items-center gap-4">
+              <div className="w-1/2">
+                <div className="font-bold flex items-center gap-2">
+                  <Trans>Input and circumstances</Trans>
+                  <Tooltip
+                    content={t(
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+                    )}
+                    trigger="click"
+                  >
+                    <FontAwesomeIcon
+                      icon={faQuestionCircle}
+                      style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+                      className="far fa-question-circle"
+                    />
+                  </Tooltip>
+                </div>
+                <div className="pt-3">
+                  <Form.Group className="mb-3" controlId="formTextInputs">
+                    <Form.Control
+                      isInvalid={errors.textInputs && touched.textInputs}
+                      type="textarea"
+                      as="textarea"
+                      rows={4}
+                      placeholder={t('Input and circumstances')}
+                      name="textInputs"
+                      value={values.textInputs}
+                      onChange={handleChange}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      <Trans>
+                        {errors.textInputs && touched.textInputs ? errors.textInputs : null}
+                      </Trans>
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </div>
+              </div>
+              <div className="w-1/2">
+                <div className="font-bold flex items-center gap-2">
+                  <Trans>Output and outcomes</Trans>
+                  <Tooltip
+                    content={t(
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+                    )}
+                    trigger="click"
+                  >
+                    <FontAwesomeIcon
+                      icon={faQuestionCircle}
+                      style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+                      className="far fa-question-circle"
+                    />
+                  </Tooltip>
+                </div>
+                <div className="pt-3">
+                  <Form.Group className="mb-3" controlId="formTextOutputs">
+                    <Form.Control
+                      isInvalid={errors.textOutputs && touched.textOutputs}
+                      type="textarea"
+                      as="textarea"
+                      rows={4}
+                      placeholder={t('Output and outcomes')}
+                      name="textOutputs"
+                      value={values.textOutputs}
+                      onChange={handleChange}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      <Trans>
+                        {errors.textOutputs && touched.textOutputs ? errors.textOutputs : null}
+                      </Trans>
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-end gap-3">
               <Button
                 variant="primary"
                 type="submit"
                 disabled={isSubmitting || !isValid}
-                data-cy="signup-btn"
+                data-cy="add-variant-btn"
               >
                 <div className="flex gap-2 items-center">
                   {isSubmitting && (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Markdown from 'react-markdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
@@ -90,6 +90,12 @@ const VariantCard = ({ variant }) => {
 const VariantList = ({ incidentId, report_numbers, variants, loading, refetch }) => {
   const { t } = useTranslation();
 
+  const [displayForm, setDisplayForm] = useState(false);
+
+  const onAddVariantClick = () => {
+    setDisplayForm(true);
+  };
+
   return (
     <div className="my-6">
       {loading && <Spinner />}
@@ -99,29 +105,31 @@ const VariantList = ({ incidentId, report_numbers, variants, loading, refetch })
           <h1>
             <Trans>Variants</Trans>
           </h1>
-          <div>
+          <div className="mb-4">
             <Trans>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
               incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
               exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
             </Trans>
-          </div>
-          <div className={'flex flex-col gap-5 mt-5'}>
-            {variants.map((variant) => (
-              <VariantCard variant={variant} key={`variant-${variant.report_number}`} />
-            ))}
+            <div className={'flex flex-col gap-5 mt-5'}>
+              {variants.map((variant) => (
+                <VariantCard variant={variant} key={`variant-${variant.report_number}`} />
+              ))}
+            </div>
           </div>
 
-          <Button variant="outline-primary">
+          <Button variant="outline-primary" onClick={onAddVariantClick}>
             <FontAwesomeIcon icon={faPlus} title={t('Add Variant')} className="mr-2" />
             <Trans>Add Variant</Trans>
           </Button>
 
-          <VariantForm
-            incidentId={incidentId}
-            report_numbers={report_numbers}
-            refetch={refetch}
-          ></VariantForm>
+          {displayForm && (
+            <VariantForm
+              incidentId={incidentId}
+              report_numbers={report_numbers}
+              refetch={refetch}
+            ></VariantForm>
+          )}
         </>
       )}
     </div>
