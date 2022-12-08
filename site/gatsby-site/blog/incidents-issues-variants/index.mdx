@@ -24,35 +24,33 @@ Two years after publicly launching the AI Incident Database (AIID) as a collecti
 
 This definition is "eventy," meaning a risk needs to be realized in the form of a harm. But what about reports of risks that have not necessarily been realized (yet)? In computer security, risks are "vulnerabilities" while a security incident is an "exposure." Some AI analogues include:
 
-<table>
-  <tr>
-    <td style="vertical-align: middle">
-      <p><a href="/reports/2304">"China develops AI 'prosecutor' to press charges 'with 97% accuracy'"</a></p>
-      <p><em>Not an incident</em>: The inevitable harm event has not happened yet.</p>
-    </td>
-    <td style="vertical-align: middle">
-      <img src="./images/chinese-flag-gavel.png" alt="A gavel on a desk with the flag of the People's Republic of China in the background."/>
-    </td>
-  </tr>
-  <tr>
-    <td style="vertical-align: middle">
-      <img src="./images/the-national-tribune.png" alt="The National Tribune"/>
-    </td>
-    <td style="vertical-align: middle">
-      <p><a href="/reports/2296">"AI and deepfakes present new risks for internet relationships"</a></p>
-      <p><em>Not an incident</em>: We lack a specific example.</p>
-    </td>
-  </tr>
-  <tr>
-    <td style="vertical-align: middle">
-      <p><a href="/reports/2294">"Slight Street Sign Modifications Can Completely Fool Machine Learning Algorithms"</a></p>
-      <p><em>Not an incident</em>: The vulnerability has yet to be exploited.</p>
-    </td>
-    <td style="vertical-align: middle">
-      <img src="./images/stopsign.png" alt=""/>
-    </td>
-  </tr>
-</table>
+<div className="flex">
+  <div className="align-top border-1 border-gray-200 px-4 py-2">
+    <p><a href="/reports/2304">"China develops AI 'prosecutor' to press charges 'with 97% accuracy'"</a></p>
+    <p><em>Not an incident</em>: The inevitable harm event has not happened yet.</p>
+  </div>
+  <div className="align-top border-1 border-gray-200 px-4 py-2">
+    <img src="./images/chinese-flag-gavel.png" alt="A gavel on a desk with the flag of the People's Republic of China in the background."/>
+  </div>
+</div>
+<div className="flex">
+  <div className="align-top border-1 border-gray-200 px-4 py-2">
+    <img src="./images/the-national-tribune.png" alt="The National Tribune"/>
+  </div>
+  <div className="align-top border-1 border-gray-200 px-4 py-2">
+    <p><a href="/reports/2296">"AI and deepfakes present new risks for internet relationships"</a></p>
+    <p><em>Not an incident</em>: We lack a specific example.</p>
+  </div>
+</div>
+<div className="flex">
+  <div className="align-top border-1 border-gray-200 px-4 py-2">
+    <p><a href="/reports/2294">"Slight Street Sign Modifications Can Completely Fool Machine Learning Algorithms"</a></p>
+    <p><em>Not an incident</em>: The vulnerability has yet to be exploited.</p>
+  </div>
+  <div className="align-top border-1 border-gray-200 px-4 py-2">
+    <img src="./images/stopsign.png" alt=""/>
+  </div>
+</div>
 
 The AI impacts community can learn from, respond to, and prevent many of these issues from developing into incidents, but they require formal definition and a rigorous criteria. Therefore, we introduce "issues" defined as:
 
@@ -68,14 +66,14 @@ across incidents and issues to explore emerging and realized risks in the world.
 
 These definitions and their application within the AI Incident Database are subject to a large and growing collection of editing rules that adjudicate difficult decisions. In most cases, the decision of whether something is or is not an incident or issue, turns on whether someone is alleging that it meets the more restrictive criteria. Our intention in proposing these definitions is to provide a forum and infrastructure for sorting out these foundational questions.
 
-<img src="" alt="OECD.AI Policy Observatory" style={{ 'float' : 'left' }}/>
+<img src="./images/oecd.png" alt="OECD.AI Policy Observatory" style={{ 'float' : 'left' }}/>
 
 Among the more important forums for sorting through these questions is the [OECD.ai Working Group on Classification and Risk](https://oecd.ai/en/network-of-experts/working-group/1137), through which the Responsible AI Collaborative (the Collab) is providing input on emerging intergovernmental definitions for a two tier AI risk framework similar to that being explored here.
 
 Adopting shared definitions for AI risks is both important and timely.
 
 <figure style={{ 'float' : 'right'}}>
-  <img src="" alt="A line graph plotting the number of incidents in the database, which increases from somewhat less than 100 in November 2020 to slightly over 400 in December 2022. The line is curved upward, suggesting that the growth in incidents is accelerating."/>
+  <img src="./images/incidents-over-time.png" alt="A line graph plotting the number of incidents in the database, which increases from somewhat less than 100 in November 2020 to slightly over 400 in December 2022. The line is curved upward, suggesting that the growth in incidents is accelerating."/>
   <figcaption>Incidents Injested Through Time</figcaption>
 </figure>
 
@@ -88,25 +86,31 @@ Among the reasons to introduce "variants" to the incident database is to assembl
 Finally, we note our privileged position in the AI social impact space and wish to note that the research paper published in the [NeurIPS Workshop on Human-Centered AI](https://hcai-at-neurips.github.io/site) also details a planned incident identifier for a world where there are multiple interrelated incident databases. No single database can index all AI incidents and issues in the world, but we desperately need to ensure that all incident data is shared. The AI Incident Database [codebase](https://github.com/responsible-ai-collaborative/aiid) is thus moving to support federation (i.e., sharing) of data among multiple countries, regulators, languages, and companies. Please [reach out](/contact) if you would like more information on federation plans.
 
 <table>
-  <tr>
-    <td colspan="2">
-      Read the Research Paper (It expands on several elements)
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      McGregor, S., Paeth, K., & Lam, K. (2022). <i>Indexing AI Risks with Incidents, Issues, and Variants.</i>
-      In Proceedings of the <a href="https://hcai-at-neurips.github.io/site">NeurIPS Workshop on Human-Centered AI</a> (NeurIPS-22). Virtual Conference.
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <strong>Abstract</strong>: <em>Despite not passing the database's current criteria for incidents, these issues advance human understanding of where AI presents the potential for harm. Similar to databases in aviation and computer security, the AIID proposes to adopt a two-tiered system for indexing AI incidents (i.e., a harm or near harm event) and issues (i.e., a risk of a harm event). Further, as some machine learning-based systems will sometimes produce a large number of incidents, the notion of an incident "variant" is introduced. These proposed changes mark the transition of the AIID to a new version in response to lessons learned from editing 2,000+ incident reports and additional reports that fall under the new category of "issue."</em> (<a href="">Read More</a>)
-    </td>
-    <td>
-      <img src="" alt=""/>
-    </td>
-  </tr>
+  <thead>
+    <tr>
+      <th colspan="2" className="align-top border-1 border-gray-200 px-4 py-2">
+        Read the Research Paper (It expands on several elements)
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td colspan="2" className="align-top border-1 border-gray-200 px-4 py-2">
+        McGregor, S., Paeth, K., & Lam, K. (2022). <i>Indexing AI Risks with Incidents, Issues, and Variants.</i>
+        In Proceedings of the <a href="https://hcai-at-neurips.github.io/site">NeurIPS Workshop on Human-Centered AI</a> (NeurIPS-22). Virtual Conference.
+      </td>
+    </tr>
+    <tr>
+      <td className="align-top border-1 border-gray-200 px-4 py-2 w-1/2">
+        <strong>Abstract</strong>: <em>Despite not passing the database's current criteria for incidents, these issues advance human understanding of where AI presents the potential for harm. Similar to databases in aviation and computer security, the AIID proposes to adopt a two-tiered system for indexing AI incidents (i.e., a harm or near harm event) and issues (i.e., a risk of a harm event). Further, as some machine learning-based systems will sometimes produce a large number of incidents, the notion of an incident "variant" is introduced. These proposed changes mark the transition of the AIID to a new version in response to lessons learned from editing 2,000+ incident reports and additional reports that fall under the new category of "issue."</em> (<a href="https://arxiv.org/abs/2211.10384">Read More</a>)
+      </td>
+      <td className="align-top border-1 border-gray-200 px-4 py-2 w-1/2">
+        <a href="https://arxiv.org/abs/2211.10384">
+          <img src="./images/paper.png" alt=""/>
+        </a>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
 *Acknowledgements*: Kate Perkins gave valuable feedback on the contents of the paper in addition to her duties as an AIID incident editor. The definitions and discussions presented within the paper are also greatly influenced by ongoing efforts by the Organisation for Economic Co-operation and Development (OECD) to adopt a shared definition of AI incident across all 38 member states. Finally, the AIID is an effort by many people and organizations organized under the banner of the Responsible AI Collaborative, including the Center for Security and Emerging Technology (CSET), whose Zachary Arnold contributed to the first incident criteria and definition. Several people have contributed to the implementation of the database features, including César Varela, Pablo Costa, Clara Youdale, and Luna McNulty. It is through the Collab's collective efforts that the ontological perspectives presented above have meaning and real world importance.
