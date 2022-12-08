@@ -1,10 +1,10 @@
-import { maybeIt } from '../../support/utils';
+import { maybeIt } from '../../../support/utils';
 
-import incident from '../../fixtures/incidents/incident112.json';
+import incident from '../../../fixtures/incidents/incident112.json';
 
-import updateOneIncident from '../../fixtures/incidents/updateOneIncident112.json';
+import updateOneIncident from '../../../fixtures/incidents/updateOneIncident112.json';
 
-import incidents from '../../fixtures/incidents/incidents.json';
+import incidents from '../../../fixtures/incidents/incidents.json';
 
 describe('Incidents App', () => {
   const url = '/apps/incidents';

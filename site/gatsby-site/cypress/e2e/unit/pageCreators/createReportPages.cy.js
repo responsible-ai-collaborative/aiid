@@ -1,4 +1,4 @@
-import createReportPages from '../../../page-creators/createReportPages';
+import createReportPages from '../../../../page-creators/createReportPages';
 
 const response = {
   data: {

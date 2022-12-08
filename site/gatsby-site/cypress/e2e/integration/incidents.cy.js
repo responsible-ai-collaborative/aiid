@@ -1,8 +1,8 @@
-import { maybeIt } from '../support/utils';
+import { maybeIt } from '../../support/utils';
 
-import incident from '../fixtures/incidents/incident.json';
+import incident from '../../fixtures/incidents/incident.json';
 
-import updateOneIncident from '../fixtures/incidents/updateOneIncident.json';
+import updateOneIncident from '../../fixtures/incidents/updateOneIncident.json';
 
 describe('Incidents', () => {
   const url = '/incidents/edit?incident_id=10';

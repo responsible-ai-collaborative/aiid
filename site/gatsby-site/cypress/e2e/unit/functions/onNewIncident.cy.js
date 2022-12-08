@@ -1,6 +1,6 @@
-const { SUBSCRIPTION_TYPE } = require('../../../src/utils/subscriptions');
+const { SUBSCRIPTION_TYPE } = require('../../../../src/utils/subscriptions');
 
-const onNewIncident = require('../../../../realm/functions/onNewIncident');
+const onNewIncident = require('../../../../../realm/functions/onNewIncident');
 
 const subscriptionsToNewIncidents = [
   {

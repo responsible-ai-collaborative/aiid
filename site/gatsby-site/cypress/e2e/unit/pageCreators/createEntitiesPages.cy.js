@@ -1,4 +1,4 @@
-import createEntitiesPages from '../../../page-creators/createEntitiesPages';
+import createEntitiesPages from '../../../../page-creators/createEntitiesPages';
 
 const response = {
   data: {

@@ -1,6 +1,6 @@
-import parseNews from '../fixtures/api/parseNews.json';
+import parseNews from '../../fixtures/api/parseNews.json';
 
-import semanticallyRelated from '../fixtures/api/semanticallyRelated.json';
+import semanticallyRelated from '../../fixtures/api/semanticallyRelated.json';
 
 describe('The Submit form', () => {
   const url = '/apps/submit';

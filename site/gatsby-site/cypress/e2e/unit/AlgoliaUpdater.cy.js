@@ -1,6 +1,6 @@
 const { ObjectID } = require('bson');
 
-const AlgoliaUpdater = require('../../src/utils/AlgoliaUpdater');
+const AlgoliaUpdater = require('../../../src/utils/AlgoliaUpdater');
 
 const incidents = [
   {

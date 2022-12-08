@@ -1,6 +1,6 @@
-import { maybeIt } from '../../support/utils';
-import submittedReports from '../../fixtures/submissions/submitted.json';
-import quickAdds from '../../fixtures/submissions/quickadds.json';
+import { maybeIt } from '../../../support/utils';
+import submittedReports from '../../../fixtures/submissions/submitted.json';
+import quickAdds from '../../../fixtures/submissions/quickadds.json';
 
 describe('Submitted reports', () => {
   const url = '/apps/submitted';

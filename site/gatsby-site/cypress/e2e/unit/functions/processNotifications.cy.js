@@ -1,6 +1,6 @@
-const { SUBSCRIPTION_TYPE } = require('../../../src/utils/subscriptions');
+const { SUBSCRIPTION_TYPE } = require('../../../../src/utils/subscriptions');
 
-const processNotifications = require('../../../../realm/functions/processNotifications');
+const processNotifications = require('../../../../../realm/functions/processNotifications');
 
 const pendingNotificationsToNewIncidents = [
   {

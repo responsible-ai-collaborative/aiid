@@ -1,6 +1,6 @@
 const { ObjectID } = require('bson');
 
-const Translator = require('../../src/utils/Translator');
+const Translator = require('../../../src/utils/Translator');
 
 const reports = [
   {

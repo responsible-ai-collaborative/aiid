@@ -1,10 +1,10 @@
-import { maybeIt } from '../support/utils';
-import flaggedReport from '../fixtures/reports/flagged.json';
-import unflaggedReport from '../fixtures/reports/unflagged.json';
+import { maybeIt } from '../../support/utils';
+import flaggedReport from '../../fixtures/reports/flagged.json';
+import unflaggedReport from '../../fixtures/reports/unflagged.json';
 import { format } from 'date-fns';
 const { gql } = require('@apollo/client');
 
-import updateOneIncidentFlagged from '../fixtures/incidents/updateOneIncidentFlagged.json';
+import updateOneIncidentFlagged from '../../fixtures/incidents/updateOneIncidentFlagged.json';
 
 describe('Cite pages', () => {
   const discoverUrl = '/apps/discover';

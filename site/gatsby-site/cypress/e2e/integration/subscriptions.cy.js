@@ -1,6 +1,6 @@
-import subscriptionsData from '../fixtures/subscriptions/subscriptions.json';
-import emptySubscriptionsData from '../fixtures/subscriptions/empty-subscriptions.json';
-import { SUBSCRIPTION_TYPE } from '../../src/utils/subscriptions';
+import subscriptionsData from '../../fixtures/subscriptions/subscriptions.json';
+import emptySubscriptionsData from '../../fixtures/subscriptions/empty-subscriptions.json';
+import { SUBSCRIPTION_TYPE } from '../../../src/utils/subscriptions';
 
 const incidentSubscriptions = subscriptionsData.data.subscriptions
   .filter((subscription) => subscription.type === SUBSCRIPTION_TYPE.incident)

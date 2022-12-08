@@ -1,4 +1,4 @@
-const linkReportsToIncidents = require('../../../../realm/functions/linkReportsToIncidents');
+const linkReportsToIncidents = require('../../../../../realm/functions/linkReportsToIncidents');
 
 //should be on its own /cypress/unit folder or something
 

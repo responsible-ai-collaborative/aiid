@@ -1,14 +1,14 @@
-import { maybeIt } from '../support/utils';
+import { maybeIt } from '../../support/utils';
 
-import updateOneReport from '../fixtures/reports/updateOneReport.json';
+import updateOneReport from '../../fixtures/reports/updateOneReport.json';
 
-import updateOneReportTranslation from '../fixtures/reports/updateOneReportTranslation.json';
+import updateOneReportTranslation from '../../fixtures/reports/updateOneReportTranslation.json';
 
 import { format, getUnixTime } from 'date-fns';
 
-import reportWithTranslations from '../fixtures/reports/reportWithTranslations.json';
+import reportWithTranslations from '../../fixtures/reports/reportWithTranslations.json';
 
-import issueWithTranslations from '../fixtures/reports/issueWithTranslations.json';
+import issueWithTranslations from '../../fixtures/reports/issueWithTranslations.json';
 
 describe('Edit report', () => {
   const url = '/cite/edit?report_number=10';

@@ -1,4 +1,4 @@
-const promoteSubmissionToReport = require('../../../../realm/functions/promoteSubmissionToReport');
+const promoteSubmissionToReport = require('../../../../../realm/functions/promoteSubmissionToReport');
 
 //should be on its own /cypress/unit folder or something
 
