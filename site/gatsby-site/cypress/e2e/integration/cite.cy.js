@@ -87,7 +87,7 @@ describe('Cite pages', () => {
 
     cy.get('[data-cy="CSET"]').contains('Edit').click();
 
-    cy.get('[data-cy="CSET"] [data-cy="taxonomy-form"]').as('taxonomyForm');
+    cy.get('[data-cy="CSET"] [data-cy="taxonomy-form"]', { timeout: 8000 }).as('taxonomyForm');
 
     cy.get('@taxonomyForm').should('exist');
   });
@@ -97,12 +97,12 @@ describe('Cite pages', () => {
 
     cy.visit(url);
 
-    cy.get('[data-cy="resources"]', { timeout: 30000 })
+    cy.get('[data-cy="resources"]', { timeout: 8000 })
       .should('be.visible')
       .contains('Edit')
       .click();
 
-    cy.get('[data-cy="resources"] [data-cy="taxonomy-form"]')
+    cy.get('[data-cy="resources"] [data-cy="taxonomy-form"]', { timeout: 8000 })
       .should('be.visible')
       .as('taxonomyForm');
 
@@ -164,10 +164,9 @@ describe('Cite pages', () => {
 
     cy.contains('New Report').scrollIntoView().click();
 
-    cy.get('[data-cy="prefilled-incident-id"]').should(
-      'contain.text',
-      'Adding a new report to incident 10'
-    );
+    cy.contains('[data-cy="prefilled-incident-id"]', 'Adding a new report to incident 10', {
+      timeout: 8000,
+    }).should('be.visible');
   });
 
   it('should render Next and Previous incident buttons', () => {
@@ -187,7 +186,7 @@ describe('Cite pages', () => {
 
     cy.url().should('contain', '/incidents/edit?incident_id=10');
 
-    cy.get('[data-cy="incident-form"]').should('be.visible');
+    cy.get('[data-cy="incident-form"]', { timeout: 8000 }).should('be.visible');
   });
 
   it('Should display correct BibTex Citation', () => {
@@ -239,12 +238,14 @@ describe('Cite pages', () => {
 
     const hrefs = new Set();
 
-    cy.get('[data-cy="similar-incident-card"] [data-cy="cite-link"]').each((link) => {
-      const href = link[0].href;
+    cy.get('.tw-main-container [data-cy="similar-incident-card"] > [data-cy="cite-link"]').each(
+      (link) => {
+        const href = link[0].href;
 
-      expect(hrefs.has(href)).to.be.false;
-      hrefs.add(href);
-    });
+        expect(hrefs.has(href)).to.be.false;
+        hrefs.add(href);
+      }
+    );
   });
 
   it('Should not display edit link when not logged in', () => {
@@ -331,7 +332,7 @@ describe('Cite pages', () => {
     });
   });
 
-  it('Should subscribe to incident updates (user authenticated)', () => {
+  maybeIt('Should subscribe to incident updates (user authenticated)', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.visit(url);
@@ -351,11 +352,11 @@ describe('Cite pages', () => {
 
     cy.contains('Notify Me of Updates').scrollIntoView().click();
 
-    cy.wait(1000);
-
-    cy.get('[data-cy="toast"]')
-      .contains(`You have successfully subscribed to updates on incident ${incidentId}`)
-      .should('exist');
+    cy.contains(
+      '[data-cy="toast"]',
+      `You have successfully subscribed to updates on incident ${incidentId}`,
+      { timeout: 8000 }
+    ).should('exist');
   });
 
   it('Should not subscribe to incident updates (user unauthenticated)', () => {
