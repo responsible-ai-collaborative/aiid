@@ -74,6 +74,19 @@ const response = {
         },
       ],
     },
+    responses: {
+      nodes: [
+        {
+          report_number: 2,
+        },
+        {
+          report_number: 3,
+        },
+        {
+          report_number: 5,
+        },
+      ],
+    },
   },
 };
 
@@ -102,6 +115,7 @@ describe('createEntitiesPages', () => {
           'ai-developer-2',
           'party-3',
         ]);
+        expect(page.context.responses).to.deep.eq([2, 3]);
       });
 
       cy.wrap(createPage.getCall(1).args[0]).then((page) => {
@@ -117,6 +131,7 @@ describe('createEntitiesPages', () => {
           'ai-deployer-1',
           'party-2',
         ]);
+        expect(page.context.responses).to.deep.eq([2, 3]);
       });
 
       cy.wrap(createPage.getCall(2).args[0]).then((page) => {
@@ -128,6 +143,7 @@ describe('createEntitiesPages', () => {
         expect(page.context.incidentsAsBoth).to.deep.eq([]);
         expect(page.context.incidentsHarmedBy).to.deep.eq([]);
         expect(page.context.relatedEntities).to.deep.eq(['ai-developer-1', 'party-1', 'party-2']);
+        expect(page.context.responses).to.deep.eq([3]);
       });
 
       cy.wrap(createPage.getCall(3).args[0]).then((page) => {
@@ -145,6 +161,7 @@ describe('createEntitiesPages', () => {
           'ai-developer-2',
           'ai-deployer-2',
         ]);
+        expect(page.context.responses).to.deep.eq([3, 5]);
       });
 
       cy.wrap(createPage.getCall(4).args[0]).then((page) => {
@@ -162,6 +179,7 @@ describe('createEntitiesPages', () => {
           'ai-developer-1',
           'party-3',
         ]);
+        expect(page.context.responses).to.deep.eq([5]);
       });
 
       cy.wrap(createPage.getCall(5).args[0]).then((page) => {
@@ -173,6 +191,7 @@ describe('createEntitiesPages', () => {
         expect(page.context.incidentsAsBoth).to.deep.eq([]);
         expect(page.context.incidentsHarmedBy).to.deep.eq([]);
         expect(page.context.relatedEntities).to.deep.eq(['ai-developer-2', 'party-2']);
+        expect(page.context.responses).to.deep.eq([5]);
       });
 
       cy.wrap(createPage.getCall(6).args[0]).then((page) => {
@@ -188,6 +207,7 @@ describe('createEntitiesPages', () => {
           'ai-developer-2',
           'party-3',
         ]);
+        expect(page.context.responses).to.deep.eq([]);
       });
 
       cy.wrap(createPage.getCall(7).args[0]).then((page) => {
@@ -203,6 +223,7 @@ describe('createEntitiesPages', () => {
           'ai-developer-1',
           'ai-developer-2',
         ]);
+        expect(page.context.responses).to.deep.eq([]);
       });
 
       cy.wrap(createPage.getCall(8).args[0]).then((page) => {

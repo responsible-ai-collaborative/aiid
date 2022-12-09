@@ -12,6 +12,7 @@ import {
 } from 'd3';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import PopoverWrapper from 'elements/PopoverWrapper';
+import { Trans } from 'react-i18next';
 
 const formatDay = timeFormat('%b %d');
 
@@ -47,11 +48,7 @@ const AxisLeft = ({ yScale, margin, data }) => {
 
 const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
   return (
-    <g
-      key={bucket.x0}
-      transform={`translate(20,${(yScale(bucket.x0) + yScale(bucket.x1)) / 2})`}
-      className="bootstrap"
-    >
+    <g key={bucket.x0} transform={`translate(20,${(yScale(bucket.x0) + yScale(bucket.x1)) / 2})`}>
       {bucket.length > 1 ? (
         <>
           <circle className="fill-gray-900" cy={0} r={groupRadius} />
@@ -93,20 +90,48 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
         </>
       ) : (
         <circle
-          className={`${bucket[0].isOccurrence ? 'fill-danger' : 'fill-gray-900'}`}
+          className={`${
+            bucket[0].isOccurrence
+              ? 'fill-danger'
+              : bucket[0].isResponse
+              ? 'fill-green-500'
+              : 'fill-gray-900'
+          }`}
           cy={0}
           r={radius}
         />
       )}
 
       {bucket[0].isOccurrence ? (
-        <text dominantBaseline="middle" className="text-[14px]" dx={16}>
+        <text
+          dominantBaseline="middle"
+          className={`text-[14px] ${bucket[0].isResponse ? 'fill-green-700' : ''}`}
+          dx={16}
+          data-cy={`timeline-text-${bucket[0].isResponse ? 'response' : 'occurrence'}`}
+        >
           {bucket[0].title}
+          {bucket[0].isResponse && (
+            <>
+              {' '}
+              - <Trans>Response</Trans>
+            </>
+          )}
         </text>
       ) : (
         <a href={bucket[0].mongodb_id ? `#r${bucket[0].report_number}` : ''}>
-          <text dominantBaseline="middle" className="text-[14px]" dx={16}>
+          <text
+            dominantBaseline="middle"
+            className={`text-[14px] ${bucket[0].isResponse ? 'fill-green-700' : ''}`}
+            dx={16}
+            data-cy={`timeline-text-${bucket[0].isResponse ? 'response' : 'occurrence'}`}
+          >
             {bucket[0].title}
+            {bucket[0].isResponse && (
+              <>
+                {' '}
+                - <Trans>Response</Trans>
+              </>
+            )}
           </text>
         </a>
       )}

@@ -648,4 +648,124 @@ describe('Submitted reports', () => {
 
     cy.get('[data-cy="update-btn"]').should('not.be.disabled');
   });
+
+  maybeIt('Should display submission image on edit modal', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    const submission = submittedReports.data.submissions.find(
+      (s) => s.cloudinary_id && s.cloudinary_id != 'reports/' && s.cloudinary_id != ''
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'FindSubmissions',
+      {
+        data: {
+          submissions: [submission],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmission',
+      'FindSubmission',
+      {
+        data: {
+          submission,
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'AllQuickAdd',
+      'AllQuickAdd',
+      {
+        data: {
+          quickadds: [quickAdds],
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.wait('@FindSubmissions');
+
+    cy.wait('@AllQuickAdd');
+
+    cy.get('[data-cy="submission"]').first().as('promoteForm');
+
+    cy.get('@promoteForm').contains('review >').click();
+
+    cy.get('[data-cy="edit-submission"]').eq(0).click();
+
+    cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
+
+    cy.get('[data-cy="image-preview-figure"] img').should(
+      'have.attr',
+      'src',
+      'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/v1/reports/s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg'
+    );
+  });
+
+  maybeIt('Should display fallback image on edit modal if submission doesnt have an image', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    const submission = submittedReports.data.submissions.find((s) => s.cloudinary_id === null);
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'FindSubmissions',
+      {
+        data: {
+          submissions: [submission],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmission',
+      'FindSubmission',
+      {
+        data: {
+          submission,
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'AllQuickAdd',
+      'AllQuickAdd',
+      {
+        data: {
+          quickadds: [quickAdds],
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.wait('@FindSubmissions');
+
+    cy.wait('@AllQuickAdd');
+
+    cy.get('[data-cy="submission"]').first().as('promoteForm');
+
+    cy.get('@promoteForm').contains('review >').click();
+
+    cy.get('[data-cy="edit-submission"]').eq(0).click();
+
+    cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
+
+    cy.get('[data-cy="image-preview-figure"] img').should(
+      'have.attr',
+      'src',
+      'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/fallback.jpg'
+    );
+  });
 });
