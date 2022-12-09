@@ -24,6 +24,19 @@ export const FIND_INCIDENT_VARIANTS = gql`
   }
 `;
 
+export const FIND_VARIANT = gql`
+  query FindVariant($query: ReportQueryInput) {
+    report(query: $query) {
+      report_number
+      title
+      date_published
+      tags
+      text_inputs
+      text_outputs
+    }
+  }
+`;
+
 export const CREATE_VARIANT = gql`
   mutation CreateVariant($input: CreateVariantInput!) {
     createVariant(input: $input) {
