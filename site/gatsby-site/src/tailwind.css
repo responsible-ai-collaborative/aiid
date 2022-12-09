@@ -358,6 +358,12 @@
     .tw-footer-link {
         @apply text-gray-700 hover:text-primary-blue;
     }
+
+    /* This needs to be set for the submission modal because Flowbite has a defect with long-content modals 
+    where the modal is not scrollable and the top content is not accesible. */
+    .submission-modal > div:first-child {
+        @apply md:m-auto;
+    }
 }
 
 @layer utilities {

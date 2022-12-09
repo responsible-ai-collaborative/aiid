@@ -17,7 +17,7 @@
     },
     "date_published": {
         "title": "When did the report become available?",
-        "text": "Reports often have a publication date at the URL, but even when it does not, you can visit the  <linkto to=\"https://archive.org/web/\">Wayback Machine</linkto> to find when the report URL was first indexed.text:"
+        "text": "Reports often have a publication date at the URL, but even when it does not, you can visit the  <linkto to=\"https://archive.org/web/\">Wayback Machine</linkto> to find when the report URL was first indexed."
     },
     "date_downloaded": {
         "title": "When did you copy the contents of the report into this form?",

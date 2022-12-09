@@ -8,19 +8,20 @@ import { Spinner } from 'flowbite-react';
 import {
   UPDATE_REPORT,
   DELETE_REPORT,
-  useUpdateLinkedReports,
   FIND_REPORT_WITH_TRANSLATIONS,
+  LINK_REPORTS_TO_INCIDENTS,
 } from '../../graphql/reports';
-import { UPDATE_INCIDENT, FIND_INCIDENT } from '../../graphql/incidents';
+import { FIND_INCIDENTS } from '../../graphql/incidents';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { format, getUnixTime } from 'date-fns';
 import { stripMarkdown } from '../../utils/typography';
 import { Formik } from 'formik';
 import pick from 'lodash/pick';
 import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
-import { gql, useApolloClient } from '@apollo/client';
+import { gql } from '@apollo/client';
 import { useTranslation, Trans } from 'react-i18next';
 import RelatedIncidents from '../../components/RelatedIncidents';
+import { isEqual } from 'lodash';
 
 const UPDATE_REPORT_TRANSLATION = gql`
   mutation UpdateReportTranslation($input: UpdateOneReportTranslationInput) {
@@ -54,53 +55,30 @@ const reportFields = [
   'embedding',
 ];
 
-const siblingsQuery = gql`
-  query Siblings($query: ReportQueryInput!) {
-    reports(query: $query) {
-      report_number
-      embedding {
-        from_text_hash
-        vector
-      }
-    }
-  }
-`;
-
-const incidentEmbedding = (reports) => {
-  reports = reports.filter((report) => report.embedding);
-  return reports.length == 0
-    ? null
-    : {
-        vector: reports
-          .map((report) => report.embedding.vector)
-          .reduce(
-            (sum, vector) => vector.map((component, i) => component + sum[i]),
-            Array(reports[0].embedding.vector.length).fill(0)
-          )
-          .map((component) => component / reports.length),
-
-        from_reports: reports.map((report) => report.report_number),
-      };
-};
-
 function EditCitePage(props) {
   const { t, i18n } = useTranslation();
 
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
 
-  const { data: reportData, loading: loadingReport } = useQuery(FIND_REPORT_WITH_TRANSLATIONS, {
+  const {
+    data: reportData,
+    loading: loadingReport,
+    refetch: refetchReport,
+  } = useQuery(FIND_REPORT_WITH_TRANSLATIONS, {
     variables: { query: { report_number: reportNumber } },
   });
 
   const [updateReport] = useMutation(UPDATE_REPORT);
 
-  const [updateIncident] = useMutation(UPDATE_INCIDENT);
-
   const [updateReportTranslations] = useMutation(UPDATE_REPORT_TRANSLATION);
 
   const [deleteReport] = useMutation(DELETE_REPORT);
 
-  const { data: parentIncident, loading: loadingIncident } = useQuery(FIND_INCIDENT, {
+  const {
+    data: incidentsData,
+    loading: loadingIncident,
+    refetch: refetchIncidents,
+  } = useQuery(FIND_INCIDENTS, {
     variables: {
       query: {
         reports_in: {
@@ -110,15 +88,15 @@ function EditCitePage(props) {
     },
   });
 
+  const incident_ids = incidentsData?.incidents.map((incident) => incident.incident_id);
+
   const loading = loadingIncident || loadingReport;
 
-  const updateLinkedReports = useUpdateLinkedReports();
+  const [linkReportsToIncidents] = useMutation(LINK_REPORTS_TO_INCIDENTS);
 
   const addToast = useToastContext();
 
   const { config } = useLocalization();
-
-  const client = useApolloClient();
 
   const updateSuccessToast = ({ reportNumber, incidentId }) => ({
     message: (
@@ -158,6 +136,28 @@ function EditCitePage(props) {
 
   const handleSubmit = async (values) => {
     try {
+      if (
+        values.incident_ids.length == 0 &&
+        incident_ids.length > 0 &&
+        !confirm(
+          t('Removing all incidents transforms the report to an issue report, are you sure?')
+        )
+      ) {
+        return;
+      }
+
+      if (
+        values.incident_ids.length > 0 &&
+        incident_ids.length == 0 &&
+        !confirm(
+          t(
+            'You are converting the report from an issue report to an incident report, are you sure?'
+          )
+        )
+      ) {
+        return;
+      }
+
       if (typeof values.authors === 'string') {
         values.authors = values.authors.split(',').map((s) => s.trim());
       }
@@ -201,76 +201,22 @@ function EditCitePage(props) {
         });
       }
 
-      if (values.is_incident_report) {
-        if (values.incident_id !== parentIncident.incident.incident_id) {
-          await updateLinkedReports({ reportNumber, incidentIds: [values.incident_id] });
-
-          // If the parent incident has changed,
-          // recompute its embedding not including that of the current report.
-          const exSiblingsResponse = await client.query({
-            query: siblingsQuery,
-            variables: {
-              query: {
-                report_number_in: parentIncident.incident.reports
-                  .map((report) => report.report_number)
-                  .filter((report_number) => report_number != reportNumber),
-              },
+      if (!isEqual(values.incident_ids, incident_ids)) {
+        await linkReportsToIncidents({
+          variables: {
+            input: {
+              incident_ids: values.incident_ids,
+              report_numbers: [reportNumber],
             },
-          });
-
-          const exSiblings = exSiblingsResponse.data.reports;
-
-          const embedding = incidentEmbedding(exSiblings);
-
-          if (embedding) {
-            await client.mutate({
-              mutation: UPDATE_INCIDENT,
-              variables: {
-                query: { incident_id: parentIncident.incident.incident_id },
-                set: { embedding },
-              },
-            });
-          }
-        }
-
-        // Update the embedding of the parent incident
-        // to include the current report.
-        const siblingIdsResponse = await client.query({
-          query: gql`
-            query SiblingIds($query: IncidentQueryInput) {
-              incident(query: $query) {
-                reports {
-                  report_number
-                }
-              }
-            }
-          `,
-          variables: { query: { incident_id: values.incident_id } },
+          },
         });
 
-        const siblingIds = siblingIdsResponse.data.incident.reports
-          .map((report) => report.report_number)
-          .filter((report_number) => report_number != reportNumber);
+        await refetchReport();
 
-        const siblingsResponse = await client.query({
-          query: siblingsQuery,
-          variables: { query: { report_number_in: siblingIds } },
-        });
+        await refetchIncidents();
+      }
 
-        const siblings = siblingsResponse.data.reports;
-
-        const embedding = incidentEmbedding(siblings.concat(values));
-
-        if (embedding) {
-          await client.mutate({
-            mutation: UPDATE_INCIDENT,
-            variables: {
-              query: { incident_id: values.incident_id },
-              set: { embedding },
-            },
-          });
-        }
-
+      if (values.incident_ids.length > 0) {
         addToast(updateSuccessToast({ reportNumber, incidentId: values.incident_id }));
       } else {
         addToast(updateIssueSuccessToast({ reportNumber }));
@@ -290,41 +236,12 @@ function EditCitePage(props) {
         },
       });
 
-      await updateIncident({
+      await linkReportsToIncidents({
         variables: {
-          query: {
-            incident_id: parentIncident.incident.incident_id,
+          input: {
+            incident_ids: [],
+            report_numbers: [reportNumber],
           },
-          set: {
-            reports: {
-              link: parentIncident.incident.reports
-                .filter((report) => report.report_number != reportNumber)
-                .map((report) => report.report_number),
-            },
-          },
-        },
-      });
-
-      const exSiblingsResponse = await client.query({
-        query: siblingsQuery,
-        variables: {
-          query: {
-            report_number_in: parentIncident.incident.reports
-              .map((report) => report.report_number)
-              .filter((report_number) => report_number != reportNumber),
-          },
-        },
-      });
-
-      const exSiblings = exSiblingsResponse.data.reports;
-
-      const embedding = incidentEmbedding(exSiblings);
-
-      await client.mutate({
-        mutation: UPDATE_INCIDENT,
-        variables: {
-          query: { incident_id: parentIncident.incident.incident_id },
-          set: { embedding },
         },
       });
 
@@ -336,76 +253,81 @@ function EditCitePage(props) {
 
   return (
     <Layout {...props} className={'w-full boostrap p-1'}>
-      {!loading && <h1 className="mb-5">Editing Incident Report {reportNumber}</h1>}
-
       {loading && (
         <div className="flex justify-center">
           <Spinner />
         </div>
       )}
-      {!reportData?.report && !loading && <div>Report not found</div>}
 
-      {!loading &&
-        reportData?.report &&
-        (!reportData.report.is_incident_report || parentIncident?.incident) && (
-          <Formik
-            validationSchema={schema}
-            onSubmit={handleSubmit}
-            initialValues={{
-              ...reportData.report,
-              incident_id: reportData.report.is_incident_report
-                ? parentIncident.incident.incident_id
-                : '',
-            }}
-          >
-            {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
-              <>
-                <IncidentReportForm />
-                <div className="mt-4 flex items-center justify-between">
-                  <div className="flex items-center">
-                    <Button
-                      variant="primary"
-                      type="submit"
-                      disabled={!isValid || isSubmitting}
-                      onClick={submitForm}
-                      className="mr-4 disabled:opacity-50 flex"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Spinner size="sm" />
-                          <div className="ml-2">
-                            <Trans>Updating...</Trans>
+      {!loading && (
+        <>
+          {!reportData?.report ? (
+            <div>Report not found</div>
+          ) : (
+            <>
+              <h1 className="mb-5">Editing Incident Report {reportNumber}</h1>
+              <Formik
+                validationSchema={schema}
+                onSubmit={handleSubmit}
+                initialValues={{
+                  ...reportData.report,
+                  incident_ids,
+                }}
+              >
+                {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
+                  <>
+                    <IncidentReportForm />
+                    <div className="mt-4 flex items-center justify-between">
+                      <div className="flex items-center">
+                        <Button
+                          variant="primary"
+                          type="submit"
+                          disabled={!isValid || isSubmitting}
+                          onClick={submitForm}
+                          className="mr-4 disabled:opacity-50 flex"
+                        >
+                          {isSubmitting ? (
+                            <>
+                              <Spinner size="sm" />
+                              <div className="ml-2">
+                                <Trans>Updating...</Trans>
+                              </div>
+                            </>
+                          ) : (
+                            <Trans>Submit</Trans>
+                          )}
+                        </Button>
+                        {!isValid && (
+                          <div className="text-danger">
+                            <Trans ns="validation">
+                              Please review report. Some data is missing.
+                            </Trans>
                           </div>
-                        </>
-                      ) : (
-                        <Trans>Submit</Trans>
-                      )}
-                    </Button>
-                    {!isValid && (
-                      <div className="text-danger">
-                        <Trans ns="validation">Please review report. Some data is missing.</Trans>
+                        )}
                       </div>
-                    )}
-                  </div>
-                  <Button
-                    className="text-danger"
-                    variant="link"
-                    disabled={isSubmitting}
-                    onClick={() => {
-                      confirm(t('Are you sure you want to delete this report?')) && handleDelete();
-                    }}
-                  >
-                    Delete this report
-                  </Button>
-                </div>
+                      <Button
+                        className="text-danger"
+                        variant="link"
+                        disabled={isSubmitting}
+                        onClick={() => {
+                          confirm(t('Are you sure you want to delete this report?')) &&
+                            handleDelete();
+                        }}
+                      >
+                        Delete this report
+                      </Button>
+                    </div>
 
-                {reportData.report.is_incident_report && (
-                  <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
+                    {reportData.report.is_incident_report && (
+                      <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
+                    )}
+                  </>
                 )}
-              </>
-            )}
-          </Formik>
-        )}
+              </Formik>
+            </>
+          )}
+        </>
+      )}
     </Layout>
   );
 }

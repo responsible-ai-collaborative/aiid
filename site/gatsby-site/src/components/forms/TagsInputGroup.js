@@ -35,7 +35,7 @@ const TagsInputGroup = ({
           >
             <TagsControl name={name} placeholder={placeholder} disabled={disabled} />
           </div>
-          <Form.Control.Feedback type="invalid">
+          <Form.Control.Feedback type="invalid" className="text-sm">
             <Trans ns="validation">{isInvalid ? errors[name] : null}</Trans>
           </Form.Control.Feedback>
         </InputGroup>
