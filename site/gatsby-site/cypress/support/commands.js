@@ -11,17 +11,17 @@ Cypress.Commands.add('disableSmoothScroll', () => {
 });
 
 Cypress.Commands.add('login', (email, password) => {
-  cy.clearLocalStorage();
+  cy.session([email, password], () => {
+    cy.visit('/login');
 
-  cy.visit('/login');
+    cy.get('input[name=email]').type(email);
 
-  cy.get('input[name=email]').type(email);
+    cy.get('input[name=password]').type(password);
 
-  cy.get('input[name=password]').type(password);
+    cy.get('[data-cy="login-btn"]').click();
 
-  cy.get('[data-cy="login-btn"]').click();
-
-  return cy.location('pathname', { timeout: 8000 }).should('eq', '/');
+    cy.location('pathname', { timeout: 8000 }).should('eq', '/');
+  });
 });
 
 Cypress.Commands.add(
