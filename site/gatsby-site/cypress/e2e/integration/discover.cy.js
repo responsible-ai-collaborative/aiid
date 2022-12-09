@@ -40,9 +40,9 @@ describe('The Discover app', () => {
 
     cy.contains('button', 'Incident ID').click();
 
-    cy.get('.card [placeholder="Type Here"]').type('34').type('{enter}');
+    cy.get('.card [placeholder="Type Here"]', { timeout: 8000 }).type('34').type('{enter}');
 
-    cy.get('.list-group-item:contains("34")').first().click();
+    cy.get('.list-group-item:contains("34")', { timeout: 8000 }).first().click();
 
     cy.url().should('include', 'incident_id=34');
 

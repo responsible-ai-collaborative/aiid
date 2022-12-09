@@ -18,8 +18,7 @@ describe('The Landing page', () => {
   it('Loads the sponsor modals', () => {
     cy.visit('/');
     cy.get('[data-cy="wu-modal-click"]').click();
-    cy.get('[data-cy="sponsor-modal"]').should('be.visible');
-    cy.get('[data-cy="close-modal"]').click();
+    cy.get('[data-cy="sponsor-modal"]', { timeout: 8000 }).should('be.visible');
   });
 
   it('Should submit a report through the Quick Add form', () => {
@@ -85,7 +84,7 @@ describe('The Landing page', () => {
   });
 
   maybeIt('Should redirect to the account page when logged in', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'), { skipSession: true });
 
     cy.location('pathname', { timeout: 8000 }).should('eq', '/');
 
