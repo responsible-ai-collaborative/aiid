@@ -60,7 +60,9 @@ describe('The Discover app', () => {
       .first()
       .click();
 
-    cy.get('button:contains("Incident ID")').get('span.badge').should('contain.text', '1');
+    cy.contains('button', 'Incident ID', { timeout: 8000 })
+      .find('span.badge')
+      .should('contain.text', '1');
 
     cy.url().should('include', 'incident_id=10');
 
