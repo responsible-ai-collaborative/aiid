@@ -91,7 +91,7 @@ const SubmitForm = () => {
       }
     }
 
-    if (queryParams.tags && queryParams.tags.includes(RESPONSE_TAG) && queryParams.incident_id) {
+    if (queryParams.tags && queryParams.tags.includes(RESPONSE_TAG)) {
       setIsIncidentResponse(true);
     }
 
@@ -222,16 +222,29 @@ const SubmitForm = () => {
       </div>
       <p>
         {isIncidentResponse ? (
-          <Trans ns="submit" i18nKey={'submitFormResponseDescription'}>
-            The following form will create a new incident response for incident{' '}
-            <Link to={`/cite/${submission.incident_id}`}>#{{ incident_id }}</Link> for{' '}
-            <Link to="/apps/submitted">review</Link> and inclusion into the AI Incident Database.
-            Fields beginning with an asterisk (*) are required. Please carefully check your entries
-            for content issues (e.g., accidental copy and paste of advertisements). For details on
-            the database ingestion process, please check the{' '}
-            <Link to="/research/1-criteria/">research pages</Link> or{' '}
-            <Link to="/contact">contact us with questions</Link>.
-          </Trans>
+          <>
+            {incident_id ? (
+              <Trans ns="submit" i18nKey={'submitFormResponseDescription1'}>
+                The following form will create a new incident response {}for incident{' '}
+                <Link to={`/cite/${incident_id}`}>#{{ incident_id }}</Link> for{' '}
+                <Link to="/apps/submitted">review</Link> and inclusion into the AI Incident
+                Database.
+              </Trans>
+            ) : (
+              <Trans ns="submit" i18nKey={'submitFormResponseDescription2'}>
+                The following form will create a new incident response for{' '}
+                <Link to="/apps/submitted">review</Link> and inclusion into the AI Incident
+                Database.
+              </Trans>
+            )}{' '}
+            <Trans ns="submit" i18nKey={'submitFormResponseDescription3'}>
+              Fields beginning with an asterisk (*) are required. Please carefully check your
+              entries for content issues (e.g., accidental copy and paste of advertisements). For
+              details on the database ingestion process, please check the{' '}
+              <Link to="/research/1-criteria/">research pages</Link> or{' '}
+              <Link to="/contact">contact us with questions</Link>.
+            </Trans>
+          </>
         ) : (
           <Trans ns="submit" i18nKey={'submitFormDescription'}>
             The following form will create a new incident report for{' '}
