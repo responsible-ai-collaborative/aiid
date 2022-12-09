@@ -220,23 +220,8 @@ function CitePage(props) {
     (report) => report.tags && report.tags.includes(RESPONSE_TAG)
   );
 
-  const rightSidebar = (
-    <>
-      <div className="max-w-[16rem] 2xl:max-w-[18rem] ml-2 pr-4 py-8">
-        <SimilarIncidents
-          nlp_similar_incidents={nlp_similar_incidents}
-          editor_similar_incidents={editor_similar_incidents}
-          editor_dissimilar_incidents={editor_dissimilar_incidents}
-          flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
-          parentIncident={incident}
-          orientation="column"
-        />
-      </div>
-    </>
-  );
-
   return (
-    <Layout {...{ props, rightSidebar }}>
+    <Layout {...{ props }}>
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
@@ -260,215 +245,233 @@ function CitePage(props) {
         </div>
       </div>
 
-      <div>
-        <strong>Description</strong>: {incident.description}
-      </div>
+      <div className="flex">
+        <div className="shrink-1">
+          <div>
+            <strong>Description</strong>: {incident.description}
+          </div>
 
-      <Container>
-        <Row>
-          <Col>
-            <Card className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6">
-              <Card.Header className="items-center justify-between">
-                <h4 className="m-0">
-                  <Trans ns="entities">Entities</Trans>
-                </h4>
-                <Link to="/entities">
-                  <Trans ns="entities">View all entities</Trans>
-                </Link>
-              </Card.Header>
-              <Card.Body className="block" data-cy="alleged-entities">
-                <AllegedEntities entities={entities} />
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+          <Container>
+            <Row>
+              <Col>
+                <Card className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6">
+                  <Card.Header className="items-center justify-between">
+                    <h4 className="m-0">
+                      <Trans ns="entities">Entities</Trans>
+                    </h4>
+                    <Link to="/entities">
+                      <Trans ns="entities">View all entities</Trans>
+                    </Link>
+                  </Card.Header>
+                  <Card.Body className="block" data-cy="alleged-entities">
+                    <AllegedEntities entities={entities} />
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
 
-        <Row>
-          <Col>
-            <Card
-              data-cy="citation"
-              className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6"
-            >
-              <Card.Header className="items-center justify-between">
-                <h4 className="m-0">
-                  <Trans>Suggested citation format</Trans>
-                </h4>
-              </Card.Header>
-              <Card.Body className="block">
-                <Citation
-                  nodes={incidentReports}
-                  incidentDate={incident.date}
-                  incident_id={incident.incident_id}
-                  editors={incident.editors}
-                />
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-
-        <Row className="mt-6">
-          <Col>
-            <div data-cy={'incident-stats'}>
-              <IncidentStatsCard
-                {...{
-                  incidentId: incident.incident_id,
-                  reportCount: incidentReports.length,
-                  incidentDate: incident.date,
-                  editors: incident.editors.join(', '),
-                }}
-              />
-            </div>
-          </Col>
-        </Row>
-
-        <Row className="mt-6">
-          <Col>
-            <Card className="shadow-card">
-              <Card.Header className="items-center justify-between">
-                <h4>
-                  <Trans>Reports Timeline</Trans>
-                </h4>
-              </Card.Header>
-              <Card.Body>
-                <Timeline data={timeline} />
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-
-        <Row className="mt-6">
-          <Col>
-            <Card className="shadow-card">
-              <Card.Header className="items-center justify-between">
-                <h4>
-                  <Trans>Tools</Trans>
-                </h4>
-              </Card.Header>
-              <Card.Body className="flex-row flex-wrap gap-2">
-                <Button variant="outline-primary" onClick={subscribeToNewReports}>
-                  <div className="flex gap-2 items-center">
-                    {subscribing ? (
-                      <div>
-                        <Spinner size="sm" />
-                      </div>
-                    ) : (
-                      <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
-                    )}
-                    <Trans>Notify Me of Updates</Trans>
-                  </div>
-                </Button>
-                <Button
-                  variant="outline-primary"
-                  href={`/apps/submit?incident_id=${incident.incident_id}&date_downloaded=${format(
-                    new Date(),
-                    'yyyy-MM-dd'
-                  )}`}
+            <Row>
+              <Col>
+                <Card
+                  data-cy="citation"
+                  className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6"
                 >
-                  <FontAwesomeIcon icon={faPlus} title={t('New Report')} className="mr-2" />
-                  <Trans>New Report</Trans>
-                </Button>
-                <Button
-                  variant="outline-primary"
-                  href={`/apps/submit?tags=${RESPONSE_TAG}&incident_id=${incident.incident_id}`}
-                >
-                  <FontAwesomeIcon icon={faPlus} title={t('New Response')} className="mr-2" />
-                  <Trans>New Response</Trans>
-                </Button>
-                <Button
-                  variant="outline-primary"
-                  href={'/apps/discover?incident_id=' + incident.incident_id}
-                >
-                  <FontAwesomeIcon className="mr-2" icon={faSearch} title={t('Discover')} />
-                  <Trans>Discover</Trans>
-                </Button>
-                {!loading && isRole('incident_editor') && (
-                  <Button
-                    variant="outline-primary"
-                    href={'/incidents/edit?incident_id=' + incident.incident_id}
-                  >
-                    <FontAwesomeIcon className="mr-2" icon={faEdit} title={t('Edit Incident')} />
-                    <Trans>Edit Incident</Trans>
-                  </Button>
-                )}
-                <BibTex
-                  nodes={incidentReports}
-                  incidentDate={incident.date}
-                  incident_id={incident.incident_id}
-                  editors={incident.editors}
-                />
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+                  <Card.Header className="items-center justify-between">
+                    <h4 className="m-0">
+                      <Trans>Suggested citation format</Trans>
+                    </h4>
+                  </Card.Header>
+                  <Card.Body className="block">
+                    <Citation
+                      nodes={incidentReports}
+                      incidentDate={incident.date}
+                      incident_id={incident.incident_id}
+                      editors={incident.editors}
+                    />
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
 
-        {taxonomies.length > 0 && (
-          <Row id="taxa-area">
-            <Col>
-              {taxonomiesList
-                .filter((t) => t.canEdit || t.classificationsArray.length > 0)
-                .map((t) => (
-                  <Taxonomy
-                    key={t.namespace}
-                    taxonomy={t}
-                    incidentId={incident.incident_id}
-                    canEdit={t.canEdit}
+            <Row className="mt-6">
+              <Col>
+                <div data-cy={'incident-stats'}>
+                  <IncidentStatsCard
+                    {...{
+                      incidentId: incident.incident_id,
+                      reportCount: incidentReports.length,
+                      incidentDate: incident.date,
+                      editors: incident.editors.join(', '),
+                    }}
                   />
-                ))}
-            </Col>
-          </Row>
-        )}
+                </div>
+              </Col>
+            </Row>
 
-        <Row className="mt-6">
-          <Col>
-            <Card>
-              <ImageCarousel nodes={incidentReports} />
-            </Card>
-          </Col>
-        </Row>
+            <Row className="mt-6">
+              <Col>
+                <Card className="shadow-card">
+                  <Card.Header className="items-center justify-between">
+                    <h4>
+                      <Trans>Reports Timeline</Trans>
+                    </h4>
+                  </Card.Header>
+                  <Card.Body>
+                    <Timeline data={timeline} />
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
 
-        <Row className="mt-6">
-          <Col>
-            <div className="pb-5">
-              <div className={'titleWrapper'}>
-                <h1 className="tw-styled-heading">
-                  <Trans>Incident Reports</Trans>
-                </h1>
-              </div>
-            </div>
-          </Col>
-        </Row>
+            <Row className="mt-6">
+              <Col>
+                <Card className="shadow-card">
+                  <Card.Header className="items-center justify-between">
+                    <h4>
+                      <Trans>Tools</Trans>
+                    </h4>
+                  </Card.Header>
+                  <Card.Body className="flex-row flex-wrap gap-2">
+                    <Button variant="outline-primary" onClick={subscribeToNewReports}>
+                      <div className="flex gap-2 items-center">
+                        {subscribing ? (
+                          <div>
+                            <Spinner size="sm" />
+                          </div>
+                        ) : (
+                          <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
+                        )}
+                        <Trans>Notify Me of Updates</Trans>
+                      </div>
+                    </Button>
+                    <Button
+                      variant="outline-primary"
+                      href={`/apps/submit?incident_id=${
+                        incident.incident_id
+                      }&date_downloaded=${format(new Date(), 'yyyy-MM-dd')}`}
+                    >
+                      <FontAwesomeIcon icon={faPlus} title={t('New Report')} className="mr-2" />
+                      <Trans>New Report</Trans>
+                    </Button>
+                    <Button
+                      variant="outline-primary"
+                      href={`/apps/submit?tags=${RESPONSE_TAG}&incident_id=${incident.incident_id}`}
+                    >
+                      <FontAwesomeIcon icon={faPlus} title={t('New Response')} className="mr-2" />
+                      <Trans>New Response</Trans>
+                    </Button>
+                    <Button
+                      variant="outline-primary"
+                      href={'/apps/discover?incident_id=' + incident.incident_id}
+                    >
+                      <FontAwesomeIcon className="mr-2" icon={faSearch} title={t('Discover')} />
+                      <Trans>Discover</Trans>
+                    </Button>
+                    {!loading && isRole('incident_editor') && (
+                      <Button
+                        variant="outline-primary"
+                        href={'/incidents/edit?incident_id=' + incident.incident_id}
+                      >
+                        <FontAwesomeIcon
+                          className="mr-2"
+                          icon={faEdit}
+                          title={t('Edit Incident')}
+                        />
+                        <Trans>Edit Incident</Trans>
+                      </Button>
+                    )}
+                    <BibTex
+                      nodes={incidentReports}
+                      incidentDate={incident.date}
+                      incident_id={incident.incident_id}
+                      editors={incident.editors}
+                    />
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
 
-        {sortedReports.map((report) => (
-          <Row className="mb-4" key={report.report_number}>
-            <Col>
-              <ReportCard item={report} />
-            </Col>
-          </Row>
-        ))}
+            {taxonomies.length > 0 && (
+              <Row id="taxa-area">
+                <Col>
+                  {taxonomiesList
+                    .filter((t) => t.canEdit || t.classificationsArray.length > 0)
+                    .map((t) => (
+                      <Taxonomy
+                        key={t.namespace}
+                        taxonomy={t}
+                        incidentId={incident.incident_id}
+                        canEdit={t.canEdit}
+                      />
+                    ))}
+                </Col>
+              </Row>
+            )}
 
-        <SimilarIncidents
-          nlp_similar_incidents={nlp_similar_incidents}
-          editor_similar_incidents={editor_similar_incidents}
-          editor_dissimilar_incidents={editor_dissimilar_incidents}
-          flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
-          parentIncident={incident}
-        />
+            <Row className="mt-6">
+              <Col>
+                <Card>
+                  <ImageCarousel nodes={incidentReports} />
+                </Card>
+              </Col>
+            </Row>
 
-        <Pagination className="justify-between">
-          <Pagination.Item
-            href={localizePath({ path: `/cite/${prevIncident}` })}
-            disabled={!prevIncident}
-          >
-            ‹ <Trans>Previous Incident</Trans>
-          </Pagination.Item>
-          <Pagination.Item
-            href={localizePath({ path: `/cite/${nextIncident}` })}
-            disabled={!nextIncident}
-          >
-            <Trans>Next Incident</Trans> ›
-          </Pagination.Item>
-        </Pagination>
-      </Container>
+            <Row className="mt-6">
+              <Col>
+                <div className="pb-5">
+                  <div className={'titleWrapper'}>
+                    <h1 className="tw-styled-heading">
+                      <Trans>Incident Reports</Trans>
+                    </h1>
+                  </div>
+                </div>
+              </Col>
+            </Row>
+
+            {sortedReports.map((report) => (
+              <Row className="mb-4" key={report.report_number}>
+                <Col>
+                  <ReportCard item={report} />
+                </Col>
+              </Row>
+            ))}
+
+            <SimilarIncidents
+              nlp_similar_incidents={nlp_similar_incidents}
+              editor_similar_incidents={editor_similar_incidents}
+              editor_dissimilar_incidents={editor_dissimilar_incidents}
+              flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
+              parentIncident={incident}
+              className="xl:hidden"
+            />
+
+            <Pagination className="justify-between">
+              <Pagination.Item
+                href={localizePath({ path: `/cite/${prevIncident}` })}
+                disabled={!prevIncident}
+              >
+                ‹ <Trans>Previous Incident</Trans>
+              </Pagination.Item>
+              <Pagination.Item
+                href={localizePath({ path: `/cite/${nextIncident}` })}
+                disabled={!nextIncident}
+              >
+                <Trans>Next Incident</Trans> ›
+              </Pagination.Item>
+            </Pagination>
+          </Container>
+        </div>
+        <div className="hidden xl:block w-[16rem] 2xl:w-[18rem] ml-2 -mt-2 pr-4 shrink-0">
+          <SimilarIncidents
+            nlp_similar_incidents={nlp_similar_incidents}
+            editor_similar_incidents={editor_similar_incidents}
+            editor_dissimilar_incidents={editor_dissimilar_incidents}
+            flagged_dissimilar_incidents={incident.flagged_dissimilar_incidents}
+            parentIncident={incident}
+            orientation="column"
+          />
+        </div>
+      </div>
     </Layout>
   );
 }
