@@ -196,11 +196,9 @@ describe('Cite pages', () => {
 
     cy.contains('BibTex Citation').scrollIntoView().click();
 
-    cy.wait(0);
+    cy.get('[data-cy="bibtext-modal"]', { timeout: 8000 }).should('be.visible');
 
-    cy.get('[data-cy="bibtext-modal"]').should('be.visible').as('modal');
-
-    cy.get('@modal')
+    cy.get('[data-cy="bibtext-modal"]', { timeout: 8000 })
       .find('code')
       .invoke('text')
       .then((text) => {
@@ -352,11 +350,12 @@ describe('Cite pages', () => {
 
     cy.contains('Notify Me of Updates').scrollIntoView().click();
 
+    cy.get('[data-cy="toast"]', { timeout: 8000 }).should('be.visible');
+
     cy.contains(
       '[data-cy="toast"]',
-      `You have successfully subscribed to updates on incident ${incidentId}`,
-      { timeout: 8000 }
-    ).should('exist');
+      `You have successfully subscribed to updates on incident ${incidentId}`
+    ).should('be.visible');
   });
 
   it('Should not subscribe to incident updates (user unauthenticated)', () => {
@@ -377,7 +376,9 @@ describe('Cite pages', () => {
 
     cy.contains('Notify Me of Updates').scrollIntoView().click();
 
-    cy.get('[data-cy="toast"]').contains(`Please log in to subscribe`).should('exist');
+    cy.get('[data-cy="toast"]', { timeout: 8000 }).should('be.visible');
+
+    cy.get('[data-cy="toast"]').contains(`Please log in to subscribe`).should('be.visible');
   });
 
   it('Should show proper entities card text', () => {
