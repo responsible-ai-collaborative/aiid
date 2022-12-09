@@ -232,7 +232,7 @@ const SubmissionForm = () => {
         />
 
         <PreviewImageInputGroup
-          publicID={values.cloudinary_id}
+          cloudinary_id={values.cloudinary_id}
           name="image_url"
           label={t('Image Address')}
           icon={faImage}

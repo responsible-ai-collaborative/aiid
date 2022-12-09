@@ -13,7 +13,6 @@ import Label from './Label';
 import Typeahead from './Typeahead';
 import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
-import IncidentIdField from '../../components/incidents/IncidentIdField';
 import getSourceDomain from '../../utils/getSourceDomain';
 import supportedLanguages from '../../components/i18n/languages.json';
 import { useLocalization } from 'gatsby-theme-i18n';
@@ -32,6 +31,7 @@ import {
   faAlignLeft,
   faTenge,
 } from '@fortawesome/free-solid-svg-icons';
+import IncidentsField from 'components/incidents/IncidentsField';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -92,14 +92,7 @@ export const schema = yup.object().shape({
       '*Must enter URL in http://www.example.com/images/preview.png format'
     ),
   editor_notes: yup.string().nullable(),
-  incident_id: yup
-    .number()
-    .positive()
-    .integer('*Must be an incident number')
-    .when('is_incident_report', {
-      is: true,
-      then: (schema) => schema.required('Incident ID is a required field'),
-    }),
+  incident_ids: yup.array().of(yup.number().positive()),
   is_incident_report: yup.boolean().required(),
 });
 
@@ -293,7 +286,7 @@ const IncidentReportForm = () => {
           {...TextInputGroupProps}
         />
         <PreviewImageInputGroup
-          publicID={values.cloudinary_id}
+          cloudinary_id={values.cloudinary_id}
           name="image_url"
           label="Image Address"
           icon={faImage}
@@ -389,14 +382,10 @@ const IncidentReportForm = () => {
           />
         </Form.Group>
 
-        {values.is_incident_report && (
-          <IncidentIdField
-            name="incident_id"
-            className="mt-3"
-            placeHolder={t('Enter a valid Incident ID')}
-            required={true}
-          />
-        )}
+        <div className="mt-3">
+          <Label popover={'incident_ids'} label="Incident IDs" />
+          <IncidentsField id="incident_ids" name="incident_ids" />
+        </div>
 
         <TextInputGroup
           name="editor_notes"
