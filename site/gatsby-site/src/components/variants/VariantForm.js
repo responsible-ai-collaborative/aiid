@@ -16,8 +16,6 @@ export const schema = yup.object().shape({
 const VariantForm = () => {
   const { values, errors, touched, handleChange } = useFormikContext();
 
-  console.log('valuesss', values);
-
   const { t } = useTranslation();
 
   return (
