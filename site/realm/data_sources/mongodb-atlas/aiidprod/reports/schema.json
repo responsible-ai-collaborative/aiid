@@ -92,16 +92,16 @@
         "text": {
             "bsonType": "string"
         },
-        "title": {
-            "bsonType": "string"
-        },
-        "url": {
-            "bsonType": "string"
-        },
         "text_inputs": {
             "bsonType": "string"
         },
         "text_outputs": {
+            "bsonType": "string"
+        },
+        "title": {
+            "bsonType": "string"
+        },
+        "url": {
             "bsonType": "string"
         }
     },
