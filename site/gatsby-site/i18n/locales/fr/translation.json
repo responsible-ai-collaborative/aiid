@@ -40,6 +40,7 @@
   "No classifications for this taxonomy.": "Il n'y a pas de classifications pour cette taxonomie.",
   "Edit": "Editer",
   "Incidents Reports": "Rapports d'incidents",
+  "Incident Reports": "Rapports d'incidents",
   "Previous Incident": "Incident précédent",
   "Next Incident": "Prochain incident",
   "Incident {{id}}": "Incident {{id}}",
@@ -155,5 +156,9 @@
   "Show Details on Issue #{{id}}": "Afficher les détails du problème #{{id}}",
   "Entities": "Entités",
   "Notify Me of New {{name}} Incidents": "M'avertir des nouveaux Incidents de {{name}}",
-  "Unsubscribe from New {{name}} Incidents": "Désinscrire des nouveaux Incidents de {{name}}"
+  "Unsubscribe from New {{name}} Incidents": "Désinscrire des nouveaux Incidents de {{name}}",
+  "New Response": "Nouvelle Réponse",
+  "Response": "Réponse",
+  "Responded": "Répondu",
+  "{{authors}} post-incident response": "Réponse post-incident de {{authors}}"
 }

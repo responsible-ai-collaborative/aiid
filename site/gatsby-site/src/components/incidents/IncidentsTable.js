@@ -90,7 +90,28 @@ function DefaultColumnFilter({
 }
 
 function ListCell({ cell }) {
-  return <div>{cell.value?.join(', ')}</div>;
+  return (
+    <div>
+      {cell.value?.map((v, i) => {
+        const isLast = i === cell.value.length - 1;
+
+        if (v.url) {
+          return (
+            <a key={`entity-${v.name}`} href={v.url} data-cy="cell-entity-link">
+              {v.name}
+              {!isLast ? ', ' : ''}
+            </a>
+          );
+        } else {
+          return (
+            <>
+              {v.name} {!isLast ? ', ' : ''}
+            </>
+          );
+        }
+      })}
+    </div>
+  );
 }
 
 export default function IncidentsTable({ data }) {
@@ -134,19 +155,28 @@ export default function IncidentsTable({ data }) {
       {
         Header: <Trans>Alleged Deployer of AI System</Trans>,
         id: 'AllegedDeployerOfAISystem',
-        accessor: (data) => data.AllegedDeployerOfAISystem.map((i) => i.name),
+        accessor: (data) =>
+          data.AllegedDeployerOfAISystem.map((i) => {
+            return { name: i.name, url: `/entities/${i.entity_id}` };
+          }),
         Cell: ListCell,
       },
       {
         Header: <Trans>Alleged Developer of AISystem</Trans>,
         id: 'AllegedDeveloperOfAISystem',
-        accessor: (data) => data.AllegedDeveloperOfAISystem.map((i) => i.name),
+        accessor: (data) =>
+          data.AllegedDeveloperOfAISystem.map((i) => {
+            return { name: i.name, url: `/entities/${i.entity_id}` };
+          }),
         Cell: ListCell,
       },
       {
         Header: <Trans>Alleged Harmed or Nearly Harmed Parties</Trans>,
         id: 'AllegedHarmedOrNearlyHarmedParties',
-        accessor: (data) => data.AllegedHarmedOrNearlyHarmedParties.map((i) => i.name),
+        accessor: (data) =>
+          data.AllegedHarmedOrNearlyHarmedParties.map((i) => {
+            return { name: i.name, url: `/entities/${i.entity_id}` };
+          }),
         Cell: ListCell,
       },
     ];
