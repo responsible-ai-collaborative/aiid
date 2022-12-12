@@ -175,13 +175,12 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch,
                 </Modal.Body>
                 <Modal.Footer>
                   <Button
-                    //size={'xs'}
                     variant="danger"
                     disabled={isSubmitting}
                     onClick={() => handleDelete()}
                     data-cy="delete-variant-btn"
                   >
-                    {isDeleting ? <Spinner size={'xs'} /> : <FontAwesomeIcon icon={faTrash} />}
+                    {isDeleting ? <Spinner size="sm" /> : <FontAwesomeIcon icon={faTrash} />}
                   </Button>
 
                   <Button
@@ -190,7 +189,7 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch,
                       setNewVariantStatus(VARIANT_STATUS.rejected);
                       submitForm();
                     }}
-                    disabled={isSubmitting || !isValid}
+                    disabled={isSubmitting || isDeleting || !isValid}
                     className="bootstrap flex gap-2 disabled:opacity-50"
                     data-cy="reject-variant-btn"
                   >
@@ -209,7 +208,7 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch,
                       setNewVariantStatus(VARIANT_STATUS.approved);
                       submitForm();
                     }}
-                    disabled={isSubmitting || !isValid}
+                    disabled={isSubmitting || isDeleting || !isValid}
                     className="bootstrap flex gap-2 disabled:opacity-50"
                     data-cy="approve-variant-btn"
                   >
