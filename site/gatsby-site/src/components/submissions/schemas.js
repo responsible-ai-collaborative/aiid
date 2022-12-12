@@ -31,8 +31,14 @@ const incident_date = yup
 
 const description = yup
   .string()
-  .min(3, 'Description must have at least 3 characters')
-  .max(500, "Description can't be longer than 500 characters")
+  .matches(/^.{3,}/, {
+    excludeEmptyString: true,
+    message: 'Description must have at least 3 characters',
+  })
+  .matches(/^.{3,500}/, {
+    excludeEmptyString: true,
+    message: "Description can't be longer than 500 characters",
+  })
   .nullable();
 
 export const schema = yup.object().shape({

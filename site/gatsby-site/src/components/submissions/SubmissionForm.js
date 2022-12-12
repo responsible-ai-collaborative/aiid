@@ -280,7 +280,7 @@ const SubmissionForm = () => {
 
         {!values.incident_id && (
           <>
-            <hr />
+            <hr className="my-4" />
             <h3 className="text-lg">Incident Data</h3>
             <TextInputGroup
               name="incident_title"
