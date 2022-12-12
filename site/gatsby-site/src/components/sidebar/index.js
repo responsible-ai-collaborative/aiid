@@ -87,9 +87,10 @@ const Sidebar = ({ defaultCollapsed = false }) => {
     <>
       <aside
         className={`${
-          !collapsedMenu ? 'md:w-64' : 'md:w-auto'
+          !collapsedMenu ? 'md:w-64 collapsedMenu' : 'md:w-auto'
         } min-height-800:sticky top-0 bg-text-light-gray pb-6 h-auto md:h-desktop-sidebar`}
         aria-label="Sidebar"
+        data-cy="left-sidebar"
       >
         {!collapsedMenu && (
           <div className={`md:bg-text-light-gray`}>
@@ -156,6 +157,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
             onClick={() => {
               collapseMenu(!collapsedMenu), setCollapsedMenu(!collapsedMenu);
             }}
+            data-cy="collapse-sidebar-icon"
           />
         </div>
       </aside>

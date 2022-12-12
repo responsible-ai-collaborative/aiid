@@ -172,4 +172,10 @@ describe('The Discover app', () => {
 
     cy.contains('button', 'Clear Filter').should('be.disabled');
   });
+
+  it('Sidebar should be collapsed by default', () => {
+    cy.visit(url);
+
+    cy.get('[data-cy="left-sidebar"]').should('have.class', 'collapsedMenu');
+  });
 });

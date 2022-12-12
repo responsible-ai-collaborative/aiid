@@ -101,4 +101,12 @@ describe('The Landing page', () => {
 
     cy.location('pathname', { timeout: 8000 }).should('eq', '/signup');
   });
+
+  it('Should collapse sidebar', () => {
+    cy.visit('/');
+
+    cy.get('[data-cy="collapse-sidebar-icon"]').filter(':visible').click();
+
+    cy.get('[data-cy="left-sidebar"]').should('have.class', 'collapsedMenu');
+  });
 });
