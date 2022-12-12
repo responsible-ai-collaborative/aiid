@@ -109,6 +109,7 @@ const SimilarIncidents = ({
   editor_dissimilar_incidents,
   flagged_dissimilar_incidents,
   orientation,
+  className,
 }) => {
   const { isRole, loading } = useUserContext();
 
@@ -126,7 +127,7 @@ const SimilarIncidents = ({
   );
 
   return (
-    <div className="tw-similar-incidents">
+    <div className={`tw-similar-incidents ${className}`}>
       {(editor_similar_incidents.length > 0 || nlp_only_incidents.length > 0) && (
         <h2 id="similar-incidents" className="leading-9">
           <LocalizedLink to={'/summaries/spatial?incident=' + parentIncident.incident_id}>
