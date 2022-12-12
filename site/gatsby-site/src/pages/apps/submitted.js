@@ -115,7 +115,9 @@ const SubmittedIncidentsPage = ({ ...props }) => {
                       variant="outline-secondary"
                       disabled={!isAdmin}
                       onClick={() => {
-                        if (window.confirm(`Are you sure you want to delete "${url}"?`)) {
+                        if (
+                          window.confirm(t('Are you sure you want to delete “{{url}}”?', { url }))
+                        ) {
                           submitDeleteQuickAdd(_id);
                         }
                       }}
