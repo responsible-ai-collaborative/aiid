@@ -88,7 +88,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
       <aside
         className={`${
           !collapsedMenu ? 'md:w-64' : 'md:w-auto'
-        } sticky top-0 bg-text-light-gray pb-6 h-auto md:h-desktop-sidebar`}
+        } min-height-800:sticky top-0 bg-text-light-gray pb-6 h-auto md:h-desktop-sidebar`}
         aria-label="Sidebar"
       >
         {!collapsedMenu && (
@@ -103,9 +103,9 @@ const Sidebar = ({ defaultCollapsed = false }) => {
           />
         ) : null}
         <div
-          className={`${
+          className={`max-height-799:relative ${
             collapsedMenu ? 'overflow-hidden' : 'overflow-y-auto'
-          } pb-4 pt-2 px-3 bg-gray-50 rounded dark:bg-gray-800`}
+          } pb-14 min-height-800:pb-4 pt-2 px-3 bg-gray-50 rounded dark:bg-gray-800`}
         >
           <ul className="space-y-2 list-none">
             <Tree
@@ -148,7 +148,9 @@ const Sidebar = ({ defaultCollapsed = false }) => {
             icon={faChevronCircleLeft}
             color={'white'}
             className={`hidden md:inline-block transition-rotate-180 duration-1000 cursor-pointer fa fa-twitter-square fa-lg text-light-orange hover:text-gray-500 absolute  ${
-              collapsedMenu ? 'rotate-180 left-5 bottom-5 w-8 h-8' : 'right-3 bottom-5 w-8 h-8 '
+              collapsedMenu
+                ? 'rotate-180 left-4 bottom-2 min-height-800:bottom-5 w-8 h-8'
+                : 'right-3 bottom-5 w-8 h-8 '
             }`}
             title={isCollapsed ? t('Expand') : t('Collapse')}
             onClick={() => {

@@ -70,6 +70,8 @@ module.exports = {
         '992px': { min: '992px' },
         '800px': { max: '800px' },
         '1240px': { max: '1240px' },
+        'min-height-800': { raw: '(min-height: 800px)' },
+        'max-height-799': { raw: '(max-height: 799px)' },
       },
       colors: {
         'light-gray': 'rgba(0,0,0,.03)',
