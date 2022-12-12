@@ -24,56 +24,17 @@ exports = async function (changeEvent) {
   // Process subscriptions to Incident updates
   if (subscriptionsToIncident.length > 0) {
 
-    const userIds = subscriptionsToIncident.map((subscription) => subscription.userId);
-
-    const recipients = [];
-
-    for (const userId of userIds) {
-      const userResponse = await context.functions.execute('getUser', { userId });
-
-      if (userResponse.email) {
-        recipients.push({
-          email: userResponse.email,
-          userId,
-        });
-      }
-    }
-
     // Check if the "reports" field was updated
     const isReportListChanged = updatedFields.some(field => field.match(/reports/));
+
+    let newReportNumber;
 
     if (isReportListChanged) {
       const { reports: newReports } = fullDocument;
       const { reports: oldReports } = fullDocumentBeforeChange;
 
-      // If a new report is added, send the email notification to all subscribers
       if (newReports.length > oldReports.length) {
-
-        const newReportNumber = newReports.filter(report => !oldReports.includes(report))[0];
-
-        const reportsCollection = context.services.get('mongodb-atlas').db('aiidprod').collection("reports");
-        const newReport = await reportsCollection.findOne({ report_number: newReportNumber })
-
-        //Send email notification
-        const sendEmailParams = {
-          recipients,
-          subject: 'Incident {{incidentId}} was updated',
-          dynamicData: {
-            incidentId: `${incidentId}`,
-            incidentTitle: fullDocument.title,
-            incidentUrl: `https://incidentdatabase.ai/cite/${incidentId}`,
-            reportUrl: `https://incidentdatabase.ai/cite/${incidentId}#r${newReportNumber}`,
-            reportTitle: newReport.title,
-            reportAuthor: newReport.authors[0] ? newReport.authors[0] : '',
-          },
-          templateId: 'NewReportAddedToAnIncident' // Template value from function name sufix from "site/realm/functions/config.json"
-        };
-        const sendEmailresult = await context.functions.execute('sendEmail', sendEmailParams);
-
-        console.log('sendEmailParams', JSON.stringify(sendEmailParams));
-        console.log(JSON.stringify(sendEmailresult));
-
-        return sendEmailresult;
+        newReportNumber = newReports.filter(report => !oldReports.includes(report))[0];
       }
       else { //if a report was deleted
         const deletedReportNumber = oldReports.filter(report => !newReports.includes(report))[0];
@@ -81,23 +42,30 @@ exports = async function (changeEvent) {
       }
     }
 
-    //Send email notification
-    const sendEmailParams = {
-      recipients,
-      subject: 'Incident {{incidentId}} was updated',
-      dynamicData: {
-        incidentId: `${incidentId}`,
-        incidentTitle: fullDocument.title,
-        incidentUrl: `https://incidentdatabase.ai/cite/${incidentId}`,
-      },
-      templateId: 'IncidentUpdate' // Template value from function name sufix from "site/realm/functions/config.json"
-    };
-    const sendEmailresult = await context.functions.execute('sendEmail', sendEmailParams);
+    let notification;
+    if (newReportNumber) {
+      // If there is a new Report > Insert a pending notification to process in the next build
+      notification = {
+        type: 'new-report-incident',
+        incident_id: incidentId,
+        report_number: newReportNumber,
+        processed: false,
+      };
+    }
+    else {
+      // If any other Incident field is updated > Insert a pending notification to process in the next build
+      notification = {
+        type: 'incident-updated',
+        incident_id: incidentId,
+        processed: false,
+      };
+    }
 
-    console.log('sendEmailParams', JSON.stringify(sendEmailParams));
-    console.log(JSON.stringify(sendEmailresult));
-
-    return sendEmailresult;
+    await notificationsCollection.updateOne(
+      notification, // filter
+      notification, // new document
+      { upsert: true }
+    );
   }
 
   // Check if Entity fields changed
@@ -138,16 +106,25 @@ exports = async function (changeEvent) {
 
       // If there are subscribers to Entities > Insert a pending notification to process in the next build
       if (subscriptionsToEntity.length > 0) {
-        await notificationsCollection.insertOne({
+        const notification = {
           type: 'entity',
           incident_id: incidentId,
           entity_id: entityId,
           isUpdate: true,
           processed: false,
-        })
+        };
+        await notificationsCollection.updateOne(
+          notification, // filter
+          notification, // new document
+          { upsert: true }
+        )
       }
     }
   }
 
   return;
 };
+
+if (typeof module === 'object') {
+  module.exports = exports;
+}

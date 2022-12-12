@@ -4,7 +4,7 @@ const { computeEntities } = require('../src/utils/entities');
 
 const createEntitiesPages = async (graphql, createPage) => {
   const {
-    data: { incidents, entities: entitiesData },
+    data: { incidents, entities: entitiesData, responses },
   } = await graphql(`
     {
       incidents: allMongodbAiidprodIncidents {
@@ -23,12 +23,19 @@ const createEntitiesPages = async (graphql, createPage) => {
           name
         }
       }
+      responses: allMongodbAiidprodReports(filter: { tags: { in: ["response"] } }) {
+        nodes {
+          report_number
+          title
+        }
+      }
     }
   `);
 
   const entities = computeEntities({
     incidents: incidents.nodes,
     entities: entitiesData.nodes,
+    responses: responses.nodes,
   });
 
   for (const entity of entities) {
@@ -47,6 +54,7 @@ const createEntitiesPages = async (graphql, createPage) => {
         incidentsAsBoth: entity.incidentsAsBoth,
         incidentsHarmedBy: entity.incidentsHarmedBy,
         relatedEntities: entity.relatedEntities,
+        responses: entity.responses,
       },
     });
   }

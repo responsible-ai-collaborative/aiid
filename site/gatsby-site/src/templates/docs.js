@@ -10,6 +10,7 @@ import { MDXProvider } from '@mdx-js/react';
 import Components from 'components/ui/MdxComponents';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import { Trans } from 'react-i18next';
+import Outline from 'components/Outline';
 
 export default class MDXRuntimeTest extends Component {
   render() {
@@ -33,8 +34,16 @@ export default class MDXRuntimeTest extends Component {
     canonicalUrl += mdx.fields.slug;
     canonicalUrl = canonicalUrl.replace(/\/index(\...|)$/, '');
 
+    const loc = new URL(canonicalUrl);
+
+    const rightSidebar = (
+      <>
+        <Outline location={loc} />
+      </>
+    );
+
     return (
-      <Layout {...this.props}>
+      <Layout {...{ ...this.props, rightSidebar }}>
         <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl }} />
         <div className={'titleWrapper'}>
           <StyledHeading>{mdx.fields.title}</StyledHeading>
