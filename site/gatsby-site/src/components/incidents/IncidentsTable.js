@@ -161,6 +161,7 @@ export default function IncidentsTable({ data }) {
       {
         Header: <Trans>Alleged Deployer of AI System</Trans>,
         id: 'AllegedDeployerOfAISystem',
+        // Include the entity_id so that we can turn it into a link on display.
         accessor: (data) => data.AllegedDeployerOfAISystem.map((i) => `${i.name} ${i.entity_id}`),
         Cell: ListCell,
       },
