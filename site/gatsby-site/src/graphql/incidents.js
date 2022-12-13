@@ -76,6 +76,15 @@ export const FIND_INCIDENTS = gql`
   }
 `;
 
+export const FIND_INCIDENTS_TITLE = gql`
+  query FindIncidentsTitles($query: IncidentQueryInput) {
+    incidents(query: $query, limit: 999) {
+      incident_id
+      title
+    }
+  }
+`;
+
 export const UPDATE_INCIDENT = gql`
   mutation UpdateIncident($query: IncidentQueryInput!, $set: IncidentUpdateInput!) {
     updateOneIncident(query: $query, set: $set) {
