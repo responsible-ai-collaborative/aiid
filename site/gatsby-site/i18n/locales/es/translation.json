@@ -172,5 +172,11 @@
   "Display Issues": "Incluir Problemas",
   "Only Issues": "Sólo Problemas",
   "Report {{report_number}}": "Problema {{report_number}}",
-  "Show Details on Issue #{{id}}": "Ver detalles del Problema #{{id}}"
+  "Show Details on Issue #{{id}}": "Ver detalles del Problema #{{id}}",
+  "ORDER": "ORDEN",
+  "asc": "asc",
+  "desc": "desc",
+  "Asc": "Asc",
+  "Desc": "Desc",
+  "Submitted Date": "Fecha de envío"
 }

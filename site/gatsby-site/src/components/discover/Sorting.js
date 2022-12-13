@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { connectSortBy } from 'react-instantsearch-dom';
 import { Dropdown } from 'flowbite-react';
+import { Trans, useTranslation } from 'react-i18next';
 
 function Sorting(props) {
   const [selectedItem, setSelectedItem] = useState({
     label: 'Incident Date',
     value: 'instant_search-en_epoch_incident_date',
   });
+
+  const { t } = useTranslation();
 
   const [selectedDirection, setSelectedDirection] = useState('desc');
 
@@ -21,7 +24,8 @@ function Sorting(props) {
   return (
     <>
       <div className="flex justify-end px-2">
-        <Dropdown label={selectedItem.label} color={'light'}>
+        <Dropdown label={`${t(selectedItem.label)} - ${t(selectedDirection)}`} color={'light'}>
+          <Dropdown.Item className="text-gray-400 hover:bg-white">ORDER</Dropdown.Item>
           {props.items.map((item) => (
             <Dropdown.Item
               key={item.value}
@@ -32,7 +36,7 @@ function Sorting(props) {
               }}
               className={`${item.value === selectedItem.value ? 'bg-blue-100' : ''}`}
             >
-              {item.label}
+              <Trans>{item.label}</Trans>
             </Dropdown.Item>
           ))}
           <Dropdown.Divider />
@@ -43,7 +47,7 @@ function Sorting(props) {
             }}
             className={`${selectedDirection === 'asc' ? 'bg-blue-100' : ''}`}
           >
-            Asc
+            <Trans>Asc</Trans>
           </Dropdown.Item>
           <Dropdown.Item
             value="asc"
@@ -52,7 +56,7 @@ function Sorting(props) {
             }}
             className={`${selectedDirection === 'desc' ? 'bg-blue-100' : ''}`}
           >
-            Desc
+            <Trans>Desc</Trans>
           </Dropdown.Item>
         </Dropdown>
       </div>

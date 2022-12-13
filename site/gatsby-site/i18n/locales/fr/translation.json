@@ -160,5 +160,11 @@
   "New Response": "Nouvelle Réponse",
   "Response": "Réponse",
   "Responded": "Répondu",
-  "{{authors}} post-incident response": "Réponse post-incident de {{authors}}"
+  "{{authors}} post-incident response": "Réponse post-incident de {{authors}}",
+  "ORDER": "ORDRE",
+  "asc": "asc",
+  "desc": "desc",
+  "Asc": "Asc",
+  "Desc": "Desc",
+  "Submitted Date": "Date de soumission"
 }

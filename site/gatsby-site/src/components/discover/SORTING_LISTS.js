@@ -15,7 +15,7 @@ const SORTING_LIST = [
   },
   {
     attribute: 'instant_search-en_epoch_date_submitted',
-    label: 'Published Date',
+    label: 'Submitted Date',
     faIcon: faCalendarAlt,
     faClasses: 'far fa-calendar-alt',
   },
