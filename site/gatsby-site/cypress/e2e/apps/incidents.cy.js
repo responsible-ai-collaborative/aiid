@@ -130,4 +130,66 @@ describe('Incidents App', () => {
 
     cy.get('[data-cy="toast"]').contains('Incident 112 updated successfully.').should('exist');
   });
+
+  it('Entities should link to entities page', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidents',
+      'FindIncidents',
+      incidents
+    );
+
+    cy.visit(url);
+
+    cy.get('[data-cy="row"]')
+      .eq(0)
+      .within(() => {
+        const { 0: incident } = incidents.data.incidents;
+
+        cy.get('[data-cy="cell"]')
+          .eq(4)
+          .then(($element) => {
+            cy.wrap($element)
+              .find('[data-cy="cell-entity-link"]')
+              .each(($el, index) => {
+                cy.wrap($el)
+                  .should('have.attr', 'href')
+                  .and(
+                    'include',
+                    `/entities/${incident.AllegedDeployerOfAISystem[index].entity_id}`
+                  );
+              });
+          });
+
+        cy.get('[data-cy="cell"]')
+          .eq(5)
+          .then(($element) => {
+            cy.wrap($element)
+              .find('[data-cy="cell-entity-link"]')
+              .each(($el, index) => {
+                cy.wrap($el)
+                  .should('have.attr', 'href')
+                  .and(
+                    'include',
+                    `/entities/${incident.AllegedDeveloperOfAISystem[index].entity_id}`
+                  );
+              });
+          });
+
+        cy.get('[data-cy="cell"]')
+          .eq(6)
+          .then(($element) => {
+            cy.wrap($element)
+              .find('[data-cy="cell-entity-link"]')
+              .each(($el, index) => {
+                cy.wrap($el)
+                  .should('have.attr', 'href')
+                  .and(
+                    'include',
+                    `/entities/${incident.AllegedHarmedOrNearlyHarmedParties[index].entity_id}`
+                  );
+              });
+          });
+      });
+  });
 });
