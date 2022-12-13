@@ -378,6 +378,12 @@ function CitePage(props) {
                       <FontAwesomeIcon className="mr-2" icon={faSearch} title={t('Discover')} />
                       <Trans>Discover</Trans>
                     </Button>
+                    <BibTex
+                      nodes={incidentReports}
+                      incidentDate={incident.date}
+                      incident_id={incident.incident_id}
+                      editors={incident.editors}
+                    />
                     {!loading && isRole('incident_editor') && (
                       <Button
                         variant="outline-primary"
@@ -391,12 +397,6 @@ function CitePage(props) {
                         <Trans>Edit Incident</Trans>
                       </Button>
                     )}
-                    <BibTex
-                      nodes={incidentReports}
-                      incidentDate={incident.date}
-                      incident_id={incident.incident_id}
-                      editors={incident.editors}
-                    />
                   </Card.Body>
                 </Card>
               </Col>
