@@ -1,6 +1,8 @@
-describe.skip('Navigation', () => {
+describe('Navigation', { retries: { runMode: 4 } }, () => {
   it('Check menu links work (English)', () => {
     cy.visit('/');
+
+    cy.waitForStableDOM();
 
     checkLinks();
   });
@@ -8,11 +10,15 @@ describe.skip('Navigation', () => {
   it('Check menu links work (Spanish)', () => {
     cy.visit('/es/');
 
+    cy.waitForStableDOM();
+
     checkLinks();
   });
 
   it('Check menu links work (French)', () => {
     cy.visit('/fr/');
+
+    cy.waitForStableDOM();
 
     checkLinks();
   });
