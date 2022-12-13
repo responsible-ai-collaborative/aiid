@@ -203,6 +203,45 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     }
   };
 
+  const NotifyButton = ({ children }) => (
+    <Button
+      onClick={subscribeToEntity}
+      disabled={subscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
+      className="mr-2 whitespace-nowrap"
+    >
+      <div className="flex gap-2 items-center">
+        {subscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
+          <div>
+            <Spinner size="sm" />
+          </div>
+        ) : (
+          <FontAwesomeIcon icon={faEnvelope} />
+        )}
+        {children}
+      </div>
+    </Button>
+  );
+
+  const UnsubscribeButton = ({ children }) => (
+    <Button
+      onClick={unsubscribeToEntity}
+      color={'light'}
+      disabled={unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
+      className="mr-1"
+    >
+      <div className="flex gap-2 items-center">
+        {unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
+          <div>
+            <Spinner size="sm" />
+          </div>
+        ) : (
+          <FontAwesomeIcon icon={faEnvelope} title={t('Cancel Subscription')} />
+        )}
+        {children}
+      </div>
+    </Button>
+  );
+
   return (
     <Layout {...props}>
       <AiidHelmet metaTitle={'Entity: ' + name} canonicalUrl={'/entities/' + id} />
@@ -211,56 +250,20 @@ const EntityPage = ({ pageContext, data, ...props }) => {
           <Trans ns="entities">Entities</Trans>
         </Link>
       </h3>
-      {/*<div className="flex items-center flex-wrap">*/}
       <h1 className="mr-auto mb-4">{name}</h1>
       <div className="flex items-center">
         {loadingSubscription && subscriptionNetworkStatus === NetworkStatus.loading ? (
           <Spinner size="sm" />
         ) : subscriptions?.subscriptions.length > 0 ? (
-          <Trans>
-            <Button
-              onClick={unsubscribeToEntity}
-              color={'light'}
-              disabled={unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
-              className="mr-1"
-            >
-              <div className="flex gap-2 items-center">
-                {unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
-                  <div>
-                    <Spinner size="sm" />
-                  </div>
-                ) : (
-                  <FontAwesomeIcon icon={faEnvelope} title={t('Cancel Subscription')} />
-                )}
-                Unsubscribe
-              </div>
-            </Button>
-            {/*from New {{ name }} Incidents*/}
+          <Trans i18n={i18n}>
+            <UnsubscribeButton>Unsubscribe</UnsubscribeButton>
           </Trans>
         ) : (
-          <Trans>
-            <Button
-              onClick={subscribeToEntity}
-              disabled={subscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
-              className="mr-2 whitespace-nowrap"
-            >
-              <div className="flex gap-2 items-center">
-                {subscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
-                  <div>
-                    <Spinner size="sm" />
-                  </div>
-                ) : (
-                  <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
-                )}
-                Notify Me
-              </div>
-            </Button>{' '}
-            of new incidents involving this entity.
-            {/*of New {{ name }} Incidents*/}
+          <Trans i18n={i18n} name={name}>
+            <NotifyButton>Notify me</NotifyButton> of new incidents involving “{{ name }}”.
           </Trans>
         )}
       </div>
-      {/*</div>*/}
 
       {sections.map((section) => {
         const [open, setOpen] = useState(false);
