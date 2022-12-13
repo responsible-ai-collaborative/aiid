@@ -8,6 +8,7 @@ import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Trans } from 'react-i18next';
 import useSearch from './useSearch';
 import Sorting from './Sorting';
+import SORTING_LISTS from 'components/discover/SORTING_LISTS';
 
 const Controls = () => {
   const { searchState } = useSearch();
@@ -23,6 +24,13 @@ const Controls = () => {
 
     setExpandFilters(expand);
   }, []);
+
+  const items = SORTING_LISTS.map((list) => {
+    return {
+      label: list.label,
+      value: list.attribute,
+    };
+  });
 
   return (
     <>
@@ -61,7 +69,7 @@ const Controls = () => {
         </div>
       </div>
       <div className="mb-3 hidden md:block">{expandFilters && <Filters />}</div>
-      <Sorting />
+      <Sorting items={items} defaultRefinement="instant_search-en_epoch_incident_date_desc" />
     </>
   );
 };

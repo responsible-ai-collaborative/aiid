@@ -232,7 +232,12 @@ class AlgoliaUpdater {
 
     const index = await this.algoliaClient.initIndex(indexName);
 
-    await index.replaceAllObjects(entries);
+    console.log('eeeeee');
+    try {
+      await index.replaceAllObjects(entries);
+    } catch (e) {
+      console.error('eeerrrrorrr', e);
+    }
 
     await index
       .setSettings({
@@ -245,9 +250,16 @@ class AlgoliaUpdater {
       .then(async () => {
         const featuredReplicaIndex = await this.algoliaClient.initIndex(featuredReplicaIndexName);
 
+        console.log('eeeeee2');
+
         await featuredReplicaIndex.setSettings({
           ranking: ['desc(featured)', 'desc(text)'],
         });
+
+        console.log('eeeeee3');
+      })
+      .catch((e) => {
+        console.log('errorcito', e);
       });
   };
 
