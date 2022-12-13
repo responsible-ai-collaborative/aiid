@@ -1,5 +1,18 @@
 import gql from 'graphql-tag';
 
+export const FIND_VARIANTS = gql`
+  query FindVariants($query: ReportQueryInput) {
+    reports(query: $query, limit: 999) {
+      report_number
+      title
+      date_published
+      tags
+      text_inputs
+      text_outputs
+    }
+  }
+`;
+
 export const FIND_INCIDENT_VARIANTS = gql`
   query FindIncidentVariants($report_numbers: [Int]!) {
     reports(
