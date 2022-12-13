@@ -20,7 +20,7 @@ const VariantForm = () => {
 
   return (
     <>
-      <div className="flex w-full flex-row gap-4">
+      <div className="flex w-full flex-row gap-4" data-cy="variant-form">
         <div className="w-1/2">
           <div className="font-bold flex items-center gap-2">
             <Trans>Input and circumstances</Trans>

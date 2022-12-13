@@ -33,7 +33,10 @@ export const VariantStatusBadge = ({ status }) => {
   }
 
   return (
-    <div className={`${badgeClass} text-xs font-semibold px-2.5 py-0.5 rounded capitalize`}>
+    <div
+      data-cy="variant-status-badge"
+      className={`${badgeClass} text-xs font-semibold px-2.5 py-0.5 rounded capitalize`}
+    >
       <Trans>{getVariantStatusText(status)}</Trans>
     </div>
   );
@@ -69,7 +72,7 @@ const VariantCard = ({ variant, refetch }) => {
                 />
               </Tooltip>
             </div>
-            <div className="border-1 rounded-lg px-3 mt-2">
+            <div data-cy="variant-text_inputs" className="border-1 rounded-lg px-3 mt-2">
               <Markdown>{variant.text_inputs}</Markdown>
             </div>
           </div>
@@ -89,7 +92,7 @@ const VariantCard = ({ variant, refetch }) => {
                 />
               </Tooltip>
             </div>
-            <div className="border-1 rounded-lg px-3 mt-2">
+            <div data-cy="variant-text_outputs" className="border-1 rounded-lg px-3 mt-2">
               <Markdown>{variant.text_outputs}</Markdown>
             </div>
           </div>
@@ -101,7 +104,7 @@ const VariantCard = ({ variant, refetch }) => {
               variant="primary"
               type="button"
               onClick={() => setShowEditModal(true)}
-              data-cy="add-variant-btn"
+              data-cy="edit-variant-btn"
             >
               <FontAwesomeIcon icon={faEdit} title={t('Edit Variant')} />
             </Button>
@@ -114,7 +117,6 @@ const VariantCard = ({ variant, refetch }) => {
         onClose={() => setShowEditModal(false)}
         reportNumber={variant.report_number}
         refetch={refetch}
-        variantStatus={getVariantStatus(variant)}
       />
     </>
   );
@@ -173,7 +175,7 @@ const VariantList = ({ incidentId, report_numbers, variants, loading, refetch })
           </div>
 
           <div className="bootstrap">
-            <Button variant="outline-primary" onClick={onAddVariantClick}>
+            <Button variant="outline-primary" onClick={onAddVariantClick} data-cy="add-variant-btn">
               <FontAwesomeIcon icon={faPlus} title={t('Add Variant')} className="mr-2" />
               <Trans>Add Variant</Trans>
             </Button>
@@ -220,7 +222,7 @@ const VariantList = ({ incidentId, report_numbers, variants, loading, refetch })
                           type="submit"
                           disabled={isSubmitting || !isValid}
                           onClick={submitForm}
-                          data-cy="add-variant-btn"
+                          data-cy="add-variant-submit-btn"
                         >
                           <div className="flex gap-2 items-center">
                             {isSubmitting && (

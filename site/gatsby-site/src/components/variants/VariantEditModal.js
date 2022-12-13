@@ -8,12 +8,13 @@ import { useTranslation, Trans } from 'react-i18next';
 import VariantForm, { schema } from './VariantForm';
 import { DELETE_VARIANT, FIND_VARIANT, UPDATE_VARIANT } from '../../graphql/variants';
 import { LINK_REPORTS_TO_INCIDENTS } from '../../graphql/reports';
-import { VARIANT_STATUS } from 'utils/variants';
+import { getVariantStatus, VARIANT_STATUS } from 'utils/variants';
 import { VariantStatusBadge } from './VariantList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { format, getUnixTime } from 'date-fns';
 
-export default function VariantEditModal({ show, onClose, reportNumber, refetch, variantStatus }) {
+export default function VariantEditModal({ show, onClose, reportNumber, refetch }) {
   const { t } = useTranslation();
 
   const [variant, setVariant] = useState(null);
@@ -57,6 +58,9 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch,
         text_outputs: values.text_outputs,
         tags: newTags,
       };
+
+      updated.date_modified = format(new Date(), 'yyyy-MM-dd');
+      updated.epoch_date_modified = getUnixTime(new Date(updated.date_modified));
 
       await updateVariant({
         variables: {
@@ -115,6 +119,8 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch,
         });
 
         await refetch();
+
+        onClose();
       } catch (e) {
         addToast({
           message: (
@@ -130,7 +136,7 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch,
 
   return (
     <div className="bootstrap">
-      <Modal show={show} onHide={onClose}>
+      <Modal show={show} onHide={onClose} data-cy="edit-variant-modal">
         <Modal.Header closeButton>
           <Modal.Title>
             <Trans>Edit Variant</Trans>
@@ -169,7 +175,7 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch,
               <>
                 <Modal.Body>
                   <div className="flex mb-2">
-                    <VariantStatusBadge status={variantStatus} />
+                    <VariantStatusBadge status={getVariantStatus(variant)} />
                   </div>
                   <VariantForm />
                 </Modal.Body>
