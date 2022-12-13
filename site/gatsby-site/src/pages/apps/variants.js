@@ -24,6 +24,8 @@ export default function IncidentsPage(props) {
 
   const [data, setData] = useState(null);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const client = useApolloClient();
 
   useEffect(() => {
@@ -59,29 +61,42 @@ export default function IncidentsPage(props) {
           }
 
           setData(fullData);
+
+          setIsLoading(false);
         });
     }
   }, [variantsData]);
 
   const { t } = useTranslation();
 
+  const setLoading = (loading) => {
+    setIsLoading(loading);
+  };
+
   return (
     <LayoutHideSidebar {...props}>
       <AiidHelmet canonicalUrl={'/apps/variants'}>
         <title>{t('Variants')}</title>
       </AiidHelmet>
-      <div className="bootstrap">
-        {!data && (
-          <div className="p-4 flex justify-center align-items-center gap-2">
-            <Spinner />
-            <Trans>Fetching Variants...</Trans>
+      <div className="relative ml-6">
+        {isLoading && (
+          <div className="absolute bg-white bg-opacity-60 z-10 h-full w-full flex items-center justify-center">
+            <Spinner size="xl" />
           </div>
         )}
-        {data && (
-          <div className="ms-3 mt-2 mb-2">
-            <VariantsTable data={data} refetch={refetch} />
-          </div>
-        )}
+        <div className="bootstrap">
+          {!data && (
+            <div className="p-4 flex justify-center align-items-center gap-2">
+              <Spinner />
+              <Trans>Fetching Variants...</Trans>
+            </div>
+          )}
+          {data && (
+            <div className="ms-3 mt-2 mb-2">
+              <VariantsTable data={data} refetch={refetch} setLoading={setLoading} />
+            </div>
+          )}
+        </div>
       </div>
     </LayoutHideSidebar>
   );

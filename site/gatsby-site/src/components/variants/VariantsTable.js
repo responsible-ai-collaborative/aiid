@@ -2,12 +2,19 @@ import { useUserContext } from 'contexts/userContext';
 import React, { useState } from 'react';
 import Markdown from 'react-markdown';
 import { Button, Form, Pagination } from 'react-bootstrap';
+import { format, getUnixTime } from 'date-fns';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { useMutation } from '@apollo/client';
 import { useBlockLayout, useFilters, usePagination, useResizeColumns, useTable } from 'react-table';
 import VariantEditModal from './VariantEditModal';
 import styled from 'styled-components';
+import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Trans, useTranslation } from 'react-i18next';
 import { VariantStatusBadge } from './VariantList';
-import { getVariantStatus } from 'utils/variants';
+import { getVariantStatus, VARIANT_STATUS } from 'utils/variants';
+import { DELETE_VARIANT, UPDATE_VARIANT } from '../../graphql/variants';
+import { LINK_REPORTS_TO_INCIDENTS } from '../../graphql/reports';
 
 const Table = styled.div`
   display: inline-block;
@@ -92,10 +99,20 @@ function DefaultColumnFilter({
   );
 }
 
-export default function VariantsTable({ data, refetch }) {
+export default function VariantsTable({ data, refetch, setLoading }) {
+  const { isLoggedIn, isRole } = useUserContext();
+
+  const { t } = useTranslation();
+
+  const addToast = useToastContext();
+
   const [variantIdToEdit, setVariantIdToEdit] = useState(0);
 
-  const { isLoggedIn, isRole } = useUserContext();
+  const [deleteVariant] = useMutation(DELETE_VARIANT);
+
+  const [linkReportsToIncidents] = useMutation(LINK_REPORTS_TO_INCIDENTS);
+
+  const [updateVariant] = useMutation(UPDATE_VARIANT);
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -107,11 +124,93 @@ export default function VariantsTable({ data, refetch }) {
     []
   );
 
+  const handleDelete = async ({ report_number }) => {
+    if (confirm(t('Do you want to delete this variant?'))) {
+      try {
+        setLoading(true);
+
+        await deleteVariant({
+          variables: {
+            query: {
+              report_number,
+            },
+          },
+        });
+
+        await linkReportsToIncidents({
+          variables: {
+            input: {
+              incident_ids: [],
+              report_numbers: [report_number],
+            },
+          },
+        });
+
+        addToast({
+          message: t('Variant successfully deleted.'),
+          severity: SEVERITY.success,
+        });
+
+        await refetch();
+      } catch (e) {
+        addToast({
+          message: (
+            <label className="capitalize">{t(e.error || 'An unknown error has ocurred')}</label>
+          ),
+          severity: SEVERITY.danger,
+        });
+      }
+    }
+  };
+
+  const handleSubmit = async ({ report_number, tags, status }) => {
+    try {
+      setLoading(true);
+
+      let newTags = tags.filter((tag) => !tag.startsWith('variant:'));
+
+      newTags.push(status);
+
+      const updated = {
+        tags: newTags,
+      };
+
+      updated.date_modified = format(new Date(), 'yyyy-MM-dd');
+      updated.epoch_date_modified = getUnixTime(new Date(updated.date_modified));
+
+      await updateVariant({
+        variables: {
+          query: {
+            report_number,
+          },
+          set: {
+            ...updated,
+          },
+        },
+      });
+
+      addToast({
+        message: t('Variant successfully updated.'),
+        severity: SEVERITY.success,
+      });
+
+      await refetch();
+    } catch (e) {
+      addToast({
+        message: (
+          <label className="capitalize">{t(e.error || 'An unknown error has ocurred')}</label>
+        ),
+        severity: SEVERITY.danger,
+      });
+    }
+  };
+
   const columns = React.useMemo(() => {
     const columns = [
       {
         Header: 'Incident ID',
         accessor: 'incident_id',
+        width: 150,
         Cell: ({ row: { values } }) => (
           <a className="flex" href={`/cite/${values.incident_id}`}>
             Incident {values.incident_id}
@@ -125,8 +224,9 @@ export default function VariantsTable({ data, refetch }) {
       {
         Header: 'Status',
         accessor: 'tags',
+        width: 150,
         Cell: ({ row: { values } }) => (
-          <div className="flex">
+          <div className="flex justify-center">
             <VariantStatusBadge status={getVariantStatus(values)} />
           </div>
         ),
@@ -134,27 +234,68 @@ export default function VariantsTable({ data, refetch }) {
       {
         Header: 'Input and circumstances',
         accessor: 'text_inputs',
+        disableFilters: false,
         Cell: ({ row: { values } }) => <Markdown>{values.text_inputs}</Markdown>,
       },
       {
         Header: 'Output and outcomes',
         accessor: 'text_outputs',
+        disableFilters: false,
         Cell: ({ row: { values } }) => <Markdown>{values.text_outputs}</Markdown>,
       },
     ];
 
     if (isRole('incident_editor')) {
+      // @ts-ignore
       columns.push({
         Header: 'Actions',
         accessor: 'report_number',
+        disableFilters: true,
+        width: 300,
         Cell: ({ row: { values } }) => (
-          <div className="bootstrap">
+          <div className="flex gap-2 bootstrap">
+            <Button
+              variant="danger"
+              onClick={() => handleDelete({ report_number: values.report_number })}
+              data-cy="delete-variant-btn"
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </Button>
+
+            <Button
+              variant="danger"
+              onClick={() =>
+                handleSubmit({
+                  report_number: values.report_number,
+                  tags: values.tags,
+                  status: VARIANT_STATUS.rejected,
+                })
+              }
+              className="bootstrap flex gap-2 disabled:opacity-50"
+              data-cy="reject-variant-btn"
+            >
+              <Trans>Reject</Trans>
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() =>
+                handleSubmit({
+                  report_number: values.report_number,
+                  tags: values.tags,
+                  status: VARIANT_STATUS.approved,
+                })
+              }
+              className="bootstrap flex gap-2 disabled:opacity-50"
+              data-cy="approve-variant-btn"
+            >
+              <Trans>Approve</Trans>
+            </Button>
             <Button
               data-cy="edit-variant"
-              variant="link"
+              variant="primary"
               onClick={() => setVariantIdToEdit(values.report_number)}
             >
-              Edit
+              <FontAwesomeIcon icon={faEdit} />
             </Button>
           </div>
         ),
@@ -184,6 +325,14 @@ export default function VariantsTable({ data, refetch }) {
       columns,
       data,
       defaultColumn,
+      initialState: {
+        filters: [
+          {
+            id: 'tags',
+            value: 'Unreviewed',
+          },
+        ],
+      },
     },
     useFilters,
     useBlockLayout,
