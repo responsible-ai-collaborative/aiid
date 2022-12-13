@@ -162,7 +162,7 @@ describe('The Submit form', () => {
     );
 
     // Set the ID from the button in the list of semantically similar incidents
-    cy.get('[data-cy=related-byText] [data-cy=result] [data-cy=set-id]')
+    cy.get('[data-cy=related-byText] [data-cy=result] [data-cy=set-id]', { timeout: 8000 })
       .contains('#1')
       .first()
       .click();
@@ -261,7 +261,7 @@ describe('The Submit form', () => {
       .should('exist');
   });
 
-  it('Should pull parameters form the query string and auto-fill fields', () => {
+  it.skip('Should pull parameters form the query string and auto-fill fields', () => {
     const values = {
       url: 'https://test.com',
       title: 'test title',
@@ -308,17 +308,24 @@ describe('The Submit form', () => {
     );
 
     cy.visit(url + `?${params.toString()}`);
-    cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.waitForStableDOM();
+
+    cy.get('.form-has-errors').should('not.exist');
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="to-step-2"]').click();
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="to-step-3"]').click();
 
     cy.wait('@findIncident');
 
-    cy.get('button[type="submit"]').scrollIntoView().click();
+    cy.waitForStableDOM();
+
+    cy.get('button[type="submit"]').click();
 
     cy.wait('@insertSubmission').then((xhr) => {
       expect(xhr.request.body.variables.submission).to.deep.nested.include({
@@ -765,7 +772,7 @@ describe('The Submit form', () => {
     cy.get('[name="editor_notes"').should('exist');
   });
 
-  it.skip('Should show a popover', () => {
+  it('Should show a popover', () => {
     cy.visit(url);
 
     cy.get('[data-cy="label-title"]').trigger('mouseover');
@@ -777,7 +784,7 @@ describe('The Submit form', () => {
     cy.get('[data-cy="popover-title"]').contains('div', 'Most works have a title').should('exist');
   });
 
-  it.skip('Should show a translated popover', () => {
+  it('Should show a translated popover', () => {
     cy.visit(`/es/apps/submit/`);
 
     cy.get('[data-cy="label-title"]').trigger('mouseover');
@@ -949,7 +956,7 @@ describe('The Submit form', () => {
     cy.contains('Please review. Some data is missing.').should('exist');
   });
 
-  it('Should submit a new report response', () => {
+  it.skip('Should submit a new report response', () => {
     const values = {
       url: 'https://test.com',
       title: 'test title',
@@ -996,19 +1003,24 @@ describe('The Submit form', () => {
     );
 
     cy.visit(url + `?${params.toString()}`);
-    cy.clickOutside();
 
     cy.get('[data-cy="submit-form-title"]').contains('New Incident Response').should('exist');
 
     cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
 
+    cy.waitForStableDOM();
+
     cy.get('[data-cy="to-step-2"]').click();
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="to-step-3"]').click();
 
     cy.wait('@findIncident');
 
     cy.get('button[type="submit"]').scrollIntoView().click();
+
+    cy.waitForStableDOM();
 
     cy.wait('@insertSubmission').then((xhr) => {
       expect(xhr.request.body.variables.submission).to.deep.nested.include({

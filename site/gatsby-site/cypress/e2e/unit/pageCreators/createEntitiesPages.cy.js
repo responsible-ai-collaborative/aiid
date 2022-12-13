@@ -115,7 +115,10 @@ describe('createEntitiesPages', () => {
           'ai-developer-2',
           'party-3',
         ]);
-        expect(page.context.responses).to.deep.eq([2, 3]);
+        expect(page.context.responses).to.deep.eq([
+          { report_number: 2, incident_id: 1 },
+          { report_number: 3, incident_id: 2 },
+        ]);
       });
 
       cy.wrap(createPage.getCall(1).args[0]).then((page) => {
@@ -131,7 +134,10 @@ describe('createEntitiesPages', () => {
           'ai-deployer-1',
           'party-2',
         ]);
-        expect(page.context.responses).to.deep.eq([2, 3]);
+        expect(page.context.responses).to.deep.eq([
+          { report_number: 2, incident_id: 1 },
+          { report_number: 3, incident_id: 2 },
+        ]);
       });
 
       cy.wrap(createPage.getCall(2).args[0]).then((page) => {
@@ -143,7 +149,7 @@ describe('createEntitiesPages', () => {
         expect(page.context.incidentsAsBoth).to.deep.eq([]);
         expect(page.context.incidentsHarmedBy).to.deep.eq([]);
         expect(page.context.relatedEntities).to.deep.eq(['ai-developer-1', 'party-1', 'party-2']);
-        expect(page.context.responses).to.deep.eq([3]);
+        expect(page.context.responses).to.deep.eq([{ report_number: 3, incident_id: 2 }]);
       });
 
       cy.wrap(createPage.getCall(3).args[0]).then((page) => {
@@ -161,7 +167,10 @@ describe('createEntitiesPages', () => {
           'ai-developer-2',
           'ai-deployer-2',
         ]);
-        expect(page.context.responses).to.deep.eq([3, 5]);
+        expect(page.context.responses).to.deep.eq([
+          { report_number: 3, incident_id: 2 },
+          { report_number: 5, incident_id: 3 },
+        ]);
       });
 
       cy.wrap(createPage.getCall(4).args[0]).then((page) => {
@@ -179,7 +188,7 @@ describe('createEntitiesPages', () => {
           'ai-developer-1',
           'party-3',
         ]);
-        expect(page.context.responses).to.deep.eq([5]);
+        expect(page.context.responses).to.deep.eq([{ report_number: 5, incident_id: 3 }]);
       });
 
       cy.wrap(createPage.getCall(5).args[0]).then((page) => {
@@ -191,7 +200,7 @@ describe('createEntitiesPages', () => {
         expect(page.context.incidentsAsBoth).to.deep.eq([]);
         expect(page.context.incidentsHarmedBy).to.deep.eq([]);
         expect(page.context.relatedEntities).to.deep.eq(['ai-developer-2', 'party-2']);
-        expect(page.context.responses).to.deep.eq([5]);
+        expect(page.context.responses).to.deep.eq([{ report_number: 5, incident_id: 3 }]);
       });
 
       cy.wrap(createPage.getCall(6).args[0]).then((page) => {

@@ -1,4 +1,7 @@
 import { getApolloClient } from './utils';
+import { registerCommand } from 'cypress-wait-for-stable-dom';
+
+registerCommand();
 
 Cypress.Commands.add('disableSmoothScroll', () => {
   return cy.document().then((document) => {
@@ -50,7 +53,7 @@ Cypress.Commands.add(
 Cypress.Commands.add('query', ({ query, variables }) => {
   const client = getApolloClient();
 
-  return cy.wrap(client.query({ query, variables }), { log: true });
+  return cy.wrap(client.query({ query, variables }), { log: true, timeout: 30000 });
 });
 
 Cypress.Commands.add('clickOutside', () => {

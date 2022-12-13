@@ -59,9 +59,11 @@ describe('Entities page', () => {
     cy.get('[data-cy="cell-responses"]').should('have.length.lessThan', 200);
   });
 
-  it.skip('Should be able to sort', () => {
+  it('Should be able to sort', () => {
     cy.visit(url);
-
-    cy.get('[data-cy="entities"] tbody tr:nth-child(1) [data-cy="cell-id"]').contains('a', 'Tesla');
+    cy.get('[data-cy="entities"] tbody tr:nth-child(1) [data-cy="cell-id"]').contains(
+      'a',
+      'Facebook'
+    );
   });
 });

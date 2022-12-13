@@ -1,5 +1,3 @@
-import { maybeIt } from '../../../support/utils';
-
 import incident from '../../../fixtures/incidents/incident112.json';
 
 import updateOneIncident from '../../../fixtures/incidents/updateOneIncident112.json';
@@ -52,7 +50,7 @@ describe('Incidents App', () => {
       });
   });
 
-  maybeIt('Successfully filter and edit incident 112', () => {
+  it.skip('Successfully filter and edit incident 112', { retries: { runMode: 4 } }, () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -63,6 +61,8 @@ describe('Incidents App', () => {
     );
 
     cy.visit(url);
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="input-filter-Incident ID"]').type('112');
 
@@ -89,7 +89,7 @@ describe('Incidents App', () => {
 
     cy.wait('@FindIncident');
 
-    cy.wait('@FindIncident').then((xhr) => {
+    cy.wait('@FindIncident', { timeout: 8000 }).then((xhr) => {
       expect(xhr.request.body.operationName).to.eq('FindIncident');
       expect(xhr.request.body.variables.query.incident_id).to.eq(112);
     });

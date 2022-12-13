@@ -15,25 +15,28 @@ describe('Cite pages', () => {
 
   it('Successfully loads', () => {
     cy.visit(url);
-
-    cy.disableSmoothScroll();
   });
 
-  it.skip('Should scroll to report when coming from the discover app', () => {
-    cy.visit(discoverUrl);
+  it(
+    'Should scroll to report when coming from the discover app',
+    { retries: { runMode: 4 } },
+    () => {
+      cy.visit(discoverUrl);
 
-    cy.contains('Show Details on Incident #10').first().click();
+      cy.disableSmoothScroll();
 
-    cy.disableSmoothScroll();
+      cy.contains('Show Details on Incident #10').first().click();
 
-    cy.url().should('include', '/cite/10');
+      cy.url().should('include', '/cite/10#r23');
+      cy.waitForStableDOM();
 
-    cy.contains('span', 'Is Starbucks shortchanging its baristas?', { timeout: 8000 })
-      .parents('[class*="IncidentCard"]')
-      .then((subject) => {
-        expect(subject[0].getBoundingClientRect().top).to.be.closeTo(0, 1);
-      });
-  });
+      cy.contains('span', 'Is Starbucks shortchanging its baristas?', { timeout: 8000 })
+        .parents('[class*="IncidentCard"]')
+        .then((subject) => {
+          expect(subject[0].getBoundingClientRect().top).to.be.closeTo(0, 30);
+        });
+    }
+  );
 
   it('Should scroll to report when clicking on a report in the timeline', () => {
     cy.visit(url);
@@ -117,7 +120,7 @@ describe('Cite pages', () => {
     cy.get('[data-cy="resources"]').should('not.exist');
   });
 
-  it.skip('Should flag an incident', () => {
+  it('Should flag an incident', () => {
     // mock requests until a testing database is implemented
     const _id = '23';
 
@@ -130,10 +133,9 @@ describe('Cite pages', () => {
 
     cy.visit(url + '#' + _id);
 
-    cy.get(`[id="r${_id}"`).find('[data-cy="flag-button"]').scrollIntoView().click();
+    cy.waitForStableDOM();
 
-    // cypress has trouble with modals
-    cy.wait(0);
+    cy.get(`[id="r${_id}"`).find('[data-cy="flag-button"]').click();
 
     cy.get('[data-cy="flag-modal"]').as('modal').should('be.visible');
 
@@ -152,9 +154,7 @@ describe('Cite pages', () => {
 
     cy.get('@modal').find('[data-cy="flag-toggle"]').should('be.disabled');
 
-    cy.contains('Close').click();
-
-    cy.wait(0);
+    cy.get('[aria-label="Close"]').click();
 
     cy.get('@modal').should('not.exist');
   });
@@ -189,16 +189,20 @@ describe('Cite pages', () => {
     cy.get('[data-cy="incident-form"]', { timeout: 8000 }).should('be.visible');
   });
 
-  it('Should display correct BibTex Citation', () => {
+  it('Should display correct BibTex Citation', { retries: { runMode: 4 } }, () => {
     cy.visit(url);
 
     const date = format(new Date(), 'MMMMd,y');
 
-    cy.contains('BibTex Citation').scrollIntoView().click();
+    cy.waitForStableDOM();
 
-    cy.get('[data-cy="bibtext-modal"]', { timeout: 8000 }).should('be.visible');
+    cy.contains('button', 'BibTex Citation').click();
 
-    cy.get('[data-cy="bibtext-modal"]', { timeout: 8000 })
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="bibtext-modal"]', { timeout: 15000 }).should('be.visible');
+
+    cy.get('[data-cy="bibtext-modal"]', { timeout: 15000 })
       .find('code')
       .invoke('text')
       .then((text) => {
@@ -270,9 +274,11 @@ describe('Cite pages', () => {
 
     cy.visit('/cite/9');
 
+    cy.waitForStableDOM();
+
     cy.get('[data-cy="flag-similar-incident"]').first().click();
 
-    cy.wait('@updateIncident').then((xhr) => {
+    cy.wait('@updateIncident', { timeout: 8000 }).then((xhr) => {
       expect(xhr.request.body.variables.query).deep.eq({ incident_id: 9 });
       expect(xhr.request.body.variables.set.flagged_dissimilar_incidents).deep.eq([11]);
     });
@@ -348,9 +354,11 @@ describe('Cite pages', () => {
       }
     );
 
+    cy.waitForStableDOM();
+
     cy.contains('Notify Me of Updates').scrollIntoView().click();
 
-    cy.get('[data-cy="toast"]', { timeout: 8000 }).should('be.visible');
+    cy.get('[data-cy="toast"]', { timeout: 15000 }).should('be.visible');
 
     cy.contains(
       '[data-cy="toast"]',
@@ -374,9 +382,11 @@ describe('Cite pages', () => {
       }
     );
 
+    cy.waitForStableDOM();
+
     cy.contains('Notify Me of Updates').scrollIntoView().click();
 
-    cy.get('[data-cy="toast"]', { timeout: 8000 }).should('be.visible');
+    cy.get('[data-cy="toast"]', { timeout: 15000 }).should('be.visible');
 
     cy.get('[data-cy="toast"]').contains(`Please log in to subscribe`).should('be.visible');
   });
@@ -407,7 +417,10 @@ describe('Cite pages', () => {
   it('Should display response in timeline and as badge', () => {
     cy.visit('/cite/51#r1765');
 
-    cy.get('#r1765').scrollIntoView().contains('post-incident response').should('exist');
+    cy.get('#r1765')
+      .scrollIntoView()
+      .contains('post-incident response', { timeout: 8000 })
+      .should('exist');
 
     cy.get('[data-cy="responded-badge"]').should('exist');
 

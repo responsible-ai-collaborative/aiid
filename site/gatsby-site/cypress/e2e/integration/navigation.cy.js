@@ -1,4 +1,4 @@
-describe('Navigation', () => {
+describe.skip('Navigation', () => {
   it('Check menu links work (English)', () => {
     cy.visit('/');
 

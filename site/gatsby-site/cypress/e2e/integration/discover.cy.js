@@ -33,12 +33,16 @@ describe('The Discover app', () => {
     cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 8);
   });
 
-  it('Filters by incident Id using top filters', () => {
+  it('Filters by incident Id using top filters', { retries: { runMode: 4 } }, () => {
     cy.visit(url);
 
     cy.get('[data-cy=expand-filters]').click();
 
+    cy.waitForStableDOM();
+
     cy.contains('button', 'Incident ID').click();
+
+    cy.waitForStableDOM();
 
     cy.get('.card [placeholder="Type Here"]', { timeout: 8000 }).type('34').type('{enter}');
 
@@ -49,7 +53,7 @@ describe('The Discover app', () => {
     cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 28);
   });
 
-  it('Filters by incident Id using card button', () => {
+  it('Filters by incident Id using card button', { retries: { runMode: 4 } }, () => {
     cy.visit(url);
 
     cy.get('[data-cy=expand-filters]').click();
@@ -60,8 +64,10 @@ describe('The Discover app', () => {
       .first()
       .click();
 
+    cy.waitForStableDOM();
+
     cy.contains('button', 'Incident ID', { timeout: 8000 })
-      .find('span.badge')
+      .find('span.badge', { timeout: 8000 })
       .should('contain.text', '1');
 
     cy.url().should('include', 'incident_id=10');

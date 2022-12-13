@@ -13,18 +13,19 @@ describe('The Language switcher', () => {
     cy.contains('h1', 'AI Incident Database').should('be.visible');
   });
 
-  it.skip('Should update the path with the selected language', () => {
+  it('Should update the path with the selected language', () => {
     cy.visit('/');
 
+    cy.waitForStableDOM();
+
     cy.get('[data-cy="language-switcher"]').click();
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="language-switcher"]').contains('[role="button"]', 'Spanish').click();
 
     cy.url().should('contain', '/es/');
 
-    cy.contains(
-      'h1',
-      'Bienvenido a la base de datos de incidentes de Inteligencia Artificial'
-    ).should('be.visible');
+    cy.contains('h1', 'Bienvenido ala base de datos de incidentes de IA').should('be.visible');
   });
 });

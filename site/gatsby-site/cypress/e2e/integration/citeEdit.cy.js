@@ -903,12 +903,12 @@ describe('Edit report', () => {
     cy.contains('[data-cy="toast"]', 'Issue 23 updated successfully', { timeout: 8000 });
   });
 
-  maybeIt('Should display the report image', () => {
+  it.skip('Should display the report image', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.visit(url);
 
-    cy.get('[data-cy="image-preview-figure"] img', { timeout: 8000 }).should(
+    cy.get('[data-cy="image-preview-figure"] img', { timeout: 15000 }).should(
       'have.attr',
       'src',
       'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/v1/reports/assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975'

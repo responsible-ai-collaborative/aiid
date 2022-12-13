@@ -1,4 +1,4 @@
-describe('Social Share buttons on pages', () => {
+describe('Social Share buttons on pages', { retries: { runMode: 4 } }, () => {
   const incidentId = 10;
 
   const incidentUrl = `/cite/${incidentId}`;
@@ -45,6 +45,9 @@ describe('Social Share buttons on pages', () => {
           })
           .as('popup_twitter');
       });
+
+      cy.waitForStableDOM();
+
       cy.get('[data-cy=btn-share-twitter]').first().click();
       cy.get('@popup_twitter', { timeout: 8000 }).should('be.called');
       cy.url().should(
@@ -65,6 +68,9 @@ describe('Social Share buttons on pages', () => {
           })
           .as('popup_linkedin');
       });
+
+      cy.waitForStableDOM();
+
       cy.get('[data-cy=btn-share-linkedin]').first().click();
       cy.get('@popup_linkedin', { timeout: 8000 }).should('be.called');
       cy.url().should('contain', `https://www.linkedin.com/`);
@@ -82,6 +88,9 @@ describe('Social Share buttons on pages', () => {
           })
           .as('popup_email');
       });
+
+      cy.waitForStableDOM();
+
       cy.get('[data-cy=btn-share-email]').first().click();
       cy.get('@popup_email', { timeout: 8000 }).should('be.called');
     });
@@ -98,6 +107,9 @@ describe('Social Share buttons on pages', () => {
           })
           .as('popup_facebook');
       });
+
+      cy.waitForStableDOM();
+
       cy.get('[data-cy=btn-share-facebook]').first().click();
       cy.get('@popup_facebook', { timeout: 8000 }).should('be.called');
       cy.url().should('contain', `https://www.facebook.com/sharer/sharer.php?u=${canonicalUrl}`);

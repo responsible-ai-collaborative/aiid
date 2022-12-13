@@ -49,7 +49,7 @@ describe('Entities page', () => {
 
     cy.contains(`Notify Me of New ${entity.name} Incidents`).scrollIntoView().click();
 
-    cy.get('[data-cy="toast"]')
+    cy.get('[data-cy="toast"]', { timeout: 8000 })
       .contains(`You have successfully subscribed to new ${entity.name} incidents`)
       .should('exist');
   });
@@ -85,7 +85,7 @@ describe('Entities page', () => {
 
     cy.contains(`Unsubscribe from New ${entity.name} Incidents`).scrollIntoView().click();
 
-    cy.get('[data-cy="toast"]')
+    cy.get('[data-cy="toast"]', { timeout: 8000 })
       .contains(`You have successfully unsubscribed to new ${entity.name} incidents`)
       .should('exist');
   });
@@ -107,8 +107,12 @@ describe('Entities page', () => {
 
     cy.visit(url);
 
-    cy.contains(`Notify Me of New ${entity.name} Incidents`).scrollIntoView().click();
+    cy.contains(`Notify Me of New ${entity.name} Incidents`, { timeout: 8000 })
+      .scrollIntoView()
+      .click();
 
-    cy.get('[data-cy="toast"]').contains(`Please log in to subscribe`).should('exist');
+    cy.get('[data-cy="toast"]', { timeout: 8000 })
+      .contains(`Please log in to subscribe`)
+      .should('exist');
   });
 });
