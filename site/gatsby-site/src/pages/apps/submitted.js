@@ -114,7 +114,13 @@ const SubmittedIncidentsPage = ({ ...props }) => {
                     <Button
                       variant="outline-secondary"
                       disabled={!isAdmin}
-                      onClick={() => submitDeleteQuickAdd(_id)}
+                      onClick={() => {
+                        if (
+                          window.confirm(t('Are you sure you want to delete “{{url}}”?', { url }))
+                        ) {
+                          submitDeleteQuickAdd(_id);
+                        }
+                      }}
                     >
                       <Trans>Delete</Trans>&gt;
                     </Button>
