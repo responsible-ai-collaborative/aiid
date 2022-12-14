@@ -13,7 +13,7 @@ import TranslationBadge from 'components/i18n/TranslationBadge';
 import { Badge } from 'flowbite-react';
 import { RESPONSE_TAG } from 'utils/entities';
 
-const ReportCard = ({ item, className }) => {
+const ReportCard = ({ item, className = '', incidentId }) => {
   const { isRole, loading } = useUserContext();
 
   const [expanded, setExpanded] = useState(false);
@@ -70,7 +70,7 @@ const ReportCard = ({ item, className }) => {
               data-cy="edit-report"
               size={'xs'}
               color="light"
-              href={`/cite/edit?report_number=${item.report_number}`}
+              href={`/cite/edit?report_number=${item.report_number}&incident_id=${incidentId}`}
             >
               <Trans>Edit</Trans>
             </Button>

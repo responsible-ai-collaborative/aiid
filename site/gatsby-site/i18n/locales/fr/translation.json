@@ -160,5 +160,9 @@
   "New Response": "Nouvelle Réponse",
   "Response": "Réponse",
   "Responded": "Répondu",
-  "{{authors}} post-incident response": "Réponse post-incident de {{authors}}"
+  "{{authors}} post-incident response": "Réponse post-incident de {{authors}}",
+  "Back to Incident {{incidentId}}": "Retour à l'incident {{incidentId}}",
+  "Back to Report {{reportNumber}}": "Retour au rapport {{reportNumber}}",
+  "Editing Incident Report {{reportNumber}}": "Modification du rapport {{reportNumber}}",
+  "Editing Incident {{incidentId}}": "Modification de l'incident {{incidentId}}"
 }
