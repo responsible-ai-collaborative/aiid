@@ -61,7 +61,7 @@ const VariantCard = ({ variant, refetch }) => {
               <Trans>Input and circumstances</Trans>
               <Tooltip
                 content={t(
-                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+                  'Provide the relevant details producing the incident. Examples include the input prompts to a chatbot or a description of the circumstances leading to injuries sustained from a robot.'
                 )}
                 trigger="click"
               >
@@ -81,7 +81,7 @@ const VariantCard = ({ variant, refetch }) => {
               <Trans>Output and outcomes</Trans>
               <Tooltip
                 content={t(
-                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+                  'Provide the relevant details surrounding the incident. Examples include output text from a chatbot or the nature of injuries sustained from a robot.'
                 )}
                 trigger="click"
               >
@@ -159,9 +159,13 @@ const VariantList = ({ incidentId, report_numbers, variants, loading, refetch })
           </h1>
           <div className="mb-4">
             <Trans>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-              incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-              exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              A &quot;variant&quot; is an incident that shares the same causative factors, produces
+              similar harms, and involves the same intelligent systems as a known AI incident.
+              Rather than index variants as entirely separate incidents, we list variations of
+              incidents under the first incident submitted to the database. Unlike other submission
+              types to the incident database, variants are not required to have reporting in
+              evidence external to the Incident Database.{' '}
+              <a href="https://arxiv.org/abs/2211.10384">Learn more from the research paper.</a>
             </Trans>
             <div className={'flex flex-col gap-3 mt-5'}>
               {variants.map((variant) => (
