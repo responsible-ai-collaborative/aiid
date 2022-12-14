@@ -3,8 +3,7 @@ import Layout from '../../components/Layout';
 import IncidentReportForm, { schema } from '../../components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Button } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
+import { Spinner, Button } from 'flowbite-react';
 import {
   UPDATE_REPORT,
   DELETE_REPORT,
@@ -21,6 +20,7 @@ import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
 import { gql } from '@apollo/client';
 import { useTranslation, Trans } from 'react-i18next';
 import RelatedIncidents from '../../components/RelatedIncidents';
+import { Link } from 'gatsby';
 import { isEqual } from 'lodash';
 
 const UPDATE_REPORT_TRANSLATION = gql`
@@ -59,6 +59,8 @@ function EditCitePage(props) {
   const { t, i18n } = useTranslation();
 
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
+
+  const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
 
   const {
     data: reportData,
@@ -252,7 +254,20 @@ function EditCitePage(props) {
   };
 
   return (
-    <Layout {...props} className={'w-full boostrap p-1'}>
+    <Layout {...props} className={'w-full p-1'}>
+      {!loading && (
+        <div className="flex flex-row justify-between flex-wrap">
+          <h1 className="mb-5">
+            <Trans>Editing Incident Report {{ reportNumber }}</Trans>
+          </h1>
+          <Link to={`/cite/${incidentId}#r${reportNumber}`} className="mb-5">
+            <Button outline={true} color={'light'}>
+              <Trans>Back to Report {{ reportNumber }}</Trans>
+            </Button>
+          </Link>
+        </div>
+      )}
+
       {loading && (
         <div className="flex justify-center">
           <Spinner />
@@ -265,7 +280,6 @@ function EditCitePage(props) {
             <div>Report not found</div>
           ) : (
             <>
-              <h1 className="mb-5">Editing Incident Report {reportNumber}</h1>
               <Formik
                 validationSchema={schema}
                 onSubmit={handleSubmit}
