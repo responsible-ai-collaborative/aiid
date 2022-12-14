@@ -20,6 +20,7 @@ import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
 import { gql } from '@apollo/client';
 import { useTranslation, Trans } from 'react-i18next';
 import RelatedIncidents from '../../components/RelatedIncidents';
+import DefaultSkeleton from 'elements/Skeletons/Default';
 import { Link } from 'gatsby';
 import { isEqual } from 'lodash';
 
@@ -269,8 +270,8 @@ function EditCitePage(props) {
       )}
 
       {loading && (
-        <div className="flex justify-center">
-          <Spinner />
+        <div className="flex">
+          <DefaultSkeleton />
         </div>
       )}
 

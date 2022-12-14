@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import AiidHelmet from '../../components/AiidHelmet';
 import { ObjectId } from 'bson';
 import { Button, Row, Col, Card, Badge, ListGroup } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
 import { useMutation, useQuery } from '@apollo/client';
 import { DELETE_QUICKADD, FIND_QUICKADD } from '../../graphql/quickadd.js';
 import { useUserContext } from '../../contexts/userContext';
@@ -11,6 +10,7 @@ import { StyledHeading, StyledMainWrapper } from '../../components/styles/Docs';
 import SubmissionList from '../../components/submissions/SubmissionList';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Trans, useTranslation } from 'react-i18next';
+import ListSkeleton from 'elements/Skeletons/List';
 
 const SubmittedIncidentsPage = ({ ...props }) => {
   const { isRole } = useUserContext();
@@ -98,14 +98,7 @@ const SubmittedIncidentsPage = ({ ...props }) => {
           </Trans>
         </p>
         <ListGroup className="mb-5">
-          {sortedQuickAdds.length < 1 && (
-            <div className="flex gap-2">
-              <Spinner />
-              <p>
-                <Trans ns="submitted">Loading Quick Adds...</Trans>
-              </p>
-            </div>
-          )}
+          {sortedQuickAdds.length < 1 && <ListSkeleton />}
           {sortedQuickAdds.map(({ _id, url, date_submitted }) => (
             <ListGroup.Item key={_id} className="m-0 p-2">
               <Card.Header>
