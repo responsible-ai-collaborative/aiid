@@ -94,6 +94,8 @@ const PreviewImageInputGroup = ({
   handleBlur,
   className = '',
   schema,
+  alt = '',
+  icon,
 }) => {
   const [cloudinaryID, setCloudinaryID] = useState(IMG_FALLBACK);
 
@@ -160,6 +162,7 @@ const PreviewImageInputGroup = ({
       <TextInputGroup
         name={name}
         label={label}
+        icon={icon}
         placeholder={placeholder}
         values={values}
         errors={childErrors}
@@ -181,7 +184,7 @@ const PreviewImageInputGroup = ({
           {updatingImage ? (
             <Spinner size="xl" />
           ) : (
-            <Image publicID={cloudinaryID} style={{ maxHeight: '100%' }} alt="Selected image" />
+            <Image publicID={cloudinaryID} style={{ maxHeight: '100%' }} alt={alt} />
           )}
         </div>
         <figcaption className="mt-2">

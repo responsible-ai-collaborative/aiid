@@ -3,6 +3,7 @@ import { Form, InputGroup } from 'react-bootstrap';
 import Label from './Label';
 import TagsControl from './TagsControl';
 import { Trans } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const TagsInputGroup = ({
   name,
@@ -12,6 +13,7 @@ const TagsInputGroup = ({
   touched,
   schema,
   className = '',
+  icon,
   disabled = false,
 }) => {
   const [optional, setOptional] = useState(true);
@@ -26,8 +28,11 @@ const TagsInputGroup = ({
   return (
     <div className="bootstrap">
       <Form.Group className={`form-group ${className}`}>
-        <Label popover={name} label={(optional ? '' : '*') + label} />
-        <InputGroup>
+        <div className="flex items-center">
+          {icon && <FontAwesomeIcon fixedWidth icon={icon} title={label} className="mb-2 mr-1" />}
+          <Label popover={name} label={(optional ? '' : '*') + label} />
+        </div>
+        <InputGroup style={{ marginTop: '0.25rem' }}>
           <div
             className={
               'tags-control-wrapper rounded-md form-control' + (isInvalid ? ' is-invalid' : '')

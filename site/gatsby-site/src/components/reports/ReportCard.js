@@ -12,7 +12,7 @@ import { Badge } from 'flowbite-react';
 import { RESPONSE_TAG } from 'utils/entities';
 import { Trans } from 'react-i18next';
 
-const ReportCard = ({ item, className }) => {
+const ReportCard = ({ item, className = '', incidentId }) => {
   const { isRole, loading } = useUserContext();
 
   const authors = item.authors.join(', ');
@@ -25,7 +25,10 @@ const ReportCard = ({ item, className }) => {
             <span>{item.title}</span>
           </a>
           {!loading && isRole('incident_editor') && (
-            <a data-cy="edit-report" href={`/cite/edit?report_number=${item.report_number}`}>
+            <a
+              data-cy="edit-report"
+              href={`/cite/edit?report_number=${item.report_number}&incident_id=${incidentId}`}
+            >
               Edit
             </a>
           )}
