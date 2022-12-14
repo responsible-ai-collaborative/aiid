@@ -172,4 +172,14 @@ describe('The Discover app', () => {
 
     cy.contains('button', 'Clear Filter').should('be.disabled');
   });
+
+  it('Should sort by incident date', () => {
+    cy.visit(url);
+
+    cy.get('[data-cy="discover-sort"]').click();
+
+    cy.get('[data-cy="sort-asc"]').click();
+
+    cy.get('[data-cy="discover-sort"]').should('have.text', 'Incident Date - asc');
+  });
 });

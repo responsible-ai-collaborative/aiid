@@ -24,7 +24,11 @@ function Sorting(props) {
   return (
     <>
       <div className="flex justify-end px-2">
-        <Dropdown label={`${t(selectedItem.label)} - ${t(selectedDirection)}`} color={'light'}>
+        <Dropdown
+          label={`${t(selectedItem.label)} - ${t(selectedDirection)}`}
+          color={'light'}
+          data-cy="discover-sort"
+        >
           <Dropdown.Item className="text-gray-400 hover:bg-white">ORDER</Dropdown.Item>
           {props.items.map((item) => (
             <Dropdown.Item
@@ -47,7 +51,9 @@ function Sorting(props) {
             }}
             className={`${selectedDirection === 'asc' ? 'bg-blue-100' : ''}`}
           >
-            <Trans>Asc</Trans>
+            <span data-cy="sort-asc">
+              <Trans>Asc</Trans>
+            </span>
           </Dropdown.Item>
           <Dropdown.Item
             value="asc"
@@ -55,8 +61,11 @@ function Sorting(props) {
               setSelectedDirection('desc');
             }}
             className={`${selectedDirection === 'desc' ? 'bg-blue-100' : ''}`}
+            data-cy="sort-asc"
           >
-            <Trans>Desc</Trans>
+            <span data-cy="sort-desc">
+              <Trans>Desc</Trans>
+            </span>
           </Dropdown.Item>
         </Dropdown>
       </div>
