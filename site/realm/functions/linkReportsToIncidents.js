@@ -30,7 +30,9 @@ exports = async (input) => {
 
     const embedding = incidentEmbedding(reports);
 
-    await incidentsCollection.updateOne({ incident_id: incident.incident_id }, { $set: { embedding } });
+    const operation = embedding == null ? { $unset: { embedding: "" } } : { $set: { embedding } }
+
+    await incidentsCollection.updateOne({ incident_id: incident.incident_id }, operation);
   }
 
   await incidentsCollection.updateMany({ reports: { $in: input.report_numbers } }, { $pull: { reports: { $in: input.report_numbers.map(BSON.Int32) } } });
@@ -50,7 +52,9 @@ exports = async (input) => {
 
       const embedding = incidentEmbedding(reports);
 
-      await incidentsCollection.updateOne({ incident_id: incident.incident_id }, { $set: { embedding } });
+      const operation = embedding == null ? { $unset: { embedding: "" } } : { $set: { embedding } }
+
+      await incidentsCollection.updateOne({ incident_id: incident.incident_id }, operation);
     }
   }
 
