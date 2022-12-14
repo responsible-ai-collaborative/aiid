@@ -27,6 +27,8 @@ describe('Incidents', () => {
       date: '2021-01-02',
     };
 
+    cy.wait(10000);
+
     Object.keys(values).forEach((key) => {
       cy.get(`[name=${key}]`).clear().type(values[key]);
     });
@@ -37,6 +39,8 @@ describe('Incidents', () => {
       .type('Test Deployer{enter}');
 
     cy.contains('label', 'Editors').next().find('[type="text"]').type('Test Editor{enter}');
+
+    cy.wait(10000);
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -60,7 +64,9 @@ describe('Incidents', () => {
       expect(xhr.request.body.variables.set.AllegedDeveloperOfAISystem.link).to.deep.eq([
         'youtube',
       ]);
-      expect(xhr.request.body.variables.set.AllegedHarmedOrNearlyHarmedParties.link).to.deep.eq([]);
+      expect(xhr.request.body.variables.set.AllegedHarmedOrNearlyHarmedParties.link).to.deep.eq([
+        'children',
+      ]);
       expect(xhr.request.body.variables.set.editors).to.deep.eq(['Sean McGregor', 'Test Editor']);
     });
 
