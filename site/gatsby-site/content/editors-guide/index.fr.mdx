@@ -1,0 +1,477 @@
+---
+title: "Editor's Guide"
+metaTitle: "Editor's Guide"
+metaDescription: "Editorial standards for the AI Incident Database"
+slug: '/editors-guide'
+---
+
+<div className="outlineDocument">
+
+## Definitions
+
+The AI Incident Database contains records of AI “incidents” and “issues”.
+
+- **AI incident**: 
+  an alleged harm or near harm event to people, property, or the environment 
+  where an AI system is implicated.
+
+- **AI issue**: 
+  an alleged harm or near harm by an AI system 
+  that has yet to occur or be detected.
+
+- **AI incident variant**:
+  an incident that shares the same causative factors, produces similar harms, 
+  and involves the same intelligent systems as a known AI incident.
+
+- **Artificial Intelligence (AI)**:
+  for our purposes, AI means the capability of machines 
+  to perform functions typically thought of as requiring human intelligence, 
+  such as reasoning, recognizing patterns or understanding natural language.
+  AI includes, but is not limited to, machine learning –
+  a set of techniques by which a computer system learns how to perform a task 
+  through recognizing patterns in data and inferring decision rules.
+
+- **AI system**:
+  technologies and processes in which AI plays a meaningful role.
+  These systems may also include components 
+  that do not involve artificial intelligence, such as mechanical components.
+
+  - *Examples:* 
+    a self-driving car; facial-recognition software; 
+    Google Translate; a credit-scoring algorithm.
+
+  Algorithms that are not traditionally considered AI 
+  may be considered an AI system 
+  when a human transfers decision making authority to the system. 
+
+  - *Example:*
+    a hospital system selects vaccine candidates 
+    based on a series of hand tailored rules in a black box algorithm.
+
+- **Implicated**:
+  a system is implicated in an incident 
+  if it played an important role in the chain of events that led to harm. 
+  The AI system does not need to be 
+  the only factor, or the major factor, in causing the harm, 
+  but it should at least be a “but-for” cause – that is, 
+  if the AI system hadn’t acted in the way it did, 
+  the specific harm would not have occurred. 
+  This includes cases where 
+  the AI system had the potential to prevent the harm, but did not.
+
+  We make no distinction between accidental and deliberate harm 
+  (i.e., malicious use of AI). 
+  For purposes of the AIID, what matters is that harm was caused, 
+  not whether it was intended.
+
+- **Nearly harmed**:
+  played an important role in a chain of events 
+  that easily could have caused harm, 
+  but some external factor kept the harm from occurring.
+  This external factor should be independent of the AI system 
+  and should not have been put in place 
+  specifically to prevent the harm in question.
+
+  - *Example:*
+    an industrial robot begins spinning out of control, 
+    but a nearby worker manages to cut power to the robot 
+    before either the robot or nearby people are harmed.
+
+  - *Counterexample:*
+    an industrial robot begins spinning out of control, 
+    but its built-in safety sensor detects the abnormality 
+    and immediately shuts the robot down.
+
+  Again, the AI system does not need to be 
+  the only factor, or even the major factor, 
+  in the chain of events that could have led to harm. 
+  But it should at least be a “but-for” cause - 
+  that is, if the AI system hadn’t acted in the way it did, 
+  there would have been no significant chance that the harm would occur.
+
+- **Real-world harm**: includes, but is not limited to:
+
+  - Harm to physical health/safety
+  - Psychological harm
+  - Financial harm
+  - Harm to physical property
+  - Harm to intangible property 
+    (for example, IP theft, damage to a company’s reputation)
+  - Harm to social or political systems
+    (for example, election interference, loss of trust in authorities)
+  - Harm to civil liberties
+    (for example, unjustified imprisonment or other punishment, censorship)
+  - Harms do not have to be severe to meet this definition; 
+    an incident resulting in minor, easily remedied expense or inconvenience 
+    still counts as harm for our purposes.
+
+  In some cases, especially involving harms 
+  that are psychological or otherwise intangible, 
+  reasonable people might disagree 
+  about whether harm has actually occurred (or nearly occurred). 
+  Contributors should use their best judgment, 
+  erring on the side of finding harm 
+  when there is a plausible argument that harm occurred.
+
+## Mapping Reports to Incidents, Variants, and Issues
+
+Apply the following algorithm when deciding whether this is 
+an incident, variant, issue, or not relevant to the AIID.
+
+1. Does the report primarily detail a current variant?  
+   - Y: Add it to the current variant  
+   - N: Continue
+2. Does the report primarily detail a current incident?  
+   - Y: Add it to the current incident  
+   - N: Continue
+3. Does the report present the same causative factors, produce similar harms,
+   and involves the same intelligent systems as a known AI incident?  
+   - Y: Add it as a new variant  
+   - N: Continue
+4. Does the report meet the definition of an incident?  
+   - Y: Add it as a new incident  
+   - N: Continue
+5. Does the report meet the definition of an issue?  
+   - Y: Add it as an issue to the database  
+   - N: Reject the report
+
+### Examples and Discussion
+
+#### Case Analysis of “Incidents”
+
+Several common situations do not meet the above criteria 
+and should not be recorded as incidents in the AI Incident Database.
+These include:
+
+<table className="border-1 border-gray-200 my-4">
+  <tr>
+    <th>Type</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td className="align-top border-1 border-gray-200 px-4 py-2">
+      Studies documenting theoretical or conceptual flaws in AI technology
+    </td>
+    <td className="align-top border-1 border-gray-200 px-4 py-2">
+      <Link to="https://www.cv-foundation.org/openaccess/content_cvpr_2015/html/Nguyen_Deep_Neural_Networks_2015_CVPR_paper.html">
+        Deep Neural Networks Are Easily Fooled:
+        High Confidence Predictions for Unrecognizable Images
+      </Link>
+    </td>
+  </tr>
+  <tr>
+    <td className="align-top border-1 border-gray-200 px-4 py-2">
+      Thought experiments and hypothetical examples
+    </td>
+    <td className="align-top border-1 border-gray-200 px-4 py-2">
+      <Link to="https://www.lesswrong.com/tag/paperclip-maximizer">
+        “...artificial general intelligence, 
+        even one designed competently and without malice, 
+        could ultimately destroy humanity”
+      </Link>
+    </td>
+  </tr>
+  <tr>
+    <td className="align-top border-1 border-gray-200 px-4 py-2">
+      The development or deployment of AI products 
+      that seem likely to cause harm, 
+      but there are no reports of specific situations in which harm was caused
+    </td>
+    <td className="align-top border-1 border-gray-200 px-4 py-2">
+      <Link to="https://osf.io/zn79k">
+        Deep neural networks are more accurate than humans 
+        at detecting sexual orientation from facial images
+      </Link>
+    </td>
+  </tr>
+  <tr>
+    <td className="align-top border-1 border-gray-200 px-4 py-2">
+      Discussions of broad types of AI incidents or harmful AI behaviors
+    </td>
+    <td className="align-top border-1 border-gray-200 px-4 py-2">
+      <Link to="https://www.ted.com/talks/tristan_harris_how_a_handful_of_tech_companies_control_billions_of_minds_every_day">
+        How a handful of tech companies control billions of minds every day
+      </Link>
+    </td>
+  </tr>
+  <tr>
+    <td className="align-top border-1 border-gray-200 px-4 py-2">
+      Misleading marketing of AI products
+    </td>
+    <td className="align-top border-1 border-gray-200 px-4 py-2">
+      <Link to="https://thespinoff.co.nz/the-best-of/09-03-2018/the-mystery-of-zach-the-miracle-ai-continued-it-all-just-gets-terribler/">
+        The mystery of Zach the miracle AI, continued: 
+        it all just gets Terribler
+      </Link>
+    </td>
+  </tr>
+</table>
+
+#### Case Analysis of “Issues”
+
+The cases identified here are not comprehensive; 
+there are more cases that potentially fit the definition of “issues”.
+
+1. **Case 1**: Concerns by critics or community about an AI system, 
+   but without a specific event of harm
+   1. Why didn’t it meet criteria for incidents? 
+      It has not caused or been involved in an event of harm
+   2. *Example:* [
+      Student-Developed Facial Recognition App Raised Ethical Concerns](/cite/298)\*
+2. **Case 2**: Harm associated with the AI technology 
+   as opposed to a specific AI system
+   1. Why didn’t it meet criteria for incidents? 
+      No specific event is detailed, but rather 
+      the fallibility of the system type in general is discussed
+   2. *Example:* [Collaborative Filtering Prone to Popularity Bias, 
+      Resulting in Overrepresentation of Popular Items 
+      in the Recommendation Outputs](/cite/168)\*
+3. **Case 3**: Aggregated report of harm, but individual events are not identified
+   1. Why didn’t it meet criteria for incidents?
+      No identified events of harm, 
+      only report on the collection of the incidents
+   2. *Example:* [AI Tools Failed to Sufficiently Predict COVID Patients, 
+       Some Potentially Harmful](/cite/173)\*
+4. **Case 4**: Cybersecurity vulnerability reports
+   1. Why didn’t it meet criteria for incidents? 
+      It has not caused or been involved in an event of harm
+   2. *Example:* [Tesla Autopilot’s Lane Recognition Allegedly Vulnerable 
+      to Adversarial Attacks](/cite/159)\*
+
+\*incidents pending migration to the “issue” collection 
+due to not meeting definition for “AI incidents”
+
+## Report Ingestion Standards
+
+### Report Title
+
+Incident and issue reports generally, but not always, have titles.
+When there is flexibility in the title, 
+you should assign it with the following precedence:
+
+1. Article title (Can be sentence or title case)
+2. Report types
+   1. Journalistic articles, journal article, media (e.g., YouTube video): 
+      title or name as is
+   2. Social media post: 
+      use template “[social media platform]: [username or author]” 
+      (e.g., Tweet: @jdoe123, LinkedIn post: John Doe)
+
+### Author
+
+The precedence for authors of reports is:
+
+1. The names of the states authors (Title case)
+2. The full name of organization,
+   if the names of the individuals are not known
+
+### Submitter
+
+In some cases, a person may communicate 
+they would like to associate their affiliation with their name.
+
+1. People can optionally provide affiliations 
+   in their submitter ID, for example:
+   - Sonali Pednekar (CSET)
+   - Patrick Hall (BNH.ai)
+
+Submitters can generally have latitude in their attribution, 
+providing they are consistent and it does not detract 
+from the functioning of the database.
+
+### Incident date
+
+Resolve the date of each incident as follows:
+
+1. Ordered by availability
+   1. Date the incident occurred, if self-contained event (e.g., an accident)
+   2. Date harm was first committed, if harm was prolonged through a time period
+   3. If first incident of harm is unclear or  not known,
+      1. Date lawsuit was filed, if a lawsuit exists, or
+      2. Date first report of harm existed 
+         (might require some historical searches)
+   4. Date report was published, only as a last resort
+
+2. Indicate in editor notes which date was used or based on, if not (a) or (b)
+
+### Image URL
+
+Images are associated with every incident in the database
+(for user experience purposes). 
+They should be selected as follows:
+
+1. Ordered by availability:
+   1. Image from the article
+   2. Image of the publisher of the report
+   3. Image of the deployer of the technology
+   4. Image of the developer of the AI system
+   5. Image of the party/parties harmed
+
+2. If image source is not the article, use image from Wikipedia
+
+3. Many URLs for images have parameters indicating edits 
+   that should be made to the image on the server side. 
+   It is best to remove these parameters, for example
+   - `https://cnn.com/images/sandwich.jpg?resize=w200;h500` should be
+     `https://cnn.com/images/sandwich.jpg`
+
+### Incident ID
+
+When submitting the form to create a new incident, leave the field blank, 
+otherwise assign the incident the report should be associated with.
+
+### Text
+
+Format the text of reports according to the following,
+
+1. One empty line between paragraphs
+2. Strip advertisement text, caption text
+3. Format with [Markdown](https://daringfireball.net/projects/markdown/) (e.g. to provide links within the text)
+4. If “Fetch info” is used, make sure that all of the text is fetched, 
+   otherwise, copy and paste the rest of the text
+
+## Editorial Standards
+
+The following standards apply to fields that are written by AIID editors 
+and not directly provided by the incident reports.
+
+### Incident title
+
+#### Objectives
+
+- Should be short and concise
+- Should ideally be distinguishable from titles of other reports
+- Should communicate AI system of interest and the nature of harm
+- Should be easily understood without any specialized knowledge of AI
+- Should ideally require little update and correction over time, 
+  regardless of follow-up events
+
+#### Rule set
+
+1. Use [title case](https://en.wikipedia.org/wiki/Title_case)
+2. Use past tense (e.g. “they found” not “they have found” or “they find”)
+3. Use acronyms and abbreviations when applicable (e.g., US DHS, Tesla FSD)
+   - Ideally, acronym and abbreviations are spelled out in description
+4. Use operational keywords for factual reporting (e.g, allegedly, reportedly)
+5. Include
+   1. At least one of the following: 
+      name of AI, AI deployer, AI developer 
+      (e.g., DALL-E, Tesla Autopilot, Stanford’s vaccine distribution algorithm)
+   2. Nature of harm (e.g., injured a pedestrian) 
+      or implied nature of harm (e.g., exposed users to offensive content)
+   3. One of the following, if needed for distinguishability: 
+      broad location as state, large city (e.g., San Francisco), 
+      country (e.g., Korea), but avoid small city, district; 
+      broad time as year or time period (e.g., for decades, for six months), 
+      but avoid relative time (e.g., the past six months, two years ago)
+
+### Description
+
+Each incident has an editor written or editor approved description including the following properties and elements,
+
+1. Short, concise
+2. Use neutral terms
+3. Factual and complete description of the incident
+4. Must haves
+   1. Incident
+   2. Location
+   3. Harm
+
+### Developer, Deployer, and Harmed/Nearly Harmed Parties (Entities)
+
+All incidents have manually populated tags for,
+
+1. **Developer**:
+  the organizations or individuals responsible for producing 
+  either the parts or the whole intelligent system implicated in the incident.
+
+2. **Deployer**: 
+   the organizations or individuals responsible for the intelligent system 
+   when it is deployed in the real world.
+
+3. **Harmed/Nearly Harmed Parties**:
+   This field may have two different entity types entered:
+
+   1. Impacted class (e.g., teachers, black people, women):
+      This should be the largest identifiable group of people 
+      for which the harmed person is substitutable 
+      without changing the character of the harmed parties 
+      or the incident description.
+
+      - *Example:* [if an employee shift management system gives employees 
+         terrible shift scheduling requirements at Starbucks](/cite/10),
+        then the impacted class is “starbucks employees”. 
+        We cannot identify “hourly employees,” as the harmed party 
+        because this would imply a broader scope to the incident 
+        than solely Starbucks.
+
+   2. Individuals (e.g., “John Basilone”): 
+      Further, in some cases it may be possible 
+      to identify specific people that have been harmed. 
+      They can be specifically tagged, 
+      but these are secondary to the impacted class to which they belong.
+
+### Operational keywords
+
+1. If incident elements are not universally agreed upon or undisputed, 
+   then add wiggle words, for example,
+   - “Tesla Injured Pedestrian” should read as 
+     “Tesla Allegedly Injured Pedestrian” or
+     “Tesla Reportedly Injured Pedestrian”
+
+2. In cases where lawsuits are on-going,
+   1. **Report: “X did Y, violating Z”** – use “allege” 
+      (e.g., X was alleged to have done Y, potentially violating Z)
+   2. **Lawsuit filed** – use “allege”
+   3. **Lawsuit settled** – use “allege,” 
+      because admission of guilt cannot be inferred
+   4. **Report: “court found X violated Z”** – “allege” no longer used, 
+      due to admission of guilt being found (e.g., X violated Z)
+   5. **Report: “X was fined”** — “allege” no longer used, 
+      due to a fine being issued (e.g., X did Y and violated Z)
+
+## Credit
+
+Various drafts and versions of this document have been authored 
+by Sean McGregor, Khoa Lam, and Zachary Arnold
+
+## Working with Automated Systems
+
+### Bias
+
+Editors working with automated systems as set up for the editors 
+should all the more be vigilant of various biases 
+as they permeate the work we do. 
+The following is a list of documented biases
+as experienced by editors of the AIID:
+
+1. Automation bias
+   1. What is it?
+      - Bias introduced by the use of automated tooling
+   2. What does it look like in practice?
+      - Trusting the automated tool to do what it does without checking
+        (e.g., “Fetch Info” sometimes does not extract all the text from the site)
+2. Confirmation bias
+   1. What is it?
+      - The tendency to accept or reject new information
+        based on whether it conforms to pre-existing beliefs.
+   2. What does it look like in practice?
+      - Favoring submissions, wording, other content
+        that conforms to pre-existing beliefs
+        (e.g. Accepting, with insufficient evidence,
+         that allegations against an entity are accurate
+         because of general distaste for that entity)
+3. Cultural bias
+   1. What is it? 
+      - Interpretation and judgment by standards 
+        inherent to one's own culture
+   2. What does it look like in practice?
+      - Making it easier or harder 
+        for certain incidents to pass ingestion criteria
+        because of cultural perceptions 
+        of what is harmful, 
+        of how responsibility should be determined,
+        or of other factors that may be viewed differently
+        in other cultural contexts.
+
+</div>
