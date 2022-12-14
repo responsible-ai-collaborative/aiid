@@ -7,6 +7,15 @@ import * as yup from 'yup';
 import StepContainer from './StepContainer';
 import { graphql, useStaticQuery } from 'gatsby';
 import TagsInputGroup from '../TagsInputGroup';
+import FieldContainer from './FieldContainer';
+import {
+  faHandPointRight,
+  faCode,
+  faBolt,
+  faTag,
+  faAlignLeft,
+  faStickyNote,
+} from '@fortawesome/free-solid-svg-icons';
 
 const StepThree = (props) => {
   const { t } = useTranslation(['submit']);
@@ -100,68 +109,82 @@ const StepThree = (props) => {
         {(TextInputGroupProps) => (
           <>
             <Form>
-              <TextInputGroup
-                name="description"
-                label={t('Description')}
-                type="textarea"
-                as="textarea"
-                placeholder={t('Incident Description')}
-                rows={3}
-                className="mt-3"
-                {...TextInputGroupProps}
-                schema={stepThreeValidationSchema}
-              />
+              <FieldContainer>
+                <TextInputGroup
+                  name="description"
+                  label={t('Description')}
+                  type="textarea"
+                  as="textarea"
+                  placeholder={t('Incident Description')}
+                  rows={3}
+                  {...TextInputGroupProps}
+                  schema={stepThreeValidationSchema}
+                  icon={faAlignLeft}
+                />
+              </FieldContainer>
 
               {!data.incident_id && (
                 <>
-                  <TagsInputGroup
-                    name="deployers"
-                    label={t('Alleged deployer of AI system')}
-                    placeholder={t('Who employed or was responsible for the technology?')}
-                    className="mt-3"
-                    {...TextInputGroupProps}
-                    schema={stepThreeValidationSchema}
-                  />
+                  <FieldContainer>
+                    <TagsInputGroup
+                      name="deployers"
+                      label={t('Alleged deployer of AI system')}
+                      placeholder={t('Who employed or was responsible for the technology?')}
+                      {...TextInputGroupProps}
+                      schema={stepThreeValidationSchema}
+                      icon={faHandPointRight}
+                    />
+                  </FieldContainer>
 
-                  <TagsInputGroup
-                    name="developers"
-                    label={t('Alleged developer of AI system')}
-                    placeholder={t('Who created or built the technology involved in the incident?')}
-                    className="mt-3"
-                    {...TextInputGroupProps}
-                    schema={stepThreeValidationSchema}
-                  />
+                  <FieldContainer>
+                    <TagsInputGroup
+                      name="developers"
+                      label={t('Alleged developer of AI system')}
+                      placeholder={t(
+                        'Who created or built the technology involved in the incident?'
+                      )}
+                      {...TextInputGroupProps}
+                      schema={stepThreeValidationSchema}
+                      icon={faCode}
+                    />
+                  </FieldContainer>
 
-                  <TagsInputGroup
-                    name="harmed_parties"
-                    label={t('Alleged harmed or nearly harmed parties')}
-                    placeholder={t('Who experienced negative impacts?')}
-                    className="mt-3"
-                    {...TextInputGroupProps}
-                    schema={stepThreeValidationSchema}
-                  />
+                  <FieldContainer>
+                    <TagsInputGroup
+                      name="harmed_parties"
+                      label={t('Alleged harmed or nearly harmed parties')}
+                      placeholder={t('Who experienced negative impacts?')}
+                      {...TextInputGroupProps}
+                      schema={stepThreeValidationSchema}
+                      icon={faBolt}
+                    />
+                  </FieldContainer>
                 </>
               )}
 
-              <TagsInputGroup
-                name="tags"
-                label={t('Tags')}
-                className="mt-3"
-                {...TextInputGroupProps}
-                placeholder={t('Tags')}
-                schema={stepThreeValidationSchema}
-              />
+              <FieldContainer>
+                <TagsInputGroup
+                  name="tags"
+                  label={t('Tags')}
+                  {...TextInputGroupProps}
+                  placeholder={t('Tags')}
+                  schema={stepThreeValidationSchema}
+                  icon={faTag}
+                />
+              </FieldContainer>
 
-              <TextInputGroup
-                name="editor_notes"
-                label={t('Editor Notes')}
-                type="textarea"
-                placeholder={t('Optional context and notes about the incident')}
-                rows={8}
-                className="mt-3"
-                {...TextInputGroupProps}
-                schema={stepThreeValidationSchema}
-              />
+              <FieldContainer>
+                <TextInputGroup
+                  name="editor_notes"
+                  label={t('Editor Notes')}
+                  type="textarea"
+                  placeholder={t('Optional context and notes about the incident')}
+                  rows={8}
+                  {...TextInputGroupProps}
+                  schema={stepThreeValidationSchema}
+                  icon={faStickyNote}
+                />
+              </FieldContainer>
 
               <div className="flex justify-between mt-8">
                 <Button
