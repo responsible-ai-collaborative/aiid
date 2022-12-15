@@ -25,12 +25,16 @@ describe('Cite pages', () => {
 
       cy.disableSmoothScroll();
 
-      cy.contains('Show Details on Incident #10').first().click();
+      cy.contains('Show Details on Incident #352').first().click();
 
-      cy.url().should('include', '/cite/10#r23');
+      cy.url().should('include', '/cite/352#r2070');
       cy.waitForStableDOM();
 
-      cy.contains('span', 'Is Starbucks shortchanging its baristas?', { timeout: 8000 })
+      cy.contains(
+        'span',
+        'Twitter pranksters derail GPT-3 bot with newly discovered “prompt injection” hack',
+        { timeout: 8000 }
+      )
         .parents('[class*="IncidentCard"]')
         .then((subject) => {
           expect(subject[0].getBoundingClientRect().top).to.be.closeTo(0, 30);
