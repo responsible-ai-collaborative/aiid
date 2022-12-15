@@ -1037,4 +1037,95 @@ describe('The Submit form', () => {
       });
     });
   });
+
+  it('Should hide incident_date, description, deployers, developers & harmed_parties if incident_id', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
+      'insertSubmission',
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    const valuesStep1 = {
+      url: 'https://test.com',
+      title: 'test title',
+      authors: 'test author',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+      incident_date: '2022-01-01',
+      incident_id: '1',
+    };
+
+    for (const key in valuesStep1) {
+      cy.get(`[name="${key}"]`).type(valuesStep1[key]);
+    }
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
+    cy.clickOutside();
+
+    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+
+    cy.get('input[name="incident_date"]').should('not.exist');
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    const valuesStep2 = {
+      submitters: 'test submitter',
+      image_url: 'https://test.com/image.jpg',
+    };
+
+    for (const key in valuesStep2) {
+      cy.get(`[name="${key}"]`).type(valuesStep2[key]);
+    }
+
+    cy.get('[data-cy="to-step-3"]').click();
+
+    const valuesStep3 = {
+      editor_notes: 'Here are some notes',
+    };
+
+    for (const key in valuesStep3) {
+      cy.get(`[name="${key}"]`).type(valuesStep3[key]);
+    }
+
+    cy.get('input[name="description"]').should('not.exist');
+    cy.get('input[name="deployers"]').should('not.exist');
+    cy.get('input[name="developers"]').should('not.exist');
+    cy.get('input[name="harmed_parties"]').should('not.exist');
+
+    cy.get('button[type="submit"]').click();
+
+    cy.wait('@insertSubmission').then((xhr) => {
+      expect(xhr.request.body.variables.submission).to.deep.nested.include({
+        ...valuesStep1,
+        ...valuesStep2,
+        ...valuesStep3,
+        incident_id: 1,
+        authors: [valuesStep1.authors],
+        submitters: [valuesStep2.submitters],
+        tags: [],
+        plain_text:
+          'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease\n',
+        source_domain: `test.com`,
+        cloudinary_id: `reports/test.com/image.jpg`,
+        editor_notes: 'Here are some notes',
+      });
+    });
+
+    cy.get('[data-cy="submission-success"]')
+      .contains('Report successfully added to review queue')
+      .should('be.visible');
+
+    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
+
+    cy.contains('Please review. Some data is missing.').should('not.exist');
+  });
 });
