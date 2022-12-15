@@ -27,8 +27,6 @@ describe('Incidents', () => {
       date: '2021-01-02',
     };
 
-    cy.wait(10000);
-
     Object.keys(values).forEach((key) => {
       cy.get(`[name=${key}]`).clear().type(values[key]);
     });
@@ -39,8 +37,6 @@ describe('Incidents', () => {
       .type('Test Deployer{enter}');
 
     cy.contains('label', 'Editors').next().find('[type="text"]').type('Test Editor{enter}');
-
-    cy.wait(10000);
 
     cy.conditionalIntercept(
       '**/graphql',
