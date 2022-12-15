@@ -166,5 +166,9 @@
   "desc": "desc",
   "Asc": "Asc",
   "Desc": "Desc",
-  "Submitted Date": "Date de soumission"
+  "Submitted Date": "Date de soumission",
+  "Back to Incident {{incidentId}}": "Retour à l'incident {{incidentId}}",
+  "Back to Report {{reportNumber}}": "Retour au rapport {{reportNumber}}",
+  "Editing Incident Report {{reportNumber}}": "Modification du rapport {{reportNumber}}",
+  "Editing Incident {{incidentId}}": "Modification de l'incident {{incidentId}}"
 }

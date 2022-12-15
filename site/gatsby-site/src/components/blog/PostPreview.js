@@ -22,7 +22,7 @@ function PostPreview({ post, latestPost = false }) {
             <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white relative block hover:text-primary-blue">
               {post.fields.title}
               {latestPost && (
-                <span className="bg-blue-100 text-blue-800 text-sm font-semibold ml-2 px-1.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-900">
+                <span className="bg-blue-100 text-blue-800 text-sm font-semibold whitespace-nowrap ml-2 px-1.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-900">
                   <Trans ns="landing">Latest Blog Post</Trans>
                 </span>
               )}
