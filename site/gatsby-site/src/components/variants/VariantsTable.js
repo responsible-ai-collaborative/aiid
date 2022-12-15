@@ -291,7 +291,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
               <Trans>Approve</Trans>
             </Button>
             <Button
-              data-cy="edit-variant"
+              data-cy="edit-variant-btn"
               variant="primary"
               onClick={() => setVariantIdToEdit(values.report_number)}
             >

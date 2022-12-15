@@ -1,5 +1,5 @@
 import { maybeIt } from '../support/utils';
-import variants from '../fixtures/reports/variants.json';
+import variants from '../fixtures/variants/variants.json';
 import { VARIANT_STATUS } from '../../src/utils/variants';
 import { format, getUnixTime } from 'date-fns';
 
