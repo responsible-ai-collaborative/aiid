@@ -185,6 +185,8 @@ function DiscoverApp(props) {
 
   const [searchState, setSearchState] = useState(generateSearchState({ query }));
 
+  const [displayType, setDisplayType] = useState('incidents');
+
   const onSearchStateChange = (searchState) => {
     setSearchState({ ...searchState });
   };
@@ -211,6 +213,15 @@ function DiscoverApp(props) {
     const extraQuery = { display: query.display };
 
     setQuery({ ...searchQuery, ...extraQuery }, 'push');
+
+    setDisplayType(
+      (searchState.refinementList.hideDuplicates === 'true' ||
+        searchState.refinementList.hideDuplicates === true) &&
+        searchState.refinementList.is_incident_report.length > 0 &&
+        searchState.refinementList.is_incident_report[0] === 'true'
+        ? 'incidents'
+        : 'reports'
+    );
   }, [searchState]);
 
   const authorsModal = useModal();
@@ -263,6 +274,7 @@ function DiscoverApp(props) {
             authorsModal={authorsModal}
             submittersModal={submittersModal}
             flagReportModal={flagReportModal}
+            displayType={displayType}
           />
 
           <CustomModal {...authorsModal} />

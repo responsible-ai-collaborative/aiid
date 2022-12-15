@@ -13,6 +13,7 @@ const Hits = ({
   flagReportModal,
   isSearchStalled,
   toggleFilterByIncidentId,
+  displayType,
 }) => {
   const [display] = useQueryParam('display', DisplayModeEnumParam);
 
@@ -52,6 +53,7 @@ const Hits = ({
           submittersModal={submittersModal}
           flagReportModal={flagReportModal}
           toggleFilterByIncidentId={toggleFilterByIncidentId}
+          displayType={displayType}
         />
       ))}
     </div>
