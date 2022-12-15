@@ -173,6 +173,7 @@
   "Only Issues": "Sólo Problemas",
   "Report {{report_number}}": "Problema {{report_number}}",
   "Show Details on Issue #{{id}}": "Ver detalles del Problema #{{id}}",
+  "Expand": "Expandir",
   "Back to Incident {{incidentId}}": "Volver al Incidente {{incidentId}}",
   "Back to Report {{reportNumber}}": "Volver al Informe {{reportNumber}}",
   "Editing Incident Report {{reportNumber}}": "Editando Informe de Incidente {{reportNumber}}",
