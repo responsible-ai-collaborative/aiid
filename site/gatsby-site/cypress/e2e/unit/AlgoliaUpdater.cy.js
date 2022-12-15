@@ -133,10 +133,44 @@ describe('Algolia', () => {
       }),
     };
 
+    const filter = {
+      text_inputs: { $in: [null, ''] },
+      text_outputs: { $in: [null, ''] },
+    };
+
+    const projection = {
+      _id: 1,
+      authors: 1,
+      date_downloaded: 1,
+      date_modified: 1,
+      date_published: 1,
+      date_submitted: 1,
+      description: 1,
+      epoch_date_downloaded: 1,
+      epoch_date_modified: 1,
+      epoch_date_published: 1,
+      epoch_date_submitted: 1,
+      image_url: 1,
+      language: 1,
+      report_number: 1,
+      source_domain: 1,
+      submitters: 1,
+      title: 1,
+      url: 1,
+      plain_text: 1,
+      editor_notes: 1,
+      cloudinary_id: 1,
+      is_incident_report: 1,
+      flag: 1,
+    };
+
     const reportsCollection = {
-      find: cy.stub().returns({
-        toArray: cy.stub().resolves(reports),
-      }),
+      find: cy
+        .stub()
+        .withArgs(filter, { projection })
+        .returns({
+          toArray: cy.stub().resolves(reports),
+        }),
     };
 
     const duplicatesCollection = {

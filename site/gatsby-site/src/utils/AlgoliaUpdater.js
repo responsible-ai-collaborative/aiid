@@ -193,10 +193,16 @@ class AlgoliaUpdater {
       flag: 1,
     };
 
+    // Filtering Variants from the Algolia index
+    const filter = {
+      text_inputs: { $in: [null, ''] },
+      text_outputs: { $in: [null, ''] },
+    };
+
     const reports = await this.mongoClient
       .db('aiidprod')
       .collection(`reports`)
-      .find({}, { projection })
+      .find(filter, { projection })
       .toArray();
 
     const translations = await this.mongoClient
