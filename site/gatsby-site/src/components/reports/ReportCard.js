@@ -27,6 +27,7 @@ const ReportCard = ({ item, className = '', incidentId }) => {
       className={`flex flex-col items-center bg-white rounded-lg border  shadow-md md:flex-row dark:border-gray-700 dark:bg-gray-800 ${className}}`}
       id={`r${item.report_number}`}
       ref={ref}
+      data-cy="incident-report-card"
     >
       <div
         className={`${
@@ -88,6 +89,7 @@ const ReportCard = ({ item, className = '', incidentId }) => {
               }
             }}
             className="text-blue-700 border mt-4 ml-1 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-xs p-1.5 text-center inline-flex items-center mr-2  dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
+            data-cy={`${expanded ? 'collapse' : 'expand'}-report-button`}
           >
             <Trans>{expanded ? 'Collapse' : 'Expand'}</Trans>
             <svg
