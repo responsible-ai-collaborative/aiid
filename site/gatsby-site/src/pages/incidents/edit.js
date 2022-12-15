@@ -12,6 +12,7 @@ import { LocalizedLink } from 'gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
 import { graphql, Link, useStaticQuery } from 'gatsby';
 import { processEntities } from '../../utils/entities';
+import DefaultSkeleton from 'elements/Skeletons/Default';
 
 function EditCitePage(props) {
   const { t, i18n } = useTranslation();
@@ -128,8 +129,8 @@ function EditCitePage(props) {
         </div>
       )}
 
-      {incident === undefined && <Spinner />}
-      {incident === null && <div>Report not found</div>}
+      {loading && <DefaultSkeleton />}
+      {incident === null && !loading && <div>Report not found</div>}
 
       {incident && (
         <Formik

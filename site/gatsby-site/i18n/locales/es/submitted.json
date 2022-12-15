@@ -15,5 +15,6 @@
     "Are you sure this is a new issue? Any data entered that is associated with incident records will not be added": "¿Estás seguro de que se trata de un problema nuevo? Cualquier dato ingresado que esté asociado con un incidente no se agregará",
     "Successfully promoted submission to Issue {{report_number}}": "Envío promocionado con éxito al Problema {{report_number}}",
     "Are you sure this is a new incident? This will create a permanent record with all the details you provided about the incident.": "¿Seguro que desea promocionar este Envío a un nuevo Incidente?",
-    "Sure you want to promote this Submission and link it to Incident {{incident_id}}?": "¿Seguro que desea promocionar este Envío y vincularlo al Incidente {{incident_id}}?"
+    "Sure you want to promote this Submission and link it to Incident {{incident_id}}?": "¿Seguro que desea promocionar este Envío y vincularlo al Incidente {{incident_id}}?",
+    "Are you sure you want to delete “{{url}}”?": "¿Estás seguro de que quieres eliminar “{{url}}”?"
 }
