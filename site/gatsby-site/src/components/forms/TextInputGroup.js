@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, InputGroup } from 'react-bootstrap';
 import Label from './Label';
 import { Trans } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const TextInputGroup = ({
   name,
@@ -16,6 +17,7 @@ const TextInputGroup = ({
   addOnComponent = null,
   schema,
   className = '',
+  icon,
   inputClassName = '',
   ...props
 }) => {
@@ -28,7 +30,10 @@ const TextInputGroup = ({
 
   return (
     <Form.Group className={`form-group ${className}`}>
-      <Label popover={name} label={(optional ? '' : '*') + label} />
+      <div className="flex items-center">
+        {icon && <FontAwesomeIcon fixedWidth icon={icon} title={label} className="mb-2 mr-1" />}
+        <Label popover={name} label={(optional ? '' : '*') + label} />
+      </div>
       <InputGroup className="mt-1">
         {type === 'textarea' ? (
           <TextAreaInput
