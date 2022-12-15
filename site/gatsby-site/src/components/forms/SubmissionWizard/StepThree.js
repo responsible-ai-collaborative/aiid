@@ -133,70 +133,83 @@ const StepThree = (props) => {
               {!data.incident_id && (
                 <>
                   {isRole('incident_editor') && (
-                    <TextInputGroup
-                      name="incident_title"
-                      label={t('Incident Title')}
-                      icon={faTenge}
-                      placeholder={t('Incident title')}
-                      className="mt-3"
-                      schema={stepThreeValidationSchema}
-                      {...TextInputGroupProps}
-                    />
+                    <FieldContainer>
+                      <TextInputGroup
+                        name="incident_title"
+                        label={t('Incident Title')}
+                        icon={faTenge}
+                        placeholder={t('Incident title')}
+                        className="mt-3"
+                        schema={stepThreeValidationSchema}
+                        {...TextInputGroupProps}
+                      />
+                    </FieldContainer>
                   )}
 
-                  <TextInputGroup
-                    name="description"
-                    label={t('Description')}
-                    icon={faAlignLeft}
-                    type="textarea"
-                    as="textarea"
-                    placeholder={t('Incident Description')}
-                    rows={3}
-                    className="mt-3"
-                    schema={stepThreeValidationSchema}
-                    {...TextInputGroupProps}
-                  />
+                  <FieldContainer>
+                    <TextInputGroup
+                      name="description"
+                      label={t('Description')}
+                      type="textarea"
+                      as="textarea"
+                      placeholder={t('Incident Description')}
+                      rows={3}
+                      schema={stepThreeValidationSchema}
+                      icon={faAlignLeft}
+                      {...TextInputGroupProps}
+                    />
+                  </FieldContainer>
 
                   {isRole('incident_editor') && (
+                    <FieldContainer>
+                      <TagsInputGroup
+                        name="incident_editors"
+                        label={t('Editors')}
+                        icon={faPenNib}
+                        className="mt-3"
+                        schema={stepThreeValidationSchema}
+                        {...TextInputGroupProps}
+                      />
+                    </FieldContainer>
+                  )}
+
+                  <FieldContainer>
                     <TagsInputGroup
-                      name="incident_editors"
-                      label={t('Editors')}
-                      icon={faPenNib}
+                      name="deployers"
+                      label={t('Alleged deployer of AI system')}
+                      icon={faHandPointRight}
+                      placeholder={t('Who employed or was responsible for the technology?')}
                       className="mt-3"
                       schema={stepThreeValidationSchema}
                       {...TextInputGroupProps}
                     />
-                  )}
+                  </FieldContainer>
 
-                  <TagsInputGroup
-                    name="deployers"
-                    label={t('Alleged deployer of AI system')}
-                    icon={faHandPointRight}
-                    placeholder={t('Who employed or was responsible for the technology?')}
-                    className="mt-3"
-                    schema={stepThreeValidationSchema}
-                    {...TextInputGroupProps}
-                  />
+                  <FieldContainer>
+                    <TagsInputGroup
+                      name="developers"
+                      label={t('Alleged developer of AI system')}
+                      icon={faCode}
+                      placeholder={t(
+                        'Who created or built the technology involved in the incident?'
+                      )}
+                      className="mt-3"
+                      schema={stepThreeValidationSchema}
+                      {...TextInputGroupProps}
+                    />
+                  </FieldContainer>
 
-                  <TagsInputGroup
-                    name="developers"
-                    label={t('Alleged developer of AI system')}
-                    icon={faCode}
-                    placeholder={t('Who created or built the technology involved in the incident?')}
-                    className="mt-3"
-                    schema={stepThreeValidationSchema}
-                    {...TextInputGroupProps}
-                  />
-
-                  <TagsInputGroup
-                    name="harmed_parties"
-                    label={t('Alleged harmed or nearly harmed parties')}
-                    icon={faBolt}
-                    placeholder={t('Who experienced negative impacts?')}
-                    className="mt-3"
-                    schema={stepThreeValidationSchema}
-                    {...TextInputGroupProps}
-                  />
+                  <FieldContainer>
+                    <TagsInputGroup
+                      name="harmed_parties"
+                      label={t('Alleged harmed or nearly harmed parties')}
+                      icon={faBolt}
+                      placeholder={t('Who experienced negative impacts?')}
+                      className="mt-3"
+                      schema={stepThreeValidationSchema}
+                      {...TextInputGroupProps}
+                    />
+                  </FieldContainer>
                 </>
               )}
 
@@ -204,10 +217,10 @@ const StepThree = (props) => {
                 <TagsInputGroup
                   name="tags"
                   label={t('Tags')}
-                  {...TextInputGroupProps}
+                  icon={faTag}
                   placeholder={t('Tags')}
                   schema={stepThreeValidationSchema}
-                  icon={faTag}
+                  {...TextInputGroupProps}
                 />
               </FieldContainer>
 
@@ -215,12 +228,12 @@ const StepThree = (props) => {
                 <TextInputGroup
                   name="editor_notes"
                   label={t('Editor Notes')}
+                  icon={faStickyNote}
                   type="textarea"
                   placeholder={t('Optional context and notes about the incident')}
                   rows={8}
-                  {...TextInputGroupProps}
                   schema={stepThreeValidationSchema}
-                  icon={faStickyNote}
+                  {...TextInputGroupProps}
                 />
               </FieldContainer>
 
