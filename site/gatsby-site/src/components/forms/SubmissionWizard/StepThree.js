@@ -109,22 +109,22 @@ const StepThree = (props) => {
         {(TextInputGroupProps) => (
           <>
             <Form>
-              <FieldContainer>
-                <TextInputGroup
-                  name="description"
-                  label={t('Description')}
-                  type="textarea"
-                  as="textarea"
-                  placeholder={t('Incident Description')}
-                  rows={3}
-                  {...TextInputGroupProps}
-                  schema={stepThreeValidationSchema}
-                  icon={faAlignLeft}
-                />
-              </FieldContainer>
-
               {!data.incident_id && (
                 <>
+                  <FieldContainer>
+                    <TextInputGroup
+                      name="description"
+                      label={t('Description')}
+                      type="textarea"
+                      as="textarea"
+                      placeholder={t('Incident Description')}
+                      rows={3}
+                      {...TextInputGroupProps}
+                      schema={stepThreeValidationSchema}
+                      icon={faAlignLeft}
+                    />
+                  </FieldContainer>
+
                   <FieldContainer>
                     <TagsInputGroup
                       name="deployers"
