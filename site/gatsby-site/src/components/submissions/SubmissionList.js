@@ -1,11 +1,11 @@
 import React from 'react';
 import ListGroup from 'react-bootstrap/ListGroup';
-import { Spinner } from 'flowbite-react';
 import Link from '../../components/ui/Link';
 import SubmissionReview from '../../components/submissions/SubmissionReview';
 import { FIND_SUBMISSIONS } from '../../graphql/submissions';
 import { useQuery } from '@apollo/client';
 import { Trans } from 'react-i18next';
+import ListSkeleton from 'elements/Skeletons/List';
 
 const SubmissionList = () => {
   const { data, loading } = useQuery(FIND_SUBMISSIONS);
@@ -20,12 +20,7 @@ const SubmissionList = () => {
         </Trans>
       </p>
       <ListGroup className="mb-5" data-cy="submissions">
-        {loading && (
-          <div className="flex gap-2">
-            <Spinner />
-            <Trans ns="submitted">Loading Submissions...</Trans>
-          </div>
-        )}
+        {loading && <ListSkeleton />}
         {data?.submissions
           .map((submission) => ({ ...submission, __typename: undefined }))
           .sort(

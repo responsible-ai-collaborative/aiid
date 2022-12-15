@@ -1,9 +1,10 @@
 import React from 'react';
 import { connectHits, connectStateResults } from 'react-instantsearch-dom';
 import Hit from './Hit';
-import { Spinner } from 'flowbite-react';
 import { DisplayModeEnumParam } from './queryParams';
 import { useQueryParam } from 'use-query-params';
+import CardSkeleton from 'elements/Skeletons/Card';
+import ListSkeleton from 'elements/Skeletons/List';
 
 const Hits = ({
   hits,
@@ -13,10 +14,21 @@ const Hits = ({
   isSearchStalled,
   toggleFilterByIncidentId,
 }) => {
+  const [display] = useQueryParam('display', DisplayModeEnumParam);
+
   if (isSearchStalled) {
     return (
       <div className="tw-no-results bootstrap">
-        <Spinner size={'xl'} />
+        {display === 'list' ? (
+          <ListSkeleton />
+        ) : (
+          <div className="flex">
+            <CardSkeleton />
+            <CardSkeleton className="hidden sm:inline-block ml-3" />
+            <CardSkeleton className="hidden lg:inline-block ml-3" />
+            <CardSkeleton className="hidden xl:inline-block ml-3" />
+          </div>
+        )}
       </div>
     );
   }
@@ -29,8 +41,6 @@ const Hits = ({
       </div>
     );
   }
-
-  const [display] = useQueryParam('display', DisplayModeEnumParam);
 
   return (
     <div className={`tw-hits-container tw-container-xl ${display} mt-4`}>

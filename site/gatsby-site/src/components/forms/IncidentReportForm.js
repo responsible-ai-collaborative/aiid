@@ -13,11 +13,25 @@ import Label from './Label';
 import Typeahead from './Typeahead';
 import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
-import IncidentIdField from '../../components/incidents/IncidentIdField';
 import getSourceDomain from '../../utils/getSourceDomain';
 import supportedLanguages from '../../components/i18n/languages.json';
 import { useLocalization } from 'gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faTag,
+  faPenNib,
+  faMedal,
+  faCalendar,
+  faImage,
+  faLink,
+  faLanguage,
+  faDownload,
+  faNewspaper,
+  faAlignLeft,
+  faTenge,
+} from '@fortawesome/free-solid-svg-icons';
+import IncidentsField from 'components/incidents/IncidentsField';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -78,14 +92,7 @@ export const schema = yup.object().shape({
       '*Must enter URL in http://www.example.com/images/preview.png format'
     ),
   editor_notes: yup.string().nullable(),
-  incident_id: yup
-    .number()
-    .positive()
-    .integer('*Must be an incident number')
-    .when('is_incident_report', {
-      is: true,
-      then: (schema) => schema.required('Incident ID is a required field'),
-    }),
+  incident_ids: yup.array().of(yup.number().positive()),
   is_incident_report: yup.boolean().required(),
 });
 
@@ -200,7 +207,7 @@ const IncidentReportForm = () => {
   const { config } = useLocalization();
 
   return (
-    <div className="bootstrap">
+    <div>
       <Form
         onSubmit={(event) => {
           event.preventDefault();
@@ -212,6 +219,7 @@ const IncidentReportForm = () => {
           name="url"
           label={t('Report Address')}
           placeholder={t('Report URL')}
+          icon={faLink}
           addOnComponent={
             <Button
               className="outline-secondary"
@@ -238,6 +246,7 @@ const IncidentReportForm = () => {
         <TextInputGroup
           name="title"
           label="Title"
+          icon={faTenge}
           placeholder="Report title"
           className="mt-3"
           {...TextInputGroupProps}
@@ -245,6 +254,7 @@ const IncidentReportForm = () => {
         <TextInputGroup
           name="authors"
           label="Author CSV"
+          icon={faPenNib}
           placeholder="Author CSV"
           className="mt-3"
           {...TextInputGroupProps}
@@ -252,6 +262,7 @@ const IncidentReportForm = () => {
         <TextInputGroup
           name="submitters"
           label="Submitter CSV"
+          icon={faMedal}
           placeholder="Submitter CSV"
           className="mt-3"
           {...TextInputGroupProps}
@@ -259,6 +270,7 @@ const IncidentReportForm = () => {
         <TextInputGroup
           name="date_published"
           label="Date Published"
+          icon={faCalendar}
           type="date"
           placeholder="YYYY-MM-DD"
           className="mt-3"
@@ -267,15 +279,17 @@ const IncidentReportForm = () => {
         <TextInputGroup
           name="date_downloaded"
           label="Date Downloaded"
+          icon={faDownload}
           type="date"
           placeholder="YYYY-MM-DD"
           className="mt-3"
           {...TextInputGroupProps}
         />
         <PreviewImageInputGroup
-          publicID={values.cloudinary_id}
+          cloudinary_id={values.cloudinary_id}
           name="image_url"
           label="Image Address"
+          icon={faImage}
           placeholder="Image URL"
           className="mt-3"
           {...TextInputGroupProps}
@@ -286,7 +300,15 @@ const IncidentReportForm = () => {
           data-color-mode="light"
           data-cy="text"
         >
-          <Label popover="text" label={'Text'} />
+          <div className="flex items-center">
+            <FontAwesomeIcon
+              fixedWidth
+              icon={faNewspaper}
+              title={t('Text')}
+              className="mb-2 mr-1"
+            />
+            <Label popover="text" label={t('Text')} />
+          </div>
           <div style={{ position: 'relative' }}>
             {touched['text'] && errors['text'] && (
               <div
@@ -313,11 +335,18 @@ const IncidentReportForm = () => {
         </Form.Control.Feedback>
 
         <Form.Group className="mt-3">
-          <Label popover="language" label={'Language'} />
+          <div className="flex items-center">
+            <FontAwesomeIcon
+              fixedWidth
+              icon={faLanguage}
+              title={t('Language')}
+              className="mb-2 mr-1"
+            />
+            <Label popover="language" label={t('Language')} />
+          </div>
           <Form.Select
             name="language"
             placeholder="Report Language"
-            className="mt-3"
             value={values.language}
             onChange={handleChange}
           >
@@ -330,7 +359,10 @@ const IncidentReportForm = () => {
         </Form.Group>
 
         <Form.Group className="mt-3">
-          <Label popover="tags" label={'Tags'} />
+          <div className="flex items-center">
+            <FontAwesomeIcon fixedWidth icon={faTag} title={t('Tags')} className="mb-2 mr-1" />
+            <Label popover="tags" label={t('Tags')} />
+          </div>
           <Typeahead
             id="submit-report-tags"
             inputProps={{ id: 'submit-report-tags-input' }}
@@ -350,18 +382,15 @@ const IncidentReportForm = () => {
           />
         </Form.Group>
 
-        {values.is_incident_report && (
-          <IncidentIdField
-            name="incident_id"
-            className="mt-3"
-            placeHolder={t('Enter a valid Incident ID')}
-            required={true}
-          />
-        )}
+        <div className="mt-3">
+          <Label popover={'incident_ids'} label="Incident IDs" />
+          <IncidentsField id="incident_ids" name="incident_ids" />
+        </div>
 
         <TextInputGroup
           name="editor_notes"
           label="Editor Notes"
+          icon={faAlignLeft}
           as="textarea"
           rows={8}
           className="mt-3"
@@ -380,7 +409,15 @@ const IncidentReportForm = () => {
                 <h5>{c.name}</h5>
 
                 <Form.Group className="mt-3">
-                  <Label label="Title" />
+                  <div className="flex items-center">
+                    <FontAwesomeIcon
+                      fixedWidth
+                      icon={faTenge}
+                      title={t('Title')}
+                      className="mb-2 mr-1"
+                    />
+                    <Label label={t('Title')} />
+                  </div>
                   <Form.Control
                     type="text"
                     value={values[name].title}
@@ -389,7 +426,15 @@ const IncidentReportForm = () => {
                 </Form.Group>
 
                 <Form.Group className="mt-3">
-                  <Label label="Text" />
+                  <div className="flex items-center">
+                    <FontAwesomeIcon
+                      fixedWidth
+                      icon={faNewspaper}
+                      title={t('Text')}
+                      className="mb-2 mr-1"
+                    />
+                    <Label label={t('Text')} />
+                  </div>
                   <Editor
                     value={values[name].text}
                     onChange={(value) => setFieldValue(`${name}.text`, value)}
