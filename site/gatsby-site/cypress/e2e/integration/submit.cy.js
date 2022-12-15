@@ -1071,7 +1071,7 @@ describe('The Submit form', () => {
 
     cy.clickOutside();
 
-    cy.get('[data-cy="related-byAuthors"] [data-cy="result"]')
+    cy.get('[data-cy="related-byAuthors"] [data-cy="result"]', { timeout: 10000 })
       .should('be.visible')
       .eq(0)
       .then(($el) => {
@@ -1102,7 +1102,7 @@ describe('The Submit form', () => {
           'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease\n',
         source_domain: `test.com`,
         editor_dissimilar_incidents: [5],
-        editor_similar_incidents: [16],
+        editor_similar_incidents: [321],
       });
     });
   });
