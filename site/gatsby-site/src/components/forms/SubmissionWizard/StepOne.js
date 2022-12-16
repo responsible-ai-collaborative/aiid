@@ -15,6 +15,16 @@ import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncident
 import IncidentIdField from 'components/incidents/IncidentIdField';
 import isEmpty from 'lodash/isEmpty';
 import { format } from 'date-fns';
+import FieldContainer from './FieldContainer';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faPenNib,
+  faCalendar,
+  faLink,
+  faDownload,
+  faNewspaper,
+  faTenge,
+} from '@fortawesome/free-solid-svg-icons';
 import { RESPONSE_TAG } from 'utils/entities';
 
 const StepOne = (props) => {
@@ -165,154 +175,187 @@ const FormDetails = ({
           !isEmpty(errors) ? 'form-has-errors' : ''
         }`}
       >
-        <Label label={'*' + t('Report Address')} popover="url"></Label>
-        <FlowbiteSearchInput
-          name="url"
-          label={t('Report Address')}
-          placeholder={t('Report URL')}
-          defaultValue={values?.url || ''}
-          dataCy="fetch-info"
-          values={values}
-          errors={errors}
-          touched={touched}
-          handleBlur={handleBlur}
-          handleChange={(e) => {
-            setFieldTouched('url', true);
-            handleChange(e);
-          }}
-          btnClick={() => fetchNews(values.url)}
-          loading={parsingNews}
-          btnDisabled={!!errors.url || !touched.url || parsingNews}
-          btnText={t('Fetch info')}
-        />
-
-        <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
-
-        <TextInputGroup
-          name="title"
-          label={t('Title')}
-          placeholder={t('Report title')}
-          className="mt-3"
-          values={values}
-          errors={errors}
-          touched={touched}
-          handleChange={handleChange}
-          handleBlur={handleBlur}
-          schema={schema}
-          disabled={parsingNews}
-        />
-
-        <TagsInputGroup
-          name="authors"
-          label={t('Author(s)')}
-          placeholder={t('The author or authors of the report')}
-          className="mt-3"
-          errors={errors}
-          touched={touched}
-          schema={schema}
-          disabled={parsingNews}
-        />
-
-        <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byAuthors']} />
-
-        <TextInputGroup
-          name="date_published"
-          label={t('Date Published')}
-          type="date"
-          placeholder={t('YYYY-MM-DD')}
-          className="mt-3"
-          values={values}
-          errors={errors}
-          touched={touched}
-          handleChange={handleChange}
-          handleBlur={handleBlur}
-          schema={schema}
-          disabled={parsingNews}
-        />
-
-        <RelatedIncidents
-          incident={values}
-          setFieldValue={setFieldValue}
-          columns={['byDatePublished']}
-        />
-
-        <TextInputGroup
-          name="date_downloaded"
-          label={t('Date Downloaded')}
-          type="date"
-          placeholder={t('YYYY-MM-DD')}
-          className="mt-3 mb-2"
-          values={values}
-          errors={errors}
-          touched={touched}
-          handleChange={handleChange}
-          handleBlur={handleBlur}
-          schema={schema}
-          disabled={parsingNews}
-          defaultValue={format(new Date(), 'yyyy-MM-dd')}
-        />
-
-        <Label popover="text" label={'*' + t('Text')} />
-        <div
-          style={{
-            position: 'relative',
-            ...styles,
-          }}
-        >
-          {touched['text'] && errors['text'] && (
-            <div
-              style={{
-                position: 'absolute',
-                inset: '0px',
-                border: '1px solid var(--bs-red)',
-                zIndex: 10,
-                pointerEvents: 'none',
-              }}
+        <FieldContainer>
+          <div className="flex items-center mb-1">
+            <FontAwesomeIcon
+              fixedWidth
+              icon={faLink}
+              title={t('Report Address')}
+              className="mb-2 mr-1"
             />
-          )}
-          <Editor
-            value={values.text}
-            onChange={(value) => {
-              setFieldValue('text', value);
-              setFieldTouched('text', true);
+            <Label label={'*' + t('Report Address')} popover="url"></Label>
+          </div>
+          <FlowbiteSearchInput
+            name="url"
+            label={t('Report Address')}
+            placeholder={t('Report URL')}
+            defaultValue={values?.url || ''}
+            dataCy="fetch-info"
+            values={values}
+            errors={errors}
+            touched={touched}
+            handleBlur={handleBlur}
+            handleChange={(e) => {
+              setFieldTouched('url', true);
+              handleChange(e);
             }}
+            btnClick={() => fetchNews(values.url)}
+            loading={parsingNews}
+            btnDisabled={!!errors.url || !touched.url || parsingNews}
+            btnText={t('Fetch info')}
           />
-        </div>
-        <span className="text-red-700 text-sm">
-          <Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans>
-        </span>
+          <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
+        </FieldContainer>
 
-        <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
-
-        <IncidentIdField
-          name="incident_id"
-          className="mt-3"
-          placeHolder={t('Leave empty to report a new incident')}
-          showIncidentData={false}
-          disabled={parsingNews}
-        />
-
-        <RelatedIncidents
-          incident={values}
-          setFieldValue={setFieldValue}
-          columns={['byIncidentId']}
-        />
-
-        {!values.incident_id && (
+        <FieldContainer>
           <TextInputGroup
-            name="incident_date"
-            label={t('Incident Date')}
-            placeholder={t('Incident Date')}
-            type="date"
-            className="mt-3"
-            disabled={values.incident_id || parsingNews}
+            name="title"
+            label={t('Title')}
+            placeholder={t('Report title')}
             values={values}
             errors={errors}
             touched={touched}
             handleChange={handleChange}
             handleBlur={handleBlur}
             schema={schema}
+            disabled={parsingNews}
+            icon={faTenge}
           />
+        </FieldContainer>
+
+        <FieldContainer>
+          <TagsInputGroup
+            name="authors"
+            label={t('Author(s)')}
+            placeholder={t('The author or authors of the report')}
+            errors={errors}
+            touched={touched}
+            schema={schema}
+            disabled={parsingNews}
+            icon={faPenNib}
+          />
+          <RelatedIncidents
+            incident={values}
+            setFieldValue={setFieldValue}
+            columns={['byAuthors']}
+          />
+        </FieldContainer>
+
+        <FieldContainer>
+          <TextInputGroup
+            name="date_published"
+            label={t('Date Published')}
+            type="date"
+            placeholder={t('YYYY-MM-DD')}
+            values={values}
+            errors={errors}
+            touched={touched}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            schema={schema}
+            disabled={parsingNews}
+            icon={faCalendar}
+          />
+          <RelatedIncidents
+            incident={values}
+            setFieldValue={setFieldValue}
+            columns={['byDatePublished']}
+          />
+        </FieldContainer>
+
+        <FieldContainer>
+          <TextInputGroup
+            name="date_downloaded"
+            label={t('Date Downloaded')}
+            type="date"
+            placeholder={t('YYYY-MM-DD')}
+            values={values}
+            errors={errors}
+            touched={touched}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            schema={schema}
+            disabled={parsingNews}
+            defaultValue={format(new Date(), 'yyyy-MM-dd')}
+            icon={faDownload}
+          />
+        </FieldContainer>
+
+        <FieldContainer>
+          <div className="flex items-center mt-3 mb-1">
+            <FontAwesomeIcon
+              fixedWidth
+              icon={faNewspaper}
+              title={t('Text')}
+              className="mb-2 mr-1"
+            />
+            <Label popover="text" label={'*' + t('Text')} />
+          </div>
+          <div
+            className="mb-2"
+            style={{
+              position: 'relative',
+              ...styles,
+            }}
+          >
+            {touched['text'] && errors['text'] && (
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: '0px',
+                  border: '1px solid var(--bs-red)',
+                  zIndex: 10,
+                  pointerEvents: 'none',
+                }}
+              />
+            )}
+            <Editor
+              value={values.text}
+              onChange={(value) => {
+                setFieldValue('text', value);
+                setFieldTouched('text', true);
+              }}
+            />
+          </div>
+          <span className="text-red-700 text-sm">
+            <Trans ns="validation">
+              {errors['text'] && touched['text'] ? errors['text'] : null}
+            </Trans>
+          </span>
+          <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
+        </FieldContainer>
+
+        <FieldContainer>
+          <IncidentIdField
+            name="incident_id"
+            placeHolder={t('Leave empty to report a new incident')}
+            showIncidentData={false}
+            disabled={parsingNews}
+          />
+          <RelatedIncidents
+            incident={values}
+            setFieldValue={setFieldValue}
+            columns={['byIncidentId']}
+          />
+        </FieldContainer>
+
+        {!values.incident_id && (
+          <FieldContainer>
+            <TextInputGroup
+              name="incident_date"
+              label={t('Incident Date')}
+              placeholder={t('Incident Date')}
+              type="date"
+              disabled={values.incident_id || parsingNews}
+              values={values}
+              errors={errors}
+              touched={touched}
+              handleChange={handleChange}
+              handleBlur={handleBlur}
+              schema={schema}
+              icon={faCalendar}
+            />
+          </FieldContainer>
         )}
 
         <div className="flex justify-end mt-8 gap-2">

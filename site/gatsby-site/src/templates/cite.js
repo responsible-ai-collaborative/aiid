@@ -431,7 +431,7 @@ function CitePage(props) {
             {sortedReports.map((report) => (
               <Row className="mb-4" key={report.report_number}>
                 <Col>
-                  <ReportCard item={report} />
+                  <ReportCard item={report} incidentId={incident.incident_id} />
                 </Col>
               </Row>
             ))}
