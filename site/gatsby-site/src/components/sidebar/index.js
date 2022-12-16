@@ -102,6 +102,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
     <>
       <aside
         id="sidebar"
+        data-cy={'sidebar' + (isCollapsed ? '-collapsed' : '')}
         aria-label="Sidebar"
         className={`${sidebarWidth} sticky top-0 flex flex-col`}
         style={{
@@ -167,6 +168,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
             `}
           >
             <FontAwesomeIcon
+              data-cy="collapse-button"
               icon={faChevronLeft}
               color={'white'}
               className={`
