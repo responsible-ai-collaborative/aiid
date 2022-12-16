@@ -220,7 +220,7 @@ function DiscoverApp(props) {
   const flagReportModal = useModal();
 
   return (
-    <Layout {...props} sidebarCollapsed={true} className="w-full xl:w-3/4">
+    <Layout {...props} sidebarCollapsed={true} className="w-full">
       <AiidHelmet canonicalUrl="/apps/discover">
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
