@@ -15,3 +15,6 @@ TERM = "xterm"
     spa = true
     start = 'gatsby serve -p 8080'
     browser = 'chromium'
+
+[build.processing.html]
+  pretty_urls = false
