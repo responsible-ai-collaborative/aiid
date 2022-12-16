@@ -13,9 +13,9 @@ describe('Cite pages', () => {
 
   const url = `/cite/${incidentId}`;
 
-  //  it('Successfully loads', () => {
-  //    cy.visit(url);
-  //  });
+  it('Successfully loads', () => {
+    cy.visit(url);
+  });
 
   it(
     'Should scroll to report when coming from the discover app',
@@ -25,14 +25,14 @@ describe('Cite pages', () => {
 
       cy.disableSmoothScroll();
 
+      cy.waitForStableDOM();
+
       cy.get('[data-cy="collapse-button"]:visible').click();
 
       cy.contains('Show Details on Incident #10').first().click();
 
       cy.url().should('include', '/cite/10#r23');
       cy.waitForStableDOM();
-
-      cy.visit(discoverUrl);
 
       cy.contains('h5', 'Is Starbucks shortchanging its baristas?', { timeout: 8000 })
         .parents('[data-cy="incident-report-card"]')
