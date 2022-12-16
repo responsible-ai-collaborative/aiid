@@ -17,6 +17,7 @@ exports = async function (changeEvent) {
 
   const notificationsCollection = context.services.get('mongodb-atlas').db('customData').collection("notifications");
   const subscriptionsCollection = context.services.get('mongodb-atlas').db('customData').collection("subscriptions");
+  const reportsCollection = context.services.get('mongodb-atlas').db('aiidprod').collection("reports");
   const subscriptionsToIncident = await subscriptionsCollection.find({ type: 'incident', incident_id: incidentId }).toArray();
 
   console.log(`There are ${subscriptionsToIncident.length} subscribers to Incident: ${incidentId}`);
@@ -44,13 +45,21 @@ exports = async function (changeEvent) {
 
     let notification;
     if (newReportNumber) {
-      // If there is a new Report > Insert a pending notification to process in the next build
-      notification = {
-        type: 'new-report-incident',
-        incident_id: incidentId,
-        report_number: newReportNumber,
-        processed: false,
-      };
+      const newReport = await reportsCollection.findOne({ report_number: newReportNumber });
+
+      // If the new Report is not a Variant > Insert a pending notification to process in the next build
+      if (newReport &&
+        (!newReport.text_inputs || newReport.text_inputs == '') &&
+        (!newReport.text_outputs || newReport.text_outputs == '')) {
+
+        // If there is a new Report > Insert a pending notification to process in the next build
+        notification = {
+          type: 'new-report-incident',
+          incident_id: incidentId,
+          report_number: newReportNumber,
+          processed: false,
+        };
+      }
     }
     else {
       // If any other Incident field is updated > Insert a pending notification to process in the next build
@@ -61,11 +70,13 @@ exports = async function (changeEvent) {
       };
     }
 
-    await notificationsCollection.updateOne(
-      notification, // filter
-      notification, // new document
-      { upsert: true }
-    );
+    if (notification) {
+      await notificationsCollection.updateOne(
+        notification, // filter
+        notification, // new document
+        { upsert: true }
+      );
+    }
   }
 
   // Check if Entity fields changed
