@@ -17,7 +17,7 @@ describe('Cite pages', () => {
     cy.visit(url);
   });
 
-  it(
+  it.only(
     'Should scroll to report when coming from the discover app',
     { retries: { runMode: 4 } },
     () => {
@@ -26,11 +26,15 @@ describe('Cite pages', () => {
       cy.disableSmoothScroll();
 
       cy.contains('Show Details on Incident #352').first().click();
-
+      cy.waitForStableDOM();
       cy.url().should('include', '/cite/352#r2070');
       cy.waitForStableDOM();
 
-      cy.contains('h5', 'Is Starbucks shortchanging its baristas?', { timeout: 8000 })
+      cy.contains(
+        'h5',
+        'Twitter pranksters derail GPT-3 bot with newly discovered “prompt injection” hack',
+        { timeout: 8000 }
+      )
         .parents('[data-cy="incident-report-card"]')
         .then((subject) => {
           expect(subject[0].getBoundingClientRect().top).to.be.closeTo(0, 30);
