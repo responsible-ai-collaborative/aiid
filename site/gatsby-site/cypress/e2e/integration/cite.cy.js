@@ -30,12 +30,8 @@ describe('Cite pages', () => {
       cy.url().should('include', '/cite/352#r2070');
       cy.waitForStableDOM();
 
-      cy.contains(
-        'span',
-        'Twitter pranksters derail GPT-3 bot with newly discovered “prompt injection” hack',
-        { timeout: 8000 }
-      )
-        .parents('[class*="IncidentCard"]')
+      cy.contains('h5', 'Is Starbucks shortchanging its baristas?', { timeout: 8000 })
+        .parents('[data-cy="incident-report-card"]')
         .then((subject) => {
           expect(subject[0].getBoundingClientRect().top).to.be.closeTo(0, 30);
         });
@@ -54,9 +50,9 @@ describe('Cite pages', () => {
       .parents('a')
       .click({ force: true });
 
-    cy.get('span')
+    cy.get('h5')
       .contains('For some Starbucks workers, job leaves bitter taste')
-      .parents('[class*="IncidentCard"]')
+      .parents('[data-cy="incident-report-card"]')
       .then((subject) => {
         expect(subject[0].getBoundingClientRect().top).to.be.closeTo(0, 1);
       });
@@ -138,6 +134,8 @@ describe('Cite pages', () => {
     cy.visit(url + '#' + _id);
 
     cy.waitForStableDOM();
+
+    cy.get(`[id="r${_id}"`).find('[data-cy="expand-report-button"]').click();
 
     cy.get(`[id="r${_id}"`).find('[data-cy="flag-button"]').click();
 
