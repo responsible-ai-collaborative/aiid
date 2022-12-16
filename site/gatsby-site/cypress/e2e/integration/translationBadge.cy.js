@@ -21,7 +21,7 @@ describe('Translation Badges', () => {
   it('Should be visible on an incident card on the citation page', () => {
     cy.visit('/es/cite/1#r1');
 
-    cy.get('#r1')
+    cy.get('#r1', { timeout: 10000 })
       .contains('[data-cy="translation-badge"]', 'Traducido por IA')
       .should('be.visible');
   });
