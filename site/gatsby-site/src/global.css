@@ -57,6 +57,13 @@ a {
   text-decoration: none !important;
 }
 
+.outlineDocument ol ol {
+  list-style: lower-alpha; /* a  b  c  d  */
+}
+.outlineDocument ol ol ol {
+  list-style: upper-roman; /* I II III IV */
+}
+
 .visibleMobile {
   display: none;
 }

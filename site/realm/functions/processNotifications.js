@@ -42,6 +42,7 @@ exports = async function () {
   const subscriptionsCollection = context.services.get('mongodb-atlas').db('customData').collection("subscriptions");
   const incidentsCollection = context.services.get('mongodb-atlas').db('aiidprod').collection("incidents");
   const entitiesCollection = context.services.get('mongodb-atlas').db('aiidprod').collection("entities");
+  const reportsCollection = context.services.get('mongodb-atlas').db('aiidprod').collection("reports");
 
   // Notifications to New Incidents
   const pendingNotificationsToNewIncidents = await notificationsCollection.find({ processed: false, type: 'new-incidents' }).toArray();
@@ -92,7 +93,7 @@ exports = async function () {
     }
     else {
       // If there are no subscribers to New Incidents (edge case) > Mark all pending notifications as processed without "sentDate"
-      markNotificationsAsProcessed(notificationsCollection, pendingNotificationsToNewIncidents);
+      await markNotificationsAsProcessed(notificationsCollection, pendingNotificationsToNewIncidents);
     }
   }
   else {
@@ -161,11 +162,83 @@ exports = async function () {
           );
         }
 
-        console.log(`New Entity Incidents: ${pendingNotificationsToNewEntityIncidents.length} pending notifications were processed.`);
+        console.log(`New "${entity.name}" Entity Incidents: pending notification was processed.`);
       }
       else {
         // If there are no subscribers to New Entity Incidents (edge case) > Mark all pending notifications as processed without "sentDate"
-        markNotificationsAsProcessed(notificationsCollection, pendingNotificationsToNewEntityIncidents);
+        await markNotificationsAsProcessed(notificationsCollection, [pendingNotification]);
+      }
+    }
+  }
+  else {
+    console.log('New Entity Incidents: No pending notifications to process.');
+  }
+
+
+  // Notifications to Incident updates
+  const pendingNotificationsToIncidentUpdates = await notificationsCollection.find({
+    processed: false,
+    type: { $in: ['new-report-incident', 'incident-updated'] }
+  }).toArray();
+
+  if (pendingNotificationsToIncidentUpdates.length > 0) {
+
+    result += pendingNotificationsToIncidentUpdates.length;
+
+    for (const pendingNotification of pendingNotificationsToIncidentUpdates) {
+
+      const subscriptionsToIncidentUpdates = await subscriptionsCollection.find({
+        type: 'incident',
+        incident_id: pendingNotification.incident_id
+      }).toArray();
+
+      // Process subscriptions to Incident updates
+      if (subscriptionsToIncidentUpdates.length > 0) {
+
+        const userIds = subscriptionsToIncidentUpdates.map((subscription) => subscription.userId);
+
+        const recipients = await getRecipients(userIds);
+
+        const incident = await incidentsCollection.findOne({ incident_id: pendingNotification.incident_id });
+
+        const newReportNumber = pendingNotification.report_number;
+
+        const newReport = newReportNumber ? await reportsCollection.findOne({ report_number: newReportNumber }) : null;
+
+        //Send email notification
+        const sendEmailParams = {
+          recipients,
+          subject: 'Incident {{incidentId}} was updated',
+          dynamicData: {
+            incidentId: `${incident.incident_id}`,
+            incidentTitle: incident.title,
+            incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
+            reportUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}#r${newReportNumber}`,
+            reportTitle: newReportNumber ? newReport.title : '',
+            reportAuthor: newReportNumber && newReport.authors[0] ? newReport.authors[0] : '',
+          },
+          // Template value from function name sufix from "site/realm/functions/config.json"
+          templateId: newReportNumber ? 'NewReportAddedToAnIncident' : 'IncidentUpdate',
+        };
+
+        const sendEmailResult = await context.functions.execute('sendEmail', sendEmailParams);
+
+        console.log('sendEmailParams', JSON.stringify(sendEmailParams));
+        console.log(JSON.stringify(sendEmailResult));
+
+        //If notification was sucessfully sent > Mark the notification as processed
+        if (sendEmailResult.statusCode == 200 || sendEmailResult.statusCode == 202) {
+          await notificationsCollection.updateOne(
+            { _id: pendingNotification._id },
+            { $set: { processed: true, sentDate: new Date() } }
+          );
+        }
+
+        console.log(`Incident ${incident.incident_id} updates: Pending notification was processed.`);
+      }
+      else {
+        // If there are no subscribers to New Entity Incidents (edge case) > Mark all pending notifications as processed without "sentDate"
+        await markNotificationsAsProcessed(notificationsCollection, [pendingNotification]);
       }
     }
   }

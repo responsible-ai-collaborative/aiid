@@ -8,6 +8,9 @@ import supportedLanguages from '../../i18n/languages.json';
 import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
 import StepContainer from './StepContainer';
 import TagsInputGroup from '../TagsInputGroup';
+import FieldContainer from './FieldContainer';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMedal, faImage, faLanguage } from '@fortawesome/free-solid-svg-icons';
 
 const StepTwo = (props) => {
   const [data, setData] = useState(props.data);
@@ -106,45 +109,59 @@ const FormDetails = ({
   return (
     <>
       <Form>
-        <TagsInputGroup
-          name="submitters"
-          placeholder={t('Your name as you would like it to appear in the leaderboard')}
-          label={t('Submitter(s)')}
-          className="mt-3"
-          errors={errors}
-          touched={touched}
-          schema={schema}
-        />
+        <FieldContainer>
+          <TagsInputGroup
+            name="submitters"
+            placeholder={t('Your name as you would like it to appear in the leaderboard')}
+            label={t('Submitter(s)')}
+            errors={errors}
+            touched={touched}
+            schema={schema}
+            icon={faMedal}
+          />
+        </FieldContainer>
 
-        <PreviewImageInputGroup
-          cloudinary_id={data.cloudinary_id}
-          name="image_url"
-          label={t('Image Address')}
-          placeholder={t('Image URL')}
-          className="mt-3"
-          values={values}
-          errors={errors}
-          touched={touched}
-          handleChange={handleChange}
-          handleBlur={handleBlur}
-          schema={schema}
-        />
+        <FieldContainer>
+          <PreviewImageInputGroup
+            cloudinary_id={data.cloudinary_id}
+            name="image_url"
+            label={t('Image Address')}
+            placeholder={t('Image URL')}
+            values={values}
+            errors={errors}
+            touched={touched}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            schema={schema}
+            icon={faImage}
+          />
+        </FieldContainer>
 
-        <Label popover="language" label={t('Language')} />
-        <Select
-          name="language"
-          placeholder={t('Report Language')}
-          value={values.language}
-          onChange={handleChange}
-        >
-          {supportedLanguages.map((l) => (
-            <option key={l.code} value={l.code}>
-              {l.name}
-            </option>
-          ))}
-        </Select>
+        <FieldContainer>
+          <div className="flex items-center mb-1">
+            <FontAwesomeIcon
+              fixedWidth
+              icon={faLanguage}
+              title={t('Language')}
+              className="mb-2 mr-1"
+            />
+            <Label popover="language" label={t('Language')} />
+          </div>
+          <Select
+            name="language"
+            placeholder={t('Report Language')}
+            value={values.language}
+            onChange={handleChange}
+          >
+            {supportedLanguages.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.name}
+              </option>
+            ))}
+          </Select>
+        </FieldContainer>
 
-        <div className="flex justify-between mt-4">
+        <div className="flex justify-between mt-8">
           <Button type="button" color={'light'} onClick={() => previous(values)}>
             <svg
               aria-hidden="true"
@@ -163,29 +180,6 @@ const FormDetails = ({
           </Button>
           <div className="flex justify-end gap-2">
             <Button
-              data-cy="submit-step-2"
-              disabled={isSubmitting}
-              onClick={() => {
-                setSubmitCount(submitCount + 1);
-                validateAndSubmitForm(
-                  true,
-                  setIsSubmitting,
-                  isValid,
-                  validateForm,
-                  setFieldTouched,
-                  values,
-                  submitForm
-                );
-              }}
-            >
-              {isSubmitting && (
-                <div className="mr-3">
-                  <Spinner size="sm" light={true} />
-                </div>
-              )}
-              <Trans ns="submit">Submit</Trans>
-            </Button>
-            <Button
               data-cy="to-step-3"
               color={'light'}
               disabled={isSubmitting}
@@ -202,7 +196,12 @@ const FormDetails = ({
                 );
               }}
             >
-              <Trans>Add more info</Trans>
+              <span className="lg:hidden">
+                <Trans>More</Trans>
+              </span>
+              <span className="hidden lg:inline">
+                <Trans>Add more info</Trans>
+              </span>
               <svg
                 aria-hidden="true"
                 className="ml-2 w-5 h-5"
@@ -218,6 +217,31 @@ const FormDetails = ({
               </svg>
             </Button>
           </div>
+        </div>
+        <div className="flex justify-end mt-4">
+          <Button
+            data-cy="submit-step-2"
+            disabled={isSubmitting}
+            onClick={() => {
+              setSubmitCount(submitCount + 1);
+              validateAndSubmitForm(
+                true,
+                setIsSubmitting,
+                isValid,
+                validateForm,
+                setFieldTouched,
+                values,
+                submitForm
+              );
+            }}
+          >
+            {isSubmitting && (
+              <div className="mr-3">
+                <Spinner size="sm" light={true} />
+              </div>
+            )}
+            <Trans>Submit</Trans>
+          </Button>
         </div>
       </Form>
 

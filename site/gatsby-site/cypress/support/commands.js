@@ -1,4 +1,7 @@
 import { getApolloClient } from './utils';
+import { registerCommand } from 'cypress-wait-for-stable-dom';
+
+registerCommand();
 
 Cypress.Commands.add('disableSmoothScroll', () => {
   return cy.document().then((document) => {
@@ -10,9 +13,7 @@ Cypress.Commands.add('disableSmoothScroll', () => {
   });
 });
 
-Cypress.Commands.add('login', (email, password) => {
-  cy.clearLocalStorage();
-
+const loginSteps = (email, password) => {
   cy.visit('/login');
 
   cy.get('input[name=email]').type(email);
@@ -22,6 +23,16 @@ Cypress.Commands.add('login', (email, password) => {
   cy.get('[data-cy="login-btn"]').click();
 
   return cy.location('pathname', { timeout: 8000 }).should('eq', '/');
+};
+
+Cypress.Commands.add('login', (email, password, options = { skipSession: false }) => {
+  if (options.skipSession) {
+    return loginSteps(email, password);
+  } else {
+    cy.session([email, password], () => {
+      loginSteps(email, password);
+    });
+  }
 });
 
 Cypress.Commands.add(
@@ -42,7 +53,7 @@ Cypress.Commands.add(
 Cypress.Commands.add('query', ({ query, variables }) => {
   const client = getApolloClient();
 
-  return cy.wrap(client.query({ query, variables }), { log: true });
+  return cy.wrap(client.query({ query, variables }), { log: true, timeout: 30000 });
 });
 
 Cypress.Commands.add('clickOutside', () => {

@@ -16,6 +16,7 @@ import { useUserContext } from '../../contexts/userContext';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import { format } from 'date-fns';
 import Layout from 'components/Layout';
+import ListSkeleton from 'elements/Skeletons/List';
 
 const Container = styled.div`
   max-width: calc(100vw - 298px);
@@ -801,6 +802,7 @@ export default function ClassificationsDbView(props) {
           </Link>
           <Button onClick={() => setAllFilters([])}>Reset filters</Button>
         </div>
+        {loading && <ListSkeleton />}
         {!loading && (
           <TableStyles>
             <Table striped bordered hover {...getTableProps()}>

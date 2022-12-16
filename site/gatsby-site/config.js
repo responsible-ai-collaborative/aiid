@@ -140,6 +140,7 @@ const config = {
           { title: 'Contact and Follow', label: 'contact', url: '/contact' },
           { title: 'Launch Announcement', url: 'https://partnershiponai.org/aiincidentdatabase/' },
           { title: 'About Apps', label: 'about_apps', url: '/about_apps' },
+          { title: 'Editor’s Guide', label: 'editors-guide', url: '/editors-guide' },
         ],
       },
       {
