@@ -1,8 +1,8 @@
 const path = require('path');
 
-const { switchLocalizedPath, getLanguages } = require('../i18n');
+const { switchLocalizedPath } = require('../i18n');
 
-const createCitationPages = async (graphql, createPage) => {
+const createCitationPages = async (graphql, createPage, { languages }) => {
   const result = await graphql(
     `
       query IncidentIDs {
@@ -89,8 +89,6 @@ const createCitationPages = async (graphql, createPage) => {
       editor_dissimilar_incidents,
     });
   }
-
-  const languages = getLanguages();
 
   for (const language of languages) {
     for (const context of pageContexts) {

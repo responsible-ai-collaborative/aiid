@@ -76,7 +76,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   ]) {
     if (!(process.env.SKIP_PAGE_CREATOR || '').split(',').includes(pageCreator.name)) {
       reporter.info(`Page creation: ${pageCreator.name}`);
-      await pageCreator(graphql, createPage, reporter);
+      await pageCreator(graphql, createPage, { reporter, languages: getLanguages() });
     }
   }
 };
