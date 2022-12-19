@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { format, getUnixTime } from 'date-fns';
 
-export default function VariantEditModal({ show, onClose, reportNumber, refetch }) {
+export default function VariantEditModal({ show, onClose, reportNumber, refetch = null }) {
   const { t } = useTranslation();
 
   const [variant, setVariant] = useState(null);
@@ -78,7 +78,7 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch 
         severity: SEVERITY.success,
       });
 
-      await refetch();
+      refetch && (await refetch());
 
       onClose();
     } catch (e) {
