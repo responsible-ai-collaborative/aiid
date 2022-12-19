@@ -122,7 +122,7 @@ const VariantCard = ({ variant, refetch }) => {
   );
 };
 
-const VariantList = ({ incidentId, report_numbers, variants, loading, refetch }) => {
+const VariantList = ({ incidentId, variants, loading, refetch }) => {
   const { t } = useTranslation();
 
   const [displayForm, setDisplayForm] = useState(false);
@@ -141,11 +141,9 @@ const VariantList = ({ incidentId, report_numbers, variants, loading, refetch })
       text_outputs,
     };
 
-    const result = await createVariantMutation({ variables: { input: { incidentId, variant } } });
+    await createVariantMutation({ variables: { input: { incidentId, variant } } });
 
-    const new_report_numbers = report_numbers.push(result.data.createVariant.report_number);
-
-    await refetch({ variables: { report_numbers: new_report_numbers } });
+    await refetch();
   };
 
   return (

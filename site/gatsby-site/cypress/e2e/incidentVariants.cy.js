@@ -1,5 +1,5 @@
 import { maybeIt } from '../support/utils';
-import variants from '../fixtures/variants/variants.json';
+import variantsIncident from '../fixtures/variants/variants.json';
 import { VARIANT_STATUS } from '../../src/utils/variants';
 import { format, getUnixTime } from 'date-fns';
 
@@ -19,7 +19,7 @@ describe('Variants pages', () => {
       '**/graphql',
       (req) => req.body.operationName == 'FindIncidentVariants',
       'findIncidentVariants',
-      variants
+      variantsIncident
     );
 
     cy.visit(url);
@@ -64,7 +64,7 @@ describe('Variants pages', () => {
       '**/graphql',
       (req) => req.body.operationName == 'FindIncidentVariants',
       'findIncidentVariants',
-      variants
+      variantsIncident
     );
 
     const text_inputs = 'Input text with **markdown**';
@@ -119,7 +119,7 @@ describe('Variants pages', () => {
       '**/graphql',
       (req) => req.body.operationName == 'FindIncidentVariants',
       'findIncidentVariants',
-      variants
+      variantsIncident
     );
 
     cy.visit(url);
@@ -144,7 +144,7 @@ describe('Variants pages', () => {
       'findVariant',
       {
         data: {
-          report: variants.data.reports[0],
+          report: variantsIncident.data.incident.reports[0],
         },
       }
     );
@@ -153,7 +153,7 @@ describe('Variants pages', () => {
       '**/graphql',
       (req) => req.body.operationName == 'FindIncidentVariants',
       'findIncidentVariants',
-      variants
+      variantsIncident
     );
 
     const today = format(new Date(), 'yyyy-MM-dd');
@@ -235,7 +235,7 @@ describe('Variants pages', () => {
       'findVariant',
       {
         data: {
-          report: variants.data.reports[1],
+          report: variantsIncident.data.incident.reports[1],
         },
       }
     );
@@ -244,7 +244,7 @@ describe('Variants pages', () => {
       '**/graphql',
       (req) => req.body.operationName == 'FindIncidentVariants',
       'findIncidentVariants',
-      variants
+      variantsIncident
     );
 
     const today = format(new Date(), 'yyyy-MM-dd');
@@ -322,7 +322,7 @@ describe('Variants pages', () => {
       'findVariant',
       {
         data: {
-          report: variants.data.reports[2],
+          report: variantsIncident.data.incident.reports[2],
         },
       }
     );
@@ -331,7 +331,7 @@ describe('Variants pages', () => {
       '**/graphql',
       (req) => req.body.operationName == 'FindIncidentVariants',
       'findIncidentVariants',
-      variants
+      variantsIncident
     );
 
     cy.conditionalIntercept(

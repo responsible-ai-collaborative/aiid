@@ -63,7 +63,6 @@ function CitePage(props) {
       nlp_similar_incidents,
       editor_similar_incidents,
       editor_dissimilar_incidents,
-      report_numbers,
     },
     data: {
       allMongodbAiidprodTaxa,
@@ -132,13 +131,27 @@ function CitePage(props) {
     isOccurrence: true,
   });
 
+  const [variants, setVariants] = useState(null);
+
   const {
-    data: variants,
+    data: variantsIncident,
     loading: loadingVariants,
     refetch: refetchVariants,
   } = useQuery(FIND_INCIDENT_VARIANTS, {
-    variables: { report_numbers },
+    variables: { incident_id: incident.incident_id },
   });
+
+  useEffect(() => {
+    if (variantsIncident) {
+      const variantItems = variantsIncident.incident.reports
+        .filter(
+          (r) => r.text_inputs && r.text_inputs != '' && r.text_outputs && r.text_outputs != ''
+        )
+        .sort((a, b) => a.report_number - b.report_number);
+
+      setVariants(variantItems);
+    }
+  }, [variantsIncident]);
 
   const taxonomies = useMemo(
     () =>
@@ -451,8 +464,7 @@ function CitePage(props) {
               loading={loadingVariants}
               refetch={refetchVariants}
               incidentId={incident.incident_id}
-              report_numbers={report_numbers}
-              variants={variants ? variants.reports : []}
+              variants={variants ?? []}
             ></VariantList>
 
             <SimilarIncidents
