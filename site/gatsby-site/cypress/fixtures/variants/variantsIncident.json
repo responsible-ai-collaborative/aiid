@@ -1,0 +1,49 @@
+{
+  "data": {
+    "incident": {
+      "incident_id": 10,
+      "reports": [
+        {
+          "date_published": "2022-12-12",
+          "report_number": 2310,
+          "tags": ["variant:unreviewed"],
+          "text_inputs": "**Test input text** _with markdown_",
+          "text_outputs": "**Test output text** _with markdown_",
+          "title": "Variant #2310"
+        },
+        {
+          "date_published": "2022-12-12",
+          "report_number": 2311,
+          "tags": ["variant:approved"],
+          "text_inputs": "Test input text without markdown",
+          "text_outputs": "Test output text without markdown",
+          "title": "Variant #2311"
+        },
+        {
+          "date_published": "2022-12-12",
+          "report_number": 2312,
+          "tags": ["variant:rejected"],
+          "text_inputs": "Test input text without markdown (rejected)",
+          "text_outputs": "Test output text without markdown (rejected)",
+          "title": "Variant #2312"
+        },
+        {
+          "date_published": "2021-04-23",
+          "report_number": 2316,
+          "tags": [],
+          "text_inputs": null,
+          "text_outputs": null,
+          "title": "Court clears 39 post office operators convicted due to ‘corrupt data’"
+        },
+        {
+          "date_published": "2015-06-03",
+          "report_number": 25,
+          "tags": [],
+          "text_inputs": null,
+          "text_outputs": null,
+          "title": "After A Wave Of Bad Press, This Controversial Software Company Is Making Changes"
+        }
+      ]
+    }
+  }
+}

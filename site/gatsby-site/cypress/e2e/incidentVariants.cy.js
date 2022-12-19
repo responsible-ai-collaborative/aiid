@@ -1,5 +1,5 @@
 import { maybeIt } from '../support/utils';
-import variantsIncident from '../fixtures/variants/variants.json';
+import variantsIncident from '../fixtures/variants/variantsIncident.json';
 import { getVariantStatus, getVariantStatusText, VARIANT_STATUS } from '../../src/utils/variants';
 import { format, getUnixTime } from 'date-fns';
 const { gql } = require('@apollo/client');
@@ -258,7 +258,7 @@ describe('Variants pages', () => {
     });
   });
 
-  it.only('Should Delete Variant - Incident Editor user', () => {
+  maybeIt('Should Delete Variant - Incident Editor user', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     getVariants((variants) => {
