@@ -1,11 +1,39 @@
 import { maybeIt } from '../support/utils';
 import variantsIncident from '../fixtures/variants/variants.json';
-import { VARIANT_STATUS } from '../../src/utils/variants';
+import { getVariantStatus, getVariantStatusText, VARIANT_STATUS } from '../../src/utils/variants';
 import { format, getUnixTime } from 'date-fns';
+const { gql } = require('@apollo/client');
+
+const incidentId = 21;
+
+const getVariants = (callback) => {
+  cy.query({
+    query: gql`
+      query {
+        incidents(query: { incident_id: ${incidentId} }, limit: 1) {
+          reports {
+            report_number
+            title
+            date_published
+            tags
+            text_inputs
+            text_outputs
+          }
+        }
+      }
+    `,
+  }).then(({ data: { incidents } }) => {
+    const incident = incidents[0];
+
+    const variants = incident.reports
+      .filter((r) => r.text_inputs && r.text_inputs != '' && r.text_outputs && r.text_outputs != '')
+      .sort((a, b) => a.report_number - b.report_number);
+
+    callback(variants);
+  });
+};
 
 describe('Variants pages', () => {
-  const incidentId = 10;
-
   const url = `/cite/${incidentId}`;
 
   it('Successfully loads', () => {
@@ -15,58 +43,30 @@ describe('Variants pages', () => {
   });
 
   it('Should display Variant list', () => {
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindIncidentVariants',
-      'findIncidentVariants',
-      variantsIncident
-    );
-
     cy.visit(url);
-
-    cy.wait('@findIncidentVariants');
 
     cy.contains('h1', 'Variants').should('exist').scrollIntoView();
 
-    cy.get('[data-cy=variant-card]').should('have.length', 3);
+    getVariants((variants) => {
+      cy.get('[data-cy=variant-card]').should('have.length', variants.length);
 
-    cy.get('[data-cy=variant-card]')
-      .eq(0)
-      .within(() => {
-        cy.get('[data-cy=variant-status-badge]').contains('unreviewed');
-        cy.get('[data-cy=variant-text_inputs]').contains('Test input text with markdown');
-        cy.get('[data-cy=variant-text_outputs]').contains('Test output text with markdown');
-      });
+      for (let index = 0; index < variants.length; index++) {
+        const variant = variants[index];
 
-    cy.get('[data-cy=variant-card]')
-      .eq(1)
-      .within(() => {
-        cy.get('[data-cy=variant-status-badge]').contains('approved');
-        cy.get('[data-cy=variant-text_inputs]').contains('Test input text without markdown');
-        cy.get('[data-cy=variant-text_outputs]').contains('Test output text without markdown');
-      });
-
-    cy.get('[data-cy=variant-card]')
-      .eq(2)
-      .within(() => {
-        cy.get('[data-cy=variant-status-badge]').contains('rejected');
-        cy.get('[data-cy=variant-text_inputs]').contains(
-          'Test input text without markdown (rejected)'
-        );
-        cy.get('[data-cy=variant-text_outputs]').contains(
-          'Test output text without markdown (rejected)'
-        );
-      });
+        cy.get('[data-cy=variant-card]')
+          .eq(index)
+          .within(() => {
+            cy.get('[data-cy=variant-status-badge]').contains(
+              getVariantStatusText(getVariantStatus(variant))
+            );
+            cy.get('[data-cy=variant-text_inputs]').contains(variant.text_inputs);
+            cy.get('[data-cy=variant-text_outputs]').contains(variant.text_outputs);
+          });
+      }
+    });
   });
 
   it('Should add a new Variant - Unauthenticated user', () => {
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindIncidentVariants',
-      'findIncidentVariants',
-      variantsIncident
-    );
-
     const text_inputs = 'Input text with **markdown**';
 
     const text_outputs = 'Output text with **markdown**';
@@ -75,7 +75,7 @@ describe('Variants pages', () => {
       '**/graphql',
       (req) =>
         req.body.operationName == 'CreateVariant' &&
-        req.body.variables.input.incidentId === 10 &&
+        req.body.variables.input.incidentId === incidentId &&
         req.body.variables.input.variant.text_inputs === text_inputs &&
         req.body.variables.input.variant.text_outputs === text_outputs,
       'createVariant',
@@ -83,7 +83,7 @@ describe('Variants pages', () => {
         data: {
           createVariant: {
             __typename: 'CreateVariantPayload',
-            incident_id: 10,
+            incident_id: incidentId,
             report_number: 2313,
           },
         },
@@ -91,8 +91,6 @@ describe('Variants pages', () => {
     );
 
     cy.visit(url);
-
-    cy.wait('@findIncidentVariants');
 
     cy.contains('h1', 'Variants').should('exist').scrollIntoView();
 
@@ -117,16 +115,7 @@ describe('Variants pages', () => {
   });
 
   it("Shouldn't edit a Variant - Unauthenticated user", () => {
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindIncidentVariants',
-      'findIncidentVariants',
-      variantsIncident
-    );
-
     cy.visit(url);
-
-    cy.wait('@findIncidentVariants');
 
     cy.contains('h1', 'Variants').should('exist').scrollIntoView();
 
@@ -151,77 +140,54 @@ describe('Variants pages', () => {
       }
     );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindIncidentVariants',
-      'findIncidentVariants',
-      variantsIncident
-    );
-
-    const today = format(new Date(), 'yyyy-MM-dd');
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'UpdateVariant' &&
-        req.body.variables.query.report_number === 2310 &&
-        req.body.variables.set.text_inputs === new_text_inputs &&
-        req.body.variables.set.text_outputs === new_text_outputs &&
-        req.body.variables.set.tags.includes(VARIANT_STATUS.approved) &&
-        req.body.variables.set.date_modified == today &&
-        req.body.variables.set.epoch_date_modified == getUnixTime(new Date(today)),
-      'updateVariant',
-      {
-        data: {
-          updateOneReport: {
-            report_number: 2310,
-            tags: [VARIANT_STATUS.approved],
-            __typename: 'Report',
-            authors: ['Anonymous'],
-            date_downloaded: '2022-12-12',
-            date_modified: '2022-12-12',
-            date_published: '2022-12-12',
-            editor_notes: null,
-            epoch_date_downloaded: 1670803200,
-            epoch_date_modified: 1670803200,
-            epoch_date_published: 1670803200,
-            flag: null,
-            image_url: '',
-            language: 'en',
-            plain_text: 'Dummy text',
-            submitters: ['Anonymous'],
-            text: 'Dummy text',
-            title: 'Variant #2319',
-            url: 'dummyurl.com',
-          },
-        },
-      }
-    );
-
     cy.visit(url);
 
-    cy.get('[data-cy=variant-card]').should('have.length', 3);
+    getVariants((variants) => {
+      const variant = variants[0];
 
-    cy.get('[data-cy=variant-card]')
-      .eq(0)
-      .within(() => {
-        cy.get('[data-cy=edit-variant-btn]').click();
-      });
+      const today = format(new Date(), 'yyyy-MM-dd');
 
-    cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) =>
+          req.body.operationName == 'UpdateVariant' &&
+          req.body.variables.query.report_number === variant.report_number &&
+          req.body.variables.set.text_inputs === new_text_inputs &&
+          req.body.variables.set.text_outputs === new_text_outputs &&
+          req.body.variables.set.tags.includes(VARIANT_STATUS.approved) &&
+          req.body.variables.set.date_modified == today &&
+          req.body.variables.set.epoch_date_modified == getUnixTime(new Date(today)),
+        'updateVariant',
+        {
+          data: {
+            updateOneReport: { ...variant, tags: [VARIANT_STATUS.approved] },
+          },
+        }
+      );
 
-    cy.get('#formTextInputs').clear().type(new_text_inputs);
-    cy.get('#formTextOutputs').clear().type(new_text_outputs);
+      cy.get('[data-cy=variant-card]').should('have.length', variants.length);
 
-    cy.get('[data-cy=approve-variant-btn]').click();
+      if (variants.length > 0) {
+        cy.get('[data-cy=variant-card]')
+          .eq(0)
+          .within(() => {
+            cy.get('[data-cy=edit-variant-btn]').click();
+          });
 
-    cy.wait('@updateVariant');
+        cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
 
-    cy.wait('@findIncidentVariants');
+        cy.get('#formTextInputs').clear().type(new_text_inputs);
+        cy.get('#formTextOutputs').clear().type(new_text_outputs);
 
-    cy.get('[data-cy="toast"]').contains('Variant successfully updated.').should('exist');
+        cy.get('[data-cy=approve-variant-btn]').click();
 
-    cy.get('[data-cy=edit-variant-modal]').should('not.exist');
+        cy.wait('@updateVariant');
+
+        cy.get('[data-cy="toast"]').contains('Variant successfully updated.').should('exist');
+
+        cy.get('[data-cy=edit-variant-modal]').should('not.exist');
+      }
+    });
   });
 
   maybeIt('Should Reject Variant - Incident Editor user', () => {
@@ -242,152 +208,126 @@ describe('Variants pages', () => {
       }
     );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindIncidentVariants',
-      'findIncidentVariants',
-      variantsIncident
-    );
-
-    const today = format(new Date(), 'yyyy-MM-dd');
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'UpdateVariant' &&
-        req.body.variables.query.report_number === 2311 &&
-        req.body.variables.set.text_inputs === new_text_inputs &&
-        req.body.variables.set.text_outputs === new_text_outputs &&
-        req.body.variables.set.tags.includes(VARIANT_STATUS.rejected) &&
-        req.body.variables.set.date_modified == today &&
-        req.body.variables.set.epoch_date_modified == getUnixTime(new Date(today)),
-      'updateVariant',
-      {
-        data: {
-          updateOneReport: {
-            report_number: 2311,
-            tags: [VARIANT_STATUS.rejected],
-            __typename: 'Report',
-            authors: ['Anonymous'],
-            date_downloaded: '2022-12-12',
-            date_modified: '2022-12-12',
-            date_published: '2022-12-12',
-            editor_notes: null,
-            epoch_date_downloaded: 1670803200,
-            epoch_date_modified: 1670803200,
-            epoch_date_published: 1670803200,
-            flag: null,
-            image_url: '',
-            language: 'en',
-            plain_text: 'Dummy text',
-            submitters: ['Anonymous'],
-            text: 'Dummy text',
-            title: 'Variant #2319',
-            url: 'dummyurl.com',
-          },
-        },
-      }
-    );
-
     cy.visit(url);
 
-    cy.get('[data-cy=variant-card]').should('have.length', 3);
+    getVariants((variants) => {
+      const variant = variants[0];
 
-    cy.get('[data-cy=variant-card]')
-      .eq(1)
-      .within(() => {
-        cy.get('[data-cy=edit-variant-btn]').click();
-      });
+      const today = format(new Date(), 'yyyy-MM-dd');
 
-    cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) =>
+          req.body.operationName == 'UpdateVariant' &&
+          req.body.variables.query.report_number === variant.report_number &&
+          req.body.variables.set.text_inputs === new_text_inputs &&
+          req.body.variables.set.text_outputs === new_text_outputs &&
+          req.body.variables.set.tags.includes(VARIANT_STATUS.rejected) &&
+          req.body.variables.set.date_modified == today &&
+          req.body.variables.set.epoch_date_modified == getUnixTime(new Date(today)),
+        'updateVariant',
+        {
+          data: {
+            updateOneReport: { ...variant, tags: [VARIANT_STATUS.rejected] },
+          },
+        }
+      );
 
-    cy.get('#formTextInputs').clear().type(new_text_inputs);
-    cy.get('#formTextOutputs').clear().type(new_text_outputs);
+      cy.get('[data-cy=variant-card]').should('have.length', variants.length);
 
-    cy.get('[data-cy=reject-variant-btn]').click();
+      if (variants.length > 0) {
+        cy.get('[data-cy=variant-card]')
+          .eq(0)
+          .within(() => {
+            cy.get('[data-cy=edit-variant-btn]').click();
+          });
 
-    cy.wait('@updateVariant');
+        cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
 
-    cy.wait('@findIncidentVariants');
+        cy.get('#formTextInputs').clear().type(new_text_inputs);
+        cy.get('#formTextOutputs').clear().type(new_text_outputs);
 
-    cy.get('[data-cy="toast"]').contains('Variant successfully updated.').should('exist');
+        cy.get('[data-cy=reject-variant-btn]').click();
 
-    cy.get('[data-cy=edit-variant-modal]').should('not.exist');
+        cy.wait('@updateVariant');
+
+        cy.get('[data-cy="toast"]').contains('Variant successfully updated.').should('exist');
+
+        cy.get('[data-cy=edit-variant-modal]').should('not.exist');
+      }
+    });
   });
 
-  maybeIt('Should Delete Variant - Incident Editor user', () => {
+  it.only('Should Delete Variant - Incident Editor user', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindVariant',
-      'findVariant',
-      {
-        data: {
-          report: variantsIncident.data.incident.reports[2],
-        },
-      }
-    );
+    getVariants((variants) => {
+      const variant = variants[0];
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) => req.body.operationName == 'FindIncidentVariants',
-      'findIncidentVariants',
-      variantsIncident
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'DeleteOneVariant' &&
-        req.body.variables.query.report_number === 2312,
-      'deleteOneVariant',
-      {
-        data: {
-          deleteOneReport: {
-            __typename: 'Report',
-            report_number: 2312,
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'FindVariant',
+        'findVariant',
+        {
+          data: {
+            report: variant,
           },
-        },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) =>
+          req.body.operationName == 'DeleteOneVariant' &&
+          req.body.variables.query.report_number === variant.report_number,
+        'deleteOneVariant',
+        {
+          data: {
+            deleteOneReport: {
+              __typename: 'Report',
+              report_number: variant.report_number,
+            },
+          },
+        }
+      );
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) =>
+          req.body.operationName == 'LinkReportsToIncidents' &&
+          req.body.variables.input.incident_ids.length === 0 &&
+          req.body.variables.input.report_numbers.includes(variant.report_number),
+        'linkReportsToIncidents',
+        {
+          data: {
+            linkReportsToIncidents: [],
+          },
+        }
+      );
+
+      cy.visit(url);
+
+      cy.get('[data-cy=variant-card]').should('have.length', variants.length);
+
+      if (variants.length > 0) {
+        cy.get('[data-cy=variant-card]')
+          .eq(0)
+          .within(() => {
+            cy.get('[data-cy=edit-variant-btn]').click();
+          });
+
+        cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
+
+        cy.get('[data-cy=delete-variant-btn]').click();
+
+        cy.wait('@deleteOneVariant');
+
+        cy.wait('@linkReportsToIncidents');
+
+        cy.get('[data-cy="toast"]').contains('Variant successfully deleted.').should('exist');
+
+        cy.get('[data-cy=edit-variant-modal]').should('not.exist');
       }
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'LinkReportsToIncidents' &&
-        req.body.variables.input.incident_ids.length === 0 &&
-        req.body.variables.input.report_numbers.includes(2312),
-      'linkReportsToIncidents',
-      {
-        data: {
-          linkReportsToIncidents: [],
-        },
-      }
-    );
-
-    cy.visit(url);
-
-    cy.get('[data-cy=variant-card]').should('have.length', 3);
-
-    cy.get('[data-cy=variant-card]')
-      .eq(2)
-      .within(() => {
-        cy.get('[data-cy=edit-variant-btn]').click();
-      });
-
-    cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
-
-    cy.get('[data-cy=delete-variant-btn]').click();
-
-    cy.wait('@deleteOneVariant');
-
-    cy.wait('@linkReportsToIncidents');
-
-    cy.get('[data-cy="toast"]').contains('Variant successfully deleted.').should('exist');
-
-    cy.wait('@findIncidentVariants');
-
-    cy.get('[data-cy=edit-variant-modal]').should('not.exist');
+    });
   });
 });

@@ -118,7 +118,7 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch 
           severity: SEVERITY.success,
         });
 
-        await refetch();
+        refetch && (await refetch());
 
         onClose();
       } catch (e) {
