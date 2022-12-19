@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faPlus, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { Spinner, Tooltip } from 'flowbite-react';
-import Card from '../../elements/Card';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { getVariantStatus, VARIANT_STATUS, getVariantStatusText } from 'utils/variants';
 import VariantForm, { schema } from 'components/variants/VariantForm';
@@ -51,50 +50,49 @@ const VariantCard = ({ variant, refetch }) => {
 
   return (
     <>
-      <Card data-cy="variant-card" className="relative p-4 overflow-hidden flex">
+      <div
+        data-cy="variant-card"
+        className="relative p-4 overflow-hidden flex tw-card border-1 rounded-lg break-words flex-col shadow-md"
+      >
         <div className="flex">
           <VariantStatusBadge status={getVariantStatus(variant)} />
         </div>
-        <div className="flex w-full flex-row items-center mt-2 gap-4">
-          <div className="w-1/2">
-            <div className="font-bold flex items-center gap-2">
-              <Trans>Input and circumstances</Trans>
-              <Tooltip
-                content={t(
-                  'Provide the relevant details producing the incident. Examples include the input prompts to a chatbot or a description of the circumstances leading to injuries sustained from a robot.'
-                )}
-                trigger="click"
-              >
-                <FontAwesomeIcon
-                  icon={faQuestionCircle}
-                  style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-                  className="far fa-question-circle"
-                />
-              </Tooltip>
-            </div>
-            <div data-cy="variant-text_inputs" className="border-1 rounded-lg px-3 mt-2">
-              <Markdown>{variant.text_inputs}</Markdown>
-            </div>
+        <div className="flex w-full flex-col mt-3 gap-2">
+          <div className="font-bold flex items-center gap-2">
+            <Trans>Input and circumstances</Trans>
+            <Tooltip
+              content={t(
+                'Provide the relevant details producing the incident. Examples include the input prompts to a chatbot or a description of the circumstances leading to injuries sustained from a robot.'
+              )}
+              trigger="click"
+            >
+              <FontAwesomeIcon
+                icon={faQuestionCircle}
+                style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+                className="far fa-question-circle"
+              />
+            </Tooltip>
           </div>
-          <div className="w-1/2">
-            <div className="font-bold flex items-center gap-2">
-              <Trans>Output and outcomes</Trans>
-              <Tooltip
-                content={t(
-                  'Provide the relevant details surrounding the incident. Examples include output text from a chatbot or the nature of injuries sustained from a robot.'
-                )}
-                trigger="click"
-              >
-                <FontAwesomeIcon
-                  icon={faQuestionCircle}
-                  style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-                  className="far fa-question-circle"
-                />
-              </Tooltip>
-            </div>
-            <div data-cy="variant-text_outputs" className="border-1 rounded-lg px-3 mt-2">
-              <Markdown>{variant.text_outputs}</Markdown>
-            </div>
+          <div data-cy="variant-text_inputs" className="border-1 rounded-lg px-3">
+            <Markdown>{variant.text_inputs}</Markdown>
+          </div>
+          <div className="font-bold flex items-center gap-2">
+            <Trans>Output and outcomes</Trans>
+            <Tooltip
+              content={t(
+                'Provide the relevant details surrounding the incident. Examples include output text from a chatbot or the nature of injuries sustained from a robot.'
+              )}
+              trigger="click"
+            >
+              <FontAwesomeIcon
+                icon={faQuestionCircle}
+                style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+                className="far fa-question-circle"
+              />
+            </Tooltip>
+          </div>
+          <div data-cy="variant-text_outputs" className="border-1 rounded-lg px-3">
+            <Markdown>{variant.text_outputs}</Markdown>
           </div>
         </div>
 
@@ -110,7 +108,7 @@ const VariantCard = ({ variant, refetch }) => {
             </Button>
           </div>
         )}
-      </Card>
+      </div>
 
       <VariantEditModal
         show={showEditModal}
@@ -184,7 +182,7 @@ const VariantList = ({ incidentId, variants, loading, refetch }) => {
           </div>
 
           {displayForm && (
-            <Card className="p-4 mt-4 bootstrap">
+            <div className="p-4 mt-4 bootstrap flex tw-card border-1 rounded-lg break-words flex-col shadow-md">
               <Formik
                 initialValues={{ text_inputs: '', text_outputs: '' }}
                 validationSchema={schema}
@@ -240,7 +238,7 @@ const VariantList = ({ incidentId, variants, loading, refetch }) => {
                   </>
                 )}
               </Formik>
-            </Card>
+            </div>
           )}
         </>
       )}
