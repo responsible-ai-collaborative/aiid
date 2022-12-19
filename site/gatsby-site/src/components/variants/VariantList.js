@@ -125,6 +125,8 @@ const VariantList = ({ incidentId, variants, loading, refetch }) => {
 
   const [displayForm, setDisplayForm] = useState(false);
 
+  const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
+
   const onAddVariantClick = () => {
     setDisplayForm(true);
   };
@@ -141,7 +143,8 @@ const VariantList = ({ incidentId, variants, loading, refetch }) => {
 
     await createVariantMutation({ variables: { input: { incidentId, variant } } });
 
-    await refetch();
+    setDisplayForm(false);
+    setDisplaySuccessMessage(true);
   };
 
   return (
@@ -180,6 +183,15 @@ const VariantList = ({ incidentId, variants, loading, refetch }) => {
               <Trans>Add Variant</Trans>
             </Button>
           </div>
+
+          {displaySuccessMessage && (
+            <div data-cy="success-message" className="mt-3 font-medium text-green-600">
+              Your variant has been added to the review queue and will appear on this page within 12
+              hours. Please continue submitting when you encounter more variants. Most of the time
+              we won&apos;t review it in the same day, but it will appear within a day as
+              unreviewed.
+            </div>
+          )}
 
           {displayForm && (
             <div className="p-4 mt-4 bootstrap flex tw-card border-1 rounded-lg break-words flex-col shadow-md">
