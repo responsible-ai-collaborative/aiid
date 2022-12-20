@@ -127,7 +127,7 @@ const VariantList = ({ incidentId, variants }) => {
   const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
 
   const onAddVariantClick = () => {
-    setDisplayForm(true);
+    setDisplayForm(!displayForm);
   };
 
   const addToast = useToastContext();
@@ -184,7 +184,7 @@ const VariantList = ({ incidentId, variants }) => {
       )}
 
       {displayForm && (
-        <div className="p-4 mt-4 bootstrap flex tw-card border-1 rounded-lg break-words flex-col shadow-md">
+        <div className="p-4 mt-4 bootstrap flex border-1 rounded-lg break-words flex-col shadow-md">
           <Formik
             initialValues={{ text_inputs: '', text_outputs: '' }}
             validationSchema={schema}

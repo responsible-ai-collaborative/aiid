@@ -136,7 +136,7 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch 
 
   return (
     <div className="bootstrap">
-      <Modal show={show} onHide={onClose} data-cy="edit-variant-modal">
+      <Modal show={show} onHide={onClose} data-cy="edit-variant-modal" size="lg">
         <Modal.Header closeButton>
           <Modal.Title>
             <Trans>Edit Variant</Trans>
