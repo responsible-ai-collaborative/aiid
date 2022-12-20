@@ -51,7 +51,10 @@ export default function Post(props) {
         <StyledHeading>{mdx.fields.title}</StyledHeading>
 
         <div className="inline-block">
-          <span>{format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')}</span>
+          <Link to="/blog" className="font-semibold">
+            AIID blog
+          </Link>
+          . <span>{format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')}</span>
           {mdx.frontmatter.aiTranslated && (
             <>
               <TranslationBadge className="ml-2" />
