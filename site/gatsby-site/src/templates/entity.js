@@ -250,19 +250,21 @@ const EntityPage = ({ pageContext, data, ...props }) => {
           <Trans ns="entities">Entities</Trans>
         </Link>
       </h3>
-      <h1 className="mr-auto mb-4">{name}</h1>
-      <div className="flex items-center">
-        {loadingSubscription && subscriptionNetworkStatus === NetworkStatus.loading ? (
-          <Spinner size="sm" />
-        ) : subscriptions?.subscriptions.length > 0 ? (
-          <Trans i18n={i18n}>
-            <UnsubscribeButton>Unsubscribe</UnsubscribeButton>
-          </Trans>
-        ) : (
-          <Trans i18n={i18n} name={name}>
-            <NotifyButton>Notify me</NotifyButton> of new incidents involving “{{ name }}”.
-          </Trans>
-        )}
+      <div className="flex items-center flex-wrap">
+        <h1 className="mr-auto my-2">{name}</h1>
+        <div className="flex items-center my-2">
+          {loadingSubscription && subscriptionNetworkStatus === NetworkStatus.loading ? (
+            <Spinner size="sm" />
+          ) : subscriptions?.subscriptions.length > 0 ? (
+            <Trans i18n={i18n}>
+              <UnsubscribeButton>Unsubscribe</UnsubscribeButton>
+            </Trans>
+          ) : (
+            <Trans i18n={i18n} name={name}>
+              <NotifyButton>Notify me</NotifyButton> of new incidents involving “{{ name }}”.
+            </Trans>
+          )}
+        </div>
       </div>
 
       {sections.map((section) => {
