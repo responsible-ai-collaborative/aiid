@@ -13,6 +13,7 @@ import { SourceDomainSubtitle, HeaderTitle } from './shared';
 import { Trans } from 'react-i18next';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import Card from 'elements/Card';
+import { VIEW_TYPES } from 'utils/discover';
 
 const IncidentCardImage = styled(Image)`
   height: ${({ height }) => height};
@@ -30,6 +31,7 @@ export default function Details({
   submittersModal,
   flagReportModal,
   toggleFilterByIncidentId,
+  viewType,
 }) {
   const localizePath = useLocalizePath();
 
@@ -53,12 +55,15 @@ export default function Details({
         />
       </a>
       <Card.Body className="flex flex-col ">
-        <HeaderTitle item={item} />
+        <HeaderTitle item={item} viewType={viewType} />
         <SourceDomainSubtitle item={item} className="mb-2 text-muted-gray" />
 
         <Card.Text className="flex-1-1-auto mb-4">
           <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />
-          <ReportText text={item.text} maxChars={400} />
+          <ReportText
+            text={viewType === VIEW_TYPES.INCIDENTS ? item.incident_description : item.text}
+            maxChars={400}
+          />
         </Card.Text>
 
         <div className="align-bottom">

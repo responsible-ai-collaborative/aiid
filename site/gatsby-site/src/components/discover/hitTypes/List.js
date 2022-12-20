@@ -9,6 +9,7 @@ import ReportText from 'components/reports/ReportText';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import Card from 'elements/Card';
 import Button from 'elements/Button';
+import { VIEW_TYPES } from 'utils/discover';
 
 const StyledCard = styled(Card)`
   overflow: hidden;
@@ -36,6 +37,7 @@ export default function Details({
   submittersModal,
   flagReportModal,
   toggleFilterByIncidentId,
+  viewType,
 }) {
   const [viewMore, setViewMore] = useState(false);
 
@@ -46,11 +48,11 @@ export default function Details({
           <IncidentCardImage
             className="img-thumbnail"
             publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
-            alt={item.title}
+            alt={viewType === VIEW_TYPES.INCIDENTS ? item.incident_title : item.title}
             transformation={fill().height(320)}
           />
           <Text>
-            <HeaderTitle item={item} />
+            <HeaderTitle item={item} viewType={viewType} />
 
             <div>
               <SourceDomainSubtitle item={item} className="mb-2 text-muted-gray d-inline-block" />
@@ -70,9 +72,14 @@ export default function Details({
         </Contents>
         <Card.Text className="mt-2">
           {viewMore ? (
-            <ReportText text={item.text} />
+            <ReportText
+              text={viewType === VIEW_TYPES.INCIDENTS ? item.incident_description : item.text}
+            />
           ) : (
-            <ReportText text={item.text} maxChars={400} />
+            <ReportText
+              text={viewType === VIEW_TYPES.INCIDENTS ? item.incident_description : item.text}
+              maxChars={400}
+            />
           )}
 
           <Button

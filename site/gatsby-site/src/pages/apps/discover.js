@@ -19,6 +19,7 @@ import { useLocalization } from 'gatsby-theme-i18n';
 import Container from 'elements/Container';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
+import { VIEW_TYPES } from 'utils/discover';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -185,7 +186,7 @@ function DiscoverApp(props) {
 
   const [searchState, setSearchState] = useState(generateSearchState({ query }));
 
-  const [displayType, setDisplayType] = useState('incidents');
+  const [viewType, setViewType] = useState(VIEW_TYPES.INCIDENTS);
 
   const onSearchStateChange = (searchState) => {
     setSearchState({ ...searchState });
@@ -214,13 +215,13 @@ function DiscoverApp(props) {
 
     setQuery({ ...searchQuery, ...extraQuery }, 'push');
 
-    setDisplayType(
+    setViewType(
       (searchState.refinementList.hideDuplicates === 'true' ||
         searchState.refinementList.hideDuplicates === true) &&
         searchState.refinementList.is_incident_report.length > 0 &&
         searchState.refinementList.is_incident_report[0] === 'true'
-        ? 'incidents'
-        : 'reports'
+        ? VIEW_TYPES.INCIDENTS
+        : VIEW_TYPES.REPORTS
     );
   }, [searchState]);
 
@@ -274,7 +275,7 @@ function DiscoverApp(props) {
             authorsModal={authorsModal}
             submittersModal={submittersModal}
             flagReportModal={flagReportModal}
-            displayType={displayType}
+            viewType={viewType}
           />
 
           <CustomModal {...authorsModal} />
