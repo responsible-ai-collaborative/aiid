@@ -147,7 +147,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         });
 
         addToast({
-          message: t('Variant successfully deleted.'),
+          message: t('Variant successfully deleted. Your changes will be live within 24 hours.'),
           severity: SEVERITY.success,
         });
 
@@ -190,7 +190,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
       });
 
       addToast({
-        message: t('Variant successfully updated.'),
+        message: t('Variant successfully updated. Your edits will be live within 24 hours.'),
         severity: SEVERITY.success,
       });
 

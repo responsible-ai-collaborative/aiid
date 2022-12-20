@@ -183,7 +183,9 @@ describe('Variants pages', () => {
 
         cy.wait('@updateVariant');
 
-        cy.get('[data-cy="toast"]').contains('Variant successfully updated.').should('exist');
+        cy.get('[data-cy="toast"]')
+          .contains('Variant successfully updated. Your edits will be live within 24 hours.')
+          .should('exist');
 
         cy.get('[data-cy=edit-variant-modal]').should('not.exist');
       }
@@ -251,7 +253,9 @@ describe('Variants pages', () => {
 
         cy.wait('@updateVariant');
 
-        cy.get('[data-cy="toast"]').contains('Variant successfully updated.').should('exist');
+        cy.get('[data-cy="toast"]')
+          .contains('Variant successfully updated. Your edits will be live within 24 hours.')
+          .should('exist');
 
         cy.get('[data-cy=edit-variant-modal]').should('not.exist');
       }
@@ -324,7 +328,9 @@ describe('Variants pages', () => {
 
         cy.wait('@linkReportsToIncidents');
 
-        cy.get('[data-cy="toast"]').contains('Variant successfully deleted.').should('exist');
+        cy.get('[data-cy="toast"]')
+          .contains('Variant successfully deleted. Your changes will be live within 24 hours.')
+          .should('exist');
 
         cy.get('[data-cy=edit-variant-modal]').should('not.exist');
       }
