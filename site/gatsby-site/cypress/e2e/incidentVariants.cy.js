@@ -262,6 +262,76 @@ describe('Variants pages', () => {
     });
   });
 
+  maybeIt('Should Save Variant - Incident Editor user', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    const new_text_inputs = 'New Input text';
+
+    const new_text_outputs = 'New Output text';
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindVariant',
+      'findVariant',
+      {
+        data: {
+          report: variantsIncident.data.incident.reports[0],
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    getVariants((variants) => {
+      const variant = variants[0];
+
+      const today = format(new Date(), 'yyyy-MM-dd');
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) =>
+          req.body.operationName == 'UpdateVariant' &&
+          req.body.variables.query.report_number === variant.report_number &&
+          req.body.variables.set.text_inputs === new_text_inputs &&
+          req.body.variables.set.text_outputs === new_text_outputs &&
+          req.body.variables.set.tags == undefined &&
+          req.body.variables.set.date_modified == today &&
+          req.body.variables.set.epoch_date_modified == getUnixTime(new Date(today)),
+        'updateVariant',
+        {
+          data: {
+            updateOneReport: variant,
+          },
+        }
+      );
+
+      cy.get('[data-cy=variant-card]').should('have.length', variants.length);
+
+      if (variants.length > 0) {
+        cy.get('[data-cy=variant-card]')
+          .eq(0)
+          .within(() => {
+            cy.get('[data-cy=edit-variant-btn]').click();
+          });
+
+        cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
+
+        cy.get('#formTextInputs').clear().type(new_text_inputs);
+        cy.get('#formTextOutputs').clear().type(new_text_outputs);
+
+        cy.get('[data-cy=save-variant-btn]').click();
+
+        cy.wait('@updateVariant');
+
+        cy.get('[data-cy="toast"]')
+          .contains('Variant successfully updated. Your edits will be live within 24 hours.')
+          .should('exist');
+
+        cy.get('[data-cy=edit-variant-modal]').should('not.exist');
+      }
+    });
+  });
+
   maybeIt('Should Delete Variant - Incident Editor user', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 

@@ -14,7 +14,7 @@ export const schema = yup.object().shape({
 });
 
 const VariantForm = () => {
-  const { values, errors, touched, handleChange } = useFormikContext();
+  const { values, errors, touched, handleChange, isSubmitting } = useFormikContext();
 
   const { t } = useTranslation();
 
@@ -45,6 +45,7 @@ const VariantForm = () => {
           name="text_inputs"
           value={values.text_inputs}
           onChange={handleChange}
+          disabled={isSubmitting}
         />
         <Form.Control.Feedback type="invalid">
           <Trans>{errors.text_inputs && touched.text_inputs ? errors.text_inputs : null}</Trans>
@@ -75,6 +76,7 @@ const VariantForm = () => {
           name="text_outputs"
           value={values.text_outputs}
           onChange={handleChange}
+          disabled={isSubmitting}
         />
         <Form.Control.Feedback type="invalid">
           <Trans>{errors.text_outputs && touched.text_outputs ? errors.text_outputs : null}</Trans>

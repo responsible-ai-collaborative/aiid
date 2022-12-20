@@ -23,6 +23,8 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch 
 
   const [isApproving, setIsApproving] = useState(false);
 
+  const [isSaving, setIsSaving] = useState(false);
+
   const [isDeleting, setIsDeleting] = useState(false);
 
   const [newVariantStatus, setNewVariantStatus] = useState(null);
@@ -49,15 +51,17 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch 
 
   const handleSubmit = async (values) => {
     try {
-      let newTags = values.tags.filter((tag) => !tag.startsWith('variant:'));
-
-      newTags.push(newVariantStatus);
-
       const updated = {
         text_inputs: values.text_inputs,
         text_outputs: values.text_outputs,
-        tags: newTags,
       };
+
+      if (newVariantStatus) {
+        let newTags = values.tags.filter((tag) => !tag.startsWith('variant:'));
+
+        newTags.push(newVariantStatus);
+        updated.tags = newTags;
+      }
 
       updated.date_modified = format(new Date(), 'yyyy-MM-dd');
       updated.epoch_date_modified = getUnixTime(new Date(updated.date_modified));
@@ -163,12 +167,15 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch 
                 setIsApproving(true);
               } else if (newVariantStatus === VARIANT_STATUS.rejected) {
                 setIsRejecting(true);
+              } else if (newVariantStatus == null) {
+                setIsSaving(true);
               }
 
               await handleSubmit(values);
 
               setIsApproving(false);
               setIsRejecting(false);
+              setIsSaving(false);
             }}
           >
             {({ isSubmitting, isValid, submitForm }) => (
@@ -225,6 +232,22 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch 
                       </>
                     ) : (
                       <Trans>Approve</Trans>
+                    )}
+                  </Button>
+                  <Button
+                    variant="primary"
+                    onClick={submitForm}
+                    disabled={isSubmitting || isDeleting || !isValid}
+                    className="bootstrap flex gap-2 disabled:opacity-50"
+                    data-cy="save-variant-btn"
+                  >
+                    {isSubmitting && isSaving ? (
+                      <>
+                        <Spinner size="sm" />
+                        <Trans>Saving</Trans>
+                      </>
+                    ) : (
+                      <Trans>Save</Trans>
                     )}
                   </Button>
                 </Modal.Footer>
