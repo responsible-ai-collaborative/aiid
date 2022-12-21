@@ -13,8 +13,15 @@ import { VariantStatusBadge } from './VariantList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { format, getUnixTime } from 'date-fns';
+import Link from 'components/ui/Link';
 
-export default function VariantEditModal({ show, onClose, reportNumber, refetch = null }) {
+export default function VariantEditModal({
+  show,
+  onClose,
+  reportNumber,
+  incidentId,
+  refetch = null,
+}) {
   const { t } = useTranslation();
 
   const [variant, setVariant] = useState(null);
@@ -187,6 +194,13 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch 
                   <VariantForm />
                 </Modal.Body>
                 <Modal.Footer>
+                  <Link
+                    to={`/cite/edit?report_number=${reportNumber}&incident_id=${incidentId}`}
+                    data-cy="edit-all-variant-btn"
+                    className="mr-3"
+                  >
+                    <Trans>Edit more fields</Trans>
+                  </Link>
                   <Button
                     variant="danger"
                     disabled={isSubmitting}

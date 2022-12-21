@@ -8,6 +8,7 @@ import { FIND_VARIANTS } from '../../graphql/variants';
 import { FIND_INCIDENTS } from '../../graphql/incidents';
 import AiidHelmet from '../../components/AiidHelmet';
 import ListSkeleton from 'elements/Skeletons/List';
+import { getVariantStatus } from '../../utils/variants';
 
 export default function IncidentsPage(props) {
   const { data: variantsData, refetch } = useQuery(FIND_VARIANTS, {
@@ -55,6 +56,7 @@ export default function IncidentsPage(props) {
                 ...variant,
                 incident_id: incident.incident_id,
                 title: incident.title,
+                status: getVariantStatus(variant),
               };
 
               fullData.push(fullDataItem);

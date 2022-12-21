@@ -12,7 +12,7 @@ import styled from 'styled-components';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Trans, useTranslation } from 'react-i18next';
 import { VariantStatusBadge } from './VariantList';
-import { getVariantStatus, VARIANT_STATUS } from 'utils/variants';
+import { VARIANT_STATUS } from 'utils/variants';
 import { DELETE_VARIANT, UPDATE_VARIANT } from '../../graphql/variants';
 import { LINK_REPORTS_TO_INCIDENTS } from '../../graphql/reports';
 
@@ -107,6 +107,8 @@ export default function VariantsTable({ data, refetch, setLoading }) {
   const addToast = useToastContext();
 
   const [variantIdToEdit, setVariantIdToEdit] = useState(0);
+
+  const [incidentId, setIncidentId] = useState(0);
 
   const [deleteVariant] = useMutation(DELETE_VARIANT);
 
@@ -223,11 +225,11 @@ export default function VariantsTable({ data, refetch, setLoading }) {
       },
       {
         Header: 'Status',
-        accessor: 'tags',
+        accessor: 'status',
         width: 150,
         Cell: ({ row: { values } }) => (
           <div className="flex justify-center">
-            <VariantStatusBadge status={getVariantStatus(values)} />
+            <VariantStatusBadge status={values.status} />
           </div>
         ),
       },
@@ -295,7 +297,10 @@ export default function VariantsTable({ data, refetch, setLoading }) {
             <Button
               data-cy="edit-variant-btn"
               variant="primary"
-              onClick={() => setVariantIdToEdit(values.report_number)}
+              onClick={() => {
+                setVariantIdToEdit(values.report_number);
+                setIncidentId(values.incident_id);
+              }}
             >
               <FontAwesomeIcon icon={faEdit} />
             </Button>
@@ -330,7 +335,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
       initialState: {
         filters: [
           {
-            id: 'tags',
+            id: 'status',
             value: 'Unreviewed',
           },
         ],
@@ -422,6 +427,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         onClose={() => setVariantIdToEdit(0)}
         reportNumber={variantIdToEdit}
         refetch={refetch}
+        incidentId={incidentId}
       />
     </>
   );

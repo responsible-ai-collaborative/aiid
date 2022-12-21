@@ -41,7 +41,7 @@ export const VariantStatusBadge = ({ status }) => {
   );
 };
 
-const VariantCard = ({ variant }) => {
+const VariantCard = ({ variant, incidentId }) => {
   const { t } = useTranslation();
 
   const { isRole, loading: loadingUserContext } = useUserContext();
@@ -114,6 +114,7 @@ const VariantCard = ({ variant }) => {
         show={showEditModal}
         onClose={() => setShowEditModal(false)}
         reportNumber={variant.report_number}
+        incidentId={incidentId}
       />
     </>
   );
@@ -163,7 +164,11 @@ const VariantList = ({ incidentId, variants }) => {
         </Trans>
         <div className={'flex flex-col gap-3 mt-5'}>
           {variants.map((variant) => (
-            <VariantCard variant={variant} key={`variant-${variant.report_number}`} />
+            <VariantCard
+              variant={variant}
+              incidentId={incidentId}
+              key={`variant-${variant.report_number}`}
+            />
           ))}
         </div>
       </div>
