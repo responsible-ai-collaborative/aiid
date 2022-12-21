@@ -234,12 +234,14 @@ export default function VariantsTable({ data, refetch, setLoading }) {
       {
         Header: 'Input and circumstances',
         accessor: 'text_inputs',
+        width: 450,
         disableFilters: false,
         Cell: ({ row: { values } }) => <Markdown>{values.text_inputs}</Markdown>,
       },
       {
         Header: 'Output and outcomes',
         accessor: 'text_outputs',
+        width: 450,
         disableFilters: false,
         Cell: ({ row: { values } }) => <Markdown>{values.text_outputs}</Markdown>,
       },

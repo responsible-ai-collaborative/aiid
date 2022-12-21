@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery, useApolloClient } from '@apollo/client';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Spinner } from 'flowbite-react';
 import LayoutHideSidebar from '../../components/LayoutHideSidebar';
 import VariantsTable from '../../components/variants/VariantsTable';
 import { FIND_VARIANTS } from '../../graphql/variants';
 import { FIND_INCIDENTS } from '../../graphql/incidents';
 import AiidHelmet from '../../components/AiidHelmet';
+import ListSkeleton from 'elements/Skeletons/List';
 
 export default function IncidentsPage(props) {
   const { data: variantsData, refetch } = useQuery(FIND_VARIANTS, {
@@ -86,9 +87,8 @@ export default function IncidentsPage(props) {
         )}
         <div className="bootstrap">
           {!data && (
-            <div className="p-4 flex justify-center align-items-center gap-2">
-              <Spinner />
-              <Trans>Fetching Variants...</Trans>
+            <div className="px-3">
+              <ListSkeleton />
             </div>
           )}
           {data && (
