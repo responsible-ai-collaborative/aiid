@@ -140,7 +140,9 @@ const RelatedIncidentsArea = ({
               </ReportRow>
             ))}
           {!loading && (error || reports?.length == 0 || incidents?.length == 0) && (
-            <ListGroup.Item>{error ? error : t('No related reports found.')}</ListGroup.Item>
+            <ListGroup.Item data-cy="empty-message">
+              {error ? error : t('No related reports found.')}
+            </ListGroup.Item>
           )}
         </div>
       </ListContainer>
