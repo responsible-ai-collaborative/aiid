@@ -8,68 +8,12 @@ import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useMutation } from '@apollo/client';
 import { useBlockLayout, useFilters, usePagination, useResizeColumns, useTable } from 'react-table';
 import VariantEditModal from './VariantEditModal';
-import styled from 'styled-components';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Trans, useTranslation } from 'react-i18next';
 import { VariantStatusBadge } from './VariantList';
 import { VARIANT_STATUS } from 'utils/variants';
 import { DELETE_VARIANT, UPDATE_VARIANT } from '../../graphql/variants';
 import { LINK_REPORTS_TO_INCIDENTS } from '../../graphql/reports';
-
-const Table = styled.div`
-  display: inline-block;
-  border-spacing: 0;
-
-  .tr {
-    &:nth-child(even) {
-      background-color: #f2f2f2;
-    }
-    :last-child {
-      .td {
-        border-bottom: 0;
-      }
-    }
-  }
-
-  .th,
-  .td {
-    margin: 0;
-    padding: 0.5rem;
-    position: relative;
-
-    :last-child {
-      border-right: 0;
-    }
-  }
-`;
-
-const Header = styled.div`
-  background: #fff;
-  position: sticky;
-  z-index: 1;
-  width: fit-content;
-  top: 0;
-  box-shadow: 0px 3px 3px #ccc;
-`;
-
-const HeaderText = styled.h6`
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-const ResizeHandle = styled.div`
-  display: inline-block;
-  background: ${({ isResizing }) => (isResizing ? 'var(--bs-primary)' : 'var(--bs-secondary)')};
-  width: 6px;
-  height: 100%;
-  position: absolute;
-  right: 0;
-  top: 0;
-  transform: translateX(50%);
-  z-index: 1;
-  touch-action: none;
-`;
 
 function DefaultColumnFilter({
   column: { Header, canFilter, filterValue, preFilteredRows, setFilter },
@@ -79,12 +23,12 @@ function DefaultColumnFilter({
   const { t } = useTranslation();
 
   if (!canFilter) {
-    return <HeaderText>{Header}</HeaderText>;
+    return <h6>{Header}</h6>;
   }
 
   return (
     <div className="bootstrap">
-      <HeaderText>{Header}</HeaderText>
+      <h6>{Header}</h6>
       <Form.Control
         data-cy={`input-filter-${Header}`}
         className="w-100"
@@ -357,44 +301,59 @@ export default function VariantsTable({ data, refetch, setLoading }) {
     <>
       {/* eslint-disable react/jsx-key */}
 
-      <Table {...getTableProps()}>
-        <Header>
+      <table
+        {...getTableProps()}
+        className="w-full text-sm text-left text-gray-500 dark:text-gray-400 border-none overflow-hidden h-[1px]"
+      >
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           {headerGroups.map((headerGroup) => (
             <div {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
-                <div
+                <th
                   {...column.getHeaderProps()}
-                  className="td border-bottom border-right px-3 py-2"
+                  className={`${column.width} py-3 px-4 border-none`}
+                  data-cy={`header-${column.id}`}
                 >
                   {column.render('Filter')}
-                  <ResizeHandle {...column.getResizerProps()} isResizing={column.isResizing} />
-                </div>
+                  <div
+                    {...column.getResizerProps()}
+                    className="inline-block w-2 h-full absolute translate-x-1/2 right-0 top-0 z-2 touch-none"
+                  ></div>
+                </th>
               ))}
             </div>
           ))}
-        </Header>
+        </thead>
 
-        <div {...getTableBodyProps()}>
-          {page.map((row) => {
+        <tbody {...getTableBodyProps()}>
+          {page.map((row, i) => {
             prepareRow(row);
             return (
-              <div {...row.getRowProps()} className="tr" data-cy="row">
+              <tr
+                {...row.getRowProps()}
+                className={`text-gray-900 border-b dark:bg-gray-800 dark:border-gray-700") + ${
+                  i % 2 == 0
+                    ? 'bg-white dark:bg-gray-900 dark:border-gray-700'
+                    : 'bg-gray-50 dark:bg-gray-800 dark:border-gray-700'
+                }`}
+                data-cy="row"
+              >
                 {row.cells.map((cell) => {
                   return (
-                    <div
+                    <td
                       {...cell.getCellProps()}
-                      className="td border-end border-bottom"
+                      className={`${cell.column.width} py-2 px-4 border-none align-top h-full flex`}
                       data-cy="cell"
                     >
                       {cell.render('Cell')}
-                    </div>
+                    </td>
                   );
                 })}
-              </div>
+              </tr>
             );
           })}
-        </div>
-      </Table>
+        </tbody>
+      </table>
 
       <div className="flex gap-2 justify-start items-center mt-3 bootstrap">
         <Pagination className="mb-0">
