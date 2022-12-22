@@ -27,7 +27,7 @@ const checkLinks = () => {
     cy.visit(page.prop('href'));
 
     // Check if the sidebar active item match the current page
-    cy.get('aside .item.active a')
+    cy.get('aside .item.active a', { timeout: 10000 })
       .first()
       .should('have.attr', 'href')
       .then((href) => expect(page.prop('href').endsWith(href)).to.be.true);
