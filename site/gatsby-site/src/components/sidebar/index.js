@@ -123,7 +123,10 @@ const Sidebar = ({ defaultCollapsed = false }) => {
           />
         ) : null}
 
-        <ul className={`space-y-2 shrink list-none overflow-auto p-2 md:mb-12`}>
+        <ul
+          data-cy="sidebar-tree"
+          className={`space-y-2 shrink list-none overflow-auto p-2 md:mb-12`}
+        >
           <Tree
             setNavCollapsed={() => {}}
             isCollapsed={isCollapsed}

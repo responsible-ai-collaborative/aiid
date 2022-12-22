@@ -35,7 +35,7 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed 
 
   return (
     <>
-      <li className={`z-50`}>
+      <li className={`z-50`} data-cy={'sidebar-' + item.label}>
         <NodeLink
           item={item}
           title={isCollapsed ? item.title : undefined}
