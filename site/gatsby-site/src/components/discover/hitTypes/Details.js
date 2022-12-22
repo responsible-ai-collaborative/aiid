@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image } from 'utils/cloudinary';
+import Image from 'components/Image';
 import styled from 'styled-components';
 import { fill } from '@cloudinary/base/actions/resize';
 
