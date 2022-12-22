@@ -224,6 +224,11 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         accessor: 'title',
       },
       {
+        Header: 'Tags',
+        accessor: 'tags',
+        show: false,
+      },
+      {
         Header: 'Status',
         accessor: 'status',
         width: 150,
@@ -339,6 +344,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
             value: 'Unreviewed',
           },
         ],
+        hiddenColumns: ['tags'],
       },
     },
     useFilters,
