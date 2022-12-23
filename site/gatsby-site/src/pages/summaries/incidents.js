@@ -20,7 +20,7 @@ const ReportList = ({ items }) => {
 
 const IncidentList = ({ incidents }) => {
   return (
-    <>
+    <div data-cy="incident-list">
       {incidents.map((incident) => (
         <div key={incident.incident_id} data-cy={`incident-${incident.incident_id}`}>
           <h2>
@@ -39,7 +39,7 @@ const IncidentList = ({ incidents }) => {
           <ReportList items={incident.reports} />
         </div>
       ))}
-    </>
+    </div>
   );
 };
 

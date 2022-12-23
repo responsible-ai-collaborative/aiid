@@ -104,7 +104,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
         id="sidebar"
         data-cy={'sidebar' + (isCollapsed ? '-collapsed' : '')}
         aria-label="Sidebar"
-        className={`${sidebarWidth} sticky top-0 flex flex-col`}
+        className={`${sidebarWidth} sticky top-0 flex flex-col bg-text-light-gray`}
         style={{
           height:
             (headerVisiblePixels && !isMobile) || window.innerWidth > 768
