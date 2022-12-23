@@ -20,7 +20,7 @@ function DefaultColumnFilter({
 }) {
   const count = preFilteredRows.length;
 
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'variants']);
 
   if (!canFilter) {
     return <h6>{Header}</h6>;
@@ -46,7 +46,7 @@ function DefaultColumnFilter({
 export default function VariantsTable({ data, refetch, setLoading }) {
   const { isLoggedIn, isRole } = useUserContext();
 
-  const { t } = useTranslation();
+  const { t } = useTranslation(['variants']);
 
   const addToast = useToastContext();
 
@@ -154,7 +154,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
   const columns = React.useMemo(() => {
     const columns = [
       {
-        Header: 'Incident ID',
+        Header: t('Incident ID'),
         accessor: 'incident_id',
         width: 150,
         Cell: ({ row: { values } }) => (
@@ -164,7 +164,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         ),
       },
       {
-        Header: <Trans>Incident Title</Trans>,
+        Header: t('Incident Title'),
         accessor: 'title',
       },
       {
@@ -173,7 +173,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         show: false,
       },
       {
-        Header: 'Status',
+        Header: t('Status'),
         accessor: 'status',
         width: 150,
         Cell: ({ row: { values } }) => (
@@ -183,14 +183,14 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         ),
       },
       {
-        Header: 'Input and circumstances',
+        Header: t('Input and circumstances'),
         accessor: 'text_inputs',
         width: 450,
         disableFilters: false,
         Cell: ({ row: { values } }) => <Markdown>{values.text_inputs}</Markdown>,
       },
       {
-        Header: 'Output and outcomes',
+        Header: t('Output and outcomes'),
         accessor: 'text_outputs',
         width: 450,
         disableFilters: false,
@@ -201,7 +201,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
     if (isRole('incident_editor')) {
       // @ts-ignore
       columns.push({
-        Header: 'Actions',
+        Header: t('Actions'),
         accessor: 'report_number',
         disableFilters: true,
         width: 300,
@@ -227,7 +227,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
               className="bootstrap flex gap-2 disabled:opacity-50"
               data-cy="reject-variant-btn"
             >
-              <Trans>Reject</Trans>
+              <Trans ns="variants">Reject</Trans>
             </Button>
             <Button
               variant="primary"
@@ -241,7 +241,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
               className="bootstrap flex gap-2 disabled:opacity-50"
               data-cy="approve-variant-btn"
             >
-              <Trans>Approve</Trans>
+              <Trans ns="variants">Approve</Trans>
             </Button>
             <Button
               data-cy="edit-variant-btn"

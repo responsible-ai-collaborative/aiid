@@ -22,7 +22,7 @@ export default function VariantEditModal({
   incidentId,
   refetch = null,
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'variants']);
 
   const [variant, setVariant] = useState(null);
 
@@ -150,7 +150,7 @@ export default function VariantEditModal({
       <Modal show={show} onHide={onClose} data-cy="edit-variant-modal" size="lg">
         <Modal.Header closeButton>
           <Modal.Title>
-            <Trans>Edit Variant</Trans>
+            <Trans ns="variants">Edit Variant</Trans>
           </Modal.Title>
         </Modal.Header>
 
@@ -161,7 +161,11 @@ export default function VariantEditModal({
                 <Spinner />
               </div>
             )}
-            {variant === null && <div>Variant not found</div>}
+            {variant === null && (
+              <div>
+                <Trans ns="variants">Variant not found</Trans>
+              </div>
+            )}
           </Modal.Body>
         )}
 
@@ -199,7 +203,7 @@ export default function VariantEditModal({
                     data-cy="edit-all-variant-btn"
                     className="mr-3"
                   >
-                    <Trans>Edit more fields</Trans>
+                    <Trans ns="variants">Edit more fields</Trans>
                   </Link>
                   <Button
                     variant="danger"
@@ -223,10 +227,10 @@ export default function VariantEditModal({
                     {isSubmitting && isRejecting ? (
                       <>
                         <Spinner size="sm" />
-                        <Trans>Rejecting</Trans>
+                        <Trans ns="variants">Rejecting</Trans>
                       </>
                     ) : (
-                      <Trans>Reject</Trans>
+                      <Trans ns="variants">Reject</Trans>
                     )}
                   </Button>
                   <Button
@@ -242,15 +246,18 @@ export default function VariantEditModal({
                     {isSubmitting && isApproving ? (
                       <>
                         <Spinner size="sm" />
-                        <Trans>Approving</Trans>
+                        <Trans ns="variants">Approving</Trans>
                       </>
                     ) : (
-                      <Trans>Approve</Trans>
+                      <Trans ns="variants">Approve</Trans>
                     )}
                   </Button>
                   <Button
                     variant="primary"
-                    onClick={submitForm}
+                    onClick={() => {
+                      setNewVariantStatus(null);
+                      submitForm();
+                    }}
                     disabled={isSubmitting || isDeleting || !isValid}
                     className="bootstrap flex gap-2 disabled:opacity-50"
                     data-cy="save-variant-btn"
@@ -258,10 +265,10 @@ export default function VariantEditModal({
                     {isSubmitting && isSaving ? (
                       <>
                         <Spinner size="sm" />
-                        <Trans>Saving</Trans>
+                        <Trans ns="variants">Saving</Trans>
                       </>
                     ) : (
-                      <Trans>Save</Trans>
+                      <Trans ns="variants">Save</Trans>
                     )}
                   </Button>
                 </Modal.Footer>

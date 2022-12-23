@@ -70,7 +70,7 @@ export default function IncidentsPage(props) {
     }
   }, [variantsData]);
 
-  const { t } = useTranslation();
+  const { t } = useTranslation(['variants']);
 
   const setLoading = (loading) => {
     setIsLoading(loading);

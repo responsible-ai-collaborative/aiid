@@ -16,12 +16,12 @@ export const schema = yup.object().shape({
 const VariantForm = () => {
   const { values, errors, touched, handleChange, isSubmitting } = useFormikContext();
 
-  const { t } = useTranslation();
+  const { t } = useTranslation(['variants']);
 
   return (
     <div className="flex w-full flex-col gap-2" data-cy="variant-form">
       <div className="font-bold flex items-center gap-2">
-        <Trans>Input and circumstances</Trans>
+        <Trans ns="variants">Input and circumstances</Trans>
         <Tooltip
           content={t(
             'Provide the relevant details producing the incident. Examples include the input prompts to a chatbot or a description of the circumstances leading to injuries sustained from a robot.'
@@ -48,11 +48,13 @@ const VariantForm = () => {
           disabled={isSubmitting}
         />
         <Form.Control.Feedback type="invalid">
-          <Trans>{errors.text_inputs && touched.text_inputs ? errors.text_inputs : null}</Trans>
+          <Trans ns="variants">
+            {errors.text_inputs && touched.text_inputs ? errors.text_inputs : null}
+          </Trans>
         </Form.Control.Feedback>
       </Form.Group>
       <div className="font-bold flex items-center gap-2">
-        <Trans>Output and outcomes</Trans>
+        <Trans ns="variants">Output and outcomes</Trans>
         <Tooltip
           content={t(
             'Provide the relevant details surrounding the incident. Examples include output text from a chatbot or the nature of injuries sustained from a robot.'
@@ -79,7 +81,9 @@ const VariantForm = () => {
           disabled={isSubmitting}
         />
         <Form.Control.Feedback type="invalid">
-          <Trans>{errors.text_outputs && touched.text_outputs ? errors.text_outputs : null}</Trans>
+          <Trans ns="variants">
+            {errors.text_outputs && touched.text_outputs ? errors.text_outputs : null}
+          </Trans>
         </Form.Control.Feedback>
       </Form.Group>
     </div>

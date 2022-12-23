@@ -36,13 +36,13 @@ export const VariantStatusBadge = ({ status }) => {
       data-cy="variant-status-badge"
       className={`${badgeClass} text-xs font-semibold px-2.5 py-0.5 rounded capitalize`}
     >
-      <Trans>{getVariantStatusText(status)}</Trans>
+      <Trans ns="variants">{getVariantStatusText(status)}</Trans>
     </div>
   );
 };
 
 const VariantCard = ({ variant, incidentId }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'variants']);
 
   const { isRole, loading: loadingUserContext } = useUserContext();
 
@@ -59,7 +59,7 @@ const VariantCard = ({ variant, incidentId }) => {
         </div>
         <div className="flex w-full flex-col mt-3 gap-2">
           <div className="font-bold flex items-center gap-2">
-            <Trans>Input and circumstances</Trans>
+            <Trans ns="variants">Input and circumstances</Trans>
             <Tooltip
               content={t(
                 'Provide the relevant details producing the incident. Examples include the input prompts to a chatbot or a description of the circumstances leading to injuries sustained from a robot.'
@@ -77,7 +77,7 @@ const VariantCard = ({ variant, incidentId }) => {
             <Markdown>{variant.text_inputs}</Markdown>
           </div>
           <div className="font-bold flex items-center gap-2">
-            <Trans>Output and outcomes</Trans>
+            <Trans ns="variants">Output and outcomes</Trans>
             <Tooltip
               content={t(
                 'Provide the relevant details surrounding the incident. Examples include output text from a chatbot or the nature of injuries sustained from a robot.'
@@ -121,7 +121,7 @@ const VariantCard = ({ variant, incidentId }) => {
 };
 
 const VariantList = ({ incidentId, variants }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['variants']);
 
   const [displayForm, setDisplayForm] = useState(false);
 
@@ -150,10 +150,10 @@ const VariantList = ({ incidentId, variants }) => {
   return (
     <div className="my-6">
       <h1>
-        <Trans>Variants</Trans>
+        <Trans ns="variants">Variants</Trans>
       </h1>
       <div className="mb-4">
-        <Trans>
+        <Trans ns="variants">
           A &quot;variant&quot; is an incident that shares the same causative factors, produces
           similar harms, and involves the same intelligent systems as a known AI incident. Rather
           than index variants as entirely separate incidents, we list variations of incidents under
@@ -176,15 +176,17 @@ const VariantList = ({ incidentId, variants }) => {
       <div className="bootstrap">
         <Button variant="outline-primary" onClick={onAddVariantClick} data-cy="add-variant-btn">
           <FontAwesomeIcon icon={faPlus} title={t('Add Variant')} className="mr-2" />
-          <Trans>Add Variant</Trans>
+          <Trans ns="variants">Add Variant</Trans>
         </Button>
       </div>
 
       {displaySuccessMessage && (
         <div data-cy="success-message" className="mt-3 font-medium text-green-600">
-          Your variant has been added to the review queue and will appear on this page within 12
-          hours. Please continue submitting when you encounter more variants. Most of the time we
-          won&apos;t review it in the same day, but it will appear within a day as unreviewed.
+          <Trans ns="variants">
+            Your variant has been added to the review queue and will appear on this page within 12
+            hours. Please continue submitting when you encounter more variants. Most of the time we
+            won&apos;t review it in the same day, but it will appear within a day as unreviewed.
+          </Trans>
         </div>
       )}
 
@@ -198,7 +200,9 @@ const VariantList = ({ incidentId, variants }) => {
                 await addVariant({ incidentId, text_inputs, text_outputs });
 
                 addToast({
-                  message: t('Variant successfully added.'),
+                  message: t(
+                    'Your variant has been added to the review queue and will appear on this page within 12 hours.'
+                  ),
                   severity: SEVERITY.success,
                 });
 
@@ -237,7 +241,7 @@ const VariantList = ({ incidentId, variants }) => {
                             <Spinner size="sm" />
                           </div>
                         )}
-                        <Trans ns="login">Submit</Trans>
+                        <Trans>Submit</Trans>
                       </div>
                     </Button>
                   </div>
