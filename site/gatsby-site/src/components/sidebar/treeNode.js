@@ -77,7 +77,7 @@ const NodeLink = ({
     title={title}
     to={item.url}
     onClick={click}
-    className={`flex rounded-lg items-center p-2  text-white md:text-base font-normal group transition-none ${calculatedClassName}`}
+    className={`flex rounded-lg items-center p-2 text-white md:text-base font-normal group transition-none ${calculatedClassName}`}
   >
     {icon && <>{icon} </>}
     <span

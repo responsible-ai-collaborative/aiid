@@ -540,6 +540,20 @@
         @apply grid grid-cols-1 gap-2;
     }
 
+    #sidebar-tree::-webkit-scrollbar {
+        width: 0.25rem;
+    }
+    #sidebar-tree::-webkit-scrollbar-thumb {
+        @apply bg-gray-400;
+    }
+    #sidebar-tree::hover::-webkit-scrollbar {
+        width: 0.5rem;
+    }
+    #sidebar-tree::hover::-webkit-scrollbar-thumb {
+        width: 0.5rem;
+    }
+
+
     /* TAILWIND AIS PAGINATION START */
 
     .tw-ais-pagination {
