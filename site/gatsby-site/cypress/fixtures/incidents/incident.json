@@ -13,7 +13,12 @@
                     "name": "YouTube"
                 }
             ],
-            "AllegedHarmedOrNearlyHarmedParties": [],
+            "AllegedHarmedOrNearlyHarmedParties": [
+                {
+                    "entity_id": "children",
+                    "name": "Children"
+                }
+            ],
             "__typename": "Incident",
             "date": "2015-05-19",
             "description": "YouTube’s content filtering and recommendation algorithms exposed children to disturbing and inappropriate videos.",
