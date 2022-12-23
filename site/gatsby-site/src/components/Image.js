@@ -1,21 +1,28 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { CloudinaryImg } from 'utils/cloudinary';
 
-
-export default function Image({
+export function IncidentThumbnail({
   className,
   publicID,
   alt,
   height,
   transformation,
 }) {
-  return (
-    <PlaceholderImage
-      siteName="IncidentDatabase.AI"
-      title="YouTube to crack down on inappropriate content masked as kids' cartoons"
-      incidentNumber="No.100"
-      height={height}
-    />
-  );
+  console.log(`publicID`, publicID);
+  if (publicID && publicID != 'reports/placeholder.svg') {
+    return (
+      <CloudinaryImg {...{className, publicID, alt, height, transformation}} />
+    );
+  } else {
+    return (
+      <PlaceholderImage
+        siteName="IncidentDatabase.AI"
+        title="YouTube to crack down on inappropriate content masked as kids' cartoons"
+        incidentNumber="No.100"
+        height={height}
+      />
+    );
+  }
 }
 
 function PlaceholderImage({title, siteName, incidentNumber, height = 480}) {
