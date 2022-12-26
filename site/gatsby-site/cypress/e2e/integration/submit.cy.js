@@ -422,6 +422,16 @@ describe('The Submit form', () => {
       '**/graphql',
       (req) =>
         req.body.operationName == 'ProbablyRelatedReports' &&
+        req.body.variables.query?.epoch_date_published_gt == 1608346800 &&
+        req.body.variables.query?.epoch_date_published_lt == 1610766000,
+      'RelatedReportsByPublishedDate',
+      relatedReports.byDatePublished
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'ProbablyRelatedReports' &&
         req.body.variables.query?.authors_in?.[0] == 'test author',
       'RelatedReportsByAuthor',
       relatedReports.byAuthors
@@ -449,9 +459,15 @@ describe('The Submit form', () => {
       cy.get(`input[name="${key}"]`).type(values[key]);
     }
 
-    cy.wait(['@RelatedReportsByURL', '@RelatedReportsByAuthor', '@RelatedReportsByIncidentId'], {
-      timeout: 10000,
-    });
+    cy.wait(
+      [
+        '@RelatedReportsByURL',
+        '@RelatedReportsByPublishedDate',
+        '@RelatedReportsByAuthor',
+        '@RelatedReportsByIncidentId',
+      ],
+      { timeout: 10000 }
+    );
 
     for (const key of ['byURL', 'byDatePublished', 'byIncidentId']) {
       const reports =
@@ -512,6 +528,16 @@ describe('The Submit form', () => {
       '**/graphql',
       (req) =>
         req.body.operationName == 'ProbablyRelatedReports' &&
+        req.body.variables.query?.epoch_date_published_gt == 1608346800 &&
+        req.body.variables.query?.epoch_date_published_lt == 1610766000,
+      'RelatedReportsByPublishedDate',
+      relatedReports.byDatePublished
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'ProbablyRelatedReports' &&
         req.body.variables.query?.authors_in?.[0] == 'test author',
       'RelatedReportsByAuthor',
       relatedReports.byAuthors
@@ -539,9 +565,15 @@ describe('The Submit form', () => {
       cy.get(`input[name="${key}"]`).type(values[key]);
     }
 
-    cy.wait(['@RelatedReportsByURL', '@RelatedReportsByAuthor', '@RelatedReportsByIncidentId'], {
-      timeout: 10000,
-    });
+    cy.wait(
+      [
+        '@RelatedReportsByURL',
+        '@RelatedReportsByPublishedDate',
+        '@RelatedReportsByAuthor',
+        '@RelatedReportsByIncidentId',
+      ],
+      { timeout: 10000 }
+    );
 
     cy.get('[data-cy="empty-message"]').should('be.visible');
 
