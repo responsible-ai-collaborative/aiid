@@ -7,11 +7,9 @@ import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
 import config from '../../config';
 import TextInputGroup from '../components/forms/TextInputGroup';
 import { Spinner } from 'flowbite-react';
-import { isWebUri } from 'valid-url';
 import { Trans } from 'react-i18next';
 import hash from 'object-hash';
-
-const IMG_FALLBACK = 'fallback.jpg';
+import debounce from 'lodash/debounce';
 
 const getCloudinaryPublicID = (url) => {
   // https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files
@@ -36,7 +34,7 @@ const Image = ({
 
   const [needsFallback, setNeedsFallback] = useState(!publicID || publicID == 'placeholder.svg');
 
-  const image = new CloudinaryImage(publicID /*.replace(/%/g, '%25')*/, {
+  const image = new CloudinaryImage(publicID, {
     cloudName: config.cloudinary.cloudName,
   });
 
@@ -53,13 +51,14 @@ const Image = ({
   image.transformation = tmpImage.transformation.toString();
 
   useEffect(() => {
+    setNeedsFallback(false);
     let fallbackTimeout;
 
     const useFallbackIfLoadFailed = () => {
       const img = imageElement.current?.imageRef.current;
 
       if (!img || img.naturalHeight == undefined || img.naturalHeight == 0) {
-        if ((img.src || img.srcset) && img.complete) {
+        if (img && (img.src || img.srcset) && img.complete) {
           setNeedsFallback(true);
         } else {
           fallbackTimeout = setTimeout(useFallbackIfLoadFailed, 1000);
@@ -108,65 +107,15 @@ const PreviewImageInputGroup = ({
   alt = '',
   icon,
 }) => {
-  const [cloudinaryID, setCloudinaryID] = useState(IMG_FALLBACK);
+  const [cloudinaryID, setCloudinaryID] = useState(cloudinary_id);
 
-  // Track whether the image is waiting to update so we can show a spinner.
-  const [updatingImage, setUpdatingImage] = useState(false);
+  const debouncedUpdateCloudinaryId = useRef(
+    debounce((c) => {
+      setCloudinaryID(c);
+    }, 2000)
+  ).current;
 
-  const [imageReferenceError, setImageReferenceError] = useState(false);
-
-  const timeoutID = useRef(null);
-
-  const imageUrl = useRef(values.image_url);
-
-  const updateCloudinaryID = () => {
-    if (isWebUri(values.image_url)) {
-      // We want to show an error if the given url does not point to an image.
-      // We can do this by attempting to load the image ourselves
-      // before passing it to Cloudinary, which loads a fallback on error.
-      const img = document.createElement('img');
-
-      img.src = values.image_url;
-      img.onload = () => {
-        setImageReferenceError(false);
-        setCloudinaryID(getCloudinaryPublicID(values.image_url));
-      };
-      img.onerror = () => {
-        setCloudinaryID(IMG_FALLBACK);
-        setImageReferenceError(true);
-      };
-    } else {
-      setCloudinaryID(IMG_FALLBACK);
-    }
-    setUpdatingImage(false);
-  };
-
-  // When the form value changes, wait two seconds,
-  // and if it hasn't changed again by then, update the cloudinaryID.
-  // This prevents repeated requests for partially-typed URLs.
-  if (values.image_url != imageUrl.current) {
-    imageUrl.current = values.image_url;
-    setUpdatingImage(true);
-    clearTimeout(timeoutID.current);
-    timeoutID.current = setTimeout(updateCloudinaryID, 2000);
-  }
-
-  useEffect(() => {
-    // Default to fallback so we don't have to hit cloudinary API
-    // when we know there will be no match
-    if (!cloudinary_id || cloudinary_id == 'reports/') {
-      setCloudinaryID(IMG_FALLBACK);
-    } else {
-      setCloudinaryID(cloudinary_id);
-    }
-  }, [cloudinary_id]);
-
-  const childErrors = { ...errors };
-
-  touched.image_url = values.image_url.length > 0;
-  if (imageReferenceError) {
-    childErrors.image_url ||= '*Url must point to a valid image';
-  }
+  useEffect(() => debouncedUpdateCloudinaryId(cloudinary_id), [cloudinary_id]);
 
   return (
     <>
@@ -176,13 +125,16 @@ const PreviewImageInputGroup = ({
         icon={icon}
         placeholder={placeholder}
         values={values}
-        errors={childErrors}
+        errors={errors /*childErrors*/}
         touched={touched}
         handleChange={handleChange}
         className={className}
         handleBlur={handleBlur}
         schema={schema}
       />
+      {values.cloudinary_id}
+      <br />
+      {cloudinaryID}
       <figure
         data-cy="image-preview-figure"
         id="image-preview-figure"
@@ -192,10 +144,10 @@ const PreviewImageInputGroup = ({
           className="flex items-center justify-center bootstrap md:max-w-prose"
           style={{ height: '20vh', marginTop: '1rem' }}
         >
-          {updatingImage ? (
-            <Spinner size="xl" />
-          ) : (
+          {touched && cloudinaryID ? (
             <Image publicID={cloudinaryID} style={{ maxHeight: '100%' }} alt={alt} />
+          ) : (
+            <Spinner size="xl" />
           )}
         </div>
         <figcaption className="mt-2">
@@ -213,7 +165,7 @@ function PlaceholderImage({ title, siteName, itemIdentifier, height = 480, style
 
   const w = Math.floor((h * 4) / 3);
 
-  const random = mulberry32(Number('0x' + hash(itemIdentifier)) % Number.MAX_SAFE_INTEGER);
+  const random = mulberry32(Number('0x' + hash(itemIdentifier | title)) % Number.MAX_SAFE_INTEGER);
 
   const randInt = (min, max) => Math.floor(min + random() * (max - min));
 

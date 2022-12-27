@@ -123,7 +123,7 @@ const FormDetails = ({
 
         <FieldContainer>
           <PreviewImageInputGroup
-            cloudinary_id={data.cloudinary_id}
+            cloudinary_id={values.cloudinary_id}
             name="image_url"
             label={t('Image Address')}
             placeholder={t('Image URL')}
