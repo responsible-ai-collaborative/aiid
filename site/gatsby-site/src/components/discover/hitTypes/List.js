@@ -48,6 +48,7 @@ export default function Details({
             publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
             alt={item.title}
             transformation={fill().height(320)}
+            itemIdentifier={`Report.${item.report_number}`}
           />
           <Text>
             <HeaderTitle item={item} />

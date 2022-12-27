@@ -27,7 +27,9 @@ const Image = ({
   transformation = null,
   plugins = [lazyload()],
   style,
-  height = '800px'
+  height = '800px',
+  title,
+  itemIdentifier,
 }) => {
 
   const imageElement = useRef(null);
@@ -54,9 +56,7 @@ const Image = ({
     let fallbackTimeout;
 
     const useFallbackIfLoadFailed = () => {
-      console.log('useFallbackIfLoadFailed');
       const img = imageElement.current?.imageRef.current;
-      console.log(`img`, img);
 
       if (!img || img.naturalHeight == undefined || img.naturalHeight == 0) {
         if ((img.src || img.srcset) && img.complete) {
@@ -75,9 +75,11 @@ const Image = ({
   return needsFallback ? (
     <PlaceholderImage
         siteName="IncidentDatabase.AI"
-        title="YouTube to crack down on inappropriate content masked as kids' cartoons"
-        incidentNumber="No.100"
+        itemIdentifier={itemIdentifier}
+        title={title || alt}
+        className={className}
         height={height}
+        style={style}
       />
   ) : (
     <AdvancedImage
@@ -204,16 +206,12 @@ const PreviewImageInputGroup = ({
   );
 };
 
-function PlaceholderImage({title, siteName, incidentNumber, height = 480, style, className}) {
-
+function PlaceholderImage({title, siteName, itemIdentifier, height = 480, style, className}) {
+  
   const canvasRef = useRef();
-
-  console.log(`height`, height);
 
   const h = Math.floor(Number(height.replace('px', '')));
   const w = Math.floor(h * 4/3);
-  console.log(`h`, h);
-  console.log(`w`, w);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -231,7 +229,6 @@ function PlaceholderImage({title, siteName, incidentNumber, height = 480, style,
       {background: '#2d2400', text: [255, 204, 0]},
     ])
 
-    console.log(`colorScheme`, colorScheme);
 
     // Set background
     ctx.rect(0, 0, w, h);
@@ -247,7 +244,11 @@ function PlaceholderImage({title, siteName, incidentNumber, height = 480, style,
 
     const numLines = Math.floor(h / charHeight);
 
-    const title64 = btoa(title).replace(/[=+]/g, '');
+    const title64 = btoa(
+      title
+        ? title.replace(/[^A-Za-z0-9 ]/g, '')
+        : Array(10).fill().map(e => Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)).join('')
+    ).replace(/[=+]/g, '');
     let displayText = Array(numLines).fill(title64).join('.');
 
     let siteNameIndex = 
@@ -260,11 +261,14 @@ function PlaceholderImage({title, siteName, incidentNumber, height = 480, style,
 
     displayText = insertStringAtIndex(displayText, siteName, siteNameIndex);
 
-    let incidentNumberIndex = 
-      charsPerLine * randInt(numLines / 2, numLines - 3) + 
-      randInt(1, charsPerLine - incidentNumber.length - 1);
+    let itemIdentifierIndex;
+    if (itemIdentifier) {
+      itemIdentifierIndex = 
+        charsPerLine * randInt(numLines / 2, numLines - 3) + 
+        randInt(1, charsPerLine - itemIdentifier.length - 1);
 
-    displayText = insertStringAtIndex(displayText, incidentNumber, incidentNumberIndex);
+      displayText = insertStringAtIndex(displayText, itemIdentifier, itemIdentifierIndex);
+    }
 
 
     ctx.filter = 'drop-shadow(0px 0px 10px white';
@@ -282,9 +286,13 @@ function PlaceholderImage({title, siteName, incidentNumber, height = 480, style,
         const x = (siteNameIndex % charsPerLine) * charWidth + padding;
         ctx.fillText(siteName, x, y)  ;
       }
-      if (line * charsPerLine < incidentNumberIndex && incidentNumberIndex < (line+1) * charsPerLine) {
-        const x = (incidentNumberIndex % charsPerLine) * charWidth + padding;
-        ctx.fillText(incidentNumber, x, y)  ;
+      if (
+        itemIdentifier &&
+        line * charsPerLine < itemIdentifierIndex && 
+        itemIdentifierIndex < (line+1) * charsPerLine
+      ) {
+        const x = (itemIdentifierIndex % charsPerLine) * charWidth + padding;
+        ctx.fillText(itemIdentifier, x, y)  ;
       }
     }  
   }, []);

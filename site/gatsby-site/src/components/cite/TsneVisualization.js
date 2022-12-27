@@ -361,7 +361,11 @@ function PlotPoint({
         >
           {incidentData ? (
             <>
-              <Image publicID={incidentData.reports[0].cloudinary_id} />
+              <Image 
+                publicID={incidentData.reports[0].cloudinary_id}
+                title={incidentData.title}
+                itemIdentifier={`Incident.${incidentData.incident_id}`}
+              />
               <h3 data-cy="title">{incidentData?.title || incidentData.reports[0].title}</h3>
               {taxon && (
                 <div style={{ marginTop: '.5em' }}>
@@ -559,7 +563,7 @@ var Visualization = styled.div`
     position: absolute;
     padding: 1em;
     overflow: hidden;
-    img {
+    img, canvas {
       margin: -1em -1em 1em -1em;
       max-width: unset;
       width: calc(100% + 4em);

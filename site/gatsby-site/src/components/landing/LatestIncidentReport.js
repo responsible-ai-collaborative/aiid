@@ -21,6 +21,7 @@ const LatestIncidentReport = ({ report }) => {
             // transformation={{ transition: '0.5s all ease-in-out' }}
             publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
             alt={title}
+            itemIdentifier={`Incident.${item.incident_id}`}
           />
         </LocalizedLink>
       </div>

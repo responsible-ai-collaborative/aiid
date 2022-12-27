@@ -39,6 +39,7 @@ const ReportCard = ({ item, className = '', incidentId }) => {
           publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
           alt={item.title}
           transformation={fill().height(480)}
+          itemIdentifier={`Report.${item.report_number}`}
         />
       </div>
       <div

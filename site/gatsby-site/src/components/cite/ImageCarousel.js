@@ -23,6 +23,7 @@ const ImageCarousel = ({ nodes }) => {
               alt={value.title}
               transformation={fill().height(640)}
               plugins={[]}
+              itemIdentifier={`Report.${value.report_number}`}
             />
             <Carousel.Caption>
               <h3 className="bg-0-0-0-055">

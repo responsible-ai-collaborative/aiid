@@ -70,6 +70,7 @@ const RandomIncidentsCarousel = () => {
                       transformation={fill().height(800).width(1000)}
                       plugins={[]}
                       className="w-full h-full object-cover"
+                      itemIdentifier={`Incident.${incident_id}`}
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
                       <h5

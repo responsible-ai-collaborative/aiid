@@ -89,6 +89,7 @@ export default function Compact({
           alt={item.title}
           height="240px"
           transformation={fill().height(240)}
+          itemIdentifier={`Report.${item.report_number}`}
         />
       </StyledCardBody>
 

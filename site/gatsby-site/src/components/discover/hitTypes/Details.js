@@ -50,6 +50,7 @@ export default function Details({
           alt={item.title}
           height="240px"
           transformation={fill().height(480)}
+          itemIdentifier={`Report.${item.report_number}`}
         />
       </a>
       <Card.Body className="flex flex-col ">
