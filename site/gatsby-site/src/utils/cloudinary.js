@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { AdvancedImage, lazyload } from '@cloudinary/react';
 import { CloudinaryImage } from '@cloudinary/base';
-import { defaultImage, format, quality } from '@cloudinary/base/actions/delivery';
+import { format, quality } from '@cloudinary/base/actions/delivery';
 import { auto } from '@cloudinary/base/qualifiers/format';
 import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
 import config from '../../config';
@@ -9,6 +9,7 @@ import TextInputGroup from '../components/forms/TextInputGroup';
 import { Spinner } from 'flowbite-react';
 import { isWebUri } from 'valid-url';
 import { Trans } from 'react-i18next';
+import hash from 'object-hash';
 
 const IMG_FALLBACK = 'fallback.jpg';
 
@@ -31,7 +32,6 @@ const Image = ({
   title,
   itemIdentifier,
 }) => {
-
   const imageElement = useRef(null);
 
   const [needsFallback, setNeedsFallback] = useState(!publicID || publicID == 'placeholder.svg');
@@ -74,13 +74,13 @@ const Image = ({
 
   return needsFallback ? (
     <PlaceholderImage
-        siteName="IncidentDatabase.AI"
-        itemIdentifier={itemIdentifier}
-        title={title || alt}
-        className={className}
-        height={height}
-        style={style}
-      />
+      siteName="IncidentDatabase.AI"
+      itemIdentifier={itemIdentifier}
+      title={title || alt}
+      className={className}
+      height={height}
+      style={style}
+    />
   ) : (
     <AdvancedImage
       ref={imageElement}
@@ -206,16 +206,24 @@ const PreviewImageInputGroup = ({
   );
 };
 
-function PlaceholderImage({title, siteName, itemIdentifier, height = 480, style, className}) {
-  
+function PlaceholderImage({ title, siteName, itemIdentifier, height = 480, style, className }) {
   const canvasRef = useRef();
 
   const h = Math.floor(Number(height.replace('px', '')));
-  const w = Math.floor(h * 4/3);
+
+  const w = Math.floor((h * 4) / 3);
+
+  const random = mulberry32(Number('0x' + hash(itemIdentifier)) % Number.MAX_SAFE_INTEGER);
+
+  const randInt = (min, max) => Math.floor(min + random() * (max - min));
+
+  const randomChoice = (list) => list[Math.floor(random() * list.length)];
 
   useEffect(() => {
     const canvas = canvasRef.current;
+
     const charHeight = h / 12.5;
+
     const padding = charHeight * 0.2;
 
     canvas.width = w;
@@ -224,17 +232,15 @@ function PlaceholderImage({title, siteName, itemIdentifier, height = 480, style,
     const ctx = canvas.getContext('2d');
 
     const colorScheme = randomChoice([
-      {background: '#020241', text: [235, 235, 255]},
-      {background: '#030d01', text: [59, 255, 25]},
-      {background: '#2d2400', text: [255, 204, 0]},
-    ])
-
+      { background: '#020241', text: [235, 235, 255] },
+      { background: '#030d01', text: [59, 255, 25] },
+      { background: '#2d2400', text: [255, 204, 0] },
+    ]);
 
     // Set background
     ctx.rect(0, 0, w, h);
     ctx.fillStyle = colorScheme.background;
     ctx.fill();
-
 
     ctx.font = `${charHeight}px monospace`;
 
@@ -247,67 +253,79 @@ function PlaceholderImage({title, siteName, itemIdentifier, height = 480, style,
     const title64 = btoa(
       title
         ? title.replace(/[^A-Za-z0-9 ]/g, '')
-        : Array(10).fill().map(e => Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)).join('')
+        : Array(10)
+            .fill()
+            .map(() => Math.floor(random() * Number.MAX_SAFE_INTEGER))
+            .join('')
     ).replace(/[=+]/g, '');
+
     let displayText = Array(numLines).fill(title64).join('.');
 
-    let siteNameIndex = 
+    let siteNameIndex =
       // Pick random line from top half of the screen,
       // but not the first line.
-      charsPerLine * (randInt(1, numLines / 2 - 1)) + 
-
+      charsPerLine * randInt(1, numLines / 2 - 1) +
       // Pick random column such that the full siteName can fit on the line.
       randInt(1, charsPerLine - siteName.length - 1);
 
     displayText = insertStringAtIndex(displayText, siteName, siteNameIndex);
 
     let itemIdentifierIndex;
+
     if (itemIdentifier) {
-      itemIdentifierIndex = 
-        charsPerLine * randInt(numLines / 2, numLines - 3) + 
+      itemIdentifierIndex =
+        charsPerLine * randInt(numLines / 2, numLines - 3) +
         randInt(1, charsPerLine - itemIdentifier.length - 1);
 
       displayText = insertStringAtIndex(displayText, itemIdentifier, itemIdentifierIndex);
     }
 
-
     ctx.filter = 'drop-shadow(0px 0px 10px white';
     for (let line = 0; line < numLines; line++) {
-      ctx.fillStyle = `rgba(${colorScheme.text}, ${0.2 + Math.random() / 4}`;
-      
+      ctx.fillStyle = `rgba(${colorScheme.text}, ${0.2 + random() / 4}`;
+
       const textIndex = (line * charsPerLine) % displayText.length;
-      const lineText = displayText.slice(textIndex, textIndex + charsPerLine)
+
+      const lineText = displayText.slice(textIndex, textIndex + charsPerLine);
 
       const y = (charHeight + padding) * (line + 1);
+
       ctx.fillText(lineText, padding, y);
-      
+
       ctx.fillStyle = `rgba(${colorScheme.text}, 1`;
-      if (line * charsPerLine < siteNameIndex && siteNameIndex < (line+1) * charsPerLine) {
+      if (line * charsPerLine < siteNameIndex && siteNameIndex < (line + 1) * charsPerLine) {
         const x = (siteNameIndex % charsPerLine) * charWidth + padding;
-        ctx.fillText(siteName, x, y)  ;
+
+        ctx.fillText(siteName, x, y);
       }
       if (
         itemIdentifier &&
-        line * charsPerLine < itemIdentifierIndex && 
-        itemIdentifierIndex < (line+1) * charsPerLine
+        line * charsPerLine < itemIdentifierIndex &&
+        itemIdentifierIndex < (line + 1) * charsPerLine
       ) {
         const x = (itemIdentifierIndex % charsPerLine) * charWidth + padding;
-        ctx.fillText(itemIdentifier, x, y)  ;
+
+        ctx.fillText(itemIdentifier, x, y);
       }
-    }  
+    }
   }, []);
 
-  return <canvas ref={canvasRef} width={w} height={h} {...{className, style}}></canvas>
+  return <canvas ref={canvasRef} width={w} height={h} {...{ className, style }}></canvas>;
 }
 
-function randInt(min, max) {
-  return Math.floor(min + Math.random() * (max - min));
+// Seeded RNG
+function mulberry32(a) {
+  return function () {
+    var t = (a += 0x6d2b79f5);
+
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
 }
+
 function insertStringAtIndex(outerString, innerString, index) {
   return outerString.slice(0, index) + innerString + outerString.slice(index);
-}
-function randomChoice(list) {
-  return list[Math.floor(Math.random() * list.length)];
 }
 
 export { getCloudinaryPublicID, Image, PreviewImageInputGroup };
