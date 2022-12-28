@@ -32,7 +32,7 @@ const Image = ({
 }) => {
   const imageElement = useRef(null);
 
-  const [needsFallback, setNeedsFallback] = useState(!publicID || publicID == 'placeholder.svg');
+  const [loadFailed, setLoadFailed] = useState(!publicID || publicID == 'placeholder.svg');
 
   const image = new CloudinaryImage(publicID, {
     cloudName: config.cloudinary.cloudName,
@@ -51,7 +51,7 @@ const Image = ({
   image.transformation = tmpImage.transformation.toString();
 
   useEffect(() => {
-    setNeedsFallback(false);
+    setLoadFailed(false);
     let fallbackTimeout;
 
     const useFallbackIfLoadFailed = () => {
@@ -59,7 +59,7 @@ const Image = ({
 
       if (!img || img.naturalHeight == undefined || img.naturalHeight == 0) {
         if (img && (img.src || img.srcset) && img.complete) {
-          setNeedsFallback(true);
+          setLoadFailed(true);
         } else {
           fallbackTimeout = setTimeout(useFallbackIfLoadFailed, 1000);
         }
@@ -71,7 +71,10 @@ const Image = ({
     return () => clearTimeout(fallbackTimeout);
   }, [publicID]);
 
-  return needsFallback ? (
+  console.log(`loadFailed`, loadFailed);
+  console.log(`publicID`, publicID);
+
+  return !publicID || publicID == '' || loadFailed ? (
     <PlaceholderImage
       siteName="IncidentDatabase.AI"
       itemIdentifier={itemIdentifier}
@@ -109,13 +112,25 @@ const PreviewImageInputGroup = ({
 }) => {
   const [cloudinaryID, setCloudinaryID] = useState(cloudinary_id);
 
-  const debouncedUpdateCloudinaryId = useRef(
-    debounce((c) => {
-      setCloudinaryID(c);
-    }, 2000)
-  ).current;
+  // Debounced function needs to be in ref
+  // so it can maintain its internal state
+  const debouncedUpdateCloudinaryId = useRef(debounce((c) => setCloudinaryID(c), 2000)).current;
 
-  useEffect(() => debouncedUpdateCloudinaryId(cloudinary_id), [cloudinary_id]);
+  useEffect(() => {
+    const id = values.cloudinary_id || cloudinary_id;
+
+    if (id && id.length > 0) {
+      // We debounce updating the cloudinary_id to avoid
+      // making too many requests to cloudinary
+      console.log('debounced update cloudinaryID');
+      debouncedUpdateCloudinaryId(id);
+    } else {
+      // But if the ID is null, then no request will made,
+      // so we can update right away.
+      console.log('non-debounced update cloudinaryID');
+      setCloudinaryID('');
+    }
+  }, [cloudinary_id, values.cloudinary_id]);
 
   return (
     <>
@@ -132,9 +147,6 @@ const PreviewImageInputGroup = ({
         handleBlur={handleBlur}
         schema={schema}
       />
-      {values.cloudinary_id}
-      <br />
-      {cloudinaryID}
       <figure
         data-cy="image-preview-figure"
         id="image-preview-figure"
@@ -144,7 +156,7 @@ const PreviewImageInputGroup = ({
           className="flex items-center justify-center bootstrap md:max-w-prose"
           style={{ height: '20vh', marginTop: '1rem' }}
         >
-          {touched && cloudinaryID ? (
+          {cloudinaryID || !touched[name] ? (
             <Image publicID={cloudinaryID} style={{ maxHeight: '100%' }} alt={alt} />
           ) : (
             <Spinner size="xl" />
@@ -213,12 +225,14 @@ function PlaceholderImage({ title, siteName, itemIdentifier, height = 480, style
 
     let displayText = Array(numLines).fill(title64).join('.');
 
-    let siteNameIndex =
-      // Pick random line from top half of the screen,
-      // but not the first line.
-      charsPerLine * randInt(1, numLines / 2 - 1) +
-      // Pick random column such that the full siteName can fit on the line.
-      randInt(1, charsPerLine - siteName.length - 1);
+    // Pick random line from top half of the screen,
+    // but not the first line.
+    const rowIndex = charsPerLine * randInt(1, numLines / 2 - 1);
+
+    // Pick random column such that the full siteName can fit on the line.
+    const colIndex = randInt(1, charsPerLine - siteName.length - 1);
+
+    const siteNameIndex = rowIndex + colIndex;
 
     displayText = insertStringAtIndex(displayText, siteName, siteNameIndex);
 
@@ -244,7 +258,7 @@ function PlaceholderImage({ title, siteName, itemIdentifier, height = 480, style
 
       ctx.fillText(lineText, padding, y);
 
-      ctx.fillStyle = `rgba(${colorScheme.text}, 1`;
+      ctx.fillStyle = `rgba(${colorScheme.text}, 1)`;
       if (line * charsPerLine < siteNameIndex && siteNameIndex < (line + 1) * charsPerLine) {
         const x = (siteNameIndex % charsPerLine) * charWidth + padding;
 
