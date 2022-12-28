@@ -34,65 +34,58 @@ const Image = ({
 
   const [loadFailed, setLoadFailed] = useState(!publicID || publicID == 'placeholder.svg');
 
-  const image = new CloudinaryImage(publicID, {
-    cloudName: config.cloudinary.cloudName,
-  });
-
-  //TODO: this is a fix for this issue: https://github.com/PartnershipOnAI/aiid/issues/260
-  // Setting transformation as a string skips the safe url check here: https://github.com/cloudinary/js-url-gen/blob/9a3d0a29ea77ddfd6f7181251615f34c2d8a6c5d/src/assets/CloudinaryFile.ts#L279
-  const tmpImage = new CloudinaryImage();
-
-  tmpImage.delivery(format(auto())).delivery(quality(qAuto()));
-
-  if (transformation) {
-    tmpImage.addTransformation(transformation);
-  }
-
-  image.transformation = tmpImage.transformation.toString();
-
   useEffect(() => {
     setLoadFailed(false);
-    let fallbackTimeout;
+    const img = imageElement.current?.imageRef.current;
 
-    const useFallbackIfLoadFailed = () => {
-      const img = imageElement.current?.imageRef.current;
+    if (img) {
+      const errorListener = img.addEventListener('error', () => {
+        setLoadFailed(true);
+      });
 
-      if (!img || img.naturalHeight == undefined || img.naturalHeight == 0) {
-        if (img && (img.src || img.srcset) && img.complete) {
-          setLoadFailed(true);
-        } else {
-          fallbackTimeout = setTimeout(useFallbackIfLoadFailed, 1000);
-        }
-      }
-    };
+      return () => img.removeEventListener(errorListener);
+    }
+  }, [publicID, imageElement.current?.imageRef.current]);
 
-    useFallbackIfLoadFailed();
+  if (!publicID || publicID == '' || loadFailed) {
+    return (
+      <PlaceholderImage
+        siteName="IncidentDatabase.AI"
+        itemIdentifier={itemIdentifier}
+        title={title || alt}
+        className={className}
+        height={height}
+        style={style}
+      />
+    );
+  } else {
+    const image = new CloudinaryImage(publicID, {
+      cloudName: config.cloudinary.cloudName,
+    });
 
-    return () => clearTimeout(fallbackTimeout);
-  }, [publicID]);
+    //TODO: this is a fix for this issue: https://github.com/PartnershipOnAI/aiid/issues/260
+    // Setting transformation as a string skips the safe url check here: https://github.com/cloudinary/js-url-gen/blob/9a3d0a29ea77ddfd6f7181251615f34c2d8a6c5d/src/assets/CloudinaryFile.ts#L279
+    const tmpImage = new CloudinaryImage();
 
-  console.log(`loadFailed`, loadFailed);
-  console.log(`publicID`, publicID);
+    tmpImage.delivery(format(auto())).delivery(quality(qAuto()));
 
-  return !publicID || publicID == '' || loadFailed ? (
-    <PlaceholderImage
-      siteName="IncidentDatabase.AI"
-      itemIdentifier={itemIdentifier}
-      title={title || alt}
-      className={className}
-      height={height}
-      style={style}
-    />
-  ) : (
-    <AdvancedImage
-      ref={imageElement}
-      alt={alt}
-      className={className}
-      cldImg={image}
-      plugins={plugins}
-      style={style}
-    />
-  );
+    if (transformation) {
+      tmpImage.addTransformation(transformation);
+    }
+
+    image.transformation = tmpImage.transformation.toString();
+
+    return (
+      <AdvancedImage
+        ref={imageElement}
+        alt={alt}
+        className={className}
+        cldImg={image}
+        plugins={plugins}
+        style={style}
+      />
+    );
+  }
 };
 
 const PreviewImageInputGroup = ({
@@ -122,12 +115,10 @@ const PreviewImageInputGroup = ({
     if (id && id.length > 0) {
       // We debounce updating the cloudinary_id to avoid
       // making too many requests to cloudinary
-      console.log('debounced update cloudinaryID');
       debouncedUpdateCloudinaryId(id);
     } else {
       // But if the ID is null, then no request will made,
       // so we can update right away.
-      console.log('non-debounced update cloudinaryID');
       setCloudinaryID('');
     }
   }, [cloudinary_id, values.cloudinary_id]);
@@ -135,17 +126,19 @@ const PreviewImageInputGroup = ({
   return (
     <>
       <TextInputGroup
-        name={name}
-        label={label}
-        icon={icon}
-        placeholder={placeholder}
-        values={values}
-        errors={errors /*childErrors*/}
-        touched={touched}
-        handleChange={handleChange}
-        className={className}
-        handleBlur={handleBlur}
-        schema={schema}
+        {...{
+          name,
+          label,
+          icon,
+          placeholder,
+          values,
+          errors,
+          touched,
+          handleChange,
+          className,
+          handleBlur,
+          schema,
+        }}
       />
       <figure
         data-cy="image-preview-figure"
@@ -153,14 +146,28 @@ const PreviewImageInputGroup = ({
         className="text-center md:flex md:items-center md:justify-center md:flex-col"
       >
         <div
-          className="flex items-center justify-center bootstrap md:max-w-prose"
-          style={{ height: '20vh', marginTop: '1rem' }}
+          className="grid grid-cols-1 grid-rows-1 items-center justify-center mt-4"
+          style={{ height: '20vh' }}
         >
-          {cloudinaryID || !touched[name] ? (
-            <Image publicID={cloudinaryID} style={{ maxHeight: '100%' }} alt={alt} />
-          ) : (
+          <div style={{ gridRowStart: '1', gridColumnStart: '1', maxHeight: '100%', zIndex: 1 }}>
             <Spinner size="xl" />
-          )}
+          </div>
+          <div
+            style={{
+              gridRowStart: '1',
+              gridColumnStart: '1',
+              height: '20vh',
+              maxWidth: '100%',
+              zIndex: 2,
+            }}
+          >
+            <Image
+              publicID={cloudinaryID}
+              alt={alt}
+              height="300"
+              className="inline-block mx-auto min-h-48 min-w-48 max-w-full h-full bg-white"
+            />
+          </div>
         </div>
         <figcaption className="mt-2">
           <Trans>Selected Image</Trans>
@@ -177,7 +184,7 @@ function PlaceholderImage({ title, siteName, itemIdentifier, height = 480, style
 
   const w = Math.floor((h * 4) / 3);
 
-  const random = mulberry32(Number('0x' + hash(itemIdentifier | title)) % Number.MAX_SAFE_INTEGER);
+  const random = mulberry32(Number('0x' + hash(itemIdentifier || title)) % Number.MAX_SAFE_INTEGER);
 
   const randInt = (min, max) => Math.floor(min + random() * (max - min));
 
@@ -225,11 +232,13 @@ function PlaceholderImage({ title, siteName, itemIdentifier, height = 480, style
 
     let displayText = Array(numLines).fill(title64).join('.');
 
-    // Pick random line from top half of the screen,
-    // but not the first line.
-    const rowIndex = charsPerLine * randInt(1, numLines / 2 - 1);
+    // Top half if there's an itemIdentifier, else all
+    const availableLines = itemIdentifier ? numLines / 2 : numLines;
 
-    // Pick random column such that the full siteName can fit on the line.
+    // Pick randomly from available lines, not counting the first and last
+    const rowIndex = charsPerLine * randInt(1, availableLines - 1);
+
+    // Pick random column such that the full siteName can fit on the line
     const colIndex = randInt(1, charsPerLine - siteName.length - 1);
 
     const siteNameIndex = rowIndex + colIndex;
