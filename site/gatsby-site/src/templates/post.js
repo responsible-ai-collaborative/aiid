@@ -48,13 +48,12 @@ export default function Post(props) {
     <Layout {...{ ...props, rightSidebar }}>
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }} />
       <div className={'titleWrapper'}>
+        <Link to="/blog" className="tw-header-back-link">
+          AIID blog
+        </Link>
         <StyledHeading>{mdx.fields.title}</StyledHeading>
-
         <div className="inline-block">
-          <Link to="/blog" className="font-semibold">
-            AIID blog
-          </Link>
-          . <span>{format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')}</span>
+          <span>{format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')}</span>
           {mdx.frontmatter.aiTranslated && (
             <>
               <TranslationBadge className="ml-2" />

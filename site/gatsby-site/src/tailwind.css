@@ -544,6 +544,10 @@
         @apply grid grid-cols-1 gap-[6px];
     }
 
+    .tw-header-back-link {
+        @apply text-lg;
+    }
+
     /* TAILWIND AIS PAGINATION START */
 
     .tw-ais-pagination {

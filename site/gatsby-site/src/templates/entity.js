@@ -206,11 +206,9 @@ const EntityPage = ({ pageContext, data, ...props }) => {
   return (
     <Layout {...props}>
       <AiidHelmet metaTitle={'Entity: ' + name} canonicalUrl={'/entities/' + id} />
-      <h3>
-        <Link to="/entities">
-          <Trans ns="entities">Entities</Trans>
-        </Link>
-      </h3>
+      <Link to="/entities" className="tw-header-back-link">
+        <Trans ns="entities">Entities</Trans>
+      </Link>
       <div className="flex justify-between">
         <h1>{name}</h1>
 
