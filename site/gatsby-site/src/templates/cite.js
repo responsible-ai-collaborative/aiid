@@ -65,7 +65,6 @@ function CitePage(props) {
     data: {
       allMongodbAiidprodTaxa,
       mongodbAiidprodClassifications,
-      mongodbAiidprodResources,
       allMongodbAiidprodReports,
       allMongodbTranslationsReportsEs,
       allMongodbTranslationsReportsEn,
@@ -75,6 +74,9 @@ function CitePage(props) {
       responses,
     },
   } = props;
+
+  console.log(`CitePage: allMongodbAiidprodTaxa,`, allMongodbAiidprodTaxa);
+  console.log(`CitePage: mongodbAiidprodClassifications,`, mongodbAiidprodClassifications);
 
   const { isRole, user, loading } = useUserContext();
 
@@ -134,7 +136,6 @@ function CitePage(props) {
       getTaxonomies({
         allMongodbAiidprodTaxa,
         mongodbAiidprodClassifications,
-        mongodbAiidprodResources,
       }),
     []
   );
@@ -484,18 +485,6 @@ export const query = graphql`
     $translate_fr: Boolean!
     $translate_en: Boolean!
   ) {
-    mongodbAiidprodResources(
-      classifications: { Publish: { eq: true } }
-      incident_id: { eq: $incident_id }
-    ) {
-      id
-      incident_id
-      notes
-      classifications {
-        Datasheets_for_Datasets
-        Publish
-      }
-    }
     mongodbAiidprodClassifications(
       classifications: { Publish: { eq: true } }
       incident_id: { eq: $incident_id }

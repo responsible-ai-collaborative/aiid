@@ -10,9 +10,9 @@ import config from '../../../config.js';
 import { useMutation, useQuery } from '@apollo/client';
 import {
   FIND_CSET_CLASSIFICATION,
-  FIND_RESOURCE_CLASSIFICATION,
+  FIND_CSET2_CLASSIFICATION,
   UPDATE_CSET_CLASSIFICATION,
-  UPDATE_RESOURCE_CLASSIFICATION,
+  UPDATE_CSET2_CLASSIFICATION,
 } from '../../graphql/classifications.js';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import Tags from 'components/forms/Tags.js';
@@ -25,12 +25,12 @@ const TEXTAREA_LIMIT = 120;
 
 const queryMap = {
   CSET: FIND_CSET_CLASSIFICATION,
-  resources: FIND_RESOURCE_CLASSIFICATION,
+  CSET2: FIND_CSET2_CLASSIFICATION,
 };
 
 const mutationMap = {
   CSET: UPDATE_CSET_CLASSIFICATION,
-  resources: UPDATE_RESOURCE_CLASSIFICATION,
+  CSET2: UPDATE_CSET2_CLASSIFICATION,
 };
 
 const getTaxaFieldKey = (key) => {
@@ -94,13 +94,13 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
     variables: { query: { incident_id: incidentId } },
   });
 
-  const key = namespace === 'CSET' ? 'classifications' : namespace;
-
   const [updateClassification] = useMutation(mutationMap[namespace]);
 
   useEffect(() => {
     if (classificationsData && taxonomy) {
-      const classification = classificationsData[key][0];
+      const classification = classificationsData.classifications.find(
+        (classification) => classification.namespace == taxonomy.namespace
+      );
 
       const classifications = classification?.classifications || {};
 

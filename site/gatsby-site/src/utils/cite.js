@@ -49,20 +49,11 @@ export const getClassificationsArray = (incidentClassifications, taxonomy) => {
   return array;
 };
 
-export const getTaxonomies = ({
-  mongodbAiidprodClassifications,
-  mongodbAiidprodResources,
-  allMongodbAiidprodTaxa,
-}) => {
-  if (mongodbAiidprodClassifications) {
-    mongodbAiidprodClassifications.namespace = 'CSET';
-  }
-
-  if (mongodbAiidprodResources) {
-    mongodbAiidprodResources.namespace = 'resources';
-  }
-
-  const incidentClassifications = [mongodbAiidprodClassifications, mongodbAiidprodResources];
+export const getTaxonomies = ({ mongodbAiidprodClassifications, allMongodbAiidprodTaxa }) => {
+  console.log('cite.js: getTaxonomies');
+  console.log(`allMongodbAiidprodTaxa`, allMongodbAiidprodTaxa);
+  console.log(`mongodbAiidprodClassifications`, mongodbAiidprodClassifications);
+  const incidentClassifications = [mongodbAiidprodClassifications];
 
   const taxonomies = [];
 

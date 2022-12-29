@@ -51,7 +51,7 @@ export default function Taxonomies({ data, ...props }) {
           </li>
         </ul>
 
-        <h2>
+        {/*<h2>
           <Trans>In-Development Taxonomies</Trans>
         </h2>
         <ul>
@@ -65,6 +65,7 @@ export default function Taxonomies({ data, ...props }) {
             </p>
           </li>
         </ul>
+        */}
 
         <h2>
           <Trans>About Taxonomies</Trans>

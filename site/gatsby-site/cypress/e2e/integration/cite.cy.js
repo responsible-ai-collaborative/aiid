@@ -95,23 +95,6 @@ describe('Cite pages', () => {
     cy.get('@taxonomyForm').should('exist');
   });
 
-  maybeIt('Should show the taxonomy form of resources', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-    cy.visit(url);
-
-    cy.get('[data-cy="resources"]', { timeout: 8000 })
-      .should('be.visible')
-      .contains('Edit')
-      .click();
-
-    cy.get('[data-cy="resources"] [data-cy="taxonomy-form"]', { timeout: 8000 })
-      .should('be.visible')
-      .as('taxonomyForm');
-
-    cy.get('@taxonomyForm').should('exist');
-  });
-
   it(`Should taxa table only when there are classifications and the user is not authenticated`, () => {
     cy.visit(url);
 
