@@ -43,7 +43,7 @@ const Image = ({
         setLoadFailed(true);
       });
 
-      return () => img.removeEventListener(errorListener);
+      return () => img.removeEventListener('error', errorListener);
     }
   }, [publicID, imageElement.current?.imageRef.current]);
 
