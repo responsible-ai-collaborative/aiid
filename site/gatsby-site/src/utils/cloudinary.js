@@ -203,9 +203,10 @@ function PlaceholderImage({ title, siteName, itemIdentifier, height = 480, style
     const ctx = canvas.getContext('2d');
 
     const colorScheme = randomChoice([
-      { background: '#020241', text: [235, 235, 255] },
-      { background: '#030d01', text: [59, 255, 25] },
-      { background: '#2d2400', text: [255, 204, 0] },
+      { background: '#020241', text: '#ebebff', glow: '#ffffff' },
+      { background: '#030d01', text: '#3bff19', glow: '#ffffff' },
+      { background: '#2d2400', text: '#ffcc00', glow: '#ffffff' },
+      { background: '#fffbd3', text: '#ff5064', glow: '#ffe6f0' },
     ]);
 
     // Set background
@@ -255,9 +256,9 @@ function PlaceholderImage({ title, siteName, itemIdentifier, height = 480, style
       displayText = insertStringAtIndex(displayText, itemIdentifier, itemIdentifierIndex);
     }
 
-    ctx.filter = 'drop-shadow(0px 0px 10px white';
+    ctx.filter = `drop-shadow(0px 0px 10px ${colorScheme.glow})`;
     for (let line = 0; line < numLines; line++) {
-      ctx.fillStyle = `rgba(${colorScheme.text}, ${0.2 + random() / 4}`;
+      ctx.fillStyle = setAlpha(colorScheme.text, 0.2 + random() / 4);
 
       const textIndex = (line * charsPerLine) % displayText.length;
 
@@ -267,7 +268,7 @@ function PlaceholderImage({ title, siteName, itemIdentifier, height = 480, style
 
       ctx.fillText(lineText, padding, y);
 
-      ctx.fillStyle = `rgba(${colorScheme.text}, 1)`;
+      ctx.fillStyle = colorScheme.text;
       if (line * charsPerLine < siteNameIndex && siteNameIndex < (line + 1) * charsPerLine) {
         const x = (siteNameIndex % charsPerLine) * charWidth + padding;
 
@@ -301,6 +302,12 @@ function mulberry32(a) {
 
 function insertStringAtIndex(outerString, innerString, index) {
   return outerString.slice(0, index) + innerString + outerString.slice(index);
+}
+
+function setAlpha(hexColor, amount) {
+  const alphaHex = Number(Math.floor(amount * 255)).toString(16);
+
+  return hexColor + (alphaHex.length == 1 ? '0' + alphaHex : alphaHex);
 }
 
 export { getCloudinaryPublicID, Image, PreviewImageInputGroup };
