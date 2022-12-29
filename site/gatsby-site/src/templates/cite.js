@@ -75,9 +75,6 @@ function CitePage(props) {
     },
   } = props;
 
-  console.log(`CitePage: allMongodbAiidprodTaxa,`, allMongodbAiidprodTaxa);
-  console.log(`CitePage: mongodbAiidprodClassifications,`, mongodbAiidprodClassifications);
-
   const { isRole, user, loading } = useUserContext();
 
   const { i18n, t } = useTranslation();

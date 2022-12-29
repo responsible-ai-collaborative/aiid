@@ -25,8 +25,6 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
     setShowBanner(true);
   };
 
-  console.log(`taxonomy`, taxonomy);
-
   return (
     <Card key={taxonomy.namespace} className="mt-6" data-cy={taxonomy.namespace}>
       <div className="tw-taxa-card-header tw-card-header">
