@@ -50,9 +50,6 @@ export const getClassificationsArray = (incidentClassifications, taxonomy) => {
 };
 
 export const getTaxonomies = ({ mongodbAiidprodClassifications, allMongodbAiidprodTaxa }) => {
-  console.log('cite.js: getTaxonomies');
-  console.log(`allMongodbAiidprodTaxa`, allMongodbAiidprodTaxa);
-  console.log(`mongodbAiidprodClassifications`, mongodbAiidprodClassifications);
   const incidentClassifications = [mongodbAiidprodClassifications];
 
   const taxonomies = [];
