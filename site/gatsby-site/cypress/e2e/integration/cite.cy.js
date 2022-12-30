@@ -100,7 +100,7 @@ describe('Cite pages', () => {
 
     cy.get('[data-cy="CSET"]').should('exist');
 
-    cy.get('[data-cy="resources"]').should('not.exist');
+    cy.get('[data-cy="CSET2"]').should('not.exist');
   });
 
   it('Should flag an incident', () => {
