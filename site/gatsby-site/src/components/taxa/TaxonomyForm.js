@@ -322,6 +322,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
         variables: {
           query: {
             incident_id: incidentId,
+            namespace,
           },
           data: {
             incident_id: incidentId,
