@@ -49,8 +49,8 @@ export const getClassificationsArray = (incidentClassifications, taxonomy) => {
   return array;
 };
 
-export const getTaxonomies = ({ mongodbAiidprodClassifications, allMongodbAiidprodTaxa }) => {
-  const incidentClassifications = [mongodbAiidprodClassifications];
+export const getTaxonomies = ({ allMongodbAiidprodClassifications, allMongodbAiidprodTaxa }) => {
+  const incidentClassifications = allMongodbAiidprodClassifications.nodes;
 
   const taxonomies = [];
 
