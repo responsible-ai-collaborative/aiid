@@ -17,7 +17,6 @@
     "@google-cloud/translate": "^6.3.1",
     "@googlemaps/google-maps-services-js": "^3.3.3",
     "@graphql-tools/schema": "^8.3.3",
-    "@graphql-tools/stitch": "^8.5.2",
     "@graphql-tools/wrap": "^8.4.6",
     "@mdx-js/loader": "^1.6.22",
     "@mdx-js/mdx": "^1.6.22",
