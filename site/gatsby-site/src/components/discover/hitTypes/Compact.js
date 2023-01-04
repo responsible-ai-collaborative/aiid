@@ -1,7 +1,6 @@
 import React from 'react';
 import { Image } from 'utils/cloudinary';
 import styled from 'styled-components';
-import { fill } from '@cloudinary/base/actions/resize';
 import md5 from 'md5';
 import Actions from '../Actions';
 import { HeaderTitle, SourceDomainSubtitle } from './shared';
@@ -87,8 +86,8 @@ export default function Compact({
         <IncidentCardImage
           publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
           alt={item.title}
-          height="240px"
-          transformation={fill().height(240)}
+          height={240}
+          width={320}
           itemIdentifier={`Report.${item.report_number}`}
         />
       </StyledCardBody>

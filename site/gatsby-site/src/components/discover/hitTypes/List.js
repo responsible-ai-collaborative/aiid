@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Image } from 'utils/cloudinary';
 import styled from 'styled-components';
-import { fill } from '@cloudinary/base/actions/resize';
 import Actions from '../Actions';
 import { HeaderTitle, SourceDomainSubtitle } from './shared';
 import md5 from 'md5';
@@ -47,7 +46,8 @@ export default function Details({
             className="img-thumbnail"
             publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
             alt={item.title}
-            transformation={fill().height(320)}
+            height={400}
+            width={400}
             itemIdentifier={`Report.${item.report_number}`}
           />
           <Text>

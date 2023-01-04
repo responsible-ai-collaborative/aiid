@@ -3,7 +3,6 @@ import { formatISO, format, parse } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlag, faQuestionCircle, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Image } from '../../utils/cloudinary';
-import { fill } from '@cloudinary/base/actions/resize';
 import { useMutation } from '@apollo/client/react/hooks';
 import { UPDATE_INCIDENT } from '../../graphql/incidents';
 import md5 from 'md5';
@@ -41,7 +40,8 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
             publicID={
               incident.reports[0]?.cloudinary_id || `legacy/${md5(incident.reports[0]?.image_url)}`
             }
-            transformation={fill().height(480)}
+            height={240}
+            width={320}
             alt=""
             title={incident.title}
             itemIdentifier={`Incident.${incident.incident_id}`}

@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react';
 import md5 from 'md5';
 import { Image } from 'utils/cloudinary';
-import { fill } from '@cloudinary/base/actions/resize';
 import { useUserContext } from 'contexts/userContext';
 import ReportText from 'components/reports/ReportText';
 import WebArchiveLink from 'components/ui/WebArchiveLink';
@@ -38,7 +37,8 @@ const ReportCard = ({ item, className = '', incidentId }) => {
           className="img-fluid rounded-start h-full w-full max-w-full rounded-t-lg md:rounded-l-lg md:rounded-r-none border-r object-cover"
           publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
           alt={item.title}
-          transformation={fill().height(480)}
+          height={240}
+          width={320}
           itemIdentifier={`Report.${item.report_number}`}
         />
       </div>

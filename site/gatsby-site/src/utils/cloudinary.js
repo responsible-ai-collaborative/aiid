@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { AdvancedImage, lazyload } from '@cloudinary/react';
 import { CloudinaryImage } from '@cloudinary/base';
-import { format, quality } from '@cloudinary/base/actions/delivery';
-import { auto } from '@cloudinary/base/qualifiers/format';
-import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
+import { Conditional } from '@cloudinary/base/actions/conditional';
+import { thumbnail, limitPad } from '@cloudinary/base/actions/resize';
+//import { format, quality } from '@cloudinary/base/actions/delivery';
+//import { auto } from '@cloudinary/base/qualifiers/format';
+//import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
 import config from '../../config';
 import TextInputGroup from '../components/forms/TextInputGroup';
 import { Spinner } from 'flowbite-react';
@@ -23,16 +25,20 @@ const Image = ({
   publicID,
   className = '',
   alt,
-  transformation = null,
   plugins = [lazyload()],
   style,
-  height = '800px',
+  height = 300,
+  width = 400,
   title,
   itemIdentifier,
 }) => {
   const imageElement = useRef(null);
 
   const [loadFailed, setLoadFailed] = useState(!publicID || publicID == 'placeholder.svg');
+
+  // TODO: Only increase the pixel density when on a high-resolution screen.
+  height *= 2;
+  width *= 2;
 
   useEffect(() => {
     setLoadFailed(false);
@@ -53,9 +59,12 @@ const Image = ({
         siteName="IncidentDatabase.AI"
         itemIdentifier={itemIdentifier}
         title={title || alt}
-        className={className}
-        height={height}
-        style={style}
+        {...{
+          height,
+          width,
+          className,
+          style,
+        }}
       />
     );
   } else {
@@ -63,17 +72,15 @@ const Image = ({
       cloudName: config.cloudinary.cloudName,
     });
 
-    //TODO: this is a fix for this issue: https://github.com/PartnershipOnAI/aiid/issues/260
-    // Setting transformation as a string skips the safe url check here: https://github.com/cloudinary/js-url-gen/blob/9a3d0a29ea77ddfd6f7181251615f34c2d8a6c5d/src/assets/CloudinaryFile.ts#L279
-    const tmpImage = new CloudinaryImage();
-
-    tmpImage.delivery(format(auto())).delivery(quality(qAuto()));
-
-    if (transformation) {
-      tmpImage.addTransformation(transformation);
-    }
-
-    image.transformation = tmpImage.transformation.toString();
+    image.conditional(
+      Conditional.ifCondition(
+        'ar > 2.0 or ar < 0.5',
+        limitPad().height(height).width(width).background('b_auto:border')
+      )
+    );
+    image.conditional(
+      Conditional.ifCondition('ar <= 2.0 and ar >= 0.5', thumbnail().height(height).width(width))
+    );
 
     return (
       <AdvancedImage
@@ -177,12 +184,20 @@ const PreviewImageInputGroup = ({
   );
 };
 
-function PlaceholderImage({ title, siteName, itemIdentifier, height = 480, style, className }) {
+function PlaceholderImage({
+  title,
+  siteName,
+  itemIdentifier,
+  height = 300,
+  width = 400,
+  style,
+  className,
+}) {
   const canvasRef = useRef();
 
-  const h = Math.floor(Number(height.replace('px', '')));
+  const h = height;
 
-  const w = Math.floor((h * 4) / 3);
+  const w = width;
 
   const random = mulberry32(Number('0x' + hash(itemIdentifier || title)) % Number.MAX_SAFE_INTEGER);
 

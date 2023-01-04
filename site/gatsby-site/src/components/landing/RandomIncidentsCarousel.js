@@ -2,7 +2,6 @@ import React from 'react';
 import { StaticQuery, graphql, Link } from 'gatsby';
 import md5 from 'md5';
 import { Image } from 'utils/cloudinary';
-import { fill } from '@cloudinary/base/actions/resize';
 import { Carousel } from 'flowbite-react';
 
 const RandomIncidentsCarousel = () => {
@@ -67,7 +66,8 @@ const RandomIncidentsCarousel = () => {
                     <Image
                       publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
                       alt={title}
-                      transformation={fill().height(800).width(1000)}
+                      height={800}
+                      width={1000}
                       plugins={[]}
                       className="w-full h-full object-cover"
                       itemIdentifier={`Incident.${incident_id}`}
