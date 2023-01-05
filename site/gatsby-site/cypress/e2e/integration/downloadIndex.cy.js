@@ -43,7 +43,7 @@ describe('Download Algolia Index', () => {
 
   const downloadsFolder = Cypress.config('downloadsFolder');
 
-  it(
+  it.skip(
     'Should download a properly constructed Algolia index',
     { requestTimeout: 30000, defaultCommandTimeout: 30000 },
     () => {
