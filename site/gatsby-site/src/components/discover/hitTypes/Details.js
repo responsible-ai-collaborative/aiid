@@ -10,7 +10,7 @@ import ReportText from 'components/reports/ReportText';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 
 import { SourceDomainSubtitle, HeaderTitle } from './shared';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import Card from 'elements/Card';
 
@@ -33,6 +33,8 @@ export default function Details({
 }) {
   const localizePath = useLocalizePath();
 
+  const { t } = useTranslation();
+
   const detailsPath = item.is_incident_report
     ? localizePath({
         path: `/cite/${item.incident_id}#r${item.objectID}`,
@@ -50,7 +52,9 @@ export default function Details({
           alt={item.title}
           height="240px"
           transformation={fill().height(480)}
-          itemIdentifier={`Report.${item.report_number}`}
+          itemIdentifier={t('Report {{report_number}}', {
+            report_number: item.report_number,
+          }).replace(' ', '.')}
         />
       </a>
       <Card.Body className="flex flex-col ">

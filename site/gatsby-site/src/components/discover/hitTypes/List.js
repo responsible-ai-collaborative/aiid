@@ -9,6 +9,7 @@ import ReportText from 'components/reports/ReportText';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import Card from 'elements/Card';
 import Button from 'elements/Button';
+import { useTranslation } from 'react-i18next';
 
 const StyledCard = styled(Card)`
   overflow: hidden;
@@ -39,6 +40,8 @@ export default function Details({
 }) {
   const [viewMore, setViewMore] = useState(false);
 
+  const { t } = useTranslation();
+
   return (
     <StyledCard>
       <StyledCardBody>
@@ -48,7 +51,9 @@ export default function Details({
             publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
             alt={item.title}
             transformation={fill().height(320)}
-            itemIdentifier={`Report.${item.report_number}`}
+            itemIdentifier={t('Report {{report_number}}', {
+              report_number: item.report_number,
+            }).replace(' ', '.')}
           />
           <Text>
             <HeaderTitle item={item} />

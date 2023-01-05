@@ -4,11 +4,13 @@ import { format } from 'date-fns';
 import { Image } from '../../utils/cloudinary';
 import Link from 'components/ui/Link';
 import ReportText from 'components/reports/ReportText';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 
 const LatestIncidentReport = ({ report }) => {
   const { image_url, cloudinary_id, title, text, epoch_date_submitted, incident_id } = report;
+
+  const { t } = useTranslation();
 
   return (
     <div className="flex flex-col items-center bg-white rounded-lg border  shadow-md md:flex-row dark:border-gray-700 dark:bg-gray-800">
@@ -21,7 +23,7 @@ const LatestIncidentReport = ({ report }) => {
             // transformation={{ transition: '0.5s all ease-in-out' }}
             publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
             alt={title}
-            itemIdentifier={`Incident.${incident_id}`}
+            itemIdentifier={t('Incident {{id}}', { id: incident_id }).replace(' ', '.')}
           />
         </LocalizedLink>
       </div>

@@ -6,7 +6,7 @@ import { useUserContext } from 'contexts/userContext';
 import ReportText from 'components/reports/ReportText';
 import WebArchiveLink from 'components/ui/WebArchiveLink';
 import { Button } from 'flowbite-react';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import Actions from 'components/discover/Actions';
 import TranslationBadge from 'components/i18n/TranslationBadge';
@@ -15,6 +15,8 @@ import { RESPONSE_TAG } from 'utils/entities';
 
 const ReportCard = ({ item, className = '', incidentId }) => {
   const { isRole, loading } = useUserContext();
+
+  const { t } = useTranslation();
 
   const [expanded, setExpanded] = useState(false);
 
@@ -39,7 +41,9 @@ const ReportCard = ({ item, className = '', incidentId }) => {
           publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
           alt={item.title}
           transformation={fill().height(480)}
-          itemIdentifier={`Report.${item.report_number}`}
+          itemIdentifier={t('Report {{report_number}}', {
+            report_number: item.report_number,
+          }).replace(' ', '.')}
         />
       </div>
       <div
