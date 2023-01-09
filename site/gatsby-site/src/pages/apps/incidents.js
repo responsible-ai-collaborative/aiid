@@ -13,7 +13,7 @@ export default function IncidentsPage(props) {
   const { t } = useTranslation();
 
   return (
-    <Layout {...props} sidebarCollapsed={true}>
+    <Layout {...props} sidebarCollapsed={true} className="w-full">
       <AiidHelmet canonicalUrl={'/apps/incidents'}>
         <title>{t('Incidents')}</title>
       </AiidHelmet>
