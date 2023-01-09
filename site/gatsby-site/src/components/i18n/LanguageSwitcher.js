@@ -44,7 +44,7 @@ export default function LanguageSwitcher({ className = '' }) {
             onClick={() => setLanguage(locale.code)}
             className="flex"
           >
-            {locale.name}
+            {locale.localName}
             {locale.code === 'fr' && (
               <span className="ml-2 rounded">
                 <Badge>Beta</Badge>

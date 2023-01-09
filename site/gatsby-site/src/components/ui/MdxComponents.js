@@ -2,6 +2,7 @@ import React from 'react';
 import isString from 'lodash/isString';
 import Link from './Link';
 import SensitiveImage from '../images/sensitive';
+import Button from 'elements/Button';
 
 const slug = (title) => {
   if (isString(title)) {
@@ -32,6 +33,7 @@ const Components = {
   a: ({ href, ...props }) => <Link {...props} to={href} />,
   Details,
   SensitiveImage,
+  Button,
 };
 
 export default Components;
