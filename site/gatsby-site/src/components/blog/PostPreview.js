@@ -1,6 +1,6 @@
 import React from 'react';
 import { GatsbyImage as Img } from 'gatsby-plugin-image';
-import { format } from 'date-fns';
+//import { format } from 'date-fns';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans } from 'react-i18next';
 
@@ -29,9 +29,9 @@ function PostPreview({ post, latestPost = false }) {
             </h5>
           </LocalizedLink>
           <p className="text-muted-gray text-sm">By {post.frontmatter.author}</p>
-          <p className="text-sm text-muted-gray">
+          {/* <p className="text-sm text-muted-gray">
             {format(new Date(post.frontmatter.date), 'MMM d, yyyy')}
-          </p>
+          </p> */}
           <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{post.excerpt}... </p>
         </div>
         <div className="flex items-end flex-1 p-6">
