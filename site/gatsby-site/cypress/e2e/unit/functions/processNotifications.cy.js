@@ -380,6 +380,14 @@ describe('Functions', () => {
             incidentId: `${incident.incident_id}`,
             incidentTitle: incident.title,
             incidentUrl: `https://incidentdatabase.ai/cite/${pendingNotification.incident_id}`,
+            incidentDescription: incident.description,
+            incidentDate: incident.date,
+            developers: buildEntityList(entities, incident['Alleged developer of AI system']),
+            deployers: buildEntityList(entities, incident['Alleged deployer of AI system']),
+            entitiesHarmed: buildEntityList(
+              entities,
+              incident['Alleged harmed or nearly harmed parties']
+            ),
           },
           templateId: 'NewIncident', // Template value from function name sufix from "site/realm/functions/config.json"
         };

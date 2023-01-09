@@ -363,26 +363,28 @@ const IncidentReportForm = () => {
             <FontAwesomeIcon fixedWidth icon={faTag} title={t('Tags')} className="mb-2 mr-1" />
             <Label popover="tags" label={t('Tags')} />
           </div>
-          <Typeahead
-            id="submit-report-tags"
-            inputProps={{ id: 'submit-report-tags-input' }}
-            allowNew
-            multiple
-            onBlur={handleBlur}
-            onChange={(value) => {
-              setFieldTouched('tags', true);
-              setFieldValue(
-                'tags',
-                value.map((v) => (v.label ? v.label : v))
-              );
-            }}
-            selected={values.tags}
-            options={tags}
-            placeholder="Choose several tags..."
-          />
+          <div className="bootstrap">
+            <Typeahead
+              id="submit-report-tags"
+              inputProps={{ id: 'submit-report-tags-input' }}
+              allowNew
+              multiple
+              onBlur={handleBlur}
+              onChange={(value) => {
+                setFieldTouched('tags', true);
+                setFieldValue(
+                  'tags',
+                  value.map((v) => (v.label ? v.label : v))
+                );
+              }}
+              selected={values.tags}
+              options={tags}
+              placeholder="Choose several tags..."
+            />
+          </div>
         </Form.Group>
 
-        <div className="mt-3">
+        <div className="mt-3 bootstrap">
           <Label popover={'incident_ids'} label="Incident IDs" />
           <IncidentsField id="incident_ids" name="incident_ids" />
         </div>
