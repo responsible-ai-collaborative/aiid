@@ -26,11 +26,7 @@ const createWordCountsPage = async (graphql, createPage) => {
         }
       }
       latestReport: allMongodbAiidprodReports(
-        filter: {
-          is_incident_report: { eq: true }
-          text_inputs: { in: [null, ""] }
-          text_outputs: { in: [null, ""] }
-        }
+        filter: { is_incident_report: { eq: true } }
         sort: { order: DESC, fields: epoch_date_submitted }
         limit: 1
       ) {
