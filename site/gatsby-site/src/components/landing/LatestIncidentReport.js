@@ -1,6 +1,6 @@
 import React from 'react';
 import md5 from 'md5';
-import { format } from 'date-fns';
+//import { format } from 'date-fns';
 import { Image } from '../../utils/cloudinary';
 import Link from 'components/ui/Link';
 import ReportText from 'components/reports/ReportText';
@@ -8,7 +8,14 @@ import { Trans } from 'react-i18next';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 
 const LatestIncidentReport = ({ report }) => {
-  const { image_url, cloudinary_id, title, text, epoch_date_submitted, incident_id } = report;
+  const {
+    image_url,
+    cloudinary_id,
+    title,
+    text,
+    //epoch_date_submitted,
+    incident_id,
+  } = report;
 
   return (
     <div className="flex flex-col items-center bg-white rounded-lg border  shadow-md md:flex-row dark:border-gray-700 dark:bg-gray-800">
@@ -36,9 +43,9 @@ const LatestIncidentReport = ({ report }) => {
               {title}
             </h5>
           </LocalizedLink>
-          <span className="text-sm text-gray-500 dark:text-gray-400">
+          {/* <span className="text-sm text-gray-500 dark:text-gray-400">
             {format(epoch_date_submitted * 1000, 'MMM d, yyyy')}
-          </span>
+          </span> */}
           <div className="mb-3 font-normal text-gray-700 dark:text-gray-400">
             <ReportText maxChars={240} text={text} />
           </div>
