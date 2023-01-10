@@ -51,6 +51,7 @@ const VariantCard = ({ variant, incidentId }) => {
   return (
     <>
       <div
+        id={`r${variant.report_number}`}
         data-cy="variant-card"
         className="relative p-4 overflow-hidden flex tw-card border-1 rounded-lg break-words flex-col shadow-lg"
       >
