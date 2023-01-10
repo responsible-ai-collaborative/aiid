@@ -23,11 +23,18 @@ const VariantForm = () => {
       <div className="font-bold flex items-center gap-2">
         <Trans ns="variants">Input and circumstances</Trans>
         <Tooltip
-          content={t(
-            'Provide the relevant details producing the incident. Examples include the input prompts to a chatbot or a description of the circumstances leading to injuries sustained from a robot.'
-          )}
+          content={
+            <div className="tooltip-white">
+              <Trans ns="variants">
+                Provide the relevant details producing the incident. Examples include the input
+                prompts to a chatbot or a description of the circumstances leading to injuries
+                sustained from a robot.
+              </Trans>
+            </div>
+          }
           trigger="click"
           placement="right"
+          className="tooltip-white"
         >
           <FontAwesomeIcon
             icon={faQuestionCircle}
@@ -57,9 +64,14 @@ const VariantForm = () => {
       <div className="font-bold flex items-center gap-2">
         <Trans ns="variants">Output and outcomes</Trans>
         <Tooltip
-          content={t(
-            'Provide the relevant details surrounding the incident. Examples include output text from a chatbot or the nature of injuries sustained from a robot.'
-          )}
+          content={
+            <div className="tooltip-white">
+              <Trans ns="variants">
+                Provide the relevant details surrounding the incident. Examples include output text
+                from a chatbot or the nature of injuries sustained from a robot.
+              </Trans>
+            </div>
+          }
           trigger="click"
           placement="right"
         >
