@@ -157,7 +157,7 @@ const VariantList = ({ incidentId, variants }) => {
           A &quot;variant&quot; is an incident that shares the same causative factors, produces
           similar harms, and involves the same intelligent systems as a known AI incident. Rather
           than index variants as entirely separate incidents, we list variations of incidents under
-          the first incident submitted to the database. Unlike other submission types to the
+          the first similar incident submitted to the database. Unlike other submission types to the
           incident database, variants are not required to have reporting in evidence external to the
           Incident Database.{' '}
           <a href="https://arxiv.org/abs/2211.10384">Learn more from the research paper.</a>
