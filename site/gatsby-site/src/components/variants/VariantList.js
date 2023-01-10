@@ -66,6 +66,7 @@ const VariantCard = ({ variant, incidentId }) => {
                 'Provide the relevant details producing the incident. Examples include the input prompts to a chatbot or a description of the circumstances leading to injuries sustained from a robot.'
               )}
               trigger="click"
+              placement="right"
             >
               <FontAwesomeIcon
                 icon={faQuestionCircle}
@@ -84,6 +85,7 @@ const VariantCard = ({ variant, incidentId }) => {
                 'Provide the relevant details surrounding the incident. Examples include output text from a chatbot or the nature of injuries sustained from a robot.'
               )}
               trigger="click"
+              placement="right"
             >
               <FontAwesomeIcon
                 icon={faQuestionCircle}
