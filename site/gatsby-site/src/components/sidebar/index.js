@@ -33,9 +33,9 @@ const Sidebar = ({ defaultCollapsed = false }) => {
 
   useEffect(() => {
     function handleResize() {
-      if (window.innerWidth <= 768 && !isMobile) {
+      if (window.innerWidth < 768 && !isMobile) {
         setIsMobile(true);
-      } else if (window.innerWidth > 768 && isMobile) {
+      } else if (window.innerWidth >= 768 && isMobile) {
         setIsMobile(false);
       }
     }
@@ -76,7 +76,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
       { threshold }
     );
 
-    observer.observe(document.querySelector('nav.navBarDefault'));
+    observer.observe(document.querySelector('#navBarDefault'));
     return () => observer.disconnect();
   });
 
@@ -104,7 +104,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
         id="sidebar"
         data-cy={'sidebar' + (isCollapsed ? '-collapsed' : '')}
         aria-label="Sidebar"
-        className={`${sidebarWidth} sticky top-0 flex flex-col bg-text-light-gray`}
+        className={`${sidebarWidth} sticky top-0 flex flex-col md:bg-text-light-gray`}
         style={{
           height:
             (headerVisiblePixels && !isMobile) || window.innerWidth > 768
@@ -113,12 +113,12 @@ const Sidebar = ({ defaultCollapsed = false }) => {
           transition: 'width 500ms ease, height 75ms ease',
         }}
       >
-        <span className="border-b-1 border-b-gray-200">
+        <span className="md:border-b-1 md:border-b-gray-200">
           <QuickAccess isCollapsed={isCollapsed} />
         </span>
         {config.sidebar.title ? (
           <div
-            className={'tw-hidden-mobile'}
+            className={'hidden md:block'}
             dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
           />
         ) : null}

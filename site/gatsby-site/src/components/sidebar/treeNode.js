@@ -22,7 +22,7 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed 
   const calculatedClassName = `${className} item ${
     item.current
       ? 'bg-light-orange text-white dark:bg-gray-700'
-      : 'md:text-gray-900 hover:bg-light-orange dark:text-white hover:text-white dark:hover:bg-gray-700'
+      : 'text-white md:text-inherit hover:bg-light-orange dark:text-white hover:text-white dark:hover:bg-gray-700'
   }`;
 
   const hasChildren = item.items.length > 0;
@@ -77,7 +77,7 @@ const NodeLink = ({
     title={title}
     to={item.url}
     onClick={click}
-    className={`flex rounded-lg items-center p-2 text-white md:text-base font-normal group transition-none ${calculatedClassName}`}
+    className={`flex rounded-lg items-center p-2 md:text-base font-normal group transition-none ${calculatedClassName}`}
   >
     {icon && <>{icon} </>}
     <span

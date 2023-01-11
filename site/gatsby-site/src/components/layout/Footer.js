@@ -20,10 +20,6 @@ export default function Footer() {
             image
             mobile
           }
-          headerLinks {
-            link
-            text
-          }
         }
       }
     }

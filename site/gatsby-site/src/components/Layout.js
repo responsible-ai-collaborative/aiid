@@ -8,7 +8,7 @@ const Layout = ({ children, className, sidebarCollapsed = false, rightSidebar })
   <>
     <Header />
     <div className="tw-layout">
-      <div className="tw-hidden-mobile z-2 bg-text-light-gray shadow">
+      <div className="hidden md:block z-2 bg-text-light-gray shadow">
         <Sidebar defaultCollapsed={sidebarCollapsed} />
       </div>
       {config.sidebar.title && (

@@ -32,7 +32,6 @@ const StarsCount = (props) => {
         color: 'white',
         marginLeft: '3px',
         marginRight: '8px',
-        width: '2em',
         marginTop: '-2px',
         display: 'inline-block',
         textDecoration: 'none',
@@ -49,8 +48,6 @@ const Header = () => {
 
   const [navCollapsed, setNavCollapsed] = useState(true);
 
-  const topClass = navCollapsed ? 'topnav border-none' : 'topnav responsive border-none pb-0';
-
   return (
     <StaticQuery
       query={graphql`
@@ -66,10 +63,6 @@ const Header = () => {
                 image
                 mobile
               }
-              headerLinks {
-                link
-                text
-              }
             }
           }
         }
@@ -77,132 +70,135 @@ const Header = () => {
       render={(data) => {
         const {
           site: {
-            siteMetadata: { headerTitle, githubUrl, logo, headerLinks },
+            siteMetadata: { headerTitle, githubUrl, logo },
           },
         } = data;
 
         const finalLogoLink = logo.link !== '' ? logo.link : 'https://incidentdatabase.ai/';
 
-        return (
-          <nav className={'navBarDefault'}>
-            <div className="tw-nav-header-container">
-              <a className="tw-skip-to-content" href="#content">
-                Skip to Content
+        var SocialMediaIcons = () => (
+          <div className="hidden md:flex wrap-0 gap-1 items-center">
+            {config.header.social && (
+              <a href={'https://twitter.com/IncidentsDB'} target="_blank" rel="noreferrer">
+                <FontAwesomeIcon
+                  icon={faTwitterSquare}
+                  color={'white'}
+                  className="pointer fa fa-twitter-square fa-lg"
+                  title="Open Twitter"
+                />
               </a>
-              <div className={'nav-bar-header'}>
-                <Link to={finalLogoLink} className={'nav-bar-brand'}>
-                  <img
-                    id="desktopLogo"
-                    className={'hiddenMobile'}
-                    style={{ width: 200 }}
-                    src={logo.image !== '' ? logo.image : logoImg}
-                    alt={'logo'}
-                  />
-                  <div className="min-767px:hidden">
-                    <img
-                      style={{ width: 50 }}
-                      src={logo.mobile !== '' ? logo.mobile : logoImg}
-                      alt={'logo'}
-                    />
-                  </div>
-                  <div className="divider hiddenMobile"></div>
-                  <div
-                    className={'headerTitle displayInline'}
-                    dangerouslySetInnerHTML={{ __html: headerTitle }}
-                  />
-                </Link>
-              </div>
-              <div className="tw-header-icons-container">
-                <LanguageSwitcher className="mr-3 md:mr-0" />
-                <li className="divider hiddenMobile list-none"></li>
-                {config.header.social && (
-                  <a
-                    className="paddingAround hiddenMobile"
-                    href={'https://twitter.com/IncidentsDB'}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <FontAwesomeIcon
-                      icon={faTwitterSquare}
-                      color={'white'}
-                      className="pointer fa fa-twitter-square fa-lg"
-                      title="Open Twitter"
-                    />
-                  </a>
-                )}
+            )}
+            <a href={'/rss.xml'} target="_blank" rel="noopener noreferrer">
+              <FontAwesomeIcon
+                icon={faRssSquare}
+                color={'white'}
+                className="pointer fa fa-rss-square fa-lg"
+                title="Open RSS Feed"
+              />
+            </a>
+            {config.header.social && (
+              <span className="whitespace-nowrap">
                 <a
-                  className="paddingAround hiddenMobile"
-                  href={'/rss.xml'}
+                  href={githubUrl}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noreferrer"
+                  style={{ paddingRight: '0px' }}
                 >
                   <FontAwesomeIcon
-                    icon={faRssSquare}
+                    icon={faGithubSquare}
                     color={'white'}
-                    className="pointer fa fa-rss-square fa-lg"
-                    title="Open RSS Feed"
+                    className="pointer fa fa-github-square fa-lg"
+                    title="Open GitHub"
                   />
                 </a>
-                {config.header.social && (
-                  <>
-                    <a
-                      className="paddingAround hiddenMobile"
-                      href={githubUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ paddingRight: '0px' }}
-                    >
-                      <FontAwesomeIcon
-                        icon={faGithubSquare}
-                        color={'white'}
-                        className="pointer fa fa-github-square fa-lg"
-                        title="Open GitHub"
-                      />
-                    </a>
-                    <StarsCount
-                      className="hiddenMobile"
-                      repo={githubUrl.replace('https://github.com/', '')}
-                    />
-                  </>
-                )}
-                <div className="min-767px:hidden">
-                  <FontAwesomeIcon
-                    icon={faBars}
-                    color={'white'}
-                    className="pointer fa fa-BARS fa-lg"
-                    style={{ cursor: 'pointer' }}
-                    title="Open Menu"
-                    onClick={() => setNavCollapsed(!navCollapsed)}
-                  />
-                </div>
-                <LoginSignup
-                  className="hidden lg:flex ml-4"
-                  logoutClassName="text-white hover:text-primary-blue"
-                  loginClassName="text-white hover:text-primary-blue"
+                <StarsCount repo={githubUrl.replace('https://github.com/', '')} />
+              </span>
+            )}
+          </div>
+        );
+
+        var HeaderLink = ({ className }) => (
+          <Link to={finalLogoLink} className={`flex items-center ${className}`}>
+            <img
+              className={'hidden md:inline ml-[10px] mr-[10px]'}
+              style={{ width: 200 }}
+              src={logo.image !== '' ? logo.image : logoImg}
+              alt={'logo'}
+            />
+            <img
+              className="md:hidden"
+              style={{ width: 50 }}
+              src={logo.mobile !== '' ? logo.mobile : logoImg}
+              alt={'logo'}
+            />
+            <Divider />
+            <span
+              className="inline-block mx-6 font-semibold text-xs  md:text-base md:uppercase"
+              dangerouslySetInnerHTML={{ __html: headerTitle }}
+            />
+          </Link>
+        );
+
+        var SkipToContent = ({ className }) => (
+          <a
+            href="#content"
+            className={`
+              ${className}
+              relative 
+              overflow-hidden
+              text-white
+              bg-transparent 
+              text-xs
+              opacity-0 focus:opacity-100
+              w-0       focus:w-[unset]
+              h-0       focus:h-[unset]
+                        focus:px-[1ch]   
+            `}
+          >
+            Skip to Content
+          </a>
+        );
+
+        return (
+          <nav id="navBarDefault" className="bg-[#001934] shadow">
+            <div className=" text-white flex flex-row items-center w-full p-4 h-[80px]">
+              <SkipToContent className="-order-1" />
+
+              <HeaderLink className="-order-3" />
+
+              <div className="mx-auto -order-2" />
+
+              <LanguageSwitcher className="mr-3 md:mr-0" />
+
+              <Divider className="mx-2" />
+
+              <SocialMediaIcons />
+
+              <div className="block md:hidden">
+                <FontAwesomeIcon
+                  icon={faBars}
+                  color={'white'}
+                  className="pointer fa fa-BARS fa-lg"
+                  style={{ cursor: 'pointer' }}
+                  title="Open Menu"
+                  onClick={() => setNavCollapsed(!navCollapsed)}
                 />
               </div>
+              <LoginSignup
+                className="hidden lg:flex ml-4"
+                logoutClassName="text-white hover:text-primary-blue"
+                loginClassName="text-white hover:text-primary-blue"
+              />
             </div>
-            <div id="navbar" className={topClass}>
-              <div className={'visibleMobile'}>
-                <Sidebar />
-              </div>
-              <ul className={'navBarUL navBarNav navBarULRight'}>
-                {headerLinks.map((link, key) => {
-                  if (link.link !== '' && link.text !== '') {
-                    return (
-                      <li key={key}>
-                        <a
-                          className="sidebarLink"
-                          href={link.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          dangerouslySetInnerHTML={{ __html: link.text }}
-                        />
-                      </li>
-                    );
-                  }
-                })}
-              </ul>
+            <div
+              id="navbar"
+              className={
+                navCollapsed
+                  ? 'hidden border-none'
+                  : 'bg-inherit block md:hidden border-none relative z-10 pb-0'
+              }
+            >
+              <Sidebar />
             </div>
           </nav>
         );
@@ -210,5 +206,9 @@ const Header = () => {
     />
   );
 };
+
+var Divider = ({ className }) => (
+  <span className={`divider hidden md:inline-block w-px h-[30px] bg-gray-400 ${className}`} />
+);
 
 export default Header;
