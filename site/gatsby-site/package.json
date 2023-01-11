@@ -61,7 +61,7 @@
     "gatsby-source-mongodb": "^4.3.0",
     "gatsby-theme-i18n": "^3.0.0",
     "gatsby-theme-i18n-react-i18next": "^3.0.0",
-    "gatsby-transformer-remark": "^5.20.0",
+    "gatsby-transformer-remark": "^5.25.1",
     "gatsby-transformer-sharp": "^4.16.0",
     "graphql": "^15.8.0",
     "i18next": "^20.6.1",
