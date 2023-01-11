@@ -13,7 +13,7 @@ TERM = "xterm"
     enable = true
     record = false
     spa = true
-    start = 'gatsby build && gatsby serve -p 8080'
+    start = 'CI=true gatsby build && gatsby serve -p 8080'
     wait-on = 'http://localhost:8080'
     wait-on-timeout = '600' # seconds
     browser = 'chromium'
