@@ -23,9 +23,8 @@ import Pagination from '../elements/Pagination';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
 import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from '../components/i18n/useLocalizePath';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
-import { FIND_INCIDENT_VARIANTS } from '../graphql/variants';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import Link from 'components/ui/Link';
 import { graphql } from 'gatsby';
@@ -63,7 +62,6 @@ function CitePage(props) {
       nlp_similar_incidents,
       editor_similar_incidents,
       editor_dissimilar_incidents,
-      report_numbers,
     },
     data: {
       allMongodbAiidprodTaxa,
@@ -76,6 +74,7 @@ function CitePage(props) {
       incident,
       entities: entitiesData,
       responses,
+      variants: variantsData,
     },
   } = props;
 
@@ -132,13 +131,7 @@ function CitePage(props) {
     isOccurrence: true,
   });
 
-  const {
-    data: variants,
-    loading: loadingVariants,
-    refetch: refetchVariants,
-  } = useQuery(FIND_INCIDENT_VARIANTS, {
-    variables: { report_numbers },
-  });
+  const variants = variantsData.nodes;
 
   const taxonomies = useMemo(
     () =>
@@ -447,13 +440,7 @@ function CitePage(props) {
               </Row>
             ))}
 
-            <VariantList
-              loading={loadingVariants}
-              refetch={refetchVariants}
-              incidentId={incident.incident_id}
-              report_numbers={report_numbers}
-              variants={variants ? variants.reports : []}
-            ></VariantList>
+            <VariantList incidentId={incident.incident_id} variants={variants}></VariantList>
 
             <SimilarIncidents
               nlp_similar_incidents={nlp_similar_incidents}
@@ -648,6 +635,23 @@ export const query = graphql`
     responses: allMongodbAiidprodReports(filter: { tags: { in: ["response"] } }) {
       nodes {
         report_number
+      }
+    }
+
+    variants: allMongodbAiidprodReports(
+      filter: {
+        report_number: { in: $report_numbers }
+        text_inputs: { nin: [null, ""] }
+        text_outputs: { nin: [null, ""] }
+      }
+    ) {
+      nodes {
+        report_number
+        title
+        date_published
+        tags
+        text_inputs
+        text_outputs
       }
     }
   }

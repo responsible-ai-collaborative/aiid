@@ -14,25 +14,17 @@ export const FIND_VARIANTS = gql`
 `;
 
 export const FIND_INCIDENT_VARIANTS = gql`
-  query FindIncidentVariants($report_numbers: [Int]!) {
-    reports(
-      query: {
-        AND: [
-          { report_number_in: $report_numbers }
-          { text_inputs_exists: true }
-          { text_outputs_exists: true }
-          { text_inputs_ne: "" }
-          { text_outputs_ne: "" }
-        ]
+  query FindIncidentVariants($incident_id: Int!) {
+    incident(query: { incident_id: $incident_id }) {
+      incident_id
+      reports {
+        report_number
+        title
+        date_published
+        tags
+        text_inputs
+        text_outputs
       }
-      sortBy: REPORT_NUMBER_ASC
-    ) {
-      report_number
-      title
-      date_published
-      tags
-      text_inputs
-      text_outputs
     }
   }
 `;

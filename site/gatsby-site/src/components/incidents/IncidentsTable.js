@@ -95,17 +95,23 @@ function ListCell({ cell }) {
       {cell.value?.map((v, i) => {
         const isLast = i === cell.value.length - 1;
 
-        if (v.url) {
+        const segments = v.split(' ');
+
+        const url = '/entities/' + segments.pop();
+
+        const name = segments.join(' ');
+
+        if (url) {
           return (
-            <a key={`entity-${v.name}`} href={v.url} data-cy="cell-entity-link">
-              {v.name}
+            <a key={`entity-${name}`} href={url} data-cy="cell-entity-link">
+              {name}
               {!isLast ? ', ' : ''}
             </a>
           );
         } else {
           return (
             <>
-              {v.name} {!isLast ? ', ' : ''}
+              {name} {!isLast ? ', ' : ''}
             </>
           );
         }
@@ -155,28 +161,21 @@ export default function IncidentsTable({ data }) {
       {
         Header: <Trans>Alleged Deployer of AI System</Trans>,
         id: 'AllegedDeployerOfAISystem',
-        accessor: (data) =>
-          data.AllegedDeployerOfAISystem.map((i) => {
-            return { name: i.name, url: `/entities/${i.entity_id}` };
-          }),
+        // Include the entity_id so that we can turn it into a link on display.
+        accessor: (data) => data.AllegedDeployerOfAISystem.map((i) => `${i.name} ${i.entity_id}`),
         Cell: ListCell,
       },
       {
         Header: <Trans>Alleged Developer of AISystem</Trans>,
         id: 'AllegedDeveloperOfAISystem',
-        accessor: (data) =>
-          data.AllegedDeveloperOfAISystem.map((i) => {
-            return { name: i.name, url: `/entities/${i.entity_id}` };
-          }),
+        accessor: (data) => data.AllegedDeveloperOfAISystem.map((i) => `${i.name} ${i.entity_id}`),
         Cell: ListCell,
       },
       {
         Header: <Trans>Alleged Harmed or Nearly Harmed Parties</Trans>,
         id: 'AllegedHarmedOrNearlyHarmedParties',
         accessor: (data) =>
-          data.AllegedHarmedOrNearlyHarmedParties.map((i) => {
-            return { name: i.name, url: `/entities/${i.entity_id}` };
-          }),
+          data.AllegedHarmedOrNearlyHarmedParties.map((i) => `${i.name} ${i.entity_id}`),
         Cell: ListCell,
       },
     ];

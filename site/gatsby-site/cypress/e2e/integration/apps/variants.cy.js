@@ -217,7 +217,9 @@ describe('Variants App', () => {
     cy.wait('@deleteOneVariant');
     cy.wait('@linkReportsToIncidents');
 
-    cy.get('[data-cy="toast"]').contains('Variant successfully deleted.').should('exist');
+    cy.get('[data-cy="toast"]')
+      .contains('Variant successfully deleted. Your changes will be live within 24 hours.')
+      .should('exist');
 
     cy.wait('@findVariants');
   });
@@ -303,7 +305,9 @@ describe('Variants App', () => {
 
     cy.wait('@updateVariant');
 
-    cy.get('[data-cy="toast"]').contains('Variant successfully updated.').should('exist');
+    cy.get('[data-cy="toast"]')
+      .contains('Variant successfully updated. Your edits will be live within 24 hours.')
+      .should('exist');
 
     cy.wait('@findVariants');
   });
@@ -389,7 +393,9 @@ describe('Variants App', () => {
 
     cy.wait('@updateVariant');
 
-    cy.get('[data-cy="toast"]').contains('Variant successfully updated.').should('exist');
+    cy.get('[data-cy="toast"]')
+      .contains('Variant successfully updated. Your edits will be live within 24 hours.')
+      .should('exist');
 
     cy.wait('@findVariants');
   });
@@ -488,7 +494,9 @@ describe('Variants App', () => {
 
     cy.wait('@updateVariant');
 
-    cy.get('[data-cy="toast"]').contains('Variant successfully updated.').should('exist');
+    cy.get('[data-cy="toast"]')
+      .contains('Variant successfully updated. Your edits will be live within 24 hours.')
+      .should('exist');
 
     cy.wait('@findVariants');
   });

@@ -13,15 +13,24 @@ import { VariantStatusBadge } from './VariantList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { format, getUnixTime } from 'date-fns';
+import Link from 'components/ui/Link';
 
-export default function VariantEditModal({ show, onClose, reportNumber, refetch }) {
-  const { t } = useTranslation();
+export default function VariantEditModal({
+  show,
+  onClose,
+  reportNumber,
+  incidentId,
+  refetch = null,
+}) {
+  const { t } = useTranslation(['translation', 'variants']);
 
   const [variant, setVariant] = useState(null);
 
   const [isRejecting, setIsRejecting] = useState(false);
 
   const [isApproving, setIsApproving] = useState(false);
+
+  const [isSaving, setIsSaving] = useState(false);
 
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -49,15 +58,17 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch 
 
   const handleSubmit = async (values) => {
     try {
-      let newTags = values.tags.filter((tag) => !tag.startsWith('variant:'));
-
-      newTags.push(newVariantStatus);
-
       const updated = {
         text_inputs: values.text_inputs,
         text_outputs: values.text_outputs,
-        tags: newTags,
       };
+
+      if (newVariantStatus) {
+        let newTags = values.tags.filter((tag) => !tag.startsWith('variant:'));
+
+        newTags.push(newVariantStatus);
+        updated.tags = newTags;
+      }
 
       updated.date_modified = format(new Date(), 'yyyy-MM-dd');
       updated.epoch_date_modified = getUnixTime(new Date(updated.date_modified));
@@ -74,11 +85,11 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch 
       });
 
       addToast({
-        message: t('Variant successfully updated.'),
+        message: t('Variant successfully updated. Your edits will be live within 24 hours.'),
         severity: SEVERITY.success,
       });
 
-      await refetch();
+      refetch && (await refetch());
 
       onClose();
     } catch (e) {
@@ -114,11 +125,11 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch 
         });
 
         addToast({
-          message: t('Variant successfully deleted.'),
+          message: t('Variant successfully deleted. Your changes will be live within 24 hours.'),
           severity: SEVERITY.success,
         });
 
-        await refetch();
+        refetch && (await refetch());
 
         onClose();
       } catch (e) {
@@ -136,10 +147,10 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch 
 
   return (
     <div className="bootstrap">
-      <Modal show={show} onHide={onClose} data-cy="edit-variant-modal">
+      <Modal show={show} onHide={onClose} data-cy="edit-variant-modal" size="lg">
         <Modal.Header closeButton>
           <Modal.Title>
-            <Trans>Edit Variant</Trans>
+            <Trans ns="variants">Edit Variant</Trans>
           </Modal.Title>
         </Modal.Header>
 
@@ -150,7 +161,11 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch 
                 <Spinner />
               </div>
             )}
-            {variant === null && <div>Variant not found</div>}
+            {variant === null && (
+              <div>
+                <Trans ns="variants">Variant not found</Trans>
+              </div>
+            )}
           </Modal.Body>
         )}
 
@@ -163,12 +178,15 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch 
                 setIsApproving(true);
               } else if (newVariantStatus === VARIANT_STATUS.rejected) {
                 setIsRejecting(true);
+              } else if (newVariantStatus == null) {
+                setIsSaving(true);
               }
 
               await handleSubmit(values);
 
               setIsApproving(false);
               setIsRejecting(false);
+              setIsSaving(false);
             }}
           >
             {({ isSubmitting, isValid, submitForm }) => (
@@ -180,6 +198,13 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch 
                   <VariantForm />
                 </Modal.Body>
                 <Modal.Footer>
+                  <Link
+                    to={`/cite/edit?report_number=${reportNumber}&incident_id=${incidentId}`}
+                    data-cy="edit-all-variant-btn"
+                    className="mr-3"
+                  >
+                    <Trans ns="variants">Edit more fields</Trans>
+                  </Link>
                   <Button
                     variant="danger"
                     disabled={isSubmitting}
@@ -202,10 +227,10 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch 
                     {isSubmitting && isRejecting ? (
                       <>
                         <Spinner size="sm" />
-                        <Trans>Rejecting</Trans>
+                        <Trans ns="variants">Rejecting</Trans>
                       </>
                     ) : (
-                      <Trans>Reject</Trans>
+                      <Trans ns="variants">Reject</Trans>
                     )}
                   </Button>
                   <Button
@@ -221,10 +246,29 @@ export default function VariantEditModal({ show, onClose, reportNumber, refetch 
                     {isSubmitting && isApproving ? (
                       <>
                         <Spinner size="sm" />
-                        <Trans>Approving</Trans>
+                        <Trans ns="variants">Approving</Trans>
                       </>
                     ) : (
-                      <Trans>Approve</Trans>
+                      <Trans ns="variants">Approve</Trans>
+                    )}
+                  </Button>
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      setNewVariantStatus(null);
+                      submitForm();
+                    }}
+                    disabled={isSubmitting || isDeleting || !isValid}
+                    className="bootstrap flex gap-2 disabled:opacity-50"
+                    data-cy="save-variant-btn"
+                  >
+                    {isSubmitting && isSaving ? (
+                      <>
+                        <Spinner size="sm" />
+                        <Trans ns="variants">Saving</Trans>
+                      </>
+                    ) : (
+                      <Trans ns="variants">Save</Trans>
                     )}
                   </Button>
                 </Modal.Footer>
