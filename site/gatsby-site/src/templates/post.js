@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql, Link } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
@@ -44,6 +44,10 @@ export default function Post(props) {
     </>
   );
 
+  const [formattedDate, setFormattedDate] = useState(null);
+
+  useEffect(() => setFormattedDate(format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')), []);
+
   return (
     <Layout {...{ ...props, rightSidebar }}>
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }} />
@@ -51,7 +55,7 @@ export default function Post(props) {
         <StyledHeading>{mdx.fields.title}</StyledHeading>
 
         <div className="inline-block">
-          <span>{format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')}</span>
+          <span>{formattedDate}</span>
           {mdx.frontmatter.aiTranslated && (
             <>
               <TranslationBadge className="ml-2" />
