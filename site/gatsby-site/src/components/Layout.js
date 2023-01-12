@@ -19,7 +19,7 @@ const Layout = ({ children, collapse, className, rightSidebar }) => (
         />
       )}
       <div id="content" className={'tw-content' + (rightSidebar ? ' xl:pr-5' : '')}>
-        <div className={`${className ? className : ''} 50rem:max-w-full 50rem:relative`}>
+        <div className={`${className ? className : ''} max-50rem:max-w-full max-50rem:relative`}>
           {children}
         </div>
       </div>

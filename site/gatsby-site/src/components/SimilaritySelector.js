@@ -1,33 +1,23 @@
 import React from 'react';
-import { Button, ButtonGroup } from 'react-bootstrap';
-import styled from 'styled-components';
 import { useFormikContext } from 'formik';
+import { Button } from 'flowbite-react';
 
-const SimilarityButton = styled(Button)`
-  transition: 0.2s ease-in all !important;
-  opacity: 0.8 !important;
-  width: 2.5em;
-  padding-left: 0px !important;
-  padding-right: 0px !important;
-  text-align: center;
-
-  :disabled {
-    opacity: 1 !important;
-    box-shadow: inset 0px 0px 4px 4px rgba(0, 0, 0, 0.05);
-  }
-`;
-
-const SimilaritySelector = ({ incident_id }) => {
+const SimilaritySelector = ({
+  incident_id,
+  notSureList,
+  addToNotSureList,
+  removeFromNotSureList,
+}) => {
   const { values, setFieldValue } = useFormikContext();
 
   return (
-    <div className="bootstrap">
-      <ButtonGroup data-cy="similar-selector" id="similar-selector">
+    <div>
+      <Button.Group data-cy="similar-selector" id="similar-selector">
         {[
           {
             identifier: 'dissimilar',
-            variant: 'danger',
-            icon: 'x',
+            variant: 'failure',
+            text: 'No',
             show:
               values.editor_dissimilar_incidents &&
               values.editor_dissimilar_incidents.includes(incident_id),
@@ -40,17 +30,14 @@ const SimilaritySelector = ({ incident_id }) => {
                 'editor_similar_incidents',
                 (values.editor_similar_incidents || []).filter((id) => id != incident_id)
               );
+              removeFromNotSureList(incident_id);
             },
           },
           {
             identifier: 'unspecified',
-            variant: 'secondary',
-            icon: '?',
-            show:
-              !values.editor_similar_incidents ||
-              !values.editor_dissimilar_incidents ||
-              (!values.editor_similar_incidents.includes(incident_id) &&
-                !values.editor_dissimilar_incidents.includes(incident_id)),
+            variant: 'warning',
+            text: 'Not sure',
+            show: (notSureList || []).includes(incident_id),
             onClick: () => {
               setFieldValue(
                 'editor_similar_incidents',
@@ -60,12 +47,13 @@ const SimilaritySelector = ({ incident_id }) => {
                 'editor_dissimilar_incidents',
                 (values.editor_dissimilar_incidents || []).filter((id) => id != incident_id)
               );
+              addToNotSureList(incident_id);
             },
           },
           {
             identifier: 'similar',
             variant: 'success',
-            icon: '✓',
+            text: 'Yes',
             show:
               values.editor_similar_incidents &&
               values.editor_similar_incidents.includes(incident_id),
@@ -78,21 +66,31 @@ const SimilaritySelector = ({ incident_id }) => {
                 'editor_dissimilar_incidents',
                 (values.editor_dissimilar_incidents || []).filter((id) => id != incident_id)
               );
+              removeFromNotSureList(incident_id);
             },
           },
-        ].map((button) => (
-          <SimilarityButton
-            variant={button.show ? button.variant : 'secondary'}
-            aria-pressed={button.show}
-            disabled={button.show}
-            onClick={button.onClick}
-            key={button.icon}
-            data-cy={button.identifier}
-          >
-            {button.icon}
-          </SimilarityButton>
-        ))}
-      </ButtonGroup>
+        ].map((button) => {
+          let btnProps = {
+            size: 'xs',
+            'aria-pressed': button.show,
+            onClick: button.onClick,
+            key: button.text,
+            'data-cy': button.identifier,
+          };
+
+          if (button.show) {
+            btnProps.color = button.variant;
+          } else {
+            btnProps.color = 'light';
+          }
+
+          return (
+            <Button {...btnProps} key={button.text}>
+              <p className="text-xs m-0 break-keep whitespace-nowrap">{button.text}</p>
+            </Button>
+          );
+        })}
+      </Button.Group>
     </div>
   );
 };
