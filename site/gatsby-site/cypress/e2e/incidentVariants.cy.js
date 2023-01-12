@@ -111,7 +111,11 @@ describe('Variants pages', () => {
       "Your variant has been added to the review queue and will appear on this page within 12 hours. Please continue submitting when you encounter more variants. Most of the time we won't review it in the same day, but it will appear within a day as unreviewed."
     );
 
-    cy.get('[data-cy="toast"]').contains('Variant successfully added.').should('exist');
+    cy.get('[data-cy="toast"]')
+      .contains(
+        'Your variant has been added to the review queue and will appear on this page within 12 hours.'
+      )
+      .should('exist');
   });
 
   it("Shouldn't edit a Variant - Unauthenticated user", () => {

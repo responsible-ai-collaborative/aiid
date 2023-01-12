@@ -54,6 +54,41 @@ const sortIncidentsByDatePublished = (incidentReports) => {
   });
 };
 
+const isCompleteReport = (report) => {
+  return (
+    report.authors &&
+    report.authors.length > 0 &&
+    report.description &&
+    report.description != '' &&
+    report.epoch_date_downloaded &&
+    report.epoch_date_downloaded != '' &&
+    report.epoch_date_modified &&
+    report.epoch_date_modified != '' &&
+    report.epoch_date_published &&
+    report.epoch_date_published != '' &&
+    report.epoch_date_submitted &&
+    report.epoch_date_submitted != '' &&
+    report.image_url &&
+    report.image_url != '' &&
+    report.language &&
+    report.language != '' &&
+    report.source_domain &&
+    report.source_domain != '' &&
+    report.submitters &&
+    report.submitters.length > 0 &&
+    report.title &&
+    report.title != '' &&
+    report.text &&
+    report.text != '' &&
+    report.plain_text &&
+    report.plain_text != '' &&
+    report.url &&
+    report.url != '' &&
+    report.cloudinary_id &&
+    report.cloudinary_id != ''
+  );
+};
+
 function CitePage(props) {
   const {
     pageContext: {
@@ -74,7 +109,6 @@ function CitePage(props) {
       incident,
       entities: entitiesData,
       responses,
-      variants: variantsData,
     },
   } = props;
 
@@ -108,7 +142,9 @@ function CitePage(props) {
     locale,
   });
 
-  const sortedReports = sortIncidentsByDatePublished(incidentReports);
+  const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports);
+
+  const sortedReports = sortedIncidentReports.filter((report) => isCompleteReport(report));
 
   const metaImage = sortedReports[0].image_url;
 
@@ -131,7 +167,7 @@ function CitePage(props) {
     isOccurrence: true,
   });
 
-  const variants = variantsData.nodes;
+  const variants = sortedIncidentReports.filter((report) => !isCompleteReport(report));
 
   const taxonomies = useMemo(
     () =>
@@ -564,28 +600,29 @@ export const query = graphql`
         }
       }
     }
-    allMongodbAiidprodReports(
-      filter: {
-        report_number: { in: $report_numbers }
-        text_inputs: { in: [null, ""] }
-        text_outputs: { in: [null, ""] }
-      }
-    ) {
+    allMongodbAiidprodReports(filter: { report_number: { in: $report_numbers } }) {
       nodes {
         submitters
         date_published
         report_number
         title
+        description
         url
         image_url
         cloudinary_id
         source_domain
         mongodb_id
         text
+        plain_text
         authors
+        epoch_date_downloaded
+        epoch_date_modified
+        epoch_date_published
         epoch_date_submitted
         language
         tags
+        text_inputs
+        text_outputs
       }
     }
     allMongodbTranslationsReportsEs(filter: { report_number: { in: $report_numbers } })
@@ -635,23 +672,6 @@ export const query = graphql`
     responses: allMongodbAiidprodReports(filter: { tags: { in: ["response"] } }) {
       nodes {
         report_number
-      }
-    }
-
-    variants: allMongodbAiidprodReports(
-      filter: {
-        report_number: { in: $report_numbers }
-        text_inputs: { nin: [null, ""] }
-        text_outputs: { nin: [null, ""] }
-      }
-    ) {
-      nodes {
-        report_number
-        title
-        date_published
-        tags
-        text_inputs
-        text_outputs
       }
     }
   }
