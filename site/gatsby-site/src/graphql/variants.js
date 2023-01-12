@@ -2,10 +2,24 @@ import gql from 'graphql-tag';
 
 export const FIND_VARIANTS = gql`
   query FindVariants($query: ReportQueryInput) {
-    reports(query: $query, limit: 999) {
+    reports(query: $query, limit: 9999) {
+      submitters
+      date_published
       report_number
       title
-      date_published
+      description
+      url
+      image_url
+      cloudinary_id
+      source_domain
+      text
+      plain_text
+      authors
+      epoch_date_downloaded
+      epoch_date_modified
+      epoch_date_published
+      epoch_date_submitted
+      language
       tags
       text_inputs
       text_outputs

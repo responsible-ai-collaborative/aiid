@@ -35,6 +35,7 @@ import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import VariantList from 'components/variants/VariantList';
+import { isCompleteReport } from 'utils/variants';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -52,41 +53,6 @@ const sortIncidentsByDatePublished = (incidentReports) => {
       return -1;
     }
   });
-};
-
-const isCompleteReport = (report) => {
-  return (
-    report.authors &&
-    report.authors.length > 0 &&
-    report.description &&
-    report.description != '' &&
-    report.epoch_date_downloaded &&
-    report.epoch_date_downloaded != '' &&
-    report.epoch_date_modified &&
-    report.epoch_date_modified != '' &&
-    report.epoch_date_published &&
-    report.epoch_date_published != '' &&
-    report.epoch_date_submitted &&
-    report.epoch_date_submitted != '' &&
-    report.image_url &&
-    report.image_url != '' &&
-    report.language &&
-    report.language != '' &&
-    report.source_domain &&
-    report.source_domain != '' &&
-    report.submitters &&
-    report.submitters.length > 0 &&
-    report.title &&
-    report.title != '' &&
-    report.text &&
-    report.text != '' &&
-    report.plain_text &&
-    report.plain_text != '' &&
-    report.url &&
-    report.url != '' &&
-    report.cloudinary_id &&
-    report.cloudinary_id != ''
-  );
 };
 
 function CitePage(props) {
