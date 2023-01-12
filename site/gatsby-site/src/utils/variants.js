@@ -39,3 +39,10 @@ module.exports.isCompleteReport = (report) => {
     report.source_domain != ''
   );
 };
+
+module.exports.hasVariantData = (report) => {
+  return (
+    (report.text_inputs && report.text_inputs != '') ||
+    (report.text_outputs && report.text_outputs != '')
+  );
+};
