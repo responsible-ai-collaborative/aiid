@@ -28,7 +28,7 @@ const countByDate = (items, series, startDate) =>
 export default function IncidentsOverTimePage({ data, ...props }) {
   const metaTitle = 'Incidents Over Time';
 
-  const [startDate, setStartDate] = useState(new Date(2022, 2, 28));
+  const [startDate, setStartDate] = useState(new Date(2020, 10, 7));
 
   const [startAtZero, setStartAtZero] = useState(false);
 
