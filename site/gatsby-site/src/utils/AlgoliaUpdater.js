@@ -193,17 +193,46 @@ class AlgoliaUpdater {
       flag: 1,
     };
 
-    // Filtering Variants from the Algolia index
-    const filter = {
-      text_inputs: { $in: [null, ''] },
-      text_outputs: { $in: [null, ''] },
-    };
-
-    const reports = await this.mongoClient
+    let reports = await this.mongoClient
       .db('aiidprod')
       .collection(`reports`)
-      .find(filter, { projection })
+      .find({}, { projection })
       .toArray();
+
+    // Only index Incident Reports
+    reports = reports.filter(
+      (r) =>
+        r.authors &&
+        r.authors.length > 0 &&
+        r.description &&
+        r.description != '' &&
+        r.epoch_date_downloaded &&
+        r.epoch_date_downloaded != '' &&
+        r.epoch_date_modified &&
+        r.epoch_date_modified != '' &&
+        r.epoch_date_published &&
+        r.epoch_date_published != '' &&
+        r.epoch_date_submitted &&
+        r.epoch_date_submitted != '' &&
+        r.image_url &&
+        r.image_url != '' &&
+        r.language &&
+        r.language != '' &&
+        r.source_domain &&
+        r.source_domain != '' &&
+        r.submitters &&
+        r.submitters.length > 0 &&
+        r.title &&
+        r.title != '' &&
+        r.text &&
+        r.text != '' &&
+        r.plain_text &&
+        r.plain_text != '' &&
+        r.url &&
+        r.url != '' &&
+        r.cloudinary_id &&
+        r.cloudinary_id != ''
+    );
 
     const translations = await this.mongoClient
       .db('translations')
