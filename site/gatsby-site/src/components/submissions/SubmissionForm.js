@@ -153,8 +153,8 @@ const SubmissionForm = () => {
           placeholder={t('Report URL')}
           addOnComponent={
             <Button
-              className="outline-secondary rounded-l-none"
-              disabled={!!errors.url || !touched.url || parsingNews}
+              className="outline-secondary rounded-l-none whitespace-nowrap"
+              disabled={!!errors.url || !values?.url || parsingNews}
               onClick={() => parseNewsUrl(values.url)}
               data-cy="fetch-info"
             >

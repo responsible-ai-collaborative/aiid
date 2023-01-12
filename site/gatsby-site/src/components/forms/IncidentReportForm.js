@@ -222,8 +222,8 @@ const IncidentReportForm = () => {
           icon={faLink}
           addOnComponent={
             <Button
-              className="outline-secondary"
-              disabled={!!errors.url || !touched.url || parsingNews}
+              className="outline-secondary whitespace-nowrap"
+              disabled={!!errors.url || !values?.url || parsingNews}
               onClick={() => parseNewsUrl(values.url)}
             >
               {!parsingNews ? (
@@ -393,6 +393,7 @@ const IncidentReportForm = () => {
           name="editor_notes"
           label="Editor Notes"
           icon={faAlignLeft}
+          type="textarea"
           as="textarea"
           rows={8}
           className="mt-3"
