@@ -1,6 +1,11 @@
 import { maybeIt } from '../support/utils';
 import variantsIncident from '../fixtures/variants/variantsIncident.json';
-import { getVariantStatus, getVariantStatusText, VARIANT_STATUS } from '../../src/utils/variants';
+import {
+  getVariantStatus,
+  getVariantStatusText,
+  isCompleteReport,
+  VARIANT_STATUS,
+} from '../../src/utils/variants';
 import { format, getUnixTime } from 'date-fns';
 const { gql } = require('@apollo/client');
 
@@ -16,6 +21,8 @@ const getVariants = (callback) => {
             title
             date_published
             tags
+            url
+            source_domain
             text_inputs
             text_outputs
           }
@@ -26,7 +33,7 @@ const getVariants = (callback) => {
     const incident = incidents[0];
 
     const variants = incident.reports
-      .filter((r) => r.text_inputs && r.text_inputs != '' && r.text_outputs && r.text_outputs != '')
+      .filter((r) => !isCompleteReport(r))
       .sort((a, b) => a.report_number - b.report_number);
 
     callback(variants);
