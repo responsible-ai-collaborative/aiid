@@ -1139,6 +1139,93 @@ describe('The Submit form', () => {
     });
   });
 
+  it('Should show related reports based on author', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
+      'insertSubmission',
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    const values = {
+      url: 'https://test.com',
+      title: 'test title',
+      authors: 'BBC News',
+      incident_date: '2022-01-01',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+    };
+
+    for (const key in values) {
+      cy.get(`[name="${key}"]`).type(values[key]);
+    }
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
+
+    cy.clickOutside();
+
+    cy.get('[data-cy="related-byAuthors"] [data-cy="result"]', { timeout: 10000 })
+      .should('be.visible')
+      .eq(0)
+      .then(($el) => {
+        cy.wrap($el).find('[data-cy="unspecified"]').eq(0).should('be.visible').click();
+      });
+
+    cy.get('[data-cy="related-byAuthors"] [data-cy="result"]')
+      .should('be.visible')
+      .eq(1)
+      .then(($el) => {
+        cy.wrap($el).find('[data-cy="dissimilar"]').eq(0).should('be.visible').click();
+      });
+
+    cy.get('[data-cy="related-byAuthors"] [data-cy="result"]')
+      .should('be.visible')
+      .eq(2)
+      .then(($el) => {
+        cy.wrap($el).find('[data-cy="similar"]').eq(0).should('be.visible').click();
+      });
+
+    cy.get('button[data-cy="submit-step-1"]').scrollIntoView().click();
+
+    cy.wait('@insertSubmission').then((xhr) => {
+      expect(xhr.request.body.variables.submission).to.deep.nested.include({
+        ...values,
+        authors: [values.authors],
+        plain_text:
+          'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease\n',
+        source_domain: `test.com`,
+        editor_dissimilar_incidents: [5],
+        editor_similar_incidents: [321],
+      });
+    });
+  });
+
+  it('Should *not* show related reports based on author', () => {
+    cy.visit(url);
+
+    const valuesStep1 = {
+      authors: 'test author',
+    };
+
+    for (const key in valuesStep1) {
+      cy.get(`[name="${key}"]`).type(valuesStep1[key]);
+    }
+
+    cy.clickOutside();
+
+    cy.get('[data-cy="related-byAuthors"] ')
+      .should('be.visible')
+      .should('contain', 'No related reports found.');
+  });
+
   it('Should hide incident_date, description, deployers, developers & harmed_parties if incident_id', () => {
     cy.conditionalIntercept(
       '**/graphql',
