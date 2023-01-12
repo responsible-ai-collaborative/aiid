@@ -8,7 +8,7 @@ import { FIND_VARIANTS } from '../../graphql/variants';
 import { FIND_INCIDENTS } from '../../graphql/incidents';
 import AiidHelmet from '../../components/AiidHelmet';
 import ListSkeleton from 'elements/Skeletons/List';
-import { getVariantStatus, hasVariantData, isCompleteReport } from '../../utils/variants';
+import { getVariantStatus, isCompleteReport } from '../../utils/variants';
 
 export default function IncidentsPage(props) {
   const { data: variantsData, refetch } = useQuery(FIND_VARIANTS);
@@ -21,9 +21,7 @@ export default function IncidentsPage(props) {
 
   useEffect(() => {
     if (variantsData && variantsData.reports) {
-      const variants = variantsData.reports.filter(
-        (report) => !isCompleteReport(report) && hasVariantData(report)
-      );
+      const variants = variantsData.reports.filter((report) => !isCompleteReport(report));
 
       if (variants.length > 0) {
         const fullData = [];

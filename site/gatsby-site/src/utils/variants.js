@@ -31,42 +31,11 @@ module.exports.getVariantStatusText = (tag) => {
 
 module.exports.isCompleteReport = (report) => {
   return (
-    report.authors &&
-    report.authors.length > 0 &&
-    report.description &&
-    report.description != '' &&
-    report.epoch_date_downloaded &&
-    report.epoch_date_downloaded != '' &&
-    report.epoch_date_modified &&
-    report.epoch_date_modified != '' &&
-    report.epoch_date_published &&
-    report.epoch_date_published != '' &&
-    report.epoch_date_submitted &&
-    report.epoch_date_submitted != '' &&
-    report.image_url &&
-    report.image_url != '' &&
-    report.language &&
-    report.language != '' &&
-    report.source_domain &&
-    report.source_domain != '' &&
-    report.submitters &&
-    report.submitters.length > 0 &&
     report.title &&
     report.title != '' &&
-    report.text &&
-    report.text != '' &&
-    report.plain_text &&
-    report.plain_text != '' &&
     report.url &&
     report.url != '' &&
-    report.cloudinary_id &&
-    report.cloudinary_id != ''
-  );
-};
-
-module.exports.hasVariantData = (report) => {
-  return (
-    (report.text_inputs && report.text_inputs != '') ||
-    (report.text_outputs && report.text_outputs != '')
+    report.source_domain &&
+    report.source_domain != ''
   );
 };
