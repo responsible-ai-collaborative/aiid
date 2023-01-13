@@ -96,6 +96,9 @@ export default function IncidentsOverTimePage({ data, ...props }) {
             onChange={(evt) => {
               setStartDate(Date.parse(evt.target.value));
             }}
+            onKeyPress={(e) => {
+              e.preventDefault();
+            }}
           />
         </div>
         <div className="flex gap-2 items-center">
