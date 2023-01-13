@@ -237,6 +237,20 @@ describe('Cite pages', () => {
     cy.get('[data-cy="similar-incident-card"]').should('exist');
   });
 
+  it('Should display similar incidents with localized links', () => {
+    cy.visit('/es/cite/9');
+
+    cy.get('[data-cy="similar-incident-card"]').should('exist');
+
+    cy.get('.tw-main-container [data-cy="similar-incident-card"] > [data-cy="cite-link"]').each(
+      (link) => {
+        const href = link[0].href;
+
+        expect(href).to.contains('/es/cite/');
+      }
+    );
+  });
+
   it('Should not display duplicate similar incidents', () => {
     cy.visit('/cite/9');
 

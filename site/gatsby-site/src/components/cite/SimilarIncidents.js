@@ -34,7 +34,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   return (
     <Card data-cy="similar-incident-card" className="relative pb-8 overflow-hidden">
-      <a href={'/cite/' + incident.incident_id} data-cy="cite-link">
+      <LocalizedLink to={`/cite/${incident.incident_id}`} data-cy="cite-link">
         {(incident.reports[0].cloudinary_id || incident.reports[0]?.image_url) && (
           <Image
             className="object-cover w-full aspect-[16/9]"
@@ -49,7 +49,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
         <h3 className="text-lg m-4">
           {locale == 'en' && incident.title ? incident.title : incident.reports[0].title}
         </h3>
-      </a>
+      </LocalizedLink>
       <div className="flex w-full flex-row items-center font-bold mt-0 absolute pr-4 bottom-4">
         <div className="text-muted-gray text-sm mx-4">
           {parsedDate && (
