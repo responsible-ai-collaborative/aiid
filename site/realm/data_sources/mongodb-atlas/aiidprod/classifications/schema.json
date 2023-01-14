@@ -13,8 +13,9 @@
               "value": {
                 "bsonType": "object",
                 "properties": {
-                  "string": { "bsonType": "string" },
                   "bool": { "bsonType": "bool" },
+                  "date": { "bsonType": "date" },
+                  "string": { "bsonType": "string" },
                   "array": { "bsonType": "array", "items": {"bsonType": "string"}}
                 }
               }
