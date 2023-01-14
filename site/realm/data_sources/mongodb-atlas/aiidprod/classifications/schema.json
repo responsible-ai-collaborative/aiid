@@ -3,6 +3,24 @@
         "_id": {
             "bsonType": "objectId"
         },
+        "attributes": {
+          "bsonType": "array",
+          "items": {
+            "bsonType": "object",
+            "properties": {
+              "short_name" : { "bsonType": "string" },
+              "mongo_type" : { "bsonType": "string" },
+              "value": {
+                "bsonType": "object",
+                "properties": {
+                  "string": { "bsonType": "string" },
+                  "bool": { "bsonType": "bool" },
+                  "array": { "bsonType": "array", "items": {"bsonType": "string"}}
+                }
+              }
+            }
+          }
+        },
         "classifications": {
             "bsonType": "object",
             "properties": {
@@ -164,7 +182,6 @@
     },
     "required": [
         "incident_id",
-        "classifications",
         "namespace"
     ],
     "title": "classification"

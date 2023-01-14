@@ -1,5 +1,25 @@
 import gql from 'graphql-tag';
 
+export const FIND_CLASSIFICATION = gql`
+  query FindCSETClassifications($query: ClassificationQueryInput) {
+    classifications(query: $query) {
+      _id
+      incident_id
+      notes
+      namespace
+      attributes {
+        short_name
+        mongo_type
+        value {
+          bool
+          string
+          array
+        }
+      }
+    }
+  }
+`;
+
 export const FIND_CSET_CLASSIFICATION = gql`
   query FindCSETClassifications($query: ClassificationQueryInput) {
     classifications(query: $query) {
@@ -133,6 +153,29 @@ export const FIND_CSET2_CLASSIFICATION = gql`
         ShortDescription
         SystemDeveloper
         TechnologyPurveyor
+      }
+    }
+  }
+`;
+
+export const UPDATE_CLASSIFICATION = gql`
+  mutation UpsertClassification(
+    $query: ClassificationQueryInput
+    $data: ClassificationInsertInput!
+  ) {
+    upsertOneClassification(query: $query, data: $data) {
+      _id
+      incident_id
+      notes
+      namespace
+      attributes {
+        short_name
+        mongo_type
+        value {
+          bool
+          string
+          array
+        }
       }
     }
   }

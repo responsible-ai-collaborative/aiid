@@ -488,6 +488,15 @@ export const query = graphql`
         id
         namespace
         notes
+        attributes {
+          short_name
+          mongo_type
+          value {
+            bool
+            string
+            array
+          }
+        }
         classifications {
           Annotation_Status
           Annotator

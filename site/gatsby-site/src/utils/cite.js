@@ -8,6 +8,8 @@ export const getClassificationsArray = (incidentClassifications, taxonomy) => {
   }
   const classificationObj = classifications.classifications;
 
+  const attributes = classifications.attributes;
+
   const taxaFieldsArray = taxonomy.field_list.sort((a, b) => b.weight - a.weight);
 
   const array = [];
@@ -30,7 +32,14 @@ export const getClassificationsArray = (incidentClassifications, taxonomy) => {
   };
 
   taxaFieldsArray.forEach((field) => {
-    const c = classificationObj[field.short_name.split(' ').join('_')];
+    const attribute = attributes && attributes.find((a) => a.short_name == field.short_name);
+
+    const attributeValue = attribute && attribute.value[attribute.mongo_type];
+
+    const classificationValue =
+      classificationObj && classificationObj[field.short_name.split(' ').join('_')];
+
+    const c = attributeValue || classificationValue;
 
     const value = getStringForValue(c);
 

@@ -11,8 +11,10 @@ import { useMutation, useQuery } from '@apollo/client';
 import {
   FIND_CSET_CLASSIFICATION,
   FIND_CSET2_CLASSIFICATION,
+  FIND_CLASSIFICATION,
   UPDATE_CSET_CLASSIFICATION,
   UPDATE_CSET2_CLASSIFICATION,
+  UPDATE_CLASSIFICATION,
 } from '../../graphql/classifications.js';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import Tags from 'components/forms/Tags.js';
@@ -26,11 +28,13 @@ const TEXTAREA_LIMIT = 120;
 const queryMap = {
   CSET: FIND_CSET_CLASSIFICATION,
   CSET2: FIND_CSET2_CLASSIFICATION,
+  TestTaxonomy: FIND_CLASSIFICATION,
 };
 
 const mutationMap = {
   CSET: UPDATE_CSET_CLASSIFICATION,
   CSET2: UPDATE_CSET2_CLASSIFICATION,
+  TestTaxonomy: UPDATE_CLASSIFICATION,
 };
 
 const getTaxaFieldKey = (key) => {
@@ -102,7 +106,9 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
         (classification) => classification.namespace == taxonomy.namespace
       );
 
-      const classifications = classification?.classifications || {};
+      const classifications = classification?.classifications;
+
+      const attributes = classification?.attributes;
 
       const notes = classification?.notes || '';
 
@@ -124,7 +130,15 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
 
         fieldsArray.push(field);
 
-        let classificationValue = classifications[field.key];
+        let classificationValue;
+
+        if (attributes) {
+          const attribute = attributes.find((a) => a.short_name == field.short_name);
+
+          classificationValue = attribute.value[attribute.mongo_type];
+        } else if (classifications) {
+          classificationValue = classifications[field.key];
+        }
 
         if (classificationValue === undefined) {
           if (taxaField.display_type === 'multi') {
@@ -302,41 +316,94 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
   }
 
   const submit = async (values, { setSubmitting }) => {
-    const { notes, ...classifications } = values;
+    const namespaceClassifications = classificationsData.classifications.find(
+      (c) => c.namespace == namespace
+    );
 
-    fieldsWithDefaultValues.forEach((f) => {
-      //Convert string into boolean
-      if (f.display_type === 'bool') {
-        if (values[f.key] === '') {
-          classifications[f.key] = undefined;
-        } else if (values[f.key] === 'true') {
-          classifications[f.key] = true;
-        } else if (values[f.key] === 'false') {
-          classifications[f.key] = false;
+    // Using classifications
+    if (namespaceClassifications.classifications) {
+      const { notes, ...classifications } = values;
+
+      fieldsWithDefaultValues.forEach((f) => {
+        //Convert string into boolean
+        if (f.display_type === 'bool') {
+          if (values[f.key] === '') {
+            classifications[f.key] = undefined;
+          } else if (values[f.key] === 'true') {
+            classifications[f.key] = true;
+          } else if (values[f.key] === 'false') {
+            classifications[f.key] = false;
+          }
         }
-      }
-    });
+      });
 
-    try {
-      await updateClassification({
-        variables: {
-          query: {
-            incident_id: incidentId,
-            namespace,
+      try {
+        await updateClassification({
+          variables: {
+            query: {
+              incident_id: incidentId,
+              namespace,
+            },
+            data: {
+              incident_id: incidentId,
+              notes,
+              namespace,
+              classifications,
+            },
           },
-          data: {
-            incident_id: incidentId,
-            notes,
-            namespace,
-            classifications,
+        });
+      } catch (e) {
+        addToast({
+          message: <>Error updating classification data: {e.message}</>,
+          severity: SEVERITY.danger,
+        });
+      }
+    } else {
+      // Using attributes
+      const data = {
+        incident_id: incidentId,
+        notes: values.notes,
+        namespace,
+        attributes: Object.keys(values)
+          .filter((key) => key != 'notes')
+          .map((key) => {
+            const value = values[key];
+
+            let type = 'string';
+
+            if (Array.isArray(value)) {
+              type = 'array';
+            } else if (typeof value === 'boolean' || ['true', 'false'].includes(value)) {
+              type = 'bool';
+            }
+
+            const valueObj = {};
+
+            valueObj[type] = value;
+            return {
+              short_name: key,
+              mongo_type: type,
+              value: valueObj,
+            };
+          }),
+      };
+
+      try {
+        await updateClassification({
+          variables: {
+            query: {
+              incident_id: incidentId,
+              namespace,
+            },
+            data,
           },
-        },
-      });
-    } catch (e) {
-      addToast({
-        message: <>Error updating classification data: {e.message}</>,
-        severity: SEVERITY.danger,
-      });
+        });
+      } catch (e) {
+        addToast({
+          message: <>Error updating classification data: {e.message}</>,
+          severity: SEVERITY.danger,
+        });
+      }
     }
 
     setSubmitting(false);
