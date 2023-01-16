@@ -586,7 +586,7 @@ describe('The Submit form', () => {
     }
 
     cy.get(`[data-cy="related-byAuthors"]`).within(() => {
-      cy.get('.list-group-item').should('contain.text', 'No related reports found.');
+      cy.get('[data-cy="no-related-reports"]').should('contain.text', 'No related reports found.');
     });
   });
 
