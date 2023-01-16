@@ -4,6 +4,8 @@ const { getUnixTime } = require('date-fns');
 
 const config = require('../../config');
 
+const { isCompleteReport } = require('./variants');
+
 const truncate = (doc) => {
   for (const [key, value] of Object.entries(doc)) {
     if (typeof value == 'string') {
@@ -200,39 +202,7 @@ class AlgoliaUpdater {
       .toArray();
 
     // Only index Incident Reports
-    reports = reports.filter(
-      (r) =>
-        r.authors &&
-        r.authors.length > 0 &&
-        r.description &&
-        r.description != '' &&
-        r.epoch_date_downloaded &&
-        r.epoch_date_downloaded != '' &&
-        r.epoch_date_modified &&
-        r.epoch_date_modified != '' &&
-        r.epoch_date_published &&
-        r.epoch_date_published != '' &&
-        r.epoch_date_submitted &&
-        r.epoch_date_submitted != '' &&
-        r.image_url &&
-        r.image_url != '' &&
-        r.language &&
-        r.language != '' &&
-        r.source_domain &&
-        r.source_domain != '' &&
-        r.submitters &&
-        r.submitters.length > 0 &&
-        r.title &&
-        r.title != '' &&
-        r.text &&
-        r.text != '' &&
-        r.plain_text &&
-        r.plain_text != '' &&
-        r.url &&
-        r.url != '' &&
-        r.cloudinary_id &&
-        r.cloudinary_id != ''
-    );
+    reports = reports.filter((report) => isCompleteReport(report));
 
     const translations = await this.mongoClient
       .db('translations')
