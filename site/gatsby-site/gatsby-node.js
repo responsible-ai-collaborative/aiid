@@ -336,7 +336,7 @@ exports.onPreBuild = function ({ reporter }) {
 exports.onPostBuild = async ({ reporter }) => {
   reporter.info('Site has been built!');
 
-  if (process.env.CONTEXT == 'production') {
+  if (process.env.CI != 'true' && process.env.CONTEXT == 'production') {
     reporter.info('Processing pending notifications...');
 
     const processNotifications = require('./postBuild/processNotifications');
