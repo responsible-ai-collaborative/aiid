@@ -24,13 +24,17 @@ const SubdomainCard = styled(Card.Subtitle)`
   ${linkHoverHighlight}
 `;
 
-export function citationReportUrl(item) {
+export function citationReportUrl(item, viewType) {
   let path = null;
 
-  if (item.is_incident_report) {
-    path = '/cite/' + item.incident_id + '#r' + item.objectID;
+  if (viewType === VIEW_TYPES.INCIDENTS) {
+    path = '/cite/' + item.incident_id;
   } else {
-    path = `/reports/${item.report_number}`;
+    if (item.is_incident_report) {
+      path = '/cite/' + item.incident_id + '#r' + item.objectID;
+    } else {
+      path = `/reports/${item.report_number}`;
+    }
   }
 
   return path;
@@ -40,7 +44,11 @@ export function HeaderTitle({ item, ...props }) {
   return (
     <div className="bootstrap">
       <HeaderCard {...props}>
-        <LocalizedLink to={citationReportUrl(item)} className="no-underline" title={item.title}>
+        <LocalizedLink
+          to={citationReportUrl(item, props.viewType)}
+          className="no-underline"
+          title={item.title}
+        >
           <Highlight
             hit={item}
             attribute={props.viewType === VIEW_TYPES.INCIDENTS ? 'incident_title' : 'title'}

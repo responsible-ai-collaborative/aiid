@@ -35,13 +35,18 @@ export default function Details({
 }) {
   const localizePath = useLocalizePath();
 
-  const detailsPath = item.is_incident_report
-    ? localizePath({
-        path: `/cite/${item.incident_id}#r${item.objectID}`,
-      })
-    : localizePath({
-        path: `/reports/${item.report_number}`,
-      });
+  const detailsPath =
+    viewType === VIEW_TYPES.INCIDENTS
+      ? localizePath({
+          path: `/cite/${item.incident_id}`,
+        })
+      : item.is_incident_report
+      ? localizePath({
+          path: `/cite/${item.incident_id}#r${item.objectID}`,
+        })
+      : localizePath({
+          path: `/reports/${item.report_number}`,
+        });
 
   return (
     <Card className="h-full" data-cy={item.mongodb_id}>
