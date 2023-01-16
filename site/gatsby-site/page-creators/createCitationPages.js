@@ -1,10 +1,8 @@
-const config = require('../config');
-
 const path = require('path');
 
 const { switchLocalizedPath } = require('../i18n');
 
-const createCitationPages = async (graphql, createPage) => {
+const createCitationPages = async (graphql, createPage, { languages }) => {
   const result = await graphql(
     `
       query IncidentIDs {
@@ -92,10 +90,10 @@ const createCitationPages = async (graphql, createPage) => {
     });
   }
 
-  for (const language of config.i18n.availableLanguages) {
+  for (const language of languages) {
     for (const context of pageContexts) {
       const pagePath = switchLocalizedPath({
-        newLang: language,
+        newLang: language.code,
         path: '/cite/' + context.incident_id,
       });
 
@@ -104,6 +102,9 @@ const createCitationPages = async (graphql, createPage) => {
         component: path.resolve('./src/templates/cite.js'),
         context: {
           ...context,
+          originalPath: pagePath,
+          locale: language.code,
+          hrefLang: language.hrefLang,
           translate_es: incidentReportsMap[context.incident_id].some((r) => r.language !== 'es'),
           translate_fr: incidentReportsMap[context.incident_id].some((r) => r.language !== 'fr'),
           translate_en: incidentReportsMap[context.incident_id].some((r) => r.language !== 'en'),
