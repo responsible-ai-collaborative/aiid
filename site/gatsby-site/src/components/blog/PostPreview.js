@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { GatsbyImage as Img } from 'gatsby-plugin-image';
 import { format } from 'date-fns';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans } from 'react-i18next';
 
 function PostPreview({ post, latestPost = false }) {
+  const [formattedDate, setFormattedDate] = useState(null);
+
+  useEffect(() => setFormattedDate(format(new Date(post.frontmatter.date), 'MMM d, yyyy')), []);
+
   return (
     <>
       <div className="flex flex-col w-full h-full bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
@@ -29,9 +33,7 @@ function PostPreview({ post, latestPost = false }) {
             </h5>
           </LocalizedLink>
           <p className="text-muted-gray text-sm">By {post.frontmatter.author}</p>
-          <p className="text-sm text-muted-gray">
-            {format(new Date(post.frontmatter.date), 'MMM d, yyyy')}
-          </p>
+          <p className="text-sm text-muted-gray">{formattedDate}</p>
           <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{post.excerpt}... </p>
         </div>
         <div className="flex items-end flex-1 p-6">
