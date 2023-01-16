@@ -579,16 +579,10 @@ export const query = graphql`
         source_domain
         mongodb_id
         text
-        plain_text
         authors
-        epoch_date_downloaded
-        epoch_date_modified
-        epoch_date_published
         epoch_date_submitted
         language
         tags
-        text_inputs
-        text_outputs
       }
     }
     allMongodbTranslationsReportsEs(filter: { report_number: { in: $report_numbers } })
