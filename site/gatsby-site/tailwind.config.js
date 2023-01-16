@@ -56,7 +56,7 @@ module.exports = {
         'min-576px': { min: '576px' },
         'min-767px': { min: '767px' },
         'min-992px': { min: '992px' },
-        '50rem': { max: '50rem' },
+        'max-50rem': { max: '50rem' },
         '767px': { max: '767px' },
         '965px': { max: '965px' },
         '992px': { min: '992px' },
@@ -168,6 +168,8 @@ module.exports = {
         '0-1-auto': '0 1 auto',
         '1-1-auto': '1 1 auto',
         '2-1-auto': '1 1 0',
+        '1/3': '1 0 32%',
+        '1/3-fixed': '0 0 32%',
       },
       transformOrigin: {
         'center-left': 'center left',

@@ -221,7 +221,7 @@ const SubmitForm = () => {
 
   return (
     <>
-      <AiidHelmet>
+      <AiidHelmet canonicalUrl={'/apps/submit'}>
         <title>{t(isIncidentResponse ? 'New Incident Response' : 'New Incident Report')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>

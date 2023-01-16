@@ -83,6 +83,15 @@
         "incident_id": {
             "bsonType": "int"
         },
+        "incident_title": {
+            "bsonType": "string"
+        },
+        "incident_editors": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
         "language": {
             "bsonType": "string"
         },
