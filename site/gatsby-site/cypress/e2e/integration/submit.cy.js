@@ -168,11 +168,11 @@ describe('The Submit form', () => {
         });
       });
 
-      cy.get('[data-cy="submission-success"]')
+      cy.get('div[class^="ToastContext"]')
         .contains('Report successfully added to review queue')
         .should('be.visible');
 
-      cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
+      cy.get('div[class^="ToastContext"] a').should('have.attr', 'href', '/apps/submitted');
 
       cy.contains('Please review. Some data is missing.').should('not.exist');
     }
@@ -1197,7 +1197,7 @@ describe('The Submit form', () => {
           'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease\n',
         source_domain: `test.com`,
         editor_dissimilar_incidents: [5],
-        editor_similar_incidents: [16],
+        editor_similar_incidents: [321],
       });
     });
   });
@@ -1302,11 +1302,11 @@ describe('The Submit form', () => {
       });
     });
 
-    cy.get('[data-cy="submission-success"]')
+    cy.get('div[class^="ToastContext"]')
       .contains('Report successfully added to review queue')
       .should('be.visible');
 
-    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
+    cy.get('div[class^="ToastContext"] a').should('have.attr', 'href', '/apps/submitted');
 
     cy.contains('Please review. Some data is missing.').should('not.exist');
   });
