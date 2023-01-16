@@ -1203,7 +1203,7 @@ describe('The Submit form', () => {
           'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease\n',
         source_domain: `test.com`,
         editor_dissimilar_incidents: [5],
-        editor_similar_incidents: [321],
+        editor_similar_incidents: [16],
       });
     });
   });
