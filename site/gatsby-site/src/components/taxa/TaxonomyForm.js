@@ -316,12 +316,17 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
   }
 
   const submit = async (values, { setSubmitting }) => {
-    const namespaceClassifications = classificationsData.classifications.find(
+    const namespaceClassification = classificationsData.classifications.find(
       (c) => c.namespace == namespace
-    );
+    ) || {
+      incident_id: incidentId,
+      namespace,
+      notes: '',
+      attributes: [],
+    };
 
     // Using classifications
-    if (namespaceClassifications.classifications) {
+    if (namespaceClassification.classifications) {
       const { notes, ...classifications } = values;
 
       fieldsWithDefaultValues.forEach((f) => {

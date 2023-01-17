@@ -36,24 +36,26 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
   //  }
   if (!classificationsLoading && classificationsData?.nodes) {
     for (const classification of classificationsData.nodes) {
-      if (!classification.classifications.Publish) {
-        continue;
-      }
       if (classification.namespace != namespace) {
         continue;
       }
-      for (const axis in classification.classifications) {
-        categoryCounts[axis] ||= {};
-        const value = classification.classifications[axis];
+      if (classification.classifications) {
+        if (!classification.classifications.Publish) {
+          continue;
+        }
+        for (const axis in classification.classifications) {
+          categoryCounts[axis] ||= {};
+          const value = classification.classifications[axis];
 
-        if (Array.isArray(value)) {
-          for (const category of value) {
-            categoryCounts[axis][category] ||= 0;
-            categoryCounts[axis][category] += 1;
+          if (Array.isArray(value)) {
+            for (const category of value) {
+              categoryCounts[axis][category] ||= 0;
+              categoryCounts[axis][category] += 1;
+            }
+          } else {
+            categoryCounts[axis][value] ||= 0;
+            categoryCounts[axis][value] += 1;
           }
-        } else {
-          categoryCounts[axis][value] ||= 0;
-          categoryCounts[axis][value] += 1;
         }
       }
     }

@@ -6,8 +6,6 @@ exports.up = async ({ context: { client } }) => {
 
   const csetTaxonomy = await taxa.findOne({ namespace: 'CSET' });
 
-  console.log(`csetTaxonomy`, csetTaxonomy);
-
   const classifications = client
     .db(config.realm.production_db.db_name)
     .collection('classifications');
@@ -28,9 +26,17 @@ exports.up = async ({ context: { client } }) => {
 
       const value = {};
 
-      // TODO: This condition isn't met for "notes".
-      // Find out why and fix it if necessary.
-      if (mongo_type && bareValue) {
+      // `notes` is in the `classifications` object
+      // of some documents in `classifications`,
+      // but it is not in the CSET taxa document,
+      // so no mongo_type is found for it
+      // and the value is not found.
+      // In every case where the the
+      // classification.classifications.notes
+      // is not the empty string,
+      // it's the same as classification.notes,
+      // so we can just skip over it.
+      if (mongo_type) {
         value[mongo_type] = bareValue;
 
         attributes.push({ short_name, mongo_type, value });

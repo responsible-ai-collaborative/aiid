@@ -45,6 +45,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
   if (!instant_facet) {
     return '';
   }
+  console.log(namespace, instant_facet, short_name, stats, geocodes);
 
   let valueStats = {};
 
@@ -152,6 +153,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
 };
 
 const getStats = (taxa, classification) => {
+  console.log('getStats(', taxa, classification, ')');
   const incrementStat = (stat, val) => {
     if (val === undefined || val === null || val === '') {
       return 0;
@@ -168,6 +170,8 @@ const getStats = (taxa, classification) => {
 
   const filteredClassification = classification.filter((c) => c.namespace === taxa.namespace);
 
+  console.log(`filteredClassification`, filteredClassification);
+
   const stats = {};
 
   taxa.field_list
@@ -176,7 +180,15 @@ const getStats = (taxa, classification) => {
       let auxStat = {};
 
       filteredClassification.forEach((c) => {
-        const value = c.classifications[field.short_name.split(' ').join('_')];
+        const attribute =
+          c.attributes &&
+          c.attributes.find((attribute) => attribute.short_name == field.short_name);
+
+        const value = attribute
+          ? attribute.value[attribute.type]
+          : c.classifications[field.short_name.split(' ').join('_')];
+
+        console.log(`value`, value);
 
         if (value?.length > 0) {
           if (typeof value === 'object') {
@@ -275,6 +287,8 @@ const Taxonomy = (props) => {
     )
     .filter((entry) => entry.public === null || entry.public);
 
+  console.log(`allMongodbAiidprodClassifications.nodes`, allMongodbAiidprodClassifications.nodes);
+
   const stats = getStats(props.pageContext.taxonomy, allMongodbAiidprodClassifications.nodes);
 
   const geocodes = getGeocodes(allMongodbAiidprodClassifications.nodes);
@@ -336,7 +350,39 @@ export const pageQuery = graphql`
         classifications: { Publish: { eq: true } }
       }
     ) {
-      ...ClassificationFields
+      nodes {
+        classifications {
+          Annotator
+          Annotation_Status
+          Reviewer
+          Quality_Control
+          Full_Description
+          Short_Description
+          Beginning_Date
+          Ending_Date
+          Location
+          Near_Miss
+          Intent
+          Severity
+          Lives_Lost
+          AI_System_Description
+          Public_Sector_Deployment
+          Nature_of_End_User
+          Level_of_Autonomy
+          Publish
+          Financial_Cost
+          notes
+        }
+        attributes {
+          short_name
+          mongo_type
+          value {
+            bool
+            string
+            array
+          }
+        }
+      }
     }
   }
 `;
