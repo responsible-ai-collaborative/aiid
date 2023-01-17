@@ -1,6 +1,6 @@
 const path = require('path');
 
-const createMdxPages = async (graphql, createPage, reporter) => {
+const createMdxPages = async (graphql, createPage, { reporter }) => {
   const result = await graphql(
     `
       {
