@@ -17,3 +17,6 @@ TERM = "xterm"
     wait-on = 'http://localhost:8080'
     wait-on-timeout = '600' # seconds
     browser = 'chromium'
+
+[build.processing.html]
+  pretty_urls = false
