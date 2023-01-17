@@ -1,6 +1,7 @@
 import { maybeIt } from '../../../support/utils';
 import submittedReports from '../../../fixtures/submissions/submitted.json';
 import quickAdds from '../../../fixtures/submissions/quickadds.json';
+import parseNews from '../../../fixtures/api/parseNews.json';
 
 describe('Submitted reports', () => {
   const url = '/apps/submitted';
@@ -395,6 +396,59 @@ describe('Submitted reports', () => {
     });
 
     cy.get('@modal').should('not.exist');
+  });
+
+  maybeIt('Edits a submission - uses fetch info', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'FindSubmissions',
+      submittedReports
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmission',
+      'FindSubmission',
+      {
+        data: {
+          submission: submittedReports.data.submissions[0],
+        },
+      }
+    );
+
+    cy.intercept('GET', '/api/parseNews**', parseNews).as('parseNews');
+
+    cy.visit(url);
+
+    cy.wait('@FindSubmissions');
+
+    cy.get('[data-cy="submission"]').first().as('promoteForm');
+
+    cy.get('@promoteForm').contains('review >').click();
+
+    cy.get('[data-cy="edit-submission"]').eq(0).click();
+
+    cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
+
+    cy.get('[data-cy="fetch-info"]').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('input[label="Title"]').should(
+      'have.attr',
+      'value',
+      'YouTube to crack down on inappropriate content masked as kids’ cartoons'
+    );
+    cy.get('input[label="Image Address"]').should(
+      'have.attr',
+      'value',
+      'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png'
+    );
+    cy.get('input[label="Date Published"]').should('have.attr', 'value', '2017-11-10');
+    cy.get('input[label="Date Downloaded"]').should('have.attr', 'value', '2022-05-26');
   });
 
   maybeIt(
