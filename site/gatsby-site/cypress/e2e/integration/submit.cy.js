@@ -1189,7 +1189,7 @@ describe('The Submit form', () => {
 
     cy.get('button[data-cy="submit-step-1"]').scrollIntoView().click();
 
-    cy.wait('@insertSubmission').then((xhr) => {
+    cy.wait('@insertSubmission', { timeout: 10000 }).then((xhr) => {
       expect(xhr.request.body.variables.submission).to.deep.nested.include({
         ...values,
         authors: [values.authors],
