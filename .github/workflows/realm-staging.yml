@@ -1,9 +1,7 @@
 name: Realm Deploy Staging
 
 on:
-  push:
-    branches:
-      - staging
+  push
 
 jobs:
   push:
@@ -21,4 +19,7 @@ jobs:
         run: |
           cd site/realm
           realm-cli push --remote="${{ secrets.GATSBY_REALM_APP_ID }}" -y
+      - name: Process notifications
+        run: |
+          realm-cli function run --name processNotifications
 
