@@ -17,7 +17,7 @@ describe('Cite pages', () => {
     cy.visit(url);
   });
 
-  it.only(
+  it(
     'Should scroll to report when coming from the discover app',
     { retries: { runMode: 4 } },
     () => {
