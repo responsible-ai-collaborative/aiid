@@ -676,7 +676,7 @@ describe('The Submit form', () => {
       { timeout: 10000 }
     );
 
-    cy.get('[data-cy="empty-message"]').should('be.visible');
+    cy.get('[data-cy="no-related-reports"]').should('be.visible');
 
     cy.get('[data-cy="result"]').should('not.exist');
   });
@@ -1195,7 +1195,7 @@ describe('The Submit form', () => {
           'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease\n',
         source_domain: `test.com`,
         editor_dissimilar_incidents: [5],
-        editor_similar_incidents: [16],
+        editor_similar_incidents: [321],
       });
     });
   });
