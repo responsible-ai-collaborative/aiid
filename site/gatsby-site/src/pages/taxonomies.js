@@ -98,24 +98,15 @@ export const pageQuery = graphql`
       nodes {
         incident_id
         namespace
-        classifications {
-          Annotator
-          Annotation_Status
-          Reviewer
-          Quality_Control
-          Full_Description
-          Short_Description
-          Beginning_Date
-          Ending_Date
-          Location
-          Near_Miss
-          Intent
-          Severity
-          Publish
-          Harm_Distribution_Basis
-          Harm_Type
-          System_Developer
-          Severity
+        attributes {
+          short_name
+          mongo_type
+          value {
+            bool
+            string
+            array
+          }
+          value_json
         }
       }
     }

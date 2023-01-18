@@ -46,7 +46,6 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
   if (!instant_facet) {
     return '';
   }
-  console.log('FacetList(', { namespace, instant_facet, short_name, stats, geocodes }, ')');
 
   let valueStats = {};
 
@@ -154,7 +153,6 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
 };
 
 const getStats = (taxa, classification) => {
-  console.log('getStats(', taxa, classification, ')');
   const incrementStat = (stat, val) => {
     if (val === undefined || val === null || val === '') {
       return 0;
@@ -171,8 +169,6 @@ const getStats = (taxa, classification) => {
 
   const filteredClassification = classification.filter((c) => c.namespace === taxa.namespace);
 
-  console.log(`filteredClassification`, filteredClassification);
-
   const stats = {};
 
   taxa.field_list
@@ -182,8 +178,6 @@ const getStats = (taxa, classification) => {
 
       filteredClassification.forEach((c) => {
         const value = getClassificationValue(c, field.short_name, { spaceToUnderScore: true });
-
-        console.log(`value`, value);
 
         if (value?.length > 0) {
           if (typeof value === 'object') {
@@ -282,16 +276,9 @@ const Taxonomy = (props) => {
     )
     .filter((entry) => entry.public === null || entry.public);
 
-  console.log(`allMongodbAiidprodClassifications`, allMongodbAiidprodClassifications);
-  console.log(`allMongodbAiidprodClassifications.nodes`, allMongodbAiidprodClassifications.nodes);
-
   const stats = getStats(props.pageContext.taxonomy, allMongodbAiidprodClassifications.nodes);
 
-  console.log(`stats`, stats);
-
   const geocodes = getGeocodes(allMongodbAiidprodClassifications.nodes);
-
-  console.log(`sortedFieldsArray`, sortedFieldsArray);
 
   return (
     <Layout {...props} className="">
@@ -348,28 +335,6 @@ export const pageQuery = graphql`
     ) {
       nodes {
         namespace
-        classifications {
-          Annotator
-          Annotation_Status
-          Reviewer
-          Quality_Control
-          Full_Description
-          Short_Description
-          Beginning_Date
-          Ending_Date
-          Location
-          Near_Miss
-          Intent
-          Severity
-          Lives_Lost
-          AI_System_Description
-          Public_Sector_Deployment
-          Nature_of_End_User
-          Level_of_Autonomy
-          Publish
-          Financial_Cost
-          notes
-        }
         attributes {
           short_name
           mongo_type

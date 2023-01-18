@@ -2,6 +2,7 @@ import React from 'react';
 import { Carousel } from 'flowbite-react';
 import BillboardChart from 'react-billboardjs';
 import { donut } from 'billboard.js';
+import { getClassificationValue } from 'utils/classifications';
 
 const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
   const taxaData = data.allMongodbAiidprodTaxa;
@@ -39,13 +40,15 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
       if (classification.namespace != namespace) {
         continue;
       }
-      if (classification.classifications) {
-        if (!classification.classifications.Publish) {
+      if (classification.attributes) {
+        if (getClassificationValue(classification, 'Publish') === false) {
           continue;
         }
-        for (const axis in classification.classifications) {
+        for (const attribute of classification.attributes) {
+          const axis = attribute.short_name;
+
           categoryCounts[axis] ||= {};
-          const value = classification.classifications[axis];
+          const value = getClassificationValue(classification, axis); // classification.classifications[axis];
 
           if (Array.isArray(value)) {
             for (const category of value) {
@@ -94,7 +97,7 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
           {!classificationsLoading &&
             classificationsData?.nodes &&
             axes.map((axis, index) => {
-              const dbAxis = axis.replace(/ /g, '_');
+              const dbAxis = axis; //axis.replace(/ /g, '_');
 
               const columns = Object.keys(categoryCounts[dbAxis])
                 .map((category) => [category, categoryCounts[dbAxis][category]])

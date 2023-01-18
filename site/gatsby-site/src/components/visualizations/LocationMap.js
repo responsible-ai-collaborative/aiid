@@ -31,7 +31,6 @@ const Trigger = styled.div`
 const abstractLocations = ['Global', 'Twitter platform', 'Wikipedia platform'];
 
 function Points({ data, geocodes, projection }) {
-  console.log('Points(', { data, geocodes, projection }, ')');
   const sizeValue = ([, value]) => value;
 
   const [min, max] = extent(data.columns, sizeValue);
