@@ -9,5 +9,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Pablo Costa <pablo@botsfactory.io>",
+  "dependencies": {
+    "@apollo/client": "~3.5.6"
+  },
   "license": "MIT"
 }
