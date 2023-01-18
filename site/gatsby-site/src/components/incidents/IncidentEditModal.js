@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
-import { UPSERT_ENTITY } from '../../graphql/entities';
+import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Button, Modal } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
+import { Button } from 'react-bootstrap';
+import { Spinner, Modal } from 'flowbite-react';
 import IncidentForm, { schema } from './IncidentForm';
 import { Formik } from 'formik';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
-import { graphql, useStaticQuery } from 'gatsby';
 import { processEntities } from '../../utils/entities';
 
 export default function IncidentEditModal({ show, onClose, incidentId }) {
@@ -21,18 +20,7 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
     variables: { query: { incident_id: incidentId } },
   });
 
-  const {
-    entities: { nodes: allEntities },
-  } = useStaticQuery(graphql`
-    {
-      entities: allMongodbAiidprodEntities {
-        nodes {
-          entity_id
-          name
-        }
-      }
-    }
-  `);
+  const { data: entitiesData } = useQuery(FIND_ENTITIES);
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
@@ -72,20 +60,22 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         embedding: undefined,
       };
 
+      const { entities } = entitiesData;
+
       updated.AllegedDeveloperOfAISystem = await processEntities(
-        allEntities,
+        entities,
         values.AllegedDeveloperOfAISystem,
         createEntityMutation
       );
 
       updated.AllegedDeployerOfAISystem = await processEntities(
-        allEntities,
+        entities,
         values.AllegedDeployerOfAISystem,
         createEntityMutation
       );
 
       updated.AllegedHarmedOrNearlyHarmedParties = await processEntities(
-        allEntities,
+        entities,
         values.AllegedHarmedOrNearlyHarmedParties,
         createEntityMutation
       );
@@ -110,73 +100,69 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
   };
 
   return (
-    <div className="bootstrap">
-      <Modal show={show} onHide={onClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit Incident</Modal.Title>
-        </Modal.Header>
+    <Modal show={show} onClose={onClose} className="submission-modal" size="3xl">
+      <Modal.Header>Edit Incident</Modal.Header>
 
-        {!incident && (
-          <Modal.Body>
-            {incident === undefined && (
-              <div className="flex justify-center">
-                <Spinner />
-              </div>
-            )}
-            {incident === null && <div>Report not found</div>}
-          </Modal.Body>
-        )}
+      {!incident && (
+        <Modal.Body>
+          {incident === undefined && (
+            <div className="flex justify-center">
+              <Spinner />
+            </div>
+          )}
+          {incident === null && <div>Report not found</div>}
+        </Modal.Body>
+      )}
 
-        {incident && (
-          <Formik
-            validationSchema={schema}
-            onSubmit={handleSubmit}
-            initialValues={{
-              ...incident,
-              AllegedDeveloperOfAISystem:
-                incident.AllegedDeveloperOfAISystem === null
-                  ? []
-                  : incident.AllegedDeveloperOfAISystem.map((item) => item.name),
-              AllegedDeployerOfAISystem:
-                incident.AllegedDeployerOfAISystem === null
-                  ? []
-                  : incident.AllegedDeployerOfAISystem.map((item) => item.name),
-              AllegedHarmedOrNearlyHarmedParties:
-                incident.AllegedHarmedOrNearlyHarmedParties === null
-                  ? []
-                  : incident.AllegedHarmedOrNearlyHarmedParties.map((item) => item.name),
-            }}
-          >
-            {({ isValid, isSubmitting, submitForm }) => (
-              <>
-                <Modal.Body>
-                  <IncidentForm />
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button variant="secondary" onClick={onClose}>
-                    Close
-                  </Button>
-                  <Button
-                    variant="primary"
-                    onClick={submitForm}
-                    disabled={isSubmitting || !isValid}
-                    className="bootstrap flex gap-2 disabled:opacity-50"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Spinner size="sm" />
-                        <Trans>Updating</Trans>
-                      </>
-                    ) : (
-                      <Trans>Update</Trans>
-                    )}
-                  </Button>
-                </Modal.Footer>
-              </>
-            )}
-          </Formik>
-        )}
-      </Modal>
-    </div>
+      {incident && entitiesData?.entities && (
+        <Formik
+          validationSchema={schema}
+          onSubmit={handleSubmit}
+          initialValues={{
+            ...incident,
+            AllegedDeveloperOfAISystem:
+              incident.AllegedDeveloperOfAISystem === null
+                ? []
+                : incident.AllegedDeveloperOfAISystem.map((item) => item.name),
+            AllegedDeployerOfAISystem:
+              incident.AllegedDeployerOfAISystem === null
+                ? []
+                : incident.AllegedDeployerOfAISystem.map((item) => item.name),
+            AllegedHarmedOrNearlyHarmedParties:
+              incident.AllegedHarmedOrNearlyHarmedParties === null
+                ? []
+                : incident.AllegedHarmedOrNearlyHarmedParties.map((item) => item.name),
+          }}
+        >
+          {({ isValid, isSubmitting, submitForm }) => (
+            <>
+              <Modal.Body>
+                <IncidentForm />
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={onClose}>
+                  Close
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={submitForm}
+                  disabled={isSubmitting || !isValid}
+                  className="bootstrap flex gap-2 disabled:opacity-50"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Spinner size="sm" />
+                      <Trans>Updating</Trans>
+                    </>
+                  ) : (
+                    <Trans>Update</Trans>
+                  )}
+                </Button>
+              </Modal.Footer>
+            </>
+          )}
+        </Formik>
+      )}
+    </Modal>
   );
 }
