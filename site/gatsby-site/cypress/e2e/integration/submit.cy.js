@@ -495,6 +495,7 @@ describe('The Submit form', () => {
             {
               __typename: 'Incident',
               incident_id: 1,
+              title: 'Google’s YouTube Kids App Presents Inappropriate Content',
               reports: [
                 {
                   __typename: 'Report',
