@@ -496,6 +496,7 @@ export const query = graphql`
             string
             array
           }
+          value_json
         }
         classifications {
           Annotation_Status

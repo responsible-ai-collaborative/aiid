@@ -10,6 +10,7 @@ export const FIND_CLASSIFICATION = gql`
       attributes {
         short_name
         mongo_type
+        value_json
         value {
           bool
           string
@@ -176,6 +177,7 @@ export const UPDATE_CLASSIFICATION = gql`
           string
           array
         }
+        value_json
       }
     }
   }

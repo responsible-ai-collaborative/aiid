@@ -26,6 +26,8 @@ exports.up = async ({ context: { client } }) => {
 
       const value = {};
 
+      const value_json = JSON.stringify(bareValue);
+
       // `notes` is in the `classifications` object
       // of some documents in `classifications`,
       // but it is not in the CSET taxa document,
@@ -39,7 +41,7 @@ exports.up = async ({ context: { client } }) => {
       if (mongo_type) {
         value[mongo_type] = bareValue;
 
-        attributes.push({ short_name, mongo_type, value });
+        attributes.push({ short_name, mongo_type, value, value_json });
       }
     }
     classifications.updateOne(

@@ -14,6 +14,7 @@ import Link from 'components/ui/Link';
 import LocationMap from 'components/visualizations/LocationMap';
 import { Card, Badge } from 'flowbite-react';
 import AiidHelmet from 'components/AiidHelmet';
+import { getClassificationValue } from 'utils/classifications';
 
 const Description = styled(Markdown)`
   h1 {
@@ -45,7 +46,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
   if (!instant_facet) {
     return '';
   }
-  console.log(namespace, instant_facet, short_name, stats, geocodes);
+  console.log('FacetList(', { namespace, instant_facet, short_name, stats, geocodes }, ')');
 
   let valueStats = {};
 
@@ -180,13 +181,7 @@ const getStats = (taxa, classification) => {
       let auxStat = {};
 
       filteredClassification.forEach((c) => {
-        const attribute =
-          c.attributes &&
-          c.attributes.find((attribute) => attribute.short_name == field.short_name);
-
-        const value = attribute
-          ? attribute.value[attribute.type]
-          : c.classifications[field.short_name.split(' ').join('_')];
+        const value = getClassificationValue(c, field.short_name, { spaceToUnderScore: true });
 
         console.log(`value`, value);
 
@@ -217,7 +212,7 @@ const getStats = (taxa, classification) => {
       let auxStat = {};
 
       filteredClassification.forEach((c) => {
-        const value = c.classifications[field.short_name.split(' ').join('_')];
+        const value = getClassificationValue(c, field.short_name, { spaceToUnderScore: true }); //c.classifications[field.short_name.split(' ').join('_')];
 
         if ((value || typeof value === 'boolean') && value !== '') {
           if (typeof value === 'boolean') {
@@ -258,9 +253,9 @@ const getGeocodes = (classifications) => {
   const map = {};
 
   classifications.forEach((c) => {
-    const { Location } = c.classifications;
+    const Location = getClassificationValue(c, 'Location', { spaceToUnderScore: true });
 
-    if (!(Location in map)) {
+    if (Location && !(Location in map)) {
       map[Location] = c.fields ? c.fields.geocode : {};
     }
   });
@@ -287,11 +282,16 @@ const Taxonomy = (props) => {
     )
     .filter((entry) => entry.public === null || entry.public);
 
+  console.log(`allMongodbAiidprodClassifications`, allMongodbAiidprodClassifications);
   console.log(`allMongodbAiidprodClassifications.nodes`, allMongodbAiidprodClassifications.nodes);
 
   const stats = getStats(props.pageContext.taxonomy, allMongodbAiidprodClassifications.nodes);
 
+  console.log(`stats`, stats);
+
   const geocodes = getGeocodes(allMongodbAiidprodClassifications.nodes);
+
+  console.log(`sortedFieldsArray`, sortedFieldsArray);
 
   return (
     <Layout {...props} className="">
@@ -344,13 +344,10 @@ export default Taxonomy;
 export const pageQuery = graphql`
   query ($namespace: String!) {
     allMongodbAiidprodClassifications(
-      filter: {
-        namespace: { eq: $namespace }
-        incident_id: { lt: 1000 }
-        classifications: { Publish: { eq: true } }
-      }
+      filter: { namespace: { eq: $namespace }, incident_id: { lt: 1000 } }
     ) {
       nodes {
+        namespace
         classifications {
           Annotator
           Annotation_Status
@@ -381,6 +378,7 @@ export const pageQuery = graphql`
             string
             array
           }
+          value_json
         }
       }
     }

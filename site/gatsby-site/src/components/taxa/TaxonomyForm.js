@@ -43,14 +43,19 @@ const getTaxaFieldKey = (key) => {
   switch (key) {
     case 'LevelofAutonomy':
       return 'LevelOfAutonomy';
+    //         ^                         ^
     case 'NatureofEndUser':
       return 'NatureOfEndUser';
+    //          ^                         ^
     case 'SectorofDeployment':
       return 'SectorOfDeployment';
+    //          ^                            ^
     case 'RelevantAIfunctions':
       return 'RelevantAIFunctions';
+    //              ^                             ^
     case 'DatasheetsforDatasets':
       return 'DatasheetsForDatasets';
+    //              ^                               ^
   }
   return key;
 };
@@ -71,6 +76,8 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
   const addToast = useToastContext();
 
   const formRef = useRef(null);
+
+  console.log('TaxonomyForm(', { namespace, incidentId, onSubmit }, ')');
 
   useImperativeHandle(ref, () => ({
     submit() {
@@ -97,6 +104,8 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
   const { data: classificationsData } = useQuery(queryMap[namespace], {
     variables: { query: { incident_id: incidentId } },
   });
+
+  console.log(`classificationsData`, classificationsData);
 
   const [updateClassification] = useMutation(mutationMap[namespace]);
 
@@ -135,7 +144,9 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
         if (attributes) {
           const attribute = attributes.find((a) => a.short_name == field.short_name);
 
-          classificationValue = attribute.value[attribute.mongo_type];
+          console.log(`attribute`, attribute);
+
+          classificationValue = JSON.parse(attribute.value_json); //attribute.value[attribute.mongo_type];
         } else if (classifications) {
           classificationValue = classifications[field.key];
         }
@@ -389,6 +400,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
               short_name: key,
               mongo_type: type,
               value: valueObj,
+              value_json: JSON.stringify(value),
             };
           }),
       };
