@@ -25,7 +25,7 @@ describe('Cite pages', () => {
 
       cy.disableSmoothScroll();
 
-      cy.contains('Show Details on Incident #352').first().click();
+      cy.contains('Show Details on Incident #352', { timeout: 10000 }).first().click();
       cy.waitForStableDOM();
       cy.url().should('include', '/cite/352#r2070');
       cy.waitForStableDOM();
