@@ -1,4 +1,4 @@
-import { gql, ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import apolloClient from '@apollo/client';
 
 import Realm from 'realm-web';
 
@@ -16,8 +16,8 @@ const getValidAccessToken = async () => {
   return realmApp.currentUser.accessToken;
 };
 
-const client = new ApolloClient({
-  link: new HttpLink({
+const client = new apolloClient.ApolloClient({
+  link: new apolloClient.HttpLink({
     uri: `https://realm.mongodb.com/api/client/v2.0/app/${process.env.GATSBY_REALM_APP_ID}/graphql`,
     fetch: async (uri, options) => {
       const accessToken = await getValidAccessToken();
@@ -26,11 +26,11 @@ const client = new ApolloClient({
       return fetch(uri, options);
     },
   }),
-  cache: new InMemoryCache(),
+  cache: new apolloClient.InMemoryCache(),
 });
 
 const processNotifications = async () => {
-  const PROCESS_NOTIFICATIONS = gql`
+  const PROCESS_NOTIFICATIONS = apolloClient.gql`
     mutation ProcessNotifications {
       processNotifications
     }
