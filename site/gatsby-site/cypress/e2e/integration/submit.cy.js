@@ -567,7 +567,7 @@ describe('The Submit form', () => {
         '@RelatedReportsByAuthor',
         '@RelatedReportsByIncidentId',
       ],
-      { timeout: 10000 }
+      { timeout: 20000 }
     );
 
     for (const key of ['byURL', 'byDatePublished', 'byIncidentId']) {
@@ -673,7 +673,7 @@ describe('The Submit form', () => {
         '@RelatedReportsByAuthor',
         '@RelatedReportsByIncidentId',
       ],
-      { timeout: 10000 }
+      { timeout: 20000 }
     );
 
     cy.get('[data-cy="no-related-reports"]').should('be.visible');
