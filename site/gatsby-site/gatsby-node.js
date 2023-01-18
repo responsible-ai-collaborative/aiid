@@ -212,7 +212,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       cloudinary_id: String
       tags: [String]
       plain_text: String
-      embedding: reportEmbedding 
+      embedding: reportEmbedding
+      text_inputs: String
+      text_outputs: String
     }
 
     type mongodbAiidprodTaxaField_list implements Node {
