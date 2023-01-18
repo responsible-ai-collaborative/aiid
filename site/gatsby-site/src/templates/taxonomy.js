@@ -380,6 +380,16 @@ export const pageQuery = graphql`
           }
           value_json
         }
+        fields {
+          geocode {
+            geometry {
+              location {
+                lat
+                lng
+              }
+            }
+          }
+        }
       }
     }
   }
