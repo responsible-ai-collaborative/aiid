@@ -1,10 +1,10 @@
-const { gql, ApolloClient, HttpLink, InMemoryCache } = require('@apollo/client');
+import { gql, ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
-const config = require('../../../gatsby-site/config');
+import Realm from 'realm-web';
 
-const Realm = require('realm-web');
+import config from '../../../gatsby-site/config';
 
-const { fetch } = require('cross-fetch');
+import { fetch } from 'cross-fetch';
 
 const getValidAccessToken = async () => {
   const realmApp = new Realm.App({
