@@ -2,16 +2,14 @@ import { gql, ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
 import Realm from 'realm-web';
 
-import config from '../../../gatsby-site/config';
-
 import { fetch } from 'cross-fetch';
 
 const getValidAccessToken = async () => {
   const realmApp = new Realm.App({
-    id: config.realm.review_db.realm_app_id,
+    id: process.env.GATSBY_REALM_APP_ID,
   });
 
-  let credentials = Realm.Credentials.apiKey(config.realm.graphqlApiKey);
+  let credentials = Realm.Credentials.apiKey(process.env.REALM_GRAPHQL_API_KEY);
 
   await realmApp.logIn(credentials);
 
@@ -20,7 +18,7 @@ const getValidAccessToken = async () => {
 
 const client = new ApolloClient({
   link: new HttpLink({
-    uri: `https://realm.mongodb.com/api/client/v2.0/app/${config.realm.production_db.realm_app_id}/graphql`,
+    uri: `https://realm.mongodb.com/api/client/v2.0/app/${process.env.GATSBY_REALM_APP_ID}/graphql`,
     fetch: async (uri, options) => {
       const accessToken = await getValidAccessToken();
 
