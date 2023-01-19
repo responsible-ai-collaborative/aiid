@@ -10,6 +10,16 @@ describe('Incidents App', () => {
   });
 
   it('Should loads candidate cards', () => {
+    newsArticles.data.candidates[0].date_published = format(new Date(), 'yyyy-MM-dd');
+    newsArticles.data.candidates[1].date_published = format(new Date(), 'yyyy-MM-dd');
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'NewsArticles',
+      'NewsArticles',
+      newsArticles
+    );
+
     cy.visit(url);
     cy.get('[data-cy="candidate-card"]', { timeout: 8000 }).should('exist');
   });

@@ -33,18 +33,37 @@
             "additional_fields": {}
         },
         {
+            "name": "Variant",
+            "apply_when": {
+                "text_inputs": {
+                    "$exists": true
+                },
+                "text_outputs": {
+                    "$exists": true
+                },
+                "title": {
+                    "$eq": ""
+                }
+            },
+            "read": true,
+            "write": true,
+            "insert": true,
+            "delete": true,
+            "search": true
+        },
+        {
             "name": "default",
             "apply_when": {},
             "fields": {
                 "flag": {
-                    "write": true
+                    "write": true,
+                    "read": true
                 }
             },
             "read": true,
             "insert": true,
             "delete": true,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         }
     ]
 }
