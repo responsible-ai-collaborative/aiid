@@ -39,7 +39,7 @@ describe('The Submit form', () => {
 
     cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
 
@@ -124,7 +124,7 @@ describe('The Submit form', () => {
 
       cy.clickOutside();
 
-      cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+      cy.get('.form-has-errors').should('not.exist');
 
       cy.get('[data-cy="to-step-2"]').click();
 
@@ -270,7 +270,7 @@ describe('The Submit form', () => {
 
     cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
 
@@ -700,7 +700,7 @@ describe('The Submit form', () => {
     );
     cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
   });
@@ -742,7 +742,7 @@ describe('The Submit form', () => {
 
     cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
 
@@ -779,7 +779,7 @@ describe('The Submit form', () => {
 
     cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
 
@@ -847,7 +847,7 @@ describe('The Submit form', () => {
     );
     cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
 
@@ -932,7 +932,7 @@ describe('The Submit form', () => {
     cy.get('[name="incident_date"]').type('2020-01-01');
     cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
 
@@ -1026,7 +1026,7 @@ describe('The Submit form', () => {
 
     cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
 
@@ -1107,7 +1107,7 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="submit-form-title"]').contains('New Incident Response').should('exist');
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.waitForStableDOM();
 
@@ -1172,7 +1172,7 @@ describe('The Submit form', () => {
 
     cy.clickOutside();
 
-    cy.get('[data-cy="related-byAuthors"] [data-cy="result"]', { timeout: 10000 })
+    cy.get('[data-cy="related-byAuthors"] [data-cy="result"]')
       .should('be.visible')
       .eq(0)
       .then(($el) => {
@@ -1259,7 +1259,7 @@ describe('The Submit form', () => {
     );
     cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.get('input[name="incident_date"]').should('not.exist');
 

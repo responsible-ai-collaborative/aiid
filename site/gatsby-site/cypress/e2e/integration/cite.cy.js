@@ -25,7 +25,7 @@ describe('Cite pages', () => {
 
       cy.disableSmoothScroll();
 
-      cy.contains('Show Details on Incident #352', { timeout: 10000 }).first().click();
+      cy.contains('Show Details on Incident #352').first().click();
       cy.waitForStableDOM();
       cy.url().should('include', '/cite/352#r2070');
       cy.waitForStableDOM();
@@ -82,7 +82,7 @@ describe('Cite pages', () => {
 
     cy.visit('/cite/1#' + id);
 
-    cy.get(`#${id} [data-cy="edit-report"]`, { timeout: 10000 }).click();
+    cy.get(`#${id} [data-cy="edit-report"]`).click();
 
     cy.url().should('contain', '/cite/edit?report_number=3');
   });
@@ -414,21 +414,21 @@ describe('Cite pages', () => {
   it('Should show proper entities card text', () => {
     cy.visit('/cite/67/');
 
-    cy.get('[data-cy="alleged-entities"]', { timeout: 10000 }).should(
+    cy.get('[data-cy="alleged-entities"]').should(
       'have.text',
       'Alleged: Tesla developed an AI system deployed by Tesla and Motorist, which harmed Motorists.'
     );
 
     cy.visit('/cite/72/');
 
-    cy.get('[data-cy="alleged-entities"]', { timeout: 10000 }).should(
+    cy.get('[data-cy="alleged-entities"]').should(
       'have.text',
       'Alleged: Facebook developed and deployed an AI system, which harmed unnamed Palestinian Facebook user , Palestinian Facebook users , Arabic-speaking Facebook users and Facebook users.'
     );
 
     cy.visit('/cite/30');
 
-    cy.get('[data-cy="alleged-entities"]', { timeout: 10000 }).should(
+    cy.get('[data-cy="alleged-entities"]').should(
       'have.text',
       'Alleged: Tesla developed and deployed an AI system, which harmed Tesla.'
     );
