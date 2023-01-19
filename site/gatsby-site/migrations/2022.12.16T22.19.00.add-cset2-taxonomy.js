@@ -1065,6 +1065,210 @@ exports.up = async ({ context: { client } }) => {
       },
 
       /* 5. Characterizing Entities and the Harm */
+      {
+        field_number: '5',
+        short_name: 'Notes (Environmental and Temporal Characteristics)',
+        long_name: 'Notes (Environmental and Temporal Characteristics)',
+        short_description: 'Input any notes that may help explain your answers.',
+        long_description: 'Input any notes that may help explain your answers.',
+        display_type: 'object-list',
+        mongo_type: 'array',
+
+        // TODO: This needs to be implemented
+        item_fields: [
+          {
+            field_number: '5.1',
+            short_name: 'Entity',
+            long_name: 'A short 1 to 2 word description of the entity.',
+            short_description:
+              'A short 1 to 2 word description of the entity.  When possible use a proper name for the entity, making it a Named Entity.',
+            long_description: handleWhitespace(`
+              A short 1 to 2 word description of the entity.  When possible use a proper name for the entity, making it a Named Entity.
+
+              Annotate information for each entity involved in the report. Try to capture every entity directly linked to the harm. Think about the entity that experienced the harm, all of the entities between them and the AI, and then all of the entities involved in producing and deploying the AI.
+
+              Employees representing a company in a media or public relations capacity should not be included as an entity.
+            `),
+            display_type: 'string',
+            mongo_type: 'string',
+            default: '',
+            placeholder: '',
+            permitted_values: [],
+            weight: {
+              $numberInt: '5',
+            },
+            instant_facet: false,
+            required: false,
+            public: false,
+          },
+          {
+            field_number: '5.2',
+            short_name: 'Named Entity',
+            long_name: 'Named Entity Indicator',
+            short_description: 'Indicates if the entity is a Named Entity.',
+            long_description:
+              'Indicates if the entity is a Named Entity. “Yes” if the entity is a named entity. “No” otherwise.',
+            ...YesNo,
+            weight: {
+              $numberInt: '5',
+            },
+            instant_facet: false,
+            required: false,
+            public: false,
+          },
+          {
+            field_number: '5.3',
+            short_name: 'Entity type',
+            long_name: 'Indicates the type of entity that experienced the harm',
+            short_description: 'Indicates the type of entity that experienced the harm',
+            long_description:
+              'Indicates the type of entity that experienced the harm. If multiple selections could characterize the entity, select the primary function of the entity.',
+            display_type: 'enum',
+            mongo_type: 'string',
+            default: 'unclear',
+            placeholder: 'Entity Type',
+            permitted_values: [
+              'individual',
+              'group of individuals',
+              'for-profit organization',
+              'non-profit organization',
+              'government entity',
+              'privately owned space',
+              'public space',
+              'infrastructure',
+              'social or political system',
+              'unclear',
+              'product',
+              'other',
+              'unclear',
+            ],
+            weight: {
+              $numberInt: '5',
+            },
+            instant_facet: false,
+            required: false,
+            public: false,
+          },
+          {
+            field_number: '5.4',
+            short_name: 'Entity Relationship to the AI',
+            long_name: 'Entity Relationship to the AI',
+            short_description: 'Indicates the entity’s relationship to the AI.',
+            long_description:
+              'Indicates the entity’s relationship to the AI. Note, the smallest possible chain of harm has just two elements; an AI and an entity experiencing harm, near-miss, or issue.',
+            display_type: 'enum',
+            mongo_type: 'string',
+            default: '',
+            placeholder: '',
+            permitted_values: [
+              'developer',
+              'deployer',
+              'government oversight',
+              'user',
+              'AI',
+              'geographic area of use',
+              'researcher',
+              'product containing AI',
+              'watchdog',
+              'other',
+            ],
+            weight: {
+              $numberInt: '5',
+            },
+            instant_facet: false,
+            required: false,
+            public: false,
+          },
+          {
+            field_number: '5.5',
+            short_name: 'Harm Category Experienced',
+            long_name:
+              'Was an AI special interest intangible harm, tangible harm event, near-miss, or issue experienced by an entity',
+            short_description:
+              'Was an AI special interest intangible harm, tangible harm event, near-miss, or issue experienced by an entity',
+            long_description:
+              'Was an AI special interest intangible harm, tangible harm event, near-miss, or issue experienced by an entity. For each recorded entity, indicate the harm category that they experienced. Because recorded entities have a variety of roles in the AI incident, not every recorded entity will experience harm.',
+            display_type: 'enum',
+            mongo_type: 'string',
+            default: 'unclear',
+            placeholder: '',
+            permitted_values: [
+              'AI special interest intangible harm',
+              'AI tangible harm event',
+              'AI tangible harm near-miss',
+              'AI tangible harm issue',
+              'not applicable',
+              'unclear',
+            ],
+            weight: {
+              $numberInt: '5',
+            },
+            instant_facet: false,
+            required: false,
+            public: false,
+          },
+          {
+            field_number: '5.6',
+            short_name: 'Harm Type Experienced',
+            long_name: 'Type of harm experienced by entity ',
+            short_description: 'Indicates the type of harm experienced by the harmed entity',
+            long_description:
+              'Indicates the type of harm experienced by the harmed entity. Only entities experiencing harm should have an assigned type. If the entity did not experience the harm, ‘not applicable’ should be selected.',
+            display_type: 'enum',
+            mongo_type: 'string',
+            default: 'not applicable',
+            placeholder: '',
+            permitted_values: [
+              'physical health/safety',
+              'financial loss',
+              'physical property',
+              'intangible property',
+              'infrastructure',
+              'natural environment',
+              'social or political systems',
+              'violation of human rights, civil liberties, civil rights, or democratic norms',
+              'detrimental content',
+              'disproportionate treatment based upon a protected characteristic',
+              'other tangible harm',
+              'other intangible harm',
+              'not applicable',
+            ],
+            weight: {
+              $numberInt: '5',
+            },
+            instant_facet: false,
+            required: false,
+            public: false,
+          },
+          {
+            field_number: '5.7',
+            short_name: 'Notes (Characterizing Entities and the Harm)',
+            long_name: 'Notes (Characterizing Entities and the Harm)',
+            short_description: 'Input any notes that may help explain your answers.',
+            long_description: 'Input any notes that may help explain your answers.',
+            display_type: 'string',
+            mongo_type: 'string',
+            default: '',
+            placeholder: 'Notes',
+            permitted_values: [],
+            weight: {
+              $numberInt: '5',
+            },
+            instant_facet: false,
+            required: false,
+            public: false,
+          },
+        ],
+        default: [],
+        placeholder: '',
+        permitted_values: [],
+        weight: {
+          $numberInt: '5',
+        },
+        instant_facet: false,
+        required: false,
+        public: false,
+      },
 
       //      {
       //        short_name: "Named Entities",
