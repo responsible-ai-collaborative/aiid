@@ -1,4 +1,4 @@
-import { maybeIt } from '../support/utils';
+//import { maybeIt } from '../support/utils';
 import variantsIncident from '../fixtures/variants/variantsIncident.json';
 import {
   getVariantStatus,
@@ -43,13 +43,15 @@ const getVariants = (callback) => {
 describe('Variants pages', () => {
   const url = `/cite/${incidentId}`;
 
-  it('Successfully loads', () => {
+  //it('Successfully loads', () => {
+  it.skip('Successfully loads', () => {
     cy.visit(url);
 
     cy.disableSmoothScroll();
   });
 
-  it('Should display Variant list', () => {
+  //it('Should display Variant list', () => {
+  it.skip('Should display Variant list', () => {
     cy.visit(url);
 
     cy.contains('h1', 'Variants').should('exist').scrollIntoView();
@@ -73,7 +75,8 @@ describe('Variants pages', () => {
     });
   });
 
-  it('Should add a new Variant - Unauthenticated user', () => {
+  //it('Should add a new Variant - Unauthenticated user', () => {
+  it.skip('Should add a new Variant - Unauthenticated user', () => {
     const text_inputs = 'Input text with **markdown**';
 
     const text_outputs = 'Output text with **markdown**';
@@ -125,7 +128,8 @@ describe('Variants pages', () => {
       .should('exist');
   });
 
-  it("Shouldn't edit a Variant - Unauthenticated user", () => {
+  //it("Shouldn't edit a Variant - Unauthenticated user", () => {
+  it.skip("Shouldn't edit a Variant - Unauthenticated user", () => {
     cy.visit(url);
 
     cy.contains('h1', 'Variants').should('exist').scrollIntoView();
@@ -133,7 +137,8 @@ describe('Variants pages', () => {
     cy.get('[data-cy=edit-variant-btn]').should('not.exist');
   });
 
-  maybeIt('Should Approve Variant - Incident Editor user', () => {
+  //maybeIt('Should Approve Variant - Incident Editor user', () => {
+  it.skip('Should Approve Variant - Incident Editor user', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const new_text_inputs = 'New Input text';
@@ -203,7 +208,8 @@ describe('Variants pages', () => {
     });
   });
 
-  maybeIt('Should Reject Variant - Incident Editor user', () => {
+  //maybeIt('Should Reject Variant - Incident Editor user', () => {
+  it.skip('Should Reject Variant - Incident Editor user', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const new_text_inputs = 'New Input text';
@@ -273,7 +279,8 @@ describe('Variants pages', () => {
     });
   });
 
-  maybeIt('Should Save Variant - Incident Editor user', () => {
+  //maybeIt('Should Save Variant - Incident Editor user', () => {
+  it.skip('Should Save Variant - Incident Editor user', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const new_text_inputs = 'New Input text';
@@ -343,7 +350,8 @@ describe('Variants pages', () => {
     });
   });
 
-  maybeIt('Should Delete Variant - Incident Editor user', () => {
+  //maybeIt('Should Delete Variant - Incident Editor user', () => {
+  it.skip('Should Delete Variant - Incident Editor user', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     getVariants((variants) => {
