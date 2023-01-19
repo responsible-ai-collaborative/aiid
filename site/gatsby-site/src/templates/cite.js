@@ -566,13 +566,7 @@ export const query = graphql`
         }
       }
     }
-    allMongodbAiidprodReports(
-      filter: {
-        report_number: { in: $report_numbers }
-        text_inputs: { in: [null, ""] }
-        text_outputs: { in: [null, ""] }
-      }
-    ) {
+    allMongodbAiidprodReports(filter: { report_number: { in: $report_numbers } }) {
       nodes {
         submitters
         date_published
@@ -640,23 +634,6 @@ export const query = graphql`
     responses: allMongodbAiidprodReports(filter: { tags: { in: ["response"] } }) {
       nodes {
         report_number
-      }
-    }
-
-    variants: allMongodbAiidprodReports(
-      filter: {
-        report_number: { in: $report_numbers }
-        text_inputs: { nin: [null, ""] }
-        text_outputs: { nin: [null, ""] }
-      }
-    ) {
-      nodes {
-        report_number
-        title
-        date_published
-        tags
-        text_inputs
-        text_outputs
       }
     }
   }
