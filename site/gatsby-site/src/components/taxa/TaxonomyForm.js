@@ -20,6 +20,8 @@ const FormContainer = styled.div`
 const TEXTAREA_LIMIT = 120;
 
 const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, onSubmit }, ref) {
+  console.log('TaxonomyForm(', { namespace, incidentId, onSubmit }, ')');
+
   const [loading, setLoading] = useState(true);
 
   const [error] = useState('');
@@ -62,6 +64,8 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
     variables: { query: { incident_id: incidentId } },
   });
 
+  console.log(`classificationsData`, classificationsData);
+
   const classification =
     classificationsData &&
     taxonomy &&
@@ -69,10 +73,12 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
       (classification) => classification.namespace == taxonomy.namespace
     );
 
+  console.log(`classification`, classification);
+
   const [updateClassification] = useMutation(UPDATE_CLASSIFICATION);
 
   useEffect(() => {
-    if (classification) {
+    if (taxonomy) {
       const notes = classification?.notes || '';
 
       const fieldsArray = [];
@@ -82,7 +88,8 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
       taxonomy.field_list.forEach((field) => {
         fieldsArray.push(field);
 
-        let classificationValue = getClassificationValue(classification, field.short_name);
+        let classificationValue =
+          classification && getClassificationValue(classification, field.short_name);
 
         if (classificationValue === null) {
           if (field.display_type === 'multi') {
@@ -130,14 +137,14 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
                 id={`${rawField.short_name}-${v}`}
                 value={v}
                 onChange={handleChange}
-                checked={formikValues[rawField.short_name].includes(v)}
+                checked={(formikValues[rawField.short_name] || []).includes(v)}
               />
             ))}
           </>
         )}
 
         {rawField.display_type === 'string' &&
-          formikValues[rawField.short_name].length <= TEXTAREA_LIMIT && (
+          formikValues[rawField.short_name]?.length <= TEXTAREA_LIMIT && (
             <Form.Control
               id={rawField.short_name}
               name={rawField.short_name}
@@ -148,7 +155,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
           )}
 
         {rawField.display_type === 'string' &&
-          formikValues[rawField.short_name].length > TEXTAREA_LIMIT && (
+          formikValues[rawField.short_name]?.length > TEXTAREA_LIMIT && (
             <Form.Control
               as="textarea"
               rows={3}
@@ -225,7 +232,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
                 id={`${rawField.short_name}-${v}`}
                 value={v}
                 onChange={handleChange}
-                checked={formikValues[rawField.short_name].includes(v)}
+                checked={(formikValues[rawField.short_name] || []).includes(v)}
               />
             ))}
           </>
@@ -262,8 +269,9 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
   const submit = async (values, { setSubmitting }) => {
     try {
       const data = {
-        ...classification,
         __typename: undefined,
+        incident_id: incidentId,
+        namespace,
         notes: values.notes,
         attributes: Object.keys(values)
           .filter((key) => key != 'notes')

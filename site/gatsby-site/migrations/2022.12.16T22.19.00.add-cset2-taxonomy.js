@@ -271,7 +271,7 @@ var csetV1TaxaEntry = {
     },
     {
       field_number: '2.1.6',
-      short_name: 'Prodicer Test in Operational Conditions',
+      short_name: 'Producer Test in Operational Conditions',
       long_name:
         'Was this a test or demonstration of an AI system done by developers, producers or researchers (versus users) in operational conditions?',
       short_description:
