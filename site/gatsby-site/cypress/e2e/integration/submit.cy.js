@@ -561,15 +561,14 @@ describe('The Submit form', () => {
       cy.get(`input[name="${key}"]`).type(values[key]);
     }
 
-    cy.wait(
-      [
-        '@RelatedReportsByURL',
-        '@RelatedReportsByPublishedDate',
-        '@RelatedReportsByAuthor',
-        '@RelatedReportsByIncidentId',
-      ],
-      { timeout: 20000 }
-    );
+    cy.waitForStableDOM();
+
+    cy.wait([
+      '@RelatedReportsByURL',
+      '@RelatedReportsByPublishedDate',
+      '@RelatedReportsByAuthor',
+      '@RelatedReportsByIncidentId',
+    ]);
 
     for (const key of ['byURL', 'byDatePublished', 'byIncidentId']) {
       const reports =
