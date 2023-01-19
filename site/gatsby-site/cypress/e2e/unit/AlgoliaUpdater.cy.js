@@ -24,6 +24,7 @@ const reports = [
     epoch_date_published: 1431993600,
     epoch_date_submitted: 1559347200,
     image_url: 'http://url.com',
+    cloudinary_id: 'http://cloudinary.com',
     language: 'en',
     report_number: 1,
     source_domain: 'blogs.wsj.com',
@@ -47,6 +48,7 @@ const reports = [
     epoch_date_published: 1431993600,
     epoch_date_submitted: 1559347200,
     image_url: 'http://url.com',
+    cloudinary_id: 'http://cloudinary.com',
     language: 'es',
     report_number: 2,
     source_domain: 'blogs.wsj.com',
@@ -133,11 +135,6 @@ describe('Algolia', () => {
       }),
     };
 
-    const filter = {
-      text_inputs: { $in: [null, ''] },
-      text_outputs: { $in: [null, ''] },
-    };
-
     const projection = {
       _id: 1,
       authors: 1,
@@ -167,7 +164,7 @@ describe('Algolia', () => {
     const reportsCollection = {
       find: cy
         .stub()
-        .withArgs(filter, { projection })
+        .withArgs({}, { projection })
         .returns({
           toArray: cy.stub().resolves(reports),
         }),

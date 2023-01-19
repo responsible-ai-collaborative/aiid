@@ -8,21 +8,10 @@ import { FIND_VARIANTS } from '../../graphql/variants';
 import { FIND_INCIDENTS } from '../../graphql/incidents';
 import AiidHelmet from '../../components/AiidHelmet';
 import ListSkeleton from 'elements/Skeletons/List';
-import { getVariantStatus } from '../../utils/variants';
+import { getVariantStatus, isCompleteReport } from '../../utils/variants';
 
 export default function IncidentsPage(props) {
-  const { data: variantsData, refetch } = useQuery(FIND_VARIANTS, {
-    variables: {
-      query: {
-        AND: [
-          { text_inputs_exists: true },
-          { text_outputs_exists: true },
-          { text_inputs_ne: '' },
-          { text_outputs_ne: '' },
-        ],
-      },
-    },
-  });
+  const { data: variantsData, refetch } = useQuery(FIND_VARIANTS);
 
   const [data, setData] = useState(null);
 
@@ -32,41 +21,47 @@ export default function IncidentsPage(props) {
 
   useEffect(() => {
     if (variantsData && variantsData.reports) {
-      const fullData = [];
+      const variants = variantsData.reports.filter((report) => !isCompleteReport(report));
 
-      client
-        .query({
-          query: FIND_INCIDENTS,
-          variables: {
-            query: {
-              reports_in: variantsData.reports.map((report) => ({
-                report_number: report.report_number,
-              })),
+      if (variants.length > 0) {
+        const fullData = [];
+
+        client
+          .query({
+            query: FIND_INCIDENTS,
+            variables: {
+              query: {
+                reports_in: variants.map((report) => ({
+                  report_number: report.report_number,
+                })),
+              },
             },
-          },
-        })
-        .then((result) => {
-          for (const variant of variantsData.reports) {
-            const incident = result.data.incidents.find((incident) =>
-              incident.reports.find((report) => report.report_number == variant.report_number)
-            );
+          })
+          .then((result) => {
+            for (const variant of variants) {
+              const incident = result.data.incidents.find((incident) =>
+                incident.reports.find((report) => report.report_number == variant.report_number)
+              );
 
-            if (incident) {
-              const fullDataItem = {
-                ...variant,
-                incident_id: incident.incident_id,
-                title: incident.title,
-                status: getVariantStatus(variant),
-              };
+              if (incident) {
+                const fullDataItem = {
+                  ...variant,
+                  incident_id: incident.incident_id,
+                  title: incident.title,
+                  status: getVariantStatus(variant),
+                };
 
-              fullData.push(fullDataItem);
+                fullData.push(fullDataItem);
+              }
             }
-          }
 
-          setData(fullData);
+            setData(fullData);
 
-          setIsLoading(false);
-        });
+            setIsLoading(false);
+          });
+      } else {
+        setData([]);
+      }
     }
   }, [variantsData]);
 

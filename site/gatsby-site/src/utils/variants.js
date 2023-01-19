@@ -28,3 +28,21 @@ module.exports.getVariantStatus = (variant) => {
 module.exports.getVariantStatusText = (tag) => {
   return Object.keys(VARIANT_STATUS).find((key) => VARIANT_STATUS[key] === tag);
 };
+
+module.exports.isCompleteReport = (report) => {
+  return (
+    report.title &&
+    report.title != '' &&
+    report.url &&
+    report.url != '' &&
+    report.source_domain &&
+    report.source_domain != ''
+  );
+};
+
+module.exports.hasVariantData = (report) => {
+  return (
+    (report.text_inputs && report.text_inputs != '') ||
+    (report.text_outputs && report.text_outputs != '')
+  );
+};

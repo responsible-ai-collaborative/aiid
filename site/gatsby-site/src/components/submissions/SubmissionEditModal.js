@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import { Modal, Spinner } from 'flowbite-react';
 import SubmissionForm from '../../components/submissions/SubmissionForm';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { FIND_SUBMISSION, UPDATE_SUBMISSION } from '../../graphql/submissions';
-import { UPSERT_ENTITY } from '../../graphql/entities';
+import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import { Formik } from 'formik';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import isArray from 'lodash/isArray';
@@ -12,22 +12,10 @@ import { stripMarkdown } from '../../utils/typography';
 import RelatedIncidents from '../../components/RelatedIncidents';
 import { Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
-import { graphql, useStaticQuery } from 'gatsby';
 import { schema } from './schemas';
 
 export default function SubmissionEditModal({ show, onHide, submissionId }) {
-  const {
-    entities: { nodes: allEntities },
-  } = useStaticQuery(graphql`
-    {
-      entities: allMongodbAiidprodEntities {
-        nodes {
-          entity_id
-          name
-        }
-      }
-    }
-  `);
+  const { data: entitiesData } = useQuery(FIND_ENTITIES);
 
   const [findSubmission, { data, loading }] = useLazyQuery(FIND_SUBMISSION);
 
@@ -47,16 +35,14 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
     try {
       const update = { ...values, __typename: undefined, _id: undefined };
 
-      update.deployers = await processEntities(allEntities, values.deployers, createEntityMutation);
+      const { entities } = entitiesData;
 
-      update.developers = await processEntities(
-        allEntities,
-        values.developers,
-        createEntityMutation
-      );
+      update.deployers = await processEntities(entities, values.deployers, createEntityMutation);
+
+      update.developers = await processEntities(entities, values.developers, createEntityMutation);
 
       update.harmed_parties = await processEntities(
-        allEntities,
+        entities,
         values.harmed_parties,
         createEntityMutation
       );
@@ -114,7 +100,7 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
           </div>
         </Modal.Body>
       )}
-      {!loading && data?.submission && (
+      {!loading && data?.submission && entitiesData?.entities && (
         <Formik
           validationSchema={schema}
           onSubmit={handleSubmit}

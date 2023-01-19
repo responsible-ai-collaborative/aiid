@@ -315,12 +315,13 @@ export default function VariantsTable({ data, refetch, setLoading }) {
       >
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           {headerGroups.map((headerGroup) => (
-            <div {...headerGroup.getHeaderGroupProps()}>
+            <tr key={`thead-tr-${headerGroup.id}`} {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
                 <th
                   {...column.getHeaderProps()}
                   className={`${column.width} py-3 px-4 border-none`}
                   data-cy={`header-${column.id}`}
+                  key={`th-${column.id}`}
                 >
                   {column.render('Filter')}
                   <div
@@ -329,7 +330,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
                   ></div>
                 </th>
               ))}
-            </div>
+            </tr>
           ))}
         </thead>
 

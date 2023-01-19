@@ -40,6 +40,9 @@
                 },
                 "text_outputs": {
                     "$exists": true
+                },
+                "title": {
+                    "$eq": ""
                 }
             },
             "read": true,

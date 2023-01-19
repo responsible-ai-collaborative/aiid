@@ -35,6 +35,7 @@ import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import VariantList from 'components/variants/VariantList';
+import { isCompleteReport } from 'utils/variants';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -74,7 +75,6 @@ function CitePage(props) {
       incident,
       entities: entitiesData,
       responses,
-      variants: variantsData,
     },
   } = props;
 
@@ -108,7 +108,9 @@ function CitePage(props) {
     locale,
   });
 
-  const sortedReports = sortIncidentsByDatePublished(incidentReports);
+  const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports);
+
+  const sortedReports = sortedIncidentReports.filter((report) => isCompleteReport(report));
 
   const metaImage = sortedReports[0].image_url;
 
@@ -131,7 +133,7 @@ function CitePage(props) {
     isOccurrence: true,
   });
 
-  const variants = variantsData.nodes;
+  const variants = sortedIncidentReports.filter((report) => !isCompleteReport(report));
 
   const taxonomies = useMemo(
     () =>
@@ -576,6 +578,7 @@ export const query = graphql`
         date_published
         report_number
         title
+        description
         url
         image_url
         cloudinary_id
@@ -586,6 +589,8 @@ export const query = graphql`
         epoch_date_submitted
         language
         tags
+        text_inputs
+        text_outputs
       }
     }
     allMongodbTranslationsReportsEs(filter: { report_number: { in: $report_numbers } })
