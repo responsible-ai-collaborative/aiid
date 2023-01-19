@@ -181,7 +181,7 @@ describe('The Discover app', () => {
     cy.contains('button', 'Clear Filter').should('be.disabled');
   });
 
-  it.only('Should display incidents instead of reports when selection Incidents view', () => {
+  it('Should display incidents instead of reports when selection Incidents view', () => {
     cy.visit(url);
 
     cy.contains('[data-cy="display-options"]', 'Incidents').click();
