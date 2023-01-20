@@ -34,6 +34,8 @@ import AllegedEntities from 'components/entities/AllegedEntities';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { CloudinaryImage } from '@cloudinary/base';
+import config from '../../config';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -108,7 +110,13 @@ function CitePage(props) {
 
   const sortedReports = sortIncidentsByDatePublished(incidentReports);
 
-  const metaImage = sortedReports[0].image_url;
+  const publicID = sortedReports.find((report) => report.cloudinary_id)?.cloudinary_id;
+
+  const image = new CloudinaryImage(publicID, {
+    cloudName: config.cloudinary.cloudName,
+  });
+
+  const metaImage = image.createCloudinaryURL();
 
   const addToast = useToastContext();
 
