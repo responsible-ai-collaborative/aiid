@@ -444,7 +444,7 @@ describe('The Submit form', () => {
     });
   });
 
-  it('Should show a list of related reports', () => {
+  it.only('Should show a list of related reports', () => {
     const relatedReports = {
       byURL: {
         data: {
@@ -522,10 +522,14 @@ describe('The Submit form', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) =>
-        req.body.operationName == 'ProbablyRelatedReports' &&
-        req.body.variables.query?.epoch_date_published_gt == 1608346800 &&
-        req.body.variables.query?.epoch_date_published_lt == 1610766000,
+      (req) => {
+        console.log(req.body.operationName, req.body.variables.query);
+        return (
+          req.body.operationName == 'ProbablyRelatedReports' &&
+          req.body.variables.query?.epoch_date_published_gt == 1608346800 &&
+          req.body.variables.query?.epoch_date_published_lt == 1610766000
+        );
+      },
       'RelatedReportsByPublishedDate',
       relatedReports.byDatePublished
     );
