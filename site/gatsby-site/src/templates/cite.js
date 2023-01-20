@@ -1,5 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Badge, Spinner } from 'flowbite-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { CloudinaryImage } from '@cloudinary/base';
+import { Trans, useTranslation } from 'react-i18next';
+import { useLocalization } from 'gatsby-theme-i18n';
+import { useMutation } from '@apollo/client';
+import { graphql } from 'gatsby';
+
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
 import Citation from 'components/cite/Citation';
@@ -13,7 +21,6 @@ import ReportCard from '../components/reports/ReportCard';
 import Taxonomy from '../components/taxa/Taxonomy';
 import { useUserContext } from '../contexts/userContext';
 import SimilarIncidents from '../components/cite/SimilarIncidents';
-import { Trans, useTranslation } from 'react-i18next';
 import Card from '../elements/Card';
 import Button from '../elements/Button';
 import Container from '../elements/Container';
@@ -21,21 +28,17 @@ import Row from '../elements/Row';
 import Col from '../elements/Col';
 import Pagination from '../elements/Pagination';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
-import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from '../components/i18n/useLocalizePath';
-import { useMutation } from '@apollo/client';
 import { UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import Link from 'components/ui/Link';
-import { graphql } from 'gatsby';
 import { getTaxonomies, getTranslatedReports } from 'utils/cite';
 import { computeEntities, RESPONSE_TAG } from 'utils/entities';
 import AllegedEntities from 'components/entities/AllegedEntities';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
-import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { CloudinaryImage } from '@cloudinary/base';
 import config from '../../config';
+import VariantList from 'components/variants/VariantList';
+import { isCompleteReport } from 'utils/variants';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -108,7 +111,9 @@ function CitePage(props) {
     locale,
   });
 
-  const sortedReports = sortIncidentsByDatePublished(incidentReports);
+  const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports);
+
+  const sortedReports = sortedIncidentReports.filter((report) => isCompleteReport(report));
 
   const publicID = sortedReports.find((report) => report.cloudinary_id)?.cloudinary_id;
 
@@ -136,6 +141,8 @@ function CitePage(props) {
     mongodb_id: 0,
     isOccurrence: true,
   });
+
+  const variants = sortedIncidentReports.filter((report) => !isCompleteReport(report));
 
   const taxonomies = useMemo(
     () =>
@@ -444,6 +451,8 @@ function CitePage(props) {
               </Row>
             ))}
 
+            <VariantList incidentId={incident.incident_id} variants={variants}></VariantList>
+
             <SimilarIncidents
               nlp_similar_incidents={nlp_similar_incidents}
               editor_similar_incidents={editor_similar_incidents}
@@ -572,6 +581,7 @@ export const query = graphql`
         date_published
         report_number
         title
+        description
         url
         image_url
         cloudinary_id
@@ -582,6 +592,8 @@ export const query = graphql`
         epoch_date_submitted
         language
         tags
+        text_inputs
+        text_outputs
       }
     }
     allMongodbTranslationsReportsEs(filter: { report_number: { in: $report_numbers } })

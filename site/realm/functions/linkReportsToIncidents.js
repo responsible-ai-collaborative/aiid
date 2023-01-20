@@ -60,7 +60,16 @@ exports = async (input) => {
 
   //
 
-  await reportsCollection.updateMany({ report_number: { $in: input.report_numbers } }, { $set: { is_incident_report: input.incident_ids.length > 0 } });
+  await reportsCollection.updateMany(
+    {
+      report_number: { $in: input.report_numbers },
+      text_inputs: { $in: [null, ""] },
+      text_outputs: { $in: [null, ""] },
+    },
+    {
+      $set: { is_incident_report: input.incident_ids.length > 0 }
+    }
+  );
 
   return incidentsCollection.find({ reports: { $in: input.report_numbers } }).toArray();
 };

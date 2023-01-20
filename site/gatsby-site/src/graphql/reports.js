@@ -39,6 +39,8 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql`
       editor_notes
       language
       is_incident_report
+      text_inputs
+      text_outputs
       translations_es: translations(input: "es") {
         title
         text

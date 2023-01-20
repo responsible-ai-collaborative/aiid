@@ -15,3 +15,9 @@ TERM = "xterm"
     spa = true
     start = 'gatsby serve -p 8080'
     browser = 'chromium'
+
+[[plugins]]
+  package = "/plugins/netlify-plugin-process-notifications"
+
+[build.processing.html]
+  pretty_urls = false

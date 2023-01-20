@@ -1,6 +1,6 @@
 import parseNews from '../../fixtures/api/parseNews.json';
-
 import semanticallyRelated from '../../fixtures/api/semanticallyRelated.json';
+import { maybeIt } from '../../support/utils';
 
 describe('The Submit form', () => {
   const url = '/apps/submit';
@@ -49,6 +49,12 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="to-step-3"]').click();
 
+    cy.get('[name="incident_title"]').should('not.exist');
+
+    cy.get('[name="description"]').type('Description');
+
+    cy.get('[name="incident_editors"]').should('not.exist');
+
     cy.get('[name="tags"]').type('New Tag{enter}');
 
     cy.get('[name="editor_notes"').type('Here are some notes');
@@ -73,17 +79,104 @@ describe('The Submit form', () => {
         source_domain: `arstechnica.com`,
         language: 'es',
         editor_notes: 'Here are some notes',
+        description: 'Description',
       });
     });
 
-    cy.get('[data-cy="submission-success"]')
-      .contains('Report successfully added to review queue')
-      .should('be.visible');
-
-    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
+    cy.get('div[class^="ToastContext"]')
+      .contains('Report successfully added to review queue. You can see your submission')
+      .should('exist');
 
     cy.contains('Please review. Some data is missing.').should('not.exist');
   });
+
+  maybeIt(
+    'As editor, should submit a new incident report, adding an incident title and editors.',
+    () => {
+      cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+      cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
+      cy.conditionalIntercept(
+        '**/graphql',
+        (req) => req.body.operationName == 'InsertSubmission',
+        'insertSubmission',
+        {
+          data: {
+            insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+          },
+        }
+      );
+
+      cy.visit(url);
+
+      cy.get('input[name="url"]').type(
+        `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+      );
+
+      cy.get('button').contains('Fetch info').click();
+
+      cy.wait('@parseNews');
+
+      cy.get('[name="incident_date"]').type('2020-01-01');
+
+      cy.clickOutside();
+
+      cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+
+      cy.get('[data-cy="to-step-2"]').click();
+
+      cy.get('input[name="submitters"]').type('Something');
+
+      cy.get('[name="language"]').select('Spanish');
+
+      cy.get('[data-cy="to-step-3"]').click();
+
+      cy.get('[name="incident_title"]').type('Elsagate');
+
+      cy.get('[name="description"]').type('Description');
+
+      cy.get('[name="incident_editors"]').type('Sean McGregor, Khoa Lam');
+
+      cy.get('[name="tags"]').type('New Tag{enter}');
+
+      cy.get('[name="editor_notes"').type('Here are some notes');
+
+      cy.get('button[type="submit"]').click();
+
+      cy.wait('@insertSubmission').then((xhr) => {
+        expect(xhr.request.body.variables.submission).to.deep.nested.include({
+          title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
+          submitters: ['Something'],
+          authors: ['Valentina Palladino'],
+          incident_date: '2020-01-01',
+          incident_editors: ['Sean McGregor', 'Khoa Lam'],
+          incident_title: 'Elsagate',
+          date_published: '2017-11-10',
+          image_url:
+            'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+          tags: ['New Tag'],
+          incident_id: 0,
+          text: "## Recent news stories and blog\n\nposts _highlighted_ the underbelly of YouTube Kids, Google's children-friendly version. This is more text to reach the 256 charactrs minimum, becuase otherwise the text by similarity component doesnt fetch, which surprisingly is way more character that I initially imagined when I started writing this.",
+          plain_text:
+            "Recent news stories and blog\n\nposts highlighted the underbelly of YouTube Kids, Google's children-friendly version. This is more text to reach the 256 charactrs minimum, becuase otherwise the text by similarity component doesnt fetch, which surprisingly is way more character that I initially imagined when I started writing this.\n",
+          url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
+          source_domain: `arstechnica.com`,
+          language: 'es',
+          editor_notes: 'Here are some notes',
+          description: 'Description',
+        });
+      });
+
+      cy.get('div[class^="ToastContext"]')
+        .contains('Report successfully added to review queue')
+        .should('be.visible');
+
+      cy.get('div[class^="ToastContext"] a').should('have.attr', 'href', '/apps/submitted');
+
+      cy.contains('Please review. Some data is missing.').should('not.exist');
+    }
+  );
 
   it('Should submit a new report linked to incident 1 once all fields are filled properly', () => {
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
@@ -182,6 +275,12 @@ describe('The Submit form', () => {
     cy.wait('@findIncident');
 
     cy.get('[data-cy="to-step-3"]').click();
+
+    cy.get('[name="incident_title"]').should('not.exist');
+
+    cy.get('[name="description"]').should('not.exist');
+
+    cy.get('[name="incident_editors"]').should('not.exist');
 
     cy.get('[name="tags"]').type('New Tag{enter}');
 
@@ -840,9 +939,9 @@ describe('The Submit form', () => {
 
     cy.wait('@insertSubmission');
 
-    cy.get('[data-cy="submission-success"]').should('be.visible');
-
-    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/es/apps/submitted');
+    cy.get('div[class^="ToastContext"]')
+      .contains('Informe agregado exitosamente a la cola de revisión.')
+      .should('exist');
   });
 
   it('Should submit on step 1', () => {
@@ -879,11 +978,9 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="submit-step-1"]').click();
 
-    cy.get('[data-cy="submission-success"]')
-      .contains('Report successfully added to review queue')
-      .should('be.visible');
-
-    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
+    cy.get('div[class^="ToastContext"]')
+      .contains('Report successfully added to review queue. You can see your submission')
+      .should('exist');
   });
 
   it('Should submit on step 2', () => {
@@ -928,11 +1025,9 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="submit-step-2"]').click();
 
-    cy.get('[data-cy="submission-success"]')
-      .contains('Report successfully added to review queue')
-      .should('be.visible');
-
-    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
+    cy.get('div[class^="ToastContext"]')
+      .contains('Report successfully added to review queue. You can see your submission')
+      .should('exist');
   });
 
   it('Should display an error message if data is missing', () => {
@@ -1033,6 +1128,93 @@ describe('The Submit form', () => {
     });
   });
 
+  it('Should show related reports based on author', () => {
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
+      'insertSubmission',
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    const values = {
+      url: 'https://test.com',
+      title: 'test title',
+      authors: 'BBC News',
+      incident_date: '2022-01-01',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+    };
+
+    for (const key in values) {
+      cy.get(`[name="${key}"]`).type(values[key]);
+    }
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
+
+    cy.clickOutside();
+
+    cy.get('[data-cy="related-byAuthors"] [data-cy="result"]', { timeout: 10000 })
+      .should('be.visible')
+      .eq(0)
+      .then(($el) => {
+        cy.wrap($el).find('[data-cy="unspecified"]').eq(0).should('be.visible').click();
+      });
+
+    cy.get('[data-cy="related-byAuthors"] [data-cy="result"]')
+      .should('be.visible')
+      .eq(1)
+      .then(($el) => {
+        cy.wrap($el).find('[data-cy="dissimilar"]').eq(0).should('be.visible').click();
+      });
+
+    cy.get('[data-cy="related-byAuthors"] [data-cy="result"]')
+      .should('be.visible')
+      .eq(2)
+      .then(($el) => {
+        cy.wrap($el).find('[data-cy="similar"]').eq(0).should('be.visible').click();
+      });
+
+    cy.get('button[data-cy="submit-step-1"]').scrollIntoView().click();
+
+    cy.wait('@insertSubmission', { timeout: 10000 }).then((xhr) => {
+      expect(xhr.request.body.variables.submission).to.deep.nested.include({
+        ...values,
+        authors: [values.authors],
+        plain_text:
+          'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease\n',
+        source_domain: `test.com`,
+        editor_dissimilar_incidents: [5],
+        editor_similar_incidents: [16],
+      });
+    });
+  });
+
+  it('Should *not* show related reports based on author', () => {
+    cy.visit(url);
+
+    const valuesStep1 = {
+      authors: 'test author',
+    };
+
+    for (const key in valuesStep1) {
+      cy.get(`[name="${key}"]`).type(valuesStep1[key]);
+    }
+
+    cy.clickOutside();
+
+    cy.get('[data-cy="related-byAuthors"] ')
+      .should('be.visible')
+      .should('contain', 'No related reports found.');
+  });
+
   it('Should hide incident_date, description, deployers, developers & harmed_parties if incident_id', () => {
     cy.conditionalIntercept(
       '**/graphql',
@@ -1115,11 +1297,11 @@ describe('The Submit form', () => {
       });
     });
 
-    cy.get('[data-cy="submission-success"]')
+    cy.get('div[class^="ToastContext"]')
       .contains('Report successfully added to review queue')
       .should('be.visible');
 
-    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
+    cy.get('div[class^="ToastContext"] a').should('have.attr', 'href', '/apps/submitted');
 
     cy.contains('Please review. Some data is missing.').should('not.exist');
   });

@@ -1,0 +1,144 @@
+{
+  "data": {
+    "incidents": [
+      {
+        "AllegedDeployerOfAISystem": [
+          {
+            "entity_id": "youtube",
+            "name": "YouTube"
+          }
+        ],
+        "AllegedDeveloperOfAISystem": [
+          {
+            "entity_id": "youtube",
+            "name": "YouTube"
+          }
+        ],
+        "AllegedHarmedOrNearlyHarmedParties": [
+          {
+            "entity_id": "google",
+            "name": "Google"
+          }
+        ],
+        "__typename": "Incident",
+        "date": "2015-05-19",
+        "description": "YouTube’s content filtering and recommendation algorithms exposed children to disturbing and inappropriate videos.",
+        "incident_id": 112,
+        "nlp_similar_incidents": [],
+        "editors": [],
+        "editor_similar_incidents": [],
+        "editor_dissimilar_incidents": [],
+        "flagged_dissimilar_incidents": [],
+        "embedding": [],
+        "reports": [
+          {
+            "__typename": "Report",
+            "report_number": 1
+          },
+          {
+            "__typename": "Report",
+            "report_number": 2
+          },
+          {
+            "__typename": "Report",
+            "report_number": 3
+          },
+          {
+            "__typename": "Report",
+            "report_number": 4
+          },
+          {
+            "__typename": "Report",
+            "report_number": 5
+          },
+          {
+            "__typename": "Report",
+            "report_number": 6
+          },
+          {
+            "__typename": "Report",
+            "report_number": 7
+          },
+          {
+            "__typename": "Report",
+            "report_number": 8
+          },
+          {
+            "__typename": "Report",
+            "report_number": 9
+          },
+          {
+            "__typename": "Report",
+            "report_number": 10
+          },
+          {
+            "__typename": "Report",
+            "report_number": 11
+          },
+          {
+            "__typename": "Report",
+            "report_number": 12
+          },
+          {
+            "__typename": "Report",
+            "report_number": 14
+          },
+          {
+            "__typename": "Report",
+            "report_number": 15
+          },
+          {
+            "__typename": "Report",
+            "report_number": 2310
+          }
+        ],
+        "title": "YouTube Kids app is STILL showing disturbing videos"
+      },
+      {
+        "AllegedDeployerOfAISystem": [
+          {
+            "entity_id": "youtube",
+            "name": "YouTube"
+          }
+        ],
+        "AllegedDeveloperOfAISystem": [
+          {
+            "entity_id": "youtube",
+            "name": "YouTube"
+          }
+        ],
+        "AllegedHarmedOrNearlyHarmedParties": [
+          {
+            "entity_id": "google",
+            "name": "Google"
+          }
+        ],
+        "__typename": "Incident",
+        "date": "2022-12-15",
+        "description": "Kronos’s scheduling algorithm and managers’ use of its outputs allegedly negatively caused Starbucks employees’ financial and scheduling stability due to erratic schedules which disadvantaged wage workers.",
+        "incident_id": 10,
+        "nlp_similar_incidents": [],
+        "editors": [],
+        "editor_similar_incidents": [],
+        "editor_dissimilar_incidents": [],
+        "flagged_dissimilar_incidents": [],
+        "embedding": [],
+        "reports": [
+          {
+            "__typename": "Report",
+            "report_number": 16
+          },
+          {
+            "__typename": "Report",
+            "report_number": 2311
+          },
+          {
+            "__typename": "Report",
+            "report_number": 2312
+          }
+        ],
+        "title": "Kronos’s Algorithm Allegedly Created Scheduling and Financial Issues for Starbucks Employees"
+      }
+    ]
+  }
+}

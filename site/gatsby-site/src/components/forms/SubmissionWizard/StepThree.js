@@ -7,6 +7,7 @@ import * as yup from 'yup';
 import StepContainer from './StepContainer';
 import { graphql, useStaticQuery } from 'gatsby';
 import TagsInputGroup from '../TagsInputGroup';
+import { useUserContext } from 'contexts/userContext';
 import FieldContainer from './FieldContainer';
 import {
   faHandPointRight,
@@ -15,6 +16,8 @@ import {
   faTag,
   faAlignLeft,
   faStickyNote,
+  faPenNib,
+  faTenge,
 } from '@fortawesome/free-solid-svg-icons';
 
 const StepThree = (props) => {
@@ -22,18 +25,35 @@ const StepThree = (props) => {
 
   const [data, setData] = useState(props.data);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { isRole } = useUserContext();
+
   const stepThreeValidationSchema = yup.object().shape({
     editor_notes: yup.string(),
+    incident_title: yup.string(),
+    incident_editors: yup
+      .string()
+      .matches(/^.{3,}$/, {
+        excludeEmptyString: true,
+        message: 'Incident Editor must have at least 3 characters',
+      })
+      .matches(/^.{3,200}$/, {
+        excludeEmptyString: true,
+        message: "Incident Editor can't be longer than 200 characters",
+      })
+      .nullable(),
     description: yup
       .string()
       .matches(/^.{3,}$/, {
         excludeEmptyString: true,
         message: 'Description must have at least 3 characters',
       })
-      .matches(/^.{3,200}$/, {
+      .matches(/^.{3,500}$/, {
         excludeEmptyString: true,
-        message: "Description can't be longer than 200 characters",
-      }),
+        message: "Description can't be longer than 500 characters",
+      })
+      .nullable(),
     developers: yup
       .string()
       .matches(/^.{3,}$/, {
@@ -43,7 +63,8 @@ const StepThree = (props) => {
       .matches(/^.{3,200}$/, {
         excludeEmptyString: true,
         message: "Alleged Developers can't be longer than 200 characters",
-      }),
+      })
+      .nullable(),
     deployers: yup
       .string()
       .matches(/^.{3,}$/, {
@@ -53,7 +74,8 @@ const StepThree = (props) => {
       .matches(/^.{3,200}$/, {
         excludeEmptyString: true,
         message: "Alleged Deployers can't be longer than 200 characters",
-      }),
+      })
+      .nullable(),
     harmed_parties: yup
       .string()
       .matches(/^.{3,}$/, {
@@ -63,12 +85,20 @@ const StepThree = (props) => {
       .matches(/^.{3,200}$/, {
         excludeEmptyString: true,
         message: "Harmed Parties can't be longer than 200 characters",
-      }),
+      })
+      .nullable(),
   });
 
   const handleSubmit = (values) => {
+    setIsSubmitting(true);
     props.next(values, true);
   };
+
+  useEffect(() => {
+    if (props.submissionFailed || props.submissionComplete) {
+      setIsSubmitting(false);
+    }
+  }, [props.submissionFailed, props.submissionComplete]);
 
   useEffect(() => {
     setData(props.data);
@@ -111,6 +141,20 @@ const StepThree = (props) => {
             <Form>
               {!data.incident_id && (
                 <>
+                  {isRole('incident_editor') && (
+                    <FieldContainer>
+                      <TextInputGroup
+                        name="incident_title"
+                        label={t('Incident Title')}
+                        icon={faTenge}
+                        placeholder={t('Incident title')}
+                        className="mt-3"
+                        schema={stepThreeValidationSchema}
+                        {...TextInputGroupProps}
+                      />
+                    </FieldContainer>
+                  )}
+
                   <FieldContainer>
                     <TextInputGroup
                       name="description"
@@ -119,20 +163,34 @@ const StepThree = (props) => {
                       as="textarea"
                       placeholder={t('Incident Description')}
                       rows={3}
-                      {...TextInputGroupProps}
                       schema={stepThreeValidationSchema}
                       icon={faAlignLeft}
+                      {...TextInputGroupProps}
                     />
                   </FieldContainer>
+
+                  {isRole('incident_editor') && (
+                    <FieldContainer>
+                      <TagsInputGroup
+                        name="incident_editors"
+                        label={t('Editors')}
+                        icon={faPenNib}
+                        className="mt-3"
+                        schema={stepThreeValidationSchema}
+                        {...TextInputGroupProps}
+                      />
+                    </FieldContainer>
+                  )}
 
                   <FieldContainer>
                     <TagsInputGroup
                       name="deployers"
                       label={t('Alleged deployer of AI system')}
-                      placeholder={t('Who employed or was responsible for the technology?')}
-                      {...TextInputGroupProps}
-                      schema={stepThreeValidationSchema}
                       icon={faHandPointRight}
+                      placeholder={t('Who employed or was responsible for the technology?')}
+                      className="mt-3"
+                      schema={stepThreeValidationSchema}
+                      {...TextInputGroupProps}
                     />
                   </FieldContainer>
 
@@ -140,12 +198,13 @@ const StepThree = (props) => {
                     <TagsInputGroup
                       name="developers"
                       label={t('Alleged developer of AI system')}
+                      icon={faCode}
                       placeholder={t(
                         'Who created or built the technology involved in the incident?'
                       )}
-                      {...TextInputGroupProps}
+                      className="mt-3"
                       schema={stepThreeValidationSchema}
-                      icon={faCode}
+                      {...TextInputGroupProps}
                     />
                   </FieldContainer>
 
@@ -153,10 +212,11 @@ const StepThree = (props) => {
                     <TagsInputGroup
                       name="harmed_parties"
                       label={t('Alleged harmed or nearly harmed parties')}
-                      placeholder={t('Who experienced negative impacts?')}
-                      {...TextInputGroupProps}
-                      schema={stepThreeValidationSchema}
                       icon={faBolt}
+                      placeholder={t('Who experienced negative impacts?')}
+                      className="mt-3"
+                      schema={stepThreeValidationSchema}
+                      {...TextInputGroupProps}
                     />
                   </FieldContainer>
                 </>
@@ -166,10 +226,10 @@ const StepThree = (props) => {
                 <TagsInputGroup
                   name="tags"
                   label={t('Tags')}
-                  {...TextInputGroupProps}
+                  icon={faTag}
                   placeholder={t('Tags')}
                   schema={stepThreeValidationSchema}
-                  icon={faTag}
+                  {...TextInputGroupProps}
                 />
               </FieldContainer>
 
@@ -177,12 +237,12 @@ const StepThree = (props) => {
                 <TextInputGroup
                   name="editor_notes"
                   label={t('Editor Notes')}
+                  icon={faStickyNote}
                   type="textarea"
                   placeholder={t('Optional context and notes about the incident')}
                   rows={8}
-                  {...TextInputGroupProps}
                   schema={stepThreeValidationSchema}
-                  icon={faStickyNote}
+                  {...TextInputGroupProps}
                 />
               </FieldContainer>
 
@@ -190,7 +250,7 @@ const StepThree = (props) => {
                 <Button
                   type="button"
                   color={'light'}
-                  disabled={TextInputGroupProps.isSubmitting}
+                  disabled={isSubmitting}
                   onClick={() => props.previous(TextInputGroupProps.values)}
                 >
                   <svg
@@ -208,8 +268,8 @@ const StepThree = (props) => {
                   </svg>
                   <Trans>Previous</Trans>
                 </Button>
-                <Button type="submit">
-                  {TextInputGroupProps.isSubmitting && (
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting && (
                     <div className="mr-3">
                       <Spinner size="sm" light={true} />
                     </div>

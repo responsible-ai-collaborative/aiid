@@ -56,6 +56,8 @@ exports = async function () {
     // Process subscriptions to New Incidents
     if (subscriptionsToNewIncidents.length > 0) {
 
+      const allEntities = await entitiesCollection.find({}).toArray();
+
       const userIds = subscriptionsToNewIncidents.map((subscription) => subscription.userId);
 
       const recipients = await getRecipients(userIds);
@@ -72,6 +74,11 @@ exports = async function () {
             incidentId: `${incident.incident_id}`,
             incidentTitle: incident.title,
             incidentUrl: `https://incidentdatabase.ai/cite/${incident.incident_id}`,
+            incidentDescription: incident.description,
+            incidentDate: incident.date,
+            developers: buildEntityList(allEntities, incident['Alleged developer of AI system']),
+            deployers: buildEntityList(allEntities, incident['Alleged deployer of AI system']),
+            entitiesHarmed: buildEntityList(allEntities, incident['Alleged harmed or nearly harmed parties']),
           },
           templateId: 'NewIncident' // Template value from function name sufix from "site/realm/functions/config.json"
         };
