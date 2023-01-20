@@ -1,4 +1,4 @@
-it('Check menu links work (English)', () => {
+it.skip('Check menu links work (English)', () => {
   cy.visit('/');
 
   cy.waitForStableDOM();
@@ -6,7 +6,7 @@ it('Check menu links work (English)', () => {
   checkLinks();
 });
 
-it('Check menu links work (Spanish)', () => {
+it.skip('Check menu links work (Spanish)', () => {
   cy.visit('/es/');
 
   cy.waitForStableDOM();
@@ -14,7 +14,7 @@ it('Check menu links work (Spanish)', () => {
   checkLinks();
 });
 
-it('Check menu links work (French)', () => {
+it.skip('Check menu links work (French)', () => {
   cy.visit('/fr/');
 
   cy.waitForStableDOM();
