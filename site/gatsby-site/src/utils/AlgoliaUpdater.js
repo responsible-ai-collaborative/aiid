@@ -4,6 +4,8 @@ const { getUnixTime } = require('date-fns');
 
 const config = require('../../config');
 
+const { isCompleteReport } = require('./variants');
+
 const truncate = (doc) => {
   for (const [key, value] of Object.entries(doc)) {
     if (typeof value == 'string') {
@@ -193,11 +195,14 @@ class AlgoliaUpdater {
       flag: 1,
     };
 
-    const reports = await this.mongoClient
+    let reports = await this.mongoClient
       .db('aiidprod')
       .collection(`reports`)
       .find({}, { projection })
       .toArray();
+
+    // Only index Incident Reports
+    reports = reports.filter((report) => isCompleteReport(report));
 
     const translations = await this.mongoClient
       .db('translations')

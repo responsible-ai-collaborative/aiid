@@ -54,6 +54,8 @@ const reportFields = [
   'title',
   'url',
   'embedding',
+  'text_inputs',
+  'text_outputs',
 ];
 
 function EditCitePage(props) {
@@ -220,7 +222,7 @@ function EditCitePage(props) {
       }
 
       if (values.incident_ids.length > 0) {
-        addToast(updateSuccessToast({ reportNumber, incidentId: values.incident_id }));
+        addToast(updateSuccessToast({ reportNumber, incidentId: values.incident_ids[0] }));
       } else {
         addToast(updateIssueSuccessToast({ reportNumber }));
       }

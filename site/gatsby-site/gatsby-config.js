@@ -220,6 +220,7 @@ const plugins = [
           'leaderboard',
           'entities',
           'account',
+          'variants',
         ],
         debug: process.env.GATSBY_I18N_DEBUG,
         nsSeparator: false,

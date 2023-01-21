@@ -170,6 +170,8 @@ describe('Functions', () => {
 
       expect(reportsCollection.updateMany.firstCall.args[0]).to.deep.equal({
         report_number: { $in: [3] },
+        text_inputs: { $in: [null, ''] },
+        text_outputs: { $in: [null, ''] },
       });
       expect(reportsCollection.updateMany.firstCall.args[1]).to.deep.equal({
         $set: { is_incident_report: true },
@@ -256,6 +258,8 @@ describe('Functions', () => {
 
       expect(reportsCollection.updateMany.firstCall.args[0]).to.deep.equal({
         report_number: { $in: [3] },
+        text_inputs: { $in: [null, ''] },
+        text_outputs: { $in: [null, ''] },
       });
       expect(reportsCollection.updateMany.firstCall.args[1]).to.deep.equal({
         $set: { is_incident_report: false },
