@@ -100,7 +100,7 @@ const NodeLink = ({
 
 function getIcon(label, current = false) {
   const fontAwesomeStyles = `
-    w-[30px] h-[30px]
+    max-w-full w-[30px] h-[30px]
     transition-[width] duration-500 
 
     group-hover:text-white 
@@ -129,7 +129,7 @@ function getIcon(label, current = false) {
         fill="currentColor"
         stroke="none"
         className={`
-          w-6 h-6 shrink-0
+          max-w-full w-6 h-6 shrink-0
           ${current ? 'text-white' : 'text-gray-400 md:text-gray-600'}
           group-hover:text-white dark:group-hover:text-white
         `}
