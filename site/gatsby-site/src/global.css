@@ -492,9 +492,9 @@ blockquote {
 }
 @media (min-width: 768px) {
   .titleWrapper {
-    margin-top: 0.25rem;
+    margin-top: 0.5rem;
     margin-bottom: 1.75rem;
-    min-height: 4.25rem;
+    min-height: 4rem;
   }
 }
 .titleWrapper > h1 {
