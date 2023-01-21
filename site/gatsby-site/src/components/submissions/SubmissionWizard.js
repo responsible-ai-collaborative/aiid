@@ -5,7 +5,6 @@ import { getCloudinaryPublicID } from 'utils/cloudinary';
 import StepOne from '../forms/SubmissionWizard/StepOne';
 import StepTwo from '../forms/SubmissionWizard/StepTwo';
 import StepThree from '../forms/SubmissionWizard/StepThree';
-import StepFour from '../forms/SubmissionWizard/StepFour';
 
 const SubmissionWizard = ({ submitForm, initialValues }) => {
   const [data, setData] = useState(initialValues);
@@ -16,24 +15,28 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
 
   const [submissionFailed, setSubmissionFailed] = useState(false);
 
+  const [submissionComplete, setSubmissionComplete] = useState(false);
+
   const [parsingNews, setParsingNews] = useState(false);
 
   const stepsRef = useRef(null);
 
   const handleNextStep = async (newData, final = false) => {
     setSubmissionFailed(false);
+    setSubmissionComplete(false);
     setData((prev) => ({ ...prev, ...newData }));
 
     if (final) {
       try {
         await submitForm({ ...data, ...newData });
+        setSubmissionComplete(true);
       } catch (error) {
         setTimeout(() => {
           setSubmissionFailed(true);
         }, 0);
         throw error;
       }
-      setCurrentStep(steps.length - 1);
+      setCurrentStep(0);
     } else {
       setCurrentStep((prev) => prev + 1);
     }
@@ -153,6 +156,7 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
         parsingNews={parsingNews}
         validateAndSubmitForm={validateAndSubmitForm}
         submissionFailed={submissionFailed}
+        submissionComplete={submissionComplete}
       />,
       <StepTwo
         key={'submission-step-2'}
@@ -162,6 +166,7 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
         name={t('Step 2 - additional information')}
         validateAndSubmitForm={validateAndSubmitForm}
         submissionFailed={submissionFailed}
+        submissionComplete={submissionComplete}
       />,
       <StepThree
         key={'submission-step-3'}
@@ -170,12 +175,12 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
         data={data}
         name={t('Step 3 - Tell us more')}
         submissionFailed={submissionFailed}
+        submissionComplete={submissionComplete}
       />,
-      <StepFour key={'submission-step-4'} />,
     ];
 
     setSteps(steps);
-  }, [data, submissionFailed, parsingNews]);
+  }, [data, submissionFailed, parsingNews, submissionComplete]);
 
   return <div ref={stepsRef}>{steps[currentStep]}</div>;
 };

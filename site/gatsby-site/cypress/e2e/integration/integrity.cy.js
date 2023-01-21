@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { isCompleteReport } from '../../../src/utils/variants';
 
 const isLinked = (reportNumber, incidents) => {
   for (const incident of incidents) {
@@ -68,6 +69,8 @@ describe('Integrity', () => {
         `,
       }).then(({ data: { incidents, reports } }) => {
         const invalidReports = [];
+
+        reports = reports.filter((r) => isCompleteReport(r));
 
         for (const { report_number, is_incident_report } of reports) {
           if (isLinked(report_number, incidents) !== is_incident_report) {
