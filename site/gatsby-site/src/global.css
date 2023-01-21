@@ -494,7 +494,7 @@ blockquote {
   .titleWrapper {
     margin-top: 0.25rem;
     margin-bottom: 1.75rem;
-    min-height: 4.5rem;
+    min-height: 4.25rem;
   }
 }
 .titleWrapper > h1 {
