@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tooltip } from 'flowbite-react';
 import OpenedSvg from '../images/opened';
 import ClosedSvg from '../images/closed';
 import config from '../../../config';
@@ -33,18 +34,29 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed 
 
   const icon = getIcon(item.label, item.current);
 
+  const nodeLink = (
+    <>
+      <NodeLink
+        item={item}
+        isCollapsed={isCollapsed}
+        click={click}
+        icon={icon}
+        hasChildren={hasChildren}
+        calculatedClassName={calculatedClassName}
+      />
+    </>
+  );
+
   return (
     <>
       <li className={`z-50`} data-cy={'sidebar-' + item.label}>
-        <NodeLink
-          item={item}
-          title={isCollapsed ? item.title : undefined}
-          isCollapsed={isCollapsed}
-          click={click}
-          icon={icon}
-          hasChildren={hasChildren}
-          calculatedClassName={calculatedClassName}
-        />
+        {isCollapsed ? (
+          <Tooltip content={item.title} placement="right">
+            {nodeLink}
+          </Tooltip>
+        ) : (
+          <>{nodeLink}</>
+        )}
 
         {!item.collapsed && hasChildren ? (
           <ul>
@@ -129,7 +141,7 @@ function getIcon(label, current = false) {
         fill="currentColor"
         stroke="none"
         className={`
-          max-w-full w-6 h-6 shrink-0
+          max-w-full w-[30px] h-[30px] shrink-0
           ${current ? 'text-white' : 'text-gray-400 md:text-gray-600'}
           group-hover:text-white dark:group-hover:text-white
         `}
