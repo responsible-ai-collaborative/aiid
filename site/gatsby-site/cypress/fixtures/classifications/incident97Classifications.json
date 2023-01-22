@@ -1,0 +1,75 @@
+{
+    "data": {
+        "classifications": [
+            {
+                "__typename": "Classification",
+                "_id": "61d8cecbb9af57365c029cd7",
+                "classifications": {
+                    "AIApplications": [
+                        "autonomous driving"
+                    ],
+                    "AISystemDescription": "Tesla's Autopilot can carry out some driving functions autonomously, but requires the driver to keep their hands on the wheel",
+                    "AITechniques": [
+                        "computer vision"
+                    ],
+                    "AnnotationStatus": "4. Peer review complete",
+                    "Annotator": "1",
+                    "BeginningDate": "",
+                    "DataInputs": [
+                        "images of surroundings"
+                    ],
+                    "EndingDate": "",
+                    "FinancialCost": "",
+                    "FullDescription": "A Tesla Model 3 driver shared a video of their car's Autopilot system malfunctioning. The screen inside the car shows that Autopilot believes it is facing a traffic light that is alternating between red and yellow, when in fact it is looking at several white flags with the letters \"COOP\" written vertically.",
+                    "HarmDistributionBasis": [],
+                    "HarmType": [
+                        "Other"
+                    ],
+                    "InfrastructureSectors": [
+                        "Transportation"
+                    ],
+                    "Intent": "Accident",
+                    "LawsImplicated": [],
+                    "LevelOfAutonomy": "Medium",
+                    "LivesLost": false,
+                    "Location": "Switzerland",
+                    "NamedEntities": [
+                        "Starbucks",
+                        "Kronos"
+                    ],
+                    "NatureOfEndUser": "Amateur",
+                    "NearMiss": "Near miss",
+                    "PhysicalSystem": [
+                        "Vehicle/mobile robot"
+                    ],
+                    "ProblemNature": [
+                        "Robustness"
+                    ],
+                    "PublicSectorDeployment": false,
+                    "Publish": null,
+                    "RelevantAIFunctions": [
+                        "Perception",
+                        "Cognition",
+                        "Action"
+                    ],
+                    "Reviewer": "8",
+                    "SectorOfDeployment": [
+                        "Transportation and storage"
+                    ],
+                    "Severity": "Negligible",
+                    "ShortDescription": "A Tesla Model 3 mis-recognized flags with \"COOP\" written vertically on them as traffic lights.",
+                    "SystemDeveloper": [
+                        "Tesla"
+                    ],
+                    "TechnologyPurveyor": [
+                        "Tesla"
+                    ],
+                    "__typename": "ClassificationClassification"
+                },
+                "incident_id": 97,
+                "namespace": "CSET",
+                "notes": ""
+            }
+        ]
+    }
+}
