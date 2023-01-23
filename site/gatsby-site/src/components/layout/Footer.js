@@ -1,4 +1,9 @@
-import { faGithubSquare, faTwitterSquare } from '@fortawesome/free-brands-svg-icons';
+import {
+  faFacebookSquare,
+  faGithubSquare,
+  faLinkedin,
+  faTwitterSquare,
+} from '@fortawesome/free-brands-svg-icons';
 import { faExternalLinkAlt, faRssSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { graphql, useStaticQuery } from 'gatsby';
@@ -13,6 +18,8 @@ export default function Footer() {
         siteMetadata {
           headerTitle
           githubUrl
+          facebookUrl
+          linkedInUrl
           helpUrl
           tweetText
           logo {
@@ -31,7 +38,7 @@ export default function Footer() {
 
   const {
     site: {
-      siteMetadata: { githubUrl },
+      siteMetadata: { githubUrl, facebookUrl, linkedInUrl },
     },
   } = data;
 
@@ -111,6 +118,34 @@ export default function Footer() {
               color={'gray'}
               className="pointer fa fa-lg"
               title="Open RSS Feed"
+            />
+          </a>
+
+          <a
+            href={facebookUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="pr-2 tw-footer-link"
+          >
+            <FontAwesomeIcon
+              icon={faFacebookSquare}
+              color={'gray'}
+              className="pointer fa fa-lg"
+              title="Open Facebook"
+            />
+          </a>
+
+          <a
+            href={linkedInUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="pr-2 tw-footer-link"
+          >
+            <FontAwesomeIcon
+              icon={faLinkedin}
+              color={'gray'}
+              className="pointer fa fa-lg"
+              title="Open Linked In"
             />
           </a>
         </div>
