@@ -165,5 +165,9 @@
   "Back to Incident {{incidentId}}": "Retour à l'incident {{incidentId}}",
   "Back to Report {{reportNumber}}": "Retour au rapport {{reportNumber}}",
   "Editing Incident Report {{reportNumber}}": "Modification du rapport {{reportNumber}}",
-  "Editing Incident {{incidentId}}": "Modification de l'incident {{incidentId}}"
+  "Editing Incident {{incidentId}}": "Modification de l'incident {{incidentId}}",
+  "{{count}} Incident Reports found": "{{count}} Rapports d'incidents trouvés",
+  "{{count}} Incidents found": "{{count}} Incidents trouvés",
+  "{{count}} Incident and Issue Reports found": "{{count}} Rapports d'incidents et de problèmes trouvés",
+  "{{count}} Issue Reports found": "{{count}} Rapports de problème trouvés"
 }
