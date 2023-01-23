@@ -47,7 +47,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
     };
   });
 
-  const isUserLoggedIn = user && user.isLoggedIn && user.profile.email;
+  const isUserLoggedIn = user && user.isLoggedIn;
 
   // We want the bottom edge of the sidebar
   // to rest at bottom edge of the viewport.
