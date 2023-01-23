@@ -13,15 +13,19 @@ const renderTooltip = (props, displayText) => (
   </PopoverWrapper>
 );
 
-const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
+const Taxonomy = ({
+  taxonomy,
+  incidentId,
+  canEdit,
+  taxonomyBeingEdited,
+  setTaxonomyBeingEdited,
+}) => {
   const [showAllClassifications, setShowAllClassifications] = useState(false);
-
-  const [isEditing, setIsEditing] = useState(false);
 
   const [showBanner, setShowBanner] = useState(false);
 
   const handleSubmit = () => {
-    setIsEditing(false);
+    setTaxonomyBeingEdited(null);
     setShowBanner(true);
   };
 
@@ -34,10 +38,10 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
           </Trans>
         </h4>
         <>
-          {isEditing ? (
-            <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+          {taxonomyBeingEdited == taxonomy ? (
+            <Button onClick={() => setTaxonomyBeingEdited(null)}>Cancel</Button>
           ) : (
-            canEdit && <Button onClick={() => setIsEditing(true)}>Edit</Button>
+            canEdit && <Button onClick={() => setTaxonomyBeingEdited(taxonomy)}>Edit</Button>
           )}
         </>
         <a
@@ -48,7 +52,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
         </a>
       </div>
       <>
-        {!isEditing ? (
+        {taxonomyBeingEdited != taxonomy ? (
           <>
             {showBanner && (
               <div style={{ padding: '0.5em' }}>

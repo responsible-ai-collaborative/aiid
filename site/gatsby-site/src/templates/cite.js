@@ -141,6 +141,8 @@ function CitePage(props) {
     taxonomies.map((t) => ({ ...t, canEdit: false }))
   );
 
+  const [taxonomyBeingEdited, setTaxonomyBeingEdited] = useState();
+
   useEffect(() => {
     setTaxonomiesList((list) =>
       list.map((t) => ({
@@ -400,6 +402,10 @@ function CitePage(props) {
                         taxonomy={t}
                         incidentId={incident.incident_id}
                         canEdit={t.canEdit}
+                        {...{
+                          taxonomyBeingEdited,
+                          setTaxonomyBeingEdited,
+                        }}
                       />
                     ))}
                 </Col>

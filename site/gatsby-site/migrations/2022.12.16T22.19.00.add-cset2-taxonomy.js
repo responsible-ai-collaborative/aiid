@@ -25,7 +25,7 @@ var YesNoMaybe = {
 };
 
 var YesNo = {
-  display_type: 'enum',
+  display_type: 'bool',
   mongo_type: 'bool',
   permitted_values: [],
   placeholder: '',
@@ -79,7 +79,7 @@ var csetV1TaxaEntry = {
       long_name: 'The number of the incident in the AI Incident Database.',
       short_description: 'The number of the incident in the AI Incident Database.',
       long_description: 'The number of the incident in the AI Incident Database.',
-      display_type: 'string',
+      display_type: 'int',
       mongo_type: 'int',
       default: '',
       weight: 5,
@@ -499,7 +499,7 @@ var csetV1TaxaEntry = {
       short_description: 'Notes about the AI tangible harm level assessment',
       long_description:
         'If for 2.8 you select unclear or leave it blank, please provide a brief description of why.\n\n You can also add notes if you want to provide justification for a level',
-      display_type: 'string',
+      display_type: 'long_string',
       mongo_type: 'string',
       default: '',
       placeholder: 'Notes about the AI tangible harm level assessment',
@@ -652,7 +652,7 @@ var csetV1TaxaEntry = {
       short_description: 'Indicates how the harms were potentially distributed.',
       long_description:
         'Multiple can occur.\n\nGenetic information refers to information about a person’s genetic tests or the genetic tests of their relatives. Genetic information can predict the manifestation of a disease or disorder.',
-      display_type: 'enum',
+      display_type: 'multi',
       mongo_type: 'string',
       default: 'unclear',
       placeholder: '',
@@ -685,7 +685,7 @@ var csetV1TaxaEntry = {
       long_name: 'Input any notes that may help explain your answers.',
       short_description: 'Input any notes that may help explain your answers.',
       long_description: 'Input any notes that may help explain your answers.',
-      display_type: 'string',
+      display_type: 'long_string',
       mongo_type: 'string',
       default: '',
       placeholder: 'Notes',
@@ -943,7 +943,7 @@ var csetV1TaxaEntry = {
       long_name: 'Which critical infrastructure sectors were affected, if any?',
       short_description: 'Which critical infrastructure sectors were affected, if any?',
       long_description: 'Which critical infrastructure sectors were affected, if any?',
-      display_type: 'enum',
+      display_type: 'multi',
       mongo_type: 'string',
       default: 'unclear',
       placeholder: '',
@@ -996,7 +996,7 @@ var csetV1TaxaEntry = {
       long_name: 'Notes (Environmental and Temporal Characteristics)',
       short_description: 'Input any notes that may help explain your answers.',
       long_description: 'Input any notes that may help explain your answers.',
-      display_type: 'string',
+      display_type: 'long_string',
       mongo_type: 'string',
       default: '',
       placeholder: 'Notes',
@@ -1010,15 +1010,15 @@ var csetV1TaxaEntry = {
     /* 5. Characterizing Entities and the Harm */
     {
       field_number: '5',
-      short_name: 'Notes (Environmental and Temporal Characteristics)',
-      long_name: 'Notes (Environmental and Temporal Characteristics)',
-      short_description: 'Input any notes that may help explain your answers.',
-      long_description: 'Input any notes that may help explain your answers.',
+      short_name: 'Entities',
+      long_name: 'Characterizing Entities and the Harm',
+      short_description: 'Characterizing Entities and the Harm',
+      long_description: 'Characterizing Entities and the Harm',
       display_type: 'object-list',
       mongo_type: 'array',
 
       // TODO: This needs to be implemented
-      item_fields: [
+      subfields: [
         {
           field_number: '5.1',
           short_name: 'Entity',
@@ -1177,7 +1177,7 @@ var csetV1TaxaEntry = {
           long_name: 'Notes (Characterizing Entities and the Harm)',
           short_description: 'Input any notes that may help explain your answers.',
           long_description: 'Input any notes that may help explain your answers.',
-          display_type: 'string',
+          display_type: 'long_string',
           mongo_type: 'string',
           default: '',
           placeholder: 'Notes',
@@ -1374,7 +1374,7 @@ var csetV1TaxaEntry = {
       long_name: 'Notes ( Tangible Harm Quantities Information)',
       short_description: 'Input any notes that may help explain your answers.',
       long_description: 'Input any notes that may help explain your answers.',
-      display_type: 'string',
+      display_type: 'long_string',
       mongo_type: 'string',
       default: '',
       placeholder: 'Notes',
@@ -1408,8 +1408,8 @@ var csetV1TaxaEntry = {
       short_description: 'A description of the AI system (when possible)',
       long_description:
         'Describe the AI system in as much detail as the reports will allow.\n\nA high level description of the AI system is sufficient, but if more technical details about the AI system are available, include them in the description as well.',
-      display_type: 'str',
-      mongo_type: 'str',
+      display_type: 'long_string',
+      mongo_type: 'string',
       default: '',
       placeholder: 'Description of the AI system involved',
       permitted_values: [],
@@ -1669,7 +1669,7 @@ var csetV1TaxaEntry = {
       long_name: 'Notes (Information about AI System)',
       short_description: 'Input any notes that may help explain your answers.',
       long_description: 'Input any notes that may help explain your answers.',
-      display_type: 'string',
+      display_type: 'long_string',
       mongo_type: 'string',
       default: '',
       placeholder: 'Notes',
@@ -1825,7 +1825,7 @@ var csetV1TaxaEntry = {
       long_name: 'Notes (AI Functionality and Techniques)',
       short_description: 'Input any notes that may help explain your answers.',
       long_description: 'Input any notes that may help explain your answers.',
-      display_type: 'string',
+      display_type: 'long_string',
       mongo_type: 'string',
       default: '',
       placeholder: 'Notes',
