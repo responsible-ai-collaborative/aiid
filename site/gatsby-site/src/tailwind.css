@@ -453,8 +453,8 @@
      * The easy fix is to translate the tooltip
      * so that it no longer overlaps the edge of the sidebar. 
      */
-    #sidebar-tree *[data-testid="flowbite-tooltip"] {
-      @apply translate-x-1 flex items-center;
+    #sidebar-tree *.inline-block[data-testid="flowbite-tooltip"] {
+      @apply translate-x-4 items-center flex;
     }
 
     /* TAILWIND Sidebar ends */
