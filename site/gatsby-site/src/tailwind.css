@@ -441,6 +441,22 @@
         @apply text-gray-900;
     }
 
+    #sidebar-tree::-webkit-scrollbar {
+        @apply w-1;
+    }
+    #sidebar-tree::-webkit-scrollbar-thumb {
+        @apply bg-gray-300;
+    }
+
+    /* For some reason, on Firefox 
+     * the tooltip shows up _under_ the scrollbar.
+     * The easy fix is to translate the tooltip
+     * so that it no longer overlaps the edge of the sidebar. 
+     */
+    #sidebar-tree *[data-testid="flowbite-tooltip"] {
+      @apply translate-x-1 flex items-center;
+    }
+
     /* TAILWIND Sidebar ends */
 
     .tw-hbox {
@@ -506,20 +522,6 @@
     .tw-hits-container.list {
         @apply grid grid-cols-1 gap-2;
     }
-
-    #sidebar-tree::-webkit-scrollbar {
-        width: 0.25rem;
-    }
-    #sidebar-tree::-webkit-scrollbar-thumb {
-        @apply bg-gray-300;
-    }
-    #sidebar-tree::hover::-webkit-scrollbar {
-        width: 0.5rem;
-    }
-    #sidebar-tree::hover::-webkit-scrollbar-thumb {
-        width: 0.5rem;
-    }
-
 
     /* TAILWIND AIS PAGINATION START */
 

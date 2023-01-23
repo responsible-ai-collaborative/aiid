@@ -34,29 +34,17 @@ const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed 
 
   const icon = getIcon(item.label, item.current);
 
-  const nodeLink = (
-    <>
-      <NodeLink
-        item={item}
-        isCollapsed={isCollapsed}
-        click={click}
-        icon={icon}
-        hasChildren={hasChildren}
-        calculatedClassName={calculatedClassName}
-      />
-    </>
-  );
-
   return (
     <>
       <li className={`z-50`} data-cy={'sidebar-' + item.label}>
-        {isCollapsed ? (
-          <Tooltip content={item.title} placement="right">
-            {nodeLink}
-          </Tooltip>
-        ) : (
-          <>{nodeLink}</>
-        )}
+        <NodeLink
+          item={item}
+          isCollapsed={isCollapsed}
+          click={click}
+          icon={icon}
+          hasChildren={hasChildren}
+          calculatedClassName={calculatedClassName}
+        />
 
         {!item.collapsed && hasChildren ? (
           <ul>
@@ -89,9 +77,18 @@ const NodeLink = ({
     title={title}
     to={item.url}
     onClick={click}
-    className={`flex rounded-lg items-center p-2 md:text-base font-normal group transition-none ${calculatedClassName}`}
+    className={`${
+      isCollapsed ? 'w-10 h-10' : ''
+    } flex rounded-lg items-center p-2 md:text-base font-normal group transition-none ${calculatedClassName}`}
   >
-    {icon && <>{icon} </>}
+    {icon &&
+      (isCollapsed ? (
+        <Tooltip content={item.title} placement="right">
+          {icon}
+        </Tooltip>
+      ) : (
+        <>{icon}</>
+      ))}
     <span
       className={`${
         isCollapsed ? 'h-0 w-0 m-0 p-0 overflow-hidden opacity-0 ' : 'opacity-100'
@@ -112,7 +109,7 @@ const NodeLink = ({
 
 function getIcon(label, current = false) {
   const fontAwesomeStyles = `
-    max-w-full w-[30px] h-[30px]
+    w-6 h-6
     transition-[width] duration-500 
 
     group-hover:text-white 
@@ -141,7 +138,7 @@ function getIcon(label, current = false) {
         fill="currentColor"
         stroke="none"
         className={`
-          max-w-full w-[30px] h-[30px] shrink-0
+          w-6 h-6 shrink-0
           ${current ? 'text-white' : 'text-gray-400 md:text-gray-600'}
           group-hover:text-white dark:group-hover:text-white
         `}
