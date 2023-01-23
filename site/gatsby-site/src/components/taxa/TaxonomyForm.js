@@ -20,8 +20,6 @@ const FormContainer = styled.div`
 const TEXTAREA_LIMIT = 120;
 
 const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, onSubmit }, ref) {
-  console.log('TaxonomyForm(', { namespace, incidentId, onSubmit }, ')');
-
   const [loading, setLoading] = useState(true);
 
   const [error] = useState('');
@@ -64,16 +62,12 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
     variables: { query: { incident_id: incidentId } },
   });
 
-  console.log(`classificationsData`, classificationsData);
-
   const classification =
     classificationsData &&
     taxonomy &&
     classificationsData.classifications.find(
       (classification) => classification.namespace == taxonomy.namespace
     );
-
-  console.log(`classification`, classification);
 
   const [updateClassification] = useMutation(UPDATE_CLASSIFICATION);
 
