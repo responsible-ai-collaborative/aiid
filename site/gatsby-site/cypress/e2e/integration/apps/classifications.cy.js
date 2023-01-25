@@ -10,7 +10,7 @@ describe('Classifications App', () => {
 
     cy.get('select[data-cy="taxonomy"]').select('CSET');
 
-    cy.get('a[href="/cite/10#taxa-area"]')
+    cy.get('a[href="/cite/10/#taxa-area"]')
       .parents('tr')
       .find('[data-cy=edit-classification]')
       .click();
