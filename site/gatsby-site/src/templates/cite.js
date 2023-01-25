@@ -5,7 +5,6 @@ import Layout from 'components/Layout';
 import Citation from 'components/cite/Citation';
 import ImageCarousel from 'components/cite/ImageCarousel';
 import BibTex from 'components/BibTex';
-import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 import { format, isAfter, isEqual } from 'date-fns';
 import Timeline from '../components/visualizations/Timeline';
 import IncidentStatsCard from '../components/cite/IncidentStatsCard';
@@ -95,8 +94,6 @@ function CitePage(props) {
   const metaTitle = `Incident ${incident.incident_id}: ${incident.title}`;
 
   const metaDescription = incident.description;
-
-  const canonicalUrl = getCanonicalUrl(incident.incident_id);
 
   const incidentReports = getTranslatedReports({
     allMongodbAiidprodReports,
@@ -228,7 +225,7 @@ function CitePage(props) {
 
   return (
     <Layout {...{ props }}>
-      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
+      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
 
@@ -237,7 +234,7 @@ function CitePage(props) {
         <div className="flex">
           <SocialShareButtons
             metaTitle={metaTitle}
-            canonicalUrl={canonicalUrl}
+            path={props.location.pathname}
             page="cite"
             className="-mt-1"
           ></SocialShareButtons>

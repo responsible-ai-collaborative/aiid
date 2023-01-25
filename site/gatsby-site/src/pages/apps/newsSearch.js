@@ -218,7 +218,7 @@ const NewsSearchPage = (props) => {
 
   return (
     <Layout {...props}>
-      <AiidHelmet>
+      <AiidHelmet path={props.location.pathname}>
         <title>{t('News Search')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>

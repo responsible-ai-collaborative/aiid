@@ -73,7 +73,7 @@ export default function IncidentsPage(props) {
 
   return (
     <LayoutHideSidebar {...props}>
-      <AiidHelmet canonicalUrl={'/apps/variants'}>
+      <AiidHelmet path={props.location.pathname}>
         <title>{t('Variants')}</title>
       </AiidHelmet>
       <div className="relative ml-6">
