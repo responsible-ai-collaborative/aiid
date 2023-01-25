@@ -17,6 +17,8 @@ export default function TsneVisualization({
 }) {
   const [axis, setAxis] = useState('Sector of Deployment');
 
+  const [namespace, setNamespace] = useState('CSET');
+
   const [highlightedCategory, setHighlightedCategory] = useState(null);
 
   const { t } = useTranslation();
@@ -28,7 +30,8 @@ export default function TsneVisualization({
   const taxons = Array.from(
     new Set(
       classifications
-        .map((c) => c.classifications[axis.replace(/ /g, '_')])
+        .filter((c) => c.namespace == namespace)
+        .map((c) => JSON.parse(c.attributes.find(attribute => attribute.short_name == axis).value_json))
         .map((e) => (Array.isArray(e) ? e[0] : e))
         .reduce((result, value) => result.concat(value), [])
         .filter((value) => value)
@@ -63,6 +66,7 @@ export default function TsneVisualization({
               currentIncidentId,
               taxonColorMap,
               taxonVisibility,
+              namespace,
               axis,
               highlightedCategory,
             }}
@@ -136,6 +140,7 @@ function VisualizationView({
   currentIncidentId,
   taxonColorMap,
   taxonVisibility,
+  namespace,
   axis,
   highlightedCategory,
 }) {
@@ -162,12 +167,13 @@ function VisualizationView({
                     classifications={
                       classifications.find(
                         (classification) => classification.incident_id == incident.incident_id
-                      )?.classifications || {}
+                      ) || []
                     }
                     key={incident.incident_id}
                     {...{
                       highlightedCategory,
                       currentIncidentId,
+                      namespace,
                       axis,
                       taxonColorMap,
                       taxonVisibility,
@@ -193,6 +199,7 @@ function PlotPoint({
   classifications,
   taxonColorMap,
   taxonVisibility,
+  namespace,
   axis,
   currentIncidentId,
   highlightedCategory,
@@ -209,19 +216,21 @@ function PlotPoint({
 
   const [hoverTimeout, setHoverTimeout] = useState(null);
 
-  const dbAxis = axis.replace(/ /g, '_');
-
   let taxon = 'Unclassified';
 
-  if (classifications && classifications[dbAxis]) {
+  if (classifications) {
+    const classification = classifications.find((c) => c.namespace == namescape);
+    const attribute = classification.attributes.find(a => a.short_name == axis)
+    const value = JSON.parse(attribute.value_json);
+
     let initialString = null;
 
-    if (Array.isArray(classifications[dbAxis])) {
-      if (classifications[dbAxis].length > 0) {
-        initialString = String(classifications[dbAxis][0]);
+    if (Array.isArray(value)) {
+      if (value.length > 0) {
+        initialString = String(value[0]);
       }
     } else {
-      initialString = String(classifications[dbAxis]);
+      initialString = String(value);
     }
     if (initialString && initialString.trim().length > 0) {
       taxon = initialString;
