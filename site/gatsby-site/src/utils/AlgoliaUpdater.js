@@ -55,9 +55,14 @@ const getClassificationArray = (classification) => {
         classification.namespace != 'CSET' ||
         includedCSETAttributes.includes(attribute.short_name)
       ) {
-        const value = JSON.parse(attribute.value_json);
+        try {
+          const value = JSON.parse(attribute.value_json);
 
-        result.push(`${classification.namespace}:${attribute.short_name}:${value}`);
+          result.push(`${classification.namespace}:${attribute.short_name}:${value}`);
+        } catch (e) {
+          console.log(`attribute.value_json`, attribute.value_json);
+          console.error(e);
+        }
       }
     }
   }

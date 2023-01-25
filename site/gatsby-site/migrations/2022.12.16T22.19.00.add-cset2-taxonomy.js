@@ -1093,7 +1093,7 @@ var csetV1TaxaEntry = {
           short_description: 'Indicates the entity’s relationship to the AI.',
           long_description:
             'Indicates the entity’s relationship to the AI. Note, the smallest possible chain of harm has just two elements; an AI and an entity experiencing harm, near-miss, or issue.',
-          display_type: 'enum',
+          display_type: 'multi',
           mongo_type: 'string',
           default: '',
           placeholder: '',

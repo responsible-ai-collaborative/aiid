@@ -52,7 +52,7 @@ const Taxonomy = ({
         </a>
       </div>
       <>
-        {taxonomyBeingEdited != taxonomy ? (
+        {taxonomyBeingEdited != taxonomy && (
           <>
             {showBanner && (
               <div style={{ padding: '0.5em' }}>
@@ -135,15 +135,13 @@ const Taxonomy = ({
               </div>
             )}
           </>
-        ) : (
-          <>
-            <TaxonomyForm
-              namespace={taxonomy.namespace}
-              incidentId={incidentId}
-              onSubmit={handleSubmit}
-            />
-          </>
         )}
+        <TaxonomyForm
+          namespace={taxonomy.namespace}
+          incidentId={incidentId}
+          onSubmit={handleSubmit}
+          active={taxonomyBeingEdited == taxonomy}
+        />
       </>
     </Card>
   );
