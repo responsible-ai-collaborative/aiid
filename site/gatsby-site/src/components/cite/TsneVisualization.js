@@ -7,7 +7,7 @@ import { Image } from '../../utils/cloudinary';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Color from 'color';
 import { LocalizedLink } from 'gatsby-theme-i18n';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 export default function TsneVisualization({
   currentIncidentId,
@@ -18,6 +18,8 @@ export default function TsneVisualization({
   const [axis, setAxis] = useState('Sector of Deployment');
 
   const [highlightedCategory, setHighlightedCategory] = useState(null);
+
+  const { t } = useTranslation();
 
   const currentSpatialIncident = incidents.find(
     (incident) => incident.incident_id == currentIncidentId
@@ -77,7 +79,7 @@ export default function TsneVisualization({
             >
               {csetClassifications.map((axis) => (
                 <option key={axis} value={axis}>
-                  CSET:{axis}
+                  CSET:{t(axis)}
                 </option>
               ))}
             </Form.Select>
@@ -115,7 +117,7 @@ export default function TsneVisualization({
                     }
                   >
                     <Swatch color={taxonColorMap[taxon]} />
-                    {taxon}
+                    <Trans>{taxon}</Trans>
                   </button>
                 </li>
               ))}

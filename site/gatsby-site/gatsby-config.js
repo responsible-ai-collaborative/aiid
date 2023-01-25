@@ -221,6 +221,7 @@ const plugins = [
           'entities',
           'account',
           'variants',
+          'footer',
         ],
         debug: process.env.GATSBY_I18N_DEBUG,
         nsSeparator: false,
