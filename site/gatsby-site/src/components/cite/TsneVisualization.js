@@ -17,7 +17,8 @@ export default function TsneVisualization({
 }) {
   const [axis, setAxis] = useState('Sector of Deployment');
 
-  const [namespace, setNamespace] = useState('CSET');
+  // TODO: Allow selecting namespace and field together
+  const [namespace] = useState('CSET');
 
   const [highlightedCategory, setHighlightedCategory] = useState(null);
 
@@ -27,11 +28,16 @@ export default function TsneVisualization({
     (incident) => incident.incident_id == currentIncidentId
   );
 
+  const filteredClassifications = classifications.filter(
+    (c) => c.namespace == namespace && c.attributes != null && c.attributes.length > 0
+  );
+
   const taxons = Array.from(
     new Set(
-      classifications
-        .filter((c) => c.namespace == namespace)
-        .map((c) => JSON.parse(c.attributes.find(attribute => attribute.short_name == axis).value_json))
+      filteredClassifications
+        .map((c) =>
+          JSON.parse(c.attributes.find((attribute) => attribute.short_name == axis).value_json)
+        )
         .map((e) => (Array.isArray(e) ? e[0] : e))
         .reduce((result, value) => result.concat(value), [])
         .filter((value) => value)
@@ -165,7 +171,7 @@ function VisualizationView({
                 return (
                   <PlotPoint
                     classifications={
-                      classifications.find(
+                      classifications.filter(
                         (classification) => classification.incident_id == incident.incident_id
                       ) || []
                     }
@@ -219,21 +225,25 @@ function PlotPoint({
   let taxon = 'Unclassified';
 
   if (classifications) {
-    const classification = classifications.find((c) => c.namespace == namescape);
-    const attribute = classification.attributes.find(a => a.short_name == axis)
-    const value = JSON.parse(attribute.value_json);
+    const classification = classifications.find((c) => c.namespace == namespace);
 
-    let initialString = null;
+    if (classification && classification.attributes && classification.attributes.length > 0) {
+      const attribute = classification.attributes.find((a) => a.short_name == axis);
 
-    if (Array.isArray(value)) {
-      if (value.length > 0) {
-        initialString = String(value[0]);
+      const value = JSON.parse(attribute.value_json);
+
+      let initialString = null;
+
+      if (Array.isArray(value)) {
+        if (value.length > 0) {
+          initialString = String(value[0]);
+        }
+      } else {
+        initialString = String(value);
       }
-    } else {
-      initialString = String(value);
-    }
-    if (initialString && initialString.trim().length > 0) {
-      taxon = initialString;
+      if (initialString && initialString.trim().length > 0) {
+        taxon = initialString;
+      }
     }
   }
 

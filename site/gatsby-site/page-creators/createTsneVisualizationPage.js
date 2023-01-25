@@ -43,6 +43,7 @@ const createTsneVisualizationPage = async (graphql, createPage) => {
       allMongodbAiidprodClassifications(filter: { incident_id: { in: [${incidentIds}] } }) {
         nodes {
           incident_id
+          namespace
           attributes {
             short_name
             value_json 
