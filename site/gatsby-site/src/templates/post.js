@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql, Link } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
@@ -44,9 +44,7 @@ export default function Post(props) {
     </>
   );
 
-  const [formattedDate, setFormattedDate] = useState(null);
-
-  useEffect(() => setFormattedDate(format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')), []);
+  const formattedDate = format(new Date(mdx.frontmatter.date), 'yyyy-MM-dd');
 
   return (
     <Layout {...{ ...props, rightSidebar }}>
