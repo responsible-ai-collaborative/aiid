@@ -50,7 +50,7 @@ describe('Incidents App', () => {
       });
   });
 
-  it.skip('Successfully filter and edit incident 112', { retries: { runMode: 4 } }, () => {
+  it('Successfully filter and edit incident 112', { retries: { runMode: 4 } }, () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -60,9 +60,35 @@ describe('Incidents App', () => {
       incidents
     );
 
+    // this shuold not be necessary and fixed in the component
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 0,
+      'FindIncident0',
+      incident
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindEntities',
+      'FindEntities',
+      {
+        data: {
+          entities: [
+            { __typename: 'Entity', entity_id: 'Youtube', name: 'youtube' },
+            { __typename: 'Entity', entity_id: 'Google', name: 'google' },
+          ],
+        },
+      }
+    );
+
     cy.visit(url);
 
     cy.waitForStableDOM();
+
+    cy.wait(['@FindIncident0', '@FindEntities']);
 
     cy.get('[data-cy="input-filter-Incident ID"]').type('112');
 
@@ -72,31 +98,22 @@ describe('Incidents App', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) => req.body.operationName == 'FindIncident',
-      'FindIncident',
-      incident
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
       (req) =>
         req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 112,
-      'FindIncident',
+      'FindIncident112',
       incident
     );
 
     cy.contains('Edit').click();
 
-    cy.wait('@FindIncident');
-
-    cy.wait('@FindIncident', { timeout: 8000 }).then((xhr) => {
+    cy.wait('@FindIncident112', { timeout: 8000 }).then((xhr) => {
       expect(xhr.request.body.operationName).to.eq('FindIncident');
       expect(xhr.request.body.variables.query.incident_id).to.eq(112);
     });
 
     cy.get('[data-cy="incident-form"]').should('exist').as('form');
 
-    cy.get(`[name="title"]`).clear().type('Test title');
+    cy.get(`[name="title"]`).scrollIntoView().clear().type('Test title');
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -117,7 +134,38 @@ describe('Incidents App', () => {
       updateOneIncident
     );
 
-    cy.contains('Update').click();
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'UpsertEntity' &&
+        req.body.variables.entity.entity_id == 'youtube',
+      'UpsertYoutube',
+      {
+        data: {
+          upsertOneEntity: { __typename: 'Entity', entity_id: 'youtube', name: 'Youtube' },
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'UpsertEntity' && req.body.variables.entity.entity_id == 'google',
+      'UpsertGoogle',
+      {
+        data: {
+          upsertOneEntity: { __typename: 'Entity', entity_id: 'google', name: 'Google' },
+        },
+      }
+    );
+
+    cy.contains('Update').scrollIntoView().click();
+
+    cy.wait('@UpsertYoutube')
+      .its('request.body.variables.entity.entity_id')
+      .should('eq', 'youtube');
+
+    cy.wait('@UpsertGoogle').its('request.body.variables.entity.entity_id').should('eq', 'google');
 
     cy.wait('@UpdateIncident').then((xhr) => {
       expect(xhr.request.body.operationName).to.eq('UpdateIncident');

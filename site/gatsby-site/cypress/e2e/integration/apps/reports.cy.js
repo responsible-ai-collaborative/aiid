@@ -1,3 +1,5 @@
+import reports from '../../../fixtures/reports/reports.json';
+
 describe('Reports App', () => {
   const url = '/apps/reports';
 
@@ -7,6 +9,13 @@ describe('Reports App', () => {
 
   it('Filters a report by title ', () => {
     cy.visit(url);
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ReportsQuery',
+      'ReportsQuery',
+      reports
+    );
 
     cy.get('[data-cy="filter"]', { timeout: 15000 })
       .eq(1)

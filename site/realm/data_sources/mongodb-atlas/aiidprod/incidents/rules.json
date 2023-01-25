@@ -33,24 +33,47 @@
             "additional_fields": {}
         },
         {
+            "name": "Add Variant",
+            "apply_when": {},
+            "fields": {
+                "embedding": {
+                    "write": true,
+                    "read": true
+                },
+                "reports": {
+                    "write": true,
+                    "read": true
+                }
+            },
+            "insert": false,
+            "delete": false,
+            "search": false,
+            "additional_fields": {
+                "write": false,
+                "read": true
+            }
+        },
+        {
             "name": "default",
             "apply_when": {},
             "fields": {
                 "flag": {
-                    "write": true
+                    "write": true,
+                    "read": true
                 },
                 "flagged_dissimilar_incidents": {
-                    "write": true
+                    "write": true,
+                    "read": true
                 },
                 "tags": {
-                    "write": true
+                    "write": true,
+                    "read": true
                 }
             },
             "read": true,
             "insert": false,
             "delete": false,
-            "search": true,
-            "additional_fields": {}
+            "search": true
         }
     ]
 }

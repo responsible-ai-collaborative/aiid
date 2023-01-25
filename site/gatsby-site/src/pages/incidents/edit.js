@@ -5,12 +5,12 @@ import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button, Spinner } from 'flowbite-react';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
-import { UPSERT_ENTITY } from '../../graphql/entities';
+import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
-import { graphql, Link, useStaticQuery } from 'gatsby';
+import { Link } from 'gatsby';
 import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 
@@ -21,22 +21,13 @@ function EditCitePage(props) {
 
   const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
 
-  const { data: incidentData, loading } = useQuery(FIND_INCIDENT, {
+  const { data: incidentData, loading: loadingIncident } = useQuery(FIND_INCIDENT, {
     variables: { query: { incident_id: incidentId } },
   });
 
-  const {
-    entities: { nodes: allEntities },
-  } = useStaticQuery(graphql`
-    {
-      entities: allMongodbAiidprodEntities {
-        nodes {
-          entity_id
-          name
-        }
-      }
-    }
-  `);
+  const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
+
+  const loading = loadingIncident || loadingEntities;
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
@@ -79,20 +70,22 @@ function EditCitePage(props) {
         __typename: undefined,
       };
 
+      const { entities } = entitiesData;
+
       updated.AllegedDeveloperOfAISystem = await processEntities(
-        allEntities,
+        entities,
         values.AllegedDeveloperOfAISystem,
         createEntityMutation
       );
 
       updated.AllegedDeployerOfAISystem = await processEntities(
-        allEntities,
+        entities,
         values.AllegedDeployerOfAISystem,
         createEntityMutation
       );
 
       updated.AllegedHarmedOrNearlyHarmedParties = await processEntities(
-        allEntities,
+        entities,
         values.AllegedHarmedOrNearlyHarmedParties,
         createEntityMutation
       );

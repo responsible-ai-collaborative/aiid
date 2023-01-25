@@ -4,6 +4,8 @@ const { getUnixTime } = require('date-fns');
 
 const config = require('../../config');
 
+const { isCompleteReport } = require('./variants');
+
 // Reduce this if a subset of the data is needed
 // to fit within the Algolia tier limits.
 //
@@ -221,11 +223,13 @@ class AlgoliaUpdater {
         flag: 1,
       };
 
-      const reports = await this.mongoClient
-        .db('aiidprod')
-        .collection(`reports`)
-        .find({}, { projection })
-        .toArray();
+      const reports = (
+        await this.mongoClient
+          .db('aiidprod')
+          .collection(`reports`)
+          .find({}, { projection })
+          .toArray()
+      ).filter((report) => isCompleteReport(report));
 
       const translations = await this.mongoClient
         .db('translations')
@@ -246,7 +250,6 @@ class AlgoliaUpdater {
             plain_text,
           };
         }
-
         return report;
       });
 

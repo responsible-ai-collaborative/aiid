@@ -1,10 +1,16 @@
-import { faGithubSquare, faTwitterSquare } from '@fortawesome/free-brands-svg-icons';
+import {
+  faFacebookSquare,
+  faGithubSquare,
+  faLinkedin,
+  faTwitterSquare,
+} from '@fortawesome/free-brands-svg-icons';
 import { faExternalLinkAlt, faRssSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { graphql, useStaticQuery } from 'gatsby';
 import React from 'react';
 import config from '../../../config';
 import { LocalizedLink } from 'gatsby-theme-i18n';
+import { Trans, useTranslation } from 'react-i18next';
 
 export default function Footer() {
   const data = useStaticQuery(graphql`
@@ -13,6 +19,8 @@ export default function Footer() {
         siteMetadata {
           headerTitle
           githubUrl
+          facebookUrl
+          linkedInUrl
           helpUrl
           tweetText
           logo {
@@ -31,15 +39,17 @@ export default function Footer() {
 
   const {
     site: {
-      siteMetadata: { githubUrl },
+      siteMetadata: { githubUrl, facebookUrl, linkedInUrl },
     },
   } = data;
+
+  const { t } = useTranslation(['footer']);
 
   return (
     <footer className="bg-text-light-gray relative sm:grid sm:grid-cols-2 md:grid-cols-4 gap-5 p-5">
       {config.footer.navConfig.map((group) => (
         <div key={group.title}>
-          <h3 className="text-base mt-4">{group.title}</h3>
+          <h3 className="text-base mt-4">{t(group.title)}</h3>
           <ul className="p-0 mb-2">
             {group.items.map(
               (item) =>
@@ -47,7 +57,7 @@ export default function Footer() {
                   <li key={item.title}>
                     {item.url.includes('http') ? (
                       <a href={item.url} className="tw-footer-link">
-                        {item.title}{' '}
+                        {t(item.title)}{' '}
                         <FontAwesomeIcon
                           icon={faExternalLinkAlt}
                           color={'gray'}
@@ -57,7 +67,7 @@ export default function Footer() {
                       </a>
                     ) : (
                       <LocalizedLink to={item.url} className="tw-footer-link">
-                        {item.title}
+                        {t(item.title)}
                       </LocalizedLink>
                     )}
                   </li>
@@ -70,11 +80,11 @@ export default function Footer() {
         <h3 className="text-base mt-4">2022 - AI Incident Database</h3>
 
         <LocalizedLink to="/terms-of-use" className="tw-footer-link">
-          Terms of use
+          <Trans ns="footer">Terms of use</Trans>
         </LocalizedLink>
         <br />
         <LocalizedLink to="/privacy-policy" className="tw-footer-link">
-          Privacy Policy
+          <Trans ns="footer">Privacy Policy</Trans>
         </LocalizedLink>
         <div className="pt-3 mb-2">
           <a
@@ -111,6 +121,34 @@ export default function Footer() {
               color={'gray'}
               className="pointer fa fa-lg"
               title="Open RSS Feed"
+            />
+          </a>
+
+          <a
+            href={facebookUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="pr-2 tw-footer-link"
+          >
+            <FontAwesomeIcon
+              icon={faFacebookSquare}
+              color={'gray'}
+              className="pointer fa fa-lg"
+              title="Open Facebook"
+            />
+          </a>
+
+          <a
+            href={linkedInUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="pr-2 tw-footer-link"
+          >
+            <FontAwesomeIcon
+              icon={faLinkedin}
+              color={'gray'}
+              className="pointer fa fa-lg"
+              title="Open Linked In"
             />
           </a>
         </div>
