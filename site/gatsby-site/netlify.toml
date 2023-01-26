@@ -9,14 +9,15 @@ TERM = "xterm"
   package = "netlify-plugin-cypress"
   [plugins.inputs]
     enable = false
-  [plugins.inputs.preBuild]
+  [plugins.inputs.postBuild]
     enable = true
     record = false
     spa = true
-    start = 'CI=true gatsby build && gatsby serve -p 8080'
-    wait-on = 'http://localhost:8080'
-    wait-on-timeout = '600' # seconds
+    start = 'gatsby serve -p 8080'
     browser = 'chromium'
+
+[[plugins]]
+  package = "/plugins/netlify-plugin-process-notifications"
 
 [build.processing.html]
   pretty_urls = false

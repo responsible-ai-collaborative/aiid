@@ -56,16 +56,25 @@ const SubmitForm = () => {
 
   const [query] = useQueryParams(queryConfig);
 
-  const [submission, setSubmission] = useState({
+  const initialValues = {
+    url: '',
+    title: '',
+    incident_date: '',
+    date_published: '',
+    date_downloaded: '',
     image_url: '',
+    incident_id: '',
     text: '',
     authors: [],
     submitters: [],
     developers: [],
     deployers: [],
     harmed_parties: [],
-    incident_id: '',
-  });
+    editor_notes: '',
+    language: 'en',
+  };
+
+  const [submission, setSubmission] = useState(initialValues);
 
   const [isIncidentResponse, setIsIncidentResponse] = useState(false);
 
@@ -183,6 +192,8 @@ const SubmitForm = () => {
       );
 
       await insertSubmission({ variables: { submission } });
+
+      setSubmission(initialValues);
 
       addToast({
         message: (

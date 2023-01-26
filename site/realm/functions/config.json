@@ -79,5 +79,9 @@
     {
         "name": "getEmailTemplateEntityIncidentUpdated",
         "private": true
+    },
+    {
+        "name": "createVariant",
+        "private": false
     }
 ]

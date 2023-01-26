@@ -212,7 +212,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       cloudinary_id: String
       tags: [String]
       plain_text: String
-      embedding: reportEmbedding 
+      embedding: reportEmbedding
+      text_inputs: String
+      text_outputs: String
     }
 
     type mongodbAiidprodTaxaField_list implements Node {
@@ -330,23 +332,5 @@ exports.onPreBootstrap = async ({ reporter }) => {
 exports.onPreBuild = function ({ reporter }) {
   if (!config.google.mapsApiKey) {
     reporter.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
-  }
-};
-
-exports.onPostBuild = async ({ reporter }) => {
-  reporter.info('Site has been built!');
-
-  if (process.env.CI != 'true' && process.env.CONTEXT == 'production') {
-    reporter.info('Processing pending notifications...');
-
-    const processNotifications = require('./postBuild/processNotifications');
-
-    try {
-      const result = await processNotifications();
-
-      reporter.info(`${result?.data?.processNotifications} notifications were processed!`);
-    } catch (error) {
-      reporter.error('Error processing pending notifications:', error);
-    }
   }
 };
