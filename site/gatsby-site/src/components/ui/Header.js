@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faRssSquare } from '@fortawesome/free-solid-svg-icons';
-import { faTwitterSquare, faGithubSquare } from '@fortawesome/free-brands-svg-icons';
+import {
+  faTwitterSquare,
+  faGithubSquare,
+  faFacebookSquare,
+  faLinkedin,
+} from '@fortawesome/free-brands-svg-icons';
 import LoginSignup from 'components/loginSignup';
 
 import Link from './Link';
@@ -56,6 +61,8 @@ const Header = () => {
             siteMetadata {
               headerTitle
               githubUrl
+              facebookUrl
+              linkedInUrl
               helpUrl
               tweetText
               logo {
@@ -70,15 +77,15 @@ const Header = () => {
       render={(data) => {
         const {
           site: {
-            siteMetadata: { headerTitle, githubUrl, logo },
+            siteMetadata: { headerTitle, githubUrl, logo, facebookUrl, linkedInUrl },
           },
         } = data;
 
         const finalLogoLink = logo.link !== '' ? logo.link : 'https://incidentdatabase.ai/';
 
-        var SocialMediaIcons = () => (
-          <div className="hidden md:flex wrap-0 gap-1 items-center">
-            {config.header.social && (
+        var SocialMediaIcons = () =>
+          config.header.social && (
+            <div className="hidden md:flex wrap-0 gap-1 items-center">
               <a href={'https://twitter.com/IncidentsDB'} target="_blank" rel="noreferrer">
                 <FontAwesomeIcon
                   icon={faTwitterSquare}
@@ -87,35 +94,51 @@ const Header = () => {
                   title="Open Twitter"
                 />
               </a>
-            )}
-            <a href={'/rss.xml'} target="_blank" rel="noopener noreferrer">
-              <FontAwesomeIcon
-                icon={faRssSquare}
-                color={'white'}
-                className="pointer fa fa-rss-square fa-lg"
-                title="Open RSS Feed"
-              />
-            </a>
-            {config.header.social && (
-              <span className="whitespace-nowrap">
-                <a
-                  href={githubUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ paddingRight: '0px' }}
-                >
-                  <FontAwesomeIcon
-                    icon={faGithubSquare}
-                    color={'white'}
-                    className="pointer fa fa-github-square fa-lg"
-                    title="Open GitHub"
-                  />
-                </a>
-                <StarsCount repo={githubUrl.replace('https://github.com/', '')} />
-              </span>
-            )}
-          </div>
-        );
+              <a href={'/rss.xml'} target="_blank" rel="noopener noreferrer">
+                <FontAwesomeIcon
+                  icon={faRssSquare}
+                  color={'white'}
+                  className="pointer fa fa-rss-square fa-lg"
+                  title="Open RSS Feed"
+                />
+              </a>
+              <a
+                className="paddingAround hiddenMobile"
+                href={facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FontAwesomeIcon
+                  icon={faFacebookSquare}
+                  color={'white'}
+                  className="pointer fa fa-rss-square fa-lg"
+                  title="Open RSS Feed"
+                />
+              </a>
+              <a
+                className="paddingAround hiddenMobile"
+                href={linkedInUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FontAwesomeIcon
+                  icon={faLinkedin}
+                  color={'white'}
+                  className="pointer fa fa-rss-square fa-lg"
+                  title="Open RSS Feed"
+                />
+              </a>
+              <a href={githubUrl} target="_blank" rel="noreferrer" style={{ paddingRight: '0px' }}>
+                <FontAwesomeIcon
+                  icon={faGithubSquare}
+                  color={'white'}
+                  className="pointer fa fa-github-square fa-lg -mr-1"
+                  title="Open GitHub"
+                />
+              </a>
+              <StarsCount repo={githubUrl.replace('https://github.com/', '')} />
+            </div>
+          );
 
         var HeaderLink = ({ className }) => (
           <Link to={finalLogoLink} className={`flex items-center ${className}`}>
