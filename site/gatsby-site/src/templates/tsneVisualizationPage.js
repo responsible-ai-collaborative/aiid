@@ -30,7 +30,7 @@ function TsneVisulizationPage(props) {
       </AiidHelmet>
 
       <div className={'titleWrapper'}>
-        <StyledHeading>{metaDescription}</StyledHeading>
+        <StyledHeading>{t(metaDescription)}</StyledHeading>
       </div>
 
       <TsneVisualization

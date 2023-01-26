@@ -220,6 +220,8 @@ const plugins = [
           'leaderboard',
           'entities',
           'account',
+          'variants',
+          'footer',
         ],
         debug: process.env.GATSBY_I18N_DEBUG,
         nsSeparator: false,
@@ -246,6 +248,8 @@ module.exports = {
     }, // backwards compatible
     headerTitle: config.header.title,
     githubUrl: config.header.githubUrl,
+    facebookUrl: config.header.facebookUrl,
+    linkedInUrl: config.header.linkedInUrl,
     helpUrl: config.header.helpUrl,
     tweetText: config.header.tweetText,
     headerLinks: config.header.links,

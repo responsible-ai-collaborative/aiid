@@ -349,6 +349,20 @@ describe('Submitted reports', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindEntities',
+      'FindEntities',
+      {
+        data: {
+          entities: [
+            { __typename: 'Entity', entity_id: 'Adults', name: 'adults' },
+            { __typename: 'Entity', entity_id: 'Google', name: 'google' },
+          ],
+        },
+      }
+    );
+
     cy.visit(url);
 
     cy.wait('@FindSubmissions');
@@ -381,7 +395,35 @@ describe('Submitted reports', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'UpsertEntity' && req.body.variables.entity.entity_id == 'adults',
+      'UpsertAdults',
+      {
+        data: {
+          upsertOneEntity: { __typename: 'Entity', entity_id: 'adults', name: 'Adults' },
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'UpsertEntity' && req.body.variables.entity.entity_id == 'google',
+      'UpsertGoogle',
+      {
+        data: {
+          upsertOneEntity: { __typename: 'Entity', entity_id: 'google', name: 'Google' },
+        },
+      }
+    );
+
     cy.get('@modal').contains('Update').click();
+
+    cy.wait('@UpsertGoogle').its('request.body.variables.entity.entity_id').should('eq', 'google');
+
+    cy.wait('@UpsertAdults').its('request.body.variables.entity.entity_id').should('eq', 'adults');
 
     cy.wait('@UpdateSubmission').then((xhr) => {
       expect(xhr.request.body.variables.query).to.deep.nested.include({
@@ -428,6 +470,20 @@ describe('Submitted reports', () => {
     cy.get('[data-cy="submission"]').first().as('promoteForm');
 
     cy.get('@promoteForm').contains('review >').click();
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindEntities',
+      'FindEntities',
+      {
+        data: {
+          entities: [
+            { __typename: 'Entity', entity_id: 'Adults', name: 'adults' },
+            { __typename: 'Entity', entity_id: 'Google', name: 'google' },
+          ],
+        },
+      }
+    );
 
     cy.get('[data-cy="edit-submission"]').eq(0).click();
 
@@ -743,6 +799,20 @@ describe('Submitted reports', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindEntities',
+      'FindEntities',
+      {
+        data: {
+          entities: [
+            { __typename: 'Entity', entity_id: 'Adults', name: 'adults' },
+            { __typename: 'Entity', entity_id: 'Google', name: 'google' },
+          ],
+        },
+      }
+    );
+
     cy.visit(url);
 
     cy.wait('@FindSubmissions');
@@ -756,6 +826,8 @@ describe('Submitted reports', () => {
     cy.get('[data-cy="edit-submission"]').eq(0).click();
 
     cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="image-preview-figure"] img').should(
       'have.attr',

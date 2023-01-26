@@ -1,10 +1,8 @@
-const config = require('../config');
-
 const path = require('path');
 
 const { switchLocalizedPath } = require('../i18n');
 
-const createReportPages = async (graphql, createPage) => {
+const createReportPages = async (graphql, createPage, { languages }) => {
   const result = await graphql(
     `
       query ReportPages {
@@ -31,10 +29,10 @@ const createReportPages = async (graphql, createPage) => {
     });
   }
 
-  for (const language of config.i18n.availableLanguages) {
+  for (const language of languages) {
     for (const context of pageContexts) {
       const pagePath = switchLocalizedPath({
-        newLang: language,
+        newLang: language.code,
         path: '/reports/' + context.report_number,
       });
 
@@ -43,6 +41,9 @@ const createReportPages = async (graphql, createPage) => {
         component: path.resolve('./src/templates/report.js'),
         context: {
           ...context,
+          originalPath: pagePath,
+          locale: language.code,
+          hrefLang: language.hrefLang,
           translate_es: context.language !== 'es',
           translate_fr: context.language !== 'fr',
           translate_en: context.language !== 'en',
