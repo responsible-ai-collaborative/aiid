@@ -95,17 +95,12 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
           classification && getClassificationValue(classification, field.short_name);
 
         if (classificationValue && field.display_type == 'object-list') {
-          console.log('Creating values for object-list');
-          console.log(`classificationValue`, classificationValue);
           classificationValue.forEach((subClassification, i) => {
-            console.log(`subClassification`, subClassification);
             for (const subAttribute of subClassification.attributes) {
               const formValue = JSON.parse(subAttribute.value_json);
 
-              console.log(`formValue`, formValue);
               const formKey = [field.short_name, i, subAttribute.short_name].join('___');
 
-              console.log(`formKey`, formKey);
               defaultValues[formKey] = formValue;
             }
           });
@@ -147,16 +142,13 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
 
       const superfieldKeys = [];
 
-      console.log(`allTaxonomyFields`, allTaxonomyFields);
       Object.keys(values)
         .filter((key) => key != 'notes')
         .map((key) => {
-          console.log(`key`, key);
           const taxonomyField = allTaxonomyFields.find(
             (field) => field.short_name == key.replace(/.*___/g, '')
           );
 
-          console.log(`taxonomyField`, taxonomyField);
           const mongo_type = taxonomyField.mongo_type;
 
           let value = values[key];
@@ -184,13 +176,9 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
         superfieldKeys.includes(attribute.short_name)
       );
 
-      console.log(`subfields`, subfields);
-      console.log(`superfields`, superfields);
-
       for (const superfield of superfields) {
         // E.g. { short_name: "Entities", value_json: "{}" }
 
-        console.log(`superfield`, superfield);
         // E.g. [{short_name: 'Entities___0___Entity',      value_json: '"Google"'                 },
         //       {short_name: 'Entities___0___Entity Type', value_json: '"for-profit organization"'},
         //       {short_name: 'Entities___1___Entity',      value_json: '"Google Users"'           },
@@ -199,32 +187,26 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
           (subfield) => subfield.short_name.split('___')[0] == superfield.short_name
         );
 
-        console.log(`superfieldSubfields`, superfieldSubfields);
-
         // E.g. ["0", "1"]
         const subClassificationIds = Array.from(
           new Set(superfieldSubfields.map((subfield) => subfield.short_name.split('___')[1]))
         );
 
-        console.log(`subClassificationIds`, subClassificationIds);
-
         const subClassifications = [];
 
         for (const subClassificationId of subClassificationIds) {
           // E.g. "0"
-          console.log(`subClassificationId`, subClassificationId);
+
           // E.g. [{short_name: 'Entity',      value_json: '"Google"'                 },
           //       {short_name: 'Entity Type', value_json: '"for-profit organization"'} ]
           const subClassificationAttributes = superfieldSubfields
             .filter((subfield) => subfield.short_name.split('___')[1] == subClassificationId)
             .map((subfield) => ({ ...subfield, short_name: subfield.short_name.split('___')[2] }));
 
-          console.log(`subClassificationAttributes`, subClassificationAttributes);
           const subClassification = { attributes: subClassificationAttributes };
 
           subClassifications.push(subClassification);
         }
-        console.log(`subClassifications`, subClassifications);
 
         superfield.value_json = JSON.stringify(
           // E.g.
@@ -251,8 +233,6 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
         attributes,
       };
 
-      console.log(`data`, data);
-
       await updateClassification({
         variables: {
           query: {
@@ -262,7 +242,6 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
           data,
         },
       });
-      console.log(`values`, values);
     } catch (e) {
       addToast({
         message: <>Error updating classification data: {e.message}</>,
@@ -303,8 +282,6 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
       </FormContainer>
     );
   }
-
-  console.log(`initialValues`, initialValues);
 
   return (
     <FormContainer data-cy="taxonomy-form" className="bootstrap">
@@ -533,8 +510,6 @@ function ObjectListField({ field, handleChange, formikValues, setFieldTouched, s
   const [objectListItemIds, setObjectListItemsIds] = useState(
     getSubclassificationIds(Object.keys(formikValues))
   );
-
-  console.log(`objectListItemIds`, objectListItemIds);
 
   return (
     <>

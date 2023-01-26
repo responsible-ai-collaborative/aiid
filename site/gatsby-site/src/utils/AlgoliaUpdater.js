@@ -54,8 +54,10 @@ const getClassificationArray = (classification) => {
   if (classification.attributes) {
     for (const attribute of classification.attributes) {
       if (
-        classification.namespace != 'CSET' ||
-        includedCSETAttributes.includes(attribute.short_name)
+        attribute.value_json &&
+        attribute.value_json.length > 0 &&
+        (classification.namespace != 'CSET' ||
+          includedCSETAttributes.includes(attribute.short_name))
       ) {
         try {
           const value = JSON.parse(attribute.value_json);

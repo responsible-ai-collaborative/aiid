@@ -7,7 +7,7 @@ import { Image } from '../../utils/cloudinary';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Color from 'color';
 import { LocalizedLink } from 'gatsby-theme-i18n';
-import { Trans, useTranslation } from 'react-i18next';
+import { Trans } from 'react-i18next';
 
 export default function TsneVisualization({
   currentIncidentId,
@@ -15,30 +15,55 @@ export default function TsneVisualization({
   classifications,
   csetClassifications,
 }) {
-  const [axis, setAxis] = useState('Sector of Deployment');
+  const [axis, setAxis] = useState('CSET::Sector of Deployment');
 
-  // TODO: Allow selecting namespace and field together
-  const [namespace] = useState('CSET');
+  const [axisNamespace, axisFieldName] = axis.split('::');
 
   const [highlightedCategory, setHighlightedCategory] = useState(null);
-
-  const { t } = useTranslation();
 
   const currentSpatialIncident = incidents.find(
     (incident) => incident.incident_id == currentIncidentId
   );
 
-  const filteredClassifications = classifications.filter(
-    (c) => c.namespace == namespace && c.attributes != null && c.attributes.length > 0
+  const classificationsWithAttributes = classifications.filter(
+    (c) => c.attributes != null && c.attributes.length > 0
   );
+
+  const axes = [];
+
+  const attributesByAxis = {};
+
+  for (const classification of classificationsWithAttributes) {
+    for (const attribute of classification.attributes) {
+      if (attributeIsNotEmpty(attribute)) {
+        const axis = classification.namespace + '::' + attribute.short_name;
+
+        attributesByAxis[axis] ||= [];
+        attributesByAxis[axis].push(attribute);
+      }
+    }
+  }
+  for (const axis in attributesByAxis) {
+    const axisAttributes = attributesByAxis[axis];
+
+    const uniqueValues = new Set(axisAttributes.map((a) => a.value_json));
+
+    if (
+      1 < uniqueValues.size &&
+      uniqueValues.size < (axisAttributes.length * 3) / 4 &&
+      (axis.split('::')[0] != 'CSET' || csetClassifications.includes(axis.split('::')[1]))
+    ) {
+      axes.push(axis);
+    }
+  }
 
   const taxons = Array.from(
     new Set(
-      filteredClassifications
-        .map((c) =>
-          JSON.parse(c.attributes.find((attribute) => attribute.short_name == axis).value_json)
-        )
-        .map((e) => (Array.isArray(e) ? e[0] : e))
+      classificationsWithAttributes
+        .filter((c) => c.namespace == axisNamespace)
+        .map((c) => c.attributes.find((a) => a.short_name == axisFieldName))
+        .filter((a) => a && a.value_json)
+        .map((a) => attributeToTaxon(a))
         .reduce((result, value) => result.concat(value), [])
         .filter((value) => value)
         .concat('Unclassified')
@@ -72,8 +97,9 @@ export default function TsneVisualization({
               currentIncidentId,
               taxonColorMap,
               taxonVisibility,
-              namespace,
               axis,
+              axisNamespace,
+              axisFieldName,
               highlightedCategory,
             }}
           />
@@ -87,9 +113,9 @@ export default function TsneVisualization({
               onChange={(event) => setAxis(event.target.value)}
               data-cy="color-axis-select"
             >
-              {csetClassifications.map((axis) => (
+              {axes.map((axis) => (
                 <option key={axis} value={axis}>
-                  CSET:{t(axis)}
+                  {axis}
                 </option>
               ))}
             </Form.Select>
@@ -146,8 +172,9 @@ function VisualizationView({
   currentIncidentId,
   taxonColorMap,
   taxonVisibility,
-  namespace,
   axis,
+  axisNamespace,
+  axisFieldName,
   highlightedCategory,
 }) {
   return (
@@ -179,8 +206,9 @@ function VisualizationView({
                     {...{
                       highlightedCategory,
                       currentIncidentId,
-                      namespace,
                       axis,
+                      axisNamespace,
+                      axisFieldName,
                       taxonColorMap,
                       taxonVisibility,
                       scaleMultiplier,
@@ -205,8 +233,8 @@ function PlotPoint({
   classifications,
   taxonColorMap,
   taxonVisibility,
-  namespace,
-  axis,
+  axisNamespace,
+  axisFieldName,
   currentIncidentId,
   highlightedCategory,
 }) {
@@ -225,25 +253,12 @@ function PlotPoint({
   let taxon = 'Unclassified';
 
   if (classifications) {
-    const classification = classifications.find((c) => c.namespace == namespace);
+    const classification = classifications.find((c) => c.namespace == axisNamespace);
 
     if (classification && classification.attributes && classification.attributes.length > 0) {
-      const attribute = classification.attributes.find((a) => a.short_name == axis);
+      const attribute = classification.attributes.find((a) => a.short_name == axisFieldName);
 
-      const value = JSON.parse(attribute.value_json);
-
-      let initialString = null;
-
-      if (Array.isArray(value)) {
-        if (value.length > 0) {
-          initialString = String(value[0]);
-        }
-      } else {
-        initialString = String(value);
-      }
-      if (initialString && initialString.trim().length > 0) {
-        taxon = initialString;
-      }
+      taxon = attributeToTaxon(attribute);
     }
   }
 
@@ -398,6 +413,33 @@ function PlotPoint({
       )}
     </>
   );
+}
+
+var attributeIsNotEmpty = (attribute) =>
+  attribute && ![null, undefined, '""', 'null', ''].includes(attribute.value_json);
+
+function attributeToTaxon(attribute) {
+  let taxon = 'Unclassified';
+
+  if (attributeIsNotEmpty(attribute)) {
+    const value = JSON.parse(attribute.value_json);
+
+    let stringValue = null;
+
+    if (Array.isArray(value)) {
+      if (value.length > 0) {
+        stringValue = String(value[0]);
+      }
+    } else if (typeof value == 'boolean') {
+      stringValue = value ? 'True' : 'False';
+    } else {
+      stringValue = String(value);
+    }
+    if (stringValue !== null && stringValue.trim().length > 0) {
+      taxon = stringValue;
+    }
+  }
+  return taxon;
 }
 
 function getTaxonColorMap({ taxons }) {
