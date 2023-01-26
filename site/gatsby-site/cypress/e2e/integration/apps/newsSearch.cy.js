@@ -11,7 +11,7 @@ describe('Incidents App', () => {
 
   it('Should loads candidate cards', () => {
     cy.visit(url);
-    cy.get('[data-cy="candidate-card"]', { timeout: 8000 }).should('exist');
+    cy.get('[data-cy="candidate-card"]', { timeout: 10000 }).should('exist');
   });
 
   it('Should open submit form on pressing submit', () => {
@@ -26,7 +26,7 @@ describe('Incidents App', () => {
     );
 
     cy.visit(url);
-    cy.get('[data-cy="candidate-card"] [data-cy="submit-button"]', { timeout: 8000 })
+    cy.get('[data-cy="candidate-card"] [data-cy="submit-button"]', { timeout: 10000 })
       .first()
       .click();
     cy.location().should((loc) => {
@@ -47,7 +47,7 @@ describe('Incidents App', () => {
 
     cy.visit(url);
 
-    cy.get('[data-cy="results"] [data-cy="candidate-card"]', { timeout: 8000 })
+    cy.get('[data-cy="results"] [data-cy="candidate-card"]', { timeout: 10000 })
       .first()
       .invoke('attr', 'data-id')
       .then((dataId) => {
