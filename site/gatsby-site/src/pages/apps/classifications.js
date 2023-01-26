@@ -17,6 +17,7 @@ import { useUserContext } from '../../contexts/userContext';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import { format } from 'date-fns';
 import ListSkeleton from 'elements/Skeletons/List';
+import { Modal } from 'flowbite-react';
 
 const Container = styled.div`
   max-width: calc(100vw - 298px);
@@ -311,6 +312,185 @@ const getClassificationsArray = (classifications, taxonomy) => {
   return array;
 };
 
+const formatDateField = (s) => {
+  const dateObj = new Date(s.props.cell.value);
+
+  if (dateObj instanceof Date && !isNaN(dateObj)) {
+    return <>{format(new Date(dateObj), 'yyyy-MM-dd')}</>;
+  } else {
+    return <>{s.props.cell.value}</>;
+  }
+};
+
+function EditForm({
+  allTaxonomies,
+  allClassifications,
+  row,
+  editFormRef,
+  onSubmit,
+  currentTaxonomy,
+}) {
+  const taxonomyFormObj = {
+    classificationsArray: [],
+    namespace: '',
+    taxonomyFields: [],
+  };
+
+  const taxaData = allTaxonomies.filter((taxa) => taxa.namespace === currentTaxonomy)[0];
+
+  taxonomyFormObj.namespace = taxaData.namespace;
+  taxonomyFormObj.taxonomyFields = taxaData.field_list.map((f) => {
+    return {
+      display_type: f.display_type,
+      long_name: f.long_name,
+      public: f.public,
+      short_description: f.short_description,
+      short_name: f.short_name,
+      weight: f.weight,
+    };
+  });
+
+  const classificationObj = allClassifications.filter(
+    (report) => report.incident_id === row.values.IncidentId
+  );
+
+  taxonomyFormObj.classificationsArray = getClassificationsArray(
+    classificationObj.length > 0 ? classificationObj[0].classifications : null,
+    taxaData
+  );
+
+  if (classificationObj.length === 1) {
+    taxonomyFormObj.notes = classificationObj[0].notes;
+  }
+
+  return (
+    <div className="bootstrap">
+      <TaxonomyForm
+        ref={editFormRef}
+        namespace={taxaData.namespace}
+        incidentId={row.values.IncidentId}
+        onSubmit={onSubmit}
+      />
+    </div>
+  );
+}
+
+function Row({
+  row,
+  isAdmin,
+  currentTaxonomy,
+  editFormRef,
+  allClassifications,
+  allTaxonomies,
+  onSubmit,
+}) {
+  const [show, setShow] = useState(null);
+
+  const handleSubmit = () => {
+    onSubmit();
+    setShow(null);
+  };
+
+  return (
+    <tr key={row.id} {...row.getRowProps()}>
+      {row.cells.map((cell) => {
+        if (cell.column.Header.includes('Incident ID')) {
+          return (
+            <td key={cell.id} {...cell.getCellProps()}>
+              <ScrollCell>
+                <Link to={`/cite/${cell.value}#taxa-area`}>Incident {cell.render('Cell')}</Link>
+              </ScrollCell>
+            </td>
+          );
+        } else if (cell.column.Header.includes('Actions')) {
+          return (
+            <td key={cell.id} {...cell.getCellProps()}>
+              <Button
+                data-cy="edit-classification"
+                className="me-auto"
+                disabled={!isAdmin}
+                onClick={() => setShow('edit')}
+              >
+                <FontAwesomeIcon icon={faEdit} className="fas fa-edit" />
+              </Button>
+              <Modal
+                size="3xl"
+                show={show == 'edit'}
+                onClose={() => setShow(null)}
+                className="submission-modal"
+              >
+                <Modal.Header>
+                  <div className="flex items-center">
+                    <div>
+                      Edit {currentTaxonomy} classification for incident {row.original.IncidentId}
+                    </div>
+                    &nbsp;
+                    <Button className="ms-2" onClick={() => editFormRef.current.submit()}>
+                      Submit
+                    </Button>
+                  </div>
+                </Modal.Header>
+                <Modal.Body>
+                  {show == 'edit' && (
+                    <EditForm
+                      allClassifications={allClassifications}
+                      allTaxonomies={allTaxonomies}
+                      editFormRef={editFormRef}
+                      onSubmit={handleSubmit}
+                      row={row}
+                      currentTaxonomy={currentTaxonomy}
+                    />
+                  )}
+                </Modal.Body>
+              </Modal>
+            </td>
+          );
+        } else if (cell.column.Header.includes('Date')) {
+          return (
+            <td key={cell.id} {...cell.getCellProps()}>
+              <ScrollCell>{formatDateField(cell.render('Cell'))}</ScrollCell>
+            </td>
+          );
+        } else if (cell.value?.length > 130) {
+          return (
+            <td key={cell.id} {...cell.getCellProps()}>
+              <ScrollCell style={{ overflow: 'hidden' }}>
+                {cell.value.substring(0, 124)}...
+              </ScrollCell>
+              <ModalCell>
+                <FontAwesomeIcon
+                  onClick={() => setShow(cell.value)}
+                  icon={faExpandAlt}
+                  className="fas fa-expand-arrows-alt"
+                />
+
+                <Modal
+                  show={show === cell.value}
+                  onClose={() => setShow(null)}
+                  className="submission-modal"
+                >
+                  <Modal.Header>{cell.column.Header}</Modal.Header>
+                  <Modal.Body>{cell.value}</Modal.Body>
+                </Modal>
+              </ModalCell>
+            </td>
+          );
+        } else {
+          return (
+            <td key={cell.id} {...cell.getCellProps()}>
+              <ScrollCell>
+                {((value) => (Array.isArray(value) ? value.join(', ') : value))(
+                  cell.render('Cell').props.cell.value
+                )}
+              </ScrollCell>
+            </td>
+          );
+        }
+      })}
+    </tr>
+  );
+}
+
 export default function ClassificationsDbView(props) {
   const { isAdmin } = useUserContext();
 
@@ -542,8 +722,6 @@ export default function ClassificationsDbView(props) {
     }
   }, [currentTaxonomy, allTaxonomies]);
 
-  const editClassificationModal = useModal();
-
   const data = React.useMemo(() => tableData, [tableData]);
 
   const columns = React.useMemo(() => [...columnData], [columnData]);
@@ -566,68 +744,11 @@ export default function ClassificationsDbView(props) {
     );
   };
 
-  const formatDateField = (s) => {
-    const dateObj = new Date(s.props.cell.value);
-
-    if (dateObj instanceof Date && !isNaN(dateObj)) {
-      return <>{format(new Date(dateObj), 'yyyy-MM-dd')}</>;
-    } else {
-      return <>{s.props.cell.value}</>;
-    }
-  };
-
   const handleSubmit = () => {
-    editClassificationModal.close();
     initSetup();
   };
 
   const editFormRef = React.useRef(null);
-
-  const getEditClassificationForm = (row) => {
-    const taxonomyFormObj = {
-      classificationsArray: [],
-      namespace: '',
-      taxonomyFields: [],
-    };
-
-    const taxaData = allTaxonomies.filter((taxa) => taxa.namespace === currentTaxonomy)[0];
-
-    taxonomyFormObj.namespace = taxaData.namespace;
-    taxonomyFormObj.taxonomyFields = taxaData.field_list.map((f) => {
-      return {
-        display_type: f.display_type,
-        long_name: f.long_name,
-        public: f.public,
-        short_description: f.short_description,
-        short_name: f.short_name,
-        weight: f.weight,
-      };
-    });
-
-    const classificationObj = allClassifications.filter(
-      (report) => report.incident_id === row.values.IncidentId
-    );
-
-    taxonomyFormObj.classificationsArray = getClassificationsArray(
-      classificationObj.length > 0 ? classificationObj[0].classifications : null,
-      taxaData
-    );
-
-    if (classificationObj.length === 1) {
-      taxonomyFormObj.notes = classificationObj[0].notes;
-    }
-
-    return (
-      <div className="bootstrap">
-        <TaxonomyForm
-          ref={editFormRef}
-          namespace={taxaData.namespace}
-          incidentId={row.values.IncidentId}
-          onSubmit={handleSubmit}
-        />
-      </div>
-    );
-  };
 
   const filterTypes = {
     BeginningDate: filterDateFunction,
@@ -680,94 +801,6 @@ export default function ClassificationsDbView(props) {
 
   const fullTextModal = useModal();
 
-  const RenderRow = React.useCallback(
-    (row) => {
-      prepareRow(row);
-      return (
-        <tr key={row.id} {...row.getRowProps()}>
-          {row.cells.map((cell) => {
-            if (cell.column.Header.includes('Incident ID')) {
-              return (
-                <td key={cell.id} {...cell.getCellProps()}>
-                  <ScrollCell>
-                    <Link to={`/cite/${cell.value}#taxa-area`}>Incident {cell.render('Cell')}</Link>
-                  </ScrollCell>
-                </td>
-              );
-            } else if (cell.column.Header.includes('Actions')) {
-              return (
-                <td key={cell.id} {...cell.getCellProps()}>
-                  <Button
-                    data-cy="edit-classification"
-                    className="me-auto"
-                    disabled={!isAdmin}
-                    onClick={() =>
-                      editClassificationModal.openFor({
-                        title: (
-                          <>
-                            Edit {currentTaxonomy} classification for incident{' '}
-                            {row.original.IncidentId}{' '}
-                            <Button className="ms-2" onClick={() => editFormRef.current.submit()}>
-                              Submit
-                            </Button>
-                          </>
-                        ),
-                        body: function f() {
-                          return getEditClassificationForm(row);
-                        },
-                      })
-                    }
-                  >
-                    <FontAwesomeIcon icon={faEdit} className="fas fa-edit" />
-                  </Button>
-                </td>
-              );
-            } else if (cell.column.Header.includes('Date')) {
-              return (
-                <td key={cell.id} {...cell.getCellProps()}>
-                  <ScrollCell>{formatDateField(cell.render('Cell'))}</ScrollCell>
-                </td>
-              );
-            } else if (cell.value?.length > 130) {
-              return (
-                <td key={cell.id} {...cell.getCellProps()}>
-                  <ScrollCell style={{ overflow: 'hidden' }}>
-                    {cell.value.substring(0, 124)}...
-                  </ScrollCell>
-                  <ModalCell>
-                    <FontAwesomeIcon
-                      onClick={() =>
-                        fullTextModal.openFor({
-                          title: cell.column.Header,
-                          body: function f() {
-                            return cell.value;
-                          },
-                        })
-                      }
-                      icon={faExpandAlt}
-                      className="fas fa-expand-arrows-alt"
-                    />
-                  </ModalCell>
-                </td>
-              );
-            } else {
-              return (
-                <td key={cell.id} {...cell.getCellProps()}>
-                  <ScrollCell>
-                    {((value) => (Array.isArray(value) ? value.join(', ') : value))(
-                      cell.render('Cell').props.cell.value
-                    )}
-                  </ScrollCell>
-                </td>
-              );
-            }
-          })}
-        </tr>
-      );
-    },
-    [prepareRow, page]
-  );
-
   return (
     <LayoutHideSidebar
       {...props}
@@ -776,7 +809,6 @@ export default function ClassificationsDbView(props) {
       <AiidHelmet canonicalUrl={'/apps/classifications'}>
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
-      <CustomModal style={{ maxWidth: '80%' }} {...editClassificationModal} />
       <Container isWide={collapse}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
           <TaxonomySelectContainer className="gap-2">
@@ -826,7 +858,23 @@ export default function ClassificationsDbView(props) {
                 ))}
               </thead>
               <tbody {...getTableBodyProps()}>
-                {page.map(RenderRow)}
+                {page.map((row) => {
+                  prepareRow(row);
+
+                  return (
+                    <Row
+                      key={row.id}
+                      row={row}
+                      allClassifications={allClassifications}
+                      allTaxonomies={allTaxonomies}
+                      onSubmit={handleSubmit}
+                      isAdmin={isAdmin}
+                      currentTaxonomy={currentTaxonomy}
+                      editFormRef={editFormRef}
+                    />
+                  );
+                })}
+
                 {page.length === 0 && (
                   <tr>
                     <th colSpan={10}>
