@@ -55,7 +55,7 @@ export default function IncidentsOverTimePage({ data, ...props }) {
     x: (d) => d.date,
     y: (d) => d.count,
     z: (d) => d.series,
-    title: (d) => format(d.date, 'M/d/yy') + ' – ' + d.count + ' ' + d.series,
+    title: (d) => format(d.date, 'yyyy-MM-dd') + ' – ' + d.count + ' ' + d.series,
     width: 500,
     height: 500,
     color: (z) => ({ incidents: '#021b35', reports: '#ec9982' }[z]),
