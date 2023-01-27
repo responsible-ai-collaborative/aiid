@@ -79,7 +79,21 @@ const updateDescriptionWithEntities = {
   },
 };
 
-const stubEverything = () => {
+const report = {
+  report_number: 2000,
+  title: 'Report title',
+  authors: ['Pablo Costa'],
+};
+
+const variant = {
+  report_number: 2001,
+  title: 'Variant #2001',
+  authors: ['Pablo Costa'],
+  text_inputs: 'Input text',
+  text_outputs: 'Output text',
+};
+
+const stubEverything = (isVariant = false) => {
   const notificationsCollection = {
     updateOne: cy.stub().as('notifications.updateOne'),
   };
@@ -106,6 +120,10 @@ const stubEverything = () => {
     })(),
   };
 
+  const reportsCollection = {
+    findOne: cy.stub().resolves(isVariant ? variant : report),
+  };
+
   global.context = {
     // @ts-ignore
     services: {
@@ -116,6 +134,7 @@ const stubEverything = () => {
 
             stub.withArgs('notifications').returns(notificationsCollection);
             stub.withArgs('subscriptions').returns(subscriptionsCollection);
+            stub.withArgs('reports').returns(reportsCollection);
 
             return stub;
           })(),
@@ -270,6 +289,25 @@ describe('Functions', () => {
     cy.wrap(
       onIncidentUpdate({
         updateDescription: updateDescriptionWithEntities,
+        fullDocument,
+        fullDocumentBeforeChange,
+      })
+    ).then(() => {
+      expect(subscriptionsCollection.find.firstCall.args[0]).to.deep.equal({
+        type: SUBSCRIPTION_TYPE.incident,
+        incident_id: 1,
+      });
+
+      expect(notificationsCollection.updateOne.callCount).to.be.equal(0);
+    });
+  });
+
+  it(`New Variant - Shouldn't insert a pending notification if a New Variant is added`, () => {
+    const { notificationsCollection, subscriptionsCollection } = stubEverything(true);
+
+    cy.wrap(
+      onIncidentUpdate({
+        updateDescription: updateDescriptionWithReports,
         fullDocument,
         fullDocumentBeforeChange,
       })
