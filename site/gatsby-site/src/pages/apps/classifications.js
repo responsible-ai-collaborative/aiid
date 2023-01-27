@@ -398,7 +398,7 @@ function Row({
           return (
             <td key={cell.id} {...cell.getCellProps()}>
               <ScrollCell>
-                <Link to={`/cite/${cell.value}#taxa-area`}>Incident {cell.render('Cell')}</Link>
+                <Link to={`/cite/${cell.value}/#taxa-area`}>Incident {cell.render('Cell')}</Link>
               </ScrollCell>
             </td>
           );
