@@ -8,6 +8,7 @@ describe('SEO', () => {
   const baseUrl = config.gatsby.siteUrl;
 
   const paths = [
+    '/',
     '/account/',
     '/taxonomies/',
     '/apps/classifications/',
