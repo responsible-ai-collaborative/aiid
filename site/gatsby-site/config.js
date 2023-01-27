@@ -25,6 +25,8 @@ const config = {
     logoLink: '/',
     title: ' AI Incident Database',
     githubUrl: 'https://github.com/responsible-ai-collaborative/aiid',
+    facebookUrl: 'https://www.facebook.com/IncidentsDB',
+    linkedInUrl: 'https://www.linkedin.com/company/responsible-ai-collaborative',
     helpUrl: '',
     tweetText: '',
     social: `<li>
@@ -117,11 +119,6 @@ const config = {
           },
           { title: 'Database Roadmap', label: '2-roadmap', url: '/research/2-roadmap' },
           {
-            title: 'Initial Collection Methodology',
-            label: '3-history',
-            url: '/research/3-history',
-          },
-          {
             title: 'Related Work',
             label: '4-related-work',
             url: '/research/4-related-work',
@@ -138,7 +135,6 @@ const config = {
         items: [
           { title: 'About', label: 'about', url: '/about', items: [] },
           { title: 'Contact and Follow', label: 'contact', url: '/contact' },
-          { title: 'Launch Announcement', url: 'https://partnershiponai.org/aiincidentdatabase/' },
           { title: 'About Apps', label: 'about_apps', url: '/about_apps' },
           { title: 'Editor’s Guide', label: 'editors-guide', url: '/editors-guide' },
         ],
