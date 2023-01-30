@@ -77,7 +77,7 @@ export default function Footer() {
         </div>
       ))}
       <div>
-        <h3 className="text-base mt-4">2022 - AI Incident Database</h3>
+        <h3 className="text-base mt-4">2023 - AI Incident Database</h3>
 
         <LocalizedLink to="/terms-of-use" className="tw-footer-link">
           <Trans ns="footer">Terms of use</Trans>
