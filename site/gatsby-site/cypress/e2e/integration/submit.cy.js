@@ -1,6 +1,7 @@
 import parseNews from '../../fixtures/api/parseNews.json';
 import semanticallyRelated from '../../fixtures/api/semanticallyRelated.json';
 import probablyRelatedIncidents from '../../fixtures/incidents/probablyRelatedIncidents.json';
+import probablyRelatedReports from '../../fixtures/reports/probablyRelatedReports.json';
 
 import { maybeIt } from '../../support/utils';
 
@@ -1154,6 +1155,13 @@ describe('The Submit form', () => {
       probablyRelatedIncidents
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedReports',
+      'ProbablyRelatedReports',
+      probablyRelatedReports
+    );
+
     cy.visit(url);
 
     const values = {
@@ -1207,8 +1215,8 @@ describe('The Submit form', () => {
         plain_text:
           'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease\n',
         source_domain: `test.com`,
-        editor_dissimilar_incidents: [5],
-        editor_similar_incidents: [16],
+        editor_dissimilar_incidents: [2],
+        editor_similar_incidents: [3],
       });
     });
   });
