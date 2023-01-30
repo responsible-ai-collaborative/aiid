@@ -1,0 +1,72 @@
+[
+    {
+        "_id": {
+            "$oid": "61d8cecbb9af57365c029cd7"
+        },
+        "classifications": {
+            "Severity": "Negligible",
+            "Reviewer": "8",
+            "Relevant AI functions": [
+                "Perception",
+                "Cognition",
+                "Action"
+            ],
+            "Lives Lost": false,
+            "Intent": "Accident",
+            "Named Entities": [
+                "Starbucks",
+                "Kronos"
+            ],
+            "Infrastructure Sectors": [
+                "Transportation"
+            ],
+            "Level of Autonomy": "Medium",
+            "Laws Implicated": [],
+            "Sector of Deployment": [
+                "Transportation and storage"
+            ],
+            "Annotator": "1",
+            "Location": "Switzerland",
+            "Harm Type": [
+                "Other"
+            ],
+            "Near Miss": "Near miss",
+            "Financial Cost": "",
+            "Problem Nature": [
+                "Robustness"
+            ],
+            "Ending Date": "",
+            "Harm Distribution Basis": [],
+            "Short Description": "A Tesla Model 3 mis-recognized flags with \"COOP\" written vertically on them as traffic lights.",
+            "AI Applications": [
+                "autonomous driving"
+            ],
+            "Nature of End User": "Amateur",
+            "AI Techniques": [
+                "computer vision"
+            ],
+            "Annotation Status": "4. Peer review complete",
+            "Beginning Date": "",
+            "AI System Description": "Tesla's Autopilot can carry out some driving functions autonomously, but requires the driver to keep their hands on the wheel",
+            "System Developer": [
+                "Tesla"
+            ],
+            "Technology Purveyor": [
+                "Tesla"
+            ],
+            "Full Description": "A Tesla Model 3 driver shared a video of their car's Autopilot system malfunctioning. The screen inside the car shows that Autopilot believes it is facing a traffic light that is alternating between red and yellow, when in fact it is looking at several white flags with the letters \"COOP\" written vertically.",
+            "Public Sector Deployment": false,
+            "Physical System": [
+                "Vehicle/mobile robot"
+            ],
+            "Data Inputs": [
+                "images of surroundings"
+            ]
+        },
+        "incident_id": {
+            "$numberInt": "97"
+        },
+        "namespace": "CSET",
+        "notes": ""
+    }
+]
