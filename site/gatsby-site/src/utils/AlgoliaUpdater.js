@@ -4,6 +4,8 @@ const { getUnixTime } = require('date-fns');
 
 const config = require('../../config');
 
+const { isCompleteReport } = require('./variants');
+
 const truncate = (doc) => {
   for (const [key, value] of Object.entries(doc)) {
     if (typeof value == 'string') {
@@ -93,6 +95,8 @@ const reportToEntry = ({ incident = null, report }) => {
     entry.incident_id = incident.incident_id;
     entry.incident_date = incident.date;
     entry.epoch_incident_date = getUnixTime(new Date(incident.date));
+    entry.incident_title = incident.title;
+    entry.incident_description = incident.description;
   }
 
   return entry;
@@ -193,11 +197,14 @@ class AlgoliaUpdater {
       flag: 1,
     };
 
-    const reports = await this.mongoClient
+    let reports = await this.mongoClient
       .db('aiidprod')
       .collection(`reports`)
       .find({}, { projection })
       .toArray();
+
+    // Only index Incident Reports
+    reports = reports.filter((report) => isCompleteReport(report));
 
     const translations = await this.mongoClient
       .db('translations')

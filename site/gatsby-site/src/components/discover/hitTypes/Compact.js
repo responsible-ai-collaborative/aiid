@@ -75,12 +75,13 @@ export default function Compact({
   submittersModal,
   flagReportModal,
   toggleFilterByIncidentId,
+  viewType,
 }) {
   return (
     <StyledCard>
       <StyledCardBody className="flex flex-col ">
         <Contents className="pl-6 pr-6 pt-3">
-          <StyledHeaderTitle item={item} />
+          <StyledHeaderTitle item={item} viewType={viewType} />
           <StyledSubTitle item={item} className="my-2 small" />
         </Contents>
 

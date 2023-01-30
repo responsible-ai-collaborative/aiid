@@ -190,4 +190,15 @@ describe('The Discover app', () => {
 
     cy.get('[data-cy="discover-sort"]').should('have.text', 'Incident Date - asc');
   });
+
+  it('Should display incidents instead of reports when selection Incidents view', () => {
+    cy.visit(url);
+
+    cy.contains('[data-cy="display-options"]', 'Incidents').click();
+
+    cy.contains('li', /^Incidents$/).click();
+
+    cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=true');
+    cy.location('search', { timeout: 8000 }).should('contain', 'hideDuplicates=1');
+  });
 });

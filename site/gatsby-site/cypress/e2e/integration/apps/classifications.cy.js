@@ -1,4 +1,7 @@
 import { maybeIt } from '../../../support/utils';
+import taxa from '../../../fixtures/call/taxa.json';
+import classifications from '../../../fixtures/call/classifications.json';
+import incident97Classifications from '../../../fixtures/classifications/incident97Classifications.json';
 
 describe('Classifications App', () => {
   const url = '/apps/classifications';
@@ -6,11 +9,36 @@ describe('Classifications App', () => {
   maybeIt('Successfully edit a CSET classification', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
+    cy.conditionalIntercept(
+      '**/call',
+      (req) => req.body.name == 'find' && req.body.arguments[0].collection == 'taxa',
+      'FindTaxa',
+      taxa
+    );
+
+    cy.conditionalIntercept(
+      '**/call',
+      (req) => req.body.name == 'find' && req.body.arguments[0].collection == 'classifications',
+      'FindClassifications',
+      classifications
+    );
+
     cy.visit(url);
+
+    cy.wait(['@FindTaxa', '@FindClassifications']);
 
     cy.get('select[data-cy="taxonomy"]').select('CSET');
 
-    cy.get('a[href="/cite/10#taxa-area"]')
+    cy.waitForStableDOM();
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindCSETClassifications',
+      'FindCSETClassifications',
+      incident97Classifications
+    );
+
+    cy.get('a[href="/cite/97#taxa-area"]')
       .parents('tr')
       .find('[data-cy=edit-classification]')
       .click();
