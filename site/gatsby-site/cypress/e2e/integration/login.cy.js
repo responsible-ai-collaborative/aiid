@@ -10,7 +10,7 @@ describe('Login', () => {
   });
 
   it('Should redirect to specific page after login if redirectTo is provided', () => {
-    const redirectTo = '/cite/10';
+    const redirectTo = '/cite/10/';
 
     cy.clearLocalStorage();
     cy.visit(`${url}?redirectTo=${redirectTo}`);
@@ -43,6 +43,6 @@ describe('Login', () => {
   it('Should redirect to forgot password page if the user clicks on "Forgot password?" link', () => {
     cy.visit(url);
     cy.contains('Forgot password?').click();
-    cy.location('pathname').should('eq', '/forgotpassword');
+    cy.location('pathname').should('eq', '/forgotpassword/');
   });
 });

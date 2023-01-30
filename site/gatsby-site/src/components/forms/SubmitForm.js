@@ -19,8 +19,8 @@ import { graphql, useStaticQuery } from 'gatsby';
 import { processEntities, RESPONSE_TAG } from '../../utils/entities';
 import SubmissionWizard from '../submissions/SubmissionWizard';
 import getSourceDomain from 'utils/getSourceDomain';
-import AiidHelmet from 'components/AiidHelmet';
 import { StyledHeading } from 'components/styles/Docs';
+import { Helmet } from 'react-helmet';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -221,9 +221,9 @@ const SubmitForm = () => {
 
   return (
     <>
-      <AiidHelmet canonicalUrl={'/apps/submit'}>
+      <Helmet>
         <title>{t(isIncidentResponse ? 'New Incident Response' : 'New Incident Report')}</title>
-      </AiidHelmet>
+      </Helmet>
       <div className={'titleWrapper'}>
         <StyledHeading data-cy="submit-form-title">
           <Trans ns="submit">

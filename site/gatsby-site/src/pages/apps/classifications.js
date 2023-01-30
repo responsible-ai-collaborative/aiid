@@ -398,7 +398,7 @@ function Row({
           return (
             <td key={cell.id} {...cell.getCellProps()}>
               <ScrollCell>
-                <Link to={`/cite/${cell.value}#taxa-area`}>Incident {cell.render('Cell')}</Link>
+                <Link to={`/cite/${cell.value}/#taxa-area`}>Incident {cell.render('Cell')}</Link>
               </ScrollCell>
             </td>
           );
@@ -807,7 +807,7 @@ export default function ClassificationsDbView(props) {
       menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
       sidebarCollapsed={true}
     >
-      <AiidHelmet canonicalUrl={'/apps/classifications'}>
+      <AiidHelmet path={props.location.pathname}>
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
       <Container isWide={collapse}>

@@ -14,7 +14,7 @@ export default function IncidentsPage(props) {
 
   return (
     <Layout {...props} sidebarCollapsed={true} className="w-full">
-      <AiidHelmet canonicalUrl={'/apps/incidents'}>
+      <AiidHelmet path={props.location.pathname}>
         <title>{t('Incidents')}</title>
       </AiidHelmet>
       <div className="bootstrap">

@@ -206,7 +206,9 @@ const SelectDatePickerFilter = ({
 
   const handleApply = (event, picker) => {
     picker.element.val(
-      picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
+      format(picker.startDate.toDate(), 'yyyy-MM-dd') +
+        ' - ' +
+        format(picker.endDate.toDate(), 'yyyy-MM-dd')
     );
     setFilter([picker.startDate.valueOf() / 1000, picker.endDate.valueOf() / 1000]);
   };
@@ -356,7 +358,7 @@ export default function Incidents(props) {
   }, [data]);
 
   const formatDateField = (s) => {
-    return <>{format(new Date(s.props.cell.value * 1000), 'MMM d, yyyy')}</>;
+    return <>{format(new Date(s.props.cell.value * 1000), 'yyyy-MM-dd')}</>;
   };
 
   const formatIncidentIdField = (i) => {
@@ -384,7 +386,9 @@ export default function Incidents(props) {
 
     const end = filterValue[1];
 
-    return rows.filter((val) => val.original[id] >= start && val.original[id] <= end);
+    return rows.filter((val) => {
+      return val.original[id] >= start && val.original[id] <= end;
+    });
   };
 
   const filterTypes = {
@@ -444,7 +448,7 @@ export default function Incidents(props) {
 
   return (
     <Layout {...props} sidebarCollapsed={true}>
-      <AiidHelmet canonicalUrl={'/apps/reports'}>
+      <AiidHelmet path={props.location.pathname}>
         <title>Incident List</title>
       </AiidHelmet>
 

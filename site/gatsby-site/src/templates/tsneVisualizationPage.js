@@ -21,11 +21,9 @@ function TsneVisulizationPage(props) {
 
   const metaDescription = t('Spatial Visualization');
 
-  const canonicalUrl = 'https://incidentdatabase.ai/summaries/spatial';
-
   return (
     <Layout {...props}>
-      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl }}>
+      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
 

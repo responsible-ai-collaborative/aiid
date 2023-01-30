@@ -85,7 +85,7 @@ const Header = () => {
 
         var SocialMediaIcons = () =>
           config.header.social && (
-            <div className="hidden md:flex wrap-0 gap-1 items-center">
+            <div className="hidden md:flex wrap-0 gap-2 items-center">
               <a href={'https://twitter.com/IncidentsDB'} target="_blank" rel="noreferrer">
                 <FontAwesomeIcon
                   icon={faTwitterSquare}
@@ -132,7 +132,7 @@ const Header = () => {
                 <FontAwesomeIcon
                   icon={faGithubSquare}
                   color={'white'}
-                  className="pointer fa fa-github-square fa-lg -mr-1"
+                  className="pointer fa fa-github-square fa-lg -mr-2"
                   title="Open GitHub"
                 />
               </a>
@@ -142,21 +142,21 @@ const Header = () => {
 
         var HeaderLink = ({ className }) => (
           <Link to={finalLogoLink} className={`flex items-center ${className}`}>
-            <img
-              className={'hidden md:inline ml-[10px] mr-[10px]'}
-              style={{ width: 200 }}
-              src={logo.image !== '' ? logo.image : logoImg}
-              alt={'logo'}
-            />
-            <img
-              className="md:hidden"
-              style={{ width: 50 }}
-              src={logo.mobile !== '' ? logo.mobile : logoImg}
-              alt={'logo'}
-            />
+            <div className="md:w-64 text-center">
+              <img
+                className={'hidden md:inline ml-[10px] mr-[10px] w-[200px]'}
+                src={logo.image !== '' ? logo.image : logoImg}
+                alt={'logo'}
+              />
+              <img
+                className="md:hidden w-[50px]"
+                src={logo.mobile !== '' ? logo.mobile : logoImg}
+                alt={'logo'}
+              />
+            </div>
             <Divider />
             <span
-              className="inline-block mx-6 font-semibold text-xs  md:text-base md:uppercase"
+              className="inline-block ml-4 md:ml-10 font-semibold text-xs  md:text-base md:uppercase"
               dangerouslySetInnerHTML={{ __html: headerTitle }}
             />
           </Link>
@@ -184,8 +184,8 @@ const Header = () => {
 
         return (
           <nav id="navBarDefault" className="bg-[#001934] shadow">
-            <div className=" text-white flex flex-row items-center w-full p-4 h-[80px]">
-              <SkipToContent className="-order-1" />
+            <div className=" text-white flex flex-row items-center w-full p-4 md:pl-0 h-[80px]">
+              <SkipToContent className="-order-1 mx-2" />
 
               <HeaderLink className="-order-3" />
 
@@ -193,7 +193,7 @@ const Header = () => {
 
               <LanguageSwitcher className="mr-3 md:mr-0" />
 
-              <Divider className="mx-2" />
+              <Divider className="mx-4" />
 
               <SocialMediaIcons />
 
