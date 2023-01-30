@@ -34,7 +34,7 @@ Please make sure your code is well organized and commented before opening the pu
 The AI Incident Database is an open source project inviting contributions from the global community. Anyone with code changes that advance the change thesis of making the world better in the future by remembering the negative outcomes of the past are welcome to submit pull requests. To ensure that submitted changes are likely to be accepted, we recommend becoming familiar with the manner in which we organize our work items and open an issue on GitHub.
 
 The process of completing work through GitHub issues at the highest level is:
-Create Issue -> Assign Issue -> Review and Publish
+Create Issue → Assign Issue → Review and Publish
 
 Labels help streamline the process and ensure issues do not get lost or neglected. Label [descriptions are on GitHub](https://github.com/responsible-ai-collaborative/aiid/labels). The following describes when/how to use a label.
 
