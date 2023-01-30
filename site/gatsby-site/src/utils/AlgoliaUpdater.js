@@ -95,6 +95,8 @@ const reportToEntry = ({ incident = null, report }) => {
     entry.incident_id = incident.incident_id;
     entry.incident_date = incident.date;
     entry.epoch_incident_date = getUnixTime(new Date(incident.date));
+    entry.incident_title = incident.title;
+    entry.incident_description = incident.description;
   }
 
   return entry;

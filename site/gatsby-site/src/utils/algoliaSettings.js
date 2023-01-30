@@ -28,7 +28,7 @@ module.exports = {
     'is_incident_report',
   ],
   attributesToSnippet: ['description:200', 'text:15'],
-  attributesToHighlight: ['description', 'text', 'title'],
+  attributesToHighlight: ['description', 'text', 'title', 'incident_title', 'incident_description'],
   paginationLimitedTo: 1000,
   attributeForDistinct: 'incident_id',
   exactOnSingleWordQuery: 'attribute',
