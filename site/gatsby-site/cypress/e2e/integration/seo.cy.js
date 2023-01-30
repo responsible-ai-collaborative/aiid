@@ -24,13 +24,15 @@ describe('SEO', () => {
     '/summaries/incidents/',
     '/summaries/incidentsOverTime/',
     '/summaries/leaderboard/',
+    '/summaries/spatial/',
     '/research/snapshots/',
     '/cite/1/',
     '/entities/',
     '/entities/facebook/',
-    '/blog/the-first-taxonomy-of-ai-incidents/',
+    '/blog/the-first-taxonomy-of-ai-incidents/', // post template
     '/taxonomy/cset/',
     '/summaries/wordcounts/',
+    '/about/', // doc template
   ];
 
   const codes = ['es', 'en', 'fr'];
