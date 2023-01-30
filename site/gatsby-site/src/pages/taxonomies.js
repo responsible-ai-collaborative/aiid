@@ -17,11 +17,9 @@ export default function Taxonomies({ data, ...props }) {
 
   const metaDescription = t('This is the list of taxonomies supported in AIID');
 
-  const canonicalUrl = '/taxonomies';
-
   return (
     <Layout {...props}>
-      <AiidHelmet {...{ title, metaTitle, metaDescription, canonicalUrl }}>
+      <AiidHelmet {...{ title, metaTitle, metaDescription, path: props.location.pathname }}>
         <title>{title}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>

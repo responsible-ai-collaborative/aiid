@@ -66,7 +66,7 @@ export default function IncidentsOverTimePage({ data, ...props }) {
 
   return (
     <Layout {...props}>
-      <AiidHelmet {...{ metaTitle }}>
+      <AiidHelmet {...{ metaTitle }} path={props.location.pathname}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
 

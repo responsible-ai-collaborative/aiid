@@ -61,7 +61,7 @@ describe('The Landing page', () => {
       .should('be.visible')
       .within(() => {
         cy.contains('h2', 'Common Entities').should('exist');
-        cy.contains('a', 'View all entities').should('have.attr', 'href', '/entities');
+        cy.contains('a', 'View all entities').should('have.attr', 'href', '/entities/');
         cy.get('.grid > a').should('have.length', 3);
 
         for (let i = 0; i < 3; i++) {
@@ -94,7 +94,7 @@ describe('The Landing page', () => {
 
     cy.get('[data-cy="account-btn"]').filter(':visible').first().click();
 
-    cy.location('pathname', { timeout: 8000 }).should('eq', '/account');
+    cy.location('pathname', { timeout: 8000 }).should('eq', '/account/');
   });
 
   it('Should redirect to the signup page when logged out', () => {
@@ -102,6 +102,6 @@ describe('The Landing page', () => {
 
     cy.get('[data-cy="subscribe-btn"]').filter(':visible').click();
 
-    cy.location('pathname', { timeout: 8000 }).should('eq', '/signup');
+    cy.location('pathname', { timeout: 8000 }).should('eq', '/signup/');
   });
 });

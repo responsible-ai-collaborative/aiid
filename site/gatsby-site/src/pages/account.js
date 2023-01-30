@@ -15,7 +15,7 @@ const Account = (props) => {
 
   return (
     <Layout {...props}>
-      <AiidHelmet canonicalUrl={'/account'}>
+      <AiidHelmet path={props.location.pathname}>
         <title>{t('Account Details')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>

@@ -450,7 +450,7 @@ export default function Incidents(props) {
       {...props}
       menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
     >
-      <AiidHelmet canonicalUrl={'/apps/reports'}>
+      <AiidHelmet path={props.location.pathname}>
         <title>Incident List</title>
       </AiidHelmet>
 

@@ -7,7 +7,7 @@ describe('Translation Badges', () => {
     cy.contains('a', 'Ver Original')
       .should('be.visible')
       .should('have.attr', 'href')
-      .and('eq', '/blog/using-ai-to-connect-ai-incidents');
+      .and('eq', '/blog/using-ai-to-connect-ai-incidents/');
   });
 
   it('Should be visible on the discover app', () => {
@@ -34,6 +34,6 @@ describe('Translation Badges', () => {
     cy.contains('a', 'Ver Original')
       .should('be.visible')
       .should('have.attr', 'href')
-      .and('eq', '/about_apps');
+      .and('eq', '/about_apps/');
   });
 });

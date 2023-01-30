@@ -281,10 +281,7 @@ const Taxonomy = (props) => {
 
   return (
     <Layout {...props} className="">
-      <AiidHelmet
-        metaTitle={'Taxonomy: ' + namespace}
-        canonicalUrl={'/taxonomies/' + namespace.toLowerCase()}
-      />
+      <AiidHelmet metaTitle={'Taxonomy: ' + namespace} path={props.location.pathname} />
 
       <div className={'titleWrapper'}>
         <StyledHeading>{namespace}</StyledHeading>
