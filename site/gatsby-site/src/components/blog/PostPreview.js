@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { GatsbyImage as Img } from 'gatsby-plugin-image';
 import { format } from 'date-fns';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import { Trans } from 'react-i18next';
 
 function PostPreview({ post, latestPost = false }) {
-  const [formattedDate, setFormattedDate] = useState(null);
-
-  useEffect(() => setFormattedDate(format(new Date(post.frontmatter.date), 'MMM d, yyyy')), []);
+  const formattedDate = format(new Date(post.frontmatter.date), 'yyyy-MM-dd');
 
   return (
     <>
