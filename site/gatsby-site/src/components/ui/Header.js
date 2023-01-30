@@ -208,7 +208,7 @@ const Header = () => {
                 />
               </div>
               <LoginSignup
-                className="hidden lg:flex ml-4"
+                className="hidden lg:flex ml-2"
                 logoutClassName="text-white hover:text-primary-blue"
                 loginClassName="text-white hover:text-primary-blue"
               />
