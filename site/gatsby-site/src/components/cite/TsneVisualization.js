@@ -19,6 +19,8 @@ export default function TsneVisualization({
 
   const [highlightedCategory, setHighlightedCategory] = useState(null);
 
+  const { t } = useTranslation();
+
   const currentSpatialIncident = incidents.find(
     (incident) => incident.incident_id == currentIncidentId
   );
@@ -77,7 +79,7 @@ export default function TsneVisualization({
             >
               {csetClassifications.map((axis) => (
                 <option key={axis} value={axis}>
-                  CSET:{axis}
+                  CSET:{t(axis)}
                 </option>
               ))}
             </Form.Select>
@@ -115,7 +117,7 @@ export default function TsneVisualization({
                     }
                   >
                     <Swatch color={taxonColorMap[taxon]} />
-                    {taxon}
+                    <Trans>{taxon}</Trans>
                   </button>
                 </li>
               ))}
