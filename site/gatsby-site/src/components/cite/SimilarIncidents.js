@@ -108,8 +108,8 @@ const SimilarIncidents = ({
   editor_similar_incidents,
   editor_dissimilar_incidents,
   flagged_dissimilar_incidents,
-  orientation,
-  className,
+  orientation = null,
+  className = '',
 }) => {
   const { isRole, loading } = useUserContext();
 

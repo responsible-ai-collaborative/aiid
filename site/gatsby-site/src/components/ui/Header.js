@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faRssSquare } from '@fortawesome/free-solid-svg-icons';
-import { faTwitterSquare, faGithubSquare } from '@fortawesome/free-brands-svg-icons';
+import {
+  faTwitterSquare,
+  faGithubSquare,
+  faFacebookSquare,
+  faLinkedin,
+} from '@fortawesome/free-brands-svg-icons';
 import LoginSignup from 'components/loginSignup';
 
 import Link from './Link';
@@ -59,6 +64,8 @@ const Header = () => {
             siteMetadata {
               headerTitle
               githubUrl
+              facebookUrl
+              linkedInUrl
               helpUrl
               tweetText
               logo {
@@ -77,7 +84,7 @@ const Header = () => {
       render={(data) => {
         const {
           site: {
-            siteMetadata: { headerTitle, githubUrl, logo, headerLinks },
+            siteMetadata: { headerTitle, githubUrl, logo, headerLinks, facebookUrl, linkedInUrl },
           },
         } = data;
 
@@ -138,6 +145,32 @@ const Header = () => {
                 >
                   <FontAwesomeIcon
                     icon={faRssSquare}
+                    color={'white'}
+                    className="pointer fa fa-rss-square fa-lg"
+                    title="Open RSS Feed"
+                  />
+                </a>
+                <a
+                  className="paddingAround hiddenMobile"
+                  href={facebookUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FontAwesomeIcon
+                    icon={faFacebookSquare}
+                    color={'white'}
+                    className="pointer fa fa-rss-square fa-lg"
+                    title="Open RSS Feed"
+                  />
+                </a>
+                <a
+                  className="paddingAround hiddenMobile"
+                  href={linkedInUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FontAwesomeIcon
+                    icon={faLinkedin}
                     color={'white'}
                     className="pointer fa fa-rss-square fa-lg"
                     title="Open RSS Feed"

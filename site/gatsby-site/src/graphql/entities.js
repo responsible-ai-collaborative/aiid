@@ -8,3 +8,12 @@ export const UPSERT_ENTITY = gql`
     }
   }
 `;
+
+export const FIND_ENTITIES = gql`
+  query FindEntities {
+    entities {
+      entity_id
+      name
+    }
+  }
+`;

@@ -5,13 +5,17 @@ import { fill } from '@cloudinary/base/actions/resize';
 import { useUserContext } from 'contexts/userContext';
 import ReportText from 'components/reports/ReportText';
 import WebArchiveLink from 'components/ui/WebArchiveLink';
-import { Button } from 'flowbite-react';
+import { Button, Tooltip } from 'flowbite-react';
 import { Trans } from 'react-i18next';
+import Markdown from 'react-markdown';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import Actions from 'components/discover/Actions';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import { Badge } from 'flowbite-react';
 import { RESPONSE_TAG } from 'utils/entities';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { hasVariantData } from 'utils/variants';
 
 const ReportCard = ({ item, className = '', incidentId }) => {
   const { isRole, loading } = useUserContext();
@@ -55,12 +59,19 @@ const ReportCard = ({ item, className = '', incidentId }) => {
               {item.source_domain} &middot;{' '}
               {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
             </WebArchiveLink>
-            <div className="flex w-fit">
+            <div className="mt-1 flex w-fit">
               <TranslationBadge className="mx-2" originalLanguage={item.language} />
               {item.tags && item.tags.includes(RESPONSE_TAG) && (
                 <div className="flex-1">
                   <Badge color={'success'}>
                     <Trans>{{ authors }} post-incident response</Trans>
+                  </Badge>
+                </div>
+              )}
+              {hasVariantData(item) && (
+                <div className="flex-1">
+                  <Badge color="success" data-cy="responded-badge">
+                    <Trans ns="variants">Has Variant data</Trans>
                   </Badge>
                 </div>
               )}
@@ -80,6 +91,55 @@ const ReportCard = ({ item, className = '', incidentId }) => {
         <div>
           <ReportText text={item.text} maxChars={expanded ? null : 240} />
         </div>
+        {expanded && hasVariantData(item) && (
+          <div className="flex w-full flex-col mt-3 gap-2">
+            <div className="font-bold flex items-center gap-2">
+              <Trans ns="variants">Input and circumstances</Trans>
+              <Tooltip
+                content={
+                  <Trans ns="variants">
+                    Provide the relevant details producing the incident. Examples include the input
+                    prompts to a chatbot or a description of the circumstances leading to injuries
+                    sustained from a robot.
+                  </Trans>
+                }
+                trigger="click"
+                placement="right"
+              >
+                <FontAwesomeIcon
+                  icon={faQuestionCircle}
+                  style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+                  className="far fa-question-circle"
+                />
+              </Tooltip>
+            </div>
+            <div data-cy="variant-text_inputs" className="border-1 rounded-lg px-3">
+              <Markdown>{item.text_inputs}</Markdown>
+            </div>
+            <div className="font-bold flex items-center gap-2">
+              <Trans ns="variants">Output and outcomes</Trans>
+              <Tooltip
+                content={
+                  <Trans ns="variants">
+                    Provide the relevant details surrounding the incident. Examples include output
+                    text from a chatbot or the nature of injuries sustained from a robot.
+                  </Trans>
+                }
+                trigger="click"
+                placement="right"
+              >
+                <FontAwesomeIcon
+                  icon={faQuestionCircle}
+                  style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+                  className="far fa-question-circle"
+                />
+              </Tooltip>
+            </div>
+            <div data-cy="variant-text_outputs" className="border-1 rounded-lg px-3">
+              <Markdown>{item.text_outputs}</Markdown>
+            </div>
+          </div>
+        )}
         <div className="flex justify-end mt-4">
           <button
             onClick={() => {

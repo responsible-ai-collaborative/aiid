@@ -1,0 +1,30 @@
+{
+  "data": {
+    "reports": [
+      {
+        "date_published": "2022-12-12",
+        "report_number": 2310,
+        "tags": ["variant:unreviewed"],
+        "text_inputs": "**Test input text** _with markdown_",
+        "text_outputs": "**Test output text** _with markdown_",
+        "title": "Variant #2310"
+      },
+      {
+        "date_published": "2022-12-12",
+        "report_number": 2311,
+        "tags": ["variant:approved"],
+        "text_inputs": "Test input text without markdown",
+        "text_outputs": "Test output text without markdown",
+        "title": "Variant #2311"
+      },
+      {
+        "date_published": "2022-12-12",
+        "report_number": 2312,
+        "tags": ["variant:rejected"],
+        "text_inputs": "Test input text without markdown (rejected)",
+        "text_outputs": "Test output text without markdown (rejected)",
+        "title": "Variant #2312"
+      }
+    ]
+  }
+}

@@ -32,6 +32,7 @@ import {
   faTenge,
 } from '@fortawesome/free-solid-svg-icons';
 import IncidentsField from 'components/incidents/IncidentsField';
+import VariantForm from 'components/variants/VariantForm';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -94,6 +95,8 @@ export const schema = yup.object().shape({
   editor_notes: yup.string().nullable(),
   incident_ids: yup.array().of(yup.number().positive()),
   is_incident_report: yup.boolean().required(),
+  text_inputs: yup.string().nullable(),
+  text_outputs: yup.string().nullable(),
 });
 
 const IncidentReportForm = () => {
@@ -446,6 +449,12 @@ const IncidentReportForm = () => {
               </div>
             );
           })}
+
+        <h4 className="mt-3">Variant fields</h4>
+
+        <div className="mt-3">
+          <VariantForm />
+        </div>
       </Form>
     </div>
   );
