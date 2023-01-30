@@ -1,5 +1,7 @@
 import parseNews from '../../fixtures/api/parseNews.json';
 import semanticallyRelated from '../../fixtures/api/semanticallyRelated.json';
+import probablyRelatedIncidents from '../../fixtures/incidents/probablyRelatedIncidents.json';
+
 import { maybeIt } from '../../support/utils';
 
 describe('The Submit form', () => {
@@ -1145,6 +1147,13 @@ describe('The Submit form', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedIncidents',
+      'ProbablyRelatedIncidents',
+      probablyRelatedIncidents
+    );
+
     cy.visit(url);
 
     const values = {
@@ -1166,7 +1175,9 @@ describe('The Submit form', () => {
 
     cy.clickOutside();
 
-    cy.get('[data-cy="related-byAuthors"] [data-cy="result"]', { timeout: 10000 })
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="related-byAuthors"] [data-cy="result"]')
       .should('be.visible')
       .eq(0)
       .then(($el) => {

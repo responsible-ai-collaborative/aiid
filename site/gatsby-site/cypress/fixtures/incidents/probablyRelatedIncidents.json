@@ -1,0 +1,1740 @@
+{
+    "data": {
+        "incidents": [
+            {
+                "__typename": "Incident",
+                "incident_id": 5,
+                "reports": [
+                    {
+                        "__typename": "Report",
+                        "report_number": 778,
+                        "title": "Study Finds 'Nonnegligible' Number Of Complications During Robotic Surgery, 144 Deaths Since 2000",
+                        "url": "https://www.techtimes.com/articles/70761/20150721/study-finds-non-negligible-number-complications-during-robotic-surgery-144.htm"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 777,
+                        "title": "Robotic surgery may be the future, but right now it’s consistently janky",
+                        "url": "https://splinternews.com/robotic-surgery-may-be-the-future-but-right-now-it-s-c-1793849328"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 776,
+                        "title": "Adverse Events in Robotic Surgery: A Retrospective Study of 14 Years of FDA Data",
+                        "url": "https://www.researchgate.net/publication/280062076_Adverse_Events_in_Robotic_Surgery_A_Retrospective_Study_of_14_Years_of_FDA_Data"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 775,
+                        "title": "Botched Robotic Surgeries Have Been Linked to 144 Patient Deaths",
+                        "url": "https://io9.gizmodo.com/botched-robotic-surgeries-have-been-linked-to-144-patie-1719265629"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 774,
+                        "title": "Robotic Surgery Has Been Connected to 144 U.S. Deaths Since 2000",
+                        "url": "https://gizmodo.com/robotic-surgery-has-been-connected-to-144-u-s-deaths-s-1719202166"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 773,
+                        "title": "Robotic Surgery Involved in 144 Deaths in 14 Years",
+                        "url": "https://www.nbcnews.com/tech/tech-news/robotic-surgery-linked-144-deaths-2000-n395811"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 772,
+                        "title": "Robot surgeons kill 144 patients, hurt 1,391, malfunction 8,061 times",
+                        "url": "https://www.theregister.co.uk/2015/07/21/robot_surgery_kills_americans/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 771,
+                        "title": "Robotic surgery linked to 144 deaths in the US",
+                        "url": "https://www.bbc.com/news/technology-33609495"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 770,
+                        "title": "Robotic surgeries: Really safe?",
+                        "url": "https://www.christiantoday.com/article/robotic-surgeries-are-they-really-safe/59860.htm"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 769,
+                        "title": "Study looks at problems experienced in robotic surgery",
+                        "url": "https://physicstoday.scitation.org/do/10.1063/PT.5.029056/full/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 768,
+                        "title": "Robotic Surgery Linked To 144 Deaths Since 2000",
+                        "url": "https://www.technologyreview.com/s/539521/robotic-surgery-linked-to-144-deaths-since-2000/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 767,
+                        "title": "Adverse Events in Robotic Surgery: A Retrospective Study of 14 Years of FDA Data",
+                        "url": "https://arxiv.org/ftp/arxiv/papers/1507/1507.03518.pdf"
+                    }
+                ],
+                "title": "Collection of Robotic Surgery Malfunctions"
+            },
+            {
+                "__typename": "Incident",
+                "incident_id": 36,
+                "reports": [
+                    {
+                        "__typename": "Report",
+                        "report_number": 1360,
+                        "title": "Chinese AI caught out by face in bus ad",
+                        "url": "https://www.bbc.com/news/technology-46357004"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 598,
+                        "title": "Facial recognition system mistakes bus ad for jaywalker",
+                        "url": "https://www.cnet.com/news/facial-recognition-system-mistakes-bus-ad-for-jaywalker/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 597,
+                        "title": "AI Mistakes Bus-Side Ad for Famous CEO, Charges Her With Jaywalking",
+                        "url": "https://www.caixinglobal.com/2018-11-22/ai-mistakes-bus-side-ad-for-famous-ceo-charges-her-with-jaywalkingdo-101350772.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 596,
+                        "title": "Facial recognition system in China mistakes celebrity's face on moving billboard for jaywalker - Asean+",
+                        "url": "https://www.thestar.com.my/news/regional/2018/11/23/facial-recognition-snares-chinas-air-con-queen-dong-mingzhu-for-jaywalking-but-its-not-what-it-seems/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 595,
+                        "title": "Chinese AI traffic cam mistook a bus ad for a human and publicly shamed the CEO it depicted for jaywalking",
+                        "url": "https://boingboing.net/2018/11/26/just-dont-have-a-face.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 593,
+                        "title": "Chinese facial recognition system mistakes a face on a bus for a jaywalker",
+                        "url": "https://www.theverge.com/2018/11/22/18107885/china-facial-recognition-mistaken-jaywalker"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 592,
+                        "title": "Facial recognition snares China’s air con queen Dong Mingzhu for jaywalking, but it’s not what it seems",
+                        "url": "https://www.scmp.com/tech/innovation/article/2174564/facial-recognition-catches-chinas-air-con-queen-dong-mingzhu"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 591,
+                        "title": "Traffic Cam In China Mistakes Bus Ad For Real Human Face",
+                        "url": "http://www.capradio.org/news/npr/story?storyid=671090406"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 590,
+                        "title": "Jaywalking AI Mistakenly Shames Woman in Advertisement",
+                        "url": "https://insights.globalspec.com/article/10590/jaywalking-ai-mistakenly-shames-woman-in-advertisement"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 589,
+                        "title": "Facial recognition system in China mistakes bus ad for jaywalker",
+                        "url": "https://www.biometricupdate.com/201811/facial-recognition-system-in-china-mistakes-bus-ad-for-jaywalker"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 587,
+                        "title": "Chinese facial recognition system catches jaywalker, turns out to be a bus",
+                        "url": "https://mashable.com/article/chinese-jaywalker-facial-recognition/#r9FZ_0J4ugqG"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 586,
+                        "title": "Chinese Face Recognition Mistakes Bus Ad For Jaywalker",
+                        "url": "http://www.technovelgy.com/ct/Science-Fiction-News.asp?NewsNum=5552"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 585,
+                        "title": "Dong Mingzhu reelected as Gree head",
+                        "url": "http://www.chinadaily.com.cn/a/201901/17/WS5c4024b8a3106c65c34e50b5.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 584,
+                        "title": "Traffic Cam In China Mistakes Bus Ad For Real Human Face",
+                        "url": "https://www.npr.org/2018/11/27/671090406/traffic-cam-in-china-mistakes-bus-ad-for-real-human-face"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 582,
+                        "title": "Facial recognition catches China’s air con queen Dong Mingzhu jaywalking, but turns out to be ...",
+                        "url": "https://article.wn.com/view/2018/11/22/Facial_recognition_catches_China_s_air_con_queen_Dong_Mingzh/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 581,
+                        "title": "Chinese businesswoman accused of jaywalking after AI camera spots her face on an advert",
+                        "url": "https://www.telegraph.co.uk/technology/2018/11/25/chinese-businesswoman-accused-jaywalking-ai-camera-spots-face/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 580,
+                        "title": "Chinese facial recognition flags bus ad woman for jaywalking",
+                        "url": "https://www.iottechnews.com/news/2018/nov/28/chinese-facial-recognition-ad-jaywalking/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 579,
+                        "title": "Facial recognition system accuses woman in bus ad of jaywalking",
+                        "url": "https://www.theinquirer.net/inquirer/news/3066893/facial-recognition-system-accuses-woman-in-bus-ad-of-jaywalker"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 578,
+                        "title": "Chinese facial recognition system confuses bus ad for jaywalker",
+                        "url": "https://www.techspot.com/news/77546-chinese-facial-recognition-system-confuses-face-bus-ad.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 577,
+                        "title": "China's AI Camera Mistakes CEO's Photo On Moving Bus For Real Person, Shames Her For Jaywalking",
+                        "url": "https://www.indiatimes.com/trending/wtf/china-s-ai-camera-mistakes-ceo-s-photo-on-moving-bus-for-real-person-shames-her-for-jaywalking-357534.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 574,
+                        "title": "Chinese facial recognition system confuses bus ad with a jaywalker",
+                        "url": "https://www.engadget.com/2018/11/22/chinese-facial-recognition-confuses-bus-ad-with-jaywalker/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 573,
+                        "title": "Facial Recognition Flags Woman On Bus Ad For 'Jaywalking' In China",
+                        "url": "https://www.gizmodo.com.au/2018/11/facial-recognition-flags-woman-on-bus-ad-for-jaywalking-in-china/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 571,
+                        "title": "Businesswoman in China caught ‘jaywalking’ because her face was on a bus",
+                        "url": "https://www.techinasia.com/businesswoman-china-caught-jaywalking-face-bus"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 570,
+                        "title": "AI snaps business titan jaywalking",
+                        "url": "https://www.theregister.co.uk/2018/11/27/ai_snaps_business_titan_jaywalking/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 569,
+                        "title": "2018 in Review: 10 AI Failures",
+                        "url": "https://medium.com/syncedreview/2018-in-review-10-ai-failures-c18faadf5983"
+                    }
+                ],
+                "title": "Picture of Woman on Side of Bus Shamed for Jaywalking"
+            },
+            {
+                "__typename": "Incident",
+                "incident_id": 60,
+                "reports": [
+                    {
+                        "__typename": "Report",
+                        "report_number": 1344,
+                        "title": "FaceApp apologises for 'racist' filter that lightens users' skintone",
+                        "url": "https://www.theguardian.com/technology/2017/apr/25/faceapp-apologises-for-racist-filter-which-lightens-users-skintone"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1122,
+                        "title": "'Racist' FaceApp photo filters encouraged users to black up",
+                        "url": "https://www.independent.co.uk/life-style/gadgets-and-tech/news/faceapp-race-photo-filters-racist-black-asian-indian-caucasian-ethnic-remove-iphone-a7885796.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1121,
+                        "title": "FaceApp Introduced Blackface And Yellowface Selfie Filters, Then Removed Them A Few Hours Later",
+                        "url": "https://www.buzzfeednews.com/article/blakemontgomery/faceapp-is-at-it-again-with-racial-selfie-filters"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1120,
+                        "title": "FaceApp Ethnicity Filters Make You Look Like a Different Race",
+                        "url": "https://www.cosmopolitan.com/lifestyle/a11660672/faceapp-ethnicity-filters-blackface/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1119,
+                        "title": "Popular face-aging app now offers ‘Black,’ ‘Indian,’ and ‘Asian’ filters",
+                        "url": "https://www.theverge.com/2017/8/9/16119296/selfie-editor-faceapp-racial-filters"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1118,
+                        "title": "That Viral 'FaceApp' Is Making Everyone Look Whiter",
+                        "url": "https://motherboard.vice.com/en_us/article/qkqwxp/that-viral-faceapp-is-making-everyone-look-whiter"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1117,
+                        "title": "FaceApp Is Being Called \"Racist\" Again for Featuring Problematic Filters",
+                        "url": "https://www.allure.com/story/faceapp-racist-filters"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1113,
+                        "title": "How popular smartphones make your skin look 'whiter' in selfies",
+                        "url": "https://www.businessinsider.com.au/samsung-huawei-smartphone-beauty-filters-whiten-your-skin-2017-8?r=US\u0026IR=T"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1112,
+                        "title": "FaceApp's Indian and Black photo filters are quite obviously racist",
+                        "url": "https://www.dailyo.in/technology/faceapp-racism-indian-photo-filter-racial-stereotype/story/1/18870.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1110,
+                        "title": "How Does FaceApp Work? Here's How You Can Get In On The Viral Face Mashing Trend",
+                        "url": "https://www.bustle.com/p/how-does-faceapp-work-heres-how-you-can-get-in-on-the-viral-face-mashing-trend-55442"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1109,
+                        "title": "FaceApp CEO Apologizes For Whitening Skin With 'Hot' Filter",
+                        "url": "https://www.dailydot.com/irl/faceapp-apology-hot-filter-whitening-racism/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1108,
+                        "title": "FaceApp: Experts have privacy concerns about popular face transformation app",
+                        "url": "https://www.abc.net.au/news/2017-04-27/should-you-worry-about-privacy-when-using-faceapp/8476666"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1107,
+                        "title": "FaceApp forced to pull 'racist' filters that allow 'digital blackface'",
+                        "url": "https://www.theguardian.com/technology/2017/aug/10/faceapp-forced-to-pull-racist-filters-digital-blackface"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1106,
+                        "title": "FaceApp Removes Black, Asian, and Indian Filters After Backlash They Should Have Expected",
+                        "url": "https://www.complex.com/life/2017/08/faceapp-removes-black-asian-indian-filters-after-backlash-they-should-have-expected"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1105,
+                        "title": "FaceApp Launches Digital Blackface Options Because The World Is Filled With Idiots",
+                        "url": "https://www.gizmodo.com.au/2017/08/faceapp-launches-digital-blackface-options-because-the-world-is-filled-with-idiots/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1104,
+                        "title": "Photo-editing app FaceApp updates with Asian, Black, Caucasian and Indian filters",
+                        "url": "https://mic.com/articles/183535/photo-editing-app-faceapp-updates-with-asian-black-caucasian-and-indian-filters#.kFRfdoFw7"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1103,
+                        "title": "FaceApp sorry for 'racist' filter that lightens skin to make users 'hot'",
+                        "url": "http://www.bbc.co.uk/newsbeat/article/39702143/faceapp-sorry-for-racist-filter-that-lightens-skin-to-make-users-hot"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1102,
+                        "title": "FaceApp removes 'Ethnicity Filters' after racism storm",
+                        "url": "https://www.dailymail.co.uk/sciencetech/article-4777954/FaceApp-removes-Ethnicity-Filters-racism-storm.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1101,
+                        "title": "FaceApp Blames AI for Whitening up Black People",
+                        "url": "http://www.gizmodo.co.uk/2017/04/faceapp-blames-ai-for-whitening-up-black-people/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1099,
+                        "title": "FaceApp Removes 'Spark' Filter Following Whitewashing Accusations",
+                        "url": "https://www.colorlines.com/articles/faceapp-removes-spark-filter-following-whitewashing-accusations"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1098,
+                        "title": "FaceApp releases change-your-race filters",
+                        "url": "https://www.stuff.co.nz/technology/apps/95629849/faceapp-releases-changeyourrace-filters"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1097,
+                        "title": "FaceApp briefly let users change their skin color. Bad idea.",
+                        "url": "https://slate.com/technology/2017/08/faceapp-briefly-let-users-change-their-skin-color-bad-idea.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1096,
+                        "title": "FaceApp deletes new black, white and Asian filters after racism storm",
+                        "url": "https://www.telegraph.co.uk/technology/2017/08/09/faceapp-sparks-racist-backlash-black-white-asian-filters/"
+                    }
+                ],
+                "title": "FaceApp Racial Filters"
+            },
+            {
+                "__typename": "Incident",
+                "incident_id": 34,
+                "reports": [
+                    {
+                        "__typename": "Report",
+                        "report_number": 826,
+                        "title": "I may have found how Amazon prevents the echo from activating during commercials.",
+                        "url": "https://www.reddit.com/r/amazonecho/comments/5oer2u/i_may_have_found_how_amazon_prevents_the_echo/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 825,
+                        "title": "Teach Amazon Echo, Google Home Not To Respond To Your TV: Here's How",
+                        "url": "https://www.techtimes.com/articles/196227/20170207/teach-amazon-echo-google-home-not-to-respond-to-your-tv-heres-how.htm"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 824,
+                        "title": "How Amazon Keeps Your TV From Accidentally Triggering Your Echo",
+                        "url": "https://au.pcmag.com/news/51618/how-amazon-keeps-your-tv-from-accidentally-triggering-your-e"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 823,
+                        "title": "Amazon reveals secret trick to stop your Alexa waking up during Echo TV ads",
+                        "url": "https://www.thesun.co.uk/tech/5503926/amazon-echo-alexa-ad-wake-up-word/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 822,
+                        "title": "Amazon reveals how it stops Alexa responding to its hotword unintentionally",
+                        "url": "https://www.pocket-lint.com/smart-home/news/amazon/143549-amazon-reveals-how-it-stops-alexa-responding-to-its-hotword-unintentionally"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 821,
+                        "title": "Hey Alexa, is it true a TV advert made Amazon Echo order cat food?",
+                        "url": "https://www.theguardian.com/technology/2018/feb/14/amazon-alexa-ad-avoids-ban-after-viewer-complaint-ordered-cat-food"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 820,
+                        "title": "Amazon has a clever trick to make sure your Echo doesn’t activate during its Alexa Super Bowl ad",
+                        "url": "https://www.theverge.com/2018/2/2/16965484/amazon-alexa-super-bowl-ad-activate-frequency-commercial-echo"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 819,
+                        "title": "How to Keep Amazon Echo and Google Home From Responding to Your TV",
+                        "url": "https://www.wired.com/2017/02/keep-amazon-echo-google-home-responding-tv/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 818,
+                        "title": "People Are Complaining That Amazon Echo Is Responding to Ads on TV",
+                        "url": "https://motherboard.vice.com/en_us/article/53dz8x/people-are-complaining-that-amazon-echo-is-responding-to-ads-on-tv"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 538,
+                        "title": "Girl who order dollhouse with Amazon's Alexa donates it to hospital",
+                        "url": "http://www.fox4news.com/news/girl-who-order-dollhouse-with-amazons-alexa-donates-it-to-hospital"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 537,
+                        "title": "Alexa Caused Numerous Amazon Orders For Dollhouses Across San Diego When TV Report Mentioned Its Name",
+                        "url": "https://www.techtimes.com/articles/191846/20170109/alexa-caused-numerous-amazon-orders-for-dollhouses-across-san-diego-when-tv-report-mentioned-its-name.htm"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 536,
+                        "title": "Amazon Echo rogue payment warning after TV show causes 'Alexa' to order dolls houses",
+                        "url": "https://www.telegraph.co.uk/news/2017/01/08/amazon-echo-rogue-payment-warning-tv-show-causes-alexa-order/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 535,
+                        "title": "TV news anchor's report accidentally sets off viewers' Amazon's Echo Dots",
+                        "url": "https://www.cbsnews.com/news/tv-news-anchors-report-accidentally-sets-off-viewers-amazons-echo-dots/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 533,
+                        "title": "Amazon Echo's Alexa Went Dollhouse Crazy",
+                        "url": "http://fortune.com/2017/01/09/amazon-echo-alexa-dollhouse/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 532,
+                        "title": "Amazon’s Alexa started ordering people dollhouses after hearing its name on TV",
+                        "url": "https://www.theverge.com/2017/1/7/14200210/amazon-alexa-tech-news-anchor-order-dollhouse"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 531,
+                        "title": "Girl asks Amazon's Alexa to order $160 doll house, cookies; parents surprised by delivery",
+                        "url": "https://abc7ny.com/shopping/girl-uses-alexa-to-order-doll-house-cookies;-parents-shocked-by-delivery/1688875/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 530,
+                        "title": "Child orders dollhouse, cookies using Alexa",
+                        "url": "http://www.winknews.com/2017/01/05/child-orders-dollhouse-cookies-using-alexa/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 529,
+                        "title": "How parents can avoid this nightmare scenario: 'Alexa, order me a dollhouse'",
+                        "url": "https://mashable.com/2017/03/15/amazon-echo-alexa-google-home-children-ordering/#_ApCrVOaWkqy"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 528,
+                        "title": "6-year-old orders doll house, cookies using Amazon’s Alexa app",
+                        "url": "https://myfox28columbus.com/news/offbeat/6-year-old-orders-doll-house-cookies-using-amazons-alexa-app"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 527,
+                        "title": "Amazon Echos accidentally order dollhouses after hearing US news programme",
+                        "url": "https://www.standard.co.uk/news/world/amazon-echos-start-ordering-dollhouses-after-hearing-command-on-us-news-programme-a3436246.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 526,
+                        "title": "Newsreader says, ‘Alexa, buy a doll’s house’ on air - and Amazon Echos buy them",
+                        "url": "https://metro.co.uk/2017/01/09/newsreader-says-alexa-buy-me-a-dolls-house-on-air-and-tons-of-amazon-echos-buy-them-6369570/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 525,
+                        "title": "Amazon Echo Dot ad cleared over cat food order",
+                        "url": "https://www.bbc.com/news/business-43044693"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 524,
+                        "title": "Amazon Echo device ordered dollhouses being discussed on TV",
+                        "url": "https://www.dailymail.co.uk/news/article-4100446/How-Amazon-s-gadget-blows-cash-listening-TV-Owners-left-pocket-device-ordered-dollhouses-discussed-news-show.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 522,
+                        "title": "Amazon Echo orders doll houses after 'hearing' TV presenter talking",
+                        "url": "https://news.sky.com/story/amazon-echo-orders-dollhouses-after-hearing-tv-presenter-talking-10722985"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 521,
+                        "title": "TV anchor says live on-air 'Alexa, order me a dollhouse' - guess what happens next",
+                        "url": "https://www.theregister.co.uk/2017/01/07/tv_anchor_says_alexa_buy_me_a_dollhouse_and_she_does/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 520,
+                        "title": "6-year-old accidentally orders high-end treats with Amazon's Alexa",
+                        "url": "https://www.foxnews.com/tech/6-year-old-accidentally-orders-high-end-treats-with-amazons-alexa"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 519,
+                        "title": "TV news report prompts viewers' Amazon Echo devices to order unwanted dollhouses",
+                        "url": "https://www.foxnews.com/tech/tv-news-report-prompts-viewers-amazon-echo-devices-to-order-unwanted-dollhouses"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 518,
+                        "title": "Who needs Santa? Girl asks Amazon's Alexa for dollhouse and cookies",
+                        "url": "https://edition.cnn.com/2017/01/05/health/amazon-alexa-dollhouse-trnd/index.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 517,
+                        "title": "Hey Alexa, is it true a TV advert made Amazon Echo order cat food?",
+                        "url": "https://www.theguardian.com/technology/2018/feb/14/amazon-alexa-ad-avoids-ban-after-viewer-complaint-ordered-cat-food"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 516,
+                        "title": "‘Alexa, sort your life out’: when Amazon Echo goes rogue",
+                        "url": "https://www.theguardian.com/technology/shortcuts/2017/jan/09/alexa-amazon-echo-goes-rogue-accidental-shopping-dolls-house"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 514,
+                        "title": "Amazon gently stresses several ways Alexa could have stopped 6-year-old girl’s dollhouse order",
+                        "url": "https://www.geekwire.com/2017/amazon-gently-stresses-several-ways-alexa-stopped-6-year-old-girls-dollhouse-order/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 513,
+                        "title": "How Amazon’s Alexa accidentally ordered a bunch of dollhouses across San Diego",
+                        "url": "https://www.electronicproducts.com/Internet_of_Things/Household/How_Amazon_s_Alexa_accidentally_ordered_a_bunch_of_dollhouses_across_San_Diego.aspx"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 512,
+                        "title": "Alexa Went On A Dollhouse Shopping Spree After Hearing “Command” From News Anchor On TV",
+                        "url": "http://www.itechpost.com/articles/72945/20170110/alexa-went-dollhouse-shopping-spree-hearing-command-news-anchor-tv.htm"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 510,
+                        "title": "Amazon’s Alexa heard her name and tried to order up a ton of dollhouses",
+                        "url": "https://qz.com/880541/amazons-amzn-alexa-accidentally-ordered-a-ton-of-dollhouses-across-san-diego/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 509,
+                        "title": "Top 5 AI Failures From 2017 Which Prove That ‘Perfect AI’ Is Still A Dream",
+                        "url": "https://www.analyticsindiamag.com/top-5-ai-failures-from-2017-which-prove-that-perfect-ai-is-still-a-dream/"
+                    }
+                ],
+                "title": "Amazon Alexa Responding to Environmental Inputs"
+            },
+            {
+                "__typename": "Incident",
+                "incident_id": 48,
+                "reports": [
+                    {
+                        "__typename": "Report",
+                        "report_number": 863,
+                        "title": "New Zealand passport robot tells applicant of Asian descent to open eyes",
+                        "url": "https://www.reuters.com/article/us-newzealand-passport-error/new-zealand-passport-robot-tells-applicant-of-asian-descent-to-open-eyes-idUSKBN13W0RL"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 862,
+                        "title": "Man sees humour in 'racist' facial recognition software",
+                        "url": "https://www.nzherald.co.nz/nz/news/article.cfm?c_id=1\u0026objectid=11762334"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 860,
+                        "title": "‘Racist’ passport machine accuses Asian man of having eyes closed",
+                        "url": "https://www.rt.com/viral/369537-racist-passport-scanner-new-zealand/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 859,
+                        "title": "Passport photo rejected by 'racist' facial recognition robot in New Zealand",
+                        "url": "https://www.dailystar.co.uk/news/latest-news/568433/Passport-photo-Asian-eyes-racist-facial-recognition-technology-New-Zealand"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 858,
+                        "title": "New Zealand passport robot thinks this Asian man's eyes are closed",
+                        "url": "https://edition.cnn.com/2016/12/07/asia/new-zealand-passport-robot-asian-trnd/index.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 857,
+                        "title": "Asian man’s picture is rejected by New Zealand’s passport photo software because his “eyes were closed”",
+                        "url": "https://www.thesun.co.uk/news/2346663/asian-mans-picture-is-rejected-by-new-zealand-governments-passport-photo-software-because-his-eyes-were-closed/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 855,
+                        "title": "'Racist' passport request riles New Zealand citizen of 10 years",
+                        "url": "https://www.stuff.co.nz/national/88111323/racist-passport-request-riles"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 854,
+                        "title": "Racist Passport Machine Rejects Photo Because \"Subject's Eyes Are Closed\"",
+                        "url": "https://www.elitereaders.com/passport-rejects-photo-eyes-closed/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 853,
+                        "title": "Facial Recognition Tells An Asian Man His Eyes Are Closed",
+                        "url": "https://www.digitaltrends.com/computing/facial-recognition-software-passport-renewal-asian-man-eyes-closed/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 851,
+                        "title": "Passport robot donned ‘racist’, tells applicant of Asian descent to open eyes",
+                        "url": "https://tenplay.com.au/news/national/december/passport-robot-donned-racist-tells-applicant-of-asian-descent-to-open-eyes"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 850,
+                        "title": "New Zealand passport reader accuses Asian of having 'eyes closed'",
+                        "url": "https://www.theinquirer.net/inquirer/news/2479251/new-zealand-passport-reader-accuses-asian-of-having-eyes-closed"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 849,
+                        "title": "'Racist' robot rejects Asian-face passport photo",
+                        "url": "https://www.rappler.com/world/regions/asia-pacific/154897-racist-robot-rejects-asian-face-passport-photo"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 848,
+                        "title": "Racist robot? New Zealand govt website tells Asian man to open eyes, rejects passport",
+                        "url": "https://www.indiatoday.in/technology/news/story/racist-robot-new-zealand-govt-website-tells-asian-man-to-open-eyes-rejects-passport-356173-2016-12-07"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 847,
+                        "title": "Facial recognition software rejects Asian man's passport photo because it thinks his eyes are closed",
+                        "url": "https://www.techspot.com/news/67317-facial-recognition-software-rejects-asian-man-passport-photo.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 846,
+                        "title": "Racist robot rejects Asian man's passport photo, claiming 'eyes are closed'",
+                        "url": "https://www.nydailynews.com/news/world/racist-robot-rejects-asian-man-passport-photo-claiming-eyes-article-1.2901794"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 845,
+                        "title": "NZ government accused of racism after passport renewal software ‘failed’ Asian man’s photo",
+                        "url": "https://www.news.com.au/travel/travel-updates/an-error-in-passport-renewal-software-creates-really-awkward-moment/news-story/8a2805422447af2d4c1bcd8793ffccb5"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 844,
+                        "title": "New Zealand Passport Website Rejects Asian Man's Photo For Having 'Closed' Eyes",
+                        "url": "https://www.gizmodo.com.au/2016/12/new-zealand-passport-website-rejects-asian-mans-photo-for-having-closed-eyes/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 843,
+                        "title": "Passport blunder sees photo rejected for 'closed eyes'",
+                        "url": "https://www.newshub.co.nz/home/new-zealand/2016/12/passport-blunder-sees-photo-rejected-for-closed-eyes.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 842,
+                        "title": "New Zealand Passport Photo Checker Rejects Asian Guy’s Picture, Says His Eyes Are Closed",
+                        "url": "https://www.boredpanda.com/passport-photo-rejected-closed-eyes-richard-lee/?utm_source=google\u0026utm_medium=organic\u0026utm_campaign=organic"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 840,
+                        "title": "An algorithm rejected an Asian man's passport photo for having \"closed eyes\"",
+                        "url": "https://qz.com/857122/an-algorithm-rejected-an-asian-mans-passport-photo-for-having-closed-eyes/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 839,
+                        "title": "New Zealander says passport photo rejection 'not racist'",
+                        "url": "https://www.bbc.com/news/world-asia-38241833"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 838,
+                        "title": "Robot passport checker rejects Asian man's photo for having his eyes closed",
+                        "url": "http://www.telegraph.co.uk/technology/2016/12/07/robot-passport-checker-rejects-asian-mans-photo-having-eyes"
+                    }
+                ],
+                "title": "Passport checker Detects Asian man's Eyes as Closed"
+            },
+            {
+                "__typename": "Incident",
+                "incident_id": 19,
+                "reports": [
+                    {
+                        "__typename": "Report",
+                        "report_number": 1366,
+                        "title": "Probing the Dark Side of Google’s Ad-Targeting System",
+                        "url": "https://www.technologyreview.com/2015/07/06/110198/probing-the-dark-side-of-googles-ad-targeting-system/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1365,
+                        "title": "Women less likely to be shown ads for high-paid jobs on Google, study shows",
+                        "url": "https://www.theguardian.com/technology/2015/jul/08/women-less-likely-ads-high-paid-jobs-google-study"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 187,
+                        "title": "Google a 'Black' Name, Get an Arrest Ad?",
+                        "url": "https://www.theroot.com/google-a-black-name-get-an-arrest-ad-1790895136"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 185,
+                        "title": "Google's Online Ad Results Guilty Of Racial Profiling, According To New Study",
+                        "url": "https://www.huffingtonpost.com/2013/02/05/online-racial-profiling_n_2622556.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 184,
+                        "title": "Discrimination in Online Ad Delivery",
+                        "url": "https://queue.acm.org/detail.cfm?id=2460278"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 183,
+                        "title": "Google searches expose racial bias, says study of names",
+                        "url": "https://www.bbc.com/news/technology-21322183"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 182,
+                        "title": "Racism is Poisoning Online Ad Delivery, Says Harvard Professor",
+                        "url": "https://www.technologyreview.com/s/510646/racism-is-poisoning-online-ad-delivery-says-harvard-professor/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 181,
+                        "title": "Harvard professor spots Web search bias",
+                        "url": "https://www.bostonglobe.com/business/2013/02/06/harvard-professor-spots-web-search-bias/PtOgSh1ivTZMfyEGj00X4I/story.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 179,
+                        "title": "Google search results 'show racial bias'",
+                        "url": "https://www.telegraph.co.uk/technology/google/9847819/Google-search-results-show-racial-bias.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 178,
+                        "title": "Online search ads expose racial bias, study finds",
+                        "url": "https://phys.org/news/2013-02-online-ads-expose-racial-bias.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 177,
+                        "title": "Study Finds Google Search Ads Are Racially Biased",
+                        "url": "https://www.businessinsider.com/study-finds-google-search-ads-are-racially-biased-2013-2"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 176,
+                        "title": "Can Googling be racist?",
+                        "url": "https://www.theguardian.com/commentisfree/2013/feb/05/can-googling-be-racist"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 175,
+                        "title": "Google Ad Delivery Can Show 'Racial Bias,' Says Harvard Study",
+                        "url": "https://abcnews.go.com/Technology/google-ad-delivery-shows-racial-bias-study-harvard/story?id=18419075"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 174,
+                        "title": "Google exposes racial discrimination in online ads delivery - study",
+                        "url": "https://www.rt.com/news/google-racial-discrimination-study-442/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 173,
+                        "title": "Google Ads Reveal Bias Against African-Americans, Harvard University Study Reveals",
+                        "url": "http://www.sitepronews.com/2013/02/06/google-ads-reveal-bias-against-african-americans-harvard-university-study-reveals/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 172,
+                        "title": "Can computers be racist? Big data, inequality, and discrimination",
+                        "url": "https://www.fordfoundation.org/ideas/equals-change-blog/posts/can-computers-be-racist-big-data-inequality-and-discrimination/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 171,
+                        "title": "Are Google Ad Results Guilty of Racial Profiling?",
+                        "url": "https://www.cio.com/article/2370727/internet/are-google-ad-results-guilty-of-racial-profiling-.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 169,
+                        "title": "Fighting Algorithmic Bias \u0026 Homogenous Thinking in AI",
+                        "url": "https://www.topbots.com/fighting-homogenous-thinking-algorithmic-bias-ai/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 168,
+                        "title": "Embedded racism determines online advertising placement",
+                        "url": "https://privacyinternational.org/examples-abuse/1877/embedded-racism-determines-online-advertising-placement"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 167,
+                        "title": "Harvard professor says 'black' names in Google searches more likely to offer arrest ads",
+                        "url": "http://archive.boston.com/news/source/2013/02/harvard_profess.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 166,
+                        "title": "Latanya Sweeney, Racial Discrimination in Online Ad Delivery",
+                        "url": "https://sites.law.berkeley.edu/privacylaw/2013/05/28/latanya-sweeney-racial-discrimination-in-online-ad-delivery/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 163,
+                        "title": "Is Google Racist Or Is It The Rest Of Us?",
+                        "url": "https://www.forbes.com/sites/timworstall/2013/02/07/is-google-racist-or-is-it-the-rest-of-us/#5e5e88da5f1e"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 162,
+                        "title": "Harvard Researcher: Google-Generated Ads Show Racial Bias",
+                        "url": "https://www.thecrimson.com/article/2013/2/14/google-ads-racial-skew/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 161,
+                        "title": "How Much Does Your Name Matter?",
+                        "url": "http://freakonomics.com/podcast/how-much-does-your-name-matter/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 160,
+                        "title": "Discrimination in Online Ad Delivery",
+                        "url": "https://arxiv.org/abs/1301.6822"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 159,
+                        "title": "Google accused of racism after black names are 25% more likely to bring up adverts for criminal records checks",
+                        "url": "https://www.dailymail.co.uk/sciencetech/article-2273741/Google-accused-racism-black-names-25-likely-bring-adverts-criminal-records-checks.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 158,
+                        "title": "Discrimination in Online Ad Delivery",
+                        "url": "https://dataprivacylab.org/projects/onlineads/"
+                    }
+                ],
+                "title": "Sexist and Racist Google Adsense Advertisements"
+            },
+            {
+                "__typename": "Incident",
+                "incident_id": 45,
+                "reports": [
+                    {
+                        "__typename": "Report",
+                        "report_number": 1356,
+                        "title": "Google ordered to change autocomplete function in Japan",
+                        "url": "https://www.bbc.com/news/technology-17510651"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1355,
+                        "title": "Google Instant's Allegedly 'Anti-Semitic' Results Lead To Lawsuit In France",
+                        "url": "https://www.huffingtonpost.co.uk/entry/google-instant-anti-semitic-france_n_1465430?ri18n=true\u0026guccounter=1"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 809,
+                        "title": "Defamation via Google search case to be discussed by High Court",
+                        "url": "https://www.abc.net.au/news/science/2018-03-20/google-search-engine-defamation-high-court/9562666"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 808,
+                        "title": "You can now sue Google over defamatory 'innuendo' of search results",
+                        "url": "https://www.abc.net.au/triplej/programs/hack/you-can-now-sue-google-over-defamatory-search-results/9865482"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 807,
+                        "title": "Man wins right to sue Google for defamation over image search results",
+                        "url": "https://www.theguardian.com/technology/2018/jun/13/man-wins-right-to-sue-google-for-defamation-over-image-search-results"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 805,
+                        "title": "Defamation Case Attacks Google Autocomplete Results",
+                        "url": "http://www.dmlp.org/blog/2012/defamation-case-attacks-google-autocomplete-results"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 804,
+                        "title": "Google loses autocomplete defamation suit in Japan",
+                        "url": "https://www.cnet.com/news/google-loses-autocomplete-defamation-suit-in-japan/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 803,
+                        "title": "Google liable for defamation through search and autocomplete features: Duffy v Google",
+                        "url": "http://www.barrysookman.com/2015/11/05/google-liable-for-defamation-through-search-and-autocomplete-features-duffy-v-google/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 802,
+                        "title": "Australia court paves way for Google 'underworld' defamation case",
+                        "url": "https://phys.org/news/2018-06-australia-court-paves-google-underworld.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 801,
+                        "title": "Australian court rules man can sue Google for defamation",
+                        "url": "http://www.startribune.com/australian-court-rules-man-can-sue-google-for-defamation/485346951/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 800,
+                        "title": "Australian man allowed to sue Google for defamation after taking case to High Court",
+                        "url": "https://thewest.com.au/technology/google/australian-man-allowed-to-sue-google-for-defamation-after-taking-case-to-high-court-ng-b88865134z"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 799,
+                        "title": "Google guilty of defamation, Italian court rules",
+                        "url": "https://www.computerworld.com/article/2507021/google-guilty-of-defamation--italian-court-rules.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 798,
+                        "title": "Hong Kong Court Rules Tycoon Can Sue Google For Defamation Over Search Results",
+                        "url": "https://www.businessinsider.com/r-hong-kong-court-rules-tycoon-can-sue-google-for-defamation-2014-06/?r=AU\u0026IR=T"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 796,
+                        "title": "Defamation Update: Google under fire again",
+                        "url": "http://www.mondaq.com/australia/x/715180/Libel+Defamation/Defamation+Update+Google+under+fire+again"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 795,
+                        "title": "Protecting Google from defamation is worth seriously considering",
+                        "url": "http://theconversation.com/protecting-google-from-defamation-is-worth-seriously-considering-98252"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 794,
+                        "title": "Judgement of the German Federal Court of Justice on Google's autocomplete function",
+                        "url": "https://en.wikipedia.org/wiki/Judgement_of_the_German_Federal_Court_of_Justice_on_Google%27s_autocomplete_function"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 793,
+                        "title": "Google would not be held liable for defamatory 'autocomplete' suggestions in UK, says expert",
+                        "url": "https://www.out-law.com/en/articles/2012/november/google-unlikely-to-be-held-liable-for-defamatory-autocomplete-suggestions-in-uk-says-expert/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 792,
+                        "title": "Google held to be a publisher of defamatory autocomplete and related search terms",
+                        "url": "https://www.lexology.com/library/detail.aspx?g=b9306482-ed22-460d-8b19-66370dac27ef"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 791,
+                        "title": "Google Found Liable For Autocomplete Suggestions In Italy",
+                        "url": "https://www.techdirt.com/articles/20110405/03003513781/google-found-liable-autocomplete-suggestions-italy.shtml"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 790,
+                        "title": "Federal Supreme Court: Google Liable for Defamatory Autocomplete Search Terms",
+                        "url": "http://www.disputeresolutiongermany.com/2013/05/federal-supreme-court-google-liable-for-defamatory-autocomplete-search-results/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 789,
+                        "title": "When auto-complete goes wrong: High Court gives green light to defamation action for Google search results",
+                        "url": "https://www.claytonutz.com/knowledge/2018/june/when-auto-complete-goes-wrong-high-court-gives-green-light-to-defamation-action-for-google-search-results"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 788,
+                        "title": "Google Autocomplete: Former German First Lady Defamation Case",
+                        "url": "http://www.spiegel.de/international/zeitgeist/google-autocomplete-former-german-first-lady-defamation-case-a-856820.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 787,
+                        "title": "Can Google be sued for a mere search suggestion? A Hong Kong judge says yes.",
+                        "url": "https://www.washingtonpost.com/news/morning-mix/wp/2014/08/07/can-google-be-sued-for-a-search-suggestion-a-hong-kong-judge-says-yes/?noredirect=on\u0026utm_term=.7636b418f60d"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 785,
+                        "title": "Australian to sue Google for defamation over search results",
+                        "url": "https://www.cbsnews.com/news/australia-google-defamation-lawsuit-search-results-link-to-melbourne-criminal/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 784,
+                        "title": "Hong Kong tycoon can sue Google over 'autocomplete' search suggestions, court rules",
+                        "url": "https://www.scmp.com/news/hong-kong/article/1567521/hong-kong-court-rules-tycoon-can-sue-google-over-autocomplete-search"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 783,
+                        "title": "Irish Hotel Sues Google For Defamation Over Autocomplete Suggestion",
+                        "url": "https://searchengineland.com/irish-hotel-sues-google-for-defamation-over-autocomplete-suggestion-81492"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 782,
+                        "title": "Google loses autocomplete defamation case in Italy",
+                        "url": "https://www.zdnet.com/article/google-loses-autocomplete-defamation-case-in-italy/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 781,
+                        "title": "How to Deal with Google Suggest Defamation",
+                        "url": "https://www.searchenginepeople.com/blog/how-to-deal-with-google-suggest-defamation.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 780,
+                        "title": "Algorithmic Defamation: The Case of the Shameless Autocomplete",
+                        "url": "http://www.nickdiakopoulos.com/2013/08/06/algorithmic-defamation-the-case-of-the-shameless-autocomplete/"
+                    }
+                ],
+                "title": "Defamation via AutoComplete"
+            },
+            {
+                "__typename": "Incident",
+                "incident_id": 321,
+                "reports": [
+                    {
+                        "__typename": "Report",
+                        "report_number": 1370,
+                        "title": "Google says sorry for racist auto-tag in photo app",
+                        "url": "https://www.theguardian.com/technology/2015/jul/01/google-sorry-racist-auto-tag-photo-app"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1369,
+                        "title": "Google Photos identified two black people as 'gorillas'",
+                        "url": "https://mashable.com/2015/07/01/google-photos-black-people-gorillas/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 105,
+                        "title": "Google Photos labeled black people 'gorillas'",
+                        "url": "https://www.usatoday.com/story/tech/2015/07/01/google-apologizes-after-photos-identify-black-people-as-gorillas/29567465/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 104,
+                        "title": "Google's solution to accidental algorithmic racism: ban gorillas",
+                        "url": "https://www.theguardian.com/technology/2018/jan/12/google-racism-ban-gorilla-black-people"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 103,
+                        "title": "Google Photos labels black people as 'gorillas'",
+                        "url": "https://www.telegraph.co.uk/technology/google/11710136/Google-Photos-assigns-gorilla-tag-to-photos-of-black-people.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 102,
+                        "title": "Google Photos Mistakenly Labels Black People ‘Gorillas’",
+                        "url": "https://bits.blogs.nytimes.com/2015/07/01/google-photos-mistakenly-labels-black-people-gorillas/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 101,
+                        "title": "Google Photo App Labels Black Couple 'Gorillas'",
+                        "url": "https://news.sky.com/story/google-photo-app-labels-black-couple-gorillas-10353994"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 100,
+                        "title": "Two years later, Google solves 'racist algorithm' problem by purging 'gorilla' label from image classifier",
+                        "url": "https://boingboing.net/2018/01/11/gorilla-chimp-monkey-unpersone.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 99,
+                        "title": "Google Photos Still Has a Problem with Gorillas",
+                        "url": "https://www.technologyreview.com/the-download/609959/google-photos-still-has-a-problem-with-gorillas/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 98,
+                        "title": "Google apologizes for mis-tagging photos of African Americans",
+                        "url": "https://www.cbsnews.com/news/google-photos-labeled-pics-of-african-americans-as-gorillas/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 96,
+                        "title": "Google has ‘fixed’ its algorithm that categorised people as 'Gorillas' with a not so elegant solution",
+                        "url": "https://www.firstpost.com/tech/news-analysis/google-has-fixed-its-algorithm-that-categorised-people-as-gorillas-with-a-not-so-elegant-solution-4303613.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 95,
+                        "title": "Google Removed Gorillas From Search to Fix Racist Algorithm",
+                        "url": "http://nymag.com/intelligencer/2018/01/google-removed-gorillas-from-search-to-fix-racist-algorithm.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 93,
+                        "title": "Google Apologizes For Tagging Photos Of Black People As ‘Gorillas'",
+                        "url": "https://www.huffingtonpost.com/2015/07/02/google-black-people-goril_n_7717008.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 92,
+                        "title": "Google apologises for Photos app's racist blunder",
+                        "url": "https://www.bbc.com/news/technology-33347866"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 91,
+                        "title": "Google rushes to fix software that served up racial slur",
+                        "url": "https://edition.cnn.com/2015/07/02/tech/google-image-recognition-gorillas-tag/index.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 90,
+                        "title": "Google Photos identified black people as 'gorillas,' but racist software isn't new",
+                        "url": "https://splinternews.com/google-photos-identified-black-people-as-gorillas-but-1793848829"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 89,
+                        "title": "Google Mistakenly Tags Black People as ‘Gorillas,’ Showing Limits of Algorithms",
+                        "url": "https://blogs.wsj.com/digits/2015/07/01/google-mistakenly-tags-black-people-as-gorillas-showing-limits-of-algorithms/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 88,
+                        "title": "Why Google 'Thought' This Black Woman Was a Gorilla",
+                        "url": "https://www.wnycstudios.org/story/deep-problem-deep-learning"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 87,
+                        "title": "Google Photos tags black people as 'gorillas', puts pictures in special folder",
+                        "url": "https://www.independent.co.uk/life-style/gadgets-and-tech/news/google-photos-tags-black-people-as-gorillas-puts-pictures-in-special-folder-10357668.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 86,
+                        "title": "Google apologizes after app mistakenly labels black people 'gorillas'",
+                        "url": "https://www.cbc.ca/news/trending/google-photos-black-people-gorillas-1.3135754"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 85,
+                        "title": "Google Photos Tags Two African-Americans As Gorillas Through Facial Recognition Software",
+                        "url": "https://www.forbes.com/sites/mzhang/2015/07/01/google-photos-tags-two-african-americans-as-gorillas-through-facial-recognition-software/#368d7ccb713d"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 84,
+                        "title": "Google Photos app tags black Jacky Alcine and friend as GORILLAS",
+                        "url": "https://www.dailymail.co.uk/sciencetech/article-3145887/Google-apologises-Photos-app-tags-black-people-gorillas-Fault-image-recognition-software-mislabelled-picture.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 83,
+                        "title": "When It Comes to Gorillas, Google Photos Remains Blind",
+                        "url": "https://www.wired.com/story/when-it-comes-to-gorillas-google-photos-remains-blind/"
+                    }
+                ],
+                "title": "Images of Black People Labeled as Gorillas"
+            },
+            {
+                "__typename": "Incident",
+                "incident_id": 2,
+                "reports": [
+                    {
+                        "__typename": "Report",
+                        "report_number": 157,
+                        "title": "OSHA investigates Amazon warehouse bear spray accident that left worker critical",
+                        "url": "https://www.nj.com/mercer/2018/12/osha-investigates-amazon-warehouse-bear-spray-accident-that-left-worker-critical.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 156,
+                        "title": "Amazon robot sets off bear repellant, putting 24 workers in hospital",
+                        "url": "https://www.theguardian.com/technology/2018/dec/06/24-us-amazon-workers-hospitalised-after-robot-sets-off-bear-repellent"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 155,
+                        "title": "Amazon bear repellent accident this week wasn’t its first",
+                        "url": "https://www.foxbusiness.com/retail/amazon-bear-repellent-accident-this-week-wasnt-its-first"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 154,
+                        "title": "Amazon warehouse bear spray incident leaves workers sickened in Robbinsville, N.J.",
+                        "url": "https://www.washingtonpost.com/business/2018/12/05/dozens-amazon-workers-sickened-after-bear-repellent-accidentally-discharged-warehouse/?noredirect=on\u0026utm_term=.0001fedc3ea0"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 153,
+                        "title": "Amazon bear spray accident attributed to robot error",
+                        "url": "https://www.tennessean.com/story/news/2018/12/06/amazon-bear-spray-accident-robot-error/2229903002/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 152,
+                        "title": "Amazon Warehouse Bear Spray Accident Injures Dozens, One Critically",
+                        "url": "https://www.popularmechanics.com/technology/infrastructure/a25414009/amazon-warehouse-bear-spray-accident/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 151,
+                        "title": "Amazon workers injured in bear spray accident",
+                        "url": "https://www.bbc.com/news/world-us-canada-46468719"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 150,
+                        "title": "Amazon Has a History of Bear Repellent Accidents",
+                        "url": "https://www.wired.com/story/amazon-first-bear-repellent-accident/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 149,
+                        "title": "Robot Punctures Bear Spray Can, More Than 50 People Sickened at New Jersey Amazon Warehouse, Town Says",
+                        "url": "https://www.nbcphiladelphia.com/news/local/Amazon-Warehouse-Robbinsville-Sickened-Workers-501976671.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 148,
+                        "title": "Amazon warehouse NJ accident shines light on company's safety record",
+                        "url": "https://www.usatoday.com/story/money/business/2018/12/05/amazon-warehouse-nj-accident-shines-light-companys-safety-record/2216715002/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 146,
+                        "title": "24 Amazon Workers Hospitalized After Robot Punctures Bear Spray In Warehouse",
+                        "url": "https://motherboard.vice.com/en_us/article/qvqe85/24-amazon-workers-hospitalized-after-robot-punctures-bear-spray-in-warehouse"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 145,
+                        "title": "Dozens of Amazon employees taken to hospital after robot unleashes bear spray",
+                        "url": "https://www.independent.co.uk/news/world/americas/us-politics/amazon-bear-repellent-new-jersey-hospital-workers-a8669381.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 144,
+                        "title": "Bear spray incident at NJ Amazon warehouse shines light on safety record",
+                        "url": "https://www.app.com/story/money/business/main-street/2018/12/05/bear-spray-incident-nj-amazon-warehouse-shines-light-safety-record/2215515002/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 143,
+                        "title": "Amazon bear repellent accident sends 24 workers to the hospital",
+                        "url": "http://www.digitaljournal.com/business/amazon-bear-repellent-accident-sends-24-workers-to-the-hospital/article/538549"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 142,
+                        "title": "Robot's bear spray accident puts 24 Amazon workers in hospital",
+                        "url": "https://www.msn.com/en-ie/news/techandscience/robots-bear-spray-accident-puts-24-amazon-workers-in-hospital/ar-BBQzRNq"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 141,
+                        "title": "1 critical, 54 Amazon workers treated after bear repellent discharge in N.J. warehouse",
+                        "url": "https://www.nj.com/mercer/2018/12/80-workers-at-amazon-warehouse-in-nj-treated-after-being-sickened-by-bear-repellant.html#incart_river_index"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 139,
+                        "title": "24 Amazon workers sent to hospital after robot accidentally unleashes bear spray",
+                        "url": "https://abcnews.go.com/US/24-amazon-workers-hospital-bear-repellent-accident/story?id=59625712"
+                    }
+                ],
+                "title": "Warehouse robot ruptures can of bear spray and injures workers"
+            },
+            {
+                "__typename": "Incident",
+                "incident_id": 216,
+                "reports": [
+                    {
+                        "__typename": "Report",
+                        "report_number": 1927,
+                        "title": "China's Most Popular App Apologizes After Translating 'Black Foreigner' as the N-Word",
+                        "url": "https://gizmodo.com/chinas-most-popular-app-apologizes-after-translating-bl-1819400310"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1926,
+                        "title": "WeChat translates 'black foreigner' into the N-word",
+                        "url": "https://www.independent.co.uk/news/world/wechat-black-foreigner-translate-nword-a8000366.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1925,
+                        "title": "WeChat translates 'black foreigner' into racial slur",
+                        "url": "https://www.bbc.com/news/world-asia-china-41606161"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1924,
+                        "title": "China's WeChat app translates 'black foreigner' to N-word",
+                        "url": "https://www.theguardian.com/world/2017/oct/13/chinas-wechat-app-translates-black-foreigner-to-n-word"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1724,
+                        "title": "WeChat Apologizes for Translating ‘Black Foreigner’ as N-Word",
+                        "url": "https://www.sixthtone.com/news/1000991/wechat-apologizes-for-translating-black-foreigner-as-n-word"
+                    }
+                ],
+                "title": "WeChat’s Machine Translation Gave a Racist English Translation for the Chinese Term for “Black Foreigner”"
+            },
+            {
+                "__typename": "Incident",
+                "incident_id": 160,
+                "reports": [
+                    {
+                        "__typename": "Report",
+                        "report_number": 1521,
+                        "title": "OMFG My 10 year old just asked Alexa on our Echo for a challenge and this is what she said.",
+                        "url": "https://twitter.com/klivdahl/status/1475220450598924297"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1520,
+                        "title": "Alexa tells 10-year-old girl to touch live plug with penny",
+                        "url": "https://www.bbc.com/news/technology-59810383"
+                    }
+                ],
+                "title": "Alexa Recommended Dangerous TikTok Challenge to Ten-Year-Old Girl"
+            },
+            {
+                "__typename": "Incident",
+                "incident_id": 335,
+                "reports": [
+                    {
+                        "__typename": "Report",
+                        "report_number": 2125,
+                        "title": "Legal action to challenge Home Office use of secret algorithm to assess visa applications",
+                        "url": "https://www.foxglove.org.uk/2017/10/29/legal-action-to-challenge-home-office-use-of-secret-algorithm-to-assess-visa-applications/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2124,
+                        "title": "Update: papers filed for judicial review of the Home Office’s visa algorithm",
+                        "url": "https://www.foxglove.org.uk/2020/06/22/update-papers-filed-for-judicial-review-of-the-home-offices-visa-algorithm/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2123,
+                        "title": "We won! Home Office to stop using racist visa algorithm",
+                        "url": "https://www.jcwi.org.uk/news/we-won-home-office-to-stop-using-racist-visa-algorithm"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2122,
+                        "title": "Home Office drops 'racist' algorithm from visa decisions",
+                        "url": "https://www.bbc.com/news/technology-53650758"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2092,
+                        "title": "Home Office says it will abandon its racist visa algorithm - after we sued them",
+                        "url": "https://www.foxglove.org.uk/2020/08/04/home-office-says-it-will-abandon-its-racist-visa-algorithm-after-we-sued-them/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2091,
+                        "title": "UK commits to redesign visa streaming algorithm after challenge to 'racist' tool",
+                        "url": "https://techcrunch.com/2020/08/04/uk-commits-to-redesign-visa-streaming-algorithm-after-challenge-to-racist-tool/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2090,
+                        "title": "The use of Artificial Intelligence by the Home Office to stream visa applications",
+                        "url": "https://www.kingsleynapley.co.uk/insights/blogs/immigration-law-blog/the-use-of-artificial-intelligence-by-the-home-office-to-stream-visa-applications"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2047,
+                        "title": "AI system for granting UK visas is biased, rights groups claim",
+                        "url": "https://www.theguardian.com/uk-news/2019/oct/29/ai-system-for-granting-uk-visas-is-biased-rights-groups-claim"
+                    }
+                ],
+                "title": "UK Visa Streamline Algorithm Allegedly Discriminated Based on Nationality"
+            },
+            {
+                "__typename": "Incident",
+                "incident_id": 284,
+                "reports": [
+                    {
+                        "__typename": "Report",
+                        "report_number": 1887,
+                        "title": "Facebook angers Flanders with Rubens ban",
+                        "url": "https://www.bbc.com/news/technology-44936601"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1886,
+                        "title": "Social media companies kept banning pictures of ‘explicit’ art. So, Vienna museums will now post on OnlyFans.",
+                        "url": "https://www.washingtonpost.com/nation/2021/10/20/vienna-museums-artwork-social-media-onlyfans/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1885,
+                        "title": "Facebook rejects Montreal museum's ad over Picasso nude",
+                        "url": "https://www.bbc.com/news/world-us-canada-45062332"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1884,
+                        "title": "Facebook blocks nude painting by acclaimed artist",
+                        "url": "https://www.bbc.com/news/world-australia-39099726"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1883,
+                        "title": "Paris court rules against Facebook in French nudity case",
+                        "url": "https://www.bbc.com/news/world-europe-35559036"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1882,
+                        "title": "Facebook Bans Nudity? Social Media Removes Flemish Paintings by Rubens For Nude Content",
+                        "url": "https://www.latestly.com/technology/facebook-bans-nudity-social-media-removes-flemish-paintings-by-rubens-for-nude-content-285004.html"
+                    }
+                ],
+                "title": "Facebook’s Removal of Content Containing Artworks and Their Advertisements That Featured Nudity via Automated and Human-Reviewed Moderation Denounced as Censorship"
+            },
+            {
+                "__typename": "Incident",
+                "incident_id": 310,
+                "reports": [
+                    {
+                        "__typename": "Report",
+                        "report_number": 2269,
+                        "title": "UK Police Use of Facial Recognition Fails to Meet 'Legal And Ethical Standards'",
+                        "url": "https://www.pcmag.com/news/uk-police-use-of-facial-recognition-fails-to-meet-legal-and-ethical-standards"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2128,
+                        "title": "UK Court of Appeal Finds Automated Facial Recognition Technology Unlawful in Bridges v South Wales Police",
+                        "url": "https://www.huntonprivacyblog.com/2020/08/12/uk-court-of-appeal-finds-automated-facial-recognition-technology-unlawful-in-bridges-v-south-wales-police/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2127,
+                        "title": "EWCA Civ 1058 – R (Bridges) v. CC South Wales",
+                        "url": "https://www.judiciary.uk/judgments/r-bridges-v-cc-south-wales/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2126,
+                        "title": "NEC provides facial recognition system to South Wales Police in the UK",
+                        "url": "https://www.nec.com/en/press/201707/global_20170711_01.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1959,
+                        "title": "British police defend their new criminal facial recognition technology – even though it's failing at a rate of 92%",
+                        "url": "https://www.businessinsider.com/british-police-defend-criminal-facial-recognition-service-but-its-failing-at-rate-of-92-2018-5"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1958,
+                        "title": "Facial recognition wrongly identified 2,000 people as possible criminals when Champions League final came to Cardiff",
+                        "url": "https://www.walesonline.co.uk/news/wales-news/facial-recognition-wrongly-identified-2000-14619145"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1957,
+                        "title": "UK police say 92% false positive facial recognition is no big deal",
+                        "url": "https://arstechnica.com/tech-policy/2018/05/uk-police-say-92-percent-false-positive-facial-recognition-is-no-big-deal/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1955,
+                        "title": "2,000 wrongly matched with possible criminals at Champions League",
+                        "url": "https://www.bbc.com/news/uk-wales-south-west-wales-44007872"
+                    }
+                ],
+                "title": "High False Positive Rate by SWP's Facial Recognition Use at Champion's League Final"
+            },
+            {
+                "__typename": "Incident",
+                "incident_id": 374,
+                "reports": [
+                    {
+                        "__typename": "Report",
+                        "report_number": 2212,
+                        "title": "The Algorithmic Imprint",
+                        "url": "https://dl.acm.org/doi/10.1145/3531146.3533186"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2211,
+                        "title": "How a computer algorithm caused a grading crisis in British schools",
+                        "url": "https://www.cnbc.com/2020/08/21/computer-algorithm-caused-a-grading-crisis-in-british-schools.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2210,
+                        "title": "UK ditches exam results generated by biased algorithm after student protests",
+                        "url": "https://www.theverge.com/2020/8/17/21372045/uk-a-level-results-algorithm-biased-coronavirus-covid-19-pandemic-university-applications"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2209,
+                        "title": "Controversial exams algorithm to set 97% of GCSE results",
+                        "url": "https://www.theguardian.com/education/2020/aug/15/controversial-exams-algorithm-to-set-97-of-gcse-results"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2208,
+                        "title": "Ofqual ignored exams warning a month ago amid ministers' pressure",
+                        "url": "https://www.theguardian.com/politics/2020/aug/19/ofqual-was-warned-a-month-ago-that-exams-algorithm-was-volatile"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2207,
+                        "title": "A-levels and GCSEs: How did the exam algorithm work?",
+                        "url": "https://www.bbc.com/news/explainers-53807730"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2206,
+                        "title": "Ofqual chief to face MPs over exams fiasco and botched algorithm grading",
+                        "url": "https://www.theguardian.com/education/2020/aug/20/ofqual-chief-to-face-mps-over-exams-fiasco-and-botched-algorithm-grading-system"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2170,
+                        "title": "Ofqual's A-level algorithm: why did it fail to make the grade?",
+                        "url": "https://www.theguardian.com/education/2020/aug/21/ofqual-exams-algorithm-why-did-it-fail-make-grade-a-levels"
+                    }
+                ],
+                "title": "UK Ofqual's Algorithm Disproportionately Provided Lower Grades Than Teachers' Assessments"
+            },
+            {
+                "__typename": "Incident",
+                "incident_id": 323,
+                "reports": [
+                    {
+                        "__typename": "Report",
+                        "report_number": 2006,
+                        "title": "Tesla in Autopilot mode crashes into parked Laguna Beach police cruiser",
+                        "url": "http://www.latimes.com/local/lanow/la-me-ln-tesla-collision-20180529-story.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1992,
+                        "title": "Another Tesla On Autopilot Hits Another Emergency Vehicle - You Can't Make This Stuff Up",
+                        "url": "https://www.torquenews.com/1083/report-another-tesla-autopilot-hits-another-emergency-vehicle-you-cant-make-stuff"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1193,
+                        "title": "Tesla hit parked police car 'while using Autopilot'",
+                        "url": "https://www.bbc.com/news/technology-44300952"
+                    }
+                ],
+                "title": "Tesla on Autopilot Crashed into Parked Police Car in California"
+            },
+            {
+                "__typename": "Incident",
+                "incident_id": 16,
+                "reports": [
+                    {
+                        "__typename": "Report",
+                        "report_number": 1995,
+                        "title": "Tesla Model X in California Crash Sped Up Seconds Before Impact",
+                        "url": "https://www.bnnbloomberg.ca/tesla-model-x-in-california-crash-sped-up-seconds-before-impact-1.1089329"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1990,
+                        "title": "Collision Between a Sport Utility Vehicle Operating With Partial Driving Automation and a Crash Attenuator",
+                        "url": "https://www.ntsb.gov/investigations/Pages/HWY18FH011.aspx"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1989,
+                        "title": "Driver in Fatal Tesla Model X Crash Had Complained about Autopilot",
+                        "url": "https://www.caranddriver.com/news/a30877577/driver-tesla-model-x-crash-complained-autopilot/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 1988,
+                        "title": "Report: Model X In Latest Tesla Autopilot Death Accelerated And Steered Into Barrier",
+                        "url": "https://www.torquenews.com/1083/report-model-x-latest-tesla-autopilot-death-accelerated-and-steered-barrier"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 212,
+                        "title": "Tesla in fatal California crash was on Autopilot",
+                        "url": "https://www.bbc.com/news/world-us-canada-43604440"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 209,
+                        "title": "Tesla Model X driver dies in Mountain View crash",
+                        "url": "https://www.engadget.com/2018/03/24/tesla-model-x-driver-dies-in-mountain-view-crash/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 200,
+                        "title": "Tesla car that crashed and killed driver was running on Autopilot, firm says",
+                        "url": "https://www.theguardian.com/technology/2018/mar/31/tesla-car-crash-autopilot-mountain-view"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 199,
+                        "title": "Watch Tesla Autopilot Tackle This ‘Curve of Death’ in Impressive Video",
+                        "url": "https://www.inverse.com/article/42105-tesla-autopilot-curve-of-death"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 195,
+                        "title": "NTSB: Tesla driver killed in crash did not have his hands on the wheel",
+                        "url": "https://www.digitaltrends.com/cars/tesla-autopilot-fatal-crash-warnings-ignored/"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 194,
+                        "title": "Tesla says crashed vehicle had been on autopilot prior to accident",
+                        "url": "https://www.cnbc.com/2018/03/30/tesla-says-crashed-vehicle-had-been-on-autopilot-prior-to-accident.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 190,
+                        "title": "Tesla car with 'autopilot' function investigated after fatal crash",
+                        "url": "https://www.independent.co.uk/life-style/gadgets-and-tech/tesla-autopilot-investigation-self-driving-cars-crash-driver-death-elon-musk-a8277306.html"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 188,
+                        "title": "Tesla's Self-Driving Autopilot Involved in Another Deadly Crash",
+                        "url": "https://www.wired.com/story/tesla-autopilot-self-driving-crash-california/"
+                    }
+                ],
+                "title": "Tesla Model X on Autopilot Crashed into California Highway Barrier, Killing Driver"
+            },
+            {
+                "__typename": "Incident",
+                "incident_id": 347,
+                "reports": [
+                    {
+                        "__typename": "Report",
+                        "report_number": 2099,
+                        "title": "Waymo Self Driving Taxi Goes Rogue: Blocks Traffic, Evades Capture | JJRicks Rides With Waymo #54",
+                        "url": "https://www.youtube.com/watch?v=zdKCQKBvH-A"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2098,
+                        "title": "Waymo self-driving taxi confused by traffic cones flees help",
+                        "url": "https://www.bbc.com/news/technology-57144755"
+                    },
+                    {
+                        "__typename": "Report",
+                        "report_number": 2060,
+                        "title": "Confused self-driving taxi drives away from its support crew",
+                        "url": "https://www.wlwt.com/article/arizona-self-driving-taxi-waymo-got-confused/36466487#"
+                    }
+                ],
+                "title": "Waymo Self-Driving Taxi Behaved Unexpectedly, Driving away from Support Crew"
+            }
+        ]
+    }
+}
