@@ -488,21 +488,17 @@ function FormField({
         </>
       )}
 
-      {
-        // TODO: Make this work for multiple entities,
-        // store values in parent field.
-        field.display_type === 'object-list' && (
-          <ObjectListField
-            {...{
-              field,
-              handleChange,
-              formikValues,
-              setFieldTouched,
-              setFieldValue,
-            }}
-          />
-        )
-      }
+      {field.display_type === 'object-list' && (
+        <ObjectListField
+          {...{
+            field,
+            handleChange,
+            formikValues,
+            setFieldTouched,
+            setFieldValue,
+          }}
+        />
+      )}
 
       <Form.Text className="text-muted-gray mb-4 d-block">{field.short_description}</Form.Text>
     </div>
