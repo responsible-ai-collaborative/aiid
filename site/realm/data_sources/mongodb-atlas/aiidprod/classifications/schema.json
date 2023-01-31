@@ -9,7 +9,6 @@
             "bsonType": "object",
             "properties": {
               "short_name" : { "bsonType": "string" },
-              "mongo_type" : { "bsonType": "string" },
               "value_json": { "bsonType" : "string" }
             }
           }

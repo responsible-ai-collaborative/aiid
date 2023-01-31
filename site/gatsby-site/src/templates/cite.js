@@ -504,7 +504,6 @@ export const query = graphql`
         notes
         attributes {
           short_name
-          mongo_type
           value_json
         }
       }

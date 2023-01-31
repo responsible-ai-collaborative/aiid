@@ -9,7 +9,6 @@ export const FIND_CLASSIFICATION = gql`
       namespace
       attributes {
         short_name
-        mongo_type
         value_json
       }
     }
@@ -28,7 +27,6 @@ export const UPDATE_CLASSIFICATION = gql`
       namespace
       attributes {
         short_name
-        mongo_type
         value_json
       }
     }

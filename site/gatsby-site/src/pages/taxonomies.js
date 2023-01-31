@@ -84,7 +84,6 @@ export const pageQuery = graphql`
         namespace
         attributes {
           short_name
-          mongo_type
           value_json
         }
       }
