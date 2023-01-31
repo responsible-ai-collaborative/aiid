@@ -38,7 +38,7 @@ describe('Classifications App', () => {
       incident97Classifications
     );
 
-    cy.get('a[href="/cite/97#taxa-area"]')
+    cy.get('a[href="/cite/97/#taxa-area"]')
       .parents('tr')
       .find('[data-cy=edit-classification]')
       .click();

@@ -19,7 +19,7 @@ const Backups = ({ pageContext, ...props }) => {
 
   return (
     <Layout {...props}>
-      <AiidHelmet canonicalUrl={'/research/snapshots'}>
+      <AiidHelmet path={props.location.pathname}>
         <title>Database Backups and Snapshots</title>
       </AiidHelmet>
       <div className="titleWrapper">

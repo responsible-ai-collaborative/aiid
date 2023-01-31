@@ -6,15 +6,15 @@ const AiidHelmet = ({
   children,
   metaTitle = null,
   metaDescription = null,
-  canonicalUrl = null,
+  path,
   metaImage = null,
   metaType = 'website',
 }) => {
   const twitter = config.siteMetadata.twitterAccount;
 
-  if (canonicalUrl && canonicalUrl[0] == '/') {
-    canonicalUrl = config.gatsby.siteUrl + canonicalUrl;
-  }
+  metaImage ||= config.siteMetadata.ogImage;
+
+  const canonicalUrl = config.gatsby.siteUrl + path;
 
   return (
     <Helmet>

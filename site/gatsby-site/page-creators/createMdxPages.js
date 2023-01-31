@@ -21,7 +21,7 @@ const createMdxPages = async (graphql, createPage, { reporter }) => {
 
   result.data.allFile.nodes.forEach((node) => {
     if (node.childMdx.frontmatter.slug) {
-      const template = node.sourceInstanceName == 'blog' ? 'post' : 'docs';
+      const template = node.sourceInstanceName == 'blog' ? 'post' : 'doc';
 
       createPage({
         path: node.childMdx.frontmatter.slug,

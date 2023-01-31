@@ -12,7 +12,7 @@ export default function BlogPage(props) {
 
   return (
     <Layout {...props}>
-      <AiidHelmet metaTitle={'AIID Blog'} canonicalUrl={'/blog'} />
+      <AiidHelmet metaTitle={'AIID Blog'} path={props.location.pathname} />
       <div className={'titleWrapper'}>
         <StyledHeading>Blog</StyledHeading>
       </div>

@@ -35,7 +35,7 @@ describe('Confirm email', () => {
     cy.get('[data-cy="confirm-login-btn"]').should('exist');
 
     cy.get('[data-cy="confirm-login-btn"]').click();
-    cy.location('pathname', { timeout: 8000 }).should('eq', '/login');
+    cy.location('pathname', { timeout: 8000 }).should('eq', '/login/');
     cy.location('search', { timeout: 8000 }).should('eq', '?redirectTo=/account');
   });
 });
