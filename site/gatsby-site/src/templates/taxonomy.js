@@ -338,11 +338,6 @@ export const pageQuery = graphql`
         attributes {
           short_name
           mongo_type
-          value {
-            bool
-            string
-            array
-          }
           value_json
         }
         fields {
