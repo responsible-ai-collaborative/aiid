@@ -1,5 +1,8 @@
 import parseNews from '../../fixtures/api/parseNews.json';
 import semanticallyRelated from '../../fixtures/api/semanticallyRelated.json';
+import probablyRelatedIncidents from '../../fixtures/incidents/probablyRelatedIncidents.json';
+import probablyRelatedReports from '../../fixtures/reports/probablyRelatedReports.json';
+
 import { maybeIt } from '../../support/utils';
 
 describe('The Submit form', () => {
@@ -83,11 +86,9 @@ describe('The Submit form', () => {
       });
     });
 
-    cy.get('[data-cy="submission-success"]')
-      .contains('Report successfully added to review queue')
-      .should('be.visible');
-
-    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
+    cy.get('div[class^="ToastContext"]')
+      .contains('Report successfully added to review queue. You can see your submission')
+      .should('exist');
 
     cy.contains('Please review. Some data is missing.').should('not.exist');
   });
@@ -170,11 +171,11 @@ describe('The Submit form', () => {
         });
       });
 
-      cy.get('[data-cy="submission-success"]')
+      cy.get('div[class^="ToastContext"]')
         .contains('Report successfully added to review queue')
         .should('be.visible');
 
-      cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
+      cy.get('div[class^="ToastContext"] a').should('have.attr', 'href', '/apps/submitted/');
 
       cy.contains('Please review. Some data is missing.').should('not.exist');
     }
@@ -938,9 +939,9 @@ describe('The Submit form', () => {
 
     cy.wait('@insertSubmission');
 
-    cy.get('[data-cy="submission-success"]').should('be.visible');
-
-    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/es/apps/submitted');
+    cy.get('div[class^="ToastContext"]')
+      .contains('Informe agregado exitosamente a la cola de revisión.')
+      .should('exist');
   });
 
   it('Should submit on step 1', () => {
@@ -977,11 +978,9 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="submit-step-1"]').click();
 
-    cy.get('[data-cy="submission-success"]')
-      .contains('Report successfully added to review queue')
-      .should('be.visible');
-
-    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
+    cy.get('div[class^="ToastContext"]')
+      .contains('Report successfully added to review queue. You can see your submission')
+      .should('exist');
   });
 
   it('Should submit on step 2', () => {
@@ -1026,11 +1025,9 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="submit-step-2"]').click();
 
-    cy.get('[data-cy="submission-success"]')
-      .contains('Report successfully added to review queue')
-      .should('be.visible');
-
-    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
+    cy.get('div[class^="ToastContext"]')
+      .contains('Report successfully added to review queue. You can see your submission')
+      .should('exist');
   });
 
   it('Should display an error message if data is missing', () => {
@@ -1143,6 +1140,20 @@ describe('The Submit form', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedIncidents',
+      'ProbablyRelatedIncidents',
+      probablyRelatedIncidents
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedReports',
+      'ProbablyRelatedReports',
+      probablyRelatedReports
+    );
+
     cy.visit(url);
 
     const values = {
@@ -1164,7 +1175,9 @@ describe('The Submit form', () => {
 
     cy.clickOutside();
 
-    cy.get('[data-cy="related-byAuthors"] [data-cy="result"]', { timeout: 10000 })
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="related-byAuthors"] [data-cy="result"]')
       .should('be.visible')
       .eq(0)
       .then(($el) => {
@@ -1187,15 +1200,15 @@ describe('The Submit form', () => {
 
     cy.get('button[data-cy="submit-step-1"]').scrollIntoView().click();
 
-    cy.wait('@insertSubmission').then((xhr) => {
+    cy.wait('@insertSubmission', { timeout: 10000 }).then((xhr) => {
       expect(xhr.request.body.variables.submission).to.deep.nested.include({
         ...values,
         authors: [values.authors],
         plain_text:
           'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease\n',
         source_domain: `test.com`,
-        editor_dissimilar_incidents: [5],
-        editor_similar_incidents: [16],
+        editor_dissimilar_incidents: [2],
+        editor_similar_incidents: [3],
       });
     });
   });
@@ -1300,11 +1313,11 @@ describe('The Submit form', () => {
       });
     });
 
-    cy.get('[data-cy="submission-success"]')
+    cy.get('div[class^="ToastContext"]')
       .contains('Report successfully added to review queue')
       .should('be.visible');
 
-    cy.get('[data-cy="submission-success"] a').should('have.attr', 'href', '/apps/submitted');
+    cy.get('div[class^="ToastContext"] a').should('have.attr', 'href', '/apps/submitted/');
 
     cy.contains('Please review. Some data is missing.').should('not.exist');
   });

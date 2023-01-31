@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import md5 from 'md5';
 import { format } from 'date-fns';
 import { Image } from '../../utils/cloudinary';
@@ -10,9 +10,7 @@ import { LocalizedLink } from 'gatsby-theme-i18n';
 const LatestIncidentReport = ({ report }) => {
   const { image_url, cloudinary_id, title, text, epoch_date_submitted, incident_id } = report;
 
-  const [formattedDate, setFormattedDate] = useState(null);
-
-  useEffect(() => setFormattedDate(format(epoch_date_submitted * 1000, 'MMM d, yyyy')), []);
+  const formattedDate = format(epoch_date_submitted * 1000, 'yyyy-MM-dd');
 
   return (
     <div className="flex flex-col items-center bg-white rounded-lg border  shadow-md md:flex-row dark:border-gray-700 dark:bg-gray-800">
@@ -22,7 +20,6 @@ const LatestIncidentReport = ({ report }) => {
             className={
               'img-fluid rounded-start h-full w-full max-w-full rounded-t-lg md:rounded-l-lg md:rounded-r-none border-r object-cover'
             }
-            // transformation={{ transition: '0.5s all ease-in-out' }}
             publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
             alt={title}
           />

@@ -5,7 +5,6 @@ import Layout from 'components/Layout';
 import Citation from 'components/cite/Citation';
 import ImageCarousel from 'components/cite/ImageCarousel';
 import BibTex from 'components/BibTex';
-import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 import { format, isAfter, isEqual } from 'date-fns';
 import Timeline from '../components/visualizations/Timeline';
 import IncidentStatsCard from '../components/cite/IncidentStatsCard';
@@ -34,6 +33,8 @@ import AllegedEntities from 'components/entities/AllegedEntities';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import VariantList from 'components/variants/VariantList';
+import { isCompleteReport } from 'utils/variants';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -94,8 +95,6 @@ function CitePage(props) {
 
   const metaDescription = incident.description;
 
-  const canonicalUrl = getCanonicalUrl(incident.incident_id);
-
   const incidentReports = getTranslatedReports({
     allMongodbAiidprodReports,
     translations: {
@@ -106,7 +105,9 @@ function CitePage(props) {
     locale,
   });
 
-  const sortedReports = sortIncidentsByDatePublished(incidentReports);
+  const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports);
+
+  const sortedReports = sortedIncidentReports.filter((report) => isCompleteReport(report));
 
   const metaImage = sortedReports[0].image_url;
 
@@ -128,6 +129,8 @@ function CitePage(props) {
     mongodb_id: 0,
     isOccurrence: true,
   });
+
+  const variants = sortedIncidentReports.filter((report) => !isCompleteReport(report));
 
   const taxonomies = useMemo(
     () =>
@@ -222,7 +225,7 @@ function CitePage(props) {
 
   return (
     <Layout {...{ props }}>
-      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
+      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
 
@@ -231,7 +234,7 @@ function CitePage(props) {
         <div className="flex">
           <SocialShareButtons
             metaTitle={metaTitle}
-            canonicalUrl={canonicalUrl}
+            path={props.location.pathname}
             page="cite"
             className="-mt-1"
           ></SocialShareButtons>
@@ -436,6 +439,8 @@ function CitePage(props) {
               </Row>
             ))}
 
+            <VariantList incidentId={incident.incident_id} variants={variants}></VariantList>
+
             <SimilarIncidents
               nlp_similar_incidents={nlp_similar_incidents}
               editor_similar_incidents={editor_similar_incidents}
@@ -564,6 +569,7 @@ export const query = graphql`
         date_published
         report_number
         title
+        description
         url
         image_url
         cloudinary_id
@@ -574,6 +580,8 @@ export const query = graphql`
         epoch_date_submitted
         language
         tags
+        text_inputs
+        text_outputs
       }
     }
     allMongodbTranslationsReportsEs(filter: { report_number: { in: $report_numbers } })

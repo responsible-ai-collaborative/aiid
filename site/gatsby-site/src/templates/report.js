@@ -6,7 +6,6 @@ import Container from '../elements/Container';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
 import { useLocalization } from 'gatsby-theme-i18n';
 import { graphql } from 'gatsby';
-import config from '../../config';
 import ReportCard from 'components/reports/ReportCard';
 
 function ReportPage(props) {
@@ -30,13 +29,11 @@ function ReportPage(props) {
 
   const metaDescription = report.description;
 
-  const canonicalUrl = `${config.gatsby.siteUrl}/reports/${report.report_number}`;
-
   const metaImage = report.image_url;
 
   return (
     <Layout {...props}>
-      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
+      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
 
@@ -44,7 +41,7 @@ function ReportPage(props) {
         <h1 className="tw-styled-heading">{locale == 'en' ? metaTitle : defaultTitle}</h1>
         <SocialShareButtons
           metaTitle={metaTitle}
-          canonicalUrl={canonicalUrl}
+          path={props.location.pathname}
           page="cite"
         ></SocialShareButtons>
       </div>

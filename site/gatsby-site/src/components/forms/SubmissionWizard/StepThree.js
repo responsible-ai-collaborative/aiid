@@ -25,6 +25,8 @@ const StepThree = (props) => {
 
   const [data, setData] = useState(props.data);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const { isRole } = useUserContext();
 
   const stepThreeValidationSchema = yup.object().shape({
@@ -88,8 +90,15 @@ const StepThree = (props) => {
   });
 
   const handleSubmit = (values) => {
+    setIsSubmitting(true);
     props.next(values, true);
   };
+
+  useEffect(() => {
+    if (props.submissionFailed || props.submissionComplete) {
+      setIsSubmitting(false);
+    }
+  }, [props.submissionFailed, props.submissionComplete]);
 
   useEffect(() => {
     setData(props.data);
@@ -241,7 +250,7 @@ const StepThree = (props) => {
                 <Button
                   type="button"
                   color={'light'}
-                  disabled={TextInputGroupProps.isSubmitting}
+                  disabled={isSubmitting}
                   onClick={() => props.previous(TextInputGroupProps.values)}
                 >
                   <svg
@@ -259,8 +268,8 @@ const StepThree = (props) => {
                   </svg>
                   <Trans>Previous</Trans>
                 </Button>
-                <Button type="submit">
-                  {TextInputGroupProps.isSubmitting && (
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting && (
                     <div className="mr-3">
                       <Spinner size="sm" light={true} />
                     </div>

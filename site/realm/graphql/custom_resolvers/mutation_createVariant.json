@@ -1,0 +1,39 @@
+{
+    "field_name": "createVariant",
+    "function_name": "createVariant",
+    "input_type": {
+        "properties": {
+            "incidentId": {
+                "bsonType": "int"
+            },
+            "variant": {
+                "bsonType": "object",
+                "properties": {
+                    "text_inputs": {
+                        "bsonType": "string"
+                    },
+                    "text_outputs": {
+                        "bsonType": "string"
+                    }
+                }
+            }
+        },
+        "title": "CreateVariantInput",
+        "type": "object"
+    },
+    "input_type_format": "custom",
+    "on_type": "Mutation",
+    "payload_type": {
+        "properties": {
+            "incident_id": {
+                "bsonType": "int"
+            },
+            "report_number": {
+                "bsonType": "int"
+            }
+        },
+        "title": "CreateVariantPayload",
+        "type": "object"
+    },
+    "payload_type_format": "custom"
+}
