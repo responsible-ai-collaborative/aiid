@@ -48,7 +48,7 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
           const axis = attribute.short_name;
 
           categoryCounts[axis] ||= {};
-          const value = getClassificationValue(classification, axis); // classification.classifications[axis];
+          const value = getClassificationValue(classification, axis);
 
           if (Array.isArray(value)) {
             for (const category of value) {

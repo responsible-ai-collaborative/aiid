@@ -177,7 +177,7 @@ const getStats = (taxa, classification) => {
       let auxStat = {};
 
       filteredClassification.forEach((c) => {
-        const value = getClassificationValue(c, field.short_name, { spaceToUnderScore: true });
+        const value = getClassificationValue(c, field.short_name);
 
         if (value?.length > 0) {
           if (typeof value === 'object') {
@@ -206,7 +206,7 @@ const getStats = (taxa, classification) => {
       let auxStat = {};
 
       filteredClassification.forEach((c) => {
-        const value = getClassificationValue(c, field.short_name, { spaceToUnderScore: true }); //c.classifications[field.short_name.split(' ').join('_')];
+        const value = getClassificationValue(c, field.short_name);
 
         if ((value || typeof value === 'boolean') && value !== '') {
           if (typeof value === 'boolean') {

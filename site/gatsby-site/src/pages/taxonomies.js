@@ -51,22 +51,6 @@ export default function Taxonomies({ data, ...props }) {
           </li>
         </ul>
 
-        {/*<h2>
-          <Trans>In-Development Taxonomies</Trans>
-        </h2>
-        <ul>
-          <li className="list-none">
-            <p>
-              <Trans>
-                <LocalizedLink to="/taxonomy/resources">Resources</LocalizedLink>. This is a
-                taxonomy that will associate incidents with resources that help understand,
-                mitigate, and prevent incidents from recurring in the future.
-              </Trans>
-            </p>
-          </li>
-        </ul>
-        */}
-
         <h2>
           <Trans>About Taxonomies</Trans>
         </h2>
