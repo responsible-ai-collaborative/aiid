@@ -44,7 +44,7 @@ describe('Blog', () => {
     cy.get('head meta[property="og:url"]').should(
       'have.attr',
       'content',
-      `https://incidentdatabase.ai/blog/${postSlug}`
+      `https://incidentdatabase.ai/blog/${postSlug}/`
     );
     cy.get('head meta[property="og:type"]').should('have.attr', 'content', 'website');
     cy.get('head meta[property="og:title"]').should('have.attr', 'content', title);
