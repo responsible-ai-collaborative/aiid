@@ -12,6 +12,7 @@ import { FIND_CLASSIFICATION, UPDATE_CLASSIFICATION } from '../../graphql/classi
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import Tags from 'components/forms/Tags.js';
 import { getClassificationValue } from 'utils/classifications';
+import { debounce } from 'debounce';
 
 const FormContainer = styled.div`
   padding: 1em;
@@ -36,6 +37,10 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
   const addToast = useToastContext();
 
   const formRef = useRef(null);
+
+  const debouncedSetInitialValues = useRef(
+    debounce((values) => setInitialValues(values), 500)
+  ).current;
 
   useImperativeHandle(ref, () => ({
     submit() {
@@ -159,7 +164,6 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
           return {
             short_name: key,
             value_json: JSON.stringify(value),
-            mongo_type,
           };
         })
         .forEach((attribute) => {
@@ -287,7 +291,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
     <FormContainer data-cy="taxonomy-form" className="bootstrap">
       <Formik initialValues={initialValues} onSubmit={submit} innerRef={formRef}>
         {({ values, handleChange, handleSubmit, setFieldTouched, setFieldValue, isSubmitting }) => {
-          setInitialValues(values);
+          debouncedSetInitialValues(values);
           return (
             <Form onSubmit={handleSubmit}>
               <Form.Group className="mb-4">
