@@ -4,8 +4,6 @@ const config = require('../config');
 exports.up = async ({ context: { client } }) => {
   const taxaCollection = client.db(config.realm.production_db.db_name).collection('taxa');
 
-  //const csetV0TaxaEntry = await taxaCollection.findOne({ namespace: 'CSET' });
-
   await taxaCollection.insertOne(csetV1TaxaEntry);
 };
 
@@ -169,6 +167,8 @@ var csetV1TaxaEntry = {
       required: false,
       public: false,
     },
+
+    /* For reference, the CSETv0 field entry is commented above its correpsonding v1 field. */
 
     //      {
     //        short_name: "Physical System",

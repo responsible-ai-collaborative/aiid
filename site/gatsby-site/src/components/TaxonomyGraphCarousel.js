@@ -97,7 +97,7 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
           {!classificationsLoading &&
             classificationsData?.nodes &&
             axes.map((axis, index) => {
-              const dbAxis = axis; //axis.replace(/ /g, '_');
+              const dbAxis = axis;
 
               const columns = Object.keys(categoryCounts[dbAxis])
                 .map((category) => [category, categoryCounts[dbAxis][category]])
