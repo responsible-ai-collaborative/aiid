@@ -27,7 +27,7 @@ describe('Cite pages', () => {
 
       cy.contains('Show Details on Incident #10').first().click();
 
-      cy.url().should('include', '/cite/10#r23');
+      cy.url().should('include', '/cite/10/#r23');
       cy.waitForStableDOM();
 
       cy.contains('h5', 'Is Starbucks shortchanging its baristas?', { timeout: 8000 })
@@ -80,7 +80,7 @@ describe('Cite pages', () => {
 
     cy.get(`#${id} [data-cy="edit-report"]`).click();
 
-    cy.url().should('contain', '/cite/edit?report_number=3');
+    cy.url().should('contain', '/cite/edit/?report_number=3');
   });
 
   maybeIt('Should show the taxonomy form of CSET', () => {
@@ -186,7 +186,7 @@ describe('Cite pages', () => {
 
     cy.contains('Edit Incident').click();
 
-    cy.url().should('contain', '/incidents/edit?incident_id=10');
+    cy.url().should('contain', '/incidents/edit/?incident_id=10');
 
     cy.get('[data-cy="incident-form"]', { timeout: 8000 }).should('be.visible');
   });
@@ -336,7 +336,7 @@ describe('Cite pages', () => {
       cy.get('head meta[property="og:url"]').should(
         'have.attr',
         'content',
-        `https://incidentdatabase.ai${url}`
+        `https://incidentdatabase.ai${url}/`
       );
       cy.get('head meta[property="og:type"]').should('have.attr', 'content', 'website');
       cy.get('head meta[property="og:title"]').should('have.attr', 'content', title);

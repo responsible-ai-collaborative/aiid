@@ -38,7 +38,7 @@ const WordCounts = ({ pageContext, ...props }) => {
 
   return (
     <Layout {...props}>
-      <AiidHelmet canonicalUrl={'/summaries/wordcounts'}>
+      <AiidHelmet path={props.location.pathname}>
         <title>Word Counts</title>
       </AiidHelmet>
       <div className="titleWrapper">
