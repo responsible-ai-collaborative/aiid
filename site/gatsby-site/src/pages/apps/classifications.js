@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import LayoutHideSidebar from '../../components/LayoutHideSidebar';
-import TaxonomyForm from '../../components/taxa/TaxonomyForm';
 import AiidHelmet from '../../components/AiidHelmet';
 import styled from 'styled-components';
 import { useMongo } from '../../hooks/useMongo';
@@ -18,6 +17,8 @@ import DateRangePicker from 'react-bootstrap-daterangepicker';
 import { format } from 'date-fns';
 import ListSkeleton from 'elements/Skeletons/List';
 import { Modal } from 'flowbite-react';
+
+import EditForm from 'components/classifications/EditForm';
 
 const Container = styled.div`
   max-width: calc(100vw - 298px);
@@ -270,48 +271,6 @@ const SelectDatePickerFilter = ({
   );
 };
 
-const getClassificationsArray = (classifications, taxonomy) => {
-  if (!classifications) {
-    return [];
-  }
-
-  const taxaFieldsArray = taxonomy.field_list.sort((a, b) => b.weight - a.weight);
-
-  const array = [];
-
-  const getStringForValue = (value) => {
-    if (value === null) {
-      return '';
-    }
-
-    switch (typeof value) {
-      case 'object':
-        return value.join(', ');
-
-      case 'boolean':
-        return value ? 'Yes' : 'No';
-
-      default:
-        return value;
-    }
-  };
-
-  taxaFieldsArray.forEach((field) => {
-    const c = classifications[field.short_name];
-
-    const value = getStringForValue(c);
-
-    array.push({
-      name: field.short_name,
-      value: getStringForValue(value),
-      weight: field.weight,
-      shortDescription: field.short_description,
-    });
-  });
-
-  return array;
-};
-
 const formatDateField = (s) => {
   const dateObj = new Date(s.props.cell.value);
 
@@ -321,59 +280,6 @@ const formatDateField = (s) => {
     return <>{s.props.cell.value}</>;
   }
 };
-
-function EditForm({
-  allTaxonomies,
-  allClassifications,
-  row,
-  editFormRef,
-  onSubmit,
-  currentTaxonomy,
-}) {
-  const taxonomyFormObj = {
-    classificationsArray: [],
-    namespace: '',
-    taxonomyFields: [],
-  };
-
-  const taxaData = allTaxonomies.filter((taxa) => taxa.namespace === currentTaxonomy)[0];
-
-  taxonomyFormObj.namespace = taxaData.namespace;
-  taxonomyFormObj.taxonomyFields = taxaData.field_list.map((f) => {
-    return {
-      display_type: f.display_type,
-      long_name: f.long_name,
-      public: f.public,
-      short_description: f.short_description,
-      short_name: f.short_name,
-      weight: f.weight,
-    };
-  });
-
-  const classificationObj = allClassifications.filter(
-    (report) => report.incident_id === row.values.IncidentId
-  );
-
-  taxonomyFormObj.classificationsArray = getClassificationsArray(
-    classificationObj.length > 0 ? classificationObj[0].classifications : null,
-    taxaData
-  );
-
-  if (classificationObj.length === 1) {
-    taxonomyFormObj.notes = classificationObj[0].notes;
-  }
-
-  return (
-    <div className="bootstrap">
-      <TaxonomyForm
-        ref={editFormRef}
-        namespace={taxaData.namespace}
-        incidentId={row.values.IncidentId}
-        onSubmit={onSubmit}
-      />
-    </div>
-  );
-}
 
 function Row({
   row,
