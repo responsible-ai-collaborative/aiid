@@ -1188,7 +1188,7 @@ var csetV1TaxaEntry = {
           public: false,
         },
       ],
-      default: [],
+      default: '[]',
       placeholder: '',
       permitted_values: [],
       weight: 5,

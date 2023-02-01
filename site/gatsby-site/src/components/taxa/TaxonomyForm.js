@@ -1,14 +1,11 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import styled from 'styled-components';
-import { useMongo } from 'hooks/useMongo';
 import { Formik } from 'formik';
-
-import Loader from 'components/ui/Loader';
-import config from '../../../config.js';
-
 import { useMutation, useQuery } from '@apollo/client';
+
 import { FIND_CLASSIFICATION, UPDATE_CLASSIFICATION } from '../../graphql/classifications.js';
+import Loader from 'components/ui/Loader';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import Tags from 'components/forms/Tags.js';
 import { getClassificationValue } from 'utils/classifications';
@@ -19,9 +16,11 @@ const FormContainer = styled.div`
 `;
 
 const TaxonomyForm = forwardRef(function TaxonomyForm(
-  { namespace, incidentId, onSubmit, active },
+  { taxonomy, incidentId, onSubmit, active },
   ref
 ) {
+  const namespace = taxonomy.namespace;
+
   const [loading, setLoading] = useState(true);
 
   const [error] = useState('');
@@ -29,10 +28,6 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
   const [initialValues, setInitialValues] = useState({});
 
   const [fieldsWithDefaultValues, setFieldsWithDefaultValues] = useState([]);
-
-  const [taxonomy, setTaxonomy] = useState(null);
-
-  const { runQuery } = useMongo();
 
   const addToast = useToastContext();
 
@@ -47,22 +42,6 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
       formRef.current.submitForm();
     },
   }));
-
-  // this should be updated to use the useQuery hook but some
-  // fields need to be normalized to play nice with graphql
-  useEffect(() => {
-    runQuery(
-      {
-        namespace,
-      },
-      (res) => {
-        setTaxonomy(res[0]);
-      },
-      config.realm.production_db.db_service,
-      config.realm.production_db.db_name,
-      'taxa'
-    );
-  }, []);
 
   const { data: classificationsData } = useQuery(FIND_CLASSIFICATION, {
     variables: { query: { incident_id: incidentId } },
@@ -80,7 +59,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
 
   const allTaxonomyFields =
     taxonomy &&
-    taxonomy.field_list.reduce(
+    taxonomy.taxonomyFields.reduce(
       (fields, field) => fields.concat([field]).concat(field.subfields || []),
       []
     );
@@ -93,7 +72,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
 
       const defaultValues = {};
 
-      taxonomy.field_list.forEach((field) => {
+      taxonomy.taxonomyFields.forEach((field) => {
         fieldsArray.push(field);
 
         let classificationValue =
