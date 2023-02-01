@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql, Link } from 'gatsby';
 import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
@@ -22,19 +22,15 @@ export default function Post(props) {
 
   const metaDescription = mdx.frontmatter.metaDescription;
 
-  let canonicalUrl = config.gatsby.siteUrl;
-
   const postImage = mdx.frontmatter.image?.childImageSharp?.gatsbyImageData?.images?.fallback?.src;
 
   let metaImage = null;
 
   if (postImage) {
-    metaImage = `${canonicalUrl}${postImage}`;
+    metaImage = `${config.gatsby.siteUrl}${postImage}`;
   }
 
-  canonicalUrl =
-    config.gatsby.pathPrefix !== '/' ? canonicalUrl + config.gatsby.pathPrefix : canonicalUrl;
-  canonicalUrl = canonicalUrl + mdx.frontmatter.slug;
+  const canonicalUrl = config.gatsby.siteUrl + props.location.pathname;
 
   const loc = new URL(canonicalUrl);
 
@@ -44,13 +40,11 @@ export default function Post(props) {
     </>
   );
 
-  const [formattedDate, setFormattedDate] = useState(null);
-
-  useEffect(() => setFormattedDate(format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')), []);
+  const formattedDate = format(new Date(mdx.frontmatter.date), 'yyyy-MM-dd');
 
   return (
     <Layout {...{ ...props, rightSidebar }}>
-      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }} />
+      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }} />
       <div className={'titleWrapper'}>
         <StyledHeading>{mdx.fields.title}</StyledHeading>
 
@@ -68,7 +62,7 @@ export default function Post(props) {
 
         <SocialShareButtons
           metaTitle={metaTitle}
-          canonicalUrl={canonicalUrl}
+          path={props.location.pathname}
           page="post"
           className="-mt-1"
         ></SocialShareButtons>

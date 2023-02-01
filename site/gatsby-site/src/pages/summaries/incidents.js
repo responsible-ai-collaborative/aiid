@@ -58,7 +58,7 @@ export default function Incidents({ data, ...props }) {
 
   return (
     <Layout {...props}>
-      <AiidHelmet canonicalUrl={'/summaries/incidents'}>
+      <AiidHelmet path={props.location.pathname}>
         <title>Incident List</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>

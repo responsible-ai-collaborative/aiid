@@ -19,7 +19,7 @@ const CandidateCard = ({
   let date;
 
   try {
-    date = format(parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()), 'MMM d');
+    date = format(parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()), 'yyyy-MM-dd');
   } catch (e) {
     date = null;
   }
@@ -218,7 +218,7 @@ const NewsSearchPage = (props) => {
 
   return (
     <Layout {...props}>
-      <AiidHelmet>
+      <AiidHelmet path={props.location.pathname}>
         <title>{t('News Search')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
