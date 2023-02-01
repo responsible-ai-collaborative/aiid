@@ -412,7 +412,7 @@ function FormField({
             id={`${identifier}-yes`}
             value="true"
             onChange={handleChange}
-            checked={formikValues[identifier] === 'true'}
+            checked={[true, 'true'].includes(formikValues[identifier])}
           />
           <Form.Check
             key="no"
@@ -422,7 +422,7 @@ function FormField({
             id={`${identifier}-no`}
             value="false"
             onChange={handleChange}
-            checked={formikValues[identifier] === 'false'}
+            checked={[false, 'false'].includes(formikValues[identifier])}
           />
         </>
       )}
