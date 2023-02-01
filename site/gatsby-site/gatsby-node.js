@@ -227,7 +227,6 @@ exports.createSchemaCustomization = ({ actions }) => {
 
     type mongodbAiidprodClassificationsAttribute {
       short_name: String
-      mongo_type: String
       value_json: String
     }
     type mongodbAiidprodClassifications implements Node {
