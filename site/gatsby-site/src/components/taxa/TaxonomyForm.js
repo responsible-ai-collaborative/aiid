@@ -286,7 +286,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                 />
               </Form.Group>
               <fieldset disabled={isSubmitting}>
-                {fieldsWithDefaultValues.map((rawField) => (
+                {fieldsWithDefaultValues.sort(sortByFieldNumbers).map((rawField) => (
                   <FormField
                     key={rawField}
                     field={rawField}
@@ -521,5 +521,24 @@ var getSubclassificationIds = (formikKeys) =>
   Array.from(new Set(formikKeys.map((key) => key.split('___')[1]))).filter(
     (id) => id !== undefined
   );
+
+function sortByFieldNumbers(a, b) {
+  if (a.field_number !== undefined && b.field_number === undefined) return 1;
+  if (a.field_number === undefined && b.field_number !== undefined) return -1;
+  if (a.field_number !== undefined && b.field_number !== undefined) {
+    const [fieldNumsA, fieldNumsB] = [a, b].map((e) =>
+      e.field_number.split('.').map((s) => Number(s))
+    );
+
+    for (let i = 0; i < Math.max(fieldNumsA.length, fieldNumsB.length); i++) {
+      if (fieldNumsA[i] === undefined && fieldNumsB[i] === undefined) return 0;
+      if (fieldNumsA[i] !== undefined && fieldNumsB[i] === undefined) return 1;
+      if (fieldNumsA[i] === undefined && fieldNumsB[i] !== undefined) return -1;
+      if (fieldNumsA[i] > fieldNumsB[i]) return 1;
+      if (fieldNumsA[i] < fieldNumsB[i]) return -1;
+    }
+  }
+  return 0;
+}
 
 export default TaxonomyForm;
