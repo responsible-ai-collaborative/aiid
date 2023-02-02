@@ -118,7 +118,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
 
         <ul
           id="sidebar-tree"
-          data-cy={'sidebar-tree' + isCollapsed ? '-collapsed' : ''}
+          data-cy="sidebar-tree"
           className={`space-y-2 shrink list-none overflow-auto p-2 md:mb-12`}
         >
           <Tree
