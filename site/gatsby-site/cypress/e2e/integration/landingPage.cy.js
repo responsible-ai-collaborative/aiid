@@ -90,9 +90,9 @@ describe('The Landing page', () => {
   maybeIt('Should redirect to the account page when logged in', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'), { skipSession: true });
 
-    cy.waitForStableDOM();
-
     cy.location('pathname', { timeout: 8000 }).should('eq', '/');
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="sidebar-user"] a').first().scrollIntoView().click();
 
