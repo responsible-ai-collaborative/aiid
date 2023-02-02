@@ -1,5 +1,5 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Card } from 'react-bootstrap';
 import styled from 'styled-components';
 import { Formik } from 'formik';
 import { useMutation, useQuery } from '@apollo/client';
@@ -28,6 +28,8 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
   const [initialValues, setInitialValues] = useState({});
 
   const [fieldsWithDefaultValues, setFieldsWithDefaultValues] = useState([]);
+
+  const [deletedSubClassificationIds, setDeletedSubClassificationIds] = useState([]);
 
   const addToast = useToastContext();
 
@@ -180,6 +182,8 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
         for (const subClassificationId of subClassificationIds) {
           // E.g. "0"
 
+          if (deletedSubClassificationIds.includes(subClassificationId)) continue;
+
           // E.g. [{short_name: 'Entity',      value_json: '"Google"'                 },
           //       {short_name: 'Entity Type', value_json: '"for-profit organization"'} ]
           const subClassificationAttributes = superfieldSubfields
@@ -291,7 +295,12 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                     key={rawField}
                     field={rawField}
                     formikValues={values}
-                    {...{ handleChange, setFieldTouched, setFieldValue }}
+                    {...{
+                      handleChange,
+                      setFieldTouched,
+                      setFieldValue,
+                      setDeletedSubClassificationIds,
+                    }}
                   />
                 ))}
                 <Button type="submit" disabled={isSubmitting}>
@@ -314,6 +323,7 @@ function FormField({
   setFieldValue,
   superfield,
   superfieldIndex,
+  setDeletedSubClassificationIds,
 }) {
   const identifier = superfield
     ? `${superfield.short_name}___${superfieldIndex}___${field.short_name}`
@@ -475,6 +485,7 @@ function FormField({
             formikValues,
             setFieldTouched,
             setFieldValue,
+            setDeletedSubClassificationIds,
           }}
         />
       )}
@@ -484,7 +495,14 @@ function FormField({
   );
 }
 
-function ObjectListField({ field, handleChange, formikValues, setFieldTouched, setFieldValue }) {
+function ObjectListField({
+  field,
+  handleChange,
+  formikValues,
+  setFieldTouched,
+  setFieldValue,
+  setDeletedSubClassificationIds,
+}) {
   // These are client-side only
   const [objectListItemIds, setObjectListItemsIds] = useState(
     getSubclassificationIds(Object.keys(formikValues))
@@ -493,26 +511,43 @@ function ObjectListField({ field, handleChange, formikValues, setFieldTouched, s
   return (
     <>
       {objectListItemIds.map((id) => (
-        <div key={id}>
-          {field.subfields.map((subfield) => (
-            <FormField
-              key={subfield.short_name + '-form-field'}
-              field={subfield}
-              superfield={field}
-              superfieldIndex={id}
-              {...{
-                handleChange,
-                formikValues,
-                setFieldTouched,
-                setFieldValue,
+        <Card key={id} style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+          <Card.Body>
+            {field.subfields.map((subfield) => (
+              <FormField
+                key={subfield.short_name + '-form-field'}
+                field={subfield}
+                superfield={field}
+                superfieldIndex={id}
+                {...{
+                  handleChange,
+                  formikValues,
+                  setFieldTouched,
+                  setFieldValue,
+                  setDeletedSubClassificationIds,
+                }}
+              />
+            ))}
+            <Button
+              variant="outline-danger"
+              onClick={() => {
+                setObjectListItemsIds((ids) => ids.filter((itemId) => itemId != id));
+                setDeletedSubClassificationIds((ids) => ids.concat(id));
               }}
-            />
-          ))}
-        </div>
+            >
+              Delete Entity
+            </Button>
+          </Card.Body>
+        </Card>
       ))}
-      <Button onClick={() => setObjectListItemsIds((ids) => ids.concat(new Date().getTime()))}>
-        Add
-      </Button>
+      <div>
+        <Button
+          variant="secondary"
+          onClick={() => setObjectListItemsIds((ids) => ids.concat(new Date().getTime()))}
+        >
+          Add Entity
+        </Button>
+      </div>
     </>
   );
 }
