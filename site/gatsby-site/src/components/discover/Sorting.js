@@ -5,31 +5,51 @@ import { Trans, useTranslation } from 'react-i18next';
 
 function Sorting(props) {
   const [selectedItem, setSelectedItem] = useState({
-    label: 'Incident Date',
-    value: 'instant_search-en_epoch_incident_date',
+    label: 'Relevance',
+    value: 'instant_search-en',
   });
 
   const { t } = useTranslation();
 
-  const [selectedDirection, setSelectedDirection] = useState('desc');
+  const [selectedDirection, setSelectedDirection] = useState('');
 
   const sortResults = (item) => {
     setSelectedItem(item);
   };
 
   useEffect(() => {
-    props.refine(`${selectedItem.value}_${selectedDirection}`);
+    if (selectedItem.value !== 'instant_search-en') {
+      props.refine(`${selectedItem.value}_${selectedDirection}`);
+    } else {
+      props.refine(`${selectedItem.value}`);
+    }
   }, [selectedDirection, selectedItem]);
 
   return (
     <>
       <div className="flex justify-end px-2">
         <Dropdown
-          label={`${t(selectedItem.label)} - ${t(selectedDirection)}`}
+          label={`${t(selectedItem.label)} ${t(selectedDirection)}`}
           color={'light'}
           data-cy="discover-sort"
         >
           <Dropdown.Item className="text-gray-400 hover:bg-white">ORDER</Dropdown.Item>
+          <Dropdown.Item
+            key={'instant_search-en'}
+            value={'instant_search-en'}
+            style={{ fontWeight: '' }}
+            onClick={() => {
+              sortResults({
+                label: 'Relevance',
+                value: 'instant_search-en',
+              });
+              setSelectedDirection('');
+            }}
+            className={`${'instant_search-en' === selectedItem.value ? 'bg-blue-100' : ''}`}
+          >
+            <Trans>Relevance</Trans>
+          </Dropdown.Item>
+          <Dropdown.Divider />
           {props.items.map((item) => (
             <Dropdown.Item
               key={item.value}
@@ -37,6 +57,9 @@ function Sorting(props) {
               style={{ fontWeight: item.isRefined ? 'bold' : '' }}
               onClick={() => {
                 sortResults(item);
+                if (selectedDirection === '') {
+                  setSelectedDirection('desc');
+                }
               }}
               className={`${item.value === selectedItem.value ? 'bg-blue-100' : ''}`}
             >

@@ -30,11 +30,7 @@ describe('Cite pages', () => {
       cy.url().should('include', '/cite/10/#r23');
       cy.waitForStableDOM();
 
-      cy.contains(
-        'h5',
-        'Twitter pranksters derail GPT-3 bot with newly discovered “prompt injection” hack',
-        { timeout: 8000 }
-      )
+      cy.contains('h5', '​Is Starbucks shortchanging its baristas?', { timeout: 8000 })
         .parents('[data-cy="incident-report-card"]')
         .then((subject) => {
           expect(subject[0].getBoundingClientRect().top).to.be.closeTo(0, 30);
