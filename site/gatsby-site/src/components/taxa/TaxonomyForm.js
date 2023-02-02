@@ -558,17 +558,19 @@ var getSubclassificationIds = (formikKeys) =>
   );
 
 function sortByFieldNumbers(a, b) {
-  if (a.field_number !== undefined && b.field_number === undefined) return 1;
-  if (a.field_number === undefined && b.field_number !== undefined) return -1;
-  if (a.field_number !== undefined && b.field_number !== undefined) {
+  var exists = (e) => e !== undefined && e !== null;
+
+  if (exists(a.field_number) && !exists(b.field_number)) return 1;
+  if (exists(b.field_number) && !exists(a.field_number)) return -1;
+  if (exists(a.field_number) && exists(b.field_number)) {
     const [fieldNumsA, fieldNumsB] = [a, b].map((e) =>
       e.field_number.split('.').map((s) => Number(s))
     );
 
     for (let i = 0; i < Math.max(fieldNumsA.length, fieldNumsB.length); i++) {
-      if (fieldNumsA[i] === undefined && fieldNumsB[i] === undefined) return 0;
-      if (fieldNumsA[i] !== undefined && fieldNumsB[i] === undefined) return 1;
-      if (fieldNumsA[i] === undefined && fieldNumsB[i] !== undefined) return -1;
+      if (exists(fieldNumsA[i]) && !exists(fieldNumsB[i])) return 1;
+      if (exists(fieldNumsB[i]) && !exists(fieldNumsA[i])) return 1;
+      if (!exists(fieldNumsA[i]) && !exists(fieldNumsB[i])) return 0;
       if (fieldNumsA[i] > fieldNumsB[i]) return 1;
       if (fieldNumsA[i] < fieldNumsB[i]) return -1;
     }

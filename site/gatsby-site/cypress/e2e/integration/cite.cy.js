@@ -13,6 +13,20 @@ describe('Cite pages', () => {
 
   const url = `/cite/${incidentId}`;
 
+  maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    const id = 'r3';
+
+    cy.visit('/cite/1#' + id);
+
+    cy.get(`#${id} [data-cy="edit-report"]`).click();
+
+    cy.waitForStableDOM();
+
+    cy.url().should('contain', '/cite/edit/?report_number=3');
+  });
+
   it('Successfully loads', () => {
     cy.visit(url);
   });
@@ -69,18 +83,6 @@ describe('Cite pages', () => {
       .contains('Editors')
       .parents('*')
       .contains('Sean McGregor');
-  });
-
-  maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-    const id = 'r3';
-
-    cy.visit('/cite/1#' + id);
-
-    cy.get(`#${id} [data-cy="edit-report"]`).click();
-
-    cy.url().should('contain', '/cite/edit/?report_number=3');
   });
 
   maybeIt('Should show the taxonomy form of CSET', () => {
