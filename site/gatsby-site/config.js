@@ -36,7 +36,6 @@ const config = {
 		      </div>
 		    </a>
 		  </li>`,
-    links: [{ text: '', link: '' }],
     search: {
       enabled: false,
       indexName: '',

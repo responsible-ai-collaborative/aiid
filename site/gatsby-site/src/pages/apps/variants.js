@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useQuery, useApolloClient } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { Spinner } from 'flowbite-react';
-import LayoutHideSidebar from '../../components/LayoutHideSidebar';
+import Layout from '../../components/Layout';
 import VariantsTable from '../../components/variants/VariantsTable';
 import { FIND_VARIANTS } from '../../graphql/variants';
 import { FIND_INCIDENTS } from '../../graphql/incidents';
@@ -72,7 +72,7 @@ export default function IncidentsPage(props) {
   };
 
   return (
-    <LayoutHideSidebar {...props}>
+    <Layout sidebarCollapsed={true} {...props}>
       <AiidHelmet path={props.location.pathname}>
         <title>{t('Variants')}</title>
       </AiidHelmet>
@@ -95,6 +95,6 @@ export default function IncidentsPage(props) {
           )}
         </div>
       </div>
-    </LayoutHideSidebar>
+    </Layout>
   );
 }

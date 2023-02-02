@@ -46,6 +46,11 @@ module.exports = {
     './src/templates/**/*.{js,jsx,ts,tsx}',
     'node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}',
   ],
+  variants: {
+    extend: {
+      textColor: ['group-hover'],
+    },
+  },
   theme: {
     maxHeight: {
       240: '240px',
@@ -124,6 +129,7 @@ module.exports = {
         'carousel-next-prev': 'ease',
         'form-check-input': 'ease-in-out',
         modal: 'linear',
+        'rotate-180': 'cubic-bezier(0.4, 0, 0.2, 1)',
       },
       transitionProperty: {
         btn: 'color,background-color,border-color,box-shadow',
@@ -134,6 +140,9 @@ module.exports = {
         'carousel-indicator': 'opacity',
         'carousel-next-prev': 'opacity',
         'form-check-input': 'background-position',
+        'rotate-180': 'transform',
+        width: 'width',
+        visibility: 'visibility',
       },
       zIndex: {
         2: '2',

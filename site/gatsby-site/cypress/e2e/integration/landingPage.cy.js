@@ -92,7 +92,7 @@ describe('The Landing page', () => {
 
     cy.location('pathname', { timeout: 8000 }).should('eq', '/');
 
-    cy.get('[data-cy="account-btn"]').filter(':visible').first().click();
+    cy.get('[data-cy="sidebar-user"] a').first().click({ force: true });
 
     cy.location('pathname', { timeout: 8000 }).should('eq', '/account/');
   });
@@ -100,7 +100,7 @@ describe('The Landing page', () => {
   it('Should redirect to the signup page when logged out', () => {
     cy.visit('/');
 
-    cy.get('[data-cy="subscribe-btn"]').filter(':visible').click();
+    cy.get('[data-cy="sidebar-user"] a').first().click({ force: true });
 
     cy.location('pathname', { timeout: 8000 }).should('eq', '/signup/');
   });

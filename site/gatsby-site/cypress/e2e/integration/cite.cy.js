@@ -25,6 +25,10 @@ describe('Cite pages', () => {
 
       cy.disableSmoothScroll();
 
+      cy.waitForStableDOM();
+
+      cy.get('[data-cy="collapse-button"]:visible').click();
+
       cy.contains('Show Details on Incident #10').first().click();
 
       cy.url().should('include', '/cite/10/#r23');

@@ -1,10 +1,10 @@
 import React from 'react';
-import LayoutHideSidebar from '../../components/LayoutHideSidebar';
 import IncidentsTable from '../../components/incidents/IncidentsTable';
 import { FIND_INCIDENTS_TABLE } from '../../graphql/incidents';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import AiidHelmet from '../../components/AiidHelmet';
+import Layout from 'components/Layout';
 import ListSkeleton from 'elements/Skeletons/List';
 
 export default function IncidentsPage(props) {
@@ -13,7 +13,7 @@ export default function IncidentsPage(props) {
   const { t } = useTranslation();
 
   return (
-    <LayoutHideSidebar {...props}>
+    <Layout {...props} sidebarCollapsed={true} className="w-full">
       <AiidHelmet path={props.location.pathname}>
         <title>{t('Incidents')}</title>
       </AiidHelmet>
@@ -29,6 +29,6 @@ export default function IncidentsPage(props) {
           </div>
         )}
       </div>
-    </LayoutHideSidebar>
+    </Layout>
   );
 }
