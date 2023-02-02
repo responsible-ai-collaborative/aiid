@@ -56,7 +56,11 @@ describe('The Discover app', () => {
   it('Filters by incident Id using card button', { retries: { runMode: 4 } }, () => {
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.get('[data-cy=expand-filters]').click();
+
+    cy.waitForStableDOM();
 
     cy.get('div[class^="tw-hits-container"]')
       .children()
