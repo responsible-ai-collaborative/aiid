@@ -65,7 +65,7 @@ describe('Signup', () => {
   });
 
   it('Should redirect to specific page after sign up if redirectTo is provided', () => {
-    const redirectTo = '/cite/10';
+    const redirectTo = '/cite/10/';
 
     cy.visit(`${url}?redirectTo=${redirectTo}`);
 

@@ -6,7 +6,7 @@ const AiidHelmet = ({
   children,
   metaTitle = null,
   metaDescription = null,
-  canonicalUrl = null,
+  path,
   metaImage = null,
   metaType = 'website',
 }) => {
@@ -14,9 +14,7 @@ const AiidHelmet = ({
 
   metaImage ||= config.siteMetadata.ogImage;
 
-  if (canonicalUrl && canonicalUrl[0] == '/') {
-    canonicalUrl = config.gatsby.siteUrl + canonicalUrl;
-  }
+  const canonicalUrl = config.gatsby.siteUrl + path;
 
   return (
     <Helmet>

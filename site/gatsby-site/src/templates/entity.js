@@ -205,7 +205,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
 
   return (
     <Layout {...props}>
-      <AiidHelmet metaTitle={'Entity: ' + name} canonicalUrl={'/entities/' + id} />
+      <AiidHelmet metaTitle={'Entity: ' + name} path={props.location.pathname} />
       <h3>
         <Link to="/entities">
           <Trans ns="entities">Entities</Trans>

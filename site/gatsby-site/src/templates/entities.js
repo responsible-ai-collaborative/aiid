@@ -59,6 +59,7 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
           metaTitle,
           metaDescription: t('Entities involved in AI Incidents'),
           canonicalUrl: 'https://incidentdatabase.ai/entities',
+          path: props.location.pathname,
         }}
       />
       <LayoutHideSidebar {...props}>
