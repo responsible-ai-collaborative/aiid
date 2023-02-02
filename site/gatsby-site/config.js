@@ -99,7 +99,6 @@ const config = {
     ],
     frontline: true,
     ignoreIndex: false,
-    title: '',
   },
   footer: {
     navConfig: [

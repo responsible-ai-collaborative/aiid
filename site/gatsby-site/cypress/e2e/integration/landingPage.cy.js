@@ -94,7 +94,10 @@ describe('The Landing page', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('[data-cy="sidebar-user"] a').first().scrollIntoView().click();
+    cy.get('[data-cy="sidebar-desktop"]')
+      .contains('li', 'Account', { timeout: 8000 })
+      .scrollIntoView()
+      .click();
 
     cy.waitForStableDOM();
 
