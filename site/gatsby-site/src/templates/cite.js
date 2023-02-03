@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { Badge, Spinner } from 'flowbite-react';
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
@@ -153,9 +153,13 @@ function CitePage(props) {
     taxonomies.find((taxonomy) => taxonomy.namespace == query.edit_taxonomy)
   );
 
+  const taxonomyDiv = useRef();
+
   useEffect(() => {
     if (query.edit_taxonomy?.length > 0) {
-      document.querySelector('#taxonomy-' + query.edit_taxonomy).scrollIntoView();
+      if (taxonomyDiv?.current?.scrollIntoView) {
+        taxonomyDiv.current.scrollIntoView();
+      }
     }
   }, []);
 
@@ -412,19 +416,24 @@ function CitePage(props) {
                 <Col>
                   {taxonomiesList
                     .filter((t) => t.canEdit || t.classificationsArray.length > 0)
-                    .map((t) => (
-                      <Taxonomy
-                        key={t.namespace}
-                        id={`taxonomy-${t.namespace}`}
-                        taxonomy={t}
-                        incidentId={incident.incident_id}
-                        canEdit={t.canEdit}
-                        {...{
-                          taxonomyBeingEdited,
-                          setTaxonomyBeingEdited,
-                        }}
-                      />
-                    ))}
+                    .map((t) => {
+                      const inQuery = query.edit_taxonomy == t.namespace;
+
+                      return (
+                        <div key={t.namespace} ref={inQuery ? taxonomyDiv : undefined}>
+                          <Taxonomy
+                            id={`taxonomy-${t.namespace}`}
+                            taxonomy={t}
+                            incidentId={incident.incident_id}
+                            canEdit={t.canEdit}
+                            {...{
+                              taxonomyBeingEdited,
+                              setTaxonomyBeingEdited,
+                            }}
+                          />
+                        </div>
+                      );
+                    })}
                 </Col>
               </Row>
             )}
