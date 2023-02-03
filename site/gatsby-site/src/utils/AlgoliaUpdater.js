@@ -65,6 +65,7 @@ const getClassificationArray = (classification) => {
           const values = Array.isArray(value) ? value : [value];
 
           for (const v of values) {
+            if (v == '') continue;
             result.push(`${classification.namespace}:${attribute.short_name}:${v}`);
           }
         } catch (e) {
@@ -135,7 +136,10 @@ class AlgoliaUpdater {
       let classificationsHash = {};
 
       classifications.forEach((c) => {
-        classificationsHash[c.incident_id] = getClassificationArray(c);
+        classificationsHash[c.incident_id] ||= [];
+        classificationsHash[c.incident_id] = classificationsHash[c.incident_id].concat(
+          getClassificationArray(c)
+        );
       });
 
       const downloadData = [];
@@ -177,7 +181,7 @@ class AlgoliaUpdater {
       const classifications = await this.mongoClient
         .db('aiidprod')
         .collection(`classifications`)
-        .find({ namespace: 'CSET' })
+        .find({})
         .toArray();
 
       return classifications;
