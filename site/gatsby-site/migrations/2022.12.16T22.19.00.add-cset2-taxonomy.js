@@ -93,11 +93,11 @@ var csetV1TaxaEntry = {
         'This is the researcher that is responsible for applying the classifications of the CSET taxonomy.',
       long_description:
         'An ID designating the individual who classified this incident according to the CSET taxonomy.',
-      display_type: 'enum',
+      display_type: 'string',
       mongo_type: 'string',
       default: '',
       placeholder: 'Select name here',
-      permitted_values: ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Other'],
+      permitted_values: [],
       weight: 5,
       instant_facet: false,
       required: false,
@@ -154,7 +154,7 @@ var csetV1TaxaEntry = {
       short_name: 'Quality Control',
       long_name: 'Was this incident randomly selected for additional quality control?',
       short_description:
-        "Has someone flagged a potential issue with this incident's classifications?",
+        "Has someone flagged a potential issue with this incident's classifications? Annotators should leave this field blank.",
       long_description:
         'The peer review process sometimes uncovers issues with the classifications that have been applied by the annotator. This field serves as a flag when there is a need for additional thought and input on the classifications applied',
       display_type: 'bool',
@@ -288,6 +288,21 @@ var csetV1TaxaEntry = {
     {
       field_number: '2.1.7',
       short_name: 'User Test in Controlled Conditions',
+      long_name: 'Was this a test or demonstration done by users in controlled conditions?',
+      short_description: 'Was this a test or demonstration done by users in controlled conditions?',
+      long_description:
+        '“Yes” if it was a test/demonstration performed by users in controlled conditions. “No” if it was not a test/demonstration. “No” if the test/demonstration was done by developers, producers or researchers. “No” if the test/demonstration was in controlled or non-controlled conditions.“Maybe” otherwise.',
+      ...YesNoMaybe,
+      placeholder: '',
+      weight: 50,
+      instant_facet: true,
+      required: false,
+      notes:
+        'The involvement of a user (versus a developer, producer, or researcher) increases the likelihood that harm can occur even if the AI system is being tested. Relative to controlled environments, controlled environments try to closely represent real-world conditions and end-users that affect use of the AI system. Therefore, testing in an controlled environment typically poses a heightened risk of harm to people, organizations, property, institutions, or the environment.',
+    },
+    {
+      field_number: '2.1.8',
+      short_name: 'User Test in Operational Conditions',
       long_name: 'Was this a test or demonstration done by users in operational conditions?',
       short_description:
         'Was this a test or demonstration done by users in operational conditions?',
@@ -299,7 +314,7 @@ var csetV1TaxaEntry = {
       instant_facet: true,
       required: false,
       notes:
-        'The involvement of a user (versus a developer, producer, or researcher) increases the likelihood that harm can occur even if the AI system is being tested. Relative to controlled environments, operational environments try to closely represent real-world conditions and end-users that affect use of the AI system. Therefore, testing in an operational environment typically poses a heightened risk of harm to people, organizations, property, institutions, or the environment.',
+        'Sometimes, prior to deployment, the user will perform a test or demonstration of the AI system. The involvement of a user (versus a developer, producer, or researcher) increases the likelihood that harm can occur even if the AI system is being tested in controlled environments.',
     },
     {
       field_number: '2.2',
@@ -541,7 +556,7 @@ var csetV1TaxaEntry = {
       short_name: 'Impact on Critical Services',
       long_name:
         "Did this impact people's access to critical or public services (health care, social services, voting, transportation, etc)?",
-      short_description: 'Indicates if people’s access to public services was impacted.',
+      short_description: 'Indicates if people’s access to critical public services was impacted.',
       long_description:
         "Did this impact people's access to critical or public services (health care, social services, voting, transportation, etc)?",
       ...YesNoMaybe,
@@ -553,7 +568,7 @@ var csetV1TaxaEntry = {
         'Public services include healthcare, social services, voting, public transportation, education, and consumer protection.\n\nNote, if ‘yes’ is selected then there was likely a violation of civil liberties and there was a special interest intangible harm.',
     },
     {
-      field_number: '3.1',
+      field_number: '3.2',
       short_name: 'Rights Violation',
       long_name:
         'Was this a violation of  human rights, civil liberties, civil rights, or democratic norms?',
@@ -730,7 +745,7 @@ var csetV1TaxaEntry = {
     //      },
     {
       field_number: '4.1',
-      short_name: 'Date of Harm Year',
+      short_name: 'Date of Incident Year',
       long_name: 'The year in which the incident first occurred.',
       short_description:
         'The year in which the incident occurred. If there are multiple harms or occurrences of the incident, list the earliest. If a precise date is unavailable, but the available sources provide a basis for estimating the year, estimate. Otherwise, leave blank.\n\nEnter in the format of YYYY',
@@ -748,7 +763,7 @@ var csetV1TaxaEntry = {
     },
     {
       field_number: '4.2',
-      short_name: 'Date of Harm Month',
+      short_name: 'Date of Incident Month',
       long_name: 'The month in which the incident first occurred.',
       short_description:
         'The month in which the incident occurred. If there are multiple harms or occurrences of the incident, list the earliest. If a precise date is unavailable, but the available sources provide a basis for estimating the month, estimate. Otherwise, leave blank.\n\nEnter in the format of MM',
@@ -766,7 +781,7 @@ var csetV1TaxaEntry = {
     },
     {
       field_number: '4.3',
-      short_name: 'Date of Harm Day',
+      short_name: 'Date of Incident Day',
       long_name: 'The day on which the first incident occurred.',
       short_description:
         'The day on which the incident occurred. If a precise date is unavailable, leave blank.\n\nEnter in the format of DD',
@@ -1058,10 +1073,10 @@ var csetV1TaxaEntry = {
         {
           field_number: '5.3',
           short_name: 'Entity type',
-          long_name: 'Indicates the type of entity that experienced the harm',
-          short_description: 'Indicates the type of entity that experienced the harm',
+          long_name: 'Indicates the type of entity',
+          short_description: 'Indicates the type of entity',
           long_description:
-            'Indicates the type of entity that experienced the harm. If multiple selections could characterize the entity, select the primary function of the entity.',
+            'Indicates the type of entity. If multiple selections could characterize the entity, select the primary function of the entity.',
           display_type: 'enum',
           mongo_type: 'string',
           default: 'unclear',
@@ -1118,11 +1133,11 @@ var csetV1TaxaEntry = {
           field_number: '5.5',
           short_name: 'Harm Category Experienced',
           long_name:
-            'Was an AI special interest intangible harm, tangible harm event, near-miss, or issue experienced by an entity',
+            'Was an AI special interest intangible harm, tangible harm event, near-miss, or issue experienced by this entity',
           short_description:
-            'Was an AI special interest intangible harm, tangible harm event, near-miss, or issue experienced by an entity',
+            'Was an AI special interest intangible harm, tangible harm event, near-miss, or issue experienced by this entity',
           long_description:
-            'Was an AI special interest intangible harm, tangible harm event, near-miss, or issue experienced by an entity. For each recorded entity, indicate the harm category that they experienced. Because recorded entities have a variety of roles in the AI incident, not every recorded entity will experience harm.',
+            'Was an AI special interest intangible harm, tangible harm event, near-miss, or issue experienced by this entity. For each recorded entity, indicate the harm category that they experienced. Because recorded entities have a variety of roles in the AI incident, not every recorded entity will experience harm.',
           display_type: 'enum',
           mongo_type: 'string',
           default: 'unclear',
@@ -1132,6 +1147,7 @@ var csetV1TaxaEntry = {
             'AI tangible harm event',
             'AI tangible harm near-miss',
             'AI tangible harm issue',
+            'Other harm not meeting CSET definitions',
             'not applicable',
             'unclear',
           ],
@@ -1599,67 +1615,25 @@ var csetV1TaxaEntry = {
     //      },
     {
       field_number: '7.5',
-      short_name: 'Autonomy1',
-      long_name:
-        'Autonomy1: Does the system operate independently, without human oversight, interaction or intervention?',
-      short_description:
-        'Indicate if the system operates independently with no human oversight, interaction, or intervention',
-      long_description: handleWhitespace(`
-        Indicate if the system operates independently with no human oversight, interaction, or intervention
-
-        Considering the chain of harm and autonomy level 1, there would be no person between the AI and the entity that experienced the harm. In other words, no human can intervene in the time between an AI system generating outputs and taking action.
-
-        Mark the autonomy level based on information available in the reports and not based on the design specification of the system. It is possible for a system to have modes that allow it to operate at multiple levels of autonomy. Annotate for the operating autonomy level at the time of the incident.
-
-        An example of Autonomy level 1 would be an AI enabled robotic vacuum system that is designed to work independently and without oversight, cleaning the office floors at night when everyone is gone.
+      short_name: 'Autonomy Level',
+      long_name: 'Autonomy Level',
+      short_description: handleWhitespace(`
+        Autonomy1: The system operates independently with no human oversight, interaction, or intervention. //
+        Autonomy2: The system operates independently but with human oversight, where a human can observe and override the system’s decisions in real time. //
+        Autonomy3: The system does not independently make decisions but instead provides information to a human who actively chooses to proceed with the AI’s information.
       `),
-      ...YesNoMaybe,
+      long_description: handleWhitespace(`
+        Autonomy1: The system operates independently with no human oversight, interaction, or intervention. //
+        Autonomy2: The system operates independently but with human oversight, where a human can observe and override the system’s decisions in real time. //
+        Autonomy3: The system does not independently make decisions but instead provides information to a human who actively chooses to proceed with the AI’s information.
+      `),
+      display_type: 'enum',
+      mongo_type: 'string',
+      default: '',
+      placeholder: '',
+      permitted_values: ['Autonomy1', 'Autonomy2', 'Autonomy3'],
       weight: 50,
       instant_facet: true,
-      required: false,
-      public: false,
-    },
-    {
-      field_number: '7.6',
-      short_name: 'Autonomy2',
-      long_name:
-        'Autonomy2: Does the system operate independently but with human oversight, where the system makes the decisions but a human actively observes the decisions and can override the system in real time?',
-      short_description:
-        'Indicate if the system operates independently but with human oversight, where a human can observe and override the system’s decisions in real time.',
-      long_description: handleWhitespace(`
-        Indicate if the system operates independently but with human oversight, where a human can observe and override the system’s decisions in real time.
-
-        Considering the chain of harm and autonomy level 2, there would be a person observing the AI’s behavior between the AI and the entity that experienced the harm. There is a possibility that the overseeing person could stop an action that would otherwise result in harm.  In other words, a human could intervene in the time between an AI system generating outputs and taking action.
-
-        Mark the autonomy level based on information available in the reports and not based on the design specification of the system. It is possible for a system to have modes that allow it to operate at multiple levels of autonomy. Annotate for the operating autonomy level at the time of the incident.
-
-        An example of an AI system that exhibits the second level of autonomy is a vehicle with autopilot capabilities. A vehicle on autopilot can drive independently for periods of time, but a human can take control of the vehicle and reorient if needed. To be considered level two autonomy, evidence must show that a human was overseeing the system at the time of the event and the human could have or did override the system in real time. 
-      `),
-      ...YesNoMaybe,
-      weight: 50,
-      instant_facet: true,
-      required: false,
-      public: false,
-    },
-    {
-      field_number: '7.7',
-      short_name: 'Autonomy3',
-      long_name:
-        "Autonomy3: Does the system provide inputs and suggested decisions to a human that actively chooses to proceed with the AI's direction? ",
-      short_description:
-        'Indicate if the system does not independently make decisions but instead provides information to a human who actively chooses to proceed with the AI’s information',
-      long_description: handleWhitespace(`
-        Indicate if the system does not independently make decisions but instead provides information to a human who actively chooses to proceed with the AI’s information
-
-        Considering the chain of harm and autonomy level 3, there would be a person between the AI and the entity that experienced the harm. While the AI can still be directly linked, the harm would not have occurred if a person had not acted. In other words, a human must have acted in the time between an AI system generating outputs and taking action.
-
-        Mark the autonomy level based on information available in the reports and not based on the design specification of the system. It is possible for a system to have modes that allow it to operate at multiple levels of autonomy. Annotate for the operating autonomy level at the time of the incident.
-
-        An example of an AI system that exhibits the third level of autonomy is a large language model that is prompted by a user to write a short story. The large language model produces the story, which can then be used as is, edited, or discarded by the user. 
-      `),
-      ...YesNoMaybe,
-      weight: 5,
-      instant_facet: false,
       required: false,
       public: false,
     },
