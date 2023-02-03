@@ -26,7 +26,7 @@ exports.up = async ({ context: { client } }) => {
 
       attributes.push({ short_name, value_json });
     }
-    classifications.updateOne(
+    await classifications.updateOne(
       { namespace: 'CSET', incident_id: csetClassification.incident_id },
       { $set: { attributes } }
     );
@@ -44,7 +44,7 @@ exports.down = async ({ context: { client } }) => {
   while (await csetClassifications.hasNext()) {
     const csetClassification = await csetClassifications.next();
 
-    classifications.updateOne(
+    await classifications.updateOne(
       { namespace: 'CSET', incident_id: csetClassification.incident_id },
       { $unset: { attributes: null } }
     );

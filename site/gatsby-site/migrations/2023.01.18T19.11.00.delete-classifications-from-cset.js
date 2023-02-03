@@ -11,7 +11,7 @@ exports.up = async ({ context: { client } }) => {
   while (await csetClassifications.hasNext()) {
     const csetClassification = await csetClassifications.next();
 
-    classifications.updateOne(
+    await classifications.updateOne(
       { namespace: 'CSET', incident_id: csetClassification.incident_id },
       { $unset: { classifications: null } }
     );

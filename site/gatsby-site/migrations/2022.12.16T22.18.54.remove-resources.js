@@ -4,11 +4,11 @@ const config = require('../config');
 exports.up = async ({ context: { client } }) => {
   const resourcesCollection = client.db(config.realm.production_db.db_name).collection('resources');
 
-  resourcesCollection.drop();
+  await resourcesCollection.drop();
 
   const taxaCollection = client.db(config.realm.production_db.db_name).collection('taxa');
 
-  taxaCollection.deleteOne({ namespace: 'resources' });
+  await taxaCollection.deleteOne({ namespace: 'resources' });
 };
 
 /** @type {import('umzug').MigrationFn<any>} */
