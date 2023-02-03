@@ -19,6 +19,7 @@ const Taxonomy = ({
   canEdit,
   taxonomyBeingEdited,
   setTaxonomyBeingEdited,
+  id,
 }) => {
   const [showAllClassifications, setShowAllClassifications] = useState(false);
 
@@ -29,8 +30,10 @@ const Taxonomy = ({
     setShowBanner(true);
   };
 
+  const editing = taxonomyBeingEdited?.namespace == taxonomy?.namespace;
+
   return (
-    <Card key={taxonomy.namespace} className="mt-6" data-cy={taxonomy.namespace}>
+    <Card id={id} key={taxonomy.namespace} className="mt-6" data-cy={taxonomy.namespace}>
       <div className="tw-taxa-card-header tw-card-header">
         <h4 className="pr-0.8">
           <Trans namespace={taxonomy.namespace}>
@@ -38,7 +41,7 @@ const Taxonomy = ({
           </Trans>
         </h4>
         <>
-          {taxonomyBeingEdited == taxonomy ? (
+          {editing ? (
             <Button onClick={() => setTaxonomyBeingEdited(null)}>Cancel</Button>
           ) : (
             canEdit && <Button onClick={() => setTaxonomyBeingEdited(taxonomy)}>Edit</Button>
@@ -52,7 +55,7 @@ const Taxonomy = ({
         </a>
       </div>
       <>
-        {taxonomyBeingEdited != taxonomy && (
+        {!editing && (
           <>
             {showBanner && (
               <div style={{ padding: '0.5em' }}>
@@ -140,7 +143,7 @@ const Taxonomy = ({
           taxonomy={taxonomy}
           incidentId={incidentId}
           onSubmit={handleSubmit}
-          active={taxonomyBeingEdited == taxonomy}
+          active={editing}
         />
       </>
     </Card>

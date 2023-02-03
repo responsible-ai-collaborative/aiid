@@ -35,6 +35,7 @@ import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-sv
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import VariantList from 'components/variants/VariantList';
 import { isCompleteReport } from 'utils/variants';
+import { useQueryParams, StringParam, withDefault } from 'use-query-params';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -83,6 +84,10 @@ function CitePage(props) {
   const { locale } = useLocalization();
 
   const localizePath = useLocalizePath();
+
+  const [query] = useQueryParams({
+    edit_taxonomy: withDefault(StringParam, ''),
+  });
 
   // meta tags
 
@@ -144,7 +149,15 @@ function CitePage(props) {
     taxonomies.map((t) => ({ ...t, canEdit: false }))
   );
 
-  const [taxonomyBeingEdited, setTaxonomyBeingEdited] = useState();
+  const [taxonomyBeingEdited, setTaxonomyBeingEdited] = useState(
+    taxonomies.find((taxonomy) => taxonomy.namespace == query.edit_taxonomy)
+  );
+
+  useEffect(() => {
+    if (query.edit_taxonomy?.length > 0) {
+      document.querySelector('#taxonomy-' + query.edit_taxonomy).scrollIntoView();
+    }
+  }, []);
 
   useEffect(() => {
     setTaxonomiesList((list) =>
@@ -402,6 +415,7 @@ function CitePage(props) {
                     .map((t) => (
                       <Taxonomy
                         key={t.namespace}
+                        id={`taxonomy-${t.namespace}`}
                         taxonomy={t}
                         incidentId={incident.incident_id}
                         canEdit={t.canEdit}
