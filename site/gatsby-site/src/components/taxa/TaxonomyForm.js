@@ -292,7 +292,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
               <fieldset disabled={isSubmitting}>
                 {fieldsWithDefaultValues.sort(sortByFieldNumbers).map((rawField) => (
                   <FormField
-                    key={rawField}
+                    key={rawField.short_name}
                     field={rawField}
                     formikValues={values}
                     {...{
