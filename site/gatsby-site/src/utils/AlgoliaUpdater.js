@@ -62,9 +62,12 @@ const getClassificationArray = (classification) => {
         try {
           const value = JSON.parse(attribute.value_json);
 
-          result.push(`${classification.namespace}:${attribute.short_name}:${value}`);
+          const values = Array.isArray(value) ? value : [value];
+
+          for (const v of values) {
+            result.push(`${classification.namespace}:${attribute.short_name}:${v}`);
+          }
         } catch (e) {
-          console.log(`attribute.value_json`, attribute.value_json);
           console.error(e);
         }
       }
@@ -174,7 +177,7 @@ class AlgoliaUpdater {
       const classifications = await this.mongoClient
         .db('aiidprod')
         .collection(`classifications`)
-        .find({})
+        .find({ namespace: 'CSET' })
         .toArray();
 
       return classifications;
@@ -340,6 +343,8 @@ class AlgoliaUpdater {
     try {
       for (let { code: language } of this.languages) {
         const entries = await this.generateIndex({ language });
+
+        console.log(`entries`, entries);
 
         this.reporter.log(
           `Uploading Algolia index of [${language}] with [${entries.length}] entries`
