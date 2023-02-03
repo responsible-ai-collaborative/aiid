@@ -59,17 +59,13 @@ const getClassificationArray = (classification) => {
         (classification.namespace != 'CSET' ||
           includedCSETAttributes.includes(attribute.short_name))
       ) {
-        try {
-          const value = JSON.parse(attribute.value_json);
+        const value = JSON.parse(attribute.value_json);
 
-          const values = Array.isArray(value) ? value : [value];
+        const values = Array.isArray(value) ? value : [value];
 
-          for (const v of values) {
-            if (v == '' || typeof v === 'object') continue;
-            result.push(`${classification.namespace}:${attribute.short_name}:${v}`);
-          }
-        } catch (e) {
-          console.error(e);
+        for (const v of values) {
+          if (v == '' || typeof v === 'object') continue;
+          result.push(`${classification.namespace}:${attribute.short_name}:${v}`);
         }
       }
     }
@@ -132,234 +128,194 @@ class AlgoliaUpdater {
   }
 
   generateIndexEntries = async ({ reports, incidents, classifications }) => {
-    try {
-      let classificationsHash = {};
+    let classificationsHash = {};
 
-      classifications.forEach((c) => {
-        classificationsHash[c.incident_id] ||= [];
-        classificationsHash[c.incident_id] = classificationsHash[c.incident_id].concat(
-          getClassificationArray(c)
-        );
-      });
+    classifications.forEach((c) => {
+      classificationsHash[c.incident_id] ||= [];
+      classificationsHash[c.incident_id] = classificationsHash[c.incident_id].concat(
+        getClassificationArray(c)
+      );
+    });
 
-      const downloadData = [];
+    const downloadData = [];
 
-      for (const incident of incidents) {
-        for (const report_number of incident.reports) {
-          if (reports.some((r) => r.report_number == report_number)) {
-            const report = reports.find((r) => r.report_number == report_number) || {};
+    for (const incident of incidents) {
+      for (const report_number of incident.reports) {
+        if (reports.some((r) => r.report_number == report_number)) {
+          const report = reports.find((r) => r.report_number == report_number) || {};
 
-            const entry = reportToEntry({ incident, report });
+          const entry = reportToEntry({ incident, report });
 
-            if (classificationsHash[entry.incident_id]) {
-              entry.classifications = classificationsHash[entry.incident_id];
-            }
-
-            downloadData.push(entry);
+          if (classificationsHash[entry.incident_id]) {
+            entry.classifications = classificationsHash[entry.incident_id];
           }
+
+          downloadData.push(entry);
         }
       }
-
-      for (const report of reports.filter((r) => r.is_incident_report == false)) {
-        const entry = reportToEntry({ report });
-
-        downloadData.push(entry);
-      }
-
-      const truncatedData = downloadData.map(truncate);
-
-      const smallData = truncatedData.slice(0, LIMIT);
-
-      return smallData;
-    } catch (e) {
-      console.error(e);
     }
+
+    for (const report of reports.filter((r) => r.is_incident_report == false)) {
+      const entry = reportToEntry({ report });
+
+      downloadData.push(entry);
+    }
+
+    const truncatedData = downloadData.map(truncate);
+
+    const smallData = truncatedData.slice(0, LIMIT);
+
+    return smallData;
   };
 
   getClassifications = async () => {
-    try {
-      const classifications = await this.mongoClient
-        .db('aiidprod')
-        .collection(`classifications`)
-        .find({})
-        .toArray();
+    const classifications = await this.mongoClient
+      .db('aiidprod')
+      .collection(`classifications`)
+      .find({})
+      .toArray();
 
-      return classifications;
-    } catch (e) {
-      console.error(e);
-    }
+    return classifications;
   };
 
   getIncidents = async () => {
-    try {
-      return this.mongoClient.db('aiidprod').collection(`incidents`).find({}).toArray();
-    } catch (e) {
-      console.error(e);
-    }
+    return this.mongoClient.db('aiidprod').collection(`incidents`).find({}).toArray();
   };
 
   getDuplicates = async () => {
-    try {
-      return this.mongoClient.db('aiidprod').collection(`duplicates`).find({}).toArray();
-    } catch (e) {
-      console.error(e);
-    }
+    return this.mongoClient.db('aiidprod').collection(`duplicates`).find({}).toArray();
   };
 
   getReports = async ({ language }) => {
-    try {
-      const projection = {
-        _id: 1,
-        authors: 1,
-        date_downloaded: 1,
-        date_modified: 1,
-        date_published: 1,
-        date_submitted: 1,
-        description: 1,
-        epoch_date_downloaded: 1,
-        epoch_date_modified: 1,
-        epoch_date_published: 1,
-        epoch_date_submitted: 1,
-        image_url: 1,
-        language: 1,
-        report_number: 1,
-        source_domain: 1,
-        submitters: 1,
-        title: 1,
-        url: 1,
-        plain_text: 1,
-        editor_notes: 1,
-        cloudinary_id: 1,
-        is_incident_report: 1,
-        flag: 1,
-      };
+    const projection = {
+      _id: 1,
+      authors: 1,
+      date_downloaded: 1,
+      date_modified: 1,
+      date_published: 1,
+      date_submitted: 1,
+      description: 1,
+      epoch_date_downloaded: 1,
+      epoch_date_modified: 1,
+      epoch_date_published: 1,
+      epoch_date_submitted: 1,
+      image_url: 1,
+      language: 1,
+      report_number: 1,
+      source_domain: 1,
+      submitters: 1,
+      title: 1,
+      url: 1,
+      plain_text: 1,
+      editor_notes: 1,
+      cloudinary_id: 1,
+      is_incident_report: 1,
+      flag: 1,
+    };
 
-      const reports = (
-        await this.mongoClient
-          .db('aiidprod')
-          .collection(`reports`)
-          .find({}, { projection })
-          .toArray()
-      ).filter((report) => isCompleteReport(report));
+    const reports = (
+      await this.mongoClient.db('aiidprod').collection(`reports`).find({}, { projection }).toArray()
+    ).filter((report) => isCompleteReport(report));
 
-      const translations = await this.mongoClient
-        .db('translations')
-        .collection(`reports_${language}`)
-        .find({})
-        .toArray();
+    const translations = await this.mongoClient
+      .db('translations')
+      .collection(`reports_${language}`)
+      .find({})
+      .toArray();
 
-      const fullReports = reports.map((r) => {
-        let report = { ...r };
+    const fullReports = reports.map((r) => {
+      let report = { ...r };
 
-        if (translations.some((t) => t.report_number === r.report_number)) {
-          const { title, plain_text } =
-            translations.find((t) => t.report_number === r.report_number) || {};
+      if (translations.some((t) => t.report_number === r.report_number)) {
+        const { title, plain_text } =
+          translations.find((t) => t.report_number === r.report_number) || {};
 
-          report = {
-            ...r,
-            title,
-            plain_text,
-          };
-        }
-        return report;
-      });
+        report = {
+          ...r,
+          title,
+          plain_text,
+        };
+      }
+      return report;
+    });
 
-      return fullReports;
-    } catch (e) {
-      console.error(e);
-    }
+    return fullReports;
   };
 
   uploadToAlgolia = async ({ language, entries }) => {
-    try {
-      const indexName = `instant_search-${language}`;
+    const indexName = `instant_search-${language}`;
 
-      const featuredReplicaIndexName = indexName + '-featured';
+    const featuredReplicaIndexName = indexName + '-featured';
 
-      const index = await this.algoliaClient.initIndex(indexName);
+    const index = await this.algoliaClient.initIndex(indexName);
 
-      await index.replaceAllObjects(entries);
+    await index.replaceAllObjects(entries);
 
-      await index
-        .setSettings({
-          ...algoliaSettings,
-          attributeForDistinct: 'incident_id',
-          indexLanguages: [language],
-          queryLanguages: [language],
-          replicas: [featuredReplicaIndexName],
-        })
-        .then(async () => {
-          const featuredReplicaIndex = await this.algoliaClient.initIndex(featuredReplicaIndexName);
+    await index
+      .setSettings({
+        ...algoliaSettings,
+        attributeForDistinct: 'incident_id',
+        indexLanguages: [language],
+        queryLanguages: [language],
+        replicas: [featuredReplicaIndexName],
+      })
+      .then(async () => {
+        const featuredReplicaIndex = await this.algoliaClient.initIndex(featuredReplicaIndexName);
 
-          await featuredReplicaIndex.setSettings({
-            ranking: ['desc(featured)', 'desc(text)'],
-          });
+        await featuredReplicaIndex.setSettings({
+          ranking: ['desc(featured)', 'desc(text)'],
         });
-    } catch (e) {
-      console.error(e);
-    }
+      });
   };
 
   deleteDuplicates = async ({ language }) => {
-    try {
-      await this.mongoClient.connect();
+    await this.mongoClient.connect();
 
-      const indexName = `instant_search-${language}`;
+    const indexName = `instant_search-${language}`;
 
-      const index = await this.algoliaClient.initIndex(indexName);
+    const index = await this.algoliaClient.initIndex(indexName);
 
-      const duplicates = await this.getDuplicates();
+    const duplicates = await this.getDuplicates();
 
-      const filters = duplicates
-        .map((d) => d.duplicate_incident_number)
-        .map((id) => `incident_id = ${id}`)
-        .join(' OR ');
+    const filters = duplicates
+      .map((d) => d.duplicate_incident_number)
+      .map((id) => `incident_id = ${id}`)
+      .join(' OR ');
 
-      await index.deleteBy({ filters });
+    await index.deleteBy({ filters });
 
-      await this.mongoClient.close();
-    } catch (e) {
-      console.error(e);
-    }
+    await this.mongoClient.close();
   };
 
   async generateIndex({ language }) {
-    try {
-      await this.mongoClient.connect();
+    await this.mongoClient.connect();
 
-      const classifications = await this.getClassifications();
+    const classifications = await this.getClassifications();
 
-      const incidents = await this.getIncidents();
+    const incidents = await this.getIncidents();
 
-      const reports = await this.getReports({ language });
+    const reports = await this.getReports({ language });
 
-      const entries = await this.generateIndexEntries({ reports, incidents, classifications });
+    const entries = await this.generateIndexEntries({ reports, incidents, classifications });
 
-      await this.mongoClient.close();
+    await this.mongoClient.close();
 
-      return entries;
-    } catch (e) {
-      console.error(e);
-    }
+    return entries;
   }
 
   async run() {
-    try {
-      for (let { code: language } of this.languages) {
-        const entries = await this.generateIndex({ language });
+    for (let { code: language } of this.languages) {
+      const entries = await this.generateIndex({ language });
 
-        console.log(`entries`, entries);
+      console.log(`entries`, entries);
 
-        this.reporter.log(
-          `Uploading Algolia index of [${language}] with [${entries.length}] entries`
-        );
+      this.reporter.log(
+        `Uploading Algolia index of [${language}] with [${entries.length}] entries`
+      );
 
-        await this.uploadToAlgolia({ entries, language });
+      await this.uploadToAlgolia({ entries, language });
 
-        await this.deleteDuplicates({ language });
-      }
-    } catch (e) {
-      console.error(e);
+      await this.deleteDuplicates({ language });
     }
   }
 }
