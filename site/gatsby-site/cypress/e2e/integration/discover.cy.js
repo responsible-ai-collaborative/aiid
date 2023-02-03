@@ -186,9 +186,13 @@ describe('The Discover app', () => {
 
     cy.get('[data-cy="discover-sort"]').click();
 
+    cy.get('[data-cy="incident-date-sort"]').click();
+
+    cy.get('[data-cy="discover-sort"]').click();
+
     cy.get('[data-cy="sort-asc"]').click();
 
-    cy.get('[data-cy="discover-sort"]').should('have.text', 'Incident Date - asc');
+    cy.get('[data-cy="discover-sort"]').should('have.text', 'Incident Date asc');
   });
 
   it('Should display incidents instead of reports when selection Incidents view', () => {

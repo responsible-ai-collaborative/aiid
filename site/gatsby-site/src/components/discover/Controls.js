@@ -29,6 +29,7 @@ const Controls = () => {
     return {
       label: list.label,
       value: list.attribute,
+      ...list,
     };
   });
 

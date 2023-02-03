@@ -38,6 +38,7 @@ function Sorting(props) {
             key={'instant_search-en'}
             value={'instant_search-en'}
             style={{ fontWeight: '' }}
+            data-cy="relevance-sort"
             onClick={() => {
               sortResults({
                 label: 'Relevance',
@@ -47,7 +48,9 @@ function Sorting(props) {
             }}
             className={`${'instant_search-en' === selectedItem.value ? 'bg-blue-100' : ''}`}
           >
-            <Trans>Relevance</Trans>
+            <span data-cy="relevance-sort">
+              <Trans>Relevance</Trans>
+            </span>
           </Dropdown.Item>
           <Dropdown.Divider />
           {props.items.map((item) => (
@@ -63,7 +66,9 @@ function Sorting(props) {
               }}
               className={`${item.value === selectedItem.value ? 'bg-blue-100' : ''}`}
             >
-              <Trans>{item.label}</Trans>
+              <span data-cy={item.name + '-sort'}>
+                <Trans>{item.label}</Trans>
+              </span>
             </Dropdown.Item>
           ))}
           <Dropdown.Divider />
