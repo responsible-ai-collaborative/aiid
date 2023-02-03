@@ -92,7 +92,14 @@ describe('The Landing page', () => {
 
     cy.location('pathname', { timeout: 8000 }).should('eq', '/');
 
-    cy.get('[data-cy="sidebar-user"] a').first().click({ force: true });
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="sidebar-desktop"]')
+      .contains('li', 'Account', { timeout: 8000 })
+      .scrollIntoView()
+      .click();
+
+    cy.waitForStableDOM();
 
     cy.location('pathname', { timeout: 8000 }).should('eq', '/account/');
   });

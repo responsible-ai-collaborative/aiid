@@ -102,7 +102,6 @@ const Sidebar = ({ defaultCollapsed = false }) => {
     <>
       <aside
         id="sidebar"
-        data-cy={'sidebar' + (isCollapsed ? '-collapsed' : '')}
         aria-label="Sidebar"
         className={`${sidebarWidth} sticky top-0 flex flex-col md:bg-text-light-gray`}
         style={{
@@ -116,12 +115,6 @@ const Sidebar = ({ defaultCollapsed = false }) => {
         <span className="md:border-b-1 md:border-b-gray-200">
           <QuickAccess isCollapsed={isCollapsed} />
         </span>
-        {config.sidebar.title ? (
-          <div
-            className={'hidden md:block'}
-            dangerouslySetInnerHTML={{ __html: config.sidebar.title }}
-          />
-        ) : null}
 
         <ul
           id="sidebar-tree"
