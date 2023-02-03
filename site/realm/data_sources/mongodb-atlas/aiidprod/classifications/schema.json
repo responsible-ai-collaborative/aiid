@@ -21,6 +21,9 @@
         },
         "notes": {
             "bsonType": "string"
+        },
+        "publish": {
+          "bsonType": "bool"
         }
     },
     "required": [

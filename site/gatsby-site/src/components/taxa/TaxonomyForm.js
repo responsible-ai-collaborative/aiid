@@ -129,7 +129,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
       const superfieldKeys = [];
 
       Object.keys(values)
-        .filter((key) => key != 'notes')
+        .filter((key) => !['notes', 'publish'].includes(key))
         .map((key) => {
           const taxonomyField = allTaxonomyFields.find(
             (field) => field.short_name == key.replace(/.*___/g, '')
@@ -303,10 +303,31 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                     }}
                   />
                 ))}
-                <Button type="submit" disabled={isSubmitting}>
-                  Submit
-                </Button>
               </fieldset>
+              <Form.Group className="mb-4">
+                <Form.Label>Publish</Form.Label>
+                <Form.Check
+                  type="radio"
+                  name="publish"
+                  label="yes"
+                  id={`publish-yes`}
+                  value="true"
+                  onChange={handleChange}
+                  checked={[true, 'true'].includes(values.publish)}
+                />
+                <Form.Check
+                  type="radio"
+                  name="publish"
+                  label="no"
+                  id="publish-no"
+                  value="false"
+                  onChange={handleChange}
+                  checked={[false, 'false'].includes(values.publish)}
+                />
+              </Form.Group>
+              <Button type="submit" disabled={isSubmitting}>
+                Submit
+              </Button>
             </Form>
           );
         }}

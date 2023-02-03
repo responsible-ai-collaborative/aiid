@@ -11,6 +11,7 @@ export const FIND_CLASSIFICATION = gql`
         short_name
         value_json
       }
+      publish
     }
   }
 `;
@@ -29,6 +30,7 @@ export const UPDATE_CLASSIFICATION = gql`
         short_name
         value_json
       }
+      publish
     }
   }
 `;

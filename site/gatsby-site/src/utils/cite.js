@@ -59,8 +59,11 @@ export const getTaxonomies = ({ allMongodbAiidprodClassifications, allMongodbAii
   allMongodbAiidprodTaxa.nodes.forEach((t) => {
     const notes = incidentClassifications.find((c) => c?.namespace === t.namespace)?.notes;
 
+    const publish = incidentClassifications.find((c) => c?.namespace === t.namespace)?.publish;
+
     taxonomies.push({
       notes,
+      publish,
       namespace: t.namespace,
       classificationsArray: getClassificationsArray(incidentClassifications, t),
       taxonomyFields: t.field_list,

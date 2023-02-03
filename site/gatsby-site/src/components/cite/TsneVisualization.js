@@ -7,7 +7,7 @@ import { Image } from '../../utils/cloudinary';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Color from 'color';
 import { LocalizedLink } from 'gatsby-theme-i18n';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 export default function TsneVisualization({
   currentIncidentId,
@@ -240,6 +240,8 @@ function PlotPoint({
 }) {
   const client = useApolloClient();
 
+  const { t } = useTranslation();
+
   const [incidentData, setIncidentData] = useState(null);
 
   // We have to track this and render the incident card only when hovered.
@@ -397,7 +399,14 @@ function PlotPoint({
         >
           {incidentData ? (
             <>
-              <Image publicID={incidentData.reports[0].cloudinary_id} />
+              <Image
+                publicID={incidentData.reports[0].cloudinary_id}
+                title={incidentData.title}
+                itemIdentifier={t('Incident {{id}}', { id: incidentData.incident_id }).replace(
+                  ' ',
+                  '.'
+                )}
+              />
               <h3 data-cy="title">{incidentData?.title || incidentData.reports[0].title}</h3>
               {taxon && (
                 <div style={{ marginTop: '.5em' }}>
@@ -622,7 +631,8 @@ var Visualization = styled.div`
     position: absolute;
     padding: 1em;
     overflow: hidden;
-    img {
+    img,
+    canvas {
       margin: -1em -1em 1em -1em;
       max-width: unset;
       width: calc(100% + 4em);

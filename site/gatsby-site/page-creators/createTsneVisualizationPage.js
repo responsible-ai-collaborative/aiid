@@ -48,6 +48,7 @@ const createTsneVisualizationPage = async (graphql, createPage) => {
             short_name
             value_json 
           }
+          publish
         }
       }
     }

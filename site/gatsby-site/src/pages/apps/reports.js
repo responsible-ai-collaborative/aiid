@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import AiidHelmet from '../../components/AiidHelmet';
-import LayoutHideSidebar from '../../components/LayoutHideSidebar';
 import { format } from 'date-fns';
 import Link from '../../components/ui/Link';
 import { StyledHeading } from '../../components/styles/Docs';
@@ -11,6 +10,8 @@ import DateRangePicker from 'react-bootstrap-daterangepicker';
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
 import { Table, InputGroup, FormControl, Form, Button } from 'react-bootstrap';
 import { gql, useQuery } from '@apollo/client';
+import Layout from 'components/Layout';
+import { useMenuContext } from 'contexts/MenuContext';
 import ListSkeleton from 'elements/Skeletons/List';
 
 const TableStyles = styled.div`
@@ -258,8 +259,6 @@ const query = gql`
 export default function Incidents(props) {
   const [tableData, setTableData] = useState([]);
 
-  const [collapse, setCollapse] = useState(true);
-
   const [columnData, setColumnData] = useState([]);
 
   const { data, loading } = useQuery(query);
@@ -445,11 +444,10 @@ export default function Incidents(props) {
     }
   };
 
+  const { isCollapsed } = useMenuContext();
+
   return (
-    <LayoutHideSidebar
-      {...props}
-      menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
-    >
+    <Layout {...props} sidebarCollapsed={true}>
       <AiidHelmet path={props.location.pathname}>
         <title>Incident List</title>
       </AiidHelmet>
@@ -457,7 +455,7 @@ export default function Incidents(props) {
       {loading && <ListSkeleton />}
 
       {!loading && (
-        <Container isWide={collapse} className="bootstrap">
+        <Container isWide={isCollapsed} className="bootstrap">
           <StyledHeading>Incident Report Table</StyledHeading>
           <Button onClick={() => setAllFilters([])}>Reset filters</Button>
           <TableStyles>
@@ -598,6 +596,6 @@ export default function Incidents(props) {
           </TableStyles>
         </Container>
       )}
-    </LayoutHideSidebar>
+    </Layout>
   );
 }

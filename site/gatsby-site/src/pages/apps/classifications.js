@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import LayoutHideSidebar from '../../components/LayoutHideSidebar';
 import AiidHelmet from '../../components/AiidHelmet';
 import styled from 'styled-components';
 import { useApolloClient } from '@apollo/client';
@@ -16,6 +15,7 @@ import { useModal, CustomModal } from '../../hooks/useModal';
 import { useUserContext } from '../../contexts/userContext';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import { format } from 'date-fns';
+import Layout from 'components/Layout';
 import ListSkeleton from 'elements/Skeletons/List';
 import { Modal } from 'flowbite-react';
 
@@ -303,7 +303,8 @@ function Row({ row, isAdmin, currentTaxonomy }) {
                   isAdmin
                     ? `/cite/${row.values.IncidentId}/?edit_taxonomy=${currentTaxonomy}`
                     : undefined
-                } rel="noreferrer"
+                }
+                rel="noreferrer"
               >
                 <Button
                   data-cy="edit-classification"
@@ -422,7 +423,7 @@ export default function ClassificationsDbView(props) {
     const classifications = [];
 
     for (const c of classificationsData.data.classifications) {
-      if (c.attributes) {
+      if (c.attributes && c.publish) {
         classifications.push({
           ...c,
           classifications: c.attributes.reduce((classifications, attribute) => {
@@ -681,9 +682,10 @@ export default function ClassificationsDbView(props) {
   const fullTextModal = useModal();
 
   return (
-    <LayoutHideSidebar
+    <Layout
       {...props}
       menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
+      sidebarCollapsed={true}
     >
       <AiidHelmet path={props.location.pathname}>
         <title>Artificial Intelligence Incident Database</title>
@@ -813,6 +815,6 @@ export default function ClassificationsDbView(props) {
         )}
       </Container>
       <CustomModal {...fullTextModal} />
-    </LayoutHideSidebar>
+    </Layout>
   );
 }

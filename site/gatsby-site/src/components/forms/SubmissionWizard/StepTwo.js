@@ -5,9 +5,10 @@ import { Trans, useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import Label from '../Label';
 import supportedLanguages from '../../i18n/languages.json';
-import { getCloudinaryPublicID, PreviewImageInputGroup } from 'utils/cloudinary';
+import { getCloudinaryPublicID } from 'utils/cloudinary';
 import StepContainer from './StepContainer';
 import TagsInputGroup from '../TagsInputGroup';
+import PreviewImageInputGroup from 'components/forms/PreviewImageInputGroup';
 import FieldContainer from './FieldContainer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMedal, faImage, faLanguage } from '@fortawesome/free-solid-svg-icons';
@@ -123,7 +124,7 @@ const FormDetails = ({
 
         <FieldContainer>
           <PreviewImageInputGroup
-            cloudinary_id={data.cloudinary_id}
+            cloudinary_id={values.cloudinary_id}
             name="image_url"
             label={t('Image Address')}
             placeholder={t('Image URL')}
