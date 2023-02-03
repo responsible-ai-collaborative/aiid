@@ -65,7 +65,7 @@ const getClassificationArray = (classification) => {
           const values = Array.isArray(value) ? value : [value];
 
           for (const v of values) {
-            if (v == '') continue;
+            if (v == '' || typeof v === 'object') continue;
             result.push(`${classification.namespace}:${attribute.short_name}:${v}`);
           }
         } catch (e) {
