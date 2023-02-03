@@ -535,7 +535,7 @@ function ObjectListField({
                 setDeletedSubClassificationIds((ids) => ids.concat(id));
               }}
             >
-              Delete Entity
+              Delete
             </Button>
           </Card.Body>
         </Card>
@@ -545,7 +545,7 @@ function ObjectListField({
           variant="secondary"
           onClick={() => setObjectListItemsIds((ids) => ids.concat(new Date().getTime()))}
         >
-          Add Entity
+          Add
         </Button>
       </div>
     </>
