@@ -60,7 +60,7 @@ describe('The Discover app', () => {
 
     cy.get('div[class^="tw-hits-container"]')
       .children()
-      .get('[title="Filter by Incident ID #436"]')
+      .get('[title="Filter by Incident ID #10"]')
       .first()
       .click();
 
@@ -70,7 +70,7 @@ describe('The Discover app', () => {
       .find('span.badge', { timeout: 8000 })
       .should('contain.text', '1');
 
-    cy.url().should('include', 'incident_id=436');
+    cy.url().should('include', 'incident_id=10');
 
     cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 8);
   });
