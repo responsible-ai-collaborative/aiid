@@ -220,7 +220,6 @@ function CitePage(props) {
           severity: SEVERITY.success,
         });
       } catch (e) {
-        console.log(e);
         addToast({
           message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
           severity: SEVERITY.danger,
@@ -248,8 +247,6 @@ function CitePage(props) {
   const incidentResponded = sortedReports.some(
     (report) => report.tags && report.tags.includes(RESPONSE_TAG)
   );
-
-  console.log(`taxonomies`, taxonomies);
 
   return (
     <Layout {...{ props }}>

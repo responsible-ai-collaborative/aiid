@@ -307,8 +307,6 @@ class AlgoliaUpdater {
     for (let { code: language } of this.languages) {
       const entries = await this.generateIndex({ language });
 
-      console.log(`entries`, entries);
-
       this.reporter.log(
         `Uploading Algolia index of [${language}] with [${entries.length}] entries`
       );
