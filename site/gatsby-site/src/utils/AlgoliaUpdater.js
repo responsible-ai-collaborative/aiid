@@ -172,7 +172,7 @@ class AlgoliaUpdater {
     const classifications = await this.mongoClient
       .db('aiidprod')
       .collection(`classifications`)
-      .find({})
+      .find({ publish: true })
       .toArray();
 
     return classifications;
