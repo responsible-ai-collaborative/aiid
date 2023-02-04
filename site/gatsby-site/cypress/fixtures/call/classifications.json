@@ -4,6 +4,7 @@
       {
         "__typename": "Classification",
         "_id": "60dd465f80935bc89e6f9b00",
+        "publish": true,
         "attributes": [
           {
             "__typename": "ClassificationAttribute",
@@ -178,6 +179,7 @@
       {
         "__typename": "Classification",
         "_id": "60dd465f80935bc89e6f9b01",
+        "publish": true,
         "attributes": [
           {
             "__typename": "ClassificationAttribute",
