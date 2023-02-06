@@ -53,12 +53,12 @@ const getClassificationArray = ({ classification, taxonomy }) => {
 
   if (classification.attributes) {
     for (const attribute of classification.attributes) {
-      const field = taxonomy.field_list.find((field) => field.short_name == attribute.short_name);
+      const field = taxonomy?.field_list.find((field) => field.short_name == attribute.short_name);
 
       if (
         attribute.value_json &&
         attribute.value_json.length > 0 &&
-        field.display_type != 'long_string' &&
+        field?.display_type != 'long_string' &&
         (classification.namespace != 'CSET' ||
           includedCSETAttributes.includes(attribute.short_name))
       ) {
@@ -184,8 +184,17 @@ class AlgoliaUpdater {
   };
 
   getTaxa = async () => {
-    const taxa = await this.mongoClient.db('aiidprod').collection(`taxa`).find({}).toArray();
+    let taxa = [];
 
+    const aiidprod = await this.mongoClient.db('aiidprod');
+
+    const taxaCollection = await aiidprod.collection(`taxa`);
+
+    if (taxaCollection) {
+      const foundItems = await taxaCollection.find({});
+
+      if (foundItems) taxa = await foundItems.toArray();
+    }
     return taxa;
   };
 
