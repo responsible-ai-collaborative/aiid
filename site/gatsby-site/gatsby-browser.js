@@ -23,10 +23,10 @@ export const shouldUpdateScroll = ({ routerProps: { location } }) => {
 export const wrapPageElement = ({ element }) => {
   const history = {
     replace(location) {
-      navigate(location.search, { replace: true });
+      navigate(location.pathname + location.search, { replace: true });
     },
     push(location) {
-      navigate(location.search, { replace: false });
+      navigate(location.pathname + location.search, { replace: false });
     },
   };
 
