@@ -2,7 +2,6 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { Configure, InstantSearch } from 'react-instantsearch-dom';
-import LayoutHideSidebar from 'components/LayoutHideSidebar';
 import AiidHelmet from 'components/AiidHelmet';
 import { useModal, CustomModal } from 'hooks/useModal';
 
@@ -19,6 +18,7 @@ import { useLocalization } from 'gatsby-theme-i18n';
 import Container from 'elements/Container';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
+import Layout from 'components/Layout';
 import { VIEW_TYPES } from 'utils/discover';
 
 const searchClient = algoliasearch(
@@ -232,7 +232,7 @@ function DiscoverApp(props) {
   const flagReportModal = useModal();
 
   return (
-    <LayoutHideSidebar {...props}>
+    <Layout {...props} sidebarCollapsed={true} className="w-full">
       <AiidHelmet path={props.location.pathname}>
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
@@ -254,7 +254,7 @@ function DiscoverApp(props) {
 
           <VirtualFilters />
 
-          <Container className="tw-container-xl mt-6">
+          <Container className="ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl mt-6">
             <Row className="px-0 mx-0">
               <Col className="px-0 mx-0">
                 <SearchBox defaultRefinement={query.s} />
@@ -285,7 +285,7 @@ function DiscoverApp(props) {
           <Pagination />
         </InstantSearch>
       </SearchContext.Provider>
-    </LayoutHideSidebar>
+    </Layout>
   );
 }
 

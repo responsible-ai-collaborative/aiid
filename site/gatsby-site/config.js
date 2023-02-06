@@ -36,7 +36,6 @@ const config = {
 		      </div>
 		    </a>
 		  </li>`,
-    links: [{ text: '', link: '' }],
     search: {
       enabled: false,
       indexName: '',
@@ -100,7 +99,6 @@ const config = {
     ],
     frontline: true,
     ignoreIndex: false,
-    title: '',
   },
   footer: {
     navConfig: [

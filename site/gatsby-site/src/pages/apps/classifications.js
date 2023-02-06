@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import LayoutHideSidebar from '../../components/LayoutHideSidebar';
 import TaxonomyForm from '../../components/taxa/TaxonomyForm';
 import AiidHelmet from '../../components/AiidHelmet';
 import styled from 'styled-components';
@@ -16,6 +15,7 @@ import { useModal, CustomModal } from '../../hooks/useModal';
 import { useUserContext } from '../../contexts/userContext';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import { format } from 'date-fns';
+import Layout from 'components/Layout';
 import ListSkeleton from 'elements/Skeletons/List';
 import { Modal } from 'flowbite-react';
 
@@ -802,9 +802,10 @@ export default function ClassificationsDbView(props) {
   const fullTextModal = useModal();
 
   return (
-    <LayoutHideSidebar
+    <Layout
       {...props}
       menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
+      sidebarCollapsed={true}
     >
       <AiidHelmet path={props.location.pathname}>
         <title>Artificial Intelligence Incident Database</title>
@@ -936,6 +937,6 @@ export default function ClassificationsDbView(props) {
         )}
       </Container>
       <CustomModal {...fullTextModal} />
-    </LayoutHideSidebar>
+    </Layout>
   );
 }

@@ -149,6 +149,8 @@
   "Error updating incident {{incidentId}}.": "Erreur dans la mis à jour de l'incident {{incidentId}}.",
   "Error updating incident {{incident}}. \n {{message}}": "Erreur dans la mis à jour de l'incident {{incidentId}}. \n {{message}}",
   "Are you sure you want to delete this report?": "Voulez-vous vraiment supprimer ce rapport?",
+  "Collapse": "Fermer",
+  "Expand": "Ouvrir",
   "Load more": "Charger plus",
   "Display Issues": "Problèmes d'affichage",
   "Only Issues": "Seuls les problèmes",

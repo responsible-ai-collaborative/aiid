@@ -832,7 +832,7 @@ describe('Submitted reports', () => {
     cy.get('[data-cy="image-preview-figure"] img').should(
       'have.attr',
       'src',
-      'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/v1/reports/s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg'
+      'https://res.cloudinary.com/pai/image/upload/f_auto/q_auto/v1/reports/s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg'
     );
   });
 
@@ -888,10 +888,6 @@ describe('Submitted reports', () => {
 
     cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
 
-    cy.get('[data-cy="image-preview-figure"] img').should(
-      'have.attr',
-      'src',
-      'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/fallback.jpg'
-    );
+    cy.get('[data-cy="image-preview-figure"] canvas').should('exist');
   });
 });

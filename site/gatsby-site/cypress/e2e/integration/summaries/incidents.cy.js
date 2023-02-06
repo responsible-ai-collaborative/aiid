@@ -19,7 +19,9 @@ describe('Incidents Summary', () => {
         }
       `,
     }).then(({ data: { incidents } }) => {
-      cy.get('[data-cy*="incident"]').should('have.length', incidents.length).and('be.visible');
+      cy.get('[data-cy="incident-list"] > div')
+        .should('have.length', incidents.length)
+        .and('be.visible');
 
       // could use some more toughly testing here
     });
