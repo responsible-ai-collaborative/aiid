@@ -186,9 +186,15 @@ describe('The Discover app', () => {
 
     cy.get('[data-cy="discover-sort"]').click();
 
+    cy.waitForStableDOM();
+
     cy.get('[data-cy="incident-date-sort"]').click();
 
+    cy.waitForStableDOM();
+
     cy.get('[data-cy="discover-sort"]').click();
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="sort-asc"]').click();
 
