@@ -48,14 +48,17 @@ const includedCSETAttributes = [
   'Technology Purveyor',
 ];
 
-const getClassificationArray = (classification) => {
+const getClassificationArray = ({ classification, taxonomy }) => {
   const result = [];
 
   if (classification.attributes) {
     for (const attribute of classification.attributes) {
+      const field = taxonomy.field_list.find((field) => field.short_name == attribute.short_name);
+
       if (
         attribute.value_json &&
         attribute.value_json.length > 0 &&
+        field.display_type != 'long_string' &&
         (classification.namespace != 'CSET' ||
           includedCSETAttributes.includes(attribute.short_name))
       ) {
@@ -127,14 +130,16 @@ class AlgoliaUpdater {
     this.algoliaClient = algoliaClient;
   }
 
-  generateIndexEntries = async ({ reports, incidents, classifications }) => {
+  generateIndexEntries = async ({ reports, incidents, classifications, taxa }) => {
     let classificationsHash = {};
 
-    classifications.forEach((c) => {
-      classificationsHash[c.incident_id] ||= [];
-      classificationsHash[c.incident_id] = classificationsHash[c.incident_id].concat(
-        getClassificationArray(c)
-      );
+    classifications.forEach((classification) => {
+      const taxonomy = taxa.find((t) => t.namespace == classification.namespace);
+
+      classificationsHash[classification.incident_id] ||= [];
+      classificationsHash[classification.incident_id] = classificationsHash[
+        classification.incident_id
+      ].concat(getClassificationArray({ classification, taxonomy }));
     });
 
     const downloadData = [];
@@ -176,6 +181,12 @@ class AlgoliaUpdater {
       .toArray();
 
     return classifications;
+  };
+
+  getTaxa = async () => {
+    const taxa = await this.mongoClient.db('aiidprod').collection(`taxa`).find({}).toArray();
+
+    return taxa;
   };
 
   getIncidents = async () => {
@@ -292,11 +303,18 @@ class AlgoliaUpdater {
 
     const classifications = await this.getClassifications();
 
+    const taxa = await this.getTaxa();
+
     const incidents = await this.getIncidents();
 
     const reports = await this.getReports({ language });
 
-    const entries = await this.generateIndexEntries({ reports, incidents, classifications });
+    const entries = await this.generateIndexEntries({
+      reports,
+      incidents,
+      classifications,
+      taxa,
+    });
 
     await this.mongoClient.close();
 
