@@ -217,6 +217,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
         incident_id: incidentId,
         namespace,
         notes: values.notes,
+        publish: values.publish,
         attributes,
       };
 
