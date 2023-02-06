@@ -26,8 +26,8 @@ var gmfTaxaEntry = {
         'An AI Goal which is almost certainly pursued by the AI system referenced in the incident.',
       long_description:
         'An AI Goal which is almost certainly pursued by the AI system referenced in the incident.',
-      display_type: 'string',
-      mongo_type: 'string',
+      display_type: 'list',
+      mongo_type: 'array',
       default: '',
       placeholder: '',
       permitted_values: [],
@@ -109,8 +109,8 @@ var gmfTaxaEntry = {
         'An AI Goal which is probably pursued by the AI system referenced in the incident.',
       long_description:
         'An AI Goal which is probably pursued by the AI system referenced in the incident.',
-      display_type: 'string',
-      mongo_type: 'string',
+      display_type: 'list',
+      mongo_type: 'array',
       default: '',
       placeholder: '',
       permitted_values: [],
@@ -192,8 +192,8 @@ var gmfTaxaEntry = {
         'An AI Technology which is almost certainly a part of the implementation of the AI system referenced in the incident.',
       long_description:
         'An AI Technology which is almost certainly a part of the implementation of the AI system referenced in the incident.',
-      display_type: 'string',
-      mongo_type: 'string',
+      display_type: 'list',
+      mongo_type: 'array',
       default: '',
       placeholder: '',
       permitted_values: [],
@@ -275,8 +275,8 @@ var gmfTaxaEntry = {
         'An AI Method / Technology which probably is a part of the implementation of the AI system referenced in the incident.',
       long_description:
         'An AI Method / Technology which probably is a part of the implementation of the AI system referenced in the incident.',
-      display_type: 'string',
-      mongo_type: 'string',
+      display_type: 'list',
+      mongo_type: 'array',
       default: '',
       placeholder: '',
       permitted_values: [],
@@ -358,8 +358,8 @@ var gmfTaxaEntry = {
         'An AI Technical Failure which almost certainly contributes to the AI system failure referenced in the incident.',
       long_description:
         'An AI Technical Failure which almost certainly contributes to the AI system failure referenced in the incident.',
-      display_type: 'string',
-      mongo_type: 'string',
+      display_type: 'list',
+      mongo_type: 'array',
       default: '',
       placeholder: '',
       permitted_values: [],
@@ -440,8 +440,8 @@ var gmfTaxaEntry = {
       short_description:
         'An AI Technical Failure which probably contributes to the AI system failure referenced in the incident.',
       long_description: 'Distributional Bias',
-      display_type: 'long_string',
-      mongo_type: 'string',
+      display_type: 'list',
+      mongo_type: 'array',
       default: '',
       placeholder: '',
       permitted_values: [],
@@ -505,7 +505,7 @@ var gmfTaxaEntry = {
       short_description:
         'Free text with comments justifying the chosen classification (e.g. based on information on selected snippets and technical analysis), if needed.',
       long_description:
-        'If the translator was trained via distributional means, existing biases in English / Israeli training texts associating Arab people with terrorism could carry over to the translation model.',
+        'Free text with comments justifying the chosen classification (e.g. based on information on selected snippets and technical analysis), if needed.',
       display_type: 'long_string',
       mongo_type: 'string',
       default: '',
