@@ -2,23 +2,30 @@ import React, { useEffect, useState } from 'react';
 import { connectSortBy } from 'react-instantsearch-dom';
 import { Dropdown } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
+import SORTING_LIST from './SORTING_LISTS';
 
 function Sorting(props) {
-  const [selectedItem, setSelectedItem] = useState({
-    label: 'Relevance',
-    value: 'instant_search-en',
-  });
+  const [selectedItem, setSelectedItem] = useState(SORTING_LIST.find((s) => s.default));
 
   const { t } = useTranslation();
 
   const [selectedDirection, setSelectedDirection] = useState('');
 
+  const [disabledDirection, setDisabledDirection] = useState(true);
+
   const sortResults = (item) => {
     setSelectedItem(item);
+    if (item.type === 'date' && disabledDirection) {
+      setSelectedDirection('desc');
+      setDisabledDirection(false);
+    } else {
+      setSelectedDirection('');
+      setDisabledDirection(true);
+    }
   };
 
   useEffect(() => {
-    if (selectedItem.value !== 'instant_search-en') {
+    if (selectedItem.type === 'date') {
       props.refine(`${selectedItem.value}_${selectedDirection}`);
     } else {
       props.refine(`${selectedItem.value}`);
@@ -34,24 +41,6 @@ function Sorting(props) {
           data-cy="discover-sort"
         >
           <Dropdown.Item className="text-gray-400 hover:bg-white">ORDER</Dropdown.Item>
-          <Dropdown.Item
-            key={'instant_search-en'}
-            value={'instant_search-en'}
-            style={{ fontWeight: '' }}
-            data-cy="relevance-sort"
-            onClick={() => {
-              sortResults({
-                label: 'Relevance',
-                value: 'instant_search-en',
-              });
-              setSelectedDirection('');
-            }}
-            className={`${'instant_search-en' === selectedItem.value ? 'bg-blue-100' : ''}`}
-          >
-            <span data-cy="relevance-sort">
-              <Trans>Relevance</Trans>
-            </span>
-          </Dropdown.Item>
           <Dropdown.Divider />
           {props.items.map((item) => (
             <Dropdown.Item
@@ -60,9 +49,6 @@ function Sorting(props) {
               style={{ fontWeight: item.isRefined ? 'bold' : '' }}
               onClick={() => {
                 sortResults(item);
-                if (selectedDirection === '') {
-                  setSelectedDirection('desc');
-                }
               }}
               className={`${item.value === selectedItem.value ? 'bg-blue-100' : ''}`}
             >
@@ -75,9 +61,13 @@ function Sorting(props) {
           <Dropdown.Item
             value="asc"
             onClick={() => {
-              setSelectedDirection('asc');
+              if (!disabledDirection) {
+                setSelectedDirection('asc');
+              }
             }}
-            className={`${selectedDirection === 'asc' ? 'bg-blue-100' : ''}`}
+            className={`${
+              disabledDirection ? 'text-gray-400' : selectedDirection === 'asc' ? 'bg-blue-100' : ''
+            }`}
           >
             <span data-cy="sort-asc">
               <Trans>Asc</Trans>
@@ -86,9 +76,17 @@ function Sorting(props) {
           <Dropdown.Item
             value="asc"
             onClick={() => {
-              setSelectedDirection('desc');
+              if (!disabledDirection) {
+                setSelectedDirection('desc');
+              }
             }}
-            className={`${selectedDirection === 'desc' ? 'bg-blue-100' : ''}`}
+            className={`${
+              disabledDirection
+                ? 'text-gray-400'
+                : selectedDirection === 'desc'
+                ? 'bg-blue-100'
+                : ''
+            }`}
             data-cy="sort-asc"
           >
             <span data-cy="sort-desc">

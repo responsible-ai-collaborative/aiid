@@ -25,14 +25,6 @@ const Controls = () => {
     setExpandFilters(expand);
   }, []);
 
-  const items = SORTING_LISTS.map((list) => {
-    return {
-      label: list.label,
-      value: list.attribute,
-      ...list,
-    };
-  });
-
   return (
     <>
       <div className="justify-between gap-2 mt-4 hidden md:flex">
@@ -70,7 +62,10 @@ const Controls = () => {
         </div>
       </div>
       <div className="mb-3 hidden md:block">{expandFilters && <Filters />}</div>
-      <Sorting items={items} defaultRefinement="instant_search-en_epoch_incident_date_desc" />
+      <Sorting
+        items={SORTING_LISTS}
+        defaultRefinement="instant_search-en_epoch_incident_date_desc"
+      />
     </>
   );
 };

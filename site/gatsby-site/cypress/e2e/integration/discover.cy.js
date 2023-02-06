@@ -193,6 +193,40 @@ describe('The Discover app', () => {
     cy.get('[data-cy="sort-asc"]').click();
 
     cy.get('[data-cy="discover-sort"]').should('have.text', 'Incident Date asc');
+
+    cy.get('[data-cy=incident-date]').then((dates) => {
+      let firstDateValue = parseInt(dates.eq(0).val().toString());
+
+      let secondDateValue = parseInt(dates.eq(1).val().toString());
+
+      cy.wrap(dates.eq(1)).invoke('val').then(parseFloat).should('be.gte', firstDateValue);
+
+      cy.wrap(dates.eq(2)).invoke('val').then(parseFloat).should('be.gte', secondDateValue);
+    });
+  });
+
+  it('Should sort by published date', () => {
+    cy.visit(url);
+
+    cy.get('[data-cy="discover-sort"]').click();
+
+    cy.get('[data-cy="published-date-sort"]').click();
+
+    cy.get('[data-cy="discover-sort"]').click();
+
+    cy.get('[data-cy="sort-desc"]').click();
+
+    cy.get('[data-cy="discover-sort"]').should('have.text', 'Published Date desc');
+
+    cy.get('[data-cy=date-published]').then((dates) => {
+      let secondDateValue = parseInt(dates.eq(1).val().toString());
+
+      let thirdDateValue = parseInt(dates.eq(2).val().toString());
+
+      cy.wrap(dates.eq(0)).invoke('val').then(parseFloat).should('be.gte', secondDateValue);
+
+      cy.wrap(dates.eq(1)).invoke('val').then(parseFloat).should('be.gte', thirdDateValue);
+    });
   });
 
   it('Should display incidents instead of reports when selection Incidents view', () => {

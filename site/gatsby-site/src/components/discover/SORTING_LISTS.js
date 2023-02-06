@@ -2,25 +2,36 @@ import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 
 const SORTING_LIST = [
   {
+    default: true,
+    name: 'relevance',
+    value: 'instant_search-en',
+    label: 'Relevance',
+    faIcon: faCalendarAlt,
+    faClasses: 'far fa-calendar-alt',
+  },
+  {
     name: 'incident-date',
-    attribute: 'instant_search-en_epoch_incident_date',
+    value: 'instant_search-en_epoch_incident_date',
     label: 'Incident Date',
     faIcon: faCalendarAlt,
     faClasses: 'far fa-calendar-alt',
+    type: 'date',
   },
   {
     name: 'published-date',
-    attribute: 'instant_search-en_epoch_date_published',
+    value: 'instant_search-en_epoch_date_published',
     label: 'Published Date',
     faIcon: faCalendarAlt,
     faClasses: 'far fa-calendar-alt',
+    type: 'date',
   },
   {
     name: 'submitted-date',
-    attribute: 'instant_search-en_epoch_date_submitted',
+    value: 'instant_search-en_epoch_date_submitted',
     label: 'Submitted Date',
     faIcon: faCalendarAlt,
     faClasses: 'far fa-calendar-alt',
+    type: 'date',
   },
 ];
 
