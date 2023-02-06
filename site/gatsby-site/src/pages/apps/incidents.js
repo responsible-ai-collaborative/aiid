@@ -24,7 +24,7 @@ export default function IncidentsPage(props) {
           </div>
         )}
         {incidentsData && incidentsData.incidents && (
-          <div className="ms-3 mt-2 mb-2">
+          <div className="ms-3 mt-2 mb-2 overflow-x-auto">
             <IncidentsTable data={incidentsData.incidents} />
           </div>
         )}
