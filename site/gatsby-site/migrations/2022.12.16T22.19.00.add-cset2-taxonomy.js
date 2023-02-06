@@ -138,11 +138,11 @@ var csetV1TaxaEntry = {
         'This is the researcher that is responsible for ensuring the quality of the classifications applied to this incident.',
       long_description:
         "The CSET taxonomy assigns individual researchers to each incident as the primary parties responsible for classifying the incident according to the taxonomy. This is the person responsible for assuring the integrity of annotator's classifications.",
-      display_type: 'enum',
+      display_type: 'string',
       mongo_type: 'string',
       default: '',
       placeholder: 'Select name here',
-      permitted_values: ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Other'],
+      permitted_values: [],
       weight: 20,
       instant_facet: false,
       required: false,
@@ -352,7 +352,7 @@ var csetV1TaxaEntry = {
       weight: 50,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
     },
     {
       field_number: '2.4',
@@ -365,7 +365,7 @@ var csetV1TaxaEntry = {
       weight: 50,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
       notes:
         'Note, over time more information about the incident may become available, allowing a ‘maybe’ to be changed to a ‘yes’ or ‘no.’',
     },
@@ -407,7 +407,7 @@ var csetV1TaxaEntry = {
       weight: 50,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
       notes:
         'Tracking and analyzing harm from AI systems designed to do harm is valuable and worthwhile. However, analysts may want to separately analyze harm from AI systems that were or were not designed to produce the observed harm.',
     },
@@ -422,7 +422,7 @@ var csetV1TaxaEntry = {
       weight: 50,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
       notes:
         'For an AI to be directly linked to harm it must have played an important role in the chain of events that led to harm. The AI system doesn’t need to be the only factor, or even the major factor, in the chain of harm. However, if the AI system hadn’t acted in the way it did, the specific harm would not have occurred.\n\nAn occurrence of harm that involves a system which contains an AI is not sufficient for calling an incident and AI harm event, near-miss, or issue. The involved AI must also be directly linked to the harm.',
     },
@@ -440,7 +440,7 @@ var csetV1TaxaEntry = {
       weight: 50,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
       notes:
         'A potentially identifiable specific entity is an entity that can be characterized in detail such that the name (Mr. Joe Smith,  Acme Inc, etc.) or a unique identifier (e.g. 100 Main Street, Anywhere USA) of the entity could be found. We may not know the name or identifier of the entity from the reports, but it does exist and could be found. For example, the general public is not a potentially identifiable specific entity. However, incarcerated people in the Springfield penitentiary would be specific entities because it would be possible to get a list of all the prisoners in the facility.',
     },
@@ -503,7 +503,7 @@ var csetV1TaxaEntry = {
       weight: 50,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
       notes:
         'Special interest intangible harm is determined in a different field. The determination of a special interest intangible harm is not dependant upon the AI tangible harm level',
     },
@@ -519,10 +519,10 @@ var csetV1TaxaEntry = {
       default: '',
       placeholder: 'Notes about the AI tangible harm level assessment',
       permitted_values: [],
-      weight: 50,
+      weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
 
     //      {
@@ -563,7 +563,7 @@ var csetV1TaxaEntry = {
       weight: 50,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
       notes:
         'Public services include healthcare, social services, voting, public transportation, education, and consumer protection.\n\nNote, if ‘yes’ is selected then there was likely a violation of civil liberties and there was a special interest intangible harm.',
     },
@@ -580,7 +580,7 @@ var csetV1TaxaEntry = {
       weight: 50,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
       notes:
         'It can often be difficult for the typical annotator to differentiate between violations of civil liberties, civil rights, human rights, and democratic norms. For this reason CSET grouped them together.\n\nHuman rights are rights inherent to all human beings, regardless of race, sex, nationality, ethnicity, language, religion, or any other status. They include the right to life and liberty, freedom from slavery and torture, freedom of opinion and expression, and the right to work and education. Civil rights are legal provisions that originate from notions of equality and can be enforced by law. Civil liberties are personal freedoms that are referenced in the Bill of Rights. Democratic norms are traditions, customs, and best practices that support democracy. An example of a democratic norm is accepting election results and facilitating a peaceful transfer of political power. ',
     },
@@ -596,7 +596,7 @@ var csetV1TaxaEntry = {
       weight: 50,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
       notes:
         'Generally, governments have an interest in establishing heightened protections for minors. These protections are often associated with media content or privacy. For example, if an AI system illegally tracked a minor’s activity online, then answer “yes” to this question. There are instances where an AI system causes indiscriminate harm to a group of people, and it is plausible that some of those people are minors. However, in this case the entire group of people, adults and children alike, shared the distribution of harm equally and therefore the answer to this question would be “no.”',
     },
@@ -612,7 +612,7 @@ var csetV1TaxaEntry = {
       weight: 50,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
     },
     {
       field_number: '3.5',
@@ -626,7 +626,7 @@ var csetV1TaxaEntry = {
       weight: 50,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
     },
 
     //      {
@@ -692,7 +692,7 @@ var csetV1TaxaEntry = {
       weight: 50,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
     },
     {
       field_number: '3.7',
@@ -705,10 +705,10 @@ var csetV1TaxaEntry = {
       default: '',
       placeholder: 'Notes',
       permitted_values: [],
-      weight: 50,
+      weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
 
     //      {
@@ -759,7 +759,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
     {
       field_number: '4.2',
@@ -777,7 +777,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
     {
       field_number: '4.3',
@@ -795,7 +795,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
     },
     {
       field_number: '4.4',
@@ -808,7 +808,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
     {
       field_number: '4.5',
@@ -822,7 +822,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
     },
     {
       field_number: '4.6',
@@ -836,7 +836,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
     },
 
     //      {
@@ -870,7 +870,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
     {
       field_number: '4.8',
@@ -888,7 +888,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
     {
       field_number: '4.10',
@@ -916,7 +916,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
     },
 
     //      {
@@ -985,7 +985,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
     },
     {
       field_number: '4.12',
@@ -1003,7 +1003,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
     {
       field_number: '4.13',
@@ -1019,7 +1019,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
 
     /* 5. Characterizing Entities and the Harm */
@@ -1055,7 +1055,7 @@ var csetV1TaxaEntry = {
           weight: 5,
           instant_facet: false,
           required: false,
-          public: false,
+          public: true,
         },
         {
           field_number: '5.2',
@@ -1068,7 +1068,7 @@ var csetV1TaxaEntry = {
           weight: 5,
           instant_facet: false,
           required: false,
-          public: false,
+          public: true,
         },
         {
           field_number: '5.3',
@@ -1099,7 +1099,7 @@ var csetV1TaxaEntry = {
           weight: 5,
           instant_facet: false,
           required: false,
-          public: false,
+          public: true,
         },
         {
           field_number: '5.4',
@@ -1127,7 +1127,7 @@ var csetV1TaxaEntry = {
           weight: 5,
           instant_facet: false,
           required: false,
-          public: false,
+          public: true,
         },
         {
           field_number: '5.5',
@@ -1154,7 +1154,7 @@ var csetV1TaxaEntry = {
           weight: 5,
           instant_facet: false,
           required: false,
-          public: false,
+          public: true,
         },
         {
           field_number: '5.6',
@@ -1185,7 +1185,7 @@ var csetV1TaxaEntry = {
           weight: 5,
           instant_facet: false,
           required: false,
-          public: false,
+          public: true,
         },
         {
           field_number: '5.7',
@@ -1201,7 +1201,7 @@ var csetV1TaxaEntry = {
           weight: 5,
           instant_facet: false,
           required: false,
-          public: false,
+          public: true,
         },
       ],
       default: '[]',
@@ -1210,7 +1210,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
 
     //      {
@@ -1293,7 +1293,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
     },
     {
       field_number: '6.2',
@@ -1310,7 +1310,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
 
     //      {
@@ -1352,7 +1352,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
     {
       field_number: '6.4',
@@ -1370,7 +1370,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
     {
       field_number: '6.5',
@@ -1382,7 +1382,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
     {
       field_number: '6.6',
@@ -1398,7 +1398,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
 
     //      {
@@ -1432,7 +1432,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
 
     //      {
@@ -1484,7 +1484,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
 
     //      {
@@ -1564,7 +1564,7 @@ var csetV1TaxaEntry = {
       weight: 50,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
     },
 
     //      {
@@ -1594,7 +1594,7 @@ var csetV1TaxaEntry = {
       weight: 50,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
     },
 
     //      {
@@ -1635,7 +1635,7 @@ var csetV1TaxaEntry = {
       weight: 50,
       instant_facet: true,
       required: false,
-      public: false,
+      public: true,
     },
     {
       field_number: '7.8',
@@ -1651,7 +1651,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
     {
       field_number: '8.1',
@@ -1667,7 +1667,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
 
     //      {
@@ -1733,7 +1733,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
 
     //      {
@@ -1790,7 +1790,7 @@ var csetV1TaxaEntry = {
       weight: 50,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
 
     {
@@ -1807,7 +1807,7 @@ var csetV1TaxaEntry = {
       weight: 5,
       instant_facet: false,
       required: false,
-      public: false,
+      public: true,
     },
 
     /* Removed Fields */

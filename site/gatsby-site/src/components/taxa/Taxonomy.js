@@ -32,6 +32,8 @@ const Taxonomy = ({
 
   const editing = taxonomyBeingEdited?.namespace == taxonomy?.namespace;
 
+  const heavyClassifications = taxonomy.classificationsArray.filter((field) => field.weight >= 50);
+
   return (
     <Card id={id} key={taxonomy.namespace} className="mt-6" data-cy={taxonomy.namespace}>
       <div className="tw-taxa-card-header tw-card-header">
@@ -116,7 +118,7 @@ const Taxonomy = ({
                       <Markdown className="w-4/5">{field.value}</Markdown>
                     </div>
                   ))}
-                {taxonomy.classificationsArray.length > 2 && (
+                {taxonomy.classificationsArray.length > heavyClassifications.length && (
                   <button
                     type="button"
                     className="btn btn-secondary btn-sm w-100"

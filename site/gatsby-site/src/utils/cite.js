@@ -12,21 +12,41 @@ export const getClassificationsArray = (incidentClassifications, taxonomy) => {
 
   const array = [];
 
-  const getStringForValue = (value) => {
+  const getStringForValue = (value, field) => {
     if (value === null) {
       return '';
     }
 
-    switch (typeof value) {
-      case 'object':
-        return value.join(', ');
-
-      case 'boolean':
-        return value ? 'Yes' : 'No';
-
-      default:
-        return value;
+    if (typeof value === 'string') {
+      return value;
     }
+    if (typeof value === 'boolean') {
+      return value ? 'Yes' : 'No';
+    }
+    if (typeof value === 'number') {
+      return String(value);
+    }
+    if (Array.isArray(value)) {
+      return value.map((v) => getStringForValue(v, field)).join(', ');
+    }
+    if (typeof value === 'object' && value.attributes) {
+      const subfieldTaxonomy = { field_list: field.subfields, namespace: taxonomy.namespace };
+
+      const subclassificationArray = getClassificationsArray(
+        [{ ...value, namespace: taxonomy.namespace }],
+        subfieldTaxonomy
+      );
+
+      return (
+        '(' +
+        subclassificationArray.map((c) => `${c.name}: ${getStringForValue(c.value)}`).join(',\n') +
+        ')'
+      );
+    }
+    if (typeof value === 'object' && !value.attributes) {
+      return JSON.stringify(value);
+    }
+    return '';
   };
 
   taxaFieldsArray.forEach((field) => {
@@ -34,7 +54,7 @@ export const getClassificationsArray = (incidentClassifications, taxonomy) => {
 
     const attributeValue = attribute?.value_json && JSON.parse(attribute.value_json);
 
-    const value = getStringForValue(attributeValue);
+    const value = getStringForValue(attributeValue, field);
 
     if (field.public !== false && value !== undefined && value !== '' && value.length > 0) {
       array.push({
