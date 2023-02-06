@@ -196,7 +196,7 @@ describe('The Discover app', () => {
     cy.location('search', { timeout: 8000 }).should('contain', 'hideDuplicates=1');
   });
 
-  it('Should not add a trailing slash when refreshing', () => {
+  it('Should not add a trailing slash when loading the discover app', () => {
     cy.visit(url);
 
     cy.location('search', { timeout: 8000 }).should(
