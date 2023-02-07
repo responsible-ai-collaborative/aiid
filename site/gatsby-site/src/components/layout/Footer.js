@@ -28,10 +28,6 @@ export default function Footer() {
             image
             mobile
           }
-          headerLinks {
-            link
-            text
-          }
         }
       }
     }
@@ -46,7 +42,10 @@ export default function Footer() {
   const { t } = useTranslation(['footer']);
 
   return (
-    <footer className="bg-text-light-gray relative sm:grid sm:grid-cols-2 md:grid-cols-4 gap-5 p-5">
+    <footer
+      id="main-footer"
+      className="bg-text-light-gray relative sm:grid sm:grid-cols-2 md:grid-cols-4 gap-5 p-5 z-50"
+    >
       {config.footer.navConfig.map((group) => (
         <div key={group.title}>
           <h3 className="text-base mt-4">{t(group.title)}</h3>

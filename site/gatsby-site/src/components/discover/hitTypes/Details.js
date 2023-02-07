@@ -10,7 +10,7 @@ import ReportText from 'components/reports/ReportText';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 
 import { SourceDomainSubtitle, HeaderTitle } from './shared';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import Card from 'elements/Card';
 import { VIEW_TYPES } from 'utils/discover';
@@ -34,6 +34,8 @@ export default function Details({
   viewType,
 }) {
   const localizePath = useLocalizePath();
+
+  const { t } = useTranslation();
 
   const detailsPath =
     viewType === VIEW_TYPES.INCIDENTS
@@ -60,6 +62,9 @@ export default function Details({
           alt={item.title}
           height="240px"
           transformation={fill().height(480)}
+          itemIdentifier={t('Report {{report_number}}', {
+            report_number: item.report_number,
+          }).replace(' ', '.')}
         />
       </a>
       <Card.Body className="flex flex-col ">

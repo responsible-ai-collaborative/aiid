@@ -26,9 +26,10 @@ const subtreeNav = (treeRoot, currentLocation = undefined, localizePath) => {
 
     currentVisit =
       currentLocation &&
-      (localizePath({ path: currentLocation }) === localizePath({ path: item.url }) ||
-        localizePath({ path: currentLocation }) ===
-          localizePath({ path: config.gatsby.pathPrefix + item.url }));
+      [
+        localizePath({ path: item.url }),
+        localizePath({ path: config.gatsby.pathPrefix + item.url }),
+      ].includes(localizePath({ path: currentLocation }));
 
     childVisit = false;
     defaultNavSetting.items.forEach((item) => {
@@ -52,13 +53,20 @@ const subtreeNav = (treeRoot, currentLocation = undefined, localizePath) => {
   return subs;
 };
 
-const Tree = ({ setNavCollapsed = null, localizePath }) => {
-  const defaultNavSettings = subtreeNav(navConfig, undefined, localizePath);
+const Tree = ({
+  setNavCollapsed = null,
+  localizePath,
+  isCollapsed = false,
+  additionalNodes = [],
+}) => {
+  const allNodes = navConfig.concat(additionalNodes);
+
+  const defaultNavSettings = subtreeNav(allNodes, undefined, localizePath);
 
   const [navSettings, setNavSetting] = useState(defaultNavSettings);
 
   const toggle = (url) => {
-    setNavSetting(subtreeNav(navConfig, url, localizePath));
+    setNavSetting(subtreeNav(allNodes, url, localizePath));
     setNavCollapsed && setNavCollapsed(true);
   };
 
@@ -71,6 +79,8 @@ const Tree = ({ setNavCollapsed = null, localizePath }) => {
             setCollapsed={toggle}
             navSettings={navSettings}
             item={cur}
+            isCollapsed={isCollapsed}
+            localizePath={localizePath}
           />
         );
       })}

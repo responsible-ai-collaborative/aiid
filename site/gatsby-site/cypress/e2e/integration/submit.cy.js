@@ -718,9 +718,6 @@ describe('The Submit form', () => {
   });
 
   it('Should show fallback preview image on initial load', () => {
-    const imageUrl =
-      'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/fallback.jpg';
-
     const values = {
       url: 'https://test.com',
       title: 'test title',
@@ -729,7 +726,6 @@ describe('The Submit form', () => {
       incident_date: '2022-01-01',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
-      image_url: imageUrl,
       incident_id: '1',
     };
 
@@ -747,7 +743,7 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.get('[data-cy="image-preview-figure"] img').should('have.attr', 'src', imageUrl);
+    cy.get('[data-cy="image-preview-figure"] canvas').should('exist');
   });
 
   it('Should update preview image when url is typed', () => {
@@ -771,8 +767,7 @@ describe('The Submit form', () => {
     const newImageUrl = 'https://' + suffix;
 
     const cloudinaryImageUrl =
-      'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/v1/reports/' +
-      suffix;
+      'https://res.cloudinary.com/pai/image/upload/f_auto/q_auto/v1/reports/' + suffix;
 
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
