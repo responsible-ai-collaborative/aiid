@@ -195,4 +195,13 @@ describe('The Discover app', () => {
     cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=true');
     cy.location('search', { timeout: 8000 }).should('contain', 'hideDuplicates=1');
   });
+
+  it('Should not add a trailing slash when loading the discover app', () => {
+    cy.visit(url);
+
+    cy.location('search', { timeout: 8000 }).should(
+      'equal',
+      '?display=details&is_incident_report=true&page=1'
+    );
+  });
 });
