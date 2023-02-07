@@ -83,28 +83,6 @@ a:hover {
 .displayInline {
   display: inline-block;
 }
-.navBarToggle {
-  border: 0px solid #fff;
-  border-radius: 4px;
-  width: 36px;
-  height: 33px;
-  position: absolute;
-  right: 20px;
-  padding: 8px 5px;
-  display: none;
-}
-.navBarToggle .iconBar {
-  display: block;
-  width: 22px;
-  height: 2px;
-  border-radius: 1px;
-  margin: 0 auto;
-  margin-top: 4px;
-  background-color: #001934;
-}
-.navBarToggle .iconBar:first-child {
-  margin-top: 0px;
-}
 .video-responsive iframe {
   position: absolute;
   width: 100%;
@@ -126,27 +104,6 @@ a:hover {
   display: flex;
   align-items: center;
 }
-.divider {
-  height: 30px;
-  margin: 0 15px;
-  border-right: 1px solid rgba(255, 255, 255, 0.3);
-}
-.githubIcon {
-  width: 15px;
-  margin-right: 5px;
-}
-
-.githubSection {
-  display: flex;
-  align-items: center;
-  color: #000;
-  opacity: 0.7;
-}
-
-.githubSection:hover {
-  text-decoration: none;
-  opacity: 1;
-}
 
 .navbar-default .navbar-toggle .icon-bar {
   background-color: #fff !important;
@@ -162,38 +119,6 @@ a:hover {
   box-shadow: rgba(116, 129, 141, 0.1) 0px 1px 1px 0px;
   display: flex;
   align-items: center;
-}
-.formElement {
-  background-color: transparent;
-  padding: 4px;
-  border-radius: 5px;
-  position: relative;
-}
-.formElement:focus {
-  outline: none;
-  border: none;
-}
-.formElement svg path {
-  fill: #2fd2c5;
-}
-.searchInput {
-  width: 100%;
-  background-color: rgba(28, 211, 198, 0.12) !important;
-  border-width: 0 !important;
-  color: #c2c2c2;
-  padding: 10px;
-  border-radius: 5px;
-  color: #fff;
-  opacity: 0.6;
-  padding-left: 38px;
-  max-width: 600px;
-}
-.searchInput:focus,
-.searchInput:visited,
-.searchInput:hover,
-.searchInput:focus-within {
-  outline: none;
-  border: 0;
 }
 .searchWrapper {
   padding-left: 0px;
@@ -279,14 +204,15 @@ a:hover {
 .removePadd {
   padding: 0 !important;
 }
-.navBarDefault {
+#navBarDefault a {
+  color: inherit;
+}
+/*.navBarDefault {
   background-color: #001934;
   border-radius: 0;
   border-top: 0;
   margin-bottom: 0;
   border: 0;
-  display: flex;
-  align-items: center;
   box-shadow: -1px 0px 4px 1px rgba(175, 158, 232, 0.4);
   -webkit-box-shadow: -1px 0px 4px 1px rgba(175, 158, 232, 0.4);
   -moz-box-shadow: -1px 0px 4px 1px rgba(175, 158, 232, 0.8);
@@ -295,24 +221,14 @@ a:hover {
   padding: 15px;
   position: relative;
   height: 80px;
-}
+}*/
 .navBarHeader {
   min-width: 335px;
   padding-right: 20px;
   display: flex;
   align-items: center;
 }
-.navBarBrand {
-  padding: 0px 0px;
-  display: flex;
-  align-items: center;
-}
 
-.navBarBrand img {
-  width: 80px;
-  margin-right: 6px;
-  display: inline-block;
-}
 .navBarUL li {
   list-style-type: none;
 }
@@ -492,7 +408,7 @@ blockquote {
 }
 @media (min-width: 768px) {
   .titleWrapper {
-    margin-top: 0.25rem;
+    padding-top: 0.25rem;
     margin-bottom: 1.75rem;
     padding-bottom: 0rem;
 
@@ -503,19 +419,6 @@ blockquote {
   flex-grow: 0;
   line-height: 2.5rem;
   margin: 0px;
-}
-
-.gitBtn {
-  height: 30px;
-  min-height: 30px;
-  display: flex;
-  align-items: center;
-}
-
-.gitBtn img {
-  width: 15px;
-  display: inline-block;
-  margin-right: 5px;
 }
 
 .addPaddTopBottom {
@@ -675,9 +578,6 @@ img {
   text-align: end;
   padding: 0;
 }
-.topnav {
-  -webkit-transition: top 0.5s, bottom 0.5s;
-}
 
 .fullWidth {
   width: 100%;
@@ -690,108 +590,17 @@ img {
   max-width: none;
 }
 
+
+hr {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+@media (min-width: 768px) {
+  margin-top: unset;
+  margin-bottom: unset;
+}
+
 @media (max-width: 767px) {
-  .formElement svg path {
-    fill: #001934;
-  }
-  .visibleMobileView {
-    display: block !important;
-  }
-  .searchInput {
-    color: #001934;
-  }
-  .socialWrapper {
-    position: absolute;
-    right: 10px;
-    top: 29px;
-  }
-  .responsive {
-    margin-top: 15px;
-    position: relative;
-    padding-bottom: 20px;
-    border-top: 1px solid #fff;
-  }
-  .headerTitle {
-    font-size: 12px;
-    margin-top: 0;
-  }
-  .navBarBrand {
-    min-height: 40px;
-  }
-  .navBarBrand img {
-    width: 42px;
-  }
-  .topnav.responsive .visibleMobile {
-    display: block;
-  }
-  .topnav .navBarUL {
-    display: none;
-  }
-  .topnav.responsive .navBarUL {
-    display: block;
-    text-align: left;
-  }
-  .hiddenMobile {
-    display: none !important;
-  }
-  hr {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-  .navBarParent {
-    display: block;
-  }
-  .separator {
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-  .navBarULRight {
-    position: static;
-  }
-  .navBarUL {
-    display: flex;
-    align-items: center;
-    margin: 7.5px 0px;
-  }
-  .navBarUL li {
-    height: 37px;
-  }
-  .navBarUL li a {
-    font-size: 14px;
-    padding: 10px 15px;
-  }
-
-  .navBarDefault {
-    display: block;
-    height: auto;
-  }
-
-  .navBarToggle {
-    margin-right: 0;
-    display: block;
-    position: absolute;
-    left: 11px;
-    top: 15px;
-    background: #fff;
-  }
-
-  .navBarHeader {
-    display: flex;
-    min-width: auto;
-    padding-right: 0;
-    align-items: center;
-  }
-
-  .navBarBrand {
-    font-size: 20px;
-    padding: 0 0;
-    padding-left: 0;
-    flex: initial;
-  }
-
-  .gitBtn {
-    display: inline-block;
-  }
 
   .mobileView {
     text-align: left !important;
@@ -821,19 +630,12 @@ img {
   .navBarDefault {
     padding: 10px;
   }
-  .navBarBrand {
-    font-size: 22px;
-  }
   .navBarHeader {
     min-width: 240px;
     flex: initial;
   }
   .githubBtn {
     padding: 10px 10px;
-  }
-  .divider {
-    margin: 0 5px;
-    height: 20px;
   }
   .hitWrapper {
     max-width: 500px;

@@ -1,5 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Badge, Spinner } from 'flowbite-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { CloudinaryImage } from '@cloudinary/base';
+import { Trans, useTranslation } from 'react-i18next';
+import { useLocalization } from 'gatsby-theme-i18n';
+import { useMutation } from '@apollo/client';
+import { graphql } from 'gatsby';
+
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
 import Citation from 'components/cite/Citation';
@@ -12,7 +20,6 @@ import ReportCard from '../components/reports/ReportCard';
 import Taxonomy from '../components/taxa/Taxonomy';
 import { useUserContext } from '../contexts/userContext';
 import SimilarIncidents from '../components/cite/SimilarIncidents';
-import { Trans, useTranslation } from 'react-i18next';
 import Card from '../elements/Card';
 import Button from '../elements/Button';
 import Container from '../elements/Container';
@@ -20,19 +27,15 @@ import Row from '../elements/Row';
 import Col from '../elements/Col';
 import Pagination from '../elements/Pagination';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
-import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from '../components/i18n/useLocalizePath';
-import { useMutation } from '@apollo/client';
 import { UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import Link from 'components/ui/Link';
-import { graphql } from 'gatsby';
 import { getTaxonomies, getTranslatedReports } from 'utils/cite';
 import { computeEntities, RESPONSE_TAG } from 'utils/entities';
 import AllegedEntities from 'components/entities/AllegedEntities';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
-import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import config from '../../config';
 import VariantList from 'components/variants/VariantList';
 import { isCompleteReport } from 'utils/variants';
 
@@ -109,7 +112,13 @@ function CitePage(props) {
 
   const sortedReports = sortedIncidentReports.filter((report) => isCompleteReport(report));
 
-  const metaImage = sortedReports[0].image_url;
+  const publicID = sortedReports.find((report) => report.cloudinary_id)?.cloudinary_id;
+
+  const image = new CloudinaryImage(publicID, {
+    cloudName: config.cloudinary.cloudName,
+  });
+
+  const metaImage = image.createCloudinaryURL();
 
   const addToast = useToastContext();
 
