@@ -35,10 +35,23 @@ describe('SEO', () => {
     '/about/', // doc template
   ];
 
-  const codes = ['es', 'en', 'fr'];
+  const languages = [
+    {
+      code: 'en',
+      hrefLang: 'en-US',
+    },
+    {
+      code: 'es',
+      hrefLang: 'es',
+    },
+    {
+      code: 'fr',
+      hrefLang: 'fr',
+    },
+  ];
 
   paths.forEach((path) => {
-    codes.forEach((code) => {
+    languages.forEach(({ code }) => {
       it(`/${code}${path} Should have proper canonical url`, () => {
         const canonicalPath = switchLocalizedPath({ newLang: code, path });
 
@@ -47,6 +60,30 @@ describe('SEO', () => {
         cy.visit(canonicalPath);
 
         cy.get('[rel="canonical"]').invoke('attr', 'href').should('equal', url);
+      });
+    });
+  });
+
+  paths.forEach((path) => {
+    languages.forEach(({ code }) => {
+      it.only(`${code} ${path} Should have proper alternate url`, () => {
+        const canonicalPath = switchLocalizedPath({ newLang: code, path });
+
+        cy.visit(canonicalPath);
+
+        cy.get('[rel="alternate"]').should('have.length', 5);
+
+        for (const language of languages) {
+          const alternatePath = switchLocalizedPath({ newLang: language.code, path });
+
+          const alternateUrl = baseUrl + alternatePath;
+
+          cy.log(canonicalPath, 'tag', language.hrefLang, 'should eq', alternateUrl);
+
+          cy.get(
+            `[rel="alternate"][hrefLang="${language.hrefLang}"][href="${alternateUrl}"]`
+          ).should('exist');
+        }
       });
     });
   });
