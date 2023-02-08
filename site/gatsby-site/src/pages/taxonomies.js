@@ -31,7 +31,7 @@ export default function Taxonomies({ data, ...props }) {
           <Trans>Applied Taxonomies</Trans>
         </h2>
         <ul className="list-revert pl-8">
-          <li className="list-none">
+          <li>
             <p>
               <Trans>
                 <LocalizedLink to="/taxonomy/cset">
@@ -45,6 +45,18 @@ export default function Taxonomies({ data, ...props }) {
               data={data}
               namespace="CSET"
               axes={['Harm Distribution Basis', 'Harm Type', 'System Developer', 'Severity']}
+            />
+          </li>
+          <li>
+            <p>
+              <LocalizedLink to="/taxonomy/gmf/">Goals, Methods, and Failures (GMF)</LocalizedLink>.
+              This is a taxonomy detailing the technological and process factors producing an
+              incident.
+            </p>
+            <TaxonomyGraphCarousel
+              data={data}
+              namespace="GMF"
+              axes={['Known AI Goal', 'Known AI Technology', 'Known AI Technical Failure']}
             />
           </li>
         </ul>

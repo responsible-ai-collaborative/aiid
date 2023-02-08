@@ -17,6 +17,7 @@ import AiidHelmet from 'components/AiidHelmet';
 import { getClassificationValue } from 'utils/classifications';
 
 const Description = styled(Markdown)`
+  margin-top: 1rem;
   h1 {
     font-size: 26px;
     font-weight: 800;

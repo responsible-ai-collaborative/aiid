@@ -29,7 +29,12 @@ var YesNo = {
   placeholder: '',
 };
 
-var handleWhitespace = (s) => s.replace(/^ */g, '');
+var handleWhitespace = (string) =>
+  string
+    .trim()
+    .split('\n')
+    .map((line) => line.replace(/ */, ''))
+    .join('\n');
 
 var csetV1TaxaEntry = {
   namespace: 'CSETv1',

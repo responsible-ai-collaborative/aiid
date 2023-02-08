@@ -8,7 +8,7 @@ exports.up = async ({ context: { client } }) => {
     const classification = {
       incident_id: Number(incidentId),
       namespace: 'GMF',
-      publish: false,
+      publish: true,
       notes: '',
       attributes: [],
     };

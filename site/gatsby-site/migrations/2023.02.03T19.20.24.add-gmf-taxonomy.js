@@ -14,10 +14,48 @@ exports.down = async ({ context: { client } }) => {
   await taxaCollection.deleteOne({ namespace: 'GMF' });
 };
 
+var handleWhitespace = (string) =>
+  string
+    .trim()
+    .split('\n')
+    .map((line) => line.replace(/ */, ''))
+    .join('\n');
+
 var gmfTaxaEntry = {
   namespace: 'GMF',
   weight: 70,
-  description: '',
+  description: handleWhitespace(`
+    ## What is the GMF Taxonomy?
+
+    The Goals, Methods, and Failures (GMF) taxonomy is a failure 
+    cause analysis taxonomy interrelating the goals of the system 
+    deployment, the system's methods, and their likely failings. 
+    Details on the process are available in the recent work published 
+    for [SafeAI paper](https://arxiv.org/abs/2211.07280).
+
+    ## How do I explore the taxonomy?
+
+    All taxonomies can be used to filter incident reports within the 
+    Discover Application. The taxonomy filters work similarly to how 
+    you filter products on an E-commerce website. Use the search 
+    field at the bottom of the “Classifications” tab to find the 
+    taxonomy field you would like to filter with, then click the 
+    desired value to apply the filter.
+
+    ## About the Responsible AI Collaborative
+
+    The AI Incident Database is a collaborative project of many 
+    people and organizations. Details on the people and organizations 
+    contributing to this particular taxonomy will appear here, while 
+    you can learn more about the Collab itself on the incident 
+    database [home](https://incidentdatabase.ai/) and 
+    [about](https://incidentdatabase.ai/about/) pages.
+
+    The maintainers of this taxonomy include,
+
+    * [Nikiforos Pittaras](https://www.linkedin.com/in/nikiforos-pittaras/)
+    * [Sean McGregor](https://www.linkedin.com/in/seanbmcgregor/)
+  `),
   field_list: [
     {
       short_name: 'Known AI Goal',
@@ -32,7 +70,7 @@ var gmfTaxaEntry = {
       placeholder: '',
       permitted_values: [],
       weight: 50,
-      instant_facet: false,
+      instant_facet: true,
       required: false,
       public: true,
     },
@@ -115,7 +153,7 @@ var gmfTaxaEntry = {
       placeholder: '',
       permitted_values: [],
       weight: 50,
-      instant_facet: false,
+      instant_facet: true,
       required: false,
       public: true,
     },
@@ -198,7 +236,7 @@ var gmfTaxaEntry = {
       placeholder: '',
       permitted_values: [],
       weight: 50,
-      instant_facet: false,
+      instant_facet: true,
       required: false,
       public: true,
     },
@@ -281,7 +319,7 @@ var gmfTaxaEntry = {
       placeholder: '',
       permitted_values: [],
       weight: 50,
-      instant_facet: false,
+      instant_facet: true,
       required: false,
       public: true,
     },
@@ -364,7 +402,7 @@ var gmfTaxaEntry = {
       placeholder: '',
       permitted_values: [],
       weight: 50,
-      instant_facet: false,
+      instant_facet: true,
       required: false,
       public: true,
     },
@@ -446,7 +484,7 @@ var gmfTaxaEntry = {
       placeholder: '',
       permitted_values: [],
       weight: 50,
-      instant_facet: false,
+      instant_facet: true,
       required: false,
       public: true,
     },
