@@ -43,6 +43,8 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
             }
             transformation={fill().height(480)}
             alt=""
+            title={incident.title}
+            itemIdentifier={t('Incident {{id}}', { id: incident.incident_id }).replace(' ', '.')}
           />
         )}
 

@@ -10,6 +10,7 @@ import { wrapRootElement } from './wrapRootElement';
 import { QueryParamProvider } from 'use-query-params';
 import { navigate } from 'gatsby';
 import { UserContextProvider } from 'contexts/userContext';
+import { MenuContextProvider } from 'contexts/MenuContext';
 
 export const shouldUpdateScroll = ({ routerProps: { location } }) => {
   const { pathname } = location;
@@ -22,16 +23,18 @@ export const shouldUpdateScroll = ({ routerProps: { location } }) => {
 export const wrapPageElement = ({ element }) => {
   const history = {
     replace(location) {
-      navigate(location.search, { replace: true });
+      navigate(location.pathname + location.search, { replace: true });
     },
     push(location) {
-      navigate(location.search, { replace: false });
+      navigate(location.pathname + location.search, { replace: false });
     },
   };
 
   return (
     <QueryParamProvider history={history}>
-      <UserContextProvider>{element}</UserContextProvider>
+      <MenuContextProvider>
+        <UserContextProvider>{element}</UserContextProvider>
+      </MenuContextProvider>
     </QueryParamProvider>
   );
 };

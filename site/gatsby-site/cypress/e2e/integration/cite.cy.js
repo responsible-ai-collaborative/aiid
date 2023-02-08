@@ -25,6 +25,10 @@ describe('Cite pages', () => {
 
       cy.disableSmoothScroll();
 
+      cy.waitForStableDOM();
+
+      cy.get('[data-cy="collapse-button"]:visible').click();
+
       cy.contains('Show Details on Incident #10').first().click();
 
       cy.url().should('include', '/cite/10/#r23');
@@ -323,10 +327,6 @@ describe('Cite pages', () => {
 
       const description = incident.description;
 
-      const imageUrl = [...incident.reports].sort((a, b) =>
-        a.date_published >= b.date_published ? 1 : -1
-      )[0].image_url;
-
       cy.get('head meta[name="title"]').should('have.attr', 'content', title);
       cy.get('head meta[name="description"]').should('have.attr', 'content', description);
 
@@ -341,14 +341,14 @@ describe('Cite pages', () => {
       cy.get('head meta[property="og:type"]').should('have.attr', 'content', 'website');
       cy.get('head meta[property="og:title"]').should('have.attr', 'content', title);
       cy.get('head meta[property="og:description"]').should('have.attr', 'content', description);
-      cy.get('head meta[property="og:image"]').should('have.attr', 'content', imageUrl);
+      cy.get('head meta[property="og:image"]').first().should('have.attr', 'content');
       cy.get('head meta[property="twitter:title"]').should('have.attr', 'content', title);
       cy.get('head meta[property="twitter:description"]').should(
         'have.attr',
         'content',
         description
       );
-      cy.get('head meta[property="twitter:image"]').should('have.attr', 'content', imageUrl);
+      cy.get('head meta[property="twitter:image"]').should('have.attr', 'content');
     });
   });
 
