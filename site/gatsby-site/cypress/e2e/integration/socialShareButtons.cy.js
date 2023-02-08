@@ -1,7 +1,7 @@
 describe('Social Share buttons on pages', { retries: { runMode: 4 } }, () => {
   const incidentId = 10;
 
-  const incidentUrl = `/cite/${incidentId}`;
+  const incidentUrl = `/cite/${incidentId}/`;
 
   const blogPostUrl = `/blog/join-raic`;
 
