@@ -271,6 +271,8 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
     );
   }
 
+  const dummyFields = (taxonomy.dummyFields || []).map((field) => ({ ...field, dummy: true }));
+
   return (
     <FormContainer data-cy="taxonomy-form" className="bootstrap">
       <Formik initialValues={initialValues} onSubmit={submit} innerRef={formRef}>
@@ -291,19 +293,28 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                 />
               </Form.Group>
               <fieldset disabled={isSubmitting}>
-                {fieldsWithDefaultValues.sort(sortByFieldNumbers).map((rawField) => (
-                  <FormField
-                    key={rawField.short_name}
-                    field={rawField}
-                    formikValues={values}
-                    {...{
-                      handleChange,
-                      setFieldTouched,
-                      setFieldValue,
-                      setDeletedSubClassificationIds,
-                    }}
-                  />
-                ))}
+                {fieldsWithDefaultValues
+                  .concat(dummyFields)
+                  .sort(sortByFieldNumbers)
+                  .map((rawField) =>
+                    rawField.dummy ? (
+                      <h5 className="mb-3 text-lg">
+                        {rawField.field_number}. {rawField.short_name}
+                      </h5>
+                    ) : (
+                      <FormField
+                        key={rawField.short_name}
+                        field={rawField}
+                        formikValues={values}
+                        {...{
+                          handleChange,
+                          setFieldTouched,
+                          setFieldValue,
+                          setDeletedSubClassificationIds,
+                        }}
+                      />
+                    )
+                  )}
               </fieldset>
               <Form.Group className="mb-4">
                 <Form.Label>Publish</Form.Label>
@@ -512,7 +523,9 @@ function FormField({
         />
       )}
 
-      <Form.Text className="text-muted-gray mb-4 d-block">{field.short_description}</Form.Text>
+      <Form.Text className="text-muted-gray mb-4 d-block whitespace-pre-wrap">
+        {field.short_description}
+      </Form.Text>
     </div>
   );
 }
@@ -587,6 +600,11 @@ function sortByFieldNumbers(a, b) {
   if (exists(a.field_number) && !exists(b.field_number)) return 1;
   if (exists(b.field_number) && !exists(a.field_number)) return -1;
   if (exists(a.field_number) && exists(b.field_number)) {
+    if (a.field_number == b.field_number) {
+      if (a.dummy && !b.dummy) return -1;
+      if (b.dummy && !a.dummy) return 1;
+    }
+
     const [fieldNumsA, fieldNumsB] = [a, b].map((e) =>
       e.field_number.split('.').map((s) => Number(s))
     );

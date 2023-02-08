@@ -75,6 +75,16 @@ var csetV1TaxaEntry = {
     the challenges and opportunities of emerging technologies. [(Read 
     more)](https://cset.georgetown.edu/about-us/).
   `),
+  dummy_fields: [
+    { field_number: '1', short_name: 'Metadata' },
+    { field_number: '2', short_name: 'AI Tangible Harm Category' },
+    { field_number: '3', short_name: 'Special Interest Intangible Harm' },
+    { field_number: '4', short_name: 'Environmental and Temporal Characteristics' },
+    { field_number: '5', short_name: 'Characterizing Entities and the Harm' },
+    { field_number: '6', short_name: 'Tangible Harm Quantities ' },
+    { field_number: '7', short_name: 'Information about AI System' },
+    { field_number: '8', short_name: 'AI Functionality and Techniques' },
+  ],
   field_list: [
     {
       field_number: '1.1',
@@ -1628,15 +1638,17 @@ var csetV1TaxaEntry = {
         Autonomy3: The system does not independently make decisions but instead provides information to a human who actively chooses to proceed with the AI’s information.
       `),
       long_description: handleWhitespace(`
-        Autonomy1: The system operates independently with no human oversight, interaction, or intervention. //
-        Autonomy2: The system operates independently but with human oversight, where a human can observe and override the system’s decisions in real time. //
+        Autonomy1: The system operates independently with no human oversight, interaction, or intervention.
+
+        Autonomy2: The system operates independently but with human oversight, where a human can observe and override the system’s decisions in real time.
+
         Autonomy3: The system does not independently make decisions but instead provides information to a human who actively chooses to proceed with the AI’s information.
       `),
       display_type: 'enum',
       mongo_type: 'string',
       default: '',
       placeholder: '',
-      permitted_values: ['Autonomy1', 'Autonomy2', 'Autonomy3'],
+      permitted_values: ['Autonomy1', 'Autonomy2', 'Autonomy3', 'unclear'],
       weight: 50,
       instant_facet: true,
       required: false,

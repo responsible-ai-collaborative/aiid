@@ -543,6 +543,10 @@ export const query = graphql`
         namespace
         weight
         description
+        dummy_fields {
+          field_number
+          short_name
+        }
         field_list {
           field_number
           short_name
