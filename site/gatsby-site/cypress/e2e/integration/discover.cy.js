@@ -202,6 +202,8 @@ describe('The Discover app', () => {
 
     cy.get('[data-cy="sort-asc"]').click();
 
+    cy.waitForStableDOM();
+
     cy.get('[data-cy="discover-sort"]').should('have.text', 'Incident Date asc');
 
     cy.get('[data-cy=incident-date]').then((dates) => {
@@ -220,11 +222,19 @@ describe('The Discover app', () => {
 
     cy.get('[data-cy="discover-sort"]').click();
 
+    cy.waitForStableDOM();
+
     cy.get('[data-cy="published-date-sort"]').click();
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="discover-sort"]').click();
 
+    cy.waitForStableDOM();
+
     cy.get('[data-cy="sort-desc"]').click();
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="discover-sort"]').should('have.text', 'Published Date desc');
 
