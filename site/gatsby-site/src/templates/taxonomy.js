@@ -288,6 +288,7 @@ const Taxonomy = (props) => {
       <div className={'titleWrapper'}>
         <StyledHeading>{namespace}</StyledHeading>
       </div>
+      <Description>{description}</Description>
       <h1 className="heading1">Taxonomy Fields</h1>
       <div className="flex gap-9 flex-col">
         {sortedFieldsArray
@@ -319,7 +320,6 @@ const Taxonomy = (props) => {
             </div>
           ))}
       </div>
-      <Description>{description}</Description>
     </Layout>
   );
 };
