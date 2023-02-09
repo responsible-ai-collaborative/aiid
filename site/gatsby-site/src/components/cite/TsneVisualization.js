@@ -43,14 +43,19 @@ export default function TsneVisualization({
       }
     }
   }
+
   for (const axis in attributesByAxis) {
     const axisAttributes = attributesByAxis[axis];
 
     const uniqueValues = new Set(axisAttributes.map((a) => a.value_json));
 
+    const multipleValuesExist = 1 < uniqueValues.size;
+
+    const repeatingValuesExist = uniqueValues.size < axisAttributes.length;
+
     if (
-      1 < uniqueValues.size &&
-      uniqueValues.size < (axisAttributes.length * 3) / 4 &&
+      multipleValuesExist &&
+      repeatingValuesExist &&
       (axis.split('::')[0] != 'CSET' || csetClassifications.includes(axis.split('::')[1]))
     ) {
       axes.push(axis);
@@ -425,7 +430,7 @@ function PlotPoint({
 }
 
 var attributeIsNotEmpty = (attribute) =>
-  attribute && ![null, undefined, '""', 'null', ''].includes(attribute.value_json);
+  attribute && ![null, undefined, '""', 'null', '', '[]'].includes(attribute.value_json);
 
 function attributeToTaxon(attribute) {
   let taxon = 'Unclassified';
