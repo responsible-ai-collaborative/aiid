@@ -70,6 +70,8 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
     if (taxonomy && classificationsData) {
       const notes = classification?.notes || '';
 
+      const publish = classification?.publish || false;
+
       const fieldsArray = [];
 
       const defaultValues = {};
@@ -113,6 +115,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
       setInitialValues({
         ...defaultValues,
         notes,
+        publish,
       });
       setLoading(false);
     }
