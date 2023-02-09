@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import md5 from 'md5';
 import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
@@ -24,9 +24,36 @@ const ReportCard = ({ item, className = '', incidentId }) => {
 
   const [expanded, setExpanded] = useState(false);
 
+  const [imageMaxHeight, setImageMaxHeight] = useState(0);
+
   const ref = useRef(null);
 
   const authors = item.authors.join(', ');
+
+  const checkCardSize = () => {
+    if (expanded) return;
+
+    const cardHeight = ref.current.clientHeight;
+
+    setImageMaxHeight(cardHeight);
+  };
+
+  useEffect(() => {
+    checkCardSize();
+    window.addEventListener('resize', checkCardSize);
+
+    return () => {
+      window.removeEventListener('resize', checkCardSize);
+    };
+  }, [expanded]);
+
+  let adjustedImageStyles = {};
+
+  if (expanded) {
+    adjustedImageStyles = {
+      height: imageMaxHeight + 'px',
+    };
+  }
 
   return (
     <>
@@ -39,12 +66,15 @@ const ReportCard = ({ item, className = '', incidentId }) => {
         data-cy="incident-report-card"
       >
         <div
-          className={`flex self-stretch justify-center items-center md:border-r w-1/3 float-left ${
-            expanded ? 'h-[480px]' : ''
-          } mr-2`}
+          className={`flex self-stretch justify-center items-center md:border-r w-1/3 float-left mr-2 ${
+            expanded ? 'border-b' : ''
+          }`}
+          style={adjustedImageStyles}
         >
           <Image
-            className="img-fluid rounded-start h-full w-full max-w-full rounded-t-lg md:rounded-l-lg md:rounded-r-none border-r object-cover"
+            className={`img-fluid rounded-start h-full w-full max-w-full rounded-t-lg md:rounded-l-lg md:rounded-r-none border-r object-contain ${
+              expanded ? 'border-b' : ''
+            }`}
             publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
             alt={item.title}
             transformation={fill().height(480)}
