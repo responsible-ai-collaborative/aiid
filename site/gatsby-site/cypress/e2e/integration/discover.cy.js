@@ -224,7 +224,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('[data-cy="published-date-sort"]').click();
+    cy.get('[data-cy="published-date-sort"]', { timeout: 1000 }).click();
 
     cy.waitForStableDOM();
 
