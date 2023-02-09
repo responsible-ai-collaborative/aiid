@@ -135,11 +135,13 @@ Create a `.env` file under `site/gatsby-site` with the following contents:
 ```
 GATSBY_REALM_APP_ID=aiidstitch2-sasvc
 MONGODB_CONNECTION_STRING=mongodb+srv://readonly:vNMlVM35rsTlMUTr@aiiddev.seam4.mongodb.net
+MONGODB_TRANSLATIONS_CONNECTION_STRING=mongodb+srv://readonly:vNMlVM35rsTlMUTr@aiiddev.seam4.mongodb.net
 MONGODB_REPLICA_SET=aiiddev-shard-00-02.seam4.mongodb.net,aiiddev-shard-00-01.seam4.mongodb.net,aiiddev-shard-00-00.seam4.mongodb.net
 
 GATSBY_ALGOLIA_APP_ID=JD5JCVZEVS
 GATSBY_ALGOLIA_SEARCH_KEY=c5e99d93261645721a1765fe4414389c
-GATSBY_AVAILABLE_LANGUAGES=en,es
+GATSBY_AVAILABLE_LANGUAGES=en,es,fr
+SKIP_PAGE_CREATOR=createTsneVisualizationPage
 ```
 
 This will give you access to our `staging` environment, so please be sure you are on the `staging` branch.
