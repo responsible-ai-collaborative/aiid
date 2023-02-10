@@ -553,42 +553,76 @@ function ObjectListField({
     }, [])
   );
 
+  const [openItemId, setOpenItemID] = useState();
+
   return (
     <>
-      {objectListItemIds.map((id) => (
-        <Card key={id} style={{ marginTop: '1rem', marginBottom: '1rem' }}>
-          <Card.Body>
-            {field.subfields.map((subfield) => (
-              <FormField
-                key={subfield.short_name + '-form-field'}
-                field={subfield}
-                superfield={field}
-                superfieldIndex={id}
-                {...{
-                  handleChange,
-                  formikValues,
-                  setFieldTouched,
-                  setFieldValue,
-                  setDeletedSubClassificationIds,
-                }}
-              />
-            ))}
-            <Button
-              variant="outline-danger"
-              onClick={() => {
-                setObjectListItemsIds((ids) => ids.filter((itemId) => itemId != id));
-                setDeletedSubClassificationIds((ids) => ids.concat(id));
-              }}
+      {objectListItemIds.map((id) => {
+        const headerKey = field.short_name + '___' + id + '___' + field.subfields[0].short_name;
+
+        let headerValue = (openItemId == id ? '(-) ' : '(+) ') + (formikValues[headerKey] || 'New');
+
+        if (headerValue.length > 60) {
+          headerValue = headerValue.slice(0, 60) + '…';
+        }
+        return (
+          <Card key={id} style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+            <Card.Header
+              style={{ borderBottom: openItemId == id ? undefined : '0px', cursor: 'pointer' }}
+              onClick={() => setOpenItemID((old) => (old == id ? null : id))}
             >
-              Delete
-            </Button>
-          </Card.Body>
-        </Card>
-      ))}
+              {headerValue}
+            </Card.Header>
+            <Card.Body
+              style={
+                openItemId == id
+                  ? undefined
+                  : {
+                      height: '0px',
+                      padding: '0px',
+                      border: '0px',
+                      opacity: '0',
+                      overflow: 'hidden',
+                    }
+              }
+            >
+              {field.subfields.map((subfield) => (
+                <FormField
+                  key={subfield.short_name + '-form-field'}
+                  field={subfield}
+                  superfield={field}
+                  superfieldIndex={id}
+                  {...{
+                    handleChange,
+                    formikValues,
+                    setFieldTouched,
+                    setFieldValue,
+                    setDeletedSubClassificationIds,
+                  }}
+                />
+              ))}
+              <Button
+                variant="outline-danger"
+                onClick={() => {
+                  setObjectListItemsIds((ids) => ids.filter((itemId) => itemId != id));
+                  setDeletedSubClassificationIds((ids) => ids.concat(id));
+                }}
+              >
+                Delete
+              </Button>
+            </Card.Body>
+          </Card>
+        );
+      })}
       <div>
         <Button
           variant="secondary"
-          onClick={() => setObjectListItemsIds((ids) => ids.concat(new Date().getTime()))}
+          onClick={() => {
+            const newItemId = new Date().getTime();
+
+            setObjectListItemsIds((ids) => ids.concat(newItemId));
+            setOpenItemID(newItemId);
+          }}
         >
           Add
         </Button>
