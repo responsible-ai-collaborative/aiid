@@ -18,6 +18,7 @@ import { format } from 'date-fns';
 import Layout from 'components/Layout';
 import ListSkeleton from 'elements/Skeletons/List';
 import { Modal } from 'flowbite-react';
+import { Trans } from 'react-i18next';
 
 const Container = styled.div`
   max-width: calc(100vw - 298px);
@@ -813,7 +814,7 @@ export default function ClassificationsDbView(props) {
       <Container isWide={collapse}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
           <TaxonomySelectContainer className="gap-2">
-            Showing the
+            <Trans>Showing the</Trans>
             <Form.Select
               style={{ width: 120 }}
               onChange={(e) => setCurrentTaxonomy(e.target.value)}
@@ -826,7 +827,7 @@ export default function ClassificationsDbView(props) {
                 </option>
               ))}
             </Form.Select>
-            taxonomy
+            <Trans>taxonomy</Trans>
             {loading && <Spinner />}
           </TaxonomySelectContainer>
           <Link to={`/taxonomy/${currentTaxonomy.toLowerCase()}`} style={{ paddingBottom: '1em' }}>
@@ -902,13 +903,18 @@ export default function ClassificationsDbView(props) {
                 {'>>'}
               </button>{' '}
               <span>
-                Page{' '}
-                <strong>
-                  {pageIndex + 1} of {pageOptions.length}
-                </strong>{' '}
+                <Trans
+                  i18nKey="paginationKey"
+                  defaults="Page <bold>{{currentPageIndex}} of {{pageOptionsLength}}</bold>"
+                  values={{
+                    currentPageIndex: pageIndex + 1,
+                    pageOptionsLength: pageOptions.length,
+                  }}
+                  components={{ bold: <strong /> }}
+                />
               </span>
               <span>
-                | Go to page:{' '}
+                | <Trans>Go to page:</Trans>{' '}
                 <input
                   type="number"
                   defaultValue={pageIndex + 1}
@@ -928,7 +934,7 @@ export default function ClassificationsDbView(props) {
               >
                 {[10, 20, 30, 40, 50, 100, 500].map((pageSize) => (
                   <option key={pageSize} value={pageSize}>
-                    Show {pageSize}
+                    <Trans>Show {{ pageSize }}</Trans>
                   </option>
                 ))}
               </select>

@@ -199,5 +199,11 @@
   "Intent": "Intention",
   "Near Miss": "Presque accident",
   "Problem Nature": "Problème naturel",
-  "System Developer": "Développeur système"
+  "System Developer": "Développeur système",
+  "paginationKey": "Page <bold>{{currentPageIndex}} de {{pageOptionsLength}}</bold>",
+  "Show {{pageSize}}": "Montrer {{pageSize}}",
+  "Show all": "Montrer tout",
+  "Go to page:": "Aller a la page:",
+  "Showing the": "Montrant la",
+  "taxonomy": "taxonomie"
 }

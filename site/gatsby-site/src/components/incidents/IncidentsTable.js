@@ -280,10 +280,12 @@ export default function IncidentsTable({ data }) {
         </Pagination>
 
         <span>
-          Page{' '}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{' '}
+          <Trans
+            i18nKey="paginationKey"
+            defaults="Page <bold>{{currentPageIndex}} of {{pageOptionsLength}}</bold>"
+            values={{ currentPageIndex: pageIndex + 1, pageOptionsLength: pageOptions.length }}
+            components={{ bold: <strong /> }}
+          />
         </span>
 
         <Form.Select
@@ -296,7 +298,7 @@ export default function IncidentsTable({ data }) {
         >
           {[10, 50, 100, 'all'].map((pageSize) => (
             <option key={pageSize} value={pageSize == 'all' ? 99999 : pageSize}>
-              Show {pageSize}
+              {pageSize === 'all' ? <Trans>Show all</Trans> : <Trans>Show {{ pageSize }}</Trans>}
             </option>
           ))}
         </Form.Select>
