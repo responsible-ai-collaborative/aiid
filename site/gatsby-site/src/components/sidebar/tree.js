@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import config from '../../../config';
 import TreeNode from './treeNode';
+import { useLocation } from '@reach/router';
 
 const navConfig = config.sidebar.navConfig;
 
@@ -59,9 +60,11 @@ const Tree = ({
   isCollapsed = false,
   additionalNodes = [],
 }) => {
+  const location = useLocation();
+
   const allNodes = navConfig.concat(additionalNodes);
 
-  const defaultNavSettings = subtreeNav(allNodes, undefined, localizePath);
+  const defaultNavSettings = subtreeNav(allNodes, location.pathname, localizePath);
 
   const [navSettings, setNavSetting] = useState(defaultNavSettings);
 
