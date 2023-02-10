@@ -66,6 +66,10 @@ exports.up = async ({ context: { client } }) => {
               short_name: 'Snippet Text',
               value_json: JSON.stringify(snippet),
             });
+            attributes.push({
+              short_name: 'Related Classifications',
+              value_json: JSON.stringify([entry.label]),
+            });
 
             const snippetFull = annotations[incidentId].snippets.find(
               (s) => s.snippet_text == snippet
@@ -95,6 +99,49 @@ exports.up = async ({ context: { client } }) => {
           snippetsAttribute.value_json = JSON.stringify(prevSnippets.concat(snippetsValue));
         }
       }
+    }
+    const snippetsAttributes = classification.attributes.filter((attribute) =>
+      attribute.short_name.includes('Snippets')
+    );
+
+    for (const snippetAttribute of snippetsAttributes) {
+      const snippets = JSON.parse(snippetAttribute.value_json);
+
+      const noDuplicates = [];
+
+      for (const snippet of snippets) {
+        const duplicate = noDuplicates.find(
+          (s) =>
+            s.attributes.find((a) => a.short_name == 'Snippet Text').value_json ==
+            snippet.attributes.find((a) => a.short_name == 'Snippet Text').value_json
+        );
+
+        if (duplicate) {
+          const relatedClassificationsOriginal = duplicate.attributes.find(
+            (a) => a.short_name == 'Related Classifications'
+          );
+
+          const relatedClassificationsOriginalValue = JSON.parse(
+            relatedClassificationsOriginal.value_json
+          );
+
+          const relatedClassificationsNew = snippet.attributes.find(
+            (a) => a.short_name == 'Related Classifications'
+          );
+
+          const relatedClassificationsNewValue = JSON.parse(relatedClassificationsNew.value_json);
+
+          const combined = [
+            ...relatedClassificationsOriginalValue,
+            ...relatedClassificationsNewValue,
+          ];
+
+          relatedClassificationsOriginal.value_json = JSON.stringify(combined);
+        } else {
+          noDuplicates.push(snippet);
+        }
+      }
+      snippetAttribute.value_json = JSON.stringify(noDuplicates);
     }
     classifications.push(classification);
   }
@@ -1696,7 +1743,9 @@ var annotations = {
         {
           label: 'Context Misidentification',
           confidence: 'potential',
-          snippets: [NaN],
+          snippets: [
+            'A Google spokesperson confirmed that \u201cgorilla\u201d was censored from searches and image tags after the 2015 incident, and that \u201cchimp,\u201d \u201cchimpanzee,\u201d and \u201cmonkey\u201d are also blocked today.',
+          ],
         },
       ],
       technology: [
@@ -1717,7 +1766,10 @@ var annotations = {
         {
           label: 'Keyword Filtering',
           confidence: 'known',
-          snippets: [NaN, NaN],
+          snippets: [
+            'A Google spokesperson confirmed that \u201cgorilla\u201d was censored from searches and image tags after the 2015 incident, and that \u201cchimp,\u201d \u201cchimpanzee,\u201d and \u201cmonkey\u201d are also blocked today.',
+            'Searches for \u201cblack man\u201d and \u201cblack woman\u201d turned up photos of people of the chosen gender in black and white, rather than of a given race.',
+          ],
         },
       ],
     },

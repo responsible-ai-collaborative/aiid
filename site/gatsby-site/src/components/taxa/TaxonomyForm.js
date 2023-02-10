@@ -543,14 +543,18 @@ function ObjectListField({
 }) {
   // These are client-side only
   const [objectListItemIds, setObjectListItemsIds] = useState(
-    Object.keys(formikValues).reduce((ids, key) => {
-      const parts = key.split('___');
+    Array.from(
+      new Set(
+        Object.keys(formikValues).reduce((ids, key) => {
+          const parts = key.split('___');
 
-      if (parts.length > 1 && parts[0] == field.short_name) {
-        ids.push(parts[1]);
-      }
-      return ids;
-    }, [])
+          if (parts.length > 1 && parts[0] == field.short_name) {
+            ids.push(parts[1]);
+          }
+          return ids;
+        }, [])
+      )
+    )
   );
 
   const [openItemId, setOpenItemID] = useState();

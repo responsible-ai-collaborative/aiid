@@ -56,8 +56,14 @@ var gmfTaxaEntry = {
     * [Nikiforos Pittaras](https://www.linkedin.com/in/nikiforos-pittaras/)
     * [Sean McGregor](https://www.linkedin.com/in/seanbmcgregor/)
   `),
+  dummy_fields: [
+    { field_number: '1', short_name: 'Goals' },
+    { field_number: '2', short_name: 'Methods' },
+    { field_number: '3', short_name: 'Failures' },
+  ],
   field_list: [
     {
+      field_number: '1.1.1',
       short_name: 'Known AI Goal',
       long_name: 'Known AI Goal',
       short_description:
@@ -75,6 +81,7 @@ var gmfTaxaEntry = {
       public: true,
     },
     {
+      field_number: '1.1.2',
       short_name: 'Known AI Goal Snippets',
       long_name: 'Known AI Goal Snippets',
       short_description: 'One or more snippets that justify the classification.',
@@ -105,6 +112,23 @@ var gmfTaxaEntry = {
           public: true,
         },
         {
+          short_name: 'Related Classifications',
+          long_name: 'Related Classifications',
+          short_description:
+            'The Known AI Goal Classification classifications from above which this snippet supports',
+          long_description:
+            'The Known AI Goal Classification classifications from above which this snippet supports',
+          display_type: 'list',
+          mongo_type: 'array',
+          default: '',
+          placeholder: '',
+          permitted_values: [],
+          weight: 50,
+          instant_facet: false,
+          required: false,
+          public: true,
+        },
+        {
           short_name: 'Snippet Discussion',
           long_name: 'Snippet Discussion',
           short_description:
@@ -124,6 +148,7 @@ var gmfTaxaEntry = {
       ],
     },
     {
+      field_number: '1.1.3',
       short_name: 'Known AI Goal Classification Discussion',
       long_name: 'Known AI Goal Classification Discussion',
       short_description:
@@ -141,6 +166,7 @@ var gmfTaxaEntry = {
       public: true,
     },
     {
+      field_number: '1.2.1',
       short_name: 'Potential AI Goal',
       long_name: 'Potential AI Goal',
       short_description:
@@ -158,6 +184,7 @@ var gmfTaxaEntry = {
       public: true,
     },
     {
+      field_number: '1.2.2',
       short_name: 'Potential AI Goal Snippets',
       long_name: 'Potential AI Goal Snippets',
       short_description: 'One or more snippets that justify the classification.',
@@ -188,6 +215,23 @@ var gmfTaxaEntry = {
           public: true,
         },
         {
+          short_name: 'Related Classifications',
+          long_name: 'Related Classifications',
+          short_description:
+            'The Potential AI Goal classifications from above which this snippet supports',
+          long_description:
+            'The Potential AI Goal classifications from above which this snippet supports',
+          display_type: 'list',
+          mongo_type: 'array',
+          default: '',
+          placeholder: '',
+          permitted_values: [],
+          weight: 50,
+          instant_facet: false,
+          required: false,
+          public: true,
+        },
+        {
           short_name: 'Snippet Discussion',
           long_name: 'Snippet Discussion',
           short_description:
@@ -207,6 +251,7 @@ var gmfTaxaEntry = {
       ],
     },
     {
+      field_number: '1.2.3',
       short_name: 'Potential AI Goal Classification Discussion',
       long_name: 'Potential AI Goal Classification Discussion',
       short_description:
@@ -224,6 +269,7 @@ var gmfTaxaEntry = {
       public: true,
     },
     {
+      field_number: '2.1.1',
       short_name: 'Known AI Technology',
       long_name: 'Known AI Technology',
       short_description:
@@ -241,6 +287,7 @@ var gmfTaxaEntry = {
       public: true,
     },
     {
+      field_number: '2.1.2',
       short_name: 'Known AI Technology Snippets',
       long_name: 'Known AI Technology Snippets',
       short_description: 'One or more snippets that justify the classification.',
@@ -271,6 +318,23 @@ var gmfTaxaEntry = {
           public: true,
         },
         {
+          short_name: 'Related Classifications',
+          long_name: 'Related Classifications',
+          short_description:
+            'The Known AI Technology classifications from above which this snippet supports',
+          long_description:
+            'The Known AI Technology classifications from above which this snippet supports',
+          display_type: 'list',
+          mongo_type: 'array',
+          default: '',
+          placeholder: '',
+          permitted_values: [],
+          weight: 50,
+          instant_facet: false,
+          required: false,
+          public: true,
+        },
+        {
           short_name: 'Snippet Discussion',
           long_name: 'Snippet Discussion',
           short_description:
@@ -290,6 +354,7 @@ var gmfTaxaEntry = {
       ],
     },
     {
+      field_number: '2.1.3',
       short_name: 'Known AI Technology Classification Discussion',
       long_name: 'Known AI Technology Classification Discussion',
       short_description:
@@ -307,6 +372,7 @@ var gmfTaxaEntry = {
       public: true,
     },
     {
+      field_number: '2.2.1',
       short_name: 'Potential AI Technology',
       long_name: 'Potential AI Technology',
       short_description:
@@ -324,6 +390,7 @@ var gmfTaxaEntry = {
       public: true,
     },
     {
+      field_number: '2.2.2',
       short_name: 'Potential AI Technology Snippets',
       long_name: 'Potential AI Technology Snippets',
       short_description: 'One or more snippets that justify the classification.',
@@ -354,6 +421,23 @@ var gmfTaxaEntry = {
           public: true,
         },
         {
+          short_name: 'Related Classifications',
+          long_name: 'Related Classifications',
+          short_description:
+            'The Potential AI Technology classifications from above which this snippet supports',
+          long_description:
+            'The Potential AI Technology classifications from above which this snippet supports',
+          display_type: 'list',
+          mongo_type: 'array',
+          default: '',
+          placeholder: '',
+          permitted_values: [],
+          weight: 50,
+          instant_facet: false,
+          required: false,
+          public: true,
+        },
+        {
           short_name: 'Snippet Discussion',
           long_name: 'Snippet Discussion',
           short_description:
@@ -373,6 +457,7 @@ var gmfTaxaEntry = {
       ],
     },
     {
+      field_number: '2.2.3',
       short_name: 'Potential AI Technology Classification Discussion',
       long_name: 'Potential AI Technology Classification Discussion',
       short_description:
@@ -390,6 +475,7 @@ var gmfTaxaEntry = {
       public: true,
     },
     {
+      field_number: '3.1.1',
       short_name: 'Known AI Technical Failure',
       long_name: 'Known AI Technical Failure',
       short_description:
@@ -407,6 +493,7 @@ var gmfTaxaEntry = {
       public: true,
     },
     {
+      field_number: '3.1.2',
       short_name: 'Known AI Technical Failure Snippets',
       long_name: 'Snippets',
       short_description: 'One or more snippets that justify the classification.',
@@ -437,6 +524,23 @@ var gmfTaxaEntry = {
           public: true,
         },
         {
+          short_name: 'Related Classifications',
+          long_name: 'Related Classifications',
+          short_description:
+            'The Known AI Technical Failure classifications from above which this snippet supports',
+          long_description:
+            'The Known AI Technical Failure classifications from above which this snippet supports',
+          display_type: 'list',
+          mongo_type: 'array',
+          default: '',
+          placeholder: '',
+          permitted_values: [],
+          weight: 50,
+          instant_facet: false,
+          required: false,
+          public: true,
+        },
+        {
           short_name: 'Snippet Discussion',
           long_name: 'Snippet Discussion',
           short_description:
@@ -456,6 +560,7 @@ var gmfTaxaEntry = {
       ],
     },
     {
+      field_number: '3.1.3',
       short_name: 'Known AI Technical Failure Classification Discussion',
       long_name: 'Known AI Technical Failure Classification Discussion',
       short_description:
@@ -473,6 +578,7 @@ var gmfTaxaEntry = {
       public: true,
     },
     {
+      field_number: '3.2.1',
       short_name: 'Potential AI Technical Failure',
       long_name: 'Potential AI Technical Failure',
       short_description:
@@ -489,6 +595,7 @@ var gmfTaxaEntry = {
       public: true,
     },
     {
+      field_number: '3.2.2',
       short_name: 'Potential AI Technical Failure Snippets',
       long_name: 'Potential AI Technical Failure Snippets',
       short_description: 'One or more snippets that justify the classification.',
@@ -519,6 +626,23 @@ var gmfTaxaEntry = {
           public: true,
         },
         {
+          short_name: 'Related Classifications',
+          long_name: 'Related Classifications',
+          short_description:
+            'The Potential AI Technical Failure classifications from above which this snippet supports',
+          long_description:
+            'The Potential AI Technical Failure classifications from above which this snippet supports',
+          display_type: 'list',
+          mongo_type: 'array',
+          default: '',
+          placeholder: '',
+          permitted_values: [],
+          weight: 50,
+          instant_facet: false,
+          required: false,
+          public: true,
+        },
+        {
           short_name: 'Snippet Discussion',
           long_name: 'Snippet Discussion',
           short_description:
@@ -538,6 +662,7 @@ var gmfTaxaEntry = {
       ],
     },
     {
+      field_number: '3.2.3',
       short_name: 'Potential AI Technical Failure Classification Discussion',
       long_name: 'Potential AI Technical Failure Classification Discussion',
       short_description:
