@@ -566,7 +566,7 @@ var gmfTaxaEntry = {
       short_description:
         'Free text with comments justifying the chosen classification (e.g. based on information on selected snippets and technical analysis), if needed.',
       long_description:
-        'The Arabic Dialect in the post is not widely used and should be under-represented in the training dataset of the translation system.',
+        'Free text with comments justifying the chosen classification (e.g. based on information on selected snippets and technical analysis), if needed.',
       display_type: 'long_string',
       mongo_type: 'string',
       default: '',

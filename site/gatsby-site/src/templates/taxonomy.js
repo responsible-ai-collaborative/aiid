@@ -15,9 +15,11 @@ import LocationMap from 'components/visualizations/LocationMap';
 import { Card, Badge } from 'flowbite-react';
 import AiidHelmet from 'components/AiidHelmet';
 import { getClassificationValue } from 'utils/classifications';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 const Description = styled(Markdown)`
-  margin-top: 1rem;
+  margin-top: 0rem;
   h1 {
     font-size: 26px;
     font-weight: 800;
@@ -27,6 +29,9 @@ const Description = styled(Markdown)`
   }
   p {
     line-height: 1.5;
+  }
+  p:first-child {
+    margin-top: 0rem;
   }
 `;
 
@@ -150,7 +155,20 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
     );
   }
 
-  return <></>;
+  return (
+    <div className="text-center h-[210px] relative mb-2">
+      <div className="absolute inset-0 flex items-center justify-center">
+        <FontAwesomeIcon
+          fixedWidth
+          icon={faQuestionCircle}
+          className="text-[200px] block mx-auto text-gray-100"
+        />
+      </div>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-lg">No classifications with this field</span>
+      </div>
+    </div>
+  );
 };
 
 const getStats = (taxa, classification) => {
