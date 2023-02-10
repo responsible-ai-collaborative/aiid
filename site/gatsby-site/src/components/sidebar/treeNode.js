@@ -120,16 +120,24 @@ function getIcon(label, current = false) {
   `;
 
   return {
-    welcome: <FontAwesomeIcon icon={faDoorOpen} className={fontAwesomeStyles} />,
-    discover: <FontAwesomeIcon icon={faSearch} className={fontAwesomeStyles} />,
-    submit: <FontAwesomeIcon icon={faPlusCircle} className={fontAwesomeStyles} />,
-    leaderboard: <FontAwesomeIcon icon={faMedal} className={fontAwesomeStyles} />,
-    wordcounts: <FontAwesomeIcon icon={faSortAlphaDown} className={fontAwesomeStyles} />,
-    blog: <FontAwesomeIcon icon={faNewspaper} className={fontAwesomeStyles} />,
-    taxonomies: <FontAwesomeIcon icon={faChartPie} className={fontAwesomeStyles} />,
-    incidents: <FontAwesomeIcon icon={faTable} className={fontAwesomeStyles} />,
-    entities: <FontAwesomeIcon icon={faBuilding} className={fontAwesomeStyles} />,
-    user: <FontAwesomeIcon icon={faUser} className={fontAwesomeStyles} />,
+    welcome: <FontAwesomeIcon titleId="welcome" icon={faDoorOpen} className={fontAwesomeStyles} />,
+    discover: <FontAwesomeIcon titleId="discover" icon={faSearch} className={fontAwesomeStyles} />,
+    submit: <FontAwesomeIcon titleId="submit" icon={faPlusCircle} className={fontAwesomeStyles} />,
+    leaderboard: (
+      <FontAwesomeIcon titleId="leaderboard" icon={faMedal} className={fontAwesomeStyles} />
+    ),
+    wordcounts: (
+      <FontAwesomeIcon titleId="wordcounts" icon={faSortAlphaDown} className={fontAwesomeStyles} />
+    ),
+    blog: <FontAwesomeIcon titleId="blog" icon={faNewspaper} className={fontAwesomeStyles} />,
+    taxonomies: (
+      <FontAwesomeIcon titleId="taxonomies" icon={faChartPie} className={fontAwesomeStyles} />
+    ),
+    incidents: <FontAwesomeIcon titleId="incidents" icon={faTable} className={fontAwesomeStyles} />,
+    entities: (
+      <FontAwesomeIcon titleId="entities" icon={faBuilding} className={fontAwesomeStyles} />
+    ),
+    user: <FontAwesomeIcon titleId="user" icon={faUser} className={fontAwesomeStyles} />,
     spatial: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
