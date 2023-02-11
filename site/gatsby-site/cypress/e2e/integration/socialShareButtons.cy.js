@@ -1,7 +1,7 @@
 describe('Social Share buttons on pages', { retries: { runMode: 4 } }, () => {
   const incidentId = 10;
 
-  const incidentUrl = `/cite/${incidentId}`;
+  const incidentUrl = `/cite/${incidentId}/`;
 
   const blogPostUrl = `/blog/join-raic`;
 
@@ -11,7 +11,8 @@ describe('Social Share buttons on pages', { retries: { runMode: 4 } }, () => {
     {
       page: 'Incident',
       url: incidentUrl,
-      title: `Incident 10: Kronos’s Algorithm Allegedly Created Scheduling and Financial Issues for Starbucks Employees`,
+      title:
+        'Incident 10: Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees',
       shareButtonSections: 1,
     },
     {

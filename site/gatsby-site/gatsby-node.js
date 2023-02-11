@@ -225,13 +225,49 @@ exports.createSchemaCustomization = ({ actions }) => {
       field_list: [mongodbAiidprodTaxaField_list]
     }
 
-    type mongodbAiidprodTaxaField_list {
-      default: String
-      placeholder: String
+    type mongodbAiidprodClassificationsAttribute {
+      short_name: String
+      value_json: String
+    }
+    type mongodbAiidprodClassifications implements Node {
+      incident_id: Int
+      namespace: String
+      attributes: [mongodbAiidprodClassificationsAttribute]
     }
 
-    type mongodbAiidprodResourcesClassifications implements Node {
-      MSFT_AI_Fairness_Checklist: Boolean
+    type Subfield {
+      field_number: String
+      short_name: String 
+      long_name: String
+      short_description: String
+      long_description: String
+      display_type: String
+      mongo_type: String
+      default: String
+      placeholder: String
+      permitted_values: [String]
+      weight: Int
+      instant_facet: Boolean
+      required: Boolean
+      public: Boolean
+    }
+
+    type mongodbAiidprodTaxaField_list {
+      subfields: [Subfield]
+      field_number: String
+      short_name: String 
+      long_name: String
+      short_description: String
+      long_description: String
+      display_type: String
+      mongo_type: String
+      default: String
+      placeholder: String
+      permitted_values: [String]
+      weight: Int
+      instant_facet: Boolean
+      required: Boolean
+      public: Boolean
     }
   `;
 
