@@ -21,7 +21,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
 
   const [isMobile, setIsMobile] = useState(false);
 
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(user && user.profile.email);
 
   useEffect(() => {
     if (!manual) {
@@ -50,7 +50,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
   }, []);
 
   useEffect(() => {
-    setIsUserLoggedIn(user && user.isLoggedIn);
+    setIsUserLoggedIn(!!user?.profile.email);
   }, [user]);
 
   // We want the bottom edge of the sidebar
