@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import config from '../../../config';
 import TreeNode from './treeNode';
 import { useLocation } from '@reach/router';
@@ -62,14 +62,18 @@ const Tree = ({
 }) => {
   const location = useLocation();
 
-  const allNodes = navConfig.concat(additionalNodes);
+  const [navSettings, setNavSetting] = useState(
+    subtreeNav([...navConfig, ...additionalNodes], location.pathname, localizePath)
+  );
 
-  const defaultNavSettings = subtreeNav(allNodes, location.pathname, localizePath);
+  useEffect(() => {
+    const nodes = subtreeNav([...navConfig, ...additionalNodes], location.pathname, localizePath);
 
-  const [navSettings, setNavSetting] = useState(defaultNavSettings);
+    setNavSetting(nodes);
+  }, [additionalNodes]);
 
   const toggle = (url) => {
-    setNavSetting(subtreeNav(allNodes, url, localizePath));
+    setNavSetting(subtreeNav(navSettings, url, localizePath));
     setNavCollapsed && setNavCollapsed(true);
   };
 
