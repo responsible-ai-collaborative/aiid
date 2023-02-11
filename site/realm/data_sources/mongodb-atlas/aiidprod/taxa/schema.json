@@ -13,11 +13,14 @@
             "bsonType": "int"
         },
         "dummy_fields": {
+          "bsonType": "array",
+          "items": {
             "bsonType": "object",
             "properties": {
               "field_number": { "bsonType": "string" },
               "short_name": { "bsonType": "string" }
             }
+          }
         },
         "field_list": {
             "bsonType": "array",
