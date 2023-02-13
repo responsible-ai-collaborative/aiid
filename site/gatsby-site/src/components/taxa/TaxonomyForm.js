@@ -1,57 +1,26 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Card } from 'react-bootstrap';
 import styled from 'styled-components';
-import { useMongo } from 'hooks/useMongo';
 import { Formik } from 'formik';
-
-import Loader from 'components/ui/Loader';
-import config from '../../../config.js';
-
 import { useMutation, useQuery } from '@apollo/client';
-import {
-  FIND_CSET_CLASSIFICATION,
-  FIND_RESOURCE_CLASSIFICATION,
-  UPDATE_CSET_CLASSIFICATION,
-  UPDATE_RESOURCE_CLASSIFICATION,
-} from '../../graphql/classifications.js';
+
+import { FIND_CLASSIFICATION, UPDATE_CLASSIFICATION } from '../../graphql/classifications.js';
+import Loader from 'components/ui/Loader';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import Tags from 'components/forms/Tags.js';
+import { getClassificationValue } from 'utils/classifications';
+import { debounce } from 'debounce';
 
 const FormContainer = styled.div`
   padding: 1em;
 `;
 
-const TEXTAREA_LIMIT = 120;
+const TaxonomyForm = forwardRef(function TaxonomyForm(
+  { taxonomy, incidentId, onSubmit, active },
+  ref
+) {
+  const namespace = taxonomy.namespace;
 
-const queryMap = {
-  CSET: FIND_CSET_CLASSIFICATION,
-  resources: FIND_RESOURCE_CLASSIFICATION,
-};
-
-const mutationMap = {
-  CSET: UPDATE_CSET_CLASSIFICATION,
-  resources: UPDATE_RESOURCE_CLASSIFICATION,
-};
-
-const getTaxaFieldKey = (key) => {
-  key = key.split(' ').join('');
-
-  switch (key) {
-    case 'LevelofAutonomy':
-      return 'LevelOfAutonomy';
-    case 'NatureofEndUser':
-      return 'NatureOfEndUser';
-    case 'SectorofDeployment':
-      return 'SectorOfDeployment';
-    case 'RelevantAIfunctions':
-      return 'RelevantAIFunctions';
-    case 'DatasheetsforDatasets':
-      return 'DatasheetsForDatasets';
-  }
-  return key;
-};
-
-const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, onSubmit }, ref) {
   const [loading, setLoading] = useState(true);
 
   const [error] = useState('');
@@ -60,13 +29,15 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
 
   const [fieldsWithDefaultValues, setFieldsWithDefaultValues] = useState([]);
 
-  const [taxonomy, setTaxonomy] = useState(null);
-
-  const { runQuery } = useMongo();
+  const [deletedSubClassificationIds, setDeletedSubClassificationIds] = useState([]);
 
   const addToast = useToastContext();
 
   const formRef = useRef(null);
+
+  const debouncedSetInitialValues = useRef(
+    debounce((values) => setInitialValues(values), 500)
+  ).current;
 
   useImperativeHandle(ref, () => ({
     submit() {
@@ -74,71 +45,69 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
     },
   }));
 
-  // this should be updated to use the useQuery hook but some
-  // fields need to be normalized to play nice with graphql
-  useEffect(() => {
-    runQuery(
-      {
-        namespace,
-      },
-      (res) => {
-        setTaxonomy(res[0]);
-      },
-      config.realm.production_db.db_service,
-      config.realm.production_db.db_name,
-      'taxa'
-    );
-  }, []);
-
-  const { data: classificationsData } = useQuery(queryMap[namespace], {
+  const { data: classificationsData } = useQuery(FIND_CLASSIFICATION, {
     variables: { query: { incident_id: incidentId } },
+    skip: !active,
   });
 
-  const key = namespace === 'CSET' ? 'classifications' : namespace;
+  const classification =
+    classificationsData &&
+    taxonomy &&
+    classificationsData.classifications.find(
+      (classification) => classification.namespace == taxonomy.namespace
+    );
 
-  const [updateClassification] = useMutation(mutationMap[namespace]);
+  const [updateClassification] = useMutation(UPDATE_CLASSIFICATION);
 
-  useEffect(() => {
-    if (classificationsData && taxonomy) {
-      const classification = classificationsData[key][0];
+  const allTaxonomyFields =
+    taxonomy &&
+    taxonomy.taxonomyFields.reduce(
+      (fields, field) => fields.concat([field]).concat(field.subfields || []),
+      []
+    );
 
-      const classifications = classification?.classifications || {};
-
+  const loadInitialValues = () => {
+    if (taxonomy && classificationsData) {
       const notes = classification?.notes || '';
+
+      const publish = classification?.publish || false;
 
       const fieldsArray = [];
 
       const defaultValues = {};
 
-      taxonomy.field_list.forEach((taxaField) => {
-        const field = {
-          display_type: taxaField.display_type,
-          mongo_type: taxaField.mongo_type,
-          permitted_values: taxaField.permitted_values,
-          placeholder: taxaField.placeholder,
-          required: taxaField.required,
-          short_description: taxaField.short_description,
-          short_name: taxaField.short_name,
-          key: getTaxaFieldKey(taxaField.short_name),
-        };
-
+      taxonomy.taxonomyFields.forEach((field) => {
         fieldsArray.push(field);
 
-        let classificationValue = classifications[field.key];
+        let classificationValue =
+          classification && getClassificationValue(classification, field.short_name);
 
-        if (classificationValue === undefined) {
-          if (taxaField.display_type === 'multi') {
+        if (classificationValue && field.display_type == 'object-list') {
+          classificationValue.forEach((subClassification, i) => {
+            for (const subAttribute of subClassification.attributes) {
+              const formValue = JSON.parse(subAttribute.value_json);
+
+              const formKey = [field.short_name, i, subAttribute.short_name].join('___');
+
+              defaultValues[formKey] = formValue;
+            }
+          });
+        }
+
+        if (classificationValue === null) {
+          if (field.display_type === 'multi') {
             classificationValue = [];
           } else {
             classificationValue = '';
           }
-        } else {
-          if (taxaField.display_type === 'date') {
-            classificationValue = classifications[field.key].split('T')[0];
+        }
+        if (classificationValue) {
+          if (field.display_type === 'date') {
+            classificationValue = classificationValue.split('T')[0];
           }
         }
 
-        defaultValues[field.key] = classificationValue;
+        defaultValues[field.short_name] = classificationValue;
       });
 
       setFieldsWithDefaultValues(fieldsArray);
@@ -146,137 +115,141 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
       setInitialValues({
         ...defaultValues,
         notes,
+        publish,
       });
       setLoading(false);
     }
-  }, [classificationsData, taxonomy]);
-
-  const generateFormField = (
-    rawField,
-    handleChange,
-    formikValues,
-    setFieldTouched,
-    setFieldValue
-  ) => {
-    return (
-      <div key={rawField.key} className="bootstrap">
-        <Form.Label>{rawField.short_name}</Form.Label>
-        {rawField.display_type === 'enum' && (
-          <>
-            {rawField.permitted_values.map((v) => (
-              <Form.Check
-                key={v}
-                type="radio"
-                name={rawField.key}
-                label={v}
-                id={`${rawField.key}-${v}`}
-                value={v}
-                onChange={handleChange}
-                checked={formikValues[rawField.key].includes(v)}
-              />
-            ))}
-          </>
-        )}
-
-        {rawField.display_type === 'string' &&
-          formikValues[rawField.key].length <= TEXTAREA_LIMIT && (
-            <Form.Control
-              id={rawField.short_name}
-              name={rawField.key}
-              type="text"
-              onChange={handleChange}
-              value={formikValues[rawField.key]}
-            />
-          )}
-
-        {rawField.display_type === 'string' &&
-          formikValues[rawField.key].length > TEXTAREA_LIMIT && (
-            <Form.Control
-              as="textarea"
-              rows={3}
-              id={rawField.short_name}
-              name={rawField.key}
-              type="text"
-              onChange={handleChange}
-              value={formikValues[rawField.key]}
-            />
-          )}
-
-        {rawField.display_type === 'bool' && (
-          <Form.Control
-            as="select"
-            id={rawField.key}
-            name={rawField.key}
-            type="text"
-            onChange={handleChange}
-            value={formikValues[rawField.key]}
-          >
-            <option key={''} value={''}>
-              {''}
-            </option>
-            <option key={'yes'} value={true}>
-              {'Yes'}
-            </option>
-            <option key={'no'} value={false}>
-              {'No'}
-            </option>
-          </Form.Control>
-        )}
-
-        {rawField.display_type === 'date' && (
-          <Form.Control
-            id={rawField.key}
-            name={rawField.key}
-            type="date"
-            onChange={handleChange}
-            value={formikValues[rawField.key]}
-          />
-        )}
-
-        {rawField.display_type === 'location' && (
-          <Form.Control
-            id={rawField.key}
-            name={rawField.key}
-            type="text"
-            onChange={handleChange}
-            value={formikValues[rawField.key]}
-          />
-        )}
-
-        {rawField.display_type === 'list' && (
-          <Tags
-            id={`${rawField.key}-tags`}
-            inputId={rawField.key}
-            placeHolder="Type and press Enter to add an item"
-            value={formikValues[rawField.key]}
-            onChange={(value) => {
-              setFieldTouched(rawField.key, true);
-              setFieldValue(rawField.key, value);
-            }}
-          />
-        )}
-
-        {rawField.display_type === 'multi' && (
-          <>
-            {rawField.permitted_values.map((v) => (
-              <Form.Check
-                key={v}
-                type="checkbox"
-                name={rawField.key}
-                label={v}
-                id={`${rawField.key}-${v}`}
-                value={v}
-                onChange={handleChange}
-                checked={formikValues[rawField.key].includes(v)}
-              />
-            ))}
-          </>
-        )}
-        <Form.Text className="text-muted-gray mb-4 d-block">{rawField.short_description}</Form.Text>
-      </div>
-    );
   };
 
+  useEffect(loadInitialValues, [classificationsData, taxonomy]);
+
+  const submit = async (values, { setSubmitting }) => {
+    try {
+      const attributes = [];
+
+      const subfields = [];
+
+      const superfieldKeys = [];
+
+      Object.keys(values)
+        .filter((key) => !['notes', 'publish'].includes(key))
+        .map((key) => {
+          const taxonomyField = allTaxonomyFields.find(
+            (field) => field.short_name == key.replace(/.*___/g, '')
+          );
+
+          const mongo_type = taxonomyField.mongo_type;
+
+          let value = values[key];
+
+          if (mongo_type == 'bool') value = Boolean(value);
+          if (mongo_type == 'int') value = Number(value);
+          if (mongo_type == 'object') value = {};
+          return {
+            short_name: key,
+            value_json: JSON.stringify(value),
+          };
+        })
+        .forEach((attribute) => {
+          // E.g. {short_name: 'Entities___0___Entity', value_json: '"Google"'}
+          if (attribute.short_name.split('___').length > 1) {
+            subfields.push(attribute);
+            superfieldKeys.push(attribute.short_name.split('___')[0]);
+          } else {
+            attributes.push(attribute);
+          }
+        });
+
+      const superfields = attributes.filter((attribute) =>
+        superfieldKeys.includes(attribute.short_name)
+      );
+
+      for (const superfield of superfields) {
+        // E.g. { short_name: "Entities", value_json: "{}" }
+
+        // E.g. [{short_name: 'Entities___0___Entity',      value_json: '"Google"'                 },
+        //       {short_name: 'Entities___0___Entity Type', value_json: '"for-profit organization"'},
+        //       {short_name: 'Entities___1___Entity',      value_json: '"Google Users"'           },
+        //       {short_name: 'Entities___1___Entity Type', value_json: '"Group"'                  } ]
+        const superfieldSubfields = subfields.filter(
+          (subfield) => subfield.short_name.split('___')[0] == superfield.short_name
+        );
+
+        // E.g. ["0", "1"]
+        const subClassificationIds = Array.from(
+          new Set(superfieldSubfields.map((subfield) => subfield.short_name.split('___')[1]))
+        );
+
+        const subClassifications = [];
+
+        for (const subClassificationId of subClassificationIds) {
+          // E.g. "0"
+
+          if (deletedSubClassificationIds.includes(subClassificationId)) continue;
+
+          // E.g. [{short_name: 'Entity',      value_json: '"Google"'                 },
+          //       {short_name: 'Entity Type', value_json: '"for-profit organization"'} ]
+          const subClassificationAttributes = superfieldSubfields
+            .filter((subfield) => subfield.short_name.split('___')[1] == subClassificationId)
+            .map((subfield) => ({ ...subfield, short_name: subfield.short_name.split('___')[2] }));
+
+          const subClassification = { attributes: subClassificationAttributes };
+
+          subClassifications.push(subClassification);
+        }
+
+        superfield.value_json = JSON.stringify(
+          // E.g.
+          // [ { attributes: [
+          //       {short_name: 'Entities___0___Entity',      value_json: '"Google"'                 },
+          //       {short_name: 'Entities___0___Entity Type', value_json: '"for-profit organization"'}
+          //     ]
+          //   },
+          //   { attributes: [
+          //        {short_name: 'Entities___1___Entity',      value_json: '"Google Users"'           },
+          //        {short_name: 'Entities___1___Entity Type', value_json: '"Group"'                  }
+          //     ]
+          //   }
+          // ]
+          subClassifications
+        );
+      }
+
+      const data = {
+        __typename: undefined,
+        incident_id: incidentId,
+        namespace,
+        notes: values.notes,
+        publish: values.publish,
+        attributes,
+      };
+
+      await updateClassification({
+        variables: {
+          query: {
+            incident_id: incidentId,
+            namespace,
+          },
+          data,
+        },
+      });
+    } catch (e) {
+      addToast({
+        message: <>Error updating classification data: {e.message}</>,
+        severity: SEVERITY.danger,
+      });
+    }
+
+    setSubmitting(false);
+
+    if (onSubmit) {
+      onSubmit();
+    }
+  };
+
+  if (!active) {
+    return <></>;
+  }
   if (loading) {
     return (
       <FormContainer>
@@ -301,80 +274,391 @@ const TaxonomyForm = forwardRef(function TaxonomyForm({ namespace, incidentId, o
     );
   }
 
-  const submit = async (values, { setSubmitting }) => {
-    const { notes, ...classifications } = values;
-
-    fieldsWithDefaultValues.forEach((f) => {
-      //Convert string into boolean
-      if (f.display_type === 'bool') {
-        if (values[f.key] === '') {
-          classifications[f.key] = undefined;
-        } else if (values[f.key] === 'true') {
-          classifications[f.key] = true;
-        } else if (values[f.key] === 'false') {
-          classifications[f.key] = false;
-        }
-      }
-    });
-
-    try {
-      await updateClassification({
-        variables: {
-          query: {
-            incident_id: incidentId,
-          },
-          data: {
-            incident_id: incidentId,
-            notes,
-            namespace,
-            classifications,
-          },
-        },
-      });
-    } catch (e) {
-      addToast({
-        message: <>Error updating classification data: {e.message}</>,
-        severity: SEVERITY.danger,
-      });
-    }
-
-    setSubmitting(false);
-
-    if (onSubmit) {
-      onSubmit();
-    }
-  };
+  const dummyFields = (taxonomy.dummyFields || []).map((field) => ({ ...field, dummy: true }));
 
   return (
     <FormContainer data-cy="taxonomy-form" className="bootstrap">
       <Formik initialValues={initialValues} onSubmit={submit} innerRef={formRef}>
-        {({ values, handleChange, handleSubmit, setFieldTouched, setFieldValue, isSubmitting }) => (
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-4">
-              <Form.Label>Notes</Form.Label>
-              <Form.Control
-                id={'notes'}
-                name={'notes'}
-                type="text"
-                as="textarea"
-                rows={4}
-                onChange={handleChange}
-                value={values.notes}
-              />
-            </Form.Group>
-            <fieldset disabled={isSubmitting}>
-              {fieldsWithDefaultValues.map((rawField) =>
-                generateFormField(rawField, handleChange, values, setFieldTouched, setFieldValue)
-              )}
+        {({ values, handleChange, handleSubmit, setFieldTouched, setFieldValue, isSubmitting }) => {
+          debouncedSetInitialValues(values);
+          return (
+            <Form onSubmit={handleSubmit}>
+              <Form.Group className="mb-4">
+                <Form.Label>Notes</Form.Label>
+                <Form.Control
+                  id={'notes'}
+                  name={'notes'}
+                  type="text"
+                  as="textarea"
+                  rows={4}
+                  onChange={handleChange}
+                  value={values.notes}
+                />
+              </Form.Group>
+              <fieldset disabled={isSubmitting}>
+                {fieldsWithDefaultValues
+                  .concat(dummyFields)
+                  .sort(sortByFieldNumbers)
+                  .map((rawField) =>
+                    rawField.dummy ? (
+                      <h5 className="mb-3 text-lg">
+                        {rawField.field_number}. {rawField.short_name}
+                      </h5>
+                    ) : (
+                      <FormField
+                        key={rawField.short_name}
+                        field={rawField}
+                        formikValues={values}
+                        {...{
+                          handleChange,
+                          setFieldTouched,
+                          setFieldValue,
+                          setDeletedSubClassificationIds,
+                        }}
+                      />
+                    )
+                  )}
+              </fieldset>
+              <Form.Group className="mb-4">
+                <Form.Label>Publish</Form.Label>
+                <Form.Check
+                  type="radio"
+                  name="publish"
+                  label="yes"
+                  id={`publish-yes`}
+                  value="true"
+                  onChange={handleChange}
+                  checked={[true, 'true'].includes(values.publish)}
+                />
+                <Form.Check
+                  type="radio"
+                  name="publish"
+                  label="no"
+                  id="publish-no"
+                  value="false"
+                  onChange={handleChange}
+                  checked={[false, 'false'].includes(values.publish)}
+                />
+              </Form.Group>
               <Button type="submit" disabled={isSubmitting}>
                 Submit
               </Button>
-            </fieldset>
-          </Form>
-        )}
+            </Form>
+          );
+        }}
       </Formik>
     </FormContainer>
   );
 });
+
+function FormField({
+  field,
+  handleChange,
+  formikValues,
+  setFieldTouched,
+  setFieldValue,
+  superfield,
+  superfieldIndex,
+  setDeletedSubClassificationIds,
+}) {
+  const identifier = superfield
+    ? `${superfield.short_name}___${superfieldIndex}___${field.short_name}`
+    : field.short_name;
+
+  return (
+    <div key={field.short_name} className="bootstrap">
+      <Form.Label>
+        {field.field_number ? field.field_number + '. ' : ''}
+        {field.short_name}
+      </Form.Label>
+      {field.display_type === 'enum' &&
+        field.permitted_values.length <= 5 &&
+        field.permitted_values.map((v) => (
+          <Form.Check
+            key={v}
+            type="radio"
+            name={identifier}
+            label={v}
+            id={`${identifier}-${v}`}
+            value={v}
+            onChange={handleChange}
+            checked={(formikValues[identifier] || []).includes(v)}
+          />
+        ))}
+      {field.display_type === 'enum' && field.permitted_values.length > 5 && (
+        <>
+          <Form.Select
+            as="select"
+            id={identifier}
+            name={identifier}
+            type="select"
+            onChange={handleChange}
+            value={formikValues[identifier]}
+          >
+            <option>--</option>
+            {field.permitted_values.map((v) => (
+              <option key={v} value={v}>
+                {v}
+              </option>
+            ))}
+          </Form.Select>
+        </>
+      )}
+
+      {field.display_type === 'string' && (
+        <Form.Control
+          id={identifier}
+          name={identifier}
+          type="text"
+          onChange={handleChange}
+          value={formikValues[identifier]}
+        />
+      )}
+
+      {field.display_type === 'long_string' && (
+        <Form.Control
+          as="textarea"
+          rows={3}
+          id={identifier}
+          name={identifier}
+          type="text"
+          onChange={handleChange}
+          value={formikValues[identifier]}
+        />
+      )}
+
+      {field.display_type === 'bool' && (
+        <>
+          <Form.Check
+            key="yes"
+            type="radio"
+            name={identifier}
+            label="yes"
+            id={`${identifier}-yes`}
+            value="true"
+            onChange={handleChange}
+            checked={[true, 'true'].includes(formikValues[identifier])}
+          />
+          <Form.Check
+            key="no"
+            type="radio"
+            name={identifier}
+            label="no"
+            id={`${identifier}-no`}
+            value="false"
+            onChange={handleChange}
+            checked={[false, 'false'].includes(formikValues[identifier])}
+          />
+        </>
+      )}
+
+      {field.display_type == 'int' && (
+        <Form.Control
+          id={identifier}
+          name={identifier}
+          type="number"
+          step={1}
+          onChange={handleChange}
+          value={formikValues[identifier]}
+        />
+      )}
+
+      {field.display_type === 'date' && (
+        <Form.Control
+          id={identifier}
+          name={identifier}
+          type="date"
+          onChange={handleChange}
+          value={formikValues[identifier]}
+        />
+      )}
+
+      {field.display_type === 'location' && (
+        <Form.Control
+          id={identifier}
+          name={identifier}
+          type="text"
+          onChange={handleChange}
+          value={formikValues[identifier]}
+        />
+      )}
+
+      {field.display_type === 'list' && (
+        <Tags
+          id={`${identifier}-tags`}
+          inputId={identifier}
+          placeHolder="Type and press Enter to add an item"
+          value={formikValues[identifier]}
+          onChange={(value) => {
+            setFieldTouched(identifier, true);
+            setFieldValue(identifier, value);
+          }}
+        />
+      )}
+
+      {field.display_type === 'multi' && (
+        <>
+          {field.permitted_values.map((v) => (
+            <Form.Check
+              key={v}
+              type="checkbox"
+              name={identifier}
+              label={v}
+              id={`${identifier}-${v}`}
+              value={v}
+              onChange={handleChange}
+              checked={(formikValues[identifier] || []).includes(v)}
+            />
+          ))}
+        </>
+      )}
+
+      {field.display_type === 'object-list' && (
+        <ObjectListField
+          {...{
+            field,
+            handleChange,
+            formikValues,
+            setFieldTouched,
+            setFieldValue,
+            setDeletedSubClassificationIds,
+          }}
+        />
+      )}
+
+      <Form.Text className="text-muted-gray mb-4 d-block whitespace-pre-wrap">
+        {field.short_description}
+      </Form.Text>
+    </div>
+  );
+}
+
+function ObjectListField({
+  field,
+  handleChange,
+  formikValues,
+  setFieldTouched,
+  setFieldValue,
+  setDeletedSubClassificationIds,
+}) {
+  // These are client-side only
+  const [objectListItemIds, setObjectListItemsIds] = useState(
+    Array.from(
+      new Set(
+        Object.keys(formikValues).reduce((ids, key) => {
+          const parts = key.split('___');
+
+          if (parts.length > 1 && parts[0] == field.short_name) {
+            ids.push(parts[1]);
+          }
+          return ids;
+        }, [])
+      )
+    )
+  );
+
+  const [openItemId, setOpenItemID] = useState();
+
+  return (
+    <>
+      {objectListItemIds.map((id) => {
+        const headerKey = field.short_name + '___' + id + '___' + field.subfields[0].short_name;
+
+        let headerValue = (openItemId == id ? '(-) ' : '(+) ') + (formikValues[headerKey] || 'New');
+
+        if (headerValue.length > 60) {
+          headerValue = headerValue.slice(0, 60) + '…';
+        }
+        return (
+          <Card key={id} style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+            <Card.Header
+              style={{ borderBottom: openItemId == id ? undefined : '0px', cursor: 'pointer' }}
+              onClick={() => setOpenItemID((old) => (old == id ? null : id))}
+            >
+              {headerValue}
+            </Card.Header>
+            <Card.Body
+              style={
+                openItemId == id
+                  ? undefined
+                  : {
+                      height: '0px',
+                      padding: '0px',
+                      border: '0px',
+                      opacity: '0',
+                      overflow: 'hidden',
+                    }
+              }
+            >
+              {field.subfields.map((subfield) => (
+                <FormField
+                  key={subfield.short_name + '-form-field'}
+                  field={subfield}
+                  superfield={field}
+                  superfieldIndex={id}
+                  {...{
+                    handleChange,
+                    formikValues,
+                    setFieldTouched,
+                    setFieldValue,
+                    setDeletedSubClassificationIds,
+                  }}
+                />
+              ))}
+              <Button
+                variant="outline-danger"
+                onClick={() => {
+                  setObjectListItemsIds((ids) => ids.filter((itemId) => itemId != id));
+                  setDeletedSubClassificationIds((ids) => ids.concat(id));
+                }}
+              >
+                Delete
+              </Button>
+            </Card.Body>
+          </Card>
+        );
+      })}
+      <div>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            const newItemId = new Date().getTime();
+
+            setObjectListItemsIds((ids) => ids.concat(newItemId));
+            setOpenItemID(newItemId);
+          }}
+        >
+          Add
+        </Button>
+      </div>
+    </>
+  );
+}
+
+function sortByFieldNumbers(a, b) {
+  var exists = (e) => e !== undefined && e !== null;
+
+  if (exists(a.field_number) && !exists(b.field_number)) return 1;
+  if (exists(b.field_number) && !exists(a.field_number)) return -1;
+  if (exists(a.field_number) && exists(b.field_number)) {
+    if (a.field_number == b.field_number) {
+      if (a.dummy && !b.dummy) return -1;
+      if (b.dummy && !a.dummy) return 1;
+    }
+
+    const [fieldNumsA, fieldNumsB] = [a, b].map((e) =>
+      e.field_number.split('.').map((s) => Number(s))
+    );
+
+    for (let i = 0; i < Math.max(fieldNumsA.length, fieldNumsB.length); i++) {
+      if (exists(fieldNumsA[i]) && !exists(fieldNumsB[i])) return 1;
+      if (exists(fieldNumsB[i]) && !exists(fieldNumsA[i])) return 1;
+      if (!exists(fieldNumsA[i]) && !exists(fieldNumsB[i])) return 0;
+      if (fieldNumsA[i] > fieldNumsB[i]) return 1;
+      if (fieldNumsA[i] < fieldNumsB[i]) return -1;
+    }
+  }
+  return 0;
+}
 
 export default TaxonomyForm;

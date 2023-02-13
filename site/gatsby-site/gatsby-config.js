@@ -89,7 +89,6 @@ const plugins = [
         'duplicates',
         'taxa',
         'classifications',
-        'resources',
         'reports',
         'entities',
       ],
