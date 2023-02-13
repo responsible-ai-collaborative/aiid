@@ -168,7 +168,7 @@ export default function IncidentsTable({ data }) {
         Cell: ListCell,
       },
       {
-        Header: <Trans>Alleged Developer of AISystem</Trans>,
+        Header: <Trans>Alleged Developer of AI System</Trans>,
         id: 'AllegedDeveloperOfAISystem',
         accessor: (data) => data.AllegedDeveloperOfAISystem.map((i) => `${i.name} ${i.entity_id}`),
         Cell: ListCell,
