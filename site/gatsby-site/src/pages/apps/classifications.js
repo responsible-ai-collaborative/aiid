@@ -18,7 +18,7 @@ import { format } from 'date-fns';
 import Layout from 'components/Layout';
 import ListSkeleton from 'elements/Skeletons/List';
 import { Modal } from 'flowbite-react';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 const Container = styled.div`
   max-width: calc(100vw - 298px);
@@ -96,6 +96,8 @@ const DEFAULT_EMPTY_CELL_DATA = '-';
 const DefaultColumnFilter = ({ column: { filterValue, preFilteredRows, setFilter } }) => {
   const count = preFilteredRows.length;
 
+  const { t } = useTranslation();
+
   return (
     <InputGroup>
       <FormControl
@@ -105,7 +107,7 @@ const DefaultColumnFilter = ({ column: { filterValue, preFilteredRows, setFilter
           e.preventDefault();
           setFilter(e.target.value || undefined);
         }}
-        placeholder={`Search ${count} records...`}
+        placeholder={t(`Search {{count}} records...`, { count: count })}
       />
     </InputGroup>
   );
@@ -387,6 +389,8 @@ function Row({
 }) {
   const [show, setShow] = useState(null);
 
+  const { t } = useTranslation();
+
   const handleSubmit = () => {
     onSubmit();
     setShow(null);
@@ -395,15 +399,17 @@ function Row({
   return (
     <tr key={row.id} {...row.getRowProps()}>
       {row.cells.map((cell) => {
-        if (cell.column.Header.includes('Incident ID')) {
+        if (cell.column.Header.includes(t('Incident ID'))) {
           return (
             <td key={cell.id} {...cell.getCellProps()}>
               <ScrollCell>
-                <Link to={`/cite/${cell.value}/#taxa-area`}>Incident {cell.render('Cell')}</Link>
+                <Link to={`/cite/${cell.value}/#taxa-area`}>
+                  <Trans cel={cell.render('Cell')}>Incident {{ cell }}</Trans>
+                </Link>
               </ScrollCell>
             </td>
           );
-        } else if (cell.column.Header.includes('Actions')) {
+        } else if (cell.column.Header.includes(t('Actions'))) {
           return (
             <td key={cell.id} {...cell.getCellProps()}>
               <Button
@@ -512,6 +518,8 @@ export default function ClassificationsDbView(props) {
   const [currentFilters, setCurrentFilters] = useState([]);
 
   const [currentSorting, setCurrentSorting] = useState([]);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     setLoading(true);
@@ -650,7 +658,7 @@ export default function ClassificationsDbView(props) {
       const selectFilterTypes = ['multi', 'list', 'enum', 'bool'];
 
       const column = {
-        Header: taxaField.short_name,
+        Header: t(taxaField.short_name),
         accessor: taxaField.short_name.split(' ').join(''),
       };
 
@@ -675,12 +683,12 @@ export default function ClassificationsDbView(props) {
     }
 
     const incidentIdColumn = {
-      Header: 'Incident ID',
+      Header: t('Incident ID'),
       accessor: 'IncidentId',
     };
 
     const actionsColumn = {
-      Header: 'Actions',
+      Header: t('Actions'),
       accessor: 'actions',
     };
 
@@ -831,9 +839,11 @@ export default function ClassificationsDbView(props) {
             {loading && <Spinner />}
           </TaxonomySelectContainer>
           <Link to={`/taxonomy/${currentTaxonomy.toLowerCase()}`} style={{ paddingBottom: '1em' }}>
-            {currentTaxonomy} taxonomy page
+            <Trans>{{ currentTaxonomy }} taxonomy page</Trans>
           </Link>
-          <Button onClick={() => setAllFilters([])}>Reset filters</Button>
+          <Button onClick={() => setAllFilters([])}>
+            <Trans>Reset filters</Trans>
+          </Button>
         </div>
         {loading && <ListSkeleton />}
         {!loading && (
@@ -881,7 +891,9 @@ export default function ClassificationsDbView(props) {
                   <tr>
                     <th colSpan={10}>
                       <div>
-                        <span>No results found</span>
+                        <span>
+                          <Trans>No results found</Trans>
+                        </span>
                       </div>
                     </th>
                   </tr>

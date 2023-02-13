@@ -205,5 +205,12 @@
   "Show all": "Montrer tout",
   "Go to page:": "Aller a la page:",
   "Showing the": "Montrant la",
-  "taxonomy": "taxonomie"
+  "taxonomy": "taxonomie",
+  "Reset filters": "Réinitialiser les filtres",
+  "Incident {{cell}}": "Incident {{cell}}",
+  "Datasheets for Datasets": "Fiches techniques pour les ensembles de données",
+  "MSFT AI Fairness Checklist": "Liste de contrôle d'équité MSFT AI",
+  "Publish": "Publié",
+  "No results found": "Aucun résultat trouvé",
+  "{{currentTaxonomy}} taxonomy page": " page de taxonomie {{ currentTaxonomy }}"
 }
