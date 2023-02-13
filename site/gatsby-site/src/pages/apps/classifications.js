@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import TaxonomyForm from '../../components/taxa/TaxonomyForm';
 import AiidHelmet from '../../components/AiidHelmet';
 import styled from 'styled-components';
-import { useMongo } from '../../hooks/useMongo';
-import config from '../../../config';
+import { useApolloClient } from '@apollo/client';
+import gql from 'graphql-tag';
+import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
 import { Table, Form, InputGroup, FormControl, Button } from 'react-bootstrap';
 import { Spinner } from 'flowbite-react';
@@ -270,48 +270,6 @@ const SelectDatePickerFilter = ({
   );
 };
 
-const getClassificationsArray = (classifications, taxonomy) => {
-  if (!classifications) {
-    return [];
-  }
-
-  const taxaFieldsArray = taxonomy.field_list.sort((a, b) => b.weight - a.weight);
-
-  const array = [];
-
-  const getStringForValue = (value) => {
-    if (value === null) {
-      return '';
-    }
-
-    switch (typeof value) {
-      case 'object':
-        return value.join(', ');
-
-      case 'boolean':
-        return value ? 'Yes' : 'No';
-
-      default:
-        return value;
-    }
-  };
-
-  taxaFieldsArray.forEach((field) => {
-    const c = classifications[field.short_name];
-
-    const value = getStringForValue(c);
-
-    array.push({
-      name: field.short_name,
-      value: getStringForValue(value),
-      weight: field.weight,
-      shortDescription: field.short_description,
-    });
-  });
-
-  return array;
-};
-
 const formatDateField = (s) => {
   const dateObj = new Date(s.props.cell.value);
 
@@ -322,74 +280,8 @@ const formatDateField = (s) => {
   }
 };
 
-function EditForm({
-  allTaxonomies,
-  allClassifications,
-  row,
-  editFormRef,
-  onSubmit,
-  currentTaxonomy,
-}) {
-  const taxonomyFormObj = {
-    classificationsArray: [],
-    namespace: '',
-    taxonomyFields: [],
-  };
-
-  const taxaData = allTaxonomies.filter((taxa) => taxa.namespace === currentTaxonomy)[0];
-
-  taxonomyFormObj.namespace = taxaData.namespace;
-  taxonomyFormObj.taxonomyFields = taxaData.field_list.map((f) => {
-    return {
-      display_type: f.display_type,
-      long_name: f.long_name,
-      public: f.public,
-      short_description: f.short_description,
-      short_name: f.short_name,
-      weight: f.weight,
-    };
-  });
-
-  const classificationObj = allClassifications.filter(
-    (report) => report.incident_id === row.values.IncidentId
-  );
-
-  taxonomyFormObj.classificationsArray = getClassificationsArray(
-    classificationObj.length > 0 ? classificationObj[0].classifications : null,
-    taxaData
-  );
-
-  if (classificationObj.length === 1) {
-    taxonomyFormObj.notes = classificationObj[0].notes;
-  }
-
-  return (
-    <div className="bootstrap">
-      <TaxonomyForm
-        ref={editFormRef}
-        namespace={taxaData.namespace}
-        incidentId={row.values.IncidentId}
-        onSubmit={onSubmit}
-      />
-    </div>
-  );
-}
-
-function Row({
-  row,
-  isAdmin,
-  currentTaxonomy,
-  editFormRef,
-  allClassifications,
-  allTaxonomies,
-  onSubmit,
-}) {
+function Row({ row, isAdmin, currentTaxonomy }) {
   const [show, setShow] = useState(null);
-
-  const handleSubmit = () => {
-    onSubmit();
-    setShow(null);
-  };
 
   return (
     <tr key={row.id} {...row.getRowProps()}>
@@ -405,44 +297,24 @@ function Row({
         } else if (cell.column.Header.includes('Actions')) {
           return (
             <td key={cell.id} {...cell.getCellProps()}>
-              <Button
-                data-cy="edit-classification"
-                className="me-auto"
-                disabled={!isAdmin}
-                onClick={() => setShow('edit')}
+              <a
+                target="_blank"
+                href={
+                  isAdmin
+                    ? `/cite/${row.values.IncidentId}/?edit_taxonomy=${currentTaxonomy}`
+                    : undefined
+                }
+                rel="noreferrer"
               >
-                <FontAwesomeIcon icon={faEdit} className="fas fa-edit" />
-              </Button>
-              <Modal
-                size="3xl"
-                show={show == 'edit'}
-                onClose={() => setShow(null)}
-                className="submission-modal"
-              >
-                <Modal.Header>
-                  <div className="flex items-center">
-                    <div>
-                      Edit {currentTaxonomy} classification for incident {row.original.IncidentId}
-                    </div>
-                    &nbsp;
-                    <Button className="ms-2" onClick={() => editFormRef.current.submit()}>
-                      Submit
-                    </Button>
-                  </div>
-                </Modal.Header>
-                <Modal.Body>
-                  {show == 'edit' && (
-                    <EditForm
-                      allClassifications={allClassifications}
-                      allTaxonomies={allTaxonomies}
-                      editFormRef={editFormRef}
-                      onSubmit={handleSubmit}
-                      row={row}
-                      currentTaxonomy={currentTaxonomy}
-                    />
-                  )}
-                </Modal.Body>
-              </Modal>
+                <Button
+                  data-cy="edit-classification"
+                  className="me-auto"
+                  disabled={!isAdmin}
+                  onClick={() => setShow('edit')}
+                >
+                  <FontAwesomeIcon icon={faEdit} className="fas fa-edit" />
+                </Button>
+              </a>
             </td>
           );
         } else if (cell.column.Header.includes('Date')) {
@@ -512,6 +384,8 @@ export default function ClassificationsDbView(props) {
 
   const [currentSorting, setCurrentSorting] = useState([]);
 
+  const client = useApolloClient();
+
   useEffect(() => {
     setLoading(true);
     const setupTaxonomiesSelect = async () => {
@@ -538,44 +412,60 @@ export default function ClassificationsDbView(props) {
     setupTaxonomiesSelect();
   }, [isAdmin]);
 
-  const fetchClassificationData = (query) => {
-    return new Promise((resolve, reject) => {
-      const { runQuery } = useMongo();
-
-      try {
-        runQuery(
-          query,
-          (res) => {
-            resolve(res);
-          },
-          config.realm.production_db.db_service,
-          config.realm.production_db.db_name,
-          'classifications'
-        );
-      } catch (error) {
-        reject(error);
-      }
+  const fetchClassificationData = async (query) => {
+    const classificationsData = await client.query({
+      query: FIND_CLASSIFICATION,
+      variables: query,
     });
+
+    // For now we convert the list of attributes into a classifications object
+    // to work with old code.
+    const classifications = [];
+
+    for (const c of classificationsData.data.classifications) {
+      if (c.attributes && c.publish) {
+        classifications.push({
+          ...c,
+          classifications: c.attributes.reduce((classifications, attribute) => {
+            classifications[attribute.short_name] = JSON.parse(attribute.value_json);
+            return classifications;
+          }, {}),
+        });
+      }
+    }
+    return classifications;
   };
 
-  const fetchTaxaData = () => {
-    return new Promise((resolve, reject) => {
-      const { runQuery } = useMongo();
-
-      try {
-        runQuery(
-          {},
-          (res) => {
-            resolve(res);
-          },
-          config.realm.production_db.db_service,
-          config.realm.production_db.db_name,
-          'taxa'
-        );
-      } catch (error) {
-        reject(error);
-      }
+  const fetchTaxaData = async () => {
+    const taxaData = await client.query({
+      query: gql`
+        query FindTaxa {
+          taxas {
+            namespace
+            weight
+            description
+            field_list {
+              field_number
+              short_name
+              long_name
+              short_description
+              long_description
+              display_type
+              mongo_type
+              default
+              placeholder
+              permitted_values
+              weight
+              instant_facet
+              required
+              public
+            }
+          }
+        }
+      `,
     });
+
+    return taxaData.data.taxas;
   };
 
   const initSetup = async () => {
@@ -693,10 +583,6 @@ export default function ClassificationsDbView(props) {
       namespace: currentTaxonomy,
     };
 
-    // Fetch only classifications with "Annotation Status": "6. Complete and final"
-    if (!isAdmin) {
-      rowQuery['classifications.Annotation Status'] = '6. Complete and final';
-    }
     const classificationData = await fetchClassificationData(rowQuery);
 
     if (classificationData.length > 0) {
@@ -743,12 +629,6 @@ export default function ClassificationsDbView(props) {
         new Date(val.original[id]).getTime() >= start && new Date(val.original[id]).getTime() <= end
     );
   };
-
-  const handleSubmit = () => {
-    initSetup();
-  };
-
-  const editFormRef = React.useRef(null);
 
   const filterTypes = {
     BeginningDate: filterDateFunction,
@@ -868,10 +748,8 @@ export default function ClassificationsDbView(props) {
                       row={row}
                       allClassifications={allClassifications}
                       allTaxonomies={allTaxonomies}
-                      onSubmit={handleSubmit}
                       isAdmin={isAdmin}
                       currentTaxonomy={currentTaxonomy}
-                      editFormRef={editFormRef}
                     />
                   );
                 })}

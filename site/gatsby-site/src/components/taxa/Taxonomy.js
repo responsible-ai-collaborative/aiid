@@ -13,20 +13,29 @@ const renderTooltip = (props, displayText) => (
   </PopoverWrapper>
 );
 
-const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
+const Taxonomy = ({
+  taxonomy,
+  incidentId,
+  canEdit,
+  taxonomyBeingEdited,
+  setTaxonomyBeingEdited,
+  id,
+}) => {
   const [showAllClassifications, setShowAllClassifications] = useState(false);
-
-  const [isEditing, setIsEditing] = useState(false);
 
   const [showBanner, setShowBanner] = useState(false);
 
   const handleSubmit = () => {
-    setIsEditing(false);
+    setTaxonomyBeingEdited(null);
     setShowBanner(true);
   };
 
+  const editing = taxonomyBeingEdited?.namespace == taxonomy?.namespace;
+
+  const heavyClassifications = taxonomy.classificationsArray.filter((field) => field.weight >= 50);
+
   return (
-    <Card key={taxonomy.namespace} className="mt-6" data-cy={taxonomy.namespace}>
+    <Card id={id} key={taxonomy.namespace} className="mt-6" data-cy={taxonomy.namespace}>
       <div className="tw-taxa-card-header tw-card-header">
         <h4 className="pr-0.8">
           <Trans namespace={taxonomy.namespace}>
@@ -34,10 +43,10 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
           </Trans>
         </h4>
         <>
-          {isEditing ? (
-            <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+          {editing ? (
+            <Button onClick={() => setTaxonomyBeingEdited(null)}>Cancel</Button>
           ) : (
-            canEdit && <Button onClick={() => setIsEditing(true)}>Edit</Button>
+            canEdit && <Button onClick={() => setTaxonomyBeingEdited(taxonomy)}>Edit</Button>
           )}
         </>
         <a
@@ -48,7 +57,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
         </a>
       </div>
       <>
-        {!isEditing ? (
+        {!editing && (
           <>
             {showBanner && (
               <div style={{ padding: '0.5em' }}>
@@ -109,7 +118,7 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
                       <Markdown className="w-4/5">{field.value}</Markdown>
                     </div>
                   ))}
-                {taxonomy.classificationsArray.length > 2 && (
+                {taxonomy.classificationsArray.length > heavyClassifications.length && (
                   <button
                     type="button"
                     className="btn btn-secondary btn-sm w-100"
@@ -131,15 +140,13 @@ const Taxonomy = ({ taxonomy, incidentId, canEdit }) => {
               </div>
             )}
           </>
-        ) : (
-          <>
-            <TaxonomyForm
-              namespace={taxonomy.namespace}
-              incidentId={incidentId}
-              onSubmit={handleSubmit}
-            />
-          </>
         )}
+        <TaxonomyForm
+          taxonomy={taxonomy}
+          incidentId={incidentId}
+          onSubmit={handleSubmit}
+          active={editing}
+        />
       </>
     </Card>
   );
