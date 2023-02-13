@@ -296,7 +296,7 @@ function Row({ row, isAdmin, currentTaxonomy }) {
             <td key={cell.id} {...cell.getCellProps()}>
               <ScrollCell>
                 <Link to={`/cite/${cell.value}/#taxa-area`}>
-                  <Trans cel={cell.render('Cell')}>Incident {{ cell }}</Trans>
+                  <Trans>Incident</Trans> {cell.render('Cell')}
                 </Link>
               </ScrollCell>
             </td>

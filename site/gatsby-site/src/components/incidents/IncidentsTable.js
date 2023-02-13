@@ -125,6 +125,8 @@ export default function IncidentsTable({ data }) {
 
   const { isLoggedIn, isRole } = useUserContext();
 
+  const { t } = useTranslation();
+
   const defaultColumn = React.useMemo(
     () => ({
       minWidth: 30,
@@ -138,7 +140,7 @@ export default function IncidentsTable({ data }) {
   const columns = React.useMemo(() => {
     const columns = [
       {
-        Header: 'Incident ID',
+        Header: t('Incident ID'),
         accessor: 'incident_id',
         Cell: ({ row: { values } }) => (
           <a className="flex" href={`/cite/${values.incident_id}`}>

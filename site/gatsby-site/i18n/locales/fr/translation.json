@@ -212,5 +212,6 @@
   "MSFT AI Fairness Checklist": "Liste de contrôle d'équité MSFT AI",
   "Publish": "Publié",
   "No results found": "Aucun résultat trouvé",
-  "{{currentTaxonomy}} taxonomy page": " page de taxonomie {{ currentTaxonomy }}"
+  "{{currentTaxonomy}} taxonomy page": " page de taxonomie {{ currentTaxonomy }}",
+  "Incident": "Incident"
 }
