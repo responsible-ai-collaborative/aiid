@@ -1,4 +1,5 @@
 const SENDER = "notifications@incidentdatabase.ai";
+const SENDER_NAME = "AIID:Notifications";
 
 exports = async ({ recipients, subject, dynamicData, templateId }) => {
 
@@ -91,7 +92,8 @@ function BuildEmailData(recipients, subject, dynamicData, emailTemplateBody) {
 
     const emailData = {
         from: {
-            email: SENDER
+            email: SENDER,
+            name: SENDER_NAME,
         },
         personalizations,
         content: [
