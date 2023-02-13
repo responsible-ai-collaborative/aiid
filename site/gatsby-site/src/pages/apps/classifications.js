@@ -18,6 +18,7 @@ import { format } from 'date-fns';
 import Layout from 'components/Layout';
 import ListSkeleton from 'elements/Skeletons/List';
 import { Modal } from 'flowbite-react';
+import { Trans, useTranslation } from 'react-i18next';
 
 const Container = styled.div`
   max-width: calc(100vw - 298px);
@@ -95,6 +96,8 @@ const DEFAULT_EMPTY_CELL_DATA = '-';
 const DefaultColumnFilter = ({ column: { filterValue, preFilteredRows, setFilter } }) => {
   const count = preFilteredRows.length;
 
+  const { t } = useTranslation();
+
   return (
     <InputGroup>
       <FormControl
@@ -104,7 +107,7 @@ const DefaultColumnFilter = ({ column: { filterValue, preFilteredRows, setFilter
           e.preventDefault();
           setFilter(e.target.value || undefined);
         }}
-        placeholder={`Search ${count} records...`}
+        placeholder={t(`Search {{count}} records...`, { count: count })}
       />
     </InputGroup>
   );
@@ -209,7 +212,9 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
         setFilter(e.target.value || undefined);
       }}
     >
-      <option value="">All</option>
+      <option value="">
+        <Trans>All</Trans>
+      </option>
       {filteredOptions.map((option, i) => (
         <option key={i} value={option}>
           {option}
@@ -283,18 +288,22 @@ const formatDateField = (s) => {
 function Row({ row, isAdmin, currentTaxonomy }) {
   const [show, setShow] = useState(null);
 
+  const { t } = useTranslation();
+
   return (
     <tr key={row.id} {...row.getRowProps()}>
       {row.cells.map((cell) => {
-        if (cell.column.Header.includes('Incident ID')) {
+        if (cell.column.Header.includes(t('Incident ID'))) {
           return (
             <td key={cell.id} {...cell.getCellProps()}>
               <ScrollCell>
-                <Link to={`/cite/${cell.value}/#taxa-area`}>Incident {cell.render('Cell')}</Link>
+                <Link to={`/cite/${cell.value}/#taxa-area`}>
+                  <Trans>Incident</Trans> {cell.render('Cell')}
+                </Link>
               </ScrollCell>
             </td>
           );
-        } else if (cell.column.Header.includes('Actions')) {
+        } else if (cell.column.Header.includes(t('Actions'))) {
           return (
             <td key={cell.id} {...cell.getCellProps()}>
               <a
@@ -383,6 +392,8 @@ export default function ClassificationsDbView(props) {
   const [currentFilters, setCurrentFilters] = useState([]);
 
   const [currentSorting, setCurrentSorting] = useState([]);
+
+  const { t } = useTranslation();
 
   const client = useApolloClient();
 
@@ -539,7 +550,7 @@ export default function ClassificationsDbView(props) {
       const selectFilterTypes = ['multi', 'list', 'enum', 'bool'];
 
       const column = {
-        Header: taxaField.short_name,
+        Header: t(taxaField.short_name),
         accessor: taxaField.short_name.split(' ').join(''),
       };
 
@@ -564,12 +575,12 @@ export default function ClassificationsDbView(props) {
     }
 
     const incidentIdColumn = {
-      Header: 'Incident ID',
+      Header: t('Incident ID'),
       accessor: 'IncidentId',
     };
 
     const actionsColumn = {
-      Header: 'Actions',
+      Header: t('Actions'),
       accessor: 'actions',
     };
 
@@ -693,7 +704,7 @@ export default function ClassificationsDbView(props) {
       <Container isWide={collapse}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
           <TaxonomySelectContainer className="gap-2">
-            Showing the
+            <Trans>Showing the</Trans>
             <Form.Select
               style={{ width: 120 }}
               onChange={(e) => setCurrentTaxonomy(e.target.value)}
@@ -706,13 +717,15 @@ export default function ClassificationsDbView(props) {
                 </option>
               ))}
             </Form.Select>
-            taxonomy
+            <Trans>taxonomy</Trans>
             {loading && <Spinner />}
           </TaxonomySelectContainer>
           <Link to={`/taxonomy/${currentTaxonomy.toLowerCase()}`} style={{ paddingBottom: '1em' }}>
-            {currentTaxonomy} taxonomy page
+            <Trans>{{ currentTaxonomy }} taxonomy page</Trans>
           </Link>
-          <Button onClick={() => setAllFilters([])}>Reset filters</Button>
+          <Button onClick={() => setAllFilters([])}>
+            <Trans>Reset filters</Trans>
+          </Button>
         </div>
         {loading && <ListSkeleton />}
         {!loading && (
@@ -758,7 +771,9 @@ export default function ClassificationsDbView(props) {
                   <tr>
                     <th colSpan={10}>
                       <div>
-                        <span>No results found</span>
+                        <span>
+                          <Trans>No results found</Trans>
+                        </span>
                       </div>
                     </th>
                   </tr>
@@ -780,13 +795,18 @@ export default function ClassificationsDbView(props) {
                 {'>>'}
               </button>{' '}
               <span>
-                Page{' '}
-                <strong>
-                  {pageIndex + 1} of {pageOptions.length}
-                </strong>{' '}
+                <Trans
+                  i18nKey="paginationKey"
+                  defaults="Page <bold>{{currentPageIndex}} of {{pageOptionsLength}}</bold>"
+                  values={{
+                    currentPageIndex: pageIndex + 1,
+                    pageOptionsLength: pageOptions.length,
+                  }}
+                  components={{ bold: <strong /> }}
+                />
               </span>
               <span>
-                | Go to page:{' '}
+                | <Trans>Go to page:</Trans>{' '}
                 <input
                   type="number"
                   defaultValue={pageIndex + 1}
@@ -806,7 +826,7 @@ export default function ClassificationsDbView(props) {
               >
                 {[10, 20, 30, 40, 50, 100, 500].map((pageSize) => (
                   <option key={pageSize} value={pageSize}>
-                    Show {pageSize}
+                    <Trans>Show {{ pageSize }}</Trans>
                   </option>
                 ))}
               </select>
