@@ -213,5 +213,8 @@
   "Publish": "Publié",
   "No results found": "Aucun résultat trouvé",
   "{{currentTaxonomy}} taxonomy page": " page de taxonomie {{ currentTaxonomy }}",
-  "Incident": "Incident"
+  "Incident": "Incident",
+  "Reviewer": "Réviseur",
+  "Quality Control": "Contrôle de qualité",
+  "All": "Tous"
 }

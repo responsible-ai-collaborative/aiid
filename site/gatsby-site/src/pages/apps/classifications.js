@@ -212,7 +212,9 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
         setFilter(e.target.value || undefined);
       }}
     >
-      <option value="">All</option>
+      <option value="">
+        <Trans>All</Trans>
+      </option>
       {filteredOptions.map((option, i) => (
         <option key={i} value={option}>
           {option}
