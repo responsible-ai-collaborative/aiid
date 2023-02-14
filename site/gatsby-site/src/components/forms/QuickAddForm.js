@@ -9,7 +9,7 @@ import { INSERT_QUICKADD } from '../../graphql/quickadd';
 import { useMutation } from '@apollo/client';
 import getSourceDomain from '../../utils/getSourceDomain';
 import { Trans, useTranslation } from 'react-i18next';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
 import { Spinner } from 'flowbite-react';

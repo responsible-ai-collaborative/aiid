@@ -13,7 +13,7 @@ import isString from 'lodash/isString';
 import { stripMarkdown } from 'utils/typography';
 import isArray from 'lodash/isArray';
 import { Trans, useTranslation } from 'react-i18next';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { graphql, useStaticQuery } from 'gatsby';
 import { processEntities, RESPONSE_TAG } from '../../utils/entities';

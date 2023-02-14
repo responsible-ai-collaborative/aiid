@@ -3,7 +3,7 @@ import UniqueSubmittersLeaderboard from 'components/leaderboards/UniqueSubmitter
 import OriginalSubmitersLeaderboard from 'components/leaderboards/OriginalSubmittersLeaderboard';
 import SubmittersLeaderboard from 'components/leaderboards/SubmittersLeaderboard';
 import { Trans } from 'react-i18next';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 export default function Featured() {
   return (

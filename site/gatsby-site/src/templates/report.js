@@ -4,7 +4,7 @@ import Layout from 'components/Layout';
 import { useTranslation } from 'react-i18next';
 import Container from '../elements/Container';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { graphql } from 'gatsby';
 import ReportCard from 'components/reports/ReportCard';
 
