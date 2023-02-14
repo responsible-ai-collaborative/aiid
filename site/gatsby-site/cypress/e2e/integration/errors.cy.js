@@ -1,6 +1,6 @@
 const { switchLocalizedPath } = require('../../../i18n');
 
-describe('Hydration', () => {
+describe('Runtime errors', () => {
   const paths = [
     '/',
     '/account/',
@@ -50,6 +50,8 @@ describe('Hydration', () => {
             .every((call) => call.args.every((arg) => !arg.includes('did not match')));
 
           expect(noHydrationErrors, 'No hydration errors').to.be.true;
+
+          expect(consoleError.getCalls().length, 'No runtime errors').eq(0);
         });
       });
     });
