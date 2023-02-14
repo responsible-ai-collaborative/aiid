@@ -204,7 +204,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('[data-cy="discover-sort"]').should('have.text', 'Incident Date asc');
+    cy.get('[data-cy="discover-sort"]').should('have.text', 'Incident Date - asc');
 
     cy.get('[data-cy=incident-date]').then((dates) => {
       let firstDateValue = parseInt(dates.eq(0).val().toString());
@@ -236,7 +236,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('[data-cy="discover-sort"]').should('have.text', 'Published Date desc');
+    cy.get('[data-cy="discover-sort"]').should('have.text', 'Published Date - desc');
 
     cy.get('[data-cy=date-published]').then((dates) => {
       let secondDateValue = parseInt(dates.eq(1).val().toString());

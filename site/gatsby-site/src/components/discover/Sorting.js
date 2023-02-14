@@ -36,7 +36,7 @@ function Sorting(props) {
     <>
       <div className="flex justify-end px-2">
         <Dropdown
-          label={`${t(selectedItem.label)} ${
+          label={`${t(selectedItem.label)}${
             selectedDirection !== '' ? ' - ' + t(selectedDirection) : ''
           }`}
           color={'light'}
