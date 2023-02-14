@@ -63,6 +63,14 @@ describe('SEO', () => {
 
         cy.get('[rel="alternate"]').should('have.length', 5);
 
+        cy.get('[rel="alternate"][hrefLang="x-default"]')
+          .invoke('attr', 'href')
+          .should('equal', baseUrl);
+
+        cy.get('[rel="alternate"][type="application/rss+xml"]')
+          .invoke('attr', 'href')
+          .should('equal', '/rss.xml');
+
         for (const language of languages) {
           const alternatePath = switchLocalizedPath({ newLang: language.code, path });
 
