@@ -3,7 +3,7 @@ import Layout from '../../components/Layout';
 import IncidentReportForm, { schema } from '../../components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Spinner, Button } from 'flowbite-react';
+import { Button } from 'flowbite-react';
 import {
   UPDATE_REPORT,
   DELETE_REPORT,
@@ -19,7 +19,6 @@ import pick from 'lodash/pick';
 import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
 import { gql } from '@apollo/client';
 import { useTranslation, Trans } from 'react-i18next';
-import RelatedIncidents from '../../components/RelatedIncidents';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import { Link } from 'gatsby';
 import { isEqual } from 'lodash';
@@ -256,6 +255,13 @@ function EditCitePage(props) {
     }
   };
 
+  const initialValues = reportData?.report
+    ? {
+        ...reportData.report,
+        incident_ids,
+      }
+    : {};
+
   return (
     <Layout {...props} className={'w-full p-1'}>
       {!loading && (
@@ -286,16 +292,13 @@ function EditCitePage(props) {
               <Formik
                 validationSchema={schema}
                 onSubmit={handleSubmit}
-                initialValues={{
-                  ...reportData.report,
-                  incident_ids,
-                }}
+                initialValues={initialValues}
               >
-                {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (
+                {({ isSubmitting, submitForm }) => (
                   <>
-                    <IncidentReportForm />
-                    <div className="mt-4 flex items-center justify-between">
-                      <div className="flex items-center">
+                    <IncidentReportForm submitForm={submitForm} initialValues={initialValues} />
+                    <div className="mt-4 flex items-center justify-end">
+                      {/* <div className="flex items-center">
                         <Button
                           variant="primary"
                           type="submit"
@@ -321,10 +324,9 @@ function EditCitePage(props) {
                             </Trans>
                           </div>
                         )}
-                      </div>
+                      </div> */}
                       <Button
-                        className="text-danger"
-                        variant="link"
+                        color="failure"
                         disabled={isSubmitting}
                         onClick={() => {
                           confirm(t('Are you sure you want to delete this report?')) &&
@@ -335,9 +337,9 @@ function EditCitePage(props) {
                       </Button>
                     </div>
 
-                    {reportData.report.is_incident_report && (
+                    {/* {reportData.report.is_incident_report && (
                       <RelatedIncidents incident={values} setFieldValue={setFieldValue} />
-                    )}
+                    )} */}
                   </>
                 )}
               </Formik>

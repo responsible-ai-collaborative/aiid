@@ -1,39 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
+import React, { useEffect } from 'react';
 import { useFormikContext } from 'formik';
 import * as yup from 'yup';
-import TextInputGroup from '../../components/forms/TextInputGroup';
-import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { dateRegExp } from '../../utils/date';
 import { getCloudinaryPublicID } from '../../utils/cloudinary';
-import PreviewImageInputGroup from 'components/forms/PreviewImageInputGroup';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { graphql, useStaticQuery } from 'gatsby';
-import Label from './Label';
-import Typeahead from './Typeahead';
-import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
 import getSourceDomain from '../../utils/getSourceDomain';
-import supportedLanguages from '../../components/i18n/languages.json';
-import { useLocalization } from 'gatsby-theme-i18n';
-import { Trans, useTranslation } from 'react-i18next';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faTag,
-  faPenNib,
-  faMedal,
-  faCalendar,
-  faImage,
-  faLink,
-  faLanguage,
-  faDownload,
-  faNewspaper,
-  faAlignLeft,
-  faTenge,
-} from '@fortawesome/free-solid-svg-icons';
-import IncidentsField from 'components/incidents/IncidentsField';
-import VariantForm from 'components/variants/VariantForm';
+import SubmissionWizard from 'components/submissions/SubmissionWizard';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -100,19 +74,8 @@ export const schema = yup.object().shape({
   text_outputs: yup.string().nullable(),
 });
 
-const IncidentReportForm = () => {
-  const {
-    values,
-    errors,
-    touched,
-    handleChange,
-    handleBlur,
-    setFieldTouched,
-    setFieldValue,
-    setValues,
-  } = useFormikContext();
-
-  const { t } = useTranslation(['submit']);
+const IncidentReportForm = ({ submitForm, initialValues }) => {
+  const { values, errors, setFieldTouched, setFieldValue } = useFormikContext();
 
   const data = useStaticQuery(graphql`
     query IncidentReportFormQuery {
@@ -138,12 +101,6 @@ const IncidentReportForm = () => {
     }
   }
 
-  const TextInputGroupProps = { values, errors, touched, handleChange, handleBlur, schema };
-
-  const addToast = useToastContext();
-
-  const [parsingNews, setParsingNews] = useState(false);
-
   useEffect(() => {
     try {
       const url = new URL(values?.url);
@@ -164,87 +121,42 @@ const IncidentReportForm = () => {
     });
   }, [errors]);
 
-  const parseNewsUrl = useCallback(
-    async (newsUrl) => {
-      setParsingNews(true);
-
-      try {
-        const url = `/api/parseNews?url=${encodeURIComponent(newsUrl)}`;
-
-        const response = await fetch(url);
-
-        if (!response.ok) {
-          throw new Error('Parser error');
-        }
-
-        const news = await response.json();
-
-        addToast({
-          message: <>Please verify all information programmatically pulled from the report</>,
-          severity: SEVERITY.info,
-        });
-
-        const cloudinary_id = getCloudinaryPublicID(news.image_url);
-
-        setValues({
-          ...values,
-          ...news,
-          cloudinary_id,
-        });
-      } catch (e) {
-        const message =
-          e.message == 'Parser error'
-            ? `Error fetching news. Scraping was blocked by ${newsUrl}, Please enter the text manually.`
-            : `Error reaching news info endpoint, please try again in a few seconds.`;
-
-        addToast({
-          message: <>{message}</>,
-          severity: SEVERITY.danger,
-        });
-      }
-
-      setParsingNews(false);
-    },
-    [values]
-  );
-
-  const { config } = useLocalization();
-
   return (
     <div>
-      <Form
+      {/* <Form
         onSubmit={(event) => {
           event.preventDefault();
         }}
         className="mx-auto"
         data-cy="report"
       >
-        <TextInputGroup
+        <div className="flex items-center mb-1">
+          <FontAwesomeIcon
+            fixedWidth
+            icon={faLink}
+            title={t('Report Address')}
+            className="mb-2 mr-1"
+          />
+          <Label label={'*' + t('Report Address')} popover="url"></Label>
+        </div>
+        <FlowbiteSearchInput
           name="url"
           label={t('Report Address')}
           placeholder={t('Report URL')}
-          icon={faLink}
-          addOnComponent={
-            <Button
-              className="outline-secondary whitespace-nowrap"
-              disabled={!!errors.url || !values?.url || parsingNews}
-              onClick={() => parseNewsUrl(values.url)}
-            >
-              {!parsingNews ? (
-                <Trans ns="submit">Fetch info</Trans>
-              ) : (
-                <div className="flex gap-2">
-                  <Spinner size="sm" />
-                  <Trans ns="submit">Fetching...</Trans>
-                </div>
-              )}
-            </Button>
-          }
-          {...TextInputGroupProps}
+          defaultValue={values?.url || ''}
+          dataCy="fetch-info"
+          values={values}
+          errors={errors}
+          touched={touched}
+          handleBlur={handleBlur}
           handleChange={(e) => {
             setFieldTouched('url', true);
-            TextInputGroupProps.handleChange(e);
+            handleChange(e);
           }}
+          btnClick={() => parseNewsUrl(values.url)}
+          loading={parsingNews}
+          btnDisabled={!!errors.url || !touched.url || parsingNews}
+          btnText={t('Fetch info')}
         />
 
         <TextInputGroup
@@ -456,7 +368,8 @@ const IncidentReportForm = () => {
         <div className="mt-3">
           <VariantForm />
         </div>
-      </Form>
+      </Form> */}
+      <SubmissionWizard initialValues={initialValues} submitForm={submitForm} />
     </div>
   );
 };
