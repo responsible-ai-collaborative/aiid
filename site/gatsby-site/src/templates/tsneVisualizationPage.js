@@ -11,7 +11,7 @@ function TsneVisulizationPage(props) {
 
   const spatialIncidents = props.pageContext.spatialIncidents;
 
-  const classifications = props.pageContext.classifications;
+  const classifications = props.pageContext.classifications.filter((c) => c.publish);
 
   const csetClassifications = props.pageContext.csetClassifications;
 

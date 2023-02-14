@@ -13,6 +13,20 @@ describe('Cite pages', () => {
 
   const url = `/cite/${incidentId}`;
 
+  maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    const id = 'r3';
+
+    cy.visit('/cite/1#' + id);
+
+    cy.get(`#${id} [data-cy="edit-report"]`).click();
+
+    cy.waitForStableDOM();
+
+    cy.url().should('contain', '/cite/edit/?report_number=3');
+  });
+
   it('Successfully loads', () => {
     cy.visit(url);
   });
@@ -75,18 +89,6 @@ describe('Cite pages', () => {
       .contains('Sean McGregor');
   });
 
-  maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-    const id = 'r3';
-
-    cy.visit('/cite/1#' + id);
-
-    cy.get(`#${id} [data-cy="edit-report"]`).click();
-
-    cy.url().should('contain', '/cite/edit/?report_number=3');
-  });
-
   maybeIt('Should show the taxonomy form of CSET', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
@@ -99,29 +101,12 @@ describe('Cite pages', () => {
     cy.get('@taxonomyForm').should('exist');
   });
 
-  maybeIt('Should show the taxonomy form of resources', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-    cy.visit(url);
-
-    cy.get('[data-cy="resources"]', { timeout: 8000 })
-      .should('be.visible')
-      .contains('Edit')
-      .click();
-
-    cy.get('[data-cy="resources"] [data-cy="taxonomy-form"]', { timeout: 8000 })
-      .should('be.visible')
-      .as('taxonomyForm');
-
-    cy.get('@taxonomyForm').should('exist');
-  });
-
   it(`Should taxa table only when there are classifications and the user is not authenticated`, () => {
     cy.visit(url);
 
     cy.get('[data-cy="CSET"]').should('exist');
 
-    cy.get('[data-cy="resources"]').should('not.exist');
+    cy.get('[data-cy="CSETv1"]').should('not.exist');
   });
 
   it('Should flag an incident', () => {
