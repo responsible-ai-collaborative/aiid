@@ -36,7 +36,9 @@ function Sorting(props) {
     <>
       <div className="flex justify-end px-2">
         <Dropdown
-          label={`${t(selectedItem.label)} ${t(selectedDirection)}`}
+          label={`${t(selectedItem.label)} ${
+            selectedDirection !== '' ? ' - ' + t(selectedDirection) : ''
+          }`}
           color={'light'}
           data-cy="discover-sort"
         >
