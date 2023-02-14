@@ -52,7 +52,7 @@ describe('SEO', () => {
 
   paths.forEach((path) => {
     languages.forEach(({ code }) => {
-      it(`/${code}${path} Should have proper canonical url`, () => {
+      it(`/${code}${path} Should have proper SEO Tags`, () => {
         const canonicalPath = switchLocalizedPath({ newLang: code, path });
 
         const url = baseUrl + canonicalPath;
@@ -60,16 +60,6 @@ describe('SEO', () => {
         cy.visit(canonicalPath);
 
         cy.get('[rel="canonical"]').invoke('attr', 'href').should('equal', url);
-      });
-    });
-  });
-
-  paths.forEach((path) => {
-    languages.forEach(({ code }) => {
-      it.only(`${code} ${path} Should have proper alternate url`, () => {
-        const canonicalPath = switchLocalizedPath({ newLang: code, path });
-
-        cy.visit(canonicalPath);
 
         cy.get('[rel="alternate"]').should('have.length', 5);
 
