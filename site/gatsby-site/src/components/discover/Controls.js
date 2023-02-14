@@ -59,13 +59,13 @@ const Controls = () => {
               <Trans>Filter Search</Trans>
             </button>
           </div>
+          <Sorting
+            items={SORTING_LISTS}
+            defaultRefinement="instant_search-en_epoch_incident_date_desc"
+          />
         </div>
       </div>
       <div className="mb-3 hidden md:block">{expandFilters && <Filters />}</div>
-      <Sorting
-        items={SORTING_LISTS}
-        defaultRefinement="instant_search-en_epoch_incident_date_desc"
-      />
     </>
   );
 };

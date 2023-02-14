@@ -9,92 +9,44 @@ function Sorting(props) {
 
   const { t } = useTranslation();
 
-  const [selectedDirection, setSelectedDirection] = useState('');
-
-  const [disabledDirection, setDisabledDirection] = useState(true);
-
   const sortResults = (item) => {
     setSelectedItem(item);
-    if (item.type === 'date' && disabledDirection) {
-      setSelectedDirection('desc');
-      setDisabledDirection(false);
-    } else {
-      setSelectedDirection('');
-      setDisabledDirection(true);
-    }
   };
 
   useEffect(() => {
-    if (selectedItem.type === 'date') {
-      props.refine(`${selectedItem.value}_${selectedDirection}`);
-    } else {
-      props.refine(`${selectedItem.value}`);
-    }
-  }, [selectedDirection, selectedItem]);
+    props.refine(`${selectedItem.value}`);
+  }, [selectedItem]);
 
   return (
     <>
-      <div className="flex justify-end px-2">
+      <div className="flex justify-end px-2 relative">
+        <span className="absolute left-4 -top-2 text-xs text-gray-400 bg-white px-2">
+          <Trans>Sort by</Trans>
+        </span>
         <Dropdown
-          label={`${t(selectedItem.label)}${
-            selectedDirection !== '' ? ' - ' + t(selectedDirection) : ''
-          }`}
+          label={`${t(selectedItem.label)}`}
           color={'light'}
           data-cy="discover-sort"
+          className="min-w-max"
         >
-          <Dropdown.Item className="text-gray-400 hover:bg-white">ORDER</Dropdown.Item>
-          <Dropdown.Divider />
           {props.items.map((item) => (
-            <Dropdown.Item
-              key={item.value}
-              value={item.value}
-              style={{ fontWeight: item.isRefined ? 'bold' : '' }}
-              onClick={() => {
-                sortResults(item);
-              }}
-              className={`${item.value === selectedItem.value ? 'bg-blue-100' : ''}`}
-            >
-              <span data-cy={item.name + '-sort'}>
-                <Trans>{item.label}</Trans>
-              </span>
-            </Dropdown.Item>
+            <>
+              <Dropdown.Item
+                key={item.value}
+                value={item.value}
+                style={{ fontWeight: item.isRefined ? 'bold' : '' }}
+                onClick={() => {
+                  sortResults(item);
+                }}
+                className={`${item.value === selectedItem.value ? 'bg-blue-100' : ''}`}
+              >
+                <span data-cy={item.name + '-sort'}>
+                  <Trans>{item.label}</Trans>
+                </span>
+              </Dropdown.Item>
+              {item.division && <Dropdown.Divider />}
+            </>
           ))}
-          <Dropdown.Divider />
-          <Dropdown.Item
-            value="asc"
-            onClick={() => {
-              if (!disabledDirection) {
-                setSelectedDirection('asc');
-              }
-            }}
-            className={`${
-              disabledDirection ? 'text-gray-400' : selectedDirection === 'asc' ? 'bg-blue-100' : ''
-            }`}
-          >
-            <span data-cy="sort-asc">
-              <Trans>Asc</Trans>
-            </span>
-          </Dropdown.Item>
-          <Dropdown.Item
-            value="asc"
-            onClick={() => {
-              if (!disabledDirection) {
-                setSelectedDirection('desc');
-              }
-            }}
-            className={`${
-              disabledDirection
-                ? 'text-gray-400'
-                : selectedDirection === 'desc'
-                ? 'bg-blue-100'
-                : ''
-            }`}
-            data-cy="sort-asc"
-          >
-            <span data-cy="sort-desc">
-              <Trans>Desc</Trans>
-            </span>
-          </Dropdown.Item>
         </Dropdown>
       </div>
     </>
