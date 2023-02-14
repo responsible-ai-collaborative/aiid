@@ -192,7 +192,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('[data-cy="incident-date-sort"]', { timeout: 10000 }).click();
+    cy.get('[data-cy="incident-date-asc-sort"]', { timeout: 10000 }).click();
 
     cy.waitForStableDOM();
 
@@ -200,11 +200,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('[data-cy="sort-asc"]').click();
-
-    cy.waitForStableDOM();
-
-    cy.get('[data-cy="discover-sort"]').should('have.text', 'Incident Date - asc');
+    cy.get('[data-cy="discover-sort"]').should('have.text', 'Oldest Incident Date');
 
     cy.get('[data-cy=incident-date]').then((dates) => {
       let firstDateValue = parseInt(dates.eq(0).val().toString());
@@ -224,7 +220,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('[data-cy="published-date-sort"]', { timeout: 10000 }).click();
+    cy.get('[data-cy="published-date-desc-sort"]', { timeout: 10000 }).click();
 
     cy.waitForStableDOM();
 
@@ -232,11 +228,7 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('[data-cy="sort-desc"]').click();
-
-    cy.waitForStableDOM();
-
-    cy.get('[data-cy="discover-sort"]').should('have.text', 'Published Date - desc');
+    cy.get('[data-cy="discover-sort"]').should('have.text', 'Newest Published Date');
 
     cy.get('[data-cy=date-published]').then((dates) => {
       let secondDateValue = parseInt(dates.eq(1).val().toString());
