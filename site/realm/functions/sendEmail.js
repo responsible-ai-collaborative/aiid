@@ -1,4 +1,5 @@
 const SENDER = "notifications@incidentdatabase.ai";
+const SENDER_NAME = "AIID:Notifications";
 
 exports = async ({ recipients, subject, dynamicData, templateId }) => {
 
@@ -7,14 +8,14 @@ exports = async ({ recipients, subject, dynamicData, templateId }) => {
         emailTemplateBody = await context.functions.execute(`getEmailTemplate${templateId}`);
     } catch (error) {
         return {
-          statusCode: 400,
-          status: "400 Bad Request - Invalid templateId value",
+            statusCode: 400,
+            status: "400 Bad Request - Invalid templateId value",
         }
     }
 
     const sendGridApiKey = context.values.get("SendGridApiKey");
-
-    if(!sendGridApiKey || sendGridApiKey.trim() === '') {
+    
+    if (!sendGridApiKey || sendGridApiKey.trim() === '') {
         return {
             statusCode: 202,
             status: "No email sent. Missing sendGridApiKey value.",
@@ -33,7 +34,7 @@ exports = async ({ recipients, subject, dynamicData, templateId }) => {
         }
     }
 
-    const sendGridApiUrl = "https://api.sendgrid.com/v3/mail/send";    
+    const sendGridApiUrl = "https://api.sendgrid.com/v3/mail/send";
 
     var emailData = BuildEmailData(recipients, subject, dynamicData, emailTemplateBody);
 
@@ -91,7 +92,8 @@ function BuildEmailData(recipients, subject, dynamicData, emailTemplateBody) {
 
     const emailData = {
         from: {
-            email: SENDER
+            email: SENDER,
+            name: SENDER_NAME,
         },
         personalizations,
         content: [
@@ -103,4 +105,8 @@ function BuildEmailData(recipients, subject, dynamicData, emailTemplateBody) {
     }
 
     return emailData;
+}
+
+if (typeof module === 'object') {
+    module.exports = exports;
 }

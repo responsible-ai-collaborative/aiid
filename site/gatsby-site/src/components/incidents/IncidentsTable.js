@@ -125,6 +125,8 @@ export default function IncidentsTable({ data }) {
 
   const { isLoggedIn, isRole } = useUserContext();
 
+  const { t } = useTranslation();
+
   const defaultColumn = React.useMemo(
     () => ({
       minWidth: 30,
@@ -138,7 +140,7 @@ export default function IncidentsTable({ data }) {
   const columns = React.useMemo(() => {
     const columns = [
       {
-        Header: 'Incident ID',
+        Header: t('Incident ID'),
         accessor: 'incident_id',
         Cell: ({ row: { values } }) => (
           <a className="flex" href={`/cite/${values.incident_id}`}>
@@ -166,7 +168,7 @@ export default function IncidentsTable({ data }) {
         Cell: ListCell,
       },
       {
-        Header: <Trans>Alleged Developer of AISystem</Trans>,
+        Header: <Trans>Alleged Developer of AI System</Trans>,
         id: 'AllegedDeveloperOfAISystem',
         accessor: (data) => data.AllegedDeveloperOfAISystem.map((i) => `${i.name} ${i.entity_id}`),
         Cell: ListCell,
@@ -280,10 +282,12 @@ export default function IncidentsTable({ data }) {
         </Pagination>
 
         <span>
-          Page{' '}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{' '}
+          <Trans
+            i18nKey="paginationKey"
+            defaults="Page <bold>{{currentPageIndex}} of {{pageOptionsLength}}</bold>"
+            values={{ currentPageIndex: pageIndex + 1, pageOptionsLength: pageOptions.length }}
+            components={{ bold: <strong /> }}
+          />
         </span>
 
         <Form.Select
@@ -296,7 +300,7 @@ export default function IncidentsTable({ data }) {
         >
           {[10, 50, 100, 'all'].map((pageSize) => (
             <option key={pageSize} value={pageSize == 'all' ? 99999 : pageSize}>
-              Show {pageSize}
+              {pageSize === 'all' ? <Trans>Show all</Trans> : <Trans>Show {{ pageSize }}</Trans>}
             </option>
           ))}
         </Form.Select>
