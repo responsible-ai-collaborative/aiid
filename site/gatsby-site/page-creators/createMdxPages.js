@@ -12,6 +12,9 @@ const createMdxPages = async (graphql, createPage, { reporter }) => {
               frontmatter {
                 slug
               }
+              internal {
+                contentFilePath
+              }
             }
           }
         }
@@ -25,7 +28,9 @@ const createMdxPages = async (graphql, createPage, { reporter }) => {
 
       createPage({
         path: node.childMdx.frontmatter.slug,
-        component: path.resolve(`./src/templates/${template}.js`),
+        component: `${path.resolve(`./src/templates/${template}.js`)}?__contentFilePath=${
+          node.childMdx.internal.contentFilePath
+        }`,
         context: {
           slug: node.childMdx.frontmatter.slug,
         },

@@ -8,7 +8,7 @@ import WebArchiveLink from 'components/ui/WebArchiveLink';
 import { Trans, useTranslation } from 'react-i18next';
 import { Button, Tooltip } from 'flowbite-react';
 import Markdown from 'react-markdown';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import Actions from 'components/discover/Actions';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import { Badge } from 'flowbite-react';

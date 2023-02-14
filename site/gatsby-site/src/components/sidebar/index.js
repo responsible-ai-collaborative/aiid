@@ -21,7 +21,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
 
   const [isMobile, setIsMobile] = useState(false);
 
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(user && user.profile.email);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
 
   useEffect(() => {
     if (!manual) {

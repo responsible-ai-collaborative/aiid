@@ -11,7 +11,7 @@ import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import Card from '../../elements/Card';
 import Button from '../../elements/Button';
-import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
+import { useLocalization, LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
 
