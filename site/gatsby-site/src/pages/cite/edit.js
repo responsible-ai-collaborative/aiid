@@ -294,9 +294,9 @@ function EditCitePage(props) {
                 onSubmit={handleSubmit}
                 initialValues={initialValues}
               >
-                {({ isSubmitting, submitForm }) => (
+                {({ isSubmitting }) => (
                   <>
-                    <IncidentReportForm submitForm={submitForm} initialValues={initialValues} />
+                    <IncidentReportForm submitForm={handleSubmit} initialValues={initialValues} />
                     <div className="mt-4 flex items-center justify-end">
                       {/* <div className="flex items-center">
                         <Button

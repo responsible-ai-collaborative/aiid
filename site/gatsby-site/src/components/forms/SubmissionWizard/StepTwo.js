@@ -59,6 +59,7 @@ const StepTwo = (props) => {
           submitForm={handleSubmit}
           validateAndSubmitForm={props.validateAndSubmitForm}
           submissionFailed={props.submissionFailed}
+          editMode={props.editMode}
         />
       </Formik>
     </StepContainer>
@@ -72,6 +73,7 @@ const FormDetails = ({
   submitForm,
   validateAndSubmitForm,
   submissionFailed,
+  editMode = false,
 }) => {
   const { t } = useTranslation(['submit']);
 
@@ -241,7 +243,7 @@ const FormDetails = ({
                 <Spinner size="sm" light={true} />
               </div>
             )}
-            <Trans>Submit</Trans>
+            {editMode ? <Trans>Update</Trans> : <Trans>Submit</Trans>}
           </Button>
         </div>
       </Form>

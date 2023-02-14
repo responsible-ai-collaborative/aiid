@@ -369,7 +369,7 @@ const IncidentReportForm = ({ submitForm, initialValues }) => {
           <VariantForm />
         </div>
       </Form> */}
-      <SubmissionWizard initialValues={initialValues} submitForm={submitForm} />
+      <SubmissionWizard initialValues={initialValues} submitForm={submitForm} editMode={true} />
     </div>
   );
 };

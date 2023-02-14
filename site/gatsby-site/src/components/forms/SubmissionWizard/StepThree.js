@@ -274,7 +274,7 @@ const StepThree = (props) => {
                       <Spinner size="sm" light={true} />
                     </div>
                   )}
-                  <Trans>Submit</Trans>
+                  {props.editMode ? <Trans>Update</Trans> : <Trans>Submit</Trans>}
                 </Button>
               </div>
             </Form>
