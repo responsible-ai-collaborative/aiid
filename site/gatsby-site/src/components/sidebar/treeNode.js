@@ -80,7 +80,7 @@ const NodeLink = ({
     className={`${
       isCollapsed ? 'w-10 h-10' : ''
     } flex rounded-lg items-center p-2 md:text-base font-normal group transition-none ${calculatedClassName}`}
-    data-cy={`sidebar-link`}
+    data-cy={`sidebar-link${item.current ? '-active' : ''}`}
   >
     {icon &&
       (isCollapsed ? (

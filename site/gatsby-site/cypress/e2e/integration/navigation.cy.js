@@ -23,13 +23,13 @@ it('Check menu links work (French)', () => {
 });
 
 const checkLinks = () => {
-  cy.get('[data-cy="sidebar-link"]').each((page) => {
+  cy.get('.item.active').each((page) => {
     cy.visit(page.prop('href'));
 
     cy.waitForStableDOM();
 
     // Check if the sidebar active item match the current page
-    cy.get('.active[data-cy="sidebar-link"]', { timeout: 10000 })
+    cy.get('.active[data-cy="sidebar-link-active"]', { timeout: 10000 })
       .first()
       .should('have.attr', 'href')
       .then((href) => expect(page.prop('href').endsWith(href)).to.be.true);
