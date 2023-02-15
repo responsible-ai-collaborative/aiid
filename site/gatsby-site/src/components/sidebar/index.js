@@ -21,6 +21,8 @@ const Sidebar = ({ defaultCollapsed = false }) => {
 
   const [isMobile, setIsMobile] = useState(false);
 
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
+
   useEffect(() => {
     if (!manual) {
       collapseMenu(defaultCollapsed);
@@ -45,9 +47,11 @@ const Sidebar = ({ defaultCollapsed = false }) => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  });
+  }, []);
 
-  const isUserLoggedIn = user && user.isLoggedIn;
+  useEffect(() => {
+    setIsUserLoggedIn(!!user?.profile.email);
+  }, [user]);
 
   // We want the bottom edge of the sidebar
   // to rest at bottom edge of the viewport.
@@ -78,7 +82,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
 
     observer.observe(document.querySelector('#navBarDefault'));
     return () => observer.disconnect();
-  });
+  }, []);
 
   // When we've scrolled to where the footer is visible,
   // the collapse button should no longer be at the bottom of the viewport,
@@ -94,7 +98,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
 
     observer.observe(document.querySelector('#main-footer'));
     return () => observer.disconnect();
-  });
+  }, []);
 
   const sidebarWidth = !isCollapsed ? 'md:w-64' : 'md:w-[3.5rem]';
 
@@ -168,6 +172,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
               data-cy="collapse-button"
               icon={faChevronLeft}
               color={'white'}
+              titleId="collapse"
               className={`
                 w-6 h-6
                 hidden md:inline-block 
