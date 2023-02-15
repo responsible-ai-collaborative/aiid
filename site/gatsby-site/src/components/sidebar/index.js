@@ -47,7 +47,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
     };
   });
 
-  const isUserLoggedIn = user && user.isLoggedIn;
+  const isUserLoggedIn = user && user.isLoggedIn && user.profile.email;
 
   // We want the bottom edge of the sidebar
   // to rest at bottom edge of the viewport.
@@ -128,7 +128,7 @@ const Sidebar = ({ defaultCollapsed = false }) => {
             additionalNodes={[
               {
                 label: 'user',
-                url: isUserLoggedIn ? '/account' : '/signup',
+                url: isUserLoggedIn ? '/account/' : '/signup/',
                 title: isUserLoggedIn ? 'Account' : 'Subscribe',
                 items: [],
               },

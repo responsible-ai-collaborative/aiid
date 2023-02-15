@@ -41,7 +41,7 @@ const ConfirmEmail = (props) => {
       {pageMessage ? (
         <>
           <p>{pageMessage}</p>
-          <Link to={'/login?redirectTo=/account'} data-cy="confirm-login-btn">
+          <Link to={'/login?redirectTo=/account/'} data-cy="confirm-login-btn">
             <Trans>Login</Trans>
           </Link>
         </>

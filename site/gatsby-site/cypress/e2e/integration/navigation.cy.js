@@ -1,4 +1,4 @@
-it.skip('Check menu links work (English)', () => {
+it('Check menu links work (English)', () => {
   cy.visit('/');
 
   cy.waitForStableDOM();
@@ -6,7 +6,7 @@ it.skip('Check menu links work (English)', () => {
   checkLinks();
 });
 
-it.skip('Check menu links work (Spanish)', () => {
+it('Check menu links work (Spanish)', () => {
   cy.visit('/es/');
 
   cy.waitForStableDOM();
@@ -14,7 +14,7 @@ it.skip('Check menu links work (Spanish)', () => {
   checkLinks();
 });
 
-it.skip('Check menu links work (French)', () => {
+it('Check menu links work (French)', () => {
   cy.visit('/fr/');
 
   cy.waitForStableDOM();
@@ -23,13 +23,13 @@ it.skip('Check menu links work (French)', () => {
 });
 
 const checkLinks = () => {
-  cy.get('aside .item a').each((page) => {
+  cy.get('[data-cy="sidebar-link"]').each((page) => {
     cy.visit(page.prop('href'));
 
     cy.waitForStableDOM();
 
     // Check if the sidebar active item match the current page
-    cy.get('.item.active > a')
+    cy.get('.active[data-cy="sidebar-link"]', { timeout: 10000 })
       .first()
       .should('have.attr', 'href')
       .then((href) => expect(page.prop('href').endsWith(href)).to.be.true);
