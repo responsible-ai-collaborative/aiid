@@ -93,6 +93,7 @@ export default function Footer() {
             className="pr-2 tw-footer-link"
           >
             <FontAwesomeIcon
+              titleId={'twitter'}
               icon={faTwitterSquare}
               color={'gray'}
               className="pointer fa fa-lg"
@@ -102,6 +103,7 @@ export default function Footer() {
 
           <a href={githubUrl} target="_blank" rel="noreferrer" className="pr-2 tw-footer-link">
             <FontAwesomeIcon
+              titleId="github"
               icon={faGithubSquare}
               color={'gray'}
               className="pointer fa fa-lg"
@@ -116,6 +118,7 @@ export default function Footer() {
             className="pr-2 tw-footer-link"
           >
             <FontAwesomeIcon
+              titleId="rss"
               icon={faRssSquare}
               color={'gray'}
               className="pointer fa fa-lg"
@@ -130,6 +133,7 @@ export default function Footer() {
             className="pr-2 tw-footer-link"
           >
             <FontAwesomeIcon
+              titleId="facebook"
               icon={faFacebookSquare}
               color={'gray'}
               className="pointer fa fa-lg"
@@ -144,6 +148,7 @@ export default function Footer() {
             className="pr-2 tw-footer-link"
           >
             <FontAwesomeIcon
+              titleId="linkedin"
               icon={faLinkedin}
               color={'gray'}
               className="pointer fa fa-lg"
