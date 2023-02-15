@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import config from '../../../config';
 import TreeNode from './treeNode';
+import { useLocation } from '@reach/router';
 
 const navConfig = config.sidebar.navConfig;
 
@@ -59,14 +60,20 @@ const Tree = ({
   isCollapsed = false,
   additionalNodes = [],
 }) => {
-  const allNodes = navConfig.concat(additionalNodes);
+  const location = useLocation();
 
-  const defaultNavSettings = subtreeNav(allNodes, undefined, localizePath);
+  const [navSettings, setNavSetting] = useState(
+    subtreeNav([...navConfig, ...additionalNodes], location.pathname, localizePath)
+  );
 
-  const [navSettings, setNavSetting] = useState(defaultNavSettings);
+  useEffect(() => {
+    const nodes = subtreeNav([...navConfig, ...additionalNodes], location.pathname, localizePath);
+
+    setNavSetting(nodes);
+  }, [additionalNodes]);
 
   const toggle = (url) => {
-    setNavSetting(subtreeNav(allNodes, url, localizePath));
+    setNavSetting(subtreeNav(navSettings, url, localizePath));
     setNavCollapsed && setNavCollapsed(true);
   };
 
