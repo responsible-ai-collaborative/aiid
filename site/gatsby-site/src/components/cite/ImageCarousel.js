@@ -3,6 +3,8 @@ import md5 from 'md5';
 import Carousel from 'react-bootstrap/Carousel';
 import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
+import { useTranslation } from 'react-i18next';
+
 /**
  * Get an image carousel of the report images along with their headlines.
  *
@@ -10,6 +12,8 @@ import { fill } from '@cloudinary/base/actions/resize';
  * @return {jsx} The HTML to render to the page.
  */
 const ImageCarousel = ({ nodes }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="bootstrap">
       <Carousel interval={60000}>
@@ -23,6 +27,9 @@ const ImageCarousel = ({ nodes }) => {
               alt={value.title}
               transformation={fill().height(640)}
               plugins={[]}
+              itemIdentifier={t('Report {{report_number}}', {
+                report_number: value.report_number,
+              }).replace(' ', '.')}
             />
             <Carousel.Caption>
               <h3 className="bg-0-0-0-055">

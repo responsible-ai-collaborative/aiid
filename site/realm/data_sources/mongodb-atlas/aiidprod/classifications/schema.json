@@ -3,154 +3,15 @@
         "_id": {
             "bsonType": "objectId"
         },
-        "classifications": {
+        "attributes": {
+          "bsonType": "array",
+          "items": {
             "bsonType": "object",
             "properties": {
-                "AI Applications": {
-                    "bsonType": "array",
-                    "items": {
-                        "bsonType": "string"
-                    }
-                },
-                "AI System Description": {
-                    "bsonType": "string"
-                },
-                "AI Techniques": {
-                    "bsonType": "array",
-                    "items": {
-                        "bsonType": "string"
-                    }
-                },
-                "Annotation Status": {
-                    "bsonType": "string"
-                },
-                "Annotator": {
-                    "bsonType": "string"
-                },
-                "Beginning Date": {
-                    "bsonType": "string"
-                },
-                "Data Inputs": {
-                    "bsonType": "array",
-                    "items": {
-                        "bsonType": "string"
-                    }
-                },
-                "Ending Date": {
-                    "bsonType": "string"
-                },
-                "Financial Cost": {
-                    "bsonType": "string"
-                },
-                "Full Description": {
-                    "bsonType": "string"
-                },
-                "Harm Distribution Basis": {
-                    "bsonType": "array",
-                    "items": {
-                        "bsonType": "string"
-                    }
-                },
-                "Harm Type": {
-                    "bsonType": "array",
-                    "items": {
-                        "bsonType": "string"
-                    }
-                },
-                "Infrastructure Sectors": {
-                    "bsonType": "array",
-                    "items": {
-                        "bsonType": "string"
-                    }
-                },
-                "Intent": {
-                    "bsonType": "string"
-                },
-                "Laws Implicated": {
-                    "bsonType": "array",
-                    "items": {
-                        "bsonType": "string"
-                    }
-                },
-                "Level of Autonomy": {
-                    "bsonType": "string"
-                },
-                "Lives Lost": {
-                    "bsonType": "bool"
-                },
-                "Location": {
-                    "bsonType": "string"
-                },
-                "Named Entities": {
-                    "bsonType": "array",
-                    "items": {
-                        "bsonType": "string"
-                    }
-                },
-                "Nature of End User": {
-                    "bsonType": "string"
-                },
-                "Near Miss": {
-                    "bsonType": "string"
-                },
-                "Physical System": {
-                    "bsonType": "array",
-                    "items": {
-                        "bsonType": "string"
-                    }
-                },
-                "Problem Nature": {
-                    "bsonType": "array",
-                    "items": {
-                        "bsonType": "string"
-                    }
-                },
-                "Public Sector Deployment": {
-                    "bsonType": "bool"
-                },
-                "Publish": {
-                    "bsonType": "bool"
-                },
-                "Quality Control": {
-                    "bsonType": "bool"
-                },
-                "Relevant AI functions": {
-                    "bsonType": "array",
-                    "items": {
-                        "bsonType": "string"
-                    }
-                },
-                "Reviewer": {
-                    "bsonType": "string"
-                },
-                "Sector of Deployment": {
-                    "bsonType": "array",
-                    "items": {
-                        "bsonType": "string"
-                    }
-                },
-                "Severity": {
-                    "bsonType": "string"
-                },
-                "Short Description": {
-                    "bsonType": "string"
-                },
-                "System Developer": {
-                    "bsonType": "array",
-                    "items": {
-                        "bsonType": "string"
-                    }
-                },
-                "Technology Purveyor": {
-                    "bsonType": "array",
-                    "items": {
-                        "bsonType": "string"
-                    }
-                },
-                "notes": {
-                    "bsonType": "string"
-                }
+              "short_name" : { "bsonType": "string" },
+              "value_json": { "bsonType" : "string" }
             }
+          }
         },
         "incident_id": {
             "bsonType": "int"
@@ -160,11 +21,13 @@
         },
         "notes": {
             "bsonType": "string"
+        },
+        "publish": {
+          "bsonType": "bool"
         }
     },
     "required": [
         "incident_id",
-        "classifications",
         "namespace"
     ],
     "title": "classification"

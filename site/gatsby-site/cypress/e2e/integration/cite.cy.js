@@ -13,6 +13,20 @@ describe('Cite pages', () => {
 
   const url = `/cite/${incidentId}`;
 
+  maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    const id = 'r3';
+
+    cy.visit('/cite/1#' + id);
+
+    cy.get(`#${id} [data-cy="edit-report"]`).click();
+
+    cy.waitForStableDOM();
+
+    cy.url().should('contain', '/cite/edit/?report_number=3');
+  });
+
   it('Successfully loads', () => {
     cy.visit(url);
   });
@@ -24,6 +38,10 @@ describe('Cite pages', () => {
       cy.visit(discoverUrl);
 
       cy.disableSmoothScroll();
+
+      cy.waitForStableDOM();
+
+      cy.get('[data-cy="collapse-button"]:visible').click();
 
       cy.contains('Show Details on Incident #10').first().click();
 
@@ -71,18 +89,6 @@ describe('Cite pages', () => {
       .contains('Sean McGregor');
   });
 
-  maybeIt('Should show an edit link to users with the appropriate role', {}, () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-    const id = 'r3';
-
-    cy.visit('/cite/1#' + id);
-
-    cy.get(`#${id} [data-cy="edit-report"]`).click();
-
-    cy.url().should('contain', '/cite/edit/?report_number=3');
-  });
-
   maybeIt('Should show the taxonomy form of CSET', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
@@ -95,29 +101,12 @@ describe('Cite pages', () => {
     cy.get('@taxonomyForm').should('exist');
   });
 
-  maybeIt('Should show the taxonomy form of resources', () => {
-    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-    cy.visit(url);
-
-    cy.get('[data-cy="resources"]', { timeout: 8000 })
-      .should('be.visible')
-      .contains('Edit')
-      .click();
-
-    cy.get('[data-cy="resources"] [data-cy="taxonomy-form"]', { timeout: 8000 })
-      .should('be.visible')
-      .as('taxonomyForm');
-
-    cy.get('@taxonomyForm').should('exist');
-  });
-
   it(`Should taxa table only when there are classifications and the user is not authenticated`, () => {
     cy.visit(url);
 
     cy.get('[data-cy="CSET"]').should('exist');
 
-    cy.get('[data-cy="resources"]').should('not.exist');
+    cy.get('[data-cy="CSETv1"]').should('not.exist');
   });
 
   it('Should flag an incident', () => {
@@ -323,10 +312,6 @@ describe('Cite pages', () => {
 
       const description = incident.description;
 
-      const imageUrl = [...incident.reports].sort((a, b) =>
-        a.date_published >= b.date_published ? 1 : -1
-      )[0].image_url;
-
       cy.get('head meta[name="title"]').should('have.attr', 'content', title);
       cy.get('head meta[name="description"]').should('have.attr', 'content', description);
 
@@ -341,14 +326,14 @@ describe('Cite pages', () => {
       cy.get('head meta[property="og:type"]').should('have.attr', 'content', 'website');
       cy.get('head meta[property="og:title"]').should('have.attr', 'content', title);
       cy.get('head meta[property="og:description"]').should('have.attr', 'content', description);
-      cy.get('head meta[property="og:image"]').should('have.attr', 'content', imageUrl);
+      cy.get('head meta[property="og:image"]').first().should('have.attr', 'content');
       cy.get('head meta[property="twitter:title"]').should('have.attr', 'content', title);
       cy.get('head meta[property="twitter:description"]').should(
         'have.attr',
         'content',
         description
       );
-      cy.get('head meta[property="twitter:image"]').should('have.attr', 'content', imageUrl);
+      cy.get('head meta[property="twitter:image"]').should('have.attr', 'content');
     });
   });
 

@@ -5,8 +5,8 @@ import { fill } from '@cloudinary/base/actions/resize';
 import { useUserContext } from 'contexts/userContext';
 import ReportText from 'components/reports/ReportText';
 import WebArchiveLink from 'components/ui/WebArchiveLink';
+import { Trans, useTranslation } from 'react-i18next';
 import { Button, Tooltip } from 'flowbite-react';
-import { Trans } from 'react-i18next';
 import Markdown from 'react-markdown';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 import Actions from 'components/discover/Actions';
@@ -19,6 +19,8 @@ import { hasVariantData } from 'utils/variants';
 
 const ReportCard = ({ item, className = '', incidentId }) => {
   const { isRole, loading } = useUserContext();
+
+  const { t } = useTranslation();
 
   const [expanded, setExpanded] = useState(false);
 
@@ -43,6 +45,9 @@ const ReportCard = ({ item, className = '', incidentId }) => {
           publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
           alt={item.title}
           transformation={fill().height(480)}
+          itemIdentifier={t('Report {{report_number}}', {
+            report_number: item.report_number,
+          }).replace(' ', '.')}
         />
       </div>
       <div
