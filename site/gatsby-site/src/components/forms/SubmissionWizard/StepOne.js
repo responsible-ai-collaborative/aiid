@@ -91,6 +91,7 @@ const StepOne = (props) => {
           validateAndSubmitForm={props.validateAndSubmitForm}
           submissionFailed={props.submissionFailed}
           submissionComplete={props.submissionComplete}
+          shouldFetchUrl={props.shouldFetchUrl}
         />
       </Formik>
     </StepContainer>
@@ -105,6 +106,7 @@ const FormDetails = ({
   validateAndSubmitForm,
   submissionFailed,
   submissionComplete,
+  shouldFetchUrl,
 }) => {
   const { t } = useTranslation(['submit']);
 
@@ -141,6 +143,12 @@ const FormDetails = ({
       resetForm();
     }
   }, [submissionFailed, submissionComplete]);
+
+  useEffect(() => {
+    if (shouldFetchUrl && values.url) {
+      fetchNews(values.url);
+    }
+  }, [shouldFetchUrl, values.url]);
 
   const fetchNews = async (url) => {
     await parseNewsUrl(url);
