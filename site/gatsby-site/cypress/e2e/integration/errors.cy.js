@@ -47,7 +47,12 @@ describe('Runtime errors', () => {
         cy.get('@consoleError').then((consoleError) => {
           const noHydrationErrors = consoleError
             .getCalls()
-            .every((call) => call.args.every((arg) => !arg.includes('did not match')));
+            .every((call) =>
+              call.args.every(
+                (arg) =>
+                  !arg.includes('did not match') || !arg.includes('Minified React error #425')
+              )
+            );
 
           expect(noHydrationErrors, 'No hydration errors').to.be.true;
 
