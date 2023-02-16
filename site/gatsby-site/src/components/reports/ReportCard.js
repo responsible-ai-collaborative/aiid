@@ -55,7 +55,10 @@ const ReportCard = ({ item, className = '', incidentId }) => {
       >
         <div className="flex items-center w-full justify-between">
           <div>
-            <LocalizedLink to={`#r${item.report_number}`} className="max-w-full cursor-pointer">
+            <LocalizedLink
+              to={`${window.location.pathname}#r${item.report_number}`}
+              className="max-w-full cursor-pointer"
+            >
               <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full hover:text-primary-blue">
                 <Trans ns="landing">{item.title}</Trans>
               </h5>
