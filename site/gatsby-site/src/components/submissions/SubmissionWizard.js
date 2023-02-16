@@ -1,10 +1,8 @@
-import useToastContext, { SEVERITY } from 'hooks/useToast';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { getCloudinaryPublicID } from 'utils/cloudinary';
+import { useTranslation } from 'react-i18next';
 import StepOne from '../forms/SubmissionWizard/StepOne';
 import StepTwo from '../forms/SubmissionWizard/StepTwo';
 import StepThree from '../forms/SubmissionWizard/StepThree';
+import { useEffect, useRef, useState } from 'react';
 
 const SubmissionWizard = ({ submitForm, initialValues, editMode = false }) => {
   const [data, setData] = useState(initialValues);
@@ -16,8 +14,6 @@ const SubmissionWizard = ({ submitForm, initialValues, editMode = false }) => {
   const [submissionFailed, setSubmissionFailed] = useState(false);
 
   const [submissionComplete, setSubmissionComplete] = useState(false);
-
-  const [parsingNews, setParsingNews] = useState(false);
 
   const stepsRef = useRef(null);
 
@@ -54,74 +50,7 @@ const SubmissionWizard = ({ submitForm, initialValues, editMode = false }) => {
     setData(initialValues);
   }, [initialValues]);
 
-  const addToast = useToastContext();
-
   const { t } = useTranslation(['submit']);
-
-  const parseNewsUrl = useCallback(
-    async (newsUrl) => {
-      setParsingNews(true);
-
-      try {
-        const url = `/api/parseNews?url=${encodeURIComponent(newsUrl)}`;
-
-        const response = await fetch(url);
-
-        if (!response.ok) {
-          throw new Error('Parser error');
-        }
-
-        const news = await response.json();
-
-        addToast({
-          message: (
-            <Trans>Please verify all information programmatically pulled from the report</Trans>
-          ),
-          severity: SEVERITY.info,
-        });
-
-        const cloudinary_id = getCloudinaryPublicID(news.image_url);
-
-        const newValues = {
-          ...data,
-          ...news,
-          url: newsUrl,
-          cloudinary_id,
-        };
-
-        for (const key of [
-          'tags',
-          'authors',
-          'submitters',
-          'developers',
-          'deployers',
-          'harmed_parties',
-        ]) {
-          if (newValues[key] && !Array.isArray(newValues[key])) {
-            newValues[key] = [newValues[key]];
-          }
-        }
-
-        setData(newValues);
-      } catch (e) {
-        const message =
-          e.message == 'Parser error'
-            ? t(
-                `Error fetching news. Scraping was blocked by {{newsUrl}}. Please enter the text manually.`,
-                { newsUrl }
-              )
-            : t(`Error reaching news info endpoint, please try again in a few seconds.`);
-
-        addToast({
-          message: <>{message}</>,
-          severity: SEVERITY.danger,
-        });
-      }
-
-      setParsingNews(false);
-    },
-    [data]
-  );
 
   const validateAndSubmitForm = async (
     last = false,
@@ -152,8 +81,6 @@ const SubmissionWizard = ({ submitForm, initialValues, editMode = false }) => {
         next={handleNextStep}
         data={data}
         name={t('Step 1 - main information')}
-        parseNewsUrl={parseNewsUrl}
-        parsingNews={parsingNews}
         validateAndSubmitForm={validateAndSubmitForm}
         submissionFailed={submissionFailed}
         submissionComplete={submissionComplete}
@@ -183,7 +110,7 @@ const SubmissionWizard = ({ submitForm, initialValues, editMode = false }) => {
     ];
 
     setSteps(steps);
-  }, [data, submissionFailed, parsingNews, submissionComplete]);
+  }, [data, submissionFailed, submissionComplete]);
 
   return <div ref={stepsRef}>{steps[currentStep]}</div>;
 };

@@ -1,6 +1,6 @@
 import { Badge, Button, Spinner } from 'flowbite-react';
 import { Formik, Form, useFormikContext } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TextInputGroup from '../TextInputGroup';
 import * as yup from 'yup';
@@ -26,9 +26,15 @@ import {
   faTenge,
 } from '@fortawesome/free-solid-svg-icons';
 import { RESPONSE_TAG } from 'utils/entities';
+import useToastContext, { SEVERITY } from 'hooks/useToast';
+import { getCloudinaryPublicID } from 'utils/cloudinary';
 
 const StepOne = (props) => {
   const [data, setData] = useState(props.data);
+
+  const [parsingNews, setParsingNews] = useState(false);
+
+  const { t } = useTranslation(['submit']);
 
   const stepOneValidationSchema = yup.object().shape({
     title: yup
@@ -75,6 +81,73 @@ const StepOne = (props) => {
     setData(props.data);
   }, [props.data]);
 
+  const addToast = useToastContext();
+
+  const parseNewsUrl = useCallback(
+    async (newsUrl) => {
+      setParsingNews(true);
+
+      try {
+        const url = `/api/parseNews?url=${encodeURIComponent(newsUrl)}`;
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error('Parser error');
+        }
+
+        const news = await response.json();
+
+        addToast({
+          message: (
+            <Trans>Please verify all information programmatically pulled from the report</Trans>
+          ),
+          severity: SEVERITY.info,
+        });
+
+        const cloudinary_id = getCloudinaryPublicID(news.image_url);
+
+        const newValues = {
+          ...data,
+          ...news,
+          url: newsUrl,
+          cloudinary_id,
+        };
+
+        for (const key of [
+          'tags',
+          'authors',
+          'submitters',
+          'developers',
+          'deployers',
+          'harmed_parties',
+        ]) {
+          if (newValues[key] && !Array.isArray(newValues[key])) {
+            newValues[key] = [newValues[key]];
+          }
+        }
+
+        setData(newValues);
+      } catch (e) {
+        const message =
+          e.message == 'Parser error'
+            ? t(
+                `Error fetching news. Scraping was blocked by {{newsUrl}}. Please enter the text manually.`,
+                { newsUrl }
+              )
+            : t(`Error reaching news info endpoint, please try again in a few seconds.`);
+
+        addToast({
+          message: <>{message}</>,
+          severity: SEVERITY.danger,
+        });
+      }
+
+      setParsingNews(false);
+    },
+    [data]
+  );
+
   return (
     <StepContainer name={props.name}>
       <Formik
@@ -84,8 +157,8 @@ const StepOne = (props) => {
         enableReinitialize
       >
         <FormDetails
-          parsingNews={props.parsingNews}
-          parseNewsUrl={props.parseNewsUrl}
+          parsingNews={parsingNews}
+          parseNewsUrl={parseNewsUrl}
           schema={stepOneValidationSchema}
           submitForm={handleSubmit}
           validateAndSubmitForm={props.validateAndSubmitForm}
@@ -368,65 +441,69 @@ const FormDetails = ({
           </FieldContainer>
         )}
 
-        <div className="flex justify-end mt-8 gap-2">
-          <Button
-            data-cy="to-step-2"
-            color={'light'}
-            disabled={isSubmitting || parsingNews}
-            onClick={() => {
-              setSubmitCount(submitCount + 1);
-              validateAndSubmitForm(
-                false,
-                setIsSubmitting,
-                isValid,
-                validateForm,
-                setFieldTouched,
-                values,
-                submitForm
-              );
-            }}
-          >
-            <Trans>Add more info</Trans>
-            <svg
-              aria-hidden="true"
-              className="ml-2 w-5 h-5"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              ></path>
-            </svg>
-          </Button>
-        </div>
-        <div className="flex justify-end mt-4 gap-2">
-          <Button
-            data-cy="submit-step-1"
-            disabled={isSubmitting || parsingNews}
-            onClick={() => {
-              setSubmitCount(submitCount + 1);
-              validateAndSubmitForm(
-                true,
-                setIsSubmitting,
-                isValid,
-                validateForm,
-                setFieldTouched,
-                values,
-                submitForm
-              );
-            }}
-          >
-            {isSubmitting && (
-              <div className="mr-3">
-                <Spinner size="sm" light={true} />
-              </div>
-            )}
-            {editMode ? <Trans>Update</Trans> : <Trans>Submit</Trans>}
-          </Button>
-        </div>
+        {!editMode && (
+          <>
+            <div className="flex justify-end mt-8 gap-2">
+              <Button
+                data-cy="to-step-2"
+                color={'light'}
+                disabled={isSubmitting || parsingNews}
+                onClick={() => {
+                  setSubmitCount(submitCount + 1);
+                  validateAndSubmitForm(
+                    false,
+                    setIsSubmitting,
+                    isValid,
+                    validateForm,
+                    setFieldTouched,
+                    values,
+                    submitForm
+                  );
+                }}
+              >
+                <Trans>Add more info</Trans>
+                <svg
+                  aria-hidden="true"
+                  className="ml-2 w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+              </Button>
+            </div>
+            <div className="flex justify-end mt-4 gap-2">
+              <Button
+                data-cy="submit-step-1"
+                disabled={isSubmitting || parsingNews}
+                onClick={() => {
+                  setSubmitCount(submitCount + 1);
+                  validateAndSubmitForm(
+                    true,
+                    setIsSubmitting,
+                    isValid,
+                    validateForm,
+                    setFieldTouched,
+                    values,
+                    submitForm
+                  );
+                }}
+              >
+                {isSubmitting && (
+                  <div className="mr-3">
+                    <Spinner size="sm" light={true} />
+                  </div>
+                )}
+                <Trans>Submit</Trans>
+              </Button>
+            </div>
+          </>
+        )}
       </Form>
 
       {!isValid && submitCount > 0 && (

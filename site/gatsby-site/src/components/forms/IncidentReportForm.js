@@ -7,7 +7,18 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { graphql, useStaticQuery } from 'gatsby';
 import 'bytemd/dist/index.css';
 import getSourceDomain from '../../utils/getSourceDomain';
-import SubmissionWizard from 'components/submissions/SubmissionWizard';
+import StepOne from './SubmissionWizard/StepOne';
+import StepTwo from './SubmissionWizard/StepTwo';
+import StepThree from './SubmissionWizard/StepThree';
+import { useTranslation } from 'react-i18next';
+import { useLocalization } from 'gatsby-theme-i18n';
+import FieldContainer from './SubmissionWizard/FieldContainer';
+import VariantForm from 'components/variants/VariantForm';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faNewspaper, faTenge } from '@fortawesome/free-solid-svg-icons';
+import Label from './Label';
+import StepContainer from './SubmissionWizard/StepContainer';
+import { Editor } from '@bytemd/react';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -76,6 +87,10 @@ export const schema = yup.object().shape({
 
 const IncidentReportForm = ({ submitForm, initialValues }) => {
   const { values, errors, setFieldTouched, setFieldValue } = useFormikContext();
+
+  const { t } = useTranslation();
+
+  const { config } = useLocalization();
 
   const data = useStaticQuery(graphql`
     query IncidentReportFormQuery {
@@ -369,7 +384,87 @@ const IncidentReportForm = ({ submitForm, initialValues }) => {
           <VariantForm />
         </div>
       </Form> */}
-      <SubmissionWizard initialValues={initialValues} submitForm={submitForm} editMode={true} />
+      {/* <SubmissionWizard initialValues={initialValues} submitForm={submitForm} editMode={true} /> */}
+      <StepOne
+        key={'submission-step-1'}
+        data={initialValues}
+        name={t('Main information')}
+        // validateAndSubmitForm={validateAndSubmitForm}
+        // submissionFailed={submissionFailed}
+        // submissionComplete={submissionComplete}
+        editMode={true}
+      />
+      <StepTwo
+        key={'submission-step-2'}
+        data={initialValues}
+        name={t('Additional information')}
+        editMode={true}
+      />
+      <StepThree
+        key={'submission-step-3'}
+        data={initialValues}
+        name={t('Tell us more')}
+        editMode={true}
+      />
+
+      <StepContainer name={t('Translations')}>
+        {config
+          .filter((c) => c.code !== values.language)
+          .map((c) => {
+            const name = `translations_${c.code}`;
+
+            return (
+              <div key={name} data-cy={`translation-${c.code}`}>
+                <h4 className="underline">{c.name}</h4>
+
+                <FieldContainer>
+                  <div className="flex items-center">
+                    <FontAwesomeIcon
+                      fixedWidth
+                      icon={faTenge}
+                      title={t('Title')}
+                      className="mb-2 mr-1"
+                    />
+                    <Label label={t('Title')} />
+                  </div>
+
+                  <input
+                    type={'text'}
+                    className={`bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white 
+                    'border-gray-300 dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-500'`}
+                    onChange={(e) => setFieldValue(`${name}.title`, e.target.value)}
+                    value={values[name].title}
+                  />
+                </FieldContainer>
+
+                <FieldContainer>
+                  <div className="flex items-center">
+                    <FontAwesomeIcon
+                      fixedWidth
+                      icon={faNewspaper}
+                      title={t('Text')}
+                      className="mb-2 mr-1"
+                    />
+                    <Label label={t('Text')} />
+                  </div>
+                  <Editor
+                    value={values[name].text}
+                    onChange={(value) => setFieldValue(`${name}.text`, value)}
+                  />
+                </FieldContainer>
+              </div>
+            );
+          })}
+      </StepContainer>
+      <StepContainer name={t('Variants')}>
+        <h4>Variant fields</h4>
+
+        <div className="mt-3">
+          <VariantForm />
+        </div>
+      </StepContainer>
+
+      <button onClick={submitForm}>Temp Save Btn</button>
     </div>
   );
 };

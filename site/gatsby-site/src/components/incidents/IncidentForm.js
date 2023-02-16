@@ -1,12 +1,24 @@
 import React, { useEffect, useRef } from 'react';
 import { Form as FormikForm, useFormikContext } from 'formik';
 import * as Yup from 'yup';
-import { Form } from 'react-bootstrap';
-import TagsControl from 'components/forms/TagsControl';
 import SemanticallyRelatedIncidents from '../SemanticallyRelatedIncidents';
 import RelatedIncidentsArea from '../RelatedIncidentsArea';
 import { gql, useQuery } from '@apollo/client';
 import { debounce } from 'debounce';
+import FieldContainer from 'components/forms/SubmissionWizard/FieldContainer';
+import TextInputGroup from 'components/forms/TextInputGroup';
+import { useTranslation } from 'react-i18next';
+import {
+  faAlignLeft,
+  faBolt,
+  faCalendar,
+  faCode,
+  faHandPointRight,
+  faPencilAlt,
+  faTenge,
+} from '@fortawesome/free-solid-svg-icons';
+import TagsInputGroup from 'components/forms/TagsInputGroup';
+import { Label } from 'flowbite-react';
 
 const relatedIncidentIdsQuery = gql`
   query IncidentWithReports($query: IncidentQueryInput) {
@@ -41,7 +53,10 @@ export const schema = Yup.object().shape({
 });
 
 function IncidentForm() {
-  const { values, errors, handleChange, handleSubmit, setFieldValue } = useFormikContext();
+  const { values, errors, handleChange, handleSubmit, setFieldValue, touched, handleBlur } =
+    useFormikContext();
+
+  const { t } = useTranslation();
 
   const similarReportsByIdQuery = useQuery(relatedIncidentIdsQuery, {
     variables: {
@@ -106,52 +121,108 @@ function IncidentForm() {
   }, []);
 
   return (
-    <div className="bootstrap">
+    <div className="">
       <FormikForm noValidate onSubmit={handleSubmit} data-cy={`incident-form`}>
-        <Form.Group>
-          <Form.Label>Title</Form.Label>
-          <Form.Control type="text" name="title" value={values.title} onChange={handleChange} />
-          <Form.Control.Feedback type="invalid">{errors.title}</Form.Control.Feedback>
-        </Form.Group>
-
-        <Form.Group className="mt-3">
-          <Form.Label>Description</Form.Label>
-          <Form.Control
-            type="text"
-            as="textarea"
-            name="description"
-            value={values.description}
-            onChange={handleChange}
-            style={{ height: '6em' }}
+        <FieldContainer>
+          <TextInputGroup
+            name="title"
+            label={t('Title')}
+            placeholder={t('Report title')}
+            values={values}
+            errors={errors}
+            touched={touched}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            schema={schema}
+            icon={faTenge}
           />
-          <Form.Control.Feedback type="invalid">{errors.description}</Form.Control.Feedback>
-        </Form.Group>
+        </FieldContainer>
 
-        <Form.Group className="mt-3">
-          <Form.Label>Date</Form.Label>
-          <Form.Control type="date" name="date" value={values.date} onChange={handleChange} />
-          <Form.Control.Feedback type="invalid">{errors.date}</Form.Control.Feedback>
-        </Form.Group>
+        <FieldContainer>
+          <TextInputGroup
+            name="description"
+            label={t('Description')}
+            type="textarea"
+            as="textarea"
+            placeholder={t('Incident Description')}
+            values={values}
+            errors={errors}
+            touched={touched}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            rows={3}
+            schema={schema}
+            icon={faAlignLeft}
+          />
+        </FieldContainer>
 
-        <Form.Group className="mt-3">
-          <Form.Label>Alleged Deployer of AI System</Form.Label>
-          <TagsControl name="AllegedDeployerOfAISystem" />
-        </Form.Group>
+        <FieldContainer>
+          <TextInputGroup
+            name="date"
+            label={t('Date')}
+            placeholder={t('Date')}
+            type="date"
+            values={values}
+            errors={errors}
+            touched={touched}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            schema={schema}
+            icon={faCalendar}
+          />
+        </FieldContainer>
 
-        <Form.Group className="mt-3">
-          <Form.Label>Alleged Developer of AI System</Form.Label>
-          <TagsControl name="AllegedDeveloperOfAISystem" />
-        </Form.Group>
+        <FieldContainer>
+          <TagsInputGroup
+            name="AllegedDeployerOfAISystem"
+            label={t('Alleged Deployer of AI System')}
+            icon={faHandPointRight}
+            placeholder={t('Who employed or was responsible for the technology?')}
+            className="mt-3"
+            schema={schema}
+            errors={errors}
+            touched={touched}
+          />
+        </FieldContainer>
 
-        <Form.Group className="mt-3">
-          <Form.Label>Alleged Harmed or Nearly Harmed Parties</Form.Label>
-          <TagsControl name="AllegedHarmedOrNearlyHarmedParties" />
-        </Form.Group>
+        <FieldContainer>
+          <TagsInputGroup
+            name="AllegedDeveloperOfAISystem"
+            label={t('Alleged developer of AI system')}
+            icon={faCode}
+            placeholder={t('Who created or built the technology involved in the incident?')}
+            className="mt-3"
+            schema={schema}
+            errors={errors}
+            touched={touched}
+          />
+        </FieldContainer>
 
-        <Form.Group className="mt-3">
-          <Form.Label>Editors</Form.Label>
-          <TagsControl name="editors" />
-        </Form.Group>
+        <FieldContainer>
+          <TagsInputGroup
+            name="AllegedHarmedOrNearlyHarmedParties"
+            label={t('Alleged harmed or nearly harmed parties')}
+            icon={faBolt}
+            placeholder={t('Who experienced negative impacts?')}
+            className="mt-3"
+            schema={schema}
+            errors={errors}
+            touched={touched}
+          />
+        </FieldContainer>
+
+        <FieldContainer>
+          <TagsInputGroup
+            name="editors"
+            label={t('Editors')}
+            icon={faPencilAlt}
+            placeholder={''}
+            className="mt-3"
+            schema={schema}
+            errors={errors}
+            touched={touched}
+          />
+        </FieldContainer>
 
         <div id="similar-incidents">
           <RelatedIncidentsArea
@@ -170,10 +241,18 @@ function IncidentForm() {
             editId={false}
           />
 
-          <Form.Group className="mt-3">
-            <Form.Label>Similar Incident Id</Form.Label>
-            <Form.Control type="number" data-cy="similar-id-input" onChange={similarIdUpdate} />
-          </Form.Group>
+          <FieldContainer>
+            <Label>Similar Incident Id</Label>
+            <input
+              type={'number'}
+              className={`bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white ${
+                touched[name] && errors[name]
+                  ? 'border-red-600 focus:ring-red-500'
+                  : 'border-gray-300 dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-500'
+              }`}
+              onChange={similarIdUpdate}
+            />
+          </FieldContainer>
 
           <RelatedIncidentsArea
             columnKey={'byId'}

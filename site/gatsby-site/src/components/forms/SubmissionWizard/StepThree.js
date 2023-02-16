@@ -246,37 +246,41 @@ const StepThree = (props) => {
                 />
               </FieldContainer>
 
-              <div className="flex justify-between mt-8">
-                <Button
-                  type="button"
-                  color={'light'}
-                  disabled={isSubmitting}
-                  onClick={() => props.previous(TextInputGroupProps.values)}
-                >
-                  <svg
-                    aria-hidden="true"
-                    className="mr-2 w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
-                  <Trans>Previous</Trans>
-                </Button>
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting && (
-                    <div className="mr-3">
-                      <Spinner size="sm" light={true} />
-                    </div>
-                  )}
-                  {props.editMode ? <Trans>Update</Trans> : <Trans>Submit</Trans>}
-                </Button>
-              </div>
+              {!props.editMode && (
+                <>
+                  <div className="flex justify-between mt-8">
+                    <Button
+                      type="button"
+                      color={'light'}
+                      disabled={isSubmitting}
+                      onClick={() => props.previous(TextInputGroupProps.values)}
+                    >
+                      <svg
+                        aria-hidden="true"
+                        className="mr-2 w-5 h-5"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                          clipRule="evenodd"
+                        ></path>
+                      </svg>
+                      <Trans>Previous</Trans>
+                    </Button>
+                    <Button type="submit" disabled={isSubmitting}>
+                      {isSubmitting && (
+                        <div className="mr-3">
+                          <Spinner size="sm" light={true} />
+                        </div>
+                      )}
+                      {props.editMode ? <Trans>Update</Trans> : <Trans>Submit</Trans>}
+                    </Button>
+                  </div>
+                </>
+              )}
             </Form>
             {!TextInputGroupProps.isValid && TextInputGroupProps.submitCount > 0 && (
               <div className="text-danger">

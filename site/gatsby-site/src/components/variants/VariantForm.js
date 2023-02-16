@@ -1,11 +1,9 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
-import { Tooltip } from 'flowbite-react';
 import { useFormikContext } from 'formik';
 import * as yup from 'yup';
 import { Trans, useTranslation } from 'react-i18next';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import Label from 'components/forms/Label';
 
 // Schema for yup
 export const schema = yup.object().shape({
@@ -21,27 +19,7 @@ const VariantForm = () => {
   return (
     <div className="flex w-full flex-col gap-2" data-cy="variant-form">
       <div className="font-bold flex items-center gap-2">
-        <Trans ns="variants">Input and circumstances</Trans>
-        <Tooltip
-          content={
-            <div className="tooltip-white">
-              <Trans ns="variants">
-                Provide the relevant details producing the incident. Examples include the input
-                prompts to a chatbot or a description of the circumstances leading to injuries
-                sustained from a robot.
-              </Trans>
-            </div>
-          }
-          trigger="click"
-          placement="right"
-          className="tooltip-white"
-        >
-          <FontAwesomeIcon
-            icon={faQuestionCircle}
-            style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-            className="far fa-question-circle"
-          />
-        </Tooltip>
+        <Label label={t('Input and circumstances')} popover={'variantsInputCircumstances'} />
       </div>
       <Form.Group controlId="formTextInputs">
         <Form.Control
@@ -62,25 +40,7 @@ const VariantForm = () => {
         </Form.Control.Feedback>
       </Form.Group>
       <div className="font-bold flex items-center gap-2">
-        <Trans ns="variants">Output and outcomes</Trans>
-        <Tooltip
-          content={
-            <div className="tooltip-white">
-              <Trans ns="variants">
-                Provide the relevant details surrounding the incident. Examples include output text
-                from a chatbot or the nature of injuries sustained from a robot.
-              </Trans>
-            </div>
-          }
-          trigger="click"
-          placement="right"
-        >
-          <FontAwesomeIcon
-            icon={faQuestionCircle}
-            style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-            className="far fa-question-circle"
-          />
-        </Tooltip>
+        <Label label={t('Output and outcomes')} popover={'variantsOutputOutcomes'} />
       </div>
       <Form.Group className="mb-3" controlId="formTextOutputs">
         <Form.Control

@@ -164,88 +164,92 @@ const FormDetails = ({
           </Select>
         </FieldContainer>
 
-        <div className="flex justify-between mt-8">
-          <Button type="button" color={'light'} onClick={() => previous(values)}>
-            <svg
-              aria-hidden="true"
-              className="mr-2 w-5 h-5"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
-                clipRule="evenodd"
-              ></path>
-            </svg>
-            <Trans>Previous</Trans>
-          </Button>
-          <div className="flex justify-end gap-2">
-            <Button
-              data-cy="to-step-3"
-              color={'light'}
-              disabled={isSubmitting}
-              onClick={() => {
-                setSubmitCount(submitCount + 1);
-                validateAndSubmitForm(
-                  false,
-                  setIsSubmitting,
-                  isValid,
-                  validateForm,
-                  setFieldTouched,
-                  values,
-                  submitForm
-                );
-              }}
-            >
-              <span className="lg:hidden">
-                <Trans>More</Trans>
-              </span>
-              <span className="hidden lg:inline">
-                <Trans>Add more info</Trans>
-              </span>
-              <svg
-                aria-hidden="true"
-                className="ml-2 w-5 h-5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </Button>
-          </div>
-        </div>
-        <div className="flex justify-end mt-4">
-          <Button
-            data-cy="submit-step-2"
-            disabled={isSubmitting}
-            onClick={() => {
-              setSubmitCount(submitCount + 1);
-              validateAndSubmitForm(
-                true,
-                setIsSubmitting,
-                isValid,
-                validateForm,
-                setFieldTouched,
-                values,
-                submitForm
-              );
-            }}
-          >
-            {isSubmitting && (
-              <div className="mr-3">
-                <Spinner size="sm" light={true} />
+        {!editMode && (
+          <>
+            <div className="flex justify-between mt-8">
+              <Button type="button" color={'light'} onClick={() => previous(values)}>
+                <svg
+                  aria-hidden="true"
+                  className="mr-2 w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+                <Trans>Previous</Trans>
+              </Button>
+              <div className="flex justify-end gap-2">
+                <Button
+                  data-cy="to-step-3"
+                  color={'light'}
+                  disabled={isSubmitting}
+                  onClick={() => {
+                    setSubmitCount(submitCount + 1);
+                    validateAndSubmitForm(
+                      false,
+                      setIsSubmitting,
+                      isValid,
+                      validateForm,
+                      setFieldTouched,
+                      values,
+                      submitForm
+                    );
+                  }}
+                >
+                  <span className="lg:hidden">
+                    <Trans>More</Trans>
+                  </span>
+                  <span className="hidden lg:inline">
+                    <Trans>Add more info</Trans>
+                  </span>
+                  <svg
+                    aria-hidden="true"
+                    className="ml-2 w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    ></path>
+                  </svg>
+                </Button>
               </div>
-            )}
-            {editMode ? <Trans>Update</Trans> : <Trans>Submit</Trans>}
-          </Button>
-        </div>
+            </div>
+            <div className="flex justify-end mt-4">
+              <Button
+                data-cy="submit-step-2"
+                disabled={isSubmitting}
+                onClick={() => {
+                  setSubmitCount(submitCount + 1);
+                  validateAndSubmitForm(
+                    true,
+                    setIsSubmitting,
+                    isValid,
+                    validateForm,
+                    setFieldTouched,
+                    values,
+                    submitForm
+                  );
+                }}
+              >
+                {isSubmitting && (
+                  <div className="mr-3">
+                    <Spinner size="sm" light={true} />
+                  </div>
+                )}
+                {editMode ? <Trans>Update</Trans> : <Trans>Submit</Trans>}
+              </Button>
+            </div>
+          </>
+        )}
       </Form>
 
       {!isValid && submitCount > 0 && (
