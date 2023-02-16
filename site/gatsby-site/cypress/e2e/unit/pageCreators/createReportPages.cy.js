@@ -54,8 +54,8 @@ describe('createReportPages', () => {
       expect(createPage.callCount).to.eq(6);
 
       cy.wrap(createPage.getCall(0).args[0]).then((page) => {
-        expect(page.path).contain('/reports/1');
-        expect(page.context.originalPath).eq('/reports/1');
+        expect(page.path).contain('/reports/1/');
+        expect(page.context.originalPath).eq('/reports/1/');
         expect(page.context.locale).eq('en');
         expect(page.context.hrefLang).eq('en-US');
         expect(page.context.report_number).eq(1);
@@ -66,8 +66,8 @@ describe('createReportPages', () => {
       });
 
       cy.wrap(createPage.getCall(1).args[0]).then((page) => {
-        expect(page.path).contain('/reports/2');
-        expect(page.context.originalPath).eq('/reports/2');
+        expect(page.path).contain('/reports/2/');
+        expect(page.context.originalPath).eq('/reports/2/');
         expect(page.context.locale).eq('en');
         expect(page.context.hrefLang).eq('en-US');
         expect(page.context.report_number).eq(2);
@@ -78,8 +78,8 @@ describe('createReportPages', () => {
       });
 
       cy.wrap(createPage.getCall(2).args[0]).then((page) => {
-        expect(page.path).contain('/es/reports/1');
-        expect(page.context.originalPath).eq('/es/reports/1');
+        expect(page.path).contain('/es/reports/1/');
+        expect(page.context.originalPath).eq('/es/reports/1/');
         expect(page.context.locale).eq('es');
         expect(page.context.hrefLang).eq('es');
         expect(page.context.report_number).eq(1);
@@ -90,8 +90,8 @@ describe('createReportPages', () => {
       });
 
       cy.wrap(createPage.getCall(3).args[0]).then((page) => {
-        expect(page.path).contain('/es/reports/2');
-        expect(page.context.originalPath).eq('/es/reports/2');
+        expect(page.path).contain('/es/reports/2/');
+        expect(page.context.originalPath).eq('/es/reports/2/');
         expect(page.context.locale).eq('es');
         expect(page.context.hrefLang).eq('es');
         expect(page.context.report_number).eq(2);
@@ -102,8 +102,8 @@ describe('createReportPages', () => {
       });
 
       cy.wrap(createPage.getCall(4).args[0]).then((page) => {
-        expect(page.path).contain('/fr/reports/1');
-        expect(page.context.originalPath).eq('/fr/reports/1');
+        expect(page.path).contain('/fr/reports/1/');
+        expect(page.context.originalPath).eq('/fr/reports/1/');
         expect(page.context.locale).eq('fr');
         expect(page.context.hrefLang).eq('fr');
         expect(page.context.report_number).eq(1);
@@ -114,8 +114,8 @@ describe('createReportPages', () => {
       });
 
       cy.wrap(createPage.getCall(5).args[0]).then((page) => {
-        expect(page.path).contain('/fr/reports/2');
-        expect(page.context.originalPath).eq('/fr/reports/2');
+        expect(page.path).contain('/fr/reports/2/');
+        expect(page.context.originalPath).eq('/fr/reports/2/');
         expect(page.context.locale).eq('fr');
         expect(page.context.hrefLang).eq('fr');
         expect(page.context.report_number).eq(2);

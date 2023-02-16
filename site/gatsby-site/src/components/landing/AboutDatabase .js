@@ -1,6 +1,6 @@
 import React from 'react';
 import { Trans } from 'react-i18next';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { faQuoteLeft } from '@fortawesome/free-solid-svg-icons';

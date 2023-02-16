@@ -1,5 +1,5 @@
 import Wordlist from 'components/WordList';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import React from 'react';
 import { Trans } from 'react-i18next';
 

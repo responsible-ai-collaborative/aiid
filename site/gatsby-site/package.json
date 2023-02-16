@@ -59,7 +59,6 @@
     "gatsby-remark-images": "^6.16.0",
     "gatsby-source-filesystem": "^4.3.0",
     "gatsby-source-mongodb": "^4.3.0",
-    "gatsby-theme-i18n": "^3.0.0",
     "gatsby-theme-i18n-react-i18next": "^3.0.0",
     "gatsby-transformer-remark": "^5.20.0",
     "gatsby-transformer-sharp": "^4.16.0",

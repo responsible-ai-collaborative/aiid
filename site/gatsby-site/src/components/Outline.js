@@ -4,7 +4,7 @@ import { StaticQuery, graphql } from 'gatsby';
 import config from '../../config';
 import { Sidebar, ListItem } from './styles/Sidebar';
 
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 
 const SidebarLayout = ({ location }) => {
   const { locale } = useLocalization();

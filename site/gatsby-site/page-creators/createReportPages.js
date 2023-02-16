@@ -33,7 +33,7 @@ const createReportPages = async (graphql, createPage, { languages }) => {
     for (const context of pageContexts) {
       const pagePath = switchLocalizedPath({
         newLang: language.code,
-        path: '/reports/' + context.report_number,
+        path: '/reports/' + context.report_number + '/',
       });
 
       createPage({
