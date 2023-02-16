@@ -90,13 +90,42 @@ function DefaultColumnFilter({
 }
 
 function ListCell({ cell }) {
-  return <div>{cell.value?.join(', ')}</div>;
+  return (
+    <div>
+      {cell.value?.map((v, i) => {
+        const isLast = i === cell.value.length - 1;
+
+        const segments = v.split(' ');
+
+        const url = '/entities/' + segments.pop();
+
+        const name = segments.join(' ');
+
+        if (url) {
+          return (
+            <a key={`entity-${name}`} href={url} data-cy="cell-entity-link">
+              {name}
+              {!isLast ? ', ' : ''}
+            </a>
+          );
+        } else {
+          return (
+            <>
+              {name} {!isLast ? ', ' : ''}
+            </>
+          );
+        }
+      })}
+    </div>
+  );
 }
 
 export default function IncidentsTable({ data }) {
   const [incidentIdToEdit, setIncindentIdToEdit] = useState(0);
 
   const { isLoggedIn, isRole } = useUserContext();
+
+  const { t } = useTranslation();
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -111,7 +140,7 @@ export default function IncidentsTable({ data }) {
   const columns = React.useMemo(() => {
     const columns = [
       {
-        Header: 'Incident ID',
+        Header: t('Incident ID'),
         accessor: 'incident_id',
         Cell: ({ row: { values } }) => (
           <a className="flex" href={`/cite/${values.incident_id}`}>
@@ -133,17 +162,22 @@ export default function IncidentsTable({ data }) {
       },
       {
         Header: <Trans>Alleged Deployer of AI System</Trans>,
-        accessor: 'AllegedDeployerOfAISystem',
+        id: 'AllegedDeployerOfAISystem',
+        // Include the entity_id so that we can turn it into a link on display.
+        accessor: (data) => data.AllegedDeployerOfAISystem.map((i) => `${i.name} ${i.entity_id}`),
         Cell: ListCell,
       },
       {
-        Header: <Trans>Alleged Developer of AISystem</Trans>,
-        accessor: 'AllegedDeveloperOfAISystem',
+        Header: <Trans>Alleged Developer of AI System</Trans>,
+        id: 'AllegedDeveloperOfAISystem',
+        accessor: (data) => data.AllegedDeveloperOfAISystem.map((i) => `${i.name} ${i.entity_id}`),
         Cell: ListCell,
       },
       {
         Header: <Trans>Alleged Harmed or Nearly Harmed Parties</Trans>,
-        accessor: 'AllegedHarmedOrNearlyHarmedParties',
+        id: 'AllegedHarmedOrNearlyHarmedParties',
+        accessor: (data) =>
+          data.AllegedHarmedOrNearlyHarmedParties.map((i) => `${i.name} ${i.entity_id}`),
         Cell: ListCell,
       },
     ];
@@ -248,10 +282,12 @@ export default function IncidentsTable({ data }) {
         </Pagination>
 
         <span>
-          Page{' '}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{' '}
+          <Trans
+            i18nKey="paginationKey"
+            defaults="Page <bold>{{currentPageIndex}} of {{pageOptionsLength}}</bold>"
+            values={{ currentPageIndex: pageIndex + 1, pageOptionsLength: pageOptions.length }}
+            components={{ bold: <strong /> }}
+          />
         </span>
 
         <Form.Select
@@ -264,7 +300,7 @@ export default function IncidentsTable({ data }) {
         >
           {[10, 50, 100, 'all'].map((pageSize) => (
             <option key={pageSize} value={pageSize == 'all' ? 99999 : pageSize}>
-              Show {pageSize}
+              {pageSize === 'all' ? <Trans>Show all</Trans> : <Trans>Show {{ pageSize }}</Trans>}
             </option>
           ))}
         </Form.Select>

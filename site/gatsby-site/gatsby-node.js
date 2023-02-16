@@ -26,6 +26,8 @@ const createTsneVisualizationPage = require('./page-creators/createTsneVisualiza
 
 const createEntitiesPages = require('./page-creators/createEntitiesPages');
 
+const createReportPages = require('./page-creators/createReportPages');
+
 const algoliasearch = require('algoliasearch');
 
 const Translator = require('./src/utils/Translator');
@@ -54,6 +56,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     ['/research/4-taxonomies', '/taxonomies'],
     ['/research', '/research/snapshots'],
     ['/apps/newsSearch', '/apps/newsdigest'],
+    ['/research/related-work', '/research/4-related-work'],
   ];
 
   redirects.forEach((pair) => {
@@ -70,10 +73,11 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     createDuplicatePages,
     createTsneVisualizationPage,
     createEntitiesPages,
+    createReportPages,
   ]) {
     if (!(process.env.SKIP_PAGE_CREATOR || '').split(',').includes(pageCreator.name)) {
       reporter.info(`Page creation: ${pageCreator.name}`);
-      await pageCreator(graphql, createPage, reporter);
+      await pageCreator(graphql, createPage, { reporter, languages: getLanguages() });
     }
   }
 };
@@ -143,21 +147,27 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
     let value = { geometry: { location: { lat: 0, lng: 0 } } };
 
     if (config.google.mapsApiKey) {
-      try {
-        if (node.classifications.Location && node.classifications.Location !== '') {
-          const {
-            data: {
-              results: { 0: geometry },
-            },
-          } = await googleMapsApiClient.geocode({
-            params: { key: config.google.mapsApiKey, address: node.classifications.Location },
-          });
+      const locationAttribute = node.attributes.find((a) => a.short_name == 'Location');
 
-          value = geometry;
+      try {
+        if (locationAttribute) {
+          const locationValue = JSON.parse(locationAttribute.value_json);
+
+          if (locationValue && locationValue !== '') {
+            const {
+              data: {
+                results: { 0: geometry },
+              },
+            } = await googleMapsApiClient.geocode({
+              params: { key: config.google.mapsApiKey, address: locationValue },
+            });
+
+            value = geometry;
+          }
         }
       } catch (e) {
         console.log(e);
-        console.log('Error fetching geocode data for', node.classifications.Location);
+        console.log('Error fetching geocode data for', locationAttribute?.value_json);
       }
     }
 
@@ -209,7 +219,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       cloudinary_id: String
       tags: [String]
       plain_text: String
-      embedding: reportEmbedding 
+      embedding: reportEmbedding
+      text_inputs: String
+      text_outputs: String
     }
 
     type mongodbAiidprodTaxaField_list implements Node {
@@ -220,13 +232,49 @@ exports.createSchemaCustomization = ({ actions }) => {
       field_list: [mongodbAiidprodTaxaField_list]
     }
 
-    type mongodbAiidprodTaxaField_list {
-      default: String
-      placeholder: String
+    type mongodbAiidprodClassificationsAttribute {
+      short_name: String
+      value_json: String
+    }
+    type mongodbAiidprodClassifications implements Node {
+      incident_id: Int
+      namespace: String
+      attributes: [mongodbAiidprodClassificationsAttribute]
     }
 
-    type mongodbAiidprodResourcesClassifications implements Node {
-      MSFT_AI_Fairness_Checklist: Boolean
+    type Subfield {
+      field_number: String
+      short_name: String 
+      long_name: String
+      short_description: String
+      long_description: String
+      display_type: String
+      mongo_type: String
+      default: String
+      placeholder: String
+      permitted_values: [String]
+      weight: Int
+      instant_facet: Boolean
+      required: Boolean
+      public: Boolean
+    }
+
+    type mongodbAiidprodTaxaField_list {
+      subfields: [Subfield]
+      field_number: String
+      short_name: String 
+      long_name: String
+      short_description: String
+      long_description: String
+      display_type: String
+      mongo_type: String
+      default: String
+      placeholder: String
+      permitted_values: [String]
+      weight: Int
+      instant_facet: Boolean
+      required: Boolean
+      public: Boolean
     }
   `;
 
@@ -324,8 +372,8 @@ exports.onPreBootstrap = async ({ reporter }) => {
   }
 };
 
-exports.onPreBuild = function () {
+exports.onPreBuild = function ({ reporter }) {
   if (!config.google.mapsApiKey) {
-    console.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
+    reporter.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
   }
 };

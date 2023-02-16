@@ -2,13 +2,22 @@
     "data": {
         "updateOneIncident": {
             "AllegedDeployerOfAISystem": [
-                "YouTube"
+                {
+                    "entity_id": "youtube",
+                    "name": "YouTube"
+                }
             ],
             "AllegedDeveloperOfAISystem": [
-                "YouTube"
+                {
+                    "entity_id": "youtube",
+                    "name": "YouTube"
+                }
             ],
             "AllegedHarmedOrNearlyHarmedParties": [
-                "Children"
+                {
+                    "entity_id": "children",
+                    "name": "Children"
+                }
             ],
             "__typename": "Incident",
             "date": "2015-05-19",

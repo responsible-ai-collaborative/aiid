@@ -1,0 +1,43 @@
+{
+    "data": {
+        "report": {
+            "authors": [
+                "Marco Acevedo"
+            ],
+            "date_downloaded": "2019-04-13",
+            "date_published": "2015-07-11",
+            "flag": null,
+            "image_url": "https://assets.change.org/photos/0/yb/id/eYyBIdJOMHpqcty-1600x900-noPad.jpg?1523726975",
+            "report_number": 10,
+            "submitters": [
+                "Roman Yampolskiy"
+            ],
+            "tags": [
+                "Test Tag"
+            ],
+            "text": "## Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.",
+            "plain_text": "Video still of a reproduced version of Minnie Mouse\n\nWhich appeared on the now-suspended Simple Fun channel Simple Fun.",
+            "title": "Remove YouTube Kids app until it eliminates its inappropriate content",
+            "url": "https://www.change.org/p/remove-youtube-kids-app-until-it-eliminates-its-inappropriate-content",
+            "nlp_similar_incidents": [],
+            "editor_notes": "",
+            "language": "en",
+            "translations_es": {
+                "__typename": "ReportTranslation",
+                "title": "Este es el Titulo",
+                "text": "Este es el texto que tiene un largo mayor a ochenta caracteres!"
+            },
+            "translations_en": {
+                "__typename": "ReportTranslation",
+                "title": "",
+                "text": ""
+            },
+            "translations_fr": {
+                "__typename": "ReportTranslation",
+                "title": "",
+                "text": ""
+            },
+            "is_incident_report": false
+        }
+    }
+}

@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import Layout from 'components/Layout';
-import { StyledHeading } from 'components/styles/Docs';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'gatsby-theme-i18n';
-import AiidHelmet from 'components/AiidHelmet';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import { Card, Button, Badge } from 'flowbite-react';
 import { format, parse } from 'date-fns';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlusCircle,
   faTrash,
@@ -15,7 +13,10 @@ import {
   faTag,
   faBolt,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import AiidHelmet from 'components/AiidHelmet';
+import Layout from 'components/Layout';
+import { StyledHeading } from 'components/styles/Docs';
+import { useUserContext } from 'contexts/userContext';
 
 export default function NewsSearchPage(props) {
   const { t } = useTranslation(['submit']);
@@ -40,10 +41,6 @@ export default function NewsSearchPage(props) {
     }
   `);
 
-  const newsArticles = newsArticlesData?.candidates ? [...newsArticlesData?.candidates] : [];
-
-  const newsArticleUrls = newsArticles.map((newsArticle) => newsArticle.url);
-
   const { data: submissionsData } = useQuery(
     gql`
       query ExistingSubmissions($query: SubmissionQueryInput!) {
@@ -67,12 +64,6 @@ export default function NewsSearchPage(props) {
     { variables: { query: { url_in: newsArticleUrls } } }
   );
 
-  const existingSubmissions = (submissionsData?.submissions || []).map(
-    (submission) => submission.url
-  );
-
-  const existingReports = (reportsData?.reports || []).map((report) => report.url);
-
   const [updateCandidate] = useMutation(gql`
     mutation UpdateCandidate($query: CandidateQueryInput!, $set: CandidateUpdateInput!) {
       updateOneCandidate(query: $query, set: $set) {
@@ -81,20 +72,61 @@ export default function NewsSearchPage(props) {
     }
   `);
 
+  let newsArticles = (newsArticlesData?.candidates ? [...newsArticlesData?.candidates] : []).map(
+    (newsArticle) => {
+      const ageInMillis = parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()).getTime();
+
+      const ageInDays = millisToDays(new Date().getTime() - ageInMillis);
+
+      const keywordsCount = newsArticle?.matching_keywords?.length || 0;
+
+      const harmKeywordsCount = newsArticle?.matching_harm_keywords?.length || 0;
+
+      return { ...newsArticle, ageInDays, keywordsCount, harmKeywordsCount };
+    }
+  );
+
+  console.log(`newsArticles`, newsArticles);
+  const [similarityMean, similarityStdDev] = stats(newsArticles.map((e) => e.similarity));
+
+  const [keywordsCountMean, keywordsCountStdDev] = stats(newsArticles.map((e) => e.keywordsCount));
+
+  //const [harmKeywordsCountMean, harmKeywordsCountStdDev] = stats(newsArticles.map(e => e.harmKeywordsCount));
+  newsArticles = newsArticles.map((newsArticle) => {
+    const similarityDeviation = newsArticle.similarity - similarityMean;
+
+    const similaritySigma = similarityDeviation / similarityStdDev;
+
+    const keywordsCountDeviation = newsArticle.keywordsCount - keywordsCountMean;
+
+    const keywordsCountSigma = keywordsCountDeviation / keywordsCountStdDev;
+
+    return { ...newsArticle, similaritySigma, keywordsCountSigma };
+  });
+
+  const newsArticleUrls = newsArticles.map((newsArticle) => newsArticle.url);
+
+  const existingSubmissions = (submissionsData?.submissions || []).map(
+    (submission) => submission.url
+  );
+
+  const existingReports = (reportsData?.reports || []).map((report) => report.url);
+
   const [dismissedArticles, setDismissedArticles] = useState({});
 
-  const displayedArticles = newsArticles.filter(
-    (newsArticle) =>
-      ((dismissedArticles[newsArticle.url] == undefined && !newsArticle.dismissed) ||
-        dismissedArticles[newsArticle.url] === false) &&
-      (!newsArticle.date_published ||
-        millisToDays(
-          new Date().getTime() -
-            parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()).getTime()
-        ) < 30) &&
+  const displayedArticles = newsArticles.filter((newsArticle) => {
+    const notDismissed =
+      (dismissedArticles[newsArticle.url] == undefined && !newsArticle.dismissed) ||
+      dismissedArticles[newsArticle.url] === false;
+
+    return (
+      notDismissed &&
+      newsArticle.ageInDays < 30 &&
       !existingSubmissions.includes(newsArticle.url) &&
-      !existingReports.includes(newsArticle.url)
-  );
+      !existingReports.includes(newsArticle.url) &&
+      newsArticle.similaritySigma > -1
+    );
+  });
 
   const displayedDismissed = newsArticles.filter(
     (newsArticle) =>
@@ -145,13 +177,6 @@ export default function NewsSearchPage(props) {
         {loading && <p>Searching...</p>}
         {!loading && displayedArticles.length == 0 && <p>No results</p>}
         {displayedArticles
-          .filter(
-            (newsArticle) =>
-              newsArticle.similarity > 0.997 &&
-              (newsArticle?.matching_keywords?.length || 0) +
-                (newsArticle?.matching_harm_keywords?.length || 0) >
-                1
-          )
           .sort((a, b) => ranking(b) - ranking(a))
           .map((newsArticle) => (
             <CandidateCard
@@ -183,10 +208,12 @@ export default function NewsSearchPage(props) {
 }
 
 function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dismissed = false }) {
+  const { isRole } = useUserContext();
+
   let date;
 
   try {
-    date = format(parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()), 'MMM d');
+    date = format(parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()), 'yyyy-MM-dd');
   } catch (e) {
     date = null;
   }
@@ -219,7 +246,9 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
     >
       <div>
         <a href={newsArticle.url}>
-          <h3 className="text-xl mt-0 mb-0">{newsArticle.title.replace(/\s(-|\|).*/g, '')}</h3>
+          <h3 className="text-xl mt-0 mb-0">
+            {ranking(newsArticle)} {newsArticle.title.replace(/\s(-|\|).*/g, '')}
+          </h3>
         </a>
         <div className="text-lg text-gray-600 mb-3 mt-1">
           {date}
@@ -228,11 +257,11 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
         </div>
         <div className="flex flex-wrap">
           <span className="mb-1 mr-1">
-            {greatestSimilarity.similarity < 0.997 ? (
+            {newsArticle.similaritySigma < 0 ? (
               <Badge color="warning" title={'cosine similarity: ' + greatestSimilarity.similarity}>
                 Weak match
               </Badge>
-            ) : greatestSimilarity.similarity < 0.9975 ? (
+            ) : newsArticle.similaritySigma < 1.5 ? (
               <Badge color="success" title={'cosine similarity: ' + greatestSimilarity.similarity}>
                 Match
               </Badge>
@@ -278,51 +307,53 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
         </div>
       )}
       <div className="mt-auto flex">
-        {dismissed ? (
-          <Button
-            data-cy="restore-button"
-            color="light"
-            onClick={() => {
-              setDismissedArticles((dismissedArticles) => {
-                const updatedValue = { ...dismissedArticles };
+        {isRole('incident_editor') &&
+          (dismissed ? (
+            <Button
+              data-cy="restore-button"
+              color="light"
+              onClick={() => {
+                setDismissedArticles((dismissedArticles) => {
+                  const updatedValue = { ...dismissedArticles };
 
-                updatedValue[newsArticle.url] = false;
-                return updatedValue;
-              });
-              updateCandidate({
-                variables: {
-                  query: { url: newsArticle.url },
-                  set: { dismissed: false },
-                },
-              });
-            }}
-          >
-            <FontAwesomeIcon icon={faArrowUp} className="pointer fa mr-1" fixedWidth />
-            Restore
-          </Button>
-        ) : (
-          <Button
-            data-cy="dismiss-button"
-            color="light"
-            onClick={() => {
-              setDismissedArticles((dismissedArticles) => {
-                const updatedValue = { ...dismissedArticles };
+                  updatedValue[newsArticle.url] = false;
+                  return updatedValue;
+                });
+                updateCandidate({
+                  variables: {
+                    query: { url: newsArticle.url },
+                    set: { dismissed: false },
+                  },
+                });
+              }}
+            >
+              <FontAwesomeIcon icon={faArrowUp} className="pointer fa mr-1" fixedWidth />
+              Restore
+            </Button>
+          ) : (
+            <Button
+              data-cy="dismiss-button"
+              color="light"
+              onClick={() => {
+                setDismissedArticles((dismissedArticles) => {
+                  const updatedValue = { ...dismissedArticles };
 
-                updatedValue[newsArticle.url] = true;
-                return updatedValue;
-              });
-              updateCandidate({
-                variables: {
-                  query: { url: newsArticle.url },
-                  set: { dismissed: true },
-                },
-              });
-            }}
-          >
-            <FontAwesomeIcon icon={faTrash} className="pointer fa mr-1" fixedWidth />
-            Dismiss
-          </Button>
-        )}
+                  updatedValue[newsArticle.url] = true;
+                  return updatedValue;
+                });
+                updateCandidate({
+                  variables: {
+                    query: { url: newsArticle.url },
+                    set: { dismissed: true },
+                  },
+                });
+              }}
+            >
+              <FontAwesomeIcon icon={faTrash} className="pointer fa mr-1" fixedWidth />
+              Dismiss
+            </Button>
+          ))}
+
         <LocalizedLink
           data-cy="submit-button"
           to={
@@ -345,20 +376,33 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
 }
 
 function ranking(newsArticle) {
-  const s = (newsArticle.similarity - 0.99) / 0.01; // Similarity
+  const s = 2 * (newsArticle.similaritySigma + 1.5); // -1σ = 1, 0σ = 3, 1σ = 5, 2σ = 7
 
-  const k = newsArticle.matching_keywords?.length || 1; // AI Keywords
+  const k = Math.sqrt(Math.max(2 * (newsArticle.keywordsCountSigma + 1.5), 1));
 
-  const h = newsArticle.matching_harm_keywords?.length || 0; // Harm Keywords
+  const h =
+    newsArticle.harmKeywordsCount == 0
+      ? 1
+      : newsArticle.harmKeywordsCount == 1
+      ? 2
+      : newsArticle.harmKeywordsCount == 2
+      ? 2.5
+      : 1 + Math.sqrt(newsArticle.harmKeywordsCount);
 
-  const a = millisToDays(
-    // Age
-    new Date().getTime() - parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()).getTime()
-  );
+  const a = newsArticle.ageInDays;
 
-  return (s * (k + 2 * h)) / a;
+  return (s * k * h) / a;
 }
 
-function millisToDays(millis) {
-  return millis / (1000 * 60 * 60 * 24);
-}
+var millisToDays = (millis) => millis / (1000 * 60 * 60 * 24);
+
+var mean = (list) => list.reduce((sum, entry) => sum + entry, 0) / list.length;
+
+var stdDev = (list, mean) =>
+  list.reduce((sum, entry) => sum + Math.abs(entry - mean), 0) / list.length;
+
+var stats = (list) => {
+  const m = mean(list);
+
+  return [m, stdDev(list, m)];
+};

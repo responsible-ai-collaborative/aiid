@@ -7,7 +7,7 @@
                 "authors": [
                     "Nedi Bedi and Kathleen McGrory"
                 ],
-                "cloudinary_id": null,
+                "cloudinary_id": "reports/s3.amazonaws.com/ledejs/resized/s2020-pasco-ilp/600/nocco5.jpg",
                 "date_downloaded": "2020-10-30",
                 "date_modified": "2021-07-27",
                 "date_published": "2017-05-03",
@@ -21,14 +21,29 @@
                 "submitters": [
                     "Kate Perkins"
                 ],
-                "text": "## Submission 1 text\n\n_Markdown content!_",
-                "plain_text": "Submission 1 text\n\nMarkdown content!",
+                "text": "## Submission 1 text\n\n_Markdown content whichis longer than eighty characters, necessary to pass validation!_",
+                "plain_text": "Submission 1 text\n\nMarkdown content whichis longer than eighty characters, necessary to pass validation!",
                 "title": "Submisssion 1 title",
                 "url": "https://projects.tampabay.com/projects/2020/investigations/police-pasco-sheriff-targeted/school-data/",
                 "editor_notes": "",
-                "developers": ["AI Dev"],
-                "deployers": ["Youtube"],
-                "harmed_parties": ["Adults"],
+                "developers": [
+                    {
+                        "entity_id": "google",
+                        "name": "Google"
+                    }
+                ],
+                "deployers": [
+                    {
+                        "entity_id": "google",
+                        "name": "Google"
+                    }
+                ],
+                "harmed_parties": [
+                    {
+                        "entity_id": "adults",
+                        "name": "Adults"
+                    }
+                ],
                 "nlp_similar_incidents": [],
                 "editor_dissimilar_incidents": [],
                 "editor_similar_incidents": [],
@@ -55,21 +70,36 @@
                 "submitters": [
                     "Kate Perkins"
                 ],
-                "text": "Submission 2 text",
-                "plain_text": "Submission 2 text\n\nMarkdown content!",
+                "text": "Submission 2 text\n\nMarkdown content whichis longer than eighty characters to make yup happy!",
+                "plain_text": "Submission 2 text\n\nMarkdown content whichis longer than eighty characters to make yup happy!",
                 "title": "Submission 2 title",
                 "url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/",
                 "editor_notes": "",
-                "developers": ["AI Dev"],
-                "deployers": ["Youtube"],
-                "harmed_parties": ["Adults"],
+                "developers": [
+                    {
+                        "entity_id": "google",
+                        "name": "Google"
+                    }
+                ],
+                "deployers": [
+                    {
+                        "entity_id": "google",
+                        "name": "Google"
+                    }
+                ],
+                "harmed_parties": [
+                    {
+                        "entity_id": "adults",
+                        "name": "Adults"
+                    }
+                ],
                 "editor_dissimilar_incidents": [],
                 "editor_similar_incidents": [],
                 "tags": []
             },
             {
                 "__typename": "Submission",
-                "_id": "62d561606b4bb5e39603c67d",
+                "_id": "62d561606b4bb5e396034444",
                 "authors": [
                     "Adi Ashkenazy"
                 ],
@@ -101,7 +131,7 @@
             },
             {
                 "__typename": "Submission",
-                "_id": "62d561606b4bb5e39603c67d",
+                "_id": "62d561606b4bb5e39605555",
                 "authors": [
                     "Adi Ashkenazy"
                 ],
@@ -110,7 +140,6 @@
                 "date_modified": "2021-08-23",
                 "date_published": "2019-07-18",
                 "date_submitted": "2021-08-23",
-                "description": "Read about our Journey of dissecting the brain of a leading AI based Endpoint Protection Product, culminating in the creation of a universal bypass\n\nUpdate: 07/Sep/2019\nWe had the honour to present ou",
                 "image_url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/cylance-i-kill-you-small.gif",
                 "incident_date": "2019-07-18",
                 "incident_id": 0,
@@ -119,47 +148,112 @@
                 "submitters": [
                     "Kate Perkins"
                 ],
-                "text": "Submission 4 text. This is a longer text with more than 80 characters to pass the validation.",
-                "plain_text": "Submission 4 text\n\nMarkdown content!",
-                "title": "Submission 4 title",
+                "description": "This is a description",
+                "text": "Submission 3 text. This is a longer text with more than 80 characters to pass the validation.",
+                "plain_text": "Submission 3 text\n\nMarkdown content!",
+                "title": "Submission 3 title",
                 "url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/",
                 "editor_notes": "",
                 "nlp_similar_incidents": [],
                 "editor_dissimilar_incidents": [],
                 "editor_similar_incidents": [],
-                "tags": []
+                "tags": [],
+                "developers": [
+                    "dev1"
+                ],
+                "deployers": [
+                    "dep1"
+                ],
+                "harmed_parties": [
+                    "par1"
+                ]
             },
             {
                 "__typename": "Submission",
-                "_id": "6123bf345e740c1a81850e99",
-                "authors": [
-                    "Adi Ashkenazy"
-                ],
+                "_id": "62d561606b4bb5e39601234",
+                "authors": [],
                 "cloudinary_id": null,
-                "date_downloaded": "2021-08-23",
-                "date_modified": "2021-08-23",
-                "date_published": "2019-07-18",
-                "date_submitted": "2021-08-23",
+                "date_downloaded": "",
+                "date_modified": "",
+                "date_published": "",
+                "date_submitted": "",
                 "image_url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/cylance-i-kill-you-small.gif",
                 "incident_date": "2019-07-18",
                 "incident_id": 0,
                 "language": "en",
                 "source_domain": "skylightcyber.com",
-                "nlp_similar_incidents": [],
-                "submitters": [
-                    "Kate Perkins"
-                ],
-                "text": "Submission 5 text",
-                "plain_text": "Submission 5 text\n\nMarkdown content!",
-                "title": "Submission 5 title",
+                "submitters": [],
+                "description": "This is a description",
+                "text": "",
+                "plain_text": "",
+                "title": "",
                 "url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/",
                 "editor_notes": "",
-                "developers": ["AI Dev"],
-                "deployers": ["Youtube"],
-                "harmed_parties": ["Adults"],
+                "nlp_similar_incidents": [],
                 "editor_dissimilar_incidents": [],
                 "editor_similar_incidents": [],
-                "tags": []
+                "tags": [],
+                "developers": [],
+                "deployers": [],
+                "harmed_parties": []
+            },
+            {
+                "__typename": "Submission",
+                "_id": "333561606b4bb5e39601234",
+                "authors": [],
+                "cloudinary_id": null,
+                "date_downloaded": "",
+                "date_modified": "",
+                "date_published": "",
+                "date_submitted": "",
+                "image_url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/cylance-i-kill-you-small.gif",
+                "incident_date": "2019-07-18",
+                "incident_id": 12,
+                "language": "en",
+                "source_domain": "skylightcyber.com",
+                "submitters": [],
+                "description": "This is a description",
+                "text": "",
+                "plain_text": "",
+                "title": "",
+                "url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/",
+                "editor_notes": "",
+                "nlp_similar_incidents": [],
+                "editor_dissimilar_incidents": [],
+                "editor_similar_incidents": [],
+                "tags": [],
+                "developers": [],
+                "deployers": [],
+                "harmed_parties": []
+            },
+            {
+                "__typename": "Submission",
+                "_id": "123461606b4bb5e39601234",
+                "authors": [
+                    "test"
+                ],
+                "cloudinary_id": null,
+                "date_downloaded": "2021-08-23",
+                "date_modified": "2021-08-23",
+                "date_published": "2021-08-23",
+                "date_submitted": "2021-08-23",
+                "image_url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/cylance-i-kill-you-small.gif",
+                "incident_date": "2019-07-18",
+                "incident_id": 12,
+                "language": "en",
+                "source_domain": "skylightcyber.com",
+                "submitters": [],
+                "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam",
+                "plain_text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam",
+                "url": "https://skylightcyber.com/2019/07/18/cylance-i-kill-you/",
+                "editor_notes": "",
+                "nlp_similar_incidents": [],
+                "editor_dissimilar_incidents": [],
+                "editor_similar_incidents": [],
+                "tags": [],
+                "developers": [],
+                "deployers": [],
+                "harmed_parties": []
             }
         ]
     }

@@ -46,6 +46,11 @@ module.exports = {
     './src/templates/**/*.{js,jsx,ts,tsx}',
     'node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}',
   ],
+  variants: {
+    extend: {
+      textColor: ['group-hover'],
+    },
+  },
   theme: {
     maxHeight: {
       240: '240px',
@@ -56,7 +61,7 @@ module.exports = {
         'min-576px': { min: '576px' },
         'min-767px': { min: '767px' },
         'min-992px': { min: '992px' },
-        '50rem': { max: '50rem' },
+        'max-50rem': { max: '50rem' },
         '767px': { max: '767px' },
         '965px': { max: '965px' },
         '992px': { min: '992px' },
@@ -124,6 +129,7 @@ module.exports = {
         'carousel-next-prev': 'ease',
         'form-check-input': 'ease-in-out',
         modal: 'linear',
+        'rotate-180': 'cubic-bezier(0.4, 0, 0.2, 1)',
       },
       transitionProperty: {
         btn: 'color,background-color,border-color,box-shadow',
@@ -134,6 +140,9 @@ module.exports = {
         'carousel-indicator': 'opacity',
         'carousel-next-prev': 'opacity',
         'form-check-input': 'background-position',
+        'rotate-180': 'transform',
+        width: 'width',
+        visibility: 'visibility',
       },
       zIndex: {
         2: '2',
@@ -168,6 +177,8 @@ module.exports = {
         '0-1-auto': '0 1 auto',
         '1-1-auto': '1 1 auto',
         '2-1-auto': '1 1 0',
+        '1/3': '1 0 32%',
+        '1/3-fixed': '0 0 32%',
       },
       transformOrigin: {
         'center-left': 'center left',
@@ -198,8 +209,11 @@ module.exports = {
         'form-control': '1.125rem 1.125rem',
         'form-select': '16px 12px',
       },
+      listStyleType: {
+        revert: 'revert',
+      },
     },
   },
-  plugins: [backfaceVisibility, require('flowbite/plugin')],
+  plugins: [backfaceVisibility, require('flowbite/plugin'), require('@tailwindcss/typography')],
   safelist: safelist,
 };

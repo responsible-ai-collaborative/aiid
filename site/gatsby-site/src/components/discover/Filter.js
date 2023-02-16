@@ -11,7 +11,7 @@ import { Trans } from 'react-i18next';
 function ToggleContent({ label, touched, faIcon }) {
   return (
     <>
-      <FontAwesomeIcon icon={faIcon} />
+      {faIcon && <FontAwesomeIcon icon={faIcon} />}
       &nbsp; <Trans>{label}</Trans> &nbsp;{' '}
       {touched > 0 && (
         <Badge bg="light" text="dark">
@@ -120,7 +120,7 @@ function AccordionFilter({ type, ...filterProps }) {
   const touched = touchedCount({ searchState, attribute });
 
   return (
-    <Accordion.Item eventKey={attribute}>
+    <Accordion.Item eventKey={attribute} className={`${filterProps.hidden ? 'hidden' : ''}`}>
       <StyledAccordionHeader bg={touched ? 'success' : 'primary'}>
         <ToggleContent faIcon={faIcon} label={label} touched={touched} />
       </StyledAccordionHeader>

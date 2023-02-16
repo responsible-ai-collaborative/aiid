@@ -1,7 +1,15 @@
 import React, { useRef } from 'react';
 import Typeahead from './Typeahead';
 
-export default function Tags({ id, inputId, placeHolder, value, onChange, name }) {
+export default function Tags({
+  id,
+  inputId,
+  placeHolder,
+  value,
+  onChange,
+  name,
+  disabled = false,
+}) {
   const ref = useRef(null);
 
   const commitTag = (tag) => {
@@ -36,6 +44,7 @@ export default function Tags({ id, inputId, placeHolder, value, onChange, name }
       options={[]}
       selected={value}
       placeholder={placeHolder}
+      disabled={disabled}
     />
   );
 }

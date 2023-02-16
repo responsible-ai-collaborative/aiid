@@ -6,7 +6,30 @@
             "incident_id": 112,
             "nlp_similar_incidents": [],
             "title": "Test title",
-            "nlp_similar_incidents": [],
+            "AllegedDeployerOfAISystem": [
+                {
+                    "entity_id": "youtube",
+                    "name": "YouTube"
+                }
+            ],
+            "AllegedDeveloperOfAISystem": [
+                {
+                    "entity_id": "youtube",
+                    "name": "YouTube"
+                }
+            ],
+            "AllegedHarmedOrNearlyHarmedParties": [
+                {
+                    "entity_id": "google",
+                    "name": "Google"
+                }
+            ],
+            "description": "YouTube’s content filtering and recommendation algorithms exposed children to disturbing and inappropriate videos.",
+            "editors": [],
+            "editor_similar_incidents": [],
+            "editor_dissimilar_incidents": [],
+            "flagged_dissimilar_incidents": [],
+            "embedding": [],
             "reports": [
                 {
                     "__typename": "Report",

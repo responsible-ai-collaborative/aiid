@@ -1,0 +1,356 @@
+{
+  "data": {
+    "classifications": [
+      {
+        "__typename": "Classification",
+        "_id": "60dd465f80935bc89e6f9b00",
+        "publish": true,
+        "attributes": [
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Annotator",
+            "value_json": "\"1\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Annotation Status",
+            "value_json": "\"6. Complete and final\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Reviewer",
+            "value_json": "\"5\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Quality Control",
+            "value_json": "false"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Full Description",
+            "value_json": "\"On December 5, 2018, a robot punctured a can of bear spray in Amazon's fulfillment center in Robbinsville, New Jersey. Amazon's spokesman stated that \\\"an automated machine punctured a 9-oz can of bear repellent.\\\" The punctured can released capsaicin, an irritant, into the air. Several dozen workers were exposed to the fumes, causing symptoms including trouble breathing and a burning sensation in the eyes and throat. 24 workers were hospitalized, and one was sent to intensive care and intubated.\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Short Description",
+            "value_json": "\"Twenty-four Amazon workers in New Jersey were hospitalized after a robot punctured a can of bear repellent spray in a warehouse.\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Beginning Date",
+            "value_json": "\"2018-12-05T00:00:00.000Z\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Ending Date",
+            "value_json": "\"2018-12-05T00:00:00.000Z\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Location",
+            "value_json": "\"Robbinsville, New Jersey, United States of America\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Near Miss",
+            "value_json": "\"Harm caused\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Named Entities",
+            "value_json": "[\"Amazon\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Technology Purveyor",
+            "value_json": "[\"Amazon\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Intent",
+            "value_json": "\"Accident\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Severity",
+            "value_json": "\"Moderate\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Harm Type",
+            "value_json": "[\"Harm to physical health/safety\",\"Harm to physical property\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Lives Lost",
+            "value_json": "false"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Harm Distribution Basis",
+            "value_json": "[]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Infrastructure Sectors",
+            "value_json": "[]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Financial Cost",
+            "value_json": "\"\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Laws Implicated",
+            "value_json": "[\"Workplace safety laws\",\"OSHA regulations\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "AI System Description",
+            "value_json": "\"An automated machine operating within an Amazon fulfillment center.\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Data Inputs",
+            "value_json": "[]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "System Developer",
+            "value_json": "[]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Sector of Deployment",
+            "value_json": "[\"Transportation and storage\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Public Sector Deployment",
+            "value_json": "false"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Nature of End User",
+            "value_json": "\"\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Level of Autonomy",
+            "value_json": "\"Unclear/unknown\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Relevant AI functions",
+            "value_json": "[\"Unclear\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "AI Techniques",
+            "value_json": "[]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "AI Applications",
+            "value_json": "[\"robotics\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Physical System",
+            "value_json": "[\"Unknown/unclear\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Problem Nature",
+            "value_json": "[\"Unknown/unclear\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Publish",
+            "value_json": "true"
+          }
+        ],
+        "incident_id": 2,
+        "namespace": "CSET",
+        "notes": "{}"
+      },
+      {
+        "__typename": "Classification",
+        "_id": "60dd465f80935bc89e6f9b01",
+        "publish": true,
+        "attributes": [
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Annotator",
+            "value_json": "\"1\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Annotation Status",
+            "value_json": "\"6. Complete and final\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Reviewer",
+            "value_json": "\"6\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Quality Control",
+            "value_json": "false"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Full Description",
+            "value_json": "\"A Boeing 737 MAX aircraft equipped with a new, automated flight control system plunged into the Java Sea, killing 189 people on board. On October 29, 2018, shortly after takeoff from Jakarta, Lion Air Flight 610 reported a malfunction in its \\\"angle of attack\\\" sensor. Based on faulty readings from the single sensor, the plane's Maneuvering Characteristics Augmentation System (MCAS) forced the plane's nose down in order to prevent stalling. The pilots pulled the nose back up over twenty times, but the MCAS system counteracted their actions. Eventually, the plane hit the ocean at a speed of several hundred miles per hour. Flight 610 had experienced a similar problem on a previous flight, but in that case, the pilots were able to override MCAS using an emergency procedure. Commentators speculated that the pilots on the day of the fatal crash may have been confused or startled, and that they may not have been fully aware of the MCAS system and how they could override it.\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Short Description",
+            "value_json": "\"A Boeing 737 crashed into the sea, killing 189 people, after faulty sensor data caused an automated manuevering system to repeatedly push the plane's nose downward.\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Beginning Date",
+            "value_json": "\"2018-10-29\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Ending Date",
+            "value_json": "\"2018-10-29\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Location",
+            "value_json": "\"Java Sea\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Near Miss",
+            "value_json": "\"Harm caused\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Named Entities",
+            "value_json": "[\"Lion Air\",\"Boeing\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Technology Purveyor",
+            "value_json": "[\"Lion Air\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Intent",
+            "value_json": "\"Accident\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Severity",
+            "value_json": "\"Critical\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Harm Type",
+            "value_json": "[\"Harm to physical health/safety\",\"Psychological harm\",\"Harm to physical property\",\"Harm to intangible property\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Lives Lost",
+            "value_json": "true"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Harm Distribution Basis",
+            "value_json": "[]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Infrastructure Sectors",
+            "value_json": "[\"Transportation\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Financial Cost",
+            "value_json": "\"\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Laws Implicated",
+            "value_json": "[\"Federal Aviation Administration regulations\",\"Indonesian air safety regulations\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "AI System Description",
+            "value_json": "\"The Maneuvering Characteristics Augmentation System (MCAS) is an aircraft maneuvering system that can autonomously steer the plane based on sensor input\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Data Inputs",
+            "value_json": "[\"Aircraft sensor data\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "System Developer",
+            "value_json": "[\"Boeing\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Sector of Deployment",
+            "value_json": "[\"Transportation and storage\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Public Sector Deployment",
+            "value_json": "false"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Nature of End User",
+            "value_json": "\"Expert\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Level of Autonomy",
+            "value_json": "\"High\""
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Relevant AI functions",
+            "value_json": "[\"Perception\",\"Cognition\",\"Action\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "AI Techniques",
+            "value_json": "[]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "AI Applications",
+            "value_json": "[\"Aircraft maneuvering\",\"sensor input processing\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Physical System",
+            "value_json": "[\"Vehicle/mobile robot\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Problem Nature",
+            "value_json": "[\"Robustness\",\"Assurance\"]"
+          },
+          {
+            "__typename": "ClassificationAttribute",
+            "short_name": "Publish",
+            "value_json": null
+          }
+        ],
+        "incident_id": 3,
+        "namespace": "CSET",
+        "notes": ""
+      }
+    ]
+  }
+}

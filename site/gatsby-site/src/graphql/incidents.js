@@ -8,9 +8,18 @@ export const FIND_INCIDENT = gql`
       description
       editors
       date
-      AllegedDeployerOfAISystem
-      AllegedDeveloperOfAISystem
-      AllegedHarmedOrNearlyHarmedParties
+      AllegedDeployerOfAISystem {
+        entity_id
+        name
+      }
+      AllegedDeveloperOfAISystem {
+        entity_id
+        name
+      }
+      AllegedHarmedOrNearlyHarmedParties {
+        entity_id
+        name
+      }
       nlp_similar_incidents {
         incident_id
         similarity
@@ -24,6 +33,30 @@ export const FIND_INCIDENT = gql`
       embedding {
         from_reports
         vector
+      }
+    }
+  }
+`;
+
+export const FIND_INCIDENTS_TABLE = gql`
+  query FindIncidents($query: IncidentQueryInput) {
+    incidents(query: $query, limit: 999) {
+      incident_id
+      title
+      description
+      editors
+      date
+      AllegedDeployerOfAISystem {
+        entity_id
+        name
+      }
+      AllegedDeveloperOfAISystem {
+        entity_id
+        name
+      }
+      AllegedHarmedOrNearlyHarmedParties {
+        entity_id
+        name
       }
     }
   }
@@ -37,9 +70,18 @@ export const FIND_INCIDENTS = gql`
       description
       editors
       date
-      AllegedDeployerOfAISystem
-      AllegedDeveloperOfAISystem
-      AllegedHarmedOrNearlyHarmedParties
+      AllegedDeployerOfAISystem {
+        entity_id
+        name
+      }
+      AllegedDeveloperOfAISystem {
+        entity_id
+        name
+      }
+      AllegedHarmedOrNearlyHarmedParties {
+        entity_id
+        name
+      }
       nlp_similar_incidents {
         incident_id
         similarity
@@ -58,6 +100,15 @@ export const FIND_INCIDENTS = gql`
   }
 `;
 
+export const FIND_INCIDENTS_TITLE = gql`
+  query FindIncidentsTitles($query: IncidentQueryInput) {
+    incidents(query: $query, limit: 999) {
+      incident_id
+      title
+    }
+  }
+`;
+
 export const UPDATE_INCIDENT = gql`
   mutation UpdateIncident($query: IncidentQueryInput!, $set: IncidentUpdateInput!) {
     updateOneIncident(query: $query, set: $set) {
@@ -66,9 +117,18 @@ export const UPDATE_INCIDENT = gql`
       description
       editors
       date
-      AllegedDeployerOfAISystem
-      AllegedDeveloperOfAISystem
-      AllegedHarmedOrNearlyHarmedParties
+      AllegedDeployerOfAISystem {
+        entity_id
+        name
+      }
+      AllegedDeveloperOfAISystem {
+        entity_id
+        name
+      }
+      AllegedHarmedOrNearlyHarmedParties {
+        entity_id
+        name
+      }
       nlp_similar_incidents {
         incident_id
         similarity

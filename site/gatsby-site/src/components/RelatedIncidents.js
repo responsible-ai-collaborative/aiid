@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { ListGroup } from 'react-bootstrap';
 import { subWeeks, addWeeks, getUnixTime, parse, isValid } from 'date-fns';
 import { gql, useApolloClient } from '@apollo/client';
 import debounce from 'lodash/debounce';
 import isArray from 'lodash/isArray';
-import RelatedIncidentsArea from './RelatedIncidentsArea';
 import { Trans } from 'react-i18next';
+import RelatedIncidentsArea from './RelatedIncidentsArea';
 
 const relatedIncidentsQuery = gql`
   query ProbablyRelatedIncidents($query: IncidentQueryInput) {
@@ -64,7 +63,7 @@ const allSearchColumns = {
       return (
         <>
           <Trans date={date}>
-            Incidents reports matched by published date: <b>{{ date }}</b>
+            Incidents reports matched by published date: <b className="break-all">{{ date }}</b>
           </Trans>
         </>
       );
@@ -118,7 +117,7 @@ const allSearchColumns = {
       return (
         <>
           <Trans authors={authors}>
-            Incidents reports matched by authors: <b>{{ authors }}</b>
+            Incidents reports matched by authors: <b className="break-words">{{ authors }}</b>
           </Trans>
         </>
       );
@@ -138,7 +137,7 @@ const allSearchColumns = {
       return (
         <>
           <Trans url={url}>
-            Incidents reports matched by URL: <b>{{ url }}</b>
+            Incidents reports matched by URL: <b className="break-all">{{ url }}</b>
           </Trans>
         </>
       );
@@ -154,7 +153,6 @@ const allSearchColumns = {
 const RelatedIncidents = ({
   incident,
   setFieldValue = null,
-  className = '',
   columns = Object.keys(allSearchColumns),
 }) => {
   const searchColumns = {};
@@ -233,28 +231,26 @@ const RelatedIncidents = ({
   }, [queryVariables]);
 
   return (
-    <div className="bootstrap">
-      <ListGroup data-cy="related-reports" className={className + ' bootstrap break-words'}>
-        {Object.keys(searchColumns).map((key) => {
-          const column = searchColumns[key];
+    <div data-cy="related-reports">
+      {Object.keys(searchColumns).map((key) => {
+        const column = searchColumns[key];
 
-          return (
-            <RelatedIncidentsArea
-              key={key}
-              columnKey={key}
-              loading={loading[key]}
-              reports={searchColumns[key].showIncidents ? null : relatedReports[key]}
-              incidents={searchColumns[key].showIncidents ? relatedIncidents[key] : null}
-              header={column.header(incident)}
-              setFieldValue={setFieldValue}
-              {...{
-                editId: column.editId,
-                editSimilar: column.editSimilar,
-              }}
-            />
-          );
-        })}
-      </ListGroup>
+        return (
+          <RelatedIncidentsArea
+            key={key}
+            columnKey={key}
+            loading={loading[key]}
+            reports={searchColumns[key].showIncidents ? null : relatedReports[key]}
+            incidents={searchColumns[key].showIncidents ? relatedIncidents[key] : null}
+            header={column.header(incident)}
+            setFieldValue={setFieldValue}
+            {...{
+              editId: column.editId,
+              editSimilar: column.editSimilar,
+            }}
+          />
+        );
+      })}
     </div>
   );
 };

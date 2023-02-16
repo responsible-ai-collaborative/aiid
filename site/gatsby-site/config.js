@@ -25,6 +25,8 @@ const config = {
     logoLink: '/',
     title: ' AI Incident Database',
     githubUrl: 'https://github.com/responsible-ai-collaborative/aiid',
+    facebookUrl: 'https://www.facebook.com/IncidentsDB',
+    linkedInUrl: 'https://www.linkedin.com/company/responsible-ai-collaborative',
     helpUrl: '',
     tweetText: '',
     social: `<li>
@@ -34,7 +36,6 @@ const config = {
 		      </div>
 		    </a>
 		  </li>`,
-    links: [{ text: '', link: '' }],
     search: {
       enabled: false,
       indexName: '',
@@ -81,13 +82,13 @@ const config = {
   sidebar: {
     navConfig: [
       { title: 'Welcome to the AIID', label: 'welcome', url: '/', items: [] },
-      { title: 'Discover Incidents', label: 'discover', url: '/apps/discover', items: [] },
-      { title: 'Spatial View', label: 'spatial', url: '/summaries/spatial', items: [] },
-      { title: 'Table View', label: 'incidents', url: '/apps/incidents', items: [] },
-      { title: 'Entities', label: 'entities', url: '/entities', items: [] },
-      { title: 'Taxonomies', label: 'taxonomies', url: '/taxonomies', items: [] },
-      { title: 'Word Counts', label: 'wordcounts', url: '/summaries/wordcounts', items: [] },
-      { title: 'Submit Incident Reports', label: 'submit', url: '/apps/submit', items: [] },
+      { title: 'Discover Incidents', label: 'discover', url: '/apps/discover/', items: [] },
+      { title: 'Spatial View', label: 'spatial', url: '/summaries/spatial/', items: [] },
+      { title: 'Table View', label: 'incidents', url: '/apps/incidents/', items: [] },
+      { title: 'Entities', label: 'entities', url: '/entities/', items: [] },
+      { title: 'Taxonomies', label: 'taxonomies', url: '/taxonomies/', items: [] },
+      { title: 'Word Counts', label: 'wordcounts', url: '/summaries/wordcounts/', items: [] },
+      { title: 'Submit Incident Reports', label: 'submit', url: '/apps/submit/', items: [] },
       {
         title: 'Submission Leaderboard',
         label: 'leaderboard',
@@ -98,7 +99,6 @@ const config = {
     ],
     frontline: true,
     ignoreIndex: false,
-    title: '',
   },
   footer: {
     navConfig: [
@@ -110,16 +110,16 @@ const config = {
             label: '1-criteria',
             url: '/research/1-criteria',
           },
+          {
+            title: 'Defining an “AI Incident Response”',
+            label: '5-response',
+            url: '/research/5-response',
+          },
           { title: 'Database Roadmap', label: '2-roadmap', url: '/research/2-roadmap' },
           {
-            title: 'Initial Collection Methodology',
-            label: '3-history',
-            url: '/research/3-history',
-          },
-          {
             title: 'Related Work',
-            label: 'related-work',
-            url: '/research/related-work',
+            label: '4-related-work',
+            url: '/research/4-related-work',
           },
           {
             title: 'Download Complete Database',
@@ -133,8 +133,8 @@ const config = {
         items: [
           { title: 'About', label: 'about', url: '/about', items: [] },
           { title: 'Contact and Follow', label: 'contact', url: '/contact' },
-          { title: 'Launch Announcement', url: 'https://partnershiponai.org/aiincidentdatabase/' },
           { title: 'About Apps', label: 'about_apps', url: '/about_apps' },
+          { title: 'Editor’s Guide', label: 'editors-guide', url: '/editors-guide' },
         ],
       },
       {

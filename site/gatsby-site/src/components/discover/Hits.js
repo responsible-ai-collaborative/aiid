@@ -1,9 +1,10 @@
 import React from 'react';
 import { connectHits, connectStateResults } from 'react-instantsearch-dom';
 import Hit from './Hit';
-import { Spinner } from 'flowbite-react';
 import { DisplayModeEnumParam } from './queryParams';
 import { useQueryParam } from 'use-query-params';
+import CardSkeleton from 'elements/Skeletons/Card';
+import ListSkeleton from 'elements/Skeletons/List';
 
 const Hits = ({
   hits,
@@ -12,16 +13,11 @@ const Hits = ({
   flagReportModal,
   isSearchStalled,
   toggleFilterByIncidentId,
+  viewType,
 }) => {
-  if (isSearchStalled) {
-    return (
-      <div className="tw-no-results bootstrap">
-        <Spinner size={'xl'} />
-      </div>
-    );
-  }
+  const [display] = useQueryParam('display', DisplayModeEnumParam);
 
-  if (hits.length === 0) {
+  if (!isSearchStalled && hits.length === 0) {
     return (
       <div className="tw-no-results">
         <p>Your search returned no results.</p>
@@ -30,20 +26,35 @@ const Hits = ({
     );
   }
 
-  const [display] = useQueryParam('display', DisplayModeEnumParam);
-
   return (
-    <div className={`tw-hits-container tw-container-xl ${display}`}>
-      {hits.map((hit) => (
-        <Hit
-          key={hit.objectID}
-          item={hit}
-          authorsModal={authorsModal}
-          submittersModal={submittersModal}
-          flagReportModal={flagReportModal}
-          toggleFilterByIncidentId={toggleFilterByIncidentId}
-        />
-      ))}
+    <div
+      className={`tw-hits-container ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl ${display} mt-4`}
+    >
+      {isSearchStalled ? (
+        display === 'list' ? (
+          <ListSkeleton />
+        ) : (
+          Array(24)
+            .fill()
+            .map((skeleton, i) => (
+              <CardSkeleton key={i} className="m:inline-block ml-3" text={display == 'details'} />
+            ))
+        )
+      ) : (
+        hits.map((hit) => (
+          <Hit
+            key={hit.objectID}
+            item={hit}
+            {...{
+              authorsModal,
+              submittersModal,
+              flagReportModal,
+              toggleFilterByIncidentId,
+              viewType,
+            }}
+          />
+        ))
+      )}
     </div>
   );
 };

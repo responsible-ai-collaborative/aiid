@@ -11,7 +11,7 @@ function TsneVisulizationPage(props) {
 
   const spatialIncidents = props.pageContext.spatialIncidents;
 
-  const classifications = props.pageContext.classifications;
+  const classifications = props.pageContext.classifications.filter((c) => c.publish);
 
   const csetClassifications = props.pageContext.csetClassifications;
 
@@ -21,16 +21,14 @@ function TsneVisulizationPage(props) {
 
   const metaDescription = t('Spatial Visualization');
 
-  const canonicalUrl = 'https://incidentdatabase.ai/summaries/spatial';
-
   return (
     <Layout {...props}>
-      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl }}>
+      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
 
       <div className={'titleWrapper'}>
-        <StyledHeading>{metaDescription}</StyledHeading>
+        <StyledHeading>{t(metaDescription)}</StyledHeading>
       </div>
 
       <TsneVisualization

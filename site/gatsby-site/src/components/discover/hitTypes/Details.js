@@ -10,9 +10,10 @@ import ReportText from 'components/reports/ReportText';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 
 import { SourceDomainSubtitle, HeaderTitle } from './shared';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import Card from 'elements/Card';
+import { VIEW_TYPES } from 'utils/discover';
 
 const IncidentCardImage = styled(Image)`
   height: ${({ height }) => height};
@@ -30,27 +31,49 @@ export default function Details({
   submittersModal,
   flagReportModal,
   toggleFilterByIncidentId,
+  viewType,
 }) {
   const localizePath = useLocalizePath();
 
+  const { t } = useTranslation();
+
+  const detailsPath =
+    viewType === VIEW_TYPES.INCIDENTS
+      ? localizePath({
+          path: `/cite/${item.incident_id}`,
+        })
+      : item.is_incident_report
+      ? localizePath({
+          path: `/cite/${item.incident_id}#r${item.objectID}`,
+        })
+      : localizePath({
+          path: `/reports/${item.report_number}`,
+        });
+
   return (
     <Card className="h-full" data-cy={item.mongodb_id}>
-      <a href={'/cite/' + item.incident_id + '#r' + item.objectID}>
+      <a href={detailsPath}>
         <IncidentCardImage
           className="card-img-top"
           publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
           alt={item.title}
           height="240px"
           transformation={fill().height(480)}
+          itemIdentifier={t('Report {{report_number}}', {
+            report_number: item.report_number,
+          }).replace(' ', '.')}
         />
       </a>
       <Card.Body className="flex flex-col ">
-        <HeaderTitle item={item} />
+        <HeaderTitle item={item} viewType={viewType} />
         <SourceDomainSubtitle item={item} className="mb-2 text-muted-gray" />
 
         <Card.Text className="flex-1-1-auto mb-4">
           <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />
-          <ReportText text={item.text} maxChars={400} />
+          <ReportText
+            text={viewType === VIEW_TYPES.INCIDENTS ? item.incident_description : item.text}
+            maxChars={400}
+          />
         </Card.Text>
 
         <div className="align-bottom">
@@ -58,16 +81,14 @@ export default function Details({
             <button
               type="button"
               className="btn btn-secondary btn-sm w-full text-sm"
-              onClick={() => {
-                const path = localizePath({
-                  path: `/cite/${item.incident_id}#r${item.mongodb_id}`,
-                });
-
-                navigate(path);
-              }}
+              onClick={() => navigate(detailsPath)}
             >
               <StyledLabel>
-                <Trans>Show Details on Incident #{{ id: item.incident_id }}</Trans>
+                {item.is_incident_report ? (
+                  <Trans>Show Details on Incident #{{ id: item.incident_id }}</Trans>
+                ) : (
+                  <Trans>Show Details on Issue #{{ id: item.report_number }}</Trans>
+                )}
               </StyledLabel>
             </button>
           )}

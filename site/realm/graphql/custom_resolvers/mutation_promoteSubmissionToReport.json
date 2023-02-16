@@ -9,6 +9,9 @@
                     "bsonType": "int"
                 }
             },
+            "is_incident_report": {
+                "bsonType": "bool"
+            },
             "submission_id": {
                 "bsonType": "objectId"
             }
@@ -18,6 +21,20 @@
     },
     "input_type_format": "custom",
     "on_type": "Mutation",
-    "payload_type": "Incident",
-    "payload_type_format": "generated-list"
+    "payload_type": {
+        "properties": {
+            "incident_ids": {
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "int"
+                }
+            },
+            "report_number": {
+                "bsonType": "int"
+            }
+        },
+        "title": "PromoteSubmissionToReportPayload",
+        "type": "object"
+    },
+    "payload_type_format": "custom"
 }

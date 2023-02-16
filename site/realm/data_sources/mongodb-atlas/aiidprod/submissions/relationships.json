@@ -1,1 +1,20 @@
-{}
+{
+    "deployers": {
+        "ref": "#/relationship/mongodb-atlas/aiidprod/entities",
+        "source_key": "deployers",
+        "foreign_key": "entity_id",
+        "is_list": true
+    },
+    "developers": {
+        "ref": "#/relationship/mongodb-atlas/aiidprod/entities",
+        "source_key": "developers",
+        "foreign_key": "entity_id",
+        "is_list": true
+    },
+    "harmed_parties": {
+        "ref": "#/relationship/mongodb-atlas/aiidprod/entities",
+        "source_key": "harmed_parties",
+        "foreign_key": "entity_id",
+        "is_list": true
+    }
+}

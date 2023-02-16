@@ -7,7 +7,7 @@ import { Image } from '../../utils/cloudinary';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Color from 'color';
 import { LocalizedLink } from 'gatsby-theme-i18n';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 export default function TsneVisualization({
   currentIncidentId,
@@ -15,7 +15,9 @@ export default function TsneVisualization({
   classifications,
   csetClassifications,
 }) {
-  const [axis, setAxis] = useState('Sector of Deployment');
+  const [axis, setAxis] = useState('CSET::Sector of Deployment');
+
+  const [axisNamespace, axisFieldName] = axis.split('::');
 
   const [highlightedCategory, setHighlightedCategory] = useState(null);
 
@@ -23,11 +25,50 @@ export default function TsneVisualization({
     (incident) => incident.incident_id == currentIncidentId
   );
 
+  const classificationsWithAttributes = classifications.filter(
+    (c) => c.attributes != null && c.attributes.length > 0
+  );
+
+  const axes = [];
+
+  const attributesByAxis = {};
+
+  for (const classification of classificationsWithAttributes) {
+    for (const attribute of classification.attributes) {
+      if (attributeIsNotEmpty(attribute)) {
+        const axis = classification.namespace + '::' + attribute.short_name;
+
+        attributesByAxis[axis] ||= [];
+        attributesByAxis[axis].push(attribute);
+      }
+    }
+  }
+
+  for (const axis in attributesByAxis) {
+    const axisAttributes = attributesByAxis[axis];
+
+    const uniqueValues = new Set(axisAttributes.map((a) => a.value_json));
+
+    const multipleValuesExist = 1 < uniqueValues.size;
+
+    const repeatingValuesExist = uniqueValues.size < axisAttributes.length;
+
+    if (
+      multipleValuesExist &&
+      repeatingValuesExist &&
+      (axis.split('::')[0] != 'CSET' || csetClassifications.includes(axis.split('::')[1]))
+    ) {
+      axes.push(axis);
+    }
+  }
+
   const taxons = Array.from(
     new Set(
-      classifications
-        .map((c) => c.classifications[axis.replace(/ /g, '_')])
-        .map((e) => (Array.isArray(e) ? e[0] : e))
+      classificationsWithAttributes
+        .filter((c) => c.namespace == axisNamespace)
+        .map((c) => c.attributes.find((a) => a.short_name == axisFieldName))
+        .filter((a) => a && a.value_json)
+        .map((a) => attributeToTaxon(a))
         .reduce((result, value) => result.concat(value), [])
         .filter((value) => value)
         .concat('Unclassified')
@@ -62,6 +103,8 @@ export default function TsneVisualization({
               taxonColorMap,
               taxonVisibility,
               axis,
+              axisNamespace,
+              axisFieldName,
               highlightedCategory,
             }}
           />
@@ -75,13 +118,13 @@ export default function TsneVisualization({
               onChange={(event) => setAxis(event.target.value)}
               data-cy="color-axis-select"
             >
-              {csetClassifications.map((axis) => (
+              {axes.map((axis) => (
                 <option key={axis} value={axis}>
-                  CSET:{axis}
+                  {axis}
                 </option>
               ))}
             </Form.Select>
-            <ul className="list-none">
+            <ul>
               {taxons.map((taxon) => (
                 <li
                   key={taxon}
@@ -115,7 +158,7 @@ export default function TsneVisualization({
                     }
                   >
                     <Swatch color={taxonColorMap[taxon]} />
-                    {taxon}
+                    <Trans>{taxon}</Trans>
                   </button>
                 </li>
               ))}
@@ -135,6 +178,8 @@ function VisualizationView({
   taxonColorMap,
   taxonVisibility,
   axis,
+  axisNamespace,
+  axisFieldName,
   highlightedCategory,
 }) {
   return (
@@ -158,15 +203,17 @@ function VisualizationView({
                 return (
                   <PlotPoint
                     classifications={
-                      classifications.find(
+                      classifications.filter(
                         (classification) => classification.incident_id == incident.incident_id
-                      )?.classifications || {}
+                      ) || []
                     }
                     key={incident.incident_id}
                     {...{
                       highlightedCategory,
                       currentIncidentId,
                       axis,
+                      axisNamespace,
+                      axisFieldName,
                       taxonColorMap,
                       taxonVisibility,
                       scaleMultiplier,
@@ -191,11 +238,14 @@ function PlotPoint({
   classifications,
   taxonColorMap,
   taxonVisibility,
-  axis,
+  axisNamespace,
+  axisFieldName,
   currentIncidentId,
   highlightedCategory,
 }) {
   const client = useApolloClient();
+
+  const { t } = useTranslation();
 
   const [incidentData, setIncidentData] = useState(null);
 
@@ -207,22 +257,15 @@ function PlotPoint({
 
   const [hoverTimeout, setHoverTimeout] = useState(null);
 
-  const dbAxis = axis.replace(/ /g, '_');
-
   let taxon = 'Unclassified';
 
-  if (classifications && classifications[dbAxis]) {
-    let initialString = null;
+  if (classifications) {
+    const classification = classifications.find((c) => c.namespace == axisNamespace);
 
-    if (Array.isArray(classifications[dbAxis])) {
-      if (classifications[dbAxis].length > 0) {
-        initialString = String(classifications[dbAxis][0]);
-      }
-    } else {
-      initialString = String(classifications[dbAxis]);
-    }
-    if (initialString && initialString.trim().length > 0) {
-      taxon = initialString;
+    if (classification && classification.attributes && classification.attributes.length > 0) {
+      const attribute = classification.attributes.find((a) => a.short_name == axisFieldName);
+
+      taxon = attributeToTaxon(attribute);
     }
   }
 
@@ -361,7 +404,14 @@ function PlotPoint({
         >
           {incidentData ? (
             <>
-              <Image publicID={incidentData.reports[0].cloudinary_id} />
+              <Image
+                publicID={incidentData.reports[0].cloudinary_id}
+                title={incidentData.title}
+                itemIdentifier={t('Incident {{id}}', { id: incidentData.incident_id }).replace(
+                  ' ',
+                  '.'
+                )}
+              />
               <h3 data-cy="title">{incidentData?.title || incidentData.reports[0].title}</h3>
               {taxon && (
                 <div style={{ marginTop: '.5em' }}>
@@ -377,6 +427,33 @@ function PlotPoint({
       )}
     </>
   );
+}
+
+var attributeIsNotEmpty = (attribute) =>
+  attribute && ![null, undefined, '""', 'null', '', '[]'].includes(attribute.value_json);
+
+function attributeToTaxon(attribute) {
+  let taxon = 'Unclassified';
+
+  if (attributeIsNotEmpty(attribute)) {
+    const value = JSON.parse(attribute.value_json);
+
+    let stringValue = null;
+
+    if (Array.isArray(value)) {
+      if (value.length > 0) {
+        stringValue = String(value[0]);
+      }
+    } else if (typeof value == 'boolean') {
+      stringValue = value ? 'True' : 'False';
+    } else {
+      stringValue = String(value);
+    }
+    if (stringValue !== null && stringValue.trim().length > 0) {
+      taxon = stringValue;
+    }
+  }
+  return taxon;
 }
 
 function getTaxonColorMap({ taxons }) {
@@ -559,7 +636,8 @@ var Visualization = styled.div`
     position: absolute;
     padding: 1em;
     overflow: hidden;
-    img {
+    img,
+    canvas {
       margin: -1em -1em 1em -1em;
       max-width: unset;
       width: calc(100% + 4em);

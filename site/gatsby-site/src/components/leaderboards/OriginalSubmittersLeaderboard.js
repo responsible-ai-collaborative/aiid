@@ -15,7 +15,10 @@ const OriginalSubmitersLeaderboard = ({ limit, className }) => {
         }
       }
 
-      allMongodbAiidprodReports(sort: { order: ASC, fields: date_submitted }) {
+      allMongodbAiidprodReports(
+        filter: { is_incident_report: { eq: true } }
+        sort: { order: ASC, fields: date_submitted }
+      ) {
         nodes {
           report_number
           submitters

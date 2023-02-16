@@ -6,13 +6,15 @@ const AiidHelmet = ({
   children,
   metaTitle = null,
   metaDescription = null,
-  canonicalUrl = null,
+  path,
   metaImage = null,
   metaType = 'website',
 }) => {
   const twitter = config.siteMetadata.twitterAccount;
 
   metaImage ||= config.siteMetadata.ogImage;
+
+  const canonicalUrl = config.gatsby.siteUrl + path;
 
   return (
     <Helmet>
@@ -25,6 +27,18 @@ const AiidHelmet = ({
       {metaDescription && <meta name="description" content={metaDescription} />}
       {metaImage && <meta property="twitter:image" content={metaImage} />}
       {metaImage && <meta property="og:image" content={metaImage} />}
+
+      {/* Provide default image even when a metaImage is supplied
+       * to act as a fallback in case provided one fails to load.
+       * Some sites also allow users to pick from the available meta images
+       * if multiple are available.
+       */}
+      {config.siteMetadata.ogImage && (
+        <meta property="og:image" content={config.siteMetadata.ogImage} />
+      )}
+      {config.siteMetadata.ogImage && (
+        <meta property="twitter:image" content={config.siteMetadata.ogImage} />
+      )}
 
       <meta property="og:type" content={metaType} />
 

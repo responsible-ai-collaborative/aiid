@@ -1,4 +1,10 @@
 {
+    "entityId": {
+        "ref": "#/relationship/mongodb-atlas/aiidprod/entities",
+        "source_key": "entityId",
+        "foreign_key": "entity_id",
+        "is_list": false
+    },
     "incident_id": {
         "ref": "#/relationship/mongodb-atlas/aiidprod/incidents",
         "source_key": "incident_id",

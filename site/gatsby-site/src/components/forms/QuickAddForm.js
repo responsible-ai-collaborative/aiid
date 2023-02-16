@@ -59,8 +59,8 @@ const QuickAddForm = ({ className = '' }) => {
         addToast({
           message: (
             <>
-              {'Report successfully added to review queue. It will appear on the  '}
-              <LocalizedLink to="/apps/submitted">review queue page</LocalizedLink> within an hour.
+              {'Report successfully added to review queue. You can see your submission  '}
+              <LocalizedLink to="/apps/submitted">here</LocalizedLink>.
             </>
           ),
           severity: SEVERITY.success,

@@ -2,7 +2,6 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { Configure, InstantSearch } from 'react-instantsearch-dom';
-import LayoutHideSidebar from 'components/LayoutHideSidebar';
 import AiidHelmet from 'components/AiidHelmet';
 import { useModal, CustomModal } from 'hooks/useModal';
 
@@ -19,6 +18,8 @@ import { useLocalization } from 'gatsby-theme-i18n';
 import Container from 'elements/Container';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
+import Layout from 'components/Layout';
+import { VIEW_TYPES } from 'utils/discover';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -62,6 +63,7 @@ const convertStringToArray = (obj) => {
     'incident_id',
     'flag',
     'classifications',
+    'is_incident_report',
   ];
 
   let newObj = {};
@@ -131,12 +133,6 @@ const convertStringToRange = (query) => {
 };
 
 const generateSearchState = ({ query }) => {
-  const searchState = {
-    query: '',
-    refinementList: {},
-    range: {},
-  };
-
   const cleanQuery = removeUndefinedAttributes(query);
 
   const querySearch = cleanQuery.s || '';
@@ -144,7 +140,6 @@ const generateSearchState = ({ query }) => {
   delete cleanQuery.s;
 
   return {
-    ...searchState,
     page: query.page,
     query: querySearch,
     refinementList: {
@@ -191,6 +186,8 @@ function DiscoverApp(props) {
 
   const [searchState, setSearchState] = useState(generateSearchState({ query }));
 
+  const [viewType, setViewType] = useState(VIEW_TYPES.INCIDENTS);
+
   const onSearchStateChange = (searchState) => {
     setSearchState({ ...searchState });
   };
@@ -217,6 +214,15 @@ function DiscoverApp(props) {
     const extraQuery = { display: query.display };
 
     setQuery({ ...searchQuery, ...extraQuery }, 'push');
+
+    setViewType(
+      (searchState.refinementList.hideDuplicates === 'true' ||
+        searchState.refinementList.hideDuplicates === true) &&
+        searchState.refinementList.is_incident_report.length > 0 &&
+        searchState.refinementList.is_incident_report[0] === 'true'
+        ? VIEW_TYPES.INCIDENTS
+        : VIEW_TYPES.REPORTS
+    );
   }, [searchState]);
 
   const authorsModal = useModal();
@@ -226,11 +232,13 @@ function DiscoverApp(props) {
   const flagReportModal = useModal();
 
   return (
-    <LayoutHideSidebar {...props}>
-      <AiidHelmet>
+    <Layout {...props} sidebarCollapsed={true} className="w-full">
+      <AiidHelmet path={props.location.pathname}>
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
-      <SearchContext.Provider value={{ searchState, indexName, searchClient, onSearchStateChange }}>
+      <SearchContext.Provider
+        value={{ searchState, setSearchState, indexName, searchClient, onSearchStateChange }}
+      >
         <InstantSearch
           indexName={
             indexName +
@@ -246,7 +254,7 @@ function DiscoverApp(props) {
 
           <VirtualFilters />
 
-          <Container className="tw-container-xl mt-6">
+          <Container className="ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl mt-6">
             <Row className="px-0 mx-0">
               <Col className="px-0 mx-0">
                 <SearchBox defaultRefinement={query.s} />
@@ -267,6 +275,7 @@ function DiscoverApp(props) {
             authorsModal={authorsModal}
             submittersModal={submittersModal}
             flagReportModal={flagReportModal}
+            viewType={viewType}
           />
 
           <CustomModal {...authorsModal} />
@@ -276,7 +285,7 @@ function DiscoverApp(props) {
           <Pagination />
         </InstantSearch>
       </SearchContext.Provider>
-    </LayoutHideSidebar>
+    </Layout>
   );
 }
 

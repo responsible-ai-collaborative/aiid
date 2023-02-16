@@ -8,7 +8,7 @@ exports = async ({ token, tokenId, username }) => {
             token,
             tokenId,
         },
-        templateId: 'ConfirmEmail' // Template value from "site/realm/functions/sendEmail.js" EMAIL_TEMPLATES constant
+        templateId: 'ConfirmEmail' // Template value from function name sufix from "site/realm/functions/config.json"
     };
 
     const sendEmailresult = await context.functions.execute('sendEmail', sendEmailParams);

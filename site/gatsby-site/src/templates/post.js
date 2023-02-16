@@ -11,6 +11,7 @@ import SocialShareButtons from 'components/ui/SocialShareButtons';
 import MdxComponents from 'components/ui/MdxComponents';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import { Trans } from 'react-i18next';
+import Outline from 'components/Outline';
 
 export default function Post(props) {
   const {
@@ -21,28 +22,34 @@ export default function Post(props) {
 
   const metaDescription = mdx.frontmatter.metaDescription;
 
-  let canonicalUrl = config.gatsby.siteUrl;
-
   const postImage = mdx.frontmatter.image?.childImageSharp?.gatsbyImageData?.images?.fallback?.src;
 
   let metaImage = null;
 
   if (postImage) {
-    metaImage = `${canonicalUrl}${postImage}`;
+    metaImage = `${config.gatsby.siteUrl}${postImage}`;
   }
 
-  canonicalUrl =
-    config.gatsby.pathPrefix !== '/' ? canonicalUrl + config.gatsby.pathPrefix : canonicalUrl;
-  canonicalUrl = canonicalUrl + mdx.frontmatter.slug;
+  const canonicalUrl = config.gatsby.siteUrl + props.location.pathname;
+
+  const loc = new URL(canonicalUrl);
+
+  const rightSidebar = (
+    <>
+      <Outline location={loc} />
+    </>
+  );
+
+  const formattedDate = format(new Date(mdx.frontmatter.date), 'yyyy-MM-dd');
 
   return (
-    <Layout {...props}>
-      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }} />
+    <Layout {...{ ...props, rightSidebar }}>
+      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }} />
       <div className={'titleWrapper'}>
         <StyledHeading>{mdx.fields.title}</StyledHeading>
 
-        <div className="inline-block pb-2">
-          <span>{format(new Date(mdx.frontmatter.date), 'MMM d, yyyy')}</span>
+        <div className="inline-block">
+          <span>{formattedDate}</span>
           {mdx.frontmatter.aiTranslated && (
             <>
               <TranslationBadge className="ml-2" />
@@ -55,11 +62,12 @@ export default function Post(props) {
 
         <SocialShareButtons
           metaTitle={metaTitle}
-          canonicalUrl={canonicalUrl}
+          path={props.location.pathname}
           page="post"
+          className="-mt-1"
         ></SocialShareButtons>
       </div>
-      <StyledMainWrapper>
+      <StyledMainWrapper className="prose">
         <MDXProvider components={MdxComponents}>
           <MDXRenderer>{mdx.body}</MDXRenderer>
         </MDXProvider>
