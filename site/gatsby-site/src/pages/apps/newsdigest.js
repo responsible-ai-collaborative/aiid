@@ -93,6 +93,16 @@ export default function NewsSearchPage(props) {
     similaritySigma: (newsArticle.similarity - similarityMean) / similarityStdDev,
   }));
 
+  newsArticles = newsArticles.map((newsArticle) => {
+    const intrinsicRanking = getIntrinsicRanking(newsArticle);
+
+    return {
+      ...newsArticle,
+      intrinsicRanking,
+      ranking: intrinsicRanking / newsArticle.ageInDays,
+    };
+  });
+
   const newsArticleUrls = newsArticles.map((newsArticle) => newsArticle.url);
 
   const existingSubmissions = (submissionsData?.submissions || []).map(
@@ -111,6 +121,7 @@ export default function NewsSearchPage(props) {
     return (
       notDismissed &&
       newsArticle.ageInDays < 30 &&
+      newsArticle.intrinsicRanking > 0.4 &&
       !existingSubmissions.includes(newsArticle.url) &&
       !existingReports.includes(newsArticle.url) &&
       newsArticle.similaritySigma > -1
@@ -162,11 +173,11 @@ export default function NewsSearchPage(props) {
           database. However, the majority are simply AI-related.
         </Trans>
       </p>
-      <div data-cy="results" className="tw-card-set">
+      <div data-cy="results" className="grid gap-4 grid-cols-1 2xl:grid-cols-2 3xl:grid-cols-3">
         {loading && <p>Searching...</p>}
         {!loading && displayedArticles.length == 0 && <p>No results</p>}
         {displayedArticles
-          .sort((a, b) => ranking(b) - ranking(a))
+          .sort((a, b) => b.ranking - a.ranking)
           .map((newsArticle) => (
             <CandidateCard
               newsArticle={newsArticle}
@@ -235,11 +246,7 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
     >
       <div>
         <a href={newsArticle.url}>
-          <h3 className="text-xl mt-0 mb-0">
-            {newsArticle.similaritySigma} {newsArticle.harmKeywordsCountSigma}{' '}
-            {newsArticle.keywordsCountSigma} {ranking(newsArticle)}{' '}
-            {newsArticle.title.replace(/\s(-|\|).*/g, '')}
-          </h3>
+          <h3 className="text-xl mt-0 mb-0">{newsArticle.title}</h3>
         </a>
         <div className="text-lg text-gray-600 mb-3 mt-1">
           {date}
@@ -366,28 +373,26 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
   );
 }
 
-function ranking(newsArticle) {
+function getIntrinsicRanking(newsArticle) {
   const s = newsArticle.similaritySigma;
 
   const k = newsArticle.keywordsCount;
 
   const h = newsArticle.harmKeywordsCount;
 
-  const a = newsArticle.ageInDays;
-
   //         We take the square root of the keyword
   //         counts so that the bonus for having more
   //         keywords diminishes the more there are.
   //         Having 9 of each type of keyword (rare)
-  //         would be equivalent to having a 2 sigma    In the end, age
-  //         ranking cosine similarity.                 conquers all.
-  //                   |                      |                |
-  return (3 ** s * Math.sqrt(k) * Math.max(Math.sqrt(h), 0.5)) / a;
+  //         would be equivalent to having a 2 sigma
+  //         ranking cosine similarity.
+  //                   |                        |
+  return 3 ** s * Math.sqrt(k) * Math.max(Math.sqrt(h), 0.25);
   //       |                                            |
   // Since s is in stdevs, the range      In particular, articles with
   // is about [-2, 2]. With 3**s, the     one harm keyword should be
   // multiplier range is [1/9, 9].        substantially higher-ranked
-  //                                      than those with none (2x).
+  //                                      than those with none (4x).
 }
 
 var millisToDays = (millis) => millis / (1000 * 60 * 60 * 24);
