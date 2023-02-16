@@ -31,7 +31,7 @@ const StepTwo = (props) => {
     image_url: yup
       .string()
       .matches(
-        /((https?):\/\/)(\S)*$/,
+        /((https?):\/\/)(\S)*$|placeholder.svg/,
         '*Must enter URL in http://www.example.com/images/preview.png format'
       ),
   });
