@@ -86,23 +86,12 @@ export default function NewsSearchPage(props) {
     }
   );
 
-  console.log(`newsArticles`, newsArticles);
   const [similarityMean, similarityStdDev] = stats(newsArticles.map((e) => e.similarity));
 
-  const [keywordsCountMean, keywordsCountStdDev] = stats(newsArticles.map((e) => e.keywordsCount));
-
-  //const [harmKeywordsCountMean, harmKeywordsCountStdDev] = stats(newsArticles.map(e => e.harmKeywordsCount));
-  newsArticles = newsArticles.map((newsArticle) => {
-    const similarityDeviation = newsArticle.similarity - similarityMean;
-
-    const similaritySigma = similarityDeviation / similarityStdDev;
-
-    const keywordsCountDeviation = newsArticle.keywordsCount - keywordsCountMean;
-
-    const keywordsCountSigma = keywordsCountDeviation / keywordsCountStdDev;
-
-    return { ...newsArticle, similaritySigma, keywordsCountSigma };
-  });
+  newsArticles = newsArticles.map((newsArticle) => ({
+    ...newsArticle,
+    similaritySigma: (newsArticle.similarity - similarityMean) / similarityStdDev,
+  }));
 
   const newsArticleUrls = newsArticles.map((newsArticle) => newsArticle.url);
 
@@ -247,7 +236,9 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
       <div>
         <a href={newsArticle.url}>
           <h3 className="text-xl mt-0 mb-0">
-            {ranking(newsArticle)} {newsArticle.title.replace(/\s(-|\|).*/g, '')}
+            {newsArticle.similaritySigma} {newsArticle.harmKeywordsCountSigma}{' '}
+            {newsArticle.keywordsCountSigma} {ranking(newsArticle)}{' '}
+            {newsArticle.title.replace(/\s(-|\|).*/g, '')}
           </h3>
         </a>
         <div className="text-lg text-gray-600 mb-3 mt-1">
@@ -376,22 +367,27 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
 }
 
 function ranking(newsArticle) {
-  const s = 2 * (newsArticle.similaritySigma + 1.5); // -1σ = 1, 0σ = 3, 1σ = 5, 2σ = 7
+  const s = newsArticle.similaritySigma;
 
-  const k = Math.sqrt(Math.max(2 * (newsArticle.keywordsCountSigma + 1.5), 1));
+  const k = newsArticle.keywordsCount;
 
-  const h =
-    newsArticle.harmKeywordsCount == 0
-      ? 1
-      : newsArticle.harmKeywordsCount == 1
-      ? 2
-      : newsArticle.harmKeywordsCount == 2
-      ? 2.5
-      : 1 + Math.sqrt(newsArticle.harmKeywordsCount);
+  const h = newsArticle.harmKeywordsCount;
 
   const a = newsArticle.ageInDays;
 
-  return (s * k * h) / a;
+  //         We take the square root of the keyword
+  //         counts so that the bonus for having more
+  //         keywords diminishes the more there are.
+  //         Having 9 of each type of keyword (rare)
+  //         would be equivalent to having a 2 sigma    In the end, age
+  //         ranking cosine similarity.                 conquers all.
+  //                   |                      |                |
+  return (3 ** s * Math.sqrt(k) * Math.max(Math.sqrt(h), 0.5)) / a;
+  //       |                                            |
+  // Since s is in stdevs, the range      In particular, articles with
+  // is about [-2, 2]. With 3**s, the     one harm keyword should be
+  // multiplier range is [1/9, 9].        substantially higher-ranked
+  //                                      than those with none (2x).
 }
 
 var millisToDays = (millis) => millis / (1000 * 60 * 60 * 24);
