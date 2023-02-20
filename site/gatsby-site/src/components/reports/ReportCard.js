@@ -8,7 +8,6 @@ import WebArchiveLink from 'components/ui/WebArchiveLink';
 import { Trans, useTranslation } from 'react-i18next';
 import { Button, Tooltip } from 'flowbite-react';
 import Markdown from 'react-markdown';
-import { LocalizedLink } from 'gatsby-theme-i18n';
 import Actions from 'components/discover/Actions';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import { Badge } from 'flowbite-react';
@@ -55,14 +54,11 @@ const ReportCard = ({ item, className = '', incidentId }) => {
       >
         <div className="flex items-center w-full justify-between">
           <div>
-            <LocalizedLink
-              to={`${window.location.pathname}#r${item.report_number}`}
-              className="max-w-full cursor-pointer"
-            >
+            <a href={`#r${item.report_number}`} className="max-w-full cursor-pointer">
               <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full hover:text-primary-blue">
                 <Trans ns="landing">{item.title}</Trans>
               </h5>
-            </LocalizedLink>
+            </a>
             <WebArchiveLink url={item.url} className="text-dark-gray">
               {item.source_domain} &middot;{' '}
               {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
