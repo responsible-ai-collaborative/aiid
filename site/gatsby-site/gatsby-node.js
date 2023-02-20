@@ -146,21 +146,27 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
     let value = { geometry: { location: { lat: 0, lng: 0 } } };
 
     if (config.google.mapsApiKey) {
-      try {
-        if (node.classifications.Location && node.classifications.Location !== '') {
-          const {
-            data: {
-              results: { 0: geometry },
-            },
-          } = await googleMapsApiClient.geocode({
-            params: { key: config.google.mapsApiKey, address: node.classifications.Location },
-          });
+      const locationAttribute = node.attributes.find((a) => a.short_name == 'Location');
 
-          value = geometry;
+      try {
+        if (locationAttribute) {
+          const locationValue = JSON.parse(locationAttribute.value_json);
+
+          if (locationValue && locationValue !== '') {
+            const {
+              data: {
+                results: { 0: geometry },
+              },
+            } = await googleMapsApiClient.geocode({
+              params: { key: config.google.mapsApiKey, address: locationValue },
+            });
+
+            value = geometry;
+          }
         }
       } catch (e) {
         console.log(e);
-        console.log('Error fetching geocode data for', node.classifications.Location);
+        console.log('Error fetching geocode data for', locationAttribute?.value_json);
       }
     }
 
@@ -225,13 +231,49 @@ exports.createSchemaCustomization = ({ actions }) => {
       field_list: [mongodbAiidprodTaxaField_list]
     }
 
-    type mongodbAiidprodTaxaField_list {
-      default: String
-      placeholder: String
+    type mongodbAiidprodClassificationsAttribute {
+      short_name: String
+      value_json: String
+    }
+    type mongodbAiidprodClassifications implements Node {
+      incident_id: Int
+      namespace: String
+      attributes: [mongodbAiidprodClassificationsAttribute]
     }
 
-    type mongodbAiidprodResourcesClassifications implements Node {
-      MSFT_AI_Fairness_Checklist: Boolean
+    type Subfield {
+      field_number: String
+      short_name: String 
+      long_name: String
+      short_description: String
+      long_description: String
+      display_type: String
+      mongo_type: String
+      default: String
+      placeholder: String
+      permitted_values: [String]
+      weight: Int
+      instant_facet: Boolean
+      required: Boolean
+      public: Boolean
+    }
+
+    type mongodbAiidprodTaxaField_list {
+      subfields: [Subfield]
+      field_number: String
+      short_name: String 
+      long_name: String
+      short_description: String
+      long_description: String
+      display_type: String
+      mongo_type: String
+      default: String
+      placeholder: String
+      permitted_values: [String]
+      weight: Int
+      instant_facet: Boolean
+      required: Boolean
+      public: Boolean
     }
   `;
 
