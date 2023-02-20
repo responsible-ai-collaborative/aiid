@@ -515,6 +515,16 @@ describe('The Submit form', () => {
       '**/graphql',
       (req) =>
         req.body.operationName == 'ProbablyRelatedReports' &&
+        req.body.variables.query?.url_in?.[0] ==
+          'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
+      'RelatedReportsByURL',
+      relatedReports.byURL
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'ProbablyRelatedReports' &&
         req.body.variables.query?.epoch_date_published_gt == 1608346800 &&
         req.body.variables.query?.epoch_date_published_lt == 1610766000,
       'RelatedReportsByPublishedDate',
@@ -554,10 +564,7 @@ describe('The Submit form', () => {
 
     cy.waitForStableDOM();
 
-    cy.wait(
-      ['@RelatedReportsByPublishedDate', '@RelatedReportsByAuthor', '@RelatedReportsByIncidentId'],
-      { timeout: 20000 }
-    );
+    cy.wait(['@RelatedReportsByAuthor', '@RelatedReportsByIncidentId'], { timeout: 20000 });
 
     for (const key of ['byURL', 'byDatePublished', 'byIncidentId']) {
       const reports =
@@ -608,6 +615,16 @@ describe('The Submit form', () => {
       '**/graphql',
       (req) =>
         req.body.operationName == 'ProbablyRelatedReports' &&
+        req.body.variables.query?.url_in?.[0] ==
+          'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
+      'RelatedReportsByURL',
+      relatedReports.byURL
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'ProbablyRelatedReports' &&
         req.body.variables.query?.epoch_date_published_gt == 1608346800 &&
         req.body.variables.query?.epoch_date_published_lt == 1610766000,
       'RelatedReportsByPublishedDate',
@@ -645,10 +662,7 @@ describe('The Submit form', () => {
       cy.get(`input[name="${key}"]`).type(values[key]);
     }
 
-    cy.wait(
-      ['@RelatedReportsByPublishedDate', '@RelatedReportsByAuthor', '@RelatedReportsByIncidentId'],
-      { timeout: 20000 }
-    );
+    cy.wait(['@RelatedReportsByAuthor', '@RelatedReportsByIncidentId'], { timeout: 20000 });
 
     cy.get('[data-cy="no-related-reports"]').should('be.visible');
 
