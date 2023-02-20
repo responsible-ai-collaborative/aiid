@@ -1324,4 +1324,65 @@ describe('The Submit form', () => {
 
     cy.contains('Please review. Some data is missing.').should('not.exist');
   });
+
+  it('Should allow two submissions in a row', () => {
+    cy.visit(url);
+
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
+      'insertSubmission',
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
+
+    cy.get('input[name="url"]').type(
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    cy.get('[data-cy="fetch-info"]').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('input[name="authors"]').type('Something');
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
+
+    cy.get('[name="incident_date"]').type('2020-01-01');
+
+    cy.get('[data-cy="submit-step-1"]').click();
+
+    cy.get('div[class^="ToastContext"]')
+      .contains('Report successfully added to review queue. You can see your submission')
+      .should('exist');
+
+    cy.get('input[name="url"]').type(
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    cy.get('[data-cy="fetch-info"]').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('input[name="authors"]').type('Something');
+
+    cy.setEditorText(
+      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
+    );
+
+    cy.get('[name="incident_date"]').type('2020-01-01');
+
+    cy.get('[data-cy="submit-step-1"]').click();
+
+    cy.get('div[class^="ToastContext"]')
+      .contains('Report successfully added to review queue. You can see your submission')
+      .should('exist');
+  });
 });
