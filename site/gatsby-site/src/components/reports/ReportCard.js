@@ -26,7 +26,11 @@ const ReportCard = ({ item, className = '', incidentId }) => {
 
   const [imageMaxHeight, setImageMaxHeight] = useState(0);
 
+  const [imageMaxWidth, setImageMaxWidth] = useState(0);
+
   const ref = useRef(null);
+
+  const imageRef = useRef(null);
 
   const authors = item.authors.join(', ');
 
@@ -36,6 +40,10 @@ const ReportCard = ({ item, className = '', incidentId }) => {
     const cardHeight = ref.current.clientHeight;
 
     setImageMaxHeight(cardHeight);
+
+    const cardWidth = imageRef.current.clientWidth;
+
+    setImageMaxWidth(cardWidth);
   };
 
   useEffect(() => {
@@ -52,6 +60,7 @@ const ReportCard = ({ item, className = '', incidentId }) => {
   if (expanded) {
     adjustedImageStyles = {
       height: imageMaxHeight + 'px',
+      width: imageMaxWidth + 'px',
     };
   }
 
@@ -66,15 +75,14 @@ const ReportCard = ({ item, className = '', incidentId }) => {
         data-cy="incident-report-card"
       >
         <div
-          className={`flex self-stretch justify-center items-center md:border-r w-1/3 float-left mr-2 ${
-            expanded ? 'border-b' : ''
-          }`}
+          className={`flex self-stretch justify-center items-center ${
+            expanded ? '' : 'w-1/3'
+          } float-left mr-2 p-4`}
           style={adjustedImageStyles}
+          ref={imageRef}
         >
           <Image
-            className={`img-fluid rounded-start h-full w-full max-w-full rounded-t-lg md:rounded-l-lg md:rounded-r-none border-r object-cover ${
-              expanded ? 'border-b' : ''
-            }`}
+            className={`img-fluid h-full w-full max-w-full rounded-lg md:rounded-lg object-cover`}
             publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
             alt={item.title}
             transformation={fill().height(480)}
