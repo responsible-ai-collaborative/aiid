@@ -88,6 +88,7 @@ const Header = () => {
             <div className="hidden md:flex wrap-0 gap-2 items-center">
               <a href={'https://twitter.com/IncidentsDB'} target="_blank" rel="noreferrer">
                 <FontAwesomeIcon
+                  titleId="twitter"
                   icon={faTwitterSquare}
                   color={'white'}
                   className="pointer fa fa-twitter-square fa-lg"
@@ -96,6 +97,7 @@ const Header = () => {
               </a>
               <a href={'/rss.xml'} target="_blank" rel="noopener noreferrer">
                 <FontAwesomeIcon
+                  titleId="rss"
                   icon={faRssSquare}
                   color={'white'}
                   className="pointer fa fa-rss-square fa-lg"
@@ -109,6 +111,7 @@ const Header = () => {
                 rel="noopener noreferrer"
               >
                 <FontAwesomeIcon
+                  titleId="facebook"
                   icon={faFacebookSquare}
                   color={'white'}
                   className="pointer fa fa-rss-square fa-lg"
@@ -122,6 +125,7 @@ const Header = () => {
                 rel="noopener noreferrer"
               >
                 <FontAwesomeIcon
+                  titleId="linkedin"
                   icon={faLinkedin}
                   color={'white'}
                   className="pointer fa fa-rss-square fa-lg"
@@ -130,6 +134,7 @@ const Header = () => {
               </a>
               <a href={githubUrl} target="_blank" rel="noreferrer" style={{ paddingRight: '0px' }}>
                 <FontAwesomeIcon
+                  titleId="github"
                   icon={faGithubSquare}
                   color={'white'}
                   className="pointer fa fa-github-square fa-lg -mr-2"
@@ -199,6 +204,7 @@ const Header = () => {
 
               <div className="block md:hidden">
                 <FontAwesomeIcon
+                  titleId="bars"
                   icon={faBars}
                   color={'white'}
                   className="pointer fa fa-BARS fa-lg"

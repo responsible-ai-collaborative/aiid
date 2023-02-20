@@ -13,6 +13,7 @@ import { gql, useQuery } from '@apollo/client';
 import Layout from 'components/Layout';
 import { useMenuContext } from 'contexts/MenuContext';
 import ListSkeleton from 'elements/Skeletons/List';
+import { Trans } from 'react-i18next';
 
 const TableStyles = styled.div`
   padding: 1rem 1rem 1rem 0;
@@ -532,7 +533,9 @@ export default function Incidents(props) {
                   <tr>
                     <th colSpan={11}>
                       <div>
-                        <span>No results found</span>
+                        <span>
+                          <Trans>No results found</Trans>
+                        </span>
                       </div>
                     </th>
                   </tr>

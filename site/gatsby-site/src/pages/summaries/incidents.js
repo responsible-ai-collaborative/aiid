@@ -5,15 +5,18 @@ import Button from 'react-bootstrap/Button';
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
+import { hasVariantData } from 'utils/variants';
 
 const ReportList = ({ items }) => {
   return (
     <ul className="pl-8 leading-6 my-4 list-revert">
-      {items.map((report) => (
-        <li key={report.report_number} data-cy={`report-${report.report_number}`}>
-          <a href={report.url}>{report.title}</a>
-        </li>
-      ))}
+      {items
+        .filter((report) => !hasVariantData(report))
+        .map((report) => (
+          <li key={report.report_number} data-cy={`report-${report.report_number}`}>
+            <a href={report.url}>{report.title}</a>
+          </li>
+        ))}
     </ul>
   );
 };
@@ -93,6 +96,8 @@ export const pageQuery = graphql`
         report_number
         title
         url
+        text_inputs
+        text_outputs
       }
     }
   }
