@@ -515,16 +515,6 @@ describe('The Submit form', () => {
       '**/graphql',
       (req) =>
         req.body.operationName == 'ProbablyRelatedReports' &&
-        req.body.variables.query?.url_in?.[0] ==
-          'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
-      'RelatedReportsByURL',
-      relatedReports.byURL
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'ProbablyRelatedReports' &&
         req.body.variables.query?.epoch_date_published_gt == 1608346800 &&
         req.body.variables.query?.epoch_date_published_lt == 1610766000,
       'RelatedReportsByPublishedDate',
@@ -565,12 +555,7 @@ describe('The Submit form', () => {
     cy.waitForStableDOM();
 
     cy.wait(
-      [
-        '@RelatedReportsByURL',
-        '@RelatedReportsByPublishedDate',
-        '@RelatedReportsByAuthor',
-        '@RelatedReportsByIncidentId',
-      ],
+      ['@RelatedReportsByPublishedDate', '@RelatedReportsByAuthor', '@RelatedReportsByIncidentId'],
       { timeout: 20000 }
     );
 
@@ -623,16 +608,6 @@ describe('The Submit form', () => {
       '**/graphql',
       (req) =>
         req.body.operationName == 'ProbablyRelatedReports' &&
-        req.body.variables.query?.url_in?.[0] ==
-          'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
-      'RelatedReportsByURL',
-      relatedReports.byURL
-    );
-
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'ProbablyRelatedReports' &&
         req.body.variables.query?.epoch_date_published_gt == 1608346800 &&
         req.body.variables.query?.epoch_date_published_lt == 1610766000,
       'RelatedReportsByPublishedDate',
@@ -671,12 +646,7 @@ describe('The Submit form', () => {
     }
 
     cy.wait(
-      [
-        '@RelatedReportsByURL',
-        '@RelatedReportsByPublishedDate',
-        '@RelatedReportsByAuthor',
-        '@RelatedReportsByIncidentId',
-      ],
+      ['@RelatedReportsByPublishedDate', '@RelatedReportsByAuthor', '@RelatedReportsByIncidentId'],
       { timeout: 20000 }
     );
 
