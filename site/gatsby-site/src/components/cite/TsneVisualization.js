@@ -391,9 +391,6 @@ function PlotPoint({
             transform: `scale(${1 / state.scale})`,
             transformOrigin: `${onTop ? 'top' : 'bottom'} ${onLeft ? 'left' : 'right'}`,
             zIndex: 10,
-            /*display: incidentData ? undefined : 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',*/
           }}
           onMouseEnter={() => {
             clearTimeout(hoverTimeout);
