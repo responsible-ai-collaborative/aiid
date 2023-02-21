@@ -921,10 +921,6 @@ describe('The Submit form', () => {
 
     cy.get('input[name="authors"]').type('Something');
 
-    cy.setEditorText(
-      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
-    );
-
     cy.get('[name="incident_date"]').type('2020-01-01');
     cy.clickOutside();
 
@@ -973,10 +969,6 @@ describe('The Submit form', () => {
 
     cy.get('input[name="authors"]').type('Something');
 
-    cy.setEditorText(
-      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
-    );
-
     cy.get('[name="incident_date"]').type('2020-01-01');
 
     cy.get('[data-cy="submit-step-1"]').click();
@@ -1011,10 +1003,6 @@ describe('The Submit form', () => {
     cy.wait('@parseNews');
 
     cy.get('input[name="authors"]').type('Something');
-
-    cy.setEditorText(
-      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
-    );
 
     cy.get('[name="incident_date"]').type('2020-01-01');
 
@@ -1351,10 +1339,6 @@ describe('The Submit form', () => {
 
     cy.get('input[name="authors"]').type('Something');
 
-    cy.setEditorText(
-      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
-    );
-
     cy.get('[name="incident_date"]').type('2020-01-01');
 
     cy.get('[data-cy="submit-step-1"]').click();
@@ -1372,10 +1356,6 @@ describe('The Submit form', () => {
     cy.wait('@parseNews');
 
     cy.get('input[name="authors"]').type('Something');
-
-    cy.setEditorText(
-      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
-    );
 
     cy.get('[name="incident_date"]').type('2020-01-01');
 
