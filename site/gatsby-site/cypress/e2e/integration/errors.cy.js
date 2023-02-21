@@ -23,17 +23,17 @@ describe('Runtime errors', () => {
     '/cite/1/',
     '/entities/',
     '/entities/facebook/',
-    '/blog/the-first-taxonomy-of-ai-incidents/', // post template
+    '/blog/incident-report-2022-january/',
     '/taxonomy/cset/',
     '/summaries/wordcounts/',
     '/about/', // doc template
   ];
 
-  const codes = ['en', 'en', 'fr'];
+  const codes = ['en', 'es', 'fr'];
 
   paths.forEach((path) => {
     codes.forEach((code) => {
-      it(`/${code}${path} Should not have hydration errors`, () => {
+      it(`/${code}${path} Should not have runtime errors`, () => {
         const canonicalPath = switchLocalizedPath({ newLang: code, path });
 
         cy.visit(canonicalPath, {
@@ -45,18 +45,10 @@ describe('Runtime errors', () => {
         cy.waitForStableDOM();
 
         cy.get('@consoleError').then((consoleError) => {
-          const noHydrationErrors = consoleError
-            .getCalls()
-            .every((call) =>
-              call.args.every(
-                (arg) =>
-                  !arg.includes('did not match') || !arg.includes('Minified React error #425')
-              )
-            );
-
-          expect(noHydrationErrors, 'No hydration errors').to.be.true;
-
-          expect(consoleError.getCalls().length, 'No runtime errors').eq(0);
+          expect(
+            consoleError.getCalls().length,
+            'No runtime errors: ' + JSON.stringify(consoleError.getCalls())
+          ).eq(0);
         });
       });
     });

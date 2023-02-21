@@ -45,9 +45,10 @@ function EditCitePage(props) {
     severity: SEVERITY.success,
   });
 
-  const updateErrorToast = ({ incidentId }) => ({
+  const updateErrorToast = ({ incidentId, error }) => ({
     message: t('Error updating incident {{incidentId}}.', { incidentId }),
     severity: SEVERITY.danger,
+    error,
   });
 
   useEffect(() => {
@@ -102,8 +103,8 @@ function EditCitePage(props) {
       });
 
       addToast(updateSuccessToast({ incidentId }));
-    } catch (e) {
-      addToast(updateErrorToast({ incidentId }));
+    } catch (error) {
+      addToast(updateErrorToast({ incidentId, error }));
     }
   };
 

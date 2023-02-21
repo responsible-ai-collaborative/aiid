@@ -72,6 +72,7 @@ const SubmitForm = () => {
     harmed_parties: [],
     editor_notes: '',
     language: 'en',
+    tags: [],
   };
 
   const [submission, setSubmission] = useState(initialValues);
@@ -136,6 +137,7 @@ const SubmitForm = () => {
     addToast({
       message: t(`Unable to upload: `) + reason,
       severity: SEVERITY.danger,
+      error: _err,
     });
   };
 
@@ -269,7 +271,11 @@ const SubmitForm = () => {
         )}
       </p>
       <div className="my-5">
-        <SubmissionWizard submitForm={handleSubmit} initialValues={submission} />
+        <SubmissionWizard
+          submitForm={handleSubmit}
+          initialValues={submission}
+          urlFromQueryString={query.url}
+        />
 
         <p className="mt-4">
           <Trans ns="submit" i18nKey="submitReviewDescription">

@@ -223,6 +223,7 @@ function CitePage(props) {
         addToast({
           message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
           severity: SEVERITY.danger,
+          error: e,
         });
       }
     } else {
@@ -367,7 +368,11 @@ function CitePage(props) {
                             <Spinner size="sm" />
                           </div>
                         ) : (
-                          <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
+                          <FontAwesomeIcon
+                            titleId="envelope"
+                            icon={faEnvelope}
+                            title={t('Notify Me of Updates')}
+                          />
                         )}
                         <Trans>Notify Me of Updates</Trans>
                       </div>
@@ -378,21 +383,36 @@ function CitePage(props) {
                         incident.incident_id
                       }&date_downloaded=${format(new Date(), 'yyyy-MM-dd')}`}
                     >
-                      <FontAwesomeIcon icon={faPlus} title={t('New Report')} className="mr-2" />
+                      <FontAwesomeIcon
+                        titleId="report"
+                        icon={faPlus}
+                        title={t('New Report')}
+                        className="mr-2"
+                      />
                       <Trans>New Report</Trans>
                     </Button>
                     <Button
                       variant="outline-primary"
                       href={`/apps/submit?tags=${RESPONSE_TAG}&incident_id=${incident.incident_id}`}
                     >
-                      <FontAwesomeIcon icon={faPlus} title={t('New Response')} className="mr-2" />
+                      <FontAwesomeIcon
+                        titleId="response"
+                        icon={faPlus}
+                        title={t('New Response')}
+                        className="mr-2"
+                      />
                       <Trans>New Response</Trans>
                     </Button>
                     <Button
                       variant="outline-primary"
                       href={'/apps/discover?incident_id=' + incident.incident_id}
                     >
-                      <FontAwesomeIcon className="mr-2" icon={faSearch} title={t('Discover')} />
+                      <FontAwesomeIcon
+                        titleId="discover"
+                        className="mr-2"
+                        icon={faSearch}
+                        title={t('Discover')}
+                      />
                       <Trans>Discover</Trans>
                     </Button>
                     <BibTex
@@ -407,6 +427,7 @@ function CitePage(props) {
                         href={'/incidents/edit?incident_id=' + incident.incident_id}
                       >
                         <FontAwesomeIcon
+                          titleId="edit-incident"
                           className="mr-2"
                           icon={faEdit}
                           title={t('Edit Incident')}
@@ -543,6 +564,7 @@ export const query = graphql`
         namespace
         weight
         description
+        complete_entities
         dummy_fields {
           field_number
           short_name
@@ -562,6 +584,11 @@ export const query = graphql`
           instant_facet
           required
           public
+          complete_from {
+            all
+            current
+            entities
+          }
           subfields {
             field_number
             short_name
@@ -577,6 +604,11 @@ export const query = graphql`
             instant_facet
             required
             public
+            complete_from {
+              all
+              current
+              entities
+            }
           }
         }
       }

@@ -176,6 +176,12 @@
   "Only Issues": "Sólo Problemas",
   "Report {{report_number}}": "Problema {{report_number}}",
   "Show Details on Issue #{{id}}": "Ver detalles del Problema #{{id}}",
+  "ORDER": "ORDEN",
+  "asc": "asc",
+  "desc": "desc",
+  "Asc": "Asc",
+  "Desc": "Desc",
+  "Submitted Date": "Fecha de envío",
   "Back to Incident {{incidentId}}": "Volver al Incidente {{incidentId}}",
   "Back to Report {{reportNumber}}": "Volver al Informe {{reportNumber}}",
   "Editing Incident Report {{reportNumber}}": "Editando Informe de Incidente {{reportNumber}}",
@@ -227,5 +233,14 @@
   "Incident": "Incidente",
   "Reviewer": "Revisador",
   "Quality Control": "Control de calidad",
-  "All": "Todo"
+  "All": "Todo",
+  "Sort by": "Ordenar por",
+  "Display Option": "Opción de visualización",
+  "Relevance": "Relevancia",
+  "Newest Incident Date": "Fecha del incidente más reciente",
+  "Oldest Incident Date": "Fecha del incidente más antigua",
+  "Newest Published Date": "Fecha de publicación más reciente",
+  "Oldest Published Date": "Fecha de publicación más antigua",
+  "Newest Submitted Date": "Fecha de envío más reciente",
+  "Oldest Submitted Date": "Fecha de envío más antigua"
 }

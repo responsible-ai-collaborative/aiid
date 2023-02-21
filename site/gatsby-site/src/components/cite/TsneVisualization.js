@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Form } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
 import styled from 'styled-components';
 import { useApolloClient, gql } from '@apollo/client';
 import { Image } from '../../utils/cloudinary';
@@ -332,7 +331,7 @@ function PlotPoint({
             highlightedCategory != taxon
               ? 0.1
               : 1,
-          zIndex: highlightedCategory == taxon ? 2 : 1,
+          zIndex: highlightedCategory == taxon ? 3 : taxon != 'Unclassified' ? 2 : 1,
           background,
           color,
 
@@ -341,7 +340,7 @@ function PlotPoint({
           // from points that are very close to each other.
           transform: `scale(${scaleMultiplier})`,
         }}
-        className={incident.incident_id == currentIncidentId ? 'current' : ''}
+        className={`${incident.incident_id == currentIncidentId ? 'current' : ''} hover:z-10`}
         onTouchStart={() => {
           setTouchScreen(true);
         }}
@@ -392,9 +391,6 @@ function PlotPoint({
             transform: `scale(${1 / state.scale})`,
             transformOrigin: `${onTop ? 'top' : 'bottom'} ${onLeft ? 'left' : 'right'}`,
             zIndex: 10,
-            display: incidentData ? undefined : 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
           }}
           onMouseEnter={() => {
             clearTimeout(hoverTimeout);
@@ -407,22 +403,37 @@ function PlotPoint({
               <Image
                 publicID={incidentData.reports[0].cloudinary_id}
                 title={incidentData.title}
+                className="bg-gray-300"
                 itemIdentifier={t('Incident {{id}}', { id: incidentData.incident_id }).replace(
                   ' ',
                   '.'
                 )}
               />
-              <h3 data-cy="title">{incidentData?.title || incidentData.reports[0].title}</h3>
-              {taxon && (
-                <div style={{ marginTop: '.5em' }}>
-                  <Swatch color={background} />
-                  {taxon}
-                </div>
-              )}
             </>
           ) : (
-            <Spinner />
+            <div role="status" className="animate-pulse md:flex md:items-center -m-4 mb-2">
+              <div className="flex items-center justify-center w-full h-32 bg-gray-300 rounded sm:w-96 dark:bg-gray-700">
+                <svg
+                  className="w-12 h-12 text-gray-200"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  fill="currentColor"
+                  viewBox="0 0 640 512"
+                >
+                  <path d="M480 80C480 35.82 515.8 0 560 0C604.2 0 640 35.82 640 80C640 124.2 604.2 160 560 160C515.8 160 480 124.2 480 80zM0 456.1C0 445.6 2.964 435.3 8.551 426.4L225.3 81.01C231.9 70.42 243.5 64 256 64C268.5 64 280.1 70.42 286.8 81.01L412.7 281.7L460.9 202.7C464.1 196.1 472.2 192 480 192C487.8 192 495 196.1 499.1 202.7L631.1 419.1C636.9 428.6 640 439.7 640 450.9C640 484.6 612.6 512 578.9 512H55.91C25.03 512 .0006 486.1 .0006 456.1L0 456.1z" />
+                </svg>
+              </div>
+            </div>
           )}
+          <div>
+            <h3 data-cy="title">{incident.title}</h3>
+            {taxon && (
+              <div style={{ marginTop: '.5em' }}>
+                <Swatch color={background} />
+                {taxon}
+              </div>
+            )}
+          </div>
         </LocalizedLink>
       )}
     </>
@@ -638,10 +649,10 @@ var Visualization = styled.div`
     overflow: hidden;
     img,
     canvas {
-      margin: -1em -1em 1em -1em;
+      margin: -1rem -1rem 0.5rem -1rem;
       max-width: unset;
-      width: calc(100% + 4em);
-      aspect-ratio: 16 / 9;
+      width: calc(100% + 4rem);
+      height: 8rem;
       object-fit: cover;
     }
     h3 {
