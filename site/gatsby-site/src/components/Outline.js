@@ -40,7 +40,7 @@ const SidebarLayout = ({ location }) => {
 
             const prefixedSlug = slug && config.gatsby.pathPrefix + slug;
 
-            return [slug, prefixedSlug].includes(indexName) && page.node.tableOfContents.items;
+            return [slug, prefixedSlug].includes(indexName) && page.node.tableOfContents?.items;
           });
 
           navItems =
