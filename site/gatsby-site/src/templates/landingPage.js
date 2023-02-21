@@ -164,18 +164,15 @@ export const query = graphql`
       limit: 1
     ) {
       nodes {
-        fileAbsolutePath
         fields {
           slug
           title
           locale
         }
-        slug
         excerpt
         frontmatter {
           date
           author
-          slug
           image {
             childImageSharp {
               gatsbyImageData(layout: FIXED)
