@@ -32,11 +32,14 @@ const ReportCard = ({ item, className = '', incidentId }) => {
 
   const toggleReadMore = () => {
     setExpanded(!expanded);
+    if (expanded) {
+      ref.current.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const toggleReadMoreKeyDown = (e) => {
     if (e.key === 'Enter') {
-      setExpanded(!expanded);
+      toggleReadMore();
     }
   };
 
@@ -165,12 +168,7 @@ const ReportCard = ({ item, className = '', incidentId }) => {
           )}
           <div className="flex justify-end">
             <button
-              onClick={() => {
-                setExpanded(!expanded);
-                if (expanded) {
-                  ref.current.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
+              onClick={toggleReadMore}
               className="text-blue-700 border ml-1 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-xs p-1.5 text-center inline-flex items-center mr-2  dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
               data-cy={`${expanded ? 'collapse' : 'expand'}-report-button`}
             >
