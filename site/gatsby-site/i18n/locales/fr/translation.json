@@ -164,6 +164,12 @@
   "Response": "Réponse",
   "Responded": "Répondu",
   "{{authors}} post-incident response": "Réponse post-incident de {{authors}}",
+  "ORDER": "ORDRE",
+  "asc": "asc",
+  "desc": "desc",
+  "Asc": "Asc",
+  "Desc": "Desc",
+  "Submitted Date": "Date de soumission",
   "Back to Incident {{incidentId}}": "Retour à l'incident {{incidentId}}",
   "Back to Report {{reportNumber}}": "Retour au rapport {{reportNumber}}",
   "Editing Incident Report {{reportNumber}}": "Modification du rapport {{reportNumber}}",
@@ -216,5 +222,7 @@
   "Incident": "Incident",
   "Reviewer": "Réviseur",
   "Quality Control": "Contrôle de qualité",
-  "All": "Tous"
+  "All": "Tous",
+  "Sort by": "Trier par",
+  "Display Option": "Option d'affichage"
 }

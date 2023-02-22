@@ -267,6 +267,18 @@ class AlgoliaUpdater {
 
     const featuredReplicaIndexName = indexName + '-featured';
 
+    const incidentDateDescReplicaIndexName = indexName + '_epoch_incident_date_desc';
+
+    const incidentDateAscReplicaIndexName = indexName + '_epoch_incident_date_asc';
+
+    const datePublishedDescReplicaIndexName = indexName + '_epoch_date_published_desc';
+
+    const datePublishedAscReplicaIndexName = indexName + '_epoch_date_published_asc';
+
+    const dateSubmittedDescReplicaIndexName = indexName + '_epoch_date_submitted_desc';
+
+    const dateSubmittedAscReplicaIndexName = indexName + '_epoch_date_submitted_asc';
+
     const index = await this.algoliaClient.initIndex(indexName);
 
     await index.replaceAllObjects(entries);
@@ -277,7 +289,15 @@ class AlgoliaUpdater {
         attributeForDistinct: 'incident_id',
         indexLanguages: [language],
         queryLanguages: [language],
-        replicas: [featuredReplicaIndexName],
+        replicas: [
+          featuredReplicaIndexName,
+          incidentDateDescReplicaIndexName,
+          incidentDateAscReplicaIndexName,
+          datePublishedDescReplicaIndexName,
+          datePublishedAscReplicaIndexName,
+          dateSubmittedDescReplicaIndexName,
+          dateSubmittedAscReplicaIndexName,
+        ],
       })
       .then(async () => {
         const featuredReplicaIndex = await this.algoliaClient.initIndex(featuredReplicaIndexName);

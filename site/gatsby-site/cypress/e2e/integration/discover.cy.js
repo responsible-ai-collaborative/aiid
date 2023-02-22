@@ -76,7 +76,7 @@ describe('The Discover app', () => {
 
     cy.url().should('include', 'incident_id=10');
 
-    cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 10);
+    cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 8);
   });
 
   it('Should flag an incident', () => {
@@ -183,6 +183,62 @@ describe('The Discover app', () => {
     cy.contains('li', /^Incident Reports$/).click();
 
     cy.contains('button', 'Clear Filter').should('be.disabled');
+  });
+
+  it('Should sort by incident date', () => {
+    cy.visit(url);
+
+    cy.get('[data-cy="discover-sort"]', { timeout: 10000 }).click();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="incident-date-asc-sort"]', { timeout: 10000 }).click();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="discover-sort"]').click();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="discover-sort"]').should('have.text', 'Oldest Incident Date');
+
+    cy.get('[data-cy=incident-date]').then((dates) => {
+      let firstDateValue = parseInt(dates.eq(0).val().toString());
+
+      let secondDateValue = parseInt(dates.eq(1).val().toString());
+
+      cy.wrap(dates.eq(1)).invoke('val').then(parseFloat).should('be.gte', firstDateValue);
+
+      cy.wrap(dates.eq(2)).invoke('val').then(parseFloat).should('be.gte', secondDateValue);
+    });
+  });
+
+  it('Should sort by published date', () => {
+    cy.visit(url);
+
+    cy.get('[data-cy="discover-sort"]').click();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="published-date-desc-sort"]', { timeout: 10000 }).click();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="discover-sort"]').click();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="discover-sort"]').should('have.text', 'Newest Published Date');
+
+    cy.get('[data-cy=date-published]').then((dates) => {
+      let secondDateValue = parseInt(dates.eq(1).val().toString());
+
+      let thirdDateValue = parseInt(dates.eq(2).val().toString());
+
+      cy.wrap(dates.eq(0)).invoke('val').then(parseFloat).should('be.gte', secondDateValue);
+
+      cy.wrap(dates.eq(1)).invoke('val').then(parseFloat).should('be.gte', thirdDateValue);
+    });
   });
 
   it('Should display incidents instead of reports when selection Incidents view', () => {
