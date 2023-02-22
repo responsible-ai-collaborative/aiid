@@ -26,6 +26,7 @@ const SocialShareButtons = ({ metaTitle, path, page, className }) => {
         }}
       >
         <FontAwesomeIcon
+          titleId="twitter"
           icon={faTwitter}
           color={'#001934'}
           className={'pointer fa fa-lg'}
@@ -47,6 +48,7 @@ const SocialShareButtons = ({ metaTitle, path, page, className }) => {
         }}
       >
         <FontAwesomeIcon
+          titleId="linkedin"
           icon={faLinkedin}
           color={'#001934'}
           className={'pointer fa fa-lg'}
@@ -68,6 +70,7 @@ const SocialShareButtons = ({ metaTitle, path, page, className }) => {
         }}
       >
         <FontAwesomeIcon
+          titleId="envelope"
           icon={faEnvelope}
           color={'#001934'}
           className={'pointer fa fa-lg'}
@@ -89,6 +92,7 @@ const SocialShareButtons = ({ metaTitle, path, page, className }) => {
         }}
       >
         <FontAwesomeIcon
+          titleId="facebook"
           icon={faFacebook}
           color={'#001934'}
           className={'pointer fa fa-lg'}
