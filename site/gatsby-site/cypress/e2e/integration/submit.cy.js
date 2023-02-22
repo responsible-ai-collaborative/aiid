@@ -764,7 +764,11 @@ describe('The Submit form', () => {
 
     const params = new URLSearchParams(values);
 
+    cy.intercept('GET', parserURL, values).as('parseNews');
+
     cy.visit(url + `?${params.toString()}`);
+
+    cy.wait('@parseNews');
 
     const suffix = 'github.com/favicon.ico';
 
