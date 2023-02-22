@@ -46,7 +46,7 @@ const ReportCard = ({ item, className = '', incidentId }) => {
   return (
     <>
       <div
-        className={`items-center bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative cursor-pointer`}
+        className={`bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative cursor-pointer`}
         id={`r${item.report_number}`}
         ref={ref}
         data-cy="incident-report-card"
@@ -55,7 +55,7 @@ const ReportCard = ({ item, className = '', incidentId }) => {
         role="presentation"
       >
         <div
-          className={`flex self-stretch justify-center items-center w-1/3 float-left pr-4 cursor-default`}
+          className={`flex self-stretch justify-center items-center w-1/3 float-left pr-4 cursor-default md:min-h-[130px]`}
           ref={imageRef}
           role="presentation"
           onClick={(e) => e.stopPropagation()}
@@ -116,57 +116,62 @@ const ReportCard = ({ item, className = '', incidentId }) => {
             )}
           </div>
         </div>
-
-        <ReportText text={item.text} maxChars={expanded ? null : 240} />
-        {expanded && hasVariantData(item) && (
-          <div className="flex w-full flex-col mt-3 gap-2">
-            <div className="font-bold flex items-center gap-2">
-              <Trans ns="variants">Input and circumstances</Trans>
-              <Tooltip
-                content={
-                  <Trans ns="variants">
-                    Provide the relevant details producing the incident. Examples include the input
-                    prompts to a chatbot or a description of the circumstances leading to injuries
-                    sustained from a robot.
-                  </Trans>
-                }
-                trigger="click"
-                placement="right"
-              >
-                <FontAwesomeIcon
-                  icon={faQuestionCircle}
-                  style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-                  className="far fa-question-circle"
-                />
-              </Tooltip>
+        <div
+          role={'presentation'}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
+          <ReportText text={item.text} maxChars={expanded ? null : 240} />
+          {expanded && hasVariantData(item) && (
+            <div className="flex w-full flex-col mt-3 gap-2">
+              <div className="font-bold flex items-center gap-2">
+                <Trans ns="variants">Input and circumstances</Trans>
+                <Tooltip
+                  content={
+                    <Trans ns="variants">
+                      Provide the relevant details producing the incident. Examples include the
+                      input prompts to a chatbot or a description of the circumstances leading to
+                      injuries sustained from a robot.
+                    </Trans>
+                  }
+                  trigger="click"
+                  placement="right"
+                >
+                  <FontAwesomeIcon
+                    icon={faQuestionCircle}
+                    style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+                    className="far fa-question-circle"
+                  />
+                </Tooltip>
+              </div>
+              <div data-cy="variant-text_inputs" className="border-1 rounded-lg px-3">
+                <Markdown>{item.text_inputs}</Markdown>
+              </div>
+              <div className="font-bold flex items-center gap-2">
+                <Trans ns="variants">Output and outcomes</Trans>
+                <Tooltip
+                  content={
+                    <Trans ns="variants">
+                      Provide the relevant details surrounding the incident. Examples include output
+                      text from a chatbot or the nature of injuries sustained from a robot.
+                    </Trans>
+                  }
+                  trigger="click"
+                  placement="right"
+                >
+                  <FontAwesomeIcon
+                    icon={faQuestionCircle}
+                    style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+                    className="far fa-question-circle"
+                  />
+                </Tooltip>
+              </div>
+              <div data-cy="variant-text_outputs" className="border-1 rounded-lg px-3">
+                <Markdown>{item.text_outputs}</Markdown>
+              </div>
             </div>
-            <div data-cy="variant-text_inputs" className="border-1 rounded-lg px-3">
-              <Markdown>{item.text_inputs}</Markdown>
-            </div>
-            <div className="font-bold flex items-center gap-2">
-              <Trans ns="variants">Output and outcomes</Trans>
-              <Tooltip
-                content={
-                  <Trans ns="variants">
-                    Provide the relevant details surrounding the incident. Examples include output
-                    text from a chatbot or the nature of injuries sustained from a robot.
-                  </Trans>
-                }
-                trigger="click"
-                placement="right"
-              >
-                <FontAwesomeIcon
-                  icon={faQuestionCircle}
-                  style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-                  className="far fa-question-circle"
-                />
-              </Tooltip>
-            </div>
-            <div data-cy="variant-text_outputs" className="border-1 rounded-lg px-3">
-              <Markdown>{item.text_outputs}</Markdown>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
         <div className="flex justify-end">
           <button
             onClick={toggleReadMore}
@@ -198,7 +203,12 @@ const ReportCard = ({ item, className = '', incidentId }) => {
           </button>
         </div>
         {expanded && (
-          <div className="flex w-full flex-row justify-around items-center text-dark-gray">
+          <div
+            className="flex w-full flex-row justify-around items-center text-dark-gray"
+            role={'presentation'}
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+          >
             <Actions item={item} />
           </div>
         )}
