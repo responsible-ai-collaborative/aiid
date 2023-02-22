@@ -37,7 +37,7 @@ const Controls = () => {
         </div>
 
         <div className="flex">
-          <div className="bootstrap place-self-center">
+          <div className="place-self-center">
             <CsvExport />
           </div>
 

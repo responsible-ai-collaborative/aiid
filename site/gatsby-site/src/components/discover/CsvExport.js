@@ -4,7 +4,7 @@ import CsvDownloadButton from 'react-json-to-csv';
 import { format, fromUnixTime } from 'date-fns';
 import { faFileCsv } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button } from 'react-bootstrap';
+import { Button } from 'flowbite-react';
 
 const convertData = (hits) => {
   return hits.map((hit) => ({
@@ -42,12 +42,12 @@ const CsvExport = ({ hits, isSearchStalled }) => {
           disabled={!data || data.length == 0}
         >
           <Button
-            variant="secondary"
+            color={'gray'}
             size="sm"
             disabled={!data || data.length == 0}
             data-cy="export-to-csv"
           >
-            <FontAwesomeIcon icon={faFileCsv} width={'14px'} />
+            <FontAwesomeIcon icon={faFileCsv} />
           </Button>
         </CsvDownloadButton>
       )}
