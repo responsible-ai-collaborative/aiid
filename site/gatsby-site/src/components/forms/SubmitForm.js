@@ -272,7 +272,7 @@ const SubmitForm = () => {
         <SubmissionWizard
           submitForm={handleSubmit}
           initialValues={submission}
-          shouldFetchUrl={query.url != ''}
+          urlFromQueryString={query.url}
         />
 
         <p className="mt-4">

@@ -1328,6 +1328,8 @@ describe('The Submit form', () => {
   it('Should fetch the news if the url param is in the querystring', () => {
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
+    cy.intercept('GET', parserURL, cy.spy().as('parseNewsSpy'));
+
     cy.visit(
       `${url}?url=https%3A%2F%2Fwww.arstechnica.com%2Fgadgets%2F2017%2F11%2Fyoutube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons%2F`
     );
@@ -1337,5 +1339,9 @@ describe('The Submit form', () => {
     cy.get('div[class^="ToastContext"]')
       .contains('Please verify all information programmatically pulled from the report')
       .should('exist');
+
+    cy.get('input[name="url"]').type(`https://skylightcyber.com/2019/07/18/cylance-i-kill-you/`);
+
+    cy.get('@parseNewsSpy').should('have.been.calledOnce');
   });
 });
