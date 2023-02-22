@@ -1325,7 +1325,7 @@ describe('The Submit form', () => {
     cy.contains('Please review. Some data is missing.').should('not.exist');
   });
 
-  it.only('Should fetch the news if the url param is in the querystring', () => {
+  it('Should fetch the news if the url param is in the querystring', () => {
     cy.intercept('GET', parserURL, parseNews).as('parseNews');
 
     cy.visit(
