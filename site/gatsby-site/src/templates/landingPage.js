@@ -171,6 +171,7 @@ export const query = graphql`
         }
         excerpt
         frontmatter {
+          slug
           date
           author
           image {
