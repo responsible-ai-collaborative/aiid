@@ -731,7 +731,11 @@ describe('The Submit form', () => {
 
     const params = new URLSearchParams(values);
 
+    cy.intercept('GET', parserURL, values).as('parseNews');
+
     cy.visit(url + `?${params.toString()}`);
+
+    cy.wait('@parseNews');
 
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
