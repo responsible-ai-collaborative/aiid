@@ -50,6 +50,11 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
     skip: !active,
   });
 
+  const { data: allClassificationsData } = useQuery(FIND_CLASSIFICATION, {
+    variables: { query: { namespace: taxonomy.namespace } },
+    skip: !active,
+  });
+
   const classification =
     classificationsData &&
     taxonomy &&
@@ -314,6 +319,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                           setFieldTouched,
                           setFieldValue,
                           setDeletedSubClassificationIds,
+                          allClassificationsData,
                         }}
                       />
                     )
@@ -360,10 +366,45 @@ function FormField({
   superfield,
   superfieldIndex,
   setDeletedSubClassificationIds,
+  allClassificationsData,
 }) {
   const identifier = superfield
     ? `${superfield.short_name}___${superfieldIndex}___${field.short_name}`
     : field.short_name;
+
+  let autocompleteValues = [];
+
+  if (field.display_type === 'string' && allClassificationsData) {
+    autocompleteValues = allClassificationsData.classifications
+      .map((classification) =>
+        (classification.attributes || []).find((a) => a.short_name == field.short_name)
+      )
+      .filter((attribute) => attribute?.value_json)
+      .map((attribute) => JSON.parse(attribute.value_json));
+    autocompleteValues = Array.from(new Set(autocompleteValues));
+  }
+  if (field.display_type === 'list' && allClassificationsData) {
+    const classifications = allClassificationsData.classifications;
+
+    const matchingAttributes = classifications.map((classification) =>
+      (classification.attributes || []).find((a) => a.short_name == field.short_name)
+    );
+
+    const matchingAttributesWithValues = matchingAttributes.filter(
+      (attribute) => attribute?.value_json
+    );
+
+    const attributeValues = matchingAttributesWithValues.map((attribute) =>
+      JSON.parse(attribute.value_json)
+    );
+
+    const combinedAttributedValues = attributeValues.reduce(
+      (combined, array) => combined.concat(array),
+      []
+    );
+
+    autocompleteValues = Array.from(new Set(combinedAttributedValues));
+  }
 
   return (
     <div key={field.short_name} className="bootstrap">
@@ -406,13 +447,21 @@ function FormField({
       )}
 
       {field.display_type === 'string' && (
-        <Form.Control
-          id={identifier}
-          name={identifier}
-          type="text"
-          onChange={handleChange}
-          value={formikValues[identifier]}
-        />
+        <>
+          <Form.Control
+            id={identifier}
+            name={identifier}
+            type="text"
+            onChange={handleChange}
+            value={formikValues[identifier]}
+            list={`${identifier}-possible-values`}
+          />
+          <datalist id={`${identifier}-possible-values`}>
+            {autocompleteValues.map((v) => (
+              <option key={v}>{v}</option>
+            ))}
+          </datalist>
+        </>
       )}
 
       {field.display_type === 'long_string' && (
@@ -489,6 +538,7 @@ function FormField({
           inputId={identifier}
           placeHolder="Type and press Enter to add an item"
           value={formikValues[identifier]}
+          options={autocompleteValues}
           onChange={(value) => {
             setFieldTouched(identifier, true);
             setFieldValue(identifier, value);
