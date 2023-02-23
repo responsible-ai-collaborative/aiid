@@ -305,6 +305,54 @@ class AlgoliaUpdater {
         await featuredReplicaIndex.setSettings({
           ranking: ['desc(featured)', 'desc(text)'],
         });
+
+        const incidentDateDescReplicaIndex = await this.algoliaClient.initIndex(
+          incidentDateDescReplicaIndexName
+        );
+
+        await incidentDateDescReplicaIndex.setSettings({
+          ranking: ['desc(epoch_incident_date)'],
+        });
+
+        const incidentDateAscReplicaIndex = await this.algoliaClient.initIndex(
+          incidentDateAscReplicaIndexName
+        );
+
+        await incidentDateAscReplicaIndex.setSettings({
+          ranking: ['asc(epoch_incident_date)'],
+        });
+
+        const datePublishedDescReplicaIndex = await this.algoliaClient.initIndex(
+          datePublishedDescReplicaIndexName
+        );
+
+        await datePublishedDescReplicaIndex.setSettings({
+          ranking: ['desc(epoch_date_published)'],
+        });
+
+        const datePublishedAscReplicaIndex = await this.algoliaClient.initIndex(
+          datePublishedAscReplicaIndexName
+        );
+
+        await datePublishedAscReplicaIndex.setSettings({
+          ranking: ['asc(epoch_date_published)'],
+        });
+
+        const dateSubmittedDescReplicaIndex = await this.algoliaClient.initIndex(
+          dateSubmittedDescReplicaIndexName
+        );
+
+        await dateSubmittedDescReplicaIndex.setSettings({
+          ranking: ['desc(epoch_date_submitted)'],
+        });
+
+        const dateSubmittedAscReplicaIndex = await this.algoliaClient.initIndex(
+          dateSubmittedAscReplicaIndexName
+        );
+
+        await dateSubmittedAscReplicaIndex.setSettings({
+          ranking: ['desc(epoch_date_submitted)'],
+        });
       });
   };
 
