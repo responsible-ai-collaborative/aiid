@@ -215,7 +215,7 @@ function DiscoverApp(props) {
     const extraQuery = { display: query.display };
 
     if (!some([searchQuery], extraQuery)) {
-      //Only reset query if it has changed otherwise it triggers on Locale update and reloads the page to the previous locale
+      //Only set query if it has changed otherwise it triggers on Locale update and reloads the page to the previous locale
 
       setQuery({ ...searchQuery, ...extraQuery }, 'push');
 
