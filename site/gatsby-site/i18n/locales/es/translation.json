@@ -235,5 +235,12 @@
   "Quality Control": "Control de calidad",
   "All": "Todo",
   "Sort by": "Ordenar por",
-  "Display Option": "Opción de visualización"
+  "Display Option": "Opción de visualización",
+  "Relevance": "Relevancia",
+  "Newest Incident Date": "Fecha del incidente más reciente",
+  "Oldest Incident Date": "Fecha del incidente más antigua",
+  "Newest Published Date": "Fecha de publicación más reciente",
+  "Oldest Published Date": "Fecha de publicación más antigua",
+  "Newest Submitted Date": "Fecha de envío más reciente",
+  "Oldest Submitted Date": "Fecha de envío más antigua"
 }
