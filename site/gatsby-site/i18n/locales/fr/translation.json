@@ -224,5 +224,12 @@
   "Quality Control": "Contrôle de qualité",
   "All": "Tous",
   "Sort by": "Trier par",
-  "Display Option": "Option d'affichage"
+  "Display Option": "Option d'affichage",
+  "Relevance": "Pertinence",
+  "Newest Incident Date": "Date de l'incident plus récente",
+  "Oldest Incident Date": "Date de l'incident plus ancienne", 
+  "Newest Published Date": "Date de publication plus récente",
+  "Oldest Published Date": "Date de publication plus ancienne",
+  "Newest Submitted Date": "Date de soumission plus récente",
+  "Oldest Submitted Date": "Date de soumission plus ancienne"
 }
