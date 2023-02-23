@@ -9,6 +9,9 @@ exports.up = async ({ context: { client } }) => {
   await taxaCollection.insertOne(csetV1TaxaEntry);
 };
 
+/** @type {import('umzug').MigrationFn<any>} */
+exports.down = async () => {};
+
 var YesNoMaybe = {
   display_type: 'enum',
   mongo_type: 'string',
@@ -72,13 +75,15 @@ var csetV1TaxaEntry = {
   `),
   dummy_fields: [
     { field_number: '1', short_name: 'Metadata' },
-    { field_number: '2', short_name: 'AI Tangible Harm Category' },
-    { field_number: '3', short_name: 'Special Interest Intangible Harm' },
-    { field_number: '4', short_name: 'Environmental and Temporal Characteristics' },
-    { field_number: '5', short_name: 'Characterizing Entities and the Harm' },
-    { field_number: '6', short_name: 'Tangible Harm Quantities ' },
-    { field_number: '7', short_name: 'Information about AI System' },
-    { field_number: '8', short_name: 'AI Functionality and Techniques' },
+    { field_number: '2', short_name: 'Incident Domain' },
+    { field_number: '3', short_name: 'AI Tangible Harm Assessment' },
+    { field_number: '4', short_name: 'Special Interest Intangible Harm' },
+    { field_number: '5', short_name: 'AI Special Interest Intangible Harm Assessment' },
+    { field_number: '6', short_name: 'Environmental and Temporal Characteristics' },
+    { field_number: '7', short_name: 'Characterizing Entities and the Harm' },
+    { field_number: '8', short_name: 'Tangible Harm Quantities ' },
+    { field_number: '9', short_name: 'Information about AI System' },
+    { field_number: '10', short_name: 'AI Functionality and Techniques' },
   ],
   field_list: [
     {
@@ -204,7 +209,7 @@ var csetV1TaxaEntry = {
     //        required: false
     //      },
     {
-      field_number: '2.1.1',
+      field_number: '2.1',
       short_name: 'Physical Objects',
       long_name: 'Did the incident occur in a domain with physical objects ?',
       short_description: 'Did the incident occur in a domain with physical objects ?',
@@ -218,7 +223,7 @@ var csetV1TaxaEntry = {
         'Context matters. AI systems embedded in hardware that can physically interact are more likely to cause death, injury, or damage.',
     },
     {
-      field_number: '2.1.2',
+      field_number: '2.2',
       short_name: 'Entertainment Industry',
       long_name: 'Did the AI incident occur in the entertainment industry?',
       short_description: 'Did the AI incident occur in the entertainment industry?',
@@ -232,7 +237,7 @@ var csetV1TaxaEntry = {
         'Context matters. AI systems used for entertainment are less likely to result in harm. For example a deepfake used in a movie is less likely to cause harm than a deepfake used for political misinformation.',
     },
     {
-      field_number: '2.1.3',
+      field_number: '2.3',
       short_name: 'Report, Test, or Study',
       long_name:
         'Was the incident about a report, test, or study of data instead of the AI itself?',
@@ -248,7 +253,7 @@ var csetV1TaxaEntry = {
         'Sometimes there are reports about issues with the data that could be used to develop AI systems. Since there are mitigation approaches, data issues do not automatically mean that the associated AI will have issues that lead to harm. A projection or hypothesis of the harm resulting from data issues is not sufficient. There must be harm that can be clearly linked to an AI.',
     },
     {
-      field_number: '2.1.4',
+      field_number: '2.4',
       short_name: 'Deployed',
       long_name:
         'Was the reported system (even if AI involvement is unknown) deployed or sold to users?',
@@ -264,7 +269,7 @@ var csetV1TaxaEntry = {
         'Systems that are not deployed or sold to users tend to still be in the development stage and hence are less likely to cause harm. However, harm can still be possible. ',
     },
     {
-      field_number: '2.1.5',
+      field_number: '2.5',
       short_name: 'Producer Test in Controlled Conditions',
       long_name:
         'Was this a test or demonstration of an AI system done by developers, producers or researchers (versus users) in controlled conditions?',
@@ -280,7 +285,7 @@ var csetV1TaxaEntry = {
         'AI system tests or demonstrations by developers, producers, or researchers in controlled environments are less likely to expose people, organizations, property, institutions, or the natural environment to harm.  Controlled environments may include situations such as an isolated compute system, a regulatory sandbox, or an autonomous vehicle testing range. ',
     },
     {
-      field_number: '2.1.6',
+      field_number: '2.6',
       short_name: 'Producer Test in Operational Conditions',
       long_name:
         'Was this a test or demonstration of an AI system done by developers, producers or researchers (versus users) in operational conditions?',
@@ -296,7 +301,7 @@ var csetV1TaxaEntry = {
         'While almost every AI system undergoes testing or demonstration in a controlled environment, some also undergo testing  or demonstration in an operational environment. Testing in operational environments still occurs before the system is deployed or sold to end-users. However, relative to controlled environments, operational environments try to closely represent real-world conditions and end-users that affect use of the AI system. Therefore, testing in an operational environment typically poses a heightened risk of harm to people, organizations, property, institutions, or the environment.',
     },
     {
-      field_number: '2.1.7',
+      field_number: '2.7',
       short_name: 'User Test in Controlled Conditions',
       long_name: 'Was this a test or demonstration done by users in controlled conditions?',
       short_description: 'Was this a test or demonstration done by users in controlled conditions?',
@@ -311,7 +316,7 @@ var csetV1TaxaEntry = {
         'The involvement of a user (versus a developer, producer, or researcher) increases the likelihood that harm can occur even if the AI system is being tested. Relative to controlled environments, controlled environments try to closely represent real-world conditions and end-users that affect use of the AI system. Therefore, testing in an controlled environment typically poses a heightened risk of harm to people, organizations, property, institutions, or the environment.',
     },
     {
-      field_number: '2.1.8',
+      field_number: '2.8',
       short_name: 'User Test in Operational Conditions',
       long_name: 'Was this a test or demonstration done by users in operational conditions?',
       short_description:
@@ -327,7 +332,7 @@ var csetV1TaxaEntry = {
         'Sometimes, prior to deployment, the user will perform a test or demonstration of the AI system. The involvement of a user (versus a developer, producer, or researcher) increases the likelihood that harm can occur even if the AI system is being tested in controlled environments.',
     },
     {
-      field_number: '2.2',
+      field_number: '2.9',
       short_name: 'Harm Domain',
       long_name: 'Incident occurred in a domain where we could expect harm to occur?',
       short_description:
@@ -343,7 +348,7 @@ var csetV1TaxaEntry = {
     },
 
     {
-      field_number: '2.3',
+      field_number: '3.1',
       short_name: 'Tangible Harm',
       long_name: 'Did tangible harm (loss, damage or injury ) occur? ',
       short_description: 'Did tangible harm (loss, damage or injury ) occur? ',
@@ -366,7 +371,7 @@ var csetV1TaxaEntry = {
       public: true,
     },
     {
-      field_number: '2.4',
+      field_number: '3.2',
       short_name: 'AI System',
       long_name: 'Does the incident involve an AI system?',
       short_description: 'Does the incident involve an AI system?',
@@ -381,52 +386,11 @@ var csetV1TaxaEntry = {
         'Note, over time more information about the incident may become available, allowing a ‘maybe’ to be changed to a ‘yes’ or ‘no.’',
     },
 
-    //      {
-    //        short_name: "Intent",
-    //        long_name: "Probable level of intent",
-    //        short_description: "Was the incident an accident, intentional, or is the intent unclear?",
-    //        long_description: "Indicates whether the incident was deliberate/expected or accidental, based on the available evidence. \"Deliberate or expected\" applies if it is established or highly likely that the system acted more or less as expected, from the perspective of at least one of the people or entities responsible for it. “Accident” applies if it is established or highly likely that the harm arose from the system acting in an unexpected way. \"Unclear\" applies if the evidence is contradictory or too thin to apply either of the above labels.",
-    //        display_type: "enum",
-    //        mongo_type: "string",
-    //        default: "Accident",
-    //        placeholder: "Accident",
-    //        permitted_values: [ "Accident", "Deliberate or expected", "Unclear" ],
-    //        weight: {
-    //          $numberInt: "75"
-    //        },
-    //        instant_facet: true,
-    //        required: false
-    //      },
     {
-      field_number: '2.5',
-      short_name: 'Intentional Harm',
-      long_name: 'Was the AI intentionally developed or deployed to perform the harm?',
-      short_description:
-        'Was the AI intentionally developed or deployed to perform the harm?\n\nIf yes, did the AI’s behavior result in unintended or intended harm? ',
-      long_description:
-        'Indicates if the system was designed to do harm.  If it was designed to perform harm, the field will indicate if the AI system did or did not create unintended harm–i.e. was the reported harm the harm that AI was expected to perform or a different unexpected harm? ',
-      display_type: 'enum',
-      mongo_type: 'string',
-      default: 'unclear',
-      placeholder: '',
-      permitted_values: [
-        'Yes. Intentionally designed to perform harm and did create intended harm',
-        'Yes. Intentionally designed to perform harm but created an unintended harm (a different harm may have occurred)',
-        'No. Not intentionally designed to perform harm',
-        'unclear',
-      ],
-      weight: 50,
-      instant_facet: true,
-      required: false,
-      public: true,
-      notes:
-        'Tracking and analyzing harm from AI systems designed to do harm is valuable and worthwhile. However, analysts may want to separately analyze harm from AI systems that were or were not designed to produce the observed harm.',
-    },
-    {
-      field_number: '2.6',
+      field_number: '3.3',
       short_name: 'Clear Link to AI',
-      long_name: 'Can an AI be directly and clearly linked to tangible or intangible harm?',
-      short_description: 'Can an AI be directly and clearly linked to tangible or intangible harm?',
+      long_name: 'Can an AI be directly and clearly linked to tangible harm?',
+      short_description: 'Can an AI be directly and clearly linked to tangible harm?',
       long_description:
         '“Yes” if an AI was involved in harm, its behavior can be directly linked to the harm, and the harm may not have occurred if the AI acted differently. “Maybe” if the link is unclear. Otherwise, select “no.”',
       ...YesNoMaybe,
@@ -438,10 +402,9 @@ var csetV1TaxaEntry = {
         'For an AI to be directly linked to harm it must have played an important role in the chain of events that led to harm. The AI system doesn’t need to be the only factor, or even the major factor, in the chain of harm. However, if the AI system hadn’t acted in the way it did, the specific harm would not have occurred.\n\nAn occurrence of harm that involves a system which contains an AI is not sufficient for calling an incident and AI harm event, near-miss, or issue. The involved AI must also be directly linked to the harm.',
     },
     {
-      field_number: '2.7',
+      field_number: '3.4',
       short_name: 'There is a potentially identifiable specific entity that experienced the harm',
-      long_name:
-        'A potentially identifiable specific entity that experienced the harm can be characterized or identified.',
+      long_name: 'There is a potentially identifiable specific entity that experienced the harm',
       short_description:
         'A potentially identifiable specific entity that experienced the harm can be characterized or identified.',
       long_description:
@@ -453,7 +416,7 @@ var csetV1TaxaEntry = {
       required: false,
       public: true,
       notes:
-        'A potentially identifiable specific entity is an entity that can be characterized in detail such that the name (Mr. Joe Smith,  Acme Inc, etc.) or a unique identifier (e.g. 100 Main Street, Anywhere USA) of the entity could be found. We may not know the name or identifier of the entity from the reports, but it does exist and could be found. For example, the general public is not a potentially identifiable specific entity. However, incarcerated people in the Springfield penitentiary would be specific entities because it would be possible to get a list of all the prisoners in the facility.',
+        'A potentially identifiable specific entity is an entity that can be described in detail such that the name (Mr. Joe Smith,  Acme Inc, etc.) or a unique identifier (e.g. 100 Main Street, Anywhere USA) of the entity could be found. We may not know the name or identifier of the entity from the reports, but it does exist and could be found. For example, the general public is not a potentially identifiable specific entity. However, incarcerated people in the Springfield penitentiary would be specific entities because it would be possible to get a list of all the prisoners in the facility.',
     },
 
     //      {
@@ -493,7 +456,7 @@ var csetV1TaxaEntry = {
     //        required: false
     //      },
     {
-      field_number: '2.8',
+      field_number: '3.5',
       short_name: 'AI Harm Level',
       long_name: "Annotator's AI tangible harm level assessment",
       short_description:
@@ -519,12 +482,12 @@ var csetV1TaxaEntry = {
         'Special interest intangible harm is determined in a different field. The determination of a special interest intangible harm is not dependant upon the AI tangible harm level',
     },
     {
-      field_number: '2.9',
-      short_name: 'AI Harm Level Notes',
-      long_name: 'AI tangible harm level notes',
+      field_number: '3.6',
+      short_name: 'AI Tangible Harm Level Notes',
+      long_name: 'AI Tangible Harm Level Notes',
       short_description: 'Notes about the AI tangible harm level assessment',
       long_description:
-        'If for 2.8 you select unclear or leave it blank, please provide a brief description of why.\n\n You can also add notes if you want to provide justification for a level',
+        'If for 3.5 you select unclear or leave it blank, please provide a brief description of why.\n\n You can also add notes if you want to provide justification for a level',
       display_type: 'long_string',
       mongo_type: 'string',
       default: '',
@@ -563,7 +526,7 @@ var csetV1TaxaEntry = {
     //      },
 
     {
-      field_number: '3.1',
+      field_number: '4.1',
       short_name: 'Impact on Critical Services',
       long_name:
         "Did this impact people's access to critical or public services (health care, social services, voting, transportation, etc)?",
@@ -579,7 +542,7 @@ var csetV1TaxaEntry = {
         'Public services include healthcare, social services, voting, public transportation, education, and consumer protection.\n\nNote, if ‘yes’ is selected then there was likely a violation of civil liberties and there was a special interest intangible harm.',
     },
     {
-      field_number: '3.2',
+      field_number: '4.2',
       short_name: 'Rights Violation',
       long_name:
         'Was this a violation of  human rights, civil liberties, civil rights, or democratic norms?',
@@ -596,7 +559,7 @@ var csetV1TaxaEntry = {
         'It can often be difficult for the typical annotator to differentiate between violations of civil liberties, civil rights, human rights, and democratic norms. For this reason CSET grouped them together.\n\nHuman rights are rights inherent to all human beings, regardless of race, sex, nationality, ethnicity, language, religion, or any other status. They include the right to life and liberty, freedom from slavery and torture, freedom of opinion and expression, and the right to work and education. Civil rights are legal provisions that originate from notions of equality and can be enforced by law. Civil liberties are personal freedoms that are referenced in the Bill of Rights. Democratic norms are traditions, customs, and best practices that support democracy. An example of a democratic norm is accepting election results and facilitating a peaceful transfer of political power. ',
     },
     {
-      field_number: '3.3',
+      field_number: '4.3',
       short_name: 'Involving Minor',
       long_name:
         'Was a minor involved in the incident (disproportionally treated or specifically  targeted/affected)',
@@ -612,7 +575,7 @@ var csetV1TaxaEntry = {
         'Generally, governments have an interest in establishing heightened protections for minors. These protections are often associated with media content or privacy. For example, if an AI system illegally tracked a minor’s activity online, then answer “yes” to this question. There are instances where an AI system causes indiscriminate harm to a group of people, and it is plausible that some of those people are minors. However, in this case the entire group of people, adults and children alike, shared the distribution of harm equally and therefore the answer to this question would be “no.”',
     },
     {
-      field_number: '3.4',
+      field_number: '4.4',
       short_name: 'Detrimental Content',
       long_name: 'Was detrimental content (misinformation, hate speech) involved?',
       short_description:
@@ -626,7 +589,7 @@ var csetV1TaxaEntry = {
       public: true,
     },
     {
-      field_number: '3.5',
+      field_number: '4.5',
       short_name: 'Protected Characteristic',
       long_name: 'Was a group of people treated differently based upon a protected characteristic?',
       short_description:
@@ -672,7 +635,7 @@ var csetV1TaxaEntry = {
     //        required: false
     //      },
     {
-      field_number: '3.6',
+      field_number: '4.6',
       short_name: 'Harm Distribution Basis',
       long_name: 'If harms were potentially unevenly distributed among people, on what basis?',
       short_description: 'Indicates how the harms were potentially distributed.',
@@ -706,7 +669,7 @@ var csetV1TaxaEntry = {
       public: true,
     },
     {
-      field_number: '3.7',
+      field_number: '4.7',
       short_name: 'Notes (special interest intangible harm)',
       long_name: 'Input any notes that may help explain your answers.',
       short_description: 'Input any notes that may help explain your answers.',
@@ -722,6 +685,104 @@ var csetV1TaxaEntry = {
       public: true,
     },
 
+    {
+      field_number: '5.1',
+      short_name: 'Special Interest Intangible Harm',
+      long_name: 'Was there a special interest intangible harm  or risk of harm?',
+      short_description:
+        'An assessment of whether a special interest intangible harm occurred. This assessment does not consider the context of the intangible harm, if an AI was involved, or if there is characterizable class or subgroup of harmed entities. It is also not assessing if an intangible harm occurred. It is only asking if a special interest intangible harm occurred.',
+      long_description:
+        'An assessment of whether a special interest intangible harm occurred. This assessment does not consider the context of the intangible harm, if an AI was involved, or if there is characterizable class or subgroup of harmed entities. It is also not assessing if an intangible harm occurred. It is only asking if a special interest intangible harm occurred.',
+      ...YesNoMaybe,
+      weight: 5,
+      instant_facet: false,
+      required: false,
+      public: true,
+    },
+
+    {
+      field_number: '5.2',
+      short_name: 'AI System',
+      long_name: 'Does the incident involve an AI system?',
+      short_description: 'Does the incident involve an AI system?',
+      long_description:
+        'An assessment of whether or not an AI system was involved. It is sometimes difficult to judge between an AI and an automated system or expert rules system. In these cases select “maybe”',
+      ...YesNoMaybe,
+      weight: 50,
+      instant_facet: true,
+      required: false,
+      public: true,
+      notes:
+        'Note, over time more information about the incident may become available, allowing a ‘maybe’ to be changed to a ‘yes’ or ‘no.’',
+    },
+    {
+      field_number: '5.3',
+      short_name: 'AI Linked to Special Interest Intangible Harm',
+      long_name:
+        'Can an AI be directly and clearly linked to the special interest intangible harm?',
+      short_description:
+        'Can an AI be directly and clearly linked to the special interest intangible harm?',
+      long_description:
+        '“Yes” if an AI was involved in harm, its behavior can be directly linked to the harm, and the harm may not have occurred if the AI acted differently. “Maybe” if the link is unclear. Otherwise, select “no.”',
+      ...YesNoMaybe,
+      weight: 50,
+      instant_facet: true,
+      required: false,
+      public: true,
+      notes:
+        'For an AI to be directly linked to harm it must have played an important role in the chain of events that led to harm. The AI system doesn’t need to be the only factor, or even the major factor, in the chain of harm. However, if the AI system hadn’t acted in the way it did, the specific harm would not have occurred.\n\nAn occurrence of harm that involves a system which contains an AI is not sufficient for calling an incident and AI harm event, near-miss, or issue. The involved AI must also be directly linked to the harm.',
+    },
+    {
+      field_number: '5.4',
+      short_name: 'Harmed Class of Entities',
+      long_name:
+        'There is a  characterizable class or subgroup of entities that experienced the harm',
+      short_description:
+        '“Yes” if the harmed entity or entities can be characterized. “No” if there are not any characterizable entities.',
+      long_description:
+        'A characterizable class or subgroup are descriptions of different populations of people. Often they are characteristics by which people qualify for special protection by a law, policy, or similar authority.\n\n Sometimes, groups may be characterized by their exposure to the incident via geographical proximity (e.g., ‘visitors to the park’) or participation in an activity (e.g.,‘Twitter users’).',
+      ...YesNo,
+      weight: 50,
+      instant_facet: true,
+      required: false,
+      public: true,
+      notes: '',
+    },
+    {
+      field_number: '5.5',
+      short_name: 'Annotator’s AI special interest intangible harm assessment',
+      long_name:
+        'The annotator’s assessment of if an AI special interest intangible harm occurred.',
+      short_description:
+        'The annotator’s assessment of if an AI special interest intangible harm occurred.',
+      long_description:
+        'AI tangible harm is determined in a different field. The determination of a special interest intangible harm is not dependant upon the AI tangible harm level.',
+      ...YesNoMaybe,
+      weight: 50,
+      instant_facet: true,
+      required: false,
+      public: true,
+      notes: '',
+    },
+    {
+      field_number: '5.6',
+      short_name: 'Notes (AI special interest intangible harm)',
+      long_name:
+        'If for 5.5 you select unclear or leave it blank, please provide a brief description of why.\n\nYou can also add notes if you want to provide justification for a level.',
+      short_description:
+        'If for 5.5 you select unclear or leave it blank, please provide a brief description of why.\n\nYou can also add notes if you want to provide justification for a level.',
+      long_description:
+        'If for 5.5 you select unclear or leave it blank, please provide a brief description of why.\n\nYou can also add notes if you want to provide justification for a level.',
+      display_type: 'long_string',
+      mongo_type: 'string',
+      default: '',
+      placeholder: 'Notes',
+      permitted_values: [],
+      weight: 5,
+      instant_facet: false,
+      required: false,
+      public: true,
+    },
     //      {
     //        short_name: "Beginning Date",
     //        long_name: "Beginning date",
@@ -755,7 +816,7 @@ var csetV1TaxaEntry = {
     //        required: false
     //      },
     {
-      field_number: '4.1',
+      field_number: '6.1',
       short_name: 'Date of Incident Year',
       long_name: 'The year in which the incident first occurred.',
       short_description:
@@ -773,7 +834,7 @@ var csetV1TaxaEntry = {
       public: true,
     },
     {
-      field_number: '4.2',
+      field_number: '6.2',
       short_name: 'Date of Incident Month',
       long_name: 'The month in which the incident first occurred.',
       short_description:
@@ -791,7 +852,7 @@ var csetV1TaxaEntry = {
       public: true,
     },
     {
-      field_number: '4.3',
+      field_number: '6.3',
       short_name: 'Date of Incident Day',
       long_name: 'The day on which the first incident occurred.',
       short_description:
@@ -809,7 +870,7 @@ var csetV1TaxaEntry = {
       public: true,
     },
     {
-      field_number: '4.4',
+      field_number: '6.4',
       short_name: 'Estimated Date',
       long_name: 'Is the date estimated?',
       short_description: '“Yes” if the data was estimated. “No” otherwise.',
@@ -822,7 +883,7 @@ var csetV1TaxaEntry = {
       public: true,
     },
     {
-      field_number: '4.5',
+      field_number: '6.5',
       short_name: 'Multiple AI Interaction',
       long_name: 'Was the AI interacting with another AI?',
       short_description:
@@ -836,7 +897,7 @@ var csetV1TaxaEntry = {
       public: true,
     },
     {
-      field_number: '4.6',
+      field_number: '6.6',
       short_name: 'Embedded',
       long_name: 'Is the AI embedded in a physical system or have a physical presence?',
       short_description:
@@ -867,12 +928,12 @@ var csetV1TaxaEntry = {
     //        required: false
     //      },
     {
-      field_number: '4.7',
-      short_name: 'City',
-      long_name: 'Location City',
-      short_description: 'If the incident occurred at a specific known location, note the city. ',
+      field_number: '6.7',
+      short_name: 'Location City',
+      long_name: 'If the incident occurred at a specific known location, note the city.',
+      short_description: 'If the incident occurred at a specific known location, note the city.',
       long_description:
-        'If there are multiple relevant locations, enter multiple city/state/country values.',
+        'If the incident occurred at a specific known location, note the city. If there are multiple relevant locations, enter multiple city/state/country values.',
       display_type: 'string',
       mongo_type: 'string',
       default: '',
@@ -884,13 +945,13 @@ var csetV1TaxaEntry = {
       public: true,
     },
     {
-      field_number: '4.8',
-      short_name: 'State or Province',
-      long_name: 'Location State/Province (two letters)',
+      field_number: '6.8',
+      short_name: 'Location State/Province (two letters)',
+      long_name: 'If the incident occurred at a specific known location, note the state/province.',
       short_description:
         'If the incident occurred at a specific known location, note the state/province.',
       long_description:
-        'If there are multiple relevant locations, enter multiple city/state/country values.',
+        'If the incident occurred at a specific known location, note the state/province. If there are multiple relevant locations, enter multiple city/state/country values.',
       display_type: 'string',
       mongo_type: 'string',
       default: '',
@@ -902,12 +963,31 @@ var csetV1TaxaEntry = {
       public: true,
     },
     {
-      field_number: '4.10',
-      short_name: 'Region',
-      long_name: 'Location Region',
-      short_description: 'Select the region of the world where the incident occurred.',
+      field_number: '6.9',
+      short_name: 'Location Country (two letters)',
+      long_name: 'If the incident occurred at a specific known location, note the country. ',
+      short_description:
+        'If the incident occurred at a specific known location, note the country. Follow ISO 3166 for the 2-letter country codes.',
       long_description:
+        'Follow ISO 3166 for the 2-letter country codes.\n\nIf there are multiple relevant locations, enter multiple city/state/country values.',
+      display_type: 'string',
+      mongo_type: 'string',
+      default: '',
+      placeholder: 'Country',
+      permitted_values: [],
+      weight: 5,
+      instant_facet: false,
+      required: false,
+      public: true,
+    },
+    {
+      field_number: '6.10',
+      short_name: 'Location Region',
+      long_name: 'Location Region',
+      short_description:
         'Select the region of the world where the incident occurred. If it occurred in multiple, leave blank.',
+      long_description:
+        'Use this reference to map countries to regions: https://www.dhs.gov/geographic-regions',
       display_type: 'enum',
       mongo_type: 'string',
       default: 'unclear',
@@ -964,7 +1044,7 @@ var csetV1TaxaEntry = {
     //        required: false
     //      },
     {
-      field_number: '4.11',
+      field_number: '6.11',
       short_name: 'Infrastructure Sectors',
       long_name: 'Which critical infrastructure sectors were affected, if any?',
       short_description: 'Which critical infrastructure sectors were affected, if any?',
@@ -999,7 +1079,7 @@ var csetV1TaxaEntry = {
       public: true,
     },
     {
-      field_number: '4.12',
+      field_number: '6.12',
       short_name: 'Operating Conditions',
       long_name: 'A record of any abnormal or atypical operational conditions that occurred.',
       short_description:
@@ -1017,7 +1097,7 @@ var csetV1TaxaEntry = {
       public: true,
     },
     {
-      field_number: '4.13',
+      field_number: '6.13',
       short_name: 'Notes (Environmental and Temporal Characteristics)',
       long_name: 'Notes (Environmental and Temporal Characteristics)',
       short_description: 'Input any notes that may help explain your answers.',
@@ -1033,9 +1113,9 @@ var csetV1TaxaEntry = {
       public: true,
     },
 
-    /* 5. Characterizing Entities and the Harm */
+    /* 7. Characterizing Entities and the Harm */
     {
-      field_number: '5',
+      field_number: '7',
       short_name: 'Entities',
       long_name: 'Characterizing Entities and the Harm',
       short_description: 'Characterizing Entities and the Harm',
@@ -1046,7 +1126,7 @@ var csetV1TaxaEntry = {
       // TODO: This needs to be implemented
       subfields: [
         {
-          field_number: '5.1',
+          field_number: '7.1',
           short_name: 'Entity',
           long_name: 'A short 1 to 2 word description of the entity.',
           short_description:
@@ -1069,7 +1149,7 @@ var csetV1TaxaEntry = {
           public: true,
         },
         {
-          field_number: '5.2',
+          field_number: '7.2',
           short_name: 'Named Entity',
           long_name: 'Named Entity Indicator',
           short_description: 'Indicates if the entity is a Named Entity.',
@@ -1082,7 +1162,7 @@ var csetV1TaxaEntry = {
           public: true,
         },
         {
-          field_number: '5.3',
+          field_number: '7.3',
           short_name: 'Entity type',
           long_name: 'Indicates the type of entity',
           short_description: 'Indicates the type of entity',
@@ -1112,7 +1192,7 @@ var csetV1TaxaEntry = {
           public: true,
         },
         {
-          field_number: '5.4',
+          field_number: '7.4',
           short_name: 'Entity Relationship to the AI',
           long_name: 'Entity Relationship to the AI',
           short_description: 'Indicates the entity’s relationship to the AI.',
@@ -1140,7 +1220,7 @@ var csetV1TaxaEntry = {
           public: true,
         },
         {
-          field_number: '5.5',
+          field_number: '7.5',
           short_name: 'Harm Category Experienced',
           long_name:
             'Was an AI special interest intangible harm, tangible harm event, near-miss, or issue experienced by this entity',
@@ -1167,7 +1247,7 @@ var csetV1TaxaEntry = {
           public: true,
         },
         {
-          field_number: '5.6',
+          field_number: '7.6',
           short_name: 'Harm Type Experienced',
           long_name: 'Type of harm experienced by entity ',
           short_description: 'Indicates the type of harm experienced by the harmed entity',
@@ -1198,7 +1278,7 @@ var csetV1TaxaEntry = {
           public: true,
         },
         {
-          field_number: '5.7',
+          field_number: '7.7',
           short_name: 'Notes (Characterizing Entities and the Harm)',
           long_name: 'Notes (Characterizing Entities and the Harm)',
           short_description: 'Input any notes that may help explain your answers.',
@@ -1289,7 +1369,7 @@ var csetV1TaxaEntry = {
     //        required: false
     //      },
     {
-      field_number: '6.1',
+      field_number: '8.1',
       short_name: 'Lives Lost',
       long_name: 'How many human lives were lost?',
       short_description: 'Indicates the number of deaths reported',
@@ -1306,7 +1386,7 @@ var csetV1TaxaEntry = {
       public: true,
     },
     {
-      field_number: '6.2',
+      field_number: '8.2',
       short_name: 'Injuries',
       long_name: 'How many humans were injured?',
       short_description: 'Indicate the number of injuries reported.',
@@ -1340,7 +1420,7 @@ var csetV1TaxaEntry = {
     //        required: false
     //      },
     {
-      field_number: '6.3',
+      field_number: '8.3',
       short_name: 'Property Damage Cost',
       long_name: 'Property Damage Cost ($USD)',
       short_description: 'Indicate the amount of property damage in monetary terms.',
@@ -1365,7 +1445,7 @@ var csetV1TaxaEntry = {
       public: true,
     },
     {
-      field_number: '6.4',
+      field_number: '8.4',
       short_name: 'Financial Cost',
       long_name: 'Financial Cost ($USD)',
       short_description:
@@ -1383,7 +1463,7 @@ var csetV1TaxaEntry = {
       public: true,
     },
     {
-      field_number: '6.5',
+      field_number: '8.5',
       short_name: 'Estimated Harm Quantities',
       long_name: 'Are any quantities estimated?',
       short_description: 'Indicates if the amount was estimated.',
@@ -1395,7 +1475,7 @@ var csetV1TaxaEntry = {
       public: true,
     },
     {
-      field_number: '6.6',
+      field_number: '8.6',
       short_name: 'Notes ( Tangible Harm Quantities Information)',
       long_name: 'Notes ( Tangible Harm Quantities Information)',
       short_description: 'Input any notes that may help explain your answers.',
@@ -1428,7 +1508,7 @@ var csetV1TaxaEntry = {
     //        required: false
     //      },
     {
-      field_number: '7.1',
+      field_number: '9.1',
       short_name: 'AI System Description',
       long_name: 'Description of the AI system involved',
       short_description: 'A description of the AI system (when possible)',
@@ -1462,7 +1542,7 @@ var csetV1TaxaEntry = {
     //        required: false
     //      },
     {
-      field_number: '7.2',
+      field_number: '9.2',
       short_name: 'Data Inputs',
       long_name: 'Description of data inputs to the AI system',
       short_description: 'A list of the types of data inputs for the AI system.',
@@ -1534,7 +1614,7 @@ var csetV1TaxaEntry = {
     //        required: false
     //      },
     {
-      field_number: '7.3',
+      field_number: '9.3',
       short_name: 'Sector of Deployment',
       long_name: 'Indicates the sector in which the AI system is deployed',
       short_description: 'Indicate the sector in which the AI system is deployed',
@@ -1594,7 +1674,7 @@ var csetV1TaxaEntry = {
     //        required: false
     //      },
     {
-      field_number: '7.4',
+      field_number: '9.4',
       short_name: 'Public Sector Deployment',
       long_name: 'Indicates whether the AI system is deployed in the public sector',
       short_description: 'Indicate whether the AI system is deployed in the public sector',
@@ -1624,16 +1704,18 @@ var csetV1TaxaEntry = {
     //        required: false
     //      },
     {
-      field_number: '7.5',
+      field_number: '9.5',
       short_name: 'Autonomy Level',
       long_name: 'Autonomy Level',
       short_description: handleWhitespace(`
-        Autonomy1: The system operates independently with no human oversight, interaction, or intervention. //
-        Autonomy2: The system operates independently but with human oversight, where a human can observe and override the system’s decisions in real time. //
+        Autonomy1: The system operates independently without simultaneous human oversight, interaction, or intervention.
+
+        Autonomy2: The system operates independently but with human oversight, where a human can observe and override the system’s decisions in real time.
+
         Autonomy3: The system does not independently make decisions but instead provides information to a human who actively chooses to proceed with the AI’s information.
       `),
       long_description: handleWhitespace(`
-        Autonomy1: The system operates independently with no human oversight, interaction, or intervention.
+        Autonomy1: The system operates independently without simultaneous human oversight, interaction, or intervention.
 
         Autonomy2: The system operates independently but with human oversight, where a human can observe and override the system’s decisions in real time.
 
@@ -1650,7 +1732,7 @@ var csetV1TaxaEntry = {
       public: true,
     },
     {
-      field_number: '7.8',
+      field_number: '9.8',
       short_name: 'Notes (Information about AI System)',
       long_name: 'Notes (Information about AI System)',
       short_description: 'Input any notes that may help explain your answers.',
@@ -1665,8 +1747,52 @@ var csetV1TaxaEntry = {
       required: false,
       public: true,
     },
+
+    //      {
+    //        short_name: "Intent",
+    //        long_name: "Probable level of intent",
+    //        short_description: "Was the incident an accident, intentional, or is the intent unclear?",
+    //        long_description: "Indicates whether the incident was deliberate/expected or accidental, based on the available evidence. \"Deliberate or expected\" applies if it is established or highly likely that the system acted more or less as expected, from the perspective of at least one of the people or entities responsible for it. “Accident” applies if it is established or highly likely that the harm arose from the system acting in an unexpected way. \"Unclear\" applies if the evidence is contradictory or too thin to apply either of the above labels.",
+    //        display_type: "enum",
+    //        mongo_type: "string",
+    //        default: "Accident",
+    //        placeholder: "Accident",
+    //        permitted_values: [ "Accident", "Deliberate or expected", "Unclear" ],
+    //        weight: {
+    //          $numberInt: "75"
+    //        },
+    //        instant_facet: true,
+    //        required: false
+    //      },
+
     {
-      field_number: '8.1',
+      field_number: '10.1',
+      short_name: 'Intentional Harm',
+      long_name: 'Was the AI intentionally developed or deployed to perform the harm?',
+      short_description:
+        'Was the AI intentionally developed or deployed to perform the harm?\n\nIf yes, did the AI’s behavior result in unintended or intended harm? ',
+      long_description:
+        'Indicates if the system was designed to do harm.  If it was designed to perform harm, the field will indicate if the AI system did or did not create unintended harm–i.e. was the reported harm the harm that AI was expected to perform or a different unexpected harm? ',
+      display_type: 'enum',
+      mongo_type: 'string',
+      default: 'unclear',
+      placeholder: '',
+      permitted_values: [
+        'Yes. Intentionally designed to perform harm and did create intended harm',
+        'Yes. Intentionally designed to perform harm but created an unintended harm (a different harm may have occurred)',
+        'No. Not intentionally designed to perform harm',
+        'unclear',
+      ],
+      weight: 50,
+      instant_facet: true,
+      required: false,
+      public: true,
+      notes:
+        'Tracking and analyzing harm from AI systems designed to do harm is valuable and worthwhile. However, analysts may want to separately analyze harm from AI systems that were or were not designed to produce the observed harm.',
+    },
+
+    {
+      field_number: '10.2',
       short_name: 'Physical System Type',
       long_name: 'Into what type of physical system was the AI integrated, if any?',
       short_description: 'Describe the type of physical system that the AI was integrated into.',
@@ -1715,7 +1841,7 @@ var csetV1TaxaEntry = {
     //        required: false
     //      },
     {
-      field_number: '8.2',
+      field_number: '10.3',
       short_name: 'AI Task',
       long_name: 'AI task or core application  area',
       short_description: 'Describe the AI’s application.',
@@ -1765,7 +1891,7 @@ var csetV1TaxaEntry = {
     //        required: false
     //      },
     {
-      field_number: '8.3',
+      field_number: '10.4',
       short_name: 'AI tools and methods',
       long_name: 'AI tools and methods',
       short_description: 'Describe the tools and methods that enable the AI’s application.',
@@ -1806,7 +1932,7 @@ var csetV1TaxaEntry = {
     },
 
     {
-      field_number: '8.4',
+      field_number: '10.5',
       short_name: 'Notes (AI Functionality and Techniques)',
       long_name: 'Notes (AI Functionality and Techniques)',
       short_description: 'Input any notes that may help explain your answers.',
