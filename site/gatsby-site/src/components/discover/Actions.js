@@ -79,6 +79,9 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         date={item.date_submitted}
         className="btn btn-link px-1"
         title={t('Authors')}
+        datePublished={item.epoch_date_published}
+        incidentDate={item.epoch_incident_date}
+        dateSubmitted={item.epoch_date_submitted}
       >
         <FontAwesomeIcon icon={faNewspaper} className="fa-newspaper" title="Read the Source" />
       </WebArchiveLink>
