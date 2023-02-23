@@ -3,18 +3,21 @@ import { connectSortBy } from 'react-instantsearch-dom';
 import { Dropdown } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import SORTING_LIST from './SORTING_LISTS';
+import { useLocalization } from 'gatsby-theme-i18n';
 
 function Sorting(props) {
   const [selectedItem, setSelectedItem] = useState(SORTING_LIST.find((s) => s.default));
 
   const { t } = useTranslation();
 
+  const { locale } = useLocalization();
+
   const sortResults = (item) => {
     setSelectedItem(item);
   };
 
   useEffect(() => {
-    props.refine(`${selectedItem.value}`);
+    props.refine(`${selectedItem.value.replace('{{locale}}', locale)}`);
   }, [selectedItem]);
 
   return (
@@ -32,8 +35,8 @@ function Sorting(props) {
           {props.items.map((item) => (
             <>
               <Dropdown.Item
-                key={item.value}
-                value={item.value}
+                key={item.value.replace('{{locale}}', locale)}
+                value={item.value.replace('{{locale}}', locale)}
                 style={{ fontWeight: item.isRefined ? 'bold' : '' }}
                 onClick={() => {
                   sortResults(item);
