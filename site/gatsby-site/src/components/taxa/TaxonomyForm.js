@@ -301,7 +301,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                   .sort(sortByFieldNumbers)
                   .map((rawField) =>
                     rawField.dummy ? (
-                      <h5 className="mb-3 text-lg">
+                      <h5 className="mb-3 text-xl border-b-2 pb-1 border-gray-200">
                         {rawField.field_number}. {rawField.short_name}
                       </h5>
                     ) : (
