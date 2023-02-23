@@ -20,6 +20,7 @@ import Row from 'elements/Row';
 import Col from 'elements/Col';
 import Layout from 'components/Layout';
 import { VIEW_TYPES } from 'utils/discover';
+import some from 'lodash/some';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -213,16 +214,20 @@ function DiscoverApp(props) {
 
     const extraQuery = { display: query.display };
 
-    setQuery({ ...searchQuery, ...extraQuery }, 'push');
+    if (!some([searchQuery], extraQuery)) {
+      //Only reset query if it has changed otherwise it triggers on Locale update and reloads the page to the previous locale
 
-    setViewType(
-      (searchState.refinementList.hideDuplicates === 'true' ||
-        searchState.refinementList.hideDuplicates === true) &&
-        searchState.refinementList.is_incident_report.length > 0 &&
-        searchState.refinementList.is_incident_report[0] === 'true'
-        ? VIEW_TYPES.INCIDENTS
-        : VIEW_TYPES.REPORTS
-    );
+      setQuery({ ...searchQuery, ...extraQuery }, 'push');
+
+      setViewType(
+        (searchState.refinementList.hideDuplicates === 'true' ||
+          searchState.refinementList.hideDuplicates === true) &&
+          searchState.refinementList.is_incident_report.length > 0 &&
+          searchState.refinementList.is_incident_report[0] === 'true'
+          ? VIEW_TYPES.INCIDENTS
+          : VIEW_TYPES.REPORTS
+      );
+    }
   }, [searchState]);
 
   const authorsModal = useModal();
