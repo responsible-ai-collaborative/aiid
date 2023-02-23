@@ -9,7 +9,7 @@ function Stats({ className, nbHits: count }) {
     <div className={'flex gap-3 items-center ' + className}>
       <Trans count={count}>
         <b>{{ count }}</b>{' '}
-        <span className="py-1 px-2 rounded border-1 border-gray-700" data-cy="display-options">
+        <span data-cy="display-options">
           <DisplayOptions />
         </span>{' '}
         found
