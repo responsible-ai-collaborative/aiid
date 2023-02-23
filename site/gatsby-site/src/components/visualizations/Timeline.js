@@ -209,9 +209,17 @@ function Timeline({ data }) {
 
     resize();
 
-    window.addEventListener('resize', resize, false);
+    // ResizeObserver is supported in all major browsers
+    // but is not yet an official web standard.
+    if (ResizeObserver) {
+      const resizeObserver = new ResizeObserver(() => resize());
 
-    return () => window.removeEventListener('resize', resize);
+      resizeObserver.observe(containerRef.current);
+      return () => resizeObserver.disconnect();
+    } else {
+      window.addEventListener('resize', resize, false);
+      return () => window.removeEventListener('resize', resize);
+    }
   }, [containerRef]);
 
   return (

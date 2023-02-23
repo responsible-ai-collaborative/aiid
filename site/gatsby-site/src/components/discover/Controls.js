@@ -8,6 +8,8 @@ import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Trans } from 'react-i18next';
 import useSearch from './useSearch';
 import CsvExport from './CsvExport';
+import Sorting from './Sorting';
+import SORTING_LISTS from 'components/discover/SORTING_LISTS';
 
 const Controls = () => {
   const { searchState } = useSearch();
@@ -41,6 +43,10 @@ const Controls = () => {
             <CsvExport />
           </div>
 
+          <Sorting
+            items={SORTING_LISTS}
+            defaultRefinement="instant_search-en_epoch_incident_date_desc"
+          />
           <div className="justify-end">
             <ClearFilters>
               <Trans>Clear Filters</Trans>
