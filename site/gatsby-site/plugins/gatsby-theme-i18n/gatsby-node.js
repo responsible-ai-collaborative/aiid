@@ -119,11 +119,11 @@ exports.onCreateNode = ({ node, actions }, themeOptions) => {
   const { defaultLang } = withDefaults(themeOptions);
 
   if (node.internal.type === `Mdx`) {
-    const name = path.basename(node.fileAbsolutePath, `.mdx`);
+    const name = path.basename(node.fileAbsolutePath ?? node.internal.contentFilePath, `.mdx`);
 
     const isDefault = name === `index`;
 
-    const lang = isDefault ? defaultLang : name.split(`.`)[1];
+    const lang = isDefault ? defaultLang : name.split(`.`)[1] ?? defaultLang;
 
     createNodeField({ node, name: `locale`, value: lang });
     createNodeField({ node, name: `isDefault`, value: isDefault });
@@ -141,7 +141,7 @@ exports.onCreatePage = ({ page, actions }, themeOptions) => {
     return;
   }
 
-  const originalPath = page.path;
+  let originalPath = page.path;
 
   deletePage(page);
 
@@ -154,9 +154,102 @@ exports.onCreatePage = ({ page, actions }, themeOptions) => {
     defaultLang,
   });
 
-  languages.forEach((locale) => {
+  if (
+    page.component.toLowerCase().endsWith(`.mdx`) &&
+    !page.component.includes('?__contentFilePath=')
+  ) {
+    const name = path.basename(page.component, `.mdx`);
+
+    const parts = name.split(`.`);
+
+    let code = defaultLang;
+
+    // if a non-default language, (ex: "page.fr.mdx")
+    // then delete the .fr part, so it becomes "page.mdx"
+    // (later below, we will rename this to "fr/page.mdx")
+    if (parts.length > 1) {
+      code = parts.at(-1);
+      originalPath = originalPath.replace(`.${code}`, ``);
+      if (originalPath.endsWith('index/')) {
+        originalPath = originalPath.replace('index/', '');
+      }
+    }
+
+    //
+    //if not a supported language, just return.
+    //the page will not be exposed
+    let locale = languages.find((lang) => lang.code === code);
+
+    if (!locale) {
+      return;
+    }
+
     const newPage = {
-      ...page,
+      component: page.component,
+      path: localizedPath({
+        defaultLang,
+        prefixDefault,
+        locale: code,
+        path: originalPath,
+      }),
+      matchPath: page.matchPath
+        ? localizedPath({
+            defaultLang,
+            prefixDefault,
+            locale: code,
+            path: page.matchPath,
+          })
+        : page.matchPath,
+      context: {
+        ...page.context,
+        locale: locale.code,
+        hrefLang: locale.hrefLang,
+        originalPath,
+        dateFormat: locale.dateFormat,
+      },
+    };
+
+    createPage(newPage);
+    //mdx exits here.  all other pages will be handled next
+
+    return;
+  }
+
+  languages.forEach((locale) => {
+    let theFilePath = page.component;
+
+    const [template, mdxFile] = page.component.split(`?__contentFilePath=`);
+
+    // if the mdxFile path possesses a language, let's strip the language to it
+    // ex: index.de.mdx ==> index.mdx
+    if (mdxFile) {
+      //split the filename in three parts split by the dot.
+      let [thePath /* lang */, , ext] = mdxFile.split(`.`);
+
+      if (ext === `mdx`) {
+        //if there's data in the third part, just keep the first and last part, removing the language
+        theFilePath = `${thePath}.${ext}`;
+      } else {
+        //if there's no content in the third part, it means that there's no language part. No need to remove the language
+        theFilePath = mdxFile;
+      }
+
+      //if we use a non-default language, and the language file is on the disk, then use it
+      [thePath, ext] = theFilePath.split(`.`);
+      if (ext === `mdx` && locale.code !== defaultLang) {
+        if (fs.existsSync(`${thePath}.${locale.code}.${ext}`)) {
+          theFilePath = `${thePath}.${locale.code}.${ext}`;
+        } else {
+          //nothing to render if file doen't exist
+          theFilePath = '';
+        }
+      }
+
+      theFilePath = `${template}?__contentFilePath=${theFilePath}`;
+    }
+
+    const newPage = {
+      component: theFilePath,
       path: localizedPath({
         defaultLang,
         prefixDefault,
