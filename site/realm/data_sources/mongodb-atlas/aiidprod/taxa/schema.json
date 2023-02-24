@@ -27,6 +27,13 @@
             "items": {
                 "bsonType": "object",
                 "properties": {
+                    "complete_from": {
+                      "bsonType": "object",
+                      "properties": {
+                        "all":     {"bsonType": "array", "items": {"bsonType": "string"}},
+                        "current": {"bsonType": "array", "items": {"bsonType": "string"}}
+                      }
+                    },
                     "default": {
                         "bsonType": "string"
                     },
@@ -75,6 +82,13 @@
                     "item_fields": {
                         "bsonType": "object",
                         "properties": {
+                            "complete_from": {
+                              "bsonType": "object",
+                              "properties": {
+                                "all":     {"bsonType": "array", "items": {"bsonType": "string"}},
+                                "current": {"bsonType": "array", "items": {"bsonType": "string"}}
+                              }
+                            },
                             "default": {
                                 "bsonType": "string"
                             },

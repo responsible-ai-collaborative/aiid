@@ -374,20 +374,13 @@ function FormField({
 
   let autocompleteValues = [];
 
-  if (field.display_type === 'string' && allClassificationsData) {
-    autocompleteValues = allClassificationsData.classifications
-      .map((classification) =>
-        (classification.attributes || []).find((a) => a.short_name == field.short_name)
-      )
-      .filter((attribute) => attribute?.value_json)
-      .map((attribute) => JSON.parse(attribute.value_json));
-    autocompleteValues = Array.from(new Set(autocompleteValues));
-  }
-  if (field.display_type === 'list' && allClassificationsData) {
+  if (allClassificationsData && ['list', 'string'].includes(field.display_type)) {
     const classifications = allClassificationsData.classifications;
 
     const matchingAttributes = classifications.map((classification) =>
-      (classification.attributes || []).find((a) => a.short_name == field.short_name)
+      (classification.attributes || []).find((a) =>
+        (field?.complete_from?.all || [field.short_name]).includes(a.short_name)
+      )
     );
 
     const matchingAttributesWithValues = matchingAttributes.filter(
@@ -398,10 +391,16 @@ function FormField({
       JSON.parse(attribute.value_json)
     );
 
-    const combinedAttributedValues = attributeValues.reduce(
-      (combined, array) => combined.concat(array),
-      []
-    );
+    let combinedAttributedValues =
+      field.display_type === 'string'
+        ? attributeValues
+        : attributeValues.reduce((combined, array) => combined.concat(array), []);
+
+    if (field?.complete_from?.current) {
+      for (const key of field.complete_from.current) {
+        combinedAttributedValues = combinedAttributedValues.concat(formikValues[key]);
+      }
+    }
 
     autocompleteValues = Array.from(new Set(combinedAttributedValues));
   }
@@ -572,6 +571,7 @@ function FormField({
             setFieldTouched,
             setFieldValue,
             setDeletedSubClassificationIds,
+            allClassificationsData,
           }}
         />
       )}
@@ -590,6 +590,7 @@ function ObjectListField({
   setFieldTouched,
   setFieldValue,
   setDeletedSubClassificationIds,
+  allClassificationsData,
 }) {
   // These are client-side only
   const [objectListItemIds, setObjectListItemsIds] = useState(
@@ -652,6 +653,7 @@ function ObjectListField({
                     setFieldTouched,
                     setFieldValue,
                     setDeletedSubClassificationIds,
+                    allClassificationsData,
                   }}
                 />
               ))}

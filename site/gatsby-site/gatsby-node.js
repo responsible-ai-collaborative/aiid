@@ -241,6 +241,11 @@ exports.createSchemaCustomization = ({ actions }) => {
       attributes: [mongodbAiidprodClassificationsAttribute]
     }
 
+    type completeFrom {
+      all: [String]
+      current: [String]
+    }
+
     type Subfield {
       field_number: String
       short_name: String 
@@ -256,6 +261,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       instant_facet: Boolean
       required: Boolean
       public: Boolean
+      complete_from: completeFrom
     }
 
     type mongodbAiidprodTaxaField_list {
@@ -274,6 +280,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       instant_facet: Boolean
       required: Boolean
       public: Boolean
+      complete_from: completeFrom
     }
   `;
 

@@ -50,7 +50,7 @@ export const getClassificationsArray = (incidentClassifications, taxonomy) => {
   };
 
   taxaFieldsArray.forEach((field) => {
-    const attribute = attributes && attributes.find((a) => a.short_name == field.short_name);
+    const attribute = attributes && attributes.find((a) => a && a.short_name == field.short_name);
 
     const attributeValue = attribute?.value_json && JSON.parse(attribute.value_json);
 
