@@ -351,7 +351,7 @@ class AlgoliaUpdater {
         );
 
         await dateSubmittedAscReplicaIndex.setSettings({
-          ranking: ['desc(epoch_date_submitted)'],
+          ranking: ['asc(epoch_date_submitted)'],
         });
       });
   };
