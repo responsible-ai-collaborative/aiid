@@ -39,6 +39,7 @@ const SubmittedIncidentsPage = ({ ...props }) => {
           </Trans>
         ),
         severity: SEVERITY.danger,
+        error,
       });
     }
   }, [loading, data, error]);
@@ -68,6 +69,7 @@ const SubmittedIncidentsPage = ({ ...props }) => {
       addToast({
         message: <>Error deleting quick added incident: {e.message}</>,
         severity: SEVERITY.danger,
+        error: e,
       });
     }
   };

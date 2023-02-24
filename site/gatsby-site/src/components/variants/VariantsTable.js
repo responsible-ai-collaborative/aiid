@@ -104,6 +104,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
             <label className="capitalize">{t(e.error || 'An unknown error has ocurred')}</label>
           ),
           severity: SEVERITY.danger,
+          error: e,
         });
       }
     }
@@ -147,6 +148,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
           <label className="capitalize">{t(e.error || 'An unknown error has ocurred')}</label>
         ),
         severity: SEVERITY.danger,
+        error: e,
       });
     }
   };

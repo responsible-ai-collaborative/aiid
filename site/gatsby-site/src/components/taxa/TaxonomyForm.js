@@ -237,6 +237,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
       addToast({
         message: <>Error updating classification data: {e.message}</>,
         severity: SEVERITY.danger,
+        error: e,
       });
     }
 

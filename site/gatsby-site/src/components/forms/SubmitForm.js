@@ -136,6 +136,7 @@ const SubmitForm = () => {
     addToast({
       message: t(`Unable to upload: `) + reason,
       severity: SEVERITY.danger,
+      error: _err,
     });
   };
 
