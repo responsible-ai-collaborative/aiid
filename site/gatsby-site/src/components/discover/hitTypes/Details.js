@@ -52,6 +52,9 @@ export default function Details({
 
   return (
     <Card className="h-full" data-cy={item.mongodb_id}>
+      <input type="hidden" data-cy="date-published" value={item.epoch_date_published} />
+      <input type="hidden" data-cy="date-submitted" value={item.epoch_date_submitted} />
+      <input type="hidden" data-cy="incident-date" value={item.epoch_incident_date} />
       <a href={detailsPath}>
         <IncidentCardImage
           className="card-img-top"

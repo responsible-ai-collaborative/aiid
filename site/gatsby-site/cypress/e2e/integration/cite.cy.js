@@ -44,11 +44,11 @@ describe('Cite pages', () => {
       cy.get('[data-cy="collapse-button"]:visible').click();
 
       cy.contains('Show Details on Incident #10').first().click();
-
+      cy.waitForStableDOM();
       cy.url().should('include', '/cite/10/#r23');
       cy.waitForStableDOM();
 
-      cy.contains('h5', 'Is Starbucks shortchanging its baristas?', { timeout: 8000 })
+      cy.contains('h5', '​Is Starbucks shortchanging its baristas?', { timeout: 8000 })
         .parents('[data-cy="incident-report-card"]')
         .then((subject) => {
           expect(subject[0].getBoundingClientRect().top).to.be.closeTo(0, 30);
