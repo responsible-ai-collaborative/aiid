@@ -248,10 +248,10 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
       const data = {
         __typename: undefined,
         incident_id: incidentId,
-        namespace,
         notes: values.notes,
         publish: values.publish,
-        attributes,
+        attributes: attributes.map((a) => a),
+        namespace,
       };
 
       await updateClassification({
