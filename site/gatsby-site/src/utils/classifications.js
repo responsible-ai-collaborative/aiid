@@ -4,7 +4,7 @@
 export function getClassificationValue(classification, short_name) {
   const attribute =
     classification.attributes &&
-    classification.attributes.find((attribute) => attribute.short_name == short_name);
+    classification.attributes.find((attribute) => attribute && attribute.short_name == short_name);
 
   if (attribute) {
     return JSON.parse(attribute.value_json);
