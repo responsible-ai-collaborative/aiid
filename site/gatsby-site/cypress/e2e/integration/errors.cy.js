@@ -29,7 +29,7 @@ describe('Runtime errors', () => {
     '/about/', // doc template
   ];
 
-  const codes = ['en', 'en', 'fr'];
+  const codes = ['en', 'es', 'fr'];
 
   paths.forEach((path) => {
     codes.forEach((code) => {

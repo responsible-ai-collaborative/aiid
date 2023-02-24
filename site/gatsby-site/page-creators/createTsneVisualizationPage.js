@@ -25,6 +25,7 @@ const createTsneVisualizationPage = async (graphql, createPage) => {
       allMongodbAiidprodIncidents(filter: { tsne: { x: { ne: null }, y: { ne: null } } }) {
         nodes {
           incident_id
+          title
           tsne {
             x
             y
