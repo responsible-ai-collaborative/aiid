@@ -37,6 +37,7 @@ var handleWhitespace = (string) =>
 var csetV1TaxaEntry = {
   namespace: 'CSETv1',
   weight: 70,
+  complete_entities: true,
   description: handleWhitespace(`
     # What is the CSET Taxonomy?
 
@@ -1123,7 +1124,6 @@ var csetV1TaxaEntry = {
       display_type: 'object-list',
       mongo_type: 'array',
 
-      // TODO: This needs to be implemented
       subfields: [
         {
           field_number: '7.1',
@@ -1140,6 +1140,7 @@ var csetV1TaxaEntry = {
           `),
           display_type: 'string',
           mongo_type: 'string',
+          complete_from: { entities: true },
           default: '',
           placeholder: '',
           permitted_values: [],

@@ -12,6 +12,9 @@
         "weight": {
             "bsonType": "int"
         },
+        "complete_entities": { 
+          "bsonType": "bool" 
+        },
         "dummy_fields": {
           "bsonType": "array",
           "items": {
@@ -85,8 +88,9 @@
                             "complete_from": {
                               "bsonType": "object",
                               "properties": {
-                                "all":     {"bsonType": "array", "items": {"bsonType": "string"}},
-                                "current": {"bsonType": "array", "items": {"bsonType": "string"}}
+                                "all":      {"bsonType": "array", "items": {"bsonType": "string"}},
+                                "current":  {"bsonType": "array", "items": {"bsonType": "string"}},
+                                "entities": {"bsonType": "bool"}
                               }
                             },
                             "default": {

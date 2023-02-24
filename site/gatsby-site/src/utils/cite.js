@@ -88,6 +88,7 @@ export const getTaxonomies = ({ allMongodbAiidprodClassifications, allMongodbAii
       classificationsArray: getClassificationsArray(incidentClassifications, t),
       taxonomyFields: t.field_list,
       dummyFields: t.dummy_fields,
+      complete_entities: t.complete_entities,
     });
   });
 

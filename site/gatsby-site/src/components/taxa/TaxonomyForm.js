@@ -2,9 +2,10 @@ import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } f
 import { Button, Form, Card } from 'react-bootstrap';
 import styled from 'styled-components';
 import { Formik } from 'formik';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery, useApolloClient } from '@apollo/client';
+import gql from 'graphql-tag';
 
-import { FIND_CLASSIFICATION, UPDATE_CLASSIFICATION } from '../../graphql/classifications.js';
+import { FIND_CLASSIFICATION, UPDATE_CLASSIFICATION } from '../../graphql/classifications';
 import Loader from 'components/ui/Loader';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import Tags from 'components/forms/Tags.js';
@@ -54,6 +55,30 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
     variables: { query: { namespace: taxonomy.namespace } },
     skip: !active,
   });
+
+  const [entitiesData, setEntitiesData] = useState();
+
+  // We can't use a hook because we want to load the entities data
+  // only if it will be used.
+  const client = useApolloClient();
+
+  useEffect(() => {
+    (async () => {
+      if (taxonomy.complete_entities) {
+        setEntitiesData(
+          await client.query({
+            query: gql`
+              query FindEntities {
+                entities(limit: 9999) {
+                  name
+                }
+              }
+            `,
+          })
+        );
+      }
+    })();
+  }, []);
 
   const classification =
     classificationsData &&
@@ -311,7 +336,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                       </h5>
                     ) : (
                       <FormField
-                        key={rawField.short_name}
+                        key={`${rawField.field_number || ''}${rawField.short_name}`}
                         field={rawField}
                         formikValues={values}
                         {...{
@@ -320,6 +345,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                           setFieldValue,
                           setDeletedSubClassificationIds,
                           allClassificationsData,
+                          entitiesData,
                         }}
                       />
                     )
@@ -367,6 +393,7 @@ function FormField({
   superfieldIndex,
   setDeletedSubClassificationIds,
   allClassificationsData,
+  entitiesData,
 }) {
   const identifier = superfield
     ? `${superfield.short_name}___${superfieldIndex}___${field.short_name}`
@@ -403,6 +430,9 @@ function FormField({
     }
 
     autocompleteValues = Array.from(new Set(combinedAttributedValues));
+  }
+  if (entitiesData?.data?.entities && field?.complete_from?.entities) {
+    autocompleteValues = autocompleteValues.concat(entitiesData.data.entities.map((e) => e.name));
   }
 
   return (
@@ -572,6 +602,7 @@ function FormField({
             setFieldValue,
             setDeletedSubClassificationIds,
             allClassificationsData,
+            entitiesData,
           }}
         />
       )}
@@ -591,6 +622,7 @@ function ObjectListField({
   setFieldValue,
   setDeletedSubClassificationIds,
   allClassificationsData,
+  entitiesData,
 }) {
   // These are client-side only
   const [objectListItemIds, setObjectListItemsIds] = useState(
@@ -654,6 +686,7 @@ function ObjectListField({
                     setFieldValue,
                     setDeletedSubClassificationIds,
                     allClassificationsData,
+                    entitiesData,
                   }}
                 />
               ))}

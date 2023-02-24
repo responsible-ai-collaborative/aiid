@@ -229,6 +229,7 @@ exports.createSchemaCustomization = ({ actions }) => {
     
     type mongodbAiidprodTaxa implements Node {
       field_list: [mongodbAiidprodTaxaField_list]
+      complete_entities: Boolean
     }
 
     type mongodbAiidprodClassificationsAttribute {
@@ -244,6 +245,7 @@ exports.createSchemaCustomization = ({ actions }) => {
     type completeFrom {
       all: [String]
       current: [String]
+      entities: Boolean
     }
 
     type Subfield {
