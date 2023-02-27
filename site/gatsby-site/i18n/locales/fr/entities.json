@@ -19,7 +19,7 @@
     "{{count}} Report": "{{count}} Rapport",
     "{{count}} Report_plural": "{{count}} Rapports",
     "Incidents involved as both Developer and Deployer": "Incidents impliqués en tant que développeur et déployeur",
-    "Incindents Harmed By": "Affecté par des incidents",
+    "Incidents Harmed By": "Affecté par des incidents",
     "Alleged: <2></2> developed and deployed an AI system, which harmed <5></5>.": "Présumé : Un système d'IA développé et mis en œuvre par <2></2>, endommagé <5></5>.",
     "Alleged: <1></1> developed an AI system deployed by <4></4>, which harmed <6></6>.": "Présumé : un système d'IA développé par <1></1> et mis en œuvre par <4></4>, endommagé <6></6>.",
     "Entities involved in AI Incidents": "Entités impliquées dans les incidents IA",
