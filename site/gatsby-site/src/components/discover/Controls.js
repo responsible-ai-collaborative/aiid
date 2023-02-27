@@ -38,10 +38,7 @@ const Controls = () => {
         </div>
 
         <div className="flex">
-          <Sorting
-            items={SORTING_LISTS}
-            defaultRefinement="instant_search-en_epoch_incident_date_desc"
-          />
+          <Sorting items={SORTING_LISTS} defaultRefinement={searchState.sortBy} />
           <div className="justify-end">
             <ClearFilters>
               <Trans>Clear Filters</Trans>
