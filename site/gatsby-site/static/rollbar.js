@@ -1,11 +1,20 @@
 /* eslint-disable */
 
+let environment = 'other';
+if (location.hostname == 'incidentdatabase.ai') {
+  environment = 'production';
+} else if (location.hostname == 'staging-aiid.netlify.app') {
+  environment == 'staging';
+} else if (location.hostname == 'localhost') {
+  environment = 'localhost';
+}
+
 var _rollbarConfig = {
   accessToken: '8e6e3a414a6d4448befd3f46786d070f',
   captureUncaught: true,
   captureUnhandledRejections: true,
   payload: {
-    environment: 'production',
+    environment,
   },
 };
 // Rollbar Snippet
