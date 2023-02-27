@@ -257,7 +257,7 @@ describe('The Discover app', () => {
 
     cy.location('search', { timeout: 8000 }).should(
       'equal',
-      '?display=details&is_incident_report=true&page=1'
+      '?display=details&is_incident_report=true&page=1&sortBy=relevance'
     );
   });
 });
