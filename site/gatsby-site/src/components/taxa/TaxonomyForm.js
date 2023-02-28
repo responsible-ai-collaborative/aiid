@@ -739,7 +739,7 @@ function sortByFieldNumbers(a, b) {
 
     for (let i = 0; i < Math.max(fieldNumsA.length, fieldNumsB.length); i++) {
       if (exists(fieldNumsA[i]) && !exists(fieldNumsB[i])) return 1;
-      if (exists(fieldNumsB[i]) && !exists(fieldNumsA[i])) return 1;
+      if (exists(fieldNumsB[i]) && !exists(fieldNumsA[i])) return -1;
       if (!exists(fieldNumsA[i]) && !exists(fieldNumsB[i])) return 0;
       if (fieldNumsA[i] > fieldNumsB[i]) return 1;
       if (fieldNumsA[i] < fieldNumsB[i]) return -1;
