@@ -2,9 +2,10 @@ import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } f
 import { Button, Form, Card } from 'react-bootstrap';
 import styled from 'styled-components';
 import { Formik } from 'formik';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery, useApolloClient } from '@apollo/client';
+import gql from 'graphql-tag';
 
-import { FIND_CLASSIFICATION, UPDATE_CLASSIFICATION } from '../../graphql/classifications.js';
+import { FIND_CLASSIFICATION, UPDATE_CLASSIFICATION } from '../../graphql/classifications';
 import Loader from 'components/ui/Loader';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import Tags from 'components/forms/Tags.js';
@@ -49,6 +50,35 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
     variables: { query: { incident_id: incidentId } },
     skip: !active,
   });
+
+  const { data: allClassificationsData } = useQuery(FIND_CLASSIFICATION, {
+    variables: { query: { namespace: taxonomy.namespace } },
+    skip: !active,
+  });
+
+  const [entitiesData, setEntitiesData] = useState();
+
+  // We can't use a hook because we want to load the entities data
+  // only if it will be used.
+  const client = useApolloClient();
+
+  useEffect(() => {
+    (async () => {
+      if (taxonomy.complete_entities) {
+        setEntitiesData(
+          await client.query({
+            query: gql`
+              query FindEntities {
+                entities(limit: 9999) {
+                  name
+                }
+              }
+            `,
+          })
+        );
+      }
+    })();
+  }, []);
 
   const classification =
     classificationsData &&
@@ -218,10 +248,10 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
       const data = {
         __typename: undefined,
         incident_id: incidentId,
-        namespace,
         notes: values.notes,
         publish: values.publish,
-        attributes,
+        attributes: attributes.map((a) => a),
+        namespace,
       };
 
       await updateClassification({
@@ -301,12 +331,12 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                   .sort(sortByFieldNumbers)
                   .map((rawField) =>
                     rawField.dummy ? (
-                      <h5 className="mb-3 text-lg">
+                      <h5 className="mb-3 text-xl border-b-2 pb-1 border-gray-200">
                         {rawField.field_number}. {rawField.short_name}
                       </h5>
                     ) : (
                       <FormField
-                        key={rawField.short_name}
+                        key={`${rawField.field_number || ''}${rawField.short_name}`}
                         field={rawField}
                         formikValues={values}
                         {...{
@@ -314,6 +344,8 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                           setFieldTouched,
                           setFieldValue,
                           setDeletedSubClassificationIds,
+                          allClassificationsData,
+                          entitiesData,
                         }}
                       />
                     )
@@ -340,7 +372,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                   checked={[false, 'false'].includes(values.publish)}
                 />
               </Form.Group>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button onClick={handleSubmit} disabled={isSubmitting}>
                 Submit
               </Button>
             </Form>
@@ -360,10 +392,50 @@ function FormField({
   superfield,
   superfieldIndex,
   setDeletedSubClassificationIds,
+  allClassificationsData,
+  entitiesData,
 }) {
   const identifier = superfield
     ? `${superfield.short_name}___${superfieldIndex}___${field.short_name}`
     : field.short_name;
+
+  let autocompleteValues = Array.isArray(field.permitted_values) ? field.permitted_values : [];
+
+  if (allClassificationsData && ['list', 'string'].includes(field.display_type)) {
+    const classifications = allClassificationsData.classifications;
+
+    const matchingAttributes = classifications.map((classification) =>
+      (classification.attributes || []).find((a) =>
+        (field?.complete_from?.all || [field.short_name]).includes(a.short_name)
+      )
+    );
+
+    const matchingAttributesWithValues = matchingAttributes.filter(
+      (attribute) => attribute?.value_json
+    );
+
+    const attributeValues = matchingAttributesWithValues.map((attribute) =>
+      JSON.parse(attribute.value_json)
+    );
+
+    let combinedAttributedValues =
+      field.display_type === 'string'
+        ? attributeValues
+        : attributeValues.reduce((combined, array) => combined.concat(array), []);
+
+    if (field?.complete_from?.current) {
+      for (const key of field.complete_from.current) {
+        combinedAttributedValues = combinedAttributedValues.concat(formikValues[key]);
+      }
+    }
+
+    combinedAttributedValues = autocompleteValues.concat(combinedAttributedValues);
+
+    autocompleteValues = Array.from(new Set(combinedAttributedValues));
+  }
+  if (entitiesData?.data?.entities && field?.complete_from?.entities) {
+    autocompleteValues = autocompleteValues.concat(entitiesData.data.entities.map((e) => e.name));
+  }
 
   return (
     <div key={field.short_name} className="bootstrap">
@@ -406,13 +478,21 @@ function FormField({
       )}
 
       {field.display_type === 'string' && (
-        <Form.Control
-          id={identifier}
-          name={identifier}
-          type="text"
-          onChange={handleChange}
-          value={formikValues[identifier]}
-        />
+        <>
+          <Form.Control
+            id={identifier}
+            name={identifier}
+            type="text"
+            onChange={handleChange}
+            value={formikValues[identifier]}
+            list={`${identifier}-possible-values`}
+          />
+          <datalist id={`${identifier}-possible-values`}>
+            {autocompleteValues.map((v) => (
+              <option key={v}>{v}</option>
+            ))}
+          </datalist>
+        </>
       )}
 
       {field.display_type === 'long_string' && (
@@ -489,6 +569,7 @@ function FormField({
           inputId={identifier}
           placeHolder="Type and press Enter to add an item"
           value={formikValues[identifier]}
+          options={autocompleteValues}
           onChange={(value) => {
             setFieldTouched(identifier, true);
             setFieldValue(identifier, value);
@@ -522,6 +603,8 @@ function FormField({
             setFieldTouched,
             setFieldValue,
             setDeletedSubClassificationIds,
+            allClassificationsData,
+            entitiesData,
           }}
         />
       )}
@@ -540,6 +623,8 @@ function ObjectListField({
   setFieldTouched,
   setFieldValue,
   setDeletedSubClassificationIds,
+  allClassificationsData,
+  entitiesData,
 }) {
   // These are client-side only
   const [objectListItemIds, setObjectListItemsIds] = useState(
@@ -602,6 +687,8 @@ function ObjectListField({
                     setFieldTouched,
                     setFieldValue,
                     setDeletedSubClassificationIds,
+                    allClassificationsData,
+                    entitiesData,
                   }}
                 />
               ))}
@@ -652,7 +739,7 @@ function sortByFieldNumbers(a, b) {
 
     for (let i = 0; i < Math.max(fieldNumsA.length, fieldNumsB.length); i++) {
       if (exists(fieldNumsA[i]) && !exists(fieldNumsB[i])) return 1;
-      if (exists(fieldNumsB[i]) && !exists(fieldNumsA[i])) return 1;
+      if (exists(fieldNumsB[i]) && !exists(fieldNumsA[i])) return -1;
       if (!exists(fieldNumsA[i]) && !exists(fieldNumsB[i])) return 0;
       if (fieldNumsA[i] > fieldNumsB[i]) return 1;
       if (fieldNumsA[i] < fieldNumsB[i]) return -1;
