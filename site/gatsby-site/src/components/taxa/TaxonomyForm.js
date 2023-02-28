@@ -399,7 +399,7 @@ function FormField({
     ? `${superfield.short_name}___${superfieldIndex}___${field.short_name}`
     : field.short_name;
 
-  let autocompleteValues = [];
+  let autocompleteValues = Array.isArray(field.permitted_values) ? field.permitted_values : [];
 
   if (allClassificationsData && ['list', 'string'].includes(field.display_type)) {
     const classifications = allClassificationsData.classifications;
@@ -428,6 +428,8 @@ function FormField({
         combinedAttributedValues = combinedAttributedValues.concat(formikValues[key]);
       }
     }
+
+    combinedAttributedValues = autocompleteValues.concat(combinedAttributedValues);
 
     autocompleteValues = Array.from(new Set(combinedAttributedValues));
   }
