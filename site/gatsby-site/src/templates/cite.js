@@ -543,6 +543,7 @@ export const query = graphql`
         namespace
         weight
         description
+        complete_entities
         dummy_fields {
           field_number
           short_name
@@ -562,6 +563,11 @@ export const query = graphql`
           instant_facet
           required
           public
+          complete_from {
+            all
+            current
+            entities
+          }
           subfields {
             field_number
             short_name
@@ -577,6 +583,11 @@ export const query = graphql`
             instant_facet
             required
             public
+            complete_from {
+              all
+              current
+              entities
+            }
           }
         }
       }

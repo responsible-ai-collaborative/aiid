@@ -50,7 +50,7 @@ export const getClassificationsArray = (incidentClassifications, taxonomy) => {
   };
 
   taxaFieldsArray.forEach((field) => {
-    const attribute = attributes && attributes.find((a) => a.short_name == field.short_name);
+    const attribute = attributes && attributes.find((a) => a && a.short_name == field.short_name);
 
     const attributeValue = attribute?.value_json && JSON.parse(attribute.value_json);
 
@@ -88,6 +88,7 @@ export const getTaxonomies = ({ allMongodbAiidprodClassifications, allMongodbAii
       classificationsArray: getClassificationsArray(incidentClassifications, t),
       taxonomyFields: t.field_list,
       dummyFields: t.dummy_fields,
+      complete_entities: t.complete_entities,
     });
   });
 
