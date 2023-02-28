@@ -188,6 +188,8 @@ describe('The Discover app', () => {
   it('Should sort by incident date', () => {
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.get('[data-cy="discover-sort"]', { timeout: 10000 }).click();
 
     cy.waitForStableDOM();
@@ -215,6 +217,8 @@ describe('The Discover app', () => {
 
   it('Should sort by published date', () => {
     cy.visit(url);
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="discover-sort"]').click();
 
