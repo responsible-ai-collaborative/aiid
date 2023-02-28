@@ -228,6 +228,24 @@ describe('Algolia', () => {
         stub.withArgs('instant_search-es-featured').returns(esIndexReplica);
         stub.withArgs('instant_search-en-featured').returns(enIndexReplica);
 
+        stub.withArgs('instant_search-es_epoch_incident_date_desc').returns(esIndexReplica);
+        stub.withArgs('instant_search-en_epoch_incident_date_desc').returns(enIndexReplica);
+
+        stub.withArgs('instant_search-es_epoch_incident_date_asc').returns(esIndexReplica);
+        stub.withArgs('instant_search-en_epoch_incident_date_asc').returns(enIndexReplica);
+
+        stub.withArgs('instant_search-es_epoch_date_published_desc').returns(esIndexReplica);
+        stub.withArgs('instant_search-en_epoch_date_published_desc').returns(enIndexReplica);
+
+        stub.withArgs('instant_search-es_epoch_date_published_asc').returns(esIndexReplica);
+        stub.withArgs('instant_search-en_epoch_date_published_asc').returns(enIndexReplica);
+
+        stub.withArgs('instant_search-es_epoch_date_submitted_desc').returns(esIndexReplica);
+        stub.withArgs('instant_search-en_epoch_date_submitted_desc').returns(enIndexReplica);
+
+        stub.withArgs('instant_search-es_epoch_date_submitted_asc').returns(esIndexReplica);
+        stub.withArgs('instant_search-en_epoch_date_submitted_asc').returns(enIndexReplica);
+
         return stub;
       })(),
     };

@@ -63,7 +63,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
       key: 'incidentsAsBoth',
     },
     {
-      header: 'Incindents Harmed By',
+      header: 'Incidents Harmed By',
       key: 'incidentsHarmedBy',
     },
     {

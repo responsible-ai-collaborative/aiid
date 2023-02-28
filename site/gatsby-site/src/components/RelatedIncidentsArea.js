@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Spinner } from 'flowbite-react';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { useLocalization } from 'gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import SimilaritySelector from './SimilaritySelector';
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
@@ -18,6 +18,8 @@ const RelatedIncidentsArea = ({
   error,
 }) => {
   const { t } = useTranslation();
+
+  const { locale } = useLocalization();
 
   const [reportsOpened, setReportsOpened] = useState(false);
 
@@ -80,12 +82,13 @@ const RelatedIncidentsArea = ({
               <span>
                 {val?.incident_id && (
                   <span className="text-lg">
-                    <LocalizedLink
-                      to={'/cite/' + val.incident_id}
+                    <a
+                      href={`/${locale}/cite/${val.incident_id}`}
                       className="text-black hover:text-blue-700"
+                      target="_blank" rel="noreferrer"
                     >
                       #{val.incident_id}
-                    </LocalizedLink>
+                    </a>
                   </span>
                 )}
                 {` `}-{` `}
@@ -93,6 +96,7 @@ const RelatedIncidentsArea = ({
                   href={val.url || '/cite/' + val.incident_id}
                   data-cy="title"
                   className="text-black hover:text-blue-700 text-sm"
+                  target="_blank" rel="noreferrer"
                 >
                   {val.title}
                 </a>
