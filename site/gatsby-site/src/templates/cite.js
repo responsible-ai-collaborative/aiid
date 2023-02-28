@@ -10,7 +10,6 @@ import { graphql } from 'gatsby';
 
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
-import Citation from 'components/cite/Citation';
 import ImageCarousel from 'components/cite/ImageCarousel';
 import BibTex from 'components/BibTex';
 import { format, isAfter, isEqual } from 'date-fns';
@@ -298,29 +297,6 @@ function CitePage(props) {
               </Col>
             </Row>
 
-            <Row>
-              <Col>
-                <Card
-                  data-cy="citation"
-                  className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6"
-                >
-                  <Card.Header className="items-center justify-between">
-                    <h4 className="m-0">
-                      <Trans>Suggested citation format</Trans>
-                    </h4>
-                  </Card.Header>
-                  <Card.Body className="block">
-                    <Citation
-                      nodes={incidentReports}
-                      incidentDate={incident.date}
-                      incident_id={incident.incident_id}
-                      editors={incident.editors}
-                    />
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
-
             <Row className="mt-6">
               <Col>
                 <div data-cy={'incident-stats'}>
@@ -330,6 +306,12 @@ function CitePage(props) {
                       reportCount: incidentReports.length,
                       incidentDate: incident.date,
                       editors: incident.editors.join(', '),
+                      suggestedCitationFormat: {
+                        nodes: incidentReports,
+                        incidentDate: incident.date,
+                        incident_id: incident.incident_id,
+                        editors: incident.editors,
+                      },
                     }}
                   />
                 </div>
