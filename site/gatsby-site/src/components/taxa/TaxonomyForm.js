@@ -372,7 +372,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                   checked={[false, 'false'].includes(values.publish)}
                 />
               </Form.Group>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button onClick={handleSubmit} disabled={isSubmitting}>
                 Submit
               </Button>
             </Form>
