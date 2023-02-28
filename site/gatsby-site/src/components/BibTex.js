@@ -58,7 +58,12 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
     <>
       <div className="bootstrap">
         <BSButton variant="outline-primary" onClick={handleShow}>
-          <FontAwesomeIcon className="mr-2 -mt-1" icon={faQuoteLeft} title={t('BibTex Citation')} />
+          <FontAwesomeIcon
+            titleId="bibtext"
+            className="mr-2 -mt-1"
+            icon={faQuoteLeft}
+            title={t('BibTex Citation')}
+          />
           <Trans>BibTex Citation</Trans>
         </BSButton>
       </div>
@@ -77,6 +82,7 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
             }}
           >
             <FontAwesomeIcon
+              titleId="copy"
               icon={faCopy}
               className="fas fa-times"
               style={{ marginRight: '1ch' }}

@@ -185,7 +185,12 @@ const VariantList = ({ incidentId, variants }) => {
 
       <div className="bootstrap">
         <Button variant="outline-primary" onClick={onAddVariantClick} data-cy="add-variant-btn">
-          <FontAwesomeIcon icon={faPlus} title={t('Add Variant')} className="mr-2" />
+          <FontAwesomeIcon
+            titleId="add-variant"
+            icon={faPlus}
+            title={t('Add Variant')}
+            className="mr-2"
+          />
           <Trans ns="variants">Add Variant</Trans>
         </Button>
       </div>
