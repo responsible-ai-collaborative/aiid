@@ -83,7 +83,7 @@ export default function FlaggedIncidents({ data, ...props }) {
 
 export const pageQuery = graphql`
   query AllFlaggedIncidents {
-    allMongodbAiidprodIncidents(sort: { order: ASC, fields: incident_id }) {
+    allMongodbAiidprodIncidents(sort: { incident_id: ASC }) {
       nodes {
         incident_id
         title
@@ -91,7 +91,6 @@ export const pageQuery = graphql`
         reports
       }
     }
-
     allMongodbAiidprodReports(filter: { flag: { eq: true } }) {
       nodes {
         report_number
