@@ -23,7 +23,7 @@ export const wrapPageElement = ({ element }) => {
     },
   };
 
-  const location = () => (typeof window == 'undefined' ? {} : window.location);
+  const location = typeof window == 'undefined' ? {} : window.location;
 
   return (
     <QueryParamProvider history={history} location={location}>
