@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { Trans, useTranslation } from 'react-i18next';
 import { useQuery } from '@apollo/client';
 import { FIND_INCIDENT_ENTITIES } from '../../graphql/incidents';
+import Link from 'components/ui/Link';
 
 const Table = styled.div`
   display: inline-block;
@@ -113,14 +114,16 @@ function ListCell({ cell }) {
         incident?.incident[cell.column.id]?.map((v, i) => {
           const isLast = i === incident.incident[cell.column.id].length - 1;
 
-          const url = '/entities/' + v.entity_id;
-
-          if (url) {
+          if (v.entity_id) {
             return (
-              <a key={`entity-${v.name}`} href={url} data-cy="cell-entity-link">
+              <Link
+                key={`entity-${v.name}`}
+                to={`/entities/${v.entity_id}`}
+                data-cy="cell-entity-link"
+              >
                 {v.name}
                 {!isLast ? ', ' : ''}
-              </a>
+              </Link>
             );
           } else {
             return (
