@@ -5,6 +5,6 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 import './src/custom.css';
 import './src/bootstrap.scss';
 
-import { wrapRootElement, wrapPageElement, onRenderBody } from './gatsby-shared';
+import { wrapRootElement, wrapPageElement } from './gatsby-shared';
 
-export { onRenderBody, wrapPageElement, wrapRootElement };
+export { wrapPageElement, wrapRootElement };
