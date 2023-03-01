@@ -1,15 +1,8 @@
 import React, { Fragment } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import Card from '../../elements/Card';
-import Citation from './Citation';
 
-const IncidentStatsCard = ({
-  incidentId,
-  reportCount,
-  incidentDate,
-  editors,
-  suggestedCitationFormat,
-}) => {
+const IncidentStatsCard = ({ incidentId, reportCount, incidentDate, editors }) => {
   const { t } = useTranslation();
 
   const STATS = [
@@ -56,19 +49,6 @@ const IncidentStatsCard = ({
             <div>{stats[stat.key]}</div>
           </Fragment>
         ))}
-        <Fragment key={``}>
-          <div className="pr-4 my-0.5">
-            <Trans>Suggested citation format</Trans>
-          </div>
-          <div>
-            <Citation
-              nodes={suggestedCitationFormat.nodes}
-              incidentDate={suggestedCitationFormat.incidentDate}
-              incident_id={suggestedCitationFormat.incident_id}
-              editors={suggestedCitationFormat.editors}
-            />
-          </div>
-        </Fragment>
       </Card.Body>
     </Card>
   );

@@ -1,11 +1,17 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
-import { Badge, Spinner } from 'flowbite-react';
+import { Badge, Button, Modal, Spinner } from 'flowbite-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEnvelope,
+  faPlus,
+  faEdit,
+  faSearch,
+  faQuoteLeft,
+} from '@fortawesome/free-solid-svg-icons';
 import { CloudinaryImage } from '@cloudinary/base';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'gatsby-theme-i18n';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { graphql } from 'gatsby';
 
 import AiidHelmet from 'components/AiidHelmet';
@@ -20,14 +26,13 @@ import Taxonomy from '../components/taxa/Taxonomy';
 import { useUserContext } from '../contexts/userContext';
 import SimilarIncidents from '../components/cite/SimilarIncidents';
 import Card from '../elements/Card';
-import Button from '../elements/Button';
 import Container from '../elements/Container';
 import Row from '../elements/Row';
 import Col from '../elements/Col';
 import Pagination from '../elements/Pagination';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
 import useLocalizePath from '../components/i18n/useLocalizePath';
-import { UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
+import { FIND_USER_SUBSCRIPTIONS, UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import Link from 'components/ui/Link';
 import { getTaxonomies, getTranslatedReports } from 'utils/cite';
@@ -38,6 +43,7 @@ import config from '../../config';
 import VariantList from 'components/variants/VariantList';
 import { isCompleteReport } from 'utils/variants';
 import { useQueryParams, StringParam, withDefault } from 'use-query-params';
+import Citation from 'components/cite/Citation';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -56,6 +62,70 @@ const sortIncidentsByDatePublished = (incidentReports) => {
     }
   });
 };
+
+function CitationFormat({ incidentReports, incident }) {
+  const { t } = useTranslation();
+
+  const [show, setShow] = useState(false);
+
+  const handleShow = () => {
+    setShow(true);
+  };
+
+  const handleClose = () => {
+    setShow(false);
+  };
+
+  return (
+    <>
+      <Button color="gray" onClick={handleShow}>
+        <FontAwesomeIcon className="mr-2 -mt-1" icon={faQuoteLeft} title={t('Citation Info')} />
+        <Trans>Citation Info</Trans>
+      </Button>
+      <Modal show={show} onClose={handleClose} data-cy="bibtext-modal">
+        <Modal.Header>
+          <Trans>Citation Info</Trans>
+        </Modal.Header>
+        <Modal.Body>
+          <Citation
+            nodes={incidentReports}
+            incidentDate={incident.date}
+            incident_id={incident.incident_id}
+            editors={incident.editors}
+          />
+          <BibTex
+            nodes={incidentReports}
+            incidentDate={incident.date}
+            incident_id={incident.incident_id}
+            editors={incident.editors}
+          />
+          <Modal.Footer>
+            <Button onClick={handleClose}>Close</Button>
+          </Modal.Footer>
+        </Modal.Body>
+      </Modal>
+    </>
+  );
+}
+
+function NotifyButton({ subscribing, onClick, subscribed }) {
+  const { t } = useTranslation();
+
+  return (
+    <Button color="gray" onClick={onClick}>
+      <div className="flex gap-2 items-center">
+        {subscribing ? (
+          <div>
+            <Spinner size="sm" />
+          </div>
+        ) : (
+          <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
+        )}
+        {subscribed ? <Trans>Subscribed to Updates</Trans> : <Trans>Notify Me of Updates</Trans>}
+      </div>
+    </Button>
+  );
+}
 
 function CitePage(props) {
   const {
@@ -89,6 +159,14 @@ function CitePage(props) {
 
   const [query] = useQueryParams({
     edit_taxonomy: withDefault(StringParam, ''),
+  });
+
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  const { data } = useQuery(FIND_USER_SUBSCRIPTIONS, {
+    variables: {
+      query: { userId: { userId: user.id }, incident_id: { incident_id: incident.incident_id } },
+    },
   });
 
   // meta tags
@@ -181,55 +259,76 @@ function CitePage(props) {
     );
   }, [user]);
 
+  useEffect(() => {
+    if (data?.subscriptions?.length > 0) {
+      setIsSubscribed(true);
+    } else {
+      setIsSubscribed(false);
+    }
+  }, [data]);
+
   const [subscribeToNewReportsMutation, { loading: subscribing }] =
     useMutation(UPSERT_SUBSCRIPTION);
 
   const subscribeToNewReports = async () => {
-    if (isRole('subscriber')) {
-      try {
-        const incidentId = incident.incident_id;
+    if (!isSubscribed) {
+      if (isRole('subscriber')) {
+        try {
+          const incidentId = incident.incident_id;
 
-        await subscribeToNewReportsMutation({
-          variables: {
-            query: {
-              type: SUBSCRIPTION_TYPE.incident,
-              userId: { userId: user.id },
-              incident_id: { incident_id: incidentId },
-            },
-            subscription: {
-              type: SUBSCRIPTION_TYPE.incident,
-              userId: {
-                link: user.id,
+          await subscribeToNewReportsMutation({
+            variables: {
+              query: {
+                type: SUBSCRIPTION_TYPE.incident,
+                userId: { userId: user.id },
+                incident_id: { incident_id: incidentId },
               },
-              incident_id: {
-                link: incidentId,
+              subscription: {
+                type: SUBSCRIPTION_TYPE.incident,
+                userId: {
+                  link: user.id,
+                },
+                incident_id: {
+                  link: incidentId,
+                },
               },
             },
-          },
-        });
+          });
 
+          addToast({
+            message: (
+              <>
+                {t(`You have successfully subscribed to updates on incident {{incidentId}}`, {
+                  incidentId,
+                })}
+              </>
+            ),
+            severity: SEVERITY.success,
+          });
+        } catch (e) {
+          addToast({
+            message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
+            severity: SEVERITY.danger,
+          });
+        }
+      } else {
         addToast({
           message: (
-            <>
-              {t(`You have successfully subscribed to updates on incident {{incidentId}}`, {
-                incidentId,
-              })}
-            </>
+            <Trans i18n={i18n}>
+              Please <Link to={localizePath({ path: '/login', language: locale })}>log in</Link> to
+              subscribe
+            </Trans>
           ),
           severity: SEVERITY.success,
-        });
-      } catch (e) {
-        addToast({
-          message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
-          severity: SEVERITY.danger,
         });
       }
     } else {
       addToast({
         message: (
           <Trans i18n={i18n}>
-            Please <Link to={localizePath({ path: '/login', language: locale })}>log in</Link> to
-            subscribe
+            Please go to your{' '}
+            <Link to={localizePath({ path: '/account', language: locale })}>account</Link> to manage
+            subscriptions
           </Trans>
         ),
         severity: SEVERITY.success,
@@ -255,20 +354,27 @@ function CitePage(props) {
 
       <div className={'titleWrapper'}>
         <h1 className="tw-styled-heading">{locale == 'en' ? metaTitle : defaultIncidentTitle}</h1>
-        <div className="flex">
-          <SocialShareButtons
-            metaTitle={metaTitle}
-            path={props.location.pathname}
-            page="cite"
-            className="-mt-1"
-          ></SocialShareButtons>
-          {incidentResponded && (
-            <div className="self-center">
-              <Badge color="success" data-cy="responded-badge">
-                {t('Responded')}
-              </Badge>
-            </div>
-          )}
+        <div className="flex justify-between w-full flex-wrap">
+          <div className="flex">
+            <SocialShareButtons
+              metaTitle={metaTitle}
+              path={props.location.pathname}
+              page="cite"
+              className="-mt-1"
+            ></SocialShareButtons>
+            {incidentResponded && (
+              <div className="self-center">
+                <Badge color="success" data-cy="responded-badge">
+                  {t('Responded')}
+                </Badge>
+              </div>
+            )}
+          </div>
+          <NotifyButton
+            subscribing={subscribing}
+            onClick={subscribeToNewReports}
+            subscribed={isSubscribed}
+          />
         </div>
       </div>
 
@@ -306,12 +412,6 @@ function CitePage(props) {
                       reportCount: incidentReports.length,
                       incidentDate: incident.date,
                       editors: incident.editors.join(', '),
-                      suggestedCitationFormat: {
-                        nodes: incidentReports,
-                        incidentDate: incident.date,
-                        incident_id: incident.incident_id,
-                        editors: incident.editors,
-                      },
                     }}
                   />
                 </div>
@@ -342,20 +442,13 @@ function CitePage(props) {
                     </h4>
                   </Card.Header>
                   <Card.Body className="flex-row flex-wrap gap-2">
-                    <Button variant="outline-primary" onClick={subscribeToNewReports}>
-                      <div className="flex gap-2 items-center">
-                        {subscribing ? (
-                          <div>
-                            <Spinner size="sm" />
-                          </div>
-                        ) : (
-                          <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
-                        )}
-                        <Trans>Notify Me of Updates</Trans>
-                      </div>
-                    </Button>
+                    <NotifyButton
+                      subscribing={subscribing}
+                      onClick={subscribeToNewReports}
+                      subscribed={isSubscribed}
+                    />
                     <Button
-                      variant="outline-primary"
+                      color="gray"
                       href={`/apps/submit?incident_id=${
                         incident.incident_id
                       }&date_downloaded=${format(new Date(), 'yyyy-MM-dd')}`}
@@ -364,28 +457,23 @@ function CitePage(props) {
                       <Trans>New Report</Trans>
                     </Button>
                     <Button
-                      variant="outline-primary"
+                      color="gray"
                       href={`/apps/submit?tags=${RESPONSE_TAG}&incident_id=${incident.incident_id}`}
                     >
                       <FontAwesomeIcon icon={faPlus} title={t('New Response')} className="mr-2" />
                       <Trans>New Response</Trans>
                     </Button>
                     <Button
-                      variant="outline-primary"
+                      color="gray"
                       href={'/apps/discover?incident_id=' + incident.incident_id}
                     >
                       <FontAwesomeIcon className="mr-2" icon={faSearch} title={t('Discover')} />
                       <Trans>Discover</Trans>
                     </Button>
-                    <BibTex
-                      nodes={incidentReports}
-                      incidentDate={incident.date}
-                      incident_id={incident.incident_id}
-                      editors={incident.editors}
-                    />
+                    <CitationFormat incidentReports={incidentReports} incident={incident} />
                     {!loading && isRole('incident_editor') && (
                       <Button
-                        variant="outline-primary"
+                        color="gray"
                         href={'/incidents/edit?incident_id=' + incident.incident_id}
                       >
                         <FontAwesomeIcon
