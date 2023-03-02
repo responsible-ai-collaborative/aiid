@@ -148,7 +148,7 @@ var csetV1TaxaEntry = {
     },
     {
       field_number: '1.4',
-      short_name: 'Reviewer',
+      short_name: 'Peer Reviewer',
       long_name: 'Person responsible for reviewing annotations',
       short_description:
         'This is the researcher that is responsible for ensuring the quality of the classifications applied to this incident.',
@@ -239,7 +239,7 @@ var csetV1TaxaEntry = {
     },
     {
       field_number: '2.3',
-      short_name: 'Report, Test, or Study',
+      short_name: 'Report, Test, or Study of data',
       long_name:
         'Was the incident about a report, test, or study of data instead of the AI itself?',
       short_description:
@@ -579,8 +579,7 @@ var csetV1TaxaEntry = {
       field_number: '4.4',
       short_name: 'Detrimental Content',
       long_name: 'Was detrimental content (misinformation, hate speech) involved?',
-      short_description:
-        'Was detrimental content (misinformation, hate speech) involved? (note detrimental/harmful content is not in itself harm)',
+      short_description: 'Was detrimental content (misinformation, hate speech) involved?',
       long_description:
         'Detrimental content can include deepfakes, identity misrepresentation, insults, threats of violence, eating disorder or self harm promotion, extremist content, misinformation, sexual abuse material, and scam emails. Detrimental content in itself is often not harmful, however, it can lead to or instigate injury, damage, or loss.',
       ...YesNoMaybe,
@@ -592,7 +591,8 @@ var csetV1TaxaEntry = {
     {
       field_number: '4.5',
       short_name: 'Protected Characteristic',
-      long_name: 'Was a group of people treated differently based upon a protected characteristic?',
+      long_name:
+        'Was a group of people or an individual treated differently based upon a protected characteristic?',
       short_description:
         'Was a group of people treated differently based upon a protected characteristic (e.g. race, ethnicity, creed, immigrant status, color, religion, sex, national origin, age, disability, genetic information)?',
       long_description:
@@ -888,7 +888,7 @@ var csetV1TaxaEntry = {
       short_name: 'Multiple AI Interaction',
       long_name: 'Was the AI interacting with another AI?',
       short_description:
-        '“Yes” if two independently operating AI systems were involved. “No” otherwise.',
+        '“Yes” if two or more independently operating AI systems were involved. “No” otherwise.',
       long_description:
         'This happens very rarely but is possible. Examples include two chatbots having a conversation with each other, or two autonomous vehicles in a crash.',
       ...YesNoMaybe,
