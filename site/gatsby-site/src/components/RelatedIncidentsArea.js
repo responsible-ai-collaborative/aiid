@@ -85,7 +85,8 @@ const RelatedIncidentsArea = ({
                     <a
                       href={`/${locale}/cite/${val.incident_id}`}
                       className="text-black hover:text-blue-700"
-                      target="_blank" rel="noreferrer"
+                      target="_blank"
+                      rel="noreferrer"
                     >
                       #{val.incident_id}
                     </a>
@@ -96,7 +97,8 @@ const RelatedIncidentsArea = ({
                   href={val.url || '/cite/' + val.incident_id}
                   data-cy="title"
                   className="text-black hover:text-blue-700 text-sm"
-                  target="_blank" rel="noreferrer"
+                  target="_blank"
+                  rel="noreferrer"
                 >
                   {val.title}
                 </a>

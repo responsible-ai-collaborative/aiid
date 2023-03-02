@@ -72,6 +72,7 @@ const SubmitForm = () => {
     harmed_parties: [],
     editor_notes: '',
     language: 'en',
+    tags: [],
   };
 
   const [submission, setSubmission] = useState(initialValues);
