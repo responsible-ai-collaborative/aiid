@@ -223,6 +223,7 @@ function CitePage(props) {
         addToast({
           message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
           severity: SEVERITY.danger,
+          error: e,
         });
       }
     } else {
