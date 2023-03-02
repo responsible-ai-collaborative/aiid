@@ -9,6 +9,7 @@ export default function Tags({
   onChange,
   name,
   disabled = false,
+  options,
 }) {
   const ref = useRef(null);
 
@@ -39,9 +40,9 @@ export default function Tags({
       }}
       allowNew
       multiple
-      renderMenu={() => null}
+      renderMenu={options ? undefined : () => null}
       onChange={(value) => onChange(value)}
-      options={[]}
+      options={options || []}
       selected={value}
       placeholder={placeHolder}
       disabled={disabled}

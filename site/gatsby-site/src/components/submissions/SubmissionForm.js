@@ -113,6 +113,7 @@ const SubmissionForm = () => {
         addToast({
           message: <>{message}</>,
           severity: SEVERITY.danger,
+          error: e,
         });
       }
 

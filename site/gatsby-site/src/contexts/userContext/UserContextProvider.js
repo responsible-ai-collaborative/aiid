@@ -98,6 +98,7 @@ export const UserContextProvider = ({ children }) => {
           <label className="capitalize">{t(e.error || 'An unknown error has ocurred')}</label>
         ),
         severity: SEVERITY.danger,
+        error: e,
       });
       return false;
     }
