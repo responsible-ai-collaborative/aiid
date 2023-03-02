@@ -98,7 +98,7 @@ const Header = () => {
                   title="Open RSS Feed"
                 />
               </a>
-              <a href={githubUrl} target="_blank" rel="noreferrer" style={{ paddingRight: '0px' }}>
+              <a href={githubUrl} target="_blank" rel="noreferrer" className="pr-2">
                 <FontAwesomeIcon
                   titleId="github"
                   icon={faGithubSquare}
