@@ -16,9 +16,15 @@ function NotifyButton({ subscribing, onClick, subscribed }) {
             <Spinner size="sm" />
           </div>
         ) : (
-          <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
+          <>
+            <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
+            {subscribed ? (
+              <Trans>Subscribed to Updates</Trans>
+            ) : (
+              <Trans>Notify Me of Updates</Trans>
+            )}
+          </>
         )}
-        {subscribed ? <Trans>Subscribed to Updates</Trans> : <Trans>Notify Me of Updates</Trans>}
       </div>
     </Button>
   );

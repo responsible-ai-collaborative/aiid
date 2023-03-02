@@ -34,7 +34,6 @@ import config from '../../config';
 import VariantList from 'components/variants/VariantList';
 import { isCompleteReport } from 'utils/variants';
 import { useQueryParams, StringParam, withDefault } from 'use-query-params';
-import NotifyButton from 'components/cite/NotifyButton';
 import Tools from 'components/cite/Tools';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
@@ -91,9 +90,11 @@ function CitePage(props) {
 
   const [isSubscribed, setIsSubscribed] = useState(false);
 
+  const [isSubscribedLoading, setIsSubscribedLoading] = useState(true);
+
   const { data } = useQuery(FIND_USER_SUBSCRIPTIONS, {
     variables: {
-      query: { userId: { userId: user.id }, incident_id: { incident_id: incident.incident_id } },
+      query: { userId: { userId: user?.id }, incident_id: { incident_id: incident.incident_id } },
     },
   });
 
@@ -188,10 +189,13 @@ function CitePage(props) {
   }, [user]);
 
   useEffect(() => {
-    if (data?.subscriptions?.length > 0) {
-      setIsSubscribed(true);
-    } else {
-      setIsSubscribed(false);
+    if (data) {
+      if (data?.subscriptions?.length > 0) {
+        setIsSubscribed(true);
+      } else {
+        setIsSubscribed(false);
+      }
+      setIsSubscribedLoading(false);
     }
   }, [data]);
 
@@ -283,7 +287,7 @@ function CitePage(props) {
       <div className={'titleWrapper'}>
         <h1 className="tw-styled-heading">{locale == 'en' ? metaTitle : defaultIncidentTitle}</h1>
         <div className="flex justify-between w-full flex-wrap">
-          <div className="flex">
+          <div className="flex gap-2">
             <SocialShareButtons
               metaTitle={metaTitle}
               path={props.location.pathname}
@@ -297,12 +301,14 @@ function CitePage(props) {
                 </Badge>
               </div>
             )}
+            {isSubscribed && (
+              <div className="self-center">
+                <Badge color="success" data-cy="subscribed-badge">
+                  <Trans>Subscribed to Updates</Trans>
+                </Badge>
+              </div>
+            )}
           </div>
-          <NotifyButton
-            subscribing={subscribing}
-            onClick={subscribeToNewReports}
-            subscribed={isSubscribed}
-          />
         </div>
       </div>
 
@@ -313,7 +319,7 @@ function CitePage(props) {
             isSubscribed={isSubscribed}
             subscribeToNewReports={subscribeToNewReports}
             incidentReports={incidentReports}
-            subscribing={subscribing}
+            subscribing={subscribing || isSubscribedLoading}
           />
           <div className="mt-6">
             <strong>Description</strong>: {incident.description}
