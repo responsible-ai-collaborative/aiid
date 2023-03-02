@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import md5 from 'md5';
 import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
@@ -23,6 +23,8 @@ const ReportCard = ({ item, className = '', incidentId }) => {
 
   const [expanded, setExpanded] = useState(false);
 
+  const [cardHeight, setCardHeight] = useState(0);
+
   const ref = useRef(null);
 
   const imageRef = useRef(null);
@@ -42,6 +44,30 @@ const ReportCard = ({ item, className = '', incidentId }) => {
     }
   };
 
+  const checkCardSize = () => {
+    const cardHeight =
+      ref.current.clientHeight -
+      parseFloat(window.getComputedStyle(ref.current).paddingTop) -
+      parseFloat(window.getComputedStyle(ref.current).paddingBottom) -
+      parseFloat(window.getComputedStyle(ref.current).marginTop) -
+      parseFloat(window.getComputedStyle(ref.current).marginBottom);
+
+    setCardHeight(cardHeight);
+  };
+
+  useEffect(() => {
+    checkCardSize();
+    window.addEventListener('resize', checkCardSize);
+
+    return () => {
+      window.removeEventListener('resize', checkCardSize);
+    };
+  }, []);
+
+  let adjustedCardStyles = {
+    height: cardHeight,
+  };
+
   return (
     <>
       <div
@@ -59,9 +85,10 @@ const ReportCard = ({ item, className = '', incidentId }) => {
           role="presentation"
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
+          style={adjustedCardStyles}
         >
           <Image
-            className={`img-fluid h-full w-full max-w-full object-cover`}
+            className={`img-fluid h-full w-full max-w-full object-cover max-h-full`}
             publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
             alt={item.title}
             transformation={fill().height(480)}

@@ -1,13 +1,5 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
-import { Badge, Button, Modal, Spinner } from 'flowbite-react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faEnvelope,
-  faPlus,
-  faEdit,
-  faSearch,
-  faQuoteLeft,
-} from '@fortawesome/free-solid-svg-icons';
+import { Badge } from 'flowbite-react';
 import { CloudinaryImage } from '@cloudinary/base';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'gatsby-theme-i18n';
@@ -17,7 +9,7 @@ import { graphql } from 'gatsby';
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
 import ImageCarousel from 'components/cite/ImageCarousel';
-import { format, isAfter, isEqual } from 'date-fns';
+import { isAfter, isEqual } from 'date-fns';
 import Timeline from '../components/visualizations/Timeline';
 import IncidentStatsCard from '../components/cite/IncidentStatsCard';
 import ReportCard from '../components/reports/ReportCard';
@@ -42,7 +34,8 @@ import config from '../../config';
 import VariantList from 'components/variants/VariantList';
 import { isCompleteReport } from 'utils/variants';
 import { useQueryParams, StringParam, withDefault } from 'use-query-params';
-import citationTypes from 'components/cite/citationTypes';
+import NotifyButton from 'components/cite/NotifyButton';
+import Tools from 'components/cite/Tools';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -61,77 +54,6 @@ const sortIncidentsByDatePublished = (incidentReports) => {
     }
   });
 };
-
-function CitationFormat({ incidentReports, incident }) {
-  const { t } = useTranslation();
-
-  const formats = {
-    citation: {},
-    bibTex: {},
-  };
-
-  const [show, setShow] = useState(false);
-
-  const handleShow = () => {
-    setShow(true);
-  };
-
-  const handleClose = () => {
-    setShow(false);
-  };
-
-  return (
-    <>
-      <Button color="gray" onClick={handleShow}>
-        <FontAwesomeIcon className="mr-2 -mt-1" icon={faQuoteLeft} title={t('Citation Info')} />
-        <Trans>Citation Info</Trans>
-      </Button>
-      <Modal show={show} onClose={handleClose} data-cy="bibtext-modal">
-        <Modal.Header>
-          <Trans>Citation Info</Trans>
-        </Modal.Header>
-        <Modal.Body>
-          {Object.keys(formats).map((format) => {
-            const Component = citationTypes[format].default;
-
-            return (
-              <Component
-                key={format}
-                nodes={incidentReports}
-                incidentDate={incident.date}
-                incident_id={incident.incident_id}
-                editors={incident.editors}
-              />
-            );
-          })}
-
-          <Modal.Footer>
-            <Button onClick={handleClose}>Close</Button>
-          </Modal.Footer>
-        </Modal.Body>
-      </Modal>
-    </>
-  );
-}
-
-function NotifyButton({ subscribing, onClick, subscribed }) {
-  const { t } = useTranslation();
-
-  return (
-    <Button color="gray" onClick={onClick}>
-      <div className="flex gap-2 items-center">
-        {subscribing ? (
-          <div>
-            <Spinner size="sm" />
-          </div>
-        ) : (
-          <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
-        )}
-        {subscribed ? <Trans>Subscribed to Updates</Trans> : <Trans>Notify Me of Updates</Trans>}
-      </div>
-    </Button>
-  );
-}
 
 function CitePage(props) {
   const {
@@ -155,7 +77,7 @@ function CitePage(props) {
     },
   } = props;
 
-  const { isRole, user, loading } = useUserContext();
+  const { isRole, user } = useUserContext();
 
   const { i18n, t } = useTranslation();
 
@@ -384,7 +306,17 @@ function CitePage(props) {
         </div>
       </div>
 
-      <div className="flex">
+      <div className="mt-6">
+        <Tools
+          incident={incident}
+          isSubscribed={isSubscribed}
+          subscribeToNewReports={subscribeToNewReports}
+          incidentReports={incidentReports}
+          subscribing={subscribing}
+        />
+      </div>
+
+      <div className="flex mt-6">
         <div className="shrink-1">
           <div>
             <strong>Description</strong>: {incident.description}
@@ -421,62 +353,6 @@ function CitePage(props) {
                     }}
                   />
                 </div>
-              </Col>
-            </Row>
-
-            <Row className="mt-6">
-              <Col>
-                <Card className="shadow-card">
-                  <Card.Header className="items-center justify-between">
-                    <h4>
-                      <Trans>Tools</Trans>
-                    </h4>
-                  </Card.Header>
-                  <Card.Body className="flex-row flex-wrap gap-2">
-                    <NotifyButton
-                      subscribing={subscribing}
-                      onClick={subscribeToNewReports}
-                      subscribed={isSubscribed}
-                    />
-                    <Button
-                      color="gray"
-                      href={`/apps/submit?incident_id=${
-                        incident.incident_id
-                      }&date_downloaded=${format(new Date(), 'yyyy-MM-dd')}`}
-                    >
-                      <FontAwesomeIcon icon={faPlus} title={t('New Report')} className="mr-2" />
-                      <Trans>New Report</Trans>
-                    </Button>
-                    <Button
-                      color="gray"
-                      href={`/apps/submit?tags=${RESPONSE_TAG}&incident_id=${incident.incident_id}`}
-                    >
-                      <FontAwesomeIcon icon={faPlus} title={t('New Response')} className="mr-2" />
-                      <Trans>New Response</Trans>
-                    </Button>
-                    <Button
-                      color="gray"
-                      href={'/apps/discover?incident_id=' + incident.incident_id}
-                    >
-                      <FontAwesomeIcon className="mr-2" icon={faSearch} title={t('Discover')} />
-                      <Trans>Discover</Trans>
-                    </Button>
-                    <CitationFormat incidentReports={incidentReports} incident={incident} />
-                    {!loading && isRole('incident_editor') && (
-                      <Button
-                        color="gray"
-                        href={'/incidents/edit?incident_id=' + incident.incident_id}
-                      >
-                        <FontAwesomeIcon
-                          className="mr-2"
-                          icon={faEdit}
-                          title={t('Edit Incident')}
-                        />
-                        <Trans>Edit Incident</Trans>
-                      </Button>
-                    )}
-                  </Card.Body>
-                </Card>
               </Col>
             </Row>
 
