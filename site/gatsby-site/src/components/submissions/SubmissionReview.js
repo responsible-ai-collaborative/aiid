@@ -111,7 +111,11 @@ const SubmissionReview = ({ submission }) => {
     } catch (e) {
       const [error] = e.errors;
 
-      addToast({ message: t(error), severity: SEVERITY.danger });
+      addToast({
+        message: t(error),
+        severity: SEVERITY.danger,
+        error: e,
+      });
 
       return false;
     }

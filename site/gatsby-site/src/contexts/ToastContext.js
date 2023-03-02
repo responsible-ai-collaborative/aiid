@@ -75,24 +75,30 @@ export function ToastContextProvider({ children }) {
     <ToastContext.Provider value={addToast}>
       {children}
       <ToastsWrapper className="bootstrap">
-        {toasts.map(({ message, severity, id }, index) => (
-          <Toast
-            key={id}
-            className={severity.className}
-            style={{ maxWidth: '100%' }}
-            data-cy="toast"
-          >
-            <ToastBody style={{ color: 'white' }}>
-              <ToastBodyContent>
-                <FontAwesomeIcon icon={severity.icon} className={severity.faClass} />
-                {message}
-              </ToastBodyContent>
-              <CloseButton onClick={(e) => removeToast(e, index)} variant="link">
-                <FontAwesomeIcon icon={faTimes} className="fas fa-times" />
-              </CloseButton>
-            </ToastBody>
-          </Toast>
-        ))}
+        {toasts.map(({ message, severity, error, id }, index) => {
+          if (error) {
+            // eslint-disable-next-line no-undef
+            Rollbar.error(error);
+          }
+          return (
+            <Toast
+              key={id}
+              className={severity.className}
+              style={{ maxWidth: '100%' }}
+              data-cy="toast"
+            >
+              <ToastBody style={{ color: 'white' }}>
+                <ToastBodyContent>
+                  <FontAwesomeIcon icon={severity.icon} className={severity.faClass} />
+                  {message}
+                </ToastBodyContent>
+                <CloseButton onClick={(e) => removeToast(e, index)} variant="link">
+                  <FontAwesomeIcon icon={faTimes} className="fas fa-times" />
+                </CloseButton>
+              </ToastBody>
+            </Toast>
+          );
+        })}
       </ToastsWrapper>
     </ToastContext.Provider>
   );

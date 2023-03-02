@@ -229,6 +229,7 @@ exports.createSchemaCustomization = ({ actions }) => {
     
     type mongodbAiidprodTaxa implements Node {
       field_list: [mongodbAiidprodTaxaField_list]
+      complete_entities: Boolean
     }
 
     type mongodbAiidprodClassificationsAttribute {
@@ -239,6 +240,12 @@ exports.createSchemaCustomization = ({ actions }) => {
       incident_id: Int
       namespace: String
       attributes: [mongodbAiidprodClassificationsAttribute]
+    }
+
+    type completeFrom {
+      all: [String]
+      current: [String]
+      entities: Boolean
     }
 
     type Subfield {
@@ -256,6 +263,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       instant_facet: Boolean
       required: Boolean
       public: Boolean
+      complete_from: completeFrom
     }
 
     type mongodbAiidprodTaxaField_list {
@@ -274,6 +282,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       instant_facet: Boolean
       required: Boolean
       public: Boolean
+      complete_from: completeFrom
     }
   `;
 

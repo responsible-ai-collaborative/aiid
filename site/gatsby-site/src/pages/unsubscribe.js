@@ -62,8 +62,10 @@ const Unsubscribe = (props) => {
       await DeleteSubscriptions({ variables: { query } });
 
       setPageMessage(t('You have successfully unsubscribed.'));
-    } catch (error) {
+    } catch (e) {
       setPageMessage(t('An unknown error has ocurred'));
+      // eslint-disable-next-line no-undef
+      Rollbar.error(e);
     } finally {
       setUnsubscribing(false);
     }

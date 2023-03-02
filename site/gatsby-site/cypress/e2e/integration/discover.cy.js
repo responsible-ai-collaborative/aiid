@@ -189,6 +189,8 @@ describe('The Discover app', () => {
   it('Should sort by incident date', () => {
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.get('[data-cy="discover-sort"]', { timeout: 10000 }).click();
 
     cy.waitForStableDOM();
@@ -216,6 +218,8 @@ describe('The Discover app', () => {
 
   it('Should sort by published date', () => {
     cy.visit(url);
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="discover-sort"]').click();
 
@@ -258,7 +262,7 @@ describe('The Discover app', () => {
 
     cy.location('search', { timeout: 8000 }).should(
       'equal',
-      '?display=details&is_incident_report=true&page=1'
+      '?display=details&is_incident_report=true&page=1&sortBy=relevance'
     );
   });
 
@@ -292,5 +296,22 @@ describe('The Discover app', () => {
     cy.url().should('include', 's=xxxxxxxxxxxxx');
 
     cy.get('[data-cy=export-to-csv]').should('be.disabled');
+  });
+
+  it('Should set the sort with the value from the URL', () => {
+    cy.visit(url);
+
+    cy.location('search', { timeout: 8000 }).should(
+      'equal',
+      '?display=details&is_incident_report=true&page=1&sortBy=relevance'
+    );
+
+    cy.get('[data-cy="discover-sort"]').should('have.text', 'Relevance');
+
+    let newUrl = url + '?display=details&is_incident_report=true&page=1&sortBy=incident-date-desc';
+
+    cy.visit(newUrl);
+
+    cy.get('[data-cy="discover-sort"]').should('have.text', 'Newest Incident Date');
   });
 });

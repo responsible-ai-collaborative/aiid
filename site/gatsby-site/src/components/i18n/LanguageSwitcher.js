@@ -17,7 +17,11 @@ export default function LanguageSwitcher({ className = '' }) {
 
     const newPath = localizedPath({ path, language });
 
-    navigate(newPath + search);
+    if (newPath.includes('apps/discover/')) {
+      window.location.href = newPath + search;
+    } else {
+      navigate(newPath + search);
+    }
   };
 
   return (

@@ -29,6 +29,7 @@ const queryConfig = {
   page: withDefault(NumberParam, 1),
   hideDuplicates: BooleanParam,
   is_incident_report: withDefault(StringParam, 'true'),
+  sortBy: withDefault(StringParam, 'relevance'),
 };
 
 export { queryConfig, DisplayModeEnumParam, LanguageEnumParam };
