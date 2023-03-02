@@ -429,21 +429,6 @@ function CitePage(props) {
                 <Card className="shadow-card">
                   <Card.Header className="items-center justify-between">
                     <h4>
-                      <Trans>Reports Timeline</Trans>
-                    </h4>
-                  </Card.Header>
-                  <Card.Body>
-                    <Timeline data={timeline} />
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
-
-            <Row className="mt-6">
-              <Col>
-                <Card className="shadow-card">
-                  <Card.Header className="items-center justify-between">
-                    <h4>
                       <Trans>Tools</Trans>
                     </h4>
                   </Card.Header>
@@ -533,17 +518,25 @@ function CitePage(props) {
             <Row className="mt-6">
               <Col>
                 <div className="pb-5">
-                  <div className={'titleWrapper'}>
-                    <h1 className="tw-styled-heading">
-                      <Trans>Incident Reports</Trans>
-                    </h1>
-                  </div>
+                  <h1 className="tw-styled-heading">
+                    <Trans>Incident Reports</Trans>
+                  </h1>
                 </div>
+                <Card className="shadow-card">
+                  <Card.Header className="items-center justify-between">
+                    <h4>
+                      <Trans>Reports Timeline</Trans>
+                    </h4>
+                  </Card.Header>
+                  <Card.Body>
+                    <Timeline data={timeline} />
+                  </Card.Body>
+                </Card>
               </Col>
             </Row>
 
             {sortedReports.map((report) => (
-              <Row className="mb-4" key={report.report_number}>
+              <Row className="mt-6 mb-4" key={report.report_number}>
                 <Col>
                   <ReportCard item={report} incidentId={incident.incident_id} />
                 </Col>
