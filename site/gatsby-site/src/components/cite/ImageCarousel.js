@@ -20,7 +20,7 @@ const ImageCarousel = ({ nodes }) => {
         {nodes.map((value, index) => (
           <Carousel.Item key={index}>
             <Image
-              className="h-[640px] object-cover w-full"
+              className="h-[320px] object-cover w-full"
               publicID={
                 value.cloudinary_id ? value.cloudinary_id : `legacy/${md5(value.image_url)}`
               }

@@ -306,19 +306,16 @@ function CitePage(props) {
         </div>
       </div>
 
-      <div className="mt-6">
-        <Tools
-          incident={incident}
-          isSubscribed={isSubscribed}
-          subscribeToNewReports={subscribeToNewReports}
-          incidentReports={incidentReports}
-          subscribing={subscribing}
-        />
-      </div>
-
       <div className="flex mt-6">
         <div className="shrink-1">
-          <div>
+          <Tools
+            incident={incident}
+            isSubscribed={isSubscribed}
+            subscribeToNewReports={subscribeToNewReports}
+            incidentReports={incidentReports}
+            subscribing={subscribing}
+          />
+          <div className="mt-6">
             <strong>Description</strong>: {incident.description}
           </div>
 
