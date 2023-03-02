@@ -5,7 +5,7 @@ import { Button } from 'flowbite-react';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import React, { useEffect, useState } from 'react';
 import { Trans } from 'react-i18next';
-import { getFormattedName } from '../../utils/typography';
+import { getFormattedName } from '../../../utils/typography';
 
 const Citation = ({ nodes, incidentDate, incident_id, editors }) => {
   const docs = [...nodes];
@@ -46,7 +46,7 @@ const Citation = ({ nodes, incidentDate, incident_id, editors }) => {
   const editorFirstNameInitial = nameFragments[0][0] + '.';
 
   const text = `${submitterCite}. (${incidentDate}) Incident Number ${incident_id}. in ${editorLastName},${' '}
-  ${editorFirstNameInitial} (ed.) <em>Artificial Intelligence Incident Database.</em> Responsible
+  ${editorFirstNameInitial} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible
   AI Collaborative. ${retrievalString}`;
 
   return (
@@ -54,7 +54,7 @@ const Citation = ({ nodes, incidentDate, incident_id, editors }) => {
       <h2>
         <Trans>Suggested Citation Format</Trans>
       </h2>
-      {text}
+      <div dangerouslySetInnerHTML={{ __html: text }} />
       <div className="flex justify-end">
         <Button
           onClick={() => {

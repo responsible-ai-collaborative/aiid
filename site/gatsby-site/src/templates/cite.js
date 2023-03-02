@@ -17,7 +17,6 @@ import { graphql } from 'gatsby';
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
 import ImageCarousel from 'components/cite/ImageCarousel';
-import BibTex from 'components/BibTex';
 import { format, isAfter, isEqual } from 'date-fns';
 import Timeline from '../components/visualizations/Timeline';
 import IncidentStatsCard from '../components/cite/IncidentStatsCard';
@@ -43,7 +42,7 @@ import config from '../../config';
 import VariantList from 'components/variants/VariantList';
 import { isCompleteReport } from 'utils/variants';
 import { useQueryParams, StringParam, withDefault } from 'use-query-params';
-import Citation from 'components/cite/Citation';
+import citationTypes from 'components/cite/citationTypes';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -66,6 +65,11 @@ const sortIncidentsByDatePublished = (incidentReports) => {
 function CitationFormat({ incidentReports, incident }) {
   const { t } = useTranslation();
 
+  const formats = {
+    citation: {},
+    bibTex: {},
+  };
+
   const [show, setShow] = useState(false);
 
   const handleShow = () => {
@@ -87,18 +91,20 @@ function CitationFormat({ incidentReports, incident }) {
           <Trans>Citation Info</Trans>
         </Modal.Header>
         <Modal.Body>
-          <Citation
-            nodes={incidentReports}
-            incidentDate={incident.date}
-            incident_id={incident.incident_id}
-            editors={incident.editors}
-          />
-          <BibTex
-            nodes={incidentReports}
-            incidentDate={incident.date}
-            incident_id={incident.incident_id}
-            editors={incident.editors}
-          />
+          {Object.keys(formats).map((format) => {
+            const Component = citationTypes[format].default;
+
+            return (
+              <Component
+                key={format}
+                nodes={incidentReports}
+                incidentDate={incident.date}
+                incident_id={incident.incident_id}
+                editors={incident.editors}
+              />
+            );
+          })}
+
           <Modal.Footer>
             <Button onClick={handleClose}>Close</Button>
           </Modal.Footer>
