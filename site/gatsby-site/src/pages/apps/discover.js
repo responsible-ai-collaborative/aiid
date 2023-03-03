@@ -20,6 +20,7 @@ import Row from 'elements/Row';
 import Col from 'elements/Col';
 import Layout from 'components/Layout';
 import { VIEW_TYPES } from 'utils/discover';
+import SORTING_LIST from 'components/discover/SORTING_LISTS';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -148,10 +149,11 @@ const generateSearchState = ({ query }) => {
     range: {
       ...convertStringToRange(cleanQuery),
     },
+    sortBy: cleanQuery.sortBy,
   };
 };
 
-const getQueryFromState = (searchState) => {
+const getQueryFromState = (searchState, locale) => {
   let query = {};
 
   if (searchState && searchState.query !== '') {
@@ -170,6 +172,12 @@ const getQueryFromState = (searchState) => {
       ...query,
       ...convertRangeToQueryString(removeEmptyAttributes(searchState.range)),
     };
+  }
+
+  if (searchState && searchState.sortBy) {
+    query.sortBy =
+      SORTING_LIST.find((s) => s[`value_${locale}`] === searchState.sortBy)?.name ||
+      searchState.sortBy;
   }
 
   query.page = searchState.page;
@@ -203,13 +211,13 @@ function DiscoverApp(props) {
       };
 
       setSearchState(newSearchState);
-      setQuery(getQueryFromState(newSearchState), 'push');
+      setQuery(getQueryFromState(newSearchState, locale), 'push');
     },
     [searchState]
   );
 
   useEffect(() => {
-    const searchQuery = getQueryFromState(searchState);
+    const searchQuery = getQueryFromState(searchState, locale);
 
     const extraQuery = { display: query.display };
 

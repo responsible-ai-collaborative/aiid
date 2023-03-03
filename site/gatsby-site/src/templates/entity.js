@@ -63,7 +63,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
       key: 'incidentsAsBoth',
     },
     {
-      header: 'Incindents Harmed By',
+      header: 'Incidents Harmed By',
       key: 'incidentsHarmedBy',
     },
     {
@@ -156,6 +156,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
         addToast({
           message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
           severity: SEVERITY.danger,
+          error: e,
         });
       }
     } else {
@@ -199,6 +200,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
       addToast({
         message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
         severity: SEVERITY.danger,
+        error: e,
       });
     }
   };

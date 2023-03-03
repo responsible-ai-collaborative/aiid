@@ -14,11 +14,11 @@
             "search": true
         },
         {
-            "name": "deafult",
+            "name": "default",
             "apply_when": {},
             "read": true,
-            "write": false,
-            "insert": false,
+            "write": true,
+            "insert": true,
             "delete": false,
             "search": true
         }

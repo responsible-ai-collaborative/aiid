@@ -261,7 +261,24 @@ describe('The Discover app', () => {
 
     cy.location('search', { timeout: 8000 }).should(
       'equal',
-      '?display=details&is_incident_report=true&page=1'
+      '?display=details&is_incident_report=true&page=1&sortBy=relevance'
     );
+  });
+
+  it('Should set the sort with the value from the URL', () => {
+    cy.visit(url);
+
+    cy.location('search', { timeout: 8000 }).should(
+      'equal',
+      '?display=details&is_incident_report=true&page=1&sortBy=relevance'
+    );
+
+    cy.get('[data-cy="discover-sort"]').should('have.text', 'Relevance');
+
+    let newUrl = url + '?display=details&is_incident_report=true&page=1&sortBy=incident-date-desc';
+
+    cy.visit(newUrl);
+
+    cy.get('[data-cy="discover-sort"]').should('have.text', 'Newest Incident Date');
   });
 });

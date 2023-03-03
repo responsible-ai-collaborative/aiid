@@ -200,6 +200,7 @@ const IncidentReportForm = () => {
         addToast({
           message: <>{message}</>,
           severity: SEVERITY.danger,
+          error: e,
         });
       }
 

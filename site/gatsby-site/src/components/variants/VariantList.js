@@ -230,6 +230,7 @@ const VariantList = ({ incidentId, variants }) => {
                     </label>
                   ),
                   severity: SEVERITY.danger,
+                  error: e,
                 });
               }
 
