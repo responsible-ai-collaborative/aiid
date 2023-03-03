@@ -284,6 +284,17 @@ exports.createSchemaCustomization = ({ actions }) => {
       public: Boolean
       complete_from: completeFrom
     }
+
+
+    type mongodbAiidprodPublicationsHarm_labels {
+      label: String
+      labeler: String
+    }
+    type mongodbAiidprodPublications implements Node {
+      domain: String
+      title: String
+      harm_labels: [mongodbAiidprodPublicationsHarm_labels]
+    }
   `;
 
   createTypes(typeDefs);

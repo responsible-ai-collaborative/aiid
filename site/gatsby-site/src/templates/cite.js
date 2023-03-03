@@ -66,6 +66,7 @@ function CitePage(props) {
       nlp_similar_incidents,
       editor_similar_incidents,
       editor_dissimilar_incidents,
+      publications,
     },
     data: {
       allMongodbAiidprodTaxa,
@@ -469,7 +470,11 @@ function CitePage(props) {
             {sortedReports.map((report) => (
               <Row className="mb-4" key={report.report_number}>
                 <Col>
-                  <ReportCard item={report} incidentId={incident.incident_id} />
+                  <ReportCard
+                    item={report}
+                    incidentId={incident.incident_id}
+                    {...{ publications }}
+                  />
                 </Col>
               </Row>
             ))}

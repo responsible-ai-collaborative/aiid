@@ -13,17 +13,25 @@ exports.up = async ({ context: { client } }) => {
     const existingPublication = publications.find((p) => p.domain == publicationDomain);
 
     if (existingPublication) {
-      existingPublication.biasLabels.push({ label, labeler });
+      existingPublication.bias_labels.push({ label, labeler });
     } else {
       publications.push({
         title: publicationTitle,
         domain: publicationDomain,
-        biasLabels: [{ label, labeler }],
+        bias_labels: [{ label, labeler }],
       });
     }
   };
 
-  for (const alignment of ['left', 'leftcenter', 'center', 'right-center', 'right']) {
+  for (const alignment of [
+    'left',
+    'leftcenter',
+    'center',
+    'right-center',
+    'right',
+    'fake-news',
+    'conspiracy',
+  ]) {
     const mbfcResponse = await axios.get('https://mediabiasfactcheck.com/' + alignment);
 
     if (mbfcResponse.status == 200) {
@@ -39,7 +47,12 @@ exports.up = async ({ context: { client } }) => {
         let domain;
 
         if (lastToken[0] == '(') {
-          domain = lastToken.slice(1, lastToken.length - 1); // Remove parentheses
+          domain = new URL(
+            'http://' +
+              lastToken
+                .slice(1, lastToken.length - 1) // Remove parentheses
+                .replace(/^(www|m)\./, '')
+          ).hostname;
         } else {
           tokens.push(lastToken);
         }
@@ -71,7 +84,10 @@ exports.up = async ({ context: { client } }) => {
               //  > The reporting is factual and usually sourced.
               //  > These are the most credible media sources.
               //
+              // Same with "fake-news" and "conspiracy".
               center: 'least biased',
+              'fake-news': 'questionable',
+              conspiracy: 'conspiracy/pseudoscience',
             }[alignment]
           );
         }

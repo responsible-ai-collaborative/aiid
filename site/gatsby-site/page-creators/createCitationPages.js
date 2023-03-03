@@ -5,7 +5,7 @@ const { switchLocalizedPath } = require('../i18n');
 const createCitationPages = async (graphql, createPage, { languages }) => {
   const result = await graphql(
     `
-      query IncidentIDs {
+      query ContextData {
         allMongodbAiidprodIncidents {
           nodes {
             incident_id
@@ -30,13 +30,26 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
             language
             image_url
             cloudinary_id
+            source_domain
+          }
+        }
+
+        allMongodbAiidprodPublications {
+          nodes {
+            title
+            domain
+            bias_labels {
+              label
+              labeler
+            }
           }
         }
       }
     `
   );
 
-  const { allMongodbAiidprodIncidents, allMongodbAiidprodReports } = result.data;
+  const { allMongodbAiidprodIncidents, allMongodbAiidprodReports, allMongodbAiidprodPublications } =
+    result.data;
 
   // Incident reports list
   const incidentReportsMap = {};
@@ -78,6 +91,10 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
       reports: incidentReportsMap[incident_id],
     }));
 
+    const publications = allMongodbAiidprodPublications.nodes.filter((publication) =>
+      incidentReportsMap[incident_id].some((report) => report.source_domain == publication.domain)
+    );
+
     pageContexts.push({
       incident,
       incident_id,
@@ -87,6 +104,7 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
       nlp_similar_incidents,
       editor_similar_incidents,
       editor_dissimilar_incidents,
+      publications,
     });
   }
 

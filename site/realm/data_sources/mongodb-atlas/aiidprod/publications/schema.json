@@ -1,0 +1,18 @@
+{
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "title": { "bsonType": "string" },
+        "domain": { "bsonType": "string" },
+        "bias_labels": { 
+          "bsonType": "object",
+          "properties": {
+            "labeler": { "bsonType": "string" },
+            "label": { "bsonType": "string" }
+          }
+        }
+    },
+    "required": [],
+    "title": "publications"
+}

@@ -13,10 +13,18 @@ import TranslationBadge from 'components/i18n/TranslationBadge';
 import { Badge } from 'flowbite-react';
 import { RESPONSE_TAG } from 'utils/entities';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import {
+  faQuestionCircle,
+  faArrowCircleLeft,
+  faArrowCircleRight,
+  faChevronCircleLeft,
+  faChevronCircleRight,
+  faCheckCircle,
+  faExclamationCircle,
+} from '@fortawesome/free-solid-svg-icons';
 import { hasVariantData } from 'utils/variants';
 
-const ReportCard = ({ item, className = '', incidentId }) => {
+const ReportCard = ({ item, className = '', incidentId, publications }) => {
   const { isRole, loading } = useUserContext();
 
   const { t } = useTranslation();
@@ -35,6 +43,32 @@ const ReportCard = ({ item, className = '', incidentId }) => {
       ref.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  const publication = (publications || []).find((p) => p.domain == item.source_domain);
+
+  const centerLeftBias =
+    publication && publication.bias_labels.some((biasLabel) => biasLabel.label == 'center-left');
+
+  const centerRightBias =
+    publication && publication.bias_labels.some((biasLabel) => biasLabel.label == 'center-right');
+
+  const leftBias =
+    publication && publication.bias_labels.some((biasLabel) => biasLabel.label == 'left');
+
+  const rightBias =
+    publication && publication.bias_labels.some((biasLabel) => biasLabel.label == 'right');
+
+  const leastBiased =
+    publication && publication.bias_labels.some((biasLabel) => biasLabel.label == 'least biased');
+
+  const questionable =
+    publication && publication.bias_labels.some((biasLabel) => biasLabel.label == 'questionable');
+
+  const biasTitle =
+    'The bias of this source was assessed as follows:\n\n' +
+    (publication?.bias_labels || [])
+      .map((biasLabel) => `- "${biasLabel.label}" by ${biasLabel.labeler}`)
+      .join('\n');
 
   const toggleReadMoreKeyDown = (e) => {
     if (e.key === 'Enter') {
@@ -82,10 +116,56 @@ const ReportCard = ({ item, className = '', incidentId }) => {
             </h5>
           </a>
           <div className="flex justify-between">
-            <WebArchiveLink url={item.url} className="text-dark-gray">
-              {item.source_domain} &middot;{' '}
-              {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
-            </WebArchiveLink>
+            <span className="flex items-center">
+              {leastBiased && (
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  className="text-green-500 mr-1 mt-px"
+                  title={biasTitle}
+                />
+              )}
+              {questionable && (
+                <div className="text-red-500 mr-1 mt-px">
+                  <FontAwesomeIcon
+                    icon={faExclamationCircle}
+                    className="text-inherit"
+                    title={biasTitle}
+                  />
+                </div>
+              )}
+              {centerLeftBias && (
+                <FontAwesomeIcon
+                  icon={faChevronCircleLeft}
+                  className="text-inherit mr-1 mt-px"
+                  title={biasTitle}
+                />
+              )}
+              {centerRightBias && (
+                <FontAwesomeIcon
+                  icon={faChevronCircleRight}
+                  className="text-inherit mr-1 mt-px"
+                  title={biasTitle}
+                />
+              )}
+              {leftBias && (
+                <FontAwesomeIcon
+                  icon={faArrowCircleLeft}
+                  className="text-inherit mr-1 mt-px"
+                  title={biasTitle}
+                />
+              )}
+              {rightBias && (
+                <FontAwesomeIcon
+                  icon={faArrowCircleRight}
+                  className="text-inherit mr-1 mt-px"
+                  title={biasTitle}
+                />
+              )}
+              <WebArchiveLink url={item.url} className="text-dark-gray">
+                {item.source_domain} &middot;{' '}
+                {item.date_published ? item.date_published.substring(0, 4) : 'Needs publish date'}
+              </WebArchiveLink>
+            </span>
             {!loading && isRole('incident_editor') && (
               <Button
                 data-cy="edit-report"
