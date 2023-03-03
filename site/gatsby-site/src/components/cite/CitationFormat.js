@@ -29,7 +29,7 @@ function CitationFormat({ incidentReports, incident }) {
         <FontAwesomeIcon className="mr-2 -mt-1" icon={faQuoteLeft} title={t('Citation Info')} />
         <Trans>Citation Info</Trans>
       </Button>
-      <Modal show={show} onClose={handleClose} data-cy="bibtext-modal">
+      <Modal show={show} onClose={handleClose} data-cy="citation-info-modal">
         <Modal.Header>
           <Trans>Citation Info</Trans>
         </Modal.Header>

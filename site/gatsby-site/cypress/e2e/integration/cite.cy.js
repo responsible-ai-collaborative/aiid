@@ -191,9 +191,9 @@ describe('Cite pages', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('[data-cy="bibtext-modal"]', { timeout: 15000 }).should('be.visible');
+    cy.get('[data-cy="citation-info-modal"]', { timeout: 15000 }).should('be.visible');
 
-    cy.get('[data-cy="bibtext-modal"]', { timeout: 15000 })
+    cy.get('[data-cy="bibtex-format"]', { timeout: 15000 })
       .find('code')
       .invoke('text')
       .then((text) => {
@@ -214,7 +214,9 @@ describe('Cite pages', () => {
 
     cy.wait(0);
 
-    cy.get('[data-cy="citation"] .tw-card-body').should(
+    cy.contains('button', 'Citation Info').click();
+
+    cy.get('[data-cy="suggested-citation-format"]').should(
       'contain.text',
       `Olsson, Catherine. (2014-08-14) Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on ${date} from incidentdatabase.ai/cite/10.`
     );

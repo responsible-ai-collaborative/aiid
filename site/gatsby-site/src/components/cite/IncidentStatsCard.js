@@ -36,7 +36,10 @@ const IncidentStatsCard = ({ incidentId, reportCount, incidentDate, editors }) =
   };
 
   return (
-    <Card className="flex flex-col shadow-card rounded-5px border-border-light-gray border-1.5">
+    <Card
+      data-cy="citation"
+      className="flex flex-col shadow-card rounded-5px border-border-light-gray border-1.5"
+    >
       <Card.Header>
         <h4 className="m-0">
           <Trans>Incident Stats</Trans>

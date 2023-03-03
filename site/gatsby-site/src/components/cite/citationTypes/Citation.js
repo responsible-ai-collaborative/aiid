@@ -45,16 +45,14 @@ const Citation = ({ nodes, incidentDate, incident_id, editors }) => {
 
   const editorFirstNameInitial = nameFragments[0][0] + '.';
 
-  const text = `${submitterCite}. (${incidentDate}) Incident Number ${incident_id}. in ${editorLastName},${' '}
-  ${editorFirstNameInitial} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible
-  AI Collaborative. ${retrievalString}`;
+  const text = `${submitterCite}. (${incidentDate}) Incident Number ${incident_id}. in ${editorLastName}, ${editorFirstNameInitial} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. ${retrievalString}`;
 
   return (
     <>
       <h2>
         <Trans>Suggested Citation Format</Trans>
       </h2>
-      <div dangerouslySetInnerHTML={{ __html: text }} />
+      <div data-cy="suggested-citation-format" dangerouslySetInnerHTML={{ __html: text }} />
       <div className="flex justify-end">
         <Button
           onClick={() => {
