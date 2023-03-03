@@ -187,7 +187,7 @@ describe('Cite pages', () => {
 
     cy.waitForStableDOM();
 
-    cy.contains('button', 'BibTex Citation').click();
+    cy.contains('button', 'Citation Info').click();
 
     cy.waitForStableDOM();
 
@@ -340,7 +340,7 @@ describe('Cite pages', () => {
   maybeIt('Should subscribe to incident updates (user authenticated)', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    cy.visit(url);
+    cy.visit('/cite/51');
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -363,7 +363,7 @@ describe('Cite pages', () => {
 
     cy.contains(
       '[data-cy="toast"]',
-      `You have successfully subscribed to updates on incident ${incidentId}`
+      `You have successfully subscribed to updates on incident 51`
     ).should('be.visible');
   });
 

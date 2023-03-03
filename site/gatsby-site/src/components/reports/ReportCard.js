@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import md5 from 'md5';
 import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
@@ -23,8 +23,6 @@ const ReportCard = ({ item, className = '', incidentId }) => {
 
   const [expanded, setExpanded] = useState(false);
 
-  const [cardHeight, setCardHeight] = useState(0);
-
   const ref = useRef(null);
 
   const imageRef = useRef(null);
@@ -44,34 +42,10 @@ const ReportCard = ({ item, className = '', incidentId }) => {
     }
   };
 
-  const checkCardSize = () => {
-    const cardHeight =
-      ref.current.clientHeight -
-      parseFloat(window.getComputedStyle(ref.current).paddingTop) -
-      parseFloat(window.getComputedStyle(ref.current).paddingBottom) -
-      parseFloat(window.getComputedStyle(ref.current).marginTop) -
-      parseFloat(window.getComputedStyle(ref.current).marginBottom);
-
-    setCardHeight(cardHeight);
-  };
-
-  useEffect(() => {
-    checkCardSize();
-    window.addEventListener('resize', checkCardSize);
-
-    return () => {
-      window.removeEventListener('resize', checkCardSize);
-    };
-  }, []);
-
-  let adjustedCardStyles = {
-    height: cardHeight,
-  };
-
   return (
     <>
       <div
-        className={`bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative cursor-pointer`}
+        className={`inline-block w-full bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative cursor-pointer`}
         id={`r${item.report_number}`}
         ref={ref}
         data-cy="incident-report-card"
@@ -80,12 +54,11 @@ const ReportCard = ({ item, className = '', incidentId }) => {
         role="presentation"
       >
         <div
-          className={`flex self-stretch justify-center items-center w-1/3 float-left pr-4 cursor-default md:min-h-[130px]`}
+          className={`flex self-stretch justify-center items-center w-1/3 float-left pr-4 cursor-default h-36 md:h-40`}
           ref={imageRef}
           role="presentation"
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
-          style={adjustedCardStyles}
         >
           <Image
             className={`img-fluid h-full w-full max-w-full object-cover max-h-full`}
