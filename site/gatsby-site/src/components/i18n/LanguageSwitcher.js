@@ -1,7 +1,6 @@
 import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { useLocalization } from 'gatsby-theme-i18n';
-import { navigate } from 'gatsby';
 import useLocalizePath from './useLocalizePath';
 import { Badge } from 'flowbite-react';
 
@@ -17,11 +16,7 @@ export default function LanguageSwitcher({ className = '' }) {
 
     const newPath = localizedPath({ path, language });
 
-    if (newPath.includes('apps/discover/')) {
-      window.location.href = newPath + search;
-    } else {
-      navigate(newPath + search);
-    }
+    window.location.href = newPath + search;
   };
 
   return (

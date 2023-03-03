@@ -5,6 +5,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import SimilaritySelector from './SimilaritySelector';
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 
 const RelatedIncidentsArea = ({
   columnKey,
@@ -20,6 +21,8 @@ const RelatedIncidentsArea = ({
   const { t } = useTranslation();
 
   const { locale } = useLocalization();
+
+  const localizePath = useLocalizePath();
 
   const [reportsOpened, setReportsOpened] = useState(false);
 
@@ -83,9 +86,10 @@ const RelatedIncidentsArea = ({
                 {val?.incident_id && (
                   <span className="text-lg">
                     <a
-                      href={`/${locale}/cite/${val.incident_id}`}
+                      href={localizePath({ path: `/cite/${val.incident_id}`, language: locale })}
                       className="text-black hover:text-blue-700"
-                      target="_blank" rel="noreferrer"
+                      target="_blank"
+                      rel="noreferrer"
                     >
                       #{val.incident_id}
                     </a>
@@ -96,7 +100,8 @@ const RelatedIncidentsArea = ({
                   href={val.url || '/cite/' + val.incident_id}
                   data-cy="title"
                   className="text-black hover:text-blue-700 text-sm"
-                  target="_blank" rel="noreferrer"
+                  target="_blank"
+                  rel="noreferrer"
                 >
                   {val.title}
                 </a>
