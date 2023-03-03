@@ -231,6 +231,7 @@ class AlgoliaUpdater {
       cloudinary_id: 1,
       is_incident_report: 1,
       flag: 1,
+      tags: 1,
     };
 
     const reports = (
