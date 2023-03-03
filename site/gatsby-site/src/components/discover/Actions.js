@@ -83,11 +83,16 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         incidentDate={item.epoch_incident_date}
         dateSubmitted={item.epoch_date_submitted}
       >
-        <FontAwesomeIcon icon={faNewspaper} className="fa-newspaper" title="Read the Source" />
+        <FontAwesomeIcon
+          titleId="report-source"
+          icon={faNewspaper}
+          className="fa-newspaper"
+          title="Read the Source"
+        />
       </WebArchiveLink>
 
       <CustomButton variant="link" title={t('Authors')} onClick={() => setShowAuthors(true)}>
-        <FontAwesomeIcon icon={faIdCard} className="fa-id-card" />
+        <FontAwesomeIcon title="report-card" icon={faIdCard} className="fa-id-card" />
       </CustomButton>
 
       {showAuthors && (
@@ -107,7 +112,7 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         className="px-1"
         onClick={() => setShowSubmitters(true)}
       >
-        <FontAwesomeIcon icon={faUserShield} className="fa-user-shield" />
+        <FontAwesomeIcon titleId="report-shield" icon={faUserShield} className="fa-user-shield" />
       </CustomButton>
 
       {showSubmitters && (
@@ -128,7 +133,7 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         data-cy="flag-button"
         onClick={() => setShowFlag(true)}
       >
-        <FontAwesomeIcon icon={faFlag} className="fa-flag" />
+        <FontAwesomeIcon titleId="report-flag" icon={faFlag} className="fa-flag" />
       </CustomButton>
 
       {showFlag && (
@@ -154,7 +159,12 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
           title={t(`Filter by Incident ID #{{id}}`, { id: item.incident_id })}
           onClick={() => toggleFilterByIncidentId(item.incident_id + '')}
         >
-          <FontAwesomeIcon icon={faHashtag} className="fa-hashtag" title="Incident ID" />
+          <FontAwesomeIcon
+            titleId="report-hashtag"
+            icon={faHashtag}
+            className="fa-hashtag"
+            title="Incident ID"
+          />
           {item.incident_id}
         </CustomButton>
       )}
