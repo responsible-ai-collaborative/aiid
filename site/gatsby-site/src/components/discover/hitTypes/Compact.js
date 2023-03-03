@@ -70,14 +70,7 @@ const StyledSubTitle = styled(SourceDomainSubtitle)`
   }
 `;
 
-export default function Compact({
-  item,
-  authorsModal,
-  submittersModal,
-  flagReportModal,
-  toggleFilterByIncidentId,
-  viewType,
-}) {
+export default function Compact({ item, toggleFilterByIncidentId, viewType }) {
   const { t } = useTranslation();
 
   return (
@@ -103,13 +96,7 @@ export default function Compact({
       </StyledCardBody>
 
       <Card.Footer className="flex justify-between">
-        <Actions
-          authorsModal={authorsModal}
-          flagReportModal={flagReportModal}
-          submittersModal={submittersModal}
-          toggleFilterByIncidentId={toggleFilterByIncidentId}
-          item={item}
-        />
+        <Actions toggleFilterByIncidentId={toggleFilterByIncidentId} item={item} />
       </Card.Footer>
     </StyledCard>
   );
