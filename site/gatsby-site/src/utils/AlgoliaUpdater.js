@@ -262,6 +262,10 @@ class AlgoliaUpdater {
     return fullReports;
   };
 
+  getPublications = async () => {
+    return await this.mongoClient.db('aiidprod').collection(`publications`).find({}).toArray();
+  };
+
   uploadToAlgolia = async ({ language, entries }) => {
     const indexName = `instant_search-${language}`;
 
@@ -386,11 +390,14 @@ class AlgoliaUpdater {
 
     const reports = await this.getReports({ language });
 
+    const publications = await this.getPublications();
+
     const entries = await this.generateIndexEntries({
       reports,
       incidents,
       classifications,
       taxa,
+      publications
     });
 
     await this.mongoClient.close();
