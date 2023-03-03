@@ -58,6 +58,7 @@ const FilterOverlay = React.forwardRef(function Container(
       {...overlayProps}
       style={{ ...overlayProps.style, width: 320, zIndex: 1055 }}
       className="bootstrap"
+      data-cy={filterProps.attribute}
     >
       <Card className="shadow-lg">
         <Card.Body>

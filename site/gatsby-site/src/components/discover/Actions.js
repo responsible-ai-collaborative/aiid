@@ -37,7 +37,7 @@ function FlagModalContent({ reportNumber }) {
 
   return (
     <div className="bootstrap">
-      <div className="modal-body" data-cy="flag-modal">
+      <div className="modal-body">
         <div dangerouslySetInnerHTML={{ __html: t('flagReport', { ns: 'actions' }) }} />
 
         <div className="flex justify-center w-full">
@@ -90,14 +90,16 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         <FontAwesomeIcon icon={faIdCard} className="fa-id-card" />
       </CustomButton>
 
-      <Modal show={showAuthors} onClose={() => setShowAuthors(false)}>
-        <Modal.Header>
-          <Trans>Authors</Trans>
-        </Modal.Header>
-        <Modal.Body>
-          <>{item.authors.join(', ')}</>
-        </Modal.Body>
-      </Modal>
+      {showAuthors && (
+        <Modal show={showAuthors} onClose={() => setShowAuthors(false)}>
+          <Modal.Header>
+            <Trans>Authors</Trans>
+          </Modal.Header>
+          <Modal.Body>
+            <>{item.authors.join(', ')}</>
+          </Modal.Body>
+        </Modal>
+      )}
 
       <CustomButton
         variant="link"
@@ -108,14 +110,16 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         <FontAwesomeIcon icon={faUserShield} className="fa-user-shield" />
       </CustomButton>
 
-      <Modal show={showSubmitters} onClose={() => setShowSubmitters(false)}>
-        <Modal.Header>
-          <Trans>Submitters</Trans>
-        </Modal.Header>
-        <Modal.Body>
-          <>{item.submitters.join(', ')}</>
-        </Modal.Body>
-      </Modal>
+      {showSubmitters && (
+        <Modal show={showSubmitters} onClose={() => setShowSubmitters(false)}>
+          <Modal.Header>
+            <Trans>Submitters</Trans>
+          </Modal.Header>
+          <Modal.Body>
+            <>{item.submitters.join(', ')}</>
+          </Modal.Body>
+        </Modal>
+      )}
 
       <CustomButton
         variant="link"
@@ -127,14 +131,20 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         <FontAwesomeIcon icon={faFlag} className="fa-flag" />
       </CustomButton>
 
-      <Modal show={showFlag} onClose={() => setShowFlag(false)}>
-        <Modal.Header>
-          <Trans>Flag Report</Trans>
-        </Modal.Header>
-        <Modal.Body>
-          <FlagModalContent reportNumber={item.report_number} />
-        </Modal.Body>
-      </Modal>
+      {showFlag && (
+        <Modal
+          show={showFlag}
+          onClose={() => setShowFlag(false)}
+          data-cy={'flag-report-' + item.report_number}
+        >
+          <Modal.Header>
+            <Trans>Flag Report</Trans>
+          </Modal.Header>
+          <Modal.Body>
+            <FlagModalContent reportNumber={item.report_number} />
+          </Modal.Body>
+        </Modal>
+      )}
 
       {toggleFilterByIncidentId && item.is_incident_report && (
         <CustomButton
