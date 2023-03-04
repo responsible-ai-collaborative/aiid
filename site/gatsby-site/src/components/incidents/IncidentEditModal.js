@@ -103,6 +103,10 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
     }
   };
 
+  if (!show) {
+    return null;
+  }
+
   return (
     <Modal show={show} onClose={onClose} className="submission-modal" size="3xl">
       <Modal.Header>Edit Incident</Modal.Header>
