@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Spinner } from 'flowbite-react';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import SimilaritySelector from './SimilaritySelector';
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons';

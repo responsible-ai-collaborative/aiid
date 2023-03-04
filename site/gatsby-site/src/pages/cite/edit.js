@@ -16,7 +16,7 @@ import { format, getUnixTime } from 'date-fns';
 import { stripMarkdown } from '../../utils/typography';
 import { Formik } from 'formik';
 import pick from 'lodash/pick';
-import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
+import { useLocalization, LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { gql } from '@apollo/client';
 import { useTranslation, Trans } from 'react-i18next';
 import RelatedIncidents from '../../components/RelatedIncidents';

@@ -25,14 +25,7 @@ const StyledLabel = styled.p`
   margin: 0.6em 0;
 `;
 
-export default function Details({
-  item,
-  authorsModal,
-  submittersModal,
-  flagReportModal,
-  toggleFilterByIncidentId,
-  viewType,
-}) {
+export default function Details({ item, toggleFilterByIncidentId, viewType }) {
   const localizePath = useLocalizePath();
 
   const { t } = useTranslation();
@@ -99,13 +92,7 @@ export default function Details({
       </Card.Body>
 
       <Card.Footer className="flex justify-between">
-        <Actions
-          authorsModal={authorsModal}
-          flagReportModal={flagReportModal}
-          submittersModal={submittersModal}
-          toggleFilterByIncidentId={toggleFilterByIncidentId}
-          item={item}
-        />
+        <Actions toggleFilterByIncidentId={toggleFilterByIncidentId} item={item} />
       </Card.Footer>
     </Card>
   );

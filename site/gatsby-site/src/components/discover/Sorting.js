@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { connectSortBy } from 'react-instantsearch-dom';
 import { Dropdown } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import SORTING_LIST from './SORTING_LISTS';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 
 function Sorting(props) {
   const { locale } = useLocalization();
@@ -38,11 +38,11 @@ function Sorting(props) {
           className="min-w-max"
         >
           {props.items.map((item) => (
-            <>
+            <Fragment key={item.name}>
               <Dropdown.Item
                 key={item[`value_${locale}`]}
                 value={item[`value_${locale}`]}
-                style={{ fontWeight: item.isRefined ? 'bold' : '' }}
+                style={{ fontWeight: item.isRefined ? 'bold' : 'normal' }}
                 onClick={() => {
                   sortResults(item);
                 }}
@@ -55,7 +55,7 @@ function Sorting(props) {
                 </span>
               </Dropdown.Item>
               {item.division && <Dropdown.Divider />}
-            </>
+            </Fragment>
           ))}
         </Dropdown>
       </div>

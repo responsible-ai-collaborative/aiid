@@ -58,36 +58,44 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
     <>
       <div className="bootstrap">
         <BSButton variant="outline-primary" onClick={handleShow}>
-          <FontAwesomeIcon className="mr-2 -mt-1" icon={faQuoteLeft} title={t('BibTex Citation')} />
+          <FontAwesomeIcon
+            titleId="bibtext"
+            className="mr-2 -mt-1"
+            icon={faQuoteLeft}
+            title={t('BibTex Citation')}
+          />
           <Trans>BibTex Citation</Trans>
         </BSButton>
       </div>
-      <Modal show={show} onClose={handleClose} data-cy="bibtext-modal">
-        <Modal.Header>BibTex Citation</Modal.Header>
-        <Modal.Body>{jsx}</Modal.Body>
-        <Modal.Footer>
-          <Button
-            style={{ marginRight: 'auto' }}
-            onClick={() => {
-              navigator.clipboard.writeText(bibTex);
-              addToast({
-                message: 'BibTeX copied to clipboard',
-                severity: SEVERITY.success,
-              });
-            }}
-          >
-            <FontAwesomeIcon
-              icon={faCopy}
-              className="fas fa-times"
-              style={{ marginRight: '1ch' }}
-            />
-            Copy
-          </Button>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {show && (
+        <Modal show={show} onClose={handleClose} data-cy="bibtext-modal">
+          <Modal.Header>BibTex Citation</Modal.Header>
+          <Modal.Body>{jsx}</Modal.Body>
+          <Modal.Footer>
+            <Button
+              style={{ marginRight: 'auto' }}
+              onClick={() => {
+                navigator.clipboard.writeText(bibTex);
+                addToast({
+                  message: 'BibTeX copied to clipboard',
+                  severity: SEVERITY.success,
+                });
+              }}
+            >
+              <FontAwesomeIcon
+                titleId="copy"
+                icon={faCopy}
+                className="fas fa-times"
+                style={{ marginRight: '1ch' }}
+              />
+              Copy
+            </Button>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </>
   );
 };

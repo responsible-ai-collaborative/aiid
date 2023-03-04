@@ -1,20 +1,10 @@
-import { MenuContextProvider } from 'contexts/MenuContext';
-import { UserContextProvider } from 'contexts/userContext';
-import React from 'react';
-import { wrapRootElement } from './wrapRootElement';
+import './src/tailwind.css';
+import './src/global.css';
+import 'bootstrap-daterangepicker/daterangepicker.css';
+import '@fortawesome/fontawesome-svg-core/styles.css';
+import './src/custom.css';
+import './src/bootstrap.scss';
 
-const HeadComponents = [<script key="rollbar" src="/rollbar.js" />];
+import { wrapRootElement, wrapPageElement } from './gatsby-shared';
 
-const onRenderBody = ({ setHeadComponents }) => {
-  setHeadComponents(HeadComponents);
-};
-
-export const wrapPageElement = ({ element }) => {
-  return (
-    <UserContextProvider>
-      <MenuContextProvider>{element}</MenuContextProvider>
-    </UserContextProvider>
-  );
-};
-
-export { onRenderBody, wrapRootElement };
+export { wrapPageElement, wrapRootElement };

@@ -6,15 +6,7 @@ import { useQueryParam } from 'use-query-params';
 import CardSkeleton from 'elements/Skeletons/Card';
 import ListSkeleton from 'elements/Skeletons/List';
 
-const Hits = ({
-  hits,
-  authorsModal,
-  submittersModal,
-  flagReportModal,
-  isSearchStalled,
-  toggleFilterByIncidentId,
-  viewType,
-}) => {
+const Hits = ({ hits, isSearchStalled, toggleFilterByIncidentId, viewType }) => {
   const [display] = useQueryParam('display', DisplayModeEnumParam);
 
   if (!isSearchStalled && hits.length === 0) {
@@ -46,9 +38,6 @@ const Hits = ({
             key={hit.objectID}
             item={hit}
             {...{
-              authorsModal,
-              submittersModal,
-              flagReportModal,
               toggleFilterByIncidentId,
               viewType,
             }}

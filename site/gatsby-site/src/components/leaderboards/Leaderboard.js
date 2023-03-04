@@ -3,7 +3,7 @@ import { Link } from 'gatsby';
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
 import { Badge } from 'flowbite-react';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 const medalMap = (position) => {
   switch (position) {

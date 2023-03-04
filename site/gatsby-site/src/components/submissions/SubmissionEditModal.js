@@ -83,6 +83,10 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
     }
   };
 
+  if (!show) {
+    return null;
+  }
+
   return (
     <Modal
       size="3xl"
