@@ -93,7 +93,7 @@ const LandingPage = (props) => {
             <Blog post={latestPost.nodes[0]} />
           </div>
         </div>
-
+{/* 
         <div className="mb-10 md:mb-16">
           <div>
             <Featured />
@@ -117,7 +117,7 @@ const LandingPage = (props) => {
 
         <div>
           <Sponsors />
-        </div>
+        </div> */}
       </Container>
     </Layout>
   );
