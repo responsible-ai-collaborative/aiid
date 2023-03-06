@@ -1,5 +1,5 @@
 import Link from 'components/ui/Link';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import React from 'react';
 import { Trans } from 'react-i18next';
 import { Badge } from 'flowbite-react';
