@@ -50,6 +50,7 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
       <div data-cy="bibtex-format">{jsx}</div>
       <div className="flex justify-end">
         <Button
+          color={'gray'}
           onClick={() => {
             navigator.clipboard.writeText(bibTex);
             addToast({

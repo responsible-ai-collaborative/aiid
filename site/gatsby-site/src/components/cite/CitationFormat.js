@@ -29,30 +29,32 @@ function CitationFormat({ incidentReports, incident }) {
         <FontAwesomeIcon className="mr-2 -mt-1" icon={faQuoteLeft} title={t('Citation Info')} />
         <Trans>Citation Info</Trans>
       </Button>
-      <Modal show={show} onClose={handleClose} data-cy="citation-info-modal">
-        <Modal.Header>
-          <Trans>Citation Info</Trans>
-        </Modal.Header>
-        <Modal.Body>
-          {Object.keys(formats).map((format) => {
-            const Component = citationTypes[format].default;
+      {show && (
+        <Modal show={show} onClose={handleClose} data-cy="citation-info-modal">
+          <Modal.Header>
+            <Trans>Citation Info</Trans>
+          </Modal.Header>
+          <Modal.Body>
+            {Object.keys(formats).map((format) => {
+              const Component = citationTypes[format].default;
 
-            return (
-              <Component
-                key={format}
-                nodes={incidentReports}
-                incidentDate={incident.date}
-                incident_id={incident.incident_id}
-                editors={incident.editors}
-              />
-            );
-          })}
+              return (
+                <Component
+                  key={format}
+                  nodes={incidentReports}
+                  incidentDate={incident.date}
+                  incident_id={incident.incident_id}
+                  editors={incident.editors}
+                />
+              );
+            })}
 
-          <Modal.Footer>
-            <Button onClick={handleClose}>Close</Button>
-          </Modal.Footer>
-        </Modal.Body>
-      </Modal>
+            <div className="flex items-center space-x-2 rounded-b border-gray-200 dark:border-gray-600 border-t mt-4 p-2">
+              <Button onClick={handleClose}>Close</Button>
+            </div>
+          </Modal.Body>
+        </Modal>
+      )}
     </>
   );
 }
