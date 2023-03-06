@@ -58,6 +58,67 @@ const LandingPage = (props) => {
         <title>{title}</title>
         <meta property="og:type" content="website" />
       </AiidHelmet>
+      <Container>
+        {/* <div>
+          <Hero />
+        </div>
+
+        <div className="mb-10">
+          <QuickSearch />
+        </div>
+
+        <div className="mb-5 md:mb-10">
+          <div>
+            <LatestReports latestReport={latestReport} />
+          </div>
+        </div>
+
+        <div className="mb-5 md:mb-10">
+          <div>
+            <CommonEntities />
+          </div>
+        </div>
+
+        <div className="mb-5 md:mb-10">
+          <div className="flex flex-col items-center">
+            <QuickAdd />
+          </div>
+        </div> */}
+
+        <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-5 md:gap-10 mb-5 md:mb-10 flex-wrap">
+          <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
+            <AboutDatabase />
+          </div>
+          <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
+            <Blog post={latestPost.nodes[0]} />
+          </div>
+        </div>
+
+        <div className="mb-10 md:mb-16">
+          <div>
+            <Featured />
+          </div>
+        </div>
+
+        <div className="mb-10 md:mb-16">
+          <div>
+            <Leaderboards />
+          </div>
+        </div>
+
+        <div className="mb-5 md:mb-10 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-5 md:gap-10 flex-wrap">
+          <div className="flex-1 lg:max-w-[50%] grow">
+            <WordCounts localWordCounts={localWordCounts} />
+          </div>
+          <div className="flex-1 lg:max-w-[50%] self-stretch">
+            <RandomReports />
+          </div>
+        </div>
+
+        <div>
+          <Sponsors />
+        </div>
+      </Container>
     </Layout>
   );
 };
