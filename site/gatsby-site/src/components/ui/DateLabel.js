@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 export default function DateLabel({ date, className = '' }) {
   const [formmated, setFormatted] = useState('');
 
-  useEffect(() => setFormatted(format(new Date(date), 'yyyy-MM-dd')), []);
+  useEffect(() => setFormatted(format(date, 'yyyy-MM-dd')), []);
 
   if (!formmated) {
     return (
