@@ -10,7 +10,7 @@ const { isCompleteReport } = require('./variants');
 // to fit within the Algolia tier limits.
 //
 // TODO: Put this configuration in a more convenient place.
-const LIMIT = Number.MAX_SAFE_INTEGER;
+const LIMIT = 200; //Number.MAX_SAFE_INTEGER;
 
 const truncate = (doc) => {
   for (const [key, value] of Object.entries(doc)) {
@@ -77,9 +77,10 @@ const getClassificationArray = ({ classification, taxonomy }) => {
   return result;
 };
 
-const reportToEntry = ({ incident = null, report }) => {
+const reportToEntry = ({ incident = null, report, publication = null }) => {
   const entry = {
     authors: report.authors,
+    bias_labels: publication?.bias_labels,
     description: report.description,
     epoch_date_downloaded: report.epoch_date_downloaded,
     epoch_date_modified: report.epoch_date_modified,
@@ -130,7 +131,7 @@ class AlgoliaUpdater {
     this.algoliaClient = algoliaClient;
   }
 
-  generateIndexEntries = async ({ reports, incidents, classifications, taxa }) => {
+  generateIndexEntries = async ({ reports, incidents, classifications, taxa, publications }) => {
     let classificationsHash = {};
 
     classifications.forEach((classification) => {
@@ -149,7 +150,9 @@ class AlgoliaUpdater {
         if (reports.some((r) => r.report_number == report_number)) {
           const report = reports.find((r) => r.report_number == report_number) || {};
 
-          const entry = reportToEntry({ incident, report });
+          const publication = publications.find((p) => p.domain == report.source_domain);
+
+          const entry = reportToEntry({ incident, report, publication });
 
           if (classificationsHash[entry.incident_id]) {
             entry.classifications = classificationsHash[entry.incident_id];
@@ -397,7 +400,7 @@ class AlgoliaUpdater {
       incidents,
       classifications,
       taxa,
-      publications
+      publications,
     });
 
     await this.mongoClient.close();
