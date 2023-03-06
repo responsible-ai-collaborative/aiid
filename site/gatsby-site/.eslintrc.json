@@ -65,6 +65,7 @@
     "cypress/globals": true
   },
   "globals": {
-    "graphql": false
+    "graphql": false,
+    "Rollbar": true
   }
 }
