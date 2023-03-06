@@ -1,7 +1,6 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql, Link } from 'gatsby';
-import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 import { MDXProvider } from '@mdx-js/react';
 import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper, Author } from 'components/styles/Post';
@@ -16,6 +15,7 @@ import Outline from 'components/Outline';
 export default function Post(props) {
   const {
     data: { mdx },
+    children,
   } = props;
 
   const metaTitle = mdx.frontmatter.metaTitle;
@@ -68,9 +68,7 @@ export default function Post(props) {
         ></SocialShareButtons>
       </div>
       <StyledMainWrapper className="prose">
-        <MDXProvider components={MdxComponents}>
-          <MDXRenderer>{mdx.body}</MDXRenderer>
-        </MDXProvider>
+        <MDXProvider components={MdxComponents}>{children}</MDXProvider>
         <Author>By {mdx.frontmatter.author}</Author>
       </StyledMainWrapper>
     </Layout>
@@ -89,7 +87,6 @@ export const pageQuery = graphql`
       fields {
         title
       }
-      body
       tableOfContents
       parent {
         ... on File {

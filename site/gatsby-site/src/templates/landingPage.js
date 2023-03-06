@@ -14,7 +14,7 @@ import RandomReports from 'components/landing/RandomReports';
 import Hero from 'components/landing/Hero';
 import { useTranslation } from 'react-i18next';
 import { graphql } from 'gatsby';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import Container from '../elements/Container';
 import CommonEntities from 'components/entities/CommonEntities';
 
@@ -164,18 +164,16 @@ export const query = graphql`
       limit: 1
     ) {
       nodes {
-        fileAbsolutePath
         fields {
           slug
           title
           locale
         }
-        slug
         excerpt
         frontmatter {
+          slug
           date
           author
-          slug
           image {
             childImageSharp {
               gatsbyImageData(layout: FIXED)

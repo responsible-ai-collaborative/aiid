@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { Badge } from 'flowbite-react';
 import { CloudinaryImage } from '@cloudinary/base';
 import { Trans, useTranslation } from 'react-i18next';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { useMutation, useQuery } from '@apollo/client';
 import { graphql } from 'gatsby';
 

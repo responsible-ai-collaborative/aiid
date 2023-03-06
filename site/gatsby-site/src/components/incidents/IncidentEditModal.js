@@ -7,7 +7,7 @@ import { Button } from 'react-bootstrap';
 import { Spinner, Modal } from 'flowbite-react';
 import IncidentForm, { schema } from './IncidentForm';
 import { Formik } from 'formik';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
 
@@ -102,6 +102,10 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
       addToast(updateErrorToast({ incidentId, error }));
     }
   };
+
+  if (!show) {
+    return null;
+  }
 
   return (
     <Modal show={show} onClose={onClose} className="submission-modal" size="3xl">
