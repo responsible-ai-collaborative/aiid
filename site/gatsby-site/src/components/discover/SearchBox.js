@@ -32,7 +32,7 @@ function SearchBox({ currentRefinement, refine }) {
   };
 
   return (
-    <Row>
+    <Row data-cy="search-box">
       <Col>
         <form className="block relative" id="searchForm">
           {mounted && (

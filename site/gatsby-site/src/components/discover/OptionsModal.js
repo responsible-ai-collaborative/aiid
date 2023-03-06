@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Accordion } from 'react-bootstrap';
 import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
 import { AccordionFilter } from './Filter';
@@ -17,6 +17,10 @@ function OptionsModal() {
 
   const handleClose = () => setShowModal(false);
 
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
   return (
     <div>
       <div className="my-4 md:hidden flex justify-between">
@@ -32,31 +36,33 @@ function OptionsModal() {
           </Button>
         </div>
       </div>
-      <Modal show={showModal} onClose={handleClose}>
-        <Modal.Header>
-          <Trans>Search Options</Trans>
-        </Modal.Header>
-        <Modal.Body>
-          <div>
-            <div className="tw-options-modal-hbox">
-              <DisplayOptions />
-              <DisplayModeSwitch />
+      {mounted && (
+        <Modal show={showModal} onClose={handleClose}>
+          <Modal.Header>
+            <Trans>Search Options</Trans>
+          </Modal.Header>
+          <Modal.Body>
+            <div>
+              <div className="tw-options-modal-hbox">
+                <DisplayOptions />
+                <DisplayModeSwitch />
+              </div>
+              <div className="bootstrap">
+                <Accordion defaultActiveKey="0">
+                  {REFINEMENT_LISTS.map((list) => (
+                    <AccordionFilter key={list.attribute} attribute={list.attribute} {...list} />
+                  ))}
+                </Accordion>
+              </div>
             </div>
-            <div className="bootstrap">
-              <Accordion defaultActiveKey="0">
-                {REFINEMENT_LISTS.map((list) => (
-                  <AccordionFilter key={list.attribute} attribute={list.attribute} {...list} />
-                ))}
-              </Accordion>
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            <Trans>Close</Trans>
-          </Button>
-        </Modal.Footer>
-      </Modal>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              <Trans>Close</Trans>
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </div>
   );
 }

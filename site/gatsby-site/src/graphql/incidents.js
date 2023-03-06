@@ -46,6 +46,14 @@ export const FIND_INCIDENTS_TABLE = gql`
       description
       editors
       date
+    }
+  }
+`;
+
+export const FIND_INCIDENT_ENTITIES = gql`
+  query FindIncident($query: IncidentQueryInput) {
+    incident(query: $query) {
+      incident_id
       AllegedDeployerOfAISystem {
         entity_id
         name

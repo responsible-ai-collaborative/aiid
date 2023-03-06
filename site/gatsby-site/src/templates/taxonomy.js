@@ -4,9 +4,8 @@ import styled from 'styled-components';
 import Markdown from 'react-markdown';
 import { Button } from 'react-bootstrap';
 
-import BillboardChart from 'react-billboardjs';
-import { donut } from 'billboard.js';
-import 'billboard.js/dist/billboard.css';
+import bb, { donut } from 'billboard.js';
+import BillboardJS from '@billboard.js/react';
 
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
@@ -134,18 +133,21 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
               className="mt-4 border rounded"
             />
           ) : (
-            <BillboardChart
-              data={{
-                ...data,
-                onclick: (column) => {
-                  if (column.name == 'All Others') {
-                    window.open('/apps/discover');
-                  } else {
-                    window.open(
-                      '/apps/discover?classifications=' +
-                        [namespace, short_name, column.name].join(':')
-                    );
-                  }
+            <BillboardJS
+              bb={bb}
+              options={{
+                data: {
+                  ...data,
+                  onclick: (column) => {
+                    if (column.name == 'All Others') {
+                      window.open('/apps/discover');
+                    } else {
+                      window.open(
+                        '/apps/discover?classifications=' +
+                          [namespace, short_name, column.name].join(':')
+                      );
+                    }
+                  },
                 },
               }}
             />

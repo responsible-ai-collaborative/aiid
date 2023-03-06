@@ -5,7 +5,7 @@ import { Image } from '../../utils/cloudinary';
 import Link from 'components/ui/Link';
 import ReportText from 'components/reports/ReportText';
 import { Trans, useTranslation } from 'react-i18next';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 const LatestIncidentReport = ({ report }) => {
   const { image_url, cloudinary_id, title, text, epoch_date_submitted, incident_id } = report;
