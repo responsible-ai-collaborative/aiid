@@ -76,8 +76,7 @@ export function ToastContextProvider({ children }) {
       {children}
       <ToastsWrapper className="bootstrap">
         {toasts.map(({ message, severity, error, id }, index) => {
-          if (error) {
-            // eslint-disable-next-line no-undef
+          if (Rollbar && error) {
             Rollbar.error(error);
           }
           return (
