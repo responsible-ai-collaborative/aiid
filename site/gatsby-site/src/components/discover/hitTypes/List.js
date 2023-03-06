@@ -32,14 +32,7 @@ const Text = styled.div``;
 
 const ActionsContainer = styled.div``;
 
-export default function Details({
-  item,
-  authorsModal,
-  submittersModal,
-  flagReportModal,
-  toggleFilterByIncidentId,
-  viewType,
-}) {
+export default function Details({ item, toggleFilterByIncidentId, viewType }) {
   const [viewMore, setViewMore] = useState(false);
 
   const { t } = useTranslation();
@@ -47,6 +40,9 @@ export default function Details({
   return (
     <StyledCard>
       <StyledCardBody>
+        <input type="hidden" data-cy="date-published" value={item.epoch_date_published} />
+        <input type="hidden" data-cy="date-submitted" value={item.epoch_date_submitted} />
+        <input type="hidden" data-cy="incident-date" value={item.epoch_incident_date} />
         <Contents className="gap-3">
           <IncidentCardImage
             className="img-thumbnail"
@@ -66,13 +62,7 @@ export default function Details({
             </div>
 
             <ActionsContainer className="flex justify-start gap-4">
-              <Actions
-                authorsModal={authorsModal}
-                flagReportModal={flagReportModal}
-                submittersModal={submittersModal}
-                toggleFilterByIncidentId={toggleFilterByIncidentId}
-                item={item}
-              />
+              <Actions toggleFilterByIncidentId={toggleFilterByIncidentId} item={item} />
             </ActionsContainer>
           </Text>
         </Contents>

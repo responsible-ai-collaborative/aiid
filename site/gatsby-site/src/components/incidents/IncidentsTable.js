@@ -1,10 +1,14 @@
 import { useUserContext } from 'contexts/userContext';
 import React, { useState } from 'react';
 import { Button, Form, Pagination } from 'react-bootstrap';
+import { Spinner } from 'flowbite-react';
 import { useBlockLayout, useFilters, usePagination, useResizeColumns, useTable } from 'react-table';
 import IncidentEditModal from './IncidentEditModal';
 import styled from 'styled-components';
 import { Trans, useTranslation } from 'react-i18next';
+import { useQuery } from '@apollo/client';
+import { FIND_INCIDENT_ENTITIES } from '../../graphql/incidents';
+import Link from 'components/ui/Link';
 
 const Table = styled.div`
   display: inline-block;
@@ -90,32 +94,45 @@ function DefaultColumnFilter({
 }
 
 function ListCell({ cell }) {
+  const { data: incident, loading } = useQuery(FIND_INCIDENT_ENTITIES, {
+    variables: {
+      query: {
+        incident_id: cell.value,
+      },
+    },
+  });
+
   return (
     <div>
-      {cell.value?.map((v, i) => {
-        const isLast = i === cell.value.length - 1;
+      {loading && (
+        <div className="flex justify-content-center">
+          <Spinner />
+        </div>
+      )}
+      {!loading &&
+        incident &&
+        incident?.incident[cell.column.id]?.map((v, i) => {
+          const isLast = i === incident.incident[cell.column.id].length - 1;
 
-        const segments = v.split(' ');
-
-        const url = '/entities/' + segments.pop();
-
-        const name = segments.join(' ');
-
-        if (url) {
-          return (
-            <a key={`entity-${name}`} href={url} data-cy="cell-entity-link">
-              {name}
-              {!isLast ? ', ' : ''}
-            </a>
-          );
-        } else {
-          return (
-            <>
-              {name} {!isLast ? ', ' : ''}
-            </>
-          );
-        }
-      })}
+          if (v.entity_id) {
+            return (
+              <Link
+                key={`entity-${v.name}`}
+                to={`/entities/${v.entity_id}`}
+                data-cy="cell-entity-link"
+              >
+                {v.name}
+                {!isLast ? ', ' : ''}
+              </Link>
+            );
+          } else {
+            return (
+              <>
+                {v.name} {!isLast ? ', ' : ''}
+              </>
+            );
+          }
+        })}
     </div>
   );
 }
@@ -163,22 +180,23 @@ export default function IncidentsTable({ data }) {
       {
         Header: <Trans>Alleged Deployer of AI System</Trans>,
         id: 'AllegedDeployerOfAISystem',
-        // Include the entity_id so that we can turn it into a link on display.
-        accessor: (data) => data.AllegedDeployerOfAISystem.map((i) => `${i.name} ${i.entity_id}`),
+        accessor: 'incident_id',
         Cell: ListCell,
+        disableFilters: true,
       },
       {
         Header: <Trans>Alleged Developer of AI System</Trans>,
         id: 'AllegedDeveloperOfAISystem',
-        accessor: (data) => data.AllegedDeveloperOfAISystem.map((i) => `${i.name} ${i.entity_id}`),
+        accessor: 'incident_id',
         Cell: ListCell,
+        disableFilters: true,
       },
       {
         Header: <Trans>Alleged Harmed or Nearly Harmed Parties</Trans>,
         id: 'AllegedHarmedOrNearlyHarmedParties',
-        accessor: (data) =>
-          data.AllegedHarmedOrNearlyHarmedParties.map((i) => `${i.name} ${i.entity_id}`),
+        accessor: 'incident_id',
         Cell: ListCell,
+        disableFilters: true,
       },
     ];
 

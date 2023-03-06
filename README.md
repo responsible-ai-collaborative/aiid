@@ -363,7 +363,7 @@ To correctly set up  this process, the following environment variables need to b
 
 ```
 ALGOLIA_ADMIN_KEY=
-AWS_LAMBDA_JS_RUNTIME=nodejs14.x # required to run the Gatsby v4
+AWS_LAMBDA_JS_RUNTIME=nnodejs18.x # required to run the Gatsby v5
 GATSBY_ALGOLIA_APP_ID=
 GATSBY_ALGOLIA_SEARCH_KEY=
 GATSBY_REALM_APP_ID=
@@ -371,6 +371,8 @@ MONGODB_CONNECTION_STRING=
 MONGODB_REPLICA_SET=
 GATSBY_EXCLUDE_DATASTORE_FROM_BUNDLE=1 # specific to Netlify, for large sites
 GATSBY_CPU_COUNT=2 # limits the number of Gatsby threads, helping with deployments stability
+NODE_VERSION=18 # this is required by Gatsby v5
+NODE_OPTIONS=--max-old-space-size=4096 # increase default heap size to prevent crashes during build
 ```
 ### Github Actions
 Two workflows take care of deploying the Realm app to both `production` and `staging` environments, defined in `realm-production.yml` and `realm-staging.yml`. Each workflow looks for environment variables defined in a Github Environment named `production` and `staging`. 

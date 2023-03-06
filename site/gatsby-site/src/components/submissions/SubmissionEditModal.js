@@ -78,9 +78,14 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
       addToast({
         message: `Error updating submission ${values._id}`,
         severity: SEVERITY.danger,
+        error: e,
       });
     }
   };
+
+  if (!show) {
+    return null;
+  }
 
   return (
     <Modal

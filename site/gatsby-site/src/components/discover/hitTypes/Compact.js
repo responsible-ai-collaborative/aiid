@@ -70,19 +70,15 @@ const StyledSubTitle = styled(SourceDomainSubtitle)`
   }
 `;
 
-export default function Compact({
-  item,
-  authorsModal,
-  submittersModal,
-  flagReportModal,
-  toggleFilterByIncidentId,
-  viewType,
-}) {
+export default function Compact({ item, toggleFilterByIncidentId, viewType }) {
   const { t } = useTranslation();
 
   return (
     <StyledCard>
       <StyledCardBody className="flex flex-col ">
+        <input type="hidden" data-cy="date-published" value={item.epoch_date_published} />
+        <input type="hidden" data-cy="date-submitted" value={item.epoch_date_submitted} />
+        <input type="hidden" data-cy="incident-date" value={item.epoch_incident_date} />
         <Contents className="pl-6 pr-6 pt-3">
           <StyledHeaderTitle item={item} viewType={viewType} />
           <StyledSubTitle item={item} className="my-2 small" />
@@ -100,13 +96,7 @@ export default function Compact({
       </StyledCardBody>
 
       <Card.Footer className="flex justify-between">
-        <Actions
-          authorsModal={authorsModal}
-          flagReportModal={flagReportModal}
-          submittersModal={submittersModal}
-          toggleFilterByIncidentId={toggleFilterByIncidentId}
-          item={item}
-        />
+        <Actions toggleFilterByIncidentId={toggleFilterByIncidentId} item={item} />
       </Card.Footer>
     </StyledCard>
   );
