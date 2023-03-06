@@ -363,7 +363,7 @@ To correctly set up  this process, the following environment variables need to b
 
 ```
 ALGOLIA_ADMIN_KEY=
-AWS_LAMBDA_JS_RUNTIME=nnodejs18.x # required to run the Gatsby v5
+AWS_LAMBDA_JS_RUNTIME=nodejs18.x # required to run the Gatsby v5
 GATSBY_ALGOLIA_APP_ID=
 GATSBY_ALGOLIA_SEARCH_KEY=
 GATSBY_REALM_APP_ID=
