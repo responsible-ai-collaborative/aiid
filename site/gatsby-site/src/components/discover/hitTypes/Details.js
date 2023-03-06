@@ -70,7 +70,7 @@ export default function Details({
       <Card.Body className="flex flex-col ">
         <HeaderTitle item={item} viewType={viewType} />
         <SourceDomainSubtitle item={item} className="mb-2 text-muted-gray" />
-
+     
         <Card.Text className="flex-1-1-auto mb-4">
           <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />
           <ReportText
