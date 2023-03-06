@@ -89,9 +89,9 @@ const LandingPage = (props) => {
           <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
             <AboutDatabase />
           </div>
-          {/* <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
+          <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
             <Blog post={latestPost.nodes[0]} />
-          </div> */}
+          </div>
         </div>
 {/* 
         <div className="mb-10 md:mb-16">
