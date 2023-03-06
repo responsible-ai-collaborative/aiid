@@ -90,8 +90,6 @@ function CitePage(props) {
 
   const [isSubscribed, setIsSubscribed] = useState(false);
 
-  const [isSubscribedLoading, setIsSubscribedLoading] = useState(true);
-
   const { data } = useQuery(FIND_USER_SUBSCRIPTIONS, {
     variables: {
       query: { userId: { userId: user?.id }, incident_id: { incident_id: incident.incident_id } },
@@ -195,7 +193,6 @@ function CitePage(props) {
       } else {
         setIsSubscribed(false);
       }
-      setIsSubscribedLoading(false);
     }
   }, [data]);
 
@@ -314,16 +311,23 @@ function CitePage(props) {
 
       <div className="flex mt-6">
         <div className="shrink-1">
-          <Tools
-            incident={incident}
-            isSubscribed={isSubscribed}
-            subscribeToNewReports={subscribeToNewReports}
-            incidentReports={incidentReports}
-            subscribing={subscribing || isSubscribedLoading}
-          />
-          <div className="mt-6">
-            <strong>Description</strong>: {incident.description}
-          </div>
+          <Row>
+            <Col>
+              <strong>Description</strong>: {incident.description}
+            </Col>
+          </Row>
+
+          <Row className="mt-6">
+            <Col>
+              <Tools
+                incident={incident}
+                isSubscribed={isSubscribed}
+                subscribeToNewReports={subscribeToNewReports}
+                incidentReports={incidentReports}
+                subscribing={subscribing}
+              />
+            </Col>
+          </Row>
 
           <Container>
             <Row>
