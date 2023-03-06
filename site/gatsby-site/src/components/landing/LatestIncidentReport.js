@@ -8,7 +8,15 @@ import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 const LatestIncidentReport = ({ report }) => {
-  const { image_url, cloudinary_id, title, text, epoch_date_submitted, incident_id } = report;
+  const {
+    image_url,
+    cloudinary_id,
+    title,
+    text,
+    epoch_date_submitted,
+    incident_id,
+    report_number,
+  } = report;
 
   const { t } = useTranslation();
 
@@ -16,10 +24,12 @@ const LatestIncidentReport = ({ report }) => {
 
   useEffect(() => setFormattedDate(format(epoch_date_submitted * 1000, 'MMM d, yyyy')), []);
 
+  const reportLink = `/cite/${incident_id}#r${report_number}`;
+
   return (
     <div className="flex flex-col items-center bg-white rounded-lg border  shadow-md md:flex-row dark:border-gray-700 dark:bg-gray-800">
       <div className="flex self-stretch justify-center items-center md:border-r md:max-w-sm">
-        <LocalizedLink to={`/cite/${incident_id}`} className="text-primary-blue max-w-full h-full">
+        <LocalizedLink to={reportLink} className="text-primary-blue max-w-full h-full">
           <Image
             className={
               'img-fluid rounded-start h-full w-full max-w-full rounded-t-lg md:rounded-l-lg md:rounded-r-none border-r object-cover'
@@ -31,13 +41,13 @@ const LatestIncidentReport = ({ report }) => {
         </LocalizedLink>
       </div>
       <div className="flex flex-col justify-between leading-normal">
-        <LocalizedLink to={`/cite/${incident_id}`} className="max-w-full cursor-pointer">
+        <LocalizedLink to={reportLink} className="max-w-full cursor-pointer">
           <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white w-full p-6 hover:text-primary-blue">
             <Trans ns="landing">Latest Incident Report</Trans>
           </h5>
         </LocalizedLink>
         <div className="px-6 pb-6">
-          <LocalizedLink to={`/cite/${incident_id}`} className="max-w-full cursor-pointer">
+          <LocalizedLink to={reportLink} className="max-w-full cursor-pointer">
             <h5 className="text-base font-bold tracking-tight text-gray-900 dark:text-white relative block hover:text-primary-blue">
               {title}
             </h5>
@@ -48,7 +58,7 @@ const LatestIncidentReport = ({ report }) => {
           </div>
           <div className="flex justify-end">
             <Link
-              to={`/cite/${incident_id}`}
+              to={reportLink}
               className="inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
               <Trans>Read More</Trans>
