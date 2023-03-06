@@ -392,14 +392,6 @@ function CitePage(props) {
 
             <Row className="mt-6">
               <Col>
-                <Card>
-                  <ImageCarousel nodes={incidentReports} />
-                </Card>
-              </Col>
-            </Row>
-
-            <Row className="mt-6">
-              <Col>
                 <div className="pb-5">
                   <h1 className="tw-styled-heading">
                     <Trans>Incident Reports</Trans>
@@ -414,6 +406,14 @@ function CitePage(props) {
                   <Card.Body>
                     <Timeline data={timeline} />
                   </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+
+            <Row className="mt-6">
+              <Col>
+                <Card>
+                  <ImageCarousel nodes={incidentReports} />
                 </Card>
               </Col>
             </Row>
