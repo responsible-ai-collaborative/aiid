@@ -48,7 +48,10 @@ const LatestIncidentReport = ({ report }) => {
         </LocalizedLink>
         <div className="px-6 pb-6">
           <LocalizedLink to={reportLink} className="max-w-full cursor-pointer">
-            <h5 className="text-base font-bold tracking-tight text-gray-900 dark:text-white relative block hover:text-primary-blue">
+            <h5
+              className="text-base font-bold tracking-tight text-gray-900 dark:text-white relative block hover:text-primary-blue"
+              data-cy="latest-incident-report-title"
+            >
               {title}
             </h5>
           </LocalizedLink>
