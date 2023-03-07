@@ -45,18 +45,10 @@ describe('Runtime errors', () => {
         cy.waitForStableDOM();
 
         cy.get('@consoleError').then((consoleError) => {
-          const noHydrationErrors = consoleError
-            .getCalls()
-            .every((call) =>
-              call.args.every(
-                (arg) =>
-                  !arg.includes('did not match') || !arg.includes('Minified React error #425')
-              )
-            );
-
-          expect(noHydrationErrors, 'No hydration errors').to.be.true;
-
-          expect(consoleError.getCalls().length, 'No runtime errors').eq(0);
+          expect(
+            consoleError.getCalls().length,
+            'No runtime errors: ' + JSON.stringify(consoleError.getCalls())
+          ).eq(0);
         });
       });
     });
