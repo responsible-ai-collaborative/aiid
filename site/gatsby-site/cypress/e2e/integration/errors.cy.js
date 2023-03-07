@@ -23,7 +23,7 @@ describe('Runtime errors', () => {
     '/cite/1/',
     '/entities/',
     '/entities/facebook/',
-    '/blog/the-first-taxonomy-of-ai-incidents/', // post template
+    '/blog/incident-report-2022-january/',
     '/taxonomy/cset/',
     '/summaries/wordcounts/',
     '/about/', // doc template
@@ -33,7 +33,7 @@ describe('Runtime errors', () => {
 
   paths.forEach((path) => {
     codes.forEach((code) => {
-      it(`/${code}${path} Should not have hydration errors`, () => {
+      it(`/${code}${path} Should not have runtime errors`, () => {
         const canonicalPath = switchLocalizedPath({ newLang: code, path });
 
         cy.visit(canonicalPath, {
