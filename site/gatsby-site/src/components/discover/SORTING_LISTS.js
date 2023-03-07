@@ -4,9 +4,9 @@ const SORTING_LIST = [
   {
     default: true,
     name: 'relevance',
-    value_en: 'instant_search-en',
-    value_es: 'instant_search-es',
-    value_fr: 'instant_search-fr',
+    value_en: 'instant_search-en-featured',
+    value_es: 'instant_search-es-featured',
+    value_fr: 'instant_search-fr-featured',
     label: 'Relevance',
     faIcon: faCalendarAlt,
     faClasses: 'far fa-calendar-alt',
