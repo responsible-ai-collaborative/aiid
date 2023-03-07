@@ -25,7 +25,10 @@ describe('The Discover app', () => {
 
     cy.get('form#searchForm').as('form');
 
-    cy.get('@form').get('input[placeholder="Type Here"]').type('starbucks').type('{enter}');
+    cy.get('@form')
+      .get('[data-cy="search-box"] input[placeholder="Type Here"]')
+      .type('starbucks')
+      .type('{enter}');
 
     cy.url().should('include', 's=starbucks');
 
@@ -44,9 +47,13 @@ describe('The Discover app', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('.card [placeholder="Type Here"]', { timeout: 8000 }).type('34').type('{enter}');
+    cy.get('[data-cy="incident_id"] [placeholder="Type Here"]', { timeout: 8000 })
+      .type('34')
+      .type('{enter}');
 
-    cy.get('.list-group-item:contains("34")', { timeout: 8000 }).first().click();
+    cy.get('[data-cy="incident_id"] .list-group-item:contains("34")', { timeout: 8000 })
+      .first()
+      .click();
 
     cy.url().should('include', 'incident_id=34');
 
@@ -80,8 +87,6 @@ describe('The Discover app', () => {
   });
 
   it('Should flag an incident', () => {
-    // mock requests until a testing database is implemented
-
     cy.visit(
       url +
         '?display=details&incident_id=10&s=%E2%80%8BIs%20Starbucks%20shortchanging%20its%20baristas%3F'
@@ -98,7 +103,7 @@ describe('The Discover app', () => {
 
     cy.get(`[data-cy="${_id}"`).find('[data-cy="flag-button"]').click();
 
-    cy.get('[data-cy="flag-modal"]').as('modal').should('be.visible');
+    cy.get('[data-cy="flag-report-23"]').as('modal').should('be.visible');
 
     cy.wait('@fetchReport');
 
@@ -115,7 +120,7 @@ describe('The Discover app', () => {
 
     cy.get('@modal').find('[data-cy="flag-toggle"]').should('be.disabled');
 
-    cy.get('[aria-label="Close"]').click();
+    cy.get('@modal').find('[aria-label="Close"]').click();
 
     cy.get('@modal').should('not.exist');
   });

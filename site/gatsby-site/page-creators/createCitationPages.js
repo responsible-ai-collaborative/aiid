@@ -94,7 +94,7 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
     for (const context of pageContexts) {
       const pagePath = switchLocalizedPath({
         newLang: language.code,
-        path: '/cite/' + context.incident_id,
+        path: '/cite/' + context.incident_id + '/',
       });
 
       createPage({

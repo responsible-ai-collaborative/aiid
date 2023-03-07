@@ -5,13 +5,6 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 import './src/custom.css';
 import './src/bootstrap.scss';
 
-import React from 'react';
-import { wrapRootElement } from './wrapRootElement';
-import { QueryParamProvider } from 'use-query-params';
-import { navigate } from 'gatsby';
-import { UserContextProvider } from 'contexts/userContext';
-import { MenuContextProvider } from 'contexts/MenuContext';
-
 export const shouldUpdateScroll = ({ routerProps: { location } }) => {
   const { pathname } = location;
 
@@ -20,23 +13,6 @@ export const shouldUpdateScroll = ({ routerProps: { location } }) => {
   }
 };
 
-export const wrapPageElement = ({ element }) => {
-  const history = {
-    replace(location) {
-      navigate(location.pathname + location.search, { replace: true });
-    },
-    push(location) {
-      navigate(location.pathname + location.search, { replace: false });
-    },
-  };
+import { wrapRootElement, wrapPageElement } from './gatsby-shared';
 
-  return (
-    <QueryParamProvider history={history}>
-      <MenuContextProvider>
-        <UserContextProvider>{element}</UserContextProvider>
-      </MenuContextProvider>
-    </QueryParamProvider>
-  );
-};
-
-export { wrapRootElement };
+export { wrapPageElement, wrapRootElement };

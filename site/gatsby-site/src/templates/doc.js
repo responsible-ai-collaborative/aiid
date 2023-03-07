@@ -1,7 +1,6 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql, Link } from 'gatsby';
-import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 
 import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
@@ -12,7 +11,10 @@ import { Trans } from 'react-i18next';
 import Outline from 'components/Outline';
 
 export default function Doc(props) {
-  const { mdx } = props.data;
+  const {
+    data: { mdx },
+    children,
+  } = props;
 
   // meta tags
   const metaTitle = mdx.frontmatter.metaTitle;
@@ -40,9 +42,7 @@ export default function Doc(props) {
         )}
       </div>
       <StyledMainWrapper className="prose">
-        <MDXProvider components={Components}>
-          <MDXRenderer>{mdx.body}</MDXRenderer>
-        </MDXProvider>
+        <MDXProvider components={Components}>{children}</MDXProvider>
       </StyledMainWrapper>
     </Layout>
   );
@@ -62,7 +62,6 @@ export const pageQuery = graphql`
         title
         slug
       }
-      body
       tableOfContents
       parent {
         ... on File {

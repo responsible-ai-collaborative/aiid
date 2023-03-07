@@ -35,11 +35,24 @@ describe('SEO', () => {
     '/about/', // doc template
   ];
 
-  const codes = ['es', 'en', 'fr'];
+  const languages = [
+    {
+      code: 'en',
+      hrefLang: 'en-US',
+    },
+    {
+      code: 'es',
+      hrefLang: 'es',
+    },
+    {
+      code: 'fr',
+      hrefLang: 'fr',
+    },
+  ];
 
   paths.forEach((path) => {
-    codes.forEach((code) => {
-      it(`/${code}${path} Should have proper canonical url`, () => {
+    languages.forEach(({ code }) => {
+      it(`/${code}${path} Should have proper SEO Tags`, () => {
         const canonicalPath = switchLocalizedPath({ newLang: code, path });
 
         const url = baseUrl + canonicalPath;
@@ -47,6 +60,28 @@ describe('SEO', () => {
         cy.visit(canonicalPath);
 
         cy.get('[rel="canonical"]').invoke('attr', 'href').should('equal', url);
+
+        cy.get('[rel="alternate"]').should('have.length', 5);
+
+        cy.get('[rel="alternate"][hrefLang="x-default"]')
+          .invoke('attr', 'href')
+          .should('equal', baseUrl);
+
+        cy.get('[rel="alternate"][type="application/rss+xml"]')
+          .invoke('attr', 'href')
+          .should('equal', '/rss.xml');
+
+        for (const language of languages) {
+          const alternatePath = switchLocalizedPath({ newLang: language.code, path });
+
+          const alternateUrl = baseUrl + alternatePath;
+
+          cy.log(canonicalPath, 'tag', language.hrefLang, 'should eq', alternateUrl);
+
+          cy.get(
+            `[rel="alternate"][hrefLang="${language.hrefLang}"][href="${alternateUrl}"]`
+          ).should('exist');
+        }
       });
     });
   });

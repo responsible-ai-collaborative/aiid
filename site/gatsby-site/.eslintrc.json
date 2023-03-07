@@ -24,6 +24,7 @@
           ["services", "./src/services"],
           ["templates", "./src/templates"],
           ["utils", "./src/utils"],
+          ["plugins", "./plugins"],
           ["buble", "@philpl/buble"],
           ["@reach/router", "@gatsbyjs/reach-router"]
         ],

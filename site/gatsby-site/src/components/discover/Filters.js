@@ -19,6 +19,7 @@ function Filters() {
           className={`w-full flex-0-0-auto md:w-1/2 lg:w-1/5 px-1 bootstrap ${
             list.hidden ? 'hidden' : ''
           }`}
+          data-cy={list.attribute}
         >
           <StyledFilter type={list.type} {...list} />
         </div>

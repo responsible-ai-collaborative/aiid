@@ -3,7 +3,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import Collapse from 'react-bootstrap/Collapse';
 import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -300,97 +299,99 @@ const SubmissionReview = ({ submission }) => {
           </Col>
         </Row>
       </Card.Header>
-      <Collapse in={open}>
-        <div id="collapse-incident-submission" className="pt-3">
-          <ListedGroup className="mx-3" item={submission} keysToRender={leadItems} />
-          <ListedGroup className="mt-2 mx-3" item={submission} keysToRender={dateRender} />
-          <ListedGroup className="mt-2 mx-3" item={submission} keysToRender={urls} />
-          <ListedGroup
-            className="mt-2 mx-3"
-            item={submission}
-            keysToRender={otherDetails}
-            objectKeyToDisplay="name"
-          />
+      {open && (
+        <>
+          <div id="collapse-incident-submission" className="pt-3">
+            <ListedGroup className="mx-3" item={submission} keysToRender={leadItems} />
+            <ListedGroup className="mt-2 mx-3" item={submission} keysToRender={dateRender} />
+            <ListedGroup className="mt-2 mx-3" item={submission} keysToRender={urls} />
+            <ListedGroup
+              className="mt-2 mx-3"
+              item={submission}
+              keysToRender={otherDetails}
+              objectKeyToDisplay="name"
+            />
 
-          <Card className="m-3" data-cy="text">
-            <Card.Header>Text</Card.Header>
-            <Card.Body>
-              <ReadMoreText text={submission.text} visibility={open} />
-            </Card.Body>
-          </Card>
-
-          {submission.editor_notes && (
-            <Card className="m-3" data-cy="editor_notes">
-              <Card.Header>Editor Notes</Card.Header>
+            <Card className="m-3" data-cy="text">
+              <Card.Header>Text</Card.Header>
               <Card.Body>
-                <ReadMoreText text={submission.editor_notes} visibility={open} />
+                <ReadMoreText text={submission.text} visibility={open} />
               </Card.Body>
             </Card>
-          )}
 
-          {open && (
-            <div className="mx-3">
-              <h5>Possible related incidents</h5>
-              <RelatedIncidents incident={submission} />
-            </div>
-          )}
-          <Card.Footer className="flex text-muted-gray m-3">
-            <Button
-              className="mr-auto"
-              data-cy="edit-submission"
-              disabled={!isSubmitter}
-              onClick={() => setIsEditing(true)}
-            >
-              <FontAwesomeIcon icon={faEdit} />
-            </Button>
+            {submission.editor_notes && (
+              <Card className="m-3" data-cy="editor_notes">
+                <Card.Header>Editor Notes</Card.Header>
+                <Card.Body>
+                  <ReadMoreText text={submission.editor_notes} visibility={open} />
+                </Card.Body>
+              </Card>
+            )}
 
-            <Button
-              className="mr-2 text-xs md:text-base"
-              variant="outline-primary"
-              disabled={!isSubmitter || promoting}
-              onClick={() => promoteToIssue()}
-            >
-              <div className="flex gap-2">
-                {promoting === 'issue' && <Spinner size="sm" />}
-                <Trans ns="submitted">Add as issue</Trans>
+            {open && (
+              <div className="mx-3">
+                <h5>Possible related incidents</h5>
+                <RelatedIncidents incident={submission} />
               </div>
-            </Button>
+            )}
+            <Card.Footer className="flex text-muted-gray m-3">
+              <Button
+                className="mr-auto"
+                data-cy="edit-submission"
+                disabled={!isSubmitter}
+                onClick={() => setIsEditing(true)}
+              >
+                <FontAwesomeIcon icon={faEdit} />
+              </Button>
 
-            <Button
-              className="mr-2 text-xs md:text-base"
-              variant="outline-primary"
-              disabled={!isSubmitter || promoting}
-              onClick={() => (isNewIncident ? promoteToIncident() : promoteToReport())}
-            >
-              <div className="flex gap-2">
-                {promoting === 'incident' && <Spinner size="sm" />}
-                {isNewIncident ? (
-                  <Trans ns="submitted">Add new Incident</Trans>
-                ) : (
-                  <Trans ns="submitted" id={submission.incident_id}>
-                    Add to incident {{ id: submission.incident_id }}
-                  </Trans>
-                )}
-              </div>
-            </Button>
-            <Button
-              variant="outline-secondary"
-              disabled={!isSubmitter || deleting || promoting}
-              onClick={rejectReport}
-              className="text-xs md:text-base"
-            >
-              <div className="flex gap-2">
-                {deleting && <Spinner size="sm" />}
-                {isNewIncident ? (
-                  <Trans ns="submitted">Reject New Incident</Trans>
-                ) : (
-                  <Trans ns="submitted">Reject New Report</Trans>
-                )}
-              </div>
-            </Button>
-          </Card.Footer>
-        </div>
-      </Collapse>
+              <Button
+                className="mr-2 text-xs md:text-base"
+                variant="outline-primary"
+                disabled={!isSubmitter || promoting}
+                onClick={() => promoteToIssue()}
+              >
+                <div className="flex gap-2">
+                  {promoting === 'issue' && <Spinner size="sm" />}
+                  <Trans ns="submitted">Add as issue</Trans>
+                </div>
+              </Button>
+
+              <Button
+                className="mr-2 text-xs md:text-base"
+                variant="outline-primary"
+                disabled={!isSubmitter || promoting}
+                onClick={() => (isNewIncident ? promoteToIncident() : promoteToReport())}
+              >
+                <div className="flex gap-2">
+                  {promoting === 'incident' && <Spinner size="sm" />}
+                  {isNewIncident ? (
+                    <Trans ns="submitted">Add new Incident</Trans>
+                  ) : (
+                    <Trans ns="submitted" id={submission.incident_id}>
+                      Add to incident {{ id: submission.incident_id }}
+                    </Trans>
+                  )}
+                </div>
+              </Button>
+              <Button
+                variant="outline-secondary"
+                disabled={!isSubmitter || deleting || promoting}
+                onClick={rejectReport}
+                className="text-xs md:text-base"
+              >
+                <div className="flex gap-2">
+                  {deleting && <Spinner size="sm" />}
+                  {isNewIncident ? (
+                    <Trans ns="submitted">Reject New Incident</Trans>
+                  ) : (
+                    <Trans ns="submitted">Reject New Report</Trans>
+                  )}
+                </div>
+              </Button>
+            </Card.Footer>
+          </div>
+        </>
+      )}
       <SubmissionEditModal
         show={isEditing}
         onHide={() => setIsEditing(false)}
