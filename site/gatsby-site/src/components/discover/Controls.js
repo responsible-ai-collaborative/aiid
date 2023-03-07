@@ -9,6 +9,7 @@ import { Trans } from 'react-i18next';
 import useSearch from './useSearch';
 import Sorting from './Sorting';
 import SORTING_LISTS from 'components/discover/SORTING_LISTS';
+import { DEFAULT_SEARCH_KEYS_VALUES } from './DEFAULT_SEARCH_KEYS_VALUES';
 
 const Controls = () => {
   const { searchState } = useSearch();
@@ -16,10 +17,8 @@ const Controls = () => {
   const [expandFilters, setExpandFilters] = useState(false);
 
   useEffect(() => {
-    const defaultKeys = ['is_incident_report', 'page', 'display', 'sortBy'];
-
     const expand = Object.keys(searchState.refinementList).some(
-      (key) => !defaultKeys.includes(key)
+      (key) => !Object.keys(DEFAULT_SEARCH_KEYS_VALUES).includes(key)
     );
 
     setExpandFilters(expand);

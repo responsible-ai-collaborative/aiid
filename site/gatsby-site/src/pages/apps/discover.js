@@ -20,6 +20,8 @@ import Col from 'elements/Col';
 import Layout from 'components/Layout';
 import { VIEW_TYPES } from 'utils/discover';
 import SORTING_LIST from 'components/discover/SORTING_LISTS';
+import { DEFAULT_SEARCH_KEYS_VALUES } from 'components/discover/DEFAULT_SEARCH_KEYS_VALUES';
+import isEqual from 'lodash/isEqual';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -236,6 +238,11 @@ function DiscoverApp(props) {
 
   useEffect(() => setMounted(true), []);
 
+  let hasOnlyDefaultValues = isEqual(
+    DEFAULT_SEARCH_KEYS_VALUES.sort(),
+    Object.keys(searchState.refinementList).sort()
+  );
+
   return (
     <Layout {...props} sidebarCollapsed={true} className="w-full">
       <AiidHelmet path={props.location.pathname}>
@@ -246,10 +253,7 @@ function DiscoverApp(props) {
       >
         <InstantSearch
           indexName={
-            indexName +
-            (searchState.query == '' && Object.keys(searchState.refinementList).length == 0
-              ? '-featured'
-              : '')
+            indexName + (searchState.query == '' && hasOnlyDefaultValues ? '-featured' : '')
           }
           searchClient={searchClient}
           searchState={searchState}
