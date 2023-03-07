@@ -105,7 +105,7 @@ const REFINEMENT_LISTS = [
   },
   {
     attribute: 'tags',
-    placeholder: 'none',
+    placeholder: 'Type Here',
     label: 'Tags',
     faIcon: faTags,
     faClasses: 'far fa-tags',
@@ -114,7 +114,7 @@ const REFINEMENT_LISTS = [
   },
   {
     attribute: 'language',
-    placeholder: 'none',
+    placeholder: 'Type Here',
     label: 'Language',
     faIcon: faGlobe,
     faClasses: 'far fa-globe',
