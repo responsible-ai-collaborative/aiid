@@ -230,8 +230,16 @@ function CitePage(props) {
       addToast({
         message: (
           <Trans i18n={i18n}>
-            Please <Link to={localizePath({ path: '/login', language: locale })}>log in</Link> to
-            subscribe
+            Please{' '}
+            <Link
+              to={localizePath({
+                path: `/login?redirectTo=${window.location.pathname + window.location.search}`,
+                language: locale,
+              })}
+            >
+              log in
+            </Link>{' '}
+            to subscribe
           </Trans>
         ),
         severity: SEVERITY.success,

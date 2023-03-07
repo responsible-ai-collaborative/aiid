@@ -54,6 +54,8 @@ const SignUp = (props) => {
     redirectTo: StringParam,
   });
 
+  redirectTo = redirectTo ?? '/';
+
   const clickLoginWithFacebook = async () => {
     setDisplayFacebookSpinner(true);
 
@@ -332,7 +334,7 @@ const SignUp = (props) => {
 
           <div className="mt-4">
             <Trans ns="login">Already have an account?</Trans>{' '}
-            <Link to="/login">
+            <Link to={`/login?redirectTo=${redirectTo}`}>
               <Trans ns="login">Login</Trans>
             </Link>
           </div>
