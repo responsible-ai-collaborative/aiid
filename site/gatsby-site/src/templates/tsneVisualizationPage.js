@@ -4,7 +4,7 @@ import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
 import TsneVisualization from 'components/cite/TsneVisualization';
 import { Trans, useTranslation } from 'react-i18next';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 function TsneVisulizationPage(props) {
   const { t } = useTranslation();
@@ -22,7 +22,7 @@ function TsneVisulizationPage(props) {
   const metaDescription = t('Spatial Visualization');
 
   return (
-    <Layout {...props}>
+    <Layout className="max-w-full w-full" {...props}>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>

@@ -21,9 +21,9 @@ The steps for contributing changes are the following,
 
 1. Create a fork of the repository.
 2. Clone the fork to your local environment.
-3. Open a feature branch from whichever branch you would like to change. This is typically the master branch, so you can do `git checkout master` then `git checkout -b feature-cool-new-thing`.
+3. Open a feature branch from whichever branch you would like to change. This is typically the `staging` branch, so you can do `git checkout staging` then `git checkout -b feature-cool-new-thing`.
 4. Make your changes, commit them, then push them remote.
-5. Open a pull request to the `master` branch.
+5. Open a pull request to the `staging` branch.
 6. Update the pull request based on the review.
 7. See the pull request get pulled. :)
 
@@ -133,15 +133,19 @@ npm install --global gatsby-cli
 Create a `.env` file under `site/gatsby-site` with the following contents:
 
 ```
-GATSBY_REALM_APP_ID=aiidstitch2-vsdrv
-MONGODB_CONNECTION_STRING=mongodb+srv://readonlyuser:gfz2JXY1SDmworgw@aiiddev.6zxh5.mongodb.net
-MONGODB_REPLICA_SET=aiiddev-shard-00-02.6zxh5.mongodb.net,aiiddev-shard-00-01.6zxh5.mongodb.net,aiiddev-shard-00-00.6zxh5.mongodb.net
+GATSBY_REALM_APP_ID=aiidstitch2-sasvc
+MONGODB_CONNECTION_STRING=mongodb+srv://readonly:vNMlVM35rsTlMUTr@aiiddev.seam4.mongodb.net
+MONGODB_TRANSLATIONS_CONNECTION_STRING=mongodb+srv://readonly:vNMlVM35rsTlMUTr@aiiddev.seam4.mongodb.net
+MONGODB_REPLICA_SET=aiiddev-shard-00-02.seam4.mongodb.net,aiiddev-shard-00-01.seam4.mongodb.net,aiiddev-shard-00-00.seam4.mongodb.net
 
 GATSBY_ALGOLIA_APP_ID=JD5JCVZEVS
 GATSBY_ALGOLIA_SEARCH_KEY=c5e99d93261645721a1765fe4414389c
-GATSBY_AVAILABLE_LANGUAGES=en,es
-MONGODB_TRANSLATIONS_CONNECTION_STRING=[to be updated in MongoDB setup section]
+GATSBY_AVAILABLE_LANGUAGES=en,es,fr
+SKIP_PAGE_CREATOR=createTsneVisualizationPage
 ```
+
+This will give you access to our `staging` environment, so please be sure you are on the `staging` branch.
+
 In the same folder, install dependencies using `npm` (do not use `yarn`, it will ignore the `package-lock.json` file):
 
 ```
@@ -359,7 +363,7 @@ To correctly set up  this process, the following environment variables need to b
 
 ```
 ALGOLIA_ADMIN_KEY=
-AWS_LAMBDA_JS_RUNTIME=nodejs14.x # required to run the Gatsby v4
+AWS_LAMBDA_JS_RUNTIME=nodejs18.x # required to run the Gatsby v5
 GATSBY_ALGOLIA_APP_ID=
 GATSBY_ALGOLIA_SEARCH_KEY=
 GATSBY_REALM_APP_ID=
@@ -367,6 +371,8 @@ MONGODB_CONNECTION_STRING=
 MONGODB_REPLICA_SET=
 GATSBY_EXCLUDE_DATASTORE_FROM_BUNDLE=1 # specific to Netlify, for large sites
 GATSBY_CPU_COUNT=2 # limits the number of Gatsby threads, helping with deployments stability
+NODE_VERSION=18 # this is required by Gatsby v5
+NODE_OPTIONS=--max-old-space-size=4096 # increase default heap size to prevent crashes during build
 ```
 ### Github Actions
 Two workflows take care of deploying the Realm app to both `production` and `staging` environments, defined in `realm-production.yml` and `realm-staging.yml`. Each workflow looks for environment variables defined in a Github Environment named `production` and `staging`. 

@@ -13,7 +13,7 @@ import isString from 'lodash/isString';
 import { stripMarkdown } from 'utils/typography';
 import isArray from 'lodash/isArray';
 import { Trans, useTranslation } from 'react-i18next';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { graphql, useStaticQuery } from 'gatsby';
 import { processEntities, RESPONSE_TAG } from '../../utils/entities';
@@ -72,6 +72,7 @@ const SubmitForm = () => {
     harmed_parties: [],
     editor_notes: '',
     language: 'en',
+    tags: [],
   };
 
   const [submission, setSubmission] = useState(initialValues);
@@ -136,6 +137,7 @@ const SubmitForm = () => {
     addToast({
       message: t(`Unable to upload: `) + reason,
       severity: SEVERITY.danger,
+      error: _err,
     });
   };
 
@@ -269,7 +271,11 @@ const SubmitForm = () => {
         )}
       </p>
       <div className="my-5">
-        <SubmissionWizard submitForm={handleSubmit} initialValues={submission} />
+        <SubmissionWizard
+          submitForm={handleSubmit}
+          initialValues={submission}
+          urlFromQueryString={query.url}
+        />
 
         <p className="mt-4">
           <Trans ns="submit" i18nKey="submitReviewDescription">

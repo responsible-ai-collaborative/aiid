@@ -1,6 +1,5 @@
 import React from 'react';
 import isString from 'lodash/isString';
-import Link from './Link';
 import SensitiveImage from '../images/sensitive';
 import Button from 'elements/Button';
 
@@ -30,7 +29,6 @@ const Components = {
   h4: ({ children }) => <h4 id={slug(children)}>{children}</h4>,
   h5: ({ children }) => <h5 id={slug(children)}>{children}</h5>,
   h6: ({ children }) => <h6 id={slug(children)}>{children}</h6>,
-  a: ({ href, ...props }) => <Link {...props} to={href} />,
   Details,
   SensitiveImage,
   Button,

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import { Card, Button, Badge } from 'flowbite-react';
 import { format, parse } from 'date-fns';
@@ -21,6 +21,8 @@ import CardSkeleton from 'elements/Skeletons/Card';
 
 export default function NewsSearchPage(props) {
   const { t } = useTranslation(['submit']);
+
+  const [newsArticleUrls, setNewsArticleUrls] = useState([]);
 
   const { data: newsArticlesData, loading } = useQuery(
     gql`
@@ -122,7 +124,9 @@ export default function NewsSearchPage(props) {
     };
   });
 
-  const newsArticleUrls = newsArticles.map((newsArticle) => newsArticle.url);
+  useEffect(() => {
+    setNewsArticleUrls(newsArticles.map((newsArticle) => newsArticle.url));
+  }, [newsArticlesData]);
 
   const existingSubmissions = (submissionsData?.submissions || []).map(
     (submission) => submission.url
