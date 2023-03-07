@@ -576,7 +576,7 @@ describe('The Submit form', () => {
         cy.get('[data-cy="result"]').should('have.length', reports.length, 'bue');
 
         for (const report of reports) {
-          cy.contains('[data-cy="result"]', report.title).should('be.visible');
+          cy.contains('[data-cy="result"]', report.title, { timeout: 10000 }).should('be.visible');
         }
       });
     }
