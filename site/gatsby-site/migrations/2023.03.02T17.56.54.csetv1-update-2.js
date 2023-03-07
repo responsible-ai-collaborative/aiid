@@ -1421,49 +1421,6 @@ var csetV1TaxaEntry = {
     //      },
     {
       field_number: '8.3',
-      short_name: 'Property Damage Cost',
-      long_name: 'Property Damage Cost ($USD)',
-      short_description: 'Indicate the amount of property damage in monetary terms.',
-      long_description: handleWhitespace(`
-        This field will probably not be greater than zero if the harm is anything besides
-
-          - Harm to physical property
-          - Harm to infrastructure
-          - harm to natural environment
-          - Other
-
-        Do not use shorthand or abbreviations for amounts. Only use numbers and commas. Do not use dollar factions, but round to the nearest dollar. For example record one million as 1,000,000 not as 1M, 1 mil, 1 million, or one million.
-      `),
-      display_type: 'int',
-      mongo_type: 'int',
-      default: '',
-      placeholder: '',
-      permitted_values: [],
-      weight: 5,
-      instant_facet: false,
-      required: false,
-      public: true,
-    },
-    {
-      field_number: '8.4',
-      short_name: 'Financial Cost',
-      long_name: 'Financial Cost ($USD)',
-      short_description:
-        'Indicates the amount of financial cost not including property damage cost',
-      long_description:
-        'This field will probably not  be greater than zero if the harm is anything besides financial harm.\n\nOnly include financial cost that is not already recorded as property damage cost.\n\nDo not use shorthand or abbreviations for amounts. Only use numbers and commas. Do not use dollar factions, but round to the nearest dollar. For example record one million as 1,000,000 not as 1M, 1 mil, 1 million, or one million.',
-      display_type: 'int',
-      mongo_type: 'int',
-      default: '',
-      placeholder: '',
-      permitted_values: [],
-      weight: 5,
-      instant_facet: false,
-      required: false,
-      public: true,
-    },
-    {
-      field_number: '8.5',
       short_name: 'Estimated Harm Quantities',
       long_name: 'Are any quantities estimated?',
       short_description: 'Indicates if the amount was estimated.',
@@ -1475,7 +1432,7 @@ var csetV1TaxaEntry = {
       public: true,
     },
     {
-      field_number: '8.6',
+      field_number: '8.4',
       short_name: 'Notes ( Tangible Harm Quantities Information)',
       long_name: 'Notes ( Tangible Harm Quantities Information)',
       short_description: 'Input any notes that may help explain your answers.',
