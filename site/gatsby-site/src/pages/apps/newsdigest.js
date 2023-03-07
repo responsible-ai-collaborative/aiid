@@ -17,29 +17,48 @@ import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
 import { useUserContext } from 'contexts/userContext';
+import CardSkeleton from 'elements/Skeletons/Card';
 
 export default function NewsSearchPage(props) {
   const { t } = useTranslation(['submit']);
 
-  const { data: newsArticlesData, loading } = useQuery(gql`
-    query NewsArticles {
-      candidates(query: { match: true }, limit: 9999) {
-        title
-        url
-        similarity
-        classification_similarity {
-          classification
+  const { data: newsArticlesData, loading } = useQuery(
+    gql`
+      query NewsArticles($query: CandidateQueryInput!) {
+        candidates(query: $query, limit: 9999) {
+          title
+          url
           similarity
+          classification_similarity {
+            classification
+            similarity
+          }
+          matching_keywords
+          matching_harm_keywords
+          matching_entities
+          text
+          date_published
+          dismissed
         }
-        matching_keywords
-        matching_harm_keywords
-        matching_entities
-        text
-        date_published
-        dismissed
       }
+    `,
+    {
+      variables: {
+        query: {
+          match: true,
+          date_published_in: Array(14)
+            .fill()
+            .map((e, i) =>
+              new Date(
+                new Date().getTime() - 86400000 * i // i days ago
+              )
+                .toISOString()
+                .slice(0, 10)
+            ),
+        },
+      },
     }
-  `);
+  );
 
   const { data: submissionsData } = useQuery(
     gql`
@@ -122,7 +141,6 @@ export default function NewsSearchPage(props) {
       notDismissed &&
       newsArticle.ageInDays < 30 &&
       newsArticle.intrinsicRanking > 0.4 &&
-      !existingSubmissions.includes(newsArticle.url) &&
       !existingReports.includes(newsArticle.url) &&
       newsArticle.similaritySigma > -1
     );
@@ -174,16 +192,22 @@ export default function NewsSearchPage(props) {
         </Trans>
       </p>
       <div data-cy="results" className="grid gap-4 grid-cols-1 2xl:grid-cols-2 3xl:grid-cols-3">
-        {loading && <p>Searching...</p>}
+        {loading &&
+          Array(24)
+            .fill()
+            .map((e, i) => <CardSkeleton image={false} key={i} />)}
         {!loading && displayedArticles.length == 0 && <p>No results</p>}
         {displayedArticles
           .sort((a, b) => b.ranking - a.ranking)
           .map((newsArticle) => (
             <CandidateCard
-              newsArticle={newsArticle}
-              setDismissedArticles={setDismissedArticles}
-              updateCandidate={updateCandidate}
               key={newsArticle.url}
+              {...{
+                newsArticle,
+                updateCandidate,
+                setDismissedArticles,
+                existingSubmissions,
+              }}
             />
           ))}
       </div>
@@ -193,11 +217,14 @@ export default function NewsSearchPage(props) {
           <div data-cy="dismissed" className="tw-card-set mt-2">
             {displayedDismissed.map((newsArticle) => (
               <CandidateCard
-                newsArticle={newsArticle}
-                updateCandidate={updateCandidate}
-                setDismissedArticles={setDismissedArticles}
                 dismissed={true}
                 key={newsArticle.url}
+                {...{
+                  newsArticle,
+                  updateCandidate,
+                  setDismissedArticles,
+                  existingSubmissions,
+                }}
               />
             ))}
           </div>
@@ -207,7 +234,13 @@ export default function NewsSearchPage(props) {
   );
 }
 
-function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dismissed = false }) {
+function CandidateCard({
+  newsArticle,
+  setDismissedArticles,
+  updateCandidate,
+  dismissed = false,
+  existingSubmissions,
+}) {
   const { isRole } = useUserContext();
 
   let date;
@@ -352,22 +385,24 @@ function CandidateCard({ newsArticle, setDismissedArticles, updateCandidate, dis
             </Button>
           ))}
 
-        <LocalizedLink
-          data-cy="submit-button"
-          to={
-            '/apps/submit/?' +
-            ['url', 'title', 'text']
-              .map((e) => `${e}=${encodeURIComponent(newsArticle[e])}`)
-              .join('&')
-          }
-          target="_blank"
-          className="inline ml-1"
-        >
-          <Button color="light">
-            <FontAwesomeIcon icon={faPlusCircle} className="pointer fa mr-1" fixedWidth />
-            Submit
-          </Button>
-        </LocalizedLink>
+        {!existingSubmissions.includes(newsArticle.url) && (
+          <LocalizedLink
+            data-cy="submit-button"
+            to={
+              '/apps/submit/?' +
+              ['url', 'title', 'text']
+                .map((e) => `${e}=${encodeURIComponent(newsArticle[e])}`)
+                .join('&')
+            }
+            target="_blank"
+            className="inline ml-1"
+          >
+            <Button color="light">
+              <FontAwesomeIcon icon={faPlusCircle} className="pointer fa mr-1" fixedWidth />
+              Submit
+            </Button>
+          </LocalizedLink>
+        )}
       </div>
     </Card>
   );
