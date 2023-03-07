@@ -1,5 +1,5 @@
 {
-    "enabled": false,
+    "enabled": true,
     "mongo_service_name": "mongodb-atlas",
     "database_name": "customData",
     "collection_name": "users",
