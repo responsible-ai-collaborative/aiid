@@ -80,8 +80,13 @@ const Citation = ({ nodes, incidentDate, incident_id, editors }) => {
             });
           }}
         >
-          <FontAwesomeIcon icon={faCopy} className="fas fa-times" style={{ marginRight: '1ch' }} />
-          Copy
+          <FontAwesomeIcon
+            icon={faCopy}
+            className="fas fa-times"
+            style={{ marginRight: '1ch' }}
+            title={t('Copy')}
+          />
+          <Trans>Copy</Trans>
         </Button>
       </div>
     </>

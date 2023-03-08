@@ -41,7 +41,6 @@ const ImageCarousel = ({ nodes }) => {
         </div>
       ))}
     </Carousel>
-    // </div>
   );
 };
 

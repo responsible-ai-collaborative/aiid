@@ -5,9 +5,12 @@ import useToastContext, { SEVERITY } from '../../../hooks/useToast';
 import { Button } from 'flowbite-react';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Trans, useTranslation } from 'react-i18next';
 
 const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
   const addToast = useToastContext();
+
+  const { t } = useTranslation();
 
   const docs = [...nodes];
 
@@ -59,8 +62,13 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
             });
           }}
         >
-          <FontAwesomeIcon icon={faCopy} className="fas fa-times" style={{ marginRight: '1ch' }} />
-          Copy
+          <FontAwesomeIcon
+            icon={faCopy}
+            className="fas fa-times"
+            style={{ marginRight: '1ch' }}
+            title={t('Copy')}
+          />
+          <Trans>Copy</Trans>
         </Button>
       </div>
     </>
