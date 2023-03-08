@@ -1,31 +1,86 @@
 /* eslint-disable */
 
+let environment = 'other';
+if (location.hostname == 'incidentdatabase.ai') {
+  environment = 'production';
+} else if (location.hostname == 'staging-aiid.netlify.app') {
+  environment == 'staging';
+} else if (location.hostname == 'localhost') {
+  environment = 'localhost';
+}
+
 var _rollbarConfig = {
   accessToken: '8e6e3a414a6d4448befd3f46786d070f',
   captureUncaught: true,
   captureUnhandledRejections: true,
   payload: {
-    environment: 'production',
+    environment,
   },
 };
 // Rollbar Snippet
+// @ts-ignore
 !(function (r) {
-  function e(n) {
-    if (o[n]) return o[n].exports;
-    var t = (o[n] = { exports: {}, id: n, loaded: !1 });
-    return r[n].call(t.exports, t, t.exports, e), (t.loaded = !0), t.exports;
+  var e = {};
+  function o(n) {
+    if (e[n]) return e[n].exports;
+    var t = (e[n] = { i: n, l: !1, exports: {} });
+    return r[n].call(t.exports, t, t.exports, o), (t.l = !0), t.exports;
   }
-  var o = {};
-  return (e.m = r), (e.c = o), (e.p = ''), e(0);
+  (o.m = r),
+    (o.c = e),
+    (o.d = function (r, e, n) {
+      o.o(r, e) || Object.defineProperty(r, e, { enumerable: !0, get: n });
+    }),
+    (o.r = function (r) {
+      'undefined' != typeof Symbol &&
+        Symbol.toStringTag &&
+        Object.defineProperty(r, Symbol.toStringTag, { value: 'Module' }),
+        Object.defineProperty(r, '__esModule', { value: !0 });
+    }),
+    (o.t = function (r, e) {
+      if ((1 & e && (r = o(r)), 8 & e)) return r;
+      if (4 & e && 'object' == typeof r && r && r.__esModule) return r;
+      var n = Object.create(null);
+      if (
+        (o.r(n),
+        Object.defineProperty(n, 'default', { enumerable: !0, value: r }),
+        2 & e && 'string' != typeof r)
+      )
+        for (var t in r)
+          o.d(
+            n,
+            t,
+            function (e) {
+              return r[e];
+            }.bind(null, t)
+          );
+      return n;
+    }),
+    (o.n = function (r) {
+      var e =
+        r && r.__esModule
+          ? function () {
+              return r.default;
+            }
+          : function () {
+              return r;
+            };
+      return o.d(e, 'a', e), e;
+    }),
+    (o.o = function (r, e) {
+      return Object.prototype.hasOwnProperty.call(r, e);
+    }),
+    (o.p = ''),
+    o((o.s = 0));
 })([
   function (r, e, o) {
     'use strict';
     var n = o(1),
-      t = o(4);
+      t = o(5);
     (_rollbarConfig = _rollbarConfig || {}),
       (_rollbarConfig.rollbarJsUrl =
         _rollbarConfig.rollbarJsUrl ||
-        'https://cdnjs.cloudflare.com/ajax/libs/rollbar.js/2.4.6/rollbar.min.js'),
+        'https://cdn.rollbar.com/rollbarjs/refs/tags/v2.26.1/rollbar.min.js'),
       (_rollbarConfig.async = void 0 === _rollbarConfig.async || _rollbarConfig.async);
     var a = n.setupShim(window, _rollbarConfig),
       l = t(_rollbarConfig);
@@ -34,7 +89,9 @@ var _rollbarConfig = {
   },
   function (r, e, o) {
     'use strict';
-    function n(r) {
+    var n = o(2),
+      t = o(3);
+    function a(r) {
       return function () {
         try {
           return r.apply(this, arguments);
@@ -45,9 +102,10 @@ var _rollbarConfig = {
         }
       };
     }
-    function t(r, e) {
+    var l = 0;
+    function i(r, e) {
       (this.options = r), (this._rollbarOldOnError = null);
-      var o = s++;
+      var o = l++;
       (this.shimId = function () {
         return o;
       }),
@@ -55,86 +113,61 @@ var _rollbarConfig = {
           window._rollbarShims &&
           (window._rollbarShims[o] = { handler: e, messages: [] });
     }
-    function a(r, e) {
-      if (r) {
-        var o = e.globalAlias || 'Rollbar';
-        if ('object' == typeof r[o]) return r[o];
-        (r._rollbarShims = {}), (r._rollbarWrappedError = null);
-        var t = new p(e);
-        return n(function () {
-          e.captureUncaught &&
-            ((t._rollbarOldOnError = r.onerror),
-            i.captureUncaughtExceptions(r, t, !0),
-            i.wrapGlobals(r, t, !0)),
-            e.captureUnhandledRejections && i.captureUnhandledRejections(r, t, !0);
-          var n = e.autoInstrument;
-          return (
-            e.enabled !== !1 &&
-              (void 0 === n || n === !0 || ('object' == typeof n && n.network)) &&
-              r.addEventListener &&
-              (r.addEventListener('load', t.captureLoad.bind(t)),
-              r.addEventListener('DOMContentLoaded', t.captureDomContentLoaded.bind(t))),
-            (r[o] = t),
-            t
-          );
-        })();
-      }
-    }
-    function l(r) {
-      return n(function () {
+    var s = o(4),
+      d = function (r, e) {
+        return new i(r, e);
+      },
+      c = function (r) {
+        return new s(d, r);
+      };
+    function u(r) {
+      return a(function () {
         var e = this,
           o = Array.prototype.slice.call(arguments, 0),
           n = { shim: e, method: r, args: o, ts: new Date() };
         window._rollbarShims[this.shimId()].messages.push(n);
       });
     }
-    var i = o(2),
-      s = 0,
-      d = o(3),
-      c = function (r, e) {
-        return new t(r, e);
-      },
-      p = d.bind(null, c);
-    (t.prototype.loadFull = function (r, e, o, t, a) {
-      var l = function () {
-          var e;
-          if (void 0 === r._rollbarDidLoad) {
-            e = new Error('rollbar.js did not load');
-            for (var o, n, t, l, i = 0; (o = r._rollbarShims[i++]); )
-              for (o = o.messages || []; (n = o.shift()); )
-                for (t = n.args || [], i = 0; i < t.length; ++i)
-                  if (((l = t[i]), 'function' == typeof l)) {
-                    l(e);
-                    break;
-                  }
-          }
-          'function' == typeof a && a(e);
-        },
-        i = !1,
-        s = e.createElement('script'),
-        d = e.getElementsByTagName('script')[0],
-        c = d.parentNode;
-      (s.crossOrigin = ''),
-        (s.src = t.rollbarJsUrl),
-        o || (s.async = !0),
-        (s.onload = s.onreadystatechange =
-          n(function () {
+    (i.prototype.loadFull = function (r, e, o, n, t) {
+      var l = !1,
+        i = e.createElement('script'),
+        s = e.getElementsByTagName('script')[0],
+        d = s.parentNode;
+      (i.crossOrigin = ''),
+        (i.src = n.rollbarJsUrl),
+        o || (i.async = !0),
+        (i.onload = i.onreadystatechange =
+          a(function () {
             if (
               !(
-                i ||
+                l ||
                 (this.readyState && 'loaded' !== this.readyState && 'complete' !== this.readyState)
               )
             ) {
-              s.onload = s.onreadystatechange = null;
+              i.onload = i.onreadystatechange = null;
               try {
-                c.removeChild(s);
+                d.removeChild(i);
               } catch (r) {}
-              (i = !0), l();
+              (l = !0),
+                (function () {
+                  var e;
+                  if (void 0 === r._rollbarDidLoad) {
+                    e = new Error('rollbar.js did not load');
+                    for (var o, n, a, l, i = 0; (o = r._rollbarShims[i++]); )
+                      for (o = o.messages || []; (n = o.shift()); )
+                        for (a = n.args || [], i = 0; i < a.length; ++i)
+                          if ('function' == typeof (l = a[i])) {
+                            l(e);
+                            break;
+                          }
+                  }
+                  'function' == typeof t && t(e);
+                })();
             }
           })),
-        c.insertBefore(s, d);
+        d.insertBefore(i, s);
     }),
-      (t.prototype.wrap = function (r, e, o) {
+      (i.prototype.wrap = function (r, e, o) {
         try {
           var n;
           if (
@@ -176,81 +209,106 @@ var _rollbarConfig = {
         }
       });
     for (
-      var u =
-          'log,debug,info,warn,warning,error,critical,global,configure,handleUncaughtException,handleUnhandledRejection,captureEvent,captureDomContentLoaded,captureLoad'.split(
+      var p =
+          'log,debug,info,warn,warning,error,critical,global,configure,handleUncaughtException,handleAnonymousErrors,handleUnhandledRejection,captureEvent,captureDomContentLoaded,captureLoad'.split(
             ','
           ),
         f = 0;
-      f < u.length;
+      f < p.length;
       ++f
     )
-      t.prototype[u[f]] = l(u[f]);
-    r.exports = { setupShim: a, Rollbar: p };
+      i.prototype[p[f]] = u(p[f]);
+    r.exports = {
+      setupShim: function (r, e) {
+        if (r) {
+          var o = e.globalAlias || 'Rollbar';
+          if ('object' == typeof r[o]) return r[o];
+          (r._rollbarShims = {}), (r._rollbarWrappedError = null);
+          var l = new c(e);
+          return a(function () {
+            e.captureUncaught &&
+              ((l._rollbarOldOnError = r.onerror),
+              n.captureUncaughtExceptions(r, l, !0),
+              e.wrapGlobalEventHandlers && t(r, l, !0)),
+              e.captureUnhandledRejections && n.captureUnhandledRejections(r, l, !0);
+            var a = e.autoInstrument;
+            return (
+              !1 !== e.enabled &&
+                (void 0 === a ||
+                  !0 === a ||
+                  (function (r) {
+                    return !('object' != typeof r || (void 0 !== r.page && !r.page));
+                  })(a)) &&
+                r.addEventListener &&
+                (r.addEventListener('load', l.captureLoad.bind(l)),
+                r.addEventListener('DOMContentLoaded', l.captureDomContentLoaded.bind(l))),
+              (r[o] = l),
+              l
+            );
+          })();
+        }
+      },
+      Rollbar: c,
+    };
   },
-  function (r, e) {
+  function (r, e, o) {
     'use strict';
-    function o(r, e, o) {
-      if (r) {
-        var t;
-        'function' == typeof e._rollbarOldOnError
-          ? (t = e._rollbarOldOnError)
-          : r.onerror && !r.onerror.belongsToShim && ((t = r.onerror), (e._rollbarOldOnError = t));
-        var a = function () {
-          var o = Array.prototype.slice.call(arguments, 0);
-          n(r, e, t, o);
-        };
-        (a.belongsToShim = o), (r.onerror = a);
-      }
-    }
     function n(r, e, o, n) {
       r._rollbarWrappedError &&
         (n[4] || (n[4] = r._rollbarWrappedError),
         n[5] || (n[5] = r._rollbarWrappedError._rollbarContext),
-        (r._rollbarWrappedError = null)),
-        e.handleUncaughtException.apply(e, n),
-        o && o.apply(r, n);
+        (r._rollbarWrappedError = null));
+      var t = e.handleUncaughtException.apply(e, n);
+      o && o.apply(r, n), 'anonymous' === t && (e.anonymousErrorsPending += 1);
     }
-    function t(r, e, o) {
-      if (r) {
-        'function' == typeof r._rollbarURH &&
-          r._rollbarURH.belongsToShim &&
-          r.removeEventListener('unhandledrejection', r._rollbarURH);
-        var n = function (r) {
-          var o, n, t;
-          try {
-            o = r.reason;
-          } catch (r) {
-            o = void 0;
+    r.exports = {
+      captureUncaughtExceptions: function (r, e, o) {
+        if (r) {
+          var t;
+          if ('function' == typeof e._rollbarOldOnError) t = e._rollbarOldOnError;
+          else if (r.onerror) {
+            for (t = r.onerror; t._rollbarOldOnError; ) t = t._rollbarOldOnError;
+            e._rollbarOldOnError = t;
           }
-          try {
-            n = r.promise;
-          } catch (r) {
-            n = '[unhandledrejection] error getting `promise` from event';
-          }
-          try {
-            (t = r.detail), !o && t && ((o = t.reason), (n = t.promise));
-          } catch (r) {
-            t = '[unhandledrejection] error getting `detail` from event';
-          }
-          o || (o = '[unhandledrejection] error getting `reason` from event'),
-            e && e.handleUnhandledRejection && e.handleUnhandledRejection(o, n);
-        };
-        (n.belongsToShim = o), (r._rollbarURH = n), r.addEventListener('unhandledrejection', n);
-      }
-    }
-    function a(r, e, o) {
-      if (r) {
-        var n,
-          t,
-          a =
-            'EventTarget,Window,Node,ApplicationCache,AudioTrackList,ChannelMergerNode,CryptoOperation,EventSource,FileReader,HTMLUnknownElement,IDBDatabase,IDBRequest,IDBTransaction,KeyOperation,MediaController,MessagePort,ModalWindow,Notification,SVGElementInstance,Screen,TextTrack,TextTrackCue,TextTrackList,WebSocket,WebSocketWorker,Worker,XMLHttpRequest,XMLHttpRequestEventTarget,XMLHttpRequestUpload'.split(
-              ','
-            );
-        for (n = 0; n < a.length; ++n)
-          (t = a[n]), r[t] && r[t].prototype && l(e, r[t].prototype, o);
-      }
-    }
-    function l(r, e, o) {
+          e.handleAnonymousErrors();
+          var a = function () {
+            var o = Array.prototype.slice.call(arguments, 0);
+            n(r, e, t, o);
+          };
+          o && (a._rollbarOldOnError = t), (r.onerror = a);
+        }
+      },
+      captureUnhandledRejections: function (r, e, o) {
+        if (r) {
+          'function' == typeof r._rollbarURH &&
+            r._rollbarURH.belongsToShim &&
+            r.removeEventListener('unhandledrejection', r._rollbarURH);
+          var n = function (r) {
+            var o, n, t;
+            try {
+              o = r.reason;
+            } catch (r) {
+              o = void 0;
+            }
+            try {
+              n = r.promise;
+            } catch (r) {
+              n = '[unhandledrejection] error getting `promise` from event';
+            }
+            try {
+              (t = r.detail), !o && t && ((o = t.reason), (n = t.promise));
+            } catch (r) {}
+            o || (o = '[unhandledrejection] error getting `reason` from event'),
+              e && e.handleUnhandledRejection && e.handleUnhandledRejection(o, n);
+          };
+          (n.belongsToShim = o), (r._rollbarURH = n), r.addEventListener('unhandledrejection', n);
+        }
+      },
+    };
+  },
+  function (r, e, o) {
+    'use strict';
+    function n(r, e, o) {
       if (e.hasOwnProperty && e.hasOwnProperty('addEventListener')) {
         for (var n = e.addEventListener; n._rollbarOldAdd && n.belongsToShim; )
           n = n._rollbarOldAdd;
@@ -266,38 +324,45 @@ var _rollbarConfig = {
         (l._rollbarOldRemove = a), (l.belongsToShim = o), (e.removeEventListener = l);
       }
     }
-    r.exports = {
-      captureUncaughtExceptions: o,
-      captureUnhandledRejections: t,
-      wrapGlobals: a,
+    r.exports = function (r, e, o) {
+      if (r) {
+        var t,
+          a,
+          l =
+            'EventTarget,Window,Node,ApplicationCache,AudioTrackList,ChannelMergerNode,CryptoOperation,EventSource,FileReader,HTMLUnknownElement,IDBDatabase,IDBRequest,IDBTransaction,KeyOperation,MediaController,MessagePort,ModalWindow,Notification,SVGElementInstance,Screen,TextTrack,TextTrackCue,TextTrackList,WebSocket,WebSocketWorker,Worker,XMLHttpRequest,XMLHttpRequestEventTarget,XMLHttpRequestUpload'.split(
+              ','
+            );
+        for (t = 0; t < l.length; ++t) r[(a = l[t])] && r[a].prototype && n(e, r[a].prototype, o);
+      }
     };
   },
-  function (r, e) {
+  function (r, e, o) {
     'use strict';
-    function o(r, e) {
-      (this.impl = r(e, this)), (this.options = e), n(o.prototype);
+    function n(r, e) {
+      (this.impl = r(e, this)),
+        (this.options = e),
+        (function (r) {
+          for (
+            var e = function (r) {
+                return function () {
+                  var e = Array.prototype.slice.call(arguments, 0);
+                  if (this.impl[r]) return this.impl[r].apply(this.impl, e);
+                };
+              },
+              o =
+                'log,debug,info,warn,warning,error,critical,global,configure,handleUncaughtException,handleAnonymousErrors,handleUnhandledRejection,_createItem,wrap,loadFull,shimId,captureEvent,captureDomContentLoaded,captureLoad'.split(
+                  ','
+                ),
+              n = 0;
+            n < o.length;
+            n++
+          )
+            r[o[n]] = e(o[n]);
+        })(n.prototype);
     }
-    function n(r) {
-      for (
-        var e = function (r) {
-            return function () {
-              var e = Array.prototype.slice.call(arguments, 0);
-              if (this.impl[r]) return this.impl[r].apply(this.impl, e);
-            };
-          },
-          o =
-            'log,debug,info,warn,warning,error,critical,global,configure,handleUncaughtException,handleUnhandledRejection,_createItem,wrap,loadFull,shimId,captureEvent,captureDomContentLoaded,captureLoad'.split(
-              ','
-            ),
-          n = 0;
-        n < o.length;
-        n++
-      )
-        r[o[n]] = e(o[n]);
-    }
-    (o.prototype._swapAndProcessMessages = function (r, e) {
-      this.impl = r(this.options);
-      for (var o, n, t; (o = e.shift()); )
+    (n.prototype._swapAndProcessMessages = function (r, e) {
+      var o, n, t;
+      for (this.impl = r(this.options); (o = e.shift()); )
         (n = o.method),
           (t = o.args),
           this[n] &&
@@ -307,18 +372,17 @@ var _rollbarConfig = {
               : this[n].apply(this, t));
       return this;
     }),
-      (r.exports = o);
+      (r.exports = n);
   },
-  function (r, e) {
+  function (r, e, o) {
     'use strict';
     r.exports = function (r) {
       return function (e) {
         if (!e && !window._rollbarInitialized) {
-          r = r || {};
           for (
             var o,
               n,
-              t = r.globalAlias || 'Rollbar',
+              t = (r = r || {}).globalAlias || 'Rollbar',
               a = window.rollbar,
               l = function (r) {
                 return new a(r);
@@ -334,3 +398,4 @@ var _rollbarConfig = {
     };
   },
 ]);
+// End Rollbar Snippet

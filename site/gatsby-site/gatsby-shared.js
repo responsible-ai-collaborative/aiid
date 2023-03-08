@@ -6,12 +6,7 @@ import { MenuContextProvider } from 'contexts/MenuContext';
 import { ToastContextProvider } from './src/contexts/ToastContext';
 import ThemeProvider from 'components/theme/themeProvider';
 import SSRProvider from 'react-bootstrap/SSRProvider';
-
-const HeadComponents = [<script key="rollbar" src="/rollbar.js" />];
-
-export const onRenderBody = ({ setHeadComponents }) => {
-  setHeadComponents(HeadComponents);
-};
+import { Script } from 'gatsby';
 
 export const wrapPageElement = ({ element }) => {
   const history = {
@@ -23,7 +18,7 @@ export const wrapPageElement = ({ element }) => {
     },
   };
 
-  const location = () => (typeof window == 'undefined' ? {} : window.location);
+  const location = typeof window == 'undefined' ? {} : window.location;
 
   return (
     <QueryParamProvider history={history} location={location}>
@@ -36,10 +31,13 @@ export const wrapPageElement = ({ element }) => {
 
 export const wrapRootElement = ({ element }) => {
   return (
-    <SSRProvider>
-      <ThemeProvider>
-        <ToastContextProvider>{element}</ToastContextProvider>
-      </ThemeProvider>
-    </SSRProvider>
+    <>
+      <Script src="/rollbar.js" />
+      <SSRProvider>
+        <ThemeProvider>
+          <ToastContextProvider>{element}</ToastContextProvider>
+        </ThemeProvider>
+      </SSRProvider>
+    </>
   );
 };

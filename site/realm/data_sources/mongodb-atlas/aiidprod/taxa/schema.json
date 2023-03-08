@@ -12,6 +12,9 @@
         "weight": {
             "bsonType": "int"
         },
+        "complete_entities": { 
+          "bsonType": "bool" 
+        },
         "dummy_fields": {
           "bsonType": "array",
           "items": {
@@ -27,6 +30,13 @@
             "items": {
                 "bsonType": "object",
                 "properties": {
+                    "complete_from": {
+                      "bsonType": "object",
+                      "properties": {
+                        "all":     {"bsonType": "array", "items": {"bsonType": "string"}},
+                        "current": {"bsonType": "array", "items": {"bsonType": "string"}}
+                      }
+                    },
                     "default": {
                         "bsonType": "string"
                     },
@@ -75,6 +85,14 @@
                     "item_fields": {
                         "bsonType": "object",
                         "properties": {
+                            "complete_from": {
+                              "bsonType": "object",
+                              "properties": {
+                                "all":      {"bsonType": "array", "items": {"bsonType": "string"}},
+                                "current":  {"bsonType": "array", "items": {"bsonType": "string"}},
+                                "entities": {"bsonType": "bool"}
+                              }
+                            },
                             "default": {
                                 "bsonType": "string"
                             },

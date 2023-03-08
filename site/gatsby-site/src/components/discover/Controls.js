@@ -16,7 +16,7 @@ const Controls = () => {
   const [expandFilters, setExpandFilters] = useState(false);
 
   useEffect(() => {
-    const defaultKeys = ['is_incident_report', 'page', 'display'];
+    const defaultKeys = ['is_incident_report', 'page', 'display', 'sortBy'];
 
     const expand = Object.keys(searchState.refinementList).some(
       (key) => !defaultKeys.includes(key)
@@ -38,10 +38,7 @@ const Controls = () => {
         </div>
 
         <div className="flex">
-          <Sorting
-            items={SORTING_LISTS}
-            defaultRefinement="instant_search-en_epoch_incident_date_desc"
-          />
+          <Sorting items={SORTING_LISTS} defaultRefinement={searchState.sortBy} />
           <div className="justify-end">
             <ClearFilters>
               <Trans>Clear Filters</Trans>

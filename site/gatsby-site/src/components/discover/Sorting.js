@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { connectSortBy } from 'react-instantsearch-dom';
 import { Dropdown } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -6,18 +6,23 @@ import SORTING_LIST from './SORTING_LISTS';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 
 function Sorting(props) {
-  const [selectedItem, setSelectedItem] = useState(SORTING_LIST.find((s) => s.default));
+  const { locale } = useLocalization();
+
+  const [selectedItem, setSelectedItem] = useState(
+    SORTING_LIST.find((s) => s.name === props.defaultRefinement) ||
+      SORTING_LIST.find((s) => s.default)
+  );
 
   const { t } = useTranslation();
-
-  const { locale } = useLocalization();
 
   const sortResults = (item) => {
     setSelectedItem(item);
   };
 
   useEffect(() => {
-    props.refine(`${selectedItem.value.replace('{{locale}}', locale)}`);
+    if (selectedItem && selectedItem[`value_${locale}`]) {
+      props.refine(selectedItem[`value_${locale}`]);
+    }
   }, [selectedItem]);
 
   return (
@@ -33,22 +38,24 @@ function Sorting(props) {
           className="min-w-max"
         >
           {props.items.map((item) => (
-            <>
+            <Fragment key={item.name}>
               <Dropdown.Item
-                key={item.value.replace('{{locale}}', locale)}
-                value={item.value.replace('{{locale}}', locale)}
-                style={{ fontWeight: item.isRefined ? 'bold' : '' }}
+                key={item[`value_${locale}`]}
+                value={item[`value_${locale}`]}
+                style={{ fontWeight: item.isRefined ? 'bold' : 'normal' }}
                 onClick={() => {
                   sortResults(item);
                 }}
-                className={`${item.value === selectedItem.value ? 'bg-blue-100' : ''}`}
+                className={`${
+                  item[`value_${locale}`] === selectedItem[`value_${locale}`] ? 'bg-blue-100' : ''
+                }`}
               >
                 <span data-cy={item.name + '-sort'}>
                   <Trans>{item.label}</Trans>
                 </span>
               </Dropdown.Item>
               {item.division && <Dropdown.Divider />}
-            </>
+            </Fragment>
           ))}
         </Dropdown>
       </div>

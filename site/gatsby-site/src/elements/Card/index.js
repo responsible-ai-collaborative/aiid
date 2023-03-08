@@ -76,7 +76,9 @@ Card.Footer = function CardFooter(props) {
 Card.Text = function CardText(props) {
   return (
     <>
-      <p className={`tw-card-text ${props.className ? props.className : ''}`}>{props.children}</p>
+      <div className={`tw-card-text ${props.className ? props.className : ''}`}>
+        {props.children}
+      </div>
     </>
   );
 };
