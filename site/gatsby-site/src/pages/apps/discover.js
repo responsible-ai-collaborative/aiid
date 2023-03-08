@@ -198,6 +198,8 @@ function DiscoverApp(props) {
   const [viewType, setViewType] = useState(VIEW_TYPES.INCIDENTS);
 
   const onSearchStateChange = (searchState) => {
+    searchState = cleanSearchState(searchState);
+
     let hasOnlyDefaultValues = isEqual(
       DEFAULT_SEARCH_KEYS_VALUES.sort(),
       Object.keys(searchState.refinementList).sort()
@@ -205,8 +207,23 @@ function DiscoverApp(props) {
 
     if (!hasOnlyDefaultValues) {
       searchState.sortBy = searchState.sortBy.replace('-featured', '');
+    } else {
+      searchState.sortBy =
+        !searchState.sortBy.includes('-featured') &&
+        SORTING_LIST.find((s) => s[`value_${locale}`] === searchState.sortBy)?.default
+          ? `${searchState.sortBy}-featured`
+          : searchState.sortBy;
     }
     setSearchState({ ...searchState });
+  };
+
+  const cleanSearchState = (sState) => {
+    Object.keys(sState.refinementList).forEach((key) => {
+      if (sState.refinementList[key] === '') {
+        delete sState.refinementList[key];
+      }
+    });
+    return sState;
   };
 
   const toggleFilterByIncidentId = useCallback(
