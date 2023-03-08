@@ -3,7 +3,6 @@ import { useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { Configure, InstantSearch } from 'react-instantsearch-dom';
 import AiidHelmet from 'components/AiidHelmet';
-import { useModal, CustomModal } from 'hooks/useModal';
 
 import config from '../../../config';
 import Hits from 'components/discover/Hits';
@@ -14,7 +13,7 @@ import { SearchContext } from 'components/discover/useSearch';
 import { queryConfig } from 'components/discover/queryParams';
 import VirtualFilters from 'components/discover/VirtualFilters';
 import Controls from 'components/discover/Controls';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import Container from 'elements/Container';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
@@ -233,11 +232,9 @@ function DiscoverApp(props) {
     );
   }, [searchState]);
 
-  const authorsModal = useModal();
+  const [mounted, setMounted] = useState(false);
 
-  const submittersModal = useModal();
-
-  const flagReportModal = useModal();
+  useEffect(() => setMounted(true), []);
 
   return (
     <Layout {...props} sidebarCollapsed={true} className="w-full">
@@ -262,33 +259,25 @@ function DiscoverApp(props) {
 
           <VirtualFilters />
 
-          <Container className="ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl mt-6">
-            <Row className="px-0 mx-0">
-              <Col className="px-0 mx-0">
-                <SearchBox defaultRefinement={query.s} />
-              </Col>
-            </Row>
+          {mounted && (
+            <Container className="ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl mt-6">
+              <Row className="px-0 mx-0">
+                <Col className="px-0 mx-0">
+                  <SearchBox defaultRefinement={query.s} />
+                </Col>
+              </Row>
 
-            <Controls query={query} searchState={searchState} setSearchState={setSearchState} />
+              <Controls query={query} searchState={searchState} setSearchState={setSearchState} />
 
-            <OptionsModal
-              className="hiddenDesktop"
-              searchState={searchState}
-              setSearchState={setSearchState}
-            />
-          </Container>
+              <OptionsModal
+                className="hiddenDesktop"
+                searchState={searchState}
+                setSearchState={setSearchState}
+              />
+            </Container>
+          )}
 
-          <Hits
-            toggleFilterByIncidentId={toggleFilterByIncidentId}
-            authorsModal={authorsModal}
-            submittersModal={submittersModal}
-            flagReportModal={flagReportModal}
-            viewType={viewType}
-          />
-
-          <CustomModal {...authorsModal} />
-          <CustomModal {...submittersModal} />
-          <CustomModal {...flagReportModal} />
+          <Hits toggleFilterByIncidentId={toggleFilterByIncidentId} viewType={viewType} />
 
           <Pagination />
         </InstantSearch>

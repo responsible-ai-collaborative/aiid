@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faRssSquare } from '@fortawesome/free-solid-svg-icons';
@@ -9,48 +9,14 @@ import {
   faLinkedin,
 } from '@fortawesome/free-brands-svg-icons';
 import LoginSignup from 'components/loginSignup';
-
+import logoImg from '../images/logo.svg';
 import Link from './Link';
 import config from '../../../config.js';
 
 import Sidebar from '../sidebar';
 import LanguageSwitcher from 'components/i18n/LanguageSwitcher';
 
-const StarsCount = (props) => {
-  const [count, setCount] = useState(null);
-
-  useEffect(() => {
-    if (!count) {
-      fetch('https://api.github.com/repos/' + props.repo)
-        .then((res) => res.json())
-        .then((json) => {
-          setCount(json['stargazers_count']);
-        });
-    }
-  });
-  return (
-    <a
-      target="_blank"
-      className={props.className}
-      href={'https://github.com/' + props.repo + '/stargazers'}
-      style={{
-        color: 'white',
-        marginLeft: '3px',
-        marginRight: '8px',
-        marginTop: '-2px',
-        display: 'inline-block',
-        textDecoration: 'none',
-      }}
-      rel="noreferrer"
-    >
-      {count ? '★' + count : ''}
-    </a>
-  );
-};
-
 const Header = () => {
-  const logoImg = require('../images/logo.svg');
-
   const [navCollapsed, setNavCollapsed] = useState(true);
 
   return (
@@ -132,7 +98,7 @@ const Header = () => {
                   title="Open RSS Feed"
                 />
               </a>
-              <a href={githubUrl} target="_blank" rel="noreferrer" style={{ paddingRight: '0px' }}>
+              <a href={githubUrl} target="_blank" rel="noreferrer" className="pr-2">
                 <FontAwesomeIcon
                   titleId="github"
                   icon={faGithubSquare}
@@ -141,7 +107,6 @@ const Header = () => {
                   title="Open GitHub"
                 />
               </a>
-              <StarsCount repo={githubUrl.replace('https://github.com/', '')} />
             </div>
           );
 

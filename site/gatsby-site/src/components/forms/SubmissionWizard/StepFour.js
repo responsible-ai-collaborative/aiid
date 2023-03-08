@@ -1,6 +1,6 @@
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import Link from 'components/ui/Link';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { Alert } from 'flowbite-react';
