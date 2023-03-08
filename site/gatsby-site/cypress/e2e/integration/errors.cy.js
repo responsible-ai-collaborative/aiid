@@ -8,7 +8,7 @@ describe('Runtime errors', () => {
     '/apps/classifications/',
     '/apps/discover/',
     '/apps/incidents/',
-    '/apps/newsSearch/',
+    '/apps/newsdigest/',
     '/reports/2302/',
     '/apps/submit/',
     '/apps/submitted/',
