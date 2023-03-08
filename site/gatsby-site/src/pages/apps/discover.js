@@ -198,6 +198,14 @@ function DiscoverApp(props) {
   const [viewType, setViewType] = useState(VIEW_TYPES.INCIDENTS);
 
   const onSearchStateChange = (searchState) => {
+    let hasOnlyDefaultValues = isEqual(
+      DEFAULT_SEARCH_KEYS_VALUES.sort(),
+      Object.keys(searchState.refinementList).sort()
+    );
+
+    if (!hasOnlyDefaultValues) {
+      searchState.sortBy = searchState.sortBy.replace('-featured', '');
+    }
     setSearchState({ ...searchState });
   };
 
