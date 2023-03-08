@@ -36,7 +36,7 @@ describe('The Discover app', () => {
     cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 8);
   });
 
-  it.only('Filters by incident Id using top filters', { retries: { runMode: 4 } }, () => {
+  it('Filters by incident Id using top filters', { retries: { runMode: 4 } }, () => {
     cy.visit(url);
 
     cy.get('[data-cy=expand-filters]').click();
@@ -60,7 +60,7 @@ describe('The Discover app', () => {
     cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 28);
   });
 
-  it.only('Filters by incident Id using card button', { retries: { runMode: 4 } }, () => {
+  it('Filters by incident Id using card button', { retries: { runMode: 4 } }, () => {
     cy.visit(url);
 
     cy.waitForStableDOM();
@@ -86,7 +86,7 @@ describe('The Discover app', () => {
     cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 8);
   });
 
-  it.only('Should flag an incident', () => {
+  it('Should flag an incident', () => {
     cy.visit(
       url +
         '?display=details&incident_id=10&s=%E2%80%8BIs%20Starbucks%20shortchanging%20its%20baristas%3F'
