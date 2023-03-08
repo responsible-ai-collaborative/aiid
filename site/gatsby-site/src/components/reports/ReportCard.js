@@ -76,11 +76,19 @@ const ReportCard = ({ item, className = '', incidentId }) => {
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
         >
-          <a href={`#r${item.report_number}`} className="max-w-full cursor-pointer">
-            <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full hover:text-primary-blue">
+          <div
+            role="presentation"
+            onClick={toggleReadMore}
+            onKeyDown={(ev) => {
+              if (ev.key === 'Enter') {
+                toggleReadMore();
+              }
+            }}
+          >
+            <h5 className="max-w-full cursor-pointer text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full hover:text-primary-blue">
               <Trans ns="landing">{item.title}</Trans>
             </h5>
-          </a>
+          </div>
           <div className="flex justify-between">
             <WebArchiveLink url={item.url} className="text-dark-gray">
               {item.source_domain} &middot;{' '}
