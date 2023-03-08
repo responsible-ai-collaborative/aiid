@@ -1,14 +1,6 @@
 import React from 'react';
 import REFINEMENT_LISTS from 'components/discover/REFINEMENT_LISTS';
 import Filter from './Filter';
-import styled from 'styled-components';
-
-const StyledFilter = styled(Filter)`
-  width: 100%;
-  .dropdown-toggle {
-    width: 100%;
-  }
-`;
 
 function Filters() {
   return (
@@ -21,7 +13,7 @@ function Filters() {
           }`}
           data-cy={list.attribute}
         >
-          <StyledFilter type={list.type} {...list} />
+          <Filter className="w-full" type={list.type} {...list} />
         </div>
       ))}
     </div>

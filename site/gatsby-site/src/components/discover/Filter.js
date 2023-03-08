@@ -69,7 +69,7 @@ const FilterOverlay = React.forwardRef(function Container(
   );
 });
 
-export default function Filter({ type, ...filterProps }) {
+export default function Filter({ type, className = '', ...filterProps }) {
   const { label, faIcon, attribute } = filterProps;
 
   const { touchedCount } = componentsMap[type];
@@ -95,6 +95,7 @@ export default function Filter({ type, ...filterProps }) {
             faIcon={faIcon}
             attribute={attribute}
             touched={touched}
+            className={className}
           />
         )}
       </OverlayTrigger>
