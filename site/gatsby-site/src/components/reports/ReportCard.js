@@ -31,9 +31,6 @@ const ReportCard = ({ item, className = '', incidentId }) => {
 
   const toggleReadMore = () => {
     setExpanded(!expanded);
-    if (expanded) {
-      ref.current.scrollIntoView({ behavior: 'smooth' });
-    }
   };
 
   const toggleReadMoreKeyDown = (e) => {
@@ -76,15 +73,7 @@ const ReportCard = ({ item, className = '', incidentId }) => {
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
         >
-          <div
-            role="presentation"
-            onClick={toggleReadMore}
-            onKeyDown={(ev) => {
-              if (ev.key === 'Enter') {
-                toggleReadMore();
-              }
-            }}
-          >
+          <div role="presentation" onClick={toggleReadMore} onKeyDown={toggleReadMoreKeyDown}>
             <h5 className="max-w-full cursor-pointer text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full hover:text-primary-blue">
               <Trans ns="landing">{item.title}</Trans>
             </h5>
