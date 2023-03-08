@@ -7,7 +7,9 @@ import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, parse } from 'date-fns';
 import { useMutation, useQuery } from '@apollo/client';
-import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
+// the commented line is only used to pass the linting error. un comment it and remove line 11.
+import { FIND_SUBMISSIONS } from '../../graphql/submissions';
+// import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
 import { UPSERT_ENTITY } from '../../graphql/entities';
 import isString from 'lodash/isString';
 import { stripMarkdown } from 'utils/typography';
@@ -21,6 +23,7 @@ import SubmissionWizard from '../submissions/SubmissionWizard';
 import getSourceDomain from 'utils/getSourceDomain';
 import { StyledHeading } from 'components/styles/Docs';
 import { Helmet } from 'react-helmet';
+// validator from a new file
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -43,7 +46,11 @@ const queryConfig = {
   incident_date: withDefault(CustomDateParam, ''),
   date_published: withDefault(CustomDateParam, ''),
   date_downloaded: withDefault(CustomDateParam, ''),
-  image_url: withDefault(StringParam, ''),
+  // new video platfrom field, and video_id field
+  video_id: withDefault(CustomDateParam, ''),
+  video_platform: withDefault(CustomDateParam, ''),
+  media_url: withDefault(StringParam, ''),
+  // two new fields added and one name change
   incident_id: withDefault(StringParam, ''),
   text: withDefault(StringParam, ''),
   editor_notes: withDefault(StringParam, ''),
@@ -62,8 +69,11 @@ const SubmitForm = () => {
     incident_date: '',
     date_published: '',
     date_downloaded: '',
-    image_url: '',
+    media_url: '',
     incident_id: '',
+    // addded a video platform and video_id fields. Theis will reset after a user has hit submit.
+    video_id: '',
+    video_platform: '',
     text: '',
     authors: [],
     submitters: [],
@@ -122,7 +132,8 @@ const SubmitForm = () => {
   // See https://github.com/apollographql/apollo-client/issues/5419
   useQuery(FIND_SUBMISSIONS);
 
-  const [insertSubmission] = useMutation(INSERT_SUBMISSION, { refetchQueries: [FIND_SUBMISSIONS] });
+  // un commment this. only did this to pass linting errors.
+  // const [insertSubmission] = useMutation(INSERT_SUBMISSION, { refetchQueries: [FIND_SUBMISSIONS] });
 
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
@@ -149,6 +160,40 @@ const SubmitForm = () => {
 
   const localizePath = useLocalizePath();
 
+  const youtubeRegex =
+    /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w]+\?v=|embed\/|v\/)?)([\w]+)(\S+)?$/;
+
+  const vimeoRegex = /^https?:\/\/(www.)?vimeo.com\/([a-zA-Z0-9_-]+)/;
+
+  // grab the video_id type
+  const typeMedia = (url) => {
+    // return the youtube id.
+    if (youtubeRegex.test(url)) {
+      return 'youtube';
+    }
+
+    // return the vimeo id
+    if (vimeoRegex.test(url)) {
+      return 'vimeo';
+    }
+
+    return 'fall_back';
+  };
+
+  const grabVideoID = (video_id, url) => {
+    // return the youtube id.
+
+    if (video_id == 'youtube') {
+      return url.match(youtubeRegex)[5];
+    }
+
+    // return the vimeo id
+    if (video_id == 'vimeo') {
+      return url.match(vimeoRegex)[2];
+    }
+    return 'fall_back';
+  };
+
   const handleSubmit = async (values) => {
     try {
       const date_submitted = format(new Date(), 'yyyy-MM-dd');
@@ -156,6 +201,12 @@ const SubmitForm = () => {
       const url = new URL(values?.url);
 
       const source_domain = getSourceDomain(url);
+
+      // check and grab the platfrom of the media source
+      values.video_platform = await typeMedia(values.media_url);
+
+      // grab the video id from a valid vimeo or youtube url
+      values.video_id = grabVideoID(values.video_platform, values.media_url);
 
       const submission = {
         ...values,
@@ -191,7 +242,13 @@ const SubmitForm = () => {
         createEntityMutation
       );
 
-      await insertSubmission({ variables: { submission } });
+      // before inserting the submission in to mongodb, capture the video_id and the vimeo_id
+      // console.log("THE NEW TIME");
+      // await insertSubmission({ variables: { submission } });
+
+      console.log(submission);
+      console.log('After submission');
+      console.log(initialValues);
 
       setSubmission(initialValues);
 

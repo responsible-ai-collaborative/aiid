@@ -80,7 +80,7 @@ const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString }) => 
           severity: SEVERITY.info,
         });
 
-        const cloudinary_id = getCloudinaryPublicID(news.image_url);
+        const cloudinary_id = getCloudinaryPublicID(news.media_url);
 
         const newValues = {
           ...data,

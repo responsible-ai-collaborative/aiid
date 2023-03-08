@@ -28,7 +28,7 @@ const StepTwo = (props) => {
         excludeEmptyString: true,
         message: "*Submitter list can't be longer than 200 characters",
       }),
-    image_url: yup
+    media_url: yup
       .string()
       .matches(
         /((https?):\/\/)(\S)*$/,
@@ -98,8 +98,8 @@ const FormDetails = ({
   }, [data, errors]);
 
   useEffect(() => {
-    setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
-  }, [values.image_url]);
+    setFieldValue('cloudinary_id', values.media_url ? getCloudinaryPublicID(values.media_url) : '');
+  }, [values.media_url]);
 
   useEffect(() => {
     if (submissionFailed) {
@@ -125,9 +125,9 @@ const FormDetails = ({
         <FieldContainer>
           <PreviewImageInputGroup
             cloudinary_id={values.cloudinary_id}
-            name="image_url"
-            label={t('Image Address')}
-            placeholder={t('Image URL')}
+            name="media_url"
+            label={t('Media Address')}
+            placeholder={t('Media URL')}
             values={values}
             errors={errors}
             touched={touched}
