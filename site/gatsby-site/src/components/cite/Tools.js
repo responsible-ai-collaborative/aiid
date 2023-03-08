@@ -4,16 +4,22 @@ import { useUserContext } from 'contexts/userContext';
 import { format } from 'date-fns';
 import Card from 'elements/Card';
 import { Button } from 'flowbite-react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RESPONSE_TAG } from 'utils/entities';
 import CitationFormat from './CitationFormat';
 import NotifyButton from './NotifyButton';
 
 function Tools({ incident, incidentReports, isSubscribed, subscribeToNewReports, subscribing }) {
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+
   const { t } = useTranslation();
 
-  const { isRole, loading } = useUserContext();
+  const { isRole, user } = useUserContext();
+
+  useEffect(() => {
+    setIsUserLoggedIn(!!user?.profile.email);
+  }, [user]);
 
   return (
     <Card>
@@ -50,7 +56,7 @@ function Tools({ incident, incidentReports, isSubscribed, subscribeToNewReports,
           <Trans>Discover</Trans>
         </Button>
         <CitationFormat incidentReports={incidentReports} incident={incident} />
-        {!loading && isRole('incident_editor') && (
+        {isUserLoggedIn && isRole('incident_editor') && (
           <Button color="gray" href={'/incidents/edit?incident_id=' + incident.incident_id}>
             <FontAwesomeIcon className="mr-2" icon={faEdit} title={t('Edit Incident')} />
             <Trans>Edit Incident</Trans>
