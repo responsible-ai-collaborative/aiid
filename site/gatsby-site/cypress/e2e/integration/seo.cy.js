@@ -14,7 +14,7 @@ describe('SEO', () => {
     '/apps/classifications/',
     '/apps/discover/',
     '/apps/incidents/',
-    '/apps/newssearch/',
+    '/apps/newsdigest/',
     '/reports/2302/',
     '/apps/submit/',
     '/apps/submitted/',
