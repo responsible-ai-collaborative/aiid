@@ -50,11 +50,8 @@ export function BiasIcon({ bias_labels, publicationName, className, style }) {
                   }[labelName]
                 }
                 className={`mr-1 mt-px ${
-                  labelName == 'least biased'
-                    ? 'text-green-500'
-                    : labelName == 'questionable'
-                    ? 'text-red-500'
-                    : 'text-inherit'
+                  { 'least biased': 'text-green-500', questionable: 'text-red-500' }[labelName] ||
+                  'text-inherit'
                 }`}
               />
             )
@@ -63,7 +60,7 @@ export function BiasIcon({ bias_labels, publicationName, className, style }) {
       {
         // The modal causes server-side-rendering problems,
         // so we need to disable it in that context.
-        window && (
+        typeof window === 'undefined' && (
           <Modal show={modalVisible} onClose={() => setModalVisible(false)}>
             <Modal.Header>{publicationName}</Modal.Header>
             <Modal.Body>
