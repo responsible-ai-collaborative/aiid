@@ -73,7 +73,7 @@ const ReportCard = ({ item, className = '', incidentId }) => {
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
         >
-          <div className="flex justify-between">
+          <div className="flex">
             <button
               className="w-3/4 text-left"
               onClick={toggleReadMore}
