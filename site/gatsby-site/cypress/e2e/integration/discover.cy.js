@@ -276,7 +276,10 @@ describe('The Discover app', () => {
 
     cy.get('form#searchForm').as('form');
 
-    cy.get('@form').get('input[placeholder="Type Here"]').type('starbucks').type('{enter}');
+    cy.get('@form')
+      .get('[data-cy="search-box"] input[placeholder="Type Here"]')
+      .type('starbucks')
+      .type('{enter}');
 
     cy.url().should('include', 's=starbucks');
 
@@ -296,7 +299,10 @@ describe('The Discover app', () => {
 
     cy.get('form#searchForm').as('form');
 
-    cy.get('@form').get('input[placeholder="Type Here"]').type('xxxxxxxxxxxxx').type('{enter}');
+    cy.get('@form')
+      .get('[data-cy="search-box"] input[placeholder="Type Here"]')
+      .type('xxxxxxxxxxxxx')
+      .type('{enter}');
 
     cy.url().should('include', 's=xxxxxxxxxxxxx');
 
