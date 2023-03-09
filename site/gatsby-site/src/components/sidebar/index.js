@@ -141,7 +141,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null }) => {
               {
                 label: 'user',
                 url: isUserLoggedIn ? '/account' : `/signup?redirectTo=${redirectTo}`,
-                title: isUserLoggedIn ? 'Account' : 'Subscribe',
+                title: isUserLoggedIn ? t('Account') : t('Subscribe'),
                 items: [],
               },
             ]}

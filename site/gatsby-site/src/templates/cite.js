@@ -233,7 +233,7 @@ function CitePage(props) {
             Please{' '}
             <Link
               to={localizePath({
-                path: `/login?redirectTo=${window.location.pathname + window.location.search}`,
+                path: `/login?redirectTo=${props?.location?.pathname}`,
                 language: locale,
               })}
             >
