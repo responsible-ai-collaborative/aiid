@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
 import { Trans, useTranslation } from 'react-i18next';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import AiidHelmet from 'components/AiidHelmet';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import { Card, Button, Badge } from 'flowbite-react';

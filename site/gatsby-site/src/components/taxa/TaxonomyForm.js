@@ -267,6 +267,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
       addToast({
         message: <>Error updating classification data: {e.message}</>,
         severity: SEVERITY.danger,
+        error: e,
       });
     }
 
@@ -331,7 +332,10 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                   .sort(sortByFieldNumbers)
                   .map((rawField) =>
                     rawField.dummy ? (
-                      <h5 className="mb-3 text-xl border-b-2 pb-1 border-gray-200">
+                      <h5
+                        className="mb-3 text-xl border-b-2 pb-1 border-gray-200"
+                        key={rawField.field_number || ''}
+                      >
                         {rawField.field_number}. {rawField.short_name}
                       </h5>
                     ) : (

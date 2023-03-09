@@ -14,7 +14,7 @@ import RandomReports from 'components/landing/RandomReports';
 import Hero from 'components/landing/Hero';
 import { useTranslation } from 'react-i18next';
 import { graphql } from 'gatsby';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import Container from '../elements/Container';
 import CommonEntities from 'components/entities/CommonEntities';
 
@@ -67,8 +67,6 @@ const LandingPage = (props) => {
           <QuickSearch />
         </div>
 
-        {/* The shadows on the card bottoms make the gap between cards look smaller,  *
-         /* so mb-5 appears to match the p-4 of the content                           */}
         <div className="mb-5 md:mb-10">
           <div>
             <LatestReports latestReport={latestReport} />
@@ -164,18 +162,16 @@ export const query = graphql`
       limit: 1
     ) {
       nodes {
-        fileAbsolutePath
         fields {
           slug
           title
           locale
         }
-        slug
         excerpt
         frontmatter {
+          slug
           date
           author
-          slug
           image {
             childImageSharp {
               gatsbyImageData(layout: FIXED)

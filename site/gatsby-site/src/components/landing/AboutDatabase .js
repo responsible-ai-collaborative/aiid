@@ -1,6 +1,6 @@
 import React from 'react';
 import { Trans } from 'react-i18next';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { faQuoteLeft } from '@fortawesome/free-solid-svg-icons';
@@ -13,6 +13,7 @@ export default function AboutDatabase() {
       </h5>
       <span className="relative z-2 pt-8">
         <FontAwesomeIcon
+          titleId="quote"
           icon={faQuoteLeft}
           className="text-gray-300 absolute -z-2 opacity-50 -top-0"
           size="5x"

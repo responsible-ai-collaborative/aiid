@@ -16,7 +16,7 @@ import { format, getUnixTime } from 'date-fns';
 import { stripMarkdown } from '../../utils/typography';
 import { Formik } from 'formik';
 import pick from 'lodash/pick';
-import { useLocalization, LocalizedLink } from 'gatsby-theme-i18n';
+import { useLocalization, LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { gql } from '@apollo/client';
 import { useTranslation, Trans } from 'react-i18next';
 import RelatedIncidents from '../../components/RelatedIncidents';
@@ -124,9 +124,10 @@ function EditCitePage(props) {
     severity: SEVERITY.success,
   });
 
-  const updateErrorToast = ({ reportNumber }) => ({
+  const updateErrorToast = ({ reportNumber, error }) => ({
     message: t(`Error updating incident report {{reportNumber}}.`, { reportNumber }),
     severity: SEVERITY.danger,
+    error,
   });
 
   const deleteSuccessToast = ({ reportNumber }) => ({
@@ -134,9 +135,10 @@ function EditCitePage(props) {
     severity: SEVERITY.success,
   });
 
-  const deleteErrorToast = ({ reportNumber }) => ({
+  const deleteErrorToast = ({ reportNumber, error }) => ({
     message: t(`Error deleting incident report {{reportNumber}}.`, { reportNumber }),
     severity: SEVERITY.danger,
+    error,
   });
 
   const handleSubmit = async (values) => {
@@ -226,8 +228,8 @@ function EditCitePage(props) {
       } else {
         addToast(updateIssueSuccessToast({ reportNumber }));
       }
-    } catch (e) {
-      addToast(updateErrorToast({ reportNumber }));
+    } catch (error) {
+      addToast(updateErrorToast({ reportNumber, error }));
     }
   };
 
@@ -251,8 +253,8 @@ function EditCitePage(props) {
       });
 
       addToast(deleteSuccessToast({ reportNumber }));
-    } catch (e) {
-      addToast(deleteErrorToast({ reportNumber }));
+    } catch (error) {
+      addToast(deleteErrorToast({ reportNumber, error }));
     }
   };
 

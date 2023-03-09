@@ -58,6 +58,7 @@ const FilterOverlay = React.forwardRef(function Container(
       {...overlayProps}
       style={{ ...overlayProps.style, width: 320, zIndex: 1055 }}
       className="bootstrap"
+      data-cy={filterProps.attribute}
     >
       <Card className="shadow-lg">
         <Card.Body>
@@ -124,7 +125,7 @@ function AccordionFilter({ type, ...filterProps }) {
       <StyledAccordionHeader bg={touched ? 'success' : 'primary'}>
         <ToggleContent faIcon={faIcon} label={label} touched={touched} />
       </StyledAccordionHeader>
-      <Accordion.Body>
+      <Accordion.Body style={{ visibility: 'visible' }}>
         <FilterContent type={type} filterProps={filterProps} />
       </Accordion.Body>
     </Accordion.Item>

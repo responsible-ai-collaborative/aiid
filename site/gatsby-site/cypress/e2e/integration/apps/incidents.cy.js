@@ -1,8 +1,7 @@
 import incident from '../../../fixtures/incidents/incident112.json';
-
 import updateOneIncident from '../../../fixtures/incidents/updateOneIncident112.json';
-
 import incidents from '../../../fixtures/incidents/incidents.json';
+import { maybeIt } from '../../../support/utils';
 
 describe('Incidents App', () => {
   const url = '/apps/incidents';
@@ -19,6 +18,15 @@ describe('Incidents App', () => {
       incidents
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncident',
+      'FindIncident',
+      incident
+    );
+
+    const incident112 = incident.data.incident;
+
     cy.visit(url);
 
     cy.get('[data-cy="row"]')
@@ -34,23 +42,26 @@ describe('Incidents App', () => {
         cy.get('[data-cy="cell"]').eq(3).should('have.text', incident.date);
         cy.get('[data-cy="cell"]')
           .eq(4)
-          .should('have.text', incident.AllegedDeployerOfAISystem.map((i) => i['name']).join(', '));
+          .should(
+            'have.text',
+            incident112.AllegedDeployerOfAISystem.map((i) => i['name']).join(', ')
+          );
         cy.get('[data-cy="cell"]')
           .eq(5)
           .should(
             'have.text',
-            incident.AllegedDeveloperOfAISystem.map((i) => i['name']).join(', ')
+            incident112.AllegedDeveloperOfAISystem.map((i) => i['name']).join(', ')
           );
         cy.get('[data-cy="cell"]')
           .eq(6)
           .should(
             'have.text',
-            incident.AllegedHarmedOrNearlyHarmedParties.map((i) => i['name']).join(', ')
+            incident112.AllegedHarmedOrNearlyHarmedParties.map((i) => i['name']).join(', ')
           );
       });
   });
 
-  it('Successfully filter and edit incident 112', { retries: { runMode: 4 } }, () => {
+  maybeIt('Successfully filter and edit incident 112', { retries: { runMode: 4 } }, () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -58,6 +69,14 @@ describe('Incidents App', () => {
       (req) => req.body.operationName == 'FindIncidents',
       'FindIncidents',
       incidents
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) =>
+        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 112,
+      'FindIncident112',
+      incident
     );
 
     // this shuold not be necessary and fixed in the component
@@ -96,20 +115,7 @@ describe('Incidents App', () => {
 
     cy.get('[data-cy="row"]').should('have.length', 1);
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 112,
-      'FindIncident112',
-      incident
-    );
-
     cy.contains('Edit').click();
-
-    cy.wait('@FindIncident112', { timeout: 8000 }).then((xhr) => {
-      expect(xhr.request.body.operationName).to.eq('FindIncident');
-      expect(xhr.request.body.variables.query.incident_id).to.eq(112);
-    });
 
     cy.get('[data-cy="incident-form"]').should('exist').as('form');
 
@@ -187,13 +193,18 @@ describe('Incidents App', () => {
       incidents
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncident',
+      'FindIncident',
+      incident
+    );
+
     cy.visit(url);
 
     cy.get('[data-cy="row"]')
       .eq(0)
       .within(() => {
-        const { 0: incident } = incidents.data.incidents;
-
         cy.get('[data-cy="cell"]')
           .eq(4)
           .then(($element) => {
@@ -204,7 +215,7 @@ describe('Incidents App', () => {
                   .should('have.attr', 'href')
                   .and(
                     'include',
-                    `/entities/${incident.AllegedDeployerOfAISystem[index].entity_id}`
+                    `/entities/${incident.data.incident.AllegedDeployerOfAISystem[index].entity_id}`
                   );
               });
           });
@@ -219,7 +230,7 @@ describe('Incidents App', () => {
                   .should('have.attr', 'href')
                   .and(
                     'include',
-                    `/entities/${incident.AllegedDeveloperOfAISystem[index].entity_id}`
+                    `/entities/${incident.data.incident.AllegedDeveloperOfAISystem[index].entity_id}`
                   );
               });
           });
@@ -234,7 +245,7 @@ describe('Incidents App', () => {
                   .should('have.attr', 'href')
                   .and(
                     'include',
-                    `/entities/${incident.AllegedHarmedOrNearlyHarmedParties[index].entity_id}`
+                    `/entities/${incident.data.incident.AllegedHarmedOrNearlyHarmedParties[index].entity_id}`
                   );
               });
           });

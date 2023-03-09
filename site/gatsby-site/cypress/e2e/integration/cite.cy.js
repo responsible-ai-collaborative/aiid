@@ -128,7 +128,7 @@ describe('Cite pages', () => {
 
     cy.get(`[id="r${_id}"`).find('[data-cy="flag-button"]').click();
 
-    cy.get('[data-cy="flag-modal"]').as('modal').should('be.visible');
+    cy.get('[data-cy="flag-report-23"]').as('modal').should('be.visible');
 
     cy.wait('@fetchReport');
 

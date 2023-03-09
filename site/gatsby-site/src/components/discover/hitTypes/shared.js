@@ -1,5 +1,5 @@
 import { format, fromUnixTime } from 'date-fns';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import { Highlight } from 'react-instantsearch-dom';
