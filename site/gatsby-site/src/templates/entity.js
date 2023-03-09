@@ -205,44 +205,55 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     }
   };
 
-  const NotifyButton = ({ children }) => (
-    <Button
-      onClick={subscribeToEntity}
-      disabled={subscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
-      className="mr-2 whitespace-nowrap"
-    >
-      <div className="flex gap-2 items-center">
-        {subscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
-          <div>
-            <Spinner size="sm" />
-          </div>
-        ) : (
-          <FontAwesomeIcon icon={faEnvelope} />
-        )}
-        {children}
-      </div>
-    </Button>
-  );
+  const NotifyButton = ({ children }) => {
+    const { t } = useTranslation();
 
-  const UnsubscribeButton = ({ children }) => (
-    <Button
-      onClick={unsubscribeToEntity}
-      color={'light'}
-      disabled={unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
-      className="mr-1"
-    >
-      <div className="flex gap-2 items-center">
-        {unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
-          <div>
-            <Spinner size="sm" />
-          </div>
-        ) : (
-          <FontAwesomeIcon icon={faEnvelope} title={t('Cancel Subscription')} />
-        )}
-        {children}
-      </div>
-    </Button>
-  );
+    return (
+      <Button
+        color="light"
+        onClick={subscribeToEntity}
+        disabled={subscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
+        className="mr-2 whitespace-nowrap"
+        title={t('Notify Me of New {{name}} Incidents', { name })}
+      >
+        <div className="flex gap-2 items-center">
+          {subscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
+            <div>
+              <Spinner size="sm" />
+            </div>
+          ) : (
+            <FontAwesomeIcon icon={faEnvelope} />
+          )}
+          {children}
+        </div>
+      </Button>
+    );
+  };
+
+  const UnsubscribeButton = ({ children }) => {
+    const { t } = useTranslation();
+
+    return (
+      <Button
+        onClick={unsubscribeToEntity}
+        color={'light'}
+        disabled={unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
+        className="mr-1"
+        title={t('Unsubscribe from New {{name}} Incidents', { name })}
+      >
+        <div className="flex gap-2 items-center">
+          {unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
+            <div>
+              <Spinner size="sm" />
+            </div>
+          ) : (
+            <FontAwesomeIcon icon={faEnvelope} title={t('Cancel Subscription')} />
+          )}
+          {children}
+        </div>
+      </Button>
+    );
+  };
 
   return (
     <Layout {...props}>
@@ -258,13 +269,13 @@ const EntityPage = ({ pageContext, data, ...props }) => {
           {loadingSubscription && subscriptionNetworkStatus === NetworkStatus.loading ? (
             <Spinner size="sm" />
           ) : subscriptions?.subscriptions.length > 0 ? (
-            <Trans i18n={i18n}>
-              <UnsubscribeButton>Unsubscribe</UnsubscribeButton>
-            </Trans>
+            <UnsubscribeButton>
+              <Trans>Unfollow</Trans>
+            </UnsubscribeButton>
           ) : (
-            <Trans i18n={i18n} name={name}>
-              <NotifyButton>Notify me</NotifyButton> of new incidents involving “{{ name }}”.
-            </Trans>
+            <NotifyButton>
+              <Trans>Follow</Trans>
+            </NotifyButton>
           )}
         </div>
       </div>
