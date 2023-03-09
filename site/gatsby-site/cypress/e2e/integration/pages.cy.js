@@ -27,7 +27,7 @@ describe('Pages', () => {
     '/cite/1/',
     '/entities/',
     '/entities/facebook/',
-    '/blog/incident-report-2022-january/',
+    '/blog/incident-report-2023-january/',
     '/taxonomy/cset/',
     '/summaries/wordcounts/',
     '/about/', // doc template
