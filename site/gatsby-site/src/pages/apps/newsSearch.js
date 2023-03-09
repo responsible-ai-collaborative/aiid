@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
 import { Trans, useTranslation } from 'react-i18next';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import AiidHelmet from 'components/AiidHelmet';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import { Card, Button, Badge } from 'flowbite-react';
@@ -19,7 +19,7 @@ const CandidateCard = ({
   let date;
 
   try {
-    date = format(parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()), 'MMM d');
+    date = format(parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()), 'yyyy-MM-dd');
   } catch (e) {
     date = null;
   }
@@ -218,7 +218,7 @@ const NewsSearchPage = (props) => {
 
   return (
     <Layout {...props}>
-      <AiidHelmet>
+      <AiidHelmet path={props.location.pathname}>
         <title>{t('News Search')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>

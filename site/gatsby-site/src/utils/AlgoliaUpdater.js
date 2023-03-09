@@ -4,6 +4,14 @@ const { getUnixTime } = require('date-fns');
 
 const config = require('../../config');
 
+const { isCompleteReport } = require('./variants');
+
+// Reduce this if a subset of the data is needed
+// to fit within the Algolia tier limits.
+//
+// TODO: Put this configuration in a more convenient place.
+const LIMIT = Number.MAX_SAFE_INTEGER;
+
 const truncate = (doc) => {
   for (const [key, value] of Object.entries(doc)) {
     if (typeof value == 'string') {
@@ -15,7 +23,7 @@ const truncate = (doc) => {
   return doc;
 };
 
-const classificationsWhitelist = [
+const includedCSETAttributes = [
   'Harm Distribution Basis',
   'Intent',
   'Lives Lost',
@@ -40,27 +48,33 @@ const classificationsWhitelist = [
   'Technology Purveyor',
 ];
 
-const getClassificationArray = (cObj, namespace) => {
-  const cArray = [];
+const getClassificationArray = ({ classification, taxonomy }) => {
+  const result = [];
 
-  for (const c in cObj) {
-    if (cObj[c] !== null && classificationsWhitelist.includes(c)) {
-      let valuesToUnpack = null;
+  if (classification.attributes) {
+    for (const attribute of classification.attributes) {
+      const field = taxonomy?.field_list.find((field) => field.short_name == attribute.short_name);
 
-      if (typeof cObj[c] === 'object') {
-        valuesToUnpack = cObj[c];
-      } else {
-        valuesToUnpack = [cObj[c]];
-      }
-      if (cObj[c] !== undefined && cObj[c] !== '' && valuesToUnpack.length > 0) {
-        valuesToUnpack.forEach((element) =>
-          cArray.push(`${namespace}:${c.replace(/_/g, ' ')}:${element}`)
-        );
+      if (
+        attribute.value_json &&
+        attribute.value_json.length > 0 &&
+        field?.display_type != 'long_string' &&
+        (classification.namespace != 'CSET' ||
+          includedCSETAttributes.includes(attribute.short_name))
+      ) {
+        const value = JSON.parse(attribute.value_json);
+
+        const values = Array.isArray(value) ? value : [value];
+
+        for (const v of values) {
+          if (v == '' || typeof v === 'object') continue;
+          result.push(`${classification.namespace}:${attribute.short_name}:${v}`);
+        }
       }
     }
   }
 
-  return cArray;
+  return result;
 };
 
 const reportToEntry = ({ incident = null, report }) => {
@@ -93,6 +107,8 @@ const reportToEntry = ({ incident = null, report }) => {
     entry.incident_id = incident.incident_id;
     entry.incident_date = incident.date;
     entry.epoch_incident_date = getUnixTime(new Date(incident.date));
+    entry.incident_title = incident.title;
+    entry.incident_description = incident.description;
   }
 
   return entry;
@@ -114,11 +130,16 @@ class AlgoliaUpdater {
     this.algoliaClient = algoliaClient;
   }
 
-  generateIndexEntries = async ({ reports, incidents, classifications }) => {
+  generateIndexEntries = async ({ reports, incidents, classifications, taxa }) => {
     let classificationsHash = {};
 
-    classifications.forEach((c) => {
-      classificationsHash[c.incident_id] = getClassificationArray(c.classifications, c.namespace);
+    classifications.forEach((classification) => {
+      const taxonomy = taxa.find((t) => t.namespace == classification.namespace);
+
+      classificationsHash[classification.incident_id] ||= [];
+      classificationsHash[classification.incident_id] = classificationsHash[
+        classification.incident_id
+      ].concat(getClassificationArray({ classification, taxonomy }));
     });
 
     const downloadData = [];
@@ -147,15 +168,34 @@ class AlgoliaUpdater {
 
     const truncatedData = downloadData.map(truncate);
 
-    return truncatedData;
+    const smallData = truncatedData.slice(0, LIMIT);
+
+    return smallData;
   };
 
   getClassifications = async () => {
-    return this.mongoClient
+    const classifications = await this.mongoClient
       .db('aiidprod')
       .collection(`classifications`)
-      .find({ namespace: 'CSET', 'classifications.Publish': true })
+      .find({ publish: true })
       .toArray();
+
+    return classifications;
+  };
+
+  getTaxa = async () => {
+    let taxa = [];
+
+    const aiidprod = await this.mongoClient.db('aiidprod');
+
+    const taxaCollection = await aiidprod.collection(`taxa`);
+
+    if (taxaCollection) {
+      const foundItems = await taxaCollection.find({});
+
+      if (foundItems) taxa = await foundItems.toArray();
+    }
+    return taxa;
   };
 
   getIncidents = async () => {
@@ -193,11 +233,9 @@ class AlgoliaUpdater {
       flag: 1,
     };
 
-    const reports = await this.mongoClient
-      .db('aiidprod')
-      .collection(`reports`)
-      .find({}, { projection })
-      .toArray();
+    const reports = (
+      await this.mongoClient.db('aiidprod').collection(`reports`).find({}, { projection }).toArray()
+    ).filter((report) => isCompleteReport(report));
 
     const translations = await this.mongoClient
       .db('translations')
@@ -218,7 +256,6 @@ class AlgoliaUpdater {
           plain_text,
         };
       }
-
       return report;
     });
 
@@ -230,6 +267,18 @@ class AlgoliaUpdater {
 
     const featuredReplicaIndexName = indexName + '-featured';
 
+    const incidentDateDescReplicaIndexName = indexName + '_epoch_incident_date_desc';
+
+    const incidentDateAscReplicaIndexName = indexName + '_epoch_incident_date_asc';
+
+    const datePublishedDescReplicaIndexName = indexName + '_epoch_date_published_desc';
+
+    const datePublishedAscReplicaIndexName = indexName + '_epoch_date_published_asc';
+
+    const dateSubmittedDescReplicaIndexName = indexName + '_epoch_date_submitted_desc';
+
+    const dateSubmittedAscReplicaIndexName = indexName + '_epoch_date_submitted_asc';
+
     const index = await this.algoliaClient.initIndex(indexName);
 
     await index.replaceAllObjects(entries);
@@ -240,13 +289,69 @@ class AlgoliaUpdater {
         attributeForDistinct: 'incident_id',
         indexLanguages: [language],
         queryLanguages: [language],
-        replicas: [featuredReplicaIndexName],
+        replicas: [
+          featuredReplicaIndexName,
+          incidentDateDescReplicaIndexName,
+          incidentDateAscReplicaIndexName,
+          datePublishedDescReplicaIndexName,
+          datePublishedAscReplicaIndexName,
+          dateSubmittedDescReplicaIndexName,
+          dateSubmittedAscReplicaIndexName,
+        ],
       })
       .then(async () => {
         const featuredReplicaIndex = await this.algoliaClient.initIndex(featuredReplicaIndexName);
 
         await featuredReplicaIndex.setSettings({
           ranking: ['desc(featured)', 'desc(text)'],
+        });
+
+        const incidentDateDescReplicaIndex = await this.algoliaClient.initIndex(
+          incidentDateDescReplicaIndexName
+        );
+
+        await incidentDateDescReplicaIndex.setSettings({
+          ranking: ['desc(epoch_incident_date)'],
+        });
+
+        const incidentDateAscReplicaIndex = await this.algoliaClient.initIndex(
+          incidentDateAscReplicaIndexName
+        );
+
+        await incidentDateAscReplicaIndex.setSettings({
+          ranking: ['asc(epoch_incident_date)'],
+        });
+
+        const datePublishedDescReplicaIndex = await this.algoliaClient.initIndex(
+          datePublishedDescReplicaIndexName
+        );
+
+        await datePublishedDescReplicaIndex.setSettings({
+          ranking: ['desc(epoch_date_published)'],
+        });
+
+        const datePublishedAscReplicaIndex = await this.algoliaClient.initIndex(
+          datePublishedAscReplicaIndexName
+        );
+
+        await datePublishedAscReplicaIndex.setSettings({
+          ranking: ['asc(epoch_date_published)'],
+        });
+
+        const dateSubmittedDescReplicaIndex = await this.algoliaClient.initIndex(
+          dateSubmittedDescReplicaIndexName
+        );
+
+        await dateSubmittedDescReplicaIndex.setSettings({
+          ranking: ['desc(epoch_date_submitted)'],
+        });
+
+        const dateSubmittedAscReplicaIndex = await this.algoliaClient.initIndex(
+          dateSubmittedAscReplicaIndexName
+        );
+
+        await dateSubmittedAscReplicaIndex.setSettings({
+          ranking: ['asc(epoch_date_submitted)'],
         });
       });
   };
@@ -275,11 +380,18 @@ class AlgoliaUpdater {
 
     const classifications = await this.getClassifications();
 
+    const taxa = await this.getTaxa();
+
     const incidents = await this.getIncidents();
 
     const reports = await this.getReports({ language });
 
-    const entries = await this.generateIndexEntries({ reports, incidents, classifications });
+    const entries = await this.generateIndexEntries({
+      reports,
+      incidents,
+      classifications,
+      taxa,
+    });
 
     await this.mongoClient.close();
 
@@ -293,6 +405,7 @@ class AlgoliaUpdater {
       this.reporter.log(
         `Uploading Algolia index of [${language}] with [${entries.length}] entries`
       );
+
       await this.uploadToAlgolia({ entries, language });
 
       await this.deleteDuplicates({ language });

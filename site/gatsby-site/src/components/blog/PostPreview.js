@@ -1,8 +1,8 @@
 import React from 'react';
 import { GatsbyImage as Img } from 'gatsby-plugin-image';
-import { format } from 'date-fns';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans } from 'react-i18next';
+import DateLabel from 'components/ui/DateLabel';
 
 function PostPreview({ post, latestPost = false }) {
   return (
@@ -30,7 +30,7 @@ function PostPreview({ post, latestPost = false }) {
           </LocalizedLink>
           <p className="text-muted-gray text-sm">By {post.frontmatter.author}</p>
           <p className="text-sm text-muted-gray">
-            {format(new Date(post.frontmatter.date), 'MMM d, yyyy')}
+            <DateLabel date={new Date(post.frontmatter.date)} />
           </p>
           <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{post.excerpt}... </p>
         </div>

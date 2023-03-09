@@ -6,34 +6,10 @@ import { useQueryParam } from 'use-query-params';
 import CardSkeleton from 'elements/Skeletons/Card';
 import ListSkeleton from 'elements/Skeletons/List';
 
-const Hits = ({
-  hits,
-  authorsModal,
-  submittersModal,
-  flagReportModal,
-  isSearchStalled,
-  toggleFilterByIncidentId,
-}) => {
+const Hits = ({ hits, isSearchStalled, toggleFilterByIncidentId, viewType }) => {
   const [display] = useQueryParam('display', DisplayModeEnumParam);
 
-  if (isSearchStalled) {
-    return (
-      <div className="tw-no-results bootstrap">
-        {display === 'list' ? (
-          <ListSkeleton />
-        ) : (
-          <div className="flex">
-            <CardSkeleton />
-            <CardSkeleton className="hidden sm:inline-block ml-3" />
-            <CardSkeleton className="hidden lg:inline-block ml-3" />
-            <CardSkeleton className="hidden xl:inline-block ml-3" />
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  if (hits.length === 0) {
+  if (!isSearchStalled && hits.length === 0) {
     return (
       <div className="tw-no-results">
         <p>Your search returned no results.</p>
@@ -43,17 +19,31 @@ const Hits = ({
   }
 
   return (
-    <div className={`tw-hits-container tw-container-xl ${display} mt-4`}>
-      {hits.map((hit) => (
-        <Hit
-          key={hit.objectID}
-          item={hit}
-          authorsModal={authorsModal}
-          submittersModal={submittersModal}
-          flagReportModal={flagReportModal}
-          toggleFilterByIncidentId={toggleFilterByIncidentId}
-        />
-      ))}
+    <div
+      className={`tw-hits-container ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl ${display} mt-4`}
+    >
+      {isSearchStalled ? (
+        display === 'list' ? (
+          <ListSkeleton />
+        ) : (
+          Array(24)
+            .fill()
+            .map((skeleton, i) => (
+              <CardSkeleton key={i} className="m:inline-block ml-3" text={display == 'details'} />
+            ))
+        )
+      ) : (
+        hits.map((hit) => (
+          <Hit
+            key={hit.objectID}
+            item={hit}
+            {...{
+              toggleFilterByIncidentId,
+              viewType,
+            }}
+          />
+        ))
+      )}
     </div>
   );
 };

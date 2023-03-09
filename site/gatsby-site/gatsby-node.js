@@ -76,7 +76,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   ]) {
     if (!(process.env.SKIP_PAGE_CREATOR || '').split(',').includes(pageCreator.name)) {
       reporter.info(`Page creation: ${pageCreator.name}`);
-      await pageCreator(graphql, createPage, reporter);
+      await pageCreator(graphql, createPage, { reporter, languages: getLanguages() });
     }
   }
 };
@@ -94,6 +94,7 @@ exports.onCreateWebpackConfig = ({ actions }) => {
         services: path.resolve(__dirname, 'src/services'),
         templates: path.resolve(__dirname, 'src/templates'),
         utils: path.resolve(__dirname, 'src/utils'),
+        plugins: path.resolve(__dirname, 'plugins'),
         buble: '@philpl/buble', // to reduce bundle size
       },
       fallback: { crypto: false },
@@ -146,21 +147,27 @@ exports.onCreateNode = async ({ node, getNode, actions }) => {
     let value = { geometry: { location: { lat: 0, lng: 0 } } };
 
     if (config.google.mapsApiKey) {
-      try {
-        if (node.classifications.Location && node.classifications.Location !== '') {
-          const {
-            data: {
-              results: { 0: geometry },
-            },
-          } = await googleMapsApiClient.geocode({
-            params: { key: config.google.mapsApiKey, address: node.classifications.Location },
-          });
+      const locationAttribute = node.attributes.find((a) => a.short_name == 'Location');
 
-          value = geometry;
+      try {
+        if (locationAttribute) {
+          const locationValue = JSON.parse(locationAttribute.value_json);
+
+          if (locationValue && locationValue !== '') {
+            const {
+              data: {
+                results: { 0: geometry },
+              },
+            } = await googleMapsApiClient.geocode({
+              params: { key: config.google.mapsApiKey, address: locationValue },
+            });
+
+            value = geometry;
+          }
         }
       } catch (e) {
         console.log(e);
-        console.log('Error fetching geocode data for', node.classifications.Location);
+        console.log('Error fetching geocode data for', locationAttribute?.value_json);
       }
     }
 
@@ -212,7 +219,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       cloudinary_id: String
       tags: [String]
       plain_text: String
-      embedding: reportEmbedding 
+      embedding: reportEmbedding
+      text_inputs: String
+      text_outputs: String
     }
 
     type mongodbAiidprodTaxaField_list implements Node {
@@ -221,15 +230,60 @@ exports.createSchemaCustomization = ({ actions }) => {
     
     type mongodbAiidprodTaxa implements Node {
       field_list: [mongodbAiidprodTaxaField_list]
+      complete_entities: Boolean
+    }
+
+    type mongodbAiidprodClassificationsAttribute {
+      short_name: String
+      value_json: String
+    }
+    type mongodbAiidprodClassifications implements Node {
+      incident_id: Int
+      namespace: String
+      attributes: [mongodbAiidprodClassificationsAttribute]
+    }
+
+    type completeFrom {
+      all: [String]
+      current: [String]
+      entities: Boolean
+    }
+
+    type Subfield {
+      field_number: String
+      short_name: String 
+      long_name: String
+      short_description: String
+      long_description: String
+      display_type: String
+      mongo_type: String
+      default: String
+      placeholder: String
+      permitted_values: [String]
+      weight: Int
+      instant_facet: Boolean
+      required: Boolean
+      public: Boolean
+      complete_from: completeFrom
     }
 
     type mongodbAiidprodTaxaField_list {
+      subfields: [Subfield]
+      field_number: String
+      short_name: String 
+      long_name: String
+      short_description: String
+      long_description: String
+      display_type: String
+      mongo_type: String
       default: String
       placeholder: String
-    }
-
-    type mongodbAiidprodResourcesClassifications implements Node {
-      MSFT_AI_Fairness_Checklist: Boolean
+      permitted_values: [String]
+      weight: Int
+      instant_facet: Boolean
+      required: Boolean
+      public: Boolean
+      complete_from: completeFrom
     }
   `;
 
@@ -330,23 +384,5 @@ exports.onPreBootstrap = async ({ reporter }) => {
 exports.onPreBuild = function ({ reporter }) {
   if (!config.google.mapsApiKey) {
     reporter.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
-  }
-};
-
-exports.onPostBuild = async ({ reporter }) => {
-  reporter.info('Site has been built!');
-
-  if (process.env.CONTEXT == 'production') {
-    reporter.info('Processing pending notifications...');
-
-    const processNotifications = require('./postBuild/processNotifications');
-
-    try {
-      const result = await processNotifications();
-
-      reporter.info(`${result?.data?.processNotifications} notifications were processed!`);
-    } catch (error) {
-      reporter.error('Error processing pending notifications:', error);
-    }
   }
 };

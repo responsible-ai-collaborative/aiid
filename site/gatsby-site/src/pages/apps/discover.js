@@ -2,9 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { useQueryParams } from 'use-query-params';
 import algoliasearch from 'algoliasearch/lite';
 import { Configure, InstantSearch } from 'react-instantsearch-dom';
-import LayoutHideSidebar from 'components/LayoutHideSidebar';
 import AiidHelmet from 'components/AiidHelmet';
-import { useModal, CustomModal } from 'hooks/useModal';
 
 import config from '../../../config';
 import Hits from 'components/discover/Hits';
@@ -15,10 +13,13 @@ import { SearchContext } from 'components/discover/useSearch';
 import { queryConfig } from 'components/discover/queryParams';
 import VirtualFilters from 'components/discover/VirtualFilters';
 import Controls from 'components/discover/Controls';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import Container from 'elements/Container';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
+import Layout from 'components/Layout';
+import { VIEW_TYPES } from 'utils/discover';
+import SORTING_LIST from 'components/discover/SORTING_LISTS';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -147,10 +148,11 @@ const generateSearchState = ({ query }) => {
     range: {
       ...convertStringToRange(cleanQuery),
     },
+    sortBy: cleanQuery.sortBy,
   };
 };
 
-const getQueryFromState = (searchState) => {
+const getQueryFromState = (searchState, locale) => {
   let query = {};
 
   if (searchState && searchState.query !== '') {
@@ -171,6 +173,12 @@ const getQueryFromState = (searchState) => {
     };
   }
 
+  if (searchState && searchState.sortBy) {
+    query.sortBy =
+      SORTING_LIST.find((s) => s[`value_${locale}`] === searchState.sortBy)?.name ||
+      searchState.sortBy;
+  }
+
   query.page = searchState.page;
 
   return query;
@@ -184,6 +192,8 @@ function DiscoverApp(props) {
   const indexName = `instant_search-${locale}`;
 
   const [searchState, setSearchState] = useState(generateSearchState({ query }));
+
+  const [viewType, setViewType] = useState(VIEW_TYPES.INCIDENTS);
 
   const onSearchStateChange = (searchState) => {
     setSearchState({ ...searchState });
@@ -200,28 +210,35 @@ function DiscoverApp(props) {
       };
 
       setSearchState(newSearchState);
-      setQuery(getQueryFromState(newSearchState), 'push');
+      setQuery(getQueryFromState(newSearchState, locale), 'push');
     },
     [searchState]
   );
 
   useEffect(() => {
-    const searchQuery = getQueryFromState(searchState);
+    const searchQuery = getQueryFromState(searchState, locale);
 
     const extraQuery = { display: query.display };
 
     setQuery({ ...searchQuery, ...extraQuery }, 'push');
+
+    setViewType(
+      (searchState.refinementList.hideDuplicates === 'true' ||
+        searchState.refinementList.hideDuplicates === true) &&
+        searchState.refinementList.is_incident_report.length > 0 &&
+        searchState.refinementList.is_incident_report[0] === 'true'
+        ? VIEW_TYPES.INCIDENTS
+        : VIEW_TYPES.REPORTS
+    );
   }, [searchState]);
 
-  const authorsModal = useModal();
+  const [mounted, setMounted] = useState(false);
 
-  const submittersModal = useModal();
-
-  const flagReportModal = useModal();
+  useEffect(() => setMounted(true), []);
 
   return (
-    <LayoutHideSidebar {...props}>
-      <AiidHelmet canonicalUrl="/apps/discover">
+    <Layout {...props} sidebarCollapsed={true} className="w-full">
+      <AiidHelmet path={props.location.pathname}>
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
       <SearchContext.Provider
@@ -242,37 +259,30 @@ function DiscoverApp(props) {
 
           <VirtualFilters />
 
-          <Container className="tw-container-xl mt-6">
-            <Row className="px-0 mx-0">
-              <Col className="px-0 mx-0">
-                <SearchBox defaultRefinement={query.s} />
-              </Col>
-            </Row>
+          {mounted && (
+            <Container className="ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl mt-6">
+              <Row className="px-0 mx-0">
+                <Col className="px-0 mx-0">
+                  <SearchBox defaultRefinement={query.s} />
+                </Col>
+              </Row>
 
-            <Controls query={query} searchState={searchState} setSearchState={setSearchState} />
+              <Controls query={query} searchState={searchState} setSearchState={setSearchState} />
 
-            <OptionsModal
-              className="hiddenDesktop"
-              searchState={searchState}
-              setSearchState={setSearchState}
-            />
-          </Container>
+              <OptionsModal
+                className="hiddenDesktop"
+                searchState={searchState}
+                setSearchState={setSearchState}
+              />
+            </Container>
+          )}
 
-          <Hits
-            toggleFilterByIncidentId={toggleFilterByIncidentId}
-            authorsModal={authorsModal}
-            submittersModal={submittersModal}
-            flagReportModal={flagReportModal}
-          />
-
-          <CustomModal {...authorsModal} />
-          <CustomModal {...submittersModal} />
-          <CustomModal {...flagReportModal} />
+          <Hits toggleFilterByIncidentId={toggleFilterByIncidentId} viewType={viewType} />
 
           <Pagination />
         </InstantSearch>
       </SearchContext.Provider>
-    </LayoutHideSidebar>
+    </Layout>
   );
 }
 

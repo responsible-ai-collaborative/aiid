@@ -1,11 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { Badge, Spinner } from 'flowbite-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { CloudinaryImage } from '@cloudinary/base';
+import { Trans, useTranslation } from 'react-i18next';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
+import { useMutation } from '@apollo/client';
+import { graphql } from 'gatsby';
+
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
 import Citation from 'components/cite/Citation';
 import ImageCarousel from 'components/cite/ImageCarousel';
 import BibTex from 'components/BibTex';
-import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 import { format, isAfter, isEqual } from 'date-fns';
 import Timeline from '../components/visualizations/Timeline';
 import IncidentStatsCard from '../components/cite/IncidentStatsCard';
@@ -13,7 +20,6 @@ import ReportCard from '../components/reports/ReportCard';
 import Taxonomy from '../components/taxa/Taxonomy';
 import { useUserContext } from '../contexts/userContext';
 import SimilarIncidents from '../components/cite/SimilarIncidents';
-import { Trans, useTranslation } from 'react-i18next';
 import Card from '../elements/Card';
 import Button from '../elements/Button';
 import Container from '../elements/Container';
@@ -21,19 +27,18 @@ import Row from '../elements/Row';
 import Col from '../elements/Col';
 import Pagination from '../elements/Pagination';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
-import { useLocalization } from 'gatsby-theme-i18n';
 import useLocalizePath from '../components/i18n/useLocalizePath';
-import { useMutation } from '@apollo/client';
 import { UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import Link from 'components/ui/Link';
-import { graphql } from 'gatsby';
 import { getTaxonomies, getTranslatedReports } from 'utils/cite';
 import { computeEntities, RESPONSE_TAG } from 'utils/entities';
 import AllegedEntities from 'components/entities/AllegedEntities';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
-import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import config from '../../config';
+import VariantList from 'components/variants/VariantList';
+import { isCompleteReport } from 'utils/variants';
+import { useQueryParams, StringParam, withDefault } from 'use-query-params';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -64,8 +69,7 @@ function CitePage(props) {
     },
     data: {
       allMongodbAiidprodTaxa,
-      mongodbAiidprodClassifications,
-      mongodbAiidprodResources,
+      allMongodbAiidprodClassifications,
       allMongodbAiidprodReports,
       allMongodbTranslationsReportsEs,
       allMongodbTranslationsReportsEn,
@@ -84,6 +88,10 @@ function CitePage(props) {
 
   const localizePath = useLocalizePath();
 
+  const [query] = useQueryParams({
+    edit_taxonomy: withDefault(StringParam, ''),
+  });
+
   // meta tags
 
   const defaultIncidentTitle = t('Citation record for Incident {{id}}', {
@@ -93,8 +101,6 @@ function CitePage(props) {
   const metaTitle = `Incident ${incident.incident_id}: ${incident.title}`;
 
   const metaDescription = incident.description;
-
-  const canonicalUrl = getCanonicalUrl(incident.incident_id);
 
   const incidentReports = getTranslatedReports({
     allMongodbAiidprodReports,
@@ -106,9 +112,17 @@ function CitePage(props) {
     locale,
   });
 
-  const sortedReports = sortIncidentsByDatePublished(incidentReports);
+  const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports);
 
-  const metaImage = sortedReports[0].image_url;
+  const sortedReports = sortedIncidentReports.filter((report) => isCompleteReport(report));
+
+  const publicID = sortedReports.find((report) => report.cloudinary_id)?.cloudinary_id;
+
+  const image = new CloudinaryImage(publicID, {
+    cloudName: config.cloudinary.cloudName,
+  });
+
+  const metaImage = image.createCloudinaryURL();
 
   const addToast = useToastContext();
 
@@ -129,12 +143,13 @@ function CitePage(props) {
     isOccurrence: true,
   });
 
+  const variants = sortedIncidentReports.filter((report) => !isCompleteReport(report));
+
   const taxonomies = useMemo(
     () =>
       getTaxonomies({
         allMongodbAiidprodTaxa,
-        mongodbAiidprodClassifications,
-        mongodbAiidprodResources,
+        allMongodbAiidprodClassifications,
       }),
     []
   );
@@ -142,6 +157,20 @@ function CitePage(props) {
   const [taxonomiesList, setTaxonomiesList] = useState(
     taxonomies.map((t) => ({ ...t, canEdit: false }))
   );
+
+  const [taxonomyBeingEdited, setTaxonomyBeingEdited] = useState(
+    taxonomies.find((taxonomy) => taxonomy.namespace == query.edit_taxonomy)
+  );
+
+  const taxonomyDiv = useRef();
+
+  useEffect(() => {
+    if (query.edit_taxonomy?.length > 0) {
+      if (taxonomyDiv?.current?.scrollIntoView) {
+        taxonomyDiv.current.scrollIntoView();
+      }
+    }
+  }, []);
 
   useEffect(() => {
     setTaxonomiesList((list) =>
@@ -191,10 +220,10 @@ function CitePage(props) {
           severity: SEVERITY.success,
         });
       } catch (e) {
-        console.log(e);
         addToast({
           message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
           severity: SEVERITY.danger,
+          error: e,
         });
       }
     } else {
@@ -222,7 +251,7 @@ function CitePage(props) {
 
   return (
     <Layout {...{ props }}>
-      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
+      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
 
@@ -231,7 +260,7 @@ function CitePage(props) {
         <div className="flex">
           <SocialShareButtons
             metaTitle={metaTitle}
-            canonicalUrl={canonicalUrl}
+            path={props.location.pathname}
             page="cite"
             className="-mt-1"
           ></SocialShareButtons>
@@ -339,7 +368,11 @@ function CitePage(props) {
                             <Spinner size="sm" />
                           </div>
                         ) : (
-                          <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
+                          <FontAwesomeIcon
+                            titleId="envelope"
+                            icon={faEnvelope}
+                            title={t('Notify Me of Updates')}
+                          />
                         )}
                         <Trans>Notify Me of Updates</Trans>
                       </div>
@@ -350,21 +383,36 @@ function CitePage(props) {
                         incident.incident_id
                       }&date_downloaded=${format(new Date(), 'yyyy-MM-dd')}`}
                     >
-                      <FontAwesomeIcon icon={faPlus} title={t('New Report')} className="mr-2" />
+                      <FontAwesomeIcon
+                        titleId="report"
+                        icon={faPlus}
+                        title={t('New Report')}
+                        className="mr-2"
+                      />
                       <Trans>New Report</Trans>
                     </Button>
                     <Button
                       variant="outline-primary"
                       href={`/apps/submit?tags=${RESPONSE_TAG}&incident_id=${incident.incident_id}`}
                     >
-                      <FontAwesomeIcon icon={faPlus} title={t('New Response')} className="mr-2" />
+                      <FontAwesomeIcon
+                        titleId="response"
+                        icon={faPlus}
+                        title={t('New Response')}
+                        className="mr-2"
+                      />
                       <Trans>New Response</Trans>
                     </Button>
                     <Button
                       variant="outline-primary"
                       href={'/apps/discover?incident_id=' + incident.incident_id}
                     >
-                      <FontAwesomeIcon className="mr-2" icon={faSearch} title={t('Discover')} />
+                      <FontAwesomeIcon
+                        titleId="discover"
+                        className="mr-2"
+                        icon={faSearch}
+                        title={t('Discover')}
+                      />
                       <Trans>Discover</Trans>
                     </Button>
                     <BibTex
@@ -379,6 +427,7 @@ function CitePage(props) {
                         href={'/incidents/edit?incident_id=' + incident.incident_id}
                       >
                         <FontAwesomeIcon
+                          titleId="edit-incident"
                           className="mr-2"
                           icon={faEdit}
                           title={t('Edit Incident')}
@@ -395,15 +444,25 @@ function CitePage(props) {
               <Row id="taxa-area">
                 <Col>
                   {taxonomiesList
-                    .filter((t) => t.canEdit || t.classificationsArray.length > 0)
-                    .map((t) => (
-                      <Taxonomy
-                        key={t.namespace}
-                        taxonomy={t}
-                        incidentId={incident.incident_id}
-                        canEdit={t.canEdit}
-                      />
-                    ))}
+                    .filter((t) => t.canEdit || (t.classificationsArray.length > 0 && t.publish))
+                    .map((t) => {
+                      const inQuery = query.edit_taxonomy == t.namespace;
+
+                      return (
+                        <div key={t.namespace} ref={inQuery ? taxonomyDiv : undefined}>
+                          <Taxonomy
+                            id={`taxonomy-${t.namespace}`}
+                            taxonomy={t}
+                            incidentId={incident.incident_id}
+                            canEdit={t.canEdit}
+                            {...{
+                              taxonomyBeingEdited,
+                              setTaxonomyBeingEdited,
+                            }}
+                          />
+                        </div>
+                      );
+                    })}
                 </Col>
               </Row>
             )}
@@ -435,6 +494,8 @@ function CitePage(props) {
                 </Col>
               </Row>
             ))}
+
+            <VariantList incidentId={incident.incident_id} variants={variants}></VariantList>
 
             <SimilarIncidents
               nlp_similar_incidents={nlp_similar_incidents}
@@ -484,60 +545,17 @@ export const query = graphql`
     $translate_fr: Boolean!
     $translate_en: Boolean!
   ) {
-    mongodbAiidprodResources(
-      classifications: { Publish: { eq: true } }
-      incident_id: { eq: $incident_id }
-    ) {
-      id
-      incident_id
-      notes
-      classifications {
-        Datasheets_for_Datasets
-        Publish
-      }
-    }
-    mongodbAiidprodClassifications(
-      classifications: { Publish: { eq: true } }
-      incident_id: { eq: $incident_id }
-    ) {
-      incident_id
-      id
-      namespace
-      notes
-      classifications {
-        Annotation_Status
-        Annotator
-        Ending_Date
-        Beginning_Date
-        Full_Description
-        Intent
-        Location
-        Named_Entities
-        Near_Miss
-        Quality_Control
-        Reviewer
-        Severity
-        Short_Description
-        Technology_Purveyor
-        AI_Applications
-        AI_System_Description
-        AI_Techniques
-        Data_Inputs
-        Financial_Cost
-        Harm_Distribution_Basis
-        Harm_Type
-        Infrastructure_Sectors
-        Laws_Implicated
-        Level_of_Autonomy
-        Lives_Lost
-        Nature_of_End_User
-        Physical_System
-        Problem_Nature
-        Public_Sector_Deployment
-        Relevant_AI_functions
-        Sector_of_Deployment
-        System_Developer
-        Publish
+    allMongodbAiidprodClassifications(filter: { incident_id: { eq: $incident_id } }) {
+      nodes {
+        incident_id
+        id
+        namespace
+        notes
+        attributes {
+          short_name
+          value_json
+        }
+        publish
       }
     }
     allMongodbAiidprodTaxa {
@@ -546,15 +564,52 @@ export const query = graphql`
         namespace
         weight
         description
-        field_list {
-          public
-          display_type
-          long_name
+        complete_entities
+        dummy_fields {
+          field_number
           short_name
-          long_description
-          weight
+        }
+        field_list {
+          field_number
+          short_name
+          long_name
           short_description
-          render_as
+          long_description
+          display_type
+          mongo_type
+          default
+          placeholder
+          permitted_values
+          weight
+          instant_facet
+          required
+          public
+          complete_from {
+            all
+            current
+            entities
+          }
+          subfields {
+            field_number
+            short_name
+            long_name
+            short_description
+            long_description
+            display_type
+            mongo_type
+            default
+            placeholder
+            permitted_values
+            weight
+            instant_facet
+            required
+            public
+            complete_from {
+              all
+              current
+              entities
+            }
+          }
         }
       }
     }
@@ -564,6 +619,7 @@ export const query = graphql`
         date_published
         report_number
         title
+        description
         url
         image_url
         cloudinary_id
@@ -574,6 +630,8 @@ export const query = graphql`
         epoch_date_submitted
         language
         tags
+        text_inputs
+        text_outputs
       }
     }
     allMongodbTranslationsReportsEs(filter: { report_number: { in: $report_numbers } })

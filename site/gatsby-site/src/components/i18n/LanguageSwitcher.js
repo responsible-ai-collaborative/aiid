@@ -1,7 +1,6 @@
 import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
-import { useLocalization } from 'gatsby-theme-i18n';
-import { navigate } from 'gatsby';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from './useLocalizePath';
 import { Badge } from 'flowbite-react';
 
@@ -17,7 +16,7 @@ export default function LanguageSwitcher({ className = '' }) {
 
     const newPath = localizedPath({ path, language });
 
-    navigate(newPath + search);
+    window.location.href = newPath + search;
   };
 
   return (
@@ -44,7 +43,7 @@ export default function LanguageSwitcher({ className = '' }) {
             onClick={() => setLanguage(locale.code)}
             className="flex"
           >
-            {locale.name}
+            {locale.localName}
             {locale.code === 'fr' && (
               <span className="ml-2 rounded">
                 <Badge>Beta</Badge>

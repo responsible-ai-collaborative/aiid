@@ -13,14 +13,14 @@ import isString from 'lodash/isString';
 import { stripMarkdown } from 'utils/typography';
 import isArray from 'lodash/isArray';
 import { Trans, useTranslation } from 'react-i18next';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import { graphql, useStaticQuery } from 'gatsby';
 import { processEntities, RESPONSE_TAG } from '../../utils/entities';
 import SubmissionWizard from '../submissions/SubmissionWizard';
 import getSourceDomain from 'utils/getSourceDomain';
-import AiidHelmet from 'components/AiidHelmet';
 import { StyledHeading } from 'components/styles/Docs';
+import { Helmet } from 'react-helmet';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -56,16 +56,26 @@ const SubmitForm = () => {
 
   const [query] = useQueryParams(queryConfig);
 
-  const [submission, setSubmission] = useState({
+  const initialValues = {
+    url: '',
+    title: '',
+    incident_date: '',
+    date_published: '',
+    date_downloaded: '',
     image_url: '',
+    incident_id: '',
     text: '',
     authors: [],
     submitters: [],
     developers: [],
     deployers: [],
     harmed_parties: [],
-    incident_id: '',
-  });
+    editor_notes: '',
+    language: 'en',
+    tags: [],
+  };
+
+  const [submission, setSubmission] = useState(initialValues);
 
   const [isIncidentResponse, setIsIncidentResponse] = useState(false);
 
@@ -127,6 +137,7 @@ const SubmitForm = () => {
     addToast({
       message: t(`Unable to upload: `) + reason,
       severity: SEVERITY.danger,
+      error: _err,
     });
   };
 
@@ -184,6 +195,8 @@ const SubmitForm = () => {
 
       await insertSubmission({ variables: { submission } });
 
+      setSubmission(initialValues);
+
       addToast({
         message: (
           <Trans i18n={i18n} ns="submit">
@@ -210,9 +223,9 @@ const SubmitForm = () => {
 
   return (
     <>
-      <AiidHelmet>
+      <Helmet>
         <title>{t(isIncidentResponse ? 'New Incident Response' : 'New Incident Report')}</title>
-      </AiidHelmet>
+      </Helmet>
       <div className={'titleWrapper'}>
         <StyledHeading data-cy="submit-form-title">
           <Trans ns="submit">
@@ -258,7 +271,11 @@ const SubmitForm = () => {
         )}
       </p>
       <div className="my-5">
-        <SubmissionWizard submitForm={handleSubmit} initialValues={submission} />
+        <SubmissionWizard
+          submitForm={handleSubmit}
+          initialValues={submission}
+          urlFromQueryString={query.url}
+        />
 
         <p className="mt-4">
           <Trans ns="submit" i18nKey="submitReviewDescription">

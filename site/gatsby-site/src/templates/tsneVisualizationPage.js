@@ -4,14 +4,14 @@ import Layout from 'components/Layout';
 import { StyledHeading } from 'components/styles/Docs';
 import TsneVisualization from 'components/cite/TsneVisualization';
 import { Trans, useTranslation } from 'react-i18next';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 function TsneVisulizationPage(props) {
   const { t } = useTranslation();
 
   const spatialIncidents = props.pageContext.spatialIncidents;
 
-  const classifications = props.pageContext.classifications;
+  const classifications = props.pageContext.classifications.filter((c) => c.publish);
 
   const csetClassifications = props.pageContext.csetClassifications;
 
@@ -21,16 +21,14 @@ function TsneVisulizationPage(props) {
 
   const metaDescription = t('Spatial Visualization');
 
-  const canonicalUrl = 'https://incidentdatabase.ai/summaries/spatial';
-
   return (
-    <Layout {...props}>
-      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl }}>
+    <Layout className="max-w-full w-full" {...props}>
+      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
 
       <div className={'titleWrapper'}>
-        <StyledHeading>{metaDescription}</StyledHeading>
+        <StyledHeading>{t(metaDescription)}</StyledHeading>
       </div>
 
       <TsneVisualization

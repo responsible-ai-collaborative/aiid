@@ -90,6 +90,8 @@ const StepOne = (props) => {
           submitForm={handleSubmit}
           validateAndSubmitForm={props.validateAndSubmitForm}
           submissionFailed={props.submissionFailed}
+          submissionComplete={props.submissionComplete}
+          urlFromQueryString={props.urlFromQueryString}
         />
       </Formik>
     </StepContainer>
@@ -103,6 +105,8 @@ const FormDetails = ({
   submitForm,
   validateAndSubmitForm,
   submissionFailed,
+  submissionComplete,
+  urlFromQueryString,
 }) => {
   const { t } = useTranslation(['submit']);
 
@@ -120,6 +124,7 @@ const FormDetails = ({
     setFieldTouched,
     isValid,
     validateForm,
+    resetForm,
   } = useFormikContext();
 
   useEffect(() => {
@@ -129,10 +134,21 @@ const FormDetails = ({
   }, [values.date_downloaded]);
 
   useEffect(() => {
-    if (submissionFailed) {
+    if (submissionFailed || submissionComplete) {
       setIsSubmitting(false);
+      setSubmitCount(0);
     }
-  }, [submissionFailed]);
+
+    if (submissionComplete) {
+      resetForm();
+    }
+  }, [submissionFailed, submissionComplete]);
+
+  useEffect(() => {
+    if (urlFromQueryString) {
+      fetchNews(urlFromQueryString);
+    }
+  }, [urlFromQueryString]);
 
   const fetchNews = async (url) => {
     await parseNewsUrl(url);
@@ -313,7 +329,11 @@ const FormDetails = ({
               value={values.text}
               onChange={(value) => {
                 setFieldValue('text', value);
-                setFieldTouched('text', true);
+                if (!submissionComplete) {
+                  setFieldTouched('text', true);
+                } else if (value === '') {
+                  setFieldTouched('text', false);
+                }
               }}
             />
           </div>

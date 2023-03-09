@@ -57,7 +57,7 @@
     }
 
     .tw-layout {
-        @apply flex md:flex content-between bg-white 767px:block border-none;
+        @apply flex md:flex content-between bg-white md:block border-none;
     }
 
     .tw-layout .item > a:hover {
@@ -72,54 +72,17 @@
         @apply xl:max-w-[1140px] md:max-w-[520px] lg:max-w-[960px] sm:max-w-[540px];
     }
 
-    .tw-container-xl {
-        @apply ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-[1140px] xl:max-w-[1320px];
-    }
-
     .tw-bg-secondary {
         @apply bg-secondary-gray opacity-100 text-text-light-gray;
     }
 
     .tw-hidden-mobile {
-        @apply 767px:hidden;
+        @apply 767px:hidden ;
     }
 
     .tw-col-auto {
         @apply flex-0-0-auto w-auto max-w-none;
     }
-
-    .tw-nav-header-container {
-        @apply flex flex-row justify-between items-center w-full;
-    }
-
-    .tw-nav-header-container .nav-bar-header {
-        @apply order-[0];
-    }
-
-    .tw-nav-header-container .divider {
-        @apply w-[1px];
-    }
-
-    .tw-nav-header-container .nav-bar-brand {
-        @apply items-center flex p-0;
-    }
-
-    .tw-nav-header-container .nav-bar-brand > * {
-        @apply shrink-0;
-    }
-
-    #desktopLogo {
-      @apply ml-[10px] mr-[10px];
-    }
-
-    .tw-nav-header-container .nav-bar-brand > .headerTitle {
-        @apply shrink;
-    }
-
-    .tw-skip-to-content {
-        @apply text-white bg-transparent relative order-1 ml-auto opacity-0 w-0 h-0 overflow-hidden focus:opacity-100 focus:py-[0ch] focus:px-[1ch] focus:w-[unset] focus:h-[unset]  767px:text-xs;
-    }
-
 }
 
 @layer components {
@@ -195,7 +158,7 @@
     }
 
     .tw-btn-menu {
-        @apply 767px:hidden w-[100px] h-10 fixed left-56 top-1/2 rotate-90 z-10;
+        @apply md:hidden w-[100px] h-10 fixed left-56 top-1/2 rotate-90 z-10;
     }
 
     .tw-btn-menu.collapsed {
@@ -351,8 +314,8 @@
         @apply flex flex-row justify-between items-center order-2;
     }
 
-    .tw-header-icons-container .paddingAround {
-        @apply pr-2;
+    .tw-header-icons-container > *, .tw-social-media-icons {
+        @apply mx-2 inline-block;
     }
 
     .tw-footer-link {
@@ -478,6 +441,25 @@
         @apply text-gray-900;
     }
 
+    #sidebar-tree::-webkit-scrollbar {
+        @apply w-1;
+    }
+    #sidebar-tree::-webkit-scrollbar-thumb {
+        @apply bg-gray-300;
+    }
+
+    /* For some reason, on Firefox 
+     * the tooltip shows up _under_ the scrollbar.
+     * The easy fix is to translate the tooltip
+     * so that it no longer overlaps the edge of the sidebar. 
+     */
+    #sidebar-tree *[data-testid="flowbite-tooltip"] {
+      @apply translate-x-4;
+    }
+    #sidebar-tree *[data-testid="flowbite-tooltip-target"] {
+      @apply items-center flex;
+    }
+
     /* TAILWIND Sidebar ends */
 
     .tw-hbox {
@@ -529,19 +511,19 @@
     }
 
     .tw-hits-container {
-        @apply grid grid-cols-1 min-576px:grid-cols-2 min-767px:grid-cols-3 min-992px:grid-cols-4 gap-1.5;
+        @apply grid grid-cols-1 min-576px:grid-cols-2 md:grid-cols-3 min-992px:grid-cols-4 gap-1.5;
     }
 
     .tw-hits-container.details {
-        @apply grid md:grid-cols-4 gap-[6px];
+        @apply grid md:grid-cols-4 gap-2;
     }
 
     .tw-hits-container.compact {
-        @apply grid md:grid-cols-4 gap-[6px];
+        @apply grid md:grid-cols-4 gap-2;
     }
 
     .tw-hits-container.list {
-        @apply grid grid-cols-1 gap-[6px];
+        @apply grid grid-cols-1 gap-2;
     }
 
     /* TAILWIND AIS PAGINATION START */

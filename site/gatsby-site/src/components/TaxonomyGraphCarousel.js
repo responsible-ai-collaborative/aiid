@@ -1,7 +1,9 @@
 import React from 'react';
 import { Carousel } from 'flowbite-react';
-import BillboardChart from 'react-billboardjs';
-import { donut } from 'billboard.js';
+import bb, { donut } from 'billboard.js';
+import BillboardJS from '@billboard.js/react';
+
+import { getClassificationValue } from 'utils/classifications';
 
 const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
   const taxaData = data.allMongodbAiidprodTaxa;
@@ -36,24 +38,28 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
   //  }
   if (!classificationsLoading && classificationsData?.nodes) {
     for (const classification of classificationsData.nodes) {
-      if (!classification.classifications.Publish) {
-        continue;
-      }
       if (classification.namespace != namespace) {
         continue;
       }
-      for (const axis in classification.classifications) {
-        categoryCounts[axis] ||= {};
-        const value = classification.classifications[axis];
+      if (classification.attributes) {
+        if (getClassificationValue(classification, 'Publish') === false) {
+          continue;
+        }
+        for (const attribute of classification.attributes) {
+          const axis = attribute.short_name;
 
-        if (Array.isArray(value)) {
-          for (const category of value) {
-            categoryCounts[axis][category] ||= 0;
-            categoryCounts[axis][category] += 1;
+          categoryCounts[axis] ||= {};
+          const value = getClassificationValue(classification, axis);
+
+          if (Array.isArray(value)) {
+            for (const category of value) {
+              categoryCounts[axis][category] ||= 0;
+              categoryCounts[axis][category] += 1;
+            }
+          } else {
+            categoryCounts[axis][value] ||= 0;
+            categoryCounts[axis][value] += 1;
           }
-        } else {
-          categoryCounts[axis][value] ||= 0;
-          categoryCounts[axis][value] += 1;
         }
       }
     }
@@ -92,7 +98,7 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
           {!classificationsLoading &&
             classificationsData?.nodes &&
             axes.map((axis, index) => {
-              const dbAxis = axis.replace(/ /g, '_');
+              const dbAxis = axis;
 
               const columns = Object.keys(categoryCounts[dbAxis])
                 .map((category) => [category, categoryCounts[dbAxis][category]])
@@ -100,26 +106,27 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
                   a[0] == 'All Others' ? 1 : b[0] == 'All Others' ? -1 : b[1] - a[1]
                 );
 
+              const options = {
+                data: {
+                  columns,
+                  type: donut(),
+                  onclick: (column) => {
+                    if (column.name == 'All Others') {
+                      window.open('/apps/discover');
+                    } else {
+                      window.open(
+                        '/apps/discover?classifications=' + [namespace, axis, column.name].join(':')
+                      );
+                    }
+                  },
+                },
+              };
+
               return (
                 <div key={index} className="h-96">
                   <h3 className="text-base text-center">{axis}</h3>
                   <div className="h-96">
-                    <BillboardChart
-                      data={{
-                        columns,
-                        type: donut(),
-                        onclick: (column) => {
-                          if (column.name == 'All Others') {
-                            window.open('/apps/discover');
-                          } else {
-                            window.open(
-                              '/apps/discover?classifications=' +
-                                [namespace, axis, column.name].join(':')
-                            );
-                          }
-                        },
-                      }}
-                    />
+                    <BillboardJS bb={bb} options={{ ...options }} />
                   </div>
                 </div>
               );

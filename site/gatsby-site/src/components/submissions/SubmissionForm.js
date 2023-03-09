@@ -4,8 +4,9 @@ import { Spinner } from 'flowbite-react';
 import { useFormikContext } from 'formik';
 import TextInputGroup from '../../components/forms/TextInputGroup';
 import TagsInputGroup from '../../components/forms/TagsInputGroup';
+import PreviewImageInputGroup from '../../components/forms/PreviewImageInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { getCloudinaryPublicID, PreviewImageInputGroup } from '../../utils/cloudinary';
+import { getCloudinaryPublicID } from '../../utils/cloudinary';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import Label from '../forms/Label';
 import IncidentIdField from '../../components/incidents/IncidentIdField';
@@ -112,6 +113,7 @@ const SubmissionForm = () => {
         addToast({
           message: <>{message}</>,
           severity: SEVERITY.danger,
+          error: e,
         });
       }
 
@@ -153,8 +155,8 @@ const SubmissionForm = () => {
           placeholder={t('Report URL')}
           addOnComponent={
             <Button
-              className="outline-secondary rounded-l-none"
-              disabled={!!errors.url || !touched.url || parsingNews}
+              className="outline-secondary rounded-l-none whitespace-nowrap"
+              disabled={!!errors.url || !values?.url || parsingNews}
               onClick={() => parseNewsUrl(values.url)}
               data-cy="fetch-info"
             >
@@ -306,6 +308,14 @@ const SubmissionForm = () => {
           </Form.Select>
         </Form.Group>
 
+        <TagsInputGroup
+          name="tags"
+          label={t('Tags')}
+          icon={faTag}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
+
         <IncidentIdField
           name="incident_id"
           className="mt-3"
@@ -320,82 +330,84 @@ const SubmissionForm = () => {
         />
 
         {!values.incident_id && (
-          <TextInputGroup
-            name="incident_date"
-            label={t('Incident Date')}
-            icon={faCalendar}
-            placeholder={t('Incident Date')}
-            type="date"
-            className="mt-3"
-            disabled={values.incident_id}
-            {...TextInputGroupProps}
-          />
+          <>
+            <hr className="my-4" />
+            <h3 className="text-lg">Incident Data</h3>
+            <TextInputGroup
+              name="incident_title"
+              label={t('Incident Title')}
+              icon={faTenge}
+              placeholder={t('Incident title')}
+              className="mt-3"
+              {...TextInputGroupProps}
+            />
+            <TextInputGroup
+              name="incident_date"
+              label={t('Incident Date')}
+              icon={faCalendar}
+              placeholder={t('Incident Date')}
+              type="date"
+              className="mt-3"
+              disabled={values.incident_id}
+              {...TextInputGroupProps}
+            />
+            <TextInputGroup
+              name="description"
+              label={t('Description')}
+              icon={faAlignLeft}
+              type="textarea"
+              placeholder={t('Incident Description')}
+              rows={3}
+              className="mt-3"
+              {...TextInputGroupProps}
+            />
+            <TagsInputGroup
+              name="incident_editors"
+              label={t('Editors')}
+              icon={faPenNib}
+              className="mt-3"
+              {...TextInputGroupProps}
+            />
+            <TagsInputGroup
+              name="developers"
+              label={t('Alleged developer of AI system')}
+              icon={faCode}
+              placeholder={t('Who created or built the technology involved in the incident?')}
+              className="mt-3"
+              {...TextInputGroupProps}
+            />
+
+            <TagsInputGroup
+              name="deployers"
+              label={t('Alleged deployer of AI system')}
+              icon={faHandPointRight}
+              placeholder={t('Who employed or was responsible for the technology?')}
+              className="mt-3"
+              {...TextInputGroupProps}
+            />
+
+            <TagsInputGroup
+              name="harmed_parties"
+              label={t('Alleged harmed or nearly harmed parties')}
+              icon={faBolt}
+              placeholder={t('Who experienced negative impacts?')}
+              className="mt-3"
+              {...TextInputGroupProps}
+            />
+            <hr />
+          </>
         )}
 
-        <details className="mt-3">
-          <summary data-cy="extra-fields">{t('Tell us more...')}</summary>
-
-          <TagsInputGroup
-            name="tags"
-            label={t('Tags')}
-            icon={faTag}
-            className="mt-3"
-            {...TextInputGroupProps}
-          />
-
-          {!values.incident_id && (
-            <>
-              <TextInputGroup
-                name="description"
-                label={t('Description')}
-                icon={faAlignLeft}
-                type="textarea"
-                placeholder={t('Incident Description')}
-                rows={3}
-                className="mt-3"
-                {...TextInputGroupProps}
-              />
-
-              <TagsInputGroup
-                name="developers"
-                label={t('Alleged developer of AI system')}
-                icon={faCode}
-                placeholder={t('Who created or built the technology involved in the incident?')}
-                className="mt-3"
-                {...TextInputGroupProps}
-              />
-
-              <TagsInputGroup
-                name="deployers"
-                label={t('Alleged deployer of AI system')}
-                icon={faHandPointRight}
-                placeholder={t('Who employed or was responsible for the technology?')}
-                className="mt-3"
-                {...TextInputGroupProps}
-              />
-
-              <TagsInputGroup
-                name="harmed_parties"
-                label={t('Alleged harmed or nearly harmed parties')}
-                icon={faBolt}
-                placeholder={t('Who experienced negative impacts?')}
-                className="mt-3"
-                {...TextInputGroupProps}
-              />
-            </>
-          )}
-
-          <TextInputGroup
-            name="editor_notes"
-            label={t('Editor Notes')}
-            icon={faStickyNote}
-            as="textarea"
-            placeholder={t('Optional context and notes about the incident')}
-            rows={8}
-            className="mt-3"
-            {...TextInputGroupProps}
-          />
-        </details>
+        <TextInputGroup
+          name="editor_notes"
+          label={t('Editor Notes')}
+          icon={faStickyNote}
+          as="textarea"
+          placeholder={t('Optional context and notes about the incident')}
+          rows={8}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
       </Form>
     </div>
   );

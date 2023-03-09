@@ -29,6 +29,24 @@ const plugins = [
   `gatsby-transformer-sharp`,
   'gatsby-plugin-react-helmet',
   {
+    resolve: 'gatsby-plugin-mdx',
+    options: {
+      gatsbyRemarkPlugins: [
+        {
+          resolve: 'gatsby-remark-images',
+          options: {
+            maxWidth: 1035,
+            sizeByPixelDensity: true,
+          },
+        },
+        {
+          resolve: 'gatsby-remark-copy-linked-files',
+        },
+      ],
+      extensions: ['.mdx', '.md'],
+    },
+  },
+  {
     resolve: 'gatsby-source-filesystem',
     options: {
       name: 'docs',
@@ -47,24 +65,6 @@ const plugins = [
     options: {
       name: 'images',
       path: path.join(__dirname, `src`, `images`),
-    },
-  },
-  {
-    resolve: 'gatsby-plugin-mdx',
-    options: {
-      gatsbyRemarkPlugins: [
-        {
-          resolve: 'gatsby-remark-images',
-          options: {
-            maxWidth: 1035,
-            sizeByPixelDensity: true,
-          },
-        },
-        {
-          resolve: 'gatsby-remark-copy-linked-files',
-        },
-      ],
-      extensions: ['.mdx', '.md'],
     },
   },
   {
@@ -89,7 +89,6 @@ const plugins = [
         'duplicates',
         'taxa',
         'classifications',
-        'resources',
         'reports',
         'entities',
       ],
@@ -181,7 +180,7 @@ const plugins = [
   },
   'gatsby-plugin-use-query-params',
   {
-    resolve: `@robinmetral/gatsby-source-s3`,
+    resolve: `gatsby-source-s3`,
     options: {
       aws: {
         // This AWS IAM user has been provisioned no permissions, but the plugin requires a user to
@@ -220,6 +219,8 @@ const plugins = [
           'leaderboard',
           'entities',
           'account',
+          'variants',
+          'footer',
         ],
         debug: process.env.GATSBY_I18N_DEBUG,
         nsSeparator: false,
@@ -246,10 +247,16 @@ module.exports = {
     }, // backwards compatible
     headerTitle: config.header.title,
     githubUrl: config.header.githubUrl,
+    facebookUrl: config.header.facebookUrl,
+    linkedInUrl: config.header.linkedInUrl,
     helpUrl: config.header.helpUrl,
     tweetText: config.header.tweetText,
     headerLinks: config.header.links,
     siteUrl: config.gatsby.siteUrl,
   },
   plugins: plugins,
+  trailingSlash: `always`,
+  flags: {
+    DEV_SSR: true,
+  },
 };

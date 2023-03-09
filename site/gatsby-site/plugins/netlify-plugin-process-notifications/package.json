@@ -1,0 +1,18 @@
+{
+  "name": "netlify-plugin-process-notifications",
+  "version": "0.0.1",
+  "description": "Netlify Build plugin - This plugin process pending notifications",
+  "type": "module",
+  "exports": "./index.js",
+  "main": "./index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pablo Costa <pablo@botsfactory.io>",
+  "dependencies": {
+    "@apollo/client": "~3.5.6",
+    "realm-web": "^1.3.0",
+    "cross-fetch": "^3.1.5"
+  },
+  "license": "MIT"
+}

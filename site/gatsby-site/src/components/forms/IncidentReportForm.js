@@ -6,7 +6,8 @@ import * as yup from 'yup';
 import TextInputGroup from '../../components/forms/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { dateRegExp } from '../../utils/date';
-import { getCloudinaryPublicID, PreviewImageInputGroup } from '../../utils/cloudinary';
+import { getCloudinaryPublicID } from '../../utils/cloudinary';
+import PreviewImageInputGroup from 'components/forms/PreviewImageInputGroup';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { graphql, useStaticQuery } from 'gatsby';
 import Label from './Label';
@@ -15,7 +16,7 @@ import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
 import getSourceDomain from '../../utils/getSourceDomain';
 import supportedLanguages from '../../components/i18n/languages.json';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -32,6 +33,7 @@ import {
   faTenge,
 } from '@fortawesome/free-solid-svg-icons';
 import IncidentsField from 'components/incidents/IncidentsField';
+import VariantForm from 'components/variants/VariantForm';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -94,6 +96,8 @@ export const schema = yup.object().shape({
   editor_notes: yup.string().nullable(),
   incident_ids: yup.array().of(yup.number().positive()),
   is_incident_report: yup.boolean().required(),
+  text_inputs: yup.string().nullable(),
+  text_outputs: yup.string().nullable(),
 });
 
 const IncidentReportForm = () => {
@@ -196,6 +200,7 @@ const IncidentReportForm = () => {
         addToast({
           message: <>{message}</>,
           severity: SEVERITY.danger,
+          error: e,
         });
       }
 
@@ -222,8 +227,8 @@ const IncidentReportForm = () => {
           icon={faLink}
           addOnComponent={
             <Button
-              className="outline-secondary"
-              disabled={!!errors.url || !touched.url || parsingNews}
+              className="outline-secondary whitespace-nowrap"
+              disabled={!!errors.url || !values?.url || parsingNews}
               onClick={() => parseNewsUrl(values.url)}
             >
               {!parsingNews ? (
@@ -363,26 +368,28 @@ const IncidentReportForm = () => {
             <FontAwesomeIcon fixedWidth icon={faTag} title={t('Tags')} className="mb-2 mr-1" />
             <Label popover="tags" label={t('Tags')} />
           </div>
-          <Typeahead
-            id="submit-report-tags"
-            inputProps={{ id: 'submit-report-tags-input' }}
-            allowNew
-            multiple
-            onBlur={handleBlur}
-            onChange={(value) => {
-              setFieldTouched('tags', true);
-              setFieldValue(
-                'tags',
-                value.map((v) => (v.label ? v.label : v))
-              );
-            }}
-            selected={values.tags}
-            options={tags}
-            placeholder="Choose several tags..."
-          />
+          <div className="bootstrap">
+            <Typeahead
+              id="submit-report-tags"
+              inputProps={{ id: 'submit-report-tags-input' }}
+              allowNew
+              multiple
+              onBlur={handleBlur}
+              onChange={(value) => {
+                setFieldTouched('tags', true);
+                setFieldValue(
+                  'tags',
+                  value.map((v) => (v.label ? v.label : v))
+                );
+              }}
+              selected={values.tags}
+              options={tags}
+              placeholder="Choose several tags..."
+            />
+          </div>
         </Form.Group>
 
-        <div className="mt-3">
+        <div className="mt-3 bootstrap">
           <Label popover={'incident_ids'} label="Incident IDs" />
           <IncidentsField id="incident_ids" name="incident_ids" />
         </div>
@@ -391,6 +398,7 @@ const IncidentReportForm = () => {
           name="editor_notes"
           label="Editor Notes"
           icon={faAlignLeft}
+          type="textarea"
           as="textarea"
           rows={8}
           className="mt-3"
@@ -443,6 +451,12 @@ const IncidentReportForm = () => {
               </div>
             );
           })}
+
+        <h4 className="mt-3">Variant fields</h4>
+
+        <div className="mt-3">
+          <VariantForm />
+        </div>
       </Form>
     </div>
   );

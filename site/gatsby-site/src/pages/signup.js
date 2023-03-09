@@ -108,6 +108,7 @@ const SignUp = (props) => {
                       </label>
                     ),
                     severity: SEVERITY.danger,
+                    error: e,
                   });
                 }
 
@@ -197,6 +198,7 @@ const SignUp = (props) => {
                       </label>
                     ),
                     severity: SEVERITY.danger,
+                    error: e,
                   });
                 }
 

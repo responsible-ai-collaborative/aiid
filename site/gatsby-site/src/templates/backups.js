@@ -8,7 +8,7 @@ import Row from 'react-bootstrap/Row';
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 const Backups = ({ pageContext, ...props }) => {
   const { backups } = pageContext;
@@ -19,7 +19,7 @@ const Backups = ({ pageContext, ...props }) => {
 
   return (
     <Layout {...props}>
-      <AiidHelmet canonicalUrl={'/research/snapshots'}>
+      <AiidHelmet path={props.location.pathname}>
         <title>Database Backups and Snapshots</title>
       </AiidHelmet>
       <div className="titleWrapper">

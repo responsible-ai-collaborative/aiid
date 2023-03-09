@@ -24,6 +24,7 @@ const reports = [
     epoch_date_published: 1431993600,
     epoch_date_submitted: 1559347200,
     image_url: 'http://url.com',
+    cloudinary_id: 'http://cloudinary.com',
     language: 'en',
     report_number: 1,
     source_domain: 'blogs.wsj.com',
@@ -47,6 +48,7 @@ const reports = [
     epoch_date_published: 1431993600,
     epoch_date_submitted: 1559347200,
     image_url: 'http://url.com',
+    cloudinary_id: 'http://cloudinary.com',
     language: 'es',
     report_number: 2,
     source_domain: 'blogs.wsj.com',
@@ -64,16 +66,19 @@ const classifications = [
     _id: '60dd465f80935bc89e6f9b00',
     incident_id: 1,
     namespace: 'CSET',
-    classifications: {
-      Annotator: '1',
-      'Annotation Status': '6. Complete and final',
-      Reviewer: '5',
-      'Quality Control': false,
-      'Full Description': 'On December 5, 2018, a robot punctured.',
-      'Named Entities': ['Amazon'],
-      'Harm Type': ['Harm to physical health/safety', 'Harm to physical property'],
-      Publish: true,
-    },
+    attributes: [
+      { short_name: 'Annotator', value_json: '"1"' },
+      { short_name: 'Annotation Status', value_json: '"6. Complete and final"' },
+      { short_name: 'Reviewer', value_json: '"5"' },
+      { short_name: 'Quality Control', value_json: 'false' },
+      { short_name: 'Full Description', value_json: '"On December 5, 2018, a robot punctured."' },
+      { short_name: 'Named Entities', value_json: '["Amazon"]' },
+      {
+        short_name: 'Harm Type',
+        value_json: '["Harm to physical health/safety", "Harm to physical property"]',
+      },
+      { short_name: 'Publish', value_json: 'true' },
+    ],
     notes: null,
   },
 ];
@@ -133,10 +138,39 @@ describe('Algolia', () => {
       }),
     };
 
+    const projection = {
+      _id: 1,
+      authors: 1,
+      date_downloaded: 1,
+      date_modified: 1,
+      date_published: 1,
+      date_submitted: 1,
+      description: 1,
+      epoch_date_downloaded: 1,
+      epoch_date_modified: 1,
+      epoch_date_published: 1,
+      epoch_date_submitted: 1,
+      image_url: 1,
+      language: 1,
+      report_number: 1,
+      source_domain: 1,
+      submitters: 1,
+      title: 1,
+      url: 1,
+      plain_text: 1,
+      editor_notes: 1,
+      cloudinary_id: 1,
+      is_incident_report: 1,
+      flag: 1,
+    };
+
     const reportsCollection = {
-      find: cy.stub().returns({
-        toArray: cy.stub().resolves(reports),
-      }),
+      find: cy
+        .stub()
+        .withArgs({}, { projection })
+        .returns({
+          toArray: cy.stub().resolves(reports),
+        }),
     };
 
     const duplicatesCollection = {
@@ -193,6 +227,24 @@ describe('Algolia', () => {
 
         stub.withArgs('instant_search-es-featured').returns(esIndexReplica);
         stub.withArgs('instant_search-en-featured').returns(enIndexReplica);
+
+        stub.withArgs('instant_search-es_epoch_incident_date_desc').returns(esIndexReplica);
+        stub.withArgs('instant_search-en_epoch_incident_date_desc').returns(enIndexReplica);
+
+        stub.withArgs('instant_search-es_epoch_incident_date_asc').returns(esIndexReplica);
+        stub.withArgs('instant_search-en_epoch_incident_date_asc').returns(enIndexReplica);
+
+        stub.withArgs('instant_search-es_epoch_date_published_desc').returns(esIndexReplica);
+        stub.withArgs('instant_search-en_epoch_date_published_desc').returns(enIndexReplica);
+
+        stub.withArgs('instant_search-es_epoch_date_published_asc').returns(esIndexReplica);
+        stub.withArgs('instant_search-en_epoch_date_published_asc').returns(enIndexReplica);
+
+        stub.withArgs('instant_search-es_epoch_date_submitted_desc').returns(esIndexReplica);
+        stub.withArgs('instant_search-en_epoch_date_submitted_desc').returns(enIndexReplica);
+
+        stub.withArgs('instant_search-es_epoch_date_submitted_asc').returns(esIndexReplica);
+        stub.withArgs('instant_search-en_epoch_date_submitted_asc').returns(enIndexReplica);
 
         return stub;
       })(),
