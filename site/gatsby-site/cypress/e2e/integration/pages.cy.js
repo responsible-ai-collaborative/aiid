@@ -1,10 +1,8 @@
-const { switchLocalizedPath } = require('../../../i18n');
+import { switchLocalizedPath } from '../../../i18n';
 
-const config = require('../../../config');
+import config from '../../../config';
 
-// To get these tests passing locally you either need a complete build or enabling the DEV_SSR flag
-
-describe('SEO', () => {
+describe('Pages', () => {
   const baseUrl = config.gatsby.siteUrl;
 
   const paths = [
@@ -29,7 +27,7 @@ describe('SEO', () => {
     '/cite/1/',
     '/entities/',
     '/entities/facebook/',
-    '/blog/the-first-taxonomy-of-ai-incidents/', // post template
+    '/blog/incident-report-2023-january/',
     '/taxonomy/cset/',
     '/summaries/wordcounts/',
     '/about/', // doc template
@@ -52,12 +50,41 @@ describe('SEO', () => {
 
   paths.forEach((path) => {
     languages.forEach(({ code }) => {
-      it(`/${code}${path} Should have proper SEO Tags`, () => {
+      it(`/${code}${path} Should not have errors`, () => {
         const canonicalPath = switchLocalizedPath({ newLang: code, path });
 
-        const url = baseUrl + canonicalPath;
+        cy.visit(canonicalPath, {
+          onBeforeLoad(win) {
+            cy.stub(win.console, 'error').as('consoleError');
+          },
+        });
 
-        cy.visit(canonicalPath);
+        cy.waitForStableDOM();
+
+        // check for runtime errors
+
+        cy.get('@consoleError').then((consoleError) => {
+          const noHydrationErrors = consoleError
+            .getCalls()
+            .every((call) =>
+              call.args.every(
+                (arg) => !arg.includes('did not match') || !arg.includes('Minified React error')
+              )
+            );
+
+          expect(noHydrationErrors, 'No hydration errors').to.be.true;
+
+          // This should be enabled once the app is free of warnings
+
+          // expect(
+          //   consoleError.getCalls().length,
+          //   'No runtime errors: ' + JSON.stringify(consoleError.getCalls())
+          // ).eq(0);
+        });
+
+        // check for SEO tags
+
+        const url = baseUrl + canonicalPath;
 
         cy.get('[rel="canonical"]').invoke('attr', 'href').should('equal', url);
 
