@@ -73,11 +73,11 @@ const ReportCard = ({ item, className = '', incidentId }) => {
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
         >
-          <div role="presentation" onClick={toggleReadMore} onKeyDown={toggleReadMoreKeyDown}>
+          <button onClick={toggleReadMore} onKeyDown={toggleReadMoreKeyDown}>
             <h5 className="max-w-full cursor-pointer text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full hover:text-primary-blue">
               <Trans ns="landing">{item.title}</Trans>
             </h5>
-          </div>
+          </button>
           <div className="flex justify-between">
             <WebArchiveLink url={item.url} className="text-dark-gray">
               {item.source_domain} &middot;{' '}
@@ -113,6 +113,7 @@ const ReportCard = ({ item, className = '', incidentId }) => {
           </div>
         </div>
         <div
+          className="cursor-default"
           role={'presentation'}
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
