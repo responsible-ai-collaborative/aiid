@@ -73,11 +73,17 @@ const ReportCard = ({ item, className = '', incidentId }) => {
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
         >
-          <button onClick={toggleReadMore} onKeyDown={toggleReadMoreKeyDown}>
-            <h5 className="max-w-full cursor-pointer text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full hover:text-primary-blue">
-              <Trans ns="landing">{item.title}</Trans>
-            </h5>
-          </button>
+          <div className="flex justify-between">
+            <button
+              className="w-3/4 text-left"
+              onClick={toggleReadMore}
+              onKeyDown={toggleReadMoreKeyDown}
+            >
+              <h5 className="max-w-full cursor-pointer text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full hover:text-primary-blue">
+                <Trans ns="landing">{item.title}</Trans>
+              </h5>
+            </button>
+          </div>
           <div className="flex justify-between">
             <WebArchiveLink url={item.url} className="text-dark-gray">
               {item.source_domain} &middot;{' '}
