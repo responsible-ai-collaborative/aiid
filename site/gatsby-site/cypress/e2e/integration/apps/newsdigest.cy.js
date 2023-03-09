@@ -1,4 +1,5 @@
 import { format } from 'date-fns';
+import { maybeIt } from '../../../support/utils';
 
 import newsArticles from '../../../fixtures/candidates/newsArticles.json';
 
@@ -9,7 +10,7 @@ describe('Incidents App', () => {
     cy.visit(url);
   });
 
-  it('Should loads candidate cards', () => {
+  it('Should load candidate cards', () => {
     newsArticles.data.candidates[0].date_published = format(new Date(), 'yyyy-MM-dd');
     newsArticles.data.candidates[1].date_published = format(new Date(), 'yyyy-MM-dd');
 
@@ -44,7 +45,9 @@ describe('Incidents App', () => {
     });
   });
 
-  it('Should dismiss and restore items', () => {
+  maybeIt('Should dismiss and restore items', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
     newsArticles.data.candidates[0].date_published = format(new Date(), 'yyyy-MM-dd');
     newsArticles.data.candidates[1].date_published = format(new Date(), 'yyyy-MM-dd');
 

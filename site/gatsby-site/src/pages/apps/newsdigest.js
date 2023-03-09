@@ -160,7 +160,7 @@ export default function NewsSearchPage(props) {
 
   return (
     <Layout {...props}>
-      <AiidHelmet>
+      <AiidHelmet path={props.location.pathname}>
         <title>{title}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
