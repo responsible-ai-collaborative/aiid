@@ -28,8 +28,7 @@ const ConfirmEmail = (props) => {
         })
         .catch((e) => {
           setPageMessage(t('An unknown error has ocurred'));
-          // eslint-disable-next-line no-undef
-          if (Rollbar) {
+          if ('Rollbar' in window) {
             Rollbar.error(e);
           }
         });
