@@ -163,7 +163,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
       addToast({
         message: (
           <Trans i18n={i18n}>
-            Pleassss{' '}
+            Please{' '}
             <Link to={localizePath({ path: `/login?redirectTo=${props?.location?.pathname}` })}>
               log in
             </Link>{' '}
