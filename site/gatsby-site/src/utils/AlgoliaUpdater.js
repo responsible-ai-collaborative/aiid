@@ -303,7 +303,7 @@ class AlgoliaUpdater {
         const featuredReplicaIndex = await this.algoliaClient.initIndex(featuredReplicaIndexName);
 
         await featuredReplicaIndex.setSettings({
-          attributesForFaceting: ['is_incident_report'],
+          attributesForFaceting: ['is_incident_report', 'featured'],
           ranking: ['desc(featured)', 'desc(text)'],
         });
 

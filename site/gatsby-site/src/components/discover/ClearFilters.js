@@ -20,7 +20,7 @@ const ClearButton = connectCurrentRefinements(({ items, children }) => {
         onClick={() => {
           setSearchState((state) => ({
             ...state,
-            refinementList: { is_incident_report: ['true'] },
+            refinementList: { is_incident_report: ['true'], featured: 1 },
             sortBy: SORTING_LIST.find((s) => s.default).name || '',
           }));
         }}

@@ -26,6 +26,7 @@ module.exports = {
     'filterOnly(v1_incident)',
     'flag',
     'is_incident_report',
+    'featured',
   ],
   attributesToSnippet: ['description:200', 'text:15'],
   attributesToHighlight: ['description', 'text', 'title', 'incident_title', 'incident_description'],
