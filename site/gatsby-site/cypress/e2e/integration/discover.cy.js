@@ -1,5 +1,6 @@
 import flaggedReport from '../../fixtures/reports/flagged.json';
 import unflaggedReport from '../../fixtures/reports/unflagged.json';
+import config from '../../../config';
 import path from 'path';
 
 describe('The Discover app', () => {
@@ -372,5 +373,16 @@ describe('The Discover app', () => {
     cy.visit(newUrl);
 
     cy.get('[data-cy="discover-sort"]').should('have.text', 'Newest Incident Date');
+  });
+
+  it('Should default to the featured incidents', () => {
+    cy.visit(url);
+
+    cy.get('[data-cy=report-number]').each((report_number, index) => {
+      console.log(report_number, index, Object.keys(config?.header?.search?.featured[index])[0]);
+      cy.wrap(report_number.eq(0))
+        .invoke('val')
+        .should('be.eq', Object.keys(config.header.search.featured[index])[0]);
+    });
   });
 });

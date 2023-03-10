@@ -20,6 +20,8 @@ import Col from 'elements/Col';
 import Layout from 'components/Layout';
 import { VIEW_TYPES } from 'utils/discover';
 import SORTING_LIST from 'components/discover/SORTING_LISTS';
+import { DEFAULT_SEARCH_KEYS_VALUES } from 'components/discover/DEFAULT_SEARCH_KEYS_VALUES';
+import difference from 'lodash/difference';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -197,8 +199,30 @@ function DiscoverApp(props) {
 
   const [viewType, setViewType] = useState(VIEW_TYPES.INCIDENTS);
 
+  const [hasOnlyDefaultValues, setHasOnlyDefaultValues] = useState(false);
+
   const onSearchStateChange = (searchState) => {
+    searchState = cleanSearchState(searchState);
+
+    if (!hasOnlyDefaultValues) {
+      searchState.sortBy = searchState.sortBy.replace('-featured', '');
+    } else {
+      searchState.sortBy =
+        !searchState.sortBy.includes('-featured') &&
+        SORTING_LIST.find((s) => s[`value_${locale}`] === searchState.sortBy)?.default
+          ? `${searchState.sortBy}-featured`
+          : searchState.sortBy;
+    }
     setSearchState({ ...searchState });
+  };
+
+  const cleanSearchState = (sState) => {
+    Object.keys(sState.refinementList).forEach((key) => {
+      if (sState.refinementList[key] === '') {
+        delete sState.refinementList[key];
+      }
+    });
+    return sState;
   };
 
   const toggleFilterByIncidentId = useCallback(
@@ -224,6 +248,10 @@ function DiscoverApp(props) {
 
     setQuery({ ...searchQuery, ...extraQuery }, 'push');
 
+    setHasOnlyDefaultValues(
+      difference(Object.keys(searchState.refinementList), DEFAULT_SEARCH_KEYS_VALUES).length === 0
+    );
+
     setViewType(
       (searchState.refinementList.hideDuplicates === 'true' ||
         searchState.refinementList.hideDuplicates === true) &&
@@ -248,10 +276,7 @@ function DiscoverApp(props) {
       >
         <InstantSearch
           indexName={
-            indexName +
-            (searchState.query == '' && Object.keys(searchState.refinementList).length == 0
-              ? '-featured'
-              : '')
+            indexName + (searchState.query == '' && hasOnlyDefaultValues ? '-featured' : '')
           }
           searchClient={searchClient}
           searchState={searchState}
