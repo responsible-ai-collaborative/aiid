@@ -64,6 +64,8 @@ const convertStringToArray = (obj) => {
     'flag',
     'classifications',
     'is_incident_report',
+    'tags',
+    'language',
   ];
 
   let newObj = {};
