@@ -1,4 +1,4 @@
-describe.skip('Navigation', { retries: { runMode: 4 } }, () => {
+describe('Navigation', { retries: { runMode: 4 } }, () => {
   it('Check menu links work (English)', () => {
     cy.visit('/');
 
@@ -24,11 +24,13 @@ describe.skip('Navigation', { retries: { runMode: 4 } }, () => {
   });
 
   const checkLinks = () => {
-    cy.get('aside .item a').each((page) => {
+    cy.get('.item.active').each((page) => {
       cy.visit(page.prop('href'));
 
+      cy.waitForStableDOM();
+
       // Check if the sidebar active item match the current page
-      cy.get('aside .item .active a')
+      cy.get('.active[data-cy="sidebar-link-active"]', { timeout: 10000 })
         .first()
         .should('have.attr', 'href')
         .then((href) => expect(page.prop('href').endsWith(href)).to.be.true);
