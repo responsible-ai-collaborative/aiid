@@ -8,6 +8,7 @@ import Layout from 'components/Layout';
 import ListSkeleton from 'elements/Skeletons/List';
 import { graphql } from 'gatsby';
 import { makeEntitiesHash } from 'utils/entities';
+import { ToggleSwitch } from 'flowbite-react';
 
 const IncidentsPage = ({ data, ...props }) => {
   const { data: incidents } = useQuery(FIND_INCIDENTS_TABLE);
@@ -58,12 +59,18 @@ const IncidentsPage = ({ data, ...props }) => {
           </div>
         )}
         {incidentsData && (
-          <div className="ms-3 mt-2 mb-2 overflow-x-auto">
-            <IncidentsTable
-              data={incidentsData}
-              isLiveData={isLiveData}
-              setIsLiveData={setIsLiveData}
-            />
+          <div className="overflow-x-auto">
+            <div className="flex justify-end mb-2 pt-1">
+              <ToggleSwitch
+                checked={isLiveData}
+                label={t('Show Live data')}
+                onChange={(checked) => {
+                  setIsLiveData(checked);
+                }}
+                name="live-data-switch"
+              />
+            </div>
+            <IncidentsTable data={incidentsData} />
           </div>
         )}
       </div>

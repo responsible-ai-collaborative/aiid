@@ -1,7 +1,6 @@
 import { useUserContext } from 'contexts/userContext';
 import React, { useState } from 'react';
 import { Button, Form, Pagination } from 'react-bootstrap';
-import { ToggleSwitch } from 'flowbite-react';
 import { useBlockLayout, useFilters, usePagination, useResizeColumns, useTable } from 'react-table';
 import IncidentEditModal from './IncidentEditModal';
 import styled from 'styled-components';
@@ -122,7 +121,7 @@ function ListCell({ cell }) {
   );
 }
 
-export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
+export default function IncidentsTable({ data }) {
   const [incidentIdToEdit, setIncindentIdToEdit] = useState(0);
 
   const { isLoggedIn, isRole } = useUserContext();
@@ -165,20 +164,22 @@ export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
       {
         Header: <Trans>Alleged Deployer of AI System</Trans>,
         id: 'AllegedDeployerOfAISystem',
-        accessor: (data) => data.AllegedDeployerOfAISystem?.map((i) => `${i.name} ${i.id}`),
+        accessor: (data) =>
+          data.AllegedDeployerOfAISystem?.map((i) => `${i.name} ${i.id ?? i.entity_id}`),
         Cell: ListCell,
       },
       {
         Header: <Trans>Alleged Developer of AI System</Trans>,
         id: 'AllegedDeveloperOfAISystem',
-        accessor: (data) => data.AllegedDeveloperOfAISystem?.map((i) => `${i.name} ${i.id}`),
+        accessor: (data) =>
+          data.AllegedDeveloperOfAISystem?.map((i) => `${i.name} ${i.id ?? i.entity_id}`),
         Cell: ListCell,
       },
       {
         Header: <Trans>Alleged Harmed or Nearly Harmed Parties</Trans>,
         id: 'AllegedHarmedOrNearlyHarmedParties',
         accessor: (data) =>
-          data.AllegedHarmedOrNearlyHarmedParties?.map((i) => `${i.name} ${i.id}`),
+          data.AllegedHarmedOrNearlyHarmedParties?.map((i) => `${i.name} ${i.id ?? i.entity_id}`),
         Cell: ListCell,
       },
     ];
@@ -234,14 +235,6 @@ export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
     <>
       {/* eslint-disable react/jsx-key */}
 
-      <ToggleSwitch
-        checked={isLiveData}
-        label={t('Live data')}
-        onChange={(checked) => {
-          setIsLiveData(checked);
-        }}
-        name="live-data-switch"
-      />
       <Table {...getTableProps()}>
         <Header>
           {headerGroups.map((headerGroup) => (
