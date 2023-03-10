@@ -199,7 +199,7 @@ export default function NewsSearchPage(props) {
         {loading &&
           Array(24)
             .fill()
-            .map((e, i) => <CardSkeleton image={false} key={i} />)}
+            .map((e, i) => <CardSkeleton image={false} key={i} maxWidthSmall={false} lines={8} />)}
         {!loading && displayedArticles.length == 0 && <p>No results</p>}
         {displayedArticles
           .sort((a, b) => b.ranking - a.ranking)
