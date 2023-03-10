@@ -21,7 +21,7 @@ import Layout from 'components/Layout';
 import { VIEW_TYPES } from 'utils/discover';
 import SORTING_LIST from 'components/discover/SORTING_LISTS';
 import { DEFAULT_SEARCH_KEYS_VALUES } from 'components/discover/DEFAULT_SEARCH_KEYS_VALUES';
-import isEqual from 'lodash/isEqual';
+import difference from 'lodash/difference';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -200,10 +200,8 @@ function DiscoverApp(props) {
   const onSearchStateChange = (searchState) => {
     searchState = cleanSearchState(searchState);
 
-    let hasOnlyDefaultValues = isEqual(
-      DEFAULT_SEARCH_KEYS_VALUES.sort(),
-      Object.keys(searchState.refinementList).sort()
-    );
+    let hasOnlyDefaultValues =
+      difference(Object.keys(searchState.refinementList), DEFAULT_SEARCH_KEYS_VALUES).length === 0;
 
     if (!hasOnlyDefaultValues) {
       searchState.sortBy = searchState.sortBy.replace('-featured', '');
@@ -263,7 +261,7 @@ function DiscoverApp(props) {
 
   useEffect(() => setMounted(true), []);
 
-  let hasOnlyDefaultValues = isEqual(
+  let hasOnlyDefaultValues = difference(
     DEFAULT_SEARCH_KEYS_VALUES.sort(),
     Object.keys(searchState.refinementList).sort()
   );
