@@ -98,7 +98,7 @@ const reportToEntry = ({ incident = null, report }) => {
     text: report.plain_text,
     mongodb_id: report._id.toString(),
     objectID: report.report_number.toString(),
-    featured: config?.header?.search?.featured[report.report_number] || 0,
+    featured: config?.header?.search?.featured.findIndex((f) => f[report.report_number]) > -1 || 0,
     flag: report.flag,
     is_incident_report: report.is_incident_report,
   };
