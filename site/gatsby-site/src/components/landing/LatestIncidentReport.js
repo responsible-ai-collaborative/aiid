@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import md5 from 'md5';
-import { format } from 'date-fns';
 import { Image } from '../../utils/cloudinary';
 import ReportText from 'components/reports/ReportText';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
+import DateLabel from 'components/ui/DateLabel';
 
 const LatestIncidentReport = ({ report }) => {
   const {
@@ -18,10 +18,6 @@ const LatestIncidentReport = ({ report }) => {
   } = report;
 
   const { t } = useTranslation();
-
-  const [formattedDate, setFormattedDate] = useState(null);
-
-  useEffect(() => setFormattedDate(format(epoch_date_submitted * 1000, 'MMM d, yyyy')), []);
 
   const reportLink = `/cite/${incident_id}#r${report_number}`;
 
@@ -54,7 +50,10 @@ const LatestIncidentReport = ({ report }) => {
               {title}
             </h5>
           </LocalizedLink>
-          <span className="text-sm text-gray-500 dark:text-gray-400">{formattedDate}</span>
+          <DateLabel
+            date={epoch_date_submitted * 1000}
+            className="text-sm text-gray-500 dark:text-gray-400"
+          />
           <div className="mb-3 font-normal text-gray-700 dark:text-gray-400">
             <ReportText maxChars={240} text={text} />
           </div>

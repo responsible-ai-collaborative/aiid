@@ -64,8 +64,9 @@ const Unsubscribe = (props) => {
       setPageMessage(t('You have successfully unsubscribed.'));
     } catch (e) {
       setPageMessage(t('An unknown error has ocurred'));
-      // eslint-disable-next-line no-undef
-      Rollbar.error(e);
+      if ('Rollbar' in window) {
+        Rollbar.error(e);
+      }
     } finally {
       setUnsubscribing(false);
     }

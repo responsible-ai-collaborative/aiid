@@ -156,7 +156,7 @@ const Login = (props) => {
 
           <div className="mt-3">
             <Trans ns="login">Don&apos;t have an account?</Trans>{' '}
-            <Link to="/signup">
+            <Link to="/signup/">
               <Trans ns="login">Sign up</Trans>
             </Link>
           </div>
