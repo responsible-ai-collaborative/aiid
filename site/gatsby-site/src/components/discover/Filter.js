@@ -27,7 +27,7 @@ function ButtonToggle({ trigger: { ref, ...triggerHandler }, label, faIcon, touc
     <Dropdown.Toggle
       ref={ref}
       variant={touched ? 'success' : 'primary'}
-      className="w-full"
+      className="w-full lg:text-xs xl:text-sm h-full"
       {...triggerHandler}
     >
       <ToggleContent faIcon={faIcon} label={label} touched={touched} />
@@ -69,7 +69,7 @@ const FilterOverlay = React.forwardRef(function Container(
   );
 });
 
-export default function Filter({ type, ...filterProps }) {
+export default function Filter({ type, className = '', ...filterProps }) {
   const { label, faIcon, attribute } = filterProps;
 
   const { touchedCount } = componentsMap[type];
@@ -95,6 +95,7 @@ export default function Filter({ type, ...filterProps }) {
             faIcon={faIcon}
             attribute={attribute}
             touched={touched}
+            className={className}
           />
         )}
       </OverlayTrigger>

@@ -67,8 +67,6 @@ const LandingPage = (props) => {
           <QuickSearch />
         </div>
 
-        {/* The shadows on the card bottoms make the gap between cards look smaller,  *
-         /* so mb-5 appears to match the p-4 of the content                           */}
         <div className="mb-5 md:mb-10">
           <div>
             <LatestReports latestReport={latestReport} />

@@ -5,6 +5,8 @@ import {
   faFlag,
   faHashtag,
   faCalendarAlt,
+  faTags,
+  faGlobe,
 } from '@fortawesome/free-solid-svg-icons';
 
 const REFINEMENT_LISTS = [
@@ -100,6 +102,28 @@ const REFINEMENT_LISTS = [
     faClasses: '',
     type: 'refinement',
     hidden: true,
+  },
+  {
+    attribute: 'tags',
+    placeholder: 'Type Here',
+    label: 'Tags',
+    faIcon: faTags,
+    faClasses: 'far fa-tags',
+    type: 'refinement',
+    hidden: false,
+  },
+  {
+    attribute: 'language',
+    placeholder: 'Type Here',
+    label: 'Language',
+    faIcon: faGlobe,
+    faClasses: 'far fa-globe',
+    type: 'refinement',
+    hidden: false,
+
+    // algolia specific
+    showMore: true,
+    showMoreLimit: 50,
   },
 ];
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
 import Layout from 'components/Layout';
@@ -7,7 +7,7 @@ import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 const ReportList = ({ report }) => (
   <dl data-cy="report" className="my-4 grid grid-cols-1 md:grid-cols-2 border-2 rounded">
     {Object.keys(report).map((key, i) => (
-      <>
+      <Fragment key={key}>
         <dt className={'border-gray p-2' + (i % 2 == 0 ? ' bg-gray-100' : '')}>{key}</dt>
         <dd
           style={{ maxHeight: '400px' }}
@@ -19,7 +19,7 @@ const ReportList = ({ report }) => (
         >
           {key.includes('url') ? <a href={report[key]}>{report[key]}</a> : <>{report[key]}</>}
         </dd>
-      </>
+      </Fragment>
     ))}
   </dl>
 );
