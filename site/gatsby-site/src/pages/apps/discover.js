@@ -197,11 +197,10 @@ function DiscoverApp(props) {
 
   const [viewType, setViewType] = useState(VIEW_TYPES.INCIDENTS);
 
+  const [hasOnlyDefaultValues, setHasOnlyDefaultValues] = useState(false);
+
   const onSearchStateChange = (searchState) => {
     searchState = cleanSearchState(searchState);
-
-    let hasOnlyDefaultValues =
-      difference(Object.keys(searchState.refinementList), DEFAULT_SEARCH_KEYS_VALUES).length === 0;
 
     if (!hasOnlyDefaultValues) {
       searchState.sortBy = searchState.sortBy.replace('-featured', '');
@@ -247,6 +246,10 @@ function DiscoverApp(props) {
 
     setQuery({ ...searchQuery, ...extraQuery }, 'push');
 
+    setHasOnlyDefaultValues(
+      difference(Object.keys(searchState.refinementList), DEFAULT_SEARCH_KEYS_VALUES).length === 0
+    );
+
     setViewType(
       (searchState.refinementList.hideDuplicates === 'true' ||
         searchState.refinementList.hideDuplicates === true) &&
@@ -260,11 +263,6 @@ function DiscoverApp(props) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
-
-  let hasOnlyDefaultValues = difference(
-    DEFAULT_SEARCH_KEYS_VALUES.sort(),
-    Object.keys(searchState.refinementList).sort()
-  );
 
   return (
     <Layout {...props} sidebarCollapsed={true} className="w-full">
