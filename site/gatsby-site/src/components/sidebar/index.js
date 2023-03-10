@@ -140,7 +140,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null }) => {
             additionalNodes={[
               {
                 label: 'user',
-                url: isUserLoggedIn ? '/account' : `/signup?redirectTo=${redirectTo}`,
+                url: isUserLoggedIn ? '/account/' : `/signup/?redirectTo=${redirectTo}`,
                 title: isUserLoggedIn ? t('Account') : t('Subscribe'),
                 items: [],
               },

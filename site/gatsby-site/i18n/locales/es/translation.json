@@ -236,6 +236,8 @@
   "All": "Todo",
   "Sort by": "Ordenar por",
   "Display Option": "Opción de visualización",
+  "Export": "Exportar",
+  "Export items from the current page to a CSV file.<br/>To download the full data set, please follow this  <4>link</4>.": "Exportar elementos de la página actual a un archivo CSV<br/>Para descargar todos los datos, por favor siga este  <4>link</4>.",
   "Relevance": "Relevancia",
   "Newest Incident Date": "Fecha del incidente más reciente",
   "Oldest Incident Date": "Fecha del incidente más antigua",

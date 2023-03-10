@@ -1,5 +1,6 @@
 import flaggedReport from '../../fixtures/reports/flagged.json';
 import unflaggedReport from '../../fixtures/reports/unflagged.json';
+import path from 'path';
 
 describe('The Discover app', () => {
   const url = '/apps/discover';
@@ -268,6 +269,44 @@ describe('The Discover app', () => {
       'equal',
       '?display=details&is_incident_report=true&page=1&sortBy=relevance'
     );
+  });
+
+  it('Should export results to a CSV file', () => {
+    cy.visit(url);
+
+    cy.get('form#searchForm').as('form');
+
+    cy.get('@form')
+      .get('[data-cy="search-box"] input[placeholder="Type Here"]')
+      .type('starbucks')
+      .type('{enter}');
+
+    cy.url().should('include', 's=starbucks');
+
+    cy.get('[data-cy=export-to-csv]').click();
+
+    const downloadsFolder = Cypress.config('downloadsFolder');
+
+    cy.readFile(path.join(downloadsFolder, 'discover_incidents.csv'), { timeout: 15000 }).then(
+      (file) => {
+        expect(file).to.have.length.greaterThan(10);
+      }
+    );
+  });
+
+  it(`Shouldn't export results to a CSV file if no results are displayed`, () => {
+    cy.visit(url);
+
+    cy.get('form#searchForm').as('form');
+
+    cy.get('@form')
+      .get('[data-cy="search-box"] input[placeholder="Type Here"]')
+      .type('xxxxxxxxxxxxx')
+      .type('{enter}');
+
+    cy.url().should('include', 's=xxxxxxxxxxxxx');
+
+    cy.get('[data-cy=export-to-csv]').should('be.disabled');
   });
 
   it('Should set the sort with the value from the URL', () => {
