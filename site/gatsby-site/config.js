@@ -92,10 +92,10 @@ const config = {
       {
         title: 'Submission Leaderboard',
         label: 'leaderboard',
-        url: '/summaries/leaderboard',
+        url: '/summaries/leaderboard/',
         items: [],
       },
-      { title: 'Blog', label: 'blog', url: '/blog', items: [] },
+      { title: 'Blog', label: 'blog', url: '/blog/', items: [] },
     ],
     frontline: true,
     ignoreIndex: false,
