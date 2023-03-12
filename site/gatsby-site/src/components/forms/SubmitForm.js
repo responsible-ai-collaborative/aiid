@@ -24,6 +24,7 @@ import getSourceDomain from 'utils/getSourceDomain';
 import { StyledHeading } from 'components/styles/Docs';
 import { Helmet } from 'react-helmet';
 // validator from a new file
+import { checkLink } from './check_video';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -46,9 +47,7 @@ const queryConfig = {
   incident_date: withDefault(CustomDateParam, ''),
   date_published: withDefault(CustomDateParam, ''),
   date_downloaded: withDefault(CustomDateParam, ''),
-  // new video platfrom field, and video_id field
-  video_id: withDefault(CustomDateParam, ''),
-  video_platform: withDefault(CustomDateParam, ''),
+  // onefield was changed -image url to media url
   media_url: withDefault(StringParam, ''),
   // two new fields added and one name change
   incident_id: withDefault(StringParam, ''),
@@ -71,9 +70,6 @@ const SubmitForm = () => {
     date_downloaded: '',
     media_url: '',
     incident_id: '',
-    // addded a video platform and video_id fields. Theis will reset after a user has hit submit.
-    video_id: '',
-    video_platform: '',
     text: '',
     authors: [],
     submitters: [],
@@ -160,40 +156,6 @@ const SubmitForm = () => {
 
   const localizePath = useLocalizePath();
 
-  const youtubeRegex =
-    /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w]+\?v=|embed\/|v\/)?)([\w]+)(\S+)?$/;
-
-  const vimeoRegex = /^https?:\/\/(www.)?vimeo.com\/([a-zA-Z0-9_-]+)/;
-
-  // grab the video_id type
-  const typeMedia = (url) => {
-    // return the youtube id.
-    if (youtubeRegex.test(url)) {
-      return 'youtube';
-    }
-
-    // return the vimeo id
-    if (vimeoRegex.test(url)) {
-      return 'vimeo';
-    }
-
-    return 'fall_back';
-  };
-
-  const grabVideoID = (video_id, url) => {
-    // return the youtube id.
-
-    if (video_id == 'youtube') {
-      return url.match(youtubeRegex)[5];
-    }
-
-    // return the vimeo id
-    if (video_id == 'vimeo') {
-      return url.match(vimeoRegex)[2];
-    }
-    return 'fall_back';
-  };
-
   const handleSubmit = async (values) => {
     try {
       const date_submitted = format(new Date(), 'yyyy-MM-dd');
@@ -203,10 +165,18 @@ const SubmitForm = () => {
       const source_domain = getSourceDomain(url);
 
       // check and grab the platfrom of the media source
-      values.video_platform = await typeMedia(values.media_url);
+
+      const isValid = await checkLink(values.media_url);
+
+      // check if the media url is valid. if not then it should return false.
+      console.log('ISVALID goes here', isValid);
+
+      // if the media url is not a valid youtube or vimeo video, the set the media url to an empty string.
+      if (isValid == false) {
+        values.media_url = '';
+      }
 
       // grab the video id from a valid vimeo or youtube url
-      values.video_id = grabVideoID(values.video_platform, values.media_url);
 
       const submission = {
         ...values,
