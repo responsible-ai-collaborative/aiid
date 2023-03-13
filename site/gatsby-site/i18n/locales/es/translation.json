@@ -125,7 +125,7 @@
   "Notify Me of New {{name}} Incidents": "Notificarme de nuevos Incidentes de {{name}}",
   "Unsubscribe from New {{name}} Incidents": "Desuscribirse de nuevos Incidentes de {{name}}",
   "Follow": "Subscribirse",
-  "Unfollow": "Desuscribirse de nuevos Incidentes de {{name}}",
+  "Unfollow": "Desuscribirse",
   "You have successfully subscribed to new {{name}} incidents": "Te has suscrito con éxito a los nuevos Incidentes de {{name}}",
   "You have successfully unsubscribed to new {{name}} incidents": "Has cancelado tu suscripción a los nuevos Incidentes de {{name}}",
   "Confirm": "Confirmar",

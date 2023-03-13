@@ -291,7 +291,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
           <div key={section.header}>
             {entityIncidents[section.key].length > 0 && (
               <>
-                <h2 className="mt-24">
+                <h2 className="mt-8">
                   <Trans ns="entities">{section.header}</Trans>
                 </h2>
                 <div className="grid gap-4 grid-flow-row-dense md:grid-cols-2 mt-6">
