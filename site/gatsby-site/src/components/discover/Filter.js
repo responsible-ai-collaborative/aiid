@@ -27,7 +27,7 @@ function ButtonToggle({ trigger: { ref, ...triggerHandler }, label, faIcon, touc
     <Dropdown.Toggle
       ref={ref}
       variant={touched ? 'success' : 'primary'}
-      className="w-full"
+      className="w-full lg:text-xs xl:text-sm h-full"
       {...triggerHandler}
     >
       <ToggleContent faIcon={faIcon} label={label} touched={touched} />
@@ -58,6 +58,7 @@ const FilterOverlay = React.forwardRef(function Container(
       {...overlayProps}
       style={{ ...overlayProps.style, width: 320, zIndex: 1055 }}
       className="bootstrap"
+      data-cy={filterProps.attribute}
     >
       <Card className="shadow-lg">
         <Card.Body>
@@ -68,7 +69,7 @@ const FilterOverlay = React.forwardRef(function Container(
   );
 });
 
-export default function Filter({ type, ...filterProps }) {
+export default function Filter({ type, className = '', ...filterProps }) {
   const { label, faIcon, attribute } = filterProps;
 
   const { touchedCount } = componentsMap[type];
@@ -94,6 +95,7 @@ export default function Filter({ type, ...filterProps }) {
             faIcon={faIcon}
             attribute={attribute}
             touched={touched}
+            className={className}
           />
         )}
       </OverlayTrigger>
@@ -124,7 +126,7 @@ function AccordionFilter({ type, ...filterProps }) {
       <StyledAccordionHeader bg={touched ? 'success' : 'primary'}>
         <ToggleContent faIcon={faIcon} label={label} touched={touched} />
       </StyledAccordionHeader>
-      <Accordion.Body>
+      <Accordion.Body style={{ visibility: 'visible' }}>
         <FilterContent type={type} filterProps={filterProps} />
       </Accordion.Body>
     </Accordion.Item>

@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { connectSortBy } from 'react-instantsearch-dom';
 import { Dropdown } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import SORTING_LIST from './SORTING_LISTS';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
+import useSearch from './useSearch';
+import { DEFAULT_SEARCH_KEYS_VALUES } from './DEFAULT_SEARCH_KEYS_VALUES';
+import isEqual from 'lodash/isEqual';
 
 function Sorting(props) {
   const { locale } = useLocalization();
@@ -15,13 +18,33 @@ function Sorting(props) {
 
   const { t } = useTranslation();
 
+  const { searchState } = useSearch();
+
   const sortResults = (item) => {
     setSelectedItem(item);
   };
 
   useEffect(() => {
+    let indexName = '';
+
     if (selectedItem && selectedItem[`value_${locale}`]) {
-      props.refine(selectedItem[`value_${locale}`]);
+      indexName = selectedItem[`value_${locale}`];
+
+      let hasOnlyDefaultValues = isEqual(
+        DEFAULT_SEARCH_KEYS_VALUES.sort(),
+        Object.keys(searchState.refinementList).sort()
+      );
+
+      if (
+        searchState.query == '' &&
+        Object.keys(searchState.refinementList).length > 0 &&
+        selectedItem.default &&
+        hasOnlyDefaultValues
+      ) {
+        indexName += '-featured';
+      }
+
+      props.refine(indexName);
     }
   }, [selectedItem]);
 
@@ -38,11 +61,11 @@ function Sorting(props) {
           className="min-w-max"
         >
           {props.items.map((item) => (
-            <>
+            <Fragment key={item.name}>
               <Dropdown.Item
                 key={item[`value_${locale}`]}
                 value={item[`value_${locale}`]}
-                style={{ fontWeight: item.isRefined ? 'bold' : '' }}
+                style={{ fontWeight: item.isRefined ? 'bold' : 'normal' }}
                 onClick={() => {
                   sortResults(item);
                 }}
@@ -55,7 +78,7 @@ function Sorting(props) {
                 </span>
               </Dropdown.Item>
               {item.division && <Dropdown.Divider />}
-            </>
+            </Fragment>
           ))}
         </Dropdown>
       </div>

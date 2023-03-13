@@ -55,12 +55,14 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     ['/about/blog', '/blog'],
     ['/research/4-taxonomies', '/taxonomies'],
     ['/research', '/research/snapshots'],
+    ['/apps/newsSearch', '/apps/newsdigest'],
     ['/research/related-work', '/research/4-related-work'],
+    ['/blog/incident-report-2022-january', '/blog/incident-report-2023-january'],
   ];
 
-  redirects.forEach((pair) =>
-    createRedirect({ fromPath: pair[0], toPath: pair[1], isPermanent: true })
-  );
+  redirects.forEach((pair) => {
+    createRedirect({ fromPath: pair[0], toPath: pair[1], isPermanent: true });
+  });
 
   for (const pageCreator of [
     createMdxPages,
@@ -94,6 +96,7 @@ exports.onCreateWebpackConfig = ({ actions }) => {
         services: path.resolve(__dirname, 'src/services'),
         templates: path.resolve(__dirname, 'src/templates'),
         utils: path.resolve(__dirname, 'src/utils'),
+        plugins: path.resolve(__dirname, 'plugins'),
         buble: '@philpl/buble', // to reduce bundle size
       },
       fallback: { crypto: false },

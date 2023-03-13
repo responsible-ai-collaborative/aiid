@@ -1,7 +1,8 @@
 import React from 'react';
 import { Carousel } from 'flowbite-react';
-import BillboardChart from 'react-billboardjs';
-import { donut } from 'billboard.js';
+import bb, { donut } from 'billboard.js';
+import BillboardJS from '@billboard.js/react';
+
 import { getClassificationValue } from 'utils/classifications';
 
 const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
@@ -105,26 +106,27 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
                   a[0] == 'All Others' ? 1 : b[0] == 'All Others' ? -1 : b[1] - a[1]
                 );
 
+              const options = {
+                data: {
+                  columns,
+                  type: donut(),
+                  onclick: (column) => {
+                    if (column.name == 'All Others') {
+                      window.open('/apps/discover');
+                    } else {
+                      window.open(
+                        '/apps/discover?classifications=' + [namespace, axis, column.name].join(':')
+                      );
+                    }
+                  },
+                },
+              };
+
               return (
                 <div key={index} className="h-96">
                   <h3 className="text-base text-center">{axis}</h3>
                   <div className="h-96">
-                    <BillboardChart
-                      data={{
-                        columns,
-                        type: donut(),
-                        onclick: (column) => {
-                          if (column.name == 'All Others') {
-                            window.open('/apps/discover');
-                          } else {
-                            window.open(
-                              '/apps/discover?classifications=' +
-                                [namespace, axis, column.name].join(':')
-                            );
-                          }
-                        },
-                      }}
-                    />
+                    <BillboardJS bb={bb} options={{ ...options }} />
                   </div>
                 </div>
               );

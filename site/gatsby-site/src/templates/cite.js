@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { CloudinaryImage } from '@cloudinary/base';
 import { Trans, useTranslation } from 'react-i18next';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { useMutation } from '@apollo/client';
 import { graphql } from 'gatsby';
 
@@ -368,7 +368,11 @@ function CitePage(props) {
                             <Spinner size="sm" />
                           </div>
                         ) : (
-                          <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
+                          <FontAwesomeIcon
+                            titleId="envelope"
+                            icon={faEnvelope}
+                            title={t('Notify Me of Updates')}
+                          />
                         )}
                         <Trans>Notify Me of Updates</Trans>
                       </div>
@@ -379,21 +383,36 @@ function CitePage(props) {
                         incident.incident_id
                       }&date_downloaded=${format(new Date(), 'yyyy-MM-dd')}`}
                     >
-                      <FontAwesomeIcon icon={faPlus} title={t('New Report')} className="mr-2" />
+                      <FontAwesomeIcon
+                        titleId="report"
+                        icon={faPlus}
+                        title={t('New Report')}
+                        className="mr-2"
+                      />
                       <Trans>New Report</Trans>
                     </Button>
                     <Button
                       variant="outline-primary"
                       href={`/apps/submit?tags=${RESPONSE_TAG}&incident_id=${incident.incident_id}`}
                     >
-                      <FontAwesomeIcon icon={faPlus} title={t('New Response')} className="mr-2" />
+                      <FontAwesomeIcon
+                        titleId="response"
+                        icon={faPlus}
+                        title={t('New Response')}
+                        className="mr-2"
+                      />
                       <Trans>New Response</Trans>
                     </Button>
                     <Button
                       variant="outline-primary"
                       href={'/apps/discover?incident_id=' + incident.incident_id}
                     >
-                      <FontAwesomeIcon className="mr-2" icon={faSearch} title={t('Discover')} />
+                      <FontAwesomeIcon
+                        titleId="discover"
+                        className="mr-2"
+                        icon={faSearch}
+                        title={t('Discover')}
+                      />
                       <Trans>Discover</Trans>
                     </Button>
                     <BibTex
@@ -408,6 +427,7 @@ function CitePage(props) {
                         href={'/incidents/edit?incident_id=' + incident.incident_id}
                       >
                         <FontAwesomeIcon
+                          titleId="edit-incident"
                           className="mr-2"
                           icon={faEdit}
                           title={t('Edit Incident')}

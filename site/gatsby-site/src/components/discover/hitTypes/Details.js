@@ -25,14 +25,7 @@ const StyledLabel = styled.p`
   margin: 0.6em 0;
 `;
 
-export default function Details({
-  item,
-  authorsModal,
-  submittersModal,
-  flagReportModal,
-  toggleFilterByIncidentId,
-  viewType,
-}) {
+export default function Details({ item, toggleFilterByIncidentId, viewType }) {
   const localizePath = useLocalizePath();
 
   const { t } = useTranslation();
@@ -55,6 +48,7 @@ export default function Details({
       <input type="hidden" data-cy="date-published" value={item.epoch_date_published} />
       <input type="hidden" data-cy="date-submitted" value={item.epoch_date_submitted} />
       <input type="hidden" data-cy="incident-date" value={item.epoch_incident_date} />
+      <input type="hidden" data-cy="report-number" value={item.report_number} />
       <a href={detailsPath}>
         <IncidentCardImage
           className="card-img-top"
@@ -99,13 +93,7 @@ export default function Details({
       </Card.Body>
 
       <Card.Footer className="flex justify-between">
-        <Actions
-          authorsModal={authorsModal}
-          flagReportModal={flagReportModal}
-          submittersModal={submittersModal}
-          toggleFilterByIncidentId={toggleFilterByIncidentId}
-          item={item}
-        />
+        <Actions toggleFilterByIncidentId={toggleFilterByIncidentId} item={item} />
       </Card.Footer>
     </Card>
   );

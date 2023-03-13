@@ -8,7 +8,7 @@ import Row from 'react-bootstrap/Row';
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 const Backups = ({ pageContext, ...props }) => {
   const { backups } = pageContext;

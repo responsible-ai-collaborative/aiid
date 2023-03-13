@@ -1,4 +1,4 @@
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { switchLocalizedPath } from '../../../i18n';
 
 export default function useLocalizePath() {

@@ -37,7 +37,7 @@ function FlagModalContent({ reportNumber }) {
 
   return (
     <div className="bootstrap">
-      <div className="modal-body" data-cy="flag-modal">
+      <div className="modal-body">
         <div dangerouslySetInnerHTML={{ __html: t('flagReport', { ns: 'actions' }) }} />
 
         <div className="flex justify-center w-full">
@@ -83,21 +83,28 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         incidentDate={item.epoch_incident_date}
         dateSubmitted={item.epoch_date_submitted}
       >
-        <FontAwesomeIcon icon={faNewspaper} className="fa-newspaper" title="Read the Source" />
+        <FontAwesomeIcon
+          titleId="report-source"
+          icon={faNewspaper}
+          className="fa-newspaper"
+          title="Read the Source"
+        />
       </WebArchiveLink>
 
       <CustomButton variant="link" title={t('Authors')} onClick={() => setShowAuthors(true)}>
-        <FontAwesomeIcon icon={faIdCard} className="fa-id-card" />
+        <FontAwesomeIcon title="report-card" icon={faIdCard} className="fa-id-card" />
       </CustomButton>
 
-      <Modal show={showAuthors} onClose={() => setShowAuthors(false)}>
-        <Modal.Header>
-          <Trans>Authors</Trans>
-        </Modal.Header>
-        <Modal.Body>
-          <>{item.authors.join(', ')}</>
-        </Modal.Body>
-      </Modal>
+      {showAuthors && (
+        <Modal show={showAuthors} onClose={() => setShowAuthors(false)}>
+          <Modal.Header>
+            <Trans>Authors</Trans>
+          </Modal.Header>
+          <Modal.Body>
+            <>{item.authors.join(', ')}</>
+          </Modal.Body>
+        </Modal>
+      )}
 
       <CustomButton
         variant="link"
@@ -105,17 +112,19 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         className="px-1"
         onClick={() => setShowSubmitters(true)}
       >
-        <FontAwesomeIcon icon={faUserShield} className="fa-user-shield" />
+        <FontAwesomeIcon titleId="report-shield" icon={faUserShield} className="fa-user-shield" />
       </CustomButton>
 
-      <Modal show={showSubmitters} onClose={() => setShowSubmitters(false)}>
-        <Modal.Header>
-          <Trans>Submitters</Trans>
-        </Modal.Header>
-        <Modal.Body>
-          <>{item.submitters.join(', ')}</>
-        </Modal.Body>
-      </Modal>
+      {showSubmitters && (
+        <Modal show={showSubmitters} onClose={() => setShowSubmitters(false)}>
+          <Modal.Header>
+            <Trans>Submitters</Trans>
+          </Modal.Header>
+          <Modal.Body>
+            <>{item.submitters.join(', ')}</>
+          </Modal.Body>
+        </Modal>
+      )}
 
       <CustomButton
         variant="link"
@@ -124,17 +133,23 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         data-cy="flag-button"
         onClick={() => setShowFlag(true)}
       >
-        <FontAwesomeIcon icon={faFlag} className="fa-flag" />
+        <FontAwesomeIcon titleId="report-flag" icon={faFlag} className="fa-flag" />
       </CustomButton>
 
-      <Modal show={showFlag} onClose={() => setShowFlag(false)}>
-        <Modal.Header>
-          <Trans>Flag Report</Trans>
-        </Modal.Header>
-        <Modal.Body>
-          <FlagModalContent reportNumber={item.report_number} />
-        </Modal.Body>
-      </Modal>
+      {showFlag && (
+        <Modal
+          show={showFlag}
+          onClose={() => setShowFlag(false)}
+          data-cy={'flag-report-' + item.report_number}
+        >
+          <Modal.Header>
+            <Trans>Flag Report</Trans>
+          </Modal.Header>
+          <Modal.Body>
+            <FlagModalContent reportNumber={item.report_number} />
+          </Modal.Body>
+        </Modal>
+      )}
 
       {toggleFilterByIncidentId && item.is_incident_report && (
         <CustomButton
@@ -144,7 +159,12 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
           title={t(`Filter by Incident ID #{{id}}`, { id: item.incident_id })}
           onClick={() => toggleFilterByIncidentId(item.incident_id + '')}
         >
-          <FontAwesomeIcon icon={faHashtag} className="fa-hashtag" title="Incident ID" />
+          <FontAwesomeIcon
+            titleId="report-hashtag"
+            icon={faHashtag}
+            className="fa-hashtag"
+            title="Incident ID"
+          />
           {item.incident_id}
         </CustomButton>
       )}

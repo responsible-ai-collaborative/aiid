@@ -4,7 +4,7 @@ import { StaticQuery, graphql } from 'gatsby';
 import config from '../../config';
 import { Sidebar, ListItem } from './styles/Sidebar';
 
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 
 const SidebarLayout = ({ location }) => {
   const { locale } = useLocalization();
@@ -40,7 +40,7 @@ const SidebarLayout = ({ location }) => {
 
             const prefixedSlug = slug && config.gatsby.pathPrefix + slug;
 
-            return [slug, prefixedSlug].includes(indexName) && page.node.tableOfContents.items;
+            return [slug, prefixedSlug].includes(indexName) && page.node.tableOfContents?.items;
           });
 
           navItems =
