@@ -53,11 +53,37 @@
                 "bsonType": "string"
             }
         },
+        "matching_harm_keywords": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "matching_entities": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
         "plain_text": {
             "bsonType": "string"
         },
         "similarity": {
             "bsonType": "double"
+        },
+        "classification_similarity": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "classification": {
+                        "bsonType": "string"
+                    },
+                    "similarity": {
+                        "bsonType": "double"
+                    }
+                }
+            }
         },
         "source_domain": {
             "bsonType": "string"

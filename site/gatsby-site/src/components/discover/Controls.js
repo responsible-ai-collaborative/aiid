@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Trans } from 'react-i18next';
 import useSearch from './useSearch';
+import CsvExport from './CsvExport';
 import Sorting from './Sorting';
 import SORTING_LISTS from 'components/discover/SORTING_LISTS';
 
@@ -38,6 +39,10 @@ const Controls = () => {
         </div>
 
         <div className="flex">
+          <div className="place-self-center">
+            <CsvExport />
+          </div>
+
           <Sorting items={SORTING_LISTS} defaultRefinement={searchState.sortBy} />
           <div className="justify-end">
             <ClearFilters>

@@ -2,9 +2,9 @@ import React from 'react';
 import { connectCurrentRefinements } from 'react-instantsearch-dom';
 import { Button } from 'react-bootstrap';
 import useSearch from './useSearch';
-import SORTING_LIST from './SORTING_LISTS';
+import { DEFAULT_SEARCH_KEYS_VALUES } from './DEFAULT_SEARCH_KEYS_VALUES';
 
-const ClearButton = connectCurrentRefinements(({ items, children }) => {
+const ClearButton = connectCurrentRefinements(({ items, children, refine }) => {
   const { setSearchState, searchState } = useSearch();
 
   const disabled =
@@ -18,10 +18,11 @@ const ClearButton = connectCurrentRefinements(({ items, children }) => {
         className="no-underline"
         variant="link secondary"
         onClick={() => {
+          items = items.filter((item) => !DEFAULT_SEARCH_KEYS_VALUES.includes(item.attribute));
+          refine(items);
           setSearchState((state) => ({
             ...state,
             refinementList: { is_incident_report: ['true'] },
-            sortBy: SORTING_LIST.find((s) => s.default).name || '',
           }));
         }}
         disabled={disabled}

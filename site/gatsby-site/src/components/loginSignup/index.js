@@ -31,7 +31,7 @@ const Subscribe = () => {
     <>
       <Button
         color={'gray'}
-        href={localizePath({ path: '/signup' })}
+        href={localizePath({ path: '/signup/' })}
         size={'sm'}
         data-cy="subscribe-btn"
       >
@@ -48,7 +48,7 @@ const Subscriptions = () => {
     <div className="flex flex-col text-xs w-full justify-center items-center">
       <Button
         color={'gray'}
-        href={localizePath({ path: '/account' })}
+        href={localizePath({ path: '/account/' })}
         size={'sm'}
         data-cy="account-btn"
       >

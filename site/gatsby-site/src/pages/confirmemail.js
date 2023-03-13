@@ -28,8 +28,7 @@ const ConfirmEmail = (props) => {
         })
         .catch((e) => {
           setPageMessage(t('An unknown error has ocurred'));
-          // eslint-disable-next-line no-undef
-          if (Rollbar) {
+          if ('Rollbar' in window) {
             Rollbar.error(e);
           }
         });
@@ -43,7 +42,7 @@ const ConfirmEmail = (props) => {
       {pageMessage ? (
         <>
           <p>{pageMessage}</p>
-          <Link to={'/login?redirectTo=/account'} data-cy="confirm-login-btn">
+          <Link to={'/login?redirectTo=/account/'} data-cy="confirm-login-btn">
             <Trans>Login</Trans>
           </Link>
         </>

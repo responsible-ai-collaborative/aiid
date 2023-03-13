@@ -76,7 +76,7 @@ export function ToastContextProvider({ children }) {
       {children}
       <ToastsWrapper className="bootstrap">
         {toasts.map(({ message, severity, error, id }, index) => {
-          if (Rollbar && error) {
+          if ('Rollbar' in window && error) {
             Rollbar.error(error);
           }
           return (
