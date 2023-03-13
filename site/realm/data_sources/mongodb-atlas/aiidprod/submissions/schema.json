@@ -74,7 +74,7 @@
                 "bsonType": "string"
             }
         },
-        "image_url": {
+        "media_url": {
             "bsonType": "string"
         },
         "incident_date": {
@@ -139,7 +139,7 @@
     },
     "required": [
         "authors",
-        "image_url",
+        "media_url",
         "date_downloaded",
         "date_modified",
         "date_published",

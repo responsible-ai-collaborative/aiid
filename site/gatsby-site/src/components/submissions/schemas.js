@@ -82,7 +82,7 @@ export const schema = yup.object().shape({
     .string()
     .url('*Must enter URL in http://www.example.com format')
     .required('*URL required'),
-  image_url: yup
+  media_url: yup
     .string()
     .matches(/((https?):\/\/)(\S)*$/, {
       message: '*Must enter URL in http://www.example.com/images/preview.png format',

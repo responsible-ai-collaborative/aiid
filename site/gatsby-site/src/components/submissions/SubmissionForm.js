@@ -86,7 +86,7 @@ const SubmissionForm = () => {
           severity: SEVERITY.info,
         });
 
-        const cloudinary_id = getCloudinaryPublicID(news.image_url);
+        const cloudinary_id = getCloudinaryPublicID(news.media_url);
 
         const newValues = {
           ...values,
@@ -132,8 +132,8 @@ const SubmissionForm = () => {
   }, [values?.url]);
 
   useEffect(() => {
-    setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
-  }, [values.image_url]);
+    setFieldValue('cloudinary_id', values.media_url ? getCloudinaryPublicID(values.media_url) : '');
+  }, [values.media_url]);
 
   useEffect(() => {
     if (values._id) {
@@ -234,10 +234,10 @@ const SubmissionForm = () => {
 
         <PreviewImageInputGroup
           cloudinary_id={values.cloudinary_id}
-          name="image_url"
-          label={t('Image Address')}
+          name="media_url"
+          label={t('Media Address')}
           icon={faImage}
-          placeholder={t('Image URL')}
+          placeholder={t('Media URL')}
           className="mt-3"
           {...TextInputGroupProps}
         />

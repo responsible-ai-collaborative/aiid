@@ -7,9 +7,7 @@ import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { format, parse } from 'date-fns';
 import { useMutation, useQuery } from '@apollo/client';
-// the commented line is only used to pass the linting error. un comment it and remove line 11.
-import { FIND_SUBMISSIONS } from '../../graphql/submissions';
-// import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
+import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
 import { UPSERT_ENTITY } from '../../graphql/entities';
 import isString from 'lodash/isString';
 import { stripMarkdown } from 'utils/typography';
@@ -47,9 +45,7 @@ const queryConfig = {
   incident_date: withDefault(CustomDateParam, ''),
   date_published: withDefault(CustomDateParam, ''),
   date_downloaded: withDefault(CustomDateParam, ''),
-  // onefield was changed -image url to media url
   media_url: withDefault(StringParam, ''),
-  // two new fields added and one name change
   incident_id: withDefault(StringParam, ''),
   text: withDefault(StringParam, ''),
   editor_notes: withDefault(StringParam, ''),
@@ -128,8 +124,7 @@ const SubmitForm = () => {
   // See https://github.com/apollographql/apollo-client/issues/5419
   useQuery(FIND_SUBMISSIONS);
 
-  // un commment this. only did this to pass linting errors.
-  // const [insertSubmission] = useMutation(INSERT_SUBMISSION, { refetchQueries: [FIND_SUBMISSIONS] });
+  const [insertSubmission] = useMutation(INSERT_SUBMISSION, { refetchQueries: [FIND_SUBMISSIONS] });
 
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
@@ -214,7 +209,7 @@ const SubmitForm = () => {
 
       // before inserting the submission in to mongodb, capture the video_id and the vimeo_id
       // console.log("THE NEW TIME");
-      // await insertSubmission({ variables: { submission } });
+      await insertSubmission({ variables: { submission } });
 
       console.log(submission);
       console.log('After submission');

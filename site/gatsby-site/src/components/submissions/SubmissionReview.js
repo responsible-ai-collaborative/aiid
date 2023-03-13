@@ -45,7 +45,7 @@ const ListedGroup = ({ item, className = '', keysToRender, objectKeyToDisplay = 
 
 const leadItems = ['source_domain', 'authors', 'submitters', 'incident_id'];
 
-const urls = ['url', 'image_url'];
+const urls = ['url', 'media_url'];
 
 const dateRender = [
   'incident_date',
