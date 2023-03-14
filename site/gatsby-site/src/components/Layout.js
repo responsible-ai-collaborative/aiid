@@ -4,12 +4,12 @@ import config from '../../config.js';
 import Footer from './layout/Footer';
 import Header from './ui/Header';
 
-const Layout = ({ children, className, sidebarCollapsed = false, rightSidebar }) => (
+const Layout = ({ children, className, sidebarCollapsed = false, rightSidebar, location }) => (
   <>
-    <Header />
+    <Header location={location} />
     <div className="tw-layout">
       <div className="hidden md:block z-2 bg-text-light-gray shadow" data-cy="sidebar-desktop">
-        <Sidebar defaultCollapsed={sidebarCollapsed} />
+        <Sidebar defaultCollapsed={sidebarCollapsed} location={location} />
       </div>
       {config.sidebar.title && (
         <div
