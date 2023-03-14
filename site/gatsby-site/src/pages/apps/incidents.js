@@ -8,10 +8,9 @@ import Layout from 'components/Layout';
 import ListSkeleton from 'elements/Skeletons/List';
 import { graphql } from 'gatsby';
 import { makeEntitiesHash } from 'utils/entities';
-import { ToggleSwitch } from 'flowbite-react';
 
 const IncidentsPage = ({ data, ...props }) => {
-  const { data: incidents } = useQuery(FIND_INCIDENTS_TABLE);
+  const { data: incidents, loading } = useQuery(FIND_INCIDENTS_TABLE);
 
   const [incidentsData, setIncidentsData] = useState(null);
 
@@ -53,24 +52,17 @@ const IncidentsPage = ({ data, ...props }) => {
         <title>{t('Incidents')}</title>
       </AiidHelmet>
       <div className="bootstrap">
-        {!incidentsData && (
+        {(incidentsData && !isLiveData) || (incidentsData && isLiveData && !loading) ? (
+          <div className="overflow-x-auto">
+            <IncidentsTable
+              data={incidentsData}
+              isLiveData={isLiveData}
+              setIsLiveData={setIsLiveData}
+            />
+          </div>
+        ) : (
           <div className="px-3">
             <ListSkeleton />
-          </div>
-        )}
-        {incidentsData && (
-          <div className="overflow-x-auto">
-            <div className="flex justify-end mb-2 pt-1">
-              <ToggleSwitch
-                checked={isLiveData}
-                label={t('Show Live data')}
-                onChange={(checked) => {
-                  setIsLiveData(checked);
-                }}
-                name="live-data-switch"
-              />
-            </div>
-            <IncidentsTable data={incidentsData} />
           </div>
         )}
       </div>

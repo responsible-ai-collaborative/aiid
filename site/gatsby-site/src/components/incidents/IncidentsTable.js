@@ -6,6 +6,7 @@ import IncidentEditModal from './IncidentEditModal';
 import styled from 'styled-components';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
+import { ToggleSwitch } from 'flowbite-react';
 
 const Table = styled.div`
   display: inline-block;
@@ -121,7 +122,7 @@ function ListCell({ cell }) {
   );
 }
 
-export default function IncidentsTable({ data }) {
+export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
   const [incidentIdToEdit, setIncindentIdToEdit] = useState(0);
 
   const { isLoggedIn, isRole } = useUserContext();
@@ -236,6 +237,16 @@ export default function IncidentsTable({ data }) {
       {/* eslint-disable react/jsx-key */}
 
       <Table {...getTableProps()}>
+        <div className="flex justify-start ml-4 mb-2 pt-1">
+          <ToggleSwitch
+            checked={isLiveData}
+            label={t('Show Live data')}
+            onChange={(checked) => {
+              setIsLiveData(checked);
+            }}
+            name="live-data-switch"
+          />
+        </div>
         <Header>
           {headerGroups.map((headerGroup) => (
             <div {...headerGroup.getHeaderGroupProps()}>
