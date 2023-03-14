@@ -48,6 +48,7 @@ const config = {
          * (The higher the priority, the earlier an item will appear in the initial results)
          */
         { 23: 2 }, // Is Starbucks shortchanging its baristas?
+        { 1967: 1 }, // Tweet: @MarietjeSchaake
         { 1551: 1 }, // Hundreds of AI tools have been built to catch covid. None of them helped.
         { 835: 1 }, // LinkedIn’s search algorithm apparently favored men until this week
         { 1470: 1 }, // The Death and Life of an Admissions Algorithm
@@ -74,7 +75,6 @@ const config = {
         { 45: 1 }, // Google's Anti-Bullying AI Mistakes Civility for Decency
         { 620: 1 }, // Is AI Sexist?
         { 519: 1 }, // TV news report prompts viewers' Amazon Echo devices to order unwanted dollhouses
-        { 1967: 1 }, // Tweet: @MarietjeSchaake
       ],
     },
   },
