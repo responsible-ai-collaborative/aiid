@@ -26,7 +26,12 @@ function CitationFormat({ incidentReports, incident }) {
   return (
     <>
       <Button color="gray" onClick={handleShow}>
-        <FontAwesomeIcon className="mr-2 -mt-1" icon={faQuoteLeft} title={t('Citation Info')} />
+        <FontAwesomeIcon
+          className="mr-2 -mt-1"
+          icon={faQuoteLeft}
+          title={t('Citation Info')}
+          titleId={'citation-info-icon'}
+        />
         <Trans>Citation Info</Trans>
       </Button>
       {show && (

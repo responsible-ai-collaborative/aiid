@@ -41,24 +41,44 @@ function Tools({ incident, incidentReports, isSubscribed, subscribeToNewReports,
             'yyyy-MM-dd'
           )}`}
         >
-          <FontAwesomeIcon icon={faPlus} title={t('New Report')} className="mr-2" />
+          <FontAwesomeIcon
+            icon={faPlus}
+            title={t('New Report')}
+            className="mr-2"
+            titleId="new-report-icon"
+          />
           <Trans>New Report</Trans>
         </Button>
         <Button
           color="gray"
           href={`/apps/submit?tags=${RESPONSE_TAG}&incident_id=${incident.incident_id}`}
         >
-          <FontAwesomeIcon icon={faPlus} title={t('New Response')} className="mr-2" />
+          <FontAwesomeIcon
+            icon={faPlus}
+            title={t('New Response')}
+            className="mr-2"
+            titleId="new-response-icon"
+          />
           <Trans>New Response</Trans>
         </Button>
         <Button color="gray" href={'/apps/discover?incident_id=' + incident.incident_id}>
-          <FontAwesomeIcon className="mr-2" icon={faSearch} title={t('Discover')} />
+          <FontAwesomeIcon
+            className="mr-2"
+            icon={faSearch}
+            title={t('Discover')}
+            titleId="discover-icon"
+          />
           <Trans>Discover</Trans>
         </Button>
         <CitationFormat incidentReports={incidentReports} incident={incident} />
         {isUserLoggedIn && isRole('incident_editor') && (
           <Button color="gray" href={'/incidents/edit?incident_id=' + incident.incident_id}>
-            <FontAwesomeIcon className="mr-2" icon={faEdit} title={t('Edit Incident')} />
+            <FontAwesomeIcon
+              className="mr-2"
+              icon={faEdit}
+              title={t('Edit Incident')}
+              titleId="edit-incident-icon"
+            />
             <Trans>Edit Incident</Trans>
           </Button>
         )}
