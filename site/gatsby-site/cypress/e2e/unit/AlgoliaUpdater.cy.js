@@ -6,7 +6,7 @@ const incidents = [
   {
     incident_id: 1,
     date: '2020-06-14',
-    reports: [1, 2],
+    reports: [1, 23],
   },
 ];
 
@@ -42,7 +42,7 @@ const reports = [
     date_modified: '2020-06-14',
     date_published: '2015-05-19',
     date_submitted: '2019-06-01',
-    description: 'Description of report 2',
+    description: 'Description of report 23',
     epoch_date_downloaded: 1555113600,
     epoch_date_modified: 1592092800,
     epoch_date_published: 1431993600,
@@ -50,13 +50,13 @@ const reports = [
     image_url: 'http://url.com',
     cloudinary_id: 'http://cloudinary.com',
     language: 'es',
-    report_number: 2,
+    report_number: 23,
     source_domain: 'blogs.wsj.com',
     submitters: ['Roman Yampolskiy'],
     tags: [],
-    text: 'Report 2 **text**',
-    plain_text: 'Report 2 text',
-    title: 'Report 2 title',
+    text: 'Report 23 **text**',
+    plain_text: 'Report 23 text',
+    title: 'Report 23 title',
     url: 'https://url.com/stuff',
   },
 ];
@@ -95,10 +95,10 @@ describe('Algolia', () => {
     const translatedReportsEN = [
       {
         _id: '61d5ad9f102e6e30fca9065r',
-        text: 'translated-en-text **report 2**',
-        plain_text: 'translated-en-text report 2',
-        title: 'translated-en-title report 2',
-        report_number: 2,
+        text: 'translated-en-text **report 23**',
+        plain_text: 'translated-en-text report 23',
+        title: 'translated-en-title report 23',
+        report_number: 23,
       },
     ];
 
@@ -292,21 +292,21 @@ describe('Algolia', () => {
 
       expect(enIndex.replaceAllObjects.getCall(0).args[0][1]).to.deep.nested.include({
         authors: ['Alistair Barr'],
-        description: 'Description of report 2',
+        description: 'Description of report 23',
         epoch_date_downloaded: 1555113600,
         epoch_date_modified: 1592092800,
         epoch_date_published: 1431993600,
         epoch_date_submitted: 1559347200,
         image_url: 'http://url.com',
         language: 'es',
-        report_number: 2,
+        report_number: 23,
         source_domain: 'blogs.wsj.com',
         submitters: ['Roman Yampolskiy'],
         tags: [],
-        text: 'translated-en-text report 2',
-        title: 'translated-en-title report 2',
+        text: 'translated-en-text report 23',
+        title: 'translated-en-title report 23',
         url: 'https://url.com/stuff',
-        objectID: '2',
+        objectID: '23',
         mongodb_id: '60dd465f80935bc89e6f9b02',
         incident_id: 1,
         incident_date: '2020-06-14',
@@ -344,25 +344,26 @@ describe('Algolia', () => {
           'CSET:Harm Type:Harm to physical health/safety',
           'CSET:Harm Type:Harm to physical property',
         ],
+        featured: 0,
       });
 
       expect(esIndex.replaceAllObjects.getCall(0).args[0][1]).to.deep.nested.include({
         authors: ['Alistair Barr'],
-        description: 'Description of report 2',
+        description: 'Description of report 23',
         epoch_date_downloaded: 1555113600,
         epoch_date_modified: 1592092800,
         epoch_date_published: 1431993600,
         epoch_date_submitted: 1559347200,
         image_url: 'http://url.com',
         language: 'es',
-        report_number: 2,
+        report_number: 23,
         source_domain: 'blogs.wsj.com',
         submitters: ['Roman Yampolskiy'],
         tags: [],
-        text: 'Report 2 text',
-        title: 'Report 2 title',
+        text: 'Report 23 text',
+        title: 'Report 23 title',
         url: 'https://url.com/stuff',
-        objectID: '2',
+        objectID: '23',
         mongodb_id: '60dd465f80935bc89e6f9b02',
         incident_id: 1,
         incident_date: '2020-06-14',
@@ -372,6 +373,7 @@ describe('Algolia', () => {
           'CSET:Harm Type:Harm to physical health/safety',
           'CSET:Harm Type:Harm to physical property',
         ],
+        featured: 2,
       });
 
       expect(enIndex.deleteBy.getCall(0).args[0]).deep.eq({

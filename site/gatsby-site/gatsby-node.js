@@ -55,13 +55,14 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     ['/about/blog', '/blog'],
     ['/research/4-taxonomies', '/taxonomies'],
     ['/research', '/research/snapshots'],
+    ['/apps/newsSearch', '/apps/newsdigest'],
     ['/research/related-work', '/research/4-related-work'],
     ['/blog/incident-report-2022-january', '/blog/incident-report-2023-january'],
   ];
 
-  redirects.forEach((pair) =>
-    createRedirect({ fromPath: pair[0], toPath: pair[1], isPermanent: true })
-  );
+  redirects.forEach((pair) => {
+    createRedirect({ fromPath: pair[0], toPath: pair[1], isPermanent: true });
+  });
 
   for (const pageCreator of [
     createMdxPages,

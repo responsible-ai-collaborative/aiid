@@ -1,5 +1,6 @@
 import flaggedReport from '../../fixtures/reports/flagged.json';
 import unflaggedReport from '../../fixtures/reports/unflagged.json';
+import config from '../../../config';
 import path from 'path';
 
 describe('The Discover app', () => {
@@ -59,6 +60,54 @@ describe('The Discover app', () => {
     cy.url().should('include', 'incident_id=34');
 
     cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 28);
+  });
+
+  it('Filters by Language using top filters', { retries: { runMode: 4 } }, () => {
+    cy.visit(url);
+
+    cy.get('[data-cy=expand-filters]').click();
+
+    cy.waitForStableDOM();
+
+    cy.contains('button', 'Language').click();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="language"] [placeholder="Type Here"]', { timeout: 8000 })
+      .type('es')
+      .type('{enter}');
+
+    cy.get('[data-cy="language"] .list-group-item:contains("es")', { timeout: 8000 })
+      .first()
+      .click();
+
+    cy.url().should('include', 'language=es');
+
+    cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 4);
+  });
+
+  it('Filters by Tags using top filters', { retries: { runMode: 4 } }, () => {
+    cy.visit(url);
+
+    cy.get('[data-cy=expand-filters]').click();
+
+    cy.waitForStableDOM();
+
+    cy.contains('button', 'Tags').click();
+
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="tags"] [placeholder="Type Here"]', { timeout: 8000 })
+      .type('response')
+      .type('{enter}');
+
+    cy.get('[data-cy="tags"] .list-group-item:contains("response")', { timeout: 8000 })
+      .first()
+      .click();
+
+    cy.url().should('include', 'tags=response');
+
+    cy.get('div[class^="tw-hits-container"]').children().should('have.length.at.least', 1);
   });
 
   it('Filters by incident Id using card button', { retries: { runMode: 4 } }, () => {
@@ -324,5 +373,15 @@ describe('The Discover app', () => {
     cy.visit(newUrl);
 
     cy.get('[data-cy="discover-sort"]').should('have.text', 'Newest Incident Date');
+  });
+
+  it('Should default to the featured incidents', () => {
+    cy.visit(url);
+
+    for (const item of config.header.search.featured) {
+      const [report_number] = Object.entries(item).flat();
+
+      cy.get(`[data-cy-report-number="${report_number}"]`).should('be.visible');
+    }
   });
 });

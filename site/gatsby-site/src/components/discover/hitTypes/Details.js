@@ -44,7 +44,7 @@ export default function Details({ item, toggleFilterByIncidentId, viewType }) {
         });
 
   return (
-    <Card className="h-full" data-cy={item.mongodb_id}>
+    <Card className="h-full" data-cy={item.mongodb_id} data-cy-report-number={item.report_number}>
       <input type="hidden" data-cy="date-published" value={item.epoch_date_published} />
       <input type="hidden" data-cy="date-submitted" value={item.epoch_date_submitted} />
       <input type="hidden" data-cy="incident-date" value={item.epoch_incident_date} />
