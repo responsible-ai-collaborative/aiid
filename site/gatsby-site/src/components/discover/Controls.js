@@ -28,8 +28,8 @@ const Controls = () => {
 
   return (
     <>
-      <div className="justify-between gap-2 mt-4 hidden md:flex">
-        <div className="flex gap-4">
+      <div className="justify-between gap-2 mt-4 hidden md:flex flex-wrap items-center">
+        <div className="flex gap-4 items-center flex-wrap">
           <div className="flex items-center">
             <Stats />
           </div>
@@ -38,7 +38,7 @@ const Controls = () => {
           </div>
         </div>
 
-        <div className="flex">
+        <div className="flex flex-grow justify-end items-center flex-wrap">
           <div className="place-self-center">
             <CsvExport />
           </div>
