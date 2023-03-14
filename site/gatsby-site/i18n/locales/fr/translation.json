@@ -240,5 +240,8 @@
   "Please go to your <1>account</1> to manage subscriptions": "Veuillez vous rendre sur votre <1>compte</1> pour gérer vos abonnements",
   "Citation Info": "Informations de citation",
   "Citing this specific format will make it possible for the Incident Database to find your research and include it on this page.": "Citer ce format spécifique permettra à la base de données d'incidents de trouver votre recherche et de l'inclure sur cette page.",
-  "Copy": "Copier"
+  "Copy": "Copier",
+  "Suggested Citation Format": "Format de citation suggéré",
+  "{{submitterCite}}. ({{incidentDate}}) Incident Number {{incidentId}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}": "{{submitterCite}}. ({{incidentDate}}) Incident Nro {{incidentId}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}",
+  "Retrieved on {{date}} from incidentdatabase.ai/cite/{{incidentId}}.": "Récupéré le {{date}} à partir de incidentdatabase.ai/cite/{{incidentId}}."
 }

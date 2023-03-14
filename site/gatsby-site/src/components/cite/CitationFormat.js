@@ -55,7 +55,9 @@ function CitationFormat({ incidentReports, incident }) {
             })}
 
             <div className="flex items-center space-x-2 rounded-b border-gray-200 dark:border-gray-600 border-t mt-4 pt-2 py-2 pb-0">
-              <Button onClick={handleClose}>Close</Button>
+              <Button onClick={handleClose}>
+                <Trans>Close</Trans>
+              </Button>
             </div>
           </Modal.Body>
         </Modal>

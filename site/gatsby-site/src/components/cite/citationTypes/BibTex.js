@@ -49,7 +49,9 @@ const BibTex = ({ nodes, incidentDate, incident_id, editors }) => {
 
   return (
     <>
-      <h2>BibTex Citation</h2>
+      <h2>
+        <Trans>BibTex Citation</Trans>
+      </h2>
       <div data-cy="bibtex-format">{jsx}</div>
       <div className="flex justify-end">
         <Button

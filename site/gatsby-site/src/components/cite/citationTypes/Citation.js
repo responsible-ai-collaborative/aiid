@@ -31,10 +31,12 @@ const Citation = ({ nodes, incidentDate, incident_id, editors }) => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    const text = `Retrieved on ${format(
-      new Date(),
-      'MMMM d, y'
-    )} from incidentdatabase.ai/cite/${incident_id}.`;
+    const date = format(new Date(), 'MMMM d, y');
+
+    const text = t(`Retrieved on {{date}} from incidentdatabase.ai/cite/{{incidentId}}.`, {
+      date,
+      incidentId: incident_id,
+    });
 
     setRetrievalString(text);
   }, []);
@@ -47,7 +49,17 @@ const Citation = ({ nodes, incidentDate, incident_id, editors }) => {
 
   const editorFirstNameInitial = nameFragments[0][0] + '.';
 
-  const text = `${submitterCite}. (${incidentDate}) Incident Number ${incident_id}. in ${editorLastName}, ${editorFirstNameInitial} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. ${retrievalString}`;
+  const text = t(
+    '{{submitterCite}}. ({{incidentDate}}) Incident Number {{incidentId}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}',
+    {
+      submitterCite,
+      incidentDate,
+      incidentId: incident_id,
+      editorLastName,
+      editorFirstNameInitial,
+      retrievalString,
+    }
+  );
 
   return (
     <>

@@ -249,5 +249,8 @@
   "Oldest Submitted Date": "Fecha de envío más antigua",
   "Citation Info": "Información para citar",
   "Citing this specific format will make it possible for the Incident Database to find your research and include it on this page.": "Citar este formato específico permitirá que la base de datos de incidentes encuentre su investigación y la incluya en esta página.",
-  "Copy": "Copiar"
+  "Copy": "Copiar",
+  "Suggested Citation Format": "Formato de cita sugerido",
+  "{{submitterCite}}. ({{incidentDate}}) Incident Number {{incidentId}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}": "{{submitterCite}}. ({{incidentDate}}) Incidente Número {{incidentId}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}",
+  "Retrieved on {{date}} from incidentdatabase.ai/cite/{{incidentId}}.": "Recuperado el {{date}} de incidentdatabase.ai/cite/{{incidentId}}."
 }
