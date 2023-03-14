@@ -14,6 +14,8 @@ function ReportPage(props) {
     data,
   } = props;
 
+  console.log(props);
+
   const { t } = useTranslation();
 
   const { locale } = useLocalization();
@@ -47,7 +49,7 @@ function ReportPage(props) {
       </div>
 
       <Container>
-        <ReportCard item={report} />
+        <ReportCard item={report} alwaysExpanded={true} />
       </Container>
     </Layout>
   );
@@ -60,6 +62,9 @@ export const query = graphql`
     $translate_fr: Boolean!
     $translate_en: Boolean!
   ) {
+    incident: mongodbAiidprodIncidents(reports: { eq: $report_number }) {
+      incident_id
+    }
     report: mongodbAiidprodReports(report_number: { eq: $report_number }) {
       submitters
       date_published
