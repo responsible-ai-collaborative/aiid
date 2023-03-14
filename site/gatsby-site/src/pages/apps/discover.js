@@ -193,15 +193,13 @@ function DiscoverApp(props) {
 
   const { locale } = useLocalization();
 
+  const indexName = `instant_search-${locale}`;
+
   const [searchState, setSearchState] = useState(generateSearchState({ query }));
 
   const [viewType, setViewType] = useState(VIEW_TYPES.INCIDENTS);
 
   const [hasOnlyDefaultValues, setHasOnlyDefaultValues] = useState(false);
-
-  const indexName =
-    `instant_search-${locale}` +
-    (searchState.query == '' && hasOnlyDefaultValues ? '-featured' : '');
 
   const onSearchStateChange = (searchState) => {
     searchState = cleanSearchState(searchState);
@@ -277,7 +275,9 @@ function DiscoverApp(props) {
         value={{ searchState, setSearchState, indexName, searchClient, onSearchStateChange }}
       >
         <InstantSearch
-          indexName={indexName}
+          indexName={
+            indexName + (searchState.query == '' && hasOnlyDefaultValues ? '-featured' : '')
+          }
           searchClient={searchClient}
           searchState={searchState}
           onSearchStateChange={onSearchStateChange}
