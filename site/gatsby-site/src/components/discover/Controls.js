@@ -28,7 +28,7 @@ const Controls = () => {
 
   return (
     <>
-      <div className="justify-between gap-2 mt-4 hidden md:flex">
+      <div className="justify-between gap-2 mt-4 hidden md:flex flex-wrap">
         <div className="flex gap-4">
           <div className="flex items-center">
             <Stats />
@@ -38,7 +38,7 @@ const Controls = () => {
           </div>
         </div>
 
-        <div className="flex">
+        <div className="flex flex-grow justify-end">
           <div className="place-self-center">
             <CsvExport />
           </div>
