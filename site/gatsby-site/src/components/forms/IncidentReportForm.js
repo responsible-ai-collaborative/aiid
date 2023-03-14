@@ -6,7 +6,8 @@ import * as yup from 'yup';
 import TextInputGroup from '../../components/forms/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { dateRegExp } from '../../utils/date';
-import { getCloudinaryPublicID, PreviewImageInputGroup } from '../../utils/cloudinary';
+import { getCloudinaryPublicID } from '../../utils/cloudinary';
+import PreviewImageInputGroup from 'components/forms/PreviewImageInputGroup';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { graphql, useStaticQuery } from 'gatsby';
 import Label from './Label';
@@ -15,7 +16,7 @@ import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
 import getSourceDomain from '../../utils/getSourceDomain';
 import supportedLanguages from '../../components/i18n/languages.json';
-import { useLocalization } from 'gatsby-theme-i18n';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -199,6 +200,7 @@ const IncidentReportForm = () => {
         addToast({
           message: <>{message}</>,
           severity: SEVERITY.danger,
+          error: e,
         });
       }
 

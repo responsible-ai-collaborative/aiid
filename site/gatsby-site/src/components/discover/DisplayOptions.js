@@ -2,6 +2,7 @@ import React from 'react';
 import { Dropdown } from 'flowbite-react';
 import useSearch from './useSearch';
 import isEqual from 'lodash/isEqual';
+import { Trans } from 'react-i18next';
 
 const DisplayOptions = () => {
   const { setSearchState, searchState } = useSearch();
@@ -36,13 +37,26 @@ const DisplayOptions = () => {
   });
 
   return (
-    <Dropdown label={selectedIndex > -1 && displayOptions[selectedIndex].text} size="sm" inline>
-      {displayOptions.map(({ text }, index) => (
-        <Dropdown.Item key={text} onClick={() => setDisplay(index)}>
-          {text}
-        </Dropdown.Item>
-      ))}
-    </Dropdown>
+    <div className="flex justify-end px-2 relative">
+      <span className="absolute left-4 -top-2 text-xs text-gray-400 bg-white px-2">
+        <Trans>Display Option</Trans>
+      </span>
+      <Dropdown
+        label={selectedIndex > -1 && displayOptions[selectedIndex].text}
+        color={'light'}
+        className="min-w-max"
+      >
+        {displayOptions.map(({ text }, index) => (
+          <Dropdown.Item
+            key={text}
+            onClick={() => setDisplay(index)}
+            className={`${text === displayOptions[selectedIndex].text ? 'bg-blue-100' : ''}`}
+          >
+            <span>{text}</span>
+          </Dropdown.Item>
+        ))}
+      </Dropdown>
+    </div>
   );
 };
 

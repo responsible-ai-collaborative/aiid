@@ -10,9 +10,10 @@ import ReportText from 'components/reports/ReportText';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 
 import { SourceDomainSubtitle, HeaderTitle } from './shared';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import Card from 'elements/Card';
+import { VIEW_TYPES } from 'utils/discover';
 
 const IncidentCardImage = styled(Image)`
   height: ${({ height }) => height};
@@ -24,25 +25,29 @@ const StyledLabel = styled.p`
   margin: 0.6em 0;
 `;
 
-export default function Details({
-  item,
-  authorsModal,
-  submittersModal,
-  flagReportModal,
-  toggleFilterByIncidentId,
-}) {
+export default function Details({ item, toggleFilterByIncidentId, viewType }) {
   const localizePath = useLocalizePath();
 
-  const detailsPath = item.is_incident_report
-    ? localizePath({
-        path: `/cite/${item.incident_id}#r${item.objectID}`,
-      })
-    : localizePath({
-        path: `/reports/${item.report_number}`,
-      });
+  const { t } = useTranslation();
+
+  const detailsPath =
+    viewType === VIEW_TYPES.INCIDENTS
+      ? localizePath({
+          path: `/cite/${item.incident_id}`,
+        })
+      : item.is_incident_report
+      ? localizePath({
+          path: `/cite/${item.incident_id}#r${item.objectID}`,
+        })
+      : localizePath({
+          path: `/reports/${item.report_number}`,
+        });
 
   return (
-    <Card className="h-full" data-cy={item.mongodb_id}>
+    <Card className="h-full" data-cy={item.mongodb_id} data-cy-report-number={item.report_number}>
+      <input type="hidden" data-cy="date-published" value={item.epoch_date_published} />
+      <input type="hidden" data-cy="date-submitted" value={item.epoch_date_submitted} />
+      <input type="hidden" data-cy="incident-date" value={item.epoch_incident_date} />
       <a href={detailsPath}>
         <IncidentCardImage
           className="card-img-top"
@@ -50,15 +55,21 @@ export default function Details({
           alt={item.title}
           height="240px"
           transformation={fill().height(480)}
+          itemIdentifier={t('Report {{report_number}}', {
+            report_number: item.report_number,
+          }).replace(' ', '.')}
         />
       </a>
       <Card.Body className="flex flex-col ">
-        <HeaderTitle item={item} />
+        <HeaderTitle item={item} viewType={viewType} />
         <SourceDomainSubtitle item={item} className="mb-2 text-muted-gray" />
 
         <Card.Text className="flex-1-1-auto mb-4">
           <TranslationBadge originalLanguage={item.language} className="align-self-start mb-2" />
-          <ReportText text={item.text} maxChars={400} />
+          <ReportText
+            text={viewType === VIEW_TYPES.INCIDENTS ? item.incident_description : item.text}
+            maxChars={400}
+          />
         </Card.Text>
 
         <div className="align-bottom">
@@ -81,13 +92,7 @@ export default function Details({
       </Card.Body>
 
       <Card.Footer className="flex justify-between">
-        <Actions
-          authorsModal={authorsModal}
-          flagReportModal={flagReportModal}
-          submittersModal={submittersModal}
-          toggleFilterByIncidentId={toggleFilterByIncidentId}
-          item={item}
-        />
+        <Actions toggleFilterByIncidentId={toggleFilterByIncidentId} item={item} />
       </Card.Footer>
     </Card>
   );

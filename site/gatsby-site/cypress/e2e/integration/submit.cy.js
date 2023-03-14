@@ -1,5 +1,8 @@
 import parseNews from '../../fixtures/api/parseNews.json';
 import semanticallyRelated from '../../fixtures/api/semanticallyRelated.json';
+import probablyRelatedIncidents from '../../fixtures/incidents/probablyRelatedIncidents.json';
+import probablyRelatedReports from '../../fixtures/reports/probablyRelatedReports.json';
+
 import { maybeIt } from '../../support/utils';
 
 describe('The Submit form', () => {
@@ -39,7 +42,7 @@ describe('The Submit form', () => {
 
     cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
 
@@ -122,7 +125,7 @@ describe('The Submit form', () => {
 
       cy.clickOutside();
 
-      cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+      cy.get('.form-has-errors').should('not.exist');
 
       cy.get('[data-cy="to-step-2"]').click();
 
@@ -172,7 +175,7 @@ describe('The Submit form', () => {
         .contains('Report successfully added to review queue')
         .should('be.visible');
 
-      cy.get('div[class^="ToastContext"] a').should('have.attr', 'href', '/apps/submitted');
+      cy.get('div[class^="ToastContext"] a').should('have.attr', 'href', '/apps/submitted/');
 
       cy.contains('Please review. Some data is missing.').should('not.exist');
     }
@@ -268,7 +271,7 @@ describe('The Submit form', () => {
 
     cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
 
@@ -698,7 +701,7 @@ describe('The Submit form', () => {
     );
     cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
   });
@@ -715,9 +718,6 @@ describe('The Submit form', () => {
   });
 
   it('Should show fallback preview image on initial load', () => {
-    const imageUrl =
-      'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/fallback.jpg';
-
     const values = {
       url: 'https://test.com',
       title: 'test title',
@@ -726,13 +726,16 @@ describe('The Submit form', () => {
       incident_date: '2022-01-01',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
-      image_url: imageUrl,
       incident_id: '1',
     };
 
     const params = new URLSearchParams(values);
 
+    cy.intercept('GET', parserURL, values).as('parseNews');
+
     cy.visit(url + `?${params.toString()}`);
+
+    cy.wait('@parseNews');
 
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
@@ -740,11 +743,11 @@ describe('The Submit form', () => {
 
     cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.get('[data-cy="image-preview-figure"] img').should('have.attr', 'src', imageUrl);
+    cy.get('[data-cy="image-preview-figure"] canvas').should('exist');
   });
 
   it('Should update preview image when url is typed', () => {
@@ -761,15 +764,18 @@ describe('The Submit form', () => {
 
     const params = new URLSearchParams(values);
 
+    cy.intercept('GET', parserURL, values).as('parseNews');
+
     cy.visit(url + `?${params.toString()}`);
+
+    cy.wait('@parseNews');
 
     const suffix = 'github.com/favicon.ico';
 
     const newImageUrl = 'https://' + suffix;
 
     const cloudinaryImageUrl =
-      'https://res.cloudinary.com/pai/image/upload/d_fallback.jpg/f_auto/q_auto/v1/reports/' +
-      suffix;
+      'https://res.cloudinary.com/pai/image/upload/f_auto/q_auto/v1/reports/' + suffix;
 
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
@@ -777,7 +783,7 @@ describe('The Submit form', () => {
 
     cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
 
@@ -845,7 +851,7 @@ describe('The Submit form', () => {
     );
     cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
 
@@ -923,14 +929,10 @@ describe('The Submit form', () => {
 
     cy.get('input[name="authors"]').type('Something');
 
-    cy.setEditorText(
-      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
-    );
-
     cy.get('[name="incident_date"]').type('2020-01-01');
     cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
 
@@ -975,10 +977,6 @@ describe('The Submit form', () => {
 
     cy.get('input[name="authors"]').type('Something');
 
-    cy.setEditorText(
-      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
-    );
-
     cy.get('[name="incident_date"]').type('2020-01-01');
 
     cy.get('[data-cy="submit-step-1"]').click();
@@ -1014,15 +1012,11 @@ describe('The Submit form', () => {
 
     cy.get('input[name="authors"]').type('Something');
 
-    cy.setEditorText(
-      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
-    );
-
     cy.get('[name="incident_date"]').type('2020-01-01');
 
     cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.get('[data-cy="to-step-2"]').click();
 
@@ -1101,7 +1095,7 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="submit-form-title"]').contains('New Incident Response').should('exist');
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.waitForStableDOM();
 
@@ -1145,6 +1139,20 @@ describe('The Submit form', () => {
       }
     );
 
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedIncidents',
+      'ProbablyRelatedIncidents',
+      probablyRelatedIncidents
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'ProbablyRelatedReports',
+      'ProbablyRelatedReports',
+      probablyRelatedReports
+    );
+
     cy.visit(url);
 
     const values = {
@@ -1166,7 +1174,9 @@ describe('The Submit form', () => {
 
     cy.clickOutside();
 
-    cy.get('[data-cy="related-byAuthors"] [data-cy="result"]', { timeout: 10000 })
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy="related-byAuthors"] [data-cy="result"]')
       .should('be.visible')
       .eq(0)
       .then(($el) => {
@@ -1196,8 +1206,8 @@ describe('The Submit form', () => {
         plain_text:
           'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease\n',
         source_domain: `test.com`,
-        editor_dissimilar_incidents: [5],
-        editor_similar_incidents: [16],
+        editor_dissimilar_incidents: [2],
+        editor_similar_incidents: [3],
       });
     });
   });
@@ -1253,7 +1263,7 @@ describe('The Submit form', () => {
     );
     cy.clickOutside();
 
-    cy.get('.form-has-errors', { timeout: 10000 }).should('not.exist');
+    cy.get('.form-has-errors').should('not.exist');
 
     cy.get('input[name="incident_date"]').should('not.exist');
 
@@ -1306,8 +1316,81 @@ describe('The Submit form', () => {
       .contains('Report successfully added to review queue')
       .should('be.visible');
 
-    cy.get('div[class^="ToastContext"] a').should('have.attr', 'href', '/apps/submitted');
+    cy.get('div[class^="ToastContext"] a').should('have.attr', 'href', '/apps/submitted/');
 
     cy.contains('Please review. Some data is missing.').should('not.exist');
+  });
+
+  it('Should allow two submissions in a row', () => {
+    cy.visit(url);
+
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
+      'insertSubmission',
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
+
+    cy.get('input[name="url"]').type(
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    cy.get('[data-cy="fetch-info"]').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('input[name="authors"]').type('Something');
+
+    cy.get('[name="incident_date"]').type('2020-01-01');
+
+    cy.get('[data-cy="submit-step-1"]').click();
+
+    cy.get('div[class^="ToastContext"]')
+      .contains('Report successfully added to review queue. You can see your submission')
+      .should('exist');
+
+    cy.get('input[name="url"]').type(
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    cy.get('[data-cy="fetch-info"]').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('input[name="authors"]').type('Something');
+
+    cy.get('[name="incident_date"]').type('2020-01-01');
+
+    cy.get('[data-cy="submit-step-1"]').click();
+
+    cy.get('div[class^="ToastContext"]')
+      .contains('Report successfully added to review queue. You can see your submission')
+      .should('exist');
+  });
+
+  it('Should fetch the news if the url param is in the querystring', () => {
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
+    cy.intercept('GET', parserURL, cy.spy().as('parseNewsSpy'));
+
+    cy.visit(
+      `${url}?url=https%3A%2F%2Fwww.arstechnica.com%2Fgadgets%2F2017%2F11%2Fyoutube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons%2F`
+    );
+
+    cy.wait('@parseNews');
+
+    cy.get('div[class^="ToastContext"]')
+      .contains('Please verify all information programmatically pulled from the report')
+      .should('exist');
+
+    cy.get('input[name="url"]').type(`https://skylightcyber.com/2019/07/18/cylance-i-kill-you/`);
+
+    cy.get('@parseNewsSpy').should('have.been.calledOnce');
   });
 });

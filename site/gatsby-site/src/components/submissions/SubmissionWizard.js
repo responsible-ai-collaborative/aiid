@@ -6,7 +6,7 @@ import StepOne from '../forms/SubmissionWizard/StepOne';
 import StepTwo from '../forms/SubmissionWizard/StepTwo';
 import StepThree from '../forms/SubmissionWizard/StepThree';
 
-const SubmissionWizard = ({ submitForm, initialValues }) => {
+const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString }) => {
   const [data, setData] = useState(initialValues);
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -115,6 +115,7 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
         addToast({
           message: <>{message}</>,
           severity: SEVERITY.danger,
+          error: e,
         });
       }
 
@@ -157,6 +158,7 @@ const SubmissionWizard = ({ submitForm, initialValues }) => {
         validateAndSubmitForm={validateAndSubmitForm}
         submissionFailed={submissionFailed}
         submissionComplete={submissionComplete}
+        urlFromQueryString={urlFromQueryString}
       />,
       <StepTwo
         key={'submission-step-2'}

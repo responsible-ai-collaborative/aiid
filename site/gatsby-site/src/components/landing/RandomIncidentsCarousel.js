@@ -4,6 +4,7 @@ import md5 from 'md5';
 import { Image } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { Carousel } from 'flowbite-react';
+import { useTranslation } from 'react-i18next';
 
 const RandomIncidentsCarousel = () => {
   return (
@@ -32,6 +33,8 @@ const RandomIncidentsCarousel = () => {
         allMongodbAiidprodIncidents: { nodes: incidents },
       }) => {
         // this cannot be really random because it causes rehydration problems
+
+        const { t } = useTranslation();
 
         const selected = [];
 
@@ -70,6 +73,7 @@ const RandomIncidentsCarousel = () => {
                       transformation={fill().height(800).width(1000)}
                       plugins={[]}
                       className="w-full h-full object-cover"
+                      itemIdentifier={t('Incident {{id}}', { id: incident_id }).replace(' ', '.')}
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
                       <h5

@@ -1,18 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import md5 from 'md5';
-import { format } from 'date-fns';
 import { Image } from '../../utils/cloudinary';
 import Link from 'components/ui/Link';
 import ReportText from 'components/reports/ReportText';
-import { Trans } from 'react-i18next';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { Trans, useTranslation } from 'react-i18next';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
+import DateLabel from 'components/ui/DateLabel';
 
 const LatestIncidentReport = ({ report }) => {
   const { image_url, cloudinary_id, title, text, epoch_date_submitted, incident_id } = report;
 
-  const [formattedDate, setFormattedDate] = useState(null);
-
-  useEffect(() => setFormattedDate(format(epoch_date_submitted * 1000, 'MMM d, yyyy')), []);
+  const { t } = useTranslation();
 
   return (
     <div className="flex flex-col items-center bg-white rounded-lg border  shadow-md md:flex-row dark:border-gray-700 dark:bg-gray-800">
@@ -22,9 +20,9 @@ const LatestIncidentReport = ({ report }) => {
             className={
               'img-fluid rounded-start h-full w-full max-w-full rounded-t-lg md:rounded-l-lg md:rounded-r-none border-r object-cover'
             }
-            // transformation={{ transition: '0.5s all ease-in-out' }}
             publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
             alt={title}
+            itemIdentifier={t('Incident {{id}}', { id: incident_id }).replace(' ', '.')}
           />
         </LocalizedLink>
       </div>
@@ -40,7 +38,10 @@ const LatestIncidentReport = ({ report }) => {
               {title}
             </h5>
           </LocalizedLink>
-          <span className="text-sm text-gray-500 dark:text-gray-400">{formattedDate}</span>
+          <DateLabel
+            date={epoch_date_submitted * 1000}
+            className="text-sm text-gray-500 dark:text-gray-400"
+          />
           <div className="mb-3 font-normal text-gray-700 dark:text-gray-400">
             <ReportText maxChars={240} text={text} />
           </div>

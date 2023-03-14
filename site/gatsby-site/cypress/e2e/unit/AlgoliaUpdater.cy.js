@@ -6,7 +6,7 @@ const incidents = [
   {
     incident_id: 1,
     date: '2020-06-14',
-    reports: [1, 2],
+    reports: [1, 23],
   },
 ];
 
@@ -42,7 +42,7 @@ const reports = [
     date_modified: '2020-06-14',
     date_published: '2015-05-19',
     date_submitted: '2019-06-01',
-    description: 'Description of report 2',
+    description: 'Description of report 23',
     epoch_date_downloaded: 1555113600,
     epoch_date_modified: 1592092800,
     epoch_date_published: 1431993600,
@@ -50,13 +50,13 @@ const reports = [
     image_url: 'http://url.com',
     cloudinary_id: 'http://cloudinary.com',
     language: 'es',
-    report_number: 2,
+    report_number: 23,
     source_domain: 'blogs.wsj.com',
     submitters: ['Roman Yampolskiy'],
     tags: [],
-    text: 'Report 2 **text**',
-    plain_text: 'Report 2 text',
-    title: 'Report 2 title',
+    text: 'Report 23 **text**',
+    plain_text: 'Report 23 text',
+    title: 'Report 23 title',
     url: 'https://url.com/stuff',
   },
 ];
@@ -66,16 +66,19 @@ const classifications = [
     _id: '60dd465f80935bc89e6f9b00',
     incident_id: 1,
     namespace: 'CSET',
-    classifications: {
-      Annotator: '1',
-      'Annotation Status': '6. Complete and final',
-      Reviewer: '5',
-      'Quality Control': false,
-      'Full Description': 'On December 5, 2018, a robot punctured.',
-      'Named Entities': ['Amazon'],
-      'Harm Type': ['Harm to physical health/safety', 'Harm to physical property'],
-      Publish: true,
-    },
+    attributes: [
+      { short_name: 'Annotator', value_json: '"1"' },
+      { short_name: 'Annotation Status', value_json: '"6. Complete and final"' },
+      { short_name: 'Reviewer', value_json: '"5"' },
+      { short_name: 'Quality Control', value_json: 'false' },
+      { short_name: 'Full Description', value_json: '"On December 5, 2018, a robot punctured."' },
+      { short_name: 'Named Entities', value_json: '["Amazon"]' },
+      {
+        short_name: 'Harm Type',
+        value_json: '["Harm to physical health/safety", "Harm to physical property"]',
+      },
+      { short_name: 'Publish', value_json: 'true' },
+    ],
     notes: null,
   },
 ];
@@ -92,10 +95,10 @@ describe('Algolia', () => {
     const translatedReportsEN = [
       {
         _id: '61d5ad9f102e6e30fca9065r',
-        text: 'translated-en-text **report 2**',
-        plain_text: 'translated-en-text report 2',
-        title: 'translated-en-title report 2',
-        report_number: 2,
+        text: 'translated-en-text **report 23**',
+        plain_text: 'translated-en-text report 23',
+        title: 'translated-en-title report 23',
+        report_number: 23,
       },
     ];
 
@@ -225,6 +228,24 @@ describe('Algolia', () => {
         stub.withArgs('instant_search-es-featured').returns(esIndexReplica);
         stub.withArgs('instant_search-en-featured').returns(enIndexReplica);
 
+        stub.withArgs('instant_search-es_epoch_incident_date_desc').returns(esIndexReplica);
+        stub.withArgs('instant_search-en_epoch_incident_date_desc').returns(enIndexReplica);
+
+        stub.withArgs('instant_search-es_epoch_incident_date_asc').returns(esIndexReplica);
+        stub.withArgs('instant_search-en_epoch_incident_date_asc').returns(enIndexReplica);
+
+        stub.withArgs('instant_search-es_epoch_date_published_desc').returns(esIndexReplica);
+        stub.withArgs('instant_search-en_epoch_date_published_desc').returns(enIndexReplica);
+
+        stub.withArgs('instant_search-es_epoch_date_published_asc').returns(esIndexReplica);
+        stub.withArgs('instant_search-en_epoch_date_published_asc').returns(enIndexReplica);
+
+        stub.withArgs('instant_search-es_epoch_date_submitted_desc').returns(esIndexReplica);
+        stub.withArgs('instant_search-en_epoch_date_submitted_desc').returns(enIndexReplica);
+
+        stub.withArgs('instant_search-es_epoch_date_submitted_asc').returns(esIndexReplica);
+        stub.withArgs('instant_search-en_epoch_date_submitted_asc').returns(enIndexReplica);
+
         return stub;
       })(),
     };
@@ -271,21 +292,21 @@ describe('Algolia', () => {
 
       expect(enIndex.replaceAllObjects.getCall(0).args[0][1]).to.deep.nested.include({
         authors: ['Alistair Barr'],
-        description: 'Description of report 2',
+        description: 'Description of report 23',
         epoch_date_downloaded: 1555113600,
         epoch_date_modified: 1592092800,
         epoch_date_published: 1431993600,
         epoch_date_submitted: 1559347200,
         image_url: 'http://url.com',
         language: 'es',
-        report_number: 2,
+        report_number: 23,
         source_domain: 'blogs.wsj.com',
         submitters: ['Roman Yampolskiy'],
         tags: [],
-        text: 'translated-en-text report 2',
-        title: 'translated-en-title report 2',
+        text: 'translated-en-text report 23',
+        title: 'translated-en-title report 23',
         url: 'https://url.com/stuff',
-        objectID: '2',
+        objectID: '23',
         mongodb_id: '60dd465f80935bc89e6f9b02',
         incident_id: 1,
         incident_date: '2020-06-14',
@@ -323,25 +344,26 @@ describe('Algolia', () => {
           'CSET:Harm Type:Harm to physical health/safety',
           'CSET:Harm Type:Harm to physical property',
         ],
+        featured: 0,
       });
 
       expect(esIndex.replaceAllObjects.getCall(0).args[0][1]).to.deep.nested.include({
         authors: ['Alistair Barr'],
-        description: 'Description of report 2',
+        description: 'Description of report 23',
         epoch_date_downloaded: 1555113600,
         epoch_date_modified: 1592092800,
         epoch_date_published: 1431993600,
         epoch_date_submitted: 1559347200,
         image_url: 'http://url.com',
         language: 'es',
-        report_number: 2,
+        report_number: 23,
         source_domain: 'blogs.wsj.com',
         submitters: ['Roman Yampolskiy'],
         tags: [],
-        text: 'Report 2 text',
-        title: 'Report 2 title',
+        text: 'Report 23 text',
+        title: 'Report 23 title',
         url: 'https://url.com/stuff',
-        objectID: '2',
+        objectID: '23',
         mongodb_id: '60dd465f80935bc89e6f9b02',
         incident_id: 1,
         incident_date: '2020-06-14',
@@ -351,6 +373,7 @@ describe('Algolia', () => {
           'CSET:Harm Type:Harm to physical health/safety',
           'CSET:Harm Type:Harm to physical property',
         ],
+        featured: 2,
       });
 
       expect(enIndex.deleteBy.getCall(0).args[0]).deep.eq({

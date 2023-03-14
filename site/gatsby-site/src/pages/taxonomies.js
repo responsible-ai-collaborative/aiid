@@ -4,7 +4,7 @@ import { graphql } from 'gatsby';
 import Layout from 'components/Layout';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import TaxonomyGraphCarousel from '../../src/components/TaxonomyGraphCarousel.js';
-import { LocalizedLink } from 'gatsby-theme-i18n';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 
@@ -17,11 +17,9 @@ export default function Taxonomies({ data, ...props }) {
 
   const metaDescription = t('This is the list of taxonomies supported in AIID');
 
-  const canonicalUrl = '/taxonomies';
-
   return (
     <Layout {...props}>
-      <AiidHelmet {...{ title, metaTitle, metaDescription, canonicalUrl }}>
+      <AiidHelmet {...{ title, metaTitle, metaDescription, path: props.location.pathname }}>
         <title>{title}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
@@ -33,7 +31,7 @@ export default function Taxonomies({ data, ...props }) {
           <Trans>Applied Taxonomies</Trans>
         </h2>
         <ul className="list-revert pl-8">
-          <li className="list-none">
+          <li>
             <p>
               <Trans>
                 <LocalizedLink to="/taxonomy/cset">
@@ -49,20 +47,17 @@ export default function Taxonomies({ data, ...props }) {
               axes={['Harm Distribution Basis', 'Harm Type', 'System Developer', 'Severity']}
             />
           </li>
-        </ul>
-
-        <h2>
-          <Trans>In-Development Taxonomies</Trans>
-        </h2>
-        <ul>
-          <li className="list-none">
+          <li>
             <p>
-              <Trans>
-                <LocalizedLink to="/taxonomy/resources">Resources</LocalizedLink>. This is a
-                taxonomy that will associate incidents with resources that help understand,
-                mitigate, and prevent incidents from recurring in the future.
-              </Trans>
+              <LocalizedLink to="/taxonomy/gmf/">Goals, Methods, and Failures (GMF)</LocalizedLink>.
+              This is a taxonomy detailing the technological and process factors producing an
+              incident.
             </p>
+            <TaxonomyGraphCarousel
+              data={data}
+              namespace="GMF"
+              axes={['Known AI Goal', 'Known AI Technology', 'Known AI Technical Failure']}
+            />
           </li>
         </ul>
 
@@ -97,24 +92,9 @@ export const pageQuery = graphql`
       nodes {
         incident_id
         namespace
-        classifications {
-          Annotator
-          Annotation_Status
-          Reviewer
-          Quality_Control
-          Full_Description
-          Short_Description
-          Beginning_Date
-          Ending_Date
-          Location
-          Near_Miss
-          Intent
-          Severity
-          Publish
-          Harm_Distribution_Basis
-          Harm_Type
-          System_Developer
-          Severity
+        attributes {
+          short_name
+          value_json
         }
       }
     }

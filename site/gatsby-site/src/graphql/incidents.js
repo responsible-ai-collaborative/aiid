@@ -38,6 +38,38 @@ export const FIND_INCIDENT = gql`
   }
 `;
 
+export const FIND_INCIDENTS_TABLE = gql`
+  query FindIncidents($query: IncidentQueryInput) {
+    incidents(query: $query, limit: 999) {
+      incident_id
+      title
+      description
+      editors
+      date
+    }
+  }
+`;
+
+export const FIND_INCIDENT_ENTITIES = gql`
+  query FindIncident($query: IncidentQueryInput) {
+    incident(query: $query) {
+      incident_id
+      AllegedDeployerOfAISystem {
+        entity_id
+        name
+      }
+      AllegedDeveloperOfAISystem {
+        entity_id
+        name
+      }
+      AllegedHarmedOrNearlyHarmedParties {
+        entity_id
+        name
+      }
+    }
+  }
+`;
+
 export const FIND_INCIDENTS = gql`
   query FindIncidents($query: IncidentQueryInput) {
     incidents(query: $query, limit: 999) {

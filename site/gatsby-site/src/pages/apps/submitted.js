@@ -39,6 +39,7 @@ const SubmittedIncidentsPage = ({ ...props }) => {
           </Trans>
         ),
         severity: SEVERITY.danger,
+        error,
       });
     }
   }, [loading, data, error]);
@@ -68,6 +69,7 @@ const SubmittedIncidentsPage = ({ ...props }) => {
       addToast({
         message: <>Error deleting quick added incident: {e.message}</>,
         severity: SEVERITY.danger,
+        error: e,
       });
     }
   };
@@ -79,7 +81,7 @@ const SubmittedIncidentsPage = ({ ...props }) => {
 
   return (
     <Layout {...props}>
-      <AiidHelmet canonicalUrl={'/apps/submitted'}>
+      <AiidHelmet path={props.location.pathname}>
         <title>{t('Submitted Incident Report List')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>

@@ -11,7 +11,7 @@ export default function EntityCard({ entity, ...props }) {
       key: 'incidentsAsBoth',
     },
     {
-      header: 'Incindents Harmed By',
+      header: 'Incidents Harmed By',
       key: 'incidentsHarmedBy',
     },
     {

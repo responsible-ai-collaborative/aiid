@@ -6,6 +6,7 @@ import md5 from 'md5';
 import Actions from '../Actions';
 import { HeaderTitle, SourceDomainSubtitle } from './shared';
 import Card from 'elements/Card';
+import { useTranslation } from 'react-i18next';
 
 const StyledCard = styled(Card)`
   height: 240px;
@@ -69,18 +70,14 @@ const StyledSubTitle = styled(SourceDomainSubtitle)`
   }
 `;
 
-export default function Compact({
-  item,
-  authorsModal,
-  submittersModal,
-  flagReportModal,
-  toggleFilterByIncidentId,
-}) {
+export default function Compact({ item, toggleFilterByIncidentId, viewType }) {
+  const { t } = useTranslation();
+
   return (
     <StyledCard>
       <StyledCardBody className="flex flex-col ">
         <Contents className="pl-6 pr-6 pt-3">
-          <StyledHeaderTitle item={item} />
+          <StyledHeaderTitle item={item} viewType={viewType} />
           <StyledSubTitle item={item} className="my-2 small" />
         </Contents>
 
@@ -89,17 +86,14 @@ export default function Compact({
           alt={item.title}
           height="240px"
           transformation={fill().height(240)}
+          itemIdentifier={t('Report {{report_number}}', {
+            report_number: item.report_number,
+          }).replace(' ', '.')}
         />
       </StyledCardBody>
 
       <Card.Footer className="flex justify-between">
-        <Actions
-          authorsModal={authorsModal}
-          flagReportModal={flagReportModal}
-          submittersModal={submittersModal}
-          toggleFilterByIncidentId={toggleFilterByIncidentId}
-          item={item}
-        />
+        <Actions toggleFilterByIncidentId={toggleFilterByIncidentId} item={item} />
       </Card.Footer>
     </StyledCard>
   );
