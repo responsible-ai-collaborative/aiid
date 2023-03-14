@@ -40,9 +40,6 @@ export default function Details({ item, toggleFilterByIncidentId, viewType }) {
   return (
     <StyledCard>
       <StyledCardBody>
-        <input type="hidden" data-cy="date-published" value={item.epoch_date_published} />
-        <input type="hidden" data-cy="date-submitted" value={item.epoch_date_submitted} />
-        <input type="hidden" data-cy="incident-date" value={item.epoch_incident_date} />
         <Contents className="gap-3">
           <IncidentCardImage
             className="img-thumbnail"
