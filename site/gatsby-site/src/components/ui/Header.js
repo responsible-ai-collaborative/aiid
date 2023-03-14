@@ -16,7 +16,7 @@ import config from '../../../config.js';
 import Sidebar from '../sidebar';
 import LanguageSwitcher from 'components/i18n/LanguageSwitcher';
 
-const Header = () => {
+const Header = ({ location = null }) => {
   const [navCollapsed, setNavCollapsed] = useState(true);
 
   return (
@@ -182,6 +182,7 @@ const Header = () => {
                 className="hidden lg:flex ml-2"
                 logoutClassName="text-white hover:text-primary-blue"
                 loginClassName="text-white hover:text-primary-blue"
+                location={location}
               />
             </div>
             <div

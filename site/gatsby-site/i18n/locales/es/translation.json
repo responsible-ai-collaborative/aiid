@@ -116,7 +116,7 @@
   "Error updating incident {{incident}}. \n {{message}}": "~Error updating incident {{incident}}. \n {{message}}",
   "Are you sure you want to delete this report?": "~Are you sure you want to delete this report?",
   "Notify Me of Updates": "Notificarme de actualizaciones",
-  "Please <1>log in</1> to subscribe": "Por favor <1>inicie sesión</1> para subscribirse",
+  "Please <2>log in</2> to subscribe": "Por favor <2>inicie sesión</2> para subscribirse",
   "Invalid parameters": "Parámetros inválidos",
   "Unsubscribe": "Desuscribirse",
   "Do you want to unsubscribe from <2>incident {{incidentId}}</2> updates?": "¿Quieres desuscribirse de las actualizaciones del <2>incidente {{incidentId}}</2>?",
@@ -244,5 +244,6 @@
   "Newest Published Date": "Fecha de publicación más reciente",
   "Oldest Published Date": "Fecha de publicación más antigua",
   "Newest Submitted Date": "Fecha de envío más reciente",
-  "Oldest Submitted Date": "Fecha de envío más antigua"
+  "Oldest Submitted Date": "Fecha de envío más antigua",
+  "Subscribe": "Suscribirse"
 }
