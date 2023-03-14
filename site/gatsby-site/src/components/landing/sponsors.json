@@ -1,4 +1,5 @@
-[{
+[
+    {
         "name": "Organization Founding Sponsor",
         "items": [
             {
@@ -21,6 +22,19 @@
                 "logo": "partership-on-ai-logo.png",
                 "link": "https://partnershiponai.org/resource/tracking-when-ai-systems-fail/",
                 "dataCy": null
+            }
+        ]
+    },
+    {
+        "name": "Sponsors and Grants",
+        "items": [
+            {
+                "name": "MTF Grant",
+                "modalName": "MTF Grant",
+                "logo": "mtf-grand.svg",
+                "text": "Text for MTF grant",
+                "link": "https://foundation.mozilla.org/en/what-we-fund/awards/mozilla-technology-fund-mtf/",
+                "dataCy": "mtf-grant-click"
             }
         ]
     },
