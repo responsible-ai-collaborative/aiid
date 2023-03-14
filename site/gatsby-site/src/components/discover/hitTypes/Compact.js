@@ -76,10 +76,6 @@ export default function Compact({ item, toggleFilterByIncidentId, viewType }) {
   return (
     <StyledCard>
       <StyledCardBody className="flex flex-col ">
-        <input type="hidden" data-cy="date-published" value={item.epoch_date_published} />
-        <input type="hidden" data-cy="date-submitted" value={item.epoch_date_submitted} />
-        <input type="hidden" data-cy="incident-date" value={item.epoch_incident_date} />
-        <input type="hidden" data-cy="report-number" value={item.report_number} />
         <Contents className="pl-6 pr-6 pt-3">
           <StyledHeaderTitle item={item} viewType={viewType} />
           <StyledSubTitle item={item} className="my-2 small" />

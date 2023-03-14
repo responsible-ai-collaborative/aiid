@@ -78,6 +78,20 @@ const getClassificationArray = ({ classification, taxonomy }) => {
 };
 
 const reportToEntry = ({ incident = null, report }) => {
+  let featuredValue = 0;
+
+  if (config?.header?.search?.featured) {
+    const reportIndex = config?.header?.search?.featured.findIndex(
+      (f) => f[report.report_number.toString()]
+    );
+
+    if (reportIndex > -1) {
+      featuredValue = Object.values(
+        config?.header?.search?.featured.find((f) => f[report.report_number.toString()])
+      )[0];
+    }
+  }
+
   const entry = {
     authors: report.authors,
     description: report.description,
@@ -98,7 +112,7 @@ const reportToEntry = ({ incident = null, report }) => {
     text: report.plain_text,
     mongodb_id: report._id.toString(),
     objectID: report.report_number.toString(),
-    featured: config?.header?.search?.featured.findIndex((f) => f[report.report_number]) > -1 || 0,
+    featured: featuredValue,
     flag: report.flag,
     is_incident_report: report.is_incident_report,
   };
