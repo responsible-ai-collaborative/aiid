@@ -18,7 +18,7 @@ const updateCollection = async (collection) => {
   while (await cursor.hasNext()) {
     const document = await cursor.next();
 
-    const cloudinary_id = getCloudinaryPublicID(document.image_url);
+    const cloudinary_id = getCloudinaryPublicID(document.media_url);
 
     const update = {
       updateOne: {

@@ -87,7 +87,7 @@ export const schema = yup.object().shape({
     .string()
     .url('*Must enter URL in http://www.example.com format')
     .required('*URL required'),
-  image_url: yup
+  media_url: yup
     .string()
     .matches(
       /((https?):\/\/)(\S)*$/,
@@ -155,8 +155,8 @@ const IncidentReportForm = () => {
   }, [values?.url]);
 
   useEffect(() => {
-    setFieldValue('cloudinary_id', values.image_url ? getCloudinaryPublicID(values.image_url) : '');
-  }, [values.image_url]);
+    setFieldValue('cloudinary_id', values.media_url ? getCloudinaryPublicID(values.media_url) : '');
+  }, [values.media_url]);
 
   useEffect(() => {
     Object.keys(errors).map((key) => {
@@ -184,7 +184,7 @@ const IncidentReportForm = () => {
           severity: SEVERITY.info,
         });
 
-        const cloudinary_id = getCloudinaryPublicID(news.image_url);
+        const cloudinary_id = getCloudinaryPublicID(news.media_url);
 
         setValues({
           ...values,
@@ -291,8 +291,8 @@ const IncidentReportForm = () => {
         />
         <PreviewImageInputGroup
           cloudinary_id={values.cloudinary_id}
-          name="image_url"
-          label="Image Address"
+          name="media_url"
+          label="Media Address"
           icon={faImage}
           placeholder="Image URL"
           className="mt-3"

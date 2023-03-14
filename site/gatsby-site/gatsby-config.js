@@ -7,7 +7,14 @@ const cloudinary = require('cloudinary').v2;
 
 const config = require('./config');
 
-cloudinary.config({ cloud_name: config.cloudinary.cloudName });
+// cloudinary.config({ cloud_name: config.cloudinary.cloudName });
+
+cloudinary.config({
+  cloud_name: 'defzycspj',
+  api_key: '297496298697742',
+  api_secret: '7ywDGLzXUsOydCiaY57O_PmNL5g',
+  secure: true,
+});
 
 const plugins = [
   {
@@ -136,7 +143,7 @@ const plugins = [
             return allMongodbAiidprodReports.edges.map((edge) => {
               const publicID = edge.node.cloudinary_id
                 ? edge.node.cloudinary_id
-                : `legacy/${md5(edge.node.image_url)}`;
+                : `legacy/${md5(edge.node.media_url)}`;
 
               return Object.assign({}, edge.node.frontmatter, {
                 title: edge.node.title,
@@ -165,7 +172,7 @@ const plugins = [
                     url
                     description
                     id
-                    image_url
+                    media_url
                     cloudinary_id
                   }
                 }

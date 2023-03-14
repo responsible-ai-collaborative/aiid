@@ -8,7 +8,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'gatsby-theme-i18n';
 
 const LatestIncidentReport = ({ report }) => {
-  const { image_url, cloudinary_id, title, text, epoch_date_submitted, incident_id } = report;
+  const { media_url, cloudinary_id, title, text, epoch_date_submitted, incident_id } = report;
 
   const { t } = useTranslation();
 
@@ -24,7 +24,7 @@ const LatestIncidentReport = ({ report }) => {
             className={
               'img-fluid rounded-start h-full w-full max-w-full rounded-t-lg md:rounded-l-lg md:rounded-r-none border-r object-cover'
             }
-            publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
+            publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(media_url)}`}
             alt={title}
             itemIdentifier={t('Incident {{id}}', { id: incident_id }).replace(' ', '.')}
           />

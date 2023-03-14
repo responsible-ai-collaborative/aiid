@@ -58,7 +58,7 @@ export default function Details({
       <a href={detailsPath}>
         <IncidentCardImage
           className="card-img-top"
-          publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
+          publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.media_url)}`}
           alt={item.title}
           height="240px"
           transformation={fill().height(480)}

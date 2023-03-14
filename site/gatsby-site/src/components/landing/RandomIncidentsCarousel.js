@@ -22,7 +22,7 @@ const RandomIncidentsCarousel = () => {
             nodes {
               id
               report_number
-              image_url
+              media_url
               cloudinary_id
             }
           }
@@ -61,14 +61,14 @@ const RandomIncidentsCarousel = () => {
                  * so we have to cover them up on top.            */}
               </div>
               <Carousel slideInterval={6000} slide={false}>
-                {selected.map(({ incident_id, title, image_url, cloudinary_id }) => (
+                {selected.map(({ incident_id, title, media_url, cloudinary_id }) => (
                   <Link
                     to={`/cite/${incident_id}`}
                     key={incident_id}
                     className="block h-full relative"
                   >
                     <Image
-                      publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(image_url)}`}
+                      publicID={cloudinary_id ? cloudinary_id : `legacy/${md5(media_url)}`}
                       alt={title}
                       transformation={fill().height(800).width(1000)}
                       plugins={[]}

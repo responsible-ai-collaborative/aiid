@@ -589,7 +589,7 @@ export const query = graphql`
         title
         description
         url
-        image_url
+        media_url
         cloudinary_id
         source_domain
         mongodb_id

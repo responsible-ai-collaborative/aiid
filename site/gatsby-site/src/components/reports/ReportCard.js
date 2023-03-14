@@ -62,7 +62,7 @@ const ReportCard = ({ item, className = '', incidentId }) => {
         >
           <Image
             className={`img-fluid h-full w-full max-w-full object-cover`}
-            publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
+            publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.media_url)}`}
             alt={item.title}
             transformation={fill().height(480)}
             itemIdentifier={t('Report {{report_number}}', {
