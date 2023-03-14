@@ -29,7 +29,7 @@ const subtreeNav = (treeRoot, currentLocation = undefined, localizePath) => {
       currentLocation &&
       [
         localizePath({ path: item.url }),
-        localizePath({ path: config.gatsby.pathPrefix + item.url }),
+        localizePath({ path: config.gatsby.pathPrefix + item.url === '/' ? '' : item.url }),
       ].includes(localizePath({ path: currentLocation }));
 
     childVisit = false;

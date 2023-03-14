@@ -78,6 +78,20 @@ const getClassificationArray = ({ classification, taxonomy }) => {
 };
 
 const reportToEntry = ({ incident = null, report, publication = null }) => {
+  let featuredValue = 0;
+
+  if (config?.header?.search?.featured) {
+    const reportIndex = config?.header?.search?.featured.findIndex(
+      (f) => f[report.report_number.toString()]
+    );
+
+    if (reportIndex > -1) {
+      featuredValue = Object.values(
+        config?.header?.search?.featured.find((f) => f[report.report_number.toString()])
+      )[0];
+    }
+  }
+
   const entry = {
     authors: report.authors,
     bias_labels: publication?.bias_labels,
@@ -99,7 +113,7 @@ const reportToEntry = ({ incident = null, report, publication = null }) => {
     text: report.plain_text,
     mongodb_id: report._id.toString(),
     objectID: report.report_number.toString(),
-    featured: config?.header?.search?.featured[report.report_number] || 0,
+    featured: featuredValue,
     flag: report.flag,
     is_incident_report: report.is_incident_report,
   };
@@ -234,6 +248,7 @@ class AlgoliaUpdater {
       cloudinary_id: 1,
       is_incident_report: 1,
       flag: 1,
+      tags: 1,
     };
 
     const reports = (
@@ -310,6 +325,7 @@ class AlgoliaUpdater {
         const featuredReplicaIndex = await this.algoliaClient.initIndex(featuredReplicaIndexName);
 
         await featuredReplicaIndex.setSettings({
+          attributesForFaceting: ['is_incident_report'],
           ranking: ['desc(featured)', 'desc(text)'],
         });
 
