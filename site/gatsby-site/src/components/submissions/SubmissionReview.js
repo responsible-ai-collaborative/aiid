@@ -268,7 +268,7 @@ const SubmissionReview = ({ submission }) => {
 
   return (
     <>
-      <div className="flex items-center p-2" data-cy="submission">
+      <div className="flex md:flex-nowrap flex-wrap items-center p-2" data-cy="submission">
         <div className="mr-10">
           <Button
             onClick={() => setOpen(!open)}
@@ -296,7 +296,7 @@ const SubmissionReview = ({ submission }) => {
         <div>
           {' '}
           <h5>{submission['title']}</h5>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <Badge>Inc: {submission.incident_date || incidentData?.incident?.date}</Badge>{' '}
             <Badge>Pub: {submission.date_published}</Badge>{' '}
             <Badge>Sub: {submission.date_submitted}</Badge>{' '}
