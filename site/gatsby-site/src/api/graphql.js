@@ -60,7 +60,6 @@ export default async function handler(req, res) {
     });
 
     graphqlMiddleware = createHandler({ schema: gatewaySchema });
-    // graphqlMiddleware = graphqlHTTP({ schema: gatewaySchema, graphiql: true });
   }
 
   // Manually run the cors middleware
