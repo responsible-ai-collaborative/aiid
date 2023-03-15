@@ -46,6 +46,18 @@ export const FIND_INCIDENTS_TABLE = gql`
       description
       editors
       date
+      AllegedDeployerOfAISystem {
+        entity_id
+        name
+      }
+      AllegedDeveloperOfAISystem {
+        entity_id
+        name
+      }
+      AllegedHarmedOrNearlyHarmedParties {
+        entity_id
+        name
+      }
     }
   }
 `;
