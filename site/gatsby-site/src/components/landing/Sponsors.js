@@ -86,7 +86,7 @@ export default function Sponsors() {
                 <div className="flex-1 w-full" key={`sponsor-${sponsor.name}`}>
                   <Card>
                     <h6 className="text-lg dark:text-white mb-0">
-                      <Trans ns="landing">{sponsor.name}</Trans>
+                      <Trans ns="landing">{t(sponsor.name)}</Trans>
                     </h6>
                     <div className="flex justify-around gap-4">
                       {sponsor.items.map((item) => {
