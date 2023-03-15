@@ -230,8 +230,16 @@ function CitePage(props) {
       addToast({
         message: (
           <Trans i18n={i18n}>
-            Please <Link to={localizePath({ path: '/login', language: locale })}>log in</Link> to
-            subscribe
+            Please{' '}
+            <Link
+              to={localizePath({
+                path: `/login?redirectTo=${props?.location?.pathname}`,
+                language: locale,
+              })}
+            >
+              log in
+            </Link>{' '}
+            to subscribe
           </Trans>
         ),
         severity: SEVERITY.success,
@@ -250,7 +258,7 @@ function CitePage(props) {
   );
 
   return (
-    <Layout {...{ props }}>
+    <Layout {...{ props }} location={props.location}>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>

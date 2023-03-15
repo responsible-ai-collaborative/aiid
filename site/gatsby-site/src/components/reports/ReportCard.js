@@ -6,11 +6,10 @@ import { useUserContext } from 'contexts/userContext';
 import ReportText from 'components/reports/ReportText';
 import WebArchiveLink from 'components/ui/WebArchiveLink';
 import { Trans, useTranslation } from 'react-i18next';
-import { Button, Tooltip } from 'flowbite-react';
+import { Button, Tooltip, Badge } from 'flowbite-react';
 import Markdown from 'react-markdown';
 import Actions from 'components/discover/Actions';
 import TranslationBadge from 'components/i18n/TranslationBadge';
-import { Badge } from 'flowbite-react';
 import { RESPONSE_TAG } from 'utils/entities';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
@@ -33,9 +32,6 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
     if (alwaysExpanded) return;
 
     setExpanded(!expanded);
-    if (expanded) {
-      ref.current.scrollIntoView({ behavior: 'smooth' });
-    }
   };
 
   const toggleReadMoreKeyDown = (e) => {
@@ -47,7 +43,9 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
   return (
     <>
       <div
-        className={`bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative cursor-pointer`}
+        className={`bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative cursor-pointer ${
+          expanded ? 'expanded' : ''
+        }`}
         id={`r${item.report_number}`}
         ref={ref}
         data-cy="incident-report-card"
@@ -78,11 +76,17 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
         >
-          <a href={`#r${item.report_number}`} className="max-w-full cursor-pointer">
-            <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full hover:text-primary-blue">
-              <Trans ns="landing">{item.title}</Trans>
-            </h5>
-          </a>
+          <div className="flex">
+            <button
+              className="w-3/4 text-left"
+              onClick={toggleReadMore}
+              onKeyDown={toggleReadMoreKeyDown}
+            >
+              <h5 className="max-w-full cursor-pointer text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full hover:text-primary-blue">
+                <Trans ns="landing">{item.title}</Trans>
+              </h5>
+            </button>
+          </div>
           <div className="flex justify-between">
             <WebArchiveLink url={item.url} className="text-dark-gray">
               {item.source_domain} &middot;{' '}
@@ -118,6 +122,7 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
           </div>
         </div>
         <div
+          className="cursor-default"
           role={'presentation'}
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
