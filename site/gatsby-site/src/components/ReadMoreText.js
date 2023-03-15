@@ -1,5 +1,5 @@
+import { Button } from 'flowbite-react';
 import React, { useRef, useState, useEffect } from 'react';
-import { Button } from 'react-bootstrap';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -10,19 +10,6 @@ const Container = styled.div`
 const Text = styled.p`
   line-height: 1.5rem;
   margin: 0;
-`;
-
-const Toggle = styled(Button).attrs({
-  variant: 'link',
-})`
-  &&& {
-    padding: 0;
-
-    &:focus {
-      outline: none;
-      box-shadow: none;
-    }
-  }
 `;
 
 /**
@@ -65,7 +52,7 @@ const ReadMoreText = ({ text, rows = 3, visibility, ...props }) => {
   }, [visibility]);
 
   return (
-    <div className="bootstrap">
+    <>
       <Container ref={parentRef} showMore={showMore} rows={rows} {...props}>
         <Text ref={textRef}>
           {text.split('\n').map((p, key) => (
@@ -77,11 +64,11 @@ const ReadMoreText = ({ text, rows = 3, visibility, ...props }) => {
         </Text>
       </Container>
       {overflowing && (
-        <div className="text-right px-4">
-          <Toggle onClick={toggleShowMore}>{showMore ? 'less' : 'read more'}</Toggle>
+        <div className="flex justify-end text-right px-4">
+          <Button onClick={toggleShowMore}>{showMore ? 'less' : 'read more'}</Button>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

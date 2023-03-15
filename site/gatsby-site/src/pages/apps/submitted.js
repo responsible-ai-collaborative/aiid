@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import AiidHelmet from '../../components/AiidHelmet';
 import { ObjectId } from 'bson';
-import { Button, Row, Col, Card, Badge, ListGroup } from 'react-bootstrap';
+import { Button, Row, Col, Badge, ListGroup } from 'react-bootstrap';
 import { useMutation, useQuery } from '@apollo/client';
 import { DELETE_QUICKADD, FIND_QUICKADD } from '../../graphql/quickadd.js';
 import { useUserContext } from '../../contexts/userContext';
 import Layout from '../../components/Layout';
-import { StyledHeading, StyledMainWrapper } from '../../components/styles/Docs';
+import { StyledHeading } from '../../components/styles/Docs';
 import SubmissionList from '../../components/submissions/SubmissionList';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Trans, useTranslation } from 'react-i18next';
@@ -89,7 +89,7 @@ const SubmittedIncidentsPage = ({ ...props }) => {
           <Trans ns="submitted">Submitted Incident Report List</Trans>
         </StyledHeading>
       </div>
-      <StyledMainWrapper className="bootstrap">
+      <div>
         <SubmissionList />
         <h2>
           <Trans ns="submitted">Quick Add URLs</Trans>
@@ -103,7 +103,7 @@ const SubmittedIncidentsPage = ({ ...props }) => {
           {sortedQuickAdds.length < 1 && <ListSkeleton />}
           {sortedQuickAdds.map(({ _id, url, date_submitted }) => (
             <ListGroup.Item key={_id} className="m-0 p-2">
-              <Card.Header>
+              <h5>
                 <Row>
                   <Col xs={12} sm={2} lg={2} className="flex items-center">
                     <Button
@@ -129,11 +129,11 @@ const SubmittedIncidentsPage = ({ ...props }) => {
                     <Badge bg="secondary">Sub: {date_submitted}</Badge>
                   </Col>
                 </Row>
-              </Card.Header>
+              </h5>
             </ListGroup.Item>
           ))}
         </ListGroup>
-      </StyledMainWrapper>
+      </div>
     </Layout>
   );
 };
