@@ -245,5 +245,6 @@
   "{{submitterCite}}. ({{incidentDate}}) Incident Number {{incidentId}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}": "{{submitterCite}}. ({{incidentDate}}) Incident Nro {{incidentId}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}",
   "Retrieved on {{date}} from incidentdatabase.ai/cite/{{incidentId}}.": "Récupéré le {{date}} à partir de incidentdatabase.ai/cite/{{incidentId}}.",
   "Subscribe": "S'abonner",
-  "Please <2>log in</2> to subscribe": "Veuillez <2>vous connecter</2> pour vous abonner."
+  "Please <2>log in</2> to subscribe": "Veuillez <2>vous connecter</2> pour vous abonner.",
+  "Show Live data": "Afficher des informations en direct"
 }
