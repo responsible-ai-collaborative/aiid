@@ -6,7 +6,7 @@ import StepOne from '../forms/SubmissionWizard/StepOne';
 import StepTwo from '../forms/SubmissionWizard/StepTwo';
 import StepThree from '../forms/SubmissionWizard/StepThree';
 
-const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString }) => {
+const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString, saveForm }) => {
   const [data, setData] = useState(initialValues);
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -159,6 +159,7 @@ const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString }) => 
         submissionFailed={submissionFailed}
         submissionComplete={submissionComplete}
         urlFromQueryString={urlFromQueryString}
+        saveForm={saveForm}
       />,
       <StepTwo
         key={'submission-step-2'}
@@ -169,6 +170,7 @@ const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString }) => 
         validateAndSubmitForm={validateAndSubmitForm}
         submissionFailed={submissionFailed}
         submissionComplete={submissionComplete}
+        saveForm={saveForm}
       />,
       <StepThree
         key={'submission-step-3'}
@@ -178,6 +180,7 @@ const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString }) => 
         name={t('Step 3 - Tell us more')}
         submissionFailed={submissionFailed}
         submissionComplete={submissionComplete}
+        saveForm={saveForm}
       />,
     ];
 

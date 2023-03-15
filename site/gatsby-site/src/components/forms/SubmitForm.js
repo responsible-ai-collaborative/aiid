@@ -21,6 +21,7 @@ import SubmissionWizard from '../submissions/SubmissionWizard';
 import getSourceDomain from 'utils/getSourceDomain';
 import { StyledHeading } from 'components/styles/Docs';
 import { Helmet } from 'react-helmet';
+import { useLocalStorageState } from 'hooks/useLocalStorage';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -56,6 +57,8 @@ const SubmitForm = () => {
 
   const [query] = useQueryParams(queryConfig);
 
+  const LOCAL_STORAGE_KEY = 'aiid-submission-form';
+
   const initialValues = {
     url: '',
     title: '',
@@ -74,6 +77,11 @@ const SubmitForm = () => {
     language: 'en',
     tags: [],
   };
+
+  const [, handleUpdateLocalStorageState] = useLocalStorageState({
+    key: LOCAL_STORAGE_KEY,
+    value: initialValues,
+  });
 
   const [submission, setSubmission] = useState(initialValues);
 
@@ -275,6 +283,9 @@ const SubmitForm = () => {
           submitForm={handleSubmit}
           initialValues={submission}
           urlFromQueryString={query.url}
+          saveForm={(values) => {
+            handleUpdateLocalStorageState(values);
+          }}
         />
 
         <p className="mt-4">

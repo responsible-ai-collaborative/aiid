@@ -92,6 +92,7 @@ const StepOne = (props) => {
           submissionFailed={props.submissionFailed}
           submissionComplete={props.submissionComplete}
           urlFromQueryString={props.urlFromQueryString}
+          saveForm={props.saveForm}
         />
       </Formik>
     </StepContainer>
@@ -107,6 +108,7 @@ const FormDetails = ({
   submissionFailed,
   submissionComplete,
   urlFromQueryString,
+  saveForm,
 }) => {
   const { t } = useTranslation(['submit']);
 
@@ -149,6 +151,10 @@ const FormDetails = ({
       fetchNews(urlFromQueryString);
     }
   }, [urlFromQueryString]);
+
+  useEffect(() => {
+    saveForm(values);
+  }, [values, saveForm]);
 
   const fetchNews = async (url) => {
     await parseNewsUrl(url);
