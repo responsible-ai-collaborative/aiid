@@ -18,9 +18,7 @@ const Layout = ({ children, className, sidebarCollapsed = false, rightSidebar, l
         />
       )}
       <div id="content" className={'tw-content' + (rightSidebar ? ' xl:pr-5' : '')}>
-        <div className={`${className ? className : ''} max-50rem:max-w-full max-50rem:relative`}>
-          {children}
-        </div>
+        <div className={`${className ? className : ''} max-w-full`}>{children}</div>
       </div>
       <div
         className={
