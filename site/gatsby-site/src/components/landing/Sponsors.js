@@ -35,7 +35,7 @@ const SponsorModal = ({
           <Modal.Footer>
             <div className="flex justify-end w-full">
               <Button color="dark" onClick={() => setModalState('close')} data-cy="close-modal">
-                Close
+                <Trans>Close</Trans>
               </Button>
             </div>
           </Modal.Footer>
@@ -48,7 +48,7 @@ const SponsorModal = ({
 export default function Sponsors() {
   const [modalState, setModalState] = useState('close');
 
-  const { t } = useTranslation();
+  const { t } = useTranslation(['sponsors']);
 
   return (
     <>
