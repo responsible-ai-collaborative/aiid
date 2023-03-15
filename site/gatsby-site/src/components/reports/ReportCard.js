@@ -41,7 +41,7 @@ const ReportCard = ({ item, className = '', incidentId }) => {
   return (
     <>
       <div
-        className={`bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative cursor-pointer`}
+        className={`inline-block w-full bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative cursor-pointer`}
         id={`r${item.report_number}`}
         ref={ref}
         data-cy="incident-report-card"
@@ -50,14 +50,14 @@ const ReportCard = ({ item, className = '', incidentId }) => {
         role="presentation"
       >
         <div
-          className={`flex self-stretch justify-center items-center w-1/3 float-left pr-4 cursor-default md:min-h-[130px]`}
+          className={`flex self-stretch justify-center items-center w-1/3 float-left pr-4 cursor-default h-36 md:h-40`}
           ref={imageRef}
           role="presentation"
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
         >
           <Image
-            className={`img-fluid h-full w-full max-w-full object-cover`}
+            className={`img-fluid h-full w-full max-w-full object-cover max-h-full`}
             publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
             alt={item.title}
             transformation={fill().height(480)}
