@@ -1,21 +1,9 @@
-import { Button } from 'flowbite-react';
 import React, { useRef, useState, useEffect } from 'react';
-import styled from 'styled-components';
-
-const Container = styled.div`
-  height: ${(props) => (props.showMore ? 'auto' : `${props.rows * 1.5}rem`)};
-  overflow: ${(props) => (props.showMore ? 'visible' : 'hidden')};
-`;
-
-const Text = styled.p`
-  line-height: 1.5rem;
-  margin: 0;
-`;
 
 /**
  * @param {{ text: string, max: number }} props
  */
-const ReadMoreText = ({ text, rows = 3, visibility, ...props }) => {
+const ReadMoreText = ({ text, rows = 3, visibility }) => {
   if (!text) return null;
 
   const parentRef = useRef();
@@ -53,19 +41,25 @@ const ReadMoreText = ({ text, rows = 3, visibility, ...props }) => {
 
   return (
     <>
-      <Container ref={parentRef} showMore={showMore} rows={rows} {...props}>
-        <Text ref={textRef}>
+      <div
+        ref={parentRef}
+        className={`${showMore ? 'overflow-visible' : 'overflow-hidden'}`}
+        style={{ height: showMore ? 'auto' : `${rows * 1.5}rem` }}
+      >
+        <p className="leading-6 m-0" ref={textRef}>
           {text.split('\n').map((p, key) => (
             <span key={key}>
               {p}
               <br />
             </span>
           ))}
-        </Text>
-      </Container>
+        </p>
+      </div>
       {overflowing && (
         <div className="flex justify-end text-right px-4">
-          <Button onClick={toggleShowMore}>{showMore ? 'less' : 'read more'}</Button>
+          <button className="text-blue-600 underline" onClick={toggleShowMore}>
+            {showMore ? 'less' : 'read more'}
+          </button>
         </div>
       )}
     </>

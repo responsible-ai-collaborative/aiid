@@ -1,10 +1,4 @@
 import React, { useCallback, useState } from 'react';
-// import Row from 'react-bootstrap/Row';
-// import Col from 'react-bootstrap/Col';
-// import Button from 'react-bootstrap/Button';
-// import Card from 'react-bootstrap/Card';
-// import Badge from 'react-bootstrap/Badge';
-// import ListGroup from 'react-bootstrap/ListGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import ReadMoreText from '../../components/ReadMoreText';
@@ -274,48 +268,41 @@ const SubmissionReview = ({ submission }) => {
 
   return (
     <>
-      <div data-cy="submission">
-        <div className="flex p-2">
-          <div className="mr-2">
-            <Button
-              onClick={() => setOpen(!open)}
-              aria-controls="collapse-incident-submission"
-              aria-expanded={open}
-              data-cy="review-button"
-              className="text-xs"
+      <div className="flex items-center p-2" data-cy="submission">
+        <div className="mr-10">
+          <Button
+            onClick={() => setOpen(!open)}
+            aria-controls="collapse-incident-submission"
+            aria-expanded={open}
+            data-cy="review-button"
+            className="text-xs"
+          >
+            <Trans>review</Trans>
+            <svg
+              aria-hidden="true"
+              className="ml-2 -mr-1 w-4 h-4"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <Trans>review</Trans>
-              <svg
-                aria-hidden="true"
-                className="ml-2 -mr-1 w-4 h-4"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </Button>
-          </div>
-          <div>
-            {' '}
-            <h4>{submission['title']}</h4>
-            <br />
-            <div className="flex gap-2">
-              <Badge bg="secondary">
-                Inc: {submission.incident_date || incidentData?.incident?.date}
-              </Badge>{' '}
-              <Badge bg="secondary">Pub: {submission.date_published}</Badge>{' '}
-              <Badge bg="secondary">Sub: {submission.date_submitted}</Badge>{' '}
-              {submission.submitters.map((submitter) => (
-                <Badge key={submitter} bg="secondary">
-                  {submitter}
-                </Badge>
-              ))}
-            </div>
+              <path
+                fillRule="evenodd"
+                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              ></path>
+            </svg>
+          </Button>
+        </div>
+        <div>
+          {' '}
+          <h5>{submission['title']}</h5>
+          <div className="flex gap-2">
+            <Badge>Inc: {submission.incident_date || incidentData?.incident?.date}</Badge>{' '}
+            <Badge>Pub: {submission.date_published}</Badge>{' '}
+            <Badge>Sub: {submission.date_submitted}</Badge>{' '}
+            {submission.submitters.map((submitter) => (
+              <Badge key={submitter}>{submitter}</Badge>
+            ))}
           </div>
         </div>
       </div>

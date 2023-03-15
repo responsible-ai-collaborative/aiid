@@ -27,9 +27,13 @@ const SubmissionList = () => {
             (a, b) => new Date(a.date_submitted).getTime() - new Date(b.date_submitted).getTime()
           )
           .map((submission) => (
-            <Card key={submission._id} className="m-0 p-0" data-cy="submission">
+            <div
+              key={submission._id}
+              className="m-0 py-3 border-b last:border-none"
+              data-cy="submission"
+            >
               <SubmissionReview submission={submission} />
-            </Card>
+            </div>
           ))}
       </ListGroup>
     </Card>
