@@ -57,11 +57,9 @@ export default function PreviewImageInputGroup({
     if (isWebUri(values.media_url)) {
       const videoPublicID = isVideo(values.media_url);
 
-      console.log(videoPublicID);
-
       if (videoPublicID) {
         setImageReferenceError(false);
-        setCloudinaryID(videoPublicID);
+        setCloudinaryID(values.media_url);
       } else {
         setCloudinaryID(IMG_FALLBACK);
       }
@@ -98,7 +96,6 @@ export default function PreviewImageInputGroup({
   if (imageReferenceError) {
     childErrors.media_url ||= '*Url must point to a valid image';
   }
-  console.log(values);
 
   return (
     <>

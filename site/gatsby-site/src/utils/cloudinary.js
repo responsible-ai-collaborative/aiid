@@ -34,7 +34,27 @@ const Image = ({
   plugins = [lazyload()],
   style,
 }) => {
-  const [cloudinaryId, setCloudinaryID] = useState(publicID);
+  const toVideo = (url) => {
+    if (url.startsWith('reports/')) {
+      url = url.replace('reports/', '');
+    }
+    const youtubeRegex =
+      /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w]+\?v=|embed\/|v\/)?)([\w]+)(\S+)?$/;
+
+    const vimeoRegex = /^https?:\/\/(www.)?vimeo.com\/([a-zA-Z0-9_-]+)/;
+
+    if (youtubeRegex.test(url)) {
+      return 'youtube/' + url.match(youtubeRegex)[5];
+    }
+
+    if (vimeoRegex.test(url)) {
+      return 'vimeo/' + url.match(vimeoRegex)[2];
+    }
+
+    return url;
+  };
+
+  const [cloudinaryId, setCloudinaryID] = useState(toVideo(publicID));
   // const [tweetThumb, setTweetThumb] = useState('');
 
   const imageElement = useRef(null);
@@ -70,7 +90,7 @@ const Image = ({
     tmpImage.addTransformation(transformation);
   }
 
-  const image = new CloudinaryImage(cloudinaryId.replace(/%/g, '%25'), {
+  const image = new CloudinaryImage(cloudinaryId, {
     cloudName: config.cloudinary.cloudName,
   });
 
@@ -108,14 +128,10 @@ const Image = ({
       }
     };
 
-    setCloudinaryID(publicID);
     useFallbackIfLoadFailed();
 
     return () => clearTimeout(fallbackTimeout);
   }, [publicID]);
-  console.log('new image');
-
-  console.log(image);
 
   return (
     <AdvancedImage
