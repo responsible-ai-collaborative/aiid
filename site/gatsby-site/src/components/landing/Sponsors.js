@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'components/ui/Link';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 import { StyledImage, StyledImageModal, StyledImageCover } from '../../elements/StyledImage';
 import sponsors from './sponsors.json';
@@ -47,6 +47,8 @@ const SponsorModal = ({
 
 export default function Sponsors() {
   const [modalState, setModalState] = useState('close');
+
+  const { t } = useTranslation();
 
   return (
     <>
@@ -112,7 +114,7 @@ export default function Sponsors() {
       </div>
       {sponsors.map((sponsor) => {
         return sponsor.items.map((item) => {
-          const text = item.text.replace(
+          const text = t(`sponsor-${item.name}`).replace(
             /\[\[((.*?))\]\]/g,
             `<a href="${item.link}" target="_blank" rel="noreferrer">$1</a>`
           );
