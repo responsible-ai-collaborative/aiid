@@ -1,14 +1,8 @@
 import React, { useCallback } from 'react';
-import styled from 'styled-components';
 import { connectRefinementList, Highlight } from 'react-instantsearch-dom';
 import { Form, Badge, ListGroup, Button } from 'react-bootstrap';
 import useSearch from '../useSearch';
 import { Trans, useTranslation } from 'react-i18next';
-
-const ListGroupScrollable = styled(ListGroup)`
-  max-height: 400px;
-  overflow-y: scroll;
-`;
 
 const RefinementList = ({
   items,
@@ -39,7 +33,7 @@ const RefinementList = ({
           onChange={(event) => searchForItems(event.currentTarget.value)}
         />
       </Form>
-      <ListGroupScrollable className="mt-4 border">
+      <ListGroup className="max-h-[400px] overflow-y-scroll mt-4 border">
         {items.map((item) => (
           <ListGroup.Item
             action
@@ -63,7 +57,7 @@ const RefinementList = ({
             </div>
           </ListGroup.Item>
         )}
-      </ListGroupScrollable>
+      </ListGroup>
       <Button
         variant="link secondary"
         className="mt-4 no-underline"

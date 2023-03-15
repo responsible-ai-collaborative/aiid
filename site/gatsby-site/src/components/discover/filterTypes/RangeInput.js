@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 import { connectRange } from 'react-instantsearch-dom';
 import { Form, Button } from 'react-bootstrap';
 import useSearch from '../useSearch';
@@ -105,4 +104,4 @@ export const touchedCount = ({ searchState, attribute }) =>
     ? 1
     : 0;
 
-export default connectRange(styled(RangeInput)``);
+export default connectRange(RangeInput);
