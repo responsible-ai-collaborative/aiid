@@ -276,7 +276,7 @@ function CitePage(props) {
   );
 
   return (
-    <Layout {...{ props }}>
+    <Layout {...{ props }} location={props.location}>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>

@@ -76,6 +76,31 @@ describe('Cite pages', () => {
       });
   });
 
+  it(
+    'Should scroll to report when coming from the landing page',
+    { retries: { runMode: 4 } },
+    () => {
+      cy.visit('/');
+
+      cy.disableSmoothScroll();
+
+      cy.waitForStableDOM();
+
+      cy.get('[data-cy="latest-incident-report-title"]').then(($value) => {
+        const incidentTitle = $value.text();
+
+        cy.contains('Latest Incident Report').first().click();
+        cy.waitForStableDOM();
+
+        cy.contains('h5', incidentTitle, { timeout: 8000 })
+          .parents('[data-cy="incident-report-card"]')
+          .then((subject) => {
+            expect(subject[0].getBoundingClientRect().top).to.be.closeTo(0, 30);
+          });
+      });
+    }
+  );
+
   it('Should show the incident stats table', () => {
     cy.visit(url);
     cy.get('[data-cy=incident-stats]').should('exist');

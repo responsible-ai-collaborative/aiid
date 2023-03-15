@@ -4,12 +4,12 @@ import config from '../../config.js';
 import Footer from './layout/Footer';
 import Header from './ui/Header';
 
-const Layout = ({ children, className, sidebarCollapsed = false, rightSidebar }) => (
+const Layout = ({ children, className, sidebarCollapsed = false, rightSidebar, location }) => (
   <>
-    <Header />
+    <Header location={location} />
     <div className="tw-layout">
       <div className="hidden md:block z-2 bg-text-light-gray shadow" data-cy="sidebar-desktop">
-        <Sidebar defaultCollapsed={sidebarCollapsed} />
+        <Sidebar defaultCollapsed={sidebarCollapsed} location={location} />
       </div>
       {config.sidebar.title && (
         <div
@@ -18,9 +18,7 @@ const Layout = ({ children, className, sidebarCollapsed = false, rightSidebar })
         />
       )}
       <div id="content" className={'tw-content' + (rightSidebar ? ' xl:pr-5' : '')}>
-        <div className={`${className ? className : ''} max-50rem:max-w-full max-50rem:relative`}>
-          {children}
-        </div>
+        <div className={`${className ? className : ''} max-w-full`}>{children}</div>
       </div>
       <div
         className={
