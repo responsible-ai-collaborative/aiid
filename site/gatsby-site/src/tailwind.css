@@ -237,14 +237,6 @@
 
     /* TAILWIND Tooltip ends */
 
-    .tw-incident-stat-card {
-        @apply flex flex-col shadow-card rounded-5px border-border-light-gray border-1.5;
-    }
-
-    .tw-incident-stat-card .subhead {
-        @apply m-0 opacity-40 pt-2.5;
-    }
-
     .tw-similar-incidents .card {
         @apply overflow-hidden shadow-card;
     }
