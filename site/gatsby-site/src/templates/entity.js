@@ -20,6 +20,7 @@ import {
   UPSERT_SUBSCRIPTION,
 } from '../graphql/subscriptions';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
+import { StyledHeading } from 'components/styles/Post';
 
 const sortByReports = (a, b) => b.reports.length - a.reports.length;
 
@@ -212,27 +213,27 @@ const EntityPage = ({ pageContext, data, ...props }) => {
   return (
     <Layout {...props}>
       <AiidHelmet metaTitle={'Entity: ' + name} path={props.location.pathname} />
-      <h3>
-        <Link to="/entities">
+      <div className="titleWrapper">
+        <Link to="/entities" className="text-lg">
           <Trans ns="entities">Entities</Trans>
         </Link>
-      </h3>
-      <div className="flex items-center flex-wrap">
-        <h1 className="mr-auto my-2">{name}</h1>
-        <div className="flex items-center my-2">
-          {loadingSubscription && subscriptionNetworkStatus === NetworkStatus.loading ? (
-            <Spinner size="sm" />
-          ) : subscriptions?.subscriptions.length > 0 ? (
-            <UnsubscribeButton
-              {...{ unsubscribeToEntity, unsubscribing, subscriptionNetworkStatus }}
-            >
-              <Trans>Unfollow</Trans>
-            </UnsubscribeButton>
-          ) : (
-            <NotifyButton {...{ subscribeToEntity, subscribing, subscriptionNetworkStatus }}>
-              <Trans>Follow</Trans>
-            </NotifyButton>
-          )}
+        <div className="flex items-center flex-wrap w-full">
+          <StyledHeading>{name}</StyledHeading>
+          <div className="flex items-center my-2">
+            {loadingSubscription && subscriptionNetworkStatus === NetworkStatus.loading ? (
+              <Spinner size="sm" />
+            ) : subscriptions?.subscriptions.length > 0 ? (
+              <UnsubscribeButton
+                {...{ unsubscribeToEntity, unsubscribing, subscriptionNetworkStatus }}
+              >
+                <Trans>Unfollow</Trans>
+              </UnsubscribeButton>
+            ) : (
+              <NotifyButton {...{ subscribeToEntity, subscribing, subscriptionNetworkStatus }}>
+                <Trans>Follow</Trans>
+              </NotifyButton>
+            )}
+          </div>
         </div>
       </div>
 
