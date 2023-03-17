@@ -107,10 +107,10 @@ describe('Variants pages', () => {
 
     cy.get('[data-cy=add-variant-btn]').scrollIntoView().click();
 
-    // cy.get('[data-cy=variant-form]', { timeout: 10000 }).should('exist');
+    cy.get('[data-cy=variant-form]', { timeout: 10000 }).should('exist');
 
-    // cy.get('#formTextInputs').type(text_inputs);
-    // cy.get('#formTextOutputs').type(text_outputs);
+    cy.get('#formTextInputs').type(text_inputs);
+    cy.get('#formTextOutputs').type(text_outputs);
 
     // cy.get('[data-cy=add-variant-submit-btn]').click();
 
