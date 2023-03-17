@@ -209,56 +209,6 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     }
   };
 
-  const NotifyButton = ({ children }) => {
-    const { t } = useTranslation();
-
-    return (
-      <Button
-        color="light"
-        onClick={subscribeToEntity}
-        disabled={subscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
-        className="mr-2 whitespace-nowrap"
-        title={t('Notify Me of New {{name}} Incidents', { name })}
-      >
-        <div className="flex gap-2 items-center">
-          {subscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
-            <div>
-              <Spinner size="sm" />
-            </div>
-          ) : (
-            <FontAwesomeIcon icon={faEnvelope} />
-          )}
-          {children}
-        </div>
-      </Button>
-    );
-  };
-
-  const UnsubscribeButton = ({ children }) => {
-    const { t } = useTranslation();
-
-    return (
-      <Button
-        onClick={unsubscribeToEntity}
-        color={'light'}
-        disabled={unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
-        className="mr-1"
-        title={t('Unsubscribe from New {{name}} Incidents', { name })}
-      >
-        <div className="flex gap-2 items-center">
-          {unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
-            <div>
-              <Spinner size="sm" />
-            </div>
-          ) : (
-            <FontAwesomeIcon icon={faEnvelope} title={t('Cancel Subscription')} />
-          )}
-          {children}
-        </div>
-      </Button>
-    );
-  };
-
   return (
     <Layout {...props}>
       <AiidHelmet metaTitle={'Entity: ' + name} path={props.location.pathname} />
@@ -273,11 +223,13 @@ const EntityPage = ({ pageContext, data, ...props }) => {
           {loadingSubscription && subscriptionNetworkStatus === NetworkStatus.loading ? (
             <Spinner size="sm" />
           ) : subscriptions?.subscriptions.length > 0 ? (
-            <UnsubscribeButton>
+            <UnsubscribeButton
+              {...{ unsubscribeToEntity, unsubscribing, subscriptionNetworkStatus }}
+            >
               <Trans>Unfollow</Trans>
             </UnsubscribeButton>
           ) : (
-            <NotifyButton>
+            <NotifyButton {...{ subscribeToEntity, subscribing, subscriptionNetworkStatus }}>
               <Trans>Follow</Trans>
             </NotifyButton>
           )}
@@ -336,6 +288,61 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     </Layout>
   );
 };
+
+function UnsubscribeButton({
+  children,
+  unsubscribeToEntity,
+  unsubscribing,
+  subscriptionNetworkStatus,
+}) {
+  const { t } = useTranslation();
+
+  return (
+    <Button
+      onClick={unsubscribeToEntity}
+      color={'light'}
+      disabled={unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
+      className="mr-1"
+      title={t('Unsubscribe from New {{name}} Incidents', { name })}
+    >
+      <div className="flex gap-2 items-center">
+        {unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
+          <div>
+            <Spinner size="sm" />
+          </div>
+        ) : (
+          <FontAwesomeIcon icon={faEnvelope} title={t('Cancel Subscription')} />
+        )}
+        {children}
+      </div>
+    </Button>
+  );
+}
+
+function NotifyButton({ children, subscribeToEntity, subscribing, subscriptionNetworkStatus }) {
+  const { t } = useTranslation();
+
+  return (
+    <Button
+      color="light"
+      onClick={subscribeToEntity}
+      disabled={subscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
+      className="mr-2 whitespace-nowrap"
+      title={t('Notify Me of New {{name}} Incidents', { name })}
+    >
+      <div className="flex gap-2 items-center">
+        {subscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
+          <div>
+            <Spinner size="sm" />
+          </div>
+        ) : (
+          <FontAwesomeIcon icon={faEnvelope} />
+        )}
+        {children}
+      </div>
+    </Button>
+  );
+}
 
 export const query = graphql`
   query EntityPageQuery(
