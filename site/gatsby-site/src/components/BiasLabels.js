@@ -13,6 +13,11 @@ import {
 export function BiasIcon({ bias_labels, publicationName, className, style }) {
   bias_labels ||= [];
 
+  // The modal causes server-side-rendering problems,
+  // so we need to disable rendering it
+  // until an interaction has occurred on the client-side.
+  const [modalRendered, setModalRendered] = useState(false);
+
   const [modalVisible, setModalVisible] = useState(false);
 
   const hasLabelName = (labelName) => bias_labels.some((biasLabel) => biasLabel.label == labelName);
@@ -31,7 +36,11 @@ export function BiasIcon({ bias_labels, publicationName, className, style }) {
       <button
         className={`${className || ''} bg-none border-0 p-0 m-0`}
         style={style}
-        onClick={() => setModalVisible(true)}
+        onClick={() => {
+          setModalRendered(true);
+          setModalVisible(true);
+        }}
+        onMouseEnter={() => setModalRendered(true)}
       >
         {possibleLabels.map(
           (labelName) =>
@@ -49,33 +58,28 @@ export function BiasIcon({ bias_labels, publicationName, className, style }) {
                     'center-right': faChevronCircleRight,
                   }[labelName]
                 }
-                className={`mr-1 mt-px ${
-                  { 'least biased': 'text-green-500', questionable: 'text-red-500' }[labelName] ||
-                  'text-inherit'
+                className={`mr-1 -mb-px ${
+                  { questionable: 'text-red-500' }[labelName] || 'text-inherit'
                 }`}
               />
             )
         )}
       </button>
-      {
-        // The modal causes server-side-rendering problems,
-        // so we need to disable it in that context.
-        typeof window !== 'undefined' && (
-          <Modal show={modalVisible} onClose={() => setModalVisible(false)}>
-            <Modal.Header>{publicationName}</Modal.Header>
-            <Modal.Body>
-              <p className="mt-0">The bias of this source was assessed as follows:</p>
-              <ul className="list-disc pl-4">
-                {bias_labels.map((biasLabel) => (
-                  <li key={biasLabel}>
-                    “{biasLabel.label}” by {biasLabel.labeler}
-                  </li>
-                ))}
-              </ul>
-            </Modal.Body>
-          </Modal>
-        )
-      }
+      {modalRendered && (
+        <Modal show={modalVisible} onClose={() => setModalVisible(false)}>
+          <Modal.Header>{publicationName}</Modal.Header>
+          <Modal.Body>
+            <p className="mt-0">The bias of this source was assessed as follows:</p>
+            <ul className="list-disc pl-4">
+              {bias_labels.map((biasLabel) => (
+                <li key={biasLabel.label}>
+                  “{biasLabel.label}” by {biasLabel.labeler}
+                </li>
+              ))}
+            </ul>
+          </Modal.Body>
+        </Modal>
+      )}
     </>
   );
 }

@@ -89,7 +89,9 @@ const ReportCard = ({ item, className = '', incidentId, publications }) => {
           <div className="flex justify-between">
             <span className="flex items-center">
               <BiasIcon
-                bias_labels={publication?.bias_labels}
+                bias_labels={Array.from(
+                  new Set(publication?.bias_labels?.map((biasLabel) => JSON.stringify(biasLabel)))
+                ).map((json) => JSON.parse(json))}
                 publicationName={publication?.title}
               />
               <WebArchiveLink url={item.url} className="text-dark-gray">
