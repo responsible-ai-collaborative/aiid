@@ -149,7 +149,7 @@ describe('Cite pages', () => {
       cy.get(taxonomySelector).contains('Edit').click();
 
       for (const field of CSETv1Fields) {
-        const fieldSelector = `${taxonomySelector} [data-cy="taxonomy-form"] [data-cy="${field}"]`;
+        const fieldSelector = `${taxonomySelector} [data-cy="${field}"]`;
 
         cy.get(
           `${fieldSelector} input, 
