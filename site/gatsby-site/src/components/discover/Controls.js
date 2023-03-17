@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { Trans } from 'react-i18next';
 import useSearch from './useSearch';
+import CsvExport from './CsvExport';
 import Sorting from './Sorting';
 import SORTING_LISTS from 'components/discover/SORTING_LISTS';
 
@@ -27,8 +28,8 @@ const Controls = () => {
 
   return (
     <>
-      <div className="justify-between gap-2 mt-4 hidden md:flex">
-        <div className="flex gap-4">
+      <div className="justify-between gap-2 mt-4 hidden md:flex flex-wrap items-center">
+        <div className="flex gap-4 items-center flex-wrap">
           <div className="flex items-center">
             <Stats />
           </div>
@@ -37,7 +38,11 @@ const Controls = () => {
           </div>
         </div>
 
-        <div className="flex">
+        <div className="flex flex-grow justify-end items-center flex-wrap">
+          <div className="place-self-center">
+            <CsvExport />
+          </div>
+
           <Sorting items={SORTING_LISTS} defaultRefinement={searchState.sortBy} />
           <div className="justify-end">
             <ClearFilters>

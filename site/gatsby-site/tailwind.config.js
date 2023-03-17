@@ -58,6 +58,7 @@ module.exports = {
     extend: {
       screens: {
         '1300px': { min: '1300px' },
+        '3xl': { min: '1920px' },
         'min-576px': { min: '576px' },
         'min-767px': { min: '767px' },
         'min-992px': { min: '992px' },

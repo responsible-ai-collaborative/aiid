@@ -81,6 +81,7 @@
     "react-helmet": "^6.1.0",
     "react-i18next": "^11.17.1",
     "react-id-generator": "^3.0.1",
+    "react-json-to-csv": "^1.2.0",
     "react-instantsearch-dom": "^6.39.0",
     "react-is": "^18.2.0",
     "react-markdown": "^6.0.2",
