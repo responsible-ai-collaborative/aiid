@@ -21,6 +21,7 @@ import {
 } from '../graphql/subscriptions';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import { StyledHeading } from 'components/styles/Post';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 const sortByReports = (a, b) => b.reports.length - a.reports.length;
 
@@ -214,9 +215,9 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     <Layout {...props}>
       <AiidHelmet metaTitle={'Entity: ' + name} path={props.location.pathname} />
       <div className="titleWrapper">
-        <Link to="/entities" className="text-lg">
+        <LocalizedLink to="/entities" className="text-lg">
           <Trans ns="entities">Entities</Trans>
-        </Link>
+        </LocalizedLink>
         <div className="flex items-center flex-wrap w-full">
           <StyledHeading>{name}</StyledHeading>
           <div className="flex items-center my-2">
