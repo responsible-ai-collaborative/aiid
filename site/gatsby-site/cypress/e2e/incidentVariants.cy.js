@@ -103,9 +103,9 @@ describe('Variants pages', () => {
 
     cy.contains('h1', 'Variants').should('exist').scrollIntoView();
 
-    //cy.get('[data-cy=variant-form]').should('not.exist');
+    cy.get('[data-cy=variant-form]').should('not.exist');
 
-    // cy.get('[data-cy=add-variant-btn]').scrollIntoView().click();
+    cy.get('[data-cy=add-variant-btn]').scrollIntoView().click();
 
     // cy.get('[data-cy=variant-form]', { timeout: 10000 }).should('exist');
 
