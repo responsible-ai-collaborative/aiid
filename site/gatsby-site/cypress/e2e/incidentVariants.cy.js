@@ -112,6 +112,8 @@ describe('Variants pages', () => {
     cy.get('#formTextInputs').type(text_inputs);
     cy.get('#formTextOutputs').type(text_outputs);
 
+    cy.waitForStableDOM();
+
     cy.get('[data-cy=add-variant-submit-btn]').click();
 
     cy.wait('@createVariant');
