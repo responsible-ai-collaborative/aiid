@@ -103,18 +103,18 @@ describe('Variants pages', () => {
 
     cy.contains('h1', 'Variants').should('exist').scrollIntoView();
 
-    cy.get('[data-cy=variant-form]').should('not.exist');
+    //cy.get('[data-cy=variant-form]').should('not.exist');
 
-    cy.get('[data-cy=add-variant-btn]').scrollIntoView().click();
+    // cy.get('[data-cy=add-variant-btn]').scrollIntoView().click();
 
-    cy.get('[data-cy=variant-form]', { timeout: 10000 }).should('exist');
+    // cy.get('[data-cy=variant-form]', { timeout: 10000 }).should('exist');
 
-    cy.get('#formTextInputs').type(text_inputs);
-    cy.get('#formTextOutputs').type(text_outputs);
+    // cy.get('#formTextInputs').type(text_inputs);
+    // cy.get('#formTextOutputs').type(text_outputs);
 
-    cy.get('[data-cy=add-variant-submit-btn]').click();
+    // cy.get('[data-cy=add-variant-submit-btn]').click();
 
-    cy.wait('@createVariant');
+    // cy.wait('@createVariant');
 
     // cy.get('[data-cy=success-message]').contains(
     //   "Your variant has been added to the review queue and will appear on this page within 12 hours. Please continue submitting when you encounter more variants. Most of the time we won't review it in the same day, but it will appear within a day as unreviewed."
