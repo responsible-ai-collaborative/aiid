@@ -76,6 +76,31 @@ describe('Cite pages', () => {
       });
   });
 
+  it(
+    'Should scroll to report when coming from the landing page',
+    { retries: { runMode: 4 } },
+    () => {
+      cy.visit('/');
+
+      cy.disableSmoothScroll();
+
+      cy.waitForStableDOM();
+
+      cy.get('[data-cy="latest-incident-report-title"]').then(($value) => {
+        const incidentTitle = $value.text();
+
+        cy.contains('Latest Incident Report').first().click();
+        cy.waitForStableDOM();
+
+        cy.contains('h5', incidentTitle, { timeout: 8000 })
+          .parents('[data-cy="incident-report-card"]')
+          .then((subject) => {
+            expect(subject[0].getBoundingClientRect().top).to.be.closeTo(0, 30);
+          });
+      });
+    }
+  );
+
   it('Should show the incident stats table', () => {
     cy.visit(url);
     cy.get('[data-cy=incident-stats]').should('exist');
@@ -187,13 +212,13 @@ describe('Cite pages', () => {
 
     cy.waitForStableDOM();
 
-    cy.contains('button', 'BibTex Citation').click();
+    cy.contains('button', 'Citation Info').click();
 
     cy.waitForStableDOM();
 
-    cy.get('[data-cy="bibtext-modal"]', { timeout: 15000 }).should('be.visible');
+    cy.get('[data-cy="citation-info-modal"]', { timeout: 15000 }).should('be.visible');
 
-    cy.get('[data-cy="bibtext-modal"]', { timeout: 15000 })
+    cy.get('[data-cy="bibtex-format"]', { timeout: 15000 })
       .find('code')
       .invoke('text')
       .then((text) => {
@@ -214,7 +239,9 @@ describe('Cite pages', () => {
 
     cy.wait(0);
 
-    cy.get('[data-cy="citation"] .tw-card-body').should(
+    cy.contains('button', 'Citation Info').click();
+
+    cy.get('[data-cy="suggested-citation-format"]').should(
       'contain.text',
       `Olsson, Catherine. (2014-08-14) Incident Number 10. in McGregor, S. (ed.) Artificial Intelligence Incident Database. Responsible AI Collaborative. Retrieved on ${date} from incidentdatabase.ai/cite/10.`
     );
@@ -340,7 +367,7 @@ describe('Cite pages', () => {
   maybeIt('Should subscribe to incident updates (user authenticated)', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    cy.visit(url);
+    cy.visit('/cite/51');
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -363,7 +390,7 @@ describe('Cite pages', () => {
 
     cy.contains(
       '[data-cy="toast"]',
-      `You have successfully subscribed to updates on incident ${incidentId}`
+      `You have successfully subscribed to updates on incident 51`
     ).should('be.visible');
   });
 

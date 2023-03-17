@@ -116,7 +116,9 @@
   "Error updating incident {{incident}}. \n {{message}}": "~Error updating incident {{incident}}. \n {{message}}",
   "Are you sure you want to delete this report?": "~Are you sure you want to delete this report?",
   "Notify Me of Updates": "Notificarme de actualizaciones",
-  "Please <1>log in</1> to subscribe": "Por favor <1>inicie sesión</1> para subscribirse",
+  "Subscribed to Updates": "Suscrito a actualizaciones",
+  "Please go to your <1>account</1> to manage subscriptions": "Por favor vaya a su <1>cuenta</1> para administrar sus suscripciones",
+  "Please <2>log in</2> to subscribe": "Por favor <2>inicie sesión</2> para subscribirse",
   "Invalid parameters": "Parámetros inválidos",
   "Unsubscribe": "Desuscribirse",
   "Do you want to unsubscribe from <2>incident {{incidentId}}</2> updates?": "¿Quieres desuscribirse de las actualizaciones del <2>incidente {{incidentId}}</2>?",
@@ -244,5 +246,13 @@
   "Newest Published Date": "Fecha de publicación más reciente",
   "Oldest Published Date": "Fecha de publicación más antigua",
   "Newest Submitted Date": "Fecha de envío más reciente",
-  "Oldest Submitted Date": "Fecha de envío más antigua"
+  "Oldest Submitted Date": "Fecha de envío más antigua",
+  "Citation Info": "Información para citar",
+  "Citing this specific format will make it possible for the Incident Database to find your research and include it on this page.": "Citar este formato específico permitirá que la base de datos de incidentes encuentre su investigación y la incluya en esta página.",
+  "Copy": "Copiar",
+  "Suggested Citation Format": "Formato de cita sugerido",
+  "{{submitterCite}}. ({{incidentDate}}) Incident Number {{incidentId}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}": "{{submitterCite}}. ({{incidentDate}}) Incidente Número {{incidentId}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}",
+  "Retrieved on {{date}} from incidentdatabase.ai/cite/{{incidentId}}.": "Recuperado el {{date}} de incidentdatabase.ai/cite/{{incidentId}}.",
+  "Subscribe": "Suscribirse",
+  "Show Live data": "Mostrar información en tiempo real"
 }

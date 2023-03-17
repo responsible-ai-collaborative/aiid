@@ -233,5 +233,18 @@
   "Newest Published Date": "Date de publication plus récente",
   "Oldest Published Date": "Date de publication plus ancienne",
   "Newest Submitted Date": "Date de soumission plus récente",
-  "Oldest Submitted Date": "Date de soumission plus ancienne"
+  "Oldest Submitted Date": "Date de soumission plus ancienne",
+  "Notify Me of Updates": "M'avertir des mises à jour",
+  "Subscribed to Updates": "Abonné aux mises à jour",
+  "Please <1>log in</1> to subscribe": "Veuillez <1>vous connecter</1> pour vous abonner",
+  "Please go to your <1>account</1> to manage subscriptions": "Veuillez vous rendre sur votre <1>compte</1> pour gérer vos abonnements",
+  "Citation Info": "Informations de citation",
+  "Citing this specific format will make it possible for the Incident Database to find your research and include it on this page.": "Citer ce format spécifique permettra à la base de données d'incidents de trouver votre recherche et de l'inclure sur cette page.",
+  "Copy": "Copier",
+  "Suggested Citation Format": "Format de citation suggéré",
+  "{{submitterCite}}. ({{incidentDate}}) Incident Number {{incidentId}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}": "{{submitterCite}}. ({{incidentDate}}) Incident Nro {{incidentId}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}",
+  "Retrieved on {{date}} from incidentdatabase.ai/cite/{{incidentId}}.": "Récupéré le {{date}} à partir de incidentdatabase.ai/cite/{{incidentId}}.",
+  "Subscribe": "S'abonner",
+  "Please <2>log in</2> to subscribe": "Veuillez <2>vous connecter</2> pour vous abonner.",
+  "Show Live data": "Afficher des informations en direct"
 }

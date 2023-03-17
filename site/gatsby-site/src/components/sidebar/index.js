@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from 'contexts/userContext';
 import { useMenuContext } from 'contexts/MenuContext';
 
-const Sidebar = ({ defaultCollapsed = false }) => {
+const Sidebar = ({ defaultCollapsed = false, location = null }) => {
   const localizePath = useLocalizePath();
 
   const { t } = useTranslation();
@@ -23,6 +23,8 @@ const Sidebar = ({ defaultCollapsed = false }) => {
 
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
 
+  const [redirectTo, setRedirectTo] = useState('/');
+
   useEffect(() => {
     if (!manual) {
       collapseMenu(defaultCollapsed);
@@ -32,6 +34,12 @@ const Sidebar = ({ defaultCollapsed = false }) => {
       setManual(false);
     }
   }, [isMobile]);
+
+  useEffect(() => {
+    if (location) {
+      setRedirectTo(location?.pathname + location?.hash + location?.search);
+    }
+  }, [location]);
 
   useEffect(() => {
     function handleResize() {
@@ -132,8 +140,8 @@ const Sidebar = ({ defaultCollapsed = false }) => {
             additionalNodes={[
               {
                 label: 'user',
-                url: isUserLoggedIn ? '/account/' : '/signup/',
-                title: isUserLoggedIn ? 'Account' : 'Subscribe',
+                url: isUserLoggedIn ? '/account/' : `/signup/?redirectTo=${redirectTo}`,
+                title: isUserLoggedIn ? t('Account') : t('Subscribe'),
                 items: [],
               },
             ]}
