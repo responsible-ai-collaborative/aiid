@@ -126,6 +126,8 @@
   "Do you want to unsubscribe from new Incidents notifications?": "¿Quieres desuscribirse de las notificaciones de nuevos Incidentes?",
   "Notify Me of New {{name}} Incidents": "Notificarme de nuevos Incidentes de {{name}}",
   "Unsubscribe from New {{name}} Incidents": "Desuscribirse de nuevos Incidentes de {{name}}",
+  "Follow": "Subscribirse",
+  "Unfollow": "Desuscribirse",
   "You have successfully subscribed to new {{name}} incidents": "Te has suscrito con éxito a los nuevos Incidentes de {{name}}",
   "You have successfully unsubscribed to new {{name}} incidents": "Has cancelado tu suscripción a los nuevos Incidentes de {{name}}",
   "Confirm": "Confirmar",
@@ -254,5 +256,6 @@
   "{{submitterCite}}. ({{incidentDate}}) Incident Number {{incidentId}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}": "{{submitterCite}}. ({{incidentDate}}) Incidente Número {{incidentId}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}",
   "Retrieved on {{date}} from incidentdatabase.ai/cite/{{incidentId}}.": "Recuperado el {{date}} de incidentdatabase.ai/cite/{{incidentId}}.",
   "Subscribe": "Suscribirse",
-  "Show Live data": "Mostrar información en tiempo real"
+  "Show Live data": "Mostrar información en tiempo real",
+  "Posted <1></1> by <3></3>.": "Posted <1></1> by <3></3>."
 }
