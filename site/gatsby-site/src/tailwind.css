@@ -83,6 +83,10 @@
     .tw-col-auto {
         @apply flex-0-0-auto w-auto max-w-none;
     }
+
+    .tw-modal-body li {
+        @apply pl-6;
+    }
 }
 
 @layer components {

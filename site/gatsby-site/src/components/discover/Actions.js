@@ -36,28 +36,26 @@ function FlagModalContent({ reportNumber }) {
   const { t } = useTranslation(['translation', 'actions']);
 
   return (
-    <div className="bootstrap">
-      <div className="modal-body">
-        <div dangerouslySetInnerHTML={{ __html: t('flagReport', { ns: 'actions' }) }} />
+    <div className="tw-modal-body">
+      <div dangerouslySetInnerHTML={{ __html: t('flagReport', { ns: 'actions' }) }} />
 
-        <div className="flex justify-center w-full">
-          {!report ? (
-            <Spinner />
-          ) : report.flag ? (
-            <Button color="warning" disabled data-cy="flag-toggle">
-              <Trans>Flagged</Trans>
-            </Button>
-          ) : (
-            <Button color="warning" onClick={() => flagReport()} data-cy="flag-toggle">
-              {loading && (
-                <div className="mr-2">
-                  <Spinner size="sm" color="warning" light={true} />
-                </div>
-              )}
-              <Trans>Flag Report</Trans>
-            </Button>
-          )}
-        </div>
+      <div className="flex justify-center w-full pt-6">
+        {!report ? (
+          <Spinner />
+        ) : report.flag ? (
+          <Button color="warning" disabled data-cy="flag-toggle">
+            <Trans>Flagged</Trans>
+          </Button>
+        ) : (
+          <Button color="warning" onClick={() => flagReport()} data-cy="flag-toggle">
+            {loading && (
+              <div className="mr-2">
+                <Spinner size="sm" color="warning" light={true} />
+              </div>
+            )}
+            <Trans>Flag Report</Trans>
+          </Button>
+        )}
       </div>
     </div>
   );
