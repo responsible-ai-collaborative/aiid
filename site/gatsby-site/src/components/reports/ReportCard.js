@@ -30,7 +30,6 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
 
   const toggleReadMore = () => {
     if (alwaysExpanded) return;
-
     setExpanded(!expanded);
   };
 
