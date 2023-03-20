@@ -258,6 +258,7 @@
   "Suggested Citation Format": "Formato de cita sugerido",
   "{{submitterCite}}. ({{incidentDate}}) Incident Number {{incidentId}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}": "{{submitterCite}}. ({{incidentDate}}) Incidente Número {{incidentId}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}",
   "Retrieved on {{date}} from incidentdatabase.ai/cite/{{incidentId}}.": "Recuperado el {{date}} de incidentdatabase.ai/cite/{{incidentId}}.",
+  "Subscribe": "Suscribirse",
   "Show Live data": "Mostrar información en tiempo real",
   "Posted <1></1> by <3></3>.": "Posted <1></1> by <3></3>."
 }
