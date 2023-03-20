@@ -47,7 +47,7 @@ describe('Entities page', () => {
       }
     );
 
-    cy.contains(`Notify Me of New ${entity.name} Incidents`).scrollIntoView().click();
+    cy.get('button').contains(`Follow`).scrollIntoView().click();
 
     cy.get('[data-cy="toast"]', { timeout: 8000 })
       .contains(`You have successfully subscribed to new ${entity.name} incidents`)
@@ -83,7 +83,7 @@ describe('Entities page', () => {
       }
     );
 
-    cy.contains(`Unsubscribe from New ${entity.name} Incidents`).scrollIntoView().click();
+    cy.get('button').contains(`Unfollow`).scrollIntoView().click();
 
     cy.get('[data-cy="toast"]', { timeout: 8000 })
       .contains(`You have successfully unsubscribed to new ${entity.name} incidents`)
@@ -107,9 +107,7 @@ describe('Entities page', () => {
 
     cy.visit(url);
 
-    cy.contains(`Notify Me of New ${entity.name} Incidents`, { timeout: 8000 })
-      .scrollIntoView()
-      .click();
+    cy.get('button').contains(`Follow`, { timeout: 8000 }).scrollIntoView().click();
 
     cy.get('[data-cy="toast"]', { timeout: 8000 })
       .contains(`Please log in to subscribe`)

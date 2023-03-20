@@ -6,11 +6,10 @@ import { useUserContext } from 'contexts/userContext';
 import ReportText from 'components/reports/ReportText';
 import WebArchiveLink from 'components/ui/WebArchiveLink';
 import { Trans, useTranslation } from 'react-i18next';
-import { Button, Tooltip } from 'flowbite-react';
+import { Button, Tooltip, Badge } from 'flowbite-react';
 import Markdown from 'react-markdown';
 import Actions from 'components/discover/Actions';
 import TranslationBadge from 'components/i18n/TranslationBadge';
-import { Badge } from 'flowbite-react';
 import { RESPONSE_TAG } from 'utils/entities';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
@@ -31,9 +30,6 @@ const ReportCard = ({ item, className = '', incidentId }) => {
 
   const toggleReadMore = () => {
     setExpanded(!expanded);
-    if (expanded) {
-      ref.current.scrollIntoView({ behavior: 'smooth' });
-    }
   };
 
   const toggleReadMoreKeyDown = (e) => {
@@ -45,7 +41,7 @@ const ReportCard = ({ item, className = '', incidentId }) => {
   return (
     <>
       <div
-        className={`bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative cursor-pointer`}
+        className={`inline-block w-full bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative cursor-pointer`}
         id={`r${item.report_number}`}
         ref={ref}
         data-cy="incident-report-card"
@@ -54,14 +50,14 @@ const ReportCard = ({ item, className = '', incidentId }) => {
         role="presentation"
       >
         <div
-          className={`flex self-stretch justify-center items-center w-1/3 float-left pr-4 cursor-default md:min-h-[130px]`}
+          className={`flex self-stretch justify-center items-center w-1/3 float-left pr-4 cursor-default h-36 md:h-40`}
           ref={imageRef}
           role="presentation"
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
         >
           <Image
-            className={`img-fluid h-full w-full max-w-full object-cover`}
+            className={`img-fluid h-full w-full max-w-full object-cover max-h-full`}
             publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
             alt={item.title}
             transformation={fill().height(480)}
@@ -76,11 +72,17 @@ const ReportCard = ({ item, className = '', incidentId }) => {
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
         >
-          <a href={`#r${item.report_number}`} className="max-w-full cursor-pointer">
-            <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full hover:text-primary-blue">
-              <Trans ns="landing">{item.title}</Trans>
-            </h5>
-          </a>
+          <div className="flex">
+            <button
+              className="w-3/4 text-left"
+              onClick={toggleReadMore}
+              onKeyDown={toggleReadMoreKeyDown}
+            >
+              <h5 className="max-w-full cursor-pointer text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full hover:text-primary-blue">
+                <Trans ns="landing">{item.title}</Trans>
+              </h5>
+            </button>
+          </div>
           <div className="flex justify-between">
             <WebArchiveLink url={item.url} className="text-dark-gray">
               {item.source_domain} &middot;{' '}
@@ -116,6 +118,7 @@ const ReportCard = ({ item, className = '', incidentId }) => {
           </div>
         </div>
         <div
+          className="cursor-default"
           role={'presentation'}
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
@@ -173,7 +176,12 @@ const ReportCard = ({ item, className = '', incidentId }) => {
         </div>
         <div className="flex justify-end">
           <button
-            onClick={toggleReadMore}
+            onClick={() => {
+              toggleReadMore();
+              if (expanded) {
+                ref.current.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
             className="text-blue-700 border ml-1 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-xs p-1.5 text-center inline-flex items-center mr-2  dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
             data-cy={`${expanded ? 'collapse' : 'expand'}-report-button`}
           >
