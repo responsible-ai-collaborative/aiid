@@ -15,9 +15,9 @@ const TextInputGroup = ({
   handleChange,
   handleBlur,
   addOnComponent = null,
-  schema,
+  schema = null,
   className = '',
-  icon,
+  icon = null,
   inputClassName = '',
   ...props
 }) => {
@@ -25,7 +25,9 @@ const TextInputGroup = ({
 
   // this causes an unncessary re-render
   useEffect(() => {
-    schema.fields[name].isValid(undefined).then((result) => setOptional(result));
+    if (schema) {
+      schema.fields[name].isValid(undefined).then((result) => setOptional(result));
+    }
   }, []);
 
   return (

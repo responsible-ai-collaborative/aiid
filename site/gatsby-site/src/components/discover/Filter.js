@@ -7,11 +7,47 @@ import VirtualFilters from './VirtualFilters';
 import { Trans } from 'react-i18next';
 import { Accordion, Badge, Card } from 'flowbite-react';
 
-function ToggleContent({ label, touched, faIcon }) {
+function ToggleContent({ label, touched, faIcon, toggled }) {
   return (
-    <div className="flex items-center">
-      {faIcon && <FontAwesomeIcon icon={faIcon} />}
-      &nbsp; <Trans>{label}</Trans> &nbsp; {touched > 0 && <Badge color="success">{touched}</Badge>}
+    <div className="flex flex-wrap items-center justify-between w-full">
+      <div className="flex text-xs items-center">
+        {faIcon && <FontAwesomeIcon icon={faIcon} />}
+        &nbsp; <Trans>{label}</Trans> &nbsp;{' '}
+        {touched > 0 && <Badge color="success">{touched}</Badge>}
+      </div>
+      {toggled ? (
+        <svg
+          className="w-4 h-4 ml-2"
+          aria-hidden="true"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+          ></path>
+        </svg>
+      ) : (
+        <svg
+          className="w-4 h-4 ml-2"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M4.5 15.75l7.5-7.5 7.5 7.5"
+          ></path>
+        </svg>
+      )}
     </div>
   );
 }
@@ -56,22 +92,7 @@ function ButtonToggle({ label, faIcon, touched, type, filterProps }) {
         type="button"
         onClick={toggleDropdown}
       >
-        <ToggleContent label={label} touched={touched} faIcon={faIcon} />
-        <svg
-          className="w-4 h-4 ml-2"
-          aria-hidden="true"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M19 9l-7 7-7-7"
-          ></path>
-        </svg>
+        <ToggleContent label={label} touched={touched} faIcon={faIcon} toggled={toggled} />
       </button>
 
       <div
@@ -108,7 +129,6 @@ const FilterOverlay = React.forwardRef(function Container(
       ref={ref}
       {...overlayProps}
       style={{ ...overlayProps.style, width: 320, zIndex: 1055 }}
-      className=""
       data-cy={filterProps.attribute}
     >
       <Card className="shadow-lg">
@@ -157,12 +177,22 @@ function AccordionFilter({ type, ...filterProps }) {
 
   const touched = touchedCount({ searchState, attribute });
 
+  const [toggled, setToggled] = useState(true);
+
+  const toggleDropdown = () => {
+    setToggled(!toggled);
+  };
+
   return (
-    <Accordion.Panel eventKey={attribute} className={`${filterProps.hidden ? 'hidden' : ''}`}>
-      <Accordion.Title bg={touched ? 'success' : 'primary'}>
-        <ToggleContent faIcon={faIcon} label={label} touched={touched} />
+    <Accordion.Panel
+      className={`${filterProps.hidden ? 'hidden' : ''}`}
+      alwaysOpen={true}
+      collapseAll={true}
+    >
+      <Accordion.Title className="tw-accordion" onClick={toggleDropdown}>
+        <ToggleContent faIcon={faIcon} label={label} touched={touched} toggled={toggled} />
       </Accordion.Title>
-      <Accordion.Content style={{ visibility: 'visible' }}>
+      <Accordion.Content style={{ visibility: 'visible' }} hidden={toggled}>
         <FilterContent type={type} filterProps={filterProps} />
       </Accordion.Content>
     </Accordion.Panel>
