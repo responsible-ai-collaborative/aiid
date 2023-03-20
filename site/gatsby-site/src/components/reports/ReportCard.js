@@ -43,7 +43,7 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
   return (
     <>
       <div
-        className={`bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative cursor-pointer ${
+        className={`inline-block w-full bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative cursor-pointer ${
           expanded ? 'expanded' : ''
         }`}
         id={`r${item.report_number}`}
@@ -54,14 +54,14 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
         role="presentation"
       >
         <div
-          className={`flex self-stretch justify-center items-center w-1/3 float-left pr-4 cursor-default md:min-h-[130px]`}
+          className={`flex self-stretch justify-center items-center w-1/3 float-left pr-4 cursor-default h-36 md:h-40`}
           ref={imageRef}
           role="presentation"
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
         >
           <Image
-            className={`img-fluid h-full w-full max-w-full object-cover`}
+            className={`img-fluid h-full w-full max-w-full object-cover max-h-full`}
             publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
             alt={item.title}
             transformation={fill().height(480)}
@@ -82,7 +82,11 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
               onClick={toggleReadMore}
               onKeyDown={toggleReadMoreKeyDown}
             >
-              <h5 className="max-w-full cursor-pointer text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full hover:text-primary-blue">
+              <h5
+                className={`max-w-full text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full ${
+                  !alwaysExpanded ? 'cursor-pointer hover:text-primary-blue' : 'cursor-default'
+                }`}
+              >
                 <Trans ns="landing">{item.title}</Trans>
               </h5>
             </button>

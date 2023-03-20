@@ -1,14 +1,12 @@
 import { useUserContext } from 'contexts/userContext';
 import React, { useState } from 'react';
 import { Button, Form, Pagination } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
 import { useBlockLayout, useFilters, usePagination, useResizeColumns, useTable } from 'react-table';
 import IncidentEditModal from './IncidentEditModal';
 import styled from 'styled-components';
 import { Trans, useTranslation } from 'react-i18next';
-import { useQuery } from '@apollo/client';
-import { FIND_INCIDENT_ENTITIES } from '../../graphql/incidents';
 import Link from 'components/ui/Link';
+import { ToggleSwitch } from 'flowbite-react';
 
 const Table = styled.div`
   display: inline-block;
@@ -94,50 +92,37 @@ function DefaultColumnFilter({
 }
 
 function ListCell({ cell }) {
-  const { data: incident, loading } = useQuery(FIND_INCIDENT_ENTITIES, {
-    variables: {
-      query: {
-        incident_id: cell.value,
-      },
-    },
-  });
-
   return (
     <div>
-      {loading && (
-        <div className="flex justify-content-center">
-          <Spinner />
-        </div>
-      )}
-      {!loading &&
-        incident &&
-        incident?.incident[cell.column.id]?.map((v, i) => {
-          const isLast = i === incident.incident[cell.column.id].length - 1;
+      {cell.value?.map((v, i) => {
+        const isLast = i === cell.value.length - 1;
 
-          if (v.entity_id) {
-            return (
-              <Link
-                key={`entity-${v.name}`}
-                to={`/entities/${v.entity_id}`}
-                data-cy="cell-entity-link"
-              >
-                {v.name}
-                {!isLast ? ', ' : ''}
-              </Link>
-            );
-          } else {
-            return (
-              <>
-                {v.name} {!isLast ? ', ' : ''}
-              </>
-            );
-          }
-        })}
+        const segments = v.split(' ');
+
+        const entity_id = segments.pop();
+
+        const name = segments.join(' ');
+
+        if (entity_id) {
+          return (
+            <Link key={`entity-${name}`} to={`/entities/${entity_id}`} data-cy="cell-entity-link">
+              {name}
+              {!isLast ? ', ' : ''}
+            </Link>
+          );
+        } else {
+          return (
+            <>
+              {name} {!isLast ? ', ' : ''}
+            </>
+          );
+        }
+      })}
     </div>
   );
 }
 
-export default function IncidentsTable({ data }) {
+export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
   const [incidentIdToEdit, setIncindentIdToEdit] = useState(0);
 
   const { isLoggedIn, isRole } = useUserContext();
@@ -180,23 +165,23 @@ export default function IncidentsTable({ data }) {
       {
         Header: <Trans>Alleged Deployer of AI System</Trans>,
         id: 'AllegedDeployerOfAISystem',
-        accessor: 'incident_id',
+        accessor: (data) =>
+          data.AllegedDeployerOfAISystem?.map((i) => `${i.name} ${i.id ?? i.entity_id}`),
         Cell: ListCell,
-        disableFilters: true,
       },
       {
         Header: <Trans>Alleged Developer of AI System</Trans>,
         id: 'AllegedDeveloperOfAISystem',
-        accessor: 'incident_id',
+        accessor: (data) =>
+          data.AllegedDeveloperOfAISystem?.map((i) => `${i.name} ${i.id ?? i.entity_id}`),
         Cell: ListCell,
-        disableFilters: true,
       },
       {
         Header: <Trans>Alleged Harmed or Nearly Harmed Parties</Trans>,
         id: 'AllegedHarmedOrNearlyHarmedParties',
-        accessor: 'incident_id',
+        accessor: (data) =>
+          data.AllegedHarmedOrNearlyHarmedParties?.map((i) => `${i.name} ${i.id ?? i.entity_id}`),
         Cell: ListCell,
-        disableFilters: true,
       },
     ];
 
@@ -252,6 +237,16 @@ export default function IncidentsTable({ data }) {
       {/* eslint-disable react/jsx-key */}
 
       <Table {...getTableProps()}>
+        <div className="flex justify-start ml-4 mb-2 pt-1">
+          <ToggleSwitch
+            checked={isLiveData}
+            label={t('Show Live data')}
+            onChange={(checked) => {
+              setIsLiveData(checked);
+            }}
+            name="live-data-switch"
+          />
+        </div>
         <Header>
           {headerGroups.map((headerGroup) => (
             <div {...headerGroup.getHeaderGroupProps()}>

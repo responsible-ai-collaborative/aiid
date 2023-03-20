@@ -1,19 +1,15 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
-import { Badge, Spinner } from 'flowbite-react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faPlus, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { Badge } from 'flowbite-react';
 import { CloudinaryImage } from '@cloudinary/base';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { graphql } from 'gatsby';
 
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
-import Citation from 'components/cite/Citation';
 import ImageCarousel from 'components/cite/ImageCarousel';
-import BibTex from 'components/BibTex';
-import { format, isAfter, isEqual } from 'date-fns';
+import { isAfter, isEqual } from 'date-fns';
 import Timeline from '../components/visualizations/Timeline';
 import IncidentStatsCard from '../components/cite/IncidentStatsCard';
 import ReportCard from '../components/reports/ReportCard';
@@ -21,14 +17,13 @@ import Taxonomy from '../components/taxa/Taxonomy';
 import { useUserContext } from '../contexts/userContext';
 import SimilarIncidents from '../components/cite/SimilarIncidents';
 import Card from '../elements/Card';
-import Button from '../elements/Button';
 import Container from '../elements/Container';
 import Row from '../elements/Row';
 import Col from '../elements/Col';
 import Pagination from '../elements/Pagination';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
 import useLocalizePath from '../components/i18n/useLocalizePath';
-import { UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
+import { FIND_USER_SUBSCRIPTIONS, UPSERT_SUBSCRIPTION } from '../graphql/subscriptions';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import Link from 'components/ui/Link';
 import { getTaxonomies, getTranslatedReports } from 'utils/cite';
@@ -39,6 +34,7 @@ import config from '../../config';
 import VariantList from 'components/variants/VariantList';
 import { isCompleteReport } from 'utils/variants';
 import { useQueryParams, StringParam, withDefault } from 'use-query-params';
+import Tools from 'components/cite/Tools';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -80,7 +76,7 @@ function CitePage(props) {
     },
   } = props;
 
-  const { isRole, user, loading } = useUserContext();
+  const { isRole, user } = useUserContext();
 
   const { i18n, t } = useTranslation();
 
@@ -90,6 +86,14 @@ function CitePage(props) {
 
   const [query] = useQueryParams({
     edit_taxonomy: withDefault(StringParam, ''),
+  });
+
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  const { data } = useQuery(FIND_USER_SUBSCRIPTIONS, {
+    variables: {
+      query: { userId: { userId: user?.id }, incident_id: { incident_id: incident.incident_id } },
+    },
   });
 
   // meta tags
@@ -182,64 +186,78 @@ function CitePage(props) {
     );
   }, [user]);
 
+  useEffect(() => {
+    if (data) {
+      if (data?.subscriptions?.length > 0) {
+        setIsSubscribed(true);
+      } else {
+        setIsSubscribed(false);
+      }
+    }
+  }, [data]);
+
   const [subscribeToNewReportsMutation, { loading: subscribing }] =
     useMutation(UPSERT_SUBSCRIPTION);
 
   const subscribeToNewReports = async () => {
-    if (isRole('subscriber')) {
-      try {
-        const incidentId = incident.incident_id;
+    if (!isSubscribed) {
+      if (isRole('subscriber')) {
+        try {
+          const incidentId = incident.incident_id;
 
-        await subscribeToNewReportsMutation({
-          variables: {
-            query: {
-              type: SUBSCRIPTION_TYPE.incident,
-              userId: { userId: user.id },
-              incident_id: { incident_id: incidentId },
-            },
-            subscription: {
-              type: SUBSCRIPTION_TYPE.incident,
-              userId: {
-                link: user.id,
+          await subscribeToNewReportsMutation({
+            variables: {
+              query: {
+                type: SUBSCRIPTION_TYPE.incident,
+                userId: { userId: user.id },
+                incident_id: { incident_id: incidentId },
               },
-              incident_id: {
-                link: incidentId,
+              subscription: {
+                type: SUBSCRIPTION_TYPE.incident,
+                userId: {
+                  link: user.id,
+                },
+                incident_id: {
+                  link: incidentId,
+                },
               },
             },
-          },
-        });
+          });
 
+          addToast({
+            message: (
+              <>
+                {t(`You have successfully subscribed to updates on incident {{incidentId}}`, {
+                  incidentId,
+                })}
+              </>
+            ),
+            severity: SEVERITY.success,
+          });
+        } catch (e) {
+          addToast({
+            message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
+            severity: SEVERITY.danger,
+          });
+        }
+      } else {
         addToast({
           message: (
-            <>
-              {t(`You have successfully subscribed to updates on incident {{incidentId}}`, {
-                incidentId,
-              })}
-            </>
+            <Trans i18n={i18n}>
+              Please <Link to={localizePath({ path: '/login', language: locale })}>log in</Link> to
+              subscribe
+            </Trans>
           ),
           severity: SEVERITY.success,
-        });
-      } catch (e) {
-        addToast({
-          message: <label>{t(e.error || 'An unknown error has ocurred')}</label>,
-          severity: SEVERITY.danger,
-          error: e,
         });
       }
     } else {
       addToast({
         message: (
           <Trans i18n={i18n}>
-            Please{' '}
-            <Link
-              to={localizePath({
-                path: `/login?redirectTo=${props?.location?.pathname}`,
-                language: locale,
-              })}
-            >
-              log in
-            </Link>{' '}
-            to subscribe
+            Please go to your{' '}
+            <Link to={localizePath({ path: '/account', language: locale })}>account</Link> to manage
+            subscriptions
           </Trans>
         ),
         severity: SEVERITY.success,
@@ -265,28 +283,51 @@ function CitePage(props) {
 
       <div className={'titleWrapper'}>
         <h1 className="tw-styled-heading">{locale == 'en' ? metaTitle : defaultIncidentTitle}</h1>
-        <div className="flex">
-          <SocialShareButtons
-            metaTitle={metaTitle}
-            path={props.location.pathname}
-            page="cite"
-            className="-mt-1"
-          ></SocialShareButtons>
-          {incidentResponded && (
-            <div className="self-center">
-              <Badge color="success" data-cy="responded-badge">
-                {t('Responded')}
-              </Badge>
-            </div>
-          )}
+        <div className="flex justify-between w-full flex-wrap">
+          <div className="flex gap-2">
+            <SocialShareButtons
+              metaTitle={metaTitle}
+              path={props.location.pathname}
+              page="cite"
+              className="-mt-1"
+            ></SocialShareButtons>
+            {incidentResponded && (
+              <div className="self-center">
+                <Badge color="success" data-cy="responded-badge">
+                  {t('Responded')}
+                </Badge>
+              </div>
+            )}
+            {isSubscribed && (
+              <div className="self-center">
+                <Badge color="success" data-cy="subscribed-badge">
+                  <Trans>Subscribed to Updates</Trans>
+                </Badge>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="flex">
+      <div className="flex mt-6">
         <div className="shrink-1">
-          <div>
-            <strong>Description</strong>: {incident.description}
-          </div>
+          <Row>
+            <Col>
+              <strong>Description</strong>: {incident.description}
+            </Col>
+          </Row>
+
+          <Row className="mt-6">
+            <Col>
+              <Tools
+                incident={incident}
+                isSubscribed={isSubscribed}
+                subscribeToNewReports={subscribeToNewReports}
+                incidentReports={incidentReports}
+                subscribing={subscribing}
+              />
+            </Col>
+          </Row>
 
           <Container>
             <Row>
@@ -307,29 +348,6 @@ function CitePage(props) {
               </Col>
             </Row>
 
-            <Row>
-              <Col>
-                <Card
-                  data-cy="citation"
-                  className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6"
-                >
-                  <Card.Header className="items-center justify-between">
-                    <h4 className="m-0">
-                      <Trans>Suggested citation format</Trans>
-                    </h4>
-                  </Card.Header>
-                  <Card.Body className="block">
-                    <Citation
-                      nodes={incidentReports}
-                      incidentDate={incident.date}
-                      incident_id={incident.incident_id}
-                      editors={incident.editors}
-                    />
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
-
             <Row className="mt-6">
               <Col>
                 <div data-cy={'incident-stats'}>
@@ -342,109 +360,6 @@ function CitePage(props) {
                     }}
                   />
                 </div>
-              </Col>
-            </Row>
-
-            <Row className="mt-6">
-              <Col>
-                <Card className="shadow-card">
-                  <Card.Header className="items-center justify-between">
-                    <h4>
-                      <Trans>Reports Timeline</Trans>
-                    </h4>
-                  </Card.Header>
-                  <Card.Body>
-                    <Timeline data={timeline} />
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
-
-            <Row className="mt-6">
-              <Col>
-                <Card className="shadow-card">
-                  <Card.Header className="items-center justify-between">
-                    <h4>
-                      <Trans>Tools</Trans>
-                    </h4>
-                  </Card.Header>
-                  <Card.Body className="flex-row flex-wrap gap-2">
-                    <Button variant="outline-primary" onClick={subscribeToNewReports}>
-                      <div className="flex gap-2 items-center">
-                        {subscribing ? (
-                          <div>
-                            <Spinner size="sm" />
-                          </div>
-                        ) : (
-                          <FontAwesomeIcon
-                            titleId="envelope"
-                            icon={faEnvelope}
-                            title={t('Notify Me of Updates')}
-                          />
-                        )}
-                        <Trans>Notify Me of Updates</Trans>
-                      </div>
-                    </Button>
-                    <Button
-                      variant="outline-primary"
-                      href={`/apps/submit?incident_id=${
-                        incident.incident_id
-                      }&date_downloaded=${format(new Date(), 'yyyy-MM-dd')}`}
-                    >
-                      <FontAwesomeIcon
-                        titleId="report"
-                        icon={faPlus}
-                        title={t('New Report')}
-                        className="mr-2"
-                      />
-                      <Trans>New Report</Trans>
-                    </Button>
-                    <Button
-                      variant="outline-primary"
-                      href={`/apps/submit?tags=${RESPONSE_TAG}&incident_id=${incident.incident_id}`}
-                    >
-                      <FontAwesomeIcon
-                        titleId="response"
-                        icon={faPlus}
-                        title={t('New Response')}
-                        className="mr-2"
-                      />
-                      <Trans>New Response</Trans>
-                    </Button>
-                    <Button
-                      variant="outline-primary"
-                      href={'/apps/discover?incident_id=' + incident.incident_id}
-                    >
-                      <FontAwesomeIcon
-                        titleId="discover"
-                        className="mr-2"
-                        icon={faSearch}
-                        title={t('Discover')}
-                      />
-                      <Trans>Discover</Trans>
-                    </Button>
-                    <BibTex
-                      nodes={incidentReports}
-                      incidentDate={incident.date}
-                      incident_id={incident.incident_id}
-                      editors={incident.editors}
-                    />
-                    {!loading && isRole('incident_editor') && (
-                      <Button
-                        variant="outline-primary"
-                        href={'/incidents/edit?incident_id=' + incident.incident_id}
-                      >
-                        <FontAwesomeIcon
-                          titleId="edit-incident"
-                          className="mr-2"
-                          icon={faEdit}
-                          title={t('Edit Incident')}
-                        />
-                        <Trans>Edit Incident</Trans>
-                      </Button>
-                    )}
-                  </Card.Body>
-                </Card>
               </Col>
             </Row>
 
@@ -477,26 +392,34 @@ function CitePage(props) {
 
             <Row className="mt-6">
               <Col>
-                <Card>
-                  <ImageCarousel nodes={incidentReports} />
+                <div className="pb-5">
+                  <h1 className="tw-styled-heading">
+                    <Trans>Incident Reports</Trans>
+                  </h1>
+                </div>
+                <Card className="shadow-card">
+                  <Card.Header className="items-center justify-between">
+                    <h4>
+                      <Trans>Reports Timeline</Trans>
+                    </h4>
+                  </Card.Header>
+                  <Card.Body>
+                    <Timeline data={timeline} />
+                  </Card.Body>
                 </Card>
               </Col>
             </Row>
 
             <Row className="mt-6">
               <Col>
-                <div className="pb-5">
-                  <div className={'titleWrapper'}>
-                    <h1 className="tw-styled-heading">
-                      <Trans>Incident Reports</Trans>
-                    </h1>
-                  </div>
-                </div>
+                <Card>
+                  <ImageCarousel nodes={incidentReports} />
+                </Card>
               </Col>
             </Row>
 
             {sortedReports.map((report) => (
-              <Row className="mb-4" key={report.report_number}>
+              <Row className="mt-6 mb-4" key={report.report_number}>
                 <Col>
                   <ReportCard item={report} incidentId={incident.incident_id} />
                 </Col>

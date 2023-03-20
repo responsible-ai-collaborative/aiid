@@ -20,6 +20,8 @@ import {
   UPSERT_SUBSCRIPTION,
 } from '../graphql/subscriptions';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
+import { StyledHeading } from 'components/styles/Post';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 const sortByReports = (a, b) => b.reports.length - a.reports.length;
 
@@ -212,50 +214,28 @@ const EntityPage = ({ pageContext, data, ...props }) => {
   return (
     <Layout {...props}>
       <AiidHelmet metaTitle={'Entity: ' + name} path={props.location.pathname} />
-      <h3>
-        <Link to="/entities">
+      <div className="titleWrapper">
+        <LocalizedLink to="/entities" className="text-lg">
           <Trans ns="entities">Entities</Trans>
-        </Link>
-      </h3>
-      <div className="flex justify-between">
-        <h1>{name}</h1>
-
-        {loadingSubscription && subscriptionNetworkStatus === NetworkStatus.loading ? (
-          <Spinner size="sm" />
-        ) : subscriptions?.subscriptions.length > 0 ? (
-          <Button
-            onClick={unsubscribeToEntity}
-            color={'success'}
-            disabled={unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
-          >
-            <div className="flex gap-2 items-center">
-              {unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
-                <div>
-                  <Spinner size="sm" />
-                </div>
-              ) : (
-                <FontAwesomeIcon icon={faEnvelope} title={t('Cancel Subscription')} />
-              )}
-              <Trans>Unsubscribe from New {{ name }} Incidents</Trans>
-            </div>
-          </Button>
-        ) : (
-          <Button
-            onClick={subscribeToEntity}
-            disabled={subscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
-          >
-            <div className="flex gap-2 items-center">
-              {subscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
-                <div>
-                  <Spinner size="sm" />
-                </div>
-              ) : (
-                <FontAwesomeIcon icon={faEnvelope} title={t('Notify Me of Updates')} />
-              )}
-              <Trans>Notify Me of New {{ name }} Incidents</Trans>
-            </div>
-          </Button>
-        )}
+        </LocalizedLink>
+        <div className="flex items-center flex-wrap w-full">
+          <StyledHeading>{name}</StyledHeading>
+          <div className="flex items-center my-2">
+            {loadingSubscription && subscriptionNetworkStatus === NetworkStatus.loading ? (
+              <Spinner size="sm" />
+            ) : subscriptions?.subscriptions.length > 0 ? (
+              <UnsubscribeButton
+                {...{ unsubscribeToEntity, unsubscribing, subscriptionNetworkStatus }}
+              >
+                <Trans>Unfollow</Trans>
+              </UnsubscribeButton>
+            ) : (
+              <NotifyButton {...{ subscribeToEntity, subscribing, subscriptionNetworkStatus }}>
+                <Trans>Follow</Trans>
+              </NotifyButton>
+            )}
+          </div>
+        </div>
       </div>
 
       {sections.map((section) => {
@@ -269,7 +249,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
           <div key={section.header}>
             {entityIncidents[section.key].length > 0 && (
               <>
-                <h2 className="mt-24">
+                <h2 className="mt-8">
                   <Trans ns="entities">{section.header}</Trans>
                 </h2>
                 <div className="grid gap-4 grid-flow-row-dense md:grid-cols-2 mt-6">
@@ -310,6 +290,61 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     </Layout>
   );
 };
+
+function UnsubscribeButton({
+  children,
+  unsubscribeToEntity,
+  unsubscribing,
+  subscriptionNetworkStatus,
+}) {
+  const { t } = useTranslation();
+
+  return (
+    <Button
+      onClick={unsubscribeToEntity}
+      color={'light'}
+      disabled={unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
+      className="mr-1"
+      title={t('Unsubscribe from New {{name}} Incidents', { name })}
+    >
+      <div className="flex gap-2 items-center">
+        {unsubscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
+          <div>
+            <Spinner size="sm" />
+          </div>
+        ) : (
+          <FontAwesomeIcon icon={faEnvelope} title={t('Cancel Subscription')} />
+        )}
+        {children}
+      </div>
+    </Button>
+  );
+}
+
+function NotifyButton({ children, subscribeToEntity, subscribing, subscriptionNetworkStatus }) {
+  const { t } = useTranslation();
+
+  return (
+    <Button
+      color="light"
+      onClick={subscribeToEntity}
+      disabled={subscribing || subscriptionNetworkStatus === NetworkStatus.refetch}
+      className="mr-2 whitespace-nowrap"
+      title={t('Notify Me of New {{name}} Incidents', { name })}
+    >
+      <div className="flex gap-2 items-center">
+        {subscribing || subscriptionNetworkStatus === NetworkStatus.refetch ? (
+          <div>
+            <Spinner size="sm" />
+          </div>
+        ) : (
+          <FontAwesomeIcon icon={faEnvelope} />
+        )}
+        {children}
+      </div>
+    </Button>
+  );
+}
 
 export const query = graphql`
   query EntityPageQuery(
