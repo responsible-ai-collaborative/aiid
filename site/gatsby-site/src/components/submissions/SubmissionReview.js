@@ -1,10 +1,4 @@
 import React, { useCallback, useState } from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-import Badge from 'react-bootstrap/Badge';
-import ListGroup from 'react-bootstrap/ListGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import ReadMoreText from '../../components/ReadMoreText';
@@ -17,7 +11,7 @@ import { FIND_INCIDENT } from '../../graphql/incidents';
 import { DELETE_SUBMISSION, PROMOTE_SUBMISSION } from '../../graphql/submissions';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import SubmissionEditModal from './SubmissionEditModal';
-import { Spinner } from 'flowbite-react';
+import { Badge, Button, Card, ListGroup, Spinner } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { incidentSchema, issueSchema, reportSchema } from './schemas';
 
@@ -27,8 +21,12 @@ const ListedGroup = ({ item, className = '', keysToRender, objectKeyToDisplay = 
       {keysToRender
         .filter((key) => !!item[key])
         .map((key) => (
-          <ListGroup.Item key={key} className="flex gap-4" data-cy={key}>
-            <div style={{ width: 140 }} className="flex-grow">
+          <div
+            key={key}
+            className="flex flex-row justify-between gap-4 px-5 py-3 border-b last:border-none"
+            data-cy={key}
+          >
+            <div className="">
               <b>{key}</b>
             </div>
             <div className="text-break">
@@ -36,7 +34,7 @@ const ListedGroup = ({ item, className = '', keysToRender, objectKeyToDisplay = 
                 ? item[key].map((i) => (isObject(i) ? i[objectKeyToDisplay] : i)).join(', ')
                 : item[key]}
             </div>
-          </ListGroup.Item>
+          </div>
         ))}
     </ListGroup>
   );
@@ -270,35 +268,44 @@ const SubmissionReview = ({ submission }) => {
 
   return (
     <>
-      <Card.Header data-cy="submission">
-        <Row className="flex items-center p-2">
-          <Col xs={12} sm={2} lg={2}>
-            <Button
-              onClick={() => setOpen(!open)}
-              aria-controls="collapse-incident-submission"
-              aria-expanded={open}
-              data-cy="review-button"
+      <div className="flex md:flex-nowrap flex-wrap items-center p-2" data-cy="submission">
+        <div className="mr-10">
+          <Button
+            onClick={() => setOpen(!open)}
+            aria-controls="collapse-incident-submission"
+            aria-expanded={open}
+            data-cy="review-button"
+            className="text-xs"
+          >
+            <Trans>review</Trans>
+            <svg
+              aria-hidden="true"
+              className="ml-2 -mr-1 w-4 h-4"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <Trans>review</Trans> &gt;
-            </Button>
-          </Col>
-          <Col xs={12} sm={10} lg={10}>
-            {' '}
-            {submission['title']}
-            <br />
-            <Badge bg="secondary">
-              Inc: {submission.incident_date || incidentData?.incident?.date}
-            </Badge>{' '}
-            <Badge bg="secondary">Pub: {submission.date_published}</Badge>{' '}
-            <Badge bg="secondary">Sub: {submission.date_submitted}</Badge>{' '}
+              <path
+                fillRule="evenodd"
+                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              ></path>
+            </svg>
+          </Button>
+        </div>
+        <div>
+          {' '}
+          <h5>{submission['title']}</h5>
+          <div className="flex gap-2 flex-wrap">
+            <Badge>Inc: {submission.incident_date || incidentData?.incident?.date}</Badge>{' '}
+            <Badge>Pub: {submission.date_published}</Badge>{' '}
+            <Badge>Sub: {submission.date_submitted}</Badge>{' '}
             {submission.submitters.map((submitter) => (
-              <Badge key={submitter} bg="secondary">
-                {submitter}
-              </Badge>
+              <Badge key={submitter}>{submitter}</Badge>
             ))}
-          </Col>
-        </Row>
-      </Card.Header>
+          </div>
+        </div>
+      </div>
       {open && (
         <>
           <div id="collapse-incident-submission" className="pt-3">
@@ -313,18 +320,18 @@ const SubmissionReview = ({ submission }) => {
             />
 
             <Card className="m-3" data-cy="text">
-              <Card.Header>Text</Card.Header>
-              <Card.Body>
+              <h5>Text</h5>
+              <div>
                 <ReadMoreText text={submission.text} visibility={open} />
-              </Card.Body>
+              </div>
             </Card>
 
             {submission.editor_notes && (
               <Card className="m-3" data-cy="editor_notes">
-                <Card.Header>Editor Notes</Card.Header>
-                <Card.Body>
+                <h5>Editor Notes</h5>
+                <div>
                   <ReadMoreText text={submission.editor_notes} visibility={open} />
-                </Card.Body>
+                </div>
               </Card>
             )}
 
@@ -334,7 +341,7 @@ const SubmissionReview = ({ submission }) => {
                 <RelatedIncidents incident={submission} />
               </div>
             )}
-            <Card.Footer className="flex text-muted-gray m-3">
+            <div className="flex text-muted-gray m-3">
               <Button
                 className="mr-auto"
                 data-cy="edit-submission"
@@ -388,7 +395,7 @@ const SubmissionReview = ({ submission }) => {
                   )}
                 </div>
               </Button>
-            </Card.Footer>
+            </div>
           </div>
         </>
       )}

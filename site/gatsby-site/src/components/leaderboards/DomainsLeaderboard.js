@@ -11,7 +11,7 @@ const DomainsLeaderboard = ({ limit, className }) => {
       query={graphql`
         query DomainsLeaderboard {
           allMongodbAiidprodReports {
-            group(field: source_domain) {
+            group(field: { source_domain: SELECT }) {
               fieldValue
               totalCount
             }

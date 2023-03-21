@@ -4,7 +4,7 @@ import OpenedSvg from '../images/opened';
 import ClosedSvg from '../images/closed';
 import config from '../../../config';
 import Link from '../ui/Link';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import {
   faDoorOpen,
   faSearch,
@@ -72,41 +72,45 @@ const NodeLink = ({
   hasChildren,
   calculatedClassName,
   title,
-}) => (
-  <Link
-    title={title}
-    to={item.url}
-    onClick={click}
-    className={`${
-      isCollapsed ? 'w-10 h-10' : ''
-    } flex rounded-lg items-center p-2 md:text-base font-normal group transition-none ${calculatedClassName}`}
-    data-cy={`sidebar-link${item.current ? '-active' : ''}`}
-  >
-    {icon &&
-      (isCollapsed ? (
-        <Tooltip content={item.title} placement="right">
-          {icon}
-        </Tooltip>
-      ) : (
-        <>{icon}</>
-      ))}
-    <span
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <Link
+      title={title}
+      to={item.url}
+      onClick={click}
       className={`${
-        isCollapsed ? 'h-0 w-0 m-0 p-0 overflow-hidden opacity-0 ' : 'opacity-100'
-      } transition-[font-size] duration-500`}
-      style={{ fontSize: isCollapsed ? '0' : undefined }}
+        isCollapsed ? 'w-10 h-10' : ''
+      } flex rounded-lg items-center p-2 md:text-base font-normal group transition-none ${calculatedClassName}`}
+      data-cy={`sidebar-link${item.current ? '-active' : ''}`}
     >
-      <span className="ml-3 block transition-none">
-        <Trans>{item.title}</Trans>
+      {icon &&
+        (isCollapsed ? (
+          <Tooltip content={t(item.title)} placement="right">
+            {icon}
+          </Tooltip>
+        ) : (
+          <>{icon}</>
+        ))}
+      <span
+        className={`${
+          isCollapsed ? 'h-0 w-0 m-0 p-0 overflow-hidden opacity-0 ' : 'opacity-100'
+        } transition-[font-size] duration-500`}
+        style={{ fontSize: isCollapsed ? '0' : undefined }}
+      >
+        <span className="ml-3 block transition-none">
+          <Trans>{item.title}</Trans>
+        </span>
+        {!config.sidebar.frontLine && item.title && hasChildren ? (
+          <button onClick={click} aria-label="collapse" className="collapser">
+            {!item.collapsed ? <OpenedSvg /> : <ClosedSvg />}
+          </button>
+        ) : null}
       </span>
-      {!config.sidebar.frontLine && item.title && hasChildren ? (
-        <button onClick={click} aria-label="collapse" className="collapser">
-          {!item.collapsed ? <OpenedSvg /> : <ClosedSvg />}
-        </button>
-      ) : null}
-    </span>
-  </Link>
-);
+    </Link>
+  );
+};
 
 function getIcon(label, current = false) {
   const fontAwesomeStyles = `
