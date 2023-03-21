@@ -41,11 +41,7 @@ function ToggleContent({ label, touched, faIcon, toggled }) {
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden="true"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M4.5 15.75l7.5-7.5 7.5 7.5"
-          ></path>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"></path>
         </svg>
       )}
     </div>
@@ -80,7 +76,7 @@ function ButtonToggle({ label, faIcon, touched, type, filterProps }) {
   useOutsideAlerter(wrapperRef);
 
   return (
-    <div className={`w-full`} ref={wrapperRef}>
+    <div className={`relative w-full`} ref={wrapperRef}>
       <button
         id="dropdownDefaultButton"
         data-dropdown-toggle="dropdown"
@@ -98,7 +94,7 @@ function ButtonToggle({ label, faIcon, touched, type, filterProps }) {
       <div
         id="dropdown"
         className={`z-10 ${
-          toggled ? 'hidden' : 'block absolute'
+          toggled ? 'hidden' : 'block absolute lg:-left-14'
         } bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700`}
       >
         <FilterOverlay type={type} filterProps={filterProps} />
@@ -128,7 +124,7 @@ const FilterOverlay = React.forwardRef(function Container(
     <div
       ref={ref}
       {...overlayProps}
-      style={{ ...overlayProps.style, width: 320, zIndex: 1055 }}
+      style={{ ...overlayProps.style, width: '280px', zIndex: 1055 }}
       data-cy={filterProps.attribute}
     >
       <Card className="shadow-lg">

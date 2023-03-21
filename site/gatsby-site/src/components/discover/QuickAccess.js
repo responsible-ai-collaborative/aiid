@@ -14,7 +14,7 @@ export default function DiscoverQuickAccess({ className = '', isCollapsed = fals
       <LocalizedLink
         to="/apps/discover"
         className={`test-[#001934] fs-5 border-1 border-transparent rounded cursor-pointer inline-block text-base font-normal text-center no-underline select-none align-middle transition-btn shadow w-1/2 ${
-          isCollapsed ? 'py-1 px-1' : 'pb-2 py-1.5 px-2 h-16'
+          isCollapsed ? 'py-1 px-1' : 'pb-2 py-1.5 px-2 h-16 text-black'
         }  bg-white hover:bg-blue-700 hover:text-white`}
       >
         <div className={`${isCollapsed ? '' : 'text-2xl'}`}>
@@ -31,7 +31,7 @@ export default function DiscoverQuickAccess({ className = '', isCollapsed = fals
       <LocalizedLink
         to="/apps/submit"
         className={`ml-3 fs-5 border-1 border-transparent rounded cursor-pointer inline-block text-base font-normal text-center no-underline select-none align-middle transition-btn shadow w-1/2 ${
-          isCollapsed ? 'py-1 px-1' : 'pb-2 py-1.5 px-2 h-16'
+          isCollapsed ? 'py-1 px-1' : 'pb-2 py-1.5 px-2 h-16 text-black'
         }  bg-white hover:bg-blue-700 hover:text-white`}
       >
         <div className={`${isCollapsed ? '' : 'text-2xl'}`}>

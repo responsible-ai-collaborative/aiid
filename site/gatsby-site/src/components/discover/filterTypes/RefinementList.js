@@ -66,6 +66,7 @@ const RefinementList = ({
               item.isRefined ? 'bg-green-200' : 'hover:bg-gray-200'
             } cursor-pointer p-3 flex justify-between items-center w-full`}
             key={item.label}
+            data-cy={`${attribute}-item`}
             onClick={() => {
               refine(item.value);
             }}
