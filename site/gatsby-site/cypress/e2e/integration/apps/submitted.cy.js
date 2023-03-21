@@ -38,8 +38,9 @@ describe('Submitted reports', () => {
     submissions.forEach((report, index) => {
       cy.get('[data-cy="submissions"]')
         .children(`:nth-child(${index + 1})`)
-        .contains('review >')
-        .click();
+        .within(() => {
+          cy.get('[data-cy="review-button"]').click();
+        });
 
       cy.get('[data-cy="submissions"]')
         .children(`:nth-child(${index + 1})`)
@@ -104,7 +105,9 @@ describe('Submitted reports', () => {
 
     cy.get('[data-cy="submission"]').first().as('promoteForm');
 
-    cy.get('@promoteForm').contains('review >').click();
+    cy.get('@promoteForm').within(() => {
+      cy.get('[data-cy="review-button"]').click();
+    });
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -171,7 +174,9 @@ describe('Submitted reports', () => {
 
     cy.get('[data-cy="submission"]').first().as('promoteForm');
 
-    cy.get('@promoteForm').contains('review >').click();
+    cy.get('@promoteForm').within(() => {
+      cy.get('[data-cy="review-button"]').click();
+    });
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -240,7 +245,9 @@ describe('Submitted reports', () => {
 
     cy.get('[data-cy="submission"]').first().as('promoteForm');
 
-    cy.get('@promoteForm').contains('review >').click();
+    cy.get('@promoteForm').within(() => {
+      cy.get('[data-cy="review-button"]').click();
+    });
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -306,7 +313,9 @@ describe('Submitted reports', () => {
 
     cy.get('[data-cy="submission"]').first().as('promoteForm');
 
-    cy.get('@promoteForm').contains('review >').click();
+    cy.get('@promoteForm').within(() => {
+      cy.get('[data-cy="review-button"]').click();
+    });
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -369,7 +378,9 @@ describe('Submitted reports', () => {
 
     cy.get('[data-cy="submission"]').first().as('promoteForm');
 
-    cy.get('@promoteForm').contains('review >').click();
+    cy.get('@promoteForm').within(() => {
+      cy.get('[data-cy="review-button"]').click();
+    });
 
     cy.get('[data-cy="edit-submission"]').eq(0).click();
 
@@ -469,7 +480,9 @@ describe('Submitted reports', () => {
 
     cy.get('[data-cy="submission"]').first().as('promoteForm');
 
-    cy.get('@promoteForm').contains('review >').click();
+    cy.get('@promoteForm').within(() => {
+      cy.get('[data-cy="review-button"]').click();
+    });
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -546,7 +559,9 @@ describe('Submitted reports', () => {
 
       cy.get('[data-cy="submission"]').first().as('promoteForm');
 
-      cy.get('@promoteForm').contains('review >').click();
+      cy.get('@promoteForm').within(() => {
+        cy.get('[data-cy="review-button"]').click();
+      });
 
       cy.on('fail', (err) => {
         expect(err.message).to.include(
@@ -608,7 +623,9 @@ describe('Submitted reports', () => {
 
       cy.get('[data-cy="submission"]').first().as('promoteForm');
 
-      cy.get('@promoteForm').contains('review >').click();
+      cy.get('@promoteForm').within(() => {
+        cy.get('[data-cy="review-button"]').click();
+      });
 
       cy.on('fail', (err) => {
         expect(err.message).to.include(
@@ -670,7 +687,9 @@ describe('Submitted reports', () => {
 
       cy.get('[data-cy="submission"]').first().as('promoteForm');
 
-      cy.get('@promoteForm').contains('review >').click();
+      cy.get('@promoteForm').within(() => {
+        cy.get('[data-cy="review-button"]').click();
+      });
 
       cy.on('fail', (err) => {
         expect(err.message).to.include(
@@ -728,7 +747,9 @@ describe('Submitted reports', () => {
 
     cy.get('[data-cy="submission"]').first().as('promoteForm');
 
-    cy.get('@promoteForm').contains('review >').click();
+    cy.get('@promoteForm').within(() => {
+      cy.get('[data-cy="review-button"]').click();
+    });
 
     cy.get('[data-cy="edit-submission"]').eq(0).click();
 
@@ -821,7 +842,9 @@ describe('Submitted reports', () => {
 
     cy.get('[data-cy="submission"]').first().as('promoteForm');
 
-    cy.get('@promoteForm').contains('review >').click();
+    cy.get('@promoteForm').within(() => {
+      cy.get('[data-cy="review-button"]').click();
+    });
 
     cy.get('[data-cy="edit-submission"]').eq(0).click();
 
@@ -882,7 +905,9 @@ describe('Submitted reports', () => {
 
     cy.get('[data-cy="submission"]').first().as('promoteForm');
 
-    cy.get('@promoteForm').contains('review >').click();
+    cy.get('@promoteForm').within(() => {
+      cy.get('[data-cy="review-button"]').click();
+    });
 
     cy.get('[data-cy="edit-submission"]').eq(0).click();
 
