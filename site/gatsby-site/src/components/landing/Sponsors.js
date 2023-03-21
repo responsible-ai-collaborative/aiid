@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'components/ui/Link';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 import { StyledImage, StyledImageModal, StyledImageCover } from '../../elements/StyledImage';
 import sponsors from './sponsors.json';
@@ -35,7 +35,7 @@ const SponsorModal = ({
           <Modal.Footer>
             <div className="flex justify-end w-full">
               <Button color="dark" onClick={() => setModalState('close')} data-cy="close-modal">
-                Close
+                <Trans>Close</Trans>
               </Button>
             </div>
           </Modal.Footer>
@@ -47,6 +47,8 @@ const SponsorModal = ({
 
 export default function Sponsors() {
   const [modalState, setModalState] = useState('close');
+
+  const { t } = useTranslation(['sponsors']);
 
   return (
     <>
@@ -84,7 +86,7 @@ export default function Sponsors() {
                 <div className="flex-1 w-full" key={`sponsor-${sponsor.name}`}>
                   <Card>
                     <h6 className="text-lg dark:text-white mb-0">
-                      <Trans ns="landing">{sponsor.name}</Trans>
+                      <Trans ns="landing">{t(sponsor.name)}</Trans>
                     </h6>
                     <div className="flex justify-around gap-4">
                       {sponsor.items.map((item) => {
@@ -112,7 +114,7 @@ export default function Sponsors() {
       </div>
       {sponsors.map((sponsor) => {
         return sponsor.items.map((item) => {
-          const text = item.text.replace(
+          const text = t(`sponsor-${item.name}`).replace(
             /\[\[((.*?))\]\]/g,
             `<a href="${item.link}" target="_blank" rel="noreferrer">$1</a>`
           );

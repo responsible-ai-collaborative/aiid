@@ -10,11 +10,6 @@ export const StyledHeading = styled('h1')`
   color: ${(props) => props.theme.colors.heading};
 `;
 
-export const Author = styled.p`
-  font-style: italic;
-  padding: 1rem 0 2rem;
-`;
-
 export const StyledMainWrapper = styled.div`
   max-width: 750px;
   color: ${(props) => props.theme.colors.text};

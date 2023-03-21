@@ -159,6 +159,8 @@
   "Entities": "Entités",
   "Notify Me of New {{name}} Incidents": "M'avertir des nouveaux Incidents de {{name}}",
   "Unsubscribe from New {{name}} Incidents": "Désinscrire des nouveaux Incidents de {{name}}",
+  "Follow": "S'abonner",
+  "Unfollow": "Désinscrire",
   "Expand": "Voir plus",
   "New Response": "Nouvelle Réponse",
   "Response": "Réponse",
@@ -246,5 +248,6 @@
   "Retrieved on {{date}} from incidentdatabase.ai/cite/{{incidentId}}.": "Récupéré le {{date}} à partir de incidentdatabase.ai/cite/{{incidentId}}.",
   "Subscribe": "S'abonner",
   "Please <2>log in</2> to subscribe": "Veuillez <2>vous connecter</2> pour vous abonner.",
-  "Show Live data": "Afficher des informations en direct"
+  "Show Live data": "Afficher des informations en direct",
+  "Posted <1></1> by <3></3>.": "Publié <1></1> par <3></3>."
 }
