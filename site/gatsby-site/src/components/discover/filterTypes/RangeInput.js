@@ -157,7 +157,7 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
 
               <Button
                 color="light"
-                className="mt-4 no-underline bootstrap"
+                className="mt-4 no-underline"
                 onClick={clear}
                 disabled={!clearEnabled}
               >

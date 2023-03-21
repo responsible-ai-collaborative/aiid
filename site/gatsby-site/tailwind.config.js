@@ -56,6 +56,9 @@ module.exports = {
       240: '240px',
     },
     extend: {
+      animation: {
+        'all-0': 'all 0s',
+      },
       screens: {
         '1300px': { min: '1300px' },
         '3xl': { min: '1920px' },
