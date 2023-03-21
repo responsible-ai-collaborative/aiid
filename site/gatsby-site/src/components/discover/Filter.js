@@ -13,7 +13,11 @@ function ToggleContent({ label, touched, faIcon, toggled }) {
       <div className="flex text-xs items-center">
         {faIcon && <FontAwesomeIcon icon={faIcon} />}
         &nbsp; <Trans>{label}</Trans> &nbsp;{' '}
-        {touched > 0 && <Badge color="success">{touched}</Badge>}
+        {touched > 0 && (
+          <Badge className="badge" color="success">
+            {touched}
+          </Badge>
+        )}
       </div>
       {toggled ? (
         <svg
