@@ -53,9 +53,7 @@ describe('The Discover app', () => {
       .type('34')
       .type('{enter}');
 
-    cy.get('[data-cy="incident_id"] .list-group-item:contains("34")', { timeout: 8000 })
-      .first()
-      .click();
+    cy.get('[data-cy="incident_id-item"]:contains("34")', { timeout: 8000 }).first().click();
 
     cy.url().should('include', 'incident_id=34');
 
@@ -77,9 +75,7 @@ describe('The Discover app', () => {
       .type('es')
       .type('{enter}');
 
-    cy.get('[data-cy="language"] .list-group-item:contains("es")', { timeout: 8000 })
-      .first()
-      .click();
+    cy.get('[data-cy="language-item"]:contains("es")', { timeout: 8000 }).first().click();
 
     cy.url().should('include', 'language=es');
 
@@ -101,9 +97,7 @@ describe('The Discover app', () => {
       .type('response')
       .type('{enter}');
 
-    cy.get('[data-cy="tags"] .list-group-item:contains("response")', { timeout: 8000 })
-      .first()
-      .click();
+    cy.get('[data-cy="tags-item"]:contains("response")', { timeout: 8000 }).first().click();
 
     cy.url().should('include', 'tags=response');
 
