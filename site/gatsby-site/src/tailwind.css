@@ -558,8 +558,4 @@
     .bootstrap .is-invalid~.invalid-feedback, .bootstrap .is-invalid~.invalid-tooltip, .bootstrap .was-validated :invalid~.invalid-feedback, .bootstrap .was-validated :invalid~.invalid-tooltip {
         display: block;
     }
-
-    .bootstrap .list-group-item+.list-group-item {
-        border-top-width: 0;
-    }
 }

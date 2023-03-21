@@ -131,7 +131,7 @@ const FilterOverlay = React.forwardRef(function Container(
       style={{ ...overlayProps.style, width: '280px', zIndex: 1055 }}
       data-cy={filterProps.attribute}
     >
-      <Card className="shadow-lg">
+      <Card className="shadow-lg card">
         <div>
           <FilterContent type={type} filterProps={filterProps} />
         </div>

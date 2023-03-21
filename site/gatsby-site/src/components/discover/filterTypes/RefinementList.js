@@ -62,8 +62,8 @@ const RefinementList = ({
       <ListGroup className="max-h-[400px] overflow-y-auto mt-4 border">
         {items.map((item) => (
           <button
-            className={`${
-              item.isRefined ? 'bg-green-200' : 'hover:bg-gray-200'
+            className={`list-group-item ${
+              item.isRefined ? 'bg-green-200 active' : 'hover:bg-gray-200'
             } cursor-pointer p-3 flex justify-between items-center w-full`}
             key={item.label}
             data-cy={`${attribute}-item`}
