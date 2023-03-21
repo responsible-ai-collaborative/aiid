@@ -124,8 +124,8 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
 
   const dummyPageContexts = [];
 
-  for (let i = 1; i < 100; i++) {
-    const incident_id = maxIncidentId + 1;
+  for (let i = 1; i <= 100; i++) {
+    const incident_id = maxIncidentId + i;
 
     dummyPageContexts.push({
       incident_id,
@@ -137,8 +137,8 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
     });
   }
 
-  for (const language of languages) {
-    for (const context of dummyPageContexts) {
+  for (const context of dummyPageContexts) {
+    for (const language of languages) {
       const pagePath = switchLocalizedPath({
         newLang: language.code,
         path: '/cite/' + context.incident_id + '/',

@@ -1,5 +1,7 @@
 import createCitationPages from '../../../../page-creators/createCitationPages';
 
+const DUMMY_PAGES_COUNT = 100;
+
 const response = {
   data: {
     allMongodbAiidprodIncidents: {
@@ -91,7 +93,7 @@ describe('createCitationPages', () => {
     const createPage = cy.stub();
 
     cy.wrap(createCitationPages(graphql, createPage, { languages })).then(() => {
-      expect(createPage.callCount).to.eq(3);
+      expect(createPage.callCount).to.eq(3 + DUMMY_PAGES_COUNT * 3);
 
       cy.wrap(createPage.getCall(0).args[0]).then((page) => {
         expect(page.path).contain('/cite/1');
@@ -99,6 +101,7 @@ describe('createCitationPages', () => {
         expect(page.context.translate_es).eq(true);
         expect(page.context.translate_en).eq(false);
         expect(page.context.translate_fr).eq(true);
+        expect(page.component).contain('/templates/cite.js');
       });
 
       cy.wrap(createPage.getCall(1).args[0]).then((page) => {
@@ -116,6 +119,58 @@ describe('createCitationPages', () => {
         expect(page.context.translate_en).eq(false);
         expect(page.context.translate_fr).eq(true);
       });
+    });
+  });
+
+  it('Should create dummy cite pages', () => {
+    const graphql = cy.stub().resolves(response);
+
+    const createPage = cy.stub();
+
+    cy.wrap(createCitationPages(graphql, createPage, { languages })).then(() => {
+      console.log(createPage.getCalls());
+
+      for (let i = 3; i <= DUMMY_PAGES_COUNT; i = i + 3) {
+        const incident_id = i / 3 + 1;
+
+        console.log(i, incident_id);
+
+        cy.wrap(createPage.getCall(i).args[0]).then((page) => {
+          expect(page.path).contain(`/cite/${incident_id}`);
+          expect(page.context.locale).eq('en');
+          expect(page.context.incident_id).eq(incident_id);
+          expect(page.context.nextIncident).eq(null);
+          expect(page.context.prevIncident).eq(null);
+          expect(page.context.nlp_similar_incidents).length(0);
+          expect(page.context.editor_similar_incidents).length(0);
+          expect(page.context.editor_dissimilar_incidents).length(0);
+          expect(page.component).contain('/templates/cite-dynamic.js');
+        });
+
+        cy.wrap(createPage.getCall(i + 1).args[0]).then((page) => {
+          expect(page.path).contain(`es/cite/${incident_id}`);
+          expect(page.context.locale).eq('es');
+          expect(page.context.incident_id).eq(incident_id);
+          expect(page.context.nextIncident).eq(null);
+          expect(page.context.prevIncident).eq(null);
+          expect(page.context.nlp_similar_incidents).length(0);
+          expect(page.context.editor_similar_incidents).length(0);
+          expect(page.context.editor_dissimilar_incidents).length(0);
+          expect(page.component).contain('/templates/cite-dynamic.js');
+        });
+
+        cy.wrap(createPage.getCall(i + 2).args[0]).then((page) => {
+          expect(page.path).contain(`fr/cite/${incident_id}`);
+          expect(page.context.locale).eq('fr');
+          expect(page.context.incident_id).eq(incident_id);
+          expect(page.context.nextIncident).eq(null);
+          expect(page.context.prevIncident).eq(null);
+          expect(page.context.nlp_similar_incidents).length(0);
+          expect(page.context.editor_similar_incidents).length(0);
+          expect(page.context.editor_dissimilar_incidents).length(0);
+          expect(page.component).contain('/templates/cite-dynamic.js');
+        });
+      }
     });
   });
 });
