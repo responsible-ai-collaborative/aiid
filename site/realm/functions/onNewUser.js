@@ -12,5 +12,6 @@ exports = async (authEvent) => {
   } catch (error) {
     error.message = `[On New User event]: ${error.message}`;
     context.functions.execute('logRollbar', { error, data: { newUser, user } });
+    throw error;
   }
 };

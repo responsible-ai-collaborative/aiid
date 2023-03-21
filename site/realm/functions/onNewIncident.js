@@ -73,6 +73,7 @@ exports = async function (changeEvent) {
   } catch (error) {
     error.message = `[On New Incident event]: ${error.message}`;
     context.functions.execute('logRollbar', { error, data: { incidentId, fullDocument } });
+    throw error;
   }
 
   return;

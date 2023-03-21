@@ -88,6 +88,7 @@ exports = async function (changeEvent) {
   } catch (error) {
     error.message = `[On Incident Update event]: ${error.message}`;
     context.functions.execute('logRollbar', { error, data: { incidentId, updateDescription, fullDocument } });
+    throw error;
   }
 
   // Check if Entity fields changed
@@ -147,6 +148,7 @@ exports = async function (changeEvent) {
   } catch (error) {
     error.message = `[On Incident Update event]: ${error.message}`;
     context.functions.execute('logRollbar', { error, data: { incidentId, updateDescription, updatedFields } });
+    throw error;
   }
 
   return;

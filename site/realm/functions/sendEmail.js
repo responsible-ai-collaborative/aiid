@@ -61,6 +61,7 @@ exports = async ({ recipients, subject, dynamicData, templateId }) => {
     } catch (error) {
         error.message = `[Send Email]: ${error.message}`;
         context.functions.execute('logRollbar', { error, data: { recipients, subject, dynamicData, templateId } });
+        throw error;
     }
 
 };
