@@ -1,34 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Button } from 'react-bootstrap';
-import styled from 'styled-components';
-
-const Container = styled.div`
-  height: ${(props) => (props.showMore ? 'auto' : `${props.rows * 1.5}rem`)};
-  overflow: ${(props) => (props.showMore ? 'visible' : 'hidden')};
-`;
-
-const Text = styled.p`
-  line-height: 1.5rem;
-  margin: 0;
-`;
-
-const Toggle = styled(Button).attrs({
-  variant: 'link',
-})`
-  &&& {
-    padding: 0;
-
-    &:focus {
-      outline: none;
-      box-shadow: none;
-    }
-  }
-`;
 
 /**
  * @param {{ text: string, max: number }} props
  */
-const ReadMoreText = ({ text, rows = 3, visibility, ...props }) => {
+const ReadMoreText = ({ text, rows = 3, visibility }) => {
   if (!text) return null;
 
   const parentRef = useRef();
@@ -65,23 +40,29 @@ const ReadMoreText = ({ text, rows = 3, visibility, ...props }) => {
   }, [visibility]);
 
   return (
-    <div className="bootstrap">
-      <Container ref={parentRef} showMore={showMore} rows={rows} {...props}>
-        <Text ref={textRef}>
+    <>
+      <div
+        ref={parentRef}
+        className={`${showMore ? 'overflow-visible' : 'overflow-hidden'}`}
+        style={{ height: showMore ? 'auto' : `${rows * 1.5}rem` }}
+      >
+        <p className="leading-6 m-0" ref={textRef}>
           {text.split('\n').map((p, key) => (
             <span key={key}>
               {p}
               <br />
             </span>
           ))}
-        </Text>
-      </Container>
+        </p>
+      </div>
       {overflowing && (
-        <div className="text-right px-4">
-          <Toggle onClick={toggleShowMore}>{showMore ? 'less' : 'read more'}</Toggle>
+        <div className="flex justify-end text-right px-4">
+          <button className="text-blue-600 underline" onClick={toggleShowMore}>
+            {showMore ? 'less' : 'read more'}
+          </button>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

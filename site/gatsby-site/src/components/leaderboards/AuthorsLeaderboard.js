@@ -11,7 +11,7 @@ const AuthorsLeaderboard = ({ limit, className }) => {
       query={graphql`
         query AuthorsLeaderboard {
           allMongodbAiidprodReports {
-            group(field: authors) {
+            group(field: { authors: SELECT }) {
               fieldValue
               totalCount
             }
