@@ -108,53 +108,6 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
                   }}
                 />
               </FieldContainer>
-              {/* <Form.Control
-                required={true}
-                type="date"
-                min={formatDate(min)}
-                max={formatDate(
-                  currentRefinement.min > currentRefinement.max
-                    ? max
-                    : Math.min(max, currentRefinement.max)
-                )}
-                defaultValue={formatDate(currentRefinement.min)}
-                onChange={(event) => {
-                  const newMin = dateToEpoch(event.target.value);
-
-                  if (newMin >= min || currentRefinement.min != min) {
-                    debounce(() =>
-                      onChange({ min: Math.max(min, newMin), max: currentRefinement.max })
-                    )();
-                  }
-                }}
-                className={touchedMin && 'border border-success'}
-              /> */}
-
-              {/* <Form.Label className="mt-3">
-                <Trans>To Date</Trans>:
-              </Form.Label>
-              <Form.Control
-                required={true}
-                type="date"
-                min={formatDate(
-                  currentRefinement.min > currentRefinement.max
-                    ? min
-                    : Math.max(min, currentRefinement.min)
-                )}
-                max={formatDate(new Date().valueOf())}
-                defaultValue={formatDate(currentRefinement.max)}
-                onChange={(event) => {
-                  const newMax = dateToEpoch(event.target.value);
-
-                  if (newMax <= max || currentRefinement.max != max) {
-                    debounce(() =>
-                      onChange({ min: currentRefinement.min, max: Math.min(max, newMax) })
-                    )();
-                  }
-                }}
-                className={touchedMax && 'border border-success'}
-              /> */}
-
               <Button
                 color="light"
                 className="mt-4 no-underline"

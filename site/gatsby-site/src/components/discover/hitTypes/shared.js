@@ -3,19 +3,8 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import { Highlight } from 'react-instantsearch-dom';
-import styled from 'styled-components';
 import { VIEW_TYPES } from 'utils/discover';
 import WebArchiveLink from '../../../components/ui/WebArchiveLink';
-
-const linkHoverHighlight = `
-  a:not(:hover) {
-    color: inherit;
-  }
-`;
-
-const SubdomainCard = styled(Card.Subtitle)`
-  ${linkHoverHighlight}
-`;
 
 export function citationReportUrl(item, viewType) {
   let path = null;
@@ -55,11 +44,11 @@ export function HeaderTitle({ item, ...props }) {
 export function SourceDomainSubtitle({ item, ...props }) {
   return (
     <div className="bootstrap">
-      <SubdomainCard {...props}>
+      <Card.Subtitle {...props} className="text-inherit">
         <WebArchiveLink url={item.url} date={item.date_submitted}>
           {item.source_domain} &middot; {format(fromUnixTime(item.epoch_date_published), 'yyyy')}
         </WebArchiveLink>
-      </SubdomainCard>
+      </Card.Subtitle>
     </div>
   );
 }
