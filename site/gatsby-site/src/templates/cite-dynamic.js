@@ -308,8 +308,6 @@ function CiteDynamicPage(props) {
     (report) => report.tags && report.tags.includes(RESPONSE_TAG)
   );
 
-  console.log(loading, incident);
-
   return (
     <Layout {...{ props }} location={props.location}>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
