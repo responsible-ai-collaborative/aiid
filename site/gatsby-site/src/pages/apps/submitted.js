@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import AiidHelmet from '../../components/AiidHelmet';
 import { ObjectId } from 'bson';
-import { Button, Row, Col, Card, Badge, ListGroup } from 'react-bootstrap';
 import { useMutation, useQuery } from '@apollo/client';
 import { DELETE_QUICKADD, FIND_QUICKADD } from '../../graphql/quickadd.js';
 import { useUserContext } from '../../contexts/userContext';
 import Layout from '../../components/Layout';
-import { StyledHeading, StyledMainWrapper } from '../../components/styles/Docs';
 import SubmissionList from '../../components/submissions/SubmissionList';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Trans, useTranslation } from 'react-i18next';
 import ListSkeleton from 'elements/Skeletons/List';
+import { Badge, Button, ListGroup } from 'flowbite-react';
 
 const SubmittedIncidentsPage = ({ ...props }) => {
   const { isRole } = useUserContext();
@@ -85,27 +84,31 @@ const SubmittedIncidentsPage = ({ ...props }) => {
         <title>{t('Submitted Incident Report List')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <StyledHeading>
+        <h1 className="font-karla font-bold flex-1 pt-0">
           <Trans ns="submitted">Submitted Incident Report List</Trans>
-        </StyledHeading>
+        </h1>
       </div>
-      <StyledMainWrapper className="bootstrap">
+      <div>
         <SubmissionList />
-        <h2>
-          <Trans ns="submitted">Quick Add URLs</Trans>
-        </h2>
-        <p>
-          <Trans ns="submitted" i18nKey="quickaddDescription">
-            These reports were added anonymously by users in the Quick Add form on the landing page
-          </Trans>
-        </p>
-        <ListGroup className="mb-5">
-          {sortedQuickAdds.length < 1 && <ListSkeleton />}
-          {sortedQuickAdds.map(({ _id, url, date_submitted }) => (
-            <ListGroup.Item key={_id} className="m-0 p-2">
-              <Card.Header>
-                <Row>
-                  <Col xs={12} sm={2} lg={2} className="flex items-center">
+        <div className="mt-5">
+          <h2>
+            <Trans ns="submitted">Quick Add URLs</Trans>
+          </h2>
+          <p>
+            <Trans ns="submitted" i18nKey="quickaddDescription">
+              These reports were added anonymously by users in the Quick Add form on the landing
+              page
+            </Trans>
+          </p>
+          <ListGroup className="mb-5">
+            {sortedQuickAdds.length < 1 && <ListSkeleton />}
+            {sortedQuickAdds.map(({ _id, url, date_submitted }) => (
+              <div
+                key={_id}
+                className="flex flex-row md:flex-wrap flex-nowrap border-b last:border-none m-0 p-2"
+              >
+                <div className="flex">
+                  <div className="flex items-center mr-10">
                     <Button
                       variant="outline-secondary"
                       disabled={!isAdmin}
@@ -117,23 +120,38 @@ const SubmittedIncidentsPage = ({ ...props }) => {
                         }
                       }}
                     >
-                      <Trans>Delete</Trans>&gt;
+                      <Trans>Delete</Trans>
+                      <svg
+                        aria-hidden="true"
+                        className="ml-2 -mr-1 w-4 h-4"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        ></path>
+                      </svg>
                     </Button>
-                  </Col>
-                  <Col xs={12} sm={10} lg={10}>
+                  </div>
+                  <div>
                     {' '}
-                    <a href={url} style={{ overflowWrap: 'break-word' }}>
+                    <a href={url} className="break-all" style={{ overflowWrap: 'break-word' }}>
                       {url}
                     </a>
                     <br />
-                    <Badge bg="secondary">Sub: {date_submitted}</Badge>
-                  </Col>
-                </Row>
-              </Card.Header>
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-      </StyledMainWrapper>
+                    <div className="flex">
+                      <Badge>Sub: {date_submitted}</Badge>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </ListGroup>
+        </div>
+      </div>
     </Layout>
   );
 };

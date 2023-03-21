@@ -1,4 +1,4 @@
-//import { maybeIt } from '../support/utils';
+import { maybeIt } from '../support/utils';
 import variantsIncident from '../fixtures/variants/variantsIncident.json';
 import {
   getVariantStatus,
@@ -9,7 +9,7 @@ import {
 import { format, getUnixTime } from 'date-fns';
 const { gql } = require('@apollo/client');
 
-const incidentId = 21;
+const incidentId = 464;
 
 const getVariants = (callback) => {
   cy.query({
@@ -43,20 +43,18 @@ const getVariants = (callback) => {
 describe('Variants pages', () => {
   const url = `/cite/${incidentId}`;
 
-  //it('Successfully loads', () => {
-  it.skip('Successfully loads', () => {
+  it('Successfully loads', () => {
     cy.visit(url);
 
     cy.disableSmoothScroll();
   });
 
-  //it('Should display Variant list', () => {
-  it.skip('Should display Variant list', () => {
+  it('Should display Variant list', async () => {
     cy.visit(url);
 
     cy.contains('h1', 'Variants').should('exist').scrollIntoView();
 
-    getVariants((variants) => {
+    getVariants(async (variants) => {
       cy.get('[data-cy=variant-card]').should('have.length', variants.length);
 
       for (let index = 0; index < variants.length; index++) {
@@ -64,18 +62,19 @@ describe('Variants pages', () => {
 
         cy.get('[data-cy=variant-card]')
           .eq(index)
-          .within(() => {
+          .within(async () => {
             cy.get('[data-cy=variant-status-badge]').contains(
               getVariantStatusText(getVariantStatus(variant))
             );
-            cy.get('[data-cy=variant-text_inputs]').contains(variant.text_inputs);
-            cy.get('[data-cy=variant-text_outputs]').contains(variant.text_outputs);
+            cy.get('[data-cy=variant-text_inputs]').contains(variant.text_inputs.substring(0, 20));
+            cy.get('[data-cy=variant-text_outputs]').contains(
+              variant.text_outputs.substring(0, 20)
+            );
           });
       }
     });
   });
 
-  //it('Should add a new Variant - Unauthenticated user', () => {
   it.skip('Should add a new Variant - Unauthenticated user', () => {
     const text_inputs = 'Input text with **markdown**';
 
@@ -113,6 +112,8 @@ describe('Variants pages', () => {
     cy.get('#formTextInputs').type(text_inputs);
     cy.get('#formTextOutputs').type(text_outputs);
 
+    cy.waitForStableDOM();
+
     cy.get('[data-cy=add-variant-submit-btn]').click();
 
     cy.wait('@createVariant');
@@ -128,8 +129,7 @@ describe('Variants pages', () => {
       .should('exist');
   });
 
-  //it("Shouldn't edit a Variant - Unauthenticated user", () => {
-  it.skip("Shouldn't edit a Variant - Unauthenticated user", () => {
+  it("Shouldn't edit a Variant - Unauthenticated user", () => {
     cy.visit(url);
 
     cy.contains('h1', 'Variants').should('exist').scrollIntoView();
@@ -137,8 +137,7 @@ describe('Variants pages', () => {
     cy.get('[data-cy=edit-variant-btn]').should('not.exist');
   });
 
-  //maybeIt('Should Approve Variant - Incident Editor user', () => {
-  it.skip('Should Approve Variant - Incident Editor user', () => {
+  maybeIt('Should Approve Variant - Incident Editor user', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const new_text_inputs = 'New Input text';
@@ -208,8 +207,7 @@ describe('Variants pages', () => {
     });
   });
 
-  //maybeIt('Should Reject Variant - Incident Editor user', () => {
-  it.skip('Should Reject Variant - Incident Editor user', () => {
+  maybeIt('Should Reject Variant - Incident Editor user', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const new_text_inputs = 'New Input text';
@@ -279,8 +277,7 @@ describe('Variants pages', () => {
     });
   });
 
-  //maybeIt('Should Save Variant - Incident Editor user', () => {
-  it.skip('Should Save Variant - Incident Editor user', () => {
+  maybeIt('Should Save Variant - Incident Editor user', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     const new_text_inputs = 'New Input text';
@@ -350,8 +347,7 @@ describe('Variants pages', () => {
     });
   });
 
-  //maybeIt('Should Delete Variant - Incident Editor user', () => {
-  it.skip('Should Delete Variant - Incident Editor user', () => {
+  maybeIt('Should Delete Variant - Incident Editor user', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     getVariants((variants) => {

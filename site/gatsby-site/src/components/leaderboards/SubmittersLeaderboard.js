@@ -8,7 +8,7 @@ const SubmittersLeaderboard = ({ limit, className }) => {
       query={graphql`
         query SubmittersLeaderboard {
           allMongodbAiidprodReports {
-            group(field: submitters) {
+            group(field: { submitters: SELECT }) {
               field
               fieldValue
               totalCount
