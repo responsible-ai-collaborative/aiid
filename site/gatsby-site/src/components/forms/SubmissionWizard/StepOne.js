@@ -152,10 +152,6 @@ const FormDetails = ({
     }
   }, [urlFromQueryString]);
 
-  useEffect(() => {
-    saveForm(values);
-  }, [values, saveForm]);
-
   const fetchNews = async (url) => {
     await parseNewsUrl(url);
     Object.keys(errors).map((key) => {
@@ -237,7 +233,12 @@ const FormDetails = ({
             values={values}
             errors={errors}
             touched={touched}
-            handleChange={handleChange}
+            handleChange={(e) => {
+              const title = e.target.value;
+
+              saveForm({ ...values, title });
+              handleChange(e);
+            }}
             handleBlur={handleBlur}
             schema={schema}
             disabled={parsingNews}

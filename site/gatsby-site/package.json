@@ -81,9 +81,9 @@
     "react-helmet": "^6.1.0",
     "react-i18next": "^11.17.1",
     "react-id-generator": "^3.0.1",
-    "react-json-to-csv": "^1.2.0",
     "react-instantsearch-dom": "^6.39.0",
     "react-is": "^18.2.0",
+    "react-json-to-csv": "^1.2.0",
     "react-markdown": "^6.0.2",
     "react-papaparse": "^3.16.1",
     "react-table": "^7.7.0",
@@ -102,6 +102,7 @@
     "topojson-client": "^3.1.0",
     "tsne-js": "^1.0.3",
     "umzug": "^3.0.0",
+    "use-local-storage-state": "^18.2.1",
     "use-query-params": "^1.2.0",
     "valid-url": "^1.0.9",
     "yup": "^0.29.3"

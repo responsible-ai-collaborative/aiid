@@ -21,7 +21,7 @@ import SubmissionWizard from '../submissions/SubmissionWizard';
 import getSourceDomain from 'utils/getSourceDomain';
 import { StyledHeading } from 'components/styles/Docs';
 import { Helmet } from 'react-helmet';
-import { useLocalStorageState } from 'hooks/useLocalStorage';
+import { useLocalStorageState2 } from 'hooks/useLocalStorage';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -78,12 +78,12 @@ const SubmitForm = () => {
     tags: [],
   };
 
-  const [, handleUpdateLocalStorageState] = useLocalStorageState({
+  const [submission, setSubmission] = useLocalStorageState2({
     key: LOCAL_STORAGE_KEY,
     value: initialValues,
   });
 
-  const [submission, setSubmission] = useState(initialValues);
+  // const [submission, setSubmission] = useState(localStorageState);
 
   const [isIncidentResponse, setIsIncidentResponse] = useState(false);
 
@@ -112,7 +112,6 @@ const SubmitForm = () => {
     if (queryParams.tags && queryParams.tags.includes(RESPONSE_TAG)) {
       setIsIncidentResponse(true);
     }
-
     setSubmission(queryParams);
   }, []);
 
@@ -284,7 +283,7 @@ const SubmitForm = () => {
           initialValues={submission}
           urlFromQueryString={query.url}
           saveForm={(values) => {
-            handleUpdateLocalStorageState(values);
+            setSubmission(values);
           }}
         />
 
