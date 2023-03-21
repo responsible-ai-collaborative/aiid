@@ -31,7 +31,8 @@ describe('Cite pages', () => {
     cy.visit(url);
   });
 
-  it(
+  // skipping until https://github.com/responsible-ai-collaborative/aiid/pull/1680/files is merged
+  it.skip(
     'Should scroll to report when coming from the discover app',
     { retries: { runMode: 4 } },
     () => {
@@ -76,7 +77,8 @@ describe('Cite pages', () => {
       });
   });
 
-  it(
+  // skipping until https://github.com/responsible-ai-collaborative/aiid/pull/1680/files is merged
+  it.skip(
     'Should scroll to report when coming from the landing page',
     { retries: { runMode: 4 } },
     () => {

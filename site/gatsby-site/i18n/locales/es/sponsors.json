@@ -1,0 +1,12 @@
+{
+    "Organization Founding Sponsor": "Patrocinador fundador de la organización",
+    "Database Founding Sponsor": "Patrocinador fundador de la base de datos",
+    "Sponsors and Grants": "Patrocinadores y subvenciones",
+    "In-Kind Sponsors": "Patrocinadores similares",
+    "sponsor-Waking Up Foundation": "Por recomendación de Longview Philanthropy, la [[Waking Up Foundation]] aportó una subvención fundacional de $550 000 USD dirigida a la base de datos de incidentes de IA. $33k del total están comprometidos con nuestro patrocinador fiscal para llevar los libros y el cumplimiento fiscal de la organización. Se dedican aproximadamente $5k al mantenimiento de la entidad sin fines de lucro RAIC que dirige la programación AIID patrocinada por un patrocinador fiscal. Todos los fondos restantes se dedican a productos programáticos, incluido el tiempo del personal para la programación y la investigación.",
+    "sponsor-Partnership on AI": "Como [[patrocinador fundador]] de la base de datos de incidentes de IA (AIID), Partnership on AI apoyó la puesta en marcha de la base de datos, incluida una subvención para apoyar el proyecto antes de la fundación de Responsible AI Collaborative. Partnership on AI también invirtió en promover los beneficios sociales de AIID entre sus socios y otras partes interesadas y tiene un interés continuo en respaldar sus resultados.",
+    "sponsor-Mozilla Foundation": "La Responsible AI Collaborative recibió una subvención de $ 50,000 del Mozilla Technology Fund para el desarrollo de listas de verificación de riesgos de IA. Para obtener más detalles sobre el proyecto, visite el [[anuncio de lanzamiento]] de la cohorte y siga el blog de Collab a medida que anunciamos los avances.",
+    "sponsor-Netlify": "[[Netlify]] proporciona a Responsible AI Collaborative alojamiento gratuito, minutos de compilación y cuentas para el desarrollo de código abierto de la base de datos de incidentes de IA.",
+    "sponsor-Cloudinary": "[[Cloudinary]] ofrece alojamiento de imágenes y videos con descuento en su servicio de alojamiento en la nube. Son la razón por la que tantas imágenes se cargan rápidamente en la base de datos.",
+    "sponsor-Algolia": "[[Algolia]] proporciona a Responsible AI Collaborative un índice de búsqueda instantánea de informes de incidentes. "
+}
