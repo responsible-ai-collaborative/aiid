@@ -333,8 +333,8 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                   .map((rawField) =>
                     rawField.dummy ? (
                       <h5
+                        key={`${rawField.field_number || ''}${rawField.short_name}`}
                         className="mb-3 text-xl border-b-2 pb-1 border-gray-200"
-                        key={rawField.field_number || ''}
                       >
                         {rawField.field_number}. {rawField.short_name}
                       </h5>

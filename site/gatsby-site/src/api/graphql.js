@@ -3,7 +3,7 @@ import { mergeSchemas } from '@graphql-tools/schema';
 import fetch from 'cross-fetch';
 import { print } from 'graphql';
 import Cors from 'cors';
-import { graphqlHTTP } from 'express-graphql';
+import { createHandler } from 'graphql-http/lib/use/http';
 import config from '../../config';
 
 const cors = Cors();
@@ -59,7 +59,7 @@ export default async function handler(req, res) {
       },
     });
 
-    graphqlMiddleware = graphqlHTTP({ schema: gatewaySchema, graphiql: true });
+    graphqlMiddleware = createHandler({ schema: gatewaySchema });
   }
 
   // Manually run the cors middleware
