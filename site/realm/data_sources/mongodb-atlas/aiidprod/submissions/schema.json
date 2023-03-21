@@ -80,17 +80,17 @@
         "incident_date": {
             "bsonType": "string"
         },
-        "incident_id": {
-            "bsonType": "int"
-        },
-        "incident_title": {
-            "bsonType": "string"
-        },
         "incident_editors": {
             "bsonType": "array",
             "items": {
                 "bsonType": "string"
             }
+        },
+        "incident_id": {
+            "bsonType": "int"
+        },
+        "incident_title": {
+            "bsonType": "string"
         },
         "language": {
             "bsonType": "string"

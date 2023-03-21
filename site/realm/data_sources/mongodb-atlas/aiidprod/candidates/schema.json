@@ -9,6 +9,20 @@
                 "bsonType": "string"
             }
         },
+        "classification_similarity": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "classification": {
+                        "bsonType": "string"
+                    },
+                    "similarity": {
+                        "bsonType": "double"
+                    }
+                }
+            }
+        },
         "date_downloaded": {
             "bsonType": "string"
         },
@@ -47,7 +61,7 @@
         "match": {
             "bsonType": "boolean"
         },
-        "matching_keywords": {
+        "matching_entities": {
             "bsonType": "array",
             "items": {
                 "bsonType": "string"
@@ -59,7 +73,7 @@
                 "bsonType": "string"
             }
         },
-        "matching_entities": {
+        "matching_keywords": {
             "bsonType": "array",
             "items": {
                 "bsonType": "string"
@@ -70,20 +84,6 @@
         },
         "similarity": {
             "bsonType": "double"
-        },
-        "classification_similarity": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "object",
-                "properties": {
-                    "classification": {
-                        "bsonType": "string"
-                    },
-                    "similarity": {
-                        "bsonType": "double"
-                    }
-                }
-            }
         },
         "source_domain": {
             "bsonType": "string"
