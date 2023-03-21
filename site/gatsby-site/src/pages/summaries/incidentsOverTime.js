@@ -127,8 +127,7 @@ export const pageQuery = graphql`
         reports
       }
     }
-
-    allMongodbAiidprodReports(sort: { order: ASC, fields: date_submitted }, limit: 9999) {
+    allMongodbAiidprodReports(sort: { date_submitted: ASC }, limit: 9999) {
       nodes {
         report_number
         title
