@@ -130,7 +130,6 @@ export const query = graphql`
     latestReportIncident: mongodbAiidprodIncidents(reports: { eq: $latestReportNumber }) {
       incident_id
     }
-
     latestReport: mongodbAiidprodReports(report_number: { eq: $latestReportNumber }) {
       title
       text
@@ -140,25 +139,21 @@ export const query = graphql`
       cloudinary_id
       language
     }
-
     latestReport_es: mongodbTranslationsReportsEs(report_number: { eq: $latestReportNumber }) {
       title
       text
     }
-
     latestReport_fr: mongodbTranslationsReportsFr(report_number: { eq: $latestReportNumber }) {
       title
       text
     }
-
     latestReport_en: mongodbTranslationsReportsEn(report_number: { eq: $latestReportNumber }) {
       title
       text
     }
-
     latestPost: allMdx(
       filter: { fields: { slug: { glob: "/blog/**" }, locale: { eq: $locale } } }
-      sort: { order: DESC, fields: frontmatter___date }
+      sort: { frontmatter: { date: DESC } }
       limit: 1
     ) {
       nodes {
