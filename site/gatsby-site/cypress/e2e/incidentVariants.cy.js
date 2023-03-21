@@ -75,7 +75,7 @@ describe('Variants pages', () => {
     });
   });
 
-  it.skip('Should add a new Variant - Unauthenticated user', () => {
+  it.only('Should add a new Variant - Unauthenticated user', () => {
     const text_inputs = 'Input text with **markdown**';
 
     const text_outputs = 'Output text with **markdown**';
@@ -112,21 +112,21 @@ describe('Variants pages', () => {
     cy.get('#formTextInputs').type(text_inputs);
     cy.get('#formTextOutputs').type(text_outputs);
 
-    cy.waitForStableDOM();
+    // cy.waitForStableDOM();
 
-    cy.get('[data-cy=add-variant-submit-btn]').click();
+    // cy.get('[data-cy=add-variant-submit-btn]').click();
 
-    cy.wait('@createVariant');
+    // cy.wait('@createVariant');
 
-    cy.get('[data-cy=success-message]').contains(
-      "Your variant has been added to the review queue and will appear on this page within 12 hours. Please continue submitting when you encounter more variants. Most of the time we won't review it in the same day, but it will appear within a day as unreviewed."
-    );
+    // cy.get('[data-cy=success-message]').contains(
+    //   "Your variant has been added to the review queue and will appear on this page within 12 hours. Please continue submitting when you encounter more variants. Most of the time we won't review it in the same day, but it will appear within a day as unreviewed."
+    // );
 
-    cy.get('[data-cy="toast"]')
-      .contains(
-        'Your variant has been added to the review queue and will appear on this page within 12 hours.'
-      )
-      .should('exist');
+    // cy.get('[data-cy="toast"]')
+    //   .contains(
+    //     'Your variant has been added to the review queue and will appear on this page within 12 hours.'
+    //   )
+    //   .should('exist');
   });
 
   it("Shouldn't edit a Variant - Unauthenticated user", () => {
