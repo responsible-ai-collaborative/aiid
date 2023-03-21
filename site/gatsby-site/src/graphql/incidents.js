@@ -174,3 +174,56 @@ export const INSERT_INCIDENT = gql`
     }
   }
 `;
+
+export const FIND_FULL_INCIDENT = gql`
+  query FindIncident($query: IncidentQueryInput) {
+    incident(query: $query) {
+      incident_id
+      title
+      description
+      editors
+      date
+      AllegedDeployerOfAISystem {
+        entity_id
+        name
+      }
+      AllegedDeveloperOfAISystem {
+        entity_id
+        name
+      }
+      AllegedHarmedOrNearlyHarmedParties {
+        entity_id
+        name
+      }
+      nlp_similar_incidents {
+        incident_id
+        similarity
+      }
+      editor_similar_incidents
+      editor_dissimilar_incidents
+      flagged_dissimilar_incidents
+      reports {
+        submitters
+        date_published
+        report_number
+        title
+        description
+        url
+        image_url
+        cloudinary_id
+        source_domain
+        text
+        authors
+        epoch_date_submitted
+        language
+        tags
+        text_inputs
+        text_outputs
+      }
+      embedding {
+        from_reports
+        vector
+      }
+    }
+  }
+`;

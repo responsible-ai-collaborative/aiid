@@ -112,6 +112,50 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
       });
     }
   }
+
+  // Add dummy Cite pages for new Incidents
+
+  const maxIncidentId = Math.max.apply(
+    Math,
+    pageContexts.map((context) => {
+      return context.incident_id;
+    })
+  );
+
+  const dummyPageContexts = [];
+
+  for (let i = 1; i < 100; i++) {
+    const incident_id = maxIncidentId + 1;
+
+    dummyPageContexts.push({
+      incident_id,
+      nextIncident: null,
+      prevIncident: null,
+      nlp_similar_incidents: [],
+      editor_similar_incidents: [],
+      editor_dissimilar_incidents: [],
+    });
+  }
+
+  for (const language of languages) {
+    for (const context of dummyPageContexts) {
+      const pagePath = switchLocalizedPath({
+        newLang: language.code,
+        path: '/cite/' + context.incident_id + '/',
+      });
+
+      createPage({
+        path: pagePath,
+        component: path.resolve('./src/templates/cite-dynamic.js'),
+        context: {
+          ...context,
+          originalPath: pagePath,
+          locale: language.code,
+          hrefLang: language.hrefLang,
+        },
+      });
+    }
+  }
 };
 
 module.exports = createCitationPages;
