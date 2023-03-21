@@ -1,17 +1,17 @@
 import React from 'react';
-import ListGroup from 'react-bootstrap/ListGroup';
 import Link from '../../components/ui/Link';
 import SubmissionReview from '../../components/submissions/SubmissionReview';
 import { FIND_SUBMISSIONS } from '../../graphql/submissions';
 import { useQuery } from '@apollo/client';
 import { Trans } from 'react-i18next';
 import ListSkeleton from 'elements/Skeletons/List';
+import { Card, ListGroup } from 'flowbite-react';
 
 const SubmissionList = () => {
   const { data, loading } = useQuery(FIND_SUBMISSIONS);
 
   return (
-    <div className="bootstrap">
+    <Card>
       <p className="paragraph">
         <Trans ns="submitted" i18nKey="description">
           The following incident reports have been <Link to="/apps/submit">submitted </Link> by
@@ -27,12 +27,16 @@ const SubmissionList = () => {
             (a, b) => new Date(a.date_submitted).getTime() - new Date(b.date_submitted).getTime()
           )
           .map((submission) => (
-            <ListGroup.Item key={submission._id} className="m-0 p-0" data-cy="submission">
+            <div
+              key={submission._id}
+              className="m-0 py-3 border-b last:border-none"
+              data-cy="submission"
+            >
               <SubmissionReview submission={submission} />
-            </ListGroup.Item>
+            </div>
           ))}
       </ListGroup>
-    </div>
+    </Card>
   );
 };
 

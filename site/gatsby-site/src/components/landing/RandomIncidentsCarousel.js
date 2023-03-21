@@ -18,7 +18,7 @@ const RandomIncidentsCarousel = () => {
               title
             }
           }
-          allMongodbAiidprodReports(limit: 50, sort: { order: ASC, fields: id }) {
+          allMongodbAiidprodReports(limit: 50, sort: { id: ASC }) {
             nodes {
               id
               report_number

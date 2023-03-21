@@ -68,14 +68,9 @@ const plugins = [
     },
   },
   {
-    resolve: `gatsby-plugin-gtag`,
+    resolve: `gatsby-plugin-google-gtag`,
     options: {
-      // your google analytics tracking id
-      trackingId: config.gatsby.gaTrackingId,
-      // Puts tracking script in the head instead of the body
-      head: true,
-      // enable ip anonymization
-      anonymize: false,
+      trackingIds: [config.gatsby.gaTrackingId],
     },
   },
   {
@@ -155,30 +150,27 @@ const plugins = [
               });
             });
           },
-          query: `
-            {
-              allMongodbAiidprodReports(sort: {fields: date_submitted, order: DESC}, limit: 100) {
-                totalCount
-                edges {
-                  node {
-                    title
-                    url
-                    description
-                    id
-                    image_url
-                    cloudinary_id
-                  }
-                }
-              }
-            }
-          `,
+          query: `{
+  allMongodbAiidprodReports(sort: {date_submitted: DESC}, limit: 100) {
+    totalCount
+    edges {
+      node {
+        title
+        url
+        description
+        id
+        image_url
+        cloudinary_id
+      }
+    }
+  }
+}`,
           output: '/rss.xml',
           title: 'AI Incident Database RSS Feed',
         },
       ],
     },
   },
-  'gatsby-plugin-use-query-params',
   {
     resolve: `gatsby-source-s3`,
     options: {
@@ -221,6 +213,7 @@ const plugins = [
           'account',
           'variants',
           'footer',
+          'sponsors',
         ],
         debug: process.env.GATSBY_I18N_DEBUG,
         nsSeparator: false,
@@ -228,7 +221,6 @@ const plugins = [
       },
     },
   },
-  'gatsby-plugin-postcss',
   'gatsby-plugin-sass',
 ];
 

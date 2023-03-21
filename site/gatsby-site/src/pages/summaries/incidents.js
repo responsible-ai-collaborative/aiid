@@ -81,7 +81,7 @@ export default function Incidents({ data, ...props }) {
 
 export const pageQuery = graphql`
   query AllIncidentsPart {
-    allMongodbAiidprodIncidents(sort: { order: ASC, fields: incident_id }) {
+    allMongodbAiidprodIncidents(sort: { incident_id: ASC }) {
       nodes {
         incident_id
         title
@@ -89,7 +89,6 @@ export const pageQuery = graphql`
         reports
       }
     }
-
     allMongodbAiidprodReports {
       nodes {
         id
