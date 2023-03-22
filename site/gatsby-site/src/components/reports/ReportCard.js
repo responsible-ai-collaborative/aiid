@@ -70,7 +70,7 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
           />
         </div>
         <div
-          className="mt-0 cursor-default"
+          className="mt-0 cursor-default select-text"
           role="presentation"
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
