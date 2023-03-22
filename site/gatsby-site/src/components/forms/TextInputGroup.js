@@ -5,7 +5,7 @@ import { Trans } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const TextInputGroup = ({
-  name,
+  name = '',
   label,
   placeholder,
   values = {},
@@ -15,24 +15,27 @@ const TextInputGroup = ({
   handleChange,
   handleBlur,
   addOnComponent = null,
-  schema,
+  schema = null,
   className = '',
-  icon,
+  icon = null,
   inputClassName = '',
+  showPopover = true,
   ...props
 }) => {
   const [optional, setOptional] = useState(true);
 
   // this causes an unncessary re-render
   useEffect(() => {
-    schema.fields[name].isValid(undefined).then((result) => setOptional(result));
+    if (schema) {
+      schema.fields[name].isValid(undefined).then((result) => setOptional(result));
+    }
   }, []);
 
   return (
     <Form.Group className={`form-group ${className}`}>
       <div className="flex items-center">
         {icon && <FontAwesomeIcon fixedWidth icon={icon} title={label} className="mb-2 mr-1" />}
-        <Label popover={name} label={(optional ? '' : '*') + label} />
+        <Label popover={name} label={(optional ? '' : '*') + label} showPopover={showPopover} />
       </div>
       <InputGroup className="mt-1">
         {type === 'textarea' ? (

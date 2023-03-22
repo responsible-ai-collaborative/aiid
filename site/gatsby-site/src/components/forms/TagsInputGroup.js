@@ -13,7 +13,7 @@ const TagsInputGroup = ({
   touched,
   schema,
   className = '',
-  icon,
+  icon = null,
   disabled = false,
 }) => {
   const [optional, setOptional] = useState(true);
