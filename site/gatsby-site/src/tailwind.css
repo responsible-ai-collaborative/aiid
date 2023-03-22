@@ -559,78 +559,39 @@
         border-top-width: 0;
     }
     .tsne-visualization-wrapper>.react-transform-wrapper {
-        width: 100% !important;
-        height: 100%;
+        @apply w-full h-full !important;
     }
 
     .tsne-visualization-wrapper>.react-transform-wrapper>.react-transform-component {
-        height: calc(100vh - 2rem);
-        width: calc(100vh - 2rem);
-        overflow: visible !important;
+        @apply h-[calc(100vh-2rem)] w-[calc(100vh-2rem)] overflow-visible !important;
     }
 
     .tsne-visualization-item>a:not(.incident-card) {
-        color: inherit;
-        position: absolute;
-        font-size: 75%;
-        height: 2em;
-        width: 2em;
-        padding-left: 2px;
-        padding-right: 2px;
-        border-radius: 50%;
-        margin-left: -1em;
-        margin-top: -1em;
-        z-index: 1;
-        text-align: center;
-        line-height: 2em;
-        box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.15);
-        transition: background, opacity 0.25s;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        @apply text-inherit absolute text-[75%] h-[2em] w-[2em] px-[2px] rounded-[50%] -ml-4 -mt-4 z-2 text-center leading-8 shadow-tsne flex justify-center items-center;
     }
 
     .tsne-visualization-item .incident-card {
-        display: block;
-        min-height: 15em;
-        width: 15em;
-        background: white;
-        border-radius: 0.25rem;
-        box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.25);
-        position: absolute;
-        padding: 1em;
-        overflow: hidden;
+        @apply block min-h-[15em] w-60 rounded-[0.25rem] shadow-tsne absolute p-4 overflow-hidden;
     }
 
     .tsne-visualization-item .incident-card img,
     .tsne-visualization-item .incident-card canvas {
-        margin: -1rem -1rem 0.5rem -1rem;
-        max-width: unset;
-        width: calc(100% + 4rem);
-        height: 8rem;
-        object-fit: cover;
+        @apply -mt-4 -mr-4 mb-2 -ml-4 max-w-[unset] w-[calc(100%+4rem)] h-[8rem] object-cover;
     }
 
     .tsne-visualization-item .incident-card h3 {
-        font-size: 110%;
-        margin: 0px;
-        line-height: 1.5;
+        @apply text-[100%] m-0 leading-[1.5];
     }
 
     .tsne-visualization-item .incident-card:not(:hover) {
-        color: black;
+        @apply text-black;
     }
 
     .tsne-visualization-item> a:hover:not(.current):not(.incident-card) {
-        background: #dedede;
-        z-index: 3;
-        color: #ec9982 !important;
+        @apply bg-[#dedede] text-[#ec9982] z-[3] !important;
     }
 
     .tsne-visualization-item>a.current {
-        border: 1px solid grey;
-        background: #001a32;
-        box-shadow: 0px 0px 3px 3px rgba(255, 255, 255, 0.75);
-        z-index: 2;
+        @apply border-[grey] bg-[#001a32] shadow-tsne-current z-2;
     }
 }
