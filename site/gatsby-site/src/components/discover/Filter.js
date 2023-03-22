@@ -98,7 +98,7 @@ function ButtonToggle({ label, faIcon, touched, type, filterProps }) {
       <div
         id="dropdown"
         className={`z-10 ${
-          toggled ? 'hidden' : 'block absolute lg:-left-14'
+          toggled ? 'hidden' : 'block '
         } bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700`}
       >
         <FilterOverlay type={type} filterProps={filterProps} />
@@ -130,6 +130,7 @@ const FilterOverlay = React.forwardRef(function Container(
       {...overlayProps}
       style={{ ...overlayProps.style, width: '280px', zIndex: 1055 }}
       data-cy={filterProps.attribute}
+      className="absolute left-0"
     >
       <Card className="shadow-lg card">
         <div>
