@@ -9,6 +9,7 @@ import FieldContainer from 'components/forms/SubmissionWizard/FieldContainer';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import { useTranslation } from 'react-i18next';
 import TagsInputGroup from 'components/forms/TagsInputGroup';
+import Label from 'components/forms/Label';
 
 const relatedIncidentIdsQuery = gql`
   query IncidentWithReports($query: IncidentQueryInput) {
@@ -223,20 +224,19 @@ function IncidentForm() {
             editId={false}
           />
 
-          <FieldContainer>
-            <TextInputGroup
-              type="number"
-              label={t('Similar Incident Id')}
-              placeholder={t('Similar Incident Id')}
-              values={values}
-              errors={errors}
-              touched={touched}
-              handleChange={similarIdUpdate}
-              handleBlur={handleBlur}
-              showPopover={false}
-              data-cy="similar-id-input"
-            />
-          </FieldContainer>
+          <div className="mt-4">
+            <FieldContainer>
+              <Label label={t(`Similar Incident Id`)} />
+              <input
+                type="number"
+                data-cy="similar-id-input"
+                onChange={similarIdUpdate}
+                className={
+                  'mt-2 bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white'
+                }
+              />
+            </FieldContainer>
+          </div>
 
           <RelatedIncidentsArea
             columnKey={'byId'}

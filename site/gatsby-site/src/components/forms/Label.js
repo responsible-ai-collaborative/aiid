@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
 
-const Label = ({ popover, label, required = false, showPopover }) => {
+const Label = ({ popover, label, required = false, showPopover = true }) => {
   const [show, setShow] = useState(false);
 
   const { i18n } = useTranslation(['popovers']);

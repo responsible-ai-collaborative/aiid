@@ -153,11 +153,11 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
                 <Button
                   onClick={submitForm}
                   disabled={isSubmitting || !isValid}
-                  className="bootstrap flex gap-2 disabled:opacity-50"
+                  className="flex gap-2 disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <>
-                      <Spinner size="sm" />
+                      <Spinner size="sm" className="mr-2" />
                       <Trans>Updating</Trans>
                     </>
                   ) : (
