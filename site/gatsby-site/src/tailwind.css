@@ -578,4 +578,20 @@
    .incidents-pagination [aria-current="page"] button {
     @apply bg-blue-50 text-blue-600 !important;
    }
+
+   .typehead .rbt-input-multi .rbt-input-wrapper {
+    @apply bg-[rgb(249 250 251 / 1)] pl-[0.625rem] items-center !important;
+  }
+
+  .typehead .rbt-close {
+    @apply border-none bg-transparent !important;
+  }
+
+  .typehead .rbt-input-multi {
+    @apply p-0 !important;
+  }
+
+  .typehead input {
+    @apply text-sm leading-5 bg-[rgb(249 250 251 / 1)] py-[0.625rem] pr-[0.625rem] pl-0 border-[rgb(209 213 219 / 1)] border !important;
+  }
 }

@@ -127,6 +127,7 @@ function IncidentForm() {
             handleBlur={handleBlur}
             schema={schema}
             showPopover={false}
+            data-cy="title-input"
           />
         </FieldContainer>
 
@@ -144,6 +145,7 @@ function IncidentForm() {
             schema={schema}
             showPopover={false}
             rows={4}
+            data-cy="description-input"
           />
         </FieldContainer>
 
@@ -160,6 +162,7 @@ function IncidentForm() {
             handleBlur={handleBlur}
             schema={schema}
             showPopover={false}
+            data-cy="date-input"
           />
         </FieldContainer>
 
@@ -171,6 +174,7 @@ function IncidentForm() {
             errors={errors}
             touched={touched}
             schema={schema}
+            data-cy="alleged-deployer-of-ai-system-input"
           />
         </FieldContainer>
 
@@ -182,6 +186,7 @@ function IncidentForm() {
             errors={errors}
             touched={touched}
             schema={schema}
+            data-cy="alleged-developer-of-ai-system-input"
           />
         </FieldContainer>
 
@@ -193,6 +198,7 @@ function IncidentForm() {
             errors={errors}
             touched={touched}
             schema={schema}
+            data-cy="alleged-harmed-or-nearly-harmed-parties-input"
           />
         </FieldContainer>
 
@@ -204,6 +210,7 @@ function IncidentForm() {
             errors={errors}
             touched={touched}
             schema={schema}
+            data-cy="editors-input"
           />
         </FieldContainer>
 
