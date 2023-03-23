@@ -567,24 +567,24 @@
     }
 
     .tsne-visualization-item>a:not(.incident-card) {
-        @apply text-inherit absolute text-[75%] h-[2em] w-[2em] px-[2px] rounded-[50%] -ml-4 -mt-4 z-2 text-center leading-8 shadow-tsne flex justify-center items-center;
+        @apply text-inherit absolute text-[75%] h-[2em] w-[2em] px-[2px] rounded-[50%] -ml-4 -mt-4 z-2 text-center leading-8 shadow-tsne flex justify-center items-center !important;
     }
 
     .tsne-visualization-item .incident-card {
-        @apply block min-h-[15em] w-60 rounded-[0.25rem] shadow-tsne absolute p-4 overflow-hidden bg-white;
+        @apply block min-h-[15em] w-60 rounded-[0.25rem] shadow-tsne absolute p-4 overflow-hidden bg-white !important;
     }
 
     .tsne-visualization-item .incident-card img,
     .tsne-visualization-item .incident-card canvas {
-        @apply -mt-4 -mr-4 mb-2 -ml-4 max-w-[unset] w-[calc(100%+4rem)] h-[8rem] object-cover;
+        @apply -mt-4 -mr-4 mb-2 -ml-4 max-w-[unset] w-[calc(100%+4rem)] h-[8rem] object-cover !important;
     }
 
     .tsne-visualization-item .incident-card h3 {
-        @apply text-[100%] m-0 leading-[1.5];
+        @apply text-[100%] m-0 leading-[1.5] !important;
     }
 
     .tsne-visualization-item .incident-card:not(:hover) {
-        @apply text-black;
+        @apply text-black !important;
     }
 
     .tsne-visualization-item> a:hover:not(.current):not(.incident-card) {
@@ -592,6 +592,6 @@
     }
 
     .tsne-visualization-item>a.current {
-        @apply border-[grey] bg-[#001a32] shadow-tsne-current z-2;
+        @apply border-[grey] bg-[#001a32] shadow-tsne-current z-2 !important;
     }
 }
