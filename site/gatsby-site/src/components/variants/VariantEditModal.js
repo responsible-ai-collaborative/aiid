@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Button, Modal } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
+import { Button, Modal, Spinner } from 'flowbite-react';
 import { Formik } from 'formik';
 import { useTranslation, Trans } from 'react-i18next';
 import VariantForm, { schema } from './VariantForm';
@@ -148,12 +147,10 @@ export default function VariantEditModal({
   };
 
   return (
-    <div className="bootstrap">
-      <Modal show={show} onHide={onClose} data-cy="edit-variant-modal" size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>
-            <Trans ns="variants">Edit Variant</Trans>
-          </Modal.Title>
+    <div>
+      <Modal show={show} onClose={onClose} data-cy="edit-variant-modal" size="lg">
+        <Modal.Header>
+          <Trans ns="variants">Edit Variant</Trans>
         </Modal.Header>
 
         {!variant && (
@@ -208,7 +205,7 @@ export default function VariantEditModal({
                     <Trans ns="variants">Edit more fields</Trans>
                   </Link>
                   <Button
-                    variant="danger"
+                    color="failure"
                     disabled={isSubmitting}
                     onClick={() => handleDelete()}
                     data-cy="delete-variant-btn"
@@ -217,7 +214,7 @@ export default function VariantEditModal({
                   </Button>
 
                   <Button
-                    variant="danger"
+                    color="failure"
                     onClick={() => {
                       setNewVariantStatus(VARIANT_STATUS.rejected);
                       submitForm();
@@ -236,7 +233,7 @@ export default function VariantEditModal({
                     )}
                   </Button>
                   <Button
-                    variant="primary"
+                    color="success"
                     onClick={() => {
                       setNewVariantStatus(VARIANT_STATUS.approved);
                       submitForm();
@@ -255,7 +252,6 @@ export default function VariantEditModal({
                     )}
                   </Button>
                   <Button
-                    variant="primary"
                     onClick={() => {
                       setNewVariantStatus(null);
                       submitForm();

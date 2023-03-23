@@ -558,4 +558,8 @@
     .bootstrap .list-group-item+.list-group-item {
         border-top-width: 0;
     }
+
+    .pagination [aria-current="page"] button {
+        @apply bg-blue-50 text-blue-600 !important;
+    }
 }
