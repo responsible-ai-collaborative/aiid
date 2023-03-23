@@ -567,7 +567,7 @@
     }
 
     .tsne-visualization-item>a:not(.incident-card) {
-        @apply text-inherit absolute text-[75%] h-[2em] w-[2em] px-[2px] rounded-[50%] -ml-4 -mt-4 z-2 text-center leading-8 shadow-tsne flex justify-center items-center !important;
+        @apply text-inherit absolute text-[75%] h-[2em] w-[2em] px-[2px] rounded-[50%] -ml-4 -mt-4 text-center leading-8 shadow-tsne flex justify-center items-center !important;
     }
 
     .tsne-visualization-item .incident-card {
@@ -588,7 +588,7 @@
     }
 
     .tsne-visualization-item> a:hover:not(.current):not(.incident-card) {
-        @apply bg-[#dedede] text-[#ec9982] z-[3] !important;
+        @apply text-[#ec9982] z-[3] !important;
     }
 
     .tsne-visualization-item>a.current {

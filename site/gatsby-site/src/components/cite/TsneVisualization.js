@@ -341,6 +341,7 @@ function PlotPoint({
           // allowing the user to zoom to more accurately select
           // from points that are very close to each other.
           transform: `scale(${scaleMultiplier})`,
+          transition: 'opacity 0.4s ease-in-out',
         }}
         className={`${incident.incident_id == currentIncidentId ? 'current' : ''} hover:z-10`}
         onTouchStart={() => {
