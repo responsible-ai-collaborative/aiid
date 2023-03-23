@@ -26,7 +26,8 @@
         "full_document": true,
         "full_document_before_change": true,
         "unordered": false,
-        "skip_catchup_events": false
+        "skip_catchup_events": false,
+        "tolerate_resume_errors": false
     },
     "disabled": false,
     "event_processors": {
