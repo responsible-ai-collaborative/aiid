@@ -9,28 +9,31 @@ import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
 import { getTranslatedReports, sortIncidentsByDatePublished } from 'utils/cite';
 import { computeEntities, RESPONSE_TAG } from 'utils/entities';
-import config from '../../config';
+import config from '../../../config';
 import { isCompleteReport } from 'utils/variants';
-import { FIND_FULL_INCIDENT } from '../graphql/incidents';
-import CiteTemplate from './citeTemplate';
+import { FIND_FULL_INCIDENT } from '../../graphql/incidents';
+import CiteTemplate from 'templates/citeTemplate';
 
 function CiteDynamicPage(props) {
   const {
-    pageContext: {
-      incident_id,
-      nextIncident,
-      prevIncident,
-      nlp_similar_incidents,
-      editor_similar_incidents,
-      editor_dissimilar_incidents,
-    },
     data: {
       allMongodbAiidprodTaxa,
       allMongodbAiidprodClassifications,
       entities: entitiesData,
       responses,
     },
+    params: { id: incident_id },
   } = props;
+
+  const nextIncident = null;
+
+  const prevIncident = null;
+
+  const nlp_similar_incidents = [];
+
+  const editor_similar_incidents = [];
+
+  const editor_dissimilar_incidents = [];
 
   const { locale } = useLocalization();
 
