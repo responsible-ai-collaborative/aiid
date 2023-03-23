@@ -34,8 +34,8 @@ exports = async (source) => {
 
   const response = {
     email: userApiResponse.data.email,
-    creationDate: userApiResponse.creationDate,
-    lastAuthenticationDate: userApiResponse.last_authentication_date,
+    creationDate: new Date(userApiResponse.creation_date * 1000),
+    lastAuthenticationDate: new Date(userApiResponse.last_authentication_date * 1000),
     disabled: userApiResponse.disabled,
   }
 

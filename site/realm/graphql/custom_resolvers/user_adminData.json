@@ -6,7 +6,7 @@
     "payload_type": {
         "properties": {
             "creationDate": {
-                "bsonType": "string"
+                "bsonType": "date"
             },
             "disabled": {
                 "bsonType": "boolean"
@@ -15,7 +15,7 @@
                 "bsonType": "string"
             },
             "lastAuthenticationDate": {
-                "bsonType": "string"
+                "bsonType": "date"
             }
         },
         "title": "UserAdminData",

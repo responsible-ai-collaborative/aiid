@@ -1,23 +1,43 @@
 [
     {
-        "name": "getEmailTemplateConfirmEmail",
+        "name": "onNewUser",
         "private": true
+    },
+    {
+        "name": "confirmUser",
+        "private": true
+    },
+    {
+        "name": "sendEmail",
+        "private": false
     },
     {
         "name": "getEmailTemplateEntityIncidentUpdated",
         "private": true
     },
     {
+        "name": "getEmailTemplateNewIncident",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplateNewReportAddedToAnIncident",
+        "private": true
+    },
+    {
+        "name": "reportTranslations",
+        "private": false
+    },
+    {
+        "name": "getEmailTemplateNewEntityIncident",
+        "private": true
+    },
+    {
+        "name": "passwordReset",
+        "private": true
+    },
+    {
         "name": "getUser",
         "private": false
-    },
-    {
-        "name": "updateOneReportTranslation",
-        "private": false
-    },
-    {
-        "name": "getEmailTemplatePasswordReset",
-        "private": true
     },
     {
         "name": "onNewIncident",
@@ -33,15 +53,7 @@
         "private": true
     },
     {
-        "name": "getEmailTemplateNewIncident",
-        "private": true
-    },
-    {
-        "name": "createVariant",
-        "private": false
-    },
-    {
-        "name": "reportTranslations",
+        "name": "updateOneReportTranslation",
         "private": false
     },
     {
@@ -50,43 +62,32 @@
         "disable_arg_logs": true
     },
     {
-        "name": "getEmailTemplateNewReportAddedToAnIncident",
+        "name": "getEmailTemplatePasswordReset",
         "private": true
     },
     {
-        "name": "linkReportsToIncidents",
-        "private": false
-    },
-    {
-        "name": "onNewUser",
-        "private": true
+        "name": "getUserAdminData",
+        "private": false,
+        "disable_arg_logs": true
     },
     {
         "name": "onIncidentUpdate",
         "private": true
     },
     {
-        "name": "passwordReset",
-        "private": true
+        "name": "createVariant",
+        "private": false
+    },
+    {
+        "name": "linkReportsToIncidents",
+        "private": false
     },
     {
         "name": "promoteSubmissionToReport",
         "private": false
     },
     {
-        "name": "sendEmail",
-        "private": false
-    },
-    {
-        "name": "getEmailTemplateNewEntityIncident",
+        "name": "getEmailTemplateConfirmEmail",
         "private": true
-    },
-    {
-        "name": "confirmUser",
-        "private": true
-    },
-    {
-        "name": "getUserAdminData",
-        "private": false
     }
 ]
