@@ -248,7 +248,4 @@ module.exports = {
   },
   plugins: plugins,
   trailingSlash: `always`,
-  flags: {
-    DEV_SSR: true,
-  },
 };
