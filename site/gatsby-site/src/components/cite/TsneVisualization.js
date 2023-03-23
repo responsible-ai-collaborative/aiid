@@ -414,7 +414,7 @@ function PlotPoint({
             </>
           ) : (
             <div role="status" className="animate-pulse md:flex md:items-center -m-4 mb-2">
-              <div className="flex items-center justify-center w-full h-32 bg-gray-300 rounded sm:w-96 dark:bg-gray-700">
+              <div className="flex items-center justify-center w-full h-32 bg-gray-300 rounded sm:w-96 dark:bg-gray-700 rounded-b-none">
                 <svg
                   className="w-12 h-12 text-gray-200"
                   xmlns="http://www.w3.org/2000/svg"

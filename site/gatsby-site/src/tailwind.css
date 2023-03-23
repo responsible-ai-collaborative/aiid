@@ -571,7 +571,7 @@
     }
 
     .tsne-visualization-item .incident-card {
-        @apply block min-h-[15em] w-60 rounded-[0.25rem] shadow-tsne absolute p-4 overflow-hidden;
+        @apply block min-h-[15em] w-60 rounded-[0.25rem] shadow-tsne absolute p-4 overflow-hidden bg-white;
     }
 
     .tsne-visualization-item .incident-card img,
