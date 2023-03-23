@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { useField } from 'formik';
+import { useField, useFormikContext } from 'formik';
 import React, { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { FIND_INCIDENT } from '../../graphql/incidents';
@@ -29,6 +29,8 @@ export default function IncidentIdField({
 
   const [{ value, onChange, onBlur }, { error }] = useField({ validate, name });
 
+  const { setFieldTouched } = useFormikContext();
+
   const {
     data: incident,
     loading: loadingIncident,
@@ -46,7 +48,10 @@ export default function IncidentIdField({
         type="number"
         name={name}
         value={value}
-        handleChange={onChange}
+        handleChange={(ev) => {
+          setFieldTouched(name, true, true);
+          onChange(ev);
+        }}
         handleBlur={onBlur}
         onWheel={(event) => event.currentTarget.blur()}
         isInvalid={!!error}

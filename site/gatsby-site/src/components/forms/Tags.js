@@ -22,7 +22,7 @@ export default function Tags({
 
   return (
     <Typeahead
-      className="typeahead"
+      className="Typeahead"
       ref={ref}
       id={id}
       inputProps={{ id: inputId, name }}
