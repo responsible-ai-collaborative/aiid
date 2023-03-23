@@ -18,7 +18,7 @@ const VariantForm = () => {
 
   return (
     <div className="flex w-full flex-col gap-2" data-cy="variant-form">
-      <FieldContainer controlId="formTextInputs">
+      <FieldContainer>
         <TextInputGroup
           label={t('Input and circumstances')}
           isInvalid={errors.text_inputs && touched.text_inputs}
@@ -35,7 +35,7 @@ const VariantForm = () => {
           disabled={isSubmitting}
         />
       </FieldContainer>
-      <FieldContainer className="mb-3" controlId="formTextOutputs">
+      <FieldContainer>
         <TextInputGroup
           label={t('Output and outcomes')}
           isInvalid={errors.text_outputs && touched.text_outputs}

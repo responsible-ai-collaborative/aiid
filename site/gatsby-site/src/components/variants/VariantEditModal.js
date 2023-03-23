@@ -148,133 +148,135 @@ export default function VariantEditModal({
 
   return (
     <div>
-      <Modal show={show} onClose={onClose} data-cy="edit-variant-modal" size="lg">
-        <Modal.Header>
-          <Trans ns="variants">Edit Variant</Trans>
-        </Modal.Header>
+      {show && (
+        <Modal show={show} onClose={onClose} data-cy="edit-variant-modal" size="lg">
+          <Modal.Header>
+            <Trans ns="variants">Edit Variant</Trans>
+          </Modal.Header>
 
-        {!variant && (
-          <Modal.Body>
-            {variant === undefined && (
-              <div className="flex justify-center">
-                <Spinner />
-              </div>
-            )}
-            {variant === null && (
-              <div>
-                <Trans ns="variants">Variant not found</Trans>
-              </div>
-            )}
-          </Modal.Body>
-        )}
+          {!variant && (
+            <Modal.Body>
+              {variant === undefined && (
+                <div className="flex justify-center">
+                  <Spinner />
+                </div>
+              )}
+              {variant === null && (
+                <div>
+                  <Trans ns="variants">Variant not found</Trans>
+                </div>
+              )}
+            </Modal.Body>
+          )}
 
-        {variant && (
-          <Formik
-            initialValues={{ ...variant }}
-            validationSchema={schema}
-            onSubmit={async (values) => {
-              if (newVariantStatus === VARIANT_STATUS.approved) {
-                setIsApproving(true);
-              } else if (newVariantStatus === VARIANT_STATUS.rejected) {
-                setIsRejecting(true);
-              } else if (newVariantStatus == null) {
-                setIsSaving(true);
-              }
+          {variant && (
+            <Formik
+              initialValues={{ ...variant }}
+              validationSchema={schema}
+              onSubmit={async (values) => {
+                if (newVariantStatus === VARIANT_STATUS.approved) {
+                  setIsApproving(true);
+                } else if (newVariantStatus === VARIANT_STATUS.rejected) {
+                  setIsRejecting(true);
+                } else if (newVariantStatus == null) {
+                  setIsSaving(true);
+                }
 
-              await handleSubmit(values);
+                await handleSubmit(values);
 
-              setIsApproving(false);
-              setIsRejecting(false);
-              setIsSaving(false);
-            }}
-          >
-            {({ isSubmitting, isValid, submitForm }) => (
-              <>
-                <Modal.Body>
-                  <div className="flex mb-2">
-                    <VariantStatusBadge status={getVariantStatus(variant)} />
-                  </div>
-                  <VariantForm />
-                </Modal.Body>
-                <Modal.Footer>
-                  <Link
-                    to={`/cite/edit?report_number=${reportNumber}&incident_id=${incidentId}`}
-                    data-cy="edit-all-variant-btn"
-                    className="mr-3"
-                  >
-                    <Trans ns="variants">Edit more fields</Trans>
-                  </Link>
-                  <Button
-                    color="failure"
-                    disabled={isSubmitting}
-                    onClick={() => handleDelete()}
-                    data-cy="delete-variant-btn"
-                  >
-                    {isDeleting ? <Spinner size="sm" /> : <FontAwesomeIcon icon={faTrash} />}
-                  </Button>
+                setIsApproving(false);
+                setIsRejecting(false);
+                setIsSaving(false);
+              }}
+            >
+              {({ isSubmitting, isValid, submitForm }) => (
+                <>
+                  <Modal.Body>
+                    <div className="flex mb-2">
+                      <VariantStatusBadge status={getVariantStatus(variant)} />
+                    </div>
+                    <VariantForm />
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Link
+                      to={`/cite/edit?report_number=${reportNumber}&incident_id=${incidentId}`}
+                      data-cy="edit-all-variant-btn"
+                      className="mr-3"
+                    >
+                      <Trans ns="variants">Edit more fields</Trans>
+                    </Link>
+                    <Button
+                      color="failure"
+                      disabled={isSubmitting}
+                      onClick={() => handleDelete()}
+                      data-cy="delete-variant-btn"
+                    >
+                      {isDeleting ? <Spinner size="sm" /> : <FontAwesomeIcon icon={faTrash} />}
+                    </Button>
 
-                  <Button
-                    color="failure"
-                    onClick={() => {
-                      setNewVariantStatus(VARIANT_STATUS.rejected);
-                      submitForm();
-                    }}
-                    disabled={isSubmitting || isDeleting || !isValid}
-                    className="bootstrap flex gap-2 disabled:opacity-50"
-                    data-cy="reject-variant-btn"
-                  >
-                    {isSubmitting && isRejecting ? (
-                      <>
-                        <Spinner size="sm" />
-                        <Trans ns="variants">Rejecting</Trans>
-                      </>
-                    ) : (
-                      <Trans ns="variants">Reject</Trans>
-                    )}
-                  </Button>
-                  <Button
-                    color="success"
-                    onClick={() => {
-                      setNewVariantStatus(VARIANT_STATUS.approved);
-                      submitForm();
-                    }}
-                    disabled={isSubmitting || isDeleting || !isValid}
-                    className="bootstrap flex gap-2 disabled:opacity-50"
-                    data-cy="approve-variant-btn"
-                  >
-                    {isSubmitting && isApproving ? (
-                      <>
-                        <Spinner size="sm" />
-                        <Trans ns="variants">Approving</Trans>
-                      </>
-                    ) : (
-                      <Trans ns="variants">Approve</Trans>
-                    )}
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setNewVariantStatus(null);
-                      submitForm();
-                    }}
-                    disabled={isSubmitting || isDeleting || !isValid}
-                    className="bootstrap flex gap-2 disabled:opacity-50"
-                    data-cy="save-variant-btn"
-                  >
-                    {isSubmitting && isSaving ? (
-                      <>
-                        <Spinner size="sm" />
-                        <Trans ns="variants">Saving</Trans>
-                      </>
-                    ) : (
-                      <Trans ns="variants">Save</Trans>
-                    )}
-                  </Button>
-                </Modal.Footer>
-              </>
-            )}
-          </Formik>
-        )}
-      </Modal>
+                    <Button
+                      color="failure"
+                      onClick={() => {
+                        setNewVariantStatus(VARIANT_STATUS.rejected);
+                        submitForm();
+                      }}
+                      disabled={isSubmitting || isDeleting || !isValid}
+                      className="bootstrap flex gap-2 disabled:opacity-50"
+                      data-cy="reject-variant-btn"
+                    >
+                      {isSubmitting && isRejecting ? (
+                        <>
+                          <Spinner size="sm" />
+                          <Trans ns="variants">Rejecting</Trans>
+                        </>
+                      ) : (
+                        <Trans ns="variants">Reject</Trans>
+                      )}
+                    </Button>
+                    <Button
+                      color="success"
+                      onClick={() => {
+                        setNewVariantStatus(VARIANT_STATUS.approved);
+                        submitForm();
+                      }}
+                      disabled={isSubmitting || isDeleting || !isValid}
+                      className="bootstrap flex gap-2 disabled:opacity-50"
+                      data-cy="approve-variant-btn"
+                    >
+                      {isSubmitting && isApproving ? (
+                        <>
+                          <Spinner size="sm" />
+                          <Trans ns="variants">Approving</Trans>
+                        </>
+                      ) : (
+                        <Trans ns="variants">Approve</Trans>
+                      )}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setNewVariantStatus(null);
+                        submitForm();
+                      }}
+                      disabled={isSubmitting || isDeleting || !isValid}
+                      className="bootstrap flex gap-2 disabled:opacity-50"
+                      data-cy="save-variant-btn"
+                    >
+                      {isSubmitting && isSaving ? (
+                        <>
+                          <Spinner size="sm" />
+                          <Trans ns="variants">Saving</Trans>
+                        </>
+                      ) : (
+                        <Trans ns="variants">Save</Trans>
+                      )}
+                    </Button>
+                  </Modal.Footer>
+                </>
+              )}
+            </Formik>
+          )}
+        </Modal>
+      )}
     </div>
   );
 }
