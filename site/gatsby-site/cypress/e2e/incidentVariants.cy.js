@@ -191,8 +191,6 @@ describe('Variants pages', () => {
 
         cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
 
-        cy.get('#formTextInputs').clear().type(new_text_inputs);
-        cy.get('#formTextOutputs').clear().type(new_text_outputs);
         cy.get('[data-cy="variant-form-text-inputs"]').clear().type(new_text_inputs);
         cy.get('[data-cy="variant-form-text-outputs"]').clear().type(new_text_outputs);
 
@@ -334,7 +332,7 @@ describe('Variants pages', () => {
         cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
 
         cy.get('[data-cy="variant-form-text-inputs"]').clear().type(new_text_inputs);
-        cy.get('[data-cy="variant-form-text-inputs"]').clear().type(new_text_outputs);
+        cy.get('[data-cy="variant-form-text-outputs"]').clear().type(new_text_outputs);
 
         cy.get('[data-cy=save-variant-btn]').click();
 
