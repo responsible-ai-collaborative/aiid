@@ -149,7 +149,13 @@ export default function VariantEditModal({
   return (
     <div>
       {show && (
-        <Modal show={show} onClose={onClose} data-cy="edit-variant-modal" size="lg">
+        <Modal
+          show={show}
+          onClose={onClose}
+          data-cy="edit-variant-modal"
+          size="lg"
+          className="edit-variant-modal"
+        >
           <Modal.Header>
             <Trans ns="variants">Edit Variant</Trans>
           </Modal.Header>
@@ -201,7 +207,7 @@ export default function VariantEditModal({
                     <Link
                       to={`/cite/edit?report_number=${reportNumber}&incident_id=${incidentId}`}
                       data-cy="edit-all-variant-btn"
-                      className="mr-3"
+                      className="mr-3 whitespace-nowrap"
                     >
                       <Trans ns="variants">Edit more fields</Trans>
                     </Link>
@@ -226,7 +232,7 @@ export default function VariantEditModal({
                     >
                       {isSubmitting && isRejecting ? (
                         <>
-                          <Spinner size="sm" />
+                          <Spinner size="sm" className="mr-2" />
                           <Trans ns="variants">Rejecting</Trans>
                         </>
                       ) : (
@@ -245,7 +251,7 @@ export default function VariantEditModal({
                     >
                       {isSubmitting && isApproving ? (
                         <>
-                          <Spinner size="sm" />
+                          <Spinner size="sm" className="mr-2" />
                           <Trans ns="variants">Approving</Trans>
                         </>
                       ) : (
@@ -263,7 +269,7 @@ export default function VariantEditModal({
                     >
                       {isSubmitting && isSaving ? (
                         <>
-                          <Spinner size="sm" />
+                          <Spinner size="sm" className="mr-2" />
                           <Trans ns="variants">Saving</Trans>
                         </>
                       ) : (

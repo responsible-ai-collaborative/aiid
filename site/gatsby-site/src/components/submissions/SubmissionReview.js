@@ -26,7 +26,7 @@ const ListedGroup = ({ item, className = '', keysToRender, objectKeyToDisplay = 
             className="flex flex-row justify-between gap-4 px-5 py-3 border-b last:border-none"
             data-cy={key}
           >
-            <div className="">
+            <div>
               <b>{key}</b>
             </div>
             <div className="text-break">

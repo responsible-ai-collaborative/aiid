@@ -28,7 +28,7 @@ function DefaultColumnFilter({
   }
 
   return (
-    <div className="">
+    <div>
       <h6>{Header}</h6>
       <Form.Control
         data-cy={`input-filter-${Header}`}
@@ -194,7 +194,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         disableFilters: false,
         Cell: ({ row: { values } }) => (
           <div>
-            <Markdown>{values.text_inputs}</Markdown>
+            <Markdown className="variants-markdown">{values.text_inputs}</Markdown>
           </div>
         ),
       },
@@ -205,7 +205,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         disableFilters: false,
         Cell: ({ row: { values } }) => (
           <div>
-            <Markdown>{values.text_outputs}</Markdown>
+            <Markdown className="variants-markdown">{values.text_outputs}</Markdown>
           </div>
         ),
       },
@@ -217,9 +217,9 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         Header: t('Actions'),
         accessor: 'report_number',
         disableFilters: true,
-        width: 300,
+        width: 400,
         Cell: ({ row: { values } }) => (
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <Button
               color="failure"
               onClick={() => handleDelete({ report_number: values.report_number })}
@@ -364,13 +364,6 @@ export default function VariantsTable({ data, refetch, setLoading }) {
       </table>
 
       <div className="flex gap-2 justify-start items-center mt-3">
-        {/* <Pagination className="mb-0">
-          <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage} />
-          <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage} />
-
-          <Pagination.Next onClick={() => nextPage()} disabled={!canNextPage} />
-          <Pagination.Last onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage} />
-        </Pagination> */}
         <Pagination
           className="pagination mb-0"
           onPageChange={(page) => {
