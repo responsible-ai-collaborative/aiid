@@ -558,4 +558,40 @@
     .bootstrap .list-group-item+.list-group-item {
         border-top-width: 0;
     }
+
+    .incidents-table .tr:nth-child(even) {
+        @apply bg-[#f2f2f2];
+    }
+    .incidents-table .tr :last-child .td {
+        @apply border-b-0;
+    }
+    
+    .incidents-table .th,
+    .incidents-table .td {
+        @apply m-0 p-2 relative;
+    }
+    .incidents-table .th :last-child,
+    .incidents-table .td :last-child {
+        @apply border-r-0;
+    }
+
+   .incidents-pagination [aria-current="page"] button {
+    @apply bg-blue-50 text-blue-600 !important;
+   }
+
+   .Typeahead .rbt-input-multi .rbt-input-wrapper {
+    @apply bg-gray-50 items-center pl-2.5 !important;
+  }
+
+  .Typeahead .rbt-close {
+    @apply border-none bg-transparent !important;
+  }
+
+  .Typeahead .rbt-input-multi {
+    @apply p-0 !important;
+  }
+
+  .Typeahead input {
+    @apply text-sm leading-5 bg-gray-50 pt-2.5 pr-2.5 pb-2.5 border !important;
+  }
 }
