@@ -59,10 +59,10 @@ const RefinementList = ({
           </>
         )}
       </Formik>
-      <ListGroup className="max-h-[400px] overflow-y-auto mt-4 border">
+      <ListGroup className="max-h-[400px] overflow-y-none mt-4 border">
         {items.map((item) => (
           <button
-            className={`list-group-item ${
+            className={`list-group-item text-left ${
               item.isRefined ? 'bg-green-200 active' : 'hover:bg-gray-200'
             } cursor-pointer p-3 flex justify-between items-center w-full`}
             key={item.label}

@@ -190,7 +190,7 @@ function AccordionFilter({ type, ...filterProps }) {
       alwaysOpen={true}
       collapseAll={true}
     >
-      <Accordion.Title className="tw-accordion" onClick={toggleDropdown}>
+      <Accordion.Title className="tw-accordion text-gray-900" onClick={toggleDropdown}>
         <ToggleContent faIcon={faIcon} label={label} touched={touched} toggled={toggled} />
       </Accordion.Title>
       <Accordion.Content style={{ visibility: 'visible' }} hidden={toggled}>
