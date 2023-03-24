@@ -567,7 +567,7 @@
     }
 
     .tsne-visualization-item>a:not(.incident-card) {
-        @apply text-inherit absolute text-[75%] h-[2em] w-[2em] px-[2px] rounded-[50%] -ml-4 -mt-4 text-center leading-8 shadow-tsne flex justify-center items-center !important;
+        @apply text-inherit absolute text-[75%] h-[2em] w-[2em] px-[2px] rounded-[50%] -ml-[1em] -mt-[1em] text-center leading-[2em] shadow-tsne flex justify-center items-center !important;
     }
 
     .tsne-visualization-item .incident-card {
@@ -576,7 +576,7 @@
 
     .tsne-visualization-item .incident-card img,
     .tsne-visualization-item .incident-card canvas {
-        @apply -mt-4 -mr-4 mb-2 -ml-4 max-w-[unset] w-[calc(100%+4rem)] h-[8rem] object-cover !important;
+        @apply -mt-4 -mr-4 mb-2 -ml-4 max-w-[unset] w-[calc(100%+4rem)] h-32 object-cover !important;
     }
 
     .tsne-visualization-item .incident-card h3 {
