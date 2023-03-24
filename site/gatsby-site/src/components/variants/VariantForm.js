@@ -33,6 +33,7 @@ const VariantForm = () => {
           handleChange={handleChange}
           handleBlur={handleBlur}
           disabled={isSubmitting}
+          data-cy="variant-form-text-inputs"
         />
       </FieldContainer>
       <FieldContainer>
@@ -50,6 +51,7 @@ const VariantForm = () => {
           handleChange={handleChange}
           handleBlur={handleBlur}
           disabled={isSubmitting}
+          data-cy="variant-form-text-outputs"
         />
       </FieldContainer>
     </div>
