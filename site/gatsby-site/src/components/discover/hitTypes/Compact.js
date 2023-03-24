@@ -23,7 +23,7 @@ export default function Compact({ item, toggleFilterByIncidentId, viewType }) {
         </div>
 
         <Image
-          className="object-cover absolute z-0 w-full h-full bottom-0 left-0"
+          className="object-cover absolute z-0 w-full h-full bottom-0 left-0 rounded-t-lg"
           publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
           alt={item.title}
           height="240px"

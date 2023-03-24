@@ -21,7 +21,7 @@ export default function Details({ item, toggleFilterByIncidentId, viewType }) {
       <Card.Body>
         <div className="flex gap-3">
           <Image
-            className="img-thumbnail w-32 h-20 object-cover"
+            className="img-thumbnail w-32 h-20 object-cover rounded-lg"
             publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
             alt={viewType === VIEW_TYPES.INCIDENTS ? item.incident_title : item.title}
             transformation={fill().height(320)}
