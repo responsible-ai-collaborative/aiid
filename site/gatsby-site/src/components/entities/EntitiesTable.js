@@ -1,10 +1,10 @@
 import Link from 'components/ui/Link';
 import React from 'react';
-import { Form } from 'react-bootstrap';
 import { useExpanded, useFilters, useSortBy, useTable } from 'react-table';
 import { faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Trans, useTranslation } from 'react-i18next';
+import { TextInput } from 'flowbite-react';
 
 function SortButton({ column, ...props }) {
   const { isSorted } = column;
@@ -30,9 +30,9 @@ function DefaultColumnFilter({ column: { title, filterValue, preFilteredRows, se
   const { t } = useTranslation(['entities']);
 
   return (
-    <Form.Control
+    <TextInput
       data-cy={`input-filter-${title}`}
-      className="w-100 mt-4"
+      className="w-100 mt-4 font-normal"
       type="text"
       value={filterValue || ''}
       onChange={(e) => {
