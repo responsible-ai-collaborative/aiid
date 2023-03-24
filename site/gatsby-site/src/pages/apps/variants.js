@@ -72,7 +72,7 @@ export default function IncidentsPage(props) {
   };
 
   return (
-    <Layout sidebarCollapsed={true} {...props}>
+    <Layout sidebarCollapsed={true} className="w-full" {...props}>
       <AiidHelmet path={props.location.pathname}>
         <title>{t('Variants')}</title>
       </AiidHelmet>
