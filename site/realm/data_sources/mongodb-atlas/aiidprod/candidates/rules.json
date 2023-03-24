@@ -7,7 +7,6 @@
             "apply_when": {
                 "%%user.custom_data.roles": "admin"
             },
-            "fields": {},
             "write": true,
             "insert": true,
             "delete": true,
@@ -17,7 +16,6 @@
         {
             "name": "default",
             "apply_when": {},
-            "fields": {},
             "read": true,
             "insert": true,
             "delete": true,
