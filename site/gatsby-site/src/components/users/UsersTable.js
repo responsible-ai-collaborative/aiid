@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useExpanded, useFilters, useSortBy, useTable } from 'react-table';
 import Table, {
+  DefaultActionsColumnHeader,
   DefaultColumnFilter,
   DefaultColumnHeader,
   DefaultDateCell,
 } from 'components/ui/Table';
-import { Badge } from 'flowbite-react';
+import { Badge, Button } from 'flowbite-react';
+import UserEditModal from './UserEditModal';
 
 function RolesCell({ cell }) {
   return (
@@ -18,6 +20,8 @@ function RolesCell({ cell }) {
 }
 
 export default function UsersTable({ data, className = '', ...props }) {
+  const [userEditId, setUserEditId] = useState(null);
+
   const defaultColumn = React.useMemo(
     () => ({
       Filter: DefaultColumnFilter,
@@ -51,10 +55,24 @@ export default function UsersTable({ data, className = '', ...props }) {
         accessor: 'adminData.lastAuthenticationDate',
         Cell: DefaultDateCell,
       },
+      {
+        id: 'actions',
+        title: 'Actions',
+        Header: DefaultActionsColumnHeader,
+        Cell: ({ row: { values } }) => (
+          <Button
+            onClick={() => {
+              setUserEditId(values.userId);
+            }}
+          >
+            Edit
+          </Button>
+        ),
+      },
     ];
 
     return columns;
-  }, []);
+  }, [setUserEditId]);
 
   const table = useTable(
     {
@@ -68,5 +86,10 @@ export default function UsersTable({ data, className = '', ...props }) {
     useExpanded
   );
 
-  return <Table data={data} table={table} className={className} {...props} />;
+  return (
+    <>
+      <Table data={data} table={table} className={className} {...props} />
+      {userEditId && <UserEditModal userId={userEditId} onClose={() => setUserEditId(null)} />}
+    </>
+  );
 }

@@ -56,6 +56,16 @@ export function DefaultColumnHeader({ column, ...props }) {
   );
 }
 
+export function DefaultActionsColumnHeader({ column, ...props }) {
+  return (
+    <div className="flex justify-between items-center h-full">
+      <h6 className="whitespace-nowrap overflow-hidden text-ellipsis m-0" {...props}>
+        <Trans ns="entities">{column.title}</Trans>
+      </h6>
+    </div>
+  );
+}
+
 export function DefaultDateCell({ cell }) {
   return <DateLabel date={new Date(cell.value)} />;
 }
