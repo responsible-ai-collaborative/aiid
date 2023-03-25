@@ -6,7 +6,7 @@ import { Label, TextInput } from 'flowbite-react';
 
 // Schema for yup
 export const schema = yup.object().shape({
-  roles: yup.array(yup.string()),
+  roles: yup.array().of(yup.string()),
 });
 
 const UserForm = () => {
