@@ -8,15 +8,16 @@ import { useMutation } from '@apollo/client';
 import { DELETE_SUBSCRIPTIONS } from '../graphql/subscriptions';
 import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
+import useToastContext, { SEVERITY } from 'hooks/useToast';
 
 const Unsubscribe = (props) => {
-  const [pageMessage, setPageMessage] = useState(null);
-
   const [unsubscribing, setUnsubscribing] = useState(false);
 
   let errorMessage = null;
 
   const { t } = useTranslation();
+
+  const addToast = useToastContext();
 
   const [DeleteSubscriptions] = useMutation(DELETE_SUBSCRIPTIONS);
 
@@ -60,10 +61,18 @@ const Unsubscribe = (props) => {
       }
 
       await DeleteSubscriptions({ variables: { query } });
-
-      setPageMessage(t('You have successfully unsubscribed.'));
+      addToast({
+        message: <>{t('You have successfully unsubscribed.')}</>,
+        severity: SEVERITY.success,
+      });
     } catch (e) {
-      setPageMessage(t('An unknown error has ocurred'));
+      addToast({
+        message: (
+          <label className="capitalize">{t(e.error || 'An unknown error has ocurred')}</label>
+        ),
+        severity: SEVERITY.danger,
+        error: e,
+      });
       if ('Rollbar' in window) {
         Rollbar.error(e);
       }
@@ -76,12 +85,9 @@ const Unsubscribe = (props) => {
     <Layout {...props}>
       {mounted && (
         <>
-          {errorMessage || pageMessage ? (
+          {errorMessage ? (
             <>
-              <p>
-                {errorMessage}
-                {pageMessage}
-              </p>
+              <p>{errorMessage}</p>
               <Link to={'/'}>
                 <Trans>Continue</Trans>
               </Link>
