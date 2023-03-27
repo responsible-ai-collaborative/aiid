@@ -1,11 +1,11 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
-import Button from 'react-bootstrap/Button';
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import { hasVariantData } from 'utils/variants';
+import { Button } from 'flowbite-react';
 
 const ReportList = ({ items }) => {
   return (
@@ -28,15 +28,8 @@ const IncidentList = ({ incidents }) => {
         <div key={incident.incident_id} data-cy={`incident-${incident.incident_id}`}>
           <h2>
             Incident {incident.incident_id}{' '}
-            <Button variant="outline-primary" href={'/cite/' + incident.incident_id}>
-              Citation
-            </Button>
-            <Button
-              variant="outline-primary"
-              href={'/apps/discover?incident_id=' + incident.incident_id}
-            >
-              Discover
-            </Button>
+            <Button href={'/cite/' + incident.incident_id}>Citation</Button>
+            <Button href={'/apps/discover?incident_id=' + incident.incident_id}>Discover</Button>
           </h2>
           <div className="text-xl">“{incident.title}”</div>
           <ReportList items={incident.reports} />

@@ -37,7 +37,7 @@ const DisplayOptions = () => {
   });
 
   return (
-    <div className="flex justify-end px-2 relative">
+    <div className="flex justify-end px-2 relative floating-label-dropdown">
       <span className="absolute left-4 -top-2 text-xs text-gray-400 bg-white px-2">
         <Trans>Display Option</Trans>
       </span>
