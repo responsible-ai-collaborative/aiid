@@ -9,6 +9,20 @@
                 "bsonType": "string"
             }
         },
+        "classification_similarity": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "classification": {
+                        "bsonType": "string"
+                    },
+                    "similarity": {
+                        "bsonType": "double"
+                    }
+                }
+            }
+        },
         "date_downloaded": {
             "bsonType": "string"
         },
@@ -46,6 +60,18 @@
         },
         "match": {
             "bsonType": "boolean"
+        },
+        "matching_entities": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
+        "matching_harm_keywords": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
         },
         "matching_keywords": {
             "bsonType": "array",

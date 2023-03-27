@@ -1,0 +1,12 @@
+{
+    "Organization Founding Sponsor": "Commanditaire fondateur de l'organisation",
+    "Database Founding Sponsor": "Commanditaire fondateur de la base de données",
+    "Sponsors and Grants": "Commanditaires et subventions",
+    "In-Kind Sponsors": "Commanditaires en nature",
+    "sponsor-Waking Up Foundation": "Avec la recommandation de Longview Philanthropy, la [[Waking Up Foundation]] a accordé une subvention de 550 000 $ à la base de données des incidents d'IA. 33 000 $ du total sont versés à notre commanditaire fiscal pour la tenue de livres et la conformité fiscale de l'organisation. Environ 5 000 $ sont consacrés au maintien de l'entité à but non lucratif de la RAIC qui gère la programmation AIID parrainée par un commanditaire fiscal. Tous les fonds restants sont consacrés aux résultats programmatiques, y compris le temps du personnel pour la programmation et la recherche.",
+    "sponsor-Partnership on AI": "En tant que [[sponsor fondateur]] de la base de données sur les incidents d'IA (AIID), Partnership on AI a soutenu le démarrage de la base de données, y compris une subvention pour soutenir le projet avant la création de la Responsible AI Collaborative. Le Partenariat sur l'IA a également investi dans la promotion des avantages sociaux de l'AIID auprès de ses partenaires et d'autres parties prenantes et a un intérêt continu à soutenir ses résultats.",
+    "sponsor-Mozilla Foundation": "Le Responsible AI Collaborative a reçu une subvention de 50 000 $ du Mozilla Technology Fund pour le développement de listes de contrôle des risques liés à l'IA. Pour plus de détails sur le projet, visitez la cohorte [[annonce de lancement]] et suivez le blog Collab pendant que nous annonçons les avancées.",
+    "sponsor-Netlify": "[[Netlify]] fournit à Responsible AI Collaborative un hébergement gratuit, des minutes de construction et des comptes pour le développement open source de la base de données d'incidents d'IA.",
+    "sponsor-Cloudinary": "[[Cloudinary]] propose un hébergement d'images et de vidéos à prix réduit sur son service d'hébergement cloud. Ils sont la raison pour laquelle tant d'images se chargent rapidement dans la base de données.",
+    "sponsor-Algolia": "[[Algolia]] fournit au Responsible AI Collaborative un index de recherche instantanée des rapports d'incidents."
+}

@@ -1,69 +1,10 @@
 import { useUserContext } from 'contexts/userContext';
 import React, { useState } from 'react';
-import { Button, Form, Pagination } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
 import { useBlockLayout, useFilters, usePagination, useResizeColumns, useTable } from 'react-table';
 import IncidentEditModal from './IncidentEditModal';
-import styled from 'styled-components';
 import { Trans, useTranslation } from 'react-i18next';
-import { useQuery } from '@apollo/client';
-import { FIND_INCIDENT_ENTITIES } from '../../graphql/incidents';
 import Link from 'components/ui/Link';
-
-const Table = styled.div`
-  display: inline-block;
-  border-spacing: 0;
-
-  .tr {
-    &:nth-child(even) {
-      background-color: #f2f2f2;
-    }
-    :last-child {
-      .td {
-        border-bottom: 0;
-      }
-    }
-  }
-
-  .th,
-  .td {
-    margin: 0;
-    padding: 0.5rem;
-    position: relative;
-
-    :last-child {
-      border-right: 0;
-    }
-  }
-`;
-
-const Header = styled.div`
-  background: #fff;
-  position: sticky;
-  z-index: 1;
-  width: fit-content;
-  top: 0;
-  box-shadow: 0px 3px 3px #ccc;
-`;
-
-const HeaderText = styled.h6`
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-const ResizeHandle = styled.div`
-  display: inline-block;
-  background: ${({ isResizing }) => (isResizing ? 'var(--bs-primary)' : 'var(--bs-secondary)')};
-  width: 6px;
-  height: 100%;
-  position: absolute;
-  right: 0;
-  top: 0;
-  transform: translateX(50%);
-  z-index: 1;
-  touch-action: none;
-`;
+import { Button, Dropdown, Pagination, TextInput, ToggleSwitch } from 'flowbite-react';
 
 function DefaultColumnFilter({
   column: { Header, canFilter, filterValue, preFilteredRows, setFilter },
@@ -73,72 +14,61 @@ function DefaultColumnFilter({
   const { t } = useTranslation();
 
   if (!canFilter) {
-    return <HeaderText>{Header}</HeaderText>;
+    return <h6 className="whitespace-nowrap overflow-hidden text-ellipsis">{Header}</h6>;
   }
 
   return (
-    <div className="bootstrap">
-      <HeaderText>{Header}</HeaderText>
-      <Form.Control
+    <div className="">
+      <h6 className="whitespace-nowrap overflow-hidden text-ellipsis">{Header}</h6>
+      <TextInput
         data-cy={`input-filter-${Header}`}
         className="w-100"
         type="text"
+        placeholder={t(`Search {{count}} records...`, { count })}
         value={filterValue || ''}
         onChange={(e) => {
           setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
         }}
-        placeholder={t(`Search {{count}} records...`, { count })}
       />
     </div>
   );
 }
 
 function ListCell({ cell }) {
-  const { data: incident, loading } = useQuery(FIND_INCIDENT_ENTITIES, {
-    variables: {
-      query: {
-        incident_id: cell.value,
-      },
-    },
-  });
-
   return (
     <div>
-      {loading && (
-        <div className="flex justify-content-center">
-          <Spinner />
-        </div>
-      )}
-      {!loading &&
-        incident &&
-        incident?.incident[cell.column.id]?.map((v, i) => {
-          const isLast = i === incident.incident[cell.column.id].length - 1;
+      {cell.value?.map((v, i) => {
+        const isLast = i === cell.value.length - 1;
 
-          if (v.entity_id) {
-            return (
-              <Link
-                key={`entity-${v.name}`}
-                to={`/entities/${v.entity_id}`}
-                data-cy="cell-entity-link"
-              >
-                {v.name}
-                {!isLast ? ', ' : ''}
-              </Link>
-            );
-          } else {
-            return (
-              <>
-                {v.name} {!isLast ? ', ' : ''}
-              </>
-            );
-          }
-        })}
+        const segments = v.split(' ');
+
+        const entity_id = segments.pop();
+
+        const name = segments.join(' ');
+
+        if (entity_id) {
+          return (
+            <Link key={`entity-${name}`} to={`/entities/${entity_id}`} data-cy="cell-entity-link">
+              {name}
+              {!isLast ? ', ' : ''}
+            </Link>
+          );
+        } else {
+          return (
+            <>
+              {name} {!isLast ? ', ' : ''}
+            </>
+          );
+        }
+      })}
     </div>
   );
 }
 
-export default function IncidentsTable({ data }) {
+export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
   const [incidentIdToEdit, setIncindentIdToEdit] = useState(0);
+
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { isLoggedIn, isRole } = useUserContext();
 
@@ -180,23 +110,23 @@ export default function IncidentsTable({ data }) {
       {
         Header: <Trans>Alleged Deployer of AI System</Trans>,
         id: 'AllegedDeployerOfAISystem',
-        accessor: 'incident_id',
+        accessor: (data) =>
+          data.AllegedDeployerOfAISystem?.map((i) => `${i.name} ${i.id ?? i.entity_id}`),
         Cell: ListCell,
-        disableFilters: true,
       },
       {
         Header: <Trans>Alleged Developer of AI System</Trans>,
         id: 'AllegedDeveloperOfAISystem',
-        accessor: 'incident_id',
+        accessor: (data) =>
+          data.AllegedDeveloperOfAISystem?.map((i) => `${i.name} ${i.id ?? i.entity_id}`),
         Cell: ListCell,
-        disableFilters: true,
       },
       {
         Header: <Trans>Alleged Harmed or Nearly Harmed Parties</Trans>,
         id: 'AllegedHarmedOrNearlyHarmedParties',
-        accessor: 'incident_id',
+        accessor: (data) =>
+          data.AllegedHarmedOrNearlyHarmedParties?.map((i) => `${i.name} ${i.id ?? i.entity_id}`),
         Cell: ListCell,
-        disableFilters: true,
       },
     ];
 
@@ -204,15 +134,14 @@ export default function IncidentsTable({ data }) {
       columns.push({
         Header: 'Actions',
         Cell: ({ row: { values } }) => (
-          <div className="bootstrap">
-            <Button
-              data-cy="edit-incident"
-              variant="link"
-              onClick={() => setIncindentIdToEdit(values.incident_id)}
-            >
-              Edit
-            </Button>
-          </div>
+          <Button
+            color={'gray'}
+            data-cy="edit-incident"
+            variant="link"
+            onClick={() => setIncindentIdToEdit(values.incident_id)}
+          >
+            Edit
+          </Button>
         ),
       });
     }
@@ -226,13 +155,9 @@ export default function IncidentsTable({ data }) {
     headerGroups,
     prepareRow,
     page,
-    canPreviousPage,
-    canNextPage,
     pageOptions,
     pageCount,
     gotoPage,
-    nextPage,
-    previousPage,
     setPageSize,
     state: { pageIndex, pageSize },
   } = useTable(
@@ -251,8 +176,18 @@ export default function IncidentsTable({ data }) {
     <>
       {/* eslint-disable react/jsx-key */}
 
-      <Table {...getTableProps()}>
-        <Header>
+      <div className="incidents-table inline-block border-spacing-0" {...getTableProps()}>
+        <div className="flex justify-start ml-4 mb-2 pt-1">
+          <ToggleSwitch
+            checked={isLiveData}
+            label={t('Show Live data')}
+            onChange={(checked) => {
+              setIsLiveData(checked);
+            }}
+            name="live-data-switch"
+          />
+        </div>
+        <div className="bg-white sticky z-2 w-fit top-0 shadow-incidents-table">
           {headerGroups.map((headerGroup) => (
             <div {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
@@ -261,12 +196,15 @@ export default function IncidentsTable({ data }) {
                   className="td border-bottom border-right px-3 py-2"
                 >
                   {column.render('Filter')}
-                  <ResizeHandle {...column.getResizerProps()} isResizing={column.isResizing} />
+                  <div
+                    className={`inline-block bg-[#6c757d] w-2 h-full absolute right-0 top-0 translate-x-1/2 z-2 touch-none`}
+                    {...column.getResizerProps()}
+                  />
                 </div>
               ))}
             </div>
           ))}
-        </Header>
+        </div>
 
         <div {...getTableBodyProps()}>
           {page.map((row) => {
@@ -288,16 +226,21 @@ export default function IncidentsTable({ data }) {
             );
           })}
         </div>
-      </Table>
+      </div>
 
-      <div className="flex gap-2 justify-start items-center mt-3 bootstrap">
-        <Pagination className="mb-0">
-          <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage} />
-          <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage} />
-
-          <Pagination.Next onClick={() => nextPage()} disabled={!canNextPage} />
-          <Pagination.Last onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage} />
-        </Pagination>
+      <div className="flex gap-2 justify-start items-center mt-3">
+        {pageCount > 1 && (
+          <Pagination
+            className="incidents-pagination mb-0"
+            onPageChange={(page) => {
+              gotoPage(page - 1);
+              setCurrentPage(page);
+            }}
+            currentPage={currentPage}
+            showIcons={true}
+            totalPages={pageCount}
+          />
+        )}
 
         <span>
           <Trans
@@ -307,21 +250,24 @@ export default function IncidentsTable({ data }) {
             components={{ bold: <strong /> }}
           />
         </span>
-
-        <Form.Select
+        <Dropdown
+          label={t(pageSize === 9999 ? 'Show all' : `Show ${pageSize}`)}
           style={{ width: 120 }}
           size="sm"
           value={pageSize}
-          onChange={(e) => {
-            setPageSize(Number(e.target.value));
-          }}
         >
-          {[10, 50, 100, 'all'].map((pageSize) => (
-            <option key={pageSize} value={pageSize == 'all' ? 99999 : pageSize}>
-              {pageSize === 'all' ? <Trans>Show all</Trans> : <Trans>Show {{ pageSize }}</Trans>}
-            </option>
+          {[10, 50, 100, 9999].map((pageSize) => (
+            <Dropdown.Item
+              key={pageSize}
+              onClick={() => {
+                setPageSize(Number(pageSize));
+                setCurrentPage(1);
+              }}
+            >
+              {pageSize === 9999 ? <Trans>Show all</Trans> : <Trans>Show {{ pageSize }}</Trans>}
+            </Dropdown.Item>
           ))}
-        </Form.Select>
+        </Dropdown>
       </div>
 
       <IncidentEditModal

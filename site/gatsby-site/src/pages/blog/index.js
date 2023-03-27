@@ -27,7 +27,7 @@ export const query = graphql`
   query BlogQuery($locale: String) {
     allMdx(
       filter: { fields: { slug: { glob: "/blog/**" }, locale: { eq: $locale } } }
-      sort: { fields: frontmatter___date, order: DESC }
+      sort: { frontmatter: { date: DESC } }
     ) {
       nodes {
         fields {

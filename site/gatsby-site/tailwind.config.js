@@ -58,6 +58,7 @@ module.exports = {
     extend: {
       screens: {
         '1300px': { min: '1300px' },
+        '3xl': { min: '1920px' },
         'min-576px': { min: '576px' },
         'min-767px': { min: '767px' },
         'min-992px': { min: '992px' },
@@ -108,6 +109,7 @@ module.exports = {
         card: '0 2px 5px 0px #e3e5ec',
         'left-side-bar': 'rgb(175 158 232 / 40%) -1px 0px 4px 1px',
         table: 'inset 0 0 0 9999px transparent',
+        'incidents-table': '0px 3px 3px #ccc',
       },
       transitionDelay: {},
       transitionDuration: {

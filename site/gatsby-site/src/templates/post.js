@@ -3,14 +3,15 @@ import AiidHelmet from 'components/AiidHelmet';
 import { graphql, Link } from 'gatsby';
 import { MDXProvider } from '@mdx-js/react';
 import Layout from 'components/Layout';
-import { StyledHeading, StyledMainWrapper, Author } from 'components/styles/Post';
+import { StyledHeading, StyledMainWrapper } from 'components/styles/Post';
 import config from '../../config';
-import { format } from 'date-fns';
 import SocialShareButtons from 'components/ui/SocialShareButtons';
 import MdxComponents from 'components/ui/MdxComponents';
 import TranslationBadge from 'components/i18n/TranslationBadge';
 import { Trans } from 'react-i18next';
 import Outline from 'components/Outline';
+import DateLabel from 'components/ui/DateLabel';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 export default function Post(props) {
   const {
@@ -40,16 +41,21 @@ export default function Post(props) {
     </>
   );
 
-  const formattedDate = format(new Date(mdx.frontmatter.date), 'yyyy-MM-dd');
-
   return (
     <Layout {...{ ...props, rightSidebar }}>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }} />
       <div className={'titleWrapper'}>
+        <LocalizedLink to="/blog" className="text-lg">
+          <Trans>AIID Blog</Trans>
+        </LocalizedLink>
         <StyledHeading>{mdx.fields.title}</StyledHeading>
-
-        <div className="inline-block">
-          <span>{formattedDate}</span>
+        <div className="flex items-center mb-1 -mt-1 flex-wrap">
+          <SocialShareButtons
+            metaTitle={metaTitle}
+            path={props.location.pathname}
+            page="post"
+            className="inline-block"
+          />
           {mdx.frontmatter.aiTranslated && (
             <>
               <TranslationBadge className="ml-2" />
@@ -58,22 +64,23 @@ export default function Post(props) {
               </Link>
             </>
           )}
+          <span>
+            {' '}
+            <Trans>
+              Posted <DateLabel className="font-bold" date={new Date(mdx.frontmatter.date)} /> by{' '}
+              <Author name={mdx.frontmatter.author} />.
+            </Trans>
+          </span>
         </div>
-
-        <SocialShareButtons
-          metaTitle={metaTitle}
-          path={props.location.pathname}
-          page="post"
-          className="-mt-1"
-        ></SocialShareButtons>
       </div>
       <StyledMainWrapper className="prose">
         <MDXProvider components={MdxComponents}>{children}</MDXProvider>
-        <Author>By {mdx.frontmatter.author}</Author>
       </StyledMainWrapper>
     </Layout>
   );
 }
+
+var Author = ({ name }) => <span className="font-bold">{name}</span>;
 
 export const pageQuery = graphql`
   query PostTemplateQuery($slug: String!, $locale: String!) {

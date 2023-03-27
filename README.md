@@ -363,7 +363,7 @@ To correctly set up  this process, the following environment variables need to b
 
 ```
 ALGOLIA_ADMIN_KEY=
-AWS_LAMBDA_JS_RUNTIME=nnodejs18.x # required to run the Gatsby v5
+AWS_LAMBDA_JS_RUNTIME=nodejs18.x # required to run the Gatsby v5
 GATSBY_ALGOLIA_APP_ID=
 GATSBY_ALGOLIA_SEARCH_KEY=
 GATSBY_REALM_APP_ID=
@@ -528,9 +528,8 @@ Execution is taken care of by the [umzug](https://github.com/sequelize/umzug) pa
 ## Public GraphQL endpoint
 The site exposes a read-only GraphQL endpoint at `/api/graphql`, which is a reflection of the Realm's auto-generated endpoint.
 
-### GraphiQL
-The `graphiQL` UI is avaiable at:
-https://incidentdatabase.ai/api/graphql
+### Accessing the endpoint
+You can check the endpoint [here](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Fincidentdatabase.ai%2Fapi%2Fgraphql)
 
 ### Sample request
 
