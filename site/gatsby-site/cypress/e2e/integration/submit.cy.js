@@ -478,9 +478,9 @@ describe('The Submit form', () => {
             },
             {
               __typename: 'Report',
-              report_number: 1467,
-              title: 'Facial Recognition Blamed For False Arrest And Jail Time',
-              url: 'https://www.silicon.co.uk/e-regulation/facial-recognition-false-arrest-349782',
+              report_number: 1416,
+              title: 'AI Chatbot Shut Down After Learning to Talk Like a Racist Asshole',
+              url: 'https://www.vice.com/en/article/akd4g5/ai-chatbot-shut-down-after-learning-to-talk-like-a-racist-asshole',
             },
           ],
         },
