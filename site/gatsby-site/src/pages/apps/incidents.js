@@ -51,7 +51,7 @@ const IncidentsPage = ({ data, ...props }) => {
       <AiidHelmet path={props.location.pathname}>
         <title>{t('Incidents')}</title>
       </AiidHelmet>
-      <div className="bootstrap">
+      <div>
         {(incidentsData && !isLiveData) || (incidentsData && isLiveData && !loading) ? (
           <div className="overflow-x-auto">
             <IncidentsTable
