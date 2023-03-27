@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import Typeahead from './Typeahead';
+import { Typeahead } from 'react-bootstrap-typeahead';
 
 export default function Tags({
   id,
@@ -22,6 +22,7 @@ export default function Tags({
 
   return (
     <Typeahead
+      className="Typeahead"
       ref={ref}
       id={id}
       inputProps={{ id: inputId, name }}

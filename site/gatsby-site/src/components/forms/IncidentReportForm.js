@@ -11,7 +11,6 @@ import PreviewImageInputGroup from 'components/forms/PreviewImageInputGroup';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { graphql, useStaticQuery } from 'gatsby';
 import Label from './Label';
-import Typeahead from './Typeahead';
 import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
 import getSourceDomain from '../../utils/getSourceDomain';
@@ -34,6 +33,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import IncidentsField from 'components/incidents/IncidentsField';
 import VariantForm from 'components/variants/VariantForm';
+import { Typeahead } from 'react-bootstrap-typeahead';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -370,6 +370,7 @@ const IncidentReportForm = () => {
           </div>
           <div className="bootstrap">
             <Typeahead
+              className="Typeahead"
               id="submit-report-tags"
               inputProps={{ id: 'submit-report-tags-input' }}
               allowNew
