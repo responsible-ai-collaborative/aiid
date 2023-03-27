@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Form, InputGroup } from 'react-bootstrap';
 import Label from './Label';
 import { Trans } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const TextInputGroup = ({
-  name,
+  name = '',
   label,
   placeholder,
   values = {},
@@ -19,6 +18,7 @@ const TextInputGroup = ({
   className = '',
   icon = null,
   inputClassName = '',
+  showPopover = true,
   ...props
 }) => {
   const [optional, setOptional] = useState(true);
@@ -31,12 +31,12 @@ const TextInputGroup = ({
   }, []);
 
   return (
-    <Form.Group className={`form-group ${className}`}>
+    <div className={`form-group ${className}`}>
       <div className="flex items-center">
         {icon && <FontAwesomeIcon fixedWidth icon={icon} title={label} className="mb-2 mr-1" />}
-        <Label popover={name} label={(optional ? '' : '*') + label} />
+        <Label popover={name} label={(optional ? '' : '*') + label} showPopover={showPopover} />
       </div>
-      <InputGroup className="mt-1">
+      <div className="mt-1">
         {type === 'textarea' ? (
           <TextAreaInput
             name={name}
@@ -68,13 +68,15 @@ const TextInputGroup = ({
             {...props}
           />
         )}
-        <Form.Control.Feedback type="invalid">
+        <div>
           <span className="text-red-700 text-sm">
-            <Trans ns="validation">{errors[name] && touched[name] ? errors[name] : null}</Trans>
+            <Trans ns="validation">
+              {errors && touched && errors[name] && touched[name] ? errors[name] : null}
+            </Trans>
           </span>
-        </Form.Control.Feedback>
-      </InputGroup>
-    </Form.Group>
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -126,7 +128,7 @@ const Input = ({
       type={type}
       name={name}
       className={`bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white ${
-        touched[name] && errors[name]
+        errors && touched && touched[name] && errors[name]
           ? 'border-red-600 focus:ring-red-500'
           : 'border-gray-300 dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-500'
       } ${className}`}

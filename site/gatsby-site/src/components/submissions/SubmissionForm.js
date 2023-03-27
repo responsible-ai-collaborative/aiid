@@ -318,7 +318,6 @@ const SubmissionForm = () => {
 
         <IncidentIdField
           name="incident_id"
-          className="mt-3"
           placeHolder={t('Leave empty to report a new incident')}
           showIncidentData={false}
         />
