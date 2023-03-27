@@ -10,7 +10,7 @@ const { isCompleteReport } = require('./variants');
 // to fit within the Algolia tier limits.
 //
 // TODO: Put this configuration in a more convenient place.
-const LIMIT = 200; //Number.MAX_SAFE_INTEGER;
+const LIMIT = 50; //Number.MAX_SAFE_INTEGER;
 
 const truncate = (doc) => {
   for (const [key, value] of Object.entries(doc)) {
@@ -185,9 +185,23 @@ class AlgoliaUpdater {
 
     const truncatedData = downloadData.map(truncate);
 
-    const smallData = truncatedData.slice(0, LIMIT);
+    const ids = Array.from(new Set(truncatedData.map((entry) => entry.incident_id)));
 
-    return smallData;
+    const smallData = ids.reduce(
+      (entries, id) =>
+        entries.concat(
+          truncatedData[
+            [10, 34, 186, 477, 443, 23]
+              .concat(Object.keys(config.header.search.featured))
+              .includes(id)
+              ? 'filter'
+              : 'find'
+          ]((entry) => entry.incident_id == id)
+        ),
+      []
+    );
+
+    return LIMIT < Number.MAX_SAFE_INTEGER ? smallData : truncatedData;
   };
 
   getClassifications = async () => {
