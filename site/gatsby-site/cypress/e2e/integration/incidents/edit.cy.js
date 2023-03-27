@@ -91,12 +91,11 @@ describe('Incidents', () => {
       cy.get(`[name=${key}]`).clear().type(values[key]);
     });
 
-    cy.contains('label', 'Alleged Deployer of AI System')
-      .next()
-      .find('[type="text"]')
+    cy.get('[data-cy="alleged-deployer-of-ai-system-input"] input')
+      .first()
       .type('Test Deployer{enter}');
 
-    cy.contains('label', 'Editors').next().find('[type="text"]').type('Test Editor{enter}');
+    cy.get('[data-cy="editors-input"] input').first().type('Test Editor{enter}');
 
     cy.conditionalIntercept(
       '**/graphql',

@@ -45,11 +45,11 @@ const StepThree = (props) => {
       .nullable(),
     description: yup
       .string()
-      .matches(/^.{3,}$/, {
+      .matches(/^[\s\S]{3,}$/, {
         excludeEmptyString: true,
         message: 'Description must have at least 3 characters',
       })
-      .matches(/^.{3,500}$/, {
+      .matches(/^[\s\S]{3,500}$/, {
         excludeEmptyString: true,
         message: "Description can't be longer than 500 characters",
       })

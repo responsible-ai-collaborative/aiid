@@ -3,8 +3,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { FIND_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { Button } from 'react-bootstrap';
-import { Spinner, Modal } from 'flowbite-react';
+import { Spinner, Modal, Button } from 'flowbite-react';
 import IncidentForm, { schema } from './IncidentForm';
 import { Formik } from 'formik';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
@@ -148,18 +147,17 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
                 <IncidentForm />
               </Modal.Body>
               <Modal.Footer>
-                <Button variant="secondary" onClick={onClose}>
+                <Button color="gray" onClick={onClose}>
                   Close
                 </Button>
                 <Button
-                  variant="primary"
                   onClick={submitForm}
                   disabled={isSubmitting || !isValid}
-                  className="bootstrap flex gap-2 disabled:opacity-50"
+                  className="flex gap-2 disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <>
-                      <Spinner size="sm" />
+                      <Spinner size="sm" className="mr-2" />
                       <Trans>Updating</Trans>
                     </>
                   ) : (
