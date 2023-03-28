@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Form, InputGroup } from 'react-bootstrap';
 import Label from './Label';
 import TagsControl from './TagsControl';
 import { Trans } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import FieldContainer from './SubmissionWizard/FieldContainer';
 
 const TagsInputGroup = ({
   name,
@@ -12,9 +12,9 @@ const TagsInputGroup = ({
   errors,
   touched,
   schema,
-  className = '',
-  icon,
+  icon = null,
   disabled = false,
+  ...props
 }) => {
   const [optional, setOptional] = useState(true);
 
@@ -26,26 +26,26 @@ const TagsInputGroup = ({
   const isInvalid = errors[name] && touched[name];
 
   return (
-    <div className="bootstrap">
-      <Form.Group className={`form-group ${className}`}>
-        <div className="flex items-center">
-          {icon && <FontAwesomeIcon fixedWidth icon={icon} title={label} className="mb-2 mr-1" />}
-          <Label popover={name} label={(optional ? '' : '*') + label} />
+    <FieldContainer>
+      <div className="flex items-center">
+        {icon && <FontAwesomeIcon fixedWidth icon={icon} title={label} className="mb-2 mr-1" />}
+        <Label popover={name} label={(optional ? '' : '*') + label} />
+      </div>
+      <div style={{ marginTop: '0.25rem' }}>
+        <div
+          className={
+            'tags-control-wrapper rounded-md form-control' +
+            (isInvalid ? ' is-invalid border-red-700' : '')
+          }
+          data-cy={props['data-cy']}
+        >
+          <TagsControl name={name} placeholder={placeholder} disabled={disabled} />
         </div>
-        <InputGroup style={{ marginTop: '0.25rem' }}>
-          <div
-            className={
-              'tags-control-wrapper rounded-md form-control' + (isInvalid ? ' is-invalid' : '')
-            }
-          >
-            <TagsControl name={name} placeholder={placeholder} disabled={disabled} />
-          </div>
-          <Form.Control.Feedback type="invalid" className="text-sm">
-            <Trans ns="validation">{isInvalid ? errors[name] : null}</Trans>
-          </Form.Control.Feedback>
-        </InputGroup>
-      </Form.Group>
-    </div>
+        <div className="text-sm text-red-700">
+          <Trans ns="validation">{isInvalid ? errors[name] : null}</Trans>
+        </div>
+      </div>
+    </FieldContainer>
   );
 };
 

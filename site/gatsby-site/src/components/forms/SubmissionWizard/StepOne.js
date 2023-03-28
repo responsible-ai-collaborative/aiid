@@ -351,6 +351,9 @@ const FormDetails = ({
             placeHolder={t('Leave empty to report a new incident')}
             showIncidentData={false}
             disabled={parsingNews}
+            values={values}
+            errors={errors}
+            touched={touched}
           />
           <RelatedIncidents
             incident={values}

@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
 
-const Label = ({ popover, label, required = false }) => {
+const Label = ({ popover, label, required = false, showPopover = true }) => {
   const [show, setShow] = useState(false);
 
   const { i18n } = useTranslation(['popovers']);
@@ -22,7 +22,7 @@ const Label = ({ popover, label, required = false }) => {
 
   const Tooltip = (
     <div
-      className="inline-block absolute z-10 text-sm font-medium  bg-gray-200 rounded-lg shadow-sm tooltip dark:bg-gray-700 max-w-xs bottom-2 imtooltip"
+      className="inline-block absolute z-[100] text-sm font-medium  bg-gray-200 rounded-lg shadow-sm tooltip dark:bg-gray-700 max-w-xs bottom-2 imtooltip"
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
       data-cy={`popover-${popover}`}
@@ -51,12 +51,14 @@ const Label = ({ popover, label, required = false }) => {
         >
           {required && <>* </>}
           <span className="whitespace-normal mr-1">{label}</span>
-          <FontAwesomeIcon
-            icon={faQuestionCircle}
-            style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-            className="far fa-question-circle"
-            onClick={() => setShow(!show)}
-          />{' '}
+          {showPopover && (
+            <FontAwesomeIcon
+              icon={faQuestionCircle}
+              style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+              className="far fa-question-circle"
+              onClick={() => setShow(!show)}
+            />
+          )}{' '}
         </label>
       </OverlayTrigger>
     </>
