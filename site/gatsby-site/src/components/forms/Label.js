@@ -22,7 +22,7 @@ const Label = ({ popover, label, required = false, showPopover = true }) => {
 
   const Tooltip = (
     <div
-      className="inline-block absolute z-10 text-sm font-medium  bg-gray-200 rounded-lg shadow-sm tooltip dark:bg-gray-700 max-w-xs bottom-2 imtooltip"
+      className="inline-block absolute z-[100] text-sm font-medium  bg-gray-200 rounded-lg shadow-sm tooltip dark:bg-gray-700 max-w-xs bottom-2 imtooltip"
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
       data-cy={`popover-${popover}`}

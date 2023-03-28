@@ -559,6 +559,17 @@
         border-top-width: 0;
     }
 
+    .pagination [aria-current="page"] button {
+        @apply bg-blue-50 text-blue-600 !important;
+    }
+
+    .variants-markdown > p:first-child {
+        @apply mt-0;
+    }
+
+    .edit-variant-modal > div:first-child {
+        @apply flex;
+    }
     .incidents-table .tr:nth-child(even) {
         @apply bg-[#f2f2f2];
     }
