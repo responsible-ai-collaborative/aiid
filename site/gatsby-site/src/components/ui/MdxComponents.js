@@ -13,7 +13,7 @@ const slug = (title) => {
   return title.props.children;
 };
 
-const Details = ({ children, summary }) => {
+const Details = ({ children, summary = '(expand)' }) => {
   return (
     <details className="my-3">
       <summary className="mb-3">{summary}</summary>
@@ -22,7 +22,11 @@ const Details = ({ children, summary }) => {
   );
 };
 
-const Box = ({ children }) => <div className="bg-gray-100 px-4 py-2 rounded">{children}</div>;
+const Box = ({ children }) => (
+  <blockquote className="bg-gray-100 px-6 py-1 rounded not-italic font-normal">
+    {children}
+  </blockquote>
+);
 
 const Components = {
   h1: ({ children }) => <h1 id={slug(children)}>{children}</h1>,
