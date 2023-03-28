@@ -95,7 +95,7 @@ const TextAreaInput = ({
   <>
     <textarea
       name={name}
-      className={`block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white ${className} ${
+      className={`block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white min-h-[40px] ${className} ${
         touched[name] && errors[name]
           ? 'border-red-600 focus:ring-red-500'
           : 'border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-500'

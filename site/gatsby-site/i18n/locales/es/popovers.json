@@ -66,5 +66,13 @@
      "description": {
         "title": "Descripción",
         "text": "Una descripción breve, fáctica, periodísticamente neutral y completa del incidente que mencione el incidente/problema, la ubicación y el daño."
+     },
+     "text_inputs": {
+        "title": "Entrada y circunstancias",
+        "text": "Proporcione los detalles relevantes que produjeron el incidente. Los ejemplos incluyen las indicaciones de entrada a un chatbot o una descripción de las circunstancias que conducen a las lesiones sufridas por un robot."
+     },
+     "text_outputs": {
+        "title": "Producto y resultados",
+        "text": "Proporcione los detalles relevantes que rodean el incidente. Los ejemplos incluyen el texto de salida de un chatbot o la naturaleza de las lesiones sufridas por un robot."
      }
 }
