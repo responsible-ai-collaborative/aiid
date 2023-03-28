@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import AiidHelmet from '../../components/AiidHelmet';
-import styled from 'styled-components';
 import { useApolloClient } from '@apollo/client';
 import gql from 'graphql-tag';
 import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
-import { Table, Form, InputGroup, FormControl, Button } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
+import { Button, Dropdown, Spinner, Table } from 'flowbite-react';
 import Link from '../../components/ui/Link';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
@@ -20,77 +18,6 @@ import ListSkeleton from 'elements/Skeletons/List';
 import { Modal } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 
-const Container = styled.div`
-  max-width: calc(100vw - 298px);
-  margin: 0 auto;
-  overflow: auto;
-  white-space: nowrap;
-  font-size: 0.8em;
-
-  ${({ isWide }) =>
-    isWide &&
-    `
-    max-width: 100vw;
-    padding: 0 0 0 2.7rem;
-  `};
-
-  @media (max-width: 767px) {
-    padding: 0;
-  }
-`;
-
-const TableStyles = styled.div`
-  padding-top: 1rem;
-
-  table {
-    border-spacing: 0;
-
-    tr {
-      :last-child {
-        td {
-          border-bottom: 0;
-        }
-      }
-    }
-
-    th,
-    td {
-      margin: 0;
-      padding: 0.5rem;
-
-      :last-child {
-        border-right: 0;
-      }
-    }
-  }
-`;
-
-const ScrollCell = styled.div`
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: auto;
-`;
-
-const ModalCell = styled.div`
-  cursor: pointer;
-  width: 10px;
-  height: 10px;
-`;
-
-const HeaderCellContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const TaxonomySelectContainer = styled.div`
-  padding: 1rem 1rem 1rem 0;
-  font-size: 1rem;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
-
 const DEFAULT_EMPTY_CELL_DATA = '-';
 
 const DefaultColumnFilter = ({ column: { filterValue, preFilteredRows, setFilter } }) => {
@@ -99,21 +26,23 @@ const DefaultColumnFilter = ({ column: { filterValue, preFilteredRows, setFilter
   const { t } = useTranslation();
 
   return (
-    <InputGroup>
-      <FormControl
-        style={{ minWidth: 100 }}
-        value={filterValue || ''}
-        onChange={(e) => {
-          e.preventDefault();
-          setFilter(e.target.value || undefined);
-        }}
-        placeholder={t(`Search {{count}} records...`, { count: count })}
-      />
-    </InputGroup>
+    <input
+      type="text"
+      className="bg-white text-sm font-normal w-full"
+      style={{ minWidth: 100 }}
+      value={filterValue || ''}
+      onChange={(e) => {
+        e.preventDefault();
+        setFilter(e.target.value || undefined);
+      }}
+      placeholder={t(`Search {{count}} records...`, { count: count })}
+    />
   );
 };
 
 const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows, id } }) => {
+  const { t } = useTranslation();
+
   // TODO: add search for large lists
   let options;
 
@@ -205,22 +134,32 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
   ].sort((a, b) => (String(a).toLowerCase() >= String(b).toLowerCase() ? 1 : -1));
 
   return (
-    <Form.Select
+    <Dropdown
+      color={'gray'}
+      label={t(filterValue) || t('All')}
       style={{ minWidth: 100 }}
       value={filterValue}
-      onChange={(e) => {
-        setFilter(e.target.value || undefined);
-      }}
     >
-      <option value="">
+      <Dropdown.Item
+        value=""
+        onClick={() => {
+          setFilter('');
+        }}
+      >
         <Trans>All</Trans>
-      </option>
+      </Dropdown.Item>
       {filteredOptions.map((option, i) => (
-        <option key={i} value={option}>
+        <Dropdown.Item
+          onClick={() => {
+            setFilter(option);
+          }}
+          key={i}
+          value={option}
+        >
           {option}
-        </option>
+        </Dropdown.Item>
       ))}
-    </Form.Select>
+    </Dropdown>
   );
 };
 
@@ -291,21 +230,21 @@ function Row({ row, isAdmin, currentTaxonomy }) {
   const { t } = useTranslation();
 
   return (
-    <tr key={row.id} {...row.getRowProps()}>
+    <Table.Row key={row.id} {...row.getRowProps()}>
       {row.cells.map((cell) => {
         if (cell.column.Header.includes(t('Incident ID'))) {
           return (
-            <td key={cell.id} {...cell.getCellProps()}>
-              <ScrollCell>
+            <Table.Cell key={cell.id} {...cell.getCellProps()}>
+              <div className="w-full m-0 p-0 overflow-auto">
                 <Link to={`/cite/${cell.value}/#taxa-area`}>
                   <Trans>Incident</Trans> {cell.render('Cell')}
                 </Link>
-              </ScrollCell>
-            </td>
+              </div>
+            </Table.Cell>
           );
         } else if (cell.column.Header.includes(t('Actions'))) {
           return (
-            <td key={cell.id} {...cell.getCellProps()}>
+            <Table.Cell key={cell.id} {...cell.getCellProps()}>
               <a
                 target="_blank"
                 href={
@@ -324,21 +263,23 @@ function Row({ row, isAdmin, currentTaxonomy }) {
                   <FontAwesomeIcon icon={faEdit} className="fas fa-edit" />
                 </Button>
               </a>
-            </td>
+            </Table.Cell>
           );
         } else if (cell.column.Header.includes('Date')) {
           return (
-            <td key={cell.id} {...cell.getCellProps()}>
-              <ScrollCell>{formatDateField(cell.render('Cell'))}</ScrollCell>
-            </td>
+            <Table.Cell key={cell.id} {...cell.getCellProps()} className="text-gray-900">
+              <div className="w-full m-0 p-0 overflow-auto">
+                {formatDateField(cell.render('Cell'))}
+              </div>
+            </Table.Cell>
           );
         } else if (cell.value?.length > 130) {
           return (
-            <td key={cell.id} {...cell.getCellProps()}>
-              <ScrollCell style={{ overflow: 'hidden' }}>
+            <Table.Cell key={cell.id} {...cell.getCellProps()} className="text-gray-900">
+              <div className="w-full m-0 p-0 overflow-hidden">
                 {cell.value.substring(0, 124)}...
-              </ScrollCell>
-              <ModalCell>
+              </div>
+              <div className="cursor-pointer w-[10px] h-[10px]">
                 <FontAwesomeIcon
                   onClick={() => setShow(cell.value)}
                   icon={faExpandAlt}
@@ -353,22 +294,22 @@ function Row({ row, isAdmin, currentTaxonomy }) {
                   <Modal.Header>{cell.column.Header}</Modal.Header>
                   <Modal.Body>{cell.value}</Modal.Body>
                 </Modal>
-              </ModalCell>
-            </td>
+              </div>
+            </Table.Cell>
           );
         } else {
           return (
-            <td key={cell.id} {...cell.getCellProps()}>
-              <ScrollCell>
+            <Table.Cell key={cell.id} {...cell.getCellProps()} className="text-gray-900">
+              <div className="w-full m-0 p-0 overflow-auto">
                 {((value) => (Array.isArray(value) ? value.join(', ') : value))(
                   cell.render('Cell').props.cell.value
                 )}
-              </ScrollCell>
-            </td>
+              </div>
+            </Table.Cell>
           );
         }
       })}
-    </tr>
+    </Table.Row>
   );
 }
 
@@ -701,25 +642,34 @@ export default function ClassificationsDbView(props) {
       <AiidHelmet path={props.location.pathname}>
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
-      <Container isWide={collapse}>
+      <div
+        className={`p-0 md:p-[auto] my-0 mx-[auto] overflow-auto whitespace-nowrap text=[0.8em] ${
+          collapse ? 'max-w-[100vw] py-0 pr-0 pl-11' : 'max-w-[calc(100vw-298px)]'
+        }`}
+      >
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-          <TaxonomySelectContainer className="gap-2">
+          <div className="py-4 pr-4 pl-0 text-base flex flex-row items-center gap-2">
             <Trans>Showing the</Trans>
-            <Form.Select
+            <Dropdown
+              color={'gray'}
+              label={currentTaxonomy}
               style={{ width: 120 }}
-              onChange={(e) => setCurrentTaxonomy(e.target.value)}
               value={currentTaxonomy}
               data-cy="taxonomy"
             >
               {allTaxonomies.map((taxa) => (
-                <option key={taxa.namespace} value={taxa.namespace}>
+                <Dropdown.Item
+                  key={taxa.namespace}
+                  value={taxa.namespace}
+                  onClick={() => setCurrentTaxonomy(taxa.namespace)}
+                >
                   {taxa.namespace}
-                </option>
+                </Dropdown.Item>
               ))}
-            </Form.Select>
+            </Dropdown>
             <Trans>taxonomy</Trans>
             {loading && <Spinner />}
-          </TaxonomySelectContainer>
+          </div>
           <Link to={`/taxonomy/${currentTaxonomy.toLowerCase()}`} style={{ paddingBottom: '1em' }}>
             <Trans>{{ currentTaxonomy }} taxonomy page</Trans>
           </Link>
@@ -729,29 +679,26 @@ export default function ClassificationsDbView(props) {
         </div>
         {loading && <ListSkeleton />}
         {!loading && (
-          <TableStyles>
-            <Table striped bordered hover {...getTableProps()}>
-              <thead>
-                {headerGroups.map((headerGroup) => (
-                  <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map((column) => (
-                      <th key={column.id} {...column.getHeaderProps()}>
-                        <HeaderCellContainer
-                          {...column.getHeaderProps(column.getSortByToggleProps())}
-                          style={{ marginBottom: 5 }}
-                        >
-                          {column.render('Header')}
-                          <span>
-                            {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
-                          </span>
-                        </HeaderCellContainer>
-                        <div>{column.canFilter ? column.render('Filter') : null}</div>
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody {...getTableBodyProps()}>
+          <div>
+            <Table striped={true} hoverable={true} {...getTableProps()}>
+              {headerGroups.map((headerGroup) => (
+                <Table.Head key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
+                  {headerGroup.headers.map((column) => (
+                    <Table.HeadCell key={column.id} {...column.getHeaderProps()}>
+                      <div
+                        className="flex flex-col"
+                        {...column.getHeaderProps(column.getSortByToggleProps())}
+                        style={{ marginBottom: 5 }}
+                      >
+                        {column.render('Header')}
+                        <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
+                      </div>
+                      <div>{column.canFilter ? column.render('Filter') : null}</div>
+                    </Table.HeadCell>
+                  ))}
+                </Table.Head>
+              ))}
+              <Table.Body {...getTableBodyProps()}>
                 {page.map((row) => {
                   prepareRow(row);
 
@@ -768,17 +715,17 @@ export default function ClassificationsDbView(props) {
                 })}
 
                 {page.length === 0 && (
-                  <tr>
-                    <th colSpan={10}>
+                  <Table.Row>
+                    <Table.Cell colSpan={10}>
                       <div>
                         <span>
                           <Trans>No results found</Trans>
                         </span>
                       </div>
-                    </th>
-                  </tr>
+                    </Table.Cell>
+                  </Table.Row>
                 )}
-              </tbody>
+              </Table.Body>
             </Table>
 
             <div className="pagination">
@@ -831,9 +778,9 @@ export default function ClassificationsDbView(props) {
                 ))}
               </select>
             </div>
-          </TableStyles>
+          </div>
         )}
-      </Container>
+      </div>
       <CustomModal {...fullTextModal} />
     </Layout>
   );
