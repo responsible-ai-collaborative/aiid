@@ -2,10 +2,6 @@ import React, { useEffect, useState } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import ReactWordcloud from 'react-d3-cloud';
 
-import Container from 'react-bootstrap/Container';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
@@ -18,18 +14,18 @@ const WordCloudCell = ({ wordCountsSorted, wordCloud }) => {
   useEffect(() => setMounted(true), []);
 
   return (
-    <Row>
-      <Col xs={4} data-cy="wordlist-container">
+    <div>
+      <div data-cy="wordlist-container">
         <Wordlist content={wordCountsSorted} />
-      </Col>
-      <Col xs={8}>
+      </div>
+      <div>
         {mounted && (
           <div data-cy="wordcloud">
             <ReactWordcloud data={wordCloud} />
           </div>
         )}
-      </Col>
-    </Row>
+      </div>
+    </div>
   );
 };
 
@@ -55,7 +51,7 @@ const WordCounts = ({ pageContext, ...props }) => {
             <Link to="/apps/discover"> Discover app</Link>.
           </Trans>
         </p>
-        <Container>
+        <div>
           <ul className="pl-0 list-revert">
             {wordClouds &&
               wordCountsSorted &&
@@ -67,7 +63,7 @@ const WordCounts = ({ pageContext, ...props }) => {
                 />
               ))}
           </ul>
-        </Container>
+        </div>
       </StyledMainWrapper>
     </Layout>
   );
