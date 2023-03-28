@@ -3,7 +3,6 @@ import AiidHelmet from 'components/AiidHelmet';
 import { graphql, Link } from 'gatsby';
 
 import Layout from 'components/Layout';
-import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import { MDXProvider } from '@mdx-js/react';
 import Components from 'components/ui/MdxComponents';
 import TranslationBadge from 'components/i18n/TranslationBadge';
@@ -31,7 +30,7 @@ export default function Doc(props) {
     <Layout {...{ ...props, rightSidebar }}>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname }} />
       <div className={'titleWrapper'}>
-        <StyledHeading>{mdx.fields.title}</StyledHeading>
+        <h1 className="font-karla font-bold flex-1 pt-0">{mdx.fields.title}</h1>
         {mdx.frontmatter.aiTranslated && (
           <div>
             <TranslationBadge className="d-inline-block" />
@@ -41,9 +40,9 @@ export default function Doc(props) {
           </div>
         )}
       </div>
-      <StyledMainWrapper className="prose">
+      <div className="styled-main-wrapper prose">
         <MDXProvider components={Components}>{children}</MDXProvider>
-      </StyledMainWrapper>
+      </div>
     </Layout>
   );
 }

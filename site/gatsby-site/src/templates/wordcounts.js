@@ -4,7 +4,6 @@ import ReactWordcloud from 'react-d3-cloud';
 
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
-import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import Wordlist from '../components/WordList';
 import { Trans } from 'react-i18next';
 
@@ -38,9 +37,9 @@ const WordCounts = ({ pageContext, ...props }) => {
         <title>Word Counts</title>
       </AiidHelmet>
       <div className="titleWrapper">
-        <StyledHeading>Word Counts</StyledHeading>
+        <h1 className="font-karla font-bold flex-1 pt-0">Word Counts</h1>
       </div>
-      <StyledMainWrapper>
+      <div className="styled-main-wrapper">
         <p className="paragraph">
           <Trans i18nKey="wordcountAbout" ns="wordcount">
             This is a list of the words in incident reports ranked by their counts. Common words
@@ -64,7 +63,7 @@ const WordCounts = ({ pageContext, ...props }) => {
               ))}
           </ul>
         </div>
-      </StyledMainWrapper>
+      </div>
     </Layout>
   );
 };

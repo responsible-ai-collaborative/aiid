@@ -703,4 +703,24 @@
   .post-styled-main-wrapper code {
     @apply border border-[#ede713] py-[2px] px-[6px] text-base bg-white;
   }
+
+  aside.sidebar {
+    @apply max-50rem:w-full max-50rem:relative font-karla text-sm w-full border-r border-r-[#ede7f3] h-screen overflow-auto fixed pl-6 pt-0 bg-text-light-gray top-0;
+  }
+
+  aside.sidebar .rightSideTitle {
+    @apply text-sm font-bold uppercase tracking-[1.2px] py-2 pt-6 pb-4 border-l border-l-[#e6ecf1] text-[#1a1a1a];
+  }
+
+  aside.sidebar .rightSideBarUL {
+    @apply mt-8 p-0;
+  }
+
+  aside.sidebar .rightSideBarUL li {
+    @apply list-none border-l border-l-[#e6ecf1];
+  }
+
+  aside.sidebar .rightSideBarUL li a {
+    @apply font-medium leading-6 py-2 pt-6 pb-4 text-[#1a1a1a];
+  }
 }
