@@ -59,7 +59,7 @@ const RefinementList = ({
           </>
         )}
       </Formik>
-      <ListGroup className="max-h-[400px] overflow-y-none mt-4 border">
+      <ListGroup className="max-h-[400px] overflow-y-auto mt-4 border">
         {items.map((item) => (
           <button
             className={`list-group-item text-left ${
