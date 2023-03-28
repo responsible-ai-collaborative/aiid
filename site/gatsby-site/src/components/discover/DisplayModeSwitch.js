@@ -3,23 +3,17 @@ import { useQueryParam } from 'use-query-params';
 import { DisplayModeEnumParam } from './queryParams';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTh, faThList, faInfo } from '@fortawesome/free-solid-svg-icons';
-import { Button } from 'react-bootstrap';
-import styled from 'styled-components';
-
-const Buttons = styled.div`
-  display: flex;
-  gap: 4px;
-`;
-
-const StyledButton = styled(Button)`
-  width: 32px;
-`;
+import { Button } from 'flowbite-react';
 
 function ModeButton({ icon, ...rest }) {
   return (
-    <StyledButton {...rest} size="sm">
+    <Button
+      {...rest}
+      size="sm"
+      className={`${rest.active ? 'bg-gray-700' : 'bg-gray-500'} text-white w-8`}
+    >
       <FontAwesomeIcon icon={icon} />
-    </StyledButton>
+    </Button>
   );
 }
 
@@ -43,18 +37,16 @@ export default function DisplayModeSwitch() {
   };
 
   return (
-    <div className="bootstrap">
-      <Buttons>
-        {Object.keys(modes).map((key) => (
-          <ModeButton
-            variant="secondary"
-            active={key == display}
-            key={key}
-            icon={modes[key].icon}
-            onClick={() => onChange(key)}
-          />
-        ))}
-      </Buttons>
+    <div className="flex gap-1">
+      {Object.keys(modes).map((key) => (
+        <ModeButton
+          variant="secondary"
+          active={key == display}
+          key={key}
+          icon={modes[key].icon}
+          onClick={() => onChange(key)}
+        />
+      ))}
     </div>
   );
 }
