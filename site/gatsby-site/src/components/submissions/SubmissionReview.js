@@ -29,7 +29,7 @@ const ListedGroup = ({ item, className = '', keysToRender, objectKeyToDisplay = 
             <div>
               <b>{key}</b>
             </div>
-            <div className="text-break">
+            <div style={{ overflowWrap: 'anywhere' }}>
               {isArray(item[key])
                 ? item[key].map((i) => (isObject(i) ? i[objectKeyToDisplay] : i)).join(', ')
                 : item[key]}
