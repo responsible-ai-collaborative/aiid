@@ -16,7 +16,7 @@ const slug = (title) => {
 const Details = ({ children, summary = '(expand)' }) => {
   return (
     <details className="my-3">
-      <summary className="mb-3">{summary}</summary>
+      <summary className="mb-3 cursor-pointer">{summary}</summary>
       {children}
     </details>
   );
