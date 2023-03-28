@@ -73,7 +73,7 @@ describe('Unsubscribe pages', () => {
 
     cy.wait('@DeleteSubscriptions');
 
-    cy.contains('You have successfully unsubscribed.').should('exist');
+    cy.get('[data-cy="toast"]').contains('You have successfully unsubscribed.').should('exist');
 
     cy.contains('Continue').click();
 
@@ -105,7 +105,7 @@ describe('Unsubscribe pages', () => {
 
     cy.wait('@DeleteSubscriptions');
 
-    cy.contains('You have successfully unsubscribed.').should('exist');
+    cy.get('[data-cy="toast"]').contains('You have successfully unsubscribed.').should('exist');
 
     cy.contains('Continue').click();
 
@@ -137,7 +137,7 @@ describe('Unsubscribe pages', () => {
 
     cy.wait('@DeleteSubscriptions');
 
-    cy.contains('You have successfully unsubscribed.').should('exist');
+    cy.get('[data-cy="toast"]').contains('You have successfully unsubscribed.').should('exist');
 
     cy.contains('Continue').click();
 
