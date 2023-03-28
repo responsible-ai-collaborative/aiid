@@ -26,7 +26,14 @@ const ConfirmEmail = (props) => {
       confirmEmail({ token, tokenId })
         .then(() => {
           addToast({
-            message: <>{t('Thank you for verifying your account.')}</>,
+            message: (
+              <>
+                <label>{t('Thank you for verifying your account.')}</label>{' '}
+                <Link to={'/login?redirectTo=/account/'} data-cy="confirm-login-btn">
+                  <Trans>Login</Trans>
+                </Link>
+              </>
+            ),
             severity: SEVERITY.success,
           });
         })
@@ -34,7 +41,7 @@ const ConfirmEmail = (props) => {
           addToast({
             message: (
               <>
-                <label className="capitalize">{t(e.error || 'An unknown error has ocurred')}</label>
+                <label className="capitalize">{t('An unknown error has ocurred')}</label>{' '}
                 <Link to={'/login?redirectTo=/account/'} data-cy="confirm-login-btn">
                   <Trans>Login</Trans>
                 </Link>

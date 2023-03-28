@@ -30,6 +30,8 @@ const Unsubscribe = (props) => {
   // this is to get through hydration errors but the page should be refactored
   const [mounted, setMounted] = useState(false);
 
+  const [unsubscribeSuccess, setUnsubscribeSuccess] = useState(false);
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -65,6 +67,7 @@ const Unsubscribe = (props) => {
         message: <>{t('You have successfully unsubscribed.')}</>,
         severity: SEVERITY.success,
       });
+      setUnsubscribeSuccess(true);
     } catch (e) {
       addToast({
         message: (
@@ -94,23 +97,31 @@ const Unsubscribe = (props) => {
             </>
           ) : (
             <>
-              <p>
-                {subscriptionType === SUBSCRIPTION_TYPE.incident && (
-                  <Trans>
-                    Do you want to unsubscribe from{' '}
-                    <Link to={`/cite/${incidentId}`}>incident {{ incidentId }}</Link> updates?
-                  </Trans>
-                )}
-                {subscriptionType === SUBSCRIPTION_TYPE.all && (
-                  <Trans>Do you want to unsubscribe from all notifications?</Trans>
-                )}
-              </p>
-              <Button variant="primary" onClick={unsubscribe}>
-                <div className="flex gap-2">
-                  {unsubscribing && <Spinner size="sm" />}
-                  <Trans>Confirm</Trans>
-                </div>
-              </Button>
+              {unsubscribeSuccess ? (
+                <Link to={'/'}>
+                  <Trans>Continue</Trans>
+                </Link>
+              ) : (
+                <>
+                  <p>
+                    {subscriptionType === SUBSCRIPTION_TYPE.incident && (
+                      <Trans>
+                        Do you want to unsubscribe from{' '}
+                        <Link to={`/cite/${incidentId}`}>incident {{ incidentId }}</Link> updates?
+                      </Trans>
+                    )}
+                    {subscriptionType === SUBSCRIPTION_TYPE.all && (
+                      <Trans>Do you want to unsubscribe from all notifications?</Trans>
+                    )}
+                  </p>
+                  <Button variant="primary" onClick={unsubscribe}>
+                    <div className="flex gap-2">
+                      {unsubscribing && <Spinner size="sm" />}
+                      <Trans>Confirm</Trans>
+                    </div>
+                  </Button>
+                </>
+              )}
             </>
           )}
         </>
