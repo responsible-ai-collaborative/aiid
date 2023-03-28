@@ -1,7 +1,7 @@
 import { useUserContext } from 'contexts/userContext';
 import React, { useState } from 'react';
 import Markdown from 'react-markdown';
-import { Button, Form, Pagination } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { format, getUnixTime } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -14,6 +14,7 @@ import { VariantStatusBadge } from './VariantList';
 import { VARIANT_STATUS } from 'utils/variants';
 import { DELETE_VARIANT, UPDATE_VARIANT } from '../../graphql/variants';
 import { LINK_REPORTS_TO_INCIDENTS } from '../../graphql/reports';
+import { Button, Dropdown, Pagination } from 'flowbite-react';
 
 function DefaultColumnFilter({
   column: { Header, canFilter, filterValue, preFilteredRows, setFilter },
@@ -27,7 +28,7 @@ function DefaultColumnFilter({
   }
 
   return (
-    <div className="bootstrap">
+    <div>
       <h6>{Header}</h6>
       <Form.Control
         data-cy={`input-filter-${Header}`}
@@ -53,6 +54,8 @@ export default function VariantsTable({ data, refetch, setLoading }) {
   const [variantIdToEdit, setVariantIdToEdit] = useState(0);
 
   const [incidentId, setIncidentId] = useState(0);
+
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [deleteVariant] = useMutation(DELETE_VARIANT);
 
@@ -191,7 +194,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         disableFilters: false,
         Cell: ({ row: { values } }) => (
           <div>
-            <Markdown>{values.text_inputs}</Markdown>
+            <Markdown className="variants-markdown">{values.text_inputs}</Markdown>
           </div>
         ),
       },
@@ -202,7 +205,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         disableFilters: false,
         Cell: ({ row: { values } }) => (
           <div>
-            <Markdown>{values.text_outputs}</Markdown>
+            <Markdown className="variants-markdown">{values.text_outputs}</Markdown>
           </div>
         ),
       },
@@ -214,11 +217,11 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         Header: t('Actions'),
         accessor: 'report_number',
         disableFilters: true,
-        width: 300,
+        width: 400,
         Cell: ({ row: { values } }) => (
-          <div className="flex gap-2 bootstrap">
+          <div className="flex gap-2 items-center">
             <Button
-              variant="danger"
+              color="failure"
               onClick={() => handleDelete({ report_number: values.report_number })}
               data-cy="delete-variant-btn"
             >
@@ -226,7 +229,7 @@ export default function VariantsTable({ data, refetch, setLoading }) {
             </Button>
 
             <Button
-              variant="danger"
+              color="failure"
               onClick={() =>
                 handleSubmit({
                   report_number: values.report_number,
@@ -234,13 +237,12 @@ export default function VariantsTable({ data, refetch, setLoading }) {
                   status: VARIANT_STATUS.rejected,
                 })
               }
-              className="bootstrap flex gap-2 disabled:opacity-50"
+              className="flex gap-2 disabled:opacity-50"
               data-cy="reject-variant-btn"
             >
               <Trans ns="variants">Reject</Trans>
             </Button>
             <Button
-              variant="primary"
               onClick={() =>
                 handleSubmit({
                   report_number: values.report_number,
@@ -248,14 +250,13 @@ export default function VariantsTable({ data, refetch, setLoading }) {
                   status: VARIANT_STATUS.approved,
                 })
               }
-              className="bootstrap flex gap-2 disabled:opacity-50"
+              className="flex gap-2 disabled:opacity-50"
               data-cy="approve-variant-btn"
             >
               <Trans ns="variants">Approve</Trans>
             </Button>
             <Button
               data-cy="edit-variant-btn"
-              variant="primary"
               onClick={() => {
                 setVariantIdToEdit(values.report_number);
                 setIncidentId(values.incident_id);
@@ -277,13 +278,9 @@ export default function VariantsTable({ data, refetch, setLoading }) {
     headerGroups,
     prepareRow,
     page,
-    canPreviousPage,
-    canNextPage,
     pageOptions,
     pageCount,
     gotoPage,
-    nextPage,
-    previousPage,
     setPageSize,
     state: { pageIndex, pageSize },
   } = useTable(
@@ -366,14 +363,17 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         </tbody>
       </table>
 
-      <div className="flex gap-2 justify-start items-center mt-3 bootstrap">
-        <Pagination className="mb-0">
-          <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage} />
-          <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage} />
-
-          <Pagination.Next onClick={() => nextPage()} disabled={!canNextPage} />
-          <Pagination.Last onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage} />
-        </Pagination>
+      <div className="flex gap-2 justify-start items-center mt-3">
+        <Pagination
+          className="pagination mb-0"
+          onPageChange={(page) => {
+            gotoPage(page - 1);
+            setCurrentPage(page);
+          }}
+          currentPage={currentPage}
+          showIcons={true}
+          totalPages={pageCount}
+        />
 
         <span>
           Page{' '}
@@ -381,21 +381,25 @@ export default function VariantsTable({ data, refetch, setLoading }) {
             {pageIndex + 1} of {pageOptions.length}
           </strong>{' '}
         </span>
-
-        <Form.Select
+        <Dropdown
+          color={'gray'}
+          label={t(pageSize === 9999 ? 'Show all' : `Show ${pageSize}`)}
           style={{ width: 120 }}
           size="sm"
           value={pageSize}
-          onChange={(e) => {
-            setPageSize(Number(e.target.value));
-          }}
         >
-          {[10, 50, 100, 'all'].map((pageSize) => (
-            <option key={pageSize} value={pageSize == 'all' ? 99999 : pageSize}>
-              Show {pageSize}
-            </option>
+          {[10, 50, 100, 9999].map((pageSize) => (
+            <Dropdown.Item
+              key={pageSize}
+              onClick={() => {
+                setPageSize(Number(pageSize));
+                setCurrentPage(1);
+              }}
+            >
+              {pageSize === 9999 ? <Trans>Show all</Trans> : <Trans>Show {{ pageSize }}</Trans>}
+            </Dropdown.Item>
           ))}
-        </Form.Select>
+        </Dropdown>
       </div>
 
       <VariantEditModal

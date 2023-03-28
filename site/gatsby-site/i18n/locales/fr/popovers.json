@@ -54,5 +54,13 @@
     "description": {
        "title": "Description",
        "text": "Une description courte, factuelle, neutre sur le plan journalistique et complète de l'incident mentionnant l'incident/le problème, le lieu et le dégât."
+    },
+    "text_inputs": {
+        "title": "Entrée et circonstances",
+        "text": "Fournissez les détails pertinents à l'origine de l'incident. Les exemples incluent les invites d'entrée à un chatbot ou une description des circonstances menant aux blessures subies par un robot."
+    },
+    "text_outputs": {
+       "title": "Produits et résultats",
+       "text": "Fournissez les détails pertinents entourant l'incident. Les exemples incluent le texte de sortie d'un chatbot ou la nature des blessures subies par un robot."
     }
 }

@@ -20,7 +20,7 @@ describe('Confirm email', () => {
   it('Should display an error message if the confirmation failed on Atlas', () => {
     cy.visit(`${url}?token=invalidToken&tokenId=invalidTokenId`);
 
-    cy.contains('An unknown error has ocurred').should('exist');
+    cy.get('[data-cy="toast"]').contains('An unknown error has ocurred').should('exist');
     cy.get('[data-cy="confirm-login-btn"]').should('exist');
   });
 
@@ -31,7 +31,7 @@ describe('Confirm email', () => {
 
     cy.visit(`${url}?token=dummyToken&tokenId=dummyTokenId`);
 
-    cy.contains('Thank you for verifying your account.').should('exist');
+    cy.get('[data-cy="toast"]').contains('Thank you for verifying your account.').should('exist');
     cy.get('[data-cy="confirm-login-btn"]').should('exist');
 
     cy.get('[data-cy="confirm-login-btn"]').click();

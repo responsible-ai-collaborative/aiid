@@ -72,7 +72,7 @@ export default function IncidentsPage(props) {
   };
 
   return (
-    <Layout sidebarCollapsed={true} {...props}>
+    <Layout sidebarCollapsed={true} className="w-full" {...props}>
       <AiidHelmet path={props.location.pathname}>
         <title>{t('Variants')}</title>
       </AiidHelmet>
@@ -82,14 +82,14 @@ export default function IncidentsPage(props) {
             <Spinner size="xl" />
           </div>
         )}
-        <div className="bootstrap">
+        <div>
           {!data && (
             <div className="px-3">
               <ListSkeleton />
             </div>
           )}
           {data && (
-            <div className="ms-3 mt-2 mb-2">
+            <div className="ms-3 mt-2 mb-2 overflow-x-auto">
               <VariantsTable data={data} refetch={refetch} setLoading={setLoading} />
             </div>
           )}
