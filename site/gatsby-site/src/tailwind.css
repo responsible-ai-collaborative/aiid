@@ -83,6 +83,10 @@
     .tw-col-auto {
         @apply flex-0-0-auto w-auto max-w-none;
     }
+
+    .tw-modal-body li {
+        @apply pl-6;
+    }
 }
 
 @layer components {
@@ -558,4 +562,91 @@
     .bootstrap .list-group-item+.list-group-item {
         border-top-width: 0;
     }
+    .tsne-visualization-wrapper>.react-transform-wrapper {
+        @apply w-full h-full !important;
+    }
+
+    .tsne-visualization-wrapper>.react-transform-wrapper>.react-transform-component {
+        @apply h-[calc(100vh-2rem)] w-[calc(100vh-2rem)] overflow-visible !important;
+    }
+
+    .tsne-visualization-item>a:not(.incident-card) {
+        @apply text-inherit absolute text-[75%] h-[2em] w-[2em] px-[2px] rounded-[50%] -ml-[1em] -mt-[1em] text-center leading-[2em] shadow-tsne flex justify-center items-center !important;
+    }
+
+    .tsne-visualization-item .incident-card {
+        @apply block min-h-[15em] w-60 rounded-[0.25rem] shadow-tsne absolute p-4 overflow-hidden bg-white !important;
+    }
+
+    .tsne-visualization-item .incident-card img,
+    .tsne-visualization-item .incident-card canvas {
+        @apply -mt-4 -mr-4 mb-2 -ml-4 max-w-[unset] w-[calc(100%+4rem)] h-32 object-cover !important;
+    }
+
+    .tsne-visualization-item .incident-card h3 {
+        @apply text-[100%] m-0 leading-[1.5] !important;
+    }
+
+    .tsne-visualization-item .incident-card:not(:hover) {
+        @apply text-black !important;
+    }
+
+    .tsne-visualization-item> a:hover:not(.current):not(.incident-card) {
+        @apply text-[#ec9982] z-[3] !important;
+    }
+
+    .tsne-visualization-item>a.current {
+        @apply border-[grey] bg-[#001a32] shadow-tsne-current z-2 !important;
+    }
+
+    .pagination [aria-current="page"] button {
+        @apply bg-blue-50 text-blue-600 !important;
+    }
+
+    .variants-markdown > p:first-child {
+        @apply mt-0;
+    }
+
+    .edit-variant-modal > div:first-child {
+        @apply flex;
+    }
+    .incidents-table .tr:nth-child(even) {
+        @apply bg-[#f2f2f2];
+    }
+    .incidents-table .tr :last-child .td {
+        @apply border-b-0;
+    }
+    
+    .incidents-table .th,
+    .incidents-table .td {
+        @apply m-0 p-2 relative;
+    }
+    .incidents-table .th :last-child,
+    .incidents-table .td :last-child {
+        @apply border-r-0;
+    }
+
+   .incidents-pagination [aria-current="page"] button {
+    @apply bg-blue-50 text-blue-600 !important;
+   }
+
+   .Typeahead .rbt-input-multi .rbt-input-wrapper {
+    @apply bg-gray-50 items-center pl-2.5 !important;
+  }
+
+  .Typeahead .rbt-close {
+    @apply border-none bg-transparent !important;
+  }
+
+  .Typeahead .rbt-input-multi {
+    @apply p-0 !important;
+  }
+
+  .Typeahead input {
+    @apply text-sm leading-5 bg-gray-50 pt-2.5 pr-2.5 pb-2.5 border !important;
+  }
+
+  .floating-label-dropdown button {
+    @apply hover:text-blue-500 hover:bg-white hover:border-blue-500 !important;
+  }
 }

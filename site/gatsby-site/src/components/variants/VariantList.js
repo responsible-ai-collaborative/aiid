@@ -3,7 +3,7 @@ import Markdown from 'react-markdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faPlus, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { Trans, useTranslation } from 'react-i18next';
-import { Spinner, Tooltip } from 'flowbite-react';
+import { Button, Spinner, Tooltip } from 'flowbite-react';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { getVariantStatus, VARIANT_STATUS, getVariantStatusText } from 'utils/variants';
 import VariantForm, { schema } from 'components/variants/VariantForm';
@@ -12,7 +12,6 @@ import VariantEditModal from './VariantEditModal';
 import { Formik } from 'formik';
 import { useMutation } from '@apollo/client';
 import { CREATE_VARIANT } from '../../graphql/variants';
-import { Button, Modal } from 'react-bootstrap';
 
 export const VariantStatusBadge = ({ status }) => {
   let badgeClass;
@@ -108,12 +107,7 @@ const VariantCard = ({ variant, incidentId }) => {
 
         {!loadingUserContext && isRole('incident_editor') && (
           <div className="flex justify-end mt-4">
-            <Button
-              variant="primary"
-              type="button"
-              onClick={() => setShowEditModal(true)}
-              data-cy="edit-variant-btn"
-            >
+            <Button type="button" onClick={() => setShowEditModal(true)} data-cy="edit-variant-btn">
               <FontAwesomeIcon icon={faEdit} title={t('Edit Variant')} />
             </Button>
           </div>
@@ -183,7 +177,7 @@ const VariantList = ({ incidentId, variants }) => {
         </div>
       </div>
 
-      <div className="bootstrap">
+      <div>
         <Button variant="outline-primary" onClick={onAddVariantClick} data-cy="add-variant-btn">
           <FontAwesomeIcon
             titleId="add-variant"
@@ -206,7 +200,7 @@ const VariantList = ({ incidentId, variants }) => {
       )}
 
       {displayForm && (
-        <div className="p-4 mt-4 bootstrap flex border-1 rounded-lg break-words flex-col shadow-md">
+        <div className="p-4 mt-4 flex border-1 rounded-lg break-words flex-col shadow-md">
           <Formik
             initialValues={{ text_inputs: '', text_outputs: '' }}
             validationSchema={schema}
@@ -238,14 +232,13 @@ const VariantList = ({ incidentId, variants }) => {
             }}
           >
             {({ isSubmitting, isValid, submitForm }) => (
-              <>
-                <Modal.Body>
+              <div>
+                <div>
                   <VariantForm />
-                </Modal.Body>
-                <Modal.Footer>
+                </div>
+                <div>
                   <div className="flex justify-end gap-3">
                     <Button
-                      variant="primary"
                       type="submit"
                       disabled={isSubmitting || !isValid}
                       onClick={submitForm}
@@ -261,8 +254,8 @@ const VariantList = ({ incidentId, variants }) => {
                       </div>
                     </Button>
                   </div>
-                </Modal.Footer>
-              </>
+                </div>
+              </div>
             )}
           </Formik>
         </div>

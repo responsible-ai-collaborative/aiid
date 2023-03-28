@@ -50,7 +50,7 @@ export default function Details({ item, toggleFilterByIncidentId, viewType }) {
       <input type="hidden" data-cy="incident-date" value={item.epoch_incident_date} />
       <a href={detailsPath}>
         <IncidentCardImage
-          className="card-img-top"
+          className="card-img-top rounded-t-lg"
           publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
           alt={item.title}
           height="240px"
@@ -61,7 +61,7 @@ export default function Details({ item, toggleFilterByIncidentId, viewType }) {
         />
       </a>
       <Card.Body className="flex flex-col ">
-        <HeaderTitle item={item} viewType={viewType} />
+        <HeaderTitle item={item} viewType={viewType} className="text-xl" />
         <SourceDomainSubtitle item={item} className="mb-2 text-muted-gray" />
 
         <Card.Text className="flex-1-1-auto mb-4">
