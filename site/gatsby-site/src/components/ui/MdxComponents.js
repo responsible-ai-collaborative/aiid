@@ -22,6 +22,8 @@ const Details = ({ children, summary }) => {
   );
 };
 
+const Box = ({ children }) => <div className="bg-gray-100 px-4 py-2 rounded">{children}</div>;
+
 const Components = {
   h1: ({ children }) => <h1 id={slug(children)}>{children}</h1>,
   h2: ({ children }) => <h2 id={slug(children)}>{children}</h2>,
@@ -32,6 +34,7 @@ const Components = {
   Details,
   SensitiveImage,
   Button,
+  Box,
 };
 
 export default Components;
