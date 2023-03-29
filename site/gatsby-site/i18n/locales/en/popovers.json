@@ -66,5 +66,13 @@
     "description": {
        "title": "Description",
        "text": "A short, factual, journalistically neutral, and complete description of the incident mentioning the incident/issue, location, and harm."
+    },
+    "text_inputs": {
+        "title": "Input and circumstances",
+        "text": "Provide the relevant details producing the incident. Examples include the input prompts to a chatbot or a description of the circumstances leading to injuries sustained from a robot."
+    },
+    "text_outputs": {
+       "title": "Output and outcomes",
+       "text": "Provide the relevant details surrounding the incident. Examples include output text from a chatbot or the nature of injuries sustained from a robot."
     }
 }

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Form } from 'react-bootstrap';
-import styled from 'styled-components';
 import { useApolloClient, gql } from '@apollo/client';
 import { Image } from '../../utils/cloudinary';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
@@ -182,7 +181,10 @@ function VisualizationView({
   highlightedCategory,
 }) {
   return (
-    <VisualizationWrapper data-cy="tsne-visualization">
+    <div
+      data-cy="tsne-visualization"
+      className="tsne-visualization-wrapper w-full h-[calc(100vh - 2rem)] flex-shrink overflow-x-hidden bg-[#ccc]"
+    >
       <TransformWrapper
         initialScale={currentSpatialIncident ? 2 : 1}
         initialPositionX={-500 + -500 * currentSpatialIncident?.tsne?.x || 0}
@@ -193,7 +195,7 @@ function VisualizationView({
       >
         {({ state }) => (
           <TransformComponent className="h-full">
-            <Visualization className="h-full">
+            <div className="tsne-visualization-item h-full w-full relative overflow-visible aspect-square">
               {incidents.map((incident) => {
                 // I'm pretty sure the JS engine is smart enough to memoize this,
                 // but I'm not taking my chances.
@@ -222,11 +224,11 @@ function VisualizationView({
                   />
                 );
               })}
-            </Visualization>
+            </div>
           </TransformComponent>
         )}
       </TransformWrapper>
-    </VisualizationWrapper>
+    </div>
   );
 }
 
@@ -339,6 +341,7 @@ function PlotPoint({
           // allowing the user to zoom to more accurately select
           // from points that are very close to each other.
           transform: `scale(${scaleMultiplier})`,
+          transition: 'opacity 0.4s ease-in-out',
         }}
         className={`${incident.incident_id == currentIncidentId ? 'current' : ''} hover:z-10`}
         onTouchStart={() => {
@@ -412,7 +415,7 @@ function PlotPoint({
             </>
           ) : (
             <div role="status" className="animate-pulse md:flex md:items-center -m-4 mb-2">
-              <div className="flex items-center justify-center w-full h-32 bg-gray-300 rounded sm:w-96 dark:bg-gray-700">
+              <div className="flex items-center justify-center w-full h-32 bg-gray-300 rounded sm:w-96 dark:bg-gray-700 rounded-b-none">
                 <svg
                   className="w-12 h-12 text-gray-200"
                   xmlns="http://www.w3.org/2000/svg"
@@ -590,90 +593,3 @@ function Sidebar({ children }) {
     </div>
   );
 }
-
-// TransformWrapper > TransformComponent > Visualization
-var VisualizationWrapper = styled.div`
-  width: 100%;
-  height: ${visualizationHeight};
-  flex-shrink: shrink;
-  overflow-x: hidden;
-  background: #ccc;
-
-  > .react-transform-wrapper {
-    width: 100% !important;
-    height: 100%;
-
-    > .react-transform-component {
-      height: ${visualizationHeight};
-      width: ${visualizationHeight};
-      overflow: visible !important;
-    }
-  }
-`;
-
-var Visualization = styled.div`
-  width: 100% !important;
-  height: 100%;
-  position: relative;
-  overflow: visible;
-  aspect-ratio: 1 / 1;
-  > a:not(.incident-card) {
-    color: inherit;
-    position: absolute;
-    font-size: 75%;
-    height: 2em;
-    width: 2em;
-    padding-left: 2px;
-    padding-right: 2px;
-    border-radius: 50%;
-    margin-left: -1em;
-    margin-top: -1em;
-    z-index: 1;
-    text-align: center;
-    line-height: 2em;
-    box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.15);
-    transition: background, opacity 0.25s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .incident-card {
-    display: block;
-    min-height: 15em;
-    width: 15em;
-    background: white;
-    border-radius: 0.25rem;
-    box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.25);
-    position: absolute;
-    padding: 1em;
-    overflow: hidden;
-    img,
-    canvas {
-      margin: -1rem -1rem 0.5rem -1rem;
-      max-width: unset;
-      width: calc(100% + 4rem);
-      height: 8rem;
-      object-fit: cover;
-    }
-    h3 {
-      font-size: 110%;
-      margin: 0px;
-      line-height: 1.5;
-    }
-  }
-  .incident-card:not(:hover) {
-    color: black;
-  }
-
-  > a:hover:not(.current):not(.incident-card) {
-    background: #dedede;
-    z-index: 3;
-    color: var(--primary3) !important;
-  }
-  > a.current {
-    border: 1px solid grey;
-    background: #001a32;
-    box-shadow: 0px 0px 3px 3px rgba(255, 255, 255, 0.75);
-    z-index: 2;
-  }
-`;

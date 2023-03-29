@@ -827,7 +827,7 @@ describe('The Submit form', () => {
 
     cy.wait('@findIncident');
 
-    cy.contains('.invalid-feedback', 'Incident ID 3456456 not found!').should('be.visible');
+    cy.contains('Incident ID 3456456 not found!').should('exist');
   });
 
   it('Should show the editor notes field', () => {

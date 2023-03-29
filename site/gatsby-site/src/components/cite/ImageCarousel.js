@@ -14,8 +14,16 @@ import { Carousel } from 'flowbite-react';
 const ImageCarousel = ({ nodes }) => {
   const { t } = useTranslation();
 
+  const shouldNavigate = nodes.length > 1;
+
   return (
-    <Carousel slideInterval={6000} slide={false}>
+    <Carousel
+      slideInterval={6000}
+      slide={false}
+      indicators={shouldNavigate}
+      leftControl={shouldNavigate ? null : <></>}
+      rightControl={shouldNavigate ? null : <></>}
+    >
       {nodes.map((value, index) => (
         <div className="relative" key={`report-carousel-item-${index}`}>
           <Image
