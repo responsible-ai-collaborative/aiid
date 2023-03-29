@@ -14,13 +14,17 @@ const AdminPage = (props) => {
   const { data, loading } = useQuery(FIND_USERS);
 
   return (
-    <Layout {...props} className="md:max-w-5xl">
+    <Layout {...props} className="w-full">
       <AiidHelmet path={pathname}>
         <title>Admin</title>
       </AiidHelmet>
-      <div className="w-full">
+      <div className="w-full max-w-full">
         {loading && <ListSkeleton />}
-        {data?.users && <UsersTable data={data.users} />}
+        {data?.users && (
+          <div className="overflow-x-auto">
+            <UsersTable data={data.users} />
+          </div>
+        )}
       </div>
     </Layout>
   );
