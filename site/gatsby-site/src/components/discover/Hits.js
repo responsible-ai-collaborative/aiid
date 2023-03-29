@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connectHits, connectStateResults } from 'react-instantsearch-dom';
 import Hit from './Hit';
 import { DisplayModeEnumParam } from './queryParams';
@@ -9,6 +9,12 @@ import ListSkeleton from 'elements/Skeletons/List';
 const Hits = ({ hits, isSearchStalled, toggleFilterByIncidentId, viewType }) => {
   const [display] = useQueryParam('display', DisplayModeEnumParam);
 
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   if (!isSearchStalled && hits.length === 0) {
     return (
       <div className="tw-no-results">
@@ -18,17 +24,33 @@ const Hits = ({ hits, isSearchStalled, toggleFilterByIncidentId, viewType }) => 
     );
   }
 
+  if (!isMounted) return <></>;
+
+  let gridClasses = ``;
+
+  switch (display) {
+    case 'list':
+      gridClasses = `grid grid-cols-1 gap-2`;
+      break;
+    case 'compact':
+      gridClasses = `grid md:grid-cols-4 gap-2`;
+      break;
+    case 'details':
+      gridClasses = `grid md:grid-cols-4 gap-2`;
+      break;
+  }
+
   return (
     <div
-      className={`tw-hits-container ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl ${display} mt-4`}
+      className={`tw-hits-container ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl mt-4 ${gridClasses}`}
     >
-      {isSearchStalled ? (
+      {isSearchStalled && isMounted ? (
         display === 'list' ? (
           <ListSkeleton />
         ) : (
           Array(24)
             .fill()
-            .map((skeleton, i) => (
+            .map((_skeleton, i) => (
               <CardSkeleton key={i} className="m:inline-block ml-3" text={display == 'details'} />
             ))
         )
