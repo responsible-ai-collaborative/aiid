@@ -189,6 +189,8 @@ describe('Variants pages', () => {
             cy.get('[data-cy=edit-variant-btn]').click();
           });
 
+        cy.waitForStableDOM();
+
         cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
 
         cy.get('[data-cy="variant-form-text-inputs"]').clear().type(new_text_inputs);
@@ -259,6 +261,8 @@ describe('Variants pages', () => {
             cy.get('[data-cy=edit-variant-btn]').click();
           });
 
+        cy.waitForStableDOM();
+
         cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
 
         cy.get('[data-cy="variant-form-text-inputs"]').clear().type(new_text_inputs);
@@ -328,6 +332,8 @@ describe('Variants pages', () => {
           .within(() => {
             cy.get('[data-cy=edit-variant-btn]').click();
           });
+
+        cy.waitForStableDOM();
 
         cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
 

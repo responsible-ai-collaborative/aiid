@@ -1,7 +1,6 @@
 import React from 'react';
 import { Trans } from 'react-i18next';
 import { connectStats } from 'react-instantsearch-dom';
-import styled from 'styled-components';
 import DisplayOptions from './DisplayOptions';
 
 function Stats({ className, nbHits: count }) {
@@ -18,4 +17,4 @@ function Stats({ className, nbHits: count }) {
   );
 }
 
-export default connectStats(styled(Stats)``);
+export default connectStats(Stats);
