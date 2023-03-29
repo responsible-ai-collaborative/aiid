@@ -51,7 +51,7 @@ export default function UsersTable({ data, className = '', ...props }) {
         Cell: DefaultDateCell,
       },
       {
-        title: 'Creation Date',
+        title: 'Last Login Date',
         accessor: 'adminData.lastAuthenticationDate',
         Cell: DefaultDateCell,
       },
