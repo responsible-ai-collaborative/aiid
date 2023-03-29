@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Tooltip } from 'flowbite-react';
 import OpenedSvg from '../images/opened';
 import ClosedSvg from '../images/closed';
@@ -20,37 +20,24 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const TreeNode = ({ className = '', setCollapsed, navSetting, item, isCollapsed = false }) => {
+  const calculatedClassName = `${className} item ${
+    item.current
+      ? 'active bg-light-orange text-white dark:bg-gray-700'
+      : 'text-white md:text-inherit hover:bg-light-orange dark:text-white hover:text-white dark:hover:bg-gray-700'
+  }`;
+
+  const hasChildren = item.items.length > 0;
+
   const click = () => {
     setCollapsed(item['url']);
   };
 
-  const [icon, setIcon] = React.useState(null);
-
-  const [hasChildren, setHasChildren] = React.useState(false);
-
-  const [calculatedClassName, setCalculatedClassName] = React.useState('');
-
-  useEffect(() => {
-    const icon = getIcon(item.label, item.current);
-
-    setIcon(icon);
-    const hasChildren = item.items.length > 0;
-
-    setHasChildren(hasChildren);
-    const calculatedClassName = `${className} item ${
-      item.current
-        ? 'active bg-light-orange text-white dark:bg-gray-700'
-        : 'text-white md:text-inherit hover:bg-light-orange dark:text-white hover:text-white dark:hover:bg-gray-700'
-    }`;
-
-    setCalculatedClassName(calculatedClassName);
-  }, []);
+  const icon = getIcon(item.label, item.current);
 
   return (
     <>
       <li className={`z-50`} data-cy={'sidebar-' + item.label}>
         <NodeLink
-          title=""
           item={item}
           isCollapsed={isCollapsed}
           click={click}
