@@ -11,7 +11,7 @@ exports = ({
         context.http.post({
             url: 'https://api.rollbar.com/api/1/item/',
             headers: {
-                "X-Rollbar-Access-Token": [rollbarAccessToken], //["8b2c0e7fb066444b82941cee826619ca"],
+                "X-Rollbar-Access-Token": [rollbarAccessToken],
                 "accept": ["application/json"],
                 "content-type": ["application/json"],
             },
