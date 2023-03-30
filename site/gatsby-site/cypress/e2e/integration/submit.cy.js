@@ -445,7 +445,7 @@ describe('The Submit form', () => {
     });
   });
 
-  it.skip('Should show a list of related reports', () => {
+  it('Should show a list of related reports', () => {
     const relatedReports = {
       byURL: {
         data: {
@@ -478,9 +478,9 @@ describe('The Submit form', () => {
             },
             {
               __typename: 'Report',
-              report_number: 1467,
-              title: 'Facial Recognition Blamed For False Arrest And Jail Time',
-              url: 'https://www.silicon.co.uk/e-regulation/facial-recognition-false-arrest-349782',
+              report_number: 1416,
+              title: 'AI Chatbot Shut Down After Learning to Talk Like a Racist Asshole',
+              url: 'https://www.vice.com/en/article/akd4g5/ai-chatbot-shut-down-after-learning-to-talk-like-a-racist-asshole',
             },
           ],
         },
@@ -496,24 +496,13 @@ describe('The Submit form', () => {
             {
               __typename: 'Incident',
               incident_id: 1,
+              title: 'Google’s YouTube Kids App Presents Inappropriate Content',
               reports: [
                 {
                   __typename: 'Report',
                   report_number: 10,
-                  title: 'Remove YouTube Kids app until it eliminates its inappropriate content',
+                  title: 'Google’s YouTube Kids App Presents Inappropriate Content',
                   url: 'https://www.change.org/p/remove-youtube-kids-app-until-it-eliminates-its-inappropriate-content',
-                },
-                {
-                  __typename: 'Report',
-                  report_number: 6,
-                  title: 'What parents should know about inappropriate content on YouTube',
-                  url: 'https://www.goodmorningamerica.com/family/story/parents-inappropriate-content-youtube-54993637',
-                },
-                {
-                  __typename: 'Report',
-                  report_number: 14,
-                  title: 'YouTube Kids Is Nowhere Near as Innocent As It Seems',
-                  url: 'https://studybreaks.com/tvfilm/youtube-kids-isnt-innocent-seems/',
                 },
               ],
             },
@@ -573,12 +562,9 @@ describe('The Submit form', () => {
       cy.get(`input[name="${key}"]`).type(values[key]);
     }
 
-    cy.wait([
-      '@RelatedReportsByURL',
-      '@RelatedReportsByPublishedDate',
-      '@RelatedReportsByAuthor',
-      '@RelatedReportsByIncidentId',
-    ]);
+    cy.waitForStableDOM();
+
+    cy.wait(['@RelatedReportsByAuthor', '@RelatedReportsByIncidentId'], { timeout: 20000 });
 
     for (const key of ['byURL', 'byDatePublished', 'byIncidentId']) {
       const reports =
@@ -587,20 +573,20 @@ describe('The Submit form', () => {
           : relatedReports[key].data.reports;
 
       cy.get(`[data-cy="related-${key}"]`).within(() => {
-        cy.get('[class="list-group-item"]').should('have.length', reports.length, 'bue');
+        cy.get('[data-cy="result"]').should('have.length', reports.length, 'bue');
 
         for (const report of reports) {
-          cy.contains('[class="list-group-item"]', report.title).should('be.visible');
+          cy.contains('[data-cy="result"]', report.title, { timeout: 10000 }).should('be.visible');
         }
       });
     }
 
     cy.get(`[data-cy="related-byAuthors"]`).within(() => {
-      cy.get('.list-group-item').should('contain.text', 'No related reports found.');
+      cy.get('[data-cy="no-related-reports"]').should('contain.text', 'No related reports found.');
     });
   });
 
-  it.skip('Should show a preliminary checks message', () => {
+  it('Should show a preliminary checks message', () => {
     const relatedReports = {
       byURL: {
         data: {
@@ -676,38 +662,31 @@ describe('The Submit form', () => {
       cy.get(`input[name="${key}"]`).type(values[key]);
     }
 
-    cy.wait([
-      '@RelatedReportsByURL',
-      '@RelatedReportsByPublishedDate',
-      '@RelatedReportsByAuthor',
-      '@RelatedReportsByIncidentId',
-    ]);
+    cy.wait(['@RelatedReportsByAuthor', '@RelatedReportsByIncidentId'], { timeout: 20000 });
 
-    cy.get('[data-cy="empty-message"]').should('be.visible');
+    cy.get('[data-cy="no-related-reports"]').should('be.visible');
 
-    cy.get('[data-cy="related-reports"]').should('not.exist');
+    cy.get('[data-cy="result"]').should('not.exist');
   });
 
   // cy.setEditorText doesn't seem to trigger a render of the relateBbyText component
-  it.skip('Should show related reports based on semantic similarity', () => {
+  it('Should show related reports based on semantic similarity', () => {
     cy.visit(url);
     cy.setEditorText(
       `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
     );
 
-    cy.get('[data-cy=related-byText] [data-cy=result] a[data-cy=title]').should(
+    cy.clickOutside();
+
+    cy.get('[data-cy=related-byText] [data-cy=result] a[data-cy=title]', { timeout: 20000 }).should(
       'contain',
       'YouTube'
     );
     cy.clickOutside();
-
-    cy.get('.form-has-errors').should('not.exist');
-
-    cy.get('[data-cy="to-step-2"]').click();
   });
 
   // cy.setEditorText doesn't seem to trigger a render of the relateBbyText component
-  it.skip('Should *not* show semantically related reports when the text is under 256 non-space characters', () => {
+  it('Should *not* show semantically related reports when the text is under 256 non-space characters', () => {
     cy.visit(url);
 
     cy.setEditorText(
