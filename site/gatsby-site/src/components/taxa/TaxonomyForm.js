@@ -453,12 +453,10 @@ function FormField({
           <Form.Check
             key={v}
             type="radio"
-            name={identifier}
             label={v}
-            id={`${identifier}-${v}`}
-            value={v}
-            onChange={handleChange}
-            checked={(formikValues[identifier] || []).includes(v)}
+            id={`${field.field_number || ''}${identifier}-${v}`}
+            onChange={() => setFieldValue(identifier, v)}
+            checked={formikValues[identifier] == v}
           />
         ))}
       {field.display_type === 'enum' && field.permitted_values.length > 5 && (
