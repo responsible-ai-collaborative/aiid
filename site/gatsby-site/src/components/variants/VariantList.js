@@ -139,10 +139,12 @@ const VariantList = ({ incidentId, variants }) => {
 
   const [createVariantMutation] = useMutation(CREATE_VARIANT);
 
-  const addVariant = async ({ incidentId, text_inputs, text_outputs }) => {
+  const addVariant = async ({ incidentId, incident_date, submitters, text, inputs_outputs }) => {
     const variant = {
-      text_inputs,
-      text_outputs,
+      date_published: incident_date,
+      submitters,
+      text,
+      inputs_outputs,
     };
 
     await createVariantMutation({ variables: { input: { incidentId, variant } } });
@@ -202,11 +204,14 @@ const VariantList = ({ incidentId, variants }) => {
       {displayForm && (
         <div className="p-4 mt-4 flex border-1 rounded-lg break-words flex-col shadow-md">
           <Formik
-            initialValues={{ text_inputs: '', text_outputs: '' }}
+            initialValues={{ incident_date: '', submitters: [], text: '', inputs_outputs: [''] }}
             validationSchema={schema}
-            onSubmit={async ({ text_inputs, text_outputs }, { setSubmitting, resetForm }) => {
+            onSubmit={async (
+              { incident_date, submitters, text, inputs_outputs },
+              { setSubmitting, resetForm }
+            ) => {
               try {
-                await addVariant({ incidentId, text_inputs, text_outputs });
+                await addVariant({ incidentId, incident_date, submitters, text, inputs_outputs });
 
                 addToast({
                   message: t(
@@ -236,24 +241,22 @@ const VariantList = ({ incidentId, variants }) => {
                 <div>
                   <VariantForm />
                 </div>
-                <div>
-                  <div className="flex justify-end gap-3">
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting || !isValid}
-                      onClick={submitForm}
-                      data-cy="add-variant-submit-btn"
-                    >
-                      <div className="flex gap-2 items-center">
-                        {isSubmitting && (
-                          <div>
-                            <Spinner size="sm" />
-                          </div>
-                        )}
-                        <Trans>Submit</Trans>
-                      </div>
-                    </Button>
-                  </div>
+                <div className="flex justify-end gap-3 mt-3">
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting || !isValid}
+                    onClick={submitForm}
+                    data-cy="add-variant-submit-btn"
+                  >
+                    <div className="flex gap-2 items-center">
+                      {isSubmitting && (
+                        <div>
+                          <Spinner size="sm" />
+                        </div>
+                      )}
+                      <Trans>Submit</Trans>
+                    </div>
+                  </Button>
                 </div>
               </div>
             )}

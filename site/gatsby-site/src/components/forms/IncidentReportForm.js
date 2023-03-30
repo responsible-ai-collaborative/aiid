@@ -96,8 +96,6 @@ export const schema = yup.object().shape({
   editor_notes: yup.string().nullable(),
   incident_ids: yup.array().of(yup.number().positive()),
   is_incident_report: yup.boolean().required(),
-  text_inputs: yup.string().nullable(),
-  text_outputs: yup.string().nullable(),
 });
 
 const IncidentReportForm = () => {

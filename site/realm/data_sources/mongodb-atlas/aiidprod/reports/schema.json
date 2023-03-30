@@ -92,11 +92,11 @@
         "text": {
             "bsonType": "string"
         },
-        "text_inputs": {
-            "bsonType": "string"
-        },
-        "text_outputs": {
-            "bsonType": "string"
+        "inputs_outputs": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
         },
         "title": {
             "bsonType": "string"
