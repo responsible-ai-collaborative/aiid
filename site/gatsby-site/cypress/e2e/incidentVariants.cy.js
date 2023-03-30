@@ -101,13 +101,17 @@ describe('Variants pages', () => {
 
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.contains('h1', 'Variants').should('exist').scrollIntoView();
 
     cy.get('[data-cy=variant-form]').should('not.exist');
 
     cy.get('[data-cy=add-variant-btn]').scrollIntoView().click();
 
-    cy.get('[data-cy=variant-form]', { timeout: 10000 }).should('exist');
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy=variant-form]').should('exist');
 
     cy.get('[data-cy="variant-form-text-inputs"]').type(text_inputs);
     cy.get('[data-cy="variant-form-text-outputs"]').type(text_outputs);
