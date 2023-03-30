@@ -397,8 +397,8 @@ const IncidentReportForm = () => {
 
         <TextInputGroup
           name="editor_notes"
-          label="Editor Notes"
-          placeholder={'Editor notes'}
+          label={t('Editor Notes')}
+          placeholder={t('Editor Notes')}
           icon={faAlignLeft}
           type="textarea"
           as="textarea"

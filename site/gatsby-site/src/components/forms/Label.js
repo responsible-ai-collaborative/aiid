@@ -37,7 +37,7 @@ const Label = ({ popover, label = '', required = false, showPopover = true }) =>
   );
 
   return (
-    <Tooltip content={TooltipContent}>
+    <Tooltip content={TooltipContent} className="form-tooltip">
       <label
         data-cy={`label-${popover}`}
         className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 relative whitespace-nowrap"
