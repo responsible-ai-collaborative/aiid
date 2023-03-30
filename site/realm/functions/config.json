@@ -1,5 +1,29 @@
 [
     {
+        "name": "passwordReset",
+        "private": true
+    },
+    {
+        "name": "reportTranslations",
+        "private": false
+    },
+    {
+        "name": "getEmailTemplateNewReportAddedToAnIncident",
+        "private": true
+    },
+    {
+        "name": "getUser",
+        "private": false
+    },
+    {
+        "name": "getEmailTemplateNewEntityIncident",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplateEntityIncidentUpdated",
+        "private": true
+    },
+    {
         "name": "onNewUser",
         "private": true
     },
@@ -8,36 +32,20 @@
         "private": true
     },
     {
+        "name": "createVariant",
+        "private": false
+    },
+    {
         "name": "sendEmail",
         "private": false
     },
     {
-        "name": "getEmailTemplateEntityIncidentUpdated",
+        "name": "getEmailTemplatePasswordReset",
         "private": true
     },
     {
-        "name": "getEmailTemplateNewIncident",
+        "name": "getEmailTemplateIncidentUpdate",
         "private": true
-    },
-    {
-        "name": "getEmailTemplateNewReportAddedToAnIncident",
-        "private": true
-    },
-    {
-        "name": "reportTranslations",
-        "private": false
-    },
-    {
-        "name": "getEmailTemplateNewEntityIncident",
-        "private": true
-    },
-    {
-        "name": "passwordReset",
-        "private": true
-    },
-    {
-        "name": "getUser",
-        "private": false
     },
     {
         "name": "onNewIncident",
@@ -49,7 +57,24 @@
         "private": false
     },
     {
-        "name": "getEmailTemplateIncidentUpdate",
+        "name": "apiRequest",
+        "private": false,
+        "disable_arg_logs": true
+    },
+    {
+        "name": "promoteSubmissionToReport",
+        "private": false
+    },
+    {
+        "name": "linkReportsToIncidents",
+        "private": false
+    },
+    {
+        "name": "getEmailTemplateNewIncident",
+        "private": true
+    },
+    {
+        "name": "onIncidentUpdate",
         "private": true
     },
     {
@@ -57,12 +82,7 @@
         "private": false
     },
     {
-        "name": "apiRequest",
-        "private": false,
-        "disable_arg_logs": true
-    },
-    {
-        "name": "getEmailTemplatePasswordReset",
+        "name": "getEmailTemplateConfirmEmail",
         "private": true
     },
     {
@@ -71,23 +91,7 @@
         "disable_arg_logs": true
     },
     {
-        "name": "onIncidentUpdate",
-        "private": true
-    },
-    {
-        "name": "createVariant",
-        "private": false
-    },
-    {
-        "name": "linkReportsToIncidents",
-        "private": false
-    },
-    {
-        "name": "promoteSubmissionToReport",
-        "private": false
-    },
-    {
-        "name": "getEmailTemplateConfirmEmail",
+        "name": "logRollbar",
         "private": true
     }
 ]

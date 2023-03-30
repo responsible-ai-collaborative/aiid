@@ -25,7 +25,7 @@ function ReportPage(props) {
 
   const defaultTitle = t('Report {{report_number}}', { ...report });
 
-  const metaTitle = `Report ${report.report_number}: ${report.title}`;
+  const metaTitle = `Report ${report.report_number}`;
 
   const metaDescription = report.description;
 
@@ -47,7 +47,7 @@ function ReportPage(props) {
       </div>
 
       <Container>
-        <ReportCard item={report} />
+        <ReportCard item={report} alwaysExpanded={true} />
       </Container>
     </Layout>
   );

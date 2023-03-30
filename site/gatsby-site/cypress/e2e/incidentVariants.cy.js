@@ -75,7 +75,7 @@ describe('Variants pages', () => {
     });
   });
 
-  it.skip('Should add a new Variant - Unauthenticated user', () => {
+  it('Should add a new Variant - Unauthenticated user', () => {
     const text_inputs = 'Input text with **markdown**';
 
     const text_outputs = 'Output text with **markdown**';
@@ -116,7 +116,11 @@ describe('Variants pages', () => {
 
     cy.get('[data-cy=add-variant-submit-btn]').click();
 
+    cy.waitForStableDOM();
+
     cy.wait('@createVariant');
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy=success-message]').contains(
       "Your variant has been added to the review queue and will appear on this page within 12 hours. Please continue submitting when you encounter more variants. Most of the time we won't review it in the same day, but it will appear within a day as unreviewed."
@@ -189,6 +193,8 @@ describe('Variants pages', () => {
             cy.get('[data-cy=edit-variant-btn]').click();
           });
 
+        cy.waitForStableDOM();
+
         cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
 
         cy.get('[data-cy="variant-form-text-inputs"]').clear().type(new_text_inputs);
@@ -259,6 +265,8 @@ describe('Variants pages', () => {
             cy.get('[data-cy=edit-variant-btn]').click();
           });
 
+        cy.waitForStableDOM();
+
         cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
 
         cy.get('[data-cy="variant-form-text-inputs"]').clear().type(new_text_inputs);
@@ -328,6 +336,8 @@ describe('Variants pages', () => {
           .within(() => {
             cy.get('[data-cy=edit-variant-btn]').click();
           });
+
+        cy.waitForStableDOM();
 
         cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
 

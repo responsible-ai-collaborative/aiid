@@ -7,7 +7,6 @@ import Row from 'react-bootstrap/Row';
 
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
-import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 const Backups = ({ pageContext, ...props }) => {
@@ -23,9 +22,9 @@ const Backups = ({ pageContext, ...props }) => {
         <title>Database Backups and Snapshots</title>
       </AiidHelmet>
       <div className="titleWrapper">
-        <StyledHeading>Database Snapshots</StyledHeading>
+        <h1 className="font-karla font-bold flex-1 pt-0">Database Snapshots</h1>
       </div>
-      <StyledMainWrapper>
+      <div className="styled-main-wrapper">
         <h2>Citing the Database as a Whole</h2>
         <p>We invite you to cite:</p>
         <blockquote>
@@ -78,7 +77,7 @@ const Backups = ({ pageContext, ...props }) => {
             </Col>
           </Row>
         </Container>
-      </StyledMainWrapper>
+      </div>
     </Layout>
   );
 };

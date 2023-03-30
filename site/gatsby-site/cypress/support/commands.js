@@ -64,6 +64,7 @@ Cypress.Commands.add('setEditorText', (value, selector = '.CodeMirror') => {
   return cy
     .get(selector)
     .first()
+    .click()
     .then((editor) => {
       editor[0].CodeMirror.setValue(value);
     });
