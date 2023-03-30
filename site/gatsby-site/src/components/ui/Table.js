@@ -80,7 +80,7 @@ export default function Table({ table, className = '', ...props }) {
       <div className="max-w-full overflow-x-scroll">
         <table
           {...getTableProps()}
-          className="w-full text-sm text-left text-gray-500 dark:text-gray-400 border-none overflow-hidden h-[1px]"
+          className="w-full text-sm text-left text-gray-900 dark:text-gray-400 border-none overflow-hidden h-[1px]"
         >
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             {headerGroups.map((headerGroup) => (
