@@ -7,6 +7,7 @@ import UserForm, { schema } from './UserForm';
 import { FIND_USER, UPDATE_USER_ROLES } from '../../graphql/users';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import SubmitButton from 'components/ui/SubmitButton';
+import useToastContext, { SEVERITY } from 'hooks/useToast';
 
 export default function UserEditModal({ onClose, userId }) {
   const { data: userData, loading } = useQuery(FIND_USER, {
@@ -15,8 +16,24 @@ export default function UserEditModal({ onClose, userId }) {
 
   const [updateUserRoles] = useMutation(UPDATE_USER_ROLES);
 
+  const addToast = useToastContext();
+
   const handleSubmit = async (values) => {
-    await updateUserRoles({ variables: { roles: values.roles } });
+    try {
+      await updateUserRoles({ variables: { roles: values.roles } });
+
+      addToast({
+        message: <>User updated.</>,
+        severity: SEVERITY.success,
+      });
+
+      onClose();
+    } catch (e) {
+      addToast({
+        message: <>Error updating user {e.message}</>,
+        severity: SEVERITY.console.error(),
+      });
+    }
   };
 
   return (
