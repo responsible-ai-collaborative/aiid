@@ -9,6 +9,40 @@ import DefaultSkeleton from 'elements/Skeletons/Default';
 import SubmitButton from 'components/ui/SubmitButton';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 
+const supportedRoles = [
+  { name: 'admin', description: '' },
+  { name: 'subscriber', description: '' },
+  { name: 'submitter', description: '' },
+  { name: 'incident_editor', description: '' },
+  { name: 'taxonomy_editor', description: '' },
+  { name: 'taxonomy_editor_{name}', description: '' },
+];
+
+const RolesTable = ({ roles }) => (
+  <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <tr>
+        <th scope="col" className="px-6 py-3">
+          Role
+        </th>
+        <th scope="col" className="px-6 py-3">
+          Description
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {roles.map((role) => (
+        <tr key={role.name} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+          <td className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+            {role.name}
+          </td>
+          <td className="px-6 py-2">{role.description}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+);
+
 export default function UserEditModal({ onClose, userId }) {
   const { data: userData, loading } = useQuery(FIND_USER, {
     variables: { query: { userId: userId } },
@@ -58,6 +92,12 @@ export default function UserEditModal({ onClose, userId }) {
             <>
               <Modal.Body>
                 <UserForm />
+                <details>
+                  <summary className="cursor-pointer text-sm">Supported Roles</summary>
+                  <div className="mt-2">
+                    <RolesTable roles={supportedRoles} />
+                  </div>
+                </details>
               </Modal.Body>
               <Modal.Footer>
                 <SubmitButton
