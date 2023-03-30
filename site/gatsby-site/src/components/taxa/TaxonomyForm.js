@@ -441,6 +441,15 @@ function FormField({
     autocompleteValues = autocompleteValues.concat(entitiesData.data.entities.map((e) => e.name));
   }
 
+  const radio = {
+    type: 'radio',
+    onClick: (event) => {
+      if (event.target.checked) {
+        setFieldValue(identifier, null);
+      }
+    },
+  };
+
   return (
     <div key={field.short_name} className="bootstrap">
       <Form.Label>
@@ -451,8 +460,8 @@ function FormField({
         field.permitted_values.length <= 5 &&
         field.permitted_values.map((v) => (
           <Form.Check
+            {...radio}
             key={v}
-            type="radio"
             label={v}
             id={`${field.field_number || ''}${identifier}-${v}`}
             onChange={() => setFieldValue(identifier, v)}
@@ -512,8 +521,8 @@ function FormField({
       {field.display_type === 'bool' && (
         <>
           <Form.Check
+            {...radio}
             key="yes"
-            type="radio"
             name={identifier}
             label="yes"
             id={`${identifier}-yes`}
@@ -522,8 +531,8 @@ function FormField({
             checked={[true, 'true'].includes(formikValues[identifier])}
           />
           <Form.Check
+            {...radio}
             key="no"
-            type="radio"
             name={identifier}
             label="no"
             id={`${identifier}-no`}
