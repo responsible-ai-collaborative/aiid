@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field } from 'formik';
+import { Field, useFormikContext } from 'formik';
 import * as yup from 'yup';
 import TagsControl from 'components/forms/TagsControl';
 import { Label, TextInput } from 'flowbite-react';
@@ -10,6 +10,8 @@ export const schema = yup.object().shape({
 });
 
 const UserForm = () => {
+  const { isSubmitting } = useFormikContext();
+
   return (
     <div>
       <div className="mb-2 block">
@@ -18,7 +20,7 @@ const UserForm = () => {
       </div>
       <div className="mb-2 block">
         <Label htmlFor="roles" value="Roles" />
-        <TagsControl name="roles" />
+        <TagsControl name="roles" disabled={isSubmitting} />
       </div>
     </div>
   );
