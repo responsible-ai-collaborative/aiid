@@ -428,13 +428,10 @@ const IncidentReportForm = () => {
                     />
                     <Label label={t('Title')} />
                   </div>
-                  <TextInputGroup
-                    label=""
-                    placeholder={''}
+                  <input
                     type="text"
                     value={values[name].title}
                     onChange={(e) => setFieldValue(`${name}.title`, e.target.value)}
-                    {...TextInputGroupProps}
                   />
                 </div>
 
