@@ -15,7 +15,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
-import { StyledHeading } from 'components/styles/Docs';
 import { useUserContext } from 'contexts/userContext';
 import CardSkeleton from 'elements/Skeletons/Card';
 
@@ -164,9 +163,9 @@ export default function NewsSearchPage(props) {
         <title>{title}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <StyledHeading>
+        <h1 className="font-karla font-bold flex-1 pt-0">
           <Trans>{title}</Trans>
-        </StyledHeading>
+        </h1>
       </div>
       <p>
         <Trans>

@@ -1,7 +1,6 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
-import { StyledHeading } from 'components/styles/Docs';
 import TsneVisualization from 'components/cite/TsneVisualization';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
@@ -28,7 +27,7 @@ function TsneVisulizationPage(props) {
       </AiidHelmet>
 
       <div className={'titleWrapper'}>
-        <StyledHeading>{t(metaDescription)}</StyledHeading>
+        <h1 className="font-karla font-bold flex-1 pt-0">{t(metaDescription)}</h1>
       </div>
 
       <TsneVisualization

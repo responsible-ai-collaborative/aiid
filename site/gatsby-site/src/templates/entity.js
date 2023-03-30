@@ -20,7 +20,6 @@ import {
   UPSERT_SUBSCRIPTION,
 } from '../graphql/subscriptions';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
-import { StyledHeading } from 'components/styles/Post';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 const sortByReports = (a, b) => b.reports.length - a.reports.length;
@@ -219,7 +218,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
           <Trans ns="entities">Entities</Trans>
         </LocalizedLink>
         <div className="flex items-center flex-wrap w-full">
-          <StyledHeading>{name}</StyledHeading>
+          <h1 className="text-3xl leading-6 font-medium flex-1 mt-0 pt-0">{name}</h1>
           <div className="flex items-center my-2">
             {loadingSubscription && subscriptionNetworkStatus === NetworkStatus.loading ? (
               <Spinner size="sm" />
