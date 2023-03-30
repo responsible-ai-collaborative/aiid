@@ -7,6 +7,7 @@ exports = async ({ recipients, subject, dynamicData, templateId }) => {
     try {
         emailTemplateBody = await context.functions.execute(`getEmailTemplate${templateId}`);
     } catch (error) {
+        context.functions.execute('logRollbar', { error: '[Send Email]: Invalid templateId', data: { templateId } });
         return {
             statusCode: 400,
             status: "400 Bad Request - Invalid templateId value",
@@ -14,7 +15,7 @@ exports = async ({ recipients, subject, dynamicData, templateId }) => {
     }
 
     const sendGridApiKey = context.values.get("SendGridApiKey");
-    
+
     if (!sendGridApiKey || sendGridApiKey.trim() === '') {
         return {
             statusCode: 202,
@@ -27,6 +28,13 @@ exports = async ({ recipients, subject, dynamicData, templateId }) => {
     // Only "system", "server" or "admin" and "incident_editor" roles can send emails
     if (context.user.type != 'system' && context.user.type != 'server') {
         if (!userCustomData.roles || (!userCustomData.roles.includes('admin') && !userCustomData.roles.includes('incident_editor'))) {
+            context.functions.execute('logRollbar', {
+                error: '[Send Email]: Forbidden', data: {
+                    templateId,
+                    contextUser: context.user,
+                    userCustomData
+                }
+            });
             return {
                 statusCode: 403,
                 status: "403 Forbidden",
@@ -36,18 +44,26 @@ exports = async ({ recipients, subject, dynamicData, templateId }) => {
 
     const sendGridApiUrl = "https://api.sendgrid.com/v3/mail/send";
 
-    var emailData = BuildEmailData(recipients, subject, dynamicData, emailTemplateBody);
+    try {
 
-    const emailResult = await context.http.post({
-        url: sendGridApiUrl,
-        headers: {
-            Authorization: [`Bearer ${sendGridApiKey}`]
-        },
-        body: emailData,
-        encodeBodyAsJSON: true,
-    });
+        var emailData = BuildEmailData(recipients, subject, dynamicData, emailTemplateBody);
 
-    return emailResult;
+        const emailResult = await context.http.post({
+            url: sendGridApiUrl,
+            headers: {
+                Authorization: [`Bearer ${sendGridApiKey}`]
+            },
+            body: emailData,
+            encodeBodyAsJSON: true,
+        });
+
+        return emailResult;
+    } catch (error) {
+        error.message = `[Send Email]: ${error.message}`;
+        context.functions.execute('logRollbar', { error, data: { recipients, subject, dynamicData, templateId } });
+        throw error;
+    }
+
 };
 
 /**
