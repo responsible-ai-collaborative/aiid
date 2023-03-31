@@ -84,7 +84,7 @@ const VariantForm = ({ scrollInputsOutputs = false }) => {
               <Label popover={'inputs_outputs'} label={t('Inputs / Outputs')} showPopover={true} />
             </div>
             <div className={scrollInputsOutputs ? 'max-h-240 overflow-auto mb-2' : ''}>
-              {values.inputs_outputs.map((io, index) => (
+              {values.inputs_outputs?.map((io, index) => (
                 <div className="mb-3" key={`inputs_outputs.${index}`}>
                   <Field name={`inputs_outputs.${index}`}>
                     {({ field }) => (
@@ -120,7 +120,7 @@ const VariantForm = ({ scrollInputsOutputs = false }) => {
             </div>
 
             <div className="flex justify-end gap-2">
-              {values.inputs_outputs.length > 1 && (
+              {values.inputs_outputs?.length > 1 && (
                 <Button
                   type="button"
                   color="failure"
