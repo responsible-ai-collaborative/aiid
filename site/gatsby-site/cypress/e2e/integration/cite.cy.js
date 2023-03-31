@@ -239,7 +239,7 @@ describe('Cite pages', () => {
 
     const date = format(new Date(), 'MMMM d, y');
 
-    cy.wait(0);
+    cy.waitForStableDOM();
 
     cy.contains('button', 'Citation Info').click();
 

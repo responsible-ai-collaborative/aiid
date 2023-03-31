@@ -5,7 +5,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import AiidHelmet from 'components/AiidHelmet';
-import { StyledHeading } from 'components/styles/Docs';
 import UserSubscriptions from 'components/UserSubscriptions';
 
 const Account = (props) => {
@@ -19,9 +18,9 @@ const Account = (props) => {
         <title>{t('Account Details')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <StyledHeading>
+        <h1 className="font-karla font-bold flex-1 pt-0">
           <Trans ns="account">Account Details</Trans>
-        </StyledHeading>
+        </h1>
       </div>
       {loading ? (
         <div className="flex flex-wrap gap-2">
