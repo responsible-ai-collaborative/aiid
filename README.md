@@ -684,10 +684,10 @@ And finally, as part of the site build process, we processed all pending notific
 
 ### Error logging
 
-For the error logging for the whole site and background processes this project uses [Rollbar](https://rollbar.com/seanbmcgregor).
+For the error logging for the whole site and background processes this project uses [Rollbar](https://rollbar.com).
 To log the errors a Realm secret value should be set:
 ```
-rollbarAccessToken: [The post_server_item value from https://rollbar.com/seanbmcgregor/AIID/settings/access_tokens/]
+rollbarAccessToken: [The access token value from your Rollbar account > Projects > Your project > Project Access Tokens > post_server_item]
 ```
 
 ## Contact
