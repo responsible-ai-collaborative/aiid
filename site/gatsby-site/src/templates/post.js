@@ -3,7 +3,6 @@ import AiidHelmet from 'components/AiidHelmet';
 import { graphql, Link } from 'gatsby';
 import { MDXProvider } from '@mdx-js/react';
 import Layout from 'components/Layout';
-import { StyledHeading, StyledMainWrapper } from 'components/styles/Post';
 import config from '../../config';
 import SocialShareButtons from 'components/ui/SocialShareButtons';
 import MdxComponents from 'components/ui/MdxComponents';
@@ -48,7 +47,7 @@ export default function Post(props) {
         <LocalizedLink to="/blog" className="text-lg">
           <Trans>AIID Blog</Trans>
         </LocalizedLink>
-        <StyledHeading>{mdx.fields.title}</StyledHeading>
+        <h1 className="text-3xl leading-6 font-medium flex-1 mt-0 pt-0">{mdx.fields.title}</h1>
         <div className="flex items-center mb-1 -mt-1 flex-wrap">
           <SocialShareButtons
             metaTitle={metaTitle}
@@ -73,9 +72,9 @@ export default function Post(props) {
           </span>
         </div>
       </div>
-      <StyledMainWrapper className="prose">
+      <div className={`prose post-styled-main-wrapper`}>
         <MDXProvider components={MdxComponents}>{children}</MDXProvider>
-      </StyledMainWrapper>
+      </div>
     </Layout>
   );
 }

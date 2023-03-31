@@ -2,7 +2,6 @@ import React from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 
 import config from '../../config';
-import { Sidebar, ListItem } from './styles/Sidebar';
 
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 
@@ -49,14 +48,20 @@ const SidebarLayout = ({ location }) => {
               const itemId = item.title ? item.title.replace(/\s+/g, '').toLowerCase() : '#';
 
               return (
-                <ListItem key={index} to={`#${itemId}`} level={1}>
-                  {item.title}
-                </ListItem>
+                <li key={index} className={'list-none'}>
+                  <a
+                    key={index}
+                    href={`#${itemId}`}
+                    className={`text-[#5c6975] no-underline font-normal py-2 pr-0 pl-12 block relative hover:text-blue-500`}
+                  >
+                    {item.title}
+                  </a>
+                </li>
               );
             });
         }
         return (
-          <Sidebar>
+          <aside className="sidebar">
             <ul data-cy="outline" className={'rightSideBarUL list-revert pl-8'}>
               {navItems && navItems.length > 0 && (
                 <>
@@ -65,7 +70,7 @@ const SidebarLayout = ({ location }) => {
                 </>
               )}
             </ul>
-          </Sidebar>
+          </aside>
         );
       }}
     />
