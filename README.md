@@ -681,6 +681,15 @@ And finally, as part of the site build process, we processed all pending notific
         "processed": false
     }
     ```
+
+### Error logging
+
+For the error logging for the whole site and background processes this project uses [Rollbar](https://rollbar.com).
+To log the errors a Realm secret value should be set:
+```
+rollbarAccessToken: [The access token value from your Rollbar account > Projects > Your project > Project Access Tokens > post_server_item]
+```
+
 ## Contact
 
 For inquiries, you are encouraged to open an issue on this repository or visit the [contact page](https://incidentdatabase.ai/contact).
