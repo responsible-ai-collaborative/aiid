@@ -83,5 +83,9 @@
     {
         "name": "createVariant",
         "private": false
+    },
+    {
+        "name": "logRollbar",
+        "private": true
     }
 ]

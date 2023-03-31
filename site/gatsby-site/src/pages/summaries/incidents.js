@@ -3,7 +3,6 @@ import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
-import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import { hasVariantData } from 'utils/variants';
 import { Button } from 'flowbite-react';
 
@@ -58,16 +57,16 @@ export default function Incidents({ data, ...props }) {
         <title>Incident List</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <StyledHeading>Incident List</StyledHeading>
+        <h1 className="font-karla font-bold flex-1 pt-0">Incident List</h1>
       </div>
-      <StyledMainWrapper>
+      <div className="styled-main-wrapper">
         <p className="paragraph">
           This is a simple numeric listing of all incidents and their reports within the database.
           If you would like to explore the contents of the reports, you should work through the
           <Link to="/apps/discover"> Discover app</Link>.
         </p>
         <IncidentList incidents={incidents} />
-      </StyledMainWrapper>
+      </div>
     </Layout>
   );
 }

@@ -1,5 +1,4 @@
 import Layout from 'components/Layout';
-import { StyledHeading } from 'components/styles/Docs';
 import { graphql } from 'gatsby';
 import React from 'react';
 import PostsListing from 'components/blog/PostsListing';
@@ -14,7 +13,7 @@ export default function BlogPage(props) {
     <Layout {...props}>
       <AiidHelmet metaTitle={'AIID Blog'} path={props.location.pathname} />
       <div className={'titleWrapper'}>
-        <StyledHeading>Blog</StyledHeading>
+        <h1 className="font-karla font-bold flex-1 pt-0">Blog</h1>
       </div>
       <div>
         <PostsListing posts={posts} />
