@@ -8,7 +8,6 @@ import bb, { donut } from 'billboard.js';
 import BillboardJS from '@billboard.js/react';
 
 import Layout from 'components/Layout';
-import { StyledHeading } from 'components/styles/Docs';
 import Link from 'components/ui/Link';
 import LocationMap from 'components/visualizations/LocationMap';
 import { Card, Badge } from 'flowbite-react';
@@ -306,7 +305,7 @@ const Taxonomy = (props) => {
       <AiidHelmet metaTitle={'Taxonomy: ' + namespace} path={props.location.pathname} />
 
       <div className={'titleWrapper'}>
-        <StyledHeading>{namespace}</StyledHeading>
+        <h1 className="font-karla font-bold flex-1 pt-0">{namespace}</h1>
       </div>
       <Description>{description}</Description>
       <h1 className="heading1">Taxonomy Fields</h1>

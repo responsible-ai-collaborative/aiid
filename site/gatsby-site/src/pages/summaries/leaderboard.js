@@ -3,7 +3,6 @@ import AiidHelmet from 'components/AiidHelmet';
 
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
-import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import SubmittersLeaderboard from 'components/leaderboards/SubmittersLeaderboard';
 import AuthorsLeaderboard from 'components/leaderboards/AuthorsLeaderboard';
 import DomainsLeaderboard from 'components/leaderboards/DomainsLeaderboard';
@@ -18,9 +17,9 @@ export default function Authors(props) {
         <title>Submissions Leaderboard</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <StyledHeading>Leaderboard</StyledHeading>
+        <h1 className="font-karla font-bold flex-1 pt-0">Leaderboard</h1>
       </div>
-      <StyledMainWrapper>
+      <div className="styled-main-wrapper">
         <p className="paragraph">
           <Trans i18nKey="leaderboardHeader" ns="leaderboard">
             This is a ranking of the top submitters, authors, and domains by count. If you would
@@ -33,7 +32,7 @@ export default function Authors(props) {
         <SubmittersLeaderboard className="mt-4" />
         <AuthorsLeaderboard className="mt-4" />
         <DomainsLeaderboard className="mt-4" />
-      </StyledMainWrapper>
+      </div>
     </Layout>
   );
 }

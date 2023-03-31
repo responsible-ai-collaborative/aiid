@@ -19,7 +19,6 @@ import { graphql, useStaticQuery } from 'gatsby';
 import { processEntities, RESPONSE_TAG } from '../../utils/entities';
 import SubmissionWizard from '../submissions/SubmissionWizard';
 import getSourceDomain from 'utils/getSourceDomain';
-import { StyledHeading } from 'components/styles/Docs';
 import { Helmet } from 'react-helmet';
 
 const CustomDateParam = {
@@ -227,11 +226,11 @@ const SubmitForm = () => {
         <title>{t(isIncidentResponse ? 'New Incident Response' : 'New Incident Report')}</title>
       </Helmet>
       <div className={'titleWrapper'}>
-        <StyledHeading data-cy="submit-form-title">
+        <h1 className="font-karla font-bold flex-1 pt-0" data-cy="submit-form-title">
           <Trans ns="submit">
             {isIncidentResponse ? 'New Incident Response' : 'New Incident Report'}
           </Trans>
-        </StyledHeading>
+        </h1>
       </div>
       <p>
         {isIncidentResponse ? (

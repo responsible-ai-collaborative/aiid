@@ -2,7 +2,6 @@ import React, { Fragment } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
 import Layout from 'components/Layout';
-import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 
 const ReportList = ({ report }) => (
   <dl data-cy="report" className="my-4 grid grid-cols-1 md:grid-cols-2 border-2 rounded">
@@ -68,15 +67,15 @@ export default function FlaggedIncidents({ data, ...props }) {
         <title>Incident List</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <StyledHeading>Flagged Incident List</StyledHeading>
+        <h1 className="font-karla font-bold flex-1 pt-0">Flagged Incident List</h1>
       </div>
-      <StyledMainWrapper>
+      <div className="styled-main-wrapper">
         <p className="paragraph">
           The following incident reports have been flagged by users and are pending review by
           editors.
         </p>
         <IncidentList incidents={incidents} />
-      </StyledMainWrapper>
+      </div>
     </Layout>
   );
 }
