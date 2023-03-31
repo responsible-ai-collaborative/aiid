@@ -99,6 +99,7 @@ describe('createCitationPages', () => {
         expect(page.context.translate_es).eq(true);
         expect(page.context.translate_en).eq(false);
         expect(page.context.translate_fr).eq(true);
+        expect(page.component).contain('/templates/cite.js');
       });
 
       cy.wrap(createPage.getCall(1).args[0]).then((page) => {
