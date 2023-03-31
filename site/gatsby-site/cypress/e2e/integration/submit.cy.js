@@ -465,22 +465,16 @@ describe('The Submit form', () => {
           reports: [
             {
               __typename: 'Report',
-              report_number: 1397,
-              title: 'Job Screening Service Halts Facial Analysis of Applicants',
-              url: 'https://www.wired.com/story/job-screening-service-halts-facial-analysis-applicants/',
-            },
-            {
-              __typename: 'Report',
-              report_number: 1473,
+              report_number: 810,
               title:
-                'Italian court rules against ‘discriminatory’ Deliveroo rider-ranking algorithm',
-              url: 'https://techcrunch.com/2021/01/04/italian-court-rules-against-discriminatory-deliveroo-rider-ranking-algorithm/',
+                "Google's Nest Stops Selling Its Smart Smoke Alarm For Now Due To Faulty Feature",
+              url: 'https://www.forbes.com/sites/aarontilley/2014/04/03/googles-nest-stops-selling-its-smart-smoke-alarm-for-now',
             },
             {
               __typename: 'Report',
-              report_number: 1416,
-              title: 'AI Chatbot Shut Down After Learning to Talk Like a Racist Asshole',
-              url: 'https://www.vice.com/en/article/akd4g5/ai-chatbot-shut-down-after-learning-to-talk-like-a-racist-asshole',
+              report_number: 811,
+              title: 'Why Nest’s Smoke Detector Fail Is Actually A Win For Everyone',
+              url: 'https://readwrite.com/2014/04/04/nest-smoke-detector-fail/',
             },
           ],
         },
@@ -554,7 +548,7 @@ describe('The Submit form', () => {
     const values = {
       url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
       authors: 'test author',
-      date_published: '2021-01-02',
+      date_published: '2014-03-30',
       incident_id: '1',
     };
 
