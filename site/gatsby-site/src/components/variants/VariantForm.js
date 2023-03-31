@@ -9,7 +9,7 @@ import Label from 'components/forms/Label';
 
 // Schema for yup
 export const schema = yup.object().shape({
-  incident_date: yup.date(),
+  date_published: yup.date(),
   submitters: yup
     .string()
     .matches(/^.{3,}$/, {
@@ -32,15 +32,15 @@ export const schema = yup.object().shape({
     }),
 });
 
-const VariantForm = () => {
+const VariantForm = ({ scrollInputsOutputs = false }) => {
   const { values, errors, touched, handleChange, handleBlur, isSubmitting } = useFormikContext();
 
   const { t } = useTranslation(['variants']);
 
   return (
-    <div className="flex w-full flex-col" data-cy="variant-form">
+    <div className="flex w-full min-w-6xl flex-col" data-cy="variant-form">
       <TextInputGroup
-        name="incident_date"
+        name="date_published"
         label={t('Incident Date')}
         placeholder={t('Incident Date')}
         type="date"
@@ -83,46 +83,52 @@ const VariantForm = () => {
             <div className="flex items-center">
               <Label popover={'inputs_outputs'} label={t('Inputs / Outputs')} showPopover={true} />
             </div>
-            {values.inputs_outputs.map((io, index) => (
-              <div className="mb-3" key={`inputs_outputs.${index}`}>
-                <Field name={`inputs_outputs.${index}`}>
-                  {({ field }) => (
-                    <TextInputGroup
-                      label=""
-                      key={`inputs_outputs.${index}`}
-                      type="textarea"
-                      as="textarea"
-                      rows={4}
-                      placeholder={t('Inputs / Outputs')}
-                      values={values}
-                      errors={errors}
-                      touched={touched}
-                      handleChange={handleChange}
-                      handleBlur={handleBlur}
-                      disabled={isSubmitting}
-                      data-cy="variant-form-text-inputs-outputs"
-                      {...field}
-                    />
-                  )}
-                </Field>
-                <div>
-                  <span className="text-red-700 text-sm">
-                    <Trans ns="validation">
-                      {errors && touched && touched['inputs_outputs'] && errors['inputs_outputs']
-                        ? errors['inputs_outputs'][index]
-                        : null}
-                    </Trans>
-                  </span>
+            <div className={scrollInputsOutputs ? 'max-h-240 overflow-auto mb-2' : ''}>
+              {values.inputs_outputs.map((io, index) => (
+                <div className="mb-3" key={`inputs_outputs.${index}`}>
+                  <Field name={`inputs_outputs.${index}`}>
+                    {({ field }) => (
+                      <TextInputGroup
+                        label=""
+                        key={`inputs_outputs.${index}`}
+                        type="textarea"
+                        as="textarea"
+                        rows={3}
+                        placeholder={t('Inputs / Outputs')}
+                        values={values}
+                        errors={errors}
+                        touched={touched}
+                        handleChange={handleChange}
+                        handleBlur={handleBlur}
+                        disabled={isSubmitting}
+                        data-cy="variant-form-text-inputs-outputs"
+                        {...field}
+                      />
+                    )}
+                  </Field>
+                  <div>
+                    <span className="text-red-700 text-sm">
+                      <Trans ns="validation">
+                        {errors && touched && touched['inputs_outputs'] && errors['inputs_outputs']
+                          ? errors['inputs_outputs'][index]
+                          : null}
+                      </Trans>
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
 
             <div className="flex justify-end gap-2">
               {values.inputs_outputs.length > 1 && (
                 <Button
                   type="button"
                   color="failure"
-                  onClick={() => pop()}
+                  onClick={() => {
+                    push('');
+                    pop();
+                    pop();
+                  }}
                   data-cy="add-text-row-btn"
                 >
                   <Trans>Delete Row</Trans>

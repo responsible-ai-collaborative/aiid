@@ -47,6 +47,8 @@ export const FIND_VARIANT = gql`
       report_number
       title
       date_published
+      submitters
+      text
       tags
       inputs_outputs
     }

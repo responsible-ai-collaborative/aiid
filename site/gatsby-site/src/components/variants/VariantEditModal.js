@@ -58,8 +58,10 @@ export default function VariantEditModal({
   const handleSubmit = async (values) => {
     try {
       const updated = {
-        text_inputs: values.text_inputs,
-        text_outputs: values.text_outputs,
+        date_published: values.date_published,
+        submitters: values.submitters,
+        text: values.text,
+        inputs_outputs: values.inputs_outputs,
       };
 
       if (newVariantStatus) {
@@ -201,7 +203,7 @@ export default function VariantEditModal({
                     <div className="flex mb-2">
                       <VariantStatusBadge status={getVariantStatus(variant)} />
                     </div>
-                    <VariantForm />
+                    <VariantForm scrollInputsOutputs={true} />
                   </Modal.Body>
                   <Modal.Footer>
                     <Link

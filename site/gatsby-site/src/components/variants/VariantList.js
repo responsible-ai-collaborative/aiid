@@ -137,9 +137,9 @@ const VariantList = ({ incidentId, variants }) => {
 
   const [createVariantMutation] = useMutation(CREATE_VARIANT);
 
-  const addVariant = async ({ incidentId, incident_date, submitters, text, inputs_outputs }) => {
+  const addVariant = async ({ incidentId, date_published, submitters, text, inputs_outputs }) => {
     const variant = {
-      date_published: incident_date,
+      date_published,
       submitters,
       text,
       inputs_outputs,
@@ -202,14 +202,14 @@ const VariantList = ({ incidentId, variants }) => {
       {displayForm && (
         <div className="p-4 mt-4 flex border-1 rounded-lg break-words flex-col shadow-md">
           <Formik
-            initialValues={{ incident_date: '', submitters: [], text: '', inputs_outputs: [''] }}
+            initialValues={{ date_published: '', submitters: [], text: '', inputs_outputs: [''] }}
             validationSchema={schema}
             onSubmit={async (
-              { incident_date, submitters, text, inputs_outputs },
+              { date_published, submitters, text, inputs_outputs },
               { setSubmitting, resetForm }
             ) => {
               try {
-                await addVariant({ incidentId, incident_date, submitters, text, inputs_outputs });
+                await addVariant({ incidentId, date_published, submitters, text, inputs_outputs });
 
                 addToast({
                   message: t(
