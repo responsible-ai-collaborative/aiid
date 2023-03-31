@@ -57,52 +57,50 @@ const VariantCard = ({ variant, incidentId }) => {
         <div className="flex">
           <VariantStatusBadge status={getVariantStatus(variant)} />
         </div>
-        <div className="flex w-full flex-col mt-3 gap-2">
-          <div className="font-bold flex items-center gap-2">
-            <Trans ns="variants">Input and circumstances</Trans>
-            <Tooltip
-              content={
-                <Trans ns="variants">
-                  Provide the relevant details producing the incident. Examples include the input
-                  prompts to a chatbot or a description of the circumstances leading to injuries
-                  sustained from a robot.
-                </Trans>
-              }
-              trigger="click"
-              placement="right"
-            >
-              <FontAwesomeIcon
-                icon={faQuestionCircle}
-                style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-                className="far fa-question-circle"
-              />
-            </Tooltip>
+        <div className="flex w-full flex-col mt-3 gap-3">
+          <div className="flex items-center gap-2">
+            <div className="font-bold">
+              <Trans>Incident Date</Trans>:
+            </div>
+            <div>{variant.date_published}</div>
           </div>
-          <div data-cy="variant-text_inputs" className="border-1 rounded-lg px-3">
-            <Markdown>{variant.text_inputs}</Markdown>
-          </div>
-          <div className="font-bold flex items-center gap-2">
-            <Trans ns="variants">Output and outcomes</Trans>
-            <Tooltip
-              content={
-                <Trans ns="variants">
-                  Provide the relevant details surrounding the incident. Examples include output
-                  text from a chatbot or the nature of injuries sustained from a robot.
-                </Trans>
-              }
-              trigger="click"
-              placement="right"
-            >
-              <FontAwesomeIcon
-                icon={faQuestionCircle}
-                style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
-                className="far fa-question-circle"
-              />
-            </Tooltip>
-          </div>
-          <div data-cy="variant-text_outputs" className="border-1 rounded-lg px-3">
-            <Markdown>{variant.text_outputs}</Markdown>
-          </div>
+          {variant.text && (
+            <>
+              <div className="font-bold flex items-center gap-2">
+                <Trans ns="variants">Description of Incident Circumstances</Trans>
+              </div>
+              <div data-cy="variant-text" className="border-1 rounded-lg px-3">
+                <Markdown>{variant.text}</Markdown>
+              </div>
+            </>
+          )}
+          {variant.inputs_outputs && variant.inputs_outputs.length > 0 && (
+            <>
+              <div className="font-bold flex items-center gap-2">
+                <Trans ns="variants">Inputs / Outputs</Trans>
+                <Tooltip
+                  content={<Trans ns="variants">tooltip text</Trans>}
+                  trigger="click"
+                  placement="right"
+                >
+                  <FontAwesomeIcon
+                    icon={faQuestionCircle}
+                    style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+                    className="far fa-question-circle"
+                  />
+                </Tooltip>
+              </div>
+              {variant.inputs_outputs.map((input_output, index) => (
+                <div
+                  className={`border-1 rounded-lg px-3 ${index % 2 == 1 ? 'bg-gray-200' : ''}`}
+                  key={`inputs_outputs.${index}`}
+                  data-cy="variant-inputs-outputs"
+                >
+                  <Markdown>{input_output}</Markdown>
+                </div>
+              ))}
+            </>
+          )}
         </div>
 
         {!loadingUserContext && isRole('incident_editor') && (
