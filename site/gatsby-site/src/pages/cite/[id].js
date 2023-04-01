@@ -13,6 +13,7 @@ import config from '../../../config';
 import { isCompleteReport } from 'utils/variants';
 import { FIND_FULL_INCIDENT } from '../../graphql/incidents';
 import CiteTemplate from 'templates/citeTemplate';
+import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 
 function CiteDynamicPage(props) {
   const {
@@ -42,6 +43,8 @@ function CiteDynamicPage(props) {
 
   const [variants, setVariants] = useState([]);
 
+  const [classifications, setClassifications] = useState(null);
+
   // meta tags
 
   const [metaTitle, setMetaTitle] = useState(null);
@@ -54,9 +57,15 @@ function CiteDynamicPage(props) {
     variables: { query: { incident_id } },
   });
 
+  const { data: classificationsData } = useQuery(FIND_CLASSIFICATION, {
+    variables: { query: { incident_id } },
+  });
+
   useEffect(() => {
-    if (incidentData && incidentData.incident) {
+    if (incidentData?.incident && classificationsData?.classifications) {
       const incidentTemp = { ...incidentData.incident };
+
+      setClassifications({ nodes: classificationsData?.classifications });
 
       //set Entities incident fields
       incidentTemp.Alleged_deployer_of_AI_system = incidentTemp.AllegedDeployerOfAISystem.map(
@@ -142,7 +151,7 @@ function CiteDynamicPage(props) {
           timeline={timeline}
           locationPathName={props.location.pathname}
           allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
-          allMongodbAiidprodClassifications={{ nodes: [] }}
+          allMongodbAiidprodClassifications={classifications}
           nextIncident={nextIncident}
           prevIncident={prevIncident}
           nlp_similar_incidents={nlp_similar_incidents}
