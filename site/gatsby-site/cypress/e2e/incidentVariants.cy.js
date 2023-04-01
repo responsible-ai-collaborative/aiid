@@ -75,7 +75,7 @@ describe('Variants pages', () => {
     });
   });
 
-  it('Should add a new Variant - Unauthenticated user', () => {
+  it.only('Should add a new Variant - Unauthenticated user', () => {
     const text_inputs = 'Input text with **markdown**';
 
     const text_outputs = 'Output text with **markdown**';

@@ -13,15 +13,11 @@ import config from '../../../config';
 import { isCompleteReport } from 'utils/variants';
 import { FIND_FULL_INCIDENT } from '../../graphql/incidents';
 import CiteTemplate from 'templates/citeTemplate';
+import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 
 function CiteDynamicPage(props) {
   const {
-    data: {
-      allMongodbAiidprodTaxa,
-      allMongodbAiidprodClassifications,
-      entities: entitiesData,
-      responses,
-    },
+    data: { allMongodbAiidprodTaxa, entities: entitiesData, responses },
     params: { id: incident_id },
   } = props;
 
@@ -47,6 +43,8 @@ function CiteDynamicPage(props) {
 
   const [variants, setVariants] = useState([]);
 
+  const [classifications, setClassifications] = useState(null);
+
   // meta tags
 
   const [metaTitle, setMetaTitle] = useState(null);
@@ -59,9 +57,15 @@ function CiteDynamicPage(props) {
     variables: { query: { incident_id } },
   });
 
+  const { data: classificationsData } = useQuery(FIND_CLASSIFICATION, {
+    variables: { query: { incident_id } },
+  });
+
   useEffect(() => {
-    if (incidentData && incidentData.incident) {
+    if (incidentData?.incident && classificationsData?.classifications) {
       const incidentTemp = { ...incidentData.incident };
+
+      setClassifications({ nodes: classificationsData?.classifications });
 
       //set Entities incident fields
       incidentTemp.Alleged_deployer_of_AI_system = incidentTemp.AllegedDeployerOfAISystem.map(
@@ -147,7 +151,7 @@ function CiteDynamicPage(props) {
           timeline={timeline}
           locationPathName={props.location.pathname}
           allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
-          allMongodbAiidprodClassifications={allMongodbAiidprodClassifications}
+          allMongodbAiidprodClassifications={classifications}
           nextIncident={nextIncident}
           prevIncident={prevIncident}
           nlp_similar_incidents={nlp_similar_incidents}
@@ -162,20 +166,7 @@ function CiteDynamicPage(props) {
 }
 
 export const query = graphql`
-  query CitationPageQuery($incident_id: Int) {
-    allMongodbAiidprodClassifications(filter: { incident_id: { eq: $incident_id } }) {
-      nodes {
-        incident_id
-        id
-        namespace
-        notes
-        attributes {
-          short_name
-          value_json
-        }
-        publish
-      }
-    }
+  query CitationPageQuery {
     allMongodbAiidprodTaxa {
       nodes {
         id
