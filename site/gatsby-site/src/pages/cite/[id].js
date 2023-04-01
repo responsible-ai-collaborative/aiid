@@ -16,12 +16,7 @@ import CiteTemplate from 'templates/citeTemplate';
 
 function CiteDynamicPage(props) {
   const {
-    data: {
-      allMongodbAiidprodTaxa,
-      allMongodbAiidprodClassifications,
-      entities: entitiesData,
-      responses,
-    },
+    data: { allMongodbAiidprodTaxa, entities: entitiesData, responses },
     params: { id: incident_id },
   } = props;
 
@@ -147,7 +142,7 @@ function CiteDynamicPage(props) {
           timeline={timeline}
           locationPathName={props.location.pathname}
           allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
-          allMongodbAiidprodClassifications={allMongodbAiidprodClassifications}
+          allMongodbAiidprodClassifications={{ nodes: [] }}
           nextIncident={nextIncident}
           prevIncident={prevIncident}
           nlp_similar_incidents={nlp_similar_incidents}
@@ -162,20 +157,7 @@ function CiteDynamicPage(props) {
 }
 
 export const query = graphql`
-  query CitationPageQuery($incident_id: Int) {
-    allMongodbAiidprodClassifications(filter: { incident_id: { eq: $incident_id } }) {
-      nodes {
-        incident_id
-        id
-        namespace
-        notes
-        attributes {
-          short_name
-          value_json
-        }
-        publish
-      }
-    }
+  query CitationPageQuery {
     allMongodbAiidprodTaxa {
       nodes {
         id
