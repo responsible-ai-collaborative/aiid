@@ -2,7 +2,6 @@ import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
 import Layout from 'components/Layout';
-import { StyledHeading, StyledMainWrapper } from 'components/styles/Docs';
 import TaxonomyGraphCarousel from '../../src/components/TaxonomyGraphCarousel.js';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
@@ -23,10 +22,10 @@ export default function Taxonomies({ data, ...props }) {
         <title>{title}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <StyledHeading>{metaTitle}</StyledHeading>
+        <h1 className="font-karla font-bold flex-1 pt-0">{metaTitle}</h1>
         <TranslationBadge originalLanguage="en" />
       </div>
-      <StyledMainWrapper>
+      <div className="styled-main-wrapper">
         <h2>
           <Trans>Applied Taxonomies</Trans>
         </h2>
@@ -72,7 +71,7 @@ export default function Taxonomies({ data, ...props }) {
             taxonomies are the responsibility of the persons and organizations contributing them.
           </Trans>
         </p>
-      </StyledMainWrapper>
+      </div>
     </Layout>
   );
 }

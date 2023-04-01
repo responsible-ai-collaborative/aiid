@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import md5 from 'md5';
-import { Image } from 'utils/cloudinary';
+import { Image as CloudinaryImage, loadImage } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { useUserContext } from 'contexts/userContext';
 import ReportText from 'components/reports/ReportText';
@@ -15,12 +15,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { hasVariantData } from 'utils/variants';
 
-const ReportCard = ({ item, className = '', incidentId }) => {
+const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }) => {
   const { isRole, loading } = useUserContext();
 
   const { t } = useTranslation();
 
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(alwaysExpanded);
+
+  const [useCloudinaryImage, setUseCloudinaryImage] = useState(null);
 
   const ref = useRef(null);
 
@@ -29,6 +31,7 @@ const ReportCard = ({ item, className = '', incidentId }) => {
   const authors = item.authors.join(', ');
 
   const toggleReadMore = () => {
+    if (alwaysExpanded) return;
     setExpanded(!expanded);
   };
 
@@ -38,10 +41,24 @@ const ReportCard = ({ item, className = '', incidentId }) => {
     }
   };
 
+  const fetchCloudinaryImage = async (cloudinaryId) => {
+    const imageExists = await loadImage(cloudinaryId);
+
+    setUseCloudinaryImage(imageExists);
+  };
+
+  useEffect(() => {
+    if (item?.cloudinary_id) {
+      fetchCloudinaryImage(item.cloudinary_id);
+    }
+  }, [item.cloudinary_id]);
+
   return (
     <>
       <div
-        className={`inline-block w-full bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative cursor-pointer`}
+        className={`inline-block w-full bg-white rounded-lg border  shadow-md dark:border-gray-700 dark:bg-gray-800 ${className} p-4 relative cursor-pointer ${
+          expanded ? 'expanded' : ''
+        }`}
         id={`r${item.report_number}`}
         ref={ref}
         data-cy="incident-report-card"
@@ -56,9 +73,9 @@ const ReportCard = ({ item, className = '', incidentId }) => {
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
         >
-          <Image
+          <CloudinaryImage
             className={`img-fluid h-full w-full max-w-full object-cover max-h-full`}
-            publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
+            publicID={useCloudinaryImage ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
             alt={item.title}
             transformation={fill().height(480)}
             itemIdentifier={t('Report {{report_number}}', {
@@ -67,7 +84,7 @@ const ReportCard = ({ item, className = '', incidentId }) => {
           />
         </div>
         <div
-          className="mt-0 cursor-default"
+          className="mt-0 cursor-default select-text"
           role="presentation"
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
@@ -78,7 +95,11 @@ const ReportCard = ({ item, className = '', incidentId }) => {
               onClick={toggleReadMore}
               onKeyDown={toggleReadMoreKeyDown}
             >
-              <h5 className="max-w-full cursor-pointer text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full hover:text-primary-blue">
+              <h5
+                className={`max-w-full text-xl font-bold tracking-tight text-gray-900 dark:text-white w-full ${
+                  !alwaysExpanded ? 'cursor-pointer hover:text-primary-blue' : 'cursor-default'
+                }`}
+              >
                 <Trans ns="landing">{item.title}</Trans>
               </h5>
             </button>
@@ -174,41 +195,38 @@ const ReportCard = ({ item, className = '', incidentId }) => {
             </div>
           )}
         </div>
-        <div className="flex justify-end">
-          <button
-            onClick={() => {
-              toggleReadMore();
-              if (expanded) {
-                ref.current.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}
-            className="text-blue-700 border ml-1 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-xs p-1.5 text-center inline-flex items-center mr-2  dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
-            data-cy={`${expanded ? 'collapse' : 'expand'}-report-button`}
-          >
-            <Trans>{expanded ? 'Collapse' : 'Read More'}</Trans>
-            <svg
-              aria-hidden="true"
-              className="ml-2 -mr-1 w-4 h-4"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
+        {!alwaysExpanded && (
+          <div className="flex justify-end">
+            <button
+              onClick={toggleReadMore}
+              className="text-blue-700 border ml-1 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-xs p-1.5 text-center inline-flex items-center mr-2  dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
+              data-cy={`${expanded ? 'collapse' : 'expand'}-report-button`}
             >
-              {expanded ? (
-                <path
-                  fillRule="evenodd"
-                  d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z"
-                  clipRule="evenodd"
-                ></path>
-              ) : (
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                ></path>
-              )}
-            </svg>
-          </button>
-        </div>
+              <Trans>{expanded ? 'Collapse' : 'Read More'}</Trans>
+              <svg
+                aria-hidden="true"
+                className="ml-2 -mr-1 w-4 h-4"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                {expanded ? (
+                  <path
+                    fillRule="evenodd"
+                    d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z"
+                    clipRule="evenodd"
+                  ></path>
+                ) : (
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  ></path>
+                )}
+              </svg>
+            </button>
+          </div>
+        )}
         {expanded && (
           <div
             className="flex w-full flex-row justify-around items-center text-dark-gray"
