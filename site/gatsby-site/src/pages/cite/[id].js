@@ -58,7 +58,7 @@ function CiteDynamicPage(props) {
   });
 
   const { data: classificationsData } = useQuery(FIND_CLASSIFICATION, {
-    variables: { query: { incident_id } },
+    variables: { query: { incident_id, publish: true } },
   });
 
   useEffect(() => {
