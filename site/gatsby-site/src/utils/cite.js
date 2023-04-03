@@ -1,3 +1,5 @@
+import { isAfter, isEqual } from 'date-fns';
+
 export const getClassificationsArray = (incidentClassifications, taxonomy) => {
   const classifications = incidentClassifications.filter(
     (c) => c?.namespace === taxonomy.namespace
@@ -102,5 +104,23 @@ export const getTranslatedReports = ({ allMongodbAiidprodReports, translations, 
     );
 
     return translation ? { ...r, text: translation.text, title: translation.title } : { ...r };
+  });
+};
+
+export const sortIncidentsByDatePublished = (incidentReports) => {
+  return incidentReports.sort((a, b) => {
+    const dateA = new Date(a.date_published);
+
+    const dateB = new Date(b.date_published);
+
+    if (isEqual(dateA, dateB)) {
+      return 0;
+    }
+    if (isAfter(dateA, dateB)) {
+      return 1;
+    }
+    if (isAfter(dateB, dateA)) {
+      return -1;
+    }
   });
 };
