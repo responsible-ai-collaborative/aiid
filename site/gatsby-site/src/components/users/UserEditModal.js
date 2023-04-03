@@ -71,7 +71,7 @@ export default function UserEditModal({ onClose, userId }) {
   };
 
   return (
-    <Modal show={true} onClose={onClose} data-cy="edit-variant-modal" size="lg">
+    <Modal show={true} onClose={onClose} data-cy="edit-user-modal" size="lg">
       <Modal.Header>
         <Trans ns="admin">Edit User</Trans>
       </Modal.Header>
