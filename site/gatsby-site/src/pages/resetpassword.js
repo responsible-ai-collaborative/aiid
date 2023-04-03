@@ -1,14 +1,14 @@
 import React from 'react';
 import Layout from '../components/Layout';
-import { Form } from 'react-bootstrap';
 import { useUserContext } from 'contexts/userContext';
 import { StringParam, useQueryParams } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
-import { Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
-import Button from '../elements/Button';
+import TextInputGroup from 'components/forms/TextInputGroup';
+import { Button } from 'flowbite-react';
 
 const ResetPasswordSchema = Yup.object({
   password: Yup.string()
@@ -37,7 +37,7 @@ const ResetPassword = (props) => {
   });
 
   return (
-    <Layout {...props} className="bootstrap">
+    <Layout {...props}>
       <Formik
         initialValues={{ password: '', passwordConfirm: '' }}
         validationSchema={ResetPasswordSchema}
@@ -69,47 +69,48 @@ const ResetPassword = (props) => {
           setSubmitting(false);
         }}
       >
-        {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, isValid }) => (
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          isSubmitting,
+          isValid,
+        }) => (
           <Form onSubmit={handleSubmit} className={'w-64'}>
-            <Form.Group className="mb-3">
-              <Form.Label>
-                <Trans ns="login">Password</Trans>
-              </Form.Label>
-              <Form.Control
-                isInvalid={errors.password && touched.password}
+            <div className="mb-3">
+              <TextInputGroup
                 type="password"
+                label={t('Password', { ns: 'login' })}
                 placeholder={t('Enter new password', { ns: 'login' })}
                 name="password"
                 value={values.password}
-                onChange={handleChange}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+                values={values}
+                errors={errors}
+                touched={touched}
               />
-              <Form.Control.Feedback type="invalid">
-                <Trans>{errors.password && touched.password ? errors.password : null}</Trans>
-              </Form.Control.Feedback>
-            </Form.Group>
+            </div>
 
-            <Form.Group className="mb-3">
-              <Form.Label>
-                <Trans ns="login">Confirm new password</Trans>
-              </Form.Label>
-              <Form.Control
-                isInvalid={errors.passwordConfirm && touched.passwordConfirm}
+            <div className="mb-3">
+              <TextInputGroup
                 type="password"
+                label={t('Confirm new password', { ns: 'login' })}
                 placeholder={t('Confirm password', { ns: 'login' })}
                 name="passwordConfirm"
                 value={values.passwordConfirm}
-                onChange={handleChange}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+                values={values}
+                errors={errors}
+                touched={touched}
               />
-              <Form.Control.Feedback type="invalid">
-                <Trans>
-                  {errors.passwordConfirm && touched.passwordConfirm
-                    ? errors.passwordConfirm
-                    : null}
-                </Trans>
-              </Form.Control.Feedback>
-            </Form.Group>
+            </div>
 
-            <Button variant="primary" type="submit" disabled={isSubmitting || !isValid}>
+            <Button type="submit" disabled={isSubmitting || !isValid}>
               <Trans>Submit</Trans>
             </Button>
           </Form>

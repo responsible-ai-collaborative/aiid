@@ -1,12 +1,12 @@
 import React from 'react';
 import Layout from '../components/Layout';
-import { Form } from 'react-bootstrap';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
-import { Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { Trans, useTranslation } from 'react-i18next';
-import Button from '../elements/Button';
+import TextInputGroup from 'components/forms/TextInputGroup';
+import { Button } from 'flowbite-react';
 
 const ForgotPasswordSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -47,26 +47,33 @@ const ForgotPassword = (props) => {
           setSubmitting(false);
         }}
       >
-        {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, isValid }) => (
-          <div className="bootstrap">
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          isSubmitting,
+          isValid,
+        }) => (
+          <div>
             <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label>
-                  <Trans>Email address</Trans>
-                </Form.Label>
-                <Form.Control
-                  isInvalid={errors.email && touched.email}
+              <div className="mb-3" id="formBasicEmail">
+                <TextInputGroup
+                  label={t('Email address')}
                   type="email"
                   placeholder={t('Email')}
                   name="email"
                   value={values.email}
-                  onChange={handleChange}
+                  handleChange={handleChange}
+                  values={values}
+                  errors={errors}
+                  touched={touched}
+                  handleBlur={handleBlur}
                 />
-                <Form.Control.Feedback type="invalid">
-                  <Trans>{errors.email && touched.email ? errors.email : null}</Trans>
-                </Form.Control.Feedback>
-              </Form.Group>
-              <Button variant="primary" type="submit" disabled={isSubmitting || !isValid}>
+              </div>
+              <Button type="submit" disabled={isSubmitting || !isValid}>
                 <Trans>Submit</Trans>
               </Button>
             </Form>
