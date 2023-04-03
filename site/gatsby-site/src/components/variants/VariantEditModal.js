@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { format, getUnixTime } from 'date-fns';
 import Link from 'components/ui/Link';
+import DefaultSkeleton from 'elements/Skeletons/Default';
 
 export default function VariantEditModal({
   show,
@@ -164,11 +165,7 @@ export default function VariantEditModal({
 
           {!variant && (
             <Modal.Body>
-              {variant === undefined && (
-                <div className="flex justify-center">
-                  <Spinner />
-                </div>
-              )}
+              {variant === undefined && <DefaultSkeleton />}
               {variant === null && (
                 <div>
                   <Trans ns="variants">Variant not found</Trans>
