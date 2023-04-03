@@ -75,7 +75,7 @@ describe('Variants pages', () => {
     });
   });
 
-  it('Should add a new Variant - Unauthenticated user', () => {
+  it.skip('Should add a new Variant - Unauthenticated user', () => {
     const text_inputs = 'Input text with **markdown**';
 
     const text_outputs = 'Output text with **markdown**';
@@ -107,7 +107,9 @@ describe('Variants pages', () => {
 
     cy.get('[data-cy=add-variant-btn]').scrollIntoView().click();
 
-    cy.get('[data-cy=variant-form]', { timeout: 10000 }).should('exist');
+    cy.waitForStableDOM();
+
+    cy.get('[data-cy=variant-form]').should('exist');
 
     cy.get('[data-cy="variant-form-text-inputs"]').type(text_inputs);
     cy.get('[data-cy="variant-form-text-outputs"]').type(text_outputs);

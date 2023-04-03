@@ -1,11 +1,16 @@
 const logRollbar = require('../../../../../realm/functions/logRollbar');
 
 describe('Functions', () => {
+  const rollbarAccessToken = 'dummyToken';
+
   it('Log Rollbar', () => {
     global.context = {
       // @ts-ignore
       http: {
         post: cy.stub(),
+      },
+      values: {
+        get: cy.stub().returns(rollbarAccessToken),
       },
     };
 
@@ -25,7 +30,7 @@ describe('Functions', () => {
       expect(global.context.http.post).to.be.calledWith({
         url: 'https://api.rollbar.com/api/1/item/',
         headers: {
-          'X-Rollbar-Access-Token': ['8b2c0e7fb066444b82941cee826619ca'],
+          'X-Rollbar-Access-Token': [rollbarAccessToken],
           accept: ['application/json'],
           'content-type': ['application/json'],
         },
