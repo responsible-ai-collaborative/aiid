@@ -38,6 +38,9 @@ const getApolloCLient = (getValidAccessToken) =>
         Report: {
           keyFields: ['report_number'],
         },
+        Classification: {
+          keyFields: ['incident_id', 'namespace'],
+        },
       },
     }),
   });

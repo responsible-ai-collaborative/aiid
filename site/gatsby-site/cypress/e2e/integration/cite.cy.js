@@ -278,9 +278,11 @@ describe('Cite pages', () => {
 
     const date = format(new Date(), 'MMMM d, y');
 
-    cy.wait(0);
+    cy.waitForStableDOM();
 
     cy.contains('button', 'Citation Info').click();
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="suggested-citation-format"]').should(
       'contain.text',

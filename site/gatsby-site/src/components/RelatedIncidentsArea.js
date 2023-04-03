@@ -137,7 +137,7 @@ const RelatedIncidentsArea = ({
             </div>
           ))}
         {!loading && (error || reports?.length == 0 || incidents?.length == 0) && (
-          <span>{error ? error : t('No related reports found.')}</span>
+          <span data-cy="no-related-reports">{error ? error : t('No related reports found.')}</span>
         )}
       </div>
       {similarList.length > maxIncidents && (

@@ -6,5 +6,12 @@ exports = async (authEvent) => {
   const { user } = authEvent;
   const newUser = { userId: user.id, roles: ['subscriber'] };
 
-  await users.insertOne(newUser);
+  try {
+    await users.insertOne(newUser);
+
+  } catch (error) {
+    error.message = `[On New User event]: ${error.message}`;
+    context.functions.execute('logRollbar', { error, data: { newUser, user } });
+    throw error;
+  }
 };

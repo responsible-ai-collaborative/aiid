@@ -4,14 +4,18 @@
             "bsonType": "objectId"
         },
         "attributes": {
-          "bsonType": "array",
-          "items": {
-            "bsonType": "object",
-            "properties": {
-              "short_name" : { "bsonType": "string" },
-              "value_json": { "bsonType" : "string" }
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "short_name": {
+                        "bsonType": "string"
+                    },
+                    "value_json": {
+                        "bsonType": "string"
+                    }
+                }
             }
-          }
         },
         "incident_id": {
             "bsonType": "int"
@@ -23,7 +27,7 @@
             "bsonType": "string"
         },
         "publish": {
-          "bsonType": "bool"
+            "bsonType": "bool"
         }
     },
     "required": [

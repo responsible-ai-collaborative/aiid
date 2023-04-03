@@ -3,26 +3,8 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import { Highlight } from 'react-instantsearch-dom';
-import styled from 'styled-components';
 import { VIEW_TYPES } from 'utils/discover';
 import WebArchiveLink from '../../../components/ui/WebArchiveLink';
-
-const linkHoverHighlight = `
-  a:not(:hover) {
-    color: inherit;
-  }
-`;
-
-const HeaderCard = styled(Card.Title)`
-  a {
-    font-weight: bold;
-  }
-  ${linkHoverHighlight}
-`;
-
-const SubdomainCard = styled(Card.Subtitle)`
-  ${linkHoverHighlight}
-`;
 
 export function citationReportUrl(item, viewType) {
   let path = null;
@@ -42,11 +24,11 @@ export function citationReportUrl(item, viewType) {
 
 export function HeaderTitle({ item, ...props }) {
   return (
-    <div className="bootstrap">
-      <HeaderCard {...props}>
+    <div className="">
+      <h5 {...props}>
         <LocalizedLink
           to={citationReportUrl(item, props.viewType)}
-          className="no-underline"
+          className="no-underline font-bold text-inherit"
           title={item.title}
         >
           <Highlight
@@ -54,7 +36,7 @@ export function HeaderTitle({ item, ...props }) {
             attribute={props.viewType === VIEW_TYPES.INCIDENTS ? 'incident_title' : 'title'}
           />
         </LocalizedLink>
-      </HeaderCard>
+      </h5>
     </div>
   );
 }
@@ -62,11 +44,11 @@ export function HeaderTitle({ item, ...props }) {
 export function SourceDomainSubtitle({ item, ...props }) {
   return (
     <div className="bootstrap">
-      <SubdomainCard {...props}>
+      <Card.Subtitle {...props} className="text-inherit">
         <WebArchiveLink url={item.url} date={item.date_submitted}>
           {item.source_domain} &middot; {format(fromUnixTime(item.epoch_date_published), 'yyyy')}
         </WebArchiveLink>
-      </SubdomainCard>
+      </Card.Subtitle>
     </div>
   );
 }
