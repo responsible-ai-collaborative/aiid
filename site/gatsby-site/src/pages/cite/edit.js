@@ -299,7 +299,6 @@ function EditCitePage(props) {
                     <div className="mt-4 flex items-center justify-between">
                       <div className="flex items-center">
                         <Button
-                          variant="primary"
                           type="submit"
                           disabled={!isValid || isSubmitting}
                           onClick={submitForm}
@@ -325,8 +324,7 @@ function EditCitePage(props) {
                         )}
                       </div>
                       <Button
-                        className="text-danger"
-                        variant="link"
+                        color="failure"
                         disabled={isSubmitting}
                         onClick={() => {
                           confirm(t('Are you sure you want to delete this report?')) &&
