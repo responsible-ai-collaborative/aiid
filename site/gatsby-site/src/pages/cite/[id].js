@@ -11,7 +11,7 @@ import { getTranslatedReports, sortIncidentsByDatePublished } from 'utils/cite';
 import { computeEntities, RESPONSE_TAG } from 'utils/entities';
 import config from '../../../config';
 import { isCompleteReport } from 'utils/variants';
-import { FIND_FULL_INCIDENT } from '../../graphql/incidents';
+import { FIND_FULL_INCIDENT, FIND_INCIDENT } from '../../graphql/incidents';
 import CiteTemplate from 'templates/citeTemplate';
 import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 
@@ -20,10 +20,6 @@ function CiteDynamicPage(props) {
     data: { allMongodbAiidprodTaxa, entities: entitiesData, responses },
     params: { id: incident_id },
   } = props;
-
-  const nextIncident = null;
-
-  const prevIncident = null;
 
   const nlp_similar_incidents = [];
 
@@ -55,6 +51,14 @@ function CiteDynamicPage(props) {
 
   const { data: incidentData, loading } = useQuery(FIND_FULL_INCIDENT, {
     variables: { query: { incident_id } },
+  });
+
+  const { data: prevIncident } = useQuery(FIND_INCIDENT, {
+    variables: { query: { incident_id: parseInt(incident_id) - 1 } },
+  });
+
+  const { data: nextIncident } = useQuery(FIND_INCIDENT, {
+    variables: { query: { incident_id: parseInt(incident_id) + 1 } },
   });
 
   const { data: classificationsData } = useQuery(FIND_CLASSIFICATION, {
@@ -152,8 +156,12 @@ function CiteDynamicPage(props) {
           locationPathName={props.location.pathname}
           allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
           allMongodbAiidprodClassifications={classifications}
-          nextIncident={nextIncident}
-          prevIncident={prevIncident}
+          nextIncident={
+            nextIncident && nextIncident.incident ? nextIncident.incident.incident_id : null
+          }
+          prevIncident={
+            prevIncident && prevIncident.incident ? prevIncident.incident.incident_id : null
+          }
           nlp_similar_incidents={nlp_similar_incidents}
           editor_similar_incidents={editor_similar_incidents}
           editor_dissimilar_incidents={editor_dissimilar_incidents}
