@@ -454,7 +454,7 @@ const IncidentReportForm = () => {
         <h4 className="mt-3">Variant fields</h4>
 
         <div className="mt-3">
-          <VariantForm />
+          <VariantForm allFieldsForm={false} />
         </div>
       </Form>
     </div>

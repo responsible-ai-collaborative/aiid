@@ -32,50 +32,54 @@ export const schema = yup.object().shape({
     }),
 });
 
-const VariantForm = ({ scrollInputsOutputs = false }) => {
+const VariantForm = ({ scrollInputsOutputs = false, allFieldsForm = true }) => {
   const { values, errors, touched, handleChange, handleBlur, isSubmitting } = useFormikContext();
 
   const { t } = useTranslation(['variants']);
 
   return (
     <div className="flex w-full min-w-6xl flex-col" data-cy="variant-form">
-      <TextInputGroup
-        name="date_published"
-        label={t('Incident Date')}
-        placeholder={t('Incident Date')}
-        type="date"
-        values={values}
-        errors={errors}
-        touched={touched}
-        handleChange={handleChange}
-        handleBlur={handleBlur}
-        schema={schema}
-        data-cy="variant-form-incident-date"
-      />
-      <TagsInputGroup
-        name="submitters"
-        placeholder={t('Your name as you would like it to appear in the leaderboard')}
-        label={t('Submitter(s)')}
-        errors={errors}
-        touched={touched}
-        schema={schema}
-        data-cy="variant-form-submitters"
-      />
-      <TextInputGroup
-        label={t('Description of Incident Circumstances')}
-        type="textarea"
-        as="textarea"
-        rows={8}
-        placeholder={t('Description of Incident Circumstances')}
-        name="text"
-        values={values}
-        errors={errors}
-        touched={touched}
-        handleChange={handleChange}
-        handleBlur={handleBlur}
-        disabled={isSubmitting}
-        data-cy="variant-form-text"
-      />
+      {allFieldsForm && (
+        <>
+          <TextInputGroup
+            name="date_published"
+            label={t('Incident Date')}
+            placeholder={t('Incident Date')}
+            type="date"
+            values={values}
+            errors={errors}
+            touched={touched}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            schema={schema}
+            data-cy="variant-form-incident-date"
+          />
+          <TagsInputGroup
+            name="submitters"
+            placeholder={t('Your name as you would like it to appear in the leaderboard')}
+            label={t('Submitter(s)')}
+            errors={errors}
+            touched={touched}
+            schema={schema}
+            data-cy="variant-form-submitters"
+          />
+          <TextInputGroup
+            label={t('Description of Incident Circumstances')}
+            type="textarea"
+            as="textarea"
+            rows={8}
+            placeholder={t('Description of Incident Circumstances')}
+            name="text"
+            values={values}
+            errors={errors}
+            touched={touched}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            disabled={isSubmitting}
+            data-cy="variant-form-text"
+          />
+        </>
+      )}
       <FieldArray
         name="inputs_outputs"
         render={({ pop, push }) => (
