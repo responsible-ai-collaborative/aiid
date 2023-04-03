@@ -57,27 +57,25 @@ const ForgotPassword = (props) => {
           isSubmitting,
           isValid,
         }) => (
-          <div>
-            <Form onSubmit={handleSubmit}>
-              <div className="mb-3" id="formBasicEmail">
-                <TextInputGroup
-                  label={t('Email address')}
-                  type="email"
-                  placeholder={t('Email')}
-                  name="email"
-                  value={values.email}
-                  handleChange={handleChange}
-                  values={values}
-                  errors={errors}
-                  touched={touched}
-                  handleBlur={handleBlur}
-                />
-              </div>
-              <Button type="submit" disabled={isSubmitting || !isValid}>
-                <Trans>Submit</Trans>
-              </Button>
-            </Form>
-          </div>
+          <Form onSubmit={handleSubmit}>
+            <div className="mb-3" id="formBasicEmail">
+              <TextInputGroup
+                label={t('Email address')}
+                type="email"
+                placeholder={t('Email')}
+                name="email"
+                value={values.email}
+                handleChange={handleChange}
+                values={values}
+                errors={errors}
+                touched={touched}
+                handleBlur={handleBlur}
+              />
+            </div>
+            <Button type="submit" disabled={isSubmitting || !isValid}>
+              <Trans>Submit</Trans>
+            </Button>
+          </Form>
         )}
       </Formik>
     </Layout>
