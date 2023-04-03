@@ -22,7 +22,7 @@ describe('The Language switcher', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('[data-cy="language-switcher"]').contains('[role="button"]', 'Español').click();
+    cy.get('[data-cy="language-switcher"]').contains('li', 'Español').click();
 
     cy.url().should('contain', '/es/');
 

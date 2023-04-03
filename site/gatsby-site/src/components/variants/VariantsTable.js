@@ -1,7 +1,6 @@
 import { useUserContext } from 'contexts/userContext';
 import React, { useState } from 'react';
 import Markdown from 'react-markdown';
-import { Form } from 'react-bootstrap';
 import { format, getUnixTime } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -14,7 +13,7 @@ import { VariantStatusBadge } from './VariantList';
 import { VARIANT_STATUS } from 'utils/variants';
 import { DELETE_VARIANT, UPDATE_VARIANT } from '../../graphql/variants';
 import { LINK_REPORTS_TO_INCIDENTS } from '../../graphql/reports';
-import { Button, Dropdown, Pagination } from 'flowbite-react';
+import { Button, Dropdown, Pagination, TextInput } from 'flowbite-react';
 
 function DefaultColumnFilter({
   column: { Header, canFilter, filterValue, preFilteredRows, setFilter },
@@ -30,9 +29,9 @@ function DefaultColumnFilter({
   return (
     <div>
       <h6>{Header}</h6>
-      <Form.Control
+      <TextInput
         data-cy={`input-filter-${Header}`}
-        className="w-100"
+        className="w-100 font-normal"
         type="text"
         value={filterValue || ''}
         onChange={(e) => {

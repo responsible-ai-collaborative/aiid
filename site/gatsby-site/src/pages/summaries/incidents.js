@@ -25,11 +25,11 @@ const IncidentList = ({ incidents }) => {
     <div data-cy="incident-list">
       {incidents.map((incident) => (
         <div key={incident.incident_id} data-cy={`incident-${incident.incident_id}`}>
-          <h2>
-            Incident {incident.incident_id}{' '}
+          <h2>Incident {incident.incident_id} </h2>
+          <div className="flex gap-2 mb-2">
             <Button href={'/cite/' + incident.incident_id}>Citation</Button>
             <Button href={'/apps/discover?incident_id=' + incident.incident_id}>Discover</Button>
-          </h2>
+          </div>
           <div className="text-xl">“{incident.title}”</div>
           <ReportList items={incident.reports} />
         </div>
