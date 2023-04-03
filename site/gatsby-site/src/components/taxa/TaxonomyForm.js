@@ -1,5 +1,4 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
-import styled from 'styled-components';
 import { Form, Formik } from 'formik';
 import { useMutation, useQuery, useApolloClient } from '@apollo/client';
 import gql from 'graphql-tag';
@@ -13,10 +12,6 @@ import { debounce } from 'debounce';
 import { Button, Radio, Label, Checkbox, Select } from 'flowbite-react';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import Card from 'elements/Card';
-
-const FormContainer = styled.div`
-  padding: 1em;
-`;
 
 const TaxonomyForm = forwardRef(function TaxonomyForm(
   { taxonomy, incidentId, onSubmit, active },
@@ -285,32 +280,32 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
   }
   if (loading) {
     return (
-      <FormContainer>
+      <div className="p-4">
         <Loader loading={loading} />
-      </FormContainer>
+      </div>
     );
   }
 
   if (error !== '') {
     return (
-      <FormContainer>
+      <div className="p-4">
         <span>{error}</span>
-      </FormContainer>
+      </div>
     );
   }
 
   if (fieldsWithDefaultValues.length === 0) {
     return (
-      <FormContainer>
+      <div className="p-4">
         <span>{'Could not render form edit'}</span>
-      </FormContainer>
+      </div>
     );
   }
 
   const dummyFields = (taxonomy.dummyFields || []).map((field) => ({ ...field, dummy: true }));
 
   return (
-    <FormContainer data-cy="taxonomy-form" className="">
+    <div className="p-4" data-cy="taxonomy-form">
       <Formik initialValues={initialValues} onSubmit={submit} innerRef={formRef}>
         {({
           values,
@@ -403,7 +398,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
           );
         }}
       </Formik>
-    </FormContainer>
+    </div>
   );
 });
 
@@ -464,7 +459,7 @@ function FormField({
   }
 
   return (
-    <div key={field.short_name} className="">
+    <div key={field.short_name}>
       <Label>
         {field.field_number ? field.field_number + '. ' : ''}
         {field.short_name}
@@ -749,15 +744,17 @@ function ObjectListField({
                     }}
                   />
                 ))}
-                <Button
-                  color="failure"
-                  onClick={() => {
-                    setObjectListItemsIds((ids) => ids.filter((itemId) => itemId != id));
-                    setDeletedSubClassificationIds((ids) => ids.concat(id));
-                  }}
-                >
-                  Delete
-                </Button>
+                <div>
+                  <Button
+                    color="failure"
+                    onClick={() => {
+                      setObjectListItemsIds((ids) => ids.filter((itemId) => itemId != id));
+                      setDeletedSubClassificationIds((ids) => ids.concat(id));
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </div>
               </Card.Body>
             )}
           </Card>
