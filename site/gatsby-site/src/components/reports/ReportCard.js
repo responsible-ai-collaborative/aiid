@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import md5 from 'md5';
-import { Image } from 'utils/cloudinary';
+import { Image as CloudinaryImage, loadImage } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { useUserContext } from 'contexts/userContext';
 import ReportText from 'components/reports/ReportText';
@@ -22,6 +22,8 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
 
   const [expanded, setExpanded] = useState(alwaysExpanded);
 
+  const [useCloudinaryImage, setUseCloudinaryImage] = useState(null);
+
   const ref = useRef(null);
 
   const imageRef = useRef(null);
@@ -38,6 +40,18 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
       toggleReadMore();
     }
   };
+
+  const fetchCloudinaryImage = async (cloudinaryId) => {
+    const imageExists = await loadImage(cloudinaryId);
+
+    setUseCloudinaryImage(imageExists);
+  };
+
+  useEffect(() => {
+    if (item?.cloudinary_id) {
+      fetchCloudinaryImage(item.cloudinary_id);
+    }
+  }, [item.cloudinary_id]);
 
   return (
     <>
@@ -59,9 +73,9 @@ const ReportCard = ({ item, className = '', incidentId, alwaysExpanded = false }
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
         >
-          <Image
+          <CloudinaryImage
             className={`img-fluid h-full w-full max-w-full object-cover max-h-full`}
-            publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
+            publicID={useCloudinaryImage ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
             alt={item.title}
             transformation={fill().height(480)}
             itemIdentifier={t('Report {{report_number}}', {
