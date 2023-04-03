@@ -15,28 +15,6 @@ const getCloudinaryPublicID = (url) => {
   return publicID;
 };
 
-const checkCloudinaryImageExists = (url) => {
-  return fetch(url)
-    .then((response) => {
-      if (response.status === 200) {
-        return true;
-      } else {
-        return false;
-      }
-    })
-    .catch(() => {
-      return false;
-    });
-};
-
-const loadImage = async (cloudinaryId) => {
-  const url = `https://res.cloudinary.com/${config.cloudinary.cloudName}/image/upload/${cloudinaryId}`;
-
-  const imageExists = await checkCloudinaryImageExists(url);
-
-  return imageExists;
-};
-
 const Image = ({
   publicID,
   className = '',
@@ -62,6 +40,10 @@ const Image = ({
       });
 
       return () => img.removeEventListener('error', errorListener);
+    }
+
+    if (publicID === 'placeholder.svg') {
+      setLoadFailed(true);
     }
   }, [publicID, imageElement.current?.imageRef.current]);
 
@@ -106,4 +88,4 @@ const Image = ({
   }
 };
 
-export { getCloudinaryPublicID, Image, loadImage };
+export { getCloudinaryPublicID, Image };
