@@ -33,13 +33,13 @@ function Points({ data, geocodes, projection }) {
           <foreignObject
             x={x - radius}
             y={y - radius * 2}
-            width={showTooltip ? radius * 20 : radius * 2}
+            width={showTooltip ? radius * 50 : radius * 2}
             height={showTooltip ? radius * 20 : radius * 2}
             onClick={() => setShowTooltip(!showTooltip)}
           >
-            <div className="w-full h-full cursor-pointer relative">
+            <div className="relative">
               {showTooltip && (
-                <div className="absolute bottom-full left-12 top-0 transform -translate-x-1/2 bg-gray-900 text-white rounded-md border border-gray-800 pointer-events-none transition-all duration-300 z-50 text-xs h-fit w-fit p-1">
+                <div className="absolute bottom-full left-4 top-0 transform bg-gray-900 text-white rounded-md border border-gray-800 pointer-events-none transition-all duration-300 z-50 text-xs h-fit w-fit p-1">
                   {place}
                 </div>
               )}
