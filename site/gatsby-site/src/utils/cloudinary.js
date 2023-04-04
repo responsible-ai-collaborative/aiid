@@ -42,7 +42,7 @@ const Image = ({
       return () => img.removeEventListener('error', errorListener);
     }
 
-    if (publicID.includes('placeholder.svg')) {
+    if (publicID && publicID.includes('placeholder.svg')) {
       setLoadFailed(true);
     }
   }, [publicID, imageElement.current?.imageRef.current]);
