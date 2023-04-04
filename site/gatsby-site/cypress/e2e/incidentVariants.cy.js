@@ -336,7 +336,7 @@ describe('Variants pages', () => {
           req.body.variables.query.report_number === variant.report_number &&
           req.body.variables.set.date_published === new_date_published &&
           req.body.variables.set.submitters[0] === variant.submitters[0] &&
-          req.body.variables.set.submitters[1] === variant.submitters[1] &&
+          req.body.variables.set.submitters[1] === new_submitter &&
           req.body.variables.set.text === new_text &&
           req.body.variables.set.inputs_outputs[0] === new_inputs_outputs_1 &&
           req.body.variables.set.inputs_outputs[1] === variant.inputs_outputs[1] &&
