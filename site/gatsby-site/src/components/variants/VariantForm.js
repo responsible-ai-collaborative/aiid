@@ -52,7 +52,7 @@ const VariantForm = ({ scrollInputsOutputs = false, allFieldsForm = true }) => {
             handleChange={handleChange}
             handleBlur={handleBlur}
             schema={schema}
-            data-cy="variant-form-incident-date"
+            data-cy="variant-form-date-published"
           />
           <TagsInputGroup
             name="submitters"
@@ -105,7 +105,7 @@ const VariantForm = ({ scrollInputsOutputs = false, allFieldsForm = true }) => {
                         handleChange={handleChange}
                         handleBlur={handleBlur}
                         disabled={isSubmitting}
-                        data-cy="variant-form-text-inputs-outputs"
+                        data-cy="variant-form-inputs-outputs"
                         {...field}
                       />
                     )}
