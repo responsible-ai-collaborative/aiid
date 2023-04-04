@@ -314,7 +314,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
           debouncedSetInitialValues(values);
           return (
             <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-4">
+              <Form.Group className="mb-4" data-cy="Notes">
                 <Form.Label>Notes</Form.Label>
                 <Form.Control
                   id={'notes'}
@@ -355,7 +355,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                     )
                   )}
               </fieldset>
-              <Form.Group className="mb-4">
+              <Form.Group className="mb-4" data-cy="Publish">
                 <Form.Label>Publish</Form.Label>
                 <Form.Check
                   type="radio"
@@ -451,7 +451,7 @@ function FormField({
   };
 
   return (
-    <div key={field.short_name} className="bootstrap">
+    <div data-cy={field.short_name} key={field.short_name} className="bootstrap">
       <Form.Label>
         {field.field_number ? field.field_number + '. ' : ''}
         {field.short_name}
