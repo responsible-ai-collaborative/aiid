@@ -1,6 +1,6 @@
 import Link from 'components/ui/Link';
 import React from 'react';
-import { useExpanded, useFilters, useSortBy, useTable } from 'react-table';
+import { useExpanded, useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import { faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Trans } from 'react-i18next';
@@ -272,7 +272,8 @@ export default function EntitiesTable({ data, className = '', ...props }) {
     },
     useFilters,
     useSortBy,
-    useExpanded
+    useExpanded,
+    usePagination
   );
 
   return <Table data={data} table={table} className={className} {...props} />;
