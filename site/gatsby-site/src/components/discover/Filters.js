@@ -8,9 +8,7 @@ function Filters() {
       {REFINEMENT_LISTS.map((list) => (
         <div
           key={list.attribute}
-          className={`w-full flex-0-0-auto md:w-1/2 lg:w-1/5 px-1 bootstrap ${
-            list.hidden ? 'hidden' : ''
-          }`}
+          className={`w-full flex-0-0-auto md:w-1/2 lg:w-1/5 px-1 ${list.hidden ? 'hidden' : ''}`}
           data-cy={list.attribute}
         >
           <Filter className="w-full" type={list.type} {...list} />

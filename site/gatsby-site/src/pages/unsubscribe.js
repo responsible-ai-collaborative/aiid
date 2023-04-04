@@ -8,15 +8,16 @@ import { useMutation } from '@apollo/client';
 import { DELETE_SUBSCRIPTIONS } from '../graphql/subscriptions';
 import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
+import useToastContext, { SEVERITY } from 'hooks/useToast';
 
 const Unsubscribe = (props) => {
-  const [pageMessage, setPageMessage] = useState(null);
-
   const [unsubscribing, setUnsubscribing] = useState(false);
 
   let errorMessage = null;
 
   const { t } = useTranslation();
+
+  const addToast = useToastContext();
 
   const [DeleteSubscriptions] = useMutation(DELETE_SUBSCRIPTIONS);
 
@@ -28,6 +29,8 @@ const Unsubscribe = (props) => {
 
   // this is to get through hydration errors but the page should be refactored
   const [mounted, setMounted] = useState(false);
+
+  const [unsubscribeSuccess, setUnsubscribeSuccess] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -60,10 +63,19 @@ const Unsubscribe = (props) => {
       }
 
       await DeleteSubscriptions({ variables: { query } });
-
-      setPageMessage(t('You have successfully unsubscribed.'));
+      addToast({
+        message: <>{t('You have successfully unsubscribed.')}</>,
+        severity: SEVERITY.success,
+      });
+      setUnsubscribeSuccess(true);
     } catch (e) {
-      setPageMessage(t('An unknown error has ocurred'));
+      addToast({
+        message: (
+          <label className="capitalize">{t(e.error || 'An unknown error has ocurred')}</label>
+        ),
+        severity: SEVERITY.danger,
+        error: e,
+      });
       if ('Rollbar' in window) {
         Rollbar.error(e);
       }
@@ -76,35 +88,40 @@ const Unsubscribe = (props) => {
     <Layout {...props}>
       {mounted && (
         <>
-          {errorMessage || pageMessage ? (
+          {errorMessage ? (
             <>
-              <p>
-                {errorMessage}
-                {pageMessage}
-              </p>
+              <p>{errorMessage}</p>
               <Link to={'/'}>
                 <Trans>Continue</Trans>
               </Link>
             </>
           ) : (
             <>
-              <p>
-                {subscriptionType === SUBSCRIPTION_TYPE.incident && (
-                  <Trans>
-                    Do you want to unsubscribe from{' '}
-                    <Link to={`/cite/${incidentId}`}>incident {{ incidentId }}</Link> updates?
-                  </Trans>
-                )}
-                {subscriptionType === SUBSCRIPTION_TYPE.all && (
-                  <Trans>Do you want to unsubscribe from all notifications?</Trans>
-                )}
-              </p>
-              <Button variant="primary" onClick={unsubscribe}>
-                <div className="flex gap-2">
-                  {unsubscribing && <Spinner size="sm" />}
-                  <Trans>Confirm</Trans>
-                </div>
-              </Button>
+              {unsubscribeSuccess ? (
+                <Link to={'/'}>
+                  <Trans>Continue</Trans>
+                </Link>
+              ) : (
+                <>
+                  <p>
+                    {subscriptionType === SUBSCRIPTION_TYPE.incident && (
+                      <Trans>
+                        Do you want to unsubscribe from{' '}
+                        <Link to={`/cite/${incidentId}`}>incident {{ incidentId }}</Link> updates?
+                      </Trans>
+                    )}
+                    {subscriptionType === SUBSCRIPTION_TYPE.all && (
+                      <Trans>Do you want to unsubscribe from all notifications?</Trans>
+                    )}
+                  </p>
+                  <Button variant="primary" onClick={unsubscribe}>
+                    <div className="flex gap-2">
+                      {unsubscribing && <Spinner size="sm" />}
+                      <Trans>Confirm</Trans>
+                    </div>
+                  </Button>
+                </>
+              )}
             </>
           )}
         </>

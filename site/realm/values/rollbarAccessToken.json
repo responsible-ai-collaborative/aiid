@@ -1,0 +1,5 @@
+{
+    "name": "rollbarAccessToken",
+    "value": "rollbarAccessToken",
+    "from_secret": true
+}

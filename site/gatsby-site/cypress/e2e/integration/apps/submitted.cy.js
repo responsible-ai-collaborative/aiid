@@ -502,6 +502,10 @@ describe('Submitted reports', () => {
 
     cy.get('[data-cy="submission-modal"]').as('modal').should('be.visible');
 
+    cy.get('input[name="url"]').click();
+
+    cy.clickOutside();
+
     cy.get('[data-cy="fetch-info"]').click();
 
     cy.wait('@parseNews');

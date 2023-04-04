@@ -41,6 +41,10 @@ const Image = ({
 
       return () => img.removeEventListener('error', errorListener);
     }
+
+    if (publicID === 'placeholder.svg') {
+      setLoadFailed(true);
+    }
   }, [publicID, imageElement.current?.imageRef.current]);
 
   if (!publicID || publicID == '' || loadFailed) {
