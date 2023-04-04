@@ -2,6 +2,7 @@ import React from 'react';
 import { Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import DateLabel from './DateLabel';
+import { Dropdown, Pagination } from 'flowbite-react';
 
 function SortButton({ column, ...props }) {
   const { isSorted } = column;
@@ -71,7 +72,20 @@ export function DefaultDateCell({ cell }) {
 }
 
 export default function Table({ table, className = '', ...props }) {
-  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = table;
+  const { t } = useTranslation(['entities']);
+
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    prepareRow,
+    page,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    setPageSize,
+    state: { pageIndex, pageSize },
+  } = table;
 
   return (
     <div className={`max-w-full ${className}`} {...props}>
@@ -98,7 +112,7 @@ export default function Table({ table, className = '', ...props }) {
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {rows.map((row, i) => {
+            {page.map((row, i) => {
               prepareRow(row);
               return (
                 <tr
@@ -126,6 +140,43 @@ export default function Table({ table, className = '', ...props }) {
             })}
           </tbody>
         </table>
+
+        <div className="flex gap-2 justify-start items-center mt-3">
+          <Pagination
+            className="pagination mb-0"
+            onPageChange={(page) => {
+              gotoPage(page - 1);
+            }}
+            currentPage={pageIndex + 1}
+            showIcons={true}
+            totalPages={pageCount}
+          />
+
+          <span>
+            Page{' '}
+            <strong>
+              {pageIndex + 1} of {pageOptions.length}
+            </strong>{' '}
+          </span>
+          <Dropdown
+            color={'gray'}
+            label={t(pageSize === 9999 ? 'Show all' : `Show ${pageSize}`)}
+            style={{ width: 120 }}
+            size="sm"
+            value={pageSize}
+          >
+            {[10, 50, 100, 9999].map((pageSize) => (
+              <Dropdown.Item
+                key={pageSize}
+                onClick={() => {
+                  setPageSize(Number(pageSize));
+                }}
+              >
+                {pageSize === 9999 ? <Trans>Show all</Trans> : <Trans>Show {{ pageSize }}</Trans>}
+              </Dropdown.Item>
+            ))}
+          </Dropdown>
+        </div>
       </div>
     </div>
   );
