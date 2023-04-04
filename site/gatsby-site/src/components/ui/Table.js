@@ -1,8 +1,7 @@
 import React from 'react';
-import { Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import DateLabel from './DateLabel';
-import { Dropdown, Pagination } from 'flowbite-react';
+import { Dropdown, Pagination, TextInput } from 'flowbite-react';
 
 function SortButton({ column, ...props }) {
   const { isSorted } = column;
@@ -30,7 +29,7 @@ export function DefaultColumnFilter({
   const { t } = useTranslation(['entities']);
 
   return (
-    <Form.Control
+    <TextInput
       data-cy={`input-filter-${title}`}
       className="w-100 mt-4"
       type="text"
