@@ -610,21 +610,6 @@
     .edit-variant-modal > div:first-child {
         @apply flex;
     }
-    .incidents-table .tr:nth-child(even) {
-        @apply bg-[#f2f2f2];
-    }
-    .incidents-table .tr :last-child .td {
-        @apply border-b-0;
-    }
-    
-    .incidents-table .th,
-    .incidents-table .td {
-        @apply m-0 p-2 relative;
-    }
-    .incidents-table .th :last-child,
-    .incidents-table .td :last-child {
-        @apply border-r-0;
-    }
 
    .incidents-pagination [aria-current="page"] button {
     @apply bg-blue-50 text-blue-600 !important;
