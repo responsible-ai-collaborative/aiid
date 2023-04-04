@@ -1,8 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { geoPath, geoGraticule, geoEquirectangular, scaleLinear, extent, zoom, select } from 'd3';
 import { useWorldAtlas } from './useWorldAtlas';
-import { OverlayTrigger, Popover } from 'react-bootstrap';
-import PopoverWrapper from 'elements/PopoverWrapper';
 
 const abstractLocations = ['Global', 'Twitter platform', 'Wikipedia platform'];
 
@@ -27,23 +25,26 @@ function Points({ data, geocodes, projection }) {
 
       const radius = sizeScale(sizeValue(d));
 
+      const [showTooltip, setShowTooltip] = useState(false);
+
       return (
         <React.Fragment key={place}>
           <circle className="fill-[#f00]" cx={x} cy={y} r={radius} />
-          <OverlayTrigger
-            placement="right"
-            trigger="click"
-            rootClose={true}
-            overlay={
-              <PopoverWrapper>
-                <Popover.Body>{place}</Popover.Body>
-              </PopoverWrapper>
-            }
+          <foreignObject
+            x={x - radius}
+            y={y - radius * 2}
+            width={showTooltip ? radius * 20 : radius * 2}
+            height={showTooltip ? radius * 20 : radius * 2}
+            onClick={() => setShowTooltip(!showTooltip)}
           >
-            <foreignObject x={x - radius} y={y - radius} width={radius * 2} height={radius * 2}>
-              <div className="w-full h-full cursor-pointer" />
-            </foreignObject>
-          </OverlayTrigger>
+            <div className="w-full h-full cursor-pointer relative">
+              {showTooltip && (
+                <div className="absolute bottom-full left-12 top-0 transform -translate-x-1/2 bg-gray-900 text-white rounded-md border border-gray-800 pointer-events-none transition-all duration-300 z-50 text-xs h-fit w-fit p-1">
+                  {place}
+                </div>
+              )}
+            </div>
+          </foreignObject>
         </React.Fragment>
       );
     });
