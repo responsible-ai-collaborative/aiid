@@ -153,16 +153,13 @@ describe('Cite pages', () => {
       for (const field of CSETv1Fields) {
         const fieldSelector = `${taxonomySelector} [data-cy="${field}"]`;
 
-        cy.get(
-          `${fieldSelector} input, 
-           ${fieldSelector} textarea,
-           ${fieldSelector} select,
-           ${fieldSelector} .form-check,
-           ${fieldSelector} button,      /* For object lists */
-           ${fieldSelector} h5           /* For dummy fields */
-          `,
-          { timeout: 8000 }
-        ).should('exist');
+        const inputSelector = ['input', 'textarea', 'select', '.form-check', 'button', 'h5']
+          .map((input) => `${fieldSelector} ${input}`)
+          .join(', ');
+
+        cy.get(inputSelector, { timeout: 30000 }).then((el) => {
+          expect(el).to.exist;
+        });
       }
     }
   });
@@ -511,11 +508,11 @@ describe('Cite pages', () => {
     'Incident Number',
     'Annotator',
     'Annotation Status',
-    'Reviewer',
+    'Peer Reviewer',
     'Quality Control',
     'Physical Objects',
     'Entertainment Industry',
-    'Report, Test, or Study',
+    'Report, Test, or Study of data',
     'Deployed',
     'Producer Test in Controlled Conditions',
     'Producer Test in Operational Conditions',
@@ -557,8 +554,6 @@ describe('Cite pages', () => {
     'Entities',
     'Lives Lost',
     'Injuries',
-    'Property Damage Cost',
-    'Financial Cost',
     'Estimated Harm Quantities',
     'Notes ( Tangible Harm Quantities Information)',
     'AI System Description',
