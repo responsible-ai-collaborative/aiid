@@ -1,32 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { geoPath, geoGraticule, geoEquirectangular, scaleLinear, extent, zoom, select } from 'd3';
-import styled from 'styled-components';
 import { useWorldAtlas } from './useWorldAtlas';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import PopoverWrapper from 'elements/PopoverWrapper';
-
-const Point = styled.circle`
-  fill: #f00;
-`;
-
-const Sphere = styled.path`
-  fill: #fbfbfb;
-`;
-
-const Graticules = styled.path`
-  fill: none;
-  stroke: #ececec;
-`;
-
-const Land = styled.path`
-  fill: #bdbdbd;
-`;
-
-const Trigger = styled.div`
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-`;
 
 const abstractLocations = ['Global', 'Twitter platform', 'Wikipedia platform'];
 
@@ -53,7 +29,7 @@ function Points({ data, geocodes, projection }) {
 
       return (
         <React.Fragment key={place}>
-          <Point cx={x} cy={y} r={radius} />
+          <circle className="fill-[#f00]" cx={x} cy={y} r={radius} />
           <OverlayTrigger
             placement="right"
             trigger="click"
@@ -65,7 +41,7 @@ function Points({ data, geocodes, projection }) {
             }
           >
             <foreignObject x={x - radius} y={y - radius} width={radius * 2} height={radius * 2}>
-              <Trigger />
+              <div className="w-full h-full cursor-pointer" />
             </foreignObject>
           </OverlayTrigger>
         </React.Fragment>
@@ -80,12 +56,12 @@ function WorldMap({ land, projection }) {
 
   return (
     <>
-      <Sphere d={path({ type: 'Sphere' })} />
+      <path className="fill-[#fbfbfb]" d={path({ type: 'Sphere' })} />
 
-      <Graticules d={path(graticule())} />
+      <path className="fill-none stroke-[#ececec]" d={path(graticule())} />
 
       {land.features.map((feature) => (
-        <Land key={feature} d={path(feature)} />
+        <path className="fill-[#bdbdbd]" key={feature} d={path(feature)} />
       ))}
     </>
   );
