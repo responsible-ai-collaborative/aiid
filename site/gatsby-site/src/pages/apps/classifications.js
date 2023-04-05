@@ -4,7 +4,7 @@ import { useApolloClient } from '@apollo/client';
 import gql from 'graphql-tag';
 import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
-import { Button, Dropdown, Spinner, Table } from 'flowbite-react';
+import { Button, Dropdown, Pagination, Select, Spinner, Table } from 'flowbite-react';
 import Link from '../../components/ui/Link';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
@@ -593,13 +593,9 @@ export default function ClassificationsDbView(props) {
     headerGroups,
     page,
     prepareRow,
-    canPreviousPage,
-    canNextPage,
     pageOptions,
     pageCount,
     gotoPage,
-    nextPage,
-    previousPage,
     setPageSize,
     setAllFilters,
     state,
@@ -650,23 +646,20 @@ export default function ClassificationsDbView(props) {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
           <div className="py-4 pr-4 pl-0 text-base flex flex-row items-center gap-2">
             <Trans>Showing the</Trans>
-            <Dropdown
-              color={'gray'}
-              label={currentTaxonomy}
+            <Select
               style={{ width: 120 }}
+              onChange={(e) => setCurrentTaxonomy(e.target.value)}
               value={currentTaxonomy}
               data-cy="taxonomy"
             >
-              {allTaxonomies.map((taxa) => (
-                <Dropdown.Item
-                  key={taxa.namespace}
-                  value={taxa.namespace}
-                  onClick={() => setCurrentTaxonomy(taxa.namespace)}
-                >
-                  {taxa.namespace}
-                </Dropdown.Item>
-              ))}
-            </Dropdown>
+              {allTaxonomies.map((taxa) => {
+                return (
+                  <option key={taxa.namespace} value={taxa.namespace}>
+                    {taxa.namespace}
+                  </option>
+                );
+              })}
+            </Select>
             <Trans>taxonomy</Trans>
             {loading && <Spinner />}
           </div>
@@ -728,44 +721,48 @@ export default function ClassificationsDbView(props) {
               </Table.Body>
             </Table>
 
-            <div className="pagination">
-              <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-                {'<<'}
-              </button>{' '}
-              <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-                {'<'}
-              </button>{' '}
-              <button onClick={() => nextPage()} disabled={!canNextPage}>
-                {'>'}
-              </button>{' '}
-              <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-                {'>>'}
-              </button>{' '}
-              <span>
-                <Trans
-                  i18nKey="paginationKey"
-                  defaults="Page <bold>{{currentPageIndex}} of {{pageOptionsLength}}</bold>"
-                  values={{
-                    currentPageIndex: pageIndex + 1,
-                    pageOptionsLength: pageOptions.length,
-                  }}
-                  components={{ bold: <strong /> }}
-                />
-              </span>
-              <span>
-                | <Trans>Go to page:</Trans>{' '}
-                <input
-                  type="number"
-                  defaultValue={pageIndex + 1}
-                  onChange={(e) => {
-                    const page = e.target.value ? Number(e.target.value) - 1 : 0;
+            <div className="flex items-center gap-2">
+              {pageCount > 1 && (
+                <>
+                  <Pagination
+                    className="incidents-pagination mb-0"
+                    onPageChange={(page) => {
+                      gotoPage(page - 1);
+                    }}
+                    currentPage={pageIndex + 1}
+                    showIcons={true}
+                    totalPages={pageCount}
+                  />
+                  <div className="mt-2">
+                    <span>
+                      <Trans
+                        i18nKey="paginationKey"
+                        defaults="Page <bold>{{currentPageIndex}} of {{pageOptionsLength}}</bold>"
+                        values={{
+                          currentPageIndex: pageIndex + 1,
+                          pageOptionsLength: pageOptions.length,
+                        }}
+                        components={{ bold: <strong /> }}
+                      />
+                    </span>
+                    <span>
+                      | <Trans>Go to page:</Trans>{' '}
+                      <input
+                        type="number"
+                        defaultValue={pageIndex + 1}
+                        onChange={(e) => {
+                          const page = e.target.value ? Number(e.target.value) - 1 : 0;
 
-                    gotoPage(page);
-                  }}
-                  style={{ width: '100px' }}
-                />
-              </span>{' '}
-              <select
+                          gotoPage(page);
+                        }}
+                        style={{ width: '100px' }}
+                      />
+                    </span>{' '}
+                  </div>
+                </>
+              )}
+              <Select
+                className="mt-2"
                 value={pageSize}
                 onChange={(e) => {
                   setPageSize(Number(e.target.value));
@@ -776,7 +773,7 @@ export default function ClassificationsDbView(props) {
                     <Trans>Show {{ pageSize }}</Trans>
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
           </div>
         )}
