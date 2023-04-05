@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button } from 'react-bootstrap';
-import { Modal, Spinner } from 'flowbite-react';
+import { Button, Modal, Spinner } from 'flowbite-react';
 import SubmissionForm from '../../components/submissions/SubmissionForm';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { FIND_SUBMISSION, UPDATE_SUBMISSION } from '../../graphql/submissions';
@@ -140,7 +139,6 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
                   <Button
                     onClick={submitForm}
                     className="flex disabled:opacity-50"
-                    variant="primary"
                     type="submit"
                     disabled={isSubmitting || !isValid}
                     data-cy="update-btn"

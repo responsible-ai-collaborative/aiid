@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
-import { useFormikContext } from 'formik';
+import { Select } from 'flowbite-react';
+import { Form, useFormikContext } from 'formik';
 import * as yup from 'yup';
 import TextInputGroup from '../../components/forms/TextInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
@@ -16,7 +15,7 @@ import 'bytemd/dist/index.css';
 import getSourceDomain from '../../utils/getSourceDomain';
 import supportedLanguages from '../../components/i18n/languages.json';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTag,
@@ -34,6 +33,7 @@ import {
 import IncidentsField from 'components/incidents/IncidentsField';
 import VariantForm from 'components/variants/VariantForm';
 import { Typeahead } from 'react-bootstrap-typeahead';
+import FlowbiteSearchInput from './FlowbiteSearchInput';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -220,33 +220,36 @@ const IncidentReportForm = () => {
         className="mx-auto"
         data-cy="report"
       >
-        <TextInputGroup
-          name="url"
-          label={t('Report Address')}
-          placeholder={t('Report URL')}
-          icon={faLink}
-          addOnComponent={
-            <Button
-              className="outline-secondary whitespace-nowrap"
-              disabled={!!errors.url || !values?.url || parsingNews}
-              onClick={() => parseNewsUrl(values.url)}
-            >
-              {!parsingNews ? (
-                <Trans ns="submit">Fetch info</Trans>
-              ) : (
-                <div className="flex gap-2">
-                  <Spinner size="sm" />
-                  <Trans ns="submit">Fetching...</Trans>
-                </div>
-              )}
-            </Button>
-          }
-          {...TextInputGroupProps}
-          handleChange={(e) => {
-            setFieldTouched('url', true);
-            TextInputGroupProps.handleChange(e);
-          }}
-        />
+        <div>
+          <div className="flex items-center mb-1">
+            <FontAwesomeIcon
+              fixedWidth
+              icon={faLink}
+              title={t('Report Address')}
+              className="mb-2 mr-1"
+            />
+            <Label label={'*' + t('Report Address')} popover="url"></Label>
+          </div>
+          <FlowbiteSearchInput
+            name="url"
+            label={t('Report Address')}
+            placeholder={t('Report URL')}
+            defaultValue={values?.url || ''}
+            dataCy="fetch-info"
+            values={values}
+            errors={errors}
+            touched={touched}
+            handleBlur={handleBlur}
+            btnClick={() => parseNewsUrl(values.url)}
+            loading={parsingNews}
+            btnDisabled={!!errors.url || !values?.url || parsingNews}
+            btnText={t('Fetch info')}
+            handleChange={(e) => {
+              setFieldTouched('url', true);
+              TextInputGroupProps.handleChange(e);
+            }}
+          />
+        </div>
 
         <TextInputGroup
           name="title"
@@ -300,7 +303,7 @@ const IncidentReportForm = () => {
           {...TextInputGroupProps}
         />
 
-        <Form.Group
+        <div
           className={'mt-3' + (touched['text'] && errors['text'] ? ' is-invalid' : '')}
           data-color-mode="light"
           data-cy="text"
@@ -334,12 +337,9 @@ const IncidentReportForm = () => {
               }}
             />
           </div>
-        </Form.Group>
-        <Form.Control.Feedback type="invalid">
-          <Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans>
-        </Form.Control.Feedback>
+        </div>
 
-        <Form.Group className="mt-3">
+        <div className="mt-3">
           <div className="flex items-center">
             <FontAwesomeIcon
               fixedWidth
@@ -349,9 +349,9 @@ const IncidentReportForm = () => {
             />
             <Label popover="language" label={t('Language')} />
           </div>
-          <Form.Select
+          <Select
             name="language"
-            placeholder="Report Language"
+            placeholder={t('Report Language')}
             value={values.language}
             onChange={handleChange}
           >
@@ -360,10 +360,10 @@ const IncidentReportForm = () => {
                 {l.name}
               </option>
             ))}
-          </Form.Select>
-        </Form.Group>
+          </Select>
+        </div>
 
-        <Form.Group className="mt-3">
+        <div className="mt-3">
           <div className="flex items-center">
             <FontAwesomeIcon fixedWidth icon={faTag} title={t('Tags')} className="mb-2 mr-1" />
             <Label popover="tags" label={t('Tags')} />
@@ -388,7 +388,7 @@ const IncidentReportForm = () => {
               placeholder="Choose several tags..."
             />
           </div>
-        </Form.Group>
+        </div>
 
         <div className="mt-3 bootstrap">
           <Label popover={'incident_ids'} label="Incident IDs" />
@@ -397,7 +397,8 @@ const IncidentReportForm = () => {
 
         <TextInputGroup
           name="editor_notes"
-          label="Editor Notes"
+          label={t('Editor Notes')}
+          placeholder={t('Editor Notes')}
           icon={faAlignLeft}
           type="textarea"
           as="textarea"
@@ -417,7 +418,7 @@ const IncidentReportForm = () => {
               <div className="mt-5" key={name} data-cy={`translation-${c.code}`}>
                 <h5>{c.name}</h5>
 
-                <Form.Group className="mt-3">
+                <div className="mt-3">
                   <div className="flex items-center">
                     <FontAwesomeIcon
                       fixedWidth
@@ -427,14 +428,14 @@ const IncidentReportForm = () => {
                     />
                     <Label label={t('Title')} />
                   </div>
-                  <Form.Control
+                  <input
                     type="text"
                     value={values[name].title}
                     onChange={(e) => setFieldValue(`${name}.title`, e.target.value)}
                   />
-                </Form.Group>
+                </div>
 
-                <Form.Group className="mt-3">
+                <div className="mt-3">
                   <div className="flex items-center">
                     <FontAwesomeIcon
                       fixedWidth
@@ -448,7 +449,7 @@ const IncidentReportForm = () => {
                     value={values[name].text}
                     onChange={(value) => setFieldValue(`${name}.text`, value)}
                   />
-                </Form.Group>
+                </div>
               </div>
             );
           })}
