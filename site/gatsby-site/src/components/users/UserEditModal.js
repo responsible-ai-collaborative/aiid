@@ -64,8 +64,9 @@ export default function UserEditModal({ onClose, userId }) {
       onClose();
     } catch (e) {
       addToast({
-        message: <>Error updating user {e.message}</>,
+        message: <>Error updating user.</>,
         severity: SEVERITY.console.error(),
+        error: e,
       });
     }
   };
