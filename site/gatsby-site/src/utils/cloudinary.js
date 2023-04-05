@@ -28,7 +28,7 @@ const Image = ({
 }) => {
   const imageElement = useRef(null);
 
-  const [loadFailed, setLoadFailed] = useState(!publicID || publicID == 'placeholder.svg');
+  const [loadFailed, setLoadFailed] = useState(!publicID || publicID.includes('placeholder.svg'));
 
   useEffect(() => {
     setLoadFailed(false);
@@ -42,7 +42,7 @@ const Image = ({
       return () => img.removeEventListener('error', errorListener);
     }
 
-    if (publicID === 'placeholder.svg') {
+    if (publicID && publicID.includes('placeholder.svg')) {
       setLoadFailed(true);
     }
   }, [publicID, imageElement.current?.imageRef.current]);
