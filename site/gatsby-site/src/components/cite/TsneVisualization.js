@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form } from 'react-bootstrap';
+import { Select } from 'flowbite-react';
 import { useApolloClient, gql } from '@apollo/client';
 import { Image } from '../../utils/cloudinary';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
@@ -110,7 +110,7 @@ export default function TsneVisualization({
             <label htmlFor="color-axis-select">
               <Trans>Color by incident classifications from taxonomies</Trans>
             </label>
-            <Form.Select
+            <Select
               className="my-4 w-full"
               id="color-axis-select"
               onChange={(event) => setAxis(event.target.value)}
@@ -121,7 +121,7 @@ export default function TsneVisualization({
                   {axis}
                 </option>
               ))}
-            </Form.Select>
+            </Select>
             <ul>
               {taxons.map((taxon) => (
                 <li
