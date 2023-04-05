@@ -164,6 +164,38 @@ describe('Cite pages', () => {
     }
   });
 
+  maybeIt('Should synchronize duplicate fields', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.visit(url);
+
+    cy.get('#taxonomy-CSETv1', { timeout: 30000 }).contains('Edit').click();
+
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]', { timeout: 30000 })
+      .first()
+      .contains('yes')
+      .click();
+
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
+      .last()
+      .find('input[type="radio"]')
+      .eq(0)
+      .should('be.checked');
+
+    // Clicking unchecks the input for both fields
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
+      .last()
+      .find('input[type="radio"]')
+      .eq(0)
+      .click();
+
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
+      .first()
+      .find('input[type="radio"]')
+      .eq(0)
+      .should('not.be.checked');
+  });
+
   it(`Should taxa table only when there are classifications and the user is not authenticated`, () => {
     cy.visit(url);
 
