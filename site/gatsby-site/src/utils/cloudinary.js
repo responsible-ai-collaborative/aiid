@@ -34,6 +34,7 @@ const Image = ({
     setLoadFailed(false);
     const img = imageElement.current?.imageRef.current;
 
+    // In order for the error event to fire, the image must be in the document.
     if (img) {
       const errorListener = img.addEventListener('error', () => {
         setLoadFailed(true);
@@ -47,45 +48,42 @@ const Image = ({
     }
   }, [publicID, imageElement.current?.imageRef.current]);
 
-  if (!publicID || publicID == '' || loadFailed) {
-    return (
+  const image = new CloudinaryImage(publicID, {
+    cloudName: config.cloudinary.cloudName,
+  });
+
+  //TODO: this is a fix for this issue: https://github.com/PartnershipOnAI/aiid/issues/260
+  // Setting transformation as a string skips the safe url check here: https://github.com/cloudinary/js-url-gen/blob/9a3d0a29ea77ddfd6f7181251615f34c2d8a6c5d/src/assets/CloudinaryFile.ts#L279
+  const tmpImage = new CloudinaryImage();
+
+  tmpImage.delivery(format(auto())).delivery(quality(qAuto()));
+
+  if (transformation) {
+    tmpImage.addTransformation(transformation);
+  }
+
+  image.transformation = tmpImage.transformation.toString();
+
+  return (
+    <>
       <PlaceholderImage
         siteName="IncidentDatabase.AI"
         itemIdentifier={itemIdentifier}
         title={title || alt}
-        className={className}
+        className={`${className} ${!publicID || publicID == '' || loadFailed ? '' : 'hidden'}`}
         height={height}
         style={style}
       />
-    );
-  } else {
-    const image = new CloudinaryImage(publicID, {
-      cloudName: config.cloudinary.cloudName,
-    });
-
-    //TODO: this is a fix for this issue: https://github.com/PartnershipOnAI/aiid/issues/260
-    // Setting transformation as a string skips the safe url check here: https://github.com/cloudinary/js-url-gen/blob/9a3d0a29ea77ddfd6f7181251615f34c2d8a6c5d/src/assets/CloudinaryFile.ts#L279
-    const tmpImage = new CloudinaryImage();
-
-    tmpImage.delivery(format(auto())).delivery(quality(qAuto()));
-
-    if (transformation) {
-      tmpImage.addTransformation(transformation);
-    }
-
-    image.transformation = tmpImage.transformation.toString();
-
-    return (
       <AdvancedImage
         ref={imageElement}
         alt={alt}
-        className={className}
+        className={`${className} ${!publicID || publicID == '' || loadFailed ? 'hidden' : ''}`}
         cldImg={image}
         plugins={plugins}
         style={style}
       />
-    );
-  }
+    </>
+  );
 };
 
 export { getCloudinaryPublicID, Image };
