@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Container } from 'react-bootstrap';
 import { CSVReader } from 'react-papaparse';
 import { useQueryParams, StringParam, ArrayParam, encodeDate, withDefault } from 'use-query-params';
 import Link from 'components/ui/Link';
@@ -20,6 +19,7 @@ import { processEntities, RESPONSE_TAG } from '../../utils/entities';
 import SubmissionWizard from '../submissions/SubmissionWizard';
 import getSourceDomain from 'utils/getSourceDomain';
 import { Helmet } from 'react-helmet';
+import { Button } from 'flowbite-react';
 
 const CustomDateParam = {
   encode: encodeDate,
@@ -288,8 +288,7 @@ const SubmitForm = () => {
         </p>
 
         {!loading && isRole('submitter') && displayCsvSection && (
-          <Container className="mt-5 p-0 bootstrap">
-            ``
+          <div className="mt-5 p-0">
             <h2>
               <Trans ns="submit">Advanced: Add by CSV</Trans>
             </h2>
@@ -303,7 +302,7 @@ const SubmitForm = () => {
             <p>
               Record {csvIndex + 1} of {csvData.length}
             </p>
-            <div className="flex justify-center my-3">
+            <div className="flex justify-center my-3 gap-4">
               <Button className="me-4" onClick={previousRecord}>
                 &lt; <Trans>Previous</Trans>
               </Button>
@@ -328,7 +327,7 @@ const SubmitForm = () => {
                 <Trans>Click to upload</Trans>
               </span>
             </CSVReader>
-          </Container>
+          </div>
         )}
       </div>
     </>
