@@ -133,7 +133,7 @@ const VariantForm = ({ scrollInputsOutputs = false, allFieldsForm = true }) => {
                     pop();
                     pop();
                   }}
-                  data-cy="add-text-row-btn"
+                  data-cy="delete-text-row-btn"
                 >
                   <Trans>Delete Row</Trans>
                 </Button>

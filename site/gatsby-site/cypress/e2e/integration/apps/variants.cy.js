@@ -444,8 +444,6 @@ describe('Variants App', () => {
 
     const new_inputs_outputs_1 = 'New Input text';
 
-    const new_inputs_outputs_2 = 'New Output text';
-
     const new_submitter = 'New Submitter';
 
     cy.conditionalIntercept(
@@ -487,7 +485,7 @@ describe('Variants App', () => {
         req.body.variables.set.submitters[1] === new_submitter &&
         req.body.variables.set.text === new_text &&
         req.body.variables.set.inputs_outputs[0] === new_inputs_outputs_1 &&
-        req.body.variables.set.inputs_outputs[1] === new_inputs_outputs_2 &&
+        req.body.variables.set.inputs_outputs[1] === undefined &&
         req.body.variables.set.tags.includes(VARIANT_STATUS.approved) &&
         req.body.variables.set.date_modified == today &&
         req.body.variables.set.epoch_date_modified == getUnixTime(new Date(today)),
@@ -536,7 +534,7 @@ describe('Variants App', () => {
     cy.get('[data-cy="variant-form-submitters"]').type(new_submitter);
     cy.get('[data-cy="variant-form-text"]').clear().type(new_text);
     cy.get('[data-cy="variant-form-inputs-outputs"]:eq(0)').clear().type(new_inputs_outputs_1);
-    cy.get('[data-cy="variant-form-inputs-outputs"]:eq(1)').clear().type(new_inputs_outputs_2);
+    cy.get('[data-cy="delete-text-row-btn"]').click();
 
     cy.get('[data-cy=edit-variant-modal]').find('[data-cy=approve-variant-btn]').click();
 
