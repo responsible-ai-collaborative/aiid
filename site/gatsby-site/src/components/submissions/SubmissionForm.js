@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
-import { useFormikContext } from 'formik';
+import { Form, useFormikContext } from 'formik';
 import TextInputGroup from '../../components/forms/TextInputGroup';
 import TagsInputGroup from '../../components/forms/TagsInputGroup';
 import PreviewImageInputGroup from '../../components/forms/PreviewImageInputGroup';
@@ -36,6 +34,8 @@ import {
   faStickyNote,
   faTenge,
 } from '@fortawesome/free-solid-svg-icons';
+import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
+import { Select } from 'flowbite-react';
 
 const SubmissionForm = () => {
   const {
@@ -148,33 +148,33 @@ const SubmissionForm = () => {
   return (
     <div>
       <Form onSubmit={handleSubmit} className="mx-auto" data-cy="report">
-        <TextInputGroup
+        <div className="flex items-center mb-1">
+          <FontAwesomeIcon
+            fixedWidth
+            icon={faLink}
+            title={t('Report Address')}
+            className="mb-2 mr-1"
+          />
+          <Label label={'*' + t('Report Address')} popover="url"></Label>
+        </div>
+        <FlowbiteSearchInput
           name="url"
           label={t('Report Address')}
-          icon={faLink}
           placeholder={t('Report URL')}
-          addOnComponent={
-            <Button
-              className="outline-secondary rounded-l-none whitespace-nowrap"
-              disabled={!!errors.url || !values?.url || parsingNews}
-              onClick={() => parseNewsUrl(values.url)}
-              data-cy="fetch-info"
-            >
-              {!parsingNews ? (
-                <Trans ns="submit">Fetch info</Trans>
-              ) : (
-                <div className="flex gap-2">
-                  <Spinner size="sm" />
-                  <Trans ns="submit">Fetching...</Trans>
-                </div>
-              )}
-            </Button>
-          }
-          {...TextInputGroupProps}
+          defaultValue={values?.url || ''}
+          dataCy="fetch-info"
+          values={values}
+          errors={errors}
+          touched={touched}
+          handleBlur={handleBlur}
           handleChange={(e) => {
             setFieldTouched('url', true);
             TextInputGroupProps.handleChange(e);
           }}
+          btnClick={() => parseNewsUrl(values.url)}
+          loading={parsingNews}
+          btnDisabled={!!errors.url || !touched.url || parsingNews}
+          btnText={t('Fetch info')}
         />
         <RelatedIncidents incident={values} setFieldValue={setFieldValue} columns={['byURL']} />
 
@@ -243,7 +243,7 @@ const SubmissionForm = () => {
           {...TextInputGroupProps}
         />
 
-        <Form.Group
+        <div
           className={'mt-3' + (touched['text'] && errors['text'] ? ' is-invalid' : '')}
           data-color-mode="light"
         >
@@ -277,14 +277,11 @@ const SubmissionForm = () => {
               }}
             />
           </div>
-        </Form.Group>
-        <Form.Control.Feedback type="invalid">
-          <Trans ns="validation">{errors['text'] && touched['text'] ? errors['text'] : null}</Trans>
-        </Form.Control.Feedback>
+        </div>
 
         <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
 
-        <Form.Group className="mt-3">
+        <div className="mt-3">
           <div className="flex items-center">
             <FontAwesomeIcon
               fixedWidth
@@ -294,7 +291,7 @@ const SubmissionForm = () => {
             />
             <Label popover="language" label={t('Language')} />
           </div>
-          <Form.Select
+          <Select
             name="language"
             placeholder={t('Report Language')}
             value={values.language}
@@ -305,14 +302,15 @@ const SubmissionForm = () => {
                 {l.name}
               </option>
             ))}
-          </Form.Select>
-        </Form.Group>
+          </Select>
+        </div>
 
         <TagsInputGroup
           name="tags"
           label={t('Tags')}
           icon={faTag}
           className="mt-3"
+          placeholder={t('Tags')}
           {...TextInputGroupProps}
         />
 
@@ -320,6 +318,7 @@ const SubmissionForm = () => {
           name="incident_id"
           placeHolder={t('Leave empty to report a new incident')}
           showIncidentData={false}
+          {...TextInputGroupProps}
         />
 
         <RelatedIncidents
@@ -365,6 +364,7 @@ const SubmissionForm = () => {
               label={t('Editors')}
               icon={faPenNib}
               className="mt-3"
+              placeholder={t('Editors')}
               {...TextInputGroupProps}
             />
             <TagsInputGroup

@@ -15,28 +15,6 @@ const getCloudinaryPublicID = (url) => {
   return publicID;
 };
 
-const checkCloudinaryImageExists = (url) => {
-  return fetch(url)
-    .then((response) => {
-      if (response.status === 200) {
-        return true;
-      } else {
-        return false;
-      }
-    })
-    .catch(() => {
-      return false;
-    });
-};
-
-const loadImage = async (cloudinaryId) => {
-  const url = `https://res.cloudinary.com/${config.cloudinary.cloudName}/image/upload/${cloudinaryId}`;
-
-  const imageExists = await checkCloudinaryImageExists(url);
-
-  return imageExists;
-};
-
 const Image = ({
   publicID,
   className = '',
@@ -50,12 +28,13 @@ const Image = ({
 }) => {
   const imageElement = useRef(null);
 
-  const [loadFailed, setLoadFailed] = useState(!publicID || publicID == 'placeholder.svg');
+  const [loadFailed, setLoadFailed] = useState(!publicID || publicID.includes('placeholder.svg'));
 
   useEffect(() => {
     setLoadFailed(false);
     const img = imageElement.current?.imageRef.current;
 
+    // In order for the error event to fire, the image must be in the document.
     if (img) {
       const errorListener = img.addEventListener('error', () => {
         setLoadFailed(true);
@@ -63,47 +42,48 @@ const Image = ({
 
       return () => img.removeEventListener('error', errorListener);
     }
+
+    if (publicID && publicID.includes('placeholder.svg')) {
+      setLoadFailed(true);
+    }
   }, [publicID, imageElement.current?.imageRef.current]);
 
-  if (!publicID || publicID == '' || loadFailed) {
-    return (
+  const image = new CloudinaryImage(publicID, {
+    cloudName: config.cloudinary.cloudName,
+  });
+
+  //TODO: this is a fix for this issue: https://github.com/PartnershipOnAI/aiid/issues/260
+  // Setting transformation as a string skips the safe url check here: https://github.com/cloudinary/js-url-gen/blob/9a3d0a29ea77ddfd6f7181251615f34c2d8a6c5d/src/assets/CloudinaryFile.ts#L279
+  const tmpImage = new CloudinaryImage();
+
+  tmpImage.delivery(format(auto())).delivery(quality(qAuto()));
+
+  if (transformation) {
+    tmpImage.addTransformation(transformation);
+  }
+
+  image.transformation = tmpImage.transformation.toString();
+
+  return (
+    <>
       <PlaceholderImage
         siteName="IncidentDatabase.AI"
         itemIdentifier={itemIdentifier}
         title={title || alt}
-        className={className}
+        className={`${className} ${!publicID || publicID == '' || loadFailed ? '' : 'hidden'}`}
         height={height}
         style={style}
       />
-    );
-  } else {
-    const image = new CloudinaryImage(publicID, {
-      cloudName: config.cloudinary.cloudName,
-    });
-
-    //TODO: this is a fix for this issue: https://github.com/PartnershipOnAI/aiid/issues/260
-    // Setting transformation as a string skips the safe url check here: https://github.com/cloudinary/js-url-gen/blob/9a3d0a29ea77ddfd6f7181251615f34c2d8a6c5d/src/assets/CloudinaryFile.ts#L279
-    const tmpImage = new CloudinaryImage();
-
-    tmpImage.delivery(format(auto())).delivery(quality(qAuto()));
-
-    if (transformation) {
-      tmpImage.addTransformation(transformation);
-    }
-
-    image.transformation = tmpImage.transformation.toString();
-
-    return (
       <AdvancedImage
         ref={imageElement}
         alt={alt}
-        className={className}
+        className={`${className} ${!publicID || publicID == '' || loadFailed ? 'hidden' : ''}`}
         cldImg={image}
         plugins={plugins}
         style={style}
       />
-    );
-  }
+    </>
+  );
 };
 
-export { getCloudinaryPublicID, Image, loadImage };
+export { getCloudinaryPublicID, Image };

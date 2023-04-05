@@ -466,4 +466,26 @@ describe('Cite pages', () => {
 
     cy.get('[data-cy="timeline-text-response"]').should('not.exist');
   });
+
+  it('There should not be image errors (400)', () => {
+    cy.visit(url, {
+      onBeforeLoad(win) {
+        cy.stub(win.console, 'error').as('consoleError');
+      },
+    });
+
+    cy.waitForStableDOM();
+
+    cy.get('@consoleError').then((consoleError) => {
+      const noImagesErrors = consoleError
+        .getCalls()
+        .every((call) =>
+          call.args.every(
+            (arg) => !(arg.includes('https://res.cloudinary.com') && arg.includes('400'))
+          )
+        );
+
+      expect(noImagesErrors, 'No images errors').to.be.true;
+    });
+  });
 });
