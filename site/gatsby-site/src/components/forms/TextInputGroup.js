@@ -25,7 +25,7 @@ const TextInputGroup = ({
 
   // this causes an unncessary re-render
   useEffect(() => {
-    if (schema) {
+    if (schema && schema.fields[name]) {
       schema.fields[name].isValid(undefined).then((result) => setOptional(result));
     }
   }, []);
