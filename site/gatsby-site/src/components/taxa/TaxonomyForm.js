@@ -314,7 +314,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
           debouncedSetInitialValues(values);
           return (
             <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-4">
+              <Form.Group className="mb-4" data-cy="Notes">
                 <Form.Label>Notes</Form.Label>
                 <Form.Control
                   id={'notes'}
@@ -355,7 +355,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                     )
                   )}
               </fieldset>
-              <Form.Group className="mb-4">
+              <Form.Group className="mb-4" data-cy="Publish">
                 <Form.Label>Publish</Form.Label>
                 <Form.Check
                   type="radio"
@@ -441,8 +441,17 @@ function FormField({
     autocompleteValues = autocompleteValues.concat(entitiesData.data.entities.map((e) => e.name));
   }
 
+  const radio = {
+    type: 'radio',
+    onClick: (event) => {
+      if (event.target.checked) {
+        setFieldValue(identifier, null);
+      }
+    },
+  };
+
   return (
-    <div key={field.short_name} className="bootstrap">
+    <div data-cy={field.short_name} key={field.short_name} className="bootstrap">
       <Form.Label>
         {field.field_number ? field.field_number + '. ' : ''}
         {field.short_name}
@@ -451,14 +460,12 @@ function FormField({
         field.permitted_values.length <= 5 &&
         field.permitted_values.map((v) => (
           <Form.Check
+            {...radio}
             key={v}
-            type="radio"
-            name={identifier}
             label={v}
-            id={`${identifier}-${v}`}
-            value={v}
-            onChange={handleChange}
-            checked={(formikValues[identifier] || []).includes(v)}
+            id={`${field.field_number || ''}${identifier}-${v}`}
+            onChange={() => setFieldValue(identifier, v)}
+            checked={formikValues[identifier] == v}
           />
         ))}
       {field.display_type === 'enum' && field.permitted_values.length > 5 && (
@@ -514,8 +521,8 @@ function FormField({
       {field.display_type === 'bool' && (
         <>
           <Form.Check
+            {...radio}
             key="yes"
-            type="radio"
             name={identifier}
             label="yes"
             id={`${identifier}-yes`}
@@ -524,8 +531,8 @@ function FormField({
             checked={[true, 'true'].includes(formikValues[identifier])}
           />
           <Form.Check
+            {...radio}
             key="no"
-            type="radio"
             name={identifier}
             label="no"
             id={`${identifier}-no`}
