@@ -10,12 +10,16 @@ import SubmitButton from 'components/ui/SubmitButton';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 
 const supportedRoles = [
-  { name: 'admin', description: '' },
-  { name: 'subscriber', description: '' },
-  { name: 'submitter', description: '' },
-  { name: 'incident_editor', description: '' },
-  { name: 'taxonomy_editor', description: '' },
-  { name: 'taxonomy_editor_{name}', description: '' },
+  { name: 'admin', description: 'All permissions' },
+  {
+    name: 'subscriber',
+    description:
+      'Can subscribe to incidents, entities, reports, and anything else that is subscribeable',
+  },
+  { name: 'submitter', description: 'Permitted to submit incidents under their user account' },
+  { name: 'incident_editor', description: 'Can edit incidents' },
+  { name: 'taxonomy_editor', description: 'Can edit all taxonomies' },
+  { name: 'taxonomy_editor_{name}', description: 'Can edit the taxonomy with the specified name' },
 ];
 
 const RolesTable = ({ roles }) => (
