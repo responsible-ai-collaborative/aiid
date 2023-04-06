@@ -59,6 +59,7 @@ const ConfirmEmail = (props) => {
           }
         });
     } else {
+      setConfirmed(false);
       addToast({
         message: (
           <>
