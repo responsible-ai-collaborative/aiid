@@ -4,7 +4,7 @@ import { useApolloClient } from '@apollo/client';
 import gql from 'graphql-tag';
 import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
-import { Button, Dropdown, Pagination, Select, Spinner, Table } from 'flowbite-react';
+import { Button, Pagination, Select, Spinner, Table } from 'flowbite-react';
 import Link from '../../components/ui/Link';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
@@ -41,8 +41,6 @@ const DefaultColumnFilter = ({ column: { filterValue, preFilteredRows, setFilter
 };
 
 const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows, id } }) => {
-  const { t } = useTranslation();
-
   // TODO: add search for large lists
   let options;
 
@@ -134,32 +132,27 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
   ].sort((a, b) => (String(a).toLowerCase() >= String(b).toLowerCase() ? 1 : -1));
 
   return (
-    <Dropdown
-      color={'gray'}
-      label={t(filterValue) || t('All')}
+    <Select
       style={{ minWidth: 100 }}
       value={filterValue}
+      onChange={(e) => {
+        setFilter(e.target.value || undefined);
+      }}
     >
-      <Dropdown.Item
+      <option
         value=""
         onClick={() => {
           setFilter('');
         }}
       >
         <Trans>All</Trans>
-      </Dropdown.Item>
+      </option>
       {filteredOptions.map((option, i) => (
-        <Dropdown.Item
-          onClick={() => {
-            setFilter(option);
-          }}
-          key={i}
-          value={option}
-        >
+        <option key={i} value={option}>
           {option}
-        </Dropdown.Item>
+        </option>
       ))}
-    </Dropdown>
+    </Select>
   );
 };
 
