@@ -650,6 +650,10 @@
     @apply hover:text-blue-500 hover:bg-white hover:border-blue-500 !important;
   }
 
+  .form-tooltip {
+    @apply p-1 !important;
+  }
+  
   .edit-div {
     @apply py-4 px-6 text-right;
   }
