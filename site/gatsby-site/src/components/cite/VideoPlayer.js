@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import ReactPlayer from 'react-player/lazy';
 
 /*
   Example videos:
@@ -14,20 +15,6 @@ export const youtubeRegex =
 export const vimeoRegex = /^https?:\/\/(www.)?vimeo.com\/([a-zA-Z0-9_-]+)/;
 
 // const twitterRegex = /^https:\/\/(www.)?twitter.com\/\w+\/status\/([0-9]+)/;
-
-// export const constructVideoURL = (videoID, videoPlatform) => {
-//   switch (videoPlatform) {
-//     case 'youtube':
-//       return `https://youtu.be/${videoID}`;
-//     case 'vimeo':
-//       return `https://vimeo.com/${videoID}`;
-//     case 'streamable':
-//       return `https://streamable.com/${videoID}`;
-//     default:
-//       console.log('Unknown video platform.');
-//       return '';
-//   }
-// };
 
 export const isVideo = (url) => {
   if (youtubeRegex.test(url)) {
@@ -70,39 +57,39 @@ export const grabVideoID = (video_id, url) => {
   return 'fall_back';
 };
 
-const VideoPlayer = ({ incidentID, mediaURL, className = '' }) => {
-  const embedLink = (videoID, videoPlatform) => {
-    switch (videoPlatform) {
-      case 'youtube':
-        return `https://www.youtube.com/embed/${videoID}`;
-      case 'vimeo':
-        return `https://player.vimeo.com/video/${videoID}`;
-      //   case 'streamable':
-      //     return `https://streamable.com/e/${videoID}`;
-      default:
-        console.log('Unknown video platform.');
-        return '';
-    }
-  };
+const VideoPlayer = ({ mediaURL, className = '', fallback = null, onError = () => {} }) => {
+  if (!isVideo(mediaURL)) {
+    return fallback;
+  }
 
-  const videoPlatform = typeMedia(mediaURL);
+  if (!ReactPlayer.canPlay(mediaURL)) {
+    console.log(`URL ${mediaURL} can't be played by ReactPlayer.`);
+    return fallback;
+  }
 
-  const videoID = grabVideoID(videoPlatform, mediaURL);
+  function onPlayerError(err) {
+    console.log(`ReactPlayer error on video ${mediaURL}: ${err}`);
+    onError();
+    setUseVideo(false);
+  }
 
-  const embedURL = embedLink(videoID, videoPlatform);
+  const [useVideo, setUseVideo] = useState(isVideo(mediaURL));
 
-  const embedTitle = `Video player for Incident ${incidentID} (${videoPlatform} video ${videoID})`;
-
-  return (
+  return useVideo ? (
     <div className={`aspect-w-16 aspect-h-9 ${className}`}>
-      <iframe
-        className={`self-center`}
-        src={embedURL}
-        title={embedTitle}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowFullScreen
+      <ReactPlayer
+        url={mediaURL}
+        controls
+        muted
+        pip
+        fallback={fallback}
+        onError={(e) => onPlayerError(e)}
+        width="100%"
+        height="100%"
       />
     </div>
+  ) : (
+    fallback
   );
 };
 

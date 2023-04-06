@@ -38,7 +38,8 @@ import config from '../../config';
 import VariantList from 'components/variants/VariantList';
 import { isCompleteReport } from 'utils/variants';
 import { useQueryParams, StringParam, withDefault } from 'use-query-params';
-import VideoPlayer, { isVideo } from 'components/cite/VideoPlayer';
+import { isVideo } from 'components/cite/VideoPlayer';
+import VideoPlayerCard from 'components/cite/VideoPlayerCard';
 
 const sortIncidentsByDatePublished = (incidentReports) => {
   return incidentReports.sort((a, b) => {
@@ -114,11 +115,17 @@ function CitePage(props) {
 
   const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports);
 
-  const sortedReports = sortedIncidentReports.filter((report) => isCompleteReport(report));
+  const sortedReports = sortedIncidentReports
+    .filter((report) => isCompleteReport(report))
+    .reverse();
 
   const publicID = sortedReports.find((report) => report.cloudinary_id)?.cloudinary_id;
 
-  const videoURL = sortedReports.find((report) => isVideo(report.media_url))?.media_url;
+  let videoURLs = [];
+
+  sortedReports.forEach((report) => {
+    if (isVideo(report.media_url)) videoURLs.push(report.media_url);
+  });
 
   const image = new CloudinaryImage(publicID, {
     cloudName: config.cloudinary.cloudName,
@@ -282,22 +289,7 @@ function CitePage(props) {
           </div>
 
           <Container>
-            {videoURL && (
-              <Row>
-                <Col>
-                  <Card className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6">
-                    <Card.Header className="items-center justify-between">
-                      <h4 className="m-0">
-                        <Trans ns="video">Incident Video</Trans>
-                      </h4>
-                    </Card.Header>
-                    <Card.Body className="block">
-                      <VideoPlayer incidentID={incident.incident_id} mediaURL={videoURL} />
-                    </Card.Body>
-                  </Card>
-                </Col>
-              </Row>
-            )}
+            <VideoPlayerCard videoURLs={videoURLs} />
 
             <Row>
               <Col>

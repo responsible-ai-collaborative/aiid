@@ -15,7 +15,7 @@ import TranslationBadge from 'components/i18n/TranslationBadge';
 import Card from 'elements/Card';
 import { VIEW_TYPES } from 'utils/discover';
 
-import VideoPlayer, { isVideo } from 'components/cite/VideoPlayer';
+import VideoPlayer from 'components/cite/VideoPlayer';
 
 const IncidentCardImage = styled(Image)`
   height: ${({ height }) => height};
@@ -58,25 +58,22 @@ export default function Details({
       <input type="hidden" data-cy="date-submitted" value={item.epoch_date_submitted} />
       <input type="hidden" data-cy="incident-date" value={item.epoch_incident_date} />
       <a href={detailsPath}>
-        {isVideo(item.media_url) ? (
-          <VideoPlayer
-            //   className={`img-fluid h-full w-full max-w-full object-cover`}
-            className="card-img-top"
-            incidentID={item.incident_id}
-            mediaURL={item.media_url}
-          />
-        ) : (
-          <IncidentCardImage
-            className="card-img-top"
-            publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.media_url)}`}
-            alt={item.title}
-            height="240px"
-            transformation={fill().height(480)}
-            itemIdentifier={t('Report {{report_number}}', {
-              report_number: item.report_number,
-            }).replace(' ', '.')}
-          />
-        )}
+        <VideoPlayer
+          className="card-img-top"
+          mediaURL={item.media_url}
+          fallback={
+            <IncidentCardImage
+              className="card-img-top"
+              publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.media_url)}`}
+              alt={item.title}
+              height="240px"
+              transformation={fill().height(480)}
+              itemIdentifier={t('Report {{report_number}}', {
+                report_number: item.report_number,
+              }).replace(' ', '.')}
+            />
+          }
+        />
       </a>
       <Card.Body className="flex flex-col ">
         <HeaderTitle item={item} viewType={viewType} />
