@@ -128,6 +128,74 @@ describe('Cite pages', () => {
     cy.get('@taxonomyForm').should('exist');
   });
 
+  maybeIt('Should show the taxonomy form of GMF', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.visit(url);
+
+    cy.get('[data-cy="GMF"]').contains('Edit').click();
+
+    cy.get('[data-cy="GMF"] [data-cy="taxonomy-form"]', { timeout: 8000 }).as('taxonomyForm');
+
+    cy.get('@taxonomyForm').should('exist');
+  });
+
+  maybeIt('Should show taxonomy form and duplicates of CSETv1 with correct fields', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.visit(url);
+
+    for (let i = 0; i < 4; i++) {
+      const taxonomySelector = `[data-cy="CSETv1${i == 0 ? '' : '_Annotator-' + i}"]`;
+
+      cy.get(taxonomySelector).contains('Edit').click();
+
+      for (const field of CSETv1Fields) {
+        const fieldSelector = `${taxonomySelector} [data-cy="${field}"]`;
+
+        const inputSelector = ['input', 'textarea', 'select', '.form-check', 'button', 'h5']
+          .map((input) => `${fieldSelector} ${input}`)
+          .join(', ');
+
+        cy.get(inputSelector, { timeout: 30000 }).then((el) => {
+          expect(el).to.exist;
+        });
+      }
+    }
+  });
+
+  maybeIt('Should synchronize duplicate fields', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    cy.visit(url);
+
+    cy.get('#taxonomy-CSETv1', { timeout: 30000 }).contains('Edit').click();
+
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]', { timeout: 30000 })
+      .first()
+      .contains('yes')
+      .click();
+
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
+      .last()
+      .find('input[type="radio"]')
+      .eq(0)
+      .should('be.checked');
+
+    // Clicking unchecks the input for both fields
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
+      .last()
+      .find('input[type="radio"]')
+      .eq(0)
+      .click();
+
+    cy.get('[data-cy="CSETv1"] [data-cy="AI System"]')
+      .first()
+      .find('input[type="radio"]')
+      .eq(0)
+      .should('not.be.checked');
+  });
+
   it(`Should taxa table only when there are classifications and the user is not authenticated`, () => {
     cy.visit(url);
 
@@ -488,4 +556,71 @@ describe('Cite pages', () => {
       expect(noImagesErrors, 'No images errors').to.be.true;
     });
   });
+
+  var CSETv1Fields = [
+    'Notes',
+    'Incident Number',
+    'Annotator',
+    'Annotation Status',
+    'Peer Reviewer',
+    'Quality Control',
+    'Physical Objects',
+    'Entertainment Industry',
+    'Report, Test, or Study of data',
+    'Deployed',
+    'Producer Test in Controlled Conditions',
+    'Producer Test in Operational Conditions',
+    'User Test in Controlled Conditions',
+    'User Test in Operational Conditions',
+    'Harm Domain',
+    'Tangible Harm',
+    'AI System',
+    'Clear Link to AI',
+    'There is a potentially identifiable specific entity that experienced the harm',
+    'AI Harm Level',
+    'AI Tangible Harm Level Notes',
+    'Impact on Critical Services',
+    'Rights Violation',
+    'Involving Minor',
+    'Detrimental Content',
+    'Protected Characteristic',
+    'Harm Distribution Basis',
+    'Notes (special interest intangible harm)',
+    'Special Interest Intangible Harm',
+    'AI System',
+    'AI Linked to Special Interest Intangible Harm',
+    'Harmed Class of Entities',
+    'Annotator’s AI special interest intangible harm assessment',
+    'Notes (AI special interest intangible harm)',
+    'Date of Incident Year',
+    'Date of Incident Month',
+    'Date of Incident Day',
+    'Estimated Date',
+    'Multiple AI Interaction',
+    'Embedded',
+    'Location City',
+    'Location State/Province (two letters)',
+    'Location Country (two letters)',
+    'Location Region',
+    'Infrastructure Sectors',
+    'Operating Conditions',
+    'Notes (Environmental and Temporal Characteristics)',
+    'Entities',
+    'Lives Lost',
+    'Injuries',
+    'Estimated Harm Quantities',
+    'Notes ( Tangible Harm Quantities Information)',
+    'AI System Description',
+    'Data Inputs',
+    'Sector of Deployment',
+    'Public Sector Deployment',
+    'Autonomy Level',
+    'Notes (Information about AI System)',
+    'Intentional Harm',
+    'Physical System Type',
+    'AI Task',
+    'AI tools and methods',
+    'Notes (AI Functionality and Techniques)',
+    'Publish',
+  ];
 });
