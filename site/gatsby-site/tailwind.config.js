@@ -56,6 +56,9 @@ module.exports = {
       240: '240px',
     },
     extend: {
+      animation: {
+        'all-0': 'all 0s',
+      },
       screens: {
         '1300px': { min: '1300px' },
         '3xl': { min: '1920px' },
@@ -109,6 +112,9 @@ module.exports = {
         card: '0 2px 5px 0px #e3e5ec',
         'left-side-bar': 'rgb(175 158 232 / 40%) -1px 0px 4px 1px',
         table: 'inset 0 0 0 9999px transparent',
+        tsne: '0px 0px 2px 2px rgba(0, 0, 0, 0.15)',
+        'tsne-current': '0px 0px 3px 3px rgba(255, 255, 255, 0.75)',
+        'incidents-table': '0px 3px 3px #ccc',
       },
       transitionDelay: {},
       transitionDuration: {

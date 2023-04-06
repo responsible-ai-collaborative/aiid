@@ -1,6 +1,5 @@
 import React from 'react';
 import { Image } from 'utils/cloudinary';
-import styled from 'styled-components';
 import { fill } from '@cloudinary/base/actions/resize';
 import md5 from 'md5';
 import Actions from '../Actions';
@@ -8,80 +7,23 @@ import { HeaderTitle, SourceDomainSubtitle } from './shared';
 import Card from 'elements/Card';
 import { useTranslation } from 'react-i18next';
 
-const StyledCard = styled(Card)`
-  height: 240px;
-
-  :hover {
-    background: #00000000;
-  }
-
-  animation: all 0s;
-`;
-
-const StyledCardBody = styled(Card.Body)`
-  position: relative;
-  padding: 0;
-`;
-
-const Contents = styled.div`
-  background: #000000b3;
-  color: #fff;
-  bottom: 0;
-  position: absolute;
-  left: 0;
-  right: 0;
-  z-index: 1;
-  min-height: 40%;
-`;
-
-const IncidentCardImage = styled(Image)`
-  object-fit: cover;
-  position: absolute;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  bottom: 0;
-  left: 0;
-`;
-
-const StyledHeaderTitle = styled(HeaderTitle)`
-  line-height: 1.1 !important;
-  a {
-    color: white !important;
-  }
-  a:hover {
-    opacity: 0.9;
-  }
-  font-size: 1rem;
-  * {
-    font-size: 1rem;
-  }
-  max-height: 5em;
-  overflow: hidden;
-`;
-
-const StyledSubTitle = styled(SourceDomainSubtitle)`
-  color: var(--bs-gray-400);
-  :hover {
-    opacity: 0.9;
-  }
-  a:hover {
-    color: var(--bs-gray-400);
-  }
-`;
-
 export default function Compact({ item, toggleFilterByIncidentId, viewType }) {
   const { t } = useTranslation();
 
   return (
-    <StyledCard>
-      <StyledCardBody className="flex flex-col ">
-        <Contents className="pl-6 pr-6 pt-3">
-          <StyledHeaderTitle item={item} viewType={viewType} />
-          <StyledSubTitle item={item} className="my-2 small" />
-        </Contents>
+    <Card className="h-[240px] hover:bg-black animate-all-0">
+      <Card.Body className="flex flex-col relative p-0">
+        <div className="pl-6 pr-6 pt-3 bg-[#000000b3] text-white bottom-0 absolute left-0 right-0 z-2 min-h-[40%]">
+          <HeaderTitle
+            item={item}
+            viewType={viewType}
+            className="text-base leading-4 text-white hover:opacity-90 max-h-[5em] overflow-hidden"
+          />
+          <SourceDomainSubtitle item={item} className="my-2 small text-gray-400 hover:opacity-90" />
+        </div>
 
-        <IncidentCardImage
+        <Image
+          className="object-cover absolute z-0 w-full h-full bottom-0 left-0 rounded-t-lg"
           publicID={item.cloudinary_id ? item.cloudinary_id : `legacy/${md5(item.image_url)}`}
           alt={item.title}
           height="240px"
@@ -90,11 +32,11 @@ export default function Compact({ item, toggleFilterByIncidentId, viewType }) {
             report_number: item.report_number,
           }).replace(' ', '.')}
         />
-      </StyledCardBody>
+      </Card.Body>
 
       <Card.Footer className="flex justify-between">
         <Actions toggleFilterByIncidentId={toggleFilterByIncidentId} item={item} />
       </Card.Footer>
-    </StyledCard>
+    </Card>
   );
 }

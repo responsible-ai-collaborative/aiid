@@ -239,9 +239,11 @@ describe('Cite pages', () => {
 
     const date = format(new Date(), 'MMMM d, y');
 
-    cy.wait(0);
+    cy.waitForStableDOM();
 
     cy.contains('button', 'Citation Info').click();
+
+    cy.waitForStableDOM();
 
     cy.get('[data-cy="suggested-citation-format"]').should(
       'contain.text',
@@ -463,5 +465,27 @@ describe('Cite pages', () => {
     cy.get('[data-cy="responded-badge"]').should('not.exist');
 
     cy.get('[data-cy="timeline-text-response"]').should('not.exist');
+  });
+
+  it('There should not be image errors (400)', () => {
+    cy.visit(url, {
+      onBeforeLoad(win) {
+        cy.stub(win.console, 'error').as('consoleError');
+      },
+    });
+
+    cy.waitForStableDOM();
+
+    cy.get('@consoleError').then((consoleError) => {
+      const noImagesErrors = consoleError
+        .getCalls()
+        .every((call) =>
+          call.args.every(
+            (arg) => !(arg.includes('https://res.cloudinary.com') && arg.includes('400'))
+          )
+        );
+
+      expect(noImagesErrors, 'No images errors').to.be.true;
+    });
   });
 });

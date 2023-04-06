@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import AiidHelmet from '../../components/AiidHelmet';
 import { format } from 'date-fns';
 import Link from '../../components/ui/Link';
-import { StyledHeading } from '../../components/styles/Docs';
 import styled from 'styled-components';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -457,7 +456,7 @@ export default function Incidents(props) {
 
       {!loading && (
         <Container isWide={isCollapsed} className="bootstrap">
-          <StyledHeading>Incident Report Table</StyledHeading>
+          <h1 className="font-karla font-bold flex-1 pt-0">Incident Report Table</h1>
           <Button onClick={() => setAllFilters([])}>Reset filters</Button>
           <TableStyles>
             <Table striped bordered hover {...getTableProps()}>
