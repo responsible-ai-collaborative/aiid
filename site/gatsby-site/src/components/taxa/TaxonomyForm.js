@@ -320,7 +320,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
           debouncedSetInitialValues(values);
           return (
             <Form onSubmit={handleSubmit}>
-              <div className="mb-4">
+              <div className="mb-4" data-cy="Notes">
                 <TextInputGroup
                   label="Notes"
                   placeholder={'Notes'}
@@ -366,7 +366,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                     )
                   )}
               </fieldset>
-              <div className="mb-4">
+              <div className="mb-4" data-cy="Publish">
                 <Label>Publish</Label>
                 <div>
                   <Radio
@@ -458,8 +458,17 @@ function FormField({
     autocompleteValues = autocompleteValues.concat(entitiesData.data.entities.map((e) => e.name));
   }
 
+  const radio = {
+    type: 'radio',
+    onClick: (event) => {
+      if (event.target.checked) {
+        setFieldValue(identifier, null);
+      }
+    },
+  };
+
   return (
-    <div key={field.short_name}>
+    <div data-cy={field.short_name} key={field.short_name}>
       <Label>
         {field.field_number ? field.field_number + '. ' : ''}
         {field.short_name}
@@ -469,14 +478,15 @@ function FormField({
         field.permitted_values.map((v) => (
           <div key={v}>
             <Checkbox
+              {...radio}
               name={identifier}
-              id={`${identifier}-${v}`}
+              id={`${field.field_number || ''}${identifier}-${v}`}
               value={v}
-              onChange={handleChange}
-              checked={(formikValues[identifier] || []).includes(v)}
+              onChange={() => setFieldValue(identifier, v)}
+              checked={formikValues[identifier] == v}
               className="mr-2"
             />
-            <Label htmlFor={`${identifier}-${v}`}>{v}</Label>
+            <Label htmlFor={`${field.field_number || ''}${identifier}-${v}`}>{v}</Label>
           </div>
         ))}
       {field.display_type === 'enum' && field.permitted_values.length > 5 && (
@@ -542,6 +552,7 @@ function FormField({
         <>
           <div>
             <Radio
+              {...radio}
               key="yes"
               name={identifier}
               id={`${identifier}-yes`}
@@ -554,6 +565,7 @@ function FormField({
           </div>
           <div>
             <Radio
+              {...radio}
               key="no"
               name={identifier}
               id={`${identifier}-no`}

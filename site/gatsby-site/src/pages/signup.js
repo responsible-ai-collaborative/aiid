@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
-import { Form } from 'react-bootstrap';
-import { Spinner } from 'flowbite-react';
+import { Button, Spinner } from 'flowbite-react';
 import { useUserContext } from '../contexts/userContext';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
-import { Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import Link from '../components/ui/Link';
 import { Trans, useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
-import Button from '../elements/Button';
 import { StringParam, useQueryParams } from 'use-query-params';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import TextInputGroup from 'components/forms/TextInputGroup';
 
 const SignUpSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -69,7 +68,7 @@ const SignUp = (props) => {
   };
 
   return (
-    <Layout {...props} className="bootstrap">
+    <Layout {...props}>
       {loading ? (
         <div className="flex flex-wrap gap-2">
           <Spinner />
@@ -117,35 +116,37 @@ const SignUp = (props) => {
                 setSubmitting(false);
               }}
             >
-              {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, isValid }) => (
+              {({
+                values,
+                errors,
+                touched,
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                isSubmitting,
+                isValid,
+              }) => (
                 <Form onSubmit={handleSubmit}>
-                  <Form.Group className="mb-3" controlId="formBasicEmailSubscription">
-                    <Form.Label>
-                      <Trans>Email address</Trans>
-                    </Form.Label>
-                    <Form.Control
-                      isInvalid={errors.emailSubscription && touched.emailSubscription}
+                  <div className="mb-3" id="formBasicEmailSubscription">
+                    <TextInputGroup
                       type="email"
+                      label={t('Email address')}
                       placeholder={t('Email')}
                       name="emailSubscription"
                       value={values.emailSubscription}
-                      onChange={(event) => {
+                      handleChange={(event) => {
                         setEmailValue(event.target.value);
                         handleChange(event);
                       }}
+                      handleBlur={handleBlur}
+                      values={values}
+                      errors={errors}
+                      touched={touched}
                     />
-                    <Form.Control.Feedback type="invalid">
-                      <Trans>
-                        {errors.emailSubscription && touched.emailSubscription
-                          ? errors.emailSubscription
-                          : null}
-                      </Trans>
-                    </Form.Control.Feedback>
-                  </Form.Group>
+                  </div>
 
                   <div className="flex justify-between gap-3">
                     <Button
-                      variant="primary"
                       type="submit"
                       disabled={isSubmitting || !isValid}
                       data-cy="subscribe-to-updates-btn"
@@ -163,7 +164,6 @@ const SignUp = (props) => {
                     </Button>
 
                     <Button
-                      variant="primary"
                       type="button"
                       disabled={isSubmitting}
                       data-cy="signup-btn"
@@ -207,73 +207,67 @@ const SignUp = (props) => {
                 setSubmitting(false);
               }}
             >
-              {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, isValid }) => (
+              {({
+                values,
+                errors,
+                touched,
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                isSubmitting,
+                isValid,
+              }) => (
                 <Form onSubmit={handleSubmit}>
-                  <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Label>
-                      <Trans>Email address</Trans>
-                    </Form.Label>
-                    <Form.Control
-                      isInvalid={errors.email && touched.email}
+                  <div className="mb-3" id="formBasicEmail">
+                    <TextInputGroup
                       type="email"
+                      label={t('Email address')}
                       placeholder={t('Email')}
                       name="email"
                       value={values.email}
-                      onChange={(event) => {
+                      handleChange={(event) => {
                         setEmailValue(event.target.value);
                         handleChange(event);
                       }}
+                      handleBlur={handleBlur}
+                      values={values}
+                      errors={errors}
+                      touched={touched}
                     />
-                    <Form.Control.Feedback type="invalid">
-                      <Trans>{errors.email && touched.email ? errors.email : null}</Trans>
-                    </Form.Control.Feedback>
-                  </Form.Group>
+                  </div>
 
-                  <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>
-                      <Trans ns="login">Password</Trans>
-                    </Form.Label>
-                    <Form.Control
-                      isInvalid={errors.password && touched.password}
+                  <div className="mb-3" id="formBasicPassword">
+                    <TextInputGroup
                       type="password"
+                      label={t('Password', { ns: 'login' })}
                       placeholder={t('Password', { ns: 'login' })}
                       name="password"
                       value={values.password}
-                      onChange={handleChange}
+                      handleChange={handleChange}
+                      handleBlur={handleBlur}
+                      values={values}
+                      errors={errors}
+                      touched={touched}
                     />
-                    <Form.Control.Feedback type="invalid">
-                      <Trans>{errors.password && touched.password ? errors.password : null}</Trans>
-                    </Form.Control.Feedback>
-                  </Form.Group>
+                  </div>
 
-                  <Form.Group className="mb-3" controlId="formBasicPasswordConfirm">
-                    <Form.Label>
-                      <Trans ns="login">Confirm password</Trans>
-                    </Form.Label>
-                    <Form.Control
-                      isInvalid={
-                        errors.passwordConfirm &&
-                        touched.passwordConfirm &&
-                        values.password !== values.passwordConfirm
-                      }
+                  <div className="mb-3" id="formBasicPasswordConfirm">
+                    <TextInputGroup
                       type="password"
-                      placeholder={t('Confirm password', { ns: 'login' })}
+                      label={t('Confirm password', { ns: 'login' })}
+                      placeholder={t('Password', { ns: 'login' })}
                       name="passwordConfirm"
                       value={values.passwordConfirm}
-                      onChange={handleChange}
+                      handleChange={handleChange}
+                      handleBlur={handleBlur}
+                      values={values}
+                      errors={errors}
+                      touched={touched}
                     />
-                    <Form.Control.Feedback type="invalid">
-                      <Trans>
-                        {errors.passwordConfirm && touched.passwordConfirm
-                          ? errors.passwordConfirm
-                          : null}
-                      </Trans>
-                    </Form.Control.Feedback>
-                  </Form.Group>
+                  </div>
 
                   <div className="flex justify-between gap-3">
                     <Button
-                      variant="primary"
                       type="button"
                       disabled={isSubmitting}
                       data-cy="subscribe-to-updates-btn"
@@ -286,7 +280,6 @@ const SignUp = (props) => {
                     </Button>
 
                     <Button
-                      variant="primary"
                       type="submit"
                       disabled={isSubmitting || !isValid || displayFacebookSpinner}
                       data-cy="signup-btn"
@@ -312,7 +305,6 @@ const SignUp = (props) => {
           </div>
 
           <Button
-            variant="primary"
             onClick={clickLoginWithFacebook}
             className={'w-full'}
             disabled={displayFacebookSpinner}
