@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
-import Layout from 'components/Layout';
 import TaxonomyGraphCarousel from '../../src/components/TaxonomyGraphCarousel.js';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import TranslationBadge from 'components/i18n/TranslationBadge';
+import { useMenuContext } from 'contexts/MenuContext.js';
 
 export default function Taxonomies({ data, ...props }) {
   const { t } = useTranslation();
@@ -16,8 +16,16 @@ export default function Taxonomies({ data, ...props }) {
 
   const metaDescription = t('This is the list of taxonomies supported in AIID');
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+  }, []);
+
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet {...{ title, metaTitle, metaDescription, path: props.location.pathname }}>
         <title>{title}</title>
       </AiidHelmet>
@@ -72,7 +80,7 @@ export default function Taxonomies({ data, ...props }) {
           </Trans>
         </p>
       </div>
-    </Layout>
+    </>
   );
 }
 

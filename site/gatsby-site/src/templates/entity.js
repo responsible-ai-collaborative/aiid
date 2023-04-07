@@ -1,12 +1,11 @@
 import EntityCard from 'components/entities/EntityCard';
 import IncidentCard from 'components/incidents/IncidentCard';
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { useUserContext } from 'contexts/userContext';
 import { Button, Spinner } from 'flowbite-react';
 import { graphql } from 'gatsby';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { computeEntities, makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
 import AiidHelmet from 'components/AiidHelmet';
@@ -21,6 +20,7 @@ import {
 } from '../graphql/subscriptions';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
+import { useMenuContext } from 'contexts/MenuContext';
 
 const sortByReports = (a, b) => b.reports.length - a.reports.length;
 
@@ -210,8 +210,16 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     }
   };
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+  }, []);
+
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet metaTitle={'Entity: ' + name} path={props.location.pathname} />
       <div className="titleWrapper">
         <LocalizedLink to="/entities" className="text-lg">
@@ -286,7 +294,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
           </div>
         </>
       )}
-    </Layout>
+    </>
   );
 };
 

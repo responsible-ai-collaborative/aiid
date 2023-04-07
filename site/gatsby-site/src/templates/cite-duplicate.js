@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 
 import Container from 'react-bootstrap/Container';
 
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
+import { useMenuContext } from 'contexts/MenuContext';
 
-const IncidentCite = ({ pageContext, ...props }) => {
+const IncidentCite = ({ pageContext }) => {
   const { true_incident_number, duplicate_incident_number } = pageContext;
 
   // meta tags
@@ -19,8 +19,16 @@ const IncidentCite = ({ pageContext, ...props }) => {
 
   const canonicalUrl = getCanonicalUrl(true_incident_number);
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+  }, []);
+
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl }} />
       <div className={'titleWrapper'}>
         <h1 className="font-karla font-bold flex-1 pt-0">{metaDescription}</h1>
@@ -33,7 +41,7 @@ const IncidentCite = ({ pageContext, ...props }) => {
           previously found on this page have been migrated to the previously existing incident.
         </Container>
       </div>
-    </Layout>
+    </>
   );
 };
 

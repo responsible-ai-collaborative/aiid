@@ -1,11 +1,11 @@
 import EntitiesTable from 'components/entities/EntitiesTable';
 import Container from 'elements/Container';
 import { graphql } from 'gatsby';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeEntitiesHash, makeIncidentsHash } from 'utils/entities';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
+import { useMenuContext } from 'contexts/MenuContext';
 
 const incidentFields = [
   'incidentsAsBoth',
@@ -52,6 +52,14 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
 
   const metaTitle = t('Entities');
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (!isCollapsed) {
+      collapseMenu(true);
+    }
+  }, []);
+
   return (
     <>
       <AiidHelmet
@@ -62,12 +70,12 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
           path: props.location.pathname,
         }}
       />
-      <Layout {...props} sidebarCollapsed={true}>
+      <>
         <Container className="ml-auto mr-auto pl-3 pr-3 w-full lg:max-w-6xl xl:max-w-7xl mt-6">
           <h1 className="text-5xl mt-6 font-extrabold dark:text-white">{t(metaTitle)}</h1>
           <EntitiesTable data={entitiesData} className="mt-6" data-cy="entities" />
         </Container>
-      </Layout>
+      </>
     </>
   );
 };

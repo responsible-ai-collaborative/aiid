@@ -4,10 +4,10 @@ import { FIND_INCIDENTS_TABLE } from '../../graphql/incidents';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import AiidHelmet from '../../components/AiidHelmet';
-import Layout from 'components/Layout';
 import ListSkeleton from 'elements/Skeletons/List';
 import { graphql } from 'gatsby';
 import { makeEntitiesHash } from 'utils/entities';
+import { useMenuContext } from 'contexts/MenuContext';
 
 const IncidentsPage = ({ data, ...props }) => {
   const { data: incidents, loading } = useQuery(FIND_INCIDENTS_TABLE);
@@ -44,10 +44,18 @@ const IncidentsPage = ({ data, ...props }) => {
     }
   }, [isLiveData, incidents, data]);
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (!isCollapsed) {
+      collapseMenu(true);
+    }
+  }, []);
+
   const { t } = useTranslation();
 
   return (
-    <Layout {...props} sidebarCollapsed={true} className="w-full">
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>{t('Incidents')}</title>
       </AiidHelmet>
@@ -66,7 +74,7 @@ const IncidentsPage = ({ data, ...props }) => {
           </div>
         )}
       </div>
-    </Layout>
+    </>
   );
 };
 

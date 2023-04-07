@@ -6,7 +6,6 @@ import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { useQuery } from '@apollo/client';
 import { graphql } from 'gatsby';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
 import { getTranslatedReports, sortIncidentsByDatePublished } from 'utils/cite';
 import { computeEntities, RESPONSE_TAG } from 'utils/entities';
 import config from '../../../config';
@@ -14,6 +13,7 @@ import { isCompleteReport } from 'utils/variants';
 import { FIND_FULL_INCIDENT, FIND_INCIDENT } from '../../graphql/incidents';
 import CiteTemplate from 'templates/citeTemplate';
 import { FIND_CLASSIFICATION } from '../../graphql/classifications';
+import { useMenuContext } from 'contexts/MenuContext';
 
 function CiteDynamicPage(props) {
   const {
@@ -137,8 +137,16 @@ function CiteDynamicPage(props) {
     }
   }, [incidentData]);
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+  }, []);
+
   return (
-    <Layout {...{ props }} location={props.location}>
+    <>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
@@ -169,7 +177,7 @@ function CiteDynamicPage(props) {
       ) : (
         <Trans>Incident {{ incident_id }} not found</Trans>
       )}
-    </Layout>
+    </>
   );
 }
 

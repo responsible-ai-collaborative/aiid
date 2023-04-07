@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import Layout from '../components/Layout';
+import React, { useEffect, useState } from 'react';
 import { Button, Spinner } from 'flowbite-react';
 import { useUserContext } from '../contexts/userContext';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
@@ -12,6 +11,7 @@ import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { StringParam, useQueryParams } from 'use-query-params';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import TextInputGroup from 'components/forms/TextInputGroup';
+import { useMenuContext } from 'contexts/MenuContext';
 
 const SignUpSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -67,8 +67,16 @@ const SignUp = (props) => {
     setCurrentForm(FORMS[formName]);
   };
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+  }, []);
+
   return (
-    <Layout {...props}>
+    <>
       {loading ? (
         <div className="flex flex-wrap gap-2">
           <Spinner />
@@ -332,7 +340,7 @@ const SignUp = (props) => {
           </div>
         </div>
       )}
-    </Layout>
+    </>
   );
 };
 

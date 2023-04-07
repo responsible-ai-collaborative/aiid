@@ -15,10 +15,10 @@ import { useModal, CustomModal } from '../../hooks/useModal';
 import { useUserContext } from '../../contexts/userContext';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import { format } from 'date-fns';
-import Layout from 'components/Layout';
 import ListSkeleton from 'elements/Skeletons/List';
 import { Modal } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
+import { useMenuContext } from 'contexts/MenuContext';
 
 const Container = styled.div`
   max-width: calc(100vw - 298px);
@@ -377,7 +377,7 @@ export default function ClassificationsDbView(props) {
 
   const [loading, setLoading] = useState(false);
 
-  const [collapse, setCollapse] = useState(true);
+  const [collapse] = useState(true);
 
   const [allTaxonomies, setAllTaxonomies] = useState([]);
 
@@ -396,6 +396,8 @@ export default function ClassificationsDbView(props) {
   const { t } = useTranslation();
 
   const client = useApolloClient();
+
+  const { isCollapsed, collapseMenu } = useMenuContext();
 
   useEffect(() => {
     setLoading(true);
@@ -606,6 +608,12 @@ export default function ClassificationsDbView(props) {
   };
 
   useEffect(() => {
+    if (!isCollapsed) {
+      collapseMenu(true);
+    }
+  }, []);
+
+  useEffect(() => {
     if (allTaxonomies.length === 0) {
       return;
     }
@@ -693,11 +701,7 @@ export default function ClassificationsDbView(props) {
   const fullTextModal = useModal();
 
   return (
-    <Layout
-      {...props}
-      menuCollapseCallback={(collapseFlag) => setCollapse(collapseFlag)}
-      sidebarCollapsed={true}
-    >
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
@@ -835,6 +839,6 @@ export default function ClassificationsDbView(props) {
         )}
       </Container>
       <CustomModal {...fullTextModal} />
-    </Layout>
+    </>
   );
 }

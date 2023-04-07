@@ -1,5 +1,5 @@
-import Layout from 'components/Layout';
 import React, { useEffect, useRef } from 'react';
+import { useMenuContext } from 'contexts/MenuContext';
 
 const DownloadIndex = (props) => {
   const {
@@ -18,14 +18,22 @@ const DownloadIndex = (props) => {
     }
   }, [ref]);
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+  }, []);
+
   return (
-    <Layout {...props}>
+    <>
       <div className="p-4">
         <a ref={ref} href="/#" data-cy="download">
           Download Index
         </a>
       </div>
-    </Layout>
+    </>
   );
 };
 

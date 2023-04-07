@@ -7,6 +7,7 @@ import { ToastContextProvider } from './src/contexts/ToastContext';
 import ThemeProvider from 'components/theme/themeProvider';
 import SSRProvider from 'react-bootstrap/SSRProvider';
 import { Script } from 'gatsby';
+import { LayoutContextProvider } from 'contexts/LayoutContext';
 
 export const wrapPageElement = ({ element }) => {
   const history = {
@@ -23,7 +24,9 @@ export const wrapPageElement = ({ element }) => {
   return (
     <QueryParamProvider history={history} location={location}>
       <MenuContextProvider>
-        <UserContextProvider>{element}</UserContextProvider>
+        <UserContextProvider>
+          <LayoutContextProvider location={location}>{element}</LayoutContextProvider>
+        </UserContextProvider>
       </MenuContextProvider>
     </QueryParamProvider>
   );

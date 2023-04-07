@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useQuery, useApolloClient } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { Spinner } from 'flowbite-react';
-import Layout from '../../components/Layout';
 import VariantsTable from '../../components/variants/VariantsTable';
 import { FIND_VARIANTS } from '../../graphql/variants';
 import { FIND_INCIDENTS } from '../../graphql/incidents';
 import AiidHelmet from '../../components/AiidHelmet';
 import ListSkeleton from 'elements/Skeletons/List';
 import { getVariantStatus, isCompleteReport } from '../../utils/variants';
+import { useMenuContext } from 'contexts/MenuContext';
 
 export default function IncidentsPage(props) {
   const { data: variantsData, refetch } = useQuery(FIND_VARIANTS);
@@ -71,8 +71,16 @@ export default function IncidentsPage(props) {
     setIsLoading(loading);
   };
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (!isCollapsed) {
+      collapseMenu(true);
+    }
+  }, []);
+
   return (
-    <Layout sidebarCollapsed={true} className="w-full" {...props}>
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>{t('Variants')}</title>
       </AiidHelmet>
@@ -95,6 +103,6 @@ export default function IncidentsPage(props) {
           )}
         </div>
       </div>
-    </Layout>
+    </>
   );
 }

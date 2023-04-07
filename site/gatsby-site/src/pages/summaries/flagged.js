@@ -1,7 +1,7 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
-import Layout from 'components/Layout';
+import { useMenuContext } from 'contexts/MenuContext';
 
 const ReportList = ({ report }) => (
   <dl data-cy="report" className="my-4 grid grid-cols-1 md:grid-cols-2 border-2 rounded">
@@ -61,8 +61,16 @@ export default function FlaggedIncidents({ data, ...props }) {
       return { ...incident, reports };
     });
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+  }, []);
+
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>Incident List</title>
       </AiidHelmet>
@@ -76,7 +84,7 @@ export default function FlaggedIncidents({ data, ...props }) {
         </p>
         <IncidentList incidents={incidents} />
       </div>
-    </Layout>
+    </>
   );
 }
 

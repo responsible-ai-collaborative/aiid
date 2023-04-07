@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
 import TsneVisualization from 'components/cite/TsneVisualization';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
+import { useMenuContext } from 'contexts/MenuContext';
 
 function TsneVisulizationPage(props) {
   const { t } = useTranslation();
@@ -20,8 +20,16 @@ function TsneVisulizationPage(props) {
 
   const metaDescription = t('Spatial Visualization');
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+  }, []);
+
   return (
-    <Layout className="max-w-full w-full" {...props}>
+    <>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
@@ -54,7 +62,7 @@ function TsneVisulizationPage(props) {
           .
         </Trans>
       </p>
-    </Layout>
+    </>
   );
 }
 

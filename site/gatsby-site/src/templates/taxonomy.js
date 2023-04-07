@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { graphql } from 'gatsby';
 import styled from 'styled-components';
 import Markdown from 'react-markdown';
@@ -7,7 +7,6 @@ import { Button } from 'react-bootstrap';
 import bb, { donut } from 'billboard.js';
 import BillboardJS from '@billboard.js/react';
 
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import LocationMap from 'components/visualizations/LocationMap';
 import { Card, Badge } from 'flowbite-react';
@@ -15,6 +14,7 @@ import AiidHelmet from 'components/AiidHelmet';
 import { getClassificationValue } from 'utils/classifications';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { useMenuContext } from 'contexts/MenuContext';
 
 const Description = styled(Markdown)`
   margin-top: 0rem;
@@ -300,8 +300,16 @@ const Taxonomy = (props) => {
 
   const geocodes = getGeocodes(allMongodbAiidprodClassifications.nodes);
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (!isCollapsed) {
+      collapseMenu(true);
+    }
+  }, []);
+
   return (
-    <Layout {...props} className="">
+    <>
       <AiidHelmet metaTitle={'Taxonomy: ' + namespace} path={props.location.pathname} />
 
       <div className={'titleWrapper'}>
@@ -339,7 +347,7 @@ const Taxonomy = (props) => {
             </div>
           ))}
       </div>
-    </Layout>
+    </>
   );
 };
 

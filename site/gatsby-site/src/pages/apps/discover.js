@@ -17,11 +17,11 @@ import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import Container from 'elements/Container';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
-import Layout from 'components/Layout';
 import { VIEW_TYPES } from 'utils/discover';
 import SORTING_LIST from 'components/discover/SORTING_LISTS';
 import { DEFAULT_SEARCH_KEYS_VALUES } from 'components/discover/DEFAULT_SEARCH_KEYS_VALUES';
 import difference from 'lodash/difference';
+import { useMenuContext } from 'contexts/MenuContext';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -201,6 +201,8 @@ function DiscoverApp(props) {
 
   const [hasOnlyDefaultValues, setHasOnlyDefaultValues] = useState(false);
 
+  const { collapseMenu } = useMenuContext();
+
   const onSearchStateChange = (searchState) => {
     searchState = cleanSearchState(searchState);
 
@@ -264,10 +266,13 @@ function DiscoverApp(props) {
 
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMounted(true);
+    collapseMenu(true);
+  }, []);
 
   return (
-    <Layout {...props} sidebarCollapsed={true} className="w-full">
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>Artificial Intelligence Incident Database</title>
       </AiidHelmet>
@@ -309,7 +314,7 @@ function DiscoverApp(props) {
           <Pagination />
         </InstantSearch>
       </SearchContext.Provider>
-    </Layout>
+    </>
   );
 }
 

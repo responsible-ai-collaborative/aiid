@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
-import Layout from '../components/Layout';
 import { Trans, useTranslation } from 'react-i18next';
 import { useUserContext } from '../contexts/userContext';
 import { StringParam, useQueryParams } from 'use-query-params';
 import Link from '../components/ui/Link';
 import { Spinner } from 'flowbite-react';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
+import { useMenuContext } from 'contexts/MenuContext';
 
-const ConfirmEmail = (props) => {
+const ConfirmEmail = () => {
   const {
     actions: { confirmEmail },
   } = useUserContext();
@@ -21,7 +21,13 @@ const ConfirmEmail = (props) => {
     tokenId: StringParam,
   });
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
   useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+
     if (token && tokenId) {
       confirmEmail({ token, tokenId })
         .then(() => {
@@ -70,12 +76,12 @@ const ConfirmEmail = (props) => {
   }, []);
 
   return (
-    <Layout {...props}>
+    <>
       <div className="flex gap-2">
         <Spinner size="md" />
         <Trans>Loading...</Trans>
       </div>
-    </Layout>
+    </>
   );
 };
 

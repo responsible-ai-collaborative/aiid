@@ -1,16 +1,24 @@
-import Layout from 'components/Layout';
 import { graphql } from 'gatsby';
-import React from 'react';
+import React, { useEffect } from 'react';
 import PostsListing from 'components/blog/PostsListing';
 import AiidHelmet from 'components/AiidHelmet';
+import { useMenuContext } from 'contexts/MenuContext';
 
 export default function BlogPage(props) {
   const {
     allMdx: { nodes: posts },
   } = props.data;
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+  }, []);
+
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet metaTitle={'AIID Blog'} path={props.location.pathname} />
       <div className={'titleWrapper'}>
         <h1 className="font-karla font-bold flex-1 pt-0">Blog</h1>
@@ -18,7 +26,7 @@ export default function BlogPage(props) {
       <div>
         <PostsListing posts={posts} />
       </div>
-    </Layout>
+    </>
   );
 }
 

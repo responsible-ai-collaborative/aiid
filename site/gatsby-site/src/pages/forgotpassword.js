@@ -1,5 +1,4 @@
-import React from 'react';
-import Layout from '../components/Layout';
+import React, { useEffect } from 'react';
 import { useUserContext } from 'contexts/userContext';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
 import { Form, Formik } from 'formik';
@@ -7,12 +6,13 @@ import * as Yup from 'yup';
 import { Trans, useTranslation } from 'react-i18next';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import { Button, Spinner } from 'flowbite-react';
+import { useMenuContext } from 'contexts/MenuContext';
 
 const ForgotPasswordSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
 });
 
-const ForgotPassword = (props) => {
+const ForgotPassword = () => {
   const {
     actions: { sendResetPasswordEmail },
     loading,
@@ -22,8 +22,16 @@ const ForgotPassword = (props) => {
 
   const addToast = useToastContext();
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+  }, []);
+
   return (
-    <Layout {...props}>
+    <>
       {loading ? (
         <div className="flex flex-wrap gap-2">
           <Spinner />
@@ -88,7 +96,7 @@ const ForgotPassword = (props) => {
           )}
         </Formik>
       )}
-    </Layout>
+    </>
   );
 };
 

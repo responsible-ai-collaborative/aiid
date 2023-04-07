@@ -1,5 +1,4 @@
-import React from 'react';
-import Layout from '../components/Layout';
+import React, { useEffect } from 'react';
 import { useUserContext } from 'contexts/userContext';
 import { StringParam, useQueryParams } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../hooks/useToast';
@@ -9,6 +8,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import { Button, Spinner } from 'flowbite-react';
+import { useMenuContext } from 'contexts/MenuContext';
 
 const ResetPasswordSchema = Yup.object({
   password: Yup.string()
@@ -22,7 +22,7 @@ const ResetPasswordSchema = Yup.object({
     }),
 });
 
-const ResetPassword = (props) => {
+const ResetPassword = () => {
   const {
     actions: { resetPassword },
     loading,
@@ -37,8 +37,16 @@ const ResetPassword = (props) => {
     tokenId: StringParam,
   });
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+  }, []);
+
   return (
-    <Layout {...props}>
+    <>
       {loading ? (
         <div className="flex flex-wrap gap-2">
           <Spinner />
@@ -126,7 +134,7 @@ const ResetPassword = (props) => {
           )}
         </Formik>
       )}
-    </Layout>
+    </>
   );
 };
 

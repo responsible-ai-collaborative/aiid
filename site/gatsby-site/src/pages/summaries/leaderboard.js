@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import SubmittersLeaderboard from 'components/leaderboards/SubmittersLeaderboard';
 import AuthorsLeaderboard from 'components/leaderboards/AuthorsLeaderboard';
@@ -9,10 +8,19 @@ import DomainsLeaderboard from 'components/leaderboards/DomainsLeaderboard';
 import OriginalSubmittersLeaderboard from 'components/leaderboards/OriginalSubmittersLeaderboard';
 import UniqueSubmittersLeaderboard from 'components/leaderboards/UniqueSubmittersLeaderboard';
 import { Trans } from 'react-i18next';
+import { useMenuContext } from 'contexts/MenuContext';
 
 export default function Authors(props) {
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+  }, []);
+
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>Submissions Leaderboard</title>
       </AiidHelmet>
@@ -33,6 +41,6 @@ export default function Authors(props) {
         <AuthorsLeaderboard className="mt-4" />
         <DomainsLeaderboard className="mt-4" />
       </div>
-    </Layout>
+    </>
   );
 }

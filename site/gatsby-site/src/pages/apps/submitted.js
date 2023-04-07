@@ -4,12 +4,12 @@ import { ObjectId } from 'bson';
 import { useMutation, useQuery } from '@apollo/client';
 import { DELETE_QUICKADD, FIND_QUICKADD } from '../../graphql/quickadd.js';
 import { useUserContext } from '../../contexts/userContext';
-import Layout from '../../components/Layout';
 import SubmissionList from '../../components/submissions/SubmissionList';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Trans, useTranslation } from 'react-i18next';
 import ListSkeleton from 'elements/Skeletons/List';
 import { Badge, Button, ListGroup } from 'flowbite-react';
+import { useMenuContext } from 'contexts/MenuContext';
 
 const SubmittedIncidentsPage = ({ ...props }) => {
   const { isRole } = useUserContext();
@@ -78,8 +78,16 @@ const SubmittedIncidentsPage = ({ ...props }) => {
     return a['date_submitted'] - b['date_submitted'];
   });
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+  }, []);
+
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>{t('Submitted Incident Report List')}</title>
       </AiidHelmet>
@@ -152,7 +160,7 @@ const SubmittedIncidentsPage = ({ ...props }) => {
           </ListGroup>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

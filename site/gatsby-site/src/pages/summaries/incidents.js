@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { hasVariantData } from 'utils/variants';
 import { Button } from 'flowbite-react';
+import { useMenuContext } from 'contexts/MenuContext';
 
 const ReportList = ({ items }) => {
   return (
@@ -51,8 +51,16 @@ export default function Incidents({ data, ...props }) {
     return { ...incident, reports };
   });
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+  }, []);
+
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>Incident List</title>
       </AiidHelmet>
@@ -67,7 +75,7 @@ export default function Incidents({ data, ...props }) {
         </p>
         <IncidentList incidents={incidents} />
       </div>
-    </Layout>
+    </>
   );
 }
 

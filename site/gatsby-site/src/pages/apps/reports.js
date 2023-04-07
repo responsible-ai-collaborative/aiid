@@ -9,7 +9,6 @@ import DateRangePicker from 'react-bootstrap-daterangepicker';
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
 import { Table, InputGroup, FormControl, Form, Button } from 'react-bootstrap';
 import { gql, useQuery } from '@apollo/client';
-import Layout from 'components/Layout';
 import { useMenuContext } from 'contexts/MenuContext';
 import ListSkeleton from 'elements/Skeletons/List';
 import { Trans } from 'react-i18next';
@@ -444,10 +443,16 @@ export default function Incidents(props) {
     }
   };
 
-  const { isCollapsed } = useMenuContext();
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (!isCollapsed) {
+      collapseMenu(true);
+    }
+  }, []);
 
   return (
-    <Layout {...props} sidebarCollapsed={true}>
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>Incident List</title>
       </AiidHelmet>
@@ -598,6 +603,6 @@ export default function Incidents(props) {
           </TableStyles>
         </Container>
       )}
-    </Layout>
+    </>
   );
 }

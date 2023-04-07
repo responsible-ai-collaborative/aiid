@@ -2,15 +2,22 @@ import React, { useEffect, useState } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import ReactWordcloud from 'react-d3-cloud';
 
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import Wordlist from '../components/WordList';
 import { Trans } from 'react-i18next';
+import { useMenuContext } from 'contexts/MenuContext';
 
 const WordCloudCell = ({ wordCountsSorted, wordCloud }) => {
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => setMounted(true), []);
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+    setMounted(true);
+  }, []);
 
   return (
     <div>
@@ -32,7 +39,7 @@ const WordCounts = ({ pageContext, ...props }) => {
   const { wordClouds, wordCountsSorted, wordsPerCloud } = pageContext;
 
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>Word Counts</title>
       </AiidHelmet>
@@ -64,7 +71,7 @@ const WordCounts = ({ pageContext, ...props }) => {
           </ul>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

@@ -1,5 +1,4 @@
-import React from 'react';
-import Layout from '../../components/Layout';
+import React, { useEffect } from 'react';
 import IncidentReportForm, { schema } from '../../components/forms/IncidentReportForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
@@ -23,6 +22,8 @@ import RelatedIncidents from '../../components/RelatedIncidents';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import { Link } from 'gatsby';
 import { isEqual } from 'lodash';
+import { useMenuContext } from 'contexts/MenuContext';
+import { useLayoutContext } from 'contexts/LayoutContext';
 
 const UPDATE_REPORT_TRANSLATION = gql`
   mutation UpdateReportTranslation($input: UpdateOneReportTranslationInput) {
@@ -58,7 +59,7 @@ const reportFields = [
   'text_outputs',
 ];
 
-function EditCitePage(props) {
+function EditCitePage() {
   const { t, i18n } = useTranslation();
 
   const [reportNumber] = useQueryParam('report_number', withDefault(NumberParam, 1));
@@ -258,8 +259,19 @@ function EditCitePage(props) {
     }
   };
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  const { setClassName } = useLayoutContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+    setClassName('w-full p-1');
+  }, []);
+
   return (
-    <Layout {...props} className={'w-full p-1'}>
+    <>
       {!loading && (
         <div className="flex flex-row justify-between flex-wrap">
           <h1 className="mb-5">
@@ -345,7 +357,7 @@ function EditCitePage(props) {
           )}
         </>
       )}
-    </Layout>
+    </>
   );
 }
 

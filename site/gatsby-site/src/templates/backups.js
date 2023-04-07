@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
+import { useMenuContext } from 'contexts/MenuContext';
 
 const Backups = ({ pageContext, ...props }) => {
   const { backups } = pageContext;
@@ -16,8 +16,16 @@ const Backups = ({ pageContext, ...props }) => {
     return null;
   }
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+  }, []);
+
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>Database Backups and Snapshots</title>
       </AiidHelmet>
@@ -78,7 +86,7 @@ const Backups = ({ pageContext, ...props }) => {
           </Row>
         </Container>
       </div>
-    </Layout>
+    </>
   );
 };
 

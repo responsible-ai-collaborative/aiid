@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Layout from '../components/Layout';
 import { Trans, useTranslation } from 'react-i18next';
 import Button from '../elements/Button';
 import { Spinner } from 'flowbite-react';
@@ -9,8 +8,9 @@ import { DELETE_SUBSCRIPTIONS } from '../graphql/subscriptions';
 import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
+import { useMenuContext } from 'contexts/MenuContext';
 
-const Unsubscribe = (props) => {
+const Unsubscribe = () => {
   const [unsubscribing, setUnsubscribing] = useState(false);
 
   let errorMessage = null;
@@ -32,7 +32,12 @@ const Unsubscribe = (props) => {
 
   const [unsubscribeSuccess, setUnsubscribeSuccess] = useState(false);
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
   useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
     setMounted(true);
   }, []);
 
@@ -85,7 +90,7 @@ const Unsubscribe = (props) => {
   };
 
   return (
-    <Layout {...props}>
+    <>
       {mounted && (
         <>
           {errorMessage ? (
@@ -126,7 +131,7 @@ const Unsubscribe = (props) => {
           )}
         </>
       )}
-    </Layout>
+    </>
   );
 };
 

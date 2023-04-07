@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import Layout from '../components/Layout';
+import React, { useEffect, useState } from 'react';
 import { Button, Spinner } from 'flowbite-react';
 import { useUserContext } from '../contexts/userContext';
 import { Form, Formik } from 'formik';
@@ -10,6 +9,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import Link from '../components/ui/Link';
 import { StringParam, useQueryParams } from 'use-query-params';
 import TextInputGroup from 'components/forms/TextInputGroup';
+import { useMenuContext } from 'contexts/MenuContext';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
@@ -43,8 +43,16 @@ const Login = (props) => {
     setDisplayFacebookSpinner(false);
   };
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+  }, []);
+
   return (
-    <Layout {...props}>
+    <>
       {loading ? (
         <div className="flex flex-wrap gap-2">
           <Spinner />
@@ -162,7 +170,7 @@ const Login = (props) => {
           </div>
         </>
       )}
-    </Layout>
+    </>
   );
 };
 

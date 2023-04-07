@@ -4,7 +4,13 @@ import config from '../../config.js';
 import Footer from './layout/Footer';
 import Header from './ui/Header';
 
-const Layout = ({ children, className, sidebarCollapsed = false, rightSidebar, location }) => (
+const Layout = ({
+  children,
+  className = '',
+  sidebarCollapsed = false,
+  rightSidebar = null,
+  location,
+}) => (
   <>
     <Header location={location} />
     <div className="tw-layout">

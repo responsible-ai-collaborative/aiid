@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
 import { useTranslation } from 'react-i18next';
 import Container from '../elements/Container';
 import SocialShareButtons from '../components/ui/SocialShareButtons';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { graphql } from 'gatsby';
 import ReportCard from 'components/reports/ReportCard';
+import { useMenuContext } from 'contexts/MenuContext';
 
 function ReportPage(props) {
   const {
@@ -31,8 +31,16 @@ function ReportPage(props) {
 
   const metaImage = report.image_url;
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+  }, []);
+
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
@@ -49,7 +57,7 @@ function ReportPage(props) {
       <Container>
         <ReportCard item={report} alwaysExpanded={true} />
       </Container>
-    </Layout>
+    </>
   );
 }
 

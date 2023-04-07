@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CloudinaryImage } from '@cloudinary/base';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { graphql } from 'gatsby';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
 import { getTranslatedReports, sortIncidentsByDatePublished } from 'utils/cite';
 import { computeEntities, RESPONSE_TAG } from 'utils/entities';
 import config from '../../config';
 import { isCompleteReport } from 'utils/variants';
 import CiteTemplate from './citeTemplate';
+import { useMenuContext } from 'contexts/MenuContext';
 
 function CitePage(props) {
   const {
@@ -87,8 +87,16 @@ function CitePage(props) {
     responses: responses.nodes,
   });
 
+  const { isCollapsed, collapseMenu } = useMenuContext();
+
+  useEffect(() => {
+    if (isCollapsed) {
+      collapseMenu(false);
+    }
+  }, []);
+
   return (
-    <Layout {...{ props }} location={props.location}>
+    <>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
@@ -109,7 +117,7 @@ function CitePage(props) {
         editor_similar_incidents={editor_similar_incidents}
         editor_dissimilar_incidents={editor_dissimilar_incidents}
       />
-    </Layout>
+    </>
   );
 }
 
