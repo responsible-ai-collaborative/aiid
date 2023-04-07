@@ -75,6 +75,7 @@ const Image = ({
         style={style}
       />
       <AdvancedImage
+        data-cy={'cloudinary-image'}
         ref={imageElement}
         alt={alt}
         className={`${className} ${!publicID || publicID == '' || loadFailed ? 'hidden' : ''}`}
