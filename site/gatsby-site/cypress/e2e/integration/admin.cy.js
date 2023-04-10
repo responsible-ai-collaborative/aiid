@@ -73,6 +73,7 @@ describe('Admin', () => {
 
         cy.wait('@UpdateUserRoles').then((xhr) => {
           expect(xhr.request.body.variables.roles).includes('banana');
+          expect(xhr.request.body.variables.userId).eq(user.userId);
         });
       });
     });

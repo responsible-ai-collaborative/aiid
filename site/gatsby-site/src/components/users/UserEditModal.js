@@ -49,7 +49,7 @@ const RolesTable = ({ roles }) => (
 
 export default function UserEditModal({ onClose, userId }) {
   const { data: userData, loading } = useQuery(FIND_USER, {
-    variables: { query: { userId: userId } },
+    variables: { query: { userId } },
   });
 
   const [updateUserRoles] = useMutation(UPDATE_USER_ROLES);
@@ -58,7 +58,7 @@ export default function UserEditModal({ onClose, userId }) {
 
   const handleSubmit = async (values) => {
     try {
-      await updateUserRoles({ variables: { roles: values.roles } });
+      await updateUserRoles({ variables: { roles: values.roles, userId } });
 
       addToast({
         message: <>User updated.</>,
