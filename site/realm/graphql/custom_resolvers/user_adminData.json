@@ -1,0 +1,25 @@
+{
+    "field_name": "adminData",
+    "function_name": "getUserAdminData",
+    "input_type_format": "",
+    "on_type": "User",
+    "payload_type": {
+        "properties": {
+            "creationDate": {
+                "bsonType": "date"
+            },
+            "disabled": {
+                "bsonType": "boolean"
+            },
+            "email": {
+                "bsonType": "string"
+            },
+            "lastAuthenticationDate": {
+                "bsonType": "date"
+            }
+        },
+        "title": "UserAdminData",
+        "type": "object"
+    },
+    "payload_type_format": "custom"
+}
