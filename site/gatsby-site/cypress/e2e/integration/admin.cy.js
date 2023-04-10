@@ -30,16 +30,30 @@ describe('Admin', () => {
       `,
     }).then(({ data: { users } }) => {
       for (const user of users) {
-        cy.contains('[role="cell"]', user.adminData.email)
-          .parent()
-          .within(() => {
-            for (const role of user.roles) {
-              cy.contains(role).should('be.visible');
-            }
-          });
+        if (user.adminData.email) {
+          cy.contains('[role="cell"]', user.userId)
+            .parent()
+            .within(() => {
+              cy.contains(user.adminData.email).should('be.visible');
+
+              for (const role of user.roles) {
+                cy.contains(role).should('be.visible');
+              }
+            });
+        } else {
+          cy.contains('[role="cell"]', user.userId)
+            .parent()
+            .within(() => {
+              cy.contains('Not found').should('be.visible');
+
+              for (const role of user.roles) {
+                cy.contains(role).should('be.visible');
+              }
+            });
+        }
       }
 
-      const [user] = users;
+      const user = users.find((user) => user.adminData.email);
 
       cy.log(user.adminData.email);
 
