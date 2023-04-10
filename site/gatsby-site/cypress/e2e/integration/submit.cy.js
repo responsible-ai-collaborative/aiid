@@ -93,6 +93,74 @@ describe('The Submit form', () => {
     cy.contains('Please review. Some data is missing.').should('not.exist');
   });
 
+  it('Should autocomplete entities', () => {
+    cy.intercept('GET', parserURL, parseNews).as('parseNews');
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'InsertSubmission',
+      'insertSubmission',
+      {
+        data: {
+          insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.get('input[name="url"]').type(
+      `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+    );
+
+    cy.get('button').contains('Fetch info').click();
+
+    cy.wait('@parseNews');
+
+    cy.get('[name="incident_date"]').type('2020-01-01');
+
+    cy.clickOutside();
+
+    cy.get('.form-has-errors').should('not.exist');
+
+    cy.get('[data-cy="to-step-2"]').click();
+
+    cy.get('[data-cy="to-step-3"]').click();
+
+    cy.get('input[name="deployers"]').type('YouT');
+
+    cy.get('#deployers-tags .dropdown-item').contains('YouTube').click();
+
+    cy.get('button[type="submit"]').click();
+
+    cy.wait('@insertSubmission').then((xhr) => {
+      expect(xhr.request.body.variables.submission).to.deep.nested.include({
+        title: 'YouTube to crack down on inappropriate content masked as kids’ cartoons',
+        authors: ['Valentina Palladino'],
+        incident_date: '2020-01-01',
+        date_published: '2017-11-10',
+        image_url:
+          'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
+        tags: ['New Tag'],
+        incident_id: 0,
+        text: "## Recent news stories and blog\n\nposts _highlighted_ the underbelly of YouTube Kids, Google's children-friendly version. This is more text to reach the 256 charactrs minimum, becuase otherwise the text by similarity component doesnt fetch, which surprisingly is way more character that I initially imagined when I started writing this.",
+        plain_text:
+          "Recent news stories and blog\n\nposts highlighted the underbelly of YouTube Kids, Google's children-friendly version. This is more text to reach the 256 charactrs minimum, becuase otherwise the text by similarity component doesnt fetch, which surprisingly is way more character that I initially imagined when I started writing this.\n",
+        url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
+        source_domain: `arstechnica.com`,
+        deployers: ['YouTube'],
+      });
+    });
+
+    cy.get('div[class^="ToastContext"]')
+      .contains('Report successfully added to review queue')
+      .should('be.visible');
+
+    cy.get('div[class^="ToastContext"] a').should('have.attr', 'href', '/apps/submitted/');
+
+    cy.contains('Please review. Some data is missing.').should('not.exist');
+  });
+
   maybeIt(
     'As editor, should submit a new incident report, adding an incident title and editors.',
     () => {
@@ -145,6 +213,10 @@ describe('The Submit form', () => {
 
       cy.get('[name="editor_notes"').type('Here are some notes');
 
+      cy.get('input[name="deployers"]').type('YouT');
+
+      cy.get('#deployers-tags .dropdown-item').contains('YouTube').click();
+
       cy.get('button[type="submit"]').click();
 
       cy.wait('@insertSubmission').then((xhr) => {
@@ -168,6 +240,7 @@ describe('The Submit form', () => {
           language: 'es',
           editor_notes: 'Here are some notes',
           description: 'Description',
+          deployers: ['YouTube'],
         });
       });
 
