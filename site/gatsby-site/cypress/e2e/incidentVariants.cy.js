@@ -112,6 +112,8 @@ describe('Variants pages', () => {
 
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.contains('h1', 'Variants').should('exist').scrollIntoView();
 
     cy.get('[data-cy=variant-form]').should('not.exist');
