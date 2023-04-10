@@ -2,115 +2,23 @@ import React, { useEffect, useState } from 'react';
 import AiidHelmet from '../../components/AiidHelmet';
 import { format } from 'date-fns';
 import Link from '../../components/ui/Link';
-import styled from 'styled-components';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
-import { Table, InputGroup, FormControl, Form, Button } from 'react-bootstrap';
 import { gql, useQuery } from '@apollo/client';
 import Layout from 'components/Layout';
 import { useMenuContext } from 'contexts/MenuContext';
 import ListSkeleton from 'elements/Skeletons/List';
 import { Trans } from 'react-i18next';
-
-const TableStyles = styled.div`
-  padding: 1rem 1rem 1rem 0;
-
-  table {
-    border-spacing: 0;
-
-    tr {
-      :last-child {
-        td {
-          border-bottom: 0;
-        }
-      }
-    }
-
-    th,
-    td {
-      margin: 0;
-      padding: 0.5rem;
-
-      :last-child {
-        border-right: 0;
-      }
-    }
-  }
-`;
-
-const ScrollCell = styled.div`
-  width: 100%;
-  min-width: 200px;
-  margin: 0;
-  padding: 0;
-  overflow: auto;
-
-  ${({ hasClick }) =>
-    hasClick &&
-    `
-    cursor: pointer;
-
-    :hover {
-      background: white;
-    }
-  `};
-`;
-
-const Container = styled.div`
-  max-width: calc(100vw - 298px);
-  margin: 0 auto;
-  overflow: auto;
-  white-space: nowrap;
-  padding: 0 0 0 1rem;
-
-  ${({ isWide }) =>
-    isWide &&
-    `
-    max-width: 100vw;
-    padding: 0 0 0 3.5rem;
-  `};
-
-  @media (max-width: 767px) {
-    padding: 0;
-  }
-`;
-
-const HeaderCellContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const Pagination = styled.div`
-  margin: 2em 0 0 0;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-`;
-
-const PaginationNavButtons = styled.div``;
-
-const PageNumber = styled.div`
-  span {
-    font-weight: bold;
-  }
-`;
-
-const PerPageNumber = styled.div`
-  span {
-    font-weight: bold;
-  }
-`;
+import { Button, Select, Table, TextInput } from 'flowbite-react';
 
 const DefaultColumnFilter = ({ column: { filterValue, preFilteredRows, setFilter } }) => {
   const count = preFilteredRows.length;
 
   return (
-    <InputGroup>
-      <FormControl
+    <div>
+      <TextInput
         value={filterValue || ''}
         onChange={(e) => {
           e.preventDefault();
@@ -118,7 +26,7 @@ const DefaultColumnFilter = ({ column: { filterValue, preFilteredRows, setFilter
         }}
         placeholder={`Search ${count} records...`}
       />
-    </InputGroup>
+    </div>
   );
 };
 
@@ -166,7 +74,7 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
   const filteredOptions = options.filter((o) => o !== '-');
 
   return (
-    <Form.Select
+    <Select
       style={{ width: '100%' }}
       value={filterValue || 'All'}
       onChange={(e) => {
@@ -179,7 +87,7 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
           {option}
         </option>
       ))}
-    </Form.Select>
+    </Select>
   );
 };
 
@@ -453,97 +361,129 @@ export default function Incidents(props) {
       </AiidHelmet>
 
       {loading && <ListSkeleton />}
-
       {!loading && (
-        <Container isWide={isCollapsed} className="bootstrap">
+        <div
+          className={`max-w-[calc(100vw-298px) my-0 mx-auto overflow-auto whitespace-nowrap py-0 px-0 ${
+            isCollapsed ? 'max-w-[100vw] md:pl-14' : 'md:pl-4'
+          }`}
+        >
           <h1 className="font-karla font-bold flex-1 pt-0">Incident Report Table</h1>
           <Button onClick={() => setAllFilters([])}>Reset filters</Button>
-          <TableStyles>
-            <Table striped bordered hover {...getTableProps()}>
-              <thead>
-                {headerGroups.map((headerGroup) => (
-                  <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map((column) => (
-                      <th key={column.id} {...column.getHeaderProps()}>
-                        <HeaderCellContainer
-                          {...column.getHeaderProps(column.getSortByToggleProps())}
-                        >
-                          {column.render('Header')}
-                          <span>
-                            {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
-                          </span>
-                        </HeaderCellContainer>
-                        <div data-cy="filter">
-                          {column.canFilter ? column.render('Filter') : null}
-                        </div>
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody {...getTableBodyProps()}>
+          <div className="py-4 pr-4 pl-0">
+            <Table
+              striped={true}
+              hoverable={true}
+              {...getTableProps()}
+              className="reports-table border-spacing-0"
+            >
+              {headerGroups.map((headerGroup) => (
+                <Table.Head key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
+                  {headerGroup.headers.map((column) => (
+                    <Table.HeadCell key={column.id} {...column.getHeaderProps()}>
+                      <div
+                        className="flex flex-col"
+                        {...column.getHeaderProps(column.getSortByToggleProps())}
+                      >
+                        {column.render('Header')}
+                        <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
+                      </div>
+                      <div data-cy="filter">
+                        {column.canFilter ? column.render('Filter') : null}
+                      </div>
+                    </Table.HeadCell>
+                  ))}
+                </Table.Head>
+              ))}
+              <Table.Body {...getTableBodyProps()}>
                 {page.map((row) => {
                   prepareRow(row);
                   return (
-                    <tr key={row.id} {...row.getRowProps()} data-cy="row">
+                    <Table.Row key={row.id} {...row.getRowProps()} data-cy="row">
                       {row.cells.map((cell) => {
                         if (cell.column.Header === 'TITLE') {
                           return (
-                            <td key={cell.id} {...cell.getCellProps()}>
-                              <ScrollCell hasClick={true} onClick={() => filterOnClick(cell)}>
-                                <Link to={row.original.url}>{cell.render('Cell')}</Link>
-                              </ScrollCell>
-                            </td>
+                            <Table.Cell key={cell.id} {...cell.getCellProps()}>
+                              <button
+                                className="w-full text-left"
+                                onClick={() => filterOnClick(cell)}
+                              >
+                                <div
+                                  className={`w-full min-w-[200px] m-0 p-0 overflow-auto cursor-pointer hover:bg-white`}
+                                >
+                                  <Link to={row.original.url}>{cell.render('Cell')}</Link>
+                                </div>
+                              </button>
+                            </Table.Cell>
                           );
                         } else if (cell.column.Header === 'INCIDENT ID') {
                           return (
-                            <td key={cell.id} {...cell.getCellProps()}>
-                              <ScrollCell hasClick={true} onClick={() => filterOnClick(cell)}>
-                                {formatIncidentIdField(cell.render('Cell'))}
-                              </ScrollCell>
-                            </td>
+                            <Table.Cell key={cell.id} {...cell.getCellProps()}>
+                              <button
+                                className="w-full text-left"
+                                onClick={() => filterOnClick(cell)}
+                              >
+                                <div
+                                  className={`w-full min-w-[200px] m-0 p-0 overflow-auto cursor-pointer hover:bg-white`}
+                                >
+                                  {formatIncidentIdField(cell.render('Cell'))}
+                                </div>
+                              </button>
+                            </Table.Cell>
                           );
                         } else if (cell.column.Header.includes('DATE')) {
                           return (
-                            <td key={cell.id} {...cell.getCellProps()}>
-                              <ScrollCell>{formatDateField(cell.render('Cell'))}</ScrollCell>
-                            </td>
+                            <Table.Cell key={cell.id} {...cell.getCellProps()}>
+                              <div className={`w-full min-w-[200px] m-0 p-0 overflow-auto`}>
+                                {formatDateField(cell.render('Cell'))}
+                              </div>
+                            </Table.Cell>
                           );
                         } else if (cell.column.Header === 'AUTHORS') {
                           return (
-                            <td key={cell.id} {...cell.getCellProps()}>
-                              <ScrollCell style={{ width: 200 }}>{cell.render('Cell')}</ScrollCell>
-                            </td>
+                            <Table.Cell key={cell.id} {...cell.getCellProps()}>
+                              <div
+                                className={`w-full min-w-[200px] m-0 p-0 overflow-auto`}
+                                style={{ width: 200 }}
+                              >
+                                {cell.render('Cell')}
+                              </div>
+                            </Table.Cell>
                           );
                         } else {
                           return (
-                            <td key={cell.id} {...cell.getCellProps()}>
-                              <ScrollCell hasClick={true} onClick={() => filterOnClick(cell)}>
-                                {cell.render('Cell')}
-                              </ScrollCell>
-                            </td>
+                            <Table.Cell key={cell.id} {...cell.getCellProps()}>
+                              <button
+                                className="w-full text-left"
+                                onClick={() => filterOnClick(cell)}
+                              >
+                                <div
+                                  className={`w-full min-w-[200px] m-0 p-0 overflow-auto cursor-pointer hover:bg-white`}
+                                >
+                                  {cell.render('Cell')}
+                                </div>
+                              </button>
+                            </Table.Cell>
                           );
                         }
                       })}
-                    </tr>
+                    </Table.Row>
                   );
                 })}
                 {page.length === 0 && (
-                  <tr>
-                    <th colSpan={11}>
+                  <Table.Row>
+                    <Table.HeadCell colSpan={11}>
                       <div>
                         <span>
                           <Trans>No results found</Trans>
                         </span>
                       </div>
-                    </th>
-                  </tr>
+                    </Table.HeadCell>
+                  </Table.Row>
                 )}
-              </tbody>
+              </Table.Body>
             </Table>
-
-            <Pagination>
-              <PaginationNavButtons>
+            <div className="mt-8 mx-0 mb-0 flex flex-row justify-between items-center w-full">
+              <div className="flex gap-2">
                 <Button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
                   {'<<'}
                 </Button>{' '}
@@ -556,19 +496,19 @@ export default function Incidents(props) {
                 <Button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
                   {'>>'}
                 </Button>{' '}
-              </PaginationNavButtons>
+              </div>
 
-              <PageNumber>
-                <span>
+              <div>
+                <span className="font-bold">
                   Page{' '}
                   <strong>
                     {pageIndex + 1} of {pageOptions.length}
                   </strong>{' '}
                 </span>
-              </PageNumber>
+              </div>
 
-              <PerPageNumber>
-                <span>
+              <div className="flex gap-2">
+                <span className="font-bold">
                   Go to page:{' '}
                   <input
                     type="number"
@@ -581,7 +521,7 @@ export default function Incidents(props) {
                     style={{ width: '100px', minWidth: 0 }}
                   />
                 </span>{' '}
-                <select
+                <Select
                   value={pageSize}
                   onChange={(e) => {
                     setPageSize(Number(e.target.value));
@@ -592,11 +532,11 @@ export default function Incidents(props) {
                       Show {pageSize}
                     </option>
                   ))}
-                </select>
-              </PerPageNumber>
-            </Pagination>
-          </TableStyles>
-        </Container>
+                </Select>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </Layout>
   );
