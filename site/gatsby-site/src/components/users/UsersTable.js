@@ -35,6 +35,7 @@ export default function UsersTable({ data, className = '', ...props }) {
       {
         title: 'Email',
         accessor: 'adminData.email',
+        Cell: ({ cell }) => cell.value || <Badge color="grey">Not found</Badge>,
       },
       {
         title: 'Id',
