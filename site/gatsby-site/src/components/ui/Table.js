@@ -67,7 +67,7 @@ export function DefaultActionsColumnHeader({ column, ...props }) {
 }
 
 export function DefaultDateCell({ cell }) {
-  return <DateLabel date={new Date(cell.value)} />;
+  return cell.value ? <DateLabel date={new Date(cell.value)} /> : null;
 }
 
 export default function Table({ table, className = '', ...props }) {
