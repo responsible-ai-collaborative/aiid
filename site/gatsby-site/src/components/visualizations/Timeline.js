@@ -10,8 +10,6 @@ import {
   timeMonth,
   timeWeek,
 } from 'd3';
-import { OverlayTrigger, Popover } from 'react-bootstrap';
-import PopoverWrapper from 'elements/PopoverWrapper';
 import { Trans } from 'react-i18next';
 
 const formatDay = timeFormat('%b %d');
@@ -46,9 +44,41 @@ const AxisLeft = ({ yScale, margin, data }) => {
   return <g ref={axisRef} transform={`translate(${margin.left}, 0)`} />;
 };
 
-const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
+const DataPoint = ({ bucket, groupRadius, radius, yScale, setTooltipPosition }) => {
+  const gRef = useRef(null);
+
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  const tooltipContent = (
+    <ul className="m-0 p-0">
+      {bucket.slice(1).map((b) => (
+        <li className="text-[12px] mt-[6px] first:mt-[0%]" key={b.mongodb_id}>
+          {timeFormat('%b %d, %Y')(new Date(b.date_published))}
+          <br />
+          {b.isOccurrence ? <>{b.title}</> : <a href={`#r${b.report_number}`}>{b.title}</a>}
+        </li>
+      ))}
+    </ul>
+  );
+
+  const calculateTooltipPosition = () => {
+    setShowTooltip(!showTooltip);
+    if (!showTooltip) {
+      const { x, y, top, left } = gRef.current.getBoundingClientRect();
+
+      console.log('x, y', x, y, top);
+      setTooltipPosition(left - 270, top - 30, tooltipContent);
+    } else {
+      setTooltipPosition(0, 0, null);
+    }
+  };
+
   return (
-    <g key={bucket.x0} transform={`translate(20,${(yScale(bucket.x0) + yScale(bucket.x1)) / 2})`}>
+    <g
+      ref={gRef}
+      key={bucket.x0}
+      transform={`translate(20,${(yScale(bucket.x0) + yScale(bucket.x1)) / 2})`}
+    >
       {bucket.length > 1 ? (
         <>
           <circle className="fill-gray-900" cy={0} r={groupRadius} />
@@ -59,34 +89,9 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
           >
             +{bucket.length - 1}
           </text>
-          <OverlayTrigger
-            placement="top"
-            trigger="click"
-            rootClose={true}
-            overlay={
-              <PopoverWrapper>
-                <Popover.Body>
-                  <ul className="m-0 p-0">
-                    {bucket.slice(1).map((b) => (
-                      <li className="text-[12px] mt-[6px] first:mt-[0%]" key={b.mongodb_id}>
-                        {timeFormat('%b %d, %Y')(new Date(b.date_published))}
-                        <br />
-                        {b.isOccurrence ? (
-                          <>{b.title}</>
-                        ) : (
-                          <a href={`#r${b.report_number}`}>{b.title}</a>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </Popover.Body>
-              </PopoverWrapper>
-            }
-          >
-            <foreignObject x={-8} y={-8} width={16} height={16}>
-              <div className="w-[16px] h-[16px] cursor-pointer" />
-            </foreignObject>
-          </OverlayTrigger>
+          <foreignObject x={-8} y={-8} width={16} height={16} onClick={calculateTooltipPosition}>
+            <div className="w-[16px] h-[16px] cursor-pointer" />
+          </foreignObject>
         </>
       ) : (
         <circle
@@ -139,7 +144,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
   );
 };
 
-const Reports = ({ binned, yScale, radius, groupRadius, margin, size }) => {
+const Reports = ({ binned, yScale, radius, groupRadius, margin, size, setTooltipPosition }) => {
   return (
     <g transform={`translate(${margin.left}, 0)`}>
       <line
@@ -159,6 +164,7 @@ const Reports = ({ binned, yScale, radius, groupRadius, margin, size }) => {
             yScale={yScale}
             groupRadius={groupRadius}
             radius={radius}
+            setTooltipPosition={setTooltipPosition}
           />
         ))}
     </g>
@@ -222,8 +228,20 @@ function Timeline({ data }) {
     }
   }, [containerRef]);
 
+  const [tooltipX, setTooltipX] = useState(0);
+
+  const [tooltipY, setTooltipY] = useState(0);
+
+  const [tooltipContent, setTooltipContent] = useState(null);
+
+  const setTooltipPosition = (x, y, content) => {
+    setTooltipX(x);
+    setTooltipY(y);
+    setTooltipContent(content);
+  };
+
   return (
-    <div ref={containerRef} style={{ height: `${size.height}px` }}>
+    <div ref={containerRef} style={{ height: `${size.height}px` }} className="relative">
       <svg width="100%" viewBox={`0 0 ${size.width} ${size.height}`}>
         <AxisLeft data={data} yScale={yScale} margin={margin} size={size} />
         <Reports
@@ -234,8 +252,17 @@ function Timeline({ data }) {
           yValue={yValue}
           margin={margin}
           size={size}
+          setTooltipPosition={setTooltipPosition}
         />
       </svg>
+      {tooltipContent && (
+        <div
+          className="absolute tooltip bg-white text-black p-4 rounded border border-black"
+          style={{ left: `${tooltipX}px`, top: `${tooltipY}px` }}
+        >
+          {tooltipContent}
+        </div>
+      )}
     </div>
   );
 }
