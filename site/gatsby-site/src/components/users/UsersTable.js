@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useExpanded, useFilters, useSortBy, useTable } from 'react-table';
+import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import Table, {
   DefaultActionsColumnHeader,
   DefaultColumnFilter,
@@ -83,12 +83,12 @@ export default function UsersTable({ data, className = '', ...props }) {
     },
     useFilters,
     useSortBy,
-    useExpanded
+    usePagination
   );
 
   return (
     <>
-      <Table data={data} table={table} className={className} {...props} />
+      <Table table={table} className={className} {...props} />
       {userEditId && <UserEditModal userId={userEditId} onClose={() => setUserEditId(null)} />}
     </>
   );

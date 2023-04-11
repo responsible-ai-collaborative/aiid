@@ -158,6 +158,7 @@ const sortByCount = (rowA, rowB, id) => {
 export default function EntitiesTable({ data, className = '', ...props }) {
   const defaultColumn = React.useMemo(
     () => ({
+      className: 'w-[120px]',
       Filter: DefaultColumnFilter,
       Header: DefaultColumnHeader,
     }),
@@ -168,7 +169,7 @@ export default function EntitiesTable({ data, className = '', ...props }) {
     const columns = [
       {
         id: 'expander',
-        width: 'w-[1%]',
+        className: 'w-[40px]',
         Header: ({ getToggleAllRowsExpandedProps, isAllRowsExpanded }) => {
           return (
             <>
@@ -200,7 +201,6 @@ export default function EntitiesTable({ data, className = '', ...props }) {
       {
         title: 'Entity',
         accessor: 'id',
-        width: 'w-[10%]',
         Cell: ({ row: { values, original } }) => (
           <>
             <Link className="d-flex" to={`/entities/${values.id}`}>
@@ -212,7 +212,6 @@ export default function EntitiesTable({ data, className = '', ...props }) {
       },
       {
         title: 'As Deployer and Developer',
-        width: 'w-[20%]',
         accessor: 'incidentsAsBoth',
         Cell: IncidentsCell,
         filter: incidentFilter,
@@ -220,7 +219,6 @@ export default function EntitiesTable({ data, className = '', ...props }) {
       },
       {
         title: 'As Deployer',
-        width: 'w-[20%]',
         accessor: 'incidentsAsDeployer',
         Cell: IncidentsCell,
         filter: incidentFilter,
@@ -228,7 +226,6 @@ export default function EntitiesTable({ data, className = '', ...props }) {
       },
       {
         title: 'As Developer',
-        width: 'w-[20%]',
         accessor: 'incidentsAsDeveloper',
         Cell: IncidentsCell,
         filter: incidentFilter,
@@ -236,7 +233,6 @@ export default function EntitiesTable({ data, className = '', ...props }) {
       },
       {
         title: 'Harmed By',
-        width: 'w-[20%]',
         accessor: 'incidentsHarmedBy',
         Cell: IncidentsCell,
         filter: incidentFilter,
@@ -244,7 +240,6 @@ export default function EntitiesTable({ data, className = '', ...props }) {
       },
       {
         title: 'Related Entities',
-        width: 'w-[20%]',
         accessor: 'relatedEntities',
         Cell: EntitiesCell,
         filter: entitiesFilter,
@@ -252,7 +247,6 @@ export default function EntitiesTable({ data, className = '', ...props }) {
       },
       {
         title: 'Incident Responses',
-        width: 'w-[20%]',
         accessor: 'responses',
         Cell: ResponseCell,
         filter: responseFilter,
@@ -276,5 +270,5 @@ export default function EntitiesTable({ data, className = '', ...props }) {
     usePagination
   );
 
-  return <Table data={data} table={table} className={className} {...props} />;
+  return <Table table={table} className={className} {...props} />;
 }
