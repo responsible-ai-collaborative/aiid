@@ -169,10 +169,10 @@ export default function EntitiesTable({ data, className = '', ...props }) {
     const columns = [
       {
         id: 'expander',
-        className: 'w-[40px]',
+        className: 'w-[30px]',
         Header: ({ getToggleAllRowsExpandedProps, isAllRowsExpanded }) => {
           return (
-            <>
+            <div className="flex items-center justify-center">
               <span {...getToggleAllRowsExpandedProps()}>
                 {isAllRowsExpanded ? (
                   <FontAwesomeIcon icon={faMinusCircle} />
@@ -180,21 +180,23 @@ export default function EntitiesTable({ data, className = '', ...props }) {
                   <FontAwesomeIcon icon={faPlusCircle} />
                 )}
               </span>
-            </>
+            </div>
           );
         },
         Cell: ({ row }) => {
           const { isExpanded, getToggleRowExpandedProps } = row;
 
           return (
-            <span {...getToggleRowExpandedProps()}>
-              {' '}
-              {isExpanded ? (
-                <FontAwesomeIcon icon={faMinusCircle} />
-              ) : (
-                <FontAwesomeIcon icon={faPlusCircle} />
-              )}
-            </span>
+            <div className="flex items-center justify-center">
+              <span {...getToggleRowExpandedProps()}>
+                {' '}
+                {isExpanded ? (
+                  <FontAwesomeIcon icon={faMinusCircle} />
+                ) : (
+                  <FontAwesomeIcon icon={faPlusCircle} />
+                )}
+              </span>
+            </div>
           );
         },
       },
