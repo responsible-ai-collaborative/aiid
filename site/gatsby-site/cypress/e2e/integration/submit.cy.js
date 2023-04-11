@@ -141,7 +141,6 @@ describe('The Submit form', () => {
         date_published: '2017-11-10',
         image_url:
           'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
-        tags: ['New Tag'],
         incident_id: 0,
         text: "## Recent news stories and blog\n\nposts _highlighted_ the underbelly of YouTube Kids, Google's children-friendly version. This is more text to reach the 256 charactrs minimum, becuase otherwise the text by similarity component doesnt fetch, which surprisingly is way more character that I initially imagined when I started writing this.",
         plain_text:
@@ -213,10 +212,6 @@ describe('The Submit form', () => {
 
       cy.get('[name="editor_notes"').type('Here are some notes');
 
-      cy.get('input[name="deployers"]').type('YouT');
-
-      cy.get('#deployers-tags .dropdown-item').contains('YouTube').click();
-
       cy.get('button[type="submit"]').click();
 
       cy.wait('@insertSubmission').then((xhr) => {
@@ -240,7 +235,6 @@ describe('The Submit form', () => {
           language: 'es',
           editor_notes: 'Here are some notes',
           description: 'Description',
-          deployers: ['YouTube'],
         });
       });
 
