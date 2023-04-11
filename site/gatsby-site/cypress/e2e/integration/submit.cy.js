@@ -129,7 +129,9 @@ describe('The Submit form', () => {
 
     cy.get('input[name="deployers"]').type('YouT');
 
-    cy.get('#deployers-tags .dropdown-item').contains('YouTube').click();
+    cy.get('#deployers-tags .dropdown-item')
+      .contains(/^YouTube$/)
+      .click();
 
     cy.get('button[type="submit"]').click();
 
