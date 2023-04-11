@@ -743,4 +743,13 @@
     background-position: center !important;
     background-repeat: no-repeat !important;
   }
+  
+  .reports-table tr td{
+    @apply last:border-b-0;
+  }
+
+  .reports-table th,
+  .reports-table td {
+    @apply m-0 p-2 last:border-r-0;
+  }
 }
