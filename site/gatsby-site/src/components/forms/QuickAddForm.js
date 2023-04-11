@@ -1,5 +1,4 @@
 import React from 'react';
-import { Form } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
@@ -134,7 +133,7 @@ const QuickAddForm = ({ className = '' }) => {
         <p className="mt-2 text-sm text-red-600 dark:text-red-500">{errors.url}</p>
         <Row className="mt-2">
           <Col>
-            <Form.Text className="text-muted-gray">
+            <div className="text-muted-gray text-xs leading-5">
               <Trans i18nKey="quickaddDescription" ns="landing">
                 Submitted links are added to a{' '}
                 <LocalizedLink to="/apps/submitted">review queue </LocalizedLink>
@@ -142,7 +141,7 @@ const QuickAddForm = ({ className = '' }) => {
                 <LocalizedLink to="/apps/submit"> full details </LocalizedLink> are processed before
                 URLs not possessing the full details.
               </Trans>
-            </Form.Text>
+            </div>
           </Col>
         </Row>
       </form>

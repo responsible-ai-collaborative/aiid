@@ -635,6 +635,10 @@
     @apply hover:text-blue-500 hover:bg-white hover:border-blue-500 !important;
   }
 
+  .form-tooltip {
+    @apply p-1 !important;
+  }
+  
   .edit-div {
     @apply py-4 px-6 text-right;
   }
@@ -707,5 +711,14 @@
 
   aside.sidebar .rightSideBarUL li a {
     @apply font-medium leading-6 py-2 pt-6 pb-4 text-[#1a1a1a];
+  }
+  
+  .reports-table tr td{
+    @apply last:border-b-0;
+  }
+
+  .reports-table th,
+  .reports-table td {
+    @apply m-0 p-2 last:border-r-0;
   }
 }

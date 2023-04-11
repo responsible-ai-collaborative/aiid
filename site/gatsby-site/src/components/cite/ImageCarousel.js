@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import md5 from 'md5';
-import { Image, loadImage } from 'utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
 import { useTranslation } from 'react-i18next';
 import { Carousel } from 'flowbite-react';
+import { Image } from 'utils/cloudinary';
 
 /**
  * Get an image carousel of the report images along with their headlines.
@@ -51,35 +51,11 @@ const ImageCarousel = ({ nodes }) => {
 const CloudinaryImage = (value) => {
   const { t } = useTranslation();
 
-  const [useCloudinaryImage, setUseCloudinaryImage] = useState(false);
-
-  const [cloudinaryPublicId, setCloudinaryPublicId] = useState('');
-
-  const fetchCloudinaryImage = async (cloudinaryId) => {
-    const imageExists = await loadImage(cloudinaryId);
-
-    setUseCloudinaryImage(imageExists);
-  };
-
-  useEffect(() => {
-    if (value?.cloudinary_id) {
-      fetchCloudinaryImage(value.cloudinary_id);
-    }
-  }, [value.cloudinary_id]);
-
-  useEffect(() => {
-    if (!useCloudinaryImage) {
-      setCloudinaryPublicId(`legacy/${md5(value.image_url)}`);
-    } else {
-      setCloudinaryPublicId(value.cloudinary_id);
-    }
-  }, [useCloudinaryImage]);
-
   return (
     <>
       <Image
         className="h-[320px] object-cover w-full"
-        publicID={cloudinaryPublicId}
+        publicID={value.cloudinary_id ? value.cloudinary_id : `legacy/${md5(value.image_url)}`}
         alt={value.title}
         transformation={fill().height(640)}
         plugins={[]}

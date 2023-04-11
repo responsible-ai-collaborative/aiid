@@ -41,3 +41,7 @@ exports = async (input) => {
 
     return response;
 }
+
+if (typeof module === 'object') {
+    module.exports = exports;
+}

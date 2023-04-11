@@ -10,12 +10,16 @@ import SubmitButton from 'components/ui/SubmitButton';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 
 const supportedRoles = [
-  { name: 'admin', description: '' },
-  { name: 'subscriber', description: '' },
-  { name: 'submitter', description: '' },
-  { name: 'incident_editor', description: '' },
-  { name: 'taxonomy_editor', description: '' },
-  { name: 'taxonomy_editor_{name}', description: '' },
+  { name: 'admin', description: 'All permissions' },
+  {
+    name: 'subscriber',
+    description:
+      'Can subscribe to incidents, entities, reports, and anything else that is subscribeable',
+  },
+  { name: 'submitter', description: 'Permitted to submit incidents under their user account' },
+  { name: 'incident_editor', description: 'Can edit incidents' },
+  { name: 'taxonomy_editor', description: 'Can edit all taxonomies' },
+  { name: 'taxonomy_editor_{name}', description: 'Can edit the taxonomy with the specified name' },
 ];
 
 const RolesTable = ({ roles }) => (
@@ -45,7 +49,7 @@ const RolesTable = ({ roles }) => (
 
 export default function UserEditModal({ onClose, userId }) {
   const { data: userData, loading } = useQuery(FIND_USER, {
-    variables: { query: { userId: userId } },
+    variables: { query: { userId } },
   });
 
   const [updateUserRoles] = useMutation(UPDATE_USER_ROLES);
@@ -54,7 +58,7 @@ export default function UserEditModal({ onClose, userId }) {
 
   const handleSubmit = async (values) => {
     try {
-      await updateUserRoles({ variables: { roles: values.roles } });
+      await updateUserRoles({ variables: { roles: values.roles, userId } });
 
       addToast({
         message: <>User updated.</>,
@@ -64,8 +68,9 @@ export default function UserEditModal({ onClose, userId }) {
       onClose();
     } catch (e) {
       addToast({
-        message: <>Error updating user {e.message}</>,
+        message: <>Error updating user.</>,
         severity: SEVERITY.console.error(),
+        error: e,
       });
     }
   };
