@@ -62,10 +62,8 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
         }}
       />
       <Layout {...props} sidebarCollapsed={true}>
-        <div className="overflow-x-auto">
-          <h1 className="text-5xl mt-6 font-extrabold dark:text-white">{t(metaTitle)}</h1>
-          <EntitiesTable data={entitiesData} className="mt-6" data-cy="entities" />
-        </div>
+        <h1 className="text-5xl mt-6 font-extrabold dark:text-white">{t(metaTitle)}</h1>
+        <EntitiesTable data={entitiesData} className="mt-6" data-cy="entities" />
       </Layout>
     </>
   );
