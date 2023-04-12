@@ -117,14 +117,14 @@ export default function Table({ table, className = '', ...props }) {
                       ? 'bg-gray-50 dark:bg-gray-800 dark:border-gray-700'
                       : 'bg-white dark:bg-gray-900 dark:border-gray-700'
                   }`}
-                  data-cy={`row-${row.values.id}`}
+                  data-cy={`row`}
                 >
                   {row.cells.map((cell) => {
                     return (
                       <FBTable.Cell
                         {...cell.getCellProps()}
-                        className={`${cell.column.width} py-3 px-4 border-none align-top h-full`}
-                        data-cy={`cell-${cell.column.id}`}
+                        className={`${cell.column.width} py-3 px-4 border-none align-top h-full text-gray-700`}
+                        data-cy={`cell`}
                       >
                         {cell.render('Cell')}
                       </FBTable.Cell>

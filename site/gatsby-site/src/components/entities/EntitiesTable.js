@@ -18,7 +18,7 @@ function IncidentsCell({ cell }) {
     : cell.value;
 
   return (
-    <div>
+    <div data-cy={`cell-${column.id}`}>
       <div className={`text-black flex justify-between ${row.isExpanded && 'pb-4'}`}>
         <Trans ns="entities" count={filtered.length}>
           {{ count: filtered.length }} Incident
@@ -93,7 +93,7 @@ function ResponseCell({ cell }) {
     : cell.value;
 
   return (
-    <div>
+    <div data-cy={`cell-${column.id}`}>
       <div className={`text-black flex justify-between ${row.isExpanded && 'pb-4'}`}>
         <Trans ns="entities" count={filtered.length}>
           {{ count: filtered.length }} Incident responses
