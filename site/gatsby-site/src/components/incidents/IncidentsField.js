@@ -10,7 +10,7 @@ const filterBy = (option, text) => {
   );
 };
 
-export default function IncidentsField({ id, name }) {
+export default function IncidentsField({ id, name, placeHolder = '' }) {
   const [{ value }, , { setTouched, setValue }] = useField({ name });
 
   const { data } = useQuery(FIND_INCIDENTS_TITLE);
@@ -62,6 +62,7 @@ export default function IncidentsField({ id, name }) {
         isLoading={loading}
         onSearch={handleSearch}
         minLength={1}
+        placeholder={placeHolder}
         onChange={(value) => {
           setSelected(value);
           setTouched(true);
