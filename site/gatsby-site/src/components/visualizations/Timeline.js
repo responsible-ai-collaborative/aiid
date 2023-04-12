@@ -67,24 +67,27 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale, setTooltipPosition }) 
   }, [gRef]);
 
   const tooltipContent = (
-    <div className="bg-white text-gray-900 absolute opacity-100 z-50 px-2 py-1 border border-gray-900 rounded w-fit">
-      <ul className="m-0 p-0">
-        {bucket.slice(1).map((b) => (
-          <li className="text-[12px] mt-[6px] first:mt-[0%]" key={b.mongodb_id}>
-            <p className="whitespace-nowrap m-0 font-bold mb-1">
-              {timeFormat('%b %d, %Y')(new Date(b.date_published))}
-            </p>
-            {b.isOccurrence ? (
-              <p className="whitespace-nowrap m-0">{b.title}</p>
-            ) : (
-              <a href={`#r${b.report_number}`} className="whitespace-nowrap">
-                {b.title}
-              </a>
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      <div className="bg-white text-gray-900 absolute opacity-100 z-50 px-2 py-1 border border-gray-900 rounded w-fit">
+        <ul className="m-0 p-0">
+          {bucket.slice(1).map((b) => (
+            <li className="text-[12px] mt-[6px] first:mt-[0%]" key={b.mongodb_id}>
+              <p className="whitespace-nowrap m-0 font-bold mb-1">
+                {timeFormat('%b %d, %Y')(new Date(b.date_published))}
+              </p>
+              {b.isOccurrence ? (
+                <p className="whitespace-nowrap m-0">{b.title}</p>
+              ) : (
+                <a href={`#r${b.report_number}`} className="whitespace-nowrap">
+                  {b.title}
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+        <div className="absolute h-2 w-2 -left-[5px] transform-[translate3d(58.5px,0px,0px) top-1/2 bg-inherit before:border-b before:border-l before:visible before:h-2 before:absolute before:w-2 before:border-b-gray-900 before:border-l-gray-900 before:bg-inherit after:border-b after:border-l after:visible after:h-2 after:absolute after:w-2 after:border-b-gray-900 after:border-l-gray-900 after:bg-inherit before:rotate-45 after:rotate-45"></div>
+      </div>
+    </>
   );
 
   const toggleTooltip = () => {
