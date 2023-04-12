@@ -11,7 +11,7 @@ const TagsInputGroup = ({
   placeholder,
   errors,
   touched,
-  schema,
+  schema = null,
   icon = null,
   disabled = false,
   ...props
