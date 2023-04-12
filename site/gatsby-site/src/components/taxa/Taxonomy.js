@@ -1,17 +1,10 @@
 import React, { useState } from 'react';
-import { OverlayTrigger, Popover } from 'react-bootstrap';
 import Markdown from 'react-markdown';
 import TaxonomyForm from './TaxonomyForm';
 import { Trans } from 'react-i18next';
 import Card from 'elements/Card';
 import Button from 'elements/Button';
-import PopoverWrapper from 'elements/PopoverWrapper';
-
-const renderTooltip = (props, displayText) => (
-  <PopoverWrapper {...props}>
-    <Popover.Body>{displayText}</Popover.Body>
-  </PopoverWrapper>
-);
+import { Tooltip } from 'flowbite-react';
 
 const Taxonomy = ({
   taxonomy,
@@ -74,14 +67,10 @@ const Taxonomy = ({
               <>
                 {canEdit && (
                   <div key={'NOTES'} className="tw-classification-container tw-card-body">
-                    <div className="tw-field bootstrap">
-                      <OverlayTrigger
-                        placement="top"
-                        delay={{ show: 100, hide: 400 }}
-                        overlay={(e) => renderTooltip(e, 'Admin notes')}
-                      >
+                    <div className="tw-field">
+                      <Tooltip content={'Admin notes'}>
                         <p>{'Notes'}</p>
-                      </OverlayTrigger>
+                      </Tooltip>
                     </div>
                     <Markdown className="w-4/5">{taxonomy.notes}</Markdown>
                   </div>
@@ -106,14 +95,10 @@ const Taxonomy = ({
                   })
                   .map((field) => (
                     <div key={field.name} className="tw-classification-container tw-card-body">
-                      <div className="tw-field bootstrap">
-                        <OverlayTrigger
-                          placement="top"
-                          delay={{ show: 100, hide: 400 }}
-                          overlay={(e) => renderTooltip(e, field.shortDescription)}
-                        >
+                      <div className="tw-field">
+                        <Tooltip content={field.shortDescription}>
                           <p>{field.name}</p>
-                        </OverlayTrigger>
+                        </Tooltip>
                       </div>
                       <Markdown className="w-4/5">{field.value}</Markdown>
                     </div>
