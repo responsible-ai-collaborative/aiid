@@ -183,7 +183,7 @@ function CiteTemplate({
             subscriptions
           </Trans>
         ),
-        severity: SEVERITY.success,
+        severity: SEVERITY.info,
       });
     }
   };
@@ -221,7 +221,6 @@ function CiteTemplate({
           </div>
         </div>
       </div>
-
       <div className="flex mt-6">
         <div className="shrink-1">
           <Row>
