@@ -12,7 +12,7 @@ const TextInputGroup = ({
   touched,
   type = 'text',
   handleChange,
-  handleBlur,
+  handleBlur = () => {},
   addOnComponent = null,
   schema = null,
   className = '',
