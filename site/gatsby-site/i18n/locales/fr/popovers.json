@@ -56,7 +56,7 @@
        "text": "Une description courte, factuelle, neutre sur le plan journalistique et complète de l'incident mentionnant l'incident/le problème, le lieu et le dégât."
     },
     "inputs_outputs": {
-        "title": "title",
-        "text": "text"
+        "title": "Entrées / Sorties",
+        "text": "La séquence des entrées de données dans le système intelligent et des sorties produites par le système impliqué dans l'incident. Pour un chatbot, cela présentera généralement un va-et-vient entre un humain et les réponses du chatbot."
     }
 }

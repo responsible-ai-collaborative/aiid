@@ -68,6 +68,22 @@ const VariantCard = ({ variant, incidentId }) => {
             <>
               <div className="font-bold flex items-center gap-2">
                 <Trans ns="variants">Description of Incident Circumstances</Trans>
+                <Tooltip
+                  content={
+                    <Trans ns="variants">
+                      Journalistic reporting on the circumstances of the incident to help inform
+                      people what happened, where, involving who, when, and why.
+                    </Trans>
+                  }
+                  trigger="click"
+                  placement="right"
+                >
+                  <FontAwesomeIcon
+                    icon={faQuestionCircle}
+                    style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+                    className="far fa-question-circle"
+                  />
+                </Tooltip>
               </div>
               <div data-cy="variant-text" className="border-1 rounded-lg px-3">
                 <Markdown>{variant.text}</Markdown>
@@ -79,7 +95,13 @@ const VariantCard = ({ variant, incidentId }) => {
               <div className="font-bold flex items-center gap-2">
                 <Trans ns="variants">Inputs / Outputs</Trans>
                 <Tooltip
-                  content={<Trans ns="variants">tooltip text</Trans>}
+                  content={
+                    <Trans ns="variants">
+                      The sequence of data inputs into the intelligent system and outputs produced
+                      by the system involved in the incident. For a chatbot, this will generally
+                      present a back and forth between a human and the chatbot&apos;s responses.
+                    </Trans>
+                  }
                   trigger="click"
                   placement="right"
                 >
