@@ -12,7 +12,6 @@ import StepContainer from './StepContainer';
 import TagsInputGroup from '../TagsInputGroup';
 import { Editor } from '@bytemd/react';
 import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
-import IncidentIdField from 'components/incidents/IncidentIdField';
 import isEmpty from 'lodash/isEmpty';
 import { format } from 'date-fns';
 import FieldContainer from './FieldContainer';
@@ -26,6 +25,7 @@ import {
   faTenge,
 } from '@fortawesome/free-solid-svg-icons';
 import { RESPONSE_TAG } from 'utils/entities';
+import IncidentsField from 'components/incidents/IncidentsField';
 
 const StepOne = (props) => {
   const [data, setData] = useState(props.data);
@@ -346,20 +346,14 @@ const FormDetails = ({
         </FieldContainer>
 
         <FieldContainer>
-          <IncidentIdField
-            name="incident_id"
-            placeHolder={t('Leave empty to report a new incident')}
-            showIncidentData={false}
-            disabled={parsingNews}
-            values={values}
-            errors={errors}
-            touched={touched}
-          />
-          <RelatedIncidents
-            incident={values}
-            setFieldValue={setFieldValue}
-            columns={['byIncidentId']}
-          />
+          <div className={`form-group`}>
+            <div className="flex items-center">
+              <Label popover="incident_id" label={t('Incident IDs')} />
+            </div>
+            <div className="mt-1">
+              <IncidentsField id="incident_ids" name="incident_ids" />
+            </div>
+          </div>
         </FieldContainer>
 
         {!values.incident_id && (
