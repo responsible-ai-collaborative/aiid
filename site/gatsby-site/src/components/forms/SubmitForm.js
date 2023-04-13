@@ -161,7 +161,6 @@ const SubmitForm = () => {
       const submission = {
         ...values,
         source_domain,
-        incident_id: !values.incident_id || values.incident_id == '' ? 0 : values.incident_id,
         date_submitted,
         date_modified: date_submitted,
         authors: isString(values.authors) ? values.authors.split(',') : values.authors,
