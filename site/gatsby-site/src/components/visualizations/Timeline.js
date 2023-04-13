@@ -292,7 +292,7 @@ function Timeline({ data }) {
 
   return (
     <div ref={containerRef} style={{ height: `${size.height}px` }} className="relative">
-      <svg width="100%" viewBox={`0 0 ${size.width} ${size.height}`} className="">
+      <svg width="100%" viewBox={`0 0 ${size.width} ${size.height}`}>
         <AxisLeft data={data} yScale={yScale} margin={margin} size={size} />
         <Reports
           radius={radius}

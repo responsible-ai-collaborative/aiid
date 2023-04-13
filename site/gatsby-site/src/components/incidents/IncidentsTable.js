@@ -18,7 +18,7 @@ function DefaultColumnFilter({
   }
 
   return (
-    <div className="">
+    <div>
       <h6 className="whitespace-nowrap overflow-hidden text-ellipsis">{Header}</h6>
       <TextInput
         data-cy={`input-filter-${Header}`}
