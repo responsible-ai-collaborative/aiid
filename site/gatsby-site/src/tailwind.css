@@ -646,6 +646,14 @@
     @apply text-sm leading-5 bg-gray-50 pt-2.5 pr-2.5 pb-2.5 border !important;
   }
 
+  .Typeahead .rbt-menu.dropdown-menu {
+    @apply bg-white text-gray-800 flex border rounded z-2;
+  }
+
+  .Typeahead .rbt-menu.dropdown-menu .dropdown-item {
+    @apply text-gray-800 bg-transparent border-none block clear-both font-normal whitespace-nowrap w-full px-4 py-2 hover:bg-gray-200;
+  }
+
   .floating-label-dropdown button {
     @apply hover:text-blue-500 hover:bg-white hover:border-blue-500 !important;
   }
@@ -726,5 +734,22 @@
 
   aside.sidebar .rightSideBarUL li a {
     @apply font-medium leading-6 py-2 pt-6 pb-4 text-[#1a1a1a];
+  }
+
+  [type='checkbox']:checked, [type='radio']:checked, .dark [type='checkbox']:checked, .dark [type='radio']:checked {
+    border-color: transparent !important;
+    background-color: currentColor  !important;
+    background-size: 100% 100% !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+  }
+  
+  .reports-table tr td{
+    @apply last:border-b-0;
+  }
+
+  .reports-table th,
+  .reports-table td {
+    @apply m-0 p-2 last:border-r-0;
   }
 }

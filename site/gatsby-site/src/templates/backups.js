@@ -1,13 +1,12 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 
-import Container from 'react-bootstrap/Container';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
+import Container from 'elements/Container';
+import Row from 'elements/Row';
+import Col from 'elements/Col';
 
 const Backups = ({ pageContext, ...props }) => {
   const { backups } = pageContext;

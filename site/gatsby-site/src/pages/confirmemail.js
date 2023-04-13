@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import { Trans, useTranslation } from 'react-i18next';
 import { useUserContext } from '../contexts/userContext';
@@ -16,6 +16,8 @@ const ConfirmEmail = (props) => {
 
   const addToast = useToastContext();
 
+  const [confirmed, setConfirmed] = useState(null);
+
   const [{ token, tokenId }] = useQueryParams({
     token: StringParam,
     tokenId: StringParam,
@@ -25,6 +27,7 @@ const ConfirmEmail = (props) => {
     if (token && tokenId) {
       confirmEmail({ token, tokenId })
         .then(() => {
+          setConfirmed(true);
           addToast({
             message: (
               <>
@@ -38,6 +41,7 @@ const ConfirmEmail = (props) => {
           });
         })
         .catch((e) => {
+          setConfirmed(false);
           addToast({
             message: (
               <>
@@ -55,6 +59,7 @@ const ConfirmEmail = (props) => {
           }
         });
     } else {
+      setConfirmed(false);
       addToast({
         message: (
           <>
@@ -71,10 +76,20 @@ const ConfirmEmail = (props) => {
 
   return (
     <Layout {...props}>
-      <div className="flex gap-2">
-        <Spinner size="md" />
-        <Trans>Loading...</Trans>
-      </div>
+      {confirmed ? (
+        <p>
+          <Trans>Thank you for verifying your account.</Trans>
+        </p>
+      ) : confirmed === false ? (
+        <p>
+          <Trans>An unknown error has ocurred</Trans>
+        </p>
+      ) : (
+        <div className="flex gap-2">
+          <Spinner size="md" />
+          <Trans>Loading...</Trans>
+        </div>
+      )}
     </Layout>
   );
 };
