@@ -8,6 +8,7 @@ export default function PlaceholderImage({
   height = 480,
   style,
   className,
+  ...props
 }) {
   const canvasRef = useRef();
 
@@ -117,7 +118,9 @@ export default function PlaceholderImage({
     }
   }, []);
 
-  return <canvas ref={canvasRef} width={w} height={h} {...{ className, style }}></canvas>;
+  return (
+    <canvas ref={canvasRef} width={w} height={h} {...{ className, style }} {...props}></canvas>
+  );
 }
 
 // Seeded RNG
