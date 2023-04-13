@@ -752,4 +752,12 @@
   .reports-table td {
     @apply m-0 p-2 last:border-r-0;
   }
+
+  .tw-toast {
+    @apply p-0 mb-2 !important;
+  }
+
+  .tw-toast a {
+    @apply underline text-white !important;
+  }
 }
