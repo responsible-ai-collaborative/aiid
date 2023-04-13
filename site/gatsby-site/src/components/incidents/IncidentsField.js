@@ -19,7 +19,12 @@ export default function IncidentsField({ id, name, placeHolder = '' }) {
 
   const [options, setOptions] = useState([]);
 
-  const [selected, setSelected] = useState(value.sort().map((id) => ({ id, title: '' })));
+  const [selected, setSelected] = useState(
+    value
+      .slice()
+      .sort()
+      .map((id) => ({ id, title: '' }))
+  );
 
   useEffect(() => {
     if (data?.incidents) {
