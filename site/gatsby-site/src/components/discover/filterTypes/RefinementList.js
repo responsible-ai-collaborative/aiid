@@ -29,7 +29,7 @@ const RefinementList = ({
   const { t } = useTranslation();
 
   return (
-    <div className="">
+    <div>
       <Formik initialValues={{}} onSubmit={() => {}} enableReinitialize>
         {({ values, errors, touched, handleBlur, setValues }) => (
           <>
