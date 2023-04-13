@@ -3,7 +3,6 @@
     "type": "mongodb-atlas",
     "config": {
         "clusterName": "AIIDDev",
-        "namespacePreimageConfigs": [],
         "readPreference": "primary",
         "wireProtocolEnabled": false
     },

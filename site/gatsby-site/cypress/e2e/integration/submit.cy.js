@@ -545,6 +545,8 @@ describe('The Submit form', () => {
 
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     const values = {
       url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
       authors: 'test author',
@@ -556,9 +558,9 @@ describe('The Submit form', () => {
       cy.get(`input[name="${key}"]`).type(values[key]);
     }
 
-    cy.waitForStableDOM();
-
     cy.wait(['@RelatedReportsByAuthor', '@RelatedReportsByIncidentId'], { timeout: 20000 });
+
+    cy.waitForStableDOM();
 
     for (const key of ['byURL', 'byDatePublished', 'byIncidentId']) {
       const reports =

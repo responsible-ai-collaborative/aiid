@@ -1,7 +1,5 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
-import { Button, Form, Card } from 'react-bootstrap';
-import styled from 'styled-components';
-import { Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import { useMutation, useQuery, useApolloClient } from '@apollo/client';
 import gql from 'graphql-tag';
 
@@ -11,10 +9,9 @@ import useToastContext, { SEVERITY } from 'hooks/useToast';
 import Tags from 'components/forms/Tags.js';
 import { getClassificationValue } from 'utils/classifications';
 import { debounce } from 'debounce';
-
-const FormContainer = styled.div`
-  padding: 1em;
-`;
+import { Button, Radio, Label, Checkbox, Select } from 'flowbite-react';
+import TextInputGroup from 'components/forms/TextInputGroup';
+import Card from 'elements/Card';
 
 const TaxonomyForm = forwardRef(function TaxonomyForm(
   { taxonomy, incidentId, onSubmit, active },
@@ -283,49 +280,61 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
   }
   if (loading) {
     return (
-      <FormContainer>
+      <div className="p-4">
         <Loader loading={loading} />
-      </FormContainer>
+      </div>
     );
   }
 
   if (error !== '') {
     return (
-      <FormContainer>
+      <div className="p-4">
         <span>{error}</span>
-      </FormContainer>
+      </div>
     );
   }
 
   if (fieldsWithDefaultValues.length === 0) {
     return (
-      <FormContainer>
+      <div className="p-4">
         <span>{'Could not render form edit'}</span>
-      </FormContainer>
+      </div>
     );
   }
 
   const dummyFields = (taxonomy.dummyFields || []).map((field) => ({ ...field, dummy: true }));
 
   return (
-    <FormContainer data-cy="taxonomy-form" className="bootstrap">
+    <div className="p-4" data-cy="taxonomy-form">
       <Formik initialValues={initialValues} onSubmit={submit} innerRef={formRef}>
-        {({ values, handleChange, handleSubmit, setFieldTouched, setFieldValue, isSubmitting }) => {
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleSubmit,
+          setFieldTouched,
+          setFieldValue,
+          isSubmitting,
+        }) => {
           debouncedSetInitialValues(values);
           return (
             <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-4">
-                <Form.Label>Notes</Form.Label>
-                <Form.Control
+              <div className="mb-4" data-cy="Notes">
+                <TextInputGroup
+                  label="Notes"
+                  placeholder={'Notes'}
                   id={'notes'}
                   name={'notes'}
-                  type="text"
-                  as="textarea"
+                  type="textarea"
                   rows={4}
-                  onChange={handleChange}
+                  handleChange={handleChange}
                   value={values.notes}
+                  errors={errors}
+                  touched={touched}
+                  values={values}
                 />
-              </Form.Group>
+              </div>
               <fieldset disabled={isSubmitting}>
                 {fieldsWithDefaultValues
                   .concat(dummyFields)
@@ -343,6 +352,8 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                         key={`${rawField.field_number || ''}${rawField.short_name}`}
                         field={rawField}
                         formikValues={values}
+                        formikErrors={errors}
+                        formikTouched={touched}
                         {...{
                           handleChange,
                           setFieldTouched,
@@ -355,27 +366,31 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
                     )
                   )}
               </fieldset>
-              <Form.Group className="mb-4">
-                <Form.Label>Publish</Form.Label>
-                <Form.Check
-                  type="radio"
-                  name="publish"
-                  label="yes"
-                  id={`publish-yes`}
-                  value="true"
-                  onChange={handleChange}
-                  checked={[true, 'true'].includes(values.publish)}
-                />
-                <Form.Check
-                  type="radio"
-                  name="publish"
-                  label="no"
-                  id="publish-no"
-                  value="false"
-                  onChange={handleChange}
-                  checked={[false, 'false'].includes(values.publish)}
-                />
-              </Form.Group>
+              <div className="mb-4" data-cy="Publish">
+                <Label>Publish</Label>
+                <div>
+                  <Radio
+                    name="publish"
+                    id={`publish-yes`}
+                    value="true"
+                    onChange={handleChange}
+                    checked={[true, 'true'].includes(values.publish)}
+                    className="mr-2"
+                  />
+                  <Label htmlFor="publish-yes">yes</Label>
+                </div>
+                <div>
+                  <Radio
+                    name="publish"
+                    id="publish-no"
+                    value="false"
+                    onChange={handleChange}
+                    checked={[false, 'false'].includes(values.publish)}
+                    className="mr-2"
+                  />
+                  <Label htmlFor="publish-no">no</Label>
+                </div>
+              </div>
               <Button onClick={handleSubmit} disabled={isSubmitting}>
                 Submit
               </Button>
@@ -383,7 +398,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
           );
         }}
       </Formik>
-    </FormContainer>
+    </div>
   );
 });
 
@@ -398,6 +413,8 @@ function FormField({
   setDeletedSubClassificationIds,
   allClassificationsData,
   entitiesData,
+  formikErrors,
+  formikTouched,
 }) {
   const identifier = superfield
     ? `${superfield.short_name}___${superfieldIndex}___${field.short_name}`
@@ -441,33 +458,42 @@ function FormField({
     autocompleteValues = autocompleteValues.concat(entitiesData.data.entities.map((e) => e.name));
   }
 
+  const radio = {
+    type: 'radio',
+    onClick: (event) => {
+      if (event.target.checked) {
+        setFieldValue(identifier, null);
+      }
+    },
+  };
+
   return (
-    <div key={field.short_name} className="bootstrap">
-      <Form.Label>
+    <div data-cy={field.short_name} key={field.short_name}>
+      <Label>
         {field.field_number ? field.field_number + '. ' : ''}
         {field.short_name}
-      </Form.Label>
+      </Label>
       {field.display_type === 'enum' &&
         field.permitted_values.length <= 5 &&
         field.permitted_values.map((v) => (
-          <Form.Check
-            key={v}
-            type="radio"
-            name={identifier}
-            label={v}
-            id={`${identifier}-${v}`}
-            value={v}
-            onChange={handleChange}
-            checked={(formikValues[identifier] || []).includes(v)}
-          />
+          <div key={v}>
+            <Checkbox
+              {...radio}
+              name={identifier}
+              id={`${field.field_number || ''}${identifier}-${v}`}
+              value={v}
+              onChange={() => setFieldValue(identifier, v)}
+              checked={formikValues[identifier] == v}
+              className="mr-2"
+            />
+            <Label htmlFor={`${field.field_number || ''}${identifier}-${v}`}>{v}</Label>
+          </div>
         ))}
       {field.display_type === 'enum' && field.permitted_values.length > 5 && (
         <>
-          <Form.Select
-            as="select"
+          <Select
             id={identifier}
             name={identifier}
-            type="select"
             onChange={handleChange}
             value={formikValues[identifier]}
           >
@@ -477,19 +503,25 @@ function FormField({
                 {v}
               </option>
             ))}
-          </Form.Select>
+          </Select>
         </>
       )}
 
       {field.display_type === 'string' && (
         <>
-          <Form.Control
+          <TextInputGroup
             id={identifier}
             name={identifier}
             type="text"
-            onChange={handleChange}
+            handleChange={handleChange}
             value={formikValues[identifier]}
             list={`${identifier}-possible-values`}
+            values={formikValues}
+            label=""
+            placeholder={''}
+            errors={formikErrors}
+            touched={formikTouched}
+            handleBlur={() => {}}
           />
           <datalist id={`${identifier}-possible-values`}>
             {autocompleteValues.map((v) => (
@@ -500,70 +532,99 @@ function FormField({
       )}
 
       {field.display_type === 'long_string' && (
-        <Form.Control
-          as="textarea"
+        <TextInputGroup
+          type="textarea"
           rows={3}
           id={identifier}
           name={identifier}
-          type="text"
-          onChange={handleChange}
+          handleChange={handleChange}
           value={formikValues[identifier]}
+          values={formikValues}
+          label=""
+          placeholder={''}
+          errors={formikErrors}
+          touched={formikTouched}
+          handleBlur={() => {}}
         />
       )}
 
       {field.display_type === 'bool' && (
         <>
-          <Form.Check
-            key="yes"
-            type="radio"
-            name={identifier}
-            label="yes"
-            id={`${identifier}-yes`}
-            value="true"
-            onChange={handleChange}
-            checked={[true, 'true'].includes(formikValues[identifier])}
-          />
-          <Form.Check
-            key="no"
-            type="radio"
-            name={identifier}
-            label="no"
-            id={`${identifier}-no`}
-            value="false"
-            onChange={handleChange}
-            checked={[false, 'false'].includes(formikValues[identifier])}
-          />
+          <div>
+            <Radio
+              {...radio}
+              key="yes"
+              name={identifier}
+              id={`${identifier}-yes`}
+              value="true"
+              onChange={handleChange}
+              checked={[true, 'true'].includes(formikValues[identifier])}
+              className="mr-2"
+            />
+            <Label htmlFor={`${identifier}-yes`}>yes</Label>
+          </div>
+          <div>
+            <Radio
+              {...radio}
+              key="no"
+              name={identifier}
+              id={`${identifier}-no`}
+              value="false"
+              onChange={handleChange}
+              checked={[false, 'false'].includes(formikValues[identifier])}
+              className="mr-2"
+            />
+            <Label htmlFor={`${identifier}-no`}>no</Label>
+          </div>
         </>
       )}
 
       {field.display_type == 'int' && (
-        <Form.Control
+        <TextInputGroup
           id={identifier}
           name={identifier}
           type="number"
           step={1}
-          onChange={handleChange}
+          handleChange={handleChange}
           value={formikValues[identifier]}
+          values={formikValues}
+          label=""
+          placeholder={''}
+          errors={formikErrors}
+          touched={formikTouched}
+          handleBlur={() => {}}
         />
       )}
 
       {field.display_type === 'date' && (
-        <Form.Control
+        <TextInputGroup
           id={identifier}
           name={identifier}
           type="date"
-          onChange={handleChange}
+          handleChange={handleChange}
           value={formikValues[identifier]}
+          values={formikValues}
+          label=""
+          placeholder={''}
+          errors={formikErrors}
+          touched={formikTouched}
+          handleBlur={() => {}}
         />
       )}
 
       {field.display_type === 'location' && (
-        <Form.Control
+        <TextInputGroup
           id={identifier}
           name={identifier}
           type="text"
-          onChange={handleChange}
+          handleChange={handleChange}
           value={formikValues[identifier]}
+          values={formikValues}
+          label=""
+          placeholder={''}
+          errors={formikErrors}
+          touched={formikTouched}
+          handleBlur={() => {}}
         />
       )}
 
@@ -584,16 +645,17 @@ function FormField({
       {field.display_type === 'multi' && (
         <>
           {field.permitted_values.map((v) => (
-            <Form.Check
-              key={v}
-              type="checkbox"
-              name={identifier}
-              label={v}
-              id={`${identifier}-${v}`}
-              value={v}
-              onChange={handleChange}
-              checked={(formikValues[identifier] || []).includes(v)}
-            />
+            <div key={v}>
+              <Checkbox
+                name={identifier}
+                id={`${identifier}-${v}`}
+                value={v}
+                onChange={handleChange}
+                checked={(formikValues[identifier] || []).includes(v)}
+                className="mr-2"
+              />
+              <Label htmlFor={`${identifier}-${v}`}>{v}</Label>
+            </div>
           ))}
         </>
       )}
@@ -609,13 +671,15 @@ function FormField({
             setDeletedSubClassificationIds,
             allClassificationsData,
             entitiesData,
+            formikErrors,
+            formikTouched,
           }}
         />
       )}
 
-      <Form.Text className="text-muted-gray mb-4 d-block whitespace-pre-wrap">
+      <p className="text-muted-gray mb-4 d-block whitespace-pre-wrap text-sm">
         {field.short_description}
-      </Form.Text>
+      </p>
     </div>
   );
 }
@@ -629,6 +693,8 @@ function ObjectListField({
   setDeletedSubClassificationIds,
   allClassificationsData,
   entitiesData,
+  formikErrors,
+  formikTouched,
 }) {
   // These are client-side only
   const [objectListItemIds, setObjectListItemsIds] = useState(
@@ -659,59 +725,56 @@ function ObjectListField({
           headerValue = headerValue.slice(0, 60) + '…';
         }
         return (
-          <Card key={id} style={{ marginTop: '1rem', marginBottom: '1rem' }}>
-            <Card.Header
-              style={{ borderBottom: openItemId == id ? undefined : '0px', cursor: 'pointer' }}
-              onClick={() => setOpenItemID((old) => (old == id ? null : id))}
-            >
-              {headerValue}
-            </Card.Header>
-            <Card.Body
-              style={
-                openItemId == id
-                  ? undefined
-                  : {
-                      height: '0px',
-                      padding: '0px',
-                      border: '0px',
-                      opacity: '0',
-                      overflow: 'hidden',
-                    }
-              }
-            >
-              {field.subfields.map((subfield) => (
-                <FormField
-                  key={subfield.short_name + '-form-field'}
-                  field={subfield}
-                  superfield={field}
-                  superfieldIndex={id}
-                  {...{
-                    handleChange,
-                    formikValues,
-                    setFieldTouched,
-                    setFieldValue,
-                    setDeletedSubClassificationIds,
-                    allClassificationsData,
-                    entitiesData,
-                  }}
-                />
-              ))}
-              <Button
-                variant="outline-danger"
-                onClick={() => {
-                  setObjectListItemsIds((ids) => ids.filter((itemId) => itemId != id));
-                  setDeletedSubClassificationIds((ids) => ids.concat(id));
-                }}
+          <Card key={id} className="mb-2">
+            <Card.Header className={`${openItemId === id ? '' : 'border-b-0'} cursor-pointer`}>
+              <button
+                type="button"
+                className="border-none bg-none w-full text-left"
+                onClick={() => setOpenItemID((old) => (old == id ? null : id))}
               >
-                Delete
-              </Button>
-            </Card.Body>
+                {headerValue}
+              </button>
+            </Card.Header>
+            {openItemId === id && (
+              <Card.Body>
+                {field.subfields.map((subfield) => (
+                  <FormField
+                    key={subfield.short_name + '-form-field'}
+                    field={subfield}
+                    superfield={field}
+                    superfieldIndex={id}
+                    {...{
+                      handleChange,
+                      formikValues,
+                      setFieldTouched,
+                      setFieldValue,
+                      setDeletedSubClassificationIds,
+                      allClassificationsData,
+                      entitiesData,
+                      formikErrors,
+                      formikTouched,
+                    }}
+                  />
+                ))}
+                <div>
+                  <Button
+                    color="failure"
+                    onClick={() => {
+                      setObjectListItemsIds((ids) => ids.filter((itemId) => itemId != id));
+                      setDeletedSubClassificationIds((ids) => ids.concat(id));
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </Card.Body>
+            )}
           </Card>
         );
       })}
       <div>
         <Button
-          variant="secondary"
+          color="dark"
           onClick={() => {
             const newItemId = new Date().getTime();
 
