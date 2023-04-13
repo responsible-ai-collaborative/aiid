@@ -176,19 +176,19 @@ const SubmitForm = () => {
 
       submission.deployers = await processEntities(
         allEntities,
-        values.deployers,
+        values.deployers?.link || values.deployers,
         createEntityMutation
       );
 
       submission.developers = await processEntities(
         allEntities,
-        values.developers,
+        values.developers?.link || values.developers,
         createEntityMutation
       );
 
       submission.harmed_parties = await processEntities(
         allEntities,
-        values.harmed_parties,
+        values.harmed_parties?.link || values.harmed_parties,
         createEntityMutation
       );
 
