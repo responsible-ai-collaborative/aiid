@@ -49,11 +49,13 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale, setTooltipPosition }) 
 
   const fORef = useRef(null);
 
+  const tooltipRef = useRef(null);
+
   const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (gRef.current && !gRef.current.contains(event.target)) {
+      if (tooltipRef.current && !tooltipRef.current.contains(event.target)) {
         setShowTooltip(false);
         setTooltipPosition(0, 0, null);
       }
@@ -64,11 +66,14 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale, setTooltipPosition }) 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [gRef]);
+  }, [tooltipRef]);
 
   const tooltipContent = (
     <>
-      <div className="bg-white text-gray-900 absolute opacity-100 z-50 px-2 py-1 border border-gray-900 rounded w-fit">
+      <div
+        className="bg-white text-gray-900 absolute opacity-100 z-50 px-2 py-1 border border-gray-900 rounded w-fit"
+        ref={tooltipRef}
+      >
         <ul className="m-0 p-0">
           {bucket.slice(1).map((b) => (
             <li className="text-[12px] mt-[6px] first:mt-[0%]" key={b.mongodb_id}>
