@@ -37,7 +37,7 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
   const clearEnabled = touchedMin || touchedMax;
 
   return (
-    <div className="">
+    <div>
       <Formik initialValues={{}} onSubmit={() => {}} enableReinitialize>
         {({ values, errors, touched, handleBlur }) => (
           <>
