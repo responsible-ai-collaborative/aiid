@@ -22,7 +22,7 @@ function SortButton({ column, ...props }) {
 }
 
 export function DefaultColumnFilter({
-  column: { Header, canFilter, filterValue, preFilteredRows, setFilter },
+  column: { title, Header, canFilter, filterValue, preFilteredRows, setFilter },
 }) {
   const count = preFilteredRows.length;
 
@@ -36,7 +36,7 @@ export function DefaultColumnFilter({
     <div>
       <h6 className="whitespace-nowrap overflow-hidden text-ellipsis">{Header}</h6>
       <TextInput
-        data-cy={`input-filter-${Header}`}
+        data-cy={`input-filter-${title}`}
         className="w-100"
         type="text"
         placeholder={t(`Search {{count}} records...`, { count })}
