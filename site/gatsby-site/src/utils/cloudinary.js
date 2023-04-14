@@ -65,7 +65,7 @@ const Image = ({
   image.transformation = tmpImage.transformation.toString();
 
   return (
-    <div data-cy="cloudinary-image-wrapper">
+    <div data-cy="cloudinary-image-wrapper" className="h-full">
       <PlaceholderImage
         siteName="IncidentDatabase.AI"
         itemIdentifier={itemIdentifier}
