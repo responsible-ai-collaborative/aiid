@@ -115,6 +115,7 @@ export default function TsneVisualization({
               id="color-axis-select"
               onChange={(event) => setAxis(event.target.value)}
               data-cy="color-axis-select"
+              defaultValue={axis}
             >
               {axes.map((axis) => (
                 <option key={axis} value={axis}>
