@@ -144,6 +144,7 @@ function CiteDynamicTemplate({
           nlp_similar_incidents={nlp_similar_incidents}
           editor_similar_incidents={editor_similar_incidents}
           editor_dissimilar_incidents={editor_dissimilar_incidents}
+          liveVersion={true}
         />
       ) : (
         <Trans>Incident {{ incident_id }} not found</Trans>
