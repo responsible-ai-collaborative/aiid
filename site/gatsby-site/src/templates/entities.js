@@ -61,7 +61,7 @@ const EntitiesPage = ({ pageContext, data, ...props }) => {
           path: props.location.pathname,
         }}
       />
-      <Layout {...props} sidebarCollapsed={true}>
+      <Layout {...props} sidebarCollapsed={true} className="w-full">
         <h1 className="text-5xl mt-6 font-extrabold dark:text-white">{t(metaTitle)}</h1>
         <EntitiesTable data={entitiesData} className="mt-6" data-cy="entities" />
       </Layout>

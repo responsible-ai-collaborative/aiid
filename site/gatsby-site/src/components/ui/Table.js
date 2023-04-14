@@ -1,7 +1,7 @@
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import DateLabel from './DateLabel';
-import { Dropdown, Pagination, TextInput, Table as FBTable } from 'flowbite-react';
+import { Dropdown, Pagination, TextInput } from 'flowbite-react';
 
 function SortButton({ column, ...props }) {
   const { isSorted } = column;
@@ -22,46 +22,43 @@ function SortButton({ column, ...props }) {
 }
 
 export function DefaultColumnFilter({
-  column: { title, filterValue, preFilteredRows, setFilter },
+  column: { Header, canFilter, filterValue, preFilteredRows, setFilter },
 }) {
   const count = preFilteredRows.length;
 
-  const { t } = useTranslation(['entities']);
+  const { t } = useTranslation();
 
-  return (
-    <TextInput
-      data-cy={`input-filter-${title}`}
-      className="w-100 mt-4"
-      type="text"
-      value={filterValue || ''}
-      onChange={(e) => {
-        setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
-      }}
-      placeholder={t(`Search {{count}} records...`, { count })}
-    />
-  );
-}
+  if (!canFilter) {
+    return <h6 className="whitespace-nowrap overflow-hidden text-ellipsis">{Header}</h6>;
+  }
 
-export function DefaultColumnHeader({ column, ...props }) {
   return (
     <div>
-      <div className="flex justify-between items-center">
-        <h6 className="whitespace-nowrap overflow-hidden text-ellipsis m-0" {...props}>
-          <Trans ns="entities">{column.title}</Trans>
-        </h6>
-        <SortButton column={column} {...column.getSortByToggleProps()} />
-      </div>
-      {column.render('Filter')}
+      <h6 className="whitespace-nowrap overflow-hidden text-ellipsis">{Header}</h6>
+      <TextInput
+        data-cy={`input-filter-${Header}`}
+        className="w-100"
+        type="text"
+        placeholder={t(`Search {{count}} records...`, { count })}
+        value={filterValue || ''}
+        onChange={(e) => {
+          setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
+        }}
+      />
     </div>
   );
 }
 
-export function DefaultActionsColumnHeader({ column, ...props }) {
+export function DefaultColumnHeader({ column }) {
   return (
-    <div className="flex justify-between items-start h-full">
-      <h6 className="whitespace-nowrap overflow-hidden text-ellipsis m-0" {...props}>
-        <Trans ns="entities">{column.title}</Trans>
-      </h6>
+    <div className="h-full">
+      <div className="flex justify-between items-center">
+        <h6 className="whitespace-nowrap overflow-hidden text-ellipsis m-0">
+          <Trans>{column.title}</Trans>
+        </h6>
+        {column.canSort && <SortButton column={column} {...column.getSortByToggleProps()} />}
+      </div>
+      {column.render('Filter')}
     </div>
   );
 }
@@ -90,14 +87,14 @@ export default function Table({ table, className = '', ...props }) {
     <div className={`max-w-full ${className}`} {...props}>
       {/* eslint-disable react/jsx-key */}
       <div className="max-w-full overflow-x-scroll">
-        <FBTable {...getTableProps()} className="table-fixed">
+        <table {...getTableProps()} className="w-full">
           <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400 ">
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
                   <th
                     {...column.getHeaderProps()}
-                    className={`${column.className} py-3 px-4 border-none`}
+                    className={`${column.className} py-3 px-4 border-none align-top`}
                     data-cy={`header-${column.id}`}
                   >
                     {column.render('Header')}
@@ -106,11 +103,11 @@ export default function Table({ table, className = '', ...props }) {
               </tr>
             ))}
           </thead>
-          <FBTable.Body {...getTableBodyProps()} className="divide-y">
+          <tbody {...getTableBodyProps()} className="divide-y">
             {page.map((row, i) => {
               prepareRow(row);
               return (
-                <FBTable.Row
+                <tr
                   {...row.getRowProps()}
                   className={`border-b dark:bg-gray-800 dark:border-gray-700") + ${
                     i % 2 == 0
@@ -121,20 +118,20 @@ export default function Table({ table, className = '', ...props }) {
                 >
                   {row.cells.map((cell) => {
                     return (
-                      <FBTable.Cell
+                      <td
                         {...cell.getCellProps()}
                         className={`${cell.column.width} py-3 px-4 border-none align-top h-full text-gray-700`}
                         data-cy={`cell`}
                       >
                         {cell.render('Cell')}
-                      </FBTable.Cell>
+                      </td>
                     );
                   })}
-                </FBTable.Row>
+                </tr>
               );
             })}
-          </FBTable.Body>
-        </FBTable>
+          </tbody>
+        </table>
         <div className="flex gap-2 justify-start items-center mt-3">
           <Pagination
             className="pagination mb-0 text-gray-800"

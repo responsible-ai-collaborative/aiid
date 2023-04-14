@@ -3,7 +3,7 @@ import React from 'react';
 import { useExpanded, useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import { faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 
 function IncidentsCell({ cell }) {
@@ -156,6 +156,8 @@ const sortByCount = (rowA, rowB, id) => {
 };
 
 export default function EntitiesTable({ data, className = '', ...props }) {
+  const { t } = useTranslation(['entities']);
+
   const defaultColumn = React.useMemo(
     () => ({
       className: 'w-[120px]',
@@ -201,7 +203,7 @@ export default function EntitiesTable({ data, className = '', ...props }) {
         },
       },
       {
-        title: 'Entity',
+        title: t('Entity'),
         accessor: 'id',
         Cell: ({ row: { values, original } }) => (
           <>
@@ -213,42 +215,42 @@ export default function EntitiesTable({ data, className = '', ...props }) {
         filter: entityFilter,
       },
       {
-        title: 'As Deployer and Developer',
+        title: t('As Deployer and Developer'),
         accessor: 'incidentsAsBoth',
         Cell: IncidentsCell,
         filter: incidentFilter,
         sortType: sortByCount,
       },
       {
-        title: 'As Deployer',
+        title: t('As Deployer'),
         accessor: 'incidentsAsDeployer',
         Cell: IncidentsCell,
         filter: incidentFilter,
         sortType: sortByCount,
       },
       {
-        title: 'As Developer',
+        title: t('As Developer'),
         accessor: 'incidentsAsDeveloper',
         Cell: IncidentsCell,
         filter: incidentFilter,
         sortType: sortByCount,
       },
       {
-        title: 'Harmed By',
+        title: t('Harmed By'),
         accessor: 'incidentsHarmedBy',
         Cell: IncidentsCell,
         filter: incidentFilter,
         sortType: sortByCount,
       },
       {
-        title: 'Related Entities',
+        title: t('Related Entities'),
         accessor: 'relatedEntities',
         Cell: EntitiesCell,
         filter: entitiesFilter,
         sortType: sortByCount,
       },
       {
-        title: 'Incident Responses',
+        title: t('Incident Responses'),
         accessor: 'responses',
         Cell: ResponseCell,
         filter: responseFilter,
