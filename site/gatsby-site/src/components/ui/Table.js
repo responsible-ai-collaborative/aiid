@@ -1,7 +1,7 @@
 import React from 'react';
-import { Form } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 import DateLabel from './DateLabel';
+import { TextInput } from 'flowbite-react';
 
 function SortButton({ column, ...props }) {
   const { isSorted } = column;
@@ -29,11 +29,11 @@ export function DefaultColumnFilter({
   const { t } = useTranslation(['entities']);
 
   return (
-    <Form.Control
+    <TextInput
       data-cy={`input-filter-${title}`}
-      className="w-100 mt-4"
       type="text"
       value={filterValue || ''}
+      className="w-100 mt-4 font-normal"
       onChange={(e) => {
         setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
       }}
