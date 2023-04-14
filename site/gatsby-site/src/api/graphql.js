@@ -7,6 +7,9 @@ import config from '../../config';
 import BodyParser from 'body-parser';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+
+const plugins = [ApolloServerPluginLandingPageLocalDefault({ embed: true })];
 
 const cors = Cors();
 
@@ -63,7 +66,7 @@ export default async function handler(req, res) {
       },
     });
 
-    const server = new ApolloServer({ schema: gatewaySchema });
+    const server = new ApolloServer({ schema: gatewaySchema, plugins, introspection: true });
 
     await server.start();
 
