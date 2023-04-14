@@ -22,6 +22,8 @@ function CiteDynamicTemplate({
 }) {
   const { locale } = useLocalization();
 
+  const [loadingIncident, setLoadingIncident] = useState(true);
+
   const [incident, setIncident] = useState(null);
 
   const [entities, setEntities] = useState(null);
@@ -115,39 +117,43 @@ function CiteDynamicTemplate({
       setSortedReports(sortedReports);
       setVariants(variantsTemp);
       setIncident(incidentTemp);
+      setLoadingIncident(false);
     }
-  }, [incidentData]);
+  }, [incidentData, classificationsData]);
 
   return (
     <>
-      {loading ? (
+      {(loading || loadingIncident) && (
         <div className="mt-3">
           <Spinner />
         </div>
-      ) : !loading && incident ? (
-        <CiteTemplate
-          incident={incident}
-          sortedReports={sortedReports}
-          variants={variants}
-          metaTitle={metaTitle}
-          entities={entities}
-          timeline={timeline}
-          locationPathName={locationPathName}
-          allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
-          allMongodbAiidprodClassifications={classifications}
-          nextIncident={
-            nextIncident && nextIncident.incident ? nextIncident.incident.incident_id : null
-          }
-          prevIncident={
-            prevIncident && prevIncident.incident ? prevIncident.incident.incident_id : null
-          }
-          nlp_similar_incidents={nlp_similar_incidents}
-          editor_similar_incidents={editor_similar_incidents}
-          editor_dissimilar_incidents={editor_dissimilar_incidents}
-          liveVersion={true}
-        />
-      ) : (
+      )}
+      {!loading && !loadingIncident && !incident ? (
         <Trans>Incident {{ incident_id }} not found</Trans>
+      ) : (
+        incident && (
+          <CiteTemplate
+            incident={incident}
+            sortedReports={sortedReports}
+            variants={variants}
+            metaTitle={metaTitle}
+            entities={entities}
+            timeline={timeline}
+            locationPathName={locationPathName}
+            allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
+            allMongodbAiidprodClassifications={classifications}
+            nextIncident={
+              nextIncident && nextIncident.incident ? nextIncident.incident.incident_id : null
+            }
+            prevIncident={
+              prevIncident && prevIncident.incident ? prevIncident.incident.incident_id : null
+            }
+            nlp_similar_incidents={nlp_similar_incidents}
+            editor_similar_incidents={editor_similar_incidents}
+            editor_dissimilar_incidents={editor_dissimilar_incidents}
+            liveVersion={true}
+          />
+        )
       )}
     </>
   );
