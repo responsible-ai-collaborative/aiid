@@ -14,11 +14,11 @@ export default function QuickSearch() {
     const width = window.innerWidth;
 
     if (width >= 350 && width < 450) {
-      setSearchPlaceholder(t('Search 2000+ reports'));
+      setSearchPlaceholder(t('Search 2500+ reports'));
     } else if (width >= 450 && width < 500) {
-      setSearchPlaceholder(t('Search 2000+ AI harm reports'));
+      setSearchPlaceholder(t('Search 2500+ AI harm reports'));
     } else if (width >= 500) {
-      setSearchPlaceholder(t('Search over 2000 reports of AI harms'));
+      setSearchPlaceholder(t('Search over 2500 reports of AI harms'));
     } else {
       setSearchPlaceholder(t('Search reports'));
     }
