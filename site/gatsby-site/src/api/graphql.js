@@ -4,7 +4,6 @@ import fetch from 'cross-fetch';
 import { print } from 'graphql';
 import Cors from 'cors';
 import config from '../../config';
-import BodyParser from 'body-parser';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
@@ -12,8 +11,6 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 const plugins = [ApolloServerPluginLandingPageLocalDefault({ embed: true })];
 
 const cors = Cors();
-
-const bodyParser = BodyParser.json();
 
 // This custom executor is used to execute GraphQL queries against the Realm API
 // https://www.graphql-tools.com/docs/schema-wrapping#schema-wrapping
@@ -78,15 +75,6 @@ export default async function handler(req, res) {
 
   await new Promise((resolve, reject) => {
     cors(req, res, (result) => {
-      if (result instanceof Error) {
-        reject(result);
-      }
-      resolve(result);
-    });
-  });
-
-  await new Promise((resolve, reject) => {
-    bodyParser(req, res, (result) => {
       if (result instanceof Error) {
         reject(result);
       }
