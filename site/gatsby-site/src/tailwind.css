@@ -597,7 +597,7 @@
     }
 
     .tsne-visualization-item>a.current {
-        @apply border-[black] shadow-tsne-current z-2 !important;
+        @apply border-[black] shadow-tsne-current !important;
     }
 
     .pagination [aria-current="page"] button {

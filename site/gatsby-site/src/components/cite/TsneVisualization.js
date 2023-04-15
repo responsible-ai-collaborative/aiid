@@ -281,6 +281,12 @@ function PlotPoint({
 
   const [clientPosition, setClientPosition] = useState(null);
 
+  let zIndex = 1;
+
+  if (currentIncidentId == incident.incident_id) zIndex = 4;
+  else if (highlightedCategory == taxon) zIndex = 3;
+  else if (taxon != 'Unclassified') zIndex = 2;
+
   const onTop = typeof window != 'undefined' && clientPosition?.y < window.innerHeight / 2;
 
   const onLeft = typeof window != 'undefined' && clientPosition?.x < window.innerWidth / 2;
@@ -334,7 +340,7 @@ function PlotPoint({
             highlightedCategory != taxon
               ? 0.1
               : 1,
-          zIndex: highlightedCategory == taxon ? 3 : taxon != 'Unclassified' ? 2 : 1,
+          zIndex,
           background,
           color,
 
