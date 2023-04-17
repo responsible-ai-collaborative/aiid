@@ -17,18 +17,14 @@ const AdminPage = (props) => {
   const { isRole, loading: loadingAuth } = useUserContext();
 
   return (
-    <Layout {...props} className="w-full">
+    <Layout {...props} sidebarCollapsed={true} className="w-full">
       <AiidHelmet path={pathname}>
         <title>Admin</title>
       </AiidHelmet>
-      <div className="w-full max-w-full">
+      <div>
         {loading && <ListSkeleton />}
         {!loading && !loadingAuth && !isRole('admin') && <div>Not enough permissions</div>}
-        {data?.users && isRole('admin') && (
-          <div className="overflow-x-auto">
-            <UsersTable data={data.users} />
-          </div>
-        )}
+        {data?.users && isRole('admin') && <UsersTable data={data.users} />}
       </div>
     </Layout>
   );
