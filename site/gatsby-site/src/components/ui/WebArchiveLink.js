@@ -14,8 +14,7 @@ async function getSnapshotURL(url, date) {
 }
 
 export default function WebArchiveLink({ url, date, children, className = '' }) {
-  const onClick = async (e) => {
-    e.preventDefault();
+  const onClick = async () => {
     const win = window.open('', '_blank');
 
     try {
@@ -27,22 +26,23 @@ export default function WebArchiveLink({ url, date, children, className = '' }) 
     }
   };
 
-  const navigateToUrl = (e, url) => {
-    e.preventDefault();
+  const navigateToUrl = (url) => {
     window.open(url, '_blank');
   };
 
   return (
-    <div className={`flex items-center ${className}`}>
+    <div className={`flex items-center ${className}`} data-cy="web-archive-link">
       <Link to={url}>{children}</Link>
-      <Dropdown inline={true} label="" className="-ml-3">
-        <Dropdown.Item onClick={(e) => navigateToUrl(e, url)} data-cy="original">
-          <Trans>View the original report at its source</Trans>
-        </Dropdown.Item>
-        <Dropdown.Item onClick={onClick} onAuxClick={onClick} data-cy="wayback-machine">
-          <Trans>View the report at the Internet Archive</Trans>
-        </Dropdown.Item>
-      </Dropdown>
+      <div data-cy="dropdown-toggle">
+        <Dropdown inline={true} label="" className="-ml-3">
+          <Dropdown.Item onClick={(e) => navigateToUrl(e, url)} data-cy="original">
+            <Trans>View the original report at its source</Trans>
+          </Dropdown.Item>
+          <Dropdown.Item onClick={onClick} onAuxClick={onClick} data-cy="wayback-machine">
+            <Trans>View the report at the Internet Archive</Trans>
+          </Dropdown.Item>
+        </Dropdown>
+      </div>
     </div>
   );
 }
