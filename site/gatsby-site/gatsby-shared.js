@@ -5,7 +5,6 @@ import { UserContextProvider } from 'contexts/userContext';
 import { MenuContextProvider } from 'contexts/MenuContext';
 import { ToastContextProvider } from './src/contexts/ToastContext';
 import ThemeProvider from 'components/theme/themeProvider';
-import SSRProvider from 'react-bootstrap/SSRProvider';
 import { Script } from 'gatsby';
 
 export const wrapPageElement = ({ element }) => {
@@ -33,11 +32,9 @@ export const wrapRootElement = ({ element }) => {
   return (
     <>
       <Script src="/rollbar.js" />
-      <SSRProvider>
-        <ThemeProvider>
-          <ToastContextProvider>{element}</ToastContextProvider>
-        </ThemeProvider>
-      </SSRProvider>
+      <ThemeProvider>
+        <ToastContextProvider>{element}</ToastContextProvider>
+      </ThemeProvider>
     </>
   );
 };

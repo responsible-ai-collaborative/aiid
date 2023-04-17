@@ -760,4 +760,16 @@
   .tw-toast a {
     @apply underline text-white !important;
   }
+
+  .taxonomy-markdown {
+    @apply mt-0 !important;
+  }
+
+  .taxonomy-markdown h1 {
+    @apply text-2xl font-extrabold leading-[1.5] mb-4 mt-8 !important;
+  }
+
+  .taxonomy-markdown p {
+    @apply leading-[1.5] first:mt-0 !important;
+  }
 }

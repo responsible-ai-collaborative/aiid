@@ -1,14 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
-
-const Date = styled.span`
-  font-family: arial;
-  margin-right: 1rem;
-`;
-
-const Link = styled.a`
-  flex: 1;
-`;
 
 const IncidentList = ({ group }) => {
   return (
@@ -18,8 +8,10 @@ const IncidentList = ({ group }) => {
           <ul>
             {value['edges'].map((value) => (
               <li key={value['node']['id']} className="flex">
-                <Date>{value['node']['date_published']}</Date>
-                <Link href={`#${value['node']['mongodb_id']}`}>{value['node']['title']}</Link>
+                <span className='font-["Arial"] mr-4'>{value['node']['date_published']}</span>
+                <a className="flex-1" href={`#${value['node']['mongodb_id']}`}>
+                  {value['node']['title']}
+                </a>
               </li>
             ))}
           </ul>
