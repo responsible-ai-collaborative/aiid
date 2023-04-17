@@ -311,7 +311,7 @@ describe('The Discover app', () => {
 
     cy.location('search', { timeout: 8000 }).should(
       'equal',
-      '?display=details&is_incident_report=true&page=1&sortBy=relevance'
+      '?display=details&is_incident_report=true&page=1&sortBy=instant_search-en-featured'
     );
   });
 
@@ -358,7 +358,7 @@ describe('The Discover app', () => {
 
     cy.location('search', { timeout: 8000 }).should(
       'equal',
-      '?display=details&is_incident_report=true&page=1&sortBy=relevance'
+      '?display=details&is_incident_report=true&page=1&sortBy=instant_search-en-featured'
     );
 
     cy.get('[data-cy="discover-sort"]').should('have.text', 'Relevance');
