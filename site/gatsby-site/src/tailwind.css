@@ -760,4 +760,16 @@
   .tw-toast a {
     @apply underline text-white !important;
   }
+
+  .react-markdown pre {
+    @apply table table-fixed w-full !important;
+  }
+
+  .react-markdown pre code {
+    @apply block overflow-auto w-full !important;
+  }
+
+  .prose a {
+    @apply text-blue-500 !important;
+  }
 }
