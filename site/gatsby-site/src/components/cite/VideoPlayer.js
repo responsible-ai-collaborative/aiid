@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import ReactPlayer from 'react-player/lazy';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faVolumeMute, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 
 /*
   Example videos:
@@ -81,21 +83,50 @@ const VideoPlayer = ({ mediaURL, className = '', fallback = null, onError = () =
     setUseVideo(false);
   }
 
+  const handleMouseEnter = () => {
+    setPlay(true);
+  };
+
+  const handleMouseLeave = () => {
+    setPlay(false);
+  };
+
+  const handleMuteToggle = () => {
+    setIsMuted(prevIsMuted => !prevIsMuted);
+    setVolume(prevVolume => prevVolume === 0 ? 0.5 : 0);
+  }
+
+  const [play, setPlay] = useState(false);
   const [useVideo, setUseVideo] = useState(isVideo(mediaURL));
+  const [volume, setVolume] = useState(0.5);
+  const [isMuted, setIsMuted] = useState(false);
 
   return useVideo ? (
+<<<<<<< Updated upstream
     <div className={`aspect-w-16 aspect-h-9 ${className}`}  onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <ReactPlayer
         url={mediaURL}
         controls={false}
         muted={true}
         playing={play}
+=======
+    <div className={`aspect-w-16 aspect-h-9 ${className}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <ReactPlayer
+        url={mediaURL}
+        controls={false}
+        muted={isMuted}
+        volume={volume}
+>>>>>>> Stashed changes
         pip
         fallback={fallback}
+        playing={play}
         onError={(e) => onPlayerError(e)}
         width="100%"
         height="100%"
       />
+      <button onClick={handleMuteToggle}>
+        <FontAwesomeIcon icon={isMuted ? faVolumeMute : faVolumeUp} />
+      </button>
     </div>
   ) : (
     fallback
