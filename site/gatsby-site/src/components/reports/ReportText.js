@@ -10,7 +10,7 @@ function ReportText({ text, maxChars = null }) {
   }
 
   return (
-    <ReactMarkdown rehypePlugins={rehypePlugins} className="prose max-w-full">
+    <ReactMarkdown rehypePlugins={rehypePlugins} className="react-markdown prose max-w-full">
       {text}
     </ReactMarkdown>
   );
