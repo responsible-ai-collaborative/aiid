@@ -109,46 +109,43 @@ describe('Pages', () => {
             `[rel="alternate"][hrefLang="${language.hrefLang}"][href="${alternateUrl}"]`
           ).should('exist');
         }
-      });
-    });
 
-    it(`Should not display broken images on page ${path}`, () => {
-      cy.visit(path);
-      cy.get('body')
-        .then(($body) => {
-          if ($body.find('[data-cy="cloudinary-image-wrapper"]').length) {
-            return true;
-          }
-          return false;
-        })
-        .then((selectorExists) => {
-          if (selectorExists) {
-            cy.get('[data-cy="cloudinary-image-wrapper"]').each(($el) => {
-              cy.wrap($el)
-                .find('[data-cy="cloudinary-image"]')
-                .should('have.attr', 'src')
-                .then(($src) => {
-                  cy.request({
-                    url: $src.toString(),
-                    failOnStatusCode: false,
-                  }).then((resp) => {
-                    if (resp.status !== 200) {
-                      // If image is failing, check if cloudinary image is hidden
-                      cy.wrap($el)
-                        .find('[data-cy="cloudinary-image"]')
-                        .should('have.class', 'hidden');
-                      // Check if placeholder image is displayed instead
-                      cy.wrap($el)
-                        .find('[data-cy="cloudinary-image-placeholder"]')
-                        .should('not.have.class', 'hidden');
-                    }
+        cy.get('body')
+          .then(($body) => {
+            if ($body.find('[data-cy="cloudinary-image-wrapper"]').length) {
+              return true;
+            }
+            return false;
+          })
+          .then((selectorExists) => {
+            if (selectorExists) {
+              cy.get('[data-cy="cloudinary-image-wrapper"]').each(($el) => {
+                cy.wrap($el)
+                  .find('[data-cy="cloudinary-image"]')
+                  .should('have.attr', 'src')
+                  .then(($src) => {
+                    cy.request({
+                      url: $src.toString(),
+                      failOnStatusCode: false,
+                    }).then((resp) => {
+                      if (resp.status !== 200) {
+                        // If image is failing, check if cloudinary image is hidden
+                        cy.wrap($el)
+                          .find('[data-cy="cloudinary-image"]')
+                          .should('have.class', 'hidden');
+                        // Check if placeholder image is displayed instead
+                        cy.wrap($el)
+                          .find('[data-cy="cloudinary-image-placeholder"]')
+                          .should('not.have.class', 'hidden');
+                      }
+                    });
                   });
-                });
-            });
-          } else {
-            cy.log(`No images found on page, skipping test for path ${path}`);
-          }
-        });
+              });
+            } else {
+              cy.log(`No images found on page, skipping image test for path ${path}`);
+            }
+          });
+      });
     });
   });
 });
