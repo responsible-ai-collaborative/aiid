@@ -63,8 +63,17 @@ const ToolPage = (props) => {
         <title>Test</title>
       </AiidHelmet>
       <div className="w-full max-w-full">
-        {loading && <ListSkeleton />}
-        {!loading && tableData.length && <CsetTable data={tableData} />}
+        {loading ? (
+          <ListSkeleton />
+        ) : (
+          <>
+            {data?.classifications.length > 0 && tableData.length ? (
+              <CsetTable data={tableData} />
+            ) : (
+              <div>No classifications found.</div>
+            )}
+          </>
+        )}
       </div>
     </Layout>
   );
