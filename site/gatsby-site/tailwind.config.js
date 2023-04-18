@@ -115,7 +115,6 @@ module.exports = {
         table: 'inset 0 0 0 9999px transparent',
         tsne: '0px 0px 2px 2px rgba(0, 0, 0, 0.15)',
         'tsne-current': '0px 0px 3px 3px rgba(255, 255, 255, 0.75)',
-        'incidents-table': '0px 3px 3px #ccc',
       },
       transitionDelay: {},
       transitionDuration: {
