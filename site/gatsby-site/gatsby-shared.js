@@ -8,8 +8,9 @@ import ThemeProvider from 'components/theme/themeProvider';
 import SSRProvider from 'react-bootstrap/SSRProvider';
 import { Script } from 'gatsby';
 import { LayoutContextProvider } from 'contexts/LayoutContext';
+import { LocaleProvider } from 'plugins/gatsby-theme-i18n';
 
-export const wrapPageElement = ({ element }) => {
+export const wrapPageElement = ({ element, props }) => {
   const history = {
     replace(location) {
       navigate(location.pathname + location.search, { replace: true });
@@ -22,13 +23,15 @@ export const wrapPageElement = ({ element }) => {
   const location = typeof window == 'undefined' ? {} : window.location;
 
   return (
-    <QueryParamProvider history={history} location={location}>
-      <MenuContextProvider>
-        <UserContextProvider>
-          <LayoutContextProvider location={location}>{element}</LayoutContextProvider>
-        </UserContextProvider>
-      </MenuContextProvider>
-    </QueryParamProvider>
+    <LocaleProvider pageContext={props.pageContext}>
+      <QueryParamProvider history={history} location={location}>
+        <MenuContextProvider location={location}>
+          <UserContextProvider>
+            <LayoutContextProvider location={location}>{element}</LayoutContextProvider>
+          </UserContextProvider>
+        </MenuContextProvider>
+      </QueryParamProvider>
+    </LocaleProvider>
   );
 };
 
