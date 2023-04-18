@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 
-import Container from 'react-bootstrap/Container';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-
 import Link from 'components/ui/Link';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
+import Container from 'elements/Container';
+import Row from 'elements/Row';
+import Col from 'elements/Col';
 import { useMenuContext } from 'contexts/MenuContext';
 
 const Backups = ({ pageContext, ...props }) => {

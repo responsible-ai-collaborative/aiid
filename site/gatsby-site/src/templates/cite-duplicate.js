@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 
-import Container from 'react-bootstrap/Container';
-
 import Link from 'components/ui/Link';
 
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
+import Container from 'elements/Container';
 import { useMenuContext } from 'contexts/MenuContext';
 
 const IncidentCite = ({ pageContext }) => {
