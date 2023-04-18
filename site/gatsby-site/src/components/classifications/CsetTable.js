@@ -35,8 +35,6 @@ export default function CsetTable({ data, className = '', ...props }) {
     return columns;
   }, [data]);
 
-  console.log(columns, data);
-
   const table = useTable(
     {
       columns,
