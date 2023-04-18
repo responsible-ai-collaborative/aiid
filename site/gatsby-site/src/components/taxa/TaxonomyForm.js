@@ -593,6 +593,7 @@ function FormField({
           errors={formikErrors}
           touched={formikTouched}
           handleBlur={() => {}}
+          onWheel={(evt) => evt.target.blur()}
         />
       )}
 
