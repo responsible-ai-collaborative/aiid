@@ -86,7 +86,7 @@ describe('The Submit form', () => {
       });
     });
 
-    cy.get('div[class^="ToastContext"]')
+    cy.get('.tw-toast')
       .contains('Report successfully added to review queue. You can see your submission')
       .should('exist');
 
@@ -171,11 +171,11 @@ describe('The Submit form', () => {
         });
       });
 
-      cy.get('div[class^="ToastContext"]')
+      cy.get('.tw-toast')
         .contains('Report successfully added to review queue')
         .should('be.visible');
 
-      cy.get('div[class^="ToastContext"] a').should('have.attr', 'href', '/apps/submitted/');
+      cy.get('.tw-toast a').should('have.attr', 'href', '/apps/submitted/');
 
       cy.contains('Please review. Some data is missing.').should('not.exist');
     }
@@ -358,7 +358,7 @@ describe('The Submit form', () => {
 
     cy.wait('@parseNews');
 
-    cy.get('div[class^="ToastContext"]')
+    cy.get('.tw-toast')
       .contains('Error reaching news info endpoint, please try again in a few seconds.')
       .should('exist');
   });
@@ -921,7 +921,7 @@ describe('The Submit form', () => {
 
     cy.wait('@insertSubmission');
 
-    cy.get('div[class^="ToastContext"]')
+    cy.get('.tw-toast')
       .contains('Informe agregado exitosamente a la cola de revisión.')
       .should('exist');
   });
@@ -956,7 +956,7 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="submit-step-1"]').click();
 
-    cy.get('div[class^="ToastContext"]')
+    cy.get('.tw-toast')
       .contains('Report successfully added to review queue. You can see your submission')
       .should('exist');
   });
@@ -999,7 +999,7 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="submit-step-2"]').click();
 
-    cy.get('div[class^="ToastContext"]')
+    cy.get('.tw-toast')
       .contains('Report successfully added to review queue. You can see your submission')
       .should('exist');
   });
@@ -1287,11 +1287,9 @@ describe('The Submit form', () => {
       });
     });
 
-    cy.get('div[class^="ToastContext"]')
-      .contains('Report successfully added to review queue')
-      .should('be.visible');
+    cy.get('.tw-toast').contains('Report successfully added to review queue').should('be.visible');
 
-    cy.get('div[class^="ToastContext"] a').should('have.attr', 'href', '/apps/submitted/');
+    cy.get('.tw-toast a').should('have.attr', 'href', '/apps/submitted/');
 
     cy.contains('Please review. Some data is missing.').should('not.exist');
   });
@@ -1326,7 +1324,7 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="submit-step-1"]').click();
 
-    cy.get('div[class^="ToastContext"]')
+    cy.get('.tw-toast')
       .contains('Report successfully added to review queue. You can see your submission')
       .should('exist');
 
@@ -1344,7 +1342,7 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="submit-step-1"]').click();
 
-    cy.get('div[class^="ToastContext"]')
+    cy.get('.tw-toast')
       .contains('Report successfully added to review queue. You can see your submission')
       .should('exist');
   });
@@ -1360,7 +1358,7 @@ describe('The Submit form', () => {
 
     cy.wait('@parseNews');
 
-    cy.get('div[class^="ToastContext"]')
+    cy.get('.tw-toast')
       .contains('Please verify all information programmatically pulled from the report')
       .should('exist');
 

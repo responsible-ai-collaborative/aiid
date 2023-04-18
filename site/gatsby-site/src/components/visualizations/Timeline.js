@@ -10,8 +10,6 @@ import {
   timeMonth,
   timeWeek,
 } from 'd3';
-import { OverlayTrigger, Popover } from 'react-bootstrap';
-import PopoverWrapper from 'elements/PopoverWrapper';
 import { Trans } from 'react-i18next';
 
 const formatDay = timeFormat('%b %d');
@@ -46,47 +44,109 @@ const AxisLeft = ({ yScale, margin, data }) => {
   return <g ref={axisRef} transform={`translate(${margin.left}, 0)`} />;
 };
 
-const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
+const DataPoint = ({ bucket, groupRadius, radius, yScale, setTooltipPosition }) => {
+  const gRef = useRef(null);
+
+  const fORef = useRef(null);
+
+  const tooltipRef = useRef(null);
+
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (tooltipRef.current && !tooltipRef.current.contains(event.target)) {
+        setShowTooltip(false);
+        setTooltipPosition(0, 0, null);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [tooltipRef]);
+
+  const tooltipContent = (
+    <>
+      <div
+        className="bg-white text-gray-900 absolute opacity-100 z-50 px-2 py-1 border border-gray-900 rounded w-fit"
+        ref={tooltipRef}
+      >
+        <ul className="m-0 p-0">
+          {bucket.slice(1).map((b) => (
+            <li className="text-[12px] mt-[6px] first:mt-[0%]" key={b.mongodb_id}>
+              <p className="whitespace-nowrap m-0 font-bold mb-1">
+                {timeFormat('%b %d, %Y')(new Date(b.date_published))}
+              </p>
+              {b.isOccurrence ? (
+                <p className="whitespace-nowrap m-0">{b.title}</p>
+              ) : (
+                <a href={`#r${b.report_number}`} className="whitespace-nowrap">
+                  {b.title}
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+        <div className="absolute h-2 w-2 -left-[5px] transform-[translate3d(58.5px,0px,0px) top-1/2 bg-inherit before:border-b before:border-l before:visible before:h-2 before:absolute before:w-2 before:border-b-gray-900 before:border-l-gray-900 before:bg-inherit after:border-b after:border-l after:visible after:h-2 after:absolute after:w-2 after:border-b-gray-900 after:border-l-gray-900 after:bg-inherit before:rotate-45 after:rotate-45"></div>
+      </div>
+    </>
+  );
+
+  const toggleTooltip = () => {
+    setShowTooltip(!showTooltip);
+    if (!showTooltip) {
+      const g = gRef.current;
+
+      const parent = g.parentNode;
+
+      const element = fORef.current;
+
+      const { left, top } = element.getBoundingClientRect();
+
+      const { left: parentLeft, top: parentTop } = parent.getBoundingClientRect();
+
+      const offsetLeft = left - parentLeft;
+
+      const offsetTop = top - parentTop;
+
+      setTooltipPosition(offsetLeft, offsetTop, tooltipContent);
+    } else {
+      setTooltipPosition(0, 0, null);
+    }
+  };
+
   return (
-    <g key={bucket.x0} transform={`translate(20,${(yScale(bucket.x0) + yScale(bucket.x1)) / 2})`}>
+    <g
+      key={bucket.x0}
+      transform={`translate(20,${(yScale(bucket.x0) + yScale(bucket.x1)) / 2})`}
+      className="z-2"
+      ref={gRef}
+    >
       {bucket.length > 1 ? (
         <>
           <circle className="fill-gray-900" cy={0} r={groupRadius} />
           <text
             textAnchor="middle"
             dominantBaseline="middle"
-            className="fill-white font-bold text-[12px]"
+            className="fill-white font-bold text-[12px] z-40"
           >
             +{bucket.length - 1}
           </text>
-          <OverlayTrigger
-            placement="top"
-            trigger="click"
-            rootClose={true}
-            overlay={
-              <PopoverWrapper>
-                <Popover.Body>
-                  <ul className="m-0 p-0">
-                    {bucket.slice(1).map((b) => (
-                      <li className="text-[12px] mt-[6px] first:mt-[0%]" key={b.mongodb_id}>
-                        {timeFormat('%b %d, %Y')(new Date(b.date_published))}
-                        <br />
-                        {b.isOccurrence ? (
-                          <>{b.title}</>
-                        ) : (
-                          <a href={`#r${b.report_number}`}>{b.title}</a>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </Popover.Body>
-              </PopoverWrapper>
-            }
+          <foreignObject
+            x={-8}
+            y={-8}
+            width={16}
+            height={16}
+            onClick={() => {
+              toggleTooltip();
+            }}
+            ref={fORef}
           >
-            <foreignObject x={-8} y={-8} width={16} height={16}>
-              <div className="w-[16px] h-[16px] cursor-pointer" />
-            </foreignObject>
-          </OverlayTrigger>
+            <div className="w-[16px] h-[16px] cursor-pointer" />
+          </foreignObject>
         </>
       ) : (
         <circle
@@ -139,7 +199,7 @@ const DataPoint = ({ bucket, groupRadius, radius, yScale }) => {
   );
 };
 
-const Reports = ({ binned, yScale, radius, groupRadius, margin, size }) => {
+const Reports = ({ binned, yScale, radius, groupRadius, margin, size, setTooltipPosition }) => {
   return (
     <g transform={`translate(${margin.left}, 0)`}>
       <line
@@ -159,6 +219,7 @@ const Reports = ({ binned, yScale, radius, groupRadius, margin, size }) => {
             yScale={yScale}
             groupRadius={groupRadius}
             radius={radius}
+            setTooltipPosition={setTooltipPosition}
           />
         ))}
     </g>
@@ -222,8 +283,20 @@ function Timeline({ data }) {
     }
   }, [containerRef]);
 
+  const [tooltipLeft, setTooltipLeft] = useState(0);
+
+  const [tooltipTop, setTooltipTop] = useState(0);
+
+  const [tooltipContent, setTooltipContent] = useState(null);
+
+  const setTooltipPosition = (left, top, content) => {
+    setTooltipLeft(left);
+    setTooltipTop(top);
+    setTooltipContent(content);
+  };
+
   return (
-    <div ref={containerRef} style={{ height: `${size.height}px` }}>
+    <div ref={containerRef} style={{ height: `${size.height}px` }} className="relative">
       <svg width="100%" viewBox={`0 0 ${size.width} ${size.height}`}>
         <AxisLeft data={data} yScale={yScale} margin={margin} size={size} />
         <Reports
@@ -234,8 +307,14 @@ function Timeline({ data }) {
           yValue={yValue}
           margin={margin}
           size={size}
+          setTooltipPosition={setTooltipPosition}
         />
       </svg>
+      <div
+        style={{ position: 'absolute', left: tooltipLeft + 100, top: tooltipTop, width: 'auto' }}
+      >
+        {tooltipContent}
+      </div>
     </div>
   );
 }

@@ -610,21 +610,6 @@
     .edit-variant-modal > div:first-child {
         @apply flex;
     }
-    .incidents-table .tr:nth-child(even) {
-        @apply bg-[#f2f2f2];
-    }
-    .incidents-table .tr :last-child .td {
-        @apply border-b-0;
-    }
-    
-    .incidents-table .th,
-    .incidents-table .td {
-        @apply m-0 p-2 relative;
-    }
-    .incidents-table .th :last-child,
-    .incidents-table .td :last-child {
-        @apply border-r-0;
-    }
 
    .incidents-pagination [aria-current="page"] button {
     @apply bg-blue-50 text-blue-600 !important;
@@ -751,5 +736,25 @@
   .reports-table th,
   .reports-table td {
     @apply m-0 p-2 last:border-r-0;
+  }
+
+  .tw-toast {
+    @apply p-0 mb-2 !important;
+  }
+
+  .tw-toast a {
+    @apply underline text-white !important;
+  }
+
+  .react-markdown pre {
+    @apply table table-fixed w-full !important;
+  }
+
+  .react-markdown pre code {
+    @apply block overflow-auto w-full !important;
+  }
+
+  .prose a {
+    @apply text-blue-500 !important;
   }
 }

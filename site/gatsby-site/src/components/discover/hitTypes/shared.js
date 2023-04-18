@@ -23,7 +23,7 @@ export function citationReportUrl(item, viewType) {
 
 export function HeaderTitle({ item, ...props }) {
   return (
-    <div className="">
+    <div>
       <h5 {...props}>
         <LocalizedLink
           to={citationReportUrl(item, props.viewType)}

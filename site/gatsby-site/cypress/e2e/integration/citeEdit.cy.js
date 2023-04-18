@@ -200,9 +200,7 @@ describe('Edit report', () => {
       expect(xhr.request.body.variables.input.title).eq('Este es un titulo en Espanol!');
     });
 
-    cy.get('div[class^="ToastContext"]')
-      .contains('Incident report 10 updated successfully.')
-      .should('exist');
+    cy.get('.tw-toast').contains('Incident report 10 updated successfully.').should('exist');
   });
 
   maybeIt('Should load and update Issue values', () => {
