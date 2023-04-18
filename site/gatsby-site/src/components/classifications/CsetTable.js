@@ -16,7 +16,7 @@ export default function CsetTable({ data, className = '', ...props }) {
   const columns = React.useMemo(() => {
     const columns = [
       {
-        className: 'w-[80px]',
+        className: 'w-[10%]',
         accessor: 'short_name',
         title: 'Short Name',
       },
