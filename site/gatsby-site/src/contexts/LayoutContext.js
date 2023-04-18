@@ -28,7 +28,9 @@ export function LayoutContextProvider({ location, children }) {
         setRightSidebar,
       }}
     >
-      <Layout location={location}>{children}</Layout>
+      <Layout location={location} rightSidebar={rightSidebar}>
+        {children}
+      </Layout>
     </LayoutContext.Provider>
   );
 }
