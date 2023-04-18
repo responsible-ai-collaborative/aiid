@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { useExpanded, useFilters, useSortBy, useTable } from 'react-table';
+import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import Table, {
-  DefaultActionsColumnHeader,
   DefaultColumnFilter,
   DefaultColumnHeader,
   DefaultDateCell,
@@ -24,6 +23,7 @@ export default function UsersTable({ data, className = '', ...props }) {
 
   const defaultColumn = React.useMemo(
     () => ({
+      className: 'w-[120px]',
       Filter: DefaultColumnFilter,
       Header: DefaultColumnHeader,
     }),
@@ -59,7 +59,7 @@ export default function UsersTable({ data, className = '', ...props }) {
       {
         id: 'actions',
         title: 'Actions',
-        Header: DefaultActionsColumnHeader,
+        className: 'w-[80px]',
         Cell: ({ row: { values } }) => (
           <Button
             onClick={() => {
@@ -84,12 +84,12 @@ export default function UsersTable({ data, className = '', ...props }) {
     },
     useFilters,
     useSortBy,
-    useExpanded
+    usePagination
   );
 
   return (
     <>
-      <Table data={data} table={table} className={className} {...props} />
+      <Table table={table} className={className} {...props} />
       {userEditId && <UserEditModal userId={userEditId} onClose={() => setUserEditId(null)} />}
     </>
   );
