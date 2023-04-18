@@ -169,7 +169,7 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
 
           let value = values[key];
 
-          if (mongo_type == 'bool') value = Boolean(value);
+          if (mongo_type == 'bool') value = value === 'false' ? false : Boolean(value);
           if (mongo_type == 'int') value = Number(value);
           if (mongo_type == 'object') value = {};
           return {
