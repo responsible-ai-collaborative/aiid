@@ -107,6 +107,7 @@ function CitePage(props) {
           setIsLiveData(checked);
         }}
         name="live-data-switch"
+        data-cy="toogle-live-data"
       />
 
       {isLiveData ? (
