@@ -475,20 +475,29 @@ function FormField({
       </Label>
       {field.display_type === 'enum' &&
         field.permitted_values.length <= 5 &&
-        field.permitted_values.map((v) => (
-          <div key={v}>
-            <Checkbox
-              {...radio}
-              name={identifier}
-              id={`${field.field_number || ''}${identifier}-${v}`}
-              value={v}
-              onChange={() => setFieldValue(identifier, v)}
-              checked={formikValues[identifier] == v}
-              className="mr-2"
-            />
-            <Label htmlFor={`${field.field_number || ''}${identifier}-${v}`}>{v}</Label>
-          </div>
-        ))}
+        field.permitted_values.map((v) => {
+          const checked = formikValues[identifier] == v;
+
+          const id = `${field.field_number || ''}${identifier}-${v}`;
+
+          return (
+            <div key={v}>
+              <Radio
+                {...radio}
+                id={id}
+                name={`${field.field_number}${identifier}`}
+                value={v}
+                onChange={() => {
+                  setFieldValue(identifier, v);
+                }}
+                defaultChecked={checked}
+                checked={checked}
+                className="mr-2"
+              />
+              <Label htmlFor={id}>{v}</Label>
+            </div>
+          );
+        })}
       {field.display_type === 'enum' && field.permitted_values.length > 5 && (
         <>
           <Select
