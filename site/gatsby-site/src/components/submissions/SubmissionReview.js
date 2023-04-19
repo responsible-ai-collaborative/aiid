@@ -32,7 +32,7 @@ const ListedGroup = ({ item, className = '', keysToRender, objectKeyToDisplay = 
             </div>
             <div style={{ overflowWrap: 'anywhere' }}>
               {isArray(item[key])
-                ? item[key].map((i) => (isObject(i) ? i[objectKeyToDisplay] : i)).join(', ')
+                ? arrayToList(item[key].map((i) => (isObject(i) ? i[objectKeyToDisplay] : i)))
                 : item[key]}
             </div>
           </div>
