@@ -94,7 +94,7 @@ describe('Edit report', () => {
       .contains('[data-cy="token"]', 'Incident 1')
       .should('be.visible');
 
-    cy.get('[class*=Typeahead] [option="Test Tag"]').should('have.length', 1);
+    cy.get('.submit-report-tags [option="Test Tag"]').should('have.length', 1);
 
     cy.get('[data-cy="translation-es"] [type="text"]').should(
       'have.value',
@@ -126,7 +126,7 @@ describe('Edit report', () => {
       '[data-cy="text"] .CodeMirror'
     );
 
-    cy.get('[class*=Typeahead] [type="text"]').type('New Tag');
+    cy.get('[id^=submit-report-tags]').type('New Tag');
 
     cy.get('a[aria-label="New Tag"]').click();
 
@@ -264,7 +264,7 @@ describe('Edit report', () => {
 
     cy.get(`[name="incident_id"]`).should('not.exist');
 
-    cy.get('[class*=Typeahead] [option="Test Tag"]').should('have.length', 1);
+    cy.get('.submit-report-tags [option="Test Tag"]').should('have.length', 1);
 
     cy.get('[data-cy="translation-es"] [type="text"]').should(
       'have.value',
@@ -296,7 +296,7 @@ describe('Edit report', () => {
       '[data-cy="text"] .CodeMirror'
     );
 
-    cy.get('[class*=Typeahead] [type="text"]').type('New Tag');
+    cy.get('[id^=submit-report-tags]').type('New Tag');
 
     cy.get('a[aria-label="New Tag"]').click();
 

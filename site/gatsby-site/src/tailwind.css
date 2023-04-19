@@ -555,13 +555,6 @@
 
     /* BOOTSTRAP missing styles */
 
-    .bootstrap .is-invalid~.invalid-feedback, .bootstrap .is-invalid~.invalid-tooltip, .bootstrap .was-validated :invalid~.invalid-feedback, .bootstrap .was-validated :invalid~.invalid-tooltip {
-        display: block;
-    }
-
-    .bootstrap .list-group-item+.list-group-item {
-        border-top-width: 0;
-    }
     .tsne-visualization-wrapper>.react-transform-wrapper {
         @apply w-full h-full !important;
     }
@@ -746,6 +739,18 @@
     @apply underline text-white !important;
   }
 
+  .taxonomy-markdown {
+    @apply mt-0 !important;
+  }
+
+  .taxonomy-markdown h1 {
+    @apply text-2xl font-extrabold leading-[1.5] mb-4 mt-8 !important;
+  }
+
+  .taxonomy-markdown p {
+    @apply leading-[1.5] first:mt-0 !important;
+  }
+  
   .react-markdown pre {
     @apply table table-fixed w-full !important;
   }

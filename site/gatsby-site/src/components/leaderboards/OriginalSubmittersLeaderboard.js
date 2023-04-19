@@ -2,7 +2,7 @@ import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import { Leaderboard } from './Leaderboard';
 
-const OriginalSubmitersLeaderboard = ({ limit, className }) => {
+const OriginalSubmitersLeaderboard = ({ limit = 0, className = '' }) => {
   const {
     allMongodbAiidprodReports: { nodes: reports },
     allMongodbAiidprodIncidents: { nodes: incidents },

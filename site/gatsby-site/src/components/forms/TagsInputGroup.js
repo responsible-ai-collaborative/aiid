@@ -28,7 +28,7 @@ const TagsInputGroup = ({
   return (
     <FieldContainer>
       <div className="flex items-center">
-        {icon && <FontAwesomeIcon fixedWidth icon={icon} title={label} className="mb-2 mr-1" />}
+        {icon && <FontAwesomeIcon fixedWidth icon={icon} title={label} className="mr-1" />}
         <Label popover={name} label={(optional ? '' : '*') + label} />
       </div>
       <div style={{ marginTop: '0.25rem' }}>

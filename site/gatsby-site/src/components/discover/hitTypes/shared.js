@@ -42,12 +42,10 @@ export function HeaderTitle({ item, ...props }) {
 
 export function SourceDomainSubtitle({ item, ...props }) {
   return (
-    <div className="bootstrap">
-      <div {...props} className="text-inherit">
-        <WebArchiveLink url={item.url} date={item.date_submitted}>
-          {item.source_domain} &middot; {format(fromUnixTime(item.epoch_date_published), 'yyyy')}
-        </WebArchiveLink>
-      </div>
+    <div {...props} className="text-inherit">
+      <WebArchiveLink url={item.url} date={item.date_submitted}>
+        {item.source_domain} &middot; {format(fromUnixTime(item.epoch_date_published), 'yyyy')}
+      </WebArchiveLink>
     </div>
   );
 }
