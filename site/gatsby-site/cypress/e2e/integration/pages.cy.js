@@ -2,7 +2,7 @@ import { switchLocalizedPath } from '../../../i18n';
 
 import config from '../../../config';
 
-describe.skip('Pages', () => {
+describe('Pages', () => {
   const baseUrl = config.gatsby.siteUrl;
 
   const paths = [
