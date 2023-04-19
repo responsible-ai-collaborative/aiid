@@ -35,7 +35,7 @@ export default function WebArchiveLink({ url, date, children, className = '' }) 
       <Link to={url}>{children}</Link>
       <div data-cy="dropdown-toggle">
         <Dropdown inline={true} label="" className="-ml-3">
-          <Dropdown.Item onClick={(e) => navigateToUrl(e, url)} data-cy="original">
+          <Dropdown.Item onClick={() => navigateToUrl(url)} data-cy="original">
             <Trans>View the original report at its source</Trans>
           </Dropdown.Item>
           <Dropdown.Item onClick={onClick} onAuxClick={onClick} data-cy="wayback-machine">
