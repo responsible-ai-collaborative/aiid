@@ -345,7 +345,7 @@ const FormDetails = ({
             <div className="flex items-center">
               <Label popover="incident_id" label={t('Incident IDs')} />
             </div>
-            <div className="mt-1 bootstrap">
+            <div className="mt-1">
               <IncidentsField id="incident_ids" name="incident_ids" />
             </div>
           </div>
