@@ -1,69 +1,150 @@
 {
-  "extends": [
-    "eslint:recommended",
-    "plugin:import/errors",
-    "plugin:react/recommended",
-    "plugin:jsx-a11y/recommended",
-    "prettier",
-    "prettier/react"
-  ],
-  "plugins": ["react", "import", "jsx-a11y", "cypress"],
-  "settings": {
-    "react": {
-      "version": "detect"
-    },
-    "import/resolver": {
-      "alias": {
-        "map": [
-          ["components", "./src/components"],
-          ["elements", "./src/elements"],
-          ["hooks", "./src/hooks"],
-          ["contexts", "./src/contexts"],
-          ["mongodb", "./src/mongodb"],
-          ["pages", "./src/pages"],
-          ["services", "./src/services"],
-          ["templates", "./src/templates"],
-          ["utils", "./src/utils"],
-          ["buble", "@philpl/buble"],
-          ["@reach/router", "@gatsbyjs/reach-router"]
-        ],
-        "extensions": [".js", ".jsx"]
-      }
-    }
-  },
-  "rules": {
-    "react/prop-types": 0,
-    "react/react-in-jsx-scope": "off",
-    "lines-between-class-members": ["error", "always"],
-    "import/namespace": [2, { "allowComputed": true }],
-    "padding-line-between-statements": [
-      "error",
-      { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*" },
-      {
-        "blankLine": "always",
-        "prev": ["const", "let", "var"],
-        "next": ["const", "let", "var"]
-      },
-      { "blankLine": "always", "prev": "directive", "next": "*" },
-      { "blankLine": "any", "prev": "directive", "next": "directive" }
+    "extends": [
+        "eslint:recommended",
+        "plugin:import/errors",
+        "plugin:react/recommended",
+        "plugin:jsx-a11y/recommended",
+        "prettier",
+        "prettier/react"
     ],
-    "jsx-a11y/no-onchange": "off"
-  },
-  "parser": "babel-eslint",
-  "parserOptions": {
-    "ecmaVersion": 10,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true
+    "plugins": [
+        "react",
+        "import",
+        "jsx-a11y",
+        "cypress"
+    ],
+    "settings": {
+        "react": {
+            "version": "detect"
+        },
+        "import/resolver": {
+            "alias": {
+                "map": [
+                    [
+                        "components",
+                        "./src/components"
+                    ],
+                    [
+                        "elements",
+                        "./src/elements"
+                    ],
+                    [
+                        "hooks",
+                        "./src/hooks"
+                    ],
+                    [
+                        "contexts",
+                        "./src/contexts"
+                    ],
+                    [
+                        "mongodb",
+                        "./src/mongodb"
+                    ],
+                    [
+                        "pages",
+                        "./src/pages"
+                    ],
+                    [
+                        "services",
+                        "./src/services"
+                    ],
+                    [
+                        "templates",
+                        "./src/templates"
+                    ],
+                    [
+                        "utils",
+                        "./src/utils"
+                    ],
+                    [
+                        "buble",
+                        "@philpl/buble"
+                    ],
+                    [
+                        "@reach/router",
+                        "@gatsbyjs/reach-router"
+                    ]
+                ],
+                "extensions": [
+                    ".js",
+                    ".jsx"
+                ]
+            }
+        }
+    },
+    "rules": {
+        "react/prop-types": 0,
+        "react/react-in-jsx-scope": "off",
+        "react/no-unknown-property": [
+            "error",
+            {
+                "ignore": [
+                    "allowFullScreen"
+                ]
+            }
+        ],
+        "lines-between-class-members": [
+            "error",
+            "always"
+        ],
+        "import/namespace": [
+            2,
+            {
+                "allowComputed": true
+            }
+        ],
+        "padding-line-between-statements": [
+            "error",
+            {
+                "blankLine": "always",
+                "prev": [
+                    "const",
+                    "let",
+                    "var"
+                ],
+                "next": "*"
+            },
+            {
+                "blankLine": "always",
+                "prev": [
+                    "const",
+                    "let",
+                    "var"
+                ],
+                "next": [
+                    "const",
+                    "let",
+                    "var"
+                ]
+            },
+            {
+                "blankLine": "always",
+                "prev": "directive",
+                "next": "*"
+            },
+            {
+                "blankLine": "any",
+                "prev": "directive",
+                "next": "directive"
+            }
+        ],
+        "jsx-a11y/no-onchange": "off"
+    },
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "ecmaVersion": 10,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "env": {
+        "es6": true,
+        "browser": true,
+        "node": true,
+        "cypress/globals": true
+    },
+    "globals": {
+        "graphql": false
     }
-  },
-  "env": {
-    "es6": true,
-    "browser": true,
-    "node": true,
-    "cypress/globals": true
-  },
-  "globals": {
-    "graphql": false
-  }
 }

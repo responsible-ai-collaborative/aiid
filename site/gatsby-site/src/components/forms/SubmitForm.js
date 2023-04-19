@@ -189,23 +189,28 @@ const SubmitForm = () => {
         embedding: values.embedding || undefined,
       };
 
+      console.log(submission);
+
       submission.deployers = await processEntities(
         allEntities,
         values.deployers,
         createEntityMutation
       );
+      console.log('processed deployers');
 
       submission.developers = await processEntities(
         allEntities,
         values.developers,
         createEntityMutation
       );
+      console.log('processed developers');
 
       submission.harmed_parties = await processEntities(
         allEntities,
         values.harmed_parties,
         createEntityMutation
       );
+      console.log('processed harmed parties');
 
       // before inserting the submission in to mongodb, capture the video_id and the vimeo_id
       // console.log("THE NEW TIME");
@@ -235,6 +240,7 @@ const SubmitForm = () => {
         ),
         severity: SEVERITY.warning,
       });
+      console.log(e);
       throw e;
     }
   };
