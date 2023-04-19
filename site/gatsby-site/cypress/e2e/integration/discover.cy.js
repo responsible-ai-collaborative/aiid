@@ -176,16 +176,17 @@ describe('The Discover app', () => {
       },
     });
 
-    cy.get('[data-cy="web-archive-link"] .dropdown-toggle').first().click();
+    cy.get('[data-cy="web-archive-link"] [data-cy="dropdown-toggle"]').first().click();
 
     cy.get('[data-cy="original"]')
       .first()
       .should('be.visible')
-      .should('have.attr', 'target', '_blank')
-      .invoke('attr', 'href')
+      .click()
       .then((href) => {
         expect(href).to.not.contain('web.archive.org');
       });
+
+    cy.get('[data-cy="web-archive-link"] [data-cy="dropdown-toggle"]').first().click();
 
     cy.get('[data-cy="wayback-machine"]').first().should('be.visible').click();
 
@@ -310,7 +311,7 @@ describe('The Discover app', () => {
 
     cy.location('search', { timeout: 8000 }).should(
       'equal',
-      '?display=details&is_incident_report=true&page=1&sortBy=relevance'
+      '?display=details&is_incident_report=true&page=1&sortBy=instant_search-en-featured'
     );
   });
 
@@ -357,7 +358,7 @@ describe('The Discover app', () => {
 
     cy.location('search', { timeout: 8000 }).should(
       'equal',
-      '?display=details&is_incident_report=true&page=1&sortBy=relevance'
+      '?display=details&is_incident_report=true&page=1&sortBy=instant_search-en-featured'
     );
 
     cy.get('[data-cy="discover-sort"]').should('have.text', 'Relevance');

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { graphql } from 'gatsby';
-import styled from 'styled-components';
 import Markdown from 'react-markdown';
-import { Button } from 'react-bootstrap';
 
 import bb, { donut } from 'billboard.js';
 import BillboardJS from '@billboard.js/react';
@@ -10,35 +8,16 @@ import BillboardJS from '@billboard.js/react';
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import LocationMap from 'components/visualizations/LocationMap';
-import { Card, Badge } from 'flowbite-react';
+import { Card, Badge, Button } from 'flowbite-react';
 import AiidHelmet from 'components/AiidHelmet';
 import { getClassificationValue } from 'utils/classifications';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
-const Description = styled(Markdown)`
-  margin-top: 0rem;
-  h1 {
-    font-size: 26px;
-    font-weight: 800;
-    line-height: 1.5;
-    margin-bottom: 16px;
-    margin-top: 32px;
-  }
-  p {
-    line-height: 1.5;
-  }
-  p:first-child {
-    margin-top: 0rem;
-  }
-`;
-
-const StatItemText = styled.span``;
-
 const StatItem = ({ text, value }) => {
   return (
     <>
-      <StatItemText>{text}</StatItemText>
+      <span>{text}</span>
       <div className="flex ml-4">
         <Badge>{`${value || 0} ${value === 1 ? 'Incident' : 'Incidents'}`}</Badge>
       </div>
@@ -116,7 +95,7 @@ const FacetList = ({ namespace, instant_facet, short_name, stats, geocodes }) =>
         </ul>
         {sortedStatsArray.length > 5 && (
           <Button
-            variant="link"
+            color="gray"
             className="mb-3 btn btn-sm assignment-button"
             onClick={toggleShowAllStats}
             style={{ padding: '0px', margin: '0px', textDecoration: 'none' }}
@@ -307,7 +286,7 @@ const Taxonomy = (props) => {
       <div className={'titleWrapper'}>
         <h1 className="font-karla font-bold flex-1 pt-0">{namespace}</h1>
       </div>
-      <Description>{description}</Description>
+      <Markdown className="taxonomy-markdown">{description}</Markdown>
       <h1 className="heading1">Taxonomy Fields</h1>
       <div className="flex gap-9 flex-col">
         {sortedFieldsArray
@@ -334,7 +313,9 @@ const Taxonomy = (props) => {
                   stats={stats}
                   geocodes={geocodes}
                 />
-                <Description>{'**Definition**: ' + long_description}</Description>
+                <Markdown className="taxonomy-markdown">
+                  {'**Definition**: ' + long_description}
+                </Markdown>
               </Card>
             </div>
           ))}

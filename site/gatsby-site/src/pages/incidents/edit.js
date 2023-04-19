@@ -153,7 +153,7 @@ function EditCitePage(props) {
                 onClick={submitForm}
                 type="submit"
                 disabled={!isValid || isSubmitting}
-                className="mt-3 bootstrap flex disabled:opacity-50"
+                className="mt-3 flex disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <>
