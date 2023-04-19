@@ -197,7 +197,7 @@ const FormDetails = ({
               fixedWidth
               icon={faLink}
               title={t('Report Address')}
-              className="mb-2 mr-1"
+              className="mr-1"
             />
             <Label label={'*' + t('Report Address')} popover="url"></Label>
           </div>
@@ -299,12 +299,7 @@ const FormDetails = ({
 
         <FieldContainer>
           <div className="flex items-center mt-3 mb-1">
-            <FontAwesomeIcon
-              fixedWidth
-              icon={faNewspaper}
-              title={t('Text')}
-              className="mb-2 mr-1"
-            />
+            <FontAwesomeIcon fixedWidth icon={faNewspaper} title={t('Text')} className="mr-1" />
             <Label popover="text" label={'*' + t('Text')} />
           </div>
           <div

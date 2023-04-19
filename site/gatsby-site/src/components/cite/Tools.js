@@ -82,6 +82,17 @@ function Tools({ incident, incidentReports, isSubscribed, subscribeToNewReports,
             <Trans>Edit Incident</Trans>
           </Button>
         )}
+        {isUserLoggedIn && isRole('taxonomy_editor') && (
+          <Button color="gray" href={`/apps/csettool/${incident.incident_id}`}>
+            <FontAwesomeIcon
+              className="mr-2"
+              icon={faEdit}
+              title={t('CSET Annotators Table')}
+              titleId="csettool"
+            />
+            <Trans>CSET Annotators Table</Trans>
+          </Button>
+        )}
       </Card.Body>
     </Card>
   );

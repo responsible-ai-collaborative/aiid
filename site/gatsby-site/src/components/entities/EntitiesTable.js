@@ -1,9 +1,9 @@
 import Link from 'components/ui/Link';
 import React from 'react';
-import { useExpanded, useFilters, useSortBy, useTable } from 'react-table';
+import { useExpanded, useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import { faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 
 function IncidentsCell({ cell }) {
@@ -18,7 +18,7 @@ function IncidentsCell({ cell }) {
     : cell.value;
 
   return (
-    <div>
+    <div data-cy={`cell-${column.id}`}>
       <div className={`text-black flex justify-between ${row.isExpanded && 'pb-4'}`}>
         <Trans ns="entities" count={filtered.length}>
           {{ count: filtered.length }} Incident
@@ -93,7 +93,7 @@ function ResponseCell({ cell }) {
     : cell.value;
 
   return (
-    <div>
+    <div data-cy={`cell-${column.id}`}>
       <div className={`text-black flex justify-between ${row.isExpanded && 'pb-4'}`}>
         <Trans ns="entities" count={filtered.length}>
           {{ count: filtered.length }} Incident responses
@@ -156,8 +156,11 @@ const sortByCount = (rowA, rowB, id) => {
 };
 
 export default function EntitiesTable({ data, className = '', ...props }) {
+  const { t } = useTranslation(['entities']);
+
   const defaultColumn = React.useMemo(
     () => ({
+      className: 'w-[120px]',
       Filter: DefaultColumnFilter,
       Header: DefaultColumnHeader,
     }),
@@ -168,10 +171,10 @@ export default function EntitiesTable({ data, className = '', ...props }) {
     const columns = [
       {
         id: 'expander',
-        width: 'w-[1%]',
+        className: 'w-[30px]',
         Header: ({ getToggleAllRowsExpandedProps, isAllRowsExpanded }) => {
           return (
-            <>
+            <div className="flex items-center justify-center">
               <span {...getToggleAllRowsExpandedProps()}>
                 {isAllRowsExpanded ? (
                   <FontAwesomeIcon icon={faMinusCircle} />
@@ -179,28 +182,29 @@ export default function EntitiesTable({ data, className = '', ...props }) {
                   <FontAwesomeIcon icon={faPlusCircle} />
                 )}
               </span>
-            </>
+            </div>
           );
         },
         Cell: ({ row }) => {
           const { isExpanded, getToggleRowExpandedProps } = row;
 
           return (
-            <span {...getToggleRowExpandedProps()}>
-              {' '}
-              {isExpanded ? (
-                <FontAwesomeIcon icon={faMinusCircle} />
-              ) : (
-                <FontAwesomeIcon icon={faPlusCircle} />
-              )}
-            </span>
+            <div className="flex items-center justify-center">
+              <span {...getToggleRowExpandedProps()}>
+                {' '}
+                {isExpanded ? (
+                  <FontAwesomeIcon icon={faMinusCircle} />
+                ) : (
+                  <FontAwesomeIcon icon={faPlusCircle} />
+                )}
+              </span>
+            </div>
           );
         },
       },
       {
-        title: 'Entity',
+        title: t('Entity'),
         accessor: 'id',
-        width: 'w-[10%]',
         Cell: ({ row: { values, original } }) => (
           <>
             <Link className="d-flex" to={`/entities/${values.id}`}>
@@ -211,48 +215,42 @@ export default function EntitiesTable({ data, className = '', ...props }) {
         filter: entityFilter,
       },
       {
-        title: 'As Deployer and Developer',
-        width: 'w-[20%]',
+        title: t('As Deployer and Developer'),
         accessor: 'incidentsAsBoth',
         Cell: IncidentsCell,
         filter: incidentFilter,
         sortType: sortByCount,
       },
       {
-        title: 'As Deployer',
-        width: 'w-[20%]',
+        title: t('As Deployer'),
         accessor: 'incidentsAsDeployer',
         Cell: IncidentsCell,
         filter: incidentFilter,
         sortType: sortByCount,
       },
       {
-        title: 'As Developer',
-        width: 'w-[20%]',
+        title: t('As Developer'),
         accessor: 'incidentsAsDeveloper',
         Cell: IncidentsCell,
         filter: incidentFilter,
         sortType: sortByCount,
       },
       {
-        title: 'Harmed By',
-        width: 'w-[20%]',
+        title: t('Harmed By'),
         accessor: 'incidentsHarmedBy',
         Cell: IncidentsCell,
         filter: incidentFilter,
         sortType: sortByCount,
       },
       {
-        title: 'Related Entities',
-        width: 'w-[20%]',
+        title: t('Related Entities'),
         accessor: 'relatedEntities',
         Cell: EntitiesCell,
         filter: entitiesFilter,
         sortType: sortByCount,
       },
       {
-        title: 'Incident Responses',
-        width: 'w-[20%]',
+        title: t('Incident Responses'),
         accessor: 'responses',
         Cell: ResponseCell,
         filter: responseFilter,
@@ -272,8 +270,9 @@ export default function EntitiesTable({ data, className = '', ...props }) {
     },
     useFilters,
     useSortBy,
-    useExpanded
+    useExpanded,
+    usePagination
   );
 
-  return <Table data={data} table={table} className={className} {...props} />;
+  return <Table table={table} className={className} {...props} />;
 }

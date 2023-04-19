@@ -227,7 +227,7 @@ export default function VariantEditModal({
                         submitForm();
                       }}
                       disabled={isSubmitting || isDeleting || !isValid}
-                      className="bootstrap flex gap-2 disabled:opacity-50"
+                      className="flex gap-2 disabled:opacity-50"
                       data-cy="reject-variant-btn"
                     >
                       {isSubmitting && isRejecting ? (
@@ -246,7 +246,7 @@ export default function VariantEditModal({
                         submitForm();
                       }}
                       disabled={isSubmitting || isDeleting || !isValid}
-                      className="bootstrap flex gap-2 disabled:opacity-50"
+                      className="flex gap-2 disabled:opacity-50"
                       data-cy="approve-variant-btn"
                     >
                       {isSubmitting && isApproving ? (
@@ -264,7 +264,7 @@ export default function VariantEditModal({
                         submitForm();
                       }}
                       disabled={isSubmitting || isDeleting || !isValid}
-                      className="bootstrap flex gap-2 disabled:opacity-50"
+                      className="flex gap-2 disabled:opacity-50"
                       data-cy="save-variant-btn"
                     >
                       {isSubmitting && isSaving ? (

@@ -19,7 +19,7 @@ export default function Authors(props) {
       <div className={'titleWrapper'}>
         <h1 className="font-karla font-bold flex-1 pt-0">Leaderboard</h1>
       </div>
-      <div className="styled-main-wrapper">
+      <div className="styled-main-wrapper max-w-full">
         <p className="paragraph">
           <Trans i18nKey="leaderboardHeader" ns="leaderboard">
             This is a ranking of the top submitters, authors, and domains by count. If you would
@@ -27,11 +27,13 @@ export default function Authors(props) {
             <Link to="/about_apps/1-discover"> Discover app</Link>.
           </Trans>
         </p>
-        <OriginalSubmittersLeaderboard className="mt-4" />
-        <UniqueSubmittersLeaderboard className="mt-4" />
-        <SubmittersLeaderboard className="mt-4" />
-        <AuthorsLeaderboard className="mt-4" />
-        <DomainsLeaderboard className="mt-4" />
+        <div className="flex flex-wrap gap-10">
+          <OriginalSubmittersLeaderboard />
+          <UniqueSubmittersLeaderboard />
+          <SubmittersLeaderboard />
+          <AuthorsLeaderboard />
+          <DomainsLeaderboard />
+        </div>
       </div>
     </Layout>
   );
