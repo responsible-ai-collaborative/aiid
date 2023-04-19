@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CloudinaryImage } from '@cloudinary/base';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { graphql } from 'gatsby';
@@ -9,6 +9,9 @@ import { computeEntities, RESPONSE_TAG } from 'utils/entities';
 import config from '../../config';
 import { isCompleteReport } from 'utils/variants';
 import CiteTemplate from './citeTemplate';
+import CiteDynamicTemplate from './citeDynamicTemplate';
+import { ToggleSwitch } from 'flowbite-react';
+import { useTranslation } from 'react-i18next';
 
 function CitePage(props) {
   const {
@@ -32,7 +35,11 @@ function CitePage(props) {
     },
   } = props;
 
+  const [isLiveData, setIsLiveData] = useState(false);
+
   const { locale } = useLocalization();
+
+  const { t } = useTranslation();
 
   // meta tags
 
@@ -93,22 +100,45 @@ function CitePage(props) {
         <meta property="og:type" content="website" />
       </AiidHelmet>
 
-      <CiteTemplate
-        incident={incident}
-        sortedReports={sortedReports}
-        variants={variants}
-        metaTitle={metaTitle}
-        entities={entities}
-        timeline={timeline}
-        locationPathName={props.location.pathname}
-        allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
-        allMongodbAiidprodClassifications={allMongodbAiidprodClassifications}
-        nextIncident={nextIncident}
-        prevIncident={prevIncident}
-        nlp_similar_incidents={nlp_similar_incidents}
-        editor_similar_incidents={editor_similar_incidents}
-        editor_dissimilar_incidents={editor_dissimilar_incidents}
+      <ToggleSwitch
+        checked={isLiveData}
+        label={t('Show Live data')}
+        onChange={(checked) => {
+          setIsLiveData(checked);
+        }}
+        name="live-data-switch"
+        data-cy="toogle-live-data"
       />
+
+      {isLiveData ? (
+        <CiteDynamicTemplate
+          allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
+          entitiesData={entitiesData}
+          incident_id={incident.incident_id}
+          responses={responses}
+          nlp_similar_incidents={nlp_similar_incidents}
+          editor_similar_incidents={editor_similar_incidents}
+          editor_dissimilar_incidents={editor_dissimilar_incidents}
+          locationPathName={props.location.pathname}
+        />
+      ) : (
+        <CiteTemplate
+          incident={incident}
+          sortedReports={sortedReports}
+          variants={variants}
+          metaTitle={metaTitle}
+          entities={entities}
+          timeline={timeline}
+          locationPathName={props.location.pathname}
+          allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
+          allMongodbAiidprodClassifications={allMongodbAiidprodClassifications}
+          nextIncident={nextIncident}
+          prevIncident={prevIncident}
+          nlp_similar_incidents={nlp_similar_incidents}
+          editor_similar_incidents={editor_similar_incidents}
+          editor_dissimilar_incidents={editor_dissimilar_incidents}
+        />
+      )}
     </Layout>
   );
 }
