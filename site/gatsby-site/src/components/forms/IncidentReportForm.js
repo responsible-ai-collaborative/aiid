@@ -370,7 +370,7 @@ const IncidentReportForm = () => {
           </div>
           <div>
             <Typeahead
-              className="Typeahead"
+              className="Typeahead submit-report-tags"
               id="submit-report-tags"
               inputProps={{ id: 'submit-report-tags-input' }}
               allowNew
