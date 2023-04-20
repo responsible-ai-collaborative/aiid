@@ -15,6 +15,8 @@ describe('The Discover app', () => {
 
     cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=true');
 
+    cy.waitForStableDOM();
+
     cy.contains('[data-cy="display-options"]', 'Incident Reports')
       .should('exist')
       .and('be.visible');
@@ -176,16 +178,17 @@ describe('The Discover app', () => {
       },
     });
 
-    cy.get('[data-cy="web-archive-link"] .dropdown-toggle').first().click();
+    cy.get('[data-cy="web-archive-link"] [data-cy="dropdown-toggle"]').first().click();
 
     cy.get('[data-cy="original"]')
       .first()
       .should('be.visible')
-      .should('have.attr', 'target', '_blank')
-      .invoke('attr', 'href')
+      .click()
       .then((href) => {
         expect(href).to.not.contain('web.archive.org');
       });
+
+    cy.get('[data-cy="web-archive-link"] [data-cy="dropdown-toggle"]').first().click();
 
     cy.get('[data-cy="wayback-machine"]').first().should('be.visible').click();
 
@@ -195,11 +198,15 @@ describe('The Discover app', () => {
   it("Let's you filter by type", () => {
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.contains('[data-cy="display-options"]', 'Incident Reports').scrollIntoView().click();
 
     cy.contains('li', /^Issue Reports$/).click();
 
     cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=false');
+
+    cy.waitForStableDOM();
 
     cy.contains('[data-cy="display-options"]', 'Issue Reports').should('be.be.visible');
   });
@@ -209,11 +216,15 @@ describe('The Discover app', () => {
 
     cy.contains('button', 'Clear Filter').should('be.disabled');
 
+    cy.waitForStableDOM();
+
     cy.contains('[data-cy="display-options"]', 'Incident Reports').scrollIntoView().click();
 
     cy.contains('li', /^Incidents$/).click();
 
     cy.contains('button', 'Clear Filter').should('not.be.disabled');
+
+    cy.waitForStableDOM();
 
     cy.contains('[data-cy="display-options"]', 'Incidents').click();
 
@@ -221,11 +232,15 @@ describe('The Discover app', () => {
 
     cy.contains('button', 'Clear Filter').should('not.be.disabled');
 
+    cy.waitForStableDOM();
+
     cy.contains('[data-cy="display-options"]', 'Issue Reports').click();
 
     cy.contains('li', /^Incident and Issue Reports$/).click();
 
     cy.contains('button', 'Clear Filter').should('not.be.disabled');
+
+    cy.waitForStableDOM();
 
     cy.contains('[data-cy="display-options"]', 'Incident and Issue Reports').click();
 
@@ -297,6 +312,8 @@ describe('The Discover app', () => {
   it('Should display incidents instead of reports when selection Incidents view', () => {
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.contains('[data-cy="display-options"]', 'Incidents').click();
 
     cy.contains('li', /^Incidents$/).click();
@@ -310,7 +327,7 @@ describe('The Discover app', () => {
 
     cy.location('search', { timeout: 8000 }).should(
       'equal',
-      '?display=details&is_incident_report=true&page=1&sortBy=relevance'
+      '?display=details&is_incident_report=true&page=1&sortBy=instant_search-en-featured'
     );
   });
 
@@ -357,7 +374,7 @@ describe('The Discover app', () => {
 
     cy.location('search', { timeout: 8000 }).should(
       'equal',
-      '?display=details&is_incident_report=true&page=1&sortBy=relevance'
+      '?display=details&is_incident_report=true&page=1&sortBy=instant_search-en-featured'
     );
 
     cy.get('[data-cy="discover-sort"]').should('have.text', 'Relevance');

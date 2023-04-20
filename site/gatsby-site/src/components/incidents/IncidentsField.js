@@ -52,6 +52,7 @@ export default function IncidentsField({ id, name }) {
   return (
     <>
       <AsyncTypeahead
+        className="Typeahead"
         filterBy={() => true}
         id={id}
         inputProps={{ id: 'input-' + id, name }}
