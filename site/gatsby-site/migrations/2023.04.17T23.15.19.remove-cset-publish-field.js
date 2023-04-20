@@ -35,9 +35,16 @@ exports.up = async ({ context: { client } }) => {
     const attributePublishValue =
       attributePublish?.value_json && JSON.parse(attributePublish.value_json);
 
+    const noMatch =
+      `CSET classification for incident ${classification.incident_id} ` +
+      `has member value 'publish' with value '${classification.publish}' ` +
+      `that does not match its attribute value ${JSON.stringify(attributePublish)}.`;
+
     // Ensure that we don't have a situation where one is explicitly set to true
     // and the other explicitly set to false.
-    console.assert(Boolean(classification.publish) == Boolean(attributePublishValue));
+    if (Boolean(classification.publish) != Boolean(attributePublishValue)) {
+      throw noMatch;
+    }
 
     classification.publish = classification.publish || attributePublishValue || false;
     classification.attributes = classification.attributes.filter(
