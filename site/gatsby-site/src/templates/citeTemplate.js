@@ -44,6 +44,7 @@ function CiteTemplate({
   editor_similar_incidents,
   editor_dissimilar_incidents,
   liveVersion = false,
+  setIsLiveData,
 }) {
   const { isRole, user } = useUserContext();
 
@@ -238,6 +239,8 @@ function CiteTemplate({
                 subscribeToNewReports={subscribeToNewReports}
                 incidentReports={sortedReports}
                 subscribing={subscribing}
+                isLiveData={liveVersion}
+                setIsLiveData={setIsLiveData}
               />
             </Col>
           </Row>

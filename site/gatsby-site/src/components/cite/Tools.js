@@ -3,14 +3,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from 'contexts/userContext';
 import { format } from 'date-fns';
 import Card from 'elements/Card';
-import { Button } from 'flowbite-react';
+import { Button, ToggleSwitch } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RESPONSE_TAG } from 'utils/entities';
 import CitationFormat from './CitationFormat';
 import NotifyButton from './NotifyButton';
 
-function Tools({ incident, incidentReports, isSubscribed, subscribeToNewReports, subscribing }) {
+function Tools({
+  incident,
+  incidentReports,
+  isSubscribed,
+  subscribeToNewReports,
+  subscribing,
+  isLiveData,
+  setIsLiveData,
+}) {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
   const { t } = useTranslation();
@@ -93,6 +101,17 @@ function Tools({ incident, incidentReports, isSubscribed, subscribeToNewReports,
             <Trans>CSET Annotators Table</Trans>
           </Button>
         )}
+        <div className="flex items-center">
+          <ToggleSwitch
+            checked={isLiveData}
+            label={t('Show Live data')}
+            onChange={(checked) => {
+              setIsLiveData(checked);
+            }}
+            name="live-data-switch"
+            data-cy="toogle-live-data"
+          />
+        </div>
       </Card.Body>
     </Card>
   );
