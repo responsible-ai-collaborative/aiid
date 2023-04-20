@@ -42,9 +42,6 @@ export default function VariantsTable({ data, refetch, setLoading }) {
 
   const defaultColumn = React.useMemo(
     () => ({
-      // minWidth: 30,
-      // // width: 220,
-      // maxWidth: 640,
       Filter: DefaultColumnFilter,
       Header: DefaultColumnHeader,
     }),
