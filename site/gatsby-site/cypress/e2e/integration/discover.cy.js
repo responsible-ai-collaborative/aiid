@@ -211,7 +211,7 @@ describe('The Discover app', () => {
     cy.contains('[data-cy="display-options"]', 'Issue Reports').should('be.be.visible');
   });
 
-  it.only('Clear filters button should be enabled if other than Incident Reports is selected', () => {
+  it('Clear filters button should be enabled if other than Incident Reports is selected', () => {
     cy.visit(url);
 
     cy.contains('button', 'Clear Filter').should('be.disabled');
