@@ -37,7 +37,7 @@ export function DefaultColumnFilter({
       <h6 className="whitespace-nowrap overflow-hidden text-ellipsis">{Header}</h6>
       <TextInput
         data-cy={`input-filter-${title}`}
-        className="w-100"
+        className="w-100 font-normal"
         type="text"
         placeholder={t(`Search {{count}} records...`, { count })}
         value={filterValue || ''}
