@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'gatsby';
-import styled from 'styled-components';
 import { Trans } from 'react-i18next';
 import { Badge } from 'flowbite-react';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
@@ -29,10 +28,6 @@ const medalMap = (position) => {
       return <span>{position}.</span>;
   }
 };
-
-const Medal = styled.div`
-  display: inline-block;
-`;
 
 export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit, className }) => {
   let sortedArray = [];
@@ -74,7 +69,7 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
                 <Link to={`/apps/discover?${item.attribute}=${item.label}`}>
                   <div className="flex items-center space-x-4">
                     <div className="shrink-0">
-                      <Medal className="pr-2">{medalMap(index + 1)}</Medal>
+                      <div className="inline-block pr-2">{medalMap(index + 1)}</div>
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-gray-900 dark:text-w  hite mb-0 my-0">

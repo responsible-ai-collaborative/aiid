@@ -157,7 +157,6 @@ const StepThree = (props) => {
                         label={t('Incident Title')}
                         icon={faTenge}
                         placeholder={t('Incident title')}
-                        className="mt-3"
                         schema={stepThreeValidationSchema}
                         {...TextInputGroupProps}
                       />
@@ -184,7 +183,6 @@ const StepThree = (props) => {
                         name="incident_editors"
                         label={t('Editors')}
                         icon={faPenNib}
-                        className="mt-3"
                         schema={stepThreeValidationSchema}
                         {...TextInputGroupProps}
                       />

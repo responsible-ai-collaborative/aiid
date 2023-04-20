@@ -1,12 +1,11 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 
-import Container from 'react-bootstrap/Container';
-
 import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 
 import { getCanonicalUrl } from 'utils/getCanonicalUrl';
+import Container from 'elements/Container';
 
 const IncidentCite = ({ pageContext, ...props }) => {
   const { true_incident_number, duplicate_incident_number } = pageContext;

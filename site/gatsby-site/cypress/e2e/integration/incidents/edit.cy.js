@@ -141,8 +141,6 @@ describe('Incidents', () => {
       expect(xhr.request.body.variables.set.editors).to.deep.eq(['Sean McGregor', 'Test Editor']);
     });
 
-    cy.get('div[class^="ToastContext"]')
-      .contains('Incident 10 updated successfully.')
-      .should('exist');
+    cy.get('.tw-toast').contains('Incident 10 updated successfully.').should('exist');
   });
 });

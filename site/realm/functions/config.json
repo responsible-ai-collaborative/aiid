@@ -1,50 +1,5 @@
 [
     {
-        "name": "onNewUser",
-        "private": true
-    },
-    {
-        "name": "promoteSubmissionToReport",
-        "private": false
-    },
-    {
-        "name": "updateOneReportTranslation",
-        "private": false
-    },
-    {
-        "name": "confirmUser",
-        "private": true
-    },
-    {
-        "name": "processNotifications",
-        "private": false
-    },
-    {
-        "name": "linkReportsToIncidents",
-        "private": false
-    },
-    {
-        "name": "onNewIncident",
-        "private": false,
-        "disable_arg_logs": true
-    },
-    {
-        "name": "sendEmail",
-        "private": false
-    },
-    {
-        "name": "unlinkReportsFromIncidents",
-        "private": false
-    },
-    {
-        "name": "getUser",
-        "private": false
-    },
-    {
-        "name": "onIncidentUpdate",
-        "private": true
-    },
-    {
         "name": "passwordReset",
         "private": true
     },
@@ -53,24 +8,12 @@
         "private": false
     },
     {
-        "name": "getEmailTemplateConfirmEmail",
-        "private": true
-    },
-    {
-        "name": "getEmailTemplatePasswordReset",
-        "private": true
-    },
-    {
         "name": "getEmailTemplateNewReportAddedToAnIncident",
         "private": true
     },
     {
-        "name": "getEmailTemplateIncidentUpdate",
-        "private": true
-    },
-    {
-        "name": "getEmailTemplateNewIncident",
-        "private": true
+        "name": "getUser",
+        "private": false
     },
     {
         "name": "getEmailTemplateNewEntityIncident",
@@ -81,8 +24,71 @@
         "private": true
     },
     {
+        "name": "onNewUser",
+        "private": true
+    },
+    {
+        "name": "confirmUser",
+        "private": true
+    },
+    {
         "name": "createVariant",
         "private": false
+    },
+    {
+        "name": "sendEmail",
+        "private": false
+    },
+    {
+        "name": "getEmailTemplatePasswordReset",
+        "private": true
+    },
+    {
+        "name": "getEmailTemplateIncidentUpdate",
+        "private": true
+    },
+    {
+        "name": "onNewIncident",
+        "private": false,
+        "disable_arg_logs": true
+    },
+    {
+        "name": "processNotifications",
+        "private": false
+    },
+    {
+        "name": "apiRequest",
+        "private": false,
+        "disable_arg_logs": true
+    },
+    {
+        "name": "promoteSubmissionToReport",
+        "private": false
+    },
+    {
+        "name": "linkReportsToIncidents",
+        "private": false
+    },
+    {
+        "name": "getEmailTemplateNewIncident",
+        "private": true
+    },
+    {
+        "name": "onIncidentUpdate",
+        "private": true
+    },
+    {
+        "name": "updateOneReportTranslation",
+        "private": false
+    },
+    {
+        "name": "getEmailTemplateConfirmEmail",
+        "private": true
+    },
+    {
+        "name": "getUserAdminData",
+        "private": false,
+        "disable_arg_logs": true
     },
     {
         "name": "logRollbar",

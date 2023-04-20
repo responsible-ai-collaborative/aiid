@@ -94,7 +94,7 @@ describe('Edit report', () => {
       .contains('[data-cy="token"]', 'Incident 1')
       .should('be.visible');
 
-    cy.get('[class*=Typeahead] [option="Test Tag"]').should('have.length', 1);
+    cy.get('.submit-report-tags [option="Test Tag"]').should('have.length', 1);
 
     cy.get('[data-cy="translation-es"] [type="text"]').should(
       'have.value',
@@ -126,7 +126,7 @@ describe('Edit report', () => {
       '[data-cy="text"] .CodeMirror'
     );
 
-    cy.get('[class*=Typeahead] [type="text"]').type('New Tag');
+    cy.get('[id^=submit-report-tags]').type('New Tag');
 
     cy.get('a[aria-label="New Tag"]').click();
 
@@ -200,9 +200,7 @@ describe('Edit report', () => {
       expect(xhr.request.body.variables.input.title).eq('Este es un titulo en Espanol!');
     });
 
-    cy.get('div[class^="ToastContext"]')
-      .contains('Incident report 10 updated successfully.')
-      .should('exist');
+    cy.get('.tw-toast').contains('Incident report 10 updated successfully.').should('exist');
   });
 
   maybeIt('Should load and update Issue values', () => {
@@ -266,7 +264,7 @@ describe('Edit report', () => {
 
     cy.get(`[name="incident_id"]`).should('not.exist');
 
-    cy.get('[class*=Typeahead] [option="Test Tag"]').should('have.length', 1);
+    cy.get('.submit-report-tags [option="Test Tag"]').should('have.length', 1);
 
     cy.get('[data-cy="translation-es"] [type="text"]').should(
       'have.value',
@@ -298,7 +296,7 @@ describe('Edit report', () => {
       '[data-cy="text"] .CodeMirror'
     );
 
-    cy.get('[class*=Typeahead] [type="text"]').type('New Tag');
+    cy.get('[id^=submit-report-tags]').type('New Tag');
 
     cy.get('a[aria-label="New Tag"]').click();
 
