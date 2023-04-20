@@ -43,6 +43,7 @@ function CiteTemplate({
   nlp_similar_incidents,
   editor_similar_incidents,
   editor_dissimilar_incidents,
+  liveVersion = false,
 }) {
   const { isRole, user } = useUserContext();
 
@@ -338,7 +339,11 @@ function CiteTemplate({
               </Row>
             ))}
 
-            <VariantList incidentId={incident.incident_id} variants={variants}></VariantList>
+            <VariantList
+              liveVersion={liveVersion}
+              incidentId={incident.incident_id}
+              variants={variants}
+            />
 
             <SimilarIncidents
               nlp_similar_incidents={nlp_similar_incidents}

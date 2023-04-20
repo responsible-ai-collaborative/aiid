@@ -65,7 +65,7 @@ const Image = ({
   image.transformation = tmpImage.transformation.toString();
 
   return (
-    <>
+    <div data-cy="cloudinary-image-wrapper" className="h-full">
       <PlaceholderImage
         siteName="IncidentDatabase.AI"
         itemIdentifier={itemIdentifier}
@@ -73,8 +73,10 @@ const Image = ({
         className={`${className} ${!publicID || publicID == '' || loadFailed ? '' : 'hidden'}`}
         height={height}
         style={style}
+        data-cy="cloudinary-image-placeholder"
       />
       <AdvancedImage
+        data-cy={'cloudinary-image'}
         ref={imageElement}
         alt={alt}
         className={`${className} ${!publicID || publicID == '' || loadFailed ? 'hidden' : ''}`}
@@ -82,7 +84,7 @@ const Image = ({
         plugins={plugins}
         style={style}
       />
-    </>
+    </div>
   );
 };
 
