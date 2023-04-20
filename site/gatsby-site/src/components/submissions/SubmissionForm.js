@@ -318,7 +318,7 @@ const SubmissionForm = () => {
           <div className="flex items-center">
             <Label popover="incident_id" label={t('Incident IDs')} />
           </div>
-          <div className="mt-1 bootstrap">
+          <div className="mt-1">
             <IncidentsField
               name="incident_ids"
               id={'incident_ids'}
