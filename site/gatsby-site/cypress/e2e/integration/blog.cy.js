@@ -1,23 +1,42 @@
 describe('Blog', () => {
   it('Should include outline in blog post', () => {
+    cy.viewport(1280, 1000);
     cy.visit('/blog/the-first-taxonomy-of-ai-incidents');
 
     cy.get('[data-cy="outline"] > li').should('have.length.at.least', 5);
 
-    cy.get('[data-cy="outline"]').contains('Multiple Perspectives').should('exist');
-    cy.get('[data-cy="outline"]').contains('Collection Biases').should('exist');
-    cy.get('[data-cy="outline"]').contains('What Can You Do With This?').should('exist');
-    cy.get('[data-cy="outline"]').contains('Credit and Acknowledgements').should('exist');
+    cy.get('[data-cy="outline"]').contains('Multiple Perspectives').should('be.visible');
+    cy.get('[data-cy="outline"]').contains('Collection Biases').should('be.visible');
+    cy.get('[data-cy="outline"]').contains('What Can You Do With This?').should('be.visible');
+    cy.get('[data-cy="outline"]').contains('Credit and Acknowledgements').should('be.visible');
+
+    cy.viewport(800, 1000);
+
+    cy.get('[data-cy="outline"]').contains('Multiple Perspectives').should('not.be.visible');
+    cy.get('[data-cy="outline"]').contains('Collection Biases').should('not.be.visible');
+    cy.get('[data-cy="outline"]').contains('What Can You Do With This?').should('not.be.visible');
+    cy.get('[data-cy="outline"]').contains('Credit and Acknowledgements').should('not.be.visible');
   });
 
   it('Should include outline in Spanish blog post', () => {
+    cy.viewport(1280, 1000);
     cy.visit('/es/blog/multilingual-incident-reporting');
 
     cy.get('[data-cy="outline"] > li').should('have.length.at.least', 3);
 
-    cy.get('[data-cy="outline"]').contains('¿Como funciona?').should('exist');
-    cy.get('[data-cy="outline"]').contains('Llamado a la acción').should('exist');
-    cy.get('[data-cy="outline"]').contains('Anexo: Riesgos y mejores prácticas').should('exist');
+    cy.get('[data-cy="outline"]').contains('¿Como funciona?').should('be.visible');
+    cy.get('[data-cy="outline"]').contains('Llamado a la acción').should('be.visible');
+    cy.get('[data-cy="outline"]')
+      .contains('Anexo: Riesgos y mejores prácticas')
+      .should('be.visible');
+
+    cy.viewport(800, 1000);
+
+    cy.get('[data-cy="outline"]').contains('¿Como funciona?').should('not.be.visible');
+    cy.get('[data-cy="outline"]').contains('Llamado a la acción').should('not.be.visible');
+    cy.get('[data-cy="outline"]')
+      .contains('Anexo: Riesgos y mejores prácticas')
+      .should('not.be.visible');
   });
 
   it('Should have OpenGraph meta tags', () => {

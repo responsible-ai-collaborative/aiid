@@ -698,8 +698,12 @@
     @apply max-50rem:w-full max-50rem:relative font-karla text-sm w-full border-r border-r-[#ede7f3] h-screen overflow-auto fixed pl-6 pt-0 bg-text-light-gray top-0;
   }
 
+  aside.sidebar.right {
+    @apply sticky max-50rem:w-full max-50rem:relative font-karla text-sm w-full border-none h-screen overflow-auto pl-6 pt-0 bg-none bg-transparent top-0;
+  }
+
   aside.sidebar .rightSideTitle {
-    @apply text-sm font-bold uppercase tracking-[1.2px] py-2 pt-6 pb-4 border-l border-l-[#e6ecf1] text-[#1a1a1a];
+    @apply text-sm leading-4 font-bold uppercase tracking-wider py-2 pr-6 pl-4 border-l border-l-gray-200 text-[rgb(59,69,78)];
   }
 
   aside.sidebar .rightSideBarUL {
@@ -707,7 +711,7 @@
   }
 
   aside.sidebar .rightSideBarUL li {
-    @apply list-none border-l border-l-[#e6ecf1];
+    @apply list-none border-l border-l-[#e6ecf1] py-2 pr-6 pl-4;
   }
 
   aside.sidebar .rightSideBarUL li a {
