@@ -763,6 +763,10 @@
     @apply block overflow-auto w-full !important;
   }
 
+  .react-markdown ul {
+    margin-top: 45px !important;
+  }
+
   .prose a {
     @apply text-blue-500 !important;
   }
