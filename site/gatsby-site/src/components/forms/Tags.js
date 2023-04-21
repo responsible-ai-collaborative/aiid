@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Typeahead } from 'react-bootstrap-typeahead';
 
 export default function Tags({
@@ -11,6 +11,8 @@ export default function Tags({
   disabled = false,
   options,
 }) {
+  const [open, setOpen] = useState(false);
+
   const ref = useRef(null);
 
   const commitTag = (tag) => {
@@ -34,13 +36,16 @@ export default function Tags({
           commitTag(e.target.value);
         }
       }}
+      onFocus={() => setOpen(true)}
       onBlur={(e) => {
         if (e.target.value) {
           commitTag(e.target.value);
         }
+        setOpen(false);
       }}
       allowNew
       multiple
+      open={open ? true : undefined}
       renderMenu={options ? undefined : () => null}
       onChange={(value) => onChange(value)}
       options={options || []}
