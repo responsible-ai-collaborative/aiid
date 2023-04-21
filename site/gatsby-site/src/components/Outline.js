@@ -52,7 +52,7 @@ const SidebarLayout = ({ location }) => {
                   <a
                     key={index}
                     href={`#${itemId}`}
-                    className={`text-[#5c6975] no-underline font-normal py-2 pr-0 pl-12 block relative hover:text-blue-500`}
+                    className={`text-[#5c6975] no-underline font-normal py-2 pr-0 block relative hover:text-blue-500`}
                   >
                     {item.title}
                   </a>
@@ -61,7 +61,7 @@ const SidebarLayout = ({ location }) => {
             });
         }
         return (
-          <aside className="sidebar">
+          <aside className="sidebar right">
             <ul data-cy="outline" className={'rightSideBarUL list-revert pl-8'}>
               {navItems && navItems.length > 0 && (
                 <>

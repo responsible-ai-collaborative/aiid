@@ -101,17 +101,19 @@ function Tools({
             <Trans>CSET Annotators Table</Trans>
           </Button>
         )}
-        <div className="flex items-center">
-          <ToggleSwitch
-            checked={isLiveData}
-            label={t('Show Live data')}
-            onChange={(checked) => {
-              setIsLiveData(checked);
-            }}
-            name="live-data-switch"
-            data-cy="toogle-live-data"
-          />
-        </div>
+        {isUserLoggedIn && (isRole('incident_editor') || isRole('taxonomy_editor')) && (
+          <div className="flex items-center">
+            <ToggleSwitch
+              checked={isLiveData}
+              label={t('Show Live data')}
+              onChange={(checked) => {
+                setIsLiveData(checked);
+              }}
+              name="live-data-switch"
+              data-cy="toogle-live-data"
+            />
+          </div>
+        )}
       </Card.Body>
     </Card>
   );
