@@ -351,14 +351,14 @@ const FormDetails = ({
           </div>
         </FieldContainer>
 
-        {!values.incident_id && (
+        {values.incident_ids.length == 0 && (
           <FieldContainer>
             <TextInputGroup
               name="incident_date"
               label={t('Incident Date')}
               placeholder={t('Incident Date')}
               type="date"
-              disabled={values.incident_id || parsingNews}
+              disabled={parsingNews}
               values={values}
               errors={errors}
               touched={touched}

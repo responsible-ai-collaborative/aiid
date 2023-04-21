@@ -22,7 +22,7 @@ const harmed_parties = yup.array(
     .max(200, "Harmed Parties can't be longer than 200 characters")
 );
 
-const incident_id = yup.number().integer().positive();
+const incident_ids = yup.array(yup.number().integer().positive());
 
 const incident_date = yup
   .date()
@@ -90,7 +90,7 @@ export const schema = yup.object().shape({
     })
     .optional()
     .nullable(),
-  incident_id,
+  incident_ids,
   incident_date,
   incident_title: yup.string().nullable(),
   incident_editors: yup
@@ -113,13 +113,13 @@ export const incidentSchema = schema.shape({
   harmed_parties: harmed_parties.required(),
   description: description.required('*Description is required.'),
   incident_date: incident_date.required('*Incident Date required'),
-  incident_id: yup.mixed(),
+  incident_ids: yup.mixed(),
 });
 
 export const reportSchema = schema.shape({
-  incident_id: incident_id.required('*Must be a number'),
+  incident_ids: incident_ids.required('*Must be a number'),
 });
 
 export const issueSchema = schema.shape({
-  incident_id: yup.mixed(),
+  incident_ids: yup.mixed(),
 });
