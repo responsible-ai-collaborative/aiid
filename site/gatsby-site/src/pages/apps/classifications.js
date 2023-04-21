@@ -20,6 +20,7 @@ import Table, {
   formatDateField,
   SelectDatePickerFilter,
 } from 'components/ui/Table';
+import { v4 as uuidv4 } from 'uuid';
 
 const DEFAULT_EMPTY_CELL_DATA = '-';
 
@@ -313,10 +314,10 @@ export default function ClassificationsDbView(props) {
     };
 
     const fieldToColumnMap = (taxaField) => {
-      console.log(taxaField);
       const selectFilterTypes = ['multi', 'list', 'enum', 'bool'];
 
       const column = {
+        id: uuidv4(),
         title: t(taxaField.short_name),
         accessor: taxaField.short_name.split(' ').join(''),
       };
@@ -342,7 +343,7 @@ export default function ClassificationsDbView(props) {
               <div className="line-clamp-4 text-ellipsis" style={{ whiteSpace: 'break-spaces' }}>
                 {values[column.accessor]}
               </div>
-              {values[column.accessor].length > 130 && (
+              {values[column.accessor]?.length > 130 && (
                 <FontAwesomeIcon
                   onClick={() => {
                     setShowModal(true);
@@ -473,8 +474,6 @@ export default function ClassificationsDbView(props) {
       initialState: {
         pageIndex: 0,
         pageSize: 500,
-        // filters: currentFilters,
-        // sortBy: currentSorting,
       },
     },
     useFilters,
