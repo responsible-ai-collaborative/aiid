@@ -205,7 +205,7 @@ export default function Incidents(props) {
         ),
       },
       {
-        className: 'min-w-[240px]',
+        className: 'min-w-[240px] max-w-[400px]',
         title: t('Incident Title'),
         accessor: 'title',
         Cell: (cell) => (

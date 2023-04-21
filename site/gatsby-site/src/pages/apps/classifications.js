@@ -4,41 +4,38 @@ import { useApolloClient } from '@apollo/client';
 import gql from 'graphql-tag';
 import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
-import { Button, Dropdown, Pagination, Select, Spinner, Table } from 'flowbite-react';
+import { Button, Dropdown, Pagination, Select, Spinner } from 'flowbite-react';
 import Link from '../../components/ui/Link';
-import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useModal, CustomModal } from '../../hooks/useModal';
 import { useUserContext } from '../../contexts/userContext';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
-import { format } from 'date-fns';
+// import { format } from 'date-fns';
 import Layout from 'components/Layout';
 import ListSkeleton from 'elements/Skeletons/List';
-import { Modal } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
+import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
 
 const DEFAULT_EMPTY_CELL_DATA = '-';
 
-const DefaultColumnFilter = ({ column: { filterValue, preFilteredRows, setFilter } }) => {
-  const count = preFilteredRows.length;
+// const DefaultColumnFilter = ({ column: { filterValue, preFilteredRows, setFilter } }) => {
+//   const count = preFilteredRows.length;
 
-  const { t } = useTranslation();
+//   const { t } = useTranslation();
 
-  return (
-    <input
-      type="text"
-      className="bg-white text-sm font-normal w-full"
-      style={{ minWidth: 100 }}
-      value={filterValue || ''}
-      onChange={(e) => {
-        e.preventDefault();
-        setFilter(e.target.value || undefined);
-      }}
-      placeholder={t(`Search {{count}} records...`, { count: count })}
-    />
-  );
-};
+//   return (
+//     <input
+//       type="text"
+//       className="bg-white text-sm font-normal w-full"
+//       style={{ minWidth: 100 }}
+//       value={filterValue || ''}
+//       onChange={(e) => {
+//         e.preventDefault();
+//         setFilter(e.target.value || undefined);
+//       }}
+//       placeholder={t(`Search {{count}} records...`, { count: count })}
+//     />
+//   );
+// };
 
 const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows, id } }) => {
   // TODO: add search for large lists
@@ -207,104 +204,94 @@ const SelectDatePickerFilter = ({
   );
 };
 
-const formatDateField = (s) => {
-  const dateObj = new Date(s.props.cell.value);
+// function Row({ row, isAdmin, currentTaxonomy }) {
+//   const [show, setShow] = useState(null);
 
-  if (dateObj instanceof Date && !isNaN(dateObj)) {
-    return <>{format(new Date(dateObj), 'yyyy-MM-dd')}</>;
-  } else {
-    return <>{s.props.cell.value}</>;
-  }
-};
+//   const { t } = useTranslation();
 
-function Row({ row, isAdmin, currentTaxonomy }) {
-  const [show, setShow] = useState(null);
+//   return (
+//     <Table.Row key={row.id} {...row.getRowProps()}>
+//       {row.cells.map((cell) => {
+//         if (cell.column.Header.includes(t('Incident ID'))) {
+//           return (
+//             <Table.Cell key={cell.id} {...cell.getCellProps()}>
+//               <div className="w-full m-0 p-0 overflow-auto">
+//                 <Link to={`/cite/${cell.value}/#taxa-area`}>
+//                   <Trans>Incident</Trans> {cell.render('Cell')}
+//                 </Link>
+//               </div>
+//             </Table.Cell>
+//           );
+//         } else if (cell.column.Header.includes(t('Actions'))) {
+//           return (
+//             <Table.Cell key={cell.id} {...cell.getCellProps()}>
+//               <a
+//                 target="_blank"
+//                 href={
+//                   isAdmin
+//                     ? `/cite/${row.values.IncidentId}/?edit_taxonomy=${currentTaxonomy}`
+//                     : undefined
+//                 }
+//                 rel="noreferrer"
+//               >
+//                 <Button
+//                   data-cy="edit-classification"
+//                   className="me-auto"
+//                   disabled={!isAdmin}
+//                   onClick={() => setShow('edit')}
+//                 >
+//                   <FontAwesomeIcon icon={faEdit} className="fas fa-edit" />
+//                 </Button>
+//               </a>
+//             </Table.Cell>
+//           );
+//         } else if (cell.column.Header.includes('Date')) {
+//           return (
+//             <Table.Cell key={cell.id} {...cell.getCellProps()} className="text-gray-900">
+//               <div className="w-full m-0 p-0 overflow-auto">
+//                 {formatDateField(cell.render('Cell'))}
+//               </div>
+//             </Table.Cell>
+//           );
+//         } else if (cell.value?.length > 130) {
+//           return (
+//             <Table.Cell key={cell.id} {...cell.getCellProps()} className="text-gray-900">
+//               <div className="w-full m-0 p-0 overflow-hidden">
+//                 {cell.value.substring(0, 124)}...
+//               </div>
+//               <div className="cursor-pointer w-[10px] h-[10px]">
+//                 <FontAwesomeIcon
+//                   onClick={() => setShow(cell.value)}
+//                   icon={faExpandAlt}
+//                   className="fas fa-expand-arrows-alt"
+//                 />
 
-  const { t } = useTranslation();
-
-  return (
-    <Table.Row key={row.id} {...row.getRowProps()}>
-      {row.cells.map((cell) => {
-        if (cell.column.Header.includes(t('Incident ID'))) {
-          return (
-            <Table.Cell key={cell.id} {...cell.getCellProps()}>
-              <div className="w-full m-0 p-0 overflow-auto">
-                <Link to={`/cite/${cell.value}/#taxa-area`}>
-                  <Trans>Incident</Trans> {cell.render('Cell')}
-                </Link>
-              </div>
-            </Table.Cell>
-          );
-        } else if (cell.column.Header.includes(t('Actions'))) {
-          return (
-            <Table.Cell key={cell.id} {...cell.getCellProps()}>
-              <a
-                target="_blank"
-                href={
-                  isAdmin
-                    ? `/cite/${row.values.IncidentId}/?edit_taxonomy=${currentTaxonomy}`
-                    : undefined
-                }
-                rel="noreferrer"
-              >
-                <Button
-                  data-cy="edit-classification"
-                  className="me-auto"
-                  disabled={!isAdmin}
-                  onClick={() => setShow('edit')}
-                >
-                  <FontAwesomeIcon icon={faEdit} className="fas fa-edit" />
-                </Button>
-              </a>
-            </Table.Cell>
-          );
-        } else if (cell.column.Header.includes('Date')) {
-          return (
-            <Table.Cell key={cell.id} {...cell.getCellProps()} className="text-gray-900">
-              <div className="w-full m-0 p-0 overflow-auto">
-                {formatDateField(cell.render('Cell'))}
-              </div>
-            </Table.Cell>
-          );
-        } else if (cell.value?.length > 130) {
-          return (
-            <Table.Cell key={cell.id} {...cell.getCellProps()} className="text-gray-900">
-              <div className="w-full m-0 p-0 overflow-hidden">
-                {cell.value.substring(0, 124)}...
-              </div>
-              <div className="cursor-pointer w-[10px] h-[10px]">
-                <FontAwesomeIcon
-                  onClick={() => setShow(cell.value)}
-                  icon={faExpandAlt}
-                  className="fas fa-expand-arrows-alt"
-                />
-
-                <Modal
-                  show={show === cell.value}
-                  onClose={() => setShow(null)}
-                  className="submission-modal"
-                >
-                  <Modal.Header>{cell.column.Header}</Modal.Header>
-                  <Modal.Body>{cell.value}</Modal.Body>
-                </Modal>
-              </div>
-            </Table.Cell>
-          );
-        } else {
-          return (
-            <Table.Cell key={cell.id} {...cell.getCellProps()} className="text-gray-900">
-              <div className="w-full m-0 p-0 overflow-auto">
-                {((value) => (Array.isArray(value) ? value.join(', ') : value))(
-                  cell.render('Cell').props.cell.value
-                )}
-              </div>
-            </Table.Cell>
-          );
-        }
-      })}
-    </Table.Row>
-  );
-}
+//                 <Modal
+//                   show={show === cell.value}
+//                   onClose={() => setShow(null)}
+//                   className="submission-modal"
+//                 >
+//                   <Modal.Header>{cell.column.Header}</Modal.Header>
+//                   <Modal.Body>{cell.value}</Modal.Body>
+//                 </Modal>
+//               </div>
+//             </Table.Cell>
+//           );
+//         } else {
+//           return (
+//             <Table.Cell key={cell.id} {...cell.getCellProps()} className="text-gray-900">
+//               <div className="w-full m-0 p-0 overflow-auto">
+//                 {((value) => (Array.isArray(value) ? value.join(', ') : value))(
+//                   cell.render('Cell').props.cell.value
+//                 )}
+//               </div>
+//             </Table.Cell>
+//           );
+//         }
+//       })}
+//     </Table.Row>
+//   );
+// }
 
 export default function ClassificationsDbView(props) {
   const { isAdmin } = useUserContext();
@@ -315,11 +302,7 @@ export default function ClassificationsDbView(props) {
 
   const [allTaxonomies, setAllTaxonomies] = useState([]);
 
-  const [allClassifications, setAllClassifications] = useState([]);
-
   const [tableData, setTableData] = useState([]);
-
-  const [columnData, setColumnData] = useState([]);
 
   const [currentTaxonomy, setCurrentTaxonomy] = useState('');
 
@@ -480,26 +463,26 @@ export default function ClassificationsDbView(props) {
       return tableData;
     };
 
-    const fieldToColumnMap = (taxaField) => {
-      const selectFilterTypes = ['multi', 'list', 'enum', 'bool'];
+    // const fieldToColumnMap = (taxaField) => {
+    //   const selectFilterTypes = ['multi', 'list', 'enum', 'bool'];
 
-      const column = {
-        Header: t(taxaField.short_name),
-        accessor: taxaField.short_name.split(' ').join(''),
-      };
+    //   const column = {
+    //     Header: t(taxaField.short_name),
+    //     accessor: taxaField.short_name.split(' ').join(''),
+    //   };
 
-      if (selectFilterTypes.includes(taxaField.display_type)) {
-        column.Filter = SelectColumnFilter;
-        column.filter = 'includes';
-      }
+    //   if (selectFilterTypes.includes(taxaField.display_type)) {
+    //     column.Filter = SelectColumnFilter;
+    //     column.filter = 'includes';
+    //   }
 
-      if (taxaField.display_type === 'date') {
-        column.Filter = SelectDatePickerFilter;
-        column.filter = taxaField.short_name.split(' ').join('');
-      }
+    //   if (taxaField.display_type === 'date') {
+    //     column.Filter = SelectDatePickerFilter;
+    //     column.filter = taxaField.short_name.split(' ').join('');
+    //   }
 
-      return column;
-    };
+    //   return column;
+    // };
 
     const taxaData = allTaxonomies.filter((taxa) => taxa.namespace === currentTaxonomy);
 
@@ -508,21 +491,21 @@ export default function ClassificationsDbView(props) {
       return;
     }
 
-    const incidentIdColumn = {
-      Header: t('Incident ID'),
-      accessor: 'IncidentId',
-    };
+    // const incidentIdColumn = {
+    //   Header: t('Incident ID'),
+    //   accessor: 'IncidentId',
+    // };
 
-    const actionsColumn = {
-      Header: t('Actions'),
-      accessor: 'actions',
-    };
+    // const actionsColumn = {
+    //   Header: t('Actions'),
+    //   accessor: 'actions',
+    // };
 
-    setColumnData([
-      actionsColumn,
-      incidentIdColumn,
-      ...taxaData[0].field_list.map(fieldToColumnMap),
-    ]);
+    // setColumnData([
+    //   actionsColumn,
+    //   incidentIdColumn,
+    //   ...taxaData[0].field_list.map(fieldToColumnMap),
+    // ]);
 
     let rowQuery = {
       namespace: currentTaxonomy,
@@ -531,7 +514,7 @@ export default function ClassificationsDbView(props) {
     const classificationData = await fetchClassificationData(rowQuery);
 
     if (classificationData.length > 0) {
-      setAllClassifications(classificationData);
+      // setAllClassifications(classificationData);
     }
 
     setTableData(formatClassificationData(taxaData[0].field_list, classificationData));
@@ -555,14 +538,208 @@ export default function ClassificationsDbView(props) {
 
   const data = React.useMemo(() => tableData, [tableData]);
 
-  const columns = React.useMemo(() => [...columnData], [columnData]);
+  // const columns = React.useMemo(() => [...columnData], [columnData]);
 
   const defaultColumn = React.useMemo(
     () => ({
       Filter: DefaultColumnFilter,
+      Header: DefaultColumnHeader,
     }),
     []
   );
+
+  const columns = React.useMemo(() => {
+    const columns = [
+      {
+        title: t('Incident ID'),
+        accessor: 'IncidentId',
+        Cell: ({ row: { values } }) => (
+          <a className="flex" href={`/cite/${values.IncidentId}`}>
+            Incident {values.IncidentId}
+          </a>
+        ),
+      },
+      {
+        className: 'min-w-[240px]',
+        title: t('Annotator'),
+        accessor: 'Annotator',
+        Filter: SelectColumnFilter,
+      },
+      {
+        className: 'min-w-[240px]',
+        title: t('Annotation Status'),
+        accessor: 'AnnotationStatus',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Reviewer'),
+        accessor: 'Reviewer',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Quality Control'),
+        accessor: 'QualityControl',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Full Description'),
+        accessor: 'FullDescription',
+      },
+      {
+        title: t('Short Description'),
+        accessor: 'ShortDescription',
+      },
+      {
+        title: t('Beginning Date'),
+        accessor: 'BeginningDate',
+        Filter: SelectDatePickerFilter,
+      },
+      {
+        title: t('Ending Date'),
+        accessor: 'EndingDate',
+        Filter: SelectDatePickerFilter,
+      },
+      {
+        title: t('Location'),
+        accessor: 'Location',
+      },
+      {
+        title: t('Near Miss'),
+        accessor: 'NearMiss',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Named Entities'),
+        accessor: 'NamedEntities',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Technology Purveyor'),
+        accessor: 'TechnologyPurveyor',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Intent'),
+        accessor: 'Intent',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Severity'),
+        accessor: 'Severity',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Harm Type'),
+        accessor: 'HarmType',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Lives Lost'),
+        accessor: 'LivesLost',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Harm Distribution Basis'),
+        accessor: 'HarmDistributionBasis',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Infrastructure Sectors'),
+        accessor: 'InfrastructureSectors',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Financial Cost'),
+        accessor: 'FinancialCost',
+      },
+      {
+        title: t('Laws Implicated'),
+        accessor: 'LawsImplicated',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('AI Sytem Description'),
+        accessor: 'AISystemDescription',
+      },
+      {
+        title: t('Data Inputs'),
+        accessor: 'DataInputs',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('System Developer'),
+        accessor: 'SystemDeveloper',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Sector Of Deployment'),
+        accessor: 'SectorofDeployment',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Public Sector Deployment'),
+        accessor: 'PublicSectorDeployment',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Nature of End User'),
+        accessor: 'NatureofEndUser',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Level of Autonomy'),
+        accessor: 'LevelofAutonomy',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Relevant AI Functions'),
+        accessor: 'RelevantAIFunctions',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('AI Techniques'),
+        accessor: 'AITechniques',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('AI Applications'),
+        accessor: 'AIApplications',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Physical System'),
+        accessor: 'PhysicalSystem',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Problem Nature'),
+        accessor: 'ProblemNature',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Publish'),
+        accessor: 'Publish',
+        Filter: SelectColumnFilter,
+      },
+      {
+        title: t('Actions'),
+        id: 'actions',
+        className: 'min-w-[120px]',
+        Cell: () => (
+          <Button
+            color={'gray'}
+            data-cy="edit-classification"
+            // onClick={() => setShow('edit')}
+            // onClick={() => {() => setClassificationIdToEdit(values.id)}}
+          >
+            <Trans>Edit</Trans>
+          </Button>
+        ),
+      },
+    ];
+
+    return columns;
+  }, []);
 
   const filterDateFunction = (rows, id, filterValue) => {
     const start = new Date(filterValue[0]).getTime();
@@ -580,19 +757,25 @@ export default function ClassificationsDbView(props) {
     EndingDate: filterDateFunction,
   };
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    page,
-    prepareRow,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    setPageSize,
-    setAllFilters,
-    state,
-  } = useTable(
+  const { pageOptions, pageCount, gotoPage, setPageSize, setAllFilters, state } = useTable(
+    {
+      columns,
+      data,
+      defaultColumn,
+      filterTypes,
+      initialState: {
+        pageIndex: 0,
+        pageSize: 500,
+        filters: currentFilters,
+        sortBy: currentSorting,
+      },
+    },
+    useFilters,
+    useSortBy,
+    usePagination
+  );
+
+  const table = useTable(
     {
       columns,
       data,
@@ -666,7 +849,8 @@ export default function ClassificationsDbView(props) {
         {loading && <ListSkeleton />}
         {!loading && (
           <div>
-            <Table striped={true} hoverable={true} {...getTableProps()}>
+            <Table table={table} />
+            {/* <Table striped={true} hoverable={true} {...getTableProps()}>
               {headerGroups.map((headerGroup) => (
                 <Table.Head key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map((column) => (
@@ -712,7 +896,7 @@ export default function ClassificationsDbView(props) {
                   </Table.Row>
                 )}
               </Table.Body>
-            </Table>
+            </Table> */}
 
             <div className="flex items-center gap-2">
               {pageCount > 1 && (
