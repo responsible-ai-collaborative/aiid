@@ -174,21 +174,21 @@ const SubmitForm = () => {
         embedding: values.embedding || undefined,
       };
 
-      submission.deployers = await processEntities(
+      await processEntities(
         allEntities,
-        values.deployers?.link || values.deployers,
+        values.deployers || values.deployers,
         createEntityMutation
       );
 
-      submission.developers = await processEntities(
+      await processEntities(
         allEntities,
-        values.developers?.link || values.developers,
+        values.developers || values.developers,
         createEntityMutation
       );
 
-      submission.harmed_parties = await processEntities(
+      await processEntities(
         allEntities,
-        values.harmed_parties?.link || values.harmed_parties,
+        values.harmed_parties || values.harmed_parties,
         createEntityMutation
       );
 
