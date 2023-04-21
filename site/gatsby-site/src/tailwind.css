@@ -564,7 +564,8 @@
     }
 
     .tsne-visualization-item>a:not(.incident-card) {
-        @apply text-inherit absolute text-[75%] h-[2em] w-[2em] px-[2px] rounded-[50%] -ml-[1em] -mt-[1em] text-center leading-[2em] shadow-tsne flex justify-center items-center !important;
+        @apply absolute text-[75%] h-[2em] w-[2em] px-[2px] rounded-[50%] -ml-[1em] -mt-[1em] text-center leading-[2em] shadow-tsne flex justify-center items-center !important;
+        @apply text-inherit
     }
 
     .tsne-visualization-item .incident-card {
@@ -589,7 +590,7 @@
     }
 
     .tsne-visualization-item>a.current {
-        @apply border-[grey] bg-[#001a32] shadow-tsne-current z-2 !important;
+        @apply border-[black] shadow-tsne-current !important;
     }
 
     .pagination [aria-current="page"] button {
