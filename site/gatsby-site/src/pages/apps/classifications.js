@@ -8,290 +8,18 @@ import { Button, Dropdown, Pagination, Select, Spinner } from 'flowbite-react';
 import Link from '../../components/ui/Link';
 import { useModal, CustomModal } from '../../hooks/useModal';
 import { useUserContext } from '../../contexts/userContext';
-import DateRangePicker from 'react-bootstrap-daterangepicker';
-// import { format } from 'date-fns';
 import Layout from 'components/Layout';
 import ListSkeleton from 'elements/Skeletons/List';
 import { Trans, useTranslation } from 'react-i18next';
-import Table, { DefaultColumnFilter, DefaultColumnHeader } from 'components/ui/Table';
+import Table, {
+  DefaultColumnFilter,
+  DefaultColumnHeader,
+  formatDateField,
+  SelectColumnFilter,
+  SelectDatePickerFilter,
+} from 'components/ui/Table';
 
 const DEFAULT_EMPTY_CELL_DATA = '-';
-
-// const DefaultColumnFilter = ({ column: { filterValue, preFilteredRows, setFilter } }) => {
-//   const count = preFilteredRows.length;
-
-//   const { t } = useTranslation();
-
-//   return (
-//     <input
-//       type="text"
-//       className="bg-white text-sm font-normal w-full"
-//       style={{ minWidth: 100 }}
-//       value={filterValue || ''}
-//       onChange={(e) => {
-//         e.preventDefault();
-//         setFilter(e.target.value || undefined);
-//       }}
-//       placeholder={t(`Search {{count}} records...`, { count: count })}
-//     />
-//   );
-// };
-
-const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows, id } }) => {
-  // TODO: add search for large lists
-  let options;
-
-  const columnsArrayValues = [
-    'NamedEntities',
-    'TechnologyPurveyor',
-    'HarmType',
-    'HarmDistributionBasis',
-    'InfrastructureSectors',
-    'LawsImplicated',
-    'RelevantAIfunctions',
-    'AIApplications',
-    'PhysicalSystem',
-    'ProblemNature',
-  ];
-
-  const columnSemicolonValues = ['DataInputs', 'SystemDeveloper', 'AITechniques'];
-
-  const filterOptionsFromArray = () => {
-    return (options = React.useMemo(() => {
-      const options = new Set();
-
-      preFilteredRows.forEach((row) => {
-        if (row.values[id]) {
-          if (Array.isArray(row.values[id])) {
-            row.values[id].forEach((w) => {
-              if (w !== '') {
-                options.add(w);
-              }
-            });
-          } else {
-            if (row.values[id] !== '') {
-              options.add(row.values[id]);
-            }
-          }
-        }
-      });
-      return [...options.values()];
-    }, [id, preFilteredRows]));
-  };
-
-  const filterOptionsFromSemicolonString = () => {
-    return React.useMemo(() => {
-      const options = new Set();
-
-      preFilteredRows.forEach((row) => {
-        if (row.values[id]) {
-          let valuesCollection = Array.isArray(row.values[id])
-            ? row.values[id]
-            : row.values[id].split('; ');
-
-          valuesCollection.forEach((s) => {
-            if (s !== '') {
-              options.add(s);
-            }
-          });
-        }
-      });
-
-      return [...options.values()];
-    }, [id, preFilteredRows]);
-  };
-
-  if (columnsArrayValues.includes(id)) {
-    options = filterOptionsFromArray();
-  } else if (columnSemicolonValues.includes(id)) {
-    options = filterOptionsFromSemicolonString();
-  } else {
-    options = React.useMemo(() => {
-      const options = new Set();
-
-      preFilteredRows.forEach((row) => {
-        if (row.values[id]) {
-          if (row.values[id] !== '') {
-            options.add(row.values[id]);
-          }
-        }
-      });
-      return [...options.values()];
-    }, [id, preFilteredRows]);
-  }
-
-  const filteredOptions = [
-    ...new Set(
-      options
-        .filter((o) => o && String(o).replace(/\s/g, '').length > 0 && o !== '-')
-        .map((o) => String(o).trim())
-    ),
-  ].sort((a, b) => (String(a).toLowerCase() >= String(b).toLowerCase() ? 1 : -1));
-
-  return (
-    <Select
-      style={{ minWidth: 100 }}
-      value={filterValue}
-      onChange={(e) => {
-        setFilter(e.target.value || undefined);
-      }}
-    >
-      <option
-        value=""
-        onClick={() => {
-          setFilter('');
-        }}
-      >
-        <Trans>All</Trans>
-      </option>
-      {filteredOptions.map((option, i) => (
-        <option key={i} value={option}>
-          {option}
-        </option>
-      ))}
-    </Select>
-  );
-};
-
-const SelectDatePickerFilter = ({
-  column: { filterValue = [], preFilteredRows, setFilter, id },
-}) => {
-  const [min, max] = React.useMemo(() => {
-    let min = new Date(preFilteredRows[0]?.values[id] ?? '1970-01-01').getTime();
-
-    let max = new Date(preFilteredRows[0]?.values[id] ?? '1970-01-01').getTime();
-
-    preFilteredRows.forEach((row) => {
-      const currentDatetime = new Date(row.values[id]).getTime();
-
-      min = currentDatetime <= min ? currentDatetime : min;
-      max = currentDatetime >= max ? currentDatetime : max;
-    });
-    return [min, max];
-  }, [id, preFilteredRows]);
-
-  if (filterValue.length === 0) {
-    setFilter;
-  }
-
-  const handleApply = (event, picker) => {
-    picker.element.val(
-      picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY')
-    );
-    setFilter([picker.startDate.valueOf(), picker.endDate.valueOf()]);
-  };
-
-  const handleCancel = (event, picker) => {
-    picker.element.val('');
-    setFilter([min, max]);
-  };
-
-  return (
-    <DateRangePicker
-      className="custom-picker"
-      onApply={handleApply}
-      onCancel={handleCancel}
-      initialSettings={{
-        showDropdowns: true,
-        autoUpdateInput: false,
-        locale: {
-          cancelLabel: 'Clear',
-        },
-      }}
-    >
-      <input style={{ width: 190 }} type="text" className="form-control col-4" defaultValue="" />
-    </DateRangePicker>
-  );
-};
-
-// function Row({ row, isAdmin, currentTaxonomy }) {
-//   const [show, setShow] = useState(null);
-
-//   const { t } = useTranslation();
-
-//   return (
-//     <Table.Row key={row.id} {...row.getRowProps()}>
-//       {row.cells.map((cell) => {
-//         if (cell.column.Header.includes(t('Incident ID'))) {
-//           return (
-//             <Table.Cell key={cell.id} {...cell.getCellProps()}>
-//               <div className="w-full m-0 p-0 overflow-auto">
-//                 <Link to={`/cite/${cell.value}/#taxa-area`}>
-//                   <Trans>Incident</Trans> {cell.render('Cell')}
-//                 </Link>
-//               </div>
-//             </Table.Cell>
-//           );
-//         } else if (cell.column.Header.includes(t('Actions'))) {
-//           return (
-//             <Table.Cell key={cell.id} {...cell.getCellProps()}>
-//               <a
-//                 target="_blank"
-//                 href={
-//                   isAdmin
-//                     ? `/cite/${row.values.IncidentId}/?edit_taxonomy=${currentTaxonomy}`
-//                     : undefined
-//                 }
-//                 rel="noreferrer"
-//               >
-//                 <Button
-//                   data-cy="edit-classification"
-//                   className="me-auto"
-//                   disabled={!isAdmin}
-//                   onClick={() => setShow('edit')}
-//                 >
-//                   <FontAwesomeIcon icon={faEdit} className="fas fa-edit" />
-//                 </Button>
-//               </a>
-//             </Table.Cell>
-//           );
-//         } else if (cell.column.Header.includes('Date')) {
-//           return (
-//             <Table.Cell key={cell.id} {...cell.getCellProps()} className="text-gray-900">
-//               <div className="w-full m-0 p-0 overflow-auto">
-//                 {formatDateField(cell.render('Cell'))}
-//               </div>
-//             </Table.Cell>
-//           );
-//         } else if (cell.value?.length > 130) {
-//           return (
-//             <Table.Cell key={cell.id} {...cell.getCellProps()} className="text-gray-900">
-//               <div className="w-full m-0 p-0 overflow-hidden">
-//                 {cell.value.substring(0, 124)}...
-//               </div>
-//               <div className="cursor-pointer w-[10px] h-[10px]">
-//                 <FontAwesomeIcon
-//                   onClick={() => setShow(cell.value)}
-//                   icon={faExpandAlt}
-//                   className="fas fa-expand-arrows-alt"
-//                 />
-
-//                 <Modal
-//                   show={show === cell.value}
-//                   onClose={() => setShow(null)}
-//                   className="submission-modal"
-//                 >
-//                   <Modal.Header>{cell.column.Header}</Modal.Header>
-//                   <Modal.Body>{cell.value}</Modal.Body>
-//                 </Modal>
-//               </div>
-//             </Table.Cell>
-//           );
-//         } else {
-//           return (
-//             <Table.Cell key={cell.id} {...cell.getCellProps()} className="text-gray-900">
-//               <div className="w-full m-0 p-0 overflow-auto">
-//                 {((value) => (Array.isArray(value) ? value.join(', ') : value))(
-//                   cell.render('Cell').props.cell.value
-//                 )}
-//               </div>
-//             </Table.Cell>
-//           );
-//         }
-//       })}
-//     </Table.Row>
-//   );
-// }
 
 export default function ClassificationsDbView(props) {
   const { isAdmin } = useUserContext();
@@ -463,27 +191,6 @@ export default function ClassificationsDbView(props) {
       return tableData;
     };
 
-    // const fieldToColumnMap = (taxaField) => {
-    //   const selectFilterTypes = ['multi', 'list', 'enum', 'bool'];
-
-    //   const column = {
-    //     Header: t(taxaField.short_name),
-    //     accessor: taxaField.short_name.split(' ').join(''),
-    //   };
-
-    //   if (selectFilterTypes.includes(taxaField.display_type)) {
-    //     column.Filter = SelectColumnFilter;
-    //     column.filter = 'includes';
-    //   }
-
-    //   if (taxaField.display_type === 'date') {
-    //     column.Filter = SelectDatePickerFilter;
-    //     column.filter = taxaField.short_name.split(' ').join('');
-    //   }
-
-    //   return column;
-    // };
-
     const taxaData = allTaxonomies.filter((taxa) => taxa.namespace === currentTaxonomy);
 
     if (taxaData.length === 0) {
@@ -491,31 +198,11 @@ export default function ClassificationsDbView(props) {
       return;
     }
 
-    // const incidentIdColumn = {
-    //   Header: t('Incident ID'),
-    //   accessor: 'IncidentId',
-    // };
-
-    // const actionsColumn = {
-    //   Header: t('Actions'),
-    //   accessor: 'actions',
-    // };
-
-    // setColumnData([
-    //   actionsColumn,
-    //   incidentIdColumn,
-    //   ...taxaData[0].field_list.map(fieldToColumnMap),
-    // ]);
-
     let rowQuery = {
       namespace: currentTaxonomy,
     };
 
     const classificationData = await fetchClassificationData(rowQuery);
-
-    if (classificationData.length > 0) {
-      // setAllClassifications(classificationData);
-    }
 
     setTableData(formatClassificationData(taxaData[0].field_list, classificationData));
 
@@ -537,8 +224,6 @@ export default function ClassificationsDbView(props) {
   }, [currentTaxonomy, allTaxonomies]);
 
   const data = React.useMemo(() => tableData, [tableData]);
-
-  // const columns = React.useMemo(() => [...columnData], [columnData]);
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -584,24 +269,46 @@ export default function ClassificationsDbView(props) {
       {
         title: t('Full Description'),
         accessor: 'FullDescription',
+        className: 'min-w-[400px]',
+        Cell: ({ row: { values } }) => (
+          <div className="overflow-hidden whitespace-pre-wrap break-words">
+            {values.FullDescription}
+          </div>
+        ),
       },
       {
         title: t('Short Description'),
         accessor: 'ShortDescription',
+        className: 'min-w-[400px]',
+        Cell: ({ row: { values } }) => (
+          <div className="overflow-hidden whitespace-pre-wrap break-words">
+            {values.ShortDescription}
+          </div>
+        ),
       },
       {
         title: t('Beginning Date'),
         accessor: 'BeginningDate',
         Filter: SelectDatePickerFilter,
+        Cell: ({ row: { values } }) => {
+          return <>{formatDateField(values.BeginningDate)}</>;
+        },
       },
       {
         title: t('Ending Date'),
         accessor: 'EndingDate',
         Filter: SelectDatePickerFilter,
+        Cell: ({ row: { values } }) => {
+          return <>{formatDateField(values.EndingDate)}</>;
+        },
       },
       {
         title: t('Location'),
         accessor: 'Location',
+        className: 'min-w-[200px]',
+        Cell: ({ row: { values } }) => (
+          <div className="overflow-hidden whitespace-pre-wrap break-words">{values.Location}</div>
+        ),
       },
       {
         title: t('Near Miss'),
@@ -612,11 +319,23 @@ export default function ClassificationsDbView(props) {
         title: t('Named Entities'),
         accessor: 'NamedEntities',
         Filter: SelectColumnFilter,
+        className: 'min-w-[200px]',
+        Cell: ({ row: { values } }) => (
+          <div className="overflow-hidden whitespace-pre-wrap break-words">
+            {values.NamedEntities}
+          </div>
+        ),
       },
       {
         title: t('Technology Purveyor'),
         accessor: 'TechnologyPurveyor',
         Filter: SelectColumnFilter,
+        className: 'min-w-[200px]',
+        Cell: ({ row: { values } }) => (
+          <div className="overflow-hidden whitespace-pre-wrap break-words">
+            {values.TechnologyPurveyor}
+          </div>
+        ),
       },
       {
         title: t('Intent'),
@@ -632,6 +351,10 @@ export default function ClassificationsDbView(props) {
         title: t('Harm Type'),
         accessor: 'HarmType',
         Filter: SelectColumnFilter,
+        className: 'min-w-[200px]',
+        Cell: ({ row: { values } }) => (
+          <div className="overflow-hidden whitespace-pre-wrap break-words">{values.HarmType}</div>
+        ),
       },
       {
         title: t('Lives Lost'),
@@ -642,6 +365,12 @@ export default function ClassificationsDbView(props) {
         title: t('Harm Distribution Basis'),
         accessor: 'HarmDistributionBasis',
         Filter: SelectColumnFilter,
+        className: 'min-w-[200px]',
+        Cell: ({ row: { values } }) => (
+          <div className="overflow-hidden whitespace-pre-wrap break-words">
+            {values.HarmDistributionBasis}
+          </div>
+        ),
       },
       {
         title: t('Infrastructure Sectors'),
@@ -651,30 +380,64 @@ export default function ClassificationsDbView(props) {
       {
         title: t('Financial Cost'),
         accessor: 'FinancialCost',
+        className: 'min-w-[200px]',
+        Cell: ({ row: { values } }) => (
+          <div className="overflow-hidden whitespace-pre-wrap break-words">
+            {values.FinancialCost}
+          </div>
+        ),
       },
       {
         title: t('Laws Implicated'),
         accessor: 'LawsImplicated',
         Filter: SelectColumnFilter,
+        className: 'min-w-[200px]',
+        Cell: ({ row: { values } }) => (
+          <div className="overflow-hidden whitespace-pre-wrap break-words">
+            {values.LawsImplicated}
+          </div>
+        ),
       },
       {
         title: t('AI Sytem Description'),
         accessor: 'AISystemDescription',
+        className: 'min-w-[400px]',
+        Cell: ({ row: { values } }) => (
+          <div className="overflow-hidden whitespace-pre-wrap break-words">
+            {values.AISystemDescription}
+          </div>
+        ),
       },
       {
         title: t('Data Inputs'),
         accessor: 'DataInputs',
         Filter: SelectColumnFilter,
+        className: 'min-w-[200px]',
+        Cell: ({ row: { values } }) => (
+          <div className="overflow-hidden whitespace-pre-wrap break-words">{values.DataInputs}</div>
+        ),
       },
       {
         title: t('System Developer'),
         accessor: 'SystemDeveloper',
         Filter: SelectColumnFilter,
+        className: 'min-w-[100px]',
+        Cell: ({ row: { values } }) => (
+          <div className="overflow-hidden whitespace-pre-wrap break-words">
+            {values.SystemDeveloper}
+          </div>
+        ),
       },
       {
         title: t('Sector Of Deployment'),
         accessor: 'SectorofDeployment',
         Filter: SelectColumnFilter,
+        className: 'min-w-[100px]',
+        Cell: ({ row: { values } }) => (
+          <div className="overflow-hidden whitespace-pre-wrap break-words">
+            {values.SectorofDeployment}
+          </div>
+        ),
       },
       {
         title: t('Public Sector Deployment'),
@@ -700,11 +463,23 @@ export default function ClassificationsDbView(props) {
         title: t('AI Techniques'),
         accessor: 'AITechniques',
         Filter: SelectColumnFilter,
+        className: 'min-w-[300px]',
+        Cell: ({ row: { values } }) => (
+          <div className="overflow-hidden whitespace-pre-wrap break-words">
+            {values.AITechniques}
+          </div>
+        ),
       },
       {
         title: t('AI Applications'),
         accessor: 'AIApplications',
         Filter: SelectColumnFilter,
+        className: 'min-w-[300px]',
+        Cell: ({ row: { values } }) => (
+          <div className="overflow-hidden whitespace-pre-wrap break-words">
+            {values.AIApplications}
+          </div>
+        ),
       },
       {
         title: t('Physical System'),
@@ -850,53 +625,6 @@ export default function ClassificationsDbView(props) {
         {!loading && (
           <div>
             <Table table={table} />
-            {/* <Table striped={true} hoverable={true} {...getTableProps()}>
-              {headerGroups.map((headerGroup) => (
-                <Table.Head key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map((column) => (
-                    <Table.HeadCell key={column.id} {...column.getHeaderProps()}>
-                      <div
-                        className="flex flex-col"
-                        {...column.getHeaderProps(column.getSortByToggleProps())}
-                        style={{ marginBottom: 5 }}
-                      >
-                        {column.render('Header')}
-                        <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
-                      </div>
-                      <div>{column.canFilter ? column.render('Filter') : null}</div>
-                    </Table.HeadCell>
-                  ))}
-                </Table.Head>
-              ))}
-              <Table.Body {...getTableBodyProps()}>
-                {page.map((row) => {
-                  prepareRow(row);
-
-                  return (
-                    <Row
-                      key={row.id}
-                      row={row}
-                      allClassifications={allClassifications}
-                      allTaxonomies={allTaxonomies}
-                      isAdmin={isAdmin}
-                      currentTaxonomy={currentTaxonomy}
-                    />
-                  );
-                })}
-
-                {page.length === 0 && (
-                  <Table.Row>
-                    <Table.Cell colSpan={10}>
-                      <div>
-                        <span>
-                          <Trans>No results found</Trans>
-                        </span>
-                      </div>
-                    </Table.Cell>
-                  </Table.Row>
-                )}
-              </Table.Body>
-            </Table> */}
 
             <div className="flex items-center gap-2">
               {pageCount > 1 && (
