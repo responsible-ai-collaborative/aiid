@@ -58,7 +58,7 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
             </h5>
           </LocalizedLink>
         </div>
-        <div className="flow-root">
+        <div className="flow-root overflow-y-auto max-h-[400px]">
           <ul className="divide-y divide-gray-200 dark:divide-gray-700">
             {sortedArray.map((item, index) => (
               <li
