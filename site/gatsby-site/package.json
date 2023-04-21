@@ -24,6 +24,7 @@
     "@philpl/buble": "^0.19.7",
     "@postlight/mercury-parser": "^2.2.1",
     "@sendgrid/mail": "^7.7.0",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "algoliasearch": "^4.10.5",
     "async": "^3.2.2",
     "billboard.js": "^3.7.4",

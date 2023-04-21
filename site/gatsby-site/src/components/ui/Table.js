@@ -35,7 +35,7 @@ export function DefaultColumnFilter({
   }
 
   return (
-    <div>
+    <div data-cy="filter">
       <h6 className="whitespace-nowrap overflow-hidden text-ellipsis">{Header}</h6>
       <TextInput
         data-cy={`input-filter-${title}`}
