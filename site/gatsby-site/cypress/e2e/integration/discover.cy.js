@@ -15,6 +15,8 @@ describe('The Discover app', () => {
 
     cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=true');
 
+    cy.waitForStableDOM();
+
     cy.contains('[data-cy="display-options"]', 'Incident Reports')
       .should('exist')
       .and('be.visible');
@@ -196,11 +198,15 @@ describe('The Discover app', () => {
   it("Let's you filter by type", () => {
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.contains('[data-cy="display-options"]', 'Incident Reports').scrollIntoView().click();
 
     cy.contains('li', /^Issue Reports$/).click();
 
     cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=false');
+
+    cy.waitForStableDOM();
 
     cy.contains('[data-cy="display-options"]', 'Issue Reports').should('be.be.visible');
   });
@@ -210,11 +216,15 @@ describe('The Discover app', () => {
 
     cy.contains('button', 'Clear Filter').should('be.disabled');
 
+    cy.waitForStableDOM();
+
     cy.contains('[data-cy="display-options"]', 'Incident Reports').scrollIntoView().click();
 
     cy.contains('li', /^Incidents$/).click();
 
     cy.contains('button', 'Clear Filter').should('not.be.disabled');
+
+    cy.waitForStableDOM();
 
     cy.contains('[data-cy="display-options"]', 'Incidents').click();
 
@@ -222,11 +232,15 @@ describe('The Discover app', () => {
 
     cy.contains('button', 'Clear Filter').should('not.be.disabled');
 
+    cy.waitForStableDOM();
+
     cy.contains('[data-cy="display-options"]', 'Issue Reports').click();
 
     cy.contains('li', /^Incident and Issue Reports$/).click();
 
     cy.contains('button', 'Clear Filter').should('not.be.disabled');
+
+    cy.waitForStableDOM();
 
     cy.contains('[data-cy="display-options"]', 'Incident and Issue Reports').click();
 
@@ -297,6 +311,8 @@ describe('The Discover app', () => {
 
   it('Should display incidents instead of reports when selection Incidents view', () => {
     cy.visit(url);
+
+    cy.waitForStableDOM();
 
     cy.contains('[data-cy="display-options"]', 'Incidents').click();
 

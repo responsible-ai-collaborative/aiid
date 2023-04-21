@@ -10,8 +10,6 @@ import config from '../../config';
 import { isCompleteReport } from 'utils/variants';
 import CiteTemplate from './citeTemplate';
 import CiteDynamicTemplate from './citeDynamicTemplate';
-import { ToggleSwitch } from 'flowbite-react';
-import { useTranslation } from 'react-i18next';
 
 function CitePage(props) {
   const {
@@ -38,8 +36,6 @@ function CitePage(props) {
   const [isLiveData, setIsLiveData] = useState(false);
 
   const { locale } = useLocalization();
-
-  const { t } = useTranslation();
 
   // meta tags
 
@@ -100,16 +96,6 @@ function CitePage(props) {
         <meta property="og:type" content="website" />
       </AiidHelmet>
 
-      <ToggleSwitch
-        checked={isLiveData}
-        label={t('Show Live data')}
-        onChange={(checked) => {
-          setIsLiveData(checked);
-        }}
-        name="live-data-switch"
-        data-cy="toogle-live-data"
-      />
-
       {isLiveData ? (
         <CiteDynamicTemplate
           allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
@@ -120,6 +106,7 @@ function CitePage(props) {
           editor_similar_incidents={editor_similar_incidents}
           editor_dissimilar_incidents={editor_dissimilar_incidents}
           locationPathName={props.location.pathname}
+          setIsLiveData={setIsLiveData}
         />
       ) : (
         <CiteTemplate
@@ -137,6 +124,7 @@ function CitePage(props) {
           nlp_similar_incidents={nlp_similar_incidents}
           editor_similar_incidents={editor_similar_incidents}
           editor_dissimilar_incidents={editor_dissimilar_incidents}
+          setIsLiveData={setIsLiveData}
         />
       )}
     </Layout>
