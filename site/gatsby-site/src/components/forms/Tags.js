@@ -17,7 +17,7 @@ export default function Tags({
     const splitTags = tag.split(',').map((tag) => tag.trim());
 
     onChange(value ? value.concat(splitTags) : splitTags);
-    ref?.current?.clear();
+    ref.current.clear();
   };
 
   return (

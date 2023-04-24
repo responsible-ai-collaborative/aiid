@@ -5,6 +5,7 @@ import TagsInputGroup from '../../components/forms/TagsInputGroup';
 import PreviewImageInputGroup from '../../components/forms/PreviewImageInputGroup';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { getCloudinaryPublicID } from '../../utils/cloudinary';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 import Label from '../forms/Label';
 import IncidentIdField from '../../components/incidents/IncidentIdField';
 import getSourceDomain from '../../utils/getSourceDomain';
