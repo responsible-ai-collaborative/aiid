@@ -174,7 +174,7 @@ const FormDetails = ({
           </span>
         </>
       )}
-      {values.incident_ids.length && (
+      {values.incident_ids.length > 0 && (
         <span className="flex mb-4" data-cy="prefilled-incident-id">
           <Badge>
             {values.tags && values.tags.includes(RESPONSE_TAG) ? (
