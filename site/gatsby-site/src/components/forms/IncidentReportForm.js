@@ -7,7 +7,6 @@ import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { dateRegExp } from '../../utils/date';
 import { getCloudinaryPublicID } from '../../utils/cloudinary';
 import PreviewImageInputGroup from 'components/forms/PreviewImageInputGroup';
-import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { graphql, useStaticQuery } from 'gatsby';
 import Label from './Label';
 import { Editor } from '@bytemd/react';
@@ -32,8 +31,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import IncidentsField from 'components/incidents/IncidentsField';
 import VariantForm from 'components/variants/VariantForm';
-import { Typeahead } from 'react-bootstrap-typeahead';
 import FlowbiteSearchInput from './FlowbiteSearchInput';
+import { Typeahead } from 'elements/Typeahead';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -370,7 +369,7 @@ const IncidentReportForm = () => {
           </div>
           <div>
             <Typeahead
-              className="Typeahead submit-report-tags"
+              className="submit-report-tags"
               id="submit-report-tags"
               inputProps={{ id: 'submit-report-tags-input' }}
               allowNew
