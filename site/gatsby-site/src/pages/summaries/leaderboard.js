@@ -28,11 +28,9 @@ export default function Authors(props) {
           </Trans>
         </p>
         <div className="flex flex-wrap gap-6">
-          <OriginalSubmittersLeaderboard className="sape" />
+          <OriginalSubmittersLeaderboard />
           <UniqueSubmittersLeaderboard />
           <SubmittersLeaderboard />
-        </div>
-        <div className="flex flex-wrap gap-6 mt-10">
           <AuthorsLeaderboard />
           <DomainsLeaderboard />
         </div>
