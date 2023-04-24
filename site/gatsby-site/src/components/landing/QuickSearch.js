@@ -82,7 +82,7 @@ export default function QuickSearch() {
             onKeyPress={(e) => {
               e.key === 'Enter' && submit(e);
             }}
-            aria-label={t('Search over 1800 reports of AI harms')}
+            aria-label={t('Search over 2000 reports of AI harms')}
           />
         </div>
         <div className="flex flex-row items-center justify-center mt-4 md:mt-6 gap-2">
