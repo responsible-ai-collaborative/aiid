@@ -33,7 +33,7 @@ const TextInputGroup = ({
   return (
     <div className={`form-group ${className}`}>
       <div className="flex items-center">
-        {icon && <FontAwesomeIcon fixedWidth icon={icon} title={label} className="mb-2 mr-1" />}
+        {icon && <FontAwesomeIcon fixedWidth icon={icon} title={label} className="mr-1" />}
         <Label popover={name} label={(optional ? '' : '*') + label} showPopover={showPopover} />
       </div>
       <div className="mt-1">

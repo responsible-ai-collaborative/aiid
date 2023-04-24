@@ -5,7 +5,6 @@ import { UserContextProvider } from 'contexts/userContext';
 import { MenuContextProvider } from 'contexts/MenuContext';
 import { ToastContextProvider } from './src/contexts/ToastContext';
 import ThemeProvider from 'components/theme/themeProvider';
-import SSRProvider from 'react-bootstrap/SSRProvider';
 import { Script } from 'gatsby';
 import { LayoutContextProvider } from 'contexts/LayoutContext';
 import { LocaleProvider } from 'plugins/gatsby-theme-i18n';
@@ -39,11 +38,9 @@ export const wrapRootElement = ({ element }) => {
   return (
     <>
       <Script src="/rollbar.js" />
-      <SSRProvider>
-        <ThemeProvider>
-          <ToastContextProvider>{element}</ToastContextProvider>
-        </ThemeProvider>
-      </SSRProvider>
+      <ThemeProvider>
+        <ToastContextProvider>{element}</ToastContextProvider>
+      </ThemeProvider>
     </>
   );
 };

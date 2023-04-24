@@ -1,3 +1,5 @@
+import { maybeIt } from '../../support/utils';
+
 describe('Account', () => {
   const url = '/account';
 
@@ -5,7 +7,7 @@ describe('Account', () => {
     cy.visit(url);
   });
 
-  it('Should display account information if the user is logged in', () => {
+  maybeIt('Should display account information if the user is logged in', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.visit(url);

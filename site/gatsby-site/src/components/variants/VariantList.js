@@ -1,17 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Markdown from 'react-markdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faPlus, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { Button, Spinner, Tooltip } from 'flowbite-react';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { getVariantStatus, VARIANT_STATUS, getVariantStatusText } from 'utils/variants';
+import {
+  getVariantStatus,
+  VARIANT_STATUS,
+  getVariantStatusText,
+  isCompleteReport,
+} from 'utils/variants';
+import { sortIncidentsByDatePublished } from 'utils/cite';
 import VariantForm, { schema } from 'components/variants/VariantForm';
 import { useUserContext } from 'contexts/userContext';
 import VariantEditModal from './VariantEditModal';
 import { Formik } from 'formik';
-import { useMutation } from '@apollo/client';
-import { CREATE_VARIANT } from '../../graphql/variants';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { CREATE_VARIANT, FIND_INCIDENT_VARIANTS } from '../../graphql/variants';
 
 export const VariantStatusBadge = ({ status }) => {
   let badgeClass;
@@ -124,12 +130,27 @@ const VariantCard = ({ variant, incidentId }) => {
   );
 };
 
-const VariantList = ({ incidentId, variants }) => {
+const VariantList = ({ liveVersion, incidentId, variants }) => {
   const { t } = useTranslation(['variants']);
 
   const [displayForm, setDisplayForm] = useState(false);
 
+  const [variantList, setVariantList] = useState(variants);
+
   const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
+
+  const [findIncidentVariants, { data: incidentData, refetch: refetchVariants }] = useLazyQuery(
+    FIND_INCIDENT_VARIANTS,
+    {
+      variables: { incident_id: incidentId },
+    }
+  );
+
+  useEffect(() => {
+    if (liveVersion) {
+      findIncidentVariants();
+    }
+  }, [liveVersion]);
 
   const onAddVariantClick = () => {
     setDisplayForm(!displayForm);
@@ -138,6 +159,18 @@ const VariantList = ({ incidentId, variants }) => {
   const addToast = useToastContext();
 
   const [createVariantMutation] = useMutation(CREATE_VARIANT);
+
+  useEffect(() => {
+    if (incidentData?.incident?.reports) {
+      const incidentReports = incidentData.incident.reports;
+
+      const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports.slice());
+
+      const variants = sortedIncidentReports.filter((report) => !isCompleteReport(report));
+
+      setVariantList(variants);
+    }
+  }, [incidentData]);
 
   const addVariant = async ({ incidentId, text_inputs, text_outputs }) => {
     const variant = {
@@ -148,7 +181,11 @@ const VariantList = ({ incidentId, variants }) => {
     await createVariantMutation({ variables: { input: { incidentId, variant } } });
 
     setDisplayForm(false);
-    setDisplaySuccessMessage(true);
+    if (liveVersion) {
+      refetchVariants();
+    } else {
+      setDisplaySuccessMessage(true);
+    }
   };
 
   return (
@@ -167,7 +204,7 @@ const VariantList = ({ incidentId, variants }) => {
           <a href="https://arxiv.org/abs/2211.10384">Learn more from the research paper.</a>
         </Trans>
         <div className={'flex flex-col gap-3 mt-5'}>
-          {variants.map((variant) => (
+          {variantList.map((variant) => (
             <VariantCard
               variant={variant}
               incidentId={incidentId}

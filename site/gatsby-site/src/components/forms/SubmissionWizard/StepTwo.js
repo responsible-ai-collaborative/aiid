@@ -140,12 +140,7 @@ const FormDetails = ({
 
         <FieldContainer>
           <div className="flex items-center mb-1">
-            <FontAwesomeIcon
-              fixedWidth
-              icon={faLanguage}
-              title={t('Language')}
-              className="mb-2 mr-1"
-            />
+            <FontAwesomeIcon fixedWidth icon={faLanguage} title={t('Language')} className="mr-1" />
             <Label popover="language" label={t('Language')} />
           </div>
           <Select
