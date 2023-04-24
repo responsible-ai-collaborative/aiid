@@ -10,7 +10,7 @@ const filterBy = (option, text) => {
   );
 };
 
-export default function IncidentsField({ id, name }) {
+export default function IncidentsField({ id, name, multiple = true }) {
   const [{ value }, , { setTouched, setValue }] = useField({ name });
 
   const { data } = useQuery(FIND_INCIDENTS_TITLE);
@@ -19,7 +19,9 @@ export default function IncidentsField({ id, name }) {
 
   const [options, setOptions] = useState([]);
 
-  const [selected, setSelected] = useState(value.sort().map((id) => ({ id, title: '' })));
+  const [selected, setSelected] = useState(
+    multiple && Array.isArray(value) ? value.sort().map((id) => ({ id, title: '' })) : []
+  );
 
   useEffect(() => {
     if (data?.incidents) {
@@ -58,7 +60,7 @@ export default function IncidentsField({ id, name }) {
         inputProps={{ id: 'input-' + id, name }}
         selected={selected}
         options={options}
-        multiple
+        multiple={multiple}
         labelKey={(option) => `${option.id}`}
         isLoading={loading}
         onSearch={handleSearch}

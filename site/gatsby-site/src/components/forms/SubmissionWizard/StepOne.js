@@ -12,7 +12,7 @@ import StepContainer from './StepContainer';
 import TagsInputGroup from '../TagsInputGroup';
 import { Editor } from '@bytemd/react';
 import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
-import IncidentIdField from 'components/incidents/IncidentIdField';
+// import IncidentIdField from 'components/incidents/IncidentIdField';
 import isEmpty from 'lodash/isEmpty';
 import { format } from 'date-fns';
 import FieldContainer from './FieldContainer';
@@ -26,6 +26,7 @@ import {
   faTenge,
 } from '@fortawesome/free-solid-svg-icons';
 import { RESPONSE_TAG } from 'utils/entities';
+import IncidentsField from 'components/incidents/IncidentsField';
 
 const StepOne = (props) => {
   const [data, setData] = useState(props.data);
@@ -341,7 +342,10 @@ const FormDetails = ({
         </FieldContainer>
 
         <FieldContainer>
-          <IncidentIdField
+          <Label label={t('Incident ID')} popover="url"></Label>
+          <IncidentsField id="incident_id" name="incident_id" multiple={false} />
+
+          {/* <IncidentIdField
             name="incident_id"
             placeHolder={t('Leave empty to report a new incident')}
             showIncidentData={false}
@@ -349,7 +353,7 @@ const FormDetails = ({
             values={values}
             errors={errors}
             touched={touched}
-          />
+          /> */}
           <RelatedIncidents
             incident={values}
             setFieldValue={setFieldValue}
