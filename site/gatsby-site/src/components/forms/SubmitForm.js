@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { CSVReader } from 'react-papaparse';
 import { useQueryParams, StringParam, ArrayParam, encodeDate, withDefault } from 'use-query-params';
 import Link from 'components/ui/Link';
@@ -220,6 +220,8 @@ const SubmitForm = () => {
 
   const incident_id = submission.incident_id;
 
+  const submissionRef = useRef(null);
+
   return (
     <>
       <Helmet>
@@ -232,7 +234,7 @@ const SubmitForm = () => {
           </Trans>
         </h1>
       </div>
-      <p>
+      <p ref={submissionRef}>
         {isIncidentResponse ? (
           <>
             {incident_id ? (
@@ -274,6 +276,9 @@ const SubmitForm = () => {
           submitForm={handleSubmit}
           initialValues={submission}
           urlFromQueryString={query.url}
+          scrollToTop={() => {
+            submissionRef.current.scrollIntoView();
+          }}
         />
 
         <p className="mt-4">
