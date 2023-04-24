@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useField } from 'formik';
-import { Token } from 'react-bootstrap-typeahead';
+import { AsyncTypeahead, Token } from 'react-bootstrap-typeahead';
 import { useQuery } from '@apollo/client';
 import { FIND_INCIDENTS_TITLE } from '../../graphql/incidents';
-import { AsyncTypeahead } from 'elements/Typeahead';
 
 const filterBy = (option, text) => {
   return (

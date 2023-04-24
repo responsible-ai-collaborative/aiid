@@ -32,7 +32,7 @@ import {
 import IncidentsField from 'components/incidents/IncidentsField';
 import VariantForm from 'components/variants/VariantForm';
 import FlowbiteSearchInput from './FlowbiteSearchInput';
-import { Typeahead } from 'elements/Typeahead';
+import { Typeahead } from 'react-bootstrap-typeahead';
 
 // set in form //
 // * title: "title of the report" # (string) The title of the report that is indexed.
@@ -369,7 +369,7 @@ const IncidentReportForm = () => {
           </div>
           <div>
             <Typeahead
-              className="submit-report-tags"
+              className="Typeahead submit-report-tags"
               id="submit-report-tags"
               inputProps={{ id: 'submit-report-tags-input' }}
               allowNew

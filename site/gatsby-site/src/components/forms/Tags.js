@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Typeahead } from 'elements/Typeahead';
+import { Typeahead } from 'react-bootstrap-typeahead';
 
 export default function Tags({
   id,
@@ -17,11 +17,12 @@ export default function Tags({
     const splitTags = tag.split(',').map((tag) => tag.trim());
 
     onChange(value ? value.concat(splitTags) : splitTags);
-    ref.current.clear();
+    ref?.current?.clear();
   };
 
   return (
     <Typeahead
+      className="Typeahead"
       ref={ref}
       id={id}
       inputProps={{ id: inputId, name }}
