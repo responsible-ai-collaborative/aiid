@@ -1,7 +1,7 @@
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import DateLabel from './DateLabel';
-import { Dropdown, Pagination, TextInput } from 'flowbite-react';
+import { Button, Dropdown, Pagination, TextInput } from 'flowbite-react';
 
 function SortButton({ column, ...props }) {
   const { isSorted } = column;
@@ -142,6 +142,10 @@ export default function Table({ table, className = '', ...props }) {
             showIcons={true}
             totalPages={pageCount}
           />
+
+          <Button onClick={() => gotoPage(pageCount - 1)}>
+            <Trans>Last</Trans>
+          </Button>
 
           <span>
             Page{' '}
