@@ -1,3 +1,4 @@
+import { maybeIt } from '../../support/utils';
 import incident10 from '../../fixtures/incidents/incident10.json';
 
 describe('Dynamic Cite pages', () => {
@@ -7,11 +8,17 @@ describe('Dynamic Cite pages', () => {
 
   it('Successfully loads', () => {
     cy.visit(url);
-
-    cy.get('[data-cy="toogle-live-data"]').should('exist');
   });
 
-  it('Should load dynamic Incident data', () => {
+  it("Shouldn't display live data option if it's not logged in", () => {
+    cy.visit(url);
+
+    cy.get('[data-cy="toogle-live-data"]').should('not.exist');
+  });
+
+  maybeIt('Should load dynamic Incident data', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
     cy.visit(url);
 
     cy.conditionalIntercept(
@@ -47,7 +54,9 @@ describe('Dynamic Cite pages', () => {
     cy.get('[data-cy="variant-card"]').should('have.length', 1);
   });
 
-  it('Should display a new Variant if live mode is turned on', () => {
+  maybeIt('Should display a new Variant if live mode is turned on', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
     cy.visit(url);
 
     const text_inputs = 'Input text';
@@ -104,7 +113,9 @@ describe('Dynamic Cite pages', () => {
     cy.wait('@findIncident');
   });
 
-  it('There should not be image errors (400)', () => {
+  maybeIt('There should not be image errors (400)', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
     cy.visit(url, {
       onBeforeLoad(win) {
         cy.stub(win.console, 'error').as('consoleError');

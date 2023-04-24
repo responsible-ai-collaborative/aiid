@@ -564,7 +564,8 @@
     }
 
     .tsne-visualization-item>a:not(.incident-card) {
-        @apply text-inherit absolute text-[75%] h-[2em] w-[2em] px-[2px] rounded-[50%] -ml-[1em] -mt-[1em] text-center leading-[2em] shadow-tsne flex justify-center items-center !important;
+        @apply absolute text-[75%] h-[2em] w-[2em] px-[2px] rounded-[50%] -ml-[1em] -mt-[1em] text-center leading-[2em] shadow-tsne flex justify-center items-center !important;
+        @apply text-inherit
     }
 
     .tsne-visualization-item .incident-card {
@@ -589,7 +590,7 @@
     }
 
     .tsne-visualization-item>a.current {
-        @apply border-[grey] bg-[#001a32] shadow-tsne-current z-2 !important;
+        @apply border-[black] shadow-tsne-current !important;
     }
 
     .pagination [aria-current="page"] button {
@@ -698,8 +699,12 @@
     @apply max-50rem:w-full max-50rem:relative font-karla text-sm w-full border-r border-r-[#ede7f3] h-screen overflow-auto fixed pl-6 pt-0 bg-text-light-gray top-0;
   }
 
+  aside.sidebar.right {
+    @apply sticky max-50rem:w-full max-50rem:relative font-karla text-sm w-full border-none h-screen overflow-auto pl-6 pt-0 bg-none bg-transparent top-0;
+  }
+
   aside.sidebar .rightSideTitle {
-    @apply text-sm font-bold uppercase tracking-[1.2px] py-2 pt-6 pb-4 border-l border-l-[#e6ecf1] text-[#1a1a1a];
+    @apply text-sm leading-4 font-bold uppercase tracking-wider py-2 pr-6 pl-4 border-l border-l-gray-200 text-[rgb(59,69,78)];
   }
 
   aside.sidebar .rightSideBarUL {
@@ -707,7 +712,7 @@
   }
 
   aside.sidebar .rightSideBarUL li {
-    @apply list-none border-l border-l-[#e6ecf1];
+    @apply list-none border-l border-l-[#e6ecf1] py-2 pr-6 pl-4;
   }
 
   aside.sidebar .rightSideBarUL li a {
@@ -757,6 +762,10 @@
 
   .react-markdown pre code {
     @apply block overflow-auto w-full !important;
+  }
+
+  .react-markdown ul {
+    margin-top: 45px !important;
   }
 
   .prose a {
