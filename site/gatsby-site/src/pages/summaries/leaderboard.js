@@ -27,7 +27,7 @@ export default function Authors(props) {
             <Link to="/about_apps/1-discover"> Discover app</Link>.
           </Trans>
         </p>
-        <div className="flex flex-wrap gap-10">
+        <div className="flex flex-wrap gap-6">
           <OriginalSubmittersLeaderboard />
           <UniqueSubmittersLeaderboard />
           <SubmittersLeaderboard />
