@@ -36,7 +36,7 @@ function Tools({ incident, incidentReports, isSubscribed, subscribeToNewReports,
         />
         <Button
           color="gray"
-          href={`/apps/submit?incident_id=${incident.incident_id}&date_downloaded=${format(
+          href={`/apps/submit?incident_ids=${incident.incident_id}&date_downloaded=${format(
             new Date(),
             'yyyy-MM-dd'
           )}`}

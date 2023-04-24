@@ -26,6 +26,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { RESPONSE_TAG } from 'utils/entities';
 import IncidentsField from 'components/incidents/IncidentsField';
+import { arrayToList } from 'utils/typography';
 
 const StepOne = (props) => {
   const [data, setData] = useState(props.data);
@@ -163,8 +164,6 @@ const FormDetails = ({
     padding: errors['text'] && touched['text'] ? '0.5rem' : '0',
   };
 
-  const incident_id = values.incident_id;
-
   return (
     <>
       {parsingNews && (
@@ -175,13 +174,18 @@ const FormDetails = ({
           </span>
         </>
       )}
-      {incident_id && (
+      {values.incident_ids.length && (
         <span className="flex mb-4" data-cy="prefilled-incident-id">
           <Badge>
             {values.tags && values.tags.includes(RESPONSE_TAG) ? (
-              <Trans ns="submit">Adding a new response to incident {{ incident_id }}</Trans>
+              <Trans ns="submit" incident_id={arrayToList(values.incident_ids)}>
+                Adding a new response to incident{' '}
+                {{ incident_id: arrayToList(values.incident_ids) }}
+              </Trans>
             ) : (
-              <Trans ns="submit">Adding a new report to incident {{ incident_id }}</Trans>
+              <Trans ns="submit" incident_id={arrayToList(values.incident_ids)}>
+                Adding a new report to incident {{ incident_id: arrayToList(values.incident_ids) }}
+              </Trans>
             )}
           </Badge>
         </span>
