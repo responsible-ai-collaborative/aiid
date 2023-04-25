@@ -58,10 +58,10 @@ describe('Classifications App', () => {
 
     cy.waitForStableDOM();
 
-    cy.wait(1000);
-
     cy.get('select[data-cy="taxonomy"]').select('GMF');
 
-    cy.wait(1000);
+    cy.waitForStableDOM();
+
+    cy.get('[role="columnheader"]').contains('Known AI Goal').should('exist');
   });
 });
