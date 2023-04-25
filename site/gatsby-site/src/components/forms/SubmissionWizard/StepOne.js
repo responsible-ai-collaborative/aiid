@@ -350,7 +350,11 @@ const FormDetails = ({
               <Label popover="incident_id" label={t('Incident IDs')} />
             </div>
             <div className="mt-1">
-              <IncidentsField id="incident_ids" name="incident_ids" />
+              <IncidentsField
+                id="incident_ids"
+                name="incident_ids"
+                placeHolder={t('Leave empty to report a new incident')}
+              />
             </div>
           </div>
         </FieldContainer>
