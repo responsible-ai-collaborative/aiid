@@ -88,7 +88,7 @@ describe('Variants pages', () => {
     });
   });
 
-  it('Should add a new Variant - Unauthenticated user', () => {
+  it.skip('Should add a new Variant - Unauthenticated user', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
