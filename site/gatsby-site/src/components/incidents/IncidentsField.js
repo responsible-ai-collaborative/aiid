@@ -10,7 +10,13 @@ const filterBy = (option, text) => {
   );
 };
 
-export default function IncidentsField({ id, name, multiple = true }) {
+export default function IncidentsField({
+  id,
+  name,
+  multiple = true,
+  placeholder = '',
+  setValueManually = null,
+}) {
   const [{ value }, , { setTouched, setValue }] = useField({ name });
 
   const { data } = useQuery(FIND_INCIDENTS_TITLE);
@@ -20,7 +26,11 @@ export default function IncidentsField({ id, name, multiple = true }) {
   const [options, setOptions] = useState([]);
 
   const [selected, setSelected] = useState(
-    multiple && Array.isArray(value) ? value.sort().map((id) => ({ id, title: '' })) : []
+    multiple && Array.isArray(value)
+      ? value.sort().map((id) => ({ id, title: '' }))
+      : value
+      ? [{ id: value, title: '' }]
+      : []
   );
 
   useEffect(() => {
@@ -61,15 +71,20 @@ export default function IncidentsField({ id, name, multiple = true }) {
         selected={selected}
         options={options}
         multiple={multiple}
-        labelKey={(option) => `${option.id}`}
+        labelKey={(option) => `${option.id} - ${option.title}`}
         isLoading={loading}
         onSearch={handleSearch}
         minLength={1}
         onChange={(value) => {
           setSelected(value);
           setTouched(true);
-          setValue(value.map((item) => item.id));
+          if (setValueManually) {
+            setValueManually(value);
+          } else {
+            setValue(value.map((item) => item.id));
+          }
         }}
+        placeholder={placeholder}
         renderToken={(option, { onRemove }, index) => (
           <Token key={index} onRemove={onRemove} option={option} title={option.title}>
             <div className="flex" data-cy="token">

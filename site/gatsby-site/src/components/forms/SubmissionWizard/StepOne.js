@@ -12,7 +12,6 @@ import StepContainer from './StepContainer';
 import TagsInputGroup from '../TagsInputGroup';
 import { Editor } from '@bytemd/react';
 import SemanticallyRelatedIncidents from 'components/SemanticallyRelatedIncidents';
-// import IncidentIdField from 'components/incidents/IncidentIdField';
 import isEmpty from 'lodash/isEmpty';
 import { format } from 'date-fns';
 import FieldContainer from './FieldContainer';
@@ -343,17 +342,16 @@ const FormDetails = ({
 
         <FieldContainer>
           <Label label={t('Incident ID')} popover="url"></Label>
-          <IncidentsField id="incident_id" name="incident_id" multiple={false} />
-
-          {/* <IncidentIdField
+          <IncidentsField
+            id="incident_id"
             name="incident_id"
-            placeHolder={t('Leave empty to report a new incident')}
-            showIncidentData={false}
-            disabled={parsingNews}
-            values={values}
-            errors={errors}
-            touched={touched}
-          /> */}
+            multiple={false}
+            placeholder={t('Incident ID')}
+            setValueManually={(value) => {
+              setFieldValue(value[0] ? value[0].id : '');
+            }}
+          />
+
           <RelatedIncidents
             incident={values}
             setFieldValue={setFieldValue}
