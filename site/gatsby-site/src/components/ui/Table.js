@@ -132,7 +132,7 @@ export default function Table({ table, className = '', ...props }) {
             })}
           </tbody>
         </table>
-        <div className="flex gap-2 justify-start items-center mt-3">
+        <div className="flex gap-2 justify-start items-center my-3 pagination">
           <Pagination
             className="pagination mb-0 text-gray-800"
             onPageChange={(page) => {
@@ -143,7 +143,7 @@ export default function Table({ table, className = '', ...props }) {
             totalPages={pageCount}
           />
 
-          <Button onClick={() => gotoPage(pageCount - 1)}>
+          <Button onClick={() => gotoPage(pageCount - 1)} size={'sm'} color="light">
             <Trans>Last</Trans>
           </Button>
 
