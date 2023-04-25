@@ -265,4 +265,16 @@ describe('Incidents App', () => {
           );
       });
   });
+
+  it('Should navigate to the last page', () => {
+    cy.visit(url);
+
+    cy.get('[data-cy="last-page"]').click();
+
+    cy.get('[data-cy="total-pages"]')
+      .invoke('text')
+      .then((text) => {
+        cy.get('[data-cy="current-page"]').should('have.text', text);
+      });
+  });
 });
