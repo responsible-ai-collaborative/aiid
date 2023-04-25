@@ -630,14 +630,10 @@
   }
 
   .Typeahead .rbt-menu.dropdown-menu .dropdown-item {
-    @apply text-gray-800 border-none block clear-both font-normal whitespace-nowrap w-full px-4 py-2 !important;
+    @apply text-gray-800 border-none block clear-both font-normal whitespace-nowrap w-full px-4 py-2 bg-transparent hover:bg-gray-200;
   }
 
-  .Typeahead .rbt-menu.dropdown-menu .dropdown-item[aria-selected="false"] {
-    @apply bg-transparent hover:bg-gray-200 !important;
-  }
-
-  .Typeahead .rbt-menu.dropdown-menu .dropdown-item[aria-selected="true"]{
+  .Typeahead .rbt-menu.dropdown-menu .dropdown-item.active{
     @apply bg-blue-100 !important;
   }
 
