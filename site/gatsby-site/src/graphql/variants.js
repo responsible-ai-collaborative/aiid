@@ -33,6 +33,8 @@ export const FIND_INCIDENT_VARIANTS = gql`
       reports {
         report_number
         title
+        url
+        source_domain
         date_published
         tags
         inputs_outputs

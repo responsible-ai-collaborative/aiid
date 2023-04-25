@@ -2,7 +2,7 @@ import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import { Leaderboard } from './Leaderboard';
 
-const UniqueSubmittersLeaderboard = ({ limit, className }) => {
+const UniqueSubmittersLeaderboard = ({ limit = 0, className = '' }) => {
   const {
     allMongodbAiidprodReports: { nodes: reports },
     allMongodbAiidprodIncidents: { nodes: incidents },
@@ -56,7 +56,7 @@ const UniqueSubmittersLeaderboard = ({ limit, className }) => {
       dataHash={hash}
       leaderboard={{
         attribute: 'submitters',
-        title: 'Distinct Incidents Reported',
+        title: 'Reports added to Existing Incidents',
       }}
       limit={limit}
       className={className}

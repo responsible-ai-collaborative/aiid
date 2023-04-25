@@ -4,7 +4,7 @@ import { useApolloClient } from '@apollo/client';
 import gql from 'graphql-tag';
 import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
-import { Button, Pagination, Select, Spinner, Table } from 'flowbite-react';
+import { Button, Dropdown, Pagination, Select, Spinner, Table } from 'flowbite-react';
 import Link from '../../components/ui/Link';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
@@ -754,19 +754,30 @@ export default function ClassificationsDbView(props) {
                   </div>
                 </>
               )}
-              <Select
-                className="mt-2"
-                value={pageSize}
-                onChange={(e) => {
-                  setPageSize(Number(e.target.value));
-                }}
-              >
-                {[10, 20, 30, 40, 50, 100, 500].map((pageSize) => (
-                  <option key={pageSize} value={pageSize}>
-                    <Trans>Show {{ pageSize }}</Trans>
-                  </option>
-                ))}
-              </Select>
+              <div className="mt-2">
+                <Dropdown
+                  color={'gray'}
+                  label={t(pageSize === 9999 ? 'Show all' : `Show ${pageSize}`)}
+                  style={{ width: 120 }}
+                  size="sm"
+                  value={pageSize}
+                >
+                  {[10, 20, 30, 40, 50, 100, 500, 9999].map((pageSize) => (
+                    <Dropdown.Item
+                      key={pageSize}
+                      onClick={() => {
+                        setPageSize(Number(pageSize));
+                      }}
+                    >
+                      {pageSize === 9999 ? (
+                        <Trans>Show all</Trans>
+                      ) : (
+                        <Trans>Show {{ pageSize }}</Trans>
+                      )}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown>
+              </div>
             </div>
           </div>
         )}
