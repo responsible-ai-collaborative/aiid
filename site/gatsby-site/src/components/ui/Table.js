@@ -132,25 +132,39 @@ export default function Table({ table, className = '', ...props }) {
             })}
           </tbody>
         </table>
-        <div className="flex gap-2 justify-start items-center my-3 pagination">
-          <Pagination
-            className="pagination mb-0 text-gray-800"
-            onPageChange={(page) => {
-              gotoPage(page - 1);
-            }}
-            currentPage={pageIndex + 1}
-            showIcons={true}
-            totalPages={pageCount}
-          />
+        <div className="flex gap-2 justify-start items-center my-3 pl-1 pagination">
+          {pageSize < 9999 && (
+            <>
+              <Button onClick={() => gotoPage(0)} size={'sm'} color="light" data-cy="first-page">
+                <Trans>First</Trans>
+              </Button>
 
-          <Button onClick={() => gotoPage(pageCount - 1)} size={'sm'} color="light">
-            <Trans>Last</Trans>
-          </Button>
+              <Pagination
+                className="pagination mb-0 text-gray-800"
+                onPageChange={(page) => {
+                  gotoPage(page - 1);
+                }}
+                currentPage={pageIndex + 1}
+                showIcons={true}
+                totalPages={pageCount}
+              />
+
+              <Button
+                onClick={() => gotoPage(pageCount - 1)}
+                size={'sm'}
+                color="light"
+                data-cy="last-page"
+              >
+                <Trans>Last</Trans>
+              </Button>
+            </>
+          )}
 
           <span>
             Page{' '}
             <strong>
-              {pageIndex + 1} of {pageOptions.length}
+              <span data-cy="current-page">{pageIndex + 1}</span> of{' '}
+              <span data-cy="total-pages">{pageOptions.length}</span>
             </strong>{' '}
           </span>
           <Dropdown
