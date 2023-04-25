@@ -50,7 +50,7 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
 
   return (
     <div className={`max-w-full md:max-w-sm flex-1 self-stretch ${className || ''}`}>
-      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-full">
+      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-full max-h-[400px]">
         <div className="flex items-center justify-between px-6 pt-6 pb-4 hover:bg-gray-100 dark:hover:bg-gray-700">
           <LocalizedLink to={`/summaries/leaderboard`}>
             <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
@@ -58,7 +58,7 @@ export const Leaderboard = ({ dataHash, leaderboard: { attribute, title }, limit
             </h5>
           </LocalizedLink>
         </div>
-        <div className="flow-root">
+        <div className="flow-root overflow-y-auto">
           <ul className="divide-y divide-gray-200 dark:divide-gray-700">
             {sortedArray.map((item, index) => (
               <li
