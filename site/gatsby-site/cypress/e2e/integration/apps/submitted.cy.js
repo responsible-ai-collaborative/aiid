@@ -2,6 +2,8 @@ import { maybeIt } from '../../../support/utils';
 import submittedReports from '../../../fixtures/submissions/submitted.json';
 import quickAdds from '../../../fixtures/submissions/quickadds.json';
 import parseNews from '../../../fixtures/api/parseNews.json';
+import { isArray } from 'lodash';
+import { arrayToList } from '../../../../src/utils/typography';
 
 describe('Submitted reports', () => {
   const url = '/apps/submitted';
@@ -55,11 +57,18 @@ describe('Submitted reports', () => {
             'date_downloaded',
             'date_modified',
             'url',
+            'incident_ids',
           ];
 
           for (const key of keys) {
             if (report[key]) {
-              cy.get(`[data-cy="${key}"] div:nth-child(2)`).should('contain', report[key]);
+              let value = report[key];
+
+              if (isArray(value)) {
+                value = arrayToList(value);
+              }
+
+              cy.get(`[data-cy="${key}"] div:nth-child(2)`).should('contain', value);
             } else {
               cy.get(`[data-cy="${key}"] div:nth-child(2)`).should('not.exist');
             }
@@ -142,7 +151,9 @@ describe('Submitted reports', () => {
   maybeIt('Promotes a submission to a new report and links it to an existing incident', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    const submission = submittedReports.data.submissions.find((r) => r.incident_id === 10);
+    const submission = submittedReports.data.submissions.find(
+      (r) => r.incident_ids.length == 1 && r.incident_ids.includes(10)
+    );
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -205,6 +216,82 @@ describe('Submitted reports', () => {
     cy.contains(
       '[data-cy="toast"]',
       'Successfully promoted submission to Incident 10 and Report 1566'
+    ).should('exist');
+  });
+
+  maybeIt('Promotes a submission to a new report and links it to multiple incidents', () => {
+    cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
+
+    const submission = submittedReports.data.submissions.find(
+      (r) => r._id == '444461606b4bb5e39601234'
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindSubmissions',
+      'FindSubmissions',
+      {
+        data: {
+          submissions: [submission],
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'AllQuickAdd',
+      'AllQuickAdd',
+      {
+        data: {
+          quickadds: [quickAdds],
+        },
+      }
+    );
+
+    cy.visit(url);
+
+    cy.wait('@FindSubmissions');
+
+    cy.wait('@AllQuickAdd');
+
+    cy.get('[data-cy="submission"]').first().as('promoteForm');
+
+    cy.get('@promoteForm').within(() => {
+      cy.get('[data-cy="review-button"]').click();
+    });
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'PromoteSubmission',
+      'promoteSubmission',
+      {
+        data: {
+          promoteSubmissionToReport: {
+            incident_ids: [52, 53],
+            report_number: 1566,
+          },
+        },
+      }
+    );
+
+    cy.get('@promoteForm').contains('button', 'Add to incidents 52 and 53').click();
+
+    cy.wait('@promoteSubmission')
+      .its('request.body.variables.input')
+      .then((input) => {
+        expect(input.incident_ids).to.deep.eq([52, 53]);
+        expect(input.submission_id).to.eq('444461606b4bb5e39601234');
+        expect(input.is_incident_report).to.eq(true);
+      });
+
+    cy.contains(
+      '[data-cy="toast"]',
+      'Successfully promoted submission to Incident 52 and Report 1566'
+    ).should('exist');
+
+    cy.contains(
+      '[data-cy="toast"]',
+      'Successfully promoted submission to Incident 53 and Report 1566'
     ).should('exist');
   });
 
@@ -281,7 +368,9 @@ describe('Submitted reports', () => {
   maybeIt('Rejects a submission', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    const submission = submittedReports.data.submissions.find((r) => r.incident_id === 10);
+    const submission = submittedReports.data.submissions.find(
+      (r) => r.incident_ids.length == 1 && r.incident_ids.includes(10)
+    );
 
     cy.conditionalIntercept(
       '**/graphql',

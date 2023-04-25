@@ -44,7 +44,7 @@ function Tools({
         />
         <Button
           color="gray"
-          href={`/apps/submit?incident_id=${incident.incident_id}&date_downloaded=${format(
+          href={`/apps/submit?incident_ids=${incident.incident_id}&date_downloaded=${format(
             new Date(),
             'yyyy-MM-dd'
           )}`}
@@ -101,17 +101,19 @@ function Tools({
             <Trans>CSET Annotators Table</Trans>
           </Button>
         )}
-        <div className="flex items-center">
-          <ToggleSwitch
-            checked={isLiveData}
-            label={t('Show Live data')}
-            onChange={(checked) => {
-              setIsLiveData(checked);
-            }}
-            name="live-data-switch"
-            data-cy="toogle-live-data"
-          />
-        </div>
+        {isUserLoggedIn && (isRole('incident_editor') || isRole('taxonomy_editor')) && (
+          <div className="flex items-center">
+            <ToggleSwitch
+              checked={isLiveData}
+              label={t('Show Live data')}
+              onChange={(checked) => {
+                setIsLiveData(checked);
+              }}
+              name="live-data-switch"
+              data-cy="toogle-live-data"
+            />
+          </div>
+        )}
       </Card.Body>
     </Card>
   );
