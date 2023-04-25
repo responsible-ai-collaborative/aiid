@@ -103,8 +103,8 @@ const allSearchColumns = {
     getReports: async (result) =>
       result.data.incidents.length ? result.data.incidents[0].reports : [],
     getIncidents: async (result) => result.data.incidents,
-    isSet: (incident) => incident.incident_id,
-    getQueryVariables: (incident) => ({ incident_id_in: [incident.incident_id] }),
+    isSet: (incident) => incident.incident_ids && incident.incident_ids.length,
+    getQueryVariables: (incident) => ({ incident_id_in: incident.incident_ids }),
     editSimilar: false,
     editId: false,
     showIncidents: true,
@@ -190,7 +190,7 @@ const RelatedIncidents = ({
 
   useEffect(() => {
     debouncedUpdateSearch(searchColumns, incident);
-  }, [incident.authors, incident.incident_id, incident.date_published, incident.url]);
+  }, [incident.authors, incident.incident_ids, incident.date_published, incident.url]);
 
   const search = useCallback(
     async (key, column) => {
