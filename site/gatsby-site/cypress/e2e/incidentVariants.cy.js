@@ -78,16 +78,17 @@ describe('Variants pages', () => {
             cy.get('[data-cy=variant-status-badge]').contains(
               getVariantStatusText(getVariantStatus(variant))
             );
-            cy.get('[data-cy=variant-text_inputs]').contains(variant.text_inputs.substring(0, 20));
-            cy.get('[data-cy=variant-text_outputs]').contains(
-              variant.text_outputs.substring(0, 20)
-            );
+            cy.get('[data-cy=variant-text]').contains(variant.text);
+            cy.get('[data-cy=variant-inputs-outputs]').eq(0).contains('New Input text');
+            cy.get('[data-cy=variant-inputs-outputs]')
+              .eq(1)
+              .contains('Test output text with markdown');
           });
       }
     });
   });
 
-  it.skip('Should add a new Variant - Unauthenticated user', () => {
+  it('Should add a new Variant - Unauthenticated user', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>

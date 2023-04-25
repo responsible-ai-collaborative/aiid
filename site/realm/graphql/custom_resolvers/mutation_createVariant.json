@@ -12,6 +12,12 @@
                     "date_published": {
                         "bsonType": "string"
                     },
+                    "inputs_outputs": {
+                        "bsonType": "array",
+                        "items": {
+                            "bsonType": "string"
+                        }
+                    },
                     "submitters": {
                         "bsonType": "array",
                         "items": {
@@ -20,12 +26,6 @@
                     },
                     "text": {
                         "bsonType": "string"
-                    },
-                    "inputs_outputs": {
-                        "bsonType": "array",
-                        "items": {
-                            "bsonType": "string"
-                        }
                     }
                 }
             }
