@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Carousel } from 'flowbite-react';
 import bb, { donut } from 'billboard.js';
 import BillboardJS from '@billboard.js/react';
@@ -6,6 +6,8 @@ import BillboardJS from '@billboard.js/react';
 import { getClassificationValue } from 'utils/classifications';
 
 const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
+  const [hover, setHover] = useState(false);
+
   const taxaData = data.allMongodbAiidprodTaxa;
 
   const classificationsData = data.allMongodbAiidprodClassifications;
@@ -93,8 +95,12 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
 
   return (
     !classificationsLoading && (
-      <div className="h-96 dark">
-        <Carousel>
+      <div
+        className="h-96 dark"
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
+        <Carousel slide={hover ? false : undefined}>
           {!classificationsLoading &&
             classificationsData?.nodes &&
             axes.map((axis, index) => {
