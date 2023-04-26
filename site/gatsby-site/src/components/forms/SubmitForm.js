@@ -285,7 +285,10 @@ const SubmitForm = () => {
             initialValues={submission}
             urlFromQueryString={query.url}
             scrollToTop={() => {
-              submissionRef.current.scrollIntoView();
+              setTimeout(() => {
+                // This is needed to make it work in Firefox
+                submissionRef.current.scrollIntoView();
+              }, 0);
             }}
           />
         )}
