@@ -48,10 +48,6 @@ const SubmissionWizard = ({ submitForm, initialValues, urlFromQueryString, scrol
     setCurrentStep((prev) => prev - 1);
   };
 
-  useEffect(() => {
-    setData(initialValues);
-  }, [initialValues]);
-
   const addToast = useToastContext();
 
   const { t } = useTranslation(['submit']);
