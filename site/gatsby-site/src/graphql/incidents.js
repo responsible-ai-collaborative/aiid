@@ -217,8 +217,7 @@ export const FIND_FULL_INCIDENT = gql`
         epoch_date_submitted
         language
         tags
-        text_inputs
-        text_outputs
+        inputs_outputs
       }
       embedding {
         from_reports

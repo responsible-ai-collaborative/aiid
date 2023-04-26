@@ -56,8 +56,9 @@ exports = async function (changeEvent) {
 
         // If the new Report is not a Variant > Insert a pending notification to process in the next build
         if (newReport &&
-          (!newReport.text_inputs || newReport.text_inputs == '') &&
-          (!newReport.text_outputs || newReport.text_outputs == '')) {
+          newReport.title && newReport.title != '' &&
+          newReport.url && newReport.url != '' &&
+          newReport.source_domain && newReport.source_domain != '') {
 
           // If there is a new Report > Insert a pending notification to process in the next build
           notification = {
