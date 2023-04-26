@@ -222,8 +222,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       tags: [String]
       plain_text: String
       embedding: reportEmbedding
-      text_inputs: String
-      text_outputs: String
+      inputs_outputs: [String]
     }
 
     type mongodbAiidprodTaxaField_list implements Node {

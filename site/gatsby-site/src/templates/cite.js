@@ -224,8 +224,7 @@ export const query = graphql`
         epoch_date_submitted
         language
         tags
-        text_inputs
-        text_outputs
+        inputs_outputs
       }
     }
     allMongodbTranslationsReportsEs(filter: { report_number: { in: $report_numbers } })
