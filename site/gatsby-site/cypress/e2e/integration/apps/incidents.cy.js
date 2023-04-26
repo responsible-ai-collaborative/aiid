@@ -1,6 +1,7 @@
 import incident from '../../../fixtures/incidents/incident112.json';
 import updateOneIncident from '../../../fixtures/incidents/updateOneIncident112.json';
 import incidents from '../../../fixtures/incidents/incidents.json';
+import { maybeIt } from '../../../support/utils';
 
 describe('Incidents App', () => {
   const url = '/apps/incidents';
@@ -15,7 +16,7 @@ describe('Incidents App', () => {
     cy.get('[data-cy="row"]').should('have.length.at.least', 10);
   });
 
-  it.skip('Successfully filter and edit incident 112', { retries: { runMode: 4 } }, () => {
+  maybeIt('Successfully filter and edit incident 112', { retries: { runMode: 4 } }, () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
     cy.conditionalIntercept(
@@ -264,5 +265,21 @@ describe('Incidents App', () => {
             incident.AllegedHarmedOrNearlyHarmedParties.map((i) => i['name']).join(', ')
           );
       });
+  });
+
+  it('Should navigate to the last page, and the first page', () => {
+    cy.visit(url);
+
+    cy.get('[data-cy="last-page"]').click();
+
+    cy.get('[data-cy="total-pages"]')
+      .invoke('text')
+      .then((text) => {
+        cy.get('[data-cy="current-page"]').should('have.text', text);
+      });
+
+    cy.get('[data-cy="first-page"]').click();
+
+    cy.get('[data-cy="current-page"]').should('have.text', '1');
   });
 });

@@ -250,9 +250,11 @@ describe('Cite pages', () => {
 
     cy.contains('New Report').scrollIntoView().click();
 
-    cy.contains('[data-cy="prefilled-incident-id"]', 'Adding a new report to incident 10', {
-      timeout: 8000,
-    }).should('be.visible');
+    cy.waitForStableDOM();
+
+    cy.contains('[data-cy="prefilled-incident-id"]', 'Adding a new report to incident 10').should(
+      'be.visible'
+    );
   });
 
   it('should render Next and Previous incident buttons', () => {
