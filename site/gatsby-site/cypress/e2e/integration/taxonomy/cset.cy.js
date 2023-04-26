@@ -10,6 +10,8 @@ describe('The CSET taxonomy page', () => {
   it('Should render CSET fields list and Searchable status', () => {
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.query({
       query: gql`
         {
