@@ -139,7 +139,7 @@ const StepThree = (props) => {
         {(TextInputGroupProps) => (
           <>
             <Form>
-              {!data.incident_id && (
+              {data.incident_ids.length == 0 && (
                 <>
                   {isRole('incident_editor') && (
                     <FieldContainer>
