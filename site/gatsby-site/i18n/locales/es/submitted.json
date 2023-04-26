@@ -8,6 +8,7 @@
     "Successfully promoted submission to <2>Incident {{incident_id}} and Report {{report_number}}</2>": "<2>Incidente {{incident_id}} e Informe {{report_number}}</2> promovido exitosamente",
     "Add new Incident": "Agregar Nuevo Incidente",
     "Add to incident {{id}}": "Agregar al incidente {{id}}",
+    "Add to incidents {{id}}": "Agregar a los incidentes {{id}}",
     "Reject New Incident": "Rechazar Nuevo Incidente",
     "Reject New Report": "Rechazar Nuevo Informe",
     "Loading Submissions...": "Cargando incidentes enviados...",

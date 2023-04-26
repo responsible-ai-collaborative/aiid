@@ -50,3 +50,7 @@ export async function stripMarkdown(markdown) {
 
   return result.contents.toString();
 }
+
+export function arrayToList(array) {
+  return array.join(', ').replace(/, ((?:.(?!, ))+)$/, ' and $1');
+}
