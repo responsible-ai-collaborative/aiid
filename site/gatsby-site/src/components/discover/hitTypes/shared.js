@@ -43,7 +43,7 @@ export function HeaderTitle({ item, ...props }) {
 
 export function SourceDomainSubtitle({ item, ...props }) {
   return (
-    <div {...props} className="text-inherit">
+    <div {...props} className="text-inherit flex">
       <BiasIcon bias_labels={item.bias_labels} publicationName={item.source_domain} />
       <WebArchiveLink url={item.url} date={item.date_submitted}>
         {item.source_domain} &middot; {format(fromUnixTime(item.epoch_date_published), 'yyyy')}
