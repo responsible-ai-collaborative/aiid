@@ -24,7 +24,7 @@ export function citationReportUrl(item, viewType) {
 
 export function HeaderTitle({ item, ...props }) {
   return (
-    <div className="">
+    <div>
       <h5 {...props}>
         <LocalizedLink
           to={citationReportUrl(item, props.viewType)}
@@ -43,13 +43,11 @@ export function HeaderTitle({ item, ...props }) {
 
 export function SourceDomainSubtitle({ item, ...props }) {
   return (
-    <div className="bootstrap">
-      <div {...props} className="text-inherit">
-        <BiasIcon bias_labels={item.bias_labels} publicationName={item.source_domain} />
-        <WebArchiveLink url={item.url} date={item.date_submitted}>
-          {item.source_domain} &middot; {format(fromUnixTime(item.epoch_date_published), 'yyyy')}
-        </WebArchiveLink>
-      </div>
+    <div {...props} className="text-inherit">
+      <BiasIcon bias_labels={item.bias_labels} publicationName={item.source_domain} />
+      <WebArchiveLink url={item.url} date={item.date_submitted}>
+        {item.source_domain} &middot; {format(fromUnixTime(item.epoch_date_published), 'yyyy')}
+      </WebArchiveLink>
     </div>
   );
 }

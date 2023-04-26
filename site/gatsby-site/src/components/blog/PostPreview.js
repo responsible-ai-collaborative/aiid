@@ -18,7 +18,7 @@ function PostPreview({ post, latestPost = false }) {
           />
         </LocalizedLink>
         <div className="p-6">
-          <LocalizedLink to={post.frontmatter.slug} className="">
+          <LocalizedLink to={post.frontmatter.slug}>
             <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white relative block hover:text-primary-blue">
               {post.fields.title}
               {latestPost && (

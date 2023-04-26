@@ -122,7 +122,6 @@ export default function SubmissionEditModal({ show, onHide, submissionId }) {
               data.submission.harmed_parties === null
                 ? []
                 : data.submission.harmed_parties.map((item) => item.name),
-            incident_id: data.submission.incident_id == 0 ? '' : data.submission.incident_id,
           }}
         >
           {({ isValid, isSubmitting, submitForm, values, setFieldValue }) => (

@@ -1,3 +1,5 @@
+import { isArray } from 'lodash';
+import { arrayToList } from '../../../src/utils/typography';
 import parseNews from '../../fixtures/api/parseNews.json';
 import semanticallyRelated from '../../fixtures/api/semanticallyRelated.json';
 import probablyRelatedIncidents from '../../fixtures/incidents/probablyRelatedIncidents.json';
@@ -74,7 +76,7 @@ describe('The Submit form', () => {
         image_url:
           'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
         tags: ['New Tag'],
-        incident_id: 0,
+        incident_ids: [],
         text: "## Recent news stories and blog\n\nposts _highlighted_ the underbelly of YouTube Kids, Google's children-friendly version. This is more text to reach the 256 charactrs minimum, becuase otherwise the text by similarity component doesnt fetch, which surprisingly is way more character that I initially imagined when I started writing this.",
         plain_text:
           "Recent news stories and blog\n\nposts highlighted the underbelly of YouTube Kids, Google's children-friendly version. This is more text to reach the 256 charactrs minimum, becuase otherwise the text by similarity component doesnt fetch, which surprisingly is way more character that I initially imagined when I started writing this.\n",
@@ -86,7 +88,7 @@ describe('The Submit form', () => {
       });
     });
 
-    cy.get('div[class^="ToastContext"]')
+    cy.get('.tw-toast')
       .contains('Report successfully added to review queue. You can see your submission')
       .should('exist');
 
@@ -159,7 +161,7 @@ describe('The Submit form', () => {
           image_url:
             'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
           tags: ['New Tag'],
-          incident_id: 0,
+          incident_ids: [],
           text: "## Recent news stories and blog\n\nposts _highlighted_ the underbelly of YouTube Kids, Google's children-friendly version. This is more text to reach the 256 charactrs minimum, becuase otherwise the text by similarity component doesnt fetch, which surprisingly is way more character that I initially imagined when I started writing this.",
           plain_text:
             "Recent news stories and blog\n\nposts highlighted the underbelly of YouTube Kids, Google's children-friendly version. This is more text to reach the 256 charactrs minimum, becuase otherwise the text by similarity component doesnt fetch, which surprisingly is way more character that I initially imagined when I started writing this.\n",
@@ -171,11 +173,11 @@ describe('The Submit form', () => {
         });
       });
 
-      cy.get('div[class^="ToastContext"]')
+      cy.get('.tw-toast')
         .contains('Report successfully added to review queue')
         .should('be.visible');
 
-      cy.get('div[class^="ToastContext"] a').should('have.attr', 'href', '/apps/submitted/');
+      cy.get('.tw-toast a').should('have.attr', 'href', '/apps/submitted/');
 
       cy.contains('Please review. Some data is missing.').should('not.exist');
     }
@@ -186,17 +188,18 @@ describe('The Submit form', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) =>
-        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 1,
-      'findIncident',
+      (req) => req.body.operationName == 'FindIncidentsTitles',
+      'FindIncidentsTitles',
       {
         data: {
-          incident: {
-            __typename: 'Incident',
-            incident_id: 1,
-            title: 'Test title',
-            date: '2016-03-13',
-          },
+          incidents: [
+            {
+              __typename: 'Incident',
+              incident_id: 1,
+              title: 'Test title',
+              date: '2016-03-13',
+            },
+          ],
         },
       }
     );
@@ -231,7 +234,7 @@ describe('The Submit form', () => {
               image_url:
                 'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
               tags: ['New Tag'],
-              incident_id: '0',
+              incident_ids: [1],
               url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
               source_domain: 'arstechnica.com',
               language: 'en',
@@ -275,7 +278,7 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="to-step-2"]').click();
 
-    cy.wait('@findIncident');
+    cy.wait('@FindIncidentsTitles');
 
     cy.get('[data-cy="to-step-3"]').click();
 
@@ -302,7 +305,7 @@ describe('The Submit form', () => {
         cloudinary_id:
           'reports/cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
         tags: ['New Tag'],
-        incident_id: 1,
+        incident_ids: [1],
         url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
         source_domain: `arstechnica.com`,
         editor_notes: 'Here are some notes',
@@ -331,7 +334,7 @@ describe('The Submit form', () => {
       date_published: '2017-11-10',
       image_url:
         'https://cdn.arstechnica.net/wp-content/uploads/2017/11/Screen-Shot-2017-11-10-at-9.25.47-AM-760x380.png',
-      incident_id: '0',
+      incident_ids: [1],
       url: `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`,
       source_domain: 'arstechnica.com',
       language: 'en',
@@ -339,7 +342,11 @@ describe('The Submit form', () => {
     };
 
     for (let key in expectedValues) {
-      cy.get(`[data-cy="${key}"]`).contains(expectedValues[key]).should('exist');
+      cy.get(`[data-cy="${key}"]`)
+        .contains(
+          isArray(expectedValues[key]) ? arrayToList(expectedValues[key]) : expectedValues[key]
+        )
+        .should('exist');
     }
 
     cy.contains('Please review. Some data is missing.').should('not.exist');
@@ -358,12 +365,12 @@ describe('The Submit form', () => {
 
     cy.wait('@parseNews');
 
-    cy.get('div[class^="ToastContext"]')
+    cy.get('.tw-toast')
       .contains('Error reaching news info endpoint, please try again in a few seconds.')
       .should('exist');
   });
 
-  it.skip('Should pull parameters form the query string and auto-fill fields', () => {
+  it('Should pull parameters form the query string and auto-fill fields', () => {
     const values = {
       url: 'https://test.com',
       title: 'test title',
@@ -373,13 +380,22 @@ describe('The Submit form', () => {
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
       image_url: 'https://test.com/image.jpg',
-      incident_id: '1',
+      incident_ids: [1],
       text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
       tags: 'test tag',
       editor_notes: 'Here are some notes',
     };
 
     const params = new URLSearchParams(values);
+
+    cy.intercept('GET', parserURL, {
+      title: 'test title',
+      authors: 'test author',
+      date_published: '2021-01-02',
+      date_downloaded: '2021-01-03',
+      image_url: 'https://test.com/image.jpg',
+      text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
+    }).as('parseNews');
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -394,24 +410,25 @@ describe('The Submit form', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) =>
-        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 1,
-      'findIncident',
+      (req) => req.body.operationName == 'FindIncidentsTitles',
+      'FindIncidentsTitles',
       {
         data: {
-          incident: {
-            __typename: 'Incident',
-            incident_id: 1,
-            title: 'Test title',
-            date: '2022-01-01',
-          },
+          incidents: [
+            {
+              __typename: 'Incident',
+              incident_id: 1,
+              title: 'Test title',
+              date: '2022-01-01',
+            },
+          ],
         },
       }
     );
 
     cy.visit(url + `?${params.toString()}`);
 
-    cy.waitForStableDOM();
+    cy.wait('@FindIncidentsTitles');
 
     cy.get('.form-has-errors').should('not.exist');
 
@@ -423,8 +440,6 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="to-step-3"]').click();
 
-    cy.wait('@findIncident');
-
     cy.waitForStableDOM();
 
     cy.get('button[type="submit"]').click();
@@ -432,7 +447,7 @@ describe('The Submit form', () => {
     cy.wait('@insertSubmission').then((xhr) => {
       expect(xhr.request.body.variables.submission).to.deep.nested.include({
         ...values,
-        incident_id: '1',
+        incident_ids: [1],
         authors: [values.authors],
         submitters: [values.submitters],
         tags: [values.tags],
@@ -534,40 +549,41 @@ describe('The Submit form', () => {
       relatedReports.byAuthors
     );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'ProbablyRelatedIncidents' &&
-        req.body.variables.query?.incident_id_in?.[0] == 1,
-      'RelatedReportsByIncidentId',
-      relatedReports.byIncidentId
-    );
-
     cy.visit(url);
+
+    cy.waitForStableDOM();
 
     const values = {
       url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
       authors: 'test author',
       date_published: '2014-03-30',
-      incident_id: '1',
+      incident_ids: 1,
     };
 
     for (const key in values) {
-      cy.get(`input[name="${key}"]`).type(values[key]);
+      if (key == 'incident_ids') {
+        cy.get(`input[name="${key}"]`).type(values[key]);
+
+        cy.waitForStableDOM();
+
+        cy.get(`[role="option"]`).first().click();
+      } else {
+        cy.get(`input[name="${key}"]`).type(values[key]);
+      }
     }
+
+    cy.wait(['@RelatedReportsByAuthor']);
 
     cy.waitForStableDOM();
 
-    cy.wait(['@RelatedReportsByAuthor', '@RelatedReportsByIncidentId'], { timeout: 20000 });
-
-    for (const key of ['byURL', 'byDatePublished', 'byIncidentId']) {
+    for (const key of ['byURL', 'byDatePublished']) {
       const reports =
         key == 'byIncidentId'
           ? relatedReports[key].data.incidents[0].reports
           : relatedReports[key].data.reports;
 
       cy.get(`[data-cy="related-${key}"]`).within(() => {
-        cy.get('[data-cy="result"]').should('have.length', reports.length, 'bue');
+        cy.get('[data-cy="result"]').should('have.length', reports.length);
 
         for (const report of reports) {
           cy.contains('[data-cy="result"]', report.title, { timeout: 10000 }).should('be.visible');
@@ -634,29 +650,28 @@ describe('The Submit form', () => {
       relatedReports.byAuthors
     );
 
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'ProbablyRelatedIncidents' &&
-        req.body.variables.query?.incident_id_in?.[0] == 1,
-      'RelatedReportsByIncidentId',
-      relatedReports.byIncidentId
-    );
-
     const values = {
       url: 'https://www.cnn.com/2021/11/02/homes/zillow-exit-ibuying-home-business/index.html',
       authors: 'test author',
       date_published: '2021-01-02',
-      incident_id: '1',
+      incident_ids: '1',
     };
 
     cy.visit(url);
 
     for (const key in values) {
-      cy.get(`input[name="${key}"]`).type(values[key]);
+      if (key == 'incident_ids') {
+        cy.get(`input[name="${key}"]`).type(values[key]);
+
+        cy.waitForStableDOM();
+
+        cy.get(`[role="option"]`).first().click();
+      } else {
+        cy.get(`input[name="${key}"]`).type(values[key]);
+      }
     }
 
-    cy.wait(['@RelatedReportsByAuthor', '@RelatedReportsByIncidentId'], { timeout: 20000 });
+    cy.wait(['@RelatedReportsByAuthor']);
 
     cy.get('[data-cy="no-related-reports"]').should('be.visible');
 
@@ -765,42 +780,6 @@ describe('The Submit form', () => {
     cy.get('[data-cy=image-preview-figure] img', { timeout: 30000 })
       .scrollIntoView()
       .should('have.attr', 'src', cloudinaryImageUrl);
-  });
-
-  it("Should not submit form when linking to an Incident that doesn't exist", () => {
-    cy.conditionalIntercept(
-      '**/graphql',
-      (req) =>
-        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 3456456,
-      'findIncident',
-      { data: { incident: null } }
-    );
-
-    cy.visit(url);
-
-    const valuesStep1 = {
-      url: 'https://test.com',
-      title: 'test title',
-      authors: 'test author',
-      date_published: '2021-01-02',
-      date_downloaded: '2021-01-03',
-      incident_date: '2022-01-01',
-      incident_id: '3456456',
-    };
-
-    for (const key in valuesStep1) {
-      cy.get(`[name="${key}"]`).type(valuesStep1[key]);
-    }
-
-    cy.setEditorText(
-      'Sit quo accusantium quia assumenda. Quod delectus similique labore optio quaease'
-    );
-
-    cy.get('[name="incident_date"]').should('not.exist');
-
-    cy.wait('@findIncident');
-
-    cy.contains('Incident ID 3456456 not found!').should('exist');
   });
 
   it('Should show the editor notes field', () => {
@@ -919,7 +898,7 @@ describe('The Submit form', () => {
 
     cy.wait('@insertSubmission');
 
-    cy.get('div[class^="ToastContext"]')
+    cy.get('.tw-toast')
       .contains('Informe agregado exitosamente a la cola de revisión.')
       .should('exist');
   });
@@ -954,7 +933,7 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="submit-step-1"]').click();
 
-    cy.get('div[class^="ToastContext"]')
+    cy.get('.tw-toast')
       .contains('Report successfully added to review queue. You can see your submission')
       .should('exist');
   });
@@ -997,7 +976,7 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="submit-step-2"]').click();
 
-    cy.get('div[class^="ToastContext"]')
+    cy.get('.tw-toast')
       .contains('Report successfully added to review queue. You can see your submission')
       .should('exist');
   });
@@ -1018,7 +997,7 @@ describe('The Submit form', () => {
     cy.contains('Please review. Some data is missing.').should('exist');
   });
 
-  it.skip('Should submit a new report response', () => {
+  it('Should submit a new report response', () => {
     const values = {
       url: 'https://test.com',
       title: 'test title',
@@ -1028,7 +1007,7 @@ describe('The Submit form', () => {
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
       image_url: 'https://test.com/image.jpg',
-      incident_id: '1',
+      incident_ids: [1],
       text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
       tags: 'response',
       editor_notes: 'Here are some notes',
@@ -1049,22 +1028,27 @@ describe('The Submit form', () => {
 
     cy.conditionalIntercept(
       '**/graphql',
-      (req) =>
-        req.body.operationName == 'FindIncident' && req.body.variables.query.incident_id == 1,
-      'findIncident',
+      (req) => req.body.operationName == 'FindIncidentsTitles',
+      'FindIncidentsTitles',
       {
         data: {
-          incident: {
-            __typename: 'Incident',
-            incident_id: 1,
-            title: 'Test title',
-            date: '2022-01-01',
-          },
+          incidents: [
+            {
+              __typename: 'Incident',
+              incident_id: 1,
+              title: 'Test title',
+              date: '2022-01-01',
+            },
+          ],
         },
       }
     );
 
+    cy.intercept('GET', parserURL).as('parseNews');
+
     cy.visit(url + `?${params.toString()}`);
+
+    cy.wait('@parseNews');
 
     cy.get('[data-cy="submit-form-title"]').contains('New Incident Response').should('exist');
 
@@ -1072,13 +1056,13 @@ describe('The Submit form', () => {
 
     cy.waitForStableDOM();
 
-    cy.get('[data-cy="to-step-2"]').click();
+    cy.get('[data-cy="to-step-2"]').scrollIntoView().click();
 
     cy.waitForStableDOM();
 
     cy.get('[data-cy="to-step-3"]').click();
 
-    cy.wait('@findIncident');
+    cy.wait('@FindIncidentsTitles');
 
     cy.get('button[type="submit"]').scrollIntoView().click();
 
@@ -1087,7 +1071,7 @@ describe('The Submit form', () => {
     cy.wait('@insertSubmission').then((xhr) => {
       expect(xhr.request.body.variables.submission).to.deep.nested.include({
         ...values,
-        incident_id: '1',
+        incident_ids: [1],
         authors: [values.authors],
         submitters: [values.submitters],
         tags: [values.tags],
@@ -1203,7 +1187,7 @@ describe('The Submit form', () => {
       .should('contain', 'No related reports found.');
   });
 
-  it('Should hide incident_date, description, deployers, developers & harmed_parties if incident_id', () => {
+  it('Should hide incident_date, description, deployers, developers & harmed_parties if incident_ids is set', () => {
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'InsertSubmission',
@@ -1211,6 +1195,24 @@ describe('The Submit form', () => {
       {
         data: {
           insertOneSubmission: { __typename: 'Submission', _id: '6272f2218933c7a9b512e13b' },
+        },
+      }
+    );
+
+    cy.conditionalIntercept(
+      '**/graphql',
+      (req) => req.body.operationName == 'FindIncidentsTitles',
+      'FindIncidentsTitles',
+      {
+        data: {
+          incidents: [
+            {
+              __typename: 'Incident',
+              incident_id: 1,
+              title: 'Test title',
+              date: '2016-03-13',
+            },
+          ],
         },
       }
     );
@@ -1223,12 +1225,19 @@ describe('The Submit form', () => {
       authors: 'test author',
       date_published: '2021-01-02',
       date_downloaded: '2021-01-03',
-      incident_date: '2022-01-01',
-      incident_id: '1',
+      incident_ids: '1',
     };
 
     for (const key in valuesStep1) {
-      cy.get(`[name="${key}"]`).type(valuesStep1[key]);
+      if (key == 'incident_ids') {
+        cy.get(`input[name="${key}"]`).type(valuesStep1[key]);
+
+        cy.waitForStableDOM();
+
+        cy.get(`[role="option"]`).first().click();
+      } else {
+        cy.get(`[name="${key}"]`).type(valuesStep1[key]);
+      }
     }
 
     cy.setEditorText(
@@ -1273,7 +1282,7 @@ describe('The Submit form', () => {
         ...valuesStep1,
         ...valuesStep2,
         ...valuesStep3,
-        incident_id: 1,
+        incident_ids: [1],
         authors: [valuesStep1.authors],
         submitters: [valuesStep2.submitters],
         tags: [],
@@ -1285,11 +1294,9 @@ describe('The Submit form', () => {
       });
     });
 
-    cy.get('div[class^="ToastContext"]')
-      .contains('Report successfully added to review queue')
-      .should('be.visible');
+    cy.get('.tw-toast').contains('Report successfully added to review queue').should('be.visible');
 
-    cy.get('div[class^="ToastContext"] a').should('have.attr', 'href', '/apps/submitted/');
+    cy.get('.tw-toast a').should('have.attr', 'href', '/apps/submitted/');
 
     cy.contains('Please review. Some data is missing.').should('not.exist');
   });
@@ -1324,7 +1331,7 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="submit-step-1"]').click();
 
-    cy.get('div[class^="ToastContext"]')
+    cy.get('.tw-toast')
       .contains('Report successfully added to review queue. You can see your submission')
       .should('exist');
 
@@ -1342,7 +1349,7 @@ describe('The Submit form', () => {
 
     cy.get('[data-cy="submit-step-1"]').click();
 
-    cy.get('div[class^="ToastContext"]')
+    cy.get('.tw-toast')
       .contains('Report successfully added to review queue. You can see your submission')
       .should('exist');
   });
@@ -1358,7 +1365,7 @@ describe('The Submit form', () => {
 
     cy.wait('@parseNews');
 
-    cy.get('div[class^="ToastContext"]')
+    cy.get('.tw-toast')
       .contains('Please verify all information programmatically pulled from the report')
       .should('exist');
 

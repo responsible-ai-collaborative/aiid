@@ -22,7 +22,6 @@ const plugins = [
       excludePattern: /(\/discover\/)/,
     },
   },
-  'gatsby-plugin-styled-components',
   'gatsby-plugin-sitemap',
   `gatsby-plugin-image`,
   'gatsby-plugin-sharp',

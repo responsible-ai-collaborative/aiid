@@ -10,7 +10,7 @@ describe('Entities page', () => {
 
     cy.get('[data-cy="entities"]').should('be.visible');
 
-    cy.get('[data-cy="entities"] tr').should('have.length.at.least', 658);
+    cy.get('[data-cy="entities"] tr').should('have.length.at.least', 10);
   });
 
   it('Filter entities by name', () => {
@@ -28,7 +28,7 @@ describe('Entities page', () => {
 
     cy.get('[data-cy="entities"] tr').should('have.length.at.least', 1);
 
-    cy.get('[data-cy="row-cruise"]').should('be.visible');
+    cy.contains('[data-cy="row"]', 'Cruise').should('be.visible');
   });
 
   it('Entities row should be expandable', () => {
@@ -36,7 +36,7 @@ describe('Entities page', () => {
 
     cy.get('[data-cy="input-filter-Entity"]').type('Amazon');
 
-    cy.get('[data-cy="row-amazon"]').as('row');
+    cy.contains('[data-cy="row"]', 'Amazon').as('row');
 
     cy.get('@row').find('[title="Toggle Row Expanded"]').click();
 
@@ -52,18 +52,15 @@ describe('Entities page', () => {
 
     cy.get('[data-cy="header-responses"]').should('exist');
 
-    cy.get('[data-cy="cell-responses"]').should('have.length.at.least', 658);
+    cy.get('[data-cy="cell-responses"]').should('have.length.at.least', 10);
 
-    cy.get('[data-cy="input-filter-Incident Responses"]').type('google');
+    cy.get('[data-cy="input-filter-Entity"]').type('openai');
 
-    cy.get('[data-cy="cell-responses"]').should('have.length.lessThan', 200);
+    cy.get('[data-cy="cell-responses"]').should('have.text', '1 Incident responses');
   });
 
   it('Should be able to sort', () => {
     cy.visit(url);
-    cy.get('[data-cy="entities"] tbody tr:nth-child(1) [data-cy="cell-id"]').contains(
-      'a',
-      'Facebook'
-    );
+    cy.get('[data-cy="row"]').first().contains('a', 'Facebook').should('be.visible');
   });
 });

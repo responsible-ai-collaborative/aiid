@@ -2,18 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Spinner } from 'flowbite-react';
 import { CloudinaryImage } from '@cloudinary/base';
 import { Trans } from 'react-i18next';
-import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { useQuery } from '@apollo/client';
 import { graphql } from 'gatsby';
 import AiidHelmet from 'components/AiidHelmet';
 import Layout from 'components/Layout';
-import { getTranslatedReports, sortIncidentsByDatePublished } from 'utils/cite';
-import { computeEntities, RESPONSE_TAG } from 'utils/entities';
+import { sortIncidentsByDatePublished } from 'utils/cite';
 import config from '../../../config';
 import { isCompleteReport } from 'utils/variants';
-import { FIND_FULL_INCIDENT, FIND_INCIDENT } from '../../graphql/incidents';
-import CiteTemplate from 'templates/citeTemplate';
-import { FIND_CLASSIFICATION } from '../../graphql/classifications';
+import { FIND_FULL_INCIDENT } from '../../graphql/incidents';
+import CiteDynamicTemplate from 'templates/citeDynamicTemplate';
 
 function CiteDynamicPage(props) {
   const {
@@ -27,19 +24,7 @@ function CiteDynamicPage(props) {
 
   const editor_dissimilar_incidents = [];
 
-  const { locale } = useLocalization();
-
   const [incident, setIncident] = useState(null);
-
-  const [entities, setEntities] = useState(null);
-
-  const [sortedReports, setSortedReports] = useState([]);
-
-  const [timeline, setTimeline] = useState(null);
-
-  const [variants, setVariants] = useState([]);
-
-  const [classifications, setClassifications] = useState(null);
 
   // meta tags
 
@@ -53,51 +38,11 @@ function CiteDynamicPage(props) {
     variables: { query: { incident_id } },
   });
 
-  const { data: prevIncident } = useQuery(FIND_INCIDENT, {
-    variables: { query: { incident_id: parseInt(incident_id) - 1 } },
-  });
-
-  const { data: nextIncident } = useQuery(FIND_INCIDENT, {
-    variables: { query: { incident_id: parseInt(incident_id) + 1 } },
-  });
-
-  const { data: classificationsData } = useQuery(FIND_CLASSIFICATION, {
-    variables: { query: { incident_id, publish: true } },
-  });
-
   useEffect(() => {
-    if (incidentData?.incident && classificationsData?.classifications) {
+    if (incidentData?.incident) {
       const incidentTemp = { ...incidentData.incident };
 
-      setClassifications({ nodes: classificationsData?.classifications });
-
-      //set Entities incident fields
-      incidentTemp.Alleged_deployer_of_AI_system = incidentTemp.AllegedDeployerOfAISystem.map(
-        (e) => e.entity_id
-      );
-      incidentTemp.Alleged_developer_of_AI_system = incidentTemp.AllegedDeveloperOfAISystem.map(
-        (e) => e.entity_id
-      );
-      incidentTemp.Alleged_harmed_or_nearly_harmed_parties =
-        incidentTemp.AllegedHarmedOrNearlyHarmedParties.map((e) => e.entity_id);
-
-      const entities = computeEntities({
-        incidents: [incidentTemp],
-        entities: entitiesData.nodes,
-        responses: responses.nodes,
-      });
-
-      const incidentReports = getTranslatedReports({
-        allMongodbAiidprodReports: { nodes: incidentTemp.reports },
-        translations: {
-          en: { nodes: incidentTemp.reports },
-          es: { nodes: incidentTemp.reports },
-          fr: { nodes: incidentTemp.reports },
-        },
-        locale,
-      });
-
-      const sortedIncidentReports = sortIncidentsByDatePublished(incidentReports);
+      const sortedIncidentReports = sortIncidentsByDatePublished(incidentTemp.reports);
 
       const sortedReports = sortedIncidentReports.filter((report) => isCompleteReport(report));
 
@@ -107,32 +52,9 @@ function CiteDynamicPage(props) {
         cloudName: config.cloudinary.cloudName,
       });
 
-      const timelineTemp = sortedReports.map(
-        ({ date_published, title, mongodb_id, report_number, tags }) => ({
-          date_published,
-          title,
-          mongodb_id,
-          report_number,
-          isResponse: tags && tags.includes(RESPONSE_TAG),
-        })
-      );
-
-      timelineTemp.push({
-        date_published: incidentTemp.date,
-        title: 'Incident Occurrence',
-        mongodb_id: 0,
-        isOccurrence: true,
-      });
-
-      const variantsTemp = sortedIncidentReports.filter((report) => !isCompleteReport(report));
-
-      setEntities(entities);
       setMetaTitle(`Incident ${incidentTemp.incident_id}: ${incidentTemp.title}`);
       setMetaDescription(incidentTemp.description);
       setMetaImage(image.createCloudinaryURL());
-      setTimeline(timelineTemp);
-      setSortedReports(sortedReports);
-      setVariants(variantsTemp);
       setIncident(incidentTemp);
     }
   }, [incidentData]);
@@ -146,25 +68,15 @@ function CiteDynamicPage(props) {
       {loading ? (
         <Spinner />
       ) : !loading && incident ? (
-        <CiteTemplate
-          incident={incident}
-          sortedReports={sortedReports}
-          variants={variants}
-          metaTitle={metaTitle}
-          entities={entities}
-          timeline={timeline}
-          locationPathName={props.location.pathname}
+        <CiteDynamicTemplate
           allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
-          allMongodbAiidprodClassifications={classifications}
-          nextIncident={
-            nextIncident && nextIncident.incident ? nextIncident.incident.incident_id : null
-          }
-          prevIncident={
-            prevIncident && prevIncident.incident ? prevIncident.incident.incident_id : null
-          }
+          entitiesData={entitiesData}
+          incident_id={incident.incident_id}
+          responses={responses}
           nlp_similar_incidents={nlp_similar_incidents}
           editor_similar_incidents={editor_similar_incidents}
           editor_dissimilar_incidents={editor_dissimilar_incidents}
+          locationPathName={props.location.pathname}
         />
       ) : (
         <Trans>Incident {{ incident_id }} not found</Trans>
