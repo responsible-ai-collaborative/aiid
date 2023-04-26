@@ -10,6 +10,7 @@ export default function Tags({
   name,
   disabled = false,
   options,
+  stayOpen = false,
 }) {
   const [open, setOpen] = useState(false);
 
@@ -45,7 +46,7 @@ export default function Tags({
       }}
       allowNew
       multiple
-      open={open ? true : undefined}
+      open={open && stayOpen ? true : undefined}
       renderMenu={options ? undefined : () => null}
       onChange={(value) => onChange(value)}
       options={options || []}
