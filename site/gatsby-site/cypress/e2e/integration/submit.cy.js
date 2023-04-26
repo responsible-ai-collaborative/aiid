@@ -152,11 +152,9 @@ describe('The Submit form', () => {
       });
     });
 
-    cy.get('div[class^="ToastContext"]')
-      .contains('Report successfully added to review queue')
-      .should('be.visible');
-
-    cy.get('div[class^="ToastContext"] a').should('have.attr', 'href', '/apps/submitted/');
+    cy.get('.tw-toast')
+      .contains('Report successfully added to review queue. You can see your submission')
+      .should('exist');
 
     cy.contains('Please review. Some data is missing.').should('not.exist');
   });
