@@ -12,6 +12,7 @@ import QuickSearch from 'components/landing/QuickSearch';
 import QuickAdd from 'components/landing/QuickAdd';
 import RandomReports from 'components/landing/RandomReports';
 import Hero from 'components/landing/Hero';
+import NewsLetterSignup from 'components/landing/newsLetterSignup';
 import { useTranslation } from 'react-i18next';
 import { graphql } from 'gatsby';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
@@ -108,7 +109,7 @@ const LandingPage = (props) => {
 
         <div className="mb-5 md:mb-10 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-5 md:gap-10 flex-wrap">
           <div className="flex-1 lg:max-w-[50%] grow">
-            <WordCounts localWordCounts={localWordCounts} />
+            <NewsLetterSignup/>
           </div>
           <div className="flex-1 lg:max-w-[50%] self-stretch">
             <RandomReports />
