@@ -12,7 +12,7 @@ function ToggleContent({ label, touched, faIcon, toggled, accordion = false }) {
     <div className="flex flex-nowrap items-center justify-between w-full">
       <div
         className={`flex items-center whitespace-nowrap ${
-          !accordion ? 'text-[0.8vw] md:text-[1vw] lg:text-xs' : 'text-xs'
+          !accordion ? 'text-[1.2vw] lg:text-xs' : 'text-xs'
         }`}
       >
         {faIcon && <FontAwesomeIcon icon={faIcon} />}
