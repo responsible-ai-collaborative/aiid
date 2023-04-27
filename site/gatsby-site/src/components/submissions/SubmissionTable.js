@@ -265,7 +265,6 @@ export default function SubmissionTable({ data }) {
   };
 
   function StringCell({ cell }) {
-    console.log(cell);
     return (
       <div className="max-w-[400px] flex flex-col items-start">
         <div className="line-clamp-4 text-ellipsis" style={{ whiteSpace: 'break-spaces' }}>
