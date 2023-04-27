@@ -40,6 +40,8 @@ describe('Variants App', () => {
 
         const incident = variantIncidents.data.incidents[0];
 
+        const variant = variants.data.reports[0];
+
         cy.get('[data-cy="cell"]').eq(0).should('have.text', `Incident ${incident.incident_id}`);
         cy.get('[data-cy="cell"]')
           .eq(0)
@@ -49,8 +51,17 @@ describe('Variants App', () => {
         cy.get('[data-cy="cell"]')
           .eq(2)
           .should('have.text', getVariantStatusText(VARIANT_STATUS.unreviewed));
-        cy.get('[data-cy="cell"]').eq(3).should('have.text', 'Test input text with markdown');
-        cy.get('[data-cy="cell"]').eq(4).should('have.text', 'Test output text with markdown');
+        cy.get('[data-cy="cell"]').eq(3).should('have.text', variant.text);
+        cy.get('[data-cy="cell"]')
+          .eq(4)
+          .find('div')
+          .eq(1)
+          .should('have.text', 'Test input text with markdown');
+        cy.get('[data-cy="cell"]')
+          .eq(4)
+          .find('div')
+          .eq(2)
+          .should('have.text', 'Test output text with markdown');
       });
   });
 
@@ -85,6 +96,8 @@ describe('Variants App', () => {
 
         const incident = variantIncidents.data.incidents[0];
 
+        const variant = variants.data.reports[0];
+
         cy.get('[data-cy="cell"]').eq(0).should('have.text', `Incident ${incident.incident_id}`);
         cy.get('[data-cy="cell"]')
           .eq(0)
@@ -94,8 +107,17 @@ describe('Variants App', () => {
         cy.get('[data-cy="cell"]')
           .eq(2)
           .should('have.text', getVariantStatusText(VARIANT_STATUS.unreviewed));
-        cy.get('[data-cy="cell"]').eq(3).should('have.text', 'Test input text with markdown');
-        cy.get('[data-cy="cell"]').eq(4).should('have.text', 'Test output text with markdown');
+        cy.get('[data-cy="cell"]').eq(3).should('have.text', variant.text);
+        cy.get('[data-cy="cell"]')
+          .eq(4)
+          .find('div')
+          .eq(1)
+          .should('have.text', 'Test input text with markdown');
+        cy.get('[data-cy="cell"]')
+          .eq(4)
+          .find('div')
+          .eq(2)
+          .should('have.text', 'Test output text with markdown');
       });
 
     cy.get('[data-cy="row"]')
@@ -116,8 +138,14 @@ describe('Variants App', () => {
         cy.get('[data-cy="cell"]')
           .eq(2)
           .should('have.text', getVariantStatusText(VARIANT_STATUS.approved));
-        cy.get('[data-cy="cell"]').eq(3).should('have.text', variant.text_inputs);
-        cy.get('[data-cy="cell"]').eq(4).should('have.text', variant.text_outputs);
+        cy.get('[data-cy="cell"]').eq(3).should('have.text', variant.text);
+        for (let i = 0; i < variant.inputs_outputs.length; i++) {
+          cy.get('[data-cy="cell"]')
+            .eq(4)
+            .find('div')
+            .eq(i + 1)
+            .should('have.text', variant.inputs_outputs[i]);
+        }
       });
 
     cy.get('[data-cy="row"]')
@@ -138,8 +166,14 @@ describe('Variants App', () => {
         cy.get('[data-cy="cell"]')
           .eq(2)
           .should('have.text', getVariantStatusText(VARIANT_STATUS.rejected));
-        cy.get('[data-cy="cell"]').eq(3).should('have.text', variant.text_inputs);
-        cy.get('[data-cy="cell"]').eq(4).should('have.text', variant.text_outputs);
+        cy.get('[data-cy="cell"]').eq(3).should('have.text', variant.text);
+        for (let i = 0; i < variant.inputs_outputs.length; i++) {
+          cy.get('[data-cy="cell"]')
+            .eq(4)
+            .find('div')
+            .eq(i + 1)
+            .should('have.text', variant.inputs_outputs[i]);
+        }
       });
   });
 
@@ -403,9 +437,14 @@ describe('Variants App', () => {
   maybeIt('Should Edit a Variant - Incident Editor user', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    const new_text_inputs = 'New Input text';
+    const new_date_published = '2000-01-01';
 
-    const new_text_outputs = 'New Output text';
+    const new_text =
+      'New text example with more than 80 characters. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+
+    const new_inputs_outputs_1 = 'New Input text';
+
+    const new_submitter = 'New Submitter';
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -441,8 +480,12 @@ describe('Variants App', () => {
       (req) =>
         req.body.operationName == 'UpdateVariant' &&
         req.body.variables.query.report_number === variant.report_number &&
-        req.body.variables.set.text_inputs === new_text_inputs &&
-        req.body.variables.set.text_outputs === new_text_outputs &&
+        req.body.variables.set.date_published === new_date_published &&
+        req.body.variables.set.submitters[0] === variant.submitters[0] &&
+        req.body.variables.set.submitters[1] === new_submitter &&
+        req.body.variables.set.text === new_text &&
+        req.body.variables.set.inputs_outputs[0] === new_inputs_outputs_1 &&
+        req.body.variables.set.inputs_outputs[1] === undefined &&
         req.body.variables.set.tags.includes(VARIANT_STATUS.approved) &&
         req.body.variables.set.date_modified == today &&
         req.body.variables.set.epoch_date_modified == getUnixTime(new Date(today)),
@@ -487,8 +530,11 @@ describe('Variants App', () => {
 
     cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
 
-    cy.get('[data-cy="variant-form-text-inputs"]').clear().type(new_text_inputs);
-    cy.get('[data-cy="variant-form-text-outputs"]').clear().type(new_text_outputs);
+    cy.get('[data-cy="variant-form-date-published"]').type(new_date_published);
+    cy.get('[data-cy="variant-form-submitters"]').type(new_submitter);
+    cy.get('[data-cy="variant-form-text"]').clear().type(new_text);
+    cy.get('[data-cy="variant-form-inputs-outputs"]:eq(0)').clear().type(new_inputs_outputs_1);
+    cy.get('[data-cy="delete-text-row-btn"]').click();
 
     cy.get('[data-cy=edit-variant-modal]').find('[data-cy=approve-variant-btn]').click();
 

@@ -21,8 +21,7 @@ export const FIND_VARIANTS = gql`
       epoch_date_submitted
       language
       tags
-      text_inputs
-      text_outputs
+      inputs_outputs
     }
   }
 `;
@@ -38,8 +37,7 @@ export const FIND_INCIDENT_VARIANTS = gql`
         source_domain
         date_published
         tags
-        text_inputs
-        text_outputs
+        inputs_outputs
       }
     }
   }
@@ -51,9 +49,10 @@ export const FIND_VARIANT = gql`
       report_number
       title
       date_published
+      submitters
+      text
       tags
-      text_inputs
-      text_outputs
+      inputs_outputs
     }
   }
 `;

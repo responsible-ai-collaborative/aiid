@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Carousel } from 'flowbite-react';
 import bb, { donut } from 'billboard.js';
 import BillboardJS from '@billboard.js/react';
+import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 
 import { getClassificationValue } from 'utils/classifications';
 
 const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
+  const [hover, setHover] = useState(false);
+
   const taxaData = data.allMongodbAiidprodTaxa;
 
   const classificationsData = data.allMongodbAiidprodClassifications;
@@ -93,8 +96,12 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
 
   return (
     !classificationsLoading && (
-      <div className="h-96 dark">
-        <Carousel>
+      <div
+        className="h-96 dark"
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
+        <Carousel slide={hover ? false : undefined}>
           {!classificationsLoading &&
             classificationsData?.nodes &&
             axes.map((axis, index) => {
@@ -120,14 +127,20 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
                     }
                   },
                 },
+                interaction: {
+                  enabled: false,
+                },
               };
 
               return (
                 <div key={index} className="h-96">
                   <h3 className="text-base text-center">{axis}</h3>
-                  <div className="h-96">
+                  <LocalizedLink
+                    to={`/taxonomy/${namespace.toLowerCase()}#field-${encodeURIComponent(axis)}`}
+                    className="h-96"
+                  >
                     <BillboardJS bb={bb} options={{ ...options }} />
-                  </div>
+                  </LocalizedLink>
                 </div>
               );
             })}

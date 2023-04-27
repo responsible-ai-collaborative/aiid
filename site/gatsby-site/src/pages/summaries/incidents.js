@@ -87,8 +87,7 @@ export const pageQuery = graphql`
         report_number
         title
         url
-        text_inputs
-        text_outputs
+        inputs_outputs
       }
     }
   }

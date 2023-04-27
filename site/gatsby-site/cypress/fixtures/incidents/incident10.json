@@ -429,14 +429,13 @@
           "url": "https://www.nytimes.com/interactive/2014/08/13/us/starbucks-workers-scheduling-hours.html"
         },
         {
-            "authors": ["Pablo Costa"],
-            "date_published": "2023-04-18",
-            "epoch_date_submitted": 1559347200,
-            "report_number": 18,
-            "tags": ["variant:unreviewed"],
-            "text_inputs": "Input 1",
-            "text_outputs": "Output 1"
-          }
+          "authors": ["Pablo Costa"],
+          "date_published": "2023-04-18",
+          "epoch_date_submitted": 1559347200,
+          "report_number": 18,
+          "tags": ["variant:unreviewed"],
+          "inputs_outputs": ["Input 1", "Output 1"]
+        }
       ],
       "title": "Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees V2"
     }

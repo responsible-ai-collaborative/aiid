@@ -645,6 +645,7 @@ function FormField({
           placeHolder="Type and press Enter to add an item"
           value={formikValues[identifier]}
           options={autocompleteValues}
+          stayOpen={true}
           onChange={(value) => {
             setFieldTouched(identifier, true);
             setFieldValue(identifier, value);

@@ -323,6 +323,10 @@
     .submission-modal > div:first-child {
         @apply md:m-auto;
     }
+
+    .pagination nav ul {
+        margin-top: 0 !important;
+    }
 }
 
 @layer utilities {
@@ -630,7 +634,11 @@
   }
 
   .Typeahead .rbt-menu.dropdown-menu .dropdown-item {
-    @apply text-gray-800 bg-transparent border-none block clear-both font-normal whitespace-nowrap w-full px-4 py-2 hover:bg-gray-200;
+    @apply text-gray-800 border-none block clear-both font-normal whitespace-nowrap w-full px-4 py-2 bg-transparent hover:bg-gray-200;
+  }
+
+  .Typeahead .rbt-menu.dropdown-menu .dropdown-item.active{
+    @apply bg-blue-100 !important;
   }
 
   .floating-label-dropdown button {
