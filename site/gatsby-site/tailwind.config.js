@@ -79,7 +79,6 @@ module.exports = {
         'disable-gray': '#dee2e6',
         'primary-blue': '#0d6efd',
         'hover-blue': '#0b5ed7',
-        'gray-500': '#adb5bd',
         'dark-gray': '#6c757d',
         'muted-gray': '#6c757d',
         'deep-blue': '#0a58ca',

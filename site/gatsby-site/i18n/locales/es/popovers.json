@@ -55,24 +55,20 @@
        "title": "Partes presuntamente perjudicadas o casi perjudicadas",
        "text": "Si son múltiples, presione “enter” después del elemento para ingresar uno nuevo"
      },
-     "deployers": {
-       "title": "Presunto implementador del sistema de IA",
-       "text": "Si son múltiples, presione “enter” después del elemento para ingresar uno nuevo"
-     },
-     "developers": {
-       "title": "Presunto desarrollador del sistema de IA",
-       "text": "Si son múltiples, presione “enter” después del elemento para ingresar uno nuevo"
-     },
-     "description": {
+    "deployers": {
+        "title": "Presunto implementador del sistema de IA",
+        "text": "Si son múltiples, presione “enter” después del elemento para ingresar uno nuevo"
+    },
+    "developers": {
+        "title": "Presunto desarrollador del sistema de IA",
+        "text": "Si son múltiples, presione “enter” después del elemento para ingresar uno nuevo"
+    },
+    "description": {
         "title": "Descripción",
         "text": "Una descripción breve, fáctica, periodísticamente neutral y completa del incidente que mencione el incidente/problema, la ubicación y el daño."
-     },
-     "text_inputs": {
-        "title": "Entrada y circunstancias",
-        "text": "Proporcione los detalles relevantes que produjeron el incidente. Los ejemplos incluyen las indicaciones de entrada a un chatbot o una descripción de las circunstancias que conducen a las lesiones sufridas por un robot."
-     },
-     "text_outputs": {
-        "title": "Producto y resultados",
-        "text": "Proporcione los detalles relevantes que rodean el incidente. Los ejemplos incluyen el texto de salida de un chatbot o la naturaleza de las lesiones sufridas por un robot."
-     }
+    },
+    "inputs_outputs": {
+        "title": "Entradas / Salidas",
+        "text": "La secuencia de entradas de datos en el sistema inteligente y salidas producidas por el sistema involucrado en el incidente. Para un chatbot, esto generalmente presentará un ida y vuelta entre las respuestas de un humano y las del chatbot."
+    }
 }
