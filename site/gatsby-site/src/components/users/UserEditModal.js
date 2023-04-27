@@ -4,10 +4,11 @@ import { Modal } from 'flowbite-react';
 import { Formik } from 'formik';
 import { Trans } from 'react-i18next';
 import UserForm, { schema } from './UserForm';
-import { FIND_USER, UPDATE_USER_ROLES } from '../../graphql/users';
+import { FIND_USER, UPDATE_USER_PROFILE, UPDATE_USER_ROLES } from '../../graphql/users';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import SubmitButton from 'components/ui/SubmitButton';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
+import lodash from 'lodash';
 
 const supportedRoles = [
   { name: 'admin', description: 'All permissions' },
@@ -54,11 +55,23 @@ export default function UserEditModal({ onClose, userId }) {
 
   const [updateUserRoles] = useMutation(UPDATE_USER_ROLES);
 
+  const [updateUserProfile] = useMutation(UPDATE_USER_PROFILE);
+
   const addToast = useToastContext();
 
   const handleSubmit = async (values) => {
     try {
-      await updateUserRoles({ variables: { roles: values.roles, userId } });
+      if (!lodash.isEqual(values.roles, userData.user.roles)) {
+        await updateUserRoles({ variables: { roles: values.roles, userId } });
+      }
+
+      await updateUserProfile({
+        variables: {
+          userId,
+          first_name: values.first_name,
+          last_name: values.last_name,
+        },
+      });
 
       addToast({
         message: <>User updated.</>,
@@ -69,7 +82,7 @@ export default function UserEditModal({ onClose, userId }) {
     } catch (e) {
       addToast({
         message: <>Error updating user.</>,
-        severity: SEVERITY.console.error(),
+        severity: SEVERITY.danger,
         error: e,
       });
     }
