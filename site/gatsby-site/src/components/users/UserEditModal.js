@@ -9,6 +9,7 @@ import DefaultSkeleton from 'elements/Skeletons/Default';
 import SubmitButton from 'components/ui/SubmitButton';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import lodash from 'lodash';
+import { useUserContext } from 'contexts/userContext';
 
 const supportedRoles = [
   { name: 'admin', description: 'All permissions' },
@@ -52,6 +53,8 @@ export default function UserEditModal({ onClose, userId }) {
   const { data: userData, loading } = useQuery(FIND_USER, {
     variables: { query: { userId } },
   });
+
+  const { isRole } = useUserContext();
 
   const [updateUserRoles] = useMutation(UPDATE_USER_ROLES);
 
@@ -110,12 +113,14 @@ export default function UserEditModal({ onClose, userId }) {
             <>
               <Modal.Body>
                 <UserForm />
-                <details>
-                  <summary className="cursor-pointer text-sm">Supported Roles</summary>
-                  <div className="mt-2">
-                    <RolesTable roles={supportedRoles} />
-                  </div>
-                </details>
+                {isRole('admin') && (
+                  <details>
+                    <summary className="cursor-pointer text-sm">Supported Roles</summary>
+                    <div className="mt-2">
+                      <RolesTable roles={supportedRoles} />
+                    </div>
+                  </details>
+                )}
               </Modal.Body>
               <Modal.Footer>
                 <SubmitButton
