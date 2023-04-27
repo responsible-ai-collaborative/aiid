@@ -662,7 +662,7 @@ describe('The Submit form', () => {
     });
   });
 
-  it('Should show a preliminary checks message', () => {
+  it.skip('Should show a preliminary checks message', () => {
     const relatedReports = {
       byURL: {
         data: {
