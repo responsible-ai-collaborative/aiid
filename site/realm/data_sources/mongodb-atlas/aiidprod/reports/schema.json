@@ -62,6 +62,12 @@
         "image_url": {
             "bsonType": "string"
         },
+        "inputs_outputs": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "string"
+            }
+        },
         "is_incident_report": {
             "bsonType": "bool"
         },
@@ -90,12 +96,6 @@
             }
         },
         "text": {
-            "bsonType": "string"
-        },
-        "text_inputs": {
-            "bsonType": "string"
-        },
-        "text_outputs": {
             "bsonType": "string"
         },
         "title": {

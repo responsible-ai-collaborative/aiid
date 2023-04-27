@@ -23,8 +23,9 @@ const getVariants = (callback) => {
             tags
             url
             source_domain
-            text_inputs
-            text_outputs
+            submitters
+            text
+            inputs_outputs
           }
         }
       }
@@ -39,6 +40,17 @@ const getVariants = (callback) => {
     callback(variants);
   });
 };
+
+const new_date_published = '2000-01-01';
+
+const new_text =
+  'New text example with more than 80 characters. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+
+const new_inputs_outputs_1 = 'New Input text';
+
+const new_inputs_outputs_2 = 'New Output text';
+
+const new_submitter = 'New Submitter';
 
 describe('Variants pages', () => {
   const url = `/cite/${incidentId}`;
@@ -66,27 +78,27 @@ describe('Variants pages', () => {
             cy.get('[data-cy=variant-status-badge]').contains(
               getVariantStatusText(getVariantStatus(variant))
             );
-            cy.get('[data-cy=variant-text_inputs]').contains(variant.text_inputs.substring(0, 20));
-            cy.get('[data-cy=variant-text_outputs]').contains(
-              variant.text_outputs.substring(0, 20)
-            );
+            cy.get('[data-cy=variant-text]').contains(variant.text);
+            cy.get('[data-cy=variant-inputs-outputs]').eq(0).contains('New Input text');
+            cy.get('[data-cy=variant-inputs-outputs]')
+              .eq(1)
+              .contains('Test output text with markdown');
           });
       }
     });
   });
 
   it.skip('Should add a new Variant - Unauthenticated user', () => {
-    const text_inputs = 'Input text with **markdown**';
-
-    const text_outputs = 'Output text with **markdown**';
-
     cy.conditionalIntercept(
       '**/graphql',
       (req) =>
         req.body.operationName == 'CreateVariant' &&
         req.body.variables.input.incidentId === incidentId &&
-        req.body.variables.input.variant.text_inputs === text_inputs &&
-        req.body.variables.input.variant.text_outputs === text_outputs,
+        req.body.variables.input.variant.date_published === new_date_published &&
+        req.body.variables.input.variant.submitters[0] === new_submitter &&
+        req.body.variables.input.variant.text === new_text &&
+        req.body.variables.input.variant.inputs_outputs[0] === new_inputs_outputs_1 &&
+        req.body.variables.input.variant.inputs_outputs[1] === new_inputs_outputs_2,
       'createVariant',
       {
         data: {
@@ -113,8 +125,12 @@ describe('Variants pages', () => {
 
     cy.get('[data-cy=variant-form]').should('exist');
 
-    cy.get('[data-cy="variant-form-text-inputs"]').type(text_inputs);
-    cy.get('[data-cy="variant-form-text-outputs"]').type(text_outputs);
+    cy.get('[data-cy="variant-form-date-published"]').type(new_date_published);
+    cy.get('[data-cy="variant-form-submitters"]').type(new_submitter);
+    cy.get('[data-cy="variant-form-text"]').clear().type(new_text);
+    cy.get('[data-cy="variant-form-inputs-outputs"]:eq(0)').clear().type(new_inputs_outputs_1);
+    cy.get('[data-cy="add-text-row-btn"]').click();
+    cy.get('[data-cy="variant-form-inputs-outputs"]:eq(1)').clear().type(new_inputs_outputs_2);
 
     cy.waitForStableDOM();
 
@@ -148,10 +164,6 @@ describe('Variants pages', () => {
   maybeIt('Should Approve Variant - Incident Editor user', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
 
-    const new_text_inputs = 'New Input text';
-
-    const new_text_outputs = 'New Output text';
-
     cy.conditionalIntercept(
       '**/graphql',
       (req) => req.body.operationName == 'FindVariant',
@@ -175,8 +187,12 @@ describe('Variants pages', () => {
         (req) =>
           req.body.operationName == 'UpdateVariant' &&
           req.body.variables.query.report_number === variant.report_number &&
-          req.body.variables.set.text_inputs === new_text_inputs &&
-          req.body.variables.set.text_outputs === new_text_outputs &&
+          req.body.variables.set.date_published === new_date_published &&
+          req.body.variables.set.submitters[0] === variant.submitters[0] &&
+          req.body.variables.set.submitters[1] === variant.submitters[1] &&
+          req.body.variables.set.text === new_text &&
+          req.body.variables.set.inputs_outputs[0] === new_inputs_outputs_1 &&
+          req.body.variables.set.inputs_outputs[1] === new_inputs_outputs_2 &&
           req.body.variables.set.tags.includes(VARIANT_STATUS.approved) &&
           req.body.variables.set.date_modified == today &&
           req.body.variables.set.epoch_date_modified == getUnixTime(new Date(today)),
@@ -201,8 +217,11 @@ describe('Variants pages', () => {
 
         cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
 
-        cy.get('[data-cy="variant-form-text-inputs"]').clear().type(new_text_inputs);
-        cy.get('[data-cy="variant-form-text-outputs"]').clear().type(new_text_outputs);
+        cy.get('[data-cy="variant-form-date-published"]').type(new_date_published);
+        cy.get('[data-cy="variant-form-submitters"]').type(new_submitter);
+        cy.get('[data-cy="variant-form-text"]').clear().type(new_text);
+        cy.get('[data-cy="variant-form-inputs-outputs"]:eq(0)').clear().type(new_inputs_outputs_1);
+        cy.get('[data-cy="variant-form-inputs-outputs"]:eq(1)').clear().type(new_inputs_outputs_2);
 
         cy.get('[data-cy=approve-variant-btn]').click();
 
@@ -219,10 +238,6 @@ describe('Variants pages', () => {
 
   maybeIt('Should Reject Variant - Incident Editor user', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-    const new_text_inputs = 'New Input text';
-
-    const new_text_outputs = 'New Output text';
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -247,8 +262,12 @@ describe('Variants pages', () => {
         (req) =>
           req.body.operationName == 'UpdateVariant' &&
           req.body.variables.query.report_number === variant.report_number &&
-          req.body.variables.set.text_inputs === new_text_inputs &&
-          req.body.variables.set.text_outputs === new_text_outputs &&
+          req.body.variables.set.date_published === new_date_published &&
+          req.body.variables.set.submitters[0] === variant.submitters[0] &&
+          req.body.variables.set.submitters[1] === new_submitter &&
+          req.body.variables.set.text === new_text &&
+          req.body.variables.set.inputs_outputs[0] === new_inputs_outputs_1 &&
+          req.body.variables.set.inputs_outputs[1] === new_inputs_outputs_2 &&
           req.body.variables.set.tags.includes(VARIANT_STATUS.rejected) &&
           req.body.variables.set.date_modified == today &&
           req.body.variables.set.epoch_date_modified == getUnixTime(new Date(today)),
@@ -273,8 +292,11 @@ describe('Variants pages', () => {
 
         cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
 
-        cy.get('[data-cy="variant-form-text-inputs"]').clear().type(new_text_inputs);
-        cy.get('[data-cy="variant-form-text-outputs"]').clear().type(new_text_outputs);
+        cy.get('[data-cy="variant-form-date-published"]').type(new_date_published);
+        cy.get('[data-cy="variant-form-submitters"]').type(new_submitter);
+        cy.get('[data-cy="variant-form-text"]').clear().type(new_text);
+        cy.get('[data-cy="variant-form-inputs-outputs"]:eq(0)').clear().type(new_inputs_outputs_1);
+        cy.get('[data-cy="variant-form-inputs-outputs"]:eq(1)').clear().type(new_inputs_outputs_2);
 
         cy.get('[data-cy=reject-variant-btn]').click();
 
@@ -291,10 +313,6 @@ describe('Variants pages', () => {
 
   maybeIt('Should Save Variant - Incident Editor user', () => {
     cy.login(Cypress.env('e2eUsername'), Cypress.env('e2ePassword'));
-
-    const new_text_inputs = 'New Input text';
-
-    const new_text_outputs = 'New Output text';
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -319,8 +337,12 @@ describe('Variants pages', () => {
         (req) =>
           req.body.operationName == 'UpdateVariant' &&
           req.body.variables.query.report_number === variant.report_number &&
-          req.body.variables.set.text_inputs === new_text_inputs &&
-          req.body.variables.set.text_outputs === new_text_outputs &&
+          req.body.variables.set.date_published === new_date_published &&
+          req.body.variables.set.submitters[0] === variant.submitters[0] &&
+          req.body.variables.set.submitters[1] === new_submitter &&
+          req.body.variables.set.text === new_text &&
+          req.body.variables.set.inputs_outputs[0] === new_inputs_outputs_1 &&
+          req.body.variables.set.inputs_outputs[1] === variant.inputs_outputs[1] &&
           req.body.variables.set.tags == undefined &&
           req.body.variables.set.date_modified == today &&
           req.body.variables.set.epoch_date_modified == getUnixTime(new Date(today)),
@@ -345,8 +367,10 @@ describe('Variants pages', () => {
 
         cy.get('[data-cy=edit-variant-modal]').should('be.visible').as('modal');
 
-        cy.get('[data-cy="variant-form-text-inputs"]').clear().type(new_text_inputs);
-        cy.get('[data-cy="variant-form-text-outputs"]').clear().type(new_text_outputs);
+        cy.get('[data-cy="variant-form-date-published"]').type(new_date_published);
+        cy.get('[data-cy="variant-form-submitters"]').type(new_submitter);
+        cy.get('[data-cy="variant-form-text"]').clear().type(new_text);
+        cy.get('[data-cy="variant-form-inputs-outputs"]:eq(0)').clear().type(new_inputs_outputs_1);
 
         cy.get('[data-cy=save-variant-btn]').click();
 

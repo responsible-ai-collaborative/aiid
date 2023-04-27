@@ -166,26 +166,34 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         ),
       },
       {
-        title: t('Input and circumstances'),
+        title: t('Description of Incident Circumstances'),
         className: 'min-w-[450px]',
-        accessor: 'text_inputs',
+        accessor: 'text',
         width: 450,
         disableFilters: false,
         Cell: ({ row: { values } }) => (
           <div>
-            <Markdown className="variants-markdown">{values.text_inputs}</Markdown>
+            <Markdown className="variants-markdown">{values.text}</Markdown>
           </div>
         ),
       },
       {
-        title: t('Output and outcomes'),
+        title: t('Inputs / Outputs'),
         className: 'min-w-[450px]',
-        accessor: 'text_outputs',
+        accessor: 'inputs_outputs',
         width: 450,
         disableFilters: false,
         Cell: ({ row: { values } }) => (
-          <div>
-            <Markdown className="variants-markdown">{values.text_outputs}</Markdown>
+          <div className="flex flex-col gap-2 w-full">
+            {values.inputs_outputs?.map((input_output, index) => (
+              <div
+                className={`border-1 rounded-lg px-3 ${index % 2 == 1 ? 'bg-gray-200' : ''}`}
+                key={`inputs_outputs.${index}`}
+                data-cy="variant-inputs-outputs"
+              >
+                <Markdown>{input_output}</Markdown>
+              </div>
+            ))}
           </div>
         ),
       },

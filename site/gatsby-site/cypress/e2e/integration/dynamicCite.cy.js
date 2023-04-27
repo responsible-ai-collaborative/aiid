@@ -59,9 +59,16 @@ describe('Dynamic Cite pages', () => {
 
     cy.visit(url);
 
-    const text_inputs = 'Input text';
+    const new_date_published = '2000-01-01';
 
-    const text_outputs = 'Output text';
+    const new_text =
+      'New text example with more than 80 characters. Lorem ipsum dolor sit amet, consectetur';
+
+    const new_inputs_outputs_1 = 'New Input text';
+
+    const new_inputs_outputs_2 = 'New Output text';
+
+    const new_submitter = 'New Submitter';
 
     cy.conditionalIntercept(
       '**/graphql',
@@ -75,8 +82,11 @@ describe('Dynamic Cite pages', () => {
       (req) =>
         req.body.operationName == 'CreateVariant' &&
         req.body.variables.input.incidentId === incidentId &&
-        req.body.variables.input.variant.text_inputs === text_inputs &&
-        req.body.variables.input.variant.text_outputs === text_outputs,
+        req.body.variables.input.variant.date_published === new_date_published &&
+        req.body.variables.input.variant.submitters[0] === new_submitter &&
+        req.body.variables.input.variant.text === new_text &&
+        req.body.variables.input.variant.inputs_outputs[0] === new_inputs_outputs_1 &&
+        req.body.variables.input.variant.inputs_outputs[1] === new_inputs_outputs_2,
       'createVariant',
       {
         data: {
@@ -99,8 +109,12 @@ describe('Dynamic Cite pages', () => {
 
     cy.get('[data-cy=variant-form]').should('exist');
 
-    cy.get('[data-cy="variant-form-text-inputs"]').type(text_inputs);
-    cy.get('[data-cy="variant-form-text-outputs"]').type(text_outputs);
+    cy.get('[data-cy="variant-form-date-published"]').type(new_date_published);
+    cy.get('[data-cy="variant-form-submitters"]').type(new_submitter);
+    cy.get('[data-cy="variant-form-text"]').clear().type(new_text);
+    cy.get('[data-cy="variant-form-inputs-outputs"]:eq(0)').clear().type(new_inputs_outputs_1);
+    cy.get('[data-cy="add-text-row-btn"]').click();
+    cy.get('[data-cy="variant-form-inputs-outputs"]:eq(1)').clear().type(new_inputs_outputs_2);
 
     cy.waitForStableDOM();
 
